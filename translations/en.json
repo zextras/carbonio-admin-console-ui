@@ -1,26 +1,41 @@
 {
     "label": {
+        "active_sync": "ActiveSync",
+        "admins": "Admins",
         "app_clicked": "You have accepted the share request",
         "app_name": "Manage",
+        "backup": "Backup",
+        "certificates": "Certificates",
+        "core": "Core",
+        "cos": "CoS",
+        "domains": "Domains",
         "example_new": "New Example",
+        "features": "Features",
+        "log": "Log",
         "main_view": "This is a view",
+        "notification": "Notification",
         "page ": "You have accepted the share request",
         "page_": "You have accepted the share request",
+        "privacy": "Privacy",
         "secondary bar_view": "This is a main view",
         "secondary?bar_view": "This is a main view",
         "secondary_app": "App Example",
         "secondary_bar_view": "This is a main view",
         "secondarybar_view": "This is a main view",
+        "serverl_and_volumes": "Server & Volumes",
         "snackbar": {
             "share": {
                 "accepted": "You have accepted the share request"
             }
         },
+        "storages": "Storages",
+        "subscriptions": "Subscriptions",
         "utility_view": "Test utility view 1",
         "utility_view2": "Test utility view 2",
         "utility_view3": "Test utility view 3",
         "view": "This is a view"
     },
+    "log": "Log",
     "message": {
         "snackbar": {
             "share": {
