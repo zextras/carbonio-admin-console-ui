@@ -4,23 +4,29 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, Suspense } from 'react';
-import { Container, Text } from '@zextras/carbonio-design-system';
+import { Container } from '@zextras/carbonio-design-system';
 import { Spinner } from '@zextras/carbonio-shell-ui';
-import { useTranslation } from 'react-i18next';
+import { useRouteMatch, Switch, Route } from 'react-router-dom';
+import DomainListPanel from './domain/domain-list-panel';
+import DomainDetailPanel from './domain/domain-detail-panel';
 
 const AppView: FC = () => {
-	const [t] = useTranslation();
+	const { path } = useRouteMatch();
 	return (
-		<Container orientation="horizontal" mainAlignment="flex-start">
-			<Container width="40%">
-				<Text>Manage part-1</Text>
-			</Container>
-			<Suspense fallback={<Spinner />}>
-				<Container width="60%">
-					<Text>Manage part-2</Text>
+		<Switch>
+			<Route path={`${path}/domain`}>
+				<Container orientation="horizontal" mainAlignment="flex-start">
+					<Container width="40%">
+						<Suspense fallback={<Spinner />}>
+							<DomainListPanel />
+						</Suspense>
+					</Container>
+					<Suspense fallback={<Spinner />}>
+						<DomainDetailPanel />
+					</Suspense>
 				</Container>
-			</Suspense>
-		</Container>
+			</Route>
+		</Switch>
 	);
 };
 

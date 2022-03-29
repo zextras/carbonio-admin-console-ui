@@ -6,6 +6,7 @@
 import React, { FC, useMemo, useState } from 'react';
 import { Accordion } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { replaceHistory } from '@zextras/carbonio-shell-ui';
 
 const SidebarView: FC = () => {
 	const [t] = useTranslation();
@@ -15,7 +16,10 @@ const SidebarView: FC = () => {
 		{
 			id: 'domains',
 			icon: 'Globe',
-			label: t('label.domains', 'Domains')
+			label: t('label.domains', 'Domains'),
+			onClick: (): void => {
+				replaceHistory(`/domain`);
+			}
 		}
 	]);
 
