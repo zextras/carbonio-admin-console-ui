@@ -6,7 +6,7 @@
 import React, { FC } from 'react';
 import { Container, Padding, Text, Button } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import logo from '../../assets/ninja_robo.svg';
+// import logo from '../../assets/ninja_robo.svg';
 import DomainHeader from './domain-header';
 
 const DomainDetailPanel: FC = () => {
@@ -27,7 +27,7 @@ const DomainDetailPanel: FC = () => {
 					size="large"
 					style={{ whiteSpace: 'pre-line', textAlign: 'center', 'font-family': 'roboto' }}
 				>
-					<img src={logo} alt="logo" />
+					{/* <img src={logo} alt="logo" /> */}
 				</Text>
 				<Padding all="medium" width="47%">
 					<Text
