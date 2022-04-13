@@ -18,8 +18,20 @@ import {
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { useRouteMatch } from 'react-router-dom';
 import { getDomainList } from '../../services/search-domain-service';
-import { MAX_DOMAIN_DISPLAY } from '../../constants';
+import {
+	ADVANCED,
+	AUTHENTICATION,
+	FREE_BUSY,
+	GAL,
+	GENERAL_INFORMATION,
+	GENERAL_SETTINGS,
+	MAILBOX_QUOTA,
+	MAX_DOMAIN_DISPLAY,
+	THEME,
+	VIRTUAL_HOSTS
+} from '../../constants';
 
 const SelectItem = styled(Row)`
 	cursor: pointer;
@@ -110,41 +122,13 @@ const DomainLists: FC<{ domainList: any; selectedDomain: any; t: any }> = ({
 	</Container>
 );
 
-const ListItem: FC<{
-	visible: any;
-	active: boolean;
-	item: any;
-	selected: boolean;
-	selecting: any;
-	background: any;
-	selectedBackground: any;
-	activeBackground: any;
-}> = ({
-	visible,
-	active,
-	item,
-	selected,
-	selecting,
-	background,
-	selectedBackground,
-	activeBackground
-}) => (
-	<Container height={55} orientation="vertical" mainAlignment="flex-start" width="100%">
-		<Container padding={{ all: 'small' }} orientation="horizontal" mainAlignment="flex-start">
-			<Padding horizontal="small">
-				<Text color="rgba(204, 204, 204, 1)">{item.name}</Text>
-			</Padding>
-		</Container>
-		<Divider />
-	</Container>
-);
-
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const [isDomainListExpand, setIsDomainListExpand] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
+	const { path } = useRouteMatch();
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -175,37 +159,102 @@ const DomainListPanel: FC = () => {
 		setIsDomainSelect(true);
 		setSearchDomainName(domain?.name);
 		setIsDomainListExpand(false);
-		replaceHistory(`/domain/${domain?.name}`);
+		replaceHistory(`domain/${domain?.id}/${GENERAL_SETTINGS}`);
 	}, []);
 
 	const options = useMemo(
 		() => [
 			{
-				id: 1,
-				name: t('domain.authentication', 'Authentication')
+				id: GENERAL_INFORMATION,
+				name: t('domain.general_information', 'General Information'),
+				domainSelected: isDomainSelect
 			},
 			{
-				id: 2,
-				name: t('domain.virtual_hosts', 'Virtual Hosts')
+				id: GENERAL_SETTINGS,
+				name: t('domain.general_settings', 'General Settings'),
+				domainSelected: isDomainSelect
 			},
 			{
-				id: 3,
-				name: t('domain.advanced', 'Advanced')
+				id: GAL,
+				name: t('domain.gal', 'GAL'),
+				domainSelected: isDomainSelect
 			},
 			{
-				id: 4,
-				name: t('domain.free_busy', 'Free/Busy')
+				id: AUTHENTICATION,
+				name: t('domain.authentication', 'Authentication'),
+				domainSelected: isDomainSelect
 			},
 			{
-				id: 5,
-				name: t('domain.mailbox_quota', 'Mailbox Quota')
+				id: VIRTUAL_HOSTS,
+				name: t('domain.virtual_hosts', 'Virtual Hosts'),
+				domainSelected: isDomainSelect
 			},
 			{
-				id: 6,
-				name: t('domain.theme', 'Theme')
+				id: ADVANCED,
+				name: t('domain.advanced', 'Advanced'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: FREE_BUSY,
+				name: t('domain.free_busy', 'Free/Busy'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: MAILBOX_QUOTA,
+				name: t('domain.mailbox_quota', 'Mailbox Quota'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: THEME,
+				name: t('domain.theme', 'Theme'),
+				domainSelected: isDomainSelect
 			}
 		],
-		[t]
+		[t, isDomainSelect]
+	);
+
+	const selectDomainOption = useCallback(
+		(item) => () => {
+			replaceHistory(`domain/${searchDomainName}/${item?.id}`);
+		},
+		[searchDomainName]
+	);
+
+	const ListItem: FC<{
+		visible: any;
+		active: boolean;
+		item: any;
+		selected: boolean;
+		selecting: any;
+		background: any;
+		selectedBackground: any;
+		activeBackground: any;
+	}> = ({
+		visible,
+		active,
+		item,
+		selected,
+		selecting,
+		background,
+		selectedBackground,
+		activeBackground
+	}) => (
+		<Container
+			height={55}
+			orientation="vertical"
+			mainAlignment="flex-start"
+			width="100%"
+			onClick={selectDomainOption(item)}
+		>
+			<Container padding={{ all: 'small' }} orientation="horizontal" mainAlignment="flex-start">
+				<Padding horizontal="small">
+					<Text color={item?.domainSelected ? '#414141' : 'rgba(204, 204, 204, 1)'}>
+						{item.name}
+					</Text>
+				</Padding>
+			</Container>
+			<Divider />
+		</Container>
 	);
 
 	return (
