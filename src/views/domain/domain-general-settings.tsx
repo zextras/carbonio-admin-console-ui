@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Input,
@@ -18,6 +18,17 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { timeZoneList } from '../utility/utils';
+import {
+	ACTIVE,
+	CLOSED,
+	HTTP,
+	HTTPS,
+	LOCKED,
+	MAINTENANCE,
+	NOT_SET,
+	SUSPENDED
+} from '../../constants';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -55,41 +66,56 @@ const CustomField: FC<{ name: any; label: any; value: any; background?: any }> =
 
 const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformation }) => {
 	const [t] = useTranslation();
+	const timezones = useMemo(() => timeZoneList(t), [t]);
+	const serviceProtocolItems: any = useMemo(
+		() => [
+			{
+				value: NOT_SET,
+				label: t('label.not_set', 'Not Set')
+			},
+			{
+				label: t('label.https', 'https'),
+				value: HTTPS
+			},
+			{
+				label: t('label.http', 'http'),
+				value: HTTP
+			}
+		],
+		[t]
+	);
+
+	const domainStatusItems = useMemo(
+		() => [
+			{
+				label: t('label.active', 'Active'),
+				value: ACTIVE
+			},
+			{
+				label: t('label.closed', 'Closed'),
+				value: CLOSED
+			},
+			{
+				label: t('label.locked', 'Locked'),
+				value: LOCKED
+			},
+			{
+				label: t('label.maintenance', 'Maintenance'),
+				value: MAINTENANCE
+			},
+			{
+				label: t('label.suspended', 'Suspended'),
+				value: SUSPENDED
+			}
+		],
+		[t]
+	);
 	const [domainData, setDomainData]: any = useState({});
-
-	const serverProtocolItems = [
-		{
-			label: t('label.https', 'https'),
-			value: '1'
-		},
-		{
-			label: t('label.http', 'http'),
-			value: '2'
-		}
-	];
-
-	const domainStatusItems = [
-		{
-			label: t('label.active', 'Active'),
-			value: '1'
-		},
-		{
-			label: t('label.closed', 'Closed'),
-			value: '2'
-		},
-		{
-			label: t('label.locked', 'Locked'),
-			value: '3'
-		},
-		{
-			label: t('label.maintenance', 'Maintenance'),
-			value: '4'
-		},
-		{
-			label: t('label.suspended', 'Suspended'),
-			value: '5'
-		}
-	];
+	const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
+	const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
+		serviceProtocolItems[0]
+	);
+	const [domainStatus, setDomainStatus]: any = useState(domainStatusItems[0]);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -98,9 +124,28 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 				obj[item?.n] = item._content;
 				return '';
 			});
+			if (obj.zimbraPrefTimeZoneId) {
+				setSelectedTimeZone(timezones.find((item) => item.value === obj.zimbraPrefTimeZoneId));
+			} else {
+				setSelectedTimeZone(timezones[0]);
+			}
+
+			if (obj.zimbraPublicServiceProtocol) {
+				setSelectedPublicServiceProtocol(
+					serviceProtocolItems.find((item: any) => item.value === obj.zimbraPublicServiceProtocol)
+				);
+			} else {
+				setSelectedPublicServiceProtocol(serviceProtocolItems[0]);
+			}
+
+			if (obj.zimbraDomainStatus) {
+				setDomainStatus(domainStatusItems.find((item) => item.value === obj.zimbraDomainStatus));
+			} else {
+				setDomainStatus(domainStatusItems[0]);
+			}
 			setDomainData(obj);
 		}
-	}, [domainInformation]);
+	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems]);
 
 	const getDomainCreateDate = (serverStr: string): any => {
 		if (serverStr === null) return null;
@@ -123,6 +168,28 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		return `${yyyy}-${mm}-${dd}`;
 	};
 
+	const onTimeZoneChange = (v: any): any => {
+		const it = timezones.find((item: any) => item.value === v);
+		setSelectedTimeZone(it);
+	};
+
+	const onPublicServiceProtocolChange = (v: any): any => {
+		const it = serviceProtocolItems.find((item: any) => item.value === v);
+		setSelectedPublicServiceProtocol(it);
+	};
+
+	const onDomainStatusChange = (v: any): any => {
+		const it = domainStatusItems.find((item: any) => item.value === v);
+		setDomainStatus(it);
+	};
+
+	const onCancel = (): void => {
+		console.log('cancelllllllllll');
+	};
+
+	const onSave = (): void => {
+		console.log('SAVCEEEEE');
+	};
 	return (
 		<Container
 			orientation="column"
@@ -134,9 +201,36 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			width="96%"
 		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Text size="medium" weight="bold" color="gray0">
-					{t('domain.general_settings', 'General Settings')}
-				</Text>
+				<Container
+					orientation="vertical"
+					mainAlignment="space-around"
+					background="gray6"
+					height="fit"
+				>
+					<Row orientation="horizontal" width="100%">
+						<Row
+							padding={{ all: 'small' }}
+							mainAlignment="flex-start"
+							width="50%"
+							crossAlignment="flex-start"
+						>
+							<Text size="medium" weight="bold" color="gray0">
+								{t('domain.general_settings', 'General Settings')}
+							</Text>
+						</Row>
+						<Row
+							padding={{ all: 'small' }}
+							width="50%"
+							mainAlignment="flex-end"
+							crossAlignment="flex-end"
+						>
+							<Padding right="small">
+								<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
+							</Padding>
+							<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+						</Row>
+					</Row>
+				</Container>
 			</Row>
 
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -178,11 +272,12 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 					<SettingRow>
 						<Container padding={{ all: 'small' }}>
 							<Select
-								items={serverProtocolItems}
+								items={serviceProtocolItems}
 								background="gray5"
 								label={t('label.public_service_protocol', 'Public Service Protocol')}
-								defaultSelection={serverProtocolItems[0]}
 								showCheckbox={false}
+								onChange={onPublicServiceProtocolChange}
+								selection={selectedPublicServiceProtocol}
 							/>
 						</Container>
 						<CustomField
@@ -190,17 +285,22 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 							label={t('label.public_service_hostname', 'Public Service Host Name')}
 							value={domainData.zimbraPublicServiceHostname}
 						/>
-						<CustomField name="namePrefix" label="Public Service Prot" value="" />
+						<CustomField
+							name="namePrefix"
+							label="Public Service Prot"
+							value={domainData.zimbraPublicServicePort ? domainData.zimbraPublicServicePort : ''}
+						/>
 					</SettingRow>
 
 					<SettingRow>
 						<Container padding={{ all: 'small' }}>
 							<Select
-								items={serverProtocolItems}
+								items={timezones}
 								background="gray5"
 								label={t('label.timezone', 'Time Zone')}
-								defaultSelection={serverProtocolItems[0]}
 								showCheckbox={false}
+								onChange={onTimeZoneChange}
+								selection={selectedTimeZone}
 							/>
 						</Container>
 					</SettingRow>
@@ -253,12 +353,16 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 						<CustomField
 							name="namePrefix"
 							label={t('label.inbound_smtp_host_name', 'Inbound SMTP Host Name')}
-							value=""
+							value={domainData.zimbraDNSCheckHostname ? domainData.zimbraDNSCheckHostname : ''}
 						/>
 					</SettingRow>
 
 					<SettingRow>
-						<CustomField name="namePrefix" label={t('label.description', 'Description')} value="" />
+						<CustomField
+							name="namePrefix"
+							label={t('label.description', 'Description')}
+							value={domainData.description ? domainData.description : ''}
+						/>
 					</SettingRow>
 
 					<SettingRow>
@@ -274,19 +378,25 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 								label={t('label.status', 'Status')}
 								defaultSelection={domainStatusItems[0]}
 								showCheckbox={false}
+								onChange={onDomainStatusChange}
+								selection={domainStatus}
 							/>
 						</Container>
 					</SettingRow>
 
 					<SettingRow>
-						<CustomField name="namePrefix" label={t('label.note', 'Note')} value="" />
+						<CustomField
+							name="namePrefix"
+							label={t('label.note', 'Note')}
+							value={domainData.zimbraNotes ? domainData.zimbraNotes : ''}
+						/>
 					</SettingRow>
 
 					<SettingRow>
 						<CustomField
 							name="namePrefix"
 							label={t('label.admin_help_url', 'Admin Help URL')}
-							value=""
+							value={domainData.zimbraHelpAdminURL ? domainData.zimbraHelpAdminURL : ''}
 						/>
 					</SettingRow>
 
@@ -294,7 +404,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 						<CustomField
 							name="namePrefix"
 							label={t('label.deligated_admin_help_url', 'Deligated Admin Help URL')}
-							value=""
+							value={domainData.zimbraHelpDelegatedURL ? domainData.zimbraHelpDelegatedURL : ''}
 						/>
 					</SettingRow>
 
