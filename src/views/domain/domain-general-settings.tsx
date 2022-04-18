@@ -14,7 +14,8 @@ import {
 	Divider,
 	Button,
 	Padding,
-	Icon
+	Icon,
+	Shimmer
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -45,23 +46,6 @@ const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	>
 		{children}
 	</Row>
-);
-
-const CustomField: FC<{ name: any; label: any; value: any; background?: any }> = ({
-	name,
-	label,
-	value,
-	background = 'gray5'
-}) => (
-	<Container padding={{ all: 'small' }}>
-		<Input
-			backgroundColor={background}
-			inputName={name}
-			label={label}
-			defaultValue={value}
-			value={value}
-		/>
-	</Container>
 );
 
 const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformation }) => {
@@ -110,12 +94,31 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		],
 		[t]
 	);
-	const [domainData, setDomainData]: any = useState({});
+	const [domainData, setDomainData]: any = useState({
+		zimbraPrefTimeZoneId: NOT_SET,
+		zimbraPublicServiceProtocol: NOT_SET,
+		zimbraDomainStatus: ACTIVE,
+		zimbraPublicServicePort: '',
+		zimbraDNSCheckHostname: '',
+		zimbraNotes: '',
+		zimbraHelpAdminURL: '',
+		zimbraHelpDelegatedURL: ''
+	});
 	const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
 	const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
 		serviceProtocolItems[0]
 	);
-	const [domainStatus, setDomainStatus]: any = useState(domainStatusItems[0]);
+	const [domainStatus, setDomainStatus] = useState<any>(domainStatusItems[0]);
+	const [domainName, setDomainName] = useState<string>('');
+	const [publicServiceHostName, setPublicServiceHostName] = useState<string>('');
+	const [zimbraPublicServicePort, setZimbraPublicServicePort] = useState<string>('');
+	const [zimbraDNSCheckHostname, setZimbraDNSCheckHostname] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
+	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [zimbraHelpAdminURL, setZimbraHelpAdminURL] = useState<string>('');
+	const [zimbraHelpDelegatedURL, setZimbraHelpDelegatedURL] = useState<string>('');
+	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [loading, setLoading] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -124,9 +127,11 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 				obj[item?.n] = item._content;
 				return '';
 			});
+			setDomainName(obj.zimbraDomainName);
 			if (obj.zimbraPrefTimeZoneId) {
 				setSelectedTimeZone(timezones.find((item) => item.value === obj.zimbraPrefTimeZoneId));
 			} else {
+				obj.zimbraPrefTimeZoneId = NOT_SET;
 				setSelectedTimeZone(timezones[0]);
 			}
 
@@ -135,6 +140,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 					serviceProtocolItems.find((item: any) => item.value === obj.zimbraPublicServiceProtocol)
 				);
 			} else {
+				obj.zimbraPublicServiceProtocol = NOT_SET;
 				setSelectedPublicServiceProtocol(serviceProtocolItems[0]);
 			}
 
@@ -143,7 +149,43 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			} else {
 				setDomainStatus(domainStatusItems[0]);
 			}
+
+			if (obj.zimbraPublicServicePort) {
+				setZimbraPublicServicePort(obj.zimbraPublicServicePort);
+			} else {
+				obj.zimbraPublicServicePort = '';
+				setZimbraPublicServicePort('');
+			}
+
+			if (obj.zimbraDNSCheckHostname) {
+				setZimbraDNSCheckHostname(obj.zimbraDNSCheckHostname);
+			} else {
+				obj.zimbraDNSCheckHostname = '';
+				setZimbraDNSCheckHostname('');
+			}
+
+			if (obj.zimbraNotes) {
+				setZimbraNotes(obj.zimbraNotes);
+			} else {
+				obj.zimbraNotes = '';
+				setZimbraNotes('');
+			}
+
+			if (obj.zimbraHelpAdminURL) {
+				setZimbraHelpAdminURL(obj.zimbraHelpAdminURL);
+			} else {
+				obj.zimbraHelpAdminURL = '';
+				setZimbraHelpAdminURL('');
+			}
+
+			if (obj.zimbraHelpDelegatedURL) {
+				setZimbraHelpDelegatedURL(obj.zimbraHelpDelegatedURL);
+			} else {
+				obj.zimbraHelpDelegatedURL = '';
+				setZimbraHelpDelegatedURL('');
+			}
 			setDomainData(obj);
+			setIsDirty(false);
 		}
 	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems]);
 
@@ -183,8 +225,65 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		setDomainStatus(it);
 	};
 
+	useEffect(() => {
+		if (domainData.zimbraPrefTimeZoneId.toString() !== selectedTimeZone?.value.toString()) {
+			setIsDirty(true);
+		}
+		if (domainData.zimbraPublicServiceProtocol !== selectedPublicServiceProtocol.value) {
+			setIsDirty(true);
+		}
+
+		if (domainData.zimbraDomainStatus !== domainStatus.value) {
+			setIsDirty(true);
+		}
+
+		if (domainData.zimbraPublicServicePort !== zimbraPublicServicePort) {
+			setIsDirty(true);
+		}
+
+		if (domainData.zimbraDNSCheckHostname !== zimbraDNSCheckHostname) {
+			setIsDirty(true);
+		}
+
+		if (domainData.zimbraNotes !== zimbraNotes) {
+			setIsDirty(true);
+		}
+
+		if (domainData.zimbraHelpAdminURL !== zimbraHelpAdminURL) {
+			setIsDirty(true);
+		}
+
+		if (domainData.zimbraHelpDelegatedURL !== zimbraHelpDelegatedURL) {
+			setIsDirty(true);
+		}
+	}, [
+		domainData,
+		selectedTimeZone,
+		zimbraPublicServicePort,
+		domainStatus,
+		zimbraDNSCheckHostname,
+		selectedPublicServiceProtocol,
+		zimbraHelpAdminURL,
+		zimbraHelpDelegatedURL,
+		zimbraNotes
+	]);
+
 	const onCancel = (): void => {
-		console.log('cancelllllllllll');
+		setLoading(true);
+		setTimeout(() => setLoading(false), 10);
+		setSelectedPublicServiceProtocol(
+			serviceProtocolItems.find(
+				(item: any) => item.value === domainData.zimbraPublicServiceProtocol
+			)
+		);
+		setSelectedTimeZone(timezones.find((item) => item.value === domainData.zimbraPrefTimeZoneId));
+		setDomainStatus(domainStatusItems.find((item) => item.value === domainData.zimbraDomainStatus));
+		setZimbraPublicServicePort(domainData.zimbraPublicServicePort);
+		setZimbraDNSCheckHostname(domainData.zimbraDNSCheckHostname);
+		setZimbraNotes(domainData.zimbraNotes);
+		setZimbraHelpAdminURL(domainData.zimbraHelpAdminURL);
+		setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
+		setIsDirty(false);
 	};
 
 	const onSave = (): void => {
@@ -225,225 +324,262 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 							crossAlignment="flex-end"
 						>
 							<Padding right="small">
-								<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
+								{isDirty && (
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										onClick={onCancel}
+									/>
+								)}
 							</Padding>
-							<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+							{isDirty && (
+								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+							)}
 						</Row>
 					</Row>
 				</Container>
 			</Row>
+			{loading ? (
+				<Container
+					orientation="horizontal"
+					mainAlignment="flex-start"
+					width="fill"
+					crossAlignment="flex-start"
+				>
+					<Shimmer.FormSection>
+						<Shimmer.FormSubSection />
+					</Shimmer.FormSection>
+				</Container>
+			) : (
+				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Container height="fit" crossAlignment="flex-start" background="gray6" className="ff">
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.name', 'Name')}
+									value={domainName}
+									background="gray6"
+									disabled
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Input label={t('label.certificate', 'Certificate')} value="" background="gray6" />
+							</Container>
+						</SettingRow>
 
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Container height="fit" crossAlignment="flex-start" background="gray6" className="ff">
-					<SettingRow>
-						<CustomField
-							name="namePrefix"
-							label={t('label.name', 'Name')}
-							value={domainData.zimbraDomainName}
-							background="gray6"
-						/>
-						<CustomField
-							name="namePrefix"
-							label={t('label.certificate', 'Certificate')}
-							value=""
-							background="gray6"
-						/>
-					</SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.id', 'Id')}
+									value={domainData.zimbraId}
+									background="gray6"
+									disabled
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.create_date', 'CreateDate')}
+									value={
+										!!domainData.zimbraCreateTimestamp && domainData.zimbraCreateTimestamp !== null
+											? getFormatedDate(getDomainCreateDate(domainData.zimbraCreateTimestamp))
+											: ''
+									}
+									background="gray6"
+									disabled
+								/>
+							</Container>
+						</SettingRow>
 
-					<SettingRow>
-						<CustomField
-							name="namePrefix"
-							label={t('label.id', 'Id')}
-							value={domainData.zimbraId}
-							background="gray6"
-						/>
-						<CustomField
-							name="namePrefix"
-							label={t('label.create_date', 'CreateDate')}
-							value={
-								!!domainData.zimbraCreateTimestamp && domainData.zimbraCreateTimestamp !== null
-									? getFormatedDate(getDomainCreateDate(domainData.zimbraCreateTimestamp))
-									: ''
-							}
-							background="gray6"
-						/>
-					</SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Select
+									items={serviceProtocolItems}
+									background="gray5"
+									label={t('label.public_service_protocol', 'Public Service Protocol')}
+									showCheckbox={false}
+									onChange={onPublicServiceProtocolChange}
+									selection={selectedPublicServiceProtocol}
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.public_service_hostname', 'Public Service Host Name')}
+									value={publicServiceHostName}
+									background="gray5"
+									onChange={(e: any): any => {
+										setPublicServiceHostName(e.target.value);
+									}}
+								/>
+							</Container>
 
-					<SettingRow>
-						<Container padding={{ all: 'small' }}>
-							<Select
-								items={serviceProtocolItems}
-								background="gray5"
-								label={t('label.public_service_protocol', 'Public Service Protocol')}
-								showCheckbox={false}
-								onChange={onPublicServiceProtocolChange}
-								selection={selectedPublicServiceProtocol}
-							/>
-						</Container>
-						<CustomField
-							name="namePrefix"
-							label={t('label.public_service_hostname', 'Public Service Host Name')}
-							value={domainData.zimbraPublicServiceHostname}
-						/>
-						<CustomField
-							name="namePrefix"
-							label="Public Service Prot"
-							value={domainData.zimbraPublicServicePort ? domainData.zimbraPublicServicePort : ''}
-						/>
-					</SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.public_service_port', 'Public Service Port')}
+									value={zimbraPublicServicePort}
+									background="gray6"
+									onChange={(e: any): any => {
+										setZimbraPublicServicePort(e.target.value);
+									}}
+								/>
+							</Container>
+						</SettingRow>
 
-					<SettingRow>
-						<Container padding={{ all: 'small' }}>
-							<Select
-								items={timezones}
-								background="gray5"
-								label={t('label.timezone', 'Time Zone')}
-								showCheckbox={false}
-								onChange={onTimeZoneChange}
-								selection={selectedTimeZone}
-							/>
-						</Container>
-					</SettingRow>
-					<Container
-						orientation="horizontal"
-						width="98%"
-						crossAlignment="center"
-						mainAlignment="space-between"
-						style={{ margin: '8px' }}
-					>
-						<Divider />
-					</Container>
-
-					<SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Select
+									items={timezones}
+									background="gray5"
+									label={t('label.timezone', 'Time Zone')}
+									showCheckbox={false}
+									onChange={onTimeZoneChange}
+									selection={selectedTimeZone}
+								/>
+							</Container>
+						</SettingRow>
 						<Container
 							orientation="horizontal"
-							width="99%"
+							width="98%"
 							crossAlignment="center"
 							mainAlignment="space-between"
-							background="#D3EBF8"
-							padding={{
-								all: 'large'
-							}}
 							style={{ margin: '8px' }}
 						>
-							<Row takeAvwidth="fill" mainAlignment="flex-start">
-								<Padding horizontal="small">
-									<CustomIcon icon="InfoOutline"></CustomIcon>
-								</Padding>
-							</Row>
-							<Row
-								takeAvwidth="fill"
-								mainAlignment="flex-start"
-								width="100%"
+							<Divider />
+						</Container>
+
+						<SettingRow>
+							<Container
+								orientation="horizontal"
+								width="99%"
+								crossAlignment="center"
+								mainAlignment="space-between"
+								background="#D3EBF8"
 								padding={{
-									all: 'small'
+									all: 'large'
 								}}
+								style={{ margin: '8px' }}
 							>
-								<Text overflow="break-word">
-									{t(
-										'label.mx_record_information_msg',
-										'If your MX records point to a spam-relay or any other external non-zimbra server, enter the name of that server in "Inbound SMTP Host Name" field.'
-									)}
-								</Text>
-							</Row>
-						</Container>
-					</SettingRow>
+								<Row takeAvwidth="fill" mainAlignment="flex-start">
+									<Padding horizontal="small">
+										<CustomIcon icon="InfoOutline"></CustomIcon>
+									</Padding>
+								</Row>
+								<Row
+									takeAvwidth="fill"
+									mainAlignment="flex-start"
+									width="100%"
+									padding={{
+										all: 'small'
+									}}
+								>
+									<Text overflow="break-word">
+										{t(
+											'label.mx_record_information_msg',
+											'If your MX records point to a spam-relay or any other external non-zimbra server, enter the name of that server in "Inbound SMTP Host Name" field.'
+										)}
+									</Text>
+								</Row>
+							</Container>
+						</SettingRow>
 
-					<SettingRow>
-						<CustomField
-							name="namePrefix"
-							label={t('label.inbound_smtp_host_name', 'Inbound SMTP Host Name')}
-							value={domainData.zimbraDNSCheckHostname ? domainData.zimbraDNSCheckHostname : ''}
-						/>
-					</SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.inbound_smtp_host_name', 'Inbound SMTP Host Name')}
+									value={zimbraDNSCheckHostname}
+									background="gray5"
+									onChange={(e: any): any => {
+										setZimbraDNSCheckHostname(e.target.value);
+									}}
+								/>
+							</Container>
+						</SettingRow>
 
-					<SettingRow>
-						<CustomField
-							name="namePrefix"
-							label={t('label.description', 'Description')}
-							value={domainData.description ? domainData.description : ''}
-						/>
-					</SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.description', 'Description')}
+									value={description}
+									background="gray5"
+									onChange={(e: any): any => {
+										setDescription(e.target.value);
+									}}
+								/>
+							</Container>
+						</SettingRow>
 
-					<SettingRow>
-						<CustomField
-							name="namePrefix"
-							label={t('label.default_class_of_service', 'Default Class of Service')}
-							value=""
-						/>
-						<Container padding={{ all: 'small' }}>
-							<Select
-								items={domainStatusItems}
-								background="gray5"
-								label={t('label.status', 'Status')}
-								defaultSelection={domainStatusItems[0]}
-								showCheckbox={false}
-								onChange={onDomainStatusChange}
-								selection={domainStatus}
-							/>
-						</Container>
-					</SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.default_class_of_service', 'Default Class of Service')}
+									value=""
+									background="gray5"
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Select
+									items={domainStatusItems}
+									background="gray5"
+									label={t('label.status', 'Status')}
+									defaultSelection={domainStatusItems[0]}
+									showCheckbox={false}
+									onChange={onDomainStatusChange}
+									selection={domainStatus}
+								/>
+							</Container>
+						</SettingRow>
 
-					<SettingRow>
-						<CustomField
-							name="namePrefix"
-							label={t('label.note', 'Note')}
-							value={domainData.zimbraNotes ? domainData.zimbraNotes : ''}
-						/>
-					</SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.note', 'Note')}
+									value={zimbraNotes}
+									background="gray5"
+									onChange={(e: any): any => {
+										setZimbraNotes(e.target.value);
+									}}
+								/>
+							</Container>
+						</SettingRow>
 
-					<SettingRow>
-						<CustomField
-							name="namePrefix"
-							label={t('label.admin_help_url', 'Admin Help URL')}
-							value={domainData.zimbraHelpAdminURL ? domainData.zimbraHelpAdminURL : ''}
-						/>
-					</SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.admin_help_url', 'Admin Help URL')}
+									value={zimbraHelpAdminURL}
+									background="gray5"
+									onChange={(e: any): any => {
+										setZimbraHelpAdminURL(e.target.value);
+									}}
+								/>
+							</Container>
+						</SettingRow>
 
-					<SettingRow>
-						<CustomField
-							name="namePrefix"
-							label={t('label.deligated_admin_help_url', 'Deligated Admin Help URL')}
-							value={domainData.zimbraHelpDelegatedURL ? domainData.zimbraHelpDelegatedURL : ''}
-						/>
-					</SettingRow>
-
-					<Container
-						orientation="column"
-						crossAlignment="flex-start"
-						mainAlignment="flex-start"
-						background="gray6"
-						padding={{ all: 'large' }}
-						style={{ overflow: 'auto', margin: '16px' }}
-						width="96%"
-					>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-							<Text size="medium" weight="bold" color="gray0">
-								{t('domain.general_settings', 'General Settings')}
-							</Text>
-						</Row>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.deligated_admin_help_url', 'Deligated Admin Help URL')}
+									value={zimbraHelpDelegatedURL}
+									background="gray5"
+									onChange={(e: any): any => {
+										setZimbraHelpDelegatedURL(e.target.value);
+									}}
+								/>
+							</Container>
+						</SettingRow>
+						<SettingRow>
+							<Container padding={{ all: 'small' }}>
+								<Button
+									type="outlined"
+									label={t('label.delete_domain', 'Delete Domain')}
+									icon="Close"
+									color="error"
+									size="fill"
+								/>
+							</Container>
+						</SettingRow>
 					</Container>
-
-					<SettingRow>
-						<CustomField label="" value="" name="" />
-						<Container padding={{ all: 'small' }}>
-							<Button type="outlined" label={t('label.add_regex', 'ADD REGEX')} color="primary" />
-						</Container>
-					</SettingRow>
-
-					<SettingRow>
-						<Container padding={{ all: 'small' }}>
-							<Button
-								type="outlined"
-								label={t('label.delete_domain', 'Delete Domain')}
-								icon="Close"
-								color="error"
-								size="fill"
-							/>
-						</Container>
-					</SettingRow>
-				</Container>
-			</Row>
+				</Row>
+			)}
 		</Container>
 	);
 };
