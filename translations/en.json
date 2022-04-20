@@ -28,6 +28,7 @@
         "cancel": "Cancel",
         "certificate": "Certificate",
         "certificates": "Certificates",
+        "change_save_success_msg": "The change has been saved successfully",
         "closed": "Closed",
         "core": "Core",
         "cos": "CoS",
@@ -66,11 +67,13 @@
         "secondary_bar_view": "This is a main view",
         "secondarybar_view": "This is a main view",
         "serverl_and_volumes": "Server & Volumes",
+        "signature_required": "Signature information is required.",
         "snackbar": {
             "share": {
                 "accepted": "You have accepted the share request"
             }
         },
+        "something_wrong_wrror_msg": "Something went wrong. Please try again.",
         "status": "Status",
         "storages": "Storages",
         "subscriptions": "Subscriptions",

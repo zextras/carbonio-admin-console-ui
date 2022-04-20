@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Input,
@@ -15,7 +15,8 @@ import {
 	Button,
 	Padding,
 	Icon,
-	Shimmer
+	Shimmer,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -30,6 +31,7 @@ import {
 	NOT_SET,
 	SUSPENDED
 } from '../../constants';
+import { modifyDomain } from '../../services/modify-domain-service';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -51,6 +53,7 @@ const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformation }) => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const serviceProtocolItems: any = useMemo(
 		() => [
 			{
@@ -287,7 +290,135 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 	};
 
 	const onSave = (): void => {
-		console.log('SAVCEEEEE');
+		const body: any = {};
+		const attributes: any[] = [];
+		body.id = domainData.zimbraId;
+		body._jsns = 'urn:zimbraAdmin';
+		attributes.push({
+			n: 'zimbraNotes',
+			_content: zimbraNotes
+		});
+		if (selectedTimeZone.value !== NOT_SET) {
+			attributes.push({
+				n: 'zimbraPrefTimeZoneId',
+				_content: selectedTimeZone.value
+			});
+		}
+		if (selectedPublicServiceProtocol.value !== NOT_SET) {
+			attributes.push({
+				n: 'zimbraPublicServiceProtocol',
+				_content: selectedPublicServiceProtocol.value
+			});
+		}
+		attributes.push({
+			n: 'zimbraDomainStatus',
+			_content: domainStatus.value
+		});
+		attributes.push({
+			n: 'zimbraPublicServicePort',
+			_content: zimbraPublicServicePort
+		});
+		attributes.push({
+			n: 'zimbraDNSCheckHostname',
+			_content: zimbraDNSCheckHostname
+		});
+		attributes.push({
+			n: 'zimbraHelpAdminURL',
+			_content: zimbraHelpAdminURL
+		});
+		attributes.push({
+			n: 'zimbraHelpDelegatedURL',
+			_content: zimbraHelpDelegatedURL
+		});
+		body.a = attributes;
+		modifyDomain(body)
+			.then((response) => response.json())
+			.then((data) => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				const domainInfo: any = data?.Body?.ModifyDomainResponse?.domain[0]?.a;
+
+				const obj: any = {};
+				domainInfo.map((item: any) => {
+					obj[item?.n] = item._content;
+					return '';
+				});
+				setDomainName(obj.zimbraDomainName);
+				if (obj.zimbraPrefTimeZoneId) {
+					setSelectedTimeZone(timezones.find((item) => item.value === obj.zimbraPrefTimeZoneId));
+				} else {
+					obj.zimbraPrefTimeZoneId = NOT_SET;
+					setSelectedTimeZone(timezones[0]);
+				}
+
+				if (obj.zimbraPublicServiceProtocol) {
+					setSelectedPublicServiceProtocol(
+						serviceProtocolItems.find((item: any) => item.value === obj.zimbraPublicServiceProtocol)
+					);
+				} else {
+					obj.zimbraPublicServiceProtocol = NOT_SET;
+					setSelectedPublicServiceProtocol(serviceProtocolItems[0]);
+				}
+
+				if (obj.zimbraDomainStatus) {
+					setDomainStatus(domainStatusItems.find((item) => item.value === obj.zimbraDomainStatus));
+				} else {
+					setDomainStatus(domainStatusItems[0]);
+				}
+
+				if (obj.zimbraPublicServicePort) {
+					setZimbraPublicServicePort(obj.zimbraPublicServicePort);
+				} else {
+					obj.zimbraPublicServicePort = '';
+					setZimbraPublicServicePort('');
+				}
+
+				if (obj.zimbraDNSCheckHostname) {
+					setZimbraDNSCheckHostname(obj.zimbraDNSCheckHostname);
+				} else {
+					obj.zimbraDNSCheckHostname = '';
+					setZimbraDNSCheckHostname('');
+				}
+
+				if (obj.zimbraNotes) {
+					setZimbraNotes(obj.zimbraNotes);
+				} else {
+					obj.zimbraNotes = '';
+					setZimbraNotes('');
+				}
+
+				if (obj.zimbraHelpAdminURL) {
+					setZimbraHelpAdminURL(obj.zimbraHelpAdminURL);
+				} else {
+					obj.zimbraHelpAdminURL = '';
+					setZimbraHelpAdminURL('');
+				}
+
+				if (obj.zimbraHelpDelegatedURL) {
+					setZimbraHelpDelegatedURL(obj.zimbraHelpDelegatedURL);
+				} else {
+					obj.zimbraHelpDelegatedURL = '';
+					setZimbraHelpDelegatedURL('');
+				}
+				setDomainData(obj);
+				setIsDirty(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
 	};
 	return (
 		<Container
