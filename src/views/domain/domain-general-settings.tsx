@@ -105,7 +105,9 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		zimbraDNSCheckHostname: '',
 		zimbraNotes: '',
 		zimbraHelpAdminURL: '',
-		zimbraHelpDelegatedURL: ''
+		zimbraHelpDelegatedURL: '',
+		zimbraPublicServiceHostname: '',
+		description: ''
 	});
 	const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
 	const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
@@ -167,6 +169,13 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 				setZimbraDNSCheckHostname('');
 			}
 
+			if (obj.zimbraPublicServiceHostname) {
+				setPublicServiceHostName(obj.zimbraPublicServiceHostname);
+			} else {
+				obj.zimbraPublicServiceHostname = '';
+				setPublicServiceHostName('');
+			}
+
 			if (obj.zimbraNotes) {
 				setZimbraNotes(obj.zimbraNotes);
 			} else {
@@ -186,6 +195,12 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			} else {
 				obj.zimbraHelpDelegatedURL = '';
 				setZimbraHelpDelegatedURL('');
+			}
+
+			if (obj.description) {
+				setDescription(obj.description);
+			} else {
+				obj.description('');
 			}
 			setDomainData(obj);
 			setIsDirty(false);
@@ -208,9 +223,11 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 	const getFormatedDate = (date: Date): any => {
 		const dd = date.getDate();
 		const mm = date.getMonth() + 1; // January is 0!
-
 		const yyyy = date.getFullYear();
-		return `${yyyy}-${mm}-${dd}`;
+		const hour = date.getHours();
+		const minutes = date.getMinutes();
+		const seconds = date.getSeconds();
+		return `${yyyy}-${mm}-${dd} | ${hour}:${minutes}:${seconds}`;
 	};
 
 	const onTimeZoneChange = (v: any): any => {
@@ -236,6 +253,9 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			setIsDirty(true);
 		}
 
+		if (domainData.zimbraPublicServiceHostname !== publicServiceHostName) {
+			setIsDirty(true);
+		}
 		if (domainData.zimbraDomainStatus !== domainStatus.value) {
 			setIsDirty(true);
 		}
@@ -244,6 +264,9 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			setIsDirty(true);
 		}
 
+		if (domainData.zimbraPublicServiceHostname !== publicServiceHostName) {
+			setIsDirty(true);
+		}
 		if (domainData.zimbraDNSCheckHostname !== zimbraDNSCheckHostname) {
 			setIsDirty(true);
 		}
@@ -256,6 +279,9 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			setIsDirty(true);
 		}
 
+		if (domainData.description !== description) {
+			setIsDirty(true);
+		}
 		if (domainData.zimbraHelpDelegatedURL !== zimbraHelpDelegatedURL) {
 			setIsDirty(true);
 		}
@@ -268,7 +294,9 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		selectedPublicServiceProtocol,
 		zimbraHelpAdminURL,
 		zimbraHelpDelegatedURL,
-		zimbraNotes
+		zimbraNotes,
+		publicServiceHostName,
+		description
 	]);
 
 	const onCancel = (): void => {
@@ -286,6 +314,8 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		setZimbraNotes(domainData.zimbraNotes);
 		setZimbraHelpAdminURL(domainData.zimbraHelpAdminURL);
 		setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
+		setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
+		setDescription(domainData.description);
 		setIsDirty(false);
 	};
 
@@ -406,6 +436,18 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 					obj.zimbraHelpDelegatedURL = '';
 					setZimbraHelpDelegatedURL('');
 				}
+
+				if (obj.zimbraPublicServiceHostname) {
+					setPublicServiceHostName(obj.zimbraPublicServiceHostname);
+				} else {
+					obj.zimbraPublicServiceHostname = '';
+					setPublicServiceHostName('');
+				}
+				if (obj.description) {
+					setDescription(obj.description);
+				} else {
+					obj.description('');
+				}
 				setDomainData(obj);
 				setIsDirty(false);
 			})
@@ -435,7 +477,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="fit"
+					height="58px"
 				>
 					<Row orientation="horizontal" width="100%">
 						<Row
