@@ -20,6 +20,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { timeZoneList } from '../utility/utils';
 import {
 	ACTIVE,
@@ -32,6 +33,10 @@ import {
 	SUSPENDED
 } from '../../constants';
 import { modifyDomain } from '../../services/modify-domain-service';
+import { deleteDomain } from '../../services/delete-domain-service';
+import { getDomainList } from '../../services/search-domain-service';
+import { searchDirectory } from '../../services/search-directory-service';
+import { deleteAccount } from '../../services/delete-account-service';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -200,7 +205,8 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			if (obj.description) {
 				setDescription(obj.description);
 			} else {
-				obj.description('');
+				obj.description = '';
+				setDescription('');
 			}
 			setDomainData(obj);
 			setIsDirty(false);
@@ -249,6 +255,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		if (domainData.zimbraPrefTimeZoneId.toString() !== selectedTimeZone?.value.toString()) {
 			setIsDirty(true);
 		}
+
 		if (domainData.zimbraPublicServiceProtocol !== selectedPublicServiceProtocol.value) {
 			setIsDirty(true);
 		}
@@ -256,6 +263,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		if (domainData.zimbraPublicServiceHostname !== publicServiceHostName) {
 			setIsDirty(true);
 		}
+
 		if (domainData.zimbraDomainStatus !== domainStatus.value) {
 			setIsDirty(true);
 		}
@@ -264,9 +272,6 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			setIsDirty(true);
 		}
 
-		if (domainData.zimbraPublicServiceHostname !== publicServiceHostName) {
-			setIsDirty(true);
-		}
 		if (domainData.zimbraDNSCheckHostname !== zimbraDNSCheckHostname) {
 			setIsDirty(true);
 		}
@@ -282,6 +287,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		if (domainData.description !== description) {
 			setIsDirty(true);
 		}
+
 		if (domainData.zimbraHelpDelegatedURL !== zimbraHelpDelegatedURL) {
 			setIsDirty(true);
 		}
@@ -446,7 +452,8 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 				if (obj.description) {
 					setDescription(obj.description);
 				} else {
-					obj.description('');
+					obj.description = '';
+					setDescription('');
 				}
 				setDomainData(obj);
 				setIsDirty(false);
@@ -462,6 +469,39 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 				});
 			});
 	};
+
+	const onDeleteDomain = (): void => {
+		const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
+		const attrs =
+			'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+		searchDirectory(domainName, attrs, type)
+			.then((response) => response.json())
+			.then((data) => {
+				if (data?.Body?.SearchDirectoryResponse?.searchTotal > 0) {
+					const accounts = data?.Body?.SearchDirectoryResponse?.account;
+					const requests = accounts.map((item: any): any => deleteAccount(item?.id));
+					Promise.all(requests).then((response) => {
+						deleteDomain(domainData.zimbraId)
+							.then((res) => res.json())
+							.then((resData) => {
+								createSnackbar({
+									key: 'success',
+									type: 'success',
+									label: t(
+										'label.delete_domain_success_msg',
+										'Domain has been delete successfully'
+									),
+									autoHideTimeout: 3000,
+									hideButton: true,
+									replace: true
+								});
+								replaceHistory(`/domain`);
+							});
+					});
+				}
+			});
+	};
+
 	return (
 		<Container
 			orientation="column"
@@ -747,6 +787,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 									icon="Close"
 									color="error"
 									size="fill"
+									onClick={onDeleteDomain}
 								/>
 							</Container>
 						</SettingRow>

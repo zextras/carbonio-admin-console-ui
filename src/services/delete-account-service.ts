@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const modifyDomain = async (body: JSON): Promise<any> =>
-	fetch(`/service/admin/soap/ModifyDomainRequest`, {
+export const deleteAccount = async (accountId: string): Promise<any> =>
+	fetch(`/service/admin/soap/DeleteAccountRequest`, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
@@ -13,7 +13,10 @@ export const modifyDomain = async (body: JSON): Promise<any> =>
 		},
 		body: JSON.stringify({
 			Body: {
-				ModifyDomainRequest: body
+				DeleteAccountRequest: {
+					_jsns: 'urn:zimbraAdmin',
+					id: accountId
+				}
 			}
 		})
 	});

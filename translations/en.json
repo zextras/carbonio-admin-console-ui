@@ -35,6 +35,7 @@
         "create_date": "CreateDate",
         "default_class_of_service": "Default Class of Service",
         "delete_domain": "Delete Domain",
+        "delete_domain_success_msg": "Domain has been delete successfully",
         "deligated_admin_help_url": "Deligated Admin Help URL",
         "description": "Description",
         "discard_changes": "DISCARD CHANGES",
