@@ -7,10 +7,12 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
+import { searchDirectory } from '../../services/search-directory-service';
 import DomainGeneralSettings from './domain-general-settings';
 
 const DomainOperations: FC = () => {
 	const [domainInformation, setDomainInformation] = useState([]);
+	const [cosList, setCosList] = useState([]);
 	const { operation, domainId }: { operation: string; domainId: string } = useParams();
 
 	const getSelectedDomainInformation = useCallback((id: any): any => {
@@ -24,8 +26,23 @@ const DomainOperations: FC = () => {
 			});
 	}, []);
 
+	const getClassOfService = (): any => {
+		const attrs = 'cn,description';
+		const types = 'coses';
+
+		searchDirectory(attrs, types, '', '')
+			.then((response) => response.json())
+			.then((data) => {
+				const cosLists = data?.Body?.SearchDirectoryResponse?.cos;
+				if (cosLists) {
+					setCosList(cosLists);
+				}
+			});
+	};
+
 	useEffect(() => {
 		getSelectedDomainInformation(domainId);
+		getClassOfService();
 	}, [domainId, getSelectedDomainInformation]);
 	return (
 		<>
@@ -34,7 +51,9 @@ const DomainOperations: FC = () => {
 					case GENERAL_INFORMATION:
 						return <div>GENearl information</div>;
 					case GENERAL_SETTINGS:
-						return <DomainGeneralSettings domainInformation={domainInformation} />;
+						return (
+							<DomainGeneralSettings domainInformation={domainInformation} cosList={cosList} />
+						);
 					case GAL:
 						return <div>GAL</div>;
 					default:

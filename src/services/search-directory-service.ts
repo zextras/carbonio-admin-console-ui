@@ -5,30 +5,37 @@
  */
 
 export const searchDirectory = async (
-	domainName: string,
 	attr: string,
-	type: string
-): Promise<any> =>
-	fetch(`/service/admin/soap/SearchDirectoryRequest`, {
+	type: string,
+	domainName: string,
+	query: string
+): Promise<any> => {
+	const request: any = {
+		SearchDirectoryRequest: {
+			_jsns: 'urn:zimbraAdmin',
+			limit: '50',
+			offset: 0,
+			sortAscending: '1',
+			applyCos: 'false',
+			applyConfig: 'false',
+			attrs: attr,
+			types: type
+		}
+	};
+	if (domainName !== '') {
+		request.SearchDirectoryRequest.domain = domainName;
+	}
+	if (query !== '') {
+		request.SearchDirectoryRequest.query = query;
+	}
+	return fetch(`/service/admin/soap/SearchDirectoryRequest`, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
-			Body: {
-				SearchDirectoryRequest: {
-					_jsns: 'urn:zimbraAdmin',
-					limit: '50',
-					offset: 0,
-					sortAscending: '1',
-					applyCos: 'false',
-					applyConfig: 'false',
-					domain: domainName,
-					attrs: attr,
-					types: type,
-					query: {}
-				}
-			}
+			Body: request
 		})
 	});
+};

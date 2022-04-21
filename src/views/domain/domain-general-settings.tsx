@@ -55,7 +55,10 @@ const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	</Row>
 );
 
-const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformation }) => {
+const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
+	domainInformation,
+	cosList
+}) => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -102,6 +105,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		],
 		[t]
 	);
+
 	const [domainData, setDomainData]: any = useState({
 		zimbraPrefTimeZoneId: NOT_SET,
 		zimbraPublicServiceProtocol: NOT_SET,
@@ -129,6 +133,21 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 	const [zimbraHelpDelegatedURL, setZimbraHelpDelegatedURL] = useState<string>('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [loading, setLoading] = useState<boolean>(false);
+	const [cosItems, setCosItems] = useState<any[]>([]);
+	const [zimbraDomainDefaultCOSId, setZimbraDomainDefaultCOSId] = useState<string>('');
+
+	useEffect(() => {
+		if (!!cosList && cosList.length > 0) {
+			const arrayItem: any[] = [];
+			cosList.forEach((item: any) => {
+				arrayItem.push({
+					label: item.name,
+					value: item.id
+				});
+			});
+			setCosItems(arrayItem);
+		}
+	}, [cosList]);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -208,10 +227,22 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 				obj.description = '';
 				setDescription('');
 			}
+			if (obj.zimbraDomainDefaultCOSId) {
+				const getItem = cosItems.find((item: any) => item.value === obj.zimbraDomainDefaultCOSId);
+				if (!!getItem && getItem.value) {
+					setZimbraDomainDefaultCOSId(getItem.value);
+				} else {
+					obj.zimbraDomainDefaultCOSId = '';
+					setZimbraDomainDefaultCOSId('');
+				}
+			} else {
+				obj.zimbraDomainDefaultCOSId = '';
+				setZimbraDomainDefaultCOSId('');
+			}
 			setDomainData(obj);
 			setIsDirty(false);
 		}
-	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems]);
+	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems, cosItems]);
 
 	const getDomainCreateDate = (serverStr: string): any => {
 		if (serverStr === null) return null;
@@ -291,6 +322,9 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		if (domainData.zimbraHelpDelegatedURL !== zimbraHelpDelegatedURL) {
 			setIsDirty(true);
 		}
+		if (domainData.zimbraDomainDefaultCOSId !== zimbraDomainDefaultCOSId) {
+			setIsDirty(true);
+		}
 	}, [
 		domainData,
 		selectedTimeZone,
@@ -302,7 +336,8 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		zimbraHelpDelegatedURL,
 		zimbraNotes,
 		publicServiceHostName,
-		description
+		description,
+		zimbraDomainDefaultCOSId
 	]);
 
 	const onCancel = (): void => {
@@ -322,6 +357,14 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
 		setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
 		setDescription(domainData.description);
+		const getItem = cosItems.find(
+			(item: any) => item.value === domainData.zimbraDomainDefaultCOSId
+		);
+		if (!!getItem && getItem.value) {
+			setZimbraDomainDefaultCOSId(getItem.value);
+		} else {
+			setZimbraDomainDefaultCOSId('');
+		}
 		setIsDirty(false);
 	};
 
@@ -366,6 +409,12 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 			n: 'zimbraHelpDelegatedURL',
 			_content: zimbraHelpDelegatedURL
 		});
+		if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
+			attributes.push({
+				n: 'zimbraDomainDefaultCOSId',
+				_content: zimbraDomainDefaultCOSId
+			});
+		}
 		body.a = attributes;
 		modifyDomain(body)
 			.then((response) => response.json())
@@ -455,6 +504,15 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 					obj.description = '';
 					setDescription('');
 				}
+				if (obj.zimbraDomainDefaultCOSId) {
+					const getItem = cosItems.find((item: any) => item.value === obj.zimbraDomainDefaultCOSId);
+					if (!!getItem && getItem.value) {
+						setZimbraDomainDefaultCOSId(getItem.value);
+					}
+				} else {
+					obj.zimbraDomainDefaultCOSId = '';
+					setZimbraDomainDefaultCOSId('');
+				}
 				setDomainData(obj);
 				setIsDirty(false);
 			})
@@ -474,7 +532,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 		const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
 		const attrs =
 			'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-		searchDirectory(domainName, attrs, type)
+		searchDirectory(attrs, type, domainName, '')
 			.then((response) => response.json())
 			.then((data) => {
 				if (data?.Body?.SearchDirectoryResponse?.searchTotal > 0) {
@@ -629,7 +687,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 								<Input
 									label={t('label.public_service_port', 'Public Service Port')}
 									value={zimbraPublicServicePort}
-									background="gray6"
+									background="gray5"
 									onChange={(e: any): any => {
 										setZimbraPublicServicePort(e.target.value);
 									}}
@@ -722,10 +780,21 @@ const DomainGeneralSettings: FC<{ domainInformation: any }> = ({ domainInformati
 
 						<SettingRow>
 							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.default_class_of_service', 'Default Class of Service')}
-									value=""
+								<Select
+									items={cosItems}
 									background="gray5"
+									label={t('label.default_class_of_service', 'Default Class of Service')}
+									showCheckbox={false}
+									onChange={(e: any): any => {
+										setZimbraDomainDefaultCOSId(
+											cosItems.find((item: any) => item.value === e).value
+										);
+									}}
+									selection={
+										zimbraDomainDefaultCOSId === ''
+											? cosItems[-1]
+											: cosItems.find((item: any) => item.value === zimbraDomainDefaultCOSId)
+									}
 								/>
 							</Container>
 							<Container padding={{ all: 'small' }}>

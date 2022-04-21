@@ -32,6 +32,7 @@ import {
 	THEME,
 	VIRTUAL_HOSTS
 } from '../../constants';
+import { searchDirectory } from '../../services/search-directory-service';
 
 const SelectItem = styled(Row)`
 	cursor: pointer;
