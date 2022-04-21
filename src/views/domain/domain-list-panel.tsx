@@ -18,7 +18,7 @@ import {
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { useRouteMatch } from 'react-router-dom';
+import { useLocation, useRouteMatch } from 'react-router-dom';
 import { getDomainList } from '../../services/search-domain-service';
 import {
 	ADVANCED,
@@ -124,6 +124,7 @@ const DomainLists: FC<{ domainList: any; selectedDomain: any; t: any }> = ({
 
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
+	const locationService = useLocation();
 	const [isDomainListExpand, setIsDomainListExpand] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
 	const [domainList, setDomainList] = useState([]);
@@ -146,6 +147,15 @@ const DomainListPanel: FC = () => {
 	useEffect(() => {
 		getDomainLists('');
 	}, []);
+
+	useEffect(() => {
+		if (locationService.pathname && locationService.pathname === '/manage/domain') {
+			setDomainList([]);
+			setIsDomainSelect(false);
+			setSearchDomainName('');
+			setIsDomainListExpand(false);
+		}
+	}, [locationService]);
 
 	useEffect(() => {
 		if (searchDomainName && !isDomainSelect) {
