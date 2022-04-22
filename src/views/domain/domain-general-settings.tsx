@@ -16,7 +16,8 @@ import {
 	Padding,
 	Icon,
 	Shimmer,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Modal
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -135,6 +136,10 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 	const [loading, setLoading] = useState<boolean>(false);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [zimbraDomainDefaultCOSId, setZimbraDomainDefaultCOSId] = useState<string>('');
+	const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
+	const [openDeleteDomainConfirmDialog, setOpenDeleteDomainConfirmDialog] =
+		useState<boolean>(false);
+	const [domainAccounts, setDomainAccounts] = useState<any[]>([]);
 
 	useEffect(() => {
 		if (!!cosList && cosList.length > 0) {
@@ -150,6 +155,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 	}, [cosList]);
 
 	useEffect(() => {
+		setDomainAccounts([]);
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
 			domainInformation.map((item: any) => {
@@ -528,6 +534,31 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 			});
 	};
 
+	const deleteOnlyDomain = (): void => {
+		deleteDomain(domainData.zimbraId)
+			.then((res) => res.json())
+			.then((resData) => {
+				setOpenDeleteDomainConfirmDialog(false);
+				setDomainAccounts([]);
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('label.delete_domain_success_msg', 'Domain has been delete successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				replaceHistory(`/domain`);
+			});
+	};
+
+	const onDeleteAccountAndDomain = (): void => {
+		const requests = domainAccounts.map((item: any): any => deleteAccount(item?.id));
+		Promise.all(requests).then((response) => {
+			deleteOnlyDomain();
+		});
+	};
+
 	const onDeleteDomain = (): void => {
 		const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
 		const attrs =
@@ -537,25 +568,13 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 			.then((data) => {
 				if (data?.Body?.SearchDirectoryResponse?.searchTotal > 0) {
 					const accounts = data?.Body?.SearchDirectoryResponse?.account;
-					const requests = accounts.map((item: any): any => deleteAccount(item?.id));
-					Promise.all(requests).then((response) => {
-						deleteDomain(domainData.zimbraId)
-							.then((res) => res.json())
-							.then((resData) => {
-								createSnackbar({
-									key: 'success',
-									type: 'success',
-									label: t(
-										'label.delete_domain_success_msg',
-										'Domain has been delete successfully'
-									),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
-								replaceHistory(`/domain`);
-							});
-					});
+					if (accounts && accounts.length > 0) {
+						setDomainAccounts(accounts);
+						setOpenConfirmDialog(false);
+						setOpenDeleteDomainConfirmDialog(true);
+					} else {
+						deleteOnlyDomain();
+					}
 				}
 			});
 	};
@@ -856,8 +875,111 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 									icon="Close"
 									color="error"
 									size="fill"
-									onClick={onDeleteDomain}
+									onClick={(): void => {
+										setOpenConfirmDialog(true);
+									}}
 								/>
+								<Modal
+									title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
+									open={openConfirmDialog}
+									showCloseIcon
+									onClose={(): void => {
+										setOpenConfirmDialog(false);
+									}}
+									customFooter={
+										<Container orientation="horizontal" mainAlignment="space-between">
+											<Button
+												label={t('label.need_help', 'NEED HELP?')}
+												type="outlined"
+												color="primary"
+												isSmall
+												onClick={(): void => {
+													setOpenConfirmDialog(false);
+												}}
+											/>
+											<Container orientation="horizontal" mainAlignment="flex-end">
+												<Padding all="small">
+													<Button
+														label={t('label.no', 'NO')}
+														color="secondary"
+														isSmall
+														onClick={(): void => {
+															setOpenConfirmDialog(false);
+														}}
+													/>
+												</Padding>
+												<Button
+													label={t('label.delete', 'DELETE')}
+													color="error"
+													isSmall
+													onClick={onDeleteDomain}
+												/>
+											</Container>
+										</Container>
+									}
+								>
+									<Padding all="medium">
+										<Text overflow="break-word" weight="regular">
+											{t('label.delete_domain_error_msg', {
+												domainName,
+												defaultValue:
+													'You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?'
+											})}
+										</Text>
+									</Padding>
+								</Modal>
+
+								{/* Open Delete Forcefully domains */}
+
+								<Modal
+									title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
+									open={openDeleteDomainConfirmDialog}
+									showCloseIcon
+									onClose={(): void => {
+										setOpenDeleteDomainConfirmDialog(false);
+										setDomainAccounts([]);
+									}}
+									customFooter={
+										<Container orientation="horizontal" mainAlignment="space-between">
+											<Button
+												label={t('label.need_help', 'NEED HELP?')}
+												type="outlined"
+												color="primary"
+												isSmall
+											/>
+											<Container orientation="horizontal" mainAlignment="flex-end">
+												<Padding all="small">
+													<Button
+														label={t('label.no', 'NO')}
+														color="secondary"
+														isSmall
+														onClick={(): void => {
+															setOpenDeleteDomainConfirmDialog(false);
+															setDomainAccounts([]);
+														}}
+													/>
+												</Padding>
+												<Button
+													label={t('label.force_delete', 'Force Delete')}
+													color="error"
+													isSmall
+													onClick={onDeleteAccountAndDomain}
+												/>
+											</Container>
+										</Container>
+									}
+								>
+									<Padding all="medium">
+										<Text overflow="break-word" weight="regular">
+											{t('label.delete_domain_with_account_content_msg', {
+												domainName,
+												domainAccounts: domainAccounts.length,
+												defaultValue:
+													'{{domainName}} is not empty: contains {{domainAccounts}} system accounts and {{domainAccounts}} regular accounts. Are you sure to continue the deletion'
+											})}
+										</Text>
+									</Padding>
+								</Modal>
 							</Container>
 						</SettingRow>
 					</Container>
