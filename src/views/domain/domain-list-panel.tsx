@@ -20,6 +20,7 @@ import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { useLocation, useRouteMatch } from 'react-router-dom';
+import { debounce } from 'lodash';
 import { getDomainList } from '../../services/search-domain-service';
 import {
 	ADVANCED,
@@ -76,13 +77,19 @@ const DomainListPanel: FC = () => {
 		}
 	}, [locationService]);
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchDomainCall = useCallback(
+		debounce((domain) => {
+			getDomainLists(domain);
+		}, 700),
+		[]
+	);
+
 	useEffect(() => {
 		if (searchDomainName && !isDomainSelect) {
-			setTimeout(() => {
-				getDomainLists(searchDomainName);
-			}, 1000);
+			searchDomainCall(searchDomainName);
 		}
-	}, [searchDomainName, isDomainSelect]);
+	}, [searchDomainName, isDomainSelect, searchDomainCall]);
 
 	const selectedDomain = useCallback((domain: any) => {
 		setIsDomainSelect(true);
