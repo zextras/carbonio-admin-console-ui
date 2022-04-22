@@ -12,7 +12,8 @@ import {
 	Padding,
 	List,
 	Divider,
-	Text
+	Text,
+	Dropdown
 } from '@zextras/carbonio-design-system';
 
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -32,96 +33,13 @@ import {
 	THEME,
 	VIRTUAL_HOSTS
 } from '../../constants';
-import { searchDirectory } from '../../services/search-directory-service';
 
-const SelectItem = styled(Row)`
-	cursor: pointer;
-	width: 100%;
-	&:hover {
-		background: ${({ theme }): any => theme.palette.highlight.regular};
-	}
-`;
+const SelectItem = styled(Row)``;
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
 	height: 20px;
 `;
-
-const DomainLists: FC<{ domainList: any; selectedDomain: any; t: any }> = ({
-	domainList,
-	selectedDomain,
-	t
-}) => (
-	<Container
-		orientation="column"
-		crossAlignment="flex-start"
-		mainAlignment="flex-start"
-		width="100%"
-		maxHeight="200px"
-		style={{
-			overflowY: 'auto'
-		}}
-		background="gray5"
-	>
-		{domainList.length <= MAX_DOMAIN_DISPLAY ? (
-			domainList.map((item: any, i: number) => (
-				<SelectItem
-					takeAvwidth="fill"
-					mainAlignment="flex-start"
-					key={i}
-					height="50px"
-					onClick={(): void => {
-						selectedDomain(item);
-					}}
-				>
-					<Padding
-						top="9px"
-						right="large"
-						bottom="9px"
-						left="large"
-						style={{
-							'font-family': 'roboto'
-						}}
-					>
-						{item?.name}
-					</Padding>
-				</SelectItem>
-			))
-		) : (
-			<Container
-				orientation="horizontal"
-				width="fill"
-				crossAlignment="center"
-				mainAlignment="space-between"
-				background="gray5"
-				padding={{
-					all: 'small'
-				}}
-			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start">
-					<Padding horizontal="small">
-						<CustomIcon icon="InfoOutline"></CustomIcon>
-					</Padding>
-				</Row>
-				<Row
-					takeAvwidth="fill"
-					mainAlignment="flex-start"
-					width="100%"
-					padding={{
-						all: 'small'
-					}}
-				>
-					<Text overflow="break-word">
-						{t(
-							'many_domain_info_msg',
-							'So many domains! Which one would you like to see? Start typing to filter.'
-						)}
-					</Text>
-				</Row>
-			</Container>
-		)}
-	</Container>
-);
 
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -231,6 +149,55 @@ const DomainListPanel: FC = () => {
 		[searchDomainName]
 	);
 
+	const items =
+		domainList.length > MAX_DOMAIN_DISPLAY
+			? [
+					{
+						customComponent: (
+							<>
+								<Row takeAvwidth="fill" mainAlignment="flex-start">
+									<Padding horizontal="small">
+										<CustomIcon icon="InfoOutline"></CustomIcon>
+									</Padding>
+								</Row>
+								<Row
+									takeAvwidth="fill"
+									mainAlignment="flex-start"
+									width="100%"
+									padding={{
+										all: 'small'
+									}}
+								>
+									<Text overflow="break-word">
+										{t(
+											'many_domain_info_msg',
+											'So many domains! Which one would you like to see? Start typing to filter.'
+										)}
+									</Text>
+								</Row>
+							</>
+						)
+					}
+			  ]
+			: domainList.map((domain: any, index) => ({
+					customComponent: (
+						<SelectItem
+							top="9px"
+							right="large"
+							bottom="9px"
+							left="large"
+							style={{
+								'font-family': 'roboto'
+							}}
+							onClick={(): void => {
+								selectedDomain(domain);
+							}}
+						>
+							{domain?.name}
+						</SelectItem>
+					)
+			  }));
+
 	const ListItem: FC<{
 		visible: any;
 		active: boolean;
@@ -271,33 +238,37 @@ const DomainListPanel: FC = () => {
 	return (
 		<Container orientation="column" crossAlignment="flex-start" mainAlignment="flex-start">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Input
-					label={t('domain.search_domain', 'Search a domain')}
-					onChange={(ev: any): void => {
-						setIsDomainSelect(false);
-						setSearchDomainName(ev.target.value);
+				<Dropdown
+					items={items}
+					placement="bottom-start"
+					maxWidth="300px"
+					disableAutoFocus="true"
+					width="21%"
+					style={{
+						width: '100%'
 					}}
-					CustomIcon={(): any => (
-						<Icon
-							icon={isDomainListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline'}
-							size="medium"
-							color="primary"
-							onClick={(): void => {
-								setIsDomainListExpand(!isDomainListExpand);
-							}}
-						/>
-					)}
-					value={searchDomainName}
-					backgroundColor="gray5"
-				/>
+				>
+					<Input
+						label={t('domain.search_domain', 'Search a domain')}
+						onChange={(ev: any): void => {
+							setIsDomainSelect(false);
+							setSearchDomainName(ev.target.value);
+						}}
+						CustomIcon={(): any => (
+							<Icon
+								icon={isDomainListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline'}
+								size="medium"
+								color="primary"
+								onClick={(): void => {
+									setIsDomainListExpand(!isDomainListExpand);
+								}}
+							/>
+						)}
+						value={searchDomainName}
+						backgroundColor="gray5"
+					/>
+				</Dropdown>
 			</Row>
-			{isDomainListExpand && (
-				<Row width="fill" mainAlignment="flex-start">
-					<Container orientation="column" crossAlignment="flex-start" mainAlignment="flex-start">
-						<DomainLists domainList={domainList} selectedDomain={selectedDomain} t={t} />
-					</Container>
-				</Row>
-			)}
 			<Container crossAlignment="flex-start" mainAlignment="flex-start">
 				<List
 					items={options}
