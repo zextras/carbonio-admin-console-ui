@@ -49,6 +49,7 @@ const DomainListPanel: FC = () => {
 	const [searchDomainName, setSearchDomainName] = useState('');
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
+	const [selectedOperationItem, setSelectedOperationItem] = useState('');
 	const { path } = useRouteMatch();
 
 	const getDomainLists = (domainName: string): any => {
@@ -96,6 +97,7 @@ const DomainListPanel: FC = () => {
 		setSearchDomainName(domain?.name);
 		setIsDomainListExpand(false);
 		replaceHistory(`domain/${domain?.id}/${GENERAL_SETTINGS}`);
+		setSelectedOperationItem(GENERAL_SETTINGS);
 	}, []);
 
 	const options = useMemo(
@@ -152,6 +154,7 @@ const DomainListPanel: FC = () => {
 	const selectDomainOption = useCallback(
 		(item) => () => {
 			replaceHistory(`domain/${searchDomainName}/${item?.id}`);
+			setSelectedOperationItem(item?.id);
 		},
 		[searchDomainName]
 	);
@@ -233,7 +236,10 @@ const DomainListPanel: FC = () => {
 		>
 			<Container padding={{ all: 'small' }} orientation="horizontal" mainAlignment="flex-start">
 				<Padding horizontal="small">
-					<Text color={item?.domainSelected ? '#414141' : 'rgba(204, 204, 204, 1)'}>
+					<Text
+						color={item?.domainSelected ? '#414141' : 'rgba(204, 204, 204, 1)'}
+						weight={item?.id === selectedOperationItem ? 'bold' : 'regular'}
+					>
 						{item.name}
 					</Text>
 				</Padding>
@@ -280,8 +286,9 @@ const DomainListPanel: FC = () => {
 				<List
 					items={options}
 					ItemComponent={ListItem}
-					selectedBackground="success"
-					activeBackground="warning"
+					activeBackground="highlight"
+					active={selectedOperationItem}
+					selectedBackground="highlight"
 				/>
 			</Container>
 		</Container>
