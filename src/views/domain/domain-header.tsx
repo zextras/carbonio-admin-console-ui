@@ -14,7 +14,6 @@ const DomainHeader: FC = () => (
 		crossAlignment="flex-end"
 		height="49px"
 		background="#FFFFFF"
-		padding={{ bottom: 'extrasmall' }}
 	>
 		<Button
 			type="ghost"

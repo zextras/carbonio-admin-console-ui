@@ -5,7 +5,6 @@
  */
 
 export const APP_ID = 'carbonio-example-ui';
-
 export const MAIN_ROUTE = 'example';
 export const SECONDARY_ROUTE = 'something';
 export const MANAGE = 'manage';
