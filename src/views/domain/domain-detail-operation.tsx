@@ -42,8 +42,12 @@ const DomainOperations: FC = () => {
 
 	useEffect(() => {
 		getSelectedDomainInformation(domainId);
-		getClassOfService();
 	}, [domainId, getSelectedDomainInformation]);
+
+	useEffect(() => {
+		getClassOfService();
+	}, []);
+
 	return (
 		<>
 			{((): any => {

@@ -75,6 +75,7 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
+			setSelectedOperationItem('');
 		}
 	}, [locationService]);
 
