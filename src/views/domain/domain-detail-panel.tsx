@@ -19,7 +19,7 @@ const DomainDetailPanel: FC = () => {
 			orientation="column"
 			crossAlignment="flex-start"
 			mainAlignment="flex-start"
-			style={{ overflowY: 'auto' }}
+			style={{ overflowY: 'hidden' }}
 			background="gray5"
 		>
 			<DomainHeader />

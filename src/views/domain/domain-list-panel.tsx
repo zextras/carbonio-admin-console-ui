@@ -154,8 +154,10 @@ const DomainListPanel: FC = () => {
 
 	const selectDomainOption = useCallback(
 		(item) => () => {
-			replaceHistory(`domain/${searchDomainName}/${item?.id}`);
-			setSelectedOperationItem(item?.id);
+			if (item?.domainSelected && item?.id !== GENERAL_INFORMATION) {
+				replaceHistory(`domain/${searchDomainName}/${item?.id}`);
+				setSelectedOperationItem(item?.id);
+			}
 		},
 		[searchDomainName]
 	);

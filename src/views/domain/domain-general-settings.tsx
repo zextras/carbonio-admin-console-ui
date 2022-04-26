@@ -580,15 +580,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 	};
 
 	return (
-		<Container
-			orientation="column"
-			crossAlignment="flex-start"
-			mainAlignment="flex-start"
-			background="gray6"
-			padding={{ all: 'large' }}
-			style={{ overflow: 'auto', margin: '16px' }}
-			width="96%"
-		>
+		<Container padding={{ all: 'large' }} background="gray5">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -629,362 +621,376 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 					</Row>
 				</Container>
 			</Row>
-			{loading ? (
-				<Container
-					orientation="horizontal"
-					mainAlignment="flex-start"
-					width="fill"
-					crossAlignment="flex-start"
-				>
-					<Shimmer.FormSection>
-						<Shimmer.FormSubSection />
-					</Shimmer.FormSection>
-				</Container>
-			) : (
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container height="fit" crossAlignment="flex-start" background="gray6" className="ff">
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.name', 'Name')}
-									value={domainName}
-									background="gray6"
-									disabled
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input label={t('label.certificate', 'Certificate')} value="" background="gray6" />
-							</Container>
-						</SettingRow>
+			<Container
+				orientation="column"
+				crossAlignment="flex-start"
+				mainAlignment="flex-start"
+				style={{ overflow: 'auto' }}
+				width="100%"
+				height="calc(100vh - 200px)"
+			>
+				{loading ? (
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						width="fill"
+						crossAlignment="flex-start"
+					>
+						<Shimmer.FormSection>
+							<Shimmer.FormSubSection />
+						</Shimmer.FormSection>
+					</Container>
+				) : (
+					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Container height="fit" crossAlignment="flex-start" background="gray6" className="ff">
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.name', 'Name')}
+										value={domainName}
+										background="gray6"
+										disabled
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.certificate', 'Certificate')}
+										value=""
+										background="gray6"
+									/>
+								</Container>
+							</SettingRow>
 
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.id', 'Id')}
-									value={domainData.zimbraId}
-									background="gray6"
-									disabled
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.create_date', 'CreateDate')}
-									value={
-										!!domainData.zimbraCreateTimestamp && domainData.zimbraCreateTimestamp !== null
-											? getFormatedDate(getDomainCreateDate(domainData.zimbraCreateTimestamp))
-											: ''
-									}
-									background="gray6"
-									disabled
-								/>
-							</Container>
-						</SettingRow>
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.id', 'Id')}
+										value={domainData.zimbraId}
+										background="gray6"
+										disabled
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.create_date', 'CreateDate')}
+										value={
+											!!domainData.zimbraCreateTimestamp &&
+											domainData.zimbraCreateTimestamp !== null
+												? getFormatedDate(getDomainCreateDate(domainData.zimbraCreateTimestamp))
+												: ''
+										}
+										background="gray6"
+										disabled
+									/>
+								</Container>
+							</SettingRow>
 
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Select
-									items={serviceProtocolItems}
-									background="gray5"
-									label={t('label.public_service_protocol', 'Public Service Protocol')}
-									showCheckbox={false}
-									onChange={onPublicServiceProtocolChange}
-									selection={selectedPublicServiceProtocol}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.public_service_hostname', 'Public Service Host Name')}
-									value={publicServiceHostName}
-									background="gray5"
-									onChange={(e: any): any => {
-										setPublicServiceHostName(e.target.value);
-									}}
-								/>
-							</Container>
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										items={serviceProtocolItems}
+										background="gray5"
+										label={t('label.public_service_protocol', 'Public Service Protocol')}
+										showCheckbox={false}
+										onChange={onPublicServiceProtocolChange}
+										selection={selectedPublicServiceProtocol}
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.public_service_hostname', 'Public Service Host Name')}
+										value={publicServiceHostName}
+										background="gray5"
+										onChange={(e: any): any => {
+											setPublicServiceHostName(e.target.value);
+										}}
+									/>
+								</Container>
 
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.public_service_port', 'Public Service Port')}
-									value={zimbraPublicServicePort}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraPublicServicePort(e.target.value);
-									}}
-								/>
-							</Container>
-						</SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.public_service_port', 'Public Service Port')}
+										value={zimbraPublicServicePort}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraPublicServicePort(e.target.value);
+										}}
+									/>
+								</Container>
+							</SettingRow>
 
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Select
-									items={timezones}
-									background="gray5"
-									label={t('label.timezone', 'Time Zone')}
-									showCheckbox={false}
-									onChange={onTimeZoneChange}
-									selection={selectedTimeZone}
-								/>
-							</Container>
-						</SettingRow>
-						<Container
-							orientation="horizontal"
-							width="98%"
-							crossAlignment="center"
-							mainAlignment="space-between"
-							style={{ margin: '8px' }}
-						>
-							<Divider />
-						</Container>
-
-						<SettingRow>
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										items={timezones}
+										background="gray5"
+										label={t('label.timezone', 'Time Zone')}
+										showCheckbox={false}
+										onChange={onTimeZoneChange}
+										selection={selectedTimeZone}
+									/>
+								</Container>
+							</SettingRow>
 							<Container
 								orientation="horizontal"
-								width="99%"
+								width="98%"
 								crossAlignment="center"
 								mainAlignment="space-between"
-								background="#D3EBF8"
-								padding={{
-									all: 'large'
-								}}
 								style={{ margin: '8px' }}
 							>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
-									<Padding horizontal="small">
-										<CustomIcon icon="InfoOutline"></CustomIcon>
-									</Padding>
-								</Row>
-								<Row
-									takeAvwidth="fill"
-									mainAlignment="flex-start"
-									width="100%"
+								<Divider />
+							</Container>
+
+							<SettingRow>
+								<Container
+									orientation="horizontal"
+									width="99%"
+									crossAlignment="center"
+									mainAlignment="space-between"
+									background="#D3EBF8"
 									padding={{
-										all: 'small'
+										all: 'large'
 									}}
+									style={{ margin: '8px' }}
 								>
-									<Text overflow="break-word">
-										{t(
-											'label.mx_record_information_msg',
-											'If your MX records point to a spam-relay or any other external non-zimbra server, enter the name of that server in "Inbound SMTP Host Name" field.'
-										)}
-									</Text>
-								</Row>
-							</Container>
-						</SettingRow>
-
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.inbound_smtp_host_name', 'Inbound SMTP Host Name')}
-									value={zimbraDNSCheckHostname}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraDNSCheckHostname(e.target.value);
-									}}
-								/>
-							</Container>
-						</SettingRow>
-
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.description', 'Description')}
-									value={description}
-									background="gray5"
-									onChange={(e: any): any => {
-										setDescription(e.target.value);
-									}}
-								/>
-							</Container>
-						</SettingRow>
-
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Select
-									items={cosItems}
-									background="gray5"
-									label={t('label.default_class_of_service', 'Default Class of Service')}
-									showCheckbox={false}
-									onChange={(e: any): any => {
-										setZimbraDomainDefaultCOSId(
-											cosItems.find((item: any) => item.value === e).value
-										);
-									}}
-									selection={
-										zimbraDomainDefaultCOSId === ''
-											? cosItems[-1]
-											: cosItems.find((item: any) => item.value === zimbraDomainDefaultCOSId)
-									}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Select
-									items={domainStatusItems}
-									background="gray5"
-									label={t('label.status', 'Status')}
-									defaultSelection={domainStatusItems[0]}
-									showCheckbox={false}
-									onChange={onDomainStatusChange}
-									selection={domainStatus}
-								/>
-							</Container>
-						</SettingRow>
-
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.note', 'Note')}
-									value={zimbraNotes}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraNotes(e.target.value);
-									}}
-								/>
-							</Container>
-						</SettingRow>
-
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.admin_help_url', 'Admin Help URL')}
-									value={zimbraHelpAdminURL}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraHelpAdminURL(e.target.value);
-									}}
-								/>
-							</Container>
-						</SettingRow>
-
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.deligated_admin_help_url', 'Deligated Admin Help URL')}
-									value={zimbraHelpDelegatedURL}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraHelpDelegatedURL(e.target.value);
-									}}
-								/>
-							</Container>
-						</SettingRow>
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Button
-									type="outlined"
-									label={t('label.delete_domain', 'Delete Domain')}
-									icon="Close"
-									color="error"
-									size="fill"
-									onClick={(): void => {
-										setOpenConfirmDialog(true);
-									}}
-								/>
-								<Modal
-									title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
-									open={openConfirmDialog}
-									showCloseIcon
-									onClose={(): void => {
-										setOpenConfirmDialog(false);
-									}}
-									customFooter={
-										<Container orientation="horizontal" mainAlignment="space-between">
-											<Button
-												label={t('label.need_help', 'NEED HELP?')}
-												type="outlined"
-												color="primary"
-												isSmall
-												onClick={(): void => {
-													setOpenConfirmDialog(false);
-												}}
-											/>
-											<Container orientation="horizontal" mainAlignment="flex-end">
-												<Padding all="small">
-													<Button
-														label={t('label.no', 'NO')}
-														color="secondary"
-														isSmall
-														onClick={(): void => {
-															setOpenConfirmDialog(false);
-														}}
-													/>
-												</Padding>
-												<Button
-													label={t('label.delete', 'DELETE')}
-													color="error"
-													isSmall
-													onClick={onDeleteDomain}
-												/>
-											</Container>
-										</Container>
-									}
-								>
-									<Padding all="medium">
-										<Text overflow="break-word" weight="regular">
-											{t('label.delete_domain_error_msg', {
-												domainName,
-												defaultValue:
-													'You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?'
-											})}
+									<Row takeAvwidth="fill" mainAlignment="flex-start">
+										<Padding horizontal="small">
+											<CustomIcon icon="InfoOutline"></CustomIcon>
+										</Padding>
+									</Row>
+									<Row
+										takeAvwidth="fill"
+										mainAlignment="flex-start"
+										width="100%"
+										padding={{
+											all: 'small'
+										}}
+									>
+										<Text overflow="break-word">
+											{t(
+												'label.mx_record_information_msg',
+												'If your MX records point to a spam-relay or any other external non-zimbra server, enter the name of that server in "Inbound SMTP Host Name" field.'
+											)}
 										</Text>
-									</Padding>
-								</Modal>
+									</Row>
+								</Container>
+							</SettingRow>
 
-								{/* Open Delete Forcefully domains */}
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.inbound_smtp_host_name', 'Inbound SMTP Host Name')}
+										value={zimbraDNSCheckHostname}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraDNSCheckHostname(e.target.value);
+										}}
+									/>
+								</Container>
+							</SettingRow>
 
-								<Modal
-									title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
-									open={openDeleteDomainConfirmDialog}
-									showCloseIcon
-									onClose={(): void => {
-										setOpenDeleteDomainConfirmDialog(false);
-										setDomainAccounts([]);
-									}}
-									customFooter={
-										<Container orientation="horizontal" mainAlignment="space-between">
-											<Button
-												label={t('label.need_help', 'NEED HELP?')}
-												type="outlined"
-												color="primary"
-												isSmall
-											/>
-											<Container orientation="horizontal" mainAlignment="flex-end">
-												<Padding all="small">
-													<Button
-														label={t('label.no', 'NO')}
-														color="secondary"
-														isSmall
-														onClick={(): void => {
-															setOpenDeleteDomainConfirmDialog(false);
-															setDomainAccounts([]);
-														}}
-													/>
-												</Padding>
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.description', 'Description')}
+										value={description}
+										background="gray5"
+										onChange={(e: any): any => {
+											setDescription(e.target.value);
+										}}
+									/>
+								</Container>
+							</SettingRow>
+
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										items={cosItems}
+										background="gray5"
+										label={t('label.default_class_of_service', 'Default Class of Service')}
+										showCheckbox={false}
+										onChange={(e: any): any => {
+											setZimbraDomainDefaultCOSId(
+												cosItems.find((item: any) => item.value === e).value
+											);
+										}}
+										selection={
+											zimbraDomainDefaultCOSId === ''
+												? cosItems[-1]
+												: cosItems.find((item: any) => item.value === zimbraDomainDefaultCOSId)
+										}
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										items={domainStatusItems}
+										background="gray5"
+										label={t('label.status', 'Status')}
+										defaultSelection={domainStatusItems[0]}
+										showCheckbox={false}
+										onChange={onDomainStatusChange}
+										selection={domainStatus}
+									/>
+								</Container>
+							</SettingRow>
+
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.note', 'Note')}
+										value={zimbraNotes}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraNotes(e.target.value);
+										}}
+									/>
+								</Container>
+							</SettingRow>
+
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.admin_help_url', 'Admin Help URL')}
+										value={zimbraHelpAdminURL}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraHelpAdminURL(e.target.value);
+										}}
+									/>
+								</Container>
+							</SettingRow>
+
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.deligated_admin_help_url', 'Deligated Admin Help URL')}
+										value={zimbraHelpDelegatedURL}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraHelpDelegatedURL(e.target.value);
+										}}
+									/>
+								</Container>
+							</SettingRow>
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Button
+										type="outlined"
+										label={t('label.delete_domain', 'Delete Domain')}
+										icon="Close"
+										color="error"
+										size="fill"
+										onClick={(): void => {
+											setOpenConfirmDialog(true);
+										}}
+									/>
+									<Modal
+										title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
+										open={openConfirmDialog}
+										showCloseIcon
+										onClose={(): void => {
+											setOpenConfirmDialog(false);
+										}}
+										customFooter={
+											<Container orientation="horizontal" mainAlignment="space-between">
 												<Button
-													label={t('label.force_delete', 'Force Delete')}
-													color="error"
+													label={t('label.need_help', 'NEED HELP?')}
+													type="outlined"
+													color="primary"
 													isSmall
-													onClick={onDeleteAccountAndDomain}
+													onClick={(): void => {
+														setOpenConfirmDialog(false);
+													}}
 												/>
+												<Container orientation="horizontal" mainAlignment="flex-end">
+													<Padding all="small">
+														<Button
+															label={t('label.no', 'NO')}
+															color="secondary"
+															isSmall
+															onClick={(): void => {
+																setOpenConfirmDialog(false);
+															}}
+														/>
+													</Padding>
+													<Button
+														label={t('label.delete', 'DELETE')}
+														color="error"
+														isSmall
+														onClick={onDeleteDomain}
+													/>
+												</Container>
 											</Container>
-										</Container>
-									}
-								>
-									<Padding all="medium">
-										<Text overflow="break-word" weight="regular">
-											{t('label.delete_domain_with_account_content_msg', {
-												domainName,
-												domainAccounts: domainAccounts.length,
-												defaultValue:
-													'{{domainName}} is not empty: contains {{domainAccounts}} system accounts and {{domainAccounts}} regular accounts. Are you sure to continue the deletion'
-											})}
-										</Text>
-									</Padding>
-								</Modal>
-							</Container>
-						</SettingRow>
-					</Container>
-				</Row>
-			)}
+										}
+									>
+										<Padding all="medium">
+											<Text overflow="break-word" weight="regular">
+												{t('label.delete_domain_error_msg', {
+													domainName,
+													defaultValue:
+														'You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?'
+												})}
+											</Text>
+										</Padding>
+									</Modal>
+
+									{/* Open Delete Forcefully domains */}
+
+									<Modal
+										title={`${t('label.deleteing', 'Deleting')} ${domainName}`}
+										open={openDeleteDomainConfirmDialog}
+										showCloseIcon
+										onClose={(): void => {
+											setOpenDeleteDomainConfirmDialog(false);
+											setDomainAccounts([]);
+										}}
+										customFooter={
+											<Container orientation="horizontal" mainAlignment="space-between">
+												<Button
+													label={t('label.need_help', 'NEED HELP?')}
+													type="outlined"
+													color="primary"
+													isSmall
+												/>
+												<Container orientation="horizontal" mainAlignment="flex-end">
+													<Padding all="small">
+														<Button
+															label={t('label.no', 'NO')}
+															color="secondary"
+															isSmall
+															onClick={(): void => {
+																setOpenDeleteDomainConfirmDialog(false);
+																setDomainAccounts([]);
+															}}
+														/>
+													</Padding>
+													<Button
+														label={t('label.force_delete', 'Force Delete')}
+														color="error"
+														isSmall
+														onClick={onDeleteAccountAndDomain}
+													/>
+												</Container>
+											</Container>
+										}
+									>
+										<Padding all="medium">
+											<Text overflow="break-word" weight="regular">
+												{t('label.delete_domain_with_account_content_msg', {
+													domainName,
+													domainAccounts: domainAccounts.length,
+													defaultValue:
+														'{{domainName}} is not empty: contains {{domainAccounts}} system accounts and {{domainAccounts}} regular accounts. Are you sure to continue the deletion'
+												})}
+											</Text>
+										</Padding>
+									</Modal>
+								</Container>
+							</SettingRow>
+						</Container>
+					</Row>
+				)}
+			</Container>
 		</Container>
 	);
 };
