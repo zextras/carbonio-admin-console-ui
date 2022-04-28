@@ -49,7 +49,7 @@ const SidebarView: FC = () => {
 
 	const [coreItem, setCoreItem]: any = useState([
 		{
-			id: 'certificateitem',
+			id: 'coreitem',
 			icon: 'CoreModeOutline',
 			label: t('label.core', 'Core'),
 			items: [
