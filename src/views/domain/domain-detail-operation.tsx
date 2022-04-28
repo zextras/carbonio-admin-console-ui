@@ -5,10 +5,11 @@
  */
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS } from '../../constants';
+import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS, VIRTUAL_HOSTS } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import DomainGeneralSettings from './domain-general-settings';
+import DomainVirtualHosts from './domain-virtual-hosts';
 
 const DomainOperations: FC = () => {
 	const [domainInformation, setDomainInformation] = useState([]);
@@ -60,6 +61,8 @@ const DomainOperations: FC = () => {
 						);
 					case GAL:
 						return <div>GAL</div>;
+					case VIRTUAL_HOSTS:
+						return <DomainVirtualHosts domainInformation={domainInformation} />;
 					default:
 						return null;
 				}

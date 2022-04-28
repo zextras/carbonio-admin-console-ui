@@ -18,6 +18,7 @@
     "label": {
         "active": "Active",
         "active_sync": "ActiveSync",
+        "add": "Add",
         "add_regex": "ADD REGEX",
         "admin_help_url": "Admin Help URL",
         "admins": "Admins",
@@ -67,6 +68,7 @@
         "public_service_hostname": "Public Service Host Name",
         "public_service_port": "Public Service Port",
         "public_service_protocol": "Public Service Protocol",
+        "remove": "Remove",
         "save": "Save",
         "secondary bar_view": "This is a main view",
         "secondary?bar_view": "This is a main view",
@@ -89,7 +91,11 @@
         "utility_view": "Test utility view 1",
         "utility_view2": "Test utility view 2",
         "utility_view3": "Test utility view 3",
-        "view": "This is a view"
+        "view": "This is a view",
+        "virtual_host_info_msg": "Virtual hosts allow the system to establish a default domain for a user login.",
+        "virtual_host_name": "Virtual Host Name",
+        "virtual_host_note": "Please note, that removal of a virtual host takes effect only after mailbox server is restarted.",
+        "virtual_host_user_msg": "Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, {{domainName}}"
     },
     "log": "Log",
     "many_domain_info_msg": "So many domains! Which one would you like to see? Start typing to filter.",
