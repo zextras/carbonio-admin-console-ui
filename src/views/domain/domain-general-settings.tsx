@@ -415,6 +415,10 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 			n: 'zimbraHelpDelegatedURL',
 			_content: zimbraHelpDelegatedURL
 		});
+		attributes.push({
+			n: 'description',
+			_content: description
+		});
 		if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
 			attributes.push({
 				n: 'zimbraDomainDefaultCOSId',
