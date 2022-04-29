@@ -274,6 +274,30 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 								}
 							}}
 						/>
+						{items.length === 0 && (
+							<Container background="gray6" mainAlignment="center" crossAlignment="center">
+								<Padding vertical="large" width="100%">
+									<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+										{/* <img src={logo} alt="logo" /> */}
+									</Row>
+								</Padding>
+								<Padding vertical="large" width="100%">
+									<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+										<Text size="large" color="secondary" weight="regular">
+											{t('label.no_virtual_host_msg', 'There aren’t virtual hosts here.')}
+										</Text>
+									</Row>
+									<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+										<Text size="large" color="secondary" weight="regular">
+											{t(
+												'label.virtual_host_enable_info_msg',
+												'Click to ADD button to enabled new one.'
+											)}
+										</Text>
+									</Row>
+								</Padding>
+							</Container>
+						)}
 					</Padding>
 				</Container>
 			</Container>
