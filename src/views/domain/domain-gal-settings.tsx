@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Input,
@@ -14,14 +14,13 @@ import {
 	Divider,
 	Button,
 	Padding,
-	Icon,
-	Shimmer,
-	SnackbarManagerContext,
-	Modal
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { getAccount } from '../../services/get-account-service';
 import { getDatasource } from '../../services/get-datasource-service';
+import { modifyDomain } from '../../services/modify-domain-service';
+import { modifyDataSource } from '../../services/modify-datasource-service';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -38,10 +37,10 @@ const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
-	DAYS = 'days',
-	HOURS = 'hours',
-	MINUTES = 'minutes',
-	SECONDS = 'seconds'
+	DAYS = 'd',
+	HOURS = 'h',
+	MINUTES = 'm',
+	SECONDS = 's'
 }
 
 const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
@@ -49,16 +48,44 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 	cosList
 }) => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const rangeItems = useMemo(
+		() => [
+			{
+				label: t('label.days', 'Days'),
+				value: RANGE.DAYS
+			},
+			{
+				label: t('label.hours', 'Hours'),
+				value: RANGE.HOURS
+			},
+			{
+				label: t('label.minutes', 'Minutes'),
+				value: RANGE.MINUTES
+			},
+			{
+				label: t('label.seconds', 'Seconds'),
+				value: RANGE.SECONDS
+			}
+		],
+		[t]
+	);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [domainData, setDomainData]: any = useState({
 		zimbraGalMaxResults: '',
 		zimbraGalAccountId: '',
-		zimbraGalMode: ''
+		zimbraGalMode: '',
+		zimbraDataSourcePollingInterval: ''
 	});
 	const [zimbraGalMaxResults, setZimbraGalMaxResults] = useState<string>('');
 	const [zimbraGalAccountId, setZimbraGalAccountId] = useState<string>('');
 	const [zimbraGalAccountName, setZimbraGalAccountName] = useState<string>('');
 	const [mailServerName, setMailServerName] = useState<string>('');
+	const [zimbraDataSourcePollingInterval, setZimbraDataSourcePollingInterval] =
+		useState<string>('');
+	const [pollingIntervalValue, setPollingIntervalValue] = useState<string>('');
+	const [pollingIntervalType, setPollingIntervalType] = useState<any>(rangeItems[0]);
+	const [dataSourceId, setDataSourceId] = useState<any>('');
 
 	const getGalAccount = (accountId: string): void => {
 		getAccount(accountId)
@@ -87,12 +114,23 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 		getDatasource(accountId)
 			.then((response) => response.json())
 			.then((data) => {
-				console.log('$$$DataSource$$', data);
+				const dataSource: any = data?.Body?.GetDataSourcesResponse?.dataSource[0];
+				if (dataSource && dataSource?.id) {
+					setDataSourceId(dataSource?.id);
+					if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourcePollingInterval) {
+						setZimbraDataSourcePollingInterval(dataSource?._attrs?.zimbraDataSourcePollingInterval);
+					}
+				} else {
+					setZimbraDataSourcePollingInterval('');
+				}
 			});
 	};
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
+			setZimbraGalAccountId('');
+			setZimbraGalAccountName('');
+			setZimbraDataSourcePollingInterval('');
 			const obj: any = {};
 			domainInformation.map((item: any) => {
 				obj[item?.n] = item._content;
@@ -127,35 +165,117 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 			setMailServerName('');
 		}
 	}, [zimbraGalAccountId]);
-	const rangeItems = useMemo(
-		() => [
-			{
-				label: t('label.days', 'Days'),
-				value: RANGE.DAYS
-			},
-			{
-				label: t('label.hours', 'Hours'),
-				value: RANGE.HOURS
-			},
-			{
-				label: t('label.minutes', 'Minutes'),
-				value: RANGE.MINUTES
-			},
-			{
-				label: t('label.seconds', 'Seconds'),
-				value: RANGE.SECONDS
+
+	useEffect(() => {
+		if (zimbraDataSourcePollingInterval !== '') {
+			const rangeType = zimbraDataSourcePollingInterval.charAt(
+				zimbraDataSourcePollingInterval.length - 1
+			);
+			setPollingIntervalValue(
+				zimbraDataSourcePollingInterval.substr(0, zimbraDataSourcePollingInterval.length - 1)
+			);
+			if (rangeType && rangeType !== '') {
+				const range = rangeItems.find((item: any) => item.value === rangeType);
+				setPollingIntervalType(range);
 			}
-		],
-		[t]
-	);
+		} else {
+			setPollingIntervalType(rangeItems[0]);
+			setPollingIntervalValue('');
+		}
+	}, [zimbraDataSourcePollingInterval, rangeItems]);
 
 	const onCancel = (): void => {
-		console.log('On Cancel');
+		setZimbraGalMaxResults(domainData?.zimbraGalMaxResults);
+		if (zimbraGalAccountId !== '') {
+			const rangeType = zimbraDataSourcePollingInterval.charAt(
+				zimbraDataSourcePollingInterval.length - 1
+			);
+			if (rangeType && rangeType !== '') {
+				const range = rangeItems.find((item: any) => item.value === rangeType);
+				setPollingIntervalType(range);
+			}
+			setPollingIntervalValue(
+				zimbraDataSourcePollingInterval.substr(0, zimbraDataSourcePollingInterval.length - 1)
+			);
+		}
+		setIsDirty(false);
 	};
 
 	const onSave = (): void => {
-		console.log('On Save');
+		const requests: any[] = [];
+		const body: any = {};
+		let attributes: any[] = [];
+		body.id = domainData.zimbraId;
+		body._jsns = 'urn:zimbraAdmin';
+		attributes.push({
+			n: 'zimbraNotes',
+			_content: zimbraGalMaxResults
+		});
+		body.a = attributes;
+		requests.push(modifyDomain(body));
+		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
+			const dataSourceBody: any = {};
+			dataSourceBody.id = zimbraGalAccountId;
+			dataSourceBody._jsns = 'urn:zimbraAdmin';
+			attributes = [];
+			attributes.push({
+				n: 'zimbraDataSourcePollingInterval',
+				_content: `${pollingIntervalValue}${pollingIntervalType?.value}`
+			});
+			dataSourceBody.dataSource = {
+				id: dataSourceId,
+				a: attributes
+			};
+			requests.push(modifyDataSource(dataSourceBody));
+		}
+		Promise.all(requests)
+			.then((results) => Promise.all(results.map((r) => r.json())))
+			.then((results) => {
+				setIsDirty(false);
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
 	};
+
+	const onChangeRangeType = (v: any): any => {
+		const range = rangeItems.find((item: any) => item.value === v);
+		setPollingIntervalType(range);
+	};
+
+	const changeIntervalValue = (ev: any): any => {
+		setPollingIntervalValue(ev.target.value);
+	};
+
+	const onZimbraGalMaxResultChange = (ev: any): any => {
+		setZimbraGalMaxResults(ev.target.value);
+	};
+
+	useEffect(() => {
+		if (domainData?.zimbraGalMaxResults !== zimbraGalMaxResults) {
+			setIsDirty(true);
+		}
+		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
+			if (
+				zimbraDataSourcePollingInterval !== `${pollingIntervalValue}${pollingIntervalType?.value}`
+			) {
+				setIsDirty(true);
+			}
+		}
+	}, [
+		zimbraGalMaxResults,
+		domainData,
+		zimbraDataSourcePollingInterval,
+		pollingIntervalType,
+		pollingIntervalValue,
+		zimbraGalAccountId
+	]);
+
 	return (
 		<Container padding={{ all: 'large' }} background="gray5">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -220,6 +340,7 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 									value={zimbraGalMaxResults}
 									defaultValue={zimbraGalMaxResults}
 									background="gray6"
+									onChange={onZimbraGalMaxResultChange}
 								/>
 							</Container>
 							<Container padding={{ all: 'small' }}>
@@ -291,8 +412,9 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 										<Container padding={{ all: 'small' }}>
 											<Input
 												label={t('domain.internal_gal_received', 'Internal GAL received range')}
-												value=""
+												value={pollingIntervalValue}
 												background="gray6"
+												onChange={changeIntervalValue}
 											/>
 										</Container>
 										<Container padding={{ all: 'small' }}>
@@ -300,8 +422,9 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 												items={rangeItems}
 												background="gray5"
 												label={t('domain.range', 'Range')}
-												defaultSelection={rangeItems[0]}
 												showCheckbox={false}
+												onChange={onChangeRangeType}
+												selection={pollingIntervalType}
 											/>
 										</Container>
 									</SettingRow>
