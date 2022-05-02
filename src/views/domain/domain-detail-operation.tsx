@@ -5,9 +5,10 @@
  */
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS } from '../../constants';
+import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS, AUTHENTICATION } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
+import DomainAuthentication from './domain-authentication';
 import DomainGeneralSettings from './domain-general-settings';
 
 const DomainOperations: FC = () => {
@@ -60,6 +61,8 @@ const DomainOperations: FC = () => {
 						);
 					case GAL:
 						return <div>GAL</div>;
+					case AUTHENTICATION:
+						return <DomainAuthentication domainInformation={domainInformation} />;
 					default:
 						return null;
 				}
