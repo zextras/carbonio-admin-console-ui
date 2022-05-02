@@ -166,7 +166,7 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 		}
 	}, [zimbraGalAccountId]);
 
-	useEffect(() => {
+	useMemo(() => {
 		if (zimbraDataSourcePollingInterval !== '') {
 			const rangeType = zimbraDataSourcePollingInterval.charAt(
 				zimbraDataSourcePollingInterval.length - 1
