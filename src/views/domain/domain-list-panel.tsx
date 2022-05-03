@@ -50,6 +50,7 @@ const DomainListPanel: FC = () => {
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');
+	const [domainItem, setDomainItem] = useState<any>({});
 	const { path } = useRouteMatch();
 
 	const getDomainLists = (domainName: string): any => {
@@ -76,6 +77,7 @@ const DomainListPanel: FC = () => {
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
 			setSelectedOperationItem('');
+			setDomainItem({});
 		}
 	}, [locationService]);
 
@@ -99,6 +101,7 @@ const DomainListPanel: FC = () => {
 		setIsDomainListExpand(false);
 		replaceHistory(`domain/${domain?.id}/${GENERAL_SETTINGS}`);
 		setSelectedOperationItem(GENERAL_SETTINGS);
+		setDomainItem(domain);
 	}, []);
 
 	const options = useMemo(
@@ -155,11 +158,11 @@ const DomainListPanel: FC = () => {
 	const selectDomainOption = useCallback(
 		(item) => () => {
 			if (item?.domainSelected && item?.id !== GENERAL_INFORMATION) {
-				replaceHistory(`domain/${searchDomainName}/${item?.id}`);
+				replaceHistory(`domain/${domainItem?.id}/${item?.id}`);
 				setSelectedOperationItem(item?.id);
 			}
 		},
-		[searchDomainName]
+		[domainItem]
 	);
 
 	const items =
@@ -200,7 +203,12 @@ const DomainListPanel: FC = () => {
 							bottom="9px"
 							left="large"
 							style={{
-								'font-family': 'roboto'
+								'font-family': 'roboto',
+								display: 'block',
+								textAlign: 'left',
+								height: 'inherit',
+								padding: '3px',
+								width: 'inherit'
 							}}
 							onClick={(): void => {
 								selectedDomain(domain);
