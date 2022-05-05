@@ -19,7 +19,7 @@ import {
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { useLocation, useRouteMatch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { getDomainList } from '../../services/search-domain-service';
 import {
@@ -50,7 +50,6 @@ const DomainListPanel: FC = () => {
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');
-	const { path } = useRouteMatch();
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -84,7 +83,7 @@ const DomainListPanel: FC = () => {
 		debounce((domain) => {
 			getDomainLists(domain);
 		}, 700),
-		[]
+		[debounce]
 	);
 
 	useEffect(() => {

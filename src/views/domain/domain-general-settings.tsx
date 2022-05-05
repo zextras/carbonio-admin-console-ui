@@ -292,59 +292,67 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 		if (domainData.zimbraPrefTimeZoneId.toString() !== selectedTimeZone?.value.toString()) {
 			setIsDirty(true);
 		}
+	}, [domainData, selectedTimeZone]);
 
+	useEffect(() => {
 		if (domainData.zimbraPublicServiceProtocol !== selectedPublicServiceProtocol.value) {
 			setIsDirty(true);
 		}
+	}, [domainData, selectedPublicServiceProtocol]);
 
+	useEffect(() => {
 		if (domainData.zimbraPublicServiceHostname !== publicServiceHostName) {
 			setIsDirty(true);
 		}
+	}, [domainData, publicServiceHostName]);
 
+	useEffect(() => {
 		if (domainData.zimbraDomainStatus !== domainStatus.value) {
 			setIsDirty(true);
 		}
+	}, [domainData, domainStatus]);
 
+	useEffect(() => {
 		if (domainData.zimbraPublicServicePort !== zimbraPublicServicePort) {
 			setIsDirty(true);
 		}
+	}, [domainData, zimbraPublicServicePort]);
 
+	useEffect(() => {
 		if (domainData.zimbraDNSCheckHostname !== zimbraDNSCheckHostname) {
 			setIsDirty(true);
 		}
+	}, [domainData, zimbraDNSCheckHostname]);
 
+	useEffect(() => {
 		if (domainData.zimbraNotes !== zimbraNotes) {
 			setIsDirty(true);
 		}
+	}, [domainData, zimbraNotes]);
 
+	useEffect(() => {
 		if (domainData.zimbraHelpAdminURL !== zimbraHelpAdminURL) {
 			setIsDirty(true);
 		}
+	}, [domainData, zimbraHelpAdminURL]);
 
+	useEffect(() => {
 		if (domainData.description !== description) {
 			setIsDirty(true);
 		}
+	}, [domainData, description]);
 
+	useEffect(() => {
 		if (domainData.zimbraHelpDelegatedURL !== zimbraHelpDelegatedURL) {
 			setIsDirty(true);
 		}
+	}, [domainData, zimbraHelpDelegatedURL]);
+
+	useEffect(() => {
 		if (domainData.zimbraDomainDefaultCOSId !== zimbraDomainDefaultCOSId) {
 			setIsDirty(true);
 		}
-	}, [
-		domainData,
-		selectedTimeZone,
-		zimbraPublicServicePort,
-		domainStatus,
-		zimbraDNSCheckHostname,
-		selectedPublicServiceProtocol,
-		zimbraHelpAdminURL,
-		zimbraHelpDelegatedURL,
-		zimbraNotes,
-		publicServiceHostName,
-		description,
-		zimbraDomainDefaultCOSId
-	]);
+	}, [domainData, zimbraDomainDefaultCOSId]);
 
 	const onCancel = (): void => {
 		setLoading(true);
@@ -530,7 +538,7 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
