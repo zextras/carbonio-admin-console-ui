@@ -145,53 +145,90 @@ const DomainAuthentication: FC<{ domainInformation: any }> = ({ domainInformatio
 			if (domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraPasswordChangeListener]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			const oldFallbacktoLocalValue = domainAuthData.zimbraAuthFallbackToLocal === 'TRUE';
 			if (oldFallbacktoLocalValue !== zimbraAuthFallbackToLocal) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraAuthFallbackToLocal]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAdminConsoleLoginURL !== zimbraAdminConsoleLoginURL) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraAdminConsoleLoginURL]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAdminConsoleLogoutURL !== zimbraAdminConsoleLogoutURL) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraAdminConsoleLogoutURL]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraWebClientLoginURL !== zimbraWebClientLoginURL) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraWebClientLoginURL]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraWebClientLogoutURL !== zimbraWebClientLogoutURL) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraWebClientLogoutURL]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraWebClientLoginURLAllowedUA !== zimbraWebClientLoginURLAllowedUA) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraWebClientLoginURLAllowedUA]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraWebClientLogoutURLAllowedUA !== zimbraWebClientLogoutURLAllowedUA) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraWebClientLogoutURLAllowedUA]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraWebClientLoginURLAllowedIP !== zimbraWebClientLoginURLAllowedIP) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraWebClientLoginURLAllowedIP]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraWebClientLogoutURLAllowedIP !== zimbraWebClientLogoutURLAllowedIP) {
 				setIsDirty(true);
 			}
+		}
+	}, [domainAuthData, zimbraWebClientLogoutURLAllowedIP]);
+
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
 			const oldForceClearCookiesValue = domainAuthData.zimbraForceClearCookies === 'TRUE';
 			if (oldForceClearCookiesValue !== zimbraForceClearCookies) {
 				setIsDirty(true);
 			}
 		}
-	}, [
-		domainAuthData,
-		zimbraPasswordChangeListener,
-		zimbraAuthFallbackToLocal,
-		zimbraAdminConsoleLoginURL,
-		zimbraAdminConsoleLogoutURL,
-		zimbraWebClientLoginURL,
-		zimbraWebClientLogoutURL,
-		zimbraWebClientLoginURLAllowedUA,
-		zimbraWebClientLogoutURLAllowedUA,
-		zimbraWebClientLoginURLAllowedIP,
-		zimbraWebClientLogoutURLAllowedIP,
-		zimbraForceClearCookies
-	]);
+	}, [domainAuthData, zimbraForceClearCookies]);
 
 	const forceClearCookies = useCallback(() => setZimbraForceClearCookies((c) => !c), []);
 	const authFallbackToLocal = useCallback(() => setZimbraAuthFallbackToLocal((c) => !c), []);
