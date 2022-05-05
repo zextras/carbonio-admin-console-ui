@@ -84,8 +84,9 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 	const addVirtualHost = useCallback((): void => {
 		if (virtualHostValue) {
 			const lastId = items.length > 0 ? items[items.length - 1].id : 0;
+			const newId = lastId + 1;
 			const item = {
-				id: (lastId + 1)?.toString(),
+				id: newId?.toString(),
 				columns: [virtualHostValue]
 			};
 			setItems([...items, item]);
