@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS, VIRTUAL_HOSTS } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
@@ -12,6 +13,7 @@ import DomainGeneralSettings from './domain-general-settings';
 import DomainVirtualHosts from './domain-virtual-hosts';
 
 const DomainOperations: FC = () => {
+	const [t] = useTranslation();
 	const [domainInformation, setDomainInformation] = useState([]);
 	const [cosList, setCosList] = useState([]);
 	const { operation, domainId }: { operation: string; domainId: string } = useParams();
@@ -54,7 +56,7 @@ const DomainOperations: FC = () => {
 			{((): any => {
 				switch (operation) {
 					case GENERAL_INFORMATION:
-						return <div>GENearl information</div>;
+						return <div>{t('label.general_information', 'General Information')}</div>;
 					case GENERAL_SETTINGS:
 						return (
 							<DomainGeneralSettings domainInformation={domainInformation} cosList={cosList} />
