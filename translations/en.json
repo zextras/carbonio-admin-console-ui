@@ -101,7 +101,6 @@
             }
         },
         "something_wrong_error_msg": "Something went wrong. Please try again.",
-        "something_wrong_wrror_msg": "Something went wrong. Please try again.",
         "sso_login_redirect_admin_to_msg": "SSO Login will redirect the admin to",
         "sso_logout_redirect_admin_to_msg": "SSO Logout will redirect the admin to",
         "start_tls": "StartTLS",
