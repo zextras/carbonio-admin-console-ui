@@ -249,6 +249,7 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 										icon="Plus"
 										color="primary"
 										disabled={addButtonDisabled}
+										height="44px"
 										onClick={addVirtualHost}
 									/>
 								</Padding>
@@ -258,6 +259,7 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 										label={t('label.remove', 'Remove')}
 										icon="Close"
 										color="error"
+										height="44px"
 										disabled={removeButtonDisabled}
 										onClick={removeVirtualHost}
 									/>
