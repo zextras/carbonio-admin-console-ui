@@ -87,7 +87,8 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 			const newId = lastId + 1;
 			const item = {
 				id: newId?.toString(),
-				columns: [virtualHostValue]
+				columns: [virtualHostValue],
+				clickable: true
 			};
 			setItems([...items, item]);
 			setAddButtonDisabled(true);
@@ -100,6 +101,7 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 			const filterItems = items.filter((item: any) => !selectedRows.includes(item.id));
 			setItems(filterItems);
 			setRemoveButtonDisabled(true);
+			setSelectedRows([]);
 		}
 	}, [selectedRows, items]);
 
@@ -265,7 +267,7 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 						<Table
 							rows={items}
 							headers={headers}
-							showCheckbox={false}
+							selectedRows={selectedRows}
 							onSelectionChange={(selected: any): any => {
 								setSelectedRows(selected);
 								if (selected && selected.length > 0) {
