@@ -316,7 +316,7 @@ const DomainAuthentication: FC<{ domainInformation: any }> = ({ domainInformatio
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: t('label.something_wrong_wrror_msg', 'Something went wrong. Please try again.'),
+					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
