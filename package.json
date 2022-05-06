@@ -53,6 +53,7 @@
 		"pinst": "2.1.6"
 	},
 	"dependencies": {
+		"@datapunt/matomo-tracker-react": "^0.5.1",
 		"@reduxjs/toolkit": "1.6.2",
 		"@zextras/carbonio-design-system": "^0.1.4",
 		"@zextras/carbonio-shell-ui": "^0.4.1-rc.0",

@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect } from 'react';
+import React, { FC } from 'react';
 import { Container, Padding, Text, Button } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 // import logo from '../../assets/ninja_robo.svg';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import DomainHeader from './domain-header';
 import DomainOperations from './domain-detail-operation';
 
@@ -63,7 +63,7 @@ const DomainDetailPanel: FC = () => {
 							>
 								<Button
 									type="outlined"
-									label={t('create_new_domain', 'CREATE NEW DOMAIN')}
+									label={t('create_new_domain', 'Creat New Domain')}
 									icon="Plus"
 									color="info"
 								/>

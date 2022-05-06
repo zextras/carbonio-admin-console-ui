@@ -1,5 +1,5 @@
 {
-    "create_new_domain": "CREATE NEW DOMAIN",
+    "create_new_domain": "Creat New Domain",
     "domain": {
         "account_gal_synchronization": "Account Name of GAL Synchronization",
         "advanced": "Advanced",
@@ -58,6 +58,7 @@
         "external_gal": "ExternalGAL",
         "features": "Features",
         "force_delete": "Force Delete",
+        "general_information": "General Information",
         "hours": "Hours",
         "http": "http",
         "https": "https",
@@ -97,7 +98,7 @@
                 "accepted": "You have accepted the share request"
             }
         },
-        "something_wrong_wrror_msg": "Something went wrong. Please try again.",
+        "something_wrong_error_msg": "Something went wrong. Please try again.",
         "status": "Status",
         "storages": "Storages",
         "subscriptions": "Subscriptions",

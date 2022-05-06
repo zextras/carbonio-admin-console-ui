@@ -51,7 +51,6 @@ const DomainListPanel: FC = () => {
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');
 	const [domainItem, setDomainItem] = useState<any>({});
-	const { path } = useRouteMatch();
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -86,7 +85,7 @@ const DomainListPanel: FC = () => {
 		debounce((domain) => {
 			getDomainLists(domain);
 		}, 700),
-		[]
+		[debounce]
 	);
 
 	useEffect(() => {
