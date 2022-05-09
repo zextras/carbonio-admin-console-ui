@@ -6,23 +6,42 @@
  */
 
 import React, { FC } from 'react';
-import { Container, Button } from '@zextras/carbonio-design-system';
-import Breadcrumbs from '../app/breadcrumbs';
+import { Container, Button, Breadcrumbs } from '@zextras/carbonio-design-system';
 
-const BucketHeader: FC<{ currentpath: any }> = ({ currentpath }) => (
-	<Container mainAlignment="flex-start" orientation="horizontal" height="49px" background="#FFFFFF">
-		<Breadcrumbs folderPath={currentpath} />
-		<Container width="auto" mainAlignment="flex-end" orientation="horizontal">
-			<Button type="ghost" label="GLOBAL" icon="Globe" iconPlacement="left" color="primary" />
-			<Button
-				type="ghost"
-				label="ACTIONS"
-				icon="AdminPanelOutline"
-				iconPlacement="left"
-				color="primary"
-			/>
+const BucketHeader: FC = () => {
+	const crumbs = [
+		{
+			id: 'manage',
+			label: 'Manage',
+			click: () => console.log('Breadcrumb Manage clicked')
+		},
+		{
+			id: 'buckets',
+			label: 'Buckets',
+			click: () => console.log('Breadcrumb Buckets clicked')
+		}
+	];
+
+	return (
+		<Container
+			mainAlignment="flex-start"
+			orientation="horizontal"
+			height="49px"
+			background="#FFFFFF"
+		>
+			<Breadcrumbs crumbs={crumbs} />
+			<Container width="auto" mainAlignment="flex-end" orientation="horizontal">
+				<Button type="ghost" label="GLOBAL" icon="Globe" iconPlacement="left" color="primary" />
+				<Button
+					type="ghost"
+					label="ACTIONS"
+					icon="AdminPanelOutline"
+					iconPlacement="left"
+					color="primary"
+				/>
+			</Container>
 		</Container>
-	</Container>
-);
+	);
+};
 
 export default BucketHeader;

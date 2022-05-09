@@ -1,4 +1,3 @@
-/* eslint-disable no-empty-pattern */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -8,16 +7,13 @@ import React, { FC, useState } from 'react';
 import {
 	Container,
 	Input,
-	Icon,
 	Row,
 	Select,
-	Text,
 	Padding,
-	PasswordInput
+	PasswordInput,
+	Button
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-
-// eslint-disable-next-line @typescript-eslint/ban-types
 
 const Connection: FC<{
 	isActive: any;
@@ -26,71 +22,83 @@ const Connection: FC<{
 	title: string;
 }> = ({ isActive, getData, onSelection, title }) => {
 	const [t] = useTranslation();
-
-	const [selected, setSelected]: any = useState(4);
-
-	const items = [
+	const regions = [
 		{
-			label: 'hi',
-			value: '1'
-		},
-		{
-			label: 'hello',
-			value: '2'
-		},
-		{
-			label: 'good day',
-			value: '3'
-		},
-		{
-			label: 'goodnight',
-			value: '4'
-		},
-		{
-			label: 'nothing',
-			value: '5'
+			label: 'EU | Milan',
+			value: 'eu-milan'
 		}
 	];
 
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">
-			<Row padding="32px 12px 10px 12px" width="100%">
-				<Select
-					items={items}
-					background="gray5"
-					label="Buckets Type"
-					onChange={setSelected}
-					showCheckbox={false}
-					padding={{ right: 'medium' }}
-				/>
-			</Row>
-			<Row padding="32px 12px 10px 12px" width="100%">
+			<Row padding={{ top: 'extralarge' }} width="100%">
 				<Input
-					label={t('connection.descriptive_name', 'Descriptive Name')}
+					label={t('buckets.bucket_type', 'Buckets Type')}
 					backgroundColor="gray5"
+					value={'S3 AWS'}
+					readOnly
 				/>
 			</Row>
-
-			<Row width="100%" padding={{ horizontal: 'small', vertical: 'small' }}>
+			<Row padding={{ top: 'large' }} width="100%">
+				<Input
+					label={t('buckets.connection.descriptive_name', 'Descriptive Name')}
+					backgroundColor="gray5"
+					value="s3aws"
+				/>
+			</Row>
+			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
-					<Input background="gray5" label={t('connection.arn_name', 'Arn/Name')} />
+					<Input
+						background="gray5"
+						label={t('buckets.connection.arn_name', 'Arn / Name')}
+						value="s3aws"
+					/>
 				</Row>
 				<Padding width="4%" />
 				<Row width="48%" mainAlignment="flex-end">
-					<Select background="gray5" label="Region" />
+					<Select
+						background="gray5"
+						label="Region"
+						items={regions}
+						showCheckbox={false}
+						onChange={(): any => console.log('region changed')}
+					/>
 				</Row>
 			</Row>
-			<Row width="100%" padding={{ horizontal: 'small', vertical: 'small' }}>
+			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
-					<PasswordInput background="gray5" label={t('connection.access_key', 'Access Key')} />
+					<PasswordInput
+						background="gray5"
+						label={t('buckets.connection.access_key', 'Access Key')}
+						value="ABC123"
+					/>
 				</Row>
 				<Padding width="4%" />
 				<Row width="48%" mainAlignment="flex-end">
-					<PasswordInput background="gray5" label={t('connection.secret_key', 'Secret Key')} />
+					<PasswordInput
+						background="gray5"
+						label={t('buckets.connection.secret_key', 'Secret Key')}
+						value="ABC123"
+					/>
 				</Row>
 			</Row>
-			<Row padding="32px 12px 10px 12px" width="100%">
-				<Input background="gray5" label={t('connection.notes', 'Notes')} />
+			<Row width="100%" padding={{ top: 'large' }}>
+				<Input
+					background="gray5"
+					label={t('buckets.connection.notes', 'Notes')}
+					value="This is my notes"
+				/>
+			</Row>
+			<Row width="100%" padding={{ top: 'large' }}>
+				<Button
+					type="outlined"
+					label={t('buckets.connection.verify_connector', 'VERIFY CONNECTOR')}
+					icon="ActivityOutline"
+					iconPlacement="right"
+					color="primary"
+					width="100%"
+					onClick={(): any => console.log('Verify Connector clicked')}
+				/>
 			</Row>
 		</Container>
 	);

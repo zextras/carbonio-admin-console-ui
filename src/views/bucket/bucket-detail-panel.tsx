@@ -31,7 +31,7 @@ const AbsoluteContainer = styled(Container)`
 	box-shadow: 0 0 12px -1px #888;
 `;
 
-const BucketDetailPanel: FC<{ currentpath: any }> = ({ currentpath }) => {
+const BucketDetailPanel: FC = () => {
 	const [t] = useTranslation();
 
 	const [selected, setSelected]: any = useState(4);
@@ -39,24 +39,8 @@ const BucketDetailPanel: FC<{ currentpath: any }> = ({ currentpath }) => {
 
 	const items = [
 		{
-			label: 'hi',
-			value: '1'
-		},
-		{
-			label: 'hello',
-			value: '2'
-		},
-		{
-			label: 'good day',
-			value: '3'
-		},
-		{
-			label: 'goodnight',
-			value: '4'
-		},
-		{
-			label: 'nothing',
-			value: '5'
+			label: 'S3 AWS',
+			value: 's3-aws'
 		}
 	];
 
@@ -70,13 +54,13 @@ const BucketDetailPanel: FC<{ currentpath: any }> = ({ currentpath }) => {
 				background="white"
 			>
 				{toggleBucket && (
-					<AbsoluteContainer orientation="vertical" background="gray5" width="60%">
+					<AbsoluteContainer orientation="vertical" background="gray5">
 						<NewBucket setToggleBucket={setToggleBucket} title="Bucket Connection" />
 					</AbsoluteContainer>
 				)}
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
 					<Text size="extralarge" weight="bold">
-						Buckets List
+						{t('buckets.bucket_list', 'Buckets List')}
 					</Text>
 				</Row>
 				<Divider />
@@ -84,9 +68,8 @@ const BucketDetailPanel: FC<{ currentpath: any }> = ({ currentpath }) => {
 					<Select
 						items={items}
 						background="gray5"
-						label="Buckets Type"
+						label={t('buckets.bucket_type', 'Buckets Type')}
 						onChange={setSelected}
-						defaultSelection={{ value: '4', label: 'goodnight' }}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
 					/>

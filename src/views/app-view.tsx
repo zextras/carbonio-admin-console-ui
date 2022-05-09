@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, Suspense, useState } from 'react';
-import { Container } from '@zextras/carbonio-design-system';
+import { Container, Breadcrumbs } from '@zextras/carbonio-design-system';
 import { Spinner, getBridgedFunctions } from '@zextras/carbonio-shell-ui';
 import { useRouteMatch, Switch, Route } from 'react-router-dom';
 import DomainListPanel from './domain/domain-list-panel';
@@ -32,7 +32,7 @@ const AppView: FC = () => {
 				</Container>
 			</Route>
 			<Route path={`${path}/buckets`}>
-				<BucketHeader currentpath={`${path}/Buckets`} />
+				<BucketHeader />
 				<Container
 					width="100%"
 					orientation="horizontal"
@@ -44,7 +44,7 @@ const AppView: FC = () => {
 						<BucketListPanel />
 					</Suspense>
 					<Suspense fallback={<Spinner />}>
-						<BucketDetailPanel currentpath={`${path}/Buckets`} />
+						<BucketDetailPanel />
 					</Suspense>
 				</Container>
 			</Route>

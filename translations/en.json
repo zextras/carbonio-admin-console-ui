@@ -1,8 +1,25 @@
 {
     "buckets": {
+        "bucket_list": "Buckets List",
+        "bucket_type": "Buckets Type",
         "connect_buckets": "Connect Buckets",
+        "connection": {
+            "access_key": "Access Key",
+            "arn_name": "Arn / Name",
+            "descriptive_name": "Descriptive Name",
+            "notes": "Notes",
+            "secret_key": "Secret Key",
+            "verify_connector": "VERIFY CONNECTOR"
+        },
         "new": {
             "bucket_connection": "Bucket Connection"
+        },
+        "summary": {
+            "access_key": "Access Key",
+            "arn_name": "Arn / Name",
+            "descriptive_name": "Descriptive Name",
+            "notes": "Notes",
+            "secret_key": "Secret Key"
         }
     },
     "commons": {
@@ -10,7 +27,7 @@
     },
     "connection": {
         "access_key": "Access Key",
-        "arn_name": "Arn/Name",
+        "arn_name": "Arn / Name",
         "descriptive_name": "Descriptive Name",
         "notes": "Notes",
         "secret_key": "Secret Key"

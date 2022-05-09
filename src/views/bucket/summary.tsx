@@ -4,7 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useState } from 'react';
-import { Container, Input, Icon, Row, Padding, Select } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Input,
+	Row,
+	Padding,
+	Select,
+	PasswordInput,
+	Button
+} from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -17,70 +25,50 @@ const Summary: FC<{
 }> = ({ isActive, getData, onSelection, title }) => {
 	const [t] = useTranslation();
 
-	const [selected, setSelected]: any = useState(4);
-
-	const items = [
-		{
-			label: 'hi',
-			value: '1'
-		},
-		{
-			label: 'hello',
-			value: '2'
-		},
-		{
-			label: 'good day',
-			value: '3'
-		},
-		{
-			label: 'goodnight',
-			value: '4'
-		},
-		{
-			label: 'nothing',
-			value: '5'
-		}
-	];
-
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">
-			<Row padding="32px 12px 10px 12px" width="100%">
-				<Select
-					items={items}
-					background="gray5"
-					label="Buckets Type"
-					onChange={setSelected}
-					showCheckbox={false}
-					padding={{ right: 'medium' }}
-				/>
+			<Row padding={{ top: 'extralarge' }} width="100%">
+				<Input label={t('buckets.bucket_type', 'Buckets Type')} value={'S3 AWS'} readOnly />
 			</Row>
-			<Row padding="32px 12px 10px 12px" width="100%">
+			<Row padding={{ top: 'large' }} width="100%">
 				<Input
-					label={t('connection.descriptive_name', 'Descriptive Name')}
-					backgroundColor="gray5"
+					label={t('buckets.connection.descriptive_name', 'Descriptive Name')}
+					value="s3aws"
+					readOnly
 				/>
 			</Row>
-
-			<Row width="100%" padding={{ horizontal: 'small', vertical: 'small' }}>
+			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
-					<Input background="gray5" label={t('connection.arn_name', 'Arn/Name')} />
+					<Input label={t('buckets.connection.arn_name', 'Arn / Name')} value="s3aws" readOnly />
 				</Row>
 				<Padding width="4%" />
 				<Row width="48%" mainAlignment="flex-end">
-					<Select background="gray5" label="Region" />
+					<Input
+						label={t('buckets.connection.arn_name', 'Arn / Name')}
+						value="EU | Milan"
+						readOnly
+					/>
 				</Row>
 			</Row>
-			<Row width="100%" padding={{ horizontal: 'small', vertical: 'small' }}>
+			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
-					<Input background="gray5" label={t('connection.access_key', 'Access Key')} />
+					<PasswordInput
+						label={t('buckets.connection.access_key', 'Access Key')}
+						value="ABC123"
+						readOnly
+					/>
 				</Row>
 				<Padding width="4%" />
 				<Row width="48%" mainAlignment="flex-end">
-					<Input background="gray5" label={t('connection.secret_key', 'Secret Key')} />
+					<PasswordInput
+						label={t('buckets.connection.secret_key', 'Secret Key')}
+						value="ABC123"
+						readOnly
+					/>
 				</Row>
 			</Row>
-			<Row padding="32px 12px 10px 12px" width="100%">
-				<Input background="gray5" label={t('connection.notes', 'Notes')} />
+			<Row width="100%" padding={{ top: 'large' }}>
+				<Input label={t('buckets.connection.notes', 'Notes')} value="This is my notes" readOnly />
 			</Row>
 		</Container>
 	);
