@@ -1,4 +1,21 @@
 {
+    "buckets": {
+        "connect_buckets": "Connect Buckets",
+        "new": {
+            "bucket_connection": "Bucket Connection"
+        }
+    },
+    "commons": {
+        "confirm_connection": "CONFIRM CONNECTION"
+    },
+    "connection": {
+        "access_key": "Access Key",
+        "arn_name": "Arn/Name",
+        "descriptive_name": "Descriptive Name",
+        "notes": "Notes",
+        "secret_key": "Secret Key"
+    },
+    "create_new_bucket": "NEW BUCKET",
     "create_new_domain": "Creat New Domain",
     "domain": {
         "advanced": "Advanced",
@@ -24,6 +41,7 @@
         "app_clicked": "You have accepted the share request",
         "app_name": "Manage",
         "backup": "Backup",
+        "buckets": "Buckets",
         "cancel": "Cancel",
         "certificate": "Certificate",
         "certificates": "Certificates",
@@ -102,6 +120,9 @@
             }
         }
     },
+    "new_bucket_connection": "CONNECTION",
+    "new_bucket_summary": "SUMMARY",
+    "select_bucket_or_create_new_bucket": "it seems like you haven't setup a bucket type.Click NEW BUCKET button to create a new one.",
     "select_domain_or_create_new": "Please select a domain to manage it or click Create button to create a new one.",
     "timezone": {
         "africa_algiers": "{{value}} West Central Africa",

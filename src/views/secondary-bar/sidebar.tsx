@@ -7,13 +7,11 @@ import React, { FC, useMemo, useState } from 'react';
 import { Accordion } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import MatomoTracker from '../../matomo-tracker';
 
 const SidebarView: FC = () => {
 	const [t] = useTranslation();
 	const [accordionItems, setAccordionItems]: any = useState([]);
 
-	const matomo = new MatomoTracker();
 	const [domainItem, setDomainItem]: any = useState([
 		{
 			id: 'domains',
@@ -21,142 +19,100 @@ const SidebarView: FC = () => {
 			label: t('label.domains', 'Domains'),
 			onClick: (): void => {
 				replaceHistory(`/domain`);
-				matomo.trackPageView('Domains');
 			}
 		}
 	]);
 
-	const [serverAndVolumes, setServerAndVolumes]: any = useState([
+	const [bucketsItem, setBucketsItems]: any = useState([
 		{
-			id: 'server-and-volumes',
+			id: 'buckets',
+			icon: 'bucket-outline',
+			label: t('label.buckets', 'Buckets'),
+			onClick: (): void => {
+				replaceHistory(`/buckets`);
+			}
+		}
+	]);
+
+	const [serverAndVolumeItem, setServerAndVolumeItem]: any = useState([
+		{
+			id: 'serverandvolutem',
 			icon: 'HardDriveOutline',
-			label: t('label.serverl_and_volumes', 'Server & Volumes'),
-			onClick: (): void => {
-				replaceHistory(`/server-and-volumes`);
-				matomo.trackPageView('Server and Volumes');
-			}
+			label: t('label.serverl_and_volumes', 'Server & Volumes')
 		}
 	]);
 
-	const [cos, setCos]: any = useState([
+	const [cosItem, setCosItem]: any = useState([
 		{
-			id: 'cos',
+			id: 'cositem',
 			icon: 'CosOutline',
-			label: t('label.cos', 'CoS'),
-			onClick: (): void => {
-				replaceHistory(`/cos`);
-				matomo.trackPageView('COS');
-			}
+			label: t('label.cos', 'CoS')
 		}
 	]);
 
-	const [certificates, setCertificates]: any = useState([
+	const [certificatesItem, setCertificatesItem]: any = useState([
 		{
-			id: 'certificates',
+			id: 'certificateitem',
 			icon: 'AwardOutline',
-			label: t('label.certificates', 'Certificates'),
-			onClick: (): void => {
-				replaceHistory(`/certificates`);
-				matomo.trackPageView('Certificates');
-			}
+			label: t('label.certificates', 'Certificates')
 		}
 	]);
 
-	const [core, setCore]: any = useState([
+	const [coreItem, setCoreItem]: any = useState([
 		{
-			id: 'core',
+			id: 'certificateitem',
 			icon: 'CoreModeOutline',
 			label: t('label.core', 'Core'),
-			onClick: (): void => {
-				replaceHistory(`/core`);
-				matomo.trackPageView('Core');
-			},
 			items: [
 				{
 					id: 'core-subscription',
 					label: t('label.subscriptions', 'Subscriptions'),
-					icon: 'BarChartOutline',
-					onClick: (): void => {
-						replaceHistory(`/core-subscription`);
-						matomo.trackPageView('Core/Subscriptions');
-					}
+					icon: 'BarChartOutline'
 				},
 				{
 					id: 'core-notification',
 					label: t('label.notification', 'Notification'),
-					icon: 'EmailOutline',
-					onClick: (): void => {
-						replaceHistory(`/core-notification`);
-						matomo.trackPageView('Core/Notifications');
-					}
+					icon: 'EmailOutline'
 				},
 				{
 					id: 'core-log',
 					label: t('label.log', 'Log'),
-					icon: 'CodeOutline',
-					onClick: (): void => {
-						replaceHistory(`/core-log`);
-						matomo.trackPageView('Core/Logs');
-					}
+					icon: 'CodeOutline'
 				},
 				{
 					id: 'core-privacy',
 					label: t('label.privacy', 'Privacy'),
-					icon: 'LockOutline',
-					onClick: (): void => {
-						replaceHistory(`/core-privacy`);
-						matomo.trackPageView('Core/Privacy');
-					}
+					icon: 'LockOutline'
 				}
 			]
 		}
 	]);
 
-	const [features, setFeatures]: any = useState([
+	const [featuresItem, setFeaturesItem]: any = useState([
 		{
-			id: 'features',
+			id: 'featuresitem',
 			icon: 'GridOutline',
 			label: t('label.features', 'Features'),
-			onClick: (): void => {
-				replaceHistory(`/features`);
-				matomo.trackPageView('Features');
-			},
 			items: [
 				{
-					id: 'features-admins',
+					id: 'core-admins',
 					label: t('label.admins', 'Admins'),
-					icon: 'CrownOutline',
-					onClick: (): void => {
-						replaceHistory(`/features/admins`);
-						matomo.trackPageView('Features/Admins');
-					}
+					icon: 'CrownOutline'
 				},
 				{
-					id: 'features-backup',
+					id: 'core-backup',
 					label: t('label.backup', 'Backup'),
-					icon: 'HistoryOutline',
-					onClick: (): void => {
-						replaceHistory(`/features/backup`);
-						matomo.trackPageView('Features/Backup');
-					}
+					icon: 'HistoryOutline'
 				},
 				{
-					id: 'features-activesync',
+					id: 'core-activesync',
 					label: t('label.active_sync', 'ActiveSync'),
-					icon: 'SmartphoneOutline',
-					onClick: (): void => {
-						replaceHistory(`/features/active-sync`);
-						matomo.trackPageView('Features/ActiveSync');
-					}
+					icon: 'SmartphoneOutline'
 				},
 				{
-					id: 'features-storages',
+					id: 'core-storages',
 					label: t('label.storages', 'Storages'),
-					icon: 'CubeOutline',
-					onClick: (): void => {
-						replaceHistory(`/features/storages`);
-						matomo.trackPageView('Features/Storages');
-					}
+					icon: 'CubeOutline'
 				}
 			]
 		}
@@ -165,13 +121,22 @@ const SidebarView: FC = () => {
 	useMemo(() => {
 		setAccordionItems([
 			...domainItem,
-			...serverAndVolumes,
-			...certificates,
-			...cos,
-			...core,
-			...features
+			...bucketsItem,
+			...serverAndVolumeItem,
+			...certificatesItem,
+			...cosItem,
+			...coreItem,
+			...featuresItem
 		]);
-	}, [domainItem, serverAndVolumes, certificates, cos, core, features]);
+	}, [
+		domainItem,
+		serverAndVolumeItem,
+		certificatesItem,
+		cosItem,
+		coreItem,
+		featuresItem,
+		bucketsItem
+	]);
 
 	return <Accordion items={accordionItems} />;
 };

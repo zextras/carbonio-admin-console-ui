@@ -1,14 +1,18 @@
+/* eslint-disable import/no-named-as-default */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, Suspense } from 'react';
-import { Container, Text } from '@zextras/carbonio-design-system';
-import { Spinner } from '@zextras/carbonio-shell-ui';
+import React, { FC, Suspense, useState } from 'react';
+import { Container } from '@zextras/carbonio-design-system';
+import { Spinner, getBridgedFunctions } from '@zextras/carbonio-shell-ui';
 import { useRouteMatch, Switch, Route } from 'react-router-dom';
 import DomainListPanel from './domain/domain-list-panel';
 import DomainDetailPanel from './domain/domain-detail-panel';
+import BucketHeader from './bucket/bucket-header';
+import BucketDetailPanel from './bucket/bucket-detail-panel';
+import BucketListPanel from './bucket/bucket-list-panel';
 
 const AppView: FC = () => {
 	const { path } = useRouteMatch();
@@ -27,53 +31,20 @@ const AppView: FC = () => {
 					</Suspense>
 				</Container>
 			</Route>
-			<Route path={`${path}/server-and-volumes`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>Server and Volumes</Text>
-					</Container>
+			<Route path={`${path}/buckets`}>
+				<BucketHeader currentpath={`${path}/Buckets`} />
+				<Container
+					width="100%"
+					orientation="horizontal"
+					mainAlignment="flex-start"
+					background="gray5"
+					padding={{ all: 'large' }}
+				>
 					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
+						<BucketListPanel />
 					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`${path}/certificate-item`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>Certificate Sidebar</Text>
-					</Container>
 					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`${path}/cos`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>COS</Text>
-					</Container>
-					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`${path}/core`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>Core</Text>
-					</Container>
-					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`${path}/features`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>Features</Text>
-					</Container>
-					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
+						<BucketDetailPanel currentpath={`${path}/Buckets`} />
 					</Suspense>
 				</Container>
 			</Route>
