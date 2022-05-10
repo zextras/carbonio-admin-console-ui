@@ -208,7 +208,7 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 		body.id = domainData.zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
 		attributes.push({
-			n: 'zimbraNotes',
+			n: 'zimbraGalMaxResults',
 			_content: zimbraGalMaxResults
 		});
 		body.a = attributes;
