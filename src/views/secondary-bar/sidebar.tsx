@@ -142,9 +142,10 @@ const SidebarView: FC = () => {
 				label: view.label,
 				icon: view.icon,
 				textProps,
-				active: location.pathname === `/${MANAGE_APP_ID}/${view.route}` && location.search === '',
+				active:
+					location.pathname.includes(`/${MANAGE_APP_ID}/${view.route}`) && location.search === '',
 				disableHover:
-					location.pathname === `/${MANAGE_APP_ID}/${view.route}` && location.search === '',
+					location.pathname.includes(`/${MANAGE_APP_ID}/${view.route}`) && location.search === '',
 				onClick: (e: MouseEvent): void => {
 					e.stopPropagation();
 					replaceHistory(`/${view.route}`);
