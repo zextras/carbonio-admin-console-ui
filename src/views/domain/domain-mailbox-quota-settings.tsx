@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useContext } from 'react';
+import React, { FC, useEffect, useState, useMemo, useContext, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
 	Container,
@@ -13,10 +13,12 @@ import {
 	Select,
 	Button,
 	Padding,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Table
 } from '@zextras/carbonio-design-system';
-import { ALLOW_SEND_RECEIVE, BLOCK_SEND, BLOCK_SEND_RECEIVE } from '../../constants';
+import { ALLOW_SEND_RECEIVE, BLOCK_SEND, BLOCK_SEND_RECEIVE, BYTE_PER_MB } from '../../constants';
 import { modifyDomain } from '../../services/modify-domain-service';
+import { getQuotaUsage } from '../../services/get-quota-usage-service';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -50,6 +52,36 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 		[t]
 	);
 
+	const headers: any = useMemo(
+		() => [
+			{
+				id: 'index',
+				label: '',
+				width: '5%',
+				bold: true
+			},
+			{
+				id: 'account',
+				label: t('label.account', 'Account'),
+				width: '40%',
+				bold: true
+			},
+			{
+				id: 'mailsize',
+				label: t('label.mail_size', 'Mail Size'),
+				width: '20%',
+				bold: true
+			},
+			{
+				id: 'availablesize',
+				label: t('label.available_space', 'Available Space'),
+				width: '20%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
 	const [zimbraDomainAggregateQuota, setZimbraDomainAggregateQuota] = useState<string>('');
 	const [zimbraDomainAggregateQuotaWarnPercent, setZimbraDomainAggregateQuotaWarnPercent] =
@@ -68,7 +100,63 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 		zimbraDomainAggregateQuotaWarnEmailRecipient: '',
 		zimbraDomainAggregateQuotaPolicy: ALLOW_SEND_RECEIVE
 	});
+	const [usageQuota, setUsageQuota] = useState<any[]>([]);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+
+	const getQuotaUsageInformation = useCallback(
+		(domainName: string): void => {
+			getQuotaUsage(domainName)
+				.then((response) => response.json())
+				.then((data) => {
+					const usedQuota: any = data?.Body?.GetQuotaUsageResponse?.account;
+					if (usedQuota && Array.isArray(usedQuota)) {
+						const quota: any = [];
+						usedQuota.map((item: any): any => {
+							let diskUsed: any = 0;
+							let quotaLimit: any = 0;
+							let percentage: any = 0;
+
+							if (item?.used) {
+								diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(2);
+							}
+
+							if (item?.limit === 0) {
+								quotaLimit = t('label.unlimited', 'Unlimited');
+								percentage = 0;
+							} else {
+								if (item?.limit >= BYTE_PER_MB) {
+									quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
+								} else {
+									quotaLimit = 1;
+								}
+								percentage = ((diskUsed * 100) / quotaLimit).toFixed();
+							}
+							diskUsed += ` ${t('label.mb', 'MB')}`;
+							quotaLimit += ` ${t('label.mb', 'MB')}`;
+							percentage += '%';
+							quota.push({
+								id: item?.id,
+								columns: [
+									'',
+									<Text size="medium" weight="bold" key={item?.id} color="#828282">
+										{item?.name}
+									</Text>,
+									<Text size="medium" weight="bold" key={item?.id} color="#828282">
+										{diskUsed}
+									</Text>,
+									<Text size="medium" weight="bold" key={item?.id} color="#828282">
+										{`${quotaLimit} (${percentage})`}
+									</Text>
+								]
+							});
+							return '';
+						});
+						setUsageQuota(quota);
+					}
+				});
+		},
+		[t]
+	);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -77,7 +165,7 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 				obj[item?.n] = item._content;
 				return '';
 			});
-
+			getQuotaUsageInformation(obj.zimbraDomainName);
 			if (obj.zimbraMailDomainQuota) {
 				setZimbraMailDomainQuota(obj.zimbraMailDomainQuota);
 			} else {
@@ -121,7 +209,7 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 			setDomainData(obj);
 			setIsDirty(false);
 		}
-	}, [domainInformation, quotaPolicy]);
+	}, [domainInformation, quotaPolicy, getQuotaUsageInformation]);
 
 	useEffect(() => {
 		if (domainData.zimbraMailDomainQuota !== zimbraMailDomainQuota) {
@@ -320,7 +408,7 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							width="100%"
-							background="gray5"
+							background="gray6"
 							padding={{ left: 'large', top: 'large' }}
 						>
 							<Text size="small" weight="bold">
@@ -391,6 +479,20 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 									onChange={onZimbraDomainAggregateQuotaPolicy}
 								/>
 							</Container>
+						</SettingRow>
+						<Row
+							takeAvwidth="fill"
+							mainAlignment="flex-start"
+							width="100%"
+							background="gray6"
+							padding={{ left: 'large', top: 'large', bottom: 'large' }}
+						>
+							<Text size="small" weight="bold">
+								{t('label.accounts', 'Accounts')}
+							</Text>
+						</Row>
+						<SettingRow>
+							<Table rows={usageQuota} headers={headers} showCheckbox={false} />
 						</SettingRow>
 					</Container>
 				</Row>

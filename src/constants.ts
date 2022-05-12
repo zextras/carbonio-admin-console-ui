@@ -29,3 +29,4 @@ export const SUSPENDED = 'suspended';
 export const ALLOW_SEND_RECEIVE = 'ALLOWSENDRECEIVE';
 export const BLOCK_SEND = 'BLOCKSEND';
 export const BLOCK_SEND_RECEIVE = 'BLOCKSENDRECEIVE';
+export const BYTE_PER_MB = 1048576;
