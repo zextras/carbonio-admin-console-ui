@@ -25,11 +25,13 @@ import { getDomainList } from '../../services/search-domain-service';
 import {
 	ADVANCED,
 	AUTHENTICATION,
+	DOMAINS_ROUTE_ID,
 	FREE_BUSY,
 	GAL,
 	GENERAL_INFORMATION,
 	GENERAL_SETTINGS,
 	MAILBOX_QUOTA,
+	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
 	THEME,
 	VIRTUAL_HOSTS
@@ -69,7 +71,10 @@ const DomainListPanel: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		if (locationService.pathname && locationService.pathname === '/manage/domain') {
+		if (
+			locationService.pathname &&
+			locationService.pathname === `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`
+		) {
 			setDomainList([]);
 			setIsDomainSelect(false);
 			setSearchDomainName('');
@@ -96,7 +101,7 @@ const DomainListPanel: FC = () => {
 		setIsDomainSelect(true);
 		setSearchDomainName(domain?.name);
 		setIsDomainListExpand(false);
-		replaceHistory(`domain/${domain?.id}/${GENERAL_SETTINGS}`);
+		replaceHistory(`${DOMAINS_ROUTE_ID}/${domain?.id}/${GENERAL_SETTINGS}`);
 		setSelectedOperationItem(GENERAL_SETTINGS);
 	}, []);
 
@@ -154,7 +159,7 @@ const DomainListPanel: FC = () => {
 	const selectDomainOption = useCallback(
 		(item) => () => {
 			if (item?.domainSelected && item?.id !== GENERAL_INFORMATION) {
-				replaceHistory(`domain/${searchDomainName}/${item?.id}`);
+				replaceHistory(`${DOMAINS_ROUTE_ID}/${searchDomainName}/${item?.id}`);
 				setSelectedOperationItem(item?.id);
 			}
 		},
