@@ -6,10 +6,11 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS } from '../../constants';
+import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS, MAILBOX_QUOTA } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import DomainGeneralSettings from './domain-general-settings';
+import DomainMailboxQuotaSetting from './domain-mailbox-quota-settings';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
@@ -62,6 +63,8 @@ const DomainOperations: FC = () => {
 						);
 					case GAL:
 						return <div>GAL</div>;
+					case MAILBOX_QUOTA:
+						return <DomainMailboxQuotaSetting domainInformation={domainInformation} />;
 					default:
 						return null;
 				}

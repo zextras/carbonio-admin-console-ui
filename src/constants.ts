@@ -26,3 +26,6 @@ export const CLOSED = 'closed';
 export const LOCKED = 'locked';
 export const MAINTENANCE = 'maintenance';
 export const SUSPENDED = 'suspended';
+export const ALLOW_SEND_RECEIVE = 'ALLOWSENDRECEIVE';
+export const BLOCK_SEND = 'BLOCKSEND';
+export const BLOCK_SEND_RECEIVE = 'BLOCKSENDRECEIVE';
