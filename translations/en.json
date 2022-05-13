@@ -55,6 +55,7 @@
         "log": "Log",
         "main_view": "This is a view",
         "maintenance": "Maintenance",
+        "management": "Management",
         "mx_record_information_msg": "If your MX records point to a spam-relay or any other external non-zimbra server, enter the name of that server in \"Inbound SMTP Host Name\" field.",
         "name": "Name",
         "need_help": "NEED HELP?",
@@ -75,6 +76,7 @@
         "secondary_bar_view": "This is a main view",
         "secondarybar_view": "This is a main view",
         "serverl_and_volumes": "Server & Volumes",
+        "services": "Services",
         "signature_required": "Signature information is required.",
         "snackbar": {
             "share": {
