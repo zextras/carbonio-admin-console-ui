@@ -172,7 +172,7 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 				zimbraDataSourcePollingInterval.length - 1
 			);
 			setPollingIntervalValue(
-				zimbraDataSourcePollingInterval.substr(0, zimbraDataSourcePollingInterval.length - 1)
+				zimbraDataSourcePollingInterval.substring(0, zimbraDataSourcePollingInterval.length - 1)
 			);
 			if (rangeType && rangeType !== '') {
 				const range = rangeItems.find((item: any) => item.value === rangeType);
@@ -195,7 +195,7 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 				setPollingIntervalType(range);
 			}
 			setPollingIntervalValue(
-				zimbraDataSourcePollingInterval.substr(0, zimbraDataSourcePollingInterval.length - 1)
+				zimbraDataSourcePollingInterval.substring(0, zimbraDataSourcePollingInterval.length - 1)
 			);
 		}
 		setIsDirty(false);
