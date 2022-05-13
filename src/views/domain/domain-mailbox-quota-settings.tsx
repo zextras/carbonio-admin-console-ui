@@ -19,6 +19,7 @@ import {
 import { ALLOW_SEND_RECEIVE, BLOCK_SEND, BLOCK_SEND_RECEIVE, BYTE_PER_MB } from '../../constants';
 import { modifyDomain } from '../../services/modify-domain-service';
 import { getQuotaUsage } from '../../services/get-quota-usage-service';
+import Paginig from '../components/paging';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -351,6 +352,22 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 		setZimbraDomainAggregateQuotaPolicy(it);
 	};
 
+	const firstPage = (): void => {
+		console.log('first Page');
+	};
+
+	const nextPage = (): void => {
+		console.log('next page');
+	};
+
+	const previousPage = (): void => {
+		console.log('previous');
+	};
+
+	const lastPage = (): void => {
+		console.log('lastpage');
+	};
+
 	return (
 		<Container padding={{ all: 'large' }} background="gray5">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -493,6 +510,16 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 						</Row>
 						<SettingRow>
 							<Table rows={usageQuota} headers={headers} showCheckbox={false} />
+						</SettingRow>
+						<SettingRow>
+							<Paginig
+								offset={0}
+								totalItem={100}
+								firstPage={firstPage}
+								nextPage={nextPage}
+								previousPage={previousPage}
+								lastPage={lastPage}
+							/>
 						</SettingRow>
 					</Container>
 				</Row>

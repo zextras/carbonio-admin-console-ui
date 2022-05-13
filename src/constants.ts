@@ -38,3 +38,4 @@ export const BACKUP_ROUTE_ID = 'backup';
 export const ZIMBRA_DOMAIN_NAME = 'zimbraDomainName';
 export const ZIMBRA_ID = 'zimbraId';
 export const ZIMBRA_VIRTUAL_HOSTNAME = 'zimbraVirtualHostname';
+export const FIRST_PAGE = 1;
