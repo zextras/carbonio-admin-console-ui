@@ -7,15 +7,23 @@ import React, { FC, Suspense } from 'react';
 import { Container, Text } from '@zextras/carbonio-design-system';
 import { Spinner } from '@zextras/carbonio-shell-ui';
 import { useRouteMatch, Switch, Route } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import DomainListPanel from './domain/domain-list-panel';
 import DomainDetailPanel from './domain/domain-detail-panel';
+import {
+	BACKUP_ROUTE_ID,
+	DOMAINS_ROUTE_ID,
+	STORAGES_ROUTE_ID,
+	SUBSCRIPTIONS_ROUTE_ID
+} from '../constants';
+import Subscription from './core/subscribsion/subscription';
 
 const AppView: FC = () => {
 	const { path } = useRouteMatch();
-
+	const [t] = useTranslation();
 	return (
 		<Switch>
-			<Route path={`${path}/domain`}>
+			<Route path={`${path}/${DOMAINS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container width="40%">
 						<Suspense fallback={<Spinner />}>
@@ -27,50 +35,27 @@ const AppView: FC = () => {
 					</Suspense>
 				</Container>
 			</Route>
-			<Route path={`${path}/server-and-volumes`}>
+			<Route path={`${path}/${STORAGES_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container width="40%">
-						<Text>Server and Volumes</Text>
+						<Text>{t('label.storages', 'Storages')}</Text>
 					</Container>
 					<Suspense fallback={<Spinner />}>
 						<DomainDetailPanel />
 					</Suspense>
 				</Container>
 			</Route>
-			<Route path={`${path}/certificate-item`}>
+			<Route path={`${path}/${SUBSCRIPTIONS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>Certificate Sidebar</Text>
-					</Container>
 					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
+						<Subscription />
 					</Suspense>
 				</Container>
 			</Route>
-			<Route path={`${path}/cos`}>
+			<Route path={`${path}/${BACKUP_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container width="40%">
-						<Text>COS</Text>
-					</Container>
-					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`${path}/core`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>Core</Text>
-					</Container>
-					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`${path}/features`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>Features</Text>
+						<Text>{t('label.backup', 'Backup')}</Text>
 					</Container>
 					<Suspense fallback={<Spinner />}>
 						<DomainDetailPanel />
