@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import { GAL, GENERAL_INFORMATION, GENERAL_SETTINGS, VIRTUAL_HOSTS } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
+import DomainGalSettings from './domain-gal-settings';
 import DomainGeneralSettings from './domain-general-settings';
 import DomainVirtualHosts from './domain-virtual-hosts';
 
@@ -62,7 +63,7 @@ const DomainOperations: FC = () => {
 							<DomainGeneralSettings domainInformation={domainInformation} cosList={cosList} />
 						);
 					case GAL:
-						return <div>GAL</div>;
+						return <DomainGalSettings domainInformation={domainInformation} cosList={cosList} />;
 					case VIRTUAL_HOSTS:
 						return <DomainVirtualHosts domainInformation={domainInformation} />;
 					default:
