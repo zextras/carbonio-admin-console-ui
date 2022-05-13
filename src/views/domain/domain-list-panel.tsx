@@ -19,7 +19,7 @@ import {
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useRouteMatch } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { getDomainList } from '../../services/search-domain-service';
 import {
@@ -52,6 +52,7 @@ const DomainListPanel: FC = () => {
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');
+	const [domainItem, setDomainItem] = useState<any>({});
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -80,6 +81,7 @@ const DomainListPanel: FC = () => {
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
 			setSelectedOperationItem('');
+			setDomainItem({});
 		}
 	}, [locationService]);
 
@@ -103,6 +105,7 @@ const DomainListPanel: FC = () => {
 		setIsDomainListExpand(false);
 		replaceHistory(`${DOMAINS_ROUTE_ID}/${domain?.id}/${GENERAL_SETTINGS}`);
 		setSelectedOperationItem(GENERAL_SETTINGS);
+		setDomainItem(domain);
 	}, []);
 
 	const options = useMemo(
@@ -159,11 +162,11 @@ const DomainListPanel: FC = () => {
 	const selectDomainOption = useCallback(
 		(item) => () => {
 			if (item?.domainSelected && item?.id !== GENERAL_INFORMATION) {
-				replaceHistory(`${DOMAINS_ROUTE_ID}/${searchDomainName}/${item?.id}`);
+				replaceHistory(`${DOMAINS_ROUTE_ID}/${domainItem?.id}/${item?.id}`);
 				setSelectedOperationItem(item?.id);
 			}
 		},
-		[searchDomainName]
+		[domainItem]
 	);
 
 	const items =
@@ -204,7 +207,12 @@ const DomainListPanel: FC = () => {
 							bottom="9px"
 							left="large"
 							style={{
-								'font-family': 'roboto'
+								'font-family': 'roboto',
+								display: 'block',
+								textAlign: 'left',
+								height: 'inherit',
+								padding: '3px',
+								width: 'inherit'
 							}}
 							onClick={(): void => {
 								selectedDomain(domain);

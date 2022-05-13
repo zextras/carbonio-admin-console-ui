@@ -16,6 +16,7 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
 } from '../constants';
+import Subscription from './core/subscribsion/subscription';
 
 const AppView: FC = () => {
 	const { path } = useRouteMatch();
@@ -46,11 +47,8 @@ const AppView: FC = () => {
 			</Route>
 			<Route path={`${path}/${SUBSCRIPTIONS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>{t('label.subscriptions', 'Subscriptions')}</Text>
-					</Container>
 					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
+						<Subscription />
 					</Suspense>
 				</Container>
 			</Route>

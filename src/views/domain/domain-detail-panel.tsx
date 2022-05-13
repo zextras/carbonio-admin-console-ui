@@ -7,7 +7,7 @@ import React, { FC } from 'react';
 import { Container, Padding, Text, Button } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 // import logo from '../../assets/ninja_robo.svg';
-import { Route, Switch, useParams, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import DomainHeader from './domain-header';
 import DomainOperations from './domain-detail-operation';
 
