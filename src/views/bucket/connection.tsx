@@ -56,13 +56,7 @@ const Connection: FC<{
 				</Row>
 				<Padding width="4%" />
 				<Row width="48%" mainAlignment="flex-end">
-					<Select
-						background="gray5"
-						label="Region"
-						items={regions}
-						showCheckbox={false}
-						onChange={(): any => console.log('region changed')}
-					/>
+					<Select background="gray5" label="Region" items={regions} showCheckbox={false} />
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
@@ -97,7 +91,6 @@ const Connection: FC<{
 					iconPlacement="right"
 					color="primary"
 					width="100%"
-					onClick={(): any => console.log('Verify Connector clicked')}
 				/>
 			</Row>
 		</Container>

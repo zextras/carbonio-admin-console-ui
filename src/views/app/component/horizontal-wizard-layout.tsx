@@ -267,13 +267,7 @@ export const VerticalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 
 		const wizardFooter = (
 			<Row mainAlignment="space-between" width="100%">
-				<CancelButton
-					key="wizard-cancel"
-					label={'Need Help?'}
-					type="outlined"
-					color="secondary"
-					onClick={(): any => console.log('_dd NeedHelp Clicked')}
-				/>
+				<CancelButton key="wizard-cancel" label={'Need Help?'} type="outlined" color="secondary" />
 
 				<Row mainAlignment="flex-end" takeAvailableSpace>
 					<Padding right="large">

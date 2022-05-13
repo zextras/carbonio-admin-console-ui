@@ -12,13 +12,11 @@ const BucketHeader: FC = () => {
 	const crumbs = [
 		{
 			id: 'manage',
-			label: 'Manage',
-			click: () => console.log('Breadcrumb Manage clicked')
+			label: 'Manage'
 		},
 		{
 			id: 'buckets',
-			label: 'Buckets',
-			click: () => console.log('Breadcrumb Buckets clicked')
+			label: 'Buckets'
 		}
 	];
 

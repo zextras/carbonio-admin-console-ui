@@ -13,24 +13,10 @@
         },
         "new": {
             "bucket_connection": "Bucket Connection"
-        },
-        "summary": {
-            "access_key": "Access Key",
-            "arn_name": "Arn / Name",
-            "descriptive_name": "Descriptive Name",
-            "notes": "Notes",
-            "secret_key": "Secret Key"
         }
     },
     "commons": {
         "confirm_connection": "CONFIRM CONNECTION"
-    },
-    "connection": {
-        "access_key": "Access Key",
-        "arn_name": "Arn / Name",
-        "descriptive_name": "Descriptive Name",
-        "notes": "Notes",
-        "secret_key": "Secret Key"
     },
     "create_new_bucket": "NEW BUCKET",
     "create_new_domain": "Creat New Domain",
