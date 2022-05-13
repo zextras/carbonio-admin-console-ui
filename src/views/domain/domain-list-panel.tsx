@@ -19,17 +19,19 @@ import {
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useRouteMatch } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { getDomainList } from '../../services/search-domain-service';
 import {
 	ADVANCED,
 	AUTHENTICATION,
+	DOMAINS_ROUTE_ID,
 	FREE_BUSY,
 	GAL,
 	GENERAL_INFORMATION,
 	GENERAL_SETTINGS,
 	MAILBOX_QUOTA,
+	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
 	THEME,
 	VIRTUAL_HOSTS
@@ -50,6 +52,7 @@ const DomainListPanel: FC = () => {
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');
+	const [domainItem, setDomainItem] = useState<any>({});
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -69,12 +72,16 @@ const DomainListPanel: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		if (locationService.pathname && locationService.pathname === '/manage/domain') {
+		if (
+			locationService.pathname &&
+			locationService.pathname === `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`
+		) {
 			setDomainList([]);
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
 			setSelectedOperationItem('');
+			setDomainItem({});
 		}
 	}, [locationService]);
 
@@ -96,8 +103,9 @@ const DomainListPanel: FC = () => {
 		setIsDomainSelect(true);
 		setSearchDomainName(domain?.name);
 		setIsDomainListExpand(false);
-		replaceHistory(`domain/${domain?.id}/${GENERAL_SETTINGS}`);
+		replaceHistory(`${DOMAINS_ROUTE_ID}/${domain?.id}/${GENERAL_SETTINGS}`);
 		setSelectedOperationItem(GENERAL_SETTINGS);
+		setDomainItem(domain);
 	}, []);
 
 	const options = useMemo(
@@ -154,11 +162,11 @@ const DomainListPanel: FC = () => {
 	const selectDomainOption = useCallback(
 		(item) => () => {
 			if (item?.domainSelected && item?.id !== GENERAL_INFORMATION) {
-				replaceHistory(`domain/${searchDomainName}/${item?.id}`);
+				replaceHistory(`${DOMAINS_ROUTE_ID}/${domainItem?.id}/${item?.id}`);
 				setSelectedOperationItem(item?.id);
 			}
 		},
-		[searchDomainName]
+		[domainItem]
 	);
 
 	const items =
@@ -199,7 +207,12 @@ const DomainListPanel: FC = () => {
 							bottom="9px"
 							left="large"
 							style={{
-								'font-family': 'roboto'
+								'font-family': 'roboto',
+								display: 'block',
+								textAlign: 'left',
+								height: 'inherit',
+								padding: '3px',
+								width: 'inherit'
 							}}
 							onClick={(): void => {
 								selectedDomain(domain);
