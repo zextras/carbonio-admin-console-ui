@@ -21,8 +21,9 @@ import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { ZIMBRA_DOMAIN_NAME, ZIMBRA_ID, ZIMBRA_VIRTUAL_HOSTNAME } from '../../constants';
 import { modifyDomain } from '../../services/modify-domain-service';
+import { useDomainStore } from '../../store/domain/store';
 
-const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation }) => {
+const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
 	const [selectedRows, setSelectedRows] = useState<any>([]);
 	const [addButtonDisabled, setAddButtonDisabled] = useState(true);
@@ -34,6 +35,8 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [zimbraId, setZimbraId] = useState('');
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const domainInformation = useDomainStore((state) => state.domain?.a);
+	const setDomain = useDomainStore((state) => state.setDomain);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -132,7 +135,10 @@ const DomainVirtualHosts: FC<{ domainInformation: any }> = ({ domainInformation 
 					hideButton: true,
 					replace: true
 				});
-				setIsDirty(false);
+				const domain: any = data?.Body?.ModifyDomainResponse?.domain[0];
+				if (domain) {
+					setDomain(domain);
+				}
 			})
 			.catch((error) => {
 				createSnackbar({

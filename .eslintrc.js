@@ -5,6 +5,13 @@
  */
 module.exports = {
 	extends: ['./node_modules/@zextras/carbonio-ui-configs/rules/eslint.js'],
+	settings: {
+		'import/resolver': {
+			node: {
+				extensions: ['.js', '.jsx', '.d.ts', '.ts', '.tsx']
+			}
+		}
+	},
 	plugins: ['notice'],
 	rules: {
 		'notice/notice': [

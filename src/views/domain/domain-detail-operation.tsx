@@ -19,25 +19,29 @@ import { searchDirectory } from '../../services/search-directory-service';
 import DomainGalSettings from './domain-gal-settings';
 import DomainGeneralSettings from './domain-general-settings';
 import DomainVirtualHosts from './domain-virtual-hosts';
+import { useDomainStore } from '../../store/domain/store';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
-	const [domainInformation, setDomainInformation] = useState([]);
-	const [cosList, setCosList] = useState([]);
 	const { operation, domainId }: { operation: string; domainId: string } = useParams();
+	const setDomain = useDomainStore((state) => state.setDomain);
+	const setCosList = useDomainStore((state) => state.setCosList);
 
-	const getSelectedDomainInformation = useCallback((id: any): any => {
-		getDomainInformation(id)
-			.then((response) => response.json())
-			.then((data) => {
-				const domainInfo = data?.Body?.GetDomainResponse?.domain[0]?.a;
-				if (!!data && !!domainInfo) {
-					setDomainInformation(domainInfo);
-				}
-			});
-	}, []);
+	const getSelectedDomainInformation = useCallback(
+		(id: any): any => {
+			getDomainInformation(id)
+				.then((response) => response.json())
+				.then((data) => {
+					const domain = data?.Body?.GetDomainResponse?.domain[0];
+					if (domain) {
+						setDomain(domain);
+					}
+				});
+		},
+		[setDomain]
+	);
 
-	const getClassOfService = (): any => {
+	const getClassOfService = useCallback(() => {
 		const attrs = 'cn,description';
 		const types = 'coses';
 
@@ -49,7 +53,7 @@ const DomainOperations: FC = () => {
 					setCosList(cosLists);
 				}
 			});
-	};
+	}, [setCosList]);
 
 	useEffect(() => {
 		getSelectedDomainInformation(domainId);
@@ -57,7 +61,7 @@ const DomainOperations: FC = () => {
 
 	useEffect(() => {
 		getClassOfService();
-	}, []);
+	}, [getClassOfService]);
 
 	return (
 		<>
@@ -66,15 +70,13 @@ const DomainOperations: FC = () => {
 					case GENERAL_INFORMATION:
 						return <div>{t('label.general_information', 'General Information')}</div>;
 					case GENERAL_SETTINGS:
-						return (
-							<DomainGeneralSettings domainInformation={domainInformation} cosList={cosList} />
-						);
+						return <DomainGeneralSettings />;
 					case GAL:
-						return <DomainGalSettings domainInformation={domainInformation} cosList={cosList} />;
+						return <DomainGalSettings />;
 					case AUTHENTICATION:
-						return <DomainAuthentication domainInformation={domainInformation} />;
+						return <DomainAuthentication />;
 					case VIRTUAL_HOSTS:
-						return <DomainVirtualHosts domainInformation={domainInformation} />;
+						return <DomainVirtualHosts />;
 					default:
 						return null;
 				}

@@ -186,6 +186,7 @@
         "utility_view2": "Test utility view 2",
         "utility_view3": "Test utility view 3",
         "view": "This is a view",
+        "virtual_host": "virtual host",
         "virtual_host_enable_info_msg": "Click to ADD button to enabled new one.",
         "virtual_host_info_msg": "Virtual hosts allow the system to establish a default domain for a user login.",
         "virtual_host_name": "Virtual Host Name",

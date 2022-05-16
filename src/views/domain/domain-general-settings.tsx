@@ -26,6 +26,7 @@ import { timeZoneList } from '../utility/utils';
 import {
 	ACTIVE,
 	CLOSED,
+	DOMAINS_ROUTE_ID,
 	HTTP,
 	HTTPS,
 	LOCKED,
@@ -35,9 +36,9 @@ import {
 } from '../../constants';
 import { modifyDomain } from '../../services/modify-domain-service';
 import { deleteDomain } from '../../services/delete-domain-service';
-import { getDomainList } from '../../services/search-domain-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { deleteAccount } from '../../services/delete-account-service';
+import { useDomainStore } from '../../store/domain/store';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -56,12 +57,13 @@ const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	</Row>
 );
 
-const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
-	domainInformation,
-	cosList
-}) => {
+const DomainGeneralSettings: FC = () => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
+	const cosList = useDomainStore((state) => state.cosList);
+	const domainInformation = useDomainStore((state) => state.domain?.a);
+	const setDomain = useDomainStore((state) => state.setDomain);
+	const removeDomain = useDomainStore((state) => state.removeDomain);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const serviceProtocolItems: any = useMemo(
 		() => [
@@ -445,94 +447,10 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 					hideButton: true,
 					replace: true
 				});
-				const domainInfo: any = data?.Body?.ModifyDomainResponse?.domain[0]?.a;
-
-				const obj: any = {};
-				domainInfo.map((item: any) => {
-					obj[item?.n] = item._content;
-					return '';
-				});
-				setDomainName(obj.zimbraDomainName);
-				if (obj.zimbraPrefTimeZoneId) {
-					setSelectedTimeZone(timezones.find((item) => item.value === obj.zimbraPrefTimeZoneId));
-				} else {
-					obj.zimbraPrefTimeZoneId = NOT_SET;
-					setSelectedTimeZone(timezones[0]);
+				const domain: any = data?.Body?.ModifyDomainResponse?.domain[0];
+				if (domain) {
+					setDomain(domain);
 				}
-
-				if (obj.zimbraPublicServiceProtocol) {
-					setSelectedPublicServiceProtocol(
-						serviceProtocolItems.find((item: any) => item.value === obj.zimbraPublicServiceProtocol)
-					);
-				} else {
-					obj.zimbraPublicServiceProtocol = NOT_SET;
-					setSelectedPublicServiceProtocol(serviceProtocolItems[0]);
-				}
-
-				if (obj.zimbraDomainStatus) {
-					setDomainStatus(domainStatusItems.find((item) => item.value === obj.zimbraDomainStatus));
-				} else {
-					setDomainStatus(domainStatusItems[0]);
-				}
-
-				if (obj.zimbraPublicServicePort) {
-					setZimbraPublicServicePort(obj.zimbraPublicServicePort);
-				} else {
-					obj.zimbraPublicServicePort = '';
-					setZimbraPublicServicePort('');
-				}
-
-				if (obj.zimbraDNSCheckHostname) {
-					setZimbraDNSCheckHostname(obj.zimbraDNSCheckHostname);
-				} else {
-					obj.zimbraDNSCheckHostname = '';
-					setZimbraDNSCheckHostname('');
-				}
-
-				if (obj.zimbraNotes) {
-					setZimbraNotes(obj.zimbraNotes);
-				} else {
-					obj.zimbraNotes = '';
-					setZimbraNotes('');
-				}
-
-				if (obj.zimbraHelpAdminURL) {
-					setZimbraHelpAdminURL(obj.zimbraHelpAdminURL);
-				} else {
-					obj.zimbraHelpAdminURL = '';
-					setZimbraHelpAdminURL('');
-				}
-
-				if (obj.zimbraHelpDelegatedURL) {
-					setZimbraHelpDelegatedURL(obj.zimbraHelpDelegatedURL);
-				} else {
-					obj.zimbraHelpDelegatedURL = '';
-					setZimbraHelpDelegatedURL('');
-				}
-
-				if (obj.zimbraPublicServiceHostname) {
-					setPublicServiceHostName(obj.zimbraPublicServiceHostname);
-				} else {
-					obj.zimbraPublicServiceHostname = '';
-					setPublicServiceHostName('');
-				}
-				if (obj.description) {
-					setDescription(obj.description);
-				} else {
-					obj.description = '';
-					setDescription('');
-				}
-				if (obj.zimbraDomainDefaultCOSId) {
-					const getItem = cosItems.find((item: any) => item.value === obj.zimbraDomainDefaultCOSId);
-					if (!!getItem && getItem.value) {
-						setZimbraDomainDefaultCOSId(getItem.value);
-					}
-				} else {
-					obj.zimbraDomainDefaultCOSId = '';
-					setZimbraDomainDefaultCOSId('');
-				}
-				setDomainData(obj);
-				setIsDirty(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -560,7 +478,8 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 					hideButton: true,
 					replace: true
 				});
-				replaceHistory(`/domain`);
+				removeDomain();
+				replaceHistory(`/${DOMAINS_ROUTE_ID}`);
 			});
 	};
 

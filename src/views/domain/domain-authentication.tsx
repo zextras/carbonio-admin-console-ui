@@ -18,6 +18,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { modifyDomain } from '../../services/modify-domain-service';
+import { useDomainStore } from '../../store/domain/store';
 
 const ListRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -37,7 +38,7 @@ const ZimbraAuthMethod = {
 	EXTERNAL: 'ad'
 } as const;
 
-const DomainAuthentication: FC<{ domainInformation: any }> = ({ domainInformation }) => {
+const DomainAuthentication: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [zimbraAuthMech, setZimbraAuthMech] = useState<string>('');
@@ -59,6 +60,8 @@ const DomainAuthentication: FC<{ domainInformation: any }> = ({ domainInformatio
 	const [zimbraForceClearCookies, setZimbraForceClearCookies] = useState<boolean>(false);
 	const [domainAuthData, setDomainAuthData]: any = useState({});
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const domainInformation = useDomainStore((state) => state.domain?.a);
+	const setDomain = useDomainStore((state) => state.setDomain);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -310,7 +313,10 @@ const DomainAuthentication: FC<{ domainInformation: any }> = ({ domainInformatio
 					hideButton: true,
 					replace: true
 				});
-				setIsDirty(false);
+				const domain: any = data?.Body?.ModifyDomainResponse?.domain[0];
+				if (domain) {
+					setDomain(domain);
+				}
 			})
 			.catch((error) => {
 				createSnackbar({

@@ -21,6 +21,7 @@ import { getAccount } from '../../services/get-account-service';
 import { getDatasource } from '../../services/get-datasource-service';
 import { modifyDomain } from '../../services/modify-domain-service';
 import { modifyDataSource } from '../../services/modify-datasource-service';
+import { useDomainStore } from '../../store/domain/store';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -43,12 +44,10 @@ export enum RANGE {
 	SECONDS = 's'
 }
 
-const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
-	domainInformation,
-	cosList
-}) => {
+const DomainGalSettings: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const rangeItems = useMemo(
 		() => [
 			{
@@ -86,6 +85,7 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 	const [pollingIntervalValue, setPollingIntervalValue] = useState<string>('');
 	const [pollingIntervalType, setPollingIntervalType] = useState<any>(rangeItems[0]);
 	const [dataSourceId, setDataSourceId] = useState<any>('');
+	const setDomain = useDomainStore((state) => state.setDomain);
 
 	const getGalAccount = (accountId: string): void => {
 		getAccount(accountId)
@@ -231,6 +231,10 @@ const DomainGalSettings: FC<{ domainInformation: any; cosList: any }> = ({
 		Promise.all(requests)
 			.then((results) => Promise.all(results.map((r) => r.json())))
 			.then((results) => {
+				const domain: any = results[0]?.Body?.ModifyDomainResponse?.domain[0];
+				if (domain) {
+					setDomain(domain);
+				}
 				setIsDirty(false);
 				createSnackbar({
 					key: 'success',
