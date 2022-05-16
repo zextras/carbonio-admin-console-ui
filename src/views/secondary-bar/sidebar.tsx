@@ -11,6 +11,7 @@ import { useLocation } from 'react-router-dom';
 import MatomoTracker from '../../matomo-tracker';
 import {
 	BACKUP_ROUTE_ID,
+	BUCKET_ROUTE_ID,
 	DOMAINS_ROUTE_ID,
 	MANAGE_APP_ID,
 	STORAGES_ROUTE_ID,
@@ -45,6 +46,13 @@ const SidebarView: FC = () => {
 				label: t('label.domains', 'Domains'),
 				icon: 'At',
 				trackView: 'Domains'
+			},
+			{
+				id: 'buckets',
+				route: BUCKET_ROUTE_ID,
+				label: t('label.buckets', 'Buckets'),
+				icon: 'bucket-outline',
+				trackView: 'Buckets'
 			},
 			{
 				id: 'storages',
