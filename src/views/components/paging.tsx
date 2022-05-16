@@ -30,7 +30,9 @@ const Paginig: FC<{
 		setCurrentPage(page);
 		setIsPreviousPageDisabled(false);
 		setIsFirstPageDisabled(false);
-		nextPage(page);
+		if (nextPage) {
+			nextPage(page);
+		}
 	};
 
 	const onPreviousPage = (): void => {
@@ -41,17 +43,23 @@ const Paginig: FC<{
 			setIsNextPageDisabled(false);
 			setIsLastPageDisabled(false);
 		}
-		previousPage(page);
+		if (previousPage) {
+			previousPage(page);
+		}
 	};
 
 	const onLastPage = (): void => {
 		setCurrentPage(totalPages);
-		lastPage(totalPages);
+		if (lastPage) {
+			lastPage(totalPages);
+		}
 	};
 
 	const onFirstPage = (): void => {
 		setCurrentPage(FIRST_PAGE);
-		firstPage(FIRST_PAGE);
+		if (firstPage) {
+			firstPage(FIRST_PAGE);
+		}
 	};
 
 	useEffect(() => {
@@ -71,7 +79,7 @@ const Paginig: FC<{
 	}, [currentPage, totalPages, setOffset, pageSize]);
 
 	return (
-		<Container orientation="horizontal" width="fill">
+		<Container orientation="horizontal" crossAlignment="center" mainAlignment="flex-start">
 			<IconButton
 				size="large"
 				icon="GoFirstOutLine"
@@ -108,14 +116,14 @@ const Paginig: FC<{
 				icon="ChevronRight"
 				iconColor="primary"
 				onClick={onNextPage}
-				disabled={isNextPageDisabled}
+				disabled={isNextPageDisabled || currentPage === totalPages}
 			/>
 			<IconButton
 				size="large"
 				icon="GoFirstOutLine"
 				iconColor="primary"
 				onClick={onLastPage}
-				disabled={isLastPageDisabled}
+				disabled={isLastPageDisabled || currentPage === totalPages}
 			/>
 		</Container>
 	);

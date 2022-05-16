@@ -421,6 +421,85 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
+						<Container padding={{ all: 'small' }}>
+							<Row
+								takeAvwidth="fill"
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ all: 'small' }}
+							>
+								<Text size="small" weight="bold">
+									{t('label.domain_quota_settings', 'Domain Quota Settings')}
+								</Text>
+							</Row>
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('domain.domain_space_byte', 'Domain Space (Byte)')}
+										value={zimbraMailDomainQuota}
+										defaultValue={zimbraMailDomainQuota}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraMailDomainQuota(e.target.value);
+										}}
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('domain.aggregated_domain_space', 'Aggregated Domain Space (Byte)')}
+										value={zimbraDomainAggregateQuota}
+										defaultValue={zimbraDomainAggregateQuota}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraDomainAggregateQuota(e.target.value);
+										}}
+									/>
+								</Container>
+							</SettingRow>
+
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t(
+											'domain.warn_when_reach_space_quota',
+											'Warn me when I reach this aggregated space quota'
+										)}
+										value={zimbraDomainAggregateQuotaWarnPercent}
+										defaultValue={zimbraDomainAggregateQuotaWarnPercent}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
+										}}
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('domain.send_the_warning_to', 'Send the warning to')}
+										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
+										defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
+										}}
+									/>
+								</Container>
+							</SettingRow>
+
+							<SettingRow>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										items={quotaPolicy}
+										background="gray5"
+										label={t('label.aggrigated_space_criteria', 'Aggregated Space Criteria')}
+										showCheckbox={false}
+										selection={zimbraDomainAggregateQuotaPolicy}
+										onChange={onZimbraDomainAggregateQuotaPolicy}
+									/>
+								</Container>
+							</SettingRow>
+						</Container>
+
 						<Row
 							takeAvwidth="fill"
 							mainAlignment="flex-start"
@@ -429,100 +508,26 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 							padding={{ left: 'large', top: 'large' }}
 						>
 							<Text size="small" weight="bold">
-								{t('label.domain_quota_settings', 'Domain Quota Settings')}
-							</Text>
-						</Row>
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('domain.domain_space_byte', 'Domain Space (Byte)')}
-									value={zimbraMailDomainQuota}
-									defaultValue={zimbraMailDomainQuota}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraMailDomainQuota(e.target.value);
-									}}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('domain.aggregated_domain_space', 'Aggregated Domain Space (Byte)')}
-									value={zimbraDomainAggregateQuota}
-									defaultValue={zimbraDomainAggregateQuota}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraDomainAggregateQuota(e.target.value);
-									}}
-								/>
-							</Container>
-						</SettingRow>
-
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t(
-										'domain.warn_when_reach_space_quota',
-										'Warn me when I reach this aggregated space quota'
-									)}
-									value={zimbraDomainAggregateQuotaWarnPercent}
-									defaultValue={zimbraDomainAggregateQuotaWarnPercent}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
-									}}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('domain.send_the_warning_to', 'Send the warning to')}
-									value={zimbraDomainAggregateQuotaWarnEmailRecipient}
-									defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
-									background="gray5"
-									onChange={(e: any): any => {
-										setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
-									}}
-								/>
-							</Container>
-						</SettingRow>
-
-						<SettingRow>
-							<Container padding={{ all: 'small' }}>
-								<Select
-									items={quotaPolicy}
-									background="gray5"
-									label={t('label.aggrigated_space_criteria', 'Aggregated Space Criteria')}
-									showCheckbox={false}
-									selection={zimbraDomainAggregateQuotaPolicy}
-									onChange={onZimbraDomainAggregateQuotaPolicy}
-								/>
-							</Container>
-						</SettingRow>
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							width="100%"
-							background="gray6"
-							padding={{ left: 'large', top: 'large', bottom: 'large' }}
-						>
-							<Text size="small" weight="bold">
 								{t('label.accounts', 'Accounts')}
 							</Text>
 						</Row>
-						<SettingRow>
-							<Table rows={usageQuota} headers={headers} showCheckbox={false} />
-						</SettingRow>
-						<Row
-							orientation="horizontal"
-							mainAlignment="space-between"
-							crossAlignment="flex-start"
-							width="fill"
-							padding={{ left: 'large', right: 'large', top: 'large' }}
-						>
-							<Divider />
-						</Row>
-						<Row orientation="horizontal">
-							<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-						</Row>
+						<Container padding={{ all: 'large' }}>
+							<SettingRow>
+								<Table rows={usageQuota} headers={headers} showCheckbox={false} />
+							</SettingRow>
+							<Row
+								orientation="horizontal"
+								mainAlignment="space-between"
+								crossAlignment="flex-start"
+								width="fill"
+								padding={{ top: 'medium' }}
+							>
+								<Divider />
+							</Row>
+							<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
+								<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+							</Row>
+						</Container>
 					</Container>
 				</Row>
 			</Container>
