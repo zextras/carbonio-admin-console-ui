@@ -5,7 +5,7 @@
  */
 import React, { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, IconButton } from '@zextras/carbonio-design-system';
+import { Container, IconButton, Text, Row } from '@zextras/carbonio-design-system';
 import { FIRST_PAGE } from '../../constants';
 
 const Paginig: FC<{
@@ -71,7 +71,7 @@ const Paginig: FC<{
 	}, [currentPage, totalPages, setOffset, pageSize]);
 
 	return (
-		<Container orientation="horizontal" crossAlignment="center" width="fill">
+		<Container orientation="horizontal" width="fill">
 			<IconButton
 				size="large"
 				icon="GoFirstOutLine"
@@ -86,7 +86,23 @@ const Paginig: FC<{
 				onClick={onPreviousPage}
 				disabled={isPreviousPageDisabled}
 			/>
-			{currentPage} {t('label.of', 'of')} {totalPages}
+
+			<Text size="medium" weight="bold" color="#828282" orientation="horizontal">
+				<span
+					style={{
+						color: '#414141',
+						width: '41px',
+						height: '23px',
+						textAlign: 'center',
+						display: 'inline-block',
+						background: '#F5F6F8'
+					}}
+				>
+					{currentPage}
+				</span>{' '}
+				{t('label.of', 'of')} {totalPages}
+			</Text>
+
 			<IconButton
 				size="large"
 				icon="ChevronRight"

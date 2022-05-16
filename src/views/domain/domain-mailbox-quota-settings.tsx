@@ -14,7 +14,8 @@ import {
 	Button,
 	Padding,
 	SnackbarManagerContext,
-	Table
+	Table,
+	Divider
 } from '@zextras/carbonio-design-system';
 import { ALLOW_SEND_RECEIVE, BLOCK_SEND, BLOCK_SEND_RECEIVE, BYTE_PER_MB } from '../../constants';
 import { modifyDomain } from '../../services/modify-domain-service';
@@ -509,9 +510,18 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 						<SettingRow>
 							<Table rows={usageQuota} headers={headers} showCheckbox={false} />
 						</SettingRow>
-						<SettingRow>
+						<Row
+							orientation="horizontal"
+							mainAlignment="space-between"
+							crossAlignment="flex-start"
+							width="fill"
+							padding={{ left: 'large', right: 'large', top: 'large' }}
+						>
+							<Divider />
+						</Row>
+						<Row orientation="horizontal">
 							<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-						</SettingRow>
+						</Row>
 					</Container>
 				</Row>
 			</Container>
