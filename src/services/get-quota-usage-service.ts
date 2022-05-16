@@ -6,16 +6,16 @@
 
 export const getQuotaUsage = async (
 	domainName: string,
-	propSortBy?: string,
-	offset?: string,
-	limit?: string
+	offset?: number,
+	limit?: number,
+	propSortBy?: string
 ): Promise<any> => {
 	const request: any = {
 		GetQuotaUsageRequest: {
 			_jsns: 'urn:zimbraAdmin',
 			sortBy: propSortBy || 'totalUsed',
-			offset: offset || '0',
-			limit: limit || '50',
+			offset: offset || 0,
+			limit: limit || 50,
 			refresh: '1',
 			domain: domainName,
 			allServers: '1'

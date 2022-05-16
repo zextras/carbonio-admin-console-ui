@@ -9,46 +9,49 @@ import { Container, IconButton } from '@zextras/carbonio-design-system';
 import { FIRST_PAGE } from '../../constants';
 
 const Paginig: FC<{
-	offset: number;
 	totalItem: any;
-	firstPage: any;
-	lastPage: any;
-	nextPage: any;
-	previousPage: any;
-}> = ({ offset, totalItem, firstPage, lastPage, nextPage, previousPage }) => {
+	firstPage?: any;
+	lastPage?: any;
+	nextPage?: any;
+	previousPage?: any;
+	setOffset?: any;
+	pageSize?: number;
+}> = ({ totalItem, firstPage, lastPage, nextPage, previousPage, setOffset, pageSize = 10 }) => {
 	const [t] = useTranslation();
-	const pageSize = 10;
 	const totalPages = Math.ceil(totalItem / pageSize);
-	const [currentPage, setCurrentPage] = useState(FIRST_PAGE);
+	const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
 	const [isNextPageDisabled, setIsNextPageDisabled] = useState(false);
 	const [isPreviousPageDisabled, setIsPreviousPageDisabled] = useState(false);
 	const [isFirstPageDisabled, setIsFirstPageDisabled] = useState(false);
 	const [isLastPageDisabled, setIsLastPageDisabled] = useState(false);
 
 	const onNextPage = (): void => {
-		setCurrentPage(currentPage + 1);
+		const page = currentPage + 1;
+		setCurrentPage(page);
 		setIsPreviousPageDisabled(false);
 		setIsFirstPageDisabled(false);
-		nextPage();
+		nextPage(page);
 	};
 
 	const onPreviousPage = (): void => {
+		let page = currentPage;
 		if (currentPage !== 1) {
-			setCurrentPage(currentPage - 1);
+			page = currentPage - 1;
+			setCurrentPage(page);
 			setIsNextPageDisabled(false);
 			setIsLastPageDisabled(false);
 		}
-		previousPage();
+		previousPage(page);
 	};
 
 	const onLastPage = (): void => {
 		setCurrentPage(totalPages);
-		lastPage();
+		lastPage(totalPages);
 	};
 
 	const onFirstPage = (): void => {
 		setCurrentPage(FIRST_PAGE);
-		firstPage();
+		firstPage(FIRST_PAGE);
 	};
 
 	useEffect(() => {
@@ -64,13 +67,14 @@ const Paginig: FC<{
 			setIsFirstPageDisabled(true);
 			setIsLastPageDisabled(false);
 		}
-	}, [currentPage, totalPages]);
+		setOffset(currentPage * pageSize - pageSize);
+	}, [currentPage, totalPages, setOffset, pageSize]);
 
 	return (
 		<Container orientation="horizontal" crossAlignment="center" width="fill">
 			<IconButton
 				size="large"
-				icon="ArrowheadLeftOutline"
+				icon="GoFirstOutLine"
 				iconColor="primary"
 				onClick={onFirstPage}
 				disabled={isFirstPageDisabled}
@@ -92,7 +96,7 @@ const Paginig: FC<{
 			/>
 			<IconButton
 				size="large"
-				icon="ArrowheadRightOutline"
+				icon="GoFirstOutLine"
 				iconColor="primary"
 				onClick={onLastPage}
 				disabled={isLastPageDisabled}

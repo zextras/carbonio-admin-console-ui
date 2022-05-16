@@ -68,14 +68,14 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 				bold: true
 			},
 			{
-				id: 'mailsize',
-				label: t('label.mail_size', 'Mail Size'),
+				id: 'mailboxsize',
+				label: t('label.mail_size', 'Mailbox Size'),
 				width: '20%',
 				bold: true
 			},
 			{
-				id: 'availablesize',
-				label: t('label.available_space', 'Available Space'),
+				id: 'quota',
+				label: t('label.quota_used', 'Quota / Quota used'),
 				width: '20%',
 				bold: true
 			}
@@ -103,15 +103,21 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 	});
 	const [usageQuota, setUsageQuota] = useState<any[]>([]);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [offset, setOffset] = useState<number>(0);
+	const [limit, setLimit] = useState<number>(10);
+	const [totalAccount, setTotalAccount] = useState<number>(0);
 
 	const getQuotaUsageInformation = useCallback(
 		(domainName: string): void => {
-			getQuotaUsage(domainName)
+			getQuotaUsage(domainName, offset, limit)
 				.then((response) => response.json())
 				.then((data) => {
 					const usedQuota: any = data?.Body?.GetQuotaUsageResponse?.account;
 					if (usedQuota && Array.isArray(usedQuota)) {
 						const quota: any = [];
+						if (data?.Body?.GetQuotaUsageResponse?.searchTotal) {
+							setTotalAccount(data?.Body?.GetQuotaUsageResponse?.searchTotal);
+						}
 						usedQuota.map((item: any): any => {
 							let diskUsed: any = 0;
 							let quotaLimit: any = 0;
@@ -146,7 +152,7 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 										{diskUsed}
 									</Text>,
 									<Text size="medium" weight="bold" key={item?.id} color="#828282">
-										{`${quotaLimit} (${percentage})`}
+										{`${quotaLimit} / ${percentage}`}
 									</Text>
 								]
 							});
@@ -156,17 +162,19 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 					}
 				});
 		},
-		[t]
+		[t, offset, limit]
 	);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
+			setOffset(0);
+			setTotalAccount(0);
+			setUsageQuota([]);
 			domainInformation.map((item: any) => {
 				obj[item?.n] = item._content;
 				return '';
 			});
-			getQuotaUsageInformation(obj.zimbraDomainName);
 			if (obj.zimbraMailDomainQuota) {
 				setZimbraMailDomainQuota(obj.zimbraMailDomainQuota);
 			} else {
@@ -210,7 +218,7 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 			setDomainData(obj);
 			setIsDirty(false);
 		}
-	}, [domainInformation, quotaPolicy, getQuotaUsageInformation]);
+	}, [domainInformation, quotaPolicy]);
 
 	useEffect(() => {
 		if (domainData.zimbraMailDomainQuota !== zimbraMailDomainQuota) {
@@ -352,21 +360,11 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 		setZimbraDomainAggregateQuotaPolicy(it);
 	};
 
-	const firstPage = (): void => {
-		console.log('first Page');
-	};
-
-	const nextPage = (): void => {
-		console.log('next page');
-	};
-
-	const previousPage = (): void => {
-		console.log('previous');
-	};
-
-	const lastPage = (): void => {
-		console.log('lastpage');
-	};
+	useEffect(() => {
+		if (domainData.zimbraDomainName) {
+			getQuotaUsageInformation(domainData.zimbraDomainName);
+		}
+	}, [domainData, offset, getQuotaUsageInformation]);
 
 	return (
 		<Container padding={{ all: 'large' }} background="gray5">
@@ -512,14 +510,7 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 							<Table rows={usageQuota} headers={headers} showCheckbox={false} />
 						</SettingRow>
 						<SettingRow>
-							<Paginig
-								offset={0}
-								totalItem={100}
-								firstPage={firstPage}
-								nextPage={nextPage}
-								previousPage={previousPage}
-								lastPage={lastPage}
-							/>
+							<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 						</SettingRow>
 					</Container>
 				</Row>

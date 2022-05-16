@@ -149,6 +149,7 @@
         "public_service_hostname": "Public Service Host Name",
         "public_service_port": "Public Service Port",
         "public_service_protocol": "Public Service Protocol",
+        "quota_used": "Quota / Quota used",
         "remove": "Remove",
         "save": "Save",
         "search_base": "Search Base",
