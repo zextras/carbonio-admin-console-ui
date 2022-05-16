@@ -159,6 +159,7 @@ const DomainMailboxQuotaSetting: FC<{ domainInformation: any }> = ({ domainInfor
 							});
 							return '';
 						});
+						setUsageQuota([]);
 						setUsageQuota(quota);
 					}
 				});
