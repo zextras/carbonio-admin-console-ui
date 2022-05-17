@@ -600,23 +600,13 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 					background="gray6"
 					height="58px"
 				>
-					<Row orientation="horizontal" width="100%">
-						<Row
-							padding={{ all: 'small' }}
-							mainAlignment="flex-start"
-							width="50%"
-							crossAlignment="flex-start"
-						>
+					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
 								{t('domain.general_settings', 'General Settings')}
 							</Text>
 						</Row>
-						<Row
-							padding={{ all: 'small' }}
-							width="50%"
-							mainAlignment="flex-end"
-							crossAlignment="flex-end"
-						>
+						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Padding right="small">
 								{isDirty && (
 									<Button
@@ -633,6 +623,15 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 					</Row>
 				</Container>
 			</Row>
+			<Row
+				orientation="horizontal"
+				width="100%"
+				padding={{ left: 'large', right: 'large' }}
+				background="gray6"
+			>
+				<Divider />
+			</Row>
+
 			<Container
 				orientation="column"
 				crossAlignment="flex-start"
@@ -654,7 +653,12 @@ const DomainGeneralSettings: FC<{ domainInformation: any; cosList: any }> = ({
 					</Container>
 				) : (
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-						<Container height="fit" crossAlignment="flex-start" background="gray6" className="ff">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ left: 'small', right: 'small' }}
+						>
 							<SettingRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
