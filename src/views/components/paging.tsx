@@ -82,7 +82,7 @@ const Paginig: FC<{
 		<Container orientation="horizontal" crossAlignment="center" mainAlignment="flex-start">
 			<IconButton
 				size="large"
-				icon="GoFirstOutLine"
+				icon="ArrowheadLeft"
 				iconColor="primary"
 				onClick={onFirstPage}
 				disabled={isFirstPageDisabled}
@@ -120,7 +120,7 @@ const Paginig: FC<{
 			/>
 			<IconButton
 				size="large"
-				icon="GoFirstOutLine"
+				icon="ArrowheadRight"
 				iconColor="primary"
 				onClick={onLastPage}
 				disabled={isLastPageDisabled || currentPage === totalPages}
