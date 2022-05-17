@@ -22,6 +22,7 @@ import _ from 'lodash';
 import { ZIMBRA_DOMAIN_NAME, ZIMBRA_ID, ZIMBRA_VIRTUAL_HOSTNAME } from '../../constants';
 import { modifyDomain } from '../../services/modify-domain-service';
 import { useDomainStore } from '../../store/domain/store';
+import logo from '../../assets/helmet_logo.svg';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -286,13 +287,18 @@ const DomainVirtualHosts: FC = () => {
 							}}
 						/>
 						{items.length === 0 && (
-							<Container background="gray6" mainAlignment="center" crossAlignment="center">
-								<Padding vertical="large" width="100%">
+							<Container
+								background="gray6"
+								height="fit-content"
+								mainAlignment="center"
+								crossAlignment="center"
+							>
+								<Padding value="57px 0 0 0" width="100%">
 									<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-										{/* <img src={logo} alt="logo" /> */}
+										<img src={logo} alt="logo" />
 									</Row>
 								</Padding>
-								<Padding vertical="large" width="100%">
+								<Padding vertical="extralarge" width="100%">
 									<Row takeAvwidth="fill" mainAlignment="center" width="100%">
 										<Text size="large" color="secondary" weight="regular">
 											{t('label.no_virtual_host_msg', 'There aren’t virtual hosts here.')}
