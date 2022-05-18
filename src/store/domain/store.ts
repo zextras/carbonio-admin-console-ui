@@ -20,8 +20,8 @@ export const useDomainStore = create<DomainState>(
 	devtools((set) => ({
 		domain: {},
 		cosList: [],
-		setDomain: (domain): void => set({ domain }),
-		setCosList: (cosList): void => set({ cosList }),
+		setDomain: (domain): void => set({ domain }, false, 'setDomain'),
+		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
 			set(
 				produce((state) => {
