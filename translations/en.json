@@ -122,6 +122,7 @@
         "discard_changes": "DISCARD CHANGES",
         "domain_quota_settings": "Domain Quota Settings",
         "domains": "Domains",
+        "enable_start_tls": "Enable StartTLS",
         "example_new": "New Example",
         "external": "External",
         "external_active_directory": "External Active Directory",
