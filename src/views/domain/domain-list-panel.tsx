@@ -136,23 +136,8 @@ const DomainListPanel: FC = () => {
 				domainSelected: isDomainSelect
 			},
 			{
-				id: ADVANCED,
-				name: t('domain.advanced', 'Advanced'),
-				domainSelected: isDomainSelect
-			},
-			{
-				id: FREE_BUSY,
-				name: t('domain.free_busy', 'Free/Busy'),
-				domainSelected: isDomainSelect
-			},
-			{
 				id: MAILBOX_QUOTA,
 				name: t('domain.mailbox_quota', 'Mailbox Quota'),
-				domainSelected: isDomainSelect
-			},
-			{
-				id: THEME,
-				name: t('domain.theme', 'Theme'),
 				domainSelected: isDomainSelect
 			}
 		],
@@ -298,13 +283,7 @@ const DomainListPanel: FC = () => {
 				</Dropdown>
 			</Row>
 			<Container crossAlignment="flex-start" mainAlignment="flex-start">
-				<List
-					items={options}
-					ItemComponent={ListItem}
-					activeBackground="highlight"
-					active={selectedOperationItem}
-					selectedBackground="highlight"
-				/>
+				<List items={options} ItemComponent={ListItem} active={selectedOperationItem} />
 			</Container>
 		</Container>
 	);
