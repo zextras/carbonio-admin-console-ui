@@ -10,8 +10,6 @@ import {
 	Icon,
 	Row,
 	Padding,
-	List,
-	Divider,
 	Text,
 	Dropdown
 } from '@zextras/carbonio-design-system';
@@ -19,23 +17,33 @@ import {
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { useLocation, useRouteMatch } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { debounce } from 'lodash';
 import { getDomainList } from '../../services/search-domain-service';
 import {
-	ADVANCED,
+	ACCOUNTS,
+	ACCOUNT_SCAN,
+	ACTIVE_SYNC,
+	ADMIN_DELEGATES,
 	AUTHENTICATION,
 	DOMAINS_ROUTE_ID,
-	FREE_BUSY,
+	DOMAIN_DETAIL_VIEW,
+	DOMAIN_MANAGE_VIEW,
+	EXPORT_DOMAIN,
 	GAL,
 	GENERAL_INFORMATION,
 	GENERAL_SETTINGS,
 	MAILBOX_QUOTA,
+	MAILING_LIST,
 	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
-	THEME,
+	RESOURCES,
+	RESTORE_ACCOUNT,
+	RESTORE_DELETED_EMAIL,
 	VIRTUAL_HOSTS
 } from '../../constants';
+import { useDomainStore } from '../../store/domain/store';
+import DomainListItems from './domain-list-items';
 
 const SelectItem = styled(Row)``;
 
@@ -49,10 +57,13 @@ const DomainListPanel: FC = () => {
 	const locationService = useLocation();
 	const [isDomainListExpand, setIsDomainListExpand] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
+	const [domainId, setDomainId] = useState('');
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const [selectedOperationItem, setSelectedOperationItem] = useState('');
-	const [domainItem, setDomainItem] = useState<any>({});
+	const [selectedDetailOperationItem, setSelectedDetailOperationItem] = useState('');
+	const [selectedManageOperationItem, setSelectedManageOperationItem] = useState('');
+	const domainView = useDomainStore((state) => state.domainView);
+	const setDomain = useDomainStore((state) => state.setDomain);
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -80,10 +91,12 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setSelectedOperationItem('');
-			setDomainItem({});
+			setSelectedDetailOperationItem('');
+			setSelectedManageOperationItem('');
+			setDomainId('');
+			setDomain({});
 		}
-	}, [locationService]);
+	}, [locationService, setDomain]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchDomainCall = useCallback(
@@ -103,12 +116,37 @@ const DomainListPanel: FC = () => {
 		setIsDomainSelect(true);
 		setSearchDomainName(domain?.name);
 		setIsDomainListExpand(false);
-		replaceHistory(`${DOMAINS_ROUTE_ID}/${domain?.id}/${GENERAL_SETTINGS}`);
-		setSelectedOperationItem(GENERAL_SETTINGS);
-		setDomainItem(domain);
+		setDomainId(domain?.id);
+		setSelectedDetailOperationItem(GENERAL_SETTINGS);
+		setSelectedManageOperationItem(ACCOUNTS);
 	}, []);
 
-	const options = useMemo(
+	useEffect(() => {
+		if (isDomainSelect && domainId) {
+			if (domainView === DOMAIN_DETAIL_VIEW) {
+				if (selectedDetailOperationItem) {
+					replaceHistory(`${DOMAINS_ROUTE_ID}/${domainId}/${selectedDetailOperationItem}`);
+				} else {
+					replaceHistory(`${DOMAINS_ROUTE_ID}/${domainId}/${GENERAL_SETTINGS}`);
+				}
+			}
+			if (domainView === DOMAIN_MANAGE_VIEW) {
+				if (selectedManageOperationItem) {
+					replaceHistory(`${DOMAINS_ROUTE_ID}/${domainId}/${selectedManageOperationItem}`);
+				} else {
+					replaceHistory(`${DOMAINS_ROUTE_ID}/${domainId}/${ACCOUNTS}`);
+				}
+			}
+		}
+	}, [
+		isDomainSelect,
+		domainId,
+		domainView,
+		selectedDetailOperationItem,
+		selectedManageOperationItem
+	]);
+
+	const detailOptions = useMemo(
 		() => [
 			{
 				id: GENERAL_INFORMATION,
@@ -144,14 +182,55 @@ const DomainListPanel: FC = () => {
 		[t, isDomainSelect]
 	);
 
-	const selectDomainOption = useCallback(
-		(item) => () => {
-			if (item?.domainSelected && item?.id !== GENERAL_INFORMATION) {
-				replaceHistory(`${DOMAINS_ROUTE_ID}/${domainItem?.id}/${item?.id}`);
-				setSelectedOperationItem(item?.id);
+	const manageOptions = useMemo(
+		() => [
+			{
+				id: ACCOUNTS,
+				name: t('domain.accounts', 'Accounts'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: MAILING_LIST,
+				name: t('domain.mailing_list', 'Mailing List'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: RESOURCES,
+				name: t('domain.resources', 'Resources'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: ADMIN_DELEGATES,
+				name: t('domain.admin_delegates', 'Admin Delegates'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: ACTIVE_SYNC,
+				name: t('domain.active_sync', 'ActiveSync'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: ACCOUNT_SCAN,
+				name: t('domain.account_scan', 'AccountScan'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: EXPORT_DOMAIN,
+				name: t('domain.export_domain', 'Export Domain'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: RESTORE_ACCOUNT,
+				name: t('domain.restore_account', 'Restore Account'),
+				domainSelected: isDomainSelect
+			},
+			{
+				id: RESTORE_DELETED_EMAIL,
+				name: t('domain.restore_deleted_email', 'Restore Deleted E-mail'),
+				domainSelected: isDomainSelect
 			}
-		},
-		[domainItem]
+		],
+		[t, isDomainSelect]
 	);
 
 	const items =
@@ -208,46 +287,6 @@ const DomainListPanel: FC = () => {
 					)
 			  }));
 
-	const ListItem: FC<{
-		visible: any;
-		active: boolean;
-		item: any;
-		selected: boolean;
-		selecting: any;
-		background: any;
-		selectedBackground: any;
-		activeBackground: any;
-	}> = ({
-		visible,
-		active,
-		item,
-		selected,
-		selecting,
-		background,
-		selectedBackground,
-		activeBackground
-	}) => (
-		<Container
-			height={55}
-			orientation="vertical"
-			mainAlignment="flex-start"
-			width="100%"
-			onClick={selectDomainOption(item)}
-		>
-			<Container padding={{ all: 'small' }} orientation="horizontal" mainAlignment="flex-start">
-				<Padding horizontal="small">
-					<Text
-						color={item?.domainSelected ? '#414141' : 'rgba(204, 204, 204, 1)'}
-						weight={item?.id === selectedOperationItem ? 'bold' : 'regular'}
-					>
-						{item.name}
-					</Text>
-				</Padding>
-			</Container>
-			<Divider />
-		</Container>
-	);
-
 	return (
 		<Container orientation="column" crossAlignment="flex-start" mainAlignment="flex-start">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -282,9 +321,19 @@ const DomainListPanel: FC = () => {
 					/>
 				</Dropdown>
 			</Row>
-			<Container crossAlignment="flex-start" mainAlignment="flex-start">
-				<List items={options} ItemComponent={ListItem} active={selectedOperationItem} />
-			</Container>
+			<DomainListItems
+				items={domainView === DOMAIN_DETAIL_VIEW ? detailOptions : manageOptions}
+				selectedOperationItem={
+					domainView === DOMAIN_DETAIL_VIEW
+						? selectedDetailOperationItem
+						: selectedManageOperationItem
+				}
+				setSelectedOperationItem={
+					domainView === DOMAIN_DETAIL_VIEW
+						? setSelectedDetailOperationItem
+						: setSelectedManageOperationItem
+				}
+			/>
 		</Container>
 	);
 };

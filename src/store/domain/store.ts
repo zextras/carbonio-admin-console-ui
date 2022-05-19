@@ -7,19 +7,23 @@ import create from 'zustand';
 import produce from 'immer';
 import { devtools } from 'zustand/middleware';
 import { Cos, Domain } from '../../../types';
+import { DOMAIN_DETAIL_VIEW } from '../../constants';
 
 type DomainState = {
 	domain: Domain;
 	cosList: Array<Cos>;
+	domainView: string;
 	setDomain: (domain: Domain) => void;
 	setCosList: (cosList: Array<Cos>) => void;
 	removeDomain: () => void;
+	setDomainView: (domainView: string) => void;
 };
 
 export const useDomainStore = create<DomainState>(
 	devtools((set) => ({
 		domain: {},
 		cosList: [],
+		domainView: DOMAIN_DETAIL_VIEW,
 		setDomain: (domain): void => set({ domain }, false, 'setDomain'),
 		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
@@ -27,6 +31,14 @@ export const useDomainStore = create<DomainState>(
 				produce((state) => {
 					state.domain = {};
 				})
+			),
+		setDomainView: (domainView): void =>
+			set(
+				produce((state) => {
+					state.domainView = domainView;
+				}),
+				false,
+				'setDomainView'
 			)
 	}))
 );
