@@ -36,6 +36,7 @@ import {
 	THEME,
 	VIRTUAL_HOSTS
 } from '../../constants';
+import { useDomainStore } from '../../store/domain/store';
 
 const SelectItem = styled(Row)``;
 
@@ -53,6 +54,7 @@ const DomainListPanel: FC = () => {
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');
 	const [domainItem, setDomainItem] = useState<any>({});
+	const domainInformation = useDomainStore((state) => state.domain);
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -70,6 +72,15 @@ const DomainListPanel: FC = () => {
 	useEffect(() => {
 		getDomainLists('');
 	}, []);
+
+	useEffect(() => {
+		if (domainInformation?.name) {
+			setSearchDomainName(domainInformation?.name);
+			setIsDomainSelect(true);
+			setIsDomainListExpand(false);
+			setSelectedOperationItem(GENERAL_SETTINGS);
+		}
+	}, [domainInformation]);
 
 	useEffect(() => {
 		if (
