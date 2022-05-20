@@ -86,6 +86,7 @@ const DomainGalSettings: FC = () => {
 	const [pollingIntervalType, setPollingIntervalType] = useState<any>(rangeItems[0]);
 	const [dataSourceId, setDataSourceId] = useState<any>('');
 	const setDomain = useDomainStore((state) => state.setDomain);
+	const [dataSourceName, setDataSourceName] = useState<string>('');
 
 	const getGalAccount = (accountId: string): void => {
 		getAccount(accountId)
@@ -120,8 +121,12 @@ const DomainGalSettings: FC = () => {
 					if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourcePollingInterval) {
 						setZimbraDataSourcePollingInterval(dataSource?._attrs?.zimbraDataSourcePollingInterval);
 					}
+					if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourceName) {
+						setDataSourceName(dataSource?._attrs?.zimbraDataSourceName);
+					}
 				} else {
 					setZimbraDataSourcePollingInterval('');
+					setDataSourceName('');
 				}
 			});
 	};
@@ -131,6 +136,7 @@ const DomainGalSettings: FC = () => {
 			setZimbraGalAccountId('');
 			setZimbraGalAccountName('');
 			setZimbraDataSourcePollingInterval('');
+			setDataSourceName('');
 			const obj: any = {};
 			domainInformation.map((item: any) => {
 				obj[item?.n] = item._content;
@@ -401,11 +407,7 @@ const DomainGalSettings: FC = () => {
 										<Container padding={{ all: 'small' }}>
 											<Input
 												label={t('domain.source_name_internal_gal', 'Source Name of internal GAL')}
-												value={
-													!domainData?.zimbraGalMode && domainData?.zimbraGalMode === 'zimbra'
-														? t('label.internal_gal', 'InternalGAL')
-														: t('label.external_gal', 'ExternalGAL')
-												}
+												value={dataSourceName}
 												background="gray6"
 												disabled
 											/>

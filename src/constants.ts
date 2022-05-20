@@ -40,3 +40,4 @@ export const ZIMBRA_DOMAIN_NAME = 'zimbraDomainName';
 export const ZIMBRA_ID = 'zimbraId';
 export const ZIMBRA_VIRTUAL_HOSTNAME = 'zimbraVirtualHostname';
 export const FIRST_PAGE = 1;
+export const CREATE_NEW_DOMAIN_ROUTE_ID = 'create-new-domain';
