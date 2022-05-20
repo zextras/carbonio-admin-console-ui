@@ -13,7 +13,8 @@ import {
 	SnackbarManagerContext,
 	Input,
 	Select,
-	Padding
+	Padding,
+	Divider
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -224,10 +225,13 @@ const CreateDomain: FC = () => {
 				background="gray6"
 				height="58px"
 			>
-				<Row width="100%" padding={{ all: 'large' }} mainAlignment="flex-start">
-					<Text size="medium" weight="bold" color="gray0">
-						{t('domain.new_domain', 'New Domain')}
-					</Text>
+				<Row width="100%" mainAlignment="flex-start">
+					<Padding all="large">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('domain.new_domain', 'New Domain')}
+						</Text>
+					</Padding>
+					<Divider />
 				</Row>
 			</Container>
 			<Container
@@ -252,7 +256,7 @@ const CreateDomain: FC = () => {
 							</Text>
 						</Row>
 						<SettingRow>
-							<Container>
+							<Container padding={{ left: 'small', right: 'small' }}>
 								<Input
 									label={t('label.domain_name', 'Domain Name')}
 									background="gray5"
@@ -264,7 +268,7 @@ const CreateDomain: FC = () => {
 							</Container>
 						</SettingRow>
 						<SettingRow>
-							<Container>
+							<Container padding={{ left: 'small', right: 'small' }}>
 								<Input
 									label={t('label.description', 'Description')}
 									background="gray5"
@@ -276,7 +280,7 @@ const CreateDomain: FC = () => {
 							</Container>
 						</SettingRow>
 						<SettingRow>
-							<Container>
+							<Container padding={{ left: 'small', right: 'small' }}>
 								<Input
 									label={t('label.note', 'Note')}
 									background="gray5"
@@ -360,6 +364,7 @@ const CreateDomain: FC = () => {
 							mainAlignment="flex-end"
 							background="gray6"
 							height="58px"
+							padding={{ top: 'small', right: 'large' }}
 						>
 							<Padding right="medium">
 								<Button
