@@ -168,6 +168,7 @@
         "name": "Name",
         "need_help": "NEED HELP?",
         "new_domain": "New Domain",
+        "new_email": "New E-mail",
         "no": "NO",
         "no_virtual_host_msg": "There aren’t virtual hosts here.",
         "not_set": "Not Set",
