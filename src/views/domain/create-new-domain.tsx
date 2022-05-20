@@ -64,7 +64,6 @@ const CreateDomain: FC = () => {
 	);
 	const [createObjectAttributeData, setCreateObjectAttributeData] = useState<any>({});
 	const [zimbraGalMode, setZimbraGalMode] = useState<string>('Internal');
-	const [mailServer, setMailserver] = useState<string>('');
 	const [zimbraPublicServiceHostnameList, setZimbraPublicServiceHostnameList] = useState<any>([]);
 	const [zimbraPublisServiceHostname, setZimbraPublisServiceHostname] = useState<any>({});
 	const [galSyncAccountName, setGalSyncAccountName] = useState<string>('galsync');
@@ -135,6 +134,15 @@ const CreateDomain: FC = () => {
 		});
 	};
 
+	const routeToDomain = (resp: any): void => {
+		const domainId = resp?.Body?.CreateDomainResponse?.domain[0]?.id;
+		if (domainId) {
+			replaceHistory(`/${DOMAINS_ROUTE_ID}/${domainId}/general_settings`);
+		} else {
+			replaceHistory(`/${DOMAINS_ROUTE_ID}`);
+		}
+	};
+
 	const onCreate = (): void => {
 		const body: any = {};
 		let attributes: any[] = [];
@@ -185,11 +193,11 @@ const CreateDomain: FC = () => {
 						.then((response) => response.json())
 						.then((resp) => {
 							showSuccessSnackBar();
-							replaceHistory(`/${DOMAINS_ROUTE_ID}`);
+							routeToDomain(data);
 						});
 				} else {
 					showSuccessSnackBar();
-					replaceHistory(`/${DOMAINS_ROUTE_ID}`);
+					routeToDomain(data);
 				}
 			})
 			.catch((error) => {
