@@ -337,7 +337,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 				>
 					<Row orientation="horizontal" width="100%">
 						<Row
-							padding={{ all: 'small' }}
+							padding={{ all: 'large' }}
 							mainAlignment="flex-start"
 							width="50%"
 							crossAlignment="flex-start"
@@ -368,7 +368,9 @@ const DomainMailboxQuotaSetting: FC = () => {
 					</Row>
 				</Container>
 			</Row>
-
+			<Row orientation="horizontal" width="100%" background="gray6">
+				<Divider />
+			</Row>
 			<Container
 				orientation="column"
 				crossAlignment="flex-start"

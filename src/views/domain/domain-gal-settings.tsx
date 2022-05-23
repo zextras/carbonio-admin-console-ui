@@ -312,6 +312,9 @@ const DomainGalSettings: FC = () => {
 					</Row>
 				</Container>
 			</Row>
+			<Row orientation="horizontal" width="100%" background="gray6">
+				<Divider />
+			</Row>
 
 			<Container
 				orientation="column"
@@ -343,7 +346,7 @@ const DomainGalSettings: FC = () => {
 									)}
 									value={zimbraGalMaxResults}
 									defaultValue={zimbraGalMaxResults}
-									background="gray6"
+									background="gray5"
 									onChange={onZimbraGalMaxResultChange}
 								/>
 							</Container>

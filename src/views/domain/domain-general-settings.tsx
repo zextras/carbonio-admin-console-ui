@@ -142,6 +142,7 @@ const DomainGeneralSettings: FC = () => {
 	const [openDeleteDomainConfirmDialog, setOpenDeleteDomainConfirmDialog] =
 		useState<boolean>(false);
 	const [domainAccounts, setDomainAccounts] = useState<any[]>([]);
+	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (!!cosList && cosList.length > 0) {
@@ -542,12 +543,7 @@ const DomainGeneralSettings: FC = () => {
 					</Row>
 				</Container>
 			</Row>
-			<Row
-				orientation="horizontal"
-				width="100%"
-				padding={{ left: 'large', right: 'large' }}
-				background="gray6"
-			>
+			<Row orientation="horizontal" width="100%" background="gray6">
 				<Divider />
 			</Row>
 
