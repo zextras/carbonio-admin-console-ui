@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { modifyDomain } from '../../services/modify-domain-service';
 import { useDomainStore } from '../../store/domain/store';
+import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 
 const ListRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -703,6 +704,16 @@ const DomainAuthentication: FC = () => {
 					</Row>
 				</Container>
 			</Container>
+
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
 		</Container>
 	);
 };

@@ -39,6 +39,7 @@ import { deleteDomain } from '../../services/delete-domain-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { deleteAccount } from '../../services/delete-account-service';
 import { useDomainStore } from '../../store/domain/store';
+import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -928,6 +929,16 @@ const DomainGeneralSettings: FC = () => {
 					</Row>
 				)}
 			</Container>
+
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
 		</Container>
 	);
 };

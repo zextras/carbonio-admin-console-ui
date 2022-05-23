@@ -23,6 +23,7 @@ import { ZIMBRA_DOMAIN_NAME, ZIMBRA_ID, ZIMBRA_VIRTUAL_HOSTNAME } from '../../co
 import { modifyDomain } from '../../services/modify-domain-service';
 import { useDomainStore } from '../../store/domain/store';
 import logo from '../../assets/helmet_logo.svg';
+import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -318,6 +319,16 @@ const DomainVirtualHosts: FC = () => {
 					</Padding>
 				</Container>
 			</Container>
+
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
 		</Container>
 	);
 };
