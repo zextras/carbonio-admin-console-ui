@@ -22,6 +22,7 @@ import { getDatasource } from '../../services/get-datasource-service';
 import { modifyDomain } from '../../services/modify-domain-service';
 import { modifyDataSource } from '../../services/modify-datasource-service';
 import { useDomainStore } from '../../store/domain/store';
+import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -86,6 +87,7 @@ const DomainGalSettings: FC = () => {
 	const [pollingIntervalType, setPollingIntervalType] = useState<any>(rangeItems[0]);
 	const [dataSourceId, setDataSourceId] = useState<any>('');
 	const setDomain = useDomainStore((state) => state.setDomain);
+	const [dataSourceName, setDataSourceName] = useState<string>('');
 
 	const getGalAccount = (accountId: string): void => {
 		getAccount(accountId)
@@ -120,8 +122,12 @@ const DomainGalSettings: FC = () => {
 					if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourcePollingInterval) {
 						setZimbraDataSourcePollingInterval(dataSource?._attrs?.zimbraDataSourcePollingInterval);
 					}
+					if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourceName) {
+						setDataSourceName(dataSource?._attrs?.zimbraDataSourceName);
+					}
 				} else {
 					setZimbraDataSourcePollingInterval('');
+					setDataSourceName('');
 				}
 			});
 	};
@@ -131,6 +137,7 @@ const DomainGalSettings: FC = () => {
 			setZimbraGalAccountId('');
 			setZimbraGalAccountName('');
 			setZimbraDataSourcePollingInterval('');
+			setDataSourceName('');
 			const obj: any = {};
 			domainInformation.map((item: any) => {
 				obj[item?.n] = item._content;
@@ -312,6 +319,9 @@ const DomainGalSettings: FC = () => {
 					</Row>
 				</Container>
 			</Row>
+			<Row orientation="horizontal" width="100%" background="gray6">
+				<Divider />
+			</Row>
 
 			<Container
 				orientation="column"
@@ -343,7 +353,7 @@ const DomainGalSettings: FC = () => {
 									)}
 									value={zimbraGalMaxResults}
 									defaultValue={zimbraGalMaxResults}
-									background="gray6"
+									background="gray5"
 									onChange={onZimbraGalMaxResultChange}
 								/>
 							</Container>
@@ -401,11 +411,7 @@ const DomainGalSettings: FC = () => {
 										<Container padding={{ all: 'small' }}>
 											<Input
 												label={t('domain.source_name_internal_gal', 'Source Name of internal GAL')}
-												value={
-													!domainData?.zimbraGalMode && domainData?.zimbraGalMode === 'zimbra'
-														? t('label.internal_gal', 'InternalGAL')
-														: t('label.external_gal', 'ExternalGAL')
-												}
+												value={dataSourceName}
 												background="gray6"
 												disabled
 											/>
@@ -438,6 +444,16 @@ const DomainGalSettings: FC = () => {
 					</Container>
 				</Row>
 			</Container>
+
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
 		</Container>
 	);
 };

@@ -64,6 +64,7 @@ const DomainListPanel: FC = () => {
 	const [selectedManageOperationItem, setSelectedManageOperationItem] = useState('');
 	const domainView = useDomainStore((state) => state.domainView);
 	const setDomain = useDomainStore((state) => state.setDomain);
+	const domainInformation = useDomainStore((state) => state.domain);
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -81,6 +82,16 @@ const DomainListPanel: FC = () => {
 	useEffect(() => {
 		getDomainLists('');
 	}, []);
+
+	useEffect(() => {
+		if (domainInformation?.name) {
+			setSearchDomainName(domainInformation?.name);
+			setIsDomainSelect(true);
+			setIsDomainListExpand(false);
+			setSelectedDetailOperationItem(GENERAL_SETTINGS);
+			setSelectedManageOperationItem(ACCOUNTS);
+		}
+	}, [domainInformation]);
 
 	useEffect(() => {
 		if (

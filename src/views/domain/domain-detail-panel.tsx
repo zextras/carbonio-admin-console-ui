@@ -7,13 +7,21 @@ import React, { FC } from 'react';
 import { Container, Padding, Text, Button } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import logo from '../../assets/ninja_robo.svg';
 import DomainHeader from './domain-header';
 import DomainOperations from './domain-detail-operation';
+import { CREATE_NEW_DOMAIN_ROUTE_ID, DOMAINS_ROUTE_ID } from '../../constants';
+import CreateDomain from './create-new-domain';
 
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const { path } = useRouteMatch();
+
+	const createNewDomain = (): void => {
+		replaceHistory(`${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
+	};
+
 	return (
 		<Container
 			orientation="column"
@@ -24,11 +32,11 @@ const DomainDetailPanel: FC = () => {
 		>
 			<DomainHeader />
 			<Switch>
-				{/* <Route exact path={`${path}/:domainId`}>
-					<TestPanel />
-				</Route> */}
 				<Route exact path={`${path}/:domainId/:operation`}>
 					<DomainOperations />
+				</Route>
+				<Route exact path={`${path}/${CREATE_NEW_DOMAIN_ROUTE_ID}`}>
+					<CreateDomain />
 				</Route>
 				<Route exact path={`${path}`}>
 					<Container>
@@ -66,6 +74,7 @@ const DomainDetailPanel: FC = () => {
 									label={t('create_new_domain', 'Creat New Domain')}
 									icon="Plus"
 									color="info"
+									onClick={createNewDomain}
 								/>
 							</Text>
 						</Padding>

@@ -1,0 +1,21 @@
+{
+    "label": {
+        "name": "Nume",
+        "add": "Adauga",
+        "app_name": "Gestioneaza",
+        "cancel": "Anulare",
+        "delete": "Sterge",
+        "description": "Descriere",
+        "of": "a",
+        "save": "Salvați",
+        "status": "Status"
+    },
+    "core": {
+        "subscription": {
+            "status": "Status"
+        }
+    },
+    "domain": {
+        "theme": "Tema"
+    }
+}

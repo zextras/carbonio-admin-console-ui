@@ -1,0 +1,10 @@
+{
+    "core": {
+        "subscription": {
+            "status": "Trạng thái"
+        }
+    },
+    "label": {
+        "status": "Trạng thái"
+    }
+}

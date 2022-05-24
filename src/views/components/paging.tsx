@@ -75,8 +75,14 @@ const Paginig: FC<{
 			setIsFirstPageDisabled(true);
 			setIsLastPageDisabled(false);
 		}
+		if (currentPage === 1 && totalItem < pageSize) {
+			setIsPreviousPageDisabled(true);
+			setIsNextPageDisabled(true);
+			setIsFirstPageDisabled(true);
+			setIsLastPageDisabled(true);
+		}
 		setOffset(currentPage * pageSize - pageSize);
-	}, [currentPage, totalPages, setOffset, pageSize]);
+	}, [currentPage, totalPages, setOffset, pageSize, totalItem]);
 
 	return (
 		<Container orientation="horizontal" crossAlignment="center" mainAlignment="flex-start">
