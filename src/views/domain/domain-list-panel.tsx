@@ -94,7 +94,7 @@ const DomainListPanel: FC = () => {
 				setDomainId(domainInformation?.id);
 			}
 		}
-	}, [domainInformation]);
+	}, [domainInformation?.id, domainInformation?.name]);
 
 	useEffect(() => {
 		if (

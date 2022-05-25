@@ -49,7 +49,7 @@
         }
     },
     "create_new_bucket": "NEW BUCKET",
-    "create_new_domain": "Creat New Domain",
+    "create_new_domain": "Create New Domain",
     "domain": {
         "account_gal_synchronization": "Account Name of GAL Synchronization",
         "account_scan": "AccountScan",
