@@ -370,7 +370,7 @@ const CreateDomain: FC = () => {
 								<Button
 									label={t('label.cancel', 'Cancel')}
 									icon="Close"
-									color="primary"
+									color="secondary"
 									onClick={onCancel}
 								/>
 							</Padding>
@@ -378,7 +378,7 @@ const CreateDomain: FC = () => {
 							<Button
 								label={t('label.create', 'Create')}
 								icon="CheckmarkCircle"
-								color="secondary"
+								color="primary"
 								disabled={domainName === ''}
 								onClick={onCreate}
 							/>
