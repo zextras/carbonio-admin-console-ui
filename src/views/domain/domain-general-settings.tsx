@@ -512,6 +512,8 @@ const DomainGeneralSettings: FC = () => {
 					} else {
 						deleteOnlyDomain();
 					}
+				} else if (data?.Body?.SearchDirectoryResponse?.searchTotal === 0) {
+					deleteOnlyDomain();
 				}
 			});
 	};

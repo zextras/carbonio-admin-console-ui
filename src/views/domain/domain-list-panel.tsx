@@ -90,6 +90,9 @@ const DomainListPanel: FC = () => {
 			setIsDomainListExpand(false);
 			setSelectedDetailOperationItem(GENERAL_SETTINGS);
 			setSelectedManageOperationItem(ACCOUNTS);
+			if (domainInformation?.id) {
+				setDomainId(domainInformation?.id);
+			}
 		}
 	}, [domainInformation]);
 
