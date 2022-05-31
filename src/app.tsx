@@ -69,7 +69,7 @@ const App: FC = () => {
 			position: 2,
 			visible: true,
 			label: t('label.monitoring', 'Monitoring'),
-			primaryBar: 'InProgressOutline',
+			primaryBar: 'ActivityOutline',
 			appView: AppView
 		});
 
@@ -88,7 +88,7 @@ const App: FC = () => {
 			position: 2,
 			visible: true,
 			label: t('label.storages', 'Storages'),
-			primaryBar: 'CreditCardOutline',
+			primaryBar: 'HardDriveOutline',
 			appView: AppView
 			// primarybarSection: { ...managementSection },
 			// tooltip: StorageTooltipView

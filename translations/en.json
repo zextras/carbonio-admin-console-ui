@@ -277,6 +277,7 @@
     "new_bucket_summary": "SUMMARY",
     "select_bucket_or_create_new_bucket": "it seems like you haven't setup a bucket type.Click NEW BUCKET button to create a new one.",
     "select_domain_or_create_new": "Please select a domain to manage it or click Create button to create a new one.",
+    "select_section_from_left_menu": "Please select a section from the left menu",
     "timezone": {
         "africa_algiers": "{{value}} West Central Africa",
         "africa_cairo": "{{value}} Egypt",
@@ -415,5 +416,6 @@
         "pacific_norfolk": "{{value}} Norfolk",
         "pacific_tongatapu": "{{value}} Nuku’alofa",
         "utc": "{{value}} Coordinated Universal Time"
-    }
+    },
+    "welcome_to_carbonio": "Welcome {{adminName}}, to Carbonio {{carbonioVersion}}!"
 }

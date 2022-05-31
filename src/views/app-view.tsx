@@ -17,19 +17,37 @@ import BucketListPanel from './bucket/bucket-list-panel';
 import {
 	BACKUP_ROUTE_ID,
 	BUCKET_ROUTE_ID,
+	DASHBOARD,
 	DOMAINS_ROUTE_ID,
 	MANAGE_APP_ID,
+	MONITORING,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
 } from '../constants';
 import Subscription from './core/subscribsion/subscription';
+import Dashboard from './components/dashboard/dashboard-view';
+import MonitoringView from './components/monitoring/monitoring-view';
 
 const AppView: FC = () => {
 	const { path } = useRouteMatch();
 	const [t] = useTranslation();
 	return (
 		<Switch>
+			<Route path={`/${DASHBOARD}`}>
+				<Container orientation="horizontal" mainAlignment="flex-start">
+					<Suspense fallback={<Spinner />}>
+						<Dashboard />
+					</Suspense>
+				</Container>
+			</Route>
+			<Route path={`/${MONITORING}`}>
+				<Container orientation="horizontal" mainAlignment="flex-start">
+					<Suspense fallback={<Spinner />}>
+						<MonitoringView />
+					</Suspense>
+				</Container>
+			</Route>
 			<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container width="40%">
