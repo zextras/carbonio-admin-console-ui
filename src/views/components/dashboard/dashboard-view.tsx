@@ -29,12 +29,7 @@ const Dashboard: FC = () => {
 		}
 	}, []);
 	return (
-		<Container
-			height="fit-content"
-			mainAlignment="center"
-			crossAlignment="center"
-			background="#FFFFFF"
-		>
+		<Container height="100%" mainAlignment="center" crossAlignment="center" background="gray5">
 			<Container>
 				<Text
 					overflow="break-word"

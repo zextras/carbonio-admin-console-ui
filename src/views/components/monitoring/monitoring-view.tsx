@@ -11,12 +11,7 @@ import { useTranslation } from 'react-i18next';
 const MonitoringView: FC = () => {
 	const [t] = useTranslation();
 	return (
-		<Container
-			height="fit-content"
-			mainAlignment="center"
-			crossAlignment="center"
-			background="#FFFFFF"
-		>
+		<Container height="100%" mainAlignment="center" crossAlignment="center" background="gray5">
 			{t('label.monitoring', 'Monitoring')}
 		</Container>
 	);
