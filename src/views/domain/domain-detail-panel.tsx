@@ -19,7 +19,7 @@ const DomainDetailPanel: FC = () => {
 	const { path } = useRouteMatch();
 
 	const createNewDomain = (): void => {
-		replaceHistory(`${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
+		replaceHistory(`/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
 	};
 
 	return (

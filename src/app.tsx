@@ -62,7 +62,6 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.dashboard', 'Dashboard'),
 			primaryBar: 'HomeOutline',
-			secondaryBar: SidebarView,
 			appView: AppView
 		});
 		addRoute({
@@ -71,7 +70,6 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.monitoring', 'Monitoring'),
 			primaryBar: 'InProgressOutline',
-			secondaryBar: SidebarView,
 			appView: AppView
 		});
 
@@ -81,7 +79,6 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.domains', 'Domains'),
 			primaryBar: 'AtOutline',
-			secondaryBar: SidebarView,
 			appView: AppView
 			// primarybarSection: { ...managementSection },
 			// tooltip: DomainTooltipView
@@ -92,7 +89,6 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.storages', 'Storages'),
 			primaryBar: 'CreditCardOutline',
-			secondaryBar: SidebarView,
 			appView: AppView
 			// primarybarSection: { ...managementSection },
 			// tooltip: StorageTooltipView
@@ -103,7 +99,6 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.subscriptions', 'Subscriptions'),
 			primaryBar: 'AwardOutline',
-			secondaryBar: SidebarView,
 			appView: AppView
 			// primarybarSection: { ...managementSection },
 			// tooltip: SubscriptionTooltipView
@@ -114,7 +109,6 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.backup', 'Backup'),
 			primaryBar: 'RefreshOutline',
-			secondaryBar: SidebarView,
 			appView: AppView
 			// primarybarSection: { ...servicesSection },
 			// tooltip: BackupTooltipView

@@ -139,16 +139,16 @@ const DomainListPanel: FC = () => {
 		if (isDomainSelect && domainId) {
 			if (domainView === DOMAIN_DETAIL_VIEW) {
 				if (selectedDetailOperationItem) {
-					replaceHistory(`${DOMAINS_ROUTE_ID}/${domainId}/${selectedDetailOperationItem}`);
+					replaceHistory(`/${domainId}/${selectedDetailOperationItem}`);
 				} else {
-					replaceHistory(`${DOMAINS_ROUTE_ID}/${domainId}/${GENERAL_SETTINGS}`);
+					replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 				}
 			}
 			if (domainView === DOMAIN_MANAGE_VIEW) {
 				if (selectedManageOperationItem) {
-					replaceHistory(`${DOMAINS_ROUTE_ID}/${domainId}/${selectedManageOperationItem}`);
+					replaceHistory(`/${domainId}/${selectedManageOperationItem}`);
 				} else {
-					replaceHistory(`${DOMAINS_ROUTE_ID}/${domainId}/${ACCOUNTS}`);
+					replaceHistory(`/${domainId}/${ACCOUNTS}`);
 				}
 			}
 		}

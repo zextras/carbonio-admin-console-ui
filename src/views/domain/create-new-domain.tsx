@@ -138,9 +138,9 @@ const CreateDomain: FC = () => {
 	const routeToDomain = (resp: any): void => {
 		const domainId = resp?.Body?.CreateDomainResponse?.domain[0]?.id;
 		if (domainId) {
-			replaceHistory(`/${DOMAINS_ROUTE_ID}/${domainId}/general_settings`);
+			replaceHistory(`/${domainId}/general_settings`);
 		} else {
-			replaceHistory(`/${DOMAINS_ROUTE_ID}`);
+			replaceHistory(`/`);
 		}
 	};
 
@@ -214,7 +214,7 @@ const CreateDomain: FC = () => {
 	};
 
 	const onCancel = (): void => {
-		replaceHistory(`/${DOMAINS_ROUTE_ID}`);
+		replaceHistory(`/`);
 	};
 
 	return (

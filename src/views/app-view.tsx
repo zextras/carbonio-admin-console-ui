@@ -18,6 +18,8 @@ import {
 	BACKUP_ROUTE_ID,
 	BUCKET_ROUTE_ID,
 	DOMAINS_ROUTE_ID,
+	MANAGE_APP_ID,
+	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
 } from '../constants';
@@ -28,7 +30,7 @@ const AppView: FC = () => {
 	const [t] = useTranslation();
 	return (
 		<Switch>
-			<Route path={`${path}/${DOMAINS_ROUTE_ID}`}>
+			<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container width="40%">
 						<Suspense fallback={<Spinner />}>
@@ -40,7 +42,7 @@ const AppView: FC = () => {
 					</Suspense>
 				</Container>
 			</Route>
-			<Route path={`${path}/${BUCKET_ROUTE_ID}`}>
+			<Route path={`/${MANAGE_APP_ID}/${BUCKET_ROUTE_ID}`}>
 				<BucketHeader />
 				<Container
 					width="100%"
@@ -57,7 +59,7 @@ const AppView: FC = () => {
 					</Suspense>
 				</Container>
 			</Route>
-			<Route path={`${path}/${STORAGES_ROUTE_ID}`}>
+			<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container width="40%">
 						<Text>{t('label.storages', 'Storages')}</Text>
@@ -67,14 +69,14 @@ const AppView: FC = () => {
 					</Suspense>
 				</Container>
 			</Route>
-			<Route path={`${path}/${SUBSCRIPTIONS_ROUTE_ID}`}>
+			<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Suspense fallback={<Spinner />}>
 						<Subscription />
 					</Suspense>
 				</Container>
 			</Route>
-			<Route path={`${path}/${BACKUP_ROUTE_ID}`}>
+			<Route path={`${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
 					<Container width="40%">
 						<Text>{t('label.backup', 'Backup')}</Text>
