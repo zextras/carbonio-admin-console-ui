@@ -52,3 +52,6 @@ export const EXPORT_DOMAIN = 'export_domain';
 export const RESTORE_ACCOUNT = 'restore_account';
 export const RESTORE_DELETED_EMAIL = 'restore_deleted_email';
 export const CREATE_NEW_DOMAIN_ROUTE_ID = 'create-new-domain';
+export const DASHBOARD = 'dashboard';
+export const MONITORING = 'monitoring';
+export const SERVICES_ROUTE_ID = 'services';

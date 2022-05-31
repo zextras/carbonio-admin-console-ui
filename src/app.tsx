@@ -4,12 +4,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, lazy, Suspense, useEffect } from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { addRoute, registerActions, setAppContext, Spinner } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { APP_ID, CREATE_NEW_DOMAIN_ROUTE_ID, DOMAINS_ROUTE_ID, MANAGE } from './constants';
+import {
+	APP_ID,
+	BACKUP_ROUTE_ID,
+	CREATE_NEW_DOMAIN_ROUTE_ID,
+	DASHBOARD,
+	DOMAINS_ROUTE_ID,
+	MANAGE,
+	MANAGE_APP_ID,
+	MONITORING,
+	SERVICES_ROUTE_ID,
+	STORAGES_ROUTE_ID,
+	SUBSCRIPTIONS_ROUTE_ID
+} from './constants';
 import SidebarView from './views/secondary-bar/sidebar';
+import BackupTooltipView from './views/tooltip-view/backup-tooltip-view';
+import DomainTooltipView from './views/tooltip-view/domain-tooltip-view';
+import StorageTooltipView from './views/tooltip-view/storage-tooltip-view';
+import SubscriptionTooltipView from './views/tooltip-view/subscription-tooltip-view';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -22,19 +38,90 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
+	const managementSection = useMemo(
+		() => ({
+			id: MANAGE_APP_ID,
+			label: t('label.management', 'Management'),
+			position: 3
+		}),
+		[t]
+	);
+	const servicesSection = useMemo(
+		() => ({
+			id: SERVICES_ROUTE_ID,
+			label: t('label.services', 'Services'),
+			position: 4
+		}),
+		[t]
+	);
+
 	useEffect(() => {
-		const label1 = t('label.app_name', 'Manage');
 		addRoute({
-			route: MANAGE,
-			position: 3,
+			route: DASHBOARD,
+			position: 1,
 			visible: true,
-			label: label1,
-			primaryBar: 'List',
+			label: t('label.dashboard', 'Dashboard'),
+			primaryBar: 'HomeOutline',
 			secondaryBar: SidebarView,
 			appView: AppView
 		});
+		addRoute({
+			route: MONITORING,
+			position: 2,
+			visible: true,
+			label: t('label.monitoring', 'Monitoring'),
+			primaryBar: 'InProgressOutline',
+			secondaryBar: SidebarView,
+			appView: AppView
+		});
+
+		addRoute({
+			route: DOMAINS_ROUTE_ID,
+			position: 1,
+			visible: true,
+			label: t('label.domains', 'Domains'),
+			primaryBar: 'AtOutline',
+			secondaryBar: SidebarView,
+			appView: AppView
+			// primarybarSection: { ...managementSection },
+			// tooltip: DomainTooltipView
+		});
+		addRoute({
+			route: STORAGES_ROUTE_ID,
+			position: 2,
+			visible: true,
+			label: t('label.storages', 'Storages'),
+			primaryBar: 'CreditCardOutline',
+			secondaryBar: SidebarView,
+			appView: AppView
+			// primarybarSection: { ...managementSection },
+			// tooltip: StorageTooltipView
+		});
+		addRoute({
+			route: SUBSCRIPTIONS_ROUTE_ID,
+			position: 3,
+			visible: true,
+			label: t('label.subscriptions', 'Subscriptions'),
+			primaryBar: 'AwardOutline',
+			secondaryBar: SidebarView,
+			appView: AppView
+			// primarybarSection: { ...managementSection },
+			// tooltip: SubscriptionTooltipView
+		});
+		addRoute({
+			route: BACKUP_ROUTE_ID,
+			position: 1,
+			visible: true,
+			label: t('label.backup', 'Backup'),
+			primaryBar: 'RefreshOutline',
+			secondaryBar: SidebarView,
+			appView: AppView
+			// primarybarSection: { ...servicesSection },
+			// tooltip: BackupTooltipView
+		});
+
 		setAppContext({ hello: 'world' });
-	}, [t]);
+	}, [t, managementSection, servicesSection]);
 
 	useEffect(() => {
 		registerActions({
