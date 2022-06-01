@@ -426,7 +426,12 @@ const DomainAuthentication: FC = () => {
 	};
 
 	return (
-		<Container padding={{ all: 'large' }} background="gray5" height="calc(100% - 50px)">
+		<Container
+			padding={{ all: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+			style={{ maxWidth: '982px' }}
+		>
 			<Container
 				orientation="column"
 				background="gray6"
@@ -475,7 +480,7 @@ const DomainAuthentication: FC = () => {
 					mainAlignment="flex-start"
 					style={{ overflow: 'auto' }}
 					width="100%"
-					height="calc(100vh - 200px)"
+					height="calc(100vh - 150px)"
 				>
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 						<Container

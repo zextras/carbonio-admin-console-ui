@@ -328,7 +328,12 @@ const DomainMailboxQuotaSetting: FC = () => {
 	}, [domainData, offset, getQuotaUsageInformation]);
 
 	return (
-		<Container padding={{ all: 'large' }} background="gray5">
+		<Container
+			padding={{ all: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+			style={{ maxWidth: '982px' }}
+		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -378,7 +383,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 150px)"
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">

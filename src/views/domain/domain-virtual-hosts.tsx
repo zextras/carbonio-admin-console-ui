@@ -155,7 +155,12 @@ const DomainVirtualHosts: FC = () => {
 	};
 
 	return (
-		<Container padding={{ all: 'large' }} background="gray5" height="calc(100% - 50px)">
+		<Container
+			padding={{ all: 'large' }}
+			background="gray6"
+			mainAlignment="flex-start"
+			style={{ maxWidth: '982px' }}
+		>
 			<Container
 				orientation="column"
 				background="gray6"

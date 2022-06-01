@@ -50,7 +50,7 @@ const AppView: FC = () => {
 			</Route>
 			<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
+					<Container width="30%">
 						<Suspense fallback={<Spinner />}>
 							<DomainListPanel />
 						</Suspense>
@@ -79,7 +79,7 @@ const AppView: FC = () => {
 			</Route>
 			<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
+					<Container width="30%">
 						<Text>{t('label.storages', 'Storages')}</Text>
 					</Container>
 					<Suspense fallback={<Spinner />}>
@@ -96,7 +96,7 @@ const AppView: FC = () => {
 			</Route>
 			<Route path={`${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
 				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
+					<Container width="30%">
 						<Text>{t('label.backup', 'Backup')}</Text>
 					</Container>
 					<Suspense fallback={<Spinner />}>

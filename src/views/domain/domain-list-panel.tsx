@@ -11,7 +11,9 @@ import {
 	Row,
 	Padding,
 	Text,
-	Dropdown
+	Dropdown,
+	IconButton,
+	Divider
 } from '@zextras/carbonio-design-system';
 
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -27,8 +29,6 @@ import {
 	ADMIN_DELEGATES,
 	AUTHENTICATION,
 	DOMAINS_ROUTE_ID,
-	DOMAIN_DETAIL_VIEW,
-	DOMAIN_MANAGE_VIEW,
 	EXPORT_DOMAIN,
 	GAL,
 	GENERAL_INFORMATION,
@@ -52,6 +52,44 @@ const CustomIcon = styled(Icon)`
 	height: 20px;
 `;
 
+const ListPanelItem: FC<{
+	title: string;
+	isListExpanded: boolean;
+	setToggleView: any;
+}> = ({ title, isListExpanded, setToggleView }) => (
+	<>
+		<Container height={52} orientation="vertical" mainAlignment="flex-start" width="100%">
+			<Row
+				padding={{ all: 'small' }}
+				takeAvwidth="fill"
+				width="100%"
+				mainAlignment="space-between"
+			></Row>
+			<Row
+				padding={{ all: 'small' }}
+				takeAvwidth="fill"
+				width="100%"
+				mainAlignment="space-between"
+				onClick={setToggleView}
+			>
+				<Padding horizontal="small">
+					<Text size="small" color="gray0" weight="bold">
+						{title}
+					</Text>
+				</Padding>
+				<Padding horizontal="small">
+					<IconButton
+						icon={isListExpanded ? 'ChevronDownOutline' : 'ChevronUpOutline'}
+						size="small"
+						color="text"
+					/>
+				</Padding>
+			</Row>
+		</Container>
+		<Divider color="gray3" />
+	</>
+);
+
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const locationService = useLocation();
@@ -60,11 +98,11 @@ const DomainListPanel: FC = () => {
 	const [domainId, setDomainId] = useState('');
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const [selectedDetailOperationItem, setSelectedDetailOperationItem] = useState('');
-	const [selectedManageOperationItem, setSelectedManageOperationItem] = useState('');
-	const domainView = useDomainStore((state) => state.domainView);
+	const [selectedOperationItem, setSelectedOperationItem] = useState('');
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const domainInformation = useDomainStore((state) => state.domain);
+	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
+	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
@@ -88,8 +126,7 @@ const DomainListPanel: FC = () => {
 			setSearchDomainName(domainInformation?.name);
 			setIsDomainSelect(true);
 			setIsDomainListExpand(false);
-			setSelectedDetailOperationItem(GENERAL_SETTINGS);
-			setSelectedManageOperationItem(ACCOUNTS);
+			setSelectedOperationItem(GENERAL_SETTINGS);
 			if (domainInformation?.id) {
 				setDomainId(domainInformation?.id);
 			}
@@ -105,8 +142,7 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setSelectedDetailOperationItem('');
-			setSelectedManageOperationItem('');
+			setSelectedOperationItem('');
 			setDomainId('');
 			setDomain({});
 		}
@@ -131,34 +167,18 @@ const DomainListPanel: FC = () => {
 		setSearchDomainName(domain?.name);
 		setIsDomainListExpand(false);
 		setDomainId(domain?.id);
-		setSelectedDetailOperationItem(GENERAL_SETTINGS);
-		setSelectedManageOperationItem(ACCOUNTS);
+		setSelectedOperationItem(GENERAL_SETTINGS);
 	}, []);
 
 	useEffect(() => {
 		if (isDomainSelect && domainId) {
-			if (domainView === DOMAIN_DETAIL_VIEW) {
-				if (selectedDetailOperationItem) {
-					replaceHistory(`/${domainId}/${selectedDetailOperationItem}`);
-				} else {
-					replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
-				}
-			}
-			if (domainView === DOMAIN_MANAGE_VIEW) {
-				if (selectedManageOperationItem) {
-					replaceHistory(`/${domainId}/${selectedManageOperationItem}`);
-				} else {
-					replaceHistory(`/${domainId}/${ACCOUNTS}`);
-				}
+			if (selectedOperationItem) {
+				replaceHistory(`/${domainId}/${selectedOperationItem}`);
+			} else {
+				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 			}
 		}
-	}, [
-		isDomainSelect,
-		domainId,
-		domainView,
-		selectedDetailOperationItem,
-		selectedManageOperationItem
-	]);
+	}, [isDomainSelect, domainId, selectedOperationItem]);
 
 	const detailOptions = useMemo(
 		() => [
@@ -247,6 +267,14 @@ const DomainListPanel: FC = () => {
 		[t, isDomainSelect]
 	);
 
+	const toggleDetailView = (): void => {
+		setIsDetailListExpanded(!isDetailListExpanded);
+	};
+
+	const toggleManageView = (): void => {
+		setIsManageListExpanded(!isManageListExpanded);
+	};
+
 	const items =
 		domainList.length > MAX_DOMAIN_DISPLAY
 			? [
@@ -302,29 +330,39 @@ const DomainListPanel: FC = () => {
 			  }));
 
 	return (
-		<Container orientation="column" crossAlignment="flex-start" mainAlignment="flex-start">
+		<Container
+			orientation="column"
+			crossAlignment="flex-start"
+			mainAlignment="flex-start"
+			background="gray5"
+			style={{ overflow: 'auto' }}
+		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Dropdown
 					items={items}
 					placement="bottom-start"
 					maxWidth="300px"
 					disableAutoFocus="true"
-					width="21%"
+					width="20%"
 					style={{
 						width: '100%'
 					}}
 				>
 					<Input
-						label={t('domain.search_domain', 'Search a domain')}
+						label={
+							isDomainSelect
+								? t('domain.i_want_to_see_this_domain', 'I want to see this domain')
+								: t('domain.type_here_a_domain', 'Type here a domain')
+						}
 						onChange={(ev: any): void => {
 							setIsDomainSelect(false);
 							setSearchDomainName(ev.target.value);
 						}}
 						CustomIcon={(): any => (
-							<Icon
-								icon={isDomainListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline'}
-								size="medium"
-								color="primary"
+							<CustomIcon
+								icon="GlobeOutline"
+								size="large"
+								color="text"
 								onClick={(): void => {
 									setIsDomainListExpand(!isDomainListExpand);
 								}}
@@ -335,19 +373,30 @@ const DomainListPanel: FC = () => {
 					/>
 				</Dropdown>
 			</Row>
-			<DomainListItems
-				items={domainView === DOMAIN_DETAIL_VIEW ? detailOptions : manageOptions}
-				selectedOperationItem={
-					domainView === DOMAIN_DETAIL_VIEW
-						? selectedDetailOperationItem
-						: selectedManageOperationItem
-				}
-				setSelectedOperationItem={
-					domainView === DOMAIN_DETAIL_VIEW
-						? setSelectedDetailOperationItem
-						: setSelectedManageOperationItem
-				}
+			<ListPanelItem
+				title={t('domain.details', 'Details')}
+				isListExpanded={isDetailListExpanded}
+				setToggleView={toggleDetailView}
 			/>
+			{isDetailListExpanded && (
+				<DomainListItems
+					items={detailOptions}
+					selectedOperationItem={selectedOperationItem}
+					setSelectedOperationItem={setSelectedOperationItem}
+				/>
+			)}
+			<ListPanelItem
+				title={t('domain.manage', 'Manage')}
+				isListExpanded={isManageListExpanded}
+				setToggleView={toggleManageView}
+			/>
+			{isManageListExpanded && (
+				<DomainListItems
+					items={manageOptions}
+					selectedOperationItem={selectedOperationItem}
+					setSelectedOperationItem={setSelectedOperationItem}
+				/>
+			)}
 		</Container>
 	);
 };
