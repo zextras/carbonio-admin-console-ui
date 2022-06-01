@@ -25,12 +25,11 @@ const DomainDetailPanel: FC = () => {
 	return (
 		<Container
 			orientation="column"
-			crossAlignment="flex-start"
+			crossAlignment="center"
 			mainAlignment="flex-start"
 			style={{ overflowY: 'hidden' }}
-			background="gray5"
+			background="gray6"
 		>
-			<DomainHeader />
 			<Switch>
 				<Route exact path={`${path}/:domainId/:operation`}>
 					<DomainOperations />

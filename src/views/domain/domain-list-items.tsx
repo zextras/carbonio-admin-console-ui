@@ -4,10 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback } from 'react';
-import { Container, Padding, List, Divider, Text } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { useDomainStore } from '../../store/domain/store';
-import { DOMAINS_ROUTE_ID, GENERAL_INFORMATION } from '../../constants';
+import { Container, Padding, List, Text } from '@zextras/carbonio-design-system';
+import { GENERAL_INFORMATION } from '../../constants';
 
 const DomainListItems: FC<{
 	items: any;
@@ -42,7 +40,7 @@ const DomainListItems: FC<{
 		activeBackground
 	}) => (
 		<Container
-			height={55}
+			height={52}
 			orientation="vertical"
 			mainAlignment="flex-start"
 			width="100%"
@@ -58,12 +56,11 @@ const DomainListItems: FC<{
 					</Text>
 				</Padding>
 			</Container>
-			<Divider />
 		</Container>
 	);
 
 	return (
-		<Container crossAlignment="flex-start" mainAlignment="flex-start">
+		<Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
 			<List items={items} ItemComponent={ListItem} active={selectedOperationItem} />
 		</Container>
 	);
