@@ -343,7 +343,7 @@ const DomainListPanel: FC = () => {
 					placement="bottom-start"
 					maxWidth="300px"
 					disableAutoFocus="true"
-					width="20%"
+					width="265px"
 					style={{
 						width: '100%'
 					}}
