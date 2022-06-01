@@ -28,83 +28,87 @@ import {
 import Subscription from './core/subscribsion/subscription';
 import Dashboard from './components/dashboard/dashboard-view';
 import MonitoringView from './components/monitoring/monitoring-view';
+import BreadCrumb from './components/breadcrumb/breadcrumb-view';
 
 const AppView: FC = () => {
 	const { path } = useRouteMatch();
 	const [t] = useTranslation();
 	return (
-		<Switch>
-			<Route path={`/${DASHBOARD}`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Suspense fallback={<Spinner />}>
-						<Dashboard />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`/${MONITORING}`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Suspense fallback={<Spinner />}>
-						<MonitoringView />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
+		<Container>
+			<BreadCrumb />
+			<Switch>
+				<Route path={`/${DASHBOARD}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Suspense fallback={<Spinner />}>
-							<DomainListPanel />
+							<Dashboard />
 						</Suspense>
 					</Container>
-					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`/${MANAGE_APP_ID}/${BUCKET_ROUTE_ID}`}>
-				<BucketHeader />
-				<Container
-					width="100%"
-					orientation="horizontal"
-					mainAlignment="flex-start"
-					background="gray5"
-					padding={{ all: 'large' }}
-				>
-					<Suspense fallback={<Spinner />}>
-						<BucketListPanel />
-					</Suspense>
-					<Suspense fallback={<Spinner />}>
-						<BucketDetailPanel />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>{t('label.storages', 'Storages')}</Text>
+				</Route>
+				<Route path={`/${MONITORING}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Suspense fallback={<Spinner />}>
+							<MonitoringView />
+						</Suspense>
 					</Container>
-					<Suspense fallback={<Spinner />}>
-						<BucketListPanel />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Suspense fallback={<Spinner />}>
-						<Subscription />
-					</Suspense>
-				</Container>
-			</Route>
-			<Route path={`${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
-				<Container orientation="horizontal" mainAlignment="flex-start">
-					<Container width="40%">
-						<Text>{t('label.backup', 'Backup')}</Text>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container width="40%">
+							<Suspense fallback={<Spinner />}>
+								<DomainListPanel />
+							</Suspense>
+						</Container>
+						<Suspense fallback={<Spinner />}>
+							<DomainDetailPanel />
+						</Suspense>
 					</Container>
-					<Suspense fallback={<Spinner />}>
-						<DomainDetailPanel />
-					</Suspense>
-				</Container>
-			</Route>
-		</Switch>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${BUCKET_ROUTE_ID}`}>
+					<BucketHeader />
+					<Container
+						width="100%"
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						background="gray5"
+						padding={{ all: 'large' }}
+					>
+						<Suspense fallback={<Spinner />}>
+							<BucketListPanel />
+						</Suspense>
+						<Suspense fallback={<Spinner />}>
+							<BucketDetailPanel />
+						</Suspense>
+					</Container>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container width="40%">
+							<Text>{t('label.storages', 'Storages')}</Text>
+						</Container>
+						<Suspense fallback={<Spinner />}>
+							<BucketListPanel />
+						</Suspense>
+					</Container>
+				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Suspense fallback={<Spinner />}>
+							<Subscription />
+						</Suspense>
+					</Container>
+				</Route>
+				<Route path={`${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container width="40%">
+							<Text>{t('label.backup', 'Backup')}</Text>
+						</Container>
+						<Suspense fallback={<Spinner />}>
+							<DomainDetailPanel />
+						</Suspense>
+					</Container>
+				</Route>
+			</Switch>
+		</Container>
 	);
 };
 

@@ -87,6 +87,7 @@
         "virtual_hosts": "Virtual Hosts",
         "warn_when_reach_space_quota": "Warn me when I reach this aggregated space quota"
     },
+    "home": "Home",
     "label": {
         "General_Settings": "General Settings",
         "account": "Account",
