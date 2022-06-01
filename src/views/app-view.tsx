@@ -52,7 +52,11 @@ const AppView: FC = () => {
 					</Container>
 				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						height="calc(100vh - 105px)"
+					>
 						<Container width="40%">
 							<Suspense fallback={<Spinner />}>
 								<DomainListPanel />
@@ -97,13 +101,13 @@ const AppView: FC = () => {
 						</Suspense>
 					</Container>
 				</Route>
-				<Route path={`${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
+				<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container width="40%">
 							<Text>{t('label.backup', 'Backup')}</Text>
 						</Container>
 						<Suspense fallback={<Spinner />}>
-							<DomainDetailPanel />
+							<Text>{t('label.backup', 'Backup')}</Text>
 						</Suspense>
 					</Container>
 				</Route>

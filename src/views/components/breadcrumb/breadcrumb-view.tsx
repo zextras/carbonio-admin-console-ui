@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 const BreadCrumb: FC = () => {
 	const [t] = useTranslation();
 	return (
-		<Container height="fit">
+		<Container height="fit" crossAlignment="baseline" mainAlignment="baseline">
 			<Container
 				background="gray5"
 				crossAlignment="flex-start"
