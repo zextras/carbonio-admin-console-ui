@@ -79,9 +79,11 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.domains', 'Domains'),
 			primaryBar: 'AtOutline',
-			appView: AppView
-			// primarybarSection: { ...managementSection },
-			// tooltip: DomainTooltipView
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			primarybarSection: { ...managementSection },
+			tooltip: DomainTooltipView
 		});
 		addRoute({
 			route: STORAGES_ROUTE_ID,
@@ -89,9 +91,11 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.storages', 'Storages'),
 			primaryBar: 'HardDriveOutline',
-			appView: AppView
-			// primarybarSection: { ...managementSection },
-			// tooltip: StorageTooltipView
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			primarybarSection: { ...managementSection },
+			tooltip: StorageTooltipView
 		});
 		addRoute({
 			route: SUBSCRIPTIONS_ROUTE_ID,
@@ -99,9 +103,11 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.subscriptions', 'Subscriptions'),
 			primaryBar: 'AwardOutline',
-			appView: AppView
-			// primarybarSection: { ...managementSection },
-			// tooltip: SubscriptionTooltipView
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			primarybarSection: { ...managementSection },
+			tooltip: SubscriptionTooltipView
 		});
 		addRoute({
 			route: BACKUP_ROUTE_ID,
@@ -109,9 +115,11 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.backup', 'Backup'),
 			primaryBar: 'RefreshOutline',
-			appView: AppView
-			// primarybarSection: { ...servicesSection },
-			// tooltip: BackupTooltipView
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			primarybarSection: { ...servicesSection },
+			tooltip: BackupTooltipView
 		});
 
 		setAppContext({ hello: 'world' });
