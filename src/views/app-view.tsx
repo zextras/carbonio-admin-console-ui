@@ -4,9 +4,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, Suspense, useState } from 'react';
-import { Container, Breadcrumbs, Text } from '@zextras/carbonio-design-system';
-import { Spinner, getBridgedFunctions } from '@zextras/carbonio-shell-ui';
+import React, { FC, Suspense } from 'react';
+import { Container, Text } from '@zextras/carbonio-design-system';
+import { Spinner } from '@zextras/carbonio-shell-ui';
 import { useRouteMatch, Switch, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import DomainListPanel from './domain/domain-list-panel';
@@ -29,6 +29,7 @@ import Subscription from './core/subscribsion/subscription';
 import Dashboard from './components/dashboard/dashboard-view';
 import MonitoringView from './components/monitoring/monitoring-view';
 import BreadCrumb from './components/breadcrumb/breadcrumb-view';
+import BackupApp from './features/backup/BackupApp';
 
 const AppView: FC = () => {
 	const { path } = useRouteMatch();
@@ -103,11 +104,8 @@ const AppView: FC = () => {
 				</Route>
 				<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container width="40%">
-							<Text>{t('label.backup', 'Backup')}</Text>
-						</Container>
 						<Suspense fallback={<Spinner />}>
-							<Text>{t('label.backup', 'Backup')}</Text>
+							<BackupApp />
 						</Suspense>
 					</Container>
 				</Route>
