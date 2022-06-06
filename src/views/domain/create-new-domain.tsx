@@ -19,7 +19,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
-import { DOMAINS_ROUTE_ID } from '../../constants';
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
 

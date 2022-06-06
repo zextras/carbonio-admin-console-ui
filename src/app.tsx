@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, lazy, Suspense, useEffect, useMemo } from 'react';
 import { addRoute, registerActions, setAppContext, Spinner } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -21,7 +21,6 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
 } from './constants';
-import SidebarView from './views/secondary-bar/sidebar';
 import BackupTooltipView from './views/tooltip-view/backup-tooltip-view';
 import DomainTooltipView from './views/tooltip-view/domain-tooltip-view';
 import StorageTooltipView from './views/tooltip-view/storage-tooltip-view';

@@ -9,9 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import logo from '../../assets/ninja_robo.svg';
-import DomainHeader from './domain-header';
 import DomainOperations from './domain-detail-operation';
-import { CREATE_NEW_DOMAIN_ROUTE_ID, DOMAINS_ROUTE_ID } from '../../constants';
+import { CREATE_NEW_DOMAIN_ROUTE_ID } from '../../constants';
 import CreateDomain from './create-new-domain';
 
 const DomainDetailPanel: FC = () => {
