@@ -1,40 +1,33 @@
 {
+    "backup": "Backup",
+    "general_settings": "General Settings",
+    "free_busy": "Free/Busy",
+    "gal": "GAL",
+    "authentication": "Authentication",
+    "mailbox_quota": "Mailbox Quota",
+    "virtual_hosts": "Virtual Hosts",
+    "accounts": "Accounts",
+    "mailing_list": "Mailing List",
+    "mailing_lists": "Mailing Lists",
+    "resources": "Resources",
+    "admin_delegates": "Admin Delegates",
+    "active_sync": "ActiveSync",
+    "export_domain": "Export Domain",
+    "restore_account": "Restore Account",
+    "restore_deleted_email": "Restore Deleted E-mail",
+    "domains": "Domains",
+    "new_domain": "New Domain",
+    "create-new-domain": "New Domain",
+    "account_scan": "AccountScan",
+    "storages": "Storages",
+    "subscriptions": "Subscriptions",
     "backup": {
-        "attributes": {
-            "bck_purge": "Backup Purge",
-            "blobless_mode": "Blobless Mode",
-            "compression": "Compression",
-            "fly_metadata": "On the Fly Metadata",
-            "latency_high": "Latency High Threshold (ms)",
-            "latency_low": "Latency Low Threshold (ms)",
-            "ldap": "LDAP Dump",
-            "max_meta": "Maximum Metadata Size (MB)",
-            "max_operations": "Maximum Operations per Account",
-            "max_waiting": "Max Waiting Time (ms)",
-            "metadata_archive": "Metadata Archiving",
-            "module_startup": "Module Enabled at Startup",
-            "move_blobs": "Move deleted blobs on secondary volume",
-            "purge_config": "Purge Old Configurations",
-            "rt_scanner": "RealTime Scanner",
-            "save_index": "Include Index",
-            "scan_scheduling": "Smart Scan Scheduling",
-            "server_config": "Include Server Configuration",
-            "smartscan_startup": "SmartScan at Startup",
-            "threads_accounts": "Threads number for Accounts",
-            "threads_items": "Threads number for Items",
-            "zero_value_infinite": ""
-        },
         "global": {
-            "account_retention_days": "Keep deleted accounts in the backup",
-            "backup_path": "Backup path",
             "headers": {
                 "advanced": "Advanced",
                 "server_config": "Server Config",
                 "service_status": "Service Status"
-            },
-            "meta_thresh": "Local Metadata Threshold",
-            "min_thresh": "Minimum Space Threshold",
-            "retention_days": "Keep deleted accounts in the backup"
+            }
         }
     },
     "buckets": {
@@ -54,14 +47,7 @@
         }
     },
     "commons": {
-        "account": "",
-        "account_plural": "",
-        "confirm_connection": "CONFIRM CONNECTION",
-        "dirty_form": "Dirty form",
-        "item": "",
-        "item_plural": "",
-        "options": "Options",
-        "schedule": "Schedule"
+        "confirm_connection": "CONFIRM CONNECTION"
     },
     "core": {
         "subscription": {
@@ -325,11 +311,6 @@
     },
     "new_bucket_connection": "CONNECTION",
     "new_bucket_summary": "SUMMARY",
-    "rules": {
-        "between": "",
-        "greater": "",
-        "required": "This field is required"
-    },
     "select_bucket_or_create_new_bucket": "it seems like you haven't setup a bucket type.Click NEW BUCKET button to create a new one.",
     "select_domain_or_create_new": "Please select a domain to manage it or click Create button to create a new one.",
     "select_section_from_left_menu": "Please select a section from the left menu",

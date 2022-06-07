@@ -3,24 +3,98 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-import { Container, Text } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { Container, Text, Row, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { useHistory, useLocation } from 'react-router-dom';
+import styled from 'styled-components';
+import { useDomainStore } from '../../../store/domain/store';
+import { DASHBOARD } from '../../../constants';
 
-const BreadCrumb: FC = () => {
+const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
+	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : '#414141')};
+	cursor: pointer;
+`;
+const BreadCrumb: FC = (props) => {
 	const [t] = useTranslation();
+	const loc = useLocation();
+	const history = useHistory();
+	const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
+	const domainInformation = useDomainStore((state) => state.domain);
+
+	useEffect(() => {
+		if (loc?.pathname) {
+			const currentRoute = loc?.pathname.substring(1);
+			const splitRoute = currentRoute?.split('/');
+			const _storeTempRoute: any[] = [];
+			splitRoute.forEach((item: any, index: number) => {
+				if (index === 0) {
+					_storeTempRoute.push({
+						label: t('home', 'Home'),
+						path: `/${item}`,
+						homePath: `/${DASHBOARD}`
+					});
+				} else {
+					const path = _storeTempRoute.map((i) => i?.path);
+					_storeTempRoute.push({
+						label: t(item),
+						path: `${path[index - 1]}/${item}`,
+						homePath: `/${DASHBOARD}`
+					});
+					if (domainInformation && domainInformation?.id === item) {
+						_storeTempRoute.splice(index, 1);
+					}
+				}
+			});
+			setSplitRoutes(_storeTempRoute);
+		}
+	}, [loc, t, domainInformation]);
+
+	const navigationClick = useCallback(
+		(item, index) => {
+			if (index === 0) {
+				history.push(item?.homePath);
+			} else {
+				history.push(item?.path);
+			}
+		},
+		[history]
+	);
+
 	return (
 		<Container height="fit" crossAlignment="baseline" mainAlignment="baseline">
 			<Container
+				orientation="horizontal"
 				background="gray5"
-				crossAlignment="flex-start"
-				mainAlignment="center"
+				mainAlignment="flex-start"
+				crossAlignment="center"
 				height="44px"
-				padding={{ left: 'large', right: 'large' }}
+				padding={{ left: 'small', right: 'small' }}
+				className="dddd"
 			>
-				<Text size="medium" weight="regular" color="gray0">
-					{t('home', 'Home')}
-				</Text>
+				{splitRoutes.map((item: any, index) => (
+					<Row key="index">
+						<BreadCrumbText
+							size="medium"
+							weight="regular"
+							isLast={splitRoutes.length - 1 === index}
+							onClick={(): void => {
+								if (splitRoutes.length - 1 !== index) {
+									navigationClick(item, index);
+								}
+							}}
+						>
+							{item?.label}
+						</BreadCrumbText>
+						{index !== splitRoutes.length - 1 && (
+							<Padding all="small">
+								<BreadCrumbText size="medium" weight="regular" isLast={false}>
+									&gt;
+								</BreadCrumbText>
+							</Padding>
+						)}
+					</Row>
+				))}
 			</Container>
 		</Container>
 	);
