@@ -58,7 +58,7 @@ const AppView: FC = () => {
 						mainAlignment="flex-start"
 						height="calc(100vh - 105px)"
 					>
-						<Container width="30%" style={{ maxWidth: '265px' }}>
+						<Container style={{ maxWidth: '265px' }}>
 							<Suspense fallback={<Spinner />}>
 								<DomainListPanel />
 							</Suspense>
