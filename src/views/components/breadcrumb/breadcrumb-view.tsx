@@ -88,7 +88,7 @@ const BreadCrumb: FC = () => {
 						{index !== splitRoutes.length - 1 && (
 							<Padding left="extrasmall" right="extrasmall">
 								<BreadCrumbText size="medium" weight="regular" isLast={false}>
-									&gt;
+									/
 								</BreadCrumbText>
 							</Padding>
 						)}
