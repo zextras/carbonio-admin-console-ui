@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useState, FC, ReactElement } from 'react';
+import React, { useState, FC, ReactElement, useEffect, useCallback } from 'react';
 import {
 	Button,
 	Container,
@@ -107,7 +107,7 @@ const Subscription: FC = () => {
 
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 
-	const getLicence = (): void => {
+	const getLicence = useCallback(() => {
 		fetchSoap('zextras', {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
@@ -139,8 +139,11 @@ const Subscription: FC = () => {
 				setVersion(response.response[server].response.version);
 			}
 		});
-	};
-	getLicence();
+	}, [server]);
+
+	useEffect(() => {
+		getLicence();
+	}, [getLicence]);
 
 	const activeLicence = (): void => {
 		setDisableActiveBtn(true);
