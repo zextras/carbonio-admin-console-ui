@@ -15,17 +15,17 @@ const GlobalView: FC = () => {
 
 	const navigationLinks = [
 		{
-			label: t('backup.global.headers.service_status', 'Service Status'),
+			label: t('label.service_status', 'Service Status'),
 			icon: 'ActivityOutline',
-			url: '/services/backup/service-status'
+			url: '/services/backup/service_status'
 		},
 		{
-			label: t('backup.global.headers.server_config', 'Server Config'),
+			label: t('label.server_config', 'Server Config'),
 			icon: 'HardDriveOutline',
-			url: '/services/backup/server-config'
+			url: '/services/backup/server_config'
 		},
 		{
-			label: t('backup.global.headers.advanced', 'Advanced'),
+			label: t('label.advanced', 'Advanced'),
 			icon: 'LogInOutline',
 			url: '/services/backup/advanced'
 		}
@@ -38,11 +38,15 @@ const GlobalView: FC = () => {
 				<ColumnLeft width="100%" padding={{ top: 'medium' }}>
 					<RouterSwitch>
 						<Route exact path="/services/backup">
-							<Redirect to="/services/backup/service-status" />
+							<Redirect to="/services/backup/service_status" />
 						</Route>
-						<Route path="/services/backup/service-status">Service Status</Route>
-						<Route path="/services/backup/server-config">Server Config</Route>
-						<Route path="/services/backup/advanced">Advanced</Route>
+						<Route path="/services/backup/service_status">
+							{t('label.service_status', 'Service Status')}
+						</Route>
+						<Route path="/services/backup/server_config">
+							{t('label.server_config', 'Server Config')}
+						</Route>
+						<Route path="/services/backup/advanced">{t('label.advanced', 'Advanced')}</Route>
 					</RouterSwitch>
 				</ColumnLeft>
 			</ColumnFull>

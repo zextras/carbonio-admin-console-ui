@@ -73,7 +73,7 @@ const BreadCrumb: FC = () => {
 				padding={{ left: 'large', right: 'large' }}
 			>
 				{splitRoutes.map((item: any, index) => (
-					<Row key="index">
+					<Row key={index}>
 						<BreadCrumbText
 							size="medium"
 							weight="regular"

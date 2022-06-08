@@ -1,13 +1,4 @@
 {
-    "backup": {
-        "global": {
-            "headers": {
-                "advanced": "Advanced",
-                "server_config": "Server Config",
-                "service_status": "Service Status"
-            }
-        }
-    },
     "buckets": {
         "bucket_list": "Buckets List",
         "bucket_type": "Buckets Type",
@@ -227,7 +218,7 @@
         "server_lists": "Server Lists",
         "serverl_and_volumes": "Server & Volumes",
         "servers": "Servers",
-        "service_status": "Service_Status",
+        "service_status": "Service Status",
         "services": "Services",
         "signature_required": "Signature information is required.",
         "snackbar": {
