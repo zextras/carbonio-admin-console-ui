@@ -42,13 +42,7 @@ export const ColumnLeft = ({
 // }
 
 export const ShellBody = ({ children }: { children: any }): ReactElement => (
-	<Row
-		width="100%"
-		height="100%"
-		mainAlignment="space-between"
-		crossAlignment="flex-start"
-		padding={{ top: 'large' }}
-	>
+	<Row width="100%" height="100%" mainAlignment="space-between" crossAlignment="flex-start">
 		{children}
 	</Row>
 );

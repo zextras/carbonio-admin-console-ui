@@ -18,10 +18,8 @@ const BackupApp: FC = () => (
 		<SnackbarManager>
 			<ModalManager>
 				<Container
-					width={process.env.NODE_ENV === 'development' ? '100%' : 'calc(100vw - 264px)'}
-					height={
-						process.env.NODE_ENV === 'development' ? 'calc(100vh - 16px)' : 'calc(100vh - 108px)'
-					}
+					width="100%"
+					height="calc(100vh - 105px)"
 					mainAlignment="flex-start"
 					style={{ minHeight: '300px' }}
 				>
