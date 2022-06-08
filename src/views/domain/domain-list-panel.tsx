@@ -184,32 +184,32 @@ const DomainListPanel: FC = () => {
 		() => [
 			{
 				id: GENERAL_INFORMATION,
-				name: t('domain.general_information', 'General Information'),
+				name: t('label.general_information', 'General Information'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: GENERAL_SETTINGS,
-				name: t('domain.general_settings', 'General Settings'),
+				name: t('label.general_settings', 'General Settings'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: GAL,
-				name: t('domain.gal', 'GAL'),
+				name: t('label.gal', 'GAL'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: AUTHENTICATION,
-				name: t('domain.authentication', 'Authentication'),
+				name: t('label.authentication', 'Authentication'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: VIRTUAL_HOSTS,
-				name: t('domain.virtual_hosts', 'Virtual Hosts'),
+				name: t('label.virtual_hosts', 'Virtual Hosts'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: MAILBOX_QUOTA,
-				name: t('domain.mailbox_quota', 'Mailbox Quota'),
+				name: t('label.mailbox_quota', 'Mailbox Quota'),
 				domainSelected: isDomainSelect
 			}
 		],
@@ -220,47 +220,47 @@ const DomainListPanel: FC = () => {
 		() => [
 			{
 				id: ACCOUNTS,
-				name: t('domain.accounts', 'Accounts'),
+				name: t('label.accounts', 'Accounts'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: MAILING_LIST,
-				name: t('domain.mailing_list', 'Mailing List'),
+				name: t('label.mailing_list', 'Mailing List'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: RESOURCES,
-				name: t('domain.resources', 'Resources'),
+				name: t('label.resources', 'Resources'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: ADMIN_DELEGATES,
-				name: t('domain.admin_delegates', 'Admin Delegates'),
+				name: t('label.admin_delegates', 'Admin Delegates'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: ACTIVE_SYNC,
-				name: t('domain.active_sync', 'ActiveSync'),
+				name: t('label.active_sync', 'ActiveSync'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: ACCOUNT_SCAN,
-				name: t('domain.account_scan', 'AccountScan'),
+				name: t('label.account_scan', 'AccountScan'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: EXPORT_DOMAIN,
-				name: t('domain.export_domain', 'Export Domain'),
+				name: t('label.export_domain', 'Export Domain'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: RESTORE_ACCOUNT,
-				name: t('domain.restore_account', 'Restore Account'),
+				name: t('label.restore_account', 'Restore Account'),
 				domainSelected: isDomainSelect
 			},
 			{
 				id: RESTORE_DELETED_EMAIL,
-				name: t('domain.restore_deleted_email', 'Restore Deleted E-mail'),
+				name: t('label.restore_deleted_email', 'Restore Deleted E-mail'),
 				domainSelected: isDomainSelect
 			}
 		],
@@ -374,7 +374,7 @@ const DomainListPanel: FC = () => {
 				</Dropdown>
 			</Row>
 			<ListPanelItem
-				title={t('domain.details', 'Details')}
+				title={t('label.details', 'Details')}
 				isListExpanded={isDetailListExpanded}
 				setToggleView={toggleDetailView}
 			/>

@@ -106,7 +106,7 @@ const BucketDetailPanel: FC = () => {
 						>
 							<Button
 								type="outlined"
-								label={t('create_new_bucket', 'NEW BUCKET')}
+								label={t('label.create_new_bucket', 'NEW BUCKET')}
 								icon="Plus"
 								color="info"
 								onClick={(): any => setToggleBucket(!toggleBucket)}

@@ -535,7 +535,7 @@ const DomainGeneralSettings: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('domain.general_settings', 'General Settings')}
+								{t('label.general_settings', 'General Settings')}
 							</Text>
 						</Row>
 						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">

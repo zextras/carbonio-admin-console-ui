@@ -235,7 +235,7 @@ const CreateDomain: FC = () => {
 				<Row width="100%" mainAlignment="flex-start">
 					<Padding all="large">
 						<Text size="medium" weight="bold" color="gray0">
-							{t('domain.new_domain', 'New Domain')}
+							{t('label.new_domain', 'New Domain')}
 						</Text>
 					</Padding>
 					<Divider />

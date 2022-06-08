@@ -177,7 +177,7 @@ const DomainVirtualHosts: FC = () => {
 								crossAlignment="flex-start"
 							>
 								<Text size="medium" weight="bold" color="gray0">
-									{t('domain.virtual_hosts', 'Virtual Hosts')}
+									{t('label.virtual_hosts', 'Virtual Hosts')}
 								</Text>
 							</Row>
 							<Row

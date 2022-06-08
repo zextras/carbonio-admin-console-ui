@@ -27,7 +27,7 @@ const DomainTooltipView: FC = () => {
 						label: t('label.domain_status', 'Domain Status')
 					},
 					{
-						label: t('label.General_Settings', 'General Settings')
+						label: t('label.general_Settings', 'General Settings')
 					},
 					{
 						label: t('label.gal', 'GAL')
@@ -56,22 +56,22 @@ const DomainTooltipView: FC = () => {
 						label: t('label.resources', 'Resources')
 					},
 					{
-						label: t('domain.admin_delegates', 'Admin Delegates')
+						label: t('label.admin_delegates', 'Admin Delegates')
 					},
 					{
-						label: t('domain.active_sync', 'ActiveSync')
+						label: t('label.active_sync', 'ActiveSync')
 					},
 					{
-						label: t('domain.account_scan', 'AccountScan')
+						label: t('label.account_scan', 'AccountScan')
 					},
 					{
-						label: t('domain.export_domain', 'Export Domain')
+						label: t('label.export_domain', 'Export Domain')
 					},
 					{
-						label: t('domain.restore_account', 'Restore Account')
+						label: t('label.restore_account', 'Restore Account')
 					},
 					{
-						label: t('domain.restore_deleted_email', 'Restore Deleted E-mail')
+						label: t('label.restore_deleted_email', 'Restore Deleted E-mail')
 					}
 				]
 			}

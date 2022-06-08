@@ -304,7 +304,7 @@ const DomainGalSettings: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('domain.gal', 'GAL')}
+								{t('label.gal', 'GAL')}
 							</Text>
 						</Row>
 						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
@@ -364,7 +364,7 @@ const DomainGalSettings: FC = () => {
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('domain.gal_mode', 'GAL Mode')}
+									label={t('label.gal_mode', 'GAL Mode')}
 									value={
 										!domainData?.zimbraGalMode || domainData?.zimbraGalMode === 'zimbra'
 											? t('label.internal', 'Internal')

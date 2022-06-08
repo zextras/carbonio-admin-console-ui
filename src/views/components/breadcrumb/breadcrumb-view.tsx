@@ -30,7 +30,7 @@ const BreadCrumb: FC = () => {
 			splitRoute.forEach((item: any, index: number) => {
 				if (index === 0) {
 					_storeTempRoute.push({
-						label: t('home', 'Home'),
+						label: t('label.home', 'Home'),
 						path: `/${item}`,
 						homePath: `/${DASHBOARD}`
 					});
@@ -38,7 +38,7 @@ const BreadCrumb: FC = () => {
 					const path = _storeTempRoute.map((i) => i?.path);
 					_storeTempRoute.push({
 						/* i18next-extract-disable-next-line */
-						label: t(item),
+						label: t(`label.${item}`),
 						path: `${path[index - 1]}/${item}`,
 						homePath: `/${DASHBOARD}`
 					});

@@ -69,7 +69,7 @@ const DomainDetailPanel: FC = () => {
 							>
 								<Button
 									type="outlined"
-									label={t('create_new_domain', 'Creat New Domain')}
+									label={t('label.create_new_domain', 'Creat New Domain')}
 									icon="Plus"
 									color="info"
 									onClick={createNewDomain}
