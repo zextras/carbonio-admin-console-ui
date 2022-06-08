@@ -8,7 +8,6 @@ import { Container, Text, Row, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { useDomainStore } from '../../../store/domain/store';
 import { DASHBOARD } from '../../../constants';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
@@ -20,7 +19,6 @@ const BreadCrumb: FC = () => {
 	const loc = useLocation();
 	const history = useHistory();
 	const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
-	const domainInformation = useDomainStore((state) => state.domain);
 
 	useEffect(() => {
 		if (loc?.pathname) {
@@ -50,7 +48,7 @@ const BreadCrumb: FC = () => {
 
 			setSplitRoutes(_storeTempRoute);
 		}
-	}, [loc, t, domainInformation]);
+	}, [loc, t]);
 
 	const navigationClick = useCallback(
 		(item, index) => {
