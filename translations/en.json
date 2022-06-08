@@ -48,7 +48,6 @@
             "version": "Zextras version"
         }
     },
-    "create-new-domain": "New Domain",
     "create_new_bucket": "NEW BUCKET",
     "domain": {
         "account_gal_synchronization": "Account Name of GAL Synchronization",
@@ -112,6 +111,7 @@
         "create_domain_success_msg": "{{domainName}} has been created successfully",
         "create_new_bucket": "NEW BUCKET",
         "create_new_domain": "Create New Domain",
+        "create-new-domain": "New Domain",
         "dashboard": "Dashboard",
         "datasource_name_for_internal_gal": "Datasource name for internal GAL",
         "days": "Days",

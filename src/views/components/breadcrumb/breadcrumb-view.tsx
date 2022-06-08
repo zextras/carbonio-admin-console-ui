@@ -42,11 +42,12 @@ const BreadCrumb: FC = () => {
 						path: `${path[index - 1]}/${item}`,
 						homePath: `/${DASHBOARD}`
 					});
-					if (domainInformation && domainInformation?.id === item) {
+					if (_storeTempRoute.find((sr) => sr?.label.startsWith('label.'))) {
 						_storeTempRoute.splice(index, 1);
 					}
 				}
 			});
+
 			setSplitRoutes(_storeTempRoute);
 		}
 	}, [loc, t, domainInformation]);
