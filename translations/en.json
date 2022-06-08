@@ -48,6 +48,7 @@
             "version": "Zextras version"
         }
     },
+    "create-new-domain": "New Domain",
     "create_new_bucket": "NEW BUCKET",
     "domain": {
         "account_gal_synchronization": "Account Name of GAL Synchronization",
