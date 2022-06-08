@@ -18,9 +18,11 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { useHistory } from 'react-router-dom';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
+import { DOMAINS_ROUTE_ID, MANAGE } from '../../constants';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -45,6 +47,7 @@ export enum GAL_MODE {
 const CreateDomain: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const history = useHistory();
 	const galModes = useMemo(
 		() => [
 			{
@@ -213,7 +216,7 @@ const CreateDomain: FC = () => {
 	};
 
 	const onCancel = (): void => {
-		replaceHistory(`/`);
+		history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}`);
 	};
 
 	return (

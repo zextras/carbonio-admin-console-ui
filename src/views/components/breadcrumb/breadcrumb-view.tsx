@@ -15,7 +15,7 @@ const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : '#414141')};
 	cursor: pointer;
 `;
-const BreadCrumb: FC = (props) => {
+const BreadCrumb: FC = () => {
 	const [t] = useTranslation();
 	const loc = useLocation();
 	const history = useHistory();
@@ -69,8 +69,7 @@ const BreadCrumb: FC = (props) => {
 				mainAlignment="flex-start"
 				crossAlignment="center"
 				height="44px"
-				padding={{ left: 'small', right: 'small' }}
-				className="dddd"
+				padding={{ left: 'large', right: 'large' }}
 			>
 				{splitRoutes.map((item: any, index) => (
 					<Row key="index">
@@ -87,7 +86,7 @@ const BreadCrumb: FC = (props) => {
 							{item?.label}
 						</BreadCrumbText>
 						{index !== splitRoutes.length - 1 && (
-							<Padding all="small">
+							<Padding left="extrasmall" right="extrasmall">
 								<BreadCrumbText size="medium" weight="regular" isLast={false}>
 									&gt;
 								</BreadCrumbText>

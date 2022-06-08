@@ -1,26 +1,9 @@
 {
-    "backup": "Backup",
-    "general_settings": "General Settings",
-    "free_busy": "Free/Busy",
-    "gal": "GAL",
-    "authentication": "Authentication",
-    "mailbox_quota": "Mailbox Quota",
-    "virtual_hosts": "Virtual Hosts",
-    "accounts": "Accounts",
-    "mailing_list": "Mailing List",
-    "mailing_lists": "Mailing Lists",
-    "resources": "Resources",
-    "admin_delegates": "Admin Delegates",
-    "active_sync": "ActiveSync",
-    "export_domain": "Export Domain",
-    "restore_account": "Restore Account",
-    "restore_deleted_email": "Restore Deleted E-mail",
-    "domains": "Domains",
-    "new_domain": "New Domain",
-    "create-new-domain": "New Domain",
     "account_scan": "AccountScan",
-    "storages": "Storages",
-    "subscriptions": "Subscriptions",
+    "accounts": "Accounts",
+    "active_sync": "ActiveSync",
+    "admin_delegates": "Admin Delegates",
+    "authentication": "Authentication",
     "backup": {
         "global": {
             "headers": {
@@ -79,6 +62,7 @@
             "version": "Zextras version"
         }
     },
+    "create-new-domain": "New Domain",
     "create_new_bucket": "NEW BUCKET",
     "create_new_domain": "Create New Domain",
     "domain": {
@@ -122,6 +106,11 @@
         "virtual_hosts": "Virtual Hosts",
         "warn_when_reach_space_quota": "Warn me when I reach this aggregated space quota"
     },
+    "domains": "Domains",
+    "export_domain": "Export Domain",
+    "free_busy": "Free/Busy",
+    "gal": "GAL",
+    "general_settings": "General Settings",
     "home": "Home",
     "label": {
         "General_Settings": "General Settings",
@@ -301,6 +290,9 @@
         "your_auth_method_is": "Your Auth Method is"
     },
     "log": "Log",
+    "mailbox_quota": "Mailbox Quota",
+    "mailing_list": "Mailing List",
+    "mailing_lists": "Mailing Lists",
     "many_domain_info_msg": "So many domains! Which one would you like to see? Start typing to filter.",
     "message": {
         "snackbar": {
@@ -311,9 +303,15 @@
     },
     "new_bucket_connection": "CONNECTION",
     "new_bucket_summary": "SUMMARY",
+    "new_domain": "New Domain",
+    "resources": "Resources",
+    "restore_account": "Restore Account",
+    "restore_deleted_email": "Restore Deleted E-mail",
     "select_bucket_or_create_new_bucket": "it seems like you haven't setup a bucket type.Click NEW BUCKET button to create a new one.",
     "select_domain_or_create_new": "Please select a domain to manage it or click Create button to create a new one.",
     "select_section_from_left_menu": "Please select a section from the left menu",
+    "storages": "Storages",
+    "subscriptions": "Subscriptions",
     "timezone": {
         "africa_algiers": "{{value}} West Central Africa",
         "africa_cairo": "{{value}} Egypt",
@@ -453,5 +451,6 @@
         "pacific_tongatapu": "{{value}} Nuku’alofa",
         "utc": "{{value}} Coordinated Universal Time"
     },
+    "virtual_hosts": "Virtual Hosts",
     "welcome_to_carbonio": "Welcome {{adminName}}, to Carbonio {{carbonioVersion}}!"
 }
