@@ -37,6 +37,7 @@ const BreadCrumb: FC = () => {
 				} else {
 					const path = _storeTempRoute.map((i) => i?.path);
 					_storeTempRoute.push({
+						/* i18next-extract-disable-next-line */
 						label: t(item),
 						path: `${path[index - 1]}/${item}`,
 						homePath: `/${DASHBOARD}`
