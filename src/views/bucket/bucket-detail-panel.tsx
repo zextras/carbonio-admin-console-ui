@@ -45,77 +45,90 @@ const BucketDetailPanel: FC = () => {
 	];
 
 	return (
-		<>
-			<RelativeContainer
-				orientation="column"
-				crossAlignment="flex-start"
+		<Container
+			orientation="column"
+			crossAlignment="center"
+			mainAlignment="flex-start"
+			style={{ overflowY: 'hidden' }}
+			background="gray6"
+		>
+			<Container
+				padding={{ all: 'large' }}
 				mainAlignment="flex-start"
-				style={{ overflowY: 'auto', marginLeft: '16px' }}
-				background="white"
+				background="gray6"
+				style={{ maxWidth: '982px' }}
 			>
-				{toggleBucket && (
-					<AbsoluteContainer orientation="vertical" background="gray5">
-						<NewBucket setToggleBucket={setToggleBucket} title="Bucket Connection" />
-					</AbsoluteContainer>
-				)}
-				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-					<Text size="extralarge" weight="bold">
-						{t('buckets.bucket_list', 'Buckets List')}
-					</Text>
-				</Row>
-				<Divider />
-				<Row padding="32px 12px 10px 12px" width="100%">
-					<Select
-						items={items}
-						background="gray5"
-						label={t('buckets.bucket_type', 'Buckets Type')}
-						onChange={setSelected}
-						showCheckbox={false}
-						padding={{ right: 'medium' }}
-					/>
-				</Row>
-				<Container>
-					<Text
-						overflow="break-word"
-						weight="normal"
-						size="large"
-						style={{ whiteSpace: 'pre-line', textAlign: 'center', 'font-family': 'roboto' }}
-					>
-						<img src={logo} alt="logo" />
-					</Text>
-					<Padding all="medium" width="47%">
+				<RelativeContainer
+					orientation="column"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					style={{ overflowY: 'auto' }}
+					background="grey6"
+				>
+					{toggleBucket && (
+						<AbsoluteContainer orientation="vertical" background="gray5">
+							<NewBucket setToggleBucket={setToggleBucket} title="Bucket Connection" />
+						</AbsoluteContainer>
+					)}
+					<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
+						<Text size="extralarge" weight="bold">
+							{t('buckets.bucket_list', 'Buckets List')}
+						</Text>
+					</Row>
+					<Divider />
+					<Row padding="32px 12px 10px 12px" width="100%">
+						<Select
+							items={items}
+							background="gray5"
+							label={t('buckets.bucket_type', 'Buckets Type')}
+							onChange={setSelected}
+							showCheckbox={false}
+							padding={{ right: 'medium' }}
+						/>
+					</Row>
+					<Container>
 						<Text
-							color="gray1"
 							overflow="break-word"
 							weight="normal"
 							size="large"
-							width="60%"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center', 'font-family': 'roboto' }}
 						>
-							{t(
-								'select_bucket_or_create_new_bucket',
-								"It seems like you haven't setup a bucket type. Click NEW BUCKET button to create a new one."
-							)}
+							<img src={logo} alt="logo" />
 						</Text>
-					</Padding>
-					<Padding all="medium">
-						<Text
-							size="small"
-							overflow="break-word"
-							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-						>
-							<Button
-								type="outlined"
-								label={t('label.create_new_bucket', 'NEW BUCKET')}
-								icon="Plus"
-								color="info"
-								onClick={(): any => setToggleBucket(!toggleBucket)}
-							/>
-						</Text>
-					</Padding>
-				</Container>
-			</RelativeContainer>
-		</>
+						<Padding all="medium" width="47%">
+							<Text
+								color="gray1"
+								overflow="break-word"
+								weight="normal"
+								size="large"
+								width="60%"
+								style={{ whiteSpace: 'pre-line', textAlign: 'center', 'font-family': 'roboto' }}
+							>
+								{t(
+									'select_bucket_or_create_new_bucket',
+									"It seems like you haven't setup a bucket type. Click NEW BUCKET button to create a new one."
+								)}
+							</Text>
+						</Padding>
+						<Padding all="medium">
+							<Text
+								size="small"
+								overflow="break-word"
+								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
+							>
+								<Button
+									type="outlined"
+									label={t('label.create_new_bucket', 'NEW BUCKET')}
+									icon="Plus"
+									color="info"
+									onClick={(): any => setToggleBucket(!toggleBucket)}
+								/>
+							</Text>
+						</Padding>
+					</Container>
+				</RelativeContainer>
+			</Container>
+		</Container>
 	);
 };
 export default BucketDetailPanel;

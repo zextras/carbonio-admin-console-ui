@@ -68,7 +68,7 @@ const AppView: FC = () => {
 						</Suspense>
 					</Container>
 				</Route>
-				<Route path={`/${MANAGE_APP_ID}/${BUCKET_ROUTE_ID}`}>
+				{/* <Route path={`/${MANAGE_APP_ID}/${BUCKET_ROUTE_ID}`}>
 					<BucketHeader />
 					<Container
 						width="100%"
@@ -84,14 +84,16 @@ const AppView: FC = () => {
 							<BucketDetailPanel />
 						</Suspense>
 					</Container>
-				</Route>
+				</Route> */}
 				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container width="40%">
-							<Text>{t('label.storages', 'Storages')}</Text>
+						<Container style={{ maxWidth: '265px' }}>
+							<Suspense fallback={<Spinner />}>
+								<BucketListPanel />
+							</Suspense>
 						</Container>
 						<Suspense fallback={<Spinner />}>
-							<BucketListPanel />
+							<BucketDetailPanel />
 						</Suspense>
 					</Container>
 				</Route>

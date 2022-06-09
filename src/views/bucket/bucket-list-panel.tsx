@@ -28,7 +28,7 @@ const ListItem: FC<{
 	activeBackground,
 	select
 }) => (
-	<Container height={55} orientation="vertical" mainAlignment="flex-start" width="100%">
+	<Container height={52} orientation="vertical" mainAlignment="flex-start" width="100%">
 		<Container padding={{ all: 'small' }} orientation="horizontal" mainAlignment="flex-start">
 			<Padding all="small">
 				<Icon icon="ActivityOutline" size="large" />
@@ -69,7 +69,8 @@ const BucketListPanel: FC = () => {
 			crossAlignment="flex-start"
 			mainAlignment="flex-start"
 			style={{ overflowY: 'auto' }}
-			width="30%"
+			width="100%"
+			background="gray5"
 		>
 			<Container crossAlignment="flex-start" mainAlignment="flex-start">
 				<List items={options} ItemComponent={ListItem} active={1} selected={selected} />
