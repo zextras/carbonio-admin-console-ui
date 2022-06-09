@@ -140,6 +140,7 @@ const App: FC = () => {
 			id: 'new-domain',
 			type: 'new'
 		});
+		history.push(`/${DASHBOARD}`);
 	}, [t, history]);
 
 	return null;
