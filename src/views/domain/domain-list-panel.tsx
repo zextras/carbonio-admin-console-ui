@@ -335,7 +335,7 @@ const DomainListPanel: FC = () => {
 			crossAlignment="flex-start"
 			mainAlignment="flex-start"
 			background="gray5"
-			style={{ overflow: 'auto' }}
+			style={{ overflow: 'auto', 'border-top': '1px solid #FFFFFF' }}
 		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Dropdown

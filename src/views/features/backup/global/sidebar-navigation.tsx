@@ -32,7 +32,7 @@ export const SidebarNavigation = ({ links }: { links: any }): ReactElement => {
 			mainAlignment="flex-start"
 			crossAlignment="stretch"
 			background="gray5"
-			style={{ width: '265px', overflow: 'auto' }}
+			style={{ width: '265px', overflow: 'auto', 'border-top': '1px solid #FFFFFF' }}
 		>
 			{links.map((link: any) => (
 				<NavigationLink
