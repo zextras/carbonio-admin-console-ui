@@ -4,10 +4,10 @@ SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
 SPDX-License-Identifier: AGPL-3.0-only
 -->
 <div align="center">
-  <h1>Carbonio Mails UI</h1>
+  <h1>Carbonio Admin Console UI</h1>
 </div>
 
-Mails module for Zextras Carbonio
+Admin module for Zextras Carbonio
 
 <p align="center">
   <a href="https://github.com/zextras/carbonio-mails-ui/graphs/contributors" alt="Contributors">
@@ -28,7 +28,6 @@ Mails module for Zextras Carbonio
 - install the dependencies:
 ```
 npm install
-npm run sdk-setup
 ```
 
 <h4>Watch Mode</h4>
