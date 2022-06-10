@@ -7,18 +7,17 @@ import React, { FC, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
-	Text,
 	IconButton,
 	Divider,
 	Button,
 	Padding,
-	MultiButton,
 	Icon,
 	Input,
-	Table
+	Table,
+	Text
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import logo from '../../assets/ninja_robo.svg';
+import logo from '../../assets/gardian.svg';
 import Paginig from '../components/paging';
 
 const DomainMailingList: FC = () => {
@@ -103,12 +102,20 @@ const DomainMailingList: FC = () => {
 								/>
 							</Padding>
 							<Padding right="medium">
-								<Button label={t('label.details', 'Details')} color="primary" type="outlined" />
+								<Button
+									label={t('label.details', 'Details')}
+									color="primary"
+									type="outlined"
+									disabled
+								/>
 							</Padding>
-							<MultiButton
-								background="primary"
+							<Button
+								type="outlined"
 								label={t('label.bulk_actions', 'Bulk Actions')}
-								items={[]}
+								icon="ArrowIosDownward"
+								iconPlacement="right"
+								color="primary"
+								disabled
 							/>
 						</Row>
 					</Row>
@@ -155,7 +162,39 @@ const DomainMailingList: FC = () => {
 							)}
 							{mailingList && mailingList.length === 0 && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="flex-start">
-									<img src={logo} alt="logo" />
+									<Row>
+										<img src={logo} alt="logo" />
+									</Row>
+									<Row
+										padding={{ top: 'extralarge' }}
+										orientation="vertical"
+										crossAlignment="center"
+										style={{ 'text-align': 'center' }}
+									>
+										<Text weight="light" color="#828282" size="large" overflow="break-word">
+											{t('label.list_is_empty', 'The list is empty.')}
+										</Text>
+									</Row>
+									<Row
+										orientation="vertical"
+										crossAlignment="center"
+										style={{ 'text-align': 'center' }}
+										padding={{ top: 'small' }}
+									>
+										<Text weight="light" color="#828282" size="large" overflow="break-word">
+											{t('label.do_you_need_more_information', 'Do you need more information?')}
+										</Text>
+									</Row>
+									<Row padding={{ top: 'small' }}>
+										<Text
+											weight="light"
+											color="#81ace4"
+											size="large"
+											style={{ 'text-decoration': ' underline', cursor: 'pointer' }}
+										>
+											{t('label.click_here', 'Click here')}
+										</Text>
+									</Row>
 								</Container>
 							)}
 						</Row>
