@@ -13,7 +13,8 @@ import {
 	GENERAL_SETTINGS,
 	VIRTUAL_HOSTS,
 	AUTHENTICATION,
-	MAILBOX_QUOTA
+	MAILBOX_QUOTA,
+	MAILING_LIST
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -22,6 +23,7 @@ import DomainGeneralSettings from './domain-general-settings';
 import DomainMailboxQuotaSetting from './domain-mailbox-quota-settings';
 import DomainVirtualHosts from './domain-virtual-hosts';
 import { useDomainStore } from '../../store/domain/store';
+import DomainMailingList from './domain-mailing-list';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
@@ -81,6 +83,8 @@ const DomainOperations: FC = () => {
 						return <DomainVirtualHosts />;
 					case MAILBOX_QUOTA:
 						return <DomainMailboxQuotaSetting />;
+					case MAILING_LIST:
+						return <DomainMailingList />;
 					default:
 						return null;
 				}
