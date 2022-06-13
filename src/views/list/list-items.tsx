@@ -4,17 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback } from 'react';
-import { Container, Padding, List, Text } from '@zextras/carbonio-design-system';
-import { GENERAL_INFORMATION } from '../../constants';
+import { Container, Padding, List, Text, Divider } from '@zextras/carbonio-design-system';
 
-const DomainListItems: FC<{
+const ListItems: FC<{
 	items: any;
 	selectedOperationItem: any;
 	setSelectedOperationItem: any;
 }> = ({ items, selectedOperationItem, setSelectedOperationItem }) => {
-	const selectDomainOption = useCallback(
+	const selectOption = useCallback(
 		(item) => () => {
-			if (item?.domainSelected && item?.id !== GENERAL_INFORMATION) {
+			if (item?.isSelected) {
 				setSelectedOperationItem(item?.id);
 			}
 		},
@@ -44,18 +43,19 @@ const DomainListItems: FC<{
 			orientation="vertical"
 			mainAlignment="flex-start"
 			width="100%"
-			onClick={selectDomainOption(item)}
+			onClick={selectOption(item)}
 		>
 			<Container padding={{ all: 'small' }} orientation="horizontal" mainAlignment="flex-start">
 				<Padding horizontal="small">
 					<Text
-						color={item?.domainSelected ? '#414141' : 'rgba(204, 204, 204, 1)'}
+						color={item?.isSelected ? '#414141' : 'rgba(204, 204, 204, 1)'}
 						weight={item?.id === selectedOperationItem ? 'bold' : 'regular'}
 					>
 						{item.name}
 					</Text>
 				</Padding>
 			</Container>
+			<Divider color="gray3" />
 		</Container>
 	);
 
@@ -66,4 +66,4 @@ const DomainListItems: FC<{
 	);
 };
 
-export default DomainListItems;
+export default ListItems;

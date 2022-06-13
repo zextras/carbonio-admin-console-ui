@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import {
 	APP_ID,
 	BACKUP_ROUTE_ID,
+	COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
@@ -25,6 +26,7 @@ import BackupTooltipView from './views/tooltip-view/backup-tooltip-view';
 import DomainTooltipView from './views/tooltip-view/domain-tooltip-view';
 import StorageTooltipView from './views/tooltip-view/storage-tooltip-view';
 import SubscriptionTooltipView from './views/tooltip-view/subscription-tooltip-view';
+import CosTooltipView from './views/tooltip-view/cos-tooltip-view';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -97,8 +99,20 @@ const App: FC = () => {
 			tooltip: StorageTooltipView
 		});
 		addRoute({
-			route: SUBSCRIPTIONS_ROUTE_ID,
+			route: COS_ROUTE_ID,
 			position: 3,
+			visible: true,
+			label: t('label.cos', 'COS'),
+			primaryBar: 'CosOutline',
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			primarybarSection: { ...managementSection },
+			tooltip: CosTooltipView
+		});
+		addRoute({
+			route: SUBSCRIPTIONS_ROUTE_ID,
+			position: 4,
 			visible: true,
 			label: t('label.subscriptions', 'Subscriptions'),
 			primaryBar: 'AwardOutline',

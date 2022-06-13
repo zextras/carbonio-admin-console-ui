@@ -22,7 +22,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { timeZoneList } from '../utility/utils';
+import { timeZoneList, getFormatedDate, getDateFromStr } from '../utility/utils';
 import {
 	ACTIVE,
 	CLOSED,
@@ -253,29 +253,6 @@ const DomainGeneralSettings: FC = () => {
 			setIsDirty(false);
 		}
 	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems, cosItems]);
-
-	const getDomainCreateDate = (serverStr: string): any => {
-		if (serverStr === null) return null;
-		const d = new Date();
-		const yyyy = parseInt(serverStr.substr(0, 4), 10);
-		const MM = parseInt(serverStr.substr(4, 2), 10);
-		const dd = parseInt(serverStr.substr(6, 2), 10);
-		d.setFullYear(yyyy);
-		d.setMonth(MM - 1);
-		d.setMonth(MM - 1);
-		d.setDate(dd);
-		return d;
-	};
-
-	const getFormatedDate = (date: Date): any => {
-		const dd = date.getDate();
-		const mm = date.getMonth() + 1; // January is 0!
-		const yyyy = date.getFullYear();
-		const hour = date.getHours();
-		const minutes = date.getMinutes();
-		const seconds = date.getSeconds();
-		return `${yyyy}-${mm}-${dd} | ${hour}:${minutes}:${seconds}`;
-	};
 
 	const onTimeZoneChange = (v: any): any => {
 		const it = timezones.find((item: any) => item.value === v);
@@ -619,7 +596,7 @@ const DomainGeneralSettings: FC = () => {
 										value={
 											!!domainData.zimbraCreateTimestamp &&
 											domainData.zimbraCreateTimestamp !== null
-												? getFormatedDate(getDomainCreateDate(domainData.zimbraCreateTimestamp))
+												? getFormatedDate(getDateFromStr(domainData.zimbraCreateTimestamp))
 												: ''
 										}
 										background="gray6"

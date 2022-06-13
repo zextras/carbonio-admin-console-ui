@@ -43,7 +43,8 @@ import {
 	VIRTUAL_HOSTS
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
-import DomainListItems from './domain-list-items';
+import ListPanelItem from '../list/list-panel-item';
+import ListItems from '../list/list-items';
 
 const SelectItem = styled(Row)``;
 
@@ -51,44 +52,6 @@ const CustomIcon = styled(Icon)`
 	width: 20px;
 	height: 20px;
 `;
-
-const ListPanelItem: FC<{
-	title: string;
-	isListExpanded: boolean;
-	setToggleView: any;
-}> = ({ title, isListExpanded, setToggleView }) => (
-	<>
-		<Container height={52} orientation="vertical" mainAlignment="flex-start" width="100%">
-			<Row
-				padding={{ all: 'small' }}
-				takeAvwidth="fill"
-				width="100%"
-				mainAlignment="space-between"
-			></Row>
-			<Row
-				padding={{ all: 'small' }}
-				takeAvwidth="fill"
-				width="100%"
-				mainAlignment="space-between"
-				onClick={setToggleView}
-			>
-				<Padding horizontal="small">
-					<Text size="small" color="gray0" weight="bold">
-						{title}
-					</Text>
-				</Padding>
-				<Padding horizontal="small">
-					<IconButton
-						icon={isListExpanded ? 'ChevronDownOutline' : 'ChevronUpOutline'}
-						size="small"
-						color="text"
-					/>
-				</Padding>
-			</Row>
-		</Container>
-		<Divider color="gray3" />
-	</>
-);
 
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -185,32 +148,32 @@ const DomainListPanel: FC = () => {
 			{
 				id: GENERAL_INFORMATION,
 				name: t('label.general_information', 'General Information'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: GENERAL_SETTINGS,
 				name: t('label.general_settings', 'General Settings'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: GAL,
 				name: t('label.gal', 'GAL'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: AUTHENTICATION,
 				name: t('label.authentication', 'Authentication'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: VIRTUAL_HOSTS,
 				name: t('label.virtual_hosts', 'Virtual Hosts'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: MAILBOX_QUOTA,
 				name: t('label.mailbox_quota', 'Mailbox Quota'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			}
 		],
 		[t, isDomainSelect]
@@ -221,47 +184,47 @@ const DomainListPanel: FC = () => {
 			{
 				id: ACCOUNTS,
 				name: t('label.accounts', 'Accounts'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: MAILING_LIST,
 				name: t('label.mailing_list', 'Mailing List'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: RESOURCES,
 				name: t('label.resources', 'Resources'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: ADMIN_DELEGATES,
 				name: t('label.admin_delegates', 'Admin Delegates'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: ACTIVE_SYNC,
 				name: t('label.active_sync', 'ActiveSync'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: ACCOUNT_SCAN,
 				name: t('label.account_scan', 'AccountScan'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: EXPORT_DOMAIN,
 				name: t('label.export_domain', 'Export Domain'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: RESTORE_ACCOUNT,
 				name: t('label.restore_account', 'Restore Account'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			},
 			{
 				id: RESTORE_DELETED_EMAIL,
 				name: t('label.restore_deleted_email', 'Restore Deleted E-mail'),
-				domainSelected: isDomainSelect
+				isSelected: isDomainSelect
 			}
 		],
 		[t, isDomainSelect]
@@ -379,7 +342,7 @@ const DomainListPanel: FC = () => {
 				setToggleView={toggleDetailView}
 			/>
 			{isDetailListExpanded && (
-				<DomainListItems
+				<ListItems
 					items={detailOptions}
 					selectedOperationItem={selectedOperationItem}
 					setSelectedOperationItem={setSelectedOperationItem}
@@ -391,7 +354,7 @@ const DomainListPanel: FC = () => {
 				setToggleView={toggleManageView}
 			/>
 			{isManageListExpanded && (
-				<DomainListItems
+				<ListItems
 					items={manageOptions}
 					selectedOperationItem={selectedOperationItem}
 					setSelectedOperationItem={setSelectedOperationItem}

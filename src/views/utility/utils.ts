@@ -820,3 +820,27 @@ export const timeZoneList = (
 		})
 	}
 ];
+
+export const getDateFromStr = (serverStr: string): any => {
+	if (serverStr === null || serverStr === undefined) return null;
+	const d = new Date();
+	const yyyy = parseInt(serverStr.substr(0, 4), 10);
+	const MM = parseInt(serverStr.substr(4, 2), 10);
+	const dd = parseInt(serverStr.substr(6, 2), 10);
+	d.setFullYear(yyyy);
+	d.setMonth(MM - 1);
+	d.setMonth(MM - 1);
+	d.setDate(dd);
+	return d;
+};
+
+export const getFormatedDate = (date: Date): any => {
+	if (date === null || date === undefined) return null;
+	const dd = date.getDate();
+	const mm = date.getMonth() + 1; // January is 0!
+	const yyyy = date.getFullYear();
+	const hour = date.getHours();
+	const minutes = date.getMinutes();
+	const seconds = date.getSeconds();
+	return `${yyyy}/${mm}/${dd} | ${hour}:${minutes}:${seconds}`;
+};
