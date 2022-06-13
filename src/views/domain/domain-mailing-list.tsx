@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -14,23 +14,23 @@ import {
 	Icon,
 	Input,
 	Table,
-	Text
+	Text,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import logo from '../../assets/gardian.svg';
 import Paginig from '../components/paging';
+import { searchDirectory } from '../../services/search-directory-service';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [mailingList, setMailingList] = useState<any[]>([]);
-	const headers: any = useMemo(
+	const [offset, setOffset] = useState<number>(0);
+	const [limit, setLimit] = useState<number>(50);
+	const [totalAccount, setTotalAccount] = useState<number>(0);
+	const headers: any[] = useMemo(
 		() => [
-			{
-				id: 'index',
-				label: '',
-				width: '5%',
-				bold: true
-			},
 			{
 				id: 'name',
 				label: t('label.name', 'Name'),
@@ -70,6 +70,57 @@ const DomainMailingList: FC = () => {
 		],
 		[t]
 	);
+
+	const getMailingList = useCallback((): void => {
+		const attrs =
+			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
+		const types = 'distributionlists,dynamicgroups';
+		const query = '(&(!(zimbraIsSystemAccount=TRUE)))';
+
+		searchDirectory(attrs, types, '', query, offset, limit, 'name')
+			.then((response) => response.json())
+			.then((data) => {
+				const dlList = data?.Body?.SearchDirectoryResponse?.dl;
+				if (dlList) {
+					if (data?.Body?.SearchDirectoryResponse?.searchTotal) {
+						setTotalAccount(data?.Body?.SearchDirectoryResponse?.searchTotal);
+					}
+					const mList: any[] = [];
+					dlList.forEach((item: any, index: number) => {
+						mList.push({
+							id: item?.id,
+							columns: [
+								<Text size="small" weight="light" key={item?.id} color="gray0">
+									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+								</Text>,
+								<Text size="medium" weight="light" key={item?.id} color="gray0">
+									{item?.name}
+								</Text>,
+								<Text size="medium" weight="light" key={item?.id} color="gray0">
+									{''}
+								</Text>,
+								<Text size="medium" weight="light" key={item?.id} color="gray0">
+									{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
+										? t('label.can_receive', 'Can receive')
+										: ''}
+								</Text>,
+								<Text size="medium" weight="light" key={item?.id} color="gray0">
+									{''}
+								</Text>,
+								<Text size="medium" weight="light" key={item?.id} color="gray0">
+									{item?.a?.find((a: any) => a?.n === 'description')?._content}
+								</Text>
+							]
+						});
+					});
+					setMailingList(mList);
+				}
+			});
+	}, [t, offset, limit]);
+
+	useEffect(() => {
+		getMailingList();
+	}, [offset, getMailingList]);
 
 	return (
 		<Container
@@ -160,7 +211,7 @@ const DomainMailingList: FC = () => {
 							{mailingList && mailingList.length > 0 && (
 								<Table rows={mailingList} headers={headers} showCheckbox={false} />
 							)}
-							{mailingList && mailingList.length === 0 && (
+							{mailingList.length === 0 && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="flex-start">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -206,13 +257,7 @@ const DomainMailingList: FC = () => {
 							padding={{ all: 'large' }}
 						>
 							{mailingList && mailingList.length > 0 && (
-								<Paginig
-									totalItem={0}
-									setOffset={(): any => {
-										console.log('paging operation');
-									}}
-									pageSize={1}
-								/>
+								<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 							)}
 						</Row>
 					</Container>
