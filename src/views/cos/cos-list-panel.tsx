@@ -1,6 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable import/no-named-as-default */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -95,8 +92,9 @@ const CosListPanel: FC = () => {
 			setCosId('');
 			setCos({});
 		}
-	}, [locationService]);
+	}, [locationService, setCos]);
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchCosCall = useCallback(
 		debounce((cos) => {
 			getCosLists(cos);
