@@ -9,8 +9,11 @@ import { Container, Padding, Text, Button } from '@zextras/carbonio-design-syste
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import logo from '../../assets/ninja_robo.svg';
 import CosOperations from './cos-detail-operation';
+import { CREATE_NEW_COS_ROUTE_ID } from '../../constants';
+import CreateCos from './create-new-cos';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -19,6 +22,10 @@ const RelativeContainer = styled(Container)`
 const CosDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const { path } = useRouteMatch();
+
+	const createNewCos = (): void => {
+		replaceHistory(`/${CREATE_NEW_COS_ROUTE_ID}`);
+	};
 
 	return (
 		<>
@@ -32,6 +39,9 @@ const CosDetailPanel: FC = () => {
 				<Switch>
 					<Route exact path={`${path}/:cosId/:operation`}>
 						<CosOperations />
+					</Route>
+					<Route exact path={`${path}/${CREATE_NEW_COS_ROUTE_ID}`}>
+						<CreateCos />
 					</Route>
 					<Route exact path={`${path}`}>
 						<RelativeContainer
@@ -76,6 +86,7 @@ const CosDetailPanel: FC = () => {
 											label={t('create_new_cos', 'Creat New Cos')}
 											icon="Plus"
 											color="info"
+											onClick={createNewCos}
 										/>
 									</Text>
 								</Padding>

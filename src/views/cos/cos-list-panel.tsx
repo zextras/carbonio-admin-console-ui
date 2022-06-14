@@ -25,7 +25,10 @@ import {
 	PREFERENCES,
 	MAX_COS_DISPLAY,
 	MANAGE_APP_ID,
-	COS_ROUTE_ID
+	COS_ROUTE_ID,
+	RETENTION_POLICY,
+	ADVANCED,
+	SERVER_POOLS
 } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
@@ -135,17 +138,32 @@ const CosListPanel: FC = () => {
 		() => [
 			{
 				id: GENERAL_INFORMATION,
-				name: t('cos.general_information', 'General Information'),
+				name: t('label.general_information', 'General Information'),
 				isSelected: isCosSelect
 			},
 			{
 				id: FEATURES,
-				name: t('cos.features', 'Features'),
+				name: t('label.features', 'Features'),
 				isSelected: isCosSelect
 			},
 			{
 				id: PREFERENCES,
-				name: t('cos.preferences', 'Preferences'),
+				name: t('label.preferences', 'Preferences'),
+				isSelected: isCosSelect
+			},
+			{
+				id: SERVER_POOLS,
+				name: t('label.server_pools', 'Server Pools'),
+				isSelected: isCosSelect
+			},
+			{
+				id: ADVANCED,
+				name: t('label.advanced', 'Advanced'),
+				isSelected: isCosSelect
+			},
+			{
+				id: RETENTION_POLICY,
+				name: t('label.retention_policy', 'Retention Policy'),
 				isSelected: isCosSelect
 			}
 		],

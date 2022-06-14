@@ -32,6 +32,15 @@ const CosTooltipView: FC = () => {
 					},
 					{
 						label: t('label.preferences', 'Preferences')
+					},
+					{
+						label: t('label.server_pools', 'Server Pools')
+					},
+					{
+						label: t('label.advanced', 'Advanced')
+					},
+					{
+						label: t('label.retention_policy', 'Retention Policy')
 					}
 				]
 			}

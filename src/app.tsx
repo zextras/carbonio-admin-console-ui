@@ -12,6 +12,7 @@ import {
 	APP_ID,
 	BACKUP_ROUTE_ID,
 	COS_ROUTE_ID,
+	CREATE_NEW_COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
@@ -142,7 +143,7 @@ const App: FC = () => {
 		registerActions({
 			action: (): any => ({
 				id: 'new-domain',
-				label: t('label.new_domain', 'New Domain'),
+				label: t('label.create_new_domain', 'Create New Domain'),
 				icon: '',
 				click: (ev: any): void => {
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
@@ -152,6 +153,21 @@ const App: FC = () => {
 				primary: false
 			}),
 			id: 'new-domain',
+			type: 'new'
+		});
+		registerActions({
+			action: (): any => ({
+				id: 'new-cos',
+				label: t('label.create_new_cos', 'Create New COS'),
+				icon: '',
+				click: (ev: any): void => {
+					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
+				},
+				disabled: false,
+				group: APP_ID,
+				primary: false
+			}),
+			id: 'new-cos',
 			type: 'new'
 		});
 		history.push(`/${DASHBOARD}`);

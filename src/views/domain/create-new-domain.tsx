@@ -364,34 +364,33 @@ const CreateDomain: FC = () => {
 								/>
 							</Container>
 						</SettingRow>
-
-						<Container
-							orientation="horizontal"
-							crossAlignment="flex-start"
-							mainAlignment="flex-end"
-							background="gray6"
-							height="58px"
-							padding={{ top: 'small', right: 'large' }}
-						>
-							<Padding right="medium">
-								<Button
-									label={t('label.cancel', 'Cancel')}
-									icon="Close"
-									color="secondary"
-									onClick={onCancel}
-								/>
-							</Padding>
-
-							<Button
-								label={t('label.create', 'Create')}
-								icon="CheckmarkCircle"
-								color="primary"
-								disabled={domainName === ''}
-								onClick={onCreate}
-							/>
-						</Container>
 					</Container>
 				</Row>
+			</Container>
+			<Container
+				orientation="horizontal"
+				crossAlignment="flex-start"
+				mainAlignment="flex-end"
+				background="gray6"
+				height="58px"
+				padding={{ top: 'small', right: 'large' }}
+			>
+				<Padding right="medium">
+					<Button
+						label={t('label.cancel', 'Cancel')}
+						icon="Close"
+						color="secondary"
+						onClick={onCancel}
+					/>
+				</Padding>
+
+				<Button
+					label={t('label.create', 'Create')}
+					icon="CheckmarkCircle"
+					color="primary"
+					disabled={domainName === ''}
+					onClick={onCreate}
+				/>
 			</Container>
 		</Container>
 	);

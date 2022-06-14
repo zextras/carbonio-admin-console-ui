@@ -345,7 +345,7 @@ const CosGeneralInformation: FC = () => {
 				width="100%"
 				mainAlignment="flex-end"
 				crossAlignment="flex-end"
-				padding={{ top: 'small', right: 'large', bottom: 'small', left: 'large' }}
+				padding={{ top: 'small', right: 'large', bottom: 'large', left: 'large' }}
 			>
 				<Button type="outlined" label="DELETE" icon="CloseOutline" color="error" size="fill" />
 			</Container>

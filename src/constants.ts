@@ -61,3 +61,6 @@ export const PREFERENCES = 'preferences';
 export const COS_MANAGE_VIEW = 'cos';
 export const COS_DETAIL_VIEW = 'default';
 export const MAX_COS_DISPLAY = 20;
+export const CREATE_NEW_COS_ROUTE_ID = 'create-new-cos';
+export const SERVER_POOLS = 'server_pools';
+export const RETENTION_POLICY = 'retention_policy';
