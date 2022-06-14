@@ -17,7 +17,7 @@ import {
 	Text,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../assets/gardian.svg';
 import Paginig from '../components/paging';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -234,10 +234,11 @@ const DomainMailingList: FC = () => {
 										width="53%"
 									>
 										<Text weight="light" color="#828282" size="large" overflow="break-word">
-											{t(
-												'label.create_mailing_list_msg',
-												'You can create a new Mailing List by clicking on Create button (upper left corner) or on the Add (+) button up here'
-											)}
+											<Trans
+												i18nKey="label.create_mailing_list_msg"
+												defaults="You can create a new Mailing List by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
+												components={{ bold: <strong /> }}
+											/>
 										</Text>
 									</Row>
 								</Container>
