@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Divider,
@@ -18,6 +18,19 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useCosStore } from '../../store/cos/store';
 import { getFormatedDate, getDateFromStr } from '../utility/utils';
+import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+
+const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
+	<Row
+		orientation="horizontal"
+		mainAlignment="space-between"
+		crossAlignment="flex-start"
+		width="fill"
+		wrap={wrap || 'nowrap'}
+	>
+		{children}
+	</Row>
+);
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
@@ -29,18 +42,6 @@ const CosGeneralInformation: FC = () => {
 	const [cosName, setCosName] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
-
-	const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-		<Row
-			orientation="horizontal"
-			mainAlignment="space-between"
-			crossAlignment="flex-start"
-			width="fill"
-			wrap={wrap || 'nowrap'}
-		>
-			{children}
-		</Row>
-	);
 
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
@@ -85,13 +86,21 @@ const CosGeneralInformation: FC = () => {
 
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	const onSave = (): void => {};
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
+
 	const onCancel = (): void => {
 		setCosName(cosData.cn);
 		setDescription(cosData.description);
 		setZimbraNotes(cosData.zimbraNotes);
 		setIsDirty(false);
 	};
+
+	const cosCreationDate = useMemo(
+		() =>
+			!!cosData.zimbraCreateTimestamp && cosData.zimbraCreateTimestamp !== null
+				? getFormatedDate(getDateFromStr(cosData.zimbraCreateTimestamp))
+				: '',
+		[cosData.zimbraCreateTimestamp]
+	);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6" style={{ maxWidth: '982px' }}>
@@ -177,11 +186,7 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.creation_date', 'Creation Date')}
-									value={
-										!!cosData.zimbraCreateTimestamp && cosData.zimbraCreateTimestamp !== null
-											? getFormatedDate(getDateFromStr(cosData.zimbraCreateTimestamp))
-											: ''
-									}
+									value={cosCreationDate}
 									background="gray6"
 									disabled
 								/>
@@ -258,6 +263,16 @@ const CosGeneralInformation: FC = () => {
 			>
 				<Button type="outlined" label="DELETE" icon="CloseOutline" color="error" size="fill" />
 			</Container>
+
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
 		</Container>
 	);
 };

@@ -471,6 +471,14 @@ const DomainGeneralSettings: FC = () => {
 		});
 	};
 
+	const domainCreationDate = useMemo(
+		() =>
+			!!domainData.zimbraCreateTimestamp && domainData.zimbraCreateTimestamp !== null
+				? getFormatedDate(getDateFromStr(domainData.zimbraCreateTimestamp))
+				: '',
+		[domainData.zimbraCreateTimestamp]
+	);
+
 	const onDeleteDomain = (): void => {
 		setIsRequestInProgress(true);
 		const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
@@ -593,12 +601,7 @@ const DomainGeneralSettings: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.create_date', 'CreateDate')}
-										value={
-											!!domainData.zimbraCreateTimestamp &&
-											domainData.zimbraCreateTimestamp !== null
-												? getFormatedDate(getDateFromStr(domainData.zimbraCreateTimestamp))
-												: ''
-										}
+										value={domainCreationDate}
 										background="gray6"
 										disabled
 									/>
