@@ -19,6 +19,8 @@ import { useTranslation } from 'react-i18next';
 import { useCosStore } from '../../store/cos/store';
 import { getFormatedDate, getDateFromStr } from '../utility/utils';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+import { modifyCos } from '../../services/modify-cos-service';
+import { renameCos } from '../../services/rename-cos-service';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -42,6 +44,7 @@ const CosGeneralInformation: FC = () => {
 	const [cosName, setCosName] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const setCos = useCosStore((state) => state.setCos);
 
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
@@ -55,11 +58,13 @@ const CosGeneralInformation: FC = () => {
 				setDescription(obj.description);
 			} else {
 				obj.description = '';
+				setDescription('');
 			}
 			if (obj.zimbraNotes) {
 				setZimbraNotes(obj.zimbraNotes);
 			} else {
 				obj.zimbraNotes = '';
+				setZimbraNotes('');
 			}
 			setCosData(obj);
 			setIsDirty(false);
@@ -67,25 +72,106 @@ const CosGeneralInformation: FC = () => {
 	}, [cosInformation]);
 
 	useEffect(() => {
+		if (cosData?.cn && cosData.cn !== cosName) {
+			setIsDirty(true);
+		}
+	}, [cosData?.cn, cosName]);
+
+	useEffect(() => {
+		if (cosData?.description && cosData.description !== description) {
+			setIsDirty(true);
+		}
+	}, [cosData?.description, description]);
+
+	useEffect(() => {
+		if (cosData?.zimbraNotes && cosData.zimbraNotes !== zimbraNotes) {
+			setIsDirty(true);
+		}
+	}, [cosData.zimbraNotes, zimbraNotes]);
+
+	const modifyCosInfo = (): void => {
+		const body: any = {};
+		const attributes: any[] = [];
+		body._jsns = 'urn:zimbraAdmin';
+		attributes.push({
+			n: 'zimbraNotes',
+			_content: zimbraNotes
+		});
+		attributes.push({
+			n: 'cn',
+			_content: cosName,
+			c: true
+		});
+		attributes.push({
+			n: 'description',
+			_content: description
+		});
+		body.a = attributes;
+		const id = {
+			_content: cosData.zimbraId
+		};
+		body.id = id;
+		modifyCos(body)
+			.then((response) => response.json())
+			.then((data) => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				const cos: any = data?.Body?.ModifyCosResponse?.cos[0];
+				if (cos) {
+					setCos(cos);
+				}
+				setIsDirty(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
+	const onSave = (): void => {
 		if (cosData.cn !== cosName) {
-			setIsDirty(true);
-		}
-	}, [cosData, cosName]);
+			const renameBody: any = {};
+			renameBody._jsns = 'urn:zimbraAdmin';
+			const id = {
+				_content: cosData.zimbraId
+			};
+			renameBody.id = id;
+			const newName = {
+				_content: cosName
+			};
+			renameBody.newName = newName;
 
-	useEffect(() => {
-		if (cosData.description !== description) {
-			setIsDirty(true);
+			renameCos(renameBody)
+				.then((response) => response.json())
+				.then((data) => {
+					modifyCosInfo();
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		} else {
+			modifyCosInfo();
 		}
-	}, [cosData, description]);
-
-	useEffect(() => {
-		if (cosData.zimbraNotes !== zimbraNotes) {
-			setIsDirty(true);
-		}
-	}, [cosData, zimbraNotes]);
-
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	const onSave = (): void => {};
+	};
 
 	const onCancel = (): void => {
 		setCosName(cosData.cn);

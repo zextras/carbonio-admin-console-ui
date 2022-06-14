@@ -65,7 +65,7 @@ const CosListPanel: FC = () => {
 
 	useEffect(() => {
 		getCosLists('');
-	}, []);
+	}, [cosInformation]);
 
 	useEffect(() => {
 		if (cosInformation?.name) {
