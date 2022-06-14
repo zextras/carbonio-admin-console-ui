@@ -223,7 +223,7 @@ const DomainMailingList: FC = () => {
 										style={{ 'text-align': 'center' }}
 									>
 										<Text weight="light" color="#828282" size="large" overflow="break-word">
-											{t('label.list_is_empty', 'The list is empty.')}
+											{t('label.this_list_is_empty', 'This list is empty.')}
 										</Text>
 									</Row>
 									<Row
@@ -231,19 +231,13 @@ const DomainMailingList: FC = () => {
 										crossAlignment="center"
 										style={{ 'text-align': 'center' }}
 										padding={{ top: 'small' }}
+										width="53%"
 									>
 										<Text weight="light" color="#828282" size="large" overflow="break-word">
-											{t('label.do_you_need_more_information', 'Do you need more information?')}
-										</Text>
-									</Row>
-									<Row padding={{ top: 'small' }}>
-										<Text
-											weight="light"
-											color="#81ace4"
-											size="large"
-											style={{ 'text-decoration': ' underline', cursor: 'pointer' }}
-										>
-											{t('label.click_here', 'Click here')}
+											{t(
+												'label.create_mailing_list_msg',
+												'You can create a new Mailing List by clicking on Create button (upper left corner) or on the Add (+) button up here'
+											)}
 										</Text>
 									</Row>
 								</Container>
