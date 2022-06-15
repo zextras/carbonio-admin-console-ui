@@ -186,6 +186,7 @@
         "delete_domain_success_msg": "Domain has been delete successfully",
         "delete_domain_with_account_content_msg": "{{domainName}} is not empty: contains {{domainAccounts}} system accounts and {{domainAccounts}} regular accounts. Are you sure to continue the deletion",
         "deleteing": "Deleting ",
+        "deleting_cos_msg": "Deleting <bold>{{cosname}}</bod>",
         "deligated_admin_help_url": "Deligated Admin Help URL",
         "description": "Description",
         "details": "Details",

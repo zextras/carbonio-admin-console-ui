@@ -16,7 +16,7 @@ import {
 	SnackbarManagerContext,
 	Modal
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useCosStore } from '../../store/cos/store';
 import { getFormatedDate, getDateFromStr } from '../utility/utils';
@@ -206,8 +206,8 @@ const CosGeneralInformation: FC = () => {
 				const isCosDelete: any = data?.Body?.DeleteCosResponse;
 				if (isCosDelete) {
 					createSnackbar({
-						key: 'success',
-						type: 'success',
+						key: 'info',
+						type: 'info',
 						label: t('label.delete_cos_succeess', {
 							cosname: cosName,
 							defaultValue: 'The {{cosname}} has been deleted successfull'
@@ -403,12 +403,19 @@ const CosGeneralInformation: FC = () => {
 				/>
 			</Container>
 			<Modal
-				title={`${t('label.deleteing', 'Deleting')} ${cosName}`}
+				title={
+					<Trans
+						i18nKey="label.deleting_cos_msg"
+						defaults="Deleting <bold>{{cosname}}</bod>"
+						components={{ bold: <strong />, cosname: cosName }}
+					/>
+				}
 				open={openDeleteCOSConfirmDialog}
 				showCloseIcon
 				onClose={(): void => {
 					setOpenDeleteCOSConfirmDialog(false);
 				}}
+				size="medium"
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
 						<Button label={t('label.help', 'Help')} type="outlined" color="primary" isSmall />
