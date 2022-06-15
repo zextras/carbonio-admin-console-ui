@@ -278,7 +278,7 @@ const CosGeneralInformation: FC = () => {
 								/>
 							</Container>
 						</SettingRow>
-						<SettingRow>
+						{/* <SettingRow>
 							<SettingRow>
 								<Row
 									mainAlignment="flex-start"
@@ -325,7 +325,7 @@ const CosGeneralInformation: FC = () => {
 									/>
 								</Row>
 							</SettingRow>
-						</SettingRow>
+						</SettingRow> */}
 						<SettingRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
