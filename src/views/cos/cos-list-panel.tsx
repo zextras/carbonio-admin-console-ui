@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo, useRef } from 'react';
 import {
 	Container,
 	Input,
@@ -53,6 +53,9 @@ const CosListPanel: FC = () => {
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');
 	const setCos = useCosStore((state) => state.setCos);
 	const cosInformation = useCosStore((state) => state.cos);
+	const cosName: any = useCosStore((state) => state.cos?.name);
+	const prevCosRef = useRef();
+
 	const getCosLists = (cos: string): any => {
 		getCosList(cos)
 			.then((res) => res.json())
@@ -68,7 +71,14 @@ const CosListPanel: FC = () => {
 
 	useEffect(() => {
 		getCosLists('');
-	}, [cosInformation]);
+	}, []);
+
+	useEffect(() => {
+		if (!!prevCosRef.current && prevCosRef.current !== cosName) {
+			getCosLists('');
+		}
+		prevCosRef.current = cosName;
+	}, [cosName]);
 
 	useEffect(() => {
 		if (cosInformation?.name) {
