@@ -38,7 +38,7 @@
                 "warning": "You are trying to deactivate the current token.Doing so will disable all the enabled features."
             },
             "more_info": "More Information",
-            "order_id": "",
+            "order_id": "Order Id",
             "renew": "Renew",
             "status": "Status",
             "subscription_Accounts": "Subscription Accounts",

@@ -19,6 +19,7 @@ import {
 import styled from 'styled-components';
 import { orderBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import moment from 'moment';
 import { fetchSoap } from '../../../services/subscription-service';
 
 const VerticalBar = styled(Container)`
@@ -368,7 +369,7 @@ const Subscription: FC = () => {
 							<IconInfo
 								icon="ClockOutline"
 								label={t('core.subscription.subscription_last_check', 'Subscription Last Check')}
-								value="24 august 2021 - 11:57 PM"
+								value=""
 							/>
 						</Container>
 					)}
@@ -405,12 +406,12 @@ const Subscription: FC = () => {
 							<IconInfo
 								icon="AppointmentOutline"
 								label={t('core.subscription.emissionDate', 'Emission date')}
-								value="24 sept 2020"
+								value={moment(services.response.dateEnd).format('DD-MMM-YYYY')}
 							/>
 							<IconInfo
 								icon="EmailOutline"
 								label={t('core.subscription.email_buyer', 'Email Buyer')}
-								value="hebergement@gplexpert.com"
+								value={services.response?.companyEmail}
 							/>
 							<IconInfo
 								icon="InfoOutline"
@@ -419,7 +420,7 @@ const Subscription: FC = () => {
 							/>
 							<IconInfo
 								icon="PricetagsOutline"
-								label={t('core.subscription.order_id')}
+								label={t('core.subscription.order_id', 'Order Id')}
 								value={services.response.order_id}
 							/>
 						</Container>
