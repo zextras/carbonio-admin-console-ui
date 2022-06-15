@@ -23,7 +23,7 @@ import { getFormatedDate, getDateFromStr } from '../utility/utils';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 import { modifyCos } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
-import { COS_ROUTE_ID, DEFAULT } from '../../constants';
+import { DEFAULT } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
@@ -40,7 +40,6 @@ const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
-	// const cos = useCosStore((state) => state.cos);
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -200,10 +199,12 @@ const CosGeneralInformation: FC = () => {
 	};
 
 	const onDeleteCOS = (): void => {
+		setIsRequestInProgress(true);
 		deleteCOS(cosData.zimbraId)
 			.then((response) => response.json())
 			.then((data) => {
 				const isCosDelete: any = data?.Body?.DeleteCosResponse;
+				setIsRequestInProgress(false);
 				if (isCosDelete) {
 					createSnackbar({
 						key: 'info',
@@ -216,11 +217,13 @@ const CosGeneralInformation: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+
 					setOpenDeleteCOSConfirmDialog(false);
-					replaceHistory(`/${COS_ROUTE_ID}`);
+					replaceHistory(`/`);
 				}
 			})
 			.catch((error) => {
+				setIsRequestInProgress(false);
 				createSnackbar({
 					key: 'error',
 					type: 'error',

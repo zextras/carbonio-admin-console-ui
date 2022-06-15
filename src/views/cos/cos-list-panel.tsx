@@ -94,8 +94,9 @@ const CosListPanel: FC = () => {
 
 	useEffect(() => {
 		if (
-			locationService.pathname &&
-			locationService.pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`
+			(locationService.pathname &&
+				locationService.pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}`) ||
+			locationService.pathname === `/${MANAGE_APP_ID}/${COS_ROUTE_ID}/`
 		) {
 			setCosList([]);
 			setIsCosSelect(false);
