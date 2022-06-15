@@ -64,3 +64,4 @@ export const MAX_COS_DISPLAY = 20;
 export const CREATE_NEW_COS_ROUTE_ID = 'create-new-cos';
 export const SERVER_POOLS = 'server_pools';
 export const RETENTION_POLICY = 'retention_policy';
+export const DEFAULT = 'default';

@@ -13,14 +13,18 @@ import {
 	Icon,
 	Button,
 	Padding,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Modal
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useCosStore } from '../../store/cos/store';
 import { getFormatedDate, getDateFromStr } from '../utility/utils';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 import { modifyCos } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
+import { COS_ROUTE_ID, DEFAULT } from '../../constants';
+import { deleteCOS } from '../../services/delete-cos-service';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row
@@ -45,7 +49,8 @@ const CosGeneralInformation: FC = () => {
 	const [description, setDescription] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const setCos = useCosStore((state) => state.setCos);
-
+	const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
+	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
@@ -188,6 +193,45 @@ const CosGeneralInformation: FC = () => {
 		[cosData.zimbraCreateTimestamp]
 	);
 
+	const canDeleteCOS = useMemo(() => !!(cosName === '' || cosName === DEFAULT), [cosName]);
+
+	const onDeleteCOSConfirmation = (): void => {
+		setOpenDeleteCOSConfirmDialog(true);
+	};
+
+	const onDeleteCOS = (): void => {
+		deleteCOS(cosData.zimbraId)
+			.then((response) => response.json())
+			.then((data) => {
+				const isCosDelete: any = data?.Body?.DeleteCosResponse;
+				if (isCosDelete) {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.delete_cos_succeess', {
+							cosname: cosName,
+							defaultValue: 'The {{cosname}} has been deleted successfull'
+						}),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					setOpenDeleteCOSConfirmDialog(false);
+					replaceHistory(`/${COS_ROUTE_ID}`);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6" style={{ maxWidth: '982px' }}>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -242,11 +286,12 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.name', 'Name')}
-									background="gray5"
+									background={canDeleteCOS ? 'gray6' : 'gray5'}
 									value={cosName}
 									onChange={(e: any): any => {
 										setCosName(e.target.value);
 									}}
+									disabled={canDeleteCOS}
 								/>
 							</Container>
 							<Container padding={{ all: 'small' }}>
@@ -347,8 +392,74 @@ const CosGeneralInformation: FC = () => {
 				crossAlignment="flex-end"
 				padding={{ top: 'small', right: 'large', bottom: 'large', left: 'large' }}
 			>
-				<Button type="outlined" label="DELETE" icon="CloseOutline" color="error" size="fill" />
+				<Button
+					type="outlined"
+					label="DELETE"
+					icon="CloseOutline"
+					color="error"
+					size="fill"
+					disabled={canDeleteCOS}
+					onClick={onDeleteCOSConfirmation}
+				/>
 			</Container>
+			<Modal
+				title={`${t('label.deleteing', 'Deleting')} ${cosName}`}
+				open={openDeleteCOSConfirmDialog}
+				showCloseIcon
+				onClose={(): void => {
+					setOpenDeleteCOSConfirmDialog(false);
+				}}
+				customFooter={
+					<Container orientation="horizontal" mainAlignment="space-between">
+						<Button label={t('label.help', 'Help')} type="outlined" color="primary" isSmall />
+						<Container orientation="horizontal" mainAlignment="flex-end">
+							<Padding all="small">
+								<Button
+									label={t('label.no_go_back', 'No, Go Back')}
+									color="secondary"
+									size="fill"
+									onClick={(): void => {
+										setOpenDeleteCOSConfirmDialog(false);
+									}}
+								/>
+							</Padding>
+							<Button
+								label={t('label.yes_delete', 'Yes, Delete')}
+								color="error"
+								onClick={onDeleteCOS}
+								disabled={isRequstInProgress}
+							/>
+						</Container>
+					</Container>
+				}
+			>
+				<Container>
+					<Padding bottom="small" top="extralarge">
+						<Text overflow="break-word" weight="regular">
+							{t('label.you_are_deleting', {
+								cosname: cosName,
+								defaultValue: 'You are deleting {{cosname}}'
+							})}
+						</Text>
+					</Padding>
+					<Padding bottom="small">
+						<Text overflow="break-word" weight="regular">
+							{t(
+								'label.are_you_sure_deleting_cos',
+								'Are you sure you want to delete this Class of Service?'
+							)}
+						</Text>
+					</Padding>
+					<Padding bottom="extralarge">
+						<Text overflow="break-word" weight="regular">
+							{t(
+								'label.delete_cos_instruction_msg',
+								'If you click YES, DELETE the DefaultCOS will be replace the deleted COS.'
+							)}
+						</Text>
+					</Padding>
+				</Container>
+			</Modal>
 
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
 				<Text>
