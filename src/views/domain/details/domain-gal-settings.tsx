@@ -17,12 +17,12 @@ import {
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { getAccount } from '../../services/get-account-service';
-import { getDatasource } from '../../services/get-datasource-service';
-import { modifyDomain } from '../../services/modify-domain-service';
-import { modifyDataSource } from '../../services/modify-datasource-service';
-import { useDomainStore } from '../../store/domain/store';
-import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+import { getAccount } from '../../../services/get-account-service';
+import { getDatasource } from '../../../services/get-datasource-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { modifyDataSource } from '../../../services/modify-datasource-service';
+import { useDomainStore } from '../../../store/domain/store';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row

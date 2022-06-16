@@ -22,7 +22,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { timeZoneList, getFormatedDate, getDateFromStr } from '../utility/utils';
+import { timeZoneList, getFormatedDate, getDateFromStr } from '../../utility/utils';
 import {
 	ACTIVE,
 	CLOSED,
@@ -33,13 +33,13 @@ import {
 	MAINTENANCE,
 	NOT_SET,
 	SUSPENDED
-} from '../../constants';
-import { modifyDomain } from '../../services/modify-domain-service';
-import { deleteDomain } from '../../services/delete-domain-service';
-import { searchDirectory } from '../../services/search-directory-service';
-import { deleteAccount } from '../../services/delete-account-service';
-import { useDomainStore } from '../../store/domain/store';
-import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+} from '../../../constants';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { deleteDomain } from '../../../services/delete-domain-service';
+import { searchDirectory } from '../../../services/search-directory-service';
+import { deleteAccount } from '../../../services/delete-account-service';
+import { useDomainStore } from '../../../store/domain/store';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;

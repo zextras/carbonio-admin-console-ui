@@ -8,7 +8,7 @@ import { Container, Text, Row, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
-import { DASHBOARD } from '../../../constants';
+import { DASHBOARD } from '../../constants';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : '#414141')};

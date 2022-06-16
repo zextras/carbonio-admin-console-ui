@@ -18,9 +18,9 @@ import {
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import logo from '../../assets/gardian.svg';
-import Paginig from '../components/paging';
-import { searchDirectory } from '../../services/search-directory-service';
+import logo from '../../../assets/gardian.svg';
+import Paginig from '../../components/paging';
+import { searchDirectory } from '../../../services/search-directory-service';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();

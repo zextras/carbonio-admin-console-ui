@@ -8,8 +8,8 @@ import React, { FC, useEffect, useState } from 'react';
 import { Container, Padding, Text, Row } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useUserAccounts } from '@zextras/carbonio-shell-ui';
-import zxboat from '../../../assets/zxboat.svg';
-import packageJson from '../../../../package.json';
+import zxboat from '../../assets/zxboat.svg';
+import packageJson from '../../../package.json';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
