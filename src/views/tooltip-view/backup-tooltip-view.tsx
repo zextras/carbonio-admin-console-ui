@@ -21,7 +21,7 @@ const BackupTooltipView: FC = () => {
 				]
 			},
 			{
-				header: t('label.global', 'Global'),
+				header: t('label.default_settings', 'Default Settings'),
 				options: [
 					{
 						label: t('label.service_status', 'Service Status')
@@ -35,10 +35,10 @@ const BackupTooltipView: FC = () => {
 				]
 			},
 			{
-				header: t('label.servers', 'Servers'),
+				header: t('label.server_settings', 'Server Settings'),
 				options: [
 					{
-						label: t('label.server_lists', 'Server Lists')
+						label: t('label.servers_list', 'Servers List')
 					}
 				]
 			},
@@ -46,7 +46,7 @@ const BackupTooltipView: FC = () => {
 				header: t('label.actions', 'Actions'),
 				options: [
 					{
-						label: t('label.import_external_backup', 'Import External Backup')
+						label: t('label.import_an_external_backup', 'Import an External Backup')
 					}
 				]
 			}
