@@ -1,0 +1,126 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import React, { FC, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import {
+	Container,
+	Input,
+	Icon,
+	Row,
+	Dropdown,
+	Padding,
+	Text
+} from '@zextras/carbonio-design-system';
+import ListPanelItem from '../list/list-panel-item';
+import { ADVANCED, IMPORT_EXTERNAL_BACKUP, SERVER_CONFIG, SERVICE_STATUS } from '../../constants';
+import ListItems from '../list/list-items';
+
+const BackupListPanel: FC = () => {
+	const [t] = useTranslation();
+	const [selectedOperationItem, setSelectedOperationItem] = useState('');
+	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
+	const [isServerSettingsEpanded, setIsServerSettingsEpanded] = useState(true);
+	const [isActionExpanded, setIsActionExpanded] = useState(true);
+	const defaultSettingsOptions = useMemo(
+		() => [
+			{
+				id: SERVICE_STATUS,
+				name: t('label.service_status', 'Service Status'),
+				isSelected: true
+			},
+			{
+				id: SERVER_CONFIG,
+				name: t('label.server_config', 'Server Config'),
+				isSelected: true
+			},
+			{
+				id: ADVANCED,
+				name: t('label.advanced', 'Advanced'),
+				isSelected: true
+			}
+		],
+		[t]
+	);
+	const serverSettingsOptions = useMemo(
+		() => [
+			{
+				id: SERVICE_STATUS,
+				name: t('label.servers_list', 'Servers List'),
+				isSelected: true
+			}
+		],
+		[t]
+	);
+	const actionOptions = useMemo(
+		() => [
+			{
+				id: IMPORT_EXTERNAL_BACKUP,
+				name: t('label.import_an_external_backup', 'Import an External Backup'),
+				isSelected: true
+			}
+		],
+		[t]
+	);
+
+	const toggleDefaultSettingsView = (): void => {
+		setIsDefaultSettingsExpanded(!isDefaultSettingsExpanded);
+	};
+	const toggleServerSettingsView = (): void => {
+		setIsServerSettingsEpanded(!isServerSettingsEpanded);
+	};
+	const toggleActionView = (): void => {
+		setIsActionExpanded(!isActionExpanded);
+	};
+	return (
+		<Container
+			orientation="column"
+			crossAlignment="flex-start"
+			mainAlignment="flex-start"
+			background="gray5"
+			style={{ overflow: 'auto', 'border-top': '1px solid #FFFFFF' }}
+		>
+			<ListPanelItem
+				title={t('label.default_settings', 'Default Settings')}
+				isListExpanded={isDefaultSettingsExpanded}
+				setToggleView={toggleDefaultSettingsView}
+			/>
+			{isDefaultSettingsExpanded && (
+				<ListItems
+					items={defaultSettingsOptions}
+					selectedOperationItem={selectedOperationItem}
+					setSelectedOperationItem={setSelectedOperationItem}
+				/>
+			)}
+
+			<ListPanelItem
+				title={t('label.server_settings', 'Server Settings')}
+				isListExpanded={isServerSettingsEpanded}
+				setToggleView={toggleServerSettingsView}
+			/>
+			{isServerSettingsEpanded && (
+				<ListItems
+					items={serverSettingsOptions}
+					selectedOperationItem={selectedOperationItem}
+					setSelectedOperationItem={setSelectedOperationItem}
+				/>
+			)}
+
+			<ListPanelItem
+				title={t('label.actions', 'Actions')}
+				isListExpanded={isActionExpanded}
+				setToggleView={toggleActionView}
+			/>
+			{isActionExpanded && (
+				<ListItems
+					items={actionOptions}
+					selectedOperationItem={selectedOperationItem}
+					setSelectedOperationItem={setSelectedOperationItem}
+				/>
+			)}
+		</Container>
+	);
+};
+export default BackupListPanel;
