@@ -6,7 +6,7 @@
 import React, { FC, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import DomainAuthentication from './domain-authentication';
+import DomainAuthentication from './details/domain-authentication';
 import {
 	GAL,
 	GENERAL_INFORMATION,
@@ -19,13 +19,13 @@ import {
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
-import DomainGalSettings from './domain-gal-settings';
-import DomainGeneralSettings from './domain-general-settings';
-import DomainMailboxQuotaSetting from './domain-mailbox-quota-settings';
+import DomainGalSettings from './details/domain-gal-settings';
+import DomainGeneralSettings from './details/domain-general-settings';
+import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
 import ManageAccounts from './manange/manage-accounts';
-import DomainVirtualHosts from './domain-virtual-hosts';
+import DomainVirtualHosts from './details/domain-virtual-hosts';
 import { useDomainStore } from '../../store/domain/store';
-import DomainMailingList from './domain-mailing-list';
+import DomainMailingList from './manange/domain-mailing-list';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();

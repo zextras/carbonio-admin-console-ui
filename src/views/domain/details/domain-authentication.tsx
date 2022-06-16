@@ -17,9 +17,9 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
-import { modifyDomain } from '../../services/modify-domain-service';
-import { useDomainStore } from '../../store/domain/store';
-import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/domain/store';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ListRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row

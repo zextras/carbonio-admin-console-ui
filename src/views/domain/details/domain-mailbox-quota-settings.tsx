@@ -17,12 +17,17 @@ import {
 	Table,
 	Divider
 } from '@zextras/carbonio-design-system';
-import { ALLOW_SEND_RECEIVE, BLOCK_SEND, BLOCK_SEND_RECEIVE, BYTE_PER_MB } from '../../constants';
-import { modifyDomain } from '../../services/modify-domain-service';
-import { getQuotaUsage } from '../../services/get-quota-usage-service';
-import Paginig from '../components/paging';
-import { useDomainStore } from '../../store/domain/store';
-import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+import {
+	ALLOW_SEND_RECEIVE,
+	BLOCK_SEND,
+	BLOCK_SEND_RECEIVE,
+	BYTE_PER_MB
+} from '../../../constants';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { getQuotaUsage } from '../../../services/get-quota-usage-service';
+import Paginig from '../../components/paging';
+import { useDomainStore } from '../../../store/domain/store';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
 	<Row

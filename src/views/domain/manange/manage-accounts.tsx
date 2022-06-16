@@ -6,7 +6,7 @@
 import React, { FC, useEffect, useState, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { filter } from 'lodash';
-import { Container, Input, Row, Text, Table, Divider } from '@zextras/carbonio-design-system';
+import { Container, Input, Row, Text, Table, Divider, Icon } from '@zextras/carbonio-design-system';
 import { useDomainStore } from '../../../store/domain/store';
 
 import Paginig from '../../components/paging';
@@ -31,14 +31,14 @@ const ManageAccounts: FC = () => {
 	const headers: any = useMemo(
 		() => [
 			{
-				id: 'name',
-				label: t('label.email', 'Name'),
-				width: '15%',
+				id: 'email',
+				label: t('label.email', 'Email'),
+				width: '25%',
 				bold: true
 			},
 			{
-				id: 'email',
-				label: t('label.name', 'Email'),
+				id: 'name',
+				label: t('label.name', 'Name'),
 				width: '15%',
 				bold: true
 			},
@@ -57,7 +57,7 @@ const ManageAccounts: FC = () => {
 			{
 				id: 'description',
 				label: t('label.description', 'Description'),
-				width: '50%',
+				width: '40%',
 				bold: true
 			}
 		],
@@ -223,7 +223,12 @@ const ManageAccounts: FC = () => {
 		}
 	}, [domainData, getAccountList]);
 	return (
-		<Container padding={{ all: 'large' }} background="gray6">
+		<Container
+			padding={{ all: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+			style={{ maxWidth: '982px' }}
+		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -271,6 +276,9 @@ const ManageAccounts: FC = () => {
 										onChange={(e: any): any => {
 											setSearchString(e.target.value);
 										}}
+										CustomIcon={(): any => (
+											<Icon icon="FunnelOutline" size="large" color="primary" />
+										)}
 									/>
 								</Container>
 							</SettingRow>

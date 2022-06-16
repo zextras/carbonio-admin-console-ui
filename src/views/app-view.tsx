@@ -25,9 +25,9 @@ import {
 	SUBSCRIPTIONS_ROUTE_ID
 } from '../constants';
 import Subscription from './core/subscribsion/subscription';
-import Dashboard from './components/dashboard/dashboard-view';
-import MonitoringView from './components/monitoring/monitoring-view';
-import BreadCrumb from './components/breadcrumb/breadcrumb-view';
+import Dashboard from './dashboard/dashboard-view';
+import MonitoringView from './monitoring/monitoring-view';
+import BreadCrumb from './breadcrumb/breadcrumb-view';
 import BackupApp from './features/backup/BackupApp';
 import CosListPanel from './cos/cos-list-panel';
 import CosDetailPanel from './cos/cos-detail-panel';
