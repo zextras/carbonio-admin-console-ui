@@ -8,13 +8,16 @@ export const searchDirectory = async (
 	attr: string,
 	type: string,
 	domainName: string,
-	query: string
+	query: string,
+	offset?: number,
+	limit?: number,
+	sortBy?: string
 ): Promise<any> => {
 	const request: any = {
 		SearchDirectoryRequest: {
 			_jsns: 'urn:zimbraAdmin',
-			limit: '50',
-			offset: 0,
+			limit: limit || 50,
+			offset: offset || 0,
 			sortAscending: '1',
 			applyCos: 'false',
 			applyConfig: 'false',
@@ -27,6 +30,9 @@ export const searchDirectory = async (
 	}
 	if (query !== '') {
 		request.SearchDirectoryRequest.query = query;
+	}
+	if (sortBy !== '') {
+		request.SearchDirectoryRequest.sortBy = sortBy;
 	}
 	return fetch(`/service/admin/soap/SearchDirectoryRequest`, {
 		method: 'POST',
