@@ -3,19 +3,18 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-	Container,
-	Input,
-	Icon,
-	Row,
-	Dropdown,
-	Padding,
-	Text
-} from '@zextras/carbonio-design-system';
+import { Container } from '@zextras/carbonio-design-system';
+import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import ListPanelItem from '../list/list-panel-item';
-import { ADVANCED, IMPORT_EXTERNAL_BACKUP, SERVER_CONFIG, SERVICE_STATUS } from '../../constants';
+import {
+	ADVANCED,
+	IMPORT_EXTERNAL_BACKUP,
+	SERVERS_LIST,
+	SERVER_CONFIG,
+	SERVICE_STATUS
+} from '../../constants';
 import ListItems from '../list/list-items';
 
 const BackupListPanel: FC = () => {
@@ -44,16 +43,18 @@ const BackupListPanel: FC = () => {
 		],
 		[t]
 	);
+
 	const serverSettingsOptions = useMemo(
 		() => [
 			{
-				id: SERVICE_STATUS,
+				id: SERVERS_LIST,
 				name: t('label.servers_list', 'Servers List'),
 				isSelected: true
 			}
 		],
 		[t]
 	);
+
 	const actionOptions = useMemo(
 		() => [
 			{
@@ -65,6 +66,14 @@ const BackupListPanel: FC = () => {
 		[t]
 	);
 
+	useEffect(() => {
+		replaceHistory(`/${selectedOperationItem}`);
+	}, [selectedOperationItem]);
+
+	useEffect(() => {
+		setSelectedOperationItem(SERVICE_STATUS);
+	}, []);
+
 	const toggleDefaultSettingsView = (): void => {
 		setIsDefaultSettingsExpanded(!isDefaultSettingsExpanded);
 	};
@@ -74,6 +83,7 @@ const BackupListPanel: FC = () => {
 	const toggleActionView = (): void => {
 		setIsActionExpanded(!isActionExpanded);
 	};
+
 	return (
 		<Container
 			orientation="column"

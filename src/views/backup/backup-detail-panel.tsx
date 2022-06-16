@@ -4,14 +4,26 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Container } from '@zextras/carbonio-design-system';
+import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import BackupDetailOperation from './backup-detail-operation';
 
 const BackupDetailPanel: FC = () => {
-	const [t] = useTranslation();
+	const { path } = useRouteMatch();
 	return (
-		<div>
-			<div>Test Detail</div>
-		</div>
+		<Container
+			orientation="column"
+			crossAlignment="center"
+			mainAlignment="flex-start"
+			style={{ overflowY: 'hidden' }}
+			background="gray6"
+		>
+			<Switch>
+				<Route exact path={`${path}/:operation`}>
+					<BackupDetailOperation />
+				</Route>
+			</Switch>
+		</Container>
 	);
 };
 export default BackupDetailPanel;

@@ -66,5 +66,6 @@ export const SERVER_POOLS = 'server_pools';
 export const RETENTION_POLICY = 'retention_policy';
 export const DEFAULT = 'default';
 export const SERVICE_STATUS = 'service_status';
-export const SERVER_CONFIG = 'service_config';
+export const SERVER_CONFIG = 'server_config';
 export const IMPORT_EXTERNAL_BACKUP = 'import_external_backup';
+export const SERVERS_LIST = 'servers_list';
