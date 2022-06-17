@@ -1,4 +1,20 @@
 {
+    "backup": {
+        "compression_level": "Compression Level",
+        "latency_high_threshold": "Latency High Threshold",
+        "latency_low_threshold": "Latency Low Threshold",
+        "ldap_dump": "LDAP Dump",
+        "max_operations_account": "Max Operations / Account",
+        "max_waiting_time": "Max Waiting Time",
+        "metadata_archiving": "Metadata Archiving",
+        "metatdata_size": "Metadata Size",
+        "on_the_fly_metadata": "On the Fly Metadata",
+        "purge_old_configurations": "Purge Old Configurations",
+        "save_index": "Save Index",
+        "server_configurations": "Server Configurations",
+        "threads_for_account": "Threads For Account",
+        "threads_for_items": "Threads For Items"
+    },
     "buckets": {
         "bucket_list": "Buckets List",
         "bucket_type": "Buckets Type",
@@ -165,6 +181,7 @@
         "change_save_success_msg": "The change has been saved successfully",
         "click_here": "Click here",
         "closed": "Closed",
+        "compression_level": "Compression Level",
         "configuration": "Configuration",
         "connect_buckets": "Connect Buckets",
         "console_redirection": "Console Redirection",
