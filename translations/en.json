@@ -1,4 +1,9 @@
 {
+    "backup": {
+        "module_enable_at_startup": "Module Enabled at Startup",
+        "realtime_scanner": "RealTime Scanner",
+        "smart_scan_at_startup": "SmartScan at Startup"
+    },
     "buckets": {
         "bucket_list": "Buckets List",
         "bucket_type": "Buckets Type",
