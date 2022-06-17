@@ -15,6 +15,7 @@ import {
 	Switch,
 	Input
 } from '@zextras/carbonio-design-system';
+import ListRow from '../../list/list-row';
 
 const BackupServerConfig: FC = () => {
 	const [t] = useTranslation();
@@ -74,155 +75,108 @@ const BackupServerConfig: FC = () => {
 				height="calc(100vh - 200px)"
 				padding={{ top: 'extralarge', left: 'small', right: 'small' }}
 			>
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'large' }}
-				>
-					<Input label={t('backup.backup_path', 'Backup Path')} value={''} background="gray5" />
-				</Row>
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'large' }}
-				>
-					<Input
-						label={t('backup.minimum_space_threshold', 'Minimum Space Threshold')}
-						value={''}
-						background="gray5"
-					/>
-				</Row>
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'large' }}
-				>
-					<Input
-						label={t('backup.local_metadata_threshold', 'Local Metadata Threshold')}
-						value={''}
-						background="gray5"
-					/>
-				</Row>
-				<Row
-					orientation="horizontal"
-					width="100%"
-					background="gray6"
-					padding={{ top: 'large', bottom: 'large' }}
-				>
-					<Divider />
-				</Row>
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'large' }}
-				>
-					<Switch value={false} label={t('backup.smart_scan_scheduling', 'SmartScan Scheduling')} />
-				</Row>
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'large' }}
-				>
-					<Input label={t('backup.schedule', 'Schedule')} value={''} background="gray5" />
-				</Row>
-				<Row
-					orientation="horizontal"
-					width="100%"
-					background="gray6"
-					padding={{ top: 'large', bottom: 'extralarge' }}
-				>
-					<Divider />
-				</Row>
+				<ListRow>
+					<Container padding={{ bottom: 'large' }}>
+						<Input label={t('backup.backup_path', 'Backup Path')} value={''} background="gray5" />
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ bottom: 'large' }}>
+						<Input
+							label={t('backup.minimum_space_threshold', 'Minimum Space Threshold')}
+							value={''}
+							background="gray5"
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ bottom: 'large' }}>
+						<Input
+							label={t('backup.local_metadata_threshold', 'Local Metadata Threshold')}
+							value={''}
+							background="gray5"
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ top: 'large', bottom: 'large' }}>
+						<Divider />
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						<Switch
+							value={false}
+							label={t('backup.smart_scan_scheduling', 'SmartScan Scheduling')}
+						/>
+					</Padding>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ bottom: 'large' }}>
+						<Input label={t('backup.schedule', 'Schedule')} value={''} background="gray5" />
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ top: 'large', bottom: 'extralarge' }}>
+						<Divider />
+					</Container>
+				</ListRow>
 
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'medium' }}
-				>
-					<Text size="medium" weight="regular">
-						{t('backup.backup_purge', 'Backup Purge')}
-					</Text>
-				</Row>
+				<ListRow>
+					<Padding bottom="medium">
+						<Text size="medium" weight="regular">
+							{t('backup.backup_purge', 'Backup Purge')}
+						</Text>
+					</Padding>
+				</ListRow>
 
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'large' }}
-				>
-					<Input label={t('backup.schedule', 'Schedule')} value={''} background="gray5" />
-				</Row>
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'small' }}
-				>
-					<Input
-						label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
-						value={''}
-						background="gray5"
-					/>
-				</Row>
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'large' }}
-				>
-					<Text size="extrasmall" weight="regular" color="secondary">
-						{t(
-							'backup.set_backup_forever_msg',
-							'If you set 0, your data will be kept in backup forever'
-						)}
-					</Text>
-				</Row>
+				<ListRow>
+					<Container padding={{ bottom: 'large' }}>
+						<Input label={t('backup.schedule', 'Schedule')} value={''} background="gray5" />
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ bottom: 'small' }}>
+						<Input
+							label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
+							value={''}
+							background="gray5"
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						<Text size="extrasmall" weight="regular" color="secondary">
+							{t(
+								'backup.set_backup_forever_msg',
+								'If you set 0, your data will be kept in backup forever'
+							)}
+						</Text>
+					</Padding>
+				</ListRow>
 
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'small' }}
-				>
-					<Input
-						label={t(
-							'backup.keep_delete_accounts_in_backup',
-							'Keep deleted accounts in the backup'
-						)}
-						value={''}
-						background="gray5"
-					/>
-				</Row>
-				<Row
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					padding={{ bottom: 'large' }}
-				>
-					<Text size="extrasmall" weight="regular" color="secondary">
-						{t(
-							'backup.set_backup_forever_msg',
-							'If you set 0, your data will be kept in backup forever'
-						)}
-					</Text>
-				</Row>
+				<ListRow>
+					<Container padding={{ bottom: 'small' }}>
+						<Input
+							label={t(
+								'backup.keep_delete_accounts_in_backup',
+								'Keep deleted accounts in the backup'
+							)}
+							value={''}
+							background="gray5"
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						<Text size="extrasmall" weight="regular" color="secondary">
+							{t(
+								'backup.set_backup_forever_msg',
+								'If you set 0, your data will be kept in backup forever'
+							)}
+						</Text>
+					</Padding>
+				</ListRow>
 			</Container>
 		</Container>
 	);

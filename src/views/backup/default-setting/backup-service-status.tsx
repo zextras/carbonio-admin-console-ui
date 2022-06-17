@@ -14,6 +14,7 @@ import {
 	Divider,
 	Switch
 } from '@zextras/carbonio-design-system';
+import ListRow from '../../list/list-row';
 
 const BackupServiceStatus: FC = () => {
 	const [t] = useTranslation();
@@ -72,18 +73,18 @@ const BackupServiceStatus: FC = () => {
 				width="100%"
 				padding={{ top: 'extralarge' }}
 			>
-				<Row orientation="horizontal" mainAlignment="space-between" crossAlignment="flex-start">
+				<ListRow>
 					<Switch value={false} label={t('backup.realtime_scanner', 'RealTime Scanner')} />
-				</Row>
-				<Row orientation="horizontal" mainAlignment="space-between" crossAlignment="flex-start">
+				</ListRow>
+				<ListRow>
 					<Switch
 						value={false}
 						label={t('backup.module_enable_at_startup', 'Module Enabled at Startup')}
 					/>
-				</Row>
-				<Row orientation="horizontal" mainAlignment="space-between" crossAlignment="flex-start">
+				</ListRow>
+				<ListRow>
 					<Switch value={false} label={t('backup.smart_scan_at_startup', 'SmartScan at Startup')} />
-				</Row>
+				</ListRow>
 			</Container>
 		</Container>
 	);
