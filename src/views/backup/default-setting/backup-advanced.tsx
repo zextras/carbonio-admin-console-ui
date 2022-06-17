@@ -99,7 +99,8 @@ const BackupAdvanced: FC = () => {
 					mainAlignment="flex-start"
 					style={{ overflow: 'auto' }}
 					width="100%"
-					height="calc(100vh - 150px)"
+					height="calc(100vh - 200px)"
+					padding={{ top: 'extralarge' }}
 				>
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 						<Container
