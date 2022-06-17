@@ -10,7 +10,6 @@ import {
 	Row,
 	Text,
 	Input,
-	Icon,
 	Button,
 	Padding,
 	SnackbarManagerContext,
@@ -25,18 +24,7 @@ import { modifyCos } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { DEFAULT } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
-
-const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-	<Row
-		orientation="horizontal"
-		mainAlignment="space-between"
-		crossAlignment="flex-start"
-		width="fill"
-		wrap={wrap || 'nowrap'}
-	>
-		{children}
-	</Row>
-);
+import ListRow from '../list/list-row';
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
@@ -285,7 +273,7 @@ const CosGeneralInformation: FC = () => {
 						background="gray6"
 						padding={{ left: 'small', right: 'small' }}
 					>
-						<SettingRow>
+						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.name', 'Name')}
@@ -307,8 +295,8 @@ const CosGeneralInformation: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
-						<SettingRow>
+						</ListRow>
+						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.id', 'ID')}
@@ -325,9 +313,9 @@ const CosGeneralInformation: FC = () => {
 									disabled
 								/>
 							</Container>
-						</SettingRow>
-						{/* <SettingRow>
-							<SettingRow>
+						</ListRow>
+						{/* <ListRow>
+							<ListRow>
 								<Row
 									mainAlignment="flex-start"
 									crossAlignment="flex-start"
@@ -349,8 +337,8 @@ const CosGeneralInformation: FC = () => {
 										disabled
 									/>
 								</Row>
-							</SettingRow>
-							<SettingRow>
+							</ListRow>
+							<ListRow>
 								<Row
 									mainAlignment="flex-start"
 									crossAlignment="flex-start"
@@ -372,9 +360,9 @@ const CosGeneralInformation: FC = () => {
 										disabled
 									/>
 								</Row>
-							</SettingRow>
-						</SettingRow> */}
-						<SettingRow>
+							</ListRow>
+						</ListRow> */}
+						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.notes', 'Notes')}
@@ -385,7 +373,7 @@ const CosGeneralInformation: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
+						</ListRow>
 					</Container>
 				</Row>
 			</Container>

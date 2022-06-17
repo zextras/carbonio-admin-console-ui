@@ -23,19 +23,7 @@ import { createObjectAttribute } from '../../services/create-object-attribute-se
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
 import { DOMAINS_ROUTE_ID, MANAGE } from '../../constants';
-
-const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-	<Row
-		orientation="horizontal"
-		mainAlignment="space-between"
-		crossAlignment="flex-start"
-		width="fill"
-		wrap={wrap || 'nowrap'}
-		padding={{ all: 'small' }}
-	>
-		{children}
-	</Row>
-);
+import ListRow from '../list/list-row';
 
 // eslint-disable-next-line no-shadow
 export enum GAL_MODE {
@@ -262,8 +250,8 @@ const CreateDomain: FC = () => {
 								{t('label.general_information', 'General Information')}
 							</Text>
 						</Row>
-						<SettingRow>
-							<Container padding={{ left: 'small', right: 'small' }}>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.domain_name', 'Domain Name')}
 									background="gray5"
@@ -273,9 +261,9 @@ const CreateDomain: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
-						<SettingRow>
-							<Container padding={{ left: 'small', right: 'small' }}>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.description', 'Description')}
 									background="gray5"
@@ -285,9 +273,9 @@ const CreateDomain: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
-						<SettingRow>
-							<Container padding={{ left: 'small', right: 'small' }}>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.note', 'Note')}
 									background="gray5"
@@ -297,7 +285,7 @@ const CreateDomain: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
+						</ListRow>
 					</Container>
 				</Row>
 
@@ -314,7 +302,7 @@ const CreateDomain: FC = () => {
 								{t('label.gal_settings', 'GAL Settings')}
 							</Text>
 						</Row>
-						<SettingRow>
+						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									value={zimbraGalMode}
@@ -337,9 +325,9 @@ const CreateDomain: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
+						</ListRow>
 
-						<SettingRow>
+						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Select
 									items={zimbraPublicServiceHostnameList}
@@ -363,7 +351,7 @@ const CreateDomain: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
+						</ListRow>
 					</Container>
 				</Row>
 			</Container>
