@@ -64,19 +64,19 @@ const CosGeneralInformation: FC = () => {
 	}, [cosInformation]);
 
 	useEffect(() => {
-		if (cosData?.cn && cosData.cn !== cosName) {
+		if (cosData.cn !== undefined && cosData.cn !== cosName) {
 			setIsDirty(true);
 		}
 	}, [cosData?.cn, cosName]);
 
 	useEffect(() => {
-		if (cosData?.description && cosData.description !== description) {
+		if (cosData.description !== undefined && cosData.description !== description) {
 			setIsDirty(true);
 		}
 	}, [cosData?.description, description]);
 
 	useEffect(() => {
-		if (cosData?.zimbraNotes && cosData.zimbraNotes !== zimbraNotes) {
+		if (cosData.zimbraNotes !== undefined && cosData.zimbraNotes !== zimbraNotes) {
 			setIsDirty(true);
 		}
 	}, [cosData.zimbraNotes, zimbraNotes]);
