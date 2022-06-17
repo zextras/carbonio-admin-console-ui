@@ -15,7 +15,7 @@ import {
 import ImportExternalBackup from './actions/import-external-backup';
 import BackupAdvanced from './default-setting/backup-advanced';
 import BackupServiceStatus from './default-setting/backup-service-status';
-import BackupServerConfig from './default-setting/rename-server-config';
+import BackupServerConfig from './default-setting/backup-server-config';
 import ServersList from './server-setting/backup-servers-list';
 
 const BackupDetailOperation: FC = () => {

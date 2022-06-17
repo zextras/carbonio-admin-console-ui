@@ -70,7 +70,6 @@ const BackupServiceStatus: FC = () => {
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 				width="100%"
-				height="calc(100vh - 150px)"
 				padding={{ top: 'extralarge' }}
 			>
 				<Row orientation="horizontal" mainAlignment="space-between" crossAlignment="flex-start">
