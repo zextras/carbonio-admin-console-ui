@@ -23,19 +23,7 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-
-const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-	<Row
-		orientation="horizontal"
-		mainAlignment="space-between"
-		crossAlignment="flex-start"
-		width="fill"
-		wrap={wrap || 'nowrap'}
-		padding={{ all: 'small' }}
-	>
-		{children}
-	</Row>
-);
+import ListRow from '../../list/list-row';
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
@@ -349,7 +337,7 @@ const DomainGalSettings: FC = () => {
 								{t('label.configuration', 'Configuration')}
 							</Text>
 						</Row>
-						<SettingRow>
+						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t(
@@ -374,7 +362,7 @@ const DomainGalSettings: FC = () => {
 									disabled
 								/>
 							</Container>
-						</SettingRow>
+						</ListRow>
 						<Divider />
 						<Container>
 							{zimbraGalAccountId !== '' && (
@@ -390,7 +378,7 @@ const DomainGalSettings: FC = () => {
 											{t('label.account', 'Account')}
 										</Text>
 									</Row>
-									<SettingRow>
+									<ListRow>
 										<Container padding={{ all: 'small' }}>
 											<Input
 												label={t(
@@ -402,9 +390,9 @@ const DomainGalSettings: FC = () => {
 												disabled
 											/>
 										</Container>
-									</SettingRow>
+									</ListRow>
 
-									<SettingRow>
+									<ListRow>
 										<Container padding={{ all: 'small' }}>
 											<Input
 												label={t('domain.mail_server', 'Mail Server')}
@@ -421,9 +409,9 @@ const DomainGalSettings: FC = () => {
 												disabled
 											/>
 										</Container>
-									</SettingRow>
+									</ListRow>
 
-									<SettingRow>
+									<ListRow>
 										<Container padding={{ all: 'small' }}>
 											<Input
 												label={t('domain.internal_gal_received', 'Internal GAL received range')}
@@ -442,7 +430,7 @@ const DomainGalSettings: FC = () => {
 												selection={pollingIntervalType}
 											/>
 										</Container>
-									</SettingRow>
+									</ListRow>
 								</>
 							)}
 						</Container>

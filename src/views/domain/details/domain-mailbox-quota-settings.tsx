@@ -28,18 +28,8 @@ import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import Paginig from '../../components/paging';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import ListRow from '../../list/list-row';
 
-const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-	<Row
-		orientation="horizontal"
-		mainAlignment="space-between"
-		crossAlignment="flex-start"
-		width="fill"
-		wrap={wrap || 'nowrap'}
-	>
-		{children}
-	</Row>
-);
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -404,7 +394,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 									{t('label.domain_quota_settings', 'Domain Quota Settings')}
 								</Text>
 							</Row>
-							<SettingRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('domain.domain_space_byte', 'Domain Space (Byte)')}
@@ -427,9 +417,9 @@ const DomainMailboxQuotaSetting: FC = () => {
 										}}
 									/>
 								</Container>
-							</SettingRow>
+							</ListRow>
 
-							<SettingRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
@@ -455,9 +445,9 @@ const DomainMailboxQuotaSetting: FC = () => {
 										}}
 									/>
 								</Container>
-							</SettingRow>
+							</ListRow>
 
-							<SettingRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Select
 										items={quotaPolicy}
@@ -468,7 +458,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										onChange={onZimbraDomainAggregateQuotaPolicy}
 									/>
 								</Container>
-							</SettingRow>
+							</ListRow>
 						</Container>
 
 						<Row
@@ -483,9 +473,9 @@ const DomainMailboxQuotaSetting: FC = () => {
 							</Text>
 						</Row>
 						<Container padding={{ all: 'large' }}>
-							<SettingRow>
+							<ListRow>
 								<Table rows={usageQuota} headers={headers} showCheckbox={false} />
-							</SettingRow>
+							</ListRow>
 							<Row
 								orientation="horizontal"
 								mainAlignment="space-between"

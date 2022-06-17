@@ -20,19 +20,7 @@ import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useHistory } from 'react-router-dom';
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
-
-const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-	<Row
-		orientation="horizontal"
-		mainAlignment="space-between"
-		crossAlignment="flex-start"
-		width="fill"
-		wrap={wrap || 'nowrap'}
-		padding={{ all: 'small' }}
-	>
-		{children}
-	</Row>
-);
+import ListRow from '../list/list-row';
 
 const CreateCos: FC = () => {
 	const [t] = useTranslation();
@@ -144,8 +132,8 @@ const CreateCos: FC = () => {
 								{t('label.general_information', 'General Information')}
 							</Text>
 						</Row>
-						<SettingRow>
-							<Container padding={{ left: 'small', right: 'small' }}>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.cos_name', 'Cos Name')}
 									background="gray5"
@@ -155,9 +143,9 @@ const CreateCos: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
-						<SettingRow>
-							<Container padding={{ left: 'small', right: 'small' }}>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.description', 'Description')}
 									background="gray5"
@@ -167,9 +155,9 @@ const CreateCos: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
-						<SettingRow>
-							<Container padding={{ left: 'small', right: 'small' }}>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.note', 'Note')}
 									background="gray5"
@@ -179,7 +167,7 @@ const CreateCos: FC = () => {
 									}}
 								/>
 							</Container>
-						</SettingRow>
+						</ListRow>
 					</Container>
 				</Row>
 			</Container>

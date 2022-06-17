@@ -9,19 +9,6 @@ import React, { FC, useState } from 'react';
 import { Container, Row, Text, Divider, Switch, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-	<Row
-		orientation="horizontal"
-		mainAlignment="flex-start"
-		crossAlignment="flex-start"
-		width="fill"
-		wrap={wrap || 'nowrap'}
-		padding={{ all: 'large' }}
-	>
-		{children}
-	</Row>
-);
-
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
 	const [checked1, setChecked1] = useState(true);

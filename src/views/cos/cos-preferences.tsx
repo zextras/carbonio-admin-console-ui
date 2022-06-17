@@ -18,23 +18,12 @@ import {
 	Padding
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import ListRow from '../list/list-row';
 
 const CosPreferences: FC = () => {
 	const [t] = useTranslation();
 	const [checked1, setChecked1] = useState(true);
 	const [selected, setSelected] = useState(1);
-
-	const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-		<Row
-			orientation="horizontal"
-			mainAlignment="space-between"
-			crossAlignment="flex-start"
-			width="fill"
-			wrap={wrap || 'nowrap'}
-		>
-			{children}
-		</Row>
-	);
 
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start" style={{ maxWidth: '982px' }}>
@@ -67,7 +56,7 @@ const CosPreferences: FC = () => {
 							background="gray6"
 							padding={{ left: 'small', right: 'small', top: 'small' }}
 						>
-							<SettingRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Select
 										// items={items}
@@ -84,7 +73,7 @@ const CosPreferences: FC = () => {
 										background="gray5"
 									/>
 								</Container>
-							</SettingRow>
+							</ListRow>
 							<Row
 								mainAlignment="flex-start"
 								orientation="vertical"
@@ -184,7 +173,7 @@ const CosPreferences: FC = () => {
 							background="gray6"
 							padding={{ top: 'small', bottom: 'small', left: 'small', right: 'small' }}
 						>
-							<SettingRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Select
 										// items={items}
@@ -209,7 +198,7 @@ const CosPreferences: FC = () => {
 										defaultSelection={{ value: '1', label: '25' }}
 									/>
 								</Container>
-							</SettingRow>
+							</ListRow>
 						</Container>
 					</Row>
 					<Divider />
@@ -253,7 +242,7 @@ const CosPreferences: FC = () => {
 								background="gray6"
 								padding={{ top: 'small', bottom: 'small', left: 'small', right: 'small' }}
 							>
-								<SettingRow>
+								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Select
 											// items={items}
@@ -275,7 +264,7 @@ const CosPreferences: FC = () => {
 											defaultSelection={{ value: '1', label: '25' }}
 										/>
 									</Container>
-								</SettingRow>
+								</ListRow>
 							</Container>
 							<Row
 								mainAlignment="flex-start"
@@ -389,7 +378,7 @@ const CosPreferences: FC = () => {
 								background="gray6"
 								padding={{ top: 'small', left: 'small', right: 'small' }}
 							>
-								<SettingRow>
+								<ListRow>
 									<Container padding={{ all: 'small' }} width="30%">
 										<Input
 											label={t(
@@ -428,7 +417,7 @@ const CosPreferences: FC = () => {
 											defaultSelection={{ value: '1', label: 'Days' }}
 										/>
 									</Container>
-								</SettingRow>
+								</ListRow>
 							</Container>
 							<Row
 								width="100%"
@@ -517,7 +506,7 @@ const CosPreferences: FC = () => {
 								background="gray6"
 								padding={{ top: 'small', bottom: 'small', left: 'small', right: 'small' }}
 							>
-								<SettingRow>
+								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Select
 											// items={items}
@@ -553,7 +542,7 @@ const CosPreferences: FC = () => {
 											CustomIcon={() => <Icon icon="Square2" size="large" color="primary" />}
 										/>
 									</Container>
-								</SettingRow>
+								</ListRow>
 							</Container>
 
 							<Row
@@ -584,7 +573,7 @@ const CosPreferences: FC = () => {
 								background="gray6"
 								padding={{ top: 'small', bottom: 'small', left: 'small', right: 'small' }}
 							>
-								<SettingRow>
+								<ListRow>
 									<Container padding={{ all: 'small' }} width="50%">
 										<Input
 											label={t(
@@ -611,7 +600,7 @@ const CosPreferences: FC = () => {
 											defaultSelection={{ value: '1', label: 'minutes' }}
 										/>
 									</Container>
-								</SettingRow>
+								</ListRow>
 							</Container>
 						</Container>
 					</Row>
@@ -691,7 +680,7 @@ const CosPreferences: FC = () => {
 								background="gray6"
 								padding={{ top: 'small', bottom: 'small', left: 'small', right: 'small' }}
 							>
-								<SettingRow>
+								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Select
 											// items={items}
@@ -731,7 +720,7 @@ const CosPreferences: FC = () => {
 											defaultSelection={{ value: '1', label: 'Public' }}
 										/>
 									</Container>
-								</SettingRow>
+								</ListRow>
 							</Container>
 							<Row
 								mainAlignment="flex-start"

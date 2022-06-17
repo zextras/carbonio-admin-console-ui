@@ -11,9 +11,7 @@ import {
 	Row,
 	Padding,
 	Text,
-	Dropdown,
-	IconButton,
-	Divider
+	Dropdown
 } from '@zextras/carbonio-design-system';
 
 import { replaceHistory } from '@zextras/carbonio-shell-ui';

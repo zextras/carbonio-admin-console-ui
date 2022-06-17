@@ -12,18 +12,8 @@ import { useDomainStore } from '../../../store/domain/store';
 import Paginig from '../../components/paging';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import AccountDetailView from './account-detail-view';
+import ListRow from '../../list/list-row';
 
-const SettingRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
-	<Row
-		orientation="horizontal"
-		mainAlignment="space-between"
-		crossAlignment="flex-start"
-		width="fill"
-		wrap={wrap || 'nowrap'}
-	>
-		{children}
-	</Row>
-);
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const domainInformation = useDomainStore((state) => state.domain?.a);
@@ -264,7 +254,7 @@ const ManageAccounts: FC = () => {
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Container padding={{ top: 'large', right: 'small', left: 'small' }}>
-							<SettingRow>
+							<ListRow>
 								<Container padding={{ top: 'large', right: 'small', left: 'small' }}>
 									<Input
 										label={t(
@@ -281,13 +271,13 @@ const ManageAccounts: FC = () => {
 										)}
 									/>
 								</Container>
-							</SettingRow>
+							</ListRow>
 						</Container>
 
 						<Container padding={{ all: 'large' }}>
-							<SettingRow>
+							<ListRow>
 								<Table rows={accountListFilter} headers={headers} showCheckbox multiSelect />
-							</SettingRow>
+							</ListRow>
 							<Row
 								orientation="horizontal"
 								mainAlignment="space-between"
