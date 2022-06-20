@@ -18,12 +18,7 @@ const CosFeatures: FC = () => {
 
 	return (
 		<>
-			<Container
-				mainAlignment="flex-start"
-				crossAlignment="flex-start"
-				height="100%"
-				style={{ maxWidth: '982px' }}
-			>
+			<Container mainAlignment="flex-start" crossAlignment="flex-start" height="100%">
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
 					<Text size="extralarge" weight="bold">
 						{t('cos.features', 'Features')}

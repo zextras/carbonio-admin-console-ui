@@ -224,7 +224,7 @@ const CosGeneralInformation: FC = () => {
 	};
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6" style={{ maxWidth: '982px' }}>
+		<Container mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"

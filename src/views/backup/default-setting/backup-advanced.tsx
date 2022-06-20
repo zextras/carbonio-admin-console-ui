@@ -45,12 +45,7 @@ const BackupAdvanced: FC = () => {
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	const onSave = (): void => {};
 	return (
-		<Container
-			padding={{ all: 'large' }}
-			mainAlignment="flex-start"
-			background="gray6"
-			style={{ maxWidth: '982px' }}
-		>
+		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Container
 				orientation="column"
 				background="gray6"

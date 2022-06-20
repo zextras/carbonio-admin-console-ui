@@ -26,7 +26,7 @@ const CosPreferences: FC = () => {
 	const [selected, setSelected] = useState(1);
 
 	return (
-		<Container mainAlignment="flex-start" crossAlignment="flex-start" style={{ maxWidth: '982px' }}>
+		<Container mainAlignment="flex-start" crossAlignment="flex-start">
 			<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
 				<Text size="medium" weight="bold">
 					{t('cos.preferences', 'Preferences')}

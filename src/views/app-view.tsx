@@ -6,9 +6,15 @@
  */
 import React, { FC, Suspense } from 'react';
 import { Container } from '@zextras/carbonio-design-system';
-import { Spinner } from '@zextras/carbonio-shell-ui';
+import {
+	Spinner,
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	usePrimaryBarState
+} from '@zextras/carbonio-shell-ui';
 import { useRouteMatch, Switch, Route } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 import DomainListPanel from './domain/domain-list-panel';
 import DomainDetailPanel from './domain/domain-detail-panel';
 import BucketDetailPanel from './bucket/bucket-detail-panel';
@@ -33,9 +39,15 @@ import CosDetailPanel from './cos/cos-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BackupDetailPanel from './backup/backup-detail-panel';
 
+const DetailViewContainer = styled(Container)`
+	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
+	transition: width 300ms;
+`;
+
 const AppView: FC = () => {
 	const { path } = useRouteMatch();
 	const [t] = useTranslation();
+	const isPrimaryBarExpanded = usePrimaryBarState();
 	return (
 		<Container>
 			<BreadCrumb />
@@ -65,9 +77,13 @@ const AppView: FC = () => {
 								<DomainListPanel />
 							</Suspense>
 						</Container>
-						<Suspense fallback={<Spinner />}>
-							<DomainDetailPanel />
-						</Suspense>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<DomainDetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
 					</Container>
 				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${STORAGES_ROUTE_ID}`}>
@@ -77,9 +93,13 @@ const AppView: FC = () => {
 								<BucketListPanel />
 							</Suspense>
 						</Container>
-						<Suspense fallback={<Spinner />}>
-							<BucketDetailPanel />
-						</Suspense>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<BucketDetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
 					</Container>
 				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${COS_ROUTE_ID}`}>
@@ -93,9 +113,13 @@ const AppView: FC = () => {
 								<CosListPanel />
 							</Suspense>
 						</Container>
-						<Suspense fallback={<Spinner />}>
-							<CosDetailPanel />
-						</Suspense>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<CosDetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
 					</Container>
 				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
@@ -112,9 +136,13 @@ const AppView: FC = () => {
 								<BackupListPanel />
 							</Suspense>
 						</Container>
-						<Suspense fallback={<Spinner />}>
-							<BackupDetailPanel />
-						</Suspense>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<BackupDetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
 					</Container>
 				</Route>
 			</Switch>
