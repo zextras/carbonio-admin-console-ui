@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
 	Container,
 	Input,
@@ -14,85 +14,217 @@ import {
 	Button
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { BucketRegions, BucketTypeItems } from '../utility/utils';
+import { fetchSoap } from '../../services/bucket-service';
 
 const Connection: FC<{
 	isActive: any;
 	getData: any;
 	onSelection: any;
 	title: string;
-}> = ({ isActive, getData, onSelection, title }) => {
+	setVerifyCheck: any;
+	verifyCheck: any;
+	setButtonChange: any;
+	bucketType: any;
+	setCompleteLoading: any;
+}> = ({ isActive, getData, onSelection, title, bucketType, setCompleteLoading }) => {
 	const [t] = useTranslation();
-	const regions = [
-		{
-			label: 'EU | Milan',
-			value: 'eu-milan'
+	const [buttonColor, setButtonColor] = useState<string>('primary');
+	const [icon, setIcon] = useState('ActivityOutline');
+	const [buttonDetail, setButtonDetail] = useState(
+		t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
+	);
+
+	const [bucketName, setBucketName] = useState();
+	const [descriptiveName, setDescripitiveName] = useState();
+	const [accessKeyData, setAccessKeyData] = useState();
+	const [secretKey, setSecretKey] = useState();
+	const [regionsData, setRegionsData] = useState();
+	const [notes, setNotes] = useState();
+	const [BucketUid, setBucketUid] = useState('');
+	const [bucketTypeData, setBucketTypeData] = useState();
+	const [verifyCheck, setVerifyCheck] = useState<string>('');
+	const [buttonChange, setButtonChange] = useState<boolean>(false);
+
+	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
+	const handleVerifyConnector = (): any => {
+		// API CALL
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxCore',
+			action: 'doCreateBucket',
+			storeType: bucketType,
+			bucketName,
+			accessKey: accessKeyData,
+			secret: secretKey,
+			region: regionsData,
+			targetServer: server
+		}).then((res: any) => {
+			const response = JSON.parse(res.response.content);
+			if (response.ok) {
+				setVerifyCheck('success');
+				const data = response.response.message;
+				const responseData = data.split("'");
+				setBucketUid(responseData[1]);
+				onSelection({ uuid: responseData[1] }, false);
+			} else {
+				setVerifyCheck('fail');
+			}
+		});
+	};
+
+	useEffect(() => {
+		if (isActive) {
+			setCompleteLoading(
+				descriptiveName &&
+					bucketName &&
+					regionsData &&
+					accessKeyData &&
+					secretKey &&
+					notes &&
+					BucketUid
+			);
 		}
-	];
+	}, [
+		accessKeyData,
+		bucketName,
+		descriptiveName,
+		isActive,
+		regionsData,
+		secretKey,
+		setCompleteLoading,
+		notes,
+		BucketUid
+	]);
+
+	useEffect(() => {
+		const volumeObject: any = BucketTypeItems.find((s) => s.value === bucketType);
+		setBucketTypeData(volumeObject.label);
+		onSelection({ storeType: bucketType }, false);
+	}, [bucketType, bucketTypeData, onSelection]);
+
+	useEffect(() => {
+		if (verifyCheck === 'success') {
+			setButtonColor('success');
+			setIcon('CheckmarkCircle2');
+			setButtonDetail(
+				t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED')
+			);
+		} else if (verifyCheck === 'fail') {
+			setButtonColor('error');
+			setIcon('AlertTriangle');
+			setButtonDetail(
+				t(
+					'label.connector_is_created_by_verification_failed',
+					'CONNECTOR IS CREATED BY VERIFICATION FAILED'
+				)
+			);
+		}
+	}, [setButtonChange, t, verifyCheck]);
 
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">
-			<Row padding={{ top: 'extralarge' }} width="100%">
-				<Input
-					label={t('buckets.bucket_type', 'Buckets Type')}
-					backgroundColor="gray5"
-					value={'S3 AWS'}
-					readOnly
-				/>
-			</Row>
-			<Row padding={{ top: 'large' }} width="100%">
-				<Input
-					label={t('buckets.connection.descriptive_name', 'Descriptive Name')}
-					backgroundColor="gray5"
-					value="s3aws"
-				/>
-			</Row>
-			<Row width="100%" padding={{ top: 'large' }}>
-				<Row width="48%" mainAlignment="flex-start">
+			<form>
+				<Row padding={{ top: 'extralarge' }} width="100%">
+					<Input
+						label={t('label.bucket_type', 'Buckets Type')}
+						backgroundColor="gray5"
+						value={bucketTypeData}
+						readOnly
+					/>
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%">
+					<Input
+						label={t('label.descriptive_name', 'Descriptive Name')}
+						backgroundColor="gray5"
+						name="descriptiveName"
+						onChange={(ev: any): any => {
+							setDescripitiveName(ev.target.value);
+							onSelection({ descriptiveName: ev.target.value }, false);
+						}}
+					/>
+				</Row>
+				<Row width="100%" padding={{ top: 'large' }}>
+					<Row width="48%" mainAlignment="flex-start">
+						<Input
+							background="gray5"
+							label={t('label.bucket_name', 'Bucket Name')}
+							name="ArnName"
+							onChange={(ev: any): any => {
+								setBucketName(ev.target.value);
+								onSelection({ bucketName: ev.target.value }, false);
+							}}
+						/>
+					</Row>
+					<Padding width="4%" />
+					<Row width="48%" mainAlignment="flex-end">
+						<Select
+							items={BucketRegions}
+							background="gray5"
+							label={t('label.region', 'Region')}
+							onChange={(e: any): any => {
+								const volumeObject: any = BucketRegions.find((s) => s.value === e);
+								setRegionsData(volumeObject.value);
+								onSelection({ region: volumeObject.value }, false);
+							}}
+							showCheckbox={false}
+							padding={{ right: 'medium' }}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'large' }}>
+					<Row width="48%" mainAlignment="flex-start">
+						<PasswordInput
+							background="gray5"
+							label={t('label.access_key', 'Access Key')}
+							name="accessKey"
+							onChange={(ev: any): any => {
+								setAccessKeyData(ev.target.value);
+								onSelection({ accessKey: ev.target.value }, false);
+							}}
+						/>
+					</Row>
+					<Padding width="4%" />
+					<Row width="48%" mainAlignment="flex-end">
+						<PasswordInput
+							background="gray5"
+							label={t('label.secret_key', 'Secret Key')}
+							name="secretKey"
+							onChange={(ev: any): any => {
+								setSecretKey(ev.target.value);
+								onSelection({ secret: ev.target.value }, false);
+							}}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'large' }}>
 					<Input
 						background="gray5"
-						label={t('buckets.connection.arn_name', 'Arn / Name')}
-						value="s3aws"
+						label={t('label.notes', 'Notes')}
+						name="notes"
+						onChange={(ev: any): any => {
+							setNotes(ev.target.value);
+							onSelection({ notes: ev.target.value }, false);
+						}}
 					/>
 				</Row>
-				<Padding width="4%" />
-				<Row width="48%" mainAlignment="flex-end">
-					<Select background="gray5" label="Region" items={regions} showCheckbox={false} />
-				</Row>
-			</Row>
-			<Row width="100%" padding={{ top: 'large' }}>
-				<Row width="48%" mainAlignment="flex-start">
-					<PasswordInput
-						background="gray5"
-						label={t('buckets.connection.access_key', 'Access Key')}
-						value="ABC123"
+				<Row width="100%" padding={{ top: 'large' }}>
+					<Button
+						type="outlined"
+						label={buttonDetail}
+						icon={icon}
+						iconPlacement="right"
+						color={buttonColor}
+						width="100%"
+						onClick={handleVerifyConnector}
 					/>
 				</Row>
-				<Padding width="4%" />
-				<Row width="48%" mainAlignment="flex-end">
-					<PasswordInput
-						background="gray5"
-						label={t('buckets.connection.secret_key', 'Secret Key')}
-						value="ABC123"
-					/>
-				</Row>
-			</Row>
-			<Row width="100%" padding={{ top: 'large' }}>
-				<Input
-					background="gray5"
-					label={t('buckets.connection.notes', 'Notes')}
-					value="This is my notes"
-				/>
-			</Row>
-			<Row width="100%" padding={{ top: 'large' }}>
-				<Button
-					type="outlined"
-					label={t('buckets.connection.verify_connector', 'VERIFY CONNECTOR')}
-					icon="ActivityOutline"
-					iconPlacement="right"
-					color="primary"
-					width="100%"
-				/>
-			</Row>
+				{verifyCheck === 'success' && (
+					<Row width="100%" padding={{ top: 'large' }}>
+						<Input label={t('label.uuid', 'uuid')} value={BucketUid} readOnly />
+					</Row>
+				)}
+			</form>
 		</Container>
 	);
 };

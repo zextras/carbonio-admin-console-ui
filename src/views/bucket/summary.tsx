@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useState } from 'react';
-import {
-	Container,
-	Input,
-	Row,
-	Padding,
-	Select,
-	PasswordInput,
-	Button
-} from '@zextras/carbonio-design-system';
+import { Container, Input, Row, Padding, PasswordInput } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 // eslint-disable-next-line @typescript-eslint/ban-types

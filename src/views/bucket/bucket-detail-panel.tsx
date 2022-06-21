@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Padding,
@@ -11,14 +11,21 @@ import {
 	Button,
 	Row,
 	Divider,
-	Select
+	Select,
+	Input,
+	Icon,
+	Table,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { Spinner, getBridgedFunctions, ACTION_TYPES } from '@zextras/carbonio-shell-ui';
 
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import logo from '../../assets/ninja_robo.svg';
 import NewBucket from './new-bucket';
+import BucketDeleteModel from './delete-bucket-model';
+import DetailsPanel from './details-panel';
+import { fetchSoap } from '../../services/bucket-service';
+import { BucketTypeItems } from '../utility/utils';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -31,74 +38,283 @@ const AbsoluteContainer = styled(Container)`
 	box-shadow: 0 0 12px -1px #888;
 `;
 
-const BucketDetailPanel: FC = () => {
-	const [t] = useTranslation();
+const headers = [
+	{
+		id: 'name',
+		label: 'Name',
+		width: '90%',
+		bold: true
+	},
+	{
+		id: 'type',
+		label: 'Type',
+		i18nAllLabel: 'All',
+		width: '10%',
+		align: 'center',
+		bold: true
+	}
+];
 
-	const [selected, setSelected]: any = useState(4);
-	const [toggleBucket, setToggleBucket] = useState(false);
-
-	const items = [
-		{
-			label: 'S3 AWS',
-			value: 's3-aws'
-		}
-	];
+const BucketListTable: FC<{ volumes: Array<any>; selectedRows: any; onSelectionChange: any }> = ({
+	volumes,
+	selectedRows,
+	onSelectionChange
+}) => {
+	const tableRows = useMemo(
+		() =>
+			volumes.map((v, i) => ({
+				id: i,
+				columns: [
+					// eslint-disable-next-line react/jsx-key
+					<Text>{v.bucketName}</Text>,
+					// eslint-disable-next-line react/jsx-key
+					<Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>{v.storeType}</Text>
+				],
+				clickable: true
+			})),
+		[volumes]
+	);
 
 	return (
-		<Container
-			orientation="column"
-			crossAlignment="center"
-			mainAlignment="flex-start"
-			style={{ overflowY: 'hidden' }}
-			background="gray6"
-		>
-			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-				<RelativeContainer
-					orientation="column"
-					crossAlignment="flex-start"
-					mainAlignment="flex-start"
-					style={{ overflowY: 'auto' }}
-					background="grey6"
-				>
-					{toggleBucket && (
-						<AbsoluteContainer orientation="vertical" background="gray5">
-							<NewBucket setToggleBucket={setToggleBucket} title="Bucket Connection" />
-						</AbsoluteContainer>
-					)}
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-						<Text size="extralarge" weight="bold">
-							{t('buckets.bucket_list', 'Buckets List')}
-						</Text>
-					</Row>
-					<Divider />
-					<Row padding="32px 12px 10px 12px" width="100%">
-						<Select
-							items={items}
-							background="gray5"
-							label={t('buckets.bucket_type', 'Buckets Type')}
-							onChange={setSelected}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
+		<Container crossAlignment="flex-start">
+			<Table
+				headers={headers}
+				rows={tableRows}
+				showCheckbox={false}
+				multiSelect={false}
+				selectedRows={selectedRows}
+				onSelectionChange={onSelectionChange}
+			/>
+			{tableRows.length === 0 && (
+				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
+					<Text>Empty Table</Text>
+				</Row>
+			)}
+		</Container>
+	);
+};
+
+const BucketDetailPanel: FC = () => {
+	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
+	const [bucketselection, setBucketselection] = useState([]);
+	const [bucketDeleteName, setBucketDeleteName] = useState<object | any>({});
+	const [bucketType, setBucketType] = useState('');
+	const [bucketList, setBucketList] = useState([]);
+	const [connectionData, setConnectionData] = useState();
+	const [detailsBucket, setDetailsBucket] = useState(false);
+
+	const [toggleBucket, setToggleBucket] = useState(false);
+	const [open, setOpen] = useState(false);
+	const [showDetails, setShowDetails] = useState(false);
+
+	const clickHandler = (): any => {
+		setOpen(true);
+	};
+	const closeHandler = (): any => {
+		setOpen(false);
+		setShowDetails(!showDetails);
+	};
+
+	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
+
+	const getBucketListType = useCallback((): void => {
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxCore',
+			action: 'listBuckets',
+			type: bucketType,
+			targetServer: server
+		}).then((res: any) => {
+			const response = JSON.parse(res.response.content);
+			if (response.ok) {
+				setBucketList(response.response.values);
+			} else {
+				setBucketList([]);
+			}
+		});
+	}, [bucketType, server]);
+
+	const deleteHandler = useCallback(() => {
+		// eslint-disable-next-line no-restricted-syntax
+		// delete  api call here
+		setOpen(false);
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxCore',
+			action: 'doDeleteBucket',
+			storeType: bucketDeleteName?.storeType,
+			bucketConfigurationId: bucketDeleteName?.uuid,
+			targetServer: server
+		}).then((res: any) => {
+			const response = JSON.parse(res.response.content);
+			if (response.ok) {
+				getBucketListType();
+				createSnackbar({
+					key: 1,
+					type: 'success',
+					label: t('label.delete_bucket_sucess', 'The {{name}} has removerd', {
+						name: bucketDeleteName?.bucketName
+					}),
+					autoHideTimeout: 2000
+				});
+			} else {
+				createSnackbar({
+					key: 1,
+					type: 'error',
+					label: t('label.delete_bucket_fail', 'The {{name}} has not removerd', {
+						name: bucketDeleteName?.bucketName
+					}),
+					autoHideTimeout: 2000
+				});
+			}
+		});
+	}, [
+		bucketDeleteName?.storeType,
+		bucketDeleteName?.uuid,
+		bucketDeleteName?.bucketName,
+		server,
+		getBucketListType,
+		createSnackbar,
+		t
+	]);
+	const showDetailHandler = useCallback(() => {
+		setDetailsBucket(!detailsBucket);
+		setShowDetails(!showDetails);
+	}, [detailsBucket, showDetails]);
+
+	useEffect(() => {
+		getBucketListType();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [bucketType, toggleBucket]);
+
+	return (
+		<>
+			<RelativeContainer
+				orientation="column"
+				crossAlignment="flex-start"
+				mainAlignment="flex-start"
+				style={{ overflowY: 'auto', marginLeft: '16px' }}
+				background="white"
+			>
+				{toggleBucket && (
+					<AbsoluteContainer orientation="vertical" background="gray5">
+						<NewBucket
+							setToggleBucket={setToggleBucket}
+							setDetailsBucket={setDetailsBucket}
+							title="Bucket Connection"
+							bucketType={bucketType}
+							setConnectionData={setConnectionData}
 						/>
-					</Row>
-					<Container>
-						<Text
-							overflow="break-word"
-							weight="normal"
-							size="large"
-							style={{ whiteSpace: 'pre-line', textAlign: 'center', 'font-family': 'roboto' }}
+					</AbsoluteContainer>
+				)}
+				{detailsBucket && (
+					<AbsoluteContainer orientation="vertical" background="gray5">
+						<DetailsPanel
+							setDetailsBucket={setDetailsBucket}
+							title="Bucket Connection"
+							BucketDetail={connectionData}
+						/>
+					</AbsoluteContainer>
+				)}
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
+					<Text size="extralarge" weight="bold">
+						{t('buckets.bucket_list', 'Buckets List')}
+					</Text>
+				</Row>
+				<Divider />
+				<Row padding="32px 12px 10px" width="100%">
+					<Select
+						items={BucketTypeItems}
+						background="gray5"
+						label={t('buckets.bucket_type', 'Buckets Type')}
+						onChange={(e: any): void => {
+							const volumeObject: any = BucketTypeItems.find((s) => s.value === e);
+							setBucketType(volumeObject.value);
+						}}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+					/>
+				</Row>
+				<BucketDeleteModel
+					open={open}
+					closeHandler={closeHandler}
+					saveHandler={deleteHandler}
+					BucketDetail={bucketDeleteName}
+				/>
+				{bucketType ? (
+					<>
+						<Row
+							width="100%"
+							mainAlignment="flex-end"
+							orientation="horizontal"
+							padding="8px 14px"
+							style={{ gap: '8px' }}
 						>
+							{bucketselection.length !== 0 && (
+								<Button
+									type="outlined"
+									label={t('label.detail_button', 'DETAILS')}
+									icon="KeyOutline"
+									color="primary"
+									disabled={!bucketselection.length}
+									onClick={showDetailHandler}
+								/>
+							)}
+							<Button
+								type="outlined"
+								label={t('label.create_button', 'CREATE')}
+								icon="Plus"
+								color="primary"
+								onClick={(): void => {
+									setToggleBucket(!toggleBucket);
+									if (showDetails) setShowDetails(!showDetails);
+								}}
+							/>
+
+							<Button
+								type="outlined"
+								label={t('label.remove_button', 'REMOVE')}
+								icon="CloseOutline"
+								color="error"
+								disabled={!bucketselection.length}
+								onClick={clickHandler}
+							/>
+						</Row>
+						{bucketList?.length !== 0 && (
+							<>
+								<Row width="100%" padding="3px 13px">
+									<Input
+										background="gray5"
+										label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
+										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="grey" />}
+									/>
+								</Row>
+								<Row padding="16px 14px 0px 14px" width="100%">
+									<BucketListTable
+										volumes={bucketList}
+										selectedRows={bucketselection}
+										onSelectionChange={(selected: any): any => {
+											setBucketselection(selected);
+											const volumeObject: any = bucketList.find(
+												(s, index) => index === selected[0]
+											);
+											setShowDetails(false);
+											setBucketDeleteName(volumeObject);
+											setConnectionData(volumeObject);
+										}}
+									/>
+								</Row>
+							</>
+						)}
+					</>
+				) : (
+					<Container>
+						<Text overflow="break-word" weight="normal" size="large">
 							<img src={logo} alt="logo" />
 						</Text>
 						<Padding all="medium" width="47%">
-							<Text
-								color="gray1"
-								overflow="break-word"
-								weight="normal"
-								size="large"
-								width="60%"
-								style={{ whiteSpace: 'pre-line', textAlign: 'center', 'font-family': 'roboto' }}
-							>
+							<Text color="gray1" overflow="break-word" weight="normal" size="large" width="60%">
 								{t(
 									'select_bucket_or_create_new_bucket',
 									"It seems like you haven't setup a bucket type. Click NEW BUCKET button to create a new one."
@@ -113,17 +329,18 @@ const BucketDetailPanel: FC = () => {
 							>
 								<Button
 									type="outlined"
-									label={t('label.create_new_bucket', 'NEW BUCKET')}
+									label={t('buckets.create_new_bucket', 'NEW BUCKET')}
 									icon="Plus"
 									color="info"
-									onClick={(): any => setToggleBucket(!toggleBucket)}
+									onClick={(): void => setToggleBucket(!toggleBucket)}
 								/>
 							</Text>
 						</Padding>
 					</Container>
-				</RelativeContainer>
-			</Container>
-		</Container>
+				)}
+			</RelativeContainer>
+		</>
 	);
 };
+
 export default BucketDetailPanel;

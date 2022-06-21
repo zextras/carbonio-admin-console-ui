@@ -8,12 +8,15 @@ export const accountListDirectory = async (
 	attr: string,
 	type: string,
 	domainName: string,
-	query: string
+	query: string,
+	offset: number,
+	limit: number
 ): Promise<any> => {
 	const request: any = {
 		SearchDirectoryRequest: {
 			_jsns: 'urn:zimbraAdmin',
-			offset: 0,
+			offset,
+			limit,
 			sortAscending: '1',
 			applyCos: 'false',
 			applyConfig: 'false',
@@ -34,6 +37,12 @@ export const accountListDirectory = async (
 			'Content-Type': 'application/json'
 		},
 		body: JSON.stringify({
+			Header: {
+				context: {
+					_jsns: 'urn:zimbra',
+					session: {}
+				}
+			},
 			Body: request
 		})
 	});

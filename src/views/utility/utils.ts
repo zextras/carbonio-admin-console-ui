@@ -821,6 +821,28 @@ export const timeZoneList = (
 	}
 ];
 
+export const BucketTypeItems = [
+	{
+		label: 'S3 AWS',
+		value: 'S3'
+	},
+	{
+		label: 'S2 AWS',
+		value: 'S2'
+	}
+];
+
+export const BucketRegions = [
+	{
+		label: 'EU | Milan',
+		value: 'EU_WEST_1'
+	},
+	{
+		label: 'EU | Milan1',
+		value: 'EU_TEST_1'
+	}
+];
+
 export const getDateFromStr = (serverStr: string): any => {
 	if (serverStr === null || serverStr === undefined) return null;
 	const d = new Date();

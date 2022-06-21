@@ -7,9 +7,8 @@
 import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button } from '@zextras/carbonio-design-system';
-import { VerticalWizard } from '../app/component/hwizard';
+import { HorizontalWizard } from '../app/component/hwizard';
 import Connection from './connection';
-import Summary from './summary';
 import { Section } from '../app/component/section';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleBucket }) => {
@@ -21,7 +20,9 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleBucket }) => 
 			footer={wizardFooter}
 			divider
 			showClose
-			onClose={(): any => setToggleBucket(false)}
+			onClose={(): void => {
+				setToggleBucket(false);
+			}}
 		>
 			{wizard}
 		</Section>
@@ -29,7 +30,13 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleBucket }) => 
 };
 
 // eslint-disable-next-line no-empty-pattern
-const NewBucket: FC<{ setToggleBucket: any; title: string }> = ({ setToggleBucket, title }) => {
+const NewBucket: FC<{
+	setToggleBucket: any;
+	title: string;
+	setDetailsBucket: any;
+	bucketType: any;
+	setConnectionData: any;
+}> = ({ setToggleBucket, title, setDetailsBucket, bucketType, setConnectionData }) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 
@@ -40,33 +47,26 @@ const NewBucket: FC<{ setToggleBucket: any; title: string }> = ({ setToggleBucke
 			icon: 'Link2Outline',
 			view: Connection,
 			canGoNext: (): any => true
-		},
-		{
-			name: 'summary',
-			label: t('new_bucket_summary', 'SUMMARY'),
-			icon: 'AtOutline',
-			view: Summary,
-			NextButton: (props: any) => (
-				<Button
-					{...props}
-					label={t('commons.confirm_connection', 'CONFIRM CONNECTION')}
-					icon="Link2Outline"
-					iconPlacement="right"
-				/>
-			)
 		}
 	];
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	const onComplete = useCallback(() => {}, []);
+	const onComplete = useCallback(
+		(data) => {
+			setConnectionData(data.steps.connection);
+			setToggleBucket(false);
+			setDetailsBucket(false);
+		},
+		[setToggleBucket, setDetailsBucket, setConnectionData]
+	);
 
 	return (
-		<VerticalWizard
+		<HorizontalWizard
 			steps={wizardSteps}
 			Wrapper={WizardInSection}
 			onChange={setWizardData}
 			onComplete={onComplete}
 			setToggleBucket={setToggleBucket}
+			bucketType={bucketType}
 		/>
 	);
 };

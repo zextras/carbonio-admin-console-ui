@@ -16,7 +16,6 @@ type WizardProps = {
 	activeRef: any;
 	title: any;
 };
-
 const useWizard = ({
 	data,
 	defaultData,

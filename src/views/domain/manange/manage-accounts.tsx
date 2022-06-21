@@ -60,6 +60,7 @@ const ManageAccounts: FC = () => {
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(20);
 	const [searchString, setSearchString] = useState<string>('');
+	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 
@@ -95,15 +96,13 @@ const ManageAccounts: FC = () => {
 			const type = 'accounts';
 			const attrs =
 				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes';
-			accountListDirectory(attrs, type, domainName, '')
+			accountListDirectory(attrs, type, domainName, searchQuery, offset, limit)
 				.then((response) => response.json())
 				.then((data) => {
-					const accountListResponse: any = data?.Body?.SearchDirectoryResponse?.account;
+					const accountListResponse: any = data?.Body?.SearchDirectoryResponse?.account || [];
 					if (accountListResponse && Array.isArray(accountListResponse)) {
 						const accountListArr: any = [];
-						if (data?.Body?.SearchDirectoryResponse?.searchTotal) {
-							setTotalAccount(data?.Body?.SearchDirectoryResponse?.searchTotal);
-						}
+						setTotalAccount(data?.Body?.SearchDirectoryResponse?.searchTotal || 0);
 						accountListResponse.map((item: any): any => {
 							item?.a?.map((ele: any) => {
 								// eslint-disable-next-line no-param-reassign
@@ -179,27 +178,25 @@ const ManageAccounts: FC = () => {
 							});
 							return '';
 						});
-						setAccountList([]);
+						// setAccountList([]);
 						setAccountList(accountListArr);
 					}
 				});
 		},
-		[STATUS_COLOR]
+		[STATUS_COLOR, limit, offset, searchQuery]
 	);
 	useEffect(() => {
-		setOffset(0);
-		const searchFilterArr = filter(accountList, (o) =>
-			o?.item?.name?.toLowerCase()?.includes(searchString)
-		);
-		const filterList: any = searchFilterArr.slice(offset, offset + limit);
-		setTotalAccount(searchFilterArr.length);
-		setAccountListFilter(filterList);
+		if (searchString) {
+			setSearchQuery(
+				`(|(mail=*${searchString}*)(cn=*${searchString}*)(sn=*${searchString}*)(gn=*${searchString}*)(displayName=*${searchString}*)(zimbraMailDeliveryAddress=*${searchString}*))`
+			);
+		} else {
+			setSearchQuery('');
+		}
 	}, [accountList, limit, offset, searchString]);
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
-			setOffset(0);
-			setTotalAccount(0);
 			domainInformation.map((item: any) => {
 				obj[item?.n] = item._content;
 				return '';
@@ -271,7 +268,7 @@ const ManageAccounts: FC = () => {
 
 						<Container padding={{ all: 'large' }}>
 							<ListRow>
-								<Table rows={accountListFilter} headers={headers} showCheckbox multiSelect />
+								<Table rows={accountList} headers={headers} showCheckbox multiSelect />
 							</ListRow>
 							<Row
 								orientation="horizontal"

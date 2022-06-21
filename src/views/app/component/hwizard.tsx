@@ -7,7 +7,7 @@
 
 import React, { FC, useRef } from 'react';
 import useWizard from '../hooks/usewizard';
-import { VerticalWizardLayout } from './horizontal-wizard-layout';
+import { HorizontalWizardLayout } from './horizontal-wizard-layout';
 
 type Props = {
 	data: any;
@@ -24,6 +24,8 @@ type Props = {
 	currentStep: any;
 	currentStepIndex: any;
 	setToggleBucket: any;
+
+	bucketType: any;
 };
 
 const Wizard: React.FC<Props> = ({
@@ -38,7 +40,8 @@ const Wizard: React.FC<Props> = ({
 	cancelI18nLabel,
 	Wrapper,
 	title,
-	setToggleBucket
+	setToggleBucket,
+	bucketType
 }) => {
 	const sectionRef = useRef();
 	const activeRef = useRef();
@@ -60,11 +63,13 @@ const Wizard: React.FC<Props> = ({
 			cancelI18nLabel={cancelI18nLabel}
 			ref={{ sectionRef, activeRef }}
 			setToggleBucket={setToggleBucket}
+			
+			bucketType={bucketType}
 			{...useWizardAnswer}
 		/>
 	);
 };
 
-export const VerticalWizard: React.FC<any> = (props) => (
-	<Wizard Layout={VerticalWizardLayout} {...props} />
+export const HorizontalWizard: React.FC<any> = (props) => (
+	<Wizard Layout={HorizontalWizardLayout} {...props} />
 );
