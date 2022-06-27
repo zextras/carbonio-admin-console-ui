@@ -35,7 +35,7 @@ const Dashboard: FC = () => {
 					overflow="break-word"
 					weight="normal"
 					size="large"
-					style={{ whiteSpace: 'pre-line', textAlign: 'center', 'font-family': 'roboto' }}
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
 				>
 					<img src={zxboat} alt="logo" />
 				</Text>
@@ -45,7 +45,7 @@ const Dashboard: FC = () => {
 					overflow="break-word"
 					weight="light"
 					size="large"
-					style={{ 'font-size': '36px', 'font-family': 'roboto', height: '45px' }}
+					style={{ fontSize: '36px', fontFamily: 'roboto', height: '45px' }}
 				>
 					{t('welcome_to_carbonio', {
 						adminName: userName,
@@ -54,7 +54,7 @@ const Dashboard: FC = () => {
 					})}
 				</Text>
 
-				<Text color="#828282" overflow="break-word" weight="light" style={{ 'font-size': '24px' }}>
+				<Text color="#828282" overflow="break-word" weight="light" style={{ fontSize: '24px' }}>
 					{t('select_section_from_left_menu', 'Please select a section from the left menu')}
 				</Text>
 			</Container>
