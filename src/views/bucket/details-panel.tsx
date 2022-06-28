@@ -160,7 +160,7 @@ const DetailsPanel: FC<{
 	const [verify, setVerify] = useState('primary');
 
 	const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
-	const [buttonIcon, setButtonIcon] = useState('ActivityOutline');
+	const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
 
 	const createSnackbar = useSnackbar();
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';

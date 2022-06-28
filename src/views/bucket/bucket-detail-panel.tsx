@@ -223,7 +223,7 @@ const BucketDetailPanel: FC = () => {
 					</Text>
 				</Row>
 				<Divider />
-				<Row padding="32px 12px 10px" width="100%">
+				<Row style={{ padding: '32px 12px 10px' }} width="100%">
 					<Select
 						items={BucketTypeItems}
 						background="gray5"
@@ -248,8 +248,7 @@ const BucketDetailPanel: FC = () => {
 							width="100%"
 							mainAlignment="flex-end"
 							orientation="horizontal"
-							padding="8px 14px"
-							style={{ gap: '8px' }}
+							style={{ gap: '8px', padding: '8px 14px' }}
 						>
 							{bucketselection.length !== 0 && (
 								<Button
@@ -283,14 +282,14 @@ const BucketDetailPanel: FC = () => {
 						</Row>
 						{bucketList?.length !== 0 && (
 							<>
-								<Row width="100%" padding="3px 13px">
+								<Row width="100%" style={{ padding: '3px 13px' }}>
 									<Input
 										background="gray5"
 										label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
 										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="grey" />}
 									/>
 								</Row>
-								<Row padding="16px 14px 0px 14px" width="100%">
+								<Row style={{ padding: '16px 14px 0px 14px' }} width="100%">
 									<BucketListTable
 										volumes={bucketList}
 										selectedRows={bucketselection}

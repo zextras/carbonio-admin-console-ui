@@ -30,7 +30,7 @@ const Connection: FC<{
 }> = ({ isActive, getData, onSelection, title, bucketType, setCompleteLoading }) => {
 	const [t] = useTranslation();
 	const [buttonColor, setButtonColor] = useState<string>('primary');
-	const [icon, setIcon] = useState('ActivityOutline');
+	const [icon, setIcon] = useState<string>('ActivityOutline');
 	const [buttonDetail, setButtonDetail] = useState(
 		t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
 	);

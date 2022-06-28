@@ -56,7 +56,7 @@ const CosDetailPanel: FC = () => {
 									overflow="break-word"
 									weight="normal"
 									size="large"
-									style={{ whiteSpace: 'pre-line', textAlign: 'center', 'font-family': 'roboto' }}
+									style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
 								>
 									<img src={logo} alt="logo" />
 								</Text>

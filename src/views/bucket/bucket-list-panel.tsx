@@ -46,7 +46,7 @@ const BucketListPanel: FC = () => {
 	const options = useMemo(
 		() => [
 			{
-				id: 1,
+				id: '1',
 				name: t('buckets.connect_buckets', 'Connect Buckets')
 			}
 		],
@@ -73,7 +73,7 @@ const BucketListPanel: FC = () => {
 			background="gray5"
 		>
 			<Container crossAlignment="flex-start" mainAlignment="flex-start">
-				<List items={options} ItemComponent={ListItem} active={1} selected={selected} />
+				<List items={options} ItemComponent={ListItem} active={'1'} selected={selected} />
 			</Container>
 		</Container>
 	);

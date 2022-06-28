@@ -68,7 +68,7 @@ const StepNavigator: FC<{
 					cursor: 'pointer'
 				}}
 			>
-				<Row padding={renderElement ? '12px 8px' : ''} style={{ borderRadius: '50%' }}>
+				<Row style={{ padding: renderElement ? '12px 8px' : '', borderRadius: '50%' }}>
 					<Icon icon={step.icon} color={color} size="large" />
 				</Row>
 				{renderElement && (
@@ -151,7 +151,6 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 					const View = steps[stepIndex].view;
 					const isDone = stepIndex < currentStepIndex;
 					const isActive = currentStep === step.name;
-					console.log('__check', isActive, isDone);
 
 					const renderElement = (): any => {
 						if (

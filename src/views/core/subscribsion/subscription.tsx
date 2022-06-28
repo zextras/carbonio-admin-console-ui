@@ -77,7 +77,7 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 		orientation="horizontal"
 		mainAlignment="flex-start"
 		crossAlignment="stretch"
-		padding="0 44px 16px 0"
+		style={{ padding: '0 44px 16px 0' }}
 	>
 		<VerticalBar licensed={licensed} />
 		<Row
@@ -258,7 +258,7 @@ const Subscription: FC = () => {
 						wrap="wrap"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
-						padding="16px 0 32px 0"
+						style={{ padding: '16px 0 32px 0' }}
 					>
 						<Row width="calc(100% - 122px)">
 							<Input
@@ -293,7 +293,7 @@ const Subscription: FC = () => {
 										? (): void => activeLicence()
 										: (): void => setOpen(true)
 								}
-								padding="12px 12px"
+								style={{ padding: '12px 12px' }}
 							/>
 						</Row>
 					</Container>
@@ -317,7 +317,7 @@ const Subscription: FC = () => {
 						<Row
 							width="100%"
 							mainAlignment="flex-start"
-							padding="0 0 32px 0"
+							style={{ padding: '0 0 32px 0' }}
 							onClick={(): void => setShowDisabledModules((prev) => !prev)}
 						>
 							<CollapseText color="primary" size="small">
