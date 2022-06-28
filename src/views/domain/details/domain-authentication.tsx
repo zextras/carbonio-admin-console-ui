@@ -487,6 +487,8 @@ const DomainAuthentication: FC = () => {
 										label={t('label.your_auth_method_is', 'Your Auth Method is')}
 										value={authMechLabel[zimbraAuthMech]}
 										disabled
+										// eslint-disable-next-line @typescript-eslint/no-empty-function
+										onChange={(e: any): any => {}}
 									/>
 								</Padding>
 							</ListRow>

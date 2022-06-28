@@ -340,7 +340,6 @@ const DomainGalSettings: FC = () => {
 										'Most results returned by GAL search'
 									)}
 									value={zimbraGalMaxResults}
-									defaultValue={zimbraGalMaxResults}
 									background="gray5"
 									onChange={onZimbraGalMaxResultChange}
 								/>
@@ -383,6 +382,8 @@ const DomainGalSettings: FC = () => {
 												value={zimbraGalAccountName}
 												background="gray6"
 												disabled
+												// eslint-disable-next-line @typescript-eslint/no-empty-function
+												onChange={(e: any): any => {}}
 											/>
 										</Container>
 									</ListRow>
@@ -394,6 +395,8 @@ const DomainGalSettings: FC = () => {
 												value={mailServerName}
 												background="gray6"
 												disabled
+												// eslint-disable-next-line @typescript-eslint/no-empty-function
+												onChange={(e: any): any => {}}
 											/>
 										</Container>
 										<Container padding={{ all: 'small' }}>
@@ -402,6 +405,8 @@ const DomainGalSettings: FC = () => {
 												value={dataSourceName}
 												background="gray6"
 												disabled
+												// eslint-disable-next-line @typescript-eslint/no-empty-function
+												onChange={(e: any): any => {}}
 											/>
 										</Container>
 									</ListRow>

@@ -562,6 +562,8 @@ const DomainGeneralSettings: FC = () => {
 										value={domainName}
 										background="gray6"
 										disabled
+										// eslint-disable-next-line @typescript-eslint/no-empty-function
+										onChange={(e: any): any => {}}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -569,6 +571,8 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.certificate', 'Certificate')}
 										value=""
 										background="gray6"
+										// eslint-disable-next-line @typescript-eslint/no-empty-function
+										onChange={(e: any): any => {}}
 									/>
 								</Container>
 							</ListRow>
@@ -580,6 +584,8 @@ const DomainGeneralSettings: FC = () => {
 										value={domainData.zimbraId}
 										background="gray6"
 										disabled
+										// eslint-disable-next-line @typescript-eslint/no-empty-function
+										onChange={(e: any): any => {}}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -588,6 +594,8 @@ const DomainGeneralSettings: FC = () => {
 										value={domainCreationDate}
 										background="gray6"
 										disabled
+										// eslint-disable-next-line @typescript-eslint/no-empty-function
+										onChange={(e: any): any => {}}
 									/>
 								</Container>
 							</ListRow>
