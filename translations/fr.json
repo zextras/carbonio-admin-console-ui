@@ -14,7 +14,8 @@
         "new": {
             "bucket_connection": "Connexion au Bucket"
         },
-        "create_new_bucket": "NOUVEAU BUCKET"
+        "create_new_bucket": "NOUVEAU BUCKET",
+        "filter_buckets_list": "Filtrer la liste des Buckets"
     },
     "core": {
         "subscription": {
@@ -256,7 +257,30 @@
         "indexer_settings": "Paramétrages de l'indexeur",
         "initial_calendar_view": "Vue initiale du calendrier",
         "last_access": "Dernier accès",
-        "leave_anyway": "Quitter malgré tout"
+        "leave_anyway": "Quitter malgré tout",
+        "delete_bucket_fail": "The {{name}} a été supprimé",
+        "delet_content": "Vous êtes sur le point de supprimer {{name}}. Êtes-vous sûr de vouloir supprimer {{name}} ?",
+        "delet_bucket_header": "Suppression de {{name}}",
+        "default_settings": "Paramétrages par défaut",
+        "default_font_size": "Taille par défaut de la Fonte",
+        "default_font_family": "Famille de Fonte par défaut",
+        "default_font_color": "Couleur par défaut de la Fonte",
+        "dashboard": "Tableau de bord",
+        "create_new_cos": "Créer une nouvelle COS",
+        "create_mailing_list_msg": "Vous pouvez créer une nouvelle Mailing Liste en cliquant sur le bouton Créer (en haut à gauche) ou sur le bouton ajouter (+) au dessus",
+        "create_domain_success_msg": "{{domainName}} a été créé avec succès",
+        "create_cos_success_msg": "{{cosName}} a été créée avec succès",
+        "create_button": "CRÉER",
+        "cos_name": "Nom de la COS",
+        "connector_is_created_by_verification_failed": "LE CONNECTEUR A ÉTÉ CRÉÉ, MAIS LA VÉRIFICATION A ÉCHOUÉ",
+        "connector_is_create_and_verified": "LE CONNECTEUR A ÉTÉ CRÉÉ ET EST VÉRIFIÉ",
+        "can_receive": "Peut recevoir",
+        "bulk_actions": "Actions de masse",
+        "are_you_sure_deleting_cos": "Êtes-vous sûr de vouloir supprimer cette Classe de Service (COS) ?",
+        "always_compose_mail_using": "Toujours composer un email en utilisant",
+        "activate_and_update": "Activer et mettre à jour",
+        "I_want_to_see_this_COS": "Je souhaite consulter cette COS",
+        "I_am_looking_for_this_account": "Je recherche ce compte..."
     },
     "message": {
         "snackbar": {
@@ -437,7 +461,12 @@
         "manage": "Gérer",
         "new_domain": "Nouveau domaine",
         "resources": "Ressources",
-        "restore_account": "Restaurer le compte"
+        "restore_account": "Restaurer le compte",
+        "type_here_a_domain": "Entrer le nom du domaine",
+        "restore_deleted_email": "Restaurer l'email supprimé",
+        "mailing_list": "Liste de distribution",
+        "i_want_to_see_this_domain": "Je souhaite consulter ce domaine",
+        "account_list": "Liste des comptes"
     },
     "commons": {
         "confirm_connection": "CONFIRMER LA CONNEXION"
@@ -460,7 +489,8 @@
         "global": {
             "headers": {
                 "advanced": "Avancé",
-                "service_status": "Statut du service"
+                "service_status": "Statut du service",
+                "server_config": "Configuration du serveur"
             }
         },
         "keep_delete_accounts_in_backup": "Garder les comptes supprimés dans le backup",
@@ -474,7 +504,16 @@
         "purge_old_configurations": "Purger les anciennes configurations",
         "realtime_scanner": "Scanner temps réel",
         "schedule": "Programme",
-        "smart_scan_at_startup": "Réaliser un Smart Scan au démarrage"
+        "smart_scan_at_startup": "Réaliser un Smart Scan au démarrage",
+        "threads_for_items": "Threads pour les Éléments",
+        "threads_for_account": "Threads par Compte",
+        "smart_scan_scheduling": "Planification du SmartScan",
+        "set_backup_forever_msg": "Si vous définissez 0, vos données seront conservées sur le serveur pour toujours",
+        "server_configurations": "Configurations du serveur",
+        "save_index": "Sauvegarder l'Index",
+        "metatdata_size": "Taille des Meta données",
+        "max_waiting_time": "Temps d'attente maximum",
+        "max_operations_account": "Maximum d'opérations par Compte"
     },
     "cos": {
         "calendar_options": "Options d’agenda",
@@ -505,6 +544,18 @@
         "s_mime_features": "Fonctions S/MIME",
         "search_features": "Fonctions de recherche",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Afficher des cases à cocher permettant de sélectionner des mails, des contacts, des objets vocaux (dans un affichage en liste) pour les opérations en batch",
-        "view_mail_as_html": "Afficher le mail au format HTML (si possible)"
-    }
+        "view_mail_as_html": "Afficher le mail au format HTML (si possible)",
+        "type_of_UI": "Type d'IHM",
+        "standard_html_client": "Client Standard (HTML)",
+        "show_search_string": "Afficher la chaîne de recherche",
+        "show_IMAP_search_folder": "Afficher le dossier de recherche IMAP",
+        "send_read_receipts": "Envoyer les rapports de lecture",
+        "search_class_of_service": "Sélectionner une Classe de Service (COS)",
+        "range_time": "Plage de temps",
+        "main_features": "Fonctionnalités principales",
+        "i_want_to_see_this_cos": "Je souhaite consulter cette COS",
+        "display_a_warning_when_administrators_try_to_navigate_away_from_Zimbra_Administration_Console": "Afficher un avertissement lorsqu'un administrateur tente de naviguer hors de la console d'administration de Zimbra",
+        "composing_mail": "Rédiger un email"
+    },
+    "create_new_cos": "CRÉER UNE NOUVELLE COS"
 }
