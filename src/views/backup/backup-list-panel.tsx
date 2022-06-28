@@ -90,7 +90,7 @@ const BackupListPanel: FC = () => {
 			crossAlignment="flex-start"
 			mainAlignment="flex-start"
 			background="gray5"
-			style={{ overflow: 'auto', 'border-top': '1px solid #FFFFFF' }}
+			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
 			<ListPanelItem
 				title={t('label.default_settings', 'Default Settings')}
