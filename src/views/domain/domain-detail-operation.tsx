@@ -15,7 +15,8 @@ import {
 	AUTHENTICATION,
 	MAILBOX_QUOTA,
 	ACCOUNTS,
-	MAILING_LIST
+	MAILING_LIST,
+	RESOURCES
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -26,6 +27,7 @@ import ManageAccounts from './manange/manage-accounts';
 import DomainVirtualHosts from './details/domain-virtual-hosts';
 import { useDomainStore } from '../../store/domain/store';
 import DomainMailingList from './manange/domain-mailing-list';
+import DomainResources from './manange/domain-resources';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
@@ -89,6 +91,8 @@ const DomainOperations: FC = () => {
 						return <ManageAccounts />;
 					case MAILING_LIST:
 						return <DomainMailingList />;
+					case RESOURCES:
+						return <DomainResources />;
 					default:
 						return null;
 				}
