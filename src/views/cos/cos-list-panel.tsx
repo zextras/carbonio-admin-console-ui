@@ -212,6 +212,8 @@ const CosListPanel: FC = () => {
 					}
 			  ]
 			: cosList.map((cos: any, index) => ({
+					id: cos.id,
+					label: cos.name,
 					customComponent: (
 						<SelectItem
 							top="9px"
@@ -219,7 +221,7 @@ const CosListPanel: FC = () => {
 							bottom="9px"
 							left="large"
 							style={{
-								'font-family': 'roboto',
+								fontFamily: 'roboto',
 								display: 'block',
 								textAlign: 'left',
 								height: 'inherit',
@@ -241,14 +243,14 @@ const CosListPanel: FC = () => {
 			crossAlignment="flex-start"
 			mainAlignment="flex-start"
 			background="gray5"
-			style={{ overflow: 'auto', 'border-top': '1px solid #FFFFFF' }}
+			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Dropdown
 					items={items}
 					placement="bottom-start"
 					maxWidth="300px"
-					disableAutoFocus="true"
+					disableAutoFocus
 					width="265px"
 					style={{
 						width: '100%'

@@ -303,6 +303,8 @@ const CosGeneralInformation: FC = () => {
 									background="gray6"
 									value={cosData.zimbraId}
 									disabled
+									// eslint-disable-next-line @typescript-eslint/no-empty-function
+									onChange={(e: any): any => {}}
 								/>
 							</Container>
 							<Container padding={{ all: 'small' }}>
@@ -311,6 +313,8 @@ const CosGeneralInformation: FC = () => {
 									value={cosCreationDate}
 									background="gray6"
 									disabled
+									// eslint-disable-next-line @typescript-eslint/no-empty-function
+									onChange={(e: any): any => {}}
 								/>
 							</Container>
 						</ListRow>
