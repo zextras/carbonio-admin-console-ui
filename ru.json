@@ -398,7 +398,8 @@
             "arn_name": "Арн / Имя",
             "descriptive_name": "Описательное имя",
             "secret_key": "Секретный ключ",
-            "verify_connector": "ПРОВЕРИТЬ КОННЕКТОР"
+            "verify_connector": "ПРОВЕРИТЬ КОННЕКТОР",
+            "create_and_verify_connector": "СОЗДАЙТЕ И ПРОВЕРЬТЕ КОННЕКТОР"
         },
         "bucket_list": "Список Бакетов",
         "bucket_type": "Тип Бакетов",
@@ -496,7 +497,8 @@
         "global": {
             "headers": {
                 "advanced": "Дополнительно",
-                "service_status": "Статус службы"
+                "service_status": "Статус службы",
+                "server_config": "Конфигурация сервера"
             }
         },
         "keep_delete_accounts_in_backup": "Хранить удаленные аккаунты в резервной копии",
@@ -510,6 +512,12 @@
         "purge_old_configurations": "Очистить старые конфигурации",
         "realtime_scanner": "Сканер реального времени",
         "schedule": "Расписание",
-        "smart_scan_at_startup": "SmartScan при запуске"
+        "smart_scan_at_startup": "SmartScan при запуске",
+        "smart_scan_scheduling": "Планирование SmartScan",
+        "set_backup_forever_msg": "Если вы установите 0, ваши данные всегда будут храниться в резервной копии",
+        "server_configurations": "Конфигурации сервера",
+        "save_index": "Сохранить индекс",
+        "max_waiting_time": "Максимальное время ожидания",
+        "max_operations_account": "Максимальное количество операций / учетная запись"
     }
 }
