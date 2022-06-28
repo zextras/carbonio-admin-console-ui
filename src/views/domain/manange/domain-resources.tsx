@@ -241,7 +241,7 @@ const DomainResources: FC = () => {
 										padding={{ top: 'extralarge' }}
 										orientation="vertical"
 										crossAlignment="center"
-										style={{ 'text-align': 'center' }}
+										style={{ textAlign: 'center' }}
 									>
 										<Text weight="light" color="#828282" size="large" overflow="break-word">
 											{t('label.this_list_is_empty', 'This list is empty.')}
@@ -250,7 +250,7 @@ const DomainResources: FC = () => {
 									<Row
 										orientation="vertical"
 										crossAlignment="center"
-										style={{ 'text-align': 'center' }}
+										style={{ textAlign: 'center' }}
 										padding={{ top: 'small' }}
 										width="53%"
 									>

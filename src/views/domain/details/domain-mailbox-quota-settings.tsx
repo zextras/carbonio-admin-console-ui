@@ -394,7 +394,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 									<Input
 										label={t('domain.domain_space_byte', 'Domain Space (Byte)')}
 										value={zimbraMailDomainQuota}
-										defaultValue={zimbraMailDomainQuota}
 										background="gray5"
 										onChange={(e: any): any => {
 											setZimbraMailDomainQuota(e.target.value);
