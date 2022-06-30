@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const getCalResource = async (resourceId: string): Promise<any> =>
-	fetch(`/service/admin/soap/GetCalResourceRequest`, {
+export const getCalenderResource = async (resourceId: string): Promise<any> =>
+	fetch(`/service/admin/soap/GetCalendarResourceRequest`, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {
@@ -13,12 +13,19 @@ export const getCalResource = async (resourceId: string): Promise<any> =>
 		},
 		body: JSON.stringify({
 			Body: {
-				GetCalResourceRequest: {
+				GetCalendarResourceRequest: {
 					_jsns: 'urn:zimbraAdmin',
-					account: {
+					calresource: {
 						by: 'id',
 						_content: resourceId
-					}
+					},
+					applyCos: '0'
+				}
+			},
+			Header: {
+				context: {
+					_jsns: 'urn:zimbra',
+					session: {}
 				}
 			}
 		})

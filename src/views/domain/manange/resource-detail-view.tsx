@@ -19,6 +19,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import ListRow from '../../list/list-row';
+import { getCalenderResource } from '../../../services/get-cal-resource-service';
+import { getSingatures } from '../../../services/get-signature-service';
+import { useDomainStore } from '../../../store/domain/store';
 
 const ResourceDetailContainer = styled(Container)`
 	z-index: 10;
@@ -38,6 +41,8 @@ const ResourceDetailContainer = styled(Container)`
 
 const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDetailView }) => {
 	const [t] = useTranslation();
+	const cosList = useDomainStore((state) => state.cosList);
+	const [resourceDetailData, setResourceDetailData]: any = useState({});
 	const [sendInviteList, setSendInviteList] = useState<any[]>([]);
 	const sendInviteHeaders: any[] = useMemo(
 		() => [
@@ -76,6 +81,73 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 		}),
 		[t]
 	);
+
+	const getResourceDetail = useCallback((): void => {
+		getCalenderResource(selectedResourceList?.id)
+			.then((response) => response.json())
+			.then((data) => {
+				const resourceDetailResponse =
+					data?.Body?.GetCalendarResourceResponse?.calresource[0] || {};
+				const obj: any = {};
+				resourceDetailResponse?.a?.map((item: any) => {
+					obj[item?.n] = item._content;
+					return '';
+				});
+				const sendInviteTo = resourceDetailResponse?.a?.filter(
+					(value: any) => value?.n === 'zimbraPrefCalendarForwardInvitesTo'
+				);
+				if (sendInviteTo && Array.isArray(sendInviteTo)) {
+					const sList: any[] = [];
+					sendInviteTo.forEach((item: any, index: number) => {
+						sList.push({
+							id: index,
+							columns: [
+								<Text size="medium" weight="light" key={index} color="gray0">
+									{item?._content}
+								</Text>
+							],
+							item,
+							clickable: false
+						});
+					});
+					setSendInviteList(sList);
+				}
+				setResourceDetailData(obj);
+			});
+	}, [selectedResourceList?.id]);
+
+	useEffect(() => {
+		getResourceDetail();
+	}, [getResourceDetail]);
+
+	const getSignatureDetail = useCallback((): void => {
+		getSingatures(selectedResourceList?.id)
+			.then((response) => response.json())
+			.then((data) => {
+				const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
+				if (signatureResponse && Array.isArray(signatureResponse)) {
+					const sList: any[] = [];
+					signatureResponse.forEach((item: any, index: number) => {
+						sList.push({
+							id: item?.id,
+							columns: [
+								<Text size="medium" weight="light" key={item?.id} color="gray0">
+									{item?.name}
+								</Text>
+							],
+							item,
+							clickable: false
+						});
+					});
+					setSignatureList(sList);
+				}
+			});
+	}, [selectedResourceList?.id]);
+
+	useEffect(() => {
+		getSignatureDetail();
+	}, [getSignatureDetail]);
+
 	return (
 		<ResourceDetailContainer background="gray5" mainAlignment="flex-start">
 			<Row
@@ -136,9 +208,9 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Input
 								label={t('label.name', 'Name')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value={resourceDetailData?.displayName}
 								size="medium"
-								disabled
+								readOnly
 							/>
 						</Row>
 					</Container>
@@ -154,9 +226,10 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						<Row width="85%">
 							<Input
 								label={t('label.email', 'Email')}
-								readOnly
 								backgroundColor="gray6"
-								value={selectedResourceList?.zimbraMailHost}
+								value={resourceDetailData?.mail}
+								size="medium"
+								readOnly
 							/>
 						</Row>
 					</Container>
@@ -175,8 +248,9 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Input
 								label={t('label.server', 'Server')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value={resourceDetailData?.zimbraMailHost}
 								size="medium"
+								readOnly
 							/>
 						</Row>
 					</Container>
@@ -192,9 +266,9 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						<Row width="85%">
 							<Input
 								label={t('label.type', 'Type')}
-								readOnly
 								backgroundColor="gray6"
-								value={selectedResourceList?.zimbraMailHost}
+								value={resourceDetailData?.zimbraCalResType}
+								readOnly
 							/>
 						</Row>
 					</Container>
@@ -207,13 +281,17 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						padding={{ top: 'large' }}
 					>
 						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="DashboardOutline" size="large" color="gray0" />
+							<Icon
+								icon="DashboardOutline"
+								size="large"
+								color={STATUS_COLOR[resourceDetailData?.zimbraAccountStatus]?.color}
+							/>
 						</Row>
 						<Row width="85%">
 							<Input
 								label={t('label.status', 'Status')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value={STATUS_COLOR[resourceDetailData?.zimbraAccountStatus]?.label}
 								size="medium"
 							/>
 						</Row>
@@ -251,7 +329,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Input
 								label={t('label.id_lbl', 'ID')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value={selectedResourceList?.id}
 								size="medium"
 							/>
 						</Row>
@@ -270,7 +348,9 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 								label={t('label.creation_date', 'Creation Date')}
 								readOnly
 								backgroundColor="gray6"
-								value={selectedResourceList?.zimbraMailHost}
+								value={moment(resourceDetailData?.zimbraCreateTimestamp, 'YYYYMMDDHHmmss.Z').format(
+									'DD MMM YYYY | hh:MM:SS A'
+								)}
 							/>
 						</Row>
 					</Container>
@@ -289,7 +369,11 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Input
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value={
+									selectedResourceList?.zimbraCalResAutoDeclineRecurring === 'TRUE'
+										? t('lable.true', 'True')
+										: t('lable.false', 'False')
+								}
 								size="medium"
 							/>
 						</Row>
@@ -309,7 +393,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Input
 								label={t('label.maximum_conflict_allowed', 'Maximun Conflict Allowed')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value={resourceDetailData?.zimbraCalResMaxNumConflictsAllowed}
 								size="medium"
 							/>
 						</Row>
@@ -328,7 +412,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 								label={t('label.percentage_maximum_conflict_allowed', '% Maximun Conflict Allowed')}
 								readOnly
 								backgroundColor="gray6"
-								value={selectedResourceList?.zimbraMailHost}
+								value={resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed}
 							/>
 						</Row>
 					</Container>
@@ -347,7 +431,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Input
 								label={t('label.schedule_policy', 'Schedule Policy')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value=""
 								size="medium"
 							/>
 						</Row>
@@ -378,7 +462,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Input
 								label={t('label.search_an_account', 'Search an account')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value=""
 								size="medium"
 								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
 							/>
@@ -425,7 +509,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Input
 								label={t('label.search_a_signature', 'Search a signature')}
 								backgroundColor="gray6"
-								value={selectedResourceList?.name}
+								value=""
 								size="medium"
 								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
 							/>
@@ -449,7 +533,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="flex-start"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -495,7 +579,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 					</Text>
 				</Row>
 				<Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
-					<Text size="small"></Text>
+					<Text size="small">{resourceDetailData?.description}</Text>
 				</Row>
 				<Row padding={{ top: 'extralarge' }}>
 					<Text
@@ -509,7 +593,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 					</Text>
 				</Row>
 				<Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
-					<Text size="small"></Text>
+					<Text size="small">{resourceDetailData?.zimbraNotes}</Text>
 				</Row>
 			</Container>
 		</ResourceDetailContainer>

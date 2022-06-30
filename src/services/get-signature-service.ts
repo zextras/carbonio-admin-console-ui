@@ -3,13 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-export const getSingature = async (accountId: string): Promise<any> => {
+export const getSingatures = async (accountId: string): Promise<any> => {
 	const request: any = {
-		GetSignatureRequest: {
-			_jsns: 'urn:zimbraAdmin'
+		GetSignaturesRequest: {
+			_jsns: 'urn:zimbraAccount'
 		}
 	};
-	return fetch(`/service/admin/soap/GetSignatureRequest`, {
+	return fetch(`/service/admin/soap/GetSignaturesRequest`, {
 		method: 'POST',
 		credentials: 'include',
 		headers: {

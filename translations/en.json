@@ -483,7 +483,9 @@
         "your_auth_method_is": "Your Auth Method is"
     },
     "lable": {
-        "delete_button": "DELETE"
+        "delete_button": "DELETE",
+        "false": "False",
+        "true": "True"
     },
     "log": "Log",
     "many_cos_info_msg": "So many COSes! Which one would you like to see?Start typing to filter.",
