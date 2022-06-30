@@ -23,6 +23,7 @@ import logo from '../../../assets/gardian.svg';
 import Paginig from '../../components/paging';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { useDomainStore } from '../../../store/domain/store';
+import ResourceDetailView from './resource-detail-view';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -33,6 +34,8 @@ const DomainResources: FC = () => {
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
+	const [selectedResourceList, setSelectedResourceList] = useState<any>({});
+	const [showResourceDetailView, setShowResourceDetailView] = useState<boolean>(false);
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -87,16 +90,56 @@ const DomainResources: FC = () => {
 							rList.push({
 								id: item?.id,
 								columns: [
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text
+										size="medium"
+										weight="light"
+										key={item?.id}
+										color="gray0"
+										onClick={(event: { stopPropagation: () => void }): void => {
+											event.stopPropagation();
+											setSelectedResourceList(item);
+											setShowResourceDetailView(true);
+										}}
+									>
 										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
 									</Text>,
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text
+										size="medium"
+										weight="light"
+										key={item?.id}
+										color="gray0"
+										onClick={(event: { stopPropagation: () => void }): void => {
+											event.stopPropagation();
+											setSelectedResourceList(item);
+											setShowResourceDetailView(true);
+										}}
+									>
 										{item?.name}
 									</Text>,
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text
+										size="medium"
+										weight="light"
+										key={item?.id}
+										color="gray0"
+										onClick={(event: { stopPropagation: () => void }): void => {
+											event.stopPropagation();
+											setSelectedResourceList(item);
+											setShowResourceDetailView(true);
+										}}
+									>
 										{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
 									</Text>,
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text
+										size="medium"
+										weight="light"
+										key={item?.id}
+										color="gray0"
+										onClick={(event: { stopPropagation: () => void }): void => {
+											event.stopPropagation();
+											setSelectedResourceList(item);
+											setShowResourceDetailView(true);
+										}}
+									>
 										{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
 											? moment(
 													item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content,
@@ -104,10 +147,22 @@ const DomainResources: FC = () => {
 											  ).format('YY/MM/DD | hh:MM')
 											: t('label.never_logged_in', 'Never logged In')}
 									</Text>,
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text
+										size="medium"
+										weight="light"
+										key={item?.id}
+										color="gray0"
+										onClick={(event: { stopPropagation: () => void }): void => {
+											event.stopPropagation();
+											setSelectedResourceList(item);
+											setShowResourceDetailView(true);
+										}}
+									>
 										{item?.a?.find((a: any) => a?.n === 'description')?._content}
 									</Text>
-								]
+								],
+								item,
+								clickable: true
 							});
 						});
 						setResourceList(rList);
@@ -162,15 +217,6 @@ const DomainResources: FC = () => {
 									icon="Plus"
 									height={36}
 									width={36}
-								/>
-							</Padding>
-							<Padding right="medium">
-								<Button
-									label={t('label.details', 'Details')}
-									color="primary"
-									type="outlined"
-									disabled
-									height={36}
 								/>
 							</Padding>
 							<Button
@@ -229,7 +275,8 @@ const DomainResources: FC = () => {
 								<Table
 									rows={resourceList}
 									headers={headers}
-									showCheckbox={false}
+									showCheckbox
+									multiSelect
 									style={{ overflow: 'auto', height: '100%' }}
 								/>
 							)}
@@ -283,6 +330,12 @@ const DomainResources: FC = () => {
 					</Container>
 				</Row>
 			</Container>
+			{showResourceDetailView && (
+				<ResourceDetailView
+					selectedResourceList={selectedResourceList}
+					setShowResourceDetailView={setShowResourceDetailView}
+				/>
+			)}
 		</Container>
 	);
 };
