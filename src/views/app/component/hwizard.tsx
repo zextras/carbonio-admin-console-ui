@@ -23,9 +23,8 @@ type Props = {
 	title: string;
 	currentStep: any;
 	currentStepIndex: any;
-	setToggleBucket: any;
-
-	bucketType: any;
+	setToggleWizardSection: any;
+	staticData: any;
 };
 
 const Wizard: React.FC<Props> = ({
@@ -40,8 +39,8 @@ const Wizard: React.FC<Props> = ({
 	cancelI18nLabel,
 	Wrapper,
 	title,
-	setToggleBucket,
-	bucketType
+	setToggleWizardSection,
+	staticData
 }) => {
 	const sectionRef = useRef();
 	const activeRef = useRef();
@@ -62,10 +61,9 @@ const Wizard: React.FC<Props> = ({
 			backI18nLabel={backI18nLabel}
 			cancelI18nLabel={cancelI18nLabel}
 			ref={{ sectionRef, activeRef }}
-			setToggleBucket={setToggleBucket}
-			
-			bucketType={bucketType}
+			setToggleWizardSection={setToggleWizardSection}
 			{...useWizardAnswer}
+			staticData={staticData}
 		/>
 	);
 };

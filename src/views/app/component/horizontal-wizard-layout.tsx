@@ -62,7 +62,7 @@ const StepNavigator: FC<{
 			<Row
 				wrap="nowrap"
 				onClick={onClick}
-				width="100%"
+				width="80%"
 				style={{
 					borderBottom: isActive ? '2px solid #2b73d2' : '',
 					cursor: 'pointer'
@@ -114,10 +114,10 @@ type Props = {
 	title: string;
 	onComplete: any;
 	setCompleteLoading: any;
-	setToggleBucket: (val: boolean) => void;
+	setToggleWizardSection: (val: boolean) => void;
 	sectionRef: any;
 	activeRef: any;
-	bucketType: any;
+	staticData: any;
 };
 
 export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
@@ -139,9 +139,8 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 			isFirstStep,
 			Wrapper = DefaultWrapper,
 			title,
-			setToggleBucket,
-
-			bucketType
+			setToggleWizardSection,
+			staticData
 		}: Props,
 		{ sectionRef, activeRef }: any
 	): JSX.Element => {
@@ -208,14 +207,14 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 				activeRef,
 				onComplete,
 				canGoNext,
-				bucketType
+				staticData
 			]
 		);
 
 		const [NextButton, PrevButton, CancelButton] = useMemo(
 			() => [
 				steps[currentStepIndex].NextButton || Button,
-				steps[currentStepIndex].BackButton || Button,
+				steps[currentStepIndex].PrevButton || Button,
 				steps[currentStepIndex].CancelButton || Button
 			],
 			[currentStepIndex]
@@ -238,7 +237,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 						const isDone = stepIndex < currentStepIndex;
 						const isActive = currentStep === step.name;
 						return (
-							<StepView padding={{ horizontal: 'large' }}>
+							<StepView>
 								{View && isDone && isActive && (
 									<View
 										step={step}
@@ -248,7 +247,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 										goToStep={goToStep}
 										title={title}
 										setCompleteLoading={setCompleteLoading}
-										bucketType={bucketType}
+										staticData={staticData}
 									/>
 								)}
 								{View && isActive && (
@@ -261,7 +260,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 										title={title}
 										onComplete={onComplete}
 										setCompleteLoading={setCompleteLoading}
-										bucketType={bucketType}
+										staticData={staticData}
 									/>
 								)}
 							</StepView>
@@ -273,27 +272,33 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 
 		const wizardFooter = (
 			<Row mainAlignment="space-between" width="100%">
-				<CancelButton key="wizard-cancel" label={'Need Help?'} type="outlined" color="secondary" />
-
-				<Row mainAlignment="flex-end" takeAvailableSpace>
+				<Row mainAlignment="flex-start" takeAvailableSpace>
 					<Padding right="large">
-						{!completeLoading && (
-							<PrevButton
-								key="wizard-cancel"
-								label={'CANCEL'}
-								color="secondary"
-								icon="ChevronLeftOutline"
-								iconPlacement="left"
-								onClick={(): void => setToggleBucket(false)}
-							/>
-						)}
+						<CancelButton
+							key="wizard-cancel"
+							label={'CANCEL'}
+							setCompleteLoading={setCompleteLoading}
+							completeLoading={completeLoading}
+							onClick={(): void => setToggleWizardSection(false)}
+						/>
 					</Padding>
-
+				</Row>
+				<Row mainAlignment="flex-start">
+					<PrevButton
+						key="wizard-prev"
+						setCompleteLoading={setCompleteLoading}
+						completeLoading={completeLoading}
+						label={'PREVIOUS'}
+						onClick={goBack}
+					/>
+				</Row>
+				<Row mainAlignment="flex-start">
 					<NextButton
 						key="wizard-next"
-						label={!completeLoading ? 'VIEW DETAILS' : ' Done'}
-						icon={!completeLoading && 'CheckmarkCircleOutline'}
+						label={'NEXT'}
 						onClick={goNext}
+						setCompleteLoading={setCompleteLoading}
+						completeLoading={completeLoading}
 						disabled={!canGoNext() || !completeLoading}
 					/>
 				</Row>
@@ -304,8 +309,8 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 			<Wrapper
 				wizard={wizard}
 				wizardFooter={wizardFooter}
-				setToggleBucket={setToggleBucket}
-				bucketType={bucketType}
+				setToggleWizardSection={setToggleWizardSection}
+				staticData={staticData}
 			/>
 		);
 	}

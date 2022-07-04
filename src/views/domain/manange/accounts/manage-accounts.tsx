@@ -6,19 +6,31 @@
 import React, { FC, useEffect, useState, useMemo, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import { Container, Input, Row, Text, Table, Divider, Icon } from '@zextras/carbonio-design-system';
-import logo from '../../../assets/gardian.svg';
-import { useDomainStore } from '../../../store/domain/store';
-
-import Paginig from '../../components/paging';
-import { accountListDirectory } from '../../../services/account-list-directory-service';
+import {
+	Container,
+	Input,
+	Row,
+	Text,
+	Table,
+	Divider,
+	Icon,
+	Padding,
+	Button,
+	IconButton,
+	useSnackbar
+} from '@zextras/carbonio-design-system';
+import logo from '../../../../assets/gardian.svg';
+import { useDomainStore } from '../../../../store/domain/store';
+import Paginig from '../../../components/paging';
+import { accountListDirectory } from '../../../../services/account-list-directory-service';
+import { createAccountRequest } from '../../../../services/create-account';
 import AccountDetailView from './account-detail-view';
-import ListRow from '../../list/list-row';
+import CreateAccount from './create-account/create-account';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
-
 	const headers: any = useMemo(
 		() => [
 			{
@@ -63,6 +75,7 @@ const ManageAccounts: FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
+	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 
 	const STATUS_COLOR: any = useMemo(
 		() => ({
@@ -210,6 +223,52 @@ const ManageAccounts: FC = () => {
 			getAccountList();
 		}
 	}, [domainName, getAccountList]);
+
+	const createAccountReq = useCallback(
+		(attr, name, password): void => {
+			createAccountRequest(attr, name, password)
+				.then((response) => response.json())
+				.then((data) => {
+					const isCreateAccount = data?.Body?.CreateAccountResponse;
+					if (isCreateAccount) {
+						setShowCreateAccountView(false);
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								'label.account_created_successfully',
+								'The account has been created successfully'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					} else {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: data?.Body?.Fault?.Reason?.Text,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
+					getAccountList();
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, getAccountList, t]
+	);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -220,15 +279,34 @@ const ManageAccounts: FC = () => {
 					height="58px"
 				>
 					<Row orientation="horizontal" width="100%">
-						<Row
-							padding={{ all: 'large' }}
-							mainAlignment="flex-start"
-							width="100%"
-							crossAlignment="flex-start"
-						>
+						<Row width="50%" mainAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
 								{t('domain.account_list', 'Account List')}
 							</Text>
+						</Row>
+						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
+							<Padding right="medium">
+								<IconButton
+									iconColor="gray6"
+									backgroundColor="primary"
+									icon="Plus"
+									height={36}
+									width={36}
+									onClick={(): void => {
+										setShowCreateAccountView(true);
+									}}
+								/>
+							</Padding>
+							<Padding right="medium">
+								<Button type="outlined" label={t('label.details', 'DETAILS')} color="primary" />
+							</Padding>
+							<Button
+								type="outlined"
+								label={t('label.bulk_actions', 'BULK ACTIONS')}
+								icon="ChevronDownOutline"
+								iconPlacement="right"
+								color="primary"
+							/>
 						</Row>
 					</Row>
 				</Container>
@@ -240,38 +318,49 @@ const ManageAccounts: FC = () => {
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
-				style={{ overflow: 'auto' }}
 				width="100%"
 				height="calc(100vh - 200px)"
+				padding={{ top: 'extralarge' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
-						<Container padding={{ top: 'large', right: 'small', left: 'small' }}>
-							<ListRow>
-								<Container padding={{ top: 'large', right: 'small', left: 'small' }}>
-									<Input
-										label={t(
-											'label.i_am_looking_for_this_account',
-											`I'm looking for this account...`
-										)}
-										value={searchString}
-										background="gray5"
-										onChange={(e: any): any => {
-											setSearchString(e.target.value);
-										}}
-										CustomIcon={(): any => (
-											<Icon icon="FunnelOutline" size="large" color="primary" />
-										)}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
+						<Row
+							orientation="horizontal"
+							mainAlignment="space-between"
+							crossAlignment="flex-start"
+							width="fill"
+							padding={{ bottom: 'large' }}
+						>
+							<Container>
+								<Input
+									label={t(
+										'label.i_am_looking_for_this_account',
+										`I'm looking for this account...`
+									)}
+									value={searchString}
+									background="gray5"
+									onChange={(e: any): any => {
+										setSearchString(e.target.value);
+									}}
+									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+								/>
+							</Container>
+						</Row>
 
-						<Container padding={{ all: 'large' }}>
+						<Row
+							orientation="horizontal"
+							mainAlignment="space-between"
+							crossAlignment="flex-start"
+							width="fill"
+							height="calc(100vh - 340px)"
+						>
 							{accountList.length !== 0 && (
-								<ListRow>
-									<Table rows={accountList} headers={headers} showCheckbox multiSelect />
-								</ListRow>
+								<Table
+									rows={accountList}
+									headers={headers}
+									showCheckbox={false}
+									style={{ overflow: 'auto', height: '100%' }}
+								/>
 							)}
 							{accountList.length === 0 && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="flex-start">
@@ -319,7 +408,7 @@ const ManageAccounts: FC = () => {
 									<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 								</Row>
 							)}
-						</Container>
+						</Row>
 					</Container>
 				</Row>
 			</Container>
@@ -328,6 +417,12 @@ const ManageAccounts: FC = () => {
 					selectedAccount={selectedAccount}
 					setShowAccountDetailView={setShowAccountDetailView}
 					STATUS_COLOR={STATUS_COLOR}
+				/>
+			)}
+			{showCreateAccountView && (
+				<CreateAccount
+					setShowCreateAccountView={setShowCreateAccountView}
+					createAccountReq={createAccountReq}
 				/>
 			)}
 		</Container>

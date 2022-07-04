@@ -100,7 +100,7 @@ const Connection: FC<{
 	useEffect(() => {
 		if (bucketType !== '') {
 			const volumeObject: any = BucketTypeItems.find((s) => s.value === bucketType);
-			setBucketTypeData(volumeObject.label);
+			setBucketTypeData(volumeObject?.label);
 			onSelection({ storeType: bucketType }, false);
 		}
 	}, [bucketType, bucketTypeData, onSelection]);
@@ -126,124 +126,122 @@ const Connection: FC<{
 
 	return (
 		<Container mainAlignment="flex-start">
-			<form>
-				{bucketType !== '' ? (
-					<Row padding={{ top: 'extralarge' }} width="100%">
-						<Input
-							label={t('label.bucket_type', 'Bucket Type')}
-							backgroundColor="gray5"
-							value={bucketTypeData}
-							readOnly
-						/>
-					</Row>
-				) : (
-					<Row padding={{ top: 'extralarge' }} width="100%">
-						<Select
-							items={BucketTypeItems}
-							background="gray5"
-							label={t('buckets.bucket_type', 'Buckets Type')}
-							onChange={(e: any): void => {
-								const volumeObject: any = BucketTypeItems.find((s) => s.value === e);
-								setBucketTypeData(volumeObject.value);
-								onSelection({ storeType: bucketTypeData }, false);
-							}}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					</Row>
-				)}
-				<Row padding={{ top: 'large' }} width="100%">
+			{bucketType !== '' ? (
+				<Row padding={{ top: 'extralarge' }} width="100%">
 					<Input
-						label={t('label.descriptive_name', 'Descriptive Name')}
+						label={t('label.bucket_type', 'Bucket Type')}
 						backgroundColor="gray5"
-						name="descriptiveName"
-						onChange={(ev: any): any => {
-							setDescripitiveName(ev.target.value);
-							onSelection({ descriptiveName: ev.target.value }, false);
-						}}
+						value={bucketTypeData}
+						readOnly
 					/>
 				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
-					<Row width="48%" mainAlignment="flex-start">
-						<Input
-							background="gray5"
-							label={t('label.bucket_name', 'Bucket Name')}
-							name="ArnName"
-							onChange={(ev: any): any => {
-								setBucketName(ev.target.value);
-								onSelection({ bucketName: ev.target.value }, false);
-							}}
-						/>
-					</Row>
-					<Padding width="4%" />
-					<Row width="48%" mainAlignment="flex-end">
-						<Select
-							items={BucketRegions}
-							background="gray5"
-							label={t('label.region', 'Region')}
-							onChange={(e: any): any => {
-								const volumeObject: any = BucketRegions.find((s) => s.value === e);
-								setRegionsData(volumeObject.value);
-								onSelection({ region: volumeObject.value }, false);
-							}}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					</Row>
+			) : (
+				<Row padding={{ top: 'extralarge' }} width="100%">
+					<Select
+						items={BucketTypeItems}
+						background="gray5"
+						label={t('buckets.bucket_type', 'Buckets Type')}
+						onChange={(e: any): void => {
+							const volumeObject: any = BucketTypeItems.find((s) => s.value === e);
+							setBucketTypeData(volumeObject.value);
+							onSelection({ storeType: bucketTypeData }, false);
+						}}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+					/>
 				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
-					<Row width="48%" mainAlignment="flex-start">
-						<PasswordInput
-							background="gray5"
-							label={t('label.access_key', 'Access Key')}
-							name="accessKey"
-							onChange={(ev: any): any => {
-								setAccessKeyData(ev.target.value);
-								onSelection({ accessKey: ev.target.value }, false);
-							}}
-						/>
-					</Row>
-					<Padding width="4%" />
-					<Row width="48%" mainAlignment="flex-end">
-						<PasswordInput
-							background="gray5"
-							label={t('label.secret_key', 'Secret Key')}
-							name="secretKey"
-							onChange={(ev: any): any => {
-								setSecretKey(ev.target.value);
-								onSelection({ secret: ev.target.value }, false);
-							}}
-						/>
-					</Row>
-				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
+			)}
+			<Row padding={{ top: 'large' }} width="100%">
+				<Input
+					label={t('label.descriptive_name', 'Descriptive Name')}
+					backgroundColor="gray5"
+					name="descriptiveName"
+					onChange={(ev: any): any => {
+						setDescripitiveName(ev.target.value);
+						onSelection({ descriptiveName: ev.target.value }, false);
+					}}
+				/>
+			</Row>
+			<Row width="100%" padding={{ top: 'large' }}>
+				<Row width="48%" mainAlignment="flex-start">
 					<Input
 						background="gray5"
-						label={t('label.notes', 'Notes')}
-						name="notes"
+						label={t('label.bucket_name', 'Bucket Name')}
+						name="ArnName"
 						onChange={(ev: any): any => {
-							setNotes(ev.target.value);
-							onSelection({ notes: ev.target.value }, false);
+							setBucketName(ev.target.value);
+							onSelection({ bucketName: ev.target.value }, false);
 						}}
 					/>
 				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
-					<Button
-						type="outlined"
-						label={buttonDetail}
-						icon={icon}
-						iconPlacement="right"
-						color={buttonColor}
-						width="100%"
-						onClick={handleVerifyConnector}
+				<Padding width="4%" />
+				<Row width="48%" mainAlignment="flex-end">
+					<Select
+						items={BucketRegions}
+						background="gray5"
+						label={t('label.region', 'Region')}
+						onChange={(e: any): any => {
+							const volumeObject: any = BucketRegions.find((s) => s.value === e);
+							setRegionsData(volumeObject.value);
+							onSelection({ region: volumeObject.value }, false);
+						}}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
 					/>
 				</Row>
-				{verifyCheck === 'success' && (
-					<Row width="100%" padding={{ top: 'large' }}>
-						<Input label={t('label.uuid', 'uuid')} value={BucketUid} readOnly />
-					</Row>
-				)}
-			</form>
+			</Row>
+			<Row width="100%" padding={{ top: 'large' }}>
+				<Row width="48%" mainAlignment="flex-start">
+					<PasswordInput
+						background="gray5"
+						label={t('label.access_key', 'Access Key')}
+						name="accessKey"
+						onChange={(ev: any): any => {
+							setAccessKeyData(ev.target.value);
+							onSelection({ accessKey: ev.target.value }, false);
+						}}
+					/>
+				</Row>
+				<Padding width="4%" />
+				<Row width="48%" mainAlignment="flex-end">
+					<PasswordInput
+						background="gray5"
+						label={t('label.secret_key', 'Secret Key')}
+						name="secretKey"
+						onChange={(ev: any): any => {
+							setSecretKey(ev.target.value);
+							onSelection({ secret: ev.target.value }, false);
+						}}
+					/>
+				</Row>
+			</Row>
+			<Row width="100%" padding={{ top: 'large' }}>
+				<Input
+					background="gray5"
+					label={t('label.notes', 'Notes')}
+					name="notes"
+					onChange={(ev: any): any => {
+						setNotes(ev.target.value);
+						onSelection({ notes: ev.target.value }, false);
+					}}
+				/>
+			</Row>
+			<Row width="100%" padding={{ top: 'large' }}>
+				<Button
+					type="outlined"
+					label={buttonDetail}
+					icon={icon}
+					iconPlacement="right"
+					color={buttonColor}
+					width="100%"
+					onClick={handleVerifyConnector}
+				/>
+			</Row>
+			{verifyCheck === 'success' && (
+				<Row width="100%" padding={{ top: 'large' }}>
+					<Input label={t('label.uuid', 'uuid')} value={BucketUid} readOnly />
+				</Row>
+			)}
 		</Container>
 	);
 };

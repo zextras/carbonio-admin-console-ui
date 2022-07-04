@@ -36,6 +36,7 @@ const AbsoluteContainer = styled(Container)`
 	right: 0;
 	z-index: 1;
 	box-shadow: 0 0 12px -1px #888;
+	top: 0;
 `;
 
 const headers = [
@@ -55,24 +56,39 @@ const headers = [
 	}
 ];
 
-const BucketListTable: FC<{ volumes: Array<any>; selectedRows: any; onSelectionChange: any }> = ({
-	volumes,
-	selectedRows,
-	onSelectionChange
-}) => {
+const BucketListTable: FC<{
+	volumes: Array<any>;
+	selectedRows: any;
+	onSelectionChange: any;
+	onDoubleClick: any;
+}> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick }) => {
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: i,
 				columns: [
 					// eslint-disable-next-line react/jsx-key
-					<Text>{v.bucketName}</Text>,
+					<Row
+						onDoubleClick={(): any => {
+							onDoubleClick(i);
+						}}
+						style={{ textAlign: 'left', justifyContent: 'flex-start', textTransform: 'capitalize' }}
+					>
+						{v.bucketName}
+					</Row>,
 					// eslint-disable-next-line react/jsx-key
-					<Text style={{ textAlign: 'center', textTransform: 'capitalize' }}>{v.storeType}</Text>
+					<Row
+						onDoubleClick={(): any => {
+							onDoubleClick(i);
+						}}
+						style={{ textAlign: 'center', textTransform: 'capitalize' }}
+					>
+						{v.storeType}
+					</Row>
 				],
 				clickable: true
 			})),
-		[volumes]
+		[onDoubleClick, volumes]
 	);
 
 	return (
@@ -103,10 +119,10 @@ const BucketDetailPanel: FC = () => {
 	const [bucketList, setBucketList] = useState([]);
 	const [connectionData, setConnectionData] = useState();
 	const [detailsBucket, setDetailsBucket] = useState(false);
-
-	const [toggleBucket, setToggleBucket] = useState(false);
+	const [toggleWizardSection, setToggleWizardSection] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
+	// let connectionData1: any = [];
 
 	const clickHandler = (): any => {
 		setOpen(true);
@@ -178,18 +194,38 @@ const BucketDetailPanel: FC = () => {
 		createSnackbar,
 		t
 	]);
-	const showDetailHandler = useCallback(() => {
-		setDetailsBucket(!detailsBucket);
-		setShowDetails(!showDetails);
-	}, [detailsBucket, showDetails]);
+	const handleDoubleClick = (i: any): any => {
+		const volumeObject: any = bucketList.find((s, index) => index === i);
+		setConnectionData(volumeObject);
+		setDetailsBucket(true);
+		setShowDetails(true);
+	};
 
 	useEffect(() => {
 		getBucketListType();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [bucketType, toggleBucket]);
+	}, [bucketType, toggleWizardSection]);
 
 	return (
 		<>
+			{toggleWizardSection && (
+				<AbsoluteContainer orientation="vertical" background="gray5">
+					<NewBucket
+						setToggleWizardSection={setToggleWizardSection}
+						setDetailsBucket={setDetailsBucket}
+						setConnectionData={setConnectionData}
+					/>
+				</AbsoluteContainer>
+			)}
+			{detailsBucket && (
+				<AbsoluteContainer orientation="vertical" background="gray5">
+					<DetailsPanel
+						setDetailsBucket={setDetailsBucket}
+						title="Bucket Connection"
+						BucketDetail={connectionData}
+					/>
+				</AbsoluteContainer>
+			)}
 			<RelativeContainer
 				orientation="column"
 				crossAlignment="flex-start"
@@ -197,33 +233,13 @@ const BucketDetailPanel: FC = () => {
 				style={{ overflowY: 'auto', marginLeft: '16px' }}
 				background="white"
 			>
-				{toggleBucket && (
-					<AbsoluteContainer orientation="vertical" background="gray5">
-						<NewBucket
-							setToggleBucket={setToggleBucket}
-							setDetailsBucket={setDetailsBucket}
-							title="Bucket Connection"
-							bucketType={bucketType}
-							setConnectionData={setConnectionData}
-						/>
-					</AbsoluteContainer>
-				)}
-				{detailsBucket && (
-					<AbsoluteContainer orientation="vertical" background="gray5">
-						<DetailsPanel
-							setDetailsBucket={setDetailsBucket}
-							title="Bucket Connection"
-							BucketDetail={connectionData}
-						/>
-					</AbsoluteContainer>
-				)}
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
 					<Text size="extralarge" weight="bold">
 						{t('buckets.bucket_list', 'Buckets List')}
 					</Text>
 				</Row>
 				<Divider />
-				<Row style={{ padding: '32px 12px 10px' }} width="100%">
+				<Row padding="32px 12px 10px" width="100%">
 					<Select
 						items={BucketTypeItems}
 						background="gray5"
@@ -236,37 +252,30 @@ const BucketDetailPanel: FC = () => {
 						padding={{ right: 'medium' }}
 					/>
 				</Row>
-				<BucketDeleteModel
-					open={open}
-					closeHandler={closeHandler}
-					saveHandler={deleteHandler}
-					BucketDetail={bucketDeleteName}
-				/>
+				{bucketDeleteName && (
+					<BucketDeleteModel
+						open={open}
+						closeHandler={closeHandler}
+						saveHandler={deleteHandler}
+						BucketDetail={bucketDeleteName}
+					/>
+				)}
 				{bucketType ? (
 					<>
 						<Row
 							width="100%"
 							mainAlignment="flex-end"
 							orientation="horizontal"
-							style={{ gap: '8px', padding: '8px 14px' }}
+							padding="8px 14px"
+							style={{ gap: '8px' }}
 						>
-							{bucketselection.length !== 0 && (
-								<Button
-									type="outlined"
-									label={t('label.detail_button', 'DETAILS')}
-									icon="KeyOutline"
-									color="primary"
-									disabled={!bucketselection.length}
-									onClick={showDetailHandler}
-								/>
-							)}
 							<Button
 								type="outlined"
 								label={t('label.create_button', 'CREATE')}
 								icon="Plus"
 								color="primary"
 								onClick={(): void => {
-									setToggleBucket(!toggleBucket);
+									setToggleWizardSection(!toggleWizardSection);
 									if (showDetails) setShowDetails(!showDetails);
 								}}
 							/>
@@ -282,14 +291,14 @@ const BucketDetailPanel: FC = () => {
 						</Row>
 						{bucketList?.length !== 0 && (
 							<>
-								<Row width="100%" style={{ padding: '3px 13px' }}>
+								<Row width="100%" padding="3px 13px">
 									<Input
 										background="gray5"
 										label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
 										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="grey" />}
 									/>
 								</Row>
-								<Row style={{ padding: '16px 14px 0px 14px' }} width="100%">
+								<Row padding="16px 14px 0px 14px" width="100%">
 									<BucketListTable
 										volumes={bucketList}
 										selectedRows={bucketselection}
@@ -300,7 +309,9 @@ const BucketDetailPanel: FC = () => {
 											);
 											setShowDetails(false);
 											setBucketDeleteName(volumeObject);
-											setConnectionData(volumeObject);
+										}}
+										onDoubleClick={(i: any): any => {
+											handleDoubleClick(i);
 										}}
 									/>
 								</Row>
@@ -331,7 +342,7 @@ const BucketDetailPanel: FC = () => {
 									label={t('buckets.create_new_bucket', 'NEW BUCKET')}
 									icon="Plus"
 									color="info"
-									onClick={(): void => setToggleBucket(!toggleBucket)}
+									onClick={(): void => setToggleWizardSection(!toggleWizardSection)}
 								/>
 							</Text>
 						</Padding>

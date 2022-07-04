@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -25,6 +25,7 @@ import { searchDirectory } from '../../../services/search-directory-service';
 import EditMailingListView from './edit-mailing-detail-view';
 import { useDomainStore } from '../../../store/domain/store';
 import { RECORD_DISPLAY_LIMIT } from '../../../constants';
+import MailingListDetail from './mailing-list-detail';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -36,8 +37,15 @@ const DomainMailingList: FC = () => {
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [selectedMailingList, setSelectedMailingList] = useState<any>({});
 	const [showMailingListDetailView, setShowMailingListDetailView] = useState<any>();
+	const [showEditMailingView, setShowEditMailingView] = useState<any>();
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
+	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
+	const [mailingListItem, setMailingListItem] = useState([]);
+	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
+	const [prevent, setPrevent] = useState<boolean>(false);
+	const [editMailingList, setEditMailingList] = useState<boolean>(false);
+	const timer = useRef<any>();
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -80,12 +88,32 @@ const DomainMailingList: FC = () => {
 		[t]
 	);
 
+	const doClickAction = useCallback((): void => {
+		setShowMailingListDetailView(true);
+	}, []);
+
+	const doDoubleClickAction = useCallback((): void => {
+		setShowEditMailingView(true);
+	}, []);
+
+	const handleClick = useCallback(
+		(event: any) => {
+			clearTimeout(timer.current);
+			if (event.detail === 1) {
+				timer.current = setTimeout(doClickAction, 200);
+			} else if (event.detail === 2) {
+				doDoubleClickAction();
+			}
+		},
+		[doClickAction, doDoubleClickAction]
+	);
+
 	const getMailingList = useCallback((): void => {
 		const attrs =
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE)))`;
-
+		setMailingListItem([]);
 		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name')
 			.then((response) => response.json())
 			.then((data) => {
@@ -99,96 +127,108 @@ const DomainMailingList: FC = () => {
 						mList.push({
 							id: item?.id,
 							columns: [
-								<Text
-									size="small"
-									weight="light"
+								<Row
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
 									key={item?.id}
-									color="gray0"
-									onClick={(event: { stopPropagation: () => void }): void => {
-										event.stopPropagation();
+									onClick={(e: any): void => {
 										setSelectedMailingList(item);
-										setShowMailingListDetailView(true);
+										setSelectedFromRow(item);
+										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
-									key={item?.id}
-									color="gray0"
-									onClick={(event: { stopPropagation: () => void }): void => {
-										event.stopPropagation();
+									<Text size="small" weight="light" key={`${item?.id}display-child`} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+									</Text>
+								</Row>,
+								<Row
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									key={`${item?.id}-address`}
+									onClick={(e: any): void => {
 										setSelectedMailingList(item);
-										setShowMailingListDetailView(true);
+										setSelectedFromRow(item);
+										handleClick(e);
 									}}
 								>
-									{item?.name}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
-									key={item?.id}
-									color="gray0"
-									onClick={(event: { stopPropagation: () => void }): void => {
-										event.stopPropagation();
+									<Text size="medium" weight="light" key={`${item?.id}address-child`} color="gray0">
+										{item?.name}
+									</Text>
+								</Row>,
+								<Row
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									key={`${item?.id}-member`}
+									onClick={(e: any): void => {
 										setSelectedMailingList(item);
-										setShowMailingListDetailView(true);
+										setSelectedFromRow(item);
+										handleClick(e);
 									}}
 								>
-									{''}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
-									key={item?.id}
-									color="gray0"
-									onClick={(event: { stopPropagation: () => void }): void => {
-										event.stopPropagation();
+									<Text size="medium" weight="light" key={`${item?.id}member-child`} color="gray0">
+										{''}
+									</Text>
+								</Row>,
+								<Row
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									key={`${item?.id}-status`}
+									onClick={(e: any): void => {
 										setSelectedMailingList(item);
-										setShowMailingListDetailView(true);
+										setSelectedFromRow(item);
+										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-										? t('label.can_receive', 'Can receive')
-										: ''}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
-									key={item?.id}
-									color="gray0"
-									onClick={(event: { stopPropagation: () => void }): void => {
-										event.stopPropagation();
+									<Text size="medium" weight="light" key={`${item?.id}status-child`} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
+											? t('label.can_receive', 'Can receive')
+											: ''}
+									</Text>
+								</Row>,
+								<Row
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									key={`${item?.id}-gal`}
+									onClick={(e: any): void => {
 										setSelectedMailingList(item);
-										setShowMailingListDetailView(true);
+										setSelectedFromRow(item);
+										handleClick(e);
 									}}
 								>
-									{''}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
-									key={item?.id}
-									color="gray0"
-									onClick={(event: { stopPropagation: () => void }): void => {
-										event.stopPropagation();
+									<Text size="medium" weight="light" key={`${item?.id}gal-child`} color="gray0">
+										{''}
+									</Text>
+								</Row>,
+								<Row
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									key={`${item?.id}-description`}
+									onClick={(e: any): void => {
 										setSelectedMailingList(item);
-										setShowMailingListDetailView(true);
+										setSelectedFromRow(item);
+										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'description')?._content}
-								</Text>
+									<Text
+										size="medium"
+										weight="light"
+										key={`${item?.id}description-child`}
+										color="gray0"
+									>
+										{item?.a?.find((a: any) => a?.n === 'description')?._content}
+									</Text>
+								</Row>
 							]
 						});
 					});
 					setMailingList(mList);
+					setMailingListItem(dlList);
 				} else {
 					setTotalAccount(0);
 					setMailingList([]);
 				}
 			});
-	}, [t, offset, limit, domainName, searchQuery]);
+	}, [t, offset, limit, domainName, searchQuery, handleClick]);
 
 	useEffect(() => {
 		getMailingList();
@@ -215,10 +255,32 @@ const DomainMailingList: FC = () => {
 	}, [searchString, searchMailingListQuery]);
 
 	useEffect(() => {
-		if (showMailingListDetailView !== undefined && !showMailingListDetailView) {
+		if (showEditMailingView !== undefined && !showEditMailingView) {
 			getMailingList();
 		}
-	}, [showMailingListDetailView, getMailingList]);
+	}, [showEditMailingView, getMailingList]);
+
+	const onDetailClick = useCallback(() => {
+		const selectedTableItem = mailingListItem.find((item: any) => selectedDlRow[0] === item?.id);
+		setSelectedFromRow(selectedTableItem);
+		setSelectedMailingList(selectedTableItem);
+		setShowMailingListDetailView(true);
+		setShowMailingListDetailView(true);
+	}, [selectedDlRow, mailingListItem]);
+
+	useEffect(() => {
+		if (showMailingListDetailView !== undefined && !showMailingListDetailView) {
+			setShowMailingListDetailView(false);
+		}
+	}, [showMailingListDetailView]);
+
+	useEffect(() => {
+		if (editMailingList) {
+			setShowMailingListDetailView(false);
+			setEditMailingList(false);
+			setShowEditMailingView(true);
+		}
+	}, [editMailingList]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -250,8 +312,9 @@ const DomainMailingList: FC = () => {
 									label={t('label.details', 'Details')}
 									color="primary"
 									type="outlined"
-									disabled
+									disabled={selectedDlRow && selectedDlRow.length !== 1}
 									height={36}
+									onClick={onDetailClick}
 								/>
 							</Padding>
 							<Button
@@ -309,8 +372,15 @@ const DomainMailingList: FC = () => {
 								<Table
 									rows={mailingList}
 									headers={headers}
-									showCheckbox={false}
+									showCheckbox
 									style={{ overflow: 'auto', height: '100%' }}
+									selectedRows={selectedDlRow}
+									onSelectionChange={(selected: any): void => {
+										setSelectedFromRow(
+											mailingListItem.find((item: any) => selected[0] === item?.id)
+										);
+										setSelectedDlRow(selected);
+									}}
 								/>
 							)}
 							{mailingList.length === 0 && (
@@ -360,10 +430,18 @@ const DomainMailingList: FC = () => {
 					</Container>
 				</Row>
 			</Container>
-			{showMailingListDetailView && (
+			{showEditMailingView && (
 				<EditMailingListView
 					selectedMailingList={selectedMailingList}
+					setShowEditMailingList={setShowEditMailingView}
+				/>
+			)}
+
+			{showMailingListDetailView && (
+				<MailingListDetail
+					selectedMailingList={selectedFromRow}
 					setShowMailingListDetailView={setShowMailingListDetailView}
+					setEditMailingList={setEditMailingList}
 				/>
 			)}
 		</Container>

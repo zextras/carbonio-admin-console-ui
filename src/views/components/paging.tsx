@@ -85,10 +85,15 @@ const Paginig: FC<{
 	}, [currentPage, totalPages, setOffset, pageSize, totalItem]);
 
 	return (
-		<Container orientation="horizontal" crossAlignment="center" mainAlignment="flex-start">
+		<Container
+			orientation="horizontal"
+			crossAlignment="center"
+			mainAlignment="flex-start"
+			width="fit"
+		>
 			<IconButton
 				size="large"
-				icon="ArrowheadLeft"
+				icon="GoFirstOutline"
 				iconColor="primary"
 				onClick={onFirstPage}
 				disabled={isFirstPageDisabled}
@@ -126,7 +131,7 @@ const Paginig: FC<{
 			/>
 			<IconButton
 				size="large"
-				icon="ArrowheadRight"
+				icon="GoLastOutline"
 				iconColor="primary"
 				onClick={onLastPage}
 				disabled={isLastPageDisabled || currentPage === totalPages}

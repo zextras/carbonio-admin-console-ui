@@ -17,7 +17,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { getMailboxQuota } from '../../../services/account-list-directory-service';
+import { getMailboxQuota } from '../../../../services/account-list-directory-service';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -32,7 +32,6 @@ const AccountDetailContainer = styled(Container)`
 	max-height: 100%;
 	overflow: hidden;
 	box-shadow: -6px 4px 5px 0px rgba(0, 0, 0, 0.1);
-	opacity: '10%;
 `;
 
 const AccountDetailView: FC<any> = ({
@@ -111,7 +110,8 @@ const AccountDetailView: FC<any> = ({
 							<Input
 								label={t('label.name', 'Name')}
 								backgroundColor="gray6"
-								value={selectedAccount?.displayName}
+								value={selectedAccount?.displayName || ''}
+								readOnly
 							/>
 						</Row>
 					</Row>
@@ -128,7 +128,8 @@ const AccountDetailView: FC<any> = ({
 							<Input
 								label={t('label.email', 'E-mail')}
 								backgroundColor="gray6"
-								value={selectedAccount?.name}
+								value={selectedAccount?.name || ''}
+								readOnly
 							/>
 						</Row>
 					</Row>
@@ -171,7 +172,6 @@ const AccountDetailView: FC<any> = ({
 									selectedAccount?.zimbraMailQuota
 										? `${(selectedAccount.zimbraMailQuota / 1048576).toFixed(3)} MB`
 										: t('label.unlimited', 'Unlimited')
-								}
 								}`}
 							/>
 							<Quota
@@ -281,6 +281,7 @@ const AccountDetailView: FC<any> = ({
 						backgroundColor="gray6"
 						width="100%"
 						value={selectedAccount?.description}
+						readOnly
 					></Input>
 				</Row>
 				<Row
@@ -293,7 +294,8 @@ const AccountDetailView: FC<any> = ({
 						label={t('label.notes', 'Notes')}
 						backgroundColor="gray6"
 						width="100%"
-						value={selectedAccount?.zimbraNotes}
+						value={selectedAccount?.zimbraNotes || ''}
+						readOnly
 					></Input>
 				</Row>
 			</Container>

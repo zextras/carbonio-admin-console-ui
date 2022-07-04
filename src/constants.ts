@@ -25,6 +25,7 @@ export const ACTIVE = 'active';
 export const CLOSED = 'closed';
 export const LOCKED = 'locked';
 export const MAINTENANCE = 'maintenance';
+export const PENDING = 'pending';
 export const SUSPENDED = 'suspended';
 export const ALLOW_SEND_RECEIVE = 'ALLOWSENDRECEIVE';
 export const BLOCK_SEND = 'BLOCKSEND';

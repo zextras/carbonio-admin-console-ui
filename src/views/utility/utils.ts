@@ -832,6 +832,136 @@ export const BucketTypeItems = [
 	}
 ];
 
+export const localeList = (
+	t: TFunction
+): Array<{ id: string; name: string; localName: string; value: string; label: string }> => [
+	{
+		id: 'zh_CN',
+		name: '中文 (中国)',
+		localName: t('locale.chinese_china', 'Chinese (China)'),
+		label: t('locale.label_chinese', {
+			value: '中文 (中国)',
+			defaultValue: 'Chinese (China) - {{value}}'
+		}),
+		value: 'zh_CN'
+	},
+	{
+		id: 'nl',
+		name: 'Nederlands',
+		localName: t('locale.dutch', 'Dutch'),
+		label: t('locale.label_dutch', { value: 'Nederlands', defaultValue: 'Dutch - {{value}}' }),
+		value: 'nl'
+	},
+	{
+		id: 'en',
+		name: 'English',
+		localName: t('locale.English', 'English'),
+		label: t('locale.label_english', { value: 'English', defaultValue: 'English - {{value}}' }),
+		value: 'en'
+	},
+	{
+		id: 'de',
+		name: 'Deutsch',
+		localName: t('locale.german', 'German'),
+		label: t('locale.label_german', { value: 'Deutsch', defaultValue: 'German - {{value}}' }),
+		value: 'de'
+	},
+	{
+		id: 'hi',
+		name: 'हिंदी',
+		localName: t('locale.hindi', 'Hindi'),
+		label: t('locale.label_hindi', { value: 'हिंदी', defaultValue: 'Hindi - {{value}}' }),
+		value: 'hi'
+	},
+	{
+		id: 'it',
+		name: 'italiano',
+		localName: t('locale.italian', 'Italian'),
+		label: t('locale.label_italian', { value: 'italiano', defaultValue: 'Italian - {{value}}' }),
+		value: 'it'
+	},
+	{
+		id: 'ja',
+		name: '日本語',
+		localName: t('locale.japanese', 'Japanese'),
+		label: t('locale.label_japanese', { value: '日本語', defaultValue: 'Japanese - {{value}}' }),
+		value: 'ja'
+	},
+
+	{
+		id: 'pt',
+		name: 'português',
+		localName: t('locale.portuguese', 'Portuguese'),
+		label: t('locale.label_portuguese', {
+			value: 'português',
+			defaultValue: 'Portuguese - {{value}}'
+		}),
+		value: 'pt'
+	},
+	{
+		id: 'pt_BR',
+		name: 'português (Brasil)',
+		localName: t('locale.portuguese_brazil', 'Portuguese (Brazil)'),
+		label: t('locale.label_portuguese_brazil', {
+			value: 'português (Brasil)',
+			defaultValue: 'Portuguese - {{value}}'
+		}),
+		value: 'pt_BR'
+	},
+
+	{
+		id: 'ro',
+		name: 'română',
+		localName: t('locale.romanian', 'Romanian'),
+		label: t('locale.label_romanian', { value: 'română', defaultValue: 'Romanian - {{value}}' }),
+		value: 'ro'
+	},
+	{
+		id: 'ru',
+		name: 'русский',
+		localName: t('locale.russian', 'Russian'),
+		label: t('locale.label_russian', { value: 'русский', defaultValue: 'Russian - {{value}}' }),
+		value: 'ru'
+	},
+
+	{
+		id: 'es',
+		name: 'español',
+		localName: t('locale.spanish', 'Spanish'),
+		label: t('locale.label_spanish', { value: 'español', defaultValue: 'Spanish - {{value}}' }),
+		value: 'es'
+	},
+
+	{
+		id: 'th',
+		name: 'ไทย',
+		localName: t('locale.thai', 'Thai'),
+		label: t('locale.label_thai', { value: 'ไทย', defaultValue: 'Thai - {{value}}' }),
+		value: 'th'
+	},
+	{
+		id: 'tr',
+		name: 'Türkçe',
+		localName: t('locale.turkish', 'Turkish'),
+		label: t('locale.label_turkish', { value: 'Türkçe', defaultValue: 'Turkish - {{value}}' }),
+		value: 'tr'
+	},
+	{
+		id: 'fr',
+		name: 'français',
+		localName: t('locale.french', 'French'),
+		label: t('locale.label_french', { value: 'français', defaultValue: 'French - {{value}}' }),
+		value: 'fr'
+	},
+	{
+		id: 'vi',
+		name: 'Tiếng Việt',
+		localName: t('locale.vietnamese', 'Vietnamese'),
+		label: 'Vietnamese - Tiếng Việt',
+		value: 'vi'
+	}
+];
+
 export const BucketRegions = [
 	{
 		label: 'EU | Milan',

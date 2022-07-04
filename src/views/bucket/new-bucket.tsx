@@ -11,7 +11,7 @@ import { HorizontalWizard } from '../app/component/hwizard';
 import Connection from './connection';
 import { Section } from '../app/component/section';
 
-const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleBucket }) => {
+const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
 	return (
 		<Section
@@ -21,7 +21,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleBucket }) => 
 			divider
 			showClose
 			onClose={(): void => {
-				setToggleBucket(false);
+				setToggleWizardSection(false);
 			}}
 		>
 			{wizard}
@@ -31,12 +31,16 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleBucket }) => 
 
 // eslint-disable-next-line no-empty-pattern
 const NewBucket: FC<{
-	setToggleBucket: any;
-	title: string;
+	setToggleWizardSection: any;
 	setDetailsBucket: any;
-	bucketType: any;
+	// staticData: any;
 	setConnectionData: any;
-}> = ({ setToggleBucket, title, setDetailsBucket, bucketType, setConnectionData }) => {
+}> = ({
+	setToggleWizardSection,
+	setDetailsBucket,
+	// staticData,
+	setConnectionData
+}) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 
@@ -46,17 +50,55 @@ const NewBucket: FC<{
 			label: t('new_bucket_connection', 'CONNECTION'),
 			icon: 'Link2Outline',
 			view: Connection,
-			canGoNext: (): any => true
+			canGoNext: (): any => true,
+			CancelButton: (props: any) => (
+				<Button
+					{...props}
+					type="outlined"
+					key="wizard-cancel"
+					label={'NEED HELP?'}
+					color="secondary"
+					onClick={(): void => setToggleWizardSection(true)}
+				/>
+			),
+			PrevButton: (props: any): any => (
+				<>
+					{!props.completeLoading ? (
+						<Button
+							{...props}
+							key="wizard-cancel"
+							label={'CANCEL'}
+							color="secondary"
+							icon="ChevronLeftOutline"
+							iconPlacement="left"
+							disable={!!props.disabled}
+							onClick={(): void => setToggleWizardSection(false)}
+						/>
+					) : (
+						''
+					)}
+				</>
+			),
+			NextButton: (props: any): any => (
+				<Button
+					{...props}
+					label={!props.completeLoading ? 'VIEW DETAILS' : ' Done'}
+					style={{ marginLeft: '16px' }}
+					onClick={(): void => {
+						setToggleWizardSection(false);
+					}}
+				/>
+			)
 		}
 	];
 
 	const onComplete = useCallback(
 		(data) => {
 			setConnectionData(data.steps.connection);
-			setToggleBucket(false);
+			setToggleWizardSection(false);
 			setDetailsBucket(false);
 		},
-		[setToggleBucket, setDetailsBucket, setConnectionData]
+		[setToggleWizardSection, setDetailsBucket, setConnectionData]
 	);
 
 	return (
@@ -65,8 +107,8 @@ const NewBucket: FC<{
 			Wrapper={WizardInSection}
 			onChange={setWizardData}
 			onComplete={onComplete}
-			setToggleBucket={setToggleBucket}
-			bucketType={bucketType}
+			setToggleWizardSection={setToggleWizardSection}
+			// staticData={staticData}
 		/>
 	);
 };

@@ -36,7 +36,7 @@ import { addDistributionListMember } from '../../../services/add-distributionlis
 import { removeDistributionListMember } from '../../../services/remove-distributionlist-member-service';
 import { distributionListAction } from '../../../services/distribution-list-action-service';
 
-const MailingListDetailContainer = styled(Container)`
+const EditMailingListContainer = styled(Container)`
 	z-index: 10;
 	position: absolute;
 	top: 43px;
@@ -65,7 +65,7 @@ export enum TRUE_FALSE {
 	FALSE = 'FALSE'
 }
 
-const EditMailingListView: FC<any> = ({ selectedMailingList, setShowMailingListDetailView }) => {
+const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingList }) => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [memberOffset, setMemberOffset] = useState<number>(0);
@@ -899,7 +899,7 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowMailingListD
 	}, [openAddMailingListDialog]);
 
 	return (
-		<MailingListDetailContainer background="gray5" mainAlignment="flex-start">
+		<EditMailingListContainer background="gray5" mainAlignment="flex-start">
 			<Row
 				mainAlignment="flex-start"
 				crossAlignment="center"
@@ -937,7 +937,7 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowMailingListD
 					<IconButton
 						size="medium"
 						icon="CloseOutline"
-						onClick={(): void => setShowMailingListDetailView(false)}
+						onClick={(): void => setShowEditMailingList(false)}
 					/>
 				</Row>
 			</Row>
@@ -1182,10 +1182,10 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowMailingListD
 					</Container>
 				</ListRow>
 				<ListRow>
-					<Container padding={{ all: 'small' }}>
+					<Container padding={{ all: 'small' }} mainAlignment="flex-end" crossAlignment="flex-end">
 						<Paginig totalItem={1} pageSize={10} setOffset={setMemberOffset} />
 					</Container>
-					<Container padding={{ all: 'small' }}>
+					<Container padding={{ all: 'small' }} mainAlignment="flex-end" crossAlignment="flex-end">
 						<Paginig totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
 					</Container>
 				</ListRow>
@@ -1301,7 +1301,7 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowMailingListD
 					</Container>
 				</Container>
 			</Modal>
-		</MailingListDetailContainer>
+		</EditMailingListContainer>
 	);
 };
 export default EditMailingListView;
