@@ -276,7 +276,7 @@ const CreateAccountDetailSection: FC = () => {
 					<Row width="64%" mainAlignment="flex-start">
 						<Select
 							background="gray6"
-							label={t('label.class_of_Service', 'Class of Service')}
+							label={t('label.class_of_service', 'Class of Service')}
 							showCheckbox={false}
 							padding={{ right: 'medium' }}
 							disabled

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -35,8 +35,9 @@ const DomainResources: FC = () => {
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedResourceList, setSelectedResourceList] = useState<any>({});
-	const [showResourceDetailView, setShowResourceDetailView] = useState<boolean>(false);
+	const [showResourceEditDetailView, setShowResourceEditDetailView] = useState<boolean>(false);
 	const [isEditMode, setIsEditMode] = useState<boolean>(false);
+	const timer = useRef<any>();
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -73,6 +74,26 @@ const DomainResources: FC = () => {
 		[t]
 	);
 
+	const doClickAction = useCallback((): void => {
+		setIsEditMode(false);
+	}, []);
+
+	const doDoubleClickAction = useCallback((): void => {
+		setIsEditMode(true);
+	}, []);
+
+	const handleClick = useCallback(
+		(event: any) => {
+			clearTimeout(timer.current);
+			if (event.detail === 1) {
+				timer.current = setTimeout(doClickAction, 200);
+			} else if (event.detail === 2) {
+				doDoubleClickAction();
+			}
+		},
+		[doClickAction, doDoubleClickAction]
+	);
+
 	const getResourceList = useCallback(
 		(zimbraDomainName: any, queryString: any): void => {
 			const attrs =
@@ -96,10 +117,10 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(event: { stopPropagation: () => void }): void => {
-											event.stopPropagation();
+										onClick={(e: any): void => {
 											setSelectedResourceList(item);
-											setShowResourceDetailView(true);
+											setShowResourceEditDetailView(true);
+											handleClick(e);
 										}}
 									>
 										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
@@ -109,10 +130,10 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(event: { stopPropagation: () => void }): void => {
-											event.stopPropagation();
+										onClick={(e: any): void => {
 											setSelectedResourceList(item);
-											setShowResourceDetailView(true);
+											setShowResourceEditDetailView(true);
+											handleClick(e);
 										}}
 									>
 										{item?.name}
@@ -122,10 +143,10 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(event: { stopPropagation: () => void }): void => {
-											event.stopPropagation();
+										onClick={(e: any): void => {
 											setSelectedResourceList(item);
-											setShowResourceDetailView(true);
+											setShowResourceEditDetailView(true);
+											handleClick(e);
 										}}
 									>
 										{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
@@ -135,10 +156,10 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(event: { stopPropagation: () => void }): void => {
-											event.stopPropagation();
+										onClick={(e: any): void => {
 											setSelectedResourceList(item);
-											setShowResourceDetailView(true);
+											setShowResourceEditDetailView(true);
+											handleClick(e);
 										}}
 									>
 										{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
@@ -153,10 +174,10 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(event: { stopPropagation: () => void }): void => {
-											event.stopPropagation();
+										onClick={(e: any): void => {
 											setSelectedResourceList(item);
-											setShowResourceDetailView(true);
+											setShowResourceEditDetailView(true);
+											handleClick(e);
 										}}
 									>
 										{item?.a?.find((a: any) => a?.n === 'description')?._content}
@@ -170,7 +191,7 @@ const DomainResources: FC = () => {
 					}
 				});
 		},
-		[t, offset, limit]
+		[offset, limit, t, handleClick]
 	);
 
 	useEffect(() => {
@@ -331,10 +352,10 @@ const DomainResources: FC = () => {
 					</Container>
 				</Row>
 			</Container>
-			{showResourceDetailView && (
+			{showResourceEditDetailView && (
 				<ResourceEditDetailView
 					selectedResourceList={selectedResourceList}
-					setShowResourceDetailView={setShowResourceDetailView}
+					setShowResourceEditDetailView={setShowResourceEditDetailView}
 					isEditMode={isEditMode}
 					setIsEditMode={setIsEditMode}
 				/>

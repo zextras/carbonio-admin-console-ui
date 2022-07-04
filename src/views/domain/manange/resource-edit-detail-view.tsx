@@ -29,7 +29,7 @@ const ResourceDetailContainer = styled(Container)`
 	z-index: 10;
 	position: absolute;
 	top: 43px;
-	right: 12px;
+	right: 0px;
 	bottom: 0px;
 	left: ${'max(calc(100% - 680px), 12px)'};
 	transition: left 0.2s ease-in-out;
@@ -38,7 +38,6 @@ const ResourceDetailContainer = styled(Container)`
 	max-height: 100%;
 	overflow: hidden;
 	box-shadow: -6px 4px 5px 0px rgba(0, 0, 0, 0.1);
-	opacity: '10%;
 `;
 
 // eslint-disable-next-line no-shadow
@@ -69,7 +68,7 @@ export enum SCHEDULE_POLITY_TYPE {
 
 const ResourceEditDetailView: FC<any> = ({
 	selectedResourceList,
-	setShowResourceDetailView,
+	setShowResourceEditDetailView,
 	isEditMode,
 	setIsEditMode
 }) => {
@@ -547,7 +546,7 @@ const ResourceEditDetailView: FC<any> = ({
 						size="medium"
 						icon="CloseOutline"
 						onClick={(): void => {
-							setShowResourceDetailView(false);
+							setShowResourceEditDetailView(false);
 							setIsEditMode(false);
 						}}
 					/>
@@ -648,14 +647,14 @@ const ResourceEditDetailView: FC<any> = ({
 					</Container>
 					<Container
 						mainAlignment="flex-end"
-						crossAlignment="flex-end"
+						crossAlignment="center"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
 						<Row padding={{ top: 'large', right: 'small' }}>
 							<Icon icon="EmailOutline" size="large" color="gray0" />
 						</Row>
-						<Row width="85%">
+						<Row width="90%">
 							<Input
 								label={t('label.email', 'Email')}
 								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
@@ -695,14 +694,14 @@ const ResourceEditDetailView: FC<any> = ({
 					</Container>
 					<Container
 						mainAlignment="flex-end"
-						crossAlignment="flex-end"
+						crossAlignment="center"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
 						<Row padding={{ top: 'large', right: 'small' }}>
 							<Icon icon="CubeOutline" size="large" color="gray0" />
 						</Row>
-						<Row width="85%">
+						<Row width="90%">
 							{isEditMode && (
 								<Select
 									items={resourceTypeOptions}
@@ -763,14 +762,14 @@ const ResourceEditDetailView: FC<any> = ({
 					</Container>
 					<Container
 						mainAlignment="flex-end"
-						crossAlignment="flex-end"
+						crossAlignment="center"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
 						<Row padding={{ top: 'large', right: 'small' }}>
 							<Icon icon="CosOutline" size="large" color="gray0" />
 						</Row>
-						<Row width="85%">
+						<Row width="90%">
 							{isEditMode && (
 								<Select
 									items={cosItems}
@@ -888,14 +887,14 @@ const ResourceEditDetailView: FC<any> = ({
 					</Container>
 					<Container
 						mainAlignment="flex-end"
-						crossAlignment="flex-end"
+						crossAlignment="center"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
 						<Row padding={{ top: 'large', right: 'small' }}>
 							<Icon icon="FlashOutline" size="large" color="gray0" />
 						</Row>
-						<Row width="85%">
+						<Row width="90%">
 							<Input
 								label={t('label.percentage_maximum_conflict_allowed', '% Maximun Conflict Allowed')}
 								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
@@ -934,14 +933,14 @@ const ResourceEditDetailView: FC<any> = ({
 					</Container>
 					<Container
 						mainAlignment="flex-end"
-						crossAlignment="flex-end"
+						crossAlignment="center"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
 						<Row padding={{ top: 'large', right: 'small' }}>
 							<Icon icon="CalendarOutline" size="large" color="gray0" />
 						</Row>
-						<Row width="85%">
+						<Row width="90%">
 							<Input
 								label={t('label.creation_date', 'Creation Date')}
 								backgroundColor="gray6"
