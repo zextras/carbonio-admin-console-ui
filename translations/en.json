@@ -478,6 +478,7 @@
         "verify_error": "{{name}}",
         "view": "This is a view",
         "view_email": "VIEW EMAIL",
+        "view_mail": "VIEW MAIL",
         "virtual_host": "virtual host",
         "virtual_host_enable_info_msg": "Click to ADD button to enabled new one.",
         "virtual_host_info_msg": "Virtual hosts allow the system to establish a default domain for a user login.",

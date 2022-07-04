@@ -23,7 +23,7 @@ import logo from '../../../assets/gardian.svg';
 import Paginig from '../../components/paging';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { useDomainStore } from '../../../store/domain/store';
-import ResourceDetailView from './resource-detail-view';
+import ResourceEditDetailView from './resource-edit-detail-view';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -36,6 +36,7 @@ const DomainResources: FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedResourceList, setSelectedResourceList] = useState<any>({});
 	const [showResourceDetailView, setShowResourceDetailView] = useState<boolean>(false);
+	const [isEditMode, setIsEditMode] = useState<boolean>(false);
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -331,9 +332,11 @@ const DomainResources: FC = () => {
 				</Row>
 			</Container>
 			{showResourceDetailView && (
-				<ResourceDetailView
+				<ResourceEditDetailView
 					selectedResourceList={selectedResourceList}
 					setShowResourceDetailView={setShowResourceDetailView}
+					isEditMode={isEditMode}
+					setIsEditMode={setIsEditMode}
 				/>
 			)}
 		</Container>

@@ -67,22 +67,35 @@ export enum SCHEDULE_POLITY_TYPE {
 	NO_AUTO_ACCEPT = 4
 }
 
-const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDetailView }) => {
+const ResourceEditDetailView: FC<any> = ({
+	selectedResourceList,
+	setShowResourceDetailView,
+	isEditMode,
+	setIsEditMode
+}) => {
 	const [t] = useTranslation();
 	const cosList = useDomainStore((state) => state.cosList);
 	const [resourceInformation, setResourceInformation]: any = useState([]);
 	const [resourceDetailData, setResourceDetailData]: any = useState({});
 	const [sendInviteList, setSendInviteList] = useState<any[]>([]);
 	const [signatureData, setSignatureData]: any = useState([]);
-	const [zimbraCOSId, setZimbraCOSId] = useState<string>('');
+	const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [zimbraPrefCalendarAutoAcceptSignatureId, setZimbraPrefCalendarAutoAcceptSignatureId] =
-		useState<string>('');
+		useState<any>({});
 	const [zimbraPrefCalendarAutoDeclineSignatureId, setZimbraPrefCalendarAutoDeclineSignatureId] =
-		useState<string>('');
+		useState<any>({});
 	const [zimbraPrefCalendarAutoDenySignatureId, setZimbraPrefCalendarAutoDenySignatureId] =
+		useState<any>({});
+	const [resourceName, setResourceName] = useState<string>('');
+	const [resourceMail, setResourceMail] = useState<string>('');
+	const [zimbraCalResMaxNumConflictsAllowed, setZimbraCalResMaxNumConflictsAllowed] =
 		useState<string>('');
+	const [zimbraCalResMaxPercentConflictsAllowed, setZimbraCalResMaxPercentConflictsAllowed] =
+		useState<string>('');
+	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 
 	const sendInviteHeaders: any[] = useMemo(
 		() => [
@@ -318,7 +331,8 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 				obj[item?.n] = item._content;
 				return '';
 			});
-
+			setResourceName(obj?.displayName);
+			setResourceMail(obj?.mail);
 			setZimbraCalResType(
 				resourceTypeOptions.find((item: any) => item.value === obj.zimbraCalResType)
 			);
@@ -381,6 +395,30 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 			} else {
 				obj.zimbraPrefCalendarAutoDenySignatureId = '';
 				setZimbraPrefCalendarAutoDenySignatureId(signatureItems[0]);
+			}
+			if (obj.zimbraCalResMaxNumConflictsAllowed) {
+				setZimbraCalResMaxNumConflictsAllowed(obj.zimbraCalResMaxNumConflictsAllowed);
+			} else {
+				obj.zimbraCalResMaxNumConflictsAllowed = '';
+				setZimbraCalResMaxNumConflictsAllowed('');
+			}
+			if (obj.zimbraCalResMaxPercentConflictsAllowed) {
+				setZimbraCalResMaxPercentConflictsAllowed(obj.zimbraCalResMaxPercentConflictsAllowed);
+			} else {
+				obj.zimbraCalResMaxPercentConflictsAllowed = '';
+				setZimbraCalResMaxPercentConflictsAllowed('');
+			}
+			if (obj.description) {
+				setDescription(obj.description);
+			} else {
+				obj.description = '';
+				setDescription('');
+			}
+			if (obj.zimbraNotes) {
+				setZimbraNotes(obj.zimbraNotes);
+			} else {
+				obj.zimbraNotes = '';
+				setZimbraNotes('');
 			}
 			setResourceDetailData(obj);
 		}
@@ -508,13 +546,60 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 					<IconButton
 						size="medium"
 						icon="CloseOutline"
-						onClick={(): void => setShowResourceDetailView(false)}
+						onClick={(): void => {
+							setShowResourceDetailView(false);
+							setIsEditMode(false);
+						}}
 					/>
 				</Row>
 			</Row>
 			<Row>
 				<Divider color="gray3" />
 			</Row>
+			{!isEditMode && (
+				<Row
+					mainAlignment="flex-end"
+					crossAlignment="flex-end"
+					orientation="horizontal"
+					background="white"
+					height="fit"
+					padding={{ top: 'extralarge', left: 'large', right: 'large', bottom: 'large' }}
+					width="100%"
+				>
+					<Padding right="large">
+						<Container width="fit" height="fit" style={{ border: '1px solid #2b73d2' }}>
+							<IconButton
+								iconColor="primary"
+								backgroundColor="gray6"
+								icon="EditAsNewOutline"
+								height={42}
+								width={42}
+								onClick={(): void => setIsEditMode(true)}
+							/>
+						</Container>
+					</Padding>
+
+					<Padding right="large">
+						<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
+							<IconButton
+								iconColor="error"
+								backgroundColor="gray6"
+								icon="Trash2Outline"
+								height={42}
+								width={42}
+							/>
+						</Container>
+					</Padding>
+
+					<Button
+						label={t('label.view_mail', 'VIEW MAIL')}
+						icon="EmailReadOutline"
+						color="primary"
+						type="outlined"
+						height={44}
+					/>
+				</Row>
+			)}
 			<Container
 				padding={{ left: 'large' }}
 				mainAlignment="flex-start"
@@ -547,10 +632,17 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						<Row width="85%">
 							<Input
 								label={t('label.name', 'Name')}
-								backgroundColor="gray6"
-								value={resourceDetailData?.displayName}
+								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
+								value={resourceName}
 								size="medium"
-								readOnly
+								readOnly={!isEditMode}
+								onChange={
+									isEditMode
+										? (e: any): any => {
+												setResourceName(e.target.value);
+										  }
+										: undefined
+								}
 							/>
 						</Row>
 					</Container>
@@ -566,10 +658,17 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						<Row width="85%">
 							<Input
 								label={t('label.email', 'Email')}
-								backgroundColor="gray6"
-								value={resourceDetailData?.mail}
+								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
+								value={resourceMail}
 								size="medium"
-								readOnly
+								readOnly={!isEditMode}
+								onChange={
+									isEditMode
+										? (e: any): any => {
+												setResourceMail(e.target.value);
+										  }
+										: undefined
+								}
 							/>
 						</Row>
 					</Container>
@@ -604,14 +703,25 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Icon icon="CubeOutline" size="large" color="gray0" />
 						</Row>
 						<Row width="85%">
-							<Select
-								items={resourceTypeOptions}
-								background="gray5"
-								label={t('label.type', 'Type')}
-								showCheckbox={false}
-								onChange={onResouseTypeChange}
-								selection={zimbraCalResType}
-							/>
+							{isEditMode && (
+								<Select
+									items={resourceTypeOptions}
+									background="gray5"
+									label={t('label.type', 'Type')}
+									showCheckbox={false}
+									onChange={onResouseTypeChange}
+									selection={zimbraCalResType}
+								/>
+							)}
+							{!isEditMode && (
+								<Input
+									label={t('label.type', 'Type')}
+									backgroundColor="gray6"
+									value={zimbraCalResType.label}
+									size="medium"
+									readOnly
+								/>
+							)}
 						</Row>
 					</Container>
 				</ListRow>
@@ -630,14 +740,25 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							/>
 						</Row>
 						<Row width="85%">
-							<Select
-								items={accountStatusOptions}
-								background="gray5"
-								label={t('label.status', 'Status')}
-								showCheckbox={false}
-								onChange={onAccountStatusChange}
-								selection={zimbraAccountStatus}
-							/>
+							{isEditMode && (
+								<Select
+									items={accountStatusOptions}
+									background="gray5"
+									label={t('label.status', 'Status')}
+									showCheckbox={false}
+									onChange={onAccountStatusChange}
+									selection={zimbraAccountStatus}
+								/>
+							)}
+							{!isEditMode && (
+								<Input
+									label={t('label.status', 'Status')}
+									backgroundColor="gray6"
+									value={zimbraAccountStatus?.label}
+									size="medium"
+									readOnly
+								/>
+							)}
 						</Row>
 					</Container>
 					<Container
@@ -650,14 +771,25 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Icon icon="CosOutline" size="large" color="gray0" />
 						</Row>
 						<Row width="85%">
-							<Select
-								items={cosItems}
-								background="gray5"
-								label={t('label.class_of_service', 'Class of Service')}
-								showCheckbox={false}
-								onChange={onCosChange}
-								selection={zimbraCOSId}
-							/>
+							{isEditMode && (
+								<Select
+									items={cosItems}
+									background="gray5"
+									label={t('label.class_of_service', 'Class of Service')}
+									showCheckbox={false}
+									onChange={onCosChange}
+									selection={zimbraCOSId}
+								/>
+							)}
+							{!isEditMode && (
+								<Input
+									label={t('label.class_of_service', 'Class of Service')}
+									backgroundColor="gray6"
+									value={zimbraCOSId?.label}
+									size="medium"
+									readOnly
+								/>
+							)}
 						</Row>
 					</Container>
 				</ListRow>
@@ -672,14 +804,25 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Icon icon="HistoryOutline" size="large" color="gray0" />
 						</Row>
 						<Row width="100%">
-							<Select
-								items={autoRefuseOption}
-								background="gray5"
-								label={t('label.auto_refuse', 'Auto-Refuse')}
-								showCheckbox={false}
-								onChange={onAutoRefuseChange}
-								selection={zimbraCalResAutoDeclineRecurring}
-							/>
+							{isEditMode && (
+								<Select
+									items={autoRefuseOption}
+									background="gray5"
+									label={t('label.auto_refuse', 'Auto-Refuse')}
+									showCheckbox={false}
+									onChange={onAutoRefuseChange}
+									selection={zimbraCalResAutoDeclineRecurring}
+								/>
+							)}
+							{!isEditMode && (
+								<Input
+									label={t('label.auto_refuse', 'Auto-Refuse')}
+									backgroundColor="gray6"
+									value={zimbraCalResAutoDeclineRecurring?.label}
+									size="medium"
+									readOnly
+								/>
+							)}
 						</Row>
 					</Container>
 				</ListRow>
@@ -694,14 +837,25 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 							<Icon icon="ClockOutline" size="large" color="gray0" />
 						</Row>
 						<Row width="100%">
-							<Select
-								items={schedulePolicyItems}
-								background="gray5"
-								label={t('label.schedule_policy', 'Schedule Policy')}
-								showCheckbox={false}
-								onChange={onSchedulePolicyChange}
-								selection={schedulePolicyType}
-							/>
+							{isEditMode && (
+								<Select
+									items={schedulePolicyItems}
+									background="gray5"
+									label={t('label.schedule_policy', 'Schedule Policy')}
+									showCheckbox={false}
+									onChange={onSchedulePolicyChange}
+									selection={schedulePolicyType}
+								/>
+							)}
+							{!isEditMode && (
+								<Input
+									label={t('label.schedule_policy', 'Schedule Policy')}
+									backgroundColor="gray6"
+									value={schedulePolicyType?.label}
+									size="medium"
+									readOnly
+								/>
+							)}
 						</Row>
 					</Container>
 				</ListRow>
@@ -718,9 +872,17 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						<Row width="85%">
 							<Input
 								label={t('label.maximum_conflict_allowed', 'Maximun Conflict Allowed')}
-								backgroundColor="gray6"
-								value={resourceDetailData?.zimbraCalResMaxNumConflictsAllowed}
+								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
+								value={zimbraCalResMaxNumConflictsAllowed}
 								size="medium"
+								onChange={
+									isEditMode
+										? (e: any): any => {
+												setZimbraCalResMaxNumConflictsAllowed(e.target.value);
+										  }
+										: undefined
+								}
+								readOnly={!isEditMode}
 							/>
 						</Row>
 					</Container>
@@ -736,9 +898,16 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						<Row width="85%">
 							<Input
 								label={t('label.percentage_maximum_conflict_allowed', '% Maximun Conflict Allowed')}
-								readOnly
-								backgroundColor="gray6"
-								value={resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed}
+								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
+								value={zimbraCalResMaxPercentConflictsAllowed}
+								onChange={
+									isEditMode
+										? (e: any): any => {
+												setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
+										  }
+										: undefined
+								}
+								readOnly={!isEditMode}
 							/>
 						</Row>
 					</Container>
@@ -759,6 +928,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 								backgroundColor="gray6"
 								value={selectedResourceList?.id}
 								size="medium"
+								readOnly
 							/>
 						</Row>
 					</Container>
@@ -774,7 +944,6 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						<Row width="85%">
 							<Input
 								label={t('label.creation_date', 'Creation Date')}
-								readOnly
 								backgroundColor="gray6"
 								value={
 									resourceDetailData?.zimbraCreateTimestamp
@@ -783,6 +952,7 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 										  )
 										: '--'
 								}
+								readOnly
 							/>
 						</Row>
 					</Container>
@@ -801,39 +971,41 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						{t('label.send_invite_to', 'Send Invite To')}
 					</Text>
 				</Row>
-				<ListRow>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						wrap="nowrap"
-						padding={{ top: 'large' }}
-					>
-						<Input
-							label={t('label.enter_email_address', 'Enter E-mail address')}
-							background="gray5"
-						/>
+				{isEditMode && (
+					<ListRow>
+						<Row
+							takeAvwidth="fill"
+							mainAlignment="flex-start"
+							width="100%"
+							wrap="nowrap"
+							padding={{ top: 'large' }}
+						>
+							<Input
+								label={t('label.enter_email_address', 'Enter E-mail address')}
+								background="gray5"
+							/>
 
-						<Padding left="large">
-							<Button
-								type="outlined"
-								label={t('label.add', 'Add')}
-								icon="Plus"
-								color="primary"
-								height="44px"
-							/>
-						</Padding>
-						<Padding left="large">
-							<Button
-								type="outlined"
-								label={t('label.delete', 'Delete')}
-								icon="Close"
-								color="error"
-								height="44px"
-							/>
-						</Padding>
-					</Row>
-				</ListRow>
+							<Padding left="large">
+								<Button
+									type="outlined"
+									label={t('label.add', 'Add')}
+									icon="Plus"
+									color="primary"
+									height="44px"
+								/>
+							</Padding>
+							<Padding left="large">
+								<Button
+									type="outlined"
+									label={t('label.delete', 'Delete')}
+									icon="Close"
+									color="error"
+									height="44px"
+								/>
+							</Padding>
+						</Row>
+					</ListRow>
+				)}
 				<ListRow>
 					<Container
 						mainAlignment="flex-start"
@@ -881,43 +1053,45 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						{t('label.signatures', 'Signatures')}
 					</Text>
 				</Row>
-				<ListRow>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-end"
-						width="100%"
-						wrap="nowrap"
-						padding={{ top: 'large' }}
-					>
-						<Padding>
-							<Button
-								type="outlined"
-								label={t('label.add', 'Add')}
-								icon="Plus"
-								color="primary"
-								height="44px"
-							/>
-						</Padding>
-						<Padding left="large">
-							<Button
-								type="outlined"
-								label={t('label.edit', 'Edit')}
-								icon="Edit"
-								color="secondary"
-								height="44px"
-							/>
-						</Padding>
-						<Padding left="large">
-							<Button
-								type="outlined"
-								label={t('label.delete', 'Delete')}
-								icon="Close"
-								color="error"
-								height="44px"
-							/>
-						</Padding>
-					</Row>
-				</ListRow>
+				{isEditMode && (
+					<ListRow>
+						<Row
+							takeAvwidth="fill"
+							mainAlignment="flex-end"
+							width="100%"
+							wrap="nowrap"
+							padding={{ top: 'large' }}
+						>
+							<Padding>
+								<Button
+									type="outlined"
+									label={t('label.add', 'Add')}
+									icon="Plus"
+									color="primary"
+									height="44px"
+								/>
+							</Padding>
+							<Padding left="large">
+								<Button
+									type="outlined"
+									label={t('label.edit', 'Edit')}
+									icon="Edit"
+									color="secondary"
+									height="44px"
+								/>
+							</Padding>
+							<Padding left="large">
+								<Button
+									type="outlined"
+									label={t('label.delete', 'Delete')}
+									icon="Close"
+									color="error"
+									height="44px"
+								/>
+							</Padding>
+						</Row>
+					</ListRow>
+				)}
 				<ListRow>
 					<Container
 						mainAlignment="flex-start"
@@ -959,71 +1133,138 @@ const ResourceDetailView: FC<any> = ({ selectedResourceList, setShowResourceDeta
 						padding={{ top: 'large' }}
 					>
 						<Row width="30%">
-							<Select
-								items={signatureItems}
-								background="gray5"
-								label={t('label.auto_accept', 'Auto-Accept')}
-								showCheckbox={false}
-								onChange={onZimbraAutoAcceptSignatureChange}
-								selection={zimbraPrefCalendarAutoAcceptSignatureId}
-							/>
+							{isEditMode && (
+								<Select
+									items={signatureItems}
+									background="gray5"
+									label={t('label.auto_accept', 'Auto-Accept')}
+									showCheckbox={false}
+									onChange={onZimbraAutoAcceptSignatureChange}
+									selection={zimbraPrefCalendarAutoAcceptSignatureId}
+								/>
+							)}
+							{!isEditMode && (
+								<Input
+									label={t('label.auto_accept', 'Auto-Accept')}
+									backgroundColor="gray6"
+									value={zimbraPrefCalendarAutoAcceptSignatureId?.label}
+									size="medium"
+									readOnly
+								/>
+							)}
 						</Row>
 						<Row width="30%">
-							<Select
-								items={signatureItems}
-								background="gray5"
-								label={t('label.auto_refuse', 'Auto-Refuse')}
-								showCheckbox={false}
-								onChange={onZimbraAutoDeclineSignatureChange}
-								selection={zimbraPrefCalendarAutoDeclineSignatureId}
-							/>
+							{isEditMode && (
+								<Select
+									items={signatureItems}
+									background="gray5"
+									label={t('label.auto_refuse', 'Auto-Refuse')}
+									showCheckbox={false}
+									onChange={onZimbraAutoDeclineSignatureChange}
+									selection={zimbraPrefCalendarAutoDeclineSignatureId}
+								/>
+							)}
+							{!isEditMode && (
+								<Input
+									label={t('label.auto_refuse', 'Auto-Refuse')}
+									backgroundColor="gray6"
+									value={zimbraPrefCalendarAutoDeclineSignatureId?.label}
+									size="medium"
+									readOnly
+								/>
+							)}
 						</Row>
 						<Row width="30%">
-							<Select
-								items={signatureItems}
-								background="gray5"
-								label={t('label.auto_negation', 'Auto-Negation')}
-								showCheckbox={false}
-								onChange={onZimbraAutoDenySignatureChange}
-								selection={zimbraPrefCalendarAutoDenySignatureId}
-							/>
+							{isEditMode && (
+								<Select
+									items={signatureItems}
+									background="gray5"
+									label={t('label.auto_negation', 'Auto-Negation')}
+									showCheckbox={false}
+									onChange={onZimbraAutoDenySignatureChange}
+									selection={zimbraPrefCalendarAutoDenySignatureId}
+								/>
+							)}
+							{!isEditMode && (
+								<Input
+									label={t('label.auto_negation', 'Auto-Negation')}
+									backgroundColor="gray6"
+									value={zimbraPrefCalendarAutoDenySignatureId?.label}
+									size="medium"
+									readOnly
+								/>
+							)}
 						</Row>
 					</Container>
 				</ListRow>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
 				</Row>
-				<Row padding={{ top: 'extralarge' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
-						{t('label.description', 'Description')}
-					</Text>
-				</Row>
-				<Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
-					<Text size="small">{resourceDetailData?.description}</Text>
-				</Row>
-				<Row padding={{ top: 'extralarge' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
-						{t('label.notes', 'Notes')}
-					</Text>
-				</Row>
-				<Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
-					<Text size="small">{resourceDetailData?.zimbraNotes}</Text>
-				</Row>
+				{isEditMode && (
+					<Row padding={{ top: 'extralarge' }} width="100%">
+						<Input
+							label={t('label.description', 'Description')}
+							backgroundColor="gray5"
+							value={description}
+							size="medium"
+							onChange={(e: any): any => {
+								setDescription(e.target.value);
+							}}
+						/>
+					</Row>
+				)}
+				{!isEditMode && (
+					<>
+						<Row padding={{ top: 'extralarge' }}>
+							<Text
+								size="small"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								weight="bold"
+							>
+								{t('label.description', 'Description')}
+							</Text>
+						</Row>
+						<Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
+							<Text size="small">{resourceDetailData?.description}</Text>
+						</Row>
+					</>
+				)}
+				{isEditMode && (
+					<Row padding={{ top: 'extralarge' }} width="100%">
+						<Input
+							label={t('label.notes', 'Notes')}
+							backgroundColor="gray5"
+							value={zimbraNotes}
+							size="medium"
+							onChange={(e: any): any => {
+								setZimbraNotes(e.target.value);
+							}}
+						/>
+					</Row>
+				)}
+				{!isEditMode && (
+					<>
+						<Row padding={{ top: 'extralarge' }}>
+							<Text
+								size="small"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								weight="bold"
+							>
+								{t('label.notes', 'Notes')}
+							</Text>
+						</Row>
+						<Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
+							<Text size="small">{resourceDetailData?.zimbraNotes}</Text>
+						</Row>
+					</>
+				)}
 			</Container>
 		</ResourceDetailContainer>
 	);
 };
 
-export default ResourceDetailView;
+export default ResourceEditDetailView;
