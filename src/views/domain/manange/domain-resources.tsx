@@ -117,7 +117,8 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(e: any): void => {
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
 											setSelectedResourceList(item);
 											setShowResourceEditDetailView(true);
 											handleClick(e);
@@ -130,7 +131,8 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(e: any): void => {
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
 											setSelectedResourceList(item);
 											setShowResourceEditDetailView(true);
 											handleClick(e);
@@ -143,7 +145,8 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(e: any): void => {
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
 											setSelectedResourceList(item);
 											setShowResourceEditDetailView(true);
 											handleClick(e);
@@ -156,7 +159,8 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(e: any): void => {
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
 											setSelectedResourceList(item);
 											setShowResourceEditDetailView(true);
 											handleClick(e);
@@ -174,7 +178,8 @@ const DomainResources: FC = () => {
 										weight="light"
 										key={item?.id}
 										color="gray0"
-										onClick={(e: any): void => {
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
 											setSelectedResourceList(item);
 											setShowResourceEditDetailView(true);
 											handleClick(e);

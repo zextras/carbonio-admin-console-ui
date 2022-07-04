@@ -19,26 +19,10 @@ import {
 	Padding
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 import ListRow from '../../list/list-row';
 import { getCalenderResource } from '../../../services/get-cal-resource-service';
 import { getSingatures } from '../../../services/get-signature-service';
 import { useDomainStore } from '../../../store/domain/store';
-
-const ResourceDetailContainer = styled(Container)`
-	z-index: 10;
-	position: absolute;
-	top: 43px;
-	right: 0px;
-	bottom: 0px;
-	left: ${'max(calc(100% - 680px), 12px)'};
-	transition: left 0.2s ease-in-out;
-	height: auto;
-	width: auto;
-	max-height: 100%;
-	overflow: hidden;
-	box-shadow: -6px 4px 5px 0px rgba(0, 0, 0, 0.1);
-`;
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -526,7 +510,23 @@ const ResourceEditDetailView: FC<any> = ({
 	);
 
 	return (
-		<ResourceDetailContainer background="gray5" mainAlignment="flex-start">
+		<Container
+			background="gray5"
+			mainAlignment="flex-start"
+			style={{
+				position: 'absolute',
+				top: '43px',
+				right: '0px',
+				bottom: '0px',
+				left: `${'max(calc(100% - 680px), 12px)'}`,
+				transition: 'left 0.2s ease-in-out',
+				height: 'auto',
+				width: 'auto',
+				maxHeight: '100%',
+				overflow: 'hidden',
+				boxShadow: '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+			}}
+		>
 			<Row
 				mainAlignment="flex-start"
 				crossAlignment="center"
@@ -1262,7 +1262,7 @@ const ResourceEditDetailView: FC<any> = ({
 					</>
 				)}
 			</Container>
-		</ResourceDetailContainer>
+		</Container>
 	);
 };
 
