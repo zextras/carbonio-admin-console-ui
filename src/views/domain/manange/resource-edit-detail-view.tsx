@@ -19,6 +19,7 @@ import {
 	Padding
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { debounce } from 'lodash';
 import ListRow from '../../list/list-row';
 import { getCalenderResource } from '../../../services/get-cal-resource-service';
 import { getSingatures } from '../../../services/get-signature-service';
@@ -62,6 +63,7 @@ const ResourceEditDetailView: FC<any> = ({
 	const [resourceDetailData, setResourceDetailData]: any = useState({});
 	const [sendInviteList, setSendInviteList] = useState<any[]>([]);
 	const [signatureData, setSignatureData]: any = useState([]);
+	const [sendInviteData, setSendInviteData]: any = useState([]);
 	const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
@@ -194,6 +196,8 @@ const ResourceEditDetailView: FC<any> = ({
 		autoRefuseOption[0]
 	);
 	const [schedulePolicyType, setSchedulePolicyType]: any = useState();
+	const [searchAccountName, setSearchAccountName]: any = useState('');
+	const [searchSignatureName, setSearchSignatureName]: any = useState('');
 
 	useEffect(() => {
 		if (!!cosList && cosList.length > 0) {
@@ -265,6 +269,7 @@ const ResourceEditDetailView: FC<any> = ({
 					(value: any) => value?.n === 'zimbraPrefCalendarForwardInvitesTo'
 				);
 				generateSendInviteList(sendInviteTo);
+				setSendInviteData(sendInviteTo);
 				setResourceDetailData(obj);
 				setResourceInformation(resourceDetailResponse?.a);
 			});
@@ -508,6 +513,28 @@ const ResourceEditDetailView: FC<any> = ({
 		},
 		[schedulePolicyItems, schedulePolicyType]
 	);
+
+	useEffect(() => {
+		if (searchSignatureName) {
+			const filterList = signatureData.filter((item: any) =>
+				item?.name?.includes(searchSignatureName)
+			);
+			generateSignatureList(filterList);
+		} else {
+			generateSignatureList(signatureData);
+		}
+	}, [searchSignatureName, signatureData]);
+
+	useEffect(() => {
+		if (searchAccountName) {
+			const filterList = sendInviteData.filter((item: any) =>
+				item?._content?.includes(searchAccountName)
+			);
+			generateSendInviteList(filterList);
+		} else {
+			generateSendInviteList(sendInviteData);
+		}
+	}, [searchAccountName, sendInviteData]);
 
 	return (
 		<Container
@@ -1016,9 +1043,12 @@ const ResourceEditDetailView: FC<any> = ({
 							<Input
 								label={t('label.search_an_account', 'Search an account')}
 								backgroundColor="gray5"
-								value=""
+								value={searchAccountName}
 								size="medium"
 								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
+								onChange={(e: any): any => {
+									setSearchAccountName(e.target.value);
+								}}
 							/>
 						</Row>
 					</Container>
@@ -1102,9 +1132,12 @@ const ResourceEditDetailView: FC<any> = ({
 							<Input
 								label={t('label.search_a_signature', 'Search a signature')}
 								backgroundColor="gray5"
-								value=""
+								value={searchSignatureName}
 								size="medium"
 								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
+								onChange={(e: any): any => {
+									setSearchSignatureName(e.target.value);
+								}}
 							/>
 						</Row>
 					</Container>

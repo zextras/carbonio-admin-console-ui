@@ -345,10 +345,16 @@ const DomainResources: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							padding={{ all: 'large' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							{resourceList && resourceList.length > 0 && (
-								<Row orientation="horizontal" width="100%" background="gray6">
+								<Row
+									orientation="horizontal"
+									crossAlignment="flex-start"
+									mainAlignment="flex-start"
+									width="100%"
+									background="gray6"
+								>
 									<Divider />
 									<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 								</Row>
