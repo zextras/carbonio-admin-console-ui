@@ -16,10 +16,10 @@ import {
 	Table,
 	Select,
 	Button,
-	Padding
+	Padding,
+	PasswordInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
 import ListRow from '../../list/list-row';
 import { getCalenderResource } from '../../../services/get-cal-resource-service';
 import { getSingatures } from '../../../services/get-signature-service';
@@ -81,6 +81,8 @@ const ResourceEditDetailView: FC<any> = ({
 		useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
+	const [selectedRows, setSelectedRows] = useState<any>([]);
+	const [newSentInviteValue, setNewSentInviteValue] = useState<string>('');
 
 	const sendInviteHeaders: any[] = useMemo(
 		() => [
@@ -199,6 +201,12 @@ const ResourceEditDetailView: FC<any> = ({
 	const [searchAccountName, setSearchAccountName]: any = useState('');
 	const [searchSignatureName, setSearchSignatureName]: any = useState('');
 
+	const [sendInviteAddBtnDisabled, setSendInviteAddBtnDisabled] = useState(true);
+	const [sendInviteDeleteBtnDisabled, setSendInviteDeleteBtnDisabled] = useState(true);
+
+	const [passowrd, setPassword]: any = useState('');
+	const [repeatPassword, setRepeatPassword]: any = useState('');
+
 	useEffect(() => {
 		if (!!cosList && cosList.length > 0) {
 			const arrayItem: any[] = [
@@ -247,7 +255,8 @@ const ResourceEditDetailView: FC<any> = ({
 						</Text>
 					],
 					item,
-					clickable: false
+					label: item?._content,
+					clickable: true
 				});
 			});
 			setSendInviteList(sList);
@@ -284,14 +293,15 @@ const ResourceEditDetailView: FC<any> = ({
 			const sList: any[] = [];
 			signatureResponse.forEach((item: any, index: number) => {
 				sList.push({
-					id: item?.id,
+					id: index,
 					columns: [
 						<Text size="medium" weight="light" key={item?.id} color="gray0">
 							{item?.name}
 						</Text>
 					],
 					item,
-					clickable: false
+					label: item?.name,
+					clickable: true
 				});
 			});
 			setSignatureList(sList);
@@ -535,6 +545,35 @@ const ResourceEditDetailView: FC<any> = ({
 			generateSendInviteList(sendInviteData);
 		}
 	}, [searchAccountName, sendInviteData]);
+
+	const addSendInviteAccount = useCallback((): void => {
+		if (newSentInviteValue) {
+			const lastId = sendInviteList.length > 0 ? sendInviteList[sendInviteList.length - 1].id : 0;
+			const newId = lastId + 1;
+			const item = {
+				id: newId.toString(),
+				columns: [
+					<Text size="medium" weight="light" key={newId} color="gray0">
+						{newSentInviteValue}
+					</Text>
+				],
+				label: newSentInviteValue,
+				clickable: true
+			};
+			setSendInviteList([...sendInviteList, item]);
+			setSendInviteAddBtnDisabled(true);
+			setNewSentInviteValue('');
+		}
+	}, [newSentInviteValue, sendInviteList]);
+
+	const deleteSendInviteAccount = useCallback((): void => {
+		if (selectedRows && selectedRows.length > 0) {
+			const filterItems = sendInviteList.filter((item: any) => !selectedRows.includes(item.id));
+			setSendInviteList(filterItems);
+			setSendInviteDeleteBtnDisabled(true);
+			setSelectedRows([]);
+		}
+	}, [selectedRows, sendInviteList]);
 
 	return (
 		<Container
@@ -983,6 +1022,64 @@ const ResourceEditDetailView: FC<any> = ({
 						</Row>
 					</Container>
 				</ListRow>
+				{isEditMode && (
+					<>
+						<Row width="100%" padding={{ top: 'medium' }}>
+							<Divider color="gray3" />
+						</Row>
+						<Row padding={{ top: 'extralarge' }}>
+							<Text
+								size="small"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								weight="bold"
+							>
+								{t('label.password', 'Password')}
+							</Text>
+						</Row>
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								padding={{ top: 'large' }}
+							>
+								<Row width="100%">
+									<PasswordInput
+										label={t('label.password', 'Password')}
+										backgroundColor="gray5"
+										value={searchAccountName}
+										inputName="password"
+										onChange={(e: any): any => {
+											setPassword(e.target.value);
+										}}
+									/>
+								</Row>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								padding={{ top: 'large' }}
+							>
+								<Row width="100%">
+									<PasswordInput
+										label={t('label.repeat_password', 'Repeat Password')}
+										backgroundColor="gray5"
+										value={searchAccountName}
+										inputName="repeatPassword"
+										onChange={(e: any): any => {
+											setRepeatPassword(e.target.value);
+										}}
+									/>
+								</Row>
+							</Container>
+						</ListRow>
+					</>
+				)}
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
 				</Row>
@@ -1009,6 +1106,11 @@ const ResourceEditDetailView: FC<any> = ({
 							<Input
 								label={t('label.enter_email_address', 'Enter E-mail address')}
 								background="gray5"
+								value={newSentInviteValue}
+								onChange={(e: any): any => {
+									setNewSentInviteValue(e.target.value);
+									setSendInviteAddBtnDisabled(false);
+								}}
 							/>
 
 							<Padding left="large">
@@ -1018,6 +1120,8 @@ const ResourceEditDetailView: FC<any> = ({
 									icon="Plus"
 									color="primary"
 									height="44px"
+									disabled={sendInviteAddBtnDisabled}
+									onClick={addSendInviteAccount}
 								/>
 							</Padding>
 							<Padding left="large">
@@ -1027,6 +1131,8 @@ const ResourceEditDetailView: FC<any> = ({
 									icon="Close"
 									color="error"
 									height="44px"
+									disabled={sendInviteDeleteBtnDisabled}
+									onClick={deleteSendInviteAccount}
 								/>
 							</Padding>
 						</Row>
@@ -1063,8 +1169,17 @@ const ResourceEditDetailView: FC<any> = ({
 						<Table
 							rows={sendInviteList}
 							headers={sendInviteHeaders}
-							showCheckbox={false}
+							showCheckbox={!!isEditMode}
 							style={{ overflow: 'auto', height: '100%' }}
+							selectedRows={selectedRows}
+							onSelectionChange={(selected: any): any => {
+								setSelectedRows(selected);
+								if (selected && selected.length > 0) {
+									setSendInviteDeleteBtnDisabled(false);
+								} else {
+									setSendInviteDeleteBtnDisabled(true);
+								}
+							}}
 						/>
 					</Container>
 				</ListRow>
