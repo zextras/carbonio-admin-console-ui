@@ -129,7 +129,7 @@ const ResourceEditDetailView: FC<any> = ({
 				value: RESOURCE_TYPE.LOCATION
 			},
 			{
-				label: t('label.equipment', 'Equipment'),
+				label: t('label.device', 'Device'),
 				value: RESOURCE_TYPE.EQUIPMENT
 			}
 		],
@@ -169,23 +169,23 @@ const ResourceEditDetailView: FC<any> = ({
 			{
 				label: t(
 					'label.auto_accept_auto_decline_on_conflict',
-					'Auto accept if available, auto decline on conflict'
+					'Automatic acceptance if available, automatic rejection in case of conflict'
 				),
 				value: SCHEDULE_POLITY_TYPE.AUTO_ACCEPT
 			},
 			{
 				label: t(
 					'label.manual_accept_auto_decline_on_conflict',
-					'Manual accept, auto decline on conflict'
+					'Handle acceptance, automatic rejection in case of conflict'
 				),
 				value: SCHEDULE_POLITY_TYPE.MANUAL_ACCEPT
 			},
 			{
-				label: t('label.auto_accept_always', 'Auto accept always'),
+				label: t('label.auto_accept_always', 'Automatic acceptance if available always'),
 				value: SCHEDULE_POLITY_TYPE.AUTO_ACCEPT_ALWAYS
 			},
 			{
-				label: t('label.no_auto_accept_or_decline', 'No auto accept or decline'),
+				label: t('label.no_auto_accept_or_decline', 'No automatic acceptance if available always'),
 				value: SCHEDULE_POLITY_TYPE.NO_AUTO_ACCEPT
 			}
 		],
