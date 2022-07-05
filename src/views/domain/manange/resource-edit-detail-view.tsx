@@ -83,6 +83,7 @@ const ResourceEditDetailView: FC<any> = ({
 	const [description, setDescription] = useState<string>('');
 	const [selectedRows, setSelectedRows] = useState<any>([]);
 	const [newSentInviteValue, setNewSentInviteValue] = useState<string>('');
+	const [isDirty, setIsDirty] = useState<boolean>(false);
 
 	const sendInviteHeaders: any[] = useMemo(
 		() => [
@@ -575,6 +576,11 @@ const ResourceEditDetailView: FC<any> = ({
 		}
 	}, [selectedRows, sendInviteList]);
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	const onCancel = (): void => {};
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	const onSave = (): void => {};
+
 	return (
 		<Container
 			background="gray5"
@@ -663,6 +669,22 @@ const ResourceEditDetailView: FC<any> = ({
 						type="outlined"
 						height={44}
 					/>
+				</Row>
+			)}
+			{isEditMode && isDirty && (
+				<Row
+					mainAlignment="flex-end"
+					crossAlignment="flex-end"
+					orientation="horizontal"
+					background="white"
+					height="fit"
+					padding={{ top: 'extralarge', left: 'large', right: 'large', bottom: 'large' }}
+					width="100%"
+				>
+					<Padding right="large">
+						<Button label={t('label.cancel', 'Cancel')} color="secondary" height="44px" />
+					</Padding>
+					<Button label={t('label.save', 'Save')} color="primary" height="44px" />
 				</Row>
 			)}
 			<Container
