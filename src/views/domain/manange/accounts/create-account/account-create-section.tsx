@@ -33,7 +33,7 @@ const AccountCreateSection: FC = () => {
 							label={t('label.user', 'User')}
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.name}
-							readOnly
+							disabled
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -41,7 +41,7 @@ const AccountCreateSection: FC = () => {
 							label={t('label.mail', 'Mail')}
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.name && `${accountDetail?.name}@${domainName}`}
-							readOnly
+							disabled
 						/>
 					</Row>
 				</Row>
@@ -52,7 +52,7 @@ const AccountCreateSection: FC = () => {
 							backgroundColor="gray5"
 							defaultValue={`${accountDetail?.password}`}
 							CustomIcon={(): any => <Icon icon="CopyOutline" size="large" color="Gray0" />}
-							readOnly
+							disabled
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -69,7 +69,7 @@ const AccountCreateSection: FC = () => {
 						/>
 					</Row>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%">
+				{/* <Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
 						label={t(
 							'label.first_2FA_access_token_link',
@@ -80,7 +80,7 @@ const AccountCreateSection: FC = () => {
 						CustomIcon={(): any => <Icon icon="CopyOutline" size="large" color="Gray0" />}
 						disabled
 					/>
-				</Row>
+				</Row> */}
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="flex-start">
 						<Select
@@ -131,7 +131,7 @@ const AccountCreateSection: FC = () => {
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
 						defaultSelection={{ value: domainName, label: domainName }}
-						readOnly
+						disabled
 					/>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
@@ -139,7 +139,7 @@ const AccountCreateSection: FC = () => {
 						label={t('label.space', 'Space')}
 						backgroundColor="gray6"
 						defaultValue="(CoS Default)"
-						readOnly
+						disabled
 					/>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
@@ -147,7 +147,7 @@ const AccountCreateSection: FC = () => {
 						label={t('label.description', 'Description')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.description}
-						readOnly
+						disabled
 					/>
 				</Row>
 			</Row>

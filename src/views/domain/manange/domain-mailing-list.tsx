@@ -45,6 +45,7 @@ const DomainMailingList: FC = () => {
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
 	const [prevent, setPrevent] = useState<boolean>(false);
 	const [editMailingList, setEditMailingList] = useState<boolean>(false);
+	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const timer = useRef<any>();
 	const headers: any[] = useMemo(
 		() => [
@@ -90,17 +91,20 @@ const DomainMailingList: FC = () => {
 
 	const doClickAction = useCallback((): void => {
 		setShowMailingListDetailView(true);
+		setShowEditMailingView(false);
 	}, []);
 
 	const doDoubleClickAction = useCallback((): void => {
 		setShowEditMailingView(true);
+		setShowMailingListDetailView(false);
 	}, []);
 
 	const handleClick = useCallback(
 		(event: any) => {
+			event.stopPropagation();
 			clearTimeout(timer.current);
 			if (event.detail === 1) {
-				timer.current = setTimeout(doClickAction, 200);
+				timer.current = setTimeout(doClickAction, 300);
 			} else if (event.detail === 2) {
 				doDoubleClickAction();
 			}
@@ -131,7 +135,9 @@ const DomainMailingList: FC = () => {
 									mainAlignment="flex-start"
 									crossAlignment="flex-start"
 									key={item?.id}
-									onClick={(e: any): void => {
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
 										setSelectedMailingList(item);
 										setSelectedFromRow(item);
 										handleClick(e);
@@ -145,7 +151,9 @@ const DomainMailingList: FC = () => {
 									mainAlignment="flex-start"
 									crossAlignment="flex-start"
 									key={`${item?.id}-address`}
-									onClick={(e: any): void => {
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
 										setSelectedMailingList(item);
 										setSelectedFromRow(item);
 										handleClick(e);
@@ -159,7 +167,9 @@ const DomainMailingList: FC = () => {
 									mainAlignment="flex-start"
 									crossAlignment="flex-start"
 									key={`${item?.id}-member`}
-									onClick={(e: any): void => {
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
 										setSelectedMailingList(item);
 										setSelectedFromRow(item);
 										handleClick(e);
@@ -173,7 +183,9 @@ const DomainMailingList: FC = () => {
 									mainAlignment="flex-start"
 									crossAlignment="flex-start"
 									key={`${item?.id}-status`}
-									onClick={(e: any): void => {
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
 										setSelectedMailingList(item);
 										setSelectedFromRow(item);
 										handleClick(e);
@@ -189,7 +201,9 @@ const DomainMailingList: FC = () => {
 									mainAlignment="flex-start"
 									crossAlignment="flex-start"
 									key={`${item?.id}-gal`}
-									onClick={(e: any): void => {
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
 										setSelectedMailingList(item);
 										setSelectedFromRow(item);
 										handleClick(e);
@@ -203,7 +217,9 @@ const DomainMailingList: FC = () => {
 									mainAlignment="flex-start"
 									crossAlignment="flex-start"
 									key={`${item?.id}-description`}
-									onClick={(e: any): void => {
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
 										setSelectedMailingList(item);
 										setSelectedFromRow(item);
 										handleClick(e);
@@ -223,9 +239,11 @@ const DomainMailingList: FC = () => {
 					});
 					setMailingList(mList);
 					setMailingListItem(dlList);
+					setIsUpdateRecord(false);
 				} else {
 					setTotalAccount(0);
 					setMailingList([]);
+					setIsUpdateRecord(false);
 				}
 			});
 	}, [t, offset, limit, domainName, searchQuery, handleClick]);
@@ -281,6 +299,12 @@ const DomainMailingList: FC = () => {
 			setShowEditMailingView(true);
 		}
 	}, [editMailingList]);
+
+	useEffect(() => {
+		if (isUpdateRecord) {
+			getMailingList();
+		}
+	}, [isUpdateRecord, getMailingList]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -434,6 +458,7 @@ const DomainMailingList: FC = () => {
 				<EditMailingListView
 					selectedMailingList={selectedMailingList}
 					setShowEditMailingList={setShowEditMailingView}
+					setIsUpdateRecord={setIsUpdateRecord}
 				/>
 			)}
 

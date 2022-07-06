@@ -15,7 +15,8 @@ import {
 	Text,
 	Select,
 	Switch,
-	Padding
+	Padding,
+	Icon
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -450,63 +451,64 @@ const MailingListDetail: FC<any> = ({
 					</Text>
 				</Row>
 				<ListRow>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'EyeOutline'} size="large" />
+					</Container>
 					<Container>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
-							background="gray5"
-							disabled
+							background="gray6"
+							readOnly
 						/>
+					</Container>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'EmailOutline'} size="large" />
 					</Container>
 					<Container padding={{ all: 'small' }}>
 						<Input
 							label={t('label.address', 'Address')}
 							value={distributionName}
-							background="gray5"
-							disabled
+							background="gray6"
 						/>
 					</Container>
 				</ListRow>
 				<ListRow>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'CheckmarkCircleOutline'} size="large" />
+					</Container>
+
 					<Container>
-						<Select
-							items={subscriptionUnsubscriptionRequestOptions}
-							background="gray5"
+						<Input
+							background="gray6"
 							label={t('label.new_subscription_requests', 'New subscriptions requests')}
-							showCheckbox={false}
-							disabled
-							onChange={(): void => {
-								null;
-							}}
-							selection={zimbraDistributionListSubscriptionPolicy}
+							readOnly
+							value={zimbraDistributionListSubscriptionPolicy?.label}
 						/>
 					</Container>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'CloseCircleOutline'} size="large" />
+					</Container>
+
 					<Container padding={{ all: 'small' }}>
-						<Select
-							items={subscriptionUnsubscriptionRequestOptions}
-							background="gray5"
+						<Input
+							background="gray6"
 							label={t('label.unsubscribe_request', 'Unsubscription requests')}
-							showCheckbox={false}
-							onChange={(): void => {
-								null;
-							}}
-							disabled
-							selection={zimbraDistributionListUnsubscriptionPolicy}
+							readOnly
+							value={zimbraDistributionListUnsubscriptionPolicy?.label}
 						/>
 					</Container>
 				</ListRow>
 				<ListRow>
+					<Container width="fit" padding={{ right: 'small' }} className="xxxxxx">
+						<Icon icon={'OptionsOutline'} size="large" />
+					</Container>
 					<Container padding={{ right: 'small', top: 'small' }}>
-						<Select
-							items={rightsOptions}
-							background="gray5"
+						<Input
+							background="gray6"
 							label={t('label.rights', 'Rights')}
-							showCheckbox={false}
-							onChange={(): void => {
-								null;
-							}}
-							disabled
-							selection={zimbraMailStatus}
+							readOnly
+							value={zimbraMailStatus?.label}
 						/>
 					</Container>
 				</ListRow>
@@ -535,34 +537,46 @@ const MailingListDetail: FC<any> = ({
 					</Container>
 				</ListRow>
 				<ListRow>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'PeopleOutline'} size="large" />
+					</Container>
 					<Container>
 						<Input
 							label={t('label.members', 'Members')}
 							value={dlm.length}
-							background="gray5"
-							disabled
+							background="gray6"
+							readOnly
 						/>
+					</Container>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'CornerUpRight'} size="large" />
 					</Container>
 					<Container padding={{ all: 'small' }}>
 						<Input
 							label={t('label.alias_in_the_list', 'Alias in the List')}
 							value={zimbraMailAlias.length}
-							background="gray5"
-							disabled
+							background="gray6"
+							readOnly
 						/>
 					</Container>
 				</ListRow>
 				<ListRow>
+					<Container width="64px">
+						<Icon icon={'FingerPrintOutline'} size="large" />
+					</Container>
+					<Container padding={{ all: 'small' }}>
+						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray6" readOnly />
+					</Container>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'CalendarOutline'} size="large" />
+					</Container>
 					<Container>
 						<Input
 							label={t('label.creation_date', 'Creation Date')}
 							value={dlCreateDate}
-							background="gray5"
-							disabled
+							background="gray6"
+							readOnly
 						/>
-					</Container>
-					<Container padding={{ all: 'small' }}>
-						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray5" disabled />
 					</Container>
 				</ListRow>
 				<Row padding={{ top: 'small', bottom: 'small' }}>
@@ -606,8 +620,8 @@ const MailingListDetail: FC<any> = ({
 						<Input
 							value={zimbraNotes}
 							label={t('label.notes', 'Notes')}
-							background="gray5"
-							disabled
+							background="gray6"
+							readOnly
 						/>
 					</Container>
 				</ListRow>

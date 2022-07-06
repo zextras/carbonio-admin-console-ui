@@ -280,7 +280,7 @@ const AccountDetailView: FC<any> = ({
 						label={t('label.description', 'Description')}
 						backgroundColor="gray6"
 						width="100%"
-						value={selectedAccount?.description}
+						value={selectedAccount?.description || ''}
 						readOnly
 					></Input>
 				</Row>

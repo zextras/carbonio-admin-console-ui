@@ -19,7 +19,8 @@ import {
 	Switch,
 	ChipInput,
 	Button,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Icon
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -36,22 +37,6 @@ import { addDistributionListMember } from '../../../services/add-distributionlis
 import { removeDistributionListMember } from '../../../services/remove-distributionlist-member-service';
 import { distributionListAction } from '../../../services/distribution-list-action-service';
 
-const EditMailingListContainer = styled(Container)`
-	z-index: 10;
-	position: absolute;
-	top: 43px;
-	right: 12px;
-	bottom: 0px;
-	left: ${'max(calc(100% - 680px), 12px)'};
-	transition: left 0.2s ease-in-out;
-	height: auto;
-	width: auto;
-	max-height: 100%;
-	overflow: hidden;
-	box-shadow: -6px 4px 5px 0px rgba(0, 0, 0, 0.1);
-	opacity: '10%;
-`;
-
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
 	ACCEPT = 'ACCEPT',
@@ -65,7 +50,11 @@ export enum TRUE_FALSE {
 	FALSE = 'FALSE'
 }
 
-const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingList }) => {
+const EditMailingListView: FC<any> = ({
+	selectedMailingList,
+	setShowEditMailingList,
+	setIsUpdateRecord
+}) => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [memberOffset, setMemberOffset] = useState<number>(0);
@@ -96,6 +85,7 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 	const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
 	const [isShowError, setIsShowError] = useState<boolean>(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [searchMember, setSearchMember] = useState<string>();
 
 	const dlCreateDate = useMemo(
 		() =>
@@ -590,6 +580,7 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 				replace: true
 			});
 			updatePreviousDetail();
+			setIsUpdateRecord(true);
 		});
 	};
 
@@ -898,8 +889,50 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 		}
 	}, [openAddMailingListDialog]);
 
+	useEffect(() => {
+		if (searchMember && dlm && dlm.length > 0) {
+			const allRows = dlm.filter((item: any) => item.includes(searchMember));
+			const searchDlRows = allRows.map((item: any) => ({
+				id: item,
+				columns: [
+					<Text size="medium" weight="bold" key={item} color="#828282">
+						{item}
+					</Text>,
+					''
+				]
+			}));
+			setDlmTableRows(searchDlRows);
+		}
+		if (searchMember && ownersList && ownersList.length > 0) {
+			const allRows = ownersList.filter((item: any) => item?.name.includes(searchMember));
+			const searchOwnerRows = allRows.map((item: any) => ({
+				id: item?.name,
+				columns: [
+					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+						{item?.name}
+					</Text>
+				]
+			}));
+			setOwnerTableRows(searchOwnerRows);
+		}
+	}, [searchMember, dlm, ownersList]);
+
 	return (
-		<EditMailingListContainer background="gray5" mainAlignment="flex-start">
+		<Container
+			background="gray5"
+			mainAlignment="flex-start"
+			style={{
+				position: 'absolute',
+				left: `${'max(calc(100% - 680px), 12px)'}`,
+				top: '43px',
+				height: 'auto',
+				width: 'auto',
+				overflow: 'hidden',
+				transition: 'left 0.2s ease-in-out',
+				'box-shadow': '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)',
+				right: 0
+			}}
+		>
 			<Row
 				mainAlignment="flex-start"
 				crossAlignment="center"
@@ -915,25 +948,6 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 					</Text>
 				</Row>
 				<Row padding={{ right: 'extrasmall' }}>
-					<Padding right="small">
-						{isDirty && (
-							<Button
-								label={t('label.undo', 'undo')}
-								type="outlined"
-								icon="CloseOutline"
-								color="secondary"
-								onClick={onUndo}
-							/>
-						)}
-					</Padding>
-					{isDirty && (
-						<Button
-							label={t('label.save', 'Save')}
-							icon="SaveOutline"
-							color="primary"
-							onClick={onSave}
-						/>
-					)}
 					<IconButton
 						size="medium"
 						icon="CloseOutline"
@@ -945,10 +959,25 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 				<Divider color="gray3" />
 			</Row>
 			<Container
+				orientation="horizontal"
+				mainAlignment="flex-end"
+				crossAlignment="flex-end"
+				background="gray6"
+				padding={{ all: 'extralarge' }}
+				height="85px"
+			>
+				<Padding right="small">
+					{isDirty && (
+						<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
+					)}
+				</Padding>
+				{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
+			</Container>
+			<Container
 				padding={{ all: 'extralarge' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100% - 64px)"
+				height="calc(100vh - 230px)"
 				background="white"
 				style={{ overflow: 'auto' }}
 			>
@@ -959,6 +988,9 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 				</Row>
 
 				<ListRow>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'EyeOutline'} size="large" />
+					</Container>
 					<Container>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
@@ -968,6 +1000,9 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 								setDisplayName(e.target.value);
 							}}
 						/>
+					</Container>
+					<Container width="64px" padding={{ right: 'small', left: 'medium' }}>
+						<Icon icon={'EmailOutline'} size="large" />
 					</Container>
 					<Container padding={{ all: 'small' }}>
 						<Input
@@ -981,6 +1016,9 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 					</Container>
 				</ListRow>
 				<ListRow>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'CheckmarkCircleOutline'} size="large" />
+					</Container>
 					<Container>
 						<Select
 							items={subscriptionUnsubscriptionRequestOptions}
@@ -990,6 +1028,9 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 							onChange={onSubscriptionChange}
 							selection={zimbraDistributionListSubscriptionPolicy}
 						/>
+					</Container>
+					<Container width="64px" padding={{ right: 'small', left: 'medium' }}>
+						<Icon icon={'CloseCircleOutline'} size="large" />
 					</Container>
 					<Container padding={{ all: 'small' }}>
 						<Select
@@ -1003,6 +1044,9 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 					</Container>
 				</ListRow>
 				<ListRow>
+					<Container width="fit" padding={{ right: 'small' }}>
+						<Icon icon={'OptionsOutline'} size="large" />
+					</Container>
 					<Container padding={{ right: 'small', top: 'small' }}>
 						<Select
 							items={rightsOptions}
@@ -1043,6 +1087,9 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 					</Container>
 				</ListRow>
 				<ListRow>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'PeopleOutline'} size="large" />
+					</Container>
 					<Container>
 						<Input
 							label={t('label.members', 'Members')}
@@ -1050,6 +1097,9 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 							background="gray5"
 							disabled
 						/>
+					</Container>
+					<Container width="64px" padding={{ left: 'medium' }}>
+						<Icon icon={'CornerUpRight'} size="large" />
 					</Container>
 					<Container padding={{ all: 'small' }}>
 						<Input
@@ -1062,6 +1112,15 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 				</ListRow>
 
 				<ListRow>
+					<Container width="54px">
+						<Icon icon={'FingerPrintOutline'} size="large" />
+					</Container>
+					<Container padding={{ all: 'small' }}>
+						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray5" disabled />
+					</Container>
+					<Container width="64px" padding={{ right: 'small' }}>
+						<Icon icon={'CalendarOutline'} size="large" />
+					</Container>
 					<Container>
 						<Input
 							label={t('label.creation_date', 'Creation Date')}
@@ -1069,9 +1128,6 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 							background="gray5"
 							disabled
 						/>
-					</Container>
-					<Container padding={{ all: 'small' }}>
-						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray5" disabled />
 					</Container>
 				</ListRow>
 				<Row padding={{ top: 'small', bottom: 'small' }}>
@@ -1116,8 +1172,11 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 							<Row mainAlignment="flex-start" width="70%" crossAlignment="flex-start">
 								<Input
 									label={t('label.i_am_looking_for_member', 'I’m looking for the member...')}
-									value=""
+									value={searchMember}
 									background="gray5"
+									onChange={(e: any): any => {
+										setSearchMember(e.target.value);
+									}}
 								/>
 							</Row>
 							<Row width="30%" mainAlignment="flex-start" crossAlignment="flex-start">
@@ -1195,7 +1254,7 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 					</Text>
 				</Row>
 				<ListRow>
-					<Container padding={{ left: 'extralarge' }}>
+					<Container>
 						<Input
 							value={zimbraNotes}
 							background="gray5"
@@ -1301,7 +1360,7 @@ const EditMailingListView: FC<any> = ({ selectedMailingList, setShowEditMailingL
 					</Container>
 				</Container>
 			</Modal>
-		</EditMailingListContainer>
+		</Container>
 	);
 };
 export default EditMailingListView;

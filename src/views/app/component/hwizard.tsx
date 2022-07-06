@@ -24,7 +24,7 @@ type Props = {
 	currentStep: any;
 	currentStepIndex: any;
 	setToggleWizardSection: any;
-	staticData: any;
+	externalData: any;
 };
 
 const Wizard: React.FC<Props> = ({
@@ -40,7 +40,7 @@ const Wizard: React.FC<Props> = ({
 	Wrapper,
 	title,
 	setToggleWizardSection,
-	staticData
+	externalData
 }) => {
 	const sectionRef = useRef();
 	const activeRef = useRef();
@@ -63,7 +63,7 @@ const Wizard: React.FC<Props> = ({
 			ref={{ sectionRef, activeRef }}
 			setToggleWizardSection={setToggleWizardSection}
 			{...useWizardAnswer}
-			staticData={staticData}
+			externalData={externalData}
 		/>
 	);
 };

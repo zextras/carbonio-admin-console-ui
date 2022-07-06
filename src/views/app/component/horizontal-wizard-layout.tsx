@@ -9,6 +9,7 @@ import React, { FC, useMemo, useRef } from 'react';
 import { map } from 'lodash';
 import styled from 'styled-components';
 import { Button, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
+import { useTranslation } from 'react-i18next';
 
 const StepContainer = styled(Row)``;
 const StepView = styled(Row)``;
@@ -117,7 +118,7 @@ type Props = {
 	setToggleWizardSection: (val: boolean) => void;
 	sectionRef: any;
 	activeRef: any;
-	staticData: any;
+	externalData: any;
 };
 
 export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
@@ -140,10 +141,11 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 			Wrapper = DefaultWrapper,
 			title,
 			setToggleWizardSection,
-			staticData
+			externalData
 		}: Props,
 		{ sectionRef, activeRef }: any
 	): JSX.Element => {
+		const { t } = useTranslation();
 		const stepsToRender = useMemo(
 			() =>
 				map(steps, (step, stepIndex) => {
@@ -207,7 +209,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 				activeRef,
 				onComplete,
 				canGoNext,
-				staticData
+				externalData
 			]
 		);
 
@@ -247,7 +249,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 										goToStep={goToStep}
 										title={title}
 										setCompleteLoading={setCompleteLoading}
-										staticData={staticData}
+										externalData={externalData}
 									/>
 								)}
 								{View && isActive && (
@@ -260,7 +262,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 										title={title}
 										onComplete={onComplete}
 										setCompleteLoading={setCompleteLoading}
-										staticData={staticData}
+										externalData={externalData}
 									/>
 								)}
 							</StepView>
@@ -276,7 +278,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 					<Padding right="large">
 						<CancelButton
 							key="wizard-cancel"
-							label={'CANCEL'}
+							label={t('label.wizard_cancel_button', 'CANCEL')}
 							setCompleteLoading={setCompleteLoading}
 							completeLoading={completeLoading}
 							onClick={(): void => setToggleWizardSection(false)}
@@ -288,14 +290,14 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 						key="wizard-prev"
 						setCompleteLoading={setCompleteLoading}
 						completeLoading={completeLoading}
-						label={'PREVIOUS'}
+						label={t('label.wizard_previous_button', 'PREVIOUS')}
 						onClick={goBack}
 					/>
 				</Row>
 				<Row mainAlignment="flex-start">
 					<NextButton
 						key="wizard-next"
-						label={'NEXT'}
+						label={t('label.wizard_previous_button', 'NEXT')}
 						onClick={goNext}
 						setCompleteLoading={setCompleteLoading}
 						completeLoading={completeLoading}
@@ -310,7 +312,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 				wizard={wizard}
 				wizardFooter={wizardFooter}
 				setToggleWizardSection={setToggleWizardSection}
-				staticData={staticData}
+				externalData={externalData}
 			/>
 		);
 	}

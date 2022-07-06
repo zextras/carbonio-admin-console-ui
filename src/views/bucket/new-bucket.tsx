@@ -33,14 +33,9 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 const NewBucket: FC<{
 	setToggleWizardSection: any;
 	setDetailsBucket: any;
-	// staticData: any;
+	bucketType: any;
 	setConnectionData: any;
-}> = ({
-	setToggleWizardSection,
-	setDetailsBucket,
-	// staticData,
-	setConnectionData
-}) => {
+}> = ({ setToggleWizardSection, setDetailsBucket, bucketType, setConnectionData }) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 
@@ -56,7 +51,7 @@ const NewBucket: FC<{
 					{...props}
 					type="outlined"
 					key="wizard-cancel"
-					label={'NEED HELP?'}
+					label={t('label.bucket_need_help_button', 'NEED HELP?')}
 					color="secondary"
 					onClick={(): void => setToggleWizardSection(true)}
 				/>
@@ -67,7 +62,7 @@ const NewBucket: FC<{
 						<Button
 							{...props}
 							key="wizard-cancel"
-							label={'CANCEL'}
+							label={t('label.bucket_cancel_button', 'CANCEL')}
 							color="secondary"
 							icon="ChevronLeftOutline"
 							iconPlacement="left"
@@ -82,7 +77,13 @@ const NewBucket: FC<{
 			NextButton: (props: any): any => (
 				<Button
 					{...props}
-					label={!props.completeLoading ? 'VIEW DETAILS' : ' Done'}
+					label={
+						!props.completeLoading
+							? t('label.bucket_view_details_button', 'VIEW DETAILS')
+							: t('label.bucket_done_button', 'Done')
+					}
+					icon={props.completeLoading && 'CheckmarkCircleOutline'}
+					iconPlacement="right"
 					style={{ marginLeft: '16px' }}
 					onClick={(): void => {
 						setToggleWizardSection(false);
@@ -108,7 +109,7 @@ const NewBucket: FC<{
 			onChange={setWizardData}
 			onComplete={onComplete}
 			setToggleWizardSection={setToggleWizardSection}
-			// staticData={staticData}
+			externalData={bucketType}
 		/>
 	);
 };

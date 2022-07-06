@@ -25,9 +25,9 @@ const Connection: FC<{
 	setVerifyCheck: any;
 	verifyCheck: any;
 	setButtonChange: any;
-	bucketType: any;
+	externalData: any;
 	setCompleteLoading: any;
-}> = ({ isActive, getData, onSelection, title, bucketType, setCompleteLoading }) => {
+}> = ({ isActive, getData, onSelection, title, externalData, setCompleteLoading }) => {
 	const [t] = useTranslation();
 	const [buttonColor, setButtonColor] = useState<string>('primary');
 	const [icon, setIcon] = useState<string>('ActivityOutline');
@@ -45,7 +45,7 @@ const Connection: FC<{
 	const [bucketTypeData, setBucketTypeData] = useState();
 	const [verifyCheck, setVerifyCheck] = useState<string>('');
 	const [buttonChange, setButtonChange] = useState<boolean>(false);
-
+	const bucketType = externalData;
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 	const handleVerifyConnector = (): any => {
 		// API CALL
@@ -125,7 +125,7 @@ const Connection: FC<{
 	}, [setButtonChange, t, verifyCheck]);
 
 	return (
-		<Container mainAlignment="flex-start">
+		<Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
 			{bucketType !== '' ? (
 				<Row padding={{ top: 'extralarge' }} width="100%">
 					<Input
