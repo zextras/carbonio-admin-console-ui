@@ -27,6 +27,7 @@ import { getCalenderResource } from '../../../services/get-cal-resource-service'
 import { getSingatures } from '../../../services/get-signature-service';
 import { useDomainStore } from '../../../store/domain/store';
 import Textarea from '../../components/textarea';
+import { createSignature } from '../../../services/create-signature-service';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -774,8 +775,12 @@ const ResourceEditDetailView: FC<any> = ({
 	const onSave = (): void => {};
 
 	const onSaveOrEditSignature = useCallback(() => {
-		console.log('Create signature');
-	}, []);
+		createSignature(selectedResourceList?.id, signatureName, signatureContent)
+			.then((response) => response.json())
+			.then((data) => {
+				setIsOpenCreateEditSignatureDialog(false);
+			});
+	}, [signatureName, signatureContent, selectedResourceList?.id]);
 
 	return (
 		<Container
