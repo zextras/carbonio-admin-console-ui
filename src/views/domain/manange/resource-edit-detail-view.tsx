@@ -17,14 +17,16 @@ import {
 	Select,
 	Button,
 	Padding,
-	PasswordInput
+	PasswordInput,
+	Modal
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import ListRow from '../../list/list-row';
 import { getCalenderResource } from '../../../services/get-cal-resource-service';
 import { getSingatures } from '../../../services/get-signature-service';
 import { useDomainStore } from '../../../store/domain/store';
+import Textarea from '../../components/textarea';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -209,6 +211,10 @@ const ResourceEditDetailView: FC<any> = ({
 
 	const [passowrd, setPassword]: any = useState('');
 	const [repeatPassword, setRepeatPassword]: any = useState('');
+	const [isOpenCreateEditSignatureDialog, setIsOpenCreateEditSignatureDialog] =
+		useState<boolean>(false);
+	const [signatureName, setSignatureName] = useState<string>('');
+	const [signatureContent, setSignatureContent] = useState<string>('');
 
 	useEffect(() => {
 		if (!!cosList && cosList.length > 0) {
@@ -766,6 +772,10 @@ const ResourceEditDetailView: FC<any> = ({
 	};
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	const onSave = (): void => {};
+
+	const onSaveOrEditSignature = useCallback(() => {
+		console.log('Create signature');
+	}, []);
 
 	return (
 		<Container
@@ -1428,6 +1438,9 @@ const ResourceEditDetailView: FC<any> = ({
 									icon="Plus"
 									color="primary"
 									height="44px"
+									onClick={(): void => {
+										setIsOpenCreateEditSignatureDialog(true);
+									}}
 								/>
 							</Padding>
 							<Padding left="large">
@@ -1625,6 +1638,72 @@ const ResourceEditDetailView: FC<any> = ({
 					</>
 				)}
 			</Container>
+			{isOpenCreateEditSignatureDialog && (
+				<Modal
+					title={
+						<Trans
+							i18nKey="label.new_signature"
+							defaults="<bold>New Signature</bod>"
+							components={{ bold: <strong /> }}
+						/>
+					}
+					open={isOpenCreateEditSignatureDialog}
+					showCloseIcon
+					onClose={(): void => {
+						setIsOpenCreateEditSignatureDialog(false);
+					}}
+					size="medium"
+					customFooter={
+						<Container orientation="horizontal" mainAlignment="space-between">
+							<Button label={t('label.help', 'Help')} type="outlined" color="primary" />
+							<Container orientation="horizontal" mainAlignment="flex-end">
+								<Padding all="small">
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										onClick={(): void => {
+											setIsOpenCreateEditSignatureDialog(false);
+										}}
+									/>
+								</Padding>
+								<Button
+									label={t('label.add_to_the_list', 'Add it to the list')}
+									color="primary"
+									disabled={signatureName === '' || signatureContent === ''}
+									onClick={onSaveOrEditSignature}
+								/>
+							</Container>
+						</Container>
+					}
+				>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ top: 'extralarge', bottom: 'extralarge' }}
+					>
+						<Container padding={{ bottom: 'medium' }}>
+							<Input
+								label={t('label.name_of_signature', 'Name of Signature')}
+								value={signatureName}
+								background="gray5"
+								onChange={(e: any): any => {
+									setSignatureName(e.target.value);
+								}}
+							/>
+						</Container>
+						<Container>
+							<Textarea
+								background="gray5"
+								label={t('label.content', 'Content')}
+								value={signatureContent}
+								onChange={(e: any): any => {
+									setSignatureContent(e.target.value);
+								}}
+							/>
+						</Container>
+					</Container>
+				</Modal>
+			)}
 		</Container>
 	);
 };
