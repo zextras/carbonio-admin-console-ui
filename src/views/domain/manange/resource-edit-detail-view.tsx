@@ -29,6 +29,7 @@ import { useDomainStore } from '../../../store/domain/store';
 import { setPasswordRequest } from '../../../services/set-password-service';
 import { renameCalendarResource } from '../../../services/rename-cal-resource-service';
 import { modifyCalendarResource } from '../../../services/modify-cal-resource-service';
+import Textarea from '../../components/textarea';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -1687,7 +1688,7 @@ const ResourceEditDetailView: FC<any> = ({
 				</Row>
 				{isEditMode && (
 					<Row padding={{ top: 'extralarge' }} width="100%">
-						<Input
+						<Textarea
 							label={t('label.description', 'Description')}
 							backgroundColor="gray5"
 							value={description}
@@ -1718,7 +1719,7 @@ const ResourceEditDetailView: FC<any> = ({
 				)}
 				{isEditMode && (
 					<Row padding={{ top: 'extralarge' }} width="100%">
-						<Input
+						<Textarea
 							label={t('label.notes', 'Notes')}
 							backgroundColor="gray5"
 							value={zimbraNotes}
