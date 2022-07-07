@@ -20,6 +20,7 @@ import {
 	PasswordInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import _ from 'lodash';
 import ListRow from '../../list/list-row';
 import { getCalenderResource } from '../../../services/get-cal-resource-service';
 import { getSingatures } from '../../../services/get-signature-service';
@@ -62,6 +63,7 @@ const ResourceEditDetailView: FC<any> = ({
 	const [resourceInformation, setResourceInformation]: any = useState([]);
 	const [resourceDetailData, setResourceDetailData]: any = useState({});
 	const [sendInviteList, setSendInviteList] = useState<any[]>([]);
+	const [defaultSendInviteList, setDefaultSendInviteList] = useState<any[]>([]);
 	const [signatureData, setSignatureData]: any = useState([]);
 	const [sendInviteData, setSendInviteData]: any = useState([]);
 	const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
@@ -261,33 +263,9 @@ const ResourceEditDetailView: FC<any> = ({
 				});
 			});
 			setSendInviteList(sList);
+			setDefaultSendInviteList(sList);
 		}
 	};
-
-	const getResourceDetail = useCallback((): void => {
-		getCalenderResource(selectedResourceList?.id)
-			.then((response) => response.json())
-			.then((data) => {
-				const resourceDetailResponse =
-					data?.Body?.GetCalendarResourceResponse?.calresource[0] || {};
-				const obj: any = {};
-				resourceDetailResponse?.a?.map((item: any) => {
-					obj[item?.n] = item._content;
-					return '';
-				});
-				const sendInviteTo = resourceDetailResponse?.a?.filter(
-					(value: any) => value?.n === 'zimbraPrefCalendarForwardInvitesTo'
-				);
-				generateSendInviteList(sendInviteTo);
-				setSendInviteData(sendInviteTo);
-				setResourceDetailData(obj);
-				setResourceInformation(resourceDetailResponse?.a);
-			});
-	}, [selectedResourceList?.id]);
-
-	useEffect(() => {
-		getResourceDetail();
-	}, [getResourceDetail]);
 
 	const generateSignatureList = (signatureResponse: any): void => {
 		if (signatureResponse && Array.isArray(signatureResponse)) {
@@ -309,6 +287,21 @@ const ResourceEditDetailView: FC<any> = ({
 		}
 	};
 
+	const getResourceDetail = useCallback((): void => {
+		getCalenderResource(selectedResourceList?.id)
+			.then((response) => response.json())
+			.then((data) => {
+				const resourceDetailResponse =
+					data?.Body?.GetCalendarResourceResponse?.calresource[0] || {};
+				const sendInviteTo = resourceDetailResponse?.a?.filter(
+					(value: any) => value?.n === 'zimbraPrefCalendarForwardInvitesTo'
+				);
+				generateSendInviteList(sendInviteTo);
+				setSendInviteData(sendInviteTo);
+				setResourceInformation(resourceDetailResponse?.a);
+			});
+	}, [selectedResourceList?.id]);
+
 	const getSignatureDetail = useCallback((): void => {
 		getSingatures(selectedResourceList?.id)
 			.then((response) => response.json())
@@ -322,6 +315,10 @@ const ResourceEditDetailView: FC<any> = ({
 	useEffect(() => {
 		getSignatureDetail();
 	}, [getSignatureDetail]);
+
+	useEffect(() => {
+		getResourceDetail();
+	}, [getResourceDetail]);
 
 	useEffect(() => {
 		if (!!resourceInformation && resourceInformation.length > 0) {
@@ -430,40 +427,33 @@ const ResourceEditDetailView: FC<any> = ({
 		signatureItems
 	]);
 
-	useEffect(() => {
-		if (
-			resourceDetailData?.zimbraCalResAutoAcceptDecline &&
-			resourceDetailData?.zimbraCalResAutoDeclineIfBusy
-		) {
-			if (
-				resourceDetailData?.zimbraCalResAutoAcceptDecline === 'TRUE' &&
-				resourceDetailData?.zimbraCalResAutoDeclineIfBusy === 'TRUE'
-			) {
+	const setSchedulePolicyItem = useCallback(
+		(zimbraCalResAutoAcceptDecline: any, zimbraCalResAutoDeclineIfBusy: any): any => {
+			if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
 				setSchedulePolicyType(schedulePolicyItems[0]);
 			}
-			if (
-				resourceDetailData?.zimbraCalResAutoAcceptDecline === 'FALSE' &&
-				resourceDetailData?.zimbraCalResAutoDeclineIfBusy === 'TRUE'
-			) {
+			if (zimbraCalResAutoAcceptDecline === 'FALSE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
 				setSchedulePolicyType(schedulePolicyItems[1]);
 			}
-			if (
-				resourceDetailData?.zimbraCalResAutoAcceptDecline === 'TRUE' &&
-				resourceDetailData?.zimbraCalResAutoDeclineIfBusy === 'FALSE'
-			) {
+			if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'FALSE') {
 				setSchedulePolicyType(schedulePolicyItems[2]);
 			}
-			if (
-				resourceDetailData?.zimbraCalResAutoAcceptDecline === 'FALSE' &&
-				resourceDetailData?.zimbraCalResAutoDeclineIfBusy === 'FALSE'
-			) {
+			if (zimbraCalResAutoAcceptDecline === 'FALSE' && zimbraCalResAutoDeclineIfBusy === 'FALSE') {
 				setSchedulePolicyType(schedulePolicyItems[3]);
 			}
-		}
+		},
+		[schedulePolicyItems]
+	);
+
+	useEffect(() => {
+		setSchedulePolicyItem(
+			resourceDetailData?.zimbraCalResAutoAcceptDecline,
+			resourceDetailData?.zimbraCalResAutoDeclineIfBusy
+		);
 	}, [
 		resourceDetailData.zimbraCalResAutoAcceptDecline,
 		resourceDetailData.zimbraCalResAutoDeclineIfBusy,
-		schedulePolicyItems
+		setSchedulePolicyItem
 	]);
 
 	const onResouseTypeChange = (v: any): any => {
@@ -576,8 +566,204 @@ const ResourceEditDetailView: FC<any> = ({
 		}
 	}, [selectedRows, sendInviteList]);
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	const onCancel = (): void => {};
+	useEffect(() => {
+		if (
+			resourceDetailData?.displayName !== undefined &&
+			resourceDetailData?.displayName !== resourceName
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.displayName, resourceName]);
+
+	useEffect(() => {
+		if (resourceDetailData?.mail !== undefined && resourceDetailData?.mail !== resourceMail) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.mail, resourceMail]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.description !== undefined &&
+			resourceDetailData?.description !== description
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.description, description]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraNotes !== undefined &&
+			resourceDetailData?.zimbraNotes !== zimbraNotes
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.zimbraNotes, zimbraNotes]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed !== undefined &&
+			resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed !==
+				zimbraCalResMaxPercentConflictsAllowed
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		resourceDetailData.zimbraCalResMaxPercentConflictsAllowed,
+		zimbraCalResMaxPercentConflictsAllowed
+	]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraCalResMaxNumConflictsAllowed !== undefined &&
+			resourceDetailData?.zimbraCalResMaxNumConflictsAllowed !== zimbraCalResMaxNumConflictsAllowed
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.zimbraCalResMaxNumConflictsAllowed, zimbraCalResMaxNumConflictsAllowed]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraCOSId !== undefined &&
+			resourceDetailData?.zimbraCOSId !== zimbraCOSId?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.zimbraCOSId, zimbraCOSId]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraPrefCalendarAutoAcceptSignatureId !== undefined &&
+			zimbraPrefCalendarAutoAcceptSignatureId?.value !== undefined &&
+			resourceDetailData?.zimbraPrefCalendarAutoAcceptSignatureId !==
+				zimbraPrefCalendarAutoAcceptSignatureId?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		resourceDetailData.zimbraPrefCalendarAutoAcceptSignatureId,
+		zimbraPrefCalendarAutoAcceptSignatureId
+	]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraPrefCalendarAutoDeclineSignatureId !== undefined &&
+			zimbraPrefCalendarAutoDeclineSignatureId?.value !== undefined &&
+			resourceDetailData?.zimbraPrefCalendarAutoDeclineSignatureId !==
+				zimbraPrefCalendarAutoDeclineSignatureId?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		resourceDetailData.zimbraPrefCalendarAutoDeclineSignatureId,
+		zimbraPrefCalendarAutoDeclineSignatureId
+	]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraPrefCalendarAutoDenySignatureId !== undefined &&
+			zimbraPrefCalendarAutoDenySignatureId?.value !== undefined &&
+			resourceDetailData?.zimbraPrefCalendarAutoDenySignatureId !==
+				zimbraPrefCalendarAutoDenySignatureId?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		resourceDetailData.zimbraPrefCalendarAutoDenySignatureId,
+		zimbraPrefCalendarAutoDenySignatureId
+	]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraCalResType !== undefined &&
+			resourceDetailData?.zimbraCalResType !== zimbraCalResType?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.zimbraCalResType, zimbraCalResType]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraAccountStatus !== undefined &&
+			resourceDetailData?.zimbraAccountStatus !== zimbraAccountStatus?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.zimbraAccountStatus, zimbraAccountStatus]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.zimbraCalResAutoDeclineRecurring !== undefined &&
+			resourceDetailData?.zimbraCalResAutoDeclineRecurring !==
+				zimbraCalResAutoDeclineRecurring?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.zimbraCalResAutoDeclineRecurring, zimbraCalResAutoDeclineRecurring]);
+
+	useEffect(() => {
+		if (
+			resourceDetailData?.schedulePolicyType !== undefined &&
+			resourceDetailData?.schedulePolicyType !== schedulePolicyType?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [resourceDetailData.schedulePolicyType, schedulePolicyType]);
+
+	useEffect(() => {
+		if (!_.isEqual(defaultSendInviteList, sendInviteList)) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [defaultSendInviteList, sendInviteList]);
+
+	const onCancel = (): void => {
+		setResourceName(resourceDetailData?.displayName);
+		setResourceMail(resourceDetailData?.mail);
+		setZimbraNotes(resourceDetailData?.zimbraNotes);
+		setDescription(resourceDetailData?.description);
+		setZimbraCalResMaxNumConflictsAllowed(resourceDetailData?.zimbraCalResMaxNumConflictsAllowed);
+		setZimbraCalResMaxPercentConflictsAllowed(
+			resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed
+		);
+		setZimbraCOSId(cosItems.find((item: any) => item.value === resourceDetailData?.zimbraCOSId));
+		setZimbraCalResType(
+			resourceTypeOptions.find((item: any) => item.value === resourceDetailData?.zimbraCalResType)
+		);
+		setZimbraAccountStatus(
+			accountStatusOptions.find(
+				(item: any) => item.value === resourceDetailData?.zimbraAccountStatus
+			)
+		);
+		setZimbraCalResAutoDeclineRecurring(
+			autoRefuseOption.find(
+				(item: any) => item.value === resourceDetailData.zimbraCalResAutoDeclineRecurring
+			)
+		);
+		setZimbraPrefCalendarAutoAcceptSignatureId(
+			signatureItems.find(
+				(item: any) => item.value === resourceDetailData.zimbraPrefCalendarAutoAcceptSignatureId
+			)
+		);
+		setZimbraPrefCalendarAutoDeclineSignatureId(
+			signatureItems.find(
+				(item: any) => item.value === resourceDetailData.zimbraPrefCalendarAutoDeclineSignatureId
+			)
+		);
+		setZimbraPrefCalendarAutoDenySignatureId(
+			signatureItems.find(
+				(item: any) => item.value === resourceDetailData.zimbraPrefCalendarAutoDenySignatureId
+			)
+		);
+		setSchedulePolicyItem(
+			resourceDetailData?.zimbraCalResAutoAcceptDecline,
+			resourceDetailData?.zimbraCalResAutoDeclineIfBusy
+		);
+		setSendInviteList(defaultSendInviteList);
+		setPassword('');
+		setRepeatPassword('');
+		setIsDirty(false);
+	};
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	const onSave = (): void => {};
 
@@ -682,9 +868,14 @@ const ResourceEditDetailView: FC<any> = ({
 					width="100%"
 				>
 					<Padding right="large">
-						<Button label={t('label.cancel', 'Cancel')} color="secondary" height="44px" />
+						<Button
+							label={t('label.cancel', 'Cancel')}
+							color="secondary"
+							height="44px"
+							onClick={onCancel}
+						/>
 					</Padding>
-					<Button label={t('label.save', 'Save')} color="primary" height="44px" />
+					<Button label={t('label.save', 'Save')} color="primary" height="44px" onClick={onSave} />
 				</Row>
 			)}
 			<Container
@@ -1071,10 +1262,11 @@ const ResourceEditDetailView: FC<any> = ({
 									<PasswordInput
 										label={t('label.password', 'Password')}
 										backgroundColor="gray5"
-										value={searchAccountName}
+										value={passowrd}
 										inputName="password"
 										onChange={(e: any): any => {
 											setPassword(e.target.value);
+											setIsDirty(true);
 										}}
 									/>
 								</Row>
@@ -1091,10 +1283,11 @@ const ResourceEditDetailView: FC<any> = ({
 									<PasswordInput
 										label={t('label.repeat_password', 'Repeat Password')}
 										backgroundColor="gray5"
-										value={searchAccountName}
+										value={repeatPassword}
 										inputName="repeatPassword"
 										onChange={(e: any): any => {
 											setRepeatPassword(e.target.value);
+											setIsDirty(true);
 										}}
 									/>
 								</Row>
