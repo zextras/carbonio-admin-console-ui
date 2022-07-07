@@ -24,12 +24,13 @@ import Paginig from '../../components/paging';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { useDomainStore } from '../../../store/domain/store';
 import ResourceEditDetailView from './resource-edit-detail-view';
+import { RECORD_DISPLAY_LIMIT } from '../../../constants';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
 	const [resourceList, setResourceList] = useState<any[]>([]);
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(50);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [searchString, setSearchString] = useState<string>('');
@@ -37,6 +38,7 @@ const DomainResources: FC = () => {
 	const [selectedResourceList, setSelectedResourceList] = useState<any>({});
 	const [showResourceEditDetailView, setShowResourceEditDetailView] = useState<boolean>(false);
 	const [isEditMode, setIsEditMode] = useState<boolean>(false);
+	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const timer = useRef<any>();
 	const headers: any[] = useMemo(
 		() => [
@@ -193,6 +195,7 @@ const DomainResources: FC = () => {
 							});
 						});
 						setResourceList(rList);
+						setIsUpdateRecord(false);
 					}
 				});
 		},
@@ -202,6 +205,12 @@ const DomainResources: FC = () => {
 	useEffect(() => {
 		getResourceList(domainName, searchQuery);
 	}, [offset, getResourceList, domainName, searchQuery]);
+
+	useEffect(() => {
+		if (isUpdateRecord) {
+			getResourceList(domainName, searchQuery);
+		}
+	}, [isUpdateRecord, getResourceList, domainName, searchQuery]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchResourceQuery = useCallback(
@@ -369,6 +378,7 @@ const DomainResources: FC = () => {
 					setShowResourceEditDetailView={setShowResourceEditDetailView}
 					isEditMode={isEditMode}
 					setIsEditMode={setIsEditMode}
+					setIsUpdateRecord={setIsUpdateRecord}
 				/>
 			)}
 		</Container>

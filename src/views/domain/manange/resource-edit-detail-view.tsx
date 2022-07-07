@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import moment from 'moment';
 import {
 	Container,
@@ -18,7 +18,8 @@ import {
 	Button,
 	Padding,
 	PasswordInput,
-	Modal
+	Modal,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import _ from 'lodash';
@@ -26,8 +27,11 @@ import ListRow from '../../list/list-row';
 import { getCalenderResource } from '../../../services/get-cal-resource-service';
 import { getSingatures } from '../../../services/get-signature-service';
 import { useDomainStore } from '../../../store/domain/store';
-import Textarea from '../../components/textarea';
 import { createSignature } from '../../../services/create-signature-service';
+import { setPasswordRequest } from '../../../services/set-password-service';
+import { renameCalendarResource } from '../../../services/rename-cal-resource-service';
+import { modifyCalendarResource } from '../../../services/modify-cal-resource-service';
+import Textarea from '../../components/textarea';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -59,9 +63,11 @@ const ResourceEditDetailView: FC<any> = ({
 	selectedResourceList,
 	setShowResourceEditDetailView,
 	isEditMode,
-	setIsEditMode
+	setIsEditMode,
+	setIsUpdateRecord
 }) => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const cosList = useDomainStore((state) => state.cosList);
 	const [resourceInformation, setResourceInformation]: any = useState([]);
 	const [resourceDetailData, setResourceDetailData]: any = useState({});
@@ -72,12 +78,6 @@ const ResourceEditDetailView: FC<any> = ({
 	const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
-	const [zimbraPrefCalendarAutoAcceptSignatureId, setZimbraPrefCalendarAutoAcceptSignatureId] =
-		useState<any>({});
-	const [zimbraPrefCalendarAutoDeclineSignatureId, setZimbraPrefCalendarAutoDeclineSignatureId] =
-		useState<any>({});
-	const [zimbraPrefCalendarAutoDenySignatureId, setZimbraPrefCalendarAutoDenySignatureId] =
-		useState<any>({});
 	const [resourceName, setResourceName] = useState<string>('');
 	const [resourceMail, setResourceMail] = useState<string>('');
 	const [zimbraCalResMaxNumConflictsAllowed, setZimbraCalResMaxNumConflictsAllowed] =
@@ -210,47 +210,50 @@ const ResourceEditDetailView: FC<any> = ({
 	const [sendInviteAddBtnDisabled, setSendInviteAddBtnDisabled] = useState(true);
 	const [sendInviteDeleteBtnDisabled, setSendInviteDeleteBtnDisabled] = useState(true);
 
-	const [passowrd, setPassword]: any = useState('');
+	const [password, setPassword]: any = useState('');
 	const [repeatPassword, setRepeatPassword]: any = useState('');
 	const [isOpenCreateEditSignatureDialog, setIsOpenCreateEditSignatureDialog] =
 		useState<boolean>(false);
 	const [signatureName, setSignatureName] = useState<string>('');
 	const [signatureContent, setSignatureContent] = useState<string>('');
 
+	const [zimbraPrefCalendarAutoAcceptSignatureId, setZimbraPrefCalendarAutoAcceptSignatureId] =
+		useState<any>({});
+	const [zimbraPrefCalendarAutoDeclineSignatureId, setZimbraPrefCalendarAutoDeclineSignatureId] =
+		useState<any>({});
+	const [zimbraPrefCalendarAutoDenySignatureId, setZimbraPrefCalendarAutoDenySignatureId] =
+		useState<any>({});
+
 	useEffect(() => {
-		if (!!cosList && cosList.length > 0) {
-			const arrayItem: any[] = [
-				{
-					label: t('label.auto', 'Auto'),
-					value: ''
-				}
-			];
-			cosList.forEach((item: any) => {
-				arrayItem.push({
-					label: item.name,
-					value: item.id
-				});
+		const arrayItem: any[] = [
+			{
+				label: t('label.auto', 'Auto'),
+				value: ''
+			}
+		];
+		cosList.forEach((item: any) => {
+			arrayItem.push({
+				label: item.name,
+				value: item.id
 			});
-			setCosItems(arrayItem);
-		}
+		});
+		setCosItems(arrayItem);
 	}, [cosList, t]);
 
 	useEffect(() => {
-		if (!!signatureData && signatureData.length > 0) {
-			const arrayItem: any[] = [
-				{
-					label: t('label.not_set', 'Not Set'),
-					value: ''
-				}
-			];
-			signatureData.forEach((item: any) => {
-				arrayItem.push({
-					label: item.name,
-					value: item.id
-				});
+		const arrayItem: any[] = [
+			{
+				label: t('label.not_set', 'Not Set'),
+				value: ''
+			}
+		];
+		signatureData.forEach((item: any) => {
+			arrayItem.push({
+				label: item.name,
+				value: item.id
 			});
-			setSignatureItems(arrayItem);
-		}
+		});
+		setSignatureItems(arrayItem);
 	}, [signatureData, t]);
 
 	const generateSendInviteList = (sendInviteTo: any): void => {
@@ -342,9 +345,13 @@ const ResourceEditDetailView: FC<any> = ({
 			setZimbraAccountStatus(
 				accountStatusOptions.find((item: any) => item.value === obj.zimbraAccountStatus)
 			);
-			setZimbraCalResAutoDeclineRecurring(
-				autoRefuseOption.find((item: any) => item.value === obj.zimbraCalResAutoDeclineRecurring)
-			);
+			if (obj.zimbraCalResAutoDeclineRecurring) {
+				setZimbraCalResAutoDeclineRecurring(
+					autoRefuseOption.find((item: any) => item.value === obj.zimbraCalResAutoDeclineRecurring)
+				);
+			} else {
+				setZimbraCalResAutoDeclineRecurring(autoRefuseOption[1]);
+			}
 			if (obj.zimbraCOSId) {
 				const getItem = cosItems.find((item: any) => item.value === obj.zimbraCOSId);
 				if (getItem) {
@@ -357,6 +364,7 @@ const ResourceEditDetailView: FC<any> = ({
 				obj.zimbraCOSId = '';
 				setZimbraCOSId(cosItems[0]);
 			}
+
 			if (obj.zimbraPrefCalendarAutoAcceptSignatureId) {
 				const getItem = signatureItems.find(
 					(item: any) => item.value === obj.zimbraPrefCalendarAutoAcceptSignatureId
@@ -771,8 +779,123 @@ const ResourceEditDetailView: FC<any> = ({
 		setRepeatPassword('');
 		setIsDirty(false);
 	};
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	const onSave = (): void => {};
+
+	const callAllRequest = (requests: any): void => {
+		Promise.all(requests).then((response: any) => {
+			createSnackbar({
+				key: 'success',
+				type: 'success',
+				label: t('label.changes_have_been_saved', 'The changes have been saved'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			setIsDirty(false);
+			setShowResourceEditDetailView(false);
+			setIsUpdateRecord(true);
+		});
+	};
+
+	const onSave = (): void => {
+		if (password !== '' && password?.length < 6) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t('label.password_lenght_msg', 'Password should be more then 5 character'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		} else if (password !== repeatPassword) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t(
+					'label.password_and repeat_password_not_match',
+					'Password and repeat password not match'
+				),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		} else {
+			const attributes: any[] = [];
+			const requests: any[] = [];
+			if (password !== '' && password === repeatPassword) {
+				requests.push(setPasswordRequest(selectedResourceList.id, password));
+			}
+			if (resourceDetailData?.mail !== resourceMail) {
+				requests.push(renameCalendarResource(selectedResourceList.id, resourceMail));
+			}
+
+			attributes.push({
+				n: 'displayName',
+				_content: resourceName
+			});
+			attributes.push({
+				n: 'description',
+				_content: description
+			});
+			attributes.push({
+				n: 'zimbraNotes',
+				_content: zimbraNotes
+			});
+			attributes.push({
+				n: 'zimbraCalResMaxNumConflictsAllowed',
+				_content: zimbraCalResMaxNumConflictsAllowed
+			});
+			attributes.push({
+				n: 'zimbraCalResMaxPercentConflictsAllowed',
+				_content: zimbraCalResMaxPercentConflictsAllowed
+			});
+			attributes.push({
+				n: 'zimbraCOSId',
+				_content: zimbraCOSId?.value
+			});
+			attributes.push({
+				n: 'zimbraPrefCalendarAutoAcceptSignatureId',
+				_content: zimbraPrefCalendarAutoAcceptSignatureId?.value
+			});
+			attributes.push({
+				n: 'zimbraPrefCalendarAutoDeclineSignatureId',
+				_content: zimbraPrefCalendarAutoDeclineSignatureId?.value
+			});
+			attributes.push({
+				n: 'zimbraPrefCalendarAutoDenySignatureId',
+				_content: zimbraPrefCalendarAutoDenySignatureId?.value
+			});
+			attributes.push({
+				n: 'zimbraCalResType',
+				_content: zimbraCalResType?.value
+			});
+			attributes.push({
+				n: 'zimbraAccountStatus',
+				_content: zimbraAccountStatus?.value
+			});
+			attributes.push({
+				n: 'zimbraCalResAutoDeclineRecurring',
+				_content: zimbraCalResAutoDeclineRecurring?.value
+			});
+			attributes.push({
+				n: 'zimbraCalResAutoAcceptDecline',
+				_content: schedulePolicyType?.value === (1 || 3) ? 'TRUE' : 'FALSE'
+			});
+			attributes.push({
+				n: 'zimbraCalResAutoDeclineIfBusy',
+				_content: schedulePolicyType?.value === (1 || 2) ? 'TRUE' : 'FALSE'
+			});
+			sendInviteList.forEach((item: any) => {
+				attributes.push({
+					n: 'zimbraPrefCalendarForwardInvitesTo',
+					_content: item.label
+				});
+			});
+			requests.push(modifyCalendarResource(selectedResourceList?.id, attributes));
+			if (requests.length > 0) {
+				callAllRequest(requests);
+			}
+		}
+	};
 
 	const onSaveOrEditSignature = useCallback(() => {
 		createSignature(selectedResourceList?.id, signatureName, signatureContent)
@@ -1277,7 +1400,7 @@ const ResourceEditDetailView: FC<any> = ({
 									<PasswordInput
 										label={t('label.password', 'Password')}
 										backgroundColor="gray5"
-										value={passowrd}
+										value={password}
 										inputName="password"
 										onChange={(e: any): any => {
 											setPassword(e.target.value);
@@ -1582,7 +1705,7 @@ const ResourceEditDetailView: FC<any> = ({
 				</Row>
 				{isEditMode && (
 					<Row padding={{ top: 'extralarge' }} width="100%">
-						<Input
+						<Textarea
 							label={t('label.description', 'Description')}
 							backgroundColor="gray5"
 							value={description}
@@ -1613,7 +1736,7 @@ const ResourceEditDetailView: FC<any> = ({
 				)}
 				{isEditMode && (
 					<Row padding={{ top: 'extralarge' }} width="100%">
-						<Input
+						<Textarea
 							label={t('label.notes', 'Notes')}
 							backgroundColor="gray5"
 							value={zimbraNotes}
