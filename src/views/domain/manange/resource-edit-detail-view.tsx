@@ -251,7 +251,7 @@ const ResourceEditDetailView: FC<any> = ({
 			const sList: any[] = [];
 			sendInviteTo.forEach((item: any, index: number) => {
 				sList.push({
-					id: index,
+					id: index?.toString(),
 					columns: [
 						<Text size="medium" weight="light" key={index} color="gray0">
 							{item?._content}
@@ -272,7 +272,7 @@ const ResourceEditDetailView: FC<any> = ({
 			const sList: any[] = [];
 			signatureResponse.forEach((item: any, index: number) => {
 				sList.push({
-					id: index,
+					id: index?.toString(),
 					columns: [
 						<Text size="medium" weight="light" key={item?.id} color="gray0">
 							{item?.name}
