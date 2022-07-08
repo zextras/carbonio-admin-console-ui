@@ -32,6 +32,7 @@ import { setPasswordRequest } from '../../../services/set-password-service';
 import { renameCalendarResource } from '../../../services/rename-cal-resource-service';
 import { modifyCalendarResource } from '../../../services/modify-cal-resource-service';
 import Textarea from '../../components/textarea';
+import { modifySignature } from '../../../services/modify-signature-service';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -224,7 +225,8 @@ const ResourceEditDetailView: FC<any> = ({
 	const [zimbraPrefCalendarAutoDenySignatureId, setZimbraPrefCalendarAutoDenySignatureId] =
 		useState<any>({});
 	const [selectedSignature, setSelectedSignature] = useState<any>([]);
-	const [signatureList, setSignatureList] = useState<any>([]);
+	const [signatureList, setSignatureList] = useState<any[]>([]);
+	const [isEditSignature, setIsEditSignature] = useState<boolean>(false);
 
 	useEffect(() => {
 		const arrayItem: any[] = [
@@ -903,7 +905,7 @@ const ResourceEditDetailView: FC<any> = ({
 		}
 	};
 
-	const onSaveOrEditSignature = useCallback(() => {
+	const _createSignature = useCallback((): void => {
 		createSignature(selectedResourceList?.id, signatureName, signatureContent)
 			.then((response) => response.json())
 			.then((data) => {
@@ -926,11 +928,65 @@ const ResourceEditDetailView: FC<any> = ({
 				}
 				setIsOpenCreateEditSignatureDialog(false);
 			});
-	}, [signatureName, signatureContent, selectedResourceList?.id, signatureList]);
+	}, [selectedResourceList?.id, signatureName, signatureContent, signatureList]);
+
+	const _modifySignature = useCallback(() => {
+		modifySignature(selectedResourceList?.id, selectedSignature[0], signatureName, signatureContent)
+			.then((response) => response.json())
+			.then((data) => {
+				const _signature = data?.Body?.ModifySignatureResponse;
+				if (_signature) {
+					const allSignature = signatureList.map((item: any) => {
+						if (item?.id === selectedSignature[0]) {
+							// eslint-disable-next-line no-param-reassign
+							item.content = [
+								{
+									type: 'text/plain',
+									_content: signatureContent
+								}
+							];
+							// eslint-disable-next-line no-param-reassign
+							item.name = signatureName;
+						}
+						return item;
+					});
+					setSignatureList([]);
+					setSignatureList(allSignature);
+				}
+				setIsOpenCreateEditSignatureDialog(false);
+			});
+	}, [selectedResourceList?.id, signatureName, selectedSignature, signatureContent, signatureList]);
+
+	const onSaveOrEditSignature = useCallback(() => {
+		if (isEditSignature) {
+			_modifySignature();
+		} else {
+			_createSignature();
+		}
+	}, [_createSignature, _modifySignature, isEditSignature]);
 
 	const onEditSignature = useCallback(() => {
-		console.log('EDIT=>> ', selectedSignature);
-	}, [selectedSignature]);
+		const _signature = signatureList.find((item: any) => item?.id === selectedSignature[0]);
+		if (_signature && _signature?.id) {
+			const content = _signature?.content;
+			if (content && content[0]?._content) {
+				setSignatureContent(content[0]?._content);
+			}
+			if (_signature?.name) {
+				setSignatureName(_signature?.name);
+			}
+			setIsEditSignature(true);
+			setIsOpenCreateEditSignatureDialog(true);
+		}
+	}, [selectedSignature, signatureList]);
+
+	useEffect(() => {
+		if (!isOpenCreateEditSignatureDialog) {
+			setIsEditSignature(false);
+			setSignatureContent('');
+			setSignatureName('');
+		}
+	}, [isOpenCreateEditSignatureDialog]);
 
 	return (
 		<Container
@@ -1800,11 +1856,19 @@ const ResourceEditDetailView: FC<any> = ({
 			{isOpenCreateEditSignatureDialog && (
 				<Modal
 					title={
-						<Trans
-							i18nKey="label.new_signature"
-							defaults="<bold>New Signature</bod>"
-							components={{ bold: <strong /> }}
-						/>
+						isEditSignature ? (
+							<Trans
+								i18nKey="label.edit_signature"
+								defaults="<bold>Edit Signature</bod>"
+								components={{ bold: <strong /> }}
+							/>
+						) : (
+							<Trans
+								i18nKey="label.new_signature"
+								defaults="<bold>New Signature</bod>"
+								components={{ bold: <strong /> }}
+							/>
+						)
 					}
 					open={isOpenCreateEditSignatureDialog}
 					showCloseIcon

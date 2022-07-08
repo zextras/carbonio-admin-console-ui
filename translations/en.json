@@ -299,6 +299,7 @@
         "domains": "Domains",
         "draft_auto_save_interval": "Draft auto save interval",
         "edit": "Edit",
+        "edit_signature": "<bold>Edit Signature</bod>",
         "email": "Email",
         "enable_automatic_adding_of_contacts": "Enable automatic adding of contacts",
         "enable_mandatory_spell_check": "Enable mandatory spell check",
