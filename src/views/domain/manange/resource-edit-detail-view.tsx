@@ -901,9 +901,36 @@ const ResourceEditDetailView: FC<any> = ({
 		createSignature(selectedResourceList?.id, signatureName, signatureContent)
 			.then((response) => response.json())
 			.then((data) => {
+				const signatureItem = data?.Body?.CreateSignatureResponse?.signature[0];
+				if (signatureItem?.id) {
+					const item = {
+						content: [
+							{
+								type: 'text/plain',
+								_content: signatureContent
+							}
+						],
+						id: signatureItem?.id,
+						name: signatureItem?.name
+					};
+					const listItem = {
+						id: item?.id?.toString(),
+						columns: [
+							<Text size="medium" weight="light" key={item?.id} color="gray0">
+								{item?.name}
+							</Text>
+						],
+						item,
+						label: item?.name,
+						clickable: true
+					};
+					const _signatureList = signatureList;
+					_signatureList.push(listItem);
+					setSignatureList(_signatureList);
+				}
 				setIsOpenCreateEditSignatureDialog(false);
 			});
-	}, [signatureName, signatureContent, selectedResourceList?.id]);
+	}, [signatureName, signatureContent, selectedResourceList?.id, signatureList]);
 
 	return (
 		<Container
