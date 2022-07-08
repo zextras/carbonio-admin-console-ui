@@ -33,6 +33,7 @@ import { renameCalendarResource } from '../../../services/rename-cal-resource-se
 import { modifyCalendarResource } from '../../../services/modify-cal-resource-service';
 import Textarea from '../../components/textarea';
 import { modifySignature } from '../../../services/modify-signature-service';
+import { deleteSignature } from '../../../services/delete-signature-service';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -905,6 +906,18 @@ const ResourceEditDetailView: FC<any> = ({
 		}
 	};
 
+	const onDeleteSignature = useCallback(() => {
+		const deleteRequest: any[] = [];
+		selectedSignature.forEach((item: string) => {
+			deleteRequest.push(deleteSignature(selectedResourceList?.id, item));
+		});
+		Promise.all(deleteRequest).then((response) => {
+			const newList = signatureList.filter((item: any) => !selectedSignature.includes(item?.id));
+			setSignatureList(newList);
+			setSelectedSignature([]);
+		});
+	}, [selectedSignature, signatureList, selectedResourceList?.id]);
+
 	const _createSignature = useCallback((): void => {
 		createSignature(selectedResourceList?.id, signatureName, signatureContent)
 			.then((response) => response.json())
@@ -1672,6 +1685,8 @@ const ResourceEditDetailView: FC<any> = ({
 									icon="Close"
 									color="error"
 									height="44px"
+									disabled={selectedSignature.length === 0}
+									onClick={onDeleteSignature}
 								/>
 							</Padding>
 						</Row>
