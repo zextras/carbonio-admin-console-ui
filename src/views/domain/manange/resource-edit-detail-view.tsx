@@ -101,7 +101,7 @@ const ResourceEditDetailView: FC<any> = ({
 		],
 		[t]
 	);
-	const [signatureList, setSignatureList] = useState<any[]>([]);
+	const [signatureListRows, setSignatureListRows] = useState<any[]>([]);
 	const signatureHeaders: any[] = useMemo(
 		() => [
 			{
@@ -223,6 +223,8 @@ const ResourceEditDetailView: FC<any> = ({
 		useState<any>({});
 	const [zimbraPrefCalendarAutoDenySignatureId, setZimbraPrefCalendarAutoDenySignatureId] =
 		useState<any>({});
+	const [selectedSignature, setSelectedSignature] = useState<any>([]);
+	const [signatureList, setSignatureList] = useState<any>([]);
 
 	useEffect(() => {
 		const arrayItem: any[] = [
@@ -279,23 +281,27 @@ const ResourceEditDetailView: FC<any> = ({
 
 	const generateSignatureList = (signatureResponse: any): void => {
 		if (signatureResponse && Array.isArray(signatureResponse)) {
-			const sList: any[] = [];
-			signatureResponse.forEach((item: any, index: number) => {
-				sList.push({
-					id: index?.toString(),
-					columns: [
-						<Text size="medium" weight="light" key={item?.id} color="gray0">
-							{item?.name}
-						</Text>
-					],
-					item,
-					label: item?.name,
-					clickable: true
-				});
-			});
-			setSignatureList(sList);
+			setSignatureList(signatureResponse);
 		}
 	};
+
+	useEffect(() => {
+		const sList: any[] = [];
+		signatureList.forEach((item: any) => {
+			sList.push({
+				id: item?.id,
+				columns: [
+					<Text size="medium" weight="light" key={`${item?.id}-name`} color="gray0">
+						{item?.name}
+					</Text>
+				],
+				item,
+				label: item?.name,
+				clickable: true
+			});
+		});
+		setSignatureListRows(sList);
+	}, [signatureList]);
 
 	const getResourceDetail = useCallback((): void => {
 		getCalenderResource(selectedResourceList?.id)
@@ -913,24 +919,18 @@ const ResourceEditDetailView: FC<any> = ({
 						id: signatureItem?.id,
 						name: signatureItem?.name
 					};
-					const listItem = {
-						id: item?.id?.toString(),
-						columns: [
-							<Text size="medium" weight="light" key={item?.id} color="gray0">
-								{item?.name}
-							</Text>
-						],
-						item,
-						label: item?.name,
-						clickable: true
-					};
 					const _signatureList = signatureList;
-					_signatureList.push(listItem);
+					_signatureList.push(item);
+					setSignatureList([]);
 					setSignatureList(_signatureList);
 				}
 				setIsOpenCreateEditSignatureDialog(false);
 			});
 	}, [signatureName, signatureContent, selectedResourceList?.id, signatureList]);
+
+	const onEditSignature = useCallback(() => {
+		console.log('EDIT=>> ', selectedSignature);
+	}, [selectedSignature]);
 
 	return (
 		<Container
@@ -1605,6 +1605,8 @@ const ResourceEditDetailView: FC<any> = ({
 									icon="Edit"
 									color="secondary"
 									height="44px"
+									disabled={selectedSignature.length === 0 || selectedSignature.length > 1}
+									onClick={onEditSignature}
 								/>
 							</Padding>
 							<Padding left="large">
@@ -1648,10 +1650,12 @@ const ResourceEditDetailView: FC<any> = ({
 						padding={{ top: 'large' }}
 					>
 						<Table
-							rows={signatureList}
+							rows={signatureListRows}
 							headers={signatureHeaders}
 							showCheckbox={false}
 							style={{ overflow: 'auto', height: '100%' }}
+							selectedRows={selectedSignature}
+							onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
 						/>
 					</Container>
 				</ListRow>
