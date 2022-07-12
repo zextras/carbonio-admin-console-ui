@@ -32,11 +32,9 @@ export const modifySignature = async (
 					signature: {
 						name: signaturName,
 						id: signatureId,
-						_content: {
-							content: {
-								type: 'text/plain',
-								_content: content
-							}
+						content: {
+							type: 'text/plain',
+							_content: content
 						}
 					}
 				}

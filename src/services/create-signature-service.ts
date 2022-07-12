@@ -30,11 +30,9 @@ export const createSignature = async (
 					_jsns: 'urn:zimbraAccount',
 					signature: {
 						name: signatureName,
-						_content: {
-							content: {
-								type: 'text/plain',
-								_content: signatureContent
-							}
+						content: {
+							type: 'text/plain',
+							_content: signatureContent
 						}
 					}
 				}
