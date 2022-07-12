@@ -27,7 +27,7 @@ import ManageAccounts from './manange/accounts/manage-accounts';
 import DomainVirtualHosts from './details/domain-virtual-hosts';
 import { useDomainStore } from '../../store/domain/store';
 import DomainMailingList from './manange/domain-mailing-list';
-import DomainResources from './manange/domain-resources';
+import DomainResources from './manange/resources/domain-resources';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
