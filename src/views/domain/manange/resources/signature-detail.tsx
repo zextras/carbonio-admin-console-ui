@@ -145,8 +145,10 @@ export const SignatureDetail: FC<any> = ({
 			);
 			setDefaultSignatureList(newDefaultList);
 			setSelectedSignature([]);
+			const signItems = signatureItems.filter((item: any) => !selectedList.includes(item?.value));
+			setSignatureItems(signItems);
 		},
-		[defaultSignatureList, setSignatureList, signatureList]
+		[defaultSignatureList, setSignatureItems, setSignatureList, signatureItems, signatureList]
 	);
 
 	const onDeleteSignature = useCallback(() => {
