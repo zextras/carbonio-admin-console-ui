@@ -1307,7 +1307,7 @@ const ResourceEditDetailView: FC<any> = ({
 					<Divider color="gray3" />
 				</Row>
 				<SendInviteAccounts
-					isEditMode={isEditMode}
+					isEditable={isEditMode}
 					sendInviteList={sendInviteList}
 					setSendInviteList={setSendInviteList}
 				/>
@@ -1315,7 +1315,7 @@ const ResourceEditDetailView: FC<any> = ({
 					<Divider color="gray3" />
 				</Row>
 				<SignatureDetail
-					isEditMode={isEditMode}
+					isEditable={isEditMode}
 					signatureList={signatureList}
 					setSignatureList={setSignatureList}
 					signatureItems={signatureItems}

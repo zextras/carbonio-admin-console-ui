@@ -17,7 +17,12 @@ import {
 import { useTranslation } from 'react-i18next';
 import ListRow from '../../../list/list-row';
 
-export const SendInviteAccounts: FC<any> = ({ isEditMode, sendInviteList, setSendInviteList }) => {
+export const SendInviteAccounts: FC<any> = ({
+	isEditable,
+	sendInviteList,
+	setSendInviteList,
+	hideSearchBar
+}) => {
 	const [t] = useTranslation();
 	const [newSentInviteValue, setNewSentInviteValue] = useState<string>('');
 	const [selectedSendInvite, setSelectedSendInvite] = useState<any>([]);
@@ -113,7 +118,7 @@ export const SendInviteAccounts: FC<any> = ({ isEditMode, sendInviteList, setSen
 					{t('label.send_invite_to', 'Send Invite To')}
 				</Text>
 			</Row>
-			{isEditMode && (
+			{isEditable && (
 				<ListRow>
 					<Row
 						takeAvwidth="fill"
@@ -157,27 +162,29 @@ export const SendInviteAccounts: FC<any> = ({ isEditMode, sendInviteList, setSen
 					</Row>
 				</ListRow>
 			)}
-			<ListRow>
-				<Container
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					orientation="horizontal"
-					padding={{ top: 'large' }}
-				>
-					<Row width="100%">
-						<Input
-							label={t('label.search_an_account', 'Search an account')}
-							backgroundColor="gray5"
-							value={searchAccountName}
-							size="medium"
-							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
-							onChange={(e: any): any => {
-								setSearchAccountName(e.target.value);
-							}}
-						/>
-					</Row>
-				</Container>
-			</ListRow>
+			{!hideSearchBar && (
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%">
+							<Input
+								label={t('label.search_an_account', 'Search an account')}
+								backgroundColor="gray5"
+								value={searchAccountName}
+								size="medium"
+								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
+								onChange={(e: any): any => {
+									setSearchAccountName(e.target.value);
+								}}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+			)}
 			<ListRow>
 				<Container
 					mainAlignment="flex-start"
@@ -188,7 +195,7 @@ export const SendInviteAccounts: FC<any> = ({ isEditMode, sendInviteList, setSen
 					<Table
 						rows={sendInviteRows}
 						headers={sendInviteHeaders}
-						showCheckbox={!!isEditMode}
+						showCheckbox={!!isEditable}
 						style={{ overflow: 'auto', height: '100%' }}
 						selectedRows={selectedSendInvite}
 						onSelectionChange={(selected: any): any => {

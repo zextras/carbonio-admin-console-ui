@@ -24,7 +24,7 @@ import { createSignature } from '../../../../services/create-signature-service';
 import Textarea from '../../../components/textarea';
 
 export const SignatureDetail: FC<any> = ({
-	isEditMode,
+	isEditable,
 	signatureList,
 	setSignatureList,
 	signatureItems,
@@ -35,7 +35,8 @@ export const SignatureDetail: FC<any> = ({
 	zimbraPrefCalendarAutoDeclineSignatureId,
 	setZimbraPrefCalendarAutoDeclineSignatureId,
 	zimbraPrefCalendarAutoDenySignatureId,
-	setZimbraPrefCalendarAutoDenySignatureId
+	setZimbraPrefCalendarAutoDenySignatureId,
+	hideSearchBar
 }) => {
 	const [t] = useTranslation();
 	const [selectedSignature, setSelectedSignature] = useState<any>([]);
@@ -306,7 +307,7 @@ export const SignatureDetail: FC<any> = ({
 					{t('label.signatures', 'Signatures')}
 				</Text>
 			</Row>
-			{isEditMode && (
+			{isEditable && (
 				<ListRow>
 					<Row
 						takeAvwidth="fill"
@@ -352,27 +353,29 @@ export const SignatureDetail: FC<any> = ({
 					</Row>
 				</ListRow>
 			)}
-			<ListRow>
-				<Container
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					orientation="horizontal"
-					padding={{ top: 'large' }}
-				>
-					<Row width="100%">
-						<Input
-							label={t('label.search_a_signature', 'Search a signature')}
-							backgroundColor="gray5"
-							value={searchSignatureName}
-							size="medium"
-							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
-							onChange={(e: any): any => {
-								setSearchSignatureName(e.target.value);
-							}}
-						/>
-					</Row>
-				</Container>
-			</ListRow>
+			{!hideSearchBar && (
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%">
+							<Input
+								label={t('label.search_a_signature', 'Search a signature')}
+								backgroundColor="gray5"
+								value={searchSignatureName}
+								size="medium"
+								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
+								onChange={(e: any): any => {
+									setSearchSignatureName(e.target.value);
+								}}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+			)}
 			<ListRow>
 				<Container
 					mainAlignment="flex-start"
@@ -398,7 +401,7 @@ export const SignatureDetail: FC<any> = ({
 					padding={{ top: 'large' }}
 				>
 					<Row width="30%">
-						{isEditMode && (
+						{isEditable && (
 							<Select
 								items={signatureItems}
 								background="gray5"
@@ -408,7 +411,7 @@ export const SignatureDetail: FC<any> = ({
 								selection={zimbraPrefCalendarAutoAcceptSignatureId}
 							/>
 						)}
-						{!isEditMode && (
+						{!isEditable && (
 							<Input
 								label={t('label.auto_accept', 'Auto-Accept')}
 								backgroundColor="gray6"
@@ -419,7 +422,7 @@ export const SignatureDetail: FC<any> = ({
 						)}
 					</Row>
 					<Row width="30%">
-						{isEditMode && (
+						{isEditable && (
 							<Select
 								items={signatureItems}
 								background="gray5"
@@ -429,7 +432,7 @@ export const SignatureDetail: FC<any> = ({
 								selection={zimbraPrefCalendarAutoDeclineSignatureId}
 							/>
 						)}
-						{!isEditMode && (
+						{!isEditable && (
 							<Input
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								backgroundColor="gray6"
@@ -440,7 +443,7 @@ export const SignatureDetail: FC<any> = ({
 						)}
 					</Row>
 					<Row width="30%">
-						{isEditMode && (
+						{isEditable && (
 							<Select
 								items={signatureItems}
 								background="gray5"
@@ -450,7 +453,7 @@ export const SignatureDetail: FC<any> = ({
 								selection={zimbraPrefCalendarAutoDenySignatureId}
 							/>
 						)}
-						{!isEditMode && (
+						{!isEditable && (
 							<Input
 								label={t('label.auto_negation', 'Auto-Negation')}
 								backgroundColor="gray6"
