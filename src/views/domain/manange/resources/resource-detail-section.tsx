@@ -151,6 +151,7 @@ const ResourceDetailSection: FC = () => {
 							backgroundColor="gray5"
 							value={resourceDetail?.displayName}
 							size="medium"
+							inputName="displayName"
 							// onChange={(e: any): any => {
 							// 	setResourceName(e.target.value);
 							// }}
@@ -170,6 +171,7 @@ const ResourceDetailSection: FC = () => {
 								backgroundColor="gray5"
 								value={resourceDetail?.name}
 								size="medium"
+								inputName="name"
 								// onChange={(e: any): any => {
 								// 	setResourceName(e.target.value);
 								// }}
@@ -184,6 +186,7 @@ const ResourceDetailSection: FC = () => {
 								backgroundColor="gray5"
 								value=""
 								size="medium"
+								inputName="domain"
 								// onChange={(e: any): any => {
 								// 	setResourceName(e.target.value);
 								// }}
@@ -252,6 +255,7 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.maximum_conflict', 'Maximun Conflict')}
 								backgroundColor="gray5"
 								value={resourceDetail.zimbraCalResMaxNumConflictsAllowed}
+								inputName="zimbraCalResMaxNumConflictsAllowed"
 								// onChange={(e: any): any => {
 								// 	setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
 								// }}
@@ -262,6 +266,7 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.percentage_maximum_conflict', '% Maximun Conflict')}
 								backgroundColor="gray5"
 								value={resourceDetail.zimbraCalResMaxPercentConflictsAllowed}
+								inputName="zimbraCalResMaxPercentConflictsAllowed"
 								// onChange={(e: any): any => {
 								// 	setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
 								// }}
@@ -336,17 +341,6 @@ const ResourceDetailSection: FC = () => {
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
 				</Row>
-				<Row padding={{ top: 'large' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
-						{t('label.description', 'Description')}
-					</Text>
-				</Row>
 				<ListRow>
 					<Container
 						mainAlignment="space-beetween"
@@ -355,10 +349,11 @@ const ResourceDetailSection: FC = () => {
 						padding={{ top: 'large' }}
 					>
 						<Textarea
-							label={t('label.description', 'Description')}
+							label={t('label.notes', 'Notes')}
 							backgroundColor="gray5"
-							value={resourceDetail.description}
+							value={resourceDetail.zimbraNotes}
 							size="medium"
+							inputName="zimbraNotes"
 							// onChange={(e: any): any => {
 							// 	setDescription(e.target.value);
 							// }}

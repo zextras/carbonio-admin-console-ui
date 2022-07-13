@@ -34,6 +34,7 @@ const ResourceDetailContainer = styled(Container)`
 
 interface ResourceDetailObj {
 	name: string;
+	domain: string;
 	description: string;
 	password: string;
 	repeatPassword: string;
@@ -80,6 +81,7 @@ const CreateResource: FC<{
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [resourceDetail, setResourceDetail] = useState<ResourceDetailObj>({
 		name: '',
+		domain: '',
 		description: '',
 		password: '',
 		repeatPassword: '',
