@@ -22,6 +22,7 @@ import { deleteSignature } from '../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../services/modify-signature-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import Textarea from '../../../components/textarea';
+import logo from '../../../../assets/gardian.svg';
 
 export const SignatureDetail: FC<any> = ({
 	isEditable,
@@ -36,7 +37,8 @@ export const SignatureDetail: FC<any> = ({
 	setZimbraPrefCalendarAutoDeclineSignatureId,
 	zimbraPrefCalendarAutoDenySignatureId,
 	setZimbraPrefCalendarAutoDenySignatureId,
-	hideSearchBar
+	hideSearchBar,
+	hideHeaderBar
 }) => {
 	const [t] = useTranslation();
 	const [selectedSignature, setSelectedSignature] = useState<any>([]);
@@ -298,17 +300,19 @@ export const SignatureDetail: FC<any> = ({
 
 	return (
 		<>
-			<Row padding={{ top: 'extralarge' }}>
-				<Text
-					size="small"
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					orientation="horizontal"
-					weight="bold"
-				>
-					{t('label.signatures', 'Signatures')}
-				</Text>
-			</Row>
+			{!hideHeaderBar && (
+				<Row padding={{ top: 'extralarge' }}>
+					<Text
+						size="small"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						weight="bold"
+					>
+						{t('label.signatures', 'Signatures')}
+					</Text>
+				</Row>
+			)}
 			{isEditable && (
 				<ListRow>
 					<Row
@@ -385,14 +389,58 @@ export const SignatureDetail: FC<any> = ({
 					orientation="horizontal"
 					padding={{ top: 'large' }}
 				>
-					<Table
-						rows={signatureListRows}
-						headers={signatureHeaders}
-						showCheckbox={false}
-						style={{ overflow: 'auto', height: '100%' }}
-						selectedRows={selectedSignature}
-						onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
-					/>
+					{signatureListRows && signatureListRows.length > 0 && (
+						<Table
+							rows={signatureListRows}
+							headers={signatureHeaders}
+							showCheckbox={false}
+							style={{ overflow: 'auto', height: '100%' }}
+							selectedRows={selectedSignature}
+							onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
+						/>
+					)}
+					{signatureListRows?.length === 0 && (
+						<Container orientation="column" crossAlignment="center" mainAlignment="center">
+							<Row>
+								<img src={logo} alt="logo" />
+							</Row>
+							<Row
+								padding={{ top: 'extralarge' }}
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+							>
+								<Text weight="light" color="#828282" size="large" overflow="break-word">
+									{t('label.this_list_is_empty', 'This list is empty.')}
+								</Text>
+							</Row>
+							<Row
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+								padding={{ top: 'small' }}
+								width="53%"
+							>
+								<Text weight="light" color="#828282" size="large" overflow="break-word">
+									<Trans
+										i18nKey="label.do_you_need_more_information"
+										defaults="Do you need more information?"
+									/>
+								</Text>
+							</Row>
+							<Row
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+								padding={{ top: 'small' }}
+								width="53%"
+							>
+								<Text weight="light" color="primary">
+									{t('label.click_here', 'Click here')}
+								</Text>
+							</Row>
+						</Container>
+					)}
 				</Container>
 			</ListRow>
 			<ListRow>

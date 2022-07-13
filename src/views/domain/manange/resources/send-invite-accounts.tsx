@@ -14,14 +14,16 @@ import {
 	Button,
 	Padding
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import ListRow from '../../../list/list-row';
+import logo from '../../../../assets/gardian.svg';
 
 export const SendInviteAccounts: FC<any> = ({
 	isEditable,
 	sendInviteList,
 	setSendInviteList,
-	hideSearchBar
+	hideSearchBar,
+	hideHeaderBar
 }) => {
 	const [t] = useTranslation();
 	const [newSentInviteValue, setNewSentInviteValue] = useState<string>('');
@@ -107,17 +109,19 @@ export const SendInviteAccounts: FC<any> = ({
 
 	return (
 		<>
-			<Row padding={{ top: 'extralarge' }}>
-				<Text
-					size="small"
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					orientation="horizontal"
-					weight="bold"
-				>
-					{t('label.send_invite_to', 'Send Invite To')}
-				</Text>
-			</Row>
+			{!hideHeaderBar && (
+				<Row padding={{ top: 'extralarge' }}>
+					<Text
+						size="small"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						weight="bold"
+					>
+						{t('label.send_invite_to', 'Send Invite To')}
+					</Text>
+				</Row>
+			)}
 			{isEditable && (
 				<ListRow>
 					<Row
@@ -192,21 +196,65 @@ export const SendInviteAccounts: FC<any> = ({
 					orientation="horizontal"
 					padding={{ top: 'large' }}
 				>
-					<Table
-						rows={sendInviteRows}
-						headers={sendInviteHeaders}
-						showCheckbox={!!isEditable}
-						style={{ overflow: 'auto', height: '100%' }}
-						selectedRows={selectedSendInvite}
-						onSelectionChange={(selected: any): any => {
-							setSelectedSendInvite(selected);
-							if (selected && selected.length > 0) {
-								setSendInviteDeleteBtnDisabled(false);
-							} else {
-								setSendInviteDeleteBtnDisabled(true);
-							}
-						}}
-					/>
+					{sendInviteRows && sendInviteRows.length > 0 && (
+						<Table
+							rows={sendInviteRows}
+							headers={sendInviteHeaders}
+							showCheckbox={!!isEditable}
+							style={{ overflow: 'auto', height: '100%' }}
+							selectedRows={selectedSendInvite}
+							onSelectionChange={(selected: any): any => {
+								setSelectedSendInvite(selected);
+								if (selected && selected.length > 0) {
+									setSendInviteDeleteBtnDisabled(false);
+								} else {
+									setSendInviteDeleteBtnDisabled(true);
+								}
+							}}
+						/>
+					)}
+					{sendInviteRows?.length === 0 && (
+						<Container orientation="column" crossAlignment="center" mainAlignment="center">
+							<Row>
+								<img src={logo} alt="logo" />
+							</Row>
+							<Row
+								padding={{ top: 'extralarge' }}
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+							>
+								<Text weight="light" color="#828282" size="large" overflow="break-word">
+									{t('label.this_list_is_empty', 'This list is empty.')}
+								</Text>
+							</Row>
+							<Row
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+								padding={{ top: 'small' }}
+								width="53%"
+							>
+								<Text weight="light" color="#828282" size="large" overflow="break-word">
+									<Trans
+										i18nKey="label.do_you_need_more_information"
+										defaults="Do you need more information?"
+									/>
+								</Text>
+							</Row>
+							<Row
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+								padding={{ top: 'small' }}
+								width="53%"
+							>
+								<Text weight="light" color="primary">
+									{t('label.click_here', 'Click here')}
+								</Text>
+							</Row>
+						</Container>
+					)}
 				</Container>
 			</ListRow>
 		</>

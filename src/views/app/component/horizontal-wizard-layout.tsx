@@ -59,16 +59,14 @@ const StepNavigator: FC<{
 	}, [currentStepIndex, stepIndex]);
 
 	return (
-		<Row width={renderElement ? '100%' : '50%'}>
-			<Row
-				wrap="nowrap"
-				onClick={onClick}
-				width="80%"
-				style={{
-					borderBottom: isActive ? '2px solid #2b73d2' : '',
-					cursor: 'pointer'
-				}}
-			>
+		<Row
+			width={renderElement ? '100%' : '50%'}
+			style={{
+				borderBottom: isActive ? '2px solid #2b73d2' : '',
+				cursor: 'pointer'
+			}}
+		>
+			<Row wrap="nowrap" onClick={onClick} width="80%">
 				<Row style={{ padding: renderElement ? '12px 8px' : '', borderRadius: '50%' }}>
 					<Icon icon={step.icon} color={color} size="large" />
 				</Row>
@@ -286,13 +284,15 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 					</Padding>
 				</Row>
 				<Row mainAlignment="flex-start">
-					<PrevButton
-						key="wizard-prev"
-						setCompleteLoading={setCompleteLoading}
-						completeLoading={completeLoading}
-						label={t('label.wizard_previous_button', 'PREVIOUS')}
-						onClick={goBack}
-					/>
+					<Padding right="large">
+						<PrevButton
+							key="wizard-prev"
+							setCompleteLoading={setCompleteLoading}
+							completeLoading={completeLoading}
+							label={t('label.wizard_previous_button', 'PREVIOUS')}
+							onClick={goBack}
+						/>
+					</Padding>
 				</Row>
 				<Row mainAlignment="flex-start">
 					<NextButton

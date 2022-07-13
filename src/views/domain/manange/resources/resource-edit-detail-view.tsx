@@ -83,7 +83,6 @@ const ResourceEditDetailView: FC<any> = ({
 	const [zimbraCalResMaxPercentConflictsAllowed, setZimbraCalResMaxPercentConflictsAllowed] =
 		useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
-	const [description, setDescription] = useState<string>('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 
 	const STATUS_COLOR: any = useMemo(
@@ -357,12 +356,6 @@ const ResourceEditDetailView: FC<any> = ({
 				obj.zimbraCalResMaxPercentConflictsAllowed = '';
 				setZimbraCalResMaxPercentConflictsAllowed('');
 			}
-			if (obj.description) {
-				setDescription(obj.description);
-			} else {
-				obj.description = '';
-				setDescription('');
-			}
 			if (obj.zimbraNotes) {
 				setZimbraNotes(obj.zimbraNotes);
 			} else {
@@ -473,15 +466,6 @@ const ResourceEditDetailView: FC<any> = ({
 			setIsDirty(true);
 		}
 	}, [resourceDetailData.mail, resourceMail]);
-
-	useEffect(() => {
-		if (
-			resourceDetailData?.description !== undefined &&
-			resourceDetailData?.description !== description
-		) {
-			setIsDirty(true);
-		}
-	}, [resourceDetailData.description, description]);
 
 	useEffect(() => {
 		if (
@@ -614,7 +598,6 @@ const ResourceEditDetailView: FC<any> = ({
 		setResourceName(resourceDetailData?.displayName);
 		setResourceMail(resourceDetailData?.mail);
 		setZimbraNotes(resourceDetailData?.zimbraNotes);
-		setDescription(resourceDetailData?.description);
 		setZimbraCalResMaxNumConflictsAllowed(resourceDetailData?.zimbraCalResMaxNumConflictsAllowed);
 		setZimbraCalResMaxPercentConflictsAllowed(
 			resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed
@@ -709,10 +692,6 @@ const ResourceEditDetailView: FC<any> = ({
 			attributes.push({
 				n: 'displayName',
 				_content: resourceName
-			});
-			attributes.push({
-				n: 'description',
-				_content: description
 			});
 			attributes.push({
 				n: 'zimbraNotes',
@@ -1331,37 +1310,6 @@ const ResourceEditDetailView: FC<any> = ({
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
 				</Row>
-				{isEditMode && (
-					<Row padding={{ top: 'extralarge' }} width="100%">
-						<Textarea
-							label={t('label.description', 'Description')}
-							backgroundColor="gray5"
-							value={description}
-							size="medium"
-							onChange={(e: any): any => {
-								setDescription(e.target.value);
-							}}
-						/>
-					</Row>
-				)}
-				{!isEditMode && (
-					<>
-						<Row padding={{ top: 'extralarge' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
-								{t('label.description', 'Description')}
-							</Text>
-						</Row>
-						<Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
-							<Text size="small">{resourceDetailData?.description}</Text>
-						</Row>
-					</>
-				)}
 				{isEditMode && (
 					<Row padding={{ top: 'extralarge' }} width="100%">
 						<Textarea

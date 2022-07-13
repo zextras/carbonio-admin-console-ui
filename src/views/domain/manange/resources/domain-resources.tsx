@@ -25,6 +25,7 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import ResourceEditDetailView from './resource-edit-detail-view';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import CreateResource from './create-resource';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -39,6 +40,7 @@ const DomainResources: FC = () => {
 	const [showResourceEditDetailView, setShowResourceEditDetailView] = useState<boolean>(false);
 	const [isEditMode, setIsEditMode] = useState<boolean>(false);
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
+	const [showCreateResourceView, setShowCreateResourceView] = useState<boolean>(false);
 	const timer = useRef<any>();
 	const headers: any[] = useMemo(
 		() => [
@@ -228,6 +230,9 @@ const DomainResources: FC = () => {
 		searchResourceQuery(searchString);
 	}, [searchString, searchResourceQuery]);
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	const createResourceReq = useCallback(() => {}, []);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -251,6 +256,9 @@ const DomainResources: FC = () => {
 									icon="Plus"
 									height={36}
 									width={36}
+									onClick={(): void => {
+										setShowCreateResourceView(true);
+									}}
 								/>
 							</Padding>
 							<Button
@@ -377,6 +385,12 @@ const DomainResources: FC = () => {
 					isEditMode={isEditMode}
 					setIsEditMode={setIsEditMode}
 					setIsUpdateRecord={setIsUpdateRecord}
+				/>
+			)}
+			{showCreateResourceView && (
+				<CreateResource
+					setShowCreateResourceView={setShowCreateResourceView}
+					createResourceReq={createResourceReq}
 				/>
 			)}
 		</Container>
