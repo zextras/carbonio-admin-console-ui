@@ -7,7 +7,6 @@
 import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container, Button, useSnackbar } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { Section } from '../../../app/component/section';
 import { useDomainStore } from '../../../../store/domain/store';
 import { ResourceContext } from './resource-context';
@@ -15,22 +14,6 @@ import { HorizontalWizard } from '../../../app/component/hwizard';
 import ResourceDetailSection from './resource-detail-section';
 import ResourceSharingSection from './resource-sharing-section';
 import ResourceCreateSection from './resource-create-section';
-
-const ResourceDetailContainer = styled(Container)`
-	z-index: 10;
-	position: absolute;
-	top: 43px;
-	right: 12px;
-	bottom: 0px;
-	left: ${'max(calc(100% - 680px), 12px)'};
-	transition: left 0.2s ease-in-out;
-	height: auto;
-	width: auto;
-	max-height: 100%;
-	overflow: hidden;
-	box-shadow: -6px 4px 5px 0px rgba(0, 0, 0, 0.1);
-	opacity: '10%;
-`;
 
 interface ResourceDetailObj {
 	name: string;
@@ -252,7 +235,23 @@ const CreateResource: FC<{
 	}, [setShowCreateResourceView]);
 
 	return (
-		<ResourceDetailContainer background="gray5" mainAlignment="flex-start">
+		<Container
+			background="gray5"
+			mainAlignment="flex-start"
+			style={{
+				position: 'absolute',
+				top: '43px',
+				right: '0px',
+				bottom: '0px',
+				left: `${'max(calc(100% - 680px), 12px)'}`,
+				transition: 'left 0.2s ease-in-out',
+				height: 'auto',
+				width: 'auto',
+				maxHeight: '100%',
+				overflow: 'hidden',
+				boxShadow: '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+			}}
+		>
 			<ResourceContext.Provider value={{ resourceDetail, setResourceDetail }}>
 				<HorizontalWizard
 					steps={wizardSteps}
@@ -262,7 +261,7 @@ const CreateResource: FC<{
 					setToggleWizardSection={setShowCreateResourceView}
 				/>
 			</ResourceContext.Provider>
-		</ResourceDetailContainer>
+		</Container>
 	);
 };
 
