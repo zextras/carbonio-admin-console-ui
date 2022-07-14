@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -14,7 +14,8 @@ import {
 	Icon,
 	Input,
 	Table,
-	Text
+	Text,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -25,10 +26,14 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import ResourceEditDetailView from './resource-edit-detail-view';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { createResource } from '../../../../services/create-cal-resource-service';
+import { createSignature } from '../../../../services/create-signature-service';
 import CreateResource from './create-resource';
+import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [resourceList, setResourceList] = useState<any[]>([]);
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
@@ -230,8 +235,135 @@ const DomainResources: FC = () => {
 		searchResourceQuery(searchString);
 	}, [searchString, searchResourceQuery]);
 
-	// eslint-disable-next-line @typescript-eslint/no-empty-function
-	const createResourceReq = useCallback(() => {}, []);
+	const successSnackBar = useCallback(
+		(resourceName: any): void => {
+			createSnackbar({
+				key: 'success',
+				type: 'success',
+				label: t('label.create_resource_success_msg', {
+					resourceName,
+					defaultValue: '{{resourceName}} has been created successfully'
+				}),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[createSnackbar, t]
+	);
+
+	const errorSnackBar = useCallback(
+		(text?: any): void => {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label:
+					text || t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[createSnackbar, t]
+	);
+
+	const createResourceReq = useCallback(
+		(
+			name,
+			password,
+			attr,
+			resourceName,
+			signatureList,
+			zimbraPrefCalendarAutoAcceptSignatureId,
+			zimbraPrefCalendarAutoDeclineSignatureId,
+			zimbraPrefCalendarAutoDenySignatureId
+		) => {
+			createResource(name, password, attr)
+				.then((response) => response.json())
+				.then((data) => {
+					const resourceId = data?.Body?.CreateCalendarResourceResponse?.calresource[0]?.id;
+					if (resourceId) {
+						if (signatureList && signatureList.length > 0) {
+							const requests: any[] = [];
+							signatureList.forEach((item: any) => {
+								requests.push(createSignature(resourceId, item?.name, item?.content[0]?._content));
+							});
+							Promise.all(requests)
+								.then((responses) => Promise.all(responses.map((response) => response.json())))
+								.then((resData) => {
+									if (
+										zimbraPrefCalendarAutoAcceptSignatureId?.value === '' &&
+										zimbraPrefCalendarAutoDeclineSignatureId?.value === '' &&
+										zimbraPrefCalendarAutoDenySignatureId?.value === ''
+									) {
+										setShowCreateResourceView(false);
+										successSnackBar(resourceName);
+										setIsUpdateRecord(true);
+									} else {
+										const signatureRes: any[] = [];
+										resData.forEach((res: any) => {
+											signatureRes.push(res?.Body?.CreateSignatureResponse?.signature[0]);
+										});
+										const signtureAttr: any = {
+											zimbraPrefCalendarAutoAcceptSignatureId:
+												zimbraPrefCalendarAutoAcceptSignatureId?.value
+													? signatureRes.filter(
+															(item: any) =>
+																// eslint-disable-next-line max-len
+																item.name === zimbraPrefCalendarAutoAcceptSignatureId?.label
+													  )[0]?.id
+													: '',
+											zimbraPrefCalendarAutoDeclineSignatureId:
+												zimbraPrefCalendarAutoDeclineSignatureId?.value
+													? signatureRes.filter(
+															(item: any) =>
+																// eslint-disable-next-line max-len
+																item.name === zimbraPrefCalendarAutoDeclineSignatureId?.label
+													  )[0]?.id
+													: '',
+											zimbraPrefCalendarAutoDenySignatureId:
+												zimbraPrefCalendarAutoDenySignatureId?.value
+													? signatureRes.filter(
+															(item: any) =>
+																// eslint-disable-next-line max-len
+																item.name === zimbraPrefCalendarAutoDenySignatureId?.label
+													  )[0]?.id
+													: ''
+										};
+										const attrList: { n: string; _content: string }[] = [];
+										Object.keys(signtureAttr).map((ele: any) =>
+											attrList.push({ n: ele, _content: signtureAttr[ele] })
+										);
+										modifyCalendarResource(resourceId, attrList)
+											.then((response) => response.json())
+											.then((modifyData) => {
+												setShowCreateResourceView(false);
+												successSnackBar(resourceName);
+												setIsUpdateRecord(true);
+											})
+											.catch((error) => {
+												errorSnackBar();
+											});
+									}
+								})
+								.catch((error) => {
+									errorSnackBar();
+								});
+						} else {
+							setShowCreateResourceView(false);
+							successSnackBar(resourceName);
+							setIsUpdateRecord(true);
+						}
+					} else {
+						errorSnackBar(data?.Body?.Fault?.Reason?.Text);
+					}
+				})
+				.catch((error) => {
+					errorSnackBar();
+				});
+		},
+		[errorSnackBar, successSnackBar]
+	);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">

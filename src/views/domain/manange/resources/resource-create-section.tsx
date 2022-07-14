@@ -115,7 +115,7 @@ const ResourceCreateSection: FC = () => {
 							<Input
 								label={t('label.domain', 'Domain')}
 								backgroundColor="gray6"
-								value=""
+								value={resourceDetail?.domain}
 								size="medium"
 								readOnly
 							/>

@@ -81,6 +81,33 @@ const ResourceSharingSection: FC = () => {
 		setSignatureItems(arrayItem);
 	}, [setSignatureItems, t]);
 
+	useEffect(() => {
+		if (!resourceDetail?.zimbraPrefCalendarAutoAcceptSignatureId) {
+			setResourceDetail((prev: any) => ({
+				...prev,
+				zimbraPrefCalendarAutoAcceptSignatureId: resourceDetail?.signatureItems[0]
+			}));
+		}
+		if (!resourceDetail?.zimbraPrefCalendarAutoDeclineSignatureId) {
+			setResourceDetail((prev: any) => ({
+				...prev,
+				zimbraPrefCalendarAutoDeclineSignatureId: resourceDetail?.signatureItems[0]
+			}));
+		}
+		if (!resourceDetail?.zimbraPrefCalendarAutoDenySignatureId) {
+			setResourceDetail((prev: any) => ({
+				...prev,
+				zimbraPrefCalendarAutoDenySignatureId: resourceDetail?.signatureItems[0]
+			}));
+		}
+	}, [
+		resourceDetail?.signatureItems,
+		resourceDetail?.zimbraPrefCalendarAutoAcceptSignatureId,
+		resourceDetail?.zimbraPrefCalendarAutoDeclineSignatureId,
+		resourceDetail?.zimbraPrefCalendarAutoDenySignatureId,
+		setResourceDetail
+	]);
+
 	return (
 		<Container mainAlignment="flex-start">
 			<Container

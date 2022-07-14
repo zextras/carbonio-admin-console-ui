@@ -262,6 +262,7 @@
         "create_new_domain": "Create New Domain",
         "create_resource": "Create Resource",
         "create_resource_msg": "You can create a new resource by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here",
+        "create_resource_success_msg": "{{resourceName}} has been created successfully",
         "creation_date": "Creation Date",
         "dashboard": "Dashboard",
         "datasource_name_for_internal_gal": "Datasource name for internal GAL",
