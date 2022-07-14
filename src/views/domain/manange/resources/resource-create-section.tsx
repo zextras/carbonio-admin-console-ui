@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useContext, useState, useEffect } from 'react';
+import React, { FC, useContext, useCallback } from 'react';
 import { Container, Input, Row, Text, Icon, Divider } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { ResourceContext } from './resource-context';
@@ -15,15 +15,47 @@ const ResourceCreateSection: FC = () => {
 	const context = useContext(ResourceContext);
 	const { t } = useTranslation();
 	const { resourceDetail, setResourceDetail } = context;
-	const [sendInviteList, setSendInviteList] = useState<any[]>([]);
-	const [zimbraPrefCalendarAutoAcceptSignatureId, setZimbraPrefCalendarAutoAcceptSignatureId] =
-		useState<any>({});
-	const [zimbraPrefCalendarAutoDeclineSignatureId, setZimbraPrefCalendarAutoDeclineSignatureId] =
-		useState<any>({});
-	const [zimbraPrefCalendarAutoDenySignatureId, setZimbraPrefCalendarAutoDenySignatureId] =
-		useState<any>({});
-	const [signatureList, setSignatureList] = useState<any[]>([]);
-	const [signatureItems, setSignatureItems] = useState<any[]>([]);
+
+	const setZimbraPrefCalendarAutoAcceptSignatureId = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoAcceptSignatureId: v }));
+		},
+		[setResourceDetail]
+	);
+	const setZimbraPrefCalendarAutoDeclineSignatureId = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoDeclineSignatureId: v }));
+		},
+		[setResourceDetail]
+	);
+	const setZimbraPrefCalendarAutoDenySignatureId = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoDenySignatureId: v }));
+		},
+		[setResourceDetail]
+	);
+
+	const setSignatureList = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, signaturelist: v }));
+		},
+		[setResourceDetail]
+	);
+
+	const setSignatureItems = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, signatureItems: v }));
+		},
+		[setResourceDetail]
+	);
+
+	const setSendInviteList = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, sendInviteList: v }));
+		},
+		[setResourceDetail]
+	);
+
 	return (
 		<Container mainAlignment="flex-start">
 			<Container
@@ -101,7 +133,7 @@ const ResourceCreateSection: FC = () => {
 							<Input
 								label={t('label.type', 'Type')}
 								backgroundColor="gray6"
-								value={resourceDetail.zimbraCalResType}
+								value={resourceDetail?.zimbraCalResType?.label}
 								size="medium"
 								readOnly
 							/>
@@ -110,7 +142,7 @@ const ResourceCreateSection: FC = () => {
 							<Input
 								label={t('label.status', 'Status')}
 								backgroundColor="gray6"
-								value={resourceDetail.zimbraAccountStatus}
+								value={resourceDetail?.zimbraAccountStatus?.label}
 								size="medium"
 								readOnly
 							/>
@@ -119,7 +151,7 @@ const ResourceCreateSection: FC = () => {
 							<Input
 								label={t('label.class_of_service', 'Class of Service')}
 								backgroundColor="gray6"
-								value={resourceDetail.zimbraCOSId}
+								value={resourceDetail?.zimbraCOSId?.label}
 								size="medium"
 								readOnly
 							/>
@@ -137,7 +169,7 @@ const ResourceCreateSection: FC = () => {
 							<Input
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								backgroundColor="gray6"
-								value={resourceDetail.zimbraCalResAutoDeclineRecurring}
+								value={resourceDetail?.zimbraCalResAutoDeclineRecurring?.label}
 								size="medium"
 								readOnly
 							/>
@@ -171,7 +203,7 @@ const ResourceCreateSection: FC = () => {
 						<Input
 							label={t('label.schedule_policy', 'Schedule Policy')}
 							backgroundColor="gray6"
-							value={resourceDetail.schedulePolicyType}
+							value={resourceDetail?.schedulePolicyType?.label}
 							size="medium"
 							readOnly
 						/>
@@ -182,7 +214,7 @@ const ResourceCreateSection: FC = () => {
 				</Row>
 				<SendInviteAccounts
 					isEditable={false}
-					sendInviteList={sendInviteList}
+					sendInviteList={resourceDetail?.sendInviteList}
 					setSendInviteList={setSendInviteList}
 					hideSearchBar
 				/>
@@ -191,22 +223,28 @@ const ResourceCreateSection: FC = () => {
 				</Row>
 				<SignatureDetail
 					isEditable={false}
-					signatureList={signatureList}
+					signatureList={resourceDetail?.signaturelist}
 					setSignatureList={setSignatureList}
-					signatureItems={signatureItems}
+					signatureItems={resourceDetail?.signatureItems}
 					setSignatureItems={setSignatureItems}
-					zimbraPrefCalendarAutoAcceptSignatureId={zimbraPrefCalendarAutoAcceptSignatureId}
+					zimbraPrefCalendarAutoAcceptSignatureId={
+						resourceDetail?.zimbraPrefCalendarAutoAcceptSignatureId
+					}
 					setZimbraPrefCalendarAutoAcceptSignatureId={setZimbraPrefCalendarAutoAcceptSignatureId}
-					zimbraPrefCalendarAutoDeclineSignatureId={zimbraPrefCalendarAutoDeclineSignatureId}
+					zimbraPrefCalendarAutoDeclineSignatureId={
+						resourceDetail?.zimbraPrefCalendarAutoDeclineSignatureId
+					}
 					setZimbraPrefCalendarAutoDeclineSignatureId={setZimbraPrefCalendarAutoDeclineSignatureId}
-					zimbraPrefCalendarAutoDenySignatureId={zimbraPrefCalendarAutoDenySignatureId}
+					zimbraPrefCalendarAutoDenySignatureId={
+						resourceDetail?.zimbraPrefCalendarAutoDenySignatureId
+					}
 					setZimbraPrefCalendarAutoDenySignatureId={setZimbraPrefCalendarAutoDenySignatureId}
 					hideSearchBar
 				/>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
 				</Row>
-				<Row>
+				<Row padding={{ top: 'large' }}>
 					<Text
 						size="small"
 						mainAlignment="flex-start"

@@ -8,7 +8,6 @@ import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container, Button, useSnackbar } from '@zextras/carbonio-design-system';
 import { Section } from '../../../app/component/section';
-import { useDomainStore } from '../../../../store/domain/store';
 import { ResourceContext } from './resource-context';
 import { HorizontalWizard } from '../../../app/component/hwizard';
 import ResourceDetailSection from './resource-detail-section';
@@ -17,23 +16,25 @@ import ResourceCreateSection from './resource-create-section';
 
 interface ResourceDetailObj {
 	name: string;
+	changeNameBool: boolean;
 	domain: string;
 	description: string;
 	password: string;
 	repeatPassword: string;
 	displayName: string;
-	zimbraCOSId: string;
-	zimbraAccountStatus: string;
-	zimbraCalResType: string;
-	zimbraCalResAutoDeclineRecurring: string;
+	zimbraCOSId: any;
+	zimbraAccountStatus: any;
+	zimbraCalResType: any;
+	zimbraCalResAutoDeclineRecurring: any;
 	zimbraCalResMaxNumConflictsAllowed: string;
 	zimbraCalResMaxPercentConflictsAllowed: string;
-	zimbraPrefCalendarAutoAcceptSignatureId: string;
-	zimbraPrefCalendarAutoDeclineSignatureId: string;
-	zimbraPrefCalendarAutoDenySignatureId: string;
+	zimbraPrefCalendarAutoAcceptSignatureId: any;
+	zimbraPrefCalendarAutoDeclineSignatureId: any;
+	zimbraPrefCalendarAutoDenySignatureId: any;
 	sendInviteList: any[];
 	signaturelist: any[];
-	schedulePolicyType: string;
+	schedulePolicyType: any;
+	signatureItems: any[];
 }
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
@@ -61,26 +62,27 @@ const CreateResource: FC<{
 }> = ({ setShowCreateResourceView, createResourceReq }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
-	const domainName = useDomainStore((state) => state.domain?.name);
 	const [resourceDetail, setResourceDetail] = useState<ResourceDetailObj>({
 		name: '',
+		changeNameBool: false,
 		domain: '',
 		description: '',
 		password: '',
 		repeatPassword: '',
 		displayName: '',
-		zimbraCOSId: '',
-		zimbraAccountStatus: '',
-		zimbraCalResType: '',
-		zimbraCalResAutoDeclineRecurring: '',
+		zimbraCOSId: {},
+		zimbraAccountStatus: {},
+		zimbraCalResType: {},
+		zimbraCalResAutoDeclineRecurring: {},
 		zimbraCalResMaxNumConflictsAllowed: '',
 		zimbraCalResMaxPercentConflictsAllowed: '',
-		zimbraPrefCalendarAutoAcceptSignatureId: '',
-		zimbraPrefCalendarAutoDeclineSignatureId: '',
-		zimbraPrefCalendarAutoDenySignatureId: '',
+		zimbraPrefCalendarAutoAcceptSignatureId: {},
+		zimbraPrefCalendarAutoDeclineSignatureId: {},
+		zimbraPrefCalendarAutoDenySignatureId: {},
 		sendInviteList: [],
 		signaturelist: [],
-		schedulePolicyType: ''
+		schedulePolicyType: {},
+		signatureItems: []
 	});
 
 	const [wizardData, setWizardData] = useState();
@@ -213,6 +215,7 @@ const CreateResource: FC<{
 									replace: true
 								});
 							} else {
+								console.log('resourceDetail::::', resourceDetail);
 								createResourceReq();
 							}
 						}}
@@ -223,10 +226,11 @@ const CreateResource: FC<{
 		[
 			t,
 			setShowCreateResourceView,
-			resourceDetail?.password,
-			resourceDetail?.repeatPassword,
+			// resourceDetail?.password,
+			// resourceDetail?.repeatPassword,
 			createSnackbar,
-			createResourceReq
+			createResourceReq,
+			resourceDetail
 		]
 	);
 

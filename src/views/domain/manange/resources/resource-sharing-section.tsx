@@ -24,17 +24,52 @@ const ResourceSharingSection: FC = () => {
 	const context = useContext(ResourceContext);
 	const { t } = useTranslation();
 	const { resourceDetail, setResourceDetail } = context;
-	const [sendInviteList, setSendInviteList] = useState<any[]>([]);
-	const [zimbraPrefCalendarAutoAcceptSignatureId, setZimbraPrefCalendarAutoAcceptSignatureId] =
-		useState<any>({});
-	const [zimbraPrefCalendarAutoDeclineSignatureId, setZimbraPrefCalendarAutoDeclineSignatureId] =
-		useState<any>({});
-	const [zimbraPrefCalendarAutoDenySignatureId, setZimbraPrefCalendarAutoDenySignatureId] =
-		useState<any>({});
-	const [signatureList, setSignatureList] = useState<any[]>([]);
-	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [showSendInvite, setShowSendInvite] = useState<boolean>(true);
 	const [showSignature, setShowSignature] = useState<boolean>(true);
+
+	const sendInviteEnabled = useCallback(() => setShowSendInvite((c) => !c), []);
+
+	const signatureEnabled = useCallback(() => setShowSignature((c) => !c), []);
+
+	const setZimbraPrefCalendarAutoAcceptSignatureId = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoAcceptSignatureId: v }));
+		},
+		[setResourceDetail]
+	);
+	const setZimbraPrefCalendarAutoDeclineSignatureId = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoDeclineSignatureId: v }));
+		},
+		[setResourceDetail]
+	);
+	const setZimbraPrefCalendarAutoDenySignatureId = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoDenySignatureId: v }));
+		},
+		[setResourceDetail]
+	);
+
+	const setSignatureList = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, signaturelist: v }));
+		},
+		[setResourceDetail]
+	);
+
+	const setSignatureItems = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, signatureItems: v }));
+		},
+		[setResourceDetail]
+	);
+
+	const setSendInviteList = useCallback(
+		(v) => {
+			setResourceDetail((prev: any) => ({ ...prev, sendInviteList: v }));
+		},
+		[setResourceDetail]
+	);
 
 	useEffect(() => {
 		const arrayItem: any[] = [
@@ -44,11 +79,7 @@ const ResourceSharingSection: FC = () => {
 			}
 		];
 		setSignatureItems(arrayItem);
-	}, [t]);
-
-	const sendInviteEnabled = useCallback(() => setShowSendInvite((c) => !c), []);
-
-	const signatureEnabled = useCallback(() => setShowSignature((c) => !c), []);
+	}, [setSignatureItems, t]);
 
 	return (
 		<Container mainAlignment="flex-start">
@@ -90,7 +121,7 @@ const ResourceSharingSection: FC = () => {
 				{showSendInvite && (
 					<SendInviteAccounts
 						isEditable
-						sendInviteList={sendInviteList}
+						sendInviteList={resourceDetail?.sendInviteList}
 						setSendInviteList={setSendInviteList}
 						hideHeaderBar
 					/>
@@ -126,17 +157,23 @@ const ResourceSharingSection: FC = () => {
 				{showSignature && (
 					<SignatureDetail
 						isEditable
-						signatureList={signatureList}
+						signatureList={resourceDetail?.signaturelist}
 						setSignatureList={setSignatureList}
-						signatureItems={signatureItems}
+						signatureItems={resourceDetail?.signatureItems}
 						setSignatureItems={setSignatureItems}
-						zimbraPrefCalendarAutoAcceptSignatureId={zimbraPrefCalendarAutoAcceptSignatureId}
+						zimbraPrefCalendarAutoAcceptSignatureId={
+							resourceDetail?.zimbraPrefCalendarAutoAcceptSignatureId
+						}
 						setZimbraPrefCalendarAutoAcceptSignatureId={setZimbraPrefCalendarAutoAcceptSignatureId}
-						zimbraPrefCalendarAutoDeclineSignatureId={zimbraPrefCalendarAutoDeclineSignatureId}
+						zimbraPrefCalendarAutoDeclineSignatureId={
+							resourceDetail?.zimbraPrefCalendarAutoDeclineSignatureId
+						}
 						setZimbraPrefCalendarAutoDeclineSignatureId={
 							setZimbraPrefCalendarAutoDeclineSignatureId
 						}
-						zimbraPrefCalendarAutoDenySignatureId={zimbraPrefCalendarAutoDenySignatureId}
+						zimbraPrefCalendarAutoDenySignatureId={
+							resourceDetail?.zimbraPrefCalendarAutoDenySignatureId
+						}
 						setZimbraPrefCalendarAutoDenySignatureId={setZimbraPrefCalendarAutoDenySignatureId}
 						hideHeaderBar
 					/>

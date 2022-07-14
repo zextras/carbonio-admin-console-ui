@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useContext, useState, useEffect } from 'react';
+import React, { FC, useMemo, useContext, useState, useEffect, useCallback } from 'react';
 import {
 	Container,
 	Input,
@@ -32,6 +32,7 @@ const ResourceDetailSection: FC = () => {
 	const { resourceDetail, setResourceDetail } = context;
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
+	const domainName = useDomainStore((state) => state.domain?.name);
 
 	const resourceTypeOptions: any[] = useMemo(
 		() => [
@@ -119,6 +120,115 @@ const ResourceDetailSection: FC = () => {
 		setCosItems(arrayItem);
 	}, [cosList, t]);
 
+	const onCOSIdChange = useCallback(
+		(v: string): void => {
+			const objItem = cosItems.find((item: any) => item.value === v);
+			if (objItem !== resourceDetail?.zimbraCOSId) {
+				setResourceDetail((prev: any) => ({ ...prev, zimbraCOSId: objItem }));
+			}
+		},
+		[cosItems, resourceDetail?.zimbraCOSId, setResourceDetail]
+	);
+
+	const onAccountStatusChange = useCallback(
+		(v: string): void => {
+			const objItem = accountStatusOptions.find((item: any) => item.value === v);
+			if (objItem !== resourceDetail?.zimbraAccountStatus) {
+				setResourceDetail((prev: any) => ({ ...prev, zimbraAccountStatus: objItem }));
+			}
+		},
+		[accountStatusOptions, resourceDetail?.zimbraAccountStatus, setResourceDetail]
+	);
+
+	const onResourceTypeChange = useCallback(
+		(v: string): void => {
+			const objItem = resourceTypeOptions.find((item: any) => item.value === v);
+			if (objItem !== resourceDetail?.zimbraCalResType) {
+				setResourceDetail((prev: any) => ({ ...prev, zimbraCalResType: objItem }));
+			}
+		},
+		[resourceDetail?.zimbraCalResType, resourceTypeOptions, setResourceDetail]
+	);
+
+	const onAutoRefuseChange = useCallback(
+		(v: string): void => {
+			const objItem = autoRefuseOption.find((item: any) => item.value === v);
+			if (objItem !== resourceDetail?.zimbraCalResAutoDeclineRecurring) {
+				setResourceDetail((prev: any) => ({ ...prev, zimbraCalResAutoDeclineRecurring: objItem }));
+			}
+		},
+		[autoRefuseOption, resourceDetail?.zimbraCalResAutoDeclineRecurring, setResourceDetail]
+	);
+
+	const onSchedulePolicyChange = useCallback(
+		(v: string): void => {
+			const objItem = schedulePolicyItems.find((item: any) => item.value === v);
+			if (objItem !== resourceDetail?.schedulePolicyType) {
+				setResourceDetail((prev: any) => ({ ...prev, schedulePolicyType: objItem }));
+			}
+		},
+		[resourceDetail?.schedulePolicyType, schedulePolicyItems, setResourceDetail]
+	);
+
+	const changeResourceDetail = useCallback(
+		(e) => {
+			setResourceDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+		},
+		[setResourceDetail]
+	);
+
+	const changeResourceName = useCallback(
+		(e) => {
+			setResourceDetail((prev: any) => ({ ...prev, changeNameBool: true }));
+			setResourceDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+		},
+		[setResourceDetail]
+	);
+
+	useEffect(() => {
+		if (domainName) {
+			setResourceDetail((prev: any) => ({ ...prev, domain: domainName }));
+		}
+	}, [domainName, setResourceDetail]);
+
+	useEffect(() => {
+		!resourceDetail?.changeNameBool &&
+			setResourceDetail((prev: any) => ({ ...prev, name: resourceDetail?.displayName }));
+	}, [resourceDetail?.changeNameBool, resourceDetail?.displayName, setResourceDetail]);
+
+	useEffect(() => {
+		if (accountStatusOptions && accountStatusOptions.length > 0) {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraAccountStatus: accountStatusOptions[0] }));
+		}
+	}, [accountStatusOptions, setResourceDetail]);
+
+	useEffect(() => {
+		if (resourceTypeOptions && resourceTypeOptions.length > 0) {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraCalResType: resourceTypeOptions[0] }));
+		}
+	}, [resourceTypeOptions, setResourceDetail]);
+
+	useEffect(() => {
+		if (cosItems && cosItems.length > 0) {
+			setResourceDetail((prev: any) => ({ ...prev, zimbraCOSId: cosItems[0] }));
+		}
+	}, [cosItems, setResourceDetail]);
+
+	useEffect(() => {
+		if (schedulePolicyItems && schedulePolicyItems.length > 0) {
+			setResourceDetail((prev: any) => ({ ...prev, schedulePolicyType: schedulePolicyItems[0] }));
+		}
+	}, [schedulePolicyItems, setResourceDetail]);
+
+	useEffect(() => {
+		if (autoRefuseOption && autoRefuseOption.length > 0) {
+			setResourceDetail((prev: any) => ({
+				...prev,
+				zimbraCalResAutoDeclineRecurring: autoRefuseOption[1]
+			}));
+		}
+	}, [autoRefuseOption, setResourceDetail]);
+
 	return (
 		<Container mainAlignment="flex-start">
 			<Container
@@ -152,9 +262,7 @@ const ResourceDetailSection: FC = () => {
 							value={resourceDetail?.displayName}
 							size="medium"
 							inputName="displayName"
-							// onChange={(e: any): any => {
-							// 	setResourceName(e.target.value);
-							// }}
+							onChange={changeResourceDetail}
 						/>
 					</Container>
 				</ListRow>
@@ -172,9 +280,7 @@ const ResourceDetailSection: FC = () => {
 								value={resourceDetail?.name}
 								size="medium"
 								inputName="name"
-								// onChange={(e: any): any => {
-								// 	setResourceName(e.target.value);
-								// }}
+								onChange={changeResourceName}
 							/>
 						</Row>
 						<Row width="10%" style={{ padding: '12px' }}>
@@ -184,12 +290,10 @@ const ResourceDetailSection: FC = () => {
 							<Input
 								label={t('label.domain', 'Domain')}
 								backgroundColor="gray5"
-								value=""
+								value={resourceDetail?.domain}
 								size="medium"
 								inputName="domain"
-								// onChange={(e: any): any => {
-								// 	setResourceName(e.target.value);
-								// }}
+								disabled
 							/>
 						</Row>
 					</Container>
@@ -207,8 +311,8 @@ const ResourceDetailSection: FC = () => {
 								background="gray5"
 								label={t('label.type', 'Type')}
 								showCheckbox={false}
-								// onChange={onResouseTypeChange}
-								selection={resourceDetail.zimbraCalResType}
+								onChange={onResourceTypeChange}
+								selection={resourceDetail?.zimbraCalResType}
 							/>
 						</Container>
 						<Container padding={{ right: 'large' }}>
@@ -217,8 +321,8 @@ const ResourceDetailSection: FC = () => {
 								background="gray5"
 								label={t('label.status', 'Status')}
 								showCheckbox={false}
-								// onChange={onAccountStatusChange}
-								selection={resourceDetail.zimbraAccountStatus}
+								selection={resourceDetail?.zimbraAccountStatus}
+								onChange={onAccountStatusChange}
 							/>
 						</Container>
 						<Container>
@@ -227,8 +331,8 @@ const ResourceDetailSection: FC = () => {
 								background="gray5"
 								label={t('label.class_of_service', 'Class of Service')}
 								showCheckbox={false}
-								// onChange={onCosChange}
-								selection={resourceDetail.zimbraCOSId}
+								selection={resourceDetail?.zimbraCOSId}
+								onChange={onCOSIdChange}
 							/>
 						</Container>
 					</Container>
@@ -246,8 +350,8 @@ const ResourceDetailSection: FC = () => {
 								background="gray5"
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								showCheckbox={false}
-								// onChange={onAutoRefuseChange}
-								selection={resourceDetail.zimbraCalResAutoDeclineRecurring}
+								selection={resourceDetail?.zimbraCalResAutoDeclineRecurring}
+								onChange={onAutoRefuseChange}
 							/>
 						</Container>
 						<Container padding={{ right: 'large' }}>
@@ -256,9 +360,7 @@ const ResourceDetailSection: FC = () => {
 								backgroundColor="gray5"
 								value={resourceDetail.zimbraCalResMaxNumConflictsAllowed}
 								inputName="zimbraCalResMaxNumConflictsAllowed"
-								// onChange={(e: any): any => {
-								// 	setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
-								// }}
+								onChange={changeResourceDetail}
 							/>
 						</Container>
 						<Container>
@@ -267,9 +369,7 @@ const ResourceDetailSection: FC = () => {
 								backgroundColor="gray5"
 								value={resourceDetail.zimbraCalResMaxPercentConflictsAllowed}
 								inputName="zimbraCalResMaxPercentConflictsAllowed"
-								// onChange={(e: any): any => {
-								// 	setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
-								// }}
+								onChange={changeResourceDetail}
 							/>
 						</Container>
 					</Container>
@@ -286,8 +386,8 @@ const ResourceDetailSection: FC = () => {
 							background="gray5"
 							label={t('label.schedule_policy', 'Schedule Policy')}
 							showCheckbox={false}
-							// onChange={onSchedulePolicyChange}
-							selection={resourceDetail.schedulePolicyType}
+							selection={resourceDetail?.schedulePolicyType}
+							onChange={onSchedulePolicyChange}
 						/>
 					</Container>
 				</ListRow>
@@ -318,10 +418,7 @@ const ResourceDetailSection: FC = () => {
 								backgroundColor="gray5"
 								value={resourceDetail.password}
 								inputName="password"
-								// onChange={(e: any): any => {
-								// 	setPassword(e.target.value);
-								// 	setIsDirty(true);
-								// }}
+								onChange={changeResourceDetail}
 							/>
 						</Container>
 						<Container>
@@ -330,10 +427,7 @@ const ResourceDetailSection: FC = () => {
 								backgroundColor="gray5"
 								value={resourceDetail.repeatPassword}
 								inputName="repeatPassword"
-								// onChange={(e: any): any => {
-								// 	setRepeatPassword(e.target.value);
-								// 	setIsDirty(true);
-								// }}
+								onChange={changeResourceDetail}
 							/>
 						</Container>
 					</Container>
@@ -354,9 +448,7 @@ const ResourceDetailSection: FC = () => {
 							value={resourceDetail.zimbraNotes}
 							size="medium"
 							inputName="zimbraNotes"
-							// onChange={(e: any): any => {
-							// 	setDescription(e.target.value);
-							// }}
+							onChange={changeResourceDetail}
 						/>
 					</Container>
 				</ListRow>
