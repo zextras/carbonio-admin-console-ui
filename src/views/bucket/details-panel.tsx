@@ -230,14 +230,8 @@ const DetailsPanel: FC<{
 						readOnly
 					/>
 				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
-					<Row width="48%" mainAlignment="flex-start">
-						<Input label={t('label.arn_name', 'Arn / Name')} value="Arn Name" readOnly />
-					</Row>
-					<Padding width="4%" />
-					<Row width="48%" mainAlignment="flex-end">
-						<Input label="Region" showCheckbox={false} value={regionData} readOnly />
-					</Row>
+				<Row padding={{ top: 'large' }} width="100%">
+					<Input label="Region" showCheckbox={false} value={regionData} readOnly />
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Row width="48%" mainAlignment="flex-start">
@@ -255,9 +249,6 @@ const DetailsPanel: FC<{
 							readOnly
 						/>
 					</Row>
-				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
-					<Input label={t('label.Notes', 'Notes')} value="This is my notes" readOnly />
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Button

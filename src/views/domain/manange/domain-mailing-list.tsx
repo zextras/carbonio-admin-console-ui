@@ -264,7 +264,7 @@ const DomainMailingList: FC = () => {
 				setOffset(0);
 				setSearchQuery('');
 			}
-		}, 100),
+		}, 700),
 		[debounce]
 	);
 

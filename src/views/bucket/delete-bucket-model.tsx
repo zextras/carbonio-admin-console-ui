@@ -54,7 +54,7 @@ const DeleteBucketModel: FC<{
 					<Text size={'extralarge'} overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
 						{t(
 							'label.delete_content',
-							`You are deleting {{name}}. This will {{name}}. \n Are you sure you want to delete {{name}} ?`,
+							`You are deleting {{name}}. This will be removed. \n Are you sure you want to delete {{name}} ?`,
 							{
 								name: BucketDetail.bucketName
 							}

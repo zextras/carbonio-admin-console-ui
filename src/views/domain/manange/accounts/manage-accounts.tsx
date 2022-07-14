@@ -26,6 +26,7 @@ import { accountListDirectory } from '../../../../services/account-list-director
 import { createAccountRequest } from '../../../../services/create-account';
 import AccountDetailView from './account-detail-view';
 import CreateAccount from './create-account/create-account';
+import EditAccount from './edit-account/edit-account';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -76,6 +77,7 @@ const ManageAccounts: FC = () => {
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
+	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
 
 	const STATUS_COLOR: any = useMemo(
 		() => ({
@@ -416,6 +418,7 @@ const ManageAccounts: FC = () => {
 				<AccountDetailView
 					selectedAccount={selectedAccount}
 					setShowAccountDetailView={setShowAccountDetailView}
+					setShowEditAccountView={setShowEditAccountView}
 					STATUS_COLOR={STATUS_COLOR}
 				/>
 			)}
@@ -423,6 +426,14 @@ const ManageAccounts: FC = () => {
 				<CreateAccount
 					setShowCreateAccountView={setShowCreateAccountView}
 					createAccountReq={createAccountReq}
+				/>
+			)}
+			{showEditAccountView && (
+				<EditAccount
+					setShowEditAccountView={setShowEditAccountView}
+					createAccountReq={createAccountReq}
+					selectedAccount={selectedAccount}
+					getAccountList={getAccountList}
 				/>
 			)}
 		</Container>

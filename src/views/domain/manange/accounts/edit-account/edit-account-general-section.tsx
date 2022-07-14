@@ -12,21 +12,22 @@ import {
 	Select,
 	Text,
 	Icon,
-	Switch
+	Switch,
+	Divider
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { setDefaults, useTranslation } from 'react-i18next';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from './account-context';
 import { ACTIVE, CLOSED, LOCKED, MAINTENANCE, PENDING } from '../../../../../constants';
 import { timeZoneList, localeList } from '../../../../utility/utils';
 
-const CreateAccountDetailSection: FC = () => {
+const EditAccountGeneralSection: FC = () => {
 	const conext = useContext(AccountContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(true);
 	const { accountDetail, setAccountDetail } = conext;
-
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
 	const localeZone = useMemo(() => localeList(t), [t]);
@@ -59,7 +60,10 @@ const CreateAccountDetailSection: FC = () => {
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
-			setAccountDetail((prev: any) => ({ ...prev, [key]: !accountDetail[key] }));
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
+			}));
 		},
 		[accountDetail, setAccountDetail]
 	);
@@ -69,45 +73,7 @@ const CreateAccountDetailSection: FC = () => {
 		},
 		[setAccountDetail]
 	);
-	const changeAccName = useCallback(
-		(e) => {
-			setAccountDetail((prev: any) => ({ ...prev, changeNameBool: true }));
-			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setAccountDetail]
-	);
 
-	const changeAccDisplayName = useCallback(
-		(e) => {
-			setAccountDetail((prev: any) => ({ ...prev, changeDisplayNameBool: true }));
-			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setAccountDetail]
-	);
-
-	const combineName = useMemo(
-		() =>
-			!accountDetail?.changeNameBool
-				? `${accountDetail?.givenName || ''}${accountDetail?.initials || ''}${
-						accountDetail?.sn || ''
-				  }`
-				: accountDetail?.name,
-		[
-			accountDetail?.changeNameBool,
-			accountDetail?.givenName,
-			accountDetail?.initials,
-			accountDetail?.name,
-			accountDetail?.sn
-		]
-	);
-
-	const combineDisplayName = useMemo(
-		() =>
-			`${accountDetail?.givenName || ''} ${accountDetail?.initials || ''} ${
-				accountDetail?.sn || ''
-			}`,
-		[accountDetail?.givenName, accountDetail?.initials, accountDetail?.sn]
-	);
 	useEffect(() => {
 		if (!!cosList && cosList.length > 0) {
 			const arrayItem: any[] = [];
@@ -121,16 +87,6 @@ const CreateAccountDetailSection: FC = () => {
 		}
 	}, [cosList]);
 
-	useEffect(() => {
-		!accountDetail?.changeNameBool &&
-			setAccountDetail((prev: any) => ({ ...prev, name: combineName }));
-	}, [accountDetail?.changeNameBool, combineName, setAccountDetail]);
-
-	useEffect(() => {
-		!accountDetail?.changeDisplayNameBool &&
-			setAccountDetail((prev: any) => ({ ...prev, displayName: combineDisplayName }));
-	}, [accountDetail?.changeDisplayNameBool, combineDisplayName, setAccountDetail]);
-
 	const onAccountStatusChange = (v: any): any => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraAccountStatus: v }));
 	};
@@ -143,7 +99,10 @@ const CreateAccountDetailSection: FC = () => {
 	const onCOSIdChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraCOSId: v }));
 	};
-
+	const onCOSSwitchChanges = (): void => {
+		defaultCOS && setAccountDetail((prev: any) => ({ ...prev, zimbraCOSId: '' }));
+		setDefaultCOS(!defaultCOS);
+	};
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -161,6 +120,7 @@ const CreateAccountDetailSection: FC = () => {
 							label={t('label.name', 'Name')}
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.givenName || ''}
+							value={accountDetail?.givenName || ''}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
@@ -170,6 +130,7 @@ const CreateAccountDetailSection: FC = () => {
 							onChange={changeAccDetail}
 							inputName="initials"
 							defaultValue={accountDetail?.initials || ''}
+							value={accountDetail?.initials || ''}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
@@ -179,6 +140,7 @@ const CreateAccountDetailSection: FC = () => {
 							onChange={changeAccDetail}
 							inputName="sn"
 							defaultValue={accountDetail?.sn || ''}
+							value={accountDetail?.sn || ''}
 						/>
 					</Row>
 				</Row>
@@ -186,11 +148,11 @@ const CreateAccountDetailSection: FC = () => {
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
 							background="gray5"
-							label={t('label.userName_auto_fill', 'username (Auto-fill)')}
-							value={accountDetail.name}
-							onChange={changeAccName}
-							inputName="name"
-							// defaultValue={accountDetail?.name || ''}
+							label={t('label.userName', 'username')}
+							onChange={changeAccDetail}
+							inputName="uid"
+							defaultValue={accountDetail?.uid}
+							value={accountDetail?.uid}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -214,13 +176,34 @@ const CreateAccountDetailSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.viewed_name_auto_fill', 'Viewed Name (Auto-fill)')}
+						label={t('label.viewed_name', 'Viewed Name')}
 						backgroundColor="gray5"
-						value={accountDetail.displayName || combineDisplayName}
-						onChange={changeAccDisplayName}
+						defaultValue={accountDetail?.displayName}
+						value={accountDetail?.displayName}
+						onChange={changeAccDetail}
 						inputName="displayName"
 						name="descriptiveName"
 					/>
+				</Row>
+
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraHideInGal === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraHideInGal')}
+							label={t('accountDetails.hide_in_gal', 'Hide in GAL')}
+						/>
+					</Row>
+					<Row width="48%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraPasswordMustChange === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraPasswordMustChange')}
+							label={t(
+								'accountDetails.this_user_must_change_password',
+								'This user must change password'
+							)}
+						/>
+					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
@@ -242,37 +225,21 @@ const CreateAccountDetailSection: FC = () => {
 						/>
 					</Row>
 				</Row>
-				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraPasswordMustChange}
-							onClick={(): void => changeSwitchOption('zimbraPasswordMustChange')}
-							label={t(
-								'accountDetails.change_password_for_next_login',
-								'Must change password on the next login'
-							)}
-						/>
-					</Row>
-					{/* <Row width="48%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.generateFirst2FAToken}
-							onClick={(): void => changeSwitchOption('generateFirst2FAToken')}
-							label={t('accountDetails.generate_first_2FA_token', 'Generate first 2FA token')}
-						/>
-					</Row> */}
-				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
 					<Row mainAlignment="flex-start">
 						<Switch
-							value={accountDetail?.enableActiveSyncRemoteAccess}
-							onClick={(): void => changeSwitchOption('enableActiveSyncRemoteAccess')}
+							value={accountDetail?.zimbraPasswordLocked === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraPasswordLocked')}
 							label={t(
-								'accountDetails.enable_activeSync_remote_access',
-								'Enable ActiveSync remote access'
+								'accountDetails.prevent_user_from_changing_password',
+								'Prevent user from changing password'
 							)}
 						/>
 					</Row>
 				</Row>
+			</Row>
+			<Row width="100%" padding={{ top: 'medium' }}>
+				<Divider color="gray2" />
 			</Row>
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>
@@ -281,56 +248,44 @@ const CreateAccountDetailSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="32%" mainAlignment="flex-start">
-						<Select
-							items={ACCOUNT_STATUS}
-							background="gray5"
-							label={t('label.account_status', 'Account Status')}
-							showCheckbox={false}
-							onChange={onAccountStatusChange}
-							defaultSelection={ACCOUNT_STATUS.find(
-								(item: any) => item.value === accountDetail?.zimbraAccountStatus
-							)}
-							padding={{ right: 'medium' }}
-						/>
+					<Row width="48%" mainAlignment="flex-start">
+						{accountDetail?.zimbraId ? (
+							<Select
+								items={ACCOUNT_STATUS}
+								background="gray5"
+								label={t('label.account_status', 'Account Status')}
+								showCheckbox={false}
+								onChange={onAccountStatusChange}
+								defaultSelection={ACCOUNT_STATUS.find(
+									(item: any) => item.value === accountDetail?.zimbraAccountStatus
+								)}
+								padding={{ right: 'medium' }}
+							/>
+						) : (
+							<></>
+						)}
 					</Row>
-					<Row width="32%" mainAlignment="flex-start">
-						<Select
-							items={localeZone}
-							background="gray5"
-							label={t('label.language', 'Language')}
-							showCheckbox={false}
-							defaultSelection={localeZone.find(
-								(item: any) => item.value === accountDetail?.zimbraPrefLocale
+					<Row width="48%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraIsAdminAccount')}
+							label={t(
+								'accountDetails.this_is_global_administrator',
+								'This is a Global Administrator '
 							)}
-							onChange={onPrefLocaleChange}
-							padding={{ right: 'medium' }}
-						/>
-					</Row>
-					<Row width="32%" mainAlignment="flex-start">
-						<Select
-							items={timezones}
-							background="gray5"
-							label={t('label.time_zone', 'Time Zone')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-							defaultSelection={timezones.find(
-								(item: any) => item.value === accountDetail?.zimbraPrefTimeZoneId
-							)}
-							onChange={onPrefTimeZoneChange}
 						/>
 					</Row>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="48%" mainAlignment="flex-start">
 						<Switch
-							value={accountDetail?.defaultCOS}
-							onClick={(): void => changeSwitchOption('defaultCOS')}
+							value={defaultCOS}
+							onClick={onCOSSwitchChanges}
 							label={t('accountDetails.default_COS', 'Default COS')}
 						/>
 					</Row>
-					<Row width="64%" mainAlignment="flex-start">
-						{cosItems?.length === cosList?.length ? (
+					<Row width="48%" mainAlignment="flex-start">
+						{accountDetail?.zimbraId ? (
 							<Select
 								items={cosItems}
 								background="gray5"
@@ -340,7 +295,42 @@ const CreateAccountDetailSection: FC = () => {
 									(item: any) => item.value === accountDetail?.zimbraCOSId
 								)}
 								onChange={onCOSIdChange}
-								disabled={accountDetail?.defaultCOS}
+							/>
+						) : (
+							<></>
+						)}
+					</Row>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						{accountDetail?.zimbraId ? (
+							<Select
+								items={localeZone}
+								background="gray5"
+								label={t('label.language', 'Language')}
+								showCheckbox={false}
+								defaultSelection={localeZone.find(
+									(item: any) => item.value === accountDetail?.zimbraPrefLocale
+								)}
+								onChange={onPrefLocaleChange}
+								padding={{ right: 'medium' }}
+							/>
+						) : (
+							<></>
+						)}
+					</Row>
+					<Row width="48%" mainAlignment="flex-start">
+						{accountDetail?.zimbraId ? (
+							<Select
+								items={timezones}
+								background="gray5"
+								label={t('label.time_zone', 'Time Zone')}
+								showCheckbox={false}
+								padding={{ right: 'medium' }}
+								defaultSelection={timezones.find(
+									(item: any) => item.value === accountDetail?.zimbraPrefTimeZoneId
+								)}
+								onChange={onPrefTimeZoneChange}
 							/>
 						) : (
 							<></>
@@ -348,10 +338,17 @@ const CreateAccountDetailSection: FC = () => {
 					</Row>
 				</Row>
 			</Row>
-			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+			<Row width="100%" padding={{ top: 'large' }}>
+				<Divider color="gray2" />
+			</Row>
+			<Row
+				mainAlignment="flex-start"
+				padding={{ top: 'large', left: 'small', bottom: 'large' }}
+				width="100%"
+			>
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" color="gray0" weight="bold">
-						Notes
+						{t('label.notes', 'Notes')}
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
@@ -359,7 +356,8 @@ const CreateAccountDetailSection: FC = () => {
 						background="gray5"
 						height="85px"
 						label={t('label.description', 'Description')}
-						defaultValue={accountDetail?.description || ''}
+						defaultValue={accountDetail?.description}
+						value={accountDetail?.description}
 						onChange={changeAccDetail}
 						inputName="description"
 					/>
@@ -369,4 +367,4 @@ const CreateAccountDetailSection: FC = () => {
 	);
 };
 
-export default CreateAccountDetailSection;
+export default EditAccountGeneralSection;

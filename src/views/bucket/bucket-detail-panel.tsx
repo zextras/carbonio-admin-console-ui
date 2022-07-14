@@ -140,7 +140,8 @@ const BucketDetailPanel: FC = () => {
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: bucketType,
-			targetServer: server
+			targetServer: server,
+			showSecrets: true
 		}).then((res: any) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {

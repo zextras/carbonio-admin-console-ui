@@ -13,7 +13,8 @@ import {
 	IconButton,
 	Padding,
 	Icon,
-	Quota
+	Quota,
+	Button
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -37,6 +38,7 @@ const AccountDetailContainer = styled(Container)`
 const AccountDetailView: FC<any> = ({
 	selectedAccount,
 	setShowAccountDetailView,
+	setShowEditAccountView,
 	STATUS_COLOR
 }) => {
 	const [t] = useTranslation();
@@ -84,6 +86,50 @@ const AccountDetailView: FC<any> = ({
 				height="calc(100% - 64px)"
 				background="white"
 			>
+				<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
+					<Padding right="medium" top="large">
+						<IconButton
+							iconColor="gray6"
+							backgroundColor="primary"
+							icon="EditAsNewOutline"
+							height={36}
+							width={36}
+							onClick={(): void => {
+								setShowAccountDetailView(false);
+								setShowEditAccountView(true);
+							}}
+						/>
+					</Padding>
+					<Padding right="medium">
+						<IconButton
+							iconColor="gray6"
+							backgroundColor="error"
+							icon="DeletePermanentlyOutline"
+							height={36}
+							width={36}
+							onClick={(): void => {
+								console.log('delete to be');
+							}}
+						/>
+					</Padding>
+					<Padding right="medium">
+						<Button
+							type="outlined"
+							label={t('label.view_mail', 'VIEW MAIL')}
+							icon="EmailReadOutline"
+							iconPlacement="right"
+							color="primary"
+						/>
+					</Padding>
+					<Button
+						type="outlined"
+						label={t('label.restart_replica', 'RESTART REPLICA')}
+						icon="RefreshOutline"
+						iconPlacement="right"
+						color="primary"
+						disabled
+					/>
+				</Row>
 				<Row padding={{ top: 'extralarge' }}>
 					<Text
 						size="small"

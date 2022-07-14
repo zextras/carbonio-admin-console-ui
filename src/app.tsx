@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, lazy, Suspense, useEffect, useMemo } from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
 import { addRoute, registerActions, setAppContext, Spinner } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -23,11 +23,7 @@ import {
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
 } from './constants';
-import BackupTooltipView from './views/tooltip-view/backup-tooltip-view';
-import DomainTooltipView from './views/tooltip-view/domain-tooltip-view';
-import StorageTooltipView from './views/tooltip-view/storage-tooltip-view';
-import SubscriptionTooltipView from './views/tooltip-view/subscription-tooltip-view';
-import CosTooltipView from './views/tooltip-view/cos-tooltip-view';
+import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -55,6 +51,248 @@ const App: FC = () => {
 			position: 4
 		}),
 		[t]
+	);
+
+	const backupTooltipItems = useMemo(
+		() => [
+			{
+				header: t('label.backup', 'BACKUP'),
+				options: [
+					{
+						label: t('label.here_you_will_find', 'Here you will find')
+					}
+				]
+			},
+			{
+				header: t('label.default_settings', 'Default Settings'),
+				options: [
+					{
+						label: t('label.service_status', 'Service Status')
+					},
+					{
+						label: t('label.server_config', 'Server Config')
+					},
+					{
+						label: t('label.advanced', 'Advanced')
+					}
+				]
+			},
+			{
+				header: t('label.server_settings', 'Server Settings'),
+				options: [
+					{
+						label: t('label.servers_list', 'Servers List')
+					}
+				]
+			},
+			{
+				header: t('label.actions', 'Actions'),
+				options: [
+					{
+						label: t('label.import_an_external_backup', 'Import an External Backup')
+					}
+				]
+			}
+		],
+		[t]
+	);
+
+	const BackupTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={backupTooltipItems} />,
+		[backupTooltipItems]
+	);
+
+	const cosTooltipItems = useMemo(
+		() => [
+			{
+				header: t('label.cos', 'COS'),
+				options: [
+					{
+						label: t('label.here_you_will_find', 'Here you will find')
+					}
+				]
+			},
+			{
+				header: t('label.details', 'Details'),
+				options: [
+					{
+						label: t('label.general_information', 'General Information')
+					},
+					{
+						label: t('label.features', 'Features')
+					},
+					{
+						label: t('label.preferences', 'Preferences')
+					},
+					{
+						label: t('label.server_pools', 'Server Pools')
+					},
+					{
+						label: t('label.advanced', 'Advanced')
+					},
+					{
+						label: t('label.retention_policy', 'Retention Policy')
+					}
+				]
+			}
+		],
+		[t]
+	);
+
+	const CosTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={cosTooltipItems} />,
+		[cosTooltipItems]
+	);
+
+	const domainsTooltipItems = useMemo(
+		() => [
+			{
+				header: t('label.domains', 'DOMAINS'),
+				options: [
+					{
+						label: t('label.here_you_will_find', 'Here you will find')
+					}
+				]
+			},
+			{
+				header: t('label.details', 'Details'),
+				options: [
+					{
+						label: t('label.domain_status', 'Domain Status')
+					},
+					{
+						label: t('label.general_Settings', 'General Settings')
+					},
+					{
+						label: t('label.gal', 'GAL')
+					},
+					{
+						label: t('label.authentication', 'Authentication')
+					},
+					{
+						label: t('label.virtual_hosts', 'Virtual Hosts')
+					},
+					{
+						label: t('label.mailbox_quota', 'Mailbox Quota')
+					}
+				]
+			},
+			{
+				header: t('label.management', 'Management'),
+				options: [
+					{
+						label: t('label.accounts', 'Accounts')
+					},
+					{
+						label: t('label.mailing_lists', 'Mailing Lists')
+					},
+					{
+						label: t('label.resources', 'Resources')
+					},
+					{
+						label: t('label.admin_delegates', 'Admin Delegates')
+					},
+					{
+						label: t('label.active_sync', 'ActiveSync')
+					},
+					{
+						label: t('label.account_scan', 'AccountScan')
+					},
+					{
+						label: t('label.export_domain', 'Export Domain')
+					},
+					{
+						label: t('label.restore_account', 'Restore Account')
+					},
+					{
+						label: t('label.restore_deleted_email', 'Restore Deleted E-mail')
+					}
+				]
+			}
+		],
+		[t]
+	);
+
+	const DomainTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={domainsTooltipItems} />,
+		[domainsTooltipItems]
+	);
+
+	const storagesTooltipItems = useMemo(
+		() => [
+			{
+				header: t('label.storages', 'STORAGES'),
+				options: [
+					{
+						label: t('label.here_you_will_find', 'Here you will find')
+					}
+				]
+			},
+			{
+				header: t('label.servers', 'Servers'),
+				options: [
+					{
+						label: t('label.service_status', 'Service_Status')
+					},
+					{
+						label: t('label.volumes', 'Volumes')
+					},
+					{
+						label: t('label.hsm_policies', 'HSM Policies')
+					},
+					{
+						label: t('label.indexer_settings', 'Indexer Settings')
+					},
+					{
+						label: t('label.index_volumes', 'Index Volumes')
+					}
+				]
+			},
+			{
+				header: t('label.buckets', 'Buckets'),
+				options: [
+					{
+						label: t('label.connect_buckets', 'Connect Buckets')
+					}
+				]
+			}
+		],
+		[t]
+	);
+
+	const StorageTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={storagesTooltipItems} />,
+		[storagesTooltipItems]
+	);
+
+	const subscriptionTooltipItems = useMemo(
+		() => [
+			{
+				header: t('label.subscriptions', 'SUBSCRIPTIONS'),
+				options: [
+					{
+						label: t('label.here_you_will_find', 'Here you will find')
+					}
+				]
+			},
+			{
+				header: t('label.subscription', 'Subscription'),
+				options: [
+					{
+						label: t('label.details', 'Details')
+					},
+					{
+						label: t('label.activate_and_update', 'Activate & Update')
+					}
+				]
+			}
+		],
+		[t]
+	);
+
+	const SubscriptionTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={subscriptionTooltipItems} />,
+		[subscriptionTooltipItems]
 	);
 
 	useEffect(() => {
@@ -137,7 +375,16 @@ const App: FC = () => {
 		});
 
 		setAppContext({ hello: 'world' });
-	}, [t, managementSection, servicesSection]);
+	}, [
+		t,
+		managementSection,
+		servicesSection,
+		BackupTooltipView,
+		CosTooltipView,
+		DomainTooltipView,
+		StorageTooltipView,
+		SubscriptionTooltipView
+	]);
 
 	useEffect(() => {
 		registerActions({
