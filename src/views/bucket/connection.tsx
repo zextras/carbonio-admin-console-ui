@@ -209,7 +209,7 @@ const Connection: FC<{
 					<Input
 						background="gray5"
 						label={t('label.bucket_name', 'Bucket Name')}
-						name="ArnName"
+						name="bucketName"
 						onChange={(ev: any): any => {
 							setBucketName(ev.target.value);
 							onSelection({ bucketName: ev.target.value }, false);

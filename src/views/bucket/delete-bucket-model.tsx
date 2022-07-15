@@ -50,17 +50,19 @@ const DeleteBucketModel: FC<{
 				showCloseIcon
 				onClose={closeHandler}
 			>
-				<Padding style={{ textAlign: 'center', padding: '20px', paddingLeft: '25%' }}>
-					<Text size={'extralarge'} overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
-						{t(
-							'label.delete_content',
-							`You are deleting {{name}}. This will be removed. \n Are you sure you want to delete {{name}} ?`,
-							{
-								name: BucketDetail.bucketName
-							}
-						)}
-					</Text>
-				</Padding>
+				<Text
+					size={'extralarge'}
+					overflow="break-word"
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '32px 0' }}
+				>
+					{t(
+						'label.delete_content',
+						`You are deleting {{name}}. This will be removed. \n Are you sure you want to delete {{name}} ?`,
+						{
+							name: BucketDetail.bucketName
+						}
+					)}
+				</Text>
 			</Modal>
 		</>
 	);

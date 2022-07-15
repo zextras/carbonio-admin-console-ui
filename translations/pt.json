@@ -113,7 +113,9 @@
         "show_time_zone_list_in_appointment_view": "Mostrar lista de fusos horários na vista de compromissos",
         "space": "Espaços",
         "time_zone": "Fuso horário",
-        "type": "Tipo"
+        "type": "Tipo",
+        "deleting_cos_msg": "A eliminar <bold>{{cosname}}</bod>",
+        "delet_bucket_header": "A remover {{name}}"
     },
     "timezone": {
         "asia_pyongyang": "{{value}} Pyongyang",
@@ -257,7 +259,9 @@
     "buckets": {
         "connection": {
             "access_key": "Chave de acesso",
-            "notes": "Observações"
+            "notes": "Observações",
+            "descriptive_name": "Nome descritivo",
+            "create_and_verify_connector": "CRIAR E VERIFICAR CONECTOR"
         }
     },
     "core": {
@@ -282,7 +286,9 @@
         "manage": "Gerir",
         "new_domain": "Novo domínio",
         "resources": "Recursos",
-        "restore_account": "Restaurar conta"
+        "restore_account": "Restaurar conta",
+        "search_domain": "Buscar um domínio",
+        "restore_deleted_email": "Restaurar e-mail eliminado"
     },
     "message": {
         "snackbar": {
@@ -331,6 +337,18 @@
         },
         "minimum_space_threshold": "Limiar de espaço mínimo",
         "realtime_scanner": "RealTime Scanner",
-        "schedule": "Programação"
+        "schedule": "Programação",
+        "set_backup_forever_msg": "Se definir 0, os seus dados serão mantidos no backup para sempre",
+        "server_configurations": "Configurações do servidor",
+        "save_index": "Salvar Índice",
+        "purge_old_configurations": "Depurar configurações antigas",
+        "on_the_fly_metadata": "Metadados na hora",
+        "metatdata_size": "Tamanho dos metadados",
+        "metadata_archiving": "Arquivamento de Metadados",
+        "max_waiting_time": "Tempo máximo de espera",
+        "local_metadata_threshold": "Limiar local de Metadados",
+        "ldap_dump": "Dump do LDAP",
+        "latency_low_threshold": "Limiar mínimo de latência",
+        "latency_high_threshold": "Limiar máximo de latência"
     }
 }

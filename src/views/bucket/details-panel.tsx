@@ -150,11 +150,20 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 const DetailsPanel: FC<{
 	setDetailsBucket: any;
 	title: string;
-	BucketDetail: any;
-}> = ({ setDetailsBucket, title, BucketDetail }) => {
+	bucketDetail: any;
+	setBucketDeleteName: any;
+	setOpen: any;
+	setShowEditDetailView: any;
+}> = ({
+	setDetailsBucket,
+	title,
+	bucketDetail,
+	setBucketDeleteName,
+	setOpen,
+	setShowEditDetailView
+}) => {
 	const [t] = useTranslation();
 
-	const [severSelection, setServerSelection] = useState([]);
 	const [bucketType, setBucketType] = useState();
 	const [regionData, setRegionData] = useState();
 	const [verify, setVerify] = useState('primary');
@@ -171,11 +180,13 @@ const DetailsPanel: FC<{
 			module: 'ZxCore',
 			action: 'testS3Connection',
 			targetServers: server,
-			bucketId: BucketDetail.uuid
+			bucketId: bucketDetail.uuid
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok && response.response[server] && response.response[server].ok) {
 				setVerify('success');
+				setButtonLabel(t('label.verify_connector_verified', ' VERIFIED'));
+				setButtonIcon('ActivityOutline');
 			} else {
 				setVerify('error');
 				setButtonLabel(t('label.verify_connector_fail', ' VERIFICATION FAILED'));
@@ -189,18 +200,24 @@ const DetailsPanel: FC<{
 				});
 			}
 		});
-	}, [BucketDetail.uuid, createSnackbar, server, t]);
+	}, [bucketDetail.uuid, createSnackbar, server, t]);
+
+	useEffect(() => {
+		setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
+		setButtonIcon('ActivityOutline');
+		setVerify('primary');
+	}, [bucketDetail.uuid, t]);
 
 	useEffect(() => {
 		const volumeObject: any = find(
 			BucketTypeItems,
-			(o) => o.value === BucketDetail.storeType
+			(o) => o.value === bucketDetail.storeType
 		)?.label;
-		const regionValue: any = find(BucketRegions, (o) => o.value === BucketDetail.region)?.label;
+		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region)?.label;
 
 		setBucketType(volumeObject);
 		setRegionData(regionValue);
-	}, [BucketDetail]);
+	}, [bucketDetail]);
 
 	return (
 		<Container background="gray6">
@@ -214,19 +231,55 @@ const DetailsPanel: FC<{
 					<IconButton
 						icon="CloseOutline"
 						color="gray1"
-						onClick={(): any => setDetailsBucket(false)}
+						onClick={(): void => setDetailsBucket(false)}
 					/>
 				</Row>
 			</Row>
 			<Divider />
+			<Container
+				orientation="horizontal"
+				mainAlignment="flex-end"
+				crossAlignment="flex-end"
+				background="gray6"
+				padding={{ all: 'extralarge' }}
+				style={{ height: 'fit-content' }}
+			>
+				<Padding right="large">
+					<Container style={{ border: '1px solid #2b73d2' }}>
+						<IconButton
+							iconColor="primary"
+							backgroundColor="gray6"
+							icon="EditAsNewOutline"
+							height={44}
+							width={44}
+							onClick={(): void => {
+								setShowEditDetailView(true);
+							}}
+						/>
+					</Container>
+				</Padding>
+				<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
+					<IconButton
+						iconColor="error"
+						backgroundColor="gray6"
+						icon="Trash2Outline"
+						height={44}
+						width={44}
+						onClick={(): void => {
+							setBucketDeleteName(bucketDetail);
+							setOpen(true);
+						}}
+					/>
+				</Container>
+			</Container>
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
-				<Row padding={{ top: 'extralarge' }} width="100%">
-					<Input label={t('buckets.bucket_type', 'Buckets Type')} value={bucketType} readOnly />
+				<Row padding={{ top: 'small' }} width="100%">
+					<Input label={t('buckets.bucket_type', 'Buckets Type')} value={bucketType} readyOnly />
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
 					<Input
 						label={t('label.descriptive_name', 'Descriptive Name')}
-						value={BucketDetail.bucketName}
+						value={bucketDetail.bucketName}
 						readOnly
 					/>
 				</Row>
@@ -237,7 +290,7 @@ const DetailsPanel: FC<{
 					<Row width="48%" mainAlignment="flex-start">
 						<PasswordInput
 							label={t('label.access_key', 'Access Key')}
-							value={BucketDetail.accessKey}
+							value={bucketDetail.accessKey}
 							readOnly
 						/>
 					</Row>
@@ -245,7 +298,7 @@ const DetailsPanel: FC<{
 					<Row width="48%" mainAlignment="flex-end">
 						<PasswordInput
 							label={t('label.secret_key', 'Secret Key')}
-							value={BucketDetail.secret}
+							value={bucketDetail.secret}
 							readOnly
 						/>
 					</Row>

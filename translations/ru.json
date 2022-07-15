@@ -32,7 +32,12 @@
         "manage": "Управление",
         "new_domain": "Новый домен",
         "resources": "Ресурсы",
-        "restore_account": "Восстановить аккаунт"
+        "restore_account": "Восстановить аккаунт",
+        "type_here_a_domain": "Введите здесь домен",
+        "restore_deleted_email": "Восстановить удаленную почту",
+        "mailing_list": "Список рассылки",
+        "i_want_to_see_this_domain": "Я хочу увидеть этот домен",
+        "account_list": "Список учетных записей"
     },
     "label": {
         "account": "Учетная запись",
@@ -250,7 +255,62 @@
         "space": "Переговорная",
         "subscription": "Подписка",
         "time_zone": "Часовой пояс",
-        "type": "Тип"
+        "type": "Тип",
+        "you_are_deleting": "Вы удаляете {{cosname}}",
+        "yes_delete": "Да, удалить",
+        "verify_error": "{{name}}",
+        "verify_connector_fail": " ПРОВЕРКА НЕ ПРОШЛА",
+        "use_the_QuickAdd_dialog_when_creating_new_appointments": "использовать диалоговое окно QuickAdd при создании новых встреч",
+        "this_list_is_empty": "Этот список пустой.",
+        "show_reminder": "Показать напоминание",
+        "servers_list": "Список серверов",
+        "server_settings": "Настройки сервера",
+        "server_pools": "Пулы серверов",
+        "server_lists": "Списки серверов",
+        "server_config": "Конфигурация сервера",
+        "search_dot": "Поиск...",
+        "save_to_sent_folder": "Сохранить в папку «Отправленные»",
+        "restore_deleted_email": "Восстановить удаленное письмо",
+        "remove_button": "УДАЛИТЬ",
+        "range_time": "Диапазон времени",
+        "number_of_items_to_fetch_when_scrolling": "Количество элементов для выборки при прокрутке",
+        "never_logged_in": "Никогда не входил",
+        "maximum_length_of_mail_signature": "Максимальная длина электронной подписи",
+        "mailing_lists": "Списки рассылки",
+        "mailing_list": "Список рассылки",
+        "import_external_backup": "Импорт внешней резервной копии",
+        "import_an_external_backup": "Импорт внешней резервной копии",
+        "i_am_looking_for_this_account": "Я ищу эту учетную запись...",
+        "here_you_will_find": "Здесь вы найдете",
+        "gay_sync_account_name": "Имя учетной записи GAL Sync",
+        "gal_settings": "Настройки GAL",
+        "first_day_of_Week": "Первый день недели",
+        "enable_toaster_notification_for_new_calendar_events": "включить всплывающее уведомление о новых событиях календаря",
+        "domain_status": "Статус домена",
+        "domain_name": "Имя домена",
+        "detail_button": "Подробности",
+        "deleting_cos_msg": "Удаление <bold>{{cosname}}</bod>",
+        "delete_cos_succeess": "{{cosname}} успешно удален",
+        "delete_bucket_sucess": "{{name}} был удален",
+        "delete_bucket_message_2": "Вы уверены, что хотите удалить соединение с {{bucket_name}}?",
+        "delete_bucket_fail": "{{name}} не удалено",
+        "delet_content": "Вы удаляете {{name}}. Это будет {{name}}. Вы уверены, что хотите удалить {{name}}?",
+        "delet_bucket_header": "Удаление {{name}}.",
+        "default_settings": "Настройки по умолчанию",
+        "create_new_cos": "Создать новый COS",
+        "create_mailing_list_msg": "Вы можете создать новый список рассылки, нажав кнопку «Создать» (левый верхний угол) или кнопку «Добавить» (+) здесь вверху",
+        "create_domain_success_msg": "{{domainName}} успешно создан",
+        "create_cos_success_msg": "{{cosName}} успешно создан",
+        "create_button": "СОЗДАТЬ",
+        "cos_name": "Имя класса сервисов",
+        "can_receive": "Может получить",
+        "bulk_actions": "Массовые действия",
+        "are_you_sure_deleting_cos": "Вы уверены, что хотите удалить этот класс сервиса?",
+        "always_compose_mail_using": "Всегда составляйте письмо используя",
+        "admin_delegates": "Делегированные администраторы",
+        "activate_and_update": "Активировать и обновить",
+        "I_want_to_see_this_COS": "Я хочу увидеть этот COS",
+        "I_am_looking_for_this_account": "Я ищу эту учетную запись..."
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
@@ -407,7 +467,8 @@
         "new": {
             "bucket_connection": "Соединение с Бакетом"
         },
-        "create_new_bucket": "НОВЫЙ БАКЕТ"
+        "create_new_bucket": "НОВЫЙ БАКЕТ",
+        "filter_buckets_list": "Фильтр списка Бакетов"
     },
     "core": {
         "subscription": {
@@ -485,7 +546,17 @@
         "receiving_mail": "Получение почты",
         "s_mime_features": "Функции S/MIME",
         "search_features": "Функции поиска",
-        "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Показать окно для выбора электронного адреса, контакта, элементов голосовой почты в виде списка для групповых процессов"
+        "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Показать окно для выбора электронного адреса, контакта, элементов голосовой почты в виде списка для групповых процессов",
+        "type_of_UI": "Тип пользовательского интерфейса",
+        "standard_html_client": "Стандартный (HTML) клиент",
+        "show_search_string": "Показать строку поиска",
+        "show_IMAP_search_folder": "Показать папку поиска IMAP",
+        "sending_mail": "Отправка письма",
+        "send_read_receipts": "Отправлять уведомления о прочтении",
+        "search_class_of_service": "Выберите класс сервиса",
+        "range_time": "Диапазон времени",
+        "main_features": "Основные функции",
+        "i_want_to_see_this_cos": "Я хочу увидеть этот COS"
     },
     "lable": {
         "delete_button": "УДАЛИТЬ"
@@ -518,6 +589,14 @@
         "server_configurations": "Конфигурации сервера",
         "save_index": "Сохранить индекс",
         "max_waiting_time": "Максимальное время ожидания",
-        "max_operations_account": "Максимальное количество операций / учетная запись"
-    }
+        "max_operations_account": "Максимальное количество операций / учетная запись",
+        "metatdata_size": "Размер метаданных",
+        "latency_low_threshold": "Низкий порог задержки",
+        "latency_high_threshold": "Верхний порог задержки"
+    },
+    "welcome_to_carbonio": "Добро пожаловать, {{adminName}}, в Carbonio {{carbonioVersion}}!",
+    "select_section_from_left_menu": "Пожалуйста, выберите раздел в меню слева",
+    "select_cos_or_create_new_cos": "Выберите класс сервиса, чтобы управлять им, или нажмите кнопку «Создать», чтобы создать новый.",
+    "many_cos_info_msg": "Столько COS! Какой из них вы бы хотели увидеть? Начните вводить текст для фильтрации.",
+    "create_new_cos": "СОЗДАТЬ НОВЫЙ COS"
 }

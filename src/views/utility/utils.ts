@@ -825,10 +825,6 @@ export const BucketTypeItems = [
 	{
 		label: 'S3 AWS',
 		value: 'S3'
-	},
-	{
-		label: 'S2 AWS',
-		value: 'S2'
 	}
 ];
 
@@ -964,12 +960,120 @@ export const localeList = (
 
 export const BucketRegions = [
 	{
-		label: 'EU | Milan',
+		label: 'AF_SOUTH_1',
+		value: 'AF_SOUTH_1'
+	},
+	{
+		label: 'AP_EAST_1',
+		value: 'AP_EAST_1'
+	},
+	{
+		label: 'AP_NORTHEAST_1',
+		value: 'AP_NORTHEAST_1'
+	},
+	{
+		label: 'AP_NORTHEAST_2',
+		value: 'AP_NORTHEAST_2'
+	},
+	{
+		label: 'AP_NORTHEAST_3',
+		value: 'AP_NORTHEAST_3'
+	},
+	{
+		label: 'AP_SOUTH_1',
+		value: 'AP_SOUTH_1'
+	},
+	{
+		label: 'AP_SOUTHEAST_1',
+		value: 'AP_SOUTHEAST_1'
+	},
+	{
+		label: 'AP_SOUTHEAST_2',
+		value: 'AP_SOUTHEAST_2'
+	},
+	{
+		label: 'AP_SOUTHEAST_3',
+		value: 'AP_SOUTHEAST_3'
+	},
+	{
+		label: 'CA_CENTRAL_1',
+		value: 'CA_CENTRAL_1'
+	},
+	{
+		label: 'CN_NORTH_1',
+		value: 'CN_NORTH_1'
+	},
+	{
+		label: 'CN_NORTHWEST_1',
+		value: 'CN_NORTHWEST_1'
+	},
+	{
+		label: 'EU_CENTRAL_1',
+		value: 'EU_CENTRAL_1'
+	},
+	{
+		label: 'EU_NORTH_1',
+		value: 'EU_NORTH_1'
+	},
+	{
+		label: 'EU_SOUTH_1',
+		value: 'EU_SOUTH_1'
+	},
+	{
+		label: 'EU_WEST_1',
 		value: 'EU_WEST_1'
 	},
 	{
-		label: 'EU | Milan1',
-		value: 'EU_TEST_1'
+		label: 'EU_WEST_2',
+		value: 'EU_WEST_2'
+	},
+	{
+		label: 'EU_WEST_3',
+		value: 'EU_WEST_3'
+	},
+	{
+		label: 'GovCloud',
+		value: 'GovCloud'
+	},
+	{
+		label: 'ME_SOUTH_1',
+		value: 'ME_SOUTH_1'
+	},
+	{
+		label: 'SA_EAST_1',
+		value: 'SA_EAST_1'
+	},
+	{
+		label: 'US_EAST_1',
+		value: 'US_EAST_1'
+	},
+	{
+		label: 'US_EAST_2',
+		value: 'US_EAST_2'
+	},
+	{
+		label: 'US_GOV_EAST_1',
+		value: 'US_GOV_EAST_1'
+	},
+	{
+		label: 'US_ISO_EAST_1',
+		value: 'US_ISO_EAST_1'
+	},
+	{
+		label: 'US_ISO_WEST_1',
+		value: 'US_ISO_WEST_1'
+	},
+	{
+		label: 'US_ISOB_EAST_1',
+		value: 'US_ISOB_EAST_1'
+	},
+	{
+		label: 'US_WEST_1',
+		value: 'US_WEST_1'
+	},
+	{
+		label: 'US_WEST_2',
+		value: 'US_WEST_2'
 	}
 ];
 

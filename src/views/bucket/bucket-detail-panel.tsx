@@ -26,6 +26,7 @@ import BucketDeleteModel from './delete-bucket-model';
 import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import { BucketTypeItems } from '../utility/utils';
+import EditBucketDetailPanel from './edit-bucket-details-panel';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -61,7 +62,8 @@ const BucketListTable: FC<{
 	selectedRows: any;
 	onSelectionChange: any;
 	onDoubleClick: any;
-}> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick }) => {
+	onClick: any;
+}> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick, onClick }) => {
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
@@ -72,6 +74,9 @@ const BucketListTable: FC<{
 						onDoubleClick={(): any => {
 							onDoubleClick(i);
 						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start', textTransform: 'capitalize' }}
 					>
 						{v.bucketName}
@@ -81,6 +86,9 @@ const BucketListTable: FC<{
 						onDoubleClick={(): any => {
 							onDoubleClick(i);
 						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
 						style={{ textAlign: 'center', textTransform: 'capitalize' }}
 					>
 						{v.storeType}
@@ -88,7 +96,7 @@ const BucketListTable: FC<{
 				],
 				clickable: true
 			})),
-		[onDoubleClick, volumes]
+		[onClick, onDoubleClick, volumes]
 	);
 
 	return (
@@ -122,11 +130,8 @@ const BucketDetailPanel: FC = () => {
 	const [toggleWizardSection, setToggleWizardSection] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
-	// let connectionData1: any = [];
+	const [showEditDetailView, setShowEditDetailView] = useState(false);
 
-	const clickHandler = (): any => {
-		setOpen(true);
-	};
 	const closeHandler = (): any => {
 		setOpen(false);
 		setShowDetails(!showDetails);
@@ -175,6 +180,7 @@ const BucketDetailPanel: FC = () => {
 					}),
 					autoHideTimeout: 2000
 				});
+				setDetailsBucket(false);
 			} else {
 				createSnackbar({
 					key: 1,
@@ -224,7 +230,19 @@ const BucketDetailPanel: FC = () => {
 					<DetailsPanel
 						setDetailsBucket={setDetailsBucket}
 						title="Bucket Connection"
-						BucketDetail={connectionData}
+						bucketDetail={connectionData}
+						setBucketDeleteName={setBucketDeleteName}
+						setOpen={setOpen}
+						setShowEditDetailView={setShowEditDetailView}
+					/>
+				</AbsoluteContainer>
+			)}
+			{showEditDetailView && (
+				<AbsoluteContainer orientation="vertical" background="gray5">
+					<EditBucketDetailPanel
+						setShowEditDetailView={setShowEditDetailView}
+						title="Bucket Connection"
+						bucketDetail={connectionData}
 					/>
 				</AbsoluteContainer>
 			)}
@@ -281,15 +299,6 @@ const BucketDetailPanel: FC = () => {
 									if (showDetails) setShowDetails(!showDetails);
 								}}
 							/>
-
-							<Button
-								type="outlined"
-								label={t('label.remove_button', 'REMOVE')}
-								icon="CloseOutline"
-								color="error"
-								disabled={!bucketselection.length}
-								onClick={clickHandler}
-							/>
 						</Row>
 						{bucketList?.length !== 0 && (
 							<>
@@ -314,6 +323,11 @@ const BucketDetailPanel: FC = () => {
 										}}
 										onDoubleClick={(i: any): any => {
 											handleDoubleClick(i);
+											setShowEditDetailView(true);
+										}}
+										onClick={(i: any): any => {
+											handleDoubleClick(i);
+											setShowEditDetailView(false);
 										}}
 									/>
 								</Row>

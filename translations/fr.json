@@ -6,7 +6,8 @@
             "arn_name": "Arn / Nom",
             "descriptive_name": "Nom descriptif",
             "secret_key": "Clé secrète",
-            "verify_connector": "VÉRIFIER LE CONNECTEUR"
+            "verify_connector": "VÉRIFIER LE CONNECTEUR",
+            "create_and_verify_connector": "CRÉATION ET VÉRIFICATION DU CONNECTEUR"
         },
         "bucket_list": "Liste des buckets",
         "bucket_type": "Type de Buckets",
@@ -15,7 +16,8 @@
             "bucket_connection": "Connexion au Bucket"
         },
         "create_new_bucket": "NOUVEAU BUCKET",
-        "filter_buckets_list": "Filtrer la liste des Buckets"
+        "filter_buckets_list": "Filtrer la liste des Buckets",
+        "connector_used": "Connecteur utilisé comme"
     },
     "core": {
         "subscription": {
@@ -280,7 +282,51 @@
         "always_compose_mail_using": "Toujours composer un email en utilisant",
         "activate_and_update": "Activer et mettre à jour",
         "I_want_to_see_this_COS": "Je souhaite consulter cette COS",
-        "I_am_looking_for_this_account": "Je recherche ce compte..."
+        "I_am_looking_for_this_account": "Je recherche ce compte...",
+        "you_are_deleting": "Vous êtes sur le point de supprimer {{cosname}}",
+        "yes_delete": "Oui, Supprimer",
+        "verify_error": "{{name}}",
+        "verify_connector_fail": " LA VÉRIFICATION A ÉCHOUÉE",
+        "uuid": "uuid",
+        "used_on_accounts": "Utilisé sur les comptes",
+        "used_on_Domains": "Utilisé sur les domaines",
+        "use_the_QuickAdd_dialog_when_creating_new_appointments": "Utiliser l'écran d'ajout rapide lors de la création d'un nouvel évènement",
+        "this_list_is_empty": "La liste est vide.",
+        "show_reminder": "Afficher un rappel",
+        "servers_list": "Liste des serveurs",
+        "server_settings": "Paramétrages du serveur",
+        "server_pools": "Pools de Serveurs",
+        "server_lists": "Listes des serveurs",
+        "server_config": "Configuration serveur",
+        "search_dot": "Recherche ...",
+        "save_to_sent_folder": "Enregistrer dans le dossier Envoyé",
+        "restore_deleted_email": "Restaurer l'email supprimé",
+        "remove_button": "SUPPRIMER",
+        "range_time": "Durée de l'intervalle",
+        "number_of_items_to_fetch_when_scrolling": "Nombre d'élément à récupérer en scrolling",
+        "no_go_back": "Non, retour",
+        "never_logged_in": "Jamais connecté",
+        "maximum_length_of_mail_signature": "Taille maximum pour une signature",
+        "mailing_lists": "Mailing Listes",
+        "mailing_list": "Mailing Liste",
+        "initial_mail_serach": "Recherche d'email initiale",
+        "import_external_backup": "Importer un Backup externe",
+        "import_an_external_backup": "Importer un Backup externe",
+        "i_am_looking_for_this_account": "Je recherche ce compte...",
+        "here_you_will_find": "Ici vous trouverez",
+        "gay_sync_account_name": "Nom du compte de GAL Sync",
+        "gal_settings": "Paramétrages de la GAL",
+        "first_day_of_Week": "Premier jour de la semaine",
+        "enable_toaster_notification_for_new_calendar_events": "activer les notifications pour les évènements du calendrier",
+        "domain_status": "Statut du domaine",
+        "domain_name": "Nom de domaine",
+        "detail_button": "DÉTAILS",
+        "deleting_cos_msg": "Suppression de <bold>{{cosname}}</bod>",
+        "delete_cos_succeess": "La COS {{cosname}} a été supprimée avec succès",
+        "delete_cos_instruction_msg": "Si vous cliquez sur OUI, SUPPRIMER la COS par défaut remplacera la COS supprimée.",
+        "delete_bucket_sucess": "Le {{name}} a été supprimé",
+        "delete_bucket_message_2": "Êtes-vous sûr de vouloir supprimer la connexion a {{bucket_name}} ?",
+        "delete_bucket_message": "Vous êtes sur le point de supprimer la connexion a {{bucket_name}}. Vous supprimerez uniquement la connexion, les données stockées sur le bucket seront préservées. Si vous souhaitez supprimer les données, veuillez vous référer à la procédure de suppression du bucket."
     },
     "message": {
         "snackbar": {
@@ -555,7 +601,11 @@
         "main_features": "Fonctionnalités principales",
         "i_want_to_see_this_cos": "Je souhaite consulter cette COS",
         "display_a_warning_when_administrators_try_to_navigate_away_from_Zimbra_Administration_Console": "Afficher un avertissement lorsqu'un administrateur tente de naviguer hors de la console d'administration de Zimbra",
-        "composing_mail": "Rédiger un email"
+        "composing_mail": "Rédiger un email",
+        "sending_mail": "email en cours d'envoi"
     },
-    "create_new_cos": "CRÉER UNE NOUVELLE COS"
+    "create_new_cos": "CRÉER UNE NOUVELLE COS",
+    "select_section_from_left_menu": "Merci de sélectionner une section depuis le menu de gauche",
+    "select_cos_or_create_new_cos": "Merci de sélectionner une Classe de Service (COS) pour l'administrer ou cliquez sur le bouton Créer pour en créer une nouvelle.",
+    "many_cos_info_msg": "Il y a beaucoup de COS ! La quelle souhaitez-vous consulter ? Commencer la saisi pour filtrer."
 }

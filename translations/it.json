@@ -5,7 +5,8 @@
             "access_key": "Chiave d'Accesso",
             "descriptive_name": "Nome Descrittivo",
             "secret_key": "Chiave Segreta",
-            "verify_connector": "VERIFICA CONNETTORE"
+            "verify_connector": "VERIFICA CONNETTORE",
+            "create_and_verify_connector": "CREA E VERIFICA CONNETTORE"
         },
         "bucket_list": "Bucket List",
         "bucket_type": "Tipologia Bucket",
@@ -13,7 +14,8 @@
         "new": {
             "bucket_connection": "Connessione Bucket"
         },
-        "create_new_bucket": "NUOVO BUCKET"
+        "create_new_bucket": "NUOVO BUCKET",
+        "connector_used": "Connettore usato come"
     },
     "core": {
         "subscription": {
@@ -402,7 +404,8 @@
         "global": {
             "headers": {
                 "advanced": "Avanzate",
-                "service_status": "Stato del Servizio"
+                "service_status": "Stato del Servizio",
+                "server_config": "Configurazione Server"
             }
         },
         "keep_delete_accounts_in_backup": "Tieni nel backup gli account eliminati",
@@ -416,7 +419,13 @@
         "purge_old_configurations": "Elimina Vecchie Configurazioni",
         "realtime_scanner": "Scansione in Tempo Reale",
         "schedule": "Pianificazione",
-        "smart_scan_at_startup": "SmartScan all'avvio"
+        "smart_scan_at_startup": "SmartScan all'avvio",
+        "server_configurations": "Configurazioni Server",
+        "save_index": "Salva Indice",
+        "metatdata_size": "Dimensione Metadati",
+        "max_waiting_time": "Tempo Massimo di Attesa",
+        "latency_low_threshold": "Soglia Bassa Latenza",
+        "latency_high_threshold": "Soglia Alta Latenza"
     },
     "cos": {
         "maximum_number_of_items_to_display_per_page": "Numero massimo di elementi da visualizzare per pagina",
