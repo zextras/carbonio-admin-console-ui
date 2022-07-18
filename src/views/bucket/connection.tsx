@@ -38,16 +38,16 @@ const Connection: FC<{
 	);
 
 	const [bucketName, setBucketName] = useState();
-	const [descriptiveName, setDescripitiveName] = useState();
 	const [accessKeyData, setAccessKeyData] = useState();
 	const [secretKey, setSecretKey] = useState();
 	const [regionsData, setRegionsData] = useState();
-	const [notes, setNotes] = useState();
 	const [BucketUid, setBucketUid] = useState('');
 	const [bucketTypeData, setBucketTypeData] = useState();
 	const [verifyCheck, setVerifyCheck] = useState<string>('');
 	const [buttonChange, setButtonChange] = useState<boolean>(false);
 	const [verifyFailErr, setverifyFailErr] = useState('');
+	const [bothFail, setbothFail] = useState('');
+	const [bucketDetailButton, setbucketDetailButton] = useState<boolean>(false);
 	const bucketType = externalData;
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 	const handleVerifyConnector = (): any => {
@@ -83,33 +83,33 @@ const Connection: FC<{
 						responseVerifyData.response[server].ok
 					) {
 						setVerifyCheck('successWithVerify');
+						setbucketDetailButton(true);
 					} else {
 						setVerifyCheck('errorOnVerify');
-						setverifyFailErr(responseVerifyData.response[server].error);
+						setverifyFailErr(data);
+						setbucketDetailButton(true);
 					}
 				});
 			} else {
+				setbothFail(response.error.message || response.error);
 				setVerifyCheck('fail');
+				setbucketDetailButton(false);
 			}
 		});
 	};
+	useEffect(() => {
+		if (bucketName && accessKeyData && secretKey) {
+			setbucketDetailButton(false);
+		} else {
+			setbucketDetailButton(true);
+		}
+	}, [accessKeyData, bucketName, secretKey]);
 
 	useEffect(() => {
 		if (isActive) {
-			setCompleteLoading(
-				descriptiveName && bucketName && regionsData && accessKeyData && secretKey && BucketUid
-			);
+			setCompleteLoading(bucketName && regionsData && accessKeyData && secretKey && BucketUid);
 		}
-	}, [
-		accessKeyData,
-		bucketName,
-		descriptiveName,
-		isActive,
-		regionsData,
-		secretKey,
-		setCompleteLoading,
-		BucketUid
-	]);
+	}, [accessKeyData, bucketName, isActive, regionsData, secretKey, setCompleteLoading, BucketUid]);
 
 	useEffect(() => {
 		if (bucketType !== '') {
@@ -127,7 +127,7 @@ const Connection: FC<{
 				t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED')
 			);
 		} else if (verifyCheck === 'errorOnVerify') {
-			setButtonColor('error');
+			setButtonColor('warning');
 			setIcon('alert-triangle');
 			setButtonDetail(
 				t(
@@ -138,7 +138,7 @@ const Connection: FC<{
 			if (verifyFailErr !== '') {
 				createSnackbar({
 					key: '1',
-					type: 'error',
+					type: 'warning',
 					label: t('label.verify_error', '{{name}}', {
 						name: verifyFailErr
 					}),
@@ -157,14 +157,19 @@ const Connection: FC<{
 			createSnackbar({
 				key: 1,
 				type: 'error',
-				label: t(
-					'label.connector_is_not_created_and_verification_failed',
-					'CONNECTOR IS NOT CREATED AND VERIFICATION FAILED'
-				),
+				label: t('label.verify_error', '{{name}}', {
+					name: bothFail
+				}),
 				autoHideTimeout: 2000
 			});
+		} else {
+			setButtonColor('primary');
+			setIcon('ActivityOutline');
+			setButtonDetail(
+				t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
+			);
 		}
-	}, [createSnackbar, setButtonChange, t, verifyCheck, verifyFailErr]);
+	}, [bothFail, createSnackbar, setButtonChange, t, verifyCheck, verifyFailErr]);
 
 	return (
 		<Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
@@ -193,17 +198,6 @@ const Connection: FC<{
 					/>
 				</Row>
 			)}
-			<Row padding={{ top: 'large' }} width="100%">
-				<Input
-					label={t('label.descriptive_name', 'Descriptive Name')}
-					backgroundColor="gray5"
-					name="descriptiveName"
-					onChange={(ev: any): any => {
-						setDescripitiveName(ev.target.value);
-						onSelection({ descriptiveName: ev.target.value }, false);
-					}}
-				/>
-			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
 					<Input
@@ -258,17 +252,6 @@ const Connection: FC<{
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
-				<Input
-					background="gray5"
-					label={t('label.notes', 'Notes')}
-					name="notes"
-					onChange={(ev: any): any => {
-						setNotes(ev.target.value);
-						onSelection({ notes: ev.target.value }, false);
-					}}
-				/>
-			</Row>
-			<Row width="100%" padding={{ top: 'large' }}>
 				<Button
 					type="outlined"
 					label={buttonDetail}
@@ -277,6 +260,7 @@ const Connection: FC<{
 					color={buttonColor}
 					width="100%"
 					onClick={handleVerifyConnector}
+					disabled={bucketDetailButton}
 				/>
 			</Row>
 			{verifyCheck === 'success' && (

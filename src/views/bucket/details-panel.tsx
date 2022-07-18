@@ -278,7 +278,7 @@ const DetailsPanel: FC<{
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
 					<Input
-						label={t('label.descriptive_name', 'Descriptive Name')}
+						label={t('label.bucket_name', 'Bucket Name')}
 						value={bucketDetail.bucketName}
 						readOnly
 					/>
@@ -288,7 +288,7 @@ const DetailsPanel: FC<{
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Row width="48%" mainAlignment="flex-start">
-						<PasswordInput
+						<Input
 							label={t('label.access_key', 'Access Key')}
 							value={bucketDetail.accessKey}
 							readOnly

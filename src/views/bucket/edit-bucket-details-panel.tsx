@@ -153,9 +153,8 @@ const EditBucketDetailPanel: FC<{
 	bucketDetail: any;
 }> = ({ setShowEditDetailView, title, bucketDetail }) => {
 	const [t] = useTranslation();
-	const [bucketName, setBucketName] = useState();
+	const [bucketName, setBucketName] = useState(bucketDetail.bucketName);
 	const [bucketType, setBucketType] = useState<any>();
-	const [descriptiveName, setDescriptiveName] = useState(bucketDetail.bucketName);
 	const [regionData, setRegionData] = useState(bucketDetail.region);
 	const [accessKeyData, setAccessKeyData] = useState(bucketDetail.accessKey);
 	const [secretKey, setSecretKey] = useState(bucketDetail.secret);
@@ -204,7 +203,6 @@ const EditBucketDetailPanel: FC<{
 	const updatePreviousDetail = (): void => {
 		const latestData: any = {};
 		latestData.bucketName = bucketName;
-		latestData.descriptiveName = descriptiveName;
 		latestData.regionData = regionData;
 		latestData.accessKeyData = accessKeyData;
 		latestData.secretKey = secretKey;
@@ -222,7 +220,7 @@ const EditBucketDetailPanel: FC<{
 			bucketName,
 			accessKey: accessKeyData,
 			secret: secretKey,
-			region: regionData,
+			region: regionData.value,
 			targetServer: server
 		}).then((res: any) => {
 			const updateResData = JSON.parse(res.response.content);
@@ -258,16 +256,9 @@ const EditBucketDetailPanel: FC<{
 		previousDetail?.bucketType
 			? setBucketType(previousDetail?.bucketType)
 			: setBucketType(bucketTypeValue);
-		previousDetail?.descriptiveName
-			? setDescriptiveName(previousDetail?.descriptiveName)
-			: setDescriptiveName(bucketDetail.bucketName);
-		const volumeObject: any = find(
-			BucketTypeItems,
-			(o) => o.value === bucketDetail.storeType
-		)?.label;
 		previousDetail?.bucketName
 			? setBucketName(previousDetail?.bucketName)
-			: setBucketName(volumeObject);
+			: setBucketName(bucketName);
 		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region);
 		previousDetail?.regionData
 			? setRegionData(previousDetail?.regionData)
@@ -304,24 +295,12 @@ const EditBucketDetailPanel: FC<{
 	}, [bucketDetail.storeType, bucketType]);
 
 	useEffect(() => {
-		if (descriptiveName !== undefined && bucketDetail?.bucketName !== descriptiveName) {
+		if (bucketName !== undefined && bucketDetail?.bucketName !== bucketName) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
 		}
-	}, [bucketDetail?.bucketName, descriptiveName]);
-
-	useEffect(() => {
-		const volumeObject: any = find(
-			BucketTypeItems,
-			(o) => o.value === bucketDetail.storeType
-		)?.label;
-		if (bucketName !== undefined && volumeObject !== bucketName) {
-			setIsDirty(true);
-		} else {
-			setIsDirty(false);
-		}
-	}, [bucketDetail?.bucketName, bucketDetail.storeType, bucketName]);
+	}, [bucketDetail?.bucketName, bucketName]);
 
 	useEffect(() => {
 		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region)?.value;
@@ -349,13 +328,8 @@ const EditBucketDetailPanel: FC<{
 	}, [bucketDetail?.secret, secretKey]);
 
 	useEffect(() => {
-		const volumeObject: any = find(
-			BucketTypeItems,
-			(o) => o.value === bucketDetail.storeType
-		)?.label;
 		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region);
 		const bucketTypeValue: any = find(BucketTypeItems, (o) => o.value === bucketDetail.storeType);
-		setBucketName(volumeObject);
 		setRegionData(regionValue);
 		setBucketType(bucketTypeValue);
 	}, [bucketDetail]);
@@ -402,15 +376,6 @@ const EditBucketDetailPanel: FC<{
 						selection={bucketType}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
-					/>
-				</Row>
-				<Row padding={{ top: 'large' }} width="100%">
-					<Input
-						label={t('label.descriptive_name', 'Descriptive Name')}
-						value={descriptiveName}
-						onChange={(e: any): void => {
-							setDescriptiveName(e.target.value);
-						}}
 					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
@@ -477,6 +442,3 @@ const EditBucketDetailPanel: FC<{
 };
 
 export default EditBucketDetailPanel;
-function setDetailsBucket(arg0: boolean): any {
-	throw new Error('Function not implemented.');
-}

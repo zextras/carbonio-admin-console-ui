@@ -109,9 +109,11 @@ const EditAccountGeneralSection: FC = () => {
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
 		>
 			<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-				<Text size="small" color="gray0" weight="bold">
-					{t('label.account', 'Account')}
-				</Text>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.account', 'Account')}
+					</Text>
+				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="space-between">
 						<Input
@@ -191,7 +193,7 @@ const EditAccountGeneralSection: FC = () => {
 						<Switch
 							value={accountDetail?.zimbraHideInGal === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraHideInGal')}
-							label={t('accountDetails.hide_in_gal', 'Hide in GAL')}
+							label={t('account_details.hide_in_gal', 'Hide in GAL')}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -199,7 +201,7 @@ const EditAccountGeneralSection: FC = () => {
 							value={accountDetail?.zimbraPasswordMustChange === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraPasswordMustChange')}
 							label={t(
-								'accountDetails.this_user_must_change_password',
+								'account_details.this_user_must_change_password',
 								'This user must change password'
 							)}
 						/>
@@ -231,7 +233,7 @@ const EditAccountGeneralSection: FC = () => {
 							value={accountDetail?.zimbraPasswordLocked === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraPasswordLocked')}
 							label={t(
-								'accountDetails.prevent_user_from_changing_password',
+								'account_details.prevent_user_from_changing_password',
 								'Prevent user from changing password'
 							)}
 						/>
@@ -270,7 +272,7 @@ const EditAccountGeneralSection: FC = () => {
 							value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraIsAdminAccount')}
 							label={t(
-								'accountDetails.this_is_global_administrator',
+								'account_details.this_is_global_administrator',
 								'This is a Global Administrator '
 							)}
 						/>
@@ -281,7 +283,7 @@ const EditAccountGeneralSection: FC = () => {
 						<Switch
 							value={defaultCOS}
 							onClick={onCOSSwitchChanges}
-							label={t('accountDetails.default_COS', 'Default COS')}
+							label={t('account_details.default_COS', 'Default COS')}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">

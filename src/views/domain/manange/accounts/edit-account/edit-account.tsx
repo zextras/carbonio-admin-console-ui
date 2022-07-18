@@ -27,6 +27,7 @@ import EditAccountGeneralSection from './edit-account-general-section';
 import EditAccountConfigrationSection from './edit-account-configration-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 import { getAccountRequest } from '../../../../../services/get-account';
+import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { setPasswordRequest } from '../../../../../services/set-password';
 
@@ -45,6 +46,8 @@ const EditAccount: FC<{
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
 	const [accountDetail, setAccountDetail] = useState<any>({});
+	const [directMemberList, setDirectMemberList] = useState<any>({});
+	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 
 	const getAccountDetail = useCallback((id): void => {
 		getAccountRequest(id)
@@ -53,10 +56,38 @@ const EditAccount: FC<{
 				const obj: any = {};
 				// eslint-disable-next-line array-callback-return
 				data?.Body?.GetAccountResponse?.account?.[0]?.a?.map((ele: any) => {
-					obj[ele.n] = ele._content;
+					if (obj[ele.n]) {
+						obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
+					} else {
+						obj[ele.n] = ele._content;
+					}
 				});
+				obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
+					? obj.zimbraPrefMailForwardingAddress
+					: '';
+				obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
+					? obj.zimbraPrefCalendarForwardInvitesTo
+					: '';
 				setInitAccountDetail({ ...obj });
 				setAccountDetail({ ...obj });
+			})
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			.catch((error) => {});
+	}, []);
+	const getAccountMembership = useCallback((id): void => {
+		getAccountMembershipRequest(id)
+			.then((response: any) => response.json())
+			.then((data: any) => {
+				const directMemArr: any[] = [];
+				const inDirectMemArr: any[] = [];
+				// eslint-disable-next-line array-callback-return
+				data?.Body?.GetAccountMembershipResponse?.dl?.map((ele: any) => {
+					if (ele?.via) inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
+					else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
+				});
+
+				setDirectMemberList(directMemArr);
+				setInDirectMemberList(inDirectMemArr);
 			})
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			.catch((error) => {});
@@ -70,7 +101,8 @@ const EditAccount: FC<{
 	}, [accountDetail, initAccountDetail]);
 	useEffect(() => {
 		getAccountDetail(selectedAccount?.id);
-	}, [getAccountDetail, selectedAccount]);
+		getAccountMembership(selectedAccount?.id);
+	}, [getAccountDetail, selectedAccount, getAccountMembership]);
 	const ReusedDefaultTabBar: FC<{
 		item: any;
 		index: any;
@@ -202,7 +234,9 @@ const EditAccount: FC<{
 	};
 
 	return (
-		<AccountContext.Provider value={{ accountDetail, setAccountDetail }}>
+		<AccountContext.Provider
+			value={{ accountDetail, setAccountDetail, directMemberList, inDirectMemberList }}
+		>
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"
@@ -263,7 +297,7 @@ const EditAccount: FC<{
 					<Row width="100%">
 						<Divider color="gray2" />
 					</Row>
-					<Container crossAlignment="flex-start">
+					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
 						{isDirty && (
 							<Container
 								orientation="horizontal"

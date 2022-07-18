@@ -7,6 +7,8 @@ import { createContext } from 'react';
 
 type AccountContext = {
 	accountDetail: any;
+	directMemberList: any[];
+	inDirectMemberList: any[];
 	setAccountDetail: (arg: any) => void;
 };
 export const AccountContext = createContext({} as AccountContext);
