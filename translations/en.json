@@ -340,10 +340,7 @@
         "discard_changes": "DISCARD CHANGES",
         "displayed_name": "Displayed Name",
         "do_you_need_more_information": "Do you need more information?",
-<<<<<<< HEAD
         "domain": "Domain",
-=======
->>>>>>> devel
         "domain_name": "Domain Name",
         "domain_quota_settings": "Domain Quota Settings",
         "domain_status": "Domain Status",
