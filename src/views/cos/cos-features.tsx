@@ -320,277 +320,275 @@ const CosFeatures: FC = () => {
 	};
 
 	return (
-		<>
-			<Container mainAlignment="flex-start" background="gray6">
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container
-						orientation="vertical"
-						mainAlignment="space-around"
-						background="gray6"
-						height="58px"
-					>
-						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-							<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-								<Text size="medium" weight="bold" color="gray0">
-									{t('cos.features', 'Features')}
-								</Text>
-							</Row>
-							<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-								<Padding right="small">
-									{isDirty && (
-										<Button
-											label={t('label.cancel', 'Cancel')}
-											color="secondary"
-											onClick={onCancel}
-										/>
-									)}
-								</Padding>
-								{isDirty && (
-									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-								)}
-							</Row>
-						</Row>
-					</Container>
-				</Row>
-				<Row orientation="horizontal" width="100%" background="gray6">
-					<Divider />
-				</Row>
+		<Container mainAlignment="flex-start" background="gray6">
+			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Container
-					mainAlignment="flex-start"
-					width="100%"
 					orientation="vertical"
-					style={{ overflow: 'auto' }}
+					mainAlignment="space-around"
+					background="gray6"
+					height="58px"
 				>
-					<Row
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ all: 'large' }}
-						width="100%"
-					>
-						<Text size="extralarge" weight="bold">
-							{t('cos.main_features', 'Main Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureMailEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureMailEnabled')}
-									label={t('cos.mail', 'Mail')}
-								/>
-							</Row>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureCalendarEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureCalendarEnabled')}
-									label={t('cos.calendar', 'Calendar')}
-								/>
-							</Row>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureContactsEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureContactsEnabled')}
-									label={t('cos.contacts', 'Contacts')}
-								/>
-							</Row>
+					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+							<Text size="medium" weight="bold" color="gray0">
+								{t('cos.features', 'Features')}
+							</Text>
 						</Row>
-
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.general_features', 'General Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureTaggingEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureTaggingEnabled')}
-									label={t('cos.tagging', 'Tagging')}
-								/>
-							</Row>
-
-							<Row width="25%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureHtmlComposeEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureHtmlComposeEnabled')}
-									label={t('cos.html_compose', 'HTML compose')}
-								/>
-							</Row>
-
-							<Row width="35%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureWebClientOfflineAccessEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureWebClientOfflineAccessEnabled')}
-									label={t(
-										'cos.offline_support_for_advanced_client',
-										'Offline support for Advanced (Ajax) client'
-									)}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.mail_features', 'Mail Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureMailPriorityEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureMailPriorityEnabled')}
-									label={t('cos.message_priority', 'Message Priority')}
-									disabled={!cosFeatures.zimbraFeatureMailEnabled}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="25%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeaturePop3DataSourceEnabled}
-									onClick={() => changeSwitchOption('zimbraFeaturePop3DataSourceEnabled')}
-									label={t('cos.external_pop_access', 'External POP Access')}
-									disabled={!cosFeatures.zimbraFeatureMailEnabled}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="35%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureOutOfOfficeReplyEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
-									label={t('cos.out_of_the_office_reply', 'Out of the Office Reply')}
-									disabled={!cosFeatures.zimbraFeatureMailEnabled}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.contact_features', 'Contact Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="40%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureDistributionListFolderEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureDistributionListFolderEnabled')}
-									label={t('cos.distribution_list_folder', 'Distribution List Folder')}
-									disabled={!cosFeatures.zimbraFeatureContactsEnabled}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.calender_features', 'Calendar Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureGroupCalendarEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureGroupCalendarEnabled')}
-									label={t('cos.group_calender', 'Group Calendar')}
-									disabled={!cosFeatures.zimbraFeatureCalendarEnabled}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="25%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureCalendarReminderDeviceEmailEnabled}
-									onClick={() =>
-										changeSwitchOption('zimbraFeatureCalendarReminderDeviceEmailEnabled')
-									}
-									label={t('cos.sms_reminders', 'SMS Reminders')}
-									disabled={!cosFeatures.zimbraFeatureCalendarEnabled}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.search_features', 'Search Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureAdvancedSearchEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureAdvancedSearchEnabled')}
-									label={t('cos.advanced_search', 'Advanced Search')}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureSavedSearchesEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureSavedSearchesEnabled')}
-									label={t('cos.saved_searches', 'Saved Searches')}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureInitialSearchPreferenceEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureInitialSearchPreferenceEnabled')}
-									label={t('cos.initial_search_preference', 'Initial Search Preference')}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeaturePeopleSearchEnabled}
-									onClick={() => changeSwitchOption('zimbraFeaturePeopleSearchEnabled')}
-									label={t('cos.search_for_people', 'Search for People')}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.s_mime_features', 'S/MIME Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureSMIMEEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureSMIMEEnabled')}
-									label={t('cos.enable_smime', 'Enable S/MIME')}
-								/>
-							</Row>
+						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
+							<Padding right="small">
+								{isDirty && (
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										onClick={onCancel}
+									/>
+								)}
+							</Padding>
+							{isDirty && (
+								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+							)}
 						</Row>
 					</Row>
 				</Container>
+			</Row>
+			<Row orientation="horizontal" width="100%" background="gray6">
+				<Divider />
+			</Row>
+			<Container
+				mainAlignment="flex-start"
+				width="100%"
+				orientation="vertical"
+				style={{ overflow: 'auto' }}
+			>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ all: 'large' }}
+					width="100%"
+				>
+					<Text size="extralarge" weight="bold">
+						{t('cos.main_features', 'Main Features')}
+					</Text>
+					<Row
+						width="100%"
+						mainAlignment="flex-start"
+						padding={{ top: 'large', left: 'large', bottom: 'large' }}
+					>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureMailEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureMailEnabled')}
+								label={t('cos.mail', 'Mail')}
+							/>
+						</Row>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureCalendarEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureCalendarEnabled')}
+								label={t('cos.calendar', 'Calendar')}
+							/>
+						</Row>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureContactsEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureContactsEnabled')}
+								label={t('cos.contacts', 'Contacts')}
+							/>
+						</Row>
+					</Row>
+
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.general_features', 'General Features')}
+					</Text>
+					<Row
+						width="100%"
+						mainAlignment="flex-start"
+						padding={{ top: 'large', left: 'large', bottom: 'large' }}
+					>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureTaggingEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureTaggingEnabled')}
+								label={t('cos.tagging', 'Tagging')}
+							/>
+						</Row>
+
+						<Row width="25%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureHtmlComposeEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureHtmlComposeEnabled')}
+								label={t('cos.html_compose', 'HTML compose')}
+							/>
+						</Row>
+
+						<Row width="35%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureWebClientOfflineAccessEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureWebClientOfflineAccessEnabled')}
+								label={t(
+									'cos.offline_support_for_advanced_client',
+									'Offline support for Advanced (Ajax) client'
+								)}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.mail_features', 'Mail Features')}
+					</Text>
+					<Row
+						width="100%"
+						mainAlignment="flex-start"
+						padding={{ top: 'large', left: 'large', bottom: 'large' }}
+					>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureMailPriorityEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureMailPriorityEnabled')}
+								label={t('cos.message_priority', 'Message Priority')}
+								disabled={!cosFeatures.zimbraFeatureMailEnabled}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="25%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeaturePop3DataSourceEnabled}
+								onClick={() => changeSwitchOption('zimbraFeaturePop3DataSourceEnabled')}
+								label={t('cos.external_pop_access', 'External POP Access')}
+								disabled={!cosFeatures.zimbraFeatureMailEnabled}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="35%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureOutOfOfficeReplyEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
+								label={t('cos.out_of_the_office_reply', 'Out of the Office Reply')}
+								disabled={!cosFeatures.zimbraFeatureMailEnabled}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.contact_features', 'Contact Features')}
+					</Text>
+					<Row
+						width="100%"
+						mainAlignment="flex-start"
+						padding={{ top: 'large', left: 'large', bottom: 'large' }}
+					>
+						<Row width="40%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureDistributionListFolderEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureDistributionListFolderEnabled')}
+								label={t('cos.distribution_list_folder', 'Distribution List Folder')}
+								disabled={!cosFeatures.zimbraFeatureContactsEnabled}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.calender_features', 'Calendar Features')}
+					</Text>
+					<Row
+						width="100%"
+						mainAlignment="flex-start"
+						padding={{ top: 'large', left: 'large', bottom: 'large' }}
+					>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureGroupCalendarEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureGroupCalendarEnabled')}
+								label={t('cos.group_calender', 'Group Calendar')}
+								disabled={!cosFeatures.zimbraFeatureCalendarEnabled}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="25%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureCalendarReminderDeviceEmailEnabled}
+								onClick={() =>
+									changeSwitchOption('zimbraFeatureCalendarReminderDeviceEmailEnabled')
+								}
+								label={t('cos.sms_reminders', 'SMS Reminders')}
+								disabled={!cosFeatures.zimbraFeatureCalendarEnabled}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.search_features', 'Search Features')}
+					</Text>
+					<Row
+						width="100%"
+						mainAlignment="flex-start"
+						padding={{ top: 'large', left: 'large', bottom: 'large' }}
+					>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureAdvancedSearchEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureAdvancedSearchEnabled')}
+								label={t('cos.advanced_search', 'Advanced Search')}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureSavedSearchesEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureSavedSearchesEnabled')}
+								label={t('cos.saved_searches', 'Saved Searches')}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureInitialSearchPreferenceEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureInitialSearchPreferenceEnabled')}
+								label={t('cos.initial_search_preference', 'Initial Search Preference')}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeaturePeopleSearchEnabled}
+								onClick={() => changeSwitchOption('zimbraFeaturePeopleSearchEnabled')}
+								label={t('cos.search_for_people', 'Search for People')}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.s_mime_features', 'S/MIME Features')}
+					</Text>
+					<Row
+						width="100%"
+						mainAlignment="flex-start"
+						padding={{ top: 'large', left: 'large', bottom: 'large' }}
+					>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureSMIMEEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureSMIMEEnabled')}
+								label={t('cos.enable_smime', 'Enable S/MIME')}
+							/>
+						</Row>
+					</Row>
+				</Row>
 			</Container>
-		</>
+		</Container>
 	);
 };
 
