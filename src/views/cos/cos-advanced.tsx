@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -21,6 +21,29 @@ import ListRow from '../list/list-row';
 const CosAdvanced: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+
+	const timeItems: any[] = useMemo(
+		() => [
+			{
+				label: t('label.days', 'Days'),
+				value: 'd'
+			},
+			{
+				label: t('label.hours', 'Hours'),
+				value: 'h'
+			},
+			{
+				label: t('label.minutes', 'Minutes'),
+				value: 'm'
+			},
+			{
+				label: t('label.seconds', 'Seconds'),
+				value: 's'
+			}
+		],
+		[t]
+	);
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -176,10 +199,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="26%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
@@ -237,10 +260,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 								<Container width="72%" padding={{ all: 'small' }}>
@@ -252,10 +275,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
@@ -278,10 +301,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 								<Container width="72%" padding={{ all: 'small' }}>
@@ -293,10 +316,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
@@ -319,10 +342,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 								<Container width="72%" padding={{ all: 'small' }}>
@@ -334,10 +357,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
@@ -359,7 +382,7 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'small', left: 'small', right: 'small', bottom: 'small' }}
 						>
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
@@ -588,10 +611,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 								<Container width="72%" padding={{ all: 'small' }}>
@@ -606,10 +629,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
@@ -646,10 +669,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
@@ -672,10 +695,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
@@ -698,10 +721,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
@@ -753,10 +776,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 								<Container width="72%" padding={{ all: 'small' }}>
@@ -768,10 +791,10 @@ const CosAdvanced: FC = () => {
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
 									<Select
-										// items={items}
+										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										defaultSelection={{ value: 'd', label: 'days' }}
+										defaultSelection={{ value: 'd', label: 'Days' }}
 									/>
 								</Container>
 							</ListRow>
