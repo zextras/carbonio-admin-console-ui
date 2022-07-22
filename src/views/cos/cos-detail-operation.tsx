@@ -19,23 +19,12 @@ const CosDetailOperation: FC = () => {
 	const setTotalAccount = useCosStore((state) => state.setTotalAccount);
 	const setTotalDomain = useCosStore((state) => state.setTotalDomain);
 
-	const getSelectedCosInformation = useCallback(
-		(id: any): any => {
-			getCosGeneralInformation(id)
-				.then((response) => response.json())
-				.then((data) => {
-					const cos = data?.Body?.GetCosResponse?.cos[0];
-					if (cos) {
-						setCos(cos);
-					}
-				});
-		},
-		[setCos]
-	);
-
 	const getTotalDomain = useCallback(
-		(id: any): any => {
-			const query = `(|(!(zimbraDomainDefaultCOSId=*))(zimbraDomainDefaultCOSId=${id}))`;
+		(id: any, isDefaultCos: boolean): any => {
+			let query = `(zimbraDomainDefaultCOSId=${id})`;
+			if (isDefaultCos) {
+				query = `(|(!(zimbraDomainDefaultCOSId=*))(zimbraDomainDefaultCOSId=${id}))`;
+			}
 			searchDirectory('', 'domains', '', query, 0, -1)
 				.then((response) => response.json())
 				.then((data) => {
@@ -47,8 +36,11 @@ const CosDetailOperation: FC = () => {
 	);
 
 	const getTotalAccount = useCallback(
-		(id: any): any => {
-			const query = `(|(!(zimbraCOSId=*))(!(zimbraIsExternalVirtualAccount=TRUE))(zimbraCOSId=${id})(!(zimbraIsSystemAccount=TRUE)))`;
+		(id: any, isDefaultCos: boolean): any => {
+			let query = `(&(zimbraCOSId=${id})(!(zimbraIsSystemAccount=TRUE)))`;
+			if (isDefaultCos) {
+				query = `(&(|(&(!(zimbraCOSId=*))(!(zimbraIsExternalVirtualAccount=TRUE)))(zimbraCOSId=${id}))(!(zimbraIsSystemAccount=TRUE)))`;
+			}
 			searchDirectory('', 'accounts', '', query, 0, -1)
 				.then((response) => response.json())
 				.then((data) => {
@@ -59,11 +51,25 @@ const CosDetailOperation: FC = () => {
 		[setTotalAccount]
 	);
 
+	const getSelectedCosInformation = useCallback(
+		(id: any): any => {
+			getCosGeneralInformation(id)
+				.then((response) => response.json())
+				.then((data) => {
+					const cos = data?.Body?.GetCosResponse?.cos[0];
+					if (cos) {
+						setCos(cos);
+						getTotalAccount(cos.id, !!cos?.isDefaultCos);
+						getTotalDomain(cos.id, !!cos?.isDefaultCos);
+					}
+				});
+		},
+		[getTotalAccount, getTotalDomain, setCos]
+	);
+
 	useEffect(() => {
 		getSelectedCosInformation(cosId);
-		getTotalAccount(cosId);
-		getTotalDomain(cosId);
-	}, [cosId, getSelectedCosInformation, getTotalAccount, getTotalDomain]);
+	}, [cosId, getSelectedCosInformation]);
 
 	return (
 		<>
