@@ -1,6 +1,18 @@
 {
     "label": {
         "home": "خانه",
-        "description": "توضیح"
+        "description": "توضیح",
+        "wizard_cancel_button": "لغو",
+        "bucket_done_button": "انجام",
+        "bucket_cancel_button": "لغو",
+        "type": "نوع",
+        "email": "نامه‌ها",
+        "details": "جزئیات",
+        "actions": "اقدامات",
+        "of": "از",
+        "delete": "حذف"
+    },
+    "domain": {
+        "theme": "پوسته‌ها"
     }
 }

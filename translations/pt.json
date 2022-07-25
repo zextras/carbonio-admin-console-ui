@@ -5,7 +5,7 @@
         "account": "Conta",
         "accounts": "Contas",
         "add": "Adicionar",
-        "app_clicked": "Você aceitou este pedido de compartilhamento",
+        "app_clicked": "Você aceitou este pedido de partilha",
         "app_name": "Gerir",
         "backup": "Backup",
         "cancel": "Cancelar",
@@ -18,15 +18,15 @@
         "name": "Nome",
         "not_set": "Não definido",
         "of": "de",
-        "page ": "Você aceitou este pedido de compartilhamento",
-        "page_": "Você aceitou este pedido de compartilhamento",
+        "page ": "Você aceitou este pedido de partilha",
+        "page_": "Você aceitou este pedido de partilha",
         "privacy": "Privacy",
         "remove": "Remover",
         "save": "Salvar",
         "signature_required": "A informação da assinatura é necessária.",
         "snackbar": {
             "share": {
-                "accepted": "Você aceitou este pedido de compartilhamento"
+                "accepted": "Você aceitou este pedido de partilha"
             }
         },
         "status": "Status",
@@ -85,7 +85,7 @@
         "general_settings": "Configurações Gerais",
         "global": "Global",
         "help": "Ajuda",
-        "home": "Página inicial",
+        "home": "Residência",
         "initial_calendar_view": "Visualização inicial da agenda",
         "leave_anyway": "Sair assim mesmo",
         "mailbox_quota": "Quota da caixa de correio",
@@ -114,8 +114,44 @@
         "space": "Espaços",
         "time_zone": "Fuso horário",
         "type": "Tipo",
-        "deleting_cos_msg": "A eliminar <bold>{{cosname}}</bod>",
-        "delet_bucket_header": "A remover {{name}}"
+        "deleting_cos_msg": "A eliminar <bold>{{cosname}}</bold>",
+        "delet_bucket_header": "A remover {{name}}",
+        "auto": "Auto",
+        "automatically_accept": "Aceitar automaticamente",
+        "automatically_reject": "Rejeitar automaticamente",
+        "bucket_cancel_button": "CANCELAR",
+        "bucket_done_button": "Concluído",
+        "class_of_Service": "Classe de serviço",
+        "class_of_service": "Classe de serviço",
+        "restore_deleted_email": "Restaurar e-mail eliminado",
+        "wizard_cancel_button": "CANCELAR",
+        "yes": "Sim",
+        "account_status": "Estado da conta",
+        "content": "Conteúdo",
+        "cos": "COS",
+        "descriptive_name": "Nome descritivo",
+        "detail": "Detalhar",
+        "device": "Dispositivo",
+        "edit": "Editar",
+        "go_back": "Voltar",
+        "id_lbl": "ID",
+        "language": "Idioma",
+        "location": "Local",
+        "mail": "E-mail",
+        "no": "Não",
+        "owners": "Proprietários",
+        "password": "Senha",
+        "require_list_owner_approval": "Exigir aprovação do proprietário da lista",
+        "resource": "Recurso",
+        "rights": "Direitos",
+        "signatures": "Assinaturas",
+        "standard": "Padrão",
+        "surname": "Apelido",
+        "user": "Usuário",
+        "deleteing": "Eliminação",
+        "enable_toaster_notification_for_new_calendar_events": "Ativar notificação de saudação para novos eventos do calendário",
+        "range_time": "Hora",
+        "search_dot": "Busca…"
     },
     "timezone": {
         "asia_pyongyang": "{{value}} Pyongyang",
@@ -293,7 +329,7 @@
     "message": {
         "snackbar": {
             "share": {
-                "accepted": "Você aceitou este pedido de compartilhamento"
+                "accepted": "Você aceitou este pedido de partilha"
             }
         }
     },
@@ -326,7 +362,10 @@
         "play_sound_when_message_arrives": "Reproduzir um som quando chegar uma mensagem (requer o suplemento do QuickTime ou Windows Media)",
         "polling_interval": "Intervalo de verificação (tempo após o qual se irá verificar se existem novas mensagens de correio)",
         "preferences": "Preferências",
-        "receiving_mail": "A receber correio"
+        "receiving_mail": "A receber correio",
+        "display_a_warning_when_administrators_try_to_navigate_away_from_Carbonio_Administration_Console": "Apresentar um aviso quando os administradores tentarem navegar para fora da Consola de administração do Carbonio",
+        "group_mail": "Agrupar e-mail por:",
+        "range_time": "Hora"
     },
     "backup": {
         "backup_path": "Path do backup",
@@ -350,5 +389,40 @@
         "ldap_dump": "Dump do LDAP",
         "latency_low_threshold": "Limiar mínimo de latência",
         "latency_high_threshold": "Limiar máximo de latência"
+    },
+    "locale": {
+        "English": "Inglês",
+        "chinese_china": "Chinês (China)",
+        "dutch": "Holandês",
+        "french": "Francês",
+        "german": "Alemão",
+        "hindi": "Hindi",
+        "italian": "Italiano",
+        "japanese": "Japonês",
+        "label_chinese": "Chinês (China) - {{value}}",
+        "label_dutch": "Holandês - {{value}}",
+        "label_english": "Inglês - {{value}}",
+        "label_french": "Francês - {{value}}",
+        "label_german": "Alemão - {{value}}",
+        "label_hindi": "Hindi - {{value}}",
+        "label_italian": "Italiano - {{value}}",
+        "label_japanese": "Japonês - {{value}}",
+        "label_portuguese": "Português - {{value}}",
+        "label_portuguese_brazil": "Português - {{value}}",
+        "label_romanian": "Romeno - {{value}}",
+        "label_russian": "Russo - {{value}}",
+        "label_spanish": "Espanhol - {{value}}",
+        "label_thai": "Tailandês - {{value}}",
+        "label_turkish": "Turco - {{value}}",
+        "portuguese": "Português",
+        "portuguese_brazil": "Português (Brasil)",
+        "romanian": "Romeno",
+        "russian": "Russo",
+        "spanish": "Espanhol",
+        "thai": "Tailandês",
+        "turkish": "Turco"
+    },
+    "accountDetails": {
+        "prevent_user_from_changing_password": "Impedir utilizador de alterar a palavra-passe"
     }
 }

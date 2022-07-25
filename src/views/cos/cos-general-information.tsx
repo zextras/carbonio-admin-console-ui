@@ -13,7 +13,8 @@ import {
 	Button,
 	Padding,
 	SnackbarManagerContext,
-	Modal
+	Modal,
+	Icon
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -38,6 +39,9 @@ const CosGeneralInformation: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 	const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
 	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const totalAccount = useCosStore((state) => state.totalAccount);
+	const totalDomain = useCosStore((state) => state.totalDomain);
+
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
@@ -318,7 +322,7 @@ const CosGeneralInformation: FC = () => {
 								/>
 							</Container>
 						</ListRow>
-						{/* <ListRow>
+						<ListRow>
 							<ListRow>
 								<Row
 									mainAlignment="flex-start"
@@ -337,7 +341,7 @@ const CosGeneralInformation: FC = () => {
 									<Input
 										label={t('label.used_on_accounts', 'Used on Accounts')}
 										background="gray6"
-										value="85"
+										value={totalAccount}
 										disabled
 									/>
 								</Row>
@@ -359,13 +363,13 @@ const CosGeneralInformation: FC = () => {
 								>
 									<Input
 										label={t('label.used_on_Domains', 'Used on Domains')}
-										value="7"
+										value={totalDomain}
 										background="gray6"
 										disabled
 									/>
 								</Row>
 							</ListRow>
-						</ListRow> */}
+						</ListRow>
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
