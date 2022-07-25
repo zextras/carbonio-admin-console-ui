@@ -190,7 +190,7 @@ const Connection: FC<{
 						label={t('buckets.bucket_type', 'Buckets Type')}
 						onChange={(e: any): void => {
 							const volumeObject: any = BucketTypeItems.find((s) => s.value === e);
-							setBucketTypeData(volumeObject.value);
+							setBucketTypeData(volumeObject?.value);
 							onSelection({ storeType: bucketTypeData }, false);
 						}}
 						showCheckbox={false}
@@ -218,8 +218,8 @@ const Connection: FC<{
 						label={t('label.region', 'Region')}
 						onChange={(e: any): any => {
 							const volumeObject: any = BucketRegions.find((s) => s.value === e);
-							setRegionsData(volumeObject.value);
-							onSelection({ region: volumeObject.value }, false);
+							setRegionsData(volumeObject?.value);
+							onSelection({ region: volumeObject?.value }, false);
 						}}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}

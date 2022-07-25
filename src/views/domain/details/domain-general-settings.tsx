@@ -739,7 +739,7 @@ const DomainGeneralSettings: FC = () => {
 										showCheckbox={false}
 										onChange={(e: any): any => {
 											setZimbraDomainDefaultCOSId(
-												cosItems.find((item: any) => item.value === e).value
+												cosItems.find((item: any) => item.value === e)?.value
 											);
 										}}
 										selection={

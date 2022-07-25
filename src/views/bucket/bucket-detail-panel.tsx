@@ -266,7 +266,7 @@ const BucketDetailPanel: FC = () => {
 						label={t('buckets.bucket_type', 'Buckets Type')}
 						onChange={(e: any): void => {
 							const volumeObject: any = BucketTypeItems.find((s) => s.value === e);
-							setBucketType(volumeObject.value);
+							setBucketType(volumeObject?.value);
 						}}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
