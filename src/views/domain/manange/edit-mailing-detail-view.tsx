@@ -36,6 +36,7 @@ import { renameDistributionList } from '../../../services/rename-distributionlis
 import { addDistributionListMember } from '../../../services/add-distributionlist-member-service';
 import { removeDistributionListMember } from '../../../services/remove-distributionlist-member-service';
 import { distributionListAction } from '../../../services/distribution-list-action-service';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -1697,6 +1698,15 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</Container>
 			</Modal>
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
 		</Container>
 	);
 };

@@ -2,6 +2,7 @@
     "label": {
         "remove": "Poista",
         "search": "Hae",
-        "details": "Yksityiskohdat"
+        "details": "Yksityiskohdat",
+        "password": "Salasana"
     }
 }

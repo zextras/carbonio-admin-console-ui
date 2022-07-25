@@ -31,6 +31,7 @@ import { modifyCalendarResource } from '../../../../services/modify-cal-resource
 import Textarea from '../../../components/textarea';
 import { SendInviteAccounts } from './send-invite-accounts';
 import { SignatureDetail } from './signature-detail';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -1342,6 +1343,15 @@ const ResourceEditDetailView: FC<any> = ({
 					</>
 				)}
 			</Container>
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
 		</Container>
 	);
 };

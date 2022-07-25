@@ -19,6 +19,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
+import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
@@ -589,6 +590,15 @@ const CosFeatures: FC = () => {
 						</Row>
 					</Row>
 				</Container>
+				<RouteLeavingGuard when={isDirty} onSave={onSave}>
+					<Text>
+						{t(
+							'label.unsaved_changes_line1',
+							'Are you sure you want to leave this page without saving?'
+						)}
+					</Text>
+					<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+				</RouteLeavingGuard>
 			</Container>
 		</>
 	);
