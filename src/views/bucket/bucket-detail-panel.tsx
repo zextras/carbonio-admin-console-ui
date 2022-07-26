@@ -214,10 +214,12 @@ const BucketDetailPanel: FC = () => {
 					style={{
 						position: 'absolute',
 						maxWidth: '630px',
-						right: '0',
+						top: '43px',
+						right: '0px',
+						bottom: '0px',
 						zIndex: '1',
 						boxShadow: '0 0 12px -1px #888',
-						top: '0'
+						height: 'auto'
 					}}
 				>
 					<NewBucket
@@ -235,10 +237,12 @@ const BucketDetailPanel: FC = () => {
 					style={{
 						position: 'absolute',
 						maxWidth: '630px',
-						right: '0',
+						top: '43px',
+						right: '0px',
+						bottom: '0px',
 						zIndex: '1',
 						boxShadow: '0 0 12px -1px #888',
-						top: '0'
+						height: 'auto'
 					}}
 				>
 					<DetailsPanel
@@ -258,10 +262,12 @@ const BucketDetailPanel: FC = () => {
 					style={{
 						position: 'absolute',
 						maxWidth: '630px',
-						right: '0',
+						top: '43px',
+						right: '0px',
+						bottom: '0px',
 						zIndex: '1',
 						boxShadow: '0 0 12px -1px #888',
-						top: '0'
+						height: 'auto'
 					}}
 				>
 					<EditBucketDetailPanel
