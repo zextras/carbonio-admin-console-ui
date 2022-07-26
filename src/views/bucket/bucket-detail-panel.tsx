@@ -369,7 +369,7 @@ const BucketDetailPanel: FC = () => {
 						<Text overflow="break-word" weight="normal" size="large">
 							<img src={logo} alt="logo" />
 						</Text>
-						<Padding all="medium">
+						<Padding all="medium" style={{ textAlign: 'center' }}>
 							<Text color="gray1" overflow="break-word" weight="normal" size="large" width="60%">
 								{t('have_not_setup_bucket_type', "It seems like you haven't setup a bucket type")}
 							</Text>
