@@ -22,7 +22,7 @@ import { deleteSignature } from '../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../services/modify-signature-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import Textarea from '../../../components/textarea';
-import logo from '../../../../assets/gardian.svg';
+import logo from '../../../../assets/carbonio_defender.svg';
 
 export const SignatureDetail: FC<any> = ({
 	isEditable,
@@ -389,60 +389,65 @@ export const SignatureDetail: FC<any> = ({
 					orientation="horizontal"
 					padding={{ top: 'large' }}
 				>
-					{signatureListRows && signatureListRows.length > 0 && (
-						<Table
-							rows={signatureListRows}
-							headers={signatureHeaders}
-							showCheckbox={false}
-							style={{ overflow: 'auto', height: '100%' }}
-							selectedRows={selectedSignature}
-							onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
-						/>
-					)}
-					{signatureListRows?.length === 0 && (
-						<Container orientation="column" crossAlignment="center" mainAlignment="center">
-							<Row>
-								<img src={logo} alt="logo" />
-							</Row>
-							<Row
-								padding={{ top: 'extralarge' }}
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-							>
-								<Text weight="light" color="#828282" size="large" overflow="break-word">
-									{t('label.this_list_is_empty', 'This list is empty.')}
-								</Text>
-							</Row>
-							<Row
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-								padding={{ top: 'small' }}
-								width="53%"
-							>
-								<Text weight="light" color="#828282" size="large" overflow="break-word">
-									<Trans
-										i18nKey="label.do_you_need_more_information"
-										defaults="Do you need more information?"
-									/>
-								</Text>
-							</Row>
-							<Row
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-								padding={{ top: 'small' }}
-								width="53%"
-							>
-								<Text weight="light" color="primary">
-									{t('label.click_here', 'Click here')}
-								</Text>
-							</Row>
-						</Container>
-					)}
+					<Table
+						rows={signatureListRows}
+						headers={signatureHeaders}
+						showCheckbox={false}
+						style={{ overflow: 'auto', height: '100%' }}
+						selectedRows={selectedSignature}
+						onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
+					/>
 				</Container>
 			</ListRow>
+			{signatureListRows?.length === 0 && (
+				<ListRow>
+					<Container
+						orientation="column"
+						crossAlignment="center"
+						mainAlignment="center"
+						padding={{ top: 'extralarge' }}
+					>
+						<Row>
+							<img src={logo} alt="logo" />
+						</Row>
+						<Row
+							padding={{ top: 'extralarge' }}
+							orientation="vertical"
+							crossAlignment="center"
+							style={{ textAlign: 'center' }}
+						>
+							<Text weight="light" color="#828282" size="large" overflow="break-word">
+								{t('label.this_list_is_empty', 'This list is empty.')}
+							</Text>
+						</Row>
+						<Row
+							orientation="vertical"
+							crossAlignment="center"
+							style={{ textAlign: 'center' }}
+							padding={{ top: 'small' }}
+							width="53%"
+						>
+							<Text weight="light" color="#828282" size="large" overflow="break-word">
+								<Trans
+									i18nKey="label.do_you_need_more_information"
+									defaults="Do you need more information?"
+								/>
+							</Text>
+						</Row>
+						<Row
+							orientation="vertical"
+							crossAlignment="center"
+							style={{ textAlign: 'center' }}
+							padding={{ top: 'small' }}
+							width="53%"
+						>
+							<Text weight="light" color="primary">
+								{t('label.click_here', 'Click here')}
+							</Text>
+						</Row>
+					</Container>
+				</ListRow>
+			)}
 			<ListRow>
 				<Container
 					mainAlignment="space-between"
