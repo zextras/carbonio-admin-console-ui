@@ -11,7 +11,7 @@ const PrimaryBarTooltip: FC<{ items: any[] }> = ({ items }) => (
 		orientation="horizontal"
 		mainAlignment="flex-start"
 		background="gray3"
-		width="140px"
+		width="fit"
 		height="fit"
 		crossAlignment="flex-start"
 	>

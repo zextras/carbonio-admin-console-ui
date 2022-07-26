@@ -31,14 +31,6 @@ import EditBucketDetailPanel from './edit-bucket-details-panel';
 const RelativeContainer = styled(Container)`
 	position: relative;
 `;
-const AbsoluteContainer = styled(Container)`
-	position: absolute;
-	max-width: 630px;
-	right: 0;
-	z-index: 1;
-	box-shadow: 0 0 12px -1px #888;
-	top: 0;
-`;
 
 const headers = [
 	{
@@ -216,17 +208,39 @@ const BucketDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardSection && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<Container
+					orientation="vertical"
+					background="gray5"
+					style={{
+						position: 'absolute',
+						maxWidth: '630px',
+						right: '0',
+						zIndex: '1',
+						boxShadow: '0 0 12px -1px #888',
+						top: '0'
+					}}
+				>
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
 						setDetailsBucket={setDetailsBucket}
 						setConnectionData={setConnectionData}
 						bucketType={bucketType}
 					/>
-				</AbsoluteContainer>
+				</Container>
 			)}
 			{detailsBucket && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<Container
+					orientation="vertical"
+					background="gray5"
+					style={{
+						position: 'absolute',
+						maxWidth: '630px',
+						right: '0',
+						zIndex: '1',
+						boxShadow: '0 0 12px -1px #888',
+						top: '0'
+					}}
+				>
 					<DetailsPanel
 						setDetailsBucket={setDetailsBucket}
 						title="Bucket Connection"
@@ -235,16 +249,27 @@ const BucketDetailPanel: FC = () => {
 						setOpen={setOpen}
 						setShowEditDetailView={setShowEditDetailView}
 					/>
-				</AbsoluteContainer>
+				</Container>
 			)}
 			{showEditDetailView && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<Container
+					orientation="vertical"
+					background="gray5"
+					style={{
+						position: 'absolute',
+						maxWidth: '630px',
+						right: '0',
+						zIndex: '1',
+						boxShadow: '0 0 12px -1px #888',
+						top: '0'
+					}}
+				>
 					<EditBucketDetailPanel
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
 						bucketDetail={connectionData}
 					/>
-				</AbsoluteContainer>
+				</Container>
 			)}
 			<RelativeContainer
 				orientation="column"
@@ -338,11 +363,14 @@ const BucketDetailPanel: FC = () => {
 						<Text overflow="break-word" weight="normal" size="large">
 							<img src={logo} alt="logo" />
 						</Text>
-						<Padding all="medium" width="47%">
+						<Padding all="medium">
+							<Text color="gray1" overflow="break-word" weight="normal" size="large" width="60%">
+								{t('have_not_setup_bucket_type', "It seems like you haven't setup a bucket type")}
+							</Text>
 							<Text color="gray1" overflow="break-word" weight="normal" size="large" width="60%">
 								{t(
-									'select_bucket_or_create_new_bucket',
-									"It seems like you haven't setup a bucket type. Click NEW BUCKET button to create a new one."
+									'click_new_bucket_button_to_create_new_one',
+									'Click NEW BUCKET button to create a new one.'
 								)}
 							</Text>
 						</Padding>
