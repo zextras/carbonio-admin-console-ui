@@ -239,6 +239,7 @@
         "offline_support_for_advanced_client": "Offline support for Advanced (Ajax) client",
         "out_of_the_office_reply": "Out of the Office Reply",
         "password": "password",
+        "password_set_to_use_external_authentication_information_msg": "These settings do not affect the passwords set by users in domains that are configured to use external authentication",
         "percentage_threshold_for_quota_warning": "Percentage threshold for quota warning messages",
         "play_sound_when_message_arrives": "Play a sound when a message arrives (requires QuickTime or Windows Media plugin)",
         "polling_interval": "Polling interval (time after which to check for new mail)",

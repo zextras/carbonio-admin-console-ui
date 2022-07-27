@@ -13,10 +13,17 @@ import {
 	Padding,
 	Button,
 	Input,
-	Select
+	Select,
+	Icon
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 import ListRow from '../list/list-row';
+
+const CustomIcon = styled(Icon)`
+	width: 20px;
+	height: 20px;
+`;
 
 const CosAdvanced: FC = () => {
 	const [t] = useTranslation();
@@ -416,6 +423,45 @@ const CosAdvanced: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.password', 'Password')}
 					</Text>
+					<Row
+						takeAvwidth="fill"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'small', left: 'small', right: 'small' }}
+					>
+						<Container
+							orientation="horizontal"
+							width="99%"
+							crossAlignment="center"
+							mainAlignment="space-between"
+							background="#D3EBF8"
+							padding={{
+								all: 'large'
+							}}
+							style={{ margin: '8px', borderRadius: '2px 2px 0px 0px' }}
+						>
+							<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Padding horizontal="small">
+									<CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
+								</Padding>
+							</Row>
+							<Row
+								takeAvwidth="fill"
+								mainAlignment="flex-start"
+								width="100%"
+								padding={{
+									all: 'small'
+								}}
+							>
+								<Text overflow="break-word">
+									{t(
+										'cos.password_set_to_use_external_authentication_information_msg',
+										'These settings do not affect the passwords set by users in domains that are configured to use external authentication'
+									)}
+								</Text>
+							</Row>
+						</Container>
+					</Row>
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
