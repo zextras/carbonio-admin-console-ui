@@ -1105,3 +1105,156 @@ export const isValidEmail = (email: string): boolean => {
 	const re = /\S+@\S+\.\S+/;
 	return re.test(email);
 };
+
+export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('label.message', 'Message'),
+		value: 'message'
+	},
+	{
+		label: t('label.conversation', 'Conversation'),
+		value: 'conversation'
+	}
+];
+
+export const appointmentReminder = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('label.never', 'Never'),
+		value: '0'
+	},
+	{
+		label: '1',
+		value: '1'
+	},
+	{
+		label: '5',
+		value: '5'
+	},
+	{
+		label: '10',
+		value: '10'
+	},
+	{
+		label: '15',
+		value: '15'
+	},
+	{
+		label: '20',
+		value: '20'
+	},
+	{
+		label: '25',
+		value: '25'
+	},
+	{
+		label: '30',
+		value: '30'
+	},
+	{
+		label: '45',
+		value: '45'
+	},
+	{
+		label: '50',
+		value: '50'
+	},
+	{
+		label: '55',
+		value: '55'
+	},
+	{
+		label: '60',
+		value: '60'
+	}
+];
+
+export const charactorSet = (): Array<{ value?: string; label: string }> => [
+	{ label: 'Big5', value: 'Big5' },
+	{ label: 'Big5-HKSCS', value: 'Big5-HKSCS' },
+	{ label: 'EUC-JP', value: 'EUC-JP' },
+	{ label: 'EUC-KR', value: 'EUC-KR' },
+	{ label: 'GB18030', value: 'GB18030' },
+	{ label: 'GB2312', value: 'GB2312' },
+	{ label: 'GBK', value: 'GBK' },
+	{ label: 'IBM-Thai', value: 'IBM-Thai' },
+	{ label: 'IBM00858', value: 'IBM00858' },
+	{ label: 'IBM01140', value: 'IBM01140' },
+	{ label: 'IBM01141', value: 'IBM01141' },
+	{ label: 'IBM01142', value: 'IBM01142' },
+	{ label: 'IBM01143', value: 'IBM01143' },
+	{ label: 'IBM01144', value: 'IBM01144' },
+	{ label: 'IBM01145', value: 'IBM01145' },
+	{ label: 'IBM01146', value: 'IBM01146' },
+	{ label: 'IBM01147', value: 'IBM01147' },
+	{ label: 'IBM01148', value: 'IBM01148' },
+	{ label: 'IBM01149', value: 'IBM01149' },
+	{ label: 'IBM037', value: 'IBM037' },
+	{ label: 'IBM1026', value: 'IBM1026' },
+	{ label: 'IBM1047', value: 'IBM1047' },
+	{ label: 'IBM273', value: 'IBM273' },
+	{ label: 'IBM277', value: 'IBM277' },
+	{ label: 'IBM278', value: 'IBM278' },
+	{ label: 'IBM280', value: 'IBM280' },
+	{ label: 'IBM284', value: 'IBM284' },
+	{ label: 'IBM285', value: 'IBM285' },
+	{ label: 'IBM297', value: 'IBM297' },
+	{ label: 'IBM420', value: 'IBM420' },
+	{ label: 'IBM424', value: 'IBM424' },
+	{ label: 'IBM437', value: 'IBM437' },
+	{ label: 'IBM500', value: 'IBM500' },
+	{ label: 'IBM775', value: 'IBM775' },
+	{ label: 'IBM850', value: 'IBM850' },
+	{ label: 'IBM852', value: 'IBM852' },
+	{ label: 'IBM855', value: 'IBM855' },
+	{ label: 'IBM857', value: 'IBM857' },
+	{ label: 'IBM860', value: 'IBM860' },
+	{ label: 'IBM861', value: 'IBM861' },
+	{ label: 'IBM862', value: 'IBM862' },
+	{ label: 'IBM863', value: 'IBM863' },
+	{ label: 'IBM864', value: 'IBM864' },
+	{ label: 'IBM865', value: 'IBM865' },
+	{ label: 'IBM866', value: 'IBM866' },
+	{ label: 'IBM868', value: 'IBM868' },
+	{ label: 'IBM869', value: 'IBM869' },
+	{ label: 'IBM870', value: 'IBM870' },
+	{ label: 'IBM871', value: 'IBM871' },
+	{ label: 'IBM918', value: 'IBM918' },
+	{ label: 'imap-utf-7', value: 'imap-utf-7' },
+	{ label: 'ISO-2022-CN', value: 'ISO-2022-CN' },
+	{ label: 'ISO-2022-JP', value: 'ISO-2022-JP' },
+	{ label: 'ISO-2022-KR', value: 'ISO-2022-KR' },
+	{ label: 'ISO-8859-1', value: 'ISO-8859-1' },
+	{ label: 'ISO-8859-13', value: 'ISO-8859-13' },
+	{ label: 'ISO-8859-15', value: 'ISO-8859-15' },
+	{ label: 'ISO-8859-2', value: 'ISO-8859-2' },
+	{ label: 'ISO-8859-3', value: 'ISO-8859-3' },
+	{ label: 'ISO-8859-4', value: 'ISO-8859-4' },
+	{ label: 'ISO-8859-5', value: 'ISO-8859-5' },
+	{ label: 'ISO-8859-6', value: 'ISO-8859-6' },
+	{ label: 'ISO-8859-7', value: 'ISO-8859-7' },
+	{ label: 'ISO-8859-8', value: 'ISO-8859-8' },
+	{ label: 'ISO-8859-9', value: 'ISO-8859-9' },
+	{ label: 'JIS_X0201', value: 'JIS_X0201' },
+	{ label: 'JIS_X0212-1990', value: 'JIS_X0212-1990' },
+	{ label: 'KOI8-R', value: 'KOI8-R' },
+	{ label: 'macintosh', value: 'macintosh' },
+	{ label: 'macintosh_ce', value: 'macintosh_ce' },
+	{ label: 'Shift_JIS', value: 'Shift_JIS' },
+	{ label: 'TIS-620', value: 'TIS-620' },
+	{ label: 'US-ASCII', value: 'US-ASCII' },
+	{ label: 'UTF-16', value: 'UTF-16' },
+	{ label: 'UTF-16BE', value: 'UTF-16BE' },
+	{ label: 'UTF-16LE', value: 'UTF-16LE' },
+	{ label: 'utf-7', value: 'utf-7' },
+	{ label: 'UTF-8', value: 'UTF-8' },
+	{ label: 'windows-1250', value: 'windows-1250' },
+	{ label: 'windows-1251', value: 'windows-1251' },
+	{ label: 'windows-1252', value: 'windows-1252' },
+	{ label: 'windows-1253', value: 'windows-1253' },
+	{ label: 'windows-1254', value: 'windows-1254' },
+	{ label: 'windows-1255', value: 'windows-1255' },
+	{ label: 'windows-1256', value: 'windows-1256' },
+	{ label: 'windows-1257', value: 'windows-1257' },
+	{ label: 'windows-1258', value: 'windows-1258' },
+	{ label: 'windows-31j', value: 'windows-31j' }
+];

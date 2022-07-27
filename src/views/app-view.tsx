@@ -20,12 +20,16 @@ import DomainDetailPanel from './domain/domain-detail-panel';
 import BucketDetailPanel from './bucket/bucket-detail-panel';
 import BucketListPanel from './bucket/bucket-list-panel';
 import {
+	APPLICATION_LOG,
 	BACKUP_ROUTE_ID,
 	COS_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
+	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
 	MONITORING,
+	MTA,
+	OPERATIONS,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
@@ -144,6 +148,30 @@ const AppView: FC = () => {
 							</DetailViewContainer>
 						</Container>
 					</Container>
+				</Route>
+
+				<Route path={`/${LOG_AND_QUEUES}/${OPERATIONS}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						height="calc(100vh - 105px)"
+					></Container>
+				</Route>
+
+				<Route path={`/${LOG_AND_QUEUES}/${APPLICATION_LOG}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						height="calc(100vh - 105px)"
+					></Container>
+				</Route>
+
+				<Route path={`/${LOG_AND_QUEUES}/${MTA}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						height="calc(100vh - 105px)"
+					></Container>
 				</Route>
 			</Switch>
 		</Container>

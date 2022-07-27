@@ -566,7 +566,7 @@ const DomainGeneralSettings: FC = () => {
 										onChange={(e: any): any => {}}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								{/* <Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.certificate', 'Certificate')}
 										value=""
@@ -574,7 +574,7 @@ const DomainGeneralSettings: FC = () => {
 										// eslint-disable-next-line @typescript-eslint/no-empty-function
 										onChange={(e: any): any => {}}
 									/>
-								</Container>
+								</Container> */}
 							</ListRow>
 
 							<ListRow>
@@ -684,7 +684,7 @@ const DomainGeneralSettings: FC = () => {
 										<Text overflow="break-word">
 											{t(
 												'label.mx_record_information_msg',
-												'If your MX records point to a spam-relay or any other external non-zimbra server, enter the name of that server in "Inbound SMTP Host Name" field.'
+												'If your MX records point to a spam-relay or any other external server, enter the name of that server in "Inbound SMTP Host Name" field.'
 											)}
 										</Text>
 									</Row>
@@ -712,6 +712,19 @@ const DomainGeneralSettings: FC = () => {
 										background="gray5"
 										onChange={(e: any): any => {
 											setDescription(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.note', 'Note')}
+										value={zimbraNotes}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraNotes(e.target.value);
 										}}
 									/>
 								</Container>
@@ -749,20 +762,7 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 							</ListRow>
 
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.note', 'Note')}
-										value={zimbraNotes}
-										background="gray5"
-										onChange={(e: any): any => {
-											setZimbraNotes(e.target.value);
-										}}
-									/>
-								</Container>
-							</ListRow>
-
-							<ListRow>
+							{/* <ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.admin_help_url', 'Admin Help URL')}
@@ -773,9 +773,9 @@ const DomainGeneralSettings: FC = () => {
 										}}
 									/>
 								</Container>
-							</ListRow>
+							</ListRow> */}
 
-							<ListRow>
+							{/* <ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.deligated_admin_help_url', 'Deligated Admin Help URL')}
@@ -786,7 +786,7 @@ const DomainGeneralSettings: FC = () => {
 										}}
 									/>
 								</Container>
-							</ListRow>
+							</ListRow> */}
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Button

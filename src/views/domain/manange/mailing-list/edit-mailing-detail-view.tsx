@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
 import {
 	Container,
 	Row,
@@ -24,19 +23,19 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { isEqual, isError } from 'lodash';
-import ListRow from '../../list/list-row';
-import Paginig from '../../components/paging';
-import { getDistributionList } from '../../../services/get-distribution-list';
-import { getDistributionListMembership } from '../../../services/get-distributionlists-membership-service';
-import { getDateFromStr } from '../../utility/utils';
-import { searchDirectory } from '../../../services/search-directory-service';
-import { modifyDistributionList } from '../../../services/modify-distributionlist-service';
-import { renameDistributionList } from '../../../services/rename-distributionlist-service';
-import { addDistributionListMember } from '../../../services/add-distributionlist-member-service';
-import { removeDistributionListMember } from '../../../services/remove-distributionlist-member-service';
-import { distributionListAction } from '../../../services/distribution-list-action-service';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { isEqual } from 'lodash';
+import ListRow from '../../../list/list-row';
+import Paginig from '../../../components/paging';
+import { getDistributionList } from '../../../../services/get-distribution-list';
+import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
+import { getDateFromStr } from '../../../utility/utils';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
+import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
+import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
+import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
+import { distributionListAction } from '../../../../services/distribution-list-action-service';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -1431,23 +1430,23 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 				{/* {selectedMailingList?.dynamic && (
-					<ListRow>
-						<Container padding={{ top: 'small', bottom: 'small' }}>
-							<ChipInput
-								placeholder={t('label.owners_of_the_list', 'Owners of the List')}
-								value={ownerOfList}
-								onInputType={(e: any): void => {
-									if (e.textContent && e.textContent !== '') {
-										getOwnerOfListSearch(e.textContent);
-									}
-								}}
-								options={searchOwnerMemberOfList}
-								onChange={onChangeOwnerOfListChipInput}
-								requireUniqueChips
-							/>
-						</Container>
-					</ListRow>
-				)} */}
+    <ListRow>
+        <Container padding={{ top: 'small', bottom: 'small' }}>
+            <ChipInput
+                placeholder={t('label.owners_of_the_list', 'Owners of the List')}
+                value={ownerOfList}
+                onInputType={(e: any): void => {
+                    if (e.textContent && e.textContent !== '') {
+                        getOwnerOfListSearch(e.textContent);
+                    }
+                }}
+                options={searchOwnerMemberOfList}
+                onChange={onChangeOwnerOfListChipInput}
+                requireUniqueChips
+            />
+        </Container>
+    </ListRow>
+)} */}
 				<Row padding={{ top: 'small', bottom: 'small' }}>
 					<Text size="medium" weight="bold" color="gray0">
 						{t('label.manage_list', 'Manage List')}

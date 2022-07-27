@@ -19,13 +19,17 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import logo from '../../../assets/gardian.svg';
-import Paginig from '../../components/paging';
-import { searchDirectory } from '../../../services/search-directory-service';
+import logo from '../../../../assets/gardian.svg';
+import Paginig from '../../../components/paging';
+import { searchDirectory } from '../../../../services/search-directory-service';
 import EditMailingListView from './edit-mailing-detail-view';
-import { useDomainStore } from '../../../store/domain/store';
-import { RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { useDomainStore } from '../../../../store/domain/store';
+import { FALSE, RECORD_DISPLAY_LIMIT, TRUE } from '../../../../constants';
 import MailingListDetail from './mailing-list-detail';
+import CreateMailingList from './create-mailing-list';
+import { createMailingList } from '../../../../services/create-mailing-list-service';
+import { distributionListAction } from '../../../../services/distribution-list-action-service';
+import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -43,9 +47,9 @@ const DomainMailingList: FC = () => {
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
 	const [mailingListItem, setMailingListItem] = useState([]);
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
-	const [prevent, setPrevent] = useState<boolean>(false);
 	const [editMailingList, setEditMailingList] = useState<boolean>(false);
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
+	const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
 	const timer = useRef<any>();
 	const headers: any[] = useMemo(
 		() => [
@@ -306,6 +310,191 @@ const DomainMailingList: FC = () => {
 		}
 	}, [isUpdateRecord, getMailingList]);
 
+	const onAddClick = useCallback(() => {
+		setShowCreateMailingListView(true);
+	}, []);
+
+	const callAllRequest = useCallback(
+		(requests: any): void => {
+			Promise.all(requests)
+				.then((response: any) => Promise.all(response.map((res: any) => res.json())))
+				.then((data: any) => {
+					setIsUpdateRecord(true);
+					// eslint-disable-next-line no-shadow
+					let isError = false;
+					let errorMessage = '';
+					data.forEach((item: any) => {
+						if (item?.Body?.Fault) {
+							isError = true;
+							errorMessage = item?.Body?.Fault?.Reason?.Text;
+						}
+					});
+					if (isError) {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: errorMessage,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
+				});
+		},
+		[createSnackbar]
+	);
+
+	const addMemberToMailingList = useCallback(
+		(members: any, owners: any, mlId: string): void => {
+			const request: any[] = [];
+			if (members.length > 0 && mlId) {
+				members.forEach((item: any) => {
+					const id: any = {
+						n: 'id',
+						_content: mlId
+					};
+					const dlmItem: any = {
+						n: 'dlm',
+						_content: item
+					};
+					request.push(addDistributionListMember(id, dlmItem));
+				});
+			}
+
+			if (owners.length > 0 && mlId) {
+				owners.forEach((item: any) => {
+					const dl: any = {
+						by: 'id',
+						_content: mlId
+					};
+					const action: any = {
+						op: 'addOwners',
+						owner: {
+							by: 'name',
+							type: 'usr',
+							_content: item
+						}
+					};
+					request.push(distributionListAction(dl, action));
+				});
+			}
+
+			if (request.length > 0) {
+				callAllRequest(request);
+			} else {
+				setIsUpdateRecord(true);
+			}
+		},
+		[callAllRequest]
+	);
+
+	const createMailingListReq = useCallback(
+		(
+			name,
+			description,
+			dynamic,
+			displayName,
+			zimbraHideInGal,
+			zimbraIsACLGroup,
+			zimbraMailStatus,
+			zimbraNotes,
+			memberURL,
+			members,
+			zimbraDistributionListSendShareMessageToNewMembers,
+			owners,
+			zimbraDistributionListSubscriptionPolicy,
+			zimbraDistributionListUnsubscriptionPolicy
+		) => {
+			const attributes: any[] = [];
+			attributes.push({
+				n: 'displayName',
+				_content: displayName
+			});
+			attributes.push({
+				n: 'zimbraNotes',
+				_content: zimbraNotes
+			});
+			attributes.push({
+				n: 'zimbraHideInGal',
+				_content: zimbraHideInGal ? TRUE : FALSE
+			});
+			attributes.push({
+				n: 'zimbraMailStatus',
+				_content: zimbraMailStatus ? 'enabled' : 'disabled'
+			});
+			if (dynamic) {
+				attributes.push({
+					n: 'zimbraIsACLGroup',
+					_content: memberURL !== '' ? 'FALSE' : 'TRUE'
+				});
+				attributes.push({
+					n: 'memberURL',
+					_content: memberURL
+				});
+			} else {
+				attributes.push({
+					n: 'description',
+					_content: description
+				});
+				attributes.push({
+					n: 'zimbraDistributionListSendShareMessageToNewMembers',
+					_content: zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE
+				});
+				attributes.push({
+					n: 'zimbraDistributionListUnsubscriptionPolicy',
+					_content: zimbraDistributionListUnsubscriptionPolicy?.value
+				});
+
+				attributes.push({
+					n: 'zimbraDistributionListSubscriptionPolicy',
+					_content: zimbraDistributionListSubscriptionPolicy?.value
+				});
+			}
+			createMailingList(dynamic, name, attributes)
+				.then((response) => response.json())
+				.then((data) => {
+					let type = 'success';
+					let message = '';
+					if (data?.Body?.Fault?.Reason?.Text) {
+						type = 'error';
+						const text = data?.Body?.Fault?.Reason?.Text;
+						if (text.contains('no such domain')) {
+							message = t('label.specified_domain_not_exist', 'Specified domain does not exist');
+						} else {
+							message = text;
+						}
+					} else {
+						const mlId = data?.Body?.CreateDistributionListResponse?.dl[0]?.id;
+						addMemberToMailingList(members, owners, mlId);
+						setShowCreateMailingListView(false);
+						message = t('label.the_has_been_created_success', {
+							name,
+							defaultValue: 'The {{name}} has been created successfull'
+						});
+					}
+					createSnackbar({
+						key: type,
+						type,
+						label: message,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, t, addMemberToMailingList]
+	);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -329,6 +518,7 @@ const DomainMailingList: FC = () => {
 									icon="Plus"
 									height={36}
 									width={36}
+									onClick={onAddClick}
 								/>
 							</Padding>
 							<Padding right="large">
@@ -467,6 +657,13 @@ const DomainMailingList: FC = () => {
 					selectedMailingList={selectedFromRow}
 					setShowMailingListDetailView={setShowMailingListDetailView}
 					setEditMailingList={setEditMailingList}
+				/>
+			)}
+
+			{showCreateMailingListView && (
+				<CreateMailingList
+					setShowCreateMailingListView={setShowCreateMailingListView}
+					createMailingListReq={createMailingListReq}
 				/>
 			)}
 		</Container>

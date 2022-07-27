@@ -9,6 +9,7 @@ import { addRoute, registerActions, setAppContext, Spinner } from '@zextras/carb
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import {
+	APPLICATION_LOG,
 	APP_ID,
 	BACKUP_ROUTE_ID,
 	COS_ROUTE_ID,
@@ -16,9 +17,12 @@ import {
 	CREATE_NEW_DOMAIN_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
+	LOG_AND_QUEUES,
 	MANAGE,
 	MANAGE_APP_ID,
 	MONITORING,
+	MTA,
+	OPERATIONS,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
@@ -49,6 +53,15 @@ const App: FC = () => {
 			id: SERVICES_ROUTE_ID,
 			label: t('label.services', 'Services'),
 			position: 4
+		}),
+		[t]
+	);
+
+	const logAndQueuesSection = useMemo(
+		() => ({
+			id: LOG_AND_QUEUES,
+			label: t('label.long_and_queues', 'Log & Queues'),
+			position: 5
 		}),
 		[t]
 	);
@@ -221,7 +234,7 @@ const App: FC = () => {
 	const storagesTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.storages', 'STORAGES'),
+				header: t('label.mail_stores', 'Mailstores'),
 				options: [
 					{
 						label: t('label.here_you_will_find', 'Here you will find')
@@ -329,7 +342,7 @@ const App: FC = () => {
 			route: STORAGES_ROUTE_ID,
 			position: 2,
 			visible: true,
-			label: t('label.storages', 'Storages'),
+			label: t('label.mail_stores', 'Mailstores'),
 			primaryBar: 'HardDriveOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -374,7 +387,43 @@ const App: FC = () => {
 			tooltip: BackupTooltipView
 		});
 
-		setAppContext({ hello: 'world' });
+		addRoute({
+			route: OPERATIONS,
+			position: 1,
+			visible: true,
+			label: t('label.operations', 'Operations'),
+			primaryBar: 'ListOutline',
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			primarybarSection: { ...logAndQueuesSection }
+		});
+
+		addRoute({
+			route: APPLICATION_LOG,
+			position: 2,
+			visible: true,
+			label: t('label.application_log', 'Application Log'),
+			primaryBar: 'FileTextOutline',
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			primarybarSection: { ...logAndQueuesSection }
+		});
+
+		addRoute({
+			route: MTA,
+			position: 3,
+			visible: true,
+			label: t('label.mta', 'MTA'),
+			primaryBar: 'MailFolderOutline',
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			primarybarSection: { ...logAndQueuesSection }
+		});
+
+		setAppContext({ cabonio_admin_console_ui: 'cabonio_admin_console_ui' });
 	}, [
 		t,
 		managementSection,
@@ -383,7 +432,8 @@ const App: FC = () => {
 		CosTooltipView,
 		DomainTooltipView,
 		StorageTooltipView,
-		SubscriptionTooltipView
+		SubscriptionTooltipView,
+		logAndQueuesSection
 	]);
 
 	useEffect(() => {
