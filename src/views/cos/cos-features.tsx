@@ -55,6 +55,79 @@ const CosFeatures: FC = () => {
 		[setCosFeatures]
 	);
 
+	const setInitalValues = useCallback(
+		(obj: any) => {
+			if (obj) {
+				setSwitchOptionValue('zimbraFeatureMailEnabled', obj?.zimbraFeatureMailEnabled === 'TRUE');
+				setSwitchOptionValue(
+					'zimbraFeatureContactsEnabled',
+					obj?.zimbraFeatureContactsEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureCalendarEnabled',
+					obj?.zimbraFeatureCalendarEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureTaggingEnabled',
+					obj?.zimbraFeatureTaggingEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureHtmlComposeEnabled',
+					obj?.zimbraFeatureHtmlComposeEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureWebClientOfflineAccessEnabled',
+					obj?.zimbraFeatureWebClientOfflineAccessEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureMailPriorityEnabled',
+					obj?.zimbraFeatureMailPriorityEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureOutOfOfficeReplyEnabled',
+					obj?.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeaturePop3DataSourceEnabled',
+					obj?.zimbraFeaturePop3DataSourceEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureDistributionListFolderEnabled',
+					obj?.zimbraFeatureDistributionListFolderEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureGroupCalendarEnabled',
+					obj?.zimbraFeatureGroupCalendarEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureCalendarReminderDeviceEmailEnabled',
+					obj?.zimbraFeatureCalendarReminderDeviceEmailEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureSavedSearchesEnabled',
+					obj?.zimbraFeatureSavedSearchesEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureInitialSearchPreferenceEnabled',
+					obj?.zimbraFeatureInitialSearchPreferenceEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureAdvancedSearchEnabled',
+					obj?.zimbraFeatureAdvancedSearchEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeaturePeopleSearchEnabled',
+					obj?.zimbraFeaturePeopleSearchEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureSMIMEEnabled',
+					obj?.zimbraFeatureSMIMEEnabled === 'TRUE'
+				);
+			}
+		},
+		[setSwitchOptionValue]
+	);
+
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
@@ -62,157 +135,62 @@ const CosFeatures: FC = () => {
 				obj[item?.n] = item._content;
 				return '';
 			});
-			if (obj.zimbraFeatureMailEnabled) {
-				setSwitchOptionValue('zimbraFeatureMailEnabled', obj.zimbraFeatureMailEnabled === 'TRUE');
-			} else {
+			if (!obj.zimbraFeatureMailEnabled) {
 				obj.zimbraFeatureMailEnabled = false;
-				setSwitchOptionValue('zimbraFeatureMailEnabled', false);
 			}
-			if (obj.zimbraFeatureContactsEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureContactsEnabled',
-					obj.zimbraFeatureContactsEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureContactsEnabled) {
 				obj.zimbraFeatureContactsEnabled = false;
-				setSwitchOptionValue('zimbraFeatureContactsEnabled', false);
 			}
-			if (obj.zimbraFeatureCalendarEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureCalendarEnabled',
-					obj.zimbraFeatureCalendarEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureCalendarEnabled) {
 				obj.zimbraFeatureCalendarEnabled = false;
-				setSwitchOptionValue('zimbraFeatureCalendarEnabled', false);
 			}
-			if (obj.zimbraFeatureTaggingEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureTaggingEnabled',
-					obj.zimbraFeatureTaggingEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureTaggingEnabled) {
 				obj.zimbraFeatureTaggingEnabled = false;
-				setSwitchOptionValue('zimbraFeatureTaggingEnabled', false);
 			}
-			if (obj.zimbraFeatureHtmlComposeEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureHtmlComposeEnabled',
-					obj.zimbraFeatureHtmlComposeEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureHtmlComposeEnabled) {
 				obj.zimbraFeatureHtmlComposeEnabled = false;
-				setSwitchOptionValue('zimbraFeatureHtmlComposeEnabled', false);
 			}
-			if (obj.zimbraFeatureWebClientOfflineAccessEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureWebClientOfflineAccessEnabled',
-					obj.zimbraFeatureWebClientOfflineAccessEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureWebClientOfflineAccessEnabled) {
 				obj.zimbraFeatureWebClientOfflineAccessEnabled = false;
-				setSwitchOptionValue('zimbraFeatureWebClientOfflineAccessEnabled', false);
 			}
-			if (obj.zimbraFeatureMailPriorityEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureMailPriorityEnabled',
-					obj.zimbraFeatureMailPriorityEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureMailPriorityEnabled) {
 				obj.zimbraFeatureMailPriorityEnabled = false;
-				setSwitchOptionValue('zimbraFeatureMailPriorityEnabled', false);
 			}
-			if (obj.zimbraFeatureOutOfOfficeReplyEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureOutOfOfficeReplyEnabled',
-					obj.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureOutOfOfficeReplyEnabled) {
 				obj.zimbraFeatureOutOfOfficeReplyEnabled = false;
-				setSwitchOptionValue('zimbraFeatureOutOfOfficeReplyEnabled', false);
 			}
-			if (obj.zimbraFeaturePop3DataSourceEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeaturePop3DataSourceEnabled',
-					obj.zimbraFeaturePop3DataSourceEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeaturePop3DataSourceEnabled) {
 				obj.zimbraFeaturePop3DataSourceEnabled = false;
-				setSwitchOptionValue('zimbraFeaturePop3DataSourceEnabled', false);
 			}
-			if (obj.zimbraFeatureDistributionListFolderEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureDistributionListFolderEnabled',
-					obj.zimbraFeatureDistributionListFolderEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureDistributionListFolderEnabled) {
 				obj.zimbraFeatureDistributionListFolderEnabled = false;
-				setSwitchOptionValue('zimbraFeatureDistributionListFolderEnabled', false);
 			}
-			if (obj.zimbraFeatureGroupCalendarEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureGroupCalendarEnabled',
-					obj.zimbraFeatureGroupCalendarEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureGroupCalendarEnabled) {
 				obj.zimbraFeatureGroupCalendarEnabled = false;
-				setSwitchOptionValue('zimbraFeatureGroupCalendarEnabled', false);
 			}
-			if (obj.zimbraFeatureCalendarReminderDeviceEmailEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureCalendarReminderDeviceEmailEnabled',
-					obj.zimbraFeatureCalendarReminderDeviceEmailEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureCalendarReminderDeviceEmailEnabled) {
 				obj.zimbraFeatureCalendarReminderDeviceEmailEnabled = false;
-				setSwitchOptionValue('zimbraFeatureCalendarReminderDeviceEmailEnabled', false);
 			}
-			if (obj.zimbraFeatureSavedSearchesEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureSavedSearchesEnabled',
-					obj.zimbraFeatureSavedSearchesEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureSavedSearchesEnabled) {
 				obj.zimbraFeatureSavedSearchesEnabled = false;
-				setSwitchOptionValue('zimbraFeatureSavedSearchesEnabled', false);
 			}
-			if (obj.zimbraFeatureInitialSearchPreferenceEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureInitialSearchPreferenceEnabled',
-					obj.zimbraFeatureInitialSearchPreferenceEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureInitialSearchPreferenceEnabled) {
 				obj.zimbraFeatureInitialSearchPreferenceEnabled = false;
-				setSwitchOptionValue('zimbraFeatureInitialSearchPreferenceEnabled', false);
 			}
-			if (obj.zimbraFeatureAdvancedSearchEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureAdvancedSearchEnabled',
-					obj.zimbraFeatureAdvancedSearchEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureAdvancedSearchEnabled) {
 				obj.zimbraFeatureAdvancedSearchEnabled = false;
-				setSwitchOptionValue('zimbraFeatureAdvancedSearchEnabled', false);
 			}
-			if (obj.zimbraFeaturePeopleSearchEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeaturePeopleSearchEnabled',
-					obj.zimbraFeaturePeopleSearchEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeaturePeopleSearchEnabled) {
 				obj.zimbraFeaturePeopleSearchEnabled = false;
-				setSwitchOptionValue('zimbraFeaturePeopleSearchEnabled', false);
 			}
-			if (obj.zimbraFeatureSMIMEEnabled) {
-				setSwitchOptionValue('zimbraFeatureSMIMEEnabled', obj.zimbraFeatureSMIMEEnabled === 'TRUE');
-			} else {
+			if (!obj.zimbraFeatureSMIMEEnabled) {
 				obj.zimbraFeatureSMIMEEnabled = false;
-				setSwitchOptionValue('zimbraFeatureSavedSearchesEnabled', false);
 			}
 			setCosData(obj);
+			setInitalValues(obj);
 			setIsDirty(false);
 		}
-	}, [cosInformation, setSwitchOptionValue]);
+	}, [cosInformation, setInitalValues, setSwitchOptionValue]);
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
@@ -248,6 +226,15 @@ const CosFeatures: FC = () => {
 				const cos: any = data?.Body?.ModifyCosResponse?.cos[0];
 				if (cos) {
 					setCos(cos);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: data?.Body?.Fault?.Reason?.Text,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
 				}
 				setIsDirty(false);
 			})
@@ -264,59 +251,7 @@ const CosFeatures: FC = () => {
 	};
 
 	const onCancel = (): void => {
-		setSwitchOptionValue('zimbraFeatureMailEnabled', cosData.zimbraFeatureMailEnabled);
-		setSwitchOptionValue('zimbraFeatureContactsEnabled', cosData.zimbraFeatureContactsEnabled);
-		setSwitchOptionValue('zimbraFeatureCalendarEnabled', cosData.zimbraFeatureCalendarEnabled);
-		setSwitchOptionValue('zimbraFeatureTaggingEnabled', cosData.zimbraFeatureTaggingEnabled);
-		setSwitchOptionValue(
-			'zimbraFeatureHtmlComposeEnabled',
-			cosData.zimbraFeatureHtmlComposeEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureWebClientOfflineAccessEnabled',
-			cosData.zimbraFeatureWebClientOfflineAccessEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureMailPriorityEnabled',
-			cosData.zimbraFeatureMailPriorityEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureOutOfOfficeReplyEnabled',
-			cosData.zimbraFeatureOutOfOfficeReplyEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeaturePop3DataSourceEnabled',
-			cosData.zimbraFeaturePop3DataSourceEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureDistributionListFolderEnabled',
-			cosData.zimbraFeatureDistributionListFolderEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureGroupCalendarEnabled',
-			cosData.zimbraFeatureGroupCalendarEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureCalendarReminderDeviceEmailEnabled',
-			cosData.zimbraFeatureCalendarReminderDeviceEmailEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureSavedSearchesEnabled',
-			cosData.zimbraFeatureSavedSearchesEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureInitialSearchPreferenceEnabled',
-			cosData.zimbraFeatureInitialSearchPreferenceEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureAdvancedSearchEnabled',
-			cosData.zimbraFeatureAdvancedSearchEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeaturePeopleSearchEnabled',
-			cosData.zimbraFeaturePeopleSearchEnabled
-		);
-		setSwitchOptionValue('zimbraFeatureSMIMEEnabled', cosData.zimbraFeatureSMIMEEnabled);
+		setInitalValues(cosData);
 		setIsDirty(false);
 	};
 
