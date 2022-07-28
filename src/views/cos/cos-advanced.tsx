@@ -164,6 +164,423 @@ const CosAdvanced: FC = () => {
 		}
 	};
 
+	const setInitalValues = useCallback(
+		(obj: any): void => {
+			if (obj) {
+				setValue('zimbraAttachmentsBlocked', obj?.zimbraAttachmentsBlocked === 'TRUE');
+				setValue(
+					'zimbraMailForwardingAddressMaxLength',
+					obj?.zimbraMailForwardingAddressMaxLength ? obj?.zimbraMailForwardingAddressMaxLength : ''
+				);
+				setValue(
+					'zimbraMailForwardingAddressMaxNumAddrs',
+					obj?.zimbraMailForwardingAddressMaxNumAddrs
+						? obj?.zimbraMailForwardingAddressMaxNumAddrs
+						: ''
+				);
+				setValue(
+					'zimbraMailQuota',
+					// eslint-disable-next-line no-unsafe-optional-chaining
+					obj?.zimbraMailQuota ? obj?.zimbraMailQuota / (1024 * 124) : ''
+				);
+				setValue(
+					'zimbraContactMaxNumEntries',
+					obj?.zimbraContactMaxNumEntries ? obj?.zimbraContactMaxNumEntries : ''
+				);
+				setValue(
+					'zimbraQuotaWarnPercent',
+					obj?.zimbraQuotaWarnPercent ? obj?.zimbraQuotaWarnPercent : ''
+				);
+				setValue(
+					'zimbraQuotaWarnInterval',
+					obj?.zimbraQuotaWarnInterval
+						? // eslint-disable-next-line no-unsafe-optional-chaining
+						  obj?.zimbraQuotaWarnInterval.substring(0, obj?.zimbraQuotaWarnInterval?.length - 1)
+						: ''
+				);
+				setValue(
+					'zimbraQuotaWarnIntervalRangeTime',
+					obj?.zimbraQuotaWarnInterval
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									// eslint-disable-next-line no-unsafe-optional-chaining
+									obj?.zimbraQuotaWarnInterval.charAt(obj?.zimbraQuotaWarnInterval?.length - 1)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraQuotaWarnMessage',
+					obj?.zimbraQuotaWarnMessage ? obj?.zimbraQuotaWarnMessage : ''
+				);
+				setValue(
+					'zimbraDataSourceMinPollingInterval',
+					obj?.zimbraDataSourceMinPollingInterval
+						? obj?.zimbraDataSourceMinPollingInterval.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraDataSourceMinPollingInterval?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraDataSourceMinPollingIntervalRangeTime',
+					obj?.zimbraDataSourceMinPollingInterval
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraDataSourceMinPollingInterval.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraDataSourceMinPollingInterval?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraDataSourcePop3PollingInterval',
+					obj?.zimbraDataSourcePop3PollingInterval
+						? obj?.zimbraDataSourcePop3PollingInterval.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraDataSourcePop3PollingInterval?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraDataSourcePop3PollingIntervalRangeTime',
+					obj?.zimbraDataSourcePop3PollingInterval
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraDataSourcePop3PollingInterval.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraDataSourcePop3PollingInterval?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraDataSourceImapPollingInterval',
+					obj?.zimbraDataSourceImapPollingInterval
+						? obj?.zimbraDataSourceImapPollingInterval.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraDataSourceImapPollingInterval?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraDataSourceImapPollingIntervalRangeTime',
+					obj?.zimbraDataSourceImapPollingInterval
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraDataSourceImapPollingInterval.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraDataSourceImapPollingInterval?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraDataSourceCalendarPollingInterval',
+					obj?.zimbraDataSourceCalendarPollingInterval
+						? obj?.zimbraDataSourceCalendarPollingInterval.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraDataSourceCalendarPollingInterval?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraDataSourceCalendarPollingIntervalRangeTime',
+					obj?.zimbraDataSourceCalendarPollingInterval
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraDataSourceCalendarPollingInterval.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraDataSourceCalendarPollingInterval?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraDataSourceRssPollingInterval',
+					obj?.zimbraDataSourceRssPollingInterval
+						? obj?.zimbraDataSourceRssPollingInterval.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraDataSourceRssPollingInterval?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraDataSourceRssPollingIntervalRangeTime',
+					obj?.zimbraDataSourceRssPollingInterval
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraDataSourceRssPollingInterval.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraDataSourceRssPollingInterval?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraDataSourceCaldavPollingInterval',
+					obj?.zimbraDataSourceCaldavPollingInterval
+						? obj?.zimbraDataSourceCaldavPollingInterval.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraDataSourceCaldavPollingInterval?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraDataSourceCaldavPollingIntervalRangeTime',
+					obj?.zimbraDataSourceCaldavPollingInterval
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraDataSourceCaldavPollingInterval.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraDataSourceCaldavPollingInterval?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue('zimbraPasswordLocked', obj?.zimbraPasswordLocked === 'TRUE');
+				setValue(
+					'zimbraPasswordMinLength',
+					obj?.zimbraPasswordMinLength ? obj?.zimbraPasswordMinLength : ''
+				);
+				setValue(
+					'zimbraPasswordMaxLength',
+					obj?.zimbraPasswordMaxLength ? obj?.zimbraPasswordMaxLength : ''
+				);
+				setValue(
+					'zimbraPasswordMinUpperCaseChars',
+					obj?.zimbraPasswordMinUpperCaseChars ? obj?.zimbraPasswordMinUpperCaseChars : ''
+				);
+				setValue(
+					'zimbraPasswordMinLowerCaseChars',
+					obj?.zimbraPasswordMinLowerCaseChars ? obj?.zimbraPasswordMinLowerCaseChars : ''
+				);
+				setValue(
+					'zimbraPasswordMinPunctuationChars',
+					obj?.zimbraPasswordMinPunctuationChars ? obj?.zimbraPasswordMinPunctuationChars : ''
+				);
+				setValue(
+					'zimbraPasswordMinNumericChars',
+					obj?.zimbraPasswordMinNumericChars ? obj?.zimbraPasswordMinNumericChars : ''
+				);
+				setValue(
+					'zimbraPasswordMinDigitsOrPuncs',
+					obj?.zimbraPasswordMinDigitsOrPuncs ? obj?.zimbraPasswordMinDigitsOrPuncs : ''
+				);
+				setValue(
+					'zimbraPasswordMinAge',
+					obj?.zimbraPasswordMinAge ? obj?.zimbraPasswordMinAge : ''
+				);
+				setValue(
+					'zimbraPasswordMaxAge',
+					obj?.zimbraPasswordMaxAge ? obj?.zimbraPasswordMaxAge : ''
+				);
+				setValue(
+					'zimbraPasswordEnforceHistory',
+					obj?.zimbraPasswordEnforceHistory ? obj?.zimbraPasswordEnforceHistory : ''
+				);
+				setValue(
+					'zimbraPasswordBlockCommonEnabled',
+					obj?.zimbraPasswordBlockCommonEnabled === 'TRUE'
+				);
+				setValue('zimbraPasswordLockoutEnabled', obj?.zimbraPasswordLockoutEnabled === 'TRUE');
+				setValue(
+					'zimbraPasswordLockoutMaxFailures',
+					obj?.zimbraPasswordLockoutMaxFailures ? obj?.zimbraPasswordLockoutMaxFailures : ''
+				);
+				setValue(
+					'zimbraPasswordLockoutDuration',
+					obj?.zimbraPasswordLockoutDuration
+						? obj?.zimbraPasswordLockoutDuration.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraPasswordLockoutDuration?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraPasswordLockoutDurationRangeTime',
+					obj?.zimbraPasswordLockoutDuration
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraPasswordLockoutDuration.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraPasswordLockoutDuration?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraPasswordLockoutFailureLifetime',
+					obj?.zimbraPasswordLockoutFailureLifetime
+						? obj?.zimbraPasswordLockoutFailureLifetime.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraPasswordLockoutFailureLifetime?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraPasswordLockoutFailureLifetimeRangeTime',
+					obj?.zimbraPasswordLockoutFailureLifetime
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraPasswordLockoutFailureLifetime.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraPasswordLockoutFailureLifetime?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraAdminAuthTokenLifetime',
+					obj?.zimbraAdminAuthTokenLifetime
+						? obj?.zimbraAdminAuthTokenLifetime.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraAdminAuthTokenLifetime?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraAdminAuthTokenLifetimeRangeTime',
+					obj?.zimbraAdminAuthTokenLifetime
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraAdminAuthTokenLifetime.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraAdminAuthTokenLifetime?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraAuthTokenLifetime',
+					obj?.zimbraAuthTokenLifetime
+						? obj?.zimbraAuthTokenLifetime.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraAuthTokenLifetime?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraAuthTokenLifetimeRangeTime',
+					obj?.zimbraAuthTokenLifetime
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraAuthTokenLifetime.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraAuthTokenLifetime?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraMailIdleSessionTimeout',
+					obj?.zimbraMailIdleSessionTimeout
+						? obj?.zimbraMailIdleSessionTimeout.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraMailIdleSessionTimeout?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraMailIdleSessionTimeoutRangeTime',
+					obj?.zimbraMailIdleSessionTimeout
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraMailIdleSessionTimeout.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraMailIdleSessionTimeout?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraMailMessageLifetime',
+					obj?.zimbraMailMessageLifetime
+						? obj?.zimbraMailMessageLifetime.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraMailMessageLifetime?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraMailTrashLifetime',
+					obj?.zimbraMailTrashLifetime
+						? obj?.zimbraMailTrashLifetime.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraMailTrashLifetime?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraMailTrashLifetimeRangeTime',
+					obj?.zimbraMailTrashLifetime
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraMailTrashLifetime.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraMailTrashLifetime?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraMailSpamLifetime',
+					obj?.zimbraMailSpamLifetime
+						? obj?.zimbraMailSpamLifetime.substring(
+								0,
+								// eslint-disable-next-line no-unsafe-optional-chaining
+								obj?.zimbraMailSpamLifetime?.length - 1
+						  )
+						: ''
+				);
+				setValue(
+					'zimbraMailSpamLifetimeRangeTime',
+					obj?.zimbraMailSpamLifetime
+						? timeItems.find(
+								(item: any) =>
+									item.value ===
+									obj?.zimbraMailSpamLifetime.charAt(
+										// eslint-disable-next-line no-unsafe-optional-chaining
+										obj?.zimbraMailSpamLifetime?.length - 1
+									)
+						  )
+						: timeItems[0]
+				);
+				setValue(
+					'zimbraFreebusyExchangeUserOrg',
+					obj?.zimbraFreebusyExchangeUserOrg ? obj?.zimbraFreebusyExchangeUserOrg : ''
+				);
+			}
+		},
+		[setValue, timeItems]
+	);
+
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const proxyAllowedDomains = cosInformation
@@ -179,521 +596,122 @@ const CosAdvanced: FC = () => {
 				obj[item?.n] = item._content;
 				return '';
 			});
-			setValue('zimbraAttachmentsBlocked', obj?.zimbraAttachmentsBlocked === 'TRUE');
 			if (!obj.zimbraAttachmentsBlocked) {
 				obj.zimbraAttachmentsBlocked = false;
 			}
-			setValue(
-				'zimbraMailForwardingAddressMaxLength',
-				obj?.zimbraMailForwardingAddressMaxLength ? obj?.zimbraMailForwardingAddressMaxLength : ''
-			);
 			if (!obj.zimbraMailForwardingAddressMaxLength) {
 				obj.zimbraMailForwardingAddressMaxLength = '';
 			}
-			setValue(
-				'zimbraMailForwardingAddressMaxNumAddrs',
-				obj?.zimbraMailForwardingAddressMaxNumAddrs
-					? obj?.zimbraMailForwardingAddressMaxNumAddrs
-					: ''
-			);
 			if (!obj.zimbraMailForwardingAddressMaxNumAddrs) {
 				obj.zimbraMailForwardingAddressMaxNumAddrs = '';
 			}
-			// eslint-disable-next-line no-unsafe-optional-chaining
-			setValue('zimbraMailQuota', obj?.zimbraMailQuota ? obj?.zimbraMailQuota / (1024 * 124) : '');
 			if (!obj.zimbraMailQuota) {
 				obj.zimbraMailQuota = '';
 			}
-			setValue(
-				'zimbraContactMaxNumEntries',
-				obj?.zimbraContactMaxNumEntries ? obj?.zimbraContactMaxNumEntries : ''
-			);
 			if (!obj.zimbraContactMaxNumEntries) {
 				obj.zimbraContactMaxNumEntries = '';
 			}
-			setValue(
-				'zimbraQuotaWarnPercent',
-				obj?.zimbraQuotaWarnPercent ? obj?.zimbraQuotaWarnPercent : ''
-			);
 			if (!obj.zimbraQuotaWarnPercent) {
 				obj.zimbraQuotaWarnPercent = '';
 			}
-			setValue(
-				'zimbraQuotaWarnInterval',
-				obj?.zimbraQuotaWarnInterval
-					? // eslint-disable-next-line no-unsafe-optional-chaining
-					  obj?.zimbraQuotaWarnInterval.substring(0, obj?.zimbraQuotaWarnInterval?.length - 1)
-					: ''
-			);
-			setValue(
-				'zimbraQuotaWarnIntervalRangeTime',
-				obj?.zimbraQuotaWarnInterval
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraQuotaWarnInterval.charAt(obj?.zimbraQuotaWarnInterval?.length - 1)
-					  )
-					: ''
-			);
 			if (!obj.zimbraQuotaWarnInterval) {
 				obj.zimbraQuotaWarnInterval = '';
 			}
-			setValue(
-				'zimbraQuotaWarnMessage',
-				obj?.zimbraQuotaWarnMessage ? obj?.zimbraQuotaWarnMessage : ''
-			);
 			if (!obj.zimbraQuotaWarnMessage) {
 				obj.zimbraQuotaWarnMessage = '';
 			}
-			setValue(
-				'zimbraDataSourceMinPollingInterval',
-				obj?.zimbraDataSourceMinPollingInterval
-					? obj?.zimbraDataSourceMinPollingInterval.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraDataSourceMinPollingInterval?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraDataSourceMinPollingIntervalRangeTime',
-				obj?.zimbraDataSourceMinPollingInterval
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraDataSourceMinPollingInterval.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraDataSourceMinPollingInterval?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraDataSourceMinPollingInterval) {
 				obj.zimbraDataSourceMinPollingInterval = '';
 			}
-			setValue(
-				'zimbraDataSourcePop3PollingInterval',
-				obj?.zimbraDataSourcePop3PollingInterval
-					? obj?.zimbraDataSourcePop3PollingInterval.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraDataSourcePop3PollingInterval?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraDataSourcePop3PollingIntervalRangeTime',
-				obj?.zimbraDataSourcePop3PollingInterval
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraDataSourcePop3PollingInterval.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraDataSourcePop3PollingInterval?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraDataSourcePop3PollingInterval) {
 				obj.zimbraDataSourcePop3PollingInterval = '';
 			}
-			setValue(
-				'zimbraDataSourceImapPollingInterval',
-				obj?.zimbraDataSourceImapPollingInterval
-					? obj?.zimbraDataSourceImapPollingInterval.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraDataSourceImapPollingInterval?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraDataSourceImapPollingIntervalRangeTime',
-				obj?.zimbraDataSourceImapPollingInterval
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraDataSourceImapPollingInterval.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraDataSourceImapPollingInterval?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraDataSourceImapPollingInterval) {
 				obj.zimbraDataSourceImapPollingInterval = '';
 			}
-			setValue(
-				'zimbraDataSourceCalendarPollingInterval',
-				obj?.zimbraDataSourceCalendarPollingInterval
-					? obj?.zimbraDataSourceCalendarPollingInterval.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraDataSourceCalendarPollingInterval?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraDataSourceCalendarPollingIntervalRangeTime',
-				obj?.zimbraDataSourceCalendarPollingInterval
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraDataSourceCalendarPollingInterval.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraDataSourceCalendarPollingInterval?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraDataSourceCalendarPollingInterval) {
 				obj.zimbraDataSourceCalendarPollingInterval = '';
 			}
-			setValue(
-				'zimbraDataSourceRssPollingInterval',
-				obj?.zimbraDataSourceRssPollingInterval
-					? obj?.zimbraDataSourceRssPollingInterval.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraDataSourceRssPollingInterval?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraDataSourceRssPollingIntervalRangeTime',
-				obj?.zimbraDataSourceRssPollingInterval
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraDataSourceRssPollingInterval.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraDataSourceRssPollingInterval?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraDataSourceRssPollingInterval) {
 				obj.zimbraDataSourceRssPollingInterval = '';
 			}
-			setValue(
-				'zimbraDataSourceCaldavPollingInterval',
-				obj?.zimbraDataSourceCaldavPollingInterval
-					? obj?.zimbraDataSourceCaldavPollingInterval.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraDataSourceCaldavPollingInterval?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraDataSourceCaldavPollingIntervalRangeTime',
-				obj?.zimbraDataSourceCaldavPollingInterval
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraDataSourceCaldavPollingInterval.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraDataSourceCaldavPollingInterval?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraDataSourceCaldavPollingInterval) {
 				obj.zimbraDataSourceCaldavPollingInterval = '';
 			}
-			setValue('zimbraPasswordLocked', obj?.zimbraPasswordLocked === 'TRUE');
 			if (!obj.zimbraPasswordLocked) {
 				obj.zimbraPasswordLocked = false;
 			}
-			setValue(
-				'zimbraPasswordMinLength',
-				obj?.zimbraPasswordMinLength ? obj?.zimbraPasswordMinLength : ''
-			);
 			if (!obj.zimbraPasswordMinLength) {
 				obj.zimbraPasswordMinLength = '';
 			}
-			setValue(
-				'zimbraPasswordMaxLength',
-				obj?.zimbraPasswordMaxLength ? obj?.zimbraPasswordMaxLength : ''
-			);
 			if (!obj.zimbraPasswordMaxLength) {
 				obj.zimbraPasswordMaxLength = '';
 			}
-			setValue(
-				'zimbraPasswordMinUpperCaseChars',
-				obj?.zimbraPasswordMinUpperCaseChars ? obj?.zimbraPasswordMinUpperCaseChars : ''
-			);
 			if (!obj.zimbraPasswordMinUpperCaseChars) {
 				obj.zimbraPasswordMinUpperCaseChars = '';
 			}
-			setValue(
-				'zimbraPasswordMinLowerCaseChars',
-				obj?.zimbraPasswordMinLowerCaseChars ? obj?.zimbraPasswordMinLowerCaseChars : ''
-			);
 			if (!obj.zimbraPasswordMinLowerCaseChars) {
 				obj.zimbraPasswordMinLowerCaseChars = '';
 			}
-			setValue(
-				'zimbraPasswordMinPunctuationChars',
-				obj?.zimbraPasswordMinPunctuationChars ? obj?.zimbraPasswordMinPunctuationChars : ''
-			);
 			if (!obj.zimbraPasswordMinPunctuationChars) {
 				obj.zimbraPasswordMinPunctuationChars = '';
 			}
-			setValue(
-				'zimbraPasswordMinNumericChars',
-				obj?.zimbraPasswordMinNumericChars ? obj?.zimbraPasswordMinNumericChars : ''
-			);
 			if (!obj.zimbraPasswordMinNumericChars) {
 				obj.zimbraPasswordMinNumericChars = '';
 			}
-			setValue(
-				'zimbraPasswordMinDigitsOrPuncs',
-				obj?.zimbraPasswordMinDigitsOrPuncs ? obj?.zimbraPasswordMinDigitsOrPuncs : ''
-			);
 			if (!obj.zimbraPasswordMinDigitsOrPuncs) {
 				obj.zimbraPasswordMinDigitsOrPuncs = '';
 			}
-			setValue('zimbraPasswordMinAge', obj?.zimbraPasswordMinAge ? obj?.zimbraPasswordMinAge : '');
 			if (!obj.zimbraPasswordMinAge) {
 				obj.zimbraPasswordMinAge = '';
 			}
-			setValue('zimbraPasswordMaxAge', obj?.zimbraPasswordMaxAge ? obj?.zimbraPasswordMaxAge : '');
 			if (!obj.zimbraPasswordMaxAge) {
 				obj.zimbraPasswordMaxAge = '';
 			}
-			setValue(
-				'zimbraPasswordEnforceHistory',
-				obj?.zimbraPasswordEnforceHistory ? obj?.zimbraPasswordEnforceHistory : ''
-			);
 			if (!obj.zimbraPasswordEnforceHistory) {
 				obj.zimbraPasswordEnforceHistory = '';
 			}
-			setValue(
-				'zimbraPasswordBlockCommonEnabled',
-				obj?.zimbraPasswordBlockCommonEnabled === 'TRUE'
-			);
 			if (!obj.zimbraPasswordBlockCommonEnabled) {
 				obj.zimbraPasswordBlockCommonEnabled = false;
 			}
-			setValue('zimbraPasswordLockoutEnabled', obj?.zimbraPasswordLockoutEnabled === 'TRUE');
 			if (!obj.zimbraPasswordLockoutEnabled) {
 				obj.zimbraPasswordLockoutEnabled = false;
 			}
-			setValue(
-				'zimbraPasswordLockoutMaxFailures',
-				obj?.zimbraPasswordLockoutMaxFailures ? obj?.zimbraPasswordLockoutMaxFailures : ''
-			);
 			if (!obj.zimbraPasswordLockoutMaxFailures) {
 				obj.zimbraPasswordLockoutMaxFailures = '';
 			}
-			setValue(
-				'zimbraPasswordLockoutDuration',
-				obj?.zimbraPasswordLockoutDuration
-					? obj?.zimbraPasswordLockoutDuration.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraPasswordLockoutDuration?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraPasswordLockoutDurationRangeTime',
-				obj?.zimbraPasswordLockoutDuration
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraPasswordLockoutDuration.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraPasswordLockoutDuration?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraPasswordLockoutDuration) {
 				obj.zimbraPasswordLockoutDuration = '';
 			}
-			setValue(
-				'zimbraPasswordLockoutFailureLifetime',
-				obj?.zimbraPasswordLockoutFailureLifetime
-					? obj?.zimbraPasswordLockoutFailureLifetime.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraPasswordLockoutFailureLifetime?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraPasswordLockoutFailureLifetimeRangeTime',
-				obj?.zimbraPasswordLockoutFailureLifetime
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraPasswordLockoutFailureLifetime.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraPasswordLockoutFailureLifetime?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraPasswordLockoutFailureLifetime) {
 				obj.zimbraPasswordLockoutFailureLifetime = '';
 			}
-			setValue(
-				'zimbraAdminAuthTokenLifetime',
-				obj?.zimbraAdminAuthTokenLifetime
-					? obj?.zimbraAdminAuthTokenLifetime.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraAdminAuthTokenLifetime?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraAdminAuthTokenLifetimeRangeTime',
-				obj?.zimbraAdminAuthTokenLifetime
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraAdminAuthTokenLifetime.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraAdminAuthTokenLifetime?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraAdminAuthTokenLifetime) {
 				obj.zimbraAdminAuthTokenLifetime = '';
 			}
-			setValue(
-				'zimbraAuthTokenLifetime',
-				obj?.zimbraAuthTokenLifetime
-					? obj?.zimbraAuthTokenLifetime.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraAuthTokenLifetime?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraAuthTokenLifetimeRangeTime',
-				obj?.zimbraAuthTokenLifetime
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraAuthTokenLifetime.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraAuthTokenLifetime?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraAuthTokenLifetime) {
 				obj.zimbraAuthTokenLifetime = '';
 			}
-			setValue(
-				'zimbraMailIdleSessionTimeout',
-				obj?.zimbraMailIdleSessionTimeout
-					? obj?.zimbraMailIdleSessionTimeout.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraMailIdleSessionTimeout?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraMailIdleSessionTimeoutRangeTime',
-				obj?.zimbraMailIdleSessionTimeout
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraMailIdleSessionTimeout.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraMailIdleSessionTimeout?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraMailIdleSessionTimeout) {
 				obj.zimbraMailIdleSessionTimeout = '';
 			}
-			setValue(
-				'zimbraMailMessageLifetime',
-				obj?.zimbraMailMessageLifetime
-					? obj?.zimbraMailMessageLifetime.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraMailMessageLifetime?.length - 1
-					  )
-					: ''
-			);
 			if (!obj.zimbraMailMessageLifetime) {
 				obj.zimbraMailMessageLifetime = '';
 			}
-			setValue(
-				'zimbraMailTrashLifetime',
-				obj?.zimbraMailTrashLifetime
-					? obj?.zimbraMailTrashLifetime.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraMailTrashLifetime?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraMailTrashLifetimeRangeTime',
-				obj?.zimbraMailTrashLifetime
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraMailTrashLifetime.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraMailTrashLifetime?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraMailTrashLifetime) {
 				obj.zimbraMailTrashLifetime = '';
 			}
-			setValue(
-				'zimbraMailSpamLifetime',
-				obj?.zimbraMailSpamLifetime
-					? obj?.zimbraMailSpamLifetime.substring(
-							0,
-							// eslint-disable-next-line no-unsafe-optional-chaining
-							obj?.zimbraMailSpamLifetime?.length - 1
-					  )
-					: ''
-			);
-			setValue(
-				'zimbraMailSpamLifetimeRangeTime',
-				obj?.zimbraMailSpamLifetime
-					? timeItems.find(
-							(item: any) =>
-								item.value ===
-								obj?.zimbraMailSpamLifetime.charAt(
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraMailSpamLifetime?.length - 1
-								)
-					  )
-					: ''
-			);
 			if (!obj.zimbraMailSpamLifetime) {
 				obj.zimbraMailSpamLifetime = '';
 			}
-			setValue(
-				'zimbraFreebusyExchangeUserOrg',
-				obj?.zimbraFreebusyExchangeUserOrg ? obj?.zimbraFreebusyExchangeUserOrg : ''
-			);
 			if (!obj.zimbraFreebusyExchangeUserOrg) {
 				obj.zimbraFreebusyExchangeUserOrg = '';
 			}
 			setCosData(obj);
+			setInitalValues(obj);
 			setIsDirty(false);
 		}
-	}, [cosInformation, setValue, timeItems]);
+	}, [cosInformation, setInitalValues, setValue, timeItems]);
 
 	const changeValue = useCallback(
 		(e) => {
@@ -749,6 +767,12 @@ const CosAdvanced: FC = () => {
 		}
 	}, [selectedProxyAllowedDomain, proxyAllowedDomainList, setProxyAllowedDomainList]);
 
+	const onCancel = (): void => {
+		setInitalValues(cosData);
+		setProxyAllowedDomainList(cosAdvanced.zimbraProxyAllowedDomains);
+		setIsDirty(false);
+	};
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -766,7 +790,13 @@ const CosAdvanced: FC = () => {
 						</Row>
 						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Padding right="small">
-								{isDirty && <Button label={t('label.cancel', 'Cancel')} color="secondary" />}
+								{isDirty && (
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										onClick={onCancel}
+									/>
+								)}
 							</Padding>
 							{isDirty && <Button label={t('label.save', 'Save')} color="primary" />}
 						</Row>
@@ -1153,7 +1183,7 @@ const CosAdvanced: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('cos.proxy_allowed_domain_name', 'Proxy Allowed Domain Name')}
+										label={t('cos.new_proxy_allowed_domain', 'New Proxy Allowed Domain')}
 										value={newProxyAllowedDomain}
 										background="gray5"
 										onChange={(e: any): any => {
