@@ -252,6 +252,7 @@
         "quotas": "Quotas",
         "range_time": "Time",
         "receiving_mail": "Receiving mail",
+        "reject_common_passwords": "Reject common passwords",
         "rss_polling_interval": "RSS polling interval",
         "s_mime_features": "S/MIME Features",
         "saved_searches": "Saved Searches",
