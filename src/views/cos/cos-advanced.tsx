@@ -15,12 +15,14 @@ import {
 	Input,
 	Select,
 	Icon,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Table
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import ListRow from '../list/list-row';
 import { useCosStore } from '../../store/cos/store';
+import logo from '../../assets/gardian.svg';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -55,6 +57,19 @@ const CosAdvanced: FC = () => {
 		],
 		[t]
 	);
+
+	const proxyAllowedDomainHeaders: any[] = useMemo(
+		() => [
+			{
+				id: 'account',
+				label: t('cos.proxy_allowed_domain_name', 'Proxy Allowed Domain Name'),
+				width: '100%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
 	const [cosAdvanced, setCosAdvanced] = useState<any>({
 		zimbraAttachmentsBlocked: false,
 		zimbraMailForwardingAddressMaxLength: '',
@@ -109,6 +124,14 @@ const CosAdvanced: FC = () => {
 		zimbraMailSpamLifetimeRangeTime: timeItems[0],
 		zimbraFreebusyExchangeUserOrg: ''
 	});
+	const [newProxyAllowedDomain, setNewProxyAllowedDomain] = useState<string>('');
+	const [selectedProxyAllowedDomain, setSelectedProxyAllowedDomain] = useState<any>([]);
+	const [proxyAllowedDomainAddBtnDisabled, setProxyAllowedDomainAddBtnDisabled] = useState(true);
+	const [proxyAllowedDomainDeleteBtnDisabled, setProxyAllowedDomainDeleteBtnDisabled] =
+		useState(true);
+	const [searchProxyAllowedDomain, setSearchProxyAllowedDomain]: any = useState('');
+	const [proxyAllowedDomainRows, setProxyAllowedDomainRows] = useState<any[]>([]);
+	const [proxyAllowedDomainList, setProxyAllowedDomainList] = useState<any[]>([]);
 
 	const setValue = useCallback(
 		(key: string, value: any): void => {
@@ -118,7 +141,39 @@ const CosAdvanced: FC = () => {
 	);
 
 	useEffect(() => {
+		const sList: any[] = [];
+		proxyAllowedDomainList.forEach((item: any, index: number) => {
+			sList.push({
+				id: index?.toString(),
+				columns: [
+					<Text size="medium" weight="light" key={index} color="gray0">
+						{item?._content}
+					</Text>
+				],
+				item,
+				label: item?._content,
+				clickable: true
+			});
+		});
+		setProxyAllowedDomainRows(sList);
+	}, [proxyAllowedDomainList]);
+
+	const generateProxyAllowedDomainList = (proxyAllowedDomains: any): void => {
+		if (proxyAllowedDomains && Array.isArray(proxyAllowedDomains)) {
+			setProxyAllowedDomainList(proxyAllowedDomains);
+		}
+	};
+
+	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
+			const proxyAllowedDomains = cosInformation
+				?.filter((value: any) => value?.n === 'zimbraProxyAllowedDomains')
+				.map((item: any, index: any): any => {
+					const id = index?.toString();
+					return { ...item, id };
+				});
+			generateProxyAllowedDomainList(proxyAllowedDomains);
+			setValue('zimbraProxyAllowedDomains', proxyAllowedDomains);
 			const obj: any = {};
 			cosInformation.map((item: any) => {
 				obj[item?.n] = item._content;
@@ -665,6 +720,35 @@ const CosAdvanced: FC = () => {
 		[cosAdvanced, timeItems, setCosAdvanced]
 	);
 
+	const addProxyAllowedDomain = useCallback((): void => {
+		if (newProxyAllowedDomain) {
+			const lastId =
+				proxyAllowedDomainList.length > 0
+					? proxyAllowedDomainList[proxyAllowedDomainList.length - 1].id
+					: 0;
+			const newId = +lastId + 1;
+			const item = {
+				id: newId.toString(),
+				n: 'zimbraProxyAllowedDomains',
+				_content: newProxyAllowedDomain
+			};
+			setProxyAllowedDomainList([...proxyAllowedDomainList, item]);
+			setProxyAllowedDomainAddBtnDisabled(true);
+			setNewProxyAllowedDomain('');
+		}
+	}, [newProxyAllowedDomain, proxyAllowedDomainList, setProxyAllowedDomainList]);
+
+	const deleteProxyAllowedDomain = useCallback((): void => {
+		if (selectedProxyAllowedDomain && selectedProxyAllowedDomain.length > 0) {
+			const filterItems = proxyAllowedDomainList.filter(
+				(item: any, index: any) => !selectedProxyAllowedDomain.includes(index.toString())
+			);
+			setProxyAllowedDomainList(filterItems);
+			setProxyAllowedDomainDeleteBtnDisabled(true);
+			setSelectedProxyAllowedDomain([]);
+		}
+	}, [selectedProxyAllowedDomain, proxyAllowedDomainList, setProxyAllowedDomainList]);
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -1064,14 +1148,18 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small', bottom: 'small' }}
+							padding={{ top: 'small', left: 'small', right: 'small' }}
 						>
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('cos.proxy_allowed_domain_name', 'Proxy Allowed Domain Name')}
-										value="50"
+										value={newProxyAllowedDomain}
 										background="gray5"
+										onChange={(e: any): any => {
+											setNewProxyAllowedDomain(e.target.value);
+											setProxyAllowedDomainAddBtnDisabled(false);
+										}}
 									/>
 								</Container>
 								<Container crossAlignment="flex-end" width="17%" padding={{ all: 'small' }}>
@@ -1082,6 +1170,8 @@ const CosAdvanced: FC = () => {
 										color="primary"
 										height="44px"
 										width="128px"
+										disabled={proxyAllowedDomainAddBtnDisabled}
+										onClick={addProxyAllowedDomain}
 									/>
 								</Container>
 								<Container crossAlignment="flex-end" width="17%" padding={{ all: 'small' }}>
@@ -1092,13 +1182,95 @@ const CosAdvanced: FC = () => {
 										color="error"
 										height="44px"
 										width="128px"
+										disabled={proxyAllowedDomainDeleteBtnDisabled}
+										onClick={deleteProxyAllowedDomain}
 									/>
 								</Container>
 							</ListRow>
 						</Container>
 					</Row>
-					<Divider />
 				</Row>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ left: 'large', right: 'large' }}
+					width="100%"
+				>
+					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ left: 'large', right: 'large', bottom: 'small' }}
+						>
+							<Table
+								rows={proxyAllowedDomainRows}
+								headers={proxyAllowedDomainHeaders}
+								showCheckbox
+								style={{ overflow: 'auto', height: '100%' }}
+								selectedRows={selectedProxyAllowedDomain}
+								onSelectionChange={(selected: any): any => {
+									setSelectedProxyAllowedDomain(selected);
+									if (selected && selected.length > 0) {
+										setProxyAllowedDomainDeleteBtnDisabled(false);
+									} else {
+										setProxyAllowedDomainDeleteBtnDisabled(true);
+									}
+								}}
+							/>
+						</Container>
+					</Row>
+				</Row>
+				{proxyAllowedDomainRows?.length === 0 && (
+					<Row
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ all: 'large' }}
+						width="100%"
+					>
+						<Container orientation="column" crossAlignment="center" mainAlignment="center">
+							<Row>
+								<img src={logo} alt="logo" />
+							</Row>
+							<Row
+								padding={{ top: 'extralarge' }}
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+							>
+								<Text weight="light" color="#828282" size="large" overflow="break-word">
+									{t('label.this_list_is_empty', 'This list is empty.')}
+								</Text>
+							</Row>
+							<Row
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+								padding={{ top: 'small' }}
+								width="53%"
+							>
+								<Text weight="light" color="#828282" size="large" overflow="break-word">
+									<Trans
+										i18nKey="label.do_you_need_more_information"
+										defaults="Do you need more information?"
+									/>
+								</Text>
+							</Row>
+							<Row
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+								padding={{ top: 'small', bottom: 'small' }}
+								width="53%"
+							>
+								<Text weight="light" color="primary">
+									{t('label.click_here', 'Click here')}
+								</Text>
+							</Row>
+						</Container>
+						<Divider />
+					</Row>
+				)}
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
