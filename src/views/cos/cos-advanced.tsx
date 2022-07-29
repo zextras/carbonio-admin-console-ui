@@ -24,6 +24,7 @@ import _ from 'lodash';
 import ListRow from '../list/list-row';
 import { useCosStore } from '../../store/cos/store';
 import logo from '../../assets/gardian.svg';
+import { modifyCos } from '../../services/modify-cos-service';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -1158,6 +1159,207 @@ const CosAdvanced: FC = () => {
 		}
 	}, [cosAdvanced.zimbraProxyAllowedDomains, proxyAllowedDomainList]);
 
+	const onSave = (): void => {
+		const body: any = {};
+		body._jsns = 'urn:zimbraAdmin';
+		const attributes: any[] = [];
+		const id = {
+			_content: cosData.zimbraId
+		};
+		body.id = id;
+		attributes.push({
+			n: 'zimbraAttachmentsBlocked',
+			_content: cosAdvanced?.zimbraAttachmentsBlocked === true ? 'TRUE' : 'FALSE'
+		});
+		attributes.push({
+			n: 'zimbraMailForwardingAddressMaxLength',
+			_content: cosAdvanced?.zimbraMailForwardingAddressMaxLength
+		});
+		attributes.push({
+			n: 'zimbraMailForwardingAddressMaxNumAddrs',
+			_content: cosAdvanced?.zimbraMailForwardingAddressMaxNumAddrs
+		});
+		attributes.push({
+			n: 'zimbraMailQuota',
+			_content: (parseInt(cosAdvanced?.zimbraMailQuota, 10) * 1024 * 1024)?.toString()
+		});
+		attributes.push({
+			n: 'zimbraContactMaxNumEntries',
+			_content: cosAdvanced?.zimbraContactMaxNumEntries
+		});
+		attributes.push({
+			n: 'zimbraQuotaWarnPercent',
+			_content: cosAdvanced?.zimbraQuotaWarnPercent
+		});
+		attributes.push({
+			n: 'zimbraQuotaWarnInterval',
+			_content: `${cosAdvanced?.zimbraQuotaWarnInterval}${cosAdvanced?.zimbraQuotaWarnIntervalRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraQuotaWarnMessage',
+			_content: cosAdvanced?.zimbraQuotaWarnMessage
+		});
+		attributes.push({
+			n: 'zimbraDataSourceMinPollingInterval',
+			_content: `${cosAdvanced?.zimbraDataSourceMinPollingInterval}${cosAdvanced?.zimbraDataSourceMinPollingIntervalRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraDataSourcePop3PollingInterval',
+			_content: `${cosAdvanced?.zimbraDataSourcePop3PollingInterval}${cosAdvanced?.zimbraDataSourcePop3PollingIntervalRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraDataSourceImapPollingInterval',
+			_content: `${cosAdvanced?.zimbraDataSourceImapPollingInterval}${cosAdvanced?.zimbraDataSourceImapPollingIntervalRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraDataSourceCalendarPollingInterval',
+			_content: `${cosAdvanced?.zimbraDataSourceCalendarPollingInterval}${cosAdvanced?.zimbraDataSourceCalendarPollingIntervalRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraDataSourceRssPollingInterval',
+			_content: `${cosAdvanced?.zimbraDataSourceRssPollingInterval}${cosAdvanced?.zimbraDataSourceRssPollingIntervalRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraDataSourceCaldavPollingInterval',
+			_content: `${cosAdvanced?.zimbraDataSourceCaldavPollingInterval}${cosAdvanced?.zimbraDataSourceCaldavPollingIntervalRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraPasswordLocked',
+			_content: cosAdvanced?.zimbraPasswordLocked === true ? 'TRUE' : 'FALSE'
+		});
+		attributes.push({
+			n: 'zimbraPasswordMinLength',
+			_content: cosAdvanced?.zimbraPasswordMinLength
+		});
+		attributes.push({
+			n: 'zimbraPasswordMaxLength',
+			_content: cosAdvanced?.zimbraPasswordMaxLength
+		});
+		attributes.push({
+			n: 'zimbraPasswordMinUpperCaseChars',
+			_content: cosAdvanced?.zimbraPasswordMinUpperCaseChars
+		});
+		attributes.push({
+			n: 'zimbraPasswordMinLowerCaseChars',
+			_content: cosAdvanced?.zimbraPasswordMinLowerCaseChars
+		});
+		attributes.push({
+			n: 'zimbraPasswordMinPunctuationChars',
+			_content: cosAdvanced?.zimbraPasswordMinPunctuationChars
+		});
+		attributes.push({
+			n: 'zimbraPasswordMinNumericChars',
+			_content: cosAdvanced?.zimbraPasswordMinNumericChars
+		});
+		attributes.push({
+			n: 'zimbraPasswordMinDigitsOrPuncs',
+			_content: cosAdvanced?.zimbraPasswordMinDigitsOrPuncs
+		});
+		attributes.push({
+			n: 'zimbraPasswordMinAge',
+			_content: cosAdvanced?.zimbraPasswordMinAge
+		});
+		attributes.push({
+			n: 'zimbraPasswordEnforceHistory',
+			_content: cosAdvanced?.zimbraPasswordEnforceHistory
+		});
+		attributes.push({
+			n: 'zimbraPasswordMaxAge',
+			_content: cosAdvanced?.zimbraPasswordMaxAge
+		});
+		attributes.push({
+			n: 'zimbraPasswordBlockCommonEnabled',
+			_content: cosAdvanced?.zimbraPasswordBlockCommonEnabled === true ? 'TRUE' : 'FALSE'
+		});
+		attributes.push({
+			n: 'zimbraPasswordLockoutEnabled',
+			_content: cosAdvanced?.zimbraPasswordLockoutEnabled === true ? 'TRUE' : 'FALSE'
+		});
+		attributes.push({
+			n: 'zimbraPasswordLockoutMaxFailures',
+			_content: cosAdvanced?.zimbraPasswordLockoutMaxFailures
+		});
+		attributes.push({
+			n: 'zimbraPasswordLockoutDuration',
+			_content: `${cosAdvanced?.zimbraPasswordLockoutDuration}${cosAdvanced?.zimbraPasswordLockoutDurationRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraPasswordLockoutFailureLifetime',
+			_content: `${cosAdvanced?.zimbraPasswordLockoutFailureLifetime}${cosAdvanced?.zimbraPasswordLockoutFailureLifetimeRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraAdminAuthTokenLifetime',
+			_content: `${cosAdvanced?.zimbraAdminAuthTokenLifetime}${cosAdvanced?.zimbraAdminAuthTokenLifetimeRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraAuthTokenLifetime',
+			_content: `${cosAdvanced?.zimbraAuthTokenLifetime}${cosAdvanced?.zimbraAuthTokenLifetimeRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraMailIdleSessionTimeout',
+			_content: `${cosAdvanced?.zimbraMailIdleSessionTimeout}${cosAdvanced?.zimbraMailIdleSessionTimeoutRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraMailMessageLifetime',
+			_content: `${cosAdvanced?.zimbraMailMessageLifetime}d`
+		});
+		attributes.push({
+			n: 'zimbraMailTrashLifetime',
+			_content: `${cosAdvanced?.zimbraMailTrashLifetime}${cosAdvanced?.zimbraMailTrashLifetimeRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraMailSpamLifetime',
+			_content: `${cosAdvanced?.zimbraMailSpamLifetime}${cosAdvanced?.zimbraMailSpamLifetimeRangeTime?.value}`
+		});
+		attributes.push({
+			n: 'zimbraFreebusyExchangeUserOrg',
+			_content: cosAdvanced?.zimbraFreebusyExchangeUserOrg
+		});
+		proxyAllowedDomainList.forEach((item: any) => {
+			attributes.push({
+				n: 'zimbraProxyAllowedDomains',
+				_content: item?._content
+			});
+		});
+		body.a = attributes;
+		modifyCos(body)
+			.then((response) => response.json())
+			.then((data) => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				const cos: any = data?.Body?.ModifyCosResponse?.cos[0];
+				if (cos) {
+					setCos(cos);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: data?.Body?.Fault?.Reason?.Text,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+				setIsDirty(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -1183,7 +1385,9 @@ const CosAdvanced: FC = () => {
 									/>
 								)}
 							</Padding>
-							{isDirty && <Button label={t('label.save', 'Save')} color="primary" />}
+							{isDirty && (
+								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+							)}
 						</Row>
 					</Row>
 				</Container>
@@ -1634,6 +1838,7 @@ const CosAdvanced: FC = () => {
 								}}
 							/>
 						</Container>
+						{proxyAllowedDomainRows?.length > 0 && <Divider />}
 					</Row>
 				</Row>
 				{proxyAllowedDomainRows?.length === 0 && (
@@ -1952,6 +2157,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordLockoutMaxFailures"
 										onChange={changeValue}
+										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
 									/>
 								</Container>
 							</ListRow>
@@ -1972,6 +2178,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordLockoutDuration"
 										onChange={changeValue}
+										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
 									/>
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
@@ -1985,6 +2192,7 @@ const CosAdvanced: FC = () => {
 										onChange={(v: any) =>
 											onSelectionChange('zimbraPasswordLockoutDurationRangeTime', v)
 										}
+										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
 									/>
 								</Container>
 								<Container width="72%" padding={{ all: 'small' }}>
@@ -1997,6 +2205,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordLockoutFailureLifetime"
 										onChange={changeValue}
+										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
 									/>
 								</Container>
 								<Container width="28%" padding={{ all: 'small' }}>
@@ -2010,6 +2219,7 @@ const CosAdvanced: FC = () => {
 										onChange={(v: any) =>
 											onSelectionChange('zimbraPasswordLockoutFailureLifetimeRangeTime', v)
 										}
+										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
 									/>
 								</Container>
 							</ListRow>
