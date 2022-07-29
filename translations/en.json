@@ -251,7 +251,7 @@
         "proxy_allowed_domains": "Proxy Allowed Domains",
         "quota_warning_message_template": "Quota warning message template",
         "quotas": "Quotas",
-        "range_time": "Time",
+        "range_time": "Range Time",
         "receiving_mail": "Receiving mail",
         "reject_common_passwords": "Reject common passwords",
         "rss_polling_interval": "RSS polling interval",
