@@ -20,6 +20,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import _ from 'lodash';
 import ListRow from '../list/list-row';
 import { useCosStore } from '../../store/cos/store';
 import logo from '../../assets/gardian.svg';
@@ -772,6 +773,390 @@ const CosAdvanced: FC = () => {
 		setProxyAllowedDomainList(cosAdvanced.zimbraProxyAllowedDomains);
 		setIsDirty(false);
 	};
+
+	useEffect(() => {
+		if (
+			cosData.zimbraMailForwardingAddressMaxLength !== undefined &&
+			cosData.zimbraMailForwardingAddressMaxLength !==
+				cosAdvanced.zimbraMailForwardingAddressMaxLength
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraMailForwardingAddressMaxLength,
+		cosData.zimbraMailForwardingAddressMaxLength
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraMailForwardingAddressMaxNumAddrs !== undefined &&
+			cosData.zimbraMailForwardingAddressMaxNumAddrs !==
+				cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs,
+		cosData.zimbraMailForwardingAddressMaxNumAddrs
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraMailQuota !== undefined &&
+			cosData.zimbraMailQuota !==
+				(parseInt(cosAdvanced.zimbraMailQuota, 10) * 1024 * 1024).toString()
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraMailQuota, cosData.zimbraMailQuota]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraContactMaxNumEntries !== undefined &&
+			cosData.zimbraContactMaxNumEntries !== cosAdvanced.zimbraContactMaxNumEntries
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraContactMaxNumEntries, cosData.zimbraContactMaxNumEntries]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraQuotaWarnPercent !== undefined &&
+			cosData.zimbraQuotaWarnPercent !== cosAdvanced.zimbraQuotaWarnPercent
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraQuotaWarnPercent, cosData.zimbraQuotaWarnPercent]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraQuotaWarnInterval !== undefined &&
+			cosData.zimbraQuotaWarnInterval !==
+				`${cosAdvanced.zimbraQuotaWarnInterval}${cosAdvanced?.zimbraQuotaWarnIntervalRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraQuotaWarnInterval,
+		cosAdvanced?.zimbraQuotaWarnIntervalRangeTime?.value,
+		cosData.zimbraQuotaWarnInterval
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraQuotaWarnMessage !== undefined &&
+			cosData.zimbraQuotaWarnMessage !== cosAdvanced.zimbraQuotaWarnMessage
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraQuotaWarnMessage, cosData.zimbraQuotaWarnMessage]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraDataSourceMinPollingInterval !== undefined &&
+			cosData.zimbraDataSourceMinPollingInterval !==
+				`${cosAdvanced.zimbraDataSourceMinPollingInterval}${cosAdvanced?.zimbraDataSourceMinPollingIntervalRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraDataSourceMinPollingInterval,
+		cosAdvanced?.zimbraDataSourceMinPollingIntervalRangeTime?.value,
+		cosData.zimbraDataSourceMinPollingInterval
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraDataSourcePop3PollingInterval !== undefined &&
+			cosData.zimbraDataSourcePop3PollingInterval !==
+				`${cosAdvanced.zimbraDataSourcePop3PollingInterval}${cosAdvanced?.zimbraDataSourcePop3PollingIntervalRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraDataSourcePop3PollingInterval,
+		cosAdvanced?.zimbraDataSourcePop3PollingIntervalRangeTime?.value,
+		cosData.zimbraDataSourcePop3PollingInterval
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraDataSourceImapPollingInterval !== undefined &&
+			cosData.zimbraDataSourceImapPollingInterval !==
+				`${cosAdvanced.zimbraDataSourceImapPollingInterval}${cosAdvanced?.zimbraDataSourceImapPollingIntervalRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraDataSourceImapPollingInterval,
+		cosAdvanced?.zimbraDataSourceImapPollingIntervalRangeTime?.value,
+		cosData.zimbraDataSourceImapPollingInterval
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraDataSourceCalendarPollingInterval !== undefined &&
+			cosData.zimbraDataSourceCalendarPollingInterval !==
+				`${cosAdvanced.zimbraDataSourceCalendarPollingInterval}${cosAdvanced?.zimbraDataSourceCalendarPollingIntervalRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraDataSourceCalendarPollingInterval,
+		cosAdvanced?.zimbraDataSourceCalendarPollingIntervalRangeTime?.value,
+		cosData.zimbraDataSourceCalendarPollingInterval
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraDataSourceRssPollingInterval !== undefined &&
+			cosData.zimbraDataSourceRssPollingInterval !==
+				`${cosAdvanced.zimbraDataSourceRssPollingInterval}${cosAdvanced?.zimbraDataSourceRssPollingIntervalRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraDataSourceRssPollingInterval,
+		cosAdvanced?.zimbraDataSourceRssPollingIntervalRangeTime?.value,
+		cosData.zimbraDataSourceRssPollingInterval
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraDataSourceCaldavPollingInterval !== undefined &&
+			cosData.zimbraDataSourceCaldavPollingInterval !==
+				`${cosAdvanced.zimbraDataSourceCaldavPollingInterval}${cosAdvanced?.zimbraDataSourceCaldavPollingIntervalRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraDataSourceCaldavPollingInterval,
+		cosAdvanced?.zimbraDataSourceCaldavPollingIntervalRangeTime?.value,
+		cosData.zimbraDataSourceCaldavPollingInterval
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMinLength !== undefined &&
+			cosData.zimbraPasswordMinLength !== cosAdvanced.zimbraPasswordMinLength
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMinLength, cosData.zimbraPasswordMinLength]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMaxLength !== undefined &&
+			cosData.zimbraPasswordMaxLength !== cosAdvanced.zimbraPasswordMaxLength
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMaxLength, cosData.zimbraPasswordMaxLength]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMinUpperCaseChars !== undefined &&
+			cosData.zimbraPasswordMinUpperCaseChars !== cosAdvanced.zimbraPasswordMinUpperCaseChars
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMinUpperCaseChars, cosData.zimbraPasswordMinUpperCaseChars]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMinLowerCaseChars !== undefined &&
+			cosData.zimbraPasswordMinLowerCaseChars !== cosAdvanced.zimbraPasswordMinLowerCaseChars
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMinLowerCaseChars, cosData.zimbraPasswordMinLowerCaseChars]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMinPunctuationChars !== undefined &&
+			cosData.zimbraPasswordMinPunctuationChars !== cosAdvanced.zimbraPasswordMinPunctuationChars
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMinPunctuationChars, cosData.zimbraPasswordMinPunctuationChars]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMinNumericChars !== undefined &&
+			cosData.zimbraPasswordMinNumericChars !== cosAdvanced.zimbraPasswordMinNumericChars
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMinNumericChars, cosData.zimbraPasswordMinNumericChars]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMinDigitsOrPuncs !== undefined &&
+			cosData.zimbraPasswordMinDigitsOrPuncs !== cosAdvanced.zimbraPasswordMinDigitsOrPuncs
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMinDigitsOrPuncs, cosData.zimbraPasswordMinDigitsOrPuncs]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMinAge !== undefined &&
+			cosData.zimbraPasswordMinAge !== cosAdvanced.zimbraPasswordMinAge
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMinAge, cosData.zimbraPasswordMinAge]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordMaxAge !== undefined &&
+			cosData.zimbraPasswordMaxAge !== cosAdvanced.zimbraPasswordMaxAge
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordMaxAge, cosData.zimbraPasswordMaxAge]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordEnforceHistory !== undefined &&
+			cosData.zimbraPasswordEnforceHistory !== cosAdvanced.zimbraPasswordEnforceHistory
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordEnforceHistory, cosData.zimbraPasswordEnforceHistory]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordLockoutMaxFailures !== undefined &&
+			cosData.zimbraPasswordLockoutMaxFailures !== cosAdvanced.zimbraPasswordLockoutMaxFailures
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraPasswordLockoutMaxFailures, cosData.zimbraPasswordLockoutMaxFailures]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordLockoutDuration !== undefined &&
+			cosData.zimbraPasswordLockoutDuration !==
+				`${cosAdvanced.zimbraPasswordLockoutDuration}${cosAdvanced?.zimbraPasswordLockoutDurationRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraPasswordLockoutDuration,
+		cosAdvanced?.zimbraPasswordLockoutDurationRangeTime?.value,
+		cosData.zimbraPasswordLockoutDuration
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPasswordLockoutFailureLifetime !== undefined &&
+			cosData.zimbraPasswordLockoutFailureLifetime !==
+				`${cosAdvanced.zimbraPasswordLockoutFailureLifetime}${cosAdvanced?.zimbraPasswordLockoutFailureLifetimeRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraPasswordLockoutFailureLifetime,
+		cosAdvanced?.zimbraPasswordLockoutFailureLifetimeRangeTime?.value,
+		cosData.zimbraPasswordLockoutFailureLifetime
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraAdminAuthTokenLifetime !== undefined &&
+			cosData.zimbraAdminAuthTokenLifetime !==
+				`${cosAdvanced.zimbraAdminAuthTokenLifetime}${cosAdvanced?.zimbraAdminAuthTokenLifetimeRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraAdminAuthTokenLifetime,
+		cosAdvanced?.zimbraAdminAuthTokenLifetimeRangeTime?.value,
+		cosData.zimbraAdminAuthTokenLifetime
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraAuthTokenLifetime !== undefined &&
+			cosData.zimbraAuthTokenLifetime !==
+				`${cosAdvanced.zimbraAuthTokenLifetime}${cosAdvanced?.zimbraAuthTokenLifetimeRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraAuthTokenLifetime,
+		cosAdvanced?.zimbraAuthTokenLifetimeRangeTime?.value,
+		cosData.zimbraAuthTokenLifetime
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraMailIdleSessionTimeout !== undefined &&
+			cosData.zimbraMailIdleSessionTimeout !==
+				`${cosAdvanced.zimbraMailIdleSessionTimeout}${cosAdvanced?.zimbraMailIdleSessionTimeoutRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraMailIdleSessionTimeout,
+		cosAdvanced?.zimbraMailIdleSessionTimeoutRangeTime?.value,
+		cosData.zimbraMailIdleSessionTimeout
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraMailMessageLifetime !== undefined &&
+			cosData.zimbraMailMessageLifetime !== `${cosAdvanced.zimbraMailMessageLifetime}d`
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraMailMessageLifetime, cosData.zimbraMailMessageLifetime]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraMailTrashLifetime !== undefined &&
+			cosData.zimbraMailTrashLifetime !==
+				`${cosAdvanced.zimbraMailTrashLifetime}${cosAdvanced?.zimbraMailTrashLifetimeRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraMailTrashLifetime,
+		cosAdvanced?.zimbraMailTrashLifetimeRangeTime?.value,
+		cosData.zimbraMailTrashLifetime
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraMailSpamLifetime !== undefined &&
+			cosData.zimbraMailSpamLifetime !==
+				`${cosAdvanced.zimbraMailSpamLifetime}${cosAdvanced?.zimbraMailSpamLifetimeRangeTime?.value}`
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosAdvanced.zimbraMailSpamLifetime,
+		cosAdvanced?.zimbraMailSpamLifetimeRangeTime?.value,
+		cosData.zimbraMailSpamLifetime
+	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraFreebusyExchangeUserOrg !== undefined &&
+			cosData.zimbraFreebusyExchangeUserOrg !== cosAdvanced.zimbraFreebusyExchangeUserOrg
+		) {
+			setIsDirty(true);
+		}
+	}, [cosAdvanced.zimbraFreebusyExchangeUserOrg, cosData.zimbraFreebusyExchangeUserOrg]);
+
+	useEffect(() => {
+		if (!_.isEqual(cosAdvanced.zimbraProxyAllowedDomains, proxyAllowedDomainList)) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [cosAdvanced.zimbraProxyAllowedDomains, proxyAllowedDomainList]);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
