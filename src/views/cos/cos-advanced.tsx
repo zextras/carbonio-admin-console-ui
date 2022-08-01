@@ -183,7 +183,7 @@ const CosAdvanced: FC = () => {
 				setValue(
 					'zimbraMailQuota',
 					// eslint-disable-next-line no-unsafe-optional-chaining
-					obj?.zimbraMailQuota ? obj?.zimbraMailQuota / (1024 * 124) : ''
+					obj?.zimbraMailQuota ? obj?.zimbraMailQuota / (1024 * 1024) : ''
 				);
 				setValue(
 					'zimbraContactMaxNumEntries',
