@@ -305,11 +305,7 @@ const CosFeatures: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.main_features', 'Main Features')}
 					</Text>
-					<Row
-						width="100%"
-						mainAlignment="flex-start"
-						padding={{ top: 'large', left: 'large', bottom: 'large' }}
-					>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Row width="20%" mainAlignment="flex-start">
 							<Switch
 								value={cosFeatures.zimbraFeatureMailEnabled}
@@ -339,11 +335,7 @@ const CosFeatures: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.general_features', 'General Features')}
 					</Text>
-					<Row
-						width="100%"
-						mainAlignment="flex-start"
-						padding={{ top: 'large', left: 'large', bottom: 'large' }}
-					>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Row width="20%" mainAlignment="flex-start">
 							<Switch
 								value={cosFeatures.zimbraFeatureTaggingEnabled}
@@ -377,11 +369,7 @@ const CosFeatures: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.mail_features', 'Mail Features')}
 					</Text>
-					<Row
-						width="100%"
-						mainAlignment="flex-start"
-						padding={{ top: 'large', left: 'large', bottom: 'large' }}
-					>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Row width="20%" mainAlignment="flex-start">
 							<Switch
 								value={cosFeatures.zimbraFeatureMailPriorityEnabled}
@@ -415,11 +403,7 @@ const CosFeatures: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.contact_features', 'Contact Features')}
 					</Text>
-					<Row
-						width="100%"
-						mainAlignment="flex-start"
-						padding={{ top: 'large', left: 'large', bottom: 'large' }}
-					>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Row width="40%" mainAlignment="flex-start">
 							<Switch
 								value={cosFeatures.zimbraFeatureDistributionListFolderEnabled}
@@ -435,11 +419,7 @@ const CosFeatures: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.calender_features', 'Calendar Features')}
 					</Text>
-					<Row
-						width="100%"
-						mainAlignment="flex-start"
-						padding={{ top: 'large', left: 'large', bottom: 'large' }}
-					>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Row width="20%" mainAlignment="flex-start">
 							<Switch
 								value={cosFeatures.zimbraFeatureGroupCalendarEnabled}
@@ -466,11 +446,7 @@ const CosFeatures: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.search_features', 'Search Features')}
 					</Text>
-					<Row
-						width="100%"
-						mainAlignment="flex-start"
-						padding={{ top: 'large', left: 'large', bottom: 'large' }}
-					>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Row width="20%" mainAlignment="flex-start">
 							<Switch
 								value={cosFeatures.zimbraFeatureAdvancedSearchEnabled}
@@ -509,11 +485,7 @@ const CosFeatures: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.s_mime_features', 'S/MIME Features')}
 					</Text>
-					<Row
-						width="100%"
-						mainAlignment="flex-start"
-						padding={{ top: 'large', left: 'large', bottom: 'large' }}
-					>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Row width="20%" mainAlignment="flex-start">
 							<Switch
 								value={cosFeatures.zimbraFeatureSMIMEEnabled}
