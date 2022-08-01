@@ -1410,11 +1410,7 @@ const CosAdvanced: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.general_options', 'General Options')}
 					</Text>
-					<Row
-						width="100%"
-						mainAlignment="flex-start"
-						padding={{ top: 'large', left: 'large', bottom: 'large' }}
-					>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Switch
 							value={cosAdvanced.zimbraAttachmentsBlocked}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -1441,10 +1437,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t(
 											'cos.user_specific_fowarding_addresses',
@@ -1456,7 +1452,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t(
 											'cos.maximum_number_of_user_specific_forwarding_addresses',
@@ -1476,10 +1472,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.account_quota', 'Account quota')}
 										value={cosAdvanced.zimbraMailQuota}
@@ -1488,7 +1484,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t(
 											'cos.maximum_number_of_contacts_allowed_in_folder',
@@ -1508,10 +1504,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container width="100%" padding={{ all: 'small' }}>
+								<Container width="100%" padding={{ right: 'small' }}>
 									<Input
 										label={t(
 											'cos.percentage_threshold_for_quota_warning',
@@ -1523,7 +1519,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t(
 											'cos.minimum_duration_of_time_between_quota_warnings',
@@ -1535,7 +1531,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="26%" padding={{ all: 'small' }}>
+								<Container width="26%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -1554,10 +1550,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small', bottom: 'small' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container>
 									<Input
 										label={t(
 											'cos.quota_warning_message_template',
@@ -1588,10 +1584,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t(
 											'cos.shortest_allowed_duration_for_any_polling_interval',
@@ -1603,7 +1599,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -1616,7 +1612,7 @@ const CosAdvanced: FC = () => {
 										}
 									/>
 								</Container>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.pop3_polling_interval', 'POP3 polling interval')}
 										value={cosAdvanced.zimbraDataSourcePop3PollingInterval}
@@ -1625,7 +1621,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -1646,10 +1642,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.imap_polling_interval', 'IMAP polling interval')}
 										value={cosAdvanced.zimbraDataSourceImapPollingInterval}
@@ -1658,7 +1654,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -1671,7 +1667,7 @@ const CosAdvanced: FC = () => {
 										}
 									/>
 								</Container>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.calendar_polling_interval', 'Calendar polling interval')}
 										value={cosAdvanced.zimbraDataSourceCalendarPollingInterval}
@@ -1680,7 +1676,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -1701,10 +1697,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small', bottom: 'small' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.rss_polling_interval', 'RSS polling interval')}
 										value={cosAdvanced.zimbraDataSourceRssPollingInterval}
@@ -1713,7 +1709,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -1726,7 +1722,7 @@ const CosAdvanced: FC = () => {
 										}
 									/>
 								</Container>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.caldav_polling_interval', 'CalDAV polling interval')}
 										value={cosAdvanced.zimbraDataSourceCaldavPollingInterval}
@@ -1735,7 +1731,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -1767,10 +1763,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.new_proxy_allowed_domain', 'New Proxy Allowed Domain')}
 										value={newProxyAllowedDomain}
@@ -1781,7 +1777,11 @@ const CosAdvanced: FC = () => {
 										}}
 									/>
 								</Container>
-								<Container crossAlignment="flex-end" width="17%" padding={{ all: 'small' }}>
+								<Container
+									crossAlignment="flex-end"
+									width="17%"
+									padding={{ left: 'small', right: 'small' }}
+								>
 									<Button
 										type="outlined"
 										label={t('label.add', 'Add')}
@@ -1793,7 +1793,7 @@ const CosAdvanced: FC = () => {
 										onClick={addProxyAllowedDomain}
 									/>
 								</Container>
-								<Container crossAlignment="flex-end" width="17%" padding={{ all: 'small' }}>
+								<Container crossAlignment="flex-end" width="17%" padding={{ left: 'small' }}>
 									<Button
 										type="outlined"
 										label={t('label.delete', 'Delete')}
@@ -1820,7 +1820,7 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'large', right: 'large', bottom: 'small' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<Table
 								rows={proxyAllowedDomainRows}
@@ -1904,7 +1904,7 @@ const CosAdvanced: FC = () => {
 						takeAvwidth="fill"
 						mainAlignment="flex-start"
 						width="100%"
-						padding={{ top: 'small', left: 'small', right: 'small' }}
+						padding={{ top: 'large' }}
 					>
 						<Container
 							orientation="horizontal"
@@ -1913,9 +1913,10 @@ const CosAdvanced: FC = () => {
 							mainAlignment="space-between"
 							background="#D3EBF8"
 							padding={{
-								all: 'large'
+								top: 'large',
+								bottom: 'large'
 							}}
-							style={{ margin: '8px', borderRadius: '2px 2px 0px 0px' }}
+							style={{ borderRadius: '2px 2px 0px 0px' }}
 						>
 							<Row takeAvwidth="fill" mainAlignment="flex-start">
 								<Padding horizontal="small">
@@ -1927,7 +1928,8 @@ const CosAdvanced: FC = () => {
 								mainAlignment="flex-start"
 								width="100%"
 								padding={{
-									all: 'small'
+									top: 'small',
+									bottom: 'small'
 								}}
 							>
 								<Text overflow="break-word">
@@ -1944,10 +1946,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container crossAlignment="flex-start">
 									<Switch
 										value={cosAdvanced.zimbraPasswordLocked}
 										label={t(
@@ -1966,10 +1968,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.minimum_password_length', 'Minimum password length')}
 										value={cosAdvanced.zimbraPasswordMinLength}
@@ -1978,7 +1980,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.maximum_password_length', 'Maximum password length')}
 										value={cosAdvanced.zimbraPasswordMaxLength}
@@ -1987,7 +1989,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.minimum_upper_case_characters', 'Minimum upper case characters')}
 										value={cosAdvanced.zimbraPasswordMinUpperCaseChars}
@@ -1996,7 +1998,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t('cos.minimum_lower_case_characters', 'Minimum lower case characters')}
 										value={cosAdvanced.zimbraPasswordMinLowerCaseChars}
@@ -2013,10 +2015,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
 										value={cosAdvanced.zimbraPasswordMinPunctuationChars}
@@ -2025,7 +2027,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
 										value={cosAdvanced.zimbraPasswordMinNumericChars}
@@ -2034,7 +2036,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
 										value={cosAdvanced.zimbraPasswordMinAge}
@@ -2043,7 +2045,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
 										value={cosAdvanced.zimbraPasswordMaxAge}
@@ -2060,10 +2062,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small', top: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t(
 											'cos.minimum_numeric_characters_or_punctuation_symbols',
@@ -2075,7 +2077,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t(
 											'cos.minimum_number_of_unique_password_history',
@@ -2095,10 +2097,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ bottom: 'small', left: 'small', right: 'small' }}
+							padding={{ bottom: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
 									<Switch
 										value={cosAdvanced.zimbraPasswordBlockCommonEnabled}
 										label={t('cos.reject_common_passwords', 'Reject common passwords')}
@@ -2125,10 +2127,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container crossAlignment="flex-start">
 									<Switch
 										value={cosAdvanced.zimbraPasswordLockoutEnabled}
 										label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
@@ -2144,10 +2146,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container crossAlignment="flex-start">
 									<Input
 										label={t(
 											'cos.number_of_consecutive_failed_login_allowed',
@@ -2168,10 +2170,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small', bottom: 'small' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
 										value={cosAdvanced.zimbraPasswordLockoutDuration}
@@ -2181,7 +2183,7 @@ const CosAdvanced: FC = () => {
 										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -2195,7 +2197,7 @@ const CosAdvanced: FC = () => {
 										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
 									/>
 								</Container>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t(
 											'cos.time_window_failed_logins_must_occur_to_lock_account',
@@ -2208,7 +2210,7 @@ const CosAdvanced: FC = () => {
 										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -2241,10 +2243,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Input
 										label={t(
 											'cos.admin_console_auth_token_lifetime',
@@ -2256,7 +2258,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ all: 'small' }}>
+								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -2277,10 +2279,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.auth_token_lifetime', 'Auth token lifetime')}
 										value={cosAdvanced.zimbraAuthTokenLifetime}
@@ -2289,7 +2291,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ all: 'small' }}>
+								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -2308,10 +2310,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small', bottom: 'small' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container width="100%" crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.session_idle_timeout', 'Session idle timeout')}
 										value={cosAdvanced.zimbraMailIdleSessionTimeout}
@@ -2320,7 +2322,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="17%" crossAlignment="flex-end" padding={{ all: 'small' }}>
+								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -2352,10 +2354,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small' }}
+							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container crossAlignment="flex-start">
 									<Input
 										label={t('cos.email_message_lifetime', 'E-mail message lifetime')}
 										value={cosAdvanced.zimbraMailMessageLifetime}
@@ -2372,10 +2374,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small', bottom: 'small' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.trashed_message_lifetime', 'Trashed message lifetime')}
 										value={cosAdvanced.zimbraMailTrashLifetime}
@@ -2384,7 +2386,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -2395,7 +2397,7 @@ const CosAdvanced: FC = () => {
 										onChange={(v: any) => onSelectionChange('zimbraMailTrashLifetimeRangeTime', v)}
 									/>
 								</Container>
-								<Container width="72%" padding={{ all: 'small' }}>
+								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.spam_message_lifetime', 'Spam message lifetime')}
 										value={cosAdvanced.zimbraMailSpamLifetime}
@@ -2404,7 +2406,7 @@ const CosAdvanced: FC = () => {
 										onChange={changeValue}
 									/>
 								</Container>
-								<Container width="28%" padding={{ all: 'small' }}>
+								<Container width="28%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
 										background="gray5"
@@ -2434,10 +2436,10 @@ const CosAdvanced: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'small', left: 'small', right: 'small', bottom: 'small' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+								<Container crossAlignment="flex-start">
 									<Input
 										label={t(
 											'cos.legacy_exchange_dn_attribute',
