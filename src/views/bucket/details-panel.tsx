@@ -166,6 +166,7 @@ const DetailsPanel: FC<{
 
 	const [bucketType, setBucketType] = useState();
 	const [regionData, setRegionData] = useState();
+	const [toggleBtn, setToggleBtn] = useState(false);
 	const [verify, setVerify] = useState('primary');
 
 	const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
@@ -187,6 +188,7 @@ const DetailsPanel: FC<{
 				setVerify('success');
 				setButtonLabel(t('label.verify_connector_verified', ' VERIFIED'));
 				setButtonIcon('ActivityOutline');
+				setToggleBtn(true);
 			} else {
 				setVerify('error');
 				setButtonLabel(t('label.verify_connector_fail', ' VERIFICATION FAILED'));
@@ -198,6 +200,7 @@ const DetailsPanel: FC<{
 						name: response.response[server].error
 					})
 				});
+				setToggleBtn(false);
 			}
 		});
 	}, [bucketDetail.uuid, createSnackbar, server, t]);
@@ -206,7 +209,8 @@ const DetailsPanel: FC<{
 		setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
 		setButtonIcon('ActivityOutline');
 		setVerify('primary');
-	}, [bucketDetail.uuid, t]);
+		setToggleBtn(false);
+	}, [bucketDetail.uuid, t, bucketDetail]);
 
 	useEffect(() => {
 		const volumeObject: any = find(
@@ -312,6 +316,7 @@ const DetailsPanel: FC<{
 						size="fill"
 						color={verify}
 						onClick={verifyConnector}
+						disabled={toggleBtn}
 					/>
 				</Row>
 
@@ -322,6 +327,3 @@ const DetailsPanel: FC<{
 };
 
 export default DetailsPanel;
-function setDetailsBucket(arg0: boolean): any {
-	throw new Error('Function not implemented.');
-}

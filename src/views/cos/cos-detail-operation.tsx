@@ -5,10 +5,11 @@
  */
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { GENERAL_INFORMATION, FEATURES, PREFERENCES } from '../../constants';
+import { GENERAL_INFORMATION, FEATURES, PREFERENCES, ADVANCED } from '../../constants';
 import { getCosGeneralInformation } from '../../services/cos-general-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useCosStore } from '../../store/cos/store';
+import CosAdvanced from './cos-advanced';
 import CosFeatures from './cos-features';
 import CosGeneralInformation from './cos-general-information';
 import CosPreference from './cos-preferences';
@@ -81,6 +82,8 @@ const CosDetailOperation: FC = () => {
 						return <CosFeatures />;
 					case PREFERENCES:
 						return <CosPreference />;
+					case ADVANCED:
+						return <CosAdvanced />;
 					default:
 						return null;
 				}

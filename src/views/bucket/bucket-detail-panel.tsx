@@ -77,7 +77,7 @@ const BucketListTable: FC<{
 						onClick={(): any => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start', textTransform: 'capitalize' }}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
 						{v.bucketName}
 					</Row>,
@@ -89,7 +89,7 @@ const BucketListTable: FC<{
 						onClick={(): any => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'center', textTransform: 'capitalize' }}
+						style={{ textAlign: 'center' }}
 					>
 						{v.storeType}
 					</Row>
@@ -131,6 +131,8 @@ const BucketDetailPanel: FC = () => {
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
 	const [showEditDetailView, setShowEditDetailView] = useState(false);
+	const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
+	const [selectedRow, setSelectedRow] = useState<any>();
 
 	const closeHandler = (): any => {
 		setOpen(false);
@@ -202,11 +204,21 @@ const BucketDetailPanel: FC = () => {
 		t
 	]);
 	const handleDoubleClick = (i: any): any => {
+		setSelectedRow(i);
 		const volumeObject: any = bucketList.find((s, index) => index === i);
 		setConnectionData(volumeObject);
 		setDetailsBucket(true);
 		setShowDetails(true);
 	};
+
+	useEffect(() => {
+		if (selectedRow !== undefined) {
+			const getIndex = bucketList.findIndex((data: any) => data.uuid === selectedRow.uuid);
+			const volumeObject: any = bucketList.find((s, index) => index === getIndex);
+			setConnectionData(volumeObject);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [bucketList, toggleForGetAPICall]);
 
 	useEffect(() => {
 		getBucketListType();
@@ -243,6 +255,10 @@ const BucketDetailPanel: FC = () => {
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
 						bucketDetail={connectionData}
+						getBucketListType={getBucketListType}
+						setSelectedRow={setSelectedRow}
+						setToggleForGetAPICall={setToggleForGetAPICall}
+						toggleForGetAPICall={toggleForGetAPICall}
 					/>
 				</AbsoluteContainer>
 			)}
