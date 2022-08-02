@@ -26,6 +26,7 @@ import { accountListDirectory } from '../../../../services/account-list-director
 import { createAccountRequest } from '../../../../services/create-account';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
+import { getSingatures } from '../../../../services/get-signature-service';
 import AccountDetailView from './account-detail-view';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
@@ -85,6 +86,29 @@ const ManageAccounts: FC = () => {
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
+
+	const [signatureList, setSignatureList] = useState<any[]>([]);
+	const [signatureItems, setSignatureItems] = useState<any[]>([]);
+	const [signatureData, setSignatureData]: any = useState([]);
+
+	const generateSignatureList = (signatureResponse: any): void => {
+		if (signatureResponse && Array.isArray(signatureResponse)) {
+			setSignatureList(signatureResponse);
+		}
+	};
+	const getSignatureDetail = useCallback((id): void => {
+		getSingatures(id)
+			.then((response) => response.json())
+			.then((data) => {
+				const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
+				generateSignatureList(signatureResponse);
+				setSignatureData(signatureResponse);
+			});
+	}, []);
+
+	// useEffect(() => {
+	// 	getSignatureDetail();
+	// }, [getSignatureDetail]);
 
 	const STATUS_COLOR: any = useMemo(
 		() => ({
@@ -177,9 +201,10 @@ const ManageAccounts: FC = () => {
 			setSelectedAccount(acc);
 			setShowAccountDetailView(true);
 			getAccountDetail(acc?.id);
+			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
 		},
-		[getAccountDetail, getAccountMembership]
+		[getAccountDetail, getAccountMembership, getSignatureDetail]
 	);
 	const getAccountList = useCallback((): void => {
 		const type = 'accounts';
@@ -493,7 +518,9 @@ const ManageAccounts: FC = () => {
 					setDirectMemberList,
 					setInDirectMemberList,
 					initAccountDetail,
-					setInitAccountDetail
+					setInitAccountDetail,
+					setSignatureItems,
+					setSignatureList
 				}}
 			>
 				{showAccountDetailView && (

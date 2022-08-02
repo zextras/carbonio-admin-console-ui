@@ -151,7 +151,20 @@ const EditBucketDetailPanel: FC<{
 	setShowEditDetailView: any;
 	title: string;
 	bucketDetail: any;
-}> = ({ setShowEditDetailView, title, bucketDetail }) => {
+	getBucketListType: any;
+	setSelectedRow: any;
+	setToggleForGetAPICall: any;
+	toggleForGetAPICall: any;
+}> = ({
+	setShowEditDetailView,
+	title,
+	bucketDetail,
+	getBucketListType,
+	setSelectedRow,
+	setToggleForGetAPICall,
+	toggleForGetAPICall
+}) => {
+	setSelectedRow(bucketDetail);
 	const [t] = useTranslation();
 	const [bucketName, setBucketName] = useState(bucketDetail.bucketName);
 	const [bucketType, setBucketType] = useState<any>();
@@ -163,6 +176,7 @@ const EditBucketDetailPanel: FC<{
 	const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [previousDetail, setPreviousDetail] = useState<any>({});
+	const [toggleBtn, setToggleBtn] = useState(false);
 	const createSnackbar = useSnackbar();
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 
@@ -179,6 +193,7 @@ const EditBucketDetailPanel: FC<{
 				setVerify('success');
 				setButtonLabel(t('label.verify_connector_verified', ' VERIFIED'));
 				setButtonIcon('ActivityOutline');
+				setToggleBtn(true);
 			} else {
 				setVerify('error');
 				setButtonLabel(t('label.verify_connector_fail', ' VERIFICATION FAILED'));
@@ -190,6 +205,7 @@ const EditBucketDetailPanel: FC<{
 						name: response.response[server].error
 					})
 				});
+				setToggleBtn(false);
 			}
 		});
 	}, [bucketDetail.uuid, createSnackbar, server, t]);
@@ -198,7 +214,8 @@ const EditBucketDetailPanel: FC<{
 		setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
 		setButtonIcon('ActivityOutline');
 		setVerify('primary');
-	}, [bucketDetail.uuid, t]);
+		setToggleBtn(false);
+	}, [bucketDetail.uuid, t, bucketDetail]);
 
 	const updatePreviousDetail = (): void => {
 		const latestData: any = {};
@@ -225,6 +242,12 @@ const EditBucketDetailPanel: FC<{
 		}).then((res: any) => {
 			const updateResData = JSON.parse(res.response.content);
 			if (updateResData.ok) {
+				getBucketListType();
+				setToggleForGetAPICall(!toggleForGetAPICall);
+				setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
+				setButtonIcon('ActivityOutline');
+				setVerify('primary');
+				setToggleBtn(false);
 				createSnackbar({
 					key: 'success',
 					type: 'success',
@@ -247,6 +270,7 @@ const EditBucketDetailPanel: FC<{
 					hideButton: true,
 					replace: true
 				});
+				setToggleBtn(false);
 			}
 		});
 	};
@@ -289,16 +313,12 @@ const EditBucketDetailPanel: FC<{
 		)?.value;
 		if (bucketType !== undefined && bucketTypeValue !== bucketType?.value) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail.storeType, bucketType]);
 
 	useEffect(() => {
 		if (bucketName !== undefined && bucketDetail?.bucketName !== bucketName) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail?.bucketName, bucketName]);
 
@@ -306,24 +326,18 @@ const EditBucketDetailPanel: FC<{
 		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region)?.value;
 		if (regionData.value !== undefined && regionValue !== regionData?.value) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail?.region, regionData]);
 
 	useEffect(() => {
 		if (accessKeyData !== undefined && bucketDetail?.accessKey !== accessKeyData) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail?.accessKey, accessKeyData]);
 
 	useEffect(() => {
 		if (secretKey !== undefined && bucketDetail?.secret !== secretKey) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail?.secret, secretKey]);
 
@@ -404,7 +418,7 @@ const EditBucketDetailPanel: FC<{
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Row width="48%" mainAlignment="flex-start">
-						<PasswordInput
+						<Input
 							label={t('label.access_key', 'Access Key')}
 							value={accessKeyData}
 							onChange={(e: any): void => {
@@ -432,6 +446,7 @@ const EditBucketDetailPanel: FC<{
 						size="fill"
 						color={verify}
 						onClick={verifyConnector}
+						disabled={toggleBtn}
 					/>
 				</Row>
 

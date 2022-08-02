@@ -248,51 +248,197 @@ const EditAccountConfigrationSection: FC = () => {
 						{t('label.features', 'Features')}
 					</Text>
 				</Row>
-				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="32%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraFeatureSharingEnabled === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraFeatureSharingEnabled')}
-							label={t('account_details.sharing', 'Sharing')}
-						/>
-					</Row>
-					<Row width="32%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraPrefImapEnabled === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraPrefImapEnabled')}
-							label={t('account_details.iamp_access', 'IMAP Access')}
-						/>
-					</Row>
-					<Row width="32%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraPrefPop3Enabled === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraPrefPop3Enabled')}
-							label={t('account_details.pop3_access', 'POP3 Access')}
-						/>
-					</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.main', 'Main')}
+					</Text>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="32%" mainAlignment="flex-start">
 						<Switch
-							value={accountDetail?.zimbraFeatureGalEnabled === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraFeatureGalEnabled')}
-							label={t('account_details.global_address_list_access', 'Global Address List Access')}
+							value={accountDetail?.zimbraFeatureMailEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureMailEnabled')}
+							label={t('account_details.mail', 'Mail')}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="flex-start">
 						<Switch
-							value={accountDetail?.zimbraFeatureNewMailNotificationEnabled === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraFeatureNewMailNotificationEnabled')}
-							label={t('account_details.new_mail_notification', 'New Mail Notification')}
+							value={accountDetail?.zimbraFeatureCalendarEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureCalendarEnabled')}
+							label={t('account_details.calendar', 'Calendar')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureContactsEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureContactsEnabled')}
+							label={t('account_details.contact', 'Contact')}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('account_details.general', 'General')}
+					</Text>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureTaggingEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureTaggingEnabled')}
+							label={t('account_details.tagging', 'Tagging')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureHtmlComposeEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureHtmlComposeEnabled')}
+							label={t('account_details.html_compose', 'HTML Compose')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureWebClientOfflineAccessEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureWebClientOfflineAccessEnabled')}
+							label={t(
+								'account_details.offline_support_for_advanced_ajax_client',
+								'Offline support for Advanced (Ajax) client'
+							)}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.mail', 'Mail')}
+					</Text>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureMailPriorityEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureMailPriorityEnabled')}
+							label={t('account_details.message_priority', 'Message Priority')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeaturePop3DataSourceEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeaturePop3DataSourceEnabled')}
+							label={t('account_details.external_pop_access', 'External POP Access')}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="flex-start">
 						<Switch
 							value={accountDetail?.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
-							label={t('account_details.out_of_office_reply', 'Out of Office Reply')}
+							label={t('account_details.out_of_the_office_reply', 'Out of the Office Reply')}
 						/>
 					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraPrefMailSignatureEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraPrefMailSignatureEnabled')}
+							label={t('account_details.mail_signatures', 'Mail Signatures')}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.contact', 'Contact')}
+					</Text>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureDistributionListFolderEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureDistributionListFolderEnabled')}
+							label={t('account_details.distribution_list_folder', 'Distribution List Folder')}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.calendar', 'Calendar')}
+					</Text>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureGroupCalendarEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureGroupCalendarEnabled')}
+							label={t('account_details.group_calendar', 'Group Calendar')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureCalendarReminderDeviceEmailEnabled === 'TRUE'}
+							onClick={(): void =>
+								changeSwitchOption('zimbraFeatureCalendarReminderDeviceEmailEnabled')
+							}
+							label={t('account_details.sms_reminder', 'SMS Reminder')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start"></Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.search', 'Search')}
+					</Text>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureAdvancedSearchEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureAdvancedSearchEnabled')}
+							label={t('account_details.advanced_search', 'Advanced Search')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureSavedSearchesEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureSavedSearchesEnabled')}
+							label={t('account_details.saved_searches', 'Saved Searches')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureInitialSearchPreferenceEnabled === 'TRUE'}
+							onClick={(): void =>
+								changeSwitchOption('zimbraFeatureInitialSearchPreferenceEnabled')
+							}
+							label={t('account_details.initial_search_preference', 'Initial Search Preference')}
+						/>
+					</Row>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeaturePeopleSearchEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeaturePeopleSearchEnabled')}
+							label={t('account_details.search_fro_people', 'Search fro People')}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.smime', 'S/MIME')}
+					</Text>
 				</Row>
 				<Row
 					width="100%"
@@ -301,9 +447,9 @@ const EditAccountConfigrationSection: FC = () => {
 				>
 					<Row width="32%" mainAlignment="flex-start">
 						<Switch
-							value={accountDetail?.zimbraPrefGalAutoCompleteEnabled === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraPrefGalAutoCompleteEnabled')}
-							label={t('account_details.autocomplete_from_GAL', 'Autocomplete from GAL')}
+							value={accountDetail?.zimbraFeatureSMIMEEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureSMIMEEnabled')}
+							label={t('account_details.enable_smime', 'Enable S/MIME')}
 						/>
 					</Row>
 				</Row>

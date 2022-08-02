@@ -17,6 +17,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next';
 import ListRow from '../../../list/list-row';
 import logo from '../../../../assets/gardian.svg';
+import { isValidEmail } from '../../../utility/utils';
 
 export const SendInviteAccounts: FC<any> = ({
 	isEditable,
@@ -137,7 +138,11 @@ export const SendInviteAccounts: FC<any> = ({
 							value={newSentInviteValue}
 							onChange={(e: any): any => {
 								setNewSentInviteValue(e.target.value);
-								setSendInviteAddBtnDisabled(false);
+								if (isValidEmail(e.target.value)) {
+									setSendInviteAddBtnDisabled(false);
+								} else {
+									setSendInviteAddBtnDisabled(true);
+								}
 							}}
 						/>
 
