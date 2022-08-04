@@ -28,6 +28,7 @@ import {
 	timeZoneList
 } from '../utility/utils';
 import { useCosStore } from '../../store/cos/store';
+import { modifyCos } from '../../services/modify-cos-service';
 
 const CosPreferences: FC = () => {
 	const [t] = useTranslation();
@@ -117,10 +118,10 @@ const CosPreferences: FC = () => {
 
 	const DEFAULT_APPOINTMENT_DURATION = useMemo(
 		() => [
-			{ label: `30 ${t('label.minutes', 'minutes')}`, value: '1800' },
-			{ label: `60 ${t('label.minutes', 'minutes')}`, value: '3600' },
-			{ label: `90 ${t('label.minutes', 'minutes')}`, value: '5400' },
-			{ label: `120 ${t('label.minutes', 'minutes')}`, value: '7200' }
+			{ label: `30 ${t('label.minutes', 'minutes')}`, value: '30m' },
+			{ label: `60 ${t('label.minutes', 'minutes')}`, value: '60m' },
+			{ label: `90 ${t('label.minutes', 'minutes')}`, value: '90m' },
+			{ label: `120 ${t('label.minutes', 'minutes')}`, value: '120m' }
 		],
 		[t]
 	);
@@ -141,16 +142,16 @@ const CosPreferences: FC = () => {
 				value: '',
 				disabled: true
 			},
-			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '120s' },
-			{ label: `3 ${t('label.minutes', 'minutes')}`, value: '180s' },
-			{ label: `4 ${t('label.minutes', 'minutes')}`, value: '240s' },
-			{ label: `5 ${t('label.minutes', 'minutes')}`, value: '300s' },
-			{ label: `6 ${t('label.minutes', 'minutes')}`, value: '360s' },
-			{ label: `7 ${t('label.minutes', 'minutes')}`, value: '420s' },
-			{ label: `8 ${t('label.minutes', 'minutes')}`, value: '480s' },
-			{ label: `9 ${t('label.minutes', 'minutes')}`, value: '540s' },
-			{ label: `10 ${t('label.minutes', 'minutes')}`, value: '600s' },
-			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '900s' },
+			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
+			{ label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
+			{ label: `4 ${t('label.minutes', 'minutes')}`, value: '4m' },
+			{ label: `5 ${t('label.minutes', 'minutes')}`, value: '5m' },
+			{ label: `6 ${t('label.minutes', 'minutes')}`, value: '6m' },
+			{ label: `7 ${t('label.minutes', 'minutes')}`, value: '7m' },
+			{ label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
+			{ label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
+			{ label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
+			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
 			{
 				label: t('cos.manuallly', 'Manually'),
 				value: '31536000s'
@@ -318,13 +319,14 @@ const CosPreferences: FC = () => {
 				setValue(
 					'zimbraPrefGroupMailBy',
 					obj?.zimbraPrefGroupMailBy
-						? GROUP_BY.find((item: any) => item.value === obj?.zimbraPrefGroupMailBy)
+						? GROUP_BY.find((item: any) => item.value === obj?.zimbraPrefGroupMailBy) || {}
 						: {}
 				);
 				setValue(
 					'zimbraPrefMailDefaultCharset',
 					obj?.zimbraPrefMailDefaultCharset
-						? CHARACTOR_SET.find((item: any) => item.value === obj?.zimbraPrefMailDefaultCharset)
+						? CHARACTOR_SET.find((item: any) => item.value === obj?.zimbraPrefMailDefaultCharset) ||
+								{}
 						: {}
 				);
 				setValue(
@@ -342,7 +344,7 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefMailPollingInterval
 						? POLLING_INTERVAL.find(
 								(item: any) => item.value === obj?.zimbraPrefMailPollingInterval
-						  )
+						  ) || {}
 						: {}
 				);
 				setValue(
@@ -360,7 +362,7 @@ const CosPreferences: FC = () => {
 					obj?.zimbraMailMinPollingInterval
 						? TIME_TYPES.find(
 								(item: any) => item.value === obj?.zimbraMailMinPollingInterval?.slice(-1)
-						  )
+						  ) || {}
 						: {}
 				);
 				setValue(
@@ -368,7 +370,7 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefMailSendReadReceipts
 						? SEND_READ_RECEIPTS.find(
 								(item: any) => item.value === obj?.zimbraPrefMailSendReadReceipts
-						  )
+						  ) || {}
 						: {}
 				);
 				setValue(
@@ -392,21 +394,21 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefCalendarFirstDayOfWeek
 						? FIRST_DAY_OF_WEEK.find(
 								(item: any) => item.value === obj?.zimbraPrefCalendarFirstDayOfWeek
-						  )
+						  ) || {}
 						: {}
 				);
 				setValue(
 					'zimbraPrefTimeZoneId',
 					obj?.zimbraPrefTimeZoneId
 						? timezones.find((item: any) => item.value === obj?.zimbraPrefTimeZoneId)
-						: {}
+						: {} || {}
 				);
 				setValue(
 					'zimbraPrefCalendarInitialView',
 					obj?.zimbraPrefCalendarInitialView
 						? DefaultViewOptions.find(
 								(item: any) => item.value === obj?.zimbraPrefCalendarInitialView
-						  )
+						  ) || {}
 						: {}
 				);
 				setValue(
@@ -414,7 +416,7 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefCalendarApptVisibility
 						? APPOINTMENT_VISIBILITY.find(
 								(item: any) => item.value === obj?.zimbraPrefCalendarApptVisibility
-						  )
+						  ) || {}
 						: {}
 				);
 				setValue(
@@ -422,7 +424,7 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefCalendarDefaultApptDuration
 						? DEFAULT_APPOINTMENT_DURATION.find(
 								(item: any) => item.value === obj?.zimbraPrefCalendarDefaultApptDuration
-						  )
+						  ) || {}
 						: {}
 				);
 				setValue(
@@ -430,7 +432,7 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefCalendarApptReminderWarningTime
 						? APPOINTMENT_REMINDER.find(
 								(item: any) => item.value === obj?.zimbraPrefCalendarApptReminderWarningTime
-						  )
+						  ) || {}
 						: {}
 				);
 				setValue(
@@ -640,7 +642,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefGroupMailBy !== undefined &&
-			_.isEqual(cosData.zimbraPrefGroupMailBy, cosPreferences.zimbraPrefGroupMailBy?.value)
+			!_.isEqual(cosData.zimbraPrefGroupMailBy, cosPreferences.zimbraPrefGroupMailBy?.value || {})
 		) {
 			setIsDirty(true);
 		}
@@ -649,9 +651,9 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailDefaultCharset !== undefined &&
-			_.isEqual(
+			!_.isEqual(
 				cosData.zimbraPrefMailDefaultCharset,
-				cosPreferences.zimbraPrefMailDefaultCharset?.value
+				cosPreferences.zimbraPrefMailDefaultCharset?.value || {}
 			)
 		) {
 			setIsDirty(true);
@@ -683,9 +685,9 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailPollingInterval !== undefined &&
-			_.isEqual(
+			!_.isEqual(
 				cosData.zimbraPrefMailPollingInterval,
-				cosPreferences.zimbraPrefMailPollingInterval?.value
+				cosPreferences.zimbraPrefMailPollingInterval?.value || {}
 			)
 		) {
 			setIsDirty(true);
@@ -722,7 +724,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailSendReadReceipts !== undefined &&
-			_.isEqual(
+			!_.isEqual(
 				cosData.zimbraPrefMailSendReadReceipts,
 				cosPreferences.zimbraPrefMailSendReadReceipts?.value
 			)
@@ -773,9 +775,9 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarFirstDayOfWeek !== undefined &&
-			_.isEqual(
+			!_.isEqual(
 				cosData.zimbraPrefCalendarFirstDayOfWeek,
-				cosPreferences.zimbraPrefCalendarFirstDayOfWeek?.value
+				cosPreferences.zimbraPrefCalendarFirstDayOfWeek?.value || {}
 			)
 		) {
 			setIsDirty(true);
@@ -788,7 +790,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefTimeZoneId !== undefined &&
-			_.isEqual(cosData.zimbraPrefTimeZoneId, cosPreferences.zimbraPrefTimeZoneId?.value)
+			!_.isEqual(cosData.zimbraPrefTimeZoneId, cosPreferences.zimbraPrefTimeZoneId?.value || {})
 		) {
 			setIsDirty(true);
 		}
@@ -797,9 +799,9 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarInitialView !== undefined &&
-			_.isEqual(
+			!_.isEqual(
 				cosData.zimbraPrefCalendarInitialView,
-				cosPreferences.zimbraPrefCalendarInitialView?.value
+				cosPreferences.zimbraPrefCalendarInitialView?.value || {}
 			)
 		) {
 			setIsDirty(true);
@@ -809,9 +811,9 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarApptVisibility !== undefined &&
-			_.isEqual(
+			!_.isEqual(
 				cosData.zimbraPrefCalendarApptVisibility,
-				cosPreferences.zimbraPrefCalendarApptVisibility?.value
+				cosPreferences.zimbraPrefCalendarApptVisibility?.value || {}
 			)
 		) {
 			setIsDirty(true);
@@ -824,9 +826,9 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarDefaultApptDuration !== undefined &&
-			_.isEqual(
+			!_.isEqual(
 				cosData.zimbraPrefCalendarDefaultApptDuration,
-				cosPreferences.zimbraPrefCalendarDefaultApptDuration?.value
+				cosPreferences.zimbraPrefCalendarDefaultApptDuration?.value || {}
 			)
 		) {
 			setIsDirty(true);
@@ -839,9 +841,9 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarApptReminderWarningTime !== undefined &&
-			_.isEqual(
+			!_.isEqual(
 				cosData.zimbraPrefCalendarApptReminderWarningTime,
-				cosPreferences.zimbraPrefCalendarApptReminderWarningTime?.value
+				cosPreferences.zimbraPrefCalendarApptReminderWarningTime?.value || {}
 			)
 		) {
 			setIsDirty(true);
@@ -1000,6 +1002,177 @@ const CosPreferences: FC = () => {
 		setIsDirty(false);
 	};
 
+	const onSave = (): void => {
+		const body: any = {};
+		body._jsns = 'urn:zimbraAdmin';
+		const attributes: any[] = [];
+		const id = {
+			_content: cosData.zimbraId
+		};
+		body.id = id;
+		attributes.push({
+			n: 'zimbraPrefMessageViewHtmlPreferred',
+			_content: cosPreferences?.zimbraPrefMessageViewHtmlPreferred
+		});
+		attributes.push({
+			n: 'zimbraPrefGroupMailBy',
+			_content: cosPreferences?.zimbraPrefGroupMailBy?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefMailDefaultCharset',
+			_content: cosPreferences?.zimbraPrefMailDefaultCharset?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefMessageIdDedupingEnabled',
+			_content: cosPreferences?.zimbraPrefMessageIdDedupingEnabled
+		});
+		attributes.push({
+			n: 'zimbraPrefMailToasterEnabled',
+			_content: cosPreferences?.zimbraPrefMailToasterEnabled
+		});
+		attributes.push({
+			n: 'zimbraPrefMailPollingInterval',
+			_content: cosPreferences?.zimbraPrefMailPollingInterval
+		});
+		attributes.push({
+			n: 'zimbraPrefMailLocalDeliveryDisabled',
+			_content: cosPreferences?.zimbraPrefMailLocalDeliveryDisabled
+		});
+		attributes.push({
+			n: 'zimbraMailMinPollingInterval',
+			_content: `${cosPreferences?.zimbraMailMinPollingInterval}${cosPreferences?.zimbraMailMinPollingIntervalType?.value}`
+		});
+		attributes.push({
+			n: 'zimbraPrefMailSendReadReceipts',
+			_content: cosPreferences?.zimbraPrefMailSendReadReceipts?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefSaveToSent',
+			_content: cosPreferences?.zimbraPrefSaveToSent
+		});
+		attributes.push({
+			n: 'zimbraAllowAnyFromAddress',
+			_content: cosPreferences?.zimbraAllowAnyFromAddress
+		});
+		attributes.push({
+			n: 'zimbraPrefAutoAddAddressEnabled',
+			_content: cosPreferences?.zimbraPrefAutoAddAddressEnabled
+		});
+		attributes.push({
+			n: 'zimbraPrefGalAutoCompleteEnabled',
+			_content: cosPreferences?.zimbraPrefGalAutoCompleteEnabled
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarFirstDayOfWeek',
+			_content: cosPreferences?.zimbraPrefCalendarFirstDayOfWeek?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefTimeZoneId',
+			_content: cosPreferences?.zimbraPrefTimeZoneId?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarInitialView',
+			_content: cosPreferences?.zimbraPrefCalendarInitialView?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarApptVisibility',
+			_content: cosPreferences?.zimbraPrefCalendarApptVisibility?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarDefaultApptDuration',
+			_content: cosPreferences?.zimbraPrefCalendarDefaultApptDuration?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarApptReminderWarningTime',
+			_content: cosPreferences?.zimbraPrefCalendarApptReminderWarningTime?.value
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarShowPastDueReminders',
+			_content: cosPreferences?.zimbraPrefCalendarShowPastDueReminders
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarToasterEnabled',
+			_content: cosPreferences?.zimbraPrefCalendarToasterEnabled
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarAllowCancelEmailToSelf',
+			_content: cosPreferences?.zimbraPrefCalendarAllowCancelEmailToSelf
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarAllowPublishMethodInvite',
+			_content: cosPreferences?.zimbraPrefCalendarAllowPublishMethodInvite
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarAllowForwardedInvite',
+			_content: cosPreferences?.zimbraPrefCalendarAllowForwardedInvite
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarAutoAddInvites',
+			_content: cosPreferences?.zimbraPrefCalendarAutoAddInvites
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarReminderSoundsEnabled',
+			_content: cosPreferences?.zimbraPrefCalendarReminderSoundsEnabled
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarSendInviteDeniedAutoReply',
+			_content: cosPreferences?.zimbraPrefCalendarSendInviteDeniedAutoReply
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarNotifyDelegatedChanges',
+			_content: cosPreferences?.zimbraPrefCalendarNotifyDelegatedChanges
+		});
+		attributes.push({
+			n: 'zimbraPrefCalendarUseQuickAdd',
+			_content: cosPreferences?.zimbraPrefCalendarUseQuickAdd
+		});
+		attributes.push({
+			n: 'zimbraPrefAppleIcalDelegationEnabled',
+			_content: cosPreferences?.zimbraPrefAppleIcalDelegationEnabled
+		});
+		attributes.push({
+			n: 'zimbraPrefUseTimeZoneListInCalendar',
+			_content: cosPreferences?.zimbraPrefUseTimeZoneListInCalendar
+		});
+		body.a = attributes;
+		modifyCos(body)
+			.then((response) => response.json())
+			.then((data) => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				const cos: any = data?.Body?.ModifyCosResponse?.cos[0];
+				if (cos) {
+					setCos(cos);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: data?.Body?.Fault?.Reason?.Text,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+				setIsDirty(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -1025,7 +1198,9 @@ const CosPreferences: FC = () => {
 									/>
 								)}
 							</Padding>
-							{isDirty && <Button label={t('label.save', 'Save')} color="primary" />}
+							{isDirty && (
+								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+							)}
 						</Row>
 					</Row>
 				</Container>
