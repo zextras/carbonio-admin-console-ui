@@ -71,7 +71,7 @@ const CosPreferences: FC = () => {
 		zimbraPrefUseTimeZoneListInCalendar: 'FALSE'
 	});
 	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
-		cosPreferences?.zimbraMailMinPollingInterval?.slice(0, -1)
+		cosPreferences?.zimbraMailMinPollingInterval?.slice(0, -1) || ''
 	);
 	const [prefMailPollingIntervalType, setPrefMailPollingIntervalType] = useState(
 		cosPreferences?.zimbraMailMinPollingInterval?.slice(-1) || ''
@@ -175,17 +175,26 @@ const CosPreferences: FC = () => {
 		[cosPreferences, setCosPreferences]
 	);
 
-	const onGroupByChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({ ...prev, zimbraPrefGroupMailBy: v }));
-	};
+	const onGroupByChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefGroupMailBy: v }));
+		},
+		[setCosPreferences]
+	);
 
-	const onCharactorSetChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
-	};
+	const onCharactorSetChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
+		},
+		[setCosPreferences]
+	);
 
-	const onPollingIntervalChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
-	};
+	const onPollingIntervalChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
+		},
+		[setCosPreferences]
+	);
 
 	const onPrefMailPollingIntervalTypeChange = useCallback(
 		(v: string) => {
@@ -207,42 +216,63 @@ const CosPreferences: FC = () => {
 		[setCosPreferences, prefMailPollingIntervalType]
 	);
 
-	const onMailSendReadReceipts = (v: string) => {
-		setCosPreferences((prev: any) => ({
-			...prev,
-			zimbraPrefMailSendReadReceipts: v
-		}));
-	};
+	const onMailSendReadReceipts = useCallback(
+		(v: string) => {
+			setCosPreferences((prev: any) => ({
+				...prev,
+				zimbraPrefMailSendReadReceipts: v
+			}));
+		},
+		[setCosPreferences]
+	);
 
-	const onPrefTimeZoneChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
-	};
+	const onPrefTimeZoneChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
+		},
+		[setCosPreferences]
+	);
 
-	const onCalendarDefaultApptDurationChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({
-			...prev,
-			zimbraPrefCalendarDefaultApptDuration: v
-		}));
-	};
+	const onCalendarDefaultApptDurationChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({
+				...prev,
+				zimbraPrefCalendarDefaultApptDuration: v
+			}));
+		},
+		[setCosPreferences]
+	);
 
-	const onReminderWarningTimeChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({
-			...prev,
-			zimbraPrefCalendarApptReminderWarningTime: v
-		}));
-	};
+	const onReminderWarningTimeChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({
+				...prev,
+				zimbraPrefCalendarApptReminderWarningTime: v
+			}));
+		},
+		[setCosPreferences]
+	);
 
-	const onCalendarInitialViewChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
-	};
+	const onCalendarInitialViewChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
+		},
+		[setCosPreferences]
+	);
 
-	const onFirstDayOfWeekChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
-	};
+	const onFirstDayOfWeekChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
+		},
+		[setCosPreferences]
+	);
 
-	const onAppointmentVisibilityChange = (v: string): void => {
-		setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
-	};
+	const onAppointmentVisibilityChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
+		},
+		[setCosPreferences]
+	);
 
 	const setValue = useCallback(
 		(key: string, value: any): void => {
