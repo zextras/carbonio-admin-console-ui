@@ -45,7 +45,6 @@ const CosPreferences: FC = () => {
 		zimbraPrefMailToasterEnabled: 'FALSE',
 		zimbraPrefMailPollingInterval: '',
 		zimbraMailMinPollingInterval: '',
-		zimbraPrefMailLocalDeliveryDisabled: 'FALSE',
 		zimbraPrefMailSendReadReceipts: '',
 		zimbraPrefSaveToSent: 'FALSE',
 		zimbraAllowAnyFromAddress: 'FALSE',
@@ -311,12 +310,6 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefMailPollingInterval ? obj?.zimbraPrefMailPollingInterval : ''
 				);
 				setValue(
-					'zimbraPrefMailLocalDeliveryDisabled',
-					obj?.zimbraPrefMailLocalDeliveryDisabled
-						? obj?.zimbraPrefMailLocalDeliveryDisabled
-						: 'FALSE'
-				);
-				setValue(
 					'zimbraMailMinPollingInterval',
 					obj?.zimbraMailMinPollingInterval ? obj?.zimbraMailMinPollingInterval : ''
 				);
@@ -463,9 +456,6 @@ const CosPreferences: FC = () => {
 			}
 			if (!obj.zimbraPrefMailPollingInterval) {
 				obj.zimbraPrefMailPollingInterval = '';
-			}
-			if (!obj.zimbraPrefMailLocalDeliveryDisabled) {
-				obj.zimbraPrefMailLocalDeliveryDisabled = 'FALSE';
 			}
 			if (!obj.zimbraMailMinPollingInterval) {
 				obj.zimbraMailMinPollingInterval = '';
@@ -621,19 +611,6 @@ const CosPreferences: FC = () => {
 			setIsDirty(true);
 		}
 	}, [cosData.zimbraMailMinPollingInterval, cosPreferences.zimbraMailMinPollingInterval]);
-
-	useEffect(() => {
-		if (
-			cosData.zimbraPrefMailLocalDeliveryDisabled !== undefined &&
-			cosData.zimbraPrefMailLocalDeliveryDisabled !==
-				cosPreferences.zimbraPrefMailLocalDeliveryDisabled
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		cosData.zimbraPrefMailLocalDeliveryDisabled,
-		cosPreferences.zimbraPrefMailLocalDeliveryDisabled
-	]);
 
 	useEffect(() => {
 		if (
@@ -1122,7 +1099,7 @@ const CosPreferences: FC = () => {
 								<Container padding={{ right: 'small' }}>
 									<Input
 										inputName="zimbraPrefMailMinPollingInterval"
-										label={t('cos.check_new_mail_every', 'Check new mail every')}
+										label={t('cos.minimum_mail_polling_interval', 'Minimum mail polling interval')}
 										backgroundColor="gray5"
 										value={zimbraPrefMailPollingIntervalNum}
 										type="number"
@@ -1154,21 +1131,14 @@ const CosPreferences: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ top: 'large' }}
+							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
-									<Switch
-										value={cosPreferences?.zimbraPrefMailLocalDeliveryDisabled === 'TRUE'}
-										onClick={(): void => changeSwitchOption('zimbraPrefMailLocalDeliveryDisabled')}
-										label={t('cos.cannot_check_for_less_than', `Cannot check for less than`)}
-									/>
-								</Container>
-								<Container padding={{ left: 'small' }}>
 									<Select
 										items={POLLING_INTERVAL}
 										background="gray5"
-										label={t('cos.min_new_check_interval_value', 'Min new check interval (value)')}
+										label={t('cos.polling_interval', 'Polling interval')}
 										showCheckbox={false}
 										selection={
 											cosPreferences?.zimbraPrefMailPollingInterval === ''
@@ -1182,31 +1152,25 @@ const CosPreferences: FC = () => {
 										onChange={onPollingIntervalChange}
 									/>
 								</Container>
+								<Container padding={{ left: 'small' }}>
+									<Select
+										items={SEND_READ_RECEIPTS}
+										background="gray5"
+										label={t('cos.send_read_receipts', 'Send read receipts')}
+										showCheckbox={false}
+										selection={
+											cosPreferences?.zimbraPrefMailSendReadReceipts === ''
+												? SEND_READ_RECEIPTS[-1]
+												: SEND_READ_RECEIPTS.find(
+														(item: any) =>
+															// eslint-disable-next-line max-len
+															item.value === cosPreferences?.zimbraPrefMailSendReadReceipts
+												  )
+										}
+										onChange={onMailSendReadReceipts}
+									/>
+								</Container>
 							</ListRow>
-						</Container>
-					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<Select
-								items={SEND_READ_RECEIPTS}
-								background="gray5"
-								label={t('cos.send_read_receipts', 'Send read receipts')}
-								showCheckbox={false}
-								selection={
-									cosPreferences?.zimbraPrefMailSendReadReceipts === ''
-										? SEND_READ_RECEIPTS[-1]
-										: SEND_READ_RECEIPTS.find(
-												// eslint-disable-next-line max-len
-												(item: any) => item.value === cosPreferences?.zimbraPrefMailSendReadReceipts
-										  )
-								}
-								onChange={onMailSendReadReceipts}
-							/>
 						</Container>
 					</Row>
 					<Divider />
