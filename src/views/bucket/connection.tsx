@@ -262,7 +262,7 @@ const Connection: FC<{
 					? BucketRegionsInAlibaba.find((s) => s.value === e)
 					: BucketRegions.find((s) => s.value === e);
 			setRegionsData(volumeObject);
-			onSelection({ region: volumeObject.value }, false);
+			onSelection({ region: volumeObject?.value }, false);
 		},
 		[bucketType, bucketTypeData, onSelection]
 	);

@@ -73,29 +73,21 @@ const CosAdvanced: FC = () => {
 	);
 
 	const [cosAdvanced, setCosAdvanced] = useState<any>({
-		zimbraAttachmentsBlocked: false,
+		zimbraAttachmentsBlocked: 'FALSE',
 		zimbraMailForwardingAddressMaxLength: '',
 		zimbraMailForwardingAddressMaxNumAddrs: '',
 		zimbraMailQuota: '',
 		zimbraContactMaxNumEntries: '',
 		zimbraQuotaWarnPercent: '',
 		zimbraQuotaWarnInterval: '',
-		zimbraQuotaWarnIntervalRangeTime: timeItems[0],
 		zimbraQuotaWarnMessage: '',
 		zimbraDataSourceMinPollingInterval: '',
-		zimbraDataSourceMinPollingIntervalRangeTime: timeItems[0],
 		zimbraDataSourcePop3PollingInterval: '',
-		zimbraDataSourcePop3PollingIntervalRangeTime: timeItems[0],
 		zimbraDataSourceImapPollingInterval: '',
-		zimbraDataSourceImapPollingIntervalRangeTime: timeItems[0],
 		zimbraDataSourceCalendarPollingInterval: '',
-		zimbraDataSourceCalendarPollingIntervalRangeTime: timeItems[0],
 		zimbraDataSourceRssPollingInterval: '',
-		zimbraDataSourceRssPollingIntervalRangeTime: timeItems[0],
 		zimbraDataSourceCaldavPollingInterval: '',
-		zimbraDataSourceCaldavPollingIntervalRangeTime: timeItems[0],
-		zimbraProxyAllowedDomains: [],
-		zimbraPasswordLocked: false,
+		zimbraPasswordLocked: 'FALSE',
 		zimbraPasswordMinLength: '',
 		zimbraPasswordMaxLength: '',
 		zimbraPasswordMinUpperCaseChars: '',
@@ -106,26 +98,98 @@ const CosAdvanced: FC = () => {
 		zimbraPasswordMinAge: '',
 		zimbraPasswordMaxAge: '',
 		zimbraPasswordEnforceHistory: '',
-		zimbraPasswordBlockCommonEnabled: false,
-		zimbraPasswordLockoutEnabled: false,
+		zimbraPasswordBlockCommonEnabled: 'FALSE',
+		zimbraPasswordLockoutEnabled: 'FALSE',
 		zimbraPasswordLockoutMaxFailures: '',
 		zimbraPasswordLockoutDuration: '',
-		zimbraPasswordLockoutDurationRangeTime: timeItems[0],
 		zimbraPasswordLockoutFailureLifetime: '',
-		zimbraPasswordLockoutFailureLifetimeRangeTime: timeItems[0],
 		zimbraAdminAuthTokenLifetime: '',
-		zimbraAdminAuthTokenLifetimeRangeTime: timeItems[0],
 		zimbraAuthTokenLifetime: '',
-		zimbraAuthTokenLifetimeRangeTime: timeItems[0],
 		zimbraMailIdleSessionTimeout: '',
-		zimbraMailIdleSessionTimeoutRangeTime: timeItems[0],
 		zimbraMailMessageLifetime: '',
 		zimbraMailTrashLifetime: '',
-		zimbraMailTrashLifetimeRangeTime: timeItems[0],
 		zimbraMailSpamLifetime: '',
-		zimbraMailSpamLifetimeRangeTime: timeItems[0],
 		zimbraFreebusyExchangeUserOrg: ''
 	});
+	const [zimbraMailQuota, setZimbraMailQuota] = useState('');
+	const [zimbraMailMessageLifetime, setZimbraMailMessageLifetime] = useState('');
+	const [zimbraQuotaWarnIntervalNum, setZimbraQuotaWarnIntervalNum] = useState(
+		cosAdvanced?.zimbraQuotaWarnInterval?.slice(0, -1)
+	);
+	const [zimbraQuotaWarnIntervalType, setzimbraQuotaWarnIntervalType] = useState(
+		cosAdvanced?.zimbraQuotaWarnInterval?.slice(-1) || ''
+	);
+	const [zimbraDataSourceMinPollingIntervalNum, setZimbraDataSourceMinPollingIntervalNum] =
+		useState(cosAdvanced?.zimbraDataSourceMinPollingInterval?.slice(0, -1));
+	const [zimbraDataSourceMinPollingIntervalType, setZimbraDataSourceMinPollingIntervalType] =
+		useState(cosAdvanced?.zimbraDataSourceMinPollingInterval?.slice(-1) || '');
+
+	const [zimbraDataSourcePop3PollingIntervalNum, setZimbraDataSourcePop3PollingIntervalNum] =
+		useState(cosAdvanced?.zimbraDataSourcePop3PollingInterval?.slice(0, -1));
+	const [zimbraDataSourcePop3PollingIntervalType, setZimbraDataSourcePop3PollingIntervalType] =
+		useState(cosAdvanced?.zimbraDataSourcePop3PollingInterval?.slice(-1) || '');
+
+	const [zimbraDataSourceImapPollingIntervalNum, setZimbraDataSourceImapPollingIntervalNum] =
+		useState(cosAdvanced?.zimbraDataSourceImapPollingInterval?.slice(0, -1));
+	const [zimbraDataSourceImapPollingIntervalType, setZimbraDataSourceImapPollingIntervalType] =
+		useState(cosAdvanced?.zimbraDataSourceImapPollingInterval?.slice(-1) || '');
+	const [
+		zimbraDataSourceCalendarPollingIntervalNum,
+		setZimbraDataSourceCalendarPollingIntervalNum
+	] = useState(cosAdvanced?.zimbraDataSourceCalendarPollingInterval?.slice(0, -1));
+	const [
+		zimbraDataSourceCalendarPollingIntervalType,
+		setZimbraDataSourceCalendarPollingIntervalType
+	] = useState(cosAdvanced?.zimbraDataSourceCalendarPollingInterval?.slice(-1) || '');
+	const [zimbraDataSourceRssPollingIntervalNum, setZimbraDataSourceRssPollingIntervalNum] =
+		useState(cosAdvanced?.zimbraDataSourceRssPollingInterval?.slice(0, -1));
+	const [zimbraDataSourceRssPollingIntervalType, setZimbraDataSourceRssPollingIntervalType] =
+		useState(cosAdvanced?.zimbraDataSourceRssPollingInterval?.slice(-1) || '');
+	const [zimbraDataSourceCaldavPollingIntervalNum, setZimbraDataSourceCaldavPollingIntervalNum] =
+		useState(cosAdvanced?.zimbraDataSourceCaldavPollingInterval?.slice(0, -1));
+	const [zimbraDataSourceCaldavPollingIntervalType, setZimbraDataSourceCaldavPollingIntervalType] =
+		useState(cosAdvanced?.zimbraDataSourceCaldavPollingInterval?.slice(-1) || '');
+	const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
+		cosAdvanced?.zimbraPasswordLockoutDuration?.slice(0, -1)
+	);
+	const [zimbraPasswordLockoutDurationType, setZimbraPasswordLockoutDurationType] = useState(
+		cosAdvanced?.zimbraPasswordLockoutDuration?.slice(-1) || ''
+	);
+	const [zimbraPasswordLockoutFailureLifetimeNum, setZimbraPasswordLockoutFailureLifetimeNum] =
+		useState(cosAdvanced?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
+	const [zimbraPasswordLockoutFailureLifetimeType, setZimbraPasswordLockoutFailureLifetimeType] =
+		useState(cosAdvanced?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '');
+	const [zimbraAdminAuthTokenLifetimeNum, setZimbraAdminAuthTokenLifetimeNum] = useState(
+		cosAdvanced?.zimbraAdminAuthTokenLifetime?.slice(0, -1)
+	);
+	const [zimbraAdminAuthTokenLifetimeType, setZimbraAdminAuthTokenLifetimeType] = useState(
+		cosAdvanced?.zimbraAdminAuthTokenLifetime?.slice(-1) || ''
+	);
+	const [zimbraAuthTokenLifetimeNum, setZimbraAuthTokenLifetimeNum] = useState(
+		cosAdvanced?.zimbraAuthTokenLifetime?.slice(0, -1)
+	);
+	const [zimbraAuthTokenLifetimeType, setZimbraAuthTokenLifetimeType] = useState(
+		cosAdvanced?.zimbraAuthTokenLifetime?.slice(-1) || ''
+	);
+	const [zimbraMailIdleSessionTimeoutNum, setZimbraMailIdleSessionTimeoutNum] = useState(
+		cosAdvanced?.zimbraMailIdleSessionTimeout?.slice(0, -1)
+	);
+	const [zimbraMailIdleSessionTimeoutType, setZimbraMailIdleSessionTimeoutType] = useState(
+		cosAdvanced?.zimbraMailIdleSessionTimeout?.slice(-1) || ''
+	);
+	const [zimbraMailTrashLifetimeNum, setZimbraMailTrashLifetimeNum] = useState(
+		cosAdvanced?.zimbraMailTrashLifetime?.slice(0, -1)
+	);
+	const [zimbraMailTrashLifetimeType, setZimbraMailTrashLifetimeType] = useState(
+		cosAdvanced?.zimbraMailTrashLifetime?.slice(-1) || ''
+	);
+	const [zimbraMailSpamLifetimeNum, setZimbraMailSpamLifetimeNum] = useState(
+		cosAdvanced?.zimbraMailSpamLifetime?.slice(0, -1)
+	);
+	const [zimbraMailSpamLifetimeType, setZimbraMailSpamLifetimeType] = useState(
+		cosAdvanced?.zimbraMailSpamLifetime?.slice(-1) || ''
+	);
+
 	const [newProxyAllowedDomain, setNewProxyAllowedDomain] = useState<string>('');
 	const [selectedProxyAllowedDomain, setSelectedProxyAllowedDomain] = useState<any>([]);
 	const [proxyAllowedDomainAddBtnDisabled, setProxyAllowedDomainAddBtnDisabled] = useState(true);
@@ -134,6 +198,7 @@ const CosAdvanced: FC = () => {
 	const [searchProxyAllowedDomain, setSearchProxyAllowedDomain]: any = useState('');
 	const [proxyAllowedDomainRows, setProxyAllowedDomainRows] = useState<any[]>([]);
 	const [proxyAllowedDomainList, setProxyAllowedDomainList] = useState<any[]>([]);
+	const [zimbraProxyAllowedDomains, setZimbraProxyAllowedDomains] = useState<any[]>([]);
 
 	const setValue = useCallback(
 		(key: string, value: any): void => {
@@ -169,7 +234,10 @@ const CosAdvanced: FC = () => {
 	const setInitalValues = useCallback(
 		(obj: any): void => {
 			if (obj) {
-				setValue('zimbraAttachmentsBlocked', obj?.zimbraAttachmentsBlocked === 'TRUE');
+				setValue(
+					'zimbraAttachmentsBlocked',
+					obj?.zimbraAttachmentsBlocked ? obj?.zimbraAttachmentsBlocked : 'FALSE'
+				);
 				setValue(
 					'zimbraMailForwardingAddressMaxLength',
 					obj?.zimbraMailForwardingAddressMaxLength ? obj?.zimbraMailForwardingAddressMaxLength : ''
@@ -180,11 +248,7 @@ const CosAdvanced: FC = () => {
 						? obj?.zimbraMailForwardingAddressMaxNumAddrs
 						: ''
 				);
-				setValue(
-					'zimbraMailQuota',
-					// eslint-disable-next-line no-unsafe-optional-chaining
-					obj?.zimbraMailQuota ? obj?.zimbraMailQuota / (1024 * 1024) : ''
-				);
+				setValue('zimbraMailQuota', obj?.zimbraMailQuota ? obj?.zimbraMailQuota : '');
 				setValue(
 					'zimbraContactMaxNumEntries',
 					obj?.zimbraContactMaxNumEntries ? obj?.zimbraContactMaxNumEntries : ''
@@ -195,21 +259,7 @@ const CosAdvanced: FC = () => {
 				);
 				setValue(
 					'zimbraQuotaWarnInterval',
-					obj?.zimbraQuotaWarnInterval
-						? // eslint-disable-next-line no-unsafe-optional-chaining
-						  obj?.zimbraQuotaWarnInterval.substring(0, obj?.zimbraQuotaWarnInterval?.length - 1)
-						: ''
-				);
-				setValue(
-					'zimbraQuotaWarnIntervalRangeTime',
-					obj?.zimbraQuotaWarnInterval
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									// eslint-disable-next-line no-unsafe-optional-chaining
-									obj?.zimbraQuotaWarnInterval.charAt(obj?.zimbraQuotaWarnInterval?.length - 1)
-						  )
-						: timeItems[0]
+					obj?.zimbraQuotaWarnInterval ? obj?.zimbraQuotaWarnInterval : ''
 				);
 				setValue(
 					'zimbraQuotaWarnMessage',
@@ -217,143 +267,36 @@ const CosAdvanced: FC = () => {
 				);
 				setValue(
 					'zimbraDataSourceMinPollingInterval',
-					obj?.zimbraDataSourceMinPollingInterval
-						? obj?.zimbraDataSourceMinPollingInterval.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraDataSourceMinPollingInterval?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraDataSourceMinPollingIntervalRangeTime',
-					obj?.zimbraDataSourceMinPollingInterval
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraDataSourceMinPollingInterval.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraDataSourceMinPollingInterval?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraDataSourceMinPollingInterval ? obj?.zimbraDataSourceMinPollingInterval : ''
 				);
 				setValue(
 					'zimbraDataSourcePop3PollingInterval',
-					obj?.zimbraDataSourcePop3PollingInterval
-						? obj?.zimbraDataSourcePop3PollingInterval.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraDataSourcePop3PollingInterval?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraDataSourcePop3PollingIntervalRangeTime',
-					obj?.zimbraDataSourcePop3PollingInterval
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraDataSourcePop3PollingInterval.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraDataSourcePop3PollingInterval?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraDataSourcePop3PollingInterval ? obj?.zimbraDataSourcePop3PollingInterval : ''
 				);
 				setValue(
 					'zimbraDataSourceImapPollingInterval',
-					obj?.zimbraDataSourceImapPollingInterval
-						? obj?.zimbraDataSourceImapPollingInterval.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraDataSourceImapPollingInterval?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraDataSourceImapPollingIntervalRangeTime',
-					obj?.zimbraDataSourceImapPollingInterval
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraDataSourceImapPollingInterval.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraDataSourceImapPollingInterval?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraDataSourceImapPollingInterval ? obj?.zimbraDataSourceImapPollingInterval : ''
 				);
 				setValue(
 					'zimbraDataSourceCalendarPollingInterval',
 					obj?.zimbraDataSourceCalendarPollingInterval
-						? obj?.zimbraDataSourceCalendarPollingInterval.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraDataSourceCalendarPollingInterval?.length - 1
-						  )
+						? obj?.zimbraDataSourceCalendarPollingInterval
 						: ''
-				);
-				setValue(
-					'zimbraDataSourceCalendarPollingIntervalRangeTime',
-					obj?.zimbraDataSourceCalendarPollingInterval
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraDataSourceCalendarPollingInterval.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraDataSourceCalendarPollingInterval?.length - 1
-									)
-						  )
-						: timeItems[0]
 				);
 				setValue(
 					'zimbraDataSourceRssPollingInterval',
-					obj?.zimbraDataSourceRssPollingInterval
-						? obj?.zimbraDataSourceRssPollingInterval.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraDataSourceRssPollingInterval?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraDataSourceRssPollingIntervalRangeTime',
-					obj?.zimbraDataSourceRssPollingInterval
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraDataSourceRssPollingInterval.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraDataSourceRssPollingInterval?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraDataSourceRssPollingInterval ? obj?.zimbraDataSourceRssPollingInterval : ''
 				);
 				setValue(
 					'zimbraDataSourceCaldavPollingInterval',
 					obj?.zimbraDataSourceCaldavPollingInterval
-						? obj?.zimbraDataSourceCaldavPollingInterval.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraDataSourceCaldavPollingInterval?.length - 1
-						  )
+						? obj?.zimbraDataSourceCaldavPollingInterval
 						: ''
 				);
 				setValue(
-					'zimbraDataSourceCaldavPollingIntervalRangeTime',
-					obj?.zimbraDataSourceCaldavPollingInterval
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraDataSourceCaldavPollingInterval.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraDataSourceCaldavPollingInterval?.length - 1
-									)
-						  )
-						: timeItems[0]
+					'zimbraPasswordLocked',
+					obj?.zimbraPasswordLocked ? obj?.zimbraPasswordLocked : 'FALSE'
 				);
-				setValue('zimbraPasswordLocked', obj?.zimbraPasswordLocked === 'TRUE');
 				setValue(
 					'zimbraPasswordMinLength',
 					obj?.zimbraPasswordMinLength ? obj?.zimbraPasswordMinLength : ''
@@ -396,183 +339,48 @@ const CosAdvanced: FC = () => {
 				);
 				setValue(
 					'zimbraPasswordBlockCommonEnabled',
-					obj?.zimbraPasswordBlockCommonEnabled === 'TRUE'
+					obj?.zimbraPasswordBlockCommonEnabled ? obj?.zimbraPasswordBlockCommonEnabled : 'FALSE'
 				);
-				setValue('zimbraPasswordLockoutEnabled', obj?.zimbraPasswordLockoutEnabled === 'TRUE');
+				setValue(
+					'zimbraPasswordLockoutEnabled',
+					obj?.zimbraPasswordLockoutEnabled ? obj?.zimbraPasswordLockoutEnabled : 'FALSE'
+				);
 				setValue(
 					'zimbraPasswordLockoutMaxFailures',
 					obj?.zimbraPasswordLockoutMaxFailures ? obj?.zimbraPasswordLockoutMaxFailures : ''
 				);
 				setValue(
 					'zimbraPasswordLockoutDuration',
-					obj?.zimbraPasswordLockoutDuration
-						? obj?.zimbraPasswordLockoutDuration.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraPasswordLockoutDuration?.length - 1
-						  )
-						: ''
+					obj?.zimbraPasswordLockoutDuration ? obj?.zimbraPasswordLockoutDuration : ''
 				);
-				setValue(
-					'zimbraPasswordLockoutDurationRangeTime',
-					obj?.zimbraPasswordLockoutDuration
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraPasswordLockoutDuration.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraPasswordLockoutDuration?.length - 1
-									)
-						  )
-						: timeItems[0]
-				);
+
 				setValue(
 					'zimbraPasswordLockoutFailureLifetime',
-					obj?.zimbraPasswordLockoutFailureLifetime
-						? obj?.zimbraPasswordLockoutFailureLifetime.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraPasswordLockoutFailureLifetime?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraPasswordLockoutFailureLifetimeRangeTime',
-					obj?.zimbraPasswordLockoutFailureLifetime
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraPasswordLockoutFailureLifetime.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraPasswordLockoutFailureLifetime?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraPasswordLockoutFailureLifetime ? obj?.zimbraPasswordLockoutFailureLifetime : ''
 				);
 				setValue(
 					'zimbraAdminAuthTokenLifetime',
-					obj?.zimbraAdminAuthTokenLifetime
-						? obj?.zimbraAdminAuthTokenLifetime.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraAdminAuthTokenLifetime?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraAdminAuthTokenLifetimeRangeTime',
-					obj?.zimbraAdminAuthTokenLifetime
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraAdminAuthTokenLifetime.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraAdminAuthTokenLifetime?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraAdminAuthTokenLifetime ? obj?.zimbraAdminAuthTokenLifetime : ''
 				);
 				setValue(
 					'zimbraAuthTokenLifetime',
-					obj?.zimbraAuthTokenLifetime
-						? obj?.zimbraAuthTokenLifetime.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraAuthTokenLifetime?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraAuthTokenLifetimeRangeTime',
-					obj?.zimbraAuthTokenLifetime
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraAuthTokenLifetime.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraAuthTokenLifetime?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraAuthTokenLifetime ? obj?.zimbraAuthTokenLifetime : ''
 				);
 				setValue(
 					'zimbraMailIdleSessionTimeout',
-					obj?.zimbraMailIdleSessionTimeout
-						? obj?.zimbraMailIdleSessionTimeout.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraMailIdleSessionTimeout?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraMailIdleSessionTimeoutRangeTime',
-					obj?.zimbraMailIdleSessionTimeout
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraMailIdleSessionTimeout.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraMailIdleSessionTimeout?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraMailIdleSessionTimeout ? obj?.zimbraMailIdleSessionTimeout : ''
 				);
 				setValue(
 					'zimbraMailMessageLifetime',
-					obj?.zimbraMailMessageLifetime
-						? obj?.zimbraMailMessageLifetime.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraMailMessageLifetime?.length - 1
-						  )
-						: ''
+					obj?.zimbraMailMessageLifetime ? obj?.zimbraMailMessageLifetime : ''
 				);
 				setValue(
 					'zimbraMailTrashLifetime',
-					obj?.zimbraMailTrashLifetime
-						? obj?.zimbraMailTrashLifetime.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraMailTrashLifetime?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraMailTrashLifetimeRangeTime',
-					obj?.zimbraMailTrashLifetime
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraMailTrashLifetime.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraMailTrashLifetime?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraMailTrashLifetime ? obj?.zimbraMailTrashLifetime : ''
 				);
 				setValue(
 					'zimbraMailSpamLifetime',
-					obj?.zimbraMailSpamLifetime
-						? obj?.zimbraMailSpamLifetime.substring(
-								0,
-								// eslint-disable-next-line no-unsafe-optional-chaining
-								obj?.zimbraMailSpamLifetime?.length - 1
-						  )
-						: ''
-				);
-				setValue(
-					'zimbraMailSpamLifetimeRangeTime',
-					obj?.zimbraMailSpamLifetime
-						? timeItems.find(
-								(item: any) =>
-									item.value ===
-									obj?.zimbraMailSpamLifetime.charAt(
-										// eslint-disable-next-line no-unsafe-optional-chaining
-										obj?.zimbraMailSpamLifetime?.length - 1
-									)
-						  )
-						: timeItems[0]
+					obj?.zimbraMailSpamLifetime ? obj?.zimbraMailSpamLifetime : ''
 				);
 				setValue(
 					'zimbraFreebusyExchangeUserOrg',
@@ -580,7 +388,7 @@ const CosAdvanced: FC = () => {
 				);
 			}
 		},
-		[setValue, timeItems]
+		[setValue]
 	);
 
 	useEffect(() => {
@@ -592,14 +400,14 @@ const CosAdvanced: FC = () => {
 					return { ...item, id };
 				});
 			generateProxyAllowedDomainList(proxyAllowedDomains);
-			setValue('zimbraProxyAllowedDomains', proxyAllowedDomains);
+			setZimbraProxyAllowedDomains(proxyAllowedDomains);
 			const obj: any = {};
 			cosInformation.map((item: any) => {
 				obj[item?.n] = item._content;
 				return '';
 			});
 			if (!obj.zimbraAttachmentsBlocked) {
-				obj.zimbraAttachmentsBlocked = false;
+				obj.zimbraAttachmentsBlocked = 'FALSE';
 			}
 			if (!obj.zimbraMailForwardingAddressMaxLength) {
 				obj.zimbraMailForwardingAddressMaxLength = '';
@@ -641,7 +449,7 @@ const CosAdvanced: FC = () => {
 				obj.zimbraDataSourceCaldavPollingInterval = '';
 			}
 			if (!obj.zimbraPasswordLocked) {
-				obj.zimbraPasswordLocked = false;
+				obj.zimbraPasswordLocked = 'FALSE';
 			}
 			if (!obj.zimbraPasswordMinLength) {
 				obj.zimbraPasswordMinLength = '';
@@ -674,10 +482,10 @@ const CosAdvanced: FC = () => {
 				obj.zimbraPasswordEnforceHistory = '';
 			}
 			if (!obj.zimbraPasswordBlockCommonEnabled) {
-				obj.zimbraPasswordBlockCommonEnabled = false;
+				obj.zimbraPasswordBlockCommonEnabled = 'FALSE';
 			}
 			if (!obj.zimbraPasswordLockoutEnabled) {
-				obj.zimbraPasswordLockoutEnabled = false;
+				obj.zimbraPasswordLockoutEnabled = 'FALSE';
 			}
 			if (!obj.zimbraPasswordLockoutMaxFailures) {
 				obj.zimbraPasswordLockoutMaxFailures = '';
@@ -711,6 +519,62 @@ const CosAdvanced: FC = () => {
 			}
 			setCosData(obj);
 			setInitalValues(obj);
+			setZimbraQuotaWarnIntervalNum(obj?.zimbraQuotaWarnInterval?.slice(0, -1));
+			setzimbraQuotaWarnIntervalType(obj?.zimbraQuotaWarnInterval?.slice(-1));
+			setZimbraDataSourceMinPollingIntervalNum(
+				obj?.zimbraDataSourceMinPollingInterval?.slice(0, -1)
+			);
+			setZimbraDataSourceMinPollingIntervalType(obj?.zimbraDataSourceMinPollingInterval?.slice(-1));
+			setZimbraDataSourcePop3PollingIntervalNum(
+				obj?.zimbraDataSourcePop3PollingInterval?.slice(0, -1)
+			);
+			setZimbraDataSourcePop3PollingIntervalType(
+				obj?.zimbraDataSourcePop3PollingInterval?.slice(-1)
+			);
+			setZimbraDataSourceImapPollingIntervalNum(
+				obj?.zimbraDataSourceImapPollingInterval?.slice(0, -1)
+			);
+			setZimbraDataSourceImapPollingIntervalType(
+				obj?.zimbraDataSourceImapPollingInterval?.slice(-1)
+			);
+			setZimbraDataSourceCalendarPollingIntervalNum(
+				obj?.zimbraDataSourceCalendarPollingInterval?.slice(0, -1)
+			);
+			setZimbraDataSourceCalendarPollingIntervalType(
+				obj?.zimbraDataSourceCalendarPollingInterval?.slice(-1)
+			);
+			setZimbraDataSourceRssPollingIntervalNum(
+				obj?.zimbraDataSourceRssPollingInterval?.slice(0, -1)
+			);
+			setZimbraDataSourceRssPollingIntervalType(obj?.zimbraDataSourceRssPollingInterval?.slice(-1));
+			setZimbraDataSourceCaldavPollingIntervalNum(
+				obj?.zimbraDataSourceCaldavPollingInterval?.slice(0, -1)
+			);
+			setZimbraDataSourceCaldavPollingIntervalType(
+				obj?.zimbraDataSourceCaldavPollingInterval?.slice(-1)
+			);
+			setZimbraPasswordLockoutDurationNum(obj?.zimbraPasswordLockoutDuration?.slice(0, -1));
+			setZimbraPasswordLockoutDurationType(obj?.zimbraPasswordLockoutDuration?.slice(-1));
+			setZimbraPasswordLockoutFailureLifetimeNum(
+				obj?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)
+			);
+			setZimbraPasswordLockoutFailureLifetimeType(
+				obj?.zimbraPasswordLockoutFailureLifetime?.slice(-1)
+			);
+			setZimbraAdminAuthTokenLifetimeNum(obj?.zimbraAdminAuthTokenLifetime?.slice(0, -1));
+			setZimbraAdminAuthTokenLifetimeType(obj?.zimbraAdminAuthTokenLifetime?.slice(-1));
+			setZimbraAuthTokenLifetimeNum(obj?.zimbraAuthTokenLifetime?.slice(0, -1));
+			setZimbraAuthTokenLifetimeType(obj?.zimbraAuthTokenLifetime?.slice(-1));
+			setZimbraMailIdleSessionTimeoutNum(obj?.zimbraMailIdleSessionTimeout?.slice(0, -1));
+			setZimbraMailIdleSessionTimeoutType(obj?.zimbraMailIdleSessionTimeout?.slice(-1));
+			setZimbraMailTrashLifetimeNum(obj?.zimbraMailTrashLifetime?.slice(0, -1));
+			setZimbraMailTrashLifetimeType(obj?.zimbraMailTrashLifetime?.slice(-1));
+			setZimbraMailSpamLifetimeNum(obj?.zimbraMailSpamLifetime?.slice(0, -1));
+			setZimbraMailSpamLifetimeType(obj?.zimbraMailSpamLifetime?.slice(-1));
+			setZimbraMailQuota(
+				obj?.zimbraMailQuota ? (parseInt(obj?.zimbraMailQuota, 10) / (1024 * 1024)).toString() : ''
+			);
+			setZimbraMailMessageLifetime(obj?.zimbraMailMessageLifetime?.slice(0, -1));
 			setIsDirty(false);
 		}
 	}, [cosInformation, setInitalValues, setValue, timeItems]);
@@ -724,7 +588,10 @@ const CosAdvanced: FC = () => {
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
-			setCosAdvanced((prev: any) => ({ ...prev, [key]: !cosAdvanced[key] }));
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				[key]: cosAdvanced[key] === 'TRUE' ? 'FALSE' : 'TRUE'
+			}));
 			setIsDirty(true);
 		},
 		[cosAdvanced, setCosAdvanced, setIsDirty]
@@ -771,7 +638,69 @@ const CosAdvanced: FC = () => {
 
 	const onCancel = (): void => {
 		setInitalValues(cosData);
-		setProxyAllowedDomainList(cosAdvanced.zimbraProxyAllowedDomains);
+		setZimbraQuotaWarnIntervalNum(cosData?.zimbraQuotaWarnInterval?.slice(0, -1));
+		setzimbraQuotaWarnIntervalType(cosData?.zimbraQuotaWarnInterval?.slice(-1));
+		setZimbraDataSourceMinPollingIntervalNum(
+			cosData?.zimbraDataSourceMinPollingInterval?.slice(0, -1)
+		);
+		setZimbraDataSourceMinPollingIntervalType(
+			cosData?.zimbraDataSourceMinPollingInterval?.slice(-1)
+		);
+		setZimbraDataSourcePop3PollingIntervalNum(
+			cosData?.zimbraDataSourcePop3PollingInterval?.slice(0, -1)
+		);
+		setZimbraDataSourcePop3PollingIntervalType(
+			cosData?.zimbraDataSourcePop3PollingInterval?.slice(-1)
+		);
+		setZimbraDataSourceImapPollingIntervalNum(
+			cosData?.zimbraDataSourceImapPollingInterval?.slice(0, -1)
+		);
+		setZimbraDataSourceImapPollingIntervalType(
+			cosData?.zimbraDataSourceImapPollingInterval?.slice(-1)
+		);
+		setZimbraDataSourceCalendarPollingIntervalNum(
+			cosData?.zimbraDataSourceCalendarPollingInterval?.slice(0, -1)
+		);
+		setZimbraDataSourceCalendarPollingIntervalType(
+			cosData?.zimbraDataSourceCalendarPollingInterval?.slice(-1)
+		);
+		setZimbraDataSourceRssPollingIntervalNum(
+			cosData?.zimbraDataSourceRssPollingInterval?.slice(0, -1)
+		);
+		setZimbraDataSourceRssPollingIntervalType(
+			cosData?.zimbraDataSourceRssPollingInterval?.slice(-1)
+		);
+		setZimbraDataSourceCaldavPollingIntervalNum(
+			cosData?.zimbraDataSourceCaldavPollingInterval?.slice(0, -1)
+		);
+		setZimbraDataSourceCaldavPollingIntervalType(
+			cosData?.zimbraDataSourceCaldavPollingInterval?.slice(-1)
+		);
+		setZimbraPasswordLockoutDurationNum(cosData?.zimbraPasswordLockoutDuration?.slice(0, -1));
+		setZimbraPasswordLockoutDurationType(cosData?.zimbraPasswordLockoutDuration?.slice(-1));
+		setZimbraPasswordLockoutFailureLifetimeNum(
+			cosData?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)
+		);
+		setZimbraPasswordLockoutFailureLifetimeType(
+			cosData?.zimbraPasswordLockoutFailureLifetime?.slice(-1)
+		);
+		setZimbraAdminAuthTokenLifetimeNum(cosData?.zimbraAdminAuthTokenLifetime?.slice(0, -1));
+		setZimbraAdminAuthTokenLifetimeType(cosData?.zimbraAdminAuthTokenLifetime?.slice(-1));
+		setZimbraAuthTokenLifetimeNum(cosData?.zimbraAuthTokenLifetime?.slice(0, -1));
+		setZimbraAuthTokenLifetimeType(cosData?.zimbraAuthTokenLifetime?.slice(-1));
+		setZimbraMailIdleSessionTimeoutNum(cosData?.zimbraMailIdleSessionTimeout?.slice(0, -1));
+		setZimbraMailIdleSessionTimeoutType(cosData?.zimbraMailIdleSessionTimeout?.slice(-1));
+		setZimbraMailTrashLifetimeNum(cosData?.zimbraMailTrashLifetime?.slice(0, -1));
+		setZimbraMailTrashLifetimeType(cosData?.zimbraMailTrashLifetime?.slice(-1));
+		setZimbraMailSpamLifetimeNum(cosData?.zimbraMailSpamLifetime?.slice(0, -1));
+		setZimbraMailSpamLifetimeType(cosData?.zimbraMailSpamLifetime?.slice(-1));
+		setProxyAllowedDomainList(cosAdvanced.zimbraProxyAllowedDomains || []);
+		setZimbraMailQuota(
+			cosAdvanced?.zimbraMailQuota
+				? (parseInt(cosAdvanced?.zimbraMailQuota, 10) / (1024 * 1024)).toString()
+				: ''
+		);
+		setZimbraMailMessageLifetime(cosData?.zimbraMailMessageLifetime?.slice(0, -1));
 		setIsDirty(false);
 	};
 
@@ -832,16 +761,11 @@ const CosAdvanced: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraQuotaWarnInterval !== undefined &&
-			cosData.zimbraQuotaWarnInterval !==
-				`${cosAdvanced.zimbraQuotaWarnInterval}${cosAdvanced?.zimbraQuotaWarnIntervalRangeTime?.value}`
+			cosData.zimbraQuotaWarnInterval !== cosAdvanced.zimbraQuotaWarnInterval
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraQuotaWarnInterval,
-		cosAdvanced?.zimbraQuotaWarnIntervalRangeTime?.value,
-		cosData.zimbraQuotaWarnInterval
-	]);
+	}, [cosAdvanced.zimbraQuotaWarnInterval, cosData.zimbraQuotaWarnInterval]);
 
 	useEffect(() => {
 		if (
@@ -855,28 +779,22 @@ const CosAdvanced: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraDataSourceMinPollingInterval !== undefined &&
-			cosData.zimbraDataSourceMinPollingInterval !==
-				`${cosAdvanced.zimbraDataSourceMinPollingInterval}${cosAdvanced?.zimbraDataSourceMinPollingIntervalRangeTime?.value}`
+			cosData.zimbraDataSourceMinPollingInterval !== cosAdvanced.zimbraDataSourceMinPollingInterval
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraDataSourceMinPollingInterval,
-		cosAdvanced?.zimbraDataSourceMinPollingIntervalRangeTime?.value,
-		cosData.zimbraDataSourceMinPollingInterval
-	]);
+	}, [cosAdvanced.zimbraDataSourceMinPollingInterval, cosData.zimbraDataSourceMinPollingInterval]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraDataSourcePop3PollingInterval !== undefined &&
 			cosData.zimbraDataSourcePop3PollingInterval !==
-				`${cosAdvanced.zimbraDataSourcePop3PollingInterval}${cosAdvanced?.zimbraDataSourcePop3PollingIntervalRangeTime?.value}`
+				cosAdvanced.zimbraDataSourcePop3PollingInterval
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosAdvanced.zimbraDataSourcePop3PollingInterval,
-		cosAdvanced?.zimbraDataSourcePop3PollingIntervalRangeTime?.value,
 		cosData.zimbraDataSourcePop3PollingInterval
 	]);
 
@@ -884,13 +802,12 @@ const CosAdvanced: FC = () => {
 		if (
 			cosData.zimbraDataSourceImapPollingInterval !== undefined &&
 			cosData.zimbraDataSourceImapPollingInterval !==
-				`${cosAdvanced.zimbraDataSourceImapPollingInterval}${cosAdvanced?.zimbraDataSourceImapPollingIntervalRangeTime?.value}`
+				cosAdvanced.zimbraDataSourceImapPollingInterval
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosAdvanced.zimbraDataSourceImapPollingInterval,
-		cosAdvanced?.zimbraDataSourceImapPollingIntervalRangeTime?.value,
 		cosData.zimbraDataSourceImapPollingInterval
 	]);
 
@@ -898,41 +815,34 @@ const CosAdvanced: FC = () => {
 		if (
 			cosData.zimbraDataSourceCalendarPollingInterval !== undefined &&
 			cosData.zimbraDataSourceCalendarPollingInterval !==
-				`${cosAdvanced.zimbraDataSourceCalendarPollingInterval}${cosAdvanced?.zimbraDataSourceCalendarPollingIntervalRangeTime?.value}`
+				cosAdvanced.zimbraDataSourceCalendarPollingInterval
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosAdvanced.zimbraDataSourceCalendarPollingInterval,
-		cosAdvanced?.zimbraDataSourceCalendarPollingIntervalRangeTime?.value,
 		cosData.zimbraDataSourceCalendarPollingInterval
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraDataSourceRssPollingInterval !== undefined &&
-			cosData.zimbraDataSourceRssPollingInterval !==
-				`${cosAdvanced.zimbraDataSourceRssPollingInterval}${cosAdvanced?.zimbraDataSourceRssPollingIntervalRangeTime?.value}`
+			cosData.zimbraDataSourceRssPollingInterval !== cosAdvanced.zimbraDataSourceRssPollingInterval
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraDataSourceRssPollingInterval,
-		cosAdvanced?.zimbraDataSourceRssPollingIntervalRangeTime?.value,
-		cosData.zimbraDataSourceRssPollingInterval
-	]);
+	}, [cosAdvanced.zimbraDataSourceRssPollingInterval, cosData.zimbraDataSourceRssPollingInterval]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraDataSourceCaldavPollingInterval !== undefined &&
 			cosData.zimbraDataSourceCaldavPollingInterval !==
-				`${cosAdvanced.zimbraDataSourceCaldavPollingInterval}${cosAdvanced?.zimbraDataSourceCaldavPollingIntervalRangeTime?.value}`
+				cosAdvanced.zimbraDataSourceCaldavPollingInterval
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosAdvanced.zimbraDataSourceCaldavPollingInterval,
-		cosAdvanced?.zimbraDataSourceCaldavPollingIntervalRangeTime?.value,
 		cosData.zimbraDataSourceCaldavPollingInterval
 	]);
 
@@ -1038,77 +948,56 @@ const CosAdvanced: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPasswordLockoutDuration !== undefined &&
-			cosData.zimbraPasswordLockoutDuration !==
-				`${cosAdvanced.zimbraPasswordLockoutDuration}${cosAdvanced?.zimbraPasswordLockoutDurationRangeTime?.value}`
+			cosData.zimbraPasswordLockoutDuration !== cosAdvanced.zimbraPasswordLockoutDuration
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraPasswordLockoutDuration,
-		cosAdvanced?.zimbraPasswordLockoutDurationRangeTime?.value,
-		cosData.zimbraPasswordLockoutDuration
-	]);
+	}, [cosAdvanced.zimbraPasswordLockoutDuration, cosData.zimbraPasswordLockoutDuration]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraPasswordLockoutFailureLifetime !== undefined &&
 			cosData.zimbraPasswordLockoutFailureLifetime !==
-				`${cosAdvanced.zimbraPasswordLockoutFailureLifetime}${cosAdvanced?.zimbraPasswordLockoutFailureLifetimeRangeTime?.value}`
+				cosAdvanced.zimbraPasswordLockoutFailureLifetime
 		) {
 			setIsDirty(true);
 		}
 	}, [
 		cosAdvanced.zimbraPasswordLockoutFailureLifetime,
-		cosAdvanced?.zimbraPasswordLockoutFailureLifetimeRangeTime?.value,
 		cosData.zimbraPasswordLockoutFailureLifetime
 	]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraAdminAuthTokenLifetime !== undefined &&
-			cosData.zimbraAdminAuthTokenLifetime !==
-				`${cosAdvanced.zimbraAdminAuthTokenLifetime}${cosAdvanced?.zimbraAdminAuthTokenLifetimeRangeTime?.value}`
+			cosData.zimbraAdminAuthTokenLifetime !== cosAdvanced.zimbraAdminAuthTokenLifetime
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraAdminAuthTokenLifetime,
-		cosAdvanced?.zimbraAdminAuthTokenLifetimeRangeTime?.value,
-		cosData.zimbraAdminAuthTokenLifetime
-	]);
+	}, [cosAdvanced.zimbraAdminAuthTokenLifetime, cosData.zimbraAdminAuthTokenLifetime]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraAuthTokenLifetime !== undefined &&
-			cosData.zimbraAuthTokenLifetime !==
-				`${cosAdvanced.zimbraAuthTokenLifetime}${cosAdvanced?.zimbraAuthTokenLifetimeRangeTime?.value}`
+			cosData.zimbraAuthTokenLifetime !== cosAdvanced.zimbraAuthTokenLifetime
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraAuthTokenLifetime,
-		cosAdvanced?.zimbraAuthTokenLifetimeRangeTime?.value,
-		cosData.zimbraAuthTokenLifetime
-	]);
+	}, [cosAdvanced.zimbraAuthTokenLifetime, cosData.zimbraAuthTokenLifetime]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraMailIdleSessionTimeout !== undefined &&
-			cosData.zimbraMailIdleSessionTimeout !==
-				`${cosAdvanced.zimbraMailIdleSessionTimeout}${cosAdvanced?.zimbraMailIdleSessionTimeoutRangeTime?.value}`
+			cosData.zimbraMailIdleSessionTimeout !== cosAdvanced.zimbraMailIdleSessionTimeout
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraMailIdleSessionTimeout,
-		cosAdvanced?.zimbraMailIdleSessionTimeoutRangeTime?.value,
-		cosData.zimbraMailIdleSessionTimeout
-	]);
+	}, [cosAdvanced.zimbraMailIdleSessionTimeout, cosData.zimbraMailIdleSessionTimeout]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraMailMessageLifetime !== undefined &&
-			cosData.zimbraMailMessageLifetime !== `${cosAdvanced.zimbraMailMessageLifetime}d`
+			cosData.zimbraMailMessageLifetime !== cosAdvanced.zimbraMailMessageLifetime
 		) {
 			setIsDirty(true);
 		}
@@ -1117,30 +1006,20 @@ const CosAdvanced: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraMailTrashLifetime !== undefined &&
-			cosData.zimbraMailTrashLifetime !==
-				`${cosAdvanced.zimbraMailTrashLifetime}${cosAdvanced?.zimbraMailTrashLifetimeRangeTime?.value}`
+			cosData.zimbraMailTrashLifetime !== cosAdvanced.zimbraMailTrashLifetime
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraMailTrashLifetime,
-		cosAdvanced?.zimbraMailTrashLifetimeRangeTime?.value,
-		cosData.zimbraMailTrashLifetime
-	]);
+	}, [cosAdvanced.zimbraMailTrashLifetime, cosData.zimbraMailTrashLifetime]);
 
 	useEffect(() => {
 		if (
 			cosData.zimbraMailSpamLifetime !== undefined &&
-			cosData.zimbraMailSpamLifetime !==
-				`${cosAdvanced.zimbraMailSpamLifetime}${cosAdvanced?.zimbraMailSpamLifetimeRangeTime?.value}`
+			cosData.zimbraMailSpamLifetime !== cosAdvanced.zimbraMailSpamLifetime
 		) {
 			setIsDirty(true);
 		}
-	}, [
-		cosAdvanced.zimbraMailSpamLifetime,
-		cosAdvanced?.zimbraMailSpamLifetimeRangeTime?.value,
-		cosData.zimbraMailSpamLifetime
-	]);
+	}, [cosAdvanced.zimbraMailSpamLifetime, cosData.zimbraMailSpamLifetime]);
 
 	useEffect(() => {
 		if (
@@ -1152,12 +1031,316 @@ const CosAdvanced: FC = () => {
 	}, [cosAdvanced.zimbraFreebusyExchangeUserOrg, cosData.zimbraFreebusyExchangeUserOrg]);
 
 	useEffect(() => {
-		if (!_.isEqual(cosAdvanced.zimbraProxyAllowedDomains, proxyAllowedDomainList)) {
+		if (!_.isEqual(zimbraProxyAllowedDomains, proxyAllowedDomainList)) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
 		}
-	}, [cosAdvanced.zimbraProxyAllowedDomains, proxyAllowedDomainList]);
+	}, [zimbraProxyAllowedDomains, proxyAllowedDomainList]);
+
+	const onZimbraQuotaWarnIntervalTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraQuotaWarnInterval: `${zimbraQuotaWarnIntervalNum}${v}`
+			}));
+		},
+		[zimbraQuotaWarnIntervalNum, setCosAdvanced]
+	);
+	const onZimbraQuotaWarnIntervalNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraQuotaWarnInterval: `${e.target.value}${zimbraQuotaWarnIntervalType}`
+			}));
+			setZimbraQuotaWarnIntervalNum(e.target.value);
+		},
+		[zimbraQuotaWarnIntervalType, setCosAdvanced]
+	);
+
+	const onZimbraDataSourceMinPollingIntervalTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceMinPollingInterval: `${zimbraDataSourceMinPollingIntervalNum}${v}`
+			}));
+		},
+		[zimbraDataSourceMinPollingIntervalNum, setCosAdvanced]
+	);
+	const onZimbraDataSourceMinPollingIntervalNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceMinPollingInterval: `${e.target.value}${zimbraDataSourceMinPollingIntervalType}`
+			}));
+			setZimbraDataSourceMinPollingIntervalNum(e.target.value);
+		},
+		[zimbraDataSourceMinPollingIntervalType, setCosAdvanced]
+	);
+
+	const onZimbraDataSourcePop3PollingIntervalTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourcePop3PollingInterval: `${zimbraDataSourcePop3PollingIntervalNum}${v}`
+			}));
+		},
+		[zimbraDataSourcePop3PollingIntervalNum, setCosAdvanced]
+	);
+	const onZimbraDataSourcePop3PollingIntervalNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourcePop3PollingInterval: `${e.target.value}${zimbraDataSourcePop3PollingIntervalType}`
+			}));
+			setZimbraDataSourcePop3PollingIntervalNum(e.target.value);
+		},
+		[zimbraDataSourcePop3PollingIntervalType, setCosAdvanced]
+	);
+
+	const onZimbraDataSourceImapPollingIntervalTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceImapPollingInterval: `${zimbraDataSourceImapPollingIntervalNum}${v}`
+			}));
+		},
+		[zimbraDataSourceImapPollingIntervalNum, setCosAdvanced]
+	);
+	const onZimbraDataSourceImapPollingIntervalNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceImapPollingInterval: `${e.target.value}${zimbraDataSourceImapPollingIntervalType}`
+			}));
+			setZimbraDataSourceImapPollingIntervalNum(e.target.value);
+		},
+		[zimbraDataSourceImapPollingIntervalType, setCosAdvanced]
+	);
+
+	const onZimbraDataSourceCalendarPollingIntervalTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceCalendarPollingInterval: `${zimbraDataSourceCalendarPollingIntervalNum}${v}`
+			}));
+		},
+		[zimbraDataSourceCalendarPollingIntervalNum, setCosAdvanced]
+	);
+	const onZimbraDataSourceCalendarPollingIntervalNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceCalendarPollingInterval: `${e.target.value}${zimbraDataSourceCalendarPollingIntervalType}`
+			}));
+			setZimbraDataSourceCalendarPollingIntervalNum(e.target.value);
+		},
+		[zimbraDataSourceCalendarPollingIntervalType, setCosAdvanced]
+	);
+
+	const onZimbraDataSourceRssPollingIntervalTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceRssPollingInterval: `${zimbraDataSourceRssPollingIntervalNum}${v}`
+			}));
+		},
+		[zimbraDataSourceRssPollingIntervalNum, setCosAdvanced]
+	);
+	const onZimbraDataSourceRssPollingIntervalNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceRssPollingInterval: `${e.target.value}${zimbraDataSourceRssPollingIntervalType}`
+			}));
+			setZimbraDataSourceRssPollingIntervalNum(e.target.value);
+		},
+		[zimbraDataSourceRssPollingIntervalType, setCosAdvanced]
+	);
+
+	const onZimbraDataSourceCaldavPollingIntervalTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceCaldavPollingInterval: `${zimbraDataSourceCaldavPollingIntervalNum}${v}`
+			}));
+		},
+		[zimbraDataSourceCaldavPollingIntervalNum, setCosAdvanced]
+	);
+	const onZimbraDataSourceCaldavPollingIntervalNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraDataSourceCaldavPollingInterval: `${e.target.value}${zimbraDataSourceCaldavPollingIntervalType}`
+			}));
+			setZimbraDataSourceCaldavPollingIntervalNum(e.target.value);
+		},
+		[zimbraDataSourceCaldavPollingIntervalType, setCosAdvanced]
+	);
+
+	const onZimbraPasswordLockoutDurationTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraPasswordLockoutDuration: `${zimbraPasswordLockoutDurationNum}${v}`
+			}));
+		},
+		[zimbraPasswordLockoutDurationNum, setCosAdvanced]
+	);
+	const onZimbraPasswordLockoutDurationNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraPasswordLockoutDuration: `${e.target.value}${zimbraPasswordLockoutDurationType}`
+			}));
+			setZimbraPasswordLockoutDurationNum(e.target.value);
+		},
+		[zimbraPasswordLockoutDurationType, setCosAdvanced]
+	);
+
+	const onZimbraPasswordLockoutFailureLifetimeTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraPasswordLockoutFailureLifetime: `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
+			}));
+		},
+		[zimbraPasswordLockoutFailureLifetimeNum, setCosAdvanced]
+	);
+	const onZimbraPasswordLockoutFailureLifetimeNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraPasswordLockoutFailureLifetime: `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
+			}));
+			setZimbraPasswordLockoutFailureLifetimeNum(e.target.value);
+		},
+		[zimbraPasswordLockoutFailureLifetimeType, setCosAdvanced]
+	);
+
+	const onZimbraAdminAuthTokenLifetimeTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraAdminAuthTokenLifetime: `${zimbraAdminAuthTokenLifetimeNum}${v}`
+			}));
+		},
+		[zimbraAdminAuthTokenLifetimeNum, setCosAdvanced]
+	);
+	const onZimbraAdminAuthTokenLifetimeNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraAdminAuthTokenLifetime: `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+			}));
+			setZimbraAdminAuthTokenLifetimeNum(e.target.value);
+		},
+		[zimbraAdminAuthTokenLifetimeType, setCosAdvanced]
+	);
+
+	const onZimbraAuthTokenLifetimeTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraAuthTokenLifetime: `${zimbraAuthTokenLifetimeNum}${v}`
+			}));
+		},
+		[zimbraAuthTokenLifetimeNum, setCosAdvanced]
+	);
+	const onZimbraAuthTokenLifetimeNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraAuthTokenLifetime: `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+			}));
+			setZimbraAuthTokenLifetimeNum(e.target.value);
+		},
+		[zimbraAdminAuthTokenLifetimeType, setCosAdvanced]
+	);
+
+	const onZimbraMailIdleSessionTimeoutTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailIdleSessionTimeout: `${zimbraMailIdleSessionTimeoutNum}${v}`
+			}));
+		},
+		[zimbraMailIdleSessionTimeoutNum, setCosAdvanced]
+	);
+	const onZimbraMailIdleSessionTimeoutNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailIdleSessionTimeout: `${e.target.value}${zimbraMailIdleSessionTimeoutType}`
+			}));
+			setZimbraMailIdleSessionTimeoutNum(e.target.value);
+		},
+		[zimbraMailIdleSessionTimeoutType, setCosAdvanced]
+	);
+
+	const onZimbraMailTrashLifetimeTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailTrashLifetime: `${zimbraMailTrashLifetimeNum}${v}`
+			}));
+		},
+		[zimbraMailTrashLifetimeNum, setCosAdvanced]
+	);
+	const onZimbraMailTrashLifetimeNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailTrashLifetime: `${e.target.value}${zimbraMailTrashLifetimeType}`
+			}));
+			setZimbraMailTrashLifetimeNum(e.target.value);
+		},
+		[zimbraMailTrashLifetimeType, setCosAdvanced]
+	);
+
+	const onZimbraMailSpamLifetimeTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailSpamLifetime: `${zimbraMailSpamLifetimeNum}${v}`
+			}));
+		},
+		[zimbraMailSpamLifetimeNum, setCosAdvanced]
+	);
+	const onZimbraMailSpamLifetimeNumChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailSpamLifetime: `${e.target.value}${zimbraMailSpamLifetimeType}`
+			}));
+			setZimbraMailSpamLifetimeNum(e.target.value);
+		},
+		[zimbraMailSpamLifetimeType, setCosAdvanced]
+	);
+
+	const onZimbraMailQuotaChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailQuota: e.target.value
+					? (parseInt(e.target.value, 10) * 1024 * 1024)?.toString()
+					: ''
+			}));
+			setZimbraMailQuota(e.target.value);
+		},
+		[setCosAdvanced]
+	);
+
+	const onZimbraMailMessageLifetimeChange = useCallback(
+		(e) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailMessageLifetime: `${e.target.value}d`
+			}));
+			setZimbraMailMessageLifetime(e.target.value);
+		},
+		[setCosAdvanced]
+	);
 
 	const onSave = (): void => {
 		const body: any = {};
@@ -1167,154 +1350,9 @@ const CosAdvanced: FC = () => {
 			_content: cosData.zimbraId
 		};
 		body.id = id;
-		attributes.push({
-			n: 'zimbraAttachmentsBlocked',
-			_content: cosAdvanced?.zimbraAttachmentsBlocked === true ? 'TRUE' : 'FALSE'
-		});
-		attributes.push({
-			n: 'zimbraMailForwardingAddressMaxLength',
-			_content: cosAdvanced?.zimbraMailForwardingAddressMaxLength
-		});
-		attributes.push({
-			n: 'zimbraMailForwardingAddressMaxNumAddrs',
-			_content: cosAdvanced?.zimbraMailForwardingAddressMaxNumAddrs
-		});
-		attributes.push({
-			n: 'zimbraMailQuota',
-			_content: (parseInt(cosAdvanced?.zimbraMailQuota, 10) * 1024 * 1024)?.toString()
-		});
-		attributes.push({
-			n: 'zimbraContactMaxNumEntries',
-			_content: cosAdvanced?.zimbraContactMaxNumEntries
-		});
-		attributes.push({
-			n: 'zimbraQuotaWarnPercent',
-			_content: cosAdvanced?.zimbraQuotaWarnPercent
-		});
-		attributes.push({
-			n: 'zimbraQuotaWarnInterval',
-			_content: `${cosAdvanced?.zimbraQuotaWarnInterval}${cosAdvanced?.zimbraQuotaWarnIntervalRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraQuotaWarnMessage',
-			_content: cosAdvanced?.zimbraQuotaWarnMessage
-		});
-		attributes.push({
-			n: 'zimbraDataSourceMinPollingInterval',
-			_content: `${cosAdvanced?.zimbraDataSourceMinPollingInterval}${cosAdvanced?.zimbraDataSourceMinPollingIntervalRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraDataSourcePop3PollingInterval',
-			_content: `${cosAdvanced?.zimbraDataSourcePop3PollingInterval}${cosAdvanced?.zimbraDataSourcePop3PollingIntervalRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraDataSourceImapPollingInterval',
-			_content: `${cosAdvanced?.zimbraDataSourceImapPollingInterval}${cosAdvanced?.zimbraDataSourceImapPollingIntervalRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraDataSourceCalendarPollingInterval',
-			_content: `${cosAdvanced?.zimbraDataSourceCalendarPollingInterval}${cosAdvanced?.zimbraDataSourceCalendarPollingIntervalRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraDataSourceRssPollingInterval',
-			_content: `${cosAdvanced?.zimbraDataSourceRssPollingInterval}${cosAdvanced?.zimbraDataSourceRssPollingIntervalRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraDataSourceCaldavPollingInterval',
-			_content: `${cosAdvanced?.zimbraDataSourceCaldavPollingInterval}${cosAdvanced?.zimbraDataSourceCaldavPollingIntervalRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraPasswordLocked',
-			_content: cosAdvanced?.zimbraPasswordLocked === true ? 'TRUE' : 'FALSE'
-		});
-		attributes.push({
-			n: 'zimbraPasswordMinLength',
-			_content: cosAdvanced?.zimbraPasswordMinLength
-		});
-		attributes.push({
-			n: 'zimbraPasswordMaxLength',
-			_content: cosAdvanced?.zimbraPasswordMaxLength
-		});
-		attributes.push({
-			n: 'zimbraPasswordMinUpperCaseChars',
-			_content: cosAdvanced?.zimbraPasswordMinUpperCaseChars
-		});
-		attributes.push({
-			n: 'zimbraPasswordMinLowerCaseChars',
-			_content: cosAdvanced?.zimbraPasswordMinLowerCaseChars
-		});
-		attributes.push({
-			n: 'zimbraPasswordMinPunctuationChars',
-			_content: cosAdvanced?.zimbraPasswordMinPunctuationChars
-		});
-		attributes.push({
-			n: 'zimbraPasswordMinNumericChars',
-			_content: cosAdvanced?.zimbraPasswordMinNumericChars
-		});
-		attributes.push({
-			n: 'zimbraPasswordMinDigitsOrPuncs',
-			_content: cosAdvanced?.zimbraPasswordMinDigitsOrPuncs
-		});
-		attributes.push({
-			n: 'zimbraPasswordMinAge',
-			_content: cosAdvanced?.zimbraPasswordMinAge
-		});
-		attributes.push({
-			n: 'zimbraPasswordEnforceHistory',
-			_content: cosAdvanced?.zimbraPasswordEnforceHistory
-		});
-		attributes.push({
-			n: 'zimbraPasswordMaxAge',
-			_content: cosAdvanced?.zimbraPasswordMaxAge
-		});
-		attributes.push({
-			n: 'zimbraPasswordBlockCommonEnabled',
-			_content: cosAdvanced?.zimbraPasswordBlockCommonEnabled === true ? 'TRUE' : 'FALSE'
-		});
-		attributes.push({
-			n: 'zimbraPasswordLockoutEnabled',
-			_content: cosAdvanced?.zimbraPasswordLockoutEnabled === true ? 'TRUE' : 'FALSE'
-		});
-		attributes.push({
-			n: 'zimbraPasswordLockoutMaxFailures',
-			_content: cosAdvanced?.zimbraPasswordLockoutMaxFailures
-		});
-		attributes.push({
-			n: 'zimbraPasswordLockoutDuration',
-			_content: `${cosAdvanced?.zimbraPasswordLockoutDuration}${cosAdvanced?.zimbraPasswordLockoutDurationRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraPasswordLockoutFailureLifetime',
-			_content: `${cosAdvanced?.zimbraPasswordLockoutFailureLifetime}${cosAdvanced?.zimbraPasswordLockoutFailureLifetimeRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraAdminAuthTokenLifetime',
-			_content: `${cosAdvanced?.zimbraAdminAuthTokenLifetime}${cosAdvanced?.zimbraAdminAuthTokenLifetimeRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraAuthTokenLifetime',
-			_content: `${cosAdvanced?.zimbraAuthTokenLifetime}${cosAdvanced?.zimbraAuthTokenLifetimeRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraMailIdleSessionTimeout',
-			_content: `${cosAdvanced?.zimbraMailIdleSessionTimeout}${cosAdvanced?.zimbraMailIdleSessionTimeoutRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraMailMessageLifetime',
-			_content: `${cosAdvanced?.zimbraMailMessageLifetime}d`
-		});
-		attributes.push({
-			n: 'zimbraMailTrashLifetime',
-			_content: `${cosAdvanced?.zimbraMailTrashLifetime}${cosAdvanced?.zimbraMailTrashLifetimeRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraMailSpamLifetime',
-			_content: `${cosAdvanced?.zimbraMailSpamLifetime}${cosAdvanced?.zimbraMailSpamLifetimeRangeTime?.value}`
-		});
-		attributes.push({
-			n: 'zimbraFreebusyExchangeUserOrg',
-			_content: cosAdvanced?.zimbraFreebusyExchangeUserOrg
-		});
+		Object.keys(cosAdvanced).map((ele: any) =>
+			attributes.push({ n: ele, _content: cosAdvanced[ele] })
+		);
 		proxyAllowedDomainList.forEach((item: any) => {
 			attributes.push({
 				n: 'zimbraProxyAllowedDomains',
@@ -1412,7 +1450,7 @@ const CosAdvanced: FC = () => {
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Switch
-							value={cosAdvanced.zimbraAttachmentsBlocked}
+							value={cosAdvanced.zimbraAttachmentsBlocked === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraAttachmentsBlocked')}
 							label={t(
@@ -1478,10 +1516,10 @@ const CosAdvanced: FC = () => {
 								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.account_quota', 'Account quota')}
-										value={cosAdvanced.zimbraMailQuota}
+										value={zimbraMailQuota}
 										background="gray5"
 										inputName="zimbraMailQuota"
-										onChange={changeValue}
+										onChange={onZimbraMailQuotaChange}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1525,10 +1563,10 @@ const CosAdvanced: FC = () => {
 											'cos.minimum_duration_of_time_between_quota_warnings',
 											'Minimum duration of time between quota warnings'
 										)}
-										value={cosAdvanced.zimbraQuotaWarnInterval}
+										value={zimbraQuotaWarnIntervalNum}
 										background="gray5"
 										inputName="zimbraQuotaWarnInterval"
-										onChange={changeValue}
+										onChange={onZimbraQuotaWarnIntervalNumChange}
 									/>
 								</Container>
 								<Container width="26%" padding={{ left: 'small' }}>
@@ -1536,10 +1574,15 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraQuotaWarnIntervalRangeTime}
+										selection={
+											zimbraQuotaWarnIntervalType === ''
+												? timeItems[-1]
+												: // eslint-disable-next-line max-len
+												  timeItems.find((item: any) => item.value === zimbraQuotaWarnIntervalType)
+										}
 										showCheckbox={false}
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) => onSelectionChange('zimbraQuotaWarnIntervalRangeTime', v)}
+										onChange={onZimbraQuotaWarnIntervalTypeChange}
 									/>
 								</Container>
 							</ListRow>
@@ -1593,10 +1636,10 @@ const CosAdvanced: FC = () => {
 											'cos.shortest_allowed_duration_for_any_polling_interval',
 											'Shortest allowed duration for any polling interval'
 										)}
-										value={cosAdvanced.zimbraDataSourceMinPollingInterval}
+										value={zimbraDataSourceMinPollingIntervalNum}
 										background="gray5"
 										inputName="zimbraDataSourceMinPollingInterval"
-										onChange={changeValue}
+										onChange={onZimbraDataSourceMinPollingIntervalNumChange}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
@@ -1604,21 +1647,25 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraDataSourceMinPollingIntervalRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraDataSourceMinPollingIntervalRangeTime', v)
+										selection={
+											zimbraDataSourceMinPollingIntervalType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraDataSourceMinPollingIntervalType
+												  )
 										}
+										showCheckbox={false}
+										onChange={onZimbraDataSourceMinPollingIntervalTypeChange}
 									/>
 								</Container>
 								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.pop3_polling_interval', 'POP3 polling interval')}
-										value={cosAdvanced.zimbraDataSourcePop3PollingInterval}
+										value={zimbraDataSourcePop3PollingIntervalNum}
 										background="gray5"
 										inputName="zimbraDataSourcePop3PollingInterval"
-										onChange={changeValue}
+										onChange={onZimbraDataSourcePop3PollingIntervalNumChange}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small' }}>
@@ -1626,12 +1673,16 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraDataSourcePop3PollingIntervalRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraDataSourcePop3PollingIntervalRangeTime', v)
+										selection={
+											zimbraDataSourcePop3PollingIntervalType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraDataSourcePop3PollingIntervalType
+												  )
 										}
+										showCheckbox={false}
+										onChange={onZimbraDataSourcePop3PollingIntervalTypeChange}
 									/>
 								</Container>
 							</ListRow>
@@ -1648,10 +1699,10 @@ const CosAdvanced: FC = () => {
 								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.imap_polling_interval', 'IMAP polling interval')}
-										value={cosAdvanced.zimbraDataSourceImapPollingInterval}
+										value={zimbraDataSourceImapPollingIntervalNum}
 										background="gray5"
 										inputName="zimbraDataSourceImapPollingInterval"
-										onChange={changeValue}
+										onChange={onZimbraDataSourceImapPollingIntervalNumChange}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
@@ -1659,21 +1710,25 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraDataSourceImapPollingIntervalRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraDataSourceImapPollingIntervalRangeTime', v)
+										selection={
+											zimbraDataSourceImapPollingIntervalType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraDataSourceImapPollingIntervalType
+												  )
 										}
+										showCheckbox={false}
+										onChange={onZimbraDataSourceImapPollingIntervalTypeChange}
 									/>
 								</Container>
 								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.calendar_polling_interval', 'Calendar polling interval')}
-										value={cosAdvanced.zimbraDataSourceCalendarPollingInterval}
+										value={zimbraDataSourceCalendarPollingIntervalNum}
 										background="gray5"
 										inputName="zimbraDataSourceCalendarPollingInterval"
-										onChange={changeValue}
+										onChange={onZimbraDataSourceCalendarPollingIntervalNumChange}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small' }}>
@@ -1681,12 +1736,17 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraDataSourceCalendarPollingIntervalRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraDataSourceCalendarPollingIntervalRangeTime', v)
+										selection={
+											zimbraDataSourceCalendarPollingIntervalType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) =>
+															item.value === zimbraDataSourceCalendarPollingIntervalType
+												  )
 										}
+										showCheckbox={false}
+										onChange={onZimbraDataSourceCalendarPollingIntervalTypeChange}
 									/>
 								</Container>
 							</ListRow>
@@ -1703,10 +1763,10 @@ const CosAdvanced: FC = () => {
 								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.rss_polling_interval', 'RSS polling interval')}
-										value={cosAdvanced.zimbraDataSourceRssPollingInterval}
+										value={zimbraDataSourceRssPollingIntervalNum}
 										background="gray5"
 										inputName="zimbraDataSourceRssPollingInterval"
-										onChange={changeValue}
+										onChange={onZimbraDataSourceRssPollingIntervalNumChange}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
@@ -1714,21 +1774,25 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraDataSourceRssPollingIntervalRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraDataSourceRssPollingIntervalRangeTime', v)
+										selection={
+											zimbraDataSourceRssPollingIntervalType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraDataSourceRssPollingIntervalType
+												  )
 										}
+										showCheckbox={false}
+										onChange={onZimbraDataSourceRssPollingIntervalTypeChange}
 									/>
 								</Container>
 								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.caldav_polling_interval', 'CalDAV polling interval')}
-										value={cosAdvanced.zimbraDataSourceCaldavPollingInterval}
+										value={zimbraDataSourceCaldavPollingIntervalNum}
 										background="gray5"
 										inputName="zimbraDataSourceCaldavPollingInterval"
-										onChange={changeValue}
+										onChange={onZimbraDataSourceCaldavPollingIntervalNumChange}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small' }}>
@@ -1736,12 +1800,16 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraDataSourceCaldavPollingIntervalRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraDataSourceCaldavPollingIntervalRangeTime', v)
+										selection={
+											zimbraDataSourceCaldavPollingIntervalType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraDataSourceCaldavPollingIntervalType
+												  )
 										}
+										showCheckbox={false}
+										onChange={onZimbraDataSourceCaldavPollingIntervalTypeChange}
 									/>
 								</Container>
 							</ListRow>
@@ -1951,7 +2019,7 @@ const CosAdvanced: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start">
 									<Switch
-										value={cosAdvanced.zimbraPasswordLocked}
+										value={cosAdvanced.zimbraPasswordLocked === 'TRUE'}
 										label={t(
 											'cos.prevent_user_from_changing_password',
 											'Prevent user from changing password'
@@ -2102,7 +2170,7 @@ const CosAdvanced: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
 									<Switch
-										value={cosAdvanced.zimbraPasswordBlockCommonEnabled}
+										value={cosAdvanced.zimbraPasswordBlockCommonEnabled === 'TRUE'}
 										label={t('cos.reject_common_passwords', 'Reject common passwords')}
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
@@ -2132,7 +2200,7 @@ const CosAdvanced: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start">
 									<Switch
-										value={cosAdvanced.zimbraPasswordLockoutEnabled}
+										value={cosAdvanced.zimbraPasswordLockoutEnabled === 'TRUE'}
 										label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => changeSwitchOption('zimbraPasswordLockoutEnabled')}
@@ -2159,7 +2227,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordLockoutMaxFailures"
 										onChange={changeValue}
-										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
 									/>
 								</Container>
 							</ListRow>
@@ -2176,11 +2244,11 @@ const CosAdvanced: FC = () => {
 								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-										value={cosAdvanced.zimbraPasswordLockoutDuration}
+										value={zimbraPasswordLockoutDurationNum}
 										background="gray5"
 										inputName="zimbraPasswordLockoutDuration"
-										onChange={changeValue}
-										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
+										onChange={onZimbraPasswordLockoutDurationNumChange}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
@@ -2188,13 +2256,17 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraPasswordLockoutDurationRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraPasswordLockoutDurationRangeTime', v)
+										selection={
+											zimbraPasswordLockoutDurationType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraPasswordLockoutDurationType
+												  )
 										}
-										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
+										showCheckbox={false}
+										onChange={onZimbraPasswordLockoutDurationTypeChange}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
 									/>
 								</Container>
 								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
@@ -2203,11 +2275,11 @@ const CosAdvanced: FC = () => {
 											'cos.time_window_failed_logins_must_occur_to_lock_account',
 											'Time window in which the failed logins must occur to lock the account:'
 										)}
-										value={cosAdvanced.zimbraPasswordLockoutFailureLifetime}
+										value={zimbraPasswordLockoutFailureLifetimeNum}
 										background="gray5"
 										inputName="zimbraPasswordLockoutFailureLifetime"
-										onChange={changeValue}
-										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
+										onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small' }}>
@@ -2215,13 +2287,17 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraPasswordLockoutFailureLifetimeRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraPasswordLockoutFailureLifetimeRangeTime', v)
+										selection={
+											zimbraPasswordLockoutFailureLifetimeType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraPasswordLockoutFailureLifetimeType
+												  )
 										}
-										disabled={!cosAdvanced.zimbraPasswordLockoutEnabled}
+										showCheckbox={false}
+										onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
 									/>
 								</Container>
 							</ListRow>
@@ -2252,10 +2328,10 @@ const CosAdvanced: FC = () => {
 											'cos.admin_console_auth_token_lifetime',
 											'Admin console auth token lifetime'
 										)}
-										value={cosAdvanced.zimbraAdminAuthTokenLifetime}
+										value={zimbraAdminAuthTokenLifetimeNum}
 										background="gray5"
 										inputName="zimbraAdminAuthTokenLifetime"
-										onChange={changeValue}
+										onChange={onZimbraAdminAuthTokenLifetimeNumChange}
 									/>
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
@@ -2263,12 +2339,16 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraAdminAuthTokenLifetimeRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraAdminAuthTokenLifetimeRangeTime', v)
+										selection={
+											zimbraAdminAuthTokenLifetimeType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraAdminAuthTokenLifetimeType
+												  )
 										}
+										showCheckbox={false}
+										onChange={onZimbraAdminAuthTokenLifetimeTypeChange}
 									/>
 								</Container>
 							</ListRow>
@@ -2285,10 +2365,10 @@ const CosAdvanced: FC = () => {
 								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.auth_token_lifetime', 'Auth token lifetime')}
-										value={cosAdvanced.zimbraAuthTokenLifetime}
+										value={zimbraAuthTokenLifetimeNum}
 										background="gray5"
 										inputName="zimbraAuthTokenLifetime"
-										onChange={changeValue}
+										onChange={onZimbraAuthTokenLifetimeNumChange}
 									/>
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
@@ -2296,10 +2376,16 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraAuthTokenLifetimeRangeTime}
+										selection={
+											zimbraAuthTokenLifetimeType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraAuthTokenLifetimeType
+												  )
+										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) => onSelectionChange('zimbraAuthTokenLifetimeRangeTime', v)}
+										onChange={onZimbraAuthTokenLifetimeTypeChange}
 									/>
 								</Container>
 							</ListRow>
@@ -2316,10 +2402,10 @@ const CosAdvanced: FC = () => {
 								<Container width="100%" crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.session_idle_timeout', 'Session idle timeout')}
-										value={cosAdvanced.zimbraMailIdleSessionTimeout}
+										value={zimbraMailIdleSessionTimeoutNum}
 										background="gray5"
 										inputName="zimbraMailIdleSessionTimeout"
-										onChange={changeValue}
+										onChange={onZimbraMailIdleSessionTimeoutNumChange}
 									/>
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
@@ -2327,12 +2413,16 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraMailIdleSessionTimeoutRangeTime}
-										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) =>
-											onSelectionChange('zimbraMailIdleSessionTimeoutRangeTime', v)
+										selection={
+											zimbraMailIdleSessionTimeoutType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraMailIdleSessionTimeoutType
+												  )
 										}
+										showCheckbox={false}
+										onChange={onZimbraMailIdleSessionTimeoutTypeChange}
 									/>
 								</Container>
 							</ListRow>
@@ -2360,10 +2450,10 @@ const CosAdvanced: FC = () => {
 								<Container crossAlignment="flex-start">
 									<Input
 										label={t('cos.email_message_lifetime', 'E-mail message lifetime')}
-										value={cosAdvanced.zimbraMailMessageLifetime}
+										value={zimbraMailMessageLifetime}
 										background="gray5"
 										inputName="zimbraMailMessageLifetime"
-										onChange={changeValue}
+										onChange={onZimbraMailMessageLifetimeChange}
 									/>
 								</Container>
 							</ListRow>
@@ -2380,10 +2470,10 @@ const CosAdvanced: FC = () => {
 								<Container width="72%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.trashed_message_lifetime', 'Trashed message lifetime')}
-										value={cosAdvanced.zimbraMailTrashLifetime}
+										value={zimbraMailTrashLifetimeNum}
 										background="gray5"
 										inputName="zimbraMailTrashLifetime"
-										onChange={changeValue}
+										onChange={onZimbraMailTrashLifetimeNumChange}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
@@ -2391,19 +2481,25 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraMailTrashLifetimeRangeTime}
+										selection={
+											zimbraMailTrashLifetimeType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraMailTrashLifetimeType
+												  )
+										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) => onSelectionChange('zimbraMailTrashLifetimeRangeTime', v)}
+										onChange={onZimbraMailTrashLifetimeTypeChange}
 									/>
 								</Container>
 								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
 									<Input
 										label={t('cos.spam_message_lifetime', 'Spam message lifetime')}
-										value={cosAdvanced.zimbraMailSpamLifetime}
+										value={zimbraMailSpamLifetimeNum}
 										background="gray5"
 										inputName="zimbraMailSpamLifetime"
-										onChange={changeValue}
+										onChange={onZimbraMailSpamLifetimeNumChange}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small' }}>
@@ -2411,10 +2507,16 @@ const CosAdvanced: FC = () => {
 										items={timeItems}
 										background="gray5"
 										label={t('cos.range_time', 'Range Time')}
-										selection={cosAdvanced.zimbraMailSpamLifetimeRangeTime}
+										selection={
+											zimbraMailSpamLifetimeType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraMailSpamLifetimeType
+												  )
+										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onChange={(v: any) => onSelectionChange('zimbraMailSpamLifetimeRangeTime', v)}
+										onChange={onZimbraMailSpamLifetimeTypeChange}
 									/>
 								</Container>
 							</ListRow>
