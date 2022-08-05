@@ -3,28 +3,210 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useCallback, useMemo, useContext, useState } from 'react';
+import React, { FC, useCallback, useMemo, useContext, useState } from 'react';
 import {
 	Container,
 	Input,
-	PasswordInput,
 	Row,
 	Select,
 	Text,
-	Icon,
 	Switch,
 	Divider
 } from '@zextras/carbonio-design-system';
-import { setDefaults, useTranslation } from 'react-i18next';
-import { useDomainStore } from '../../../../../store/domain/store';
+import { useTranslation } from 'react-i18next';
 import { AccountContext } from '../account-context';
-import { ACTIVE, CLOSED, LOCKED, MAINTENANCE, PENDING } from '../../../../../constants';
-import { timeZoneList, localeList } from '../../../../utility/utils';
+import { SignatureDetail } from './signature-detail';
+import {
+	timeZoneList,
+	conversationGroupBy,
+	appointmentReminder,
+	charactorSet
+} from '../../../../utility/utils';
 
 const EditAccountUserPrefrencesSection: FC = () => {
 	const conext = useContext(AccountContext);
 	const [t] = useTranslation();
-	const { accountDetail, setAccountDetail, directMemberList, inDirectMemberList } = conext;
+	const { accountDetail, setAccountDetail, setSignatureItems, setSignatureList } = conext;
+	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
+		accountDetail?.zimbraPrefMailPollingInterval?.slice(0, -1)
+	);
+	const [prefMailPollingIntervalType, setPrefMailPollingIntervalType] = useState(
+		accountDetail?.zimbraPrefMailPollingInterval?.slice(-1) || ''
+	);
+	const [outOfOfficeCacheDurationNum, setOutOfOfficeCacheDurationNum] = useState(
+		accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1)
+	);
+	const [outOfOfficeCacheDurationType, setOutOfOfficeCacheDurationType] = useState(
+		accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''
+	);
+	const timezones = useMemo(() => timeZoneList(t), [t]);
+	const GROUP_BY = useMemo(() => conversationGroupBy(t), [t]);
+	const APPOINTMENT_REMINDER = useMemo(() => appointmentReminder(t), [t]);
+	const CHARACTOR_SET = useMemo(() => charactorSet(), []);
+
+	const POLLING_INTERVAL = useMemo(
+		() => [
+			{
+				label: t('account_details.as_new_mail_arrives', 'As New Mail Arrives'),
+				value: '',
+				disabled: true
+			},
+			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
+			{ label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
+			{ label: `4 ${t('label.minutes', 'minutes')}`, value: '4m' },
+			{ label: `5 ${t('label.minutes', 'minutes')}`, value: '5m' },
+			{ label: `6 ${t('label.minutes', 'minutes')}`, value: '6m' },
+			{ label: `7 ${t('label.minutes', 'minutes')}`, value: '7m' },
+			{ label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
+			{ label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
+			{ label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
+			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
+			{
+				label: t('account_details.manuallly', 'Manually'),
+				value: accountDetail.zimbraPrefMailPollingInterval
+			}
+		],
+		[accountDetail.zimbraPrefMailPollingInterval, t]
+	);
+	const TIME_TYPES = useMemo(
+		() => [
+			{ label: `${t('label.days', 'Days')}`, value: 'd' },
+			{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
+			{ label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
+			{ label: `${t('label.seconds', 'Seconds')}`, value: 's' }
+		],
+		[t]
+	);
+	const DefaultViewOptions = useMemo(
+		() => [
+			{ label: t('account_details.default_view.month', 'Month View'), value: 'month' },
+			{ label: t('account_details.default_view.week', 'Week View'), value: 'week' },
+			{ label: t('account_details.default_view.day', 'Day View'), value: 'day' },
+			{ label: t('account_details.default_view.work_week', 'Work Week View'), value: 'workWeek' },
+			{ label: t('account_details.default_view.list', 'List View'), value: 'list' }
+		],
+		[t]
+	);
+	const APPOINTMENT_VISIBILITY = useMemo(
+		() => [
+			{ label: t('label.public', 'Public'), value: 'public' },
+			{ label: t('label.private', 'Private'), value: 'private' }
+		],
+		[t]
+	);
+	const FIRST_DAY_OF_WEEK = useMemo(
+		() => [
+			{ label: t('label.week_day.sunday', 'Sunday'), value: '0' },
+			{ label: t('label.week_day.monday', 'Monday'), value: '1' },
+			{ label: t('label.week_day.tuesday', 'Tuesday'), value: '2' },
+			{ label: t('label.week_day.wednesday', 'Wednesday'), value: '3' },
+			{ label: t('label.week_day.thursday', 'Thursday'), value: '4' },
+			{ label: t('label.week_day.friday', 'Friday'), value: '5' },
+			{ label: t('label.week_day.saturday', 'Saturday'), value: '6' }
+		],
+		[t]
+	);
+
+	const APPOINTMENT_DURATION = useMemo(
+		() => [
+			{
+				label: t('reminder.minute', {
+					count: 30,
+					defaultValue: '{{count}} minute',
+					defaultValue_plural: '{{count}} minutes'
+				}),
+				value: '30m'
+			},
+			{
+				label: t('reminder.minute', {
+					count: 60,
+					defaultValue: '{{count}} minute',
+					defaultValue_plural: '{{count}} minutes'
+				}),
+				value: '60m'
+			},
+			{
+				label: t('reminder.minute', {
+					count: 90,
+					defaultValue: '{{count}} minute',
+					defaultValue_plural: '{{count}} minutes'
+				}),
+				value: '90m'
+			},
+			{
+				label: t('reminder.minute', {
+					count: 120,
+					defaultValue: '{{count}} minute',
+					defaultValue_plural: '{{count}} minutes'
+				}),
+				value: '120m'
+			}
+		],
+		[t]
+	);
+
+	const onPrefMailPollingIntervalTypeChange = useCallback(
+		(v: string) => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				zimbraPrefMailPollingInterval: `${zimbraPrefMailPollingIntervalNum}${v}`
+			}));
+		},
+		[zimbraPrefMailPollingIntervalNum, setAccountDetail]
+	);
+	const onPrefMailPollingIntervalNumChange = useCallback(
+		(e) => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				zimbraPrefMailPollingInterval: `${e.target.value}${prefMailPollingIntervalType}`
+			}));
+			setZimbraPrefMailPollingIntervalNum(e.target.value);
+		},
+		[setAccountDetail, prefMailPollingIntervalType]
+	);
+	const changeAccDetail = useCallback(
+		(e) => {
+			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+		},
+		[setAccountDetail]
+	);
+	const changeOutOfOfficeDurationetail = useCallback(
+		(e) => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				zimbraPrefOutOfOfficeCacheDuration: `${e.target.value}${outOfOfficeCacheDurationType}`
+			}));
+			setOutOfOfficeCacheDurationNum(e.target.value);
+		},
+		[setAccountDetail, outOfOfficeCacheDurationType]
+	);
+	const onOutOfOfficeCacheDurationTypeChange = useCallback(
+		(v: string) => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				zimbraPrefOutOfOfficeCacheDuration: `${outOfOfficeCacheDurationNum}${v}`
+			}));
+		},
+		[outOfOfficeCacheDurationNum, setAccountDetail]
+	);
+	const onPrefTimeZoneChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
+	};
+	const onCalendarDefaultApptDurationChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarDefaultApptDuration: v }));
+	};
+	const onReminderWarningTimeChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarApptReminderWarningTime: v }));
+	};
+	const onCalendarInitialViewChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
+	};
+	const onFirstDayOfWeekChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
+	};
+	const onAppointmentVisibilityChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
+	};
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
 			setAccountDetail((prev: any) => ({
@@ -34,6 +216,17 @@ const EditAccountUserPrefrencesSection: FC = () => {
 		},
 		[accountDetail, setAccountDetail]
 	);
+
+	const onGroupByChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefGroupMailBy: v }));
+	};
+	const onCharactorSetChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
+	};
+	const onPollingIntervalChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
+	};
+
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -54,43 +247,33 @@ const EditAccountUserPrefrencesSection: FC = () => {
 						label={t('account_details.view_mail_as_html', 'View mail as HTML')}
 					/>
 				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					<Switch
-						value={accountDetail?.zimbraPrefDisplayExternalImages === 'TRUE'}
-						onClick={(): void => changeSwitchOption('zimbraPrefDisplayExternalImages')}
-						label={t(
-							'account_details.display_external_image_as_html',
-							`Display external image as HTML`
-						)}
-					/>
-				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.group_by', 'Group by')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Select
+						background="gray5"
+						label={t('label.group_by', 'Group by')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={GROUP_BY.find(
+							(item: any) => item.value === accountDetail?.zimbraPrefGroupMailBy
+						)}
+						onChange={onGroupByChange}
+						items={GROUP_BY}
+					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.default_charset', 'Default Charset')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Select
+						background="gray5"
+						label={t('label.default_charset', 'Default Charset')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={CHARACTOR_SET.find(
+							(item: any) => item.value === accountDetail?.zimbraPrefMailDefaultCharset
+						)}
+						onChange={onCharactorSetChange}
+						items={CHARACTOR_SET}
+					/>
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -123,53 +306,54 @@ const EditAccountUserPrefrencesSection: FC = () => {
 				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.check_new_mail_every', 'Check new mail every')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
-				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+				<Row width="100%" mainAlignment="flex-start">
+					<Select
+						items={POLLING_INTERVAL}
+						background="gray5"
+						label={t('label.check_new_mail_every', 'Check new mail every')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={POLLING_INTERVAL.find(
+							(item: any) => item.value === accountDetail?.zimbraPrefMailPollingInterval
+						)}
+						onChange={onPollingIntervalChange}
+					/>
 				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
+				<Row width="32%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefMailLocalDeliveryDisabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefMailLocalDeliveryDisabled')}
 						label={t('account_details.cannot_check_for_less_than', `Cannot check for less than`)}
 					/>
 				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.min_new_check_interval', 'Min new check interval')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+				<Row width="32%" mainAlignment="flex-start">
+					<Input
+						onChange={onPrefMailPollingIntervalNumChange}
+						inputName="zimbraPrefMailPollingInterval"
+						label={t(
+							'account_details.min_new_check_interval_value',
+							'Min new check interval (value)'
+						)}
+						backgroundColor="gray5"
+						defaultValue={zimbraPrefMailPollingIntervalNum}
+						value={zimbraPrefMailPollingIntervalNum}
+						type="number"
+					/>
+				</Row>
+				<Row width="32%" mainAlignment="flex-start">
+					<Select
+						items={TIME_TYPES}
+						background="gray5"
+						label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={TIME_TYPES.find(
+							(item: any) => item.value === prefMailPollingIntervalType
+						)}
+						onChange={onPrefMailPollingIntervalTypeChange}
+					/>
 				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
@@ -184,17 +368,14 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.enabed_address', 'Enabed Address')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Input
+						onChange={changeAccDetail}
+						inputName="zimbraPrefNewMailNotificationAddress"
+						label={t('label.enabed_address', 'Enabed Address')}
+						backgroundColor="gray5"
+						defaultValue={accountDetail?.zimbraPrefNewMailNotificationAddress || ''}
+						value={accountDetail?.zimbraPrefNewMailNotificationAddress || ''}
+					/>
 				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
@@ -211,30 +392,28 @@ const EditAccountUserPrefrencesSection: FC = () => {
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.out_of_office_cache_lifetime', 'Out of office cache lifetime')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Input
+						label={t('label.out_of_office_cache_lifetime', 'Out of office cache lifetime')}
+						backgroundColor="gray5"
+						defaultValue={outOfOfficeCacheDurationNum}
+						onChange={changeOutOfOfficeDurationetail}
+						inputName="zimbraPrefOutOfOfficeCacheDuration"
+						name="zimbraPrefOutOfOfficeCacheDuration"
+					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Select
+						items={TIME_TYPES}
+						background="gray5"
+						label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={TIME_TYPES.find(
+							(item: any) =>
+								item.value === accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1)
+						)}
+						onChange={onOutOfOfficeCacheDurationTypeChange}
+					/>
 				</Row>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
@@ -259,17 +438,14 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.reply_to_address_for_receipt', 'Reply-to address for receipt')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Input
+						onChange={changeAccDetail}
+						inputName="zimbraPrefReadReceiptsToAddress"
+						label={t('label.reply_to_address_for_receipt', 'Reply-to address for receipt')}
+						backgroundColor="gray5"
+						defaultValue={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
+						value={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
+					/>
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
@@ -333,6 +509,14 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					/>
 				</Row>
 			</Row>
+			<SignatureDetail
+				isEditable
+				signatureList={[]}
+				setSignatureList={setSignatureList}
+				signatureItems={[]}
+				setSignatureItems={setSignatureItems}
+				accountId={accountDetail?.zimbraId}
+			/>
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
 			</Row>
@@ -370,88 +554,97 @@ const EditAccountUserPrefrencesSection: FC = () => {
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				<Row width="100%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.time_zone', 'Time Zone')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+				<Row width="48%" mainAlignment="flex-start">
+					<Select
+						items={timezones}
+						background="gray5"
+						label={t('label.time_zone', 'Time Zone')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={timezones.find(
+							(item: any) => item.value === accountDetail?.zimbraPrefTimeZoneId
+						)}
+						onChange={onPrefTimeZoneChange}
+					/>
+				</Row>
+				<Row width="48%" mainAlignment="flex-start">
+					<Select
+						items={APPOINTMENT_DURATION}
+						background="gray5"
+						label={t(
+							'account_details.appointments_default_duration',
+							'Appointment’s Default Duration'
+						)}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={APPOINTMENT_DURATION.find(
+							(item: any) => item.value === accountDetail?.zimbraPrefCalendarDefaultApptDuration
+						)}
+						onChange={onCalendarDefaultApptDurationChange}
+					/>
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.remind_appointments_timer', 'Remind Appointments Timer')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Select
+						items={APPOINTMENT_REMINDER}
+						background="gray5"
+						label={t('label.remind_appointments_timer', 'Remind Appointments Timer')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={APPOINTMENT_REMINDER.find(
+							(item: any) => item.value === accountDetail?.zimbraPrefCalendarApptReminderWarningTime
+						)}
+						onChange={onReminderWarningTimeChange}
+					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.initial_calendar_view', 'Initial Calendar View')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Select
+						items={DefaultViewOptions}
+						background="gray5"
+						label={t('label.initial_calendar_view', 'Initial Calendar View')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={DefaultViewOptions.find(
+							(item: any) => item.value === accountDetail?.zimbraPrefCalendarInitialView
+						)}
+						onChange={onCalendarInitialViewChange}
+					/>
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
-					{accountDetail?.zimbraId ? (
-						<Select
-							items={[]}
-							background="gray5"
-							label={t('label.first_day_of_week', 'First Day of Week')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					) : (
-						<></>
-					)}
+					<Select
+						items={FIRST_DAY_OF_WEEK}
+						background="gray5"
+						label={t('label.first_day_of_week', 'First Day of Week')}
+						showCheckbox={false}
+						padding={{ right: 'medium' }}
+						defaultSelection={FIRST_DAY_OF_WEEK.find(
+							(item: any) => item.value === accountDetail?.zimbraPrefCalendarFirstDayOfWeek
+						)}
+						onChange={onFirstDayOfWeekChange}
+					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					{accountDetail?.zimbraId ? (
 						<Select
-							items={[]}
+							items={APPOINTMENT_VISIBILITY}
 							background="gray5"
 							label={t('label.default_appointment_visibility', 'Default Appointment visibility')}
 							showCheckbox={false}
 							padding={{ right: 'medium' }}
+							defaultSelection={APPOINTMENT_VISIBILITY.find(
+								(item: any) => item.value === accountDetail?.zimbraPrefCalendarApptVisibility
+							)}
+							onChange={onAppointmentVisibilityChange}
 						/>
 					) : (
 						<></>
 					)}
 				</Row>
 			</Row>
-			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				<Row width="100%" mainAlignment="flex-start">
-					<Switch
-						value={accountDetail?.zimbraPrefAppleIcalDelegationEnabled === 'TRUE'}
-						onClick={(): void => changeSwitchOption('zimbraPrefAppleIcalDelegationEnabled')}
-						label={t(
-							'account_details.use_ical_delegation_model_for_shared_calendars',
-							'Use iCal delegation model for shared calendars'
-						)}
-					/>
-				</Row>
-			</Row>
+
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<Switch
@@ -464,7 +657,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					<Switch
 						value={accountDetail?.zimbraPrefCalendarToasterEnabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarToasterEnabled')}
-						label={t('account_details.enable_toast_notifications', `Enable toast notifications`)}
+						label={t('account_details.enable_notifications', `Enable notifications`)}
 					/>
 				</Row>
 			</Row>
@@ -576,7 +769,17 @@ const EditAccountUserPrefrencesSection: FC = () => {
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				<Row width="100%" mainAlignment="flex-start">
+				<Row width="48%" mainAlignment="flex-start">
+					<Switch
+						value={accountDetail?.zimbraPrefAppleIcalDelegationEnabled === 'TRUE'}
+						onClick={(): void => changeSwitchOption('zimbraPrefAppleIcalDelegationEnabled')}
+						label={t(
+							'account_details.use_ical_delegation_model_for_shared_calendars',
+							'Use iCal delegation model for shared calendars'
+						)}
+					/>
+				</Row>
+				<Row width="48%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefUseTimeZoneListInCalendar === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefUseTimeZoneListInCalendar')}

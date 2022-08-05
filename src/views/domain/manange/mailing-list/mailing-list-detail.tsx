@@ -19,11 +19,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 
-import ListRow from '../../list/list-row';
-import Paginig from '../../components/paging';
-import { getDistributionList } from '../../../services/get-distribution-list';
-import { getDistributionListMembership } from '../../../services/get-distributionlists-membership-service';
-import { getDateFromStr } from '../../utility/utils';
+import ListRow from '../../../list/list-row';
+import Paginig from '../../../components/paging';
+import { getDistributionList } from '../../../../services/get-distribution-list';
+import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
+import { getDateFromStr } from '../../../utility/utils';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {

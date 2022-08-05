@@ -31,6 +31,7 @@ import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { renameAccountRequest } from '../../../../../services/rename-account';
 import { AccountContext } from '../account-context';
+
 // eslint-disable-next-line no-empty-pattern
 const EditAccount: FC<{
 	setShowEditAccountView: any;
@@ -86,8 +87,8 @@ const EditAccount: FC<{
 			icon: 'InfoOutline'
 		},
 		{
-			id: 'configration',
-			label: t('label.configration', 'CONFIGRATION'),
+			id: 'configuration',
+			label: t('label.configuration', 'CONFIGURATION'),
 			CustomComponent: ReusedDefaultTabBar,
 			icon: 'OptionsOutline'
 		},
@@ -283,7 +284,7 @@ const EditAccount: FC<{
 							</Container>
 						)}
 						{change === 'general' && <EditAccountGeneralSection />}
-						{change === 'configration' && <EditAccountConfigrationSection />}
+						{change === 'configuration' && <EditAccountConfigrationSection />}
 						{change === 'user_preferences' && <EditAccountUserPrefrencesSection />}
 					</Container>
 				</Container>

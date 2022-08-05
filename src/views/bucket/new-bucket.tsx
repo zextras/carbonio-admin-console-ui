@@ -77,12 +77,8 @@ const NewBucket: FC<{
 			NextButton: (props: any): any => (
 				<Button
 					{...props}
-					label={
-						!props.completeLoading
-							? t('label.bucket_view_details_button', 'VIEW DETAILS')
-							: t('label.bucket_done_button', 'Done')
-					}
-					icon={props.completeLoading && 'CheckmarkCircleOutline'}
+					label={t('label.bucket_done_button', 'Done')}
+					icon={'CheckmarkCircleOutline'}
 					iconPlacement="right"
 					style={{ marginLeft: '16px' }}
 					onClick={(): void => {

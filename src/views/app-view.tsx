@@ -12,24 +12,18 @@ import {
 	// @ts-ignore
 	usePrimaryBarState
 } from '@zextras/carbonio-shell-ui';
-import { useRouteMatch, Switch, Route } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import { Switch, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import DomainListPanel from './domain/domain-list-panel';
 import DomainDetailPanel from './domain/domain-detail-panel';
-import BucketDetailPanel from './bucket/bucket-detail-panel';
 import BucketListPanel from './bucket/bucket-list-panel';
 import {
-	APPLICATION_LOG,
 	BACKUP_ROUTE_ID,
 	COS_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
-	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
 	MONITORING,
-	MTA,
-	OPERATIONS,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID
@@ -42,6 +36,7 @@ import CosListPanel from './cos/cos-list-panel';
 import CosDetailPanel from './cos/cos-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BackupDetailPanel from './backup/backup-detail-panel';
+import BucketRoutePanel from './bucket/bucket-route-panel';
 
 const DetailViewContainer = styled(Container)`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
@@ -49,8 +44,6 @@ const DetailViewContainer = styled(Container)`
 `;
 
 const AppView: FC = () => {
-	const { path } = useRouteMatch();
-	const [t] = useTranslation();
 	const isPrimaryBarExpanded = usePrimaryBarState();
 	return (
 		<Container>
@@ -98,11 +91,9 @@ const AppView: FC = () => {
 							</Suspense>
 						</Container>
 						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<BucketDetailPanel />
-								</Suspense>
-							</DetailViewContainer>
+							<Suspense fallback={<Spinner />}>
+								<BucketRoutePanel />
+							</Suspense>
 						</Container>
 					</Container>
 				</Route>
@@ -148,30 +139,6 @@ const AppView: FC = () => {
 							</DetailViewContainer>
 						</Container>
 					</Container>
-				</Route>
-
-				<Route path={`/${LOG_AND_QUEUES}/${OPERATIONS}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						height="calc(100vh - 105px)"
-					></Container>
-				</Route>
-
-				<Route path={`/${LOG_AND_QUEUES}/${APPLICATION_LOG}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						height="calc(100vh - 105px)"
-					></Container>
-				</Route>
-
-				<Route path={`/${LOG_AND_QUEUES}/${MTA}`}>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						height="calc(100vh - 105px)"
-					></Container>
 				</Route>
 			</Switch>
 		</Container>

@@ -1,5 +1,3 @@
-/* eslint-disable no-shadow */
-/* eslint-disable @typescript-eslint/no-use-before-define */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -21,8 +19,9 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { find } from 'lodash';
-import { BucketRegions, BucketTypeItems } from '../utility/utils';
+import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
+import { ALIBABA, EMC } from '../../constants';
 
 const DetailsHeaders = [
 	{
@@ -163,11 +162,11 @@ const DetailsPanel: FC<{
 	setShowEditDetailView
 }) => {
 	const [t] = useTranslation();
-
 	const [bucketType, setBucketType] = useState();
 	const [regionData, setRegionData] = useState();
 	const [verify, setVerify] = useState('primary');
-
+	const [showRegion, setShowRegion] = useState(true);
+	const [showURL, setShowURL] = useState(true);
 	const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
 	const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
 
@@ -209,15 +208,35 @@ const DetailsPanel: FC<{
 	}, [bucketDetail.uuid, t]);
 
 	useEffect(() => {
-		const volumeObject: any = find(
-			BucketTypeItems,
-			(o) => o.value === bucketDetail.storeType
+		const upperBucketType =
+			bucketDetail.storeType !== EMC
+				? bucketDetail.storeType.charAt(0).toUpperCase() +
+				  bucketDetail.storeType.slice(1).toLowerCase()
+				: bucketDetail.storeType;
+		const volumeObject: any = find(BucketTypeItems, (o) => o.value === upperBucketType)?.label;
+		const regionValue: any = find(
+			upperBucketType === ALIBABA ? BucketRegionsInAlibaba : BucketRegions,
+			(o) => o.value === bucketDetail.region
 		)?.label;
-		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region)?.label;
-
 		setBucketType(volumeObject);
 		setRegionData(regionValue);
 	}, [bucketDetail]);
+
+	useEffect(() => {
+		if (bucketDetail.region !== undefined) {
+			setShowRegion(true);
+		} else {
+			setShowRegion(false);
+		}
+	}, [bucketDetail.region]);
+
+	useEffect(() => {
+		if (bucketDetail.url !== undefined) {
+			setShowURL(true);
+		} else {
+			setShowURL(false);
+		}
+	}, [bucketDetail.region, bucketDetail.url]);
 
 	return (
 		<Container background="gray6">
@@ -283,9 +302,11 @@ const DetailsPanel: FC<{
 						readOnly
 					/>
 				</Row>
-				<Row padding={{ top: 'large' }} width="100%">
-					<Input label="Region" showCheckbox={false} value={regionData} readOnly />
-				</Row>
+				{showRegion && (
+					<Row padding={{ top: 'large' }} width="100%">
+						<Input label="Region" showCheckbox={false} value={regionData} readOnly />
+					</Row>
+				)}
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
@@ -303,6 +324,16 @@ const DetailsPanel: FC<{
 						/>
 					</Row>
 				</Row>
+				{showURL && (
+					<Row padding={{ top: 'large' }} width="100%">
+						<Input
+							label={t('label.url', 'URL')}
+							showCheckbox={false}
+							value={bucketDetail.url}
+							readOnly
+						/>
+					</Row>
+				)}
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Button
 						type="outlined"
@@ -322,6 +353,3 @@ const DetailsPanel: FC<{
 };
 
 export default DetailsPanel;
-function setDetailsBucket(arg0: boolean): any {
-	throw new Error('Function not implemented.');
-}

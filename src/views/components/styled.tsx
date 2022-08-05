@@ -12,4 +12,5 @@ export const AbsoluteContainer = styled(Container)`
 	right: 0;
 	z-index: 1;
 	box-shadow: 0 0 12px -1px #888;
+	top: 0;
 `;

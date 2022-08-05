@@ -55,6 +55,79 @@ const CosFeatures: FC = () => {
 		[setCosFeatures]
 	);
 
+	const setInitalValues = useCallback(
+		(obj: any) => {
+			if (obj) {
+				setSwitchOptionValue('zimbraFeatureMailEnabled', obj?.zimbraFeatureMailEnabled === 'TRUE');
+				setSwitchOptionValue(
+					'zimbraFeatureContactsEnabled',
+					obj?.zimbraFeatureContactsEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureCalendarEnabled',
+					obj?.zimbraFeatureCalendarEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureTaggingEnabled',
+					obj?.zimbraFeatureTaggingEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureHtmlComposeEnabled',
+					obj?.zimbraFeatureHtmlComposeEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureWebClientOfflineAccessEnabled',
+					obj?.zimbraFeatureWebClientOfflineAccessEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureMailPriorityEnabled',
+					obj?.zimbraFeatureMailPriorityEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureOutOfOfficeReplyEnabled',
+					obj?.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeaturePop3DataSourceEnabled',
+					obj?.zimbraFeaturePop3DataSourceEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureDistributionListFolderEnabled',
+					obj?.zimbraFeatureDistributionListFolderEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureGroupCalendarEnabled',
+					obj?.zimbraFeatureGroupCalendarEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureCalendarReminderDeviceEmailEnabled',
+					obj?.zimbraFeatureCalendarReminderDeviceEmailEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureSavedSearchesEnabled',
+					obj?.zimbraFeatureSavedSearchesEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureInitialSearchPreferenceEnabled',
+					obj?.zimbraFeatureInitialSearchPreferenceEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureAdvancedSearchEnabled',
+					obj?.zimbraFeatureAdvancedSearchEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeaturePeopleSearchEnabled',
+					obj?.zimbraFeaturePeopleSearchEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureSMIMEEnabled',
+					obj?.zimbraFeatureSMIMEEnabled === 'TRUE'
+				);
+			}
+		},
+		[setSwitchOptionValue]
+	);
+
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
@@ -62,157 +135,62 @@ const CosFeatures: FC = () => {
 				obj[item?.n] = item._content;
 				return '';
 			});
-			if (obj.zimbraFeatureMailEnabled) {
-				setSwitchOptionValue('zimbraFeatureMailEnabled', obj.zimbraFeatureMailEnabled === 'TRUE');
-			} else {
+			if (!obj.zimbraFeatureMailEnabled) {
 				obj.zimbraFeatureMailEnabled = false;
-				setSwitchOptionValue('zimbraFeatureMailEnabled', false);
 			}
-			if (obj.zimbraFeatureContactsEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureContactsEnabled',
-					obj.zimbraFeatureContactsEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureContactsEnabled) {
 				obj.zimbraFeatureContactsEnabled = false;
-				setSwitchOptionValue('zimbraFeatureContactsEnabled', false);
 			}
-			if (obj.zimbraFeatureCalendarEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureCalendarEnabled',
-					obj.zimbraFeatureCalendarEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureCalendarEnabled) {
 				obj.zimbraFeatureCalendarEnabled = false;
-				setSwitchOptionValue('zimbraFeatureCalendarEnabled', false);
 			}
-			if (obj.zimbraFeatureTaggingEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureTaggingEnabled',
-					obj.zimbraFeatureTaggingEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureTaggingEnabled) {
 				obj.zimbraFeatureTaggingEnabled = false;
-				setSwitchOptionValue('zimbraFeatureTaggingEnabled', false);
 			}
-			if (obj.zimbraFeatureHtmlComposeEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureHtmlComposeEnabled',
-					obj.zimbraFeatureHtmlComposeEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureHtmlComposeEnabled) {
 				obj.zimbraFeatureHtmlComposeEnabled = false;
-				setSwitchOptionValue('zimbraFeatureHtmlComposeEnabled', false);
 			}
-			if (obj.zimbraFeatureWebClientOfflineAccessEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureWebClientOfflineAccessEnabled',
-					obj.zimbraFeatureWebClientOfflineAccessEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureWebClientOfflineAccessEnabled) {
 				obj.zimbraFeatureWebClientOfflineAccessEnabled = false;
-				setSwitchOptionValue('zimbraFeatureWebClientOfflineAccessEnabled', false);
 			}
-			if (obj.zimbraFeatureMailPriorityEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureMailPriorityEnabled',
-					obj.zimbraFeatureMailPriorityEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureMailPriorityEnabled) {
 				obj.zimbraFeatureMailPriorityEnabled = false;
-				setSwitchOptionValue('zimbraFeatureMailPriorityEnabled', false);
 			}
-			if (obj.zimbraFeatureOutOfOfficeReplyEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureOutOfOfficeReplyEnabled',
-					obj.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureOutOfOfficeReplyEnabled) {
 				obj.zimbraFeatureOutOfOfficeReplyEnabled = false;
-				setSwitchOptionValue('zimbraFeatureOutOfOfficeReplyEnabled', false);
 			}
-			if (obj.zimbraFeaturePop3DataSourceEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeaturePop3DataSourceEnabled',
-					obj.zimbraFeaturePop3DataSourceEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeaturePop3DataSourceEnabled) {
 				obj.zimbraFeaturePop3DataSourceEnabled = false;
-				setSwitchOptionValue('zimbraFeaturePop3DataSourceEnabled', false);
 			}
-			if (obj.zimbraFeatureDistributionListFolderEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureDistributionListFolderEnabled',
-					obj.zimbraFeatureDistributionListFolderEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureDistributionListFolderEnabled) {
 				obj.zimbraFeatureDistributionListFolderEnabled = false;
-				setSwitchOptionValue('zimbraFeatureDistributionListFolderEnabled', false);
 			}
-			if (obj.zimbraFeatureGroupCalendarEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureGroupCalendarEnabled',
-					obj.zimbraFeatureGroupCalendarEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureGroupCalendarEnabled) {
 				obj.zimbraFeatureGroupCalendarEnabled = false;
-				setSwitchOptionValue('zimbraFeatureGroupCalendarEnabled', false);
 			}
-			if (obj.zimbraFeatureCalendarReminderDeviceEmailEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureCalendarReminderDeviceEmailEnabled',
-					obj.zimbraFeatureCalendarReminderDeviceEmailEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureCalendarReminderDeviceEmailEnabled) {
 				obj.zimbraFeatureCalendarReminderDeviceEmailEnabled = false;
-				setSwitchOptionValue('zimbraFeatureCalendarReminderDeviceEmailEnabled', false);
 			}
-			if (obj.zimbraFeatureSavedSearchesEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureSavedSearchesEnabled',
-					obj.zimbraFeatureSavedSearchesEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureSavedSearchesEnabled) {
 				obj.zimbraFeatureSavedSearchesEnabled = false;
-				setSwitchOptionValue('zimbraFeatureSavedSearchesEnabled', false);
 			}
-			if (obj.zimbraFeatureInitialSearchPreferenceEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureInitialSearchPreferenceEnabled',
-					obj.zimbraFeatureInitialSearchPreferenceEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureInitialSearchPreferenceEnabled) {
 				obj.zimbraFeatureInitialSearchPreferenceEnabled = false;
-				setSwitchOptionValue('zimbraFeatureInitialSearchPreferenceEnabled', false);
 			}
-			if (obj.zimbraFeatureAdvancedSearchEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeatureAdvancedSearchEnabled',
-					obj.zimbraFeatureAdvancedSearchEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeatureAdvancedSearchEnabled) {
 				obj.zimbraFeatureAdvancedSearchEnabled = false;
-				setSwitchOptionValue('zimbraFeatureAdvancedSearchEnabled', false);
 			}
-			if (obj.zimbraFeaturePeopleSearchEnabled) {
-				setSwitchOptionValue(
-					'zimbraFeaturePeopleSearchEnabled',
-					obj.zimbraFeaturePeopleSearchEnabled === 'TRUE'
-				);
-			} else {
+			if (!obj.zimbraFeaturePeopleSearchEnabled) {
 				obj.zimbraFeaturePeopleSearchEnabled = false;
-				setSwitchOptionValue('zimbraFeaturePeopleSearchEnabled', false);
 			}
-			if (obj.zimbraFeatureSMIMEEnabled) {
-				setSwitchOptionValue('zimbraFeatureSMIMEEnabled', obj.zimbraFeatureSMIMEEnabled === 'TRUE');
-			} else {
+			if (!obj.zimbraFeatureSMIMEEnabled) {
 				obj.zimbraFeatureSMIMEEnabled = false;
-				setSwitchOptionValue('zimbraFeatureSavedSearchesEnabled', false);
 			}
 			setCosData(obj);
+			setInitalValues(obj);
 			setIsDirty(false);
 		}
-	}, [cosInformation, setSwitchOptionValue]);
+	}, [cosInformation, setInitalValues, setSwitchOptionValue]);
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
@@ -248,6 +226,15 @@ const CosFeatures: FC = () => {
 				const cos: any = data?.Body?.ModifyCosResponse?.cos[0];
 				if (cos) {
 					setCos(cos);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: data?.Body?.Fault?.Reason?.Text,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
 				}
 				setIsDirty(false);
 			})
@@ -264,343 +251,261 @@ const CosFeatures: FC = () => {
 	};
 
 	const onCancel = (): void => {
-		setSwitchOptionValue('zimbraFeatureMailEnabled', cosData.zimbraFeatureMailEnabled);
-		setSwitchOptionValue('zimbraFeatureContactsEnabled', cosData.zimbraFeatureContactsEnabled);
-		setSwitchOptionValue('zimbraFeatureCalendarEnabled', cosData.zimbraFeatureCalendarEnabled);
-		setSwitchOptionValue('zimbraFeatureTaggingEnabled', cosData.zimbraFeatureTaggingEnabled);
-		setSwitchOptionValue(
-			'zimbraFeatureHtmlComposeEnabled',
-			cosData.zimbraFeatureHtmlComposeEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureWebClientOfflineAccessEnabled',
-			cosData.zimbraFeatureWebClientOfflineAccessEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureMailPriorityEnabled',
-			cosData.zimbraFeatureMailPriorityEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureOutOfOfficeReplyEnabled',
-			cosData.zimbraFeatureOutOfOfficeReplyEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeaturePop3DataSourceEnabled',
-			cosData.zimbraFeaturePop3DataSourceEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureDistributionListFolderEnabled',
-			cosData.zimbraFeatureDistributionListFolderEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureGroupCalendarEnabled',
-			cosData.zimbraFeatureGroupCalendarEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureCalendarReminderDeviceEmailEnabled',
-			cosData.zimbraFeatureCalendarReminderDeviceEmailEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureSavedSearchesEnabled',
-			cosData.zimbraFeatureSavedSearchesEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureInitialSearchPreferenceEnabled',
-			cosData.zimbraFeatureInitialSearchPreferenceEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeatureAdvancedSearchEnabled',
-			cosData.zimbraFeatureAdvancedSearchEnabled
-		);
-		setSwitchOptionValue(
-			'zimbraFeaturePeopleSearchEnabled',
-			cosData.zimbraFeaturePeopleSearchEnabled
-		);
-		setSwitchOptionValue('zimbraFeatureSMIMEEnabled', cosData.zimbraFeatureSMIMEEnabled);
+		setInitalValues(cosData);
 		setIsDirty(false);
 	};
 
 	return (
-		<>
-			<Container mainAlignment="flex-start" background="gray6">
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container
-						orientation="vertical"
-						mainAlignment="space-around"
-						background="gray6"
-						height="58px"
-					>
-						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-							<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-								<Text size="medium" weight="bold" color="gray0">
-									{t('cos.features', 'Features')}
-								</Text>
-							</Row>
-							<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-								<Padding right="small">
-									{isDirty && (
-										<Button
-											label={t('label.cancel', 'Cancel')}
-											color="secondary"
-											onClick={onCancel}
-										/>
-									)}
-								</Padding>
-								{isDirty && (
-									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-								)}
-							</Row>
-						</Row>
-					</Container>
-				</Row>
-				<Row orientation="horizontal" width="100%" background="gray6">
-					<Divider />
-				</Row>
+		<Container mainAlignment="flex-start" background="gray6">
+			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Container
-					mainAlignment="flex-start"
-					width="100%"
 					orientation="vertical"
-					style={{ overflow: 'auto' }}
+					mainAlignment="space-around"
+					background="gray6"
+					height="58px"
 				>
-					<Row
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ all: 'large' }}
-						width="100%"
-					>
-						<Text size="extralarge" weight="bold">
-							{t('cos.main_features', 'Main Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureMailEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureMailEnabled')}
-									label={t('cos.mail', 'Mail')}
-								/>
-							</Row>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureCalendarEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureCalendarEnabled')}
-									label={t('cos.calendar', 'Calendar')}
-								/>
-							</Row>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureContactsEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureContactsEnabled')}
-									label={t('cos.contacts', 'Contacts')}
-								/>
-							</Row>
+					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+							<Text size="medium" weight="bold" color="gray0">
+								{t('cos.features', 'Features')}
+							</Text>
 						</Row>
-
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.general_features', 'General Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureTaggingEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureTaggingEnabled')}
-									label={t('cos.tagging', 'Tagging')}
-								/>
-							</Row>
-
-							<Row width="25%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureHtmlComposeEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureHtmlComposeEnabled')}
-									label={t('cos.html_compose', 'HTML compose')}
-								/>
-							</Row>
-
-							<Row width="35%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureWebClientOfflineAccessEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureWebClientOfflineAccessEnabled')}
-									label={t(
-										'cos.offline_support_for_advanced_client',
-										'Offline support for Advanced (Ajax) client'
-									)}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.mail_features', 'Mail Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureMailPriorityEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureMailPriorityEnabled')}
-									label={t('cos.message_priority', 'Message Priority')}
-									disabled={!cosFeatures.zimbraFeatureMailEnabled}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="25%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeaturePop3DataSourceEnabled}
-									onClick={() => changeSwitchOption('zimbraFeaturePop3DataSourceEnabled')}
-									label={t('cos.external_pop_access', 'External POP Access')}
-									disabled={!cosFeatures.zimbraFeatureMailEnabled}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="35%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureOutOfOfficeReplyEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
-									label={t('cos.out_of_the_office_reply', 'Out of the Office Reply')}
-									disabled={!cosFeatures.zimbraFeatureMailEnabled}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.contact_features', 'Contact Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="40%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureDistributionListFolderEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureDistributionListFolderEnabled')}
-									label={t('cos.distribution_list_folder', 'Distribution List Folder')}
-									disabled={!cosFeatures.zimbraFeatureContactsEnabled}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.calender_features', 'Calendar Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureGroupCalendarEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureGroupCalendarEnabled')}
-									label={t('cos.group_calender', 'Group Calendar')}
-									disabled={!cosFeatures.zimbraFeatureCalendarEnabled}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="25%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureCalendarReminderDeviceEmailEnabled}
-									onClick={() =>
-										changeSwitchOption('zimbraFeatureCalendarReminderDeviceEmailEnabled')
-									}
-									label={t('cos.sms_reminders', 'SMS Reminders')}
-									disabled={!cosFeatures.zimbraFeatureCalendarEnabled}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.search_features', 'Search Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureAdvancedSearchEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureAdvancedSearchEnabled')}
-									label={t('cos.advanced_search', 'Advanced Search')}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureSavedSearchesEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureSavedSearchesEnabled')}
-									label={t('cos.saved_searches', 'Saved Searches')}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureInitialSearchPreferenceEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureInitialSearchPreferenceEnabled')}
-									label={t('cos.initial_search_preference', 'Initial Search Preference')}
-								/>
-							</Row>
-							<Padding right="extralarge" />
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeaturePeopleSearchEnabled}
-									onClick={() => changeSwitchOption('zimbraFeaturePeopleSearchEnabled')}
-									label={t('cos.search_for_people', 'Search for People')}
-								/>
-							</Row>
-						</Row>
-						<Divider />
-					</Row>
-					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-						<Text size="extralarge" weight="bold">
-							{t('cos.s_mime_features', 'S/MIME Features')}
-						</Text>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', left: 'large', bottom: 'large' }}
-						>
-							<Row width="20%" mainAlignment="flex-start">
-								<Switch
-									value={cosFeatures.zimbraFeatureSMIMEEnabled}
-									onClick={() => changeSwitchOption('zimbraFeatureSMIMEEnabled')}
-									label={t('cos.enable_smime', 'Enable S/MIME')}
-								/>
-							</Row>
+						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
+							<Padding right="small">
+								{isDirty && (
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										onClick={onCancel}
+									/>
+								)}
+							</Padding>
+							{isDirty && (
+								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+							)}
 						</Row>
 					</Row>
 				</Container>
-				<RouteLeavingGuard when={isDirty} onSave={onSave}>
-					<Text>
-						{t(
-							'label.unsaved_changes_line1',
-							'Are you sure you want to leave this page without saving?'
-						)}
+			</Row>
+			<Row orientation="horizontal" width="100%" background="gray6">
+				<Divider />
+			</Row>
+			<Container
+				mainAlignment="flex-start"
+				width="100%"
+				orientation="vertical"
+				style={{ overflow: 'auto' }}
+			>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ all: 'large' }}
+					width="100%"
+				>
+					<Text size="extralarge" weight="bold">
+						{t('cos.main_features', 'Main Features')}
 					</Text>
-					<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-				</RouteLeavingGuard>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureMailEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureMailEnabled')}
+								label={t('cos.mail', 'Mail')}
+							/>
+						</Row>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureCalendarEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureCalendarEnabled')}
+								label={t('cos.calendar', 'Calendar')}
+							/>
+						</Row>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureContactsEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureContactsEnabled')}
+								label={t('cos.contacts', 'Contacts')}
+							/>
+						</Row>
+					</Row>
+
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.general_features', 'General Features')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureTaggingEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureTaggingEnabled')}
+								label={t('cos.tagging', 'Tagging')}
+							/>
+						</Row>
+
+						<Row width="25%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureHtmlComposeEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureHtmlComposeEnabled')}
+								label={t('cos.html_compose', 'HTML compose')}
+							/>
+						</Row>
+
+						<Row width="35%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureWebClientOfflineAccessEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureWebClientOfflineAccessEnabled')}
+								label={t(
+									'cos.offline_support_for_advanced_client',
+									'Offline support for Advanced (Ajax) client'
+								)}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.mail_features', 'Mail Features')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureMailPriorityEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureMailPriorityEnabled')}
+								label={t('cos.message_priority', 'Message Priority')}
+								disabled={!cosFeatures.zimbraFeatureMailEnabled}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="25%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeaturePop3DataSourceEnabled}
+								onClick={() => changeSwitchOption('zimbraFeaturePop3DataSourceEnabled')}
+								label={t('cos.external_pop_access', 'External POP Access')}
+								disabled={!cosFeatures.zimbraFeatureMailEnabled}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="35%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureOutOfOfficeReplyEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
+								label={t('cos.out_of_the_office_reply', 'Out of the Office Reply')}
+								disabled={!cosFeatures.zimbraFeatureMailEnabled}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.contact_features', 'Contact Features')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Row width="40%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureDistributionListFolderEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureDistributionListFolderEnabled')}
+								label={t('cos.distribution_list_folder', 'Distribution List Folder')}
+								disabled={!cosFeatures.zimbraFeatureContactsEnabled}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.calender_features', 'Calendar Features')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureGroupCalendarEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureGroupCalendarEnabled')}
+								label={t('cos.group_calender', 'Group Calendar')}
+								disabled={!cosFeatures.zimbraFeatureCalendarEnabled}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="25%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureCalendarReminderDeviceEmailEnabled}
+								onClick={() =>
+									changeSwitchOption('zimbraFeatureCalendarReminderDeviceEmailEnabled')
+								}
+								label={t('cos.sms_reminders', 'SMS Reminders')}
+								disabled={!cosFeatures.zimbraFeatureCalendarEnabled}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.search_features', 'Search Features')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureAdvancedSearchEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureAdvancedSearchEnabled')}
+								label={t('cos.advanced_search', 'Advanced Search')}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureSavedSearchesEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureSavedSearchesEnabled')}
+								label={t('cos.saved_searches', 'Saved Searches')}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureInitialSearchPreferenceEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureInitialSearchPreferenceEnabled')}
+								label={t('cos.initial_search_preference', 'Initial Search Preference')}
+							/>
+						</Row>
+						<Padding right="extralarge" />
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeaturePeopleSearchEnabled}
+								onClick={() => changeSwitchOption('zimbraFeaturePeopleSearchEnabled')}
+								label={t('cos.search_for_people', 'Search for People')}
+							/>
+						</Row>
+					</Row>
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('cos.s_mime_features', 'S/MIME Features')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureSMIMEEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureSMIMEEnabled')}
+								label={t('cos.enable_smime', 'Enable S/MIME')}
+							/>
+						</Row>
+					</Row>
+				</Row>
 			</Container>
-		</>
+			<RouteLeavingGuard when={isDirty} onSave={onSave}>
+				<Text>
+					{t(
+						'label.unsaved_changes_line1',
+						'Are you sure you want to leave this page without saving?'
+					)}
+				</Text>
+				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+			</RouteLeavingGuard>
+		</Container>
 	);
 };
 

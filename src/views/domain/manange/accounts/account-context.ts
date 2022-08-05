@@ -9,6 +9,8 @@ type AccountContext = {
 	accountDetail: any;
 	directMemberList: any[];
 	inDirectMemberList: any[];
+	setSignatureItems: (arg: any) => void;
+	setSignatureList: (arg: any) => void;
 	setAccountDetail: (arg: any) => void;
 	setDirectMemberList: (arg: any) => void;
 	setInDirectMemberList: (arg: any) => void;

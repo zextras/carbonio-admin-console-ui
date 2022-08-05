@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Container,
 	Padding,
@@ -27,6 +27,7 @@ import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import { BucketTypeItems } from '../utility/utils';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
+import { AbsoluteContainer } from '../components/styled';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -61,27 +62,27 @@ const BucketListTable: FC<{
 			volumes.map((v, i) => ({
 				id: i,
 				columns: [
-					// eslint-disable-next-line react/jsx-key
 					<Row
+						key={i}
 						onDoubleClick={(): any => {
 							onDoubleClick(i);
 						}}
 						onClick={(): any => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start', textTransform: 'capitalize' }}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
 						{v.bucketName}
 					</Row>,
-					// eslint-disable-next-line react/jsx-key
 					<Row
+						key={i}
 						onDoubleClick={(): any => {
 							onDoubleClick(i);
 						}}
 						onClick={(): any => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'center', textTransform: 'capitalize' }}
+						style={{ textAlign: 'center' }}
 					>
 						{v.storeType}
 					</Row>
@@ -196,7 +197,15 @@ const BucketDetailPanel: FC = () => {
 	const handleDoubleClick = (i: any): any => {
 		const volumeObject: any = bucketList.find((s, index) => index === i);
 		setConnectionData(volumeObject);
+		setShowEditDetailView(true);
+		setDetailsBucket(false);
+		setShowDetails(true);
+	};
+	const handleClick = (i: any): any => {
+		const volumeObject: any = bucketList.find((s, index) => index === i);
+		setConnectionData(volumeObject);
 		setDetailsBucket(true);
+		setShowEditDetailView(false);
 		setShowDetails(true);
 	};
 
@@ -281,7 +290,7 @@ const BucketDetailPanel: FC = () => {
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
-				style={{ overflowY: 'auto', marginLeft: '16px' }}
+				style={{ overflowY: 'auto' }}
 				background="white"
 			>
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
@@ -290,7 +299,7 @@ const BucketDetailPanel: FC = () => {
 					</Text>
 				</Row>
 				<Divider />
-				<Row style={{ padding: '32px 12px 10px' }} width="100%">
+				<Row padding="32px 16px 16px 16px" width="100%">
 					<Select
 						items={BucketTypeItems}
 						background="gray5"
@@ -353,11 +362,9 @@ const BucketDetailPanel: FC = () => {
 										}}
 										onDoubleClick={(i: any): any => {
 											handleDoubleClick(i);
-											setShowEditDetailView(true);
 										}}
 										onClick={(i: any): any => {
-											handleDoubleClick(i);
-											setShowEditDetailView(false);
+											handleClick(i);
 										}}
 									/>
 								</Row>
@@ -369,14 +376,18 @@ const BucketDetailPanel: FC = () => {
 						<Text overflow="break-word" weight="normal" size="large">
 							<img src={logo} alt="logo" />
 						</Text>
-						<Padding all="medium" style={{ textAlign: 'center' }}>
-							<Text color="gray1" overflow="break-word" weight="normal" size="large" width="60%">
-								{t('have_not_setup_bucket_type', "It seems like you haven't setup a bucket type")}
-							</Text>
-							<Text color="gray1" overflow="break-word" weight="normal" size="large" width="60%">
+						<Padding all="medium" width="47%">
+							<Text
+								color="gray1"
+								overflow="break-word"
+								weight="normal"
+								size="large"
+								width="60%"
+								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
+							>
 								{t(
-									'click_new_bucket_button_to_create_new_one',
-									'Click NEW BUCKET button to create a new one.'
+									'select_bucket_or_create_new_bucket',
+									"It seems like you haven't setup a bucket type. \n Click NEW BUCKET button to create a new one."
 								)}
 							</Text>
 						</Padding>
