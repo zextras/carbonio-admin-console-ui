@@ -348,7 +348,7 @@ const EditBucketDetailPanel: FC<{
 		)?.value;
 		if (
 			bucketDetail?.region !== undefined &&
-			regionData.value !== undefined &&
+			regionData?.value !== undefined &&
 			regionValue !== regionData?.value
 		) {
 			setIsDirty(true);
