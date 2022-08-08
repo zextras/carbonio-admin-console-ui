@@ -68,7 +68,7 @@ const ServersListTable: FC<{
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
-				id: i,
+				id: i?.toString(),
 				columns: [
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
 						{v.name}

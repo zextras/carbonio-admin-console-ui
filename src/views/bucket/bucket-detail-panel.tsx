@@ -299,7 +299,7 @@ const BucketDetailPanel: FC = () => {
 					</Text>
 				</Row>
 				<Divider />
-				<Row padding="32px 16px 16px 16px" width="100%">
+				<Row style={{ padding: '32px 16px 16px 16px' }} width="100%">
 					<Select
 						items={BucketTypeItems}
 						background="gray5"

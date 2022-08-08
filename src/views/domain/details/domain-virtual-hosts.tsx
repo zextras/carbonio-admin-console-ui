@@ -57,7 +57,7 @@ const DomainVirtualHosts: FC = () => {
 			);
 			if (domainVirtualHostArray && domainVirtualHostArray.length > 0) {
 				const virtualHostItems = domainVirtualHostArray.map((domain: any, index: any) => ({
-					id: index + 1,
+					id: (index + 1)?.toString(),
 					columns: [domain._content]
 				}));
 				setItems(virtualHostItems);
@@ -88,8 +88,8 @@ const DomainVirtualHosts: FC = () => {
 
 	const addVirtualHost = useCallback((): void => {
 		if (virtualHostValue) {
-			const lastId = items.length > 0 ? items[items.length - 1].id : 0;
-			const newId = lastId + 1;
+			const lastId = items.length > 0 ? items[items.length - 1]?.id : '0';
+			const newId = parseInt(lastId, 10) + 1;
 			const item = {
 				id: newId?.toString(),
 				columns: [virtualHostValue],
