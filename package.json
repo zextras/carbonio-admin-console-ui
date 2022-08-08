@@ -82,7 +82,7 @@
 	],
 	"carbonio": {
 		"translations_repository": "<Insert Repo Here>",
-		"name": "carbonio-admin-manage-ui",
+		"name": "carbonio-admin-console-ui",
 		"priority": 3,
 		"type": "carbonioAdmin",
 		"display": "Manage",
