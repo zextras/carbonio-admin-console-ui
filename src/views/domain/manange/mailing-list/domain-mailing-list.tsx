@@ -608,7 +608,7 @@ const DomainMailingList: FC = () => {
 								/>
 							)}
 							{mailingList.length === 0 && (
-								<Container orientation="column" crossAlignment="center" mainAlignment="flex-start">
+								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
 									</Row>
