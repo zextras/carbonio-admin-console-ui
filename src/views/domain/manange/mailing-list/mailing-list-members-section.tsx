@@ -4,11 +4,27 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Container, Row, Text, Input, Button, Table } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Row,
+	Text,
+	Input,
+	Button,
+	Table,
+	Dropdown,
+	SnackbarManagerContext
+} from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { debounce, sortedUniq } from 'lodash';
 import ListRow from '../../../list/list-row';
-import { isValidEmail } from '../../../utility/utils';
+import {
+	getAllEmailFromString,
+	getEmailDisplayNameFromString,
+	isValidEmail
+} from '../../../utility/utils';
 import { MailingListContext } from './mailinglist-context';
+import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { searchDirectory } from '../../../../services/search-directory-service';
 
 const MailingListMembersSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -20,6 +36,8 @@ const MailingListMembersSection: FC<any> = () => {
 		[]
 	);
 	const [member, setMember] = useState<string>('');
+	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 
 	const memberHeaders: any[] = useMemo(
 		() => [
@@ -53,17 +71,45 @@ const MailingListMembersSection: FC<any> = () => {
 			setDlmTableRows([]);
 			setMailingListDetail((prev: any) => ({
 				...prev,
-				members: dlm
+				members: []
 			}));
 		}
 	}, [dlm, setMailingListDetail]);
 
 	const onAdd = useCallback((): void => {
-		if (member !== '' && isValidEmail(member)) {
-			setDlm((prev: any) => [...prev, member]);
-			setMember('');
+		if (member !== '') {
+			const allEmails: any[] =
+				member.includes('"') || member.includes("'") ? getAllEmailFromString(member) : [member];
+
+			if (allEmails !== null && allEmails !== undefined) {
+				const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
+				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
+							inValidEmailAddress[0]
+						}`,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				} else {
+					const sortedList = sortedUniq(allEmails);
+					setDlm(dlm.concat(sortedList));
+				}
+			} else if (allEmails === undefined) {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: `${t('label.invalid_email_address', 'Invalid email address')} ${member}`,
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			}
 		}
-	}, [member]);
+	}, [member, createSnackbar, t, dlm]);
 
 	const onDeleteFromList = useCallback((): void => {
 		if (selectedDistributionListMember.length > 0) {
@@ -72,6 +118,72 @@ const MailingListMembersSection: FC<any> = () => {
 			setSelectedDistributionListMember([]);
 		}
 	}, [dlm, selectedDistributionListMember]);
+
+	const getSearchMemberList = useCallback((mem) => {
+		const attrs =
+			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+		const types = 'accounts,distributionlists,aliases';
+		const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+
+		searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name')
+			.then((response) => response.json())
+			.then((data) => {
+				const result: any[] = [];
+
+				const dl = data?.Body?.SearchDirectoryResponse?.dl;
+				const account = data?.Body?.SearchDirectoryResponse?.account;
+				const alias = data?.Body?.SearchDirectoryResponse?.alias;
+				if (dl) {
+					dl.map((item: any) => result.push(item));
+				}
+				if (account) {
+					account.map((item: any) => result.push(item));
+				}
+				if (alias) {
+					alias.map((item: any) => result.push(item));
+				}
+				setSearchMemberResult(result);
+			});
+	}, []);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchMemberCall = useCallback(
+		debounce((mem) => {
+			getSearchMemberList(mem);
+		}, 700),
+		[debounce]
+	);
+	useEffect(() => {
+		if (member !== '') {
+			searchMemberCall(member);
+		}
+	}, [member, searchMemberCall]);
+
+	const items = searchMemberResult.map((item: any, index) => ({
+		id: item.id,
+		label: item.name,
+		customComponent: (
+			<Row
+				top="9px"
+				right="large"
+				bottom="9px"
+				left="large"
+				style={{
+					fontFamily: 'roboto',
+					display: 'block',
+					textAlign: 'left',
+					height: 'inherit',
+					padding: '3px',
+					width: 'inherit'
+				}}
+				onClick={(): void => {
+					setMember(item?.name);
+				}}
+			>
+				{item?.name}
+			</Row>
+		)
+	}));
 
 	return (
 		<Container mainAlignment="flex-start">
@@ -101,15 +213,26 @@ const MailingListMembersSection: FC<any> = () => {
 						padding={{ top: 'large', right: 'small' }}
 						width="65%"
 					>
-						<Input
-							label={t('label.type_an_account_dot', 'Type an account ...')}
-							backgroundColor="gray5"
-							size="medium"
-							value={member}
-							onChange={(e: any): void => {
-								setMember(e.target.value);
+						<Dropdown
+							items={items}
+							placement="bottom-start"
+							maxWidth="300px"
+							disableAutoFocus
+							width="265px"
+							style={{
+								width: '100%'
 							}}
-						/>
+						>
+							<Input
+								label={t('label.type_an_account_dot', 'Type an account ...')}
+								backgroundColor="gray5"
+								size="medium"
+								value={member}
+								onChange={(e: any): void => {
+									setMember(e.target.value);
+								}}
+							/>
+						</Dropdown>
 					</Container>
 					<Container
 						mainAlignment="flex-start"
@@ -125,6 +248,7 @@ const MailingListMembersSection: FC<any> = () => {
 							icon="PlusOutline"
 							iconPlacement="right"
 							height={44}
+							disabled={member === ''}
 							onClick={onAdd}
 						/>
 					</Container>
@@ -142,6 +266,9 @@ const MailingListMembersSection: FC<any> = () => {
 							icon="PlusOutline"
 							iconPlacement="right"
 							height={44}
+							disabled={
+								selectedDistributionListMember && selectedDistributionListMember.length === 0
+							}
 							onClick={onDeleteFromList}
 						/>
 					</Container>

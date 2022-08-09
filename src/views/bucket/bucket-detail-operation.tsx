@@ -24,7 +24,11 @@ const BucketOperation: FC = () => {
 			{((): any => {
 				switch (operation) {
 					case SERVERS_LIST:
-						return <ServersDetailPanel />;
+						return (
+							<DetailViewContainer>
+								<ServersDetailPanel />
+							</DetailViewContainer>
+						);
 					case BUCKET_LIST:
 						return (
 							<DetailViewContainer>

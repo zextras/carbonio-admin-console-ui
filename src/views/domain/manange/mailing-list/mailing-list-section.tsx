@@ -3,27 +3,120 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useState } from 'react';
-import { Container, Text, Input, Row, Switch, Icon } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import {
+	Container,
+	Text,
+	Input,
+	Row,
+	Switch,
+	Icon,
+	Table,
+	Padding
+} from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
 import { MailingListContext } from './mailinglist-context';
 import ListRow from '../../../list/list-row';
-import { getDomainList } from '../../../../services/search-domain-service';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import { isValidLdapQuery } from '../../../utility/utils';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(MailingListContext);
 	const [domainList, setDomainList] = useState([]);
-
+	const [isValidQuery, setIsValidQuery] = useState<boolean>(true);
 	const { mailingListDetail, setMailingListDetail } = context;
-
+	const [dynamicListMember, setDynamicListMember] = useState<Array<any>>(
+		mailingListDetail?.ldapQueryMembers
+	);
+	const [dynamicListMemberRows, setDynamicListMemberRows] = useState<Array<any>>([]);
+	const [isShowLdapQueryMessage, setIsShowLdapQueryMessage] = useState<boolean>(false);
+	const [ldapQueryErrorMessage, setLdapQueryErrorMessage] = useState<string>('');
 	const changeResourceDetail = useCallback(
 		(e) => {
+			if (e.target.name === 'memberURL') {
+				const validQuery = isValidLdapQuery(e.target.value);
+				setIsValidQuery(validQuery);
+				setIsShowLdapQueryMessage(!validQuery);
+			}
 			setMailingListDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setMailingListDetail]
 	);
+
+	const memberHeaders: any[] = useMemo(
+		() => [
+			{
+				id: 'members',
+				label: t('label.accounts', 'Accounts'),
+				width: '100%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	const getMemberFromLdapQuery = useCallback(() => {
+		const query = mailingListDetail?.memberURL.replace('ldap:///??sub?', '');
+		searchDirectory(
+			'cn,description,name,zimbraId',
+			'accounts,distributionlists,dynamicgroups,accounts,aliases,dynamicgroups,resources',
+			'',
+			query
+		)
+			.then((response) => response.json())
+			.then((data) => {
+				const allList: any[] = [];
+				const account = data?.Body?.SearchDirectoryResponse?.account;
+				const dl = data?.Body?.SearchDirectoryResponse?.dl;
+				const alias = data?.Body?.SearchDirectoryResponse?.alias;
+				const calresource = data?.Body?.SearchDirectoryResponse?.calresource;
+				const errorFault = data?.Body?.Fault;
+				if (errorFault) {
+					setIsShowLdapQueryMessage(true);
+					setLdapQueryErrorMessage(t('label.query_is_not_valid', 'Query is not valid'));
+				} else {
+					setIsShowLdapQueryMessage(false);
+					setLdapQueryErrorMessage('');
+				}
+				if (dl) {
+					dl.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+				}
+				if (account) {
+					account.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+				}
+				if (alias) {
+					alias.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+				}
+				if (calresource) {
+					calresource.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+				}
+				if (allList && allList.length > 0) {
+					setDynamicListMember(allList);
+				} else {
+					setDynamicListMember([]);
+				}
+			});
+	}, [mailingListDetail?.memberURL, t]);
+
+	useEffect(() => {
+		if (dynamicListMember && dynamicListMember.length > 0) {
+			const searchDlRows = dynamicListMember.map((item: any) => ({
+				id: item?.name,
+				columns: [
+					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+						{item?.name}
+					</Text>,
+					''
+				]
+			}));
+			setDynamicListMemberRows(searchDlRows);
+			setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: dynamicListMember }));
+		} else {
+			setDynamicListMemberRows([]);
+			setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: [] }));
+		}
+	}, [dynamicListMember, setMailingListDetail]);
 
 	return (
 		<Container mainAlignment="flex-start">
@@ -136,9 +229,51 @@ const MailingListSection: FC<any> = () => {
 								size="medium"
 								inputName="memberURL"
 								onChange={changeResourceDetail}
+								hasError={!isValidQuery}
+								CustomIcon={(): any => (
+									<Icon
+										icon="CheckmarkOutline"
+										size="large"
+										color="grey"
+										onClick={getMemberFromLdapQuery}
+									/>
+								)}
 							/>
 						</Container>
 					</ListRow>
+				)}
+
+				{isShowLdapQueryMessage && (
+					<Row>
+						<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+							<Padding>
+								<Text size="extrasmall" weight="regular" color="error">
+									{ldapQueryErrorMessage}
+								</Text>
+							</Padding>
+						</Container>
+					</Row>
+				)}
+
+				{mailingListDetail?.dynamic && (
+					<>
+						<Row padding={{ top: 'large' }}>
+							<Text
+								size="small"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								weight="bold"
+							>
+								{t('label.members', 'Members')}
+							</Text>
+						</Row>
+						<ListRow>
+							<Container padding={{ top: 'large', bottom: 'large' }}>
+								<Table rows={dynamicListMemberRows} headers={memberHeaders} showCheckbox={false} />
+							</Container>
+						</ListRow>
+					</>
 				)}
 				<ListRow>
 					<Container

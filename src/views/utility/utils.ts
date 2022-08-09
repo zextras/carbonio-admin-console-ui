@@ -823,8 +823,40 @@ export const timeZoneList = (
 
 export const BucketTypeItems = [
 	{
-		label: 'S3 AWS',
+		label: 'Alibaba Cloud S3',
+		value: 'Alibaba'
+	},
+	{
+		label: 'Amazon Web Service S3',
 		value: 'S3'
+	},
+	{
+		label: 'Ceph S3',
+		value: 'Ceph'
+	},
+	{
+		label: 'Cloudian S3',
+		value: 'Cloudian'
+	},
+	{
+		label: 'Custom S3',
+		value: 'CustomS3'
+	},
+	{
+		label: 'EMC S3',
+		value: 'EMC'
+	},
+	{
+		label: 'OpenIO S3',
+		value: 'OpenIO'
+	},
+	{
+		label: 'Scality S3',
+		value: 'ScalityS3'
+	},
+	{
+		label: 'Yandex S3',
+		value: 'Yandex'
 	}
 ];
 
@@ -1077,6 +1109,89 @@ export const BucketRegions = [
 	}
 ];
 
+export const BucketRegionsInAlibaba = [
+	{
+		label: 'China (Hangzhou)',
+		value: 'oss-cn-hangzhou'
+	},
+	{
+		label: 'China (Shanghai)',
+		value: 'oss-cn-shanghai'
+	},
+	{
+		label: 'China (Qingdao)',
+		value: 'oss-cn-qingdao'
+	},
+	{
+		label: 'China (Beijing)',
+		value: 'oss-cn-beijing'
+	},
+	{
+		label: 'China (Zhangjiakou)',
+		value: 'oss-cn-zhangjiakou'
+	},
+	{
+		label: 'China (Hohhot)',
+		value: 'oss-cn-huhehaote'
+	},
+	{
+		label: 'China (Shenzhen)',
+		value: 'oss-cn-shenzhen'
+	},
+	{
+		label: 'China (Chengdu)',
+		value: 'oss-cn-chengdu'
+	},
+	{
+		label: 'China (Hong Kong)',
+		value: 'oss-cn-hongkong'
+	},
+	{
+		label: 'Japan (Tokyo)',
+		value: 'oss-ap-northeast-1'
+	},
+	{
+		label: 'Singapore',
+		value: 'oss-ap-southeast-1'
+	},
+	{
+		label: 'Australia (Sydney)',
+		value: 'oss-ap-southeast-2'
+	},
+	{
+		label: 'Malaysia (Kuala Lumpur)',
+		value: 'oss-ap-southeast-3'
+	},
+	{
+		label: 'Indonesia (Jakarta)',
+		value: 'oss-ap-southeast-5'
+	},
+	{
+		label: 'India (Mumbai)',
+		value: 'oss-ap-south-1'
+	},
+	{
+		label: 'US (Silicon Valley)',
+		value: 'oss-us-west-1'
+	},
+	{
+		label: 'US (Virginia)',
+		value: 'oss-us-east-1'
+	},
+	{
+		label: 'Germany (Frankfurt)',
+		value: 'oss-eu-central-1'
+	},
+	{
+		label: 'UK (London)',
+		value: 'oss-eu-west-1'
+	},
+	{
+		label: 'UAE Dubai',
+		value: 'oss-me-east-1'
+	}
+];
+
 export const getDateFromStr = (serverStr: string): any => {
 	if (serverStr === null || serverStr === undefined) return null;
 	const d = new Date();
@@ -1102,10 +1217,22 @@ export const getFormatedDate = (date: Date): any => {
 };
 
 export const isValidEmail = (email: string): boolean => {
-	const re = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+	const re = /^\w+([\\.-]?\w+)*@\w+([\\.-]?\w+)*(\.\w{2,3})+$/;
+	// const re = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
 	return re.test(email);
 };
 
+export const getAllEmailFromString = (str: string): any =>
+	str
+		.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)
+		?.map((item: any) => item.replace('>', ''));
+
+export const getEmailDisplayNameFromString = (str: string): any => str.match(/".*?"|'.*?'/g);
+
+export const isValidLdapQuery = (query: string): boolean => {
+	const re = /\([^\\(\\)\\=]+=[^\\(\\)\\=]+\)/;
+	return re.test(query);
+};
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),

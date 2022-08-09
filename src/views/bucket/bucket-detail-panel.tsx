@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Container,
 	Padding,
@@ -27,17 +27,10 @@ import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import { BucketTypeItems } from '../utility/utils';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
+import { AbsoluteContainer } from '../components/styled';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
-`;
-const AbsoluteContainer = styled(Container)`
-	position: absolute;
-	max-width: 630px;
-	right: 0;
-	z-index: 1;
-	box-shadow: 0 0 12px -1px #888;
-	top: 0;
 `;
 
 const headers = [
@@ -69,8 +62,8 @@ const BucketListTable: FC<{
 			volumes.map((v, i) => ({
 				id: i,
 				columns: [
-					// eslint-disable-next-line react/jsx-key
 					<Row
+						key={i}
 						onDoubleClick={(): any => {
 							onDoubleClick(i);
 						}}
@@ -81,8 +74,8 @@ const BucketListTable: FC<{
 					>
 						{v.bucketName}
 					</Row>,
-					// eslint-disable-next-line react/jsx-key
 					<Row
+						key={i}
 						onDoubleClick={(): any => {
 							onDoubleClick(i);
 						}}
@@ -131,8 +124,6 @@ const BucketDetailPanel: FC = () => {
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
 	const [showEditDetailView, setShowEditDetailView] = useState(false);
-	const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
-	const [selectedRow, setSelectedRow] = useState<any>();
 
 	const closeHandler = (): any => {
 		setOpen(false);
@@ -204,21 +195,19 @@ const BucketDetailPanel: FC = () => {
 		t
 	]);
 	const handleDoubleClick = (i: any): any => {
-		setSelectedRow(i);
+		const volumeObject: any = bucketList.find((s, index) => index === i);
+		setConnectionData(volumeObject);
+		setShowEditDetailView(true);
+		setDetailsBucket(false);
+		setShowDetails(true);
+	};
+	const handleClick = (i: any): any => {
 		const volumeObject: any = bucketList.find((s, index) => index === i);
 		setConnectionData(volumeObject);
 		setDetailsBucket(true);
+		setShowEditDetailView(false);
 		setShowDetails(true);
 	};
-
-	useEffect(() => {
-		if (selectedRow !== undefined) {
-			const getIndex = bucketList.findIndex((data: any) => data.uuid === selectedRow.uuid);
-			const volumeObject: any = bucketList.find((s, index) => index === getIndex);
-			setConnectionData(volumeObject);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [bucketList, toggleForGetAPICall]);
 
 	useEffect(() => {
 		getBucketListType();
@@ -228,17 +217,43 @@ const BucketDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardSection && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<Container
+					orientation="vertical"
+					background="gray5"
+					style={{
+						position: 'absolute',
+						maxWidth: '630px',
+						top: '43px',
+						right: '0px',
+						bottom: '0px',
+						zIndex: '1',
+						boxShadow: '0 0 12px -1px #888',
+						height: 'auto'
+					}}
+				>
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
 						setDetailsBucket={setDetailsBucket}
 						setConnectionData={setConnectionData}
 						bucketType={bucketType}
 					/>
-				</AbsoluteContainer>
+				</Container>
 			)}
 			{detailsBucket && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<Container
+					orientation="vertical"
+					background="gray5"
+					style={{
+						position: 'absolute',
+						maxWidth: '630px',
+						top: '43px',
+						right: '0px',
+						bottom: '0px',
+						zIndex: '1',
+						boxShadow: '0 0 12px -1px #888',
+						height: 'auto'
+					}}
+				>
 					<DetailsPanel
 						setDetailsBucket={setDetailsBucket}
 						title="Bucket Connection"
@@ -247,26 +262,35 @@ const BucketDetailPanel: FC = () => {
 						setOpen={setOpen}
 						setShowEditDetailView={setShowEditDetailView}
 					/>
-				</AbsoluteContainer>
+				</Container>
 			)}
 			{showEditDetailView && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<Container
+					orientation="vertical"
+					background="gray5"
+					style={{
+						position: 'absolute',
+						maxWidth: '630px',
+						top: '43px',
+						right: '0px',
+						bottom: '0px',
+						zIndex: '1',
+						boxShadow: '0 0 12px -1px #888',
+						height: 'auto'
+					}}
+				>
 					<EditBucketDetailPanel
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
 						bucketDetail={connectionData}
-						getBucketListType={getBucketListType}
-						setSelectedRow={setSelectedRow}
-						setToggleForGetAPICall={setToggleForGetAPICall}
-						toggleForGetAPICall={toggleForGetAPICall}
 					/>
-				</AbsoluteContainer>
+				</Container>
 			)}
 			<RelativeContainer
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
-				style={{ overflowY: 'auto', marginLeft: '16px' }}
+				style={{ overflowY: 'auto' }}
 				background="white"
 			>
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
@@ -275,14 +299,14 @@ const BucketDetailPanel: FC = () => {
 					</Text>
 				</Row>
 				<Divider />
-				<Row padding="32px 12px 10px" width="100%">
+				<Row style={{ padding: '32px 16px 16px 16px' }} width="100%">
 					<Select
 						items={BucketTypeItems}
 						background="gray5"
 						label={t('buckets.bucket_type', 'Buckets Type')}
 						onChange={(e: any): void => {
 							const volumeObject: any = BucketTypeItems.find((s) => s.value === e);
-							setBucketType(volumeObject.value);
+							setBucketType(volumeObject?.value);
 						}}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
@@ -302,8 +326,7 @@ const BucketDetailPanel: FC = () => {
 							width="100%"
 							mainAlignment="flex-end"
 							orientation="horizontal"
-							padding="8px 14px"
-							style={{ gap: '8px' }}
+							style={{ gap: '8px', padding: '8px 14px' }}
 						>
 							<Button
 								type="outlined"
@@ -318,14 +341,14 @@ const BucketDetailPanel: FC = () => {
 						</Row>
 						{bucketList?.length !== 0 && (
 							<>
-								<Row width="100%" padding="3px 13px">
+								<Row width="100%" style={{ padding: '3px 13px' }}>
 									<Input
 										background="gray5"
 										label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
 										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="grey" />}
 									/>
 								</Row>
-								<Row padding="16px 14px 0px 14px" width="100%">
+								<Row style={{ padding: '16px 14px 0px 14px' }} width="100%">
 									<BucketListTable
 										volumes={bucketList}
 										selectedRows={bucketselection}
@@ -339,11 +362,9 @@ const BucketDetailPanel: FC = () => {
 										}}
 										onDoubleClick={(i: any): any => {
 											handleDoubleClick(i);
-											setShowEditDetailView(true);
 										}}
 										onClick={(i: any): any => {
-											handleDoubleClick(i);
-											setShowEditDetailView(false);
+											handleClick(i);
 										}}
 									/>
 								</Row>
@@ -356,10 +377,17 @@ const BucketDetailPanel: FC = () => {
 							<img src={logo} alt="logo" />
 						</Text>
 						<Padding all="medium" width="47%">
-							<Text color="gray1" overflow="break-word" weight="normal" size="large" width="60%">
+							<Text
+								color="gray1"
+								overflow="break-word"
+								weight="normal"
+								size="large"
+								width="60%"
+								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
+							>
 								{t(
 									'select_bucket_or_create_new_bucket',
-									"It seems like you haven't setup a bucket type. Click NEW BUCKET button to create a new one."
+									"It seems like you haven't setup a bucket type. \n Click NEW BUCKET button to create a new one."
 								)}
 							</Text>
 						</Padding>

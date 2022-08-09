@@ -201,67 +201,72 @@ export const SendInviteAccounts: FC<any> = ({
 					orientation="horizontal"
 					padding={{ top: 'large' }}
 				>
-					{sendInviteRows && sendInviteRows.length > 0 && (
-						<Table
-							rows={sendInviteRows}
-							headers={sendInviteHeaders}
-							showCheckbox={!!isEditable}
-							style={{ overflow: 'auto', height: '100%' }}
-							selectedRows={selectedSendInvite}
-							onSelectionChange={(selected: any): any => {
-								setSelectedSendInvite(selected);
-								if (selected && selected.length > 0) {
-									setSendInviteDeleteBtnDisabled(false);
-								} else {
-									setSendInviteDeleteBtnDisabled(true);
-								}
-							}}
-						/>
-					)}
-					{sendInviteRows?.length === 0 && (
-						<Container orientation="column" crossAlignment="center" mainAlignment="center">
-							<Row>
-								<img src={logo} alt="logo" />
-							</Row>
-							<Row
-								padding={{ top: 'extralarge' }}
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-							>
-								<Text weight="light" color="#828282" size="large" overflow="break-word">
-									{t('label.this_list_is_empty', 'This list is empty.')}
-								</Text>
-							</Row>
-							<Row
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-								padding={{ top: 'small' }}
-								width="53%"
-							>
-								<Text weight="light" color="#828282" size="large" overflow="break-word">
-									<Trans
-										i18nKey="label.do_you_need_more_information"
-										defaults="Do you need more information?"
-									/>
-								</Text>
-							</Row>
-							<Row
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-								padding={{ top: 'small' }}
-								width="53%"
-							>
-								<Text weight="light" color="primary">
-									{t('label.click_here', 'Click here')}
-								</Text>
-							</Row>
-						</Container>
-					)}
+					<Table
+						rows={sendInviteRows}
+						headers={sendInviteHeaders}
+						showCheckbox={!!isEditable}
+						style={{ overflow: 'auto', height: '100%' }}
+						selectedRows={selectedSendInvite}
+						onSelectionChange={(selected: any): any => {
+							setSelectedSendInvite(selected);
+							if (selected && selected.length > 0) {
+								setSendInviteDeleteBtnDisabled(false);
+							} else {
+								setSendInviteDeleteBtnDisabled(true);
+							}
+						}}
+					/>
 				</Container>
 			</ListRow>
+			{sendInviteRows?.length === 0 && (
+				<ListRow>
+					<Container
+						orientation="column"
+						crossAlignment="center"
+						mainAlignment="center"
+						padding={{ top: 'extralarge' }}
+					>
+						<Row>
+							<img src={logo} alt="logo" />
+						</Row>
+						<Row
+							padding={{ top: 'extralarge' }}
+							orientation="vertical"
+							crossAlignment="center"
+							style={{ textAlign: 'center' }}
+						>
+							<Text weight="light" color="#828282" size="large" overflow="break-word">
+								{t('label.this_list_is_empty', 'This list is empty.')}
+							</Text>
+						</Row>
+						<Row
+							orientation="vertical"
+							crossAlignment="center"
+							style={{ textAlign: 'center' }}
+							padding={{ top: 'small' }}
+							width="53%"
+						>
+							<Text weight="light" color="#828282" size="large" overflow="break-word">
+								<Trans
+									i18nKey="label.do_you_need_more_information"
+									defaults="Do you need more information?"
+								/>
+							</Text>
+						</Row>
+						<Row
+							orientation="vertical"
+							crossAlignment="center"
+							style={{ textAlign: 'center' }}
+							padding={{ top: 'small' }}
+							width="53%"
+						>
+							<Text weight="light" color="primary">
+								{t('label.click_here', 'Click here')}
+							</Text>
+						</Row>
+					</Container>
+				</ListRow>
+			)}
 		</>
 	);
 };

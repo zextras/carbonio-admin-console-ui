@@ -21,8 +21,9 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { find } from 'lodash';
-import { BucketRegions, BucketTypeItems } from '../utility/utils';
+import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
+import { ALIBABA, EMC } from '../../constants';
 
 const DetailsHeaders = [
 	{
@@ -116,9 +117,7 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 					<Text color="text" key={i}>
 						{v.rtstatus}
 					</Text>,
-					<Text style={{ textTransform: 'capitalize' }} key={i}>
-						{v.type}
-					</Text>,
+					<Text key={i}>{v.type}</Text>,
 					<Text color="text" key={i}>
 						{v.samrtstatus}
 					</Text>
@@ -151,32 +150,22 @@ const EditBucketDetailPanel: FC<{
 	setShowEditDetailView: any;
 	title: string;
 	bucketDetail: any;
-	getBucketListType: any;
-	setSelectedRow: any;
-	setToggleForGetAPICall: any;
-	toggleForGetAPICall: any;
-}> = ({
-	setShowEditDetailView,
-	title,
-	bucketDetail,
-	getBucketListType,
-	setSelectedRow,
-	setToggleForGetAPICall,
-	toggleForGetAPICall
-}) => {
-	setSelectedRow(bucketDetail);
+}> = ({ setShowEditDetailView, title, bucketDetail }) => {
 	const [t] = useTranslation();
-	const [bucketName, setBucketName] = useState(bucketDetail.bucketName);
+	const [bucketName, setBucketName] = useState(bucketDetail?.bucketName);
 	const [bucketType, setBucketType] = useState<any>();
-	const [regionData, setRegionData] = useState(bucketDetail.region);
-	const [accessKeyData, setAccessKeyData] = useState(bucketDetail.accessKey);
-	const [secretKey, setSecretKey] = useState(bucketDetail.secret);
+	const [regionData, setRegionData] = useState(
+		bucketDetail?.region !== undefined && bucketDetail?.region
+	);
+	const [accessKeyData, setAccessKeyData] = useState(bucketDetail?.accessKey);
+	const [secretKey, setSecretKey] = useState(bucketDetail?.secret);
+	const [urlData, setUrlData] = useState(bucketDetail?.url !== undefined && bucketDetail?.url);
 	const [verify, setVerify] = useState('primary');
 	const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
 	const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [previousDetail, setPreviousDetail] = useState<any>({});
-	const [toggleBtn, setToggleBtn] = useState(false);
+	const [showURL, setShowURL] = useState(true);
 	const createSnackbar = useSnackbar();
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 
@@ -193,7 +182,6 @@ const EditBucketDetailPanel: FC<{
 				setVerify('success');
 				setButtonLabel(t('label.verify_connector_verified', ' VERIFIED'));
 				setButtonIcon('ActivityOutline');
-				setToggleBtn(true);
 			} else {
 				setVerify('error');
 				setButtonLabel(t('label.verify_connector_fail', ' VERIFICATION FAILED'));
@@ -205,7 +193,6 @@ const EditBucketDetailPanel: FC<{
 						name: response.response[server].error
 					})
 				});
-				setToggleBtn(false);
 			}
 		});
 	}, [bucketDetail.uuid, createSnackbar, server, t]);
@@ -214,15 +201,23 @@ const EditBucketDetailPanel: FC<{
 		setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
 		setButtonIcon('ActivityOutline');
 		setVerify('primary');
-		setToggleBtn(false);
-	}, [bucketDetail.uuid, t, bucketDetail]);
+	}, [bucketDetail.uuid, t]);
+
+	useEffect(() => {
+		if (bucketDetail?.url !== undefined) {
+			setShowURL(true);
+		} else {
+			setShowURL(false);
+		}
+	}, [bucketDetail?.url]);
 
 	const updatePreviousDetail = (): void => {
 		const latestData: any = {};
 		latestData.bucketName = bucketName;
-		latestData.regionData = regionData;
+		latestData.regionData = bucketDetail?.region !== undefined && regionData;
 		latestData.accessKeyData = accessKeyData;
 		latestData.secretKey = secretKey;
+		latestData.url = urlData;
 		setPreviousDetail(latestData);
 		setIsDirty(false);
 	};
@@ -237,17 +232,12 @@ const EditBucketDetailPanel: FC<{
 			bucketName,
 			accessKey: accessKeyData,
 			secret: secretKey,
-			region: regionData.value,
+			url: bucketDetail?.url !== undefined ? urlData : '',
+			region: bucketDetail?.region !== undefined ? regionData.value : '',
 			targetServer: server
 		}).then((res: any) => {
 			const updateResData = JSON.parse(res.response.content);
 			if (updateResData.ok) {
-				getBucketListType();
-				setToggleForGetAPICall(!toggleForGetAPICall);
-				setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
-				setButtonIcon('ActivityOutline');
-				setVerify('primary');
-				setToggleBtn(false);
 				createSnackbar({
 					key: 'success',
 					type: 'success',
@@ -270,21 +260,30 @@ const EditBucketDetailPanel: FC<{
 					hideButton: true,
 					replace: true
 				});
-				setToggleBtn(false);
 			}
 		});
 	};
 
 	const onUndo = (): void => {
-		const bucketTypeValue: any = find(BucketTypeItems, (o) => o.value === bucketDetail.storeType);
+		const upperBucketType =
+			bucketDetail.storeType !== EMC
+				? bucketDetail.storeType.charAt(0).toUpperCase() +
+				  bucketDetail.storeType.slice(1).toLowerCase()
+				: bucketDetail.storeType;
+		const bucketTypeValue: any = find(BucketTypeItems, (o) => o.value === upperBucketType);
 		previousDetail?.bucketType
 			? setBucketType(previousDetail?.bucketType)
 			: setBucketType(bucketTypeValue);
 		previousDetail?.bucketName
 			? setBucketName(previousDetail?.bucketName)
 			: setBucketName(bucketName);
-		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region);
-		previousDetail?.regionData
+		const regionValue: any = find(
+			upperBucketType === ALIBABA && bucketDetail?.region !== undefined
+				? BucketRegionsInAlibaba
+				: BucketRegions,
+			(o) => o.value === bucketDetail.region
+		);
+		bucketDetail?.region !== undefined && previousDetail?.regionData
 			? setRegionData(previousDetail?.regionData)
 			: setRegionData(regionValue);
 		previousDetail?.accessKeyData
@@ -293,13 +292,20 @@ const EditBucketDetailPanel: FC<{
 		previousDetail?.secretKey
 			? setSecretKey(previousDetail?.secretKey)
 			: setSecretKey(bucketDetail.secret);
+		previousDetail?.url ? setUrlData(previousDetail?.url) : setUrlData(bucketDetail.url);
 		setIsDirty(false);
 	};
 
-	const onSelectionChange = useCallback((e: any): any => {
-		const volumeObject = BucketRegions.find((item: any) => item.value === e);
-		setRegionData(volumeObject);
-	}, []);
+	const onSelectionChange = useCallback(
+		(e: any): any => {
+			const volumeObject =
+				bucketDetail?.region !== undefined && bucketDetail.storeType === ALIBABA.toUpperCase()
+					? BucketRegionsInAlibaba.find((s) => s.value === e)
+					: BucketRegions.find((s) => s.value === e);
+			setRegionData(volumeObject);
+		},
+		[bucketDetail?.region, bucketDetail.storeType]
+	);
 
 	const onBucketTypeSelectionChange = useCallback((e: any): void => {
 		const volumeObject: any = BucketTypeItems.find((item: any): any => item.value === e);
@@ -307,44 +313,88 @@ const EditBucketDetailPanel: FC<{
 	}, []);
 
 	useEffect(() => {
-		const bucketTypeValue: any = find(
-			BucketTypeItems,
-			(o) => o.value === bucketDetail.storeType
-		)?.value;
+		const upperBucketType =
+			bucketDetail.storeType !== EMC
+				? bucketDetail.storeType.charAt(0).toUpperCase() +
+				  bucketDetail.storeType.slice(1).toLowerCase()
+				: bucketDetail.storeType;
+		const bucketTypeValue: any = find(BucketTypeItems, (o) => o.value === upperBucketType)?.value;
 		if (bucketType !== undefined && bucketTypeValue !== bucketType?.value) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
 	}, [bucketDetail.storeType, bucketType]);
 
 	useEffect(() => {
 		if (bucketName !== undefined && bucketDetail?.bucketName !== bucketName) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
 	}, [bucketDetail?.bucketName, bucketName]);
 
 	useEffect(() => {
-		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region)?.value;
-		if (regionData.value !== undefined && regionValue !== regionData?.value) {
+		const upperBucketType =
+			bucketDetail.storeType !== EMC
+				? bucketDetail.storeType.charAt(0).toUpperCase() +
+				  bucketDetail.storeType.slice(1).toLowerCase()
+				: bucketDetail.storeType;
+		const regionValue: any = find(
+			bucketDetail?.region !== undefined && upperBucketType === ALIBABA
+				? BucketRegionsInAlibaba
+				: BucketRegions,
+			(o) => o.value === bucketDetail.region
+		)?.value;
+		if (
+			bucketDetail?.region !== undefined &&
+			regionData?.value !== undefined &&
+			regionValue !== regionData?.value
+		) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
-	}, [bucketDetail?.region, regionData]);
+	}, [bucketDetail.region, bucketDetail.storeType, regionData]);
 
 	useEffect(() => {
 		if (accessKeyData !== undefined && bucketDetail?.accessKey !== accessKeyData) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
 	}, [bucketDetail?.accessKey, accessKeyData]);
 
 	useEffect(() => {
 		if (secretKey !== undefined && bucketDetail?.secret !== secretKey) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
 	}, [bucketDetail?.secret, secretKey]);
 
 	useEffect(() => {
-		const regionValue: any = find(BucketRegions, (o) => o.value === bucketDetail.region);
-		const bucketTypeValue: any = find(BucketTypeItems, (o) => o.value === bucketDetail.storeType);
-		setRegionData(regionValue);
+		if (urlData !== undefined && bucketDetail?.url !== urlData) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [bucketDetail?.url, secretKey, urlData]);
+
+	useEffect(() => {
+		const upperBucketType =
+			bucketDetail.storeType !== EMC
+				? bucketDetail.storeType.charAt(0).toUpperCase() +
+				  bucketDetail.storeType.slice(1).toLowerCase()
+				: bucketDetail.storeType;
+		const regionValue: any = find(
+			bucketDetail?.region !== undefined && upperBucketType === ALIBABA
+				? BucketRegionsInAlibaba
+				: BucketRegions,
+			(o) => o.value === bucketDetail.region
+		);
+		const bucketTypeValue: any = find(BucketTypeItems, (o) => o.value === upperBucketType);
+		setRegionData(bucketDetail?.region !== undefined && regionValue);
 		setBucketType(bucketTypeValue);
 	}, [bucketDetail]);
 
@@ -393,7 +443,10 @@ const EditBucketDetailPanel: FC<{
 					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
-					<Row width="48%" mainAlignment="flex-start">
+					<Row
+						width={bucketDetail?.region !== undefined ? '48%' : '100%'}
+						mainAlignment="flex-start"
+					>
 						<Input
 							label={t('label.bucket_name', 'Bucket Name')}
 							name="BucketName"
@@ -403,18 +456,26 @@ const EditBucketDetailPanel: FC<{
 							}}
 						/>
 					</Row>
-					<Padding width="4%" />
-					<Row width="48%" mainAlignment="flex-end">
-						<Select
-							items={BucketRegions}
-							background="gray6"
-							label={t('label.region', 'Region')}
-							onChange={onSelectionChange}
-							selection={regionData}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-						/>
-					</Row>
+					{bucketDetail?.region !== undefined && (
+						<>
+							<Padding width="4%" />
+							<Row width="48%" mainAlignment="flex-end">
+								<Select
+									items={
+										bucketDetail.storeType === ALIBABA.toUpperCase()
+											? BucketRegionsInAlibaba
+											: BucketRegions
+									}
+									background="gray6"
+									label={t('label.region', 'Region')}
+									onChange={onSelectionChange}
+									selection={regionData}
+									showCheckbox={false}
+									padding={{ right: 'medium' }}
+								/>
+							</Row>
+						</>
+					)}
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Row width="48%" mainAlignment="flex-start">
@@ -437,6 +498,17 @@ const EditBucketDetailPanel: FC<{
 						/>
 					</Row>
 				</Row>
+				{showURL && (
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<Input
+							label={t('label.url', 'URL')}
+							value={urlData}
+							onChange={(e: any): void => {
+								setUrlData(e.target.value);
+							}}
+						/>
+					</Row>
+				)}
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Button
 						type="outlined"
@@ -446,7 +518,6 @@ const EditBucketDetailPanel: FC<{
 						size="fill"
 						color={verify}
 						onClick={verifyConnector}
-						disabled={toggleBtn}
 					/>
 				</Row>
 

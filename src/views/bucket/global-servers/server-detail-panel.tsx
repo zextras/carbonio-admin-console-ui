@@ -68,30 +68,30 @@ const ServersListTable: FC<{
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
-				id: i,
+				id: i?.toString(),
 				columns: [
-					// eslint-disable-next-line react/jsx-key
-					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>{v.name}</Row>,
-					// eslint-disable-next-line react/jsx-key
+					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+						{v.name}
+					</Row>,
 					<Row
+						key={i}
 						style={{ textAlign: 'left', justifyContent: 'flex-start', textTransform: 'capitalize' }}
 					>
 						{v.primaries}
 					</Row>,
-					// eslint-disable-next-line react/jsx-key
 					<Row
+						key={i}
 						style={{ textAlign: 'left', justifyContent: 'flex-start', textTransform: 'capitalize' }}
 					>
 						{v.secondaries}
 					</Row>,
-					// eslint-disable-next-line react/jsx-key
 					<Row
+						key={i}
 						style={{ textAlign: 'left', justifyContent: 'flex-start', textTransform: 'capitalize' }}
 					>
 						{v.indexes}
 					</Row>
-					// eslint-disable-next-line react/jsx-key
-					// <Row style={{ textAlign: 'center', textTransform: 'capitalize' }}>{v.id}</Row>
+					// <Row key={i} style={{ textAlign: 'center', textTransform: 'capitalize' }}>{v.id}</Row>
 				],
 				clickable: true
 			})),
@@ -161,7 +161,7 @@ const serverDetailPanel: FC = () => {
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
-				style={{ overflowY: 'auto', marginRight: '8px' }}
+				style={{ overflowY: 'auto' }}
 				background="white"
 			>
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
@@ -176,7 +176,7 @@ const serverDetailPanel: FC = () => {
 					mainAlignment="flex-start"
 					width="100%"
 					height="calc(100vh - 200px)"
-					padding={{ all: 'large' }}
+					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
 				>
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -185,7 +185,7 @@ const serverDetailPanel: FC = () => {
 								mainAlignment="space-between"
 								crossAlignment="flex-start"
 								width="fill"
-								padding={{ bottom: 'large' }}
+								padding={{ top: 'small', bottom: 'large' }}
 							>
 								<Container>
 									<Input

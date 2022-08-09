@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-export const APP_ID = 'carbonio-admin-manage-ui';
+export const APP_ID = 'carbonio-admin-console-ui';
 export const MAIN_ROUTE = 'example';
 export const SECONDARY_ROUTE = 'something';
 export const MANAGE = 'manage';
@@ -81,3 +81,11 @@ export const LOG_AND_QUEUES = 'logandqueues';
 export const OPERATIONS = 'operations';
 export const APPLICATION_LOG = 'application_log';
 export const MTA = 'mta';
+export const ALIBABA = 'Alibaba';
+export const AMAZON_WEB_SERVICE_S3 = 'S3';
+export const EMC = 'EMC';
+export const SUCCESS = 'successWithVerify';
+export const ERROR = 'errorOnVerify';
+export const FAIL = 'fail';
+export const ENABLED = 'enabled';
+export const DISABLED = 'disabled';

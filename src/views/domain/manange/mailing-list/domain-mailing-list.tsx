@@ -344,8 +344,18 @@ const DomainMailingList: FC = () => {
 		[createSnackbar]
 	);
 
+	const getOwnerType = useCallback((ownersList: any, email?: string): any => {
+		let type = 'email';
+		ownersList.forEach((item: any) => {
+			if (item?._attrs && item?._attrs?.type && item?._attrs?.email === email) {
+				type = item?._attrs?.type === 'group' ? 'grp' : 'usr';
+			}
+		});
+		return type;
+	}, []);
+
 	const addMemberToMailingList = useCallback(
-		(members: any, owners: any, mlId: string): void => {
+		(members: any, owners: any, mlId: string, ownersList: Array<any>): void => {
 			const request: any[] = [];
 			if (members.length > 0 && mlId) {
 				members.forEach((item: any) => {
@@ -371,21 +381,20 @@ const DomainMailingList: FC = () => {
 						op: 'addOwners',
 						owner: {
 							by: 'name',
-							type: 'usr',
+							type: getOwnerType(ownersList, item),
 							_content: item
 						}
 					};
 					request.push(distributionListAction(dl, action));
 				});
 			}
-
 			if (request.length > 0) {
 				callAllRequest(request);
 			} else {
 				setIsUpdateRecord(true);
 			}
 		},
-		[callAllRequest]
+		[callAllRequest, getOwnerType]
 	);
 
 	const createMailingListReq = useCallback(
@@ -403,7 +412,8 @@ const DomainMailingList: FC = () => {
 			zimbraDistributionListSendShareMessageToNewMembers,
 			owners,
 			zimbraDistributionListSubscriptionPolicy,
-			zimbraDistributionListUnsubscriptionPolicy
+			zimbraDistributionListUnsubscriptionPolicy,
+			allOwnersList
 		) => {
 			const attributes: any[] = [];
 			attributes.push({
@@ -465,7 +475,7 @@ const DomainMailingList: FC = () => {
 						}
 					} else {
 						const mlId = data?.Body?.CreateDistributionListResponse?.dl[0]?.id;
-						addMemberToMailingList(members, owners, mlId);
+						addMemberToMailingList(members, owners, mlId, allOwnersList);
 						setShowCreateMailingListView(false);
 						message = t('label.the_has_been_created_success', {
 							name,
@@ -598,7 +608,7 @@ const DomainMailingList: FC = () => {
 								/>
 							)}
 							{mailingList.length === 0 && (
-								<Container orientation="column" crossAlignment="center" mainAlignment="flex-start">
+								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
 									</Row>
