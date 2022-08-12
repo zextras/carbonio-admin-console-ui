@@ -70,8 +70,20 @@ const CreateCos: FC = () => {
 		createCos(cosName, attributes)
 			.then((response) => response.json())
 			.then((data) => {
-				showSuccessSnackBar();
-				routeToCos(data);
+				const cos: any = data?.Body?.CreateCosResponse?.cos[0];
+				if (cos) {
+					showSuccessSnackBar();
+					routeToCos(data);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: data?.Body?.Fault?.Reason?.Text,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
 			})
 			.catch((error) => {
 				createSnackbar({
