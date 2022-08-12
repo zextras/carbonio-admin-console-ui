@@ -199,7 +199,9 @@ const CosPreferences: FC = () => {
 		(v: string) => {
 			setCosPreferences((prev: any) => ({
 				...prev,
-				zimbraMailMinPollingInterval: `${zimbraPrefMailPollingIntervalNum}${v}`
+				zimbraMailMinPollingInterval: zimbraPrefMailPollingIntervalNum
+					? `${zimbraPrefMailPollingIntervalNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraPrefMailPollingIntervalNum, setCosPreferences]
@@ -208,7 +210,9 @@ const CosPreferences: FC = () => {
 		(e) => {
 			setCosPreferences((prev: any) => ({
 				...prev,
-				zimbraMailMinPollingInterval: `${e.target.value}${prefMailPollingIntervalType}`
+				zimbraMailMinPollingInterval: e.target.value
+					? `${e.target.value}${prefMailPollingIntervalType}`
+					: ''
 			}));
 			setZimbraPrefMailPollingIntervalNum(e.target.value);
 		},
