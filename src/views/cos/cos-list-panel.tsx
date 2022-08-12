@@ -171,11 +171,6 @@ const CosListPanel: FC = () => {
 				id: ADVANCED,
 				name: t('label.advanced', 'Advanced'),
 				isSelected: isCosSelect
-			},
-			{
-				id: RETENTION_POLICY,
-				name: t('label.retention_policy', 'Retention Policy'),
-				isSelected: isCosSelect
 			}
 		],
 		[t, isCosSelect]
