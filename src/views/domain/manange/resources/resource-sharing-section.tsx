@@ -16,7 +16,6 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { ResourceContext } from './resource-context';
-import ListRow from '../../../list/list-row';
 import { SendInviteAccounts } from './send-invite-accounts';
 import { SignatureDetail } from './signature-detail';
 
@@ -24,12 +23,6 @@ const ResourceSharingSection: FC = () => {
 	const context = useContext(ResourceContext);
 	const { t } = useTranslation();
 	const { resourceDetail, setResourceDetail } = context;
-	const [showSendInvite, setShowSendInvite] = useState<boolean>(true);
-	const [showSignature, setShowSignature] = useState<boolean>(true);
-
-	const sendInviteEnabled = useCallback(() => setShowSendInvite((c) => !c), []);
-
-	const signatureEnabled = useCallback(() => setShowSignature((c) => !c), []);
 
 	const setZimbraPrefCalendarAutoAcceptSignatureId = useCallback(
 		(v) => {
@@ -128,31 +121,14 @@ const ResourceSharingSection: FC = () => {
 						{t('label.invites', 'Invites')}
 					</Text>
 				</Row>
-				<ListRow>
-					<Container
-						mainAlignment="space-beetween"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large' }}
-					>
-						<Switch
-							value={showSendInvite}
-							label={t(
-								'label.i_want_to_send_invites_to_resource',
-								'I want to send invites to resource'
-							)}
-							onClick={sendInviteEnabled}
-						/>
-					</Container>
-				</ListRow>
-				{showSendInvite && (
-					<SendInviteAccounts
-						isEditable
-						sendInviteList={resourceDetail?.sendInviteList}
-						setSendInviteList={setSendInviteList}
-						hideHeaderBar
-					/>
-				)}
+
+				<SendInviteAccounts
+					isEditable
+					sendInviteList={resourceDetail?.sendInviteList}
+					setSendInviteList={setSendInviteList}
+					hideHeaderBar
+				/>
+
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
 				</Row>
@@ -167,44 +143,27 @@ const ResourceSharingSection: FC = () => {
 						{t('label.signatures', 'Signatures')}
 					</Text>
 				</Row>
-				<ListRow>
-					<Container
-						mainAlignment="space-beetween"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large' }}
-					>
-						<Switch
-							value={showSignature}
-							label={t('label.i_want_to_set_signature', 'I want to set a Signature')}
-							onClick={signatureEnabled}
-						/>
-					</Container>
-				</ListRow>
-				{showSignature && (
-					<SignatureDetail
-						isEditable
-						signatureList={resourceDetail?.signaturelist}
-						setSignatureList={setSignatureList}
-						signatureItems={resourceDetail?.signatureItems}
-						setSignatureItems={setSignatureItems}
-						zimbraPrefCalendarAutoAcceptSignatureId={
-							resourceDetail?.zimbraPrefCalendarAutoAcceptSignatureId
-						}
-						setZimbraPrefCalendarAutoAcceptSignatureId={setZimbraPrefCalendarAutoAcceptSignatureId}
-						zimbraPrefCalendarAutoDeclineSignatureId={
-							resourceDetail?.zimbraPrefCalendarAutoDeclineSignatureId
-						}
-						setZimbraPrefCalendarAutoDeclineSignatureId={
-							setZimbraPrefCalendarAutoDeclineSignatureId
-						}
-						zimbraPrefCalendarAutoDenySignatureId={
-							resourceDetail?.zimbraPrefCalendarAutoDenySignatureId
-						}
-						setZimbraPrefCalendarAutoDenySignatureId={setZimbraPrefCalendarAutoDenySignatureId}
-						hideHeaderBar
-					/>
-				)}
+
+				<SignatureDetail
+					isEditable
+					signatureList={resourceDetail?.signaturelist}
+					setSignatureList={setSignatureList}
+					signatureItems={resourceDetail?.signatureItems}
+					setSignatureItems={setSignatureItems}
+					zimbraPrefCalendarAutoAcceptSignatureId={
+						resourceDetail?.zimbraPrefCalendarAutoAcceptSignatureId
+					}
+					setZimbraPrefCalendarAutoAcceptSignatureId={setZimbraPrefCalendarAutoAcceptSignatureId}
+					zimbraPrefCalendarAutoDeclineSignatureId={
+						resourceDetail?.zimbraPrefCalendarAutoDeclineSignatureId
+					}
+					setZimbraPrefCalendarAutoDeclineSignatureId={setZimbraPrefCalendarAutoDeclineSignatureId}
+					zimbraPrefCalendarAutoDenySignatureId={
+						resourceDetail?.zimbraPrefCalendarAutoDenySignatureId
+					}
+					setZimbraPrefCalendarAutoDenySignatureId={setZimbraPrefCalendarAutoDenySignatureId}
+					hideHeaderBar
+				/>
 			</Container>
 		</Container>
 	);
