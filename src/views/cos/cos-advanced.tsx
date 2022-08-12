@@ -112,7 +112,12 @@ const CosAdvanced: FC = () => {
 		zimbraFreebusyExchangeUserOrg: ''
 	});
 	const [zimbraMailQuota, setZimbraMailQuota] = useState('');
-	const [zimbraMailMessageLifetime, setZimbraMailMessageLifetime] = useState('');
+	const [zimbraMailMessageLifetimeNum, setZimbraMailMessageLifetimeNum] = useState(
+		cosAdvanced?.zimbraMailMessageLifetime?.slice(0, -1)
+	);
+	const [zimbraMailMessageLifetimeType, setZimbraMailMessageLifetimeType] = useState(
+		cosAdvanced?.zimbraMailMessageLifetime?.slice(-1) || ''
+	);
 	const [zimbraQuotaWarnIntervalNum, setZimbraQuotaWarnIntervalNum] = useState(
 		cosAdvanced?.zimbraQuotaWarnInterval?.slice(0, -1)
 	);
@@ -574,7 +579,8 @@ const CosAdvanced: FC = () => {
 			setZimbraMailQuota(
 				obj?.zimbraMailQuota ? (parseInt(obj?.zimbraMailQuota, 10) / (1024 * 1024)).toString() : ''
 			);
-			setZimbraMailMessageLifetime(obj?.zimbraMailMessageLifetime?.slice(0, -1));
+			setZimbraMailMessageLifetimeNum(obj?.zimbraMailMessageLifetime?.slice(0, -1));
+			setZimbraMailMessageLifetimeType(obj?.zimbraMailMessageLifetime?.slice(-1));
 			setIsDirty(false);
 		}
 	}, [cosInformation, setInitalValues, setValue, timeItems]);
@@ -700,7 +706,8 @@ const CosAdvanced: FC = () => {
 				? (parseInt(cosAdvanced?.zimbraMailQuota, 10) / (1024 * 1024)).toString()
 				: ''
 		);
-		setZimbraMailMessageLifetime(cosData?.zimbraMailMessageLifetime?.slice(0, -1));
+		setZimbraMailMessageLifetimeNum(cosAdvanced?.zimbraMailMessageLifetime?.slice(0, -1));
+		setZimbraMailMessageLifetimeType(cosAdvanced?.zimbraMailMessageLifetime?.slice(-1));
 		setIsDirty(false);
 	};
 
@@ -1042,7 +1049,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraQuotaWarnInterval: `${zimbraQuotaWarnIntervalNum}${v}`
+				zimbraQuotaWarnInterval: zimbraQuotaWarnIntervalNum
+					? `${zimbraQuotaWarnIntervalNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraQuotaWarnIntervalNum, setCosAdvanced]
@@ -1051,7 +1060,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraQuotaWarnInterval: `${e.target.value}${zimbraQuotaWarnIntervalType}`
+				zimbraQuotaWarnInterval: e.target.value
+					? `${e.target.value}${zimbraQuotaWarnIntervalType}`
+					: ''
 			}));
 			setZimbraQuotaWarnIntervalNum(e.target.value);
 		},
@@ -1062,7 +1073,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceMinPollingInterval: `${zimbraDataSourceMinPollingIntervalNum}${v}`
+				zimbraDataSourceMinPollingInterval: zimbraDataSourceMinPollingIntervalNum
+					? `${zimbraDataSourceMinPollingIntervalNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraDataSourceMinPollingIntervalNum, setCosAdvanced]
@@ -1071,7 +1084,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceMinPollingInterval: `${e.target.value}${zimbraDataSourceMinPollingIntervalType}`
+				zimbraDataSourceMinPollingInterval: e.target.value
+					? `${e.target.value}${zimbraDataSourceMinPollingIntervalType}`
+					: ''
 			}));
 			setZimbraDataSourceMinPollingIntervalNum(e.target.value);
 		},
@@ -1082,7 +1097,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourcePop3PollingInterval: `${zimbraDataSourcePop3PollingIntervalNum}${v}`
+				zimbraDataSourcePop3PollingInterval: zimbraDataSourcePop3PollingIntervalNum
+					? `${zimbraDataSourcePop3PollingIntervalNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraDataSourcePop3PollingIntervalNum, setCosAdvanced]
@@ -1091,7 +1108,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourcePop3PollingInterval: `${e.target.value}${zimbraDataSourcePop3PollingIntervalType}`
+				zimbraDataSourcePop3PollingInterval: e.target.value
+					? `${e.target.value}${zimbraDataSourcePop3PollingIntervalType}`
+					: ''
 			}));
 			setZimbraDataSourcePop3PollingIntervalNum(e.target.value);
 		},
@@ -1102,7 +1121,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceImapPollingInterval: `${zimbraDataSourceImapPollingIntervalNum}${v}`
+				zimbraDataSourceImapPollingInterval: zimbraDataSourceImapPollingIntervalNum
+					? `${zimbraDataSourceImapPollingIntervalNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraDataSourceImapPollingIntervalNum, setCosAdvanced]
@@ -1111,7 +1132,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceImapPollingInterval: `${e.target.value}${zimbraDataSourceImapPollingIntervalType}`
+				zimbraDataSourceImapPollingInterval: e.target.value
+					? `${e.target.value}${zimbraDataSourceImapPollingIntervalType}`
+					: ''
 			}));
 			setZimbraDataSourceImapPollingIntervalNum(e.target.value);
 		},
@@ -1122,7 +1145,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceCalendarPollingInterval: `${zimbraDataSourceCalendarPollingIntervalNum}${v}`
+				zimbraDataSourceCalendarPollingInterval: zimbraDataSourceCalendarPollingIntervalNum
+					? `${zimbraDataSourceCalendarPollingIntervalNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraDataSourceCalendarPollingIntervalNum, setCosAdvanced]
@@ -1131,7 +1156,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceCalendarPollingInterval: `${e.target.value}${zimbraDataSourceCalendarPollingIntervalType}`
+				zimbraDataSourceCalendarPollingInterval: e.target.value
+					? `${e.target.value}${zimbraDataSourceCalendarPollingIntervalType}`
+					: ''
 			}));
 			setZimbraDataSourceCalendarPollingIntervalNum(e.target.value);
 		},
@@ -1142,7 +1169,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceRssPollingInterval: `${zimbraDataSourceRssPollingIntervalNum}${v}`
+				zimbraDataSourceRssPollingInterval: zimbraDataSourceRssPollingIntervalNum
+					? `${zimbraDataSourceRssPollingIntervalNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraDataSourceRssPollingIntervalNum, setCosAdvanced]
@@ -1151,7 +1180,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceRssPollingInterval: `${e.target.value}${zimbraDataSourceRssPollingIntervalType}`
+				zimbraDataSourceRssPollingInterval: e.target.value
+					? `${e.target.value}${zimbraDataSourceRssPollingIntervalType}`
+					: ''
 			}));
 			setZimbraDataSourceRssPollingIntervalNum(e.target.value);
 		},
@@ -1162,7 +1193,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceCaldavPollingInterval: `${zimbraDataSourceCaldavPollingIntervalNum}${v}`
+				zimbraDataSourceCaldavPollingInterval: zimbraDataSourceCaldavPollingIntervalNum
+					? `${zimbraDataSourceCaldavPollingIntervalNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraDataSourceCaldavPollingIntervalNum, setCosAdvanced]
@@ -1171,7 +1204,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraDataSourceCaldavPollingInterval: `${e.target.value}${zimbraDataSourceCaldavPollingIntervalType}`
+				zimbraDataSourceCaldavPollingInterval: e.target.value
+					? `${e.target.value}${zimbraDataSourceCaldavPollingIntervalType}`
+					: ''
 			}));
 			setZimbraDataSourceCaldavPollingIntervalNum(e.target.value);
 		},
@@ -1182,7 +1217,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraPasswordLockoutDuration: `${zimbraPasswordLockoutDurationNum}${v}`
+				zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
+					? `${zimbraPasswordLockoutDurationNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraPasswordLockoutDurationNum, setCosAdvanced]
@@ -1191,7 +1228,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraPasswordLockoutDuration: `${e.target.value}${zimbraPasswordLockoutDurationType}`
+				zimbraPasswordLockoutDuration: e.target.value
+					? `${e.target.value}${zimbraPasswordLockoutDurationType}`
+					: ''
 			}));
 			setZimbraPasswordLockoutDurationNum(e.target.value);
 		},
@@ -1202,7 +1241,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraPasswordLockoutFailureLifetime: `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
+				zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
+					? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraPasswordLockoutFailureLifetimeNum, setCosAdvanced]
@@ -1211,7 +1252,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraPasswordLockoutFailureLifetime: `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
+				zimbraPasswordLockoutFailureLifetime: e.target.value
+					? `${e.target.value}${zimbraPasswordLockoutFailureLifetimeType}`
+					: ''
 			}));
 			setZimbraPasswordLockoutFailureLifetimeNum(e.target.value);
 		},
@@ -1222,7 +1265,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraAdminAuthTokenLifetime: `${zimbraAdminAuthTokenLifetimeNum}${v}`
+				zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
+					? `${zimbraAdminAuthTokenLifetimeNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraAdminAuthTokenLifetimeNum, setCosAdvanced]
@@ -1231,7 +1276,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraAdminAuthTokenLifetime: `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+				zimbraAdminAuthTokenLifetime: e.target.value
+					? `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+					: ''
 			}));
 			setZimbraAdminAuthTokenLifetimeNum(e.target.value);
 		},
@@ -1242,7 +1289,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraAuthTokenLifetime: `${zimbraAuthTokenLifetimeNum}${v}`
+				zimbraAuthTokenLifetime: zimbraAuthTokenLifetimeNum
+					? `${zimbraAuthTokenLifetimeNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraAuthTokenLifetimeNum, setCosAdvanced]
@@ -1251,7 +1300,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraAuthTokenLifetime: `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+				zimbraAuthTokenLifetime: e.target.value
+					? `${e.target.value}${zimbraAdminAuthTokenLifetimeType}`
+					: ''
 			}));
 			setZimbraAuthTokenLifetimeNum(e.target.value);
 		},
@@ -1262,7 +1313,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailIdleSessionTimeout: `${zimbraMailIdleSessionTimeoutNum}${v}`
+				zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
+					? `${zimbraMailIdleSessionTimeoutNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraMailIdleSessionTimeoutNum, setCosAdvanced]
@@ -1271,7 +1324,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailIdleSessionTimeout: `${e.target.value}${zimbraMailIdleSessionTimeoutType}`
+				zimbraMailIdleSessionTimeout: e.target.value
+					? `${e.target.value}${zimbraMailIdleSessionTimeoutType}`
+					: ''
 			}));
 			setZimbraMailIdleSessionTimeoutNum(e.target.value);
 		},
@@ -1282,7 +1337,9 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailTrashLifetime: `${zimbraMailTrashLifetimeNum}${v}`
+				zimbraMailTrashLifetime: zimbraMailTrashLifetimeNum
+					? `${zimbraMailTrashLifetimeNum}${v}`
+					: ''
 			}));
 		},
 		[zimbraMailTrashLifetimeNum, setCosAdvanced]
@@ -1291,7 +1348,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailTrashLifetime: `${e.target.value}${zimbraMailTrashLifetimeType}`
+				zimbraMailTrashLifetime: e.target.value
+					? `${e.target.value}${zimbraMailTrashLifetimeType}`
+					: ''
 			}));
 			setZimbraMailTrashLifetimeNum(e.target.value);
 		},
@@ -1302,7 +1361,7 @@ const CosAdvanced: FC = () => {
 		(v: string) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailSpamLifetime: `${zimbraMailSpamLifetimeNum}${v}`
+				zimbraMailSpamLifetime: zimbraMailSpamLifetimeNum ? `${zimbraMailSpamLifetimeNum}${v}` : ''
 			}));
 		},
 		[zimbraMailSpamLifetimeNum, setCosAdvanced]
@@ -1311,7 +1370,9 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailSpamLifetime: `${e.target.value}${zimbraMailSpamLifetimeType}`
+				zimbraMailSpamLifetime: e.target.value
+					? `${e.target.value}${zimbraMailSpamLifetimeType}`
+					: ''
 			}));
 			setZimbraMailSpamLifetimeNum(e.target.value);
 		},
@@ -1331,15 +1392,28 @@ const CosAdvanced: FC = () => {
 		[setCosAdvanced]
 	);
 
-	const onZimbraMailMessageLifetimeChange = useCallback(
+	const onZimbraMailMessageLifetimeTypeChange = useCallback(
+		(v: string) => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				zimbraMailMessageLifetime: zimbraMailMessageLifetimeNum
+					? `${zimbraMailMessageLifetimeNum}${v}`
+					: ''
+			}));
+		},
+		[zimbraMailMessageLifetimeNum, setCosAdvanced]
+	);
+	const onZimbraMailMessageLifetimeNumChange = useCallback(
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailMessageLifetime: `${e.target.value}d`
+				zimbraMailMessageLifetime: e.target.value
+					? `${e.target.value}${zimbraMailMessageLifetimeType}`
+					: ''
 			}));
-			setZimbraMailMessageLifetime(e.target.value);
+			setZimbraMailMessageLifetimeNum(e.target.value);
 		},
-		[setCosAdvanced]
+		[zimbraMailMessageLifetimeType, setCosAdvanced]
 	);
 
 	const onSave = (): void => {
@@ -2447,13 +2521,30 @@ const CosAdvanced: FC = () => {
 							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start">
+								<Container width="100%" padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.email_message_lifetime', 'E-mail message lifetime')}
-										value={zimbraMailMessageLifetime}
+										value={zimbraMailMessageLifetimeNum}
 										background="gray5"
 										inputName="zimbraMailMessageLifetime"
-										onChange={onZimbraMailMessageLifetimeChange}
+										onChange={onZimbraMailMessageLifetimeNumChange}
+									/>
+								</Container>
+								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
+									<Select
+										items={timeItems}
+										background="gray5"
+										label={t('cos.range_time', 'Range Time')}
+										selection={
+											zimbraMailMessageLifetimeType === ''
+												? timeItems[-1]
+												: timeItems.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === zimbraMailMessageLifetimeType
+												  )
+										}
+										showCheckbox={false}
+										onChange={onZimbraMailMessageLifetimeTypeChange}
 									/>
 								</Container>
 							</ListRow>
