@@ -53,7 +53,7 @@ const CosServerPools: FC = () => {
 			});
 	};
 
-	useEffect(() => {
+	useMemo(() => {
 		if (serverList && serverList.length > 0) {
 			const allRows = serverList.map((item: any) => ({
 				id: item?.id,
@@ -104,10 +104,7 @@ const CosServerPools: FC = () => {
 
 	const onFilterApply = useCallback(
 		(e) => {
-			if (e.length === 0) {
-				setServerTableRows([]);
-				setSelectedTableRows([]);
-			} else if (e.length > 1) {
+			if (e.length > 1) {
 				const allRows = serverList.map((item: any) => ({
 					id: item?.id,
 					columns: [
@@ -338,7 +335,7 @@ const CosServerPools: FC = () => {
 	}, [searchServer, searchServerLists, serverList]);
 
 	useEffect(() => {
-		if (zimbraMailHostPoolList) {
+		if (zimbraMailHostPoolList && serverList.length > 0) {
 			if (
 				zimbraMailHostPoolList.length ===
 				zimbraMailHostPoolList.filter((item: any) => !item?.c).length
@@ -346,7 +343,7 @@ const CosServerPools: FC = () => {
 				setZimbraMailHostPool(false);
 			}
 		}
-	}, [zimbraMailHostPoolList]);
+	}, [zimbraMailHostPoolList, serverList]);
 
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">

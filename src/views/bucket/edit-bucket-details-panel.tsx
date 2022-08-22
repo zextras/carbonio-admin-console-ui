@@ -150,7 +150,20 @@ const EditBucketDetailPanel: FC<{
 	setShowEditDetailView: any;
 	title: string;
 	bucketDetail: any;
-}> = ({ setShowEditDetailView, title, bucketDetail }) => {
+	getBucketListType: any;
+	setSelectedRow: any;
+	setToggleForGetAPICall: any;
+	toggleForGetAPICall: any;
+}> = ({
+	setShowEditDetailView,
+	title,
+	bucketDetail,
+	getBucketListType,
+	setSelectedRow,
+	setToggleForGetAPICall,
+	toggleForGetAPICall
+}) => {
+	setSelectedRow(bucketDetail);
 	const [t] = useTranslation();
 	const [bucketName, setBucketName] = useState(bucketDetail?.bucketName);
 	const [bucketType, setBucketType] = useState<any>();
@@ -159,13 +172,14 @@ const EditBucketDetailPanel: FC<{
 	);
 	const [accessKeyData, setAccessKeyData] = useState(bucketDetail?.accessKey);
 	const [secretKey, setSecretKey] = useState(bucketDetail?.secret);
-	const [urlData, setUrlData] = useState(bucketDetail?.url !== undefined && bucketDetail?.url);
+	const [urlData, setUrlData] = useState(bucketDetail?.url !== undefined ? bucketDetail?.url : '');
 	const [verify, setVerify] = useState('primary');
 	const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
 	const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [previousDetail, setPreviousDetail] = useState<any>({});
 	const [showURL, setShowURL] = useState(true);
+	const [toggleBtn, setToggleBtn] = useState(false);
 	const createSnackbar = useSnackbar();
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 
@@ -182,6 +196,7 @@ const EditBucketDetailPanel: FC<{
 				setVerify('success');
 				setButtonLabel(t('label.verify_connector_verified', ' VERIFIED'));
 				setButtonIcon('ActivityOutline');
+				setToggleBtn(true);
 			} else {
 				setVerify('error');
 				setButtonLabel(t('label.verify_connector_fail', ' VERIFICATION FAILED'));
@@ -193,6 +208,7 @@ const EditBucketDetailPanel: FC<{
 						name: response.response[server].error
 					})
 				});
+				setToggleBtn(false);
 			}
 		});
 	}, [bucketDetail.uuid, createSnackbar, server, t]);
@@ -201,7 +217,8 @@ const EditBucketDetailPanel: FC<{
 		setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
 		setButtonIcon('ActivityOutline');
 		setVerify('primary');
-	}, [bucketDetail.uuid, t]);
+		setToggleBtn(false);
+	}, [bucketDetail.uuid, t, bucketDetail]);
 
 	useEffect(() => {
 		if (bucketDetail?.url !== undefined) {
@@ -217,7 +234,7 @@ const EditBucketDetailPanel: FC<{
 		latestData.regionData = bucketDetail?.region !== undefined && regionData;
 		latestData.accessKeyData = accessKeyData;
 		latestData.secretKey = secretKey;
-		latestData.url = urlData;
+		latestData.url = bucketDetail?.url !== undefined ? urlData : '';
 		setPreviousDetail(latestData);
 		setIsDirty(false);
 	};
@@ -238,6 +255,12 @@ const EditBucketDetailPanel: FC<{
 		}).then((res: any) => {
 			const updateResData = JSON.parse(res.response.content);
 			if (updateResData.ok) {
+				getBucketListType();
+				setToggleForGetAPICall(!toggleForGetAPICall);
+				setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
+				setButtonIcon('ActivityOutline');
+				setVerify('primary');
+				setToggleBtn(false);
 				createSnackbar({
 					key: 'success',
 					type: 'success',
@@ -260,6 +283,7 @@ const EditBucketDetailPanel: FC<{
 					hideButton: true,
 					replace: true
 				});
+				setToggleBtn(false);
 			}
 		});
 	};
@@ -321,16 +345,12 @@ const EditBucketDetailPanel: FC<{
 		const bucketTypeValue: any = find(BucketTypeItems, (o) => o.value === upperBucketType)?.value;
 		if (bucketType !== undefined && bucketTypeValue !== bucketType?.value) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail.storeType, bucketType]);
 
 	useEffect(() => {
 		if (bucketName !== undefined && bucketDetail?.bucketName !== bucketName) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail?.bucketName, bucketName]);
 
@@ -352,32 +372,26 @@ const EditBucketDetailPanel: FC<{
 			regionValue !== regionData?.value
 		) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail.region, bucketDetail.storeType, regionData]);
 
 	useEffect(() => {
 		if (accessKeyData !== undefined && bucketDetail?.accessKey !== accessKeyData) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail?.accessKey, accessKeyData]);
 
 	useEffect(() => {
 		if (secretKey !== undefined && bucketDetail?.secret !== secretKey) {
 			setIsDirty(true);
-		} else {
-			setIsDirty(false);
 		}
 	}, [bucketDetail?.secret, secretKey]);
 
 	useEffect(() => {
-		if (urlData !== undefined && bucketDetail?.url !== urlData) {
-			setIsDirty(true);
-		} else {
-			setIsDirty(false);
+		if (bucketDetail?.url !== undefined) {
+			if (bucketDetail?.url !== urlData) {
+				setIsDirty(true);
+			}
 		}
 	}, [bucketDetail?.url, secretKey, urlData]);
 
@@ -518,6 +532,7 @@ const EditBucketDetailPanel: FC<{
 						size="fill"
 						color={verify}
 						onClick={verifyConnector}
+						disabled={toggleBtn}
 					/>
 				</Row>
 

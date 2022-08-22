@@ -43,6 +43,7 @@ import {
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
 import ListItems from '../list/list-items';
+import { useBackupModuleStore } from '../../store/backup-module/store';
 
 const SelectItem = styled(Row)``;
 
@@ -64,7 +65,7 @@ const DomainListPanel: FC = () => {
 	const domainInformation = useDomainStore((state) => state.domain);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
-
+	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName)
 			.then((response) => response.json())
@@ -177,7 +178,7 @@ const DomainListPanel: FC = () => {
 		[t, isDomainSelect]
 	);
 
-	const manageOptions = useMemo(
+	const allManageOptions = useMemo(
 		() => [
 			{
 				id: ACCOUNTS,
@@ -226,6 +227,14 @@ const DomainListPanel: FC = () => {
 			}
 		],
 		[t, isDomainSelect]
+	);
+
+	const manageOptions = useMemo(
+		() =>
+			!getBackupModuleEnable
+				? allManageOptions.filter((item: any) => item?.id !== RESTORE_DELETED_EMAIL)
+				: allManageOptions,
+		[getBackupModuleEnable, allManageOptions]
 	);
 
 	const toggleDetailView = (): void => {

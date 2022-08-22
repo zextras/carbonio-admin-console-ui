@@ -62,6 +62,8 @@ const CreateDomain: FC = () => {
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [description, setDescription] = useState<string>('');
 	const [domainName, setDomainName] = useState<string>('');
+	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
+	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
 
 	const getCreateObjectAttribute = (): void => {
 		const target = [
@@ -156,6 +158,14 @@ const CreateDomain: FC = () => {
 		attributes.push({
 			n: 'zimbraAuthMech',
 			_content: GAL_MODE.INTERNAL
+		});
+		attributes.push({
+			n: 'zimbraDomainMaxAccounts',
+			_content: zimbraDomainMaxAccounts
+		});
+		attributes.push({
+			n: 'zimbraMailDomainQuota',
+			_content: zimbraMailDomainQuota
 		});
 
 		createDomain(domainName, attributes)
@@ -253,6 +263,34 @@ const CreateDomain: FC = () => {
 									value={domainName}
 									onChange={(e: any): any => {
 										setDomainName(e.target.value);
+									}}
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t(
+										'label.max_account_you_can_manage_is',
+										'The max accounts you can manage is...'
+									)}
+									background="gray5"
+									value={zimbraDomainMaxAccounts}
+									onChange={(e: any): any => {
+										setZimbraDomainMaxAccounts(e.target.value);
+									}}
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t(
+										'label.max_email_quota_you_can_manage_is',
+										'The max email quota you can manage is...'
+									)}
+									background="gray5"
+									value={zimbraMailDomainQuota}
+									onChange={(e: any): any => {
+										setZimbraMailDomainQuota(e.target.value);
 									}}
 								/>
 							</Container>

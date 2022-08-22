@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, Suspense } from 'react';
+import React, { FC, Suspense, useCallback, useEffect } from 'react';
 import { Container } from '@zextras/carbonio-design-system';
 import {
 	Spinner,
@@ -37,6 +37,10 @@ import CosDetailPanel from './cos/cos-detail-panel';
 import BackupListPanel from './backup/backup-list-panel';
 import BackupDetailPanel from './backup/backup-detail-panel';
 import BucketRoutePanel from './bucket/bucket-route-panel';
+import { getAllServers } from '../services/get-all-servers-service';
+import { useServerStore } from '../store/server/store';
+import { useGlobalConfigStore } from '../store/global-config/store';
+import { useBackupModuleStore } from '../store/backup-module/store';
 
 const DetailViewContainer = styled(Container)`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;

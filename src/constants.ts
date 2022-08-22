@@ -89,3 +89,5 @@ export const ERROR = 'errorOnVerify';
 export const FAIL = 'fail';
 export const ENABLED = 'enabled';
 export const DISABLED = 'disabled';
+export const SERVER_DETAIL_VIEW = 'server-detail';
+export const CLOBAL_CONFIG_DETAIL_VIEW = 'global-config-detail';

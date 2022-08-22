@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Padding,
@@ -124,6 +124,8 @@ const BucketDetailPanel: FC = () => {
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
 	const [showEditDetailView, setShowEditDetailView] = useState(false);
+	const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
+	const [selectedRow, setSelectedRow] = useState<any>();
 
 	const closeHandler = (): any => {
 		setOpen(false);
@@ -210,6 +212,15 @@ const BucketDetailPanel: FC = () => {
 	};
 
 	useEffect(() => {
+		if (selectedRow !== undefined) {
+			const getIndex = bucketList.findIndex((data: any) => data.uuid === selectedRow.uuid);
+			const volumeObject: any = bucketList.find((s, index) => index === getIndex);
+			setConnectionData(volumeObject);
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [bucketList, toggleForGetAPICall]);
+
+	useEffect(() => {
 		getBucketListType();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [bucketType, toggleWizardSection]);
@@ -217,43 +228,17 @@ const BucketDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardSection && (
-				<Container
-					orientation="vertical"
-					background="gray5"
-					style={{
-						position: 'absolute',
-						maxWidth: '630px',
-						top: '43px',
-						right: '0px',
-						bottom: '0px',
-						zIndex: '1',
-						boxShadow: '0 0 12px -1px #888',
-						height: 'auto'
-					}}
-				>
+				<AbsoluteContainer orientation="vertical" background="gray5">
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
 						setDetailsBucket={setDetailsBucket}
 						setConnectionData={setConnectionData}
 						bucketType={bucketType}
 					/>
-				</Container>
+				</AbsoluteContainer>
 			)}
 			{detailsBucket && (
-				<Container
-					orientation="vertical"
-					background="gray5"
-					style={{
-						position: 'absolute',
-						maxWidth: '630px',
-						top: '43px',
-						right: '0px',
-						bottom: '0px',
-						zIndex: '1',
-						boxShadow: '0 0 12px -1px #888',
-						height: 'auto'
-					}}
-				>
+				<AbsoluteContainer orientation="vertical" background="gray5">
 					<DetailsPanel
 						setDetailsBucket={setDetailsBucket}
 						title="Bucket Connection"
@@ -262,29 +247,20 @@ const BucketDetailPanel: FC = () => {
 						setOpen={setOpen}
 						setShowEditDetailView={setShowEditDetailView}
 					/>
-				</Container>
+				</AbsoluteContainer>
 			)}
 			{showEditDetailView && (
-				<Container
-					orientation="vertical"
-					background="gray5"
-					style={{
-						position: 'absolute',
-						maxWidth: '630px',
-						top: '43px',
-						right: '0px',
-						bottom: '0px',
-						zIndex: '1',
-						boxShadow: '0 0 12px -1px #888',
-						height: 'auto'
-					}}
-				>
+				<AbsoluteContainer orientation="vertical" background="gray5">
 					<EditBucketDetailPanel
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
 						bucketDetail={connectionData}
+						getBucketListType={getBucketListType}
+						setSelectedRow={setSelectedRow}
+						setToggleForGetAPICall={setToggleForGetAPICall}
+						toggleForGetAPICall={toggleForGetAPICall}
 					/>
-				</Container>
+				</AbsoluteContainer>
 			)}
 			<RelativeContainer
 				orientation="column"

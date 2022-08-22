@@ -28,6 +28,10 @@ import {
 	SUBSCRIPTIONS_ROUTE_ID
 } from './constants';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
+import { useServerStore } from './store/server/store';
+import { useGlobalConfigStore } from './store/global-config/store';
+import { useBackupModuleStore } from './store/backup-module/store';
+import { getAllServers } from './services/get-all-servers-service';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -40,6 +44,9 @@ const AppView: FC = (props) => (
 const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
+	const setServerList = useServerStore((state) => state.setServerList);
+	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
+	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
 	const managementSection = useMemo(
 		() => ({
 			id: MANAGE_APP_ID,
@@ -469,6 +476,78 @@ const App: FC = () => {
 		});
 		history.push(`/${DASHBOARD}`);
 	}, [t, history]);
+
+	const checkIsBackupModuleEnable = useCallback(
+		(servers) => {
+			fetch(`/service/extension/zextras_admin/core/getAllServers?module=zxbackup`, {
+				method: 'GET',
+				credentials: 'include'
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					const backupServer = data?.servers;
+					if (backupServer && Array.isArray(backupServer) && backupServer.length > 0) {
+						setBackupModuleEnable(true);
+					} else {
+						setBackupModuleEnable(false);
+					}
+				});
+		},
+		[setBackupModuleEnable]
+	);
+	const getGlobalConfig = useCallback(
+		(serverName) => {
+			fetch(`/service/admin/soap/zextras`, {
+				method: 'POST',
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					Header: {
+						context: {
+							_jsns: 'urn:zimbra',
+							session: {}
+						}
+					},
+					Body: {
+						zextras: {
+							_jsns: 'urn:zimbraAdmin',
+							module: 'ZxConfig',
+							action: 'dump_global_config',
+							targetServers: serverName
+						}
+					}
+				})
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					const responseData = JSON.parse(data?.Body?.response?.content);
+					const globalConfig = responseData?.response[serverName]?.response;
+					if (globalConfig) {
+						setGlobalConfig(globalConfig);
+					}
+				});
+		},
+		[setGlobalConfig]
+	);
+
+	const getAllServersRequest = useCallback(() => {
+		getAllServers()
+			.then((response) => response.json())
+			.then((data) => {
+				const server = data?.Body?.GetAllServersResponse?.server;
+				if (server && Array.isArray(server) && server.length > 0) {
+					setServerList(server);
+					checkIsBackupModuleEnable(server);
+					getGlobalConfig(server[0]?.name);
+				}
+			});
+	}, [setServerList, getGlobalConfig, checkIsBackupModuleEnable]);
+
+	useEffect(() => {
+		getAllServersRequest();
+	}, [getAllServersRequest]);
 
 	return null;
 };

@@ -233,7 +233,7 @@ const Connection: FC<{
 	}, [bucketType, bucketTypeData, showURL]);
 
 	useEffect(() => {
-		if (bucketType !== '') {
+		if (bucketType !== undefined) {
 			const volumeObject: any = BucketTypeItems.find((s) => s.value === bucketType);
 			setBucketTypeData(volumeObject?.label);
 			onSelection({ storeType: bucketType }, false);
@@ -332,7 +332,7 @@ const Connection: FC<{
 
 	return (
 		<Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-			{bucketType !== '' ? (
+			{bucketType !== undefined ? (
 				<Row padding={{ top: 'extralarge' }} width="100%">
 					<Input
 						label={t('label.bucket_type', 'Bucket Type')}
