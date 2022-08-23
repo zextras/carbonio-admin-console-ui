@@ -197,8 +197,20 @@ const CreateDomain: FC = () => {
 							routeToDomain(data);
 						});
 				} else {
-					showSuccessSnackBar();
-					routeToDomain(data);
+					const domain: any = data?.Body?.CreateDomainResponse?.domain[0];
+					if (domain) {
+						showSuccessSnackBar();
+						routeToDomain(data);
+					} else {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: data?.Body?.Fault?.Reason?.Text,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
 				}
 			})
 			.catch((error) => {
