@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -13,7 +13,10 @@ import {
 	Input,
 	Button,
 	SnackbarManagerContext,
-	Switch
+	Switch,
+	Select,
+	Icon,
+	Popper
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
@@ -28,18 +31,34 @@ const ZimbraAuthMethod = {
 	EXTERNAL: 'ad'
 } as const;
 
+const Tooltip: FC<{ items: any[] }> = ({ items }) => (
+	<Container
+		orientation="horizontal"
+		mainAlignment="flex-start"
+		background="gray3"
+		width="fit"
+		height="fit"
+		crossAlignment="flex-start"
+	>
+		<Padding left="small" right="small" bottom="small">
+			{items.map((item, index) => (
+				<Padding top="small" key={index}>
+					<Text size="extrasmall" color="text" key={item.label}>
+						{item.label}
+					</Text>
+				</Padding>
+			))}
+		</Padding>
+	</Container>
+);
+
 const DomainAuthentication: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [zimbraAuthMech, setZimbraAuthMech] = useState<string>('');
+	const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
-	const [zimbraAdminConsoleLoginURL, setZimbraAdminConsoleLoginURL] = useState<string>('');
 	const [zimbraAdminConsoleLogoutURL, setZimbraAdminConsoleLogoutURL] = useState<string>('');
 	const [zimbraWebClientLogoutURL, setZimbraWebClientLogoutURL] = useState<string>('');
-	const [zimbraWebClientLogoutURLAllowedUA, setZimbraWebClientLogoutURLAllowedUA] =
-		useState<string>('');
-	const [zimbraWebClientLogoutURLAllowedIP, setZimbraWebClientLogoutURLAllowedIP] =
-		useState<string>('');
 	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
 	const [zimbraForceClearCookies, setZimbraForceClearCookies] = useState<boolean>(false);
 	const [domainAuthData, setDomainAuthData]: any = useState({});
@@ -53,6 +72,54 @@ const DomainAuthentication: FC = () => {
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 
+	const [open, setOpen] = useState(false);
+	const iconRef = useRef(undefined);
+
+	const DOMAIN_AUTH_LIST = useMemo(
+		() => [
+			{ label: `${t('label.default', 'Default')}`, value: '' },
+			{ label: `${t('label.local_ldap', 'Local LDAP')}`, value: ZimbraAuthMethod.INTERNAL },
+			{ label: `${t('label.external_ldap', 'External LDAP')}`, value: ZimbraAuthMethod.LDAP },
+			{
+				label: `${t('label.external_active_directory', 'External Active Directory')}`,
+				value: ZimbraAuthMethod.EXTERNAL
+			}
+		],
+		[t]
+	);
+
+	const DN_TEMPLATE_TOOLTIP = useMemo(
+		() => [
+			{
+				label: `%n = ${t('label.username_with', 'username with')} @ (${t(
+					'label.example',
+					'example'
+				)} username@domain.tld)`
+			},
+			{
+				label: `%u = ${t('label.username_without', 'username without')} @ (${t(
+					'label.example',
+					'example'
+				)} username)`
+			},
+			{
+				label: `%d = ${t('label.domain', 'domain')} (${t('label.example', 'example')} domain.tld)`
+			},
+			{
+				label: `%D = ${t('label.domain', 'domain')} (${t(
+					'label.example',
+					'example'
+				)} dc=domain,dc=tld)`
+			}
+		],
+		[t]
+	);
+
+	const DnTemplateTooltip: FC = useCallback(
+		() => <Tooltip items={DN_TEMPLATE_TOOLTIP} />,
+		[DN_TEMPLATE_TOOLTIP]
+	);
+
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
@@ -60,20 +127,18 @@ const DomainAuthentication: FC = () => {
 				obj[item?.n] = item._content;
 				return '';
 			});
-			if (obj.zimbraAuthMech) {
-				setZimbraAuthMech(obj.zimbraAuthMech);
-			} else {
-				setZimbraAuthMech(ZimbraAuthMethod.INTERNAL);
+			setZimbraAuthMech(
+				obj.zimbraAuthMech
+					? DOMAIN_AUTH_LIST.find((item: any) => item.value === obj.zimbraAuthMech)
+					: DOMAIN_AUTH_LIST[0]
+			);
+			if (!obj.zimbraAuthMech) {
+				obj.zimbraAuthMech = '';
 			}
 			if (obj.zimbraPasswordChangeListener) {
 				setZimbraPasswordChangeListener(obj.zimbraPasswordChangeListener);
 			} else {
 				obj.zimbraPasswordChangeListener = '';
-			}
-			if (obj.zimbraAdminConsoleLoginURL) {
-				setZimbraAdminConsoleLoginURL(obj.zimbraAdminConsoleLoginURL);
-			} else {
-				obj.zimbraAdminConsoleLoginURL = '';
 			}
 			if (obj.zimbraAdminConsoleLogoutURL) {
 				setZimbraAdminConsoleLogoutURL(obj.zimbraAdminConsoleLogoutURL);
@@ -84,16 +149,6 @@ const DomainAuthentication: FC = () => {
 				setZimbraWebClientLogoutURL(obj.zimbraWebClientLogoutURL);
 			} else {
 				obj.zimbraWebClientLogoutURL = '';
-			}
-			if (obj.zimbraWebClientLogoutURLAllowedUA) {
-				setZimbraWebClientLogoutURLAllowedUA(obj.zimbraWebClientLogoutURLAllowedUA);
-			} else {
-				obj.zimbraWebClientLogoutURLAllowedUA = '';
-			}
-			if (obj.zimbraWebClientLogoutURLAllowedIP) {
-				setZimbraWebClientLogoutURLAllowedIP(obj.zimbraWebClientLogoutURLAllowedIP);
-			} else {
-				obj.zimbraWebClientLogoutURLAllowedIP = '';
 			}
 			if (obj.zimbraAuthFallbackToLocal) {
 				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
@@ -127,16 +182,15 @@ const DomainAuthentication: FC = () => {
 			setDomainAuthData(obj);
 			setIsDirty(false);
 		}
-	}, [domainInformation]);
+	}, [domainInformation, DOMAIN_AUTH_LIST]);
 
-	const authMechLabel = useMemo(() => {
-		const labels: any = {
-			ad: t('label.external_active_directory', 'External Active Directory'),
-			zimbra: t('label.internal', 'Internal'),
-			ldap: t('label.external_ldap', 'External LDAP')
-		};
-		return labels;
-	}, [t]);
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
+			if (domainAuthData.zimbraAuthMech !== zimbraAuthMech?.value) {
+				setIsDirty(true);
+			}
+		}
+	}, [domainAuthData, zimbraAuthMech]);
 
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
@@ -157,14 +211,6 @@ const DomainAuthentication: FC = () => {
 
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
-			if (domainAuthData.zimbraAdminConsoleLoginURL !== zimbraAdminConsoleLoginURL) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraAdminConsoleLoginURL]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAdminConsoleLogoutURL !== zimbraAdminConsoleLogoutURL) {
 				setIsDirty(true);
 			}
@@ -178,22 +224,6 @@ const DomainAuthentication: FC = () => {
 			}
 		}
 	}, [domainAuthData, zimbraWebClientLogoutURL]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
-			if (domainAuthData.zimbraWebClientLogoutURLAllowedUA !== zimbraWebClientLogoutURLAllowedUA) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraWebClientLogoutURLAllowedUA]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
-			if (domainAuthData.zimbraWebClientLogoutURLAllowedIP !== zimbraWebClientLogoutURLAllowedIP) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraWebClientLogoutURLAllowedIP]);
 
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
@@ -251,13 +281,26 @@ const DomainAuthentication: FC = () => {
 		() => setZimbraAuthLdapStartTlsEnabled((c) => !c),
 		[]
 	);
+
+	const onAuthMethodChange = useCallback(
+		(v: string): void => {
+			setZimbraAuthMech(
+				DOMAIN_AUTH_LIST.find(
+					// eslint-disable-next-line max-len
+					(item: any) => item.value === v
+				)
+			);
+		},
+		[setZimbraAuthMech, DOMAIN_AUTH_LIST]
+	);
+
 	const onCancel = (): void => {
+		setZimbraAuthMech(
+			DOMAIN_AUTH_LIST.find((item: any) => item.value === domainAuthData.zimbraAuthMech)
+		);
 		setZimbraPasswordChangeListener(domainAuthData.zimbraPasswordChangeListener);
-		setZimbraAdminConsoleLoginURL(domainAuthData.zimbraAdminConsoleLoginURL);
 		setZimbraAdminConsoleLogoutURL(domainAuthData.zimbraAdminConsoleLogoutURL);
 		setZimbraWebClientLogoutURL(domainAuthData.zimbraWebClientLogoutURL);
-		setZimbraWebClientLogoutURLAllowedUA(domainAuthData.zimbraWebClientLogoutURLAllowedUA);
-		setZimbraWebClientLogoutURLAllowedIP(domainAuthData.zimbraWebClientLogoutURLAllowedIP);
 		setZimbraAuthFallbackToLocal(domainAuthData.zimbraAuthFallbackToLocal === 'TRUE');
 		setZimbraForceClearCookies(domainAuthData.zimbraForceClearCookies === 'TRUE');
 		setZimbraAuthLdapBindDn(domainAuthData.zimbraAuthLdapBindDn);
@@ -275,12 +318,12 @@ const DomainAuthentication: FC = () => {
 		body._jsns = 'urn:zimbraAdmin';
 
 		attributes.push({
-			n: 'zimbraPasswordChangeListener',
-			_content: zimbraPasswordChangeListener
+			n: 'zimbraAuthMech',
+			_content: zimbraAuthMech?.value
 		});
 		attributes.push({
-			n: 'zimbraAdminConsoleLoginURL',
-			_content: zimbraAdminConsoleLoginURL
+			n: 'zimbraPasswordChangeListener',
+			_content: zimbraPasswordChangeListener
 		});
 		attributes.push({
 			n: 'zimbraAdminConsoleLogoutURL',
@@ -289,14 +332,6 @@ const DomainAuthentication: FC = () => {
 		attributes.push({
 			n: 'zimbraWebClientLogoutURL',
 			_content: zimbraWebClientLogoutURL
-		});
-		attributes.push({
-			n: 'zimbraWebClientLogoutURLAllowedUA',
-			_content: zimbraWebClientLogoutURLAllowedUA
-		});
-		attributes.push({
-			n: 'zimbraWebClientLogoutURLAllowedIP',
-			_content: zimbraWebClientLogoutURLAllowedIP
 		});
 		attributes.push({
 			n: 'zimbraAuthFallbackToLocal',
@@ -424,13 +459,14 @@ const DomainAuthentication: FC = () => {
 							</ListRow>
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
+									<Select
+										background="gray5"
 										label={t('label.your_auth_method_is', 'Your Auth Method is')}
-										value={authMechLabel[zimbraAuthMech]}
-										disabled
-										// eslint-disable-next-line @typescript-eslint/no-empty-function
-										onChange={(e: any): any => {}}
-									/>
+										showCheckbox={false}
+										items={DOMAIN_AUTH_LIST}
+										selection={zimbraAuthMech}
+										onChange={onAuthMethodChange}
+									></Select>
 								</Padding>
 							</ListRow>
 							<ListRow>
@@ -442,8 +478,30 @@ const DomainAuthentication: FC = () => {
 										onChange={(e: any): any => {
 											setZimbraAuthLdapBindDn(e.target.value);
 										}}
+										CustomIcon={(): any => (
+											<Container
+												ref={iconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												onMouseEnter={() => setOpen(true)}
+												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												onMouseLeave={() => setOpen(false)}
+											>
+												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
+											</Container>
+										)}
 									/>
+									<Popper
+										open={open}
+										anchorEl={iconRef}
+										placement="top-end"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClose={() => setOpen(false)}
+										disableRestoreFocus
+									>
+										<DnTemplateTooltip />
+									</Popper>
 								</Padding>
+							</ListRow>
+							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
 										label={t('label.url', 'URL')}
@@ -524,21 +582,6 @@ const DomainAuthentication: FC = () => {
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
 										label={t(
-											'label.sso_login_redirect_admin_to_msg',
-											'SSO Login will redirect the admin to'
-										)}
-										background="gray5"
-										value={zimbraAdminConsoleLoginURL}
-										onChange={(e: any): any => {
-											setZimbraAdminConsoleLoginURL(e.target.value);
-										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
-										label={t(
 											'label.sso_logout_redirect_admin_to_msg',
 											'SSO Logout will redirect the admin to'
 										)}
@@ -565,30 +608,6 @@ const DomainAuthentication: FC = () => {
 										value={zimbraWebClientLogoutURL}
 										onChange={(e: any): any => {
 											setZimbraWebClientLogoutURL(e.target.value);
-										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
-										label={t('label.logout_allowed_user_agent', 'Logout Allowed User Agent')}
-										background="gray5"
-										value={zimbraWebClientLogoutURLAllowedUA}
-										onChange={(e: any): any => {
-											setZimbraWebClientLogoutURLAllowedUA(e.target.value);
-										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
-										label={t('label.logout_allowed_ip', 'Logout Allowed IP')}
-										background="gray5"
-										value={zimbraWebClientLogoutURLAllowedIP}
-										onChange={(e: any): any => {
-											setZimbraWebClientLogoutURLAllowedIP(e.target.value);
 										}}
 									/>
 								</Padding>
