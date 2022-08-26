@@ -24,6 +24,7 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
+import { isValidLdapBaseDN, isValidLdapBaseUrl } from '../../utility/utils';
 
 const ZimbraAuthMethod = {
 	INTERNAL: 'zimbra',
@@ -74,6 +75,8 @@ const DomainAuthentication: FC = () => {
 
 	const [open, setOpen] = useState(false);
 	const iconRef = useRef(undefined);
+	const [isValidLdapDN, setIsValidLdapDn] = useState<boolean>(true);
+	const [isValidLdapUrl, setIsValidLdapUrl] = useState<boolean>(true);
 
 	const DOMAIN_AUTH_LIST = useMemo(
 		() => [
@@ -309,6 +312,8 @@ const DomainAuthentication: FC = () => {
 		setZimbraAuthLdapURL(domainAuthData.zimbraAuthLdapURL);
 		setZimbraAuthLdapStartTlsEnabled(domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE');
 		setIsDirty(false);
+		setIsValidLdapDn(true);
+		setIsValidLdapUrl(true);
 	};
 
 	const onSave = (): void => {
@@ -427,7 +432,12 @@ const DomainAuthentication: FC = () => {
 									)}
 								</Padding>
 								{isDirty && (
-									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+									<Button
+										label={t('label.save', 'Save')}
+										color="primary"
+										onClick={onSave}
+										disabled={!isValidLdapUrl || !isValidLdapDN}
+									/>
 								)}
 							</Row>
 						</Row>
@@ -476,8 +486,15 @@ const DomainAuthentication: FC = () => {
 										value={zimbraAuthLdapBindDn}
 										background="gray5"
 										onChange={(e: any): any => {
+											if (e.target.value) {
+												const validLdapDn = isValidLdapBaseDN(e.target.value);
+												setIsValidLdapDn(validLdapDn);
+											} else {
+												setIsValidLdapDn(true);
+											}
 											setZimbraAuthLdapBindDn(e.target.value);
 										}}
+										hasError={!isValidLdapDN}
 										CustomIcon={(): any => (
 											<Container
 												ref={iconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -489,6 +506,21 @@ const DomainAuthentication: FC = () => {
 											</Container>
 										)}
 									/>
+									{!isValidLdapDN && (
+										<Row>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												width="fill"
+											>
+												<Padding top="small">
+													<Text size="extrasmall" weight="regular" color="error">
+														{t('label.base_dn_is_not_valid', 'Base DN is not valid')}
+													</Text>
+												</Padding>
+											</Container>
+										</Row>
+									)}
 									<Popper
 										open={open}
 										anchorEl={iconRef}
@@ -508,9 +540,31 @@ const DomainAuthentication: FC = () => {
 										value={zimbraAuthLdapURL}
 										background="gray5"
 										onChange={(e: any): any => {
+											if (e.target.value) {
+												const validLdapUrl = isValidLdapBaseUrl(e.target.value);
+												setIsValidLdapUrl(validLdapUrl);
+											} else {
+												setIsValidLdapUrl(true);
+											}
 											setZimbraAuthLdapURL(e.target.value);
 										}}
+										hasError={!isValidLdapUrl}
 									/>
+									{!isValidLdapUrl && (
+										<Row>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												width="fill"
+											>
+												<Padding top="small">
+													<Text size="extrasmall" weight="regular" color="error">
+														{t('label.ldap_url_is_not_valid', 'Ldap url is not valid')}
+													</Text>
+												</Padding>
+											</Container>
+										</Row>
+									)}
 								</Padding>
 							</ListRow>
 							<ListRow>

@@ -1222,6 +1222,13 @@ export const isValidEmail = (email: string): boolean => {
 	return re.test(email);
 };
 
+export const isValidLdapBaseUrl = (url: string): boolean => {
+	const reqex =
+		// eslint-disable-next-line max-len
+		/^(?:ldap)s?:\/\/(([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])\.)*([a-z0-9]|[a-z0-9][a-z0-9\\-]*[a-z0-9])(:[0-9]+)?$/;
+	return reqex.test(url);
+};
+
 export const getAllEmailFromString = (str: string): any =>
 	str
 		.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9_-]+)/gi)
@@ -1233,6 +1240,13 @@ export const isValidLdapQuery = (query: string): boolean => {
 	const re = /\([^\\(\\)\\=]+=[^\\(\\)\\=]+\)/;
 	return re.test(query);
 };
+
+export const isValidLdapBaseDN = (basedn: string): boolean => {
+	const reqex =
+		/(?:(?<cn>CN=(?<name>[^,]*)),)?(?:(?<path>(?:(?:CN|OU)=[^,]+,?)+),)?(?<domain>(?:DC=[^,]+,?)+)$/gi;
+	return reqex.test(basedn);
+};
+
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
