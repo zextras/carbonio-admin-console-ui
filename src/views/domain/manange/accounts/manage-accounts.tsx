@@ -369,14 +369,14 @@ const ManageAccounts: FC = () => {
 					background="gray6"
 					height="58px"
 				>
-					<Row orientation="horizontal" width="100%">
-						<Row width="50%" mainAlignment="flex-start">
+					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
 								{t('domain.account_list', 'Account List')}
 							</Text>
 						</Row>
-						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="medium">
+						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
+							<Padding right="large">
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
@@ -388,16 +388,17 @@ const ManageAccounts: FC = () => {
 									}}
 								/>
 							</Padding>
-							<Padding right="medium">
-								<Button type="outlined" label={t('label.details', 'DETAILS')} color="primary" />
+							<Padding right="large">
+								<Button
+									type="outlined"
+									label={t('label.bulk_actions', 'BULK ACTIONS')}
+									icon="ChevronDownOutline"
+									iconPlacement="right"
+									color="primary"
+									height={36}
+									disabled
+								/>
 							</Padding>
-							<Button
-								type="outlined"
-								label={t('label.bulk_actions', 'BULK ACTIONS')}
-								icon="ChevronDownOutline"
-								iconPlacement="right"
-								color="primary"
-							/>
 						</Row>
 					</Row>
 				</Container>

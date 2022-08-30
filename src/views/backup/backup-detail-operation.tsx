@@ -37,9 +37,11 @@ const BackupDetailOperation: FC = () => {
 				}
 			});
 	}, [setGlobalConfig]);
+
 	useEffect(() => {
 		getGlobalConfig();
 	}, [getGlobalConfig]);
+
 	return (
 		<>
 			{((): any => {

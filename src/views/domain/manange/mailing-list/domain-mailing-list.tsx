@@ -529,23 +529,15 @@ const DomainMailingList: FC = () => {
 							</Padding>
 							<Padding right="large">
 								<Button
-									label={t('label.details', 'Details')}
-									color="primary"
 									type="outlined"
-									disabled={selectedDlRow && selectedDlRow.length !== 1}
+									label={t('label.bulk_actions', 'Bulk Actions')}
+									icon="ArrowIosDownward"
+									iconPlacement="right"
+									color="primary"
+									disabled
 									height={36}
-									onClick={onDetailClick}
 								/>
 							</Padding>
-							<Button
-								type="outlined"
-								label={t('label.bulk_actions', 'Bulk Actions')}
-								icon="ArrowIosDownward"
-								iconPlacement="right"
-								color="primary"
-								disabled
-								height={36}
-							/>
 						</Row>
 					</Row>
 				</Container>

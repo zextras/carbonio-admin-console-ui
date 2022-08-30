@@ -381,7 +381,7 @@ const DomainResources: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="medium">
+							<Padding right="large">
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
@@ -393,15 +393,17 @@ const DomainResources: FC = () => {
 									}}
 								/>
 							</Padding>
-							<Button
-								type="outlined"
-								label={t('label.bulk_actions', 'Bulk Actions')}
-								icon="ArrowIosDownward"
-								iconPlacement="right"
-								color="primary"
-								disabled
-								height={36}
-							/>
+							<Padding right="large">
+								<Button
+									type="outlined"
+									label={t('label.bulk_actions', 'Bulk Actions')}
+									icon="ArrowIosDownward"
+									iconPlacement="right"
+									color="primary"
+									disabled
+									height={36}
+								/>
+							</Padding>
 						</Row>
 					</Row>
 				</Container>

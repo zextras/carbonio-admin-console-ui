@@ -27,12 +27,9 @@ const BackupServerConfig: FC = () => {
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
 	const [initbackupDetail, setInitBackupDetail] = useState<any>({});
 	const onCancel = (): void => {
-		console.log('onCancel');
 		setInitBackupDetail({ ...globalConfig });
 	};
 	const onSave = (): void => {
-		console.log('onSave');
-
 		const modifiedKeys: any = reduce(
 			globalConfig,
 			function (result, value, key): any {
