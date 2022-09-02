@@ -12,7 +12,6 @@
             "company_name": "Tên Công ty",
             "customer": "Khách hàng",
             "email_buyer": "Người mua thư điện tử",
-            "renew": "Làm mới",
             "subscription_Accounts": "Các tài khoản thuê bao",
             "subscription_last_check": "Lần cuối kiểm tra thuê bao",
             "subscription_type": "Kiểu thuê bao",
@@ -79,7 +78,6 @@
         "closed": "Đã đóng",
         "virtual_hosts": "Máy chủ ảo",
         "volumes": "Dung lượng",
-        "Notes": "Ghi chú",
         "access_key": "Khoá truy cập",
         "account_scan": "Quét Tài khoản",
         "actions": "Thao tác",
@@ -106,7 +104,6 @@
         "gal": "GAL",
         "general_Settings": "Cài đặt chung",
         "general_settings": "Cài đặt chung",
-        "global": "Chung",
         "help": "Trợ giúp",
         "home": "Nhà riêng",
         "hsm_policies": "Chính sách HSM",
@@ -121,7 +118,6 @@
         "monitoring": "Giám sát",
         "new_cos": "Lớp dịch vụ mới",
         "new_domain": "Tên miền mới",
-        "new_email": "Thư mới",
         "no_subject": "Không chủ đề",
         "notes": "Ghi chú",
         "notify_of_changes_made_via_delegated_access": "Thông báo thay đổi qua truy cập ủy quyền",
@@ -162,7 +158,6 @@
         "automatically_reject": "Tự động từ chối",
         "bucket_cancel_button": "HUỶ",
         "bucket_done_button": "Hoàn thành",
-        "class_of_Service": "Lớp dịch vụ",
         "class_of_service": "Lớp dịch vụ",
         "content": "Nội dung",
         "cos": "COS",
@@ -333,13 +328,9 @@
         "mailbox_quota": "Hạn mức hộp thư",
         "most_result_return_gal_search": "Hầu hết các kết quả được trả về bởi tìm kiếm GAL",
         "virtual_hosts": "Máy chủ ảo",
-        "export_domain": "Xuất Miền",
         "manage": "Quản lý",
-        "new_domain": "Tên miền mới",
         "resources": "Tài nguyên",
-        "restore_account": "Khôi phục tài khoản",
-        "account_scan": "Quét Tài khoản",
-        "accounts": "Tài khoản"
+        "account_scan": "Quét Tài khoản"
     },
     "buckets": {
         "connection": {
@@ -360,7 +351,6 @@
         "compression_level": "Mức độ nén",
         "global": {
             "headers": {
-                "advanced": "Nâng cao",
                 "service_status": "Trạng thái Dịch vụ"
             }
         },
@@ -411,12 +401,10 @@
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Hiển thị hộp lựa chọn để chọn các mục email, liên hệ, thư thoại ở chế độ xem theo danh sách đối với các thao tác theo từng đợt",
         "view_mail_as_html": "Xem thư dưới dạng HTML (khi có thể)",
         "group_mail": "Nhóm thư theo:",
-        "range_time": "Thời gian",
-        "display_a_warning_when_administrators_try_to_navigate_away_from_Carbonio_Administration_Console": "Hiển thị cảnh báo khi quản trị viên cố gắng di chuyển khỏi Bảng quản trị Carbonio"
+        "range_time": "Thời gian"
     },
     "accountDetails": {
-        "hide_in_gal": "Ẩn trong GAL",
-        "prevent_user_from_changing_password": "Ngăn không cho người dùng thay đổi mật khẩu"
+        "hide_in_gal": "Ẩn trong GAL"
     },
     "locale": {
         "English": "Tiếng Anh",

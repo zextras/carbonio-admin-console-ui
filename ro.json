@@ -56,7 +56,6 @@
         "use_the_gal_when_autocompleting_addresses": "Utilizare GAL la completare automată adrese",
         "virtual_hosts": "Gazde virtuale",
         "volumes": "Volume",
-        "Notes": "Note",
         "actions": "Acţiuni",
         "address": "Adresă",
         "advanced": "Avansat",
@@ -76,7 +75,6 @@
         "enable_mandatory_spell_check": "Activare verificare ortografică obligatorie",
         "enable_past_due_reminders": "Activare mementouri pentru scadenţe depăşite",
         "gal": "GAL",
-        "global": "Global",
         "help": "Ajutor",
         "home": "Pornire",
         "initial_calendar_view": "Vizualizare iniţială calendar",
@@ -90,7 +88,6 @@
         "automatically_reject": "Respingere automată",
         "bucket_cancel_button": "Anuleaza",
         "bucket_done_button": "Efectuat",
-        "class_of_Service": "Clasă de servicii",
         "class_of_service": "Clasă de servicii",
         "content": "Conţinut",
         "cos": "COS",
@@ -132,9 +129,7 @@
         "mailbox_quota": "Cotă căsuţă poştală",
         "most_result_return_gal_search": "Majoritatea rezultatelor căutării în GAL",
         "virtual_hosts": "Gazde virtuale",
-        "accounts": "Conturi",
         "manage": "Gestionare",
-        "new_domain": "Domeniu nou",
         "resources": "Resurse"
     },
     "buckets": {
@@ -143,11 +138,6 @@
         }
     },
     "backup": {
-        "global": {
-            "headers": {
-                "advanced": "Avansat"
-            }
-        },
         "schedule": "Planificare"
     },
     "cos": {
@@ -180,7 +170,6 @@
         "search_features": "Caracteristicile căutare",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Afişare casetă pentru selectarea mesajelor, a persoanelor de contact şi a mesajelor vocale într-o listă pentru operaţii în lot",
         "view_mail_as_html": "Afişare mesaj ca HTML (când este posibil)",
-        "display_a_warning_when_administrators_try_to_navigate_away_from_Carbonio_Administration_Console": "Afişare avertisment când administratorii încearcă să părăsească consola de administrare Carbonio",
         "group_mail": "Grupare mesaje după:",
         "range_time": "Moment"
     },
@@ -200,8 +189,5 @@
         "spanish": "spaniolă",
         "thai": "tailandeză",
         "turkish": "turcă"
-    },
-    "accountDetails": {
-        "prevent_user_from_changing_password": "Împiedică utilizatorul să schimbe parola"
     }
 }
