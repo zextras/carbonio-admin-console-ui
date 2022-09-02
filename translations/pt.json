@@ -51,7 +51,6 @@
         "maintenance": "Manutenção",
         "services": "Serviços",
         "web_client": "Cliente web",
-        "Notes": "Observações",
         "access_key": "Chave de acesso",
         "actions": "Ações",
         "unsaved_changes": "Você tem alterações que não foram salvas",
@@ -71,7 +70,7 @@
         "automatically_add_invites_with_PUBLISH_method": "Adicionar convites automaticamente com o método PUBLISH",
         "both": "Ambos",
         "bucket_name": "Nome do Bucket",
-        "create": "Criar",
+        "create": "Create",
         "creation_date": "Data de criação",
         "default_appointment_visibility": "Visibilidade predefinida do compromisso",
         "details": "Detalhes",
@@ -83,7 +82,6 @@
         "gal": "GAL",
         "general_Settings": "Configurações Gerais",
         "general_settings": "Configurações Gerais",
-        "global": "Global",
         "help": "Ajuda",
         "home": "Residência",
         "initial_calendar_view": "Visualização inicial da agenda",
@@ -94,7 +92,6 @@
         "monitoring": "Monitorização",
         "new_cos": "Novo COS",
         "new_domain": "Novo domínio",
-        "new_email": "Novo E-mail",
         "no_subject": "Sem Assunto",
         "notes": "Observações",
         "notify_of_changes_made_via_delegated_access": "Notificação de alterações efetuadas através de acesso delegado",
@@ -121,7 +118,6 @@
         "automatically_reject": "Rejeitar automaticamente",
         "bucket_cancel_button": "CANCELAR",
         "bucket_done_button": "Concluído",
-        "class_of_Service": "Classe de serviço",
         "class_of_service": "Classe de serviço",
         "restore_deleted_email": "Restaurar e-mail eliminado",
         "wizard_cancel_button": "CANCELAR",
@@ -129,7 +125,6 @@
         "account_status": "Estado da conta",
         "content": "Conteúdo",
         "cos": "COS",
-        "descriptive_name": "Nome descritivo",
         "detail": "Detalhar",
         "device": "Dispositivo",
         "edit": "Editar",
@@ -318,13 +313,9 @@
         "mailbox_quota": "Quota da caixa de correio",
         "most_result_return_gal_search": "Maioria dos resultados devolvidos pela pesquisa na GAL",
         "virtual_hosts": "Anfitriões virtuais",
-        "accounts": "Contas",
         "manage": "Gerir",
-        "new_domain": "Novo domínio",
         "resources": "Recursos",
-        "restore_account": "Restaurar conta",
-        "search_domain": "Buscar um domínio",
-        "restore_deleted_email": "Restaurar e-mail eliminado"
+        "search_domain": "Buscar um domínio"
     },
     "message": {
         "snackbar": {
@@ -363,17 +354,11 @@
         "polling_interval": "Intervalo de verificação (tempo após o qual se irá verificar se existem novas mensagens de correio)",
         "preferences": "Preferências",
         "receiving_mail": "A receber correio",
-        "display_a_warning_when_administrators_try_to_navigate_away_from_Carbonio_Administration_Console": "Apresentar um aviso quando os administradores tentarem navegar para fora da Consola de administração do Carbonio",
         "group_mail": "Agrupar e-mail por:",
         "range_time": "Hora"
     },
     "backup": {
         "backup_path": "Path do backup",
-        "global": {
-            "headers": {
-                "advanced": "Avançado"
-            }
-        },
         "minimum_space_threshold": "Limiar de espaço mínimo",
         "realtime_scanner": "RealTime Scanner",
         "schedule": "Programação",
@@ -421,8 +406,5 @@
         "spanish": "Espanhol",
         "thai": "Tailandês",
         "turkish": "Turco"
-    },
-    "accountDetails": {
-        "prevent_user_from_changing_password": "Impedir utilizador de alterar a palavra-passe"
     }
 }

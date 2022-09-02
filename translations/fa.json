@@ -10,7 +10,12 @@
         "details": "جزئیات",
         "actions": "اقدامات",
         "of": "از",
-        "delete": "حذف"
+        "delete": "حذف",
+        "search": "جستجو",
+        "name": "نام",
+        "edit": "ویرایش",
+        "create": "ایجاد",
+        "cancel": "لغو"
     },
     "domain": {
         "theme": "پوسته‌ها"
