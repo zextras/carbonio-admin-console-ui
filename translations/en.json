@@ -731,6 +731,7 @@
         "reply/forward_using_format_of_the_original_message": "Reply/forward using format of the original message",
         "reply_to_address_for_receipt": "Reply-to address for receipt",
         "require_list_owner_approval": "Require list owner approval",
+        "required": "Required",
         "resource": "Resource",
         "resource_name": "ResourceName",
         "resources": "Resources",

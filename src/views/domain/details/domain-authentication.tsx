@@ -293,8 +293,19 @@ const DomainAuthentication: FC = () => {
 					(item: any) => item.value === v
 				)
 			);
+			if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
+				if (!zimbraAuthLdapBindDn) {
+					setIsValidLdapDn(false);
+				}
+				if (!zimbraAuthLdapURL) {
+					setIsValidLdapUrl(false);
+				}
+			} else {
+				setIsValidLdapDn(true);
+				setIsValidLdapUrl(true);
+			}
 		},
-		[setZimbraAuthMech, DOMAIN_AUTH_LIST]
+		[DOMAIN_AUTH_LIST, zimbraAuthLdapBindDn, zimbraAuthLdapURL]
 	);
 
 	const onCancel = (): void => {
@@ -490,6 +501,11 @@ const DomainAuthentication: FC = () => {
 											if (e.target.value) {
 												const validLdapDn = isValidLdapBaseDN(e.target.value);
 												setIsValidLdapDn(validLdapDn);
+											} else if (
+												zimbraAuthMech?.value === ZimbraAuthMethod.EXTERNAL ||
+												zimbraAuthMech?.value === ZimbraAuthMethod.LDAP
+											) {
+												setIsValidLdapDn(false);
 											} else {
 												setIsValidLdapDn(true);
 											}
@@ -516,7 +532,9 @@ const DomainAuthentication: FC = () => {
 											>
 												<Padding top="small">
 													<Text size="extrasmall" weight="regular" color="error">
-														{t('label.base_dn_is_not_valid', 'Base DN is not valid')}
+														{zimbraAuthLdapBindDn
+															? t('label.base_dn_is_not_valid', 'Base DN is not valid')
+															: t('label.required', 'Required')}
 													</Text>
 												</Padding>
 											</Container>
@@ -544,6 +562,11 @@ const DomainAuthentication: FC = () => {
 											if (e.target.value) {
 												const validLdapUrl = isValidLdapBaseUrl(e.target.value);
 												setIsValidLdapUrl(validLdapUrl);
+											} else if (
+												zimbraAuthMech?.value === ZimbraAuthMethod.EXTERNAL ||
+												zimbraAuthMech?.value === ZimbraAuthMethod.LDAP
+											) {
+												setIsValidLdapUrl(false);
 											} else {
 												setIsValidLdapUrl(true);
 											}
@@ -560,7 +583,9 @@ const DomainAuthentication: FC = () => {
 											>
 												<Padding top="small">
 													<Text size="extrasmall" weight="regular" color="error">
-														{t('label.ldap_url_is_not_valid', 'Ldap url is not valid')}
+														{zimbraAuthLdapURL
+															? t('label.ldap_url_is_not_valid', 'Ldap url is not valid')
+															: t('label.required', 'Required')}
 													</Text>
 												</Padding>
 											</Container>
