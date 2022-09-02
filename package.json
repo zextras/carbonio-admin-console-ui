@@ -81,7 +81,7 @@
 		"not dead"
 	],
 	"carbonio": {
-		"translations_repository": "<Insert Repo Here>",
+		"translations_repository": "git@bitbucket.org:zextras/admin-manage-ui.git",
 		"name": "carbonio-admin-console-ui",
 		"priority": 3,
 		"type": "carbonioAdmin",
