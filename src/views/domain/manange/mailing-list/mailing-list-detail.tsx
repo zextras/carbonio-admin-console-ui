@@ -463,10 +463,7 @@ const MailingListDetail: FC<any> = ({
 					</Text>
 				</Row>
 				<ListRow>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'EyeOutline'} size="large" />
-					</Container>
-					<Container>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
@@ -474,10 +471,8 @@ const MailingListDetail: FC<any> = ({
 							readOnly
 						/>
 					</Container>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'EmailOutline'} size="large" />
-					</Container>
-					<Container padding={{ all: 'small' }}>
+
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
 							label={t('label.address', 'Address')}
 							value={distributionName}
@@ -486,11 +481,7 @@ const MailingListDetail: FC<any> = ({
 					</Container>
 				</ListRow>
 				<ListRow>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'CheckmarkCircleOutline'} size="large" />
-					</Container>
-
-					<Container>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input
 							background="gray6"
 							label={t('label.new_subscription_requests', 'New subscriptions requests')}
@@ -498,11 +489,8 @@ const MailingListDetail: FC<any> = ({
 							value={zimbraDistributionListSubscriptionPolicy?.label}
 						/>
 					</Container>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'CloseCircleOutline'} size="large" />
-					</Container>
 
-					<Container padding={{ all: 'small' }}>
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
 							background="gray6"
 							label={t('label.unsubscribe_request', 'Unsubscription requests')}
@@ -512,9 +500,6 @@ const MailingListDetail: FC<any> = ({
 					</Container>
 				</ListRow>
 				<ListRow>
-					<Container width="fit" padding={{ right: 'small' }} className="xxxxxx">
-						<Icon icon={'OptionsOutline'} size="large" />
-					</Container>
 					<Container padding={{ right: 'small', top: 'small' }}>
 						<Input
 							background="gray6"
@@ -549,10 +534,7 @@ const MailingListDetail: FC<any> = ({
 					</Container>
 				</ListRow>
 				<ListRow>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'PeopleOutline'} size="large" />
-					</Container>
-					<Container>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input
 							label={t('label.members', 'Members')}
 							value={dlm.length}
@@ -560,10 +542,7 @@ const MailingListDetail: FC<any> = ({
 							readOnly
 						/>
 					</Container>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'CornerUpRight'} size="large" />
-					</Container>
-					<Container padding={{ all: 'small' }}>
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
 							label={t('label.alias_in_the_list', 'Alias in the List')}
 							value={zimbraMailAlias.length}
@@ -574,9 +553,6 @@ const MailingListDetail: FC<any> = ({
 				</ListRow>
 				{selectedMailingList?.dynamic && (
 					<ListRow>
-						<Container width="fit" padding={{ right: 'small' }}>
-							<Icon icon={'Link2Outline'} size="large" />
-						</Container>
 						<Container>
 							<Input
 								label={t('label.list_url', 'List URL')}
@@ -591,16 +567,10 @@ const MailingListDetail: FC<any> = ({
 					</ListRow>
 				)}
 				<ListRow>
-					<Container width="64px">
-						<Icon icon={'FingerPrintOutline'} size="large" />
-					</Container>
-					<Container padding={{ all: 'small' }}>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray6" readOnly />
 					</Container>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'CalendarOutline'} size="large" />
-					</Container>
-					<Container>
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
 							label={t('label.creation_date', 'Creation Date')}
 							value={dlCreateDate}

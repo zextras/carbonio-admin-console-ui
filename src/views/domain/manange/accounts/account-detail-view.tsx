@@ -239,9 +239,8 @@ const AccountDetailView: FC<any> = ({
 					</Text>
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
-					<Padding left="medium" />
 					<Row
-						width="48%"
+						width="50%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						orientation="horizontal"
@@ -272,9 +271,8 @@ const AccountDetailView: FC<any> = ({
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
-					<Padding left="medium" />
 					<Row
-						width="48%"
+						width="50%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						orientation="horizontal"
@@ -317,9 +315,8 @@ const AccountDetailView: FC<any> = ({
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
-					<Padding left="medium" />
 					<Row
-						width="48%"
+						width="50%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						orientation="horizontal"
@@ -345,9 +342,8 @@ const AccountDetailView: FC<any> = ({
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
-					<Padding left="medium" />
 					<Row
-						width="48%"
+						width="50%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						orientation="horizontal"

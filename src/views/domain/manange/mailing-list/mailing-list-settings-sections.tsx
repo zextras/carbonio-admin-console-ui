@@ -309,7 +309,7 @@ const MailingListSettingsSection: FC<any> = () => {
 					>
 						<Switch
 							value={mailingListDetail?.zimbraMailStatus}
-							label={t('label.can_receive_email', 'Can receive email')}
+							label={t('label.this_list_can_receive_email', 'This list can receive emails')}
 							onClick={(): void => {
 								setMailingListDetail((prev: any) => ({
 									...prev,

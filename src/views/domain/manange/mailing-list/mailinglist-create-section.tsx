@@ -128,23 +128,6 @@ const MailingListCreateSection: FC<any> = () => {
 					</Container>
 				</ListRow>
 
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Input
-							label={t('label.description', 'Description')}
-							backgroundColor="gray6"
-							size="medium"
-							value={mailingListDetail?.description}
-							readOnly
-						/>
-					</Container>
-				</ListRow>
-
 				{mailingListDetail?.dynamic && (
 					<ListRow>
 						<Container
@@ -253,7 +236,7 @@ const MailingListCreateSection: FC<any> = () => {
 						padding={{ top: 'large', right: 'small' }}
 					>
 						<Input
-							label={t('label.can_receive_email', 'Can receive email')}
+							label={t('label.this_list_can_receive_email', 'This list can receive emails')}
 							backgroundColor="gray6"
 							size="medium"
 							value={
