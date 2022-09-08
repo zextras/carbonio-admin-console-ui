@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { TFunction } from 'i18next';
-import { NOT_SET } from '../../constants';
+import { ACTIVE, CLOSED, LOCKED, MAINTENANCE, PENDING, NOT_SET } from '../../constants';
 
 export const timeZoneList = (
 	t: TFunction
@@ -818,6 +818,35 @@ export const timeZoneList = (
 			value: 'GMT +14:00',
 			defaultValue: '{{value}} Kiritimati Island'
 		})
+	}
+];
+
+export const AccountStatus = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('label.active', 'Active'),
+		value: ACTIVE
+	},
+	{
+		label: `${t('label.in_maintenance', 'In maintenance')} (${t(
+			'label.login_is_disabled',
+			'Login is disabled'
+		)})`,
+		value: MAINTENANCE
+	},
+	{
+		label: `${t('label.locked', 'Locked')} (${t('label.login_is_disabled', 'Login is disabled')})`,
+		value: LOCKED
+	},
+	{
+		label: `${t('label.closed', 'Closed')} (${t('label.soft_deleted', 'Soft-deleted')})`,
+		value: CLOSED
+	},
+	{
+		label: `${t('label.pending', 'Pending')} (${t(
+			'label.not_ready_to_be_active',
+			'Not ready to be active'
+		)})`,
+		value: PENDING
 	}
 ];
 

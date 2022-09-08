@@ -17,8 +17,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from './account-context';
-import { ACTIVE, CLOSED, LOCKED, MAINTENANCE, PENDING } from '../../../../../constants';
-import { timeZoneList, localeList } from '../../../../utility/utils';
+import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
 
 const CreateAccountDetailSection: FC = () => {
 	const conext = useContext(AccountContext);
@@ -30,32 +29,7 @@ const CreateAccountDetailSection: FC = () => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
 	const localeZone = useMemo(() => localeList(t), [t]);
-
-	const ACCOUNT_STATUS = useMemo(
-		() => [
-			{
-				label: 'Active',
-				value: ACTIVE
-			},
-			{
-				label: 'Maintenance',
-				value: MAINTENANCE
-			},
-			{
-				label: 'Locked',
-				value: LOCKED
-			},
-			{
-				label: 'Closed',
-				value: CLOSED
-			},
-			{
-				label: 'Pending',
-				value: PENDING
-			}
-		],
-		[]
-	);
+	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
@@ -351,17 +325,17 @@ const CreateAccountDetailSection: FC = () => {
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" color="gray0" weight="bold">
-						Notes
+						{t('label.notes', 'Notes')}
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
 						background="gray5"
 						height="85px"
-						label={t('label.description', 'Description')}
-						defaultValue={accountDetail?.description || ''}
+						label={t('label.notes', 'Notes')}
+						defaultValue={accountDetail?.zimbraNotes || ''}
 						onChange={changeAccDetail}
-						inputName="description"
+						inputName="zimbraNotes"
 					/>
 				</Row>
 			</Row>

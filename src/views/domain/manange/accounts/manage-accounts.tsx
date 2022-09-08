@@ -116,7 +116,7 @@ const ManageAccounts: FC = () => {
 			},
 			maintenance: {
 				color: '#2196D3',
-				label: t('label.maintenance', 'Maintenance')
+				label: t('label.in_maintenance', 'In maintenance')
 			},
 			locked: {
 				color: '#D74942',

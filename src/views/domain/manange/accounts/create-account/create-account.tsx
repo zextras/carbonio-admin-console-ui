@@ -61,7 +61,7 @@ interface AccountDetailObj {
 	zimbraAccountStatus: string;
 	zimbraPrefLocale: string;
 	zimbraPrefTimeZoneId: string;
-	description: string;
+	zimbraNotes: string;
 	password: string;
 	repeatPassword: string;
 	displayName: string;
@@ -90,7 +90,7 @@ const CreateAccount: FC<{
 		zimbraAccountStatus: '',
 		zimbraPrefLocale: '',
 		zimbraPrefTimeZoneId: '',
-		description: '',
+		zimbraNotes: '',
 		password: '',
 		repeatPassword: '',
 		displayName: '',
@@ -192,7 +192,7 @@ const CreateAccount: FC<{
 										zimbraAccountStatus: accountDetail?.zimbraAccountStatus,
 										zimbraPrefLocale: accountDetail?.zimbraPrefLocale,
 										zimbraPrefTimeZoneId: accountDetail?.zimbraPrefTimeZoneId,
-										description: accountDetail?.description,
+										zimbraNotes: accountDetail?.zimbraNotes,
 										displayName: accountDetail?.displayName,
 										zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId
 									},
@@ -217,7 +217,7 @@ const CreateAccount: FC<{
 			accountDetail?.zimbraAccountStatus,
 			accountDetail?.zimbraPrefLocale,
 			accountDetail?.zimbraPrefTimeZoneId,
-			accountDetail?.description,
+			accountDetail?.zimbraNotes,
 			accountDetail?.displayName,
 			accountDetail?.defaultCOS,
 			accountDetail?.zimbraCOSId,

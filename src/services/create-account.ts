@@ -21,7 +21,7 @@ export const createAccountRequest = async (
 		a: attrList
 	};
 	if (!password) {
-		delete request.CreateAccountRequest.password;
+		delete request.password;
 	}
 
 	return soapFetch(`CreateAccount`, {

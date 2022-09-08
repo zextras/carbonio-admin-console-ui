@@ -171,45 +171,49 @@ const AccountDetailView: FC<any> = ({
 				background="white"
 			>
 				<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
-					<Padding right="medium" top="large">
-						<Button
-							type="outlined"
-							iconColor="gray6"
-							icon="EditAsNewOutline"
-							height={36}
-							label=""
-							width={36}
-							onClick={(): void => {
-								setShowAccountDetailView(false);
-								setShowEditAccountView(true);
-							}}
-							disabled={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
-							loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
-							style={{ padding: '8px 8px 8px 6px', display: 'block' }}
-						/>
+					<Padding right="large" top="large">
+						<Container width="fit" height="fit" style={{ border: '1px solid #2b73d2' }}>
+							<IconButton
+								iconColor="primary"
+								backgroundColor="gray6"
+								icon="EditAsNewOutline"
+								height={42}
+								width={42}
+								onClick={(): void => {
+									setShowAccountDetailView(false);
+									setShowEditAccountView(true);
+								}}
+								disabled={
+									!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
+								}
+								loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
+							/>
+						</Container>
 					</Padding>
-					<Padding right="medium">
-						<Button
-							type="outlined"
-							color="error"
-							icon="DeletePermanentlyOutline"
-							height={36}
-							label=""
-							width={36}
-							// onClick={(): void => {}}
-							disabled={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
-							// loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
-							style={{ padding: '8px 8px 8px 6px', display: 'block' }}
-							onClick={onDeleteAccount}
-						/>
+					<Padding right="large">
+						<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
+							<IconButton
+								iconColor="error"
+								backgroundColor="gray6"
+								icon="Trash2Outline"
+								height={42}
+								width={42}
+								disabled={
+									!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
+								}
+								// loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
+								onClick={onDeleteAccount}
+							/>
+						</Container>
 					</Padding>
-					<Padding right="medium">
+					<Padding right="large">
 						<Button
 							type="outlined"
 							label={t('label.view_mail', 'VIEW MAIL')}
 							icon="EmailReadOutline"
 							iconPlacement="right"
 							color="primary"
+							height={44}
 							disabled
 						/>
 					</Padding>
@@ -219,6 +223,7 @@ const AccountDetailView: FC<any> = ({
 						icon="RefreshOutline"
 						iconPlacement="right"
 						color="primary"
+						height={44}
 						disabled
 					/>
 				</Row>
@@ -241,10 +246,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 						orientation="horizontal"
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="PersonOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="80%">
+						<Row width="95%">
 							<Input
 								label={t('label.name', 'Name')}
 								backgroundColor="gray6"
@@ -259,10 +261,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 						orientation="horizontal"
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="EmailOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="80%">
+						<Row width="95%">
 							<Input
 								label={t('label.email', 'E-mail')}
 								backgroundColor="gray6"
@@ -280,10 +279,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 						orientation="horizontal"
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="HardDriveOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="80%">
+						<Row width="95%">
 							<Input
 								label={t('label.server', 'Server')}
 								readOnly
@@ -298,10 +294,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 						orientation="horizontal"
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="CubeOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="80%">
+						<Row width="95%">
 							<Input
 								readOnly
 								label={t('label.space', 'Space')}
@@ -331,10 +324,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 						orientation="horizontal"
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="FingerPrintOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="80%">
+						<Row width="95%">
 							<Input readOnly label="ID" backgroundColor="gray6" value={selectedAccount?.id} />
 						</Row>
 					</Row>
@@ -344,14 +334,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 						orientation="horizontal"
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon
-								icon="DashboardOutline"
-								size="large"
-								color={STATUS_COLOR[selectedAccount?.zimbraAccountStatus]?.color}
-							/>
-						</Row>
-						<Row width="80%">
+						<Row width="95%">
 							<Input
 								label={t('label.status', 'Status')}
 								backgroundColor="gray6"
@@ -369,10 +352,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 						orientation="horizontal"
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="CalendarOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="80%">
+						<Row width="95%">
 							<Input
 								label={t('label.creation_date', 'Creation Date')}
 								backgroundColor="gray6"
@@ -389,10 +369,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 						orientation="horizontal"
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="ClockOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="80%">
+						<Row width="95%">
 							<Input
 								label={t('label.last_access', 'Last Access')}
 								backgroundColor="gray6"
@@ -408,19 +385,16 @@ const AccountDetailView: FC<any> = ({
 						</Row>
 					</Row>
 				</Row>
-				<Row
-					padding={{ top: 'extralarge' }}
-					width="100%"
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-				>
-					<Input
-						label={t('label.description', 'Description')}
-						backgroundColor="gray6"
-						width="100%"
-						value={selectedAccount?.description || ''}
-						readOnly
-					></Input>
+				<Row padding={{ top: 'extralarge' }}>
+					<Text
+						size="small"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						weight="bold"
+					>
+						{t('label.notes', 'Notes')}
+					</Text>
 				</Row>
 				<Row
 					padding={{ top: 'extralarge' }}

@@ -434,6 +434,7 @@
     "label": {
         "\"max_email_quota_you_can_manage_is": "The max email quota you can manage is...",
         "I_want_to_see_this_server_details": "i want to see this server’s details",
+        "Maintenance": "Maintenance",
         "access_key": "Access Key",
         "account": "Account",
         "account_created_successfully": "The account has been created successfully",
@@ -526,8 +527,7 @@
         "compression": "Compression",
         "compression_threshold": "Compression Threshold",
         "config": "Config",
-        "configration": "CONFIGRATION",
-        "configuration": "Configuration",
+        "configuration": "CONFIGURATION",
         "connect_buckets": "Connect Buckets",
         "connection_is_created_verify_connector_fail": "CONNECTOR IS CREATED BUT VERIFICATION FAILED",
         "connector_is_create_and_verified": "CONNECTOR IS CREATED AND VERIFIED",
@@ -669,6 +669,7 @@
         "id": "Id",
         "id_lbl": "ID",
         "import_an_external_backup": "Import an External Backup",
+        "in_maintenance": "In maintenance",
         "inbound_smtp_host_name": "Inbound SMTP Host Name",
         "index_volumes": "Index Volumes",
         "indexer_settings": "Indexer Settings",
@@ -688,6 +689,7 @@
         "location": "Location",
         "locked": "Locked",
         "log": "Log",
+        "login_is_disabled": "Login is disabled",
         "logout_redirect_url": "On Logout, the user will be redirected to this URL",
         "long_and_queues": "Log & Queues",
         "mail": "Mail",
@@ -750,6 +752,7 @@
         "no_auto_accept_or_decline": "No automatic acceptance if available always",
         "no_go_back": "No, Go Back",
         "no_virtual_host_msg": "There aren’t virtual hosts here.",
+        "not_ready_to_be_active": "Not ready to be active",
         "not_send_receive": "Not Send & Receive",
         "not_set": "Not Set",
         "note": "Note",
@@ -850,6 +853,7 @@
                 "accepted": "You have accepted the share request"
             }
         },
+        "soft_deleted": "Soft-deleted",
         "something_wrong_error_msg": "Something went wrong. Please try again.",
         "something_wrong_wrror_msg": "Something went wrong. Please try again.",
         "space": "Space",
@@ -1011,7 +1015,7 @@
     },
     "select_bucket_or_create_new_bucket": "It seems like you haven't setup a bucket type. \n Click NEW BUCKET button to create a new one.",
     "select_cos_or_create_new_cos": "Please select a Class of Service to manage it or click Create button to create a new one.",
-    "select_domain_or_create_new": "Please select a domain to manage it or click Create button to create a new one.",
+    "select_domain_or_create_new": "Please select a domain from the menu on the left or click on the Create Button to create a new one.",
     "select_section_from_left_menu": "Please select a section from the left menu",
     "timezone": {
         "africa_algiers": "{{value}} West Central Africa",
