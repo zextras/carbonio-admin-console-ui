@@ -348,7 +348,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 							crossAlignment="flex-start"
 						>
 							<Text size="medium" weight="bold" color="gray0">
-								{t('domain.mailbox_space', 'Mailbox  Space')}
+								{t('domain.mailbox_quota', 'Mailbox Quota')}
 							</Text>
 						</Row>
 						<Row
@@ -401,7 +401,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('domain.domain_space_byte', 'Domain Space (Byte)')}
+										label={t(
+											'domain.single_account_domain_space_byte',
+											'Single Account Domain Space (Byte)'
+										)}
 										value={zimbraMailDomainQuota}
 										background="gray5"
 										onChange={(e: any): any => {
@@ -411,7 +414,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('domain.aggregated_domain_space', 'Aggregated Domain Space (Byte)')}
+										label={t('domain.total_domain_space', 'Total Domain Space (Byte)')}
 										value={zimbraDomainAggregateQuota}
 										defaultValue={zimbraDomainAggregateQuota}
 										background="gray5"
