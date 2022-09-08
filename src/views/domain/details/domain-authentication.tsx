@@ -494,7 +494,7 @@ const DomainAuthentication: FC = () => {
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
-										label={t('label.bind_dn_template', 'Bind DN Template')}
+										label={t('label.bind_dn_template', 'Bind Distinguished Name (DN) Template')}
 										value={zimbraAuthLdapBindDn}
 										background="gray5"
 										onChange={(e: any): any => {
@@ -630,7 +630,7 @@ const DomainAuthentication: FC = () => {
 										value={zimbraAuthFallbackToLocal}
 										label={t(
 											'label.fall_back_to_local_msg',
-											'Fall back to local password management in case of failure'
+											'Try local password management in case of failure with other methods'
 										)}
 										onClick={authFallbackToLocal}
 									/>
@@ -663,7 +663,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t(
 											'label.sso_logout_redirect_admin_to_msg',
-											'SSO Logout will redirect the admin to'
+											'On Logout, the admin will be redirected to this URL'
 										)}
 										background="gray5"
 										value={zimbraAdminConsoleLogoutURL}
@@ -683,7 +683,10 @@ const DomainAuthentication: FC = () => {
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
-										label={t('label.logout_redirect_url', 'Logout Redirect URL')}
+										label={t(
+											'label.logout_redirect_url',
+											'On Logout, the user will be redirected to this URL'
+										)}
 										background="gray5"
 										value={zimbraWebClientLogoutURL}
 										onChange={(e: any): any => {
