@@ -109,7 +109,6 @@ const DomainGeneralSettings: FC = () => {
 		zimbraHelpAdminURL: '',
 		zimbraHelpDelegatedURL: '',
 		zimbraPublicServiceHostname: '',
-		description: '',
 		zimbraDomainMaxAccounts: '',
 		zimbraDomainAggregateQuota: ''
 	});
@@ -122,7 +121,6 @@ const DomainGeneralSettings: FC = () => {
 	const [publicServiceHostName, setPublicServiceHostName] = useState<string>('');
 	const [zimbraPublicServicePort, setZimbraPublicServicePort] = useState<string>('');
 	const [zimbraDNSCheckHostname, setZimbraDNSCheckHostname] = useState<string>('');
-	const [description, setDescription] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [zimbraHelpAdminURL, setZimbraHelpAdminURL] = useState<string>('');
 	const [zimbraHelpDelegatedURL, setZimbraHelpDelegatedURL] = useState<string>('');
@@ -223,13 +221,6 @@ const DomainGeneralSettings: FC = () => {
 				obj.zimbraHelpDelegatedURL = '';
 				setZimbraHelpDelegatedURL('');
 			}
-
-			if (obj.description) {
-				setDescription(obj.description);
-			} else {
-				obj.description = '';
-				setDescription('');
-			}
 			if (obj.zimbraDomainDefaultCOSId) {
 				const getItem = cosItems.find((item: any) => item.value === obj.zimbraDomainDefaultCOSId);
 				if (!!getItem && getItem.value) {
@@ -326,12 +317,6 @@ const DomainGeneralSettings: FC = () => {
 	}, [domainData, zimbraHelpAdminURL]);
 
 	useEffect(() => {
-		if (domainData.description !== description) {
-			setIsDirty(true);
-		}
-	}, [domainData, description]);
-
-	useEffect(() => {
 		if (domainData.zimbraHelpDelegatedURL !== zimbraHelpDelegatedURL) {
 			setIsDirty(true);
 		}
@@ -373,7 +358,6 @@ const DomainGeneralSettings: FC = () => {
 		setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
 		setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
 		setZimbraMailDomainQuota(domainData.zimbraDomainAggregateQuota);
-		setDescription(domainData.description);
 		const getItem = cosItems.find(
 			(item: any) => item.value === domainData.zimbraDomainDefaultCOSId
 		);
@@ -425,10 +409,6 @@ const DomainGeneralSettings: FC = () => {
 		attributes.push({
 			n: 'zimbraHelpDelegatedURL',
 			_content: zimbraHelpDelegatedURL
-		});
-		attributes.push({
-			n: 'description',
-			_content: description
 		});
 		attributes.push({
 			n: 'zimbraDomainMaxAccounts',
@@ -632,7 +612,7 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.create_date', 'CreateDate')}
+										label={t('label.creation_date', 'Creation Date')}
 										value={domainCreationDate}
 										background="gray6"
 										disabled
@@ -770,19 +750,6 @@ const DomainGeneralSettings: FC = () => {
 										background="gray5"
 										onChange={(e: any): any => {
 											setZimbraDNSCheckHostname(e.target.value);
-										}}
-									/>
-								</Container>
-							</ListRow>
-
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.description', 'Description')}
-										value={description}
-										background="gray5"
-										onChange={(e: any): any => {
-											setDescription(e.target.value);
 										}}
 									/>
 								</Container>

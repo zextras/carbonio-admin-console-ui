@@ -14,7 +14,8 @@ import {
 	Input,
 	Select,
 	Padding,
-	Divider
+	Divider,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -60,7 +61,6 @@ const CreateDomain: FC = () => {
 	const [galSyncAccountName, setGalSyncAccountName] = useState<string>('galsync');
 	const [dataSourceName, setDataSourceName] = useState<string>('zimbra');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
-	const [description, setDescription] = useState<string>('');
 	const [domainName, setDomainName] = useState<string>('');
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
@@ -148,10 +148,6 @@ const CreateDomain: FC = () => {
 		attributes.push({
 			n: 'zimbraGalMaxResults',
 			_content: ''
-		});
-		attributes.push({
-			n: 'description',
-			_content: description
 		});
 		attributes.push({
 			n: 'zimbraAuthMech',
@@ -267,7 +263,10 @@ const CreateDomain: FC = () => {
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.domain_name', 'Domain Name')}
+									label={t(
+										'label.type_name_your_domain_will_have',
+										'Type the name your domain will have'
+									)}
 									background="gray5"
 									value={domainName}
 									onChange={(e: any): any => {
@@ -307,18 +306,6 @@ const CreateDomain: FC = () => {
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.description', 'Description')}
-									background="gray5"
-									value={description}
-									onChange={(e: any): any => {
-										setDescription(e.target.value);
-									}}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
 									label={t('label.note', 'Note')}
 									background="gray5"
 									value={zimbraNotes}
@@ -341,8 +328,16 @@ const CreateDomain: FC = () => {
 							padding={{ left: 'large', top: 'large' }}
 						>
 							<Text size="small" weight="bold" color="#414141">
-								{t('label.gal_settings', 'GAL Settings')}
+								{t('label.gal_settings', 'GAL Settings ')}&nbsp;
 							</Text>
+							<Tooltip
+								placement="top"
+								label={t('label.global_address_list', 'Global Address List')}
+							>
+								<Text size="small" color="#414141" style={{ 'text-decoration': 'underline' }}>
+									({t('label.what_is_a_gal', "What's a GAL?")})
+								</Text>
+							</Tooltip>
 						</Row>
 						<ListRow>
 							<Container padding={{ all: 'small' }}>

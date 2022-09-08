@@ -331,17 +331,6 @@ const DomainGalSettings: FC = () => {
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t(
-										'domain.most_result_return_gal_search',
-										'Most results returned by GAL search'
-									)}
-									value={zimbraGalMaxResults}
-									background="gray5"
-									onChange={onZimbraGalMaxResultChange}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
 									label={t('label.gal_mode', 'GAL Mode')}
 									value={
 										!domainData?.zimbraGalMode || domainData?.zimbraGalMode === 'zimbra'
@@ -350,6 +339,17 @@ const DomainGalSettings: FC = () => {
 									}
 									background="gray6"
 									disabled
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t(
+										'domain.max_result_return_gal_search',
+										'Max results returned by GAL search'
+									)}
+									value={zimbraGalMaxResults}
+									background="gray5"
+									onChange={onZimbraGalMaxResultChange}
 								/>
 							</Container>
 						</ListRow>
