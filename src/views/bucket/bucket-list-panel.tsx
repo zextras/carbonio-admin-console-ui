@@ -11,7 +11,7 @@ import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import styled from 'styled-components';
 import ListPanelItem from '../list/list-panel-item';
 import ListItems from '../list/list-items';
-import { BUCKET_LIST, SERVERS_LIST, VOLUME, HMS_SETTINGS, INDEXER_SETTINGS } from '../../constants';
+import { BUCKET_LIST, SERVERS_LIST, VOLUME, HSM_SETTINGS, INDEXER_SETTINGS } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
@@ -88,12 +88,12 @@ const BucketListPanel: FC = () => {
 		() => [
 			{
 				id: VOLUME,
-				name: t('label.volume', 'Volume'),
+				name: t('label.data_volume', 'Data Volume'),
 				isSelected: isStoreVolumeSelect
 			},
 			{
-				id: HMS_SETTINGS,
-				name: t('label.hms_settings', 'HMS Settings'),
+				id: HSM_SETTINGS,
+				name: t('label.hsm_settings', 'HSM Settings'),
 				isSelected: isStoreVolumeSelect
 			},
 			{
