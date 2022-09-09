@@ -887,10 +887,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="BulbOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="85%">
+						<Row width="100%" padding={{ right: 'small' }}>
 							<Input
 								label={t('label.name', 'Name')}
 								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
@@ -913,10 +910,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="EmailOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="90%">
+						<Row width="100%" padding={{ left: 'small' }}>
 							<Input
 								label={t('label.email', 'Email')}
 								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
@@ -941,10 +935,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="HardDriveOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="85%">
+						<Row width="100%" padding={{ right: 'small' }}>
 							<Input
 								label={t('label.server', 'Server')}
 								backgroundColor="gray6"
@@ -960,10 +951,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="CubeOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="90%">
+						<Row width="100%" padding={{ left: 'small' }}>
 							{isEditMode && (
 								<Select
 									items={resourceTypeOptions}
@@ -993,14 +981,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon
-								icon="DashboardOutline"
-								size="large"
-								color={STATUS_COLOR[resourceDetailData?.zimbraAccountStatus]?.color}
-							/>
-						</Row>
-						<Row width="85%">
+						<Row width="100%" padding={{ right: 'small' }}>
 							{isEditMode && (
 								<Select
 									items={accountStatusOptions}
@@ -1028,10 +1009,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="CosOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="90%">
+						<Row width="100%" padding={{ left: 'small' }}>
 							{isEditMode && (
 								<Select
 									items={cosItems}
@@ -1061,9 +1039,6 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="HistoryOutline" size="large" color="gray0" />
-						</Row>
 						<Row width="100%">
 							{isEditMode && (
 								<Select
@@ -1094,9 +1069,6 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="ClockOutline" size="large" color="gray0" />
-						</Row>
 						<Row width="100%">
 							{isEditMode && (
 								<Select
@@ -1127,10 +1099,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="FlashOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="85%">
+						<Row width="100%" padding={{ right: 'small' }}>
 							<Input
 								label={t('label.maximum_conflict_allowed', 'Maximun Conflict Allowed')}
 								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
@@ -1153,10 +1122,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="FlashOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="90%">
+						<Row width="100%" padding={{ left: 'small' }}>
 							<Input
 								label={t('label.percentage_maximum_conflict_allowed', '% Maximun Conflict Allowed')}
 								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
@@ -1180,10 +1146,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="FingerPrintOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="85%">
+						<Row width="100%" padding={{ right: 'small' }}>
 							<Input
 								label={t('label.id_lbl', 'ID')}
 								backgroundColor="gray6"
@@ -1199,10 +1162,7 @@ const ResourceEditDetailView: FC<any> = ({
 						orientation="horizontal"
 						padding={{ top: 'large' }}
 					>
-						<Row padding={{ top: 'large', right: 'small' }}>
-							<Icon icon="CalendarOutline" size="large" color="gray0" />
-						</Row>
-						<Row width="90%">
+						<Row width="100%" padding={{ left: 'small' }}>
 							<Input
 								label={t('label.creation_date', 'Creation Date')}
 								backgroundColor="gray6"
