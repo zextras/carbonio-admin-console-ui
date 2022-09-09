@@ -268,7 +268,10 @@ const MailingListSettingsSection: FC<any> = () => {
 					>
 						<Switch
 							value={mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers}
-							label={t('label.share_message_to_new_member', 'Share message to new members')}
+							label={t(
+								'label.send_new_members_notification_for_share_assigned_to_this_group',
+								'Send new members a notification for the share/delegation assigned to this group'
+							)}
 							onClick={(): void => {
 								setMailingListDetail((prev: any) => ({
 									...prev,

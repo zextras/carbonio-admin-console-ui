@@ -1575,7 +1575,10 @@ const EditMailingListView: FC<any> = ({
 					>
 						<Switch
 							value={zimbraDistributionListSendShareMessageToNewMembers}
-							label={t('label.share_manages_to_new_members', 'Share messages to new members')}
+							label={t(
+								'label.send_new_members_notification_for_share_assigned_to_this_group',
+								'Send new members a notification for the share/delegation assigned to this group'
+							)}
 							onClick={(): void => {
 								setIsDirty(true);
 								setZimbraDistributionListSendShareMessageToNewMembers(
@@ -1584,10 +1587,12 @@ const EditMailingListView: FC<any> = ({
 							}}
 						/>
 					</Container>
+				</ListRow>
+				<ListRow>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium', left: 'small' }}
+						padding={{ top: 'large', bottom: 'medium' }}
 					>
 						<Switch
 							value={zimbraHideInGal}
@@ -1830,8 +1835,29 @@ const EditMailingListView: FC<any> = ({
 				</ListRow>
 
 				<Row padding={{ top: 'small', bottom: 'medium' }}>
-					<Text size="medium" weight="bold" color="gray0">
-						{t('label.owners', 'Owners')}
+					<Text
+						size="medium"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						weight="bold"
+						color="gray0"
+					>
+						{t('label.owners_settings', `Owners' Settings`)}
+					</Text>
+				</Row>
+				<Row>
+					<Text
+						size="medium"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						color="secondary"
+						style={{ 'white-space': 'normal' }}
+					>
+						{t(
+							'label.owners_description',
+							'Owners can manage distribution list members (adding and removing emails) and modify the distribution list options.'
+						)}
 					</Text>
 				</Row>
 

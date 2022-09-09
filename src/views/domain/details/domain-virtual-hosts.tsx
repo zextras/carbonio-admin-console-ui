@@ -218,17 +218,24 @@ const DomainVirtualHosts: FC = () => {
 								<Paragraph size="medium" color="secondary">
 									{t(
 										'label.virtual_host_info_msg',
-										'Virtual hosts allow the system to establish a default domain for a user login.'
+										'Using the Virtual host name allow users to browse the service also using different URL.'
 									)}
 								</Paragraph>
 							</Row>
 							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 								<Paragraph size="medium" color="secondary">
-									{t('label.virtual_host_user_msg', {
-										domainName,
-										defaultValue:
-											'Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, {{domainName}}'
-									})}
+									{t(
+										'label.virtual_host_user_msg_1',
+										'For example, you can make the service available both for mail.example.com and webamil.example.com.'
+									)}
+								</Paragraph>
+							</Row>
+							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+								<Paragraph size="medium" color="secondary">
+									{t(
+										'label.virtual_host_user_msg_2',
+										'Virtual hosts must be unique for the domain, so the system can understand which domain the user belongs to and we can sow the customized option for the domain'
+									)}
 								</Paragraph>
 							</Row>
 							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">

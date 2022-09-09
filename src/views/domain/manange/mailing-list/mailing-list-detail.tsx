@@ -517,10 +517,15 @@ const MailingListDetail: FC<any> = ({
 					>
 						<Switch
 							value={zimbraDistributionListSendShareMessageToNewMembers}
-							label={t('label.share_manages_to_new_members', 'Share messages to new members')}
+							label={t(
+								'label.send_new_members_notification_for_share_assigned_to_this_group',
+								'Send new members a notification for the share/delegation assigned to this group'
+							)}
 							disabled
 						/>
 					</Container>
+				</ListRow>
+				<ListRow>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"

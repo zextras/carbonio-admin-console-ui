@@ -77,6 +77,10 @@ const DomainAuthentication: FC = () => {
 	const iconRef = useRef(undefined);
 	const [isValidLdapDN, setIsValidLdapDn] = useState<boolean>(true);
 	const [isValidLdapUrl, setIsValidLdapUrl] = useState<boolean>(true);
+	const [ldapUrlOpen, setLdapUrlOpen] = useState(false);
+	const [filterOpen, setFilterOpen] = useState(false);
+	const ldapUrlIconRef = useRef(undefined);
+	const filterIconRef = useRef(undefined);
 
 	const DOMAIN_AUTH_LIST = useMemo(
 		() => [
@@ -122,6 +126,34 @@ const DomainAuthentication: FC = () => {
 		() => <Tooltip items={DN_TEMPLATE_TOOLTIP} />,
 		[DN_TEMPLATE_TOOLTIP]
 	);
+
+	const LDAP_URL_TOOLTIP = useMemo(
+		() => [
+			{
+				label: `${t('label.ex', 'ex.')} ldap[s]://${t(
+					'label.external_ldap_server',
+					'external-ldap-server'
+				)}[:389]`
+			}
+		],
+		[t]
+	);
+
+	const LdapUrlTooltip: FC = useCallback(
+		() => <Tooltip items={LDAP_URL_TOOLTIP} />,
+		[LDAP_URL_TOOLTIP]
+	);
+
+	const FILTER_TOOLTIP = useMemo(
+		() => [
+			{
+				label: `${t('label.ex', 'ex.')} (ou=text)`
+			}
+		],
+		[t]
+	);
+
+	const FilterTooltip: FC = useCallback(() => <Tooltip items={FILTER_TOOLTIP} />, [FILTER_TOOLTIP]);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -573,6 +605,16 @@ const DomainAuthentication: FC = () => {
 											setZimbraAuthLdapURL(e.target.value);
 										}}
 										hasError={!isValidLdapUrl}
+										CustomIcon={(): any => (
+											<Container
+												ref={ldapUrlIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												onMouseEnter={() => setLdapUrlOpen(true)}
+												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												onMouseLeave={() => setLdapUrlOpen(false)}
+											>
+												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
+											</Container>
+										)}
 									/>
 									{!isValidLdapUrl && (
 										<Row>
@@ -591,6 +633,16 @@ const DomainAuthentication: FC = () => {
 											</Container>
 										</Row>
 									)}
+									<Popper
+										open={ldapUrlOpen}
+										anchorEl={ldapUrlIconRef}
+										placement="top-end"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClose={() => setLdapUrlOpen(false)}
+										disableRestoreFocus
+									>
+										<LdapUrlTooltip />
+									</Popper>
 								</Padding>
 							</ListRow>
 							<ListRow>
@@ -602,7 +654,27 @@ const DomainAuthentication: FC = () => {
 										onChange={(e: any): any => {
 											setZimbraAuthLdapSearchFilter(e.target.value);
 										}}
+										CustomIcon={(): any => (
+											<Container
+												ref={filterIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												onMouseEnter={() => setFilterOpen(true)}
+												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												onMouseLeave={() => setFilterOpen(false)}
+											>
+												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
+											</Container>
+										)}
 									/>
+									<Popper
+										open={filterOpen}
+										anchorEl={filterIconRef}
+										placement="top-end"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClose={() => setFilterOpen(false)}
+										disableRestoreFocus
+									>
+										<FilterTooltip />
+									</Popper>
 								</Padding>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
