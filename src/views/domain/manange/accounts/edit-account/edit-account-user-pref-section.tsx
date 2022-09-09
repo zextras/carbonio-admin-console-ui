@@ -589,7 +589,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					<Select
 						items={APPOINTMENT_REMINDER}
 						background="gray5"
-						label={t('label.remind_appointments_timer', 'Remind Appointments Timer')}
+						label={t('label.appointment_reminder_in_minutes', 'Appointment Reminder in minutes')}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
 						defaultSelection={APPOINTMENT_REMINDER.find(
@@ -602,7 +602,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					<Select
 						items={DefaultViewOptions}
 						background="gray5"
-						label={t('label.initial_calendar_view', 'Initial Calendar View')}
+						label={t('label.default_calendar_view', 'Default Calendar View')}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
 						defaultSelection={DefaultViewOptions.find(
@@ -617,7 +617,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					<Select
 						items={FIRST_DAY_OF_WEEK}
 						background="gray5"
-						label={t('label.first_day_of_week', 'First Day of Week')}
+						label={t('label.the_week_starts_on', 'The Week starts on')}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
 						defaultSelection={FIRST_DAY_OF_WEEK.find(

@@ -1316,7 +1316,10 @@ const CosPreferences: FC = () => {
 									<Select
 										items={APPOINTMENT_REMINDER}
 										background="gray5"
-										label={t('label.remind_appointments_timer', 'Remind Appointments Timer')}
+										label={t(
+											'label.appointment_reminder_in_minutes',
+											'Appointment Reminder in minutes'
+										)}
 										showCheckbox={false}
 										selection={
 											cosPreferences?.zimbraPrefCalendarApptReminderWarningTime === ''
@@ -1335,7 +1338,7 @@ const CosPreferences: FC = () => {
 									<Select
 										items={DefaultViewOptions}
 										background="gray5"
-										label={t('label.initial_calendar_view', 'Initial Calendar View')}
+										label={t('label.default_calendar_view', 'Default Calendar View')}
 										showCheckbox={false}
 										selection={
 											cosPreferences?.zimbraPrefCalendarInitialView === ''
@@ -1364,7 +1367,7 @@ const CosPreferences: FC = () => {
 									<Select
 										items={FIRST_DAY_OF_WEEK}
 										background="gray5"
-										label={t('label.first_day_of_week', 'First Day of Week')}
+										label={t('label.the_week_starts_on', 'The Week starts on')}
 										showCheckbox={false}
 										selection={
 											cosPreferences?.zimbraPrefCalendarFirstDayOfWeek === ''

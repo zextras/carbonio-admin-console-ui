@@ -1639,7 +1639,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraQuotaWarnIntervalType === ''
 												? timeItems[-1]
@@ -1712,7 +1712,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraDataSourceMinPollingIntervalType === ''
 												? timeItems[-1]
@@ -1738,7 +1738,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraDataSourcePop3PollingIntervalType === ''
 												? timeItems[-1]
@@ -1775,7 +1775,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraDataSourceImapPollingIntervalType === ''
 												? timeItems[-1]
@@ -1801,7 +1801,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraDataSourceCalendarPollingIntervalType === ''
 												? timeItems[-1]
@@ -1839,7 +1839,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraDataSourceRssPollingIntervalType === ''
 												? timeItems[-1]
@@ -1865,7 +1865,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraDataSourceCaldavPollingIntervalType === ''
 												? timeItems[-1]
@@ -2321,7 +2321,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraPasswordLockoutDurationType === ''
 												? timeItems[-1]
@@ -2352,7 +2352,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraPasswordLockoutFailureLifetimeType === ''
 												? timeItems[-1]
@@ -2404,7 +2404,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraAdminAuthTokenLifetimeType === ''
 												? timeItems[-1]
@@ -2441,7 +2441,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraAuthTokenLifetimeType === ''
 												? timeItems[-1]
@@ -2478,7 +2478,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailIdleSessionTimeoutType === ''
 												? timeItems[-1]
@@ -2526,7 +2526,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailMessageLifetimeType === ''
 												? timeItems[-1]
@@ -2563,7 +2563,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailTrashLifetimeType === ''
 												? timeItems[-1]
@@ -2600,7 +2600,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										background="gray5"
-										label={t('cos.range_time', 'Range Time')}
+										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailSpamLifetimeType === ''
 												? timeItems[-1]
