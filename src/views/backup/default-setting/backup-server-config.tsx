@@ -210,7 +210,7 @@ const BackupServerConfig: FC = () => {
 							<Switch
 								value={initbackupDetail.ZxBackup_SmartScanSchedulingEnabled}
 								onClick={(): void => changeSwitchOption('ZxBackup_SmartScanSchedulingEnabled')}
-								label={t('backup.smart_scan_scheduling', 'SmartScan Scheduling')}
+								label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
 							/>
 						</Padding>
 					</ListRow>

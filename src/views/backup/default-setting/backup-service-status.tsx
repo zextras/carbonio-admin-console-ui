@@ -142,7 +142,7 @@ const BackupServiceStatus: FC = () => {
 				>
 					<ListRow>
 						<Switch
-							label={t('backup.realtime_scanner', 'RealTime Scanner')}
+							label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
 							value={initbackupDetail.ZxBackup_RealTimeScanner}
 							onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
 						/>
@@ -150,14 +150,20 @@ const BackupServiceStatus: FC = () => {
 					<ListRow>
 						<Switch
 							value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
-							label={t('backup.module_enable_at_startup', 'Module Enabled at Startup')}
+							label={t(
+								'backup.this_module_is_enable_at_the_startup',
+								'This module is enabled at the startup'
+							)}
 							onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
 						/>
 					</ListRow>
 					<ListRow>
 						<Switch
 							value={initbackupDetail.ZxBackup_DoSmartScanOnStartup}
-							label={t('backup.smart_scan_at_startup', 'SmartScan at Startup')}
+							label={t(
+								'backup.run_the_smart_scan_at_the_startup',
+								'Run the Smartscan at the startup'
+							)}
 							onClick={(): void => changeSwitchOption('ZxBackup_DoSmartScanOnStartup')}
 						/>
 					</ListRow>

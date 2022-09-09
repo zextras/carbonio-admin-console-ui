@@ -235,7 +235,10 @@ const BackupAdvanced: FC = () => {
 										<Switch
 											value={initbackupDetail.ZxBackup_BackupCustomizations}
 											onClick={(): void => changeSwitchOption('ZxBackup_BackupCustomizations')}
-											label={t('backup.server_configurations', 'Server Configurations')}
+											label={t(
+												'backup.store_server_configurations_in_the_backup',
+												'Store Server Configuration in the backup'
+											)}
 										/>
 									</Container>
 								</ListRow>
@@ -351,7 +354,10 @@ const BackupAdvanced: FC = () => {
 										<Switch
 											value={initbackupDetail.backupOnTheFlyMetadata}
 											onClick={(): void => changeSwitchOption('backupOnTheFlyMetadata')}
-											label={t('backup.on_the_fly_metadata', 'On the Fly Metadata')}
+											label={t(
+												'backup.flash_metadata_in_the_disk_at_every_save',
+												'Flash metadata in the disk at every save'
+											)}
 										/>
 									</Container>
 								</ListRow>
@@ -365,7 +371,10 @@ const BackupAdvanced: FC = () => {
 										<Switch
 											value={initbackupDetail.scheduledMetadataArchivingEnabled}
 											onClick={(): void => changeSwitchOption('scheduledMetadataArchivingEnabled')}
-											label={t('backup.metadata_archiving', 'Metadata Archiving')}
+											label={t(
+												'backup.archive_user_metadata_folder_in_the_remote_backup',
+												'Archive user metadata folder in the remote backup'
+											)}
 										/>
 									</Container>
 								</ListRow>
