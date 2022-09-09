@@ -82,7 +82,10 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 							<Container padding={{ right: 'medium', bottom: 'medium' }}>
 								<Input
 									backgroundColor="gray6"
-									label={t('label.hsm_apply', 'HSM Apply')}
+									label={t(
+										'label.apply_hsm_policy_after_the_restore',
+										'Apply HSM Policies after the restore'
+									)}
 									value={
 										restoreAccountDetail?.hsmApply ? t('label.yes', 'Yes') : t('label.no', 'NO')
 									}
@@ -92,7 +95,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 							<Container padding={{ right: 'medium', bottom: 'medium' }}>
 								<Input
 									backgroundColor="gray6"
-									label={t('label.restore_data_source', 'Restore Data Source')}
+									label={t('label.restore_external_data_source', 'Restore External Data Sources')}
 									value={
 										restoreAccountDetail?.dataSource ? t('label.yes', 'Yes') : t('label.no', 'NO')
 									}

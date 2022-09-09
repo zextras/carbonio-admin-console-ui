@@ -100,7 +100,10 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 							<Row padding={{ bottom: 'medium' }}>
 								<Switch
 									value={restoreAccountDetail?.hsmApply}
-									label={t('label.hsm_apply', 'HSM Apply')}
+									label={t(
+										'label.apply_hsm_policy_after_the_restore',
+										'Apply HSM Policies after the restore'
+									)}
 									onClick={(): void => {
 										setRestoreAccountDetail((prev: any) => ({
 											...prev,
@@ -114,7 +117,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 							<Row padding={{ bottom: 'medium' }}>
 								<Switch
 									value={restoreAccountDetail?.dataSource}
-									label={t('label.restore_data_source', 'Restore Data Source')}
+									label={t('label.restore_external_data_source', 'Restore External Data Sources')}
 									onClick={(): void => {
 										setRestoreAccountDetail((prev: any) => ({
 											...prev,

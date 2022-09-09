@@ -169,7 +169,7 @@ const BucketListPanel: FC = () => {
 					/>
 				)}
 				<ListPanelItem
-					title={t('label.server_specific', 'Server Specific')}
+					title={t('label.server_details', 'Server Details')}
 					isListExpanded={isServerSpecificListExpand}
 					setToggleView={toggleServerSpecific}
 				/>
@@ -188,8 +188,8 @@ const BucketListPanel: FC = () => {
 							>
 								<Input
 									label={t(
-										'label.I_want_to_see_this_server_details',
-										`i want to see this server’s details`
+										'label.select_a_server',
+										'Select a Server'
 									)}
 									CustomIcon={(): any => (
 										<Icon
