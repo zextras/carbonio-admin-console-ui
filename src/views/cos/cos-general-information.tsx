@@ -34,7 +34,6 @@ const CosGeneralInformation: FC = () => {
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [cosData, setCosData]: any = useState({});
 	const [cosName, setCosName] = useState<string>('');
-	const [description, setDescription] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const setCos = useCosStore((state) => state.setCos);
 	const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
@@ -50,12 +49,6 @@ const CosGeneralInformation: FC = () => {
 				return '';
 			});
 			setCosName(obj.cn);
-			if (obj.description) {
-				setDescription(obj.description);
-			} else {
-				obj.description = '';
-				setDescription('');
-			}
 			if (obj.zimbraNotes) {
 				setZimbraNotes(obj.zimbraNotes);
 			} else {
@@ -72,12 +65,6 @@ const CosGeneralInformation: FC = () => {
 			setIsDirty(true);
 		}
 	}, [cosData?.cn, cosName]);
-
-	useEffect(() => {
-		if (cosData.description !== undefined && cosData.description !== description) {
-			setIsDirty(true);
-		}
-	}, [cosData?.description, description]);
 
 	useEffect(() => {
 		if (cosData.zimbraNotes !== undefined && cosData.zimbraNotes !== zimbraNotes) {
@@ -97,10 +84,6 @@ const CosGeneralInformation: FC = () => {
 			n: 'cn',
 			_content: cosName,
 			c: true
-		});
-		attributes.push({
-			n: 'description',
-			_content: description
 		});
 		body.a = attributes;
 		const id = {
@@ -173,7 +156,6 @@ const CosGeneralInformation: FC = () => {
 
 	const onCancel = (): void => {
 		setCosName(cosData.cn);
-		setDescription(cosData.description);
 		setZimbraNotes(cosData.zimbraNotes);
 		setIsDirty(false);
 	};
@@ -292,21 +274,11 @@ const CosGeneralInformation: FC = () => {
 									disabled={canDeleteCOS}
 								/>
 							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.description', 'Description')}
-									value={description}
-									background="gray5"
-									onChange={(e: any): any => {
-										setDescription(e.target.value);
-									}}
-								/>
-							</Container>
 						</ListRow>
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.id', 'ID')}
+									label={t('label.id_lbl', 'ID')}
 									background="gray6"
 									value={cosData.zimbraId}
 									disabled
@@ -326,52 +298,22 @@ const CosGeneralInformation: FC = () => {
 							</Container>
 						</ListRow>
 						<ListRow>
-							<ListRow>
-								<Row
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									width="10%"
-									padding={{ top: 'large', left: 'small' }}
-								>
-									<Icon icon="AtOutline" size="large" />
-								</Row>
-								<Row
-									width="90%"
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ right: 'small' }}
-								>
-									<Input
-										label={t('label.used_on_accounts', 'Used on Accounts')}
-										background="gray6"
-										value={totalAccount}
-										disabled
-									/>
-								</Row>
-							</ListRow>
-							<ListRow>
-								<Row
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									width="10%"
-									padding={{ top: 'large', left: 'small' }}
-								>
-									<Icon icon="GlobeOutline" size="large" />
-								</Row>
-								<Row
-									width="90%"
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ right: 'small' }}
-								>
-									<Input
-										label={t('label.used_on_Domains', 'Used on Domains')}
-										value={totalDomain}
-										background="gray6"
-										disabled
-									/>
-								</Row>
-							</ListRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.accounts_that_use_this_cos', 'Accounts that use this CoS')}
+									background="gray6"
+									value={totalAccount}
+									disabled
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.domains_that_use_this_cos', 'Domains that use this CoS')}
+									value={totalDomain}
+									background="gray6"
+									disabled
+								/>
+							</Container>
 						</ListRow>
 						<ListRow>
 							<Container padding={{ all: 'small' }}>

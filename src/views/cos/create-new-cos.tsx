@@ -27,7 +27,6 @@ const CreateCos: FC = () => {
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const history = useHistory();
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
-	const [description, setDescription] = useState<string>('');
 	const [cosName, setCosName] = useState<string>('');
 
 	const showSuccessSnackBar = (): void => {
@@ -58,10 +57,6 @@ const CreateCos: FC = () => {
 		attributes.push({
 			n: 'zimbraNotes',
 			_content: zimbraNotes
-		});
-		attributes.push({
-			n: 'description',
-			_content: description
 		});
 		attributes.push({
 			n: 'cn',
@@ -146,19 +141,7 @@ const CreateCos: FC = () => {
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.description', 'Description')}
-									background="gray5"
-									value={description}
-									onChange={(e: any): any => {
-										setDescription(e.target.value);
-									}}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.note', 'Note')}
+									label={t('label.notes', 'Notes')}
 									background="gray5"
 									value={zimbraNotes}
 									onChange={(e: any): any => {
