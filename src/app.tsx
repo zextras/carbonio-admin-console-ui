@@ -105,9 +105,6 @@ const App: FC = () => {
 				header: t('label.default_settings', 'Default Settings'),
 				options: [
 					{
-						label: t('label.service_status', 'Service Status')
-					},
-					{
 						label: t('label.server_config', 'Server Config')
 					},
 					{

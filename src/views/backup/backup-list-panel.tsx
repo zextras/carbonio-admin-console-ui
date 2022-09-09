@@ -8,28 +8,17 @@ import { useTranslation } from 'react-i18next';
 import { Container } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import ListPanelItem from '../list/list-panel-item';
-import {
-	ADVANCED,
-	IMPORT_EXTERNAL_BACKUP,
-	SERVERS_LIST,
-	SERVER_CONFIG,
-	SERVICE_STATUS
-} from '../../constants';
+import { ADVANCED, IMPORT_EXTERNAL_BACKUP, SERVERS_LIST, SERVER_CONFIG } from '../../constants';
 import ListItems from '../list/list-items';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
-	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVICE_STATUS);
+	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVER_CONFIG);
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
 	const [isServerSettingsEpanded, setIsServerSettingsEpanded] = useState(true);
 	const [isActionExpanded, setIsActionExpanded] = useState(true);
 	const defaultSettingsOptions = useMemo(
 		() => [
-			{
-				id: SERVICE_STATUS,
-				name: t('label.service_status', 'Service Status'),
-				isSelected: true
-			},
 			{
 				id: SERVER_CONFIG,
 				name: t('label.server_config', 'Server Config'),

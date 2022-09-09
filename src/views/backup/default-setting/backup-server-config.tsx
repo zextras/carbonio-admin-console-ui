@@ -165,6 +165,38 @@ const BackupServerConfig: FC = () => {
 					padding={{ top: 'extralarge', left: 'small', right: 'small' }}
 				>
 					<ListRow>
+						<Switch
+							label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
+							value={initbackupDetail.ZxBackup_RealTimeScanner}
+							onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
+						/>
+					</ListRow>
+					<ListRow>
+						<Switch
+							value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
+							label={t(
+								'backup.this_module_is_enable_at_the_startup',
+								'This module is enabled at the startup'
+							)}
+							onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
+						/>
+					</ListRow>
+					<ListRow>
+						<Switch
+							value={initbackupDetail.ZxBackup_DoSmartScanOnStartup}
+							label={t(
+								'backup.run_the_smart_scan_at_the_startup',
+								'Run the Smartscan at the startup'
+							)}
+							onClick={(): void => changeSwitchOption('ZxBackup_DoSmartScanOnStartup')}
+						/>
+					</ListRow>
+					<ListRow>
+						<Container padding={{ top: 'large', bottom: 'large' }}>
+							<Divider />
+						</Container>
+					</ListRow>
+					<ListRow>
 						<Container padding={{ bottom: 'large' }}>
 							<Input
 								label={t('backup.backup_path', 'Backup Path')}

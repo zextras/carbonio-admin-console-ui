@@ -5,16 +5,9 @@
  */
 import React, { FC, useCallback, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-	ADVANCED,
-	IMPORT_EXTERNAL_BACKUP,
-	SERVERS_LIST,
-	SERVER_CONFIG,
-	SERVICE_STATUS
-} from '../../constants';
+import { ADVANCED, IMPORT_EXTERNAL_BACKUP, SERVERS_LIST, SERVER_CONFIG } from '../../constants';
 import ImportExternalBackup from './actions/import-external-backup';
 import BackupAdvanced from './default-setting/backup-advanced';
-import BackupServiceStatus from './default-setting/backup-service-status';
 import BackupServerConfig from './default-setting/backup-server-config';
 import ServersList from './server-setting/backup-servers-list';
 import { dumpGlobalConfig } from '../../services/dump-global-config';
@@ -45,8 +38,6 @@ const BackupDetailOperation: FC = () => {
 		<>
 			{((): any => {
 				switch (operation) {
-					case SERVICE_STATUS:
-						return <BackupServiceStatus />;
 					case SERVER_CONFIG:
 						return <BackupServerConfig />;
 					case ADVANCED:
