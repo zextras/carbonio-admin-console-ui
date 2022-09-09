@@ -24,7 +24,7 @@ const emailRegex =
 const EditAccountConfigrationSection: FC = () => {
 	const conext = useContext(AccountContext);
 	const [t] = useTranslation();
-	const { accountDetail, setAccountDetail, directMemberList, inDirectMemberList } = conext;
+	const { accountDetail, setAccountDetail } = conext;
 	const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
 	const [mailForwardingAddress, setMailForwardingAddress] = useState<any[]>([]);
 	const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useState<any[]>([]);
@@ -85,40 +85,6 @@ const EditAccountConfigrationSection: FC = () => {
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
 		>
 			<Row mainAlignment="flex-start" width="100%">
-				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-					<Text size="small" color="gray0" weight="bold">
-						{t('label.mailing_list', 'Mailing List')}
-					</Text>
-				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="space-between">
-						<ChipInput
-							placeholder={t(
-								'account_details.this_account_is_a_direct_member_of',
-								'This account is a direct member of'
-							)}
-							background="gray5"
-							defaultValue={directMemberList}
-							disabled
-						/>
-					</Row>
-				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="space-between">
-						<ChipInput
-							placeholder={t(
-								'account_details.this_account_is_a_in_direct_member_of',
-								'This account is a in direct member of'
-							)}
-							background="gray5"
-							defaultValue={inDirectMemberList}
-							disabled
-						/>
-					</Row>
-				</Row>
-				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray2" />
-				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
 						{t('label.forwarding', 'Forwarding')}

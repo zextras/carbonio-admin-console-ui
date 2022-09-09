@@ -14,7 +14,8 @@ import {
 	Icon,
 	Switch,
 	Divider,
-	Tooltip
+	Tooltip,
+	ChipInput
 } from '@zextras/carbonio-design-system';
 import { setDefaults, useTranslation } from 'react-i18next';
 import { useDomainStore } from '../../../../../store/domain/store';
@@ -23,10 +24,10 @@ import { timeZoneList, localeList, AccountStatus } from '../../../../utility/uti
 
 const EditAccountGeneralSection: FC = () => {
 	const conext = useContext(AccountContext);
+	const { accountDetail, setAccountDetail, directMemberList, inDirectMemberList } = conext;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
-	const { accountDetail, setAccountDetail } = conext;
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 
 	const [t] = useTranslation();
@@ -322,6 +323,40 @@ const EditAccountGeneralSection: FC = () => {
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
+				<Divider color="gray2" />
+			</Row>
+			<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+				<Text size="small" color="gray0" weight="bold">
+					{t('label.mailing_list', 'Mailing List')}
+				</Text>
+			</Row>
+			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+				<Row width="100%" mainAlignment="space-between">
+					<ChipInput
+						placeholder={t(
+							'account_details.this_account_is_a_direct_member_of',
+							'This account is a direct member of'
+						)}
+						background="gray5"
+						defaultValue={directMemberList}
+						disabled
+					/>
+				</Row>
+			</Row>
+			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+				<Row width="100%" mainAlignment="space-between">
+					<ChipInput
+						placeholder={t(
+							'account_details.this_account_is_a_in_direct_member_of',
+							'This account is a in direct member of'
+						)}
+						background="gray5"
+						defaultValue={inDirectMemberList}
+						disabled
+					/>
+				</Row>
+			</Row>
+			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
 			</Row>
 			<Row
