@@ -73,6 +73,7 @@ export const SERVERS_LIST = 'servers_list';
 export const RECORD_DISPLAY_LIMIT = 20;
 export const BUCKET_LIST = 'bucket_list';
 export const VOLUME = 'volume';
+export const DATA_VOLUMES = 'data_volumes';
 export const HSM_SETTINGS = 'hsm_settings';
 export const INDEXER_SETTINGS = 'indexer_settings';
 export const TRUE = 'TRUE';

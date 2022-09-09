@@ -7,7 +7,7 @@ import React, { FC } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container } from '@zextras/carbonio-design-system';
-import { BUCKET_LIST, SERVERS_LIST, VOLUME } from '../../constants';
+import { BUCKET_LIST, DATA_VOLUMES, SERVERS_LIST } from '../../constants';
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
 import VolumesDetailPanel from './server-specifics/volumes-detail-panel';
@@ -36,7 +36,7 @@ const BucketOperation: FC = () => {
 								<BucketDetailPanel />
 							</DetailViewContainer>
 						);
-					case VOLUME:
+					case DATA_VOLUMES:
 						return (
 							<DetailViewContainer>
 								<VolumesDetailPanel />
