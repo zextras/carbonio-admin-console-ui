@@ -639,7 +639,7 @@ const DomainGeneralSettings: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
-											'label."max_email_quota_you_can_manage_is',
+											'label.max_email_quota_you_can_manage_is',
 											'The max email quota you can manage is...'
 										)}
 										value={zimbraMailDomainQuota}

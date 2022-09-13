@@ -73,7 +73,7 @@
         "prevent_user_from_changing_password": "Prevent user from changing password",
         "save_to_sent": "Save to sent",
         "saved_searches": "Saved Searches",
-        "search_fro_people": "Search fro People",
+        "search_fro_people": "Search for People",
         "send_read_receipts": "Send read receipts",
         "sharing": "Sharing",
         "show_time_zone_lists_in_view": "Show time zone lists in view",
@@ -437,7 +437,6 @@
     },
     "have_not_setup_bucket_type": "It seems like you haven't setup a bucket type",
     "label": {
-        "\"max_email_quota_you_can_manage_is": "The max email quota you can manage is...",
         "I_want_to_see_this_server_details": "i want to see this server’s details",
         "Maintenance": "Maintenance",
         "access_key": "Access Key",

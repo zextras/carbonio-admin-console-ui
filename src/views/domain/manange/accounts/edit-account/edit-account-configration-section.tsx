@@ -394,7 +394,7 @@ const EditAccountConfigrationSection: FC = () => {
 						<Switch
 							value={accountDetail?.zimbraFeaturePeopleSearchEnabled === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraFeaturePeopleSearchEnabled')}
-							label={t('account_details.search_fro_people', 'Search fro People')}
+							label={t('account_details.search_fro_people', 'Search for People')}
 						/>
 					</Row>
 				</Row>
