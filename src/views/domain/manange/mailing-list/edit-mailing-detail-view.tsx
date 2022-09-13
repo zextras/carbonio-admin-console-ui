@@ -19,7 +19,8 @@ import {
 	Dropdown,
 	Button,
 	SnackbarManagerContext,
-	Icon
+	Icon,
+	ChipInput
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -36,8 +37,9 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { ALL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
+import { getGrant } from '../../../../services/get-grant';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -167,6 +169,28 @@ const EditMailingListView: FC<any> = ({
 			{
 				label: t('label.not_send_receive', 'Not Send & Receive'),
 				value: TRUE_FALSE.FALSE
+			}
+		],
+		[t]
+	);
+
+	const grantTypeOptions: any[] = useMemo(
+		() => [
+			{
+				label: t('label.everyone', 'Everyone'),
+				value: PUB
+			},
+			{
+				label: t('label.members_only', 'Members only'),
+				value: GRP
+			},
+			{
+				label: t('label.internal_users_only', 'Internal Users only'),
+				value: ALL
+			},
+			{
+				label: t('label.only_there_users', 'Only these users'),
+				value: EMAIL
 			}
 		],
 		[t]
@@ -525,82 +549,6 @@ const EditMailingListView: FC<any> = ({
 		[ownersList]
 	);
 
-	const getSearchMembers = useCallback((value: string) => {
-		const attrs = 'name,zimbraId';
-		const types = 'distributionlists,dynamicgroups';
-		const query = `(&(|(mail=*${value}*)(cn=*${value}*)(sn=*${value}*)(gn=*${value}*)(displayName=*${value}*)(zimbraMailAlias=*${value}*)(uid=*${value}*))(!(zimbraIsACLGroup=FALSE)))`;
-		searchDirectory(attrs, types, '', query).then((data) => {
-			const result = data?.dl;
-			if (result && result.length > 0) {
-				const allResult = result.map((item: any) => {
-					// eslint-disable-next-line no-param-reassign
-					item.label = item?.name;
-					// eslint-disable-next-line no-param-reassign
-					item.value = {
-						label: item?.name,
-						id: item?.id
-					};
-					// eslint-disable-next-line no-param-reassign
-					return item;
-				});
-				setSearchMemberList(allResult);
-			}
-		});
-	}, []);
-
-	const getOwnerOfListSearch = useCallback(
-		(value: string) => {
-			const attrs =
-				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-			const types = 'accounts,distributionlists,aliases';
-			const query = `(&(&(!(zimbraAccountStatus=closed))(|(mail=*${value}*)(cn=*${value}*)(sn=*${value}*)(gn=*${value}*)(displayName=*${value}*)(zimbraMailDeliveryAddress=*${value}*)(zimbraMailAlias=*${value}*)(uid=*${value}*)(zimbraDomainName=*${value}*)(uid=*${value}*)))(&(!(mail=${distributionName}))(!(zimbraMailAddress=${distributionName}))(!(zimbraMailDeliveryAddress=${distributionName}))(!(zimbraMailForwardingAddress=${distributionName}))(!(zimbraMemberOf=${distributionName}))))`;
-			searchDirectory(attrs, types, '', query).then((data) => {
-				const result: any[] = [];
-
-				const dl = data?.dl;
-				const account = data?.account;
-				const alias = data?.alias;
-				if (dl) {
-					dl.map((item: any) => result.push(item));
-				}
-				if (account) {
-					account.map((item: any) => result.push(item));
-				}
-				if (alias) {
-					alias.map((item: any) => result.push(item));
-				}
-				if (result && result.length > 0) {
-					const allResult = result.map((item: any) => {
-						// eslint-disable-next-line no-param-reassign
-						item.label = item?.name;
-						// eslint-disable-next-line no-param-reassign
-						item.value = {
-							label: item?.name,
-							id: item?.id
-						};
-						// eslint-disable-next-line no-param-reassign
-						return item;
-					});
-					setSearchOwnerMemberOfList(allResult);
-				}
-			});
-		},
-		[distributionName]
-	);
-
-	const onChangeChipInput = useCallback((e: any): void => {
-		setDlMembershipList(e);
-	}, []);
-
-	const onChangeOwnerOfListChipInput = useCallback((e: any): void => {
-		setOwnerOfList(e);
-	}, []);
-
-	const isEnableDeleteButton = useMemo(
-		() => !!(selectedDistributionListMember.length > 0 || selectedOwnerListMember.length > 0),
-		[selectedDistributionListMember, selectedOwnerListMember]
-	);
-
 	const onAddToList = useCallback((): void => {
 		const attrs = '';
 		const types = 'distributionlists,aliases,accounts,resources,dynamicgroups';
@@ -666,6 +614,139 @@ const EditMailingListView: FC<any> = ({
 		}
 	}, [selectedOwnerListMember, ownersList]);
 
+	const [grantType, setGrantType] = useState<any>(grantTypeOptions[0]);
+	const [grantEmails, setGrantEmails] = useState<any>([]);
+	const [grantEmailsList, setGrantEmailsList] = useState<any>([]);
+
+	const onGrantTypeChange = useCallback(
+		(v: any): any => {
+			const it = grantTypeOptions.find((item: any) => item.value === v);
+			setGrantType(it);
+		},
+		[grantTypeOptions]
+	);
+
+	const getGrantML = useCallback(() => {
+		getGrant('name', 'dl', selectedMailingList?.name)
+			.then((data: any) => {
+				if (data && data?.grant && Array.isArray(data?.grant)) {
+					const grant = data?.grant;
+					if (grant.length > 1) {
+						onGrantTypeChange(EMAIL);
+						const emails: Array<any> = [];
+						grant.forEach((grItem: any) => {
+							emails.push({
+								anotherProp: 'prop1',
+								avatarIcon: 'People',
+								label: grItem?.grantee[0]?.name
+							});
+						});
+						setGrantEmails(emails);
+						const it = grantTypeOptions.find((item: any) => item.value === EMAIL);
+						setPreviousDetail((prevState: any) => ({
+							...prevState,
+							grantType: it
+						}));
+						setPreviousDetail((prevState: any) => ({
+							...prevState,
+							grantEmails: emails
+						}));
+					} else if (grant.length === 1) {
+						const granteeType = grant[0]?.grantee[0]?.type;
+						if (
+							grant[0]?.grantee[0]?.name &&
+							grant[0]?.grantee[0]?.name !== selectedMailingList?.name
+						) {
+							onGrantTypeChange(EMAIL);
+							const it = grantTypeOptions.find((item: any) => item.value === EMAIL);
+							const emails = [
+								{
+									anotherProp: 'prop1',
+									avatarIcon: 'People',
+									label: grant[0]?.grantee[0]?.name
+								}
+							];
+							setGrantEmails(emails);
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantType: it
+							}));
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantEmails: emails
+							}));
+						} else {
+							onGrantTypeChange(granteeType);
+							const it = grantTypeOptions.find((item: any) => item.value === granteeType);
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantType: it
+							}));
+						}
+					}
+				} else {
+					const it = grantTypeOptions.find((item: any) => item.value === PUB);
+					setPreviousDetail((prevState: any) => ({
+						...prevState,
+						grantType: it
+					}));
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, t, selectedMailingList?.name, onGrantTypeChange, grantTypeOptions]);
+	useEffect(() => {
+		getGrantML();
+	}, [getGrantML]);
+
+	const onEmailAdd = useCallback((v) => {
+		setGrantEmails(v);
+		setIsDirty(true);
+	}, []);
+
+	const searchEmailFromGal = useCallback((searchKeyword) => {
+		searchGal(searchKeyword).then((data) => {
+			const contactList = data?.cn;
+			if (contactList) {
+				let result: any[] = [];
+				result = contactList.map((item: any): any => ({
+					id: item?.id,
+					address: item?._attrs?.email,
+					lastName: item?._attrs?.email,
+					firstName: item?._attrs?.email,
+					label: item?._attrs?.email,
+					value: {
+						label: item?._attrs?.email,
+						anotherProp: 'prop1',
+						avatarIcon: 'People'
+					}
+				}));
+				setGrantEmailsList(result);
+			} else {
+				setGrantEmailsList([]);
+			}
+		});
+	}, []);
+
+	useEffect(() => {
+		if (
+			previousDetail?.grantType !== undefined &&
+			previousDetail?.grantType?.value !== grantType?.value
+		) {
+			setIsDirty(true);
+		}
+	}, [previousDetail?.grantType, grantType]);
+
 	const updatePreviousDetail = (): void => {
 		const latestData: any = {};
 		latestData.displayName = displayName;
@@ -690,6 +771,8 @@ const EditMailingListView: FC<any> = ({
 			ownerOfList ? (latestData.ownerOffset = ownerOfList) : (latestData.ownerOffset = []);
 		}
 
+		latestData.grantType = grantType;
+		latestData.grantEmails = grantEmails;
 		setPreviousDetail(latestData);
 		setIsDirty(false);
 	};
@@ -730,6 +813,11 @@ const EditMailingListView: FC<any> = ({
 				? setOwnerOfList(previousDetail?.ownerOfList)
 				: setOwnerOfList([]);
 		}
+
+		setGrantType(previousDetail?.grantType);
+		previousDetail?.grantEmails !== undefined
+			? setGrantEmails(previousDetail?.grantEmails)
+			: setGrantEmails([]);
 		setIsDirty(false);
 	};
 
@@ -1052,6 +1140,46 @@ const EditMailingListView: FC<any> = ({
 				});
 			}
 		}
+
+		let dl: any = {};
+		let action: any = {};
+		if (grantType?.value === PUB) {
+			dl = { by: 'name', _content: selectedMailingList?.name };
+			action = {
+				op: 'setRights',
+				right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
+			};
+		} else if (grantType?.value === GRP) {
+			dl = { by: 'name', _content: selectedMailingList?.name };
+			action = {
+				op: 'setRights',
+				right: {
+					right: 'sendToDistList',
+					grantee: [{ type: 'grp', by: 'name', _content: selectedMailingList?.name }]
+				}
+			};
+		} else if (grantType?.value === ALL) {
+			dl = { by: 'name', _content: selectedMailingList?.name };
+			action = {
+				op: 'setRights',
+				right: { right: 'sendToDistList', grantee: [{ type: 'all' }] }
+			};
+		} else if (grantType?.value === EMAIL) {
+			dl = { by: 'name', _content: selectedMailingList?.name };
+			action = {
+				op: 'setRights',
+				right: {
+					right: 'sendToDistList',
+					grantee: grantEmails.map((item: any) => ({
+						type: 'email',
+						by: 'name',
+						_content: item?.label
+					}))
+				}
+			};
+		}
+		request.push(distributionListAction(dl, action));
+
 		if (request.length > 0) {
 			callAllRequest(request);
 		}
@@ -1861,6 +1989,35 @@ const EditMailingListView: FC<any> = ({
 					</Text>
 				</Row>
 
+				<ListRow>
+					<Container>
+						<Select
+							items={grantTypeOptions}
+							background="gray5"
+							label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
+							showCheckbox={false}
+							onChange={onGrantTypeChange}
+							selection={grantType}
+						/>
+					</Container>
+
+					<Container padding={{ all: 'small' }}>
+						<ChipInput
+							defaultValue={grantEmails}
+							value={grantEmails}
+							placeholder={t('label.type_in_the_mails', 'Type in the mails')}
+							options={grantEmailsList}
+							requireUniqueChips
+							onChange={onEmailAdd}
+							background="gray5"
+							disabled={grantType?.value !== EMAIL}
+							onInputType={(e: any): void => {
+								searchEmailFromGal(e?.textContent);
+							}}
+						/>
+					</Container>
+				</ListRow>
+
 				<Row
 					takeAvwidth="fill"
 					mainAlignment="flex-start"
@@ -1980,7 +2137,7 @@ const EditMailingListView: FC<any> = ({
 				title={
 					<Trans
 						i18nKey="label.would_you_like_to_add_ml"
-						defaults="<bold>What would you like to add to the Mailing List?</bod>"
+						defaults="<bold>What would you like to add to the Mailing List?</bold>"
 						components={{ bold: <strong /> }}
 					/>
 				}

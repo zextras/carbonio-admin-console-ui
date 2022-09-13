@@ -410,13 +410,13 @@ export const SignatureDetail: FC<any> = ({
 						isEditSignature ? (
 							<Trans
 								i18nKey="label.edit_signature"
-								defaults="<bold>Edit Signature</bod>"
+								defaults="<bold>Edit Signature</bold>"
 								components={{ bold: <strong /> }}
 							/>
 						) : (
 							<Trans
 								i18nKey="label.new_signature"
-								defaults="<bold>New Signature</bod>"
+								defaults="<bold>New Signature</bold>"
 								components={{ bold: <strong /> }}
 							/>
 						)

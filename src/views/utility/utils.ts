@@ -891,32 +891,32 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 
 export const tableHeader = [
 	{
-		id: 'name',
-		label: 'Name',
-		width: '62%',
+		id: 'id',
+		label: 'ID',
+		width: '5%',
 		bold: true,
-		align: 'left',
-		items: [
-			{ label: 'Volumename_1', value: '1' },
-			{ label: 'Volumename_2', value: '2' }
-		]
+		align: 'left'
 	},
 	{
-		id: 'allocation',
-		label: 'Allocation',
-		width: '12%',
-		align: 'center',
+		id: 'name',
+		label: 'Name',
+		width: '10%',
 		bold: true,
-		items: [
-			{ label: 'Allocation_1', value: '1' },
-			{ label: 'Allocation_2', value: '2' }
-		]
+		align: 'left'
+	},
+
+	{
+		id: 'path',
+		label: 'Path',
+		width: '47%',
+		bold: true,
+		align: 'left'
 	},
 	{
 		id: 'current',
 		label: 'Current',
 		width: '12%',
-		align: 'center',
+		align: 'left',
 		bold: true
 	},
 	{
@@ -924,43 +924,54 @@ export const tableHeader = [
 		label: 'Compression',
 		i18nAllLabel: 'All',
 		width: '14%',
-		align: 'center',
+		align: 'left',
 		bold: true
 	}
 ];
 
 export const indexerHeaders = [
 	{
+		id: 'id',
+		label: 'ID',
+		width: '5%',
+		bold: true,
+		align: 'left'
+	},
+	{
 		id: 'name',
 		label: 'Name',
-		width: '62%',
+		width: '10%',
 		bold: true,
-		align: 'left',
-		items: [
-			{ label: 'Volumename_1', value: '1' },
-			{ label: 'Volumename_2', value: '2' }
-		]
+		align: 'left'
 	},
 	{
 		id: 'path',
 		label: 'Path',
-		width: '12%',
-		align: 'center',
-		bold: true,
-		items: [
-			{ label: 'Allocation_1', value: '1' },
-			{ label: 'Allocation_2', value: '2' }
-		]
+		width: '71%',
+		align: 'left',
+		bold: true
 	},
 	{
 		id: 'current',
 		label: 'Current',
-		width: '12%',
-		align: 'center',
+		width: '14%',
+		align: 'left',
 		bold: true
+	}
+];
+
+export const volumeTypeList = [
+	{
+		label: 'Primary',
+		value: 1
 	},
 	{
-		width: '14%'
+		label: 'Secondary',
+		value: 2
+	},
+	{
+		label: 'index',
+		value: 10
 	}
 ];
 

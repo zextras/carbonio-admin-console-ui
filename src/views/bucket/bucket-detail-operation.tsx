@@ -10,7 +10,7 @@ import { Container } from '@zextras/carbonio-design-system';
 import { BUCKET_LIST, DATA_VOLUMES, SERVERS_LIST } from '../../constants';
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
-import VolumesDetailPanel from './server-specifics/volumes-detail-panel';
+import VolumesDetailPanel from './server-specifics/volume/volumes-list';
 
 const DetailViewContainer = styled(Container)`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;

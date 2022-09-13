@@ -424,15 +424,16 @@ const AccountDetailView: FC<any> = ({
 							/>
 							<Row style={{ gap: '8px' }}>
 								<Button
-									label={t('label.disable_it_instead', 'Disable it instead')}
-									color="secondary"
-									onClick={onDisableAccount}
+									label={t('lable.delete_it_instead', 'Delete it instead')}
+									color="error"
+									type="outlined"
+									onClick={onDeleteHandler}
 									disabled={isRequestInProgress}
 								/>
 								<Button
-									label={t('lable.delete_it', 'Delete it')}
-									color="error"
-									onClick={onDeleteHandler}
+									label={t('label.close_the_account', 'Close the account')}
+									color="primary"
+									onClick={onDisableAccount}
 									disabled={isRequestInProgress}
 								/>
 							</Row>

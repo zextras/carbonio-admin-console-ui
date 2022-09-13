@@ -510,7 +510,12 @@ const App: FC = () => {
 			).then((data: any) => {
 				const backupServer = data?.servers;
 				if (backupServer && Array.isArray(backupServer) && backupServer.length > 0) {
-					setBackupModuleEnable(true);
+					Object.keys(backupServer[0]).forEach((ele: any): void => {
+						const backup = backupServer[0][ele]?.ZxBackup;
+						if (backup?.services?.module?.running) {
+							setBackupModuleEnable(true);
+						}
+					});
 				} else {
 					setBackupModuleEnable(false);
 				}

@@ -15,6 +15,7 @@ import MailingListMembersSection from './mailing-list-members-section';
 import MailingListSettingsSection from './mailing-list-settings-sections';
 import MailingListCreateSection from './mailinglist-create-section';
 import { useDomainStore } from '../../../../store/domain/store';
+import { PUB } from '../../../../constants';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -42,6 +43,8 @@ interface MailingListDetailObj {
 	suffixName: string;
 	ldapQueryMembers: Array<any>;
 	allOwnersList: Array<any>;
+	ownerGrantEmailType: any;
+	ownerGrantEmails: Array<any>;
 }
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
@@ -95,7 +98,12 @@ const CreateMailingList: FC<{
 		prefixName: '',
 		suffixName: '',
 		ldapQueryMembers: [],
-		allOwnersList: []
+		allOwnersList: [],
+		ownerGrantEmailType: {
+			label: t('label.everyone', 'Everyone'),
+			value: PUB
+		},
+		ownerGrantEmails: []
 	});
 
 	const onCreate = useCallback(() => {
@@ -114,7 +122,9 @@ const CreateMailingList: FC<{
 			mailingListDetail?.owners,
 			mailingListDetail?.zimbraDistributionListSubscriptionPolicy,
 			mailingListDetail?.zimbraDistributionListUnsubscriptionPolicy,
-			mailingListDetail?.allOwnersList
+			mailingListDetail?.allOwnersList,
+			mailingListDetail?.ownerGrantEmailType,
+			mailingListDetail?.ownerGrantEmails
 		);
 	}, [createMailingListReq, mailingListDetail]);
 

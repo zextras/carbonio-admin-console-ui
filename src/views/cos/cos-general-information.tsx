@@ -350,7 +350,7 @@ const CosGeneralInformation: FC = () => {
 				title={
 					<Trans
 						i18nKey="label.deleting_cos_msg"
-						defaults="Deleting <bold>{{cosname}}</bod>"
+						defaults="Deleting <bold>{{cosname}}</bold>"
 						components={{ bold: <strong />, cosname: cosName }}
 					/>
 				}

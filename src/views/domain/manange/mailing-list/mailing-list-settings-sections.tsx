@@ -14,7 +14,8 @@ import {
 	Input,
 	Button,
 	Dropdown,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	ChipInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { debounce, sortedUniq, uniq } from 'lodash';
@@ -22,7 +23,7 @@ import { MailingListContext } from './mailinglist-context';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { ALL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
 
 // eslint-disable-next-line no-shadow
@@ -47,6 +48,9 @@ const MailingListSettingsSection: FC<any> = () => {
 	);
 
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
+	const [grantType, setGrantType] = useState<any>(mailingListDetail?.ownerGrantEmailType);
+	const [grantEmails, setGrantEmails] = useState<any>(mailingListDetail?.ownerGrantEmails);
+	const [grantEmailsList, setGrantEmailsList] = useState<any>([]);
 
 	const subscriptionUnsubscriptionRequestOptions: any[] = useMemo(
 		() => [
@@ -70,12 +74,47 @@ const MailingListSettingsSection: FC<any> = () => {
 		() => [
 			{
 				id: 'members',
-				label: t('label.accounts', 'Accounts'),
+				label: t('label.accounts_that_are_owners', 'Accounts that are owners'),
 				width: '100%',
 				bold: true
 			}
 		],
 		[t]
+	);
+
+	const grantTypeOptions: any[] = useMemo(
+		() => [
+			{
+				label: t('label.everyone', 'Everyone'),
+				value: PUB
+			},
+			{
+				label: t('label.members_only', 'Members only'),
+				value: GRP
+			},
+			{
+				label: t('label.internal_users_only', 'Internal Users only'),
+				value: ALL
+			},
+			{
+				label: t('label.only_there_users', 'Only these users'),
+				value: EMAIL
+			}
+		],
+		[t]
+	);
+
+	const onGrantTypeChange = useCallback(
+		(v: any): any => {
+			const it = grantTypeOptions.find((item: any) => item.value === v);
+
+			setMailingListDetail((prev: any) => ({
+				...prev,
+				ownerGrantEmailType: it
+			}));
+			setGrantType(it);
+		},
+		[grantTypeOptions, setMailingListDetail]
 	);
 
 	const [zimbraDistributionListSubscriptionPolicy, setZimbraDistributionListSubscriptionPolicy] =
@@ -238,6 +277,41 @@ const MailingListSettingsSection: FC<any> = () => {
 		)
 	}));
 
+	const onEmailAdd = useCallback(
+		(v) => {
+			setGrantEmails(v);
+			setMailingListDetail((prev: any) => ({
+				...prev,
+				ownerGrantEmails: v
+			}));
+		},
+		[setMailingListDetail]
+	);
+
+	const searchEmailFromGal = useCallback((searchKeyword) => {
+		searchGal(searchKeyword).then((data) => {
+			const contactList = data?.cn;
+			if (contactList) {
+				let result: any[] = [];
+				result = contactList.map((item: any): any => ({
+					id: item?.id,
+					address: item?._attrs?.email,
+					lastName: item?._attrs?.email,
+					firstName: item?._attrs?.email,
+					label: item?._attrs?.email,
+					value: {
+						label: item?._attrs?.email,
+						anotherProp: 'prop1',
+						avatarIcon: 'People'
+					}
+				}));
+				setGrantEmailsList(result);
+			} else {
+				setGrantEmailsList([]);
+			}
+		});
+	}, []);
+
 	return (
 		<Container mainAlignment="flex-start">
 			<Container
@@ -346,7 +420,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<Row padding={{ top: 'large' }}>
 					<Text
 						size="small"
 						mainAlignment="flex-start"
@@ -354,8 +428,50 @@ const MailingListSettingsSection: FC<any> = () => {
 						orientation="horizontal"
 						weight="bold"
 					>
-						{t('label.owners', 'Owners')}
+						{t('label.owners_settings', 'Owners’ Settings')}
 					</Text>
+				</Row>
+				<Row padding={{ top: 'small', bottom: 'medium' }}>
+					<Text
+						size="small"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						weight="light"
+						color="#828282"
+					>
+						{t(
+							'label.owners_manage_add_list',
+							'Owners can manage and... add what Owners can do in the list'
+						)}
+					</Text>
+				</Row>
+				<ListRow>
+					<Container>
+						<Select
+							items={grantTypeOptions}
+							background="gray5"
+							label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
+							showCheckbox={false}
+							onChange={onGrantTypeChange}
+							selection={grantType}
+						/>
+					</Container>
+
+					<Container padding={{ all: 'small' }}>
+						<ChipInput
+							defaultValue={grantEmails}
+							placeholder={t('label.type_in_the_mails', 'Type in the mails')}
+							options={grantEmailsList}
+							requireUniqueChips
+							onChange={onEmailAdd}
+							background="gray5"
+							disabled={grantType?.value !== EMAIL}
+							onInputType={(e: any): void => {
+								searchEmailFromGal(e?.textContent);
+							}}
+						/>
+					</Container>
 				</ListRow>
 
 				<ListRow>
@@ -363,7 +479,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
+						padding={{ top: 'medium', right: 'small' }}
 						width="65%"
 					>
 						{/* <Input
@@ -402,7 +518,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						crossAlignment="center"
 						orientation="horizontal"
 						width="fit"
-						padding={{ top: 'large', right: 'small' }}
+						padding={{ top: 'medium', right: 'small' }}
 					>
 						<Button
 							type="outlined"
@@ -426,7 +542,7 @@ const MailingListSettingsSection: FC<any> = () => {
 							type="outlined"
 							label={t('label.delete', 'Delete')}
 							color="error"
-							icon="PlusOutline"
+							icon="Trash2Outline"
 							iconPlacement="right"
 							height={44}
 							onClick={onDeleteFromList}

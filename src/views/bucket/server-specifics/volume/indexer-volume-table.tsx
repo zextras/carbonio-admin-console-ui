@@ -4,8 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo } from 'react';
-import { Container, Row, Text, Divider, Table, Button } from '@zextras/carbonio-design-system';
-import { NO, YES } from '../../../constants';
+import { Container, Row, Text, Table } from '@zextras/carbonio-design-system';
+import { NO, YES } from '../../../../constants';
 
 const IndexerVolumeTable: FC<{
 	volumes: Array<any>;
@@ -17,8 +17,17 @@ const IndexerVolumeTable: FC<{
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
-				id: i,
+				id: v?.id,
 				columns: [
+					<Row
+						key={i}
+						onClick={(): void => {
+							onClick(i);
+						}}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+					>
+						{v?.id}
+					</Row>,
 					<Row
 						key={i}
 						onClick={(): void => {
@@ -33,7 +42,7 @@ const IndexerVolumeTable: FC<{
 						onClick={(): void => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'center' }}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
 						{v.rootpath}
 					</Row>,
@@ -42,17 +51,10 @@ const IndexerVolumeTable: FC<{
 						onClick={(): void => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'center' }}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
 						<Text color={v.isCurrent ? 'text' : 'error'}>{v.isCurrent ? YES : NO}</Text>
-					</Row>,
-					<Row
-						key={i}
-						onClick={(): void => {
-							onClick(i);
-						}}
-						style={{ textAlign: 'center' }}
-					></Row>
+					</Row>
 				],
 				clickable: true
 			})),

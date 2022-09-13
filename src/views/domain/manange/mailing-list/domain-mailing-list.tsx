@@ -24,7 +24,16 @@ import Paginig from '../../../components/paging';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import EditMailingListView from './edit-mailing-detail-view';
 import { useDomainStore } from '../../../../store/domain/store';
-import { FALSE, RECORD_DISPLAY_LIMIT, TRUE } from '../../../../constants';
+import {
+	ALL,
+	EMAIL,
+	FALSE,
+	GRP,
+	MEMBERS_ONLY,
+	PUB,
+	RECORD_DISPLAY_LIMIT,
+	TRUE
+} from '../../../../constants';
 import MailingListDetail from './mailing-list-detail';
 import CreateMailingList from './create-mailing-list';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
@@ -411,7 +420,9 @@ const DomainMailingList: FC = () => {
 			owners,
 			zimbraDistributionListSubscriptionPolicy,
 			zimbraDistributionListUnsubscriptionPolicy,
-			allOwnersList
+			allOwnersList,
+			ownerGrantEmailType,
+			ownerGrantEmails
 		) => {
 			const attributes: any[] = [];
 			attributes.push({
@@ -458,12 +469,50 @@ const DomainMailingList: FC = () => {
 					_content: zimbraDistributionListSubscriptionPolicy?.value
 				});
 			}
+			let dl: any = {};
+			let action: any = {};
+			if (ownerGrantEmailType?.value === PUB) {
+				dl = { by: 'name', _content: name };
+				action = {
+					op: 'setRights',
+					right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
+				};
+			} else if (ownerGrantEmailType?.value === GRP) {
+				dl = { by: 'name', _content: name };
+				action = {
+					op: 'setRights',
+					right: {
+						right: 'sendToDistList',
+						grantee: [{ type: 'grp', by: 'name', _content: name }]
+					}
+				};
+			} else if (ownerGrantEmailType?.value === ALL) {
+				dl = { by: 'name', _content: name };
+				action = {
+					op: 'setRights',
+					right: { right: 'sendToDistList', grantee: [{ type: 'all' }] }
+				};
+			} else if (ownerGrantEmailType?.value === EMAIL) {
+				dl = { by: 'name', _content: name };
+				action = {
+					op: 'setRights',
+					right: {
+						right: 'sendToDistList',
+						grantee: ownerGrantEmails.map((item: any) => ({
+							type: 'email',
+							by: 'name',
+							_content: item?.label
+						}))
+					}
+				};
+			}
 			createMailingList(dynamic, name, attributes)
 				.then((data) => {
 					const type = 'success';
 					let message = '';
 					const mlId = data?.dl[0]?.id;
 					addMemberToMailingList(members, owners, mlId, allOwnersList);
+					callAllRequest([distributionListAction(dl, action)]);
 					setShowCreateMailingListView(false);
 					message = t('label.the_has_been_created_success', {
 						name,
@@ -505,7 +554,7 @@ const DomainMailingList: FC = () => {
 					});
 				});
 		},
-		[createSnackbar, t, addMemberToMailingList]
+		[createSnackbar, t, addMemberToMailingList, callAllRequest]
 	);
 
 	return (

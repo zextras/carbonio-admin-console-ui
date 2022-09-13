@@ -219,7 +219,7 @@ const Connection: FC<{
 
 	useEffect(() => {
 		if (bucketType !== undefined) {
-			const volumeObject: any = bucketTypeItems.find((s) => s.value === bucketType);
+			const volumeObject: any = bucketTypeItems.find((s: any) => s.value === bucketType);
 			setBucketTypeData(volumeObject?.label);
 			onSelection({ storeType: bucketType }, false);
 		}
@@ -244,8 +244,8 @@ const Connection: FC<{
 		(e: any): any => {
 			const volumeObject: any =
 				bucketType === ALIBABA || bucketTypeData === ALIBABA
-					? bucketRegionsInAlibaba.find((s) => s.value === e)
-					: bucketRegions.find((s) => s.value === e);
+					? bucketRegionsInAlibaba.find((s: any) => s.value === e)
+					: bucketRegions.find((s: any) => s.value === e);
 			setRegionsData(volumeObject);
 			onSelection({ region: volumeObject?.value }, false);
 		},
@@ -333,7 +333,7 @@ const Connection: FC<{
 						background="gray5"
 						label={t('buckets.bucket_type', 'Bucket Type')}
 						onChange={(e: any): void => {
-							const volumeObject: any = bucketTypeItems.find((s) => s.value === e);
+							const volumeObject: any = bucketTypeItems.find((s: any) => s.value === e);
 							setBucketTypeData(volumeObject?.value);
 							onSelection({ storeType: bucketTypeData }, false);
 							onChangeBucketType(volumeObject);
@@ -435,12 +435,14 @@ const Connection: FC<{
 						hasError={!prefixConfirm}
 					/>
 					{!prefixConfirm && (
-						<Text color="error" overflow="break-word" size="extrasmall">
-							{t(
-								'buckets.invalid_prefix',
-								'Prefix should not contains space, the allowed letters are a-z,A-z and special characters /-.'
-							)}
-						</Text>
+						<Padding top="extrasmall">
+							<Text color="error" overflow="break-word" size="extrasmall">
+								{t(
+									'buckets.invalid_prefix',
+									'Prefix should not contains space, the allowed letters are a-z,A-z and special characters /-.'
+								)}
+							</Text>
+						</Padding>
 					)}
 				</Row>
 			)}
