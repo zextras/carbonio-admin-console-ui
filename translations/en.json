@@ -536,6 +536,7 @@
         "compression_threshold": "Compression Threshold",
         "config": "Config",
         "configuration": "CONFIGURATION",
+        "configuration_lbl": "Configuration",
         "connect_buckets": "Connect Buckets",
         "connection_is_created_verify_connector_fail": "CONNECTOR IS CREATED BUT VERIFICATION FAILED",
         "connector_is_create_and_verified": "CONNECTOR IS CREATED AND VERIFIED",

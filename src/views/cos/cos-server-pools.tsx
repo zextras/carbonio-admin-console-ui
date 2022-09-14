@@ -443,6 +443,7 @@ const CosServerPools: FC = () => {
 								crossAlignment="flex-start"
 								width="fill"
 								height="calc(100vh - 340px)"
+								padding={{ top: 'large' }}
 							>
 								<Table
 									style={{ overflow: 'auto', height: '100%' }}

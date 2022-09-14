@@ -325,7 +325,7 @@ const DomainGalSettings: FC = () => {
 							padding={{ left: 'large', top: 'large' }}
 						>
 							<Text size="small" weight="bold">
-								{t('label.configuration', 'Configuration')}
+								{t('label.configuration_lbl', 'Configuration')}
 							</Text>
 						</Row>
 						<ListRow>
