@@ -182,7 +182,7 @@
         "create_new_bucket": "NEW BUCKET",
         "filter_buckets_list": "Filter Buckets List",
         "invalid_compression_thresold": "Compression Threshold is required",
-        "invalid_prefix": "Prefix should not contains space, the allowed letters are a-z,A-z and special characters /-.",
+        "invalid_prefix": "The prefix should not contain spaces. The allowed letters are a-z, A-Z, and special characters /-.",
         "invalid_volume_name": "Please fill the volume name field.",
         "invalid_volume_path": "Volume path is required",
         "new": {
@@ -437,7 +437,6 @@
     "have_not_setup_bucket_type": "It seems like you haven't setup a bucket type",
     "label": {
         "I_want_to_see_this_server_details": "i want to see this server’s details",
-        "Maintenance": "Maintenance",
         "access_key": "Access Key",
         "account": "Account",
         "account_created_successfully": "The account has been created successfully",
