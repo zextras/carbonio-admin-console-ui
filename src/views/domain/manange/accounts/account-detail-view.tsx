@@ -424,7 +424,7 @@ const AccountDetailView: FC<any> = ({
 							/>
 							<Row style={{ gap: '8px' }}>
 								<Button
-									label={t('lable.delete_it_instead', 'Delete it instead')}
+									label={t('label.delete_it_instead', 'Delete it instead')}
 									color="error"
 									type="outlined"
 									onClick={onDeleteHandler}

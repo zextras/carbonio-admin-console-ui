@@ -439,7 +439,7 @@ const Connection: FC<{
 							<Text color="error" overflow="break-word" size="extrasmall">
 								{t(
 									'buckets.invalid_prefix',
-									'Prefix should not contains space, the allowed letters are a-z,A-z and special characters /-.'
+									'The prefix should not contain spaces. The allowed letters are a-z, A-Z, and special characters /-.'
 								)}
 							</Text>
 						</Padding>

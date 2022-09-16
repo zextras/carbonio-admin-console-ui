@@ -38,7 +38,7 @@ const DeleteBucketModel: FC<{
 								onClick={closeHandler}
 							/>
 							<Button
-								label={t('lable.delete_button', 'DELETE')}
+								label={t('label.delete_button', 'DELETE')}
 								color="error"
 								onClick={(): void => {
 									saveHandler();

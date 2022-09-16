@@ -314,7 +314,6 @@
         "general_information": "General Information",
         "general_options": "General Options",
         "group_calender": "Group Calendar",
-        "group_mail": "Group Mail",
         "highlight_the_Mail_tab_when_message_arrives": "Highlight the Mail tab when a message arrives",
         "html_compose": "HTML compose",
         "i_want_to_see_this_cos": "I want to see this COS",
@@ -592,6 +591,7 @@
         "delete_domain_error_msg": "You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?",
         "delete_domain_success_msg": "Domain has been delete successfully",
         "delete_domain_with_account_content_msg": "{{domainName}} is not empty: contains {{domainAccounts}} system accounts and {{domainAccounts}} regular accounts. Are you sure to continue the deletion",
+        "delete_it_instead": "Delete it instead",
         "deleteing": "Deleting ",
         "deleting_account_content_1": "Are you sure you want to delete <bold>{{name}}</bold>?",
         "deleting_account_content_2": "Deleting the account will PERMANENTLY delete all the data. ",
@@ -995,11 +995,6 @@
         "yes_delete": "Yes, Delete",
         "you_are_deleting": "You are deleting {{cosname}}",
         "your_auth_method_is": "Your Auth Method is"
-    },
-    "lable": {
-        "delete_button": "DELETE",
-        "delete_it": "Delete it",
-        "delete_it_instead": "Delete it instead"
     },
     "locale": {
         "English": "English",
