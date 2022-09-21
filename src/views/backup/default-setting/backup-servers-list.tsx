@@ -3,61 +3,45 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, Row, Text, Divider, Table } from '@zextras/carbonio-design-system';
-import { string } from 'prop-types';
+import { Container, Row, Text, Divider, Table, Tooltip } from '@zextras/carbonio-design-system';
+import _ from 'lodash';
 import { useBackupModuleStore } from '../../../store/backup-module/store';
 import { useServerStore } from '../../../store/server/store';
+import { bytesToSize } from '../../utility/utils';
+
+// eslint-disable-next-line no-shadow
+export enum SMART_SCAN_TYPE {
+	DISABLED = 1,
+	ON_STARTUP_ONLY = 2,
+	ON_STARTUP_AND_SCHEDULED = 3,
+	SCHEDULED = 4
+}
 
 type BackupServerType = {
 	id: string;
 	name: string;
 	description: string;
+	backupAtStartup?: string;
+	rtStatus?: string;
+	type?: string;
+	purge?: string;
+	smartScan?: boolean;
+	availableMetadataSpace?: string;
+	availableBackupSpace?: string;
+	purgeTooltip?: string;
+	smartScanTooltip?: string;
+	availableMetadataSpaceTooltip?: string;
+	availableBackupSpaceTooltip?: string;
 };
 
-const ServersList: FC = () => {
+const BackupServersListTable: FC<{
+	serverList: Array<BackupServerType>;
+	selectedRows: any;
+	onSelectionChange: any;
+}> = ({ serverList, selectedRows, onSelectionChange }) => {
 	const [t] = useTranslation();
-	const backupServerList = useBackupModuleStore((state) => state.backupServerList);
-	const servers = useServerStore((state) => state.serverList);
-	console.log('backup servers:::', backupServerList);
-	console.log('servers:::', servers);
-	const [serverList, setServerList] = useState<BackupServerType[]>([]);
-	const [serverListRows, setServerListRows] = useState<any[]>([
-		{
-			id: '1',
-			columns: [
-				<Text size="medium" weight="light" key="11" color="gray0">
-					np-demo.demo.zextras.io
-				</Text>,
-				<Text size="medium" weight="light" key="12" color="gray0">
-					Scheduled
-				</Text>,
-				<Text size="medium" weight="light" key="13" color="gray0">
-					Scheduled
-				</Text>,
-				<Text size="medium" weight="light" key="14" color="gray0">
-					Local
-				</Text>,
-				<Text size="medium" weight="light" key="15" color="gray0">
-					Scheduled
-				</Text>,
-				<Text size="medium" weight="light" key="16" color="gray0">
-					Paused
-				</Text>,
-				<Text size="medium" weight="light" key="17" color="gray0">
-					blablalblablablalblalbasfsaf
-				</Text>,
-				<Text size="medium" weight="light" key="18" color="gray0">
-					6 GB
-				</Text>,
-				<Text size="medium" weight="light" key="19" color="gray0">
-					7.7 GB
-				</Text>
-			]
-		}
-	]);
-
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -118,18 +102,234 @@ const ServersList: FC = () => {
 		[t]
 	);
 
+	const tableRows = useMemo(
+		() =>
+			serverList.map((s, i) => ({
+				id: i?.toString(),
+				columns: [
+					<Text size="medium" weight="light" key={i} color="gray0">
+						{s?.name}
+					</Text>,
+					<Text size="medium" weight="light" key={i} color={s?.backupAtStartup ? 'gray0' : 'error'}>
+						{s?.backupAtStartup ? s?.backupAtStartup : t('label.na', 'N/A')}
+					</Text>,
+					<Text size="medium" weight="light" key={i} color={s?.rtStatus ? 'gray0' : 'error'}>
+						{s?.rtStatus ? s?.rtStatus : t('label.na', 'N/A')}
+					</Text>,
+					<Text size="medium" weight="light" key={i} color={s?.type ? 'gray0' : 'error'}>
+						{s?.type ? s?.type : t('label.na', 'N/A')}
+					</Text>,
+					<Tooltip
+						placement="bottom"
+						label={s?.smartScanTooltip ? s?.smartScanTooltip : t('label.na', 'N/A')}
+						key={i}
+					>
+						<Text size="medium" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
+							{s?.smartScan ? s?.smartScan : t('label.na', 'N/A')}
+						</Text>
+					</Tooltip>,
+					<Tooltip
+						placement="bottom"
+						label={s?.purgeTooltip ? s?.purgeTooltip : t('label.na', 'N/A')}
+						key={i}
+					>
+						<Text size="medium" weight="light" color={s?.purge ? 'gray0' : 'error'}>
+							{s?.purge ? s?.purge : t('label.na', 'N/A')}
+						</Text>
+					</Tooltip>,
+					<Text size="medium" weight="light" key={i} color="gray0">
+						{s?.description}
+					</Text>,
+					<Tooltip
+						placement="bottom"
+						label={
+							s?.availableMetadataSpaceTooltip
+								? s?.availableMetadataSpaceTooltip
+								: t('label.na', 'N/A')
+						}
+						key={i}
+					>
+						<Text
+							size="medium"
+							weight="light"
+							color={s?.availableMetadataSpace ? 'gray0' : 'error'}
+						>
+							{s?.availableMetadataSpace ? s?.availableMetadataSpace : t('label.na', 'N/A')}
+						</Text>
+					</Tooltip>,
+					<Tooltip
+						placement="bottom"
+						label={
+							s?.availableBackupSpaceTooltip ? s?.availableBackupSpaceTooltip : t('label.na', 'N/A')
+						}
+						key={i}
+					>
+						<Text size="medium" weight="light" color={s?.availableBackupSpace ? 'gray0' : 'error'}>
+							{s?.availableBackupSpace ? s?.availableBackupSpace : t('label.na', 'N/A')}
+						</Text>
+					</Tooltip>
+				],
+				clickable: false
+			})),
+		[serverList, t]
+	);
+
+	return (
+		<Table
+			headers={headers}
+			rows={tableRows}
+			showCheckbox={false}
+			multiSelect={false}
+			selectedRows={selectedRows}
+			onSelectionChange={onSelectionChange}
+		/>
+	);
+};
+
+const ServersList: FC = () => {
+	const [t] = useTranslation();
+	const backupServerList = useBackupModuleStore((state) => state.backupServerList);
+	const servers = useServerStore((state) => state.serverList);
+
+	const STATUS: any[] = useMemo(
+		() => [
+			{
+				label: t('label.scheduled', 'Scheduled'),
+				value: true
+			},
+			{
+				label: t('label.disabled', 'Disabled'),
+				value: false
+			}
+		],
+		[t]
+	);
+
+	const TYPE: any[] = useMemo(
+		() => [
+			{
+				label: t('label.ext_volume', 'Ext. Volume'),
+				value: true
+			},
+			{
+				label: t('label.local', 'Local'),
+				value: false
+			}
+		],
+		[t]
+	);
+
+	const smartScanType: any[] = useMemo(
+		() => [
+			{
+				label: t('label.disabled', 'Disabled'),
+				value: SMART_SCAN_TYPE.DISABLED
+			},
+			{
+				label: t('label.on_startup_only', 'On Startup Only'),
+				value: SMART_SCAN_TYPE.ON_STARTUP_ONLY
+			},
+			{
+				label: t('label.on_startup_and_scheduled', 'On Startup & Scheduled'),
+				value: SMART_SCAN_TYPE.ON_STARTUP_AND_SCHEDULED
+			},
+			{
+				label: t('label.scheduled', 'Scheduled'),
+				value: SMART_SCAN_TYPE.SCHEDULED
+			}
+		],
+		[t]
+	);
+
+	const [serverList, setServerList] = useState<BackupServerType[]>([]);
+	const [selectedRows, setSelectedRows] = useState<any[]>([]);
+
+	const getSmartScanStatus = useCallback(
+		(smartScanStartup: boolean, backupSmartScan: boolean): any => {
+			if (smartScanStartup === false && backupSmartScan === false) {
+				return smartScanType[0]?.label;
+			}
+			if (smartScanStartup === true && backupSmartScan === false) {
+				return smartScanType[1]?.label;
+			}
+			if (smartScanStartup === true && backupSmartScan === true) {
+				return smartScanType[2]?.label;
+			}
+			return smartScanType[3]?.label;
+		},
+		[smartScanType]
+	);
+
+	const getBackupServerValue = useCallback(
+		(backupServer: any): any => {
+			const serverValue = {};
+			if (backupServer) {
+				const backupAtStartup = STATUS.find(
+					(st) => st.value === backupServer?.attributes?.ZxBackup_ModuleEnabledAtStartup?.value
+				)?.label;
+				const rtStatus = STATUS.find(
+					(st) => st.value === backupServer?.attributes?.ZxBackup_RealTimeScanner?.value
+				)?.label;
+				const type = _.isEmpty(backupServer?.attributes?.backupArchivingStore?.value)
+					? TYPE[1]?.label
+					: TYPE[0]?.label;
+				const purge = `${backupServer?.attributes?.ZxBackup_DataRetentionDays?.value}/${backupServer?.attributes?.backupAccountsRetentionDays?.value}`;
+				const purgeTooltip = backupServer?.attributes?.backupPurgeScheduler?.value['cron-pattern'];
+				const smartScanStartup = backupServer?.attributes?.ZxBackup_DoSmartScanOnStartup?.value;
+				const backupSmartScan =
+					backupServer?.attributes?.backupSmartScanScheduler?.value['cron-enabled'];
+				const smartScan = getSmartScanStatus(smartScanStartup, backupSmartScan);
+				const smartScanTooltip =
+					backupServer?.attributes?.backupSmartScanScheduler?.value['cron-pattern'];
+				const availableMetadataSpace = backupServer?.properties?.available_space_for_metadata
+					? bytesToSize(backupServer?.properties?.available_space_for_metadata)
+					: '0 GB';
+				const availableBackupSpace = backupServer?.properties?.available_space_for_blobs
+					? bytesToSize(backupServer?.properties?.available_space_for_blobs)
+					: '0 GB';
+				const availableBackupSpaceTooltip = backupServer?.properties?.available_space_for_blobs
+					? backupServer?.attributes?.ZxBackup_DestPath?.value
+					: backupServer?.attributes?.backupArchivingStore?.value['cron-pattern'];
+				const availableMetadataSpaceTooltip = backupServer?.attributes?.ZxBackup_DestPath?.value;
+				return {
+					backupAtStartup,
+					rtStatus,
+					type,
+					purge,
+					purgeTooltip,
+					smartScan,
+					smartScanTooltip,
+					availableBackupSpace,
+					availableMetadataSpace,
+					availableBackupSpaceTooltip,
+					availableMetadataSpaceTooltip
+				};
+			}
+			return serverValue;
+		},
+		[STATUS, TYPE, getSmartScanStatus]
+	);
+
 	useEffect(() => {
 		if (servers && servers?.length > 0) {
 			const sList: BackupServerType[] = [];
 			servers.forEach((item: any) => {
-				const { id } = item;
-				const { name } = item;
-				const description = item?.a?.filter((value: any) => value.n === 'description')?._content;
-				sList.push({ id, name, description });
+				const id = item?.id;
+				const name = item?.name;
+				const description = item?.a?.filter((value: any) => value.n === 'description')[0]?._content;
+				if (backupServerList && backupServerList.length > 0) {
+					const backupServer = backupServerList.filter((backupItem) => backupItem[item?.id])[0][
+						item.id
+					]?.ZxBackup;
+					const backupValues = getBackupServerValue(backupServer);
+					sList.push({ id, name, description, ...backupValues });
+				} else {
+					sList.push({ id, name, description });
+				}
 			});
 			setServerList(sList);
 		}
-	}, [servers]);
+	}, [backupServerList, getBackupServerValue, servers]);
 
 	return (
 		<>
@@ -168,12 +368,11 @@ const ServersList: FC = () => {
 					height="calc(100vh - 200px)"
 					padding={{ top: 'extralarge', left: 'small', right: 'small' }}
 				>
-					<Table
-						rows={serverListRows}
-						headers={headers}
-						showCheckbox
-						multiSelect
-						style={{ overflow: 'auto', height: '100%' }}
+					<BackupServersListTable
+						serverList={serverList}
+						selectedRows={selectedRows}
+						// eslint-disable-next-line @typescript-eslint/no-empty-function
+						onSelectionChange={(selected: any): any => {}}
 					/>
 				</Container>
 			</Container>
