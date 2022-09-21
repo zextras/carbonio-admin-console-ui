@@ -10,14 +10,18 @@ import { Server } from '../../../types';
 
 type BackupModuleState = {
 	backupModuleEnable: boolean;
+	backupServerList: Array<any>;
 	setBackupModuleEnable: (v: boolean) => void;
+	setBackupServerList: (backupServerList: Array<any>) => void;
 };
 
 export const useBackupModuleStore = create<BackupModuleState>(
 	devtools((set) => ({
 		backupModuleEnable: false,
-
+		backupServerList: [],
 		setBackupModuleEnable: (backupModuleEnable): void =>
-			set({ backupModuleEnable }, false, 'setBackupModuleEnable')
+			set({ backupModuleEnable }, false, 'setBackupModuleEnable'),
+		setBackupServerList: (backupServerList): void =>
+			set({ backupServerList }, false, 'setBackupServerList')
 	}))
 );

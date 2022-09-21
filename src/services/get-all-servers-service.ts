@@ -8,5 +8,6 @@ import { soapFetch } from '@zextras/carbonio-shell-ui';
 
 export const getAllServers = async (): Promise<any> =>
 	soapFetch(`GetAllServers`, {
-		_jsns: 'urn:zimbraAdmin'
+		_jsns: 'urn:zimbraAdmin',
+		attrs: 'description,zimbraServiceHostname,zimbraId'
 	});

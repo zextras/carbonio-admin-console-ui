@@ -67,6 +67,7 @@ const App: FC = () => {
 	const setServerList = useServerStore((state) => state.setServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
+	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const setConfig = useConfigStore((state) => state.setConfig);
 	const allConfig = useAllConfig();
 	useEffect(() => {
@@ -519,13 +520,14 @@ const App: FC = () => {
 			).then((data: any) => {
 				const backupServer = data?.servers;
 				if (backupServer && Array.isArray(backupServer) && backupServer.length > 0) {
+					setBackupServerList(backupServer);
 					setBackupModuleEnable(true);
 				} else {
 					setBackupModuleEnable(false);
 				}
 			});
 		},
-		[setBackupModuleEnable]
+		[setBackupModuleEnable, setBackupServerList]
 	);
 	const getGlobalConfig = useCallback(
 		(serverName) => {

@@ -15,7 +15,6 @@ const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
 	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVER_CONFIG);
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
-	const [isServerSettingsEpanded, setIsServerSettingsEpanded] = useState(true);
 	const [isActionExpanded, setIsActionExpanded] = useState(true);
 	const defaultSettingsOptions = useMemo(
 		() => [
@@ -28,13 +27,7 @@ const BackupListPanel: FC = () => {
 				id: ADVANCED,
 				name: t('label.advanced', 'Advanced'),
 				isSelected: true
-			}
-		],
-		[t]
-	);
-
-	const serverSettingsOptions = useMemo(
-		() => [
+			},
 			{
 				id: SERVERS_LIST,
 				name: t('label.servers_list', 'Servers List'),
@@ -62,9 +55,6 @@ const BackupListPanel: FC = () => {
 	const toggleDefaultSettingsView = (): void => {
 		setIsDefaultSettingsExpanded(!isDefaultSettingsExpanded);
 	};
-	const toggleServerSettingsView = (): void => {
-		setIsServerSettingsEpanded(!isServerSettingsEpanded);
-	};
 	const toggleActionView = (): void => {
 		setIsActionExpanded(!isActionExpanded);
 	};
@@ -78,26 +68,13 @@ const BackupListPanel: FC = () => {
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
 			<ListPanelItem
-				title={t('label.default_settings', 'Default Settings')}
+				title={t('label.global_server_settings', 'Global Server Settings')}
 				isListExpanded={isDefaultSettingsExpanded}
 				setToggleView={toggleDefaultSettingsView}
 			/>
 			{isDefaultSettingsExpanded && (
 				<ListItems
 					items={defaultSettingsOptions}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
-				/>
-			)}
-
-			<ListPanelItem
-				title={t('label.server_settings', 'Server Settings')}
-				isListExpanded={isServerSettingsEpanded}
-				setToggleView={toggleServerSettingsView}
-			/>
-			{isServerSettingsEpanded && (
-				<ListItems
-					items={serverSettingsOptions}
 					selectedOperationItem={selectedOperationItem}
 					setSelectedOperationItem={setSelectedOperationItem}
 				/>
