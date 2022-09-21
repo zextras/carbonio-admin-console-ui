@@ -5,7 +5,15 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, Row, Text, Divider, Table, Tooltip } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Row,
+	Text,
+	Divider,
+	Table,
+	Tooltip,
+	Icon
+} from '@zextras/carbonio-design-system';
 import _ from 'lodash';
 import { useBackupModuleStore } from '../../../store/backup-module/store';
 import { useServerStore } from '../../../store/server/store';
@@ -140,34 +148,48 @@ const BackupServersListTable: FC<{
 					<Text size="medium" weight="light" key={i} color="gray0">
 						{s?.description}
 					</Text>,
-					<Tooltip
-						placement="bottom"
-						label={
-							s?.availableMetadataSpaceTooltip
-								? s?.availableMetadataSpaceTooltip
-								: t('label.na', 'N/A')
-						}
-						key={i}
-					>
-						<Text
-							size="medium"
-							weight="light"
-							color={s?.availableMetadataSpace ? 'gray0' : 'error'}
-						>
-							{s?.availableMetadataSpace ? s?.availableMetadataSpace : t('label.na', 'N/A')}
-						</Text>
-					</Tooltip>,
-					<Tooltip
-						placement="bottom"
-						label={
-							s?.availableBackupSpaceTooltip ? s?.availableBackupSpaceTooltip : t('label.na', 'N/A')
-						}
-						key={i}
-					>
-						<Text size="medium" weight="light" color={s?.availableBackupSpace ? 'gray0' : 'error'}>
-							{s?.availableBackupSpace ? s?.availableBackupSpace : t('label.na', 'N/A')}
-						</Text>
-					</Tooltip>
+					<Row mainAlignment="flex-start" width="100%" key={i}>
+						<Icon icon="FolderOutline" size="medium" />
+						<Row padding={{ left: 'small' }}>
+							<Tooltip
+								placement="bottom"
+								label={
+									s?.availableMetadataSpaceTooltip
+										? s?.availableMetadataSpaceTooltip
+										: t('label.na', 'N/A')
+								}
+							>
+								<Text
+									size="medium"
+									weight="light"
+									color={s?.availableMetadataSpace ? 'gray0' : 'error'}
+								>
+									{s?.availableMetadataSpace ? s?.availableMetadataSpace : t('label.na', 'N/A')}
+								</Text>
+							</Tooltip>
+						</Row>
+					</Row>,
+					<Row mainAlignment="flex-start" width="100%" key={i}>
+						<Icon icon="FolderOutline" size="medium" />
+						<Row padding={{ left: 'small' }}>
+							<Tooltip
+								placement="bottom"
+								label={
+									s?.availableBackupSpaceTooltip
+										? s?.availableBackupSpaceTooltip
+										: t('label.na', 'N/A')
+								}
+							>
+								<Text
+									size="medium"
+									weight="light"
+									color={s?.availableBackupSpace ? 'gray0' : 'error'}
+								>
+									{s?.availableBackupSpace ? s?.availableBackupSpace : t('label.na', 'N/A')}
+								</Text>
+							</Tooltip>
+						</Row>
+					</Row>
 				],
 				clickable: false
 			})),
