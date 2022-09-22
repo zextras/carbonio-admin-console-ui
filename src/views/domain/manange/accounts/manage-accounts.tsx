@@ -510,6 +510,8 @@ const ManageAccounts: FC = () => {
 						setShowEditAccountView={setShowEditAccountView}
 						selectedAccount={selectedAccount}
 						getAccountList={getAccountList}
+						signatureList={signatureList}
+						signatureItems={signatureItems}
 					/>
 				)}
 			</AccountContext.Provider>

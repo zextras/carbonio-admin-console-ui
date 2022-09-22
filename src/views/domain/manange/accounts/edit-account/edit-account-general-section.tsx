@@ -68,7 +68,7 @@ const EditAccountGeneralSection: FC = () => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraAccountStatus: v }));
 	};
 	const onPrefLocaleChange = (v: string): void => {
-		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefLocale: v }));
+		v && setAccountDetail((prev: any) => ({ ...prev, zimbraPrefLocale: v }));
 	};
 	const onPrefTimeZoneChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
@@ -286,8 +286,8 @@ const EditAccountGeneralSection: FC = () => {
 					</Row>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
-						{accountDetail?.zimbraId ? (
+					<Row width="100%" mainAlignment="flex-start">
+						{accountDetail?.zimbraId && localeZone?.length ? (
 							<Select
 								items={localeZone}
 								background="gray5"
@@ -298,23 +298,6 @@ const EditAccountGeneralSection: FC = () => {
 								)}
 								onChange={onPrefLocaleChange}
 								padding={{ right: 'medium' }}
-							/>
-						) : (
-							<></>
-						)}
-					</Row>
-					<Row width="48%" mainAlignment="flex-start">
-						{accountDetail?.zimbraId ? (
-							<Select
-								items={timezones}
-								background="gray5"
-								label={t('label.time_zone', 'Time Zone')}
-								showCheckbox={false}
-								padding={{ right: 'medium' }}
-								defaultSelection={timezones.find(
-									(item: any) => item.value === accountDetail?.zimbraPrefTimeZoneId
-								)}
-								onChange={onPrefTimeZoneChange}
 							/>
 						) : (
 							<></>

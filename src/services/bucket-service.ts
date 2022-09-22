@@ -16,9 +16,4 @@ declare global {
 	}
 }
 export const fetchSoap = async (api: string, body: unknown): Promise<any> =>
-	postSoapFetchRequest(
-		`/service/admin/soap/${api}`,
-
-		body,
-		api
-	);
+	postSoapFetchRequest(`/service/admin/soap/${api}`, body, api);

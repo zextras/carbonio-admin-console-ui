@@ -15,6 +15,13 @@ import {
 } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	postSoapFetchRequest,
+	soapFetch
+} from '@zextras/carbonio-shell-ui';
 import { NO, YES } from '../../../../constants';
 import { AbsoluteContainer } from '../../../components/styled';
 import ServerVolumeDetailsPanel from './server-volume-details-panel';
@@ -25,6 +32,7 @@ import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
 import NewVolume from './create-volume/new-volume';
 import ModifyVolume from './modify-volume/modify-volume';
 import DeleteVolumeModel from './delete-volume-model';
+import { useServerStore } from '../../../../store/server/store';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -114,6 +122,7 @@ const VolumeListTable: FC<{
 };
 
 const VolumesDetailPanel: FC = () => {
+	const { operation, server }: { operation: string; server: string } = useParams();
 	const [t] = useTranslation();
 	const selectedServerName = useBucketVolumeStore((state) => state.selectedServerName);
 	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState('');
@@ -124,6 +133,8 @@ const VolumesDetailPanel: FC = () => {
 	const [createMailstoresVolumeData, setCreateMailstoresVolumeData] = useState();
 	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState(false);
 	const [toggleDetailPage, setToggleDetailPage] = useState(false);
+	const serverList = useServerStore((state) => state.serverList);
+	const [selectedServerId, setSelectedServerId] = useState<string>('');
 	const [volume, setVolume] = useState<{
 		compressBlobs: string;
 		compressionThreshold: number;
@@ -183,20 +194,21 @@ const VolumesDetailPanel: FC = () => {
 		setOpen(false);
 	};
 
-	const GetAllVolumesRequest = useCallback((): void => {
-		fetchSoap('GetAllVolumesRequest', {
-			_jsns: 'urn:zimbraAdmin'
-		})
-			.then((response) => {
-				const primaries = response?.Body?.GetAllVolumesResponse?.volume.filter(
-					(item: any) => item.type === 1
-				);
-				const secondaries = response?.Body?.GetAllVolumesResponse?.volume.filter(
-					(item: any) => item.type === 2
-				);
-				const indexes = response?.Body?.GetAllVolumesResponse?.volume.filter(
-					(item: any) => item.type === 10
-				);
+	const getAllVolumesRequest = useCallback((): void => {
+		soapFetch(
+			'GetAllVolumes',
+			{
+				_jsns: 'urn:zimbraAdmin'
+			},
+			undefined,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			selectedServerId
+		)
+			.then((response: any) => {
+				const primaries = response?.volume.filter((item: any) => item.type === 1);
+				const secondaries = response?.volume.filter((item: any) => item.type === 2);
+				const indexes = response?.volume.filter((item: any) => item.type === 10);
 				setVolumeList({
 					primaries,
 					indexes,
@@ -213,28 +225,31 @@ const VolumesDetailPanel: FC = () => {
 					autoHideTimeout: 5000
 				});
 			});
-	}, [createSnackbar, t]);
+	}, [createSnackbar, t, selectedServerId]);
 
-	useEffect(() => {
-		GetAllVolumesRequest();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 	const deleteHandler = (id: any): any => {
-		fetchSoap('DeleteVolumeRequest', {
-			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxCore',
-			action: 'DeleteVolumeRequest',
-			id
-		})
-			.then((res) => {
-				if (res?.Body?.DeleteVolumeResponse?._jsns === 'urn:zimbraAdmin') {
+		soapFetch(
+			'DeleteVolume',
+			{
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxCore',
+				action: 'DeleteVolumeRequest',
+				id
+			},
+			undefined,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			selectedServerId
+		)
+			.then((res: any) => {
+				if (res?._jsns === 'urn:zimbraAdmin') {
 					createSnackbar({
 						key: '1',
 						type: 'success',
 						label: t('label.volume_deleted', 'Volume deleted successfully')
 					});
 				}
-				GetAllVolumesRequest();
+				getAllVolumesRequest();
 				setOpen(false);
 				setToggleDetailPage(false);
 			})
@@ -260,11 +275,15 @@ const VolumesDetailPanel: FC = () => {
 					rootpath: '',
 					type: 0
 				});
-				GetAllVolumesRequest();
+				getAllVolumesRequest();
 				setOpen(false);
 				setToggleDetailPage(false);
 			});
 	};
+
+	useEffect(() => {
+		getAllVolumesRequest();
+	}, [getAllVolumesRequest]);
 
 	const CreateVolumeRequest = async (attr: {
 		id: string;
@@ -275,20 +294,27 @@ const VolumesDetailPanel: FC = () => {
 		compressBlobs: number;
 		compressionThreshold: string;
 	}): Promise<any> => {
-		await fetchSoap('CreateVolumeRequest', {
-			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxCore',
-			action: 'CreateVolumeRequest',
-			volume: attr
-		})
+		await soapFetch(
+			'CreateVolume',
+			{
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxCore',
+				action: 'CreateVolumeRequest',
+				volume: attr
+			},
+			undefined,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			selectedServerId
+		)
 			.then(async (res: any) => {
 				if (attr?.isCurrent === 1) {
 					await fetchSoap('SetCurrentVolumeRequest', {
 						_jsns: 'urn:zimbraAdmin',
 						module: 'ZxCore',
 						action: 'SetCurrentVolumeRequest',
-						id: res?.Body?.CreateVolumeResponse?.volume[0]?.id,
-						type: res?.Body?.CreateVolumeResponse?.volume[0]?.type
+						id: res?.volume[0]?.id,
+						type: res?.volume[0]?.type
 					})
 						.then(() => {
 							createSnackbar({
@@ -310,7 +336,7 @@ const VolumesDetailPanel: FC = () => {
 							});
 						});
 				}
-				GetAllVolumesRequest();
+				getAllVolumesRequest();
 				setToggleWizardSection(false);
 				createSnackbar({
 					key: '1',
@@ -325,9 +351,11 @@ const VolumesDetailPanel: FC = () => {
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: t('label.volume_detail_error', '{{message}}', {
-						message: error
-					}),
+					label: error?.message
+						? error?.message
+						: t('label.volume_detail_error', '{{message}}', {
+								message: error
+						  }),
 					autoHideTimeout: 5000
 				});
 				return error;
@@ -339,6 +367,15 @@ const VolumesDetailPanel: FC = () => {
 		setVolume(volumeObject);
 		setToggleDetailPage(true);
 	};
+
+	useEffect(() => {
+		if (serverList && serverList.length > 0) {
+			const serverData = serverList.find((s: any) => s?.name === server);
+			if (serverData && serverData?.id) {
+				setSelectedServerId(serverData?.id);
+			}
+		}
+	}, [serverList, server]);
 
 	return (
 		<>
@@ -353,7 +390,8 @@ const VolumesDetailPanel: FC = () => {
 						detailData={detailData}
 						setDetailData={setDetailData}
 						changeSelectedVolume={changeSelectedVolume}
-						GetAllVolumesRequest={GetAllVolumesRequest}
+						getAllVolumesRequest={getAllVolumesRequest}
+						selectedServerId={selectedServerId}
 					/>
 				</AbsoluteContainer>
 			)}
@@ -363,7 +401,8 @@ const VolumesDetailPanel: FC = () => {
 						volumeDetail={detailData}
 						setmodifyVolumeToggle={setmodifyVolumeToggle}
 						changeSelectedVolume={changeSelectedVolume}
-						GetAllVolumesRequest={GetAllVolumesRequest}
+						getAllVolumesRequest={getAllVolumesRequest}
+						selectedServerId={selectedServerId}
 					/>
 				</AbsoluteContainer>
 			)}

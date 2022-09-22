@@ -116,12 +116,16 @@ const BucketListPanel: FC = () => {
 	useEffect(() => {
 		if (isStoreSelect) {
 			if (selectedOperationItem) {
-				replaceHistory(`/${selectedOperationItem}`);
+				if (selectedOperationItem === DATA_VOLUMES) {
+					replaceHistory(`${searchVolumeName}/${selectedOperationItem}`);
+				} else {
+					replaceHistory(`/${selectedOperationItem}`);
+				}
 			} else {
 				replaceHistory(`/${selectedOperationItem}`);
 			}
 		}
-	}, [isStoreSelect, selectedOperationItem]);
+	}, [isStoreSelect, selectedOperationItem, searchVolumeName]);
 
 	const toggleServer = (): void => {
 		setIsServerListExpand(!isServerListExpand);

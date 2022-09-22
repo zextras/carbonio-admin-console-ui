@@ -18,7 +18,7 @@ const DetailViewContainer = styled(Container)`
 `;
 
 const BucketOperation: FC = () => {
-	const { operation, domainId }: { operation: string; domainId: string } = useParams();
+	const { operation, server }: { operation: string; server: string } = useParams();
 
 	return (
 		<>

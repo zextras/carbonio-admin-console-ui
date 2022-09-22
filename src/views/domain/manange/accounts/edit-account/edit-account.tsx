@@ -19,7 +19,7 @@ import {
 	Padding,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, remove } from 'lodash';
+import { isEqual, reduce, remove, map } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 
@@ -37,7 +37,15 @@ const EditAccount: FC<{
 	setShowEditAccountView: any;
 	selectedAccount: any;
 	getAccountList: any;
-}> = ({ setShowEditAccountView, selectedAccount, getAccountList }) => {
+	signatureItems: any;
+	signatureList: any;
+}> = ({
+	setShowEditAccountView,
+	selectedAccount,
+	getAccountList,
+	signatureItems,
+	signatureList
+}) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -48,6 +56,17 @@ const EditAccount: FC<{
 	const { accountDetail, setAccountDetail, initAccountDetail, setInitAccountDetail } = conext;
 
 	useEffect(() => {
+		const modifiedKeys: any = reduce(
+			accountDetail,
+			function (result, value, key): any {
+				return isEqual(value, initAccountDetail[key]) ? result : [...result, key];
+			},
+			[]
+		);
+		console.log('modifiedKeys', modifiedKeys);
+		map(modifiedKeys, (ele) => {
+			console.log(ele, initAccountDetail[ele], accountDetail[ele]);
+		});
 		if (initAccountDetail?.zimbraId && !isEqual(accountDetail, initAccountDetail)) {
 			setIsDirty(true);
 		} else {
@@ -276,7 +295,12 @@ const EditAccount: FC<{
 						)}
 						{change === 'general' && <EditAccountGeneralSection />}
 						{change === 'configuration' && <EditAccountConfigrationSection />}
-						{change === 'user_preferences' && <EditAccountUserPrefrencesSection />}
+						{change === 'user_preferences' && (
+							<EditAccountUserPrefrencesSection
+								signatureItems={signatureItems}
+								signatureList={signatureList}
+							/>
+						)}
 					</Container>
 				</Container>
 			</Container>

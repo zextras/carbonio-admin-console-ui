@@ -10,7 +10,6 @@ import BucketOperation from './bucket-detail-operation';
 
 const BucketRoutePanel: FC = () => {
 	const { path } = useRouteMatch();
-
 	return (
 		<Container
 			orientation="column"
@@ -21,6 +20,9 @@ const BucketRoutePanel: FC = () => {
 		>
 			<Switch>
 				<Route exact path={`${path}/:operation`}>
+					<BucketOperation />
+				</Route>
+				<Route exact path={`${path}/:server/:operation`}>
 					<BucketOperation />
 				</Route>
 			</Switch>

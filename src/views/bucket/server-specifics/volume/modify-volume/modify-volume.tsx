@@ -18,6 +18,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { soapFetch } from '@zextras/carbonio-shell-ui';
 import { volumeTypeList } from '../../../../utility/utils';
 import { fetchSoap } from '../../../../../services/bucket-service';
 
@@ -25,8 +26,15 @@ const ModifyVolume: FC<{
 	setmodifyVolumeToggle: any;
 	volumeDetail: any;
 	changeSelectedVolume: any;
-	GetAllVolumesRequest: any;
-}> = ({ setmodifyVolumeToggle, volumeDetail, changeSelectedVolume, GetAllVolumesRequest }) => {
+	getAllVolumesRequest: any;
+	selectedServerId: string;
+}> = ({
+	setmodifyVolumeToggle,
+	volumeDetail,
+	changeSelectedVolume,
+	getAllVolumesRequest,
+	selectedServerId
+}) => {
 	const { t } = useTranslation();
 	const [isDirty, setIsDirty] = useState(false);
 	const [name, setName] = useState(volumeDetail?.name);
@@ -55,30 +63,44 @@ const ModifyVolume: FC<{
 	};
 
 	const onSave = (): void => {
-		fetchSoap('ModifyVolumeRequest', {
-			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxCore',
-			action: 'ModifyVolumeRequest',
-			id,
-			volume: {
+		soapFetch(
+			'ModifyVolume',
+			{
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxCore',
+				action: 'ModifyVolumeRequest',
 				id,
-				name,
-				rootpath,
-				type: type?.value,
-				compressBlobs: compressBlobs ? 1 : 0,
-				compressionThreshold,
-				isCurrent: isCurrent ? 1 : 0
-			}
-		})
+				volume: {
+					id,
+					name,
+					rootpath,
+					type: type?.value,
+					compressBlobs: compressBlobs ? 1 : 0,
+					compressionThreshold,
+					isCurrent: isCurrent ? 1 : 0
+				}
+			},
+			undefined,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			selectedServerId
+		)
 			.then(() => {
 				if (isCurrent) {
-					fetchSoap('SetCurrentVolumeRequest', {
-						_jsns: 'urn:zimbraAdmin',
-						module: 'ZxCore',
-						action: 'SetCurrentVolumeRequest',
-						id,
-						type: type?.value
-					}).catch((error) => {
+					soapFetch(
+						'SetCurrentVolumeRequest',
+						{
+							_jsns: 'urn:zimbraAdmin',
+							module: 'ZxCore',
+							action: 'SetCurrentVolumeRequest',
+							id,
+							type: type?.value
+						},
+						undefined,
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore
+						selectedServerId
+					).catch((error) => {
 						createSnackbar({
 							key: 'error',
 							type: 'error',
@@ -94,7 +116,7 @@ const ModifyVolume: FC<{
 					type: 'success',
 					label: t('label.volume_edited', 'Volume edited successfully')
 				});
-				GetAllVolumesRequest();
+				getAllVolumesRequest();
 				setmodifyVolumeToggle(false);
 			})
 			.catch((error) => {

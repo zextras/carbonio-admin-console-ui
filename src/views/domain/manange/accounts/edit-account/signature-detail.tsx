@@ -16,14 +16,22 @@ import {
 	Modal,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
+import { useIntegratedComponent } from '@zextras/carbonio-shell-ui';
 import { Trans, useTranslation } from 'react-i18next';
 import ListRow from '../../../../list/list-row';
 import { deleteSignature } from '../../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../../services/modify-signature-service';
 import { createSignature } from '../../../../../services/create-signature-service';
-import Textarea from '../../../../components/textarea';
+// import Textarea from '../../../../components/textarea';
 import logo from '../../../../../assets/gardian.svg';
 
+const EditorWrapper = styled.div`
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+	position: relative;
+`;
 export const SignatureDetail: FC<any> = ({
 	isEditable,
 	signatureList,
@@ -45,6 +53,7 @@ export const SignatureDetail: FC<any> = ({
 	const [signatureListRows, setSignatureListRows] = useState<any[]>([]);
 	const [defaultSignatureList, setDefaultSignatureList] = useState<any[]>([]);
 	const [isAssignDefaultList, setIsAssignDefaultList] = useState<boolean>(true);
+	const [Composer, composerIsAvailable] = useIntegratedComponent('composer');
 
 	useEffect(() => {
 		if (signatureList && signatureList.length > 0 && isAssignDefaultList) {
@@ -426,7 +435,7 @@ export const SignatureDetail: FC<any> = ({
 					onClose={(): void => {
 						setIsOpenCreateEditSignatureDialog(false);
 					}}
-					size="medium"
+					size="large"
 					customFooter={
 						<Container orientation="horizontal" mainAlignment="space-between">
 							<Button label={t('label.help', 'Help')} type="outlined" color="primary" />
@@ -466,14 +475,26 @@ export const SignatureDetail: FC<any> = ({
 							/>
 						</Container>
 						<Container>
-							<Textarea
+							{/* <Textarea
 								background="gray5"
 								label={t('label.content', 'Content')}
 								value={signatureContent}
 								onChange={(e: any): any => {
 									setSignatureContent(e.target.value);
 								}}
-							/>
+							/> */}
+							{composerIsAvailable && (
+								<EditorWrapper>
+									<Composer
+										// eslint-disable-next-line no-use-before-define, @typescript-eslint/ban-ts-comment
+										// @ts-ignore
+										value={unescape(signatureContent)}
+										onEditorChange={(ev: any): void => {
+											setSignatureContent(escape(ev[1]));
+										}}
+									/>
+								</EditorWrapper>
+							)}
 						</Container>
 					</Container>
 				</Modal>

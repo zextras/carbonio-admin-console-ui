@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useMemo, useContext, useState } from 'react';
+import React, { FC, useCallback, useMemo, useContext, useState, useEffect } from 'react';
 import {
 	Container,
 	Input,
@@ -11,8 +11,10 @@ import {
 	Select,
 	Text,
 	Switch,
-	Divider
+	Divider,
+	ChipInput
 } from '@zextras/carbonio-design-system';
+import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { AccountContext } from '../account-context';
 import { SignatureDetail } from './signature-detail';
@@ -23,7 +25,14 @@ import {
 	charactorSet
 } from '../../../../utility/utils';
 
-const EditAccountUserPrefrencesSection: FC = () => {
+const emailRegex =
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars, max-len, no-control-regex
+	/(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9][0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/;
+
+const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList: any }> = ({
+	signatureItems,
+	signatureList
+}) => {
 	const conext = useContext(AccountContext);
 	const [t] = useTranslation();
 	const { accountDetail, setAccountDetail, setSignatureItems, setSignatureList } = conext;
@@ -39,6 +48,8 @@ const EditAccountUserPrefrencesSection: FC = () => {
 	const [outOfOfficeCacheDurationType, setOutOfOfficeCacheDurationType] = useState(
 		accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''
 	);
+	const [prefReadReceiptsToAddress, setPrefReadReceiptsToAddress] = useState<any[]>([]);
+
 	const timezones = useMemo(() => timeZoneList(t), [t]);
 	const GROUP_BY = useMemo(() => conversationGroupBy(t), [t]);
 	const APPOINTMENT_REMINDER = useMemo(() => appointmentReminder(t), [t]);
@@ -106,6 +117,15 @@ const EditAccountUserPrefrencesSection: FC = () => {
 		],
 		[t]
 	);
+	useEffect(() => {
+		setPrefReadReceiptsToAddress(
+			accountDetail?.zimbraPrefReadReceiptsToAddress
+				? accountDetail.zimbraPrefReadReceiptsToAddress
+						.split(', ')
+						.map((ele: string) => ({ label: ele }))
+				: []
+		);
+	}, [accountDetail?.zimbraPrefReadReceiptsToAddress]);
 
 	const APPOINTMENT_DURATION = useMemo(
 		() => [
@@ -221,7 +241,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefGroupMailBy: v }));
 	};
 	const onCharactorSetChange = (v: string): void => {
-		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
+		v && setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
 	};
 	const onPollingIntervalChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
@@ -416,7 +436,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					/>
 				</Row>
 			</Row>
-			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+			{/* <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="100%" mainAlignment="flex-start">
 					<Input
 						label={t('label.out_of_office_message', 'Out of office message')}
@@ -428,7 +448,7 @@ const EditAccountUserPrefrencesSection: FC = () => {
 						name="zimbraPrefOutOfOfficeReply"
 					/>
 				</Row>
-			</Row>
+			</Row> */}
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<Switch
@@ -438,13 +458,34 @@ const EditAccountUserPrefrencesSection: FC = () => {
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
-					<Input
+					{/* <Input
 						onChange={changeAccDetail}
 						inputName="zimbraPrefReadReceiptsToAddress"
 						label={t('label.reply_to_address_for_receipt', 'Reply-to address for receipt')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
 						value={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
+					/> */}
+					<ChipInput
+						placeholder={t(
+							'account_details.this_account_is_a_in_direct_member_of',
+							'This account is a in direct member of'
+						)}
+						background="gray5"
+						onChange={(contacts: any): void => {
+							const data: any = [];
+							map(contacts, (contact) => {
+								if (emailRegex.test(contact.label ?? '')) data.push(contact);
+							});
+							setPrefReadReceiptsToAddress(data);
+							setAccountDetail((prev: any) => ({
+								...prev,
+								zimbraPrefReadReceiptsToAddress: map(data, 'label').join(', ')
+							}));
+						}}
+						defaultValue={prefReadReceiptsToAddress}
+						value={prefReadReceiptsToAddress}
+						hasError={some(prefReadReceiptsToAddress || [], { error: true })}
 					/>
 				</Row>
 			</Row>
@@ -511,9 +552,9 @@ const EditAccountUserPrefrencesSection: FC = () => {
 			</Row>
 			<SignatureDetail
 				isEditable
-				signatureList={[]}
+				signatureList={signatureList}
 				setSignatureList={setSignatureList}
-				signatureItems={[]}
+				signatureItems={signatureItems}
 				setSignatureItems={setSignatureItems}
 				accountId={accountDetail?.zimbraId}
 			/>
