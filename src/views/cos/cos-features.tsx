@@ -384,7 +384,7 @@ const CosFeatures: FC = () => {
 							<Switch
 								value={cosFeatures.zimbraFeatureOutOfOfficeReplyEnabled}
 								onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
-								label={t('cos.out_of_the_office_reply', 'Out of the Office Reply')}
+								label={t('cos.out_of_the_office_reply', 'Out of Office Reply')}
 								disabled={!cosFeatures.zimbraFeatureMailEnabled}
 							/>
 						</Row>

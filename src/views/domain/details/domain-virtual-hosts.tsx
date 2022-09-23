@@ -218,7 +218,7 @@ const DomainVirtualHosts: FC = () => {
 								<Paragraph size="medium" color="secondary">
 									{t(
 										'label.virtual_host_info_msg',
-										'Using the Virtual host name allow users to browse the service also using different URL.'
+										'Using the Virtualhost name allows users to browse the service also using a different URL.'
 									)}
 								</Paragraph>
 							</Row>

@@ -303,7 +303,7 @@ const EditAccountConfigrationSection: FC = () => {
 						<Switch
 							value={accountDetail?.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
-							label={t('account_details.out_of_the_office_reply', 'Out of the Office Reply')}
+							label={t('account_details.out_of_the_office_reply', 'Out of Office Reply')}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="flex-start">

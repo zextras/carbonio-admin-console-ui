@@ -1419,7 +1419,10 @@ const CosPreferences: FC = () => {
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarShowPastDueReminders')
 										}
-										label={t('cos.enable_past_due_reminders', `Enable past-due reminders`)}
+										label={t(
+											'cos.enable_past_due_reminders',
+											`Enable reminders of appointments in the past`
+										)}
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1486,7 +1489,7 @@ const CosPreferences: FC = () => {
 										}
 										label={t(
 											'cos.add_forwarded_invites_to_calendar',
-											`Add forwarded invites to calendar`
+											`Automatically add forwarded appointments to the calendar`
 										)}
 									/>
 								</Container>
@@ -1514,7 +1517,10 @@ const CosPreferences: FC = () => {
 									<Switch
 										value={cosPreferences?.zimbraPrefCalendarAutoAddInvites === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefCalendarAutoAddInvites')}
-										label={t('cos.add_appointments_when_invited', `Add appointments when invited`)}
+										label={t(
+											'cos.add_appointments_when_invited',
+											`Automatically add appointments when the user is invited`
+										)}
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1525,7 +1531,7 @@ const CosPreferences: FC = () => {
 										}
 										label={t(
 											'cos.auto_decline_if_inviter_is_blacklisted',
-											'Auto-decline if inviter is blacklisted'
+											'Auto-decline if the sender is blacklisted'
 										)}
 									/>
 								</Container>
@@ -1548,7 +1554,7 @@ const CosPreferences: FC = () => {
 										}
 										label={t(
 											'cos.notify_changes_by_delegated_access',
-											`Notify changes by delegated access`
+											`Notify changes made by delegated accounts`
 										)}
 									/>
 								</Container>

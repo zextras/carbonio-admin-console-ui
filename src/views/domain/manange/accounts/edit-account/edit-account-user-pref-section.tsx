@@ -469,7 +469,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<ChipInput
 						placeholder={t(
 							'account_details.this_account_is_a_in_direct_member_of',
-							'This account is a in direct member of'
+							'This account is an indirect member of'
 						)}
 						background="gray5"
 						onChange={(contacts: any): void => {
@@ -691,7 +691,10 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<Switch
 						value={accountDetail?.zimbraPrefCalendarShowPastDueReminders === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarShowPastDueReminders')}
-						label={t('account_details.enable_past_due_reminders', 'Enable past-due reminders')}
+						label={t(
+							'account_details.enable_past_due_reminders',
+							'Enable reminders of appointments in the past'
+						)}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -731,7 +734,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarAllowForwardedInvite')}
 						label={t(
 							'account_details.add_forwarded_invites_to_calendar',
-							'Add forwarded invites to calendar'
+							'Automatically add forwarded appointments to the calendar'
 						)}
 					/>
 				</Row>
@@ -763,7 +766,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarSendInviteDeniedAutoReply')}
 						label={t(
 							'account_details.auto_decline_if_inviter_is_blacklisted',
-							`Auto-decline if inviter is blacklisted`
+							`Auto-decline if the sender is blacklisted`
 						)}
 					/>
 				</Row>
@@ -775,7 +778,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarAutoAddInvites')}
 						label={t(
 							'account_details.add_appointments_when_invited',
-							'Add appointments when invited'
+							'Automatically add appointments when the user is invited'
 						)}
 					/>
 				</Row>
@@ -785,7 +788,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarNotifyDelegatedChanges')}
 						label={t(
 							'account_details.notify_changes_by_delegated_access',
-							`Notify changes by delegated access`
+							`Notify changes made by delegated accounts`
 						)}
 					/>
 				</Row>

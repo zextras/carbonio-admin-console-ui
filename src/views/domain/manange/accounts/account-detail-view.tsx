@@ -119,7 +119,7 @@ const AccountDetailView: FC<any> = ({
 			.then((data) => {
 				if (data?.account && Array.isArray(data?.account)) {
 					onSuccess(
-						t('label.account_disable_correctly', 'The account has been correctly disable.')
+						t('label.account_disable_correctly', 'The account has been correctly disabled.')
 					);
 				}
 			})

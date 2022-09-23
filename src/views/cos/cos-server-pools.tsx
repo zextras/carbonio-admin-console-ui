@@ -398,7 +398,7 @@ const CosServerPools: FC = () => {
 										>
 											<Input
 												value={searchServer}
-												label={t('cos.search_a_specific_server', 'Search a specific server')}
+												label={t('cos.search_a_specific_server', 'Search for a specific server')}
 												CustomIcon={(): any => (
 													<Icon icon="FunnelOutline" size="large" color="secondary" />
 												)}

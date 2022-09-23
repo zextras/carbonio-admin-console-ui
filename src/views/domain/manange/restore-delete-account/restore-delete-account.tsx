@@ -100,7 +100,7 @@ const RestoreDeleteAccount: FC = () => {
 						type: 'success',
 						label: t(
 							'label.restore_account_has_added_operation_queue',
-							'The restore account has been added on operation queue successfull'
+							'The restore of the account has been added to the operation queue successfully'
 						),
 						autoHideTimeout: 3000,
 						hideButton: true,

@@ -331,7 +331,7 @@ const EditAccountGeneralSection: FC = () => {
 					<ChipInput
 						placeholder={t(
 							'account_details.this_account_is_a_in_direct_member_of',
-							'This account is a in direct member of'
+							'This account is an indirect member of'
 						)}
 						background="gray5"
 						defaultValue={inDirectMemberList}

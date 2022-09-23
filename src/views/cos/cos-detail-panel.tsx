@@ -71,7 +71,7 @@ const CosDetailPanel: FC = () => {
 									>
 										{t(
 											'select_cos_or_create_new_cos',
-											'Please select a Class of Service to manage it or click Create button to create a new one.'
+											'Please select a Class of Service (CoS) to manage it or click on the "Create" button to create a new one.'
 										)}
 									</Text>
 								</Padding>

@@ -1984,7 +1984,7 @@ const EditMailingListView: FC<any> = ({
 					>
 						{t(
 							'label.owners_description',
-							'Owners can manage distribution list members (adding and removing emails) and modify the distribution list options.'
+							"Owners can manage the mailing list's members (adding and removing emails) and modify its options."
 						)}
 					</Text>
 				</Row>

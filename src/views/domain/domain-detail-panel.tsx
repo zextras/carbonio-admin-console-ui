@@ -57,7 +57,7 @@ const DomainDetailPanel: FC = () => {
 							>
 								{t(
 									'select_domain_or_create_new',
-									'Please select a domain from the menu on the left or click on the Create Button to create a new one.'
+									'Please select a domain from the menu on the left or click on the "Create" button to create a new one.'
 								)}
 							</Text>
 						</Padding>

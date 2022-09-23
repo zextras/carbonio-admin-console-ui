@@ -364,7 +364,7 @@ const BucketDetailPanel: FC = () => {
 							>
 								{t(
 									'select_bucket_or_create_new_bucket',
-									"It seems like you haven't setup a bucket type. \n Click NEW BUCKET button to create a new one."
+									'It seems like you haven\'t set up a bucket type. Click the "NEW BUCKET" button to create a new one.'
 								)}
 							</Text>
 						</Padding>
