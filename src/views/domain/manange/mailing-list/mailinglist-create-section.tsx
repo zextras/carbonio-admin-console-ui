@@ -301,7 +301,7 @@ const MailingListCreateSection: FC<any> = () => {
 								padding={{ top: 'small', bottom: 'medium' }}
 							>
 								<Input
-									label={t('label.list_url', 'List URL')}
+									label={t('label.list_url', "Mailing List's URL")}
 									backgroundColor="gray6"
 									size="medium"
 									value={mailingListDetail?.memberURL}

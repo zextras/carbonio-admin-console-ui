@@ -127,7 +127,7 @@ const MailingListDetail: FC<any> = ({
 		() => [
 			{
 				id: 'members',
-				label: t('label.this_list_is_member_of', 'This List is member of'),
+				label: t('label.this_list_is_member_of', 'This List is part of'),
 				width: '100%',
 				bold: true
 			}
@@ -619,7 +619,7 @@ const MailingListDetail: FC<any> = ({
 					<ListRow>
 						<Container>
 							<Input
-								label={t('label.list_url', 'List URL')}
+								label={t('label.list_url', "Mailing List's URL")}
 								value={memberURL}
 								background="gray6"
 								readOnly

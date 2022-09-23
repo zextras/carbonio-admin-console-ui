@@ -621,7 +621,7 @@ const DomainMailingList: FC = () => {
 							<Container>
 								<Input
 									backgroundColor="gray5"
-									label={t('label.search_dot', 'Search ...')}
+									label={t('label.search_dot', 'Search…')}
 									onChange={(e: any): any => {
 										setSearchString(e.target.value);
 									}}

@@ -280,7 +280,7 @@ const CreateDomain: FC = () => {
 								<Input
 									label={t(
 										'label.max_account_you_can_manage_is',
-										'The max accounts you can manage is...'
+										'The max accounts you can manage is…'
 									)}
 									background="gray5"
 									value={zimbraDomainMaxAccounts}
@@ -293,7 +293,7 @@ const CreateDomain: FC = () => {
 								<Input
 									label={t(
 										'label.max_email_quota_you_can_manage_is',
-										'The max email quota you can manage is...'
+										'The max email quota you can manage is…'
 									)}
 									background="gray5"
 									value={zimbraMailDomainQuota}

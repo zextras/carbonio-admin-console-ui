@@ -220,7 +220,7 @@ const CosServerPools: FC = () => {
 							type: 'success',
 							label: t(
 								'label.the_last_changes_has_been_saved_successfully',
-								'The last changes has been saved successfully'
+								'Changes have been saved successfully'
 							),
 							autoHideTimeout: 3000,
 							hideButton: true,

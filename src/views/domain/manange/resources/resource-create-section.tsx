@@ -176,7 +176,7 @@ const ResourceCreateSection: FC = () => {
 						</Container>
 						<Container padding={{ right: 'large' }}>
 							<Input
-								label={t('label.maximum_conflict', 'Maximun Conflict')}
+								label={t('label.maximum_conflict', 'Maximum Conflict')}
 								backgroundColor="gray6"
 								value={resourceDetail.zimbraCalResMaxNumConflictsAllowed}
 								size="medium"
@@ -185,7 +185,7 @@ const ResourceCreateSection: FC = () => {
 						</Container>
 						<Container>
 							<Input
-								label={t('label.percentage_maximum_conflict', '% Maximun Conflict')}
+								label={t('label.percentage_maximum_conflict', '% Maximum Conflict')}
 								backgroundColor="gray6"
 								value={resourceDetail.zimbraCalResMaxPercentConflictsAllowed}
 								readOnly
@@ -201,7 +201,7 @@ const ResourceCreateSection: FC = () => {
 						padding={{ top: 'large' }}
 					>
 						<Input
-							label={t('label.schedule_policy', 'Schedule Policy')}
+							label={t('label.schedule_policy', 'Set Policy')}
 							backgroundColor="gray6"
 							value={resourceDetail?.schedulePolicyType?.label}
 							size="medium"

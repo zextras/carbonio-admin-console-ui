@@ -662,7 +662,7 @@ const ResourceEditDetailView: FC<any> = ({
 			createSnackbar({
 				key: 'error',
 				type: 'error',
-				label: t('label.password_lenght_msg', 'Password should be more then 5 character'),
+				label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
 				autoHideTimeout: 3000,
 				hideButton: true,
 				replace: true
@@ -671,10 +671,7 @@ const ResourceEditDetailView: FC<any> = ({
 			createSnackbar({
 				key: 'error',
 				type: 'error',
-				label: t(
-					'label.password_and repeat_password_not_match',
-					'Password and repeat password not match'
-				),
+				label: t('label.password_and repeat_password_not_match', 'Passwords do not match'),
 				autoHideTimeout: 3000,
 				hideButton: true,
 				replace: true
@@ -1172,7 +1169,7 @@ const ResourceEditDetailView: FC<any> = ({
 								<Select
 									items={schedulePolicyItems}
 									background="gray5"
-									label={t('label.schedule_policy', 'Schedule Policy')}
+									label={t('label.schedule_policy', 'Set Policy')}
 									showCheckbox={false}
 									onChange={onSchedulePolicyChange}
 									selection={schedulePolicyType}
@@ -1180,7 +1177,7 @@ const ResourceEditDetailView: FC<any> = ({
 							)}
 							{!isEditMode && (
 								<Input
-									label={t('label.schedule_policy', 'Schedule Policy')}
+									label={t('label.schedule_policy', 'Set Policy')}
 									backgroundColor="gray6"
 									value={schedulePolicyType?.label}
 									size="medium"
@@ -1199,7 +1196,7 @@ const ResourceEditDetailView: FC<any> = ({
 					>
 						<Row width="100%" padding={{ right: 'small' }}>
 							<Input
-								label={t('label.maximum_conflict_allowed', 'Maximun Conflict Allowed')}
+								label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
 								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
 								value={zimbraCalResMaxNumConflictsAllowed}
 								size="medium"
@@ -1222,7 +1219,7 @@ const ResourceEditDetailView: FC<any> = ({
 					>
 						<Row width="100%" padding={{ left: 'small' }}>
 							<Input
-								label={t('label.percentage_maximum_conflict_allowed', '% Maximun Conflict Allowed')}
+								label={t('label.percentage_maximum_conflict_allowed', '% Maximum Conflict Allowed')}
 								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
 								value={zimbraCalResMaxPercentConflictsAllowed}
 								onChange={

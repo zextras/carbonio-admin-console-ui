@@ -276,7 +276,7 @@ const Connection: FC<{
 			setButtonDetail(
 				t(
 					'label.connection_is_created_verify_connector_fail',
-					'CONNECTOR IS CREATED BUT VERIFICATION FAILED'
+					'CONNECTOR IS CREATED BUT VERIFICATION HAS FAILED'
 				)
 			);
 			if (verifyFailErr !== '') {
@@ -295,7 +295,7 @@ const Connection: FC<{
 			setButtonDetail(
 				t(
 					'label.connector_is_not_created_and_verification_failed',
-					'CONNECTOR IS NOT CREATED AND VERIFICATION FAILED'
+					'CONNECTOR IS NOT CREATED AND VERIFICATION HAS FAILED'
 				)
 			);
 			createSnackbar({

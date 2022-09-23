@@ -627,7 +627,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t(
 											'label.max_account_you_can_manage_is',
-											'The max accounts you can manage is...'
+											'The max accounts you can manage is…'
 										)}
 										value={zimbraDomainMaxAccounts}
 										background="gray6"
@@ -640,7 +640,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t(
 											'label.max_email_quota_you_can_manage_is',
-											'The max email quota you can manage is...'
+											'The max email quota you can manage is…'
 										)}
 										value={zimbraMailDomainQuota}
 										background="gray6"
@@ -816,7 +816,7 @@ const DomainGeneralSettings: FC = () => {
 							{/* <ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.deligated_admin_help_url', 'Deligated Admin Help URL')}
+										label={t('label.deligated_admin_help_url', 'Delegated Admin Help URL')}
 										value={zimbraHelpDelegatedURL}
 										background="gray5"
 										onChange={(e: any): any => {
@@ -935,7 +935,7 @@ const DomainGeneralSettings: FC = () => {
 													domainName,
 													domainAccounts: domainAccounts.length,
 													defaultValue:
-														'{{domainName}} is not empty: contains {{domainAccounts}} system accounts and {{domainAccounts}} regular accounts. Are you sure to continue the deletion'
+														'{{domainName}} is not empty: it contains {{domainAccounts}} system accounts and {{domainAccounts}} regular accounts. Are you sure to continue the deletion?'
 												})}
 											</Text>
 										</Padding>

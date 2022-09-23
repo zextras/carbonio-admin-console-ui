@@ -339,7 +339,7 @@ export const SignatureDetail: FC<any> = ({
 					>
 						<Row width="100%">
 							<Input
-								label={t('label.search_a_signature', 'Search a signature')}
+								label={t('label.search_a_signature', 'Search for a signature')}
 								backgroundColor="gray5"
 								value={searchSignatureName}
 								size="medium"
@@ -450,7 +450,7 @@ export const SignatureDetail: FC<any> = ({
 									/>
 								</Padding>
 								<Button
-									label={t('label.add_to_the_list', 'Add it to the list')}
+									label={t('label.add_to_the_list', 'Add to the list')}
 									color="primary"
 									disabled={signatureName === '' || signatureContent === ''}
 									onClick={onSaveOrEditSignature}

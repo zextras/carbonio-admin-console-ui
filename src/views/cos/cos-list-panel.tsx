@@ -196,7 +196,7 @@ const CosListPanel: FC = () => {
 									<Text overflow="break-word">
 										{t(
 											'many_cos_info_msg',
-											'So many COSes! Which one would you like to see?Start typing to filter.'
+											'So many COSes! Which one would you like to see? Start typing to filter.'
 										)}
 									</Text>
 								</Row>

@@ -104,7 +104,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							label={t('label.second_name_initials', 'Second Name Initials')}
+							label={t('label.second_name_initials', 'Middle Name Initials')}
 							backgroundColor="gray5"
 							onChange={changeAccDetail}
 							inputName="initials"
