@@ -745,7 +745,7 @@ const MailingListDetail: FC<any> = ({
 							<Text size={'extralarge'} overflow="break-word">
 								<Trans
 									i18nKey="label.are_you_sure_delete_distribution_list"
-									defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
+									defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
 									components={{ bold: <strong />, name: distributionName }}
 								/>
 							</Text>

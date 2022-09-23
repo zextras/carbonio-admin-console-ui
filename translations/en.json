@@ -490,7 +490,7 @@
         "apply_hsm_policy_after_the_restore": "Apply HSM Policies after the restore",
         "appointment_reminder_in_minutes": "Appointment Reminder in minutes",
         "appointments_default_duration": "Appointment’s Default Duration",
-        "are_you_sure_delete_distribution_list": "Are you sure you want to delete <bold>{{name}}</bod> ?",
+        "are_you_sure_delete_distribution_list": "Are you sure you want to delete <bold>{{name}}</bold> ?",
         "are_you_sure_deleting_cos": "Are you sure you want to delete this Class of Service?",
         "auth_method": "Auth Method",
         "authentication": "Authentication",
