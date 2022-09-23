@@ -474,7 +474,7 @@ const MailingListSection: FC<any> = () => {
 								padding={{ top: 'small', bottom: 'medium' }}
 							>
 								<Input
-									label={t('label.list_url', 'List URL')}
+									label={t('label.list_url', "Mailing List's URL")}
 									backgroundColor="gray5"
 									value={mailingListDetail?.memberURL}
 									size="medium"
@@ -564,8 +564,8 @@ const MailingListSection: FC<any> = () => {
 								color="#828282"
 							>
 								{t(
-									'label.owners_manage_add_list',
-									'Owners can manage and... add what Owners can do in the list'
+									'label.owners_description',
+									'Owners can manage distribution list members (adding and removing emails) and modify the distribution list options.'
 								)}
 							</Text>
 						</Row>

@@ -134,7 +134,7 @@ const EditAccount: FC<{
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: t('label.password_lenght_msg', 'Password should be more then 5 character'),
+						label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -145,10 +145,7 @@ const EditAccount: FC<{
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: t(
-							'label.password_and repeat_password_not_match',
-							'Password and repeat password not match'
-						),
+						label: t('label.password_and repeat_password_not_match', 'Passwords do not match'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -176,7 +173,7 @@ const EditAccount: FC<{
 						type: 'success',
 						label: t(
 							'label.the_last_changes_has_been_saved_successfully',
-							'The last changes has been saved successfully'
+							'Changes have been saved successfully'
 						),
 						autoHideTimeout: 3000,
 						hideButton: true,

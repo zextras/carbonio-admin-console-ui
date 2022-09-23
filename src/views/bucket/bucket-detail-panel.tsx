@@ -171,7 +171,7 @@ const BucketDetailPanel: FC = () => {
 				createSnackbar({
 					key: 1,
 					type: 'success',
-					label: t('label.delete_bucket_sucess', 'The {{name}} has removerd', {
+					label: t('label.delete_bucket_sucess', 'The {{name}} has been removed', {
 						name: bucketDeleteName?.bucketName
 					}),
 					autoHideTimeout: 2000
@@ -181,7 +181,7 @@ const BucketDetailPanel: FC = () => {
 				createSnackbar({
 					key: 1,
 					type: 'error',
-					label: t('label.delete_bucket_fail', 'The {{name}} has not removerd', {
+					label: t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
 						name: bucketDeleteName?.bucketName
 					}),
 					autoHideTimeout: 2000

@@ -49,7 +49,7 @@ const Dashboard: FC = () => {
 					{t('welcome_to_carbonio', {
 						adminName: userName,
 						carbonioVersion: version,
-						defaultValue: 'Welcome {{adminName}}, to Carbonio {{carbonioVersion}}!'
+						defaultValue: 'Welcome {{adminName}} to Carbonio {{carbonioVersion}}!'
 					})}
 				</Text>
 				<Text color="#828282" overflow="break-word" weight="light" style={{ fontSize: '24px' }}>

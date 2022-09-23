@@ -200,7 +200,7 @@ const CreateResource: FC<{
 								createSnackbar({
 									key: 'error',
 									type: 'error',
-									label: t('label.password_lenght_msg', 'Password should be more then 5 character'),
+									label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
 									autoHideTimeout: 3000,
 									hideButton: true,
 									replace: true
@@ -211,7 +211,7 @@ const CreateResource: FC<{
 									type: 'error',
 									label: t(
 										'label.password_and repeat_password_not_match',
-										'Password and repeat password not match'
+										'Passwords do not match'
 									),
 									autoHideTimeout: 3000,
 									hideButton: true,

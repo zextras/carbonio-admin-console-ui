@@ -71,6 +71,18 @@ const IconInfo = ({
 	</Row>
 );
 
+const moduleNames: any = {
+	ZxBackup: 'Backup',
+	ZxMobile: 'ActiveSync',
+	ZxAdmin: 'Admins',
+	ZxPowerstore: 'Mailstores',
+	SproxyD: 'SproxyD',
+	ZxDrive: 'Files',
+	ZxDocs: 'Docs',
+	ZxChat: 'Chats',
+	ZxHA: 'HA'
+};
+
 const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): ReactElement => (
 	<Row
 		width="180px"
@@ -86,7 +98,7 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 			padding={{ vertical: 'extrasmall', left: 'small' }}
 		>
 			<Padding bottom="extrasmall">
-				<ServiceName licensed={licensed}>{name}</ServiceName>
+				<ServiceName licensed={licensed}>{moduleNames[name] || name}</ServiceName>
 			</Padding>
 			<Text color={licensed ? 'text' : 'secondary'}>{licensed ? 'Enabled' : 'Disabled'}</Text>
 		</Row>

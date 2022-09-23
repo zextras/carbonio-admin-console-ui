@@ -202,7 +202,7 @@ const EditBucketDetailPanel: FC<{
 				setToggleBtn(true);
 			} else {
 				setVerify('error');
-				setButtonLabel(t('label.verify_connector_fail', ' VERIFICATION FAILED'));
+				setButtonLabel(t('label.verify_connector_fail', 'VERIFICATION FAILED'));
 				setButtonIcon('alert-triangle');
 				createSnackbar({
 					key: '1',

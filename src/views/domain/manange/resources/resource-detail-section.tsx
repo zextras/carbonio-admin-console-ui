@@ -356,7 +356,7 @@ const ResourceDetailSection: FC = () => {
 						</Container>
 						<Container padding={{ right: 'large' }}>
 							<Input
-								label={t('label.maximum_conflict', 'Maximun Conflict')}
+								label={t('label.maximum_conflict', 'Maximum Conflict')}
 								backgroundColor="gray5"
 								value={resourceDetail.zimbraCalResMaxNumConflictsAllowed}
 								inputName="zimbraCalResMaxNumConflictsAllowed"
@@ -365,7 +365,7 @@ const ResourceDetailSection: FC = () => {
 						</Container>
 						<Container>
 							<Input
-								label={t('label.percentage_maximum_conflict', '% Maximun Conflict')}
+								label={t('label.percentage_maximum_conflict', '% Maximum Conflict')}
 								backgroundColor="gray5"
 								value={resourceDetail.zimbraCalResMaxPercentConflictsAllowed}
 								inputName="zimbraCalResMaxPercentConflictsAllowed"
@@ -384,7 +384,7 @@ const ResourceDetailSection: FC = () => {
 						<Select
 							items={schedulePolicyItems}
 							background="gray5"
-							label={t('label.schedule_policy', 'Schedule Policy')}
+							label={t('label.schedule_policy', 'Set Policy')}
 							showCheckbox={false}
 							selection={resourceDetail?.schedulePolicyType}
 							onChange={onSchedulePolicyChange}

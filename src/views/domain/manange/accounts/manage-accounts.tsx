@@ -343,7 +343,7 @@ const ManageAccounts: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('domain.account_list', 'Account List')}
+								{t('domain.account_list', 'Accounts List')}
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
@@ -396,10 +396,7 @@ const ManageAccounts: FC = () => {
 						>
 							<Container>
 								<Input
-									label={t(
-										'label.i_am_looking_for_this_account',
-										`I'm looking for this account...`
-									)}
+									label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
 									value={searchString}
 									background="gray5"
 									onChange={(e: any): any => {

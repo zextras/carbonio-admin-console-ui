@@ -186,7 +186,7 @@ const CosGeneralInformation: FC = () => {
 						type: 'info',
 						label: t('label.delete_cos_succeess', {
 							cosname: cosName,
-							defaultValue: 'The {{cosname}} has been deleted successfull'
+							defaultValue: 'The {{cosname}} has been deleted successfully'
 						}),
 						autoHideTimeout: 3000,
 						hideButton: true,

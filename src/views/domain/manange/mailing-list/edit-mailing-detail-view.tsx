@@ -589,7 +589,7 @@ const EditMailingListView: FC<any> = ({
 				setOwnerErrorMessage(
 					t(
 						'label.mailing_list_not_exists_error_msg',
-						'The Mailing List / User does not exists. Please check the spelling and try again.'
+						'The Mailing List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 			}
@@ -1417,7 +1417,7 @@ const EditMailingListView: FC<any> = ({
 					setMemberErrorMessage(
 						t(
 							'label.mailing_list_not_exists_error_msg',
-							'The Mailing List / User does not exists. Please check the spelling and try again.'
+							'The Mailing List / User does not exist. Please check the spelling and try again.'
 						)
 					);
 				} else if (dlm.find((item: any) => item === searchMember)) {
@@ -1439,7 +1439,7 @@ const EditMailingListView: FC<any> = ({
 				setMemberErrorMessage(
 					t(
 						'label.mailing_list_not_exists_error_msg',
-						'The Mailing List / User does not exists. Please check the spelling and try again.'
+						'The Mailing List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 				setIsShowMemberError(true);
@@ -1460,7 +1460,7 @@ const EditMailingListView: FC<any> = ({
 					setOwnerErrorMessage(
 						t(
 							'label.mailing_list_not_exists_error_msg',
-							'The Mailing List / User does not exists. Please check the spelling and try again.'
+							'The Mailing List / User does not exist. Please check the spelling and try again.'
 						)
 					);
 				} else if (ownersList.find((item: any) => item?.name === searchOwner)) {
@@ -1485,7 +1485,7 @@ const EditMailingListView: FC<any> = ({
 				setOwnerErrorMessage(
 					t(
 						'label.mailing_list_not_exists_error_msg',
-						'The Mailing List / User does not exists. Please check the spelling and try again.'
+						'The Mailing List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 			}
@@ -1740,7 +1740,7 @@ const EditMailingListView: FC<any> = ({
 							</Container>
 							<Container>
 								<Input
-									label={t('label.list_url', 'List URL')}
+									label={t('label.list_url', "Mailing List's URL")}
 									value={memberURL}
 									background="gray5"
 									onChange={(e: any): any => {
@@ -1831,7 +1831,7 @@ const EditMailingListView: FC<any> = ({
 						<ListRow>
 							<Container padding={{ top: 'small', bottom: 'small' }}>
 								<Input
-									label={t('label.this_list_is_member_of', 'This List is member of')}
+									label={t('label.this_list_is_member_of', 'This List is part of')}
 									value={dlMembershipListNames}
 									background="gray5"
 									readOnly
@@ -2137,7 +2137,7 @@ const EditMailingListView: FC<any> = ({
 				title={
 					<Trans
 						i18nKey="label.would_you_like_to_add_ml"
-						defaults="<bold>What would you like to add to the Mailing List?</bold>"
+						defaults="<bold>Who would you like to add to the Mailing List?</bold>"
 						components={{ bold: <strong /> }}
 					/>
 				}
@@ -2162,7 +2162,7 @@ const EditMailingListView: FC<any> = ({
 								/>
 							</Padding>
 							<Button
-								label={t('label.add_it_to_list', 'Add it to the list')}
+								label={t('label.add_to_the_list', 'Add to the list')}
 								color="primary"
 								onClick={onAddToList}
 								disabled={isRequstInProgress}

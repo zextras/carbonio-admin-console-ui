@@ -678,7 +678,7 @@ const DomainAuthentication: FC = () => {
 								</Padding>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
-										label={t('label.search_base', 'Search Base')}
+										label={t('label.search_base', 'Basic Search')}
 										value={zimbraAuthLdapSearchBase}
 										background="gray5"
 										onChange={(e: any): any => {
@@ -713,7 +713,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t(
 											'label.external_password_change_listener',
-											'External Password change listener'
+											'Endpoint to be used for password change'
 										)}
 										background="gray5"
 										value={zimbraPasswordChangeListener}

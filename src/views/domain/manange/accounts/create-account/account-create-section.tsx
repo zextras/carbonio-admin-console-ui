@@ -72,7 +72,10 @@ const AccountCreateSection: FC = () => {
 					<Row width="48%" mainAlignment="flex-start">
 						<Select
 							background="gray6"
-							label={t('label.must_change_passowrd', 'Must Change Passowrd?')}
+							label={t(
+								'label.must_change_passowrd',
+								'The user should change the password on the next login'
+							)}
 							showCheckbox={false}
 							padding={{ right: 'medium' }}
 							defaultSelection={{

@@ -57,7 +57,7 @@ const DeleteVolumeModel: FC<{
 				>
 					{t(
 						'label.delete_content',
-						`You are deleting {{name}}. This will be removed. \n Are you sure you want to delete {{name}} ?`,
+						`You are deleting {{name}}. Are you sure you want to delete it?`,
 						{
 							name: volumeDetail.name
 						}
