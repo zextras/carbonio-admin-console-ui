@@ -60,12 +60,12 @@ const BackupListPanel: FC = () => {
 		() => [
 			{
 				id: CONFIGURATION_BACKUP,
-				name: t('label.configuration_backup', 'Configuration'),
+				name: t('label.configuration_lbl', 'Configuration'),
 				isSelected: isServerSelect
 			},
 			{
 				id: ADVANCED_LBL,
-				name: t('label.advanced_lbl', 'Advanced'),
+				name: t('label.advanced', 'Advanced'),
 				isSelected: isServerSelect
 			}
 		],
