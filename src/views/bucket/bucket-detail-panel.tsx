@@ -20,7 +20,7 @@ import {
 
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import logo from '../../assets/ninja_robo.svg';
+import logo from '../../assets/gardian.svg';
 import NewBucket from './new-bucket';
 import BucketDeleteModel from './delete-bucket-model';
 import DetailsPanel from './details-panel';
@@ -316,36 +316,55 @@ const BucketDetailPanel: FC = () => {
 								}}
 							/>
 						</Row>
-						{bucketList?.length !== 0 && (
-							<>
-								<Row width="100%" style={{ padding: '3px 13px' }}>
-									<Input
-										background="gray5"
-										label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
-										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="grey" />}
-									/>
-								</Row>
-								<Row style={{ padding: '16px 14px 0px 14px' }} width="100%">
-									<BucketListTable
-										volumes={bucketList}
-										selectedRows={bucketselection}
-										onSelectionChange={(selected: any): any => {
-											setBucketselection(selected);
-											const volumeObject: any = bucketList.find(
-												(s, index) => index === selected[0]
-											);
-											setShowDetails(false);
-											setBucketDeleteName(volumeObject);
-										}}
-										onDoubleClick={(i: any): any => {
-											handleDoubleClick(i);
-										}}
-										onClick={(i: any): any => {
-											handleClick(i);
-										}}
-									/>
-								</Row>
-							</>
+						<Row width="100%" style={{ padding: '3px 13px' }}>
+							<Input
+								background="gray5"
+								label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
+								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="grey" />}
+							/>
+						</Row>
+						{bucketList?.length !== 0 ? (
+							<Row style={{ padding: '16px 14px 0px 14px' }} width="100%">
+								<BucketListTable
+									volumes={bucketList}
+									selectedRows={bucketselection}
+									onSelectionChange={(selected: any): any => {
+										setBucketselection(selected);
+										const volumeObject: any = bucketList.find((s, index) => index === selected[0]);
+										setShowDetails(false);
+										setBucketDeleteName(volumeObject);
+									}}
+									onDoubleClick={(i: any): any => {
+										handleDoubleClick(i);
+									}}
+									onClick={(i: any): any => {
+										handleClick(i);
+									}}
+								/>
+							</Row>
+						) : (
+							<Container style={{ marginBottom: '109px' }}>
+								<Text overflow="break-word" weight="normal" size="large">
+									<img src={logo} alt="logo" />
+								</Text>
+								<Padding all="medium" width="47%">
+									<Text
+										color="gray1"
+										overflow="break-word"
+										weight="normal"
+										size="large"
+										width="60%"
+										style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
+									>
+										{t(
+											'label.selected_empty_bucket_helperText',
+											`You haven’t selected a bucket, yet.
+											But you can start typing in the field 
+											above to start viewing them.`
+										)}
+									</Text>
+								</Padding>
+							</Container>
 						)}
 					</>
 				) : (
