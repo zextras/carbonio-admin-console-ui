@@ -21,6 +21,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import logo from '../../assets/gardian.svg';
+import withoutTypeHolderLogo from '../../assets/ninja_robo.svg';
 import NewBucket from './new-bucket';
 import BucketDeleteModel from './delete-bucket-model';
 import DetailsPanel from './details-panel';
@@ -343,7 +344,7 @@ const BucketDetailPanel: FC = () => {
 								/>
 							</Row>
 						) : (
-							<Container style={{ marginBottom: '109px' }}>
+							<Container style={{ marginTop: '109px', height: 'unset' }}>
 								<Text overflow="break-word" weight="normal" size="large">
 									<img src={logo} alt="logo" />
 								</Text>
@@ -368,9 +369,9 @@ const BucketDetailPanel: FC = () => {
 						)}
 					</>
 				) : (
-					<Container>
+					<Container style={{ marginTop: '97px', height: 'unset' }}>
 						<Text overflow="break-word" weight="normal" size="large">
-							<img src={logo} alt="logo" />
+							<img src={withoutTypeHolderLogo} alt="logo" />
 						</Text>
 						<Padding all="medium" width="47%">
 							<Text
@@ -382,8 +383,9 @@ const BucketDetailPanel: FC = () => {
 								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>
 								{t(
-									'select_bucket_or_create_new_bucket',
-									'It seems like you haven\'t set up a bucket type. Click the "NEW BUCKET" button to create a new one.'
+									'select_bucket_or_create_new_bucket_helperText',
+									`It seems like you haven't set up a bucket type.
+									Click the "NEW BUCKET" button to create a new one.`
 								)}
 							</Text>
 						</Padding>
