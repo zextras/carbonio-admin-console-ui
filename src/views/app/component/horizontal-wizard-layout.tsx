@@ -117,6 +117,8 @@ type Props = {
 	sectionRef: any;
 	activeRef: any;
 	externalData: any;
+	toggleNextBtn: any;
+	setToggleNextBtn: any;
 };
 
 export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
@@ -139,7 +141,9 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 			Wrapper = DefaultWrapper,
 			title,
 			setToggleWizardSection,
-			externalData
+			externalData,
+			toggleNextBtn,
+			setToggleNextBtn
 		}: Props,
 		{ sectionRef, activeRef }: any
 	): JSX.Element => {
@@ -249,6 +253,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 										title={title}
 										setCompleteLoading={setCompleteLoading}
 										externalData={externalData}
+										setToggleNextBtn={setToggleNextBtn}
 									/>
 								)}
 								{View && isActive && (
@@ -262,6 +267,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 										onComplete={onComplete}
 										setCompleteLoading={setCompleteLoading}
 										externalData={externalData}
+										setToggleNextBtn={setToggleNextBtn}
 									/>
 								)}
 							</StepView>
@@ -303,6 +309,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 						setCompleteLoading={setCompleteLoading}
 						completeLoading={completeLoading}
 						disabled={!canGoNext() || !completeLoading}
+						toggleNextBtn={toggleNextBtn}
 					/>
 				</Row>
 			</Row>

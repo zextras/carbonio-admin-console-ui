@@ -247,7 +247,6 @@
         "admins": "Admins",
         "admin_help_url": "URL der Admin-Hilfe",
         "add_regex": "REGEX HINZUFÜGEN",
-        "add_it_to_list": "Zur Liste hinzufügen",
         "add_in_mailing_list_or_both": "Sie fügen eine andere Mailing Liste oder einen Benutzer hinzu. Beide können der Besitzer der Liste sein.",
         "active_sync": "ActiveSync",
         "activate_and_update": "Aktivieren & Aktualisieren",
@@ -439,7 +438,14 @@
         "required": "Erforderlich",
         "volume_create": "ERSTELLEN",
         "select_a_server": "Server auswählen",
-        "volume_server": "Server"
+        "volume_server": "Server",
+        "configuration_lbl": "Konfiguration",
+        "global_address_list": "Globale Adressliste",
+        "disabled": "Deaktiviert",
+        "local": "Lokal",
+        "na": "N/A",
+        "purge": "Bereinigen",
+        "scheduled": "Geplant"
     },
     "timezone": {
         "asia_yerevan": "{{value}} Eriwan",
@@ -695,7 +701,6 @@
         "search_features": "Suchfunktionen",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Kontrollkästchen für die Auswahl von Mails, Kontakten, Sprachnachrichten in einer Listenanzeige für Stapeloperationen anzeigen",
         "view_mail_as_html": "Mail als HTML anzeigen (falls möglich)",
-        "group_mail": "Mails gruppieren nach:",
         "type_of_UI": "Art der Benutzeroberfläche",
         "standard_html_client": "Standard-Client (HTML)",
         "show_search_string": "Suchzeichenfolge anzeigen",
@@ -773,9 +778,6 @@
         "timeout_policy": "Zeitüberschreitungsregeln",
         "trashed_message_lifetime": "Mails im Papierkorb löschen nach:",
         "user_specific_fowarding_addresses": "Anzahl der Zeichen im Feld für benutzerdefinierte Weiterleitungsadresse beschränken auf"
-    },
-    "lable": {
-        "delete_button": "LÖSCHEN"
     },
     "locale": {
         "English": "Englisch",
@@ -863,7 +865,9 @@
         "saved_searches": "Gespeicherte Suchabfragen",
         "send_read_receipts": "Lesebestätigungen senden",
         "sharing": "Freigaben",
-        "tagging": "Tagging"
+        "tagging": "Tagging",
+        "min_new_check_interval_value": "Wert",
+        "send": "SENDEN"
     },
     "connection": {
         "access_key": "Access Key",

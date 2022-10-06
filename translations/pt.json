@@ -52,7 +52,7 @@
         "services": "Serviços",
         "web_client": "Cliente web",
         "access_key": "Chave de acesso",
-        "actions": "Ações",
+        "actions": "Açoes",
         "unsaved_changes": "Você tem alterações que não foram salvas",
         "unsaved_changes_line1": "Tem certeza que deseja sair desta página sem salvar?",
         "unsaved_changes_line2": "Todas as suas alterações não salvas serão perdidas",
@@ -192,7 +192,11 @@
             "wednesday": "Quarta-Feira"
         },
         "required": "Necessário",
-        "volume_server": "Servidor"
+        "volume_server": "Servidor",
+        "configuration_lbl": "Configuração",
+        "disabled": "Desativado",
+        "na": "N/A",
+        "scheduled": "Programado"
     },
     "timezone": {
         "asia_pyongyang": "{{value}} Pyongyang",
@@ -404,7 +408,6 @@
         "polling_interval": "Intervalo de verificação (tempo após o qual se irá verificar se existem novas mensagens de correio)",
         "preferences": "Preferências",
         "receiving_mail": "A receber correio",
-        "group_mail": "Agrupar e-mail por:",
         "quota_warning_message_template": "Modelo da mensagem de aviso de quota",
         "quotas": "Quotas",
         "rss_polling_interval": "Intervalo de verificação do RSS",
@@ -543,7 +546,9 @@
         "save_to_sent": "Guardar nos itens enviados",
         "saved_searches": "Pesquisas guardadas",
         "sharing": "Compartilhamento",
-        "tagging": "Marcação"
+        "tagging": "Marcação",
+        "min_new_check_interval_value": "Valor",
+        "send": "ENVIAR"
     },
     "connection": {
         "access_key": "Chave de acesso",

@@ -17,7 +17,9 @@
         "create": "ایجاد",
         "cancel": "لغو",
         "volume_cancel_button": "لغو",
-        "settings": "تنظیمات"
+        "settings": "تنظیمات",
+        "disabled": "غیرفعال",
+        "purge": "پاکسازی"
     },
     "domain": {
         "theme": "پوسته‌ها"

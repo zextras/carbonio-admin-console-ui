@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -20,7 +20,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 import { volumeTypeList } from '../../../../utility/utils';
-import { fetchSoap } from '../../../../../services/bucket-service';
 
 const ModifyVolume: FC<{
 	setmodifyVolumeToggle: any;
@@ -36,6 +35,7 @@ const ModifyVolume: FC<{
 	selectedServerId
 }) => {
 	const { t } = useTranslation();
+	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
 	const [isDirty, setIsDirty] = useState(false);
 	const [name, setName] = useState(volumeDetail?.name);
 	const [type, setType] = useState<any>();
@@ -135,8 +135,8 @@ const ModifyVolume: FC<{
 
 	const onUndo = (): void => {
 		previousDetail?.name ? setName(previousDetail?.name) : setName(volumeDetail?.name);
-		const VolumeTypeObject = volumeTypeList.find((item: any) => item.value === volumeDetail?.type);
-		previousDetail?.type ? setType(previousDetail?.type) : setType(VolumeTypeObject);
+		const volumeTypeObject = volTypeList.find((item: any) => item.value === volumeDetail?.type);
+		previousDetail?.type ? setType(previousDetail?.type) : setType(volumeTypeObject);
 		previousDetail?.id ? setId(previousDetail?.id) : setId(volumeDetail?.id);
 		previousDetail?.rootpath
 			? setRootpath(previousDetail?.rootpath)
@@ -153,10 +153,13 @@ const ModifyVolume: FC<{
 		setIsDirty(false);
 	};
 
-	const onVolumeTypeChange = useCallback((e: any): void => {
-		const volumeObject: any = volumeTypeList.find((item: any): any => item.value === e);
-		setType(volumeObject);
-	}, []);
+	const onVolumeTypeChange = useCallback(
+		(e: any): void => {
+			const volumeObject: any = volTypeList.find((item: any): any => item.value === e);
+			setType(volumeObject);
+		},
+		[volTypeList]
+	);
 
 	useEffect(() => {
 		if (volumeDetail !== undefined && volumeDetail?.name !== name) {
@@ -202,15 +205,15 @@ const ModifyVolume: FC<{
 
 	useEffect(() => {
 		setName(volumeDetail?.name);
-		const VolumeTypeObject = volumeTypeList.find((item: any) => item.value === volumeDetail?.type);
-		setType(VolumeTypeObject);
+		const volumeTypeObject = volTypeList.find((item: any) => item.value === volumeDetail?.type);
+		setType(volumeTypeObject);
 		setId(volumeDetail?.id);
 		setRootpath(volumeDetail?.rootpath);
 		setCompressBlobs(volumeDetail?.compressBlobs);
 		setIsCurrent(volumeDetail?.isCurrent);
 		setCompressionThreshold(volumeDetail?.compressionThreshold);
 		setIsDirty(false);
-	}, [volumeDetail]);
+	}, [volTypeList, volumeDetail]);
 
 	return (
 		<>
@@ -260,7 +263,7 @@ const ModifyVolume: FC<{
 					</Row>
 					<Row padding={{ top: 'large' }} width="100%">
 						<Select
-							items={volumeTypeList}
+							items={volTypeList}
 							background="gray5"
 							label={t('label.volume_main', 'Volume Main')}
 							selection={type}

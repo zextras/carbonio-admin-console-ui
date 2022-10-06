@@ -222,7 +222,7 @@ const PrivacyView: FC = () => {
 								<Text size="small" weight="regular" color="gray1">
 									{t(
 										'privacy.full_error_sub_1',
-										'We all make errors, but it’s how you deal with them that changes everything! Make errors work for you, let us know how we can fix them.'
+										"We all make mistakes but it's how you deal with them that that changes everything! We want to learn from them so let us know how we can fix them."
 									)}
 								</Text>
 							</Padding>

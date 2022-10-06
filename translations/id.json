@@ -560,7 +560,6 @@
         "admins": "Admin",
         "admin_help_url": "URL Bantuan Admin",
         "add_to_the_list": "Tambahkan ke daftar",
-        "add_it_to_list": "Tambahkan ke daftar",
         "add_in_mailing_list_or_both": "Anda menambahkan Mailing List atau Pengguna. Keduanya bisa menjadi Pemilik daftar.",
         "active_sync": "ActiveSync",
         "activate_and_update": "Aktifkan & Perbarui",
@@ -633,7 +632,14 @@
         "enable_current_helptext": "Mengaktifkan opsi ini akan menonaktifkan volume aktif saat ini.",
         "required": "Diperlukan",
         "select_a_server": "Pilih Server",
-        "volume_server": "Server"
+        "volume_server": "Server",
+        "configuration_lbl": "Konfigurasi",
+        "disabled": "Dinonaktifkan",
+        "local": "Lokal",
+        "na": "N/A",
+        "purge": "Hapus",
+        "scheduled": "Dijadwalkan",
+        "global_address_list": "Daftar Alamat Global"
     },
     "message": {
         "snackbar": {
@@ -641,9 +647,6 @@
                 "accepted": "Anda telah menerima permintaan berbagi"
             }
         }
-    },
-    "lable": {
-        "delete_button": "HAPUS"
     },
     "cos": {
         "calendar_options": "Opsi Kalender",
@@ -675,7 +678,6 @@
         "search_features": "Fitur Pencarian",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Tampilkan kotak centang pemilihan untuk memilih item email, kontak, email suara dalam tampilan daftar untuk operasi batch",
         "view_mail_as_html": "Tampilkan email sebagai HTML (jika memungkinkan)",
-        "group_mail": "Kelompokkan email menurut:",
         "type_of_UI": "Jenis UI",
         "standard_html_client": "Klien Standar (HTML)",
         "show_search_string": "Tampilkan String Pencarian",
@@ -863,7 +865,9 @@
         "saved_searches": "Pencarian Tersimpan",
         "send_read_receipts": "Kirim tanda terima",
         "sharing": "Berbagi",
-        "tagging": "Pemberian Tag"
+        "tagging": "Pemberian Tag",
+        "min_new_check_interval_value": "Nilai",
+        "send": "KIRIM"
     },
     "connection": {
         "access_key": "Kunci Akses",

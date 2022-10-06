@@ -151,7 +151,10 @@
         "compression_threshold": "Prag de comprimare",
         "contact": "Persoană de contact",
         "conversation": "Conversaţie",
-        "volume_server": "Server"
+        "volume_server": "Server",
+        "configuration_lbl": "Configuraţie",
+        "disabled": "Dezactivat",
+        "scheduled": "Planificat"
     },
     "core": {
         "subscription": {
@@ -212,7 +215,6 @@
         "search_features": "Caracteristicile căutare",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Afişare casetă pentru selectarea mesajelor, a persoanelor de contact şi a mesajelor vocale într-o listă pentru operaţii în lot",
         "view_mail_as_html": "Afişare mesaj ca HTML (când este posibil)",
-        "group_mail": "Grupare mesaje după:",
         "account_quota": "Cotă cont",
         "admin_console_auth_token_lifetime": "Valabilitate simbol de autentificare în consola de administrare",
         "advanced": "Avansat",
@@ -319,7 +321,8 @@
             "work_week": "Vizualizare zile de lucru"
         },
         "enable_smime": "Activare S/MIME",
-        "general": "General"
+        "general": "General",
+        "min_new_check_interval_value": "Valoare"
     },
     "connection": {
         "notes": "Note"

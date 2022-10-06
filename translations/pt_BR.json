@@ -562,7 +562,6 @@
         "auto_accept": "Aceitar Automaticamente",
         "alias_in_the_list": "Alias na lista",
         "add_to_the_list": "Adicionar à lista",
-        "add_it_to_list": "Adicionar à lista",
         "add_in_mailing_list_or_both": "Você adiciona outra Lista de Email ou um Usuário. Ambos podem ser um Proprietário da lista.",
         "account_created_successfully": "A conta foi criada com sucesso",
         "allocation": "Alocação",
@@ -633,7 +632,13 @@
         "enable_current_helptext": "A ativação desta opção desativará o volume ativo atual.",
         "required": "Necessário",
         "select_a_server": "Selecionar um Servidor",
-        "volume_create": "CRIAR"
+        "volume_create": "CRIAR",
+        "configuration_lbl": "Configuração",
+        "na": "N/A",
+        "purge": "Excluir",
+        "scheduled": "Programado",
+        "disabled": "Desabilitado",
+        "local": "Local"
     },
     "message": {
         "snackbar": {
@@ -677,9 +682,6 @@
         "save_index": "Salvar índice",
         "latency_low_threshold": "Limiar de latência baixo"
     },
-    "lable": {
-        "delete_button": "EXCLUIR"
-    },
     "cos": {
         "calendar_options": "Opções da agenda",
         "calender_features": "Recursos de agenda",
@@ -719,7 +721,6 @@
         "search_class_of_service": "Selecione uma Classe de Serviço",
         "main_features": "Funcionalidades principais",
         "i_want_to_see_this_cos": "Quero visualizar esta COS",
-        "group_mail": "Agrupar e-mail por:",
         "composing_mail": "Composição de email",
         "admin_console_auth_token_lifetime": "Tempo de vida do token de autenticação do console do administrador",
         "advanced": "Avançado",
@@ -864,7 +865,9 @@
         "saved_searches": "Buscas salvas",
         "send_read_receipts": "Enviar confirmações de leitura",
         "sharing": "Compartilhamento",
-        "tagging": "Identificação"
+        "tagging": "Identificação",
+        "min_new_check_interval_value": "Valor",
+        "send": "ENVIAR"
     },
     "connection": {
         "access_key": "Chave de acesso",

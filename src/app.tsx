@@ -52,6 +52,7 @@ import { useBackupModuleStore } from './store/backup-module/store';
 import { getAllServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { getAllConfig } from './services/get-all-config';
+import { useAuthIsAdvanced } from './store/auth-advanced/store';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -67,6 +68,7 @@ const App: FC = () => {
 	const setServerList = useServerStore((state) => state.setServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
+	const setIsAdvavanced = useAuthIsAdvanced((state) => state.setIsAdvavanced);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const setConfig = useConfigStore((state) => state.setConfig);
 	const allConfig = useAllConfig();
@@ -563,6 +565,23 @@ const App: FC = () => {
 	useEffect(() => {
 		getAllServersRequest();
 	}, [getAllServersRequest]);
+
+	useEffect(() => {
+		const hostname = window?.location?.hostname;
+		const protocol = window?.location?.protocol;
+		fetch(`${protocol}//${hostname}/zx/auth/supported`)
+			// eslint-disable-next-line consistent-return
+			.then((res) => {
+				if (res.status === 200) {
+					setIsAdvavanced(true);
+					return res.json();
+				}
+				setIsAdvavanced(false);
+			})
+			.catch(() => {
+				setIsAdvavanced(false);
+			});
+	}, [setIsAdvavanced]);
 
 	return null;
 };

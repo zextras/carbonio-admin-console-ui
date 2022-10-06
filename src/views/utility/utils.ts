@@ -889,89 +889,154 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 	}
 ];
 
-export const tableHeader = [
+export const volTableHeader = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	align: string;
+}> => [
 	{
 		id: 'id',
-		label: 'ID',
+		label: t('volume.volume_header.id', 'ID'),
 		width: '5%',
 		bold: true,
 		align: 'left'
 	},
 	{
 		id: 'name',
-		label: 'Name',
+		label: t('volume.volume_header.name', 'Name'),
 		width: '10%',
 		bold: true,
 		align: 'left'
 	},
-
 	{
 		id: 'path',
-		label: 'Path',
+		label: t('volume.volume_header.path', 'Path'),
 		width: '47%',
 		bold: true,
 		align: 'left'
 	},
 	{
 		id: 'current',
-		label: 'Current',
+		label: t('volume.volume_header.current', 'Current'),
 		width: '12%',
 		align: 'left',
 		bold: true
 	},
 	{
 		id: 'compression',
-		label: 'Compression',
-		i18nAllLabel: 'All',
+		label: t('volume.volume_header.compression', 'Compression'),
 		width: '14%',
 		align: 'left',
 		bold: true
 	}
 ];
 
-export const indexerHeaders = [
+export const indexerHeaders = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	align: string;
+}> => [
 	{
 		id: 'id',
-		label: 'ID',
+		label: t('volume.volume_indexer_header.id', 'ID'),
 		width: '5%',
 		bold: true,
 		align: 'left'
 	},
 	{
 		id: 'name',
-		label: 'Name',
+		label: t('volume.volume_indexer_header.name', 'Name'),
 		width: '10%',
 		bold: true,
 		align: 'left'
 	},
 	{
 		id: 'path',
-		label: 'Path',
+		label: t('volume.volume_indexer_header.path', 'Path'),
 		width: '71%',
 		align: 'left',
 		bold: true
 	},
 	{
 		id: 'current',
-		label: 'Current',
+		label: t('volume.volume_indexer_header.current', 'Current'),
 		width: '14%',
 		align: 'left',
 		bold: true
 	}
 ];
 
-export const volumeTypeList = [
+export const volumeTypeList = (t: TFunction): Array<{ label: string; value?: number }> => [
 	{
-		label: 'Primary',
+		label: t('volume.volume_type.primary', 'Priamry'),
 		value: 1
 	},
 	{
-		label: 'Secondary',
+		label: t('volume.volume_type.secondary', 'Secondary'),
 		value: 2
 	},
 	{
-		label: 'index',
+		label: t('volume.volume_type.index', 'Index'),
 		value: 10
+	}
+];
+
+export const volumeAllocationList = (t: TFunction): Array<{ label: string; value?: number }> => [
+	{
+		label: t('volume.volume_allocation_list.local', 'Local'),
+		value: 1
+	},
+	{
+		label: t('volume.volume_allocation_list.external', 'External'),
+		value: 2
+	},
+	{
+		label: t('volume.volume_allocation_list.sproxy', 'Sproxy'),
+		value: 3
+	},
+	{
+		label: t('volume.volume_allocation_list.centralized', 'Centralized'),
+		value: 4
+	}
+];
+
+export const volumeConfigHeader = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	align: string;
+}> => [
+	{
+		id: 'name',
+		label: t('volume.volume_config_header.name', 'Name'),
+		width: '33%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'hsm_scheduled',
+		label: t('volume.volume_config_header.hsm_scheduled', 'HSM Scheduled'),
+		width: '33%',
+		align: 'center',
+		bold: true
+	},
+	{
+		id: 'indexer',
+		label: t('volume.volume_config_header.indexer', 'Indexer'),
+		width: '33%',
+		align: 'center',
+		bold: true
 	}
 ];
 

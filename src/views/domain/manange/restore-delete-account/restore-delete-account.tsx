@@ -11,6 +11,7 @@ import { useHistory } from 'react-router-dom';
 import RestoreAccountWizard from './restore-delete-account-wizard';
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
+import { useDomainStore } from '../../../../store/domain/store';
 
 const RestoreDeleteAccount: FC = () => {
 	const [t] = useTranslation();
@@ -21,6 +22,7 @@ const RestoreDeleteAccount: FC = () => {
 	const { restoreAccountDetail, setRestoreAccountDetail } = context;
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [isRequestWorkInProgress, setIsRequestWorkInProgress] = useState<any>();
+	const domainName = useDomainStore((state) => state.domain?.name);
 
 	const backToFirstTab = useCallback(() => {
 		const lastloc = history?.location?.pathname;
@@ -77,40 +79,56 @@ const RestoreDeleteAccount: FC = () => {
 				body.notificationMails = [notificationReceiver];
 			}
 			if (copyAccount !== '') {
-				body.dstAccountName = copyAccount;
+				body.dstAccountName = `${copyAccount.split('@')[0]}@${domainName}`;
 			}
 			setIsRequestWorkInProgress(true);
-			doRestoreDeleteAccount(body).then((data) => {
-				const error = data?.error?.details?.cause || data?.error?.message;
-				const success = data?.operationId;
-				setIsRequestWorkInProgress(false);
-				if (error) {
+			doRestoreDeleteAccount(body)
+				.then((data) => {
+					let error = data?.error?.details?.cause || data?.error?.message;
+					const success = data?.operationId;
+					if (error === undefined && data?.status !== 200) {
+						error = t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
+					}
+					setIsRequestWorkInProgress(false);
+					if (error) {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: error,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
+					if (success) {
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								'label.restore_account_has_added_operation_queue',
+								'The restore of the account has been added to the operation queue successfully'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+						setIsSuccess(true);
+					}
+				})
+				.catch((error: any) => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: error,
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
-				}
-				if (success) {
-					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: t(
-							'label.restore_account_has_added_operation_queue',
-							'The restore of the account has been added to the operation queue successfully'
-						),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					setIsSuccess(true);
-				}
-			});
+				});
 		},
-		[createSnackbar, t]
+		[createSnackbar, t, domainName]
 	);
 
 	return (

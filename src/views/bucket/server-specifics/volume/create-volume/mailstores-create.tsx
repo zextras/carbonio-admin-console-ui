@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -11,11 +11,20 @@ import {
 	Padding,
 	Switch,
 	Text,
-	Select
+	Select,
+	Radio
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { volumeTypeList } from '../../../../utility/utils';
+import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 import { VolumeContext } from './volume-context';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import {
+	EMPTY_TYPE_VALUE,
+	INDEX_TYPE_VALUE,
+	LOCAL,
+	PRIMARY_TYPE_VALUE,
+	SECONDARY_TYPE_VALUE
+} from '../../../../../constants';
 
 const MailstoresCreate: FC<{
 	onSelection: any;
@@ -24,16 +33,23 @@ const MailstoresCreate: FC<{
 }> = ({ onSelection, externalData, setCompleteLoading }) => {
 	const context = useContext(VolumeContext);
 	const { t } = useTranslation();
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const { volumeDetail, setVolumeDetail } = context;
 	const [errName, setErrName] = useState(true);
 	const [errPath, setErrPath] = useState(true);
 	const [errCompressionThreshold, setErrCompressionThreshold] = useState(true);
 	const [toggleIndexer, setToggleIndexer] = useState(false);
+	const [primaryRadio, setPrimaryRadio] = useState(false);
+	const [secondaryRadio, setSecondaryRadio] = useState(false);
+	const [indexRadio, setIndexRadio] = useState(false);
+	const [allocation, setAllocation] = useState<any>();
 
 	const onVolMainChange = (v: any): void => {
 		setVolumeDetail((prev: any) => ({ ...prev, volumeMain: v }));
 		onSelection({ volumeMain: v }, true);
-		if (v === 10) {
+		if (v === INDEX_TYPE_VALUE) {
 			setToggleIndexer(true);
 		} else {
 			setToggleIndexer(false);
@@ -87,18 +103,28 @@ const MailstoresCreate: FC<{
 		onSelection({ isCompression: !volumeDetail?.isCompression }, true);
 	}, [onSelection, setVolumeDetail, volumeDetail?.isCompression]);
 
+	const onVolAllocationChange = (v: any): any => {
+		setVolumeDetail((prev: any) => ({ ...prev, volumeAllocation: v }));
+	};
+
 	useEffect(() => {
 		if (
-			volumeDetail?.volumeMain &&
 			volumeDetail?.volumeName &&
 			volumeDetail?.path &&
 			(volumeDetail?.compressionThreshold || toggleIndexer)
 		) {
-			setCompleteLoading(true);
+			if (isAdvanced && volumeDetail?.volumeMain) {
+				setCompleteLoading(true);
+			} else if (isAdvanced) {
+				setCompleteLoading(false);
+			} else if (!isAdvanced) {
+				setCompleteLoading(true);
+			}
 		} else {
 			setCompleteLoading(false);
 		}
 	}, [
+		isAdvanced,
 		setCompleteLoading,
 		toggleIndexer,
 		volumeDetail?.compressionThreshold,
@@ -106,6 +132,43 @@ const MailstoresCreate: FC<{
 		volumeDetail?.volumeMain,
 		volumeDetail?.volumeName
 	]);
+	useEffect(() => {
+		if (primaryRadio) {
+			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
+			onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
+		} else if (secondaryRadio) {
+			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
+			onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
+		} else if (indexRadio) {
+			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
+			onSelection({ volumeMain: INDEX_TYPE_VALUE }, true);
+		} else {
+			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
+			onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
+		}
+		const volumeTypeObject = volAllocationList.find(
+			(item: any) => item.value === volumeDetail?.volumeAllocation
+		);
+		setAllocation(volumeTypeObject);
+	}, [
+		indexRadio,
+		onSelection,
+		primaryRadio,
+		secondaryRadio,
+		setVolumeDetail,
+		volAllocationList,
+		volumeDetail?.volumeAllocation
+	]);
+
+	useEffect(() => {
+		if (volumeDetail?.volumeMain === PRIMARY_TYPE_VALUE) {
+			setPrimaryRadio(true);
+		} else if (volumeDetail?.volumeMain === SECONDARY_TYPE_VALUE) {
+			setSecondaryRadio(true);
+		} else if (volumeDetail?.volumeMain === INDEX_TYPE_VALUE) {
+			setIndexRadio(true);
+		}
+	}, [volumeDetail?.volumeMain]);
 
 	return (
 		<>
@@ -118,19 +181,43 @@ const MailstoresCreate: FC<{
 						readOnly
 					/>
 				</Row>
-				<Row padding={{ top: 'large' }} width="100%">
-					<Select
-						items={volumeTypeList}
-						background="gray5"
-						label={t('label.volume_type', 'Volume Type')}
-						defaultSelection={{
-							label: 'Primary',
-							value: 1
-						}}
-						showCheckbox={false}
-						onChange={onVolMainChange}
-					/>
-				</Row>
+				{!isAdvanced && (
+					<Row padding={{ top: 'large' }} width="100%">
+						<Input
+							label={t('label.volume_allocation', 'Allocation')}
+							backgroundColor="gray6"
+							value={LOCAL}
+							readOnly
+						/>
+					</Row>
+				)}
+				{!isAdvanced && (
+					<Row padding={{ top: 'large' }} width="100%">
+						<Select
+							items={volTypeList}
+							background="gray5"
+							label={t('label.volume_type', 'Volume Type')}
+							defaultSelection={{
+								label: 'Primary',
+								value: 1
+							}}
+							showCheckbox={false}
+							onChange={onVolMainChange}
+						/>
+					</Row>
+				)}
+				{isAdvanced && (
+					<Row padding={{ top: 'large' }} width="100%">
+						<Select
+							items={volAllocationList}
+							background="gray5"
+							label={t('label.volume_allocation', 'Allocation')}
+							showCheckbox={false}
+							selection={allocation}
+							onChange={onVolAllocationChange}
+						/>
+					</Row>
+				)}
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
 					<Input
 						inputName="volumeName"
@@ -148,6 +235,51 @@ const MailstoresCreate: FC<{
 						</Padding>
 					)}
 				</Row>
+				{isAdvanced && (
+					<>
+						<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+							<Row width="48%" mainAlignment="flex-start">
+								<Radio
+									inputName="primary"
+									label={t('label.primary_volume', 'This is a Primary Volume')}
+									value={PRIMARY_TYPE_VALUE}
+									checked={primaryRadio}
+									onClick={(): any => {
+										setPrimaryRadio(!primaryRadio);
+										setSecondaryRadio(false);
+										setIndexRadio(false);
+									}}
+								/>
+							</Row>
+							<Row width="48%" mainAlignment="flex-start">
+								<Radio
+									inputName="secondary"
+									label={t('label.secondary_volume', 'This is a Secondary Volume')}
+									value={SECONDARY_TYPE_VALUE}
+									checked={secondaryRadio}
+									onClick={(): any => {
+										setSecondaryRadio(!secondaryRadio);
+										setPrimaryRadio(false);
+										setIndexRadio(false);
+									}}
+								/>
+							</Row>
+						</Row>
+						<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+							<Radio
+								inputName="index"
+								label={t('label.index_volume', 'This is a Index Volume')}
+								value={INDEX_TYPE_VALUE}
+								checked={indexRadio}
+								onClick={(): any => {
+									setIndexRadio(!indexRadio);
+									setPrimaryRadio(false);
+									setSecondaryRadio(false);
+								}}
+							/>
+						</Row>
+					</>
+				)}
 				<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
 					<Input
 						inputName="path"

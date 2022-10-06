@@ -236,7 +236,13 @@
         "volume_server": "Máy chủ",
         "enable_current_helptext": "Bật tùy chọn này sẽ vô hiệu hóa âm lượng đang hoạt động hiện tại.",
         "required": "Yêu cầu",
-        "select_a_server": "Lựa chọn một Máy chủ"
+        "select_a_server": "Lựa chọn một Máy chủ",
+        "configuration_lbl": "Cấu hình",
+        "local": "Cục bộ",
+        "na": "Không xác định",
+        "purge": "Xoá",
+        "scheduled": "Đã lên lịch",
+        "disabled": "Đã tắt"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -421,9 +427,6 @@
         "realtime_scanner": "Quét theo thời gian thực",
         "schedule": "Lịch trình"
     },
-    "lable": {
-        "delete_button": "XOÁ"
-    },
     "cos": {
         "calendar_options": "Tuỳ chọn lịch biểu",
         "calender_features": "Tính năng lịch",
@@ -454,7 +457,6 @@
         "search_features": "Tính năng tìm kiếm",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Hiển thị hộp lựa chọn để chọn các mục email, liên hệ, thư thoại ở chế độ xem theo danh sách đối với các thao tác theo từng đợt",
         "view_mail_as_html": "Xem thư dưới dạng HTML (khi có thể)",
-        "group_mail": "Nhóm thư theo:",
         "quota_warning_message_template": "Mẫu thư cảnh báo hạn mức",
         "quotas": "Hạn mức",
         "rss_polling_interval": "Khoảng thăm dò RSS",
@@ -579,7 +581,9 @@
             "work_week": "Xem theo tuần làm việc"
         },
         "enable_smime": "Bật S/MIME:",
-        "general": "Chung"
+        "general": "Chung",
+        "min_new_check_interval_value": "Giá trị",
+        "send": "GỬI"
     },
     "privacy": {
         "send_full_error_data_to_zextras": "Gửi dữ liệu lỗi đầy đủ tới Zextras"

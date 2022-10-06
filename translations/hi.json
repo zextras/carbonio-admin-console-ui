@@ -78,7 +78,7 @@
         "space": "Space",
         "subscription": "सब्सक्रिप्शन",
         "time_zone": "टाइम ज़ोन",
-        "type": "टाइप",
+        "type": "टाइप करें",
         "unsaved_changes": "आपके अनसेव्ड मैसेज हैं",
         "unsaved_changes_line1": "क्या आप वाकई में बिना सेव किए ये पेज छोड़ना चाहते हैं?",
         "unsaved_changes_line2": "आपके सभी बिना सेव किए बदलाव उड़ जाएंगे",
@@ -322,7 +322,6 @@
         "admin_delegates": "एडमिन के डेलीगेट",
         "add_to_the_list": "लिस्ट में जोड़ें",
         "add_regex": "REGEX जोड़ें",
-        "add_it_to_list": "लिस्ट में जोड़ें",
         "add_in_mailing_list_or_both": "आप कोई और मेलिंग लिस्ट या कोई यूजर जोड़ सकते हैं। दोनों में से कोई भी लिस्ट का ओनर हो सकता है।",
         "active_sync": "ActiveSync",
         "activate_and_update": "एक्टिवेट और अपडेट करें",
@@ -411,7 +410,14 @@
         "required": "अपेक्षित",
         "select_a_server": "कोई सर्वर चुनें",
         "volume_create": "बनाएँ",
-        "volume_server": "सर्वर"
+        "volume_server": "सर्वर",
+        "configuration_lbl": "कॉन्फ़िगुरेशन",
+        "global_address_list": "वै‍श्विक एड्रैस सूची",
+        "local": "लोकल",
+        "na": "लागू नहीं",
+        "purge": "हटाएँ",
+        "scheduled": "शैड्यूल्ड",
+        "disabled": "बंद हुआ"
     },
     "timezone": {
         "asia_tomsk": "{{value}} तोम्स्क",
@@ -642,9 +648,6 @@
             }
         }
     },
-    "lable": {
-        "delete_button": "डिलीट करें"
-    },
     "backup": {
         "backup_path": "Backup पाथ",
         "backup_purge": "बैकअप मिटाएँ",
@@ -657,7 +660,7 @@
         "module_enable_at_startup": "स्टार्टअप में मॉड्यूल चालू",
         "purge_old_configurations": "पुराने कॉन्फ़िगुरेशन मिटाएँ",
         "realtime_scanner": "RealTime Scanner",
-        "schedule": "शेड्यूल",
+        "schedule": "समय सारिणी",
         "threads_for_items": "आइटम के लिए Threads",
         "threads_for_account": "अकाउंट के लिए Threads",
         "set_backup_forever_msg": "यदि आप 0 सेट करेंगे तो आपका डाटा हमेशा के लिए बैकअप में रख दिया जाएगा",
@@ -698,7 +701,6 @@
         "search_features": "खोज सुविधाएँ",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "बैच कार्रवाइयों के लिए सूची दृश्य में ईमेल, संपर्क, वॉइसमेल आइटम्स चुनने के लिए चेकबॉक्‍स दिखाएं",
         "view_mail_as_html": "HTML के रूप में मेल देखें (जब संभव हो)",
-        "group_mail": "इस आधार पर मेल समूहीकृत करें:",
         "type_of_UI": "UI का टाइप",
         "standard_html_client": "स्टैंडर्ड (HTML) क्लाइंट",
         "show_search_string": "सर्च स्ट्रिंग दिखाएँ",
@@ -863,7 +865,9 @@
         "saved_searches": "सहेजी गई खोज",
         "send_read_receipts": "पढ़ने की पुष्टि भेजें",
         "sharing": "शेयर करना",
-        "tagging": "टैगिंग"
+        "tagging": "टैगिंग",
+        "min_new_check_interval_value": "वैल्यू",
+        "send": "भेजें"
     },
     "privacy": {
         "send_full_error_data_to_zextras": "Carbonio को फुल एरर डाटा भेजें"

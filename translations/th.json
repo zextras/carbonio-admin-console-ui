@@ -426,7 +426,6 @@
         "admins": "ผู้ดูแล",
         "admin_help_url": "URL การช่วยเหลือของผู้ดูแลระบบ",
         "add_to_the_list": "เพิ่มในรายการ",
-        "add_it_to_list": "เพิ่มในรายการ",
         "add_in_mailing_list_or_both": "คุณเพิ่มรายชื่อผู้รับจดหมายหรือผู้ใช้อื่น โดยทั้งคู่สามารถเป็นเจ้าของรายการได้",
         "active_sync": "ActiveSync",
         "activate_and_update": "เปิดใช้งาน & อัปเดต",
@@ -633,7 +632,13 @@
         "detail_error": "{{name}}",
         "enable_current_helptext": "การเปิดใช้งานตัวเลือกนี้จะปิดใช้งานโวลุ่มที่ใช้งานอยู่ในปัจจุบัน",
         "required": "ที่จำเป็น",
-        "volume_server": "เซิร์ฟเวอร์"
+        "volume_server": "เซิร์ฟเวอร์",
+        "configuration_lbl": "การกำหนดค่า",
+        "local": "โลคอล",
+        "na": "N/A",
+        "purge": "ลบ",
+        "disabled": "ปิดการใช้งาน",
+        "scheduled": "กำหนดการ"
     },
     "message": {
         "snackbar": {
@@ -665,9 +670,6 @@
         "latency_low_threshold": "เกณฑ์เวลาในการตอบสนองต่ำ",
         "latency_high_threshold": "เกณฑ์เวลาในการตอบสนองสูง"
     },
-    "lable": {
-        "delete_button": "ลบ"
-    },
     "cos": {
         "calendar_options": "ตัวเลือกปฏิทิน",
         "calender_features": "คุณลักษณะปฏิทิน",
@@ -698,7 +700,6 @@
         "search_features": "คุณลักษณะการค้นหา",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "แสดงกล่องกาเครื่องหมายการเลือกสำหรับเลือกรายการอีเมล รายชื่อผู้ติดต่อ ข้อความเสียงในมุมมองรายการสำหรับการดำเนินการชุดงาน",
         "view_mail_as_html": "ดูจดหมายเป็นแบบ HTML (หากเป็นไปได้)",
-        "group_mail": "จัดกลุ่มจดหมายตาม:",
         "type_of_UI": "ประเภทของ UI",
         "standard_html_client": "ไคลเอ็นต์มาตรฐาน (HTML)",
         "show_search_string": "แสดงสตริงการค้นหา",
@@ -863,7 +864,9 @@
         "saved_searches": "การค้นหาที่บันทึกไว้",
         "send_read_receipts": "ส่งการแจ้งเมื่อผู้รับเปิดอ่าน",
         "sharing": "การใช้ร่วมกัน",
-        "tagging": "การแท็ก"
+        "tagging": "การแท็ก",
+        "min_new_check_interval_value": "ค่า",
+        "send": "ส่ง"
     },
     "connection": {
         "access_key": "รหัสการเข้าถึง",

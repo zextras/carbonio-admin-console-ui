@@ -10,11 +10,13 @@ import { useTranslation } from 'react-i18next';
 import ListRow from '../../../list/list-row';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import { getFormatedDate } from '../../../utility/utils';
+import { useDomainStore } from '../../../../store/domain/store';
 
 const RestoreDeleteAccountStartSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(RestoreDeleteAccountContext);
 	const { restoreAccountDetail, setRestoreAccountDetail } = context;
+	const domainName = useDomainStore((state) => state.domain?.name);
 	return (
 		<Container
 			orientation="column"
@@ -45,7 +47,11 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 								<Input
 									backgroundColor="gray6"
 									label={t('label.destination_account', 'Destination Account')}
-									value={restoreAccountDetail?.copyAccount}
+									value={
+										restoreAccountDetail?.copyAccount === ''
+											? ''
+											: `${restoreAccountDetail?.copyAccount.split('@')[0]}@${domainName}`
+									}
 									readOnly
 								/>
 							</Container>

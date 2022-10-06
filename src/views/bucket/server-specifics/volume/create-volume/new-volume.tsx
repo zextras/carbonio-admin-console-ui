@@ -3,13 +3,14 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, ReactElement, useCallback, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useContext, useState } from 'react';
 import { Button } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section';
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 
 const WizardInSection: FC<any> = ({
 	wizard,
@@ -40,24 +41,16 @@ const WizardInSection: FC<any> = ({
 	);
 };
 
-interface VolumeDetailObj {
-	id: string;
-	volumeName: string;
-	volumeMain: number;
-	path: string;
-	isCurrent: boolean;
-	isCompression: boolean;
-	compressionThreshold: number;
-}
-
 const NewVolume: FC<{
-	setToggleWizardSection: any;
+	setToggleWizardLocal: any;
+	setToggleWizardExternal: any;
 	setDetailsVolume: any;
 	volName: any;
 	setCreateMailstoresVolumeData: any;
 	CreateVolumeRequest: any;
 }> = ({
-	setToggleWizardSection,
+	setToggleWizardLocal,
+	setToggleWizardExternal,
 	setDetailsVolume,
 	volName,
 	setCreateMailstoresVolumeData,
@@ -65,15 +58,9 @@ const NewVolume: FC<{
 }) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
-	const [volumeDetail, setVolumeDetail] = useState<VolumeDetailObj>({
-		id: '',
-		volumeName: '',
-		volumeMain: 0,
-		path: '',
-		isCurrent: false,
-		isCompression: false,
-		compressionThreshold: 0
-	});
+	const context = useContext(VolumeContext);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const { volumeDetail, setVolumeDetail } = context;
 
 	const wizardSteps = [
 		{
@@ -90,19 +77,44 @@ const NewVolume: FC<{
 					icon={'CloseOutline'}
 					iconPlacement="right"
 					color="secondary"
-					onClick={(): void => setToggleWizardSection(false)}
+					onClick={(): void => setToggleWizardLocal(false)}
 				/>
 			),
-			PrevButton: (props: any): ReactElement => <></>,
-			NextButton: (props: any) => (
-				<Button
-					{...props}
-					label={t('label.volume_create', 'CREATE')}
-					icon={'ChevronRightOutline'}
-					iconPlacement="right"
-					disable={props.completeLoading}
-				/>
-			)
+			PrevButton: (props: any): any =>
+				isAdvanced ? (
+					<Button
+						{...props}
+						label={t('label.volume_back_button', 'BACK')}
+						icon={'ChevronLeftOutline'}
+						iconPlacement="left"
+						disable={props.completeLoading}
+						color="secondary"
+						onClick={(): void => {
+							setToggleWizardLocal(false);
+							setToggleWizardExternal(true);
+						}}
+					/>
+				) : (
+					<></>
+				),
+			NextButton: (props: any) =>
+				isAdvanced ? (
+					<Button
+						{...props}
+						label={t('label.volume_create', 'CREATE')}
+						icon={'PowerOutline'}
+						iconPlacement="right"
+						disable={props.completeLoading}
+					/>
+				) : (
+					<Button
+						{...props}
+						label={t('label.volume_create', 'CREATE')}
+						icon={'ChevronRightOutline'}
+						iconPlacement="right"
+						disable={props.completeLoading}
+					/>
+				)
 		}
 	];
 
@@ -123,16 +135,14 @@ const NewVolume: FC<{
 	);
 
 	return (
-		<VolumeContext.Provider value={{ volumeDetail, setVolumeDetail }}>
-			<HorizontalWizard
-				steps={wizardSteps}
-				Wrapper={WizardInSection}
-				onChange={setWizardData}
-				onComplete={onComplete}
-				setToggleWizardSection={setToggleWizardSection}
-				externalData={volName}
-			/>
-		</VolumeContext.Provider>
+		<HorizontalWizard
+			steps={wizardSteps}
+			Wrapper={WizardInSection}
+			onChange={setWizardData}
+			onComplete={onComplete}
+			setToggleWizardSection={setToggleWizardLocal}
+			externalData={volName}
+		/>
 	);
 };
 

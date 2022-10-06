@@ -28,8 +28,8 @@
         "account_gal_synchronization": "GAL同步账户名称"
     },
     "label": {
-        "account": "帐户",
-        "accounts": "帐户",
+        "account": "账户",
+        "accounts": "账户",
         "active": "启用",
         "signature_required": "需要签名信息。",
         "snackbar": {
@@ -38,7 +38,7 @@
             }
         },
         "status": "状态",
-        "suspended": "已挂起",
+        "suspended": "已暂停",
         "timezone": "时区",
         "unlimited": "无限",
         "url": "URL",
@@ -120,7 +120,7 @@
         "general_Settings": "通用设置",
         "general_settings": "通用设置",
         "help": "帮助",
-        "home": "首页",
+        "home": "主页",
         "hsm_policies": "HSM策略",
         "index_volumes": "索引卷",
         "indexer_settings": "索引器设置",
@@ -280,7 +280,6 @@
         "mailing_list": "邮件列表",
         "mail_size": "邮件大小",
         "logout_redirect_url": "注销重定向URL",
-        "login_allowed_user_agent": "允许登录用户代理",
         "log": "日志",
         "list_url": "邮件列表URL",
         "initial_mail_serach": "开始邮件搜索",
@@ -336,7 +335,6 @@
         "admin_delegates": "管理员委派",
         "add_to_the_list": "添加至列表",
         "add_regex": "添加正则表达式",
-        "add_it_to_list": "添加至列表",
         "add_in_mailing_list_or_both": "您添加了另一个邮件列表或用户。两者均可为列表所有者。",
         "active_sync": "ActiveSync",
         "account_created_successfully": "账户已创建成功",
@@ -378,10 +376,10 @@
         "volume_allocation": "分配",
         "volume_available_space": "可用空间",
         "volume_cancel_button": "取消",
-        "volume_compression_thresold": "压缩阈值",
+        "volume_compression_thresold": "压缩阈",
         "volume_create_with_this_data_button": "使用这些数据创建",
         "volume_id": "卷ID",
-        "volume_name": "卷名",
+        "volume_name": "卷名称",
         "volume_next_step_button": "下一步",
         "volume_path": "路径",
         "volume_type": "卷类型",
@@ -402,9 +400,9 @@
         "can_receive_email": "可接收邮件",
         "click_here": "点击此处",
         "compression": "压缩",
-        "compression_threshold": "压缩阈值",
+        "compression_threshold": "压缩阈",
         "contact": "联系人",
-        "conversation": "对话",
+        "conversation": "会话",
         "current": "当前",
         "date_creation": "数据创建",
         "default": "默认",
@@ -412,7 +410,7 @@
         "destination_account": "目标账户",
         "disable": "禁用",
         "do_you_need_more_information": "是否需要更多信息？",
-        "domain": "域名",
+        "domain": "域",
         "edit_button": "编辑",
         "enable": "启用",
         "enable_compression": "启用压缩",
@@ -422,19 +420,32 @@
         "invites": "邀请",
         "list_name": "列表名称",
         "mailing_options": "邮件选项",
-        "message": "邮件",
+        "message": "消息",
         "mta": "MTA",
-        "never": "从不",
+        "never": "永不",
         "new_volume_create": "创建",
         "next": "下一步",
         "path": "路径",
         "prefix": "称谓",
-        "private": "私人",
+        "private": "私密",
         "prompt": "提示",
-        "public": "公开",
+        "public": "公共",
         "quotas": "限额",
         "restore_data_source": "恢复数据源",
-        "settings": "设置"
+        "settings": "设置",
+        "configuration_lbl": "配置",
+        "detail_error": "{{name}}",
+        "enable_current_helptext": "启用此选项将禁用当前活动卷。",
+        "required": "必要",
+        "select_a_server": "选择服务器",
+        "volume_create": "创建",
+        "volume_server": "服务器",
+        "global_address_list": "全局地址列表",
+        "disabled": "已禁用",
+        "local": "本地",
+        "na": "N/A",
+        "purge": "清除",
+        "scheduled": "已计划"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",
@@ -637,9 +648,6 @@
             }
         }
     },
-    "lable": {
-        "delete_button": "删除"
-    },
     "backup": {
         "backup_path": "备份路径",
         "backup_purge": "备份清除",
@@ -652,7 +660,7 @@
         "module_enable_at_startup": "启动时已启用模块",
         "purge_old_configurations": "清除旧配置",
         "realtime_scanner": "实时扫描器",
-        "schedule": "日程安排",
+        "schedule": "计划",
         "threads_for_items": "项目线程",
         "threads_for_account": "账户线程",
         "set_backup_forever_msg": "如果设置为0，您的数据将被永久保存在备份中",
@@ -693,7 +701,6 @@
         "search_features": "搜索功能",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "显示选择复选框，用以在列表视图中成批选择电子邮件、联系人和语音邮件项目s",
         "view_mail_as_html": "以 HTML 格式查看邮件 (若可能)",
-        "group_mail": "邮件分组方式：",
         "type_of_UI": "UI类型",
         "standard_html_client": "标准（HTML）客户端",
         "show_search_string": "显示搜索字符串",
@@ -754,7 +761,7 @@
         "caldav_polling_interval": "CalDAV 轮询时间间隔",
         "calendar": "日历",
         "calendar_polling_interval": "日历轮询时间间隔",
-        "contacts": "联系人",
+        "contacts": "地址簿",
         "data_source": "数据源",
         "default_view": {
             "day": "天视图",
@@ -764,7 +771,7 @@
             "work_week": "工作周视图"
         },
         "disable_attachment_viewing_from_web_mail_ui": "关闭通过网络电邮用户界面查看附件",
-        "disabled": "已关闭",
+        "disabled": "已禁用",
         "email_message_lifetime": "电子邮件存活时间",
         "email_retention_policy": "电子邮件保留政策",
         "enable_failed_login_lockout": "启用登录失败锁定功能",
@@ -836,7 +843,7 @@
         "send_full_error_data_to_zextras": "向Zextras发送完整错误数据"
     },
     "reminder": {
-        "minute": "{{count}}分钟"
+        "minute": "{{count}} 分钟"
     },
     "account_details": {
         "advanced_search": "高级搜索",
@@ -853,7 +860,7 @@
             "work_week": "工作周视图"
         },
         "enable_smime": "启用 S/MIME",
-        "general": "常规",
+        "general": "通用",
         "hide_in_gal": "在GAL中隐藏",
         "mail": "邮箱",
         "manuallly": "手动",
@@ -864,7 +871,9 @@
         "saved_searches": "保存的搜索",
         "send_read_receipts": "发送已读回执",
         "sharing": "共享",
-        "tagging": "正在标记"
+        "tagging": "正在标记",
+        "min_new_check_interval_value": "值",
+        "send": "发送"
     },
     "connection": {
         "access_key": "访问密钥",

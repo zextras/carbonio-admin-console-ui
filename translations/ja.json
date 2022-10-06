@@ -551,7 +551,6 @@
         "admin_delegates": "管理者代表",
         "add_to_the_list": "リストに追加する",
         "add_regex": "正規表現を追加する",
-        "add_it_to_list": "リストに追加する",
         "add_in_mailing_list_or_both": "別のメーリングリストまたはユーザーを追加します。どちらもリストの所有者になることができます。",
         "active_sync": "ActiveSync",
         "activate_and_update": "アクティブ化と更新",
@@ -633,7 +632,13 @@
         "select_a_server": "サーバーを選択してください",
         "volume_create": "作成",
         "required": "必須",
-        "volume_server": "サーバー"
+        "volume_server": "サーバー",
+        "configuration_lbl": "構成",
+        "disabled": "無効",
+        "purge": "パージ",
+        "scheduled": "スケジュールされました",
+        "local": "ローカル",
+        "na": "N/A"
     },
     "message": {
         "snackbar": {
@@ -641,9 +646,6 @@
                 "accepted": "共有リクエストを承認しました"
             }
         }
-    },
-    "lable": {
-        "delete_button": "削除する"
     },
     "backup": {
         "backup_path": "バックアップパス",
@@ -698,7 +700,6 @@
         "search_features": "検索の機能",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "バッチ操作用のリストビューにメール、連絡先、ボイスメールの項目を選択するためのチェックボックス表示",
         "view_mail_as_html": "メールをHTML形式で表示（可能な場合）",
-        "group_mail": "メールのグループ分け：",
         "type_of_UI": "UIの種類",
         "standard_html_client": "標準（HTML）クライアント",
         "show_search_string": "検索文字列を表示する",
@@ -869,7 +870,9 @@
         "saved_searches": "保存済み検索",
         "send_read_receipts": "開封確認を送信する",
         "sharing": "共有",
-        "tagging": "タグ付け"
+        "tagging": "タグ付け",
+        "min_new_check_interval_value": "価",
+        "send": "送信する"
     },
     "connection": {
         "access_key": "アクセスキー",

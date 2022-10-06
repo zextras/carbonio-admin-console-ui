@@ -46,10 +46,10 @@ const Dashboard: FC = () => {
 					size="large"
 					style={{ fontSize: '36px', fontFamily: 'roboto', height: '45px' }}
 				>
-					{t('welcome_to_carbonio', {
+					{t('welcome_to_carbonio_display_name', {
 						adminName: userName,
 						carbonioVersion: version,
-						defaultValue: 'Welcome {{adminName}} to Carbonio {{carbonioVersion}}!'
+						defaultValue: 'Welcome {{adminName}}!'
 					})}
 				</Text>
 				<Text color="#828282" overflow="break-word" weight="light" style={{ fontSize: '24px' }}>

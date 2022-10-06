@@ -35,6 +35,7 @@ const useWizard = ({
 	const dataRef = useRef(innerData);
 	const [currentStep, setCurrentStep] = useState(innerData.currentStep);
 	const [completeLoading, setCompleteLoading] = useState(true);
+	const [toggleNextBtn, setToggleNextBtn] = useState(false);
 	const stepKeys = useMemo(() => map(steps, (step) => step.name), [steps]);
 
 	const getStepIndex = useCallback(
@@ -165,7 +166,9 @@ const useWizard = ({
 		isFirstStep,
 		title,
 		onComplete,
-		setCompleteLoading
+		setCompleteLoading,
+		toggleNextBtn,
+		setToggleNextBtn
 	};
 };
 

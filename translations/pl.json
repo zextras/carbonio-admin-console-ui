@@ -308,7 +308,7 @@
         "minutes": "Minuty",
         "name": "Nazwa",
         "not_set": "Nie ustawiono",
-        "note": "Notka",
+        "note": "Notatka",
         "notification": "Powiadomienie",
         "of": "z",
         "page ": "Zaakceptowano propozycję udostępnienia",
@@ -442,7 +442,7 @@
         "yes": "Tak",
         "deleteing": "Usuwanie ",
         "enable_toaster_notification_for_new_calendar_events": "włącz powiadomienia pop-up dla nowych zdarzeń kalendarza",
-        "search_dot": "Wyszukaj ...",
+        "search_dot": "Wyszukaj…",
         "virtual_host_info_msg": "Używanie nazwy Virtualhost pozwalają użytkownikom na używanie usługi również używając innych adresów URL.",
         "virtual_host_enable_info_msg": "Kliknij w przycisk DODAJ, aby włączyć nowe.",
         "number_of_items_to_fetch_when_scrolling": "Liczba załadowywanych elementów przy przewijaniu",
@@ -617,7 +617,6 @@
         "admin_delegates": "Delegowani Administratorzy",
         "add_to_the_list": "Dodaj to do listy",
         "add_regex": "DODAJ REGEX",
-        "add_it_to_list": "Dodaj to do listy",
         "active_sync": "ActiveSync",
         "activate_and_update": "Aktywuj i Zaktualizuj",
         "account_created_successfully": "Konto zostało stworzone pomyślnie",
@@ -846,7 +845,13 @@
         "volume_create": "STWÓRZ",
         "volume_detail_error": "{{message}}",
         "volume_server": "Serwer",
-        "volume_type_edited": "{{message}}"
+        "volume_type_edited": "{{message}}",
+        "configuration_lbl": "Konfiguracja",
+        "disabled": "Wyłączone",
+        "local": "Lokalne",
+        "na": "nd.",
+        "purge": "Czystka",
+        "scheduled": "Zaplanowane"
     },
     "message": {
         "snackbar": {
@@ -914,7 +919,6 @@
         "search_features": "Funkcje wyszukiwania",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Pokaż pole wyboru zaznaczania wiadomości e-mail, kontaktów, wiadomości głosowych w widoku listy na potrzeby operacji wsadowych",
         "view_mail_as_html": "Oglądaj pocztę jako HTML (jeśli możliwe)",
-        "group_mail": "Grupuj e-maile",
         "composing_mail": "Tworzenie e-maili",
         "type_of_UI": "Typ UI",
         "standard_html_client": "Standardowy klient (HTML)",
@@ -1033,11 +1037,6 @@
         "add_appointments_when_invited": "Dodawaj spotkania po otrzymaniu zaproszenia",
         "time_range": "Zakres czasu"
     },
-    "lable": {
-        "delete_button": "USUŃ",
-        "delete_it": "Usuń ją",
-        "delete_it_instead": "Zamiast tego ją usuń"
-    },
     "locale": {
         "label_italian": "Włoski - {{value}}",
         "label_japanese": "Japoński - {{value}}",
@@ -1078,7 +1077,7 @@
     },
     "welcome_to_carbonio": "{{adminName}}, witaj w Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Wybierz sekcję z menu po lewej stronie",
-    "select_domain_or_create_new": "Wybierz domenę, aby móc nią zarządzać lub kliknij przcisk Stwórz, aby stworzyć nową.",
+    "select_domain_or_create_new": "Wybierz domenę z menu po lewej stronie lub kliknij przcisk Stwórz, aby stworzyć nową.",
     "select_cos_or_create_new_cos": "Wybierz Class of Service (CoS), aby nim zarządzać lub kliknij przycisk \"Stwórz\", aby stworzyć nowe.",
     "select_bucket_or_create_new_bucket": "Wygląda na to, że nie ustawiłeś jeszcze typu bucketa. Kliknij przycisk \"NOWY BUCKET\", aby go stworzyć.",
     "new_bucket_summary": "PODSUMOWANIE",
@@ -1128,7 +1127,7 @@
         "send_read_receipts": "Wysyłaj potwierdzenie przeczytania",
         "sharing": "Udostępnienie",
         "tagging": "Znaczniki",
-        "enable_toast_notifications": "Włącz powiadomienia pop-up",
+        "enable_toast_notifications": "Włącz powiadomienia",
         "enable_toast_for_new_emails": "Włącz powiadomienia pop-up dla nowych e-maili",
         "allow_sending_cancellation_mail": "Zezwalaj na wysyłanie wiadomości e-mail o anulowaniu",
         "group_calendar": "Kalendarz grupowy",
@@ -1148,7 +1147,7 @@
         "out_of_office_reply": "Odpowiedź Poza biurem",
         "notify_changes_by_delegated_access": "Powiadamiaj o zmianach dokonanych przy użyciu delegowanego dostępu",
         "new_mail_notification": "Nowe powiadomienie mailowe",
-        "min_new_check_interval_value": "Min. interwał nowego sprawdzenia (wartość)",
+        "min_new_check_interval_value": "Wartość",
         "mail_signatures": "Podpisy e-mail",
         "mail_signature": "Podpis e-mail",
         "initial_search_preference": "Preferencje wstępnego wyszukiwania",
@@ -1175,7 +1174,8 @@
         "audible_reminder_notification": "Dźwiękowe przypomnienie",
         "appointments_default_duration": "Domyślna długość trwania spotkania",
         "always_show_mini_calendar": "Zawsze pokazuj minikalendarz",
-        "allow_sending_from_any_address": "Zezwalaj na wysyłanie z jakiegokolwiek adresu"
+        "allow_sending_from_any_address": "Zezwalaj na wysyłanie z jakiegokolwiek adresu",
+        "send": "WYŚLIJ"
     },
     "privacy": {
         "send_full_error_data_to_zextras": "Wyślij wszystkie dane o błędach do Zextras",

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -27,12 +27,15 @@ import { AbsoluteContainer } from '../../../components/styled';
 import ServerVolumeDetailsPanel from './server-volume-details-panel';
 import { fetchSoap } from '../../../../services/bucket-service';
 import IndexerVolumeTable from './indexer-volume-table';
-import { tableHeader, indexerHeaders } from '../../../utility/utils';
+import { volTableHeader, indexerHeaders } from '../../../utility/utils';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
 import NewVolume from './create-volume/new-volume';
 import ModifyVolume from './modify-volume/modify-volume';
 import DeleteVolumeModel from './delete-volume-model';
 import { useServerStore } from '../../../../store/server/store';
+import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
+import { VolumeContext } from './create-volume/volume-context';
+import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -124,11 +127,17 @@ const VolumeListTable: FC<{
 const VolumesDetailPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
 	const [t] = useTranslation();
+	const context = useContext(VolumeContext);
+	const { volumeDetail, setVolumeDetail } = context;
 	const selectedServerName = useBucketVolumeStore((state) => state.selectedServerName);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const volIndexerHeaders = useMemo(() => indexerHeaders(t), [t]);
+	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t), [t]);
 	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState('');
 	const [secondaryVolumeSelection, setSecondaryVolumeSelection] = useState('');
 	const [indexerVolumeSelection, setIndexerVolumeSelection] = useState('');
-	const [toggleWizardSection, setToggleWizardSection] = useState(false);
+	const [toggleWizardLocal, setToggleWizardLocal] = useState(false);
+	const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
 	const [detailsVolume, setDetailsVolume] = useState(false);
 	const [createMailstoresVolumeData, setCreateMailstoresVolumeData] = useState();
 	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState(false);
@@ -337,13 +346,15 @@ const VolumesDetailPanel: FC = () => {
 						});
 				}
 				getAllVolumesRequest();
-				setToggleWizardSection(false);
+				setToggleWizardLocal(false);
+				setToggleWizardExternal(false);
 				createSnackbar({
 					key: '1',
 					type: 'success',
 					label: t('label.volume_created', 'Volume created successfully')
 				});
-				setToggleWizardSection(false);
+				setToggleWizardLocal(false);
+				setToggleWizardExternal(false);
 				setDetailsVolume(false);
 				return res;
 			})
@@ -379,6 +390,30 @@ const VolumesDetailPanel: FC = () => {
 
 	return (
 		<>
+			{toggleWizardExternal && (
+				<AbsoluteContainer orientation="vertical" background="gray5">
+					<CreateMailstoresVolume
+						setToggleWizardExternal={setToggleWizardExternal}
+						setToggleWizardLocal={setToggleWizardLocal}
+						setDetailsVolume={setDetailsVolume}
+						setCreateMailstoresVolumeData={setCreateMailstoresVolumeData}
+						volName={selectedServerName}
+						CreateVolumeRequest={CreateVolumeRequest}
+					/>
+				</AbsoluteContainer>
+			)}
+			{toggleWizardLocal && (
+				<AbsoluteContainer orientation="vertical" background="gray5">
+					<NewVolume
+						setToggleWizardLocal={setToggleWizardLocal}
+						setToggleWizardExternal={setToggleWizardExternal}
+						setDetailsVolume={setDetailsVolume}
+						setCreateMailstoresVolumeData={setCreateMailstoresVolumeData}
+						volName={selectedServerName}
+						CreateVolumeRequest={CreateVolumeRequest}
+					/>
+				</AbsoluteContainer>
+			)}
 			{toggleDetailPage && volume && (
 				<AbsoluteContainer orientation="vertical" background="gray5">
 					<ServerVolumeDetailsPanel
@@ -406,17 +441,7 @@ const VolumesDetailPanel: FC = () => {
 					/>
 				</AbsoluteContainer>
 			)}
-			{toggleWizardSection && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
-					<NewVolume
-						setToggleWizardSection={setToggleWizardSection}
-						setDetailsVolume={setDetailsVolume}
-						setCreateMailstoresVolumeData={setCreateMailstoresVolumeData}
-						volName={selectedServerName}
-						CreateVolumeRequest={CreateVolumeRequest}
-					/>
-				</AbsoluteContainer>
-			)}
+
 			<RelativeContainer
 				orientation="column"
 				crossAlignment="flex-start"
@@ -461,7 +486,21 @@ const VolumesDetailPanel: FC = () => {
 								label={t('label.new_volume_button', 'NEW VOLUME')}
 								icon="PlusOutline"
 								color="primary"
-								onClick={(): any => setToggleWizardSection(!toggleWizardSection)}
+								onClick={(): any => {
+									setVolumeDetail({
+										id: '',
+										volumeName: '',
+										volumeMain: 0,
+										path: '',
+										isCurrent: false,
+										isCompression: false,
+										compressionThreshold: 0,
+										volumeAllocation: 0
+									});
+									isAdvanced
+										? setToggleWizardExternal(!toggleWizardExternal)
+										: setToggleWizardLocal(!toggleWizardLocal);
+								}}
 							/>
 						</Row>
 						<Row
@@ -475,7 +514,7 @@ const VolumesDetailPanel: FC = () => {
 						<Row padding={{ horizontal: 'large', bottom: 'extralarge' }} width="100%">
 							<VolumeListTable
 								volumes={volumeList?.primaries}
-								headers={tableHeader}
+								headers={volPrimarySecondaryHeaders}
 								selectedRows={priamryVolumeSelection}
 								onSelectionChange={(selected: any): any => {
 									setPriamryVolumeSelection(selected);
@@ -501,7 +540,7 @@ const VolumesDetailPanel: FC = () => {
 						<Row padding={{ horizontal: 'large', bottom: 'extralarge' }} width="100%">
 							<VolumeListTable
 								volumes={volumeList?.secondaries}
-								headers={tableHeader}
+								headers={volPrimarySecondaryHeaders}
 								selectedRows={secondaryVolumeSelection}
 								onSelectionChange={(selected: any): any => {
 									setSecondaryVolumeSelection(selected);
@@ -529,7 +568,7 @@ const VolumesDetailPanel: FC = () => {
 						>
 							<IndexerVolumeTable
 								volumes={volumeList?.indexes}
-								headers={indexerHeaders}
+								headers={volIndexerHeaders}
 								selectedRows={indexerVolumeSelection}
 								onSelectionChange={(selected: any): any => {
 									setIndexerVolumeSelection(selected);

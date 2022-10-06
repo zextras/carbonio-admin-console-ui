@@ -346,7 +346,6 @@
         "aggrigated_space_criteria": "Geaggregeerde ruimtecriteria",
         "admin_help_url": "Admin Help URL",
         "add_to_the_list": "Aan de lijst toevoegen",
-        "add_it_to_list": "Aan de lijst toevoegen",
         "add_in_mailing_list_or_both": "U voegt een andere Mailinglijst of een Gebruiker toe. Beiden kunnen Eigenaar van de lijst zijn.",
         "activate_and_update": "Activeren en bijwerken",
         "account_created_successfully": "De account is met succes gecreëerd",
@@ -466,7 +465,14 @@
         "required": "Vereist",
         "select_a_server": "Een Server selecteren",
         "volume_create": "CREËREN",
-        "volume_server": "Server"
+        "volume_server": "Server",
+        "configuration_lbl": "Configuratie",
+        "global_address_list": "Algemene adreslijst",
+        "local": "Locaal",
+        "na": "NVT",
+        "purge": "Verwijderen",
+        "scheduled": "Gepland",
+        "disabled": "Uitgeschakeld"
     },
     "timezone": {
         "europe_belgrade": "{{value}} Belgrado, Bratislava, Boedapest, Ljubljana, Praag",
@@ -642,9 +648,6 @@
             }
         }
     },
-    "lable": {
-        "delete_button": "VERWIJDEREN"
-    },
     "backup": {
         "backup_path": "Backup-traject",
         "backup_purge": "Back-up wissen",
@@ -698,7 +701,6 @@
         "search_features": "Zoekfuncties",
         "show_selection_checkbox_for_selecting_email_contact_voicemail_items_in_a_list_view_for_batch_operations": "Selectievakje tonen voor het selecteren van e-mail-, contact-, voicemail-items in een lijstweergave voor batch-bewerking",
         "view_mail_as_html": "E-mail in HTML weergeven (wanneer mogelijk)",
-        "group_mail": "E-mail groeperen op:",
         "type_of_UI": "Type UI",
         "standard_html_client": "Standaard (HTML) cliënt",
         "show_search_string": "Zoekstring weergeven",
@@ -863,7 +865,9 @@
         "saved_searches": "Opgeslagen zoekopdrachten",
         "send_read_receipts": "Gelezen-ontvangstberichten verzenden",
         "sharing": "Delen",
-        "tagging": "Bezig met labels aanbrengen"
+        "tagging": "Bezig met labels aanbrengen",
+        "min_new_check_interval_value": "Waarde",
+        "send": "VERSTUREN"
     },
     "privacy": {
         "send_full_error_data_to_zextras": "Stuur volledige foutgegevens naar Zextras"
