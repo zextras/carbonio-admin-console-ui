@@ -220,113 +220,105 @@ const Subscription: FC = () => {
 	};
 
 	return (
-		<>
-			<>
-				<Modal
-					title={t('core.subscription.modal.label', 'Deactivate Token')}
-					open={open}
-					onClose={(): void => setOpen(false)}
-					customFooter={
-						<>
-							<Button
-								label={t('core.subscription.modal.cancel', 'NO')}
-								color="secondary"
-								onClick={(): void => setOpen(false)}
-							/>
-							<Padding horizontal="small" />
-							<Button
-								color="error"
-								label={t('core.subscription.modal.deactivate', 'Yes, Deactivate')}
-								onClick={doRemoveLicense}
-							/>
-						</>
-					}
-					showCloseIcon
+		<Container mainAlignment="flex-start" background="gray6">
+			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Container
+					orientation="vertical"
+					mainAlignment="space-around"
+					background="gray6"
+					height="58px"
 				>
-					<Text overflow="break-word">
-						{t(
-							'core.subscription.modal.warning',
-							'You are trying to deactivate the current token.Doing so will disable all the enabled features.'
-						)}
-					</Text>
-
-					<Text overflow="break-word">
-						{t('core.subscription.modal.confirm', 'Are you sure you want to proceed?')}
-					</Text>
-				</Modal>
-				{/* <Section
-					title={
-						<Row mainAlignment="space-between" crossAlignment="center" width="100vw">
-							<Text weight="bold">{t('core.subscription.subcription', 'Subscription')}</Text>
-						</Row>
-					}
-					divider
-				> */}
-				<Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-					<Container
+					<Row
 						orientation="horizontal"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
 						width="100%"
-						height="fit"
-						wrap="wrap"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						style={{ padding: '16px 0 32px 0' }}
+						padding={{ all: 'large' }}
 					>
-						<Row width="calc(100% - 122px)">
-							<Input
-								label={t('core.subscription.token', 'Token')}
-								backgroundColor="gray5"
-								value={licenseKey}
-								onChange={(e: any): void => setLicenseKey(e.target.value)}
-							/>
+						<Row mainAlignment="flex-start" crossAlignment="flex-start">
+							<Text size="medium" weight="bold" color="gray0">
+								{t('label.subscriptions', 'Subscriptions')}
+							</Text>
 						</Row>
-						<Row width="122px" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Button
-								label={
-									services &&
-									services.response &&
-									(services.response.expired || services.response.type === 'Trial')
-										? t('core.subscription.active', 'Active')
-										: t('core.subscription.deactive', 'Deactive')
-								}
-								disabled={!licenseKey || disableActiveBtn}
-								type="outlined"
-								color={
-									services &&
-									services.response &&
-									(services.response.expired || services.response.type === 'Trial')
-										? 'primary'
-										: 'error'
-								}
-								onClick={
-									services &&
-									services.response &&
-									(services.response.expired || services.response.type === 'Trial')
-										? (): void => activeLicence()
-										: (): void => setOpen(true)
-								}
-								style={{ padding: '12px 12px' }}
-							/>
-						</Row>
-					</Container>
-					<Divider />
-					<Row width="fill" mainAlignment="flex-start" padding={{ vertical: 'large' }}>
-						<Text weight="bold">{t('core.subscription.bundle', 'Bundle')}</Text>
 					</Row>
-					<Container
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						wrap="wrap"
-						height="fit"
-					>
-						{modules.map(
-							(module: any) =>
-								(module.licensed || (!module.licensed && showDisabledModules)) && (
-									<ServiceStatus key={module.name} name={module.name} licensed={module.licensed} />
-								)
-						)}
-						{/* <Row
+				</Container>
+			</Row>
+			<Row orientation="horizontal" width="100%" background="gray6">
+				<Divider />
+			</Row>
+			<Container
+				mainAlignment="flex-start"
+				padding={{ horizontal: 'large' }}
+				orientation="column"
+				crossAlignment="flex-start"
+				style={{ overflow: 'auto' }}
+				width="100%"
+				height="calc(100vh - 200px)"
+			>
+				<Container
+					orientation="horizontal"
+					width="100%"
+					height="fit"
+					wrap="wrap"
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					style={{ padding: '16px 0 32px 0' }}
+				>
+					<Row width="calc(100% - 122px)">
+						<Input
+							label={t('core.subscription.token', 'Token')}
+							backgroundColor="gray5"
+							value={licenseKey}
+							onChange={(e: any): void => setLicenseKey(e.target.value)}
+						/>
+					</Row>
+					<Row width="122px" mainAlignment="flex-end" crossAlignment="flex-end">
+						<Button
+							label={
+								services &&
+								services.response &&
+								(services.response.expired || services.response.type === 'Trial')
+									? t('core.subscription.active', 'Active')
+									: t('core.subscription.deactive', 'Deactive')
+							}
+							disabled={!licenseKey || disableActiveBtn}
+							type="outlined"
+							color={
+								services &&
+								services.response &&
+								(services.response.expired || services.response.type === 'Trial')
+									? 'primary'
+									: 'error'
+							}
+							onClick={
+								services &&
+								services.response &&
+								(services.response.expired || services.response.type === 'Trial')
+									? (): void => activeLicence()
+									: (): void => setOpen(true)
+							}
+							style={{ padding: '12px 12px' }}
+						/>
+					</Row>
+				</Container>
+				<Divider />
+				<Row width="fill" mainAlignment="flex-start" padding={{ vertical: 'large' }}>
+					<Text weight="bold">{t('core.subscription.bundle', 'Bundle')}</Text>
+				</Row>
+				<Container
+					orientation="horizontal"
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					wrap="wrap"
+					height="fit"
+				>
+					{modules.map(
+						(module: any) =>
+							(module.licensed || (!module.licensed && showDisabledModules)) && (
+								<ServiceStatus key={module.name} name={module.name} licensed={module.licensed} />
+							)
+					)}
+					{/* <Row
 							width="100%"
 							mainAlignment="flex-start"
 							style={{ padding: '0 0 32px 0' }}
@@ -341,106 +333,136 @@ const Subscription: FC = () => {
 								<Icon icon={showDisabledModules ? 'ChevronUp' : 'ChevronDown'} color="primary" />
 							</Padding>
 						</Row> */}
-					</Container>
-					{services && services.response /* && showDisabledModules */ && (
-						<Container
-							orientation="horizontal"
-							width="100%"
-							height="fit"
-							wrap="wrap"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-						>
-							<IconInfo
-								icon="AwardOutline"
-								label={t('core.subscription.subscription_type', 'Subscription Type')}
-								value={services.response.type}
-							/>
-							{/* <IconInfo
+				</Container>
+				{services && services.response /* && showDisabledModules */ && (
+					<Container
+						orientation="horizontal"
+						width="100%"
+						height="fit"
+						wrap="wrap"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+					>
+						<IconInfo
+							icon="AwardOutline"
+							label={t('core.subscription.subscription_type', 'Subscription Type')}
+							value={services.response.type}
+						/>
+						{/* <IconInfo
 								icon="CalendarOutline"
 								label={t('core.subscription.valid_through', 'Valid Through')}
 								value={`
 								${formatShortDate(services.response.dateStart)} - 
 								${formatShortDate(services.response.dateEnd)}`}
 							/> */}
-							<IconInfo
-								icon="PersonOutline"
-								label={t('core.subscription.customer', 'Customer')}
-								value={services.response.customer}
-							/>
-							<IconInfo
-								icon="CheckmarkCircleOutline"
-								label={t('core.subscription.status', 'Status')}
-								value={services.response.notYetValid ? 'Not Valid' : 'Valid'}
-							/>
-							<IconInfo
-								icon="EmailOutline"
-								label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
-								value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
-							/>
-							<IconInfo
-								icon="ClockOutline"
-								label={t('core.subscription.subscription_last_check', 'Subscription Last Check')}
-								value=""
-							/>
-						</Container>
-					)}
-					<Row
-						padding={{ top: 'large' }}
-						mainAlignment="flex-start"
+						<IconInfo
+							icon="PersonOutline"
+							label={t('core.subscription.customer', 'Customer')}
+							value={services.response.customer}
+						/>
+						<IconInfo
+							icon="CheckmarkCircleOutline"
+							label={t('core.subscription.status', 'Status')}
+							value={services.response.notYetValid ? 'Not Valid' : 'Valid'}
+						/>
+						<IconInfo
+							icon="EmailOutline"
+							label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
+							value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
+						/>
+						<IconInfo
+							icon="ClockOutline"
+							label={t('core.subscription.subscription_last_check', 'Subscription Last Check')}
+							value=""
+						/>
+					</Container>
+				)}
+				<Row
+					padding={{ top: 'large' }}
+					mainAlignment="flex-start"
+					width="100%"
+					onClick={(): void => setShowInfo((prev) => !prev)}
+				>
+					<CollapseText weight="bold">
+						{showInfo
+							? t('core.subscription.less_info', 'Less Information')
+							: t('core.subscription.more_info', 'More Information')}
+					</CollapseText>
+					<Padding left="small">
+						<Icon icon={showInfo ? 'ChevronUp' : 'ChevronDown'} />
+					</Padding>
+				</Row>
+				{services && services.response && showInfo && (
+					<Container
+						orientation="horizontal"
 						width="100%"
-						onClick={(): void => setShowInfo((prev) => !prev)}
+						height="fit"
+						wrap="wrap"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ top: 'large' }}
 					>
-						<CollapseText weight="bold">
-							{showInfo
-								? t('core.subscription.less_info', 'Less Information')
-								: t('core.subscription.more_info', 'More Information')}
-						</CollapseText>
-						<Padding left="small">
-							<Icon icon={showInfo ? 'ChevronUp' : 'ChevronDown'} />
-						</Padding>
-					</Row>
-					{services && services.response && showInfo && (
-						<Container
-							orientation="horizontal"
-							width="100%"
-							height="fit"
-							wrap="wrap"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							padding={{ top: 'large' }}
-						>
-							<IconInfo
-								icon="AvatarOutline"
-								label={t('core.subscription.company_name', 'Company Name')}
-								value={services.response.company}
-							/>
-							<IconInfo
-								icon="AppointmentOutline"
-								label={t('core.subscription.emissionDate', 'Emission date')}
-								value={moment(services.response.dateEnd).format('DD-MMM-YYYY')}
-							/>
-							<IconInfo
-								icon="EmailOutline"
-								label={t('core.subscription.email_buyer', 'Email Buyer')}
-								value={services.response?.companyEmail}
-							/>
-							<IconInfo
-								icon="InfoOutline"
-								label={t('core.subscription.version', 'Module version')}
-								value={version}
-							/>
-							<IconInfo
-								icon="PricetagsOutline"
-								label={t('core.subscription.order_id', 'Order Id')}
-								value={services.response.order_id}
-							/>
-						</Container>
+						<IconInfo
+							icon="AvatarOutline"
+							label={t('core.subscription.company_name', 'Company Name')}
+							value={services.response.company}
+						/>
+						<IconInfo
+							icon="AppointmentOutline"
+							label={t('core.subscription.emissionDate', 'Emission date')}
+							value={moment(services.response.dateEnd).format('DD-MMM-YYYY')}
+						/>
+						<IconInfo
+							icon="EmailOutline"
+							label={t('core.subscription.email_buyer', 'Email Buyer')}
+							value={services.response?.companyEmail}
+						/>
+						<IconInfo
+							icon="InfoOutline"
+							label={t('core.subscription.version', 'Module version')}
+							value={version}
+						/>
+						<IconInfo
+							icon="PricetagsOutline"
+							label={t('core.subscription.order_id', 'Order Id')}
+							value={services.response.order_id}
+						/>
+					</Container>
+				)}
+			</Container>
+			<Modal
+				title={t('core.subscription.modal.label', 'Deactivate Token')}
+				open={open}
+				onClose={(): void => setOpen(false)}
+				customFooter={
+					<>
+						<Button
+							label={t('core.subscription.modal.cancel', 'NO')}
+							color="secondary"
+							onClick={(): void => setOpen(false)}
+						/>
+						<Padding horizontal="small" />
+						<Button
+							color="error"
+							label={t('core.subscription.modal.deactivate', 'Yes, Deactivate')}
+							onClick={doRemoveLicense}
+						/>
+					</>
+				}
+				showCloseIcon
+			>
+				<Text overflow="break-word">
+					{t(
+						'core.subscription.modal.warning',
+						'You are trying to deactivate the current token.Doing so will disable all the enabled features.'
 					)}
-				</Container>
-				{/* </Section> */}
-			</>
-		</>
+				</Text>
+
+				<Text overflow="break-word">
+					{t('core.subscription.modal.confirm', 'Are you sure you want to proceed?')}
+				</Text>
+			</Modal>
+		</Container>
 	);
 };
 export default Subscription;

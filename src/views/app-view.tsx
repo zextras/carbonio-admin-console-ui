@@ -106,9 +106,11 @@ const AppView: FC = () => {
 				<Route path={`/${MANAGE_APP_ID}/${PRIVACY_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '100%' }}>
-							<Suspense fallback={<Spinner />}>
-								<PrivacyView />
-							</Suspense>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<PrivacyView />
+								</Suspense>
+							</DetailViewContainer>
 						</Container>
 					</Container>
 				</Route>
@@ -134,9 +136,13 @@ const AppView: FC = () => {
 				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Suspense fallback={<Spinner />}>
-							<Subscription />
-						</Suspense>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<Subscription />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
 					</Container>
 				</Route>
 				<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
