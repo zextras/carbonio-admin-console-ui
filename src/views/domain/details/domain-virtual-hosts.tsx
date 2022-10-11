@@ -62,6 +62,9 @@ const DomainVirtualHosts: FC = () => {
 				}));
 				setItems(virtualHostItems);
 				setDefaultItems(virtualHostItems);
+			} else {
+				setItems([]);
+				setDefaultItems([]);
 			}
 		}
 	}, [domainInformation]);
