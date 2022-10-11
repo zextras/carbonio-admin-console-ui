@@ -1039,7 +1039,7 @@
         "virtual_host_name": "Virtual Host Name",
         "virtual_host_note": "Please note, that removal of a virtual host takes effect only after mailbox server is restarted.",
         "virtual_host_user_msg": "Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, {{domainName}}",
-        "virtual_host_user_msg_1": "For example, you can make the service available both for mail.example.com and webamil.example.com.",
+        "virtual_host_user_msg_1": "For example, you can make the service available both for mail.example.com and webmail.example.com.",
         "virtual_host_user_msg_2": "Virtual hosts must be unique for the domain, so the system can understand which domain the user belongs to and we can show the customized option for the domain",
         "virtual_hosts": "Virtual Hosts",
         "volume": "Volume",

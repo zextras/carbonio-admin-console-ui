@@ -125,6 +125,12 @@ const DomainVirtualHosts: FC = () => {
 				_content: item.columns[0]
 			});
 		});
+		if (attributes?.length === 0) {
+			attributes.push({
+				n: ZIMBRA_VIRTUAL_HOSTNAME,
+				_content: ''
+			});
+		}
 		body.a = attributes;
 		modifyDomain(body)
 			.then((data) => {
@@ -226,7 +232,7 @@ const DomainVirtualHosts: FC = () => {
 								<Paragraph size="medium" color="secondary">
 									{t(
 										'label.virtual_host_user_msg_1',
-										'For example, you can make the service available both for mail.example.com and webamil.example.com.'
+										'For example, you can make the service available both for mail.example.com and webmail.example.com.'
 									)}
 								</Paragraph>
 							</Row>
