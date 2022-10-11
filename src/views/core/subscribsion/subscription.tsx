@@ -267,7 +267,7 @@ const Subscription: FC = () => {
 					crossAlignment="flex-start"
 					style={{ padding: '8px 0 16px 0' }}
 				>
-					<Row width="calc(100% - 122px)">
+					<Row width="calc(100% - 145px)">
 						<Input
 							label={t('core.subscription.token', 'Token')}
 							backgroundColor="gray5"
@@ -275,14 +275,14 @@ const Subscription: FC = () => {
 							onChange={(e: any): void => setLicenseKey(e.target.value)}
 						/>
 					</Row>
-					<Row width="122px" mainAlignment="flex-end" crossAlignment="flex-end">
+					<Row width="145px" mainAlignment="flex-end" crossAlignment="flex-end">
 						<Button
 							label={
 								services &&
 								services.response &&
 								(services.response.expired || services.response.type === 'Trial')
-									? t('core.subscription.active', 'Active')
-									: t('core.subscription.deactive', 'Deactive')
+									? t('core.subscription.activate', 'Activate')
+									: t('core.subscription.deactivate', 'Deactivate')
 							}
 							disabled={!licenseKey || disableActiveBtn}
 							type="outlined"
