@@ -275,6 +275,7 @@
     },
     "core": {
         "subscription": {
+            "activation": "Activation",
             "active": "Active",
             "bundle": "Bundle",
             "company_name": "Company Name",
@@ -785,7 +786,6 @@
         "mail": "Mail",
         "mail_notifications": "Email Notifications",
         "mail_size": "Mail Size",
-        "mailstores": "Mailstores",
         "mailbox_quota": "Mailbox Quota",
         "mailing_list": "Mailing List",
         "mailing_list_already_in_list_error": "The Mailing List / User is already in the list",
@@ -794,6 +794,7 @@
         "mailing_list_user": "Mailing List / User",
         "mailing_lists": "Mailing Lists",
         "mailing_options": "Mail Options",
+        "mailstores": "Mailstores",
         "main": "Main",
         "main_settings": "Main Settings",
         "main_view": "This is a view",
@@ -939,6 +940,7 @@
         "secret_key": "Secret Key",
         "select_a_server": "Select a Server",
         "select_an_account": "Select An Account",
+        "selected_empty_bucket": "You haven’t selected a bucket, yet. But you can start typing in the field above to start viewing them.",
         "selected_empty_bucket_helperText": "You haven’t selected a bucket, yet.\n\t\t\t\t\t\t\t\t\t\t\tBut you can start typing in the field \n\t\t\t\t\t\t\t\t\t\t\tabove to start viewing them.",
         "send_invite_to": "Send Invite to",
         "send_new_members_notification_for_share_assigned_to_this_group": "Send to new members a notification for the share/delegation assigned to this group",

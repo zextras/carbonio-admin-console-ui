@@ -237,7 +237,7 @@ const Subscription: FC = () => {
 					>
 						<Row mainAlignment="flex-start" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('label.subscriptions', 'Subscriptions')}
+								{t('label.details', 'Details')}
 							</Text>
 						</Row>
 					</Row>
@@ -255,6 +255,9 @@ const Subscription: FC = () => {
 				width="100%"
 				height="calc(100vh - 200px)"
 			>
+				<Row width="fill" mainAlignment="flex-start" padding={{ vertical: 'large' }}>
+					<Text weight="bold">{t('core.subscription.activation', 'Activation')}</Text>
+				</Row>
 				<Container
 					orientation="horizontal"
 					width="100%"
@@ -262,7 +265,7 @@ const Subscription: FC = () => {
 					wrap="wrap"
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					style={{ padding: '16px 0 32px 0' }}
+					style={{ padding: '8px 0 16px 0' }}
 				>
 					<Row width="calc(100% - 122px)">
 						<Input
