@@ -437,6 +437,24 @@ const EditAccountConfigrationSection: FC = () => {
 						/>
 					</Row>
 				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.active_sync', 'ActiveSync')}
+					</Text>
+				</Row>
+				<Row
+					width="100%"
+					padding={{ top: 'large', left: 'large', bottom: 'large' }}
+					mainAlignment="space-between"
+				>
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={accountDetail?.zimbraFeatureMobileSyncEnabled === 'TRUE'}
+							onClick={(): void => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
+							label={t('account_details.activesync_remote_access', 'ActiveSync remote access')}
+						/>
+					</Row>
+				</Row>
 			</Row>
 		</Container>
 	);

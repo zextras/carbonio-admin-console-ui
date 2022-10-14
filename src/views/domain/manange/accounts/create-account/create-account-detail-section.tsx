@@ -238,8 +238,8 @@ const CreateAccountDetailSection: FC = () => {
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
 					<Row mainAlignment="flex-start">
 						<Switch
-							value={accountDetail?.enableActiveSyncRemoteAccess}
-							onClick={(): void => changeSwitchOption('enableActiveSyncRemoteAccess')}
+							value={accountDetail?.zimbraFeatureMobileSyncEnabled}
+							onClick={(): void => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
 							label={t(
 								'accountDetails.enable_activeSync_remote_access',
 								'Enable ActiveSync remote access'

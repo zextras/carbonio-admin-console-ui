@@ -45,7 +45,8 @@ const CosFeatures: FC = () => {
 		zimbraFeatureInitialSearchPreferenceEnabled: true,
 		zimbraFeatureAdvancedSearchEnabled: false,
 		zimbraFeaturePeopleSearchEnabled: false,
-		zimbraFeatureSMIMEEnabled: false
+		zimbraFeatureSMIMEEnabled: false,
+		zimbraFeatureMobileSyncEnabled: false
 	});
 
 	const setSwitchOptionValue = useCallback(
@@ -123,6 +124,10 @@ const CosFeatures: FC = () => {
 					'zimbraFeatureSMIMEEnabled',
 					obj?.zimbraFeatureSMIMEEnabled === 'TRUE'
 				);
+				setSwitchOptionValue(
+					'zimbraFeatureMobileSyncEnabled',
+					obj?.zimbraFeatureMobileSyncEnabled === 'TRUE'
+				);
 			}
 		},
 		[setSwitchOptionValue]
@@ -185,6 +190,9 @@ const CosFeatures: FC = () => {
 			}
 			if (!obj.zimbraFeatureSMIMEEnabled) {
 				obj.zimbraFeatureSMIMEEnabled = false;
+			}
+			if (!obj.zimbraFeatureMobileSyncEnabled) {
+				obj.zimbraFeatureMobileSyncEnabled = false;
 			}
 			setCosData(obj);
 			setInitalValues(obj);
@@ -494,12 +502,26 @@ const CosFeatures: FC = () => {
 						{t('cos.s_mime_features', 'S/MIME Features')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
-						<Row width="20%" mainAlignment="flex-start">
+						<Row width="100%" mainAlignment="flex-start">
 							<Switch
 								value={cosFeatures.zimbraFeatureSMIMEEnabled}
 								onClick={() => changeSwitchOption('zimbraFeatureSMIMEEnabled')}
 								label={t('cos.enable_smime', 'Enable S/MIME')}
 								disabled
+							/>
+						</Row>
+					</Row>
+				</Row>
+				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+					<Text size="extralarge" weight="bold">
+						{t('label.active_sync', 'ActiveSync')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Row width="100%" mainAlignment="flex-start">
+							<Switch
+								value={cosFeatures.zimbraFeatureMobileSyncEnabled}
+								onClick={() => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
+								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
 							/>
 						</Row>
 					</Row>

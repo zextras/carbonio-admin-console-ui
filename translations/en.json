@@ -10,6 +10,7 @@
         "enable_activeSync_remote_access": "Enable ActiveSync remote access"
     },
     "account_details": {
+        "activesync_remote_access": "ActiveSync remote access",
         "add_appointments_when_invited": "Automatically add appointments when the user is invited",
         "add_forwarded_invites_to_calendar": "Automatically add forwarded appointments to the calendar",
         "add_invites_with_publish_method": "Add invites with PUBLISH method",
@@ -305,6 +306,8 @@
     },
     "cos": {
         "account_quota": "Account quota",
+        "active_sync": "ActiveSync",
+        "activesync_remote_access": "ActiveSync remote access",
         "add_appointments_when_invited": "Automatically add appointments when the user is invited",
         "add_forwarded_invites_to_calendar": "Automatically add forwarded appointments to the calendar",
         "add_invites_with_publish_method": "Add invites with PUBLISH method",
