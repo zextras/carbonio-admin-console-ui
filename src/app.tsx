@@ -18,7 +18,10 @@ import {
 	postSoapFetchRequest,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	useAllConfig
+	useAllConfig,
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	useIsAdvanced
 } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -69,16 +72,24 @@ const App: FC = () => {
 	const setServerList = useServerStore((state) => state.setServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
-	const setIsAdvavanced = useAuthIsAdvanced((state) => state.setIsAdvavanced);
+	const setIsAdvanced = useAuthIsAdvanced((state) => state.setIsAdvanced);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
 	const setConfig = useConfigStore((state) => state.setConfig);
 	const allConfig = useAllConfig();
+	const isAdvanced = useIsAdvanced();
 	useEffect(() => {
 		if (allConfig && allConfig.length > 0) {
 			setConfig(allConfig);
 		}
 	}, [allConfig, setConfig]);
+
+	useEffect(() => {
+		if (isAdvanced) {
+			setIsAdvanced(isAdvanced);
+		}
+	}, [isAdvanced, setIsAdvanced]);
+
 	const managementSection = useMemo(
 		() => ({
 			id: MANAGE_APP_ID,
@@ -573,23 +584,6 @@ const App: FC = () => {
 	useEffect(() => {
 		getAllServersRequest();
 	}, [getAllServersRequest]);
-
-	useEffect(() => {
-		const hostname = window?.location?.hostname;
-		const protocol = window?.location?.protocol;
-		fetch(`${protocol}//${hostname}/zx/auth/supported`)
-			// eslint-disable-next-line consistent-return
-			.then((res) => {
-				if (res.status === 200) {
-					setIsAdvavanced(true);
-					return res.json();
-				}
-				setIsAdvavanced(false);
-			})
-			.catch(() => {
-				setIsAdvavanced(false);
-			});
-	}, [setIsAdvavanced]);
 
 	return null;
 };

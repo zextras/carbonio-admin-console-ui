@@ -8,12 +8,12 @@ import { devtools } from 'zustand/middleware';
 
 type AuthAdvancedState = {
 	isAdvanced: boolean;
-	setIsAdvavanced: (isAdvanced: boolean) => void;
+	setIsAdvanced: (isAdvanced: boolean) => void;
 };
 
 export const useAuthIsAdvanced = create<AuthAdvancedState>(
 	devtools((set) => ({
 		isAdvanced: false,
-		setIsAdvavanced: (isAdvanced): void => set({ isAdvanced }, false, 'setIsAdvavanced')
+		setIsAdvanced: (isAdvanced): void => set({ isAdvanced }, false, 'setIsAdvanced')
 	}))
 );
