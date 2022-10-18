@@ -87,7 +87,7 @@ const CreateAccount: FC<{
 		sn: '',
 		zimbraPasswordMustChange: true,
 		generateFirst2FAToken: true,
-		zimbraFeatureMobileSyncEnabled: true,
+		zimbraFeatureMobileSyncEnabled: false,
 		defaultCOS: true,
 		zimbraAccountStatus: '',
 		zimbraPrefLocale: '',
