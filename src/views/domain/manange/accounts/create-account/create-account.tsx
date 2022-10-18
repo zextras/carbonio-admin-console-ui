@@ -58,7 +58,6 @@ interface AccountDetailObj {
 	sn: string;
 	zimbraPasswordMustChange: boolean;
 	generateFirst2FAToken: boolean;
-	zimbraFeatureMobileSyncEnabled: boolean;
 	defaultCOS: boolean;
 	zimbraAccountStatus: string;
 	zimbraPrefLocale: string;
@@ -87,7 +86,6 @@ const CreateAccount: FC<{
 		sn: '',
 		zimbraPasswordMustChange: true,
 		generateFirst2FAToken: true,
-		zimbraFeatureMobileSyncEnabled: false,
 		defaultCOS: true,
 		zimbraAccountStatus: '',
 		zimbraPrefLocale: '',
@@ -197,10 +195,7 @@ const CreateAccount: FC<{
 										zimbraPrefTimeZoneId: accountDetail?.zimbraPrefTimeZoneId,
 										zimbraNotes: accountDetail?.zimbraNotes,
 										displayName: accountDetail?.displayName,
-										zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId,
-										zimbraFeatureMobileSyncEnabled: accountDetail?.zimbraFeatureMobileSyncEnabled
-											? 'TRUE'
-											: 'FALSE'
+										zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId
 									},
 									`${accountDetail?.name}@${domainName}`,
 									accountDetail?.password || ''
@@ -278,7 +273,6 @@ const CreateAccount: FC<{
 			accountDetail?.displayName,
 			accountDetail?.defaultCOS,
 			accountDetail?.zimbraCOSId,
-			accountDetail?.zimbraFeatureMobileSyncEnabled,
 			accountDetail?.name,
 			createSnackbar,
 			domainName,
