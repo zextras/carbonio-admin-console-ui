@@ -869,7 +869,7 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 	},
 	{
 		label: t('buckets.s3_types.custom_s3', 'Custom S3'),
-		value: 'CustomS3'
+		value: 'Custom_S3'
 	},
 	{
 		label: t('buckets.s3_types.emc_s3', 'EMC S3'),
