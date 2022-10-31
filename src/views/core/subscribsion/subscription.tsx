@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useState, FC, ReactElement, useEffect, useCallback } from 'react';
+import React, { useState, FC, ReactElement, useEffect, useCallback, useMemo } from 'react';
 import {
 	Button,
 	Container,
@@ -21,6 +21,9 @@ import { orderBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { fetchSoap } from '../../../services/subscription-service';
+import MatomoTracker from '../../../matomo-tracker';
+import { SUBSCRIPTIONS_ROUTE_ID } from '../../../constants';
+import { useGlobalConfigStore } from '../../../store/global-config/store';
 
 const VerticalBar = styled(Container)`
 	background-color: rgba(0, 80, 109, ${({ licensed }): number => (licensed ? 1 : 0.33)});
@@ -106,6 +109,10 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 );
 
 const Subscription: FC = () => {
+	const matomo = useMemo(() => new MatomoTracker(), []);
+	const globalCarbonioSendAnalytics = useGlobalConfigStore(
+		(state) => state.globalCarbonioSendAnalytics
+	);
 	const [services, setServices] = useState<any>({});
 	const [modules, setModules]: any = useState([]);
 	const [open, setOpen] = useState(false);
@@ -115,6 +122,10 @@ const Subscription: FC = () => {
 	const [version, setVersion] = useState();
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
 	const createSnackbar = useSnackbar();
+
+	useEffect(() => {
+		globalCarbonioSendAnalytics && matomo.trackPageView(`${SUBSCRIPTIONS_ROUTE_ID}`);
+	}, [globalCarbonioSendAnalytics, matomo]);
 
 	const { t } = useTranslation();
 

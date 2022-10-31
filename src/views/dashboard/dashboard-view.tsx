@@ -4,18 +4,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Container, Padding, Text, Row } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useUserAccounts } from '@zextras/carbonio-shell-ui';
 import zxboat from '../../assets/zxboat.svg';
 import packageJson from '../../../package.json';
+import MatomoTracker from '../../matomo-tracker';
+import { DASHBOARD } from '../../constants';
+import { useGlobalConfigStore } from '../../store/global-config/store';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
+	const matomo = useMemo(() => new MatomoTracker(), []);
+	const globalCarbonioSendAnalytics = useGlobalConfigStore(
+		(state) => state.globalCarbonioSendAnalytics
+	);
 	const accounts = useUserAccounts();
 	const [userName, setUserName] = useState<string>('');
 	const [version, setVersion] = useState<string>('');
+
+	useEffect(() => {
+		globalCarbonioSendAnalytics && matomo.trackPageView(`${DASHBOARD}`);
+	}, [globalCarbonioSendAnalytics, matomo]);
+
 	useEffect(() => {
 		if (accounts[0]?.displayName) {
 			setUserName(accounts[0]?.displayName);

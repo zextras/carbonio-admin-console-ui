@@ -2,6 +2,38 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.3...v0.9.4) (2022-10-28)
+
+
+### Features
+
+* add flag if auth is advanced or not ([3def81f](https://github.com/zextras/carbonio-admin-console-ui/commit/3def81f5e2b3fbb92dbcbcba71fa51291841e602))
+* added columns for advaned listing in mailstore ([f02dafa](https://github.com/zextras/carbonio-admin-console-ui/commit/f02dafad1546376e4b5375cd2284fe11a5c87e10))
+* added diff wizard toggle for local and external volume ([d4f84bc](https://github.com/zextras/carbonio-admin-console-ui/commit/d4f84bc786c4334a22bf5d87b8f879ca34cb6c84))
+* added empty state placeholders in buckets list ([332b7e0](https://github.com/zextras/carbonio-admin-console-ui/commit/332b7e036fa3d4a6415e87700920bd76d6843f80))
+* added matomo tracking and event also ([17e2ceb](https://github.com/zextras/carbonio-admin-console-ui/commit/17e2cebafb378a5b56eab392cfb520f0df7feb1a))
+* create hsm policy tab design added ([aef31ed](https://github.com/zextras/carbonio-admin-console-ui/commit/aef31ed6d2dbe215615f4b3116a8a4a9959315cd))
+* delete hsm policy has been added ([aa2f5af](https://github.com/zextras/carbonio-admin-console-ui/commit/aa2f5af7820b884fca944387d4abe0323273a980))
+* design added for edit hsm policy ([a15927c](https://github.com/zextras/carbonio-admin-console-ui/commit/a15927cf60696c93e6e25b26606bde56dd43d6c1))
+* hsm setting functionality added ([9b3889e](https://github.com/zextras/carbonio-admin-console-ui/commit/9b3889e5c9b444a595424ed3fbab188037ec7591))
+
+
+### Bug Fixes
+
+* added condition based analytics tracking and optimized tracking code ([88a1a3a](https://github.com/zextras/carbonio-admin-console-ui/commit/88a1a3add103380aa715727ed55e10c87f4f0494))
+* added fix to wizard for ce local external dropdown ([6bc318d](https://github.com/zextras/carbonio-admin-console-ui/commit/6bc318d3635d5e6831728479128a11ce80a6f873))
+* conflicts resolved ([ea385c0](https://github.com/zextras/carbonio-admin-console-ui/commit/ea385c02f00efc5e362a903393a02f923a1f2764))
+* fixed conflicts and minor wizard flow ([71166b9](https://github.com/zextras/carbonio-admin-console-ui/commit/71166b964cf7a1323ba0917bd424aad126235fc2))
+* fixed proxy translation ([fe05226](https://github.com/zextras/carbonio-admin-console-ui/commit/fe0522605c12b84b420a46320aeced04099b22a8))
+* fixed translation again for primary ([2aab7a0](https://github.com/zextras/carbonio-admin-console-ui/commit/2aab7a0b606787d9923a15f98dc1f67570866fa5))
+* fixed translation issue ([0d0e47c](https://github.com/zextras/carbonio-admin-console-ui/commit/0d0e47c3acba46cd9c80dca1386f41e7e0727a76))
+* managed new line with height and width css ([4014f12](https://github.com/zextras/carbonio-admin-console-ui/commit/4014f121601850fa8070b524fd59822ca0514eba))
+* resolved comments of other developers ([a2d2676](https://github.com/zextras/carbonio-admin-console-ui/commit/a2d267651f3e62bdd600845a8d5619c7f4c21d01))
+* reverted and commited new code ([9391574](https://github.com/zextras/carbonio-admin-console-ui/commit/93915748343ce2b9d12af1e4e63d8ed965c89255))
+* subscription other features should be open by default ([d488029](https://github.com/zextras/carbonio-admin-console-ui/commit/d488029d7be6182adad9a1d3c9c855004090b99a))
+* translation confirmed sproxy ([45084cc](https://github.com/zextras/carbonio-admin-console-ui/commit/45084cc025dfbaf1c10254411320231d972e1cf7))
+* volume type selection issue ([ecc6846](https://github.com/zextras/carbonio-admin-console-ui/commit/ecc684688bfaf43df827a28f8159f98ee08b86af))
+
 ### [0.9.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.2...v0.9.3) (2022-10-06)
 
 
