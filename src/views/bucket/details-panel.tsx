@@ -220,7 +220,10 @@ const DetailsPanel: FC<{
 				? bucketDetail.storeType.charAt(0).toUpperCase() +
 				  bucketDetail.storeType.slice(1).toLowerCase()
 				: bucketDetail.storeType;
-		const volumeObject: any = find(bucketTypeItems, (o) => o.value === upperBucketType)?.label;
+		const volumeObject: any = find(
+			bucketTypeItems,
+			(o) => o.value?.toLowerCase() === upperBucketType?.toLowerCase()
+		)?.label;
 		const regionValue: any = find(
 			upperBucketType === ALIBABA ? bucketRegionsInAlibaba : bucketRegions,
 			(o) => o.value === bucketDetail.region

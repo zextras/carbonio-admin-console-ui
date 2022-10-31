@@ -297,7 +297,10 @@ const EditBucketDetailPanel: FC<{
 				? bucketDetail.storeType.charAt(0).toUpperCase() +
 				  bucketDetail.storeType.slice(1).toLowerCase()
 				: bucketDetail.storeType;
-		const bucketTypeValue: any = find(bucketTypeItems, (o) => o.value === upperBucketType);
+		const bucketTypeValue: any = find(
+			bucketTypeItems,
+			(o) => o.value?.toLowerCase() === upperBucketType?.toLowerCase()
+		);
 		previousDetail?.bucketType
 			? setBucketType(previousDetail?.bucketType)
 			: setBucketType(bucketTypeValue);
@@ -419,7 +422,10 @@ const EditBucketDetailPanel: FC<{
 				: bucketRegions,
 			(o) => o.value === bucketDetail.region
 		);
-		const bucketTypeValue: any = find(bucketTypeItems, (o) => o.value === upperBucketType);
+		const bucketTypeValue: any = find(
+			bucketTypeItems,
+			(o) => o.value?.toLowerCase() === upperBucketType?.toLowerCase()
+		);
 		setRegionData(bucketDetail?.region !== undefined && regionValue);
 		setBucketType(bucketTypeValue);
 	}, [bucketDetail, bucketRegions, bucketRegionsInAlibaba, bucketTypeItems]);
