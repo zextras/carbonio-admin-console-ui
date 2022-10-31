@@ -235,18 +235,6 @@ const CreateAccountDetailSection: FC = () => {
 						/>
 					</Row> */}
 				</Row>
-				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
-					<Row mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.enableActiveSyncRemoteAccess}
-							onClick={(): void => changeSwitchOption('enableActiveSyncRemoteAccess')}
-							label={t(
-								'accountDetails.enable_activeSync_remote_access',
-								'Enable ActiveSync remote access'
-							)}
-						/>
-					</Row>
-				</Row>
 			</Row>
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>

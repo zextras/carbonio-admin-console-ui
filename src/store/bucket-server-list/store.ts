@@ -9,12 +9,16 @@ import { devtools } from 'zustand/middleware';
 type BucketVolumeServersListState = {
 	allServersList: Array<any>;
 	setAllServersList: (v: Array<any>) => void;
+	volumeList: Array<any>;
+	setVolumeList: (v: Array<any>) => void;
 };
 
 export const useBucketServersListStore = create<BucketVolumeServersListState>(
 	devtools((set) => ({
 		allServersList: [],
-
-		setAllServersList: (allServersList): void => set({ allServersList }, false, 'setAllServersList')
+		volumeList: [],
+		setAllServersList: (allServersList): void =>
+			set({ allServersList }, false, 'setAllServersList'),
+		setVolumeList: (volumeList): void => set({ volumeList }, false, 'setVolumeList')
 	}))
 );

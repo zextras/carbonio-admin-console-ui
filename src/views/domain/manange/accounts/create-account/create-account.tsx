@@ -58,7 +58,6 @@ interface AccountDetailObj {
 	sn: string;
 	zimbraPasswordMustChange: boolean;
 	generateFirst2FAToken: boolean;
-	enableActiveSyncRemoteAccess: boolean;
 	defaultCOS: boolean;
 	zimbraAccountStatus: string;
 	zimbraPrefLocale: string;
@@ -87,7 +86,6 @@ const CreateAccount: FC<{
 		sn: '',
 		zimbraPasswordMustChange: true,
 		generateFirst2FAToken: true,
-		enableActiveSyncRemoteAccess: true,
 		defaultCOS: true,
 		zimbraAccountStatus: '',
 		zimbraPrefLocale: '',

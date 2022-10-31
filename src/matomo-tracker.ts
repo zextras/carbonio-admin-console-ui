@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createInstance } from '@datapunt/matomo-tracker-react';
+import { MatomoInstance } from '@datapunt/matomo-tracker-react/lib/types';
 
 export default class MatomoTracker {
 	// matomoInstance;
@@ -16,6 +17,8 @@ export default class MatomoTracker {
 		},
 		linkTracking: false
 	});
+
+	static matomoInstance: MatomoInstance;
 
 	trackPageView(pageName: string): void {
 		this.matomoInstance.trackPageView({

@@ -11,6 +11,7 @@ import ListPanelItem from '../list/list-panel-item';
 import {
 	ADVANCED,
 	ADVANCED_LBL,
+	BACKUP_ROUTE_ID,
 	CONFIGURATION_BACKUP,
 	IMPORT_EXTERNAL_BACKUP,
 	SERVERS_LIST,
@@ -19,9 +20,15 @@ import {
 } from '../../constants';
 import ListItems from '../list/list-items';
 import { useServerStore } from '../../store/server/store';
+import MatomoTracker from '../../matomo-tracker';
+import { useGlobalConfigStore } from '../../store/global-config/store';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
+	const matomo = useMemo(() => new MatomoTracker(), []);
+	const globalCarbonioSendAnalytics = useGlobalConfigStore(
+		(state) => state.globalCarbonioSendAnalytics
+	);
 	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVER_CONFIG);
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
 	const [isActionExpanded, setIsActionExpanded] = useState(true);
@@ -29,6 +36,10 @@ const BackupListPanel: FC = () => {
 	const serverList = useServerStore((state) => state.serverList || []);
 	const [selectedServer, setSelectedServer] = useState<string>('');
 	const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
+
+	useEffect(() => {
+		globalCarbonioSendAnalytics && matomo.trackPageView(`${BACKUP_ROUTE_ID}`);
+	}, [globalCarbonioSendAnalytics, matomo]);
 
 	const defaultSettingsOptions = useMemo(
 		() => [
@@ -84,12 +95,13 @@ const BackupListPanel: FC = () => {
 	);
 
 	useEffect(() => {
+		globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 		if (selectedOperationItem === CONFIGURATION_BACKUP || selectedOperationItem === ADVANCED_LBL) {
 			replaceHistory(`/${selectedServer}/${selectedOperationItem}`);
 		} else {
 			replaceHistory(`/${selectedOperationItem}`);
 		}
-	}, [selectedOperationItem, selectedServer]);
+	}, [globalCarbonioSendAnalytics, matomo, selectedOperationItem, selectedServer]);
 
 	const toggleDefaultSettingsView = (): void => {
 		setIsDefaultSettingsExpanded(!isDefaultSettingsExpanded);

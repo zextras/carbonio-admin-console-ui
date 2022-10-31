@@ -11,17 +11,31 @@ import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import styled from 'styled-components';
 import ListPanelItem from '../list/list-panel-item';
 import ListItems from '../list/list-items';
-import { BUCKET_LIST, SERVERS_LIST, VOLUME, HSM_SETTINGS, INDEXER_SETTINGS, DATA_VOLUMES } from '../../constants';
+import {
+	BUCKET_LIST,
+	SERVERS_LIST,
+	VOLUME,
+	HSM_SETTINGS,
+	INDEXER_SETTINGS,
+	DATA_VOLUMES,
+	STORAGES_ROUTE_ID
+} from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
+import MatomoTracker from '../../matomo-tracker';
+import { useGlobalConfigStore } from '../../store/global-config/store';
 
 const SelectItem = styled(Row)``;
 
 const BucketListPanel: FC = () => {
 	const [t] = useTranslation();
 	const setSelectedServerName = useBucketVolumeStore((state) => state.setSelectedServerName);
-	const setAllServersList = useBucketServersListStore((state) => state.setAllServersList);
+	const volumeList = useBucketServersListStore((state) => state.volumeList);
+	const matomo = useMemo(() => new MatomoTracker(), []);
+	const globalCarbonioSendAnalytics = useGlobalConfigStore(
+		(state) => state.globalCarbonioSendAnalytics
+	);
 	const [isStoreSelect, setIsStoreSelect] = useState(false);
 	const [isStoreVolumeSelect, setIsStoreVolumeSelect] = useState(false);
 	const [selectedOperationItem, setSelectedOperationItem] = useState('');
@@ -29,7 +43,10 @@ const BucketListPanel: FC = () => {
 	const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(true);
 	const [searchVolumeName, setSearchVolumeName] = useState('');
 	const [isVolumeListExpand, setIsVolumeListExpand] = useState(false);
-	const [volumeList, setVolumeList] = useState([]);
+
+	useEffect(() => {
+		globalCarbonioSendAnalytics && matomo.trackPageView(`${STORAGES_ROUTE_ID}`);
+	}, [globalCarbonioSendAnalytics, matomo]);
 
 	const selectedVolume = useCallback(
 		(volume: any) => {
@@ -91,13 +108,13 @@ const BucketListPanel: FC = () => {
 				name: t('label.data_volumes', 'Data Volumes'),
 				isSelected: isStoreVolumeSelect
 			}
-			/* ,
+			 ,
 			{
 				id: HSM_SETTINGS,
 				name: t('label.hsm_settings', 'HSM Settings'),
 				isSelected: isStoreVolumeSelect
-			},
-			{
+			}
+			/* {
 				id: INDEXER_SETTINGS,
 				name: t('label.indexer_settings', 'Indexer Settings'),
 				isSelected: isStoreVolumeSelect
@@ -117,16 +134,20 @@ const BucketListPanel: FC = () => {
 	useEffect(() => {
 		if (isStoreSelect) {
 			if (selectedOperationItem) {
-				if (selectedOperationItem === DATA_VOLUMES) {
+				if (selectedOperationItem === DATA_VOLUMES || selectedOperationItem === HSM_SETTINGS) {
+					globalCarbonioSendAnalytics &&
+						matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 					replaceHistory(`${searchVolumeName}/${selectedOperationItem}`);
 				} else {
 					replaceHistory(`/${selectedOperationItem}`);
+					globalCarbonioSendAnalytics &&
+						matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 				}
 			} else {
 				replaceHistory(`/${selectedOperationItem}`);
 			}
 		}
-	}, [isStoreSelect, selectedOperationItem, searchVolumeName]);
+	}, [isStoreSelect, selectedOperationItem, searchVolumeName, matomo, globalCarbonioSendAnalytics]);
 
 	const toggleServer = (): void => {
 		setIsServerListExpand(!isServerListExpand);
@@ -134,22 +155,6 @@ const BucketListPanel: FC = () => {
 	const toggleServerSpecific = (): void => {
 		setIsServerSpecificListExpand(!isServerSpecificListExpand);
 	};
-
-	const getServersListType = useCallback((service): void => {
-		fetchSoap('GetAllServersRequest', {
-			...(!service ? { _jsns: 'urn:zimbraAdmin' } : { _jsns: 'urn:zimbraAdmin', service })
-		}).then((response) => {
-			const serverResponseData = response?.Body?.GetAllServersResponse.server;
-			if (serverResponseData.length !== 0) {
-				setVolumeList(serverResponseData);
-				setAllServersList(serverResponseData);
-			}
-		});
-	}, [setAllServersList]);
-
-	useEffect(() => {
-		getServersListType('mailbox');
-	}, [getServersListType]);
 
 	return (
 		<Container
@@ -192,10 +197,7 @@ const BucketListPanel: FC = () => {
 								}}
 							>
 								<Input
-									label={t(
-										'label.select_a_server',
-										'Select a Server'
-									)}
+									label={t('label.select_a_server', 'Select a Server')}
 									CustomIcon={(): any => (
 										<Icon
 											icon="HardDriveOutline"

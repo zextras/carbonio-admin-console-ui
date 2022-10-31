@@ -7,10 +7,11 @@ import React, { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { Container } from '@zextras/carbonio-design-system';
-import { BUCKET_LIST, DATA_VOLUMES, SERVERS_LIST } from '../../constants';
+import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
 import VolumesDetailPanel from './server-specifics/volume/volumes-list';
+import HSMsettingPanel from './hsm/hsm-setting-panel';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
 
 const DetailViewContainer = styled(Container)`
@@ -34,7 +35,7 @@ const BucketOperation: FC = () => {
 	const [volumeDetail, setVolumeDetail] = useState<VolumeDetailObj>({
 		id: '',
 		volumeName: '',
-		volumeMain: 0,
+		volumeMain: 1,
 		path: '',
 		isCurrent: false,
 		isCompression: false,
@@ -64,6 +65,12 @@ const BucketOperation: FC = () => {
 								<VolumeContext.Provider value={{ volumeDetail, setVolumeDetail }}>
 									<VolumesDetailPanel />
 								</VolumeContext.Provider>
+							</DetailViewContainer>
+						);
+					case HSM_SETTINGS:
+						return (
+							<DetailViewContainer>
+								<HSMsettingPanel />
 							</DetailViewContainer>
 						);
 					default:

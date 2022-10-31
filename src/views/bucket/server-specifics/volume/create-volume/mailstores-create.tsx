@@ -47,12 +47,14 @@ const MailstoresCreate: FC<{
 	const [allocation, setAllocation] = useState<any>();
 
 	const onVolMainChange = (v: any): void => {
-		setVolumeDetail((prev: any) => ({ ...prev, volumeMain: v }));
-		onSelection({ volumeMain: v }, true);
-		if (v === INDEX_TYPE_VALUE) {
-			setToggleIndexer(true);
-		} else {
-			setToggleIndexer(false);
+		if (!isAdvanced) {
+			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: v }));
+			onSelection({ volumeMain: v }, true);
+			if (v === INDEX_TYPE_VALUE) {
+				setToggleIndexer(true);
+			} else {
+				setToggleIndexer(false);
+			}
 		}
 	};
 
@@ -133,25 +135,28 @@ const MailstoresCreate: FC<{
 		volumeDetail?.volumeName
 	]);
 	useEffect(() => {
-		if (primaryRadio) {
-			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
-			onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
-		} else if (secondaryRadio) {
-			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
-			onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
-		} else if (indexRadio) {
-			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
-			onSelection({ volumeMain: INDEX_TYPE_VALUE }, true);
-		} else {
-			setVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
-			onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
+		if (isAdvanced) {
+			if (primaryRadio) {
+				setVolumeDetail((prev: any) => ({ ...prev, volumeMain: PRIMARY_TYPE_VALUE }));
+				onSelection({ volumeMain: PRIMARY_TYPE_VALUE }, true);
+			} else if (secondaryRadio) {
+				setVolumeDetail((prev: any) => ({ ...prev, volumeMain: SECONDARY_TYPE_VALUE }));
+				onSelection({ volumeMain: SECONDARY_TYPE_VALUE }, true);
+			} else if (indexRadio) {
+				setVolumeDetail((prev: any) => ({ ...prev, volumeMain: INDEX_TYPE_VALUE }));
+				onSelection({ volumeMain: INDEX_TYPE_VALUE }, true);
+			} else {
+				setVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
+				onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
+			}
+			const volumeTypeObject = volAllocationList.find(
+				(item: any) => item.value === volumeDetail?.volumeAllocation
+			);
+			setAllocation(volumeTypeObject);
 		}
-		const volumeTypeObject = volAllocationList.find(
-			(item: any) => item.value === volumeDetail?.volumeAllocation
-		);
-		setAllocation(volumeTypeObject);
 	}, [
 		indexRadio,
+		isAdvanced,
 		onSelection,
 		primaryRadio,
 		secondaryRadio,
@@ -161,14 +166,16 @@ const MailstoresCreate: FC<{
 	]);
 
 	useEffect(() => {
-		if (volumeDetail?.volumeMain === PRIMARY_TYPE_VALUE) {
-			setPrimaryRadio(true);
-		} else if (volumeDetail?.volumeMain === SECONDARY_TYPE_VALUE) {
-			setSecondaryRadio(true);
-		} else if (volumeDetail?.volumeMain === INDEX_TYPE_VALUE) {
-			setIndexRadio(true);
+		if (isAdvanced) {
+			if (volumeDetail?.volumeMain === PRIMARY_TYPE_VALUE) {
+				setPrimaryRadio(true);
+			} else if (volumeDetail?.volumeMain === SECONDARY_TYPE_VALUE) {
+				setSecondaryRadio(true);
+			} else if (volumeDetail?.volumeMain === INDEX_TYPE_VALUE) {
+				setIndexRadio(true);
+			}
 		}
-	}, [volumeDetail?.volumeMain]);
+	}, [isAdvanced, volumeDetail?.volumeMain]);
 
 	return (
 		<>
@@ -197,10 +204,9 @@ const MailstoresCreate: FC<{
 							items={volTypeList}
 							background="gray5"
 							label={t('label.volume_type', 'Volume Type')}
-							defaultSelection={{
-								label: 'Primary',
-								value: 1
-							}}
+							defaultSelection={volTypeList.filter(
+								(items) => items.value === volumeDetail?.volumeMain
+							)}
 							showCheckbox={false}
 							onChange={onVolMainChange}
 						/>

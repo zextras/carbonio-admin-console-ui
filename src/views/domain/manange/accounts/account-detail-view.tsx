@@ -25,6 +25,7 @@ import { AccountContext } from './account-context';
 import { deleteAccount } from '../../../../services/delete-account-service';
 import { CLOSED } from '../../../../constants';
 import { modifyAccountRequest } from '../../../../services/modify-account';
+import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -68,6 +69,39 @@ const AccountDetailView: FC<any> = ({
 	const onDeleteAccount = useCallback(() => {
 		setIsOpenDeleteDialog(true);
 	}, []);
+	const onViewMail = useCallback(() => {
+		getDelegateAuthRequest(selectedAccount?.id)
+			.then((data: any) => {
+				if (data?.authToken?.[0]) {
+					window.open(
+						`https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+						'blank'
+					);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+			})
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, selectedAccount?.id, t]);
 
 	const closeHandler = useCallback(() => {
 		setIsOpenDeleteDialog(false);
@@ -214,7 +248,7 @@ const AccountDetailView: FC<any> = ({
 							iconPlacement="right"
 							color="primary"
 							height={44}
-							disabled
+							onClick={onViewMail}
 						/>
 					</Padding>
 					<Button

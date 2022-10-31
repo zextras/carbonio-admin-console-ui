@@ -22,12 +22,8 @@ import { debounce } from 'lodash';
 import { getDomainList } from '../../services/search-domain-service';
 import {
 	ACCOUNTS,
-	ACCOUNT_SCAN,
-	ACTIVE_SYNC,
-	ADMIN_DELEGATES,
 	AUTHENTICATION,
 	DOMAINS_ROUTE_ID,
-	EXPORT_DOMAIN,
 	GAL,
 	GENERAL_INFORMATION,
 	GENERAL_SETTINGS,
@@ -44,6 +40,8 @@ import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
 import ListItems from '../list/list-items';
 import { useBackupModuleStore } from '../../store/backup-module/store';
+import MatomoTracker from '../../matomo-tracker';
+import { useGlobalConfigStore } from '../../store/global-config/store';
 
 const SelectItem = styled(Row)``;
 
@@ -55,6 +53,10 @@ const CustomIcon = styled(Icon)`
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const locationService = useLocation();
+	const matomo = useMemo(() => new MatomoTracker(), []);
+	const globalCarbonioSendAnalytics = useGlobalConfigStore(
+		(state) => state.globalCarbonioSendAnalytics
+	);
 	const [isDomainListExpand, setIsDomainListExpand] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
 	const [domainId, setDomainId] = useState('');
@@ -65,6 +67,11 @@ const DomainListPanel: FC = () => {
 	const domainInformation = useDomainStore((state) => state.domain);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
+
+	useEffect(() => {
+		globalCarbonioSendAnalytics && matomo.trackPageView(`${DOMAINS_ROUTE_ID}`);
+	}, [globalCarbonioSendAnalytics, matomo]);
+
 	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
 	const getDomainLists = (domainName: string): any => {
 		getDomainList(domainName).then((data) => {
@@ -133,12 +140,16 @@ const DomainListPanel: FC = () => {
 	useEffect(() => {
 		if (isDomainSelect && domainId) {
 			if (selectedOperationItem) {
+				globalCarbonioSendAnalytics &&
+					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 				replaceHistory(`/${domainId}/${selectedOperationItem}`);
 			} else {
+				globalCarbonioSendAnalytics &&
+					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 			}
 		}
-	}, [isDomainSelect, domainId, selectedOperationItem]);
+	}, [isDomainSelect, domainId, selectedOperationItem, matomo, globalCarbonioSendAnalytics]);
 
 	const detailOptions = useMemo(
 		() => [

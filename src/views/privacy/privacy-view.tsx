@@ -4,7 +4,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -23,12 +23,15 @@ import {
 	CARBONIO_SEND_ANALYTICS,
 	CARBONIO_SEND_FULL_ERROR_STACK,
 	FALSE,
+	PRIVACY_ROUTE_ID,
 	TRUE
 } from '../../constants';
 import { useConfigStore } from '../../store/config/store';
+import MatomoTracker from '../../matomo-tracker';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
+	const matomo = useMemo(() => new MatomoTracker(), []);
 	const [carbonioAllowFeedback, setCarbonioAllowFeedback] = useState<boolean>(false);
 	const [carbonioSendAnalytics, setCarbonioSendAnalytics] = useState<boolean>(false);
 	const [carbonioSendFullErrorStack, setCarbonioSendFullErrorStack] = useState<boolean>(false);
@@ -41,6 +44,10 @@ const PrivacyView: FC = () => {
 		CARBONIO_SEND_FULL_ERROR_STACK: false,
 		CARBONIO_ALLOW_FEEDBACK: false
 	});
+
+	useEffect(() => {
+		carbonioSendAnalytics && matomo.trackPageView(`${PRIVACY_ROUTE_ID}`);
+	}, [carbonioSendAnalytics, matomo]);
 
 	useEffect(() => {
 		if (config && config.length > 0) {
@@ -161,7 +168,7 @@ const PrivacyView: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('label.mailing_list', 'Mailing List')}
+								{t('label.privacy', 'Privacy')}
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">

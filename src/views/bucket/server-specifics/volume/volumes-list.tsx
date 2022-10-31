@@ -490,7 +490,7 @@ const VolumesDetailPanel: FC = () => {
 									setVolumeDetail({
 										id: '',
 										volumeName: '',
-										volumeMain: 0,
+										volumeMain: 1,
 										path: '',
 										isCurrent: false,
 										isCompression: false,

@@ -70,7 +70,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 							>
 								<Input
 									backgroundColor="gray5"
-									label={t('label.userName', 'username (Auto-fill)')}
+									label={t('label.email_address', 'Email address')}
 									value={restoreAccountDetail?.copyAccount}
 									onChange={(e: any): void => {
 										setRestoreAccountDetail((prev: any) => ({

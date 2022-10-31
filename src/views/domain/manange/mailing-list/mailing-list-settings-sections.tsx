@@ -428,7 +428,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						orientation="horizontal"
 						weight="bold"
 					>
-						{t('label.owners_settings', 'Owners’ Settings')}
+						{t('label.owners_settings_lbl', 'Owners’ Settings')}
 					</Text>
 				</Row>
 				<Row padding={{ top: 'small', bottom: 'medium' }}>
@@ -439,10 +439,11 @@ const MailingListSettingsSection: FC<any> = () => {
 						orientation="horizontal"
 						weight="light"
 						color="#828282"
+						overflow="break-word"
 					>
 						{t(
-							'label.owners_description',
-							"Owners can manage the mailing list's members (adding and removing emails) and modify its options."
+							'label.owners_description_msg_1',
+							'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.'
 						)}
 					</Text>
 				</Row>

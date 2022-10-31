@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { Icon, IconButton } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
+import { MatomoProvider } from '@datapunt/matomo-tracker-react';
 import {
 	APPLICATION_LOG,
 	APP_ID,
@@ -45,7 +46,8 @@ import {
 	PRIVACY_ROUTE_ID,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
-	SUBSCRIPTIONS_ROUTE_ID
+	SUBSCRIPTIONS_ROUTE_ID,
+	TRUE
 } from './constants';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { useServerStore } from './store/server/store';
@@ -56,13 +58,17 @@ import { useConfigStore } from './store/config/store';
 import { getAllConfig } from './services/get-all-config';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import SvgBackupOutline from './icons/outline/BackupOutline';
+import { useBucketServersListStore } from './store/bucket-server-list/store';
+import MatomoTracker from './matomo-tracker';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<Suspense fallback={<Spinner />}>
-		<LazyAppView {...props} />
-	</Suspense>
+	<MatomoProvider value={MatomoTracker.matomoInstance}>
+		<Suspense fallback={<Spinner />}>
+			<LazyAppView {...props} />
+		</Suspense>
+	</MatomoProvider>
 );
 
 const PrimaryBarIconButton = styled(IconButton)`
@@ -79,8 +85,21 @@ const App: FC = () => {
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
 	const setIsAdvavanced = useAuthIsAdvanced((state) => state.setIsAdvavanced);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
-	const setConfig = useConfigStore((state) => state.setConfig);
+	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
+	const { config, setConfig } = useConfigStore((state) => state);
+	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
+		(state) => state.setGlobalCarbonioSendAnalytics
+	);
 	const allConfig = useAllConfig();
+
+	useEffect(() => {
+		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
+			?._content;
+		sendAnalytics === TRUE
+			? setGlobalCarbonioSendAnalytics(true)
+			: setGlobalCarbonioSendAnalytics(false);
+	}, [config, setGlobalCarbonioSendAnalytics]);
+
 	useEffect(() => {
 		if (allConfig && allConfig.length > 0) {
 			setConfig(allConfig);
@@ -583,10 +602,12 @@ const App: FC = () => {
 			if (server && Array.isArray(server) && server.length > 0) {
 				setServerList(server);
 				checkIsBackupModuleEnable(server);
+				setAllServersList(server);
+				setVolumeList(server);
 				getGlobalConfig(server[0]?.name);
 			}
 		});
-	}, [setServerList, getGlobalConfig, checkIsBackupModuleEnable]);
+	}, [setServerList, checkIsBackupModuleEnable, setAllServersList, setVolumeList, getGlobalConfig]);
 
 	useEffect(() => {
 		getAllServersRequest();
