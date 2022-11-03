@@ -1506,6 +1506,11 @@ export const isValidLdapBaseDN = (basedn: string): boolean => {
 	return reqex.test(basedn);
 };
 
+export const isValidHttpsUrl = (url: string): boolean => {
+	const reqex = /^(https:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+	return reqex.test(url);
+};
+
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),

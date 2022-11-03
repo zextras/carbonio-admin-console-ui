@@ -57,8 +57,8 @@ const DomainTheme: FC = () => {
 
 	const THEME_MODE = useMemo(
 		() => [
-			{ label: `${t('label.disabled', 'Disabled')}`, value: false },
-			{ label: `${t('label.enabled', 'Enabled')}`, value: true }
+			{ label: `${t('label.disabled', 'Disabled')}`, value: 'FALSE' },
+			{ label: `${t('label.enabled', 'Enabled')}`, value: 'TRUE' }
 		],
 		[t]
 	);
@@ -115,7 +115,7 @@ const DomainTheme: FC = () => {
 				return '';
 			});
 			if (!obj.carbonioWebUiDarkMode) {
-				obj.carbonioWebUiDarkMode = false;
+				obj.carbonioWebUiDarkMode = 'FALSE';
 			}
 			if (!obj.carbonioWebUiLoginLogo) {
 				obj.carbonioWebUiLoginLogo = '';
@@ -299,7 +299,7 @@ const DomainTheme: FC = () => {
 							background="gray6"
 						>
 							<ListRow>
-								<Padding vertical="large" horizontal="large" width="100%">
+								<Padding vertical="large" horizontal="small" width="100%">
 									<Text size="small" color="gray0" weight="bold">
 										{t('label.apperance', 'Apperance')}
 									</Text>
@@ -326,7 +326,28 @@ const DomainTheme: FC = () => {
 								<Divider color="gray2" />
 							</Container>
 							<ListRow>
-								<Padding vertical="large" horizontal="large" width="100%">
+								<Padding vertical="large" horizontal="small" width="100%">
+									<Text size="small" color="gray0" weight="bold">
+										{t('label.end_user_webapp', 'End User Webapp')}
+									</Text>
+								</Padding>
+							</ListRow>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ all: 'small' }}
+								>
+									<Text size="small" color="gray0">
+										{t(
+											'label.end_user_theme_description',
+											'In this section you can customize the WebApp with your company logo and image.'
+										)}
+									</Text>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Padding vertical="large" horizontal="small" width="100%">
 									<Text size="small" color="gray0" weight="bold">
 										{t('label.title_and_description', 'Title & Description')}
 									</Text>
@@ -344,6 +365,20 @@ const DomainTheme: FC = () => {
 								</Container>
 							</ListRow>
 							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ all: 'small' }}
+								>
+									<Text size="small" color="gray0">
+										{t(
+											'label.title_theme_note',
+											'The title is the name that will appear on the browser tab'
+										)}
+									</Text>
+								</Container>
+							</ListRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.description', 'Description')}
@@ -354,13 +389,27 @@ const DomainTheme: FC = () => {
 									/>
 								</Container>
 							</ListRow>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ all: 'small' }}
+								>
+									<Text size="small" color="gray0">
+										{t(
+											'label.description_theme_note',
+											'The description will appear on the tooltip of the browser tab'
+										)}
+									</Text>
+								</Container>
+							</ListRow>
 							<Container padding={{ top: 'small' }}>
 								<Divider color="gray2" />
 							</Container>
 							<ListRow>
 								<Padding vertical="large" horizontal="small" width="100%">
 									<Text size="small" color="gray0" weight="bold">
-										{t('label.end_user', 'End User')}
+										{t('label.logo', 'Logo')}
 									</Text>
 								</Padding>
 							</ListRow>
@@ -373,7 +422,7 @@ const DomainTheme: FC = () => {
 									<Text size="small" color="gray0">
 										{t(
 											'label.logo_description',
-											'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimensions 240x120 pixels.'
+											'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.'
 										)}
 									</Text>
 								</Container>
@@ -497,7 +546,7 @@ const DomainTheme: FC = () => {
 									<Text size="small" color="gray0">
 										{t(
 											'label.favicon_description',
-											'Paste the URL of the favicon for the login page. Use a ICO file, dimensions 16x16 pixels.'
+											'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
 										)}
 									</Text>
 								</Container>
@@ -519,7 +568,7 @@ const DomainTheme: FC = () => {
 							<ListRow>
 								<Padding vertical="large" horizontal="small" width="100%">
 									<Text size="small" color="gray0" weight="bold">
-										{t('label.background', 'Background')}
+										{t('label.background_for_the_login_page', 'Background for the Login Page')}
 									</Text>
 								</Padding>
 							</ListRow>
@@ -532,7 +581,7 @@ const DomainTheme: FC = () => {
 									<Text size="small" color="gray0">
 										{t(
 											'label.background_description',
-											'Paste the URL of the image for the login page. Use a JPG file, dimensions 2560x1440 pixels, 800 KB max.'
+											'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
 										)}
 									</Text>
 								</Container>
@@ -593,6 +642,27 @@ const DomainTheme: FC = () => {
 							<ListRow>
 								<Padding vertical="large" horizontal="small" width="100%">
 									<Text size="small" color="gray0" weight="bold">
+										{t('label.admin_panel', 'Admin Panel')}
+									</Text>
+								</Padding>
+							</ListRow>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ all: 'small' }}
+								>
+									<Text size="small" color="gray0">
+										{t(
+											'label.admin_panel_theme_description',
+											'In this section you can customize the Admin Panel with your company logo and image.'
+										)}
+									</Text>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Padding vertical="large" horizontal="small" width="100%">
+									<Text size="small" color="gray0" weight="bold">
 										{t('label.title_and_description', 'Title & Description')}
 									</Text>
 								</Padding>
@@ -609,6 +679,20 @@ const DomainTheme: FC = () => {
 								</Container>
 							</ListRow>
 							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ all: 'small' }}
+								>
+									<Text size="small" color="gray0">
+										{t(
+											'label.title_theme_note',
+											'The title is the name that will appear on the browser tab'
+										)}
+									</Text>
+								</Container>
+							</ListRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.description', 'Description')}
@@ -619,13 +703,27 @@ const DomainTheme: FC = () => {
 									/>
 								</Container>
 							</ListRow>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ all: 'small' }}
+								>
+									<Text size="small" color="gray0">
+										{t(
+											'label.description_theme_note',
+											'The description will appear on the tooltip of the browser tab'
+										)}
+									</Text>
+								</Container>
+							</ListRow>
 							<Container padding={{ top: 'small' }}>
 								<Divider color="gray2" />
 							</Container>
 							<ListRow>
 								<Padding vertical="large" horizontal="small" width="100%">
 									<Text size="small" color="gray0" weight="bold">
-										{t('label.admin_panel', 'Admin Panel')}
+										{t('label.logo', 'Logo')}
 									</Text>
 								</Padding>
 							</ListRow>
@@ -638,7 +736,7 @@ const DomainTheme: FC = () => {
 									<Text size="small" color="gray0">
 										{t(
 											'label.logo_description',
-											'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimensions 240x120 pixels.'
+											'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.'
 										)}
 									</Text>
 								</Container>
@@ -762,7 +860,7 @@ const DomainTheme: FC = () => {
 									<Text size="small" color="gray0">
 										{t(
 											'label.favicon_description',
-											'Paste the URL of the favicon for the login page. Use a ICO file, dimensions 16x16 pixels.'
+											'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
 										)}
 									</Text>
 								</Container>
@@ -784,7 +882,7 @@ const DomainTheme: FC = () => {
 							<ListRow>
 								<Padding vertical="large" horizontal="small" width="100%">
 									<Text size="small" color="gray0" weight="bold">
-										{t('label.background', 'Background')}
+										{t('label.background_for_the_login_page', 'Background for the Login Page')}
 									</Text>
 								</Padding>
 							</ListRow>
@@ -797,7 +895,7 @@ const DomainTheme: FC = () => {
 									<Text size="small" color="gray0">
 										{t(
 											'label.background_description',
-											'Paste the URL of the image for the login page. Use a JPG file, dimensions 2560x1440 pixels, 800 KB max.'
+											'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
 										)}
 									</Text>
 								</Container>
