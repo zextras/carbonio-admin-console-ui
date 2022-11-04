@@ -22,6 +22,20 @@ import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
 import { useDomainStore } from '../../../store/domain/store';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { isValidHttpsUrl } from '../../utility/utils';
+
+const HttpsErrorMessage: FC = () => {
+	const [t] = useTranslation();
+	return (
+		<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+			<Padding top="small">
+				<Text size="extrasmall" weight="regular" color="error">
+					{t('label.use_https_protocol_message', 'You need to use the HTTPS protocol')}
+				</Text>
+			</Padding>
+		</Container>
+	);
+};
 
 const DomainTheme: FC = () => {
 	const [t] = useTranslation();
@@ -54,6 +68,33 @@ const DomainTheme: FC = () => {
 	const [domainData, setDomainData]: any = useState({});
 	const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+
+	const [isValidCarbonioWebUiLoginLogo, setIsValidCarbonioWebUiLoginLogo] = useState<boolean>(true);
+	const [isValidCarbonioWebUiDarkLoginLogo, setIsValidCarbonioWebUiDarkLoginLogo] =
+		useState<boolean>(true);
+	const [isValidCarbonioWebUiLoginBackground, setIsValidCarbonioWebUiLoginBackground] =
+		useState<boolean>(true);
+	const [isValidCarbonioWebUiDarkLoginBackground, setIsValidCarbonioWebUiDarkLoginBackground] =
+		useState<boolean>(true);
+	const [isValidCarbonioWebUiAppLogo, setIsValidCarbonioWebUiAppLogo] = useState<boolean>(true);
+	const [isValidCarbonioWebUiDarkAppLogo, setIsValidCarbonioWebUiDarkAppLogo] =
+		useState<boolean>(true);
+	const [isValidCarbonioWebUiFavicon, setIsValidCarbonioWebUiFavicon] = useState<boolean>(true);
+
+	const [isValidCarbonioAdminUiLoginLogo, setIsValidCarbonioAdminUiLoginLogo] =
+		useState<boolean>(true);
+	const [isValidCarbonioAdminUiDarkLoginLogo, setIsValidCarbonioAdminUiDarkLoginLogo] =
+		useState<boolean>(true);
+	const [isValidCarbonioAdminUiAppLogo, setIsValidCarbonioAdminUiAppLogo] = useState<boolean>(true);
+	const [isValidCarbonioAdminUiDarkAppLogo, setIsValidCarbonioAdminUiDarkAppLogo] =
+		useState<boolean>(true);
+	const [isValidCarbonioAdminUiBackground, setIsValidCarbonioAdminUiBackground] =
+		useState<boolean>(true);
+	const [isValidCarbonioAdminUiDarkBackground, setIsValidCarbonioAdminUiDarkBackground] =
+		useState<boolean>(true);
+	const [isValidCarbonioAdminUiFavicon, setIsValidCarbonioAdminUiFavicon] = useState<boolean>(true);
+
+	const [isValidated, setIsValidated] = useState<boolean>(true);
 
 	const THEME_MODE = useMemo(
 		() => [
@@ -239,6 +280,45 @@ const DomainTheme: FC = () => {
 	const onResetHandler = useCallback(() => {
 		setIsOpenResetDialog(true);
 	}, []);
+
+	useEffect(() => {
+		if (
+			isValidCarbonioAdminUiAppLogo &&
+			isValidCarbonioAdminUiBackground &&
+			isValidCarbonioAdminUiDarkAppLogo &&
+			isValidCarbonioAdminUiDarkBackground &&
+			isValidCarbonioAdminUiDarkLoginLogo &&
+			isValidCarbonioAdminUiFavicon &&
+			isValidCarbonioAdminUiLoginLogo &&
+			isValidCarbonioWebUiAppLogo &&
+			isValidCarbonioWebUiDarkAppLogo &&
+			isValidCarbonioWebUiDarkLoginBackground &&
+			isValidCarbonioWebUiDarkLoginLogo &&
+			isValidCarbonioWebUiFavicon &&
+			isValidCarbonioWebUiLoginBackground &&
+			isValidCarbonioWebUiLoginLogo
+		) {
+			setIsValidated(true);
+		} else {
+			setIsValidated(false);
+		}
+	}, [
+		isValidCarbonioAdminUiAppLogo,
+		isValidCarbonioAdminUiBackground,
+		isValidCarbonioAdminUiDarkAppLogo,
+		isValidCarbonioAdminUiDarkBackground,
+		isValidCarbonioAdminUiDarkLoginLogo,
+		isValidCarbonioAdminUiFavicon,
+		isValidCarbonioAdminUiLoginLogo,
+		isValidCarbonioWebUiAppLogo,
+		isValidCarbonioWebUiDarkAppLogo,
+		isValidCarbonioWebUiDarkLoginBackground,
+		isValidCarbonioWebUiDarkLoginLogo,
+		isValidCarbonioWebUiFavicon,
+		isValidCarbonioWebUiLoginBackground,
+		isValidCarbonioWebUiLoginLogo
+	]);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Container
@@ -276,7 +356,12 @@ const DomainTheme: FC = () => {
 									)}
 								</Padding>
 								{isDirty && (
-									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+									<Button
+										label={t('label.save', 'Save')}
+										color="primary"
+										onClick={onSave}
+										disabled={!isValidated}
+									/>
 								)}
 							</Row>
 						</Row>
@@ -464,8 +549,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioWebUiLoginLogo}
 										inputName="carbonioWebUiLoginLogo"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioWebUiLoginLogo(isValid);
+											} else {
+												setIsValidCarbonioWebUiLoginLogo(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioWebUiLoginLogo}
 									/>
+									{!isValidCarbonioWebUiLoginLogo && <HttpsErrorMessage />}
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
@@ -473,8 +568,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioWebUiDarkLoginLogo}
 										inputName="carbonioWebUiDarkLoginLogo"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioWebUiDarkLoginLogo(isValid);
+											} else {
+												setIsValidCarbonioWebUiDarkLoginLogo(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioWebUiDarkLoginLogo}
 									/>
+									{!isValidCarbonioWebUiDarkLoginLogo && <HttpsErrorMessage />}
 								</Container>
 							</ListRow>
 							<ListRow>
@@ -514,8 +619,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioWebUiAppLogo}
 										inputName="carbonioWebUiAppLogo"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioWebUiAppLogo(isValid);
+											} else {
+												setIsValidCarbonioWebUiAppLogo(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioWebUiAppLogo}
 									/>
+									{!isValidCarbonioWebUiAppLogo && <HttpsErrorMessage />}
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
@@ -523,8 +638,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioWebUiDarkAppLogo}
 										inputName="carbonioWebUiDarkAppLogo"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioWebUiDarkAppLogo(isValid);
+											} else {
+												setIsValidCarbonioWebUiDarkAppLogo(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioWebUiDarkAppLogo}
 									/>
+									{!isValidCarbonioWebUiDarkAppLogo && <HttpsErrorMessage />}
 								</Container>
 							</ListRow>
 							<Container padding={{ top: 'small' }}>
@@ -558,8 +683,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioWebUiFavicon}
 										inputName="carbonioWebUiFavicon"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioWebUiFavicon(isValid);
+											} else {
+												setIsValidCarbonioWebUiFavicon(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioWebUiFavicon}
 									/>
+									{!isValidCarbonioWebUiFavicon && <HttpsErrorMessage />}
 								</Container>
 							</ListRow>
 							<Container padding={{ top: 'small' }}>
@@ -623,8 +758,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioWebUiLoginBackground}
 										inputName="carbonioWebUiLoginBackground"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioWebUiLoginBackground(isValid);
+											} else {
+												setIsValidCarbonioWebUiLoginBackground(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioWebUiLoginBackground}
 									/>
+									{!isValidCarbonioWebUiLoginBackground && <HttpsErrorMessage />}
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
@@ -632,8 +777,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioWebUiDarkLoginBackground}
 										inputName="carbonioWebUiDarkLoginBackground"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioWebUiDarkLoginBackground(isValid);
+											} else {
+												setIsValidCarbonioWebUiDarkLoginBackground(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioWebUiDarkLoginBackground}
 									/>
+									{!isValidCarbonioWebUiDarkLoginBackground && <HttpsErrorMessage />}
 								</Container>
 							</ListRow>
 							<Container padding={{ top: 'small' }}>
@@ -778,8 +933,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioAdminUiLoginLogo}
 										inputName="carbonioAdminUiLoginLogo"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioAdminUiLoginLogo(isValid);
+											} else {
+												setIsValidCarbonioAdminUiLoginLogo(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioAdminUiLoginLogo}
 									/>
+									{!isValidCarbonioAdminUiLoginLogo && <HttpsErrorMessage />}
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
@@ -787,8 +952,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioAdminUiDarkLoginLogo}
 										inputName="carbonioAdminUiDarkLoginLogo"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioAdminUiDarkLoginLogo(isValid);
+											} else {
+												setIsValidCarbonioAdminUiDarkLoginLogo(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioAdminUiDarkLoginLogo}
 									/>
+									{!isValidCarbonioAdminUiDarkLoginLogo && <HttpsErrorMessage />}
 								</Container>
 							</ListRow>
 							<ListRow>
@@ -828,8 +1003,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioAdminUiAppLogo}
 										inputName="carbonioAdminUiAppLogo"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioAdminUiAppLogo(isValid);
+											} else {
+												setIsValidCarbonioAdminUiAppLogo(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioAdminUiAppLogo}
 									/>
+									{!isValidCarbonioAdminUiAppLogo && <HttpsErrorMessage />}
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
@@ -837,8 +1022,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioAdminUiDarkAppLogo}
 										inputName="carbonioAdminUiDarkAppLogo"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioAdminUiDarkAppLogo(isValid);
+											} else {
+												setIsValidCarbonioAdminUiDarkAppLogo(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioAdminUiDarkAppLogo}
 									/>
+									{!isValidCarbonioAdminUiDarkAppLogo && <HttpsErrorMessage />}
 								</Container>
 							</ListRow>
 							<Container padding={{ top: 'small' }}>
@@ -872,8 +1067,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioAdminUiFavicon}
 										inputName="carbonioAdminUiFavicon"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioAdminUiFavicon(isValid);
+											} else {
+												setIsValidCarbonioAdminUiFavicon(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioAdminUiFavicon}
 									/>
+									{!isValidCarbonioAdminUiFavicon && <HttpsErrorMessage />}
 								</Container>
 							</ListRow>
 							<Container padding={{ top: 'small' }}>
@@ -937,8 +1142,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioAdminUiBackground}
 										inputName="carbonioAdminUiBackground"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioAdminUiBackground(isValid);
+											} else {
+												setIsValidCarbonioAdminUiBackground(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioAdminUiBackground}
 									/>
+									{!isValidCarbonioAdminUiBackground && <HttpsErrorMessage />}
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
@@ -946,8 +1161,18 @@ const DomainTheme: FC = () => {
 										background="gray5"
 										value={domainTheme.carbonioAdminUiDarkBackground}
 										inputName="carbonioAdminUiDarkBackground"
-										onChange={onChangeDomainThemeDetail}
+										onChange={(e: any): any => {
+											if (e.target.value) {
+												const isValid = isValidHttpsUrl(e.target.value);
+												setIsValidCarbonioAdminUiDarkBackground(isValid);
+											} else {
+												setIsValidCarbonioAdminUiDarkBackground(false);
+											}
+											onChangeDomainThemeDetail(e);
+										}}
+										hasError={!isValidCarbonioAdminUiDarkBackground}
 									/>
+									{!isValidCarbonioAdminUiDarkBackground && <HttpsErrorMessage />}
 								</Container>
 							</ListRow>
 							<Container padding={{ top: 'small' }}>

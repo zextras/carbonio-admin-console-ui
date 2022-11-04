@@ -1148,6 +1148,7 @@
         "unsubscribe_request": "Unsubscription requests",
         "update": "Update",
         "url": "URL",
+        "use_https_protocol_message": "You need to use the HTTPS protocol",
         "use_iCal_delegation_model_for_shared_calendars_for_CalDAV_interface": "Use iCal delegation model for shared calendars for CalDAV interface",
         "use_last_available_status": "Use last available status",
         "use_the_QuickAdd_dialog_when_creating_new_appointments": "use the QuickAdd dialog when creating new appointments",
