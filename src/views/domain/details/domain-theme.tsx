@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, {
+	FC,
+	ReactElement,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 import {
 	Container,
 	Row,
@@ -15,7 +23,9 @@ import {
 	SnackbarManagerContext,
 	Select,
 	Icon,
-	Modal
+	Modal,
+	DefaultTabBarItem,
+	TabBar
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -36,6 +46,27 @@ const HttpsErrorMessage: FC = () => {
 		</Container>
 	);
 };
+
+const ReusedDefaultTabBar: FC<{
+	item: any;
+	index: any;
+	selected: any;
+	onClick: any;
+}> = ({ item, index, selected, onClick }): ReactElement => (
+	<DefaultTabBarItem
+		item={item}
+		index={index}
+		selected={selected}
+		onClick={onClick}
+		orientation="horizontal"
+	>
+		<Row padding="small">
+			<Text size="small" color={selected ? 'primary' : 'gray'}>
+				{item.label}
+			</Text>
+		</Row>
+	</DefaultTabBarItem>
+);
 
 const DomainTheme: FC = () => {
 	const [t] = useTranslation();
@@ -95,6 +126,22 @@ const DomainTheme: FC = () => {
 	const [isValidCarbonioAdminUiFavicon, setIsValidCarbonioAdminUiFavicon] = useState<boolean>(true);
 
 	const [isValidated, setIsValidated] = useState<boolean>(true);
+
+	const [change, setChange] = useState('end_user');
+	const [click, setClick] = useState('');
+
+	const items = [
+		{
+			id: 'end_user',
+			label: t('label.end_user_title', 'END USER'),
+			CustomComponent: ReusedDefaultTabBar
+		},
+		{
+			id: 'admin_panel',
+			label: t('label.admin_panel_title', 'ADMIN PANEL'),
+			CustomComponent: ReusedDefaultTabBar
+		}
+	];
 
 	const THEME_MODE = useMemo(
 		() => [
@@ -226,15 +273,7 @@ const DomainTheme: FC = () => {
 		[setDomainTheme]
 	);
 
-	const onSave = (): void => {
-		const body: any = {};
-		const attributes: any[] = [];
-		body.id = domainData.zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
-		Object.keys(domainTheme).map((ele: any) =>
-			attributes.push({ n: ele, _content: domainTheme[ele] })
-		);
-		body.a = attributes;
+	const modifyDomainRequest = (body: any): void => {
 		modifyDomain(body)
 			.then((data) => {
 				createSnackbar({
@@ -264,6 +303,18 @@ const DomainTheme: FC = () => {
 			});
 	};
 
+	const onSave = (): void => {
+		const body: any = {};
+		const attributes: any[] = [];
+		body.id = domainData.zimbraId;
+		body._jsns = 'urn:zimbraAdmin';
+		Object.keys(domainTheme).map((ele: any) =>
+			attributes.push({ n: ele, _content: domainTheme[ele] })
+		);
+		body.a = attributes;
+		modifyDomainRequest(body);
+	};
+
 	const onCancel = (): void => {
 		setInitalValues(domainData);
 		setIsDirty(false);
@@ -277,9 +328,39 @@ const DomainTheme: FC = () => {
 		setIsOpenResetDialog(false);
 	}, []);
 
-	const onResetHandler = useCallback(() => {
-		setIsOpenResetDialog(true);
-	}, []);
+	const onResetHandler = (): void => {
+		setIsOpenResetDialog(false);
+		const body: any = {};
+		const attributes: any[] = [];
+		body.id = domainData.zimbraId;
+		body._jsns = 'urn:zimbraAdmin';
+		const domainDefaultElements: any = {
+			carbonioWebUiDarkMode: 'FALSE',
+			carbonioWebUiLoginLogo: '',
+			carbonioWebUiDarkLoginLogo: '',
+			carbonioWebUiLoginBackground: '',
+			carbonioWebUiDarkLoginBackground: '',
+			carbonioWebUiAppLogo: '',
+			carbonioWebUiDarkAppLogo: '',
+			carbonioWebUiFavicon: '',
+			carbonioWebUiTitle: '',
+			carbonioWebUiDescription: '',
+			carbonioAdminUiLoginLogo: '',
+			carbonioAdminUiDarkLoginLogo: '',
+			carbonioAdminUiAppLogo: '',
+			carbonioAdminUiDarkAppLogo: '',
+			carbonioAdminUiBackground: '',
+			carbonioAdminUiDarkBackground: '',
+			carbonioAdminUiFavicon: '',
+			carbonioAdminUiTitle: '',
+			carbonioAdminUiDescription: ''
+		};
+		Object.keys(domainDefaultElements).map((ele: any) =>
+			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
+		);
+		body.a = attributes;
+		modifyDomainRequest(body);
+	};
 
 	useEffect(() => {
 		if (
@@ -407,774 +488,801 @@ const DomainTheme: FC = () => {
 									onChange={onThemeModeChange}
 								/>
 							</ListRow>
-							<Container padding={{ top: 'large' }}>
+							<Row
+								width="100%"
+								mainAlignment="center"
+								crossAlignment="center"
+								padding={{ top: 'large' }}
+							>
+								<TabBar
+									items={items}
+									defaultSelected="end_user"
+									onChange={setChange}
+									onItemClick={setClick}
+									width={300}
+								/>
+							</Row>
+							<Row width="100%">
 								<Divider color="gray2" />
+							</Row>
+							<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
+								{change === 'end_user' && (
+									<>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.end_user_webapp', 'End User Webapp')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.end_user_theme_description',
+														'In this section you can customize the WebApp with your company logo and image.'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.title_and_description', 'Title & Description')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label={t('label.title', 'Title')}
+													background="gray5"
+													value={domainTheme.carbonioWebUiTitle}
+													inputName="carbonioWebUiTitle"
+													onChange={onChangeDomainThemeDetail}
+												/>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.title_theme_note',
+														'The title is the name that will appear on the browser tab'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label={t('label.description', 'Description')}
+													background="gray5"
+													value={domainTheme.carbonioWebUiDescription}
+													inputName="carbonioWebUiDescription"
+													onChange={onChangeDomainThemeDetail}
+												/>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.description_theme_note',
+														'The description will appear on the tooltip of the browser tab'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<Container padding={{ top: 'small' }}>
+											<Divider color="gray2" />
+										</Container>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.logo', 'Logo')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.logo_description',
+														'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.light_mode"
+														defaults="<bold>Light</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.logo_for_login_page', 'Logo for Login Page')}
+												</Text>
+											</Container>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.dark_mode"
+														defaults="<bold>Dark</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.logo_for_login_page', 'Logo for Login Page')}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioWebUiLoginLogo}
+													inputName="carbonioWebUiLoginLogo"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioWebUiLoginLogo(isValid);
+														} else {
+															setIsValidCarbonioWebUiLoginLogo(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioWebUiLoginLogo}
+												/>
+												{!isValidCarbonioWebUiLoginLogo && <HttpsErrorMessage />}
+											</Container>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioWebUiDarkLoginLogo}
+													inputName="carbonioWebUiDarkLoginLogo"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioWebUiDarkLoginLogo(isValid);
+														} else {
+															setIsValidCarbonioWebUiDarkLoginLogo(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioWebUiDarkLoginLogo}
+												/>
+												{!isValidCarbonioWebUiDarkLoginLogo && <HttpsErrorMessage />}
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.light_mode"
+														defaults="<bold>Light</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.logo_for_webapp', 'Logo for WebApp')}
+												</Text>
+											</Container>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.dark_mode"
+														defaults="<bold>Dark</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.logo_for_webapp', 'Logo for WebApp')}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioWebUiAppLogo}
+													inputName="carbonioWebUiAppLogo"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioWebUiAppLogo(isValid);
+														} else {
+															setIsValidCarbonioWebUiAppLogo(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioWebUiAppLogo}
+												/>
+												{!isValidCarbonioWebUiAppLogo && <HttpsErrorMessage />}
+											</Container>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioWebUiDarkAppLogo}
+													inputName="carbonioWebUiDarkAppLogo"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioWebUiDarkAppLogo(isValid);
+														} else {
+															setIsValidCarbonioWebUiDarkAppLogo(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioWebUiDarkAppLogo}
+												/>
+												{!isValidCarbonioWebUiDarkAppLogo && <HttpsErrorMessage />}
+											</Container>
+										</ListRow>
+										<Container padding={{ top: 'small' }}>
+											<Divider color="gray2" />
+										</Container>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.favicon', 'Favicon')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.favicon_description',
+														'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioWebUiFavicon}
+													inputName="carbonioWebUiFavicon"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioWebUiFavicon(isValid);
+														} else {
+															setIsValidCarbonioWebUiFavicon(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioWebUiFavicon}
+												/>
+												{!isValidCarbonioWebUiFavicon && <HttpsErrorMessage />}
+											</Container>
+										</ListRow>
+										<Container padding={{ top: 'small' }}>
+											<Divider color="gray2" />
+										</Container>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t(
+														'label.background_for_the_login_page',
+														'Background for the Login Page'
+													)}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.background_description',
+														'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.light_mode"
+														defaults="<bold>Light</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.background_login_page', 'Background Login Page')}
+												</Text>
+											</Container>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.dark_mode"
+														defaults="<bold>Dark</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.background_login_page', 'Background Login Page')}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioWebUiLoginBackground}
+													inputName="carbonioWebUiLoginBackground"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioWebUiLoginBackground(isValid);
+														} else {
+															setIsValidCarbonioWebUiLoginBackground(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioWebUiLoginBackground}
+												/>
+												{!isValidCarbonioWebUiLoginBackground && <HttpsErrorMessage />}
+											</Container>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioWebUiDarkLoginBackground}
+													inputName="carbonioWebUiDarkLoginBackground"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioWebUiDarkLoginBackground(isValid);
+														} else {
+															setIsValidCarbonioWebUiDarkLoginBackground(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioWebUiDarkLoginBackground}
+												/>
+												{!isValidCarbonioWebUiDarkLoginBackground && <HttpsErrorMessage />}
+											</Container>
+										</ListRow>
+									</>
+								)}
+								{change === 'admin_panel' && (
+									<>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.admin_panel', 'Admin Panel')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.admin_panel_theme_description',
+														'In this section you can customize the Admin Panel with your company logo and image.'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.title_and_description', 'Title & Description')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label={t('label.title', 'Title')}
+													background="gray5"
+													value={domainTheme.carbonioAdminUiTitle}
+													inputName="carbonioAdminUiTitle"
+													onChange={onChangeDomainThemeDetail}
+												/>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.title_theme_note',
+														'The title is the name that will appear on the browser tab'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label={t('label.description', 'Description')}
+													background="gray5"
+													value={domainTheme.carbonioAdminUiDescription}
+													inputName="carbonioAdminUiDescription"
+													onChange={onChangeDomainThemeDetail}
+												/>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.description_theme_note',
+														'The description will appear on the tooltip of the browser tab'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<Container padding={{ top: 'small' }}>
+											<Divider color="gray2" />
+										</Container>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.logo', 'Logo')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.logo_description',
+														'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.light_mode"
+														defaults="<bold>Light</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.logo_for_login_page', 'Logo for Login Page')}
+												</Text>
+											</Container>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.dark_mode"
+														defaults="<bold>Dark</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.logo_for_login_page', 'Logo for Login Page')}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioAdminUiLoginLogo}
+													inputName="carbonioAdminUiLoginLogo"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioAdminUiLoginLogo(isValid);
+														} else {
+															setIsValidCarbonioAdminUiLoginLogo(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioAdminUiLoginLogo}
+												/>
+												{!isValidCarbonioAdminUiLoginLogo && <HttpsErrorMessage />}
+											</Container>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioAdminUiDarkLoginLogo}
+													inputName="carbonioAdminUiDarkLoginLogo"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioAdminUiDarkLoginLogo(isValid);
+														} else {
+															setIsValidCarbonioAdminUiDarkLoginLogo(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioAdminUiDarkLoginLogo}
+												/>
+												{!isValidCarbonioAdminUiDarkLoginLogo && <HttpsErrorMessage />}
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.light_mode"
+														defaults="<bold>Light</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.logo_for_webapp', 'Logo for WebApp')}
+												</Text>
+											</Container>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.dark_mode"
+														defaults="<bold>Dark</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.logo_for_webapp', 'Logo for WebApp')}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioAdminUiAppLogo}
+													inputName="carbonioAdminUiAppLogo"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioAdminUiAppLogo(isValid);
+														} else {
+															setIsValidCarbonioAdminUiAppLogo(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioAdminUiAppLogo}
+												/>
+												{!isValidCarbonioAdminUiAppLogo && <HttpsErrorMessage />}
+											</Container>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioAdminUiDarkAppLogo}
+													inputName="carbonioAdminUiDarkAppLogo"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioAdminUiDarkAppLogo(isValid);
+														} else {
+															setIsValidCarbonioAdminUiDarkAppLogo(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioAdminUiDarkAppLogo}
+												/>
+												{!isValidCarbonioAdminUiDarkAppLogo && <HttpsErrorMessage />}
+											</Container>
+										</ListRow>
+										<Container padding={{ top: 'small' }}>
+											<Divider color="gray2" />
+										</Container>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.favicon', 'Favicon')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.favicon_description',
+														'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioAdminUiFavicon}
+													inputName="carbonioAdminUiFavicon"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioAdminUiFavicon(isValid);
+														} else {
+															setIsValidCarbonioAdminUiFavicon(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioAdminUiFavicon}
+												/>
+												{!isValidCarbonioAdminUiFavicon && <HttpsErrorMessage />}
+											</Container>
+										</ListRow>
+										<Container padding={{ top: 'small' }}>
+											<Divider color="gray2" />
+										</Container>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t(
+														'label.background_for_the_login_page',
+														'Background for the Login Page'
+													)}
+												</Text>
+											</Padding>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													{t(
+														'label.background_description',
+														'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
+													)}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.light_mode"
+														defaults="<bold>Light</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.background_login_page', 'Background Login Page')}
+												</Text>
+											</Container>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												padding={{ all: 'small' }}
+											>
+												<Text size="small" color="gray0">
+													<Trans
+														i18nKey="label.dark_mode"
+														defaults="<bold>Dark</bold> Mode"
+														components={{ bold: <strong /> }}
+													/>{' '}
+													{t('label.background_login_page', 'Background Login Page')}
+												</Text>
+											</Container>
+										</ListRow>
+										<ListRow>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioAdminUiBackground}
+													inputName="carbonioAdminUiBackground"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioAdminUiBackground(isValid);
+														} else {
+															setIsValidCarbonioAdminUiBackground(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioAdminUiBackground}
+												/>
+												{!isValidCarbonioAdminUiBackground && <HttpsErrorMessage />}
+											</Container>
+											<Container padding={{ all: 'small' }}>
+												<Input
+													label=""
+													background="gray5"
+													value={domainTheme.carbonioAdminUiDarkBackground}
+													inputName="carbonioAdminUiDarkBackground"
+													onChange={(e: any): any => {
+														if (e.target.value) {
+															const isValid = isValidHttpsUrl(e.target.value);
+															setIsValidCarbonioAdminUiDarkBackground(isValid);
+														} else {
+															setIsValidCarbonioAdminUiDarkBackground(true);
+														}
+														onChangeDomainThemeDetail(e);
+													}}
+													hasError={!isValidCarbonioAdminUiDarkBackground}
+												/>
+												{!isValidCarbonioAdminUiDarkBackground && <HttpsErrorMessage />}
+											</Container>
+										</ListRow>
+									</>
+								)}
 							</Container>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.end_user_webapp', 'End User Webapp')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.end_user_theme_description',
-											'In this section you can customize the WebApp with your company logo and image.'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.title_and_description', 'Title & Description')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.title', 'Title')}
-										background="gray5"
-										value={domainTheme.carbonioWebUiTitle}
-										inputName="carbonioWebUiTitle"
-										onChange={onChangeDomainThemeDetail}
-									/>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.title_theme_note',
-											'The title is the name that will appear on the browser tab'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.description', 'Description')}
-										background="gray5"
-										value={domainTheme.carbonioWebUiDescription}
-										inputName="carbonioWebUiDescription"
-										onChange={onChangeDomainThemeDetail}
-									/>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.description_theme_note',
-											'The description will appear on the tooltip of the browser tab'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<Container padding={{ top: 'small' }}>
-								<Divider color="gray2" />
-							</Container>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.logo', 'Logo')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.logo_description',
-											'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.light_mode"
-											defaults="<bold>Light</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.logo_for_login_page', 'Logo for Login Page')}
-									</Text>
-								</Container>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.dark_mode"
-											defaults="<bold>Dark</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.logo_for_login_page', 'Logo for Login Page')}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioWebUiLoginLogo}
-										inputName="carbonioWebUiLoginLogo"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioWebUiLoginLogo(isValid);
-											} else {
-												setIsValidCarbonioWebUiLoginLogo(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioWebUiLoginLogo}
-									/>
-									{!isValidCarbonioWebUiLoginLogo && <HttpsErrorMessage />}
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioWebUiDarkLoginLogo}
-										inputName="carbonioWebUiDarkLoginLogo"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioWebUiDarkLoginLogo(isValid);
-											} else {
-												setIsValidCarbonioWebUiDarkLoginLogo(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioWebUiDarkLoginLogo}
-									/>
-									{!isValidCarbonioWebUiDarkLoginLogo && <HttpsErrorMessage />}
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.light_mode"
-											defaults="<bold>Light</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.logo_for_webapp', 'Logo for WebApp')}
-									</Text>
-								</Container>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.dark_mode"
-											defaults="<bold>Dark</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.logo_for_webapp', 'Logo for WebApp')}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioWebUiAppLogo}
-										inputName="carbonioWebUiAppLogo"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioWebUiAppLogo(isValid);
-											} else {
-												setIsValidCarbonioWebUiAppLogo(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioWebUiAppLogo}
-									/>
-									{!isValidCarbonioWebUiAppLogo && <HttpsErrorMessage />}
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioWebUiDarkAppLogo}
-										inputName="carbonioWebUiDarkAppLogo"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioWebUiDarkAppLogo(isValid);
-											} else {
-												setIsValidCarbonioWebUiDarkAppLogo(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioWebUiDarkAppLogo}
-									/>
-									{!isValidCarbonioWebUiDarkAppLogo && <HttpsErrorMessage />}
-								</Container>
-							</ListRow>
-							<Container padding={{ top: 'small' }}>
-								<Divider color="gray2" />
-							</Container>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.favicon', 'Favicon')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.favicon_description',
-											'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioWebUiFavicon}
-										inputName="carbonioWebUiFavicon"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioWebUiFavicon(isValid);
-											} else {
-												setIsValidCarbonioWebUiFavicon(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioWebUiFavicon}
-									/>
-									{!isValidCarbonioWebUiFavicon && <HttpsErrorMessage />}
-								</Container>
-							</ListRow>
-							<Container padding={{ top: 'small' }}>
-								<Divider color="gray2" />
-							</Container>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.background_for_the_login_page', 'Background for the Login Page')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.background_description',
-											'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.light_mode"
-											defaults="<bold>Light</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.background_login_page', 'Background Login Page')}
-									</Text>
-								</Container>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.dark_mode"
-											defaults="<bold>Dark</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.background_login_page', 'Background Login Page')}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioWebUiLoginBackground}
-										inputName="carbonioWebUiLoginBackground"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioWebUiLoginBackground(isValid);
-											} else {
-												setIsValidCarbonioWebUiLoginBackground(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioWebUiLoginBackground}
-									/>
-									{!isValidCarbonioWebUiLoginBackground && <HttpsErrorMessage />}
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioWebUiDarkLoginBackground}
-										inputName="carbonioWebUiDarkLoginBackground"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioWebUiDarkLoginBackground(isValid);
-											} else {
-												setIsValidCarbonioWebUiDarkLoginBackground(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioWebUiDarkLoginBackground}
-									/>
-									{!isValidCarbonioWebUiDarkLoginBackground && <HttpsErrorMessage />}
-								</Container>
-							</ListRow>
-							<Container padding={{ top: 'small' }}>
-								<Divider color="gray2" />
-							</Container>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.admin_panel', 'Admin Panel')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.admin_panel_theme_description',
-											'In this section you can customize the Admin Panel with your company logo and image.'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.title_and_description', 'Title & Description')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.title', 'Title')}
-										background="gray5"
-										value={domainTheme.carbonioAdminUiTitle}
-										inputName="carbonioAdminUiTitle"
-										onChange={onChangeDomainThemeDetail}
-									/>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.title_theme_note',
-											'The title is the name that will appear on the browser tab'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.description', 'Description')}
-										background="gray5"
-										value={domainTheme.carbonioAdminUiDescription}
-										inputName="carbonioAdminUiDescription"
-										onChange={onChangeDomainThemeDetail}
-									/>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.description_theme_note',
-											'The description will appear on the tooltip of the browser tab'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<Container padding={{ top: 'small' }}>
-								<Divider color="gray2" />
-							</Container>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.logo', 'Logo')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.logo_description',
-											'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.light_mode"
-											defaults="<bold>Light</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.logo_for_login_page', 'Logo for Login Page')}
-									</Text>
-								</Container>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.dark_mode"
-											defaults="<bold>Dark</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.logo_for_login_page', 'Logo for Login Page')}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioAdminUiLoginLogo}
-										inputName="carbonioAdminUiLoginLogo"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioAdminUiLoginLogo(isValid);
-											} else {
-												setIsValidCarbonioAdminUiLoginLogo(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioAdminUiLoginLogo}
-									/>
-									{!isValidCarbonioAdminUiLoginLogo && <HttpsErrorMessage />}
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioAdminUiDarkLoginLogo}
-										inputName="carbonioAdminUiDarkLoginLogo"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioAdminUiDarkLoginLogo(isValid);
-											} else {
-												setIsValidCarbonioAdminUiDarkLoginLogo(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioAdminUiDarkLoginLogo}
-									/>
-									{!isValidCarbonioAdminUiDarkLoginLogo && <HttpsErrorMessage />}
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.light_mode"
-											defaults="<bold>Light</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.logo_for_webapp', 'Logo for WebApp')}
-									</Text>
-								</Container>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.dark_mode"
-											defaults="<bold>Dark</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.logo_for_webapp', 'Logo for WebApp')}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioAdminUiAppLogo}
-										inputName="carbonioAdminUiAppLogo"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioAdminUiAppLogo(isValid);
-											} else {
-												setIsValidCarbonioAdminUiAppLogo(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioAdminUiAppLogo}
-									/>
-									{!isValidCarbonioAdminUiAppLogo && <HttpsErrorMessage />}
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioAdminUiDarkAppLogo}
-										inputName="carbonioAdminUiDarkAppLogo"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioAdminUiDarkAppLogo(isValid);
-											} else {
-												setIsValidCarbonioAdminUiDarkAppLogo(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioAdminUiDarkAppLogo}
-									/>
-									{!isValidCarbonioAdminUiDarkAppLogo && <HttpsErrorMessage />}
-								</Container>
-							</ListRow>
-							<Container padding={{ top: 'small' }}>
-								<Divider color="gray2" />
-							</Container>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.favicon', 'Favicon')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.favicon_description',
-											'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioAdminUiFavicon}
-										inputName="carbonioAdminUiFavicon"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioAdminUiFavicon(isValid);
-											} else {
-												setIsValidCarbonioAdminUiFavicon(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioAdminUiFavicon}
-									/>
-									{!isValidCarbonioAdminUiFavicon && <HttpsErrorMessage />}
-								</Container>
-							</ListRow>
-							<Container padding={{ top: 'small' }}>
-								<Divider color="gray2" />
-							</Container>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.background_for_the_login_page', 'Background for the Login Page')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										{t(
-											'label.background_description',
-											'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
-										)}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.light_mode"
-											defaults="<bold>Light</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.background_login_page', 'Background Login Page')}
-									</Text>
-								</Container>
-								<Container
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'small' }}
-								>
-									<Text size="small" color="gray0">
-										<Trans
-											i18nKey="label.dark_mode"
-											defaults="<bold>Dark</bold> Mode"
-											components={{ bold: <strong /> }}
-										/>{' '}
-										{t('label.background_login_page', 'Background Login Page')}
-									</Text>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioAdminUiBackground}
-										inputName="carbonioAdminUiBackground"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioAdminUiBackground(isValid);
-											} else {
-												setIsValidCarbonioAdminUiBackground(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioAdminUiBackground}
-									/>
-									{!isValidCarbonioAdminUiBackground && <HttpsErrorMessage />}
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label=""
-										background="gray5"
-										value={domainTheme.carbonioAdminUiDarkBackground}
-										inputName="carbonioAdminUiDarkBackground"
-										onChange={(e: any): any => {
-											if (e.target.value) {
-												const isValid = isValidHttpsUrl(e.target.value);
-												setIsValidCarbonioAdminUiDarkBackground(isValid);
-											} else {
-												setIsValidCarbonioAdminUiDarkBackground(false);
-											}
-											onChangeDomainThemeDetail(e);
-										}}
-										hasError={!isValidCarbonioAdminUiDarkBackground}
-									/>
-									{!isValidCarbonioAdminUiDarkBackground && <HttpsErrorMessage />}
-								</Container>
-							</ListRow>
 							<Container padding={{ top: 'small' }}>
 								<Divider color="gray2" />
 							</Container>
