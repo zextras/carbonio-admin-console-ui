@@ -27,6 +27,7 @@ import {
 	GAL,
 	GENERAL_INFORMATION,
 	GENERAL_SETTINGS,
+	GLOBAL_THEME_ROUTE,
 	MAILBOX_QUOTA,
 	MAILING_LIST,
 	MANAGE_APP_ID,
@@ -43,6 +44,7 @@ import ListItems from '../list/list-items';
 import { useBackupModuleStore } from '../../store/backup-module/store';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
+import GlobalListPanel from './global-list-panel';
 
 const SelectItem = styled(Row)``;
 
@@ -143,12 +145,19 @@ const DomainListPanel: FC = () => {
 			if (selectedOperationItem) {
 				globalCarbonioSendAnalytics &&
 					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
-				replaceHistory(`/${domainId}/${selectedOperationItem}`);
+				if (selectedOperationItem === GLOBAL_THEME_ROUTE) {
+					replaceHistory(`/${selectedOperationItem}`);
+				} else {
+					replaceHistory(`/${domainId}/${selectedOperationItem}`);
+				}
 			} else {
 				globalCarbonioSendAnalytics &&
 					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 			}
+		} else if (selectedOperationItem) {
+			globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
+			replaceHistory(`/${selectedOperationItem}`);
 		}
 	}, [isDomainSelect, domainId, selectedOperationItem, matomo, globalCarbonioSendAnalytics]);
 
@@ -244,6 +253,17 @@ const DomainListPanel: FC = () => {
 		[t, isDomainSelect]
 	);
 
+	const globalOptionItems = useMemo(
+		() => [
+			{
+				id: GLOBAL_THEME_ROUTE,
+				name: t('label.theme', 'Theme'),
+				isSelected: true
+			}
+		],
+		[t]
+	);
+
 	const manageOptions = useMemo(
 		() =>
 			!getBackupModuleEnable
@@ -324,7 +344,12 @@ const DomainListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<GlobalListPanel
+				globalOptionItems={globalOptionItems}
+				selectedOperationItem={selectedOperationItem}
+				setSelectedOperationItem={setSelectedOperationItem}
+			/>
+			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 				<Dropdown
 					items={items}
 					placement="bottom-start"

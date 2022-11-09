@@ -136,3 +136,5 @@ export const S3 = 'S3';
 export const LOCAL_VALUE = 'LOCAL';
 export const MOUNTPOINT = 'mountpoint';
 export const S3_BUCKET = 's3_bucket';
+export const GLOBAL_ROUTE = 'global';
+export const GLOBAL_THEME_ROUTE = 'global/theme';

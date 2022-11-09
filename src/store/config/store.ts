@@ -30,13 +30,16 @@ export const useConfigStore = create<ConfigState>(
 		},
 		updateConfig: (key, value): void => {
 			set((state: any) => {
-				state.config = state.config.map((item: any) => {
-					if (item?.n === key) {
-						// eslint-disable-next-line no-param-reassign
-						item._content = value;
-					}
-					return item;
-				});
+				const ele = state.config.find((item: any) => item?.n === key);
+				state.config = ele
+					? state.config.map((item: any) => {
+							if (item?.n === key) {
+								// eslint-disable-next-line no-param-reassign
+								item._content = value;
+							}
+							return item;
+					  })
+					: [...state.config, ...[{ n: key, _content: value }]];
 			});
 		}
 	}))

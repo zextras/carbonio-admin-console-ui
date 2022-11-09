@@ -10,8 +10,9 @@ import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import logo from '../../assets/ninja_robo.svg';
 import DomainOperations from './domain-detail-operation';
-import { CREATE_NEW_DOMAIN_ROUTE_ID } from '../../constants';
+import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 import CreateDomain from './create-new-domain';
+import GlobalOperations from './global-operation';
 
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();
@@ -30,6 +31,9 @@ const DomainDetailPanel: FC = () => {
 			background="gray6"
 		>
 			<Switch>
+				<Route exact path={`${path}/${GLOBAL_ROUTE}/:operation`}>
+					<GlobalOperations />
+				</Route>
 				<Route exact path={`${path}/:domainId/:operation`}>
 					<DomainOperations />
 				</Route>
