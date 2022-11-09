@@ -643,7 +643,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.logo_path', 'Logo Path')}
 													background="gray5"
 													value={domainTheme.carbonioWebUiLoginLogo}
 													inputName="carbonioWebUiLoginLogo"
@@ -662,7 +662,7 @@ const DomainTheme: FC = () => {
 											</Container>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.logo_path', 'Logo Path')}
 													background="gray5"
 													value={domainTheme.carbonioWebUiDarkLoginLogo}
 													inputName="carbonioWebUiDarkLoginLogo"
@@ -713,7 +713,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.logo_path', 'Logo Path')}
 													background="gray5"
 													value={domainTheme.carbonioWebUiAppLogo}
 													inputName="carbonioWebUiAppLogo"
@@ -732,7 +732,7 @@ const DomainTheme: FC = () => {
 											</Container>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.logo_path', 'Logo Path')}
 													background="gray5"
 													value={domainTheme.carbonioWebUiDarkAppLogo}
 													inputName="carbonioWebUiDarkAppLogo"
@@ -777,7 +777,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.favicon_path', 'Favicon Path')}
 													background="gray5"
 													value={domainTheme.carbonioWebUiFavicon}
 													inputName="carbonioWebUiFavicon"
@@ -855,7 +855,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.image_path', 'Image Path')}
 													background="gray5"
 													value={domainTheme.carbonioWebUiLoginBackground}
 													inputName="carbonioWebUiLoginBackground"
@@ -874,7 +874,7 @@ const DomainTheme: FC = () => {
 											</Container>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.image_path', 'Image Path')}
 													background="gray5"
 													value={domainTheme.carbonioWebUiDarkLoginBackground}
 													inputName="carbonioWebUiDarkLoginBackground"
@@ -1031,7 +1031,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.logo_path', 'Logo Path')}
 													background="gray5"
 													value={domainTheme.carbonioAdminUiLoginLogo}
 													inputName="carbonioAdminUiLoginLogo"
@@ -1050,7 +1050,7 @@ const DomainTheme: FC = () => {
 											</Container>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.logo_path', 'Logo Path')}
 													background="gray5"
 													value={domainTheme.carbonioAdminUiDarkLoginLogo}
 													inputName="carbonioAdminUiDarkLoginLogo"
@@ -1101,7 +1101,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.logo_path', 'Logo Path')}
 													background="gray5"
 													value={domainTheme.carbonioAdminUiAppLogo}
 													inputName="carbonioAdminUiAppLogo"
@@ -1120,7 +1120,7 @@ const DomainTheme: FC = () => {
 											</Container>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.logo_path', 'Logo Path')}
 													background="gray5"
 													value={domainTheme.carbonioAdminUiDarkAppLogo}
 													inputName="carbonioAdminUiDarkAppLogo"
@@ -1165,7 +1165,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.favicon_path', 'Favicon Path')}
 													background="gray5"
 													value={domainTheme.carbonioAdminUiFavicon}
 													inputName="carbonioAdminUiFavicon"
@@ -1243,7 +1243,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.image_path', 'Image Path')}
 													background="gray5"
 													value={domainTheme.carbonioAdminUiBackground}
 													inputName="carbonioAdminUiBackground"
@@ -1262,7 +1262,7 @@ const DomainTheme: FC = () => {
 											</Container>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label=""
+													label={t('label.image_path', 'Image Path')}
 													background="gray5"
 													value={domainTheme.carbonioAdminUiDarkBackground}
 													inputName="carbonioAdminUiDarkBackground"
