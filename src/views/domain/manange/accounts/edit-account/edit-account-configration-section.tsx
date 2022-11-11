@@ -437,6 +437,9 @@ const EditAccountConfigrationSection: FC = () => {
 						/>
 					</Row>
 				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
 						{t('label.active_sync', 'ActiveSync')}

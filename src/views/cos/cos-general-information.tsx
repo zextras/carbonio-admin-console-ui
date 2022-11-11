@@ -260,7 +260,7 @@ const CosGeneralInformation: FC = () => {
 						height="fit"
 						crossAlignment="flex-start"
 						background="gray6"
-						padding={{ left: 'small', right: 'small' }}
+						padding={{ left: 'small', right: 'small', top: 'small' }}
 					>
 						<ListRow>
 							<Container padding={{ all: 'small' }}>

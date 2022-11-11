@@ -455,7 +455,7 @@ const CosServerPools: FC = () => {
 									onSelectionChange={(selected: any): void => setSelectedTableRows(selected)}
 								/>
 							</Row>
-							<ListRow>
+							{/* <ListRow>
 								<Divider />
 							</ListRow>
 							<ListRow>
@@ -466,7 +466,7 @@ const CosServerPools: FC = () => {
 										console.log('setOffset for paging');
 									}}
 								/>
-							</ListRow>
+							</ListRow> */}
 						</>
 					)}
 				</Container>

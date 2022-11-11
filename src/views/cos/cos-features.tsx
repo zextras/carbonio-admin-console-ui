@@ -511,6 +511,7 @@ const CosFeatures: FC = () => {
 							/>
 						</Row>
 					</Row>
+					<Divider />
 				</Row>
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
 					<Text size="extralarge" weight="bold">

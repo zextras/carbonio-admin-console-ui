@@ -1599,7 +1599,6 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Divider />
 				</Row>
 			</Container>
 		</Container>
