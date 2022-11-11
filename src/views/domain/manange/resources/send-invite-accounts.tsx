@@ -12,12 +12,16 @@ import {
 	Icon,
 	Table,
 	Button,
-	Padding
+	Padding,
+	Dropdown
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
+import { debounce } from 'lodash';
 import ListRow from '../../../list/list-row';
 import logo from '../../../../assets/gardian.svg';
 import { isValidEmail } from '../../../utility/utils';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 
 export const SendInviteAccounts: FC<any> = ({
 	isEditable,
@@ -35,6 +39,7 @@ export const SendInviteAccounts: FC<any> = ({
 	const [sendInviteRows, setSendInviteRows] = useState<any[]>([]);
 	const [defaultSendInviteList, setDefaultSendInviteList] = useState<any[]>([]);
 	const [isAssignDefaultList, setIsAssignDefaultList] = useState<boolean>(true);
+	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 
 	useEffect(() => {
 		if (sendInviteList && sendInviteList.length > 0 && isAssignDefaultList) {
@@ -108,6 +113,75 @@ export const SendInviteAccounts: FC<any> = ({
 		}
 	}, [selectedSendInvite, sendInviteList, setDefaultSendInviteList, setSendInviteList]);
 
+	const getSearchMemberList = useCallback((mem) => {
+		const attrs =
+			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+		const types = 'accounts,distributionlists,aliases';
+		const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+
+		searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name').then((data) => {
+			const result: any[] = [];
+			const dl = data?.dl;
+			const account = data?.account;
+			const alias = data?.alias;
+			if (dl) {
+				dl.map((item: any) => result.push(item));
+			}
+			if (account) {
+				account.map((item: any) => result.push(item));
+			}
+			if (alias) {
+				alias.map((item: any) => result.push(item));
+			}
+			setSearchMemberResult(result);
+		});
+	}, []);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchMemberCall = useCallback(
+		debounce((mem) => {
+			getSearchMemberList(mem);
+		}, 700),
+		[debounce]
+	);
+
+	useEffect(() => {
+		if (newSentInviteValue !== '') {
+			searchMemberCall(newSentInviteValue);
+		}
+	}, [newSentInviteValue, searchMemberCall]);
+
+	const searchMemberItems = searchMemberResult.map((item: any, index) => ({
+		id: item.id,
+		label: item.name,
+		customComponent: (
+			<Row
+				top="9px"
+				right="large"
+				bottom="9px"
+				left="large"
+				style={{
+					fontFamily: 'roboto',
+					display: 'block',
+					textAlign: 'left',
+					height: 'inherit',
+					padding: '3px',
+					width: 'inherit'
+				}}
+				onClick={(): void => {
+					setNewSentInviteValue(item?.name);
+					if (isValidEmail(item?.name)) {
+						setSendInviteAddBtnDisabled(false);
+					} else {
+						setSendInviteAddBtnDisabled(true);
+					}
+				}}
+			>
+				{item?.name}
+			</Row>
+		)
+	}));
+
 	return (
 		<>
 			{!hideHeaderBar && (
@@ -132,19 +206,30 @@ export const SendInviteAccounts: FC<any> = ({
 						wrap="nowrap"
 						padding={{ top: 'large' }}
 					>
-						<Input
-							label={t('label.enter_email_address', 'Enter E-mail address')}
-							background="gray5"
-							value={newSentInviteValue}
-							onChange={(e: any): any => {
-								setNewSentInviteValue(e.target.value);
-								if (isValidEmail(e.target.value)) {
-									setSendInviteAddBtnDisabled(false);
-								} else {
-									setSendInviteAddBtnDisabled(true);
-								}
+						<Dropdown
+							items={searchMemberItems}
+							placement="bottom-start"
+							maxWidth="300px"
+							disableAutoFocus
+							width="300px"
+							style={{
+								width: '100%'
 							}}
-						/>
+						>
+							<Input
+								label={t('label.enter_email_address', 'Enter E-mail address')}
+								background="gray5"
+								value={newSentInviteValue}
+								onChange={(e: any): any => {
+									setNewSentInviteValue(e.target.value);
+									if (isValidEmail(e.target.value)) {
+										setSendInviteAddBtnDisabled(false);
+									} else {
+										setSendInviteAddBtnDisabled(true);
+									}
+								}}
+							/>
+						</Dropdown>
 
 						<Padding left="large">
 							<Button
