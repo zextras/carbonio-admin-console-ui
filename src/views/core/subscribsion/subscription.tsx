@@ -259,7 +259,7 @@ const Subscription: FC = () => {
 			</Row>
 			<Container
 				mainAlignment="flex-start"
-				padding={{ horizontal: 'large' }}
+				padding={{ all: 'large' }}
 				orientation="column"
 				crossAlignment="flex-start"
 				style={{ overflow: 'auto' }}

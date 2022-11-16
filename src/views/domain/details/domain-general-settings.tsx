@@ -570,12 +570,17 @@ const DomainGeneralSettings: FC = () => {
 						</Shimmer.FormSection>
 					</Container>
 				) : (
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row
+						takeAvwidth="fill"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'large' }}
+					>
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							padding={{ left: 'small', right: 'small' }}
+							padding={{ all: 'small' }}
 						>
 							<ListRow>
 								<Container padding={{ all: 'small' }}>

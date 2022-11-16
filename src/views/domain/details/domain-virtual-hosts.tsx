@@ -215,6 +215,7 @@ const DomainVirtualHosts: FC = () => {
 					mainAlignment="flex-start"
 					height="calc(100% - 70px)"
 					style={{ overflow: 'auto' }}
+					padding={{ top: 'small' }}
 				>
 					<Padding value="large">
 						<Padding vertical="small">

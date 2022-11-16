@@ -246,6 +246,7 @@ const CreateDomain: FC = () => {
 				style={{ overflow: 'auto' }}
 				width="100%"
 				height="calc(100vh - 150px)"
+				padding={{ top: 'large' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">

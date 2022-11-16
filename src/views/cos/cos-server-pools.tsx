@@ -346,7 +346,7 @@ const CosServerPools: FC = () => {
 	}, [zimbraMailHostPoolList, serverList]);
 
 	return (
-		<Container mainAlignment="flex-start" crossAlignment="flex-start">
+		<Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"

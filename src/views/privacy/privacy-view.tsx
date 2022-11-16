@@ -199,6 +199,7 @@ const PrivacyView: FC = () => {
 				style={{ overflow: 'auto' }}
 				width="100%"
 				height="calc(100vh - 200px)"
+				padding={{ top: 'extralarge' }}
 			>
 				<Container height="fit" background="gray6" padding={{ left: 'small', right: 'small' }}>
 					<ListRow>

@@ -496,7 +496,12 @@ const DomainAuthentication: FC = () => {
 					width="100%"
 					height="calc(100vh - 150px)"
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row
+						takeAvwidth="fill"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'small' }}
+					>
 						<Container
 							padding={{ all: 'small' }}
 							height="fit"

@@ -412,9 +412,15 @@ const DomainResources: FC = () => {
 				style={{ overflow: 'auto' }}
 				width="100%"
 				height="calc(100vh - 200px)"
-				padding={{ top: 'extralarge' }}
+				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" height="100%">
+				<Row
+					takeAvwidth="fill"
+					mainAlignment="flex-start"
+					width="100%"
+					height="100%"
+					padding={{ top: 'large' }}
+				>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"

@@ -933,7 +933,7 @@ const CosPreferences: FC = () => {
 	};
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6">
+		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
