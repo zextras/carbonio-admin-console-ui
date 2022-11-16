@@ -602,7 +602,7 @@ const HSMsettingPanel: FC = () => {
 				height="calc(100vh - 160px)"
 			>
 				<ListRow>
-					<Padding bottom="large">
+					<Padding top="large" bottom="large">
 						<Text size="medium" weight="regular">
 							{t('hsm.scheduling', 'Scheduling')}
 						</Text>

@@ -925,7 +925,7 @@ const BackupConfiguration: FC = () => {
 					<Container
 						mainAlignment="flex-end"
 						crossAlignment="flex-end"
-						padding={{ top: 'medium' }}
+						padding={{ top: 'large' }}
 						height="fit"
 						orientation="horizontal"
 					>

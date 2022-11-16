@@ -388,14 +388,21 @@ const ServersList: FC = () => {
 					style={{ overflow: 'auto' }}
 					width="100%"
 					height="calc(100vh - 200px)"
-					padding={{ top: 'extralarge', left: 'small', right: 'small' }}
+					padding={{ top: 'large', left: 'small', right: 'small' }}
 				>
-					<BackupServersListTable
-						serverList={serverList}
-						selectedRows={selectedRows}
-						// eslint-disable-next-line @typescript-eslint/no-empty-function
-						onSelectionChange={(selected: any): any => {}}
-					/>
+					<Row
+						takeAvwidth="fill"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'large' }}
+					>
+						<BackupServersListTable
+							serverList={serverList}
+							selectedRows={selectedRows}
+							// eslint-disable-next-line @typescript-eslint/no-empty-function
+							onSelectionChange={(selected: any): any => {}}
+						/>
+					</Row>
 				</Container>
 			</Container>
 		</>

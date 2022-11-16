@@ -162,8 +162,14 @@ const BackupServerConfig: FC = () => {
 					style={{ overflow: 'auto' }}
 					width="100%"
 					height="calc(100vh - 200px)"
-					padding={{ top: 'extralarge', left: 'small', right: 'small' }}
+					padding={{ top: 'large', left: 'small', right: 'small' }}
 				>
+					<Row
+						takeAvwidth="fill"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'large' }}
+					></Row>
 					<ListRow>
 						<Switch
 							label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
