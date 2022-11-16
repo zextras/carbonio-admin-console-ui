@@ -972,11 +972,12 @@ const CosPreferences: FC = () => {
 				width="100%"
 				orientation="vertical"
 				style={{ overflow: 'auto' }}
+				padding={{ top: 'large' }}
 			>
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
+					padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
 					width="100%"
 				>
 					<Text size="extralarge" weight="bold">

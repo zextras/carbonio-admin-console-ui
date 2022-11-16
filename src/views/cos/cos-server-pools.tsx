@@ -375,11 +375,12 @@ const CosServerPools: FC = () => {
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 				width="100%"
+				padding={{ top: 'large' }}
 			>
 				<Container
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
+					padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
 					width="100%"
 				>
 					<ListRow>
