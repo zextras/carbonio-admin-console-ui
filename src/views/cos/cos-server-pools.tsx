@@ -347,10 +347,26 @@ const CosServerPools: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">
-			<Row mainAlignment="flex-start" padding={{ all: 'large' }}>
-				<Text size="medium" weight="bold">
-					{t('label.server_pools', '"Server Pools')}
-				</Text>
+			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Container
+					orientation="vertical"
+					mainAlignment="space-around"
+					background="gray6"
+					height="58px"
+				>
+					<Row
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ all: 'large' }}
+					>
+						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+							<Text size="medium" weight="bold" color="gray0">
+								{t('label.server_pools', '"Server Pools')}
+							</Text>
+						</Row>
+					</Row>
+				</Container>
 			</Row>
 			<Divider />
 			<Container
@@ -367,7 +383,7 @@ const CosServerPools: FC = () => {
 					width="100%"
 				>
 					<ListRow>
-						<Text size="small" weight="bold">
+						<Text size="extralarge" weight="bold">
 							{t('cos.general_options', 'General Options')}
 						</Text>
 					</ListRow>
