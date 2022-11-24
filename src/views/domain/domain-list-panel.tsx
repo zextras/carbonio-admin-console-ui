@@ -368,6 +368,7 @@ const DomainListPanel: FC = () => {
 								: t('domain.type_here_a_domain', 'Type here a domain')
 						}
 						onChange={(ev: any): void => {
+							setIsDomainSelect(false);
 							setSearchDomainName(ev.target.value);
 						}}
 						CustomIcon={(): any => (
