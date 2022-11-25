@@ -103,7 +103,7 @@
         "restore_account": "Restaurar conta",
         "retention_policy": "Política de retenção",
         "save_and_leave": "Salvar e Sair",
-        "search": "Buscar",
+        "search": "Procurar",
         "server": "Servidor",
         "servers": "Servidores",
         "show_time_zone_list_in_appointment_view": "Mostrar lista de fusos horários na vista de compromissos",
@@ -126,7 +126,7 @@
         "cos": "COS",
         "detail": "Detalhar",
         "device": "Dispositivo",
-        "edit": "Editar",
+        "edit": "Edit",
         "go_back": "Voltar",
         "id_lbl": "ID",
         "language": "Idioma",
@@ -134,7 +134,7 @@
         "mail": "E-mail",
         "no": "Não",
         "owners": "Proprietários",
-        "password": "Senha",
+        "password": "Palavra-passe",
         "require_list_owner_approval": "Exigir aprovação do proprietário da lista",
         "resource": "Recurso",
         "rights": "Direitos",
@@ -196,7 +196,28 @@
         "configuration_lbl": "Configuração",
         "disabled": "Desativado",
         "na": "N/A",
-        "scheduled": "Programado"
+        "scheduled": "Programado",
+        "soft_deleted": "desactivado",
+        "advanced_lbl": "Avançado",
+        "allowed": "Permitido",
+        "device_id": "ID do dispositivo",
+        "e_mail": "E-mail",
+        "eas": "EAS",
+        "email_address": "Endereço de e-mail",
+        "enabled": "Ativada",
+        "last_seen": "Visto por última vez",
+        "mobile_password": "Mobile Password",
+        "reset": "Redefinir",
+        "reset_device": "Reiniciar dispositivo",
+        "s3_bucket": "Bucket S3",
+        "service": "Serviço",
+        "status_lbl": "Status",
+        "theme": "Tema",
+        "title": "Título",
+        "volume_server_name": "Servidor",
+        "wipe_device": "Limpar dispositivo",
+        "global": "Global",
+        "update": "Atualizar"
     },
     "timezone": {
         "asia_pyongyang": "{{value}} Pyongyang",
@@ -353,8 +374,7 @@
     "core": {
         "subscription": {
             "hide": "Ocultar",
-            "status": "Status",
-            "active": "Ativa"
+            "status": "Status"
         }
     },
     "domain": {
@@ -470,11 +490,12 @@
         "minimum_upper_case_characters": "Número mínimo de caracteres maiúsculos",
         "number_of_consecutive_failed_login_allowed": "Número permitido de inícios de sessão consecutivos sem sucesso",
         "offline_support_for_advanced_client": "Compatibilidade offline para programa-cliente avançado (Ajax)",
-        "password": "Senha",
+        "password": "Palavra-passe",
         "pop3_polling_interval": "Intervalo de verificação do POP3",
         "prevent_user_from_changing_password": "Impedir utilizador de alterar a palavra-passe",
         "proxy_allowed_domain_name": "Nome de domínio permitido pelo \"proxy\"",
-        "proxy_allowed_domains": "Domínios permitidos pelo \"proxy\""
+        "proxy_allowed_domains": "Domínios permitidos pelo \"proxy\"",
+        "dark_mode": "Modo Noturno"
     },
     "backup": {
         "backup_path": "Path do backup",
@@ -489,7 +510,11 @@
         "local_metadata_threshold": "Limiar local de Metadados",
         "ldap_dump": "Dump do LDAP",
         "latency_low_threshold": "Limiar mínimo de latência",
-        "latency_high_threshold": "Limiar máximo de latência"
+        "latency_high_threshold": "Limiar máximo de latência",
+        "advanced": "Avançado",
+        "data_retention_policies": "Políticas de retenção de dados",
+        "general": "Geral",
+        "kb": "KB"
     },
     "locale": {
         "English": "Inglês",
@@ -561,5 +586,68 @@
     "reminder": {
         "minute": "{{count}} minuto",
         "minute_plural": ""
+    },
+    "hsm": {
+        "contact": "Contacto",
+        "current": "Corrente",
+        "days": "Dias",
+        "delete": "Apagar",
+        "details": "Detalhes",
+        "document": "Texto",
+        "edit": "Edit",
+        "event": "Evento",
+        "gb": "GB",
+        "hsm_policy": "Política HSM",
+        "indexes": "Índices",
+        "items": "Itens",
+        "kb": "KB",
+        "mb": "MB",
+        "message": "Mensagem",
+        "minimum_space_threshold": "Limiar de espaço mínimo",
+        "months": "Meses",
+        "name": "Nome",
+        "no": "Não",
+        "primary": "Primário",
+        "schedule": "Programação",
+        "secondary": "Secundário",
+        "server": "Servidor",
+        "type": "Tipo",
+        "value": "Valor",
+        "volumes": "Volumes",
+        "yes": "Sim",
+        "all": "Tudo"
+    },
+    "volume": {
+        "server_list_header": {
+            "description": "Descrição",
+            "primary": "Primário",
+            "secondary": "Secundário",
+            "server": "Servidor",
+            "index": "Índice"
+        },
+        "volume_allocation_list": {
+            "centralized": "Centralizado",
+            "external": "Externo"
+        },
+        "volume_config_header": {
+            "name": "Nome"
+        },
+        "volume_header": {
+            "current": "Corrente",
+            "id": "ID",
+            "name": "Nome",
+            "path": "Path"
+        },
+        "volume_indexer_header": {
+            "current": "Corrente",
+            "id": "ID",
+            "name": "Nome",
+            "path": "Path"
+        },
+        "volume_type": {
+            "index": "Índice",
+            "primary": "Primário",
+            "secondary": "Secundário"
+        }
     }
 }

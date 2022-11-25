@@ -19,7 +19,10 @@
         "volume_cancel_button": "لغو",
         "settings": "تنظیمات",
         "disabled": "غیرفعال",
-        "purge": "پاکسازی"
+        "purge": "پاکسازی",
+        "enabled": "فعال",
+        "reset": "تنظیم مجدد",
+        "theme": "پوسته‌ها"
     },
     "domain": {
         "theme": "پوسته‌ها"
@@ -27,5 +30,26 @@
     "cos": {
         "enabled": "فعال",
         "disabled": "غیرفعال"
+    },
+    "hsm": {
+        "delete": "حذف",
+        "details": "جزئیات",
+        "edit": "ویرایش",
+        "name": "نام",
+        "type": "نوع"
+    },
+    "volume": {
+        "server_list_header": {
+            "description": "توضیح"
+        },
+        "volume_config_header": {
+            "name": "نام"
+        },
+        "volume_header": {
+            "name": "نام"
+        },
+        "volume_indexer_header": {
+            "name": "نام"
+        }
     }
 }

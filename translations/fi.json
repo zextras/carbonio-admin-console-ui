@@ -3,9 +3,13 @@
         "remove": "Poista",
         "search": "Hae",
         "details": "Yksityiskohdat",
-        "password": "Salasana"
+        "password": "Salasana",
+        "reset": "Resetoi"
     },
     "cos": {
         "password": "Salasana"
+    },
+    "hsm": {
+        "details": "Yksityiskohdat"
     }
 }

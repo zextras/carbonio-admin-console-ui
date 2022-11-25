@@ -294,8 +294,7 @@ const ManageAccounts: FC = () => {
 								size="medium"
 								key={item?.id}
 								color="#414141"
-								onClick={(event: { stopPropagation: () => void }): void => {
-									event.stopPropagation();
+								onClick={(): void => {
 									openDetailView(item);
 								}}
 							>
@@ -305,8 +304,7 @@ const ManageAccounts: FC = () => {
 								size="medium"
 								key={item?.id}
 								color="#414141"
-								onClick={(event: { stopPropagation: () => void }): void => {
-									event.stopPropagation();
+								onClick={(): void => {
 									openDetailView(item);
 								}}
 							>
@@ -316,8 +314,7 @@ const ManageAccounts: FC = () => {
 								size="medium"
 								key={item?.id}
 								color="#828282"
-								onClick={(event: { stopPropagation: () => void }): void => {
-									event.stopPropagation();
+								onClick={(): void => {
 									openDetailView(item);
 								}}
 							>
@@ -327,8 +324,7 @@ const ManageAccounts: FC = () => {
 								size="medium"
 								key={item?.id}
 								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
-								onClick={(event: { stopPropagation: () => void }): void => {
-									event.stopPropagation();
+								onClick={(): void => {
 									openDetailView(item);
 								}}
 							>
@@ -468,6 +464,7 @@ const ManageAccounts: FC = () => {
 									rows={accountList}
 									headers={headers}
 									showCheckbox={false}
+									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
 								/>
 							)}

@@ -3,7 +3,7 @@
         "minutes": "Dakika",
         "account": "Hesap",
         "accounts": "Hesaplar",
-        "active": "Etkin",
+        "active": "Aktif",
         "add": "Ekle",
         "app_clicked": "Paylaşım isteğini kabul ettiniz",
         "app_name": "Yönet",
@@ -310,7 +310,7 @@
         "block_send": "Göndermeyi Engelle",
         "auto_logout_users": "Otomatik olarak Kullanıcı Çıkışı",
         "auto_accept_auto_decline_on_conflict": "Uygunsa Otomatik Kabul, çakışma olursa Otomatik Red",
-        "auto_accept_always": "Kullanıcı uygunsa her zaman otomatik kabul edilir",
+        "auto_accept_always": "Kullanıcı uygunsa her zaman otomatik kabul et",
         "auto_accept": "Otomatik Kabul Et",
         "auth_method": "Auth Metodu",
         "are_you_sure_deleting_cos": "Bu Servis Paketini silmek istediğinizden emin misiniz?",
@@ -338,9 +338,9 @@
         "utility_view2": "Gmrünüm 2 deneme",
         "utility_view": "Görünüm 1 deneme",
         "this_list_is_member_of": "Bu Listenin dahil olduğu listeler",
-        "not_send_receive": "Gönderemez ve Alamaz",
+        "not_send_receive": "Gönderemez veya Alamaz",
         "no_virtual_host_msg": "Sanal host bulunmuyor.",
-        "no_auto_accept_or_decline": "Uygunsa her zaman Otomatik Kabul Etme",
+        "no_auto_accept_or_decline": "Kullanıcı uygun olsa bile otomatik kabul etme",
         "add_regex": "REGEX EKLE",
         "who_needs_receive_this_email": "Bu eposta kime gönderilmeli?",
         "who_is_in_this_list": "Bu listede kim var?",
@@ -360,14 +360,14 @@
         "sharing": "PAYLAŞIM",
         "share_message_to_new_member": "Mesajları yeni üyeler ile paylaş",
         "set_as_secondary_button": "İKİNCİL OLARAK AYARLA",
-        "server_specific": "Sunucu Özelliği",
+        "server_specific": "Sunucu Özellikleri",
         "sending_mails": "Posta Gönderme",
         "select_an_account": "Hesap Seçin",
         "search_for_a_Server": "Sunucu Ara",
         "restore_account_has_added_operation_queue": "Hesap geri yükleme işlem sırasına başarıyla eklendi",
         "resource_name": "Kaynak Adı",
         "reply_to_address_for_receipt": "Alındı bilgisi için yanıt adresi",
-        "remind_appointments_timer": "Toplantı Zamanı Hatırlatma",
+        "remind_appointments_timer": "Toplantı Zamanı Hatırlatma Süresi",
         "receiving_mails": "Posta Alma",
         "query_is_not_valid": "Sorgu geçersiz",
         "percentage_maximum_conflict": "% Maksimum Çakışma",
@@ -527,18 +527,18 @@
         "no_owner_search_information_message": "Burada sahip kullanıcılar bulunmuyor. Bir kullanıcı arayın ve EKLE simgesine tıklayın.",
         "not_ready_to_be_active": "Aktif olması için hazır değil",
         "only_there_users": "Sadece kullanıcılar",
-        "owners_manage_add_list": "Sahip yetkili kullanıcılar yönetebilir ve ... Sahip yetkili kullanıcıların listede neler yapabileceğini düzenler",
+        "owners_manage_add_list": "Sahip yetkili kullanıcılar üyeleri ekleyip çıkarabilir, görüntülenen ismi ve tanımı, liste görünürlüğünü (ör. gal içinde gizle), sahipliği değiştirebilir, üyeliğe katılım / ayrılma durumunu düzenleyebilir",
         "owners_settings": "Posta Listesi sahip yetkili ayarları",
         "restore_external_data_source": "Dış Veri Kaynaklarını Geri Yükle",
         "search_for_user_add_button": "Bir kullanıcı arayın ve EKLE simgesine tıklayın.",
         "send_new_members_notification_for_share_assigned_to_this_group": "Bu gruba atanan paylaşım/delegasyon için yeni üyelere bildirim gönder",
         "server_details": "Sunucu Detayları",
         "set_as_primary_button": "BİRİNCİL OLARAK BELİRLE",
-        "soft_deleted": "Silmek için işaretli",
+        "soft_deleted": "kullanıma kapalı",
         "the_week_starts_on": "Haftanın başlangıç günü",
         "there_are_not_owner_here": "Burada sahip yetkili kullanıcılar yok.",
         "this_list_can_receive_email": "Bu liste e-posta alabilir",
-        "type_in_the_mails": "Postaları yazın",
+        "type_in_the_mails": "Listeye eklemek için hesapları yazın",
         "type_name_your_domain_will_have": "Kullanılacak alanadınızı yazın",
         "virtual_host_user_msg_1": "Örneğin, mail.example.com ve webmail.example.com olarak servislere erişebilirsiniz.",
         "volume_active": "{{volumeName}} şu anda aktif",
@@ -573,7 +573,7 @@
         "resource_disable_successfully": "{{resource_name}} başarıyla kullanım dışı bırakıldı.",
         "resource_remove_correctly": "{{resource_name}} başarıyla kaldırıldı.",
         "rt_status": "RT Durumu",
-        "server_list": "Sunucu Listesi",
+        "server_list": "Sunucular Listesi",
         "smartscan": "AkıllıTarama",
         "resource_deleted_successfully": "{{resource_name}} başarıyla silindi",
         "yes_delete_it": "Evet, Sil",
@@ -583,7 +583,32 @@
         "na": "N/A",
         "purge": "Sil",
         "scheduled": "Zamanlandı",
-        "server_specifics": "Sunucu Özelliği"
+        "server_specifics": "Sunucu Özellikleri",
+        "DELETE": "SİL",
+        "OTP": "Tek Kullanımlık Parola",
+        "advanced_lbl": "Gelişmiş",
+        "allowed": "İzin verildi",
+        "device_id": "Cihaz NO",
+        "e_mail": "E-posta",
+        "eas": "EAS",
+        "email_address": "Eposta adresi",
+        "enabled": "Kullanıma açık",
+        "global": "Global",
+        "last_seen": "Son görülme",
+        "mailstores": "Posta depoları",
+        "mobile_password": "Mobil Parola",
+        "reset": "Sıfırla",
+        "reset_device": "Cihazı Sıfırla",
+        "s3_bucket": "S3 Bucket",
+        "select_an_external_volume": "Dış Depolama Hacmi Seçin",
+        "service": "Servis",
+        "status_lbl": "Durum",
+        "theme": "Tema",
+        "title": "Başlık",
+        "update": "Güncelle",
+        "volume_next_button": "İLERİ",
+        "volume_server_name": "Sunucu",
+        "wipe_device": "Cihazı Sil"
     },
     "timezone": {
         "asia_gaza": "{{value}} Gaza",
@@ -818,7 +843,6 @@
     },
     "core": {
         "subscription": {
-            "active": "Etkin",
             "bundle": "Toplu Paket",
             "company_name": "Firma Adı",
             "customer": "Müşteri",
@@ -840,8 +864,7 @@
                 "deactivate": "Evet, Pasif duruma getir",
                 "confirm": "Devam etmek istediğinizden emin misiniz?",
                 "cancel": "HAYIR"
-            },
-            "deactive": "Aktif Değil"
+            }
         }
     },
     "domain": {
@@ -932,7 +955,7 @@
         "max_waiting_time_ms": "Maks Bekleme Süresi (ms)",
         "maximum_metadata_size_mb": "Maksimum Metaveri Boyutu (MB)",
         "back_delete_account_warning_message": "Eğer 0 olarak ayarlarsanız <strong>hesaplar</strong> her zaman yedek içinde saklanacak",
-        "back_delete_item_warning_message": "Eğer 0 olarak ayarlarsanız <strong>öğeler</strong> her zaman yedek içinde saklanacak ?",
+        "back_delete_item_warning_message": "Eğer 0 olarak ayarlarsanız <strong>öğeler</strong> her zaman yedek içinde saklanacak",
         "check_ldap": "LDAP kontrol et",
         "force_start_smartscan_now": "AkıllıTarama işlemini şimdi başlat",
         "include_index": "Indeks Ekle",
@@ -940,11 +963,11 @@
         "keep_deleted_account_in_the_backup": "Silinmiş hesabı yedekte tut",
         "ldap_working_properly": "LDAP düzgün çalışıyor",
         "local_volume": "Lokal Hacim",
-        "maximum_operation_per_account": "Hesap başına Maksimum İşlem",
+        "maximum_operation_per_account": "Hesap başına Maksimum İşlemler",
         "metadata_archiving": "Metaveri arşivleme",
-        "module_is_enabled_at_startup": "Bu modül sistem başlarken etkindir ",
+        "module_is_enabled_at_startup": "Bu modül sistem başlarken etkindir",
         "on_the_fly_metadata": "Anlık Metaveri",
-        "purge_old_configuration": "Eski yapılandırmayı temizle",
+        "purge_old_configuration": "Eski yapılandırmaları temizle",
         "run_smartscan_at_startup": "Sistem başladığında Akıllı Taramayı çalıştır",
         "running": "çalışıyor",
         "schedule_automatic_retention_policies": "Otomatik saklama kuralları zamanı belirle",
@@ -958,7 +981,10 @@
         "the_service_is_stopped": "Servis durdu",
         "thread_number_for_accounts": "Hesaplar için işlem sayısı",
         "thread_number_for_items": "Öğeler için işlem sayısı",
-        "waiting_time": "Bekleme Süresi"
+        "waiting_time": "Bekleme Süresi",
+        "bucket_list": "Bucket Listesi",
+        "external_volume": "Dış Depolama Hacmi",
+        "kb": "KB"
     },
     "cos": {
         "calendar_options": "Takvim Seçenekleri",
@@ -1106,7 +1132,9 @@
         "time_window_failed_logins_must_occur_to_lock_account": "Hesabı kilitlemek için başarısız oturum açma girişimlerinin gerçekleşmesi gereken süre penceresi:",
         "timeout_policy": "Zamanaşımı İlkesi",
         "trashed_message_lifetime": "Çöp kutusundaki mesajın tutulma süresi",
-        "time_range": "Zaman Aralığı"
+        "time_range": "Zaman Aralığı",
+        "dark_mode": "Koyu Mod",
+        "active_sync": "ActiveSync"
     },
     "locale": {
         "English": "English",
@@ -1174,13 +1202,46 @@
         "new": {
             "create_mailstores_volume": "Posta Depolama Hacmi oluştur"
         },
-        "serverName_volumes": "{{serverName}} Volumes"
+        "serverName_volumes": "{{serverName}} Volumes",
+        "server_list_header": {
+            "description": "Açıklama",
+            "index": "İndeks",
+            "primary": "Birincil",
+            "secondary": "İkincil",
+            "server": "Sunucu"
+        },
+        "volume_allocation_list": {
+            "centralized": "Merkezi",
+            "external": "Harici",
+            "local": "Lokal"
+        },
+        "volume_config_header": {
+            "name": "Ad"
+        },
+        "volume_header": {
+            "compression": "Sıkıştırma",
+            "current": "Geçerli",
+            "id": "ID",
+            "name": "Ad",
+            "path": "Yol"
+        },
+        "volume_indexer_header": {
+            "current": "Geçerli",
+            "id": "ID",
+            "name": "Ad",
+            "path": "Yol"
+        },
+        "volume_type": {
+            "index": "İndeks",
+            "primary": "Birincil",
+            "secondary": "İkincil"
+        }
     },
     "privacy": {
         "survey_feedback_sub_1": "Anketler hızlı, kolay ve yapmamız gerekenleri anlamamız için çok kullanışlı olacak.",
         "full_error_sub_1": "Hepimiz hata yapabiliriz, ancak önemli olan bunları düzeltmek! Hataları ve nasıl düzeltebileceğimizi bizimle paylaşın",
         "analytics_sub_1": "Veriniz güvende. Toplanan bilgiler hiçbir zaman kişi bilgisi içermeyecek. Bu bilgiler, ekibimiz tarafından Carbonio ürününü daha nasıl geliştirebiliriz anlamak üzere kullanılacak.",
-        "allow_live_survey_feedbacks": "Canlı anket bidirimlerine izin ver",
+        "allow_live_survey_feedbacks": "Geri bildirim için anketlere izin ver",
         "allow_data_analytics": "Veri değerlendirmeye izin ver",
         "send_full_error_data_to_zextras": "Bütün hata verisini Zextras'a gönder"
     },
@@ -1280,5 +1341,50 @@
     "reminder": {
         "minute": "{{count}} dakika",
         "minute_plural": ""
+    },
+    "hsm": {
+        "allocation": "Kaynak Kullanımı",
+        "apply_duplication_after_scheduledhsm": "Zamanlanan HDY sonrasında aynı öğeleri birleştirme işlemi uygula",
+        "contact": "Kişi",
+        "create_policy": "İlke Oluştur",
+        "criteria": "Kriter",
+        "current": "Geçerli",
+        "days": "Gün",
+        "delete": "Sil",
+        "destination_volume": "Hedef Depolama Hacmi",
+        "details": "Detaylar",
+        "document": "Doküman",
+        "edit": "Düzenle",
+        "event": "Etkinlik",
+        "gb": "GB",
+        "hours": "Saat",
+        "hsm_policies_list": "HDY İlkeler Listesi",
+        "hsm_policy": "HSM İlkesi",
+        "indexes": "İndeksler",
+        "items": "Öğeler",
+        "kb": "KB",
+        "mb": "MB",
+        "message": "Mesaj",
+        "minimum_space_threshold": "Minimum Yer Eşiği",
+        "minutes": "Dakika",
+        "months": "Ay",
+        "name": "Ad",
+        "new_policy_summary": "Yeni İlke Özeti",
+        "no": "Hayır",
+        "option": "Seçenek",
+        "parameters": "Parametreler",
+        "policy_settings": "İlke Ayarları",
+        "primary": "Birincil",
+        "schedule": "Zamanlama",
+        "secondary": "İkincil",
+        "select_volumes": "Depolama Hacimleri Seç",
+        "server": "Sunucu",
+        "source_volume": "Kaynak Depolama Hacmi",
+        "this_function_allow_save_disk_copy_msg": "Bu özellik öğelerin tek kopyasını depolayıp disk alanından kazanmanızı sağlar.",
+        "type": "Tür",
+        "value": "Değer",
+        "volumes": "Birimler",
+        "yes": "Evet",
+        "all": "Hepsi"
     }
 }
