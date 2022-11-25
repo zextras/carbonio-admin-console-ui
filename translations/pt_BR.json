@@ -232,7 +232,6 @@
     },
     "core": {
         "subscription": {
-            "active": "Ativa",
             "bundle": "Bundle",
             "company_name": "Nome da Empresa",
             "customer": "Cliente",
@@ -254,8 +253,7 @@
                 "deactivate": "Sim, desativar",
                 "label": "Desativar Token",
                 "warning": "Você está tentando desativar o Token atual. Se continuar, você vai desabilitar todas as funcionalidades habilitadas."
-            },
-            "deactive": "Desativar"
+            }
         }
     },
     "domain": {
@@ -328,7 +326,7 @@
                 "accepted": "Você aceitou este pedido de compartilhamento"
             }
         },
-        "status": "Status",
+        "status": "status",
         "suspended": "Suspenso",
         "timezone": "Fuso Horário",
         "unlimited": "Ilimitado",
@@ -441,7 +439,7 @@
         "email": "E-mail",
         "enable_automatic_adding_of_contacts": "Ativar a inclusão automática de contatos",
         "enable_mandatory_spell_check": "Ativar verificação ortográfica obrigatória",
-        "enable_past_due_reminders": "Ativar lembretes dos compromissos passados",
+        "enable_past_due_reminders": "Ativar lembretes de compromissos passados",
         "export_domain": "Exportar Domínio",
         "gal": "Lista global de endereços",
         "gal_mode": "Modo da GAL",
@@ -668,7 +666,7 @@
         "new_volume_create": "CRIAR",
         "next": "PRÓXIMO",
         "path": "Caminho",
-        "prefix": "Prefixo",
+        "prefix": "Título",
         "private": "Privado",
         "prompt": "Solicitação",
         "public": "Público",
@@ -760,7 +758,7 @@
         "application_log": "Log do Aplicativo",
         "apply_hsm_policy_after_the_restore": "Aplicar as Políticas HSM após a restauração",
         "appointment_reminder_in_minutes": "Lembrete de Compromisso (minutos antes)",
-        "appointments_default_duration": "Duração do Compromisso Padrão",
+        "appointments_default_duration": "Duração Padrão do Compromisso",
         "are_you_sure_delete_distribution_list": "Tem certeza que deseja excluir <bold>{{name}}</bold>?",
         "back": "VOLTAR",
         "backup_at_startup": "Fazer Backup ao Iniciar",
@@ -815,7 +813,7 @@
         "resource_remove_correctly": "{{resource_name}} foi removido com successo.",
         "rt_status": "Status RT",
         "search_for_user_add_button": "Busque por um usuário e clique no botão ADICIONAR.",
-        "server_list": "Lista de Servidores",
+        "server_list": "Lista de servidores",
         "server_specific": "Especificações do Servidor",
         "server_specifics": "Especificações do Servidor",
         "smartscan": "Smartscan",
@@ -828,7 +826,7 @@
         "volume_type_edited": "{{message}}",
         "new_mailing_list": "Nova Lista de E-mail",
         "virtual_host_user_msg_1": "Por exemplo, você pode tornar o serviço disponível tanto para mail.example.com quanto para webmail.example.com.",
-        "deleting_resource_name": "Você está excluindo {{name}}",
+        "deleting_resource_name": "Você está excluíndo {{name}}",
         "login_is_disabled": "Login desativado",
         "mailing_list_name": "Nome da Lista de E-mail",
         "members_only": "Apenas membros",
@@ -874,7 +872,33 @@
         "specified_domain_not_exist": "O domínio especificado não existe",
         "start": "iniciar",
         "who_is_in_this_list": "Quem está nesta lista?",
-        "who_needs_receive_this_email": "Quem deve receber este e-mail?"
+        "who_needs_receive_this_email": "Quem deve receber este e-mail?",
+        "reply_to_address_for_receipt": "Endereço de resposta da confirmação",
+        "DELETE": "EXCLUIR",
+        "OTP": "OTP",
+        "advanced_lbl": "Avançado",
+        "allowed": "Permitido",
+        "device_id": "ID do dispositivo",
+        "e_mail": "E-mail",
+        "eas": "EAS",
+        "email_address": "Endereço de e-mail",
+        "enabled": "Habilitado",
+        "global": "Global",
+        "last_seen": "Visto pela última vez",
+        "mailstores": "Mailstores",
+        "mobile_password": "Senha móvel",
+        "reset": "Redefinir",
+        "reset_device": "Resetar dispositivo",
+        "service": "Serviço",
+        "status_lbl": "Status",
+        "title": "Título",
+        "update": "Atualizar",
+        "volume_next_button": "PRÓXIMO",
+        "volume_server_name": "Servidor",
+        "wipe_device": "Limpar dispositivo",
+        "s3_bucket": "Bucket S3",
+        "select_an_external_volume": "Selecionar um Volume Externo",
+        "theme": "Tema"
     },
     "message": {
         "snackbar": {
@@ -969,7 +993,10 @@
         "range": "Faixa",
         "smart_scan_configuration": "Configuração do SmartScan",
         "tuning_options": "Opções de Ajustes",
-        "initialize_backup": "Inicializar Backup"
+        "initialize_backup": "Inicializar Backup",
+        "bucket_list": "Lista de Buckets",
+        "external_volume": "Volume Externo",
+        "kb": "KB"
     },
     "cos": {
         "calendar_options": "Opções da agenda",
@@ -1117,7 +1144,9 @@
         "use_gal_to_auto_fill": "Usar o GAL para autocompletar",
         "use_ical_delegation_model_for_shared_calendars": "Usar o modelo de delegação iCal para calendários compartilhados",
         "use_quickadd_dialog_in_creation": "Usar o diálogo QuickAdd na criação",
-        "yes_disable": "Sim, Desativar"
+        "yes_disable": "Sim, Desativar",
+        "active_sync": "ActiveSync",
+        "dark_mode": "Modo Noturno"
     },
     "welcome_to_carbonio": "Bem-vindo {{adminName}} ao Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Favor selecionar uma seção do menu da esquerda",
@@ -1275,8 +1304,86 @@
             "create_mailstores_volume": "Criar Volume de Mailstores"
         },
         "serverName_volumes": "Volumes de {{serverName}}",
-        "serverName_volumes_create_mailstores_volume": "{{serverName}} Criar Volume de Mailstores"
+        "serverName_volumes_create_mailstores_volume": "{{serverName}} Criar Volume de Mailstores",
+        "server_list_header": {
+            "description": "Descrição",
+            "index": "Índice",
+            "primary": "Primário",
+            "secondary": "Secundário",
+            "server": "Servidor"
+        },
+        "volume_allocation_list": {
+            "centralized": "Centralizado",
+            "external": "Externo",
+            "local": "Local"
+        },
+        "volume_config_header": {
+            "name": "Nome"
+        },
+        "volume_header": {
+            "compression": "Compressão",
+            "current": "Corrente",
+            "id": "ID",
+            "name": "Nome",
+            "path": "Caminho"
+        },
+        "volume_indexer_header": {
+            "current": "Corrente",
+            "id": "ID",
+            "name": "Nome",
+            "path": "Caminho"
+        },
+        "volume_type": {
+            "index": "Índice",
+            "primary": "Primário",
+            "secondary": "Secundário"
+        }
     },
     "click_new_bucket_button_to_create_new_one": "Clique no botão NOVO BUCKET para criar um novo.",
-    "have_not_setup_bucket_type": "Parece que você não configurou o tipo de bucket"
+    "have_not_setup_bucket_type": "Parece que você não configurou o tipo de bucket",
+    "hsm": {
+        "all": "Tudo",
+        "allocation": "Alocação",
+        "apply_duplication_after_scheduledhsm": "Aplicar a Desduplicação após o HSM programado",
+        "contact": "Contato",
+        "create_policy": "Criar Política",
+        "criteria": "Critério",
+        "current": "Corrente",
+        "days": "Dias",
+        "delete": "Apagar",
+        "destination_volume": "Volume de Destino",
+        "details": "Detalhes",
+        "document": "Documento de texto",
+        "edit": "Editar",
+        "event": "Evento",
+        "gb": "GB",
+        "hours": "Horas",
+        "hsm_policies_list": "Lista de Políticas HSM",
+        "hsm_policy": "Política HSM",
+        "indexes": "Índices",
+        "items": "Itens",
+        "kb": "KB",
+        "mb": "MB",
+        "message": "Mensagem",
+        "minimum_space_threshold": "Limiar de espaço mínimo",
+        "months": "Meses",
+        "name": "Nome",
+        "new_policy_summary": "Resumo da Nova Política",
+        "no": "Não",
+        "option": "Opção",
+        "parameters": "Parâmetros",
+        "policy_settings": "Configurações da Política",
+        "primary": "Primário",
+        "schedule": "Programação",
+        "secondary": "Secundário",
+        "select_volumes": "Selecionar Volumes",
+        "server": "Servidor",
+        "source_volume": "Volume de Origem",
+        "this_function_allow_save_disk_copy_msg": "Essa função permite que você economize espaço em disco ao armazenar apenas uma cópia de um item.",
+        "type": "Tipo",
+        "value": "Valor",
+        "volumes": "Volumes",
+        "yes": "Sim",
+        "minutes": "Minutos"
+    }
 }

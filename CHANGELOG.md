@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.4...v0.9.5) (2022-11-25)
+
+
+### Features
+
+* added active sync design ([34d284f](https://github.com/zextras/carbonio-admin-console-ui/commit/34d284fd4725b491c4ca5837d035164a66e2b540))
+* added extra confirmation if dl delete has share grants ([1f40ef9](https://github.com/zextras/carbonio-admin-console-ui/commit/1f40ef9cb9b2d21addf7dd7dbaeabc23a2e63bcc))
+* device operation confirmation dialog added ([3734092](https://github.com/zextras/carbonio-admin-console-ui/commit/373409281ff15977f54d0cf7c288948b518baea3))
+* manage external volume functionality ([c53b235](https://github.com/zextras/carbonio-admin-console-ui/commit/c53b235a4fdb4fa8dcb980f659976139322c5622))
+* reset/suspend/wipe device soap added ([3d64b44](https://github.com/zextras/carbonio-admin-console-ui/commit/3d64b44b54a6d3db3d259f2719c4aae0780fa448))
+* search on active sync device added ([e8397d8](https://github.com/zextras/carbonio-admin-console-ui/commit/e8397d8c95de6566e6f489984e433c677d6d0923))
+
+
+### Bug Fixes
+
+* able to modify active sync access ([#181](https://github.com/zextras/carbonio-admin-console-ui/issues/181)) ([3f8e585](https://github.com/zextras/carbonio-admin-console-ui/commit/3f8e5852704f0ad5a471683d2b3e28ea392e0d76))
+* changed from grant to grantee rights count show ([bd90aa2](https://github.com/zextras/carbonio-admin-console-ui/commit/bd90aa2e5923777b28ed188469af4264a4842cd4))
+* conflicts resolved ([d9b1e1b](https://github.com/zextras/carbonio-admin-console-ui/commit/d9b1e1b3417d79d5af9e15ab64568fd3b73bea5d))
+* cos design issue ([#198](https://github.com/zextras/carbonio-admin-console-ui/issues/198)) ([5bd9dfb](https://github.com/zextras/carbonio-admin-console-ui/commit/5bd9dfbb2dc02abfe80b519d4f40028c7b34fbfd))
+* custom bucket typo issue ([#183](https://github.com/zextras/carbonio-admin-console-ui/issues/183)) ([f67abc2](https://github.com/zextras/carbonio-admin-console-ui/commit/f67abc2d8c070a36b27cf444232b6d039cc82316))
+* delete account date does not display ([1ba7545](https://github.com/zextras/carbonio-admin-console-ui/commit/1ba75457f2756002619b9f4228e3a1553ac08b7b))
+* grantee and target sum added ([babdc4e](https://github.com/zextras/carbonio-admin-console-ui/commit/babdc4e3ce3567494835500b90fea999baa2b7f3))
+* improved is current delete modal text ([#193](https://github.com/zextras/carbonio-admin-console-ui/issues/193)) ([cd6d034](https://github.com/zextras/carbonio-admin-console-ui/commit/cd6d0342414408386bba5d06c72c29697029195a))
+* mailing list show option twice ([a2cfbe8](https://github.com/zextras/carbonio-admin-console-ui/commit/a2cfbe8ad2eb7e54de412376cd84db58944ff126))
+* remove advance check and get from admin shell ui ([#188](https://github.com/zextras/carbonio-admin-console-ui/issues/188)) ([9985cb9](https://github.com/zextras/carbonio-admin-console-ui/commit/9985cb9e33e82dfa9a8e1167a1f91c96d59d93a9))
+* removed console log ([033b491](https://github.com/zextras/carbonio-admin-console-ui/commit/033b491d7da5c7e25d1fce02e9b6a5c098b91077))
+* resolved conflicts ([e926ce3](https://github.com/zextras/carbonio-admin-console-ui/commit/e926ce3b128cdc00def33bbf080fddebc709eb03))
+* send invite autocomplete list ([#197](https://github.com/zextras/carbonio-admin-console-ui/issues/197)) ([5b4ee84](https://github.com/zextras/carbonio-admin-console-ui/commit/5b4ee84e53b9309cf48d0015bae56d14fa16807c))
+* typo html tag ([#205](https://github.com/zextras/carbonio-admin-console-ui/issues/205)) ([b413dcf](https://github.com/zextras/carbonio-admin-console-ui/commit/b413dcf3d44f5f4dd3d8b7224707fd8e0d4eb46f))
+* update value for backup threashold ([d10b2a7](https://github.com/zextras/carbonio-admin-console-ui/commit/d10b2a79d1d01b21d273747cabe7079f711763fa))
+
 ### [0.9.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.3...v0.9.4) (2022-10-28)
 
 
