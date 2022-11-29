@@ -715,15 +715,13 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						)}
 					/>
 				</Row>
-				<Row width="48%" mainAlignment="flex-start">
+				{/* <Row width="48%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefCalendarToasterEnabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarToasterEnabled')}
 						label={t('account_details.enable_notifications', `Enable notifications`)}
 					/>
-				</Row>
-			</Row>
-			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+				</Row> */}
 				<Row width="48%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefCalendarAllowCancelEmailToSelf === 'TRUE'}
@@ -731,16 +729,6 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						label={t(
 							'account_details.allow_sending_cancellation_mail',
 							'Allow sending cancellation mail'
-						)}
-					/>
-				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					<Switch
-						value={accountDetail?.zimbraPrefCalendarAllowPublishMethodInvite === 'TRUE'}
-						onClick={(): void => changeSwitchOption('zimbraPrefCalendarAllowPublishMethodInvite')}
-						label={t(
-							'account_details.add_invites_with_publish_method',
-							`Add invites with PUBLISH method`
 						)}
 					/>
 				</Row>
@@ -758,6 +746,18 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					<Switch
+						value={accountDetail?.zimbraPrefCalendarAllowPublishMethodInvite === 'TRUE'}
+						onClick={(): void => changeSwitchOption('zimbraPrefCalendarAllowPublishMethodInvite')}
+						label={t(
+							'account_details.add_invites_with_publish_method',
+							`Add invites with PUBLISH method`
+						)}
+					/>
+				</Row>
+			</Row>
+			{/* <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+				<Row width="48%" mainAlignment="flex-start">
+					<Switch
 						value={accountDetail?.zimbraPrefCalendarReminderFlashTitle === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarReminderFlashTitle')}
 						label={t(
@@ -766,15 +766,25 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						)}
 					/>
 				</Row>
-			</Row>
+			</Row> */}
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
+				{/* <Row width="48%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefCalendarReminderSoundsEnabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefCalendarReminderSoundsEnabled')}
 						label={t(
 							'account_details.audible_reminder_notification',
 							'Audible reminder notification'
+						)}
+					/>
+				</Row> */}
+				<Row width="48%" mainAlignment="flex-start">
+					<Switch
+						value={accountDetail?.zimbraPrefCalendarAutoAddInvites === 'TRUE'}
+						onClick={(): void => changeSwitchOption('zimbraPrefCalendarAutoAddInvites')}
+						label={t(
+							'account_details.add_appointments_when_invited',
+							'Automatically add appointments when the user is invited'
 						)}
 					/>
 				</Row>
@@ -789,29 +799,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					/>
 				</Row>
 			</Row>
-			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
-					<Switch
-						value={accountDetail?.zimbraPrefCalendarAutoAddInvites === 'TRUE'}
-						onClick={(): void => changeSwitchOption('zimbraPrefCalendarAutoAddInvites')}
-						label={t(
-							'account_details.add_appointments_when_invited',
-							'Automatically add appointments when the user is invited'
-						)}
-					/>
-				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					<Switch
-						value={accountDetail?.zimbraPrefCalendarNotifyDelegatedChanges === 'TRUE'}
-						onClick={(): void => changeSwitchOption('zimbraPrefCalendarNotifyDelegatedChanges')}
-						label={t(
-							'account_details.notify_changes_by_delegated_access',
-							`Notify changes made by delegated accounts`
-						)}
-					/>
-				</Row>
-			</Row>
-			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+			{/* <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+			</Row> */}
+			{/* <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefCalendarAlwaysShowMiniCal === 'TRUE'}
@@ -829,8 +819,18 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						)}
 					/>
 				</Row>
-			</Row>
+			</Row> */}
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+				<Row width="48%" mainAlignment="flex-start">
+					<Switch
+						value={accountDetail?.zimbraPrefCalendarNotifyDelegatedChanges === 'TRUE'}
+						onClick={(): void => changeSwitchOption('zimbraPrefCalendarNotifyDelegatedChanges')}
+						label={t(
+							'account_details.notify_changes_by_delegated_access',
+							`Notify changes made by delegated accounts`
+						)}
+					/>
+				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefAppleIcalDelegationEnabled === 'TRUE'}
@@ -841,7 +841,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						)}
 					/>
 				</Row>
-				<Row width="48%" mainAlignment="flex-start">
+				{/* <Row width="48%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefUseTimeZoneListInCalendar === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefUseTimeZoneListInCalendar')}
@@ -850,7 +850,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'Show time zone lists in view'
 						)}
 					/>
-				</Row>
+				</Row> */}
 			</Row>
 		</Container>
 	);
