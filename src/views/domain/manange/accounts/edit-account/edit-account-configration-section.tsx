@@ -220,7 +220,7 @@ const EditAccountConfigrationSection: FC = () => {
 					</Text>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="20%" mainAlignment="flex-start">
 						<Switch
 							value={accountDetail?.zimbraFeatureMailEnabled === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraFeatureMailEnabled')}
@@ -228,7 +228,7 @@ const EditAccountConfigrationSection: FC = () => {
 							disabled
 						/>
 					</Row>
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="20%" mainAlignment="flex-start">
 						<Switch
 							value={accountDetail?.zimbraFeatureCalendarEnabled === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraFeatureCalendarEnabled')}
@@ -236,7 +236,7 @@ const EditAccountConfigrationSection: FC = () => {
 							disabled
 						/>
 					</Row>
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="20%" mainAlignment="flex-start">
 						<Switch
 							value={accountDetail?.zimbraFeatureContactsEnabled === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraFeatureContactsEnabled')}
@@ -244,11 +244,17 @@ const EditAccountConfigrationSection: FC = () => {
 							disabled
 						/>
 					</Row>
+					<Row width="20%" mainAlignment="flex-start">
+						<Switch value={false} label={t('account_details.Chats', 'Chats')} disabled />
+					</Row>
+					<Row width="20%" mainAlignment="flex-start">
+						<Switch value={false} label={t('account_details.files', 'Files')} disabled />
+					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
 				</Row>
-				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+				{/* <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
 						{t('account_details.general', 'General')}
 					</Text>
@@ -439,7 +445,7 @@ const EditAccountConfigrationSection: FC = () => {
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
-				</Row>
+				</Row> */}
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 					<Text size="small" color="gray0" weight="bold">
 						{t('label.active_sync', 'ActiveSync')}

@@ -29,9 +29,9 @@ const CosFeatures: FC = () => {
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
 	const [cosFeatures, setCosFeatures] = useState<any>({
-		// zimbraFeatureMailEnabled: true,
-		// zimbraFeatureContactsEnabled: true,
-		// zimbraFeatureCalendarEnabled: true,
+		zimbraFeatureMailEnabled: true,
+		zimbraFeatureContactsEnabled: true,
+		zimbraFeatureCalendarEnabled: true,
 		// zimbraFeatureTaggingEnabled: true,
 		// zimbraFeatureHtmlComposeEnabled: true,
 		// zimbraFeatureWebClientOfflineAccessEnabled: true,
@@ -59,15 +59,15 @@ const CosFeatures: FC = () => {
 	const setInitalValues = useCallback(
 		(obj: any) => {
 			if (obj) {
-				// setSwitchOptionValue('zimbraFeatureMailEnabled', obj?.zimbraFeatureMailEnabled === 'TRUE');
-				// setSwitchOptionValue(
-				// 	'zimbraFeatureContactsEnabled',
-				// 	obj?.zimbraFeatureContactsEnabled === 'TRUE'
-				// );
-				// setSwitchOptionValue(
-				// 	'zimbraFeatureCalendarEnabled',
-				// 	obj?.zimbraFeatureCalendarEnabled === 'TRUE'
-				// );
+				setSwitchOptionValue('zimbraFeatureMailEnabled', obj?.zimbraFeatureMailEnabled === 'TRUE');
+				setSwitchOptionValue(
+					'zimbraFeatureContactsEnabled',
+					obj?.zimbraFeatureContactsEnabled === 'TRUE'
+				);
+				setSwitchOptionValue(
+					'zimbraFeatureCalendarEnabled',
+					obj?.zimbraFeatureCalendarEnabled === 'TRUE'
+				);
 				// setSwitchOptionValue(
 				// 	'zimbraFeatureTaggingEnabled',
 				// 	obj?.zimbraFeatureTaggingEnabled === 'TRUE'
@@ -140,15 +140,15 @@ const CosFeatures: FC = () => {
 				obj[item?.n] = item._content;
 				return '';
 			});
-			// if (!obj.zimbraFeatureMailEnabled) {
-			// 	obj.zimbraFeatureMailEnabled = false;
-			// }
-			// if (!obj.zimbraFeatureContactsEnabled) {
-			// 	obj.zimbraFeatureContactsEnabled = false;
-			// }
-			// if (!obj.zimbraFeatureCalendarEnabled) {
-			// 	obj.zimbraFeatureCalendarEnabled = false;
-			// }
+			if (!obj.zimbraFeatureMailEnabled) {
+				obj.zimbraFeatureMailEnabled = false;
+			}
+			if (!obj.zimbraFeatureContactsEnabled) {
+				obj.zimbraFeatureContactsEnabled = false;
+			}
+			if (!obj.zimbraFeatureCalendarEnabled) {
+				obj.zimbraFeatureCalendarEnabled = false;
+			}
 			// if (!obj.zimbraFeatureTaggingEnabled) {
 			// 	obj.zimbraFeatureTaggingEnabled = false;
 			// }
@@ -297,7 +297,7 @@ const CosFeatures: FC = () => {
 				style={{ overflow: 'auto' }}
 				padding={{ top: 'large' }}
 			>
-				{/* <Row
+				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
 					padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
@@ -331,11 +331,17 @@ const CosFeatures: FC = () => {
 								disabled
 							/>
 						</Row>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch value={false} label={t('cos.chats', 'Chats')} disabled />
+						</Row>
+						<Row width="20%" mainAlignment="flex-start">
+							<Switch value={false} label={t('cos.files', 'Files')} disabled />
+						</Row>
 					</Row>
 
 					<Divider />
 				</Row>
-				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+				{/* <Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
 					<Text size="extralarge" weight="bold">
 						{t('cos.general_features', 'General Features')}
 					</Text>

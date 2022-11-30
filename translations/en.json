@@ -11,6 +11,7 @@
         "enable_activeSync_remote_access": "Enable ActiveSync remote access"
     },
     "account_details": {
+        "Chats": "Chats",
         "activesync_remote_access": "ActiveSync remote access",
         "add_appointments_when_invited": "Automatically add appointments when the user is invited",
         "add_forwarded_invites_to_calendar": "Automatically add forwarded appointments to the calendar",
@@ -50,6 +51,7 @@
         "enable_toast_for_new_emails": "Enable notifications for new emails",
         "enable_toast_notifications": "Enable notifications",
         "external_pop_access": "External POP Access",
+        "files": "Files",
         "forwarding_addresses_hidden_from_the_user": "Forwarding addresses hidden from the user",
         "forwarding_addresses_specified_by_the_user": "Forwarding addresses specified by the user",
         "forwarding_calendar_invitations_to_these_addresses": "Forward calendar invitations to these addresses",
@@ -334,6 +336,7 @@
         "calendar_options": "Calendar Options",
         "calendar_polling_interval": "Calendar polling interval",
         "calender_features": "Calendar Features",
+        "chats": "Chats",
         "composing_mail": "Composing Mail",
         "contact_features": "Contact Features",
         "contacts": "Contacts",
@@ -372,6 +375,7 @@
         "external_pop_access": "External POP Access",
         "failed_login_policy": "Failed Login Policy",
         "features": "Features",
+        "files": "Files",
         "flash_browser_title_when_message_arrives": "Flash the browser title when a message arrives",
         "free_busy_interop": "Free/Busy Interop",
         "general_features": "General Features",
