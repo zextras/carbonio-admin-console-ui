@@ -537,7 +537,10 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Padding vertical="large" horizontal="small" width="100%">
 												<Text size="small" color="gray0" weight="bold">
-													{t('label.title_and_description', 'Title & Description')}
+													{t(
+														'label.title_and_copyrights_information',
+														'Title & Copyrights Information'
+													)}
 												</Text>
 											</Padding>
 										</ListRow>
@@ -569,7 +572,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label={t('label.description', 'Description')}
+													label={t('label.copyrights_information', 'Copyrights information')}
 													background="gray5"
 													value={domainTheme.carbonioWebUiDescription}
 													inputName="carbonioWebUiDescription"
@@ -585,8 +588,8 @@ const DomainTheme: FC = () => {
 											>
 												<Text size="small" color="gray0">
 													{t(
-														'label.description_theme_note',
-														'The description will appear on the tooltip of the browser tab'
+														'label.copyrights_theme_note',
+														'The copyrights information will appear on the login box footer'
 													)}
 												</Text>
 											</Container>
@@ -925,7 +928,10 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Padding vertical="large" horizontal="small" width="100%">
 												<Text size="small" color="gray0" weight="bold">
-													{t('label.title_and_description', 'Title & Description')}
+													{t(
+														'label.title_and_copyrights_information',
+														'Title & Copyrights Information'
+													)}
 												</Text>
 											</Padding>
 										</ListRow>
@@ -957,7 +963,7 @@ const DomainTheme: FC = () => {
 										<ListRow>
 											<Container padding={{ all: 'small' }}>
 												<Input
-													label={t('label.description', 'Description')}
+													label={t('label.copyrights_information', 'Copyrights information')}
 													background="gray5"
 													value={domainTheme.carbonioAdminUiDescription}
 													inputName="carbonioAdminUiDescription"
@@ -973,8 +979,8 @@ const DomainTheme: FC = () => {
 											>
 												<Text size="small" color="gray0">
 													{t(
-														'label.description_theme_note',
-														'The description will appear on the tooltip of the browser tab'
+														'label.copyrights_theme_note',
+														'The copyrights information will appear on the login box footer'
 													)}
 												</Text>
 											</Container>
