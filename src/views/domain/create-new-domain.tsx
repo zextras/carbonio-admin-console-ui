@@ -188,7 +188,7 @@ const CreateDomain: FC = () => {
 						routeToDomain(data);
 					});
 				} else {
-					const domain: any = data?.Body?.CreateDomainResponse?.domain[0];
+					const domain: any = data?.domain[0];
 					if (domain) {
 						showSuccessSnackBar();
 						routeToDomain(data);
