@@ -23,7 +23,7 @@ import {
 	getSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 import ListRow from '../../../list/list-row';
-import Paginig from '../../../components/paging';
+import Paging from '../../../components/paging';
 import { useDomainStore } from '../../../../store/domain/store';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import { getFormatedShortDate } from '../../../utility/utils';
@@ -263,7 +263,7 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 						</ListRow>
 						<ListRow>
 							<Container mainAlignment="flex-end" crossAlignment="flex-end">
-								<Paginig
+								<Paging
 									totalItem={totalItem}
 									pageSize={accountLimit}
 									setOffset={(val: any): void => {

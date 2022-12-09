@@ -21,7 +21,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { debounce } from 'lodash';
 import logo from '../../../../assets/gardian.svg';
-import Paginig from '../../../components/paging';
+import Paging from '../../../components/paging';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import ResourceEditDetailView from './resource-edit-detail-view';
@@ -505,7 +505,7 @@ const DomainResources: FC = () => {
 									background="gray6"
 								>
 									<Divider />
-									<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 								</Row>
 							)}
 						</Row>

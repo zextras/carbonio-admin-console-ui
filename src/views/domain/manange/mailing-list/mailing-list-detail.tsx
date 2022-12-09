@@ -23,7 +23,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import moment from 'moment';
 
 import ListRow from '../../../list/list-row';
-import Paginig from '../../../components/paging';
+import Paging from '../../../components/paging';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
 import { getDateFromStr } from '../../../utility/utils';
@@ -767,7 +767,7 @@ const MailingListDetail: FC<any> = ({
 							<Divider />
 
 							<Padding all="small">
-								<Paginig totalItem={1} pageSize={10} setOffset={setMemberOffset} />
+								<Paging totalItem={1} pageSize={10} setOffset={setMemberOffset} />
 							</Padding>
 						</Container>
 						<Container
@@ -777,7 +777,7 @@ const MailingListDetail: FC<any> = ({
 						>
 							<Divider />
 							<Padding all="small">
-								<Paginig totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
+								<Paging totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
 							</Padding>
 						</Container>
 					</ListRow>

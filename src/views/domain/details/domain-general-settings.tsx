@@ -466,7 +466,7 @@ const DomainGeneralSettings: FC = () => {
 			createSnackbar({
 				key: 'success',
 				type: 'success',
-				label: t('label.delete_domain_success_msg', 'Domain has been delete successfully'),
+				label: t('label.delete_domain_success_msg', 'Domain has been deleted successfully'),
 				autoHideTimeout: 3000,
 				hideButton: true,
 				replace: true

@@ -57,17 +57,17 @@ const CosPreferences: FC = () => {
 		zimbraPrefCalendarDefaultApptDuration: '',
 		zimbraPrefCalendarApptReminderWarningTime: '',
 		zimbraPrefCalendarShowPastDueReminders: 'FALSE',
-		zimbraPrefCalendarToasterEnabled: 'FALSE',
+		// zimbraPrefCalendarToasterEnabled: 'FALSE',
 		zimbraPrefCalendarAllowCancelEmailToSelf: 'FALSE',
 		zimbraPrefCalendarAllowPublishMethodInvite: 'FALSE',
 		zimbraPrefCalendarAllowForwardedInvite: 'FALSE',
 		zimbraPrefCalendarAutoAddInvites: 'FALSE',
-		zimbraPrefCalendarReminderSoundsEnabled: 'FALSE',
+		// zimbraPrefCalendarReminderSoundsEnabled: 'FALSE',
 		zimbraPrefCalendarSendInviteDeniedAutoReply: 'FALSE',
 		zimbraPrefCalendarNotifyDelegatedChanges: 'FALSE',
-		zimbraPrefCalendarUseQuickAdd: 'FALSE',
-		zimbraPrefAppleIcalDelegationEnabled: 'FALSE',
-		zimbraPrefUseTimeZoneListInCalendar: 'FALSE'
+		// zimbraPrefCalendarUseQuickAdd: 'FALSE',
+		zimbraPrefAppleIcalDelegationEnabled: 'FALSE'
+		// zimbraPrefUseTimeZoneListInCalendar: 'FALSE'
 	});
 	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
 		cosPreferences?.zimbraMailMinPollingInterval?.slice(0, -1) || ''
@@ -371,10 +371,10 @@ const CosPreferences: FC = () => {
 						? obj?.zimbraPrefCalendarShowPastDueReminders
 						: 'FALSE'
 				);
-				setValue(
+				/* setValue(
 					'zimbraPrefCalendarToasterEnabled',
 					obj?.zimbraPrefCalendarToasterEnabled ? obj?.zimbraPrefCalendarToasterEnabled : 'FALSE'
-				);
+				); */
 				setValue(
 					'zimbraPrefCalendarAllowCancelEmailToSelf',
 					obj?.zimbraPrefCalendarAllowCancelEmailToSelf
@@ -397,12 +397,12 @@ const CosPreferences: FC = () => {
 					'zimbraPrefCalendarAutoAddInvites',
 					obj?.zimbraPrefCalendarAutoAddInvites ? obj?.zimbraPrefCalendarAutoAddInvites : 'FALSE'
 				);
-				setValue(
+				/* setValue(
 					'zimbraPrefCalendarReminderSoundsEnabled',
 					obj?.zimbraPrefCalendarReminderSoundsEnabled
 						? obj?.zimbraPrefCalendarReminderSoundsEnabled
 						: 'FALSE'
-				);
+				); */
 				setValue(
 					'zimbraPrefCalendarSendInviteDeniedAutoReply',
 					obj?.zimbraPrefCalendarSendInviteDeniedAutoReply
@@ -415,22 +415,22 @@ const CosPreferences: FC = () => {
 						? obj?.zimbraPrefCalendarNotifyDelegatedChanges
 						: 'FALSE'
 				);
-				setValue(
+				/* setValue(
 					'zimbraPrefCalendarUseQuickAdd',
 					obj?.zimbraPrefCalendarUseQuickAdd ? obj?.zimbraPrefCalendarUseQuickAdd : 'FALSE'
-				);
+				); */
 				setValue(
 					'zimbraPrefAppleIcalDelegationEnabled',
 					obj?.zimbraPrefAppleIcalDelegationEnabled
 						? obj?.zimbraPrefAppleIcalDelegationEnabled
 						: 'FALSE'
 				);
-				setValue(
+				/* setValue(
 					'zimbraPrefUseTimeZoneListInCalendar',
 					obj?.zimbraPrefUseTimeZoneListInCalendar
 						? obj?.zimbraPrefUseTimeZoneListInCalendar
 						: 'FALSE'
-				);
+				); */
 			}
 		},
 		[setValue]
@@ -501,9 +501,9 @@ const CosPreferences: FC = () => {
 			if (!obj.zimbraPrefCalendarShowPastDueReminders) {
 				obj.zimbraPrefCalendarShowPastDueReminders = 'FALSE';
 			}
-			if (!obj.zimbraPrefCalendarToasterEnabled) {
+			/* if (!obj.zimbraPrefCalendarToasterEnabled) {
 				obj.zimbraPrefCalendarToasterEnabled = 'FALSE';
-			}
+			} */
 			if (!obj.zimbraPrefCalendarAllowCancelEmailToSelf) {
 				obj.zimbraPrefCalendarAllowCancelEmailToSelf = 'FALSE';
 			}
@@ -516,24 +516,24 @@ const CosPreferences: FC = () => {
 			if (!obj.zimbraPrefCalendarAutoAddInvites) {
 				obj.zimbraPrefCalendarAutoAddInvites = 'FALSE';
 			}
-			if (!obj.zimbraPrefCalendarReminderSoundsEnabled) {
+			/* if (!obj.zimbraPrefCalendarReminderSoundsEnabled) {
 				obj.zimbraPrefCalendarReminderSoundsEnabled = 'FALSE';
-			}
+			} */
 			if (!obj.zimbraPrefCalendarSendInviteDeniedAutoReply) {
 				obj.zimbraPrefCalendarSendInviteDeniedAutoReply = 'FALSE';
 			}
 			if (!obj.zimbraPrefCalendarNotifyDelegatedChanges) {
 				obj.zimbraPrefCalendarNotifyDelegatedChanges = 'FALSE';
 			}
-			if (!obj.zimbraPrefCalendarUseQuickAdd) {
+			/* if (!obj.zimbraPrefCalendarUseQuickAdd) {
 				obj.zimbraPrefCalendarUseQuickAdd = 'FALSE';
-			}
+			} */
 			if (!obj.zimbraPrefAppleIcalDelegationEnabled) {
 				obj.zimbraPrefAppleIcalDelegationEnabled = 'FALSE';
 			}
-			if (!obj.zimbraPrefUseTimeZoneListInCalendar) {
+			/* if (!obj.zimbraPrefUseTimeZoneListInCalendar) {
 				obj.zimbraPrefUseTimeZoneListInCalendar = 'FALSE';
-			}
+			} */
 			setCosData(obj);
 			setInitalValues(obj);
 			setZimbraPrefMailPollingIntervalNum(obj?.zimbraMailMinPollingInterval?.slice(0, -1));
@@ -752,14 +752,14 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefCalendarShowPastDueReminders
 	]);
 
-	useEffect(() => {
+	/* useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarToasterEnabled !== undefined &&
 			cosData.zimbraPrefCalendarToasterEnabled !== cosPreferences.zimbraPrefCalendarToasterEnabled
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarToasterEnabled, cosPreferences.zimbraPrefCalendarToasterEnabled]);
+	}, [cosData.zimbraPrefCalendarToasterEnabled, cosPreferences.zimbraPrefCalendarToasterEnabled]); */
 
 	useEffect(() => {
 		if (
@@ -809,7 +809,7 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefCalendarAllowForwardedInvite
 	]);
 
-	useEffect(() => {
+	/* useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarReminderSoundsEnabled !== undefined &&
 			cosData.zimbraPrefCalendarReminderSoundsEnabled !==
@@ -820,7 +820,7 @@ const CosPreferences: FC = () => {
 	}, [
 		cosData.zimbraPrefCalendarReminderSoundsEnabled,
 		cosPreferences.zimbraPrefCalendarReminderSoundsEnabled
-	]);
+	]); */
 
 	useEffect(() => {
 		if (
@@ -848,14 +848,14 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefCalendarNotifyDelegatedChanges
 	]);
 
-	useEffect(() => {
+	/* useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarUseQuickAdd !== undefined &&
 			cosData.zimbraPrefCalendarUseQuickAdd !== cosPreferences.zimbraPrefCalendarUseQuickAdd
 		) {
 			setIsDirty(true);
 		}
-	}, [cosData.zimbraPrefCalendarUseQuickAdd, cosPreferences.zimbraPrefCalendarUseQuickAdd]);
+	}, [cosData.zimbraPrefCalendarUseQuickAdd, cosPreferences.zimbraPrefCalendarUseQuickAdd]); */
 
 	useEffect(() => {
 		if (
@@ -870,7 +870,7 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefAppleIcalDelegationEnabled
 	]);
 
-	useEffect(() => {
+	/* useEffect(() => {
 		if (
 			cosData.zimbraPrefUseTimeZoneListInCalendar !== undefined &&
 			cosData.zimbraPrefUseTimeZoneListInCalendar !==
@@ -881,7 +881,7 @@ const CosPreferences: FC = () => {
 	}, [
 		cosData.zimbraPrefUseTimeZoneListInCalendar,
 		cosPreferences.zimbraPrefUseTimeZoneListInCalendar
-	]);
+	]); */
 
 	const onCancel = (): void => {
 		setInitalValues(cosData);
@@ -1426,7 +1426,7 @@ const CosPreferences: FC = () => {
 										)}
 									/>
 								</Container>
-								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
+								{/* <Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
 										value={cosPreferences?.zimbraPrefCalendarToasterEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefCalendarToasterEnabled')}
@@ -1435,19 +1435,8 @@ const CosPreferences: FC = () => {
 											'Enable notification for new appointment'
 										)}
 									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
+								</Container> */}
+								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
 										value={cosPreferences?.zimbraPrefCalendarAllowCancelEmailToSelf === 'TRUE'}
 										onClick={(): void =>
@@ -1456,18 +1445,6 @@ const CosPreferences: FC = () => {
 										label={t(
 											'cos.allow_sending_cancellation_mail',
 											`Allow sending cancellation mail`
-										)}
-									/>
-								</Container>
-								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
-									<Switch
-										value={cosPreferences?.zimbraPrefCalendarAllowPublishMethodInvite === 'TRUE'}
-										onClick={(): void =>
-											changeSwitchOption('zimbraPrefCalendarAllowPublishMethodInvite')
-										}
-										label={t(
-											'cos.add_invites_with_publish_method',
-											'Add invites with PUBLISH method'
 										)}
 									/>
 								</Container>
@@ -1496,6 +1473,29 @@ const CosPreferences: FC = () => {
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
+										value={cosPreferences?.zimbraPrefCalendarAllowPublishMethodInvite === 'TRUE'}
+										onClick={(): void =>
+											changeSwitchOption('zimbraPrefCalendarAllowPublishMethodInvite')
+										}
+										label={t(
+											'cos.add_invites_with_publish_method',
+											'Add invites with PUBLISH method'
+										)}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					{/* <Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ top: 'large' }}
+						>
+							<ListRow>
+								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
+									<Switch
 										value={cosPreferences?.zimbraPrefCalendarReminderSoundsEnabled === 'TRUE'}
 										onClick={(): void =>
 											changeSwitchOption('zimbraPrefCalendarReminderSoundsEnabled')
@@ -1505,7 +1505,7 @@ const CosPreferences: FC = () => {
 								</Container>
 							</ListRow>
 						</Container>
-					</Row>
+					</Row> */}
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
@@ -1559,7 +1559,7 @@ const CosPreferences: FC = () => {
 										)}
 									/>
 								</Container>
-								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
+								{/* <Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
 										value={cosPreferences?.zimbraPrefCalendarUseQuickAdd === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefCalendarUseQuickAdd')}
@@ -1568,19 +1568,8 @@ const CosPreferences: FC = () => {
 											'Use QuickAdd dialog in creation'
 										)}
 									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
+								</Container> */}
+								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
 										value={cosPreferences?.zimbraPrefAppleIcalDelegationEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefAppleIcalDelegationEnabled')}
@@ -1590,6 +1579,17 @@ const CosPreferences: FC = () => {
 										)}
 									/>
 								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					{/* <Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ top: 'large', bottom: 'large' }}
+						>
+							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
 										value={cosPreferences?.zimbraPrefUseTimeZoneListInCalendar === 'TRUE'}
@@ -1599,7 +1599,7 @@ const CosPreferences: FC = () => {
 								</Container>
 							</ListRow>
 						</Container>
-					</Row>
+					</Row> */}
 				</Row>
 			</Container>
 		</Container>

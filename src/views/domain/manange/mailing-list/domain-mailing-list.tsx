@@ -20,7 +20,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import logo from '../../../../assets/gardian.svg';
-import Paginig from '../../../components/paging';
+import Paging from '../../../components/paging';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import EditMailingListView from './edit-mailing-detail-view';
 import { useDomainStore } from '../../../../store/domain/store';
@@ -692,7 +692,7 @@ const DomainMailingList: FC = () => {
 							padding={{ all: 'large' }}
 						>
 							{mailingList && mailingList.length > 0 && (
-								<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 							)}
 						</Row>
 					</Container>

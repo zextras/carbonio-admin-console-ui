@@ -18,21 +18,16 @@ import {
 import { useTranslation } from 'react-i18next';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
-import { ALIBABA, AMAZON_WEB_SERVICE_S3, ERROR, FAIL, SUCCESS } from '../../constants';
+import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, ERROR, FAIL, SUCCESS } from '../../constants';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
 const Connection: FC<{
 	isActive: any;
-	getData: any;
 	onSelection: any;
-	title: string;
-	setVerifyCheck: any;
-	verifyCheck: any;
-	setButtonChange: any;
 	externalData: any;
 	setCompleteLoading: any;
-}> = ({ isActive, getData, onSelection, title, externalData, setCompleteLoading }) => {
+}> = ({ isActive, onSelection, externalData, setCompleteLoading }) => {
 	const [t] = useTranslation();
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const bucketRegions = useMemo(() => BucketRegions(t), [t]);
@@ -43,8 +38,9 @@ const Connection: FC<{
 	const [buttonDetail, setButtonDetail] = useState(
 		t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
 	);
-
 	const [bucketName, setBucketName] = useState('');
+	const [bucketLabel, setBucketLabel] = useState('');
+	const [bucketNotes, setBucketNotes] = useState('');
 	const [accessKeyData, setAccessKeyData] = useState('');
 	const [secretKey, setSecretKey] = useState('');
 	const [regionsData, setRegionsData] = useState<any>();
@@ -53,10 +49,9 @@ const Connection: FC<{
 	const [BucketUid, setBucketUid] = useState('');
 	const [bucketTypeData, setBucketTypeData] = useState();
 	const [verifyCheck, setVerifyCheck] = useState<string>('');
-	const [buttonChange, setButtonChange] = useState<boolean>(false);
 	const [verifyFailErr, setverifyFailErr] = useState('');
 	const [bothFail, setbothFail] = useState('');
-	const [bucketDetailButton, setbucketDetailButton] = useState<boolean>(true);
+	const [bucketDetailButton, setBucketDetailButton] = useState<boolean>(true);
 	const [showPrefix, setShowPrefix] = useState(false);
 	const [showRegion, setShowRegion] = useState(true);
 	const [showURL, setShowURL] = useState(true);
@@ -66,25 +61,35 @@ const Connection: FC<{
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 	const handleVerifyConnector = (): any => {
 		if (bucketName && accessKeyData && secretKey) {
-			fetchSoap('zextras', {
+			const storeType = bucketType || bucketTypeData;
+			const objectToSend = {
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxCore',
 				action: 'doCreateBucket',
-				storeType: bucketType || bucketTypeData,
+				storeType,
 				bucketName,
+				label: bucketLabel,
+				notes: bucketNotes,
 				accessKey: accessKeyData,
 				secret: secretKey,
 				region: regionsData?.value,
 				url:
-					bucketTypeData === ALIBABA ||
-					bucketType === ALIBABA ||
-					bucketTypeData === AMAZON_WEB_SERVICE_S3 ||
-					bucketType === AMAZON_WEB_SERVICE_S3
+					bucketTypeData === AMAZON_WEB_SERVICE_S3 || bucketType === AMAZON_WEB_SERVICE_S3
 						? ''
 						: urlInput,
 				prefix,
 				targetServer: server
-			}).then((res: any) => {
+			};
+			if (storeType === CUSTOM_S3) {
+				delete objectToSend.region;
+			}
+			if (prefix === '') {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				delete objectToSend.prefix;
+			}
+
+			fetchSoap('zextras', objectToSend).then((res: any) => {
 				const response = JSON.parse(res.Body.response.content);
 				if (response.ok) {
 					const data = response.response.message;
@@ -105,23 +110,23 @@ const Connection: FC<{
 							responseVerifyData.response[server].ok
 						) {
 							setVerifyCheck(SUCCESS);
-							setbucketDetailButton(true);
+							setBucketDetailButton(true);
 							if (isActive) {
 								setCompleteLoading(true);
 							}
 						} else {
 							setVerifyCheck(ERROR);
 							setverifyFailErr(data);
-							setbucketDetailButton(true);
+							setBucketDetailButton(true);
 							if (isActive) {
 								setCompleteLoading(true);
 							}
 						}
 					});
 				} else {
-					setbothFail(response.error?.message || response.error || response.exception?.message);
+					setBucketDetailButton(false);
+					setbothFail(response?.error?.message || response?.error || response?.exception?.message);
 					setVerifyCheck(FAIL);
-					setbucketDetailButton(false);
 				}
 			});
 		}
@@ -133,10 +138,9 @@ const Connection: FC<{
 			bucketName &&
 			regionsData?.value &&
 			accessKeyData &&
-			secretKey &&
-			prefix
+			secretKey
 		) {
-			setbucketDetailButton(false);
+			setBucketDetailButton(false);
 		} else if (
 			(bucketTypeData === ALIBABA || bucketType === ALIBABA) &&
 			bucketName &&
@@ -144,10 +148,9 @@ const Connection: FC<{
 			accessKeyData &&
 			secretKey &&
 			urlInput &&
-			prefix &&
 			prefixConfirm
 		) {
-			setbucketDetailButton(false);
+			setBucketDetailButton(false);
 		} else if (
 			bucketTypeData !== AMAZON_WEB_SERVICE_S3 &&
 			bucketType !== AMAZON_WEB_SERVICE_S3 &&
@@ -157,12 +160,11 @@ const Connection: FC<{
 			accessKeyData &&
 			secretKey &&
 			urlInput &&
-			prefix &&
 			prefixConfirm
 		) {
-			setbucketDetailButton(false);
+			setBucketDetailButton(false);
 		} else {
-			setbucketDetailButton(true);
+			setBucketDetailButton(true);
 		}
 	}, [
 		accessKeyData,
@@ -171,7 +173,6 @@ const Connection: FC<{
 		bucketTypeData,
 		prefix,
 		prefixConfirm,
-		regionsData,
 		regionsData?.value,
 		secretKey,
 		urlInput
@@ -202,9 +203,10 @@ const Connection: FC<{
 				setShowRegion(true);
 			} else {
 				setShowRegion(false);
+				regionsData.value = '';
 			}
 		}
-	}, [bucketType, bucketTypeData]);
+	}, [bucketType, bucketTypeData, regionsData]);
 
 	useEffect(() => {
 		if (
@@ -218,7 +220,7 @@ const Connection: FC<{
 	}, [bucketType, bucketTypeData, showURL]);
 
 	useEffect(() => {
-		if (bucketType !== undefined) {
+		if (bucketType !== '') {
 			const volumeObject: any = bucketTypeItems.find((s: any) => s.value === bucketType);
 			setBucketTypeData(volumeObject?.label);
 			onSelection({ storeType: bucketType }, false);
@@ -231,14 +233,34 @@ const Connection: FC<{
 		setButtonDetail(
 			t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
 		);
-		setbucketDetailButton(true);
+		setBucketDetailButton(true);
 		setBucketName('');
 		setAccessKeyData('');
 		setSecretKey('');
-		setRegionsData('');
 		setUrlInput('');
 		setPrefix('');
 	}, [bucketTypeData, t]);
+
+	const onSelectBucketTypeChange = useCallback(
+		(e: any): void => {
+			const volumeObject: any = bucketTypeItems.find((s: any) => s.value === e);
+			setBucketTypeData(volumeObject?.value);
+			onSelection({ storeType: bucketTypeData }, false);
+			setRegionSelection(
+				bucketType === ALIBABA || volumeObject?.value === ALIBABA
+					? bucketRegionsInAlibaba[0]
+					: bucketRegions[0]
+			);
+		},
+		[
+			bucketRegions,
+			bucketRegionsInAlibaba,
+			bucketType,
+			bucketTypeData,
+			bucketTypeItems,
+			onSelection
+		]
+	);
 
 	const onSelectRegionChange = useCallback(
 		(e: any): any => {
@@ -250,17 +272,6 @@ const Connection: FC<{
 			onSelection({ region: volumeObject?.value }, false);
 		},
 		[bucketRegions, bucketRegionsInAlibaba, bucketType, bucketTypeData, onSelection]
-	);
-
-	const onChangeBucketType = useCallback(
-		(v: any): any => {
-			const volumeObject: any =
-				bucketType === ALIBABA || bucketTypeData === ALIBABA
-					? bucketRegionsInAlibaba[0]
-					: bucketRegions[0];
-			setRegionSelection(volumeObject);
-		},
-		[bucketRegions, bucketRegionsInAlibaba, bucketType, bucketTypeData]
 	);
 
 	useEffect(() => {
@@ -313,11 +324,11 @@ const Connection: FC<{
 				t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
 			);
 		}
-	}, [bothFail, createSnackbar, setButtonChange, t, verifyCheck, verifyFailErr]);
+	}, [bothFail, createSnackbar, t, verifyCheck, verifyFailErr]);
 
 	return (
 		<Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-			{bucketType !== undefined ? (
+			{bucketType !== '' ? (
 				<Row padding={{ top: 'extralarge' }} width="100%">
 					<Input
 						label={t('label.bucket_type', 'Bucket Type')}
@@ -332,17 +343,24 @@ const Connection: FC<{
 						items={bucketTypeItems}
 						background="gray5"
 						label={t('buckets.bucket_type', 'Bucket Type')}
-						onChange={(e: any): void => {
-							const volumeObject: any = bucketTypeItems.find((s: any) => s.value === e);
-							setBucketTypeData(volumeObject?.value);
-							onSelection({ storeType: bucketTypeData }, false);
-							onChangeBucketType(volumeObject);
-						}}
+						selection={bucketTypeItems[1]}
+						onChange={onSelectBucketTypeChange}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
 					/>
 				</Row>
 			)}
+			<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
+				<Input
+					background="gray5"
+					label={t('label.label', 'Label')}
+					name="label"
+					value={bucketLabel}
+					onChange={(ev: any): any => {
+						setBucketLabel(ev.target.value);
+					}}
+				/>
+			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width={showRegion ? '48%' : '100%'} mainAlignment="flex-start">
 					<Input
@@ -368,7 +386,7 @@ const Connection: FC<{
 								}
 								background="gray5"
 								label={t('label.region', 'Region')}
-								// selection={regionSelection}
+								selection={regionSelection}
 								onChange={onSelectRegionChange}
 								showCheckbox={false}
 								padding={{ right: 'medium' }}
@@ -426,10 +444,14 @@ const Connection: FC<{
 						value={prefix}
 						onChange={(ev: any): any => {
 							setPrefix(ev.target.value);
-							if (prefixRegex.test(ev.target.value)) {
-								setprefixConfirm(true);
+							if (ev.target.value !== '') {
+								if (prefixRegex.test(ev.target.value)) {
+									setprefixConfirm(true);
+								} else {
+									setprefixConfirm(false);
+								}
 							} else {
-								setprefixConfirm(false);
+								setprefixConfirm(true);
 							}
 						}}
 						hasError={!prefixConfirm}
@@ -446,6 +468,17 @@ const Connection: FC<{
 					)}
 				</Row>
 			)}
+			<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
+				<Input
+					background="gray5"
+					label={t('label.bucket_notes', 'Notes')}
+					name="notes"
+					value={bucketNotes}
+					onChange={(ev: any): any => {
+						setBucketNotes(ev.target.value);
+					}}
+				/>
+			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Button
 					type="outlined"

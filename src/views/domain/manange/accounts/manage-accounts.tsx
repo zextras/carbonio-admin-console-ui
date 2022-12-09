@@ -22,7 +22,7 @@ import {
 import moment from 'moment';
 import logo from '../../../../assets/gardian.svg';
 import { useDomainStore } from '../../../../store/domain/store';
-import Paginig from '../../../components/paging';
+import Paging from '../../../components/paging';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
@@ -511,7 +511,7 @@ const ManageAccounts: FC = () => {
 							</Row>
 							{accountList.length !== 0 && (
 								<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
-									<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 								</Row>
 							)}
 						</Row>

@@ -142,6 +142,7 @@ const ActiveSync: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchQuery = useCallback(
 		debounce((searchText, data: Array<MobileDevice>) => {
+			setSelectedMobileDevice([]);
 			if (searchText) {
 				const filterDevice = data.filter(
 					(item: MobileDevice) =>

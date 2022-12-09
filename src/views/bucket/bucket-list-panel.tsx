@@ -25,6 +25,7 @@ import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 
 const SelectItem = styled(Row)``;
 
@@ -43,6 +44,7 @@ const BucketListPanel: FC = () => {
 	const [isServerSpecificListExpand, setIsServerSpecificListExpand] = useState(true);
 	const [searchVolumeName, setSearchVolumeName] = useState('');
 	const [isVolumeListExpand, setIsVolumeListExpand] = useState(false);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${STORAGES_ROUTE_ID}`);
@@ -101,6 +103,10 @@ const BucketListPanel: FC = () => {
 		],
 		[t, isStoreSelect]
 	);
+
+	const globalOptions = useMemo(() => !isAdvanced ? globalServerOption.filter((item: any) => item?.id !== BUCKET_LIST)
+		: globalServerOption, [isAdvanced, globalServerOption]);
+
 	const serverSpecificOption = useMemo(
 		() => [
 			{
@@ -122,6 +128,10 @@ const BucketListPanel: FC = () => {
 		],
 		[t, isStoreVolumeSelect]
 	);
+
+	const serverOptions = useMemo(() => !isAdvanced ?
+		serverSpecificOption.filter((item: any) => item?.id !== HSM_SETTINGS)
+	: serverSpecificOption , [isAdvanced, serverSpecificOption]);
 
 	useEffect(() => {
 		setIsStoreSelect(true);
@@ -173,7 +183,7 @@ const BucketListPanel: FC = () => {
 				/>
 				{isServerListExpand && (
 					<ListItems
-						items={globalServerOption}
+						items={globalOptions}
 						selectedOperationItem={selectedOperationItem}
 						setSelectedOperationItem={setSelectedOperationItem}
 					/>
@@ -216,7 +226,7 @@ const BucketListPanel: FC = () => {
 							</Dropdown>
 						</Row>
 						<ListItems
-							items={serverSpecificOption}
+							items={serverOptions}
 							selectedOperationItem={selectedOperationItem}
 							setSelectedOperationItem={setSelectedOperationItem}
 						/>

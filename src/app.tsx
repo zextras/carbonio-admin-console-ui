@@ -56,7 +56,7 @@ import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { useServerStore } from './store/server/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useBackupModuleStore } from './store/backup-module/store';
-import { getAllServers } from './services/get-all-servers-service';
+import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
 import { getAllConfig } from './services/get-all-config';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
@@ -450,18 +450,34 @@ const App: FC = () => {
 			primarybarSection: { ...managementSection },
 			tooltip: CosTooltipView
 		});
-		addRoute({
-			route: SUBSCRIPTIONS_ROUTE_ID,
-			position: 4,
-			visible: true,
-			label: t('label.subscriptions', 'Subscriptions'),
-			primaryBar: 'AwardOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...managementSection },
-			tooltip: SubscriptionTooltipView
-		});
+		if (isAdvanced) {
+			addRoute({
+				route: SUBSCRIPTIONS_ROUTE_ID,
+				position: 4,
+				visible: true,
+				label: t('label.subscriptions', 'Subscriptions'),
+				primaryBar: 'AwardOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: SubscriptionTooltipView
+			});
+
+			addRoute({
+				route: BACKUP_ROUTE_ID,
+				position: 1,
+				visible: true,
+				label: t('label.backup', 'Backup'),
+				// primaryBar: 'HistoryOutline',
+				primaryBar: backupPrimaryBar,
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...servicesSection },
+				tooltip: BackupTooltipView
+			});
+		}
 		addRoute({
 			route: PRIVACY_ROUTE_ID,
 			position: 5,
@@ -472,19 +488,6 @@ const App: FC = () => {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			primarybarSection: { ...managementSection }
-		});
-		addRoute({
-			route: BACKUP_ROUTE_ID,
-			position: 1,
-			visible: true,
-			label: t('label.backup', 'Backup'),
-			// primaryBar: 'HistoryOutline',
-			primaryBar: backupPrimaryBar,
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...servicesSection },
-			tooltip: BackupTooltipView
 		});
 
 		/* addRoute({
@@ -534,7 +537,8 @@ const App: FC = () => {
 		StorageTooltipView,
 		SubscriptionTooltipView,
 		logAndQueuesSection,
-		backupPrimaryBar
+		backupPrimaryBar,
+		isAdvanced
 	]);
 
 	useEffect(() => {
@@ -614,15 +618,25 @@ const App: FC = () => {
 				setServerList(server);
 				checkIsBackupModuleEnable(server);
 				setAllServersList(server);
-				setVolumeList(server);
 				getGlobalConfig(server[0]?.name);
 			}
 		});
-	}, [setServerList, checkIsBackupModuleEnable, setAllServersList, setVolumeList, getGlobalConfig]);
+	}, [setServerList, checkIsBackupModuleEnable, setAllServersList, getGlobalConfig]);
+
+	const getMailstoresServersRequest = useCallback(() => {
+		getMailstoresServers().then((data) => {
+			const server = data?.server;
+			if (server && Array.isArray(server) && server.length > 0) {
+				setVolumeList(server);
+			}
+		});
+	}, [setVolumeList]);
 
 	useEffect(() => {
 		getAllServersRequest();
-	}, [getAllServersRequest]);
+		// another call just to get only mailstores can be improvised later
+		getMailstoresServersRequest();
+	}, [getAllServersRequest, getMailstoresServersRequest]);
 
 	return null;
 };

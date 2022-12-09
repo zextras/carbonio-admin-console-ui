@@ -85,6 +85,7 @@ export const MTA = 'mta';
 export const ALIBABA = 'Alibaba';
 export const AMAZON_WEB_SERVICE_S3 = 'S3';
 export const EMC = 'EMC';
+export const CUSTOM_S3 = 'Custom_S3';
 export const SUCCESS = 'successWithVerify';
 export const ERROR = 'errorOnVerify';
 export const FAIL = 'fail';

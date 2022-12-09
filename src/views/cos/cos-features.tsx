@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
@@ -48,6 +49,7 @@ const CosFeatures: FC = () => {
 		// zimbraFeatureSMIMEEnabled: false,
 		zimbraFeatureMobileSyncEnabled: false
 	});
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const setSwitchOptionValue = useCallback(
 		(key: string, value: boolean): void => {
@@ -520,20 +522,26 @@ const CosFeatures: FC = () => {
 					</Row>
 					<Divider />
 				</Row> */}
-				<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
-					<Text size="extralarge" weight="bold">
-						{t('label.active_sync', 'ActiveSync')}
-					</Text>
-					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
-						<Row width="100%" mainAlignment="flex-start">
-							<Switch
-								value={cosFeatures.zimbraFeatureMobileSyncEnabled}
-								onClick={() => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
-								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
-							/>
+				{isAdvanced && (
+					<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+						<Text size="extralarge" weight="bold">
+							{t('label.active_sync', 'ActiveSync')}
+						</Text>
+						<Row
+							width="100%"
+							mainAlignment="flex-start"
+							padding={{ top: 'large', bottom: 'large' }}
+						>
+							<Row width="100%" mainAlignment="flex-start">
+								<Switch
+									value={cosFeatures.zimbraFeatureMobileSyncEnabled}
+									onClick={() => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
+									label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
+								/>
+							</Row>
 						</Row>
 					</Row>
-				</Row>
+				)}
 			</Container>
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
 				<Text>

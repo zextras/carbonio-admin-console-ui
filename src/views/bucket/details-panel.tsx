@@ -306,6 +306,9 @@ const DetailsPanel: FC<{
 					<Input label={t('buckets.bucket_type', 'Buckets Type')} value={bucketType} readyOnly />
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
+					<Input label={t('label.label', 'Label')} value={bucketDetail.label} readOnly />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%">
 					<Input
 						label={t('label.bucket_name', 'Bucket Name')}
 						value={bucketDetail.bucketName}
@@ -344,6 +347,12 @@ const DetailsPanel: FC<{
 						/>
 					</Row>
 				)}
+				<Row padding={{ top: 'large' }} width="100%">
+					<Input label={t('label.prefix', 'Prefix')} value={bucketDetail.prefix || ''} readOnly />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%">
+					<Input label={t('label.notes', 'Notes')} value={bucketDetail.notes || ''} readOnly />
+				</Row>
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Button
 						type="outlined"

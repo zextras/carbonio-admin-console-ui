@@ -26,7 +26,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy } from 'lodash';
 import ListRow from '../../../list/list-row';
-import Paginig from '../../../components/paging';
+import Paging from '../../../components/paging';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
 import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
@@ -1964,7 +1964,7 @@ const EditMailingListView: FC<any> = ({
 							mainAlignment="flex-end"
 							crossAlignment="flex-end"
 						>
-							<Paginig totalItem={1} pageSize={10} setOffset={setMemberOffset} />
+							<Paging totalItem={1} pageSize={10} setOffset={setMemberOffset} />
 						</Container>
 					)}
 				</ListRow>
@@ -2137,7 +2137,7 @@ const EditMailingListView: FC<any> = ({
 						mainAlignment={selectedMailingList?.dynamic ? 'flex-start' : 'flex-end'}
 						crossAlignment={selectedMailingList?.dynamic ? 'flex-start' : 'flex-end'}
 					>
-						<Paginig totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
+						<Paging totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
 					</Container>
 				</ListRow>
 			</Container>

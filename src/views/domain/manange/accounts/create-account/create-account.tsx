@@ -16,6 +16,7 @@ import CreateAccountSectionView from './account-create-section';
 import CreateOtpSectionView from './account-otp-section';
 import { AccountContext } from './account-context';
 import { createAccountRequest } from '../../../../../services/create-account';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -102,6 +103,7 @@ const CreateAccount: FC<{
 	const [wizardData, setWizardData] = useState();
 	const [activeStep, setActiveStep] = useState('');
 	const goToStep = (step: string): string => step;
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const wizardSteps = useMemo(
 		() => [
@@ -203,7 +205,11 @@ const CreateAccount: FC<{
 									.then((data) => {
 										const isCreateAccount = data;
 										if (isCreateAccount) {
-											setActiveStep('otp');
+											if (isAdvanced) {
+												setActiveStep('otp');
+											} else {
+												setShowCreateAccountView(false);
+											}
 											createSnackbar({
 												key: 'success',
 												type: 'success',
@@ -276,20 +282,26 @@ const CreateAccount: FC<{
 			accountDetail?.name,
 			createSnackbar,
 			domainName,
-			getAccountList
+			getAccountList,
+			isAdvanced
 		]
 	);
 
 	const onComplete = useCallback(() => {
 		setShowCreateAccountView(false);
 	}, [setShowCreateAccountView]);
+
+	const wizardStepItems = useMemo(
+		() => (!isAdvanced ? wizardSteps.filter((item: any) => item?.name !== 'otp') : wizardSteps),
+		[isAdvanced, wizardSteps]
+	);
 	return (
 		<AccountDetailContainer background="gray5" mainAlignment="flex-start">
 			<AccountContext.Provider
 				value={{ accountDetail, setAccountDetail, setShowCreateAccountView }}
 			>
 				<HorizontalWizard
-					steps={wizardSteps}
+					steps={wizardStepItems}
 					Wrapper={WizardInSection}
 					onChange={setWizardData}
 					onComplete={onComplete}

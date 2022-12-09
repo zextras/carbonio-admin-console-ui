@@ -25,7 +25,7 @@ import {
 } from '../../../constants';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
-import Paginig from '../../components/paging';
+import Paging from '../../components/paging';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
@@ -492,7 +492,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Divider />
 							</Row>
 							<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
-								<Paginig totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 							</Row>
 						</Container>
 					</Container>

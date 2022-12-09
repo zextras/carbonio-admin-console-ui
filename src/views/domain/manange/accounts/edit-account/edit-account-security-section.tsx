@@ -27,6 +27,7 @@ import { Section } from '../../../../app/component/section';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { emailContent } from '../create-account/email-content';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 
 const emailRegex =
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, max-len, no-control-regex
@@ -76,6 +77,7 @@ const EditAccountSecuritySection: FC = () => {
 	const [selectedRows, setSelectedRows] = useState([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const wizardSteps = useMemo(
 		() => [
 			{
@@ -349,120 +351,128 @@ const EditAccountSecuritySection: FC = () => {
 		});
 	};
 	return (
-		<Container
-			mainAlignment="flex-start"
-			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-		>
-			{!showCreateOTP && (
-				<>
-					<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-						<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-							<Text size="small" color="gray0" weight="bold">
-								{t('label.OTP', 'OTP')}
-							</Text>
-						</Row>
-						<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="large">
-								<Button
-									type="outlined"
-									label={t('label.NEW_OTP', 'NEW OTP')}
-									icon="PlusOutline"
-									iconPlacement="right"
-									color="primary"
-									height={44}
-									onClick={(): void => handleOnGenerateOTP()}
-								/>
-							</Padding>
-							<Button
-								type="outlined"
-								label={t('label.DELETE', 'DELETE')}
-								icon="CloseOutline"
-								iconPlacement="right"
-								color="error"
-								height={44}
-								disabled={!selectedRows?.length}
-								onClick={(): void => handleDeleteOTP()}
-							/>
-						</Row>
-						<Row
-							padding={{ top: 'large', left: 'large' }}
-							width="100%"
-							mainAlignment="space-between"
-						>
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								height="calc(100vh - 340px)"
-							>
-								{otpList.length !== 0 && (
-									<Table
-										rows={otpList}
-										headers={headers}
-										multiSelect={false}
-										onSelectionChange={setSelectedRows}
-										style={{ overflow: 'auto', height: '100%' }}
+		<>
+			{isAdvanced && (
+				<Container
+					mainAlignment="flex-start"
+					padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+				>
+					{!showCreateOTP && (
+						<>
+							<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
+								<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+									<Text size="small" color="gray0" weight="bold">
+										{t('label.OTP', 'OTP')}
+									</Text>
+								</Row>
+								<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
+									<Padding right="large">
+										<Button
+											type="outlined"
+											label={t('label.NEW_OTP', 'NEW OTP')}
+											icon="PlusOutline"
+											iconPlacement="right"
+											color="primary"
+											height={44}
+											onClick={(): void => handleOnGenerateOTP()}
+										/>
+									</Padding>
+									<Button
+										type="outlined"
+										label={t('label.DELETE', 'DELETE')}
+										icon="CloseOutline"
+										iconPlacement="right"
+										color="error"
+										height={44}
+										disabled={!selectedRows?.length}
+										onClick={(): void => handleDeleteOTP()}
 									/>
-								)}
-								{otpList.length === 0 && (
-									<Container orientation="column" crossAlignment="center" mainAlignment="center">
-										<Row>
-											<img src={logo} alt="logo" />
-										</Row>
-										<Row
-											padding={{ top: 'extralarge' }}
-											orientation="vertical"
-											crossAlignment="center"
-											style={{ textAlign: 'center' }}
-										>
-											<Text weight="light" color="#828282" size="large" overflow="break-word">
-												{t('label.this_list_is_empty', 'This list is empty.')}
-											</Text>
-										</Row>
-										<Row
-											orientation="vertical"
-											crossAlignment="center"
-											style={{ textAlign: 'center' }}
-											padding={{ top: 'small' }}
-											width="53%"
-										>
-											<Text weight="light" color="#828282" size="large" overflow="break-word">
-												<Trans
-													i18nKey="label.create_otp_list_msg"
-													defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
-													components={{ bold: <strong /> }}
-												/>
-											</Text>
-										</Row>
-									</Container>
-								)}
+								</Row>
 								<Row
-									orientation="horizontal"
+									padding={{ top: 'large', left: 'large' }}
+									width="100%"
 									mainAlignment="space-between"
-									crossAlignment="flex-start"
-									width="fill"
-									padding={{ top: 'medium' }}
 								>
-									<Divider />
+									<Row
+										orientation="horizontal"
+										mainAlignment="space-between"
+										crossAlignment="flex-start"
+										width="fill"
+										height="calc(100vh - 340px)"
+									>
+										{otpList.length !== 0 && (
+											<Table
+												rows={otpList}
+												headers={headers}
+												multiSelect={false}
+												onSelectionChange={setSelectedRows}
+												style={{ overflow: 'auto', height: '100%' }}
+											/>
+										)}
+										{otpList.length === 0 && (
+											<Container
+												orientation="column"
+												crossAlignment="center"
+												mainAlignment="center"
+											>
+												<Row>
+													<img src={logo} alt="logo" />
+												</Row>
+												<Row
+													padding={{ top: 'extralarge' }}
+													orientation="vertical"
+													crossAlignment="center"
+													style={{ textAlign: 'center' }}
+												>
+													<Text weight="light" color="#828282" size="large" overflow="break-word">
+														{t('label.this_list_is_empty', 'This list is empty.')}
+													</Text>
+												</Row>
+												<Row
+													orientation="vertical"
+													crossAlignment="center"
+													style={{ textAlign: 'center' }}
+													padding={{ top: 'small' }}
+													width="53%"
+												>
+													<Text weight="light" color="#828282" size="large" overflow="break-word">
+														<Trans
+															i18nKey="label.create_otp_list_msg"
+															defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
+															components={{ bold: <strong /> }}
+														/>
+													</Text>
+												</Row>
+											</Container>
+										)}
+										<Row
+											orientation="horizontal"
+											mainAlignment="space-between"
+											crossAlignment="flex-start"
+											width="fill"
+											padding={{ top: 'medium' }}
+										>
+											<Divider />
+										</Row>
+									</Row>
 								</Row>
 							</Row>
-						</Row>
-					</Row>
-				</>
+						</>
+					)}
+					{showCreateOTP && (
+						<>
+							<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
+								<HorizontalWizard
+									steps={wizardSteps}
+									Wrapper={WizardInSection}
+									setToggleWizardSection={setShowCreateOTP}
+								/>
+							</Row>
+						</>
+					)}
+				</Container>
 			)}
-			{showCreateOTP && (
-				<>
-					<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-						<HorizontalWizard
-							steps={wizardSteps}
-							Wrapper={WizardInSection}
-							setToggleWizardSection={setShowCreateOTP}
-						/>
-					</Row>
-				</>
-			)}
-		</Container>
+		</>
 	);
 };
 
