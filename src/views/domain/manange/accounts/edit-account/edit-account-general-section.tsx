@@ -173,7 +173,7 @@ const EditAccountGeneralSection: FC = () => {
 							label={t('account_details.hide_in_gal', 'Hide in GAL')}
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
-							<Text size="small" color="#414141" style={{ 'text-decoration': 'underline' }}>
+							<Text size="small" color="gray0" style={{ 'text-decoration': 'underline' }}>
 								({t('label.what_is_a_gal', "What's a GAL?")})
 							</Text>
 						</Tooltip>

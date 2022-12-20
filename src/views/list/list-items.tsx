@@ -48,8 +48,9 @@ const ListItems: FC<{
 			<Container padding={{ all: 'small' }} orientation="horizontal" mainAlignment="flex-start">
 				<Padding horizontal="small">
 					<Text
-						color={item?.isSelected ? '#414141' : 'rgba(204, 204, 204, 1)'}
+						color="gray0"
 						weight={item?.id === selectedOperationItem ? 'bold' : 'regular'}
+						style={item?.isSelected ? { opacity: '1' } : { opacity: '0.5' }}
 					>
 						{item.name}
 					</Text>

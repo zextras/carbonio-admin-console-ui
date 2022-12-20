@@ -123,7 +123,7 @@ const CreateCos: FC = () => {
 							background="gray6"
 							padding={{ left: 'large', top: 'large' }}
 						>
-							<Text size="small" weight="bold" color="#414141">
+							<Text size="small" weight="bold" color="gray0">
 								{t('label.general_information', 'General Information')}
 							</Text>
 						</Row>

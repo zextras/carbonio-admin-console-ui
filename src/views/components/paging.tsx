@@ -109,7 +109,7 @@ const Paging: FC<{
 			<Text size="medium" weight="bold" color="#828282" orientation="horizontal">
 				<span
 					style={{
-						color: '#414141',
+						color: 'gray0',
 						width: '41px',
 						height: '23px',
 						textAlign: 'center',

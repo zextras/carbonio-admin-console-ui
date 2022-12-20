@@ -257,7 +257,7 @@ const CreateDomain: FC = () => {
 							background="gray6"
 							padding={{ left: 'large', top: 'large' }}
 						>
-							<Text size="small" weight="bold" color="#414141">
+							<Text size="small" weight="bold" color="gray0">
 								{t('label.general_information', 'General Information')}
 							</Text>
 						</Row>
@@ -328,14 +328,14 @@ const CreateDomain: FC = () => {
 							background="gray6"
 							padding={{ left: 'large', top: 'large' }}
 						>
-							<Text size="small" weight="bold" color="#414141">
+							<Text size="small" weight="bold" color="gray0">
 								{t('label.gal_settings', 'GAL Settings ')}&nbsp;
 							</Text>
 							<Tooltip
 								placement="top"
 								label={t('label.global_address_list', 'Global Address List')}
 							>
-								<Text size="small" color="#414141" style={{ 'text-decoration': 'underline' }}>
+								<Text size="small" color="gray0" style={{ 'text-decoration': 'underline' }}>
 									({t('label.what_is_a_gal', "What's a GAL?")})
 								</Text>
 							</Tooltip>

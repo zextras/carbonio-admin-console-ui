@@ -56,7 +56,7 @@ const CosServerPools: FC = () => {
 			const allRows = serverList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="small" weight="light" key={item?.id} color="#414141">
+					<Text size="small" weight="light" key={item?.id} color="gray0">
 						{item?.name}
 					</Text>,
 					<Text key={item?.id}>
@@ -106,7 +106,7 @@ const CosServerPools: FC = () => {
 				const allRows = serverList.map((item: any) => ({
 					id: item?.id,
 					columns: [
-						<Text size="small" weight="light" key={item?.id} color="#414141">
+						<Text size="small" weight="light" key={item?.id} color="gray0">
 							{item?.name}
 						</Text>,
 						<Text key={item?.id}>
@@ -132,7 +132,7 @@ const CosServerPools: FC = () => {
 					.map((item: any) => ({
 						id: item?.id,
 						columns: [
-							<Text size="small" weight="light" key={item?.id} color="#414141">
+							<Text size="small" weight="light" key={item?.id} color="gray0">
 								{item?.name}
 							</Text>,
 							<Text key={item?.id}>
@@ -157,7 +157,7 @@ const CosServerPools: FC = () => {
 					.map((item: any) => ({
 						id: item?.id,
 						columns: [
-							<Text size="small" weight="light" key={item?.id} color="#414141">
+							<Text size="small" weight="light" key={item?.id} color="gray0">
 								{item?.name}
 							</Text>,
 							<Text key={item?.id}>
@@ -308,7 +308,7 @@ const CosServerPools: FC = () => {
 					.map((item: any) => ({
 						id: item?.id,
 						columns: [
-							<Text size="small" weight="light" key={item?.id} color="#414141">
+							<Text size="small" weight="light" key={item?.id} color="gray0">
 								{item?.name}
 							</Text>,
 							<Text key={item?.id}>

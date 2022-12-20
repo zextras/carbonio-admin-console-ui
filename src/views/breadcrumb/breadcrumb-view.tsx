@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { DASHBOARD } from '../../constants';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
-	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : '#414141')};
+	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};
 	cursor: pointer;
 `;
 const BreadCrumb: FC = () => {

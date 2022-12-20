@@ -99,7 +99,7 @@ const HSMselectVolumes: FC<any> = () => {
 						size="medium"
 						weight="bold"
 						key={item}
-						color={item?.isCurrent ? '#414141' : '#D74942'}
+						color={item?.isCurrent ? 'gray0' : '#D74942'}
 					>
 						{item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
 					</Text>
