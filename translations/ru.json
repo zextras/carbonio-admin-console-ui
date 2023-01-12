@@ -731,13 +731,25 @@
         "yes_wipe_the_device": "Да, очистить устройство",
         "you_are_trying_wipe_device": "Вы пытаетесь очистить устройства.",
         "volume_definition": "Определение",
-        "no_donot_wipe_device": "Нет, не очищать"
+        "no_donot_wipe_device": "Нет, не очищать",
+        "date": "Дата",
+        "notifications": "Оповещения",
+        "open": "Открыть",
+        "there_are_no_owners": "Здесь нет владельцев.",
+        "who_can_send_mails_to_list ": "Кто может отправлять письма в этот список?",
+        "bucket_create_button": "СОЗДАТЬ",
+        "bucket_delete_button": "УДАЛИТЬ",
+        "bucket_notes": "Заметки",
+        "label": "Метка",
+        "search_for_user_and_clic_to_add": "Найдите пользователя и нажмите кнопку ДОБАВИТЬ.",
+        "verify": "Проверить",
+        "verify_certificate": "Проверить"
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
         "europe_chisinau": "{{value}} Кишинев",
         "europe_helsinki": "{{value}} Хельсинки, Киев, Рига, София, Таллинн, Вильнюс",
-        "europe_istanbul": "{{value}} Стамбул",
+        "europe_istanbul": "{{value}}⁣ Стамбул",
         "europe_kaliningrad": "{{value}} Калининград (RTZ 1)",
         "europe_london": "{{value}} Великобритания, Ирландия, Португалия",
         "europe_minsk": "{{value}} Минск",
@@ -789,7 +801,7 @@
         "america_santiago": "{{value}} Тихоокеанский регион Южная Америка",
         "america_sao_paulo": "{{value}} Бразилия",
         "america_st_johns": "{{value}} Ньюфаундленд",
-        "america_tijuana": "{{value}}Нижняя Калифорния",
+        "america_tijuana": "{{value}} Нижняя Калифорния",
         "america_whitehorse": "{{value}}Yukon",
         "asia_almaty": "{{value}} Астана",
         "asia_amman": "{{value}} Иордания",
@@ -806,7 +818,7 @@
         "asia_hong_kong": "{{value}} Пекин, Чунцин, Гонконг, Уру М Фаза",
         "asia_hovd": "{{value}} Ховд",
         "asia_irkutsk": "{{value}} Иркутск (RTZ 7)",
-        "asia_jerusalem": "{{value}} Jerusalem",
+        "asia_jerusalem": "{{value}} Иерусалим",
         "asia_kabul": "{{value}} Кабул",
         "asia_kamchatka": "{{value}} Анадырь, Петропавловск-Камчатский (RTZ 11)",
         "asia_karachi": "{{value}} Исламабад, Карачи",
@@ -1162,7 +1174,9 @@
         "active_sync": "ActiveSync",
         "dark_mode": "Темный Режим",
         "activesync_remote_access": "Удаленный доступ ActiveSync",
-        "create_cos_success_msg": "Вы отключаете пул на {{serverName}}. Почтовые ящики не будут перемещены. Продолжить?"
+        "create_cos_success_msg": "Вы отключаете пул на {{serverName}}. Почтовые ящики не будут перемещены. Продолжить?",
+        "chats": "Чаты",
+        "files": "Файлы"
     },
     "backup": {
         "backup_path": "Путь резервирования",
@@ -1426,7 +1440,10 @@
         "secret_code": "Секретный код",
         "select_email_otp": "Выберите адрес электронной почты для отправки OTP или скопируйте код выше",
         "send_the_otp_to": "Отправить OTP",
-        "activesync_remote_access": "Удаленный доступ ActiveSync"
+        "activesync_remote_access": "Удаленный доступ ActiveSync",
+        "Chats": "Чаты",
+        "domain": "Домен",
+        "files": "Файлы"
     },
     "privacy": {
         "survey_feedback_sub_1": "Помогите нам стать лучше. Пройдите быстрый опрос.",
@@ -1528,5 +1545,16 @@
         "scheduling": "Расписание"
     },
     "select_bucket_or_create_new_bucket_helperText": "Похоже, вы не настроили тип Бакета.\nДля создания нажмите кнопку «НОВЫЙ БАКЕТ».",
-    "welcome_to_carbonio_display_name": "Добро пожаловать, {{adminName}}!"
+    "welcome_to_carbonio_display_name": "Добро пожаловать, {{adminName}}!",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "Описание"
+    },
+    "notification": {
+        "copy": "Копия",
+        "list": "Список",
+        "manage": "Управление",
+        "mark_as_read": "Пометить как прочитанное",
+        "mark_as_unread": "Пометить как непрочитанное"
+    }
 }

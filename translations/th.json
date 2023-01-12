@@ -991,7 +991,19 @@
         "wiping_device_warning_msg_1": "การล้างข้อมูลอุปกรณ์จะคืนค่าเป็นการตั้งค่าจากโรงงาน คุณแน่ใจหรือไม่ว่าต้องการดำเนินการต่อ?",
         "yes_reset_the_device": "ใช่ รีเซ็ตอุปกรณ์",
         "you_are_trying_reset_device": "คุณกำลังพยายามรีเซ็ตอุปกรณ์",
-        "you_are_trying_wipe_device": "คุณกำลังพยายามล้างข้อมูลอุปกรณ์"
+        "you_are_trying_wipe_device": "คุณกำลังพยายามล้างข้อมูลอุปกรณ์",
+        "bucket_create_button": "สร้าง",
+        "label": "ป้ายกำกับ",
+        "notifications": "การแจ้งเตือน",
+        "open": "เปิด",
+        "verify": "ตรวจสอบ",
+        "verify_certificate": "ตรวจสอบ",
+        "who_can_send_mails_to_list ": "ใครสามารถส่งอีเมลถึงรายการนี้?",
+        "bucket_delete_button": "ลบ",
+        "bucket_notes": "บันทึก",
+        "date": "วันที่",
+        "search_for_user_and_clic_to_add": "ค้นหาผู้ใช้และคลิกที่ปุ่มเพิ่ม",
+        "there_are_no_owners": "ที่นี่ยังไม่มีเจ้าของ"
     },
     "message": {
         "snackbar": {
@@ -1231,7 +1243,9 @@
         "search_a_specific_server": "ค้นหาเซิร์ฟเวอร์เฉพาะ",
         "dark_mode": "โหมดมืด",
         "active_sync": "ActiveSync",
-        "activesync_remote_access": "การเข้าถึงระยะไกล ActiveSync"
+        "activesync_remote_access": "การเข้าถึงระยะไกล ActiveSync",
+        "chats": "Chats",
+        "files": "Drive"
     },
     "accountDetails": {
         "enable_activeSync_remote_access": "เปิดใช้งานการเข้าถึงระยะไกล ActiveSync",
@@ -1378,7 +1392,10 @@
         "use_ical_delegation_model_for_shared_calendars": "ใช้โมเดลการมอบสิทธิ์ iCal สำหรับปฏิทินที่แชร์",
         "use_quickadd_dialog_in_creation": "ใช้กล่องโต้ตอบ QuickAdd ในการสร้าง",
         "view_mail_as_html": "ดูอีเมลเป็น HTML",
-        "activesync_remote_access": "การเข้าถึงระยะไกล ActiveSync"
+        "activesync_remote_access": "การเข้าถึงระยะไกล ActiveSync",
+        "Chats": "Chats",
+        "domain": "โดเมน",
+        "files": "Drive"
     },
     "connection": {
         "access_key": "รหัสการเข้าถึง",
@@ -1526,5 +1543,16 @@
         "volume_already_selected_in_source": "วอลุ่มที่เลือกไว้ในไดรฟ์ข้อมูลต้นทาง"
     },
     "select_bucket_or_create_new_bucket_helperText": "ดูเหมือนว่าคุณยังไม่ได้ตั้งค่าประเภท bucket\nคลิกปุ่ม \"NEW BUCKET\" เพื่อสร้างใหม่",
-    "welcome_to_carbonio_display_name": "ยินดีต้อนรับ {{adminName}}!"
+    "welcome_to_carbonio_display_name": "ยินดีต้อนรับ {{adminName}}!",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "คำอธิบาย"
+    },
+    "notification": {
+        "copy": "คัดลอก",
+        "list": "รายการ",
+        "manage": "จัดการ",
+        "mark_as_read": "ทำเครื่องหมายว่าอ่านแล้ว",
+        "mark_as_unread": "ทำเครื่องหมายว่ายังไม่ได้อ่าน"
+    }
 }

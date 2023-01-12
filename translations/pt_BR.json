@@ -990,7 +990,19 @@
         "wiping_device_warning_msg_1": "Limpar um dispositivo irá restaurá-lo para as configurações de fábrica. Tem certeza que deseja continuar?",
         "yes_reset_the_device": "Sim, redefinir dispositivo",
         "yes_wipe_the_device": "Sim, limpar dispositivo",
-        "you_are_trying_wipe_device": "Você está tentando limpar um dispositivo"
+        "you_are_trying_wipe_device": "Você está tentando limpar um dispositivo",
+        "search_for_user_and_clic_to_add": "Busque por um usuário e clique no botão ADICIONAR.",
+        "verify": "Verificar",
+        "verify_certificate": "Verificar",
+        "bucket_create_button": "CRIAR",
+        "bucket_delete_button": "EXCLUIR",
+        "bucket_notes": "Observações",
+        "date": "Date",
+        "label": "Etiqueta",
+        "notifications": "Notificações",
+        "open": "Abrir",
+        "there_are_no_owners": "Não existem proprietários aqui.",
+        "who_can_send_mails_to_list ": "Quem pode enviar e-mails PARA esta lista?"
     },
     "message": {
         "snackbar": {
@@ -1243,7 +1255,9 @@
         "yes_disable": "Sim, Desativar",
         "active_sync": "ActiveSync",
         "dark_mode": "Modo Noturno",
-        "activesync_remote_access": "Acesso remoto ActiveSync"
+        "activesync_remote_access": "Acesso remoto ActiveSync",
+        "chats": "Chats",
+        "files": "Drive"
     },
     "welcome_to_carbonio": "Bem-vindo {{adminName}} ao Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Favor selecionar uma seção do menu da esquerda",
@@ -1377,7 +1391,10 @@
         "use_ical_delegation_model_for_shared_calendars": "Usar o modelo de delegação iCal para calendários compartilhados",
         "use_quickadd_dialog_in_creation": "Usar o diálogo QuickAdd na criação",
         "view_mail_as_html": "Ver e-mail como HTML",
-        "activesync_remote_access": "Acesso remoto ActiveSync"
+        "activesync_remote_access": "Acesso remoto ActiveSync",
+        "Chats": "Chats",
+        "domain": "Domínio",
+        "files": "Drive"
     },
     "connection": {
         "access_key": "Chave de acesso",
@@ -1526,5 +1543,16 @@
         "volume_already_selected_in_source": "Volume já selecionado no volume de origem"
     },
     "select_bucket_or_create_new_bucket_helperText": "Parece que você não configurou um tipo de bucket.\n\t\t\t\t\t\t\t\t\tClique no botão \"NOVO BUCKET\" para criar um novo.",
-    "welcome_to_carbonio_display_name": "Bem-vindo {{adminName}}!"
+    "welcome_to_carbonio_display_name": "Bem-vindo {{adminName}}!",
+    "notification": {
+        "copy": "Copiar",
+        "list": "Lista",
+        "manage": "Gerenciar",
+        "mark_as_read": "Marcar como lído",
+        "mark_as_unread": "Marcar como não lida"
+    },
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "Descrição"
+    }
 }

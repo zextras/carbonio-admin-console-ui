@@ -697,7 +697,19 @@
         "wipe_device_factory_settings": "डिवाइस को साफ करके फैक्ट्री सेटिंग्स में ले जाएँ",
         "total_acc_rights_with_delete_distribution_list_helper_text": "लिस्ट में <bold>{{totalAccRights}}</bold> शेयर्ड अकाउंट्स अधिकार हैं।<br /> यदि आप इसे डिलीट कर देंगे तो सभी अधिकार उड़ जाएंगे।",
         "yes_wipe_the_device": "हाँ, डिवाइस को साफ करें",
-        "you_are_trying_wipe_device": "आप किसी डिवाइस को साफ करने की कोशिश कर रहे हैं"
+        "you_are_trying_wipe_device": "आप किसी डिवाइस को साफ करने की कोशिश कर रहे हैं",
+        "notifications": "अधिसूचनाएं",
+        "who_can_send_mails_to_list ": "इस लिस्ट को मेल कौन भेज सकता है?",
+        "bucket_create_button": "बनाएँ",
+        "bucket_delete_button": "डिलीट करें",
+        "bucket_notes": "नोट्स",
+        "date": "तारीख़",
+        "label": "लेबल",
+        "open": "खोलें",
+        "search_for_user_and_clic_to_add": "किसी यूजर के लिए सर्च करने और जोड़ें बटन पर क्लिक करें।",
+        "there_are_no_owners": "यहाँ कोई ओनर नहीं हैं।",
+        "verify": "वेरिफ़ाई करें",
+        "verify_certificate": "वेरिफ़ाई करें"
     },
     "timezone": {
         "asia_tomsk": "{{value}} तोम्स्क",
@@ -1231,7 +1243,9 @@
         "yes_disable": "हाँ, बंद करें",
         "active_sync": "ActiveSync",
         "dark_mode": "डार्क मोड",
-        "activesync_remote_access": "ActiveSync रिमोट एक्सेस"
+        "activesync_remote_access": "ActiveSync रिमोट एक्सेस",
+        "chats": "चैट",
+        "files": "फाइलें"
     },
     "accountDetails": {
         "enable_activeSync_remote_access": "ActiveSync रिमोट एक्सेस चालू करें",
@@ -1378,7 +1392,10 @@
         "this_user_must_change_password": "इस यूजर को पासवर्ड बदलना जरूरी है",
         "use_gal_to_auto_fill": "अपने आप भरने के लिए GAL इस्तेमाल करें",
         "use_ical_delegation_model_for_shared_calendars": "शेयर किए कैलेंडरों के लिए iCal डेलीगेशन मॉडल इस्तेमाल करें",
-        "activesync_remote_access": "ActiveSync रिमोट एक्सेस"
+        "activesync_remote_access": "ActiveSync रिमोट एक्सेस",
+        "Chats": "चैट",
+        "domain": "डोमेन",
+        "files": "फाइलें"
     },
     "privacy": {
         "send_full_error_data_to_zextras": "Carbonio को फुल एरर डाटा भेजें",
@@ -1527,5 +1544,16 @@
         "years": "वर्ष"
     },
     "select_bucket_or_create_new_bucket_helperText": "ऐसा लगता है आपने अभी तक कोई बकेट टाइप सेटअप नहीं की है।\n         \"नई बकेट\" बटन पर क्लिक करके एक नई बनाएँ।",
-    "welcome_to_carbonio_display_name": "{{adminName}} आपका स्वागत है!"
+    "welcome_to_carbonio_display_name": "{{adminName}} आपका स्वागत है!",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "विवरण"
+    },
+    "notification": {
+        "copy": "कॉपी करें",
+        "mark_as_read": "पढ़ा गया मार्क करें",
+        "mark_as_unread": "बिना पढ़ा मार्क करें",
+        "list": "सूची",
+        "manage": "मैनेज करें"
+    }
 }

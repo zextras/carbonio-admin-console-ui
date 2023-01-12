@@ -161,7 +161,11 @@
         "global": "Global",
         "status_lbl": "Stare",
         "volume_server_name": "Server",
-        "theme": "Tema"
+        "theme": "Tema",
+        "bucket_notes": "Note",
+        "date": "Dată",
+        "notifications": "Notificări",
+        "open": "Deschide"
     },
     "core": {
         "subscription": {
@@ -288,7 +292,8 @@
         "time_window_failed_logins_must_occur_to_lock_account": "Fereastră de timp în care trebuie să se producă autentificările eşuate pentru a bloca contul:",
         "timeout_policy": "Politica privind expirarea sesiunii",
         "trashed_message_lifetime": "Durata mesajelor din coş",
-        "user_specific_fowarding_addresses": "Limitare câmp adresă de redirecţionare specificată de utilizator la (caractere)"
+        "user_specific_fowarding_addresses": "Limitare câmp adresă de redirecţionare specificată de utilizator la (caractere)",
+        "files": "Fisiere"
     },
     "locale": {
         "English": "engleză",
@@ -330,7 +335,9 @@
         },
         "enable_smime": "Activare S/MIME",
         "general": "General",
-        "min_new_check_interval_value": "Valoare"
+        "min_new_check_interval_value": "Valoare",
+        "domain": "Domeniu",
+        "files": "Fisiere"
     },
     "connection": {
         "notes": "Note"
@@ -380,5 +387,12 @@
             "name": "Nume",
             "path": "Cale"
         }
+    },
+    "dashboard": {
+        "description": "Descriere"
+    },
+    "notification": {
+        "copy": "Copiaza",
+        "manage": "Gestionare"
     }
 }

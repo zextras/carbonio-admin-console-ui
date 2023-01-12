@@ -731,7 +731,19 @@
         "wiping_device_warning_msg_1": "Wenn Sie ein Gerät löschen, wird dieses auf Werkseinstellungen zurückgesetzt. Sind Sie sich, dass Sie fortfahren möchten?",
         "yes_reset_the_device": "Ja, das Gerät zurücksetzen",
         "yes_wipe_the_device": "Ja, das Gerät löschen",
-        "you_are_trying_wipe_device": "Sie versuchen ein Gerät zu löschen"
+        "you_are_trying_wipe_device": "Sie versuchen ein Gerät zu löschen",
+        "there_are_no_owners": "Es gibt hier keine Besitzer.",
+        "bucket_create_button": "ERSTELLEN",
+        "bucket_delete_button": "LÖSCHEN",
+        "bucket_notes": "Notizen",
+        "date": "Datum",
+        "label": "Label",
+        "notifications": "Benachrichtigungen",
+        "open": "Öffnen",
+        "search_for_user_and_clic_to_add": "Einen Nutzer suchen und auf den HINZUFÜGEN Button klicken.",
+        "verify": "Überprüfen",
+        "verify_certificate": "Überprüfen",
+        "who_can_send_mails_to_list ": "Wer kann Emails AN diese Liste schicken?"
     },
     "timezone": {
         "asia_yerevan": "{{value}} Eriwan",
@@ -1231,7 +1243,8 @@
         "active_sync": "ActiveSync",
         "dark_mode": "Dunkler Modus",
         "activesync_remote_access": "ActiveSync Fernsteuerung",
-        "create_cos_success_msg": "Sie deaktivieren den Pool auf {{serverName}}. Mailboxen werden nicht entfernt. Möchten Sie fortfahren?"
+        "create_cos_success_msg": "Sie deaktivieren den Pool auf {{serverName}}. Mailboxen werden nicht entfernt. Möchten Sie fortfahren?",
+        "chats": "Chats"
     },
     "locale": {
         "English": "Englisch",
@@ -1378,7 +1391,9 @@
         "use_ical_delegation_model_for_shared_calendars": "iCal Delegierungsmodell für geteilte Kalender nutzen",
         "use_quickadd_dialog_in_creation": "QuickAdd Dialog bei Erstellung nutzen",
         "view_mail_as_html": "E-Mail als HTML ansehen",
-        "activesync_remote_access": "ActiveSync Fernsteuerung"
+        "activesync_remote_access": "ActiveSync Fernsteuerung",
+        "Chats": "Chats",
+        "domain": "Domain"
     },
     "connection": {
         "access_key": "Access Key",
@@ -1527,5 +1542,16 @@
         "volume_already_selected_in_source": "Datenträger wurde bereits als Quellldatenträger ausgewählt"
     },
     "welcome_to_carbonio_display_name": "Willkommen {{adminName}}!",
-    "select_bucket_or_create_new_bucket_helperText": "Sie haben scheinbar noch keinen Bucket Typ eingerichtet. \n Klicken Sie den \"NEUER BUCKET\" Button, um einen neuen zu erstellen."
+    "select_bucket_or_create_new_bucket_helperText": "Sie haben scheinbar noch keinen Bucket Typ eingerichtet. \n Klicken Sie den \"NEUER BUCKET\" Button, um einen neuen zu erstellen.",
+    "notification": {
+        "copy": "Kopieren",
+        "list": "Liste",
+        "manage": "Verwalten",
+        "mark_as_read": "Als gelesen markieren",
+        "mark_as_unread": "Als ungelesen markieren"
+    },
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "Beschreibung"
+    }
 }

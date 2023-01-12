@@ -633,7 +633,19 @@
         "volume_next_button": "TIẾP",
         "volume_server_name": "Máy chủ",
         "wipe_device": "Xoá thiết bị",
-        "DELETE": "XOÁ"
+        "DELETE": "XOÁ",
+        "verify": "Xác nhận",
+        "bucket_create_button": "TẠO",
+        "bucket_delete_button": "XOÁ",
+        "bucket_notes": "Ghi chú",
+        "date": "Ngày",
+        "label": "Nhãn",
+        "notifications": "Các thông báo",
+        "open": "Mở",
+        "search_for_user_and_clic_to_add": "Tìm kiếm một người dùng và bấm vào nút THÊM.",
+        "there_are_no_owners": "Không có chủ sở hữu nào ở đây.",
+        "verify_certificate": "Xác nhận",
+        "who_can_send_mails_to_list ": "Ai có thể gửi thư TO danh sách này?"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -1133,7 +1145,9 @@
         "standard_html_client": "Client chuẩn (HTML)",
         "type_of_UI": "Kiểu của UI",
         "active_sync": "Kích hoạt đồng bộ",
-        "dark_mode": "Chế độ tối"
+        "dark_mode": "Chế độ tối",
+        "chats": "Trò chuyện",
+        "files": "Tệp"
     },
     "locale": {
         "English": "Tiếng Anh",
@@ -1250,7 +1264,10 @@
         "use_gal_to_auto_fill": "Sử dụng GAL để tự động điền",
         "use_ical_delegation_model_for_shared_calendars": "Sử dụng mô hình ủy quyền iCal cho lịch dùng chung",
         "use_quickadd_dialog_in_creation": "Sử dụng hộp thoại QuickAdd trong quá trình tạo",
-        "view_mail_as_html": "Xem thư dưới dạng HTML"
+        "view_mail_as_html": "Xem thư dưới dạng HTML",
+        "Chats": "Trò chuyện",
+        "domain": "Miền",
+        "files": "Tệp"
     },
     "privacy": {
         "send_full_error_data_to_zextras": "Gửi dữ liệu lỗi đầy đủ tới Zextras",
@@ -1386,5 +1403,15 @@
         "gb": "GB",
         "secondry": "Thứ nhì",
         "scheduling": "Lịch trình"
+    },
+    "dashboard": {
+        "description": "Mô tả"
+    },
+    "notification": {
+        "copy": "Sao chép",
+        "list": "Danh sách",
+        "manage": "Quản lý",
+        "mark_as_read": "Đánh dấu đã đọc",
+        "mark_as_unread": "Đánh dấu là chưa đọc"
     }
 }

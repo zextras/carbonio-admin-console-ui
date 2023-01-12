@@ -22,7 +22,8 @@
         "purge": "پاکسازی",
         "enabled": "فعال",
         "reset": "تنظیم مجدد",
-        "theme": "پوسته‌ها"
+        "theme": "پوسته‌ها",
+        "date": "تاریخ"
     },
     "domain": {
         "theme": "پوسته‌ها"
@@ -51,5 +52,13 @@
         "volume_indexer_header": {
             "name": "نام"
         }
+    },
+    "dashboard": {
+        "description": "توضیح"
+    },
+    "notification": {
+        "mark_as_read": "علامتگذاری به عنوان خوانده شده",
+        "copy": "ایجاد رونوشت",
+        "mark_as_unread": "علامتگذاری به عنوان خوانده نشده"
     }
 }

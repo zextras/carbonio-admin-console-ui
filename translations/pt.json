@@ -103,7 +103,7 @@
         "restore_account": "Restaurar conta",
         "retention_policy": "Política de retenção",
         "save_and_leave": "Salvar e Sair",
-        "search": "Procurar",
+        "search": "Buscar",
         "server": "Servidor",
         "servers": "Servidores",
         "show_time_zone_list_in_appointment_view": "Mostrar lista de fusos horários na vista de compromissos",
@@ -217,7 +217,14 @@
         "volume_server_name": "Servidor",
         "wipe_device": "Limpar dispositivo",
         "global": "Global",
-        "update": "Atualizar"
+        "update": "Atualizar",
+        "bucket_notes": "Observações",
+        "date": "Data",
+        "label": "Etiqueta",
+        "verify": "Verificar",
+        "verify_certificate": "Verificar",
+        "notifications": "Notificações",
+        "open": "Abrir"
     },
     "timezone": {
         "asia_pyongyang": "{{value}} Pyongyang",
@@ -495,7 +502,9 @@
         "prevent_user_from_changing_password": "Impedir utilizador de alterar a palavra-passe",
         "proxy_allowed_domain_name": "Nome de domínio permitido pelo \"proxy\"",
         "proxy_allowed_domains": "Domínios permitidos pelo \"proxy\"",
-        "dark_mode": "Modo Noturno"
+        "dark_mode": "Modo Noturno",
+        "chats": "Chats",
+        "files": "Ficheiros"
     },
     "backup": {
         "backup_path": "Path do backup",
@@ -573,7 +582,10 @@
         "sharing": "Compartilhamento",
         "tagging": "Marcação",
         "min_new_check_interval_value": "Valor",
-        "send": "ENVIAR"
+        "send": "ENVIAR",
+        "Chats": "Chats",
+        "domain": "Domínio",
+        "files": "Ficheiros"
     },
     "connection": {
         "access_key": "Chave de acesso",
@@ -651,5 +663,16 @@
             "primary": "Primário",
             "secondary": "Secundário"
         }
+    },
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "Descrição"
+    },
+    "notification": {
+        "copy": "Copiar",
+        "list": "Lista",
+        "manage": "Gerir",
+        "mark_as_read": "Marcar como lida",
+        "mark_as_unread": "Marcar como não lído"
     }
 }
