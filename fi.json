@@ -11,5 +11,9 @@
     },
     "hsm": {
         "details": "Yksityiskohdat"
+    },
+    "notification": {
+        "mark_as_read": "Merkitse luetuksi",
+        "mark_as_unread": "Merkitse lukemattomaksi"
     }
 }

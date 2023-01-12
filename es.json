@@ -823,7 +823,19 @@
         "yes_reset_the_device": "Sí, reiniciar el dispositivo",
         "yes_wipe_the_device": "Sí, borrar el dispositivo",
         "you_are_trying_reset_device": "Estás tratando de reiniciar un dispositivo",
-        "you_are_trying_wipe_device": "Estas tratando de borrar un dispositivo"
+        "you_are_trying_wipe_device": "Estas tratando de borrar un dispositivo",
+        "bucket_create_button": "CREAR",
+        "bucket_delete_button": "BORRAR",
+        "bucket_notes": "Notas",
+        "date": "Date",
+        "notifications": "Notificaciones",
+        "open": "Abrir",
+        "search_for_user_and_clic_to_add": "Buscar un usuario y hacer clic en el botón AÑADIR.",
+        "there_are_no_owners": "No hay propietarios aquí.",
+        "who_can_send_mails_to_list ": "¿Quién puede enviar correos A esta lista?",
+        "label": "Etiqueta",
+        "verify": "Verificar",
+        "verify_certificate": "Verificar"
     },
     "timezone": {
         "indian_mauritius": "{{value}} Port Louis",
@@ -1244,7 +1256,9 @@
         "yes_disable": "Sí, deshabilitar",
         "dark_mode": "Modo oscuro",
         "active_sync": "ActiveSync",
-        "activesync_remote_access": "Acceso remoto a ActiveSync"
+        "activesync_remote_access": "Acceso remoto a ActiveSync",
+        "chats": "Chats",
+        "files": "Drive"
     },
     "select_section_from_left_menu": "Por favor seleccione una sección en el menú de la izquierda",
     "select_cos_or_create_new_cos": "Por favor, elige una Clase de servicio para administrarla o haz clic en el botón Crear.",
@@ -1390,7 +1404,10 @@
         "this_account_is_a_in_direct_member_of": "Esta cuenta es un miembro indirecto de",
         "this_is_global_administrator": "Este es un Administrador Global ",
         "this_user_must_change_password": "Este usuario debe cambiar la contraseña",
-        "activesync_remote_access": "Acceso remoto a ActiveSync"
+        "activesync_remote_access": "Acceso remoto a ActiveSync",
+        "Chats": "Chats",
+        "domain": "Dominio",
+        "files": "Drive"
     },
     "connection": {
         "access_key": "Clave de acceso",
@@ -1527,5 +1544,16 @@
         "volume_already_selected_in_source": "El volumen ya ha sido seleccionado como volumen de origen"
     },
     "select_bucket_or_create_new_bucket_helperText": "Parece que no has configurado un tipo de bucket.\n         Haz clic en el botón \"NUEVO BUCKET\" para crear uno nuevo.",
-    "welcome_to_carbonio_display_name": "¡Bienvenido {{adminName}}!"
+    "welcome_to_carbonio_display_name": "¡Bienvenido {{adminName}}!",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "Descripción"
+    },
+    "notification": {
+        "copy": "Copiar",
+        "list": "Lista",
+        "manage": "Administrar",
+        "mark_as_read": "Marcar como leído",
+        "mark_as_unread": "Marcar como no leído"
+    }
 }

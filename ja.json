@@ -991,7 +991,19 @@
         "you_are_trying_wipe_device": "デバイスをワイプしようとしています",
         "failed": "失敗",
         "remove_button": "削除",
-        "session_id": "セッションID"
+        "session_id": "セッションID",
+        "bucket_create_button": "作成",
+        "label": "ラベル",
+        "notifications": "通知",
+        "open": "開く",
+        "search_for_user_and_clic_to_add": "ユーザーを検索し、[追加]をクリックします。",
+        "who_can_send_mails_to_list ": "誰がこのリストにメールを送信できますか？",
+        "bucket_delete_button": "削除する",
+        "bucket_notes": "備考",
+        "date": "日",
+        "there_are_no_owners": "ここには所有者はいません。",
+        "verify": "確認する",
+        "verify_certificate": "確認する"
     },
     "message": {
         "snackbar": {
@@ -1231,7 +1243,9 @@
         "yes_disable": "はい、無効にします",
         "dark_mode": "ダークモード",
         "active_sync": "ActiveSync",
-        "activesync_remote_access": "ActiveSync リモートアクセス"
+        "activesync_remote_access": "ActiveSync リモートアクセス",
+        "chats": "チャット",
+        "files": "ファイル"
     },
     "locale": {
         "English": "英語",
@@ -1389,7 +1403,10 @@
         "use_ical_delegation_model_for_shared_calendars": "共有カレンダーにiCal委任モデルを使用する",
         "use_quickadd_dialog_in_creation": "作成時にQuickAddダイアログを使用する",
         "view_mail_as_html": "メールをHTMLとして表示する",
-        "activesync_remote_access": "ActiveSync リモートアクセス"
+        "activesync_remote_access": "ActiveSync リモートアクセス",
+        "Chats": "チャット",
+        "domain": "ドメイン",
+        "files": "ファイル"
     },
     "connection": {
         "access_key": "アクセスキー",
@@ -1526,5 +1543,16 @@
         "secondry": "セカンダリー"
     },
     "select_bucket_or_create_new_bucket_helperText": "バケットタイプを設定していないようです。\n[新しいバケット]をクリックして、新しいバケットを作成してください。",
-    "welcome_to_carbonio_display_name": "ようこそ {{adminName}}！"
+    "welcome_to_carbonio_display_name": "ようこそ {{adminName}}！",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "説明"
+    },
+    "notification": {
+        "copy": "コピー",
+        "list": "リスト",
+        "manage": "管理",
+        "mark_as_read": "既読にする",
+        "mark_as_unread": "未読にする"
+    }
 }

@@ -818,7 +818,19 @@
         "yes_reset_the_device": "Ja, reset het apparaat",
         "yes_wipe_the_device": "Ja, wis het apparaat",
         "you_are_trying_reset_device": "U probeert een apparaat te resetten",
-        "you_are_trying_wipe_device": "U probeert een apparaat te wissen"
+        "you_are_trying_wipe_device": "U probeert een apparaat te wissen",
+        "date": "Datum",
+        "open": "Openen",
+        "verify": "Verifiëren",
+        "bucket_create_button": "CREËREN",
+        "bucket_delete_button": "VERWIJDEREN",
+        "bucket_notes": "Aantekeningen",
+        "label": "Label",
+        "notifications": "kennisgevingen",
+        "search_for_user_and_clic_to_add": "Zoek een gebruiker en klik op de ADD knop.",
+        "there_are_no_owners": "Er zijn hier geen eigenaars.",
+        "verify_certificate": "Verifiëren",
+        "who_can_send_mails_to_list ": "Wie kan mails sturen naar deze lijst?"
     },
     "timezone": {
         "europe_belgrade": "{{value}} Belgrado, Bratislava, Boedapest, Ljubljana, Praag",
@@ -1231,7 +1243,9 @@
         "yes_disable": "Ja, Uitschakelen",
         "dark_mode": "Donkere modus",
         "active_sync": "ActiveSync",
-        "activesync_remote_access": "ActiveSync toegang op afstand"
+        "activesync_remote_access": "ActiveSync toegang op afstand",
+        "files": "Drive",
+        "chats": "Chats"
     },
     "locale": {
         "English": "Engels",
@@ -1378,7 +1392,10 @@
         "use_ical_delegation_model_for_shared_calendars": "Gebruik iCal delegatiemodel voor gedeelde agenda's",
         "use_quickadd_dialog_in_creation": "Gebruik het QuickAdd-dialoogvenster bij creatie",
         "view_mail_as_html": "Mail bekijken als HTML",
-        "activesync_remote_access": "ActiveSync toegang op afstand"
+        "activesync_remote_access": "ActiveSync toegang op afstand",
+        "Chats": "Chats",
+        "domain": "Domein",
+        "files": "Drive"
     },
     "privacy": {
         "send_full_error_data_to_zextras": "Stuur volledige foutgegevens naar Zextras",
@@ -1527,5 +1544,16 @@
         "years": "Jaar"
     },
     "select_bucket_or_create_new_bucket_helperText": "het lijkt erop dat u geen bucket type heeft ingesteld.\n\t\t\t\t\t\t\t\t\tKlik op de \"NIEUWE BUCKET\"-knop om een nieuwe te creëren.",
-    "welcome_to_carbonio_display_name": "Welkom {{adminName}}!"
+    "welcome_to_carbonio_display_name": "Welkom {{adminName}}!",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "Omschrijving"
+    },
+    "notification": {
+        "copy": "Kopieren",
+        "list": "Lijst",
+        "manage": "Beheren",
+        "mark_as_read": "Als gelezen markeren",
+        "mark_as_unread": "Markeren als niet geşezen"
+    }
 }

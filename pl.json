@@ -291,7 +291,16 @@
         "max_result_return_gal_search": "Max. liczba wyników pokazywanych przy wyszukiwaniu GLA",
         "proceed_without_generating_an_otp_code": "KONTYNUUJ BEZ GENEROWANIA KODU HASŁA OTP",
         "the_account_has_been_successfully_created": "Konto zostało stworzone pomyślnie",
-        "i_want_to_generate_an_otp_code": "CHCĘ WYGENEROWAĆ KOD HASŁA OTP"
+        "i_want_to_generate_an_otp_code": "CHCĘ WYGENEROWAĆ KOD HASŁA OTP",
+        "certificate_type_use_custom": "Chcę użyć niestandardowego certyfikatu",
+        "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Certyfikat jest prawidłowy, ale wygasł lub istnieje niezaufane CA",
+        "certificate_content_error": "Certyfikat domeny, łańcuch CA lub prywatny klucz jest nieprawidłowy",
+        "certificate_invalid_error": "Certyfikat jest nieprawidłowy, spróbuj z innym certyfikatem",
+        "certificate_saved": "Certyfikaty zostały zapisane",
+        "certificate_type_use_letsencrypt": "Chcę użyc certyfikatu Let's Encrypt",
+        "certificate_valid": "Certyfikat jest prawidłowy",
+        "domain_certificate_removed": "Certyfikaty domeny zostały usunięte",
+        "private_key_certificate_removed": "Prywatny klucz certyfikatu został usunięty"
     },
     "label": {
         "account": "Konto",
@@ -301,7 +310,7 @@
         "app_name": "Zarządzaj",
         "backup": "Kopia zapasowa",
         "cancel": "Anuluj",
-        "core": "Core",
+        "core": "Rdzeń",
         "days": "Dni",
         "delete": "Usuń",
         "description": "Opis",
@@ -991,7 +1000,19 @@
         "yes_reset_the_device": "Tak, zresetuj urządzenie",
         "yes_wipe_the_device": "Tak, wyczyść urządzenie",
         "you_are_trying_reset_device": "Próbujesz zresetować urządzenie",
-        "you_are_trying_wipe_device": "Próbujesz wyczyścić urządzenie"
+        "you_are_trying_wipe_device": "Próbujesz wyczyścić urządzenie",
+        "label": "Określenie",
+        "who_can_send_mails_to_list ": "Kto może wysyłać e-maile do tej listy?",
+        "bucket_create_button": "STWÓRZ",
+        "bucket_delete_button": "USUŃ",
+        "bucket_notes": "Notatki",
+        "date": "Data",
+        "notifications": "Notifications",
+        "open": "Otwórz",
+        "search_for_user_and_clic_to_add": "Wyszukaj użytkownika i kliknij przycisk DODAJ.",
+        "there_are_no_owners": "Nie ma żadnych właścicieli.",
+        "verify": "Zweryfikuj",
+        "verify_certificate": "Zweryfikuj"
     },
     "message": {
         "snackbar": {
@@ -1231,7 +1252,9 @@
         "time_range": "Jednostka czasu",
         "active_sync": "ActiveSync",
         "dark_mode": "Tryb ciemny",
-        "activesync_remote_access": "Zdalny dostęp ActiveSync"
+        "activesync_remote_access": "Zdalny dostęp ActiveSync",
+        "chats": "Czaty",
+        "files": "Pliki"
     },
     "locale": {
         "label_italian": "Włoski - {{value}}",
@@ -1378,7 +1401,18 @@
         "secret_code": "Tajny kod",
         "select_email_otp": "Wybierz adres e-mail, do którego zostanie wysłane hasło OTP lub skopiuj kod powyżej",
         "send_the_otp_to": "Wysyłaj hasło OTP do",
-        "activesync_remote_access": "Zdalny dostęp ActiveSync"
+        "activesync_remote_access": "Zdalny dostęp ActiveSync",
+        "Chats": "Czaty",
+        "domain": "Domena",
+        "files": "Pliki",
+        "type_name_of_aliases": "Wpisz nową nazwę aliasu i wybierz domenę, aby dodać go do dostępnych aliasów ",
+        "type_the_new_alias_name": "Wpisz nową nazwę aliasu i wybierz domenę, aby dodać go do dostępnych aliasów",
+        "aliases": "Aliasy",
+        "click_on_the_pencil_to_edit": "Kliknij w ołówek, aby edytować dostępny alias lub kliknij w krzyżyk, aby go usunąć",
+        "manage_aliases": "ZARZĄDZAJ ALIASEM",
+        "manage_the_aliases_for_this_account": "Zarządzaj aliasami dla tego konta",
+        "new_alias_name": "Nowa nazwa aliasu",
+        "your_available_aliases": "Dostępne aliasy"
     },
     "privacy": {
         "send_full_error_data_to_zextras": "Wysyłaj wszystkie informacje o błędach do Zextras",
@@ -1528,5 +1562,26 @@
         "volume_already_selected_in_source": "Wolumin został już wybrany jako wolumin źródłowy"
     },
     "select_bucket_or_create_new_bucket_helperText": "Wygląda na to, że nie ustawiiono typu bucketa.\n\t\t\t\t\t\t\t\t\tKliknij w przycisk \"NOWY BUCKET\", aby stworzyć nowy.",
-    "welcome_to_carbonio_display_name": "Witaj, {{adminName}}!"
+    "welcome_to_carbonio_display_name": "Witaj, {{adminName}}!",
+    "dashboard": {
+        "description": "Opis",
+        "carbonio": "Carbonio",
+        "quick_access_default_domain": "Szybki dostęp do {defaultDomain}",
+        "carbonio_core": "Carbonio rdzeń",
+        "go_to_mailstores_server_list": "Idź do listy serwerów przechowywania poczty",
+        "go_to_notification": "Idź do powiadomień",
+        "new_notifications": "Nowe powiadomienia",
+        "quick_access_to": "Szybki dostęp do",
+        "server_ip": "Serwer IP",
+        "server_name": "Nazwa serwera",
+        "your_notifications": "Twoje powiadomienia"
+    },
+    "notification": {
+        "copy": "Skopiuj",
+        "list": "Lista",
+        "manage": "Zarządzaj",
+        "mark_as_read": "Zaznacz jako przeczytane",
+        "mark_as_unread": "Zaznacz jako nieczytane"
+    },
+    "cumminity_edition": "CE!"
 }

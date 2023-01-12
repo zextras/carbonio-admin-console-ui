@@ -817,7 +817,19 @@
         "yes_reset_the_device": "Oui, réinitialiser l'appareil",
         "yes_wipe_the_device": "Oui, effacez l'appareil",
         "you_are_trying_reset_device": "Vous essayez de réinitialiser un appareil",
-        "you_are_trying_wipe_device": "Vous essayez de réinitialiser un appareil"
+        "you_are_trying_wipe_device": "Vous essayez de réinitialiser un appareil",
+        "bucket_create_button": "CRÉER",
+        "bucket_delete_button": "SUPPRIMER",
+        "bucket_notes": "Remarques",
+        "date": "Date",
+        "label": "Etiquette",
+        "notifications": "Notifications",
+        "open": "Ouvrir",
+        "search_for_user_and_clic_to_add": "Rechercher un utilisateur et appuyer sur le bouton AJOUTER.",
+        "there_are_no_owners": "Il n'y a pas de propriétaire ici.",
+        "verify": "Vérification",
+        "verify_certificate": "Vérification",
+        "who_can_send_mails_to_list ": "Qui peut envoyer des emails à cette liste ?"
     },
     "message": {
         "snackbar": {
@@ -885,7 +897,7 @@
         "america_punta_arenas": "{{value}} Punta_Arenas",
         "america_regina": "{{value}} Saskatchewan",
         "america_santiago": "{{value}} Pacifique Amérique du Sud",
-        "america_sao_paulo": "{{value}} Brésil",
+        "america_sao_paulo": "{{value}} Brasilia",
         "asia_damascus": "{{value}} Damas",
         "asia_dhaka": "{{value}} Dacca",
         "asia_gaza": "{{value}} Gaza",
@@ -938,7 +950,7 @@
         "europe_berlin": "{{value}} Amsterdam, Berlin, Berne, Rome, Stockholm, Vienne",
         "europe_brussels": "{{value}} Bruxelles, Copenhague, Madrid, Paris",
         "europe_chisinau": "{{value}} Chisinau",
-        "europe_helsinki": "{{value}} Helsinki, Kiev, Riga, Sofia, Tallinn, Vilnius",
+        "europe_helsinki": "{{value}} Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",
         "europe_istanbul": "{{value}} Istanbul",
         "europe_kaliningrad": "{{value}} Kaliningrad (RTZ 1)",
         "europe_london": "{{value}} Grande-Bretagne, Irlande, Portugal",
@@ -1243,7 +1255,9 @@
         "time_range": "Plage de temps",
         "active_sync": "ActiveSync",
         "dark_mode": "Mode sombre",
-        "activesync_remote_access": "Accès à distance ActiveSync"
+        "activesync_remote_access": "Accès à distance ActiveSync",
+        "chats": "Chats",
+        "files": "Fichiers"
     },
     "create_new_cos": "CRÉER UNE NOUVELLE COS",
     "select_section_from_left_menu": "Merci de sélectionner une section depuis le menu de gauche",
@@ -1376,7 +1390,10 @@
         "secret_code": "Code secret",
         "select_email_otp": "Sélectionnez une adresse électronique à laquelle envoyer l'OTP ou copiez le code ci-dessus",
         "send_the_otp_to": "Envoyer l'OTP à",
-        "activesync_remote_access": "Accès à distance ActiveSync"
+        "activesync_remote_access": "Accès à distance ActiveSync",
+        "Chats": "Chats",
+        "domain": "Domaine",
+        "files": "Fichiers"
     },
     "connection": {
         "access_key": "Clé d’accès",
@@ -1526,5 +1543,16 @@
         "volume_already_selected_in_source": "Volume déjà sélectionné comme volume source"
     },
     "select_bucket_or_create_new_bucket_helperText": "Il semble que vous n'ayez pas configuré de type de bucket.\n\t\t\t\t\t\t\t\t\tCliquez sur le bouton \"NOUVEAU BUCKET\" pour en créer un nouveau.",
-    "welcome_to_carbonio_display_name": "Bienvenue {{adminName}} !"
+    "welcome_to_carbonio_display_name": "Bienvenue {{adminName}} !",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "Description"
+    },
+    "notification": {
+        "copy": "Copier",
+        "list": "Liste",
+        "manage": "Gérer",
+        "mark_as_read": "Marqué comme lu",
+        "mark_as_unread": "Marqué comme non lu"
+    }
 }

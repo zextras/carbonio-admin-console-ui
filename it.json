@@ -848,7 +848,19 @@
         "you_are_trying_reset_device": "Stai cercando di ripristinare un dispositivo",
         "you_are_trying_wipe_device": "Stai provando a ripristinare un dispositivo",
         "user_agent": "Agente Utente",
-        "total_acc_rights_with_delete_distribution_list_helper_text": "Questa lista ha <bold>{{totalAccRights}}</bold> account condivisi. <br /> Eliminandola, anche le condivisioni andranno perse."
+        "total_acc_rights_with_delete_distribution_list_helper_text": "Questa lista ha <bold>{{totalAccRights}}</bold> account condivisi. <br /> Eliminandola, anche le condivisioni andranno perse.",
+        "bucket_create_button": "CREA",
+        "bucket_delete_button": "ELIMINA",
+        "bucket_notes": "Note",
+        "date": "Data",
+        "label": "Etichetta",
+        "who_can_send_mails_to_list ": "Chi può inviare e-mail a questa lista?",
+        "notifications": "Notifiche",
+        "open": "Apri",
+        "search_for_user_and_clic_to_add": "Cerca un utente e clicca il pulsante AGGIUNGI.",
+        "there_are_no_owners": "Non sono presenti proprietari.",
+        "verify": "Verifica",
+        "verify_certificate": "Verifica"
     },
     "message": {
         "snackbar": {
@@ -1239,7 +1251,9 @@
         "active_sync": "ActiveSync",
         "dark_mode": "Tema Scuro",
         "activesync_remote_access": "Accesso remoto ActiveSync",
-        "create_cos_success_msg": "Stai disabilitando il pool su {{serverName}}. Le caselle di posta non verranno spostate. Vuoi continuare?"
+        "create_cos_success_msg": "Stai disabilitando il pool su {{serverName}}. Le caselle di posta non verranno spostate. Vuoi continuare?",
+        "chats": "Chat",
+        "files": "Drive"
     },
     "accountDetails": {
         "default_COS": "COS Predefinita",
@@ -1386,7 +1400,10 @@
         "group_calendar": "Calendario Avanzato",
         "html_compose": "Composizione HTML",
         "use_quickadd_dialog_in_creation": "Utilizza la finestra QuickAdd per la creazione",
-        "activesync_remote_access": "Accesso remoto ActiveSync"
+        "activesync_remote_access": "Accesso remoto ActiveSync",
+        "Chats": "Chat",
+        "domain": "Dominio",
+        "files": "Drive"
     },
     "connection": {
         "access_key": "Chiave d'Accesso",
@@ -1521,5 +1538,16 @@
         "volume_already_selected_in_source": "Il volume è già stato selezionato come volume sorgente"
     },
     "select_bucket_or_create_new_bucket_helperText": "Sembra che tu non abbia ancora impostato un tipo di bucket.\n\t\t\t\t\t\t\t\t\tClicca il bottone NUOVO BUCKET per crearne uno nuovo.",
-    "welcome_to_carbonio_display_name": "Benvenuto {{adminName}}!"
+    "welcome_to_carbonio_display_name": "Benvenuto {{adminName}}!",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "Descrizione"
+    },
+    "notification": {
+        "copy": "Copia",
+        "list": "Lista",
+        "manage": "Gestisci",
+        "mark_as_read": "Segna come letto",
+        "mark_as_unread": "Segna come non letto"
+    }
 }

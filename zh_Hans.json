@@ -731,7 +731,19 @@
         "will_be_centralized_in_helptext": "将集中于",
         "wipe_device_factory_settings": "擦除设备并回到出厂设置",
         "you_are_trying_wipe_device": "您正在尝试擦除设备",
-        "total_acc_rights_with_delete_distribution_list_helper_text": "此列表有<bold>{{totalAccRights}}</bold>共享账户权限。<br />删除后所有权限都将丢失。"
+        "total_acc_rights_with_delete_distribution_list_helper_text": "此列表有<bold>{{totalAccRights}}</bold>共享账户权限。<br />删除后所有权限都将丢失。",
+        "bucket_create_button": "创建",
+        "bucket_delete_button": "删除",
+        "bucket_notes": "备注",
+        "date": "日期",
+        "label": "标签",
+        "notifications": "通知",
+        "open": "打开",
+        "search_for_user_and_clic_to_add": "搜索用户并点击添加按钮。",
+        "there_are_no_owners": "此处没有所有者。",
+        "verify": "验证",
+        "verify_certificate": "验证",
+        "who_can_send_mails_to_list ": "谁可向此列表发送邮件？"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",
@@ -1231,7 +1243,9 @@
         "yes_disable": "是的，禁用",
         "active_sync": "ActiveSync",
         "dark_mode": "深色模式",
-        "activesync_remote_access": "ActiveSync远程访问"
+        "activesync_remote_access": "ActiveSync远程访问",
+        "chats": "聊天",
+        "files": "文件"
     },
     "accountDetails": {
         "enable_activeSync_remote_access": "启用ActiveSync远程访问",
@@ -1389,7 +1403,10 @@
         "this_user_must_change_password": "此用户必须更改密码",
         "use_gal_to_auto_fill": "使用 GAL 以自动填充",
         "use_ical_delegation_model_for_shared_calendars": "为已共享的日历使用 iCal 委派模式",
-        "activesync_remote_access": "ActiveSync远程访问"
+        "activesync_remote_access": "ActiveSync远程访问",
+        "Chats": "聊天",
+        "domain": "域",
+        "files": "文件"
     },
     "connection": {
         "access_key": "访问密钥",
@@ -1526,5 +1543,16 @@
         "abstract_msg_1": "<strong>{{enables}} {{largerSmaller}}</strong>。这将对存储在<bold>{{previous}}</bold>与<bold>{{next}}</bold>。"
     },
     "welcome_to_carbonio_display_name": "欢迎，{{adminName}}！",
-    "select_bucket_or_create_new_bucket_helperText": "似乎您还没有设置存储桶类型。\n\t\t\t\t\t\t\t\t\t点击“新存储桶”按钮以新建。"
+    "select_bucket_or_create_new_bucket_helperText": "似乎您还没有设置存储桶类型。\n\t\t\t\t\t\t\t\t\t点击“新存储桶”按钮以新建。",
+    "dashboard": {
+        "carbonio": "Carbonio",
+        "description": "描述"
+    },
+    "notification": {
+        "copy": "复制",
+        "list": "列表",
+        "manage": "管理",
+        "mark_as_read": "标记为已读",
+        "mark_as_unread": "标记为未读"
+    }
 }
