@@ -17,9 +17,8 @@ export const getAllDevices = async (module: string): Promise<any> =>
 		{
 			_jsns: 'urn:zimbraAdmin',
 			module,
-			action: 'getAllDevices'
-
-			// targetServers: targetServer
+			action: 'getAllDevices',
+			targetServers: 'all_servers'
 		},
 		'zextras'
 	);
