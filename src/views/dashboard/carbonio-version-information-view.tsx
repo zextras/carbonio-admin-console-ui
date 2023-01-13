@@ -13,7 +13,7 @@ const CarbonioVersionInformation: FC<{
 	userName: string;
 }> = ({ userName }) => {
 	const [t] = useTranslation();
-	const isAdvanced = useAuthIsAdvanced();
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	return (
 		<Container
 			mainAlignment="flex-start"

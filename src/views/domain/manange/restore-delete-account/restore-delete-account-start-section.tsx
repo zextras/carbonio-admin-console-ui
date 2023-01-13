@@ -7,6 +7,7 @@ import React, { FC, useContext } from 'react';
 import { Container, Input, Row } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
+import moment from 'moment';
 import ListRow from '../../../list/list-row';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import { getFormatedDate } from '../../../utility/utils';
@@ -57,7 +58,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 							</Container>
 						</ListRow>
 						<ListRow>
-							<Container padding={{ bottom: 'large' }}>
+							<Container padding={{ bottom: 'large', right: 'medium' }}>
 								<Input
 									backgroundColor="gray6"
 									label={t('label.use_last_available_status', 'Use last available status')}
@@ -69,8 +70,6 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 									readOnly
 								/>
 							</Container>
-						</ListRow>
-						<ListRow>
 							<Container padding={{ bottom: 'large' }}>
 								<Input
 									backgroundColor="gray6"
@@ -78,14 +77,14 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 									value={
 										restoreAccountDetail?.dateTime === null
 											? ''
-											: getFormatedDate(restoreAccountDetail?.dateTime)
+											: moment(restoreAccountDetail?.dateTime).format('D MMMM YYYY | hh:mm:ss A')
 									}
 									readOnly
 								/>
 							</Container>
 						</ListRow>
 						<ListRow>
-							<Container padding={{ right: 'medium', bottom: 'medium' }}>
+							<Container>
 								<Input
 									backgroundColor="gray6"
 									label={t(
@@ -98,19 +97,9 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 									readOnly
 								/>
 							</Container>
-							<Container padding={{ right: 'medium', bottom: 'medium' }}>
-								<Input
-									backgroundColor="gray6"
-									label={t('label.restore_external_data_source', 'Restore External Data Sources')}
-									value={
-										restoreAccountDetail?.dataSource ? t('label.yes', 'Yes') : t('label.no', 'NO')
-									}
-									readOnly
-								/>
-							</Container>
 						</ListRow>
 						<ListRow>
-							<Container padding={{ bottom: 'large' }}>
+							<Container padding={{ bottom: 'large', top: 'large' }}>
 								<Input
 									backgroundColor="gray6"
 									label={t('label.mail_notifications', 'Email Notifications')}

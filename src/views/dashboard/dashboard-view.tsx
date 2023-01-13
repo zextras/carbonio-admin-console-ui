@@ -35,6 +35,7 @@ import QuickAccess from './quick-access-view';
 import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
 import { useDomainStore } from '../../store/domain/store';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
@@ -48,6 +49,7 @@ const Dashboard: FC = () => {
 	const [version, setVersion] = useState<string>('');
 
 	const setDomain = useDomainStore((state) => state.setDomain);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [quickAccessItems, setQuickAccessItems] = useState<Array<any>>([
 		{
 			upperText: t('label.domains', 'Domains'),
@@ -137,11 +139,13 @@ const Dashboard: FC = () => {
 					</Container>
 				</ListRow>
 
-				<ListRow>
-					<Container padding={{ all: 'extralarge' }}>
-						<DashboardNotification goToMailNotificationt={goToMailNotificationt} />
-					</Container>
-				</ListRow>
+				{isAdvanced && (
+					<ListRow>
+						<Container padding={{ all: 'extralarge' }}>
+							<DashboardNotification goToMailNotificationt={goToMailNotificationt} />
+						</Container>
+					</ListRow>
+				)}
 
 				<ListRow>
 					<Container padding={{ all: 'extralarge' }}>

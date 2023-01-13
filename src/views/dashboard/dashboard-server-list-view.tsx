@@ -12,6 +12,7 @@ import ListRow from '../list/list-row';
 import { useServerStore } from '../../store/server/store';
 import { Server } from '../../../types';
 import { getVersionInfo } from '../../services/get-version-info';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 
 export const VersionText = styled(Text)`
 	background: #2b73d2;
@@ -29,6 +30,7 @@ const DashboardServerList: FC<{
 	const serverList = useServerStore((state) => state.serverList || []);
 	const [serverListRow, setServerListRow] = useState<Array<any>>([]);
 	const [serverVersion, setServerVersion] = useState<any>({});
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const getVersionInformation = useCallback(() => {
 		getVersionInfo().then((res) => {
 			if (res && res?.info && Array.isArray(res?.info)) {
@@ -67,17 +69,21 @@ const DashboardServerList: FC<{
 					>
 						{`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
 					</VersionText>,
-					<VersionText
-						size="small"
-						weight="regular"
-						color="gray6"
-						key={item?.name}
-						onClick={(event: { stopPropagation: () => void }): void => {
-							event.stopPropagation();
-						}}
-					>
-						{`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
-					</VersionText>,
+					isAdvanced ? (
+						<VersionText
+							size="small"
+							weight="regular"
+							color="gray6"
+							key={item?.name}
+							onClick={(event: { stopPropagation: () => void }): void => {
+								event.stopPropagation();
+							}}
+						>
+							{`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
+						</VersionText>
+					) : (
+						''
+					),
 					<Text
 						size="small"
 						weight="bold"
@@ -97,7 +103,7 @@ const DashboardServerList: FC<{
 		} else {
 			setServerListRow([]);
 		}
-	}, [serverList, serverVersion]);
+	}, [serverList, serverVersion, isAdvanced]);
 
 	const headers: any[] = useMemo(
 		() => [
@@ -115,8 +121,8 @@ const DashboardServerList: FC<{
 			},
 			{
 				id: 'carbonio',
-				label: t('dashboard.carbonio', 'Carbonio'),
-				width: '20%',
+				label: isAdvanced ? t('dashboard.carbonio', 'Carbonio') : '',
+				width: isAdvanced ? '20%' : '0%',
 				bold: true
 			},
 			{
@@ -126,7 +132,7 @@ const DashboardServerList: FC<{
 				bold: true
 			}
 		],
-		[t]
+		[t, isAdvanced]
 	);
 
 	return (

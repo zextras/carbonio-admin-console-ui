@@ -15,7 +15,7 @@ import {
 	Divider,
 	Button
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -137,16 +137,16 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 			const allRows = accounts.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.name} color="#828282">
+					<Text size="medium" weight="regular" key={item?.name} color="#828282">
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="bold" key={item?.status} color="#828282">
+					<Text size="medium" weight="regular" key={item?.status} color="#828282">
 						{item?.status}
 					</Text>,
-					<Text size="medium" weight="bold" key={item?.creationTimestamp} color="#828282">
+					<Text size="medium" weight="regular" key={item?.creationTimestamp} color="#828282">
 						{getFormatedShortDate(new Date(item?.creationTimestamp))}
 					</Text>,
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="regular" key={item?.id} color="#828282">
 						{item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}
 					</Text>
 				]
@@ -202,9 +202,11 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 			mainAlignment="flex-start"
 			width="100%"
 			padding={{ top: 'extralarge' }}
+			style={{ overflowY: 'auto' }}
+			maxHeight="calc(100vh - 17.5em)"
 		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Container height="fit" crossAlignment="flex-start" background="gray6">
+				<Container crossAlignment="flex-start" background="gray6">
 					<Row
 						orientation="horizontal"
 						mainAlignment="space-between"
@@ -212,7 +214,26 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 						width="fill"
 						padding={{ bottom: 'large', right: 'large', left: 'large' }}
 					>
-						<Container padding={{ bottom: 'medium' }}>
+						<Container padding={{ bottom: 'medium' }} crossAlignment="flex-start">
+							<Text size="medium" color="gray0" weight="regular">
+								{t(
+									'label.restore_select_account_row_1',
+									'Through this tool, you`ll be able to restore an entire account from the backup into a new one.'
+								)}
+							</Text>
+						</Container>
+						<Container padding={{ bottom: 'medium' }} crossAlignment="flex-start">
+							{
+								<Text size="medium" color="gray0" weight="regular">
+									<Trans
+										i18nKey="label.restore_select_account_row_2"
+										defaults="<bold>Note</bold> that all the mails, appointments, contacts, and settings of the account will be restored, as they were at the chosen timestamp."
+										components={{ bold: <strong /> }}
+									/>
+								</Text>
+							}
+						</Container>
+						<Container padding={{ bottom: 'medium', top: 'large' }}>
 							<Input
 								backgroundColor="gray5"
 								value={searchString}
@@ -224,7 +245,7 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 							/>
 						</Container>
 						<ListRow>
-							<Row height={isRequestInProgress ? 'fit' : 'calc(100vh - 490px)'}>
+							<Row height={isRequestInProgress ? 'fit' : 'calc(100vh - 35.625em)'}>
 								<Table
 									style={{ overflow: 'auto', height: '100%' }}
 									multiSelect={false}

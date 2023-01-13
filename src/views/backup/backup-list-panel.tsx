@@ -15,13 +15,12 @@ import {
 	CONFIGURATION_BACKUP,
 	IMPORT_EXTERNAL_BACKUP,
 	SERVERS_LIST,
-	SERVER_CONFIG,
-	SERVICE_STATUS
+	SERVER_CONFIG
 } from '../../constants';
 import ListItems from '../list/list-items';
-import { useServerStore } from '../../store/server/store';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
+import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -33,7 +32,7 @@ const BackupListPanel: FC = () => {
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
 	const [isActionExpanded, setIsActionExpanded] = useState(true);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
-	const serverList = useServerStore((state) => state.serverList || []);
+	const serverList = useBucketServersListStore((state) => state.volumeList || []);
 	const [selectedServer, setSelectedServer] = useState<string>('');
 	const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
 

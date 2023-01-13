@@ -287,13 +287,34 @@ const EditAccount: FC<{
 					orientation="horizontal"
 					background="white"
 					width="fill"
-					height="48px"
+					height="56px"
 				>
 					<Row padding={{ horizontal: 'small' }}></Row>
 					<Row takeAvailableSpace mainAlignment="flex-start">
 						<Text size="medium" overflow="ellipsis" weight="bold">
 							{`${selectedAccount?.name} ${t('label.detail', 'Detail')}`}
 						</Text>
+					</Row>
+					<Row>
+						{isDirty && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="flex-end"
+								crossAlignment="flex-end"
+								background="gray6"
+							>
+								<Padding right="small">
+									<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
+								</Padding>
+								<Padding right="small">
+									<Button
+										label={t('label.save', 'Save')}
+										color="primary"
+										onClick={modifyAccountReq}
+									/>
+								</Padding>
+							</Container>
+						)}
 					</Row>
 					<Row padding={{ right: 'extrasmall' }}>
 						<IconButton
@@ -328,25 +349,6 @@ const EditAccount: FC<{
 						<Divider color="gray2" />
 					</Row>
 					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
-						{isDirty && (
-							<Container
-								orientation="horizontal"
-								mainAlignment="flex-end"
-								crossAlignment="flex-end"
-								background="gray6"
-								padding={{ all: 'medium' }}
-								height="85px"
-							>
-								<Padding right="small">
-									<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
-								</Padding>
-								<Button
-									label={t('label.save', 'Save')}
-									color="primary"
-									onClick={modifyAccountReq}
-								/>
-							</Container>
-						)}
 						{change === 'general' && <EditAccountGeneralSection />}
 						{change === 'configuration' && <EditAccountConfigrationSection />}
 						{change === 'user_preferences' && (

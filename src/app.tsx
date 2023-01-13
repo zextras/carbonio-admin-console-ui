@@ -478,6 +478,18 @@ const App: FC = () => {
 				primarybarSection: { ...servicesSection },
 				tooltip: BackupTooltipView
 			});
+
+			addRoute({
+				route: NOTIFICATION_ROUTE_ID,
+				position: 1,
+				visible: true,
+				label: t('label.notifications', 'Notifications'),
+				primaryBar: 'BellOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...logAndQueuesSection }
+			});
 		}
 		addRoute({
 			route: PRIVACY_ROUTE_ID,
@@ -489,18 +501,6 @@ const App: FC = () => {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			primarybarSection: { ...managementSection }
-		});
-
-		addRoute({
-			route: NOTIFICATION_ROUTE_ID,
-			position: 1,
-			visible: true,
-			label: t('label.notifications', 'Notifications'),
-			primaryBar: 'BellOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...logAndQueuesSection }
 		});
 
 		/* addRoute({
@@ -616,12 +616,14 @@ const App: FC = () => {
 			const server = data?.server;
 			if (server && Array.isArray(server) && server.length > 0) {
 				setServerList(server);
-				checkIsBackupModuleEnable(server);
+				if (isAdvanced) {
+					checkIsBackupModuleEnable(server);
+					getGlobalConfig(server[0]?.name);
+				}
 				setAllServersList(server);
-				getGlobalConfig(server[0]?.name);
 			}
 		});
-	}, [setServerList, checkIsBackupModuleEnable, setAllServersList, getGlobalConfig]);
+	}, [setServerList, checkIsBackupModuleEnable, setAllServersList, getGlobalConfig, isAdvanced]);
 
 	const getMailstoresServersRequest = useCallback(() => {
 		getMailstoresServers().then((data) => {

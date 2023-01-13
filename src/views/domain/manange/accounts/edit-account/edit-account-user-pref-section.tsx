@@ -354,7 +354,10 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<Switch
 						value={accountDetail?.zimbraPrefMailLocalDeliveryDisabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefMailLocalDeliveryDisabled')}
-						label={t('account_details.cannot_check_for_less_than', `Cannot check for less than`)}
+						label={t(
+							'account_details.allow_user_check_minimum_interval',
+							'Allow the user to change the minimum checking interval'
+						)}
 					/>
 				</Row>
 				<Row width="32%" mainAlignment="flex-start">
@@ -369,10 +372,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						defaultValue={zimbraPrefMailPollingIntervalNum}
 						value={zimbraPrefMailPollingIntervalNum}
 						type="number"
+						disabled={accountDetail?.zimbraPrefMailLocalDeliveryDisabled !== 'TRUE'}
 					/>
 				</Row>
 				<Row width="32%" mainAlignment="flex-start">
 					<Select
+						disabled={accountDetail?.zimbraPrefMailLocalDeliveryDisabled !== 'TRUE'}
 						items={TIME_TYPES}
 						background="gray5"
 						label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
@@ -398,6 +403,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					<Input
+						disabled={accountDetail?.zimbraPrefNewMailNotificationEnabled !== 'TRUE'}
 						onChange={changeAccDetail}
 						inputName="zimbraPrefNewMailNotificationAddress"
 						label={t('label.enabed_address', 'Enabed Address')}
@@ -461,8 +467,8 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<Switch
-						value={accountDetail?.zimbraPrefMailLocalDeliveryDisabled === 'TRUE'}
-						onClick={(): void => changeSwitchOption('zimbraPrefMailLocalDeliveryDisabled')}
+						value={accountDetail?.zimbraFeatureReadReceiptsEnabled === 'TRUE'}
+						onClick={(): void => changeSwitchOption('zimbraFeatureReadReceiptsEnabled')}
 						label={t('account_details.send_read_receipts', `Send read receipts`)}
 					/>
 				</Row>
@@ -476,6 +482,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
 					/> */}
 					<ChipInput
+						disabled={accountDetail?.zimbraFeatureReadReceiptsEnabled !== 'TRUE'}
 						placeholder={t(
 							'account_details.this_account_is_a_in_direct_member_of',
 							'This account is an indirect member of'

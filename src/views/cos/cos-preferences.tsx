@@ -25,7 +25,8 @@ import {
 	appointmentReminder,
 	charactorSet,
 	conversationGroupBy,
-	timeZoneList
+	timeZoneList,
+	localeList
 } from '../utility/utils';
 import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
@@ -37,7 +38,9 @@ const CosPreferences: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
+	const localeZone = useMemo(() => localeList(t), [t]);
 	const [cosPreferences, setCosPreferences] = useState<any>({
+		zimbraPrefLocale: '',
 		zimbraPrefMessageViewHtmlPreferred: 'FALSE',
 		zimbraPrefGroupMailBy: '',
 		zimbraPrefMailDefaultCharset: '',
@@ -188,6 +191,13 @@ const CosPreferences: FC = () => {
 		[setCosPreferences]
 	);
 
+	const onPrefLocaleChange = useCallback(
+		(v: string): void => {
+			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefLocale: v }));
+		},
+		[setCosPreferences]
+	);
+
 	const onPollingIntervalChange = useCallback(
 		(v: string): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
@@ -291,6 +301,7 @@ const CosPreferences: FC = () => {
 					'zimbraPrefMessageViewHtmlPreferred',
 					obj?.zimbraPrefMessageViewHtmlPreferred ? obj.zimbraPrefMessageViewHtmlPreferred : 'FALSE'
 				);
+				setValue('zimbraPrefLocale', obj?.zimbraPrefLocale ? obj?.zimbraPrefLocale : '');
 				setValue(
 					'zimbraPrefGroupMailBy',
 					obj?.zimbraPrefGroupMailBy ? obj?.zimbraPrefGroupMailBy : ''
@@ -446,6 +457,9 @@ const CosPreferences: FC = () => {
 			if (!obj.zimbraPrefMessageViewHtmlPreferred) {
 				obj.zimbraPrefMessageViewHtmlPreferred = 'FALSE';
 			}
+			if (!obj.zimbraPrefLocale) {
+				obj.zimbraPrefLocale = '';
+			}
 			if (!obj.zimbraPrefGroupMailBy) {
 				obj.zimbraPrefGroupMailBy = '';
 			}
@@ -554,6 +568,15 @@ const CosPreferences: FC = () => {
 		cosPreferences.zimbraPrefMessageViewHtmlPreferred,
 		cosData.zimbraPrefMessageViewHtmlPreferred
 	]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraPrefLocale !== undefined &&
+			!_.isEqual(cosData.zimbraPrefLocale, cosPreferences.zimbraPrefLocale)
+		) {
+			setIsDirty(true);
+		}
+	}, [cosData.zimbraPrefLocale, cosPreferences.zimbraPrefLocale]);
 
 	useEffect(() => {
 		if (
@@ -974,6 +997,45 @@ const CosPreferences: FC = () => {
 				style={{ overflow: 'auto' }}
 				padding={{ top: 'large' }}
 			>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+					width="100%"
+				>
+					<Text size="extralarge" weight="bold">
+						{t('label.general_options', 'General Options')}
+					</Text>
+					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ top: 'large', bottom: 'large' }}
+						>
+							<ListRow>
+								<Container>
+									<Select
+										items={localeZone}
+										background="gray5"
+										label={t('label.language', 'Language')}
+										showCheckbox={false}
+										selection={
+											cosPreferences?.zimbraPrefLocale === ''
+												? localeZone[-1]
+												: localeZone.find(
+														// eslint-disable-next-line max-len
+														(item: any) => item.value === cosPreferences?.zimbraPrefLocale
+												  )
+										}
+										onChange={onPrefLocaleChange}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					<Divider />
+				</Row>
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"

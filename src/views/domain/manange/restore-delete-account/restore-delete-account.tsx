@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
 import { Container, SnackbarManagerContext } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -72,8 +72,8 @@ const RestoreDeleteAccount: FC = () => {
 		) => {
 			const body: any = {
 				srcAccountName: id,
-				obeyHSM: hsmApply,
-				restoreDatasources: dataSource
+				obeyHSM: hsmApply
+				// restoreDatasources: dataSource
 			};
 			if (notificationReceiver !== '' && isEmailNotificationEnable) {
 				body.notificationMails = [notificationReceiver];
