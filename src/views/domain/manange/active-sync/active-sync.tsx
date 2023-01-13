@@ -103,11 +103,26 @@ const ActiveSync: FC = () => {
 			.then((res: any) => {
 				if (res?.Body?.response?.content) {
 					const content = JSON.parse(res?.Body?.response?.content);
-					if (content?.response?.devices && content?.ok) {
-						const devices = content?.response?.devices;
-						if (devices && devices.length > 0) {
-							setAllMobileDevices(devices);
-							setBackupAllDevice(devices);
+					if (content?.response) {
+						const contentDevice: any = content?.response;
+						const keys = Object.keys(contentDevice);
+						if (keys.length > 0) {
+							const allDevices: Array<MobileDevice> = [];
+							keys.forEach((item: string) => {
+								const mobileData = contentDevice[item];
+								if (mobileData?.response?.devices) {
+									const devices = mobileData?.response?.devices;
+									if (devices && devices.length > 0) {
+										devices.forEach((deviceItem: MobileDevice) => {
+											allDevices.push(deviceItem);
+										});
+									}
+								}
+							});
+							if (allDevices.length > 0) {
+								setAllMobileDevices(allDevices);
+								setBackupAllDevice(allDevices);
+							}
 						}
 					}
 				}
