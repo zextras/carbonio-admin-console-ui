@@ -369,62 +369,66 @@ const AccountDetailView: FC<any> = ({
 					/>
 				</Row>
 			</Row>
+
+			<Row
+				mainAlignment="flex-end"
+				crossAlignment="flex-end"
+				orientation="horizontal"
+				background="white"
+				height="fit"
+				padding={{ top: 'extralarge', left: 'large', right: 'large', bottom: 'large' }}
+				width="100%"
+			>
+				<Padding right="large">
+					<Container width="fit" height="fit" style={{ border: '1px solid #2b73d2' }}>
+						<IconButton
+							iconColor="primary"
+							backgroundColor="gray6"
+							icon="EditAsNewOutline"
+							height={42}
+							width={42}
+							onClick={(): void => {
+								setShowAccountDetailView(false);
+								setShowEditAccountView(true);
+							}}
+							disabled={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
+							loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
+						/>
+					</Container>
+				</Padding>
+				<Padding right="large">
+					<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
+						<IconButton
+							iconColor="error"
+							backgroundColor="gray6"
+							icon="Trash2Outline"
+							height={42}
+							width={42}
+							disabled={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
+							// loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
+							onClick={onDeleteAccount}
+						/>
+					</Container>
+				</Padding>
+
+				<Button
+					type="outlined"
+					label={t('label.view_mail', 'VIEW MAIL')}
+					icon="EmailReadOutline"
+					iconPlacement="right"
+					color="primary"
+					height={44}
+					onClick={onViewMail}
+				/>
+			</Row>
 			<Container
 				padding={{ left: 'large' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
 				height="calc(100% - 64px)"
-				style={{ overflow: 'auto' }}
 				background="white"
+				style={{ overflow: 'auto' }}
 			>
-				<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
-					<Padding right="large" top="large">
-						<Container width="fit" height="fit" style={{ border: '1px solid #2b73d2' }}>
-							<IconButton
-								iconColor="primary"
-								backgroundColor="gray6"
-								icon="EditAsNewOutline"
-								height={42}
-								width={42}
-								onClick={(): void => {
-									setShowAccountDetailView(false);
-									setShowEditAccountView(true);
-								}}
-								disabled={
-									!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-								}
-								loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
-							/>
-						</Container>
-					</Padding>
-					<Padding right="large">
-						<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
-							<IconButton
-								iconColor="error"
-								backgroundColor="gray6"
-								icon="Trash2Outline"
-								height={42}
-								width={42}
-								disabled={
-									!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-								}
-								// loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
-								onClick={onDeleteAccount}
-							/>
-						</Container>
-					</Padding>
-					<Padding right="large">
-						<Button
-							type="outlined"
-							label={t('label.view_mail', 'VIEW MAIL')}
-							icon="EmailReadOutline"
-							iconPlacement="right"
-							color="primary"
-							height={44}
-							onClick={onViewMail}
-						/>
-					</Padding>
-				</Row>
 				<Row padding={{ top: 'extralarge' }}>
 					<Text
 						size="small"

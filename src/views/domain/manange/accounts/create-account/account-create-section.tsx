@@ -36,6 +36,8 @@ const AccountCreateSection: FC = () => {
 		<Container
 			mainAlignment="flex-start"
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			style={{ overflow: 'auto' }}
+			height="calc(100vh - 300px)"
 		>
 			<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
 				<Text size="small" color="Gray0" weight="bold">

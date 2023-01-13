@@ -313,7 +313,6 @@ const EditAccount: FC<{
 					crossAlignment="flex-start"
 					height="calc(100vh - 152px)"
 					background="white"
-					style={{ overflow: 'auto' }}
 				>
 					<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<TabBar

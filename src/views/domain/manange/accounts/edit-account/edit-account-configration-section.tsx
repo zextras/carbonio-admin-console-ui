@@ -86,6 +86,7 @@ const EditAccountConfigrationSection: FC = () => {
 		<Container
 			mainAlignment="flex-start"
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			style={{ overflow: 'auto' }}
 		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">

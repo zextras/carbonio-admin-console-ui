@@ -260,6 +260,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 		<Container
 			mainAlignment="flex-start"
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			style={{ overflow: 'auto' }}
 		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -820,7 +821,11 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					/>
 				</Row>
 			</Row> */}
-			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+			<Row
+				width="100%"
+				padding={{ top: 'large', left: 'large', bottom: 'large' }}
+				mainAlignment="space-between"
+			>
 				<Row width="48%" mainAlignment="flex-start">
 					<Switch
 						value={accountDetail?.zimbraPrefCalendarNotifyDelegatedChanges === 'TRUE'}

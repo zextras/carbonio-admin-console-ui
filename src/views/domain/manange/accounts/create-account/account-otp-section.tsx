@@ -76,6 +76,8 @@ const AccountOtpSection: FC = () => {
 		<Container
 			mainAlignment="flex-start"
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			style={{ overflow: 'auto' }}
+			height="calc(100vh - 300px)"
 		>
 			{showOtpOptionSection ? (
 				<>

@@ -631,6 +631,7 @@
         "account_created_successfully": "The account has been created successfully",
         "account_data_copy_to_account": "The account data will be copied to this account",
         "account_disable_correctly": "The account has been correctly disabled.",
+        "account_password_setting_note_for_external_authentication": "The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.",
         "account_quota_mb": "Account Quota (MB)",
         "account_remove_correctly": "The account has been correctly removed.",
         "account_scan": "AccountScan",
