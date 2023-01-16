@@ -982,6 +982,7 @@
         "local_ldap": "Local LDAP",
         "location": "Location",
         "locked": "Locked",
+        "lockout": "Lockout",
         "log": "Log",
         "login_is_disabled": "Login is disabled",
         "logo": "Logo",

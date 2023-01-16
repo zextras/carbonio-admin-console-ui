@@ -139,6 +139,10 @@ const ManageAccounts: FC = () => {
 			pending: {
 				color: '#828282',
 				label: t('label.pending', 'Pending')
+			},
+			lockout: {
+				color: '#D74942',
+				label: t('label.lockout', 'Lockout')
 			}
 		}),
 		[t]
