@@ -468,7 +468,7 @@ const EditAccountSecuritySection: FC = () => {
 				>
 					{!showCreateOTP && (
 						<>
-							<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="100%">
+							<Row mainAlignment="flex-start" width="100%">
 								<Row
 									padding={{ top: 'large', left: 'large' }}
 									width="100%"
@@ -573,7 +573,7 @@ const EditAccountSecuritySection: FC = () => {
 								>
 									<Container
 										orientation="horizontal"
-										width="99%"
+										width="100%"
 										crossAlignment="center"
 										mainAlignment="space-between"
 										background="#D3EBF8"
@@ -652,7 +652,7 @@ const EditAccountSecuritySection: FC = () => {
 														onChange={changeValue}
 													/>
 												</Container>
-												<Container padding={{ left: 'small', right: 'small' }}>
+												<Container padding={{ left: 'small' }}>
 													<Input
 														label={t('cos.maximum_password_length', 'Maximum password length')}
 														value={accountDetail.zimbraPasswordMaxLength}
@@ -661,7 +661,18 @@ const EditAccountSecuritySection: FC = () => {
 														onChange={changeValue}
 													/>
 												</Container>
-												<Container padding={{ left: 'small', right: 'small' }}>
+											</ListRow>
+										</Container>
+									</Row>
+									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+										<Container
+											height="fit"
+											crossAlignment="flex-start"
+											background="gray6"
+											padding={{ top: 'large' }}
+										>
+											<ListRow>
+												<Container padding={{ right: 'small' }}>
 													<Input
 														label={t(
 															'cos.minimum_upper_case_characters',
@@ -708,7 +719,7 @@ const EditAccountSecuritySection: FC = () => {
 														onChange={changeValue}
 													/>
 												</Container>
-												<Container padding={{ left: 'small', right: 'small' }}>
+												<Container padding={{ left: 'small' }}>
 													<Input
 														label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
 														value={accountDetail.zimbraPasswordMinNumericChars}
@@ -717,7 +728,18 @@ const EditAccountSecuritySection: FC = () => {
 														onChange={changeValue}
 													/>
 												</Container>
-												<Container padding={{ left: 'small', right: 'small' }}>
+											</ListRow>
+										</Container>
+									</Row>
+									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+										<Container
+											height="fit"
+											crossAlignment="flex-start"
+											background="gray6"
+											padding={{ top: 'large' }}
+										>
+											<ListRow>
+												<Container padding={{ right: 'small' }}>
 													<Input
 														label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
 														value={accountDetail.zimbraPasswordMinAge}
