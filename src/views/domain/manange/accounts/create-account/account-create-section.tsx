@@ -64,8 +64,18 @@ const AccountCreateSection: FC = () => {
 						<Input
 							label={t('label.password', 'Password')}
 							backgroundColor="gray6"
+							type="password"
 							value={`${accountDetail?.password}`}
-							CustomIcon={(): any => <Icon icon="CopyOutline" size="large" color="Gray0" />}
+							CustomIcon={(): any => (
+								<Icon
+									icon="CopyOutline"
+									size="large"
+									color="Gray0"
+									onClick={(): any => {
+										navigator.clipboard.writeText(accountDetail?.password);
+									}}
+								/>
+							)}
 							readOnly
 						/>
 					</Row>
@@ -99,7 +109,7 @@ const AccountCreateSection: FC = () => {
                     />
                 </Row> */}
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="100%" mainAlignment="flex-start">
 						<Select
 							background="gray6"
 							label={t('label.status', 'Status')}
@@ -114,7 +124,7 @@ const AccountCreateSection: FC = () => {
 							readOnly
 						/>
 					</Row>
-					<Row width="32%" mainAlignment="flex-start">
+					{/* <Row width="32%" mainAlignment="flex-start">
 						<Select
 							background="gray6"
 							label={t('label.language', 'Language')}
@@ -145,7 +155,7 @@ const AccountCreateSection: FC = () => {
 							}
 							readOnly
 						/>
-					</Row>
+					</Row> */}
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					{cosItems?.length === cosList?.length ? (

@@ -243,7 +243,7 @@ const CreateAccountDetailSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="100%" mainAlignment="flex-start">
 						<Select
 							items={ACCOUNT_STATUS}
 							background="gray5"
@@ -256,7 +256,7 @@ const CreateAccountDetailSection: FC = () => {
 							padding={{ right: 'medium' }}
 						/>
 					</Row>
-					<Row width="32%" mainAlignment="flex-start">
+					{/* <Row width="32%" mainAlignment="flex-start">
 						<Select
 							items={localeZone}
 							background="gray5"
@@ -281,7 +281,7 @@ const CreateAccountDetailSection: FC = () => {
 							)}
 							onChange={onPrefTimeZoneChange}
 						/>
-					</Row>
+					</Row> */}
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="flex-start">

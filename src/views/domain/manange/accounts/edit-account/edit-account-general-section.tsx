@@ -243,20 +243,22 @@ const EditAccountGeneralSection: FC = () => {
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
-						<PasswordInput
+						<Input
 							background="gray5"
 							label={t('label.password', 'Password')}
 							onChange={changeAccDetail}
 							inputName="password"
+							type="password"
 							defaultValue={accountDetail?.password || ''}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
-						<PasswordInput
+						<Input
 							background="gray5"
 							label={t('label.repeat_password', 'Repeat Password')}
 							onChange={changeAccDetail}
 							inputName="repeatPassword"
+							type="password"
 							defaultValue={accountDetail?.repeatPassword || ''}
 						/>
 					</Row>

@@ -726,7 +726,7 @@ const AccountDetailView: FC<any> = ({
 									disabled={isRequestInProgress}
 								/>
 								<Button
-									label={t('label.close_the_account', 'Close the account')}
+									label={t('label.disable_the_account', 'Disable the account')}
 									color="primary"
 									onClick={onDisableAccount}
 									disabled={
