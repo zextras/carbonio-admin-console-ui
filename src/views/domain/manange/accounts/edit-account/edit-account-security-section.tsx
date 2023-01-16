@@ -459,13 +459,13 @@ const EditAccountSecuritySection: FC = () => {
 	);
 
 	return (
-		<>
+		<Container
+			mainAlignment="flex-start"
+			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			style={{ overflow: 'auto' }}
+		>
 			{isAdvanced && (
-				<Container
-					mainAlignment="flex-start"
-					padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-					style={{ overflow: 'auto' }}
-				>
+				<>
 					{!showCreateOTP && (
 						<>
 							<Row mainAlignment="flex-start" width="100%">
@@ -565,389 +565,6 @@ const EditAccountSecuritySection: FC = () => {
 										)}
 									</Row>
 								</Row>
-								<Row
-									takeAvwidth="fill"
-									mainAlignment="flex-start"
-									width="100%"
-									padding={{ top: 'large', left: 'large', right: 'large' }}
-								>
-									<Container
-										orientation="horizontal"
-										width="100%"
-										crossAlignment="center"
-										mainAlignment="space-between"
-										background="#D3EBF8"
-										padding={{
-											all: 'large'
-										}}
-										style={{ borderRadius: '2px 2px 0px 0px' }}
-									>
-										<Row takeAvwidth="fill" mainAlignment="flex-start">
-											<Padding horizontal="small">
-												<CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
-											</Padding>
-										</Row>
-										<Row
-											takeAvwidth="fill"
-											mainAlignment="flex-start"
-											width="100%"
-											padding={{
-												all: 'small'
-											}}
-										>
-											<Text overflow="break-word">
-												{t(
-													'label.account_password_setting_note_for_external_authentication',
-													'The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.'
-												)}
-											</Text>
-										</Row>
-									</Container>
-								</Row>
-								<Row
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'large' }}
-									width="100%"
-								>
-									<Text size="extralarge" weight="bold">
-										{t('cos.password', 'Password')}
-									</Text>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container crossAlignment="flex-start">
-													<Switch
-														value={accountDetail.zimbraPasswordLocked === 'TRUE'}
-														label={t(
-															'cos.prevent_user_from_changing_password',
-															'Prevent user from changing password'
-														)}
-														// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-														onClick={() => changeSwitchOption('zimbraPasswordLocked')}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container padding={{ right: 'small' }}>
-													<Input
-														label={t('cos.minimum_password_length', 'Minimum password length')}
-														value={accountDetail.zimbraPasswordMinLength}
-														background="gray5"
-														inputName="zimbraPasswordMinLength"
-														onChange={changeValue}
-													/>
-												</Container>
-												<Container padding={{ left: 'small' }}>
-													<Input
-														label={t('cos.maximum_password_length', 'Maximum password length')}
-														value={accountDetail.zimbraPasswordMaxLength}
-														background="gray5"
-														inputName="zimbraPasswordMaxLength"
-														onChange={changeValue}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container padding={{ right: 'small' }}>
-													<Input
-														label={t(
-															'cos.minimum_upper_case_characters',
-															'Minimum upper case characters'
-														)}
-														value={accountDetail.zimbraPasswordMinUpperCaseChars}
-														background="gray5"
-														inputName="zimbraPasswordMinUpperCaseChars"
-														onChange={changeValue}
-													/>
-												</Container>
-												<Container padding={{ left: 'small' }}>
-													<Input
-														label={t(
-															'cos.minimum_lower_case_characters',
-															'Minimum lower case characters'
-														)}
-														value={accountDetail.zimbraPasswordMinLowerCaseChars}
-														background="gray5"
-														inputName="zimbraPasswordMinLowerCaseChars"
-														onChange={changeValue}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container padding={{ right: 'small' }}>
-													<Input
-														label={t(
-															'cos.minimum_punctuation_symbols',
-															'Minimum punctuation symbols'
-														)}
-														value={accountDetail.zimbraPasswordMinPunctuationChars}
-														background="gray5"
-														inputName="zimbraPasswordMinPunctuationChars"
-														onChange={changeValue}
-													/>
-												</Container>
-												<Container padding={{ left: 'small' }}>
-													<Input
-														label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
-														value={accountDetail.zimbraPasswordMinNumericChars}
-														background="gray5"
-														inputName="zimbraPasswordMinNumericChars"
-														onChange={changeValue}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container padding={{ right: 'small' }}>
-													<Input
-														label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
-														value={accountDetail.zimbraPasswordMinAge}
-														background="gray5"
-														inputName="zimbraPasswordMinAge"
-														onChange={changeValue}
-													/>
-												</Container>
-												<Container padding={{ left: 'small' }}>
-													<Input
-														label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
-														value={accountDetail.zimbraPasswordMaxAge}
-														background="gray5"
-														inputName="zimbraPasswordMaxAge"
-														onChange={changeValue}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container padding={{ right: 'small' }}>
-													<Input
-														label={t(
-															'cos.minimum_numeric_characters_or_punctuation_symbols',
-															'Minimum numeric characters or punctuation symbols'
-														)}
-														value={accountDetail.zimbraPasswordMinDigitsOrPuncs}
-														background="gray5"
-														inputName="zimbraPasswordMinDigitsOrPuncs"
-														onChange={changeValue}
-													/>
-												</Container>
-												<Container padding={{ left: 'small' }}>
-													<Input
-														label={t(
-															'cos.minimum_number_of_unique_password_history',
-															'Minimum number of unique passwords history'
-														)}
-														value={accountDetail.zimbraPasswordEnforceHistory}
-														background="gray5"
-														inputName="zimbraPasswordEnforceHistory"
-														onChange={changeValue}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container height="fit" crossAlignment="flex-start" background="gray6">
-											<ListRow>
-												<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
-													<Switch
-														value={accountDetail.zimbraPasswordBlockCommonEnabled === 'TRUE'}
-														label={t('cos.reject_common_passwords', 'Reject common passwords')}
-														// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-														onClick={() => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-								</Row>
-								<Row
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									padding={{ all: 'large' }}
-									width="100%"
-								>
-									<Text size="extralarge" weight="bold">
-										{t('cos.failed_login_policy', 'Failed Login Policy')}
-									</Text>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container crossAlignment="flex-start">
-													<Switch
-														value={accountDetail.zimbraPasswordLockoutEnabled === 'TRUE'}
-														label={t(
-															'cos.enable_failed_login_lockout',
-															'Enable failed login lockout'
-														)}
-														// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-														onClick={() => changeSwitchOption('zimbraPasswordLockoutEnabled')}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container crossAlignment="flex-start">
-													<Input
-														label={t(
-															'cos.number_of_consecutive_failed_login_allowed',
-															'Number of consecutive failed logins allowed'
-														)}
-														value={accountDetail.zimbraPasswordLockoutMaxFailures}
-														background="gray5"
-														inputName="zimbraPasswordLockoutMaxFailures"
-														onChange={changeValue}
-														disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large' }}
-										>
-											<ListRow>
-												<Container width="75%" padding={{ right: 'small' }}>
-													<Input
-														label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-														value={zimbraPasswordLockoutDurationNum}
-														background="gray5"
-														inputName="zimbraPasswordLockoutDuration"
-														onChange={onZimbraPasswordLockoutDurationNumChange}
-														disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-													/>
-												</Container>
-												<Container width="25%" padding={{ left: 'small' }}>
-													<Select
-														items={timeItems}
-														background="gray5"
-														label={t('cos.time_range', 'Time Range')}
-														selection={
-															zimbraPasswordLockoutDurationType === ''
-																? timeItems[-1]
-																: timeItems.find(
-																		// eslint-disable-next-line max-len
-																		(item: any) => item.value === zimbraPasswordLockoutDurationType
-																  )
-														}
-														showCheckbox={false}
-														onChange={onZimbraPasswordLockoutDurationTypeChange}
-														disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-									<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-										<Container
-											height="fit"
-											crossAlignment="flex-start"
-											background="gray6"
-											padding={{ top: 'large', bottom: 'large' }}
-										>
-											<ListRow>
-												<Container width="75%" padding={{ right: 'small' }}>
-													<Input
-														label={t(
-															'cos.time_window_failed_logins_must_occur_to_lock_account',
-															'Time window in which the failed logins must occur to lock the account:'
-														)}
-														value={zimbraPasswordLockoutFailureLifetimeNum}
-														background="gray5"
-														inputName="zimbraPasswordLockoutFailureLifetime"
-														onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
-														disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-													/>
-												</Container>
-												<Container width="25%" padding={{ left: 'small' }}>
-													<Select
-														items={timeItems}
-														background="gray5"
-														label={t('cos.time_range', 'Time Range')}
-														selection={
-															zimbraPasswordLockoutFailureLifetimeType === ''
-																? timeItems[-1]
-																: timeItems.find(
-																		(item: any) =>
-																			// eslint-disable-next-line max-len
-																			item.value === zimbraPasswordLockoutFailureLifetimeType
-																  )
-														}
-														showCheckbox={false}
-														onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
-														disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-													/>
-												</Container>
-											</ListRow>
-										</Container>
-									</Row>
-								</Row>
 							</Row>
 						</>
 					)}
@@ -962,9 +579,390 @@ const EditAccountSecuritySection: FC = () => {
 							</Row>
 						</>
 					)}
-				</Container>
+				</>
 			)}
-		</>
+			{!showCreateOTP && (
+				<Row mainAlignment="flex-start" width="100%">
+					<Row
+						takeAvwidth="fill"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'large', left: 'large', right: 'large' }}
+					>
+						<Container
+							orientation="horizontal"
+							width="100%"
+							crossAlignment="center"
+							mainAlignment="space-between"
+							background="#D3EBF8"
+							padding={{
+								all: 'large'
+							}}
+							style={{ borderRadius: '2px 2px 0px 0px' }}
+						>
+							<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Padding horizontal="small">
+									<CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
+								</Padding>
+							</Row>
+							<Row
+								takeAvwidth="fill"
+								mainAlignment="flex-start"
+								width="100%"
+								padding={{
+									all: 'small'
+								}}
+							>
+								<Text overflow="break-word">
+									{t(
+										'label.account_password_setting_note_for_external_authentication',
+										'The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.'
+									)}
+								</Text>
+							</Row>
+						</Container>
+					</Row>
+					<Row
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ all: 'large' }}
+						width="100%"
+					>
+						<Text size="extralarge" weight="bold">
+							{t('cos.password', 'Password')}
+						</Text>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container crossAlignment="flex-start">
+										<Switch
+											value={accountDetail.zimbraPasswordLocked === 'TRUE'}
+											label={t(
+												'cos.prevent_user_from_changing_password',
+												'Prevent user from changing password'
+											)}
+											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+											onClick={() => changeSwitchOption('zimbraPasswordLocked')}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container padding={{ right: 'small' }}>
+										<Input
+											label={t('cos.minimum_password_length', 'Minimum password length')}
+											value={accountDetail.zimbraPasswordMinLength}
+											background="gray5"
+											inputName="zimbraPasswordMinLength"
+											onChange={changeValue}
+										/>
+									</Container>
+									<Container padding={{ left: 'small' }}>
+										<Input
+											label={t('cos.maximum_password_length', 'Maximum password length')}
+											value={accountDetail.zimbraPasswordMaxLength}
+											background="gray5"
+											inputName="zimbraPasswordMaxLength"
+											onChange={changeValue}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container padding={{ right: 'small' }}>
+										<Input
+											label={t(
+												'cos.minimum_upper_case_characters',
+												'Minimum upper case characters'
+											)}
+											value={accountDetail.zimbraPasswordMinUpperCaseChars}
+											background="gray5"
+											inputName="zimbraPasswordMinUpperCaseChars"
+											onChange={changeValue}
+										/>
+									</Container>
+									<Container padding={{ left: 'small' }}>
+										<Input
+											label={t(
+												'cos.minimum_lower_case_characters',
+												'Minimum lower case characters'
+											)}
+											value={accountDetail.zimbraPasswordMinLowerCaseChars}
+											background="gray5"
+											inputName="zimbraPasswordMinLowerCaseChars"
+											onChange={changeValue}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container padding={{ right: 'small' }}>
+										<Input
+											label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
+											value={accountDetail.zimbraPasswordMinPunctuationChars}
+											background="gray5"
+											inputName="zimbraPasswordMinPunctuationChars"
+											onChange={changeValue}
+										/>
+									</Container>
+									<Container padding={{ left: 'small' }}>
+										<Input
+											label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
+											value={accountDetail.zimbraPasswordMinNumericChars}
+											background="gray5"
+											inputName="zimbraPasswordMinNumericChars"
+											onChange={changeValue}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container padding={{ right: 'small' }}>
+										<Input
+											label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
+											value={accountDetail.zimbraPasswordMinAge}
+											background="gray5"
+											inputName="zimbraPasswordMinAge"
+											onChange={changeValue}
+										/>
+									</Container>
+									<Container padding={{ left: 'small' }}>
+										<Input
+											label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
+											value={accountDetail.zimbraPasswordMaxAge}
+											background="gray5"
+											inputName="zimbraPasswordMaxAge"
+											onChange={changeValue}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container padding={{ right: 'small' }}>
+										<Input
+											label={t(
+												'cos.minimum_numeric_characters_or_punctuation_symbols',
+												'Minimum numeric characters or punctuation symbols'
+											)}
+											value={accountDetail.zimbraPasswordMinDigitsOrPuncs}
+											background="gray5"
+											inputName="zimbraPasswordMinDigitsOrPuncs"
+											onChange={changeValue}
+										/>
+									</Container>
+									<Container padding={{ left: 'small' }}>
+										<Input
+											label={t(
+												'cos.minimum_number_of_unique_password_history',
+												'Minimum number of unique passwords history'
+											)}
+											value={accountDetail.zimbraPasswordEnforceHistory}
+											background="gray5"
+											inputName="zimbraPasswordEnforceHistory"
+											onChange={changeValue}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container height="fit" crossAlignment="flex-start" background="gray6">
+								<ListRow>
+									<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
+										<Switch
+											value={accountDetail.zimbraPasswordBlockCommonEnabled === 'TRUE'}
+											label={t('cos.reject_common_passwords', 'Reject common passwords')}
+											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+											onClick={() => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+					</Row>
+					<Row
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ all: 'large' }}
+						width="100%"
+					>
+						<Text size="extralarge" weight="bold">
+							{t('cos.failed_login_policy', 'Failed Login Policy')}
+						</Text>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container crossAlignment="flex-start">
+										<Switch
+											value={accountDetail.zimbraPasswordLockoutEnabled === 'TRUE'}
+											label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
+											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+											onClick={() => changeSwitchOption('zimbraPasswordLockoutEnabled')}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container crossAlignment="flex-start">
+										<Input
+											label={t(
+												'cos.number_of_consecutive_failed_login_allowed',
+												'Number of consecutive failed logins allowed'
+											)}
+											value={accountDetail.zimbraPasswordLockoutMaxFailures}
+											background="gray5"
+											inputName="zimbraPasswordLockoutMaxFailures"
+											onChange={changeValue}
+											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container width="75%" padding={{ right: 'small' }}>
+										<Input
+											label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
+											value={zimbraPasswordLockoutDurationNum}
+											background="gray5"
+											inputName="zimbraPasswordLockoutDuration"
+											onChange={onZimbraPasswordLockoutDurationNumChange}
+											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										/>
+									</Container>
+									<Container width="25%" padding={{ left: 'small' }}>
+										<Select
+											items={timeItems}
+											background="gray5"
+											label={t('cos.time_range', 'Time Range')}
+											selection={
+												zimbraPasswordLockoutDurationType === ''
+													? timeItems[-1]
+													: timeItems.find(
+															// eslint-disable-next-line max-len
+															(item: any) => item.value === zimbraPasswordLockoutDurationType
+													  )
+											}
+											showCheckbox={false}
+											onChange={onZimbraPasswordLockoutDurationTypeChange}
+											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large', bottom: 'large' }}
+							>
+								<ListRow>
+									<Container width="75%" padding={{ right: 'small' }}>
+										<Input
+											label={t(
+												'cos.time_window_failed_logins_must_occur_to_lock_account',
+												'Time window in which the failed logins must occur to lock the account:'
+											)}
+											value={zimbraPasswordLockoutFailureLifetimeNum}
+											background="gray5"
+											inputName="zimbraPasswordLockoutFailureLifetime"
+											onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
+											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										/>
+									</Container>
+									<Container width="25%" padding={{ left: 'small' }}>
+										<Select
+											items={timeItems}
+											background="gray5"
+											label={t('cos.time_range', 'Time Range')}
+											selection={
+												zimbraPasswordLockoutFailureLifetimeType === ''
+													? timeItems[-1]
+													: timeItems.find(
+															(item: any) =>
+																// eslint-disable-next-line max-len
+																item.value === zimbraPasswordLockoutFailureLifetimeType
+													  )
+											}
+											showCheckbox={false}
+											onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
+											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+					</Row>
+				</Row>
+			)}
+		</Container>
 	);
 };
 
