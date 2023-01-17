@@ -122,9 +122,8 @@ const DomainGalSettings: FC = () => {
 			setZimbraDataSourcePollingInterval('');
 			setDataSourceName('');
 			const obj: any = {};
-			domainInformation.map((item: any) => {
+			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 
 			if (obj.zimbraGalMaxResults) {

@@ -13,8 +13,11 @@
 		"type-check": "tsc --noEmit",
 		"type-check:watch": "npm run type-check -- --watch",
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --resolve-plugins-relative-to node_modules/@zextras/carbonio-ui-configs src",
-		"test": "echo jest",
-		"sdk-setup": "npm ci --prefix sdk"
+		"sdk-setup": "npm ci --prefix sdk",
+		"test": "react-scripts test",
+		"test:noWatch": "npm run test -- --watchAll=false",
+		"test:report": "react-scripts test --watchAll=false --coverage --testResultsProcessor jest-sonar-reporter",
+		"sonar": "node sonarqube-scanner.js"
 	},
 	"keywords": [],
 	"author": "Zextras DL Team <https://www.zextras.com/carbonio/>",
@@ -49,7 +52,9 @@
 		"eslint-plugin-notice": "^0.9.10",
 		"husky": "^5.2.0",
 		"is-ci": "3.0.1",
-		"pinst": "2.1.6"
+		"jest-sonar-reporter": "^2.0.0",
+		"pinst": "2.1.6",
+		"sonarqube-scanner": "^3.0.0"
 	},
 	"dependencies": {
 		"@datapunt/matomo-tracker-react": "^0.5.1",
@@ -70,6 +75,7 @@
 		"react-i18next": "^11.13.0",
 		"react-redux": "^7.2.6",
 		"react-router-dom": "^5.3.0",
+		"react-scripts": "^5.0.1",
 		"styled-components": "5.3.3",
 		"uuid": "^8.3.2",
 		"zustand": "3.6.9"
