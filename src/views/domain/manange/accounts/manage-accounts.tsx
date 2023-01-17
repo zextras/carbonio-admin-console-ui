@@ -157,7 +157,7 @@ const ManageAccounts: FC = () => {
 				.then((data: any) => {
 					const obj: any = {};
 					// eslint-disable-next-line array-callback-return
-					data?.account?.[0]?.a?.map((ele: any) => {
+					data?.account?.[0]?.a?.forEach((ele: any) => {
 						if (obj[ele.n]) {
 							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
 						} else {
@@ -199,7 +199,7 @@ const ManageAccounts: FC = () => {
 					const directMemArr: any[] = [];
 					const inDirectMemArr: any[] = [];
 					// eslint-disable-next-line array-callback-return
-					data?.dl?.map((ele: any) => {
+					data?.dl?.forEach((ele: any) => {
 						if (ele?.via)
 							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
 						else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
@@ -236,7 +236,7 @@ const ManageAccounts: FC = () => {
 					const otpListResponse = res.response?.list;
 					if (otpListResponse && Array.isArray(otpListResponse)) {
 						const otpListArr: any = [];
-						otpListResponse.map((item: any): any => {
+						otpListResponse.forEach((item: any): any => {
 							otpListArr.push({
 								id: item?.id,
 								columns: [
@@ -259,7 +259,6 @@ const ManageAccounts: FC = () => {
 								item,
 								clickable: true
 							});
-							return '';
 						});
 						setOtpList(otpListArr);
 					}
@@ -288,8 +287,8 @@ const ManageAccounts: FC = () => {
 			if (accountListResponse && Array.isArray(accountListResponse)) {
 				const accountListArr: any = [];
 				setTotalAccount(data.searchTotal || 0);
-				accountListResponse.map((item: any): any => {
-					item?.a?.map((ele: any) => {
+				accountListResponse.forEach((item: any): any => {
+					item?.a?.forEach((ele: any) => {
 						if (ele?.n === 'mail') {
 							if (item[ele?.n]) {
 								item[ele?.n].push(ele._content);
@@ -301,8 +300,6 @@ const ManageAccounts: FC = () => {
 							// eslint-disable-next-line no-param-reassign
 							item[ele?.n] = ele._content;
 						}
-
-						return '';
 					});
 					accountListArr.push({
 						id: item?.id,
@@ -400,7 +397,6 @@ const ManageAccounts: FC = () => {
 						item,
 						clickable: true
 					});
-					return '';
 				});
 				// setAccountList([]);
 				setAccountList(accountListArr);

@@ -194,7 +194,7 @@ const NotificationView: FC<{
 					const content = JSON.parse(res?.Body?.response?.content);
 					if (content?.response) {
 						// eslint-disable-next-line array-callback-return
-						Object.keys(content?.response).map((ele: any) => {
+						Object.keys(content?.response).forEach((ele: any) => {
 							if (content?.response[ele] && content?.response[ele]?.response?.notifications) {
 								const allNotification = content?.response[ele]?.response?.notifications;
 								setNotificationList(allNotification);

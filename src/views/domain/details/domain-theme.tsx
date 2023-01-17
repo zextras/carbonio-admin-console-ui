@@ -198,9 +198,8 @@ const DomainTheme: FC = () => {
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
-			domainInformation.map((item: any) => {
+			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			if (!obj.carbonioWebUiDarkMode) {
 				obj.carbonioWebUiDarkMode = 'FALSE';
@@ -308,7 +307,7 @@ const DomainTheme: FC = () => {
 		const attributes: any[] = [];
 		body.id = domainData.zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
-		Object.keys(domainTheme).map((ele: any) =>
+		Object.keys(domainTheme).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainTheme[ele] })
 		);
 		body.a = attributes;
@@ -355,7 +354,7 @@ const DomainTheme: FC = () => {
 			carbonioAdminUiTitle: '',
 			carbonioAdminUiDescription: ''
 		};
-		Object.keys(domainDefaultElements).map((ele: any) =>
+		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
 		);
 		body.a = attributes;

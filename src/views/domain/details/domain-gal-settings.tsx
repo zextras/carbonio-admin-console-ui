@@ -84,9 +84,8 @@ const DomainGalSettings: FC = () => {
 				setZimbraGalAccountName(galAccount?.name);
 				if (galAccount?.a) {
 					const obj: any = {};
-					galAccount?.a.map((item: any) => {
+					galAccount?.a.forEach((item: any) => {
 						obj[item?.n] = item._content;
-						return '';
 					});
 					if (obj?.zimbraMailHost) {
 						setMailServerName(obj?.zimbraMailHost);

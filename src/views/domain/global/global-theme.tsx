@@ -197,9 +197,8 @@ const GlobalTheme: FC = () => {
 	useEffect(() => {
 		if (!!configInformation && configInformation.length > 0) {
 			const obj: any = {};
-			configInformation.map((item: any) => {
+			configInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			if (!obj.carbonioWebUiDarkMode) {
 				obj.carbonioWebUiDarkMode = 'FALSE';
@@ -307,7 +306,7 @@ const GlobalTheme: FC = () => {
 
 	const onSave = (): void => {
 		const attributes: any[] = [];
-		Object.keys(globalTheme).map((ele: any) =>
+		Object.keys(globalTheme).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: globalTheme[ele] })
 		);
 		modifyConfigRequest(attributes);
@@ -350,7 +349,7 @@ const GlobalTheme: FC = () => {
 			carbonioAdminUiTitle: '',
 			carbonioAdminUiDescription: ''
 		};
-		Object.keys(domainDefaultElements).map((ele: any) =>
+		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
 		);
 		modifyConfigRequest(attributes);

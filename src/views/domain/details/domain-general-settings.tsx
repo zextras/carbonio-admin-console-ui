@@ -153,9 +153,8 @@ const DomainGeneralSettings: FC = () => {
 		setDomainAccounts([]);
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
-			domainInformation.map((item: any) => {
+			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			setDomainName(obj.zimbraDomainName);
 			if (obj.zimbraPrefTimeZoneId) {

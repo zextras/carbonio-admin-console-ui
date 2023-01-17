@@ -138,9 +138,8 @@ const CosFeatures: FC = () => {
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
-			cosInformation.map((item: any) => {
+			cosInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			if (!obj.zimbraFeatureMailEnabled) {
 				obj.zimbraFeatureMailEnabled = false;
@@ -214,7 +213,7 @@ const CosFeatures: FC = () => {
 		const body: any = {};
 		body._jsns = 'urn:zimbraAdmin';
 		const attrList: { n: string; _content: string }[] = [];
-		Object.keys(cosFeatures).map((ele: any) =>
+		Object.keys(cosFeatures).forEach((ele: any) =>
 			attrList.push({ n: ele, _content: cosFeatures[ele] === true ? 'TRUE' : 'FALSE' })
 		);
 		body.a = attrList;

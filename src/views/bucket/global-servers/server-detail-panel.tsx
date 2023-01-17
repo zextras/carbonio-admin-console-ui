@@ -39,125 +39,130 @@ const ServersListTable: FC<{
 	selectedRows: any;
 	onSelectionChange: any;
 }> = ({ volumes, headers, isAdvanced, selectedRows, onSelectionChange }) => {
-	const tableRows = !isAdvanced
-		? useMemo(
-				() =>
-					volumes.map((v, i) => ({
-						id: i?.toString(),
-						columns: [
-							<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-								{v?.name}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.primaries}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.indexes}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.description}
-							</Row>
-						],
-						clickable: true
-					})),
-				[volumes]
-		  )
-		: useMemo(
-				() =>
-					volumes.map((v, i) => ({
-						id: i?.toString(),
-						columns: [
-							<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-								{v?.name}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.primaries}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.secondaries}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.indexes}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{(v.indexer?.could_start && INDEXER_ACTIVE) ||
-									(v.indexer?.could_stop && INDEXER_PAUSED) ||
-									(v.indexer?.running && INDEXER_RUNNING)}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.description}
-							</Row>
-						],
-						clickable: true
-					})),
-				[volumes]
-		  );
+	const advanceTableRows = useMemo(
+		() =>
+			volumes.map((v, i) => ({
+				id: i?.toString(),
+				columns: [
+					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+						{v?.name}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.primaries}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.secondaries}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.indexes}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{(v.indexer?.could_start && INDEXER_ACTIVE) ||
+							(v.indexer?.could_stop && INDEXER_PAUSED) ||
+							(v.indexer?.running && INDEXER_RUNNING)}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.description}
+					</Row>
+				],
+				clickable: true
+			})),
+		[volumes]
+	);
+
+	const regularTableRows = useMemo(
+		() =>
+			volumes.map((v, i) => ({
+				id: i?.toString(),
+				columns: [
+					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+						{v?.name}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.primaries}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.indexes}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.description}
+					</Row>
+				],
+				clickable: true
+			})),
+		[volumes]
+	);
+
+	const tableRows = useMemo(
+		() => (isAdvanced ? advanceTableRows : regularTableRows),
+		[isAdvanced, advanceTableRows, regularTableRows]
+	);
 
 	return (
 		<Container crossAlignment="flex-start">
@@ -178,7 +183,7 @@ const ServersListTable: FC<{
 	);
 };
 
-const serverDetailPanel: FC = () => {
+const ServerDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const allServersList = useBucketServersListStore((state) => state.allServersList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -328,4 +333,4 @@ const serverDetailPanel: FC = () => {
 	);
 };
 
-export default serverDetailPanel;
+export default ServerDetailPanel;

@@ -328,7 +328,7 @@ const DomainResources: FC = () => {
 													: ''
 										};
 										const attrList: { n: string; _content: string }[] = [];
-										Object.keys(signtureAttr).map((ele: any) =>
+										Object.keys(signtureAttr).forEach((ele: any) =>
 											attrList.push({ n: ele, _content: signtureAttr[ele] })
 										);
 										modifyCalendarResource(resourceId, attrList)

@@ -164,11 +164,7 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccount = useCallback(
 		debounce((searchText) => {
-			if (searchText) {
-				setAccountOffset(0);
-			} else {
-				setAccountOffset(0);
-			}
+			setAccountOffset(0);
 			getBackupAccounts(searchText);
 		}, 1000),
 		[debounce]

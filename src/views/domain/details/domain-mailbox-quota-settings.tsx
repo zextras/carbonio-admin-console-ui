@@ -121,7 +121,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 					if (data?.searchTotal) {
 						setTotalAccount(data?.searchTotal);
 					}
-					usedQuota.map((item: any, index): any => {
+					usedQuota.forEach((item: any, index): any => {
 						let diskUsed: any = 0;
 						let quotaLimit: any = 0;
 						let percentage: any = 0;
@@ -159,7 +159,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 								</Text>
 							]
 						});
-						return '';
 					});
 					setUsageQuota(quota);
 				}
@@ -174,9 +173,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 			setOffset(0);
 			setTotalAccount(0);
 			setUsageQuota([]);
-			domainInformation.map((item: any) => {
+			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			if (obj.zimbraMailDomainQuota) {
 				setZimbraMailDomainQuota(obj.zimbraMailDomainQuota);
