@@ -82,17 +82,6 @@ const BackupListPanel: FC = () => {
 		[t, isServerSelect]
 	);
 
-	const actionOptions = useMemo(
-		() => [
-			{
-				id: IMPORT_EXTERNAL_BACKUP,
-				name: t('label.import_an_external_backup', 'Import an External Backup'),
-				isSelected: true
-			}
-		],
-		[t]
-	);
-
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 		if (selectedOperationItem === CONFIGURATION_BACKUP || selectedOperationItem === ADVANCED_LBL) {
@@ -104,9 +93,6 @@ const BackupListPanel: FC = () => {
 
 	const toggleDefaultSettingsView = (): void => {
 		setIsDefaultSettingsExpanded(!isDefaultSettingsExpanded);
-	};
-	const toggleActionView = (): void => {
-		setIsActionExpanded(!isActionExpanded);
 	};
 
 	const toggleServerSpecific = (): void => {
@@ -204,19 +190,6 @@ const BackupListPanel: FC = () => {
 					setSelectedOperationItem={setSelectedOperationItem}
 				/>
 			)}
-
-			{/* <ListPanelItem
-				title={t('label.actions', 'Actions')}
-				isListExpanded={isActionExpanded}
-				setToggleView={toggleActionView}
-			/>
-			{isActionExpanded && (
-				<ListItems
-					items={actionOptions}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
-				/>
-			)} */}
 		</Container>
 	);
 };

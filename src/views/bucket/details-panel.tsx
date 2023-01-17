@@ -108,17 +108,17 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 			volumes.map((v, i) => ({
 				id: v.id,
 				columns: [
-					<Text key={i}>{v.name}</Text>,
-					<Text color="text" key={i}>
+					<Text key={v.id}>{v.name}</Text>,
+					<Text color="text" key={v.version}>
 						{v.version}
 					</Text>,
-					<Text color="text" key={i}>
+					<Text color="text" key={v.rtstatus}>
 						{v.rtstatus}
 					</Text>,
-					<Text style={{ textTransform: 'capitalize' }} key={i}>
+					<Text style={{ textTransform: 'capitalize' }} key={v.type}>
 						{v.type}
 					</Text>,
-					<Text color="text" key={i}>
+					<Text color="text" key={v.samrtstatus}>
 						{v.samrtstatus}
 					</Text>
 				],

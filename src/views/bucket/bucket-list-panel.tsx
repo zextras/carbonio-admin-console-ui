@@ -14,13 +14,10 @@ import ListItems from '../list/list-items';
 import {
 	BUCKET_LIST,
 	SERVERS_LIST,
-	VOLUME,
 	HSM_SETTINGS,
-	INDEXER_SETTINGS,
 	DATA_VOLUMES,
 	STORAGES_ROUTE_ID
 } from '../../constants';
-import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import MatomoTracker from '../../matomo-tracker';

@@ -20,7 +20,7 @@ import {
 
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { filter, includes } from 'lodash';
+import { filter } from 'lodash';
 import logo from '../../assets/ninja_robo.svg';
 import NewBucket from './new-bucket';
 import BucketDeleteModel from './delete-bucket-model';
@@ -64,7 +64,7 @@ const BucketListTable: FC<{
 			volumes.map((v, i) => ({
 				id: i,
 				columns: [
-					<Tooltip placement="bottom" label={v.notes} key={i}>
+					<Tooltip placement="bottom" label={v.notes} key={v.label}>
 						<Row
 							onDoubleClick={(): any => {
 								onDoubleClick(i);
@@ -77,7 +77,7 @@ const BucketListTable: FC<{
 							{v.label}
 						</Row>
 					</Tooltip>,
-					<Tooltip placement="bottom" label={v.notes} key={i}>
+					<Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
 						<Row
 							key={i}
 							onDoubleClick={(): any => {
@@ -91,7 +91,7 @@ const BucketListTable: FC<{
 							{v.bucketName}
 						</Row>
 					</Tooltip>,
-					<Tooltip placement="bottom" label={v.notes} key={i}>
+					<Tooltip placement="bottom" label={v.notes} key={v.storeType}>
 						<Row
 							key={i}
 							onDoubleClick={(): any => {

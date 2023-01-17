@@ -30,7 +30,7 @@ import { checkLdap } from '../../../services/check-ldap';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
-	const { operation, server }: { operation: string; server: string } = useParams();
+	const { server }: { server: string } = useParams();
 	const allServers = useServerStore((state) => state.serverList);
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);

@@ -44,11 +44,11 @@ const ServersListTable: FC<{
 			volumes.map((v, i) => ({
 				id: i?.toString(),
 				columns: [
-					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={v?.name}>
 						{v?.name}
 					</Row>,
 					<Row
-						key={i}
+						key={v?.primaries}
 						style={{
 							textAlign: 'left',
 							justifyContent: 'flex-start',
@@ -58,7 +58,7 @@ const ServersListTable: FC<{
 						{v?.primaries}
 					</Row>,
 					<Row
-						key={i}
+						key={v?.secondaries}
 						style={{
 							textAlign: 'left',
 							justifyContent: 'flex-start',
@@ -68,7 +68,7 @@ const ServersListTable: FC<{
 						{v?.secondaries}
 					</Row>,
 					<Row
-						key={i}
+						key={v?.indexes}
 						style={{
 							textAlign: 'left',
 							justifyContent: 'flex-start',
@@ -78,7 +78,7 @@ const ServersListTable: FC<{
 						{v?.indexes}
 					</Row>,
 					<Row
-						key={i}
+						key={v?.hsmScheduled}
 						style={{
 							textAlign: 'left',
 							justifyContent: 'flex-start',
@@ -88,7 +88,7 @@ const ServersListTable: FC<{
 						{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
 					</Row>,
 					<Row
-						key={i}
+						key={v?.hsmScheduled}
 						style={{
 							textAlign: 'left',
 							justifyContent: 'flex-start',
@@ -100,7 +100,7 @@ const ServersListTable: FC<{
 							(v.indexer?.running && INDEXER_RUNNING)}
 					</Row>,
 					<Row
-						key={i}
+						key={v?.indexes}
 						style={{
 							textAlign: 'left',
 							justifyContent: 'flex-start',
@@ -188,7 +188,7 @@ const ServerDetailPanel: FC = () => {
 	const allServersList = useBucketServersListStore((state) => state.allServersList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [serversList, setServersList] = useState<any>([]);
-	const [serverSelection, setserverSelection] = useState([]);
+	const [serverSelection] = useState([]);
 	const serverHeaderAdvanced = useMemo(() => headerAdvanced(t), [t]);
 	const serverHeaderCE = useMemo(() => headerCE(t), [t]);
 
@@ -294,11 +294,7 @@ const ServerDetailPanel: FC = () => {
 								<Container>
 									<Input
 										label={t('label.search_for_a_Server', `Search for a Server`)}
-										// value={searchString}
 										background="gray5"
-										// onChange={(e: any): any => {
-										// 	setSearchString(e.target.value);
-										// }}
 										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="Gray0" />}
 									/>
 								</Container>
@@ -312,19 +308,8 @@ const ServerDetailPanel: FC = () => {
 							isAdvanced={isAdvanced}
 							selectedRows={serverSelection}
 							onSelectionChange={(selected: any): any => {
-								// setBucketselection(selected);
-								// const volumeObject: any = bucketList.find((s, index) => index === selected[0]);
-								// setShowDetails(false);
-								// setBucketDeleteName(volumeObject);
+								console.log('[selected]');
 							}}
-							// onDoubleClick={(i: any): any => {
-							// 	handleDoubleClick(i);
-							// 	setShowEditDetailView(true);
-							// }}
-							// onClick={(i: any): any => {
-							// 	handleDoubleClick(i);
-							// 	setShowEditDetailView(false);
-							// }}
 						/>
 					</Row>
 				</Container>

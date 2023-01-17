@@ -28,7 +28,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { cloneDeep, isEmpty } from 'lodash';
+import { isEmpty } from 'lodash';
 import {
 	NOTIFICATION_ALL,
 	NOTIFICATION_ERROR,
@@ -107,7 +107,7 @@ const NotificationView: FC<{
 }> = ({ isShowTitle, isAddPadding = false }) => {
 	const [t] = useTranslation();
 	const [change, setChange] = useState(NOTIFICATION_ALL);
-	const [click, setClick] = useState('');
+	const [setClick] = useState('');
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [notificationList, setNotificationList] = useState<Array<Notification>>([]);
 	const [filterdNotification, setFilterdNotification] = useState<Array<Notification>>([]);
