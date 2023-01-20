@@ -137,7 +137,7 @@ const DomainListPanel: FC = () => {
 	);
 
 	useEffect(() => {
-		if (searchDomainName && !isDomainSelect) {
+		if (!isDomainSelect) {
 			searchDomainCall(searchDomainName);
 		}
 	}, [searchDomainName, isDomainSelect, searchDomainCall]);
