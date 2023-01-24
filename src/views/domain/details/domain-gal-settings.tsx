@@ -4,19 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Input,
 	Row,
 	Text,
-	Select,
 	Divider,
 	Button,
 	Padding,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Dropdown,
+	Select,
+	Switch
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { find } from 'lodash';
 import { getAccount } from '../../../services/get-account-service';
 import { getDatasource } from '../../../services/get-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
@@ -24,6 +27,7 @@ import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
+import { FALSE, TRUE } from '../../../constants';
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
@@ -37,6 +41,15 @@ const DomainGalSettings: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
+
+	const [open, setOpen] = useState<boolean>(false);
+
+	const onClose = useCallback(() => {
+		setOpen(false);
+	}, []);
+	const onOpen = useCallback(() => {
+		setOpen(true);
+	}, []);
 	const rangeItems = useMemo(
 		() => [
 			{
@@ -63,9 +76,16 @@ const DomainGalSettings: FC = () => {
 		zimbraGalMaxResults: '',
 		zimbraGalAccountId: '',
 		zimbraGalMode: '',
-		zimbraDataSourcePollingInterval: ''
+		zimbraDataSourcePollingInterval: '',
+		zimbraGalLdapPageSize: '',
+		zimbraDataSourceGalPollingInterval: '',
+		zimbraGalLdapURL: '',
+		zimbraGalLdapStartTlsEnabled: FALSE,
+		zimbraGalLdapSearchBase: '',
+		zimbraGalLdapFilter: ''
 	});
 	const [zimbraGalMaxResults, setZimbraGalMaxResults] = useState<string>('');
+	const [zimbraGalLdapPageSize, setZimbraGalLdapPageSize] = useState<string>('');
 	const [zimbraGalAccountId, setZimbraGalAccountId] = useState<string>('');
 	const [zimbraGalAccountName, setZimbraGalAccountName] = useState<string>('');
 	const [mailServerName, setMailServerName] = useState<string>('');
@@ -76,6 +96,67 @@ const DomainGalSettings: FC = () => {
 	const [dataSourceId, setDataSourceId] = useState<any>('');
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const [dataSourceName, setDataSourceName] = useState<string>('');
+	const [freqValue, setFreqValue] = useState<object | any>({
+		digits: '',
+		time: 's'
+	});
+	const changeGalModeBtnItems = [
+		{
+			id: 'internal',
+			label: t('domain.gal_change_mode_internal', 'Internal'),
+			value: 'zimbra',
+			click: (ev: any): void => {
+				setDomainData({ ...domainData, zimbraGalMode: 'zimbra' });
+				if (ev?.target?.value !== domainData?.zimbraGalMode) {
+					setIsDirty(true);
+				}
+			}
+		},
+		{
+			id: 'external',
+			label: t('domain.gal_change_mode_external', 'External'),
+			value: 'ldap',
+			click: (ev: any): void => {
+				setDomainData({ ...domainData, zimbraGalMode: 'ldap' });
+				if (ev?.target?.value !== domainData?.zimbraGalMode) {
+					setIsDirty(true);
+				}
+			}
+		},
+		{
+			id: 'both',
+			label: t('domain.gal_change_mode_both', 'Both'),
+			value: 'both',
+			click: (ev: any): void => {
+				setDomainData({ ...domainData, zimbraGalMode: 'both' });
+				if (ev?.target?.value !== domainData?.zimbraGalMode) {
+					setIsDirty(true);
+				}
+			}
+		}
+	];
+	const measureUnitItems = [
+		{
+			label: t('domain.unit_measure_days', 'Days'),
+			value: 'd'
+		},
+		{
+			label: t('domain.unit_measure_hours', 'Hours'),
+			value: 'h'
+		},
+		{
+			label: t('domain.unit_measure_minutes', 'Minutes'),
+			value: 'm'
+		},
+		{
+			label: t('domain.unit_measure_seconds', 'Seconds'),
+			value: 's'
+		},
+		{
+			label: t('domain.unit_measure_milliseconds', 'Milliseconds'),
+			value: 'ms'
+		}
+	];
 
 	const getGalAccount = (accountId: string): void => {
 		getAccount(accountId).then((data) => {
@@ -135,6 +216,13 @@ const DomainGalSettings: FC = () => {
 				setZimbraGalMaxResults('');
 			}
 
+			if (obj.zimbraGalLdapPageSize) {
+				setZimbraGalLdapPageSize(obj.zimbraGalLdapPageSize);
+			} else {
+				obj.zimbraGalLdapPageSize = '';
+				setZimbraGalLdapPageSize('');
+			}
+
 			if (obj.zimbraGalAccountId) {
 				setZimbraGalAccountId(obj.zimbraGalAccountId);
 			} else {
@@ -142,6 +230,32 @@ const DomainGalSettings: FC = () => {
 				setZimbraGalAccountId('');
 			}
 
+			if (!obj.zimbraGalLdapURL) {
+				obj.zimbraGalLdapURL = '';
+			}
+
+			if (!obj.zimbraGalLdapFilter) {
+				obj.zimbraGalLdapFilter = '';
+			}
+
+			if (!obj.zimbraGalLdapSearchBase) {
+				obj.zimbraGalLdapSearchBase = '';
+			}
+
+			if (!obj.zimbraGalLdapStartTlsEnabled) {
+				obj.zimbraGalLdapStartTlsEnabled = FALSE;
+			}
+
+			if (obj?.zimbraDataSourceGalPollingInterval) {
+				const parts =
+					obj?.zimbraDataSourceGalPollingInterval
+						.replace(/([a-z]+)/i, ' $1')
+						.split(/[^0-9a-z]+/gi) || '';
+				setFreqValue({
+					digits: parts[0],
+					time: parts[1]
+				});
+			}
 			setDomainData(obj);
 			setIsDirty(false);
 		}
@@ -177,6 +291,7 @@ const DomainGalSettings: FC = () => {
 
 	const onCancel = (): void => {
 		setZimbraGalMaxResults(domainData?.zimbraGalMaxResults);
+		setZimbraGalLdapPageSize(domainData?.zimbraGalLdapPageSize);
 		if (zimbraGalAccountId !== '') {
 			const rangeType = zimbraDataSourcePollingInterval.charAt(
 				zimbraDataSourcePollingInterval.length - 1
@@ -202,6 +317,37 @@ const DomainGalSettings: FC = () => {
 			n: 'zimbraGalMaxResults',
 			_content: zimbraGalMaxResults
 		});
+		attributes.push({
+			n: 'zimbraGalLdapPageSize',
+			_content: zimbraGalLdapPageSize
+		});
+		attributes.push({
+			n: 'zimbraGalMode',
+			_content: domainData?.zimbraGalMode
+		});
+		attributes.push({
+			n: 'zimbraDataSourceGalPollingInterval',
+			_content: domainData?.zimbraDataSourceGalPollingInterval
+		});
+		attributes.push({
+			n: 'zimbraGalLdapURL',
+			_content: domainData?.zimbraGalLdapURL
+		});
+		attributes.push({
+			n: 'zimbraGalLdapStartTlsEnabled',
+			_content: domainData?.zimbraGalLdapStartTlsEnabled
+		});
+
+		attributes.push({
+			n: 'zimbraGalLdapFilter',
+			_content: domainData?.zimbraGalLdapFilter
+		});
+
+		attributes.push({
+			n: 'zimbraGalLdapSearchBase',
+			_content: domainData?.zimbraGalLdapSearchBase
+		});
+
 		body.a = attributes;
 		requests.push(modifyDomain(body));
 		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
@@ -251,10 +397,32 @@ const DomainGalSettings: FC = () => {
 		setZimbraGalMaxResults(ev.target.value);
 	};
 
+	const onZimbraGalLdapPageSizeChange = (ev: any): any => {
+		setZimbraGalLdapPageSize(ev.target.value);
+	};
+
+	const onZimbraGalLdapUrlChange = (ev: any): any => {
+		setDomainData({ ...domainData, zimbraGalLdapURL: ev?.target?.value });
+		setIsDirty(domainData?.zimbraGalLdapURL !== ev?.target?.value);
+	};
+
+	const onZimbraGalLdapStartTlsEnabledChange = (ev: any): any => {
+		const trueOrFalse = domainData?.zimbraGalLdapStartTlsEnabled === FALSE ? TRUE : FALSE;
+		setDomainData({
+			...domainData,
+			zimbraGalLdapStartTlsEnabled: trueOrFalse
+		});
+		setIsDirty(domainData?.zimbraGalLdapStartTlsEnabled !== trueOrFalse);
+	};
+
 	useEffect(() => {
-		if (domainData?.zimbraGalMaxResults !== zimbraGalMaxResults) {
+		if (
+			domainData?.zimbraGalMaxResults !== zimbraGalMaxResults ||
+			domainData?.zimbraGalLdapPageSize !== zimbraGalLdapPageSize
+		) {
 			setIsDirty(true);
 		}
+
 		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
 			if (
 				zimbraDataSourcePollingInterval !== `${pollingIntervalValue}${pollingIntervalType?.value}`
@@ -268,8 +436,57 @@ const DomainGalSettings: FC = () => {
 		zimbraDataSourcePollingInterval,
 		pollingIntervalType,
 		pollingIntervalValue,
-		zimbraGalAccountId
+		zimbraGalAccountId,
+		zimbraGalLdapPageSize
 	]);
+
+	const onFreqDigitsChange = (ev: any): void => {
+		if (ev?.target?.value < 0 || ev?.target?.value > 9) {
+			return;
+		}
+		setFreqValue({ digits: ev?.target?.value, time: freqValue.time });
+		// setDomainData({
+		// 	...domainData,
+		// 	zimbraDataSourceGalPollingInterval: `${ev?.target?.value}${freqValue.time}`
+		// });
+		if (ev?.target?.value !== freqValue?.digits) {
+			setIsDirty(true);
+		}
+	};
+
+	const onFreqTimeUnitChange = (ev: any): void => {
+		setFreqValue({ digits: freqValue.digits, time: ev });
+		// setDomainData({
+		// 	...domainData,
+		// 	zimbraDataSourceGalPollingInterval: `${ev?.target?.value}${freqValue.time}`
+		// });
+		if (ev !== freqValue?.time) {
+			setIsDirty(true);
+		}
+	};
+
+	const onZimbraGalLdapFilterChange = (ev: any): void => {
+		setDomainData({
+			...domainData,
+			zimbraGalLdapFilter: ev?.target?.value
+		});
+		if (ev?.target?.value !== domainData?.zimbraGalLdapFilter) {
+			setIsDirty(true);
+		}
+	};
+	const onZimbraGalLdapSearchBaseChange = (ev: any): void => {
+		setDomainData({
+			...domainData,
+			zimbraGalLdapSearchBase: ev?.target?.value
+		});
+		if (ev?.target?.value !== domainData?.zimbraGalLdapSearchBase) {
+			setIsDirty(true);
+		}
+	};
+
+	useEffect(() => {
+		console.log('_dd domainData', domainData);
+	}, [domainData]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -283,7 +500,7 @@ const DomainGalSettings: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('label.gal', 'GAL')}
+								{t('label.global_address_list', 'Global Add`ress List')}
 							</Text>
 						</Row>
 						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
@@ -306,8 +523,205 @@ const DomainGalSettings: FC = () => {
 			<Row orientation="horizontal" width="100%" background="gray6">
 				<Divider />
 			</Row>
-
+			{/* new layout based on internal external mode */}
 			<Container
+				orientation="column"
+				crossAlignment="flex-start"
+				mainAlignment="flex-start"
+				width="100%"
+				height="fit"
+			>
+				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+					<Container height="fit" crossAlignment="flex-start" background="gray6">
+						<Row
+							takeAvwidth="fill"
+							mainAlignment="flex-start"
+							width="100%"
+							background="gray6"
+							padding={{ left: 'large', top: 'large' }}
+						>
+							<Text size="small" weight="bold">
+								{t('account_details.general', 'General')}
+							</Text>
+						</Row>
+						<ListRow>
+							<Container orientation="horizontal" padding={{ all: 'small' }}>
+								<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
+									<Button
+										type="outlined"
+										size="extralarge"
+										label={t('label.change_to', 'CHANGE TO')}
+										icon={open ? 'ChevronUp' : 'ChevronDown'}
+									/>
+								</Dropdown>
+
+								<Padding left="small" width="100%">
+									<Input
+										label={t('label.gal_mode', 'GAL Mode')}
+										value={domainData?.zimbraGalMode}
+										background="gray6"
+										readOnly
+									/>
+								</Padding>
+							</Container>
+						</ListRow>
+						<Container padding={{ all: 'small' }}>
+							<Input
+								type="number"
+								label={t(
+									'domain.max_result_return_gal_search',
+									'Max results returned by GAL search'
+								)}
+								value={zimbraGalMaxResults}
+								background="gray5"
+								onChange={onZimbraGalMaxResultChange}
+							/>
+						</Container>
+						<Container padding={{ all: 'small' }}>
+							<Input
+								type="number"
+								label={t('domain.page_size', 'Page Size')}
+								value={zimbraGalLdapPageSize}
+								background="gray5"
+								onChange={onZimbraGalLdapPageSizeChange}
+							/>
+						</Container>
+					</Container>
+				</Row>
+			</Container>
+			<Container
+				orientation="column"
+				crossAlignment="flex-start"
+				mainAlignment="flex-start"
+				width="100%"
+				height="fit"
+			>
+				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+					<Container height="fit" crossAlignment="flex-start" background="gray6">
+						<Row
+							takeAvwidth="fill"
+							mainAlignment="flex-start"
+							width="100%"
+							background="gray6"
+							padding={{ left: 'large', top: 'large' }}
+						>
+							<Text size="small" weight="bold">
+								{t('label.settings', 'Settings')}
+							</Text>
+						</Row>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.gal_update_frequencey_value', 'GAL Update Frequency Value')}
+									value={freqValue?.digits}
+									background="gray5"
+									onChange={onFreqDigitsChange}
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Select
+									items={measureUnitItems}
+									background="gray5"
+									label={t('label.measure_unit', 'Measure Unit')}
+									onChange={onFreqTimeUnitChange}
+									showCheckbox={false}
+									defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
+								/>
+							</Container>
+						</ListRow>
+					</Container>
+				</Row>
+			</Container>
+
+			{domainData?.zimbraGalMode === 'ldap' && (
+				<Container
+					orientation="column"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					width="100%"
+					height="fit"
+				>
+					<Row
+						takeAvwidth="fill"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'large' }}
+					>
+						<Container height="fit" crossAlignment="flex-start" background="gray6">
+							<Row
+								takeAvwidth="fill"
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ left: 'large', top: 'large' }}
+							>
+								<Text size="small" weight="bold">
+									{t('label.ldap_url', 'LDAP Url')}
+								</Text>
+							</Row>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										items={measureUnitItems}
+										background="gray5"
+										label={t('label.server_type', 'Server Type')}
+										onChange={onFreqTimeUnitChange}
+										showCheckbox={false}
+										defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
+									/>
+								</Container>
+							</ListRow>
+							<Row
+								orientation="horizontal"
+								mainAlignment="space-between"
+								crossAlignment="center"
+								width="fill"
+								wrap="nowrap"
+							>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.external_server_address', 'External Server Address')}
+										value={domainData?.zimbraGalLdapURL}
+										background="gray5"
+										onChange={onZimbraGalLdapUrlChange}
+									/>
+								</Container>
+
+								<Container
+									width="20%"
+									orientation="horizontal"
+									mainAlignment="flex-start"
+									crossAlignment="center"
+								>
+									<Switch
+										defaultChecked={domainData?.zimbraGalLdapStartTlsEnabled === TRUE}
+										onClick={onZimbraGalLdapStartTlsEnabledChange}
+										label={t('label.user_ssl', 'Use SSL')}
+									/>
+								</Container>
+							</Row>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.ldap_filter', 'LDAP Filter')}
+									value={domainData?.zimbraGalLdapFilter}
+									background="gray5"
+									onChange={onZimbraGalLdapFilterChange}
+								/>
+							</Container>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									label={t('label.ldap_search_base', 'LDAP Search Base')}
+									value={domainData?.zimbraGalLdapSearchBase}
+									background="gray5"
+									onChange={onZimbraGalLdapSearchBaseChange}
+								/>
+							</Container>
+						</Container>
+					</Row>
+				</Container>
+			)}
+
+			{/* <Container
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
@@ -432,7 +846,7 @@ const DomainGalSettings: FC = () => {
 						</Container>
 					</Container>
 				</Row>
-			</Container>
+			</Container> */}
 
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
 				<Text>

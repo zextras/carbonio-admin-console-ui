@@ -259,7 +259,7 @@ const App: FC = () => {
 						label: t('label.general_Settings', 'General Settings')
 					},
 					{
-						label: t('label.gal', 'GAL')
+						label: t('label.global_address_list', 'Global Address List')
 					},
 					{
 						label: t('label.authentication', 'Authentication')

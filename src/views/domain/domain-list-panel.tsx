@@ -185,7 +185,7 @@ const DomainListPanel: FC = () => {
 			},
 			{
 				id: GAL,
-				name: t('label.gal', 'GAL'),
+				name: t('label.global_address_list', 'Global Address List'),
 				isSelected: isDomainSelect
 			},
 			{
