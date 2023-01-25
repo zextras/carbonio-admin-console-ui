@@ -82,7 +82,10 @@ const DomainGalSettings: FC = () => {
 		zimbraGalLdapURL: '',
 		zimbraGalLdapStartTlsEnabled: FALSE,
 		zimbraGalLdapSearchBase: '',
-		zimbraGalLdapFilter: ''
+		zimbraGalLdapFilter: '',
+		zimbraGalLdapBindDn: '',
+		zimbraGalLdapBindPassword: '',
+		zimbraGalLdapAuthMech: 'none'
 	});
 	const [zimbraGalMaxResults, setZimbraGalMaxResults] = useState<string>('');
 	const [zimbraGalLdapPageSize, setZimbraGalLdapPageSize] = useState<string>('');
@@ -246,6 +249,10 @@ const DomainGalSettings: FC = () => {
 				obj.zimbraGalLdapStartTlsEnabled = FALSE;
 			}
 
+			if (!obj.zimbraGalLdapAuthMech) {
+				obj.zimbraGalLdapAuthMech = 'none';
+			}
+
 			if (obj?.zimbraDataSourceGalPollingInterval) {
 				const parts =
 					obj?.zimbraDataSourceGalPollingInterval
@@ -348,6 +355,19 @@ const DomainGalSettings: FC = () => {
 			_content: domainData?.zimbraGalLdapSearchBase
 		});
 
+		attributes.push({
+			n: 'zimbraGalLdapBindDn',
+			_content: domainData?.zimbraGalLdapBindDn
+		});
+
+		attributes.push({
+			n: 'zimbraGalLdapBindPassword',
+			_content: domainData?.zimbraGalLdapBindPassword
+		});
+		attributes.push({
+			n: 'zimbraGalLdapAuthMech',
+			_content: domainData?.zimbraGalLdapAuthMech
+		});
 		body.a = attributes;
 		requests.push(modifyDomain(body));
 		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
@@ -484,26 +504,62 @@ const DomainGalSettings: FC = () => {
 		}
 	};
 
+	const onZimbraGalLdapBindDnChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+		setDomainData({
+			...domainData,
+			zimbraGalLdapBindDn: ev?.target?.value
+		});
+		if (ev?.target?.value !== domainData?.zimbraGalLdapBindDn) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	};
+	const onZimbraGalLdapBindPasswordChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+		setDomainData({
+			...domainData,
+			zimbraGalLdapBindPassword: ev?.target?.value
+		});
+		if (ev?.target?.value !== domainData?.zimbraGalLdapBindPassword) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	};
+
+	const onZimbraGalLdapAuthMechChange = (ev: any): void => {
+		setIsDirty(true);
+		setDomainData({
+			...domainData,
+			zimbraGalLdapAuthMech: domainData?.zimbraGalLdapAuthMech === 'none' ? 'simple' : 'none'
+		});
+	};
+
 	useEffect(() => {
 		console.log('_dd domainData', domainData);
 	}, [domainData]);
 
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Container
-					orientation="vertical"
-					mainAlignment="space-around"
-					background="gray6"
-					height="58px"
-				>
-					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+				<Container orientation="vertical" mainAlignment="space-around" height="56px">
+					<Row orientation="horizontal" width="100%">
+						<Row
+							padding={{ all: 'large' }}
+							mainAlignment="flex-start"
+							width="50%"
+							crossAlignment="flex-start"
+						>
 							<Text size="medium" weight="bold" color="gray0">
 								{t('label.global_address_list', 'Global Add`ress List')}
 							</Text>
 						</Row>
-						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
+						<Row
+							padding={{ all: 'large' }}
+							width="50%"
+							mainAlignment="flex-end"
+							crossAlignment="flex-end"
+						>
 							<Padding right="small">
 								{isDirty && (
 									<Button
@@ -526,114 +582,11 @@ const DomainGalSettings: FC = () => {
 			{/* new layout based on internal external mode */}
 			<Container
 				orientation="column"
+				background="gray6"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
-				width="100%"
-				height="fit"
+				style={{ overflow: 'auto' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-					<Container height="fit" crossAlignment="flex-start" background="gray6">
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							width="100%"
-							background="gray6"
-							padding={{ left: 'large', top: 'large' }}
-						>
-							<Text size="small" weight="bold">
-								{t('account_details.general', 'General')}
-							</Text>
-						</Row>
-						<ListRow>
-							<Container orientation="horizontal" padding={{ all: 'small' }}>
-								<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
-									<Button
-										type="outlined"
-										size="extralarge"
-										label={t('label.change_to', 'CHANGE TO')}
-										icon={open ? 'ChevronUp' : 'ChevronDown'}
-									/>
-								</Dropdown>
-
-								<Padding left="small" width="100%">
-									<Input
-										label={t('label.gal_mode', 'GAL Mode')}
-										value={domainData?.zimbraGalMode}
-										background="gray6"
-										readOnly
-									/>
-								</Padding>
-							</Container>
-						</ListRow>
-						<Container padding={{ all: 'small' }}>
-							<Input
-								type="number"
-								label={t(
-									'domain.max_result_return_gal_search',
-									'Max results returned by GAL search'
-								)}
-								value={zimbraGalMaxResults}
-								background="gray5"
-								onChange={onZimbraGalMaxResultChange}
-							/>
-						</Container>
-						<Container padding={{ all: 'small' }}>
-							<Input
-								type="number"
-								label={t('domain.page_size', 'Page Size')}
-								value={zimbraGalLdapPageSize}
-								background="gray5"
-								onChange={onZimbraGalLdapPageSizeChange}
-							/>
-						</Container>
-					</Container>
-				</Row>
-			</Container>
-			<Container
-				orientation="column"
-				crossAlignment="flex-start"
-				mainAlignment="flex-start"
-				width="100%"
-				height="fit"
-			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-					<Container height="fit" crossAlignment="flex-start" background="gray6">
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							width="100%"
-							background="gray6"
-							padding={{ left: 'large', top: 'large' }}
-						>
-							<Text size="small" weight="bold">
-								{t('label.settings', 'Settings')}
-							</Text>
-						</Row>
-						<ListRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.gal_update_frequencey_value', 'GAL Update Frequency Value')}
-									value={freqValue?.digits}
-									background="gray5"
-									onChange={onFreqDigitsChange}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Select
-									items={measureUnitItems}
-									background="gray5"
-									label={t('label.measure_unit', 'Measure Unit')}
-									onChange={onFreqTimeUnitChange}
-									showCheckbox={false}
-									defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
-								/>
-							</Container>
-						</ListRow>
-					</Container>
-				</Row>
-			</Container>
-
-			{domainData?.zimbraGalMode === 'ldap' && (
 				<Container
 					orientation="column"
 					crossAlignment="flex-start"
@@ -653,110 +606,36 @@ const DomainGalSettings: FC = () => {
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
-								padding={{ left: 'large', top: 'large' }}
+								padding={{ all: 'small' }}
 							>
 								<Text size="small" weight="bold">
-									{t('label.ldap_url', 'LDAP Url')}
+									{t('account_details.general', 'General')}
 								</Text>
 							</Row>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Select
-										items={measureUnitItems}
-										background="gray5"
-										label={t('label.server_type', 'Server Type')}
-										onChange={onFreqTimeUnitChange}
-										showCheckbox={false}
-										defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
-									/>
+								<Container orientation="horizontal" padding={{ all: 'small' }}>
+									<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
+										<Button
+											type="outlined"
+											size="extralarge"
+											label={t('label.change_to', 'CHANGE TO')}
+											icon={open ? 'ChevronUp' : 'ChevronDown'}
+										/>
+									</Dropdown>
+
+									<Padding left="small" width="100%">
+										<Input
+											label={t('label.gal_mode', 'GAL Mode')}
+											value={domainData?.zimbraGalMode}
+											background="gray6"
+											readOnly
+										/>
+									</Padding>
 								</Container>
 							</ListRow>
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="center"
-								width="fill"
-								wrap="nowrap"
-							>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.external_server_address', 'External Server Address')}
-										value={domainData?.zimbraGalLdapURL}
-										background="gray5"
-										onChange={onZimbraGalLdapUrlChange}
-									/>
-								</Container>
-
-								<Container
-									width="20%"
-									orientation="horizontal"
-									mainAlignment="flex-start"
-									crossAlignment="center"
-								>
-									<Switch
-										defaultChecked={domainData?.zimbraGalLdapStartTlsEnabled === TRUE}
-										onClick={onZimbraGalLdapStartTlsEnabledChange}
-										label={t('label.user_ssl', 'Use SSL')}
-									/>
-								</Container>
-							</Row>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.ldap_filter', 'LDAP Filter')}
-									value={domainData?.zimbraGalLdapFilter}
-									background="gray5"
-									onChange={onZimbraGalLdapFilterChange}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.ldap_search_base', 'LDAP Search Base')}
-									value={domainData?.zimbraGalLdapSearchBase}
-									background="gray5"
-									onChange={onZimbraGalLdapSearchBaseChange}
-								/>
-							</Container>
-						</Container>
-					</Row>
-				</Container>
-			)}
-
-			{/* <Container
-				orientation="column"
-				crossAlignment="flex-start"
-				mainAlignment="flex-start"
-				style={{ overflow: 'auto' }}
-				width="100%"
-				height="calc(100vh - 150px)"
-			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-					<Container height="fit" crossAlignment="flex-start" background="gray6">
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							width="100%"
-							background="gray6"
-							padding={{ left: 'large', top: 'large' }}
-						>
-							<Text size="small" weight="bold">
-								{t('label.configuration_lbl', 'Configuration')}
-							</Text>
-						</Row>
-						<ListRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.gal_mode', 'GAL Mode')}
-									value={
-										!domainData?.zimbraGalMode || domainData?.zimbraGalMode === 'zimbra'
-											? t('label.internal', 'Internal')
-											: t('label.external', 'External')
-									}
-									background="gray6"
-									disabled
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
+									type="number"
 									label={t(
 										'domain.max_result_return_gal_search',
 										'Max results returned by GAL search'
@@ -766,88 +645,216 @@ const DomainGalSettings: FC = () => {
 									onChange={onZimbraGalMaxResultChange}
 								/>
 							</Container>
-						</ListRow>
-						<Divider />
-						<Container>
-							{zimbraGalAccountId !== '' && (
-								<>
+							<Container padding={{ all: 'small' }}>
+								<Input
+									type="number"
+									label={t('domain.page_size', 'Page Size')}
+									value={zimbraGalLdapPageSize}
+									background="gray5"
+									onChange={onZimbraGalLdapPageSizeChange}
+								/>
+							</Container>
+						</Container>
+					</Row>
+				</Container>
+				<Container
+					orientation="column"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					width="100%"
+					height="fit"
+				>
+					<Row
+						takeAvwidth="fill"
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'large' }}
+					>
+						<Container height="fit" crossAlignment="flex-start" background="gray6">
+							<Row
+								takeAvwidth="fill"
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ all: 'small' }}
+							>
+								<Text size="small" weight="bold">
+									{t('label.settings', 'Settings')}
+								</Text>
+							</Row>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.gal_update_frequencey_value', 'GAL Update Frequency Value')}
+										value={freqValue?.digits}
+										background="gray5"
+										onChange={onFreqDigitsChange}
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										items={measureUnitItems}
+										background="gray5"
+										label={t('label.measure_unit', 'Measure Unit')}
+										onChange={onFreqTimeUnitChange}
+										showCheckbox={false}
+										defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+				</Container>
+
+				{domainData?.zimbraGalMode === 'ldap' && (
+					<>
+						<Container
+							orientation="column"
+							crossAlignment="flex-start"
+							mainAlignment="flex-start"
+							width="100%"
+							height="fit"
+						>
+							<Row
+								takeAvwidth="fill"
+								mainAlignment="flex-start"
+								width="100%"
+								padding={{ top: 'large' }}
+							>
+								<Container height="fit" crossAlignment="flex-start" background="gray6">
 									<Row
 										takeAvwidth="fill"
 										mainAlignment="flex-start"
 										width="100%"
 										background="gray6"
-										padding={{ left: 'large', top: 'large' }}
+										padding={{ all: 'small' }}
 									>
 										<Text size="small" weight="bold">
-											{t('label.account', 'Account')}
+											{t('label.ldap_url', 'LDAP Url')}
 										</Text>
 									</Row>
 									<ListRow>
 										<Container padding={{ all: 'small' }}>
-											<Input
-												label={t(
-													'domain.account_gal_synchronization',
-													'Account Name of GAL Synchronization'
-												)}
-												value={zimbraGalAccountName}
-												background="gray6"
-												disabled
-												// eslint-disable-next-line @typescript-eslint/no-empty-function
-												onChange={(e: any): any => {}}
-											/>
-										</Container>
-									</ListRow>
-
-									<ListRow>
-										<Container padding={{ all: 'small' }}>
-											<Input
-												label={t('domain.mail_server', 'Mail Server')}
-												value={mailServerName}
-												background="gray6"
-												disabled
-												// eslint-disable-next-line @typescript-eslint/no-empty-function
-												onChange={(e: any): any => {}}
-											/>
-										</Container>
-										<Container padding={{ all: 'small' }}>
-											<Input
-												label={t('domain.source_name_internal_gal', 'Source Name of internal GAL')}
-												value={dataSourceName}
-												background="gray6"
-												disabled
-												// eslint-disable-next-line @typescript-eslint/no-empty-function
-												onChange={(e: any): any => {}}
-											/>
-										</Container>
-									</ListRow>
-
-									<ListRow>
-										<Container padding={{ all: 'small' }}>
-											<Input
-												label={t('domain.internal_gal_received', 'Internal GAL received range')}
-												value={pollingIntervalValue}
-												background="gray6"
-												onChange={changeIntervalValue}
-											/>
-										</Container>
-										<Container padding={{ all: 'small' }}>
 											<Select
-												items={rangeItems}
+												items={measureUnitItems}
 												background="gray5"
-												label={t('domain.range', 'Range')}
+												label={t('label.server_type', 'Server Type')}
+												onChange={onFreqTimeUnitChange}
 												showCheckbox={false}
-												onChange={onChangeRangeType}
-												selection={pollingIntervalType}
+												defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
 											/>
 										</Container>
 									</ListRow>
-								</>
-							)}
-						</Container>
-					</Container>
-				</Row>
-			</Container> */}
+									<Row
+										orientation="horizontal"
+										mainAlignment="space-between"
+										crossAlignment="center"
+										width="fill"
+										wrap="nowrap"
+									>
+										<Container padding={{ all: 'small' }}>
+											<Input
+												label={t('label.external_server_address', 'External Server Address')}
+												value={domainData?.zimbraGalLdapURL}
+												background="gray5"
+												onChange={onZimbraGalLdapUrlChange}
+											/>
+										</Container>
 
+										<Container
+											width="20%"
+											orientation="horizontal"
+											mainAlignment="flex-start"
+											crossAlignment="center"
+										>
+											<Switch
+												defaultChecked={domainData?.zimbraGalLdapStartTlsEnabled === TRUE}
+												onClick={onZimbraGalLdapStartTlsEnabledChange}
+												label={t('label.user_ssl', 'Use SSL')}
+											/>
+										</Container>
+									</Row>
+									<Container padding={{ all: 'small' }}>
+										<Input
+											label={t('label.ldap_filter', 'LDAP Filter')}
+											value={domainData?.zimbraGalLdapFilter}
+											background="gray5"
+											onChange={onZimbraGalLdapFilterChange}
+										/>
+									</Container>
+									<Container padding={{ all: 'small' }}>
+										<Input
+											label={t('label.ldap_search_base', 'LDAP Search Base')}
+											value={domainData?.zimbraGalLdapSearchBase}
+											background="gray5"
+											onChange={onZimbraGalLdapSearchBaseChange}
+										/>
+									</Container>
+								</Container>
+							</Row>
+						</Container>
+
+						<Container height="fit" padding={{ all: 'small' }}>
+							<Divider />
+						</Container>
+
+						<Container
+							orientation="column"
+							crossAlignment="flex-start"
+							mainAlignment="flex-start"
+							width="100%"
+							height="fit"
+						>
+							<Row
+								takeAvwidth="fill"
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ all: 'small' }}
+							>
+								<Text size="small" weight="bold">
+									{t('label.dn_settings', 'DN Settings')}
+								</Text>
+							</Row>
+							<ListRow>
+								<Container
+									orientation="horizontal"
+									mainAlignment="flex-start"
+									crossAlignment="center"
+									padding={{ all: 'small' }}
+								>
+									<Switch
+										defaultChecked={domainData?.zimbraGalLdapAuthMech !== 'none'}
+										onClick={onZimbraGalLdapAuthMechChange}
+										label={t(
+											'label.use_dn_password_to_bind_external_server',
+											'Use DN/Password to bind to external server'
+										)}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.bind_dn', 'Bind DN')}
+										value={domainData?.zimbraGalLdapBindDn}
+										background="gray5"
+										onChange={onZimbraGalLdapBindDnChange}
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.bind_password', 'Bind Password')}
+										value={domainData?.zimbraGalLdapBindPassword}
+										background="gray5"
+										onChange={onZimbraGalLdapBindPasswordChange}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</>
+				)}
+			</Container>
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
 				<Text>
 					{t(
