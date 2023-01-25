@@ -484,6 +484,7 @@
     "dashboard": {
         "carbonio": "Carbonio",
         "carbonio_core": "Carbonio Core",
+        "core_version": "Core Version",
         "description": "Description",
         "go_to_mailstores_server_list": "Go to mailstores servers list",
         "go_to_notification": "Go to notification",
@@ -1519,7 +1520,7 @@
         "allow_live_survey_feedbacks": "Allow surveys for feedback",
         "analytics_sub_1": "Your data is safe. All information we gather is and will stay anonymous. It will be used by our team to understand how can we improve Carbonio.",
         "full_error_sub_1": "We all make mistakes but it's how you deal with them that changes everything! We want to learn from our errors so let us know how we can fix them",
-        "send_full_error_data_to_zextras": "Send full error data to Zextras",
+        "send_full_error_data": "Send full error data",
         "survey_feedback_sub_1": "Don't worry, surveys will be quick, easy and super useful to us to understand how we're going."
     },
     "reminder": {

@@ -38,17 +38,6 @@ const CarbonioVersionInformation: FC<{
 			>
 				{userName}
 			</Text>
-			{isAdvanced && (
-				<Text
-					color="secondary"
-					overflow="break-word"
-					weight="light"
-					size="large"
-					style={{ fontSize: '2.25rem', fontFamily: 'roboto' }}
-				>
-					{t('to_carbonio', 'to Carbonio!')}
-				</Text>
-			)}
 			{!isAdvanced && (
 				<Text
 					color="secondary"

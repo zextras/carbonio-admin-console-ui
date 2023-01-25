@@ -115,13 +115,13 @@ const DashboardServerList: FC<{
 			},
 			{
 				id: 'carbonio_core',
-				label: t('dashboard.carbonio_core', 'Carbonio Core'),
+				label: t('dashboard.core_version', 'Core Version'),
 				width: '20%',
 				bold: true
 			},
 			{
 				id: 'carbonio',
-				label: isAdvanced ? t('dashboard.carbonio', 'Carbonio') : '',
+				label: '',
 				width: isAdvanced ? '20%' : '0%',
 				bold: true
 			},
