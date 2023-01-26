@@ -90,6 +90,14 @@ const DomainGalSettings: FC = () => {
 	const [zimbraGalMaxResults, setZimbraGalMaxResults] = useState<string>('');
 	const [zimbraGalLdapPageSize, setZimbraGalLdapPageSize] = useState<string>('');
 	const [zimbraGalAccountId, setZimbraGalAccountId] = useState<string>('');
+	const [zimbraGalLdapStartTlsEnabled, setZimbraGalLdapStartTlsEnabled] = useState<{
+		init: boolean;
+		current: boolean;
+	}>({
+		init: false,
+		current: false
+	});
+	const [zimbraGalLdapAuthMech, setZimbraGalLdapAuthMech] = useState<boolean>(false);
 	const [zimbraGalAccountName, setZimbraGalAccountName] = useState<string>('');
 	const [mailServerName, setMailServerName] = useState<string>('');
 	const [zimbraDataSourcePollingInterval, setZimbraDataSourcePollingInterval] =
@@ -200,7 +208,7 @@ const DomainGalSettings: FC = () => {
 		});
 	};
 
-	useEffect(() => {
+	const updateDomainInformation = useCallback(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			setZimbraGalAccountId('');
 			setZimbraGalAccountName('');
@@ -247,6 +255,11 @@ const DomainGalSettings: FC = () => {
 
 			if (!obj.zimbraGalLdapStartTlsEnabled) {
 				obj.zimbraGalLdapStartTlsEnabled = FALSE;
+				setZimbraGalLdapStartTlsEnabled({ init: false, current: false });
+			} else if (obj.zimbraGalLdapStartTlsEnabled && obj.zimbraGalLdapStartTlsEnabled === TRUE) {
+				setZimbraGalLdapStartTlsEnabled({ init: true, current: true });
+			} else {
+				setZimbraGalLdapStartTlsEnabled({ init: false, current: false });
 			}
 
 			if (!obj.zimbraGalLdapAuthMech) {
@@ -340,9 +353,14 @@ const DomainGalSettings: FC = () => {
 			n: 'zimbraGalLdapURL',
 			_content: domainData?.zimbraGalLdapURL
 		});
+
 		attributes.push({
 			n: 'zimbraGalLdapStartTlsEnabled',
 			_content: domainData?.zimbraGalLdapStartTlsEnabled
+		});
+		setZimbraGalLdapStartTlsEnabled({
+			...zimbraGalLdapStartTlsEnabled,
+			current: zimbraGalLdapStartTlsEnabled?.init
 		});
 
 		attributes.push({
@@ -391,6 +409,7 @@ const DomainGalSettings: FC = () => {
 				const domain: any = results[0]?.Body?.ModifyDomainResponse?.domain[0];
 				if (domain) {
 					setDomain(domain);
+					updateDomainInformation();
 				}
 				setIsDirty(false);
 				createSnackbar({
@@ -427,12 +446,15 @@ const DomainGalSettings: FC = () => {
 	};
 
 	const onZimbraGalLdapStartTlsEnabledChange = (ev: any): any => {
-		const trueOrFalse = domainData?.zimbraGalLdapStartTlsEnabled === FALSE ? TRUE : FALSE;
+		setIsDirty(zimbraGalLdapStartTlsEnabled?.current !== zimbraGalLdapStartTlsEnabled?.init);
+		setZimbraGalLdapStartTlsEnabled({
+			...zimbraGalLdapStartTlsEnabled,
+			current: !zimbraGalLdapStartTlsEnabled?.current
+		});
 		setDomainData({
 			...domainData,
-			zimbraGalLdapStartTlsEnabled: trueOrFalse
+			zimbraGalLdapStartTlsEnabled: domainData?.zimbraGalLdapStartTlsEnabled === TRUE ? FALSE : TRUE
 		});
-		setIsDirty(domainData?.zimbraGalLdapStartTlsEnabled !== trueOrFalse);
 	};
 
 	useEffect(() => {
@@ -457,7 +479,8 @@ const DomainGalSettings: FC = () => {
 		pollingIntervalType,
 		pollingIntervalValue,
 		zimbraGalAccountId,
-		zimbraGalLdapPageSize
+		zimbraGalLdapPageSize,
+		zimbraGalLdapStartTlsEnabled
 	]);
 
 	const onFreqDigitsChange = (ev: any): void => {
@@ -536,9 +559,8 @@ const DomainGalSettings: FC = () => {
 	};
 
 	useEffect(() => {
-		console.log('_dd domainData', domainData);
-	}, [domainData]);
-
+		updateDomainInformation();
+	}, [domainInformation, updateDomainInformation]);
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -768,9 +790,10 @@ const DomainGalSettings: FC = () => {
 											crossAlignment="center"
 										>
 											<Switch
-												defaultChecked={domainData?.zimbraGalLdapStartTlsEnabled === TRUE}
+												defaultChecked={zimbraGalLdapStartTlsEnabled?.current}
 												onClick={onZimbraGalLdapStartTlsEnabledChange}
 												label={t('label.user_ssl', 'Use SSL')}
+												value={zimbraGalLdapStartTlsEnabled?.current}
 											/>
 										</Container>
 									</Row>
@@ -824,7 +847,7 @@ const DomainGalSettings: FC = () => {
 									padding={{ all: 'small' }}
 								>
 									<Switch
-										defaultChecked={domainData?.zimbraGalLdapAuthMech !== 'none'}
+										defaultChecked={zimbraGalLdapAuthMech}
 										onClick={onZimbraGalLdapAuthMechChange}
 										label={t(
 											'label.use_dn_password_to_bind_external_server',
