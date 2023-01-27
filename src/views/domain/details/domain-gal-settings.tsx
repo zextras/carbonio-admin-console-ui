@@ -28,6 +28,8 @@ import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
 import { FALSE, TRUE } from '../../../constants';
+import { modifyAccountRequest } from '../../../services/modify-account';
+import { getAccountRequest } from '../../../services/get-account';
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
@@ -78,7 +80,6 @@ const DomainGalSettings: FC = () => {
 		zimbraGalMode: '',
 		zimbraDataSourcePollingInterval: '',
 		zimbraGalLdapPageSize: '',
-		zimbraDataSourceGalPollingInterval: '',
 		zimbraGalLdapURL: '',
 		zimbraGalLdapStartTlsEnabled: FALSE,
 		zimbraGalLdapSearchBase: '',
@@ -87,7 +88,10 @@ const DomainGalSettings: FC = () => {
 		zimbraGalLdapBindPassword: '',
 		zimbraGalLdapAuthMech: 'none'
 	});
+
 	const [zimbraGalMaxResults, setZimbraGalMaxResults] = useState<string>('');
+	const [zimbraDataSourceGalPollingInterval, setZimbraDataSourceGalPollingInterval] =
+		useState<string>('');
 	const [zimbraGalLdapPageSize, setZimbraGalLdapPageSize] = useState<string>('');
 	const [zimbraGalAccountId, setZimbraGalAccountId] = useState<string>('');
 	const [zimbraGalLdapStartTlsEnabled, setZimbraGalLdapStartTlsEnabled] = useState<{
@@ -107,6 +111,11 @@ const DomainGalSettings: FC = () => {
 	const [dataSourceId, setDataSourceId] = useState<any>('');
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const [dataSourceName, setDataSourceName] = useState<string>('');
+	const [measureUnitSelection, setMeasureUnitSelection] = useState<{
+		label: string;
+		value: string;
+	}>();
+
 	const [freqValue, setFreqValue] = useState<object | any>({
 		digits: '',
 		time: 's'
@@ -184,6 +193,14 @@ const DomainGalSettings: FC = () => {
 						setMailServerName(obj?.zimbraMailHost);
 					} else {
 						setMailServerName('');
+					}
+					if (obj?.zimbraDataSourceGalPollingInterval) {
+						setZimbraDataSourceGalPollingInterval(obj?.zimbraDataSourceGalPollingInterval);
+						const splitText = obj?.zimbraDataSourceGalPollingInterval.split(/(\d+)/);
+						setFreqValue({
+							digits: splitText[1],
+							time: splitText[2]
+						});
 					}
 				}
 			}
@@ -265,17 +282,6 @@ const DomainGalSettings: FC = () => {
 			if (!obj.zimbraGalLdapAuthMech) {
 				obj.zimbraGalLdapAuthMech = 'none';
 			}
-
-			if (obj?.zimbraDataSourceGalPollingInterval) {
-				const parts =
-					obj?.zimbraDataSourceGalPollingInterval
-						.replace(/([a-z]+)/i, ' $1')
-						.split(/[^0-9a-z]+/gi) || '';
-				setFreqValue({
-					digits: parts[0],
-					time: parts[1]
-				});
-			}
 			setDomainData(obj);
 			setIsDirty(false);
 		}
@@ -289,6 +295,7 @@ const DomainGalSettings: FC = () => {
 			setZimbraGalAccountName('');
 			setMailServerName('');
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [zimbraGalAccountId]);
 
 	useMemo(() => {
@@ -344,10 +351,6 @@ const DomainGalSettings: FC = () => {
 		attributes.push({
 			n: 'zimbraGalMode',
 			_content: domainData?.zimbraGalMode
-		});
-		attributes.push({
-			n: 'zimbraDataSourceGalPollingInterval',
-			_content: domainData?.zimbraDataSourceGalPollingInterval
 		});
 		attributes.push({
 			n: 'zimbraGalLdapURL',
@@ -421,6 +424,25 @@ const DomainGalSettings: FC = () => {
 					replace: true
 				});
 			});
+
+		modifyAccountRequest(zimbraGalAccountId, {
+			zimbraDataSourceGalPollingInterval
+		})
+			.then((data) => {
+				console.log('_dd data', data);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 5000,
+					hideButton: true,
+					replace: true
+				});
+			});
 	};
 
 	const onChangeRangeType = (v: any): any => {
@@ -488,10 +510,8 @@ const DomainGalSettings: FC = () => {
 			return;
 		}
 		setFreqValue({ digits: ev?.target?.value, time: freqValue.time });
-		// setDomainData({
-		// 	...domainData,
-		// 	zimbraDataSourceGalPollingInterval: `${ev?.target?.value}${freqValue.time}`
-		// });
+		setZimbraDataSourceGalPollingInterval(`${ev?.target?.value}${freqValue.time}`);
+
 		if (ev?.target?.value !== freqValue?.digits) {
 			setIsDirty(true);
 		}
@@ -499,10 +519,7 @@ const DomainGalSettings: FC = () => {
 
 	const onFreqTimeUnitChange = (ev: any): void => {
 		setFreqValue({ digits: freqValue.digits, time: ev });
-		// setDomainData({
-		// 	...domainData,
-		// 	zimbraDataSourceGalPollingInterval: `${ev?.target?.value}${freqValue.time}`
-		// });
+		setZimbraDataSourceGalPollingInterval(`${freqValue.digits}${ev}`);
 		if (ev !== freqValue?.time) {
 			setIsDirty(true);
 		}
@@ -560,7 +577,12 @@ const DomainGalSettings: FC = () => {
 
 	useEffect(() => {
 		updateDomainInformation();
-	}, [domainInformation, updateDomainInformation]);
+	}, [updateDomainInformation]);
+
+	useEffect(() => {
+		console.log('_dd freqValue', freqValue);
+	}, [freqValue]);
+
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -720,6 +742,7 @@ const DomainGalSettings: FC = () => {
 										label={t('label.measure_unit', 'Measure Unit')}
 										onChange={onFreqTimeUnitChange}
 										showCheckbox={false}
+										selection={measureUnitSelection}
 										defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
 									/>
 								</Container>
