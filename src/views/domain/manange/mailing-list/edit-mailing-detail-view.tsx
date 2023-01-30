@@ -524,7 +524,7 @@ const EditMailingListView: FC<any> = ({
 			const allRows = dlm.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="light" key={item} color="gray0">
 						{item}
 					</Text>,
 					''
@@ -541,7 +541,7 @@ const EditMailingListView: FC<any> = ({
 			const allRows = ownersList.map((item: any) => ({
 				id: item?.name,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="gray0">
 						{item?.name}
 					</Text>
 				]
@@ -1646,7 +1646,7 @@ const EditMailingListView: FC<any> = ({
 			const allRows = grantEmailsList.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="light" key={item} color="gray0">
 						{item}
 					</Text>
 				]

@@ -125,7 +125,7 @@ const CosListPanel: FC = () => {
 	);
 
 	useEffect(() => {
-		if (searchCosName && !isCosSelect) {
+		if (!isCosSelect) {
 			searchCosCall(searchCosName);
 		}
 	}, [searchCosName, isCosSelect, searchCosCall]);

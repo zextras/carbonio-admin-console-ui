@@ -6,17 +6,26 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Container, Row, Text, Divider, Input, Icon, Table } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Row,
+	Text,
+	Divider,
+	Input,
+	Icon,
+	Table,
+	Button
+} from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	getSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
+import { TFunction } from 'i18next';
 import { fetchSoap } from '../../../services/bucket-service';
-import { useBucketServersListStore } from '../../../store/bucket-server-list/store';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { headerAdvanced, headerCE } from '../../utility/utils';
+import { headerAdvanced } from '../../utility/utils';
 import {
 	DESCRIPTION,
 	HSM_SCHEDULED_DISABLED,
@@ -27,6 +36,7 @@ import {
 	INDEXER_PAUSED,
 	INDEXER_RUNNING
 } from '../../../constants';
+import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -36,142 +46,130 @@ const ServersListTable: FC<{
 	volumes: Array<any>;
 	headers: any;
 	isAdvanced: any;
-	selectedRows: any;
-	onSelectionChange: any;
-}> = ({ volumes, headers, isAdvanced, selectedRows, onSelectionChange }) => {
-	const tableRows = !isAdvanced
-		? useMemo(
-				() =>
-					volumes.map((v, i) => ({
-						id: i?.toString(),
-						columns: [
-							<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-								{v?.name}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.primaries}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.indexes}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.description}
-							</Row>
-						],
-						clickable: true
-					})),
-				[volumes]
-		  )
-		: useMemo(
-				() =>
-					volumes.map((v, i) => ({
-						id: i?.toString(),
-						columns: [
-							<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-								{v?.name}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.primaries}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.secondaries}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.indexes}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{(v.indexer?.could_start && INDEXER_ACTIVE) ||
-									(v.indexer?.could_stop && INDEXER_PAUSED) ||
-									(v.indexer?.running && INDEXER_RUNNING)}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start',
-									textTransform: 'capitalize'
-								}}
-							>
-								{v?.description}
-							</Row>
-						],
-						clickable: true
-					})),
-				[volumes]
-		  );
+	t: TFunction;
+	isRequestInProgress: boolean;
+}> = ({ volumes, headers, isAdvanced, t, isRequestInProgress }) => {
+	const tableRowsAdvance = useMemo(
+		() =>
+			volumes.map((v, i) => ({
+				id: i?.toString(),
+				columns: [
+					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+						{v?.name}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.primaries}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.secondaries}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.indexes}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{(v.indexer?.could_start && INDEXER_ACTIVE) ||
+							(v.indexer?.could_stop && INDEXER_PAUSED) ||
+							(v.indexer?.running && INDEXER_RUNNING)}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.description}
+					</Row>
+				],
+				clickable: true
+			})),
+		[volumes]
+	);
+
+	const tableRowCe = useMemo(
+		() =>
+			volumes.map((v, i) => ({
+				id: i?.toString(),
+				columns: [
+					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
+						{v?.name}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start',
+							textTransform: 'capitalize'
+						}}
+					>
+						{v?.description}
+					</Row>
+				],
+				clickable: true
+			})),
+		[volumes]
+	);
 
 	return (
 		<Container crossAlignment="flex-start">
 			<Table
 				headers={headers}
-				rows={tableRows}
+				rows={isAdvanced ? tableRowsAdvance : tableRowCe}
 				showCheckbox={false}
 				multiSelect={false}
-				selectedRows={selectedRows}
-				onSelectionChange={onSelectionChange}
 			/>
-			{tableRows.length === 0 && (
+			{isRequestInProgress && (
+				<Container
+					crossAlignment="center"
+					mainAlignment="center"
+					height="fit"
+					padding={{ top: 'medium' }}
+				>
+					<Button type="ghost" iconColor="primary" height={36} label="" width={36} loading />
+				</Container>
+			)}
+			{(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text>Empty Table</Text>
+					<Text>{t('label.this_list_is_empty', 'This list is empty.')}</Text>
 				</Row>
 			)}
 		</Container>
@@ -180,79 +178,138 @@ const ServersListTable: FC<{
 
 const serverDetailPanel: FC = () => {
 	const [t] = useTranslation();
-	const allServersList = useBucketServersListStore((state) => state.allServersList);
+	const allServersList = useMailstoreListStore((state) => state.allMailstoreList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [serversList, setServersList] = useState<any>([]);
-	const [serverSelection, setserverSelection] = useState([]);
+	const [serverListAll, setServerListAll] = useState<any>([]);
 	const serverHeaderAdvanced = useMemo(() => headerAdvanced(t), [t]);
-	const serverHeaderCE = useMemo(() => headerCE(t), [t]);
+	const [searchServer, setSearchServer] = useState<string>('');
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
-	const getServersListType = useCallback(
-		(service): void => {
+	const getServersListType = useCallback((): void => {
+		if (isAdvanced) {
+			setIsRequestInProgress(true);
 			fetchSoap('zextras', {
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxPowerstore',
 				action: 'getAllVolumes',
 				targetServers: 'all_servers'
-			}).then((res) => {
-				const responseData = JSON.parse(res.Body.response.content);
-				if (responseData.ok) {
-					if (allServersList.length !== 0) {
-						if (!isAdvanced) {
-							const serverList = allServersList.map((item) => {
-								const data = responseData.response[item.name].response;
-								const primaries = data.primaries.length;
-								const secondaries = data.secondaries.length;
-								const indexes = data.indexes.length;
-								const description = item?.a.filter((items: any) => items?.n === DESCRIPTION);
-								return {
-									name: item.name,
-									primaries,
-									secondaries,
-									indexes,
-									description: description?.length !== 0 ? description[0]._content : ''
-								};
-							});
-							setServersList(serverList);
-						} else {
-							getSoapFetchRequest(
-								`/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`
-							).then((data: any) => {
-								const serverList = allServersList.map((item) => {
-									const advacnedData = responseData.response[item.name].response;
-									const primaries = advacnedData.primaries.length;
-									const secondaries = advacnedData.secondaries.length;
-									const indexes = advacnedData.indexes.length;
-									const description = item?.a.filter((items: any) => items?.n === DESCRIPTION);
-									const indexer =
-										data?.servers[0]?.[item?.id]?.ZxPowerstore?.services?.[INDEXER_MANAGER_KEY];
-									const hsmScheduled =
-										data?.servers[0]?.[item?.id]?.ZxPowerstore?.attributes?.powerstoreMoveScheduler
-											?.value?.[HSM_SCHEDULED_KEY];
-									return {
-										name: item.name,
-										primaries,
-										secondaries,
-										indexes,
-										hsmScheduled,
-										indexer,
-										description: description?.length !== 0 ? description[0]._content : ''
-									};
-								});
-								setServersList(serverList);
-							});
-						}
+			})
+				.then((res: any) => {
+					setIsRequestInProgress(true);
+					getSoapFetchRequest(
+						`/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`
+					)
+						.then((powerStoreData: any) => {
+							setIsRequestInProgress(false);
+							const powerStoreServer = powerStoreData?.servers.map((s: any) => Object.values(s)[0]);
+							const responseData = JSON.parse(res?.Body?.response?.content);
+							if (responseData && responseData.ok) {
+								if (allServersList.length > 0) {
+									const serverList = allServersList.map((item) => {
+										let primaries = '';
+										let secondaries = '';
+										let indexes = '';
+										let description = '';
+										let indexer = '';
+										let hsmScheduled = '';
+										const findPowerStoreServer = powerStoreServer?.find(
+											(s: any) => s.name === item?.name
+										);
+										if (findPowerStoreServer) {
+											// eslint-disable-next-line max-len
+											indexer = findPowerStoreServer?.ZxPowerstore?.services?.[INDEXER_MANAGER_KEY];
+											hsmScheduled =
+												findPowerStoreServer?.ZxPowerstore?.attributes?.powerstoreMoveScheduler
+													?.value?.[HSM_SCHEDULED_KEY];
+										}
+										if (
+											responseData &&
+											responseData?.response &&
+											responseData?.response[item.name]
+										) {
+											const data = responseData?.response[item.name]?.response;
+											if (data) {
+												primaries = data?.primaries.length;
+												secondaries = data?.secondaries.length;
+												indexes = data?.indexes.length;
+												const descriptionData = item?.a.filter(
+													(items: any) => items?.n === DESCRIPTION
+												);
+												if (descriptionData) {
+													description = descriptionData;
+												}
+											}
+										}
+										return {
+											name: item.name,
+											primaries,
+											secondaries,
+											indexes,
+											hsmScheduled,
+											indexer,
+											description
+										};
+									});
+									setServersList(serverList);
+									setServerListAll(serverList);
+								}
+							}
+						})
+						.catch((error: any) => {
+							setIsRequestInProgress(false);
+						});
+				})
+				.catch((error: any) => {
+					setIsRequestInProgress(false);
+				});
+		} else if (!isAdvanced) {
+			if (allServersList.length > 0) {
+				const serverList = allServersList.map((item) => {
+					let description = '';
+					const descriptionData = item?.a.filter((items: any) => items?.n === DESCRIPTION);
+					if (descriptionData) {
+						description = descriptionData;
 					}
-				}
-			});
-		},
-		[allServersList, isAdvanced]
+					return {
+						name: item.name,
+						description
+					};
+				});
+				setServersList(serverList);
+				setServerListAll(serverList);
+			}
+		}
+	}, [allServersList, isAdvanced]);
+
+	useEffect(() => {
+		getServersListType();
+	}, [getServersListType]);
+
+	const headerCE: any[] = useMemo(
+		() => [
+			{
+				id: 'Server',
+				label: t('volume.server_list_header.server', 'Server'),
+				i18nAllLabel: 'All',
+				width: '60%',
+				bold: true
+			},
+			{
+				id: 'Description',
+				label: t('volume.server_list_header.description', 'Description'),
+				i18nAllLabel: 'All',
+				width: '30%',
+				bold: true
+			}
+		],
+		[t]
 	);
 
 	useEffect(() => {
-		getServersListType('mailbox');
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+		const fildterdServer = serverListAll.filter((item: any) => item.name.includes(searchServer));
+		setServersList(fildterdServer);
+	}, [searchServer, serverListAll]);
 
 	return (
 		<>
@@ -289,12 +346,12 @@ const serverDetailPanel: FC = () => {
 								<Container>
 									<Input
 										label={t('label.search_for_a_Server', `Search for a Server`)}
-										// value={searchString}
 										background="gray5"
-										// onChange={(e: any): any => {
-										// 	setSearchString(e.target.value);
-										// }}
 										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="Gray0" />}
+										value={searchServer}
+										onChange={(e: any): void => {
+											setSearchServer(e.target.value);
+										}}
 									/>
 								</Container>
 							</Row>
@@ -303,23 +360,10 @@ const serverDetailPanel: FC = () => {
 					<Row width="100%">
 						<ServersListTable
 							volumes={serversList}
-							headers={isAdvanced ? serverHeaderAdvanced : serverHeaderCE}
+							headers={isAdvanced ? serverHeaderAdvanced : headerCE}
 							isAdvanced={isAdvanced}
-							selectedRows={serverSelection}
-							onSelectionChange={(selected: any): any => {
-								// setBucketselection(selected);
-								// const volumeObject: any = bucketList.find((s, index) => index === selected[0]);
-								// setShowDetails(false);
-								// setBucketDeleteName(volumeObject);
-							}}
-							// onDoubleClick={(i: any): any => {
-							// 	handleDoubleClick(i);
-							// 	setShowEditDetailView(true);
-							// }}
-							// onClick={(i: any): any => {
-							// 	handleDoubleClick(i);
-							// 	setShowEditDetailView(false);
-							// }}
+							t={t}
+							isRequestInProgress={isRequestInProgress}
 						/>
 					</Row>
 				</Container>

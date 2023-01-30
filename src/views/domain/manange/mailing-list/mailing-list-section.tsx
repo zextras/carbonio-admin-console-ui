@@ -492,6 +492,14 @@ const MailingListSection: FC<any> = () => {
 								/>
 							</Container>
 						</ListRow>
+						<ListRow>
+							<Text size="small" weight="regular" color="gray1">
+								{t(
+									'label.ldap_example_query',
+									'Example: ldap:///??sub?(&(objectClass=zimbraAccount)(ZimbraAccountStatus=active))'
+								)}
+							</Text>
+						</ListRow>
 						{isShowLdapQueryMessage && (
 							<Row>
 								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">

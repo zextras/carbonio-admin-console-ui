@@ -137,16 +137,16 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 			const allRows = accounts.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="regular" key={item?.name} color="#828282">
+					<Text size="medium" weight="light" key={item?.name} color="gray0">
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="regular" key={item?.status} color="#828282">
+					<Text size="medium" weight="light" key={item?.status} color="gray0">
 						{item?.status}
 					</Text>,
-					<Text size="medium" weight="regular" key={item?.creationTimestamp} color="#828282">
+					<Text size="medium" weight="light" key={item?.creationTimestamp} color="gray0">
 						{getFormatedShortDate(new Date(item?.creationTimestamp))}
 					</Text>,
-					<Text size="medium" weight="regular" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="gray0">
 						{item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}
 					</Text>
 				]

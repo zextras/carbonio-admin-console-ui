@@ -1297,11 +1297,12 @@ const ResourceEditDetailView: FC<any> = ({
 								padding={{ top: 'large' }}
 							>
 								<Row width="100%">
-									<PasswordInput
+									<Input
 										label={t('label.password', 'Password')}
 										backgroundColor="gray5"
 										value={password}
 										inputName="password"
+										type="password"
 										onChange={(e: any): any => {
 											setPassword(e.target.value);
 											setIsDirty(true);
@@ -1318,11 +1319,12 @@ const ResourceEditDetailView: FC<any> = ({
 								padding={{ top: 'large' }}
 							>
 								<Row width="100%">
-									<PasswordInput
+									<Input
 										label={t('label.repeat_password', 'Repeat Password')}
 										backgroundColor="gray5"
 										value={repeatPassword}
 										inputName="repeatPassword"
+										type="password"
 										onChange={(e: any): any => {
 											setRepeatPassword(e.target.value);
 											setIsDirty(true);

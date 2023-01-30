@@ -998,6 +998,7 @@
         "ldap_filter": "LDAP Filter",
         "ldap_search_base": "LDAP Search Base",
         "ldap_url": "LDAP Url",
+        "ldap_example_query": "Example: ldap:///??sub?(&(objectClass=zimbraAccount)(ZimbraAccountStatus=active))",
         "ldap_url_is_not_valid": "Ldap url is not valid",
         "leave_anyway": "Leave anyway",
         "light_mode": "<bold>Light</bold> Mode",

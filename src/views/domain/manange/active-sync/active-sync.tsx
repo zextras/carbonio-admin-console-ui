@@ -185,7 +185,8 @@ const ActiveSync: FC = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
+						color="gray0"
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
@@ -196,7 +197,8 @@ const ActiveSync: FC = () => {
 					</Text>,
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
+						color="gray0"
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
@@ -207,7 +209,8 @@ const ActiveSync: FC = () => {
 					</Text>,
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
+						color="gray0"
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
@@ -218,7 +221,8 @@ const ActiveSync: FC = () => {
 					</Text>,
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
+						color="gray0"
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
@@ -229,7 +233,8 @@ const ActiveSync: FC = () => {
 					</Text>,
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
+						color="gray0"
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
@@ -240,7 +245,8 @@ const ActiveSync: FC = () => {
 					</Text>,
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
+						color="gray0"
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();

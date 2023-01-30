@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container, Dropdown, Row, Input, Icon } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -35,6 +35,8 @@ const BackupListPanel: FC = () => {
 	const serverList = useBucketServersListStore((state) => state.volumeList || []);
 	const [selectedServer, setSelectedServer] = useState<string>('');
 	const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
+	const [searchServer, setSearchServer] = useState<string>('');
+	const [serverNames, setServerNames] = useState<any>();
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${BACKUP_ROUTE_ID}`);
@@ -42,11 +44,6 @@ const BackupListPanel: FC = () => {
 
 	const defaultSettingsOptions = useMemo(
 		() => [
-			/* {
-				id: SERVICE_STATUS,
-				name: t('label.service_status', 'Service Status'),
-				isSelected: true
-			}, */
 			{
 				id: SERVER_CONFIG,
 				name: t('label.server_config', 'Server Config'),
@@ -119,31 +116,40 @@ const BackupListPanel: FC = () => {
 		}
 	}, [selectedServer]);
 
-	const serverNames = serverList.map((serverItem: any) => ({
-		id: serverItem?.id,
-		label: serverItem?.name,
-		customComponent: (
-			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
-				style={{
-					fontFamily: 'roboto',
-					display: 'block',
-					textAlign: 'left',
-					height: 'inherit',
-					padding: '3px',
-					width: 'inherit'
-				}}
-				onClick={(): void => {
-					setSelectedServer(serverItem?.name);
-				}}
-			>
-				{serverItem?.name}
-			</Row>
-		)
-	}));
+	const addServerToList = useCallback((list: any) => {
+		const data = list.map((serverItem: any) => ({
+			id: serverItem?.id,
+			label: serverItem?.name,
+			customComponent: (
+				<Row
+					top="9px"
+					right="large"
+					bottom="9px"
+					left="large"
+					style={{
+						fontFamily: 'roboto',
+						display: 'block',
+						textAlign: 'left',
+						height: 'inherit',
+						padding: '3px',
+						width: 'inherit'
+					}}
+					onClick={(): void => {
+						setSelectedServer(serverItem?.name);
+						setSearchServer(serverItem?.name);
+					}}
+				>
+					{serverItem?.name}
+				</Row>
+			)
+		}));
+		setServerNames(data);
+	}, []);
+
+	useEffect(() => {
+		const filterList = serverList.filter((item: any) => item.name.includes(searchServer));
+		addServerToList(filterList);
+	}, [searchServer, addServerToList, serverList]);
 
 	return (
 		<Container
@@ -189,9 +195,12 @@ const BackupListPanel: FC = () => {
 								'label.I_want_to_see_this_server_details',
 								'i want to see this server’s details'
 							)}
-							value={selectedServer}
+							value={searchServer}
 							CustomIcon={(): any => <Icon icon="HardDriveOutline" size="large" />}
 							backgroundColor="gray5"
+							onChange={(e: any): any => {
+								setSearchServer(e.target.value);
+							}}
 						/>
 					</Dropdown>
 				</Row>
@@ -204,19 +213,6 @@ const BackupListPanel: FC = () => {
 					setSelectedOperationItem={setSelectedOperationItem}
 				/>
 			)}
-
-			{/* <ListPanelItem
-				title={t('label.actions', 'Actions')}
-				isListExpanded={isActionExpanded}
-				setToggleView={toggleActionView}
-			/>
-			{isActionExpanded && (
-				<ListItems
-					items={actionOptions}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
-				/>
-			)} */}
 		</Container>
 	);
 };

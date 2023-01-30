@@ -334,7 +334,7 @@ const MailingListDetail: FC<any> = ({
 			const allRows = dlMembershipList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="gray0">
 						{item?.label}
 					</Text>,
 					''
@@ -351,7 +351,7 @@ const MailingListDetail: FC<any> = ({
 			const allRows = dlm.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="light" key={item} color="gray0">
 						{item}
 					</Text>,
 					''
@@ -368,7 +368,7 @@ const MailingListDetail: FC<any> = ({
 			const allRows = ownersList.map((item: any) => ({
 				id: item?.name,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="gray0">
 						{item?.name}
 					</Text>
 				]
@@ -739,15 +739,33 @@ const MailingListDetail: FC<any> = ({
 				</Row>
 				{!selectedMailingList?.dynamic && (
 					<ListRow>
-						<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
-							<Table rows={dlmMemberOfRows} headers={listMemberOfHeaders} showCheckbox={false} />
+						<Container
+							mainAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small' }}
+							maxHeight="10rem"
+						>
+							<Table
+								rows={dlmMemberOfRows}
+								headers={listMemberOfHeaders}
+								showCheckbox={false}
+								style={{ overflow: 'auto', height: '100%' }}
+							/>
 						</Container>
 					</ListRow>
 				)}
 				<ListRow>
 					{!selectedMailingList?.dynamic && (
-						<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
-							<Table rows={dlmTableRows} headers={memberHeaders} showCheckbox={false} />
+						<Container
+							mainAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small' }}
+							maxHeight="10rem"
+						>
+							<Table
+								rows={dlmTableRows}
+								headers={memberHeaders}
+								showCheckbox={false}
+								style={{ overflow: 'auto', height: '100%' }}
+							/>
 						</Container>
 					)}
 					<Container
@@ -757,33 +775,18 @@ const MailingListDetail: FC<any> = ({
 							bottom: 'small'
 						}}
 						mainAlignment="flex-start"
+						maxHeight="10rem"
 					>
-						<Table rows={ownerTableRows} headers={ownerHeaders} showCheckbox={false} />
+						<Table
+							rows={ownerTableRows}
+							headers={ownerHeaders}
+							showCheckbox={false}
+							style={{ overflow: 'auto', height: '100%' }}
+						/>
 					</Container>
 				</ListRow>
-				{!selectedMailingList?.dynamic && (
-					<ListRow>
-						<Container mainAlignment="flex-end" crossAlignment="flex-end">
-							<Divider />
-
-							<Padding all="small">
-								<Paging totalItem={1} pageSize={10} setOffset={setMemberOffset} />
-							</Padding>
-						</Container>
-						<Container
-							mainAlignment="flex-end"
-							crossAlignment="flex-end"
-							padding={{ left: 'small' }}
-						>
-							<Divider />
-							<Padding all="small">
-								<Paging totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
-							</Padding>
-						</Container>
-					</ListRow>
-				)}
 				<ListRow>
-					<Container>
+					<Container padding={{ top: 'large' }}>
 						<Input
 							value={zimbraNotes}
 							label={t('label.notes', 'Notes')}
