@@ -30,6 +30,7 @@ import ListRow from '../../list/list-row';
 import { FALSE, TRUE } from '../../../constants';
 import { modifyAccountRequest } from '../../../services/modify-account';
 import { getAccountRequest } from '../../../services/get-account';
+import { MeasureUnitItems, ServerTypeItems } from '../../utility/utils';
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
@@ -41,6 +42,8 @@ export enum RANGE {
 
 const DomainGalSettings: FC = () => {
 	const [t] = useTranslation();
+	const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
+	const serverTypeItems = useMemo(() => ServerTypeItems(t), [t]);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 
@@ -155,28 +158,6 @@ const DomainGalSettings: FC = () => {
 			}
 		}
 	];
-	const measureUnitItems = [
-		{
-			label: t('domain.unit_measure_days', 'Days'),
-			value: 'd'
-		},
-		{
-			label: t('domain.unit_measure_hours', 'Hours'),
-			value: 'h'
-		},
-		{
-			label: t('domain.unit_measure_minutes', 'Minutes'),
-			value: 'm'
-		},
-		{
-			label: t('domain.unit_measure_seconds', 'Seconds'),
-			value: 's'
-		},
-		{
-			label: t('domain.unit_measure_milliseconds', 'Milliseconds'),
-			value: 'ms'
-		}
-	];
 
 	const getGalAccount = (accountId: string): void => {
 		getAccount(accountId).then((data) => {
@@ -201,6 +182,10 @@ const DomainGalSettings: FC = () => {
 							digits: splitText[1],
 							time: splitText[2]
 						});
+						const measureUnitObject: any = measureUnitItems?.find(
+							(item: any): any => item?.value === splitText[2]
+						);
+						setMeasureUnitSelection(measureUnitObject);
 					}
 				}
 			}
@@ -505,25 +490,36 @@ const DomainGalSettings: FC = () => {
 		zimbraGalLdapStartTlsEnabled
 	]);
 
-	const onFreqDigitsChange = (ev: any): void => {
-		if (ev?.target?.value < 0 || ev?.target?.value > 9) {
-			return;
-		}
-		setFreqValue({ digits: ev?.target?.value, time: freqValue.time });
-		setZimbraDataSourceGalPollingInterval(`${ev?.target?.value}${freqValue.time}`);
+	const onFreqDigitsChange = useCallback(
+		(ev: any) => {
+			if (ev?.target?.value < 0 || ev?.target?.value > 9) {
+				return;
+			}
+			setFreqValue({ digits: ev?.target?.value, time: freqValue.time });
+			const measureUnitObject: any = measureUnitItems?.find(
+				(item: any): any => item?.value === freqValue?.time
+			);
+			setMeasureUnitSelection(measureUnitObject);
+			setZimbraDataSourceGalPollingInterval(`${ev?.target?.value}${freqValue.time}`);
+			if (ev?.target?.value !== freqValue?.digits) {
+				setIsDirty(true);
+			}
+		},
+		[freqValue?.digits, freqValue.time, measureUnitItems]
+	);
 
-		if (ev?.target?.value !== freqValue?.digits) {
-			setIsDirty(true);
-		}
-	};
-
-	const onFreqTimeUnitChange = (ev: any): void => {
-		setFreqValue({ digits: freqValue.digits, time: ev });
-		setZimbraDataSourceGalPollingInterval(`${freqValue.digits}${ev}`);
-		if (ev !== freqValue?.time) {
-			setIsDirty(true);
-		}
-	};
+	const onFreqTimeUnitChange = useCallback(
+		(ev: any) => {
+			setFreqValue({ digits: freqValue.digits, time: ev });
+			const measureUnitObject: any = measureUnitItems?.find((item: any): any => item?.value === ev);
+			setMeasureUnitSelection(measureUnitObject);
+			setZimbraDataSourceGalPollingInterval(`${freqValue.digits}${ev}`);
+			if (ev !== freqValue?.time) {
+				setIsDirty(true);
+			}
+		},
+		[freqValue.digits, freqValue?.time, measureUnitItems]
+	);
 
 	const onZimbraGalLdapFilterChange = (ev: any): void => {
 		setDomainData({
@@ -578,10 +574,6 @@ const DomainGalSettings: FC = () => {
 	useEffect(() => {
 		updateDomainInformation();
 	}, [updateDomainInformation]);
-
-	useEffect(() => {
-		console.log('_dd freqValue', freqValue);
-	}, [freqValue]);
 
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
@@ -743,7 +735,6 @@ const DomainGalSettings: FC = () => {
 										onChange={onFreqTimeUnitChange}
 										showCheckbox={false}
 										selection={measureUnitSelection}
-										defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
 									/>
 								</Container>
 							</ListRow>
@@ -781,12 +772,12 @@ const DomainGalSettings: FC = () => {
 									<ListRow>
 										<Container padding={{ all: 'small' }}>
 											<Select
-												items={measureUnitItems}
+												items={serverTypeItems}
 												background="gray5"
 												label={t('label.server_type', 'Server Type')}
-												onChange={onFreqTimeUnitChange}
+												// onChange={onFreqTimeUnitChange}
 												showCheckbox={false}
-												defaultSelection={find(measureUnitItems, { value: freqValue?.time })}
+												defaultSelection={serverTypeItems}
 											/>
 										</Container>
 									</ListRow>

@@ -518,6 +518,7 @@
         "i_want_to_generate_an_otp_code": "I WANT TO GENERATE AN OTP CODE",
         "i_want_to_see_this_domain": "I want to see this domain",
         "internal_gal_received": "Internal GAL received range",
+        "ldap": "LDAP",
         "list_details": "List Details",
         "mail_server": "Mail Server",
         "mailbox_quota": "Mailbox Quota",
