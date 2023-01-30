@@ -939,6 +939,7 @@
         "first_day_of_week": "First Day of Week",
         "force_delete": "Force Delete",
         "forwarding": "Forwarding",
+        "frequency_value_also_updated": "The GAL Frequency value has been updated",
         "gal": "GAL",
         "gal_mode": "GAL Mode",
         "gal_settings": "GAL Settings",

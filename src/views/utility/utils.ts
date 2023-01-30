@@ -872,14 +872,6 @@ export const MeasureUnitItems = (t: TFunction): Array<{ value?: string; label: s
 		value: 'ms'
 	}
 ];
-
-export const ServerTypeItems = (t: TFunction): Array<{ value?: string; label: string }> => [
-	{
-		label: t('domain.ldap', 'LDAP'),
-		value: 'LDAP'
-	}
-];
-
 export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('buckets.s3_types.alibaba_cloud_s3', 'Alibaba Cloud S3'),

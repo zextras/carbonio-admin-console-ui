@@ -19,7 +19,6 @@ import {
 	Switch
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { find } from 'lodash';
 import { getAccount } from '../../../services/get-account-service';
 import { getDatasource } from '../../../services/get-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
@@ -29,8 +28,7 @@ import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
 import { FALSE, TRUE } from '../../../constants';
 import { modifyAccountRequest } from '../../../services/modify-account';
-import { getAccountRequest } from '../../../services/get-account';
-import { MeasureUnitItems, ServerTypeItems } from '../../utility/utils';
+import { MeasureUnitItems } from '../../utility/utils';
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
@@ -43,7 +41,6 @@ export enum RANGE {
 const DomainGalSettings: FC = () => {
 	const [t] = useTranslation();
 	const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
-	const serverTypeItems = useMemo(() => ServerTypeItems(t), [t]);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 
@@ -414,7 +411,17 @@ const DomainGalSettings: FC = () => {
 			zimbraDataSourceGalPollingInterval
 		})
 			.then((data) => {
-				console.log('_dd data', data);
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t(
+						'label.frequency_value_also_updated',
+						'The GAL Frequency value has been updated'
+					),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: false
+				});
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -769,18 +776,6 @@ const DomainGalSettings: FC = () => {
 											{t('label.ldap_url', 'LDAP Url')}
 										</Text>
 									</Row>
-									<ListRow>
-										<Container padding={{ all: 'small' }}>
-											<Select
-												items={serverTypeItems}
-												background="gray5"
-												label={t('label.server_type', 'Server Type')}
-												// onChange={onFreqTimeUnitChange}
-												showCheckbox={false}
-												defaultSelection={serverTypeItems}
-											/>
-										</Container>
-									</ListRow>
 									<Row
 										orientation="horizontal"
 										mainAlignment="space-between"
