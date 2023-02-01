@@ -16,7 +16,10 @@ import {
 	SnackbarManagerContext,
 	Dropdown,
 	Select,
-	Switch
+	Switch,
+	Icon,
+	Tooltip,
+	IconButton
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { getAccount } from '../../../services/get-account-service';
@@ -789,6 +792,25 @@ const DomainGalSettings: FC = () => {
 												value={domainData?.zimbraGalLdapURL}
 												background="gray5"
 												onChange={onZimbraGalLdapUrlChange}
+												CustomIcon={({ hasFocus }: any): any => (
+													<Tooltip
+														placement="top"
+														overflow="break-word"
+														maxWidth="40rem"
+														label={t(
+															'tooltip.external_server_exampl',
+															'For example ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld'
+														)}
+													>
+														<Text>
+															<Icon
+																icon="InfoOutline"
+																size="large"
+																color={hasFocus ? 'primary' : 'text'}
+															/>
+														</Text>
+													</Tooltip>
+												)}
 											/>
 										</Container>
 
@@ -812,6 +834,25 @@ const DomainGalSettings: FC = () => {
 											value={domainData?.zimbraGalLdapFilter}
 											background="gray5"
 											onChange={onZimbraGalLdapFilterChange}
+											CustomIcon={({ hasFocus }: any): any => (
+												<Tooltip
+													placement="top"
+													overflow="break-word"
+													maxWidth="40rem"
+													label={t(
+														'tooltip.ldap_filter_example',
+														'For example (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))'
+													)}
+												>
+													<Text>
+														<Icon
+															icon="InfoOutline"
+															size="large"
+															color={hasFocus ? 'primary' : 'text'}
+														/>
+													</Text>
+												</Tooltip>
+											)}
 										/>
 									</Container>
 									<Container padding={{ all: 'small' }}>
@@ -820,6 +861,25 @@ const DomainGalSettings: FC = () => {
 											value={domainData?.zimbraGalLdapSearchBase}
 											background="gray5"
 											onChange={onZimbraGalLdapSearchBaseChange}
+											CustomIcon={({ hasFocus }: any): any => (
+												<Tooltip
+													placement="top"
+													overflow="break-word"
+													maxWidth="40rem"
+													label={t(
+														'tooltip.ldap_search_base_example',
+														'For example dc=company,dc=local'
+													)}
+												>
+													<Text>
+														<Icon
+															icon="InfoOutline"
+															size="large"
+															color={hasFocus ? 'primary' : 'text'}
+														/>
+													</Text>
+												</Tooltip>
+											)}
 										/>
 									</Container>
 								</Container>
@@ -872,6 +932,25 @@ const DomainGalSettings: FC = () => {
 										value={domainData?.zimbraGalLdapBindDn}
 										background="gray5"
 										onChange={onZimbraGalLdapBindDnChange}
+										CustomIcon={({ hasFocus }: any): any => (
+											<Tooltip
+												placement="top"
+												overflow="break-word"
+												maxWidth="40rem"
+												label={t(
+													'tooltip.ldap_bind_dn_example',
+													'For example CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com'
+												)}
+											>
+												<Text>
+													<Icon
+														icon="InfoOutline"
+														size="large"
+														color={hasFocus ? 'primary' : 'text'}
+													/>
+												</Text>
+											</Tooltip>
+										)}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>

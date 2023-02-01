@@ -995,10 +995,10 @@
         "language": "Language",
         "last_access": "Last Access",
         "last_seen": "Last seen",
+        "ldap_example_query": "Example: ldap:///??sub?(&(objectClass=zimbraAccount)(ZimbraAccountStatus=active))",
         "ldap_filter": "LDAP Filter",
         "ldap_search_base": "LDAP Search Base",
         "ldap_url": "LDAP Url",
-        "ldap_example_query": "Example: ldap:///??sub?(&(objectClass=zimbraAccount)(ZimbraAccountStatus=active))",
         "ldap_url_is_not_valid": "Ldap url is not valid",
         "leave_anyway": "Leave anyway",
         "light_mode": "<bold>Light</bold> Mode",
@@ -1713,6 +1713,12 @@
         "utc": "{{value}} Coordinated Universal Time"
     },
     "to_carbonio": "to Carbonio!",
+    "tooltip": {
+        "external_server_exampl": "For example ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld",
+        "ldap_bind_dn_example": "For example CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com",
+        "ldap_filter_example": "For example (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))",
+        "ldap_search_base_example": "For example dc=company,dc=local"
+    },
     "virtual_hosts": {
         "load": "LOAD",
         "load_and_verify_certificate": "Load and Verify Certificate",
