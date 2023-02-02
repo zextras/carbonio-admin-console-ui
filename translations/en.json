@@ -1714,10 +1714,10 @@
     },
     "to_carbonio": "to Carbonio!",
     "tooltip": {
-        "external_server_exampl": "For example ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld",
-        "ldap_bind_dn_example": "For example CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com",
-        "ldap_filter_example": "For example (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))",
-        "ldap_search_base_example": "For example dc=company,dc=local"
+        "external_server_exampl": "e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld",
+        "ldap_bind_dn_example": "e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com",
+        "ldap_filter_example": "e.g. (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))",
+        "ldap_search_base_example": "e.g. dc=company,dc=local"
     },
     "virtual_hosts": {
         "load": "LOAD",

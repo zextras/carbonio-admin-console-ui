@@ -814,7 +814,7 @@ const DomainGalSettings: FC = () => {
 														maxWidth="40rem"
 														label={t(
 															'tooltip.external_server_exampl',
-															'For example ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld'
+															'e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld'
 														)}
 													>
 														<Text>
@@ -856,7 +856,7 @@ const DomainGalSettings: FC = () => {
 													maxWidth="40rem"
 													label={t(
 														'tooltip.ldap_filter_example',
-														'For example (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))'
+														'e.g. (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))'
 													)}
 												>
 													<Text>
@@ -881,10 +881,7 @@ const DomainGalSettings: FC = () => {
 													placement="top"
 													overflow="break-word"
 													maxWidth="40rem"
-													label={t(
-														'tooltip.ldap_search_base_example',
-														'For example dc=company,dc=local'
-													)}
+													label={t('tooltip.ldap_search_base_example', 'e.g. dc=company,dc=local')}
 												>
 													<Text>
 														<Icon
@@ -954,7 +951,7 @@ const DomainGalSettings: FC = () => {
 												maxWidth="40rem"
 												label={t(
 													'tooltip.ldap_bind_dn_example',
-													'For example CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com'
+													'e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com'
 												)}
 											>
 												<Text>
