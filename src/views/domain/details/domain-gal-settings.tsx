@@ -392,14 +392,18 @@ const DomainGalSettings: FC = () => {
 		});
 		body.a = attributes;
 		requests.push(modifyDomain(body));
-		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
+		if (zimbraGalAccountId !== '') {
 			const dataSourceBody: any = {};
 			dataSourceBody.id = zimbraGalAccountId;
 			dataSourceBody._jsns = 'urn:zimbraAdmin';
 			attributes = [];
 			attributes.push({
-				n: 'zimbraDataSourcePollingInterval',
-				_content: `${pollingIntervalValue}${pollingIntervalType?.value}`
+				n: 'zimbraDataSourceName',
+				_content: domainData?.zimbraGalMode
+			});
+			attributes.push({
+				n: 'zimbraGalType',
+				_content: domainData?.zimbraGalMode
 			});
 			dataSourceBody.dataSource = {
 				id: dataSourceId,
