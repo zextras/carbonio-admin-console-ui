@@ -23,7 +23,7 @@ import { useHistory } from 'react-router-dom';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
-import { DOMAINS_ROUTE_ID, MANAGE } from '../../constants';
+import { ACTIVE, DOMAINS_ROUTE_ID, HTTPS, MANAGE } from '../../constants';
 import ListRow from '../list/list-row';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 
@@ -75,6 +75,7 @@ const CreateDomain: FC = () => {
 			}));
 			if (data && data.length > 0) {
 				setZimbraPublicServiceHostnameList(data);
+				setZimbraPublisServiceHostname(data[0]);
 			}
 		}
 	}, [allMailStoreList]);
@@ -164,6 +165,14 @@ const CreateDomain: FC = () => {
 		attributes.push({
 			n: 'zimbraMailDomainQuota',
 			_content: zimbraMailDomainQuota
+		});
+		attributes.push({
+			n: 'zimbraDomainStatus',
+			_content: ACTIVE
+		});
+		attributes.push({
+			n: 'zimbraPublicServiceProtocol',
+			_content: HTTPS
 		});
 
 		createDomain(domainName, attributes)
