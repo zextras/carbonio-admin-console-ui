@@ -176,3 +176,4 @@ export const SWIFT = 'SWIFT';
 export const CEPH = 'CEPH';
 export const CLOUDIAN = 'CLOUDIAN';
 export const SCALITYS3 = 'SCALITYS3';
+export const LDAP_QUERY = 'ldap:///??sub?(&(objectClass=inetOrgPerson)(mail=*@domain.tld))';
