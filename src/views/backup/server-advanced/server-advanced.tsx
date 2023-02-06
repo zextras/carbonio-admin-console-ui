@@ -24,7 +24,7 @@ import {
 } from '@zextras/carbonio-shell-ui';
 import ListRow from '../../list/list-row';
 import { useServerStore } from '../../../store/server/store';
-import { updateBackup } from '../../../services/update-backup';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { SERVER } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -464,7 +464,7 @@ const ServerAdvanced: FC = () => {
 			}
 		};
 		setIsRequestInProgress(true);
-		updateBackup(body)
+		setCoreAttributes(body)
 			.then((data: any) => {
 				setIsRequestInProgress(false);
 				if (data?.errors && Array.isArray(data?.errors)) {

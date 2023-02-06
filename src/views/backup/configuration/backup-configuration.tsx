@@ -32,7 +32,7 @@ import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import ListRow from '../../list/list-row';
 import { useServerStore } from '../../../store/server/store';
-import { updateBackup } from '../../../services/update-backup';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
 import {
 	LOCAL_VALUE,
 	MANAGE_EXTERNAL_VOLUME,
@@ -386,7 +386,7 @@ const BackupConfiguration: FC = () => {
 		};
 
 		setIsSaveRequestInProgress(true);
-		updateBackup(body)
+		setCoreAttributes(body)
 			.then((data: any) => {
 				setIsSaveRequestInProgress(false);
 				if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {

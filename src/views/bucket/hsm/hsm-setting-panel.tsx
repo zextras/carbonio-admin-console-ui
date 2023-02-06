@@ -40,7 +40,7 @@ import {
 	SERVER,
 	VOLUME_INDEX_TYPE
 } from '../../../constants';
-import { updateBackup } from '../../../services/update-backup';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
 
 const HSMsettingPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -277,7 +277,7 @@ const HSMsettingPanel: FC = () => {
 				configType: SERVER
 			}
 		};
-		updateBackup(body)
+		setCoreAttributes(body)
 			.then((data: any) => {
 				setIsRequestInProgress(false);
 				if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {

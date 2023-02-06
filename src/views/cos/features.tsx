@@ -1,0 +1,237 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import React, { FC, useCallback } from 'react';
+import { Container, Row, Text, Divider, Switch } from '@zextras/carbonio-design-system';
+import { useTranslation } from 'react-i18next';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+
+export const Features: FC<{
+	featuresDetail: Record<string, boolean>;
+	setFeaturesDetail: CallableFunction;
+}> = ({ featuresDetail, setFeaturesDetail }) => {
+	const [t] = useTranslation();
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
+	const changeSwitchOption = useCallback(
+		(key: string): void => {
+			setFeaturesDetail((prev: Record<string, boolean>) => ({
+				...prev,
+				[key]: !featuresDetail[key]
+			}));
+		},
+		[featuresDetail, setFeaturesDetail]
+	);
+
+	return (
+		<Container
+			mainAlignment="flex-start"
+			width="100%"
+			height="auto"
+			orientation="vertical"
+			padding={{ top: 'large' }}
+		>
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				width="100%"
+			>
+				<Text size="extralarge" weight="bold">
+					{t('label.mail', 'Mail')}
+				</Text>
+				<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+					<Row width="35%" mainAlignment="flex-start">
+						<Switch
+							value={featuresDetail.carbonioFeatureMailsAppEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('carbonioFeatureMailsAppEnabled')}
+							label={t('label.app', 'App')}
+						/>
+					</Row>
+					<Row width="35%" mainAlignment="flex-start">
+						<Switch
+							value={featuresDetail.zimbraFeatureSignaturesEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('zimbraFeatureSignaturesEnabled')}
+							label={t('label.mail_signatures', 'Mail Signatures')}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+					<Row width="35%" mainAlignment="flex-start">
+						<Switch
+							value={featuresDetail.zimbraFeatureOutOfOfficeReplyEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
+							label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
+						/>
+					</Row>
+					{isAdvanced && (
+						<Row width="35%" mainAlignment="flex-start">
+							<Switch
+								value={featuresDetail.zimbraFeatureMobileSyncEnabled}
+								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+								onClick={() => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
+								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
+							/>
+						</Row>
+					)}
+				</Row>
+				<Divider />
+			</Row>
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				width="100%"
+			>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="50%"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<Text size="extralarge" weight="bold">
+						{t('label.contacts', 'Contacts')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<Switch
+							value={featuresDetail.zimbraFeatureContactsEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('zimbraFeatureContactsEnabled')}
+							label={t('label.feature', 'Feature')}
+						/>
+					</Row>
+					{isAdvanced && (
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<Switch
+								value={featuresDetail.mobileContactFeatureSync}
+								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+								onClick={() => changeSwitchOption('mobileContactFeatureSync')}
+								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
+								disabled={!featuresDetail.zimbraFeatureMobileSyncEnabled}
+							/>
+						</Row>
+					)}
+				</Container>
+				<Container
+					mainAlignment="flex-start"
+					width="50%"
+					crossAlignment="flex-start"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<Text size="extralarge" weight="bold">
+						{t('label.calendar', 'Calendar')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<Switch
+							value={featuresDetail.zimbraFeatureCalendarEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('zimbraFeatureCalendarEnabled')}
+							label={t('label.feature', 'Feature')}
+						/>
+					</Row>
+					{isAdvanced && (
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<Switch
+								value={featuresDetail.mobileCalendarFeatureSync}
+								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+								onClick={() => changeSwitchOption('mobileCalendarFeatureSync')}
+								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
+								disabled={!featuresDetail.zimbraFeatureMobileSyncEnabled}
+							/>
+						</Row>
+					)}
+				</Container>
+				<Divider />
+			</Row>
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				width="100%"
+			>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="50%"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<Text size="extralarge" weight="bold">
+						{t('label.files', 'Files')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<Switch
+							value={featuresDetail.carbonioFeatureFilesEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('carbonioFeatureFilesEnabled')}
+							label={t('label.feature', 'Feature')}
+						/>
+					</Row>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<Switch
+							value={featuresDetail.carbonioFeatureFilesAppEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('carbonioFeatureFilesAppEnabled')}
+							label={t('cos.app', 'App')}
+						/>
+					</Row>
+				</Container>
+				<Container
+					mainAlignment="flex-start"
+					width="50%"
+					crossAlignment="flex-start"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<Text size="extralarge" weight="bold">
+						{t('label.tasks', 'Tasks')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<Switch
+							value={featuresDetail.zimbraFeatureTaskEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('zimbraFeatureTaskEnabled')}
+							label={t('label.app', 'App')}
+						/>
+					</Row>
+				</Container>
+				{isAdvanced && <Divider />}
+			</Row>
+			{isAdvanced && (
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+					width="100%"
+				>
+					<Text size="extralarge" weight="bold">
+						{t('label.chats', 'Chats')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<Switch
+							value={featuresDetail.carbonioFeatureChatsEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('carbonioFeatureChatsEnabled')}
+							label={t('label.feature', 'Feature')}
+						/>
+					</Row>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Switch
+							value={featuresDetail.carbonioFeatureChatsAppEnabled}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('carbonioFeatureChatsAppEnabled')}
+							label={t('cos.app', 'App')}
+						/>
+					</Row>
+				</Row>
+			)}
+		</Container>
+	);
+};
