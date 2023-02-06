@@ -87,6 +87,7 @@ const MailingListSection: FC<any> = () => {
 	);
 
 	const [grantType, setGrantType] = useState<any>(mailingListDetail?.ownerGrantEmailType);
+	const ldapExample = 'ldap:///??sub?(&(objectClass=inetOrgPerson)(mail=*@domain.tld))';
 
 	useEffect(() => {
 		if (ownersList && ownersList.length > 0) {
@@ -494,10 +495,7 @@ const MailingListSection: FC<any> = () => {
 						</ListRow>
 						<ListRow>
 							<Text size="small" weight="regular" color="gray1">
-								{t(
-									'label.ldap_example_query',
-									'Example: ldap:///??sub?(&(objectClass=zimbraAccount)(ZimbraAccountStatus=active))'
-								)}
+								{`${t('label.example_lbl', 'Example:')} ${ldapExample}`}
 							</Text>
 						</ListRow>
 						{isShowLdapQueryMessage && (
