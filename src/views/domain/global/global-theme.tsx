@@ -26,27 +26,7 @@ const GlobalTheme: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({
-		carbonioWebUiDarkMode: false,
-		carbonioWebUiLoginLogo: '',
-		carbonioWebUiDarkLoginLogo: '',
-		carbonioWebUiLoginBackground: '',
-		carbonioWebUiDarkLoginBackground: '',
-		carbonioWebUiAppLogo: '',
-		carbonioWebUiDarkAppLogo: '',
-		carbonioWebUiFavicon: '',
-		carbonioWebUiTitle: '',
-		carbonioWebUiDescription: '',
-		carbonioAdminUiLoginLogo: '',
-		carbonioAdminUiDarkLoginLogo: '',
-		carbonioAdminUiAppLogo: '',
-		carbonioAdminUiDarkAppLogo: '',
-		carbonioAdminUiBackground: '',
-		carbonioAdminUiDarkBackground: '',
-		carbonioAdminUiFavicon: '',
-		carbonioAdminUiTitle: '',
-		carbonioAdminUiDescription: ''
-	});
+	const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
@@ -85,6 +65,7 @@ const GlobalTheme: FC = () => {
 				setValue('carbonioAdminUiFavicon', obj?.carbonioAdminUiFavicon);
 				setValue('carbonioAdminUiTitle', obj?.carbonioAdminUiTitle);
 				setValue('carbonioAdminUiDescription', obj?.carbonioAdminUiDescription);
+				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
 			}
 		},
 		[setValue]

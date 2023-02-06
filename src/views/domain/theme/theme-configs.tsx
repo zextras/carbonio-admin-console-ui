@@ -200,6 +200,25 @@ export const ThemeConfigs: FC<{
 							onChange={onThemeModeChange}
 						/>
 					</ListRow>
+					<ListRow>
+						<Padding vertical="large" horizontal="small" width="100%">
+							<Text size="small" color="gray0" weight="bold">
+								{t('label.logo_redirection', 'Logo Redirection')}
+							</Text>
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Input
+							label={t(
+								'label.logo_redirection_title',
+								'Clicking on the Logo will redirect the users to...'
+							)}
+							background="gray5"
+							value={themeConfig.carbonioLogoUrl}
+							inputName="carbonioLogoUrl"
+							onChange={onChangeDomainThemeDetail}
+						/>
+					</ListRow>
 					<Row
 						width="100%"
 						mainAlignment="center"

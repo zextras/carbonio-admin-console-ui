@@ -37,4 +37,5 @@ export type themeConfigStore = {
 	carbonioAdminUiFavicon?: string;
 	carbonioAdminUiTitle?: string;
 	carbonioAdminUiDescription?: string;
+	carbonioLogoUrl?: string;
 };

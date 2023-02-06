@@ -38,27 +38,7 @@ const DomainTheme: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const [domainTheme, setDomainTheme] = useState<themeConfigStore>({
-		carbonioWebUiDarkMode: false,
-		carbonioWebUiLoginLogo: '',
-		carbonioWebUiDarkLoginLogo: '',
-		carbonioWebUiLoginBackground: '',
-		carbonioWebUiDarkLoginBackground: '',
-		carbonioWebUiAppLogo: '',
-		carbonioWebUiDarkAppLogo: '',
-		carbonioWebUiFavicon: '',
-		carbonioWebUiTitle: '',
-		carbonioWebUiDescription: '',
-		carbonioAdminUiLoginLogo: '',
-		carbonioAdminUiDarkLoginLogo: '',
-		carbonioAdminUiAppLogo: '',
-		carbonioAdminUiDarkAppLogo: '',
-		carbonioAdminUiBackground: '',
-		carbonioAdminUiDarkBackground: '',
-		carbonioAdminUiFavicon: '',
-		carbonioAdminUiTitle: '',
-		carbonioAdminUiDescription: ''
-	});
+	const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -98,6 +78,7 @@ const DomainTheme: FC = () => {
 				setValue('carbonioAdminUiFavicon', obj?.carbonioAdminUiFavicon);
 				setValue('carbonioAdminUiTitle', obj?.carbonioAdminUiTitle);
 				setValue('carbonioAdminUiDescription', obj?.carbonioAdminUiDescription);
+				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
 			}
 		},
 		[setValue]
