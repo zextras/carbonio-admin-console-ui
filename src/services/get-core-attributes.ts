@@ -12,6 +12,4 @@ import {
 } from '@zextras/carbonio-shell-ui';
 
 export const getCoreAttributes = async (body: any): Promise<any> =>
-	fetchExternalSoap(`/service/extension/zextras_admin/core/attributes/get`, {
-		...body
-	});
+	fetchExternalSoap(`/service/extension/zextras_admin/core/attributes/get`, [...body]);

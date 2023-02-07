@@ -24,6 +24,8 @@ import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { Features } from './features';
 import { getCoreAttributes } from '../../services/get-core-attributes';
+import { COS } from '../../constants';
+import { setCoreAttributes } from '../../services/set-core-attributes';
 
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
@@ -34,21 +36,7 @@ const CosFeatures: FC = () => {
 	const [initCosData, setInitCosData]: any = useState({});
 	const [zimbraId, setZimbraId]: any = useState('');
 	const setCos = useCosStore((state) => state.setCos);
-	const [cosFeatures, setCosFeatures] = useState<any>({
-		carbonioFeatureMailsAppEnabled: false,
-		zimbraFeatureOutOfOfficeReplyEnabled: true,
-		zimbraFeatureSignaturesEnabled: false,
-		zimbraFeatureMobileSyncEnabled: false,
-		zimbraFeatureContactsEnabled: true,
-		mobileContactFeatureSync: false,
-		zimbraFeatureCalendarEnabled: true,
-		mobileCalendarFeatureSync: false,
-		carbonioFeatureFilesEnabled: false,
-		carbonioFeatureFilesAppEnabled: false,
-		carbonioFeatureChatsEnabled: false,
-		carbonioFeatureChatsAppEnabled: false,
-		zimbraFeatureTaskEnabled: false
-	});
+	const [cosFeatures, setCosFeatures] = useState<any>({});
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const setSwitchOptionValue = useCallback(
@@ -60,17 +48,25 @@ const CosFeatures: FC = () => {
 	);
 
 	const getMobileFeatureSync = useCallback(() => {
-		const body: any = [
+		const body = [
 			{
-				configType: 'cos',
+				configType: COS,
 				configName: [cosName],
 				attrName: ['mobileContactFeatureSync', 'mobileCalendarFeatureSync']
 			}
 		];
-
 		getCoreAttributes(body)
 			.then((data) => {
-				console.log('data:::', data);
+				if (data?.attributes) {
+					setSwitchOptionValue(
+						'mobileContactFeatureSync',
+						data?.attributes?.mobileContactFeatureSync[0]?.value === 'enabled'
+					);
+					setSwitchOptionValue(
+						'mobileCalendarFeatureSync',
+						data?.attributes?.mobileCalendarFeatureSync[0]?.value === 'enabled'
+					);
+				}
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -84,7 +80,7 @@ const CosFeatures: FC = () => {
 					replace: true
 				});
 			});
-	}, [cosName, createSnackbar, t]);
+	}, [cosName, createSnackbar, setSwitchOptionValue, t]);
 
 	const setInitalValues = useCallback(
 		(obj: any) => {
@@ -109,14 +105,9 @@ const CosFeatures: FC = () => {
 					'zimbraFeatureContactsEnabled',
 					obj?.zimbraFeatureContactsEnabled === 'TRUE'
 				);
-				setSwitchOptionValue('mobileContactFeatureSync', obj?.mobileContactFeatureSync === 'TRUE');
 				setSwitchOptionValue(
 					'zimbraFeatureCalendarEnabled',
 					obj?.zimbraFeatureCalendarEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'mobileCalendarFeatureSync',
-					obj?.mobileCalendarFeatureSync === 'TRUE'
 				);
 				setSwitchOptionValue(
 					'carbonioFeatureFilesAppEnabled',
@@ -134,7 +125,10 @@ const CosFeatures: FC = () => {
 					'carbonioFeatureChatsAppEnabled',
 					obj?.carbonioFeatureChatsAppEnabled === 'TRUE'
 				);
-				setSwitchOptionValue('zimbraFeatureTaskEnabled', obj?.zimbraFeatureTaskEnabled === 'TRUE');
+				setSwitchOptionValue(
+					'zimbraFeatureTasksEnabled',
+					obj?.zimbraFeatureTasksEnabled === 'TRUE'
+				);
 			}
 		},
 		[setSwitchOptionValue]
@@ -167,18 +161,7 @@ const CosFeatures: FC = () => {
 		}
 	}, [cosName, getMobileFeatureSync, isAdvanced]);
 
-	const onSave = (): void => {
-		const body: any = {};
-		body._jsns = 'urn:zimbraAdmin';
-		const attrList: { n: string; _content: string }[] = [];
-		Object.keys(cosFeatures).map((ele: any) =>
-			attrList.push({ n: ele, _content: cosFeatures[ele] === true ? 'TRUE' : 'FALSE' })
-		);
-		body.a = attrList;
-		const id = {
-			_content: zimbraId
-		};
-		body.id = id;
+	const modifyCosRequest = (body: any): void => {
 		modifyCos(body)
 			.then((data) => {
 				createSnackbar({
@@ -193,7 +176,6 @@ const CosFeatures: FC = () => {
 				if (cos) {
 					setCos(cos);
 				}
-				setIsDirty(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -207,6 +189,59 @@ const CosFeatures: FC = () => {
 					replace: true
 				});
 			});
+	};
+
+	const modifyCoreAttributes = (body: any): void => {
+		setCoreAttributes(body)
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			.then((data: any) => {
+				setSwitchOptionValue('mobileContactFeatureSync', cosFeatures?.mobileContactFeatureSync);
+				setSwitchOptionValue('mobileCalendarFeatureSync', cosFeatures?.mobileCalendarFeatureSync);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
+	const onSave = (): void => {
+		const body: any = {};
+		body._jsns = 'urn:zimbraAdmin';
+		const attrList: { n: string; _content: string }[] = [];
+		Object.keys(cosFeatures).forEach((ele: any) => {
+			if (ele !== 'mobileCalendarFeatureSync' && ele !== 'mobileContactFeatureSync') {
+				attrList.push({ n: ele, _content: cosFeatures[ele] === true ? 'TRUE' : 'FALSE' });
+			}
+		});
+		body.a = attrList;
+		const id = {
+			_content: zimbraId
+		};
+		body.id = id;
+		if (isAdvanced) {
+			const coreAttrBody: any = {
+				mobileCalendarFeatureSync: {
+					value: cosFeatures.mobileCalendarFeatureSync ? 'enabled' : 'disabled',
+					objectName: cosName,
+					configType: COS
+				},
+				mobileContactFeatureSync: {
+					value: cosFeatures.mobileContactFeatureSync ? 'enabled' : 'disabled',
+					objectName: cosName,
+					configType: COS
+				}
+			};
+			modifyCoreAttributes(coreAttrBody);
+		}
+		modifyCosRequest(body);
 	};
 
 	const onCancel = (): void => {
