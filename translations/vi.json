@@ -458,7 +458,6 @@
         "resource_name": "Tên tài nguyên",
         "resource_remove_correctly": "{{resource_name}} đã được loại bỏ thành công.",
         "repeat_password": "Lặp lại mật khẩu",
-        "reply_to_address_for_receipt": "Địa chỉ trả lời để nhận",
         "schedule_policy": "Đặt chính sách",
         "search_a_signature": "Tìm kiếm một chữ ký",
         "restart_replica": "KHỞI ĐỘNG LẠI REPLICA",

@@ -1640,6 +1640,60 @@ export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label
 	}
 ];
 
+export const delegateType = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('account_details.a_user', 'A User'),
+		value: 'usr'
+	},
+	{
+		label: t('account_details.an_existing_group', 'An Existing Group'),
+		value: 'grp'
+	}
+];
+
+export const delegateRightsType = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('account_details.send_mails_only', 'Send Mails only (no rights to read folders)'),
+		value: 'send_mails_only'
+	},
+	{
+		label: t('account_details.read_mails_only', 'Read Mails only (no rights to send mails)'),
+		value: 'read_mails_only'
+	},
+	{
+		label: t(
+			'account_details.send_read_mails',
+			'Send and Read Mails (no rights to create folders / manage mails)'
+		),
+		value: 'send_read_mails'
+	},
+	{
+		label: t(
+			'account_details.send_read_manage_mails',
+			'Send, Read and Manage Mails (all of the above)'
+		),
+		value: 'send_read_manage_mails'
+	}
+];
+
+export const delegateWhereToStore = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('account_details.save_it_to_sent_folder', 'Save it to Sent folder'),
+		value: 'save_it_to_sent_folder'
+	},
+	{
+		label: t(
+			'account_details.save_it_to_delegate_sent_folder',
+			'Save it to sender and delegates Sent folder)'
+		),
+		value: 'save_it_to_delegate_sent_folder'
+	},
+	{
+		label: t('account_details.do_not_save_it', 'Don’t save it'),
+		value: 'do_not_save_it'
+	}
+];
+
 export const appointmentReminder = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.never', 'Never'),

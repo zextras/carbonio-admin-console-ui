@@ -5,7 +5,7 @@
  */
 import React, { FC, useEffect, useState, useMemo, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
+import { debounce, flatMapDeep, filter } from 'lodash';
 import {
 	Container,
 	Input,
@@ -21,6 +21,11 @@ import {
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	postSoapFetchRequest
+} from '@zextras/carbonio-shell-ui';
 import logo from '../../../../assets/gardian.svg';
 import { useDomainStore } from '../../../../store/domain/store';
 import Paging from '../../../components/paging';
@@ -44,6 +49,11 @@ const ManageAccounts: FC = () => {
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
 	const [otpList, setOtpList] = useState<any[]>([]);
+	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
+	const [folderList, setFolderList] = useState<any[]>([]);
+	const [deligateDetail, setDeligateDetail] = useState<any>({});
+
+	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const headers: any = useMemo(
@@ -115,10 +125,6 @@ const ManageAccounts: FC = () => {
 			setSignatureData(signatureResponse);
 		});
 	}, []);
-
-	// useEffect(() => {
-	// 	getSignatureDetail();
-	// }, [getSignatureDetail]);
 
 	const STATUS_COLOR: any = useMemo(
 		() => ({
@@ -275,6 +281,87 @@ const ManageAccounts: FC = () => {
 		},
 		[t]
 	);
+	const getFolderList = useCallback(
+		(acc, delegateList): void => {
+			postSoapFetchRequest(
+				`/service/admin/soap/GetFolderRequest`,
+				{
+					_jsns: 'urn:zimbraMail'
+				},
+				'GetFolderRequest',
+				acc.id
+			).then((res: any) => {
+				const allFolder =
+					res?.Body?.GetFolderResponse?.folder ||
+					flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
+					[];
+				allFolder.forEach((ele: any) => {
+					// eslint-disable-next-line prefer-destructuring, no-param-reassign
+					ele.id = ele.id.split(':')[1];
+					return ele;
+				});
+				const filteredFolders = filter(allFolder, (ele: any) =>
+					['1', '2', '7', '10', '4', '5', '6', '3'].includes(ele.id)
+				);
+				const userDelegate: any[] = [];
+				filteredFolders.forEach((ele: any) => {
+					ele?.acl?.grant &&
+						ele?.acl?.grant.forEach((el: any) => {
+							userDelegate.push({ ...el, id: ele.id, name: ele.name });
+						});
+				});
+				setFolderList(filteredFolders);
+				userDelegate.forEach((ele: any) => {
+					let found = false;
+					delegateList.forEach((el: any) => {
+						// const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
+						if (el?.grantee?.[0]?.name === ele?.d) {
+							found = true;
+							if (el?.folder?.length) {
+								el?.folder.push(ele);
+							} else {
+								// eslint-disable-next-line prefer-destructuring, no-param-reassign
+								el.folder = [ele];
+							}
+						}
+					});
+					if (!found) {
+						delegateList.push({
+							grantee: [{ id: ele.zid, name: ele.d, type: ele.gt }],
+							folder: [ele]
+						});
+					}
+				});
+
+				setIdentitiesList(delegateList);
+			});
+		},
+		[flatten]
+	);
+	const getIdentitiesList = useCallback(
+		(acc): void => {
+			const request: any = {
+				_jsns: 'urn:zimbraAdmin',
+				target: {
+					_content: acc.name,
+					type: 'account',
+					by: 'name'
+				}
+			};
+			postSoapFetchRequest(
+				`/service/admin/soap/GetGrantsRequest`,
+				{
+					...request
+				},
+				'GetGrantsRequest',
+				acc.id
+			).then((res: any) => {
+				getFolderList(acc, res?.Body?.GetGrantsResponse?.grant || []);
+			});
+		},
+		[getFolderList]
+	);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setSelectedAccount(acc);
@@ -282,11 +369,19 @@ const ManageAccounts: FC = () => {
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
+			getIdentitiesList(acc);
 			if (isAdvanced) {
 				getListOtp(acc?.name);
 			}
 		},
-		[getAccountDetail, getAccountMembership, getSignatureDetail, getListOtp, isAdvanced]
+		[
+			getAccountDetail,
+			getSignatureDetail,
+			getAccountMembership,
+			getIdentitiesList,
+			isAdvanced,
+			getListOtp
+		]
 	);
 	const getAccountList = useCallback((): void => {
 		const type = 'accounts';
@@ -601,7 +696,13 @@ const ManageAccounts: FC = () => {
 					setSignatureItems,
 					setSignatureList,
 					otpList,
-					getListOtp
+					getListOtp,
+					identitiesList,
+					deligateDetail,
+					setDeligateDetail,
+					getIdentitiesList,
+					folderList,
+					setFolderList
 				}}
 			>
 				{showAccountDetailView && (

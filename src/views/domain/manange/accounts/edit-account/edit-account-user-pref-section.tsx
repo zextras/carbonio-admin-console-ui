@@ -474,14 +474,6 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
-					{/* <Input
-						onChange={changeAccDetail}
-						inputName="zimbraPrefReadReceiptsToAddress"
-						label={t('label.reply_to_address_for_receipt', 'Reply-to address for receipt')}
-						backgroundColor="gray5"
-						defaultValue={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
-						value={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
-					/> */}
 					<ChipInput
 						disabled={accountDetail?.zimbraFeatureReadReceiptsEnabled !== 'TRUE'}
 						placeholder={t(

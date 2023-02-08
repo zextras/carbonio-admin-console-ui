@@ -146,6 +146,7 @@ export const RESET_DEVICE = 'reset device';
 export const SUSPEND_DEVICE = 'suspend device';
 export const GLOBAL_ROUTE = 'global';
 export const GLOBAL_THEME_ROUTE = 'global/theme';
+export const MAX_DELEGATE_ACCOUNT_DISPLAY = 30;
 export const NOTIFICATION_INFORMATION = 'Information';
 export const NOTIFICATION_WARNING = 'Warning';
 export const NOTIFICATION_ERROR = 'Error';
