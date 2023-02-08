@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 
 export const Features: FC<{
-	featuresDetail: Record<string, boolean>;
+	featuresDetail: Record<string, string>;
 	setFeaturesDetail: CallableFunction;
 }> = ({ featuresDetail, setFeaturesDetail }) => {
 	const [t] = useTranslation();
@@ -17,9 +17,9 @@ export const Features: FC<{
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
-			setFeaturesDetail((prev: Record<string, boolean>) => ({
+			setFeaturesDetail((prev: Record<string, string>) => ({
 				...prev,
-				[key]: !featuresDetail[key]
+				[key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
 		[featuresDetail, setFeaturesDetail]
@@ -45,7 +45,7 @@ export const Features: FC<{
 				<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 					<Row width="35%" mainAlignment="flex-start">
 						<Switch
-							value={featuresDetail.carbonioFeatureMailsAppEnabled}
+							value={featuresDetail.carbonioFeatureMailsAppEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureMailsAppEnabled')}
 							label={t('label.app', 'App')}
@@ -53,7 +53,7 @@ export const Features: FC<{
 					</Row>
 					<Row width="35%" mainAlignment="flex-start">
 						<Switch
-							value={featuresDetail.zimbraFeatureSignaturesEnabled}
+							value={featuresDetail.zimbraFeatureSignaturesEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureSignaturesEnabled')}
 							label={t('label.mail_signatures', 'Mail Signatures')}
@@ -63,7 +63,7 @@ export const Features: FC<{
 				<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 					<Row width="35%" mainAlignment="flex-start">
 						<Switch
-							value={featuresDetail.zimbraFeatureOutOfOfficeReplyEnabled}
+							value={featuresDetail.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
 							label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
@@ -72,7 +72,7 @@ export const Features: FC<{
 					{isAdvanced && (
 						<Row width="35%" mainAlignment="flex-start">
 							<Switch
-								value={featuresDetail.zimbraFeatureMobileSyncEnabled}
+								value={featuresDetail.zimbraFeatureMobileSyncEnabled === 'TRUE'}
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 								onClick={() => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
@@ -100,7 +100,7 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<Switch
-							value={featuresDetail.zimbraFeatureContactsEnabled}
+							value={featuresDetail.zimbraFeatureContactsEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureContactsEnabled')}
 							label={t('label.feature', 'Feature')}
@@ -109,7 +109,7 @@ export const Features: FC<{
 					{isAdvanced && (
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<Switch
-								value={featuresDetail.mobileContactFeatureSync}
+								value={featuresDetail.mobileContactFeatureSync === 'TRUE'}
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 								onClick={() => changeSwitchOption('mobileContactFeatureSync')}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
@@ -130,7 +130,7 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<Switch
-							value={featuresDetail.zimbraFeatureCalendarEnabled}
+							value={featuresDetail.zimbraFeatureCalendarEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureCalendarEnabled')}
 							label={t('label.feature', 'Feature')}
@@ -139,7 +139,7 @@ export const Features: FC<{
 					{isAdvanced && (
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<Switch
-								value={featuresDetail.mobileCalendarFeatureSync}
+								value={featuresDetail.mobileCalendarFeatureSync === 'TRUE'}
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 								onClick={() => changeSwitchOption('mobileCalendarFeatureSync')}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
@@ -168,7 +168,7 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<Switch
-							value={featuresDetail.carbonioFeatureFilesEnabled}
+							value={featuresDetail.carbonioFeatureFilesEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureFilesEnabled')}
 							label={t('label.feature', 'Feature')}
@@ -176,7 +176,7 @@ export const Features: FC<{
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<Switch
-							value={featuresDetail.carbonioFeatureFilesAppEnabled}
+							value={featuresDetail.carbonioFeatureFilesAppEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureFilesAppEnabled')}
 							label={t('cos.app', 'App')}
@@ -195,7 +195,7 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<Switch
-							value={featuresDetail.zimbraFeatureTaskEnabled}
+							value={featuresDetail.zimbraFeatureTaskEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureTaskEnabled')}
 							label={t('label.app', 'App')}
@@ -216,7 +216,7 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<Switch
-							value={featuresDetail.carbonioFeatureChatsEnabled}
+							value={featuresDetail.carbonioFeatureChatsEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureChatsEnabled')}
 							label={t('label.feature', 'Feature')}
@@ -224,7 +224,7 @@ export const Features: FC<{
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
 						<Switch
-							value={featuresDetail.carbonioFeatureChatsAppEnabled}
+							value={featuresDetail.carbonioFeatureChatsAppEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureChatsAppEnabled')}
 							label={t('cos.app', 'App')}

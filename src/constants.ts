@@ -178,3 +178,5 @@ export const CLOUDIAN = 'CLOUDIAN';
 export const SCALITYS3 = 'SCALITYS3';
 export const COS = 'cos';
 export const ACCOUNT = 'account';
+export const MOBILE_CALENDAR_FEATURE_SYNC = 'mobileCalendarFeatureSync';
+export const MOBILE_CONTACT_FEATURE_SYNC = 'mobileContactFeatureSync';

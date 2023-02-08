@@ -17,14 +17,14 @@ import {
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import _ from 'lodash';
+import _, { isEqual, reduce } from 'lodash';
 import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { Features } from './features';
 import { getCoreAttributes } from '../../services/get-core-attributes';
-import { COS } from '../../constants';
+import { COS, MOBILE_CALENDAR_FEATURE_SYNC, MOBILE_CONTACT_FEATURE_SYNC } from '../../constants';
 import { setCoreAttributes } from '../../services/set-core-attributes';
 
 const CosFeatures: FC = () => {
@@ -40,9 +40,9 @@ const CosFeatures: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const setSwitchOptionValue = useCallback(
-		(key: string, value: boolean): void => {
-			setInitCosData((prev: Record<string, boolean>) => ({ ...prev, [key]: value }));
-			setCosFeatures((prev: Record<string, boolean>) => ({ ...prev, [key]: value }));
+		(key: string, value: string): void => {
+			setInitCosData((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+			setCosFeatures((prev: Record<string, string>) => ({ ...prev, [key]: value }));
 		},
 		[setCosFeatures, setInitCosData]
 	);
@@ -60,11 +60,11 @@ const CosFeatures: FC = () => {
 				if (data?.attributes) {
 					setSwitchOptionValue(
 						'mobileContactFeatureSync',
-						data?.attributes?.mobileContactFeatureSync[0]?.value === 'enabled'
+						data?.attributes?.mobileContactFeatureSync[0]?.value === 'enabled' ? 'TRUE' : 'FALSE'
 					);
 					setSwitchOptionValue(
 						'mobileCalendarFeatureSync',
-						data?.attributes?.mobileCalendarFeatureSync[0]?.value === 'enabled'
+						data?.attributes?.mobileCalendarFeatureSync[0]?.value === 'enabled' ? 'TRUE' : 'FALSE'
 					);
 				}
 			})
@@ -85,50 +85,20 @@ const CosFeatures: FC = () => {
 	const setInitalValues = useCallback(
 		(obj: any) => {
 			if (obj) {
-				setSwitchOptionValue(
-					'carbonioFeatureMailsAppEnabled',
-					obj?.carbonioFeatureMailsAppEnabled === 'TRUE'
-				);
+				setSwitchOptionValue('carbonioFeatureMailsAppEnabled', obj?.carbonioFeatureMailsAppEnabled);
 				setSwitchOptionValue(
 					'zimbraFeatureOutOfOfficeReplyEnabled',
-					obj?.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'
+					obj?.zimbraFeatureOutOfOfficeReplyEnabled
 				);
-				setSwitchOptionValue(
-					'zimbraFeatureSignaturesEnabled',
-					obj?.zimbraFeatureSignaturesEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'zimbraFeatureMobileSyncEnabled',
-					obj?.zimbraFeatureMobileSyncEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'zimbraFeatureContactsEnabled',
-					obj?.zimbraFeatureContactsEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'zimbraFeatureCalendarEnabled',
-					obj?.zimbraFeatureCalendarEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'carbonioFeatureFilesAppEnabled',
-					obj?.carbonioFeatureFilesAppEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'carbonioFeatureFilesEnabled',
-					obj?.carbonioFeatureFilesEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'carbonioFeatureChatsEnabled',
-					obj?.carbonioFeatureChatsEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'carbonioFeatureChatsAppEnabled',
-					obj?.carbonioFeatureChatsAppEnabled === 'TRUE'
-				);
-				setSwitchOptionValue(
-					'zimbraFeatureTasksEnabled',
-					obj?.zimbraFeatureTasksEnabled === 'TRUE'
-				);
+				setSwitchOptionValue('zimbraFeatureSignaturesEnabled', obj?.zimbraFeatureSignaturesEnabled);
+				setSwitchOptionValue('zimbraFeatureMobileSyncEnabled', obj?.zimbraFeatureMobileSyncEnabled);
+				setSwitchOptionValue('zimbraFeatureContactsEnabled', obj?.zimbraFeatureContactsEnabled);
+				setSwitchOptionValue('zimbraFeatureCalendarEnabled', obj?.zimbraFeatureCalendarEnabled);
+				setSwitchOptionValue('carbonioFeatureFilesAppEnabled', obj?.carbonioFeatureFilesAppEnabled);
+				setSwitchOptionValue('carbonioFeatureFilesEnabled', obj?.carbonioFeatureFilesEnabled);
+				setSwitchOptionValue('carbonioFeatureChatsEnabled', obj?.carbonioFeatureChatsEnabled);
+				setSwitchOptionValue('carbonioFeatureChatsAppEnabled', obj?.carbonioFeatureChatsAppEnabled);
+				setSwitchOptionValue('zimbraFeatureTasksEnabled', obj?.zimbraFeatureTasksEnabled);
 			}
 		},
 		[setSwitchOptionValue]
@@ -193,7 +163,6 @@ const CosFeatures: FC = () => {
 
 	const modifyCoreAttributes = (body: any): void => {
 		setCoreAttributes(body)
-			// eslint-disable-next-line @typescript-eslint/no-empty-function
 			.then((data: any) => {
 				setSwitchOptionValue('mobileContactFeatureSync', cosFeatures?.mobileContactFeatureSync);
 				setSwitchOptionValue('mobileCalendarFeatureSync', cosFeatures?.mobileCalendarFeatureSync);
@@ -217,8 +186,8 @@ const CosFeatures: FC = () => {
 		body._jsns = 'urn:zimbraAdmin';
 		const attrList: { n: string; _content: string }[] = [];
 		Object.keys(cosFeatures).forEach((ele: any) => {
-			if (ele !== 'mobileCalendarFeatureSync' && ele !== 'mobileContactFeatureSync') {
-				attrList.push({ n: ele, _content: cosFeatures[ele] === true ? 'TRUE' : 'FALSE' });
+			if (ele !== MOBILE_CALENDAR_FEATURE_SYNC && ele !== MOBILE_CONTACT_FEATURE_SYNC) {
+				attrList.push({ n: ele, _content: cosFeatures[ele] });
 			}
 		});
 		body.a = attrList;
@@ -226,15 +195,26 @@ const CosFeatures: FC = () => {
 			_content: zimbraId
 		};
 		body.id = id;
-		if (isAdvanced) {
+		const modifiedKeys: any = reduce(
+			cosFeatures,
+			function (result, value, key): any {
+				return isEqual(value, initCosData[key]) ? result : [...result, key];
+			},
+			[]
+		);
+		if (
+			(modifiedKeys.includes(MOBILE_CALENDAR_FEATURE_SYNC) ||
+				modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
+			isAdvanced
+		) {
 			const coreAttrBody: any = {
 				mobileCalendarFeatureSync: {
-					value: cosFeatures.mobileCalendarFeatureSync ? 'enabled' : 'disabled',
+					value: cosFeatures.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
 					objectName: cosName,
 					configType: COS
 				},
 				mobileContactFeatureSync: {
-					value: cosFeatures.mobileContactFeatureSync ? 'enabled' : 'disabled',
+					value: cosFeatures.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
 					objectName: cosName,
 					configType: COS
 				}

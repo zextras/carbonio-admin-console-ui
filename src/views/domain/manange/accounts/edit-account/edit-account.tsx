@@ -35,6 +35,13 @@ import { setPasswordRequest } from '../../../../../services/set-password';
 import { renameAccountRequest } from '../../../../../services/rename-account';
 import { AccountContext } from '../account-context';
 import { getDomainList } from '../../../../../services/search-domain-service';
+import { setCoreAttributes } from '../../../../../services/set-core-attributes';
+import {
+	ACCOUNT,
+	MOBILE_CALENDAR_FEATURE_SYNC,
+	MOBILE_CONTACT_FEATURE_SYNC
+} from '../../../../../constants';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 
 // eslint-disable-next-line no-empty-pattern
 const EditAccount: FC<{
@@ -60,6 +67,7 @@ const EditAccount: FC<{
 	const conext = useContext(AccountContext);
 	const { accountDetail, setAccountDetail, initAccountDetail, setInitAccountDetail } = conext;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const getDomainLists = useCallback(
 		(offset: number): any => {
@@ -154,6 +162,43 @@ const EditAccount: FC<{
 		}
 	];
 
+	const setSwitchInitOptionValue = useCallback(
+		(key: string, value: string): void => {
+			setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+		},
+		[setInitAccountDetail]
+	);
+
+	const modifyCoreAttributes = useCallback(
+		(body: any): void => {
+			setCoreAttributes(body)
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				.then((data: any) => {
+					setSwitchInitOptionValue(
+						'mobileContactFeatureSync',
+						body?.mobileContactFeatureSync?.value === 'enabled' ? 'TRUE' : 'FALSE'
+					);
+					setSwitchInitOptionValue(
+						'mobileCalendarFeatureSync',
+						body?.mobileCalendarFeatureSync?.value === 'enabled' ? 'TRUE' : 'FALSE'
+					);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, setSwitchInitOptionValue, t]
+	);
+
 	const modifyAccountReq = useCallback((): void => {
 		const modifiedKeys: any = reduce(
 			accountDetail,
@@ -217,47 +262,73 @@ const EditAccount: FC<{
 
 			remove(modifiedKeys, (ele) => ele === 'mail');
 		}
+
+		if (
+			(modifiedKeys.includes(MOBILE_CALENDAR_FEATURE_SYNC) ||
+				modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
+			isAdvanced
+		) {
+			const coreAttrBody: any = {
+				mobileCalendarFeatureSync: {
+					value: accountDetail?.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+					objectName: accountDetail?.name,
+					configType: ACCOUNT
+				},
+				mobileContactFeatureSync: {
+					value: accountDetail?.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+					objectName: accountDetail?.name,
+					configType: ACCOUNT
+				}
+			};
+			modifyCoreAttributes(coreAttrBody);
+			remove(modifiedKeys, (ele) => ele === MOBILE_CALENDAR_FEATURE_SYNC);
+			remove(modifiedKeys, (ele) => ele === MOBILE_CONTACT_FEATURE_SYNC);
+		}
 		modifiedKeys.forEach((ele: any) => {
 			modifiedData[ele] = accountDetail[ele];
 		});
 
-		modifyAccountRequest(initAccountDetail?.zimbraId, modifiedData)
-			.then((data) => {
-				if (data) {
-					// setShowCreateAccountView(false);
+		if (modifiedKeys && modifiedKeys?.length > 0) {
+			modifyAccountRequest(initAccountDetail?.zimbraId, modifiedData)
+				.then((data) => {
+					if (data) {
+						// setShowCreateAccountView(false);
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								'label.the_last_changes_has_been_saved_successfully',
+								'Changes have been saved successfully'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+						setInitAccountDetail({ ...accountDetail });
+						getAccountList();
+					}
+				})
+				.catch((error) => {
 					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: t(
-							'label.the_last_changes_has_been_saved_successfully',
-							'Changes have been saved successfully'
-						),
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
-					setInitAccountDetail({ ...accountDetail });
-					getAccountList();
-				}
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
 				});
-			});
+		}
 	}, [
 		accountDetail,
 		createSnackbar,
 		domainName,
 		getAccountList,
 		initAccountDetail,
+		isAdvanced,
+		modifyCoreAttributes,
 		setInitAccountDetail,
 		t
 	]);
