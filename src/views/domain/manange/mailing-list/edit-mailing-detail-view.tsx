@@ -681,7 +681,7 @@ const EditMailingListView: FC<any> = ({
 							grant[0]?.grantee[0]?.name &&
 							grant[0]?.grantee[0]?.name !== selectedMailingList?.name
 						) {
-							onGrantTypeChange(EMAIL);
+							onGrantTypeChange(PUB);
 							const it = grantTypeOptions.find((item: any) => item.value === EMAIL);
 							const emails = [
 								{
@@ -1186,10 +1186,11 @@ const EditMailingListView: FC<any> = ({
 		let action: any = {};
 		if (grantType?.value === PUB) {
 			dl = { by: 'name', _content: selectedMailingList?.name };
-			action = {
-				op: 'setRights',
-				right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
-			};
+			// Do not remove this code
+			// action = {
+			// 	op: 'setRights',
+			// 	right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
+			// };
 		} else if (grantType?.value === GRP) {
 			dl = { by: 'name', _content: selectedMailingList?.name };
 			action = {
@@ -1219,7 +1220,9 @@ const EditMailingListView: FC<any> = ({
 				}
 			};
 		}
-		request.push(distributionListAction(dl, action));
+		if (action.right) {
+			request.push(distributionListAction(dl, action));
+		}
 
 		if (request.length > 0) {
 			callAllRequest(request);

@@ -473,10 +473,11 @@ const DomainMailingList: FC = () => {
 			let action: any = {};
 			if (ownerGrantEmailType?.value === PUB) {
 				dl = { by: 'name', _content: name };
-				action = {
-					op: 'setRights',
-					right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
-				};
+				// Do not remove this code
+				// action = {
+				// 	op: 'setRights',
+				// 	right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
+				// };
 			} else if (ownerGrantEmailType?.value === GRP) {
 				dl = { by: 'name', _content: name };
 				action = {
@@ -512,7 +513,9 @@ const DomainMailingList: FC = () => {
 					let message = '';
 					const mlId = data?.dl[0]?.id;
 					addMemberToMailingList(members, owners, mlId, allOwnersList);
-					callAllRequest([distributionListAction(dl, action)]);
+					if (action.right) {
+						callAllRequest([distributionListAction(dl, action)]);
+					}
 					setShowCreateMailingListView(false);
 					message = t('label.the_has_been_created_success', {
 						name,
