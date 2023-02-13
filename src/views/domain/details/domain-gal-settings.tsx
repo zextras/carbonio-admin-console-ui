@@ -280,6 +280,8 @@ const DomainGalSettings: FC = () => {
 
 			if (!obj.zimbraGalLdapAuthMech) {
 				obj.zimbraGalLdapAuthMech = 'none';
+			} else {
+				setZimbraGalLdapAuthMech(obj.zimbraGalLdapAuthMech !== 'none');
 			}
 			setDomainData(obj);
 			setIsDirty(false);
@@ -398,12 +400,12 @@ const DomainGalSettings: FC = () => {
 			dataSourceBody._jsns = 'urn:zimbraAdmin';
 			attributes = [];
 			attributes.push({
-				n: 'zimbraDataSourceName',
+				n: 'zimbraGalType',
 				_content: domainData?.zimbraGalMode
 			});
 			attributes.push({
-				n: 'zimbraGalType',
-				_content: domainData?.zimbraGalMode
+				n: 'zimbraDataSourceGalPollingInterval',
+				_content: zimbraDataSourceGalPollingInterval
 			});
 			dataSourceBody.dataSource = {
 				id: dataSourceId,
