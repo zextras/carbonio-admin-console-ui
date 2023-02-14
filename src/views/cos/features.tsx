@@ -48,7 +48,7 @@ export const Features: FC<{
 							value={featuresDetail.carbonioFeatureMailsAppEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureMailsAppEnabled')}
-							label={t('label.app', 'App')}
+							label={t('label.mobile_app', 'Mobile App')}
 						/>
 					</Row>
 					<Row width="35%" mainAlignment="flex-start">
@@ -91,7 +91,7 @@ export const Features: FC<{
 				<Container
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					width="50%"
+					width="35%"
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
@@ -113,14 +113,14 @@ export const Features: FC<{
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 								onClick={() => changeSwitchOption('mobileContactFeatureSync')}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
-								disabled={!featuresDetail.zimbraFeatureMobileSyncEnabled}
+								disabled={featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE'}
 							/>
 						</Row>
 					)}
 				</Container>
 				<Container
 					mainAlignment="flex-start"
-					width="50%"
+					width="35%"
 					crossAlignment="flex-start"
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
@@ -143,7 +143,7 @@ export const Features: FC<{
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 								onClick={() => changeSwitchOption('mobileCalendarFeatureSync')}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
-								disabled={!featuresDetail.zimbraFeatureMobileSyncEnabled}
+								disabled={featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE'}
 							/>
 						</Row>
 					)}
@@ -159,7 +159,7 @@ export const Features: FC<{
 				<Container
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					width="50%"
+					width="35%"
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
 				>
@@ -179,13 +179,14 @@ export const Features: FC<{
 							value={featuresDetail.carbonioFeatureFilesAppEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureFilesAppEnabled')}
-							label={t('cos.app', 'App')}
+							label={t('label.mobile_app', 'Mobile App')}
+							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE'}
 						/>
 					</Row>
 				</Container>
 				<Container
 					mainAlignment="flex-start"
-					width="50%"
+					width="35%"
 					crossAlignment="flex-start"
 					orientation="vertical"
 					padding={{ bottom: 'large' }}
@@ -198,7 +199,7 @@ export const Features: FC<{
 							value={featuresDetail.zimbraFeatureTaskEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureTaskEnabled')}
-							label={t('label.app', 'App')}
+							label={t('label.feature', 'Feature')}
 						/>
 					</Row>
 				</Container>
@@ -227,7 +228,8 @@ export const Features: FC<{
 							value={featuresDetail.carbonioFeatureChatsAppEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureChatsAppEnabled')}
-							label={t('cos.app', 'App')}
+							label={t('label.mobile_app', 'Mobile App')}
+							disabled={featuresDetail.carbonioFeatureChatsEnabled !== 'TRUE'}
 						/>
 					</Row>
 				</Row>
