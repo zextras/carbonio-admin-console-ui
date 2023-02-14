@@ -957,7 +957,6 @@
         "favicon": "Favicon",
         "favicon_description": "Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.",
         "favicon_path": "Favicon Path",
-        "feature": "Feature",
         "features": "Features",
         "files": "Files",
         "filter": "Filter",
@@ -1424,6 +1423,7 @@
         "volumes": "Volumes",
         "want_to_use_this_certifiacte": "I WANT TO USE THIS CERTIFICATE",
         "web_client": "Web Client",
+        "web_feature": "Web Feature",
         "week_day": {
             "friday": "Friday",
             "monday": "Monday",
