@@ -11,14 +11,20 @@ const PrimaryBarTooltip: FC<{ items: any[] }> = ({ items }) => (
 		orientation="horizontal"
 		mainAlignment="flex-start"
 		background="gray3"
-		width="fit"
 		height="fit"
+		maxWidth="22.063rem"
 		crossAlignment="flex-start"
 	>
 		<Padding left="small" right="small">
 			{items.map((item) => (
-				<Padding top="small" bottom="small" key={item.header}>
-					<Text size="small" color="text" weight="bold">
+				<Padding bottom="small" key={item.header} all="small">
+					<Text
+						size="medium"
+						color="text"
+						weight="regular"
+						className="yyyyyyy"
+						style={{ 'white-space': 'break-spaces' }}
+					>
 						{item.header}
 					</Text>
 					{item.options.map((v: any) => (

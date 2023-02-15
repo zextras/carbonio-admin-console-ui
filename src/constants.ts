@@ -181,3 +181,7 @@ export const COS = 'cos';
 export const ACCOUNT = 'account';
 export const MOBILE_CALENDAR_FEATURE_SYNC = 'mobileCalendarFeatureSync';
 export const MOBILE_CONTACT_FEATURE_SYNC = 'mobileContactFeatureSync';
+export const ASC = 'asc';
+export const DESC = 'desc';
+export const PERCENT_USED = 'percentUsed';
+export const TOTAL_USED = 'totalUsed';

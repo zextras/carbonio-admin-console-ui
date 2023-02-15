@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container, IconButton, Text, Row } from '@zextras/carbonio-design-system';
 import { FIRST_PAGE } from '../../constants';
@@ -55,12 +55,12 @@ const Paging: FC<{
 		}
 	};
 
-	const onFirstPage = (): void => {
+	const onFirstPage = useCallback((): void => {
 		setCurrentPage(FIRST_PAGE);
 		if (firstPage) {
 			firstPage(FIRST_PAGE);
 		}
-	};
+	}, [firstPage]);
 
 	useEffect(() => {
 		if (currentPage >= totalPages) {
@@ -81,7 +81,12 @@ const Paging: FC<{
 			setIsFirstPageDisabled(true);
 			setIsLastPageDisabled(true);
 		}
-		setOffset(currentPage * pageSize - pageSize);
+		if (totalPages === 0) {
+			setCurrentPage(FIRST_PAGE);
+			setOffset(0);
+		} else {
+			setOffset(currentPage * pageSize - pageSize);
+		}
 	}, [currentPage, totalPages, setOffset, pageSize, totalItem]);
 
 	return (
