@@ -656,7 +656,11 @@ const EditMailingListView: FC<any> = ({
 				if (data && data?.grant && Array.isArray(data?.grant)) {
 					const grant = data?.grant;
 					if (grant.length > 1) {
-						onGrantTypeChange(EMAIL);
+						if (grant[1].grantee?.[0]?.type === 'all') {
+							onGrantTypeChange(ALL);
+						} else {
+							onGrantTypeChange(EMAIL);
+						}
 						const emails: Array<any> = [];
 						grant.forEach((grItem: any) => {
 							emails.push({
@@ -1187,10 +1191,10 @@ const EditMailingListView: FC<any> = ({
 		if (grantType?.value === PUB) {
 			dl = { by: 'name', _content: selectedMailingList?.name };
 			// Do not remove this code
-			// action = {
-			// 	op: 'setRights',
-			// 	right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
-			// };
+			action = {
+				op: 'setRights',
+				right: { right: 'sendToDistList', grantee: [] }
+			};
 		} else if (grantType?.value === GRP) {
 			dl = { by: 'name', _content: selectedMailingList?.name };
 			action = {
