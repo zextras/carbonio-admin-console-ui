@@ -1668,7 +1668,7 @@
     },
     "cumminity_edition": "Community Edition!",
     "welcome": "Benvenuto",
-    "welcome_to_carbonio_information": "{{adminName}}, benvenuti su Carbonio!",
+    "welcome_to_carbonio_information": "Benvenuto {{adminName}} in Carbonio!",
     "operations": {
         "copy_btn": "COPIA",
         "details": "Dettagli",
