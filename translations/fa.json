@@ -1,0 +1,69 @@
+{
+    "label": {
+        "home": "خانه",
+        "description": "توضیح",
+        "wizard_cancel_button": "لغو",
+        "bucket_done_button": "انجام",
+        "bucket_cancel_button": "لغو",
+        "type": "نوع",
+        "email": "نامه‌ها",
+        "details": "جزئیات",
+        "actions": "اقدامات",
+        "of": "از",
+        "delete": "حذف",
+        "search": "جستجو",
+        "name": "نام",
+        "edit": "ویرایش",
+        "create": "ایجاد",
+        "cancel": "لغو",
+        "volume_cancel_button": "لغو",
+        "settings": "تنظیمات",
+        "disabled": "غیرفعال",
+        "purge": "پاکسازی",
+        "enabled": "فعال",
+        "reset": "تنظیم مجدد",
+        "theme": "پوسته‌ها",
+        "date": "تاریخ",
+        "done": "انجام"
+    },
+    "domain": {
+        "theme": "پوسته‌ها"
+    },
+    "cos": {
+        "enabled": "فعال",
+        "disabled": "غیرفعال"
+    },
+    "hsm": {
+        "delete": "حذف",
+        "details": "جزئیات",
+        "edit": "ویرایش",
+        "name": "نام",
+        "type": "نوع"
+    },
+    "volume": {
+        "server_list_header": {
+            "description": "توضیح"
+        },
+        "volume_config_header": {
+            "name": "نام"
+        },
+        "volume_header": {
+            "name": "نام"
+        },
+        "volume_indexer_header": {
+            "name": "نام"
+        }
+    },
+    "dashboard": {
+        "description": "توضیح"
+    },
+    "notification": {
+        "mark_as_read": "علامتگذاری به عنوان خوانده شده",
+        "copy": "ایجاد رونوشت",
+        "mark_as_unread": "علامتگذاری به عنوان خوانده نشده"
+    },
+    "operations": {
+        "details": "جزئیات",
+        "done": "انجام"
+    }
+}
