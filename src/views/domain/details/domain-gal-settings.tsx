@@ -403,10 +403,11 @@ const DomainGalSettings: FC = () => {
 				n: 'zimbraGalType',
 				_content: domainData?.zimbraGalMode
 			});
-			attributes.push({
+			// Commented because later we need to include this attribute
+			/* attributes.push({
 				n: 'zimbraDataSourceGalPollingInterval',
 				_content: zimbraDataSourceGalPollingInterval
-			});
+			}); */
 			dataSourceBody.dataSource = {
 				id: dataSourceId,
 				a: attributes
