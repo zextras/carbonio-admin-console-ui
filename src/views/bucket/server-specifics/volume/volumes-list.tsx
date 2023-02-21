@@ -229,7 +229,7 @@ const VolumesDetailPanel: FC = () => {
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxPowerstore',
 				action: 'getAllVolumes',
-				targetServers: serverName
+				targetServers: selectedServerName
 			})
 				.then((res: any) => {
 					const result = JSON.parse(res?.Body?.response?.content);
@@ -297,7 +297,7 @@ const VolumesDetailPanel: FC = () => {
 					});
 				});
 		}
-	}, [isAdvanced, serverName, selectedServerId, createSnackbar, t]);
+	}, [isAdvanced, selectedServerName, selectedServerId, createSnackbar, t]);
 
 	const deleteHandler = async (data: any): Promise<any> => {
 		if (isAdvanced) {
@@ -305,7 +305,7 @@ const VolumesDetailPanel: FC = () => {
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxPowerstore',
 				action: 'doDeleteVolume',
-				targetServers: serverName,
+				targetServers: selectedServerName,
 				volumeName: data?.name
 			})
 				.then((res: any) => {
