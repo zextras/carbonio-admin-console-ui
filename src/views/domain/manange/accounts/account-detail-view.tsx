@@ -787,7 +787,7 @@ const AccountDetailView: FC<any> = ({
 										disabled={isRequestInProgress}
 									/>
 									<Button
-										label={t('label.disable_the_account', 'Disable the account')}
+										label={t('label.close_the_account', 'Close the account')}
 										color="primary"
 										onClick={onDisableAccount}
 										disabled={
@@ -825,7 +825,7 @@ const AccountDetailView: FC<any> = ({
 								<Text size="extralarge" overflow="break-word">
 									<Trans
 										i18nKey="label.deleting_account_content_3"
-										defaults="You can <bold>Disable it to preserve</bold> the data, instead."
+										defaults="You can <bold>Close it to preserve</bold> the data, instead."
 										components={{ bold: <strong /> }}
 									/>
 								</Text>
