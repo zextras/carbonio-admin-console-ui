@@ -234,9 +234,9 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<Switch
-							value={featuresDetail.zimbraFeatureTaskEnabled === 'TRUE'}
+							value={featuresDetail.zimbraFeatureTasksEnabled === 'TRUE'}
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('zimbraFeatureTaskEnabled')}
+							onClick={() => changeSwitchOption('zimbraFeatureTasksEnabled')}
 							label={t('label.web_feature', 'Web Feature')}
 						/>
 					</Row>
