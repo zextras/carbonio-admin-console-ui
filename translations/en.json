@@ -23,7 +23,7 @@
         "add_user_on_delegates_list": "Add user on Delegates List",
         "advanced_search": "Advanced Search",
         "aliases": "Aliases",
-        "all_folders": "All Folders (include future folders)",
+        "all_folders": "All Folders ( it includes also folders that will be created later on)",
         "allow_sending_cancellation_mail": "Allow sending cancellation mail",
         "allow_sending_from_any_address": "Allow sending from any address",
         "allow_user_check_minimum_interval": "Allow the user to change the minimum checking interval",

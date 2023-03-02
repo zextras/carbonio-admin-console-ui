@@ -159,7 +159,7 @@ const DelegateSetRightsSection: FC = () => {
 											<Radio
 												label={t(
 													'account_details.all_folders',
-													`All Folders (include future folders)`
+													`All Folders ( it includes also folders that will be created later on)`
 												)}
 												value="all_folders"
 												width="300px"
