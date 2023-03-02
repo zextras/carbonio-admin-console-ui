@@ -45,7 +45,7 @@ const DelegateSetRightsSection: FC = () => {
 				<Row mainAlignment="flex-start" width="100%">
 					<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 						<Text size="small" color="gray0" weight="bold">
-							{t('account_details.delegate_rights', `Delegate Rights`)}
+							{t('account_details.delegate_rights', 'Delegate`s rights')}
 						</Text>
 					</Row>
 				</Row>

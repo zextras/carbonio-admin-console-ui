@@ -55,7 +55,7 @@ const DelegateAddSection: FC = () => {
 				<Row mainAlignment="flex-start" width="100%">
 					<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 						<Input
-							label={t('account_details.delegate_rights', 'Delegate Rights')}
+							label={t('account_details.delegate_rights', 'Delegate`s rights')}
 							backgroundColor="gray5"
 							defaultValue={
 								DELEGETES_RIGHTS_TYPE.find(

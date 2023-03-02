@@ -53,7 +53,7 @@
         },
         "delegate_created_successfully": "Delegate created successfully",
         "delegate_deleted_successfully": "Delegate`s rights deleted successfully",
-        "delegate_rights": "Delegate Rights",
+        "delegate_rights": "Delegate`s rights",
         "delegate_updated_successfully": "Delegate updated successfully",
         "deligate_abstract_text": "The user {{granteeEmail}} will be able to send mails {{right}} {{targetEmail}}",
         "display_external_image_as_html": "Display external image as HTML",
