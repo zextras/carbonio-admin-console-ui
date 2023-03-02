@@ -742,7 +742,7 @@
         "background_login_page": "Background Login Page",
         "backup": "Backup",
         "backup_at_startup": "Backup at Startup",
-        "backup_primarybar_tooltip": "Manage your <bold>backup services, view</bold> its <bold>status</bold>, the <bold>server’s list</bold> or <bold>import an existing one</bold>.",
+        "backup_primarybar_tooltip": "Manage your <bold>backup services, view</bold> their <bold>status</bold>, the <bold>server’s list</bold> or <bold>import an existing one</bold>.",
         "backup_space": "Backup Space",
         "base_dn_is_not_valid": "Base DN is not valid",
         "bind_dn_template": "Bind Distinguished Name (DN) Template",

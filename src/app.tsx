@@ -151,7 +151,7 @@ const App: FC = () => {
 				header: (
 					<Trans
 						i18nKey="label.backup_primarybar_tooltip"
-						defaults="Manage your <bold>backup services, view</bold> its <bold>status</bold>, the <bold>server’s list</bold> or <bold>import an existing one</bold>."
+						defaults="Manage your <bold>backup services, view</bold> their <bold>status</bold>, the <bold>server’s list</bold> or <bold>import an existing one</bold>."
 						components={{ bold: <strong /> }}
 					/>
 				),
