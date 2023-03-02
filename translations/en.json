@@ -113,7 +113,7 @@
         "select_mode": "SELECT MODE",
         "send": "SEND",
         "send_as_behalf": "Send on Behalf of (recepients will see the sender {{targetEmail}})",
-        "send_as_recepients": "Send as (recipients will see the sender {{targetEmail}})",
+        "send_as_recepients": "Send as (recipients will display this sender email {{targetEmail}})",
         "send_mails_only": "Send Mails only (no rights to read folders)",
         "send_read_mails": "Send and Read Mails (no rights to create folders / manage mails)",
         "send_read_manage_mails": "Send, Read and Manage Mails (all of the above)",
