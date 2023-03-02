@@ -118,7 +118,7 @@
         "send_read_mails": "Send and Read Mails (no rights to create folders / manage mails)",
         "send_read_manage_mails": "Send, Read and Manage Mails (all of the above)",
         "send_read_receipts": "Send read receipts",
-        "send_recepients_see_the_mail": "Send {{right}} (recepients will see the mail from {{targetEmail}})",
+        "send_recepients_see_the_mail": "Send {{right}} (recipients will display this sender email {{targetEmail}})",
         "send_the_otp_to": "Send the OTP to",
         "sendin_options": "Sending Options",
         "sending_options": "Sending Options",
