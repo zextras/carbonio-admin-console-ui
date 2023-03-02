@@ -307,7 +307,10 @@ const EditAccountDelegatesSection: FC = () => {
 								'account_details.delegate_updated_successfully',
 								'Delegate`s rights updated successfully'
 						  )
-						: t('account_details.delegate_created_successfully', 'Delegate created successfully'),
+						: t(
+								'account_details.delegate_created_successfully',
+								'Delegate`s rights created successfully'
+						  ),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -350,7 +353,10 @@ const EditAccountDelegatesSection: FC = () => {
 								'account_details.delegate_updated_successfully',
 								'Delegate`s rights updated successfully'
 						  )
-						: t('account_details.delegate_created_successfully', 'Delegate created successfully'),
+						: t(
+								'account_details.delegate_created_successfully',
+								'Delegate`s rights created successfully'
+						  ),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
