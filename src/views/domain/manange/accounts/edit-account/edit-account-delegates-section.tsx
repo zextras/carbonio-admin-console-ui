@@ -259,7 +259,7 @@ const EditAccountDelegatesSection: FC = () => {
 					type: 'success',
 					label: t(
 						'account_details.delegate_deleted_successfully',
-						'Delegate deleted successfully'
+						'Delegate`s rights deleted successfully'
 					),
 					autoHideTimeout: 3000,
 					hideButton: true,

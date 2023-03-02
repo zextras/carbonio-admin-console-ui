@@ -162,7 +162,6 @@ const DelegateSetRightsSection: FC = () => {
 													`All Folders ( it includes also folders that will be created later on)`
 												)}
 												value="all_folders"
-												width="300px"
 											/>
 											<Radio
 												label={t(

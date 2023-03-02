@@ -52,7 +52,7 @@
             "work_week": "Work Week View"
         },
         "delegate_created_successfully": "Delegate created successfully",
-        "delegate_deleted_successfully": "Delegate deleted successfully",
+        "delegate_deleted_successfully": "Delegate`s rights deleted successfully",
         "delegate_rights": "Delegate Rights",
         "delegate_updated_successfully": "Delegate updated successfully",
         "deligate_abstract_text": "The user {{granteeEmail}} will be able to send mails {{right}} {{targetEmail}}",
