@@ -259,7 +259,7 @@ const EditAccountDelegatesSection: FC = () => {
 					type: 'success',
 					label: t(
 						'account_details.delegate_deleted_successfully',
-						'Delegate deleted successfully'
+						'Delegate`s rights deleted successfully'
 					),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -303,8 +303,14 @@ const EditAccountDelegatesSection: FC = () => {
 					key: 'success',
 					type: 'success',
 					label: editMode
-						? t('account_details.delegate_updated_successfully', 'Delegate updated successfully')
-						: t('account_details.delegate_created_successfully', 'Delegate created successfully'),
+						? t(
+								'account_details.delegate_updated_successfully',
+								'Delegate`s rights updated successfully'
+						  )
+						: t(
+								'account_details.delegate_created_successfully',
+								'Delegate`s rights created successfully'
+						  ),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -343,8 +349,14 @@ const EditAccountDelegatesSection: FC = () => {
 					key: 'success',
 					type: 'success',
 					label: editMode
-						? t('account_details.delegate_updated_successfully', 'Delegate updated successfully')
-						: t('account_details.delegate_created_successfully', 'Delegate created successfully'),
+						? t(
+								'account_details.delegate_updated_successfully',
+								'Delegate`s rights updated successfully'
+						  )
+						: t(
+								'account_details.delegate_created_successfully',
+								'Delegate`s rights created successfully'
+						  ),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true

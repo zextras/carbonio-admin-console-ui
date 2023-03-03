@@ -45,7 +45,7 @@ const DelegateSetRightsSection: FC = () => {
 				<Row mainAlignment="flex-start" width="100%">
 					<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 						<Text size="small" color="gray0" weight="bold">
-							{t('account_details.delegate_rights', `Delegate Rights`)}
+							{t('account_details.delegate_rights', 'Delegate`s rights')}
 						</Text>
 					</Row>
 				</Row>
@@ -100,7 +100,7 @@ const DelegateSetRightsSection: FC = () => {
 									<Radio
 										label={t(
 											'account_details.send_as_recepients',
-											`Send as (recipients will see the sender {{targetEmail}})`,
+											`Send as (recipients will display this sender email {{targetEmail}})`,
 											{
 												targetEmail: accountDetail?.zimbraMailDeliveryAddress
 											}
@@ -159,10 +159,9 @@ const DelegateSetRightsSection: FC = () => {
 											<Radio
 												label={t(
 													'account_details.all_folders',
-													`All Folders (include future folders)`
+													`All Folders ( it includes also folders that will be created later on)`
 												)}
 												value="all_folders"
-												width="300px"
 											/>
 											<Radio
 												label={t(
