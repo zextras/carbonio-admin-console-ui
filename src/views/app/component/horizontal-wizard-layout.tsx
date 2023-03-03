@@ -40,7 +40,7 @@ const StepNavigator: FC<{
 }) => {
 	const color = useMemo(() => {
 		if (isActive) return 'primary';
-		return isDone ? '#abc7ed' : 'gray1';
+		return isDone ? 'secondary' : 'gray1';
 	}, [isActive, isDone]);
 
 	const renderElement = useMemo(() => {
@@ -62,7 +62,7 @@ const StepNavigator: FC<{
 		<Row
 			width={renderElement ? '100%' : '50%'}
 			style={{
-				borderBottom: isActive ? '2px solid #2b73d2' : '',
+				borderBottom: isActive ? '2px solid primary' : '',
 				cursor: 'pointer'
 			}}
 		>
