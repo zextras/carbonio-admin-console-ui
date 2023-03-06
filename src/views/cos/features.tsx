@@ -55,6 +55,7 @@ export const Features: FC<{
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureMailsAppEnabled')}
 							label={t('label.mobile_app', 'Mobile App')}
+							iconColor="primary"
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -63,6 +64,7 @@ export const Features: FC<{
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureSignaturesEnabled')}
 							label={t('label.mail_signatures', 'Mail Signatures')}
+							iconColor="primary"
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -71,6 +73,7 @@ export const Features: FC<{
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
 							label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
+							iconColor="primary"
 						/>
 					</Row>
 					{isAdvanced && (
@@ -80,6 +83,7 @@ export const Features: FC<{
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 								onClick={() => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
+								iconColor="primary"
 							/>
 						</Row>
 					)}
@@ -101,6 +105,7 @@ export const Features: FC<{
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 								onClick={() => changeSwitchOption('carbonioFeatureChatsEnabled')}
 								label={t('label.web_feature', 'Web Feature')}
+								iconColor="primary"
 							/>
 						</Row>
 						<Row
@@ -114,6 +119,7 @@ export const Features: FC<{
 								onClick={() => changeSwitchOption('carbonioFeatureChatsAppEnabled')}
 								label={t('label.mobile_app', 'Mobile App')}
 								disabled={featuresDetail.carbonioFeatureChatsEnabled !== 'TRUE'}
+								iconColor="primary"
 							/>
 						</Row>
 					</Container>
@@ -142,6 +148,7 @@ export const Features: FC<{
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureContactsEnabled')}
 							label={t('label.web_feature', 'Web Feature')}
+							iconColor="primary"
 						/>
 					</Row>
 					{isAdvanced && (
@@ -152,6 +159,7 @@ export const Features: FC<{
 								onClick={() => changeSwitchOption('mobileContactFeatureSync')}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
 								disabled={featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE'}
+								iconColor="primary"
 							/>
 						</Row>
 					)}
@@ -172,6 +180,7 @@ export const Features: FC<{
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureCalendarEnabled')}
 							label={t('label.web_feature', 'Web Feature')}
+							iconColor="primary"
 						/>
 					</Row>
 					{isAdvanced && (
@@ -182,6 +191,7 @@ export const Features: FC<{
 								onClick={() => changeSwitchOption('mobileCalendarFeatureSync')}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
 								disabled={featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE'}
+								iconColor="primary"
 							/>
 						</Row>
 					)}
@@ -210,6 +220,7 @@ export const Features: FC<{
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('carbonioFeatureFilesEnabled')}
 							label={t('label.web_feature', 'Web Feature')}
+							iconColor="primary"
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -219,6 +230,7 @@ export const Features: FC<{
 							onClick={() => changeSwitchOption('carbonioFeatureFilesAppEnabled')}
 							label={t('label.mobile_app', 'Mobile App')}
 							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE'}
+							iconColor="primary"
 						/>
 					</Row>
 				</Container>
@@ -238,6 +250,7 @@ export const Features: FC<{
 							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 							onClick={() => changeSwitchOption('zimbraFeatureTasksEnabled')}
 							label={t('label.web_feature', 'Web Feature')}
+							iconColor="primary"
 						/>
 					</Row>
 				</Container>

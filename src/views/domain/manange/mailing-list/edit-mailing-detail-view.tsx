@@ -1860,6 +1860,7 @@ const EditMailingListView: FC<any> = ({
 									!zimbraDistributionListSendShareMessageToNewMembers
 								);
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -1876,6 +1877,7 @@ const EditMailingListView: FC<any> = ({
 								setIsDirty(true);
 								setZimbraHideInGal(!zimbraHideInGal);
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -2545,6 +2547,7 @@ const EditMailingListView: FC<any> = ({
 								setIsAddToOwnerList(!isAddToOwnerList);
 							}}
 							disabled={selectedMailingList?.dynamic}
+							iconColor="primary"
 						/>
 					</Container>
 				</Container>

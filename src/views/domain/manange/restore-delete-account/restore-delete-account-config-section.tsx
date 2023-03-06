@@ -133,6 +133,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 											lastAvailableStatus: !restoreAccountDetail?.lastAvailableStatus
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Container>
 							<Container>
@@ -165,6 +166,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 											hsmApply: !restoreAccountDetail?.hsmApply
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</ListRow>
@@ -184,6 +186,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 											isEmailNotificationEnable: !restoreAccountDetail?.isEmailNotificationEnable
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</ListRow>

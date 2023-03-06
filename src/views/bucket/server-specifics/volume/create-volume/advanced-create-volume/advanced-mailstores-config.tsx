@@ -244,6 +244,7 @@ const AdvancedMailstoresConfig: FC<{
 										value={advancedVolumeDetail?.useInfrequentAccess}
 										label={t('label.use_infraquent_access', 'Use infrequent access')}
 										onClick={changeSwitchInfraquentAccess}
+										iconColor="primary"
 									/>
 								</Row>
 								<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -272,6 +273,7 @@ const AdvancedMailstoresConfig: FC<{
 								value={advancedVolumeDetail?.useIntelligentTiering}
 								label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
 								onClick={changeSwitchInfraquentTiering}
+								iconColor="primary"
 							/>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -290,6 +292,7 @@ const AdvancedMailstoresConfig: FC<{
 						value={advancedVolumeDetail?.isCurrent}
 						label={t('label.enable_current', 'Enable as Current')}
 						onClick={changeSwitchIsCurrent}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -305,6 +308,7 @@ const AdvancedMailstoresConfig: FC<{
 						value={advancedVolumeDetail?.centralized}
 						label={t('label.storage_centralized', 'I want this Storage to be centralized')}
 						onClick={changeSwitchCentralized}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>

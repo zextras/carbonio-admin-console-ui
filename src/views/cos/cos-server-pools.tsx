@@ -382,6 +382,7 @@ const CosServerPools: FC = () => {
 								onClick={(): void => {
 									setZimbraMailHostPool(!zimbraMailHostPool);
 								}}
+								iconColor="primary"
 							/>
 						</Padding>
 					</ListRow>

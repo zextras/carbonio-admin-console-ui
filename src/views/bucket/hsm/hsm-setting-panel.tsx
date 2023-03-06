@@ -626,6 +626,7 @@ const HSMsettingPanel: FC = () => {
 							onClick={(): void =>
 								setIsPowerstoreMoveSchedulerEnabled(!isPowerstoreMoveSchedulerEnabled)
 							}
+							iconColor="primary"
 						/>
 					</Padding>
 				</ListRow>
@@ -651,6 +652,7 @@ const HSMsettingPanel: FC = () => {
 						onClick={(): void =>
 							setDeduplicateAfterScheduledMoveBlobs(!deduplicateAfterScheduledMoveBlobs)
 						}
+						iconColor="primary"
 					/>
 				</ListRow>
 				<ListRow>

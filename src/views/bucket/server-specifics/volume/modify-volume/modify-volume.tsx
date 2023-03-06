@@ -470,6 +470,7 @@ const ModifyVolume: FC<{
 										value={compressBlobs}
 										label={t('label.enable_compression', 'Enable Compression')}
 										onClick={(): any => setCompressBlobs(!compressBlobs)}
+										iconColor="primary"
 									/>
 								</Row>
 								<Padding width="4%" />
@@ -480,6 +481,7 @@ const ModifyVolume: FC<{
 								value={isCurrent}
 								label={t('label.current', 'Current')}
 								onClick={(): any => setIsCurrent(!isCurrent)}
+								iconColor="primary"
 							/>
 						</Row>
 					</Row>

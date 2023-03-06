@@ -331,6 +331,7 @@ const MailstoresCreate: FC<{
 								value={volumeDetail?.isCompression}
 								label={t('label.enable_compression', 'Enable Compression')}
 								onClick={changeSwitchIsCompression}
+								iconColor="primary"
 							/>
 						</Row>
 						<Padding horizontal="small" />
@@ -360,6 +361,7 @@ const MailstoresCreate: FC<{
 						value={volumeDetail?.isCurrent}
 						label={t('label.enable_current', 'Enable as Current')}
 						onClick={changeSwitchIsCurrent}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>

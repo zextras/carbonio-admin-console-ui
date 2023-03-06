@@ -227,6 +227,7 @@ const CreateAccountDetailSection: FC = () => {
 								'accountDetails.user_will_change_password_on_next_login',
 								'User will change password on next login'
 							)}
+							iconColor="primary"
 						/>
 					</Row>
 					{/* <Row width="48%" mainAlignment="flex-start">
@@ -291,6 +292,7 @@ const CreateAccountDetailSection: FC = () => {
 							value={accountDetail?.defaultCOS}
 							onClick={(): void => changeSwitchOption('defaultCOS')}
 							label={t('accountDetails.default_COS', 'Default COS')}
+							iconColor="primary"
 						/>
 					</Row>
 					<Row width="64%" mainAlignment="flex-start">

@@ -224,6 +224,7 @@ const EditAccountGeneralSection: FC = () => {
 							value={accountDetail?.zimbraHideInGal === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraHideInGal')}
 							label={t('account_details.hide_in_gal', 'Hide in GAL')}
+							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
 							<Text size="small" color="gray0" style={{ 'text-decoration': 'underline' }}>
@@ -239,6 +240,7 @@ const EditAccountGeneralSection: FC = () => {
 								'account_details.this_user_must_change_password',
 								'This user must change password'
 							)}
+							iconColor="primary"
 						/>
 					</Row>
 				</Row>
@@ -273,6 +275,7 @@ const EditAccountGeneralSection: FC = () => {
 								'account_details.prevent_user_from_changing_password',
 								'Prevent user from changing password'
 							)}
+							iconColor="primary"
 						/>
 					</Row>
 				</Row>
@@ -312,6 +315,7 @@ const EditAccountGeneralSection: FC = () => {
 								'account_details.this_is_global_administrator',
 								'This is a Global Administrator '
 							)}
+							iconColor="primary"
 						/>
 					</Row>
 				</Row>
@@ -321,6 +325,7 @@ const EditAccountGeneralSection: FC = () => {
 							defaultValue={defaultCOS}
 							onClick={onCOSSwitchChanges}
 							label={t('account_details.default_COS', 'Default COS')}
+							iconColor="primary"
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
