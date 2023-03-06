@@ -267,9 +267,8 @@ const ServerVolumeDetailsPanel: FC<{
 							type="outlined"
 							iconColor="gray6"
 							icon="EditAsNewOutline"
-							height={36}
+							size="large"
 							label=""
-							width={36}
 							style={{ padding: '0.5rem 0.5rem 0.5rem 0.375rem', display: 'block' }}
 							onClick={(): void => {
 								setmodifyVolumeToggle(true);
@@ -322,13 +321,18 @@ const ServerVolumeDetailsPanel: FC<{
 										<Switch
 											value={detailData?.compressBlobs}
 											label={t('label.enable_compression', 'Enable Compression')}
+											iconColor="primary"
 										/>
 									</Row>
 									<Padding width="4%" />
 								</>
 							)}
 							<Row width="48%" mainAlignment="flex-start">
-								<Switch value={detailData?.isCurrent} label={t('label.current', 'Current')} />
+								<Switch
+									value={detailData?.isCurrent}
+									label={t('label.current', 'Current')}
+									iconColor="primary"
+								/>
 							</Row>
 						</Row>
 						{typeLabel !== INDEXERES && (

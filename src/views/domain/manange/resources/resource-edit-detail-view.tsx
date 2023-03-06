@@ -925,39 +925,29 @@ const ResourceEditDetailView: FC<any> = ({
 					width="100%"
 				>
 					<Padding right="large">
-						<Container width="fit" height="fit" style={{ border: '1px solid #2b73d2' }}>
-							<IconButton
-								iconColor="primary"
-								backgroundColor="gray6"
+						<Container width="fit" height="fit">
+							<Button
+								type="outlined"
+								color="primary"
 								icon="EditAsNewOutline"
-								height={42}
-								width={42}
+								size="large"
 								onClick={(): void => setIsEditMode(true)}
 							/>
 						</Container>
 					</Padding>
 
 					<Padding right="large">
-						<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
-							<IconButton
+						<Container width="fit" height="fit">
+							<Button
+								type="outlined"
 								iconColor="error"
-								backgroundColor="gray6"
+								color="error"
 								icon="Trash2Outline"
-								height={42}
-								width={42}
+								size="large"
 								onClick={onDeleteResource}
 							/>
 						</Container>
 					</Padding>
-
-					<Button
-						label={t('label.view_mail', 'VIEW MAIL')}
-						icon="EmailReadOutline"
-						color="primary"
-						type="outlined"
-						height={44}
-						disabled
-					/>
 				</Row>
 			)}
 

@@ -576,20 +576,20 @@ const MailingListDetail: FC<any> = ({
 				padding={{ all: 'extralarge' }}
 			>
 				<Padding right="large">
-					<Container style={{ border: '1px solid #2b73d2' }}>
-						<IconButton
-							iconColor="primary"
-							backgroundColor="gray6"
+					<Container>
+						<Button
+							type="outlined"
+							color="primary"
 							icon="EditAsNewOutline"
 							onClick={onEditMailingList}
 							size="large"
 						/>
 					</Container>
 				</Padding>
-				<Container width="fit" style={{ border: '1px solid #d74942' }}>
-					<IconButton
-						iconColor="error"
-						backgroundColor="gray6"
+				<Container width="fit">
+					<Button
+						type="outlined"
+						color="error"
 						icon="Trash2Outline"
 						loading={isDeleteBtnLoading}
 						onClick={handleClickDeleteEvent}
@@ -670,6 +670,7 @@ const MailingListDetail: FC<any> = ({
 								'Send new members a notification for the share/delegation assigned to this group'
 							)}
 							disabled
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -683,6 +684,7 @@ const MailingListDetail: FC<any> = ({
 							value={zimbraHideInGal}
 							label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
 							disabled
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
