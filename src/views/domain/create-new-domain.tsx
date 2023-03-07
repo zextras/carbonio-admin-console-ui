@@ -23,7 +23,7 @@ import { useHistory } from 'react-router-dom';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
-import { ACTIVE, CARBONIO, DOMAINS_ROUTE_ID, HTTPS, MANAGE } from '../../constants';
+import { ACTIVE, DOMAINS_ROUTE_ID, HTTPS, INTERNAL_GAL, MANAGE } from '../../constants';
 import ListRow from '../list/list-row';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 
@@ -60,7 +60,7 @@ const CreateDomain: FC = () => {
 	const [zimbraPublicServiceHostnameList, setZimbraPublicServiceHostnameList] = useState<any>([]);
 	const [zimbraPublisServiceHostname, setZimbraPublisServiceHostname] = useState<any>({});
 	const [galSyncAccountName, setGalSyncAccountName] = useState<string>('galsync');
-	const [dataSourceName, setDataSourceName] = useState<string>(CARBONIO);
+	const [dataSourceName, setDataSourceName] = useState<string>(INTERNAL_GAL);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [domainName, setDomainName] = useState<string>('');
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
