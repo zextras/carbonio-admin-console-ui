@@ -363,7 +363,7 @@ const BucketDetailPanel: FC = () => {
 					<Input
 						background="gray5"
 						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
-						CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="grey" />}
+						CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 						onChange={filterBucketList}
 					/>
 				</Row>
