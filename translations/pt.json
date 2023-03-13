@@ -1,7 +1,7 @@
 {
     "label": {
         "days": "Dias",
-        "suspended": "Suspenso",
+        "suspended": "Suspendido",
         "account": "Conta",
         "accounts": "Contas",
         "add": "Adicionar",
@@ -239,7 +239,8 @@
         "contacts": "Contactos",
         "files": "Ficheiros",
         "mails": "E-mails",
-        "tasks": "Tarefas"
+        "tasks": "Tarefas",
+        "storage": "Armazenamento"
     },
     "timezone": {
         "asia_pyongyang": "{{value}} Pyongyang",

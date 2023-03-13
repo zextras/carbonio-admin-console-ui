@@ -39,7 +39,7 @@
         "delete": "Xoá",
         "description": "Mô tả",
         "discard_changes": "BỎ QUA CÁC THAY ĐỔI",
-        "external": "Bên ngoài",
+        "external": "Mở rộng",
         "of": "của",
         "page ": "Bạn đã chấp nhận yêu cầu chia sẻ",
         "page_": "Bạn đã chấp nhận yêu cầu chia sẻ",
@@ -670,7 +670,8 @@
         "mail_signatures": "Chữ ký thư",
         "mails": "Thư",
         "out_of_the_office_reply": "Trả lời khi không có mặt ở văn phòng",
-        "tasks": "Các Nhiệm vụ"
+        "tasks": "Các Nhiệm vụ",
+        "storage": "Kho chứa"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -1329,7 +1330,7 @@
         },
         "volume_allocation_list": {
             "centralized": "Tập trung",
-            "external": "Bên ngoài",
+            "external": "Mở rộng",
             "local": "Cục bộ"
         },
         "volume_config_header": {
