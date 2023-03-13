@@ -114,6 +114,7 @@ const DelegateSetRightsSection: FC = () => {
 												right: [{ _content: 'sendAs' }]
 											}));
 										}}
+										iconColor="primary"
 									/>
 									<Radio
 										label={t(
@@ -130,6 +131,7 @@ const DelegateSetRightsSection: FC = () => {
 												right: [{ _content: 'sendOnBehalfOf' }]
 											}));
 										}}
+										iconColor="primary"
 									/>
 								</RadioGroup>
 							</Row>
@@ -181,6 +183,7 @@ const DelegateSetRightsSection: FC = () => {
 														folderSelection: 'all_folders'
 													}));
 												}}
+												iconColor="primary"
 											/>
 											<Radio
 												label={t(
@@ -190,6 +193,7 @@ const DelegateSetRightsSection: FC = () => {
 												value="i_want_to_select"
 												width="300px"
 												style={{ display: 'none' }}
+												iconColor="primary"
 											/>
 										</RadioGroup>
 									</Row>
@@ -204,6 +208,7 @@ const DelegateSetRightsSection: FC = () => {
 																defaultChecked={ele.selected || false}
 																label={ele.name}
 																onClick={(): void => onFolderSelect(ele, index)}
+																iconColor="primary"
 															/>
 														</Row>
 													) : (

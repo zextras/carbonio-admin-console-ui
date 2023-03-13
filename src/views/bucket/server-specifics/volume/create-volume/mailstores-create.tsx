@@ -276,6 +276,7 @@ const MailstoresCreate: FC<{
 										setSecondaryRadio(false);
 										setIndexRadio(false);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 							<Row width="48%" mainAlignment="flex-start">
@@ -289,6 +290,7 @@ const MailstoresCreate: FC<{
 										setPrimaryRadio(false);
 										setIndexRadio(false);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</Row>
@@ -303,6 +305,7 @@ const MailstoresCreate: FC<{
 									setPrimaryRadio(false);
 									setSecondaryRadio(false);
 								}}
+								iconColor="primary"
 							/>
 						</Row>
 					</>

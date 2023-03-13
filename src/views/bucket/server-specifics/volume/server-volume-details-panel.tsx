@@ -455,11 +455,7 @@ const ServerVolumeDetailsPanel: FC<{
 						</Row>
 
 						<Row padding={{ horizontal: 'small' }}>
-							<IconButton
-								icon="CloseOutline"
-								color="gray1"
-								onClick={(): void => setToggleDetailPage(false)}
-							/>
+							<IconButton icon="CloseOutline" onClick={(): void => setToggleDetailPage(false)} />
 						</Row>
 					</Row>
 
@@ -575,6 +571,7 @@ const ServerVolumeDetailsPanel: FC<{
 										setSecondaryRadio(false);
 									}}
 									disabled
+									iconColor="primary"
 								/>
 							</Row>
 							<Row width="48%">
@@ -588,6 +585,7 @@ const ServerVolumeDetailsPanel: FC<{
 										setPrimaryRadio(false);
 									}}
 									disabled
+									iconColor="primary"
 								/>
 							</Row>
 						</Row>
@@ -617,6 +615,7 @@ const ServerVolumeDetailsPanel: FC<{
 												value={volumeDetail?.useInfrequentAccess}
 												label={t('label.use_infraquent_access', 'Use infrequent access')}
 												disabled
+												iconColor="primary"
 											/>
 										</Row>
 										<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -650,6 +649,7 @@ const ServerVolumeDetailsPanel: FC<{
 										value={volumeDetail?.useIntelligentTiering}
 										label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
 										disabled
+										iconColor="primary"
 									/>
 								</Row>
 								<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -673,6 +673,7 @@ const ServerVolumeDetailsPanel: FC<{
 								value={volumeDetail?.isCurrent}
 								label={t('label.enable_current', 'Enable as Current')}
 								disabled
+								iconColor="primary"
 							/>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -688,6 +689,7 @@ const ServerVolumeDetailsPanel: FC<{
 								value={volumeDetail?.centralized}
 								label={t('label.storage_centralized', 'I want this Storage to be centralized')}
 								disabled
+								iconColor="primary"
 							/>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>

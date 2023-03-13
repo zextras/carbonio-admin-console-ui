@@ -681,6 +681,7 @@ const ModifyVolume: FC<{
 									onClick={(): void => {
 										onVolumeTypeChange(1);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 							<Row width="48%">
@@ -692,6 +693,7 @@ const ModifyVolume: FC<{
 									onClick={(): void => {
 										onVolumeTypeChange(2);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</Row>
@@ -703,6 +705,7 @@ const ModifyVolume: FC<{
 											value={compressBlobs}
 											label={t('label.enable_compression', 'Enable Compression')}
 											onClick={(): void => setCompressBlobs(!compressBlobs)}
+											iconColor="primary"
 										/>
 										<Padding top="extrasmall">
 											<Text color="secondary" overflow="break-word" size="extrasmall">
@@ -733,6 +736,7 @@ const ModifyVolume: FC<{
 										onClick={(): void => {
 											!isCurrent && setIsCurrentToggle(true);
 										}}
+										iconColor="primary"
 									/>
 								</Tooltip>
 							</Row>
@@ -877,6 +881,7 @@ const ModifyVolume: FC<{
 									onClick={(): void => {
 										onVolumeTypeChange(1);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 							<Row width="48%">
@@ -888,6 +893,7 @@ const ModifyVolume: FC<{
 									onClick={(): void => {
 										onVolumeTypeChange(2);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</Row>
@@ -924,6 +930,7 @@ const ModifyVolume: FC<{
 												value={useInfrequentAccess}
 												label={t('label.use_infraquent_access', 'Use infrequent access')}
 												onClick={(): void => setUseInfrequentAccess(!useInfrequentAccess)}
+												iconColor="primary"
 											/>
 										</Row>
 										<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -959,6 +966,7 @@ const ModifyVolume: FC<{
 										value={useIntelligentTiering}
 										label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
 										onClick={(): void => setUseIntelligentTiering(!useIntelligentTiering)}
+										iconColor="primary"
 									/>
 								</Row>
 								<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -991,6 +999,7 @@ const ModifyVolume: FC<{
 									onClick={(): void => {
 										!isCurrent && setIsCurrentToggle(true);
 									}}
+									iconColor="primary"
 								/>
 							</Tooltip>
 						</Row>

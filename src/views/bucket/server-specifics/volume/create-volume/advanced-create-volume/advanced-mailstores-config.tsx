@@ -206,6 +206,7 @@ const AdvancedMailstoresConfig: FC<{
 								setPrimaryRadio(!primaryRadio);
 								setSecondaryRadio(false);
 							}}
+							iconColor="primary"
 						/>
 					</Row>
 					<Row width="48%">
@@ -218,6 +219,7 @@ const AdvancedMailstoresConfig: FC<{
 								setSecondaryRadio(!secondaryRadio);
 								setPrimaryRadio(false);
 							}}
+							iconColor="primary"
 						/>
 					</Row>
 				</Row>
