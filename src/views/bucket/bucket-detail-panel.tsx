@@ -28,6 +28,7 @@ import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import { AbsoluteContainer } from '../components/styled';
+import ListRow from '../list/list-row';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 
@@ -114,17 +115,28 @@ const BucketListTable: FC<{
 	);
 
 	return (
-		<Container crossAlignment="flex-start">
-			<Table
-				headers={headers(t)}
-				rows={tableRows}
-				showCheckbox={false}
-				multiSelect={false}
-				selectedRows={selectedRows}
-				onSelectionChange={onSelectionChange}
-				RowFactory={CustomRowFactory}
-				HeaderFactory={CustomHeaderFactory}
-			/>
+		<Container mainAlignment="flex-start" crossAlignment="flex-start">
+			<ListRow>
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					maxHeight="calc(100vh - 25rem)"
+					minHeight="auto"
+				>
+					<Table
+						headers={headers(t)}
+						rows={tableRows}
+						showCheckbox={false}
+						multiSelect={false}
+						selectedRows={selectedRows}
+						onSelectionChange={onSelectionChange}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
+					/>
+				</Container>
+			</ListRow>
 			{tableRows.length === 0 && (
 				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '4rem' }}>
 					<Text overflow="break-word" weight="normal" size="large">

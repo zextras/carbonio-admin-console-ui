@@ -9,11 +9,17 @@ import { devtools } from 'zustand/middleware';
 type BackupState = {
 	globalConfig: any;
 	setGlobalConfig: (backup: any) => void;
+	selectedServer: string;
+	setSelectedBackupServer: (server: string) => void;
 };
 
 export const useBackupStore = create<BackupState>(
 	devtools((set) => ({
 		globalConfig: {},
-		setGlobalConfig: (globalConfig): void => set({ globalConfig }, false, 'setGlobalConfig')
+		setGlobalConfig: (globalConfig): void => set({ globalConfig }, false, 'setGlobalConfig'),
+		selectedServer: '',
+		setSelectedBackupServer: (selectedServer): void => {
+			set({ selectedServer }, false, 'setSelectedServer');
+		}
 	}))
 );

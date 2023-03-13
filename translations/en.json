@@ -163,6 +163,7 @@
         "archive_user_metadata_folder_in_the_remote_backup": "Archive user metadata folder in the remote backup",
         "back_delete_account_warning_message": "If you set 0, <strong>accounts</strong> will be kept in backup forever",
         "back_delete_item_warning_message": "If you set 0, <strong>items</strong> will be kept in backup forever",
+        "backup_configuration": "backup configuration",
         "backup_path": "Backup Path",
         "backup_purge": "Backup Purge",
         "bucket_configuration": "Bucket Configuration",
@@ -760,6 +761,7 @@
         "background_login_page": "Background Login Page",
         "backup": "Backup",
         "backup_at_startup": "Backup at Startup",
+        "backup_lbl": "<bold>Backup</bold>",
         "backup_primarybar_tooltip": "Manage your <bold>backup services, view</bold> its <bold>status</bold>, the <bold>server’s list</bold> or <bold>import an existing one</bold>.",
         "backup_space": "Backup Space",
         "base_dn_is_not_valid": "Base DN is not valid",
@@ -806,6 +808,7 @@
         "chats": "Chats",
         "check_new_mail_every": "Check new mail every",
         "class_of_service": "Class of Service",
+        "class_of_service_lbl": "<bold>Class of Service</bold>",
         "click_here": "Click here",
         "close_the_account": "Close the account",
         "close_the_resource": "Close the resource",
@@ -923,6 +926,7 @@
         "domain_quota_settings": "Domain Quota Settings",
         "domain_status": "Domain Status",
         "domains": "Domains",
+        "domains_lbl": "<bold>Domains</bold>",
         "domains_that_use_this_cos": "Domains that use this CoS",
         "done": "Done",
         "dont_save_a_copy_of_sent_messages": "Don’t save a copy of sent messages",
@@ -1158,6 +1162,7 @@
         "note_label": "Write something that will easily make you remember this element",
         "notes": "Notes",
         "notification": "Notification",
+        "notification_lbl": "<bold>Notifications</bold>",
         "notification_primarybar_tooltip": "View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them.",
         "notifications": "Notifications",
         "notify_of_changes_made_via_delegated_access": "Notify of changes made via delegated access",
@@ -1172,6 +1177,7 @@
             "get_all_operation_error": "{{name}}",
             "stop_operation_error": "{{name}}"
         },
+        "operation_lbl": "<bold>Operations</bold>",
         "operation_now_in_queue": "The operation is now in the queue",
         "operation_primarybar_tooltip": "View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>.",
         "operations": "Operations",
@@ -1199,8 +1205,10 @@
         "preferences": "Preferences",
         "prefix": "Prefix",
         "prefix_name": "Prefix - all objects will have this prefix in their name",
+        "prefix_volume": "Prefix - {{volumePrefix}}",
         "primary_volume": "This is a Primary Volume",
         "privacy": "Privacy",
+        "privacy_lbl": "<bold>Privacy</bold>",
         "privacy_primarybar_tooltip": "Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>.",
         "private": "Private",
         "private_key_certificate": "Certificate's Private Key",
@@ -1347,9 +1355,12 @@
         "storage_centralized": "I want this Storage to be centralized",
         "storage_centralized_helpertext": "<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it’s easier to manage both the hardware and the data itself. ",
         "storage_centralized_helptext": "Centralized data becomes useful when two or more servers need access to the same data. \n By keeping data in one place, it’s easier to manage both the hardware and the data itself. ",
+        "storage_lbl": "<bold>Storage</bold>",
         "storage_primarybar_tooltip": "View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>.",
+        "storage_type": "Storage Type",
         "storages": "Storages",
         "subscription": "Subscription",
+        "subscription_lbl": "<bold>Subscription</bold>",
         "subscription_primarybar_tooltip": "View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one.",
         "subscriptions": "Subscriptions",
         "surname": "Surname",
@@ -1448,6 +1459,7 @@
         "volume_deleted": "Volume deleted successfully",
         "volume_detail_error": "{{message}}",
         "volume_detail_page_title": "{{message}} Details",
+        "volume_detail_success": "All changes have been saved successfully",
         "volume_edited": "Volume edited successfully",
         "volume_id": "Volume ID",
         "volume_main": "Volume Main",
@@ -1539,6 +1551,14 @@
             "share": {
                 "accepted": "You have accepted the share request"
             }
+        }
+    },
+    "modal": {
+        "iscurrent_confirm": {
+            "body_message": "The current {{type}} {{currentVolumeName}}.<br />Are you sure you want to <strong>set {{name}} as current</strong>?",
+            "confirm_label": "YES, PROCEED",
+            "secondary_label": "NO, GO BACK",
+            "title": "You are setting {{name}} as current"
         }
     },
     "newOtp": {
@@ -1636,6 +1656,8 @@
             "whenToUse": ""
         }
     },
+    "the_change_will_not_move_the_data": "The change will not move the data… !!",
+    "this_will_not_affect_data_already_stored": "This will not affect data already stored",
     "timezone": {
         "africa_algiers": "{{value}} West Central Africa",
         "africa_cairo": "{{value}} Egypt",
@@ -1790,6 +1812,7 @@
         "secondary_helperText": "Secondary",
         "serverName_volumes": "{{serverName}} Volumes",
         "serverName_volumes_create_mailstores_volume": "{{serverName}} Create Mailstores Volume",
+        "serverName_volumes_create_storage_volume": "{{serverName}} | Create Storage Volume",
         "server_list_header": {
             "HSM Scheduling": "HSM Schedule",
             "description": "Description",
@@ -1804,6 +1827,8 @@
             "centralized": "Centralized",
             "external": "External",
             "local": "Local",
+            "local_block_device": "Local Block Device",
+            "object_storage": "ObjectStorage",
             "sproxy": "Sproxy"
         },
         "volume_config_header": {
@@ -1817,7 +1842,8 @@
             "current": "Current",
             "id": "ID",
             "name": "Name",
-            "path": "Path"
+            "path": "Path",
+            "storageType": "Storage Type"
         },
         "volume_indexer_header": {
             "current": "Current",
@@ -1830,6 +1856,9 @@
             "primary": "Primary",
             "secondary": "Secondary"
         }
+    },
+    "warning": {
+        "is_current": "You have to set another volume as current before."
     },
     "welcome": "Welcome",
     "welcome_to_carbonio": "Welcome {{adminName}} to Carbonio {{carbonioVersion}}!",

@@ -19,6 +19,13 @@ import { cloneDeep } from 'lodash';
 
 import { delegateRightsType } from '../../../../../utility/utils';
 import { AccountContext } from '../../account-context';
+import {
+	MANAGE_NO_SEND,
+	READ_MAILS_ONLY,
+	SEND_MAILS_ONLY,
+	SEND_READ_MAILS,
+	SEND_READ_MANAGE_MAILS
+} from '../../../../../../constants';
 
 const DelegateSetRightsSection: FC = () => {
 	const [t] = useTranslation();
@@ -71,9 +78,9 @@ const DelegateSetRightsSection: FC = () => {
 					<Divider color="gray2" />
 				</Row>
 				{!(
-					deligateDetail?.delegeteRights === 'send_mails_only' ||
-					deligateDetail?.delegeteRights === 'send_read_mails' ||
-					deligateDetail?.delegeteRights === 'send_read_manage_mails'
+					deligateDetail?.delegeteRights === SEND_MAILS_ONLY ||
+					deligateDetail?.delegeteRights === SEND_READ_MAILS ||
+					deligateDetail?.delegeteRights === SEND_READ_MANAGE_MAILS
 				) ? (
 					<></>
 				) : (
@@ -130,10 +137,10 @@ const DelegateSetRightsSection: FC = () => {
 					</>
 				)}
 				{!(
-					deligateDetail?.delegeteRights === 'read_mails_only' ||
-					deligateDetail?.delegeteRights === 'manage_no_send' ||
-					deligateDetail?.delegeteRights === 'send_read_mails' ||
-					deligateDetail?.delegeteRights === 'send_read_manage_mails'
+					deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
+					deligateDetail?.delegeteRights === MANAGE_NO_SEND ||
+					deligateDetail?.delegeteRights === SEND_READ_MAILS ||
+					deligateDetail?.delegeteRights === SEND_READ_MANAGE_MAILS
 				) ? (
 					<></>
 				) : (

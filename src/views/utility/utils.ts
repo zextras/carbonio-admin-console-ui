@@ -4,7 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { TFunction } from 'i18next';
-import { ACTIVE, CLOSED, LOCKED, MAINTENANCE, PENDING, NOT_SET } from '../../constants';
+import {
+	ACTIVE,
+	CLOSED,
+	LOCKED,
+	MAINTENANCE,
+	PENDING,
+	NOT_SET,
+	SEND_MAILS_ONLY,
+	READ_MAILS_ONLY,
+	SEND_READ_MAILS,
+	MANAGE_NO_SEND,
+	SEND_READ_MANAGE_MAILS
+} from '../../constants';
 
 export const timeZoneList = (
 	t: TFunction
@@ -908,7 +920,14 @@ export const volTableHeader = (
 	{
 		id: 'name',
 		label: t('volume.volume_header.name', 'Name'),
-		width: '10%',
+		width: '30%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'storeType',
+		label: t('volume.volume_header.storageType', 'Storage Type'),
+		width: '25%',
 		bold: true,
 		align: 'left'
 	},
@@ -954,14 +973,21 @@ export const indexerHeaders = (
 	{
 		id: 'name',
 		label: t('volume.volume_indexer_header.name', 'Name'),
-		width: '10%',
+		width: '30%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'storeType',
+		label: t('volume.volume_header.storageType', 'Storage Type'),
+		width: '25%',
 		bold: true,
 		align: 'left'
 	},
 	{
 		id: 'path',
 		label: t('volume.volume_indexer_header.path', 'Path'),
-		width: '71%',
+		width: '61%',
 		align: 'left',
 		bold: true
 	},
@@ -991,11 +1017,11 @@ export const volumeTypeList = (t: TFunction): Array<{ label: string; value?: num
 
 export const volumeAllocationList = (t: TFunction): Array<{ label: string; value?: number }> => [
 	{
-		label: t('volume.volume_allocation_list.local', 'Local'),
+		label: t('volume.volume_allocation_list.local_block_device', 'Local Block Device'),
 		value: 1
 	},
 	{
-		label: t('volume.volume_allocation_list.external', 'External'),
+		label: t('volume.volume_allocation_list.object_storage', 'ObjectStorage'),
 		value: 2
 	}
 ];
@@ -1682,29 +1708,29 @@ export const delegateType = (t: TFunction): Array<{ value?: string; label: strin
 export const delegateRightsType = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('account_details.send_mails_only', 'Send Mails only (no rights to read folders)'),
-		value: 'send_mails_only'
+		value: SEND_MAILS_ONLY
 	},
 	{
 		label: t('account_details.read_mails_only', 'Read Mails only (no rights to send mails)'),
-		value: 'read_mails_only'
+		value: READ_MAILS_ONLY
 	},
 	{
 		label: t(
 			'account_details.send_read_mails',
 			'Send and Read Mails (no rights to create folders / manage mails)'
 		),
-		value: 'send_read_mails'
+		value: SEND_READ_MAILS
 	},
 	{
 		label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
-		value: 'manage_no_send'
+		value: MANAGE_NO_SEND
 	},
 	{
 		label: t(
 			'account_details.send_read_manage_mails',
 			'Send, Read and Manage Mails (all of the above)'
 		),
-		value: 'send_read_manage_mails'
+		value: SEND_READ_MANAGE_MAILS
 	}
 ];
 
