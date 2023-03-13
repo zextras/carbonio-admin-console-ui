@@ -1681,7 +1681,7 @@ export const delegateType = (t: TFunction): Array<{ value?: string; label: strin
 
 export const delegateRightsType = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
-		label: t('account_details.send_mails_only', 'Send Mails only (no rights to read folders)'),
+		label: t('account_details.send_mails_only', 'Send Mails only (no access to folders)'),
 		value: 'send_mails_only'
 	},
 	{
