@@ -12,17 +12,30 @@ import {
 	Button,
 	Divider,
 	Padding,
+	Radio,
 	Text,
 	Switch,
-	useSnackbar
+	useSnackbar,
+	Link
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
-import { INDEXERES, PRIMARIES, SECONDARIES } from '../../../../constants';
+import {
+	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
+	AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+	INDEXERES,
+	LOCAL_VALUE,
+	PRIMARIES,
+	PRIMARY_TYPE_VALUE,
+	S3,
+	SECONDARIES,
+	SECONDARY_TYPE_VALUE
+} from '../../../../constants';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 import { useBucketServersListStore } from '../../../../store/bucket-server-list/store';
 import { useServerStore } from '../../../../store/server/store';
 import { fetchSoap } from '../../../../services/bucket-service';
+import ListRow from '../../../list/list-row';
 
 const ServerVolumeDetailsPanel: FC<{
 	setToggleDetailPage: any;
@@ -59,6 +72,11 @@ const ServerVolumeDetailsPanel: FC<{
 	const [toggleSetAsIcon, setToggleSetAsIcon] = useState('ArrowheadDown');
 	const [type, setType] = useState<any>();
 	const [externalVolDetail, setExternalVolDetail] = useState<any>('');
+	const [bucketList, setBucketList] = useState<Array<object | any>>([]);
+	const [bucketName, setBucketName] = useState('');
+	const [bucketS3, setBucketS3] = useState(false);
+	const [primaryRadio, setPrimaryRadio] = useState(false);
+	const [secondaryRadio, setSecondaryRadio] = useState(false);
 
 	const getVolumeDetailData = useCallback((): void => {
 		soapFetch(
@@ -89,7 +107,7 @@ const ServerVolumeDetailsPanel: FC<{
 					key: 'error',
 					type: 'error',
 					label: t('label.volume_detail_error', '{{message}}', {
-						message: error
+						message: 'Something went wrong, please try again'
 					}),
 					autoHideTimeout: 5000
 				});
@@ -106,9 +124,50 @@ const ServerVolumeDetailsPanel: FC<{
 		getAllVolumesRequest
 	]);
 
+	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
+
+	const getAllBuckets = useCallback(() => {
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxCore',
+			action: 'listBuckets',
+			type: 'all',
+			targetServer: server,
+			showSecrets: true
+		}).then((res: any) => {
+			const response = JSON.parse(res.Body.response.content);
+			if (response.ok) {
+				setBucketList(response.response.values);
+				const bucName =
+					response.response.values.find((b: any) => b?.uuid === volumeDetail?.bucketConfigurationId)
+						?.bucketName || '';
+				setBucketName(bucName);
+			} else {
+				setBucketList([]);
+			}
+		});
+	}, [server, volumeDetail?.bucketConfigurationId]);
+
 	useEffect(() => {
 		getVolumeDetailData();
-	}, [getVolumeDetailData, volumeDetail, modifyVolumeToggle]);
+		getAllBuckets();
+	}, [getVolumeDetailData, volumeDetail, modifyVolumeToggle, getAllBuckets]);
+
+	useEffect(() => {
+		if (volumeDetail?.storeType === S3) {
+			setBucketS3(true);
+		} else {
+			setBucketS3(false);
+		}
+	}, [volumeDetail?.storeType]);
+
+	useEffect(() => {
+		if (volumeDetail?.volumeType === 'primary') {
+			setPrimaryRadio(true);
+		} else if (volumeDetail?.volumeType === 'secondary') {
+			setSecondaryRadio(true);
+		}
+	}, [volumeDetail?.volumeType]);
 
 	const handleTypeToggleClick = useCallback(async (): Promise<void> => {
 		if (isAdvanced) {
@@ -128,14 +187,12 @@ const ServerVolumeDetailsPanel: FC<{
 			await fetchSoap('zextras', obj)
 				.then((res: any) => {
 					const result = JSON.parse(res?.Body?.response?.content);
-					const updateResponse = result?.response?.[`${serverList[0]?.name}`];
+					const updateResponse = result?.response?.[serverName];
 					if (updateResponse?.ok) {
 						createSnackbar({
 							key: '1',
 							type: 'success',
-							label: t('label.external_volume_edited', '{{message}}', {
-								message: updateResponse?.response?.message
-							})
+							label: t('label.volume_detail_success', 'All changes have been saved successfully')
 						});
 						getAllVolumesRequest();
 						setmodifyVolumeToggle(false);
@@ -148,7 +205,7 @@ const ServerVolumeDetailsPanel: FC<{
 							key: 'error',
 							type: 'error',
 							label: t('label.volume_detail_error', '{{message}}', {
-								message: updateResponse?.error?.message
+								message: 'Something went wrong, please try again'
 							}),
 							autoHideTimeout: 5000
 						});
@@ -160,7 +217,7 @@ const ServerVolumeDetailsPanel: FC<{
 						key: 'error',
 						type: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
-							message: error
+							message: 'Something went wrong, please try again'
 						}),
 						autoHideTimeout: 5000
 					});
@@ -188,12 +245,7 @@ const ServerVolumeDetailsPanel: FC<{
 					createSnackbar({
 						key: '1',
 						type: 'success',
-						label: t('label.volume_type_edited', '{{message}}', {
-							message:
-								typeLabel === PRIMARIES
-									? 'volume type successfully changed to Secondary'
-									: 'volume type successfully changed to Primary'
-						})
+						label: t('label.volume_detail_success', 'All changes have been saved successfully')
 					});
 					getAllVolumesRequest();
 					getVolumeDetailData();
@@ -203,7 +255,7 @@ const ServerVolumeDetailsPanel: FC<{
 						key: 'error',
 						type: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
-							message: error
+							message: 'Something went wrong, please try again'
 						}),
 						autoHideTimeout: 5000
 					});
@@ -216,7 +268,6 @@ const ServerVolumeDetailsPanel: FC<{
 		volumeDetail?.storeType,
 		volumeDetail?.isCurrent,
 		volumeDetail?.name,
-		serverList,
 		createSnackbar,
 		t,
 		getAllVolumesRequest,
@@ -240,8 +291,13 @@ const ServerVolumeDetailsPanel: FC<{
 
 	return (
 		<>
-			{detailData && (
-				<Container background="gray6">
+			{detailData && volumeDetail?.storeType === LOCAL_VALUE ? (
+				<Container
+					background="gray6"
+					mainAlignment="flex-start"
+					orientation="vertical"
+					style={{ overflowY: 'scroll' }}
+				>
 					<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
 						<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
 							<Text size="extralarge" weight="bold">
@@ -279,7 +335,7 @@ const ServerVolumeDetailsPanel: FC<{
 						/>
 					</Container>
 					<Container
-						padding={{ horizontal: 'large', top: 'extralarge', bottom: 'large' }}
+						padding={{ horizontal: 'large', bottom: 'large' }}
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>
@@ -370,7 +426,308 @@ const ServerVolumeDetailsPanel: FC<{
 									label={t('label.button_delete', 'DELETE')}
 									color="error"
 									width="fill"
-									onClick={(): any => setOpen(true)}
+									onClick={(): void => setOpen(true)}
+									disabled={!detailData?.id || volumeDetail?.id !== detailData?.id}
+									loading={!detailData?.id || volumeDetail?.id !== detailData?.id}
+								/>
+							</Row>
+						</Container>
+					</Container>
+				</Container>
+			) : (
+				<Container
+					background="gray6"
+					mainAlignment="flex-start"
+					orientation="vertical"
+					style={{ overflowY: 'auto' }}
+				>
+					<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
+						<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
+							<Text size="extralarge" weight="bold">
+								{t('label.volume_detail_page_title', '{{message}} Details', {
+									message: detailData?.name
+								})}
+							</Text>
+						</Row>
+
+						<Row padding={{ horizontal: 'small' }}>
+							<IconButton
+								icon="CloseOutline"
+								color="gray1"
+								onClick={(): void => setToggleDetailPage(false)}
+							/>
+						</Row>
+					</Row>
+
+					<Divider />
+
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-end"
+						crossAlignment="flex-end"
+						background="gray6"
+						padding={{ all: 'extralarge' }}
+						style={{ height: 'fit-content' }}
+					>
+						<Button
+							type="outlined"
+							iconColor="gray6"
+							icon="EditAsNewOutline"
+							height={36}
+							label=""
+							width={36}
+							style={{ padding: '0.5rem 0.5rem 0.5rem 0.375rem', display: 'block' }}
+							onClick={(): void => {
+								setmodifyVolumeToggle(true);
+							}}
+							disabled={!detailData?.id || volumeDetail?.id !== detailData?.id}
+							loading={!detailData?.id || volumeDetail?.id !== detailData?.id}
+						/>
+					</Container>
+
+					<Container
+						padding={{ horizontal: 'large', bottom: 'large' }}
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+					>
+						<Row padding={{ top: 'small' }} width="100%">
+							<Input
+								inputName="server"
+								label={t('label.volume_server_name', 'Server')}
+								value={serverName}
+								backgroundColor="gray5"
+								readyOnly
+							/>
+						</Row>
+						<Row padding={{ top: 'large' }} width="100%">
+							<Input
+								label={t('label.storage_type', 'Storage Type')}
+								backgroundColor="gray6"
+								value={t('volume.volume_allocation_list.object_storage', 'ObjectStorage')}
+								readOnly
+							/>
+						</Row>
+						<Row padding={{ top: 'large' }} width="100%">
+							<Input
+								label={t('label.volume_name', 'Volume Name')}
+								value={volumeDetail?.name}
+								backgroundColor="gray6"
+								readOnly
+							/>
+						</Row>
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'large', right: 'large' }}
+							>
+								<Input
+									label={t('label.bucket_name', 'Bucket Name')}
+									backgroundColor="gray6"
+									value={bucketName}
+									readOnly
+								/>
+							</Container>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'large', right: 'large' }}
+							>
+								<Input
+									label={t('label.type', 'Type')}
+									backgroundColor="gray6"
+									value={volumeDetail?.storeType}
+									readOnly
+								/>
+							</Container>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ top: 'large' }}
+							>
+								<Input
+									label={t('label.ID', 'ID')}
+									backgroundColor="gray6"
+									value={volumeDetail?.bucketConfigurationId}
+									readOnly
+								/>
+							</Container>
+						</ListRow>
+						<Row
+							padding={{ top: 'large' }}
+							width="100%"
+							mainAlignment="center"
+							crossAlignment="center"
+							backgroundColor="gray6"
+						>
+							<Row width="48%">
+								<Radio
+									inputName="primary"
+									label={t('label.primary_volume', 'This is a Primary Volume')}
+									value={PRIMARY_TYPE_VALUE}
+									checked={primaryRadio}
+									onClick={(): void => {
+										setPrimaryRadio(!primaryRadio);
+										setSecondaryRadio(false);
+									}}
+									disabled
+								/>
+							</Row>
+							<Row width="48%">
+								<Radio
+									inputName="secondary"
+									label={t('label.secondary_volume', 'This is a Secondary Volume')}
+									value={SECONDARY_TYPE_VALUE}
+									checked={secondaryRadio}
+									onClick={(): void => {
+										setSecondaryRadio(!secondaryRadio);
+										setPrimaryRadio(false);
+									}}
+									disabled
+								/>
+							</Row>
+						</Row>
+						<Row padding={{ top: 'large' }} width="100%">
+							<Input
+								inputName="prefix"
+								label={t(
+									'label.prefix_name',
+									'Prefix - all objects will have this prefix in their name'
+								)}
+								value={volumeDetail?.volumePrefix}
+								backgroundColor="gray5"
+								readOnly
+							/>
+						</Row>
+						{bucketS3 && (
+							<>
+								<Row
+									padding={{ top: 'large' }}
+									mainAlignment="flex-start"
+									width="100%"
+									backgroundColor="gray6"
+								>
+									<Row width="48.5%" mainAlignment="flex-start">
+										<Row mainAlignment="flex-start" width="100%">
+											<Switch
+												value={volumeDetail?.useInfrequentAccess}
+												label={t('label.use_infraquent_access', 'Use infrequent access')}
+												disabled
+											/>
+										</Row>
+										<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+											<Link
+												color="secondary"
+												href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												<Trans
+													i18nKey="label.use_infraquent_access_helptext"
+													defaults="<underline>Amazon Storage Class Documentation</underline>"
+													components={{ underline: <u /> }}
+												/>
+											</Link>
+										</Row>
+									</Row>
+									<Padding horizontal="small" />
+									<Row width="48.5%" mainAlignment="flex-start">
+										<Input
+											inputName="infrequentAccessThreshold"
+											label={t('label.size_threshold', 'Size Threshold')}
+											backgroundColor="gray5"
+											value={volumeDetail?.infrequentAccessThreshold}
+											disabled
+										/>
+									</Row>
+								</Row>
+								<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+									<Switch
+										value={volumeDetail?.useIntelligentTiering}
+										label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
+										disabled
+									/>
+								</Row>
+								<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+									<Link
+										color="secondary"
+										href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
+										<Trans
+											i18nKey="label.use_intelligent_tiering_helptext"
+											defaults="<underline>Amazon Tiering Documentation</underline>"
+											components={{ underline: <u /> }}
+										/>
+									</Link>
+								</Row>
+							</>
+						)}
+						<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+							<Switch
+								value={volumeDetail?.isCurrent}
+								label={t('label.enable_current', 'Enable as Current')}
+								disabled
+							/>
+						</Row>
+						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+							<Text color="secondary">
+								{t(
+									'label.enable_current_helptext',
+									'Enabling this option will disable the current active volume.'
+								)}
+							</Text>
+						</Row>
+						<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+							<Switch
+								value={volumeDetail?.centralized}
+								label={t('label.storage_centralized', 'I want this Storage to be centralized')}
+								disabled
+							/>
+						</Row>
+						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+							<Text color="secondary" style={{ whiteSpace: 'pre-line' }}>
+								<Trans
+									i18nKey="label.storage_centralized_helpertext"
+									defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it’s easier to manage both the hardware and the data itself. "
+									components={{ bold: <strong /> }}
+								/>
+							</Text>
+						</Row>
+						<Container
+							orientation="horizontal"
+							mainAlignment="flex-end"
+							crossAlignment="flex-end"
+							padding={{ top: 'large' }}
+						>
+							{typeLabel !== INDEXERES && (
+								<>
+									<Row width="50%" mainAlignment="flex-start">
+										<Button
+											type="outlined"
+											width="fill"
+											label={toggleSetAsBtnLabel}
+											icon={toggleSetAsIcon}
+											iconPlacement="left"
+											color="primary"
+											disabled={!detailData?.id || volumeDetail?.id !== detailData?.id}
+											loading={!detailData?.id || volumeDetail?.id !== detailData?.id}
+											onClick={handleTypeToggleClick}
+										/>
+									</Row>
+									<Padding horizontal="small" />
+								</>
+							)}
+							<Row width={typeLabel !== INDEXERES ? '50%' : '100%'} mainAlignment="flex-start">
+								<Button
+									icon="CloseOutline"
+									iconPlacement="left"
+									type="outlined"
+									label={t('label.button_delete', 'DELETE')}
+									color="error"
+									width="fill"
+									onClick={(): void => setOpen(true)}
 									disabled={!detailData?.id || volumeDetail?.id !== detailData?.id}
 									loading={!detailData?.id || volumeDetail?.id !== detailData?.id}
 									size="large"

@@ -176,7 +176,7 @@ const AdvancedMailstoresDefinition: FC<{
 					<Select
 						items={volAllocationList}
 						background="gray5"
-						label={t('label.volume_allocation', 'Allocation')}
+						label={t('label.storage_type', 'Storage Type')}
 						showCheckbox={false}
 						selection={allocation}
 						onChange={onVolAllocationChange}

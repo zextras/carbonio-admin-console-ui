@@ -46,6 +46,13 @@ import { accountListDirectory } from '../../../../../services/account-list-direc
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import { deligateSendSettings } from '../../../../utility/utils';
+import {
+	SEND_MAILS_ONLY,
+	READ_MAILS_ONLY,
+	SEND_READ_MAILS,
+	MANAGE_NO_SEND,
+	SEND_READ_MANAGE_MAILS
+} from '../../../../../constants';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -184,22 +191,22 @@ const EditAccountDelegatesSection: FC = () => {
 		const selectedDelegate = find(identitiesList, (o) => o?.grantee?.[0].id === selectedRows[0]);
 		selectedDelegate.folderSelection = selectedDelegate?.folder?.length ? 'all_folders' : '';
 		if (!selectedDelegate?.folder?.length) {
-			selectedDelegate.delegeteRights = 'send_mails_only';
+			selectedDelegate.delegeteRights = SEND_MAILS_ONLY;
 		} else if (
 			selectedDelegate?.folder?.length &&
 			selectedDelegate?.folder?.[0]?.perm === 'r' &&
 			!selectedDelegate?.right?.length
 		) {
-			selectedDelegate.delegeteRights = 'read_mails_only';
+			selectedDelegate.delegeteRights = READ_MAILS_ONLY;
 		} else if (selectedDelegate?.folder?.[0]?.perm === 'r') {
-			selectedDelegate.delegeteRights = 'send_read_mails';
+			selectedDelegate.delegeteRights = SEND_READ_MAILS;
 		} else if (
 			selectedDelegate?.folder?.[0]?.perm === 'rwidxa' &&
 			!selectedDelegate?.right?.length
 		) {
-			selectedDelegate.delegeteRights = 'manage_no_send';
+			selectedDelegate.delegeteRights = MANAGE_NO_SEND;
 		} else if (selectedDelegate?.folder?.[0]?.perm === 'rwidxa') {
-			selectedDelegate.delegeteRights = 'send_read_manage_mails';
+			selectedDelegate.delegeteRights = SEND_READ_MANAGE_MAILS;
 		}
 		setDeligateDetail(selectedDelegate);
 		setShowCreateIdentity(true);
@@ -222,7 +229,7 @@ const EditAccountDelegatesSection: FC = () => {
 						},
 						'FolderActionRequest',
 						accountDetail?.zimbraId
-					).then((res: any) => {
+					).then(() => {
 						getIdentitiesList({
 							id: accountDetail?.zimbraId,
 							name: accountDetail?.zimbraMailDeliveryAddress
@@ -251,7 +258,7 @@ const EditAccountDelegatesSection: FC = () => {
 					},
 					'RevokeRightRequest',
 					accountDetail?.zimbraId
-				).then((res: any) => {
+				).then(() => {
 					setShowCreateIdentity(false);
 					getIdentitiesList({
 						id: accountDetail?.zimbraId,
@@ -304,7 +311,7 @@ const EditAccountDelegatesSection: FC = () => {
 				},
 				'GrantRightRequest',
 				accountDetail?.zimbraId
-			).then((res: any) => {
+			).then(() => {
 				getIdentitiesList({
 					id: accountDetail?.zimbraId,
 					name: accountDetail?.zimbraMailDeliveryAddress
@@ -324,10 +331,10 @@ const EditAccountDelegatesSection: FC = () => {
 		}
 		if (
 			deligateDetail?.delegeteRights &&
-			(deligateDetail?.delegeteRights === 'read_mails_only' ||
-				deligateDetail?.delegeteRights === 'send_read_mails' ||
-				deligateDetail?.delegeteRights === 'manage_no_send' ||
-				deligateDetail?.delegeteRights === 'send_read_manage_mails')
+			(deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
+				deligateDetail?.delegeteRights === SEND_READ_MAILS ||
+				deligateDetail?.delegeteRights === MANAGE_NO_SEND ||
+				deligateDetail?.delegeteRights === SEND_READ_MANAGE_MAILS)
 		) {
 			const selectedFolders = filter(folderList, { selected: true });
 			const folderIds = selectedFolders.map(function (obj) {
@@ -342,8 +349,8 @@ const EditAccountDelegatesSection: FC = () => {
 						id: deligateDetail?.folderSelection === 'all_folders' ? '1' : folderIds.join(','),
 						grant: {
 							perm:
-								deligateDetail?.delegeteRights === 'read_mails_only' ||
-								deligateDetail?.delegeteRights === 'send_read_mails'
+								deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
+								deligateDetail?.delegeteRights === SEND_MAILS_ONLY
 									? 'r'
 									: 'rwidxa',
 							gt: deligateDetail?.grantee?.[0]?.type,
@@ -354,7 +361,7 @@ const EditAccountDelegatesSection: FC = () => {
 				},
 				'FolderActionRequest',
 				accountDetail?.zimbraId
-			).then((res: any) => {
+			).then(() => {
 				getIdentitiesList({
 					id: accountDetail?.zimbraId,
 					name: accountDetail?.zimbraMailDeliveryAddress
@@ -521,7 +528,6 @@ const EditAccountDelegatesSection: FC = () => {
 	);
 	const addAccountGroupRights = useCallback((): void => {
 		simpleSelectedList?.forEach((ele: any): void => {
-			console.log('ele=>', ele);
 			if (sendRightCheck || sendBehalfRightCheck) {
 				postSoapFetchRequest(
 					`/service/admin/soap/RevokeRightRequest`,
@@ -543,7 +549,7 @@ const EditAccountDelegatesSection: FC = () => {
 					},
 					'RevokeRightRequest',
 					accountDetail?.zimbraId
-				).then((res: any) => {
+				).then(() => {
 					setShowCreateIdentity(false);
 					getIdentitiesList({
 						id: accountDetail?.zimbraId,
@@ -571,7 +577,7 @@ const EditAccountDelegatesSection: FC = () => {
 					},
 					'GrantRightRequest',
 					accountDetail?.zimbraId
-				).then((res: any) => {
+				).then(() => {
 					getIdentitiesList({
 						id: accountDetail?.zimbraId,
 						name: accountDetail?.zimbraMailDeliveryAddress
@@ -597,7 +603,7 @@ const EditAccountDelegatesSection: FC = () => {
 					},
 					'FolderActionRequest',
 					accountDetail?.zimbraId
-				).then((res: any) => {
+				).then(() => {
 					getIdentitiesList({
 						id: accountDetail?.zimbraId,
 						name: accountDetail?.zimbraMailDeliveryAddress
@@ -694,7 +700,7 @@ const EditAccountDelegatesSection: FC = () => {
 								},
 								'FolderActionRequest',
 								accountDetail?.zimbraId
-							).then((res: any) => {
+							).then(() => {
 								getIdentitiesList({
 									id: accountDetail?.zimbraId,
 									name: accountDetail?.zimbraMailDeliveryAddress
@@ -723,7 +729,7 @@ const EditAccountDelegatesSection: FC = () => {
 							},
 							'RevokeRightRequest',
 							accountDetail?.zimbraId
-						).then((res: any) => {
+						).then(() => {
 							setShowCreateIdentity(false);
 							getIdentitiesList({
 								id: accountDetail?.zimbraId,
@@ -765,13 +771,15 @@ const EditAccountDelegatesSection: FC = () => {
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
 		accountListDirectory(attrs, type, domainName, searchQuery, 0, 10).then((data) => {
 			const accountListArr: any[] = [];
-			data?.account?.map((delegateAccount: any) =>
-				accountListArr.push({
-					id: delegateAccount.id,
-					label: delegateAccount.name,
-					type: 'usr',
-					ele: delegateAccount
-				})
+			data?.account?.map(
+				(delegateAccount: any) =>
+					delegateAccount.id !== accountDetail.zimbraId &&
+					accountListArr.push({
+						id: delegateAccount.id,
+						label: delegateAccount.name,
+						type: 'usr',
+						ele: delegateAccount
+					})
 			);
 			data?.dl?.map((delegateAccount: any) =>
 				accountListArr.push({
@@ -783,7 +791,7 @@ const EditAccountDelegatesSection: FC = () => {
 			);
 			setOptions(accountListArr);
 		});
-	}, [domainName, searchQuery]);
+	}, [accountDetail.zimbraId, domainName, searchQuery]);
 
 	useEffect(() => {
 		if (searchQuery) getAccountList();
