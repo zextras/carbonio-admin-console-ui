@@ -70,7 +70,11 @@ const DelegateSetRightsSection: FC = () => {
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
 				</Row>
-				{!deligateDetail?.delegeteRights || deligateDetail?.delegeteRights === 'read_mails_only' ? (
+				{!(
+					deligateDetail?.delegeteRights === 'send_mails_only' ||
+					deligateDetail?.delegeteRights === 'send_read_mails' ||
+					deligateDetail?.delegeteRights === 'send_read_manage_mails'
+				) ? (
 					<></>
 				) : (
 					<>
@@ -87,16 +91,7 @@ const DelegateSetRightsSection: FC = () => {
 							mainAlignment="space-between"
 						>
 							<Row width="100%" mainAlignment="flex-start">
-								<RadioGroup
-									value={sendingOption || deligateDetail?.right?.[0]?._content}
-									onChange={(newValue: string): void => {
-										setSendingOption(newValue);
-										setDeligateDetail((prev: any) => ({
-											...prev,
-											right: [{ _content: newValue }]
-										}));
-									}}
-								>
+								<RadioGroup value={sendingOption || deligateDetail?.right?.[0]?._content}>
 									<Radio
 										label={t(
 											'account_details.send_as_recepients',
@@ -106,6 +101,12 @@ const DelegateSetRightsSection: FC = () => {
 											}
 										)}
 										value="sendAs"
+										onClick={(): void => {
+											setDeligateDetail((prev: any) => ({
+												...prev,
+												right: [{ _content: 'sendAs' }]
+											}));
+										}}
 									/>
 									<Radio
 										label={t(
@@ -116,13 +117,24 @@ const DelegateSetRightsSection: FC = () => {
 											}
 										)}
 										value="sendOnBehalfOf"
+										onClick={(): void => {
+											setDeligateDetail((prev: any) => ({
+												...prev,
+												right: [{ _content: 'sendOnBehalfOf' }]
+											}));
+										}}
 									/>
 								</RadioGroup>
 							</Row>
 						</Row>
 					</>
 				)}
-				{!deligateDetail?.delegeteRights || deligateDetail?.delegeteRights === 'send_mails_only' ? (
+				{!(
+					deligateDetail?.delegeteRights === 'read_mails_only' ||
+					deligateDetail?.delegeteRights === 'manage_no_send' ||
+					deligateDetail?.delegeteRights === 'send_read_mails' ||
+					deligateDetail?.delegeteRights === 'send_read_manage_mails'
+				) ? (
 					<></>
 				) : (
 					<>
@@ -146,13 +158,6 @@ const DelegateSetRightsSection: FC = () => {
 									<Row width="100%" mainAlignment="space-between">
 										<RadioGroup
 											value={deligateDetail?.folderSelection}
-											onChange={(newValue: string): void => {
-												// setFolderSelection(newValue);
-												setDeligateDetail((prev: any) => ({
-													...prev,
-													folderSelection: newValue
-												}));
-											}}
 											width="100%"
 											mainAlignment="space-between"
 										>
@@ -162,6 +167,13 @@ const DelegateSetRightsSection: FC = () => {
 													`All Folders ( it includes also folders that will be created later on)`
 												)}
 												value="all_folders"
+												width="19rem"
+												onChange={(newValue: string): void => {
+													setDeligateDetail((prev: any) => ({
+														...prev,
+														folderSelection: 'all_folders'
+													}));
+												}}
 											/>
 											<Radio
 												label={t(

@@ -161,14 +161,17 @@ const EditAccount: FC<{
 			label: t('label.security', 'SECURITY'),
 			CustomComponent: ReusedDefaultTabBar,
 			icon: 'LockOutline'
-		},
-		{
+		}
+	];
+
+	if (isAdvanced) {
+		items.push({
 			id: 'delegates',
 			label: t('label.delegates', 'DELEGATES'),
 			CustomComponent: ReusedDefaultTabBar,
 			icon: 'SharedAccountOutline'
-		}
-	];
+		});
+	}
 
 	const setSwitchInitOptionValue = useCallback(
 		(key: string, value: string): void => {

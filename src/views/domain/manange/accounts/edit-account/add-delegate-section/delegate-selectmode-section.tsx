@@ -162,9 +162,9 @@ const DelegateSelectModeSection: FC = () => {
 						<Dropdown
 							items={delegateAccountList}
 							placement="bottom-start"
-							maxWidth="300px"
+							maxWidth="19rem"
 							disableAutoFocus
-							width="265px"
+							width="17rem"
 							style={{
 								width: '100%'
 							}}
