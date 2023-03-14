@@ -1209,7 +1209,7 @@
         "prefix_name": "Prefix - all objects will have this prefix in their name",
         "primary_color_for_dark_mode": "<bold>Primary</bold> Color for Dark Mode",
         "primary_color_for_light_mode": "<bold>Primary</bold> Color for Light Mode",
-        "primary_color_hint": "To change the Primary color, please use an HEX color code as in the placeholder format. If you’re unsure on how to find it, use <hyperlink>this link</hyperlink> and copy it back here.",
+        "primary_color_hint": "To change the Primary color, please use an HEX color code as in the placeholder format.",
         "prefix_volume": "Prefix - {{volumePrefix}}",
         "primary_volume": "This is a Primary Volume",
         "privacy": "Privacy",

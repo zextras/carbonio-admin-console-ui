@@ -14,14 +14,12 @@ import {
 	Button,
 	Select,
 	DefaultTabBarItem,
-	TabBar,
-	Link
+	TabBar
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import ListRow from '../../list/list-row';
 import { isValidHttpsUrl } from '../../utility/utils';
 import { themeConfigStore } from '../../../../types/domain';
-import { COLOR_PICKER_LINK } from '../../../constants';
 
 const HttpsErrorMessage: FC = () => {
 	const [t] = useTranslation();
@@ -231,11 +229,10 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Padding vertical="small" horizontal="small" width="100%">
 							<Text size="small" color="gray0">
-								<Trans
-									i18nKey="label.primary_color_hint"
-									defaults="To change the Primary color, please use an HEX color code as in the placeholder format. If you’re unsure on how to find it, use <hyperlink>this link</hyperlink> and copy it back here."
-									components={{ hyperlink: <Link target="_blank" href={COLOR_PICKER_LINK} /> }}
-								/>
+								{t(
+									'label.primary_color_hint',
+									'To change the Primary color, please use an HEX color code as in the placeholder format.'
+								)}
 							</Text>
 						</Padding>
 					</ListRow>
