@@ -66,6 +66,8 @@ const GlobalTheme: FC = () => {
 				setValue('carbonioAdminUiTitle', obj?.carbonioAdminUiTitle);
 				setValue('carbonioAdminUiDescription', obj?.carbonioAdminUiDescription);
 				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
+				setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor);
+				setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor);
 			}
 		},
 		[setValue]
@@ -134,6 +136,15 @@ const GlobalTheme: FC = () => {
 			}
 			if (!obj.carbonioAdminUiDescription) {
 				obj.carbonioAdminUiDescription = '';
+			}
+			if (!obj.carbonioLogoUrl) {
+				obj.carbonioLogoUrl = '';
+			}
+			if (!obj.carbonioWebUiPrimaryColor) {
+				obj.carbonioWebUiPrimaryColor = '';
+			}
+			if (!obj.carbonioWebUiDarkPrimaryColor) {
+				obj.carbonioWebUiDarkPrimaryColor = '';
 			}
 			setInitalValues(obj);
 			setIsDirty(false);
@@ -225,7 +236,10 @@ const GlobalTheme: FC = () => {
 			carbonioAdminUiDarkBackground: '',
 			carbonioAdminUiFavicon: '',
 			carbonioAdminUiTitle: '',
-			carbonioAdminUiDescription: ''
+			carbonioAdminUiDescription: '',
+			carbonioLogoUrl: '',
+			carbonioWebUiPrimaryColor: '',
+			carbonioWebUiDarkPrimaryColor: ''
 		};
 		Object.keys(domainDefaultElements).map((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
