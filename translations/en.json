@@ -8,7 +8,7 @@
     "accountDetails": {
         "default_COS": "Default COS",
         "enable_activeSync_remote_access": "Enable ActiveSync remote access",
-        "user_will_change_password_on_next_login": "User will change password on next login"
+        "force_change_password": "Force Change Password"
     },
     "account_details": {
         "ADD": "ADD",
@@ -125,10 +125,10 @@
         "select_mode": "SELECT MODE",
         "send": "SEND",
         "send_as_behalf": "Send on Behalf of (recipients will display this sender email {{targetEmail}})",
-        "send_check": "Send",
-        "send_on_behalf_of_check": "Send on Behalf",
         "send_as_recepients": "Send as (recipients will display this sender email {{targetEmail}})",
+        "send_check": "Send",
         "send_mails_only": "Send Mails only (no access to folders)",
+        "send_on_behalf_of_check": "Send on Behalf",
         "send_read_mails": "Send and Read Mails (no rights to create folders / manage mails)",
         "send_read_manage_mails": "Send, Read and Manage Mails (all of the above)",
         "send_read_receipts": "Send read receipts",

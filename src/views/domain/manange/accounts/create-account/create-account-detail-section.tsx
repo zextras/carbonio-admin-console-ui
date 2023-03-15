@@ -223,10 +223,7 @@ const CreateAccountDetailSection: FC = () => {
 						<Switch
 							value={accountDetail?.zimbraPasswordMustChange}
 							onClick={(): void => changeSwitchOption('zimbraPasswordMustChange')}
-							label={t(
-								'accountDetails.user_will_change_password_on_next_login',
-								'User will change password on next login'
-							)}
+							label={t('accountDetails.force_change_password', 'Force Change Password')}
 						/>
 					</Row>
 					{/* <Row width="48%" mainAlignment="flex-start">
