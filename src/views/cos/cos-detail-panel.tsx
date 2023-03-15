@@ -85,7 +85,7 @@ const CosDetailPanel: FC = () => {
 											type="outlined"
 											label={t('create_new_cos', 'Creat New Cos')}
 											icon="Plus"
-											color="info"
+											color="primary"
 											onClick={createNewCos}
 										/>
 									</Text>

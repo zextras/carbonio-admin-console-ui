@@ -697,6 +697,7 @@ const DomainAuthentication: FC = () => {
 										value={zimbraAuthLdapStartTlsEnabled}
 										label={t('label.enable_start_tls', 'Enable StartTLS')}
 										onClick={authLdapStartTlsEnabled}
+										iconColor="primary"
 									/>
 								</Padding>
 							</ListRow>
@@ -709,6 +710,7 @@ const DomainAuthentication: FC = () => {
 											'Try local password management in case of failure with other methods'
 										)}
 										onClick={authFallbackToLocal}
+										iconColor="primary"
 									/>
 								</Padding>
 							</ListRow>
@@ -777,6 +779,7 @@ const DomainAuthentication: FC = () => {
 										value={zimbraForceClearCookies}
 										label={t('label.auto_logout_users', 'Auto Logout Users')}
 										onClick={forceClearCookies}
+										iconColor="primary"
 									/>
 								</Padding>
 							</ListRow>

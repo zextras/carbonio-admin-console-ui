@@ -609,7 +609,7 @@ const HSMsettingPanel: FC = () => {
 				width="100%"
 				padding={{ all: 'large' }}
 				style={{ overflow: 'auto' }}
-				height="calc(100vh - 160px)"
+				height="calc(100vh - 10.625rem)"
 			>
 				<ListRow>
 					<Padding top="large" bottom="large">
@@ -626,6 +626,7 @@ const HSMsettingPanel: FC = () => {
 							onClick={(): void =>
 								setIsPowerstoreMoveSchedulerEnabled(!isPowerstoreMoveSchedulerEnabled)
 							}
+							iconColor="primary"
 						/>
 					</Padding>
 				</ListRow>
@@ -651,6 +652,7 @@ const HSMsettingPanel: FC = () => {
 						onClick={(): void =>
 							setDeduplicateAfterScheduledMoveBlobs(!deduplicateAfterScheduledMoveBlobs)
 						}
+						iconColor="primary"
 					/>
 				</ListRow>
 				<ListRow>

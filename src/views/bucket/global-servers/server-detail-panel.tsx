@@ -351,7 +351,9 @@ const serverDetailPanel: FC = () => {
 									<Input
 										label={t('label.search_for_a_Server', `Search for a Server`)}
 										background="gray5"
-										CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="Gray0" />}
+										CustomIcon={(): any => (
+											<Icon icon="FunnelOutline" size="large" color="primary" />
+										)}
 										value={searchServer}
 										onChange={(e: any): void => {
 											setSearchServer(e.target.value);

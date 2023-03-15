@@ -950,6 +950,7 @@ const EditAccountDelegatesSection: FC = () => {
 						>
 							<Row width="24%" mainAlignment="flex-start">
 								<Checkbox
+									iconColor="primary"
 									value={readRightWriteCheck}
 									onClick={(): void => {
 										if (!readRightWriteCheck) {
@@ -962,6 +963,7 @@ const EditAccountDelegatesSection: FC = () => {
 							</Row>
 							<Row width="24%" mainAlignment="flex-start">
 								<Checkbox
+									iconColor="primary"
 									value={readRightCheck}
 									onClick={(): void => {
 										if (!readRightCheck) {
@@ -974,6 +976,7 @@ const EditAccountDelegatesSection: FC = () => {
 							</Row>
 							<Row width="24%" mainAlignment="flex-start">
 								<Checkbox
+									iconColor="primary"
 									value={sendRightCheck}
 									onClick={(): void => {
 										if (!sendRightCheck) {
@@ -986,6 +989,7 @@ const EditAccountDelegatesSection: FC = () => {
 							</Row>
 							<Row width="24%" mainAlignment="flex-start">
 								<Checkbox
+									iconColor="primary"
 									value={sendBehalfRightCheck}
 									onClick={(): void => {
 										if (!sendBehalfRightCheck) {

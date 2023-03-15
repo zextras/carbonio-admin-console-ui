@@ -652,6 +652,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.ldap_dump', 'LDAP Dump')}
 								value={ldapDumpEnabled}
 								onClick={(): void => setLdapDumpEnabled(!ldapDumpEnabled)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -659,6 +660,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.include_server_configuration', 'Include server configuration')}
 								value={serverConfiguration}
 								onClick={(): void => setServerConfiguration(!serverConfiguration)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -666,6 +668,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.purge_old_configuration', 'Purge old configuration')}
 								value={purgeOldConfiguration}
 								onClick={(): void => setPurgeOldConfiguration(!purgeOldConfiguration)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -673,6 +676,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.include_index', 'Include index')}
 								value={includeIndex}
 								onClick={(): void => setIncludeIndex(!includeIndex)}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
@@ -830,6 +834,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.on_the_fly_metadata', 'On the fly metadata')}
 								value={backupOnTheFlyMetadata}
 								onClick={(): void => setBackupOnTheFlyMetadata(!backupOnTheFlyMetadata)}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
@@ -848,6 +853,7 @@ const ServerAdvanced: FC = () => {
 								onClick={(): void =>
 									setScheduledMetadataArchivingEnabled(!scheduledMetadataArchivingEnabled)
 								}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>

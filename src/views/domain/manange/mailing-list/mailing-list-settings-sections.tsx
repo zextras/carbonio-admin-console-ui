@@ -481,6 +481,7 @@ const MailingListSettingsSection: FC<any> = () => {
 										!mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
 								}));
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -501,6 +502,7 @@ const MailingListSettingsSection: FC<any> = () => {
 									zimbraHideInGal: !mailingListDetail?.zimbraHideInGal
 								}));
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -521,6 +523,7 @@ const MailingListSettingsSection: FC<any> = () => {
 									zimbraMailStatus: !mailingListDetail?.zimbraMailStatus
 								}));
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>

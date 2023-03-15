@@ -181,6 +181,7 @@ const HSMselectVolumes: FC<any> = () => {
 						onClick={(): void => {
 							setShowSourceVolume(!showSourceVolume);
 						}}
+						iconColor="primary"
 					/>
 				</Padding>
 			</ListRow>
@@ -253,6 +254,7 @@ const HSMselectVolumes: FC<any> = () => {
 						onClick={(): void => {
 							setShowDestinationVolume(!showDestinationVolume);
 						}}
+						iconColor="primary"
 					/>
 				</Padding>
 			</ListRow>
