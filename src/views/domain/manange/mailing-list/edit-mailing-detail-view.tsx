@@ -1306,6 +1306,11 @@ const EditMailingListView: FC<any> = ({
 			setIsDirty(true);
 		}
 	}, [previousDetail?.displayName, displayName]);
+	useEffect(() => {
+		if (!isEqual(zimbraDefaultMailAlias, zimbraMailAlias)) {
+			setIsDirty(true);
+		}
+	}, [zimbraDefaultMailAlias, zimbraMailAlias]);
 
 	useEffect(() => {
 		if (
