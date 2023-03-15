@@ -18,6 +18,8 @@ import {
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
@@ -179,7 +181,15 @@ const HSMpolicySettings: FC<any> = () => {
 				return {
 					id: index,
 					columns: [
-						<Text size="medium" weight="bold" key={index} color="#828282">
+						<Text
+							size="medium"
+							weight="bold"
+							key={index}
+							color="#828282"
+							onClick={(): void => {
+								setSelectedPolicies([index]);
+							}}
+						>
 							{displayPolicy}
 						</Text>
 					]
@@ -238,9 +248,9 @@ const HSMpolicySettings: FC<any> = () => {
 		<Container
 			mainAlignment="flex-start"
 			crossAlignment="flex-start"
-			height="calc(100vh - 280px)"
+			height="calc(100vh - 17.5rem)"
 			background="white"
-			style={{ overflow: 'auto', padding: '16px' }}
+			style={{ overflow: 'auto', padding: '1rem' }}
 		>
 			<ListRow>
 				<Container padding={{ bottom: 'large' }}>
@@ -398,23 +408,26 @@ const HSMpolicySettings: FC<any> = () => {
 						}}
 					/>
 				</Container>
-				<Container width="fit" padding={{ right: 'small' }}>
+				<Container>
 					<Button
 						type="outlined"
 						label={t('label.add', 'Add')}
 						icon="PlusOutline"
 						iconPlacement="right"
 						color="primary"
-						height={46}
 						onClick={onAdd}
+						size="large"
 					/>
 				</Container>
-				<Container style={{ border: '1px solid rgb(215, 73, 66)' }} width="fit">
-					<IconButton
-						iconColor="error"
+				<Container maxWidth="5rem">
+					<Button
+						type="outlined"
+						key="add-button"
+						label={''}
+						color="error"
 						icon="Trash2Outline"
-						height={44}
-						width={44}
+						iconPlacement="left"
+						size="large"
 						onClick={onDeletePolicy}
 					/>
 				</Container>
@@ -431,7 +444,8 @@ const HSMpolicySettings: FC<any> = () => {
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedPolicies}
-						onSelectionChange={(selected: any): void => setSelectedPolicies(selected)}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
 			</ListRow>

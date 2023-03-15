@@ -15,5 +15,8 @@
     "notification": {
         "mark_as_read": "Merkitse luetuksi",
         "mark_as_unread": "Merkitse lukemattomaksi"
+    },
+    "operations": {
+        "details": "Yksityiskohdat"
     }
 }

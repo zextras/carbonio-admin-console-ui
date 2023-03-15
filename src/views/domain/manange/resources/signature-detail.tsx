@@ -23,6 +23,8 @@ import { modifySignature } from '../../../../services/modify-signature-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import Textarea from '../../../components/textarea';
 import logo from '../../../../assets/carbonio_defender.svg';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 export const SignatureDetail: FC<any> = ({
 	isEditable,
@@ -326,7 +328,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.add', 'Add')}
 								icon="Plus"
 								color="primary"
-								height="44px"
 								onClick={(): void => {
 									setIsOpenCreateEditSignatureDialog(true);
 								}}
@@ -338,7 +339,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.edit', 'Edit')}
 								icon="Edit"
 								color="secondary"
-								height="44px"
 								disabled={selectedSignature.length === 0 || selectedSignature.length > 1}
 								onClick={onEditSignature}
 							/>
@@ -394,6 +394,8 @@ export const SignatureDetail: FC<any> = ({
 						style={{ overflow: 'auto', height: '100%' }}
 						selectedRows={selectedSignature}
 						onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
 			</ListRow>
@@ -543,7 +545,10 @@ export const SignatureDetail: FC<any> = ({
 					size="medium"
 					customFooter={
 						<Container orientation="horizontal" mainAlignment="space-between">
-							<Button label={t('label.help', 'Help')} type="outlined" color="primary" />
+							<Container orientation="horizontal" mainAlignment="flex-start">
+								<Button label={t('label.help', 'Help')} type="outlined" />
+							</Container>
+
 							<Container orientation="horizontal" mainAlignment="flex-end">
 								<Padding all="small">
 									<Button

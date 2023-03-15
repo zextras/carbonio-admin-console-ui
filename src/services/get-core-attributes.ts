@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /*
  * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
  *
@@ -10,7 +11,5 @@ import {
 	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
 
-export const updateBackup = async (body: JSON): Promise<any> =>
-	fetchExternalSoap(`/service/extension/zextras_admin/core/attribute/set`, {
-		...body
-	});
+export const getCoreAttributes = async (body: any): Promise<any> =>
+	fetchExternalSoap(`/service/extension/zextras_admin/core/attributes/get`, [...body]);

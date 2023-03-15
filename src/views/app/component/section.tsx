@@ -30,7 +30,7 @@ export const SectionHeader: FC<any> = ({
 				</Row>
 				{showClose && (
 					<Row padding={{ horizontal: 'small' }}>
-						<IconButton icon="CloseOutline" onClick={onClose} color="gray1" />
+						<IconButton icon="CloseOutline" onClick={onClose} size="large" />
 					</Row>
 				)}
 			</Row>

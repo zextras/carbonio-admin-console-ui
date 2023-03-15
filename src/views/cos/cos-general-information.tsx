@@ -330,22 +330,23 @@ const CosGeneralInformation: FC = () => {
 					</Container>
 				</Row>
 			</Container>
-			<Container
+			<Row
 				width="100%"
-				mainAlignment="flex-end"
-				crossAlignment="flex-end"
 				padding={{ top: 'small', right: 'large', bottom: 'large', left: 'large' }}
+				style={{ display: 'block' }}
 			>
 				<Button
 					type="outlined"
 					label="DELETE"
 					icon="CloseOutline"
 					color="error"
-					size="fill"
+					size="large"
+					width="100%"
+					style={{ width: '100%' }}
 					disabled={canDeleteCOS}
 					onClick={onDeleteCOSConfirmation}
 				/>
-			</Container>
+			</Row>
 			<Modal
 				title={
 					<Trans
@@ -368,7 +369,7 @@ const CosGeneralInformation: FC = () => {
 								<Button
 									label={t('label.no_go_back', 'No, Go Back')}
 									color="secondary"
-									size="fill"
+									size="medium"
 									onClick={(): void => {
 										setOpenDeleteCOSConfirmDialog(false);
 									}}

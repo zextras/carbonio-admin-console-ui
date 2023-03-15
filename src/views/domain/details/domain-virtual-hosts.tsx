@@ -24,6 +24,8 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import logo from '../../../assets/helmet_logo.svg';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -304,6 +306,8 @@ const DomainVirtualHosts: FC = () => {
 									setRemoveButtonDisabled(true);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 						{items.length === 0 && (
 							<Container

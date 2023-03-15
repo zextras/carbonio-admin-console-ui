@@ -117,7 +117,8 @@
             },
             "activate": "Activer",
             "activation": "Activation",
-            "deactivate": "Désactiver"
+            "deactivate": "Désactiver",
+            "order_id": "Identifiant de commande"
         }
     },
     "label": {
@@ -157,7 +158,7 @@
         "core": "Core",
         "description": "Description",
         "discard_changes": "ANNULER LES MODIFICATIONS",
-        "suspended": "Suspendu(e)",
+        "suspended": "Suspendu",
         "timezone": "Fuseau horaire",
         "unlimited": "Illimité",
         "url": "URL",
@@ -368,7 +369,7 @@
         "delete_cos_succeess": "La COS {{cosname}} a été supprimée avec succès",
         "delete_cos_instruction_msg": "Si vous cliquez sur le bouton \"OUI, SUPPRIMER\", la COS par défaut remplacera la COS supprimée.",
         "delete_bucket_sucess": "Le {{name}} a été supprimé",
-        "location": "Emplacement",
+        "location": "Localisation",
         "mail": "Mail",
         "owners": "Propriétaires",
         "password": "Mot de passe",
@@ -640,7 +641,6 @@
         "out_of_office_message": "Message hors bureau",
         "owners_manage_add_list": "Les propriétaires peuvent ajouter et retirer des membres, changer le nom affiché ainsi que la description, changer la visibilité de la liste (ex : masquer dans la GAL), changer l'appartenance, modifier le comportement des inscriptions / désinscriptions",
         "percentage_maximum_conflict": "% Maximum de Conflits",
-        "reply_to_address_for_receipt": "Adresse de réponse pour le destinataire",
         "public_service_hostname": "Nom d'hôte publique du service",
         "query_is_not_valid": "La requête est valide",
         "receiving_mails": "Réception des emails",
@@ -712,7 +712,7 @@
         "email_address": "Adresse email",
         "enabled": "Activé",
         "global": "Global",
-        "last_seen": "Dernière connexion",
+        "last_seen": "vu pour la dernière fois",
         "mailstores": "Mailstores",
         "mobile_password": "Mot de passe mobile",
         "reset": "Réinitialiser",
@@ -799,7 +799,6 @@
         "security": "SÉCURITÉ",
         "select_a_bucket_configuration": "Sélectionnez une configuration de Bucket",
         "selected_empty_bucket": "Vous n'avez pas sélectionné de Bucket. Vous pouvez commencer à taper dans le champ ci-dessus pour commencer à les visualiser.",
-        "selected_empty_bucket_helperText": "Vous n'avez pas sélectionné un bucket.\n\t\t\t\t\t\t\t\t\t\t\tVous pouvez commencer à taper dans le champ\n\t\t\t\t\t\t\t\t\t\t\tci-dessus pour commencer à les visualiser.",
         "session_end_success": "La session s'est terminée avec succès",
         "wiping_device_warning_msg_1": "L'effacement d'un appareil le ramène aux paramètres d'usine. Êtes-vous sûr de vouloir continuer ?",
         "total_acc_rights_with_delete_distribution_list_helper_text": "Cette liste a <bold>{{totalAccRights}}</bold> droits de comptes partagés.<br /> Si vous la supprimez, tous les droits seront perdus.",
@@ -829,7 +828,37 @@
         "there_are_no_owners": "Il n'y a pas de propriétaire ici.",
         "verify": "Vérification",
         "verify_certificate": "Vérification",
-        "who_can_send_mails_to_list ": "Qui peut envoyer des emails à cette liste ?"
+        "who_can_send_mails_to_list ": "Qui peut envoyer des emails à cette liste ?",
+        "centralized": "Centralisé",
+        "external_volume_edited": "{{message}}",
+        "general_options": "Options Générales",
+        "operation": {
+            "get_all_operation_error": "{{name}}",
+            "stop_operation_error": "{{name}}"
+        },
+        "stop_operation_helperText": "{{message}}",
+        "ID": "ID",
+        "done": "Terminé",
+        "empty_table_helperText": "Vider la Table",
+        "queued": "Ajouté(e) dans la queue",
+        "running": "En cours",
+        "use_intelligent_tiering": "Utiliser le Tiering intelligent",
+        "Aliases": "Alias",
+        "ADD_NEW": "AJOUTER UN NOUVEAU",
+        "delegates": "DÉLÉGUATIONS",
+        "Accounts": "Comptes",
+        "EDIT": "ÉDITER",
+        "REMOVE": "SUPPRIMER",
+        "Rights": "Droits",
+        "Type": "Type",
+        "chats": "Chats",
+        "contacts": "Contacts",
+        "files": "Fichiers",
+        "mail_signatures": "Signatures email",
+        "mails": "Emails",
+        "out_of_the_office_reply": "Réponse hors bureau",
+        "tasks": "Tâches",
+        "what_inside": "Sujet"
     },
     "message": {
         "snackbar": {
@@ -842,7 +871,7 @@
         "africa_algiers": "{{value}} Afrique Central de l'Ouest",
         "africa_cairo": "{{value}} Egypte",
         "africa_casablanca": "{{value}} Casablanca",
-        "africa_harare": "{{value}} Harare, Pretorija",
+        "africa_harare": "{{value}} Harare, Pretoria",
         "africa_juba": "{{value}} Juba",
         "africa_khartoum": "{{value}} Khartoum",
         "africa_monrovia": "{{value}} Monrovia",
@@ -874,7 +903,7 @@
         "america_adak": "{{value}} Adak",
         "america_anchorage": "{{value}} Alaska",
         "america_araguaina": "{{value}} Araguaina",
-        "america_argentina_buenos_aires": "{{value}} Argentina",
+        "america_argentina_buenos_aires": "{{value}} Argentine",
         "america_asuncion": "{{value}} Asuncion",
         "america_bahia": "{{value}} Salvador",
         "america_bogota": "{{value}} Colombie",
@@ -950,7 +979,7 @@
         "europe_berlin": "{{value}} Amsterdam, Berlin, Berne, Rome, Stockholm, Vienne",
         "europe_brussels": "{{value}} Bruxelles, Copenhague, Madrid, Paris",
         "europe_chisinau": "{{value}} Chisinau",
-        "europe_helsinki": "{{value}} Helsinki, Kyiv, Riga, Sofia, Tallinn, Vilnius",
+        "europe_helsinki": "{{value}} Helsinki, Kiev, Riga, Sofia, Tallinn, Vilnius",
         "europe_istanbul": "{{value}} Istanbul",
         "europe_kaliningrad": "{{value}} Kaliningrad (RTZ 1)",
         "europe_london": "{{value}} Grande-Bretagne, Irlande, Portugal",
@@ -1009,7 +1038,16 @@
         "total_domain_space": "Total de l'espace du domaine (octet)",
         "i_want_to_generate_an_otp_code": "JE SOUHAITE GÉNÉRER UN CODE OTP",
         "proceed_without_generating_an_otp_code": "CONTINUER SANS GÉNÉRER UN CODE OTP",
-        "the_account_has_been_successfully_created": "Le compte a été créé avec succès"
+        "the_account_has_been_successfully_created": "Le compte a été créé avec succès",
+        "private_key_certificate_removed": "La clé privée du certificat a été supprimée",
+        "certificate_content_error": "Certificat du domaine, chaine CA ou Clé privée invalide",
+        "certificate_invalid_error": "Le certificat est invalide, merci de réessayer avec un autre certificat",
+        "certificate_saved": "Les certificats ont été enregistrés",
+        "certificate_type_use_custom": "Je souhaite utiliser un certificat personnalisé",
+        "certificate_type_use_letsencrypt": "Je souhaite utiliser un certificat Let's Encrypt",
+        "certificate_valid": "Le certificat est valide",
+        "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Le certificat est valide, toutefois il expire bientôt ou n'est pas un CA de confiance",
+        "domain_certificate_removed": "Les certificats de domaine ont été supprimés"
     },
     "commons": {
         "confirm_connection": "CONFIRMER LA CONNEXION",
@@ -1393,7 +1431,51 @@
         "activesync_remote_access": "Accès à distance ActiveSync",
         "Chats": "Chats",
         "domain": "Domaine",
-        "files": "Fichiers"
+        "files": "Fichiers",
+        "send_as_behalf": "Envoyer de la part de (les destinataires seront en mesure de voir l'expéditeur {{targetEmail}})",
+        "send_read_manage_mails": "Envoyer, Lire et Gérer les emails (tous les droits cités)",
+        "type_the_new_alias_name": "Saisissez le nouveau nom d'alias et sélectionnez un domaine pour l'ajouter à vos alias disponibles",
+        "allow_user_check_minimum_interval": "Autoriser l'utilisateur à changer l'interval minimum de vérification",
+        "manage_the_aliases_for_this_account": "Gérer les alias pour ce compte",
+        "new_alias_name": "Nouveau nom d'alias",
+        "ADD": "AJOUTER",
+        "a_user": "Un utilisateur",
+        "add_user_on_delegates_list": "Ajouter un utilisateur à la liste des déléguations",
+        "all_folders": "Tous les dossiers (inclure les futurs dossiers)",
+        "an_existing_group": "Un groupe existant",
+        "as": "comme",
+        "delegate_created_successfully": "Délégation créée avec succès",
+        "delegate_deleted_successfully": "Délégation supprimée avec succès",
+        "delegate_rights": "Droits de délégation",
+        "delegate_updated_successfully": "Délégation mise à jour avec succès",
+        "deligate_abstract_text": "L'utilisateur {{granteeEmail}} sera en mesure d'envoyer des emails {{right}} {{targetEmail}}",
+        "do_not_save_it": "Ne pas sauver",
+        "i_want_to_create_a_delegate_for": "Je souhaite créer une délégation pour",
+        "i_want_to_select": "Je souhaite sélectionner les dossiers",
+        "manage_aliases": "GÉRER LES ALIAS",
+        "read_mails_only": "Uniquement la lecture des emails (pas de droits sur l'envoi d'emails)",
+        "save_it_to_sent_folder": "Le sauver sur le dossier Envoi",
+        "save_it_to_delegate_sent_folder": "Le sauvegarder sur l'envoyeur et le dossier Envoi délégué)",
+        "search_here_for_an_account": "Rechercher ici pour un Compte",
+        "select_delegate_folder": "Sélectionner les dossiers délégués pouvant être vus",
+        "select_mode": "SÉLECTION DU MODE",
+        "send_as_recepients": "Envoyer en tant que (les destinataires verront l'expéditeur {{targetEmail}})",
+        "send_mails_only": "Envoyer les emails seulement (pas de droits de lecture des dossiers)",
+        "send_read_mails": "Envoyé et Lire les emails (pas de droits de créer des dossiers ou de gérer les emails)",
+        "send_recepients_see_the_mail": "Envoyer {{right}} (les destinataires verront l'email depuis {{targetEmail}})",
+        "sendin_options": "Options d'envois",
+        "sending_options": "Option d'envois",
+        "set_rights": "DÉFINITION DES DROITS",
+        "what_rights_will_the_delegate_have": "Quels droits aura le délégué ?",
+        "where_do_we_store_it": "Où sera-t-il stocké ?",
+        "where_to_store_sent_emails": "Où stocker les emails envoyés ?",
+        "who_will_be_delegates": "Qui seront les délégués ?",
+        "your_available_aliases": "Vos alias disponibles",
+        "aliases": "Alias",
+        "click_on_the_pencil_to_edit": "Cliquer sur le pinceau pour éditer les alias disponibles ou cliquer sur la croix pour les supprimer",
+        "NEXT": "SUIVANT",
+        "abstract": "Abstract",
+        "on_behalf_of": "au nom de"
     },
     "connection": {
         "access_key": "Clé d’accès",
@@ -1403,7 +1485,6 @@
         "secret_key": "Clé secrète"
     },
     "privacy": {
-        "send_full_error_data_to_zextras": "Envoyer les données en erreur à Zextras",
         "allow_data_analytics": "Autoriser l'analyse des données",
         "allow_live_survey_feedbacks": "Autoriser l'envoi de données d'analyse",
         "analytics_sub_1": "Vos données sont en sécurité. Toutes les informations que nous recueillons sont et resteront anonymes. Elles seront utilisées par notre équipe pour comprendre comment nous pouvons améliorer Carbonio.",
@@ -1441,7 +1522,8 @@
         "volume_config_header": {
             "name": "Nom",
             "hsm_scheduled": "HSM programmé",
-            "indexer": "Indexeur"
+            "indexer": "Indexeur",
+            "status": "Statut"
         },
         "volume_header": {
             "compression": "Compression",
@@ -1460,7 +1542,10 @@
             "index": "Index",
             "primary": "Primaire",
             "secondary": "Secondaire"
-        }
+        },
+        "indexer_helperText": "Indexeur",
+        "primary_helperText": "Primaire",
+        "secondary_helperText": "Secondaire"
     },
     "welcome_to_carbonio": "Bienvenue dans Carbonio {{carbonioVersion}} {{adminName}} !",
     "hsm": {
@@ -1527,12 +1612,10 @@
         "larger_size_than": "plus grande que <bold>{{mesure}} {{scale}}</bold>",
         "name_hsm_policies": "{{serverName}} Politiques HSM",
         "new_policy": "Nouvelle Politique",
-        "next_day_scale": "prochain <bold>{{day}}</bold> {{scale} ?",
         "policies_added_successfully": "Les politiques ont été ajoutées avec succès",
         "policy_criteria": "Critères politiques",
         "policy_has_been_coppied": "La politique HSM a été copiée dans le presse-papiers",
         "policy_name": "Nom de la Politique",
-        "previous_day_scale": "précédent <bold>{{day}}</bold> {{scale}} ?",
         "select_manually_destination_volumes": "Sélectionner manuellement les volumes de destination",
         "select_manually_source_volumes": "Sélectionner manuellement les volumes sources",
         "smaller_size": "Plus petit (taille)",
@@ -1546,13 +1629,47 @@
     "welcome_to_carbonio_display_name": "Bienvenue {{adminName}} !",
     "dashboard": {
         "carbonio": "Carbonio",
-        "description": "Description"
+        "description": "Description",
+        "carbonio_core": "Carbonio Core",
+        "core_version": "Core Version",
+        "go_to_mailstores_server_list": "Allez à la liste des mailstores",
+        "go_to_notification": "Allez aux notifications",
+        "new_notifications": "Nouvelles notifications",
+        "quick_access_default_domain": "Accès rapide à {defaultDomain}",
+        "quick_access_to": "Accès rapide à",
+        "server_ip": "IP du serveur",
+        "server_name": "Nom du serveur",
+        "your_notifications": "Vos notifications"
     },
     "notification": {
         "copy": "Copier",
         "list": "Liste",
         "manage": "Gérer",
         "mark_as_read": "Marqué comme lu",
-        "mark_as_unread": "Marqué comme non lu"
-    }
+        "mark_as_unread": "Marqué comme non lu",
+        "notifications_list": "Liste de notification"
+    },
+    "operations": {
+        "copy_btn": "COPIER",
+        "details": "Détails",
+        "done": "Terminé",
+        "empty_table_helperText": "Vider la Table",
+        "label": {
+            "Deep": "Profond",
+            "notifications": "Notifications",
+            "status": "Statut"
+        },
+        "operations_list_header": {
+            "author": "Auteur",
+            "operation": "Opération",
+            "server": "Server",
+            "start_date": "Date de début",
+            "status": "Statut",
+            "submit_date": "Soumettre une date"
+        },
+        "other": "Autre",
+        "queued": "Ajouté(e) dans la queue",
+        "running": "En cours"
+    },
+    "cumminity_edition": "Community Edition !"
 }

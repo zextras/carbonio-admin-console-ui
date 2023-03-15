@@ -154,7 +154,11 @@ const AppView: FC = () => {
 					</Container>
 				</Route>
 				<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						style={{ overflow: 'hidden' }}
+					>
 						<Container style={{ maxWidth: '265px' }}>
 							<Suspense fallback={<Spinner />}>
 								<BackupListPanel />

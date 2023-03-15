@@ -18,6 +18,8 @@ import _ from 'lodash';
 import { useBackupModuleStore } from '../../../store/backup-module/store';
 import { useServerStore } from '../../../store/server/store';
 import { bytesToSize } from '../../utility/utils';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 
 // eslint-disable-next-line no-shadow
 export enum SMART_SCAN_TYPE {
@@ -204,6 +206,8 @@ const BackupServersListTable: FC<{
 			multiSelect={false}
 			selectedRows={selectedRows}
 			onSelectionChange={onSelectionChange}
+			RowFactory={CustomRowFactory}
+			HeaderFactory={CustomHeaderFactory}
 		/>
 	);
 };

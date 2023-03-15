@@ -24,6 +24,8 @@ import { find, get, unset } from 'lodash';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC } from '../../constants';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
@@ -138,6 +140,8 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 				multiSelect={false}
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
+				RowFactory={CustomRowFactory}
+				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
@@ -479,18 +483,21 @@ const EditBucketDetailPanel: FC<{
 
 	return (
 		<Container background="gray6">
-			<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="center"
+				orientation="horizontal"
+				background="white"
+				width="fill"
+				height="3rem"
+			>
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
 					<Text size="extralarge" weight="bold">
 						{title}
 					</Text>
 				</Row>
 				<Row padding={{ horizontal: 'small' }}>
-					<IconButton
-						icon="CloseOutline"
-						color="gray1"
-						onClick={(): any => setShowEditDetailView(false)}
-					/>
+					<IconButton icon="CloseOutline" onClick={(): any => setShowEditDetailView(false)} />
 				</Row>
 			</Row>
 			<Divider />
@@ -627,13 +634,15 @@ const EditBucketDetailPanel: FC<{
 						}}
 					/>
 				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
+				<Row width="100%" padding={{ top: 'large' }} style={{ display: 'block' }}>
 					<Button
 						type="outlined"
 						label={ButtonLabel}
 						icon={buttonIcon}
 						iconPlacement="right"
-						size="fill"
+						size="large"
+						width="100%"
+						style={{ width: '100%' }}
 						color={verify}
 						onClick={verifyConnector}
 						disabled={toggleBtn}

@@ -16,3 +16,26 @@ export interface ICertificateContent {
 	fileName: string;
 	content: string;
 }
+
+export type themeConfigStore = {
+	carbonioWebUiDarkMode?: boolean;
+	carbonioWebUiLoginLogo?: string;
+	carbonioWebUiDarkLoginLogo?: string;
+	carbonioWebUiLoginBackground?: string;
+	carbonioWebUiDarkLoginBackground?: string;
+	carbonioWebUiAppLogo?: string;
+	carbonioWebUiDarkAppLogo?: string;
+	carbonioWebUiFavicon?: string;
+	carbonioWebUiTitle?: string;
+	carbonioWebUiDescription?: string;
+	carbonioAdminUiLoginLogo?: string;
+	carbonioAdminUiDarkLoginLogo?: string;
+	carbonioAdminUiAppLogo?: string;
+	carbonioAdminUiDarkAppLogo?: string;
+	carbonioAdminUiBackground?: string;
+	carbonioAdminUiDarkBackground?: string;
+	carbonioAdminUiFavicon?: string;
+	carbonioAdminUiTitle?: string;
+	carbonioAdminUiDescription?: string;
+	carbonioLogoUrl?: string;
+};

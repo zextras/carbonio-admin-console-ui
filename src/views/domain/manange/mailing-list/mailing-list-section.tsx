@@ -27,7 +27,9 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
 import { searchGal } from '../../../../services/search-gal-service';
 import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
-import { ALL, EMAIL, GRP, MEMBERS_ONLY, PUB } from '../../../../constants';
+import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB } from '../../../../constants';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -97,7 +99,15 @@ const MailingListSection: FC<any> = () => {
 			const allRows = ownersList.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text
+						size="medium"
+						weight="bold"
+						key={item?.id}
+						color="#828282"
+						onClick={(): void => {
+							setSelectedDistributionListOwner([item]);
+						}}
+					>
 						{item}
 					</Text>
 				]
@@ -494,10 +504,7 @@ const MailingListSection: FC<any> = () => {
 						</ListRow>
 						<ListRow>
 							<Text size="small" weight="regular" color="gray1">
-								{t(
-									'label.ldap_example_query',
-									'Example: ldap:///??sub?(&(objectClass=zimbraAccount)(ZimbraAccountStatus=active))'
-								)}
+								{`${t('label.example_lbl', 'Example:')} ${LDAP_QUERY}`}
 							</Text>
 						</ListRow>
 						{isShowLdapQueryMessage && (
@@ -548,7 +555,13 @@ const MailingListSection: FC<any> = () => {
 						</Row>
 						<ListRow>
 							<Container padding={{ top: 'large', bottom: 'large' }}>
-								<Table rows={dynamicListMemberRows} headers={memberHeaders} showCheckbox={false} />
+								<Table
+									rows={dynamicListMemberRows}
+									headers={memberHeaders}
+									showCheckbox={false}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
+								/>
 							</Container>
 						</ListRow>
 						<Row padding={{ top: 'large' }}>
@@ -684,9 +697,8 @@ const MailingListSection: FC<any> = () => {
 									headers={ownerHeaders}
 									showCheckbox={false}
 									selectedRows={selectedDistributionListOwner}
-									onSelectionChange={(selected: any): void =>
-										setSelectedDistributionListOwner(selected)
-									}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
 						</ListRow>

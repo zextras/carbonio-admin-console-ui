@@ -30,6 +30,8 @@ import { createResource } from '../../../../services/create-cal-resource-service
 import { createSignature } from '../../../../services/create-signature-service';
 import CreateResource from './create-resource';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -454,6 +456,8 @@ const DomainResources: FC = () => {
 									showCheckbox
 									multiSelect
 									style={{ overflow: 'auto', height: '100%' }}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
 							{resourceList.length === 0 && (

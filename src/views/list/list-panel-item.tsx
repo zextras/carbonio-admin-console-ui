@@ -19,7 +19,13 @@ const ListPanelItem: FC<{
 	setToggleView: any;
 }> = ({ title, isListExpanded, setToggleView }) => (
 	<>
-		<Container height={52} orientation="vertical" mainAlignment="flex-start" width="100%">
+		<Container
+			height={52}
+			orientation="vertical"
+			mainAlignment="flex-start"
+			width="100%"
+			style={{ cursor: 'pointer' }}
+		>
 			<Row
 				padding={{ all: 'small' }}
 				takeAvwidth="fill"
@@ -42,7 +48,6 @@ const ListPanelItem: FC<{
 					<IconButton
 						icon={isListExpanded ? 'ChevronDownOutline' : 'ChevronUpOutline'}
 						size="small"
-						color="text"
 					/>
 				</Padding>
 			</Row>

@@ -165,7 +165,15 @@
         "bucket_notes": "Note",
         "date": "Dată",
         "notifications": "Notificări",
-        "open": "Deschide"
+        "open": "Deschide",
+        "ID": "ID",
+        "general_options": "Opţiuni generale",
+        "running": "Executare",
+        "done": "Realizat",
+        "Accounts": "Conturi",
+        "Type": "Tip",
+        "contacts": "Contacte",
+        "files": "Fisiere"
     },
     "core": {
         "subscription": {
@@ -373,7 +381,8 @@
             "external": "Extern"
         },
         "volume_config_header": {
-            "name": "Nume"
+            "name": "Nume",
+            "status": "Stare"
         },
         "volume_header": {
             "current": "Actual",
@@ -394,5 +403,20 @@
     "notification": {
         "copy": "Copiaza",
         "manage": "Gestionare"
+    },
+    "operations": {
+        "details": "Detalii",
+        "done": "Realizat",
+        "label": {
+            "notifications": "Notificări",
+            "status": "Stare"
+        },
+        "operations_list_header": {
+            "author": "Autor",
+            "server": "Server",
+            "status": "Stare"
+        },
+        "other": "Altele",
+        "running": "Executare"
     }
 }

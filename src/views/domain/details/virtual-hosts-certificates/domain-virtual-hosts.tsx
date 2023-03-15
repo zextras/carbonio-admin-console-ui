@@ -37,6 +37,8 @@ import { AbsoluteContainer } from '../../../components/styled';
 import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 import Textarea from '../../../components/textarea';
 import DeleteCertificateModel from './delete-certificate-model';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -414,22 +416,25 @@ const DomainVirtualHosts: FC = () => {
 						</Padding>
 						<Padding vertical="large" width="100%">
 							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
-								<Input
-									label={t(
-										'label.new_virtual_host_name',
-										'Type a new Virtual Host Name and click on “Add +” to add it to the list'
-									)}
-									background="gray5"
-									value={virtualHostValue}
-									onChange={(e: any): any => {
-										setVirutalHostValue(e.target.value);
-										if (e.target.value) {
-											setAddButtonDisabled(false);
-										} else {
-											setAddButtonDisabled(true);
-										}
-									}}
-								/>
+								<Container width="85%">
+									<Input
+										label={t(
+											'label.new_virtual_host_name',
+											'Type a new Virtual Host Name and click on “Add +” to add it to the list'
+										)}
+										background="gray5"
+										value={virtualHostValue}
+										onChange={(e: any): any => {
+											setVirutalHostValue(e.target.value);
+											if (e.target.value) {
+												setAddButtonDisabled(false);
+											} else {
+												setAddButtonDisabled(true);
+											}
+										}}
+									/>
+								</Container>
+
 								<Padding left="large">
 									<Button
 										type="ghost"
@@ -464,6 +469,8 @@ const DomainVirtualHosts: FC = () => {
 									setRemoveVirtualBtnDisabled(true);
 								}
 							}}
+							HeaderFactory={CustomHeaderFactory}
+							RowFactory={CustomRowFactory}
 						/>
 						{items.length === 0 && (
 							<Container
@@ -545,7 +552,6 @@ const DomainVirtualHosts: FC = () => {
 						height="fit"
 						crossAlignment="flex-start"
 						background="gray6"
-						className="ff"
 					>
 						<Row
 							padding={{ top: 'large' }}
@@ -644,7 +650,6 @@ const DomainVirtualHosts: FC = () => {
 						height="fit"
 						crossAlignment="flex-start"
 						background="gray6"
-						className="ff"
 					>
 						<Row
 							padding={{ top: 'large' }}

@@ -39,7 +39,7 @@ const QuickAccess: FC<{
 			>
 				<ListRow>
 					<Container mainAlignment="flex-start" crossAlignment="flex-start" width="2rem">
-						<Icon icon="FlashOutline" height={'1.5rem'} width="1.5rem" />
+						<Icon size="large" icon="FlashOutline" />
 					</Container>
 					<Container mainAlignment="flex-start" crossAlignment="flex-start">
 						<Text color="gray0" overflow="break-word" weight="bold" size="medium">

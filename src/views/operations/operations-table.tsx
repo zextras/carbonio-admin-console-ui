@@ -9,6 +9,8 @@ import { Container, Row, Text, Table, Icon } from '@zextras/carbonio-design-syst
 import { useTranslation } from 'react-i18next';
 import MiliSecondToDate from './functions/miliSecondToDate';
 import { DISMMISED, STARTED, STOPPING } from '../../constants';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 
 export const OperationsTable: FC<{
 	operations: Array<any>;
@@ -185,6 +187,8 @@ export const OperationsTable: FC<{
 				multiSelect={false}
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
+				RowFactory={CustomRowFactory}
+				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">

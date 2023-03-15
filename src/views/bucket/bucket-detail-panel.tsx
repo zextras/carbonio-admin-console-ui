@@ -28,6 +28,9 @@ import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import { AbsoluteContainer } from '../components/styled';
+import ListRow from '../list/list-row';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -112,21 +115,34 @@ const BucketListTable: FC<{
 	);
 
 	return (
-		<Container crossAlignment="flex-start">
-			<Table
-				headers={headers(t)}
-				rows={tableRows}
-				showCheckbox={false}
-				multiSelect={false}
-				selectedRows={selectedRows}
-				onSelectionChange={onSelectionChange}
-			/>
+		<Container mainAlignment="flex-start" crossAlignment="flex-start">
+			<ListRow>
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					maxHeight="calc(100vh - 25rem)"
+					minHeight="auto"
+				>
+					<Table
+						headers={headers(t)}
+						rows={tableRows}
+						showCheckbox={false}
+						multiSelect={false}
+						selectedRows={selectedRows}
+						onSelectionChange={onSelectionChange}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
+					/>
+				</Container>
+			</ListRow>
 			{tableRows.length === 0 && (
-				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '64px' }}>
+				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '4rem' }}>
 					<Text overflow="break-word" weight="normal" size="large">
 						<img src={logo} alt="logo" />
 					</Text>
-					<Padding all="medium" width="494px">
+					<Padding all="medium" width="30.875rem">
 						<Text
 							color="gray1"
 							overflow="break-word"
@@ -334,7 +350,7 @@ const BucketDetailPanel: FC = () => {
 					mainAlignment="flex-end"
 					orientation="horizontal"
 					padding={{ top: 'extralarge', right: 'large', left: 'large' }}
-					style={{ gap: '16px' }}
+					style={{ gap: '1rem' }}
 				>
 					<Button
 						type="outlined"
@@ -355,7 +371,7 @@ const BucketDetailPanel: FC = () => {
 						BucketDetail={bucketDeleteName}
 					/>
 				)}
-				<Row width="100%" style={{ padding: '16px 13px' }}>
+				<Row width="100%" style={{ padding: '1rem 0.813rem' }}>
 					<Input
 						background="gray5"
 						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
@@ -363,7 +379,7 @@ const BucketDetailPanel: FC = () => {
 						onChange={filterBucketList}
 					/>
 				</Row>
-				<Row style={{ padding: '0px 14px 0px 14px' }} width="100%">
+				<Row style={{ padding: '0 0.875rem 0 0.875rem' }} width="100%">
 					<BucketListTable
 						volumes={bucketList}
 						selectedRows={bucketselection}

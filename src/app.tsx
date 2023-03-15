@@ -23,7 +23,7 @@ import {
 	// @ts-ignore
 	useIsAdvanced
 } from '@zextras/carbonio-shell-ui';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { Icon, IconButton } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
@@ -148,48 +148,25 @@ const App: FC = () => {
 	const backupTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.backup', 'BACKUP'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.global_server_settings', 'Global Server Settings'),
-				options: [
-					{
-						label: t('label.server_config', 'Server Config')
-					},
-					{
-						label: t('label.advanced', 'Advanced')
-					},
-					{
-						label: t('label.servers_list', 'Servers List')
-					}
-				]
-			},
-			{
-				header: t('label.server_specifics', 'Server Specifics'),
-				options: [
-					{
-						label: t('label.configuration_lbl', 'Configuration')
-					},
-					{
-						label: t('label.advanced', 'Advanced')
-					}
-				]
-			} /* ,
-			{
-				header: t('label.actions', 'Actions'),
-				options: [
-					{
-						label: t('label.import_an_external_backup', 'Import an External Backup')
-					}
-				]
-			} */
+				header: (
+					<>
+						<Trans
+							i18nKey="label.backup_lbl"
+							defaults="<bold>Backup</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.backup_primarybar_tooltip"
+							defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
 		],
-		[t]
+		[]
 	);
 
 	const BackupTooltipView: FC = useCallback(
@@ -200,38 +177,25 @@ const App: FC = () => {
 	const cosTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.cos', 'COS'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.details', 'Details'),
-				options: [
-					{
-						label: t('label.general_information', 'General Information')
-					},
-					{
-						label: t('label.features', 'Features')
-					},
-					{
-						label: t('label.preferences', 'Preferences')
-					},
-					{
-						label: t('label.server_pools', 'Server Pools')
-					},
-					{
-						label: t('label.advanced', 'Advanced')
-					} /* ,
-					{
-						label: t('label.retention_policy', 'Retention Policy')
-					} */
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.class_of_service_lbl"
+							defaults="<bold>Class of Service</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.cos_primarybar_tooltip"
+							defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
 	);
 
 	const CosTooltipView: FC = useCallback(
@@ -239,16 +203,90 @@ const App: FC = () => {
 		[cosTooltipItems]
 	);
 
+	const privacyTooltipItems = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.privacy_lbl"
+							defaults="<bold>Privacy</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.privacy_primarybar_tooltip"
+							defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
+	const PrivacyTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={privacyTooltipItems} />,
+		[privacyTooltipItems]
+	);
+
+	const notificationTooltipItems = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.notification_lbl"
+							defaults="<bold>Notifications</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.notification_primarybar_tooltip"
+							defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
+	const NotificationTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={notificationTooltipItems} />,
+		[notificationTooltipItems]
+	);
+
 	const domainsTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.domains', 'DOMAINS'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
+				header: (
+					<>
+						<Trans
+							i18nKey="label.domains_lbl"
+							defaults="<bold>Domains</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.domain_primarybar_tooltip"
+							defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, mailing lists, resources</bold> and <bold>more</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
+	const homeTooltipItems = useMemo(
+		() => [
 			{
 				header: t('label.details', 'Details'),
 				options: [
@@ -308,6 +346,11 @@ const App: FC = () => {
 		[t]
 	);
 
+	const HomeTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={homeTooltipItems} />,
+		[homeTooltipItems]
+	);
+
 	const DomainTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={domainsTooltipItems} />,
 		[domainsTooltipItems]
@@ -316,41 +359,25 @@ const App: FC = () => {
 	const storagesTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.mailstores', 'Mailstores'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.global_servers', 'Global Servers'),
-				options: [
-					{
-						label: t('label.servers_list', 'Servers List')
-					},
-					{
-						label: t('label.bucket_list', 'Bucket List')
-					}
-				]
-			},
-			{
-				header: t('label.server_details', 'Server Details'),
-				options: [
-					{
-						label: t('label.data_volumes', 'Data Volumes')
-					}
-					/* ,
-					{
-						label: t('label.hsm_policies', 'HSM Policies')
-					},
-					{
-						label: t('label.indexer_settings', 'Indexer Settings')
-					} */
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.storage_lbl"
+							defaults="<bold>Storage</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.storage_primarybar_tooltip"
+							defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
 	);
 
 	const StorageTooltipView: FC = useCallback(
@@ -361,26 +388,25 @@ const App: FC = () => {
 	const subscriptionTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.subscriptions', 'SUBSCRIPTIONS'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.subscription', 'Subscription'),
-				options: [
-					{
-						label: t('label.details', 'Details')
-					} /* ,
-					{
-						label: t('label.activate_and_update', 'Activate & Update')
-					} */
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.subscription_lbl"
+							defaults="<bold>Subscription</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.subscription_primarybar_tooltip"
+							defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
 	);
 
 	const SubscriptionTooltipView: FC = useCallback(
@@ -391,28 +417,25 @@ const App: FC = () => {
 	const operationTooltipItem = useMemo(
 		() => [
 			{
-				header: t('label.operations', 'Operations'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				options: [
-					{
-						label: t('label.running', 'Running')
-					},
-					{
-						label: t('label.queued', 'Queued')
-					},
-					{
-						label: t('label.done', 'Done')
-					}
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.operation_lbl"
+							defaults="<bold>Operations</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.operation_primarybar_tooltip"
+							defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
 	);
 
 	const OperationTooltipView: FC = useCallback(
@@ -438,15 +461,10 @@ const App: FC = () => {
 			visible: true,
 			label: t('label.dashboard', 'Dashboard'),
 			primaryBar: 'HomeOutline',
-			appView: AppView
-		});
-		addRoute({
-			route: MONITORING,
-			position: 2,
-			visible: false,
-			label: t('label.monitoring', 'Monitoring'),
-			primaryBar: 'ActivityOutline',
-			appView: AppView
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			tooltip: HomeTooltipView
 		});
 
 		addRoute({
@@ -463,9 +481,9 @@ const App: FC = () => {
 		});
 		addRoute({
 			route: STORAGES_ROUTE_ID,
-			position: 2,
+			position: 3,
 			visible: true,
-			label: t('label.mailstores', 'Mailstores'),
+			label: t('label.storage', 'Storage'),
 			primaryBar: 'HardDriveOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -475,7 +493,7 @@ const App: FC = () => {
 		});
 		addRoute({
 			route: COS_ROUTE_ID,
-			position: 3,
+			position: 2,
 			visible: true,
 			label: t('label.cos', 'COS'),
 			primaryBar: 'CosOutline',
@@ -522,7 +540,47 @@ const App: FC = () => {
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection }
+				primarybarSection: { ...logAndQueuesSection },
+				tooltip: NotificationTooltipView
+			});
+
+			addRoute({
+				route: OPERATIONS_ROUTE_ID,
+				position: 2,
+				visible: true,
+				label: t('label.operations', 'Operations'),
+				primaryBar: 'ListOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...logAndQueuesSection },
+				tooltip: OperationTooltipView
+			});
+
+			addRoute({
+				route: OPERATIONS_ROUTE_ID,
+				position: 2,
+				visible: true,
+				label: t('label.operations', 'Operations'),
+				primaryBar: 'ListOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...logAndQueuesSection },
+				tooltip: OperationTooltipView
+			});
+
+			addRoute({
+				route: OPERATIONS_ROUTE_ID,
+				position: 2,
+				visible: true,
+				label: t('label.operations', 'Operations'),
+				primaryBar: 'ListOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...logAndQueuesSection },
+				tooltip: OperationTooltipView
 			});
 		}
 		addRoute({
@@ -534,57 +592,9 @@ const App: FC = () => {
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			primarybarSection: { ...managementSection }
+			primarybarSection: { ...managementSection },
+			tooltip: PrivacyTooltipView
 		});
-
-		addRoute({
-			route: NOTIFICATION_ROUTE_ID,
-			position: 1,
-			visible: true,
-			label: t('label.notifications', 'Notifications'),
-			primaryBar: 'BellOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...logAndQueuesSection }
-		});
-
-		addRoute({
-			route: OPERATIONS_ROUTE_ID,
-			position: 2,
-			visible: true,
-			label: t('label.operations', 'Operations'),
-			primaryBar: 'ListOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...logAndQueuesSection },
-			tooltip: OperationTooltipView
-		});
-
-		/* addRoute({
-			route: APPLICATION_LOG,
-			position: 2,
-			visible: true,
-			label: t('label.application_log', 'Application Log'),
-			primaryBar: 'FileTextOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...logAndQueuesSection }
-		}); */
-
-		/* addRoute({
-			route: MTA,
-			position: 3,
-			visible: false,
-			label: t('label.mta', 'MTA'),
-			primaryBar: 'MailFolderOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...logAndQueuesSection }
-		}); */
 
 		setAppContext({ cabonio_admin_console_ui: 'cabonio_admin_console_ui' });
 	}, [
@@ -599,7 +609,10 @@ const App: FC = () => {
 		logAndQueuesSection,
 		backupPrimaryBar,
 		isAdvanced,
-		OperationTooltipView
+		OperationTooltipView,
+		HomeTooltipView,
+		PrivacyTooltipView,
+		NotificationTooltipView
 	]);
 
 	useEffect(() => {

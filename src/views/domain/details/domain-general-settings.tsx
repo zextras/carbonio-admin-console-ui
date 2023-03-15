@@ -404,10 +404,6 @@ const DomainGeneralSettings: FC = () => {
 				_content: zimbraDomainDefaultCOSId
 			});
 		}
-		attributes.push({
-			n: 'zimbraPublicServiceHostname',
-			_content: publicServiceHostName
-		});
 		body.a = attributes;
 		modifyDomain(body)
 			.then((data) => {
@@ -772,16 +768,18 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 							</ListRow>
 							<ListRow>
-								<Container padding={{ all: 'small' }}>
+								<Container padding={{ all: 'small' }} width="100%" style={{ display: 'block' }}>
 									<Button
 										type="outlined"
 										label={t('label.delete_domain', 'Delete Domain')}
 										icon="Close"
 										color="error"
-										size="fill"
+										size="extralarge"
+										width="100%"
 										onClick={(): void => {
 											setOpenConfirmDialog(true);
 										}}
+										style={{ width: '100%' }}
 									/>
 									<Modal
 										title={`${t('label.deleteing', 'Deleting')} ${domainName}`}

@@ -21,7 +21,9 @@ import {
 	ALLOW_SEND_RECEIVE,
 	BLOCK_SEND,
 	BLOCK_SEND_RECEIVE,
-	BYTE_PER_MB
+	BYTE_PER_MB,
+	PERCENT_USED,
+	TOTAL_USED
 } from '../../../constants';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
@@ -29,12 +31,42 @@ import Paging from '../../components/paging';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
+import DownloadCSV from '../../app/shared/download-csv';
+import { MailBoxQuota } from '../../app/types/mailbox_quota';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
+	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
+	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
+	const [zimbraDomainAggregateQuotaWarnPercent, setZimbraDomainAggregateQuotaWarnPercent] =
+		useState<string>('');
+	const [
+		zimbraDomainAggregateQuotaWarnEmailRecipient,
+		setZimbraDomainAggregateQuotaWarnEmailRecipient
+	] = useState<string>('');
+
+	const [domainData, setDomainData]: any = useState({
+		zimbraMailDomainQuota: '',
+		zimbraDomainMaxAccounts: '',
+		zimbraDomainAggregateQuota: '',
+		zimbraDomainAggregateQuotaWarnPercent: '',
+		zimbraDomainAggregateQuotaWarnEmailRecipient: '',
+		zimbraDomainAggregateQuotaPolicy: ALLOW_SEND_RECEIVE
+	});
+	const [usageQuota, setUsageQuota] = useState<any[]>([]);
+	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [offset, setOffset] = useState<number>(0);
+	const [limit, setLimit] = useState<number>(20);
+	const [totalAccount, setTotalAccount] = useState<number>(0);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [selectedSortType, setSelectedSortType] = useState<string>('');
+	const [isDownloadInProgress, setIsDownloadInProgress] = useState<boolean>(false);
+
 	const quotaPolicy: any = useMemo(
 		() => [
 			{
@@ -53,14 +85,24 @@ const DomainMailboxQuotaSetting: FC = () => {
 		[t]
 	);
 
+	const [zimbraDomainAggregateQuotaPolicy, setZimbraDomainAggregateQuotaPolicy] = useState<any>(
+		quotaPolicy[0]
+	);
+
+	const onSortChange = useCallback(
+		(v: string): any => {
+			if (v !== null && domainData?.zimbraDomainName) {
+				setOffset(0);
+				setTotalAccount(0);
+				setUsageQuota([]);
+				setSelectedSortType(v);
+			}
+		},
+		[domainData?.zimbraDomainName]
+	);
+
 	const headers: any = useMemo(
 		() => [
-			{
-				id: 'index',
-				label: '',
-				width: '5%',
-				bold: true
-			},
 			{
 				id: 'account',
 				label: t('label.account', 'Account'),
@@ -68,115 +110,127 @@ const DomainMailboxQuotaSetting: FC = () => {
 				bold: true
 			},
 			{
-				id: 'mailboxsize',
-				label: t('label.mail_size', 'Mailbox Size'),
-				width: '20%',
-				bold: true
+				id: 'quota',
+				label: t('label.mails', 'Mails'),
+				width: '55%',
+				bold: true,
+				items: [
+					{ label: t('label.sort_by_total_quota', 'Sort by Total Quota'), value: TOTAL_USED },
+					{ label: t('label.sort_by_percentage', 'Sort by Percentage'), value: PERCENT_USED }
+				],
+				onChange: onSortChange
+			}
+		],
+		[t, onSortChange]
+	);
+
+	const [isShowDownload, setIsShowDownload] = useState<boolean>(false);
+	const csvHeader: Array<{ label: string; key: string }> = useMemo(
+		() => [
+			{
+				label: t('label.account', 'Account'),
+				key: 'name'
 			},
 			{
-				id: 'quota',
-				label: t('label.quota_used', 'Quota / Quota used'),
-				width: '20%',
-				bold: true
+				label: t('label.quota', 'Quota'),
+				key: 'quota'
+			},
+			{
+				label: t('label.mail_size', 'Mail Size'),
+				key: 'mailSize'
+			},
+			{
+				label: t('label.quota_used_lbl', 'Quota used'),
+				key: 'quotaUsedPercentage'
 			}
 		],
 		[t]
 	);
+	const [csvQuotaData, setCsvQuotaData] = useState<Array<MailBoxQuota>>();
 
-	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
-	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
-	const [zimbraDomainAggregateQuotaWarnPercent, setZimbraDomainAggregateQuotaWarnPercent] =
-		useState<string>('');
-	const [
-		zimbraDomainAggregateQuotaWarnEmailRecipient,
-		setZimbraDomainAggregateQuotaWarnEmailRecipient
-	] = useState<string>('');
-	const [zimbraDomainAggregateQuotaPolicy, setZimbraDomainAggregateQuotaPolicy] = useState<any>(
-		quotaPolicy[0]
-	);
-	const [domainData, setDomainData]: any = useState({
-		zimbraMailDomainQuota: '',
-		zimbraDomainMaxAccounts: '',
-		zimbraDomainAggregateQuota: '',
-		zimbraDomainAggregateQuotaWarnPercent: '',
-		zimbraDomainAggregateQuotaWarnEmailRecipient: '',
-		zimbraDomainAggregateQuotaPolicy: ALLOW_SEND_RECEIVE
-	});
-	const [usageQuota, setUsageQuota] = useState<any[]>([]);
-	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(20);
-	const [totalAccount, setTotalAccount] = useState<number>(0);
-	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(true);
+	const getQuotaData = useCallback(
+		(usedQuota: Array<unknown>): Array<MailBoxQuota> => {
+			const quota: Array<MailBoxQuota> = [];
+			usedQuota.forEach((item: any, index): void => {
+				let diskUsed: any = 0;
+				let quotaLimit: any = 0;
+				let percentage: any = 0;
 
-	const getQuotaUsageInformation = useCallback(
-		(domainName: string): void => {
-			setIsRequestInProgress(true);
-			setUsageQuota([]);
-			getQuotaUsage(domainName, offset, limit).then((data) => {
-				setIsRequestInProgress(false);
-				const usedQuota: any = data?.account;
-				if (usedQuota && Array.isArray(usedQuota)) {
-					const quota: any = [];
-					if (data?.searchTotal) {
-						setTotalAccount(data?.searchTotal);
+				if (item?.used) {
+					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(2);
+				}
+				if (item?.limit === 0) {
+					quotaLimit = t('label.unlimited', 'Unlimited');
+					percentage = 0;
+				} else {
+					if (item?.limit >= BYTE_PER_MB) {
+						quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
+					} else {
+						quotaLimit = 1;
 					}
-					usedQuota.map((item: any, index): any => {
-						let diskUsed: any = 0;
-						let quotaLimit: any = 0;
-						let percentage: any = 0;
+					percentage = ((diskUsed * 100) / quotaLimit).toFixed();
+				}
+				diskUsed += ` ${t('label.mb', 'MB')}`;
+				quotaLimit += ` ${t('label.mb', 'MB')}`;
+				percentage += '%';
+				quota.push({
+					name: item?.name,
+					quota: quotaLimit,
+					mailSize: diskUsed,
+					quotaUsedPercentage: percentage,
+					id: item?.id
+				});
+			});
+			return quota;
+		},
+		[t]
+	);
 
-						if (item?.used) {
-							diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(2);
-						}
-
-						if (item?.limit === 0) {
-							quotaLimit = t('label.unlimited', 'Unlimited');
-							percentage = 0;
-						} else {
-							if (item?.limit >= BYTE_PER_MB) {
-								quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
-							} else {
-								quotaLimit = 1;
-							}
-							percentage = ((diskUsed * 100) / quotaLimit).toFixed();
-						}
-						diskUsed += ` ${t('label.mb', 'MB')}`;
-						quotaLimit += ` ${t('label.mb', 'MB')}`;
-						percentage += '%';
-						quota.push({
+	const getQuotaUsageInformation = useCallback(() => {
+		setIsRequestInProgress(true);
+		setUsageQuota([]);
+		getQuotaUsage(domainData?.zimbraDomainName, offset, limit, selectedSortType).then((data) => {
+			setIsRequestInProgress(false);
+			const usedQuota: any = data?.account;
+			if (usedQuota && Array.isArray(usedQuota)) {
+				if (data?.searchTotal) {
+					setTotalAccount(data?.searchTotal);
+				}
+				const quota = getQuotaData(usedQuota);
+				if (quota && quota.length > 0) {
+					const quotaData: Array<any> = [];
+					quota.forEach((item: MailBoxQuota, index) => {
+						quotaData.push({
 							id: index.toString(),
 							columns: [
-								'',
 								<Text size="medium" weight="bold" key={item?.id} color="#828282">
 									{item?.name}
 								</Text>,
 								<Text size="medium" weight="bold" key={item?.id} color="#828282">
-									{diskUsed}
-								</Text>,
-								<Text size="medium" weight="bold" key={item?.id} color="#828282">
-									{`${quotaLimit} / ${percentage}`}
+									{`${item?.mailSize} / ${item?.quotaUsedPercentage}`}
 								</Text>
 							]
 						});
-						return '';
 					});
-					setUsageQuota(quota);
+					setUsageQuota(quotaData);
 				}
-			});
-		},
-		[t, offset, limit]
-	);
+			}
+		});
+	}, [offset, limit, selectedSortType, domainData?.zimbraDomainName, getQuotaData]);
+
+	useEffect(() => {
+		if (selectedSortType) {
+			getQuotaUsageInformation();
+		} else {
+			getQuotaUsageInformation();
+		}
+	}, [selectedSortType, getQuotaUsageInformation]);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
-			setOffset(0);
-			setTotalAccount(0);
-			setUsageQuota([]);
-			domainInformation.map((item: any) => {
+			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			if (obj.zimbraMailDomainQuota) {
 				setZimbraMailDomainQuota(obj.zimbraMailDomainQuota);
@@ -333,11 +387,44 @@ const DomainMailboxQuotaSetting: FC = () => {
 		setZimbraDomainAggregateQuotaPolicy(it);
 	};
 
-	useEffect(() => {
-		if (domainData.zimbraDomainName) {
-			getQuotaUsageInformation(domainData.zimbraDomainName);
-		}
-	}, [domainData, offset, getQuotaUsageInformation]);
+	const downloadQuotaReport = useCallback(() => {
+		setIsDownloadInProgress(true);
+		getQuotaUsage(domainData?.zimbraDomainName, 0, totalAccount, selectedSortType)
+			.then((data) => {
+				setIsDownloadInProgress(false);
+				const usedQuota: string = data?.account;
+				if (usedQuota && Array.isArray(usedQuota)) {
+					const quota = getQuotaData(usedQuota);
+					if (quota && quota.length > 0) {
+						setCsvQuotaData(quota);
+						setIsShowDownload(true);
+					}
+				}
+				setTimeout(() => {
+					setIsShowDownload(false);
+				}, 100);
+			})
+			.catch((error: any) => {
+				setIsDownloadInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [
+		domainData?.zimbraDomainName,
+		selectedSortType,
+		getQuotaData,
+		createSnackbar,
+		t,
+		totalAccount
+	]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -346,7 +433,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="58px"
+					height="3.625rem"
 				>
 					<Row orientation="horizontal" width="100%">
 						<Row
@@ -390,7 +477,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 				width="100%"
-				height="calc(100vh - 150px)"
+				height="calc(100vh - 9.375rem)"
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -490,8 +577,29 @@ const DomainMailboxQuotaSetting: FC = () => {
 						</Row>
 						<Container padding={{ all: 'large' }}>
 							<ListRow>
+								<Container
+									mainAlignment="flex-end"
+									crossAlignment="flex-end"
+									padding={{ all: 'extralarge' }}
+								>
+									<Button
+										type="ghost"
+										label={t('label.download_quota_Report', 'Download Quota Report')}
+										color="primary"
+										onClick={downloadQuotaReport}
+										disabled={isDownloadInProgress || totalAccount === 0}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
 								<Row>
-									<Table rows={usageQuota} headers={headers} showCheckbox={false} />
+									<Table
+										rows={usageQuota}
+										headers={headers}
+										showCheckbox={false}
+										RowFactory={CustomRowFactory}
+										HeaderFactory={CustomHeaderFactory}
+									/>
 									{isRequestInProgress && (
 										<Container
 											crossAlignment="center"
@@ -524,6 +632,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 							</Row>
 						</Container>
+						{isShowDownload && <DownloadCSV data={csvQuotaData} header={csvHeader} />}
 					</Container>
 				</Row>
 			</Container>

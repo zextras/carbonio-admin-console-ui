@@ -33,6 +33,8 @@ import { emailContent } from '../create-account/email-content';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import ListRow from '../../../../list/list-row';
+import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 
 const emailRegex =
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars, max-len, no-control-regex
@@ -234,6 +236,7 @@ const EditAccountSecuritySection: FC = () => {
 									<Button
 										label={t('account_details.send', 'SEND')}
 										icon="PaperPlaneOutline"
+										size="large"
 										iconPlacement="right"
 										onClick={(): void => {
 											sendMail('SendMsgRequest', {
@@ -525,6 +528,8 @@ const EditAccountSecuritySection: FC = () => {
 												multiSelect={false}
 												onSelectionChange={setSelectedRows}
 												style={{ overflow: 'auto', height: '100%' }}
+												RowFactory={CustomRowFactory}
+												HeaderFactory={CustomHeaderFactory}
 											/>
 										)}
 										{otpList.length === 0 && (

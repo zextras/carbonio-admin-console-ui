@@ -458,7 +458,6 @@
         "resource_name": "Tên tài nguyên",
         "resource_remove_correctly": "{{resource_name}} đã được loại bỏ thành công.",
         "repeat_password": "Lặp lại mật khẩu",
-        "reply_to_address_for_receipt": "Địa chỉ trả lời để nhận",
         "schedule_policy": "Đặt chính sách",
         "search_a_signature": "Tìm kiếm một chữ ký",
         "restart_replica": "KHỞI ĐỘNG LẠI REPLICA",
@@ -645,7 +644,33 @@
         "search_for_user_and_clic_to_add": "Tìm kiếm một người dùng và bấm vào nút THÊM.",
         "there_are_no_owners": "Không có chủ sở hữu nào ở đây.",
         "verify_certificate": "Xác nhận",
-        "who_can_send_mails_to_list ": "Ai có thể gửi thư TO danh sách này?"
+        "who_can_send_mails_to_list ": "Ai có thể gửi thư TO danh sách này?",
+        "ID": "ID",
+        "centralized": "Tập trung",
+        "done": "Hoàn thành",
+        "empty_table_helperText": "Bảng trống",
+        "external_volume_edited": "{{message}}",
+        "general_options": "Tùy chọn chung",
+        "operation": {
+            "get_all_operation_error": "{{name}}",
+            "stop_operation_error": "{{name}}"
+        },
+        "queued": "Đã xếp hàng",
+        "stop_operation_helperText": "{{message}}",
+        "running": "Đang chạy",
+        "use_intelligent_tiering": "Sử dụng phân lớp thông minh",
+        "EDIT": "CHỈNH SỬA",
+        "what_inside": "Chủ đề",
+        "Accounts": "Tài khoản",
+        "Rights": "Quyền",
+        "Type": "Loại",
+        "chats": "Trò chuyện",
+        "contacts": "Danh bạ",
+        "files": "Tệp",
+        "mail_signatures": "Chữ ký thư",
+        "mails": "Thư",
+        "out_of_the_office_reply": "Trả lời khi không có mặt ở văn phòng",
+        "tasks": "Các Nhiệm vụ"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -1267,10 +1292,12 @@
         "view_mail_as_html": "Xem thư dưới dạng HTML",
         "Chats": "Trò chuyện",
         "domain": "Miền",
-        "files": "Tệp"
+        "files": "Tệp",
+        "NEXT": "TIẾP",
+        "abstract": "Tóm lược",
+        "on_behalf_of": "thay mặt cho"
     },
     "privacy": {
-        "send_full_error_data_to_zextras": "Gửi dữ liệu lỗi đầy đủ tới Zextras",
         "full_error_sub_1": "Tất cả chúng ta đều mắc sai lầm nhưng chính cách bạn đối phó với chúng sẽ thay đổi mọi thứ! Chúng tôi muốn học hỏi từ những lỗi của mình, vì vậy hãy cho chúng tôi biết cách chúng tôi có thể sửa chúng",
         "allow_data_analytics": "Cho phép phân tích dữ liệu",
         "allow_live_survey_feedbacks": "Cho phải khảo sát phản hồi",
@@ -1306,7 +1333,8 @@
             "local": "Cục bộ"
         },
         "volume_config_header": {
-            "name": "Tên"
+            "name": "Tên",
+            "status": "Trạng thái"
         },
         "volume_header": {
             "compression": "Nén",
@@ -1325,7 +1353,9 @@
             "index": "Mục lục",
             "primary": "Đầu tiên",
             "secondary": "Thứ nhì"
-        }
+        },
+        "primary_helperText": "Đầu tiên",
+        "secondary_helperText": "Thứ nhì"
     },
     "account": {
         "new": {
@@ -1412,6 +1442,29 @@
         "list": "Danh sách",
         "manage": "Quản lý",
         "mark_as_read": "Đánh dấu đã đọc",
-        "mark_as_unread": "Đánh dấu là chưa đọc"
+        "mark_as_unread": "Đánh dấu là chưa đọc",
+        "notifications_list": "Danh sách các thông báo"
+    },
+    "operations": {
+        "copy_btn": "SAO CHÉP",
+        "details": "Thông tin chi tiết",
+        "done": "Hoàn thành",
+        "empty_table_helperText": "Bảng trống",
+        "label": {
+            "Deep": "Sâu",
+            "notifications": "Các thông báo",
+            "status": "Trạng thái"
+        },
+        "operations_list_header": {
+            "author": "Tác giả",
+            "operation": "Hoạt động",
+            "server": "Máy chủ",
+            "start_date": "Ngày bắt đầu",
+            "status": "Trạng thái",
+            "submit_date": "Ngày chấp nhận"
+        },
+        "other": "Khác",
+        "queued": "Đã xếp hàng",
+        "running": "Đang chạy"
     }
 }

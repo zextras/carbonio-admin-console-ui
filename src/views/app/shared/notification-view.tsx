@@ -40,6 +40,8 @@ import ListRow from '../../list/list-row';
 import NotificationDetail from './notification-detail-view';
 import { copyTextToClipboard } from '../../utility/utils';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
+import CustomRowFactory from './customTableRowFactory';
+import CustomHeaderFactory from './customTableHeaderFactory';
 
 const ReusedDefaultTabBar: FC<{
 	item: any;
@@ -60,7 +62,6 @@ const ReusedDefaultTabBar: FC<{
 			crossAlignment="flex-start"
 			padding={{ all: 'medium' }}
 			takeAvailableSpace
-			style={{ 'justify-content': 'center', display: 'flex' }}
 		>
 			<Container width="2rem" padding={{ right: 'small' }}>
 				<Icon
@@ -121,6 +122,7 @@ const NotificationView: FC<{
 		information: 0,
 		all: 0
 	});
+	const [selectedRow, setSelectedRow] = useState<any>([]);
 	const timer = useRef<any>();
 
 	const items = useMemo(
@@ -283,94 +285,8 @@ const NotificationView: FC<{
 		[doClickAction, doDoubleClickAction]
 	);
 
-	useEffect(() => {
-		if (filterdNotification.length > 0) {
-			const allRows = filterdNotification.map((item: Notification) => ({
-				id: item?.id,
-				columns: [
-					<Text
-						size="small"
-						color={item?.ack ? 'secondary' : 'bold'}
-						weight={item?.ack ? 'regular' : 'bold'}
-						key={item}
-						onClick={(event: any): void => {
-							setSelectedNotification(item);
-							handleClick(event);
-						}}
-					>
-						{item?.server}
-					</Text>,
-					<Text
-						size="small"
-						color={item?.ack ? 'secondary' : 'bold'}
-						weight={item?.ack ? 'regular' : 'bold'}
-						key={item}
-						onClick={(event: { stopPropagation: () => void }): void => {
-							setSelectedNotification(item);
-							handleClick(event);
-						}}
-					>
-						{moment(item?.date).format('DD-MM-YYYY - HH:mm A')}
-					</Text>,
-					<Text
-						size="small"
-						weight={item?.ack ? 'regular' : 'bold'}
-						color={item?.ack ? 'secondary' : 'bold'}
-						key={item}
-						onClick={(event: { stopPropagation: () => void }): void => {
-							setSelectedNotification(item);
-							handleClick(event);
-						}}
-					>
-						{item?.level}
-					</Text>,
-					<Text
-						size="small"
-						weight={item?.ack ? 'regular' : 'bold'}
-						color={item?.ack ? 'secondary' : 'bold'}
-						key={item}
-						onClick={(event: { stopPropagation: () => void }): void => {
-							setSelectedNotification(item);
-							handleClick(event);
-						}}
-					>
-						{item?.subject}
-					</Text>
-				]
-			}));
-			setNotificationRows(allRows);
-		} else {
-			setNotificationRows([]);
-		}
-	}, [filterdNotification, handleClick]);
-
-	const copyNotificationOperation = useCallback(
-		(notificationSelected: Notification) => {
-			const notificationItem = `
-			${t('label.date', 'Date')} : ${moment(notificationSelected?.date).format('DD-MM-YYYY - HH:mm A')} \n
-			${t('label.type', 'Type')} : ${notificationSelected?.level} \n
-			${t('label.what_inside', 'What’s inside?')} : ${notificationSelected?.subject} \n
-			${t('label.content', 'Content')} : ${notificationSelected?.text}
-		`;
-			copyTextToClipboard(notificationItem);
-			createSnackbar({
-				key: 'success',
-				type: 'success',
-				label: t('notification.copy_notification_successfully', 'Notification copied successfully'),
-				autoHideTimeout: 3000,
-				hideButton: true,
-				replace: true
-			});
-		},
-		[t, createSnackbar]
-	);
-
-	const copyNotification = useCallback(() => {
-		copyNotificationOperation(selectedNotification);
-	}, [selectedNotification, copyNotificationOperation]);
-
 	const markAsReadUnread = useCallback(
-		(item: any) => {
+		(item: any, isShowMessage = true) => {
 			setIsRequestInProgress(true);
 			readUnreadNotification(item?.id, !item?.ack)
 				.then((res) => {
@@ -386,14 +302,16 @@ const NotificationView: FC<{
 									'notification.notification_mark_read_successfully',
 									'Notification mark as read successfully'
 							  );
-						createSnackbar({
-							key: 'success',
-							type: 'success',
-							label: message,
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
+						if (isShowMessage) {
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: message,
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						}
 						const allData = notificationList.map((nf: Notification) => {
 							if (nf?.id === item?.id) {
 								// eslint-disable-next-line no-param-reassign
@@ -421,6 +339,108 @@ const NotificationView: FC<{
 		[createSnackbar, t, notificationList]
 	);
 
+	useEffect(() => {
+		if (filterdNotification.length > 0) {
+			const allRows = filterdNotification.map((item: Notification) => ({
+				id: item?.id,
+				columns: [
+					<Text
+						size="small"
+						color={item?.ack ? 'secondary' : 'bold'}
+						weight={item?.ack ? 'regular' : 'bold'}
+						key={item}
+						onClick={(event: any): void => {
+							setSelectedNotification(item);
+							handleClick(event);
+							setSelectedRow([item?.id]);
+							if (item?.ack === false) {
+								markAsReadUnread(item, false);
+							}
+						}}
+					>
+						{item?.server}
+					</Text>,
+					<Text
+						size="small"
+						color={item?.ack ? 'secondary' : 'bold'}
+						weight={item?.ack ? 'regular' : 'bold'}
+						key={item}
+						onClick={(event: { stopPropagation: () => void }): void => {
+							setSelectedNotification(item);
+							handleClick(event);
+							setSelectedRow([item?.id]);
+							if (item?.ack === false) {
+								markAsReadUnread(item, false);
+							}
+						}}
+					>
+						{moment(item?.date).format('DD-MM-YYYY - HH:mm A')}
+					</Text>,
+					<Text
+						size="small"
+						weight={item?.ack ? 'regular' : 'bold'}
+						color={item?.ack ? 'secondary' : 'bold'}
+						key={item}
+						onClick={(event: { stopPropagation: () => void }): void => {
+							setSelectedNotification(item);
+							handleClick(event);
+							setSelectedRow([item?.id]);
+							if (item?.ack === false) {
+								markAsReadUnread(item, false);
+							}
+						}}
+					>
+						{item?.level}
+					</Text>,
+					<Text
+						size="small"
+						weight={item?.ack ? 'regular' : 'bold'}
+						color={item?.ack ? 'secondary' : 'bold'}
+						key={item}
+						onClick={(event: { stopPropagation: () => void }): void => {
+							setSelectedNotification(item);
+							handleClick(event);
+							setSelectedRow([item?.id]);
+							if (item?.ack === false) {
+								markAsReadUnread(item, false);
+							}
+						}}
+					>
+						{item?.subject}
+					</Text>
+				]
+			}));
+			setNotificationRows(allRows);
+		} else {
+			setNotificationRows([]);
+		}
+	}, [filterdNotification, handleClick, markAsReadUnread]);
+
+	const copyNotificationOperation = useCallback(
+		(notificationSelected: Notification) => {
+			const notificationItem = `
+			${t('label.date', 'Date')} : ${moment(notificationSelected?.date).format('DD-MM-YYYY - HH:mm A')} \n
+			${t('label.type', 'Type')} : ${notificationSelected?.level} \n
+			${t('label.what_inside', 'What’s inside?')} : ${notificationSelected?.subject} \n
+			${t('label.content', 'Content')} : ${notificationSelected?.text}
+		`;
+			copyTextToClipboard(notificationItem);
+			createSnackbar({
+				key: 'success',
+				type: 'success',
+				label: t('notification.copy_notification_successfully', 'Notification copied successfully'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[t, createSnackbar]
+	);
+
+	const copyNotification = useCallback(() => {
+		copyNotificationOperation(selectedNotification);
+	}, [selectedNotification, copyNotificationOperation]);
+
 	return (
 		<Container background="gray6">
 			<ListRow>
@@ -438,9 +458,12 @@ const NotificationView: FC<{
 				<Container mainAlignment="flex-end" crossAlignment="flex-end">
 					<TabBar
 						items={items}
-						defaultSelected={NOTIFICATION_ALL}
-						onChange={setChange}
+						selected={change}
+						onChange={(ev: unknown, selectedId: string): void => {
+							setChange(selectedId);
+						}}
 						onItemClick={setClick}
+						underlineColor="primary"
 					/>
 				</Container>
 			</ListRow>
@@ -479,6 +502,7 @@ const NotificationView: FC<{
 							onClick={(): void => {
 								markAsReadUnread(selectedNotification);
 							}}
+							size="medium"
 						/>
 					</Padding>
 				</Container>
@@ -494,11 +518,14 @@ const NotificationView: FC<{
 					padding={{ all: isAddPadding ? 'large' : '' }}
 				>
 					<Table
+						selectedRows={selectedRow}
 						rows={notificationRows}
 						headers={headers}
 						showCheckbox={false}
 						multiSelect={false}
 						style={{ overflow: 'auto', height: '100%' }}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
 			</ListRow>

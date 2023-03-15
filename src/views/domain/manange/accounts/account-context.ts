@@ -17,6 +17,12 @@ type AccountContext = {
 	setInitAccountDetail: (arg: any) => void;
 	initAccountDetail: any;
 	otpList: any;
+	identitiesList: any[];
+	folderList: any[];
+	setFolderList: (arg: any) => void;
 	getListOtp: any;
+	getIdentitiesList: any;
+	deligateDetail: any;
+	setDeligateDetail: (arg: any) => void;
 };
 export const AccountContext = createContext({} as AccountContext);

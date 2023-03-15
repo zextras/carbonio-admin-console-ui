@@ -22,6 +22,8 @@ import logo from '../../../../assets/gardian.svg';
 import { isValidEmail } from '../../../utility/utils';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 export const SendInviteAccounts: FC<any> = ({
 	isEditable,
@@ -200,59 +202,66 @@ export const SendInviteAccounts: FC<any> = ({
 			{isEditable && (
 				<ListRow>
 					<Row
-						takeAvwidth="fill"
 						mainAlignment="flex-start"
+						crossAlignment="center"
+						orientation="horizontal"
+						background="white"
 						width="100%"
-						wrap="nowrap"
 						padding={{ top: 'large' }}
 					>
-						<Dropdown
-							items={searchMemberItems}
-							placement="bottom-start"
-							maxWidth="300px"
-							disableAutoFocus
-							width="300px"
-							style={{
-								width: '100%'
-							}}
+						<Row mainAlignment="flex-start" style={{ width: '60%' }}>
+							<Dropdown
+								items={searchMemberItems}
+								placement="bottom-start"
+								disableAutoFocus
+								maxWidth="19rem"
+								width="19rem"
+								style={{ width: '100%' }}
+							>
+								<Input
+									label={t('label.enter_email_address', 'Enter E-mail address')}
+									background="gray5"
+									value={newSentInviteValue}
+									onChange={(e: any): any => {
+										setNewSentInviteValue(e.target.value);
+										if (isValidEmail(e.target.value)) {
+											setSendInviteAddBtnDisabled(false);
+										} else {
+											setSendInviteAddBtnDisabled(true);
+										}
+									}}
+								/>
+							</Dropdown>
+						</Row>
+						<Row
+							orientation="horizontal"
+							mainAlignment="flex-end"
+							crossAlignment="flex-end"
+							width="40%"
 						>
-							<Input
-								label={t('label.enter_email_address', 'Enter E-mail address')}
-								background="gray5"
-								value={newSentInviteValue}
-								onChange={(e: any): any => {
-									setNewSentInviteValue(e.target.value);
-									if (isValidEmail(e.target.value)) {
-										setSendInviteAddBtnDisabled(false);
-									} else {
-										setSendInviteAddBtnDisabled(true);
-									}
-								}}
-							/>
-						</Dropdown>
-
-						<Padding left="large">
-							<Button
-								type="outlined"
-								label={t('label.add', 'Add')}
-								icon="Plus"
-								color="primary"
-								height="44px"
-								disabled={sendInviteAddBtnDisabled}
-								onClick={addSendInviteAccount}
-							/>
-						</Padding>
-						<Padding left="large">
-							<Button
-								type="outlined"
-								label={t('label.delete', 'Delete')}
-								icon="Close"
-								color="error"
-								height="44px"
-								disabled={sendInviteDeleteBtnDisabled}
-								onClick={deleteSendInviteAccount}
-							/>
-						</Padding>
+							<Padding left="large">
+								<Button
+									type="outlined"
+									label={t('label.add', 'Add')}
+									icon="Plus"
+									color="primary"
+									size="large"
+									disabled={sendInviteAddBtnDisabled}
+									onClick={addSendInviteAccount}
+								/>
+							</Padding>
+							<Padding left="large">
+								<Button
+									type="outlined"
+									label={t('label.delete', 'Delete')}
+									icon="Close"
+									color="error"
+									size="large"
+									disabled={sendInviteDeleteBtnDisabled}
+									onClick={deleteSendInviteAccount}
+								/>
+							</Padding>
+						</Row>
 					</Row>
 				</ListRow>
 			)}
@@ -300,6 +309,8 @@ export const SendInviteAccounts: FC<any> = ({
 								setSendInviteDeleteBtnDisabled(true);
 							}
 						}}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
 			</ListRow>

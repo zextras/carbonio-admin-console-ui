@@ -332,8 +332,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					</Padding>
 					<Padding vertical="small" horizontal="small">
 						<FileLoader
-							label={t('label.load_FILE', 'LOAD FILE')}
-							size="large"
+							label={''}
+							size="extralarge"
 							type="outlined"
 							color="primary"
 							onChange={(e: any): any =>
@@ -383,8 +383,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					</Padding>
 					<Padding vertical="small" horizontal="small">
 						<FileLoader
-							label={t('label.load_FILE', 'LOAD FILE')}
-							size="large"
+							label={''}
+							size="extralarge"
 							type="outlined"
 							color="primary"
 							onChange={(e: any): any =>
@@ -434,8 +434,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					</Padding>
 					<Padding vertical="small" horizontal="small">
 						<FileLoader
-							label={t('label.load_FILE', 'LOAD FILE')}
-							size="large"
+							label={''}
+							size="extralarge"
 							type="outlined"
 							color="primary"
 							onChange={(e: any): any =>
@@ -445,22 +445,24 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					</Padding>
 				</ListRow>
 			</Container>
-			<Container>
-				<ListRow>
-					<Padding vertical="large" horizontal="small" width="100%">
-						<Button
-							width="fill"
-							label={
-								uploadBtnTgl
-									? t('label.want_to_use_this_certifiacte', 'I WANT TO USE THIS CERTIFICATE')
-									: t('label.verify', 'Verify')
-							}
-							onClick={uploadBtnTgl ? uploadClickHandler : verifyCertificateHandler}
-							loading={verifyBtnLoading}
-							type={uploadBtnTgl ? 'outlined' : 'default'}
-						/>
-					</Padding>
-				</ListRow>
+			<Container
+				width="100%"
+				style={{ display: 'block' }}
+				padding={{ top: 'large', bottom: 'small' }}
+			>
+				<Button
+					style={{ width: '100%' }}
+					width="100%"
+					size="large"
+					label={
+						uploadBtnTgl
+							? t('label.want_to_use_this_certifiacte', 'I WANT TO USE THIS CERTIFICATE')
+							: t('label.verify', 'Verify')
+					}
+					onClick={uploadBtnTgl ? uploadClickHandler : verifyCertificateHandler}
+					loading={verifyBtnLoading}
+					type={uploadBtnTgl ? 'outlined' : 'default'}
+				/>
 			</Container>
 		</Container>
 	);

@@ -507,7 +507,6 @@ const DomainAuthentication: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							className="ff"
 						>
 							<ListRow>
 								<Padding vertical="large" horizontal="small" width="100%">

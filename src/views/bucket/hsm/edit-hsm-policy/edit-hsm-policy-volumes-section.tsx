@@ -13,6 +13,8 @@ import {
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
@@ -248,6 +250,8 @@ const EditHsmPolicyVolumesSection: FC<{
 									setSelectedSourceVolume(selected);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 				</Padding>
@@ -297,7 +301,7 @@ const EditHsmPolicyVolumesSection: FC<{
 						<Table
 							rows={volumeRows}
 							headers={headers}
-							showCheckbox={false}
+							showCheckbox
 							multiSelect={false}
 							selectedRows={selectedDestinationVolume}
 							onSelectionChange={(selected: any): void => {
@@ -321,6 +325,8 @@ const EditHsmPolicyVolumesSection: FC<{
 									setSelectedDestinationVolume(selected);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 				</Padding>

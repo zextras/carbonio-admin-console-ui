@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container, Button, useSnackbar } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
@@ -21,17 +21,16 @@ import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
 	position: absolute;
-	top: 43px;
-	right: 12px;
-	bottom: 0px;
-	left: ${'max(calc(100% - 680px), 12px)'};
+	top: 2.688rem;
+	right: 0.75rem;
+	bottom: 0;
+	left: ${'max(calc(100% - 42.5rem), 0.75rem)'};
 	transition: left 0.2s ease-in-out;
 	height: auto;
-	width: auto;
+	width: 42rem;
 	max-height: 100%;
 	overflow: hidden;
-	box-shadow: -6px 4px 5px 0px rgba(0, 0, 0, 0.1);
-	opacity: '10%;
+	box-shadow: -0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1);
 `;
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
@@ -102,8 +101,76 @@ const CreateAccount: FC<{
 
 	const [wizardData, setWizardData] = useState();
 	const [activeStep, setActiveStep] = useState('');
+	const [accountCreate, setAccountCreate] = useState('');
 	const goToStep = (step: string): string => step;
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
+	const createAccountAPI = useCallback((): void => {
+		createAccountRequest(
+			{
+				givenName: accountDetail?.givenName,
+				initials: accountDetail?.initials,
+				sn: accountDetail?.sn,
+				zimbraPasswordMustChange: accountDetail?.zimbraPasswordMustChange ? 'TRUE' : 'FALSE',
+				zimbraAccountStatus: accountDetail?.zimbraAccountStatus,
+				zimbraPrefLocale: accountDetail?.zimbraPrefLocale,
+				zimbraPrefTimeZoneId: accountDetail?.zimbraPrefTimeZoneId,
+				zimbraNotes: accountDetail?.zimbraNotes,
+				displayName: accountDetail?.displayName,
+				zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId
+			},
+			`${accountDetail?.name}@${domainName}`,
+			accountDetail?.password || ''
+		)
+			.then((data) => {
+				const isCreateAccount = data;
+				if (isCreateAccount) {
+					if (isAdvanced) {
+						setActiveStep('otp');
+					} else {
+						setShowCreateAccountView(false);
+					}
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t(
+							'label.account_created_successfully',
+							'The account has been created successfully'
+						),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+				getAccountList();
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [
+		accountDetail,
+		createSnackbar,
+		domainName,
+		getAccountList,
+		isAdvanced,
+		setShowCreateAccountView,
+		t
+	]);
+	useEffect(() => {
+		if (accountCreate === 'create') {
+			setAccountCreate('');
+			createAccountAPI();
+		}
+	}, [accountCreate, accountDetail, createAccountAPI]);
 
 	const wizardSteps = useMemo(
 		() => [
@@ -113,33 +180,6 @@ const CreateAccount: FC<{
 				icon: 'Edit2Outline',
 				view: CreateAccountDetailSection,
 				CancelButton: (props: any): ReactElement => (
-					<Button
-						{...props}
-						type="outlined"
-						key="wizard-cancel"
-						label={'CANCEL'}
-						color="secondary"
-						icon="CloseOutline"
-						iconPlacement="right"
-						onClick={(): void => setShowCreateAccountView(false)}
-					/>
-				),
-				PrevButton: (props: any): ReactElement => <></>,
-				NextButton: (props: any) => (
-					<Button
-						{...props}
-						label={t('label.next_step', 'NEXT STEP')}
-						icon="ChevronRightOutline"
-						iconPlacement="right"
-					/>
-				)
-			},
-			{
-				name: 'create',
-				label: t('label.create', 'CREATE'),
-				icon: 'PersonOutline',
-				view: CreateAccountSectionView,
-				CancelButton: (props: any) => (
 					<Button
 						{...props}
 						type="outlined"
@@ -184,66 +224,13 @@ const CreateAccount: FC<{
 									replace: true
 								});
 							} else {
-								createAccountRequest(
-									{
-										givenName: accountDetail?.givenName,
-										initials: accountDetail?.initials,
-										sn: accountDetail?.sn,
-										zimbraPasswordMustChange: accountDetail?.zimbraPasswordMustChange
-											? 'TRUE'
-											: 'FALSE',
-										zimbraAccountStatus: accountDetail?.zimbraAccountStatus,
-										zimbraPrefLocale: accountDetail?.zimbraPrefLocale,
-										zimbraPrefTimeZoneId: accountDetail?.zimbraPrefTimeZoneId,
-										zimbraNotes: accountDetail?.zimbraNotes,
-										displayName: accountDetail?.displayName,
-										zimbraCOSId: accountDetail?.defaultCOS ? '' : accountDetail?.zimbraCOSId
-									},
-									`${accountDetail?.name}@${domainName}`,
-									accountDetail?.password || ''
-								)
-									.then((data) => {
-										const isCreateAccount = data;
-										if (isCreateAccount) {
-											if (isAdvanced) {
-												setActiveStep('otp');
-											} else {
-												setShowCreateAccountView(false);
-											}
-											createSnackbar({
-												key: 'success',
-												type: 'success',
-												label: t(
-													'label.account_created_successfully',
-													'The account has been created successfully'
-												),
-												autoHideTimeout: 3000,
-												hideButton: true,
-												replace: true
-											});
-										}
-										getAccountList();
-									})
-									.catch((error) => {
-										createSnackbar({
-											key: 'error',
-											type: 'error',
-											label: error?.message
-												? error?.message
-												: t(
-														'label.something_wrong_error_msg',
-														'Something went wrong. Please try again.'
-												  ),
-											autoHideTimeout: 3000,
-											hideButton: true,
-											replace: true
-										});
-									});
+								setAccountCreate('create');
 							}
 						}}
 					/>
 				)
 			},
+
 			{
 				name: 'otp',
 				label: t('label.otp', 'OTP'),
@@ -263,28 +250,7 @@ const CreateAccount: FC<{
 				)
 			}
 		],
-		[
-			t,
-			setShowCreateAccountView,
-			accountDetail?.password,
-			accountDetail?.repeatPassword,
-			accountDetail?.givenName,
-			accountDetail?.initials,
-			accountDetail?.sn,
-			accountDetail?.zimbraPasswordMustChange,
-			accountDetail?.zimbraAccountStatus,
-			accountDetail?.zimbraPrefLocale,
-			accountDetail?.zimbraPrefTimeZoneId,
-			accountDetail?.zimbraNotes,
-			accountDetail?.displayName,
-			accountDetail?.defaultCOS,
-			accountDetail?.zimbraCOSId,
-			accountDetail?.name,
-			createSnackbar,
-			domainName,
-			getAccountList,
-			isAdvanced
-		]
+		[t, setShowCreateAccountView, accountDetail, createSnackbar]
 	);
 
 	const onComplete = useCallback(() => {

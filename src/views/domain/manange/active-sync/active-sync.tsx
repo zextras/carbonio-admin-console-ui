@@ -24,6 +24,8 @@ import gardian from '../../../../assets/gardian.svg';
 import { getAllDevices } from '../../../../services/get-all-devices';
 import ActiveDeviceDetail from './active-device-detail';
 import { ZX_MOBILE } from '../../../../constants';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 type MobileDevice = {
 	accountEmail: string;
@@ -327,27 +329,30 @@ const ActiveSync: FC = () => {
 					padding={{ all: 'large' }}
 				>
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
-						<Input
-							label={t(
-								'label.filter_by_device_type_account',
-								'Filter by device type, account, status'
-							)}
-							background="gray5"
-							onChange={(e: any): any => {
-								setSearchString(e.target.value);
-							}}
-							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-						/>
-
-						<Padding left="medium">
-							<Button
-								type="outlined"
-								label={t('label.remove', 'Remove')}
-								color="error"
-								height="44px"
-								disabled
+						<Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
+							<Input
+								label={t(
+									'label.filter_by_device_type_account',
+									'Filter by device type, account, status'
+								)}
+								background="gray5"
+								onChange={(e: any): any => {
+									setSearchString(e.target.value);
+								}}
+								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 							/>
-						</Padding>
+						</Container>
+						<Container width="12%" crossAlignment="flex-end" mainAlignment="flex-end">
+							<Padding left="medium">
+								<Button
+									type="outlined"
+									label={t('label.remove', 'Remove')}
+									color="error"
+									disabled
+									size="extralarge"
+								/>
+							</Padding>
+						</Container>
 					</Row>
 					<Row
 						takeAvwidth="fill"
@@ -356,7 +361,14 @@ const ActiveSync: FC = () => {
 						wrap="nowrap"
 						padding={{ top: 'large' }}
 					>
-						<Table rows={allDeviceRow} headers={headers} showCheckbox={false} multiSelect={false} />
+						<Table
+							rows={allDeviceRow}
+							headers={headers}
+							showCheckbox={false}
+							multiSelect={false}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
+						/>
 					</Row>
 					{allDeviceRow.length === 0 && (
 						<Container orientation="column" crossAlignment="center" mainAlignment="center">

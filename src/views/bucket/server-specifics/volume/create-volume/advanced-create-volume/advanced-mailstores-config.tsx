@@ -11,11 +11,14 @@ import {
 	Switch,
 	Text,
 	Padding,
-	Radio
+	Radio,
+	Link
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import {
+	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
+	AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
 	EMPTY_TYPE_VALUE,
 	PRIMARY_TYPE_VALUE,
 	S3,
@@ -134,7 +137,7 @@ const AdvancedMailstoresConfig: FC<{
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
 					<Input
-						label={t('label.volume_allocation', 'Allocation')}
+						label={t('label.storage_type', 'Storage Type')}
 						backgroundColor="gray6"
 						value={advancedVolumeDetail?.volumeAllocation}
 						readOnly
@@ -199,7 +202,7 @@ const AdvancedMailstoresConfig: FC<{
 							label={t('label.primary_volume', 'This is a Primary Volume')}
 							value={PRIMARY_TYPE_VALUE}
 							checked={primaryRadio}
-							onClick={(): any => {
+							onClick={(): void => {
 								setPrimaryRadio(!primaryRadio);
 								setSecondaryRadio(false);
 							}}
@@ -211,7 +214,7 @@ const AdvancedMailstoresConfig: FC<{
 							label={t('label.secondary_volume', 'This is a Secondary Volume')}
 							value={SECONDARY_TYPE_VALUE}
 							checked={secondaryRadio}
-							onClick={(): any => {
+							onClick={(): void => {
 								setSecondaryRadio(!secondaryRadio);
 								setPrimaryRadio(false);
 							}}
@@ -247,13 +250,18 @@ const AdvancedMailstoresConfig: FC<{
 									/>
 								</Row>
 								<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-									<Text color="secondary">
+									<Link
+										color="secondary"
+										href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
+										target="_blank"
+										rel="noopener noreferrer"
+									>
 										<Trans
 											i18nKey="label.use_infraquent_access_helptext"
 											defaults="<underline>Amazon Storage Class Documentation</underline>"
 											components={{ underline: <u /> }}
 										/>
-									</Text>
+									</Link>
 								</Row>
 							</Row>
 							<Padding horizontal="small" />
@@ -275,13 +283,18 @@ const AdvancedMailstoresConfig: FC<{
 							/>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-							<Text color="secondary">
+							<Link
+								color="secondary"
+								href={AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
 								<Trans
 									i18nKey="label.use_intelligent_tiering_helptext"
 									defaults="<underline>Amazon Tiering Documentation</underline>"
 									components={{ underline: <u /> }}
 								/>
-							</Text>
+							</Link>
 						</Row>
 					</>
 				)}

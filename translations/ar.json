@@ -1,1 +1,76 @@
-{}
+{
+    "notification": {
+        "copy": "نسخ"
+    },
+    "backup": {
+        "general": "عام"
+    },
+    "core": {
+        "subscription": {
+            "status": "الحالة"
+        }
+    },
+    "cos": {
+        "enabled": "قيد التمكين",
+        "disabled": "معطل",
+        "status": "الحالة",
+        "chats": "دردشات"
+    },
+    "dashboard": {
+        "description": "الوصف"
+    },
+    "hsm": {
+        "name": "الاسم",
+        "delete": "حذف",
+        "edit": "تحرير",
+        "message": "رسالة"
+    },
+    "label": {
+        "add": "إضافة",
+        "cancel": "إلغاء",
+        "delete": "حذف",
+        "done": "تم",
+        "email": "البريد الإلكتروني",
+        "account": "الحساب",
+        "description": "الوصف",
+        "disabled": "معطل",
+        "edit": "تحرير",
+        "enabled": "قيد التمكين",
+        "message": "رسالة",
+        "name": "الاسم",
+        "bucket_done_button": "تم",
+        "notifications": "إعلامات",
+        "search": "البحث",
+        "status_lbl": "الحالة",
+        "chats": "دردشات"
+    },
+    "account_details": {
+        "general": "عام",
+        "Chats": "دردشات"
+    },
+    "volume": {
+        "volume_config_header": {
+            "name": "الاسم",
+            "status": "الحالة"
+        },
+        "volume_header": {
+            "name": "الاسم"
+        },
+        "volume_indexer_header": {
+            "name": "الاسم"
+        },
+        "server_list_header": {
+            "description": "الوصف"
+        }
+    },
+    "operations": {
+        "done": "تم",
+        "label": {
+            "notifications": "إعلامات",
+            "status": "الحالة"
+        },
+        "operations_list_header": {
+            "status": "الحالة"
+        }
+    }
+}

@@ -14,6 +14,8 @@ import {
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
@@ -209,6 +211,8 @@ const HSMselectVolumes: FC<any> = () => {
 									setSelectedSourceVolume(selected);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 				</Padding>
@@ -258,7 +262,7 @@ const HSMselectVolumes: FC<any> = () => {
 						<Table
 							rows={volumeRows}
 							headers={headers}
-							showCheckbox={false}
+							showCheckbox
 							multiSelect={false}
 							selectedRows={selectedDestinationVolume}
 							onSelectionChange={(selected: any): void => {
@@ -281,6 +285,8 @@ const HSMselectVolumes: FC<any> = () => {
 									setSelectedDestinationVolume(selected);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 				</Padding>

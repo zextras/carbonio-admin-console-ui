@@ -18,6 +18,8 @@ import { cloneDeep } from 'lodash';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
@@ -288,7 +290,15 @@ const EditHsmPolicyDetailSection: FC<{
 				return {
 					id: index,
 					columns: [
-						<Text size="medium" weight="bold" key={index} color="#828282">
+						<Text
+							size="medium"
+							weight="bold"
+							key={index}
+							color="#828282"
+							onClick={(): void => {
+								setSelectedPolicies([index]);
+							}}
+						>
 							{displayPolicy}
 						</Text>
 					]
@@ -560,7 +570,7 @@ const EditHsmPolicyDetailSection: FC<{
 						}}
 					/>
 				</Container>
-				<Container style={{ border: '1px solid #2b73d2' }} width="fit">
+				<Container>
 					{!isUpdatePolicyCriteria && (
 						<Button
 							type="outlined"
@@ -568,7 +578,7 @@ const EditHsmPolicyDetailSection: FC<{
 							icon="PlusOutline"
 							iconPlacement="right"
 							color="primary"
-							height={46}
+							size="large"
 							onClick={onAdd}
 						/>
 					)}
@@ -579,18 +589,22 @@ const EditHsmPolicyDetailSection: FC<{
 							icon="EditOutline"
 							iconPlacement="right"
 							color="primary"
-							height={46}
+							size="large"
 							onClick={onUpdate}
 						/>
 					)}
 				</Container>
 				<Padding left="small">
-					<Container style={{ border: '1px solid rgb(215, 73, 66)' }} width="fit">
+					<Container
+						width="3rem"
+						height="fit"
+						style={{ border: '1px solid #d74942', margin: '4px 0 0 0' }}
+					>
 						<IconButton
 							iconColor="error"
+							backgroundColor="gray6"
 							icon="Trash2Outline"
-							height={44}
-							width={44}
+							size="large"
 							onClick={onDeletePolicy}
 							disabled={selectedPolicies.length === 0}
 						/>
@@ -602,10 +616,12 @@ const EditHsmPolicyDetailSection: FC<{
 					<Table
 						rows={policyCriteriaRows}
 						headers={headers}
-						showCheckbox={false}
+						showCheckbox
 						multiSelect={false}
 						selectedRows={selectedPolicies}
 						onSelectionChange={(selected: any): void => setSelectedPolicies(selected)}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Padding>
 			</ListRow>

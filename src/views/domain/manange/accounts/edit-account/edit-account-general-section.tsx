@@ -26,6 +26,7 @@ import { map, cloneDeep, uniqBy } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
+import ManageAliases from '../../../../components/manageAliases';
 
 const EditAccountGeneralSection: FC = () => {
 	const conext = useContext(AccountContext);
@@ -35,10 +36,7 @@ const EditAccountGeneralSection: FC = () => {
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
-	const [showManageAliesModal, setShowManageAliesModal] = useState<boolean>(false);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
-	const [aliesNameValue, setAliesNameValue] = useState<string>('');
-	const [selectedDomainName, setSelectedDomainName] = useState<string>('');
 
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
@@ -95,9 +93,6 @@ const EditAccountGeneralSection: FC = () => {
 	const onCOSSwitchChanges = (): void => {
 		defaultCOS && setAccountDetail((prev: any) => ({ ...prev, zimbraCOSId: '' }));
 		setDefaultCOS(!defaultCOS);
-	};
-	const onDomainOptionChange = (v: any): any => {
-		setSelectedDomainName(v);
 	};
 	return (
 		<Container
@@ -173,39 +168,17 @@ const EditAccountGeneralSection: FC = () => {
 						</Row>
 					</Row>
 				</Row>
-				<Row width="100%" padding={{ top: 'large', left: 'large' }}>
-					<Row width="76%" mainAlignment="flex-start" crossAlignment="flex-start">
-						<Row padding={{ left: 'large', bottom: 'small' }}>
-							<Text size="small" color="secondary">
-								{t('account_details.aliases', 'Aliases')}
-							</Text>
-						</Row>
-						<Row width="100%">
-							<Container
-								orientation="horizontal"
-								wrap="wrap"
-								mainAlignment="flex-start"
-								maxWidth="44rem"
-								style={{ gap: '0.5rem' }}
-							>
-								{accountAliases?.map(
-									(ele, index) => index > 0 && <Chip key={`chip${index}`} label={ele.label} />
-								)}
-								<Row width="100%" padding={{ top: 'medium' }}>
-									<Divider color="gray2" />
-								</Row>
-							</Container>
-						</Row>
-					</Row>
-					<Row width="24%">
-						<Button
-							type="outlined"
-							label={t('account_details.manage_aliases', 'MANAGE ALIAS')}
-							color="primary"
-							onClick={(): void => setShowManageAliesModal(true)}
-						/>
-					</Row>
-				</Row>
+				<ManageAliases
+					aliasType="accounts"
+					listAliases={accountAliases}
+					setListAliases={setAccountAliases}
+					setAliasChange={(aliaes): void =>
+						setAccountDetail((prev: any) => ({
+							...prev,
+							mail: map(aliaes, 'label').join(', ')
+						}))
+					}
+				/>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
 						label={t('label.viewed_name', 'Viewed Name')}
@@ -419,170 +392,6 @@ const EditAccountGeneralSection: FC = () => {
 					/>
 				</Row>
 			</Row>
-			{showManageAliesModal && (
-				<Modal
-					title={t(
-						'account_details.manage_the_aliases_for_this_account',
-						'Manage the Aliases for this account'
-					)}
-					open={showManageAliesModal}
-					onClose={(): void => setShowManageAliesModal(false)}
-					showCloseIcon
-					hideFooter
-					size={'medium'}
-				>
-					<Row padding={{ top: 'large', bottom: 'large' }} width="100%">
-						<Row padding={{ top: 'medium', bottom: 'large' }}>
-							<Text>
-								{t(
-									'account_details.type_the_new_alias_name',
-									'Type the new Alias Name and select a domain to add it to your available aliases'
-								)}
-							</Text>
-						</Row>
-						<Row
-							padding={{ bottom: 'large' }}
-							orientation="horizontal"
-							mainAlignment="space-between"
-							crossAlignment="flex-start"
-							width="fill"
-							wrap={'nowrap'}
-						>
-							<Container mainAlignment="flex-start" crossAlignment="flex-start">
-								<Input
-									label={t('account_details.new_alias_name', 'New Alias Name')}
-									backgroundColor="gray5"
-									size="medium"
-									value={aliesNameValue}
-									onChange={(e: any): any => {
-										setAliesNameValue(e.target.value);
-									}}
-								/>
-							</Container>
-							<Container width="fit" padding={{ top: 'large', left: 'small', right: 'small' }}>
-								<Icon icon="AtOutline" size="large" />
-							</Container>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								padding={{ right: 'large' }}
-							>
-								<Select
-									items={domainList.map((ele) => ({
-										label: ele.name,
-										value: ele.name
-									}))}
-									background="gray5"
-									label={t('account_details.domain', 'Domain')}
-									showCheckbox={false}
-									// defaultSelection={{
-									// 	label: domainName,
-									// 	value: domainName
-									// }}
-									selection={{
-										label: selectedDomainName || domainName,
-										value: selectedDomainName || domainName
-									}}
-									onChange={onDomainOptionChange}
-								/>
-							</Container>
-							<Container style={{ border: '1px solid #2b73d2' }} width="fit">
-								<IconButton
-									type="outlined"
-									icon="PlusOutline"
-									iconColor="primary"
-									onClick={(): void => {
-										if (!aliesNameValue.trim()) return;
-										let aliaes = cloneDeep(accountAliases);
-										// aliaes.unshift({ label: `${accountDetail?.uid}@${domainName}` });
-										aliaes.push({
-											label: `${aliesNameValue.trim()}@${selectedDomainName || domainName}`
-										});
-										aliaes = uniqBy(aliaes, 'label');
-										setAccountAliases(aliaes);
-										setAccountDetail((prev: any) => ({
-											...prev,
-											mail: map(aliaes, 'label').join(', ')
-										}));
-										setAliesNameValue('');
-									}}
-								/>
-							</Container>
-							{/* </ListRow> */}
-						</Row>
-						<Row padding={{ top: 'medium', bottom: 'large' }}>
-							<Text>
-								{t(
-									'account_details.click_on_the_pencil_to_edit',
-									'Click on the pencil to edit the available alias or click on the cross to delete it'
-								)}
-							</Text>
-						</Row>
-						<Row width="100%" mainAlignment="flex-start" crossAlignment="flex-start">
-							<Row padding={{ left: 'large', bottom: 'small' }}>
-								<Text size="small" color="secondary">
-									{t('account_details.your_available_aliases', 'Your Available Aliases')}
-								</Text>
-							</Row>
-							<Row width="100%">
-								<Container
-									orientation="horizontal"
-									wrap="wrap"
-									mainAlignment="flex-start"
-									maxWidth="44rem"
-									style={{ gap: '0.5rem' }}
-								>
-									{accountAliases?.map(
-										(ele, index) =>
-											index > 0 && (
-												<Chip
-													key={`chip${index}`}
-													label={ele.label}
-													onClose={(): void => {
-														const aliaes = cloneDeep(accountAliases);
-														aliaes.splice(index, 1);
-														setAccountAliases(aliaes);
-														setAccountDetail((prev: any) => ({
-															...prev,
-															mail: map(aliaes, 'label').join(', ')
-														}));
-													}}
-													actions={[
-														{
-															id: 'action1',
-															label: 'The Queen Across the Water',
-															type: 'button',
-															icon: 'Edit2Outline',
-															onClick: (): void => {
-																const aliaes = cloneDeep(accountAliases);
-																let selectedItem = aliaes.splice(index, 1);
-																selectedItem = selectedItem[0].label;
-																// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-																// @ts-ignore
-																selectedItem = selectedItem.split('@');
-
-																setAliesNameValue(selectedItem[0]);
-																setSelectedDomainName(selectedItem[1]);
-																setAccountAliases(aliaes);
-																setAccountDetail((prev: any) => ({
-																	...prev,
-																	mail: map(aliaes, 'label').join(', ')
-																}));
-															}
-														}
-													]}
-												/>
-											)
-									)}
-									<Row width="100%" padding={{ top: 'medium' }}>
-										<Divider color="gray2" />
-									</Row>
-								</Container>
-							</Row>
-						</Row>
-					</Row>
-				</Modal>
-			)}
 		</Container>
 	);
 };

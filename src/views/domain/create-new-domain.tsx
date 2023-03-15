@@ -23,8 +23,9 @@ import { useHistory } from 'react-router-dom';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
-import { DOMAINS_ROUTE_ID, MANAGE } from '../../constants';
+import { ACTIVE, CARBONIO, DOMAINS_ROUTE_ID, HTTPS, MANAGE } from '../../constants';
 import ListRow from '../list/list-row';
+import { useMailstoreListStore } from '../../store/mailstore-list/store';
 
 // eslint-disable-next-line no-shadow
 export enum GAL_MODE {
@@ -59,11 +60,25 @@ const CreateDomain: FC = () => {
 	const [zimbraPublicServiceHostnameList, setZimbraPublicServiceHostnameList] = useState<any>([]);
 	const [zimbraPublisServiceHostname, setZimbraPublisServiceHostname] = useState<any>({});
 	const [galSyncAccountName, setGalSyncAccountName] = useState<string>('galsync');
-	const [dataSourceName, setDataSourceName] = useState<string>('zimbra');
+	const [dataSourceName, setDataSourceName] = useState<string>(CARBONIO);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [domainName, setDomainName] = useState<string>('');
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
+	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
+
+	useEffect(() => {
+		if (allMailStoreList && allMailStoreList.length > 0) {
+			const data = allMailStoreList.map((item: any) => ({
+				label: item?.name,
+				value: item?.name
+			}));
+			if (data && data.length > 0) {
+				setZimbraPublicServiceHostnameList(data);
+				setZimbraPublisServiceHostname(data[0]);
+			}
+		}
+	}, [allMailStoreList]);
 
 	const getCreateObjectAttribute = (): void => {
 		const target = [
@@ -81,22 +96,13 @@ const CreateDomain: FC = () => {
 			const obj: any = {};
 			const allData = data?.setAttrs[0]?.a;
 			if (allData && allData.length > 0) {
-				allData.map((item: any) => {
+				allData.forEach((item: any) => {
 					if (item?.default) {
 						obj[item?.n] = item.default;
 					} else {
 						obj[item?.n] = [];
 					}
-					return '';
 				});
-				const hostnames = obj?.zimbraPublicServiceHostname[0]?.v;
-				if (hostnames && Array.isArray(hostnames)) {
-					const hostNameList = hostnames.map((item): any => ({
-						label: item?._content,
-						value: item?._content
-					}));
-					setZimbraPublicServiceHostnameList(hostNameList);
-				}
 				setCreateObjectAttributeData(obj);
 			}
 		});
@@ -135,7 +141,6 @@ const CreateDomain: FC = () => {
 	};
 
 	const onCreate = (): void => {
-		const body: any = {};
 		let attributes: any[] = [];
 		attributes.push({
 			n: 'zimbraNotes',
@@ -160,6 +165,14 @@ const CreateDomain: FC = () => {
 		attributes.push({
 			n: 'zimbraMailDomainQuota',
 			_content: zimbraMailDomainQuota
+		});
+		attributes.push({
+			n: 'zimbraDomainStatus',
+			_content: ACTIVE
+		});
+		attributes.push({
+			n: 'zimbraPublicServiceProtocol',
+			_content: HTTPS
 		});
 
 		createDomain(domainName, attributes)

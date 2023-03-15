@@ -305,7 +305,7 @@ const Subscription: FC = () => {
 									? (): void => activeLicence()
 									: (): void => setOpen(true)
 							}
-							style={{ padding: '12px 12px' }}
+							size="extralarge"
 						/>
 					</Row>
 				</Container>

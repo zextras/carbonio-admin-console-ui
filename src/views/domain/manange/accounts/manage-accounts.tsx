@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback } from 'react';
+import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
+import { debounce, flatMapDeep, filter } from 'lodash';
 import {
 	Container,
 	Input,
@@ -21,6 +21,11 @@ import {
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
+import {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	postSoapFetchRequest
+} from '@zextras/carbonio-shell-ui';
 import logo from '../../../../assets/gardian.svg';
 import { useDomainStore } from '../../../../store/domain/store';
 import Paging from '../../../components/paging';
@@ -33,6 +38,10 @@ import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import { AccountContext } from './account-context';
 import { fetchSoap } from '../../../../services/listOTP-service';
+import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import useOutsideClick from '../../../app/hooks/useoutsideclick';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -43,6 +52,13 @@ const ManageAccounts: FC = () => {
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
 	const [otpList, setOtpList] = useState<any[]>([]);
+	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
+	const [folderList, setFolderList] = useState<any[]>([]);
+	const [deligateDetail, setDeligateDetail] = useState<any>({});
+
+	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const tableRef = useRef(null);
 
 	const headers: any = useMemo(
 		() => [
@@ -114,10 +130,6 @@ const ManageAccounts: FC = () => {
 		});
 	}, []);
 
-	// useEffect(() => {
-	// 	getSignatureDetail();
-	// }, [getSignatureDetail]);
-
 	const STATUS_COLOR: any = useMemo(
 		() => ({
 			active: {
@@ -177,6 +189,7 @@ const ManageAccounts: FC = () => {
 
 					obj.password = '';
 					obj.repeatPassword = '';
+					obj.name = data?.account?.[0]?.name;
 					setInitAccountDetail({ ...obj });
 					setAccountDetail({ ...obj });
 				})
@@ -272,6 +285,87 @@ const ManageAccounts: FC = () => {
 		},
 		[t]
 	);
+	const getFolderList = useCallback(
+		(acc, delegateList): void => {
+			postSoapFetchRequest(
+				`/service/admin/soap/GetFolderRequest`,
+				{
+					_jsns: 'urn:zimbraMail'
+				},
+				'GetFolderRequest',
+				acc.id
+			).then((res: any) => {
+				const allFolder =
+					res?.Body?.GetFolderResponse?.folder ||
+					flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
+					[];
+				allFolder.forEach((ele: any) => {
+					// eslint-disable-next-line prefer-destructuring, no-param-reassign
+					ele.id = ele.id.split(':')[1];
+					return ele;
+				});
+				const filteredFolders = filter(allFolder, (ele: any) =>
+					['1', '2', '7', '10', '4', '5', '6', '3'].includes(ele.id)
+				);
+				const userDelegate: any[] = [];
+				filteredFolders.forEach((ele: any) => {
+					ele?.acl?.grant &&
+						ele?.acl?.grant.forEach((el: any) => {
+							userDelegate.push({ ...el, id: ele.id, name: ele.name });
+						});
+				});
+				setFolderList(filteredFolders);
+				userDelegate.forEach((ele: any) => {
+					let found = false;
+					delegateList.forEach((el: any) => {
+						// const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
+						if (el?.grantee?.[0]?.name === ele?.d) {
+							found = true;
+							if (el?.folder?.length) {
+								el?.folder.push(ele);
+							} else {
+								// eslint-disable-next-line prefer-destructuring, no-param-reassign
+								el.folder = [ele];
+							}
+						}
+					});
+					if (!found) {
+						delegateList.push({
+							grantee: [{ id: ele.zid, name: ele.d, type: ele.gt }],
+							folder: [ele]
+						});
+					}
+				});
+
+				setIdentitiesList(delegateList);
+			});
+		},
+		[flatten]
+	);
+	const getIdentitiesList = useCallback(
+		(acc): void => {
+			const request: any = {
+				_jsns: 'urn:zimbraAdmin',
+				target: {
+					_content: acc.name,
+					type: 'account',
+					by: 'name'
+				}
+			};
+			postSoapFetchRequest(
+				`/service/admin/soap/GetGrantsRequest`,
+				{
+					...request
+				},
+				'GetGrantsRequest',
+				acc.id
+			).then((res: any) => {
+				getFolderList(acc, res?.Body?.GetGrantsResponse?.grant || []);
+			});
+		},
+		[getFolderList]
+	);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setSelectedAccount(acc);
@@ -279,9 +373,19 @@ const ManageAccounts: FC = () => {
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
-			getListOtp(acc?.name);
+			getIdentitiesList(acc);
+			if (isAdvanced) {
+				getListOtp(acc?.name);
+			}
 		},
-		[getAccountDetail, getAccountMembership, getSignatureDetail, getListOtp]
+		[
+			getAccountDetail,
+			getSignatureDetail,
+			getAccountMembership,
+			getIdentitiesList,
+			isAdvanced,
+			getListOtp
+		]
 	);
 	const getAccountList = useCallback((): void => {
 		const type = 'accounts';
@@ -435,6 +539,30 @@ const ManageAccounts: FC = () => {
 		}
 	}, [domainName, getAccountList]);
 
+	const closeAccountDetailDialog = useCallback(() => {
+		if (showAccountDetailView) {
+			setShowAccountDetailView(false);
+		}
+	}, [showAccountDetailView]);
+
+	const handleKeyEvent = useCallback(
+		(event) => {
+			if (event.key === 'Escape') {
+				closeAccountDetailDialog();
+			}
+		},
+		[closeAccountDetailDialog]
+	);
+
+	useOutsideClick(tableRef, closeAccountDetailDialog);
+
+	useEffect(() => {
+		window.addEventListener('keydown', handleKeyEvent);
+		return () => {
+			window.removeEventListener('keydown', handleKeyEvent);
+		};
+	}, [handleKeyEvent]);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -517,6 +645,7 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							height="calc(100vh - 340px)"
+							ref={tableRef}
 						>
 							{accountList.length !== 0 && (
 								<Table
@@ -525,6 +654,8 @@ const ManageAccounts: FC = () => {
 									showCheckbox={false}
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
 							{accountList.length === 0 && (
@@ -573,6 +704,48 @@ const ManageAccounts: FC = () => {
 									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 								</Row>
 							)}
+							<AccountContext.Provider
+								value={{
+									accountDetail,
+									setAccountDetail,
+									directMemberList,
+									inDirectMemberList,
+									setDirectMemberList,
+									setInDirectMemberList,
+									initAccountDetail,
+									setInitAccountDetail,
+									setSignatureItems,
+									setSignatureList,
+									otpList,
+									getListOtp,
+									identitiesList,
+									deligateDetail,
+									setDeligateDetail,
+									getIdentitiesList,
+									folderList,
+									setFolderList
+								}}
+							>
+								{showAccountDetailView && (
+									<AccountDetailView
+										selectedAccount={selectedAccount}
+										setShowAccountDetailView={setShowAccountDetailView}
+										setShowEditAccountView={setShowEditAccountView}
+										STATUS_COLOR={STATUS_COLOR}
+										getAccountList={getAccountList}
+									/>
+								)}
+
+								{showEditAccountView && (
+									<EditAccount
+										setShowEditAccountView={setShowEditAccountView}
+										selectedAccount={selectedAccount}
+										getAccountList={getAccountList}
+										signatureList={signatureList}
+										signatureItems={signatureItems}
+									/>
+								)}
+							</AccountContext.Provider>
 						</Row>
 					</Container>
 				</Row>
@@ -583,42 +756,6 @@ const ManageAccounts: FC = () => {
 					getAccountList={getAccountList}
 				/>
 			)}
-			<AccountContext.Provider
-				value={{
-					accountDetail,
-					setAccountDetail,
-					directMemberList,
-					inDirectMemberList,
-					setDirectMemberList,
-					setInDirectMemberList,
-					initAccountDetail,
-					setInitAccountDetail,
-					setSignatureItems,
-					setSignatureList,
-					otpList,
-					getListOtp
-				}}
-			>
-				{showAccountDetailView && (
-					<AccountDetailView
-						selectedAccount={selectedAccount}
-						setShowAccountDetailView={setShowAccountDetailView}
-						setShowEditAccountView={setShowEditAccountView}
-						STATUS_COLOR={STATUS_COLOR}
-						getAccountList={getAccountList}
-					/>
-				)}
-
-				{showEditAccountView && (
-					<EditAccount
-						setShowEditAccountView={setShowEditAccountView}
-						selectedAccount={selectedAccount}
-						getAccountList={getAccountList}
-						signatureList={signatureList}
-						signatureItems={signatureItems}
-					/>
-				)}
-			</AccountContext.Provider>
 		</Container>
 	);
 };

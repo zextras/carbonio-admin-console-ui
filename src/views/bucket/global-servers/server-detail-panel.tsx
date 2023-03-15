@@ -37,6 +37,8 @@ import {
 	INDEXER_RUNNING
 } from '../../../constants';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -156,6 +158,8 @@ const ServersListTable: FC<{
 				rows={isAdvanced ? tableRowsAdvance : tableRowCe}
 				showCheckbox={false}
 				multiSelect={false}
+				RowFactory={CustomRowFactory}
+				HeaderFactory={CustomHeaderFactory}
 			/>
 			{isRequestInProgress && (
 				<Container

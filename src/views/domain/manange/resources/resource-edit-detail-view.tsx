@@ -867,7 +867,7 @@ const ResourceEditDetailView: FC<any> = ({
 				orientation="horizontal"
 				background="white"
 				width="fill"
-				height="48px"
+				height="56px"
 			>
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
@@ -875,7 +875,32 @@ const ResourceEditDetailView: FC<any> = ({
 						{selectedResourceList?.name}
 					</Text>
 				</Row>
-				<Row padding={{ right: 'extrasmall' }}>
+				<Row>
+					{isEditMode && isDirty && (
+						<Container
+							orientation="horizontal"
+							mainAlignment="flex-end"
+							crossAlignment="flex-end"
+							background="gray6"
+						>
+							<Padding right="large">
+								<Button
+									label={t('label.cancel', 'Cancel')}
+									color="secondary"
+									height="44px"
+									onClick={onCancel}
+								/>
+							</Padding>
+							<Button
+								label={t('label.save', 'Save')}
+								color="primary"
+								height="44px"
+								onClick={onSave}
+							/>
+						</Container>
+					)}
+				</Row>
+				<Row padding={{ right: 'extrasmall', left: 'small' }}>
 					<IconButton
 						size="medium"
 						icon="CloseOutline"
@@ -935,27 +960,7 @@ const ResourceEditDetailView: FC<any> = ({
 					/>
 				</Row>
 			)}
-			{isEditMode && isDirty && (
-				<Row
-					mainAlignment="flex-end"
-					crossAlignment="flex-end"
-					orientation="horizontal"
-					background="white"
-					height="fit"
-					padding={{ top: 'extralarge', left: 'large', right: 'large', bottom: 'large' }}
-					width="100%"
-				>
-					<Padding right="large">
-						<Button
-							label={t('label.cancel', 'Cancel')}
-							color="secondary"
-							height="44px"
-							onClick={onCancel}
-						/>
-					</Padding>
-					<Button label={t('label.save', 'Save')} color="primary" height="44px" onClick={onSave} />
-				</Row>
-			)}
+
 			<Container
 				padding={{ left: 'large' }}
 				mainAlignment="flex-start"

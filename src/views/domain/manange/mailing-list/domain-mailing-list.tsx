@@ -39,6 +39,8 @@ import CreateMailingList from './create-mailing-list';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -346,6 +348,9 @@ const DomainMailingList: FC = () => {
 							replace: true
 						});
 					}
+				})
+				.catch((error) => {
+					setIsUpdateRecord(true);
 				});
 		},
 		[createSnackbar]
@@ -475,7 +480,7 @@ const DomainMailingList: FC = () => {
 				dl = { by: 'name', _content: name };
 				action = {
 					op: 'setRights',
-					right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
+					right: { right: 'sendToDistList', grantee: [] }
 				};
 			} else if (ownerGrantEmailType?.value === GRP) {
 				dl = { by: 'name', _content: name };
@@ -649,6 +654,8 @@ const DomainMailingList: FC = () => {
 										);
 										setSelectedDlRow(selected);
 									}}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
 							{mailingList.length === 0 && (

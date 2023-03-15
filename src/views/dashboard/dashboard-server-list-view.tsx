@@ -13,6 +13,8 @@ import { useServerStore } from '../../store/server/store';
 import { Server } from '../../../types';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 
 export const VersionText = styled(Text)`
 	background: #2b73d2;
@@ -115,13 +117,13 @@ const DashboardServerList: FC<{
 			},
 			{
 				id: 'carbonio_core',
-				label: t('dashboard.carbonio_core', 'Carbonio Core'),
+				label: t('dashboard.core_version', 'Core Version'),
 				width: '20%',
 				bold: true
 			},
 			{
 				id: 'carbonio',
-				label: isAdvanced ? t('dashboard.carbonio', 'Carbonio') : '',
+				label: '',
 				width: isAdvanced ? '20%' : '0%',
 				bold: true
 			},
@@ -164,6 +166,7 @@ const DashboardServerList: FC<{
 						label={t('dashboard.go_to_mailstores_server_list', 'Go to mailstores servers list')}
 						color="primary"
 						onClick={goToMailStoreServerList}
+						size="large"
 					/>
 				</Container>
 			</ListRow>
@@ -182,6 +185,8 @@ const DashboardServerList: FC<{
 						showCheckbox={false}
 						multiSelect={false}
 						style={{ overflow: 'auto', height: '100%' }}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
 			</ListRow>

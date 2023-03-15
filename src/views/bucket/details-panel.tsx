@@ -22,6 +22,8 @@ import { find } from 'lodash';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
 import { ALIBABA, EMC } from '../../constants';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 
 const DetailsHeaders = [
 	{
@@ -136,6 +138,8 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 				multiSelect={false}
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
+				RowFactory={CustomRowFactory}
+				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
@@ -250,18 +254,21 @@ const DetailsPanel: FC<{
 
 	return (
 		<Container background="gray6">
-			<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="center"
+				orientation="horizontal"
+				background="white"
+				width="fill"
+				height="3rem"
+			>
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
 					<Text size="extralarge" weight="bold">
 						{title}
 					</Text>
 				</Row>
 				<Row padding={{ horizontal: 'small' }}>
-					<IconButton
-						icon="CloseOutline"
-						color="gray1"
-						onClick={(): void => setDetailsBucket(false)}
-					/>
+					<IconButton icon="CloseOutline" onClick={(): void => setDetailsBucket(false)} />
 				</Row>
 			</Row>
 			<Divider />
@@ -353,16 +360,18 @@ const DetailsPanel: FC<{
 				<Row padding={{ top: 'large' }} width="100%">
 					<Input label={t('label.notes', 'Notes')} value={bucketDetail.notes || ''} readOnly />
 				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
+				<Row width="100%" padding={{ top: 'large' }} style={{ display: 'block' }}>
 					<Button
+						width="100%"
+						style={{ width: '100%' }}
 						type="outlined"
 						label={ButtonLabel}
 						icon={buttonIcon}
 						iconPlacement="right"
-						size="fill"
 						color={verify}
 						onClick={verifyConnector}
 						disabled={toggleBtn}
+						size="large"
 					/>
 				</Row>
 

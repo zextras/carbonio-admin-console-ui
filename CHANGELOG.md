@@ -2,6 +2,77 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.11...v0.9.12) (2023-03-02)
+
+
+### Features
+
+* download mailbox quota in csv ([1ada4f3](https://github.com/zextras/carbonio-admin-console-ui/commit/1ada4f3510626b2fceeb7a4ac33278d02e4bcbfc))
+* sort functionality added inside mail quota ([a52e26e](https://github.com/zextras/carbonio-admin-console-ui/commit/a52e26eae8df47794e9066ac77f4180326e06a9f))
+
+
+### Bug Fixes
+
+* add the hand pointer to clickable items in the secondary bar ([#279](https://github.com/zextras/carbonio-admin-console-ui/issues/279)) ([eb2be76](https://github.com/zextras/carbonio-admin-console-ui/commit/eb2be76f2e47230c3087ecfb809c727c4d304f9e))
+* cos feature error ([#291](https://github.com/zextras/carbonio-admin-console-ui/issues/291)) ([f515607](https://github.com/zextras/carbonio-admin-console-ui/commit/f51560774b896dd9ad959695646e96fa58846a3d))
+* delete account dialog trans ([#286](https://github.com/zextras/carbonio-admin-console-ui/issues/286)) ([b13b8e6](https://github.com/zextras/carbonio-admin-console-ui/commit/b13b8e6c8d22be6884e2408e525e8e5efce6bb53))
+* disable download button when load record of mailbox quota ([a423c3b](https://github.com/zextras/carbonio-admin-console-ui/commit/a423c3b83c8daead691a4ef922652c18155348f6))
+* height of table header in bucket detail is worng ([20ee133](https://github.com/zextras/carbonio-admin-console-ui/commit/20ee13323d80830161bcee8605228eac0cdc81ce))
+* notification and operation should show in carbonio Advance ([d7c57fb](https://github.com/zextras/carbonio-admin-console-ui/commit/d7c57fbcb81080b45fc809b3ba9bb0eb71ffd3dd))
+* tab bar upgrade after design system upgrade ([fd6fda1](https://github.com/zextras/carbonio-admin-console-ui/commit/fd6fda104d78368f6607362e0fc6a04f31d4d260))
+
+### [0.9.11](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.10...v0.9.11) (2023-02-21)
+
+### [0.9.10](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.9...v0.9.10) (2023-02-16)
+
+### [0.9.9](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.8...v0.9.9) (2023-02-15)
+
+
+### Bug Fixes
+
+* local volume create getting error ([ca92f6f](https://github.com/zextras/carbonio-admin-console-ui/commit/ca92f6ff3b2cf9c71ab2a1013c75a7e16de7d187))
+* notification and operation should show in carbonio Advance ([8788df1](https://github.com/zextras/carbonio-admin-console-ui/commit/8788df162882b0f412b3909a370f067ec69a2bd7))
+
+### [0.9.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.7...v0.9.8) (2023-02-02)
+
+
+### Features
+
+* added create advanced volume request api ([bd65d73](https://github.com/zextras/carbonio-admin-console-ui/commit/bd65d73fb97590575424ca882bbeae4de15671c2))
+* added separation of running and queued ([2890370](https://github.com/zextras/carbonio-admin-console-ui/commit/2890370e14471a798294a988b67ff3e2c39af02d))
+* extarnal volume ui added and api calls also ([1e4d1bb](https://github.com/zextras/carbonio-admin-console-ui/commit/1e4d1bbcc0c5369696d142926198c2c44a2cc3b1))
+
+
+### Bug Fixes
+
+* account lockout status ([#246](https://github.com/zextras/carbonio-admin-console-ui/issues/246)) ([5a0463d](https://github.com/zextras/carbonio-admin-console-ui/commit/5a0463d2460624686a4e289dbaff24b1d172e004))
+* account password issue and remove language, timezone ([#247](https://github.com/zextras/carbonio-admin-console-ui/issues/247)) ([a9182d6](https://github.com/zextras/carbonio-admin-console-ui/commit/a9182d61d8ce1dcc6bf28db9ad9e897859bd3e84))
+* added copied operation with list we have ([d2af2bb](https://github.com/zextras/carbonio-admin-console-ui/commit/d2af2bb852864aed0c28e1935bf21be4c6dcd427))
+* adjust server list based on carbonio ce/advance ([ab92a89](https://github.com/zextras/carbonio-admin-console-ui/commit/ab92a89a42fdc7855588de1ca376e9dc4de7d560))
+* after account selection session panel does not reload ([1e8cb32](https://github.com/zextras/carbonio-admin-console-ui/commit/1e8cb32c87dd3faef41b9845097961ee7c7c04b2))
+* conflicts resolved ([3111c2e](https://github.com/zextras/carbonio-admin-console-ui/commit/3111c2e6282bb35d87bf6a8ce7275cb9df017673))
+* create volume with external ([c0c3962](https://github.com/zextras/carbonio-admin-console-ui/commit/c0c39627146fbc87656fe81978a8bedd2065f4e4))
+* dashboard should not report the product name ([#257](https://github.com/zextras/carbonio-admin-console-ui/issues/257)) ([a60d3ba](https://github.com/zextras/carbonio-admin-console-ui/commit/a60d3ba519c21221fe82e42bb700e2b4361d6ca6))
+* domain selector blank case not showing default list of domain ([#251](https://github.com/zextras/carbonio-admin-console-ui/issues/251)) ([6232b7d](https://github.com/zextras/carbonio-admin-console-ui/commit/6232b7d482f84ce73af1c5b07bf6f857ec273207))
+* fixed  operation details panel ([54b075f](https://github.com/zextras/carbonio-admin-console-ui/commit/54b075fba884019f542a0ba1e00e2827489d881c))
+* fixed dynamic api call ([90780c7](https://github.com/zextras/carbonio-admin-console-ui/commit/90780c7418f22a821546aa71a9f4403d804f2749))
+* fixed issue for set current and primary api call ([64c2acd](https://github.com/zextras/carbonio-admin-console-ui/commit/64c2acd922da97b3067a31523933caa3d058d463))
+* fixed px and rem issue ([4d749ca](https://github.com/zextras/carbonio-admin-console-ui/commit/4d749ca6585b672991672abace813948f6685459))
+* fixed set current volume request issue ([fd19ea8](https://github.com/zextras/carbonio-admin-console-ui/commit/fd19ea8a799646adee181a98888761d5dbba2eba))
+* iscurrent on create ([dee8d96](https://github.com/zextras/carbonio-admin-console-ui/commit/dee8d96c9805037aa99453c1004dd78fbd661237))
+* layout issue with px to rem ([38d3e7e](https://github.com/zextras/carbonio-admin-console-ui/commit/38d3e7e1e32652a0a60547fdbcad363cccd101ac))
+* mail store list not display in create domain ([faffe49](https://github.com/zextras/carbonio-admin-console-ui/commit/faffe4974d85cff5d5f568fac35b90f5d5c8d226))
+* manage user locale from cos pref ([#239](https://github.com/zextras/carbonio-admin-console-ui/issues/239)) ([886681f](https://github.com/zextras/carbonio-admin-console-ui/commit/886681f7ce2b77e2993242052b634f8a1efbfdd2))
+* optimize list data with color and weight ([1f5bef7](https://github.com/zextras/carbonio-admin-console-ui/commit/1f5bef732737183745b7aa0cb77183d9620c7960))
+* remove eye icon from edit resource panel ([#250](https://github.com/zextras/carbonio-admin-console-ui/issues/250)) ([b9b7071](https://github.com/zextras/carbonio-admin-console-ui/commit/b9b7071c44aef6b2b2191bbe5df7545e84809063))
+* removed commented code ([6a8cc0a](https://github.com/zextras/carbonio-admin-console-ui/commit/6a8cc0a1345b4087694031745d85b00623e69b70))
+* removed unwanted fields ([fa1b4d9](https://github.com/zextras/carbonio-admin-console-ui/commit/fa1b4d9a45197f0a444b85d7d70a8691591974a0))
+* search server bucket panel not working ([704735c](https://github.com/zextras/carbonio-admin-console-ui/commit/704735c78dd84ec4927908aa792730a85586bd4e))
+* server list does not show value incase of multiserver ([086209c](https://github.com/zextras/carbonio-admin-console-ui/commit/086209ceb8529f35652dd5995665e1c47a41d5f4))
+* server list not searchable from backup and mailstore ([68ddcdc](https://github.com/zextras/carbonio-admin-console-ui/commit/68ddcdc6a79eb6ae3e10b862bc344ed95ae31dfc))
+* storetype missin issue ([9ec1918](https://github.com/zextras/carbonio-admin-console-ui/commit/9ec191888fcafeed4deb23d0863dc66e025f3215))
+* user session not remove when change account from list ([a017433](https://github.com/zextras/carbonio-admin-console-ui/commit/a0174336656c1acae056f453790eba2bc144bcfe))
+
 ### [0.9.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.6...v0.9.7) (2023-01-16)
 
 ### [0.9.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.5...v0.9.6) (2023-01-05)

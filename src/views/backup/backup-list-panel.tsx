@@ -137,6 +137,7 @@ const BackupListPanel: FC = () => {
 					onClick={(): void => {
 						setSelectedServer(serverItem?.name);
 						setSearchServer(serverItem?.name);
+						setSelectedOperationItem(CONFIGURATION_BACKUP);
 					}}
 				>
 					{serverItem?.name}

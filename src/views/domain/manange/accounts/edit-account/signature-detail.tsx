@@ -25,6 +25,8 @@ import { modifySignature } from '../../../../../services/modify-signature-servic
 import { createSignature } from '../../../../../services/create-signature-service';
 // import Textarea from '../../../../components/textarea';
 import logo from '../../../../../assets/gardian.svg';
+import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 
 const EditorWrapper = styled.div`
 	width: 100%;
@@ -47,6 +49,7 @@ export const SignatureDetail: FC<any> = ({
 	const [isEditSignature, setIsEditSignature] = useState<boolean>(false);
 	const [signatureName, setSignatureName] = useState<string>('');
 	const [signatureContent, setSignatureContent] = useState<string>('');
+	const [defaultSignatureContent, setDefaultSignatureContent] = useState<string>('');
 	const [searchSignatureName, setSearchSignatureName]: any = useState('');
 	const [isOpenCreateEditSignatureDialog, setIsOpenCreateEditSignatureDialog] =
 		useState<boolean>(false);
@@ -264,6 +267,7 @@ export const SignatureDetail: FC<any> = ({
 			const content = _signature?.content;
 			if (content && content[0]?._content) {
 				setSignatureContent(content[0]?._content);
+				setDefaultSignatureContent(content[0]?._content);
 			}
 			if (_signature?.name) {
 				setSignatureName(_signature?.name);
@@ -276,6 +280,7 @@ export const SignatureDetail: FC<any> = ({
 	useEffect(() => {
 		if (!isOpenCreateEditSignatureDialog) {
 			setIsEditSignature(false);
+			setDefaultSignatureContent('');
 			setSignatureContent('');
 			setSignatureName('');
 		}
@@ -367,6 +372,8 @@ export const SignatureDetail: FC<any> = ({
 							style={{ overflow: 'auto', height: '100%' }}
 							selectedRows={selectedSignature}
 							onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 					{signatureListRows?.length === 0 && (
@@ -488,7 +495,7 @@ export const SignatureDetail: FC<any> = ({
 									<Composer
 										// eslint-disable-next-line no-use-before-define, @typescript-eslint/ban-ts-comment
 										// @ts-ignore
-										value={unescape(signatureContent)}
+										value={unescape(defaultSignatureContent)}
 										onEditorChange={(ev: any): void => {
 											setSignatureContent(escape(ev[1]));
 										}}

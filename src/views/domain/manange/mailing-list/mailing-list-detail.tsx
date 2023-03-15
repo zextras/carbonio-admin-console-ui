@@ -17,7 +17,8 @@ import {
 	Icon,
 	SnackbarManagerContext,
 	Modal,
-	Button
+	Button,
+	Chip
 } from '@zextras/carbonio-design-system';
 import { useTranslation, Trans } from 'react-i18next';
 import moment from 'moment';
@@ -29,6 +30,8 @@ import { getDistributionListMembership } from '../../../../services/get-distribu
 import { getDateFromStr } from '../../../utility/utils';
 import { deleteDistributionList } from '../../../../services/delete-distribution-list';
 import { getGrant } from '../../../../services/get-grant';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -147,7 +150,7 @@ const MailingListDetail: FC<any> = ({
 	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
 	const [dlmTableRows, setDlmTableRows] = useState<any>([]);
 	const [zimbraHideInGal, setZimbraHideInGal] = useState<boolean>(false);
-	const [zimbraMailAlias, setZimbraMailAlias] = useState<any>([]);
+	const [zimbraMailAlias, setZimbraMailAlias] = useState<any[]>([]);
 	const [dlm, setDlm] = useState<any[]>([]);
 	const [ownersList, setOwnersList] = useState<any[]>([]);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
@@ -237,10 +240,7 @@ const MailingListDetail: FC<any> = ({
 							(a: any) => a?.n === 'zimbraMailAlias' && a?._content !== selectedMailingList?.name
 						);
 						if (_zimbraMailAlias && _zimbraMailAlias.length > 0) {
-							const allAlias = _zimbraMailAlias.map((item: any) => ({
-								attr: 'zimbraMailAlias',
-								value: item?._content
-							}));
+							const allAlias = _zimbraMailAlias.map((ele: any) => ({ label: ele?._content }));
 							setZimbraMailAlias(allAlias);
 						}
 						const _zimbraCreateTimestamp = distributionListMembers?.a?.find(
@@ -579,9 +579,8 @@ const MailingListDetail: FC<any> = ({
 							iconColor="primary"
 							backgroundColor="gray6"
 							icon="EditAsNewOutline"
-							height={44}
-							width={44}
 							onClick={onEditMailingList}
+							size="large"
 						/>
 					</Container>
 				</Padding>
@@ -590,10 +589,9 @@ const MailingListDetail: FC<any> = ({
 						iconColor="error"
 						backgroundColor="gray6"
 						icon="Trash2Outline"
-						height={44}
-						width={44}
 						loading={isDeleteBtnLoading}
 						onClick={handleClickDeleteEvent}
+						size="large"
 					/>
 				</Container>
 			</Container>
@@ -601,7 +599,7 @@ const MailingListDetail: FC<any> = ({
 				padding={{ all: 'extralarge' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 250px)"
+				height="calc(100vh - 14.375rem)"
 				background="white"
 				style={{ overflow: 'auto' }}
 			>
@@ -655,6 +653,37 @@ const MailingListDetail: FC<any> = ({
 							readOnly
 							value={zimbraMailStatus?.label}
 						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						orientation="vertical"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ right: 'small', top: 'small' }}
+					>
+						<Row padding={{ left: 'large', bottom: 'small' }}>
+							<Text size="small" color="secondary">
+								{t('label.aliases', 'Aliases')}
+							</Text>
+						</Row>
+						<Row width="100%">
+							<Container
+								orientation="horizontal"
+								wrap="wrap"
+								mainAlignment="flex-start"
+								maxWidth="44rem"
+								style={{ gap: '0.5rem' }}
+								padding={{ left: 'large' }}
+							>
+								{zimbraMailAlias?.map((ele, index) => (
+									<Chip key={`chip${index}`} label={ele.label} />
+								))}
+							</Container>
+							<Row width="100%" padding={{ top: 'medium' }}>
+								<Divider color="gray2" />
+							</Row>
+						</Row>
 					</Container>
 				</ListRow>
 				<ListRow>
@@ -749,6 +778,8 @@ const MailingListDetail: FC<any> = ({
 								headers={listMemberOfHeaders}
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
 					</ListRow>
@@ -765,6 +796,8 @@ const MailingListDetail: FC<any> = ({
 								headers={memberHeaders}
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
 					)}
@@ -782,6 +815,8 @@ const MailingListDetail: FC<any> = ({
 							headers={ownerHeaders}
 							showCheckbox={false}
 							style={{ overflow: 'auto', height: '100%' }}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
 				</ListRow>

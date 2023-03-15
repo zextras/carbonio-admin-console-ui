@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { MailingListContext } from './mailinglist-context';
 import ListRow from '../../../list/list-row';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -228,7 +230,13 @@ const MailingListCreateSection: FC<any> = () => {
 				{!mailingListDetail?.dynamic && (
 					<ListRow>
 						<Container padding={{ bottom: 'medium' }}>
-							<Table rows={memberList} headers={tableHeader} showCheckbox={false} />
+							<Table
+								rows={memberList}
+								headers={tableHeader}
+								showCheckbox={false}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
 						</Container>
 					</ListRow>
 				)}
@@ -329,7 +337,13 @@ const MailingListCreateSection: FC<any> = () => {
 						</Row>
 						<ListRow>
 							<Container padding={{ bottom: 'medium' }}>
-								<Table rows={ldapQueryMembers} headers={tableHeader} showCheckbox={false} />
+								<Table
+									rows={ldapQueryMembers}
+									headers={tableHeader}
+									showCheckbox={false}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
+								/>
 							</Container>
 						</ListRow>
 					</>
@@ -366,7 +380,13 @@ const MailingListCreateSection: FC<any> = () => {
 
 				<ListRow>
 					<Container padding={{ bottom: 'medium', top: 'medium' }}>
-						<Table rows={ownerMember} headers={ownerTableHeader} showCheckbox={false} />
+						<Table
+							rows={ownerMember}
+							headers={ownerTableHeader}
+							showCheckbox={false}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
+						/>
 					</Container>
 				</ListRow>
 
