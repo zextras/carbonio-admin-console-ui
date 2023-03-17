@@ -198,3 +198,5 @@ export const SEND_READ_MAILS = 'send_read_mails';
 export const MANAGE_NO_SEND = 'manage_no_send';
 export const SEND_READ_MANAGE_MAILS = 'send_read_manage_mails';
 export const INTERNAL_GAL = 'InternalGal';
+export const MTA_ROUTE_ID = 'mail_transfer_agent';
+export const GENERAL = 'general_lbl';

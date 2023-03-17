@@ -45,6 +45,7 @@ import {
 	MANAGE_APP_ID,
 	MONITORING,
 	MTA,
+	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIVACY_ROUTE_ID,
@@ -387,9 +388,38 @@ const App: FC = () => {
 		[]
 	);
 
+	const mtaTooltipItem = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.mta_lbl"
+							defaults="<bold>MTA</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.mta_primarybar_tooltip"
+							defaults="Mail Transfer Agent"
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
 	const OperationTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={operationTooltipItem} />,
 		[operationTooltipItem]
+	);
+
+	const MTATooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={mtaTooltipItem} />,
+		[mtaTooltipItem]
 	);
 
 	const backupPrimaryBar: FC = useCallback(
@@ -507,29 +537,16 @@ const App: FC = () => {
 			});
 
 			addRoute({
-				route: OPERATIONS_ROUTE_ID,
-				position: 2,
+				route: MTA_ROUTE_ID,
+				position: 3,
 				visible: true,
-				label: t('label.operations', 'Operations'),
-				primaryBar: 'ListOutline',
+				label: t('label.mail_trans_agent', 'Mail Trans. Agent'),
+				primaryBar: 'MailFolderOutline',
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...logAndQueuesSection },
-				tooltip: OperationTooltipView
-			});
-
-			addRoute({
-				route: OPERATIONS_ROUTE_ID,
-				position: 2,
-				visible: true,
-				label: t('label.operations', 'Operations'),
-				primaryBar: 'ListOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection },
-				tooltip: OperationTooltipView
+				tooltip: MTATooltipView
 			});
 		}
 		addRoute({
@@ -561,7 +578,8 @@ const App: FC = () => {
 		OperationTooltipView,
 		HomeTooltipView,
 		PrivacyTooltipView,
-		NotificationTooltipView
+		NotificationTooltipView,
+		MTATooltipView
 	]);
 
 	useEffect(() => {
