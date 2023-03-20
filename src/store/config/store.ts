@@ -11,6 +11,7 @@ type ConfigState = {
 	setConfig: (config: any) => void;
 	addConfig: (config: any) => void;
 	removeConfig: () => void;
+	removeConfigItems: (config: any) => void;
 	updateConfig: (key: any, value: any) => void;
 };
 
@@ -26,6 +27,12 @@ export const useConfigStore = create<ConfigState>(
 		removeConfig: (): void => {
 			set((state: any) => {
 				state.config = [];
+			});
+		},
+		removeConfigItems: (config: any): void => {
+			set((state: any) => {
+				console.log('>>>', config);
+				state.config = state.config.filter((item: any) => item?.n !== config?.n);
 			});
 		},
 		updateConfig: (key, value): void => {

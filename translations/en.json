@@ -1557,6 +1557,9 @@
     "log": "Log",
     "many_cos_info_msg": "So many COSes! Which one would you like to see? Start typing to filter.",
     "many_domain_info_msg": "So many domains! Which one would you like to see? Start typing to filter.",
+    "mat": {
+        "add_here_any_blocked_extension": "Add here any Blocked Extension"
+    },
     "message": {
         "snackbar": {
             "share": {

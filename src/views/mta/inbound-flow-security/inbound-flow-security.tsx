@@ -11,15 +11,174 @@ import {
 	Button,
 	Divider,
 	Switch,
-	ChipInput
+	ChipInput,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import React, { FC, useState } from 'react';
+import { isEqual } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { MtaInboundSecurity } from '../../../../types';
+import { modifyConfig } from '../../../services/modify-config';
+import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
 
 const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
-	const [isDirty, setIsDirty] = useState<boolean>(true);
+	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const configInformation = useConfigStore((state) => state.config);
+	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const addConfig = useConfigStore((state) => state.addConfig);
+	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
+	const [mtaBlockExtension, setMtaBlockExtension] = useState<Array<Record<string, string>>>([]);
+
+	const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =
+		useState<MtaInboundSecurity>();
+	const [mtaInboundSecurityDetail, setMtaInboundSecurityDetail] = useState<MtaInboundSecurity>();
+
+	const setInitialValue = useCallback((key: string, value: any): void => {
+		setMtaInboundSecurityInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+	}, []);
+
+	useEffect(() => {
+		if (configInformation && configInformation.length > 0) {
+			const findBlockExtension = configInformation.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtension'
+			);
+			if (findBlockExtension && findBlockExtension.length > 0) {
+				const allExtensions: Array<Record<string, string>> = [];
+				findBlockExtension.forEach((item: Record<string, string>) => {
+					allExtensions.push({ label: item?._content });
+				});
+				setInitialValue(
+					'zimbraMtaBlockedExtension',
+					findBlockExtension.map((item: Record<string, string>) => item?._content)
+				);
+				setMtaBlockExtension(allExtensions);
+			}
+		}
+	}, [configInformation, setInitialValue]);
+
+	const setValue = useCallback((key: string, value: any): void => {
+		setMtaInboundSecurityDetail((prev: any) => ({ ...prev, [key]: value }));
+	}, []);
+
+	const onBlockExtensionChange = useCallback(
+		(ev) => {
+			if (ev && ev.length > 0) {
+				const extension = ev.map((item: Record<string, string>) => item?.label);
+				if (extension && extension.length > 0) {
+					setValue('zimbraMtaBlockedExtension', extension);
+					setMtaBlockExtension(ev);
+				}
+			} else {
+				setValue('zimbraMtaBlockedExtension', []);
+				setMtaBlockExtension([]);
+			}
+		},
+		[setValue]
+	);
+
+	useEffect(() => {
+		if (
+			mtaInboundSecurityDetail &&
+			!isEqual(mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail)
+		) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail]);
+
+	const updateGlobalConfig = useCallback(
+		(attributes: Array<any>): void => {
+			const attributeWithoutExtension = attributes.filter(
+				(item: Record<string, string>) => item?.n !== 'zimbraMtaBlockedExtension'
+			);
+			const attributeWithExtension = attributes.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtension'
+			);
+			if (attributeWithoutExtension && attributeWithoutExtension.length > 0) {
+				attributeWithoutExtension.forEach((ele: any) => {
+					updateConfig(ele?.n, ele._content);
+				});
+			}
+			if (attributeWithExtension && attributeWithExtension.length > 0) {
+				attributeWithExtension.forEach((item: any) => {
+					removeConfigItems(item);
+				});
+				if (attributeWithExtension.length === 1 && attributeWithExtension[0]?._content === '') {
+					removeConfigItems(attributeWithExtension[0]);
+				} else {
+					addConfig(attributeWithExtension);
+				}
+			}
+		},
+		[updateConfig, addConfig, removeConfigItems]
+	);
+
+	const modifyConfigRequest = useCallback(
+		(attributes: Array<any>): void => {
+			modifyConfig(attributes)
+				.then((data) => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					updateGlobalConfig(attributes);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, t, updateGlobalConfig]
+	);
+
+	const onSave = useCallback(() => {
+		const attributes: any[] = [];
+		if (mtaInboundSecurityDetail?.zimbraMtaBlockedExtension) {
+			const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
+			if (blockedExtension) {
+				if (blockedExtension.length === 0) {
+					attributes.push({ n: 'zimbraMtaBlockedExtension', _content: '' });
+				} else {
+					blockedExtension.forEach((item: string) => {
+						attributes.push({ n: 'zimbraMtaBlockedExtension', _content: item });
+					});
+				}
+			}
+		}
+		modifyConfigRequest(attributes);
+	}, [mtaInboundSecurityDetail, modifyConfigRequest]);
+
+	const onCancel = useCallback(() => {
+		setIsDirty(false);
+		setMtaInboundSecurityDetail(mtaInboundSecurityInitialDetail);
+		if (mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtension) {
+			const extension = mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtension;
+			if (extension) {
+				const allExtensions: Array<Record<string, string>> = [];
+				extension.forEach((item: string) => {
+					allExtensions.push({ label: item });
+				});
+				setMtaBlockExtension(allExtensions);
+			}
+		}
+	}, [mtaInboundSecurityInitialDetail]);
+
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -46,11 +205,23 @@ const MTAInboundFlowSecurity: FC = () => {
 						>
 							<Padding right="small">
 								{isDirty && (
-									<Button label={t('label.cancel', 'Cancel')} color="secondary" height={36} />
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										height={36}
+										onClick={onCancel}
+									/>
 								)}
 							</Padding>
 							<Padding right="small">
-								{isDirty && <Button label={t('label.save', 'Save')} color="primary" height={36} />}
+								{isDirty && (
+									<Button
+										label={t('label.save', 'Save')}
+										color="primary"
+										height={36}
+										onClick={onSave}
+									/>
+								)}
 							</Padding>
 						</Container>
 					)}
@@ -76,6 +247,8 @@ const MTAInboundFlowSecurity: FC = () => {
 					<ChipInput
 						placeholder={t('mta.add_here_any_blocked_extension', 'Add here any Blocked Extension')}
 						background="gray5"
+						onChange={onBlockExtensionChange}
+						value={mtaBlockExtension}
 					/>
 				</Container>
 				<Row padding={{ top: 'large' }}>
