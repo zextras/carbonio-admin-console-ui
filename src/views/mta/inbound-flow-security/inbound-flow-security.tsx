@@ -6,10 +6,13 @@
 import { Container } from '@zextras/carbonio-design-system';
 import React, { FC } from 'react';
 
-const MTAInboundFlowSecurity: FC = () => (
-	<Container>
-		<Container></Container>
-	</Container>
-);
+const MTAInboundFlowSecurity: FC = () => {
+	console.log('....');
+	return (
+		<Container>
+			<Container></Container>
+		</Container>
+	);
+};
 
 export default MTAInboundFlowSecurity;

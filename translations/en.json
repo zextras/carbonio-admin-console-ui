@@ -1087,6 +1087,7 @@
         "mail_trans_agent": "Mail Trans. Agent",
         "mailbox_quota": "Mailbox Quota",
         "mailing_list": "Mailing List",
+        "mail_transfer_agent": "Mail Transfer Agent (MTA)",
         "mailing_list_already_in_list_error": "The Mailing List / User is already in the list",
         "mailing_list_name": "Mailing List Name",
         "mailing_list_not_exists_error_msg": "The Mailing List / User does not exist. Please check the spelling and try again.",
