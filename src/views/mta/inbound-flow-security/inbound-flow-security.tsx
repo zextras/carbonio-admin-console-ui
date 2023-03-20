@@ -10,7 +10,8 @@ import {
 	Padding,
 	Button,
 	Divider,
-	Switch
+	Switch,
+	ChipInput
 } from '@zextras/carbonio-design-system';
 import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +63,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				padding={{ all: 'extralarge' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 145px)"
+				height="calc(100vh - 10.5rem)"
 				background="white"
 				style={{ overflow: 'auto' }}
 			>
@@ -70,6 +71,12 @@ const MTAInboundFlowSecurity: FC = () => {
 					<Text size="small" weight="bold" color="gray0">
 						{t('mta.settings', 'Settings')}
 					</Text>
+				</Container>
+				<Container crossAlignment="flex-start">
+					<ChipInput
+						placeholder={t('mta.add_here_any_blocked_extension', 'Add here any Blocked Extension')}
+						background="gray5"
+					/>
 				</Container>
 				<Row padding={{ top: 'large' }}>
 					<Switch label={t('mta.block_also_common_extensions', 'Block also common extensions')} />

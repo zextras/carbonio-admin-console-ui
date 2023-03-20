@@ -1573,6 +1573,7 @@
         }
     },
     "mta": {
+        "add_here_any_blocked_extension": "Add here any Blocked Extension",
         "additional_settings": "Additional settings",
         "block_also_common_extensions": "Block also common extensions",
         "client_must_greet_with_fully_qualified_hostname": "Client must greet with a fully qualified hostname",
