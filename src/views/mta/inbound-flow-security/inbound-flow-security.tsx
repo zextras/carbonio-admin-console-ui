@@ -26,6 +26,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [blockCommonExtension, setBlockCommonExtension] = useState<boolean>(false);
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const addConfig = useConfigStore((state) => state.addConfig);
@@ -62,22 +63,6 @@ const MTAInboundFlowSecurity: FC = () => {
 	const setValue = useCallback((key: string, value: any): void => {
 		setMtaInboundSecurityDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
-
-	const onBlockExtensionChange = useCallback(
-		(ev) => {
-			if (ev && ev.length > 0) {
-				const extension = ev.map((item: Record<string, string>) => item?.label);
-				if (extension && extension.length > 0) {
-					setValue('zimbraMtaBlockedExtension', extension);
-					setMtaBlockExtension(ev);
-				}
-			} else {
-				setValue('zimbraMtaBlockedExtension', []);
-				setMtaBlockExtension([]);
-			}
-		},
-		[setValue]
-	);
 
 	useEffect(() => {
 		if (
@@ -179,6 +164,43 @@ const MTAInboundFlowSecurity: FC = () => {
 		}
 	}, [mtaInboundSecurityInitialDetail]);
 
+	useEffect(() => {
+		if (blockCommonExtension) {
+			if (configInformation && configInformation.length > 0) {
+				const findBlockCommonExtension = configInformation.filter(
+					(item: Record<string, string>) => item?.n === 'zimbraMtaCommonBlockedExtension'
+				);
+				if (findBlockCommonExtension && findBlockCommonExtension.length > 0) {
+					const allExtensions: Array<Record<string, string>> = [];
+					findBlockCommonExtension.forEach((item: Record<string, string>) => {
+						allExtensions.push({ label: item?._content });
+					});
+					setValue(
+						'zimbraMtaBlockedExtension',
+						findBlockCommonExtension.map((item: Record<string, string>) => item?._content)
+					);
+					setMtaBlockExtension(allExtensions);
+				}
+			}
+		}
+	}, [blockCommonExtension, configInformation, setValue]);
+
+	const onBlockExtensionChange = useCallback(
+		(ev) => {
+			if (ev && ev.length > 0) {
+				const extension = ev.map((item: Record<string, string>) => item?.label);
+				if (extension && extension.length > 0) {
+					setValue('zimbraMtaBlockedExtension', extension);
+					setMtaBlockExtension(ev);
+				}
+			} else {
+				setValue('zimbraMtaBlockedExtension', []);
+				setMtaBlockExtension([]);
+			}
+		},
+		[setValue]
+	);
+
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -247,12 +269,17 @@ const MTAInboundFlowSecurity: FC = () => {
 					<ChipInput
 						placeholder={t('mta.add_here_any_blocked_extension', 'Add here any Blocked Extension')}
 						background="gray5"
-						onChange={onBlockExtensionChange}
+						requireUniqueChips
 						value={mtaBlockExtension}
+						onChange={onBlockExtensionChange}
 					/>
 				</Container>
 				<Row padding={{ top: 'large' }}>
-					<Switch label={t('mta.block_also_common_extensions', 'Block also common extensions')} />
+					<Switch
+						label={t('mta.block_also_common_extensions', 'Block also common extensions')}
+						value={blockCommonExtension}
+						onClick={(): void => setBlockCommonExtension(!blockCommonExtension)}
+					/>
 				</Row>
 				<Container
 					orientation="horizontal"
