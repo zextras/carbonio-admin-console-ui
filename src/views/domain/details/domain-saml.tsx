@@ -22,6 +22,8 @@ import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import logo from '../../../assets/ninja_robo.svg';
 import { useDomainStore } from '../../../store/domain/store';
 import { getSamlConfig } from '../../../services/get-saml-configurations';
+import { importSamlConfig } from '../../../services/import-saml-configurations';
+import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
 
 export type SamlAttribute = {
 	attribute: string;
@@ -33,10 +35,11 @@ const DomainSaml: FC = () => {
 	const [samlAttributes, setSamlAttributes] = useState<Array<SamlAttribute>>([]);
 	const [samlTableRows, setSamlTableRows] = useState<any[]>([]);
 	const [isAllowUnsecure, setIsAllowUnsecure] = useState<boolean>(false);
-	const domainName = useDomainStore((state) => state.domain?.name);
+	const domainName = useDomainStore((state) => state.domain?.name) || '';
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [samlAttrKey, setSamlAttrKey] = useState<string>('');
 	const [samlAttrValue, setSamlAttrValue] = useState<unknown>('');
+	const [metadataUrl, setMetadataUrl] = useState<string>('');
 
 	const headers: any = useMemo(
 		() => [
@@ -56,7 +59,7 @@ const DomainSaml: FC = () => {
 		[t]
 	);
 
-	const getSamlData = useCallback((samlData: any): Array<SamlAttribute> => {
+	const setSAMLAttributes = useCallback((samlData: any): void => {
 		const samlAttr: Array<SamlAttribute> = [];
 		Object.entries(samlData).forEach((entry) => {
 			const [key, value] = entry;
@@ -65,7 +68,7 @@ const DomainSaml: FC = () => {
 				value
 			});
 		});
-		return samlAttr;
+		setSamlAttributes(samlAttr);
 	}, []);
 
 	const openSamlValue = useCallback((item: SamlAttribute): void => {
@@ -112,27 +115,59 @@ const DomainSaml: FC = () => {
 		[openSamlValue]
 	);
 
+	const showError = useCallback(
+		(error): void => {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: error?.message
+					? error?.message
+					: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[t, createSnackbar]
+	);
+
 	const getSAMLConfigurations = useCallback(
 		(domain: string): void => {
 			getSamlConfig(domain)
 				.then((data) => {
-					const samlAttr = getSamlData(data);
-					setSamlAttributes(samlAttr);
+					setSAMLAttributes(data);
 				})
 				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+					showError(error);
 				});
 		},
-		[createSnackbar, getSamlData, t]
+		[setSAMLAttributes, showError]
+	);
+
+	const importSAMLConfigurations = useCallback(
+		(domain: string, url: string): void => {
+			importSamlConfig(domain, url)
+				.then((data) => {
+					setSAMLAttributes(data);
+				})
+				.catch((error) => {
+					showError(error);
+				});
+		},
+		[setSAMLAttributes, showError]
+	);
+
+	const generateSPCertificates = useCallback(
+		(domain: string): void => {
+			generateSignedCertificate(domain)
+				.then((data) => {
+					setSAMLAttributes(data);
+				})
+				.catch((error) => {
+					showError(error);
+				});
+		},
+		[setSAMLAttributes, showError]
 	);
 
 	useEffect(() => {
@@ -230,6 +265,10 @@ const DomainSaml: FC = () => {
 											'Import the SAML Metadata from the IDP'
 										)}
 										background="gray5"
+										value={metadataUrl}
+										onChange={(e: any): any => {
+											setMetadataUrl(e.target.value);
+										}}
 									/>
 								</Container>
 								<Container
@@ -243,6 +282,8 @@ const DomainSaml: FC = () => {
 										label={t('label.import', 'IMPORT')}
 										color="primary"
 										size="extralarge"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClick={() => importSAMLConfigurations(domainName, metadataUrl)}
 									/>
 								</Container>
 							</Row>
@@ -260,6 +301,8 @@ const DomainSaml: FC = () => {
 										size="large"
 										height={36}
 										width="fill"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClick={() => generateSPCertificates(domainName)}
 									/>
 								</Container>
 								<Container width="32%" mainAlignment="flex-start" crossAlignment="flex-start">
