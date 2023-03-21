@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
 	Container,
@@ -14,18 +14,29 @@ import {
 	Button,
 	Switch,
 	Table,
-	Padding
+	Padding,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import logo from '../../../assets/ninja_robo.svg';
 import { useDomainStore } from '../../../store/domain/store';
+import { getSamlConfig } from '../../../services/get-saml-configurations';
+
+export type SamlAttribute = {
+	attribute: string;
+	value: unknown;
+};
 
 const DomainSaml: FC = () => {
 	const [t] = useTranslation();
-	const [samlAttributes, setSamlAttributes] = useState<any[]>([]);
+	const [samlAttributes, setSamlAttributes] = useState<Array<SamlAttribute>>([]);
+	const [samlTableRows, setSamlTableRows] = useState<any[]>([]);
 	const [isAllowUnsecure, setIsAllowUnsecure] = useState<boolean>(false);
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [samlAttrKey, setSamlAttrKey] = useState<string>('');
+	const [samlAttrValue, setSamlAttrValue] = useState<unknown>('');
 
 	const headers: any = useMemo(
 		() => [
@@ -44,6 +55,98 @@ const DomainSaml: FC = () => {
 		],
 		[t]
 	);
+
+	const getSamlData = useCallback((samlData: any): Array<SamlAttribute> => {
+		const samlAttr: Array<SamlAttribute> = [];
+		Object.entries(samlData).forEach((entry) => {
+			const [key, value] = entry;
+			samlAttr.push({
+				attribute: key,
+				value
+			});
+		});
+		return samlAttr;
+	}, []);
+
+	const openSamlValue = useCallback((item: SamlAttribute): void => {
+		setSamlAttrKey(item?.attribute);
+		setSamlAttrValue(item?.value);
+	}, []);
+
+	const generateSAMLTable = useCallback(
+		(samlAttr: Array<SamlAttribute>): void => {
+			if (samlAttr && samlAttr.length > 0) {
+				const samlRows: Array<any> = [];
+				samlAttr.forEach((item: SamlAttribute, index) => {
+					samlRows.push({
+						id: index.toString(),
+						columns: [
+							<Text
+								size="small"
+								weight="bold"
+								key={index}
+								color="gray0"
+								onClick={(): void => {
+									openSamlValue(item);
+								}}
+							>
+								{item?.attribute}
+							</Text>,
+							<Text
+								size="small"
+								weight="bold"
+								key={index}
+								color="gray0"
+								onClick={(): void => {
+									openSamlValue(item);
+								}}
+							>
+								{item?.value}
+							</Text>
+						]
+					});
+				});
+				setSamlTableRows(samlRows);
+			}
+		},
+		[openSamlValue]
+	);
+
+	const getSAMLConfigurations = useCallback(
+		(domain: string): void => {
+			getSamlConfig(domain)
+				.then((data) => {
+					const samlAttr = getSamlData(data);
+					setSamlAttributes(samlAttr);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, getSamlData, t]
+	);
+
+	useEffect(() => {
+		if (domainName) {
+			getSAMLConfigurations(domainName);
+		}
+	}, [domainName, getSAMLConfigurations]);
+
+	useEffect(() => {
+		if (samlAttributes && samlAttributes?.length > 0) {
+			generateSAMLTable(samlAttributes);
+		}
+	}, [generateSAMLTable, samlAttributes]);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Container
@@ -187,7 +290,7 @@ const DomainSaml: FC = () => {
 								padding={{ all: 'large' }}
 							>
 								<Table
-									rows={samlAttributes}
+									rows={samlTableRows}
 									headers={headers}
 									showCheckbox={false}
 									multiSelect={false}
@@ -195,7 +298,7 @@ const DomainSaml: FC = () => {
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Row>
-							{samlAttributes.length === 0 && (
+							{samlTableRows.length === 0 && (
 								<Container
 									crossAlignment="center"
 									mainAlignment="flex-start"
@@ -275,6 +378,7 @@ const DomainSaml: FC = () => {
 											'Select an Attribute to show its value'
 										)}
 										background="gray5"
+										value={samlAttrKey}
 									/>
 								</Container>
 							</Row>
@@ -295,6 +399,7 @@ const DomainSaml: FC = () => {
 											'Here will be shown the Attribute Value'
 										)}
 										background="gray5"
+										value={samlAttrValue}
 									/>
 								</Container>
 							</Row>
