@@ -147,6 +147,7 @@ const EditAccountGeneralSection: FC = () => {
 							inputName="uid"
 							defaultValue={accountDetail?.uid}
 							value={accountDetail?.uid}
+							autoComplete="new-password"
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -188,6 +189,7 @@ const EditAccountGeneralSection: FC = () => {
 						onChange={changeAccDetail}
 						inputName="displayName"
 						name="descriptiveName"
+						autoComplete="new-password"
 					/>
 				</Row>
 
@@ -225,6 +227,7 @@ const EditAccountGeneralSection: FC = () => {
 							onChange={changeAccDetail}
 							inputName="password"
 							type="password"
+							autoComplete="new-password"
 							defaultValue={accountDetail?.password || ''}
 						/>
 					</Row>
@@ -235,6 +238,7 @@ const EditAccountGeneralSection: FC = () => {
 							onChange={changeAccDetail}
 							inputName="repeatPassword"
 							type="password"
+							autoComplete="new-password"
 							defaultValue={accountDetail?.repeatPassword || ''}
 						/>
 					</Row>
