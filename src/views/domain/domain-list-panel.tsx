@@ -78,6 +78,12 @@ const DomainListPanel: FC = () => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${DOMAINS_ROUTE_ID}`);
 	}, [globalCarbonioSendAnalytics, matomo]);
 
+	useEffect(() => {
+		if (!domainInformation?.name) {
+			setSearchDomainName('');
+		}
+	}, [domainInformation]);
+
 	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
 	const getDomainLists = useCallback((domainName: string): any => {
 		getDomainList(domainName, 0).then((data) => {

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import {
 	Container,
 	Input,
@@ -22,11 +22,11 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { cloneDeep, filter, find, isEqual } from 'lodash';
 import { timeZoneList, getFormatedDate, getDateFromStr } from '../../utility/utils';
 import {
 	ACTIVE,
 	CLOSED,
-	DOMAINS_ROUTE_ID,
 	HTTP,
 	HTTPS,
 	LOCKED,
@@ -37,7 +37,7 @@ import {
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
-import { deleteAccount } from '../../../services/delete-account-service';
+import { batchService } from '../../../services/batch-service';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
@@ -131,7 +131,41 @@ const DomainGeneralSettings: FC = () => {
 	const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
 	const [openDeleteDomainConfirmDialog, setOpenDeleteDomainConfirmDialog] =
 		useState<boolean>(false);
-	const [domainAccounts, setDomainAccounts] = useState<any[]>([]);
+	interface Attribute {
+		n: string;
+		_content: string;
+	}
+
+	interface AccountDlAlias {
+		name: string;
+		id: string;
+		isExternal?: boolean;
+		dynamic?: boolean;
+		targetName?: string;
+		a: Attribute[];
+		zimbraIsSystemAccount?: string;
+	}
+
+	interface DomainDirectoies {
+		account: AccountDlAlias[];
+		dl: AccountDlAlias[];
+		alias: AccountDlAlias[];
+		calresource: AccountDlAlias[];
+	}
+	interface SearchDomainDirectoies {
+		account: AccountDlAlias[];
+		dl: AccountDlAlias[];
+		alias: AccountDlAlias[];
+		calresource: AccountDlAlias[];
+		more: boolean;
+		searchTotal: number;
+	}
+	const [domainDirectoies, setDomainDirectoies] = useState<DomainDirectoies>({
+		account: [],
+		dl: [],
+		alias: [],
+		calresource: []
+	});
 	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
@@ -150,7 +184,12 @@ const DomainGeneralSettings: FC = () => {
 	}, [cosList]);
 
 	useEffect(() => {
-		setDomainAccounts([]);
+		setDomainDirectoies({
+			account: [],
+			dl: [],
+			alias: [],
+			calresource: []
+		});
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
 			domainInformation.map((item: any) => {
@@ -269,65 +308,48 @@ const DomainGeneralSettings: FC = () => {
 	};
 
 	useEffect(() => {
-		if (domainData.zimbraPrefTimeZoneId.toString() !== selectedTimeZone?.value.toString()) {
+		const updatedData = {
+			zimbraPrefTimeZoneId: selectedTimeZone?.value.toString(),
+			zimbraPublicServiceProtocol: selectedPublicServiceProtocol.value,
+			zimbraPublicServiceHostname: publicServiceHostName,
+			zimbraDomainStatus: domainStatus.value,
+			zimbraPublicServicePort,
+			zimbraDNSCheckHostname,
+			zimbraNotes,
+			zimbraHelpAdminURL,
+			zimbraHelpDelegatedURL,
+			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || ''
+		};
+		const defaultDomainData = {
+			zimbraPrefTimeZoneId: domainData.zimbraPrefTimeZoneId,
+			zimbraPublicServiceProtocol: domainData.zimbraPublicServiceProtocol,
+			zimbraPublicServiceHostname: domainData.zimbraPublicServiceHostname,
+			zimbraDomainStatus: domainData.zimbraDomainStatus,
+			zimbraPublicServicePort: domainData.zimbraPublicServicePort,
+			zimbraDNSCheckHostname: domainData.zimbraDNSCheckHostname,
+			zimbraNotes: domainData.zimbraNotes,
+			zimbraHelpAdminURL: domainData.zimbraHelpAdminURL,
+			zimbraHelpDelegatedURL: domainData.zimbraHelpDelegatedURL,
+			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || ''
+		};
+		if (!isEqual(defaultDomainData, updatedData)) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
-	}, [domainData, selectedTimeZone]);
-
-	useEffect(() => {
-		if (domainData.zimbraPublicServiceProtocol !== selectedPublicServiceProtocol.value) {
-			setIsDirty(true);
-		}
-	}, [domainData, selectedPublicServiceProtocol]);
-
-	useEffect(() => {
-		if (domainData.zimbraPublicServiceHostname !== publicServiceHostName) {
-			setIsDirty(true);
-		}
-	}, [domainData, publicServiceHostName]);
-
-	useEffect(() => {
-		if (domainData.zimbraDomainStatus !== domainStatus.value) {
-			setIsDirty(true);
-		}
-	}, [domainData, domainStatus]);
-
-	useEffect(() => {
-		if (domainData.zimbraPublicServicePort !== zimbraPublicServicePort) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraPublicServicePort]);
-
-	useEffect(() => {
-		if (domainData.zimbraDNSCheckHostname !== zimbraDNSCheckHostname) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraDNSCheckHostname]);
-
-	useEffect(() => {
-		if (domainData.zimbraNotes !== zimbraNotes) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraNotes]);
-
-	useEffect(() => {
-		if (domainData.zimbraHelpAdminURL !== zimbraHelpAdminURL) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraHelpAdminURL]);
-
-	useEffect(() => {
-		if (domainData.zimbraHelpDelegatedURL !== zimbraHelpDelegatedURL) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraHelpDelegatedURL]);
-
-	useEffect(() => {
-		if (domainData.zimbraDomainDefaultCOSId !== zimbraDomainDefaultCOSId) {
-			setIsDirty(true);
-		}
-	}, [domainData, zimbraDomainDefaultCOSId]);
-
+	}, [
+		domainData,
+		domainStatus.value,
+		publicServiceHostName,
+		selectedPublicServiceProtocol.value,
+		selectedTimeZone?.value,
+		zimbraDNSCheckHostname,
+		zimbraDomainDefaultCOSId,
+		zimbraHelpAdminURL,
+		zimbraHelpDelegatedURL,
+		zimbraNotes,
+		zimbraPublicServicePort
+	]);
 	const onCancel = (): void => {
 		setLoading(true);
 		setTimeout(() => setLoading(false), 10);
@@ -434,11 +456,16 @@ const DomainGeneralSettings: FC = () => {
 			});
 	};
 
-	const deleteOnlyDomain = (): void => {
-		deleteDomain(domainData.zimbraId).then((resData) => {
+	const deleteOnlyDomain = useCallback((): void => {
+		deleteDomain(domainData.zimbraId).then(() => {
 			setIsRequestInProgress(false);
 			setOpenDeleteDomainConfirmDialog(false);
-			setDomainAccounts([]);
+			setDomainDirectoies({
+				account: [],
+				dl: [],
+				alias: [],
+				calresource: []
+			});
 			createSnackbar({
 				key: 'success',
 				type: 'success',
@@ -448,14 +475,40 @@ const DomainGeneralSettings: FC = () => {
 				replace: true
 			});
 			removeDomain();
-			replaceHistory(`/${DOMAINS_ROUTE_ID}`);
+			replaceHistory(`/`);
 		});
-	};
+	}, [createSnackbar, domainData.zimbraId, removeDomain, t]);
 
 	const onDeleteAccountAndDomain = (): void => {
 		setIsRequestInProgress(true);
-		const requests = domainAccounts.map((item: any): any => deleteAccount(item?.id));
-		Promise.all(requests).then((response) => {
+		const accountDeleteBatch: any[] = [];
+		const dlDeleteBatch: any[] = [];
+		const resourceDeleteBatch: any[] = [];
+
+		domainDirectoies.account.map((item: any): any =>
+			accountDeleteBatch.push({
+				id: item?.id,
+				_jsns: 'urn:zimbraAdmin'
+			})
+		);
+		domainDirectoies.dl.map((item: any): any =>
+			dlDeleteBatch.push({
+				id: { _content: item?.id },
+				_jsns: 'urn:zimbraAdmin'
+			})
+		);
+		domainDirectoies.calresource.map((item: any): any =>
+			resourceDeleteBatch.push({
+				id: item?.id,
+				_jsns: 'urn:zimbraAdmin'
+			})
+		);
+		batchService({
+			DeleteDistributionListRequest: dlDeleteBatch,
+			DeleteCalendarResourceRequest: resourceDeleteBatch,
+			DeleteAccountRequest: accountDeleteBatch,
+			_jsns: 'urn:zimbra'
+		}).then(() => {
 			deleteOnlyDomain();
 		});
 	};
@@ -467,27 +520,128 @@ const DomainGeneralSettings: FC = () => {
 				: '',
 		[domainData.zimbraCreateTimestamp]
 	);
+	const getAllDirectories = useCallback(
+		(
+			offset: number,
+			limit: number,
+			accountListArr: AccountDlAlias[],
+			dlListArr: AccountDlAlias[],
+			aliasListArr: AccountDlAlias[],
+			calResourceArr: AccountDlAlias[]
+		): void => {
+			const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
+			const attrs =
+				'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
+			searchDirectory(attrs, type, domainName, '', offset, limit).then(
+				(data: SearchDomainDirectoies) => {
+					setIsRequestInProgress(false);
+					if (data?.account?.length) {
+						data.account.map((item: AccountDlAlias) => {
+							const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
+							if (zimbraIsSystemAccount) {
+								// eslint-disable-next-line no-param-reassign
+								item.zimbraIsSystemAccount = zimbraIsSystemAccount._content;
+							}
+							return item;
+						});
+						accountListArr.push(...data.account);
+					}
+					if (data?.dl?.length) {
+						dlListArr.push(...data.dl);
+					}
+					if (data?.alias?.length) {
+						aliasListArr.push(...data.alias);
+					}
+					if (data?.calresource?.length) {
+						calResourceArr.push(...data.calresource);
+					}
+					if (data?.more) {
+						getAllDirectories(
+							offset + limit,
+							limit,
+							cloneDeep(accountListArr),
+							cloneDeep(dlListArr),
+							cloneDeep(aliasListArr),
+							cloneDeep(calResourceArr)
+						);
+					} else if (data?.searchTotal > 0) {
+						if (
+							accountListArr?.length ||
+							dlListArr?.length ||
+							aliasListArr?.length ||
+							calResourceArr?.length
+						) {
+							setDomainDirectoies({
+								account: cloneDeep(accountListArr),
+								dl: cloneDeep(dlListArr),
+								alias: cloneDeep(aliasListArr),
+								calresource: cloneDeep(calResourceArr)
+							});
+							setOpenConfirmDialog(false);
+							setOpenDeleteDomainConfirmDialog(true);
+						} else {
+							deleteOnlyDomain();
+						}
+					} else if (data?.searchTotal === 0) {
+						deleteOnlyDomain();
+					}
+				}
+			);
+		},
+		[deleteOnlyDomain, domainName]
+	);
 
 	const onDeleteDomain = (): void => {
 		setIsRequestInProgress(true);
-		const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
-		const attrs =
-			'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-		searchDirectory(attrs, type, domainName, '').then((data) => {
-			setIsRequestInProgress(false);
-			if (data?.searchTotal > 0) {
-				const accounts = data?.account;
-				if (accounts && accounts.length > 0) {
-					setDomainAccounts(accounts);
-					setOpenConfirmDialog(false);
-					setOpenDeleteDomainConfirmDialog(true);
-				} else {
-					deleteOnlyDomain();
+		getAllDirectories(0, 1000, [], [], [], []);
+	};
+
+	const onCloseDomain = (): void => {
+		setOpenDeleteDomainConfirmDialog(false);
+		const body: any = {
+			_jsns: 'urn:zimbraAdmin',
+			id: domainData.zimbraId,
+			a: [
+				{
+					n: 'zimbraDomainStatus',
+					_content: domainStatusItems[1].value
 				}
-			} else if (data?.searchTotal === 0) {
-				deleteOnlyDomain();
-			}
-		});
+			]
+		};
+		setIsRequestInProgress(true);
+		modifyDomain(body)
+			.then((data) => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('label.domain_close_success_msg', 'Domain has been closed successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				const domain: any = data?.domain[0];
+				if (domain) {
+					setDomain(domain);
+				}
+				const refDomainData = cloneDeep(domainData);
+				refDomainData.zimbraDomainStatus = domainStatusItems[1].value;
+				setDomainData(refDomainData);
+				setDomainStatus(domainStatusItems[1]);
+				setIsRequestInProgress(false);
+			})
+			.catch((error) => {
+				setIsRequestInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
 	};
 
 	return (
@@ -790,19 +944,26 @@ const DomainGeneralSettings: FC = () => {
 										}}
 										customFooter={
 											<Container orientation="horizontal" mainAlignment="space-between">
-												<Button
-													label={t('label.need_help', 'NEED HELP?')}
-													type="outlined"
-													color="primary"
-													isSmall
-													onClick={(): void => {
-														setOpenConfirmDialog(false);
-													}}
-												/>
+												<Container
+													orientation="horizontal"
+													mainAlignment="flex-start"
+													width="10rem"
+												>
+													<Button
+														label={t('label.need_help', 'NEED HELP?')}
+														type="outlined"
+														color="primary"
+														isSmall
+														onClick={(): void => {
+															setOpenConfirmDialog(false);
+														}}
+														width="fill"
+													/>
+												</Container>
 												<Container orientation="horizontal" mainAlignment="flex-end">
 													<Padding all="small">
 														<Button
-															label={t('label.no', 'NO')}
+															label={t('label.cancel', 'CANCEL')}
 															color="secondary"
 															isSmall
 															onClick={(): void => {
@@ -810,6 +971,7 @@ const DomainGeneralSettings: FC = () => {
 															}}
 														/>
 													</Padding>
+
 													<Button
 														label={t('label.delete', 'DELETE')}
 														color="error"
@@ -840,28 +1002,49 @@ const DomainGeneralSettings: FC = () => {
 										showCloseIcon
 										onClose={(): void => {
 											setOpenDeleteDomainConfirmDialog(false);
-											setDomainAccounts([]);
+											setDomainDirectoies({
+												account: [],
+												dl: [],
+												alias: [],
+												calresource: []
+											});
 										}}
 										customFooter={
 											<Container orientation="horizontal" mainAlignment="space-between">
-												<Button
-													label={t('label.need_help', 'NEED HELP?')}
-													type="outlined"
-													color="primary"
-													isSmall
-												/>
+												<Container
+													orientation="horizontal"
+													mainAlignment="flex-start"
+													width="10rem"
+												>
+													<Button
+														label={t('label.cancel', 'CANCEL')}
+														color="secondary"
+														isSmall
+														onClick={(): void => {
+															setOpenDeleteDomainConfirmDialog(false);
+															setDomainDirectoies({
+																account: [],
+																dl: [],
+																alias: [],
+																calresource: []
+															});
+														}}
+													/>
+												</Container>
 												<Container orientation="horizontal" mainAlignment="flex-end">
-													<Padding all="small">
-														<Button
-															label={t('label.no', 'NO')}
-															color="secondary"
-															isSmall
-															onClick={(): void => {
-																setOpenDeleteDomainConfirmDialog(false);
-																setDomainAccounts([]);
-															}}
-														/>
-													</Padding>
+													{domainStatus.value !== domainStatusItems[1].value ? (
+														<Padding right="small">
+															<Button
+																label={t('label.close_domain', 'CLOSE DOMAIN')}
+																color="primary"
+																isSmall
+																onClick={onCloseDomain}
+																disabled={isRequstInProgress}
+															/>
+														</Padding>
+													) : (
+														<></>
+													)}
 													<Button
 														label={t('label.force_delete', 'Force Delete')}
 														color="error"
@@ -875,11 +1058,78 @@ const DomainGeneralSettings: FC = () => {
 									>
 										<Padding all="medium">
 											<Text overflow="break-word" weight="regular">
-												{t('label.delete_domain_with_account_content_msg', {
+												{t('label.delete_domain_with_all_resources_pre_msg', {
 													domainName,
-													domainAccounts: domainAccounts.length,
+													defaultValue: 'Domain {{domainName}} is not empty and contains'
+												})}
+											</Text>
+											<br />
+											{domainDirectoies.account.length ? (
+												<Text overflow="break-word" weight="regular">
+													{t('label.delete_domain_account', {
+														domainRegularAccounts: domainDirectoies.account.length,
+														defaultValue: '{{domainRegularAccounts}} Accounts'
+													})}
+												</Text>
+											) : (
+												<></>
+											)}
+											{filter(domainDirectoies.account, {
+												zimbraIsSystemAccount: 'TRUE'
+											}).length ? (
+												<Text overflow="break-word" weight="regular">
+													{t('label.delete_domain_system_account', {
+														domainSystemAccounts: filter(domainDirectoies.account, {
+															zimbraIsSystemAccount: 'TRUE'
+														}).length,
+														defaultValue: '{{domainSystemAccounts}} System Accounts'
+													})}
+												</Text>
+											) : (
+												<></>
+											)}
+											{domainDirectoies.dl.length ? (
+												<Text overflow="break-word" weight="regular">
+													{t('label.delete_domain_distribution_list', {
+														distributionList: domainDirectoies.dl.length,
+														defaultValue: '{{distributionList}} Distribution list'
+													})}
+												</Text>
+											) : (
+												<></>
+											)}
+											{domainDirectoies.alias.length ? (
+												<Text overflow="break-word" weight="regular">
+													{t('label.delete_domain_aliases', {
+														aliases: domainDirectoies.alias.length,
+														defaultValue: '{{aliases}} Aliases'
+													})}
+												</Text>
+											) : (
+												<></>
+											)}
+											{domainDirectoies.calresource.length ? (
+												<Text overflow="break-word" weight="regular">
+													{t('label.delete_domain_resources', {
+														resources: domainDirectoies.calresource.length,
+														defaultValue: '{{resources}} Resources'
+													})}
+												</Text>
+											) : (
+												<></>
+											)}
+											<br />
+											<Text overflow="break-word" weight="regular">
+												{t('label.delete_domain_with_all_resources_close_domain', {
 													defaultValue:
-														'{{domainName}} is not empty: it contains {{domainAccounts}} system accounts and {{domainAccounts}} regular accounts. Are you sure to continue the deletion?'
+														'If you are not sure, you still can “close” the domain to avoid any further interaction, leaving all the resources available in case of needs.'
+												})}
+											</Text>
+											<br />
+											<Text overflow="break-word" weight="regular">
+												{t('label.delete_domain_with_all_resources_permanently_remove', {
+													defaultValue:
+														'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.'
 												})}
 											</Text>
 										</Padding>
