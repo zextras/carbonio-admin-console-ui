@@ -58,6 +58,15 @@ const EditAccountGeneralSection: FC = () => {
 		},
 		[setAccountDetail]
 	);
+	const changeUserNaneDetail = useCallback(
+		(e) => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				uid: e.target.value?.replace(/ /g, '')?.toLowerCase()
+			}));
+		},
+		[setAccountDetail]
+	);
 	useEffect(() => {
 		if (accountDetail?.mail) {
 			const aliaes = accountDetail.mail.split(', ').map((ele: string) => ({ label: ele }));
@@ -143,7 +152,7 @@ const EditAccountGeneralSection: FC = () => {
 						<Input
 							background="gray5"
 							label={t('label.userName', 'username')}
-							onChange={changeAccDetail}
+							onChange={changeUserNaneDetail}
 							inputName="uid"
 							defaultValue={accountDetail?.uid}
 							value={accountDetail?.uid}
