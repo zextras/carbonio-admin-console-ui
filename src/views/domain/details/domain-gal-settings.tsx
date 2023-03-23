@@ -33,6 +33,29 @@ import { FALSE, TRUE } from '../../../constants';
 import { modifyAccountRequest } from '../../../services/modify-account';
 import { MeasureUnitItems } from '../../utility/utils';
 
+interface DomainDataType {
+	zimbraGalMaxResults: string;
+	zimbraGalAccountId?: string;
+	zimbraGalMode?: string;
+	zimbraDataSourcePollingInterval?: string;
+	zimbraGalLdapPageSize: string;
+	zimbraGalLdapURL?: string;
+	zimbraGalLdapStartTlsEnabled?: string;
+	zimbraGalLdapSearchBase?: string;
+	zimbraGalLdapFilter?: string;
+	zimbraGalLdapBindDn?: string;
+	zimbraGalLdapBindPassword?: string;
+	zimbraGalLdapAuthMech?: string;
+	zimbraDataSourceGalPollingInterval?: string;
+	zimbraId?: string;
+	zimbraGalLdapPageSizets?: string;
+}
+
+interface IntervalType {
+	label?: string;
+	value?: string;
+}
+
 // eslint-disable-next-line no-shadow
 export enum RANGE {
 	DAYS = 'd',
@@ -77,7 +100,7 @@ const DomainGalSettings: FC = () => {
 		[t]
 	);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [domainData, setDomainData]: any = useState({
+	const [domainData, setDomainData] = useState<DomainDataType>({
 		zimbraGalMaxResults: '',
 		zimbraGalAccountId: '',
 		zimbraGalMode: '',
@@ -111,25 +134,36 @@ const DomainGalSettings: FC = () => {
 	const [zimbraDataSourcePollingInterval, setZimbraDataSourcePollingInterval] =
 		useState<string>('');
 	const [pollingIntervalValue, setPollingIntervalValue] = useState<string>('');
-	const [pollingIntervalType, setPollingIntervalType] = useState<any>(rangeItems[0]);
-	const [dataSourceId, setDataSourceId] = useState<any>('');
+	const [pollingIntervalType, setPollingIntervalType] = useState<IntervalType | undefined>(
+		rangeItems[0]
+	);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const [dataSourceName, setDataSourceName] = useState<string>('');
-	const [measureUnitSelection, setMeasureUnitSelection] = useState<{
-		label: string;
-		value: string;
-	}>();
+	const [measureUnitSelection, setMeasureUnitSelection] = useState<
+		string | IntervalType | undefined
+	>('');
 
-	const [freqValue, setFreqValue] = useState<object | any>({
-		digits: '',
-		time: 's'
+	const [zimbraGalAccountIdArray, setZimbraGalAccountIdArray] = useState<
+		{
+			n: string;
+			_content: string;
+		}[]
+	>([]);
+	const [zimbraAccountDataSourceId, setZimbraAccountDataSourceId] = useState<object[]>([]);
+	const [freqValue, setFreqValue] = useState<{
+		digits: string;
+		time: string;
+	}>({
+		digits: '1',
+		time: 'm'
 	});
+
 	const changeGalModeBtnItems = [
 		{
 			id: 'internal',
 			label: t('domain.gal_change_mode_internal', 'Internal'),
 			value: 'zimbra',
-			click: (ev: any): void => {
+			click: (ev: React.ChangeEvent<HTMLInputElement>): void => {
 				setDomainData({ ...domainData, zimbraGalMode: 'zimbra' });
 				if (ev?.target?.value !== domainData?.zimbraGalMode) {
 					setIsDirty(true);
@@ -140,7 +174,7 @@ const DomainGalSettings: FC = () => {
 			id: 'external',
 			label: t('domain.gal_change_mode_external', 'External'),
 			value: 'ldap',
-			click: (ev: any): void => {
+			click: (ev: React.ChangeEvent<HTMLInputElement>): void => {
 				setDomainData({ ...domainData, zimbraGalMode: 'ldap' });
 				if (ev?.target?.value !== domainData?.zimbraGalMode) {
 					setIsDirty(true);
@@ -151,7 +185,7 @@ const DomainGalSettings: FC = () => {
 			id: 'both',
 			label: t('domain.gal_change_mode_both', 'Both'),
 			value: 'both',
-			click: (ev: any): void => {
+			click: (ev: React.ChangeEvent<HTMLInputElement>): void => {
 				setDomainData({ ...domainData, zimbraGalMode: 'both' });
 				if (ev?.target?.value !== domainData?.zimbraGalMode) {
 					setIsDirty(true);
@@ -161,7 +195,7 @@ const DomainGalSettings: FC = () => {
 	];
 
 	const updateFreqValues = useCallback(
-		(obj: any) => {
+		(obj: DomainDataType | { [key: string]: string }) => {
 			const val = obj?.zimbraDataSourceGalPollingInterval || zimbraDataSourceGalPollingInterval;
 			setZimbraDataSourceGalPollingInterval(val);
 			setDomainData({
@@ -169,13 +203,13 @@ const DomainGalSettings: FC = () => {
 				zimbraDataSourceGalPollingInterval: val
 			});
 			const splitText = val.split(/(\d+)/);
-
 			setFreqValue({
 				digits: splitText[1],
 				time: splitText[2]
 			});
-			const measureUnitObject: any = measureUnitItems?.find(
-				(item: any): any => item?.value === splitText[2]
+
+			const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
+				(item: { [key: string]: string }) => item?.value === splitText[2]
 			);
 			setMeasureUnitSelection(measureUnitObject);
 		},
@@ -184,12 +218,16 @@ const DomainGalSettings: FC = () => {
 
 	const getGalAccount = (accountId: string): void => {
 		getAccount(accountId).then((data) => {
-			const galAccount: any = data?.account[0];
+			const galAccount: {
+				a: { n: string; _content: string }[];
+				id: string;
+				name: string;
+			} = data?.account[0];
 			if (galAccount) {
 				setZimbraGalAccountName(galAccount?.name);
 				if (galAccount?.a) {
-					const obj: any = {};
-					galAccount?.a.map((item: any) => {
+					const obj: { [key: string]: string } = {};
+					galAccount?.a.map((item: { n: string; _content: string }) => {
 						obj[item?.n] = item._content;
 						return '';
 					});
@@ -208,9 +246,22 @@ const DomainGalSettings: FC = () => {
 
 	const getDomainDataSource = (accountId: string): void => {
 		getDatasource(accountId).then((data) => {
-			const dataSource: any = data?.dataSource[0];
+			const dataSource: {
+				id: string;
+				name: string;
+				type: string;
+				_attrs: { [key: string]: string };
+			} = data?.dataSource[0];
 			if (dataSource && dataSource?.id) {
-				setDataSourceId(dataSource?.id);
+				// eslint-disable-next-line array-callback-return, consistent-return
+				zimbraGalAccountIdArray.map((item, index) => {
+					if (item._content === accountId) {
+						zimbraAccountDataSourceId.push({
+							id: item._content,
+							dataSourceId: dataSource?.id
+						});
+					}
+				});
 				if (dataSource?._attrs && dataSource?._attrs?.zimbraDataSourcePollingInterval) {
 					setZimbraDataSourcePollingInterval(dataSource?._attrs?.zimbraDataSourcePollingInterval);
 				}
@@ -224,74 +275,83 @@ const DomainGalSettings: FC = () => {
 		});
 	};
 
-	const updateDomainInformation = useCallback(() => {
-		if (!!domainInformation && domainInformation.length > 0) {
-			setZimbraGalAccountId('');
-			setZimbraGalAccountName('');
-			setZimbraDataSourcePollingInterval('');
-			setDataSourceName('');
-			const obj: any = {};
-			domainInformation.map((item: any) => {
-				obj[item?.n] = item._content;
-				return '';
-			});
-
-			if (obj.zimbraGalMaxResults) {
-				setZimbraGalMaxResults(obj.zimbraGalMaxResults);
-			} else {
-				obj.zimbraGalMaxResults = '';
-				setZimbraGalMaxResults('');
-			}
-
-			if (obj.zimbraGalLdapPageSize) {
-				setZimbraGalLdapPageSize(obj.zimbraGalLdapPageSize);
-			} else {
-				obj.zimbraGalLdapPageSize = '';
-				setZimbraGalLdapPageSize('');
-			}
-
-			if (obj.zimbraGalAccountId) {
-				setZimbraGalAccountId(obj.zimbraGalAccountId);
-			} else {
-				obj.zimbraGalAccountId = '';
+	const updateDomainInformation = useCallback(
+		() => {
+			if (!!domainInformation && domainInformation.length > 0) {
 				setZimbraGalAccountId('');
-			}
+				setZimbraGalAccountName('');
+				setZimbraDataSourcePollingInterval('');
+				setDataSourceName('');
+				const obj: DomainDataType | any = {};
+				domainInformation.map((item: { n: string; _content: string }) => {
+					obj[item?.n] = item._content;
+					return '';
+				});
+				if (obj.zimbraGalMaxResults) {
+					setZimbraGalMaxResults(obj.zimbraGalMaxResults);
+				} else {
+					obj.zimbraGalMaxResults = '';
+					setZimbraGalMaxResults('');
+				}
 
-			if (!obj.zimbraGalLdapURL) {
-				obj.zimbraGalLdapURL = '';
-			}
+				if (obj.zimbraGalLdapPageSize) {
+					setZimbraGalLdapPageSize(obj.zimbraGalLdapPageSize);
+				} else {
+					obj.zimbraGalLdapPageSize = '';
+					setZimbraGalLdapPageSize('');
+				}
 
-			if (!obj.zimbraGalLdapFilter) {
-				obj.zimbraGalLdapFilter = '';
-			}
+				if (obj.zimbraGalAccountId) {
+					// eslint-disable-next-line consistent-return, array-callback-return
+					const result = domainInformation.filter((item) => item.n === 'zimbraGalAccountId');
+					setZimbraGalAccountIdArray(result);
+					setZimbraGalAccountId(obj.zimbraGalAccountId);
+				} else {
+					obj.zimbraGalAccountId = '';
+					setZimbraGalAccountId('');
+				}
 
-			if (!obj.zimbraGalLdapSearchBase) {
-				obj.zimbraGalLdapSearchBase = '';
-			}
+				if (!obj.zimbraGalLdapURL) {
+					obj.zimbraGalLdapURL = '';
+				}
 
-			if (!obj.zimbraGalLdapStartTlsEnabled) {
-				obj.zimbraGalLdapStartTlsEnabled = FALSE;
-				setZimbraGalLdapStartTlsEnabled({ init: false, current: false });
-			} else if (obj.zimbraGalLdapStartTlsEnabled && obj.zimbraGalLdapStartTlsEnabled === TRUE) {
-				setZimbraGalLdapStartTlsEnabled({ init: true, current: true });
-			} else {
-				setZimbraGalLdapStartTlsEnabled({ init: false, current: false });
-			}
+				if (!obj.zimbraGalLdapFilter) {
+					obj.zimbraGalLdapFilter = '';
+				}
 
-			if (!obj.zimbraGalLdapAuthMech) {
-				obj.zimbraGalLdapAuthMech = 'none';
-			} else {
-				setZimbraGalLdapAuthMech(obj.zimbraGalLdapAuthMech !== 'none');
+				if (!obj.zimbraGalLdapSearchBase) {
+					obj.zimbraGalLdapSearchBase = '';
+				}
+
+				if (!obj.zimbraGalLdapStartTlsEnabled) {
+					obj.zimbraGalLdapStartTlsEnabled = FALSE;
+					setZimbraGalLdapStartTlsEnabled({ init: false, current: false });
+				} else if (obj.zimbraGalLdapStartTlsEnabled && obj.zimbraGalLdapStartTlsEnabled === TRUE) {
+					setZimbraGalLdapStartTlsEnabled({ init: true, current: true });
+				} else {
+					setZimbraGalLdapStartTlsEnabled({ init: false, current: false });
+				}
+
+				if (!obj.zimbraGalLdapAuthMech) {
+					obj.zimbraGalLdapAuthMech = 'none';
+				} else {
+					setZimbraGalLdapAuthMech(obj.zimbraGalLdapAuthMech !== 'none');
+				}
+				setDomainData(obj);
+				setIsDirty(false);
 			}
-			setDomainData(obj);
-			setIsDirty(false);
-		}
-	}, [domainInformation]);
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[domainInformation]
+	);
 
 	useEffect(() => {
 		if (zimbraGalAccountId !== '') {
 			getGalAccount(zimbraGalAccountId);
-			getDomainDataSource(zimbraGalAccountId);
+			// eslint-disable-next-line array-callback-return
+			zimbraGalAccountIdArray.map((items) => {
+				getDomainDataSource(items?._content);
+			});
 		} else {
 			setZimbraGalAccountName('');
 			setMailServerName('');
@@ -308,7 +368,9 @@ const DomainGalSettings: FC = () => {
 				zimbraDataSourcePollingInterval.substring(0, zimbraDataSourcePollingInterval.length - 1)
 			);
 			if (rangeType && rangeType !== '') {
-				const range = rangeItems.find((item: any) => item.value === rangeType);
+				const range: IntervalType | undefined = rangeItems.find(
+					(item: IntervalType) => item.value === rangeType
+				);
 				setPollingIntervalType(range);
 			}
 		} else {
@@ -323,11 +385,16 @@ const DomainGalSettings: FC = () => {
 		updateFreqValues(domainData);
 		updateDomainInformation();
 		if (zimbraGalAccountId !== '') {
+			getGalAccount(zimbraGalAccountId);
+		}
+		if (zimbraGalAccountId !== '') {
 			const rangeType = zimbraDataSourcePollingInterval.charAt(
 				zimbraDataSourcePollingInterval.length - 1
 			);
 			if (rangeType && rangeType !== '') {
-				const range = rangeItems.find((item: any) => item.value === rangeType);
+				const range: IntervalType | undefined = rangeItems.find(
+					(item: IntervalType) => item.value === rangeType
+				);
 				setPollingIntervalType(range);
 			}
 			setPollingIntervalValue(
@@ -339,9 +406,15 @@ const DomainGalSettings: FC = () => {
 
 	const onSave = (): void => {
 		const requests: any[] = [];
-		const body: any = {};
-		let attributes: any[] = [];
-		body.id = domainData.zimbraId;
+		const body:
+			| {
+					id?: string;
+					_jsns?: string;
+					a?: { n: string; _content?: string }[];
+			  }
+			| any = {};
+		let attributes: { n: string; _content?: string }[] = [];
+		body.id = domainData?.zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
 		attributes.push({
 			n: 'zimbraGalMaxResults',
@@ -393,34 +466,52 @@ const DomainGalSettings: FC = () => {
 			_content: domainData?.zimbraGalLdapAuthMech
 		});
 		body.a = attributes;
+
 		requests.push(modifyDomain(body));
 		if (zimbraGalAccountId !== '') {
-			const dataSourceBody: any = {};
-			dataSourceBody.id = zimbraGalAccountId;
-			dataSourceBody._jsns = 'urn:zimbraAdmin';
-			attributes = [];
-			attributes.push({
-				n: 'zimbraGalType',
-				_content: domainData?.zimbraGalMode
-			});
-			// Commented because later we need to include this attribute
-			/* attributes.push({
-				n: 'zimbraDataSourceGalPollingInterval',
-				_content: zimbraDataSourceGalPollingInterval
-			}); */
-			dataSourceBody.dataSource = {
-				id: dataSourceId,
-				a: attributes
-			};
-			requests.push(modifyDataSource(dataSourceBody));
+			if (zimbraGalAccountIdArray?.length !== 0 && zimbraAccountDataSourceId?.length !== 0) {
+				// eslint-disable-next-line array-callback-return
+				zimbraGalAccountIdArray.map((items) => {
+					interface DataSourceId {
+						dataSourceId?: string;
+						id?: number;
+					}
+
+					const dataSourceId: DataSourceId[] = zimbraAccountDataSourceId?.filter(
+						(item: { id?: string }) => item?.id === items?._content
+					);
+
+					const dataSourceBody: any = {};
+					dataSourceBody.id = items?._content;
+					dataSourceBody._jsns = 'urn:zimbraAdmin';
+					attributes = [];
+					attributes.push({
+						n: 'zimbraGalType',
+						_content: domainData?.zimbraGalMode
+					});
+					attributes.push({
+						n: 'zimbraDataSourcePollingInterval',
+						_content: zimbraDataSourceGalPollingInterval
+					});
+					dataSourceBody.dataSource = {
+						id: dataSourceId[0]?.dataSourceId,
+						a: attributes
+					};
+					requests.push(modifyDataSource(dataSourceBody));
+				});
+			}
 		}
 		Promise.all(requests)
 			.then((results) => Promise.all(results))
 			.then((results) => {
-				const domain: any = results[0]?.domain[0];
+				const domain: {
+					a: { n: string; _content: string }[];
+					id: string;
+					name: string;
+				} = results[0]?.domain[0];
 				if (domain) {
-					updateDomainInformation();
 					setDomain(domain);
+					updateDomainInformation();
 				}
 				setIsDirty(false);
 				createSnackbar({
@@ -432,47 +523,53 @@ const DomainGalSettings: FC = () => {
 					replace: true
 				});
 			});
-
-		modifyAccountRequest(zimbraGalAccountId, {
-			zimbraDataSourceGalPollingInterval
-		}).catch((error) => {
-			createSnackbar({
-				key: 'error',
-				type: 'error',
-				label: error?.message
-					? error?.message
-					: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-				autoHideTimeout: 5000,
-				hideButton: true,
-				replace: true
+		if (zimbraGalAccountIdArray?.length !== 0) {
+			// eslint-disable-next-line array-callback-return
+			zimbraGalAccountIdArray.map((items) => {
+				modifyAccountRequest(items?._content, {
+					zimbraDataSourceGalPollingInterval
+				}).catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 5000,
+						hideButton: true,
+						replace: true
+					});
+					updateFreqValues({});
+				});
 			});
-			updateFreqValues({});
-		});
+		}
 	};
 
-	const onChangeRangeType = (v: any): any => {
-		const range = rangeItems.find((item: any) => item.value === v);
+	const onChangeRangeType = (v: string): void => {
+		const range: IntervalType | undefined = rangeItems.find(
+			(item: IntervalType) => item.value === v
+		);
 		setPollingIntervalType(range);
 	};
 
-	const changeIntervalValue = (ev: any): any => {
+	const changeIntervalValue = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setPollingIntervalValue(ev.target.value);
 	};
 
-	const onZimbraGalMaxResultChange = (ev: any): any => {
+	const onZimbraGalMaxResultChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setZimbraGalMaxResults(ev.target.value);
 	};
 
-	const onZimbraGalLdapPageSizeChange = (ev: any): any => {
+	const onZimbraGalLdapPageSizeChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setZimbraGalLdapPageSize(ev.target.value);
 	};
 
-	const onZimbraGalLdapUrlChange = (ev: any): any => {
+	const onZimbraGalLdapUrlChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setDomainData({ ...domainData, zimbraGalLdapURL: ev?.target?.value });
 		setIsDirty(domainData?.zimbraGalLdapURL !== ev?.target?.value);
 	};
 
-	const onZimbraGalLdapStartTlsEnabledChange = (ev: any): any => {
+	const onZimbraGalLdapStartTlsEnabledChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setZimbraGalLdapStartTlsEnabled({
 			...zimbraGalLdapStartTlsEnabled,
 			current: !zimbraGalLdapStartTlsEnabled?.current
@@ -514,13 +611,13 @@ const DomainGalSettings: FC = () => {
 	]);
 
 	const onFreqDigitsChange = useCallback(
-		(ev: any) => {
+		(ev: React.ChangeEvent<HTMLInputElement> | any) => {
 			if (ev?.target?.value < 0 || ev?.target?.value > 9) {
 				return;
 			}
 			setFreqValue({ digits: ev?.target?.value, time: freqValue.time });
-			const measureUnitObject: any = measureUnitItems?.find(
-				(item: any): any => item?.value === freqValue?.time
+			const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
+				(item: IntervalType): boolean => item?.value === freqValue?.time
 			);
 			setMeasureUnitSelection(measureUnitObject);
 			setZimbraDataSourceGalPollingInterval(`${ev?.target?.value}${freqValue.time}`);
@@ -532,9 +629,11 @@ const DomainGalSettings: FC = () => {
 	);
 
 	const onFreqTimeUnitChange = useCallback(
-		(ev: any) => {
+		(ev: string) => {
 			setFreqValue({ digits: freqValue.digits, time: ev });
-			const measureUnitObject: any = measureUnitItems?.find((item: any): any => item?.value === ev);
+			const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
+				(item: IntervalType): boolean => item?.value === ev
+			);
 			setMeasureUnitSelection(measureUnitObject);
 			setZimbraDataSourceGalPollingInterval(`${freqValue.digits}${ev}`);
 			if (ev !== freqValue?.time) {
@@ -544,7 +643,7 @@ const DomainGalSettings: FC = () => {
 		[freqValue.digits, freqValue?.time, measureUnitItems]
 	);
 
-	const onZimbraGalLdapFilterChange = (ev: any): void => {
+	const onZimbraGalLdapFilterChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setIsDirty(ev?.target?.value !== domainData?.zimbraGalLdapFilter);
 
 		setDomainData({
@@ -552,7 +651,7 @@ const DomainGalSettings: FC = () => {
 			zimbraGalLdapFilter: ev?.target?.value
 		});
 	};
-	const onZimbraGalLdapSearchBaseChange = (ev: any): void => {
+	const onZimbraGalLdapSearchBaseChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setDomainData({
 			...domainData,
 			zimbraGalLdapSearchBase: ev?.target?.value
@@ -585,7 +684,7 @@ const DomainGalSettings: FC = () => {
 		}
 	};
 
-	const onZimbraGalLdapAuthMechChange = (ev: any): void => {
+	const onZimbraGalLdapAuthMechChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setIsDirty(true);
 		setDomainData({
 			...domainData,
@@ -814,7 +913,13 @@ const DomainGalSettings: FC = () => {
 												value={domainData?.zimbraGalLdapURL}
 												background="gray5"
 												onChange={onZimbraGalLdapUrlChange}
-												CustomIcon={({ hasFocus }: any): any => (
+												CustomIcon={({
+													hasFocus
+												}: {
+													hasError: boolean;
+													hasFocus: boolean;
+													disabled: boolean;
+												}): React.ReactElement => (
 													<Tooltip
 														placement="top"
 														overflow="break-word"
@@ -856,7 +961,13 @@ const DomainGalSettings: FC = () => {
 											value={domainData?.zimbraGalLdapFilter}
 											background="gray5"
 											onChange={onZimbraGalLdapFilterChange}
-											CustomIcon={({ hasFocus }: any): any => (
+											CustomIcon={({
+												hasFocus
+											}: {
+												hasError: boolean;
+												hasFocus: boolean;
+												disabled: boolean;
+											}): React.ReactElement => (
 												<Tooltip
 													placement="top"
 													overflow="break-word"
@@ -883,7 +994,13 @@ const DomainGalSettings: FC = () => {
 											value={domainData?.zimbraGalLdapSearchBase}
 											background="gray5"
 											onChange={onZimbraGalLdapSearchBaseChange}
-											CustomIcon={({ hasFocus }: any): any => (
+											CustomIcon={({
+												hasFocus
+											}: {
+												hasError: boolean;
+												hasFocus: boolean;
+												disabled: boolean;
+											}): React.ReactElement => (
 												<Tooltip
 													placement="top"
 													overflow="break-word"
@@ -951,7 +1068,13 @@ const DomainGalSettings: FC = () => {
 										value={domainData?.zimbraGalLdapBindDn}
 										background="gray5"
 										onChange={onZimbraGalLdapBindDnChange}
-										CustomIcon={({ hasFocus }: any): any => (
+										CustomIcon={({
+											hasFocus
+										}: {
+											hasError: boolean;
+											hasFocus: boolean;
+											disabled: boolean;
+										}): React.ReactElement => (
 											<Tooltip
 												placement="top"
 												overflow="break-word"
