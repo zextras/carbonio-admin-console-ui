@@ -1659,6 +1659,11 @@ export const isValidHttpsUrl = (url: string): boolean => {
 	return reqex.test(url);
 };
 
+export const isValidUrl = (url: string): boolean => {
+	const reqex = /^((http|https):\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+	return reqex.test(url);
+};
+
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
@@ -1907,4 +1912,12 @@ export const copyTextToClipboard = (text: string): void => {
 	if (navigator) {
 		navigator.clipboard.writeText(text);
 	}
+};
+
+export const download = (content: BlobPart, fileName: string, contentType: string): void => {
+	const a = document.createElement('a');
+	const file = new Blob([content], { type: contentType });
+	a.href = URL.createObjectURL(file);
+	a.download = fileName;
+	a.click();
 };

@@ -15,7 +15,8 @@ import {
 	Switch,
 	Table,
 	Padding,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Icon
 } from '@zextras/carbonio-design-system';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -24,6 +25,9 @@ import { useDomainStore } from '../../../store/domain/store';
 import { getSamlConfig } from '../../../services/get-saml-configurations';
 import { importSamlConfig } from '../../../services/import-saml-configurations';
 import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
+import { download, isValidHttpsUrl, isValidUrl } from '../../utility/utils';
+import { updateSamlAttributes } from '../../../services/update-saml-attributes';
+import { SAML_METADATA_JSON_FILE, CONTENT_TYPE_TEXT_PLAIN } from '../../../constants';
 
 export type SamlAttribute = {
 	attribute: string;
@@ -40,6 +44,7 @@ const DomainSaml: FC = () => {
 	const [samlAttrKey, setSamlAttrKey] = useState<string>('');
 	const [samlAttrValue, setSamlAttrValue] = useState<unknown>('');
 	const [metadataUrl, setMetadataUrl] = useState<string>('');
+	const [isAllowImport, setIsAllowImport] = useState<boolean>(false);
 
 	const headers: any = useMemo(
 		() => [
@@ -76,45 +81,6 @@ const DomainSaml: FC = () => {
 		setSamlAttrValue(item?.value);
 	}, []);
 
-	const generateSAMLTable = useCallback(
-		(samlAttr: Array<SamlAttribute>): void => {
-			if (samlAttr && samlAttr.length > 0) {
-				const samlRows: Array<any> = [];
-				samlAttr.forEach((item: SamlAttribute, index) => {
-					samlRows.push({
-						id: index.toString(),
-						columns: [
-							<Text
-								size="small"
-								weight="bold"
-								key={index}
-								color="gray0"
-								onClick={(): void => {
-									openSamlValue(item);
-								}}
-							>
-								{item?.attribute}
-							</Text>,
-							<Text
-								size="small"
-								weight="bold"
-								key={index}
-								color="gray0"
-								onClick={(): void => {
-									openSamlValue(item);
-								}}
-							>
-								{item?.value}
-							</Text>
-						]
-					});
-				});
-				setSamlTableRows(samlRows);
-			}
-		},
-		[openSamlValue]
-	);
-
 	const showError = useCallback(
 		(error): void => {
 			createSnackbar({
@@ -131,11 +97,72 @@ const DomainSaml: FC = () => {
 		[t, createSnackbar]
 	);
 
+	const exportMetadata = (domain: string): void => {
+		getSamlConfig(domain)
+			.then((data) => {
+				if (!data?.error) {
+					download(JSON.stringify(data), SAML_METADATA_JSON_FILE, CONTENT_TYPE_TEXT_PLAIN);
+				} else {
+					const err = { message: data?.error };
+					showError(err);
+				}
+			})
+			.catch((error) => {
+				showError(error);
+			});
+	};
+
+	const generateSAMLTable = useCallback(
+		(samlAttr: Array<SamlAttribute>): void => {
+			if (samlAttr && samlAttr.length > 0) {
+				const samlRows: Array<any> = [];
+				samlAttr.forEach((item: SamlAttribute, index) => {
+					samlRows.push({
+						id: index.toString(),
+						columns: [
+							<Container
+								crossAlignment="flex-start"
+								mainAlignment="center"
+								key={index}
+								onClick={(): void => {
+									openSamlValue(item);
+								}}
+							>
+								<Text size="small" weight="bold" color="gray0">
+									{item?.attribute}
+								</Text>
+							</Container>,
+							<Container
+								crossAlignment="flex-start"
+								mainAlignment="center"
+								key={index}
+								onClick={(): void => {
+									openSamlValue(item);
+								}}
+							>
+								<Text size="small" weight="bold" color="gray0">
+									{item?.value}
+								</Text>
+							</Container>
+						]
+					});
+				});
+				setSamlTableRows(samlRows);
+			}
+		},
+		[openSamlValue]
+	);
+
 	const getSAMLConfigurations = useCallback(
 		(domain: string): void => {
 			getSamlConfig(domain)
 				.then((data) => {
-					setSAMLAttributes(data);
+					if (!data?.error) {
+						setSAMLAttributes(data);
+					} else {
+						const err = { message: data?.error };
+						showError(err);
+					}
 				})
 				.catch((error) => {
 					showError(error);
@@ -148,7 +175,12 @@ const DomainSaml: FC = () => {
 		(domain: string, url: string): void => {
 			importSamlConfig(domain, url)
 				.then((data) => {
-					setSAMLAttributes(data);
+					if (!data?.error) {
+						setSAMLAttributes(data);
+					} else {
+						const err = { message: data?.error };
+						showError(err);
+					}
 				})
 				.catch((error) => {
 					showError(error);
@@ -161,7 +193,31 @@ const DomainSaml: FC = () => {
 		(domain: string): void => {
 			generateSignedCertificate(domain)
 				.then((data) => {
-					setSAMLAttributes(data);
+					if (!data?.error) {
+						setSAMLAttributes(data);
+					} else {
+						const err = { message: data?.error };
+						showError(err);
+					}
+				})
+				.catch((error) => {
+					showError(error);
+				});
+		},
+		[setSAMLAttributes, showError]
+	);
+
+	const updateSAMLAttributes = useCallback(
+		(domain: string, key: string, value: unknown): void => {
+			const body: any = { [key]: value };
+			updateSamlAttributes(domain, body)
+				.then((data) => {
+					if (!data?.error) {
+						setSAMLAttributes(data);
+					} else {
+						const err = { message: data?.error };
+						showError(err);
+					}
 				})
 				.catch((error) => {
 					showError(error);
@@ -268,6 +324,17 @@ const DomainSaml: FC = () => {
 										value={metadataUrl}
 										onChange={(e: any): any => {
 											setMetadataUrl(e.target.value);
+											if (e.target.value) {
+												if (isAllowUnsecure) {
+													const validUrl = isValidUrl(e.target.value);
+													setIsAllowImport(validUrl);
+												} else {
+													const validUrl = isValidHttpsUrl(e.target.value);
+													setIsAllowImport(validUrl);
+												}
+											} else {
+												setIsAllowImport(false);
+											}
 										}}
 									/>
 								</Container>
@@ -284,6 +351,7 @@ const DomainSaml: FC = () => {
 										size="extralarge"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => importSAMLConfigurations(domainName, metadataUrl)}
+										disabled={!isAllowImport}
 									/>
 								</Container>
 							</Row>
@@ -313,6 +381,8 @@ const DomainSaml: FC = () => {
 										size="large"
 										height={36}
 										width="fill"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClick={() => exportMetadata(domainName)}
 									/>
 								</Container>
 								<Container width="32%" mainAlignment="flex-start" crossAlignment="flex-start">
@@ -381,6 +451,8 @@ const DomainSaml: FC = () => {
 										size="large"
 										height={36}
 										width="fill"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClick={() => updateSAMLAttributes(domainName, samlAttrKey, samlAttrValue)}
 									/>
 								</Container>
 								<Container width="32%" mainAlignment="flex-start" crossAlignment="flex-start">
@@ -391,6 +463,8 @@ const DomainSaml: FC = () => {
 										size="large"
 										height={36}
 										width="fill"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClick={() => updateSAMLAttributes(domainName, samlAttrKey, samlAttrValue)}
 									/>
 								</Container>
 								<Container width="32%" mainAlignment="flex-start" crossAlignment="flex-start">
@@ -422,6 +496,20 @@ const DomainSaml: FC = () => {
 										)}
 										background="gray5"
 										value={samlAttrKey}
+										onChange={(e: any): any => {
+											setSamlAttrKey(e.target.value);
+										}}
+										CustomIcon={(): any =>
+											samlAttrKey && (
+												<Container
+													// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+													onClick={() => setSamlAttrKey('')}
+													style={{ cursor: 'pointer' }}
+												>
+													<Icon icon="CloseOutline" size="large" color="secondary" />
+												</Container>
+											)
+										}
 									/>
 								</Container>
 							</Row>
@@ -443,6 +531,20 @@ const DomainSaml: FC = () => {
 										)}
 										background="gray5"
 										value={samlAttrValue}
+										onChange={(e: any): any => {
+											setSamlAttrValue(e.target.value);
+										}}
+										CustomIcon={(): any =>
+											samlAttrValue && (
+												<Container
+													// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+													onClick={() => setSamlAttrValue('')}
+													style={{ cursor: 'pointer' }}
+												>
+													<Icon icon="CloseOutline" size="large" color="secondary" />
+												</Container>
+											)
+										}
 									/>
 								</Container>
 							</Row>

@@ -10,5 +10,10 @@ import {
 	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
 
-export const importSamlConfig = async (domain: string, url: string): Promise<any> =>
-	fetchExternalSoap(`/service/extension/zextras_admin/auth/saml-generate/${domain}?url=${url}`, {});
+export const deleteSamlAttributes = async (domain: string, keys: string): Promise<any> =>
+	fetchExternalSoap(
+		`/service/extension/zextras_admin/auth/saml/${domain}?keys=${keys}`,
+		{},
+		'',
+		'DELETE'
+	);

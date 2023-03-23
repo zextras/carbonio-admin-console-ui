@@ -11,4 +11,4 @@ import {
 } from '@zextras/carbonio-shell-ui';
 
 export const generateSignedCertificate = async (domain: string): Promise<any> =>
-	fetchExternalSoap(`/service/extension/zextras_admin/auth/saml/${domain}`, {});
+	fetchExternalSoap(`/service/extension/zextras_admin/auth/saml-generate/${domain}`, {});
