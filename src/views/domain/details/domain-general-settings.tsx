@@ -329,8 +329,6 @@ const DomainGeneralSettings: FC = () => {
 	}, [domainData, zimbraDomainDefaultCOSId]);
 
 	const onCancel = (): void => {
-		setLoading(true);
-		setTimeout(() => setLoading(false), 10);
 		setSelectedPublicServiceProtocol(
 			serviceProtocolItems.find(
 				(item: any) => item.value === domainData.zimbraPublicServiceProtocol
