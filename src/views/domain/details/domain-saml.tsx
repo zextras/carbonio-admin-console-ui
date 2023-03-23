@@ -16,8 +16,10 @@ import {
 	Table,
 	Padding,
 	SnackbarManagerContext,
-	Icon
+	Icon,
+	IconButton
 } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import logo from '../../../assets/ninja_robo.svg';
@@ -25,14 +27,24 @@ import { useDomainStore } from '../../../store/domain/store';
 import { getSamlConfig } from '../../../services/get-saml-configurations';
 import { importSamlConfig } from '../../../services/import-saml-configurations';
 import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
-import { download, isValidHttpsUrl, isValidUrl } from '../../utility/utils';
+import { copyTextToClipboard, download, isValidHttpsUrl, isValidUrl } from '../../utility/utils';
 import { updateSamlAttributes } from '../../../services/update-saml-attributes';
-import { SAML_METADATA_JSON_FILE, CONTENT_TYPE_TEXT_PLAIN } from '../../../constants';
+import {
+	SAML_METADATA_JSON_FILE,
+	CONTENT_TYPE_TEXT_PLAIN,
+	SP_ENTITY_ID_KEY,
+	SP_ASSERTION_CONSUMER_SERVICE_KEY
+} from '../../../constants';
 
 export type SamlAttribute = {
 	attribute: string;
 	value: unknown;
 };
+
+const CustomIcon = styled(Icon)`
+	width: 20px;
+	height: 20px;
+`;
 
 const DomainSaml: FC = () => {
 	const [t] = useTranslation();
@@ -45,6 +57,9 @@ const DomainSaml: FC = () => {
 	const [samlAttrValue, setSamlAttrValue] = useState<unknown>('');
 	const [metadataUrl, setMetadataUrl] = useState<string>('');
 	const [isAllowImport, setIsAllowImport] = useState<boolean>(false);
+	const [entityId, setEntityId] = useState<string>('');
+	const [serverUrl, setServiceUrl] = useState<string>('');
+	const [showBannerText, setShowBannerText] = useState<boolean>(true);
 
 	const headers: any = useMemo(
 		() => [
@@ -153,6 +168,19 @@ const DomainSaml: FC = () => {
 		[openSamlValue]
 	);
 
+	const setCopySAMLValues = useCallback((samlAttr: Array<SamlAttribute>): void => {
+		const spId: any = samlAttr.find((item) => item.attribute === SP_ENTITY_ID_KEY)?.value;
+		const spURl: any = samlAttr.find(
+			(item) => item.attribute === SP_ASSERTION_CONSUMER_SERVICE_KEY
+		)?.value;
+		if (spId) {
+			setEntityId(spId);
+		}
+		if (spURl) {
+			setServiceUrl(spURl);
+		}
+	}, []);
+
 	const getSAMLConfigurations = useCallback(
 		(domain: string): void => {
 			getSamlConfig(domain)
@@ -235,8 +263,9 @@ const DomainSaml: FC = () => {
 	useEffect(() => {
 		if (samlAttributes && samlAttributes?.length > 0) {
 			generateSAMLTable(samlAttributes);
+			setCopySAMLValues(samlAttributes);
 		}
-	}, [generateSAMLTable, samlAttributes]);
+	}, [generateSAMLTable, setCopySAMLValues, samlAttributes]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -278,6 +307,82 @@ const DomainSaml: FC = () => {
 						padding={{ top: 'large' }}
 					>
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
+							{showBannerText && (entityId || serverUrl) && (
+								<Container
+									orientation="horizontal"
+									crossAlignment="center"
+									width="97%"
+									mainAlignment="flex-start"
+									background="#D3EBF8"
+									padding={{
+										top: 'medium',
+										bottom: 'medium'
+									}}
+									style={{
+										borderRadius: '2px 2px 0px 0px',
+										margin: '1rem',
+										borderBottom: '1px solid #2196D3'
+									}}
+								>
+									<Row takeAvwidth="fill" width="5%" mainAlignment="flex-start">
+										<Padding horizontal="small">
+											<CustomIcon icon="CheckmarkCircle2Outline" color="#2196D3"></CustomIcon>
+										</Padding>
+									</Row>
+									<Row
+										takeAvwidth="fill"
+										mainAlignment="flex-start"
+										width="65%"
+										padding={{
+											top: 'small',
+											bottom: 'small'
+										}}
+									>
+										<Text overflow="break-word">
+											{t(
+												'cos.idp_configuration_saml_notes',
+												'Go to your IDP to configure your SAML and copy the entityid and serviceurl values'
+											)}
+										</Text>
+									</Row>
+									<Row takeAvwidth="fill" width="12%" mainAlignment="flex-start">
+										<Button
+											type="outlined"
+											label={t('label.entity_id', 'Entity ID')}
+											color="#2196D3"
+											size="medium"
+											backgroundColor="#D3EBF8"
+											icon="CopyOutline"
+											iconPlacement="left"
+											disabled={!entityId}
+											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+											onClick={() => copyTextToClipboard(entityId)}
+										/>
+									</Row>
+									<Row takeAvwidth="fill" width="16%" mainAlignment="flex-start">
+										<Button
+											type="outlined"
+											label={t('label.service_url', 'Service URL')}
+											color="#2196D3"
+											size="medium"
+											backgroundColor="#D3EBF8"
+											icon="CopyOutline"
+											iconPlacement="left"
+											disabled={!serverUrl}
+											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+											onClick={() => copyTextToClipboard(serverUrl)}
+										/>
+									</Row>
+									<Row takeAvwidth="fill" width="4%" mainAlignment="flex-start">
+										<IconButton
+											icon="CloseOutline"
+											size="large"
+											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+											onClick={() => setShowBannerText(false)}
+										/>
+									</Row>
+								</Container>
+							)}
 							<Row
 								takeAvwidth="fill"
 								mainAlignment="flex-start"
