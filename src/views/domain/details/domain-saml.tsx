@@ -27,13 +27,13 @@ import { useDomainStore } from '../../../store/domain/store';
 import { getSamlConfig } from '../../../services/get-saml-configurations';
 import { importSamlConfig } from '../../../services/import-saml-configurations';
 import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
-import { copyTextToClipboard, download, isValidHttpsUrl, isValidUrl } from '../../utility/utils';
+import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
 import { updateSamlAttributes } from '../../../services/update-saml-attributes';
 import {
 	SAML_METADATA_JSON_FILE,
 	CONTENT_TYPE_TEXT_PLAIN,
-	SP_ENTITY_ID_KEY,
-	SP_ASSERTION_CONSUMER_SERVICE_KEY
+	ZIMBRA_PUBLIC_SERVICE_HOSTNAME,
+	ZIMBRA_PUBLIC_SERVICE_PROTOCOL
 } from '../../../constants';
 import { deleteSamlAttributes } from '../../../services/delete-saml-attributes';
 
@@ -57,10 +57,10 @@ const DomainSaml: FC = () => {
 	const [samlAttrKey, setSamlAttrKey] = useState<string>('');
 	const [samlAttrValue, setSamlAttrValue] = useState<unknown>('');
 	const [metadataUrl, setMetadataUrl] = useState<string>('');
-	const [isAllowImport, setIsAllowImport] = useState<boolean>(false);
 	const [entityId, setEntityId] = useState<string>('');
 	const [serverUrl, setServiceUrl] = useState<string>('');
 	const [showBannerText, setShowBannerText] = useState<boolean>(true);
+	const domainInformation: any = useDomainStore((state) => state.domain?.a);
 
 	const headers: any = useMemo(
 		() => [
@@ -169,19 +169,6 @@ const DomainSaml: FC = () => {
 		[openSamlValue]
 	);
 
-	const setCopySAMLValues = useCallback((samlAttr: Array<SamlAttribute>): void => {
-		const spId: any = samlAttr.find((item) => item.attribute === SP_ENTITY_ID_KEY)?.value;
-		const spURl: any = samlAttr.find(
-			(item) => item.attribute === SP_ASSERTION_CONSUMER_SERVICE_KEY
-		)?.value;
-		if (spId) {
-			setEntityId(spId);
-		}
-		if (spURl) {
-			setServiceUrl(spURl);
-		}
-	}, []);
-
 	const getSAMLConfigurations = useCallback(
 		(domain: string): void => {
 			getSamlConfig(domain)
@@ -278,6 +265,21 @@ const DomainSaml: FC = () => {
 	);
 
 	useEffect(() => {
+		if (!!domainInformation && domainInformation.length > 0 && domainName) {
+			const publicHostNameArr = domainInformation.filter(
+				(domain: any) => domain.n === ZIMBRA_PUBLIC_SERVICE_HOSTNAME
+			);
+			const publicProtocolArr = domainInformation.filter(
+				(domain: any) => domain.n === ZIMBRA_PUBLIC_SERVICE_PROTOCOL
+			);
+			setEntityId(
+				getSPEntityId(publicProtocolArr[0]?._content, publicHostNameArr[0]?._content, domainName)
+			);
+			setServiceUrl(getServiceUrl(publicProtocolArr[0]?._content, publicHostNameArr[0]?._content));
+		}
+	}, [domainInformation, domainName]);
+
+	useEffect(() => {
 		if (domainName) {
 			getSAMLConfigurations(domainName);
 		}
@@ -286,9 +288,8 @@ const DomainSaml: FC = () => {
 	useEffect(() => {
 		if (samlAttributes && samlAttributes?.length > 0) {
 			generateSAMLTable(samlAttributes);
-			setCopySAMLValues(samlAttributes);
 		}
-	}, [generateSAMLTable, setCopySAMLValues, samlAttributes]);
+	}, [generateSAMLTable, samlAttributes]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -323,14 +324,9 @@ const DomainSaml: FC = () => {
 					width="100%"
 					height="calc(100vh - 150px)"
 				>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
-							{showBannerText && (entityId || serverUrl) && (
+							{showBannerText && (
 								<Container
 									orientation="horizontal"
 									crossAlignment="center"
@@ -411,7 +407,7 @@ const DomainSaml: FC = () => {
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
-								padding={{ left: 'large', top: 'large' }}
+								padding={{ left: 'large', top: 'medium' }}
 							>
 								<Text size="medium" weight="bold">
 									{t('label.configuration_lbl', 'Configuration')}
@@ -452,17 +448,6 @@ const DomainSaml: FC = () => {
 										value={metadataUrl}
 										onChange={(e: any): any => {
 											setMetadataUrl(e.target.value);
-											if (e.target.value) {
-												if (isAllowUnsecure) {
-													const validUrl = isValidUrl(e.target.value);
-													setIsAllowImport(validUrl);
-												} else {
-													const validUrl = isValidHttpsUrl(e.target.value);
-													setIsAllowImport(validUrl);
-												}
-											} else {
-												setIsAllowImport(false);
-											}
 										}}
 									/>
 								</Container>
@@ -479,7 +464,6 @@ const DomainSaml: FC = () => {
 										size="extralarge"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => importSAMLConfigurations(domainName, metadataUrl)}
-										disabled={!isAllowImport}
 									/>
 								</Container>
 							</Row>
@@ -537,6 +521,7 @@ const DomainSaml: FC = () => {
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
 									HeaderFactory={CustomHeaderFactory}
+									style={{ height: '15rem', overflow: 'auto' }}
 								/>
 							</Row>
 							{samlTableRows.length === 0 && (

@@ -201,5 +201,5 @@ export const INTERNAL_GAL = 'InternalGal';
 export const SAML = 'saml';
 export const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 export const SAML_METADATA_JSON_FILE = 'saml_metadata.json';
-export const SP_ENTITY_ID_KEY = 'sp.entityid';
-export const SP_ASSERTION_CONSUMER_SERVICE_KEY = 'sp.assertion_consumer_service.url';
+export const ZIMBRA_PUBLIC_SERVICE_HOSTNAME = 'zimbraPublicServiceHostname';
+export const ZIMBRA_PUBLIC_SERVICE_PROTOCOL = 'zimbraPublicServiceProtocol';

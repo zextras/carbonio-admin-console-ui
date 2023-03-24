@@ -1921,3 +1921,23 @@ export const download = (content: BlobPart, fileName: string, contentType: strin
 	a.download = fileName;
 	a.click();
 };
+
+export const getSPEntityId = (
+	protocol: string,
+	publicServerHostName: string,
+	domain: string
+): string => {
+	let url = '';
+	if (publicServerHostName) {
+		url = `${protocol || 'https'}://${publicServerHostName}/zx/auth/samlMetadata?domain=${domain}`;
+	}
+	return url;
+};
+
+export const getServiceUrl = (protocol: string, publicServerHostName: string): string => {
+	let url = '';
+	if (publicServerHostName) {
+		url = `${protocol || 'https'}://${publicServerHostName}/zx/auth/saml`;
+	}
+	return url;
+};
