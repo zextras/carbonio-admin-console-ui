@@ -35,6 +35,7 @@ import {
 	SP_ENTITY_ID_KEY,
 	SP_ASSERTION_CONSUMER_SERVICE_KEY
 } from '../../../constants';
+import { deleteSamlAttributes } from '../../../services/delete-saml-attributes';
 
 export type SamlAttribute = {
 	attribute: string;
@@ -242,6 +243,28 @@ const DomainSaml: FC = () => {
 				.then((data) => {
 					if (!data?.error) {
 						setSAMLAttributes(data);
+						setSamlAttrKey('');
+						setSamlAttrValue('');
+					} else {
+						const err = { message: data?.error };
+						showError(err);
+					}
+				})
+				.catch((error) => {
+					showError(error);
+				});
+		},
+		[setSAMLAttributes, showError]
+	);
+
+	const removeSAMLAttributes = useCallback(
+		(domain: string, key: string): void => {
+			deleteSamlAttributes(domain, key)
+				.then((data) => {
+					if (!data?.error) {
+						setSAMLAttributes(data);
+						setSamlAttrKey('');
+						setSamlAttrValue('');
 					} else {
 						const err = { message: data?.error };
 						showError(err);
@@ -557,7 +580,11 @@ const DomainSaml: FC = () => {
 										height={36}
 										width="fill"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClick={() => updateSAMLAttributes(domainName, samlAttrKey, samlAttrValue)}
+										onClick={() => {
+											if (samlAttrKey) {
+												updateSAMLAttributes(domainName, samlAttrKey, samlAttrValue);
+											}
+										}}
 									/>
 								</Container>
 								<Container width="32%" mainAlignment="flex-start" crossAlignment="flex-start">
@@ -569,7 +596,11 @@ const DomainSaml: FC = () => {
 										height={36}
 										width="fill"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClick={() => updateSAMLAttributes(domainName, samlAttrKey, samlAttrValue)}
+										onClick={() => {
+											if (samlAttrKey) {
+												updateSAMLAttributes(domainName, samlAttrKey, samlAttrValue);
+											}
+										}}
 									/>
 								</Container>
 								<Container width="32%" mainAlignment="flex-start" crossAlignment="flex-start">
@@ -580,6 +611,12 @@ const DomainSaml: FC = () => {
 										size="large"
 										height={36}
 										width="fill"
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClick={() => {
+											if (samlAttrKey) {
+												removeSAMLAttributes(domainName, samlAttrKey);
+											}
+										}}
 									/>
 								</Container>
 							</Row>
