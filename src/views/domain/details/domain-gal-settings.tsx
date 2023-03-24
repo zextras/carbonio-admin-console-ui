@@ -276,14 +276,14 @@ const DomainGalSettings: FC = () => {
 	};
 
 	const updateDomainInformation = useCallback(
-		() => {
+		(data) => {
 			if (!!domainInformation && domainInformation.length > 0) {
 				setZimbraGalAccountId('');
 				setZimbraGalAccountName('');
 				setZimbraDataSourcePollingInterval('');
 				setDataSourceName('');
 				const obj: DomainDataType | any = {};
-				domainInformation.map((item: { n: string; _content: string }) => {
+				data.map((item: { n: string; _content: string }) => {
 					obj[item?.n] = item._content;
 					return '';
 				});
@@ -377,13 +377,14 @@ const DomainGalSettings: FC = () => {
 			setPollingIntervalType(rangeItems[0]);
 			setPollingIntervalValue('');
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [zimbraDataSourcePollingInterval, rangeItems]);
 
 	const onCancel = (): void => {
 		setZimbraGalMaxResults(domainData?.zimbraGalMaxResults);
 		setZimbraGalLdapPageSize(domainData?.zimbraGalLdapPageSize);
 		updateFreqValues(domainData);
-		updateDomainInformation();
+		updateDomainInformation(domainInformation);
 		if (zimbraGalAccountId !== '') {
 			getGalAccount(zimbraGalAccountId);
 		}
@@ -401,8 +402,55 @@ const DomainGalSettings: FC = () => {
 				zimbraDataSourcePollingInterval.substring(0, zimbraDataSourcePollingInterval.length - 1)
 			);
 		}
-		setIsDirty(false);
+		// eslint-disable-next-line array-callback-return
+		domainInformation?.map((item) => {
+			if (item.n === 'zimbraGalLdapURL') {
+				if (domainData?.zimbraGalLdapURL === item?._content) {
+					setIsDirty(false);
+				}
+			}
+		});
 	};
+
+	useEffect(() => {
+		if (!isDirty) {
+			// eslint-disable-next-line array-callback-return
+			domainInformation?.map((item) => {
+				if (
+					item.n === 'zimbraGalLdapURL' ||
+					item.n === 'zimbraGalLdapFilter' ||
+					item.n === 'zimbraGalLdapSearchBase' ||
+					item.n === 'zimbraGalLdapBindDn' ||
+					item.n === 'zimbraGalLdapBindPassword' ||
+					item.n === 'zimbraGalMaxResults' ||
+					item.n === 'zimbraGalLdapPageSize'
+				) {
+					if (
+						domainData?.zimbraGalLdapURL !== item?._content ||
+						domainData?.zimbraGalLdapFilter !== item?._content ||
+						domainData?.zimbraGalLdapSearchBase !== item?._content ||
+						domainData?.zimbraGalLdapBindDn !== item?._content ||
+						domainData?.zimbraGalLdapBindPassword !== item?._content ||
+						domainData?.zimbraGalMaxResults !== item?._content ||
+						domainData?.zimbraGalLdapPageSize !== item?._content
+					) {
+						updateDomainInformation(domainInformation);
+					}
+				}
+			});
+		}
+	}, [
+		domainData?.zimbraGalLdapBindDn,
+		domainData?.zimbraGalLdapBindPassword,
+		domainData?.zimbraGalLdapFilter,
+		domainData?.zimbraGalLdapPageSize,
+		domainData?.zimbraGalLdapSearchBase,
+		domainData?.zimbraGalLdapURL,
+		domainData?.zimbraGalMaxResults,
+		domainInformation,
+		isDirty,
+		updateDomainInformation
+	]);
 
 	const onSave = (): void => {
 		const requests: any[] = [];
@@ -466,7 +514,6 @@ const DomainGalSettings: FC = () => {
 			_content: domainData?.zimbraGalLdapAuthMech
 		});
 		body.a = attributes;
-
 		requests.push(modifyDomain(body));
 		if (zimbraGalAccountId !== '') {
 			if (zimbraGalAccountIdArray?.length !== 0 && zimbraAccountDataSourceId?.length !== 0) {
@@ -504,14 +551,14 @@ const DomainGalSettings: FC = () => {
 		Promise.all(requests)
 			.then((results) => Promise.all(results))
 			.then((results) => {
-				const domain: {
+				const response: {
 					a: { n: string; _content: string }[];
 					id: string;
 					name: string;
 				} = results[0]?.domain[0];
-				if (domain) {
-					setDomain(domain);
-					updateDomainInformation();
+				if (response) {
+					setDomain(response);
+					updateDomainInformation(response?.a);
 				}
 				setIsDirty(false);
 				createSnackbar({
@@ -545,17 +592,6 @@ const DomainGalSettings: FC = () => {
 		}
 	};
 
-	const onChangeRangeType = (v: string): void => {
-		const range: IntervalType | undefined = rangeItems.find(
-			(item: IntervalType) => item.value === v
-		);
-		setPollingIntervalType(range);
-	};
-
-	const changeIntervalValue = (ev: React.ChangeEvent<HTMLInputElement>): void => {
-		setPollingIntervalValue(ev.target.value);
-	};
-
 	const onZimbraGalMaxResultChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setZimbraGalMaxResults(ev.target.value);
 	};
@@ -579,19 +615,19 @@ const DomainGalSettings: FC = () => {
 			zimbraGalLdapStartTlsEnabled: domainData?.zimbraGalLdapStartTlsEnabled === TRUE ? FALSE : TRUE
 		});
 	};
-
 	useEffect(() => {
 		if (
 			domainData?.zimbraGalMaxResults !== zimbraGalMaxResults ||
 			domainData?.zimbraGalLdapPageSize !== zimbraGalLdapPageSize
 		) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
 
 		if (zimbraGalLdapStartTlsEnabled?.current !== zimbraGalLdapStartTlsEnabled?.init) {
 			setIsDirty(true);
 		}
-
 		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
 			if (
 				zimbraDataSourcePollingInterval !== `${pollingIntervalValue}${pollingIntervalType?.value}`
@@ -600,14 +636,15 @@ const DomainGalSettings: FC = () => {
 			}
 		}
 	}, [
-		zimbraGalMaxResults,
-		domainData,
-		zimbraDataSourcePollingInterval,
-		pollingIntervalType,
+		domainData?.zimbraGalLdapPageSize,
+		domainData?.zimbraGalMaxResults,
+		pollingIntervalType?.value,
 		pollingIntervalValue,
+		zimbraDataSourcePollingInterval,
 		zimbraGalAccountId,
 		zimbraGalLdapPageSize,
-		zimbraGalLdapStartTlsEnabled
+		zimbraGalLdapStartTlsEnabled,
+		zimbraGalMaxResults
 	]);
 
 	const onFreqDigitsChange = useCallback(
@@ -635,7 +672,9 @@ const DomainGalSettings: FC = () => {
 				(item: IntervalType): boolean => item?.value === ev
 			);
 			setMeasureUnitSelection(measureUnitObject);
-			setZimbraDataSourceGalPollingInterval(`${freqValue.digits}${ev}`);
+			if (ev) {
+				setZimbraDataSourceGalPollingInterval(`${freqValue.digits}${ev}`);
+			}
 			if (ev !== freqValue?.time) {
 				setIsDirty(true);
 			}
@@ -703,8 +742,9 @@ const DomainGalSettings: FC = () => {
 	}, [domainData?.zimbraGalMode]);
 
 	useEffect(() => {
-		updateDomainInformation();
-	}, [updateDomainInformation]);
+		updateDomainInformation(domainInformation);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
