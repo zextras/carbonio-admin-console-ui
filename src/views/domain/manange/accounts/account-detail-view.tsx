@@ -434,10 +434,10 @@ const AccountDetailView: FC<any> = ({
 					width="100%"
 				>
 					<Padding right="large">
-						<Container width="fit" height="fit" style={{ border: '1px solid #2b73d2' }}>
-							<IconButton
-								iconColor="primary"
-								backgroundColor="gray6"
+						<Container width="fit" height="fit">
+							<Button
+								type="outlined"
+								color="primary"
 								icon="EditAsNewOutline"
 								size="large"
 								onClick={(): void => {
@@ -452,10 +452,10 @@ const AccountDetailView: FC<any> = ({
 						</Container>
 					</Padding>
 					<Padding right="large">
-						<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
-							<IconButton
-								iconColor="error"
-								backgroundColor="gray6"
+						<Container width="fit" height="fit">
+							<Button
+								type="outlined"
+								color="error"
 								icon="Trash2Outline"
 								size="large"
 								disabled={

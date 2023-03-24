@@ -454,6 +454,7 @@ const MailingListSection: FC<any> = () => {
 											zimbraHideInGal: !mailingListDetail?.zimbraHideInGal
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Container>
 						</ListRow>
@@ -473,6 +474,7 @@ const MailingListSection: FC<any> = () => {
 											zimbraMailStatus: !mailingListDetail?.zimbraMailStatus
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Container>
 						</ListRow>
@@ -536,6 +538,7 @@ const MailingListSection: FC<any> = () => {
 									dynamic: !mailingListDetail?.dynamic
 								}));
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>

@@ -234,6 +234,7 @@ const BackupAdvanced: FC = () => {
 											value={initbackupDetail.ldapDumpEnabled}
 											onClick={(): void => changeSwitchOption('ldapDumpEnabled')}
 											label={t('backup.ldap_dump', 'LDAP Dump')}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>
@@ -251,6 +252,7 @@ const BackupAdvanced: FC = () => {
 												'backup.store_server_configurations_in_the_backup',
 												'Store Server Configuration in the backup'
 											)}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>
@@ -265,6 +267,7 @@ const BackupAdvanced: FC = () => {
 											value={initbackupDetail.ZxBackup_PurgeCustomizations}
 											onClick={(): void => changeSwitchOption('ZxBackup_PurgeCustomizations')}
 											label={t('backup.purge_old_configurations', 'Purge Old Configurations')}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>
@@ -279,6 +282,7 @@ const BackupAdvanced: FC = () => {
 											value={initbackupDetail.backupSaveIndex}
 											onClick={(): void => changeSwitchOption('backupSaveIndex')}
 											label={t('backup.save_index', 'Save Index')}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>
@@ -373,6 +377,7 @@ const BackupAdvanced: FC = () => {
 												'backup.flash_metadata_in_the_disk_at_every_save',
 												'Flash metadata in the disk at every save'
 											)}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>
@@ -390,6 +395,7 @@ const BackupAdvanced: FC = () => {
 												'backup.archive_user_metadata_folder_in_the_remote_backup',
 												'Archive user metadata folder in the remote backup'
 											)}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>

@@ -173,7 +173,8 @@
         "Accounts": "Conturi",
         "Type": "Tip",
         "contacts": "Contacte",
-        "files": "Fisiere"
+        "files": "Fisiere",
+        "storage": "Spatiu de stocare"
     },
     "core": {
         "subscription": {

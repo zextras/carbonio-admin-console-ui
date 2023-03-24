@@ -219,6 +219,7 @@ const EditHsmPolicyVolumesSection: FC<{
 						onClick={(): void => {
 							setShowSourceVolume(!showSourceVolume);
 						}}
+						iconColor="primary"
 					/>
 				</Padding>
 			</ListRow>
@@ -292,6 +293,7 @@ const EditHsmPolicyVolumesSection: FC<{
 						onClick={(): void => {
 							setShowDestinationVolume(!showDestinationVolume);
 						}}
+						iconColor="primary"
 					/>
 				</Padding>
 			</ListRow>

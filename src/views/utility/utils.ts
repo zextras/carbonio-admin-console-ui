@@ -1752,6 +1752,10 @@ export const delegateRightsType = (t: TFunction): Array<{ value?: string; label:
 		value: MANAGE_NO_SEND
 	},
 	{
+		label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
+		value: 'manage_no_send'
+	},
+	{
 		label: t(
 			'account_details.send_read_manage_mails',
 			'Send, Read and Manage Mails (all of the above)'

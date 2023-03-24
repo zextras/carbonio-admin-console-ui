@@ -407,7 +407,7 @@ const DomainListPanel: FC = () => {
 							<CustomIcon
 								icon="GlobeOutline"
 								size="large"
-								color="text"
+								color="primary"
 								onClick={(): void => {
 									setIsDomainListExpand(!isDomainListExpand);
 								}}

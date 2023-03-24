@@ -281,26 +281,24 @@ const DetailsPanel: FC<{
 				style={{ height: 'fit-content' }}
 			>
 				<Padding right="large">
-					<Container style={{ border: '1px solid #2b73d2' }}>
-						<IconButton
-							iconColor="primary"
-							backgroundColor="gray6"
+					<Container>
+						<Button
+							type="outlined"
+							color="primary"
 							icon="EditAsNewOutline"
-							height={44}
-							width={44}
+							size="large"
 							onClick={(): void => {
 								setShowEditDetailView(true);
 							}}
 						/>
 					</Container>
 				</Padding>
-				<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
-					<IconButton
-						iconColor="error"
-						backgroundColor="gray6"
+				<Container width="fit" height="fit">
+					<Button
+						type="outlined"
+						color="error"
 						icon="Trash2Outline"
-						height={44}
-						width={44}
+						size="large"
 						onClick={(): void => {
 							setBucketDeleteName(bucketDetail);
 							setOpen(true);

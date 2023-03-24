@@ -1306,6 +1306,11 @@ const EditMailingListView: FC<any> = ({
 			setIsDirty(true);
 		}
 	}, [previousDetail?.displayName, displayName]);
+	useEffect(() => {
+		if (!isEqual(zimbraDefaultMailAlias, zimbraMailAlias)) {
+			setIsDirty(true);
+		}
+	}, [zimbraDefaultMailAlias, zimbraMailAlias]);
 
 	useEffect(() => {
 		if (
@@ -1924,6 +1929,7 @@ const EditMailingListView: FC<any> = ({
 									!zimbraDistributionListSendShareMessageToNewMembers
 								);
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -1940,6 +1946,7 @@ const EditMailingListView: FC<any> = ({
 								setIsDirty(true);
 								setZimbraHideInGal(!zimbraHideInGal);
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -2609,6 +2616,7 @@ const EditMailingListView: FC<any> = ({
 								setIsAddToOwnerList(!isAddToOwnerList);
 							}}
 							disabled={selectedMailingList?.dynamic}
+							iconColor="primary"
 						/>
 					</Container>
 				</Container>

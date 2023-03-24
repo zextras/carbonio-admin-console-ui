@@ -323,9 +323,8 @@ const ServerVolumeDetailsPanel: FC<{
 							type="outlined"
 							iconColor="gray6"
 							icon="EditAsNewOutline"
-							height={36}
+							size="large"
 							label=""
-							width={36}
 							style={{ padding: '0.5rem 0.5rem 0.5rem 0.375rem', display: 'block' }}
 							onClick={(): void => {
 								setmodifyVolumeToggle(true);
@@ -378,13 +377,18 @@ const ServerVolumeDetailsPanel: FC<{
 										<Switch
 											value={detailData?.compressBlobs}
 											label={t('label.enable_compression', 'Enable Compression')}
+											iconColor="primary"
 										/>
 									</Row>
 									<Padding width="4%" />
 								</>
 							)}
 							<Row width="48%" mainAlignment="flex-start">
-								<Switch value={detailData?.isCurrent} label={t('label.current', 'Current')} />
+								<Switch
+									value={detailData?.isCurrent}
+									label={t('label.current', 'Current')}
+									iconColor="primary"
+								/>
 							</Row>
 						</Row>
 						{typeLabel !== INDEXERES && (
@@ -451,11 +455,7 @@ const ServerVolumeDetailsPanel: FC<{
 						</Row>
 
 						<Row padding={{ horizontal: 'small' }}>
-							<IconButton
-								icon="CloseOutline"
-								color="gray1"
-								onClick={(): void => setToggleDetailPage(false)}
-							/>
+							<IconButton icon="CloseOutline" onClick={(): void => setToggleDetailPage(false)} />
 						</Row>
 					</Row>
 
@@ -571,6 +571,7 @@ const ServerVolumeDetailsPanel: FC<{
 										setSecondaryRadio(false);
 									}}
 									disabled
+									iconColor="primary"
 								/>
 							</Row>
 							<Row width="48%">
@@ -584,6 +585,7 @@ const ServerVolumeDetailsPanel: FC<{
 										setPrimaryRadio(false);
 									}}
 									disabled
+									iconColor="primary"
 								/>
 							</Row>
 						</Row>
@@ -613,6 +615,7 @@ const ServerVolumeDetailsPanel: FC<{
 												value={volumeDetail?.useInfrequentAccess}
 												label={t('label.use_infraquent_access', 'Use infrequent access')}
 												disabled
+												iconColor="primary"
 											/>
 										</Row>
 										<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -646,6 +649,7 @@ const ServerVolumeDetailsPanel: FC<{
 										value={volumeDetail?.useIntelligentTiering}
 										label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
 										disabled
+										iconColor="primary"
 									/>
 								</Row>
 								<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -669,6 +673,7 @@ const ServerVolumeDetailsPanel: FC<{
 								value={volumeDetail?.isCurrent}
 								label={t('label.enable_current', 'Enable as Current')}
 								disabled
+								iconColor="primary"
 							/>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
@@ -684,6 +689,7 @@ const ServerVolumeDetailsPanel: FC<{
 								value={volumeDetail?.centralized}
 								label={t('label.storage_centralized', 'I want this Storage to be centralized')}
 								disabled
+								iconColor="primary"
 							/>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>

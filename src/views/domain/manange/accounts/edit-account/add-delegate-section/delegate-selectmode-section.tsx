@@ -143,10 +143,7 @@ const DelegateSelectModeSection: FC = () => {
 				<Row mainAlignment="flex-start" width="100%">
 					<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 						<Text size="small" color="gray0" weight="bold">
-							{t(
-								'account_details.i_want_to_create_a_delegate_for',
-								`I want to create a delegate for`
-							)}
+							{t('account_details.i_want_to_create_a_delegate_for', `I want to create a delegate`)}
 						</Text>
 					</Row>
 				</Row>

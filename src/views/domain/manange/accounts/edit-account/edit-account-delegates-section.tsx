@@ -45,7 +45,7 @@ import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import { deligateSendSettings } from '../../../../utility/utils';
+import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
 import {
 	SEND_MAILS_ONLY,
 	READ_MAILS_ONLY,
@@ -272,7 +272,7 @@ const EditAccountDelegatesSection: FC = () => {
 					type: 'success',
 					label: t(
 						'account_details.delegate_deleted_successfully',
-						'Delegate deleted successfully'
+						'Delegate`s rights deleted successfully'
 					),
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -321,8 +321,14 @@ const EditAccountDelegatesSection: FC = () => {
 					key: 'success',
 					type: 'success',
 					label: editMode
-						? t('account_details.delegate_updated_successfully', 'Delegate updated successfully')
-						: t('account_details.delegate_created_successfully', 'Delegate created successfully'),
+						? t(
+								'account_details.delegate_updated_successfully',
+								'Delegate`s rights updated successfully'
+						  )
+						: t(
+								'account_details.delegate_created_successfully',
+								'Delegate`s rights created successfully'
+						  ),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -371,8 +377,14 @@ const EditAccountDelegatesSection: FC = () => {
 					key: 'success',
 					type: 'success',
 					label: editMode
-						? t('account_details.delegate_updated_successfully', 'Delegate updated successfully')
-						: t('account_details.delegate_created_successfully', 'Delegate created successfully'),
+						? t(
+								'account_details.delegate_updated_successfully',
+								'Delegate`s rights updated successfully'
+						  )
+						: t(
+								'account_details.delegate_created_successfully',
+								'Delegate`s rights created successfully'
+						  ),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -923,7 +935,11 @@ const EditAccountDelegatesSection: FC = () => {
 									listArr = pullAt(listArr, pullIndex);
 								}
 								setSimpleSelectedList(listArr);
-								setSelectedAccounts(data);
+								const filterData: any = [];
+								map(data, (ele) => {
+									if (isValidEmail(ele.label ?? '')) filterData.push(ele);
+								});
+								setSelectedAccounts(filterData);
 
 								setSearchQuery('');
 							}}
@@ -938,6 +954,7 @@ const EditAccountDelegatesSection: FC = () => {
 						>
 							<Row width="24%" mainAlignment="flex-start">
 								<Checkbox
+									iconColor="primary"
 									value={readRightWriteCheck}
 									onClick={(): void => {
 										if (!readRightWriteCheck) {
@@ -950,6 +967,7 @@ const EditAccountDelegatesSection: FC = () => {
 							</Row>
 							<Row width="24%" mainAlignment="flex-start">
 								<Checkbox
+									iconColor="primary"
 									value={readRightCheck}
 									onClick={(): void => {
 										if (!readRightCheck) {
@@ -962,6 +980,7 @@ const EditAccountDelegatesSection: FC = () => {
 							</Row>
 							<Row width="24%" mainAlignment="flex-start">
 								<Checkbox
+									iconColor="primary"
 									value={sendRightCheck}
 									onClick={(): void => {
 										if (!sendRightCheck) {
@@ -974,6 +993,7 @@ const EditAccountDelegatesSection: FC = () => {
 							</Row>
 							<Row width="24%" mainAlignment="flex-start">
 								<Checkbox
+									iconColor="primary"
 									value={sendBehalfRightCheck}
 									onClick={(): void => {
 										if (!sendBehalfRightCheck) {

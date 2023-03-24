@@ -2093,6 +2093,7 @@ const CosAdvanced: FC = () => {
 										)}
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => changeSwitchOption('zimbraPasswordLocked')}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>
@@ -2241,6 +2242,7 @@ const CosAdvanced: FC = () => {
 										label={t('cos.reject_common_passwords', 'Reject common passwords')}
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>
@@ -2271,6 +2273,7 @@ const CosAdvanced: FC = () => {
 										label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => changeSwitchOption('zimbraPasswordLockoutEnabled')}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>

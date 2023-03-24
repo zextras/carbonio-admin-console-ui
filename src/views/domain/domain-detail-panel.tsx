@@ -75,7 +75,7 @@ const DomainDetailPanel: FC = () => {
 									type="outlined"
 									label={t('label.create_new_domain', 'Creat New Domain')}
 									icon="Plus"
-									color="info"
+									color="primary"
 									onClick={createNewDomain}
 								/>
 							</Text>

@@ -382,6 +382,7 @@ const CosServerPools: FC = () => {
 								onClick={(): void => {
 									setZimbraMailHostPool(!zimbraMailHostPool);
 								}}
+								iconColor="primary"
 							/>
 						</Padding>
 					</ListRow>
@@ -400,7 +401,7 @@ const CosServerPools: FC = () => {
 												value={searchServer}
 												label={t('cos.search_a_specific_server', 'Search for a specific server')}
 												CustomIcon={(): any => (
-													<Icon icon="FunnelOutline" size="large" color="secondary" />
+													<Icon icon="FunnelOutline" size="large" color="primary" />
 												)}
 												onChange={(e: any): any => {
 													setSearchServer(e.target.value);

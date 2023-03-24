@@ -276,6 +276,7 @@ const MailstoresCreate: FC<{
 										setSecondaryRadio(false);
 										setIndexRadio(false);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 							<Row width="48%" mainAlignment="flex-start">
@@ -289,6 +290,7 @@ const MailstoresCreate: FC<{
 										setPrimaryRadio(false);
 										setIndexRadio(false);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</Row>
@@ -303,6 +305,7 @@ const MailstoresCreate: FC<{
 									setPrimaryRadio(false);
 									setSecondaryRadio(false);
 								}}
+								iconColor="primary"
 							/>
 						</Row>
 					</>
@@ -331,6 +334,7 @@ const MailstoresCreate: FC<{
 								value={volumeDetail?.isCompression}
 								label={t('label.enable_compression', 'Enable Compression')}
 								onClick={changeSwitchIsCompression}
+								iconColor="primary"
 							/>
 						</Row>
 						<Padding horizontal="small" />
@@ -360,6 +364,7 @@ const MailstoresCreate: FC<{
 						value={volumeDetail?.isCurrent}
 						label={t('label.enable_current', 'Enable as Current')}
 						onClick={changeSwitchIsCurrent}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>

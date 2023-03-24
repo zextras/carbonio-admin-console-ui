@@ -152,7 +152,7 @@
         "type": "Typ",
         "unsaved_changes": "Sie haben ungespeicherte Änderungen",
         "unsaved_changes_line1": "Sind Sie sicher, dass Sie diese Seite verlassen wollen, ohne zu speichern?",
-        "unsaved_changes_line2": "Alle nicht gespeicherten Änderungen gehen verloren.",
+        "unsaved_changes_line2": "Alle nicht gespeicherten Änderungen gehen verloren",
         "use_iCal_delegation_model_for_shared_calendars_for_CalDAV_interface": "iCal-Delegationsmodell für freigegebene Kalender für CalDAV-Schnittstelle nutzen",
         "use_the_gal_when_autocompleting_addresses": "Die globale Adressliste beim automatischen Vervollständigen von Adressen verwenden",
         "virtual_hosts": "Virtuelle Hosts",
@@ -773,7 +773,9 @@
         "mail_signatures": "Mail-Signaturen",
         "mails": "Mails",
         "out_of_the_office_reply": "Abwesenheitsnachricht",
-        "tasks": "Aufgaben"
+        "tasks": "Aufgaben",
+        "quota": "Kontingent",
+        "storage": "Speicher"
     },
     "timezone": {
         "asia_yerevan": "{{value}} Eriwan",
@@ -1313,7 +1315,8 @@
     "accountDetails": {
         "enable_activeSync_remote_access": "ActiveSync Fernsteuerung aktivieren",
         "default_COS": "Standard COS",
-        "change_password_for_next_login": "Das Passwort muss beim nächsten Login geändert werden"
+        "change_password_for_next_login": "Das Passwort muss beim nächsten Login geändert werden",
+        "user_will_change_password_on_next_login": "Benutzer ändert Passwort bei nächster Anmeldung"
     },
     "account": {
         "new": {
@@ -1423,13 +1426,27 @@
         "use_quickadd_dialog_in_creation": "QuickAdd Dialog bei Erstellung nutzen",
         "view_mail_as_html": "E-Mail als HTML ansehen",
         "activesync_remote_access": "ActiveSync Fernsteuerung",
-        "Chats": "Chats",
+        "Chats": "Chat",
         "domain": "Domain",
         "aliases": "Aliasnamen",
         "files": "Dateien",
         "NEXT": "WEITER",
         "abstract": "Abstrakt",
-        "on_behalf_of": "im namen von"
+        "on_behalf_of": "im namen von",
+        "delegate_created_successfully": "Delegierter erfolgreich erstellt",
+        "delegate_deleted_successfully": "Rechte des Delegierten erfolgreich gelöscht",
+        "delegate_rights": "Die Rechte des Delegierten",
+        "delegate_updated_successfully": "Rechte des Delegierten erfolgreich aktualisiert",
+        "allow_user_check_minimum_interval": "Dem Benutzer die Möglichkeit geben, das Mindestprüfintervall zu ändern",
+        "ADD": "hinzufügen",
+        "as": "als",
+        "click_on_the_pencil_to_edit": "Klicken Sie auf den Bleistift, um den vorhandenen Alias zu bearbeiten, oder klicken Sie auf das Kreuz, um ihn zu löschen",
+        "a_user": "Ein benutzer",
+        "add_user_on_delegates_list": "Benutzer zur Delegiertenliste hinzufügen",
+        "all_folders": "Alle Ordner",
+        "an_existing_group": "Eine existierende Gruppe",
+        "do_not_save_it": "Nicht speichern",
+        "deligate_abstract_text": "Der Benutzer {{granteeEmail}} wird in der Lage sein, Mails zu senden {{right}} {{targetEmail}}"
     },
     "connection": {
         "access_key": "Access Key",

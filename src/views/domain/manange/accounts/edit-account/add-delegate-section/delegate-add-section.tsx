@@ -56,7 +56,7 @@ const DelegateAddSection: FC = () => {
 				<Row mainAlignment="flex-start" width="100%">
 					<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 						<Input
-							label={t('account_details.delegate_rights', 'Delegate Rights')}
+							label={t('account_details.delegate_rights', 'Delegate`s rights')}
 							backgroundColor="gray5"
 							defaultValue={
 								DELEGETES_RIGHTS_TYPE.find(
@@ -84,7 +84,7 @@ const DelegateAddSection: FC = () => {
 								backgroundColor="gray5"
 								defaultValue={t(
 									'account_details.send_recepients_see_the_mail',
-									'Send {{right}} (recepients will see the mail from {{targetEmail}})',
+									'Send {{right}} (recipients will display this sender email {{targetEmail}})',
 									{
 										granteeEmail: deligateDetail?.grantee?.[0]?.name,
 										targetEmail: accountDetail?.zimbraMailDeliveryAddress,
@@ -96,7 +96,7 @@ const DelegateAddSection: FC = () => {
 								)}
 								value={t(
 									'account_details.send_recepients_see_the_mail',
-									'Send {{right}} (recepients will see the mail from {{targetEmail}})',
+									'Send {{right}} (recipients will display this sender email {{targetEmail}})',
 									{
 										granteeEmail: deligateDetail?.grantee?.[0]?.name,
 										targetEmail: accountDetail?.zimbraMailDeliveryAddress,

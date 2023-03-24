@@ -999,6 +999,7 @@ const BackupConfiguration: FC = () => {
 								)}
 								value={moduleEnableStartup}
 								onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -1006,6 +1007,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
 								value={enableRealtimeScanner}
 								onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -1013,6 +1015,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
 								value={runSmartScanStartup}
 								onClick={(): void => setRunSmartScanStartup(!runSmartScanStartup)}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
@@ -1295,6 +1298,7 @@ const BackupConfiguration: FC = () => {
 							label={t('backup.schedule_smartscan', 'Schedule Smartscan')}
 							value={isScheduleSmartScan}
 							onClick={(): void => setIsScheduleSmartScan(!isScheduleSmartScan)}
+							iconColor="primary"
 						/>
 					</Container>
 
@@ -1368,6 +1372,7 @@ const BackupConfiguration: FC = () => {
 								onClick={(): void =>
 									setScheduleAutomaticRetentionPolicy(!scheduleAutomaticRetentionPolicy)
 								}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
