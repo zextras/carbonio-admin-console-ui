@@ -17,7 +17,8 @@ import {
 	Padding,
 	SnackbarManagerContext,
 	Icon,
-	IconButton
+	IconButton,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -118,6 +119,17 @@ const DomainSaml: FC = () => {
 			.then((data) => {
 				if (!data?.error) {
 					download(JSON.stringify(data), SAML_METADATA_JSON_FILE, CONTENT_TYPE_TEXT_PLAIN);
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t(
+							'label.you_have_exported_the_configuration',
+							'You have exported the configuration'
+						),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
 				} else {
 					const err = { message: data?.error };
 					showError(err);
@@ -193,6 +205,17 @@ const DomainSaml: FC = () => {
 				.then((data) => {
 					if (!data?.error) {
 						setSAMLAttributes(data);
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								'label.you_have_imported_the_configuration',
+								'You have imported the configuration'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
 					} else {
 						const err = { message: data?.error };
 						showError(err);
@@ -202,7 +225,7 @@ const DomainSaml: FC = () => {
 					showError(error);
 				});
 		},
-		[setSAMLAttributes, showError]
+		[createSnackbar, setSAMLAttributes, showError, t]
 	);
 
 	const generateSPCertificates = useCallback(
@@ -211,6 +234,17 @@ const DomainSaml: FC = () => {
 				.then((data) => {
 					if (!data?.error) {
 						setSAMLAttributes(data);
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								'label.you_have_generated_the_sp_certificate',
+								'You have generated the SP Certificate'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
 					} else {
 						const err = { message: data?.error };
 						showError(err);
@@ -220,11 +254,11 @@ const DomainSaml: FC = () => {
 					showError(error);
 				});
 		},
-		[setSAMLAttributes, showError]
+		[createSnackbar, setSAMLAttributes, showError, t]
 	);
 
-	const updateSAMLAttributes = useCallback(
-		(domain: string, key: string, value: unknown): void => {
+	const addOrUpdateSAMLAttributes = useCallback(
+		(domain: string, key: string, value: unknown, isUpdate: boolean): void => {
 			const body: any = { [key]: value };
 			updateSamlAttributes(domain, body)
 				.then((data) => {
@@ -232,6 +266,32 @@ const DomainSaml: FC = () => {
 						setSAMLAttributes(data);
 						setSamlAttrKey('');
 						setSamlAttrValue('');
+						const attributeName = key;
+						if (isUpdate) {
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t('label.you_have_updated_attribute', {
+									attributeName,
+									defaultValue: 'You have updated the {{ attributeName }} attribute'
+								}),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						} else {
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t('label.you_have_added_attribute', {
+									attributeName,
+									defaultValue: 'You have added the {{ attributeName }} attribute'
+								}),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						}
 					} else {
 						const err = { message: data?.error };
 						showError(err);
@@ -241,7 +301,7 @@ const DomainSaml: FC = () => {
 					showError(error);
 				});
 		},
-		[setSAMLAttributes, showError]
+		[createSnackbar, setSAMLAttributes, showError, t]
 	);
 
 	const removeSAMLAttributes = useCallback(
@@ -252,6 +312,18 @@ const DomainSaml: FC = () => {
 						setSAMLAttributes(data);
 						setSamlAttrKey('');
 						setSamlAttrValue('');
+						const attributeName = key;
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t('label.you_have_removed_attribute', {
+								attributeName,
+								defaultValue: 'You have removed the {{ attributeName }} attribute'
+							}),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
 					} else {
 						const err = { message: data?.error };
 						showError(err);
@@ -261,7 +333,7 @@ const DomainSaml: FC = () => {
 					showError(error);
 				});
 		},
-		[setSAMLAttributes, showError]
+		[createSnackbar, setSAMLAttributes, showError, t]
 	);
 
 	useEffect(() => {
@@ -365,32 +437,39 @@ const DomainSaml: FC = () => {
 										</Text>
 									</Row>
 									<Row takeAvwidth="fill" width="12%" mainAlignment="flex-start">
-										<Button
-											type="outlined"
-											label={t('label.entity_id', 'Entity ID')}
-											color="#2196D3"
-											size="medium"
-											backgroundColor="#D3EBF8"
-											icon="CopyOutline"
-											iconPlacement="left"
-											disabled={!entityId}
-											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-											onClick={() => copyTextToClipboard(entityId)}
-										/>
+										<Tooltip placement="top" label={t('label.entity_id_copied', 'EntityID copied')}>
+											<Button
+												type="outlined"
+												label={t('label.entity_id', 'Entity ID')}
+												color="#2196D3"
+												size="medium"
+												backgroundColor="#D3EBF8"
+												icon="CopyOutline"
+												iconPlacement="left"
+												disabled={!entityId}
+												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												onClick={() => copyTextToClipboard(entityId)}
+											/>
+										</Tooltip>
 									</Row>
 									<Row takeAvwidth="fill" width="16%" mainAlignment="flex-start">
-										<Button
-											type="outlined"
-											label={t('label.service_url', 'Service URL')}
-											color="#2196D3"
-											size="medium"
-											backgroundColor="#D3EBF8"
-											icon="CopyOutline"
-											iconPlacement="left"
-											disabled={!serverUrl}
-											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-											onClick={() => copyTextToClipboard(serverUrl)}
-										/>
+										<Tooltip
+											placement="top"
+											label={t('label.service_url_copied', 'ServiceURL copied')}
+										>
+											<Button
+												type="outlined"
+												label={t('label.service_url', 'Service URL')}
+												color="#2196D3"
+												size="medium"
+												backgroundColor="#D3EBF8"
+												icon="CopyOutline"
+												iconPlacement="left"
+												disabled={!serverUrl}
+												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+												onClick={() => copyTextToClipboard(serverUrl)}
+											/>
+										</Tooltip>
 									</Row>
 									<Row takeAvwidth="fill" width="4%" mainAlignment="flex-start">
 										<IconButton
@@ -505,6 +584,7 @@ const DomainSaml: FC = () => {
 										size="large"
 										height={36}
 										width="fill"
+										disabled
 									/>
 								</Container>
 							</Row>
@@ -567,7 +647,8 @@ const DomainSaml: FC = () => {
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => {
 											if (samlAttrKey) {
-												updateSAMLAttributes(domainName, samlAttrKey, samlAttrValue);
+												// eslint-disable-next-line max-len
+												addOrUpdateSAMLAttributes(domainName, samlAttrKey, samlAttrValue, false);
 											}
 										}}
 									/>
@@ -583,7 +664,7 @@ const DomainSaml: FC = () => {
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => {
 											if (samlAttrKey) {
-												updateSAMLAttributes(domainName, samlAttrKey, samlAttrValue);
+												addOrUpdateSAMLAttributes(domainName, samlAttrKey, samlAttrValue, true);
 											}
 										}}
 									/>

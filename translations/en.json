@@ -972,6 +972,7 @@
         "end_user_webapp": "WebApp End user",
         "enter_email_address": "Enter E-mail address",
         "entity_id": "Entity ID",
+        "entity_id_copied": "EntityID copied",
         "error": "{{message}}",
         "everyone": "Everyone",
         "ex": "ex.",
@@ -1336,6 +1337,7 @@
         "service": "Service",
         "service_status": "Service Status",
         "service_url": "Service URL",
+        "service_url_copied": "ServiceURL copied",
         "services": "Services",
         "session_end_success": "Session ended successfully",
         "session_id": "Session ID",
@@ -1531,6 +1533,12 @@
         "you_are_deleting_ml": "You are deleting {{name}}",
         "you_are_trying_reset_device": "You are trying to reset a device",
         "you_are_trying_wipe_device": "You are trying to wipe a device",
+        "you_have_added_attribute": "You have added the {{ attributeName }} attribute",
+        "you_have_exported_the_configuration": "You have exported the configuration",
+        "you_have_generated_the_sp_certificate": "You have generated the SP Certificate",
+        "you_have_imported_the_configuration": "You have imported the configuration",
+        "you_have_removed_attribute": "You have removed the {{ attributeName }} attribute",
+        "you_have_updated_attribute": "You have updated the {{ attributeName }} attribute",
         "your_auth_method_is": "Your Auth Method is"
     },
     "locale": {

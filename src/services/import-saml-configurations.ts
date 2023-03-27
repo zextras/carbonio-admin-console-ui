@@ -11,4 +11,4 @@ import {
 } from '@zextras/carbonio-shell-ui';
 
 export const importSamlConfig = async (domain: string, url: string): Promise<any> =>
-	fetchExternalSoap(`/service/extension/zextras_admin/auth/saml-generate/${domain}?url=${url}`, {});
+	fetchExternalSoap(`/service/extension/zextras_admin/auth/saml/${domain}?url=${url}`, {});
