@@ -930,9 +930,7 @@ const DomainGeneralSettings: FC = () => {
 										color="error"
 										size="extralarge"
 										width="100%"
-										onClick={(): void => {
-											setOpenConfirmDialog(true);
-										}}
+										onClick={onDeleteDomain}
 										style={{ width: '100%' }}
 									/>
 									<Modal
