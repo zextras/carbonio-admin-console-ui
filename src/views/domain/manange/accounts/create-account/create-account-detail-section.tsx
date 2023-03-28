@@ -82,7 +82,7 @@ const CreateAccountDetailSection: FC = () => {
 		() =>
 			`${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}${
 				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
-			} ${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
+			}${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
 		[accountDetail?.givenName, accountDetail?.initials, accountDetail?.sn]
 	);
 	useEffect(() => {
