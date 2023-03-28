@@ -100,7 +100,7 @@ const MTAInboundFlowSecurity: FC = () => {
 			}
 
 			const zimbraMtaSmtpdRejectUnlistedSender = configInformation.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaSmtpdRejectUnlistedRecipient'
+				(item: Record<string, string>) => item?.n === 'zimbraMtaSmtpdRejectUnlistedSender'
 			);
 
 			if (zimbraMtaSmtpdRejectUnlistedSender && zimbraMtaSmtpdRejectUnlistedSender[0]?._content) {
