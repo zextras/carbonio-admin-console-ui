@@ -14,10 +14,11 @@ import {
 	ChipInput,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { isEqual } from 'lodash';
+import { isEqual, reduce } from 'lodash';
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MtaInboundSecurity } from '../../../../types';
+import { FALSE, TRUE } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
@@ -95,6 +96,54 @@ const MTAInboundFlowSecurity: FC = () => {
 				setValue(
 					'zimbraMtaBlockedExtensionWarnRecipient',
 					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === 'TRUE'
+				);
+			}
+
+			const zimbraMtaSmtpdRejectUnlistedSender = configInformation.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaSmtpdRejectUnlistedRecipient'
+			);
+
+			if (zimbraMtaSmtpdRejectUnlistedSender && zimbraMtaSmtpdRejectUnlistedSender[0]?._content) {
+				setInitialValue(
+					'zimbraMtaSmtpdRejectUnlistedSender',
+					zimbraMtaSmtpdRejectUnlistedSender[0]?._content === 'yes'
+				);
+				setValue(
+					'zimbraMtaSmtpdRejectUnlistedSender',
+					zimbraMtaSmtpdRejectUnlistedSender[0]?._content === 'yes'
+				);
+			}
+			const zimbraMtaSmtpdRejectUnlistedRecipient = configInformation.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaSmtpdRejectUnlistedRecipient'
+			);
+			if (
+				zimbraMtaSmtpdRejectUnlistedRecipient &&
+				zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content
+			) {
+				setInitialValue(
+					'zimbraMtaSmtpdRejectUnlistedRecipient',
+					zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content === 'yes'
+				);
+				setValue(
+					'zimbraMtaSmtpdRejectUnlistedRecipient',
+					zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content === 'yes'
+				);
+			}
+			const zimbraMtaSmtpdSenderRestrictions = configInformation.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaSmtpdSenderRestrictions'
+			);
+
+			if (zimbraMtaSmtpdSenderRestrictions) {
+				setInitialValue(
+					'zimbraMtaSmtpdSenderRestrictions',
+					zimbraMtaSmtpdSenderRestrictions.length > 0 &&
+						zimbraMtaSmtpdSenderRestrictions[0]?._content === 'reject_sender_login_mismatch'
+				);
+				setValue(
+					'zimbraMtaSmtpdSenderRestrictions',
+
+					zimbraMtaSmtpdSenderRestrictions.length > 0 &&
+						zimbraMtaSmtpdSenderRestrictions[0]?._content === 'reject_sender_login_mismatch'
 				);
 			}
 		}
@@ -182,6 +231,29 @@ const MTAInboundFlowSecurity: FC = () => {
 				}
 			}
 		}
+		attributes.push({
+			n: 'zimbraMtaBlockedExtensionWarnAdmin',
+			_content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin ? TRUE : FALSE
+		});
+		attributes.push({
+			n: 'zimbraMtaBlockedExtensionWarnRecipient',
+			_content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient ? TRUE : FALSE
+		});
+
+		attributes.push({
+			n: 'zimbraMtaSmtpdRejectUnlistedSender',
+			_content: mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender ? 'yes' : 'no'
+		});
+		attributes.push({
+			n: 'zimbraMtaSmtpdRejectUnlistedRecipient',
+			_content: mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient ? 'yes' : 'no'
+		});
+		attributes.push({
+			n: 'zimbraMtaSmtpdSenderRestrictions',
+			_content: mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions
+				? 'reject_sender_login_mismatch'
+				: ''
+		});
 		modifyConfigRequest(attributes);
 	}, [mtaInboundSecurityDetail, modifyConfigRequest]);
 
@@ -344,10 +416,28 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch label={t('mta.reject_unlisted_sender', 'Reject unlisted Sender')} />
+						<Switch
+							label={t('mta.reject_unlisted_sender', 'Reject unlisted Sender')}
+							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender}
+							onClick={(): void =>
+								setValue(
+									'zimbraMtaSmtpdRejectUnlistedSender',
+									!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender
+								)
+							}
+						/>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch label={t('mta.reject_unlisted_recipient', 'Reject unlisted Recipient')} />
+						<Switch
+							label={t('mta.reject_unlisted_recipient', 'Reject unlisted Recipient')}
+							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient}
+							onClick={(): void =>
+								setValue(
+									'zimbraMtaSmtpdRejectUnlistedRecipient',
+									!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient
+								)
+							}
+						/>
 					</Container>
 					<Container crossAlignment="flex-start">
 						<Switch
@@ -355,42 +445,13 @@ const MTAInboundFlowSecurity: FC = () => {
 								'mta.reject_sender_login_mismatch_or_empty',
 								'Reject Sender login mismatch or empty '
 							)}
-						/>
-					</Container>
-				</Container>
-				<ListRow>
-					<Divider />
-				</ListRow>
-
-				<Container crossAlignment="flex-start" padding={{ top: 'extralarge', bottom: 'large' }}>
-					<Text size="small" weight="bold" color="gray0">
-						{t('mta.additional_settings', 'Additional settings')}
-					</Text>
-				</Container>
-				<Container
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					padding={{ top: 'small', bottom: 'small' }}
-					height="auto"
-				>
-					<Container crossAlignment="flex-start">
-						<Switch label={t('mta.enable_antispam', 'Enable Antispam')} />
-					</Container>
-					<Container crossAlignment="flex-start">
-						<Switch label={t('mta.enable_antivirus', 'Enable Antivirus')} />
-					</Container>
-				</Container>
-				<Container
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					padding={{ top: 'small', bottom: 'extralarge' }}
-					height="auto"
-				>
-					<Container crossAlignment="flex-start">
-						<Switch
-							label={t('mta.enable_accounting_quota_checks', 'Enable Accounting quota checks')}
+							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions}
+							onClick={(): void =>
+								setValue(
+									'zimbraMtaSmtpdSenderRestrictions',
+									!mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions
+								)
+							}
 						/>
 					</Container>
 				</Container>
