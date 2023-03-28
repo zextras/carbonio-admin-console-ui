@@ -31,7 +31,6 @@ export const useConfigStore = create<ConfigState>(
 		},
 		removeConfigItems: (config: any): void => {
 			set((state: any) => {
-				console.log('>>>', config);
 				state.config = state.config.filter((item: any) => item?.n !== config?.n);
 			});
 		},

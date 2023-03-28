@@ -146,6 +146,42 @@ const MTAInboundFlowSecurity: FC = () => {
 						zimbraMtaSmtpdSenderRestrictions[0]?._content === 'reject_sender_login_mismatch'
 				);
 			}
+
+			const zimbraMtaRestriction = configInformation.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaRestriction'
+			);
+			if (zimbraMtaRestriction) {
+				const rejectUnknownClientHostname = zimbraMtaRestriction.filter(
+					(item: any) => item?._content === 'reject_unknown_client_hostname'
+				);
+				if (
+					rejectUnknownClientHostname &&
+					rejectUnknownClientHostname[0] &&
+					rejectUnknownClientHostname[0]._content === 'reject_unknown_client_hostname'
+				) {
+					setInitialValue('rejectUnknownClientHostname', true);
+					setValue('rejectUnknownClientHostname', true);
+				} else {
+					setInitialValue('rejectUnknownClientHostname', false);
+					setValue('rejectUnknownClientHostname', false);
+				}
+
+				const rejectUnknownReverseClientHostname = zimbraMtaRestriction.filter(
+					(item: any) => item?._content === 'reject_unknown_reverse_client_hostname'
+				);
+				if (
+					rejectUnknownReverseClientHostname &&
+					rejectUnknownReverseClientHostname[0] &&
+					rejectUnknownReverseClientHostname[0]._content ===
+						'reject_unknown_reverse_client_hostname'
+				) {
+					setInitialValue('rejectUnknownReverseClientHostname', true);
+					setValue('rejectUnknownReverseClientHostname', true);
+				} else {
+					setInitialValue('rejectUnknownReverseClientHostname', false);
+					setValue('rejectUnknownReverseClientHostname', false);
+				}
+			}
 		}
 	}, [configInformation, setInitialValue, setValue]);
 
@@ -163,16 +199,26 @@ const MTAInboundFlowSecurity: FC = () => {
 	const updateGlobalConfig = useCallback(
 		(attributes: Array<any>): void => {
 			const attributeWithoutExtension = attributes.filter(
-				(item: Record<string, string>) => item?.n !== 'zimbraMtaBlockedExtension'
+				(item: Record<string, string>) =>
+					item?.n !== 'zimbraMtaBlockedExtension' && item?.n !== 'zimbraMtaRestriction'
 			);
 			const attributeWithExtension = attributes.filter(
 				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtension'
 			);
+
+			const zimbraMtaRestriction = attributes.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaRestriction'
+			);
+			removeConfigItems({ n: 'zimbraMtaRestriction' });
+			if (zimbraMtaRestriction && zimbraMtaRestriction.length > 0) {
+				addConfig(zimbraMtaRestriction);
+			}
 			if (attributeWithoutExtension && attributeWithoutExtension.length > 0) {
 				attributeWithoutExtension.forEach((ele: any) => {
 					updateConfig(ele?.n, ele._content);
 				});
 			}
+
 			if (attributeWithExtension && attributeWithExtension.length > 0) {
 				attributeWithExtension.forEach((item: any) => {
 					removeConfigItems(item);
@@ -254,6 +300,28 @@ const MTAInboundFlowSecurity: FC = () => {
 				? 'reject_sender_login_mismatch'
 				: ''
 		});
+		if (mtaInboundSecurityDetail?.rejectUnknownClientHostname) {
+			attributes.push({
+				n: 'zimbraMtaRestriction',
+				_content: mtaInboundSecurityDetail?.rejectUnknownClientHostname
+					? 'reject_unknown_client_hostname'
+					: ''
+			});
+		}
+		if (mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname) {
+			attributes.push({
+				n: 'zimbraMtaRestriction',
+				_content: mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname
+					? 'reject_unknown_reverse_client_hostname'
+					: ''
+			});
+		}
+		if (!attributes.find((item: any) => item?.n === 'zimbraMtaRestriction')) {
+			attributes.push({
+				n: 'zimbraMtaRestriction',
+				_content: ''
+			});
+		}
 		modifyConfigRequest(attributes);
 	}, [mtaInboundSecurityDetail, modifyConfigRequest]);
 
@@ -472,7 +540,16 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch label={t('mta.clients_ip_address', 'Client’s IP address')} />
+						<Switch
+							label={t('mta.clients_ip_address', 'Client’s IP address')}
+							value={mtaInboundSecurityDetail?.rejectUnknownClientHostname}
+							onClick={(): void =>
+								setValue(
+									'rejectUnknownClientHostname',
+									!mtaInboundSecurityDetail?.rejectUnknownClientHostname
+								)
+							}
+						/>
 					</Container>
 					<Container crossAlignment="flex-start">
 						<Switch
@@ -491,7 +568,16 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch label={t('mta.hostname_in_greetings', 'Hostname in greetings')} />
+						<Switch
+							label={t('mta.hostname_in_greetings', 'Hostname in greetings')}
+							value={mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname}
+							onClick={(): void =>
+								setValue(
+									'rejectUnknownReverseClientHostname',
+									!mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname
+								)
+							}
+						/>
 					</Container>
 					<Container crossAlignment="flex-start">
 						<Switch label={t('mta.senders_domain', 'Sender’s Domain')} />

@@ -11,4 +11,11 @@ export type MtaInboundSecurity = {
 	zimbraMtaSmtpdRejectUnlistedSender: boolean;
 	zimbraMtaSmtpdRejectUnlistedRecipient: boolean;
 	zimbraMtaSmtpdSenderRestrictions: boolean;
+	rejectUnknownClientHostname: boolean;
+	rejectUnknownReverseClientHostname: boolean;
+	rejectInvalidHeloHostname: boolean;
+	rejectNonFqdnHeloHostname: boolean;
+	rejectUnknownHeloHostname: boolean;
+	rejectUnknownSenderDomain: boolean;
+	rejectNonFqdnSender: boolean;
 };
