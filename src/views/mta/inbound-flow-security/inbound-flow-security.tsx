@@ -154,33 +154,48 @@ const MTAInboundFlowSecurity: FC = () => {
 				const rejectUnknownClientHostname = zimbraMtaRestriction.filter(
 					(item: any) => item?._content === 'reject_unknown_client_hostname'
 				);
-				if (
+
+				const isRejectUnknownClientHostname =
 					rejectUnknownClientHostname &&
 					rejectUnknownClientHostname[0] &&
-					rejectUnknownClientHostname[0]._content === 'reject_unknown_client_hostname'
-				) {
-					setInitialValue('rejectUnknownClientHostname', true);
-					setValue('rejectUnknownClientHostname', true);
-				} else {
-					setInitialValue('rejectUnknownClientHostname', false);
-					setValue('rejectUnknownClientHostname', false);
-				}
+					rejectUnknownClientHostname[0]._content === 'reject_unknown_client_hostname';
+
+				setInitialValue('rejectUnknownClientHostname', isRejectUnknownClientHostname);
+				setValue('rejectUnknownClientHostname', isRejectUnknownClientHostname);
 
 				const rejectUnknownReverseClientHostname = zimbraMtaRestriction.filter(
 					(item: any) => item?._content === 'reject_unknown_reverse_client_hostname'
 				);
-				if (
+				const isRejectUnknownReverseClientHostname =
 					rejectUnknownReverseClientHostname &&
 					rejectUnknownReverseClientHostname[0] &&
 					rejectUnknownReverseClientHostname[0]._content ===
-						'reject_unknown_reverse_client_hostname'
-				) {
-					setInitialValue('rejectUnknownReverseClientHostname', true);
-					setValue('rejectUnknownReverseClientHostname', true);
-				} else {
-					setInitialValue('rejectUnknownReverseClientHostname', false);
-					setValue('rejectUnknownReverseClientHostname', false);
-				}
+						'reject_unknown_reverse_client_hostname';
+
+				setInitialValue('rejectUnknownReverseClientHostname', isRejectUnknownReverseClientHostname);
+				setValue('rejectUnknownReverseClientHostname', isRejectUnknownReverseClientHostname);
+
+				const rejectInvalidHeloHostname = zimbraMtaRestriction.filter(
+					(item: any) => item?._content === 'reject_invalid_helo_hostname'
+				);
+				const isRejectInvalidHeloHostname =
+					rejectInvalidHeloHostname &&
+					rejectInvalidHeloHostname[0] &&
+					rejectInvalidHeloHostname[0]._content === 'reject_invalid_helo_hostname';
+
+				setInitialValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
+				setValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
+
+				const rejectNonFqdnHeloHostname = zimbraMtaRestriction.filter(
+					(item: any) => item?._content === 'reject_non_fqdn_helo_hostname'
+				);
+				const isRejectNonFqdnHeloHostname =
+					rejectNonFqdnHeloHostname &&
+					rejectNonFqdnHeloHostname[0] &&
+					rejectNonFqdnHeloHostname[0]._content === 'reject_non_fqdn_helo_hostname';
+
+				setInitialValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
+				setValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
 			}
 		}
 	}, [configInformation, setInitialValue, setValue]);
@@ -316,6 +331,25 @@ const MTAInboundFlowSecurity: FC = () => {
 					: ''
 			});
 		}
+
+		if (mtaInboundSecurityDetail?.rejectInvalidHeloHostname) {
+			attributes.push({
+				n: 'zimbraMtaRestriction',
+				_content: mtaInboundSecurityDetail?.rejectInvalidHeloHostname
+					? 'reject_invalid_helo_hostname'
+					: ''
+			});
+		}
+
+		if (mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname) {
+			attributes.push({
+				n: 'zimbraMtaRestriction',
+				_content: mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname
+					? 'reject_non_fqdn_helo_hostname'
+					: ''
+			});
+		}
+
 		if (!attributes.find((item: any) => item?.n === 'zimbraMtaRestriction')) {
 			attributes.push({
 				n: 'zimbraMtaRestriction',
@@ -596,6 +630,13 @@ const MTAInboundFlowSecurity: FC = () => {
 								'mta.hostname_in_greeting_violates_rfc',
 								'Hostname in greeting violates RFC'
 							)}
+							value={mtaInboundSecurityDetail?.rejectInvalidHeloHostname}
+							onClick={(): void =>
+								setValue(
+									'rejectInvalidHeloHostname',
+									!mtaInboundSecurityDetail?.rejectInvalidHeloHostname
+								)
+							}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -620,6 +661,13 @@ const MTAInboundFlowSecurity: FC = () => {
 								'mta.client_must_greet_with_fully_qualified_hostname',
 								'Client must greet with a fully qualified hostname'
 							)}
+							value={mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname}
+							onClick={(): void =>
+								setValue(
+									'rejectNonFqdnHeloHostname',
+									!mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname
+								)
+							}
 						/>
 					</Container>
 				</Container>
