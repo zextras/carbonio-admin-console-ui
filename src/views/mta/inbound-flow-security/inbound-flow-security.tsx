@@ -26,7 +26,6 @@ const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [blockCommonExtension, setBlockCommonExtension] = useState<boolean>(false);
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const addConfig = useConfigStore((state) => state.addConfig);
@@ -39,6 +38,10 @@ const MTAInboundFlowSecurity: FC = () => {
 
 	const setInitialValue = useCallback((key: string, value: any): void => {
 		setMtaInboundSecurityInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+	}, []);
+
+	const setValue = useCallback((key: string, value: any): void => {
+		setMtaInboundSecurityDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
 
 	useEffect(() => {
@@ -55,14 +58,47 @@ const MTAInboundFlowSecurity: FC = () => {
 					'zimbraMtaBlockedExtension',
 					findBlockExtension.map((item: Record<string, string>) => item?._content)
 				);
+				if (allExtensions) {
+					setValue(
+						'zimbraMtaBlockedExtension',
+						allExtensions.map((item: Record<string, string>) => item?.label)
+					);
+				}
 				setMtaBlockExtension(allExtensions);
 			}
-		}
-	}, [configInformation, setInitialValue]);
+			const zimbraMtaBlockedExtensionWarnAdmin = configInformation.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtensionWarnAdmin'
+			);
+			const zimbraMtaBlockedExtensionWarnRecipient = configInformation.filter(
+				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtensionWarnRecipient'
+			);
 
-	const setValue = useCallback((key: string, value: any): void => {
-		setMtaInboundSecurityDetail((prev: any) => ({ ...prev, [key]: value }));
-	}, []);
+			if (zimbraMtaBlockedExtensionWarnAdmin && zimbraMtaBlockedExtensionWarnAdmin[0]?._content) {
+				setInitialValue(
+					'zimbraMtaBlockedExtensionWarnAdmin',
+					zimbraMtaBlockedExtensionWarnAdmin[0]?._content === 'TRUE'
+				);
+				setValue(
+					'zimbraMtaBlockedExtensionWarnAdmin',
+					zimbraMtaBlockedExtensionWarnAdmin[0]?._content === 'TRUE'
+				);
+			}
+
+			if (
+				zimbraMtaBlockedExtensionWarnRecipient &&
+				zimbraMtaBlockedExtensionWarnRecipient[0]?._content
+			) {
+				setInitialValue(
+					'zimbraMtaBlockedExtensionWarnRecipient',
+					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === 'TRUE'
+				);
+				setValue(
+					'zimbraMtaBlockedExtensionWarnRecipient',
+					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === 'TRUE'
+				);
+			}
+		}
+	}, [configInformation, setInitialValue, setValue]);
 
 	useEffect(() => {
 		if (
@@ -164,27 +200,6 @@ const MTAInboundFlowSecurity: FC = () => {
 		}
 	}, [mtaInboundSecurityInitialDetail]);
 
-	useEffect(() => {
-		if (blockCommonExtension) {
-			if (configInformation && configInformation.length > 0) {
-				const findBlockCommonExtension = configInformation.filter(
-					(item: Record<string, string>) => item?.n === 'zimbraMtaCommonBlockedExtension'
-				);
-				if (findBlockCommonExtension && findBlockCommonExtension.length > 0) {
-					const allExtensions: Array<Record<string, string>> = [];
-					findBlockCommonExtension.forEach((item: Record<string, string>) => {
-						allExtensions.push({ label: item?._content });
-					});
-					setValue(
-						'zimbraMtaBlockedExtension',
-						findBlockCommonExtension.map((item: Record<string, string>) => item?._content)
-					);
-					setMtaBlockExtension(allExtensions);
-				}
-			}
-		}
-	}, [blockCommonExtension, configInformation, setValue]);
-
 	const onBlockExtensionChange = useCallback(
 		(ev) => {
 			if (ev && ev.length > 0) {
@@ -274,13 +289,6 @@ const MTAInboundFlowSecurity: FC = () => {
 						onChange={onBlockExtensionChange}
 					/>
 				</Container>
-				<Row padding={{ top: 'large' }}>
-					<Switch
-						label={t('mta.block_also_common_extensions', 'Block also common extensions')}
-						value={blockCommonExtension}
-						onClick={(): void => setBlockCommonExtension(!blockCommonExtension)}
-					/>
-				</Row>
 				<Container
 					orientation="horizontal"
 					mainAlignment="space-between"
@@ -294,6 +302,13 @@ const MTAInboundFlowSecurity: FC = () => {
 								'mta.notify_admins_about_block_extensions',
 								'Notify admins about blocked extensions'
 							)}
+							value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin}
+							onClick={(): void =>
+								setValue(
+									'zimbraMtaBlockedExtensionWarnAdmin',
+									!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin
+								)
+							}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -302,6 +317,13 @@ const MTAInboundFlowSecurity: FC = () => {
 								'mta.notify_users_about_block_extensions',
 								'Notify users about blocked extensions'
 							)}
+							value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
+							onClick={(): void =>
+								setValue(
+									'zimbraMtaBlockedExtensionWarnRecipient',
+									!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient
+								)
+							}
 						/>
 					</Container>
 				</Container>

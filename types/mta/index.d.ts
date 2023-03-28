@@ -6,4 +6,6 @@
 
 export type MtaInboundSecurity = {
 	zimbraMtaBlockedExtension: Array<string>;
+	zimbraMtaBlockedExtensionWarnAdmin: boolean;
+	zimbraMtaBlockedExtensionWarnRecipient: boolean;
 };
