@@ -196,6 +196,39 @@ const MTAInboundFlowSecurity: FC = () => {
 
 				setInitialValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
 				setValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
+
+				const rejectUnknownHeloHostname = zimbraMtaRestriction.filter(
+					(item: any) => item?._content === 'reject_unknown_helo_hostname'
+				);
+				const isRejectUnknownHeloHostname =
+					rejectUnknownHeloHostname &&
+					rejectUnknownHeloHostname[0] &&
+					rejectUnknownHeloHostname[0]._content === 'reject_unknown_helo_hostname';
+
+				setInitialValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
+				setValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
+
+				const rejectUnknownSenderDomain = zimbraMtaRestriction.filter(
+					(item: any) => item?._content === 'reject_unknown_sender_domain'
+				);
+				const isRejectUnknownSenderDomain =
+					rejectUnknownSenderDomain &&
+					rejectUnknownSenderDomain[0] &&
+					rejectUnknownSenderDomain[0]._content === 'reject_unknown_sender_domain';
+
+				setInitialValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
+				setValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
+
+				const rejectNonFqdnSender = zimbraMtaRestriction.filter(
+					(item: any) => item?._content === 'reject_non_fqdn_sender'
+				);
+				const isRejectNonFqdnSender =
+					rejectNonFqdnSender &&
+					rejectNonFqdnSender[0] &&
+					rejectNonFqdnSender[0]._content === 'reject_non_fqdn_sender';
+
+				setInitialValue('rejectNonFqdnSender', isRejectNonFqdnSender);
+				setValue('rejectNonFqdnSender', isRejectNonFqdnSender);
 			}
 		}
 	}, [configInformation, setInitialValue, setValue]);
@@ -347,6 +380,31 @@ const MTAInboundFlowSecurity: FC = () => {
 				_content: mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname
 					? 'reject_non_fqdn_helo_hostname'
 					: ''
+			});
+		}
+
+		if (mtaInboundSecurityDetail?.rejectUnknownHeloHostname) {
+			attributes.push({
+				n: 'zimbraMtaRestriction',
+				_content: mtaInboundSecurityDetail?.rejectUnknownHeloHostname
+					? 'reject_unknown_helo_hostname'
+					: ''
+			});
+		}
+
+		if (mtaInboundSecurityDetail?.rejectUnknownSenderDomain) {
+			attributes.push({
+				n: 'zimbraMtaRestriction',
+				_content: mtaInboundSecurityDetail?.rejectUnknownSenderDomain
+					? 'reject_unknown_sender_domain'
+					: ''
+			});
+		}
+
+		if (mtaInboundSecurityDetail?.rejectNonFqdnSender) {
+			attributes.push({
+				n: 'zimbraMtaRestriction',
+				_content: mtaInboundSecurityDetail?.rejectNonFqdnSender ? 'reject_non_fqdn_sender' : ''
 			});
 		}
 
@@ -591,6 +649,13 @@ const MTAInboundFlowSecurity: FC = () => {
 								'mta.client_must_greet_with_resolving_hostname',
 								'Client must greet with a resolving hostname'
 							)}
+							value={mtaInboundSecurityDetail?.rejectUnknownHeloHostname}
+							onClick={(): void =>
+								setValue(
+									'rejectUnknownHeloHostname',
+									!mtaInboundSecurityDetail?.rejectUnknownHeloHostname
+								)
+							}
 						/>
 					</Container>
 				</Container>
@@ -614,7 +679,16 @@ const MTAInboundFlowSecurity: FC = () => {
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch label={t('mta.senders_domain', 'Sender’s Domain')} />
+						<Switch
+							label={t('mta.senders_domain', 'Sender’s Domain')}
+							value={mtaInboundSecurityDetail?.rejectUnknownSenderDomain}
+							onClick={(): void =>
+								setValue(
+									'rejectUnknownSenderDomain',
+									!mtaInboundSecurityDetail?.rejectUnknownSenderDomain
+								)
+							}
+						/>
 					</Container>
 				</Container>
 				<Container
@@ -645,6 +719,10 @@ const MTAInboundFlowSecurity: FC = () => {
 								'mta.senders_address_must_fully_qualified',
 								'Sender address must be fully qualified'
 							)}
+							value={mtaInboundSecurityDetail?.rejectNonFqdnSender}
+							onClick={(): void =>
+								setValue('rejectNonFqdnSender', !mtaInboundSecurityDetail?.rejectNonFqdnSender)
+							}
 						/>
 					</Container>
 				</Container>
