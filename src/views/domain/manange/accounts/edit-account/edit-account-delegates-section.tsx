@@ -45,7 +45,7 @@ import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import { deligateSendSettings } from '../../../../utility/utils';
+import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
 import {
 	SEND_MAILS_ONLY,
 	READ_MAILS_ONLY,
@@ -935,7 +935,11 @@ const EditAccountDelegatesSection: FC = () => {
 									listArr = pullAt(listArr, pullIndex);
 								}
 								setSimpleSelectedList(listArr);
-								setSelectedAccounts(data);
+								const filterData: any = [];
+								map(data, (ele) => {
+									if (isValidEmail(ele.label ?? '')) filterData.push(ele);
+								});
+								setSelectedAccounts(filterData);
 
 								setSearchQuery('');
 							}}
