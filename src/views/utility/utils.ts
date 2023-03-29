@@ -862,6 +862,28 @@ export const AccountStatus = (t: TFunction): Array<{ value?: string; label: stri
 	}
 ];
 
+export const MeasureUnitItems = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('domain.unit_measure_days', 'Days'),
+		value: 'd'
+	},
+	{
+		label: t('domain.unit_measure_hours', 'Hours'),
+		value: 'h'
+	},
+	{
+		label: t('domain.unit_measure_minutes', 'Minutes'),
+		value: 'm'
+	},
+	{
+		label: t('domain.unit_measure_seconds', 'Seconds'),
+		value: 's'
+	},
+	{
+		label: t('domain.unit_measure_milliseconds', 'Milliseconds'),
+		value: 'ms'
+	}
+];
 export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('buckets.s3_types.alibaba_cloud_s3', 'Alibaba Cloud S3'),
