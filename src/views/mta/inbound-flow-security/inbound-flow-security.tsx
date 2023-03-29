@@ -436,7 +436,6 @@ const MTAInboundFlowSecurity: FC = () => {
 	}, [mtaInboundSecurityDetail, modifyConfigRequest]);
 
 	const onCancel = useCallback(() => {
-		setIsDirty(false);
 		setMtaInboundSecurityDetail(mtaInboundSecurityInitialDetail);
 		if (mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtension) {
 			const extension = mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtension;
@@ -497,6 +496,9 @@ const MTAInboundFlowSecurity: FC = () => {
 			'rejectNonFqdnSender',
 			mtaInboundSecurityInitialDetail?.rejectNonFqdnSender !== undefined
 		);
+		setTimeout(() => {
+			setIsDirty(false);
+		}, 100);
 	}, [mtaInboundSecurityInitialDetail, setValue]);
 
 	const onBlockExtensionChange = useCallback(
