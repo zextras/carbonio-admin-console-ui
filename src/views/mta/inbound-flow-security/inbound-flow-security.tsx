@@ -64,6 +64,14 @@ const MTAInboundFlowSecurity: FC = () => {
 		setMtaInboundSecurityDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
 
+	const setInitialAndCurrentValue = useCallback(
+		(key, value) => {
+			setInitialValue(key, value);
+			setValue(key, value);
+		},
+		[setInitialValue, setValue]
+	);
+
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			const findBlockExtension = configInformation.filter(
@@ -94,11 +102,7 @@ const MTAInboundFlowSecurity: FC = () => {
 			);
 
 			if (zimbraMtaBlockedExtensionWarnAdmin && zimbraMtaBlockedExtensionWarnAdmin[0]?._content) {
-				setInitialValue(
-					ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-					zimbraMtaBlockedExtensionWarnAdmin[0]?._content === TRUE
-				);
-				setValue(
+				setInitialAndCurrentValue(
 					ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
 					zimbraMtaBlockedExtensionWarnAdmin[0]?._content === TRUE
 				);
@@ -108,11 +112,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				zimbraMtaBlockedExtensionWarnRecipient &&
 				zimbraMtaBlockedExtensionWarnRecipient[0]?._content
 			) {
-				setInitialValue(
-					ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === TRUE
-				);
-				setValue(
+				setInitialAndCurrentValue(
 					ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
 					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === TRUE
 				);
@@ -123,11 +123,7 @@ const MTAInboundFlowSecurity: FC = () => {
 			);
 
 			if (zimbraMtaSmtpdRejectUnlistedSender && zimbraMtaSmtpdRejectUnlistedSender[0]?._content) {
-				setInitialValue(
-					ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-					zimbraMtaSmtpdRejectUnlistedSender[0]?._content === 'yes'
-				);
-				setValue(
+				setInitialAndCurrentValue(
 					ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
 					zimbraMtaSmtpdRejectUnlistedSender[0]?._content === 'yes'
 				);
@@ -139,11 +135,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				zimbraMtaSmtpdRejectUnlistedRecipient &&
 				zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content
 			) {
-				setInitialValue(
-					ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-					zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content === 'yes'
-				);
-				setValue(
+				setInitialAndCurrentValue(
 					ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
 					zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content === 'yes'
 				);
@@ -153,14 +145,8 @@ const MTAInboundFlowSecurity: FC = () => {
 			);
 
 			if (zimbraMtaSmtpdSenderRestrictions) {
-				setInitialValue(
+				setInitialAndCurrentValue(
 					ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-					zimbraMtaSmtpdSenderRestrictions.length > 0 &&
-						zimbraMtaSmtpdSenderRestrictions[0]?._content === REJECT_SENDER_LOGIN_MISMATCH
-				);
-				setValue(
-					ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-
 					zimbraMtaSmtpdSenderRestrictions.length > 0 &&
 						zimbraMtaSmtpdSenderRestrictions[0]?._content === REJECT_SENDER_LOGIN_MISMATCH
 				);
@@ -179,8 +165,7 @@ const MTAInboundFlowSecurity: FC = () => {
 					rejectUnknownClientHostname[0] &&
 					rejectUnknownClientHostname[0]._content === REJECT_UNKNOWN_CLIENT_HOSTNAME;
 
-				setInitialValue(_REJECT_UNKNOWN_CLIENT_HOSTNAME, isRejectUnknownClientHostname);
-				setValue(_REJECT_UNKNOWN_CLIENT_HOSTNAME, isRejectUnknownClientHostname);
+				setInitialAndCurrentValue(_REJECT_UNKNOWN_CLIENT_HOSTNAME, isRejectUnknownClientHostname);
 
 				const rejectUnknownReverseClientHostname = zimbraMtaRestriction.filter(
 					(item: Record<string, string>) =>
@@ -191,8 +176,10 @@ const MTAInboundFlowSecurity: FC = () => {
 					rejectUnknownReverseClientHostname[0] &&
 					rejectUnknownReverseClientHostname[0]._content === REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME;
 
-				setInitialValue('rejectUnknownReverseClientHostname', isRejectUnknownReverseClientHostname);
-				setValue('rejectUnknownReverseClientHostname', isRejectUnknownReverseClientHostname);
+				setInitialAndCurrentValue(
+					'rejectUnknownReverseClientHostname',
+					isRejectUnknownReverseClientHostname
+				);
 
 				const rejectInvalidHeloHostname = zimbraMtaRestriction.filter(
 					(item: Record<string, string>) => item?._content === REJECT_INVALID_HELO_HOSTNAME
@@ -202,8 +189,7 @@ const MTAInboundFlowSecurity: FC = () => {
 					rejectInvalidHeloHostname[0] &&
 					rejectInvalidHeloHostname[0]._content === REJECT_INVALID_HELO_HOSTNAME;
 
-				setInitialValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
-				setValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
+				setInitialAndCurrentValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
 
 				const rejectNonFqdnHeloHostname = zimbraMtaRestriction.filter(
 					(item: Record<string, string>) => item?._content === REJECT_NON_FQDN_HELO_HOSTNAME
@@ -213,8 +199,7 @@ const MTAInboundFlowSecurity: FC = () => {
 					rejectNonFqdnHeloHostname[0] &&
 					rejectNonFqdnHeloHostname[0]._content === REJECT_NON_FQDN_HELO_HOSTNAME;
 
-				setInitialValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
-				setValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
+				setInitialAndCurrentValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
 
 				const rejectUnknownHeloHostname = zimbraMtaRestriction.filter(
 					(item: Record<string, string>) => item?._content === REJECT_UNKNOWN_HELO_HOSTNAME
@@ -224,8 +209,7 @@ const MTAInboundFlowSecurity: FC = () => {
 					rejectUnknownHeloHostname[0] &&
 					rejectUnknownHeloHostname[0]._content === REJECT_UNKNOWN_HELO_HOSTNAME;
 
-				setInitialValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
-				setValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
+				setInitialAndCurrentValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
 
 				const rejectUnknownSenderDomain = zimbraMtaRestriction.filter(
 					(item: Record<string, string>) => item?._content === REJECT_UNKNOWN_SENDER_DOMAIN
@@ -235,8 +219,7 @@ const MTAInboundFlowSecurity: FC = () => {
 					rejectUnknownSenderDomain[0] &&
 					rejectUnknownSenderDomain[0]._content === REJECT_UNKNOWN_SENDER_DOMAIN;
 
-				setInitialValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
-				setValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
+				setInitialAndCurrentValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
 
 				const rejectNonFqdnSender = zimbraMtaRestriction.filter(
 					(item: Record<string, string>) => item?._content === REJECT_NON_FQDN_SENDER
@@ -246,11 +229,10 @@ const MTAInboundFlowSecurity: FC = () => {
 					rejectNonFqdnSender[0] &&
 					rejectNonFqdnSender[0]._content === REJECT_NON_FQDN_SENDER;
 
-				setInitialValue('rejectNonFqdnSender', isRejectNonFqdnSender);
-				setValue('rejectNonFqdnSender', isRejectNonFqdnSender);
+				setInitialAndCurrentValue('rejectNonFqdnSender', isRejectNonFqdnSender);
 			}
 		}
-	}, [configInformation, setInitialValue, setValue]);
+	}, [configInformation, setInitialValue, setValue, setInitialAndCurrentValue]);
 
 	useEffect(() => {
 		if (
