@@ -289,8 +289,59 @@ const App: FC = () => {
 	const homeTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.home', 'Home'),
-				options: []
+				header: t('label.details', 'Details'),
+				options: [
+					{
+						label: t('label.domain_status', 'Domain Status')
+					},
+					{
+						label: t('label.general_Settings', 'General Settings')
+					},
+					{
+						label: t('label.global_address_list', 'Global Address List')
+					},
+					{
+						label: t('label.authentication', 'Authentication')
+					},
+					{
+						label: t('label.virtual_hosts_and_certificates', 'Virtual Hosts & Certificate')
+					},
+					{
+						label: t('label.mailbox_quota', 'Mailbox Quota')
+					}
+				]
+			},
+			{
+				header: t('domain.manage', 'Manage'),
+				options: [
+					{
+						label: t('label.accounts', 'Accounts')
+					},
+					{
+						label: t('label.mailing_list', 'Mailing List')
+					},
+					{
+						label: t('label.resources', 'Resources')
+					},
+					/* {
+						label: t('label.admin_delegates', 'Admin Delegates')
+					},
+					{
+						label: t('label.active_sync', 'ActiveSync')
+					},
+					{
+						label: t('label.account_scan', 'AccountScan')
+					},
+					{
+						label: t('label.export_domain', 'Export Domain')
+					} */
+					{
+						label: t('label.restore_account', 'Restore Account')
+					}
+					/* {
+						label: t('label.restore_deleted_email', 'Restore Deleted E-mail')
+					} */
+				]
 			}
 		],
 		[t]
