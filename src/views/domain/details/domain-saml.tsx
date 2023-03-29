@@ -44,8 +44,8 @@ export type SamlAttribute = {
 };
 
 const CustomIcon = styled(Icon)`
-	width: 20px;
-	height: 20px;
+	width: 1.25rem;
+	height: 1.25rem;
 `;
 
 const DomainSaml: FC = () => {
@@ -401,7 +401,7 @@ const DomainSaml: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="56px">
+					<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
 						<Row orientation="horizontal" width="100%">
 							<Row
 								padding={{ all: 'large' }}
@@ -423,7 +423,7 @@ const DomainSaml: FC = () => {
 					mainAlignment="flex-start"
 					style={{ overflow: 'auto' }}
 					width="100%"
-					height="calc(100vh - 150px)"
+					height="calc(100vh - 9.375rem)"
 				>
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -439,9 +439,9 @@ const DomainSaml: FC = () => {
 										bottom: 'medium'
 									}}
 									style={{
-										borderRadius: '2px 2px 0px 0px',
+										borderRadius: '0.125rem 0.125rem 0 0',
 										margin: '1rem',
-										borderBottom: '1px solid #2196D3'
+										borderBottom: '0.063rem solid #2196D3'
 									}}
 								>
 									<Row takeAvwidth="fill" width="5%" mainAlignment="flex-start">
