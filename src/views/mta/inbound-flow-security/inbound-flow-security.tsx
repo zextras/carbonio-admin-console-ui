@@ -14,11 +14,30 @@ import {
 	ChipInput,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce } from 'lodash';
+import { isEqual } from 'lodash';
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { MtaInboundSecurity } from '../../../../types';
-import { FALSE, TRUE } from '../../../constants';
+import {
+	FALSE,
+	REJECT_INVALID_HELO_HOSTNAME,
+	REJECT_NON_FQDN_HELO_HOSTNAME,
+	REJECT_NON_FQDN_SENDER,
+	REJECT_SENDER_LOGIN_MISMATCH,
+	REJECT_UNKNOWN_CLIENT_HOSTNAME,
+	REJECT_UNKNOWN_HELO_HOSTNAME,
+	REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME,
+	REJECT_UNKNOWN_SENDER_DOMAIN,
+	TRUE,
+	ZIMBRA_MTA_BLOCKED_EXTENSION,
+	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
+	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
+	ZIMBRA_MTA_RESTRICTION,
+	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
+	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
+	ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
+	_REJECT_UNKNOWN_CLIENT_HOSTNAME
+} from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
@@ -48,7 +67,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			const findBlockExtension = configInformation.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtension'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION
 			);
 			if (findBlockExtension && findBlockExtension.length > 0) {
 				const allExtensions: Array<Record<string, string>> = [];
@@ -56,32 +75,32 @@ const MTAInboundFlowSecurity: FC = () => {
 					allExtensions.push({ label: item?._content });
 				});
 				setInitialValue(
-					'zimbraMtaBlockedExtension',
+					ZIMBRA_MTA_BLOCKED_EXTENSION,
 					findBlockExtension.map((item: Record<string, string>) => item?._content)
 				);
 				if (allExtensions) {
 					setValue(
-						'zimbraMtaBlockedExtension',
+						ZIMBRA_MTA_BLOCKED_EXTENSION,
 						allExtensions.map((item: Record<string, string>) => item?.label)
 					);
 				}
 				setMtaBlockExtension(allExtensions);
 			}
 			const zimbraMtaBlockedExtensionWarnAdmin = configInformation.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtensionWarnAdmin'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN
 			);
 			const zimbraMtaBlockedExtensionWarnRecipient = configInformation.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtensionWarnRecipient'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT
 			);
 
 			if (zimbraMtaBlockedExtensionWarnAdmin && zimbraMtaBlockedExtensionWarnAdmin[0]?._content) {
 				setInitialValue(
-					'zimbraMtaBlockedExtensionWarnAdmin',
-					zimbraMtaBlockedExtensionWarnAdmin[0]?._content === 'TRUE'
+					ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
+					zimbraMtaBlockedExtensionWarnAdmin[0]?._content === TRUE
 				);
 				setValue(
-					'zimbraMtaBlockedExtensionWarnAdmin',
-					zimbraMtaBlockedExtensionWarnAdmin[0]?._content === 'TRUE'
+					ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
+					zimbraMtaBlockedExtensionWarnAdmin[0]?._content === TRUE
 				);
 			}
 
@@ -90,142 +109,141 @@ const MTAInboundFlowSecurity: FC = () => {
 				zimbraMtaBlockedExtensionWarnRecipient[0]?._content
 			) {
 				setInitialValue(
-					'zimbraMtaBlockedExtensionWarnRecipient',
-					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === 'TRUE'
+					ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
+					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === TRUE
 				);
 				setValue(
-					'zimbraMtaBlockedExtensionWarnRecipient',
-					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === 'TRUE'
+					ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
+					zimbraMtaBlockedExtensionWarnRecipient[0]?._content === TRUE
 				);
 			}
 
 			const zimbraMtaSmtpdRejectUnlistedSender = configInformation.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaSmtpdRejectUnlistedSender'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER
 			);
 
 			if (zimbraMtaSmtpdRejectUnlistedSender && zimbraMtaSmtpdRejectUnlistedSender[0]?._content) {
 				setInitialValue(
-					'zimbraMtaSmtpdRejectUnlistedSender',
+					ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
 					zimbraMtaSmtpdRejectUnlistedSender[0]?._content === 'yes'
 				);
 				setValue(
-					'zimbraMtaSmtpdRejectUnlistedSender',
+					ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
 					zimbraMtaSmtpdRejectUnlistedSender[0]?._content === 'yes'
 				);
 			}
 			const zimbraMtaSmtpdRejectUnlistedRecipient = configInformation.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaSmtpdRejectUnlistedRecipient'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT
 			);
 			if (
 				zimbraMtaSmtpdRejectUnlistedRecipient &&
 				zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content
 			) {
 				setInitialValue(
-					'zimbraMtaSmtpdRejectUnlistedRecipient',
+					ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
 					zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content === 'yes'
 				);
 				setValue(
-					'zimbraMtaSmtpdRejectUnlistedRecipient',
+					ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
 					zimbraMtaSmtpdRejectUnlistedRecipient[0]?._content === 'yes'
 				);
 			}
 			const zimbraMtaSmtpdSenderRestrictions = configInformation.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaSmtpdSenderRestrictions'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS
 			);
 
 			if (zimbraMtaSmtpdSenderRestrictions) {
 				setInitialValue(
-					'zimbraMtaSmtpdSenderRestrictions',
+					ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
 					zimbraMtaSmtpdSenderRestrictions.length > 0 &&
-						zimbraMtaSmtpdSenderRestrictions[0]?._content === 'reject_sender_login_mismatch'
+						zimbraMtaSmtpdSenderRestrictions[0]?._content === REJECT_SENDER_LOGIN_MISMATCH
 				);
 				setValue(
-					'zimbraMtaSmtpdSenderRestrictions',
+					ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
 
 					zimbraMtaSmtpdSenderRestrictions.length > 0 &&
-						zimbraMtaSmtpdSenderRestrictions[0]?._content === 'reject_sender_login_mismatch'
+						zimbraMtaSmtpdSenderRestrictions[0]?._content === REJECT_SENDER_LOGIN_MISMATCH
 				);
 			}
 
 			const zimbraMtaRestriction = configInformation.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaRestriction'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RESTRICTION
 			);
 			if (zimbraMtaRestriction) {
 				const rejectUnknownClientHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === 'reject_unknown_client_hostname'
+					(item: any) => item?._content === REJECT_UNKNOWN_CLIENT_HOSTNAME
 				);
 
 				const isRejectUnknownClientHostname =
 					rejectUnknownClientHostname &&
 					rejectUnknownClientHostname[0] &&
-					rejectUnknownClientHostname[0]._content === 'reject_unknown_client_hostname';
+					rejectUnknownClientHostname[0]._content === REJECT_UNKNOWN_CLIENT_HOSTNAME;
 
-				setInitialValue('rejectUnknownClientHostname', isRejectUnknownClientHostname);
-				setValue('rejectUnknownClientHostname', isRejectUnknownClientHostname);
+				setInitialValue(_REJECT_UNKNOWN_CLIENT_HOSTNAME, isRejectUnknownClientHostname);
+				setValue(_REJECT_UNKNOWN_CLIENT_HOSTNAME, isRejectUnknownClientHostname);
 
 				const rejectUnknownReverseClientHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === 'reject_unknown_reverse_client_hostname'
+					(item: any) => item?._content === REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME
 				);
 				const isRejectUnknownReverseClientHostname =
 					rejectUnknownReverseClientHostname &&
 					rejectUnknownReverseClientHostname[0] &&
-					rejectUnknownReverseClientHostname[0]._content ===
-						'reject_unknown_reverse_client_hostname';
+					rejectUnknownReverseClientHostname[0]._content === REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME;
 
 				setInitialValue('rejectUnknownReverseClientHostname', isRejectUnknownReverseClientHostname);
 				setValue('rejectUnknownReverseClientHostname', isRejectUnknownReverseClientHostname);
 
 				const rejectInvalidHeloHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === 'reject_invalid_helo_hostname'
+					(item: any) => item?._content === REJECT_INVALID_HELO_HOSTNAME
 				);
 				const isRejectInvalidHeloHostname =
 					rejectInvalidHeloHostname &&
 					rejectInvalidHeloHostname[0] &&
-					rejectInvalidHeloHostname[0]._content === 'reject_invalid_helo_hostname';
+					rejectInvalidHeloHostname[0]._content === REJECT_INVALID_HELO_HOSTNAME;
 
 				setInitialValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
 				setValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
 
 				const rejectNonFqdnHeloHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === 'reject_non_fqdn_helo_hostname'
+					(item: any) => item?._content === REJECT_NON_FQDN_HELO_HOSTNAME
 				);
 				const isRejectNonFqdnHeloHostname =
 					rejectNonFqdnHeloHostname &&
 					rejectNonFqdnHeloHostname[0] &&
-					rejectNonFqdnHeloHostname[0]._content === 'reject_non_fqdn_helo_hostname';
+					rejectNonFqdnHeloHostname[0]._content === REJECT_NON_FQDN_HELO_HOSTNAME;
 
 				setInitialValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
 				setValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
 
 				const rejectUnknownHeloHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === 'reject_unknown_helo_hostname'
+					(item: any) => item?._content === REJECT_UNKNOWN_HELO_HOSTNAME
 				);
 				const isRejectUnknownHeloHostname =
 					rejectUnknownHeloHostname &&
 					rejectUnknownHeloHostname[0] &&
-					rejectUnknownHeloHostname[0]._content === 'reject_unknown_helo_hostname';
+					rejectUnknownHeloHostname[0]._content === REJECT_UNKNOWN_HELO_HOSTNAME;
 
 				setInitialValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
 				setValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
 
 				const rejectUnknownSenderDomain = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === 'reject_unknown_sender_domain'
+					(item: any) => item?._content === REJECT_UNKNOWN_SENDER_DOMAIN
 				);
 				const isRejectUnknownSenderDomain =
 					rejectUnknownSenderDomain &&
 					rejectUnknownSenderDomain[0] &&
-					rejectUnknownSenderDomain[0]._content === 'reject_unknown_sender_domain';
+					rejectUnknownSenderDomain[0]._content === REJECT_UNKNOWN_SENDER_DOMAIN;
 
 				setInitialValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
 				setValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
 
 				const rejectNonFqdnSender = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === 'reject_non_fqdn_sender'
+					(item: any) => item?._content === REJECT_NON_FQDN_SENDER
 				);
 				const isRejectNonFqdnSender =
 					rejectNonFqdnSender &&
 					rejectNonFqdnSender[0] &&
-					rejectNonFqdnSender[0]._content === 'reject_non_fqdn_sender';
+					rejectNonFqdnSender[0]._content === REJECT_NON_FQDN_SENDER;
 
 				setInitialValue('rejectNonFqdnSender', isRejectNonFqdnSender);
 				setValue('rejectNonFqdnSender', isRejectNonFqdnSender);
@@ -248,16 +266,16 @@ const MTAInboundFlowSecurity: FC = () => {
 		(attributes: Array<any>): void => {
 			const attributeWithoutExtension = attributes.filter(
 				(item: Record<string, string>) =>
-					item?.n !== 'zimbraMtaBlockedExtension' && item?.n !== 'zimbraMtaRestriction'
+					item?.n !== ZIMBRA_MTA_BLOCKED_EXTENSION && item?.n !== ZIMBRA_MTA_RESTRICTION
 			);
 			const attributeWithExtension = attributes.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaBlockedExtension'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION
 			);
 
 			const zimbraMtaRestriction = attributes.filter(
-				(item: Record<string, string>) => item?.n === 'zimbraMtaRestriction'
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RESTRICTION
 			);
-			removeConfigItems({ n: 'zimbraMtaRestriction' });
+			removeConfigItems({ n: ZIMBRA_MTA_RESTRICTION });
 			if (zimbraMtaRestriction && zimbraMtaRestriction.length > 0) {
 				addConfig(zimbraMtaRestriction);
 			}
@@ -317,100 +335,100 @@ const MTAInboundFlowSecurity: FC = () => {
 			const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
 			if (blockedExtension) {
 				if (blockedExtension.length === 0) {
-					attributes.push({ n: 'zimbraMtaBlockedExtension', _content: '' });
+					attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: '' });
 				} else {
 					blockedExtension.forEach((item: string) => {
-						attributes.push({ n: 'zimbraMtaBlockedExtension', _content: item });
+						attributes.push({ n: ZIMBRA_MTA_BLOCKED_EXTENSION, _content: item });
 					});
 				}
 			}
 		}
 		attributes.push({
-			n: 'zimbraMtaBlockedExtensionWarnAdmin',
+			n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
 			_content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin ? TRUE : FALSE
 		});
 		attributes.push({
-			n: 'zimbraMtaBlockedExtensionWarnRecipient',
+			n: ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
 			_content: mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient ? TRUE : FALSE
 		});
 
 		attributes.push({
-			n: 'zimbraMtaSmtpdRejectUnlistedSender',
+			n: ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
 			_content: mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender ? 'yes' : 'no'
 		});
 		attributes.push({
-			n: 'zimbraMtaSmtpdRejectUnlistedRecipient',
+			n: ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
 			_content: mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient ? 'yes' : 'no'
 		});
 		attributes.push({
-			n: 'zimbraMtaSmtpdSenderRestrictions',
+			n: ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
 			_content: mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions
-				? 'reject_sender_login_mismatch'
+				? REJECT_SENDER_LOGIN_MISMATCH
 				: ''
 		});
 		if (mtaInboundSecurityDetail?.rejectUnknownClientHostname) {
 			attributes.push({
-				n: 'zimbraMtaRestriction',
+				n: ZIMBRA_MTA_RESTRICTION,
 				_content: mtaInboundSecurityDetail?.rejectUnknownClientHostname
-					? 'reject_unknown_client_hostname'
+					? REJECT_UNKNOWN_CLIENT_HOSTNAME
 					: ''
 			});
 		}
 		if (mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname) {
 			attributes.push({
-				n: 'zimbraMtaRestriction',
+				n: ZIMBRA_MTA_RESTRICTION,
 				_content: mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname
-					? 'reject_unknown_reverse_client_hostname'
+					? REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME
 					: ''
 			});
 		}
 
 		if (mtaInboundSecurityDetail?.rejectInvalidHeloHostname) {
 			attributes.push({
-				n: 'zimbraMtaRestriction',
+				n: ZIMBRA_MTA_RESTRICTION,
 				_content: mtaInboundSecurityDetail?.rejectInvalidHeloHostname
-					? 'reject_invalid_helo_hostname'
+					? REJECT_INVALID_HELO_HOSTNAME
 					: ''
 			});
 		}
 
 		if (mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname) {
 			attributes.push({
-				n: 'zimbraMtaRestriction',
+				n: ZIMBRA_MTA_RESTRICTION,
 				_content: mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname
-					? 'reject_non_fqdn_helo_hostname'
+					? REJECT_NON_FQDN_HELO_HOSTNAME
 					: ''
 			});
 		}
 
 		if (mtaInboundSecurityDetail?.rejectUnknownHeloHostname) {
 			attributes.push({
-				n: 'zimbraMtaRestriction',
+				n: ZIMBRA_MTA_RESTRICTION,
 				_content: mtaInboundSecurityDetail?.rejectUnknownHeloHostname
-					? 'reject_unknown_helo_hostname'
+					? REJECT_UNKNOWN_HELO_HOSTNAME
 					: ''
 			});
 		}
 
 		if (mtaInboundSecurityDetail?.rejectUnknownSenderDomain) {
 			attributes.push({
-				n: 'zimbraMtaRestriction',
+				n: ZIMBRA_MTA_RESTRICTION,
 				_content: mtaInboundSecurityDetail?.rejectUnknownSenderDomain
-					? 'reject_unknown_sender_domain'
+					? REJECT_UNKNOWN_SENDER_DOMAIN
 					: ''
 			});
 		}
 
 		if (mtaInboundSecurityDetail?.rejectNonFqdnSender) {
 			attributes.push({
-				n: 'zimbraMtaRestriction',
-				_content: mtaInboundSecurityDetail?.rejectNonFqdnSender ? 'reject_non_fqdn_sender' : ''
+				n: ZIMBRA_MTA_RESTRICTION,
+				_content: mtaInboundSecurityDetail?.rejectNonFqdnSender ? REJECT_NON_FQDN_SENDER : ''
 			});
 		}
 
-		if (!attributes.find((item: any) => item?.n === 'zimbraMtaRestriction')) {
+		if (!attributes.find((item: any) => item?.n === ZIMBRA_MTA_RESTRICTION)) {
 			attributes.push({
-				n: 'zimbraMtaRestriction',
+				n: ZIMBRA_MTA_RESTRICTION,
 				_content: ''
 			});
 		}
@@ -437,11 +455,11 @@ const MTAInboundFlowSecurity: FC = () => {
 			if (ev && ev.length > 0) {
 				const extension = ev.map((item: Record<string, string>) => item?.label);
 				if (extension && extension.length > 0) {
-					setValue('zimbraMtaBlockedExtension', extension);
+					setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, extension);
 					setMtaBlockExtension(ev);
 				}
 			} else {
-				setValue('zimbraMtaBlockedExtension', []);
+				setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
 				setMtaBlockExtension([]);
 			}
 		},
@@ -537,7 +555,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin}
 							onClick={(): void =>
 								setValue(
-									'zimbraMtaBlockedExtensionWarnAdmin',
+									ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
 									!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin
 								)
 							}
@@ -552,7 +570,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
 							onClick={(): void =>
 								setValue(
-									'zimbraMtaBlockedExtensionWarnRecipient',
+									ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
 									!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient
 								)
 							}
@@ -581,7 +599,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender}
 							onClick={(): void =>
 								setValue(
-									'zimbraMtaSmtpdRejectUnlistedSender',
+									ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
 									!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender
 								)
 							}
@@ -593,7 +611,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient}
 							onClick={(): void =>
 								setValue(
-									'zimbraMtaSmtpdRejectUnlistedRecipient',
+									ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
 									!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient
 								)
 							}
@@ -608,7 +626,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions}
 							onClick={(): void =>
 								setValue(
-									'zimbraMtaSmtpdSenderRestrictions',
+									ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
 									!mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions
 								)
 							}
@@ -637,7 +655,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							value={mtaInboundSecurityDetail?.rejectUnknownClientHostname}
 							onClick={(): void =>
 								setValue(
-									'rejectUnknownClientHostname',
+									_REJECT_UNKNOWN_CLIENT_HOSTNAME,
 									!mtaInboundSecurityDetail?.rejectUnknownClientHostname
 								)
 							}
