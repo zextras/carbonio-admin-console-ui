@@ -10,5 +10,10 @@ import {
 	getSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 
-export const getSamlConfig = async (domain: string): Promise<any> =>
-	getSoapFetchRequest(`/service/extension/zextras_admin/auth/saml/${domain}`);
+export const getSamlConfig = async (domain: string, raw?: boolean): Promise<any> => {
+	let url = `/service/extension/zextras_admin/auth/saml/${domain}`;
+	if (raw) {
+		url += `?raw=${raw}`;
+	}
+	return getSoapFetchRequest(url);
+};

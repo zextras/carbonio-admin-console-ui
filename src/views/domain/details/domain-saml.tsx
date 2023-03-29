@@ -142,7 +142,7 @@ const DomainSaml: FC = () => {
 
 	const generateSAMLTable = useCallback(
 		(samlAttr: Array<SamlAttribute>): void => {
-			if (samlAttr && samlAttr.length > 0) {
+			if (samlAttr) {
 				const samlRows: Array<any> = [];
 				samlAttr.forEach((item: SamlAttribute, index) => {
 					samlRows.push({
@@ -183,7 +183,7 @@ const DomainSaml: FC = () => {
 
 	const getSAMLConfigurations = useCallback(
 		(domain: string): void => {
-			getSamlConfig(domain)
+			getSamlConfig(domain, true)
 				.then((data) => {
 					if (!data?.error) {
 						setSAMLAttributes(data);
@@ -200,8 +200,8 @@ const DomainSaml: FC = () => {
 	);
 
 	const importSAMLConfigurations = useCallback(
-		(domain: string, url: string): void => {
-			importSamlConfig(domain, url)
+		(domain: string, url: string, allowUnsecure: boolean): void => {
+			importSamlConfig(domain, url, allowUnsecure)
 				.then((data) => {
 					if (!data?.error) {
 						setSAMLAttributes(data);
@@ -336,6 +336,35 @@ const DomainSaml: FC = () => {
 		[createSnackbar, setSAMLAttributes, showError, t]
 	);
 
+	const deleteSAMLConfigurations = useCallback(
+		(domain: string): void => {
+			deleteSamlAttributes(domain)
+				.then((data) => {
+					if (!data?.error) {
+						setSAMLAttributes(data);
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								'label.you_have_deleted_the_configuration',
+								'You have deleted the configuration'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					} else {
+						const err = { message: data?.error };
+						showError(err);
+					}
+				})
+				.catch((error) => {
+					showError(error);
+				});
+		},
+		[createSnackbar, setSAMLAttributes, showError, t]
+	);
+
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0 && domainName) {
 			const publicHostNameArr = domainInformation.filter(
@@ -358,7 +387,7 @@ const DomainSaml: FC = () => {
 	}, [domainName, getSAMLConfigurations]);
 
 	useEffect(() => {
-		if (samlAttributes && samlAttributes?.length > 0) {
+		if (samlAttributes) {
 			generateSAMLTable(samlAttributes);
 		}
 	}, [generateSAMLTable, samlAttributes]);
@@ -542,7 +571,10 @@ const DomainSaml: FC = () => {
 										color="primary"
 										size="extralarge"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClick={() => importSAMLConfigurations(domainName, metadataUrl)}
+										onClick={() =>
+											importSAMLConfigurations(domainName, metadataUrl, isAllowUnsecure)
+										}
+										disabled={!metadataUrl}
 									/>
 								</Container>
 							</Row>
@@ -584,7 +616,8 @@ const DomainSaml: FC = () => {
 										size="large"
 										height={36}
 										width="fill"
-										disabled
+										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										onClick={() => deleteSAMLConfigurations(domainName)}
 									/>
 								</Container>
 							</Row>
@@ -601,7 +634,7 @@ const DomainSaml: FC = () => {
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
 									HeaderFactory={CustomHeaderFactory}
-									style={{ height: '15rem', overflow: 'auto' }}
+									style={samlTableRows?.length > 0 ? { height: '15rem', overflow: 'auto' } : {}}
 								/>
 							</Row>
 							{samlTableRows.length === 0 && (
