@@ -171,7 +171,7 @@ const MTAInboundFlowSecurity: FC = () => {
 			);
 			if (zimbraMtaRestriction) {
 				const rejectUnknownClientHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === REJECT_UNKNOWN_CLIENT_HOSTNAME
+					(item: Record<string, string>) => item?._content === REJECT_UNKNOWN_CLIENT_HOSTNAME
 				);
 
 				const isRejectUnknownClientHostname =
@@ -183,7 +183,8 @@ const MTAInboundFlowSecurity: FC = () => {
 				setValue(_REJECT_UNKNOWN_CLIENT_HOSTNAME, isRejectUnknownClientHostname);
 
 				const rejectUnknownReverseClientHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME
+					(item: Record<string, string>) =>
+						item?._content === REJECT_UNKNOWN_REVERSE_CLIENT_HOSTNAME
 				);
 				const isRejectUnknownReverseClientHostname =
 					rejectUnknownReverseClientHostname &&
@@ -194,7 +195,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				setValue('rejectUnknownReverseClientHostname', isRejectUnknownReverseClientHostname);
 
 				const rejectInvalidHeloHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === REJECT_INVALID_HELO_HOSTNAME
+					(item: Record<string, string>) => item?._content === REJECT_INVALID_HELO_HOSTNAME
 				);
 				const isRejectInvalidHeloHostname =
 					rejectInvalidHeloHostname &&
@@ -205,7 +206,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				setValue('rejectInvalidHeloHostname', isRejectInvalidHeloHostname);
 
 				const rejectNonFqdnHeloHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === REJECT_NON_FQDN_HELO_HOSTNAME
+					(item: Record<string, string>) => item?._content === REJECT_NON_FQDN_HELO_HOSTNAME
 				);
 				const isRejectNonFqdnHeloHostname =
 					rejectNonFqdnHeloHostname &&
@@ -216,7 +217,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				setValue('rejectNonFqdnHeloHostname', isRejectNonFqdnHeloHostname);
 
 				const rejectUnknownHeloHostname = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === REJECT_UNKNOWN_HELO_HOSTNAME
+					(item: Record<string, string>) => item?._content === REJECT_UNKNOWN_HELO_HOSTNAME
 				);
 				const isRejectUnknownHeloHostname =
 					rejectUnknownHeloHostname &&
@@ -227,7 +228,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				setValue('rejectUnknownHeloHostname', isRejectUnknownHeloHostname);
 
 				const rejectUnknownSenderDomain = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === REJECT_UNKNOWN_SENDER_DOMAIN
+					(item: Record<string, string>) => item?._content === REJECT_UNKNOWN_SENDER_DOMAIN
 				);
 				const isRejectUnknownSenderDomain =
 					rejectUnknownSenderDomain &&
@@ -238,7 +239,7 @@ const MTAInboundFlowSecurity: FC = () => {
 				setValue('rejectUnknownSenderDomain', isRejectUnknownSenderDomain);
 
 				const rejectNonFqdnSender = zimbraMtaRestriction.filter(
-					(item: any) => item?._content === REJECT_NON_FQDN_SENDER
+					(item: Record<string, string>) => item?._content === REJECT_NON_FQDN_SENDER
 				);
 				const isRejectNonFqdnSender =
 					rejectNonFqdnSender &&
@@ -263,7 +264,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	}, [mtaInboundSecurityDetail, mtaInboundSecurityInitialDetail]);
 
 	const updateGlobalConfig = useCallback(
-		(attributes: Array<any>): void => {
+		(attributes: Array<Record<string, string>>): void => {
 			const attributeWithoutExtension = attributes.filter(
 				(item: Record<string, string>) =>
 					item?.n !== ZIMBRA_MTA_BLOCKED_EXTENSION && item?.n !== ZIMBRA_MTA_RESTRICTION
@@ -280,13 +281,13 @@ const MTAInboundFlowSecurity: FC = () => {
 				addConfig(zimbraMtaRestriction);
 			}
 			if (attributeWithoutExtension && attributeWithoutExtension.length > 0) {
-				attributeWithoutExtension.forEach((ele: any) => {
+				attributeWithoutExtension.forEach((ele: Record<string, string>) => {
 					updateConfig(ele?.n, ele._content);
 				});
 			}
 
 			if (attributeWithExtension && attributeWithExtension.length > 0) {
-				attributeWithExtension.forEach((item: any) => {
+				attributeWithExtension.forEach((item: Record<string, string>) => {
 					removeConfigItems(item);
 				});
 				if (attributeWithExtension.length === 1 && attributeWithExtension[0]?._content === '') {
@@ -300,7 +301,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	);
 
 	const modifyConfigRequest = useCallback(
-		(attributes: Array<any>): void => {
+		(attributes: Array<Record<string, string>>): void => {
 			modifyConfig(attributes)
 				.then((data) => {
 					createSnackbar({
@@ -330,7 +331,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	);
 
 	const onSave = useCallback(() => {
-		const attributes: any[] = [];
+		const attributes: Array<Record<string, string>> = [];
 		if (mtaInboundSecurityDetail?.zimbraMtaBlockedExtension) {
 			const blockedExtension = mtaInboundSecurityDetail?.zimbraMtaBlockedExtension;
 			if (blockedExtension) {
@@ -426,7 +427,7 @@ const MTAInboundFlowSecurity: FC = () => {
 			});
 		}
 
-		if (!attributes.find((item: any) => item?.n === ZIMBRA_MTA_RESTRICTION)) {
+		if (!attributes.find((item: Record<string, string>) => item?.n === ZIMBRA_MTA_RESTRICTION)) {
 			attributes.push({
 				n: ZIMBRA_MTA_RESTRICTION,
 				_content: ''
