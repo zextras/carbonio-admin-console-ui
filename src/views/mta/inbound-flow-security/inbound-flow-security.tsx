@@ -556,15 +556,19 @@ const MTAInboundFlowSecurity: FC = () => {
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
 				height="calc(100vh - 10.5rem)"
-				background="white"
 				style={{ overflow: 'auto' }}
 			>
-				<Container crossAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+				<Container
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					height="auto"
+					padding={{ top: 'large', bottom: 'extralarge' }}
+				>
 					<Text size="small" weight="bold" color="gray0">
 						{t('mta.settings', 'Settings')}
 					</Text>
 				</Container>
-				<Container crossAlignment="flex-start">
+				<Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
 					<ChipInput
 						placeholder={t('mta.add_here_any_blocked_extension', 'Add here any Blocked Extension')}
 						background="gray5"
@@ -595,7 +599,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							}
 						/>
 					</Container>
-					<Container crossAlignment="flex-start">
+					<Container crossAlignment="flex-start" height="auto">
 						<Switch
 							label={t(
 								'mta.notify_users_about_block_extensions',
@@ -615,7 +619,11 @@ const MTAInboundFlowSecurity: FC = () => {
 					<Divider />
 				</ListRow>
 
-				<Container crossAlignment="flex-start" padding={{ top: 'extralarge', bottom: 'large' }}>
+				<Container
+					crossAlignment="flex-start"
+					padding={{ top: 'extralarge', bottom: 'large' }}
+					height="auto"
+				>
 					<Text size="small" weight="bold" color="gray0">
 						{t('mta.rejection', 'Rejection')}
 					</Text>
@@ -671,7 +679,11 @@ const MTAInboundFlowSecurity: FC = () => {
 					<Divider />
 				</ListRow>
 
-				<Container crossAlignment="flex-start" padding={{ top: 'extralarge', bottom: 'large' }}>
+				<Container
+					crossAlignment="flex-start"
+					padding={{ top: 'extralarge', bottom: 'large' }}
+					height="auto"
+				>
 					<Text size="small" weight="bold" color="gray0">
 						{t('mta.protocol_checks', 'Protocol Checks')}
 					</Text>
