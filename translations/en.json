@@ -798,6 +798,7 @@
         "buckets": "Buckets",
         "bulk_actions": "Bulk Actions",
         "button_delete": "DELETE",
+        "byte_lbl": "BYTE",
         "calendar": "Calendar",
         "calendar_options": "Calendar Options",
         "can_not_receiver": "Can't receive",
