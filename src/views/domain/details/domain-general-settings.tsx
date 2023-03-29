@@ -760,10 +760,10 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
+										label={`${t(
 											'label.default_mail_quota_for_account_domain',
 											'The default email quota for each account in the domain'
-										)}
+										)} (${t('label.byte_lbl', 'BYTE')})`}
 										value={zimbraMailDomainQuota}
 										background="gray6"
 										readOnly

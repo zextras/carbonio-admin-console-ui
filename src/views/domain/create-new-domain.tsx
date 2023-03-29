@@ -308,7 +308,7 @@ const CreateDomain: FC = () => {
 									label={`${t(
 										'label.default_mail_quota_for_account_domain',
 										'The default email quota for each account in the domain'
-									)} (${t('label.mb', 'MB')})`}
+									)} (${t('label.byte_lbl', 'BYTE')})`}
 									background="gray5"
 									value={zimbraMailDomainQuota}
 									onChange={(e: any): any => {
