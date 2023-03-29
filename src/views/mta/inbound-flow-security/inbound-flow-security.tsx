@@ -448,7 +448,56 @@ const MTAInboundFlowSecurity: FC = () => {
 				setMtaBlockExtension(allExtensions);
 			}
 		}
-	}, [mtaInboundSecurityInitialDetail]);
+		setValue(
+			ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
+			mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtensionWarnAdmin
+		);
+		setValue(
+			ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
+			mtaInboundSecurityInitialDetail?.zimbraMtaBlockedExtensionWarnRecipient
+		);
+
+		setValue(
+			ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
+			mtaInboundSecurityInitialDetail?.zimbraMtaSmtpdRejectUnlistedSender
+		);
+		setValue(
+			ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
+			mtaInboundSecurityInitialDetail?.zimbraMtaSmtpdRejectUnlistedRecipient
+		);
+		setValue(
+			ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
+			mtaInboundSecurityInitialDetail?.zimbraMtaSmtpdSenderRestrictions
+		);
+		setValue(
+			'rejectUnknownClientHostname',
+			mtaInboundSecurityInitialDetail?.rejectUnknownClientHostname !== undefined
+		);
+		setValue(
+			'rejectUnknownReverseClientHostname',
+			mtaInboundSecurityInitialDetail?.rejectUnknownReverseClientHostname !== undefined
+		);
+		setValue(
+			'rejectInvalidHeloHostname',
+			mtaInboundSecurityInitialDetail?.rejectInvalidHeloHostname !== undefined
+		);
+		setValue(
+			'rejectNonFqdnHeloHostname',
+			mtaInboundSecurityInitialDetail?.rejectNonFqdnHeloHostname !== undefined
+		);
+		setValue(
+			'rejectUnknownHeloHostname',
+			mtaInboundSecurityInitialDetail?.rejectUnknownHeloHostname !== undefined
+		);
+		setValue(
+			'rejectUnknownSenderDomain',
+			mtaInboundSecurityInitialDetail?.rejectUnknownSenderDomain !== undefined
+		);
+		setValue(
+			'rejectNonFqdnSender',
+			mtaInboundSecurityInitialDetail?.rejectNonFqdnSender !== undefined
+		);
+	}, [mtaInboundSecurityInitialDetail, setValue]);
 
 	const onBlockExtensionChange = useCallback(
 		(ev) => {
