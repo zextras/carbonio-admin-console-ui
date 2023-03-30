@@ -2,6 +2,43 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.14](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.13...v0.9.14) (2023-03-30)
+
+
+### Features
+
+* add primary color configuration ([#301](https://github.com/zextras/carbonio-admin-console-ui/issues/301)) ([e663d4b](https://github.com/zextras/carbonio-admin-console-ui/commit/e663d4b4d8a31c835035efdb76745034d4f9258e))
+* added dn settings ([458f25c](https://github.com/zextras/carbonio-admin-console-ui/commit/458f25c1e74aa8e02b640f8e9122e47733071b3f))
+* added feature for external gal ldpa url ([5eaaad8](https://github.com/zextras/carbonio-admin-console-ui/commit/5eaaad8a2cd8b85bc269bff2f646361039b0a8e5))
+* edit volume with new layout ([1561731](https://github.com/zextras/carbonio-admin-console-ui/commit/15617311c5d44385d45070c4555115dcffda6049))
+* minio bucket create functionality added ([932c879](https://github.com/zextras/carbonio-admin-console-ui/commit/932c87974b3eff37c87e4762e7e5551c1c982218))
+
+
+### Bug Fixes
+
+* added correct parameter for datasource ([ca3707c](https://github.com/zextras/carbonio-admin-console-ui/commit/ca3707ce7f61950d3d2c7662f57a36ad27eee826))
+* added datasource update feature ([c6884d2](https://github.com/zextras/carbonio-admin-console-ui/commit/c6884d248646a751f55a2ec68346de5e3fa677b0))
+* added frequency update todo selection for unit time ([8895bee](https://github.com/zextras/carbonio-admin-console-ui/commit/8895bee477ed2fb6d9ed5098650e1a22b7e2f573))
+* added tooltip ([817ec2b](https://github.com/zextras/carbonio-admin-console-ui/commit/817ec2b2ce093ebce860c2c91883c63629e2b087))
+* cancel button not working on domain settings ([69c8eae](https://github.com/zextras/carbonio-admin-console-ui/commit/69c8eaecb35ac69022e83a10031f31b9db4d92b7))
+* commented interval parameter to avoid api error ([4e9517f](https://github.com/zextras/carbonio-admin-console-ui/commit/4e9517ff3732afa4a252511f7710ac0bf26101d8))
+* comments resolved and types added ([97a6499](https://github.com/zextras/carbonio-admin-console-ui/commit/97a64998345a9ae67a73c1775fa38b230e26953a))
+* conflicts resolved ([31e0c98](https://github.com/zextras/carbonio-admin-console-ui/commit/31e0c98a7d8053fc0e0b0729f58da4db1557db9b))
+* conflicts resolved ([a508802](https://github.com/zextras/carbonio-admin-console-ui/commit/a50880256e55acc1e79f52d5882baa54be753654))
+* feedback fixed about saving domain ([1c33c5a](https://github.com/zextras/carbonio-admin-console-ui/commit/1c33c5a865f7e32445a0ed48d98d750013bc5fd5))
+* fixed cancel button issue ([13497e5](https://github.com/zextras/carbonio-admin-console-ui/commit/13497e53b3e0803d12fb3ae5890fd1ad703f9e0f))
+* fixed default value state for measure unit ([979d263](https://github.com/zextras/carbonio-admin-console-ui/commit/979d2638b42b1625e1f954a59d54c2dc151b0e91))
+* fixed dn update part todo settings pending ([4c47f6b](https://github.com/zextras/carbonio-admin-console-ui/commit/4c47f6b4d2d74caccff1f39880ee4361514c523e))
+* fixed gal frequency snackbar ([648521b](https://github.com/zextras/carbonio-admin-console-ui/commit/648521b3591505c218c9cac79f0928ecdfddc5dc))
+* fixed interval issue ([8287e28](https://github.com/zextras/carbonio-admin-console-ui/commit/8287e284b71f810bc8f4854dc8a35a3532bf0132))
+* fixed new s3 edit volume ([12952da](https://github.com/zextras/carbonio-admin-console-ui/commit/12952da29917a6fa985f5ecff3c611b125e6a7ef))
+* fixed prefix and path layout in listings ([dd04937](https://github.com/zextras/carbonio-admin-console-ui/commit/dd04937bd153cde6a9b6913773cabb8e77626917))
+* missing measurement for quota account in create domain ([39d19e8](https://github.com/zextras/carbonio-admin-console-ui/commit/39d19e808000b5e33f59127feaa90bd07af2c345))
+* remove hardcode color from serverlist ([#312](https://github.com/zextras/carbonio-admin-console-ui/issues/312)) ([66381c8](https://github.com/zextras/carbonio-admin-console-ui/commit/66381c8eea46d6ed47f7e8a35c9e28bc9e95aca7))
+* removed dummy value conflicts resolved and added comment ([7dc925c](https://github.com/zextras/carbonio-admin-console-ui/commit/7dc925ce2c70e4d7f0a1c4952d23a0e593ff82d6))
+* scrolling on bucket list ([28922d7](https://github.com/zextras/carbonio-admin-console-ui/commit/28922d7e5a8c22fce67a40faa5bf3c374f3e2c56))
+* translation changed ([e7a79ad](https://github.com/zextras/carbonio-admin-console-ui/commit/e7a79ad505c9c04cad96c4e45839885668120505))
+
 ### [0.9.13](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.12...v0.9.13) (2023-03-14)
 
 ### [0.9.12](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.11...v0.9.12) (2023-03-02)
