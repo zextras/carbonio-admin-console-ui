@@ -37,7 +37,8 @@ import {
 	RESTORE_ACCOUNT,
 	RESTORE_DELETED_EMAIL,
 	THEME,
-	VIRTUAL_HOSTS
+	VIRTUAL_HOSTS,
+	SAML
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -212,6 +213,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: THEME,
 				name: t('label.theme', 'Theme'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: SAML,
+				name: t('label.saml', 'SAML'),
 				isSelected: isDomainSelect
 			}
 		],
