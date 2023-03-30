@@ -605,40 +605,63 @@ const DomainGalSettings: FC = () => {
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const verifyLdapConnection = useCallback(
-		debounce((zimbraGalLdapURL, zimbraGalLdapFilter) => {
-			const body:
-				| {
-						_jsns?: string;
-						a?: { n: string; _content?: string }[];
-				  }
-				| any = {};
-			body._jsns = 'urn:zimbraAdmin';
-			const attributes: { n: string; _content?: string }[] = [];
-			attributes.push({
-				n: 'zimbraGalMode',
-				_content: 'ldap'
-			});
-			attributes.push({
-				n: 'zimbraGalLdapFilter',
-				_content: zimbraGalLdapFilter
-			});
-			attributes.push({
-				n: 'zimbraGalLdapURL',
-				_content: zimbraGalLdapURL
-			});
-			body.a = attributes;
-			checkGalConfig(body)
-				.then((data: any) => {
-					if (data?.code?.[0]?._content === 'check.OK') {
-						setIsGalUrlverified(true);
-					} else {
-						setIsGalUrlverified(false);
-					}
-				})
-				.catch(() => {
-					setIsGalUrlverified(false);
+		debounce(
+			(
+				zimbraGalLdapURL,
+				zimbraGalLdapFilter,
+				zimbraGalLdapAuthMechVal,
+				zimbraGalLdapBindDn,
+				zimbraGalLdapBindPassword
+			) => {
+				const body:
+					| {
+							_jsns?: string;
+							a?: { n: string; _content?: string }[];
+					  }
+					| any = {};
+				body._jsns = 'urn:zimbraAdmin';
+				const attributes: { n: string; _content?: string }[] = [];
+				attributes.push({
+					n: 'zimbraGalMode',
+					_content: 'ldap'
 				});
-		}, 700),
+				attributes.push({
+					n: 'zimbraGalLdapFilter',
+					_content: zimbraGalLdapFilter
+				});
+				attributes.push({
+					n: 'zimbraGalLdapURL',
+					_content: zimbraGalLdapURL
+				});
+				if (zimbraGalLdapAuthMechVal !== 'none') {
+					attributes.push({
+						n: 'zimbraGalLdapAuthMech',
+						_content: zimbraGalLdapAuthMechVal
+					});
+					attributes.push({
+						n: 'zimbraGalLdapBindDn',
+						_content: zimbraGalLdapBindDn
+					});
+					attributes.push({
+						n: 'zimbraGalLdapBindPassword',
+						_content: zimbraGalLdapBindPassword
+					});
+				}
+				body.a = attributes;
+				checkGalConfig(body)
+					.then((data: any) => {
+						if (data?.code?.[0]?._content === 'check.OK') {
+							setIsGalUrlverified(true);
+						} else {
+							setIsGalUrlverified(false);
+						}
+					})
+					.catch(() => {
+						setIsGalUrlverified(false);
+					});
+			},
+			700
+		),
 		[debounce]
 	);
 
@@ -649,9 +672,22 @@ const DomainGalSettings: FC = () => {
 
 	useEffect(() => {
 		if (domainData?.zimbraGalLdapURL) {
-			verifyLdapConnection(domainData?.zimbraGalLdapURL, domainData?.zimbraGalLdapFilter);
+			verifyLdapConnection(
+				domainData?.zimbraGalLdapURL,
+				domainData?.zimbraGalLdapFilter,
+				domainData?.zimbraGalLdapAuthMech,
+				domainData?.zimbraGalLdapBindDn,
+				domainData?.zimbraGalLdapBindPassword
+			);
 		}
-	}, [domainData?.zimbraGalLdapFilter, domainData?.zimbraGalLdapURL, verifyLdapConnection]);
+	}, [
+		domainData?.zimbraGalLdapAuthMech,
+		domainData?.zimbraGalLdapBindDn,
+		domainData?.zimbraGalLdapBindPassword,
+		domainData?.zimbraGalLdapFilter,
+		domainData?.zimbraGalLdapURL,
+		verifyLdapConnection
+	]);
 
 	const onZimbraGalLdapStartTlsEnabledChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setZimbraGalLdapStartTlsEnabled({
