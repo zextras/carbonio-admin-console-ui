@@ -149,11 +149,19 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<Trans
-						i18nKey="label.backup_primarybar_tooltip"
-						defaults="Manage your <bold>backup services, view</bold> their <bold>status</bold>, the <bold>server’s list</bold> or <bold>import an existing one</bold>."
-						components={{ bold: <strong /> }}
-					/>
+					<>
+						<Trans
+							i18nKey="label.backup_lbl"
+							defaults="<bold>Backup</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.backup_primarybar_tooltip"
+							defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
 				),
 				options: []
 			}
@@ -170,11 +178,19 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<Trans
-						i18nKey="label.cos_primarybar_tooltip"
-						defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
-						components={{ bold: <strong /> }}
-					/>
+					<>
+						<Trans
+							i18nKey="label.class_of_service_lbl"
+							defaults="<bold>Class of Service</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.cos_primarybar_tooltip"
+							defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
+							components={{ bold: <strong /> }}
+						/>
+					</>
 				),
 				options: []
 			}
@@ -191,11 +207,19 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<Trans
-						i18nKey="label.privacy_primarybar_tooltip"
-						defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
-						components={{ bold: <strong /> }}
-					/>
+					<>
+						<Trans
+							i18nKey="label.privacy_lbl"
+							defaults="<bold>Privacy</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.privacy_primarybar_tooltip"
+							defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
 				),
 				options: []
 			}
@@ -212,11 +236,19 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<Trans
-						i18nKey="label.notification_primarybar_tooltip"
-						defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
-						components={{ bold: <strong /> }}
-					/>
+					<>
+						<Trans
+							i18nKey="label.notification_lbl"
+							defaults="<bold>Notifications</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.notification_primarybar_tooltip"
+							defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
+							components={{ bold: <strong /> }}
+						/>
+					</>
 				),
 				options: []
 			}
@@ -233,11 +265,19 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<Trans
-						i18nKey="label.domain_primarybar_tooltip"
-						defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, mailing lists, resources</bold> and <bold>more</bold>."
-						components={{ bold: <strong /> }}
-					/>
+					<>
+						<Trans
+							i18nKey="label.domains_lbl"
+							defaults="<bold>Domains</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.domain_primarybar_tooltip"
+							defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, mailing lists, resources</bold> and <bold>more</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
 				),
 				options: []
 			}
@@ -248,8 +288,59 @@ const App: FC = () => {
 	const homeTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.home', 'Home'),
-				options: []
+				header: t('label.details', 'Details'),
+				options: [
+					{
+						label: t('label.domain_status', 'Domain Status')
+					},
+					{
+						label: t('label.general_Settings', 'General Settings')
+					},
+					{
+						label: t('label.global_address_list', 'Global Address List')
+					},
+					{
+						label: t('label.authentication', 'Authentication')
+					},
+					{
+						label: t('label.virtual_hosts_and_certificates', 'Virtual Hosts & Certificate')
+					},
+					{
+						label: t('label.mailbox_quota', 'Mailbox Quota')
+					}
+				]
+			},
+			{
+				header: t('domain.manage', 'Manage'),
+				options: [
+					{
+						label: t('label.accounts', 'Accounts')
+					},
+					{
+						label: t('label.mailing_list', 'Mailing List')
+					},
+					{
+						label: t('label.resources', 'Resources')
+					},
+					/* {
+						label: t('label.admin_delegates', 'Admin Delegates')
+					},
+					{
+						label: t('label.active_sync', 'ActiveSync')
+					},
+					{
+						label: t('label.account_scan', 'AccountScan')
+					},
+					{
+						label: t('label.export_domain', 'Export Domain')
+					} */
+					{
+						label: t('label.restore_account', 'Restore Account')
+					}
+					/* {
+						label: t('label.restore_deleted_email', 'Restore Deleted E-mail')
+					} */
+				]
 			}
 		],
 		[t]
@@ -269,11 +360,19 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<Trans
-						i18nKey="label.storage_primarybar_tooltip"
-						defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
-						components={{ bold: <strong /> }}
-					/>
+					<>
+						<Trans
+							i18nKey="label.storage_lbl"
+							defaults="<bold>Storage</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.storage_primarybar_tooltip"
+							defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
 				),
 				options: []
 			}
@@ -290,11 +389,19 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<Trans
-						i18nKey="label.subscription_primarybar_tooltip"
-						defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
-						components={{ bold: <strong /> }}
-					/>
+					<>
+						<Trans
+							i18nKey="label.subscription_lbl"
+							defaults="<bold>Subscription</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.subscription_primarybar_tooltip"
+							defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
+							components={{ bold: <strong /> }}
+						/>
+					</>
 				),
 				options: []
 			}
@@ -311,11 +418,19 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<Trans
-						i18nKey="label.operation_primarybar_tooltip"
-						defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
-						components={{ bold: <strong /> }}
-					/>
+					<>
+						<Trans
+							i18nKey="label.operation_lbl"
+							defaults="<bold>Operations</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.operation_primarybar_tooltip"
+							defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
 				),
 				options: []
 			}

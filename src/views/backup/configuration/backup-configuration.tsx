@@ -45,6 +45,7 @@ import {
 } from '../../../constants';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { fetchSoap } from '../../../services/bucket-service';
+import { useBackupStore } from '../../../store/backup/store';
 
 const BackupConfiguration: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -88,6 +89,7 @@ const BackupConfiguration: FC = () => {
 	const [manageExternalVolumeNewLocalMountpoint, setManageExternalVolumeNewLocalMountpoint] =
 		useState<string>('');
 	const [rootVolumePath, setRootVolumePath] = useState<string>('');
+	const selectedBackupServer = useBackupStore((state) => state.selectedServer);
 
 	const destinationOptions: any[] = useMemo(
 		() => [
@@ -438,12 +440,28 @@ const BackupConfiguration: FC = () => {
 			})
 			.catch((error: any) => {
 				setIsSaveRequestInProgress(false);
+				setCurrentBackupValue((prev: any) => ({
+					...prev,
+					moduleEnableStartup,
+					enableRealtimeScanner,
+					runSmartScanStartup,
+					spaceThreshold,
+					isScheduleSmartScan,
+					scheduleSmartScan,
+					scheduleAutomaticRetentionPolicy,
+					retentionPolicySchedule,
+					backupDestPath,
+					keepDeletedItemInBackup,
+					keepDeletedAccountsInBackup
+				}));
+				setIsDirty(false);
 				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					key: 'success',
+					type: 'success',
+					label: t(
+						'label.the_last_changes_has_been_saved_successfully',
+						'Changes have been saved successfully'
+					),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -882,7 +900,7 @@ const BackupConfiguration: FC = () => {
 								crossAlignment="flex-start"
 							>
 								<Text size="medium" weight="bold" color="gray0">
-									{t('backup.server_configuration', 'Server Configuration')}
+									{selectedBackupServer} {t('backup.backup_configuration', 'backup configuration')}
 								</Text>
 							</Row>
 							<Row
@@ -981,6 +999,7 @@ const BackupConfiguration: FC = () => {
 								)}
 								value={moduleEnableStartup}
 								onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -988,6 +1007,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
 								value={enableRealtimeScanner}
 								onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -995,6 +1015,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
 								value={runSmartScanStartup}
 								onClick={(): void => setRunSmartScanStartup(!runSmartScanStartup)}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
@@ -1277,6 +1298,7 @@ const BackupConfiguration: FC = () => {
 							label={t('backup.schedule_smartscan', 'Schedule Smartscan')}
 							value={isScheduleSmartScan}
 							onClick={(): void => setIsScheduleSmartScan(!isScheduleSmartScan)}
+							iconColor="primary"
 						/>
 					</Container>
 
@@ -1350,6 +1372,7 @@ const BackupConfiguration: FC = () => {
 								onClick={(): void =>
 									setScheduleAutomaticRetentionPolicy(!scheduleAutomaticRetentionPolicy)
 								}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>

@@ -411,7 +411,6 @@ const DomainResources: FC = () => {
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
-				style={{ overflow: 'auto' }}
 				width="100%"
 				height="calc(100vh - 200px)"
 				padding={{ top: 'large' }}
@@ -498,7 +497,7 @@ const DomainResources: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							padding={{ top: 'large', bottom: 'large' }}
+							padding={{ all: 'large' }}
 						>
 							{resourceList && resourceList.length > 0 && (
 								<Row

@@ -35,7 +35,8 @@ import {
 	CEPH,
 	CLOUDIAN,
 	EMC,
-	SCALITYS3
+	SCALITYS3,
+	LOCAL_VALUE
 } from '../../../../constants';
 import { AbsoluteContainer } from '../../../components/styled';
 import ServerVolumeDetailsPanel from './server-volume-details-panel';
@@ -99,7 +100,22 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						{isAdvanced ? v?.path : v?.rootpath}
+						{v?.storeType === LOCAL_VALUE
+							? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
+							: t('volume.volume_allocation_list.object_storage', 'ObjectStorage')}
+					</Row>,
+					<Row
+						key={i}
+						onClick={(): void => {
+							onClick(i);
+						}}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+					>
+						{v?.storeType === LOCAL_VALUE
+							? v?.path
+							: t('label.prefix_volume', 'Prefix - {{volumePrefix}}', {
+									volumePrefix: v?.volumePrefix
+							  })}
 					</Row>,
 					<Row
 						key={i}
@@ -122,7 +138,7 @@ const VolumeListTable: FC<{
 				],
 				clickable: true
 			})),
-		[isAdvanced, onClick, volumes]
+		[onClick, t, volumes]
 	);
 
 	return (
@@ -156,9 +172,9 @@ const VolumesDetailPanel: FC = () => {
 	const volIndexerHeaders = useMemo(() => indexerHeaders(t), [t]);
 	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t), [t]);
 	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
-	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState('');
-	const [secondaryVolumeSelection, setSecondaryVolumeSelection] = useState('');
-	const [indexerVolumeSelection, setIndexerVolumeSelection] = useState('');
+	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);
+	const [secondaryVolumeSelection, setSecondaryVolumeSelection] = useState<string[]>([]);
+	const [indexerVolumeSelection, setIndexerVolumeSelection] = useState<string[]>([]);
 	const [toggleWizardLocal, setToggleWizardLocal] = useState(false);
 	const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
 	const [detailsVolume, setDetailsVolume] = useState(false);
@@ -210,20 +226,20 @@ const VolumesDetailPanel: FC = () => {
 	const createSnackbar = useSnackbar();
 	const serverName = useBucketServersListStore((state) => state?.volumeList)[0].name;
 
-	const changeSelectedVolume = (): any => {
-		if (volume?.type === 1 && volume?.id !== 0) {
-			const volumeObject: any = volumeList?.primaries?.find((s: any) => s?.id === volume?.id);
+	const changeSelectedVolume = (): void => {
+		if (detailData?.type === 1 && detailData?.id !== 0) {
+			const volumeObject: any = volumeList?.primaries?.find((s: any) => s?.id === detailData?.id);
 			setVolume(volumeObject);
-		} else if (volume?.type === 2 && volume?.id !== 0) {
-			const volumeObject: any = volumeList?.secondaries?.find((s: any) => s?.id === volume?.id);
+		} else if (detailData?.type === 2 && detailData?.id !== 0) {
+			const volumeObject: any = volumeList?.secondaries?.find((s: any) => s?.id === detailData?.id);
 			setVolume(volumeObject);
-		} else if (volume?.type === 10 && volume?.id !== 0) {
-			const volumeObject: any = volumeList?.indexes?.find((s: any) => s?.id === volume?.id);
+		} else if (detailData?.type === 10 && detailData?.id !== 0) {
+			const volumeObject: any = volumeList?.indexes?.find((s: any) => s?.id === detailData?.id);
 			setVolume(volumeObject);
 		}
 	};
 
-	const closeHandler = (): any => {
+	const closeHandler = (): void => {
 		setOpen(false);
 	};
 
@@ -253,8 +269,8 @@ const VolumesDetailPanel: FC = () => {
 						createSnackbar({
 							key: '1',
 							type: 'error',
-							label: t('label.volume_create_error', '{{volumeErrMessage}}', {
-								volumeErrMessage: getAllVolResponse?.error?.message
+							label: t('label.volume_detail_error', '{{message}}', {
+								message: 'Something went wrong, please try again'
 							})
 						});
 					}
@@ -264,7 +280,7 @@ const VolumesDetailPanel: FC = () => {
 						key: 'error',
 						type: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
-							message: error
+							message: 'Something went wrong, please try again'
 						}),
 						autoHideTimeout: 5000
 					});
@@ -295,7 +311,7 @@ const VolumesDetailPanel: FC = () => {
 						key: 'error',
 						type: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
-							message: error
+							message: 'Something went wrong, please try again'
 						}),
 						autoHideTimeout: 5000
 					});
@@ -330,8 +346,8 @@ const VolumesDetailPanel: FC = () => {
 						createSnackbar({
 							key: '1',
 							type: 'error',
-							label: t('label.volume_create_error', '{{volumeErrMessage}}', {
-								volumeErrMessage: deleteResponse?.error?.message
+							label: t('label.volume_detail_error', '{{message}}', {
+								message: 'Something went wrong, please try again'
 							})
 						});
 						setOpen(false);
@@ -343,7 +359,7 @@ const VolumesDetailPanel: FC = () => {
 						key: 'error',
 						type: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
-							message: error
+							message: 'Something went wrong, please try again'
 						}),
 						autoHideTimeout: 5000
 					});
@@ -383,7 +399,7 @@ const VolumesDetailPanel: FC = () => {
 						key: 'error',
 						type: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
-							message: error
+							message: 'Something went wrong, please try again'
 						}),
 						autoHideTimeout: 5000
 					});
@@ -441,12 +457,13 @@ const VolumesDetailPanel: FC = () => {
 			obj.bucketConfigurationId = attr?.bucketConfigurationId;
 			obj.volumePrefix = attr?.volumePrefix;
 			obj.centralized = attr?.centralized;
-			obj.useInfrequentAccess = false;
-			obj.infrequentAccessThreshold = 'asd';
-			obj.useIntelligentTiering = false;
+			obj.useInfrequentAccess = attr?.useInfrequentAccess;
+			obj.infrequentAccessThreshold = attr?.infrequentAccessThreshold;
+			obj.useIntelligentTiering = attr?.useIntelligentTiering;
 		}
+		// TODO : Fileblob, Centeralized, Open IO, Swift Mocks needs to be provided this is for future reference only
 		if (attr?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
-			obj.volumePath = '/tmp/store2';
+			obj.volumePath = '';
 			obj.volumeCompressed = false;
 			obj.compressionThresholdBytes = 4096;
 		}
@@ -454,31 +471,30 @@ const VolumesDetailPanel: FC = () => {
 			obj.serverName = attr?.serverName;
 		}
 		if (attr?.storeType?.toUpperCase() === OPENIO?.toUpperCase()) {
-			obj.url = '/tmp/store2';
-			obj.account = 'abc';
-			obj.namespace = 'abc';
+			obj.url = '';
+			obj.account = '';
+			obj.namespace = '';
 			obj.proxyPort = 1;
 			obj.accountPort = 1;
-			obj.ecd = 'abc';
+			obj.ecd = '';
 			obj.centralized = attr?.centralized;
 		}
 		if (attr?.storeType?.toUpperCase() === SWIFT?.toUpperCase()) {
-			obj.url = '/tmp/store2';
-			obj.username = 'abc';
-			obj.password = 'abc';
-			obj.authenticationMethod = 'abc';
-			obj.authenticationMethodScope = 'BASIC';
-			obj.authenticationMethodScope = 'DEFAULT';
-			obj.tenantId = '12';
-			obj.tenantName = '12';
-			obj.domain = '12';
-			obj.proxyHost = '12';
-			obj.proxyPort = 10;
-			obj.proxyUsername = 'abc';
-			obj.proxyPassword = 'abc';
-			obj.publicHost = 'abc';
-			obj.privateHost = 'abc';
-			obj.region = 'abc';
+			obj.url = '';
+			obj.username = '';
+			obj.password = '';
+			obj.authenticationMethod = '';
+			obj.authenticationMethodScope = '';
+			obj.tenantId = '';
+			obj.tenantName = '';
+			obj.domain = '';
+			obj.proxyHost = '';
+			obj.proxyPort = 0;
+			obj.proxyUsername = '';
+			obj.proxyPassword = '';
+			obj.publicHost = '';
+			obj.privateHost = '';
+			obj.region = '';
 			obj.maxDeleteObjectsCount = 10;
 			obj.centralized = attr?.centralized;
 		}
@@ -500,8 +516,8 @@ const VolumesDetailPanel: FC = () => {
 					createSnackbar({
 						key: '1',
 						type: 'error',
-						label: t('label.volume_create_error', '{{volumeErrMessage}}', {
-							volumeErrMessage: result?.error?.message || result?.exception?.message
+						label: t('label.volume_detail_error', '{{message}}', {
+							message: 'Something went wrong, please try again'
 						})
 					});
 				}
@@ -514,7 +530,7 @@ const VolumesDetailPanel: FC = () => {
 					label: error?.message
 						? error?.message
 						: t('label.volume_detail_error', '{{message}}', {
-								message: error
+								message: 'Something went wrong, please try again'
 						  }),
 					autoHideTimeout: 5000
 				});
@@ -576,7 +592,7 @@ const VolumesDetailPanel: FC = () => {
 									key: 'error',
 									type: 'error',
 									label: t('label.volume_detail_error', '{{message}}', {
-										message: error
+										message: 'Something went wrong, please try again'
 									}),
 									autoHideTimeout: 5000
 								});
@@ -596,7 +612,7 @@ const VolumesDetailPanel: FC = () => {
 						key: 'error',
 						type: 'error',
 						label: t('label.volume_detail_error', '{{message}}', {
-							message: responseData?.error?.message
+							message: 'Something went wrong, please try again'
 						}),
 						autoHideTimeout: 5000
 					});
@@ -624,7 +640,7 @@ const VolumesDetailPanel: FC = () => {
 											key: 'error',
 											type: 'error',
 											label: t('label.volume_detail_error', '{{message}}', {
-												message: error
+												message: 'Something went wrong, please try again'
 											}),
 											autoHideTimeout: 5000
 										});
@@ -650,7 +666,7 @@ const VolumesDetailPanel: FC = () => {
 						label: error?.message
 							? error?.message
 							: t('label.volume_detail_error', '{{message}}', {
-									message: error
+									message: 'Something went wrong, please try again'
 							  }),
 						autoHideTimeout: 5000
 					});
@@ -673,6 +689,11 @@ const VolumesDetailPanel: FC = () => {
 			}
 		}
 	}, [serverList, server]);
+
+	useEffect(() => {
+		changeSelectedVolume();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [modifyVolumeToggle, detailData, volumeList]);
 
 	return (
 		<>
@@ -774,7 +795,7 @@ const VolumesDetailPanel: FC = () => {
 								label={t('label.new_volume_button', 'NEW VOLUME')}
 								icon="PlusOutline"
 								color="primary"
-								onClick={(): any => {
+								onClick={(): void => {
 									setVolumeDetail({
 										id: '',
 										volumeName: '',
@@ -804,10 +825,10 @@ const VolumesDetailPanel: FC = () => {
 								volumes={volumeList?.primaries}
 								headers={volPrimarySecondaryHeaders}
 								selectedRows={priamryVolumeSelection}
-								onSelectionChange={(selected: any): any => {
+								onSelectionChange={(selected: string[]): void => {
 									setPriamryVolumeSelection(selected);
 								}}
-								onClick={(i: any): any => {
+								onClick={(i: number): void => {
 									handleClick(i, volumeList?.primaries);
 								}}
 							/>
@@ -830,10 +851,10 @@ const VolumesDetailPanel: FC = () => {
 								volumes={volumeList?.secondaries}
 								headers={volPrimarySecondaryHeaders}
 								selectedRows={secondaryVolumeSelection}
-								onSelectionChange={(selected: any): any => {
+								onSelectionChange={(selected: string[]): void => {
 									setSecondaryVolumeSelection(selected);
 								}}
-								onClick={(i: any): any => {
+								onClick={(i: number): void => {
 									handleClick(i, volumeList?.secondaries);
 								}}
 							/>
@@ -857,10 +878,10 @@ const VolumesDetailPanel: FC = () => {
 								volumes={volumeList?.indexes}
 								headers={volIndexerHeaders}
 								selectedRows={indexerVolumeSelection}
-								onSelectionChange={(selected: any): any => {
+								onSelectionChange={(selected: string[]): void => {
 									setIndexerVolumeSelection(selected);
 								}}
-								onClick={(i: any): any => {
+								onClick={(i: number): void => {
 									handleClick(i, volumeList?.indexes);
 								}}
 							/>

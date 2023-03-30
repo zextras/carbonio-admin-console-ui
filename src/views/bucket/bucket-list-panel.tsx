@@ -213,6 +213,7 @@ const BucketListPanel: FC = () => {
 										<Icon
 											icon="HardDriveOutline"
 											size="large"
+											color="primary"
 											onClick={(): void => {
 												setIsVolumeListExpand(!isVolumeListExpand);
 											}}

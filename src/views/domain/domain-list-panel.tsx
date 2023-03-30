@@ -37,7 +37,8 @@ import {
 	RESTORE_ACCOUNT,
 	RESTORE_DELETED_EMAIL,
 	THEME,
-	VIRTUAL_HOSTS
+	VIRTUAL_HOSTS,
+	SAML
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -77,6 +78,12 @@ const DomainListPanel: FC = () => {
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${DOMAINS_ROUTE_ID}`);
 	}, [globalCarbonioSendAnalytics, matomo]);
+
+	useEffect(() => {
+		if (!domainInformation?.name) {
+			setSearchDomainName('');
+		}
+	}, [domainInformation]);
 
 	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
 	const getDomainLists = useCallback((domainName: string): any => {
@@ -185,7 +192,7 @@ const DomainListPanel: FC = () => {
 			},
 			{
 				id: GAL,
-				name: t('label.gal', 'GAL'),
+				name: t('label.global_address_list', 'Global Address List'),
 				isSelected: isDomainSelect
 			},
 			{
@@ -206,6 +213,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: THEME,
 				name: t('label.theme', 'Theme'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: SAML,
+				name: t('label.saml', 'SAML'),
 				isSelected: isDomainSelect
 			}
 		],
@@ -407,7 +419,7 @@ const DomainListPanel: FC = () => {
 							<CustomIcon
 								icon="GlobeOutline"
 								size="large"
-								color="text"
+								color="primary"
 								onClick={(): void => {
 									setIsDomainListExpand(!isDomainListExpand);
 								}}

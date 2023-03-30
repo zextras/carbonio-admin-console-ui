@@ -17,7 +17,7 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 
 export const VersionText = styled(Text)`
-	background: #2b73d2;
+	background: ${({ theme }): string => theme.palette.primary.regular};
 	width: 4.813rem;
 	border-radius: 3.125rem;
 	padding: 0.188rem 0 0 0;
