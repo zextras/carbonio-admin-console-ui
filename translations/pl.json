@@ -275,7 +275,7 @@
         "internal_gal_received": "Odbierany zakres wewnętrznego GLA",
         "many_domain_info_msg": "Ale dużo domen! Którą z nich chcesz zobaczyć? Aby filtrować, zacznij wpisywać.",
         "warn_when_reach_space_quota": "Ostrzeż mnie kiedy osiągnę ten zsumowany limit przestrzeni",
-        "type_here_a_domain": "Wybierz domenę...",
+        "type_here_a_domain": "Wybierz domenę…",
         "source_name_internal_gal": "Nazwa źródłowa wewnętrznego GLA",
         "send_the_warning_to": "Wyślij ostrzeżenie do",
         "select_domain_or_create_new": "Wybierz domenę z menu po lewej stronie lub kliknij przycisk \"Stwórz\", aby stworzyć nową.",
@@ -560,7 +560,7 @@
         "inbound_smtp_host_name": "Nazwa przychodzącego hosta SMTP",
         "import_an_external_backup": "Importuj zewnętrzną kopię zapasową",
         "i_am_looking_for_this_account": "Wyszukaj konto…",
-        "i_am_looking_for_member": "Szukam członka...",
+        "i_am_looking_for_member": "Szukam członka…",
         "https": "https",
         "http": "http",
         "here_you_will_find": "w tej zakładce znajdziesz",
@@ -720,7 +720,7 @@
         "verify_connector_verified": " ZWERYFIKOWANO",
         "username_without": "nazwa użytkownika bez",
         "username_with": "nazwa użytkownika z",
-        "type_an_account_dot": "Dodaj właścicieli ...",
+        "type_an_account_dot": "Dodaj właścicieli …",
         "type_accounts_paste_them_here": "Wprowadź konta lub wklej je tutaj",
         "the_has_been_created_success": "{{name}} zostało stworzone pomyślnie",
         "start": "start",
@@ -897,7 +897,7 @@
         "enabled": "Włączone",
         "global": "Globalne",
         "last_seen": "Ostatnio widziano",
-        "mailstores": "Przechowywanie poczty",
+        "mailstores": "Magazyn poczty",
         "mobile_password": "Hasło Mobilne",
         "reset": "Zresetuj",
         "reset_device": "Reset urządzenia",
@@ -949,7 +949,7 @@
         "favicon_description": "Wklej URL ikonki w karcie przeglądarki (favicon) dla ekranu logowania. Użyj pliku ICO, rozdzielczość 16x16 pikseli.",
         "favicon_path": "Ścieżka ikonki w karcie przeglądarki (favicon)",
         "image_path": "Ścieżka obrazka",
-        "i_m_looking_for_the_session": "Szukam sesji...",
+        "i_m_looking_for_the_session": "Szukam sesji…",
         "index_volume": "To jest wolumin indeksowy",
         "end_user_webapp": "Klient sieciowy dla użytkownika końcowego",
         "ip": "IP",
@@ -1108,7 +1108,7 @@
         "download_quota_Report": "Pobierz raport użycia przestrzeni",
         "example_lbl": "Przykład:",
         "logo_redirection": "Po kliknięciu loga przekieruj na",
-        "logo_redirection_title": "Kliknięcie w logo spowoduje przekierowanie na stronę...",
+        "logo_redirection_title": "Kliknięcie w logo spowoduje przekierowanie na stronę…",
         "mobile_app": "Aplikacja mobilna",
         "notification_primarybar_tooltip": "Zobacz swoje <bold>powiadomienia</bold> i oznaczaj je jako przeczytane lub kopiuj, aby je udostępnić.",
         "privacy_primarybar_tooltip": "Zarządzaj <bold>ustawieniami prywatności</bold> takimi jak raporty danych, raporty o błędach i ankiety.",
@@ -1571,8 +1571,8 @@
     },
     "reminder": {
         "minute_0": "{{count}} minuta",
-        "minute_1": "{{count}} minuty",
-        "minute_2": "{{count}} minut"
+        "minute_1": "",
+        "minute_2": ""
     },
     "connection": {
         "access_key": "Klucz dostępu",
@@ -1582,10 +1582,10 @@
         "secret_key": "Tajny klucz"
     },
     "volume": {
-        "serverName_volumes_create_mailstores_volume": "Stwórz wolumin przechowywania poczty w {{serverName}}",
+        "serverName_volumes_create_mailstores_volume": "Stwórz wolumin magazynu poczty w {{serverName}}",
         "serverName_volumes": "Woluminy {{serverName}}",
         "new": {
-            "create_mailstores_volume": "Stwórz wolumin przechowywania poczty"
+            "create_mailstores_volume": "Stwórz wolumin magazynu poczty"
         },
         "server_list_header": {
             "description": "Opis",
@@ -1717,7 +1717,7 @@
         "carbonio": "Carbonio",
         "quick_access_default_domain": "Szybki dostęp do {defaultDomain}",
         "carbonio_core": "Carbonio Rdzeń",
-        "go_to_mailstores_server_list": "Idź do listy serwerów przechowywania poczty",
+        "go_to_mailstores_server_list": "Idź do listy serwerów magazynu poczty",
         "go_to_notification": "Idź do powiadomień",
         "new_notifications": "Nowe powiadomienia",
         "quick_access_to": "Szybki dostęp do",
