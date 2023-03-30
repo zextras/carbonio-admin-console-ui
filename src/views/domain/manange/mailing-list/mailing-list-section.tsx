@@ -252,7 +252,6 @@ const MailingListSection: FC<any> = () => {
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -721,7 +720,7 @@ const MailingListSection: FC<any> = () => {
 								overflow="break-word"
 								weight="normal"
 								size="large"
-								style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
+								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>
 								<img src={carbonioHelmet} alt="logo" />
 							</Text>

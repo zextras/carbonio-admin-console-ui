@@ -94,7 +94,6 @@ const DelegateSelectModeSection: FC = () => {
 							customComponent: (
 								<SelectItem
 									style={{
-										fontFamily: 'roboto',
 										display: 'block',
 										textAlign: 'left',
 										height: 'inherit',
