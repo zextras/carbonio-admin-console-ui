@@ -1,6 +1,6 @@
 {
 	"name": "carbonio-admin-console-ui",
-	"version": "0.9.13",
+	"version": "0.9.14",
 	"description": "Admin module for Zextras Carbonio",
 	"main": "src/app.tsx",
 	"scripts": {
