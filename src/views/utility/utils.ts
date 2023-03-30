@@ -1715,7 +1715,7 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
-			`Save a copy of sent messages to delegate and delegated send folde`
+			`Save a copy of sent messages to delegate and delegated send folder`
 		),
 		value: 'both'
 	},
@@ -1755,10 +1755,6 @@ export const delegateRightsType = (t: TFunction): Array<{ value?: string; label:
 	{
 		label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
 		value: MANAGE_NO_SEND
-	},
-	{
-		label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
-		value: 'manage_no_send'
 	},
 	{
 		label: t(

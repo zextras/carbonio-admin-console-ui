@@ -1571,8 +1571,8 @@
     },
     "reminder": {
         "minute_0": "{{count}} minuta",
-        "minute_1": "",
-        "minute_2": ""
+        "minute_1": "{{count}} minuty",
+        "minute_2": "{{count}} minut"
     },
     "connection": {
         "access_key": "Klucz dostępu",
