@@ -331,6 +331,8 @@ const EditAccount: FC<{
 						replace: true
 					});
 				});
+		} else {
+			setInitAccountDetail({ ...accountDetail });
 		}
 	}, [
 		accountDetail,

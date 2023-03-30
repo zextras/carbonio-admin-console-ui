@@ -38,4 +38,6 @@ export type themeConfigStore = {
 	carbonioAdminUiTitle?: string;
 	carbonioAdminUiDescription?: string;
 	carbonioLogoUrl?: string;
+	carbonioWebUiPrimaryColor?: string;
+	carbonioWebUiDarkPrimaryColor?: string;
 };

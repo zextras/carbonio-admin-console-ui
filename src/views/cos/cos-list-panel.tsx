@@ -277,7 +277,7 @@ const CosListPanel: FC = () => {
 							<CustomIcon
 								icon={isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline'}
 								size="large"
-								color="text"
+								color="primary"
 								onClick={(): void => {
 									setIsCosListExpand(!isCosListExpand);
 								}}

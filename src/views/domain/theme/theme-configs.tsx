@@ -219,6 +219,75 @@ export const ThemeConfigs: FC<{
 							onChange={onChangeDomainThemeDetail}
 						/>
 					</ListRow>
+					<ListRow>
+						<Padding vertical="large" horizontal="small" width="100%">
+							<Text size="small" color="gray0" weight="bold">
+								{t('label.personalisation', 'Personalisation')}
+							</Text>
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Padding vertical="small" horizontal="small" width="100%">
+							<Text size="small" color="gray0">
+								{t(
+									'label.primary_color_hint',
+									'To change the Primary color, please use an HEX color code as in the placeholder format.'
+								)}
+							</Text>
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ all: 'small' }}
+						>
+							<Text size="small" color="gray0">
+								<Trans
+									i18nKey="label.primary_color_for_light_mode"
+									defaults="<bold>Primary</bold> Color for Light Mode"
+									components={{ bold: <strong /> }}
+								/>
+							</Text>
+						</Container>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ all: 'small' }}
+						>
+							<Text size="small" color="gray0">
+								<Trans
+									i18nKey="label.primary_color_for_dark_mode"
+									defaults="<bold>Primary</bold> Color for Dark Mode"
+									components={{ bold: <strong /> }}
+								/>
+							</Text>
+						</Container>
+					</ListRow>
+					<ListRow>
+						<Container padding={{ all: 'small' }}>
+							<Input
+								label={t('label.color_code', 'Color code')}
+								background="gray5"
+								value={themeConfig.carbonioWebUiPrimaryColor}
+								inputName="carbonioWebUiPrimaryColor"
+								onChange={(e: any): any => {
+									onChangeDomainThemeDetail(e);
+								}}
+							/>
+						</Container>
+						<Container padding={{ all: 'small' }}>
+							<Input
+								label={t('label.color_code', 'Color code')}
+								background="gray5"
+								value={themeConfig.carbonioWebUiDarkPrimaryColor}
+								inputName="carbonioWebUiDarkPrimaryColor"
+								onChange={(e: any): any => {
+									onChangeDomainThemeDetail(e);
+								}}
+							/>
+						</Container>
+					</ListRow>
 					<Row
 						width="100%"
 						mainAlignment="center"

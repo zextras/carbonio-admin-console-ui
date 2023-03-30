@@ -9,6 +9,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { delegateRightsType } from '../../../../../utility/utils';
 import { AccountContext } from '../../account-context';
+import { READ_MAILS_ONLY } from '../../../../../../constants';
 
 const DelegateAddSection: FC = () => {
 	const [t] = useTranslation();
@@ -73,7 +74,7 @@ const DelegateAddSection: FC = () => {
 						/>
 					</Row>
 				</Row>
-				{deligateDetail?.delegeteRights === 'read_mails_only' ? (
+				{deligateDetail?.delegeteRights === READ_MAILS_ONLY ? (
 					<></>
 				) : (
 					<Row mainAlignment="flex-start" width="100%">

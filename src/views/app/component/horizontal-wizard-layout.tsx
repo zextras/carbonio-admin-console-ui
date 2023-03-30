@@ -14,6 +14,12 @@ import { useTranslation } from 'react-i18next';
 const StepContainer = styled(Row)``;
 const StepView = styled(Row)``;
 
+export const RowContainer = styled(Row)`
+	border-bottom: ${({ isActive, theme }): string =>
+		isActive ? `2px solid ${theme.palette.primary.regular}` : ''};
+	cursor: pointer;
+`;
+
 const StepNavigator: FC<{
 	isDone: boolean;
 	steps: Array<any>;
@@ -40,7 +46,7 @@ const StepNavigator: FC<{
 }) => {
 	const color = useMemo(() => {
 		if (isActive) return 'primary';
-		return isDone ? '#abc7ed' : 'gray1';
+		return isDone ? 'secondary' : 'gray1';
 	}, [isActive, isDone]);
 
 	const renderElement = useMemo(() => {
@@ -59,13 +65,7 @@ const StepNavigator: FC<{
 	}, [currentStepIndex, stepIndex]);
 
 	return (
-		<Row
-			width={renderElement ? '100%' : '50%'}
-			style={{
-				borderBottom: isActive ? '2px solid #2b73d2' : '',
-				cursor: 'pointer'
-			}}
-		>
+		<RowContainer width={renderElement ? '100%' : '50%'} isActive={isActive}>
 			<Row wrap="nowrap" onClick={onClick} width="80%">
 				<Row style={{ padding: renderElement ? '12px 8px' : '', borderRadius: '50%' }}>
 					<Icon icon={step.icon} color={color} size="large" />
@@ -81,7 +81,7 @@ const StepNavigator: FC<{
 			<Row wrap="nowrap" style={{ cursor: 'pointer' }} width={'20%'}>
 				{!isLastStep && <Icon icon="ChevronRight" color={color} size={'large'} />}
 			</Row>
-		</Row>
+		</RowContainer>
 	);
 };
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

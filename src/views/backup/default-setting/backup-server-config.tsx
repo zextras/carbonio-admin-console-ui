@@ -191,6 +191,7 @@ const BackupServerConfig: FC = () => {
 							label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
 							value={initbackupDetail.ZxBackup_RealTimeScanner}
 							onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
+							iconColor="primary"
 						/>
 					</ListRow>
 					<ListRow>
@@ -201,6 +202,7 @@ const BackupServerConfig: FC = () => {
 								'This module is enabled at the startup'
 							)}
 							onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
+							iconColor="primary"
 						/>
 					</ListRow>
 					<ListRow>
@@ -211,6 +213,7 @@ const BackupServerConfig: FC = () => {
 								'Run the Smartscan at the startup'
 							)}
 							onClick={(): void => changeSwitchOption('ZxBackup_DoSmartScanOnStartup')}
+							iconColor="primary"
 						/>
 					</ListRow>
 					<ListRow>
@@ -271,6 +274,7 @@ const BackupServerConfig: FC = () => {
 								value={initbackupDetail.ZxBackup_SmartScanSchedulingEnabled}
 								onClick={(): void => changeSwitchOption('ZxBackup_SmartScanSchedulingEnabled')}
 								label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
+								iconColor="primary"
 							/>
 						</Padding>
 					</ListRow>

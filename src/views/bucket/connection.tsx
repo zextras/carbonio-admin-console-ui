@@ -18,7 +18,17 @@ import {
 import { useTranslation } from 'react-i18next';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
-import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, ERROR, FAIL, SUCCESS } from '../../constants';
+import {
+	ALIBABA,
+	AMAZON_WEB_SERVICE_S3,
+	CUSTOM_S3,
+	ERROR,
+	FAIL,
+	HTTP,
+	HTTPS,
+	SUCCESS,
+	V4
+} from '../../constants';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
@@ -58,7 +68,7 @@ const Connection: FC<{
 	const [prefixConfirm, setprefixConfirm] = useState(true);
 	const [regionSelection, setRegionSelection] = useState<any>(bucketRegions[0]);
 	const bucketType = externalData;
-	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
+	const server = document.location.hostname;
 	const handleVerifyConnector = (): any => {
 		if (bucketName && accessKeyData && secretKey) {
 			const storeType = bucketType || bucketTypeData;
@@ -73,6 +83,8 @@ const Connection: FC<{
 				accessKey: accessKeyData,
 				secret: secretKey,
 				region: regionsData?.value,
+				signatureVersion: V4,
+				protocol: urlInput.startsWith(HTTPS) ? HTTPS : HTTP,
 				url:
 					bucketTypeData === AMAZON_WEB_SERVICE_S3 || bucketType === AMAZON_WEB_SERVICE_S3
 						? ''

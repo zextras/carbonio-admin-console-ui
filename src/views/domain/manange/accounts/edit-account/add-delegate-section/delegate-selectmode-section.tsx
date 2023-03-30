@@ -40,7 +40,7 @@ const DelegateSelectModeSection: FC = () => {
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(20);
 	const conext = useContext(AccountContext);
-	const { deligateDetail, setDeligateDetail } = conext;
+	const { deligateDetail, setDeligateDetail, accountDetail } = conext;
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
@@ -85,37 +85,42 @@ const DelegateSelectModeSection: FC = () => {
 					// eslint-disable-next-line no-param-reassign
 					data.account = data?.dl;
 				}
-				data?.account.map((delegateAccount: any) =>
-					accountListArr.push({
-						id: delegateAccount.id,
-						label: delegateAccount.name,
-						customComponent: (
-							<SelectItem
-								top="9px"
-								right="large"
-								bottom="9px"
-								left="large"
-								style={{
-									fontFamily: 'roboto',
-									display: 'block',
-									textAlign: 'left',
-									height: 'inherit',
-									padding: '3px',
-									width: 'inherit'
-								}}
-								onClick={(): void => {
-									selectedDelegateAccount(delegateAccount);
-								}}
-							>
-								{delegateAccount?.name}
-							</SelectItem>
-						)
-					})
+				data?.account.map(
+					(delegateAccount: any) =>
+						delegateAccount.id !== accountDetail.zimbraId &&
+						accountListArr.push({
+							id: delegateAccount.id,
+							label: delegateAccount.name,
+							customComponent: (
+								<SelectItem
+									style={{
+										fontFamily: 'roboto',
+										display: 'block',
+										textAlign: 'left',
+										height: 'inherit',
+										width: 'inherit'
+									}}
+									onClick={(): void => {
+										selectedDelegateAccount(delegateAccount);
+									}}
+								>
+									{delegateAccount?.name}
+								</SelectItem>
+							)
+						})
 				);
 				setDelegateAccountList(accountListArr);
 			}
 		});
-	}, [deligateDetail, domainName, searchQuery, offset, limit, selectedDelegateAccount]);
+	}, [
+		deligateDetail?.grantee,
+		domainName,
+		searchQuery,
+		offset,
+		limit,
+		accountDetail.zimbraId,
+		selectedDelegateAccount
+	]);
 
 	useEffect(() => {
 		getAccountList();

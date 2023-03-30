@@ -25,8 +25,8 @@ const WizardInSection: FC<any> = ({
 	return (
 		<Section
 			title={t(
-				'volume.serverName_volumes_create_mailstores_volume',
-				'{{serverName}} | Create Mailstores Volume',
+				'volume.serverName_volumes_create_storage_volume',
+				'{{serverName}} | Create Storage Volume',
 				{
 					serverName: externalData
 				}
@@ -223,7 +223,9 @@ const CreateMailstoresVolume: FC<{
 				bucketConfigurationId: advancedVolumeDetail?.bucketId,
 				volumePrefix: advancedVolumeDetail?.prefix,
 				centralized: advancedVolumeDetail?.centralized,
-				isCurrent: advancedVolumeDetail?.isCurrent ? 1 : 0
+				isCurrent: advancedVolumeDetail?.isCurrent ? 1 : 0,
+				useInfrequentAccess: advancedVolumeDetail?.useInfrequentAccess,
+				useIntelligentTiering: advancedVolumeDetail?.useIntelligentTiering
 			});
 			setCreateMailstoresVolumeData(advancedVolumeDetail);
 		},

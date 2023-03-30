@@ -279,7 +279,7 @@ export const SendInviteAccounts: FC<any> = ({
 								backgroundColor="gray5"
 								value={searchAccountName}
 								size="medium"
-								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="secondary" />}
+								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								onChange={(e: any): any => {
 									setSearchAccountName(e.target.value);
 								}}

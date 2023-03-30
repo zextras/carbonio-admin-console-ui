@@ -252,7 +252,7 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 							<Text size="medium" color="gray0" weight="regular">
 								{t(
 									'label.restore_select_account_row_1',
-									'Through this tool, you`ll be able to restore an entire account from the backup into a new one.'
+									`Through this tool, you'll be able to restore an entire account from the backup into a new account.`
 								)}
 							</Text>
 						</Container>

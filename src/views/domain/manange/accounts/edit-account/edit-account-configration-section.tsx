@@ -157,6 +157,7 @@ const EditAccountConfigrationSection: FC = () => {
 								'account_details.can_specify_forwarding_address',
 								'Can specify forwarding address'
 							)}
+							iconColor="primary"
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -167,6 +168,7 @@ const EditAccountConfigrationSection: FC = () => {
 								'account_details.dont_keep_local_copy_of_messages',
 								`Don't Keep local copy of messages`
 							)}
+							iconColor="primary"
 						/>
 					</Row>
 				</Row>

@@ -139,7 +139,7 @@ const AdvancedMailstoresCreate: FC<{
 						<Row padding={{ top: 'large' }} width="100%">
 							<Input
 								label={t('label.infrequent_access', 'Infrequent access')}
-								value={advancedVolumeDetail?.isCurrent ? ENABLED : DISABLED}
+								value={advancedVolumeDetail?.useInfrequentAccess ? ENABLED : DISABLED}
 								backgroundColor="gray6"
 								readOnly
 							/>
@@ -147,7 +147,7 @@ const AdvancedMailstoresCreate: FC<{
 						<Row padding={{ top: 'large' }} width="100%">
 							<Input
 								label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
-								value={advancedVolumeDetail?.isCurrent ? ENABLED : DISABLED}
+								value={advancedVolumeDetail?.useIntelligentTiering ? ENABLED : DISABLED}
 								backgroundColor="gray6"
 								readOnly
 							/>

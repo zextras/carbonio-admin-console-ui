@@ -24,7 +24,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { debounce, isEqual, sortedUniq, uniq, uniqBy } from 'lodash';
+import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
 import ListRow from '../../../list/list-row';
 import Paging from '../../../components/paging';
 import { getDistributionList } from '../../../../services/get-distribution-list';
@@ -33,9 +33,12 @@ import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../ut
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
 import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
+import { addMailingListAliasRequest } from '../../../../services/add-mailing-list-alias';
+import { deleteMailingListAliasRequest } from '../../../../services/delete-mailing-list-alias';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
+import { getDomainList } from '../../../../services/search-domain-service';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { ALL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
@@ -43,6 +46,8 @@ import { getGrant } from '../../../../services/get-grant';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import ManageAliases from '../../../components/manageAliases';
+import { useDomainStore } from '../../../../store/domain/store';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -74,6 +79,7 @@ const EditMailingListView: FC<any> = ({
 	] = useState<boolean>(false);
 
 	const [zimbraHideInGal, setZimbraHideInGal] = useState<boolean>(false);
+	const [zimbraDefaultMailAlias, setDefaultZimbraMailAlias] = useState<any>([]);
 	const [zimbraMailAlias, setZimbraMailAlias] = useState<any>([]);
 	const [dlm, setDlm] = useState<any[]>([]);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
@@ -106,6 +112,9 @@ const EditMailingListView: FC<any> = ({
 	const [isShowOwnerError, setIsShowOwnerError] = useState<boolean>(false);
 	const [memberErrorMessage, setMemberErrorMessage] = useState<string>('');
 	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
+	const domainName = useDomainStore((state) => state.domain?.name);
+	const domainList = useDomainStore((state) => state.domainList);
+	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 
 	const dlCreateDate = useMemo(
 		() =>
@@ -210,6 +219,43 @@ const EditMailingListView: FC<any> = ({
 		],
 		[t]
 	);
+
+	type DomainResponse = {
+		domain: [
+			{
+				name: string;
+				id: string;
+				a: { n: string; _content: string }[];
+			}
+		];
+		more: boolean;
+		searchTotal: number;
+		_jsns: string;
+	};
+	const getDomainLists = useCallback(
+		(offset: number): void => {
+			getDomainList('', offset).then((data) => {
+				const searchResponse: DomainResponse = data;
+				if (!!searchResponse && searchResponse?.searchTotal > 0) {
+					if (searchResponse?.domain?.length) {
+						setDomainListStore([...domainList, ...searchResponse.domain]);
+						if (searchResponse?.more) {
+							getDomainLists(offset + 50);
+						}
+					}
+				} else {
+					setDomainListStore([]);
+				}
+			});
+		},
+		[domainList, setDomainListStore]
+	);
+
+	useEffect(() => {
+		if (!domainList?.length) {
+			getDomainLists(0);
+		}
+	}, [domainList, getDomainLists]);
 
 	const [previousDetail, setPreviousDetail] = useState<any>({});
 
@@ -354,11 +400,9 @@ const EditMailingListView: FC<any> = ({
 							(a: any) => a?.n === 'zimbraMailAlias' && a?._content !== selectedMailingList?.name
 						);
 						if (_zimbraMailAlias && _zimbraMailAlias.length > 0) {
-							const allAlias = _zimbraMailAlias.map((item: any) => ({
-								attr: 'zimbraMailAlias',
-								value: item?._content
-							}));
+							const allAlias = _zimbraMailAlias.map((ele: any) => ({ label: ele?._content }));
 							setZimbraMailAlias(allAlias);
+							setDefaultZimbraMailAlias(allAlias);
 						}
 						const _zimbraCreateTimestamp = distributionListMembers?.a?.find(
 							(a: any) => a?.n === 'zimbraCreateTimestamp'
@@ -876,7 +920,6 @@ const EditMailingListView: FC<any> = ({
 				? setOwnerOfList(previousDetail?.ownerOfList)
 				: setOwnerOfList([]);
 		}
-		setGrantType(previousDetail?.grantType);
 		setIsDirty(false);
 	};
 
@@ -1199,6 +1242,20 @@ const EditMailingListView: FC<any> = ({
 				});
 			}
 		}
+		/* Alias List */
+		if (!isEqual(zimbraDefaultMailAlias, zimbraMailAlias)) {
+			const deleteAliasArr = differenceBy(zimbraDefaultMailAlias, zimbraMailAlias, 'label');
+			const addAliasArr = differenceBy(zimbraMailAlias, zimbraDefaultMailAlias, 'label');
+			// eslint-disable-next-line array-callback-return
+			deleteAliasArr.map((aliasName: any) => {
+				deleteMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`).then();
+			});
+
+			// eslint-disable-next-line array-callback-return
+			addAliasArr.map((aliasName: any) => {
+				addMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`).then();
+			});
+		}
 
 		let dl: any = {};
 		let action: any = {};
@@ -1249,6 +1306,11 @@ const EditMailingListView: FC<any> = ({
 			setIsDirty(true);
 		}
 	}, [previousDetail?.displayName, displayName]);
+	useEffect(() => {
+		if (!isEqual(zimbraDefaultMailAlias, zimbraMailAlias)) {
+			setIsDirty(true);
+		}
+	}, [zimbraDefaultMailAlias, zimbraMailAlias]);
 
 	useEffect(() => {
 		if (
@@ -1843,6 +1905,13 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 				<ListRow>
+					<ManageAliases
+						listAliases={zimbraMailAlias}
+						setListAliases={setZimbraMailAlias}
+						setAliasChange={(): void => ((): any => true)()}
+					/>
+				</ListRow>
+				<ListRow>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
@@ -1860,6 +1929,7 @@ const EditMailingListView: FC<any> = ({
 									!zimbraDistributionListSendShareMessageToNewMembers
 								);
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -1876,6 +1946,7 @@ const EditMailingListView: FC<any> = ({
 								setIsDirty(true);
 								setZimbraHideInGal(!zimbraHideInGal);
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -2545,6 +2616,7 @@ const EditMailingListView: FC<any> = ({
 								setIsAddToOwnerList(!isAddToOwnerList);
 							}}
 							disabled={selectedMailingList?.dynamic}
+							iconColor="primary"
 						/>
 					</Container>
 				</Container>

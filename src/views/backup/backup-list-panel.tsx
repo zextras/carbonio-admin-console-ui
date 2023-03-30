@@ -137,6 +137,7 @@ const BackupListPanel: FC = () => {
 					onClick={(): void => {
 						setSelectedServer(serverItem?.name);
 						setSearchServer(serverItem?.name);
+						setSelectedOperationItem(CONFIGURATION_BACKUP);
 					}}
 				>
 					{serverItem?.name}
@@ -196,7 +197,7 @@ const BackupListPanel: FC = () => {
 								'i want to see this server’s details'
 							)}
 							value={searchServer}
-							CustomIcon={(): any => <Icon icon="HardDriveOutline" size="large" />}
+							CustomIcon={(): any => <Icon icon="HardDriveOutline" size="large" color="primary" />}
 							backgroundColor="gray5"
 							onChange={(e: any): any => {
 								setSearchServer(e.target.value);

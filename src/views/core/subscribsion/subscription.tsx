@@ -26,16 +26,18 @@ import { SUBSCRIPTIONS_ROUTE_ID } from '../../../constants';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
 
 const VerticalBar = styled(Container)`
-	background-color: rgba(0, 80, 109, ${({ licensed }): number => (licensed ? 1 : 0.33)});
+	background-color: ${({ theme }): string => theme.palette.primary.regular};
 	width: 4px;
 	height: auto;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
+	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
 `;
 
 const ServiceName = styled(Text)`
-	color: rgba(0, 80, 109, ${({ licensed }): number => (licensed ? 1 : 0.33)});
+	color: ${({ theme }): string => theme.palette.primary.regular};
 	font-weight: bold;
+	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
 `;
 
 const CollapseText = styled(Text)`
