@@ -554,7 +554,8 @@ const ManageAccounts: FC = () => {
 		[closeAccountDetailDialog]
 	);
 
-	useOutsideClick(tableRef, closeAccountDetailDialog);
+	/** Commented code for fix issue of AC-529 */
+	// useOutsideClick(tableRef, closeAccountDetailDialog);
 
 	useEffect(() => {
 		window.addEventListener('keydown', handleKeyEvent);
