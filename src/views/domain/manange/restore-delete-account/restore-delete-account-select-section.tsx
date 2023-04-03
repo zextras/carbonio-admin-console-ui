@@ -139,50 +139,46 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 			const allRows = accounts.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text
-						size="medium"
-						weight="light"
+					<Container
 						key={item?.name}
-						color="gray0"
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
 					>
-						{item?.name}
-					</Text>,
-					<Text
-						size="medium"
-						weight="light"
+						<Text size="medium" weight="light" key={item?.name} color="gray0">
+							{item?.name}
+						</Text>
+					</Container>,
+					<Container
 						key={item?.status}
-						color="gray0"
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
 					>
-						{item?.status}
-					</Text>,
-					<Text
-						size="medium"
-						weight="light"
+						<Text size="medium" weight="light" key={item?.status} color="gray0">
+							{item?.status}
+						</Text>
+					</Container>,
+					<Container
 						key={item?.creationTimestamp}
-						color="gray0"
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
 					>
-						{getFormatedShortDate(new Date(item?.creationTimestamp))}
-					</Text>,
-					<Text
-						size="medium"
-						weight="light"
+						<Text size="medium" weight="light" key={item?.creationTimestamp} color="gray0">
+							{getFormatedShortDate(new Date(item?.creationTimestamp))}
+						</Text>
+					</Container>,
+					<Container
 						key={item?.id}
-						color="gray0"
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
 					>
-						{item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}
-					</Text>
+						<Text size="medium" weight="light" key={item?.id} color="gray0">
+							{item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}
+						</Text>
+					</Container>
 				]
 			}));
 			setAccountRows(allRows);
