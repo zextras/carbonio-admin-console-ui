@@ -44,7 +44,7 @@ const DomainDetailPanel: FC = () => {
 					<Container>
 						<Text
 							overflow="break-word"
-							weight="normal"
+							weight="regular"
 							size="large"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>
@@ -54,7 +54,7 @@ const DomainDetailPanel: FC = () => {
 							<Text
 								color="gray1"
 								overflow="break-word"
-								weight="normal"
+								weight="regular"
 								size="large"
 								width="60%"
 								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}

@@ -419,6 +419,7 @@ const ManageAccounts: FC = () => {
 								size="medium"
 								key={item?.id}
 								color="gray0"
+								weight="light"
 								onClick={(): void => {
 									openDetailView(item);
 								}}
@@ -429,6 +430,7 @@ const ManageAccounts: FC = () => {
 								size="medium"
 								key={item?.id}
 								color="gray0"
+								weight="light"
 								onClick={(): void => {
 									openDetailView(item);
 								}}
@@ -447,6 +449,7 @@ const ManageAccounts: FC = () => {
 										>
 											<Text
 												size="medium"
+												weight="light"
 												key={item?.id}
 												color="#828282"
 												onClick={(): void => {
@@ -464,6 +467,7 @@ const ManageAccounts: FC = () => {
 											size="medium"
 											key={item?.id}
 											color="#828282"
+											weight="light"
 											onClick={(): void => {
 												openDetailView(item);
 											}}
@@ -477,6 +481,7 @@ const ManageAccounts: FC = () => {
 								size="medium"
 								key={item?.id}
 								color="gray0"
+								weight="light"
 								onClick={(): void => {
 									openDetailView(item);
 								}}
@@ -485,6 +490,7 @@ const ManageAccounts: FC = () => {
 							</Text>,
 							<Text
 								size="medium"
+								weight="light"
 								key={item?.id}
 								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
 								onClick={(): void => {
@@ -495,6 +501,7 @@ const ManageAccounts: FC = () => {
 							</Text>,
 							<Text
 								size="medium"
+								weight="light"
 								key={item?.id}
 								color="gray0"
 								onClick={(event: { stopPropagation: () => void }): void => {

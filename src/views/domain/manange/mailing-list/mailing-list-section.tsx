@@ -101,7 +101,7 @@ const MailingListSection: FC<any> = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
 						key={item?.id}
 						color="#828282"
 						onClick={(): void => {
@@ -192,7 +192,7 @@ const MailingListSection: FC<any> = () => {
 			const searchDlRows = dynamicListMember.map((item: any) => ({
 				id: item?.name,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item?.name}
 					</Text>,
 					''
@@ -718,7 +718,7 @@ const MailingListSection: FC<any> = () => {
 						>
 							<Text
 								overflow="break-word"
-								weight="normal"
+								weight="regular"
 								size="large"
 								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>

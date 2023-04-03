@@ -347,7 +347,7 @@ const NotificationView: FC<{
 					<Text
 						size="small"
 						color={item?.ack ? 'secondary' : 'bold'}
-						weight={item?.ack ? 'regular' : 'bold'}
+						weight={item?.ack ? 'light' : 'medium'}
 						key={item}
 						onClick={(event: any): void => {
 							setSelectedNotification(item);
@@ -363,7 +363,7 @@ const NotificationView: FC<{
 					<Text
 						size="small"
 						color={item?.ack ? 'secondary' : 'bold'}
-						weight={item?.ack ? 'regular' : 'bold'}
+						weight={item?.ack ? 'light' : 'medium'}
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							setSelectedNotification(item);
@@ -378,7 +378,7 @@ const NotificationView: FC<{
 					</Text>,
 					<Text
 						size="small"
-						weight={item?.ack ? 'regular' : 'bold'}
+						weight={item?.ack ? 'light' : 'medium'}
 						color={item?.ack ? 'secondary' : 'bold'}
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
@@ -394,7 +394,7 @@ const NotificationView: FC<{
 					</Text>,
 					<Text
 						size="small"
-						weight={item?.ack ? 'regular' : 'bold'}
+						weight={item?.ack ? 'light' : 'medium'}
 						color={item?.ack ? 'secondary' : 'bold'}
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {

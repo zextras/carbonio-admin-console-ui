@@ -180,7 +180,7 @@ const MailingListSettingsSection: FC<any> = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
 						key={item?.id}
 						color="#828282"
 						onClick={(): void => {
@@ -417,7 +417,7 @@ const MailingListSettingsSection: FC<any> = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
 						key={item?.id}
 						color="#828282"
 						onClick={(): void => {

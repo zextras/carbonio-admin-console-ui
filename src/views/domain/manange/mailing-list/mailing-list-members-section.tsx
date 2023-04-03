@@ -66,7 +66,7 @@ const MailingListMembersSection: FC<any> = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
 						key={item}
 						color="#828282"
 						onClick={(): void => {
