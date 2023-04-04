@@ -144,6 +144,7 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
+						crossAlignment="flex-start"
 					>
 						<Text size="medium" weight="light" key={item?.name} color="gray0">
 							{item?.name}
@@ -154,6 +155,7 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
+						crossAlignment="flex-start"
 					>
 						<Text size="medium" weight="light" key={item?.status} color="gray0">
 							{item?.status}
@@ -164,6 +166,7 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
+						crossAlignment="flex-start"
 					>
 						<Text size="medium" weight="light" key={item?.creationTimestamp} color="gray0">
 							{getFormatedShortDate(new Date(item?.creationTimestamp))}
@@ -174,6 +177,7 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
+						crossAlignment="flex-start"
 					>
 						<Text size="medium" weight="light" key={item?.id} color="gray0">
 							{item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}

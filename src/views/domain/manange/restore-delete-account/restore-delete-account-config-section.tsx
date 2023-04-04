@@ -122,7 +122,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 							<Container
 								crossAlignment="flex-start"
 								padding={{ top: 'extralarge', bottom: 'medium' }}
-								width="30%"
+								width="50%"
 							>
 								<Switch
 									value={restoreAccountDetail?.lastAvailableStatus}
@@ -136,7 +136,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 									iconColor="primary"
 								/>
 							</Container>
-							<Container>
+							<Container width="47.8%">
 								<DatePickerContainer
 									crossAlignment="flex-start"
 									padding={{ top: 'large', bottom: 'medium' }}
