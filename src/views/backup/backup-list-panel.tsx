@@ -13,7 +13,6 @@ import {
 	ADVANCED_LBL,
 	BACKUP_ROUTE_ID,
 	CONFIGURATION_BACKUP,
-	IMPORT_EXTERNAL_BACKUP,
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
@@ -21,6 +20,7 @@ import ListItems from '../list/list-items';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
+import { useModuleLicenseStore } from '../../store/module-license/store';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -30,37 +30,49 @@ const BackupListPanel: FC = () => {
 	);
 	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVER_CONFIG);
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
-	const [isActionExpanded, setIsActionExpanded] = useState(true);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
 	const serverList = useBucketServersListStore((state) => state.volumeList || []);
 	const [selectedServer, setSelectedServer] = useState<string>('');
 	const [isServerSelect, setIsServerSelect] = useState<boolean>(false);
 	const [searchServer, setSearchServer] = useState<string>('');
 	const [serverNames, setServerNames] = useState<any>();
+	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
+	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${BACKUP_ROUTE_ID}`);
 	}, [globalCarbonioSendAnalytics, matomo]);
+
+	useEffect(() => {
+		if (moduleLicense && moduleLicense.length > 0) {
+			const backupModule = moduleLicense.filter(
+				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+			);
+			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+				setIsBackupModuleLicensed(true);
+			}
+		}
+	}, [moduleLicense]);
 
 	const defaultSettingsOptions = useMemo(
 		() => [
 			{
 				id: SERVER_CONFIG,
 				name: t('label.server_config', 'Server Config'),
-				isSelected: true
+				isSelected: !!isBackupModuleLicensed
 			},
 			{
 				id: ADVANCED,
 				name: t('label.advanced', 'Advanced'),
-				isSelected: true
+				isSelected: !!isBackupModuleLicensed
 			},
 			{
 				id: SERVERS_LIST,
 				name: t('label.servers_list', 'Servers List'),
-				isSelected: true
+				isSelected: !!isBackupModuleLicensed
 			}
 		],
-		[t]
+		[t, isBackupModuleLicensed]
 	);
 
 	const serverSettingsOptions = useMemo(
@@ -68,26 +80,15 @@ const BackupListPanel: FC = () => {
 			{
 				id: CONFIGURATION_BACKUP,
 				name: t('label.configuration_lbl', 'Configuration'),
-				isSelected: isServerSelect
+				isSelected: isBackupModuleLicensed ? isServerSelect : false
 			},
 			{
 				id: ADVANCED_LBL,
 				name: t('label.advanced', 'Advanced'),
-				isSelected: isServerSelect
+				isSelected: isBackupModuleLicensed ? isServerSelect : false
 			}
 		],
-		[t, isServerSelect]
-	);
-
-	const actionOptions = useMemo(
-		() => [
-			{
-				id: IMPORT_EXTERNAL_BACKUP,
-				name: t('label.import_an_external_backup', 'Import an External Backup'),
-				isSelected: true
-			}
-		],
-		[t]
+		[t, isServerSelect, isBackupModuleLicensed]
 	);
 
 	useEffect(() => {
@@ -101,9 +102,6 @@ const BackupListPanel: FC = () => {
 
 	const toggleDefaultSettingsView = (): void => {
 		setIsDefaultSettingsExpanded(!isDefaultSettingsExpanded);
-	};
-	const toggleActionView = (): void => {
-		setIsActionExpanded(!isActionExpanded);
 	};
 
 	const toggleServerSpecific = (): void => {
@@ -182,7 +180,7 @@ const BackupListPanel: FC = () => {
 			{isServerSpecificsExpanded && (
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 					<Dropdown
-						items={serverNames}
+						items={isBackupModuleLicensed ? serverNames : []}
 						placement="bottom-start"
 						maxWidth="300px"
 						disableAutoFocus
@@ -202,6 +200,7 @@ const BackupListPanel: FC = () => {
 							onChange={(e: any): any => {
 								setSearchServer(e.target.value);
 							}}
+							disabled={!isBackupModuleLicensed}
 						/>
 					</Dropdown>
 				</Row>
