@@ -109,6 +109,7 @@ const RestoreDeleteAccountWizard: FC<{
 				label: t('label.select_an_account', 'Select An Account'),
 				icon: 'AtOutline',
 				view: RestoreSelectAccountSection,
+				canGoNext: (): any => restoreAccountDetail?.id !== '',
 				CancelButton: (props: any): ReactElement => (
 					<Button
 						{...props}
@@ -121,16 +122,7 @@ const RestoreDeleteAccountWizard: FC<{
 						onClick={backToFirstTab}
 					/>
 				),
-				PrevButton: (props: any) => (
-					<Button
-						{...props}
-						label={t('label.back', 'BACK')}
-						icon="ChevronLeftOutline"
-						color="secondary"
-						iconPlacement="left"
-						disabled
-					/>
-				),
+				PrevButton: (props: any) => <></>,
 				NextButton: (props: any) => (
 					<Button
 						{...props}
@@ -145,6 +137,7 @@ const RestoreDeleteAccountWizard: FC<{
 				label: t('label.config', 'Config'),
 				icon: 'OptionsOutline',
 				view: RestoreAccountConfigSection,
+				canGoNext: (): any => restoreAccountDetail?.copyAccount,
 				CancelButton: (props: any): ReactElement => (
 					<Button
 						{...props}
@@ -222,7 +215,8 @@ const RestoreDeleteAccountWizard: FC<{
 			restoreAccountDetail?.name,
 			restoreAccountDetail?.copyAccount,
 			backToFirstTab,
-			isRequestInProgress
+			isRequestInProgress,
+			restoreAccountDetail?.id
 		]
 	);
 
