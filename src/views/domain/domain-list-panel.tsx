@@ -293,7 +293,17 @@ const DomainListPanel: FC = () => {
 			const options = manageItems.filter((item: any) => item?.id !== RESTORE_ACCOUNT);
 			setManageOptions(options);
 		}
-	}, [getBackupModuleEnable, manageItems, isBackupModuleLicensed]);
+	}, [getBackupModuleEnable, manageItems, isBackupModuleLicensed, isDomainSelect]);
+
+	useMemo(() => {
+		setManageOptions(
+			manageItems.map((item: any) => {
+				// eslint-disable-next-line no-param-reassign
+				item.isSelected = isDomainSelect;
+				return item;
+			})
+		);
+	}, [isDomainSelect, manageItems]);
 
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
