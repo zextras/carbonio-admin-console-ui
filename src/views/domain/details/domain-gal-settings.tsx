@@ -903,8 +903,14 @@ const DomainGalSettings: FC = () => {
 									{t('account_details.general', 'General')}
 								</Text>
 							</Row>
-							<ListRow>
-								<Container orientation="horizontal" padding={{ all: 'small' }}>
+							<Row
+								orientation="horizontal"
+								mainAlignment="space-between"
+								crossAlignment="flex-start"
+								width="fill"
+								padding={{ all: 'small' }}
+							>
+								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="18%">
 									<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
 										<Button
 											type="outlined"
@@ -913,17 +919,16 @@ const DomainGalSettings: FC = () => {
 											icon={open ? 'ChevronUp' : 'ChevronDown'}
 										/>
 									</Dropdown>
-
-									<Padding left="small" width="100%">
-										<Input
-											label={t('label.gal_mode', 'GAL Mode')}
-											value={zimbraGalMode}
-											background="gray6"
-											readOnly
-										/>
-									</Padding>
 								</Container>
-							</ListRow>
+								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="82%">
+									<Input
+										label={t('label.gal_mode', 'GAL Mode')}
+										value={zimbraGalMode}
+										background="gray6"
+										readOnly
+									/>
+								</Container>
+							</Row>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									type="number"
