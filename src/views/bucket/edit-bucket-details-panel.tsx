@@ -26,6 +26,7 @@ import { fetchSoap } from '../../services/bucket-service';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC } from '../../constants';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
@@ -190,7 +191,6 @@ const EditBucketDetailPanel: FC<{
 	const [showURL, setShowURL] = useState(true);
 	const [toggleBtn, setToggleBtn] = useState(false);
 	const createSnackbar = useSnackbar();
-	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const bucketRegions = useMemo(() => BucketRegions(t), [t]);
 	const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
@@ -204,17 +204,31 @@ const EditBucketDetailPanel: FC<{
 		bucketConfigurationId: bucketDetail?.uuid,
 		storeType: bucketDetail?.storeType
 	});
+	const { selectedServerName } = useBucketVolumeStore((state) => state);
 
 	const verifyConnector = useCallback(() => {
-		fetchSoap('zextras', {
+		const objToSendTestConnection = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'testS3Connection',
-			targetServers: server,
+			targetServers: selectedServerName,
 			bucketId: bucketDetail.uuid
-		}).then((res) => {
+		};
+
+		if (selectedServerName === '') {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			delete objToSendTestConnection?.targetServers;
+		}
+
+		fetchSoap('zextras', objToSendTestConnection).then((res) => {
 			const response = JSON.parse(res.Body.response.content);
-			if (response.ok && response.response[server] && response.response[server].ok) {
+			if (
+				response.ok ||
+				(response.ok === true &&
+					response.response[selectedServerName] &&
+					response.response[selectedServerName].ok)
+			) {
 				setVerify('success');
 				setButtonLabel(t('label.verify_connector_verified', ' VERIFIED'));
 				setButtonIcon('ActivityOutline');
@@ -227,13 +241,16 @@ const EditBucketDetailPanel: FC<{
 					key: '1',
 					type: 'error',
 					label: t('label.verify_error', '{{name}}', {
-						name: response.response[server].error
+						name:
+							response.error ||
+							response.response[selectedServerName]?.error ||
+							response.response[selectedServerName]?.error?.message
 					})
 				});
 				setToggleBtn(false);
 			}
 		});
-	}, [bucketDetail.uuid, createSnackbar, server, t]);
+	}, [bucketDetail.uuid, createSnackbar, selectedServerName, t]);
 
 	useEffect(() => {
 		setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));

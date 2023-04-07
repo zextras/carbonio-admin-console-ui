@@ -29,6 +29,7 @@ import {
 	SUCCESS,
 	V4
 } from '../../constants';
+import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
@@ -68,7 +69,7 @@ const Connection: FC<{
 	const [prefixConfirm, setprefixConfirm] = useState(true);
 	const [regionSelection, setRegionSelection] = useState<any>(bucketRegions[0]);
 	const bucketType = externalData;
-	const server = document.location.hostname;
+	const { selectedServerName } = useBucketVolumeStore((state) => state);
 	const handleVerifyConnector = (): any => {
 		if (bucketName && accessKeyData && secretKey) {
 			const storeType = bucketType || bucketTypeData;
@@ -90,7 +91,7 @@ const Connection: FC<{
 						? ''
 						: urlInput,
 				prefix,
-				targetServer: server
+				targetServer: selectedServerName
 			};
 			if (storeType === CUSTOM_S3) {
 				delete objectToSend.region;
@@ -100,6 +101,11 @@ const Connection: FC<{
 				// @ts-ignore
 				delete objectToSend.prefix;
 			}
+			if (selectedServerName === '') {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				delete objectToSend?.targetServers;
+			}
 
 			fetchSoap('zextras', objectToSend).then((res: any) => {
 				const response = JSON.parse(res.Body.response.content);
@@ -108,18 +114,26 @@ const Connection: FC<{
 					const responseData = data.split("'");
 					setBucketUid(responseData[1]);
 					onSelection({ uuid: responseData[1] }, false);
-					fetchSoap('zextras', {
+					const objToSendTestConnection = {
 						_jsns: 'urn:zimbraAdmin',
 						module: 'ZxCore',
 						action: 'testS3Connection',
-						targetServers: server,
+						targetServers: selectedServerName,
 						bucketId: responseData[1]
-					}).then((responseVerify) => {
+					};
+
+					if (selectedServerName === '') {
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore
+						delete objToSendTestConnection?.targetServers;
+					}
+
+					fetchSoap('zextras', objToSendTestConnection).then((responseVerify) => {
 						const responseVerifyData = JSON.parse(responseVerify.Body.response.content);
 						if (
 							responseVerifyData.ok &&
-							responseVerifyData.response[server] &&
-							responseVerifyData.response[server].ok
+							responseVerifyData.response[selectedServerName] &&
+							responseVerifyData.response[selectedServerName].ok
 						) {
 							setVerifyCheck(SUCCESS);
 							setBucketDetailButton(true);
@@ -137,7 +151,12 @@ const Connection: FC<{
 					});
 				} else {
 					setBucketDetailButton(false);
-					setbothFail(response?.error?.message || response?.error || response?.exception?.message);
+					setbothFail(
+						response?.error?.message ||
+							response?.error ||
+							response?.exception?.message ||
+							response.response[selectedServerName].error.message
+					);
 					setVerifyCheck(FAIL);
 				}
 			});

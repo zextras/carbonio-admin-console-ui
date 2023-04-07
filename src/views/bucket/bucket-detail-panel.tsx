@@ -31,6 +31,7 @@ import { AbsoluteContainer } from '../components/styled';
 import ListRow from '../list/list-row';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -186,6 +187,7 @@ const BucketDetailPanel: FC = () => {
 	};
 
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
+	const { selectedServerName } = useBucketVolumeStore((state) => state);
 
 	const getBucketListType = useCallback((): void => {
 		fetchSoap('zextras', {
@@ -210,14 +212,21 @@ const BucketDetailPanel: FC = () => {
 		// eslint-disable-next-line no-restricted-syntax
 		// delete  api call here
 		setOpen(false);
-		fetchSoap('zextras', {
+		const objectToSendDeleteBucket = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'doDeleteBucket',
 			storeType: bucketDeleteName?.storeType,
 			bucketConfigurationId: bucketDeleteName?.uuid,
-			targetServer: server
-		}).then((res: any) => {
+			targetServer: selectedServerName
+		};
+
+		if (selectedServerName === '') {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			delete objectToSend?.targetServers;
+		}
+		fetchSoap('zextras', objectToSendDeleteBucket).then((res: any) => {
 			const response = JSON.parse(res.Body.response.content);
 			if (response.ok) {
 				getBucketListType();
@@ -245,7 +254,7 @@ const BucketDetailPanel: FC = () => {
 		bucketDeleteName?.storeType,
 		bucketDeleteName?.uuid,
 		bucketDeleteName?.bucketName,
-		server,
+		selectedServerName,
 		getBucketListType,
 		createSnackbar,
 		t
