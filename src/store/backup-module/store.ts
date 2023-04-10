@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import create from 'zustand';
-import produce from 'immer';
 import { devtools } from 'zustand/middleware';
-import { Server } from '../../../types';
 
 type BackupModuleState = {
 	backupModuleEnable: boolean;
 	backupServerList: Array<any>;
 	setBackupModuleEnable: (v: boolean) => void;
 	setBackupServerList: (backupServerList: Array<any>) => void;
+	isBackupModuleLicensed: boolean;
+	setIsBackupModuleLicensed: (v: boolean) => void;
 };
 
 export const useBackupModuleStore = create<BackupModuleState>(
@@ -22,6 +22,9 @@ export const useBackupModuleStore = create<BackupModuleState>(
 		setBackupModuleEnable: (backupModuleEnable): void =>
 			set({ backupModuleEnable }, false, 'setBackupModuleEnable'),
 		setBackupServerList: (backupServerList): void =>
-			set({ backupServerList }, false, 'setBackupServerList')
+			set({ backupServerList }, false, 'setBackupServerList'),
+		isBackupModuleLicensed: false,
+		setIsBackupModuleLicensed: (isBackupModuleLicensed): void =>
+			set({ isBackupModuleLicensed }, false, 'setIsBackupModuleLicensed')
 	}))
 );

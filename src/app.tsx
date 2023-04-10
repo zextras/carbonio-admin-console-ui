@@ -59,12 +59,12 @@ import { useGlobalConfigStore } from './store/global-config/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
-import { getAllConfig } from './services/get-all-config';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import MatomoTracker from './matomo-tracker';
 import { useMailstoreListStore } from './store/mailstore-list/store';
+import { useModuleLicenseStore } from './store/module-license/store';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -98,6 +98,7 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
+	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
 
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
@@ -708,11 +709,35 @@ const App: FC = () => {
 		});
 	}, [setVolumeList, setAllMailstoreList]);
 
+	const getModuleLicense = useCallback(() => {
+		postSoapFetchRequest(`/service/admin/soap/zextras`, {
+			zextras: {
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxCore',
+				action: 'getLicenseInfo'
+			}
+		})
+			.then((res: any) => res.Body)
+			.then((res: any) => {
+				const response = JSON.parse(res.response.content);
+				if (response.ok) {
+					const allModules = Object.keys(response.response.modules).map((module) => ({
+						...response.response.modules[module],
+						name: module
+					}));
+					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
+						setModuleLicense(allModules);
+					}
+				}
+			});
+	}, [setModuleLicense]);
+
 	useEffect(() => {
 		getAllServersRequest();
 		// another call just to get only mailstores can be improvised later
 		getMailstoresServersRequest();
-	}, [getAllServersRequest, getMailstoresServersRequest]);
+		getModuleLicense();
+	}, [getAllServersRequest, getMailstoresServersRequest, getModuleLicense]);
 
 	return null;
 };
