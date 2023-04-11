@@ -294,8 +294,10 @@ const ManageAccounts: FC = () => {
 			request: 'list',
 			account: `${id}`
 		}).then((res: any) => {
-			if (res.response?.values?.length > 0) {
+			if (res.response?.values) {
 				setCredentialList(res.response?.values);
+			} else {
+				setCredentialList([]);
 			}
 		});
 	}, []);

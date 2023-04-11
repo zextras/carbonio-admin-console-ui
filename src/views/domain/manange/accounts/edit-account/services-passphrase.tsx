@@ -13,7 +13,28 @@ import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 
-export const ServicesPassphrase: FC<any> = () => {
+interface CredentialType {
+	id?: string;
+	label?: string;
+	services?: string;
+	enabled?: boolean;
+}
+
+interface SelectServiceType {
+	label?: string;
+	value?: string;
+}
+
+interface SelectStatusType {
+	label?: string;
+	value?: boolean;
+}
+
+interface AddCredentialApiType {
+	ok?: boolean;
+}
+
+export const ServicesPassphrase: FC = () => {
 	const conext = useContext(AccountContext);
 	const { accountDetail, credentialList, getCredentialList } = conext;
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -22,20 +43,20 @@ export const ServicesPassphrase: FC<any> = () => {
 
 	const SERVICE_PASSPHRASE_STATUS = useMemo(() => ServicesPassphraseStatus(t), [t]);
 	const SERVICE_PASSPHRASE_SERVICES = useMemo(() => ServicesPassphraseServices(), []);
-	const [createCredential, setCreateCredential] = useState({
+	const [createCredential, setCreateCredential] = useState<CredentialType>({
 		label: '',
 		services: SERVICE_PASSPHRASE_SERVICES[0].value
 	});
 
-	const changeAccDetail = useCallback(
+	const changeCredLabel = useCallback(
 		(e) => {
-			setCreateCredential((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setCreateCredential((prev: CredentialType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setCreateCredential]
 	);
 
-	const onServicesPassphraseServicesChange = (v: any): any => {
-		setCreateCredential((prev: any) => ({ ...prev, services: v }));
+	const onServicesPassphraseServicesChange = (v: string): void => {
+		setCreateCredential((prev: CredentialType) => ({ ...prev, services: v }));
 	};
 
 	const onSave = useCallback((): void => {
@@ -46,7 +67,7 @@ export const ServicesPassphrase: FC<any> = () => {
 			request: 'add',
 			account: `${accountDetail?.uid}@${domainName}`,
 			...createCredential
-		}).then((res: any) => {
+		}).then((res: AddCredentialApiType) => {
 			if (res.ok) {
 				getCredentialList(`${accountDetail?.uid}@${domainName}`);
 				setCreateCredential({
@@ -86,7 +107,7 @@ export const ServicesPassphrase: FC<any> = () => {
 	]);
 
 	const onDelete = useCallback(
-		(cred: any): void => {
+		(cred: CredentialType): void => {
 			fetchSoap('zextras', {
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxAuth',
@@ -95,7 +116,7 @@ export const ServicesPassphrase: FC<any> = () => {
 				password_id: cred.id,
 				account: `${accountDetail?.uid}@${domainName}`,
 				...createCredential
-			}).then((res: any) => {
+			}).then((res: AddCredentialApiType) => {
 				if (res.ok) {
 					getCredentialList(`${accountDetail?.uid}@${domainName}`);
 					createSnackbar({
@@ -131,8 +152,7 @@ export const ServicesPassphrase: FC<any> = () => {
 						{t('account_details.services_passphrase', 'Services Passphrase')}
 					</Text>
 				</Row>
-				{/* {console.log('credentialList ===>', credentialList)} */}
-				{credentialList.map((item: any, index: number): any => (
+				{credentialList.map((item: CredentialType, index: number) => (
 					<Row
 						key={`credentialList${index}`}
 						padding={{ top: 'large', left: 'large' }}
@@ -154,8 +174,9 @@ export const ServicesPassphrase: FC<any> = () => {
 								background="gray5"
 								label={t('account_details.services', 'Services')}
 								showCheckbox={false}
-								defaultSelection={SERVICE_PASSPHRASE_SERVICES.find(
-									(el: any) => el.value.toLowerCase() === item?.services.toLowerCase()
+								selection={SERVICE_PASSPHRASE_SERVICES.find(
+									(el: SelectServiceType) =>
+										el.value?.toLowerCase() === item.services?.toLowerCase()
 								)}
 								padding={{ right: 'medium' }}
 								disabled
@@ -167,8 +188,8 @@ export const ServicesPassphrase: FC<any> = () => {
 								background="gray5"
 								label={t('account_details.status', 'Status')}
 								showCheckbox={false}
-								defaultSelection={SERVICE_PASSPHRASE_STATUS.find(
-									(el: any) => el.value === item?.enabled
+								selection={SERVICE_PASSPHRASE_STATUS.find(
+									(el: SelectStatusType) => el.value === item?.enabled
 								)}
 								padding={{ right: 'medium' }}
 								disabled
@@ -179,7 +200,7 @@ export const ServicesPassphrase: FC<any> = () => {
 								inputName="hash"
 								label={t('account_details.passphrasaId', 'Passphrase ID')}
 								backgroundColor="gray5"
-								value={item.hash}
+								value={item.id}
 								disabled
 							/>
 						</Row>
@@ -196,23 +217,12 @@ export const ServicesPassphrase: FC<any> = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="19%" mainAlignment="space-between">
 						<Input
-							onChange={changeAccDetail}
+							onChange={changeCredLabel}
 							inputName="label"
 							label={t('account_details.label', 'Label')}
 							backgroundColor="gray5"
 						/>
 					</Row>
-					{/* <Row width="19%" mainAlignment="space-between">
-						<Select
-							items={SERVICE_PASSPHRASE_STATUS}
-							background="gray5"
-							label={t('account_details.status', 'Status')}
-							showCheckbox={false}
-							onChange={onServicesPassphraseStatusChange}
-							defaultSelection={SERVICE_PASSPHRASE_STATUS[0]}
-							padding={{ right: 'medium' }}
-						/>
-					</Row> */}
 					<Row width="19%" mainAlignment="space-between">
 						<Select
 							items={SERVICE_PASSPHRASE_SERVICES}
