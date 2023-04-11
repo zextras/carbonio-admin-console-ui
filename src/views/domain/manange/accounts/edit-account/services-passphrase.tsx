@@ -152,7 +152,7 @@ export const ServicesPassphrase: FC<any> = () => {
 							<Select
 								items={SERVICE_PASSPHRASE_SERVICES}
 								background="gray5"
-								label={t('labeaccount_detailsl.services', 'Services')}
+								label={t('account_details.services', 'Services')}
 								showCheckbox={false}
 								defaultSelection={SERVICE_PASSPHRASE_SERVICES.find(
 									(el: any) => el.value.toLowerCase() === item?.services.toLowerCase()
@@ -165,7 +165,7 @@ export const ServicesPassphrase: FC<any> = () => {
 							<Select
 								items={SERVICE_PASSPHRASE_STATUS}
 								background="gray5"
-								label={t('labeaccount_detailsl.status', 'Status')}
+								label={t('account_details.status', 'Status')}
 								showCheckbox={false}
 								defaultSelection={SERVICE_PASSPHRASE_STATUS.find(
 									(el: any) => el.value === item?.enabled
@@ -186,7 +186,7 @@ export const ServicesPassphrase: FC<any> = () => {
 						<Row width="19%" mainAlignment="space-between">
 							<Button
 								type="outlined"
-								label={t('labeaccount_detailsl.DELETE', 'DELETE')}
+								label={t('account_details.DELETE', 'DELETE')}
 								color="error"
 								onClick={(): void => onDelete(item)}
 							/>
@@ -206,7 +206,7 @@ export const ServicesPassphrase: FC<any> = () => {
 						<Select
 							items={SERVICE_PASSPHRASE_STATUS}
 							background="gray5"
-							label={t('labeaccount_detailsl.status', 'Status')}
+							label={t('account_details.status', 'Status')}
 							showCheckbox={false}
 							onChange={onServicesPassphraseStatusChange}
 							defaultSelection={SERVICE_PASSPHRASE_STATUS[0]}
@@ -217,7 +217,7 @@ export const ServicesPassphrase: FC<any> = () => {
 						<Select
 							items={SERVICE_PASSPHRASE_SERVICES}
 							background="gray5"
-							label={t('labeaccount_detailsl.services', 'Services')}
+							label={t('account_details.services', 'Services')}
 							showCheckbox={false}
 							onChange={onServicesPassphraseServicesChange}
 							defaultSelection={SERVICE_PASSPHRASE_SERVICES[0]}
@@ -228,7 +228,7 @@ export const ServicesPassphrase: FC<any> = () => {
 					<Row width="19%" mainAlignment="space-between">
 						<Button
 							type="outlined"
-							label={t('labeaccount_detailsl.SAVE', 'SAVE')}
+							label={t('account_details.SAVE', 'SAVE')}
 							color="primary"
 							onClick={onSave}
 						/>

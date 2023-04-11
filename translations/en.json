@@ -15,7 +15,9 @@
     "account_details": {
         "ADD": "ADD",
         "Chats": "Chats",
+        "DELETE": "DELETE",
         "NEXT": "NEXT",
+        "SAVE": "SAVE",
         "a_user": "A User",
         "abstract": "Abstract",
         "account_read_only_rights": "This account has <bold>Read Only</bold> rights on",
@@ -140,6 +142,7 @@
         "send_the_otp_to": "Send the OTP to",
         "sendin_options": "Sending Options",
         "sending_options": "Sending Options",
+        "services": "Services",
         "services_passphrase": "Services Passphrase",
         "services_passphrase_created_successfully": "Services Passphrase created successfully",
         "services_passphrase_deleted_successfully": "Services Passphrase deleted successfully",
@@ -148,6 +151,7 @@
         "show_time_zone_lists_in_view": "Show time zone list in the appointment view",
         "sms_reminder": "SMS Reminder",
         "start_typing_account": "Start typing an Account / Group to add it to the rights",
+        "status": "Status",
         "switch_advanced": "Switch to Advanced View",
         "switch_simplified": "Switch to Simplified View",
         "tagging": "Tagging",
@@ -690,12 +694,6 @@
         "volumes": "Volumes",
         "years": "Years",
         "yes": "Yes"
-    },
-    "labeaccount_detailsl": {
-        "DELETE": "DELETE",
-        "SAVE": "SAVE",
-        "services": "Services",
-        "status": "Status"
     },
     "label": {
         "ADD_NEW": "ADD NEW",
