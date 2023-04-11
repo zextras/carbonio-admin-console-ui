@@ -24,5 +24,7 @@ type AccountContext = {
 	getIdentitiesList: any;
 	deligateDetail: any;
 	setDeligateDetail: (arg: any) => void;
+	credentialList: any;
+	getCredentialList: any;
 };
 export const AccountContext = createContext({} as AccountContext);

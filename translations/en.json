@@ -91,6 +91,7 @@
         "i_want_to_select": "I want to select the Folders",
         "iamp_access": "IMAP Access",
         "initial_search_preference": "Initial Search Preference",
+        "label": "Label",
         "mail": "Mail",
         "mail_signature": "Mail Signature",
         "mail_signatures": "Mail Signatures",
@@ -107,6 +108,7 @@
         "on_behalf_of": "on behalf of",
         "out_of_office_reply": "Out of Office Reply",
         "out_of_the_office_reply": "Out of Office Reply",
+        "passphrasaId": "Passphrase ID",
         "please_note_code": "Please note: you'll be able to see these codes just once.",
         "pop3_access": "POP3 Access",
         "prevent_user_from_changing_password": "Prevent user from changing password",
@@ -138,6 +140,9 @@
         "send_the_otp_to": "Send the OTP to",
         "sendin_options": "Sending Options",
         "sending_options": "Sending Options",
+        "services_passphrase": "Services Passphrase",
+        "services_passphrase_created_successfully": "Services Passphrase created successfully",
+        "services_passphrase_deleted_successfully": "Services Passphrase deleted successfully",
         "set_rights": "SET RIGHTS",
         "sharing": "Sharing",
         "show_time_zone_lists_in_view": "Show time zone list in the appointment view",
@@ -686,6 +691,12 @@
         "years": "Years",
         "yes": "Yes"
     },
+    "labeaccount_detailsl": {
+        "DELETE": "DELETE",
+        "SAVE": "SAVE",
+        "services": "Services",
+        "status": "Status"
+    },
     "label": {
         "ADD_NEW": "ADD NEW",
         "Accounts": "Accounts",
@@ -1082,6 +1093,7 @@
         "import_an_external_backup": "Import an External Backup",
         "import_saml_metadata_from_idp": "Import the SAML Metadata from the IDP",
         "in_maintenance": "Under maintenance",
+        "inactive": "Inactive",
         "inbound_smtp_host_name": "Inbound SMTP Host Name",
         "index_volume": "This is an Index Volume",
         "index_volumes": "Index Volumes",
