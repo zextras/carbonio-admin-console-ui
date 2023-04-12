@@ -363,7 +363,6 @@
             "features": "Other features",
             "hide": "Hide",
             "less_info": "Less Information",
-            "license_activated_successfully": "License activated successfully",
             "modal": {
                 "cancel": "NO",
                 "confirm": "Are you sure you want to proceed?",
@@ -372,14 +371,12 @@
                 "warning": "You are trying to deactivate the current token.Doing so will disable all the enabled features."
             },
             "more_info": "More Information",
-            "not_valid": "Not Valid",
             "order_id": "Order Id",
             "status": "Status",
             "subscription_Accounts": "Subscription Accounts",
             "subscription_last_check": "Subscription Last Check",
             "subscription_type": "Subscription Type",
             "token": "Token",
-            "valid": "Valid",
             "version": "Module version"
         }
     },
