@@ -1959,3 +1959,63 @@ export const getServiceUrl = (protocol: string, publicServerHostName: string): s
 	}
 	return url;
 };
+
+export const ServicesPassphraseStatus = (
+	t: TFunction
+): Array<{ value?: boolean; label: string }> => [
+	{
+		label: t('label.active', 'Active'),
+		value: true
+	},
+	{
+		label: t('label.inactive', 'Inactive'),
+		value: false
+	}
+];
+
+export const ServicesPassphraseServices = (): Array<{ value?: string; label: string }> => [
+	{
+		label: 'Dav(Web/Card/Cal)',
+		value: 'DAV'
+	},
+	{
+		label: 'EAS',
+		value: 'EAS'
+	},
+	{
+		label: 'WebUI',
+		value: 'WebUI'
+	},
+	{
+		label: 'WebAdminUI',
+		value: 'WebAdminUI'
+	},
+	{
+		label: 'MobileApp',
+		value: 'MobileApp'
+	},
+	{
+		label: 'DesktopApp',
+		value: 'DesktopApp'
+	},
+	{
+		label: 'ZmWebUI',
+		value: 'ZmWebUI'
+	},
+	{
+		label: 'CLI',
+		value: 'CLI'
+	},
+	{
+		label: 'SMTP',
+		value: 'SMTP'
+	},
+	{
+		label: 'IMAP',
+		value: 'IMAP'
+	},
+	{
+		label: 'POP3',
+		value: 'POP3'
+	}
+];

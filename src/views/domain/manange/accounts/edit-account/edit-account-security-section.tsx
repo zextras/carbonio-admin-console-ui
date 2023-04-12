@@ -27,6 +27,7 @@ import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import logo from '../../../../../assets/gardian.svg';
+import { ServicesPassphrase } from './services-passphrase';
 import { Section } from '../../../../app/component/section';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { emailContent } from '../create-account/email-content';
@@ -467,6 +468,7 @@ const EditAccountSecuritySection: FC = () => {
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
 			style={{ overflow: 'auto' }}
 		>
+			{isAdvanced && <ServicesPassphrase />}
 			{isAdvanced && (
 				<>
 					{!showCreateOTP && (

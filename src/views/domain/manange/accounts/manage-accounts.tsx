@@ -52,6 +52,7 @@ const ManageAccounts: FC = () => {
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
 	const [otpList, setOtpList] = useState<any[]>([]);
+	const [credentialList, setCredentialList] = useState<any[]>([]);
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
@@ -285,6 +286,21 @@ const ManageAccounts: FC = () => {
 		},
 		[t]
 	);
+	const getCredentialList = useCallback((id): void => {
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxAuth',
+			action: 'credential',
+			request: 'list',
+			account: `${id}`
+		}).then((res: any) => {
+			if (res.response?.values) {
+				setCredentialList(res.response?.values);
+			} else {
+				setCredentialList([]);
+			}
+		});
+	}, []);
 	const getFolderList = useCallback(
 		(acc, delegateList): void => {
 			postSoapFetchRequest(
@@ -376,6 +392,7 @@ const ManageAccounts: FC = () => {
 			getIdentitiesList(acc);
 			if (isAdvanced) {
 				getListOtp(acc?.name);
+				getCredentialList(acc?.name);
 			}
 		},
 		[
@@ -384,6 +401,7 @@ const ManageAccounts: FC = () => {
 			getAccountMembership,
 			getIdentitiesList,
 			isAdvanced,
+			getCredentialList,
 			getListOtp
 		]
 	);
@@ -723,7 +741,9 @@ const ManageAccounts: FC = () => {
 									setDeligateDetail,
 									getIdentitiesList,
 									folderList,
-									setFolderList
+									setFolderList,
+									credentialList,
+									getCredentialList
 								}}
 							>
 								{showAccountDetailView && (
