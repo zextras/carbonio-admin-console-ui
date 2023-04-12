@@ -111,6 +111,7 @@ export const ServicesPassphrase: FC = () => {
 					services: res?.response?.list?.label,
 					text_data: res?.response?.text_data
 				});
+				setCreateCredential((prev: CredentialType) => ({ ...prev, label: '' }));
 				getCredentialList(`${accountDetail?.uid}@${domainName}`);
 				setCreateCredential({
 					label: '',
@@ -265,6 +266,7 @@ export const ServicesPassphrase: FC = () => {
 							inputName="label"
 							label={t('account_details.label', 'Label')}
 							backgroundColor="gray5"
+							value={createCredential.label}
 						/>
 					</Row>
 					<Row width="19%" mainAlignment="space-between">
