@@ -1884,7 +1884,7 @@
     "tooltip": {
         "external_server_exampl": "e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld",
         "ldap_bind_dn_example": "e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com",
-        "ldap_filter_example": "e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))",
+        "ldap_filter_example": "e.g. (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))",
         "ldap_search_base_example": "e.g. dc=company,dc=local"
     },
     "virtual_hosts": {
