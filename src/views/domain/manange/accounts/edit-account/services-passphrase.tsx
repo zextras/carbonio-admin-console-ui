@@ -13,25 +13,14 @@ import {
 	useSnackbar,
 	Modal,
 	Container,
-	Icon,
-	IconButton
+	Icon
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
 
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-
-const StyledIconButton = styled(IconButton)`
-	padding: 0.125rem;
-	& > svg {
-		width: 1.25rem;
-		height: 1.25rem;
-		padding: 0;
-	}
-`;
 
 interface CredentialTextDataType {
 	password?: string;
