@@ -20,7 +20,14 @@ import { useDomainStore } from '../../../store/domain/store';
 const CreateGalsyncAccountModel: FC<{
 	open: boolean;
 	closeHandler: () => void;
-	saveHandler: (accountData: any, galDomainName: string) => void;
+	saveHandler: (
+		accountData: {
+			id?: string;
+			name: string;
+			galAccount?: null;
+		},
+		galDomainName: string
+	) => void;
 	accountData: any;
 }> = ({ open, closeHandler, saveHandler, accountData }) => {
 	const [t] = useTranslation();
@@ -35,7 +42,7 @@ const CreateGalsyncAccountModel: FC<{
 				open={open}
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="flex-end">
-						<Row style={{ gap: '8px' }} padding={{ right: 'medium' }}>
+						<Row style={{ gap: '0.5rem' }} padding={{ right: 'medium' }}>
 							<Button
 								label={t('label.go_back_button', 'GO BACK')}
 								color="secondary"

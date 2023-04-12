@@ -36,7 +36,7 @@ const DistroyGalsyncAccountModel: FC<{
 				open={open}
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="flex-end">
-						<Row style={{ gap: '8px' }} padding={{ right: 'medium' }}>
+						<Row style={{ gap: '0.5rem' }} padding={{ right: 'medium' }}>
 							<Button
 								label={t('label.keep_it_button', 'NO, KEEP IT')}
 								color="primary"
@@ -60,7 +60,7 @@ const DistroyGalsyncAccountModel: FC<{
 				<Text
 					size={'extralarge'}
 					overflow="break-word"
-					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '32px 0' }}
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '4rem 0' }}
 				>
 					{t('label.delete_account', `Are you sure you want to destroy {{accountId}}?`, {
 						accountId: accountData?.galAccount?.name

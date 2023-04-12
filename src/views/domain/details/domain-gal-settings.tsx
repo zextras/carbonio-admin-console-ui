@@ -79,6 +79,15 @@ interface AccountDataType {
 	galAccount?: GalAccountType | null;
 }
 
+interface CreateSnackbarType {
+	key: string;
+	type: 'error' | 'success' | 'warning';
+	label: string;
+	autoHideTimeout: number;
+	hideButton: boolean;
+	replace: boolean;
+}
+
 // eslint-disable-next-line no-shadow
 export enum RANGE {
 	DAYS = 'd',
@@ -90,7 +99,7 @@ export enum RANGE {
 const ServerListTable: FC<{
 	volumes: Array<AccountDataType>;
 	selectedRows: number[];
-	onSelectionChange: any;
+	onSelectionChange: (selected: number[]) => void;
 }> = ({ volumes, selectedRows, onSelectionChange }) => {
 	const [t] = useTranslation();
 	const tableRows = useMemo(
@@ -158,7 +167,7 @@ const ServerListTable: FC<{
 const DomainGalSettings: FC = () => {
 	const [t] = useTranslation();
 	const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const domain: { name?: string } = useDomainStore((state) => state.domain);
 	const { allMailstoreList } = useMailstoreListStore((state) => state);
 	const { domainId }: { domainId: string } = useParams();
@@ -196,7 +205,9 @@ const DomainGalSettings: FC = () => {
 		[t]
 	);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [domainData, setDomainData] = useState<DomainDataType>({
+	const [domainData, setDomainData] = useState<{
+		[key: string]: string;
+	}>({
 		zimbraGalMaxResults: '',
 		zimbraGalAccountId: '',
 		zimbraGalMode: '',
@@ -391,7 +402,9 @@ const DomainGalSettings: FC = () => {
 				setZimbraGalAccountName('');
 				setZimbraDataSourcePollingInterval('');
 				setDataSourceName('');
-				const obj: DomainDataType | any = {};
+				const obj: {
+					[key: string]: string;
+				} = {};
 				data.map((item: { n: string; _content: string }) => {
 					obj[item?.n] = item._content;
 					return '';
@@ -562,14 +575,12 @@ const DomainGalSettings: FC = () => {
 	]);
 
 	const onSave = (): void => {
-		const requests: any[] = [];
-		const body:
-			| {
-					id?: string;
-					_jsns?: string;
-					a?: { n: string; _content?: string }[];
-			  }
-			| any = {};
+		const requests = [];
+		const body: {
+			id?: string;
+			_jsns?: string;
+			a?: { n: string; _content?: string }[];
+		} = {};
 		let attributes: { n: string; _content?: string }[] = [];
 		body.id = domainData?.zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
@@ -637,7 +648,11 @@ const DomainGalSettings: FC = () => {
 						(item: { id?: string }) => item?.id === items?._content
 					);
 
-					const dataSourceBody: any = {};
+					const dataSourceBody: {
+						id?: string;
+						_jsns?: string;
+						dataSource?: { id?: string; a?: { n: string; _content?: string }[] };
+					} = {};
 					dataSourceBody.id = items?._content;
 					dataSourceBody._jsns = 'urn:zimbraAdmin';
 					attributes = [];
@@ -757,7 +772,7 @@ const DomainGalSettings: FC = () => {
 	]);
 
 	const onFreqDigitsChange = useCallback(
-		(ev: React.ChangeEvent<HTMLInputElement> | any) => {
+		(ev) => {
 			if (ev?.target?.value < 0 || ev?.target?.value > 9) {
 				return;
 			}
@@ -902,27 +917,28 @@ const DomainGalSettings: FC = () => {
 				(item: { n: string; _content: string }) => item.n === 'zimbraGalAccountId'
 			);
 			// eslint-disable-next-line array-callback-return
-			const result: any = allDomains?.map((item: { n: string; _content: string }) =>
-				getAccount(item?._content)
-					.then((data) => {
-						const galAccount: {
-							a: { n: string; _content: string }[];
-							id: string;
-							name: string;
-						} = data?.account[0];
-						const accountData: { n: string; _content: string }[] = galAccount?.a?.filter(
-							(account) => account?.n === 'zimbraMailHost'
-						);
+			const result: readonly unknown[] | [] = allDomains?.map(
+				(item: { n: string; _content: string }) =>
+					getAccount(item?._content)
+						.then((data) => {
+							const galAccount: {
+								a: { n: string; _content: string }[];
+								id: string;
+								name: string;
+							} = data?.account[0];
+							const accountData: { n: string; _content: string }[] = galAccount?.a?.filter(
+								(account) => account?.n === 'zimbraMailHost'
+							);
 
-						const object = {
-							accountData,
-							name: galAccount?.name,
-							id: galAccount?.id
-						};
-						return object;
-					})
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
-					.catch(() => {})
+							const object = {
+								accountData,
+								name: galAccount?.name,
+								id: galAccount?.id
+							};
+							return object;
+						})
+						// eslint-disable-next-line @typescript-eslint/no-empty-function
+						.catch(() => {})
 			);
 			Promise.all(result).then((results) => {
 				getAllTableList(results);
@@ -965,7 +981,7 @@ const DomainGalSettings: FC = () => {
 		});
 		account.push({
 			by: 'name',
-			_content: `${galDomainName}@${domain?.name}`
+			_content: `${galDomainName}.${accountData.name}@${domain?.name}`
 		});
 		createGalSyncAccount(INTERNAL_GAL, domain?.name, accountData.name, account, ZIMBRA, attributes)
 			.then((res) => {
@@ -1045,7 +1061,7 @@ const DomainGalSettings: FC = () => {
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Container orientation="vertical" mainAlignment="space-around" height="56px">
+				<Container orientation="vertical" mainAlignment="space-around" height="4rem">
 					<Row orientation="horizontal" width="100%">
 						<Row
 							padding={{ all: 'large' }}
