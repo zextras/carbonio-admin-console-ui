@@ -289,7 +289,7 @@ const DomainListPanel: FC = () => {
 	);
 
 	useEffect(() => {
-		if (!getBackupModuleEnable || !isBackupModuleLicensed) {
+		if (!getBackupModuleEnable && !isBackupModuleLicensed) {
 			const options = manageItems.filter((item: any) => item?.id !== RESTORE_ACCOUNT);
 			setManageOptions(options);
 		}
