@@ -159,16 +159,16 @@ export const ServicesPassphrase: FC = () => {
 						width="100%"
 						mainAlignment="space-between"
 					>
-						<Row width="19%" mainAlignment="space-between">
+						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
 							<Input
 								inputName="label"
 								label={t('account_details.label', 'Label')}
 								backgroundColor="gray5"
 								value={item.label}
-								disabled
+								textColor="secondary"
 							/>
 						</Row>
-						<Row width="19%" mainAlignment="space-between">
+						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
 							<Select
 								items={SERVICE_PASSPHRASE_SERVICES}
 								background="gray5"
@@ -182,7 +182,7 @@ export const ServicesPassphrase: FC = () => {
 								disabled
 							/>
 						</Row>
-						<Row width="19%" mainAlignment="space-between">
+						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
 							<Select
 								items={SERVICE_PASSPHRASE_STATUS}
 								background="gray5"
@@ -195,13 +195,13 @@ export const ServicesPassphrase: FC = () => {
 								disabled
 							/>
 						</Row>
-						<Row width="19%" mainAlignment="space-between">
+						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
 							<Input
 								inputName="hash"
 								label={t('account_details.passphrasaId', 'Passphrase ID')}
 								backgroundColor="gray5"
 								value={item.id}
-								disabled
+								textColor="secondary"
 							/>
 						</Row>
 						<Row width="19%" mainAlignment="space-between">
