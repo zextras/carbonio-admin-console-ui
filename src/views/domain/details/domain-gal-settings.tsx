@@ -1112,7 +1112,7 @@ const DomainGalSettings: FC = () => {
 													maxWidth="40rem"
 													label={t(
 														'tooltip.ldap_filter_example',
-														'e.g. (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))'
+														'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))'
 													)}
 												>
 													<Text>
