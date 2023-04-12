@@ -813,7 +813,6 @@ const EditMailingListView: FC<any> = ({
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -1446,7 +1445,6 @@ const EditMailingListView: FC<any> = ({
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -1472,7 +1470,6 @@ const EditMailingListView: FC<any> = ({
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',

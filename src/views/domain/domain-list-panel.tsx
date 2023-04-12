@@ -364,7 +364,6 @@ const DomainListPanel: FC = () => {
 							bottom="9px"
 							left="large"
 							style={{
-								fontFamily: 'roboto',
 								display: 'block',
 								textAlign: 'left',
 								height: 'inherit',

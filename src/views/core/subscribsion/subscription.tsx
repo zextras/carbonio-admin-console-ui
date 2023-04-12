@@ -278,7 +278,7 @@ const Subscription: FC = () => {
 					crossAlignment="flex-start"
 					style={{ padding: '8px 0 16px 0' }}
 				>
-					<Row width="calc(100% - 145px)">
+					<Row width="83%">
 						<Input
 							label={t('core.subscription.token', 'Token')}
 							backgroundColor="gray5"
@@ -286,7 +286,7 @@ const Subscription: FC = () => {
 							onChange={(e: any): void => setLicenseKey(e.target.value)}
 						/>
 					</Row>
-					<Row width="145px" mainAlignment="flex-end" crossAlignment="flex-end">
+					<Row width="17%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<Button
 							label={
 								services &&

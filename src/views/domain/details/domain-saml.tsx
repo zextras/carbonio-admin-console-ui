@@ -156,7 +156,7 @@ const DomainSaml: FC = () => {
 									openSamlValue(item);
 								}}
 							>
-								<Text size="small" weight="bold" color="gray0">
+								<Text size="small" weight="light" color="gray0">
 									{item?.attribute}
 								</Text>
 							</Container>,
@@ -168,7 +168,7 @@ const DomainSaml: FC = () => {
 									openSamlValue(item);
 								}}
 							>
-								<Text size="small" weight="bold" color="gray0">
+								<Text size="small" weight="light" color="gray0">
 									{item?.value}
 								</Text>
 							</Container>
@@ -643,14 +643,14 @@ const DomainSaml: FC = () => {
 									mainAlignment="flex-start"
 									style={{ marginTop: '1rem' }}
 								>
-									<Text overflow="break-word" weight="normal" size="large">
+									<Text overflow="break-word" weight="regular" size="large">
 										<img src={logo} alt="logo" />
 									</Text>
 									<Padding all="medium" width="25.875rem">
 										<Text
 											color="gray1"
 											overflow="break-word"
-											weight="normal"
+											weight="regular"
 											size="large"
 											width="60%"
 											style={{ whiteSpace: 'pre-line', textAlign: 'center' }}

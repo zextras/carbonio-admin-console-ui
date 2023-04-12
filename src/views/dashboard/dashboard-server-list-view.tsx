@@ -52,7 +52,7 @@ const DashboardServerList: FC<{
 					<Text
 						size="small"
 						color="gray1"
-						weight="bold"
+						weight="medium"
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
@@ -88,7 +88,7 @@ const DashboardServerList: FC<{
 					),
 					<Text
 						size="small"
-						weight="bold"
+						weight="medium"
 						color="gray1"
 						key={item?.name}
 						onClick={(event: { stopPropagation: () => void }): void => {

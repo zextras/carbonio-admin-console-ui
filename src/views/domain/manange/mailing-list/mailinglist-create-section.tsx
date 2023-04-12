@@ -59,7 +59,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = member.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="light" key={item} color="#828282">
 						{item}
 					</Text>
 				]
@@ -74,7 +74,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = ownersList.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item}
 					</Text>
 				]
@@ -89,7 +89,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = member.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item?.name}
 					</Text>
 				]
