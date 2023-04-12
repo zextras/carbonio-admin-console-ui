@@ -1052,6 +1052,20 @@ export const volumeAllocationList = (t: TFunction): Array<{ label: string; value
 	}
 ];
 
+export const GalServerTableheaders = (t: TFunction): Array<object> => [
+	{
+		id: 'server',
+		label: t('label.server', 'Server'),
+		bold: true,
+		width: '30%'
+	},
+	{
+		id: 'galsync_account',
+		label: t('label.galsync_account', 'GALSync Account'),
+		bold: true
+	}
+];
+
 export const volumeConfigHeader = (
 	t: TFunction
 ): Array<{
