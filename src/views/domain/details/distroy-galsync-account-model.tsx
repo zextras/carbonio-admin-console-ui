@@ -60,7 +60,7 @@ const DistroyGalsyncAccountModel: FC<{
 				<Text
 					size={'extralarge'}
 					overflow="break-word"
-					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '4rem 0' }}
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
 				>
 					{t('label.delete_account', `Are you sure you want to destroy {{accountId}}?`, {
 						accountId: accountData?.galAccount?.name
