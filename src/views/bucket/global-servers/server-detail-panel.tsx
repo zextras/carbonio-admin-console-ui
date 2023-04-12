@@ -57,7 +57,7 @@ const ServersListTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-						{v?.name}
+						<Text weight="light">{v?.name}</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -67,7 +67,7 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						{v?.primaries}
+						<Text weight="light">{v?.primaries}</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -77,7 +77,7 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						{v?.secondaries}
+						<Text weight="light">{v?.secondaries}</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -87,7 +87,7 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						{v?.indexes}
+						<Text weight="light">{v?.indexes}</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -97,7 +97,9 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
+						<Text weight="light">
+							{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -107,9 +109,11 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						{(v.indexer?.could_start && INDEXER_ACTIVE) ||
-							(v.indexer?.could_stop && INDEXER_PAUSED) ||
-							(v.indexer?.running && INDEXER_RUNNING)}
+						<Text weight="light">
+							{(v.indexer?.could_start && INDEXER_ACTIVE) ||
+								(v.indexer?.could_stop && INDEXER_PAUSED) ||
+								(v.indexer?.running && INDEXER_RUNNING)}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -119,7 +123,7 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						{v?.description}
+						<Text weight="light">{v?.description}</Text>
 					</Row>
 				],
 				clickable: true
@@ -133,7 +137,7 @@ const ServersListTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-						{v?.name}
+						<Text weight="light">{v?.name}</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -143,7 +147,7 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						{v?.description}
+						<Text weight="light">{v?.description}</Text>
 					</Row>
 				],
 				clickable: true

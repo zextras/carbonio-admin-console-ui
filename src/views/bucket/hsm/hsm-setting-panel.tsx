@@ -137,7 +137,7 @@ const HSMsettingPanel: FC = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="medium"
 						key={item?.hsmQuery}
 						color="#828282"
 						onClick={(): void => {

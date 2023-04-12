@@ -108,17 +108,17 @@ const EditAccountDelegatesSection: FC = () => {
 			identitiesArr.push({
 				id: item?.grantee?.[0]?.id,
 				columns: [
-					<Text size="medium" key={item?.grantee?.[0]?.id} color="#414141">
+					<Text size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
 						{item?.grantee?.[0]?.name || ' '}
 					</Text>,
-					<Text size="medium" key={item?.grantee?.[0]?.id} color="#414141">
+					<Text size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
 						{item?.grantee?.[0]?.type === 'usr' ? 'Single User' : 'Group'}
 					</Text>,
-					<Text size="medium" key={item?.grantee?.[0]?.id} color="#414141">
+					<Text size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
 						{item?.right?.[0]?._content === 'sendAs' ? 'Send As' : ''}
 						{item?.right?.[0]?._content === 'sendOnBehalfOf' ? 'Send on Behalf Of' : ''}
 					</Text>,
-					<Text size="medium" key={item?.grantee?.[0]?.id} color="#414141">
+					<Text size="medium" weight="light" key={item?.grantee?.[0]?.id} color="#414141">
 						{find(
 							item?.folder || [],
 							(ele: any) => ele.perm.includes('r') && !ele.perm.includes('w')

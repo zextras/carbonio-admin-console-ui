@@ -88,18 +88,18 @@ const HSMselectVolumes: FC<any> = () => {
 			const allRows = volumeList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{''}
 					</Text>,
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{getVoumeType(item?.type)}
 					</Text>,
 					<Text
 						size="medium"
-						weight="bold"
+						weight="medium"
 						key={item}
 						color={item?.isCurrent ? 'gray0' : '#D74942'}
 					>
