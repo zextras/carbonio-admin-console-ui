@@ -20,7 +20,8 @@ import {
 	RESTORE_ACCOUNT,
 	RESTORE_DELETED_EMAIL,
 	ACTIVE_SYNC,
-	THEME
+	THEME,
+	SAML
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -35,6 +36,7 @@ import DomainResources from './manange/resources/domain-resources';
 import RestoreAccount from './manange/restore-delete-account/restore-delete-account';
 import ActiveSync from './manange/active-sync/active-sync';
 import DomainTheme from './details/domain-theme';
+import DomainSaml from './details/domain-saml';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
@@ -92,6 +94,8 @@ const DomainOperations: FC = () => {
 						return <DomainMailboxQuotaSetting />;
 					case THEME:
 						return <DomainTheme />;
+					case SAML:
+						return <DomainSaml />;
 					case ACCOUNTS:
 						return <ManageAccounts />;
 					case MAILING_LIST:

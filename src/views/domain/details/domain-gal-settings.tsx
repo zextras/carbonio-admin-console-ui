@@ -22,9 +22,11 @@ import {
 	IconButton
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { debounce } from 'lodash';
 import { getAccount } from '../../../services/get-account-service';
 import { getDatasource } from '../../../services/get-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { checkGalConfig } from '../../../services/check-gal-config-service';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -100,6 +102,7 @@ const DomainGalSettings: FC = () => {
 		[t]
 	);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [isGalUrlverified, setIsGalUrlverified] = useState<boolean>(false);
 	const [domainData, setDomainData] = useState<DomainDataType>({
 		zimbraGalMaxResults: '',
 		zimbraGalAccountId: '',
@@ -600,10 +603,91 @@ const DomainGalSettings: FC = () => {
 		setZimbraGalLdapPageSize(ev.target.value);
 	};
 
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const verifyLdapConnection = useCallback(
+		debounce(
+			(
+				zimbraGalLdapURL,
+				zimbraGalLdapFilter,
+				zimbraGalLdapAuthMechVal,
+				zimbraGalLdapBindDn,
+				zimbraGalLdapBindPassword
+			) => {
+				const body:
+					| {
+							_jsns?: string;
+							a?: { n: string; _content?: string }[];
+					  }
+					| any = {};
+				body._jsns = 'urn:zimbraAdmin';
+				const attributes: { n: string; _content?: string }[] = [];
+				attributes.push({
+					n: 'zimbraGalMode',
+					_content: 'ldap'
+				});
+				attributes.push({
+					n: 'zimbraGalLdapFilter',
+					_content: zimbraGalLdapFilter
+				});
+				attributes.push({
+					n: 'zimbraGalLdapURL',
+					_content: zimbraGalLdapURL
+				});
+				if (zimbraGalLdapAuthMechVal !== 'none') {
+					attributes.push({
+						n: 'zimbraGalLdapAuthMech',
+						_content: zimbraGalLdapAuthMechVal
+					});
+					attributes.push({
+						n: 'zimbraGalLdapBindDn',
+						_content: zimbraGalLdapBindDn
+					});
+					attributes.push({
+						n: 'zimbraGalLdapBindPassword',
+						_content: zimbraGalLdapBindPassword
+					});
+				}
+				body.a = attributes;
+				checkGalConfig(body)
+					.then((data: any) => {
+						if (data?.code?.[0]?._content === 'check.OK') {
+							setIsGalUrlverified(true);
+						} else {
+							setIsGalUrlverified(false);
+						}
+					})
+					.catch(() => {
+						setIsGalUrlverified(false);
+					});
+			},
+			700
+		),
+		[debounce]
+	);
+
 	const onZimbraGalLdapUrlChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setDomainData({ ...domainData, zimbraGalLdapURL: ev?.target?.value });
 		setIsDirty(domainData?.zimbraGalLdapURL !== ev?.target?.value);
 	};
+
+	useEffect(() => {
+		if (domainData?.zimbraGalLdapURL) {
+			verifyLdapConnection(
+				domainData?.zimbraGalLdapURL,
+				domainData?.zimbraGalLdapFilter,
+				domainData?.zimbraGalLdapAuthMech,
+				domainData?.zimbraGalLdapBindDn,
+				domainData?.zimbraGalLdapBindPassword
+			);
+		}
+	}, [
+		domainData?.zimbraGalLdapAuthMech,
+		domainData?.zimbraGalLdapBindDn,
+		domainData?.zimbraGalLdapBindPassword,
+		domainData?.zimbraGalLdapFilter,
+		domainData?.zimbraGalLdapURL,
+		verifyLdapConnection
+	]);
 
 	const onZimbraGalLdapStartTlsEnabledChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setZimbraGalLdapStartTlsEnabled({
@@ -819,8 +903,14 @@ const DomainGalSettings: FC = () => {
 									{t('account_details.general', 'General')}
 								</Text>
 							</Row>
-							<ListRow>
-								<Container orientation="horizontal" padding={{ all: 'small' }}>
+							<Row
+								orientation="horizontal"
+								mainAlignment="space-between"
+								crossAlignment="flex-start"
+								width="fill"
+								padding={{ all: 'small' }}
+							>
+								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="18%">
 									<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
 										<Button
 											type="outlined"
@@ -829,17 +919,16 @@ const DomainGalSettings: FC = () => {
 											icon={open ? 'ChevronUp' : 'ChevronDown'}
 										/>
 									</Dropdown>
-
-									<Padding left="small" width="100%">
-										<Input
-											label={t('label.gal_mode', 'GAL Mode')}
-											value={zimbraGalMode}
-											background="gray6"
-											readOnly
-										/>
-									</Padding>
 								</Container>
-							</ListRow>
+								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="82%">
+									<Input
+										label={t('label.gal_mode', 'GAL Mode')}
+										value={zimbraGalMode}
+										background="gray6"
+										readOnly
+									/>
+								</Container>
+							</Row>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									type="number"
@@ -953,6 +1042,7 @@ const DomainGalSettings: FC = () => {
 												value={domainData?.zimbraGalLdapURL}
 												background="gray5"
 												onChange={onZimbraGalLdapUrlChange}
+												hasError={!isGalUrlverified}
 												CustomIcon={({
 													hasFocus
 												}: {
@@ -970,11 +1060,19 @@ const DomainGalSettings: FC = () => {
 														)}
 													>
 														<Text>
-															<Icon
-																icon="InfoOutline"
-																size="large"
-																color={hasFocus ? 'primary' : 'text'}
-															/>
+															{isGalUrlverified ? (
+																<Icon
+																	icon="CheckmarkOutline"
+																	size="large"
+																	color={hasFocus ? 'primary' : 'text'}
+																/>
+															) : (
+																<Icon
+																	icon="InfoOutline"
+																	size="large"
+																	color={hasFocus ? 'primary' : 'text'}
+																/>
+															)}
 														</Text>
 													</Tooltip>
 												)}
@@ -1014,7 +1112,7 @@ const DomainGalSettings: FC = () => {
 													maxWidth="40rem"
 													label={t(
 														'tooltip.ldap_filter_example',
-														'e.g. (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))'
+														'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))'
 													)}
 												>
 													<Text>

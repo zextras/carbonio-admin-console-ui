@@ -60,12 +60,12 @@ import { useGlobalConfigStore } from './store/global-config/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
-import { getAllConfig } from './services/get-all-config';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import MatomoTracker from './matomo-tracker';
 import { useMailstoreListStore } from './store/mailstore-list/store';
+import { useModuleLicenseStore } from './store/module-license/store';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -99,6 +99,7 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
+	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
 
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
@@ -289,62 +290,19 @@ const App: FC = () => {
 	const homeTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.details', 'Details'),
-				options: [
-					{
-						label: t('label.domain_status', 'Domain Status')
-					},
-					{
-						label: t('label.general_Settings', 'General Settings')
-					},
-					{
-						label: t('label.global_address_list', 'Global Address List')
-					},
-					{
-						label: t('label.authentication', 'Authentication')
-					},
-					{
-						label: t('label.virtual_hosts_and_certificates', 'Virtual Hosts & Certificate')
-					},
-					{
-						label: t('label.mailbox_quota', 'Mailbox Quota')
-					}
-				]
-			},
-			{
-				header: t('domain.manage', 'Manage'),
-				options: [
-					{
-						label: t('label.accounts', 'Accounts')
-					},
-					{
-						label: t('label.mailing_list', 'Mailing List')
-					},
-					{
-						label: t('label.resources', 'Resources')
-					},
-					/* {
-						label: t('label.admin_delegates', 'Admin Delegates')
-					},
-					{
-						label: t('label.active_sync', 'ActiveSync')
-					},
-					{
-						label: t('label.account_scan', 'AccountScan')
-					},
-					{
-						label: t('label.export_domain', 'Export Domain')
-					} */
-					{
-						label: t('label.restore_account', 'Restore Account')
-					}
-					/* {
-						label: t('label.restore_deleted_email', 'Restore Deleted E-mail')
-					} */
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.dashboard"
+							defaults="<bold>Dashboard</bold>"
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
 	);
 
 	const HomeTooltipView: FC = useCallback(
@@ -726,11 +684,35 @@ const App: FC = () => {
 		});
 	}, [setVolumeList, setAllMailstoreList]);
 
+	const getModuleLicense = useCallback(() => {
+		postSoapFetchRequest(`/service/admin/soap/zextras`, {
+			zextras: {
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxCore',
+				action: 'getLicenseInfo'
+			}
+		})
+			.then((res: any) => res.Body)
+			.then((res: any) => {
+				const response = JSON.parse(res.response.content);
+				if (response.ok) {
+					const allModules = Object.keys(response.response.modules).map((module) => ({
+						...response.response.modules[module],
+						name: module
+					}));
+					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
+						setModuleLicense(allModules);
+					}
+				}
+			});
+	}, [setModuleLicense]);
+
 	useEffect(() => {
 		getAllServersRequest();
 		// another call just to get only mailstores can be improvised later
 		getMailstoresServersRequest();
-	}, [getAllServersRequest, getMailstoresServersRequest]);
+		getModuleLicense();
+	}, [getAllServersRequest, getMailstoresServersRequest, getModuleLicense]);
 
 	return null;
 };

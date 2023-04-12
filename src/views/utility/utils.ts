@@ -1681,6 +1681,11 @@ export const isValidHttpsUrl = (url: string): boolean => {
 	return reqex.test(url);
 };
 
+export const isValidUrl = (url: string): boolean => {
+	const reqex = /^((http|https):\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+	return reqex.test(url);
+};
+
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
@@ -1710,7 +1715,7 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
-			`Save a copy of sent messages to delegate and delegated send folde`
+			`Save a copy of sent messages to delegate and delegated send folder`
 		),
 		value: 'both'
 	},
@@ -1750,10 +1755,6 @@ export const delegateRightsType = (t: TFunction): Array<{ value?: string; label:
 	{
 		label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
 		value: MANAGE_NO_SEND
-	},
-	{
-		label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
-		value: 'manage_no_send'
 	},
 	{
 		label: t(
@@ -1930,3 +1931,91 @@ export const copyTextToClipboard = (text: string): void => {
 		navigator.clipboard.writeText(text);
 	}
 };
+
+export const download = (content: BlobPart, fileName: string, contentType: string): void => {
+	const a = document.createElement('a');
+	const file = new Blob([content], { type: contentType });
+	a.href = URL.createObjectURL(file);
+	a.download = fileName;
+	a.click();
+};
+
+export const getSPEntityId = (
+	protocol: string,
+	publicServerHostName: string,
+	domain: string
+): string => {
+	let url = '';
+	if (publicServerHostName) {
+		url = `${protocol || 'https'}://${publicServerHostName}/zx/auth/samlMetadata?domain=${domain}`;
+	}
+	return url;
+};
+
+export const getServiceUrl = (protocol: string, publicServerHostName: string): string => {
+	let url = '';
+	if (publicServerHostName) {
+		url = `${protocol || 'https'}://${publicServerHostName}/zx/auth/saml`;
+	}
+	return url;
+};
+
+export const ServicesPassphraseStatus = (
+	t: TFunction
+): Array<{ value?: boolean; label: string }> => [
+	{
+		label: t('label.active', 'Active'),
+		value: true
+	},
+	{
+		label: t('label.inactive', 'Inactive'),
+		value: false
+	}
+];
+
+export const ServicesPassphraseServices = (): Array<{ value?: string; label: string }> => [
+	{
+		label: 'Dav(Web/Card/Cal)',
+		value: 'DAV'
+	},
+	{
+		label: 'EAS',
+		value: 'EAS'
+	},
+	{
+		label: 'WebUI',
+		value: 'WebUI'
+	},
+	{
+		label: 'WebAdminUI',
+		value: 'WebAdminUI'
+	},
+	{
+		label: 'MobileApp',
+		value: 'MobileApp'
+	},
+	{
+		label: 'DesktopApp',
+		value: 'DesktopApp'
+	},
+	{
+		label: 'ZmWebUI',
+		value: 'ZmWebUI'
+	},
+	{
+		label: 'CLI',
+		value: 'CLI'
+	},
+	{
+		label: 'SMTP',
+		value: 'SMTP'
+	},
+	{
+		label: 'IMAP',
+		value: 'IMAP'
+	},
+	{
+		label: 'POP3',
+		value: 'POP3'
+	}
+];

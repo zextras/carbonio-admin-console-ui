@@ -126,7 +126,7 @@
         "asia_yekaterinburg": "{{value}}エカテリンブルク（RTZ 4）",
         "asia_yerevan": "{{value}}エレバン",
         "atlantic_azores": "{{value}}アゾレス諸島",
-        "atlantic_cape_verde": "{{value}}カーボベルデ諸島",
+        "atlantic_cape_verde": "{{value}}カーボベルデ諸島。",
         "atlantic_south_georgia": "{{value}}中部大西洋岸",
         "australia_adelaide": "{{value}}アデレード",
         "australia_brisbane": "{{value}}ブリスベン",
@@ -548,7 +548,7 @@
         "inbound_smtp_host_name": "インバウンドSMTPホスト名",
         "import_an_external_backup": "外部バックアップをインポートする",
         "i_am_looking_for_this_account": "このアカウントを探しています…",
-        "i_am_looking_for_member": "メンバーを探しています...",
+        "i_am_looking_for_member": "メンバーを探しています…",
         "https": "http",
         "http": "http",
         "here_you_will_find": "ここで見つかります",
@@ -783,7 +783,7 @@
         "there_are_not_owner_here": "ここには所有者はいません。",
         "this_list_can_receive_email": "このリストはメールを受信できます",
         "type_accounts_paste_them_here": "アカウントを入力するか、ここに貼り付けます",
-        "type_an_account_dot": "アカウントを入力してください...",
+        "type_an_account_dot": "アカウントを入力してください…",
         "type_in_the_mails": "リストに追加するアカウントを入力してください",
         "type_name_your_domain_will_have": "ドメイン名を入力してください",
         "virtual_host_user_msg_1": "以下のいずれかのホスト名を持つURLを使用してログインするユーザーは、このドメインdomain1.localにいると見なされます。",
@@ -949,7 +949,7 @@
         "favicon": "ファビコン",
         "favicon_path": "ファビコンパス",
         "filter_by_device_type_account": "デバイスの種類、アカウント、ステータスでフィルタ",
-        "i_m_looking_for_the_session": "セッションを探しています...",
+        "i_m_looking_for_the_session": "セッションを探しています…",
         "image_path": "画像パス",
         "index_volume": "これはインデックス ボリュームです",
         "ip": "IP",
@@ -1112,7 +1112,7 @@
         "sort_by_percentage": "パーセントで並べ替える",
         "domain_primarybar_tooltip": "<bold>ドメインの詳細</bold>を表示し、<bold>アカウント、メーリング リスト、リソース</bold>、<bold>その他</bold>を<bold>管理</bold>します。",
         "logo_redirection": "ロゴのリダイレクト",
-        "logo_redirection_title": "ロゴをクリックすると、ユーザーは次の場所にリダイレクトされます...",
+        "logo_redirection_title": "ロゴをクリックすると、ユーザーは次の場所にリダイレクトされます…",
         "sort_by_total_quota": "総クォータで並べ替える",
         "backup_primarybar_tooltip": "<bold>バックアップ サービス、表示<bold>、ステータス</bold>、</bold>、<bold>サーバーのリスト</bold>、<bold>既存のサービスのインポート</bold>を管理します。",
         "cos_primarybar_tooltip": "<bold>サービス クラス</bold>、<bold>機能、サーバープール</bold>、および<bold>詳細</bold>設定を表示および管理します。",
@@ -1794,5 +1794,5 @@
         "load_certificate": "証明書を読み込む"
     },
     "welcome_to_carbonio_information": "{{adminName}}、Carbonio にようこそ！",
-    "select_bucket_or_create_bucket": "バケットタイプを設定していないようです。\n  []CREATE +]をクリックして、新規で作成してください。"
+    "select_bucket_or_create_bucket": "バケットタイプを設定していないようです。\n []CREATE +]をクリックして、新規で作成してください。"
 }

@@ -183,7 +183,7 @@ const DomainGeneralSettings: FC = () => {
 		}
 	}, [cosList]);
 
-	useEffect(() => {
+	useMemo(() => {
 		setDomainDirectoies({
 			account: [],
 			dl: [],
@@ -292,20 +292,29 @@ const DomainGeneralSettings: FC = () => {
 		}
 	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems, cosItems]);
 
-	const onTimeZoneChange = (v: any): any => {
-		const it = timezones.find((item: any) => item.value === v);
-		setSelectedTimeZone(it);
-	};
+	const onTimeZoneChange = useCallback(
+		(v: any): any => {
+			const it = timezones.find((item: any) => item.value === v);
+			setSelectedTimeZone(it);
+		},
+		[timezones]
+	);
 
-	const onPublicServiceProtocolChange = (v: any): any => {
-		const it = serviceProtocolItems.find((item: any) => item.value === v);
-		setSelectedPublicServiceProtocol(it);
-	};
+	const onPublicServiceProtocolChange = useCallback(
+		(v: any): any => {
+			const it = serviceProtocolItems.find((item: any) => item.value === v);
+			setSelectedPublicServiceProtocol(it);
+		},
+		[serviceProtocolItems]
+	);
 
-	const onDomainStatusChange = (v: any): any => {
-		const it = domainStatusItems.find((item: any) => item.value === v);
-		setDomainStatus(it);
-	};
+	const onDomainStatusChange = useCallback(
+		(v: any): any => {
+			const it = domainStatusItems.find((item: any) => item.value === v);
+			setDomainStatus(it);
+		},
+		[domainStatusItems]
+	);
 
 	useEffect(() => {
 		const updatedData = {
@@ -760,10 +769,10 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
+										label={`${t(
 											'label.default_mail_quota_for_account_domain',
 											'The default email quota for each account in the domain'
-										)}
+										)} (${t('label.byte_lbl', 'BYTE')})`}
 										value={zimbraMailDomainQuota}
 										background="gray6"
 										readOnly

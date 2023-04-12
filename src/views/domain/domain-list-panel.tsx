@@ -37,7 +37,8 @@ import {
 	RESTORE_ACCOUNT,
 	RESTORE_DELETED_EMAIL,
 	THEME,
-	VIRTUAL_HOSTS
+	VIRTUAL_HOSTS,
+	SAML
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -47,6 +48,7 @@ import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import GlobalListPanel from './global-list-panel';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useModuleLicenseStore } from '../../store/module-license/store';
 
 const SelectItem = styled(Row)``;
 
@@ -73,6 +75,9 @@ const DomainListPanel: FC = () => {
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const [manageOptions, setManageOptions] = useState<any>([]);
+	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${DOMAINS_ROUTE_ID}`);
@@ -179,11 +184,6 @@ const DomainListPanel: FC = () => {
 
 	const detailOptions = useMemo(
 		() => [
-			// {
-			// 	id: GENERAL_INFORMATION,
-			// 	name: t('label.general_information', 'General Information'),
-			// 	isSelected: isDomainSelect
-			// },
 			{
 				id: GENERAL_SETTINGS,
 				name: t('label.general_settings', 'General Settings'),
@@ -213,6 +213,11 @@ const DomainListPanel: FC = () => {
 				id: THEME,
 				name: t('label.theme', 'Theme'),
 				isSelected: isDomainSelect
+			},
+			{
+				id: SAML,
+				name: t('label.saml', 'SAML'),
+				isSelected: isDomainSelect
 			}
 		],
 		[t, isDomainSelect]
@@ -235,36 +240,16 @@ const DomainListPanel: FC = () => {
 				name: t('label.resources', 'Resources'),
 				isSelected: isDomainSelect
 			},
-			/* {
-				id: ADMIN_DELEGATES,
-				name: t('label.admin_delegates', 'Admin Delegates'),
-				isSelected: isDomainSelect
-			}, */
 			{
 				id: ACTIVE_SYNC,
 				name: t('label.active_sync', 'ActiveSync'),
 				isSelected: isDomainSelect
 			},
-			/*	{
-				id: ACCOUNT_SCAN,
-				name: t('label.account_scan', 'AccountScan'),
-				isSelected: isDomainSelect
-			},
-			{
-				id: EXPORT_DOMAIN,
-				name: t('label.export_domain', 'Export Domain'),
-				isSelected: isDomainSelect
-			}, */
 			{
 				id: RESTORE_ACCOUNT,
 				name: t('label.restore_account', 'Restore Account'),
 				isSelected: isDomainSelect
 			}
-			/* {
-				id: RESTORE_DELETED_EMAIL,
-				name: t('label.restore_deleted_email', 'Restore Deleted E-mail'),
-				isSelected: isDomainSelect
-			} */
 		],
 		[t, isDomainSelect]
 	);
@@ -303,13 +288,33 @@ const DomainListPanel: FC = () => {
 		[globalOptionItems, isAdvanced]
 	);
 
-	const manageOptions = useMemo(
-		() =>
-			!getBackupModuleEnable
-				? manageItems.filter((item: any) => item?.id !== RESTORE_DELETED_EMAIL)
-				: manageItems,
-		[getBackupModuleEnable, manageItems]
-	);
+	useEffect(() => {
+		if (!getBackupModuleEnable && !isBackupModuleLicensed) {
+			const options = manageItems.filter((item: any) => item?.id !== RESTORE_ACCOUNT);
+			setManageOptions(options);
+		}
+	}, [getBackupModuleEnable, manageItems, isBackupModuleLicensed, isDomainSelect]);
+
+	useMemo(() => {
+		setManageOptions(
+			manageItems.map((item: any) => {
+				// eslint-disable-next-line no-param-reassign
+				item.isSelected = isDomainSelect;
+				return item;
+			})
+		);
+	}, [isDomainSelect, manageItems]);
+
+	useEffect(() => {
+		if (moduleLicense && moduleLicense.length > 0) {
+			const backupModule = moduleLicense.filter(
+				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+			);
+			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+				setIsBackupModuleLicensed(true);
+			}
+		}
+	}, [moduleLicense]);
 
 	const toggleDetailView = (): void => {
 		setIsDetailListExpanded(!isDetailListExpanded);
