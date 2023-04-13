@@ -198,6 +198,7 @@ export const SEND_READ_MAILS = 'send_read_mails';
 export const MANAGE_NO_SEND = 'manage_no_send';
 export const SEND_READ_MANAGE_MAILS = 'send_read_manage_mails';
 export const INTERNAL_GAL = 'InternalGal';
+export const ZIMBRA = 'zimbra';
 export const SAML = 'saml';
 export const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 export const SAML_METADATA_JSON_FILE = 'saml_metadata.json';

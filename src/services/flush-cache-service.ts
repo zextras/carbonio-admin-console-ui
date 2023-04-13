@@ -6,11 +6,11 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
-export const modifyDomain = async (body: {
-	id?: string;
-	_jsns?: string;
-	a?: { n: string; _content?: string }[];
-}): Promise<any> =>
-	soapFetch(`ModifyDomain`, {
-		...body
+export const flushCache = async (cacheType: string): Promise<any> =>
+	soapFetch(`FlushCache`, {
+		_jsns: 'urn:zimbraAdmin',
+		cache: {
+			type: cacheType,
+			allServers: true
+		}
 	});

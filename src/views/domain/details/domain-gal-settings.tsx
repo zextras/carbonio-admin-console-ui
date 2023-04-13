@@ -19,21 +19,30 @@ import {
 	Switch,
 	Icon,
 	Tooltip,
-	IconButton
+	Table
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
+import { useParams } from 'react-router-dom';
 import { getAccount } from '../../../services/get-account-service';
 import { getDatasource } from '../../../services/get-datasource-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { checkGalConfig } from '../../../services/check-gal-config-service';
 import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
-import { FALSE, TRUE } from '../../../constants';
+import { FALSE, TRUE, INTERNAL_GAL, ZIMBRA } from '../../../constants';
 import { modifyAccountRequest } from '../../../services/modify-account';
-import { MeasureUnitItems } from '../../utility/utils';
+import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CreateGalsyncAccountModel from './create-galsync-account-model';
+import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
+import { destroyAccount } from '../../../services/destroy-account-service';
+import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
+import { Server } from '../../../../types';
+import { getDomainInformation } from '../../../services/domain-information-service';
+import { useMailstoreListStore } from '../../../store/mailstore-list/store';
+import { flushCache } from '../../../services/flush-cache-service';
 
 interface DomainDataType {
 	zimbraGalMaxResults: string;
@@ -58,6 +67,27 @@ interface IntervalType {
 	value?: string;
 }
 
+interface GalAccountType {
+	id: string;
+	name: string;
+	server: string;
+}
+
+interface AccountDataType {
+	id?: string;
+	name?: string;
+	galAccount?: GalAccountType | null;
+}
+
+interface CreateSnackbarType {
+	key: string;
+	type: 'error' | 'success' | 'warning';
+	label: string;
+	autoHideTimeout: number;
+	hideButton: boolean;
+	replace: boolean;
+}
+
 // eslint-disable-next-line no-shadow
 export enum RANGE {
 	DAYS = 'd',
@@ -66,13 +96,86 @@ export enum RANGE {
 	SECONDS = 's'
 }
 
+const ServerListTable: FC<{
+	volumes: Array<AccountDataType>;
+	selectedRows: number[];
+	onSelectionChange: (selected: number[]) => void;
+}> = ({ volumes, selectedRows, onSelectionChange }) => {
+	const [t] = useTranslation();
+	const tableRows = useMemo(
+		() =>
+			volumes.map((v, i) => ({
+				id: i,
+				columns: [
+					<Tooltip placement="bottom" label={v?.name} key={i}>
+						<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>{v?.name}</Row>
+					</Tooltip>,
+					<Tooltip placement="bottom" label={v?.name} key={i}>
+						<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+							{v?.galAccount !== null ? v?.galAccount?.name : '-'}
+						</Row>
+					</Tooltip>
+				],
+				clickable: true
+			})),
+		[volumes]
+	);
+
+	return (
+		<Container mainAlignment="flex-start" crossAlignment="flex-start">
+			<ListRow>
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					maxHeight="calc(100vh - 25rem)"
+					minHeight="auto"
+				>
+					<Table
+						headers={GalServerTableheaders(t)}
+						rows={tableRows}
+						showCheckbox={false}
+						multiSelect={false}
+						selectedRows={selectedRows}
+						onSelectionChange={onSelectionChange}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
+					/>
+				</Container>
+			</ListRow>
+			{tableRows.length === 0 && (
+				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '1rem' }}>
+					<Padding all="medium" width="30.875rem">
+						<Text
+							color="gray0"
+							overflow="break-word"
+							weight="normal"
+							size="large"
+							width="60%"
+							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
+						>
+							{t('label.empty_table_placeholder_message', 'Empty Table')}
+						</Text>
+					</Padding>
+				</Container>
+			)}
+		</Container>
+	);
+};
+
 const DomainGalSettings: FC = () => {
 	const [t] = useTranslation();
 	const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const domainInformation = useDomainStore((state) => state.domain?.a);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const domain: { name?: string } = useDomainStore((state) => state.domain);
+	const { allMailstoreList } = useMailstoreListStore((state) => state);
+	const { domainId }: { domainId: string } = useParams();
 
 	const [open, setOpen] = useState<boolean>(false);
+	const [domainInformation, setDomainInformation] = useState(
+		useDomainStore((state) => state.domain?.a)
+	);
 
 	const onClose = useCallback(() => {
 		setOpen(false);
@@ -102,8 +205,9 @@ const DomainGalSettings: FC = () => {
 		[t]
 	);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [isGalUrlverified, setIsGalUrlverified] = useState<boolean>(false);
-	const [domainData, setDomainData] = useState<DomainDataType>({
+	const [domainData, setDomainData] = useState<{
+		[key: string]: string;
+	}>({
 		zimbraGalMaxResults: '',
 		zimbraGalAccountId: '',
 		zimbraGalMode: '',
@@ -160,6 +264,19 @@ const DomainGalSettings: FC = () => {
 		digits: '1',
 		time: 'm'
 	});
+	const [serverSelection, setServerSelection] = useState<number[]>([]);
+	const [toggleCreateGalSyncAccModel, setToggleCreateGalSyncAccModel] = useState<boolean>(false);
+	const [toggleDestroyGalSyncAccModel, setToggleDestroyGalSyncAccModel] = useState<boolean>(false);
+	const [isDistroyBtnDisable, setIsDistroyBtnDisable] = useState<boolean>(true);
+	const [isCreateAccBtnDisable, setIsCreateAccBtnDisable] = useState<boolean>(true);
+	const [openAccModel, setOpenAccModel] = useState<boolean>(false);
+	const [openDistroyModel, setOpenDistroyModel] = useState<boolean>(false);
+	const [serverList, setServerList] = useState<AccountDataType[]>([]);
+
+	const closeHandler = (): void => {
+		setOpenAccModel(false);
+		setOpenDistroyModel(false);
+	};
 
 	const changeGalModeBtnItems = [
 		{
@@ -257,7 +374,7 @@ const DomainGalSettings: FC = () => {
 			} = data?.dataSource[0];
 			if (dataSource && dataSource?.id) {
 				// eslint-disable-next-line array-callback-return, consistent-return
-				zimbraGalAccountIdArray.map((item, index) => {
+				zimbraGalAccountIdArray.map((item) => {
 					if (item._content === accountId) {
 						zimbraAccountDataSourceId.push({
 							id: item._content,
@@ -285,7 +402,9 @@ const DomainGalSettings: FC = () => {
 				setZimbraGalAccountName('');
 				setZimbraDataSourcePollingInterval('');
 				setDataSourceName('');
-				const obj: DomainDataType | any = {};
+				const obj: {
+					[key: string]: string;
+				} = {};
 				data.map((item: { n: string; _content: string }) => {
 					obj[item?.n] = item._content;
 					return '';
@@ -456,14 +575,12 @@ const DomainGalSettings: FC = () => {
 	]);
 
 	const onSave = (): void => {
-		const requests: any[] = [];
-		const body:
-			| {
-					id?: string;
-					_jsns?: string;
-					a?: { n: string; _content?: string }[];
-			  }
-			| any = {};
+		const requests = [];
+		const body: {
+			id?: string;
+			_jsns?: string;
+			a?: { n: string; _content?: string }[];
+		} = {};
 		let attributes: { n: string; _content?: string }[] = [];
 		body.id = domainData?.zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
@@ -531,7 +648,11 @@ const DomainGalSettings: FC = () => {
 						(item: { id?: string }) => item?.id === items?._content
 					);
 
-					const dataSourceBody: any = {};
+					const dataSourceBody: {
+						id?: string;
+						_jsns?: string;
+						dataSource?: { id?: string; a?: { n: string; _content?: string }[] };
+					} = {};
 					dataSourceBody.id = items?._content;
 					dataSourceBody._jsns = 'urn:zimbraAdmin';
 					attributes = [];
@@ -603,93 +724,12 @@ const DomainGalSettings: FC = () => {
 		setZimbraGalLdapPageSize(ev.target.value);
 	};
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const verifyLdapConnection = useCallback(
-		debounce(
-			(
-				zimbraGalLdapURL,
-				zimbraGalLdapFilter,
-				zimbraGalLdapAuthMechVal,
-				zimbraGalLdapBindDn,
-				zimbraGalLdapBindPassword
-			) => {
-				const body:
-					| {
-							_jsns?: string;
-							a?: { n: string; _content?: string }[];
-					  }
-					| any = {};
-				body._jsns = 'urn:zimbraAdmin';
-				const attributes: { n: string; _content?: string }[] = [];
-				attributes.push({
-					n: 'zimbraGalMode',
-					_content: 'ldap'
-				});
-				attributes.push({
-					n: 'zimbraGalLdapFilter',
-					_content: zimbraGalLdapFilter
-				});
-				attributes.push({
-					n: 'zimbraGalLdapURL',
-					_content: zimbraGalLdapURL
-				});
-				if (zimbraGalLdapAuthMechVal !== 'none') {
-					attributes.push({
-						n: 'zimbraGalLdapAuthMech',
-						_content: zimbraGalLdapAuthMechVal
-					});
-					attributes.push({
-						n: 'zimbraGalLdapBindDn',
-						_content: zimbraGalLdapBindDn
-					});
-					attributes.push({
-						n: 'zimbraGalLdapBindPassword',
-						_content: zimbraGalLdapBindPassword
-					});
-				}
-				body.a = attributes;
-				checkGalConfig(body)
-					.then((data: any) => {
-						if (data?.code?.[0]?._content === 'check.OK') {
-							setIsGalUrlverified(true);
-						} else {
-							setIsGalUrlverified(false);
-						}
-					})
-					.catch(() => {
-						setIsGalUrlverified(false);
-					});
-			},
-			700
-		),
-		[debounce]
-	);
-
 	const onZimbraGalLdapUrlChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
 		setDomainData({ ...domainData, zimbraGalLdapURL: ev?.target?.value });
 		setIsDirty(domainData?.zimbraGalLdapURL !== ev?.target?.value);
 	};
 
-	useEffect(() => {
-		if (domainData?.zimbraGalLdapURL) {
-			verifyLdapConnection(
-				domainData?.zimbraGalLdapURL,
-				domainData?.zimbraGalLdapFilter,
-				domainData?.zimbraGalLdapAuthMech,
-				domainData?.zimbraGalLdapBindDn,
-				domainData?.zimbraGalLdapBindPassword
-			);
-		}
-	}, [
-		domainData?.zimbraGalLdapAuthMech,
-		domainData?.zimbraGalLdapBindDn,
-		domainData?.zimbraGalLdapBindPassword,
-		domainData?.zimbraGalLdapFilter,
-		domainData?.zimbraGalLdapURL,
-		verifyLdapConnection
-	]);
-
-	const onZimbraGalLdapStartTlsEnabledChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+	const onZimbraGalLdapStartTlsEnabledChange = (): void => {
 		setZimbraGalLdapStartTlsEnabled({
 			...zimbraGalLdapStartTlsEnabled,
 			current: !zimbraGalLdapStartTlsEnabled?.current
@@ -732,7 +772,7 @@ const DomainGalSettings: FC = () => {
 	]);
 
 	const onFreqDigitsChange = useCallback(
-		(ev: React.ChangeEvent<HTMLInputElement> | any) => {
+		(ev) => {
 			if (ev?.target?.value < 0 || ev?.target?.value > 9) {
 				return;
 			}
@@ -807,7 +847,7 @@ const DomainGalSettings: FC = () => {
 		}
 	};
 
-	const onZimbraGalLdapAuthMechChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+	const onZimbraGalLdapAuthMechChange = (): void => {
 		setIsDirty(true);
 		setDomainData({
 			...domainData,
@@ -830,10 +870,198 @@ const DomainGalSettings: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const handleClick = useCallback((i: number[], serverListData): void => {
+		if (i.length !== 0) {
+			if (serverListData[i[0]]?.galAccount === null) {
+				setIsDistroyBtnDisable(true);
+				setIsCreateAccBtnDisable(false);
+			} else {
+				setIsCreateAccBtnDisable(true);
+				setIsDistroyBtnDisable(false);
+			}
+		} else {
+			setIsDistroyBtnDisable(true);
+			setIsCreateAccBtnDisable(true);
+		}
+	}, []);
+
+	const getAllTableList = useCallback(
+		(data) => {
+			// eslint-disable-next-line array-callback-return
+			const result = allMailstoreList.map((listItems: Server) => {
+				const obj: AccountDataType = {};
+				const matchingData = data.find(
+					(galAccount: { accountData: { _content: string }[] }) =>
+						listItems.name === galAccount?.accountData[0]?._content
+				);
+				obj.name = listItems?.name;
+				obj.id = listItems?.id;
+				obj.galAccount = matchingData
+					? {
+							server: matchingData?.accountData[0]?._content,
+							name: matchingData?.name,
+							id: matchingData?.id
+					  }
+					: null;
+				return obj;
+			});
+			setServerList(result);
+			handleClick(serverSelection, result);
+		},
+		[allMailstoreList, handleClick, serverSelection]
+	);
+
+	const getDomainWithGAlSyncList = useCallback(
+		(domainList) => {
+			const allDomains = domainList?.filter(
+				(item: { n: string; _content: string }) => item.n === 'zimbraGalAccountId'
+			);
+			// eslint-disable-next-line array-callback-return
+			const result: readonly unknown[] | [] = allDomains?.map(
+				(item: { n: string; _content: string }) =>
+					getAccount(item?._content)
+						.then((data) => {
+							const galAccount: {
+								a: { n: string; _content: string }[];
+								id: string;
+								name: string;
+							} = data?.account[0];
+							const accountData: { n: string; _content: string }[] = galAccount?.a?.filter(
+								(account) => account?.n === 'zimbraMailHost'
+							);
+
+							const object = {
+								accountData,
+								name: galAccount?.name,
+								id: galAccount?.id
+							};
+							return object;
+						})
+						// eslint-disable-next-line @typescript-eslint/no-empty-function
+						.catch(() => {})
+			);
+			Promise.all(result).then((results) => {
+				getAllTableList(results);
+			});
+		},
+		[getAllTableList]
+	);
+
+	const getSelectedDomainInformation = useCallback(
+		(id: string): void => {
+			flushCache('all').then((result) => {
+				if (result) {
+					getDomainInformation(id).then((data) => {
+						const domainList = data?.domain[0];
+						if (domainList) {
+							setDomain(domainList);
+							setDomainInformation(domainList?.a);
+							getDomainWithGAlSyncList(domainList?.a);
+						}
+					});
+				}
+			});
+		},
+		[getDomainWithGAlSyncList, setDomain]
+	);
+
+	const createHandler = (
+		accountData: {
+			id?: string;
+			name: string;
+			galAccount?: null;
+		},
+		galDomainName: string
+	): void => {
+		const attributes = [];
+		const account = [];
+		attributes.push({
+			n: 'zimbraDataSourcePollingInterval',
+			_content: '1d'
+		});
+		account.push({
+			by: 'name',
+			_content: `${galDomainName}.${accountData.name}@${domain?.name}`
+		});
+		createGalSyncAccount(INTERNAL_GAL, domain?.name, accountData.name, account, ZIMBRA, attributes)
+			.then((res) => {
+				if (res) {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t(
+							'label.create_galsync_account_success_msg',
+							'You have created the GALSync account name'
+						),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+				getSelectedDomainInformation(domainId);
+				setOpenAccModel(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 5000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
+	const deleteHandler = (destroyData: {
+		id?: string;
+		name?: string;
+		galAccount: {
+			id: string;
+			name: string;
+			server: string;
+		};
+	}): void => {
+		destroyAccount(destroyData?.galAccount?.id)
+			.then((res) => {
+				if (res) {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.changes_save_success_msg', 'Your changes has been saved!'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+				getSelectedDomainInformation(domainId);
+				setOpenDistroyModel(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 5000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
+	useEffect(() => {
+		getDomainWithGAlSyncList(domainInformation);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Container orientation="vertical" mainAlignment="space-around" height="56px">
+				<Container orientation="vertical" mainAlignment="space-around" height="4rem">
 					<Row orientation="horizontal" width="100%">
 						<Row
 							padding={{ all: 'large' }}
@@ -867,9 +1095,8 @@ const DomainGalSettings: FC = () => {
 					</Row>
 				</Container>
 			</Row>
-			<Row orientation="horizontal" width="100%" background="gray6">
-				<Divider />
-			</Row>
+			<Divider />
+
 			{/* new layout based on internal external mode */}
 			<Container
 				orientation="column"
@@ -878,6 +1105,63 @@ const DomainGalSettings: FC = () => {
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 			>
+				{toggleCreateGalSyncAccModel && (
+					<CreateGalsyncAccountModel
+						open={openAccModel}
+						closeHandler={closeHandler}
+						saveHandler={createHandler}
+						accountData={serverList[serverSelection[0]]}
+					/>
+				)}
+				{toggleDestroyGalSyncAccModel && (
+					<DistroyGalsyncAccountModel
+						open={openDistroyModel}
+						closeHandler={closeHandler}
+						saveHandler={deleteHandler}
+						accountData={serverList[serverSelection[0]]}
+					/>
+				)}
+				<Padding vertical="medium" />
+				<Row orientation="horizontal" width="100%" background="gray6">
+					<Row
+						width="100%"
+						mainAlignment="flex-end"
+						orientation="horizontal"
+						padding={{ top: 'extralarge', right: 'large', left: 'large' }}
+						style={{ gap: '1rem' }}
+					>
+						<Button
+							type="ghost"
+							label={t('label.create_account_name', 'CREATE ACCOUNT NAME')}
+							color="primary"
+							onClick={(): void => {
+								setToggleCreateGalSyncAccModel(true);
+								setOpenAccModel(true);
+							}}
+							disabled={isCreateAccBtnDisable}
+						/>
+						<Button
+							type="ghost"
+							label={t('label.destroy', 'DESTROY')}
+							color="error"
+							onClick={(): void => {
+								setToggleDestroyGalSyncAccModel(true);
+								setOpenDistroyModel(true);
+							}}
+							disabled={isDistroyBtnDisable}
+						/>
+					</Row>
+				</Row>
+				<Row padding={{ top: 'extralarge' }} width="100%">
+					<ServerListTable
+						volumes={serverList}
+						selectedRows={serverSelection}
+						onSelectionChange={(selected: number[]): void => {
+							setServerSelection(selected);
+							handleClick(selected, serverList);
+						}}
+					/>
+				</Row>
 				<Container
 					orientation="column"
 					crossAlignment="flex-start"
@@ -903,14 +1187,8 @@ const DomainGalSettings: FC = () => {
 									{t('account_details.general', 'General')}
 								</Text>
 							</Row>
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								padding={{ all: 'small' }}
-							>
-								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="18%">
+							<ListRow>
+								<Container orientation="horizontal" padding={{ all: 'small' }}>
 									<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
 										<Button
 											type="outlined"
@@ -919,16 +1197,17 @@ const DomainGalSettings: FC = () => {
 											icon={open ? 'ChevronUp' : 'ChevronDown'}
 										/>
 									</Dropdown>
+
+									<Padding left="small" width="100%">
+										<Input
+											label={t('label.gal_mode', 'GAL Mode')}
+											value={zimbraGalMode}
+											background="gray6"
+											readOnly
+										/>
+									</Padding>
 								</Container>
-								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="82%">
-									<Input
-										label={t('label.gal_mode', 'GAL Mode')}
-										value={zimbraGalMode}
-										background="gray6"
-										readOnly
-									/>
-								</Container>
-							</Row>
+							</ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									type="number"
@@ -1042,7 +1321,6 @@ const DomainGalSettings: FC = () => {
 												value={domainData?.zimbraGalLdapURL}
 												background="gray5"
 												onChange={onZimbraGalLdapUrlChange}
-												hasError={!isGalUrlverified}
 												CustomIcon={({
 													hasFocus
 												}: {
@@ -1060,19 +1338,11 @@ const DomainGalSettings: FC = () => {
 														)}
 													>
 														<Text>
-															{isGalUrlverified ? (
-																<Icon
-																	icon="CheckmarkOutline"
-																	size="large"
-																	color={hasFocus ? 'primary' : 'text'}
-																/>
-															) : (
-																<Icon
-																	icon="InfoOutline"
-																	size="large"
-																	color={hasFocus ? 'primary' : 'text'}
-																/>
-															)}
+															<Icon
+																icon="InfoOutline"
+																size="large"
+																color={hasFocus ? 'primary' : 'text'}
+															/>
 														</Text>
 													</Tooltip>
 												)}
