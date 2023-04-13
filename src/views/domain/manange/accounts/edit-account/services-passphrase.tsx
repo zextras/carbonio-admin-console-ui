@@ -273,7 +273,7 @@ export const ServicesPassphrase: FC = () => {
 					<Row width="19%" mainAlignment="space-between">
 						<Button
 							type="outlined"
-							label={t('account_details.SAVE', 'SAVE')}
+							label={t('account_details.create', 'CREATE')}
 							color="primary"
 							onClick={onSave}
 						/>
@@ -339,7 +339,9 @@ export const ServicesPassphrase: FC = () => {
 									icon="CopyOutline"
 									size="large"
 									color="Gray0"
-									onClick={(): any => {
+									onClick={(e: React.MouseEvent<HTMLElement>): any => {
+										e.preventDefault();
+										e.stopPropagation();
 										navigator.clipboard.writeText(
 											createCredentialResponse.text_data?.password || ''
 										);
@@ -348,6 +350,8 @@ export const ServicesPassphrase: FC = () => {
 								/>
 							)}
 							readOnly
+							disabled
+							textColor={'gray1'}
 						/>
 					</Row>
 				</Row>
