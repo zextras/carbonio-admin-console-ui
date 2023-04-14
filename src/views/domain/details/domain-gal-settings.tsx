@@ -183,17 +183,6 @@ const DomainGalSettings: FC = () => {
 					setIsDirty(true);
 				}
 			}
-		},
-		{
-			id: 'both',
-			label: t('domain.gal_change_mode_both', 'Both'),
-			value: 'both',
-			click: (ev: React.ChangeEvent<HTMLInputElement>): void => {
-				setDomainData({ ...domainData, zimbraGalMode: 'both' });
-				if (ev?.target?.value !== domainData?.zimbraGalMode) {
-					setIsDirty(true);
-				}
-			}
 		}
 	];
 
