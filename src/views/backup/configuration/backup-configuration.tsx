@@ -631,6 +631,16 @@ const BackupConfiguration: FC = () => {
 					if (isFromInitialize && res && res?.serverId) {
 						setIsBackupInitialized(!isBackupInitialized);
 					}
+					if (isFromInitialize && res && res?.error && res?.error?.message) {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: res?.error?.message,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
 				})
 				.catch((error: any) => {
 					setIsRequestInProgress(false);
@@ -638,7 +648,7 @@ const BackupConfiguration: FC = () => {
 						key: 'error',
 						type: 'error',
 						label: error
-							? error?.error
+							? error?.error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
