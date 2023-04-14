@@ -99,7 +99,7 @@ const IndexerVolumeTable: FC<{
 			/>
 			{tableRows?.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text>{t('label.empty_table_helperText', 'Empty Table')}</Text>
+					<Text>{t('label.empty_table', 'Empty Table')}</Text>
 				</Row>
 			)}
 		</Container>

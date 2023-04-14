@@ -1071,10 +1071,7 @@ const DomainGeneralSettings: FC = () => {
 											<br />
 											{domainDirectoies.account.length ? (
 												<Text overflow="break-word" weight="regular">
-													{t('label.delete_domain_account', {
-														domainRegularAccounts: domainDirectoies.account.length,
-														defaultValue: '{{domainRegularAccounts}} Accounts'
-													})}
+													{domainDirectoies.account.length} {t('label.accounts', 'Accounts')}
 												</Text>
 											) : (
 												<></>
@@ -1083,42 +1080,34 @@ const DomainGeneralSettings: FC = () => {
 												zimbraIsSystemAccount: 'TRUE'
 											}).length ? (
 												<Text overflow="break-word" weight="regular">
-													{t('label.delete_domain_system_account', {
-														domainSystemAccounts: filter(domainDirectoies.account, {
+													{
+														filter(domainDirectoies.account, {
 															zimbraIsSystemAccount: 'TRUE'
-														}).length,
-														defaultValue: '{{domainSystemAccounts}} System Accounts'
-													})}
+														}).length
+													}{' '}
+													{t('label.system_account', 'System Accounts')}
 												</Text>
 											) : (
 												<></>
 											)}
 											{domainDirectoies.dl.length ? (
 												<Text overflow="break-word" weight="regular">
-													{t('label.delete_domain_distribution_list', {
-														distributionList: domainDirectoies.dl.length,
-														defaultValue: '{{distributionList}} Distribution list'
-													})}
+													{domainDirectoies.dl.length}{' '}
+													{t('label.distribution_list', 'Distribution list')}
 												</Text>
 											) : (
 												<></>
 											)}
 											{domainDirectoies.alias.length ? (
 												<Text overflow="break-word" weight="regular">
-													{t('label.delete_domain_aliases', {
-														aliases: domainDirectoies.alias.length,
-														defaultValue: '{{aliases}} Aliases'
-													})}
+													{domainDirectoies.alias.length} {t('label.aliases', 'Aliases')}
 												</Text>
 											) : (
 												<></>
 											)}
 											{domainDirectoies.calresource.length ? (
 												<Text overflow="break-word" weight="regular">
-													{t('label.delete_domain_resources', {
-														resources: domainDirectoies.calresource.length,
-														defaultValue: '{{resources}} Resources'
-													})}
+													{domainDirectoies.calresource.length} {t('label.resources', 'Resources')}
 												</Text>
 											) : (
 												<></>
