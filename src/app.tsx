@@ -21,7 +21,8 @@ import {
 	useAllConfig,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	useIsAdvanced
+	useIsAdvanced,
+	useUserAccounts
 } from '@zextras/carbonio-shell-ui';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
@@ -65,6 +66,8 @@ import { useBucketServersListStore } from './store/bucket-server-list/store';
 import MatomoTracker from './matomo-tracker';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
+import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
+import { useRightsStore } from './store/rights/store';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -99,6 +102,16 @@ const App: FC = () => {
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
+	const accounts = useUserAccounts();
+	const setRights = useRightsStore((state) => state.setRights);
+
+	useEffect(() => {
+		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
+			getAllEffectiveRigthsRequest(accounts[0]?.name).then((res) => {
+				setRights(res?.target);
+			});
+		}
+	}, [accounts, setRights]);
 
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
