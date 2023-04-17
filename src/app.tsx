@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	addRoute,
 	registerActions,
@@ -41,6 +41,7 @@ import {
 	CREATE_NEW_DOMAIN_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
+	LIST_SERVER,
 	LOG_AND_QUEUES,
 	MANAGE,
 	MANAGE_APP_ID,
@@ -49,6 +50,7 @@ import {
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIVACY_ROUTE_ID,
+	SERVER,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID,
@@ -68,6 +70,7 @@ import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import { useRightsStore } from './store/rights/store';
+import { getRights } from './views/utility/utils';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -104,6 +107,8 @@ const App: FC = () => {
 	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
 	const accounts = useUserAccounts();
 	const setRights = useRightsStore((state) => state.setRights);
+	const rights = useRightsStore((state) => state.rights);
+	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
 	useEffect(() => {
 		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
@@ -426,6 +431,20 @@ const App: FC = () => {
 	);
 
 	useEffect(() => {
+		if (rights && rights.length > 0) {
+			const right = getRights(rights, SERVER);
+			if (right.length > 0) {
+				const findServerRight = right.find(
+					(item: Record<string, string>) => item?.n && item?.n === LIST_SERVER
+				);
+				if (findServerRight) {
+					sethasListServerRights(true);
+				}
+			}
+		}
+	}, [rights]);
+
+	useEffect(() => {
 		addRoute({
 			route: DASHBOARD,
 			position: 1,
@@ -450,18 +469,22 @@ const App: FC = () => {
 			primarybarSection: { ...managementSection },
 			tooltip: DomainTooltipView
 		});
-		addRoute({
-			route: STORAGES_ROUTE_ID,
-			position: 3,
-			visible: true,
-			label: t('label.storage', 'Storage'),
-			primaryBar: 'HardDriveOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...managementSection },
-			tooltip: StorageTooltipView
-		});
+
+		if (hasListServerRights) {
+			addRoute({
+				route: STORAGES_ROUTE_ID,
+				position: 3,
+				visible: true,
+				label: t('label.storage', 'Storage'),
+				primaryBar: 'HardDriveOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: StorageTooltipView
+			});
+		}
+
 		addRoute({
 			route: COS_ROUTE_ID,
 			position: 2,
@@ -527,32 +550,6 @@ const App: FC = () => {
 				primarybarSection: { ...logAndQueuesSection },
 				tooltip: OperationTooltipView
 			});
-
-			addRoute({
-				route: OPERATIONS_ROUTE_ID,
-				position: 2,
-				visible: true,
-				label: t('label.operations', 'Operations'),
-				primaryBar: 'ListOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection },
-				tooltip: OperationTooltipView
-			});
-
-			addRoute({
-				route: OPERATIONS_ROUTE_ID,
-				position: 2,
-				visible: true,
-				label: t('label.operations', 'Operations'),
-				primaryBar: 'ListOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection },
-				tooltip: OperationTooltipView
-			});
 		}
 		addRoute({
 			route: PRIVACY_ROUTE_ID,
@@ -583,7 +580,8 @@ const App: FC = () => {
 		OperationTooltipView,
 		HomeTooltipView,
 		PrivacyTooltipView,
-		NotificationTooltipView
+		NotificationTooltipView,
+		hasListServerRights
 	]);
 
 	useEffect(() => {
