@@ -482,9 +482,10 @@ const DomainGeneralSettings: FC = () => {
 				replace: true
 			});
 			removeDomain();
+			setDomain({});
 			replaceHistory(`/`);
 		});
-	}, [createSnackbar, domainData.zimbraId, removeDomain, t]);
+	}, [createSnackbar, domainData.zimbraId, removeDomain, setDomain, t]);
 
 	const onDeleteAccountAndDomain = (): void => {
 		setIsRequestInProgress(true);
