@@ -30,9 +30,7 @@ const DistroyGalsyncAccountModel: FC<{
 		<>
 			<Modal
 				size="medium"
-				title={t('label.destroy_account_title', 'Destroy {{accountId}}', {
-					accountId: accountData?.galAccount?.name
-				})}
+				title={`${t('label.destroy_account', 'Destroy')} ${accountData?.galAccount?.name}`}
 				open={open}
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="flex-end">
