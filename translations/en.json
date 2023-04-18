@@ -724,7 +724,6 @@
         "account_data_copy_to_account": "The account data will be copied to this account",
         "account_disable_correctly": "The account has been correctly disabled.",
         "account_name": "Account Name",
-        "account_name_helper_text": ".{{serverName}}@{{domainName}}",
         "account_password_setting_note_for_external_authentication": "The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.",
         "account_quota_mb": "Account Quota (MB)",
         "account_remove_correctly": "The account has been correctly removed.",
@@ -1910,12 +1909,6 @@
         "utc": "{{value}} Coordinated Universal Time"
     },
     "to_carbonio": "to Carbonio!",
-    "tooltip": {
-        "external_server_exampl": "e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld",
-        "ldap_bind_dn_example": "e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com",
-        "ldap_filter_example": "e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))",
-        "ldap_search_base_example": "e.g. dc=company,dc=local"
-    },
     "virtual_hosts": {
         "load": "LOAD",
         "load_and_verify_certificate": "Load and Verify Certificate",

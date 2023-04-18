@@ -208,5 +208,5 @@ export const EXTERNAL_SERVER_EXAMPLE =
 	'e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld';
 export const LDAP_BIND_DN_LABLE =
 	'e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com';
-export const LDAP_FILTER_LABEL = 'e.g. (&(|(cn=%s*)(sn=%s*)(gn=%s*)(mail=%s*)))';
+export const LDAP_FILTER_LABEL = 'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))';
 export const LDAP_SEARCH_BASE_LABEL = 'e.g. dc=company,dc=local';
