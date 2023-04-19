@@ -104,13 +104,13 @@ const EditMailingListView: FC<any> = ({
 	const [memberURL, setMemberURL] = useState<string>();
 	const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
 	const [searchOwnerMemberOfList, setSearchOwnerMemberOfList] = useState<any[]>([]);
-	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string>('');
+	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
 	const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const [searchOwnerResult, setSearchOwnerResult] = useState<Array<any>>([]);
 	const [isShowMemberError, setIsShowMemberError] = useState<boolean>(false);
 	const [isShowOwnerError, setIsShowOwnerError] = useState<boolean>(false);
-	const [memberErrorMessage, setMemberErrorMessage] = useState<string>('');
+	const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
 	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const domainList = useDomainStore((state) => state.domainList);
