@@ -1011,8 +1011,6 @@
         "email_address": "Email address",
         "email_notification": "E-mail Notifications",
         "empty_table": "Empty Table",
-        "empty_table_helperText": "Empty Table",
-        "empty_table_placeholder_message": "Empty Table",
         "enabed_address": "Enabled Address",
         "enable": "enable",
         "enable_automatic_adding_of_contacts": "Enable automatic adding of contacts",
@@ -1701,7 +1699,6 @@
         "details": "Details",
         "done": "Done",
         "done_panel_heading": "Operations Done",
-        "empty_table_helperText": "Empty Table",
         "label": {
             "Deep": "Deep",
             "action(M)": "Action (M)",
