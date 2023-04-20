@@ -173,6 +173,7 @@ const ResourceEditDetailView: FC<any> = ({
 	const [zimbraCalResAutoDeclineRecurring, setZimbraCalResAutoDeclineRecurring]: any = useState(
 		autoRefuseOption[0]
 	);
+	const [defaultSchedulePolicyType, setDefaultSchedulePolicyType]: any = useState();
 	const [schedulePolicyType, setSchedulePolicyType]: any = useState();
 
 	const [password, setPassword]: any = useState('');
@@ -281,15 +282,19 @@ const ResourceEditDetailView: FC<any> = ({
 	const setSchedulePolicyItem = useCallback(
 		(zimbraCalResAutoAcceptDecline: any, zimbraCalResAutoDeclineIfBusy: any): any => {
 			if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
+				setDefaultSchedulePolicyType(schedulePolicyItems[0]);
 				setSchedulePolicyType(schedulePolicyItems[0]);
 			}
 			if (zimbraCalResAutoAcceptDecline === 'FALSE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
+				setDefaultSchedulePolicyType(schedulePolicyItems[1]);
 				setSchedulePolicyType(schedulePolicyItems[1]);
 			}
 			if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'FALSE') {
+				setDefaultSchedulePolicyType(schedulePolicyItems[2]);
 				setSchedulePolicyType(schedulePolicyItems[2]);
 			}
 			if (zimbraCalResAutoAcceptDecline === 'FALSE' && zimbraCalResAutoDeclineIfBusy === 'FALSE') {
+				setDefaultSchedulePolicyType(schedulePolicyItems[3]);
 				setSchedulePolicyType(schedulePolicyItems[3]);
 			}
 		},
@@ -442,12 +447,12 @@ const ResourceEditDetailView: FC<any> = ({
 
 	useEffect(() => {
 		if (
-			resourceDetailData?.schedulePolicyType !== undefined &&
-			resourceDetailData?.schedulePolicyType !== schedulePolicyType?.value
+			defaultSchedulePolicyType?.value !== undefined &&
+			defaultSchedulePolicyType?.value !== schedulePolicyType?.value
 		) {
 			setIsDirty(true);
 		}
-	}, [resourceDetailData.schedulePolicyType, schedulePolicyType]);
+	}, [defaultSchedulePolicyType, schedulePolicyType]);
 
 	useEffect(() => {
 		if (!_.isEqual(sendInviteData, sendInviteList)) {
