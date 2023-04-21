@@ -16,7 +16,6 @@ import {
 	Select,
 	Button,
 	Padding,
-	PasswordInput,
 	SnackbarManagerContext,
 	Modal
 } from '@zextras/carbonio-design-system';
@@ -24,14 +23,12 @@ import { Trans, useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import ListRow from '../../../list/list-row';
 import { getCalenderResource } from '../../../../services/get-cal-resource-service';
-import { getSingatures } from '../../../../services/get-signature-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import { setPasswordRequest } from '../../../../services/set-password-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import Textarea from '../../../components/textarea';
 import { SendInviteAccounts } from './send-invite-accounts';
-import { SignatureDetail } from './signature-detail';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
 
@@ -78,7 +75,6 @@ const ResourceEditDetailView: FC<any> = ({
 	const [signatureData, setSignatureData]: any = useState([]);
 	const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
 	const [cosItems, setCosItems] = useState<any[]>([]);
-	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [resourceName, setResourceName] = useState<string>('');
 	const [resourceMail, setResourceMail] = useState<string>('');
 	const [zimbraCalResMaxNumConflictsAllowed, setZimbraCalResMaxNumConflictsAllowed] =
@@ -177,18 +173,12 @@ const ResourceEditDetailView: FC<any> = ({
 	const [zimbraCalResAutoDeclineRecurring, setZimbraCalResAutoDeclineRecurring]: any = useState(
 		autoRefuseOption[0]
 	);
+	const [defaultSchedulePolicyType, setDefaultSchedulePolicyType]: any = useState();
 	const [schedulePolicyType, setSchedulePolicyType]: any = useState();
 
 	const [password, setPassword]: any = useState('');
 	const [repeatPassword, setRepeatPassword]: any = useState('');
 
-	const [zimbraPrefCalendarAutoAcceptSignatureId, setZimbraPrefCalendarAutoAcceptSignatureId] =
-		useState<any>({});
-	const [zimbraPrefCalendarAutoDeclineSignatureId, setZimbraPrefCalendarAutoDeclineSignatureId] =
-		useState<any>({});
-	const [zimbraPrefCalendarAutoDenySignatureId, setZimbraPrefCalendarAutoDenySignatureId] =
-		useState<any>({});
-	const [signatureList, setSignatureList] = useState<any[]>([]);
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
@@ -208,31 +198,9 @@ const ResourceEditDetailView: FC<any> = ({
 		setCosItems(arrayItem);
 	}, [cosList, t]);
 
-	useEffect(() => {
-		const arrayItem: any[] = [
-			{
-				label: t('label.not_set', 'Not Set'),
-				value: ''
-			}
-		];
-		signatureData.forEach((item: any) => {
-			arrayItem.push({
-				label: item.name,
-				value: item.id
-			});
-		});
-		setSignatureItems(arrayItem);
-	}, [signatureData, t]);
-
 	const generateSendInviteList = (sendInviteTo: any): void => {
 		if (sendInviteTo && Array.isArray(sendInviteTo)) {
 			setSendInviteList(sendInviteTo);
-		}
-	};
-
-	const generateSignatureList = (signatureResponse: any): void => {
-		if (signatureResponse && Array.isArray(signatureResponse)) {
-			setSignatureList(signatureResponse);
 		}
 	};
 
@@ -250,18 +218,6 @@ const ResourceEditDetailView: FC<any> = ({
 			setResourceInformation(resourceDetailResponse?.a);
 		});
 	}, [selectedResourceList?.id]);
-
-	const getSignatureDetail = useCallback((): void => {
-		getSingatures(selectedResourceList?.id).then((data) => {
-			const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
-			generateSignatureList(signatureResponse);
-			setSignatureData(signatureResponse);
-		});
-	}, [selectedResourceList?.id]);
-
-	useEffect(() => {
-		getSignatureDetail();
-	}, [getSignatureDetail]);
 
 	useEffect(() => {
 		getResourceDetail();
@@ -301,49 +257,6 @@ const ResourceEditDetailView: FC<any> = ({
 				obj.zimbraCOSId = '';
 				setZimbraCOSId(cosItems[0]);
 			}
-
-			if (obj.zimbraPrefCalendarAutoAcceptSignatureId) {
-				const getItem = signatureItems.find(
-					(item: any) => item.value === obj.zimbraPrefCalendarAutoAcceptSignatureId
-				);
-				if (getItem) {
-					setZimbraPrefCalendarAutoAcceptSignatureId(getItem);
-				} else {
-					obj.zimbraPrefCalendarAutoAcceptSignatureId = '';
-					setZimbraPrefCalendarAutoAcceptSignatureId(signatureItems[0]);
-				}
-			} else {
-				obj.zimbraPrefCalendarAutoAcceptSignatureId = '';
-				setZimbraPrefCalendarAutoAcceptSignatureId(signatureItems[0]);
-			}
-			if (obj.zimbraPrefCalendarAutoDeclineSignatureId) {
-				const getItem = signatureItems.find(
-					(item: any) => item.value === obj.zimbraPrefCalendarAutoDeclineSignatureId
-				);
-				if (getItem) {
-					setZimbraPrefCalendarAutoDeclineSignatureId(getItem);
-				} else {
-					obj.zimbraPrefCalendarAutoDeclineSignatureId = '';
-					setZimbraPrefCalendarAutoDeclineSignatureId(signatureItems[0]);
-				}
-			} else {
-				obj.zimbraPrefCalendarAutoDeclineSignatureId = '';
-				setZimbraPrefCalendarAutoDeclineSignatureId(signatureItems[0]);
-			}
-			if (obj.zimbraPrefCalendarAutoDenySignatureId) {
-				const getItem = signatureItems.find(
-					(item: any) => item.value === obj.zimbraPrefCalendarAutoDenySignatureId
-				);
-				if (getItem) {
-					setZimbraPrefCalendarAutoDenySignatureId(getItem);
-				} else {
-					obj.zimbraPrefCalendarAutoDenySignatureId = '';
-					setZimbraPrefCalendarAutoDenySignatureId(signatureItems[0]);
-				}
-			} else {
-				obj.zimbraPrefCalendarAutoDenySignatureId = '';
-				setZimbraPrefCalendarAutoDenySignatureId(signatureItems[0]);
-			}
 			if (obj.zimbraCalResMaxNumConflictsAllowed) {
 				setZimbraCalResMaxNumConflictsAllowed(obj.zimbraCalResMaxNumConflictsAllowed);
 			} else {
@@ -364,27 +277,24 @@ const ResourceEditDetailView: FC<any> = ({
 			}
 			setResourceDetailData(obj);
 		}
-	}, [
-		resourceInformation,
-		resourceTypeOptions,
-		accountStatusOptions,
-		autoRefuseOption,
-		cosItems,
-		signatureItems
-	]);
+	}, [resourceInformation, resourceTypeOptions, accountStatusOptions, autoRefuseOption, cosItems]);
 
 	const setSchedulePolicyItem = useCallback(
 		(zimbraCalResAutoAcceptDecline: any, zimbraCalResAutoDeclineIfBusy: any): any => {
 			if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
+				setDefaultSchedulePolicyType(schedulePolicyItems[0]);
 				setSchedulePolicyType(schedulePolicyItems[0]);
 			}
 			if (zimbraCalResAutoAcceptDecline === 'FALSE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
+				setDefaultSchedulePolicyType(schedulePolicyItems[1]);
 				setSchedulePolicyType(schedulePolicyItems[1]);
 			}
 			if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'FALSE') {
+				setDefaultSchedulePolicyType(schedulePolicyItems[2]);
 				setSchedulePolicyType(schedulePolicyItems[2]);
 			}
 			if (zimbraCalResAutoAcceptDecline === 'FALSE' && zimbraCalResAutoDeclineIfBusy === 'FALSE') {
+				setDefaultSchedulePolicyType(schedulePolicyItems[3]);
 				setSchedulePolicyType(schedulePolicyItems[3]);
 			}
 		},
@@ -509,48 +419,6 @@ const ResourceEditDetailView: FC<any> = ({
 
 	useEffect(() => {
 		if (
-			resourceDetailData?.zimbraPrefCalendarAutoAcceptSignatureId !== undefined &&
-			zimbraPrefCalendarAutoAcceptSignatureId?.value !== undefined &&
-			resourceDetailData?.zimbraPrefCalendarAutoAcceptSignatureId !==
-				zimbraPrefCalendarAutoAcceptSignatureId?.value
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		resourceDetailData.zimbraPrefCalendarAutoAcceptSignatureId,
-		zimbraPrefCalendarAutoAcceptSignatureId
-	]);
-
-	useEffect(() => {
-		if (
-			resourceDetailData?.zimbraPrefCalendarAutoDeclineSignatureId !== undefined &&
-			zimbraPrefCalendarAutoDeclineSignatureId?.value !== undefined &&
-			resourceDetailData?.zimbraPrefCalendarAutoDeclineSignatureId !==
-				zimbraPrefCalendarAutoDeclineSignatureId?.value
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		resourceDetailData.zimbraPrefCalendarAutoDeclineSignatureId,
-		zimbraPrefCalendarAutoDeclineSignatureId
-	]);
-
-	useEffect(() => {
-		if (
-			resourceDetailData?.zimbraPrefCalendarAutoDenySignatureId !== undefined &&
-			zimbraPrefCalendarAutoDenySignatureId?.value !== undefined &&
-			resourceDetailData?.zimbraPrefCalendarAutoDenySignatureId !==
-				zimbraPrefCalendarAutoDenySignatureId?.value
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		resourceDetailData.zimbraPrefCalendarAutoDenySignatureId,
-		zimbraPrefCalendarAutoDenySignatureId
-	]);
-
-	useEffect(() => {
-		if (
 			resourceDetailData?.zimbraCalResType !== undefined &&
 			resourceDetailData?.zimbraCalResType !== zimbraCalResType?.value
 		) {
@@ -579,12 +447,12 @@ const ResourceEditDetailView: FC<any> = ({
 
 	useEffect(() => {
 		if (
-			resourceDetailData?.schedulePolicyType !== undefined &&
-			resourceDetailData?.schedulePolicyType !== schedulePolicyType?.value
+			defaultSchedulePolicyType?.value !== undefined &&
+			defaultSchedulePolicyType?.value !== schedulePolicyType?.value
 		) {
 			setIsDirty(true);
 		}
-	}, [resourceDetailData.schedulePolicyType, schedulePolicyType]);
+	}, [defaultSchedulePolicyType, schedulePolicyType]);
 
 	useEffect(() => {
 		if (!_.isEqual(sendInviteData, sendInviteList)) {
@@ -614,21 +482,6 @@ const ResourceEditDetailView: FC<any> = ({
 		setZimbraCalResAutoDeclineRecurring(
 			autoRefuseOption.find(
 				(item: any) => item.value === resourceDetailData.zimbraCalResAutoDeclineRecurring
-			)
-		);
-		setZimbraPrefCalendarAutoAcceptSignatureId(
-			signatureItems.find(
-				(item: any) => item.value === resourceDetailData.zimbraPrefCalendarAutoAcceptSignatureId
-			)
-		);
-		setZimbraPrefCalendarAutoDeclineSignatureId(
-			signatureItems.find(
-				(item: any) => item.value === resourceDetailData.zimbraPrefCalendarAutoDeclineSignatureId
-			)
-		);
-		setZimbraPrefCalendarAutoDenySignatureId(
-			signatureItems.find(
-				(item: any) => item.value === resourceDetailData.zimbraPrefCalendarAutoDenySignatureId
 			)
 		);
 		setSchedulePolicyItem(
@@ -705,18 +558,6 @@ const ResourceEditDetailView: FC<any> = ({
 			attributes.push({
 				n: 'zimbraCOSId',
 				_content: zimbraCOSId?.value
-			});
-			attributes.push({
-				n: 'zimbraPrefCalendarAutoAcceptSignatureId',
-				_content: zimbraPrefCalendarAutoAcceptSignatureId?.value
-			});
-			attributes.push({
-				n: 'zimbraPrefCalendarAutoDeclineSignatureId',
-				_content: zimbraPrefCalendarAutoDeclineSignatureId?.value
-			});
-			attributes.push({
-				n: 'zimbraPrefCalendarAutoDenySignatureId',
-				_content: zimbraPrefCalendarAutoDenySignatureId?.value
 			});
 			attributes.push({
 				n: 'zimbraCalResType',
@@ -1337,23 +1178,6 @@ const ResourceEditDetailView: FC<any> = ({
 					isEditable={isEditMode}
 					sendInviteList={sendInviteList}
 					setSendInviteList={setSendInviteList}
-				/>
-				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray3" />
-				</Row>
-				<SignatureDetail
-					isEditable={isEditMode}
-					signatureList={signatureList}
-					setSignatureList={setSignatureList}
-					signatureItems={signatureItems}
-					setSignatureItems={setSignatureItems}
-					resourceId={selectedResourceList?.id}
-					zimbraPrefCalendarAutoAcceptSignatureId={zimbraPrefCalendarAutoAcceptSignatureId}
-					setZimbraPrefCalendarAutoAcceptSignatureId={setZimbraPrefCalendarAutoAcceptSignatureId}
-					zimbraPrefCalendarAutoDeclineSignatureId={zimbraPrefCalendarAutoDeclineSignatureId}
-					setZimbraPrefCalendarAutoDeclineSignatureId={setZimbraPrefCalendarAutoDeclineSignatureId}
-					zimbraPrefCalendarAutoDenySignatureId={zimbraPrefCalendarAutoDenySignatureId}
-					setZimbraPrefCalendarAutoDenySignatureId={setZimbraPrefCalendarAutoDenySignatureId}
 				/>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
