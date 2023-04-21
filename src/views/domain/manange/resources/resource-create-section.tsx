@@ -9,45 +9,11 @@ import { useTranslation } from 'react-i18next';
 import { ResourceContext } from './resource-context';
 import ListRow from '../../../list/list-row';
 import { SendInviteAccounts } from './send-invite-accounts';
-import { SignatureDetail } from './signature-detail';
 
 const ResourceCreateSection: FC = () => {
 	const context = useContext(ResourceContext);
 	const { t } = useTranslation();
 	const { resourceDetail, setResourceDetail } = context;
-
-	const setZimbraPrefCalendarAutoAcceptSignatureId = useCallback(
-		(v) => {
-			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoAcceptSignatureId: v }));
-		},
-		[setResourceDetail]
-	);
-	const setZimbraPrefCalendarAutoDeclineSignatureId = useCallback(
-		(v) => {
-			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoDeclineSignatureId: v }));
-		},
-		[setResourceDetail]
-	);
-	const setZimbraPrefCalendarAutoDenySignatureId = useCallback(
-		(v) => {
-			setResourceDetail((prev: any) => ({ ...prev, zimbraPrefCalendarAutoDenySignatureId: v }));
-		},
-		[setResourceDetail]
-	);
-
-	const setSignatureList = useCallback(
-		(v) => {
-			setResourceDetail((prev: any) => ({ ...prev, signaturelist: v }));
-		},
-		[setResourceDetail]
-	);
-
-	const setSignatureItems = useCallback(
-		(v) => {
-			setResourceDetail((prev: any) => ({ ...prev, signatureItems: v }));
-		},
-		[setResourceDetail]
-	);
 
 	const setSendInviteList = useCallback(
 		(v) => {
@@ -216,29 +182,6 @@ const ResourceCreateSection: FC = () => {
 					isEditable={false}
 					sendInviteList={resourceDetail?.sendInviteList}
 					setSendInviteList={setSendInviteList}
-					hideSearchBar
-				/>
-				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray3" />
-				</Row>
-				<SignatureDetail
-					isEditable={false}
-					signatureList={resourceDetail?.signaturelist}
-					setSignatureList={setSignatureList}
-					signatureItems={resourceDetail?.signatureItems}
-					setSignatureItems={setSignatureItems}
-					zimbraPrefCalendarAutoAcceptSignatureId={
-						resourceDetail?.zimbraPrefCalendarAutoAcceptSignatureId
-					}
-					setZimbraPrefCalendarAutoAcceptSignatureId={setZimbraPrefCalendarAutoAcceptSignatureId}
-					zimbraPrefCalendarAutoDeclineSignatureId={
-						resourceDetail?.zimbraPrefCalendarAutoDeclineSignatureId
-					}
-					setZimbraPrefCalendarAutoDeclineSignatureId={setZimbraPrefCalendarAutoDeclineSignatureId}
-					zimbraPrefCalendarAutoDenySignatureId={
-						resourceDetail?.zimbraPrefCalendarAutoDenySignatureId
-					}
-					setZimbraPrefCalendarAutoDenySignatureId={setZimbraPrefCalendarAutoDenySignatureId}
 					hideSearchBar
 				/>
 				<Row width="100%" padding={{ top: 'medium' }}>
