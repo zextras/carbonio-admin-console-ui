@@ -318,7 +318,6 @@ const EditAccountGeneralSection: FC = () => {
 					label={t('account_details.delete_user_password', 'DELETE USER PASSWORD FROM THE LDAP')}
 					color="error"
 					width="fill"
-					disabled={!accountDetail?.userPassword}
 					onClick={(): void => deleteUserPassword()}
 				/>
 			</Row>
