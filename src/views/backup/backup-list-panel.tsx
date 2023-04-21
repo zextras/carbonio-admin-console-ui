@@ -139,15 +139,15 @@ const BackupListPanel: FC = () => {
 			label: serverItem?.name,
 			customComponent: (
 				<Row
-					top="9px"
+					top="0.56rem"
 					right="large"
-					bottom="9px"
+					bottom="0.56rem"
 					left="large"
 					style={{
 						display: 'block',
 						textAlign: 'left',
 						height: 'inherit',
-						padding: '3px',
+						padding: '0.18rem',
 						width: 'inherit'
 					}}
 					onClick={(): void => {
@@ -215,9 +215,9 @@ const BackupListPanel: FC = () => {
 							<Dropdown
 								items={isBackupModuleLicensed ? serverNames : []}
 								placement="bottom-start"
-								maxWidth="300px"
+								maxWidth="18.75rem"
 								disableAutoFocus
-								width="265px"
+								width="16.56rem"
 								style={{
 									width: '100%'
 								}}
