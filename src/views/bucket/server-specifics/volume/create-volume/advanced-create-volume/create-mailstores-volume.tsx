@@ -24,13 +24,7 @@ const WizardInSection: FC<any> = ({
 	const { t } = useTranslation();
 	return (
 		<Section
-			title={t(
-				'volume.serverName_volumes_create_storage_volume',
-				'{{serverName}} | Create Storage Volume',
-				{
-					serverName: externalData
-				}
-			)}
+			title={`${externalData} | ${t('volume.create_storage_volume', 'Create Storage Volume')}`}
 			padding={{ all: '0' }}
 			footer={wizardFooter}
 			divider

@@ -106,12 +106,7 @@ const CreateGalsyncAccountModel: FC<{
 						mainAlignment="flex-start"
 						crossAlignment="center"
 					>
-						<Text weight="bold">
-							{t('label.account_name_helper_text', `.{{serverName}}@{{domainName}}`, {
-								serverName: accountData?.name,
-								domainName: domain?.name
-							})}
-						</Text>
+						<Text weight="bold">{`.${accountData?.name}@${domain?.name}`}</Text>
 					</Container>
 				</Row>
 			</Modal>

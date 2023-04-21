@@ -30,7 +30,16 @@ import { modifyDataSource } from '../../../services/modify-datasource-service';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
-import { FALSE, TRUE, INTERNAL_GAL, ZIMBRA } from '../../../constants';
+import {
+	FALSE,
+	TRUE,
+	INTERNAL_GAL,
+	ZIMBRA,
+	EXTERNAL_SERVER_EXAMPLE,
+	LDAP_BIND_DN_LABLE,
+	LDAP_FILTER_LABEL,
+	LDAP_SEARCH_BASE_LABEL
+} from '../../../constants';
 import { modifyAccountRequest } from '../../../services/modify-account';
 import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
@@ -155,7 +164,7 @@ const ServerListTable: FC<{
 							width="60%"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>
-							{t('label.empty_table_placeholder_message', 'Empty Table')}
+							{t('label.empty_table', 'Empty Table')}
 						</Text>
 					</Padding>
 				</Container>
@@ -1321,10 +1330,7 @@ const DomainGalSettings: FC = () => {
 														placement="top"
 														overflow="break-word"
 														maxWidth="40rem"
-														label={t(
-															'tooltip.external_server_exampl',
-															'e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld'
-														)}
+														label={EXTERNAL_SERVER_EXAMPLE}
 													>
 														<Text>
 															<Icon
@@ -1369,10 +1375,7 @@ const DomainGalSettings: FC = () => {
 													placement="top"
 													overflow="break-word"
 													maxWidth="40rem"
-													label={t(
-														'tooltip.ldap_filter_example',
-														'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))'
-													)}
+													label={LDAP_FILTER_LABEL}
 												>
 													<Text>
 														<Icon
@@ -1402,7 +1405,7 @@ const DomainGalSettings: FC = () => {
 													placement="top"
 													overflow="break-word"
 													maxWidth="40rem"
-													label={t('tooltip.ldap_search_base_example', 'e.g. dc=company,dc=local')}
+													label={LDAP_SEARCH_BASE_LABEL}
 												>
 													<Text>
 														<Icon
@@ -1476,10 +1479,7 @@ const DomainGalSettings: FC = () => {
 												placement="top"
 												overflow="break-word"
 												maxWidth="40rem"
-												label={t(
-													'tooltip.ldap_bind_dn_example',
-													'e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com'
-												)}
+												label={LDAP_BIND_DN_LABLE}
 											>
 												<Text>
 													<Icon

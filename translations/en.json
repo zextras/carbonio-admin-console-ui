@@ -727,7 +727,6 @@
         "account_data_copy_to_account": "The account data will be copied to this account",
         "account_disable_correctly": "The account has been correctly disabled.",
         "account_name": "Account Name",
-        "account_name_helper_text": ".{{serverName}}@{{domainName}}",
         "account_password_setting_note_for_external_authentication": "The settings below ↓ do not affect the passwords set by users in domains that are configured to use external authentication. Changes made here will override COS settings for the password and the failed login lockout.",
         "account_quota_mb": "Account Quota (MB)",
         "account_remove_correctly": "The account has been correctly removed.",
@@ -941,15 +940,10 @@
         "delete_cos_instruction_msg": "If you click YES, DELETE button, the DefaultCOS will replace the deleted COS.",
         "delete_cos_succeess": "The {{cosname}} has been deleted successfully",
         "delete_domain": "Delete Domain",
-        "delete_domain_account": "{{domainRegularAccounts}} Accounts",
-        "delete_domain_aliases": "{{aliases}} Aliases",
         "delete_domain_certificate_content": "You are deleting Domain Certificate.<br /> Are you sure you want to delete it?",
         "delete_domain_certificate_header": "Delete Domain Certificate?",
-        "delete_domain_distribution_list": "{{distributionList}} Distribution list",
         "delete_domain_error_msg": "You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?",
-        "delete_domain_resources": "{{resources}} Resources",
         "delete_domain_success_msg": "Domain has been deleted successfully",
-        "delete_domain_system_account": "{{domainSystemAccounts}} System Accounts",
         "delete_domain_with_account_content_msg": "{{domainName}} is not empty: it contains {{domainSystemAccounts}} system accounts and {{domainRegularAccounts}} regular accounts. Are you sure to continue the deletion?",
         "delete_domain_with_all_resources_close_domain": "If you are not sure, you still can “close” the domain to avoid any further interaction, leaving all the resources available in case of needs.",
         "delete_domain_with_all_resources_msg": "Domain {{domainName}} is not empty and contains {{domainRegularAccounts}} Accounts, {{domainSystemAccounts}} System Accounts, {{distributionList}} Distribution list, {{aliases}} Aliases and {{resources}} Resources. If you are not sure, you still can “close” the domain to avoid any further interaction, leaving all the resources available in case of needs. Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.",
@@ -972,8 +966,8 @@
         "destination": "Destination",
         "destination_account": "Destination Account",
         "destroy": "DESTROY",
+        "destroy_account": "Destroy",
         "destroy_account_button": "YES, DESTROY IT",
-        "destroy_account_title": "Destroy {{accountId}}",
         "detail": "Detail",
         "detail_error": "{{name}}",
         "details": "Details",
@@ -985,6 +979,7 @@
         "disabled": "Disabled",
         "discard_changes": "DISCARD CHANGES",
         "displayed_name": "Displayed Name",
+        "distribution_list": "Distribution list",
         "dl_delete_successfull": "{{name}} has been deleted successfully",
         "dn_settings": "DN Settings",
         "do_you_need_more_information": "Do you need more information?",
@@ -1019,8 +1014,6 @@
         "email_address": "Email address",
         "email_notification": "E-mail Notifications",
         "empty_table": "Empty Table",
-        "empty_table_helperText": "Empty Table",
-        "empty_table_placeholder_message": "Empty Table",
         "enabed_address": "Enabled Address",
         "enable": "enable",
         "enable_automatic_adding_of_contacts": "Enable automatic adding of contacts",
@@ -1471,6 +1464,7 @@
         "surname": "Surname",
         "suspend": "Suspend",
         "suspended": "Suspended",
+        "system_account": "System Accounts",
         "tasks": "Tasks",
         "the_has_been_created_success": "The {{name}} has been created successfully",
         "the_last_changes_has_been_saved_successfully": "Changes have been saved successfully",
@@ -1708,7 +1702,6 @@
         "details": "Details",
         "done": "Done",
         "done_panel_heading": "Operations Done",
-        "empty_table_helperText": "Empty Table",
         "label": {
             "Deep": "Deep",
             "action(M)": "Action (M)",
@@ -1916,18 +1909,13 @@
         "utc": "{{value}} Coordinated Universal Time"
     },
     "to_carbonio": "to Carbonio!",
-    "tooltip": {
-        "external_server_exampl": "e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld",
-        "ldap_bind_dn_example": "e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com",
-        "ldap_filter_example": "e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))",
-        "ldap_search_base_example": "e.g. dc=company,dc=local"
-    },
     "virtual_hosts": {
         "load": "LOAD",
         "load_and_verify_certificate": "Load and Verify Certificate",
         "load_certificate": "LOAD CERTIFICATE"
     },
     "volume": {
+        "create_storage_volume": "Create Storage Volume",
         "indexer_helperText": "Indexer",
         "new": {
             "create_mailstores_volume": "Create Mailstores Volume"
@@ -1936,7 +1924,6 @@
         "secondary_helperText": "Secondary",
         "serverName_volumes": "{{serverName}} Volumes",
         "serverName_volumes_create_mailstores_volume": "{{serverName}} Create Mailstores Volume",
-        "serverName_volumes_create_storage_volume": "{{serverName}} | Create Storage Volume",
         "server_list_header": {
             "HSM Scheduling": "HSM Schedule",
             "description": "Description",
