@@ -48,54 +48,18 @@ import CreateGalsyncAccountModel from './create-galsync-account-model';
 import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 import { destroyAccount } from '../../../services/destroy-account-service';
 import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
-import { Server } from '../../../../types';
+import {
+	AccountDataType,
+	Attribute,
+	CreateSnackbarType,
+	DomainDataType,
+	IntervalType,
+	Server,
+	objectType
+} from '../../../../types';
 import { getDomainInformation } from '../../../services/domain-information-service';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import { flushCache } from '../../../services/flush-cache-service';
-
-interface DomainDataType {
-	zimbraGalMaxResults: string;
-	zimbraGalAccountId?: string;
-	zimbraGalMode?: string;
-	zimbraDataSourcePollingInterval?: string;
-	zimbraGalLdapPageSize: string;
-	zimbraGalLdapURL?: string;
-	zimbraGalLdapStartTlsEnabled?: string;
-	zimbraGalLdapSearchBase?: string;
-	zimbraGalLdapFilter?: string;
-	zimbraGalLdapBindDn?: string;
-	zimbraGalLdapBindPassword?: string;
-	zimbraGalLdapAuthMech?: string;
-	zimbraDataSourceGalPollingInterval?: string;
-	zimbraId?: string;
-	zimbraGalLdapPageSizets?: string;
-}
-
-interface IntervalType {
-	label?: string;
-	value?: string;
-}
-
-interface GalAccountType {
-	id: string;
-	name: string;
-	server: string;
-}
-
-interface AccountDataType {
-	id?: string;
-	name?: string;
-	galAccount?: GalAccountType | null;
-}
-
-interface CreateSnackbarType {
-	key: string;
-	type: 'error' | 'success' | 'warning';
-	label: string;
-	autoHideTimeout: number;
-	hideButton: boolean;
-	replace: boolean;
-}
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
@@ -313,7 +277,7 @@ const DomainGalSettings: FC = () => {
 	];
 
 	const updateFreqValues = useCallback(
-		(obj: DomainDataType | { [key: string]: string }) => {
+		(obj: DomainDataType | objectType) => {
 			const val = obj?.zimbraDataSourceGalPollingInterval || zimbraDataSourceGalPollingInterval;
 			setZimbraDataSourceGalPollingInterval(val);
 			setDomainData({
@@ -327,7 +291,7 @@ const DomainGalSettings: FC = () => {
 			});
 
 			const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
-				(item: { [key: string]: string }) => item?.value === splitText[2]
+				(item: objectType) => item?.value === splitText[2]
 			);
 			setMeasureUnitSelection(measureUnitObject);
 		},
@@ -337,15 +301,15 @@ const DomainGalSettings: FC = () => {
 	const getGalAccount = (accountId: string): void => {
 		getAccount(accountId).then((data) => {
 			const galAccount: {
-				a: { n: string; _content: string }[];
+				a: Attribute[];
 				id: string;
 				name: string;
 			} = data?.account[0];
 			if (galAccount) {
 				setZimbraGalAccountName(galAccount?.name);
 				if (galAccount?.a) {
-					const obj: { [key: string]: string } = {};
-					galAccount?.a.map((item: { n: string; _content: string }) => {
+					const obj: objectType = {};
+					galAccount?.a.map((item: Attribute) => {
 						obj[item?.n] = item._content;
 						return '';
 					});
@@ -368,7 +332,7 @@ const DomainGalSettings: FC = () => {
 				id: string;
 				name: string;
 				type: string;
-				_attrs: { [key: string]: string };
+				_attrs: objectType;
 			} = data?.dataSource[0];
 			if (dataSource && dataSource?.id) {
 				// eslint-disable-next-line array-callback-return, consistent-return
@@ -403,7 +367,7 @@ const DomainGalSettings: FC = () => {
 				const obj: {
 					[key: string]: string;
 				} = {};
-				data.map((item: { n: string; _content: string }) => {
+				data.map((item: Attribute) => {
 					obj[item?.n] = item._content;
 					return '';
 				});
@@ -579,7 +543,7 @@ const DomainGalSettings: FC = () => {
 			_jsns?: string;
 			a?: { n: string; _content?: string }[];
 		} = {};
-		let attributes: { n: string; _content?: string }[] = [];
+		let attributes: Attribute[] = [];
 		body.id = domainData?.zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
 		attributes.push({
@@ -674,7 +638,7 @@ const DomainGalSettings: FC = () => {
 			.then((results) => Promise.all(results))
 			.then((results) => {
 				const response: {
-					a: { n: string; _content: string }[];
+					a: Attribute[];
 					id: string;
 					name: string;
 				} = results[0]?.domain[0];
@@ -911,32 +875,29 @@ const DomainGalSettings: FC = () => {
 
 	const getDomainWithGAlSyncList = useCallback(
 		(domainList) => {
-			const allDomains = domainList?.filter(
-				(item: { n: string; _content: string }) => item.n === 'zimbraGalAccountId'
-			);
+			const allDomains = domainList?.filter((item: Attribute) => item.n === 'zimbraGalAccountId');
 			// eslint-disable-next-line array-callback-return
-			const result: readonly unknown[] | [] = allDomains?.map(
-				(item: { n: string; _content: string }) =>
-					getAccount(item?._content)
-						.then((data) => {
-							const galAccount: {
-								a: { n: string; _content: string }[];
-								id: string;
-								name: string;
-							} = data?.account[0];
-							const accountData: { n: string; _content: string }[] = galAccount?.a?.filter(
-								(account) => account?.n === 'zimbraMailHost'
-							);
+			const result: readonly unknown[] | [] = allDomains?.map((item: Attribute) =>
+				getAccount(item?._content)
+					.then((data) => {
+						const galAccount: {
+							a: Attribute[];
+							id: string;
+							name: string;
+						} = data?.account[0];
+						const accountData: Attribute[] = galAccount?.a?.filter(
+							(account) => account?.n === 'zimbraMailHost'
+						);
 
-							const object = {
-								accountData,
-								name: galAccount?.name,
-								id: galAccount?.id
-							};
-							return object;
-						})
-						// eslint-disable-next-line @typescript-eslint/no-empty-function
-						.catch(() => {})
+						const object = {
+							accountData,
+							name: galAccount?.name,
+							id: galAccount?.id
+						};
+						return object;
+					})
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
+					.catch(() => {})
 			);
 			Promise.all(result).then((results) => {
 				getAllTableList(results);

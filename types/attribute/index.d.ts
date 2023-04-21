@@ -8,3 +8,5 @@ export type Attribute = {
 	n: string;
 	_content: string;
 };
+
+export type objectType = { [key: string]: string };
