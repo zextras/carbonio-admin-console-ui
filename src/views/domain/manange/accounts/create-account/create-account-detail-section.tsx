@@ -224,7 +224,7 @@ const CreateAccountDetailSection: FC = () => {
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="100%" mainAlignment="flex-start">
 						<Switch
 							value={accountDetail?.zimbraPasswordMustChange}
 							onClick={(): void => changeSwitchOption('zimbraPasswordMustChange')}
@@ -235,13 +235,6 @@ const CreateAccountDetailSection: FC = () => {
 							iconColor="primary"
 						/>
 					</Row>
-					{/* <Row width="48%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.generateFirst2FAToken}
-							onClick={(): void => changeSwitchOption('generateFirst2FAToken')}
-							label={t('accountDetails.generate_first_2FA_token', 'Generate first 2FA token')}
-						/>
-					</Row> */}
 				</Row>
 			</Row>
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
