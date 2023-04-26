@@ -352,7 +352,10 @@ const CosGeneralInformation: FC = () => {
 					<Trans
 						i18nKey="label.deleting_cos_msg"
 						defaults="Deleting <bold>{{cosname}}</bold>"
-						components={{ bold: <strong />, cosname: cosName }}
+						components={{ bold: <strong /> }}
+						values={{
+							cosname: cosName
+						}}
 					/>
 				}
 				open={openDeleteCOSConfirmDialog}

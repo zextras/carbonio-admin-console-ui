@@ -24,10 +24,10 @@ const MailingListCreateSection: FC<any> = () => {
 	const { mailingListDetail, setMailingListDetail } = context;
 	const [ownerMember, setOwnerMember] = useState<Array<any>>([]);
 	const [memberList, setMemberList] = useState<Array<any>>([]);
-	const [subscription, setSubscription] = useState<string>('');
-	const [unSubscription, setUnSubscription] = useState<string>('');
+	const [subscription, setSubscription] = useState<string | null>('');
+	const [unSubscription, setUnSubscription] = useState<string | null>('');
 	const [ldapQueryMembers, setLdapQueryMembers] = useState<Array<any>>([]);
-	const [grantEmailType, setGrantEmailType] = useState<string>('');
+	const [grantEmailType, setGrantEmailType] = useState<string | null>('');
 
 	const tableHeader: any[] = useMemo(
 		() => [

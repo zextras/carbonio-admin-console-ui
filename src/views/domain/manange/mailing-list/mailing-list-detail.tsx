@@ -882,8 +882,10 @@ const MailingListDetail: FC<any> = ({
 											defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. <br /> If you delete it all rights will be lost."
 											components={{
 												bold: <strong />,
-												totalAccRights: totalGrantRights,
 												br: <br />
+											}}
+											values={{
+												totalAccRights: totalGrantRights
 											}}
 										/>
 									</Text>
@@ -893,7 +895,10 @@ const MailingListDetail: FC<any> = ({
 								<Trans
 									i18nKey="label.are_you_sure_delete_distribution_list"
 									defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
-									components={{ bold: <strong />, name: displayName || distributionName }}
+									components={{ bold: <strong /> }}
+									values={{
+										name: displayName || distributionName
+									}}
 								/>
 							</Text>
 						</Padding>

@@ -43,7 +43,7 @@ const MailingListSection: FC<any> = () => {
 	);
 	const [dynamicListMemberRows, setDynamicListMemberRows] = useState<Array<any>>([]);
 	const [isShowLdapQueryMessage, setIsShowLdapQueryMessage] = useState<boolean>(false);
-	const [ldapQueryErrorMessage, setLdapQueryErrorMessage] = useState<string>('');
+	const [ldapQueryErrorMessage, setLdapQueryErrorMessage] = useState<string | null>('');
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const [member, setMember] = useState<string>('');
 	const [ownersList, setOwnersList] = useState<Array<any>>(

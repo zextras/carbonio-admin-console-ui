@@ -417,7 +417,7 @@ const App: FC = () => {
 			route: DASHBOARD,
 			position: 1,
 			visible: true,
-			label: t('label.dashboard', 'Dashboard'),
+			label: t('label.dashboard', 'Dashboard') || '',
 			primaryBar: 'HomeOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -429,7 +429,7 @@ const App: FC = () => {
 			route: DOMAINS_ROUTE_ID,
 			position: 1,
 			visible: true,
-			label: t('label.domains', 'Domains'),
+			label: t('label.domains', 'Domains') || '',
 			primaryBar: 'AtOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -441,7 +441,7 @@ const App: FC = () => {
 			route: STORAGES_ROUTE_ID,
 			position: 3,
 			visible: true,
-			label: t('label.storage', 'Storage'),
+			label: t('label.storage', 'Storage') || '',
 			primaryBar: 'HardDriveOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -453,7 +453,7 @@ const App: FC = () => {
 			route: COS_ROUTE_ID,
 			position: 2,
 			visible: true,
-			label: t('label.cos', 'COS'),
+			label: t('label.cos', 'COS') || '',
 			primaryBar: 'CosOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -466,7 +466,7 @@ const App: FC = () => {
 				route: SUBSCRIPTIONS_ROUTE_ID,
 				position: 4,
 				visible: true,
-				label: t('label.subscriptions', 'Subscriptions'),
+				label: t('label.subscriptions', 'Subscriptions') || '',
 				primaryBar: 'AwardOutline',
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -479,7 +479,7 @@ const App: FC = () => {
 				route: BACKUP_ROUTE_ID,
 				position: 1,
 				visible: true,
-				label: t('label.backup', 'Backup'),
+				label: t('label.backup', 'Backup') || '',
 				// primaryBar: 'HistoryOutline',
 				primaryBar: backupPrimaryBar,
 				appView: AppView,
@@ -493,7 +493,7 @@ const App: FC = () => {
 				route: NOTIFICATION_ROUTE_ID,
 				position: 1,
 				visible: true,
-				label: t('label.notifications', 'Notifications'),
+				label: t('label.notifications', 'Notifications') || '',
 				primaryBar: 'BellOutline',
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -506,7 +506,7 @@ const App: FC = () => {
 				route: OPERATIONS_ROUTE_ID,
 				position: 2,
 				visible: true,
-				label: t('label.operations', 'Operations'),
+				label: t('label.operations', 'Operations') || '',
 				primaryBar: 'ListOutline',
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -519,7 +519,7 @@ const App: FC = () => {
 				route: OPERATIONS_ROUTE_ID,
 				position: 2,
 				visible: true,
-				label: t('label.operations', 'Operations'),
+				label: t('label.operations', 'Operations') || '',
 				primaryBar: 'ListOutline',
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -532,7 +532,7 @@ const App: FC = () => {
 				route: OPERATIONS_ROUTE_ID,
 				position: 2,
 				visible: true,
-				label: t('label.operations', 'Operations'),
+				label: t('label.operations', 'Operations') || '',
 				primaryBar: 'ListOutline',
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -545,7 +545,7 @@ const App: FC = () => {
 			route: PRIVACY_ROUTE_ID,
 			position: 5,
 			visible: true,
-			label: t('label.privacy', 'Privacy'),
+			label: t('label.privacy', 'Privacy') || '',
 			primaryBar: 'ShieldOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment

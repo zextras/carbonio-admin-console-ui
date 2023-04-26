@@ -27,10 +27,10 @@ const ActiveDeviceConfirmation: FC<{
 	setWipeDeviceConfirmation
 }) => {
 	const [t] = useTranslation();
-	const [title, setTitle] = useState<string>('title');
+	const [title, setTitle] = useState<string | null>('title');
 	const [isRequstInProgress, setIsRequstInProgress] = useState<boolean>(false);
-	const [yesOperationTitle, setYesOperationTitle] = useState<string>('operation');
-	const [noOperationTitle, setNoOperationTitle] = useState<string>('operation');
+	const [yesOperationTitle, setYesOperationTitle] = useState<string | null>('operation');
+	const [noOperationTitle, setNoOperationTitle] = useState<string | null>('operation');
 	const [awareResetSetting, setAwareResetSetting] = useState<boolean>(false);
 
 	useEffect(() => {
