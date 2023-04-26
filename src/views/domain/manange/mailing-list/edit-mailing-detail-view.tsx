@@ -2081,7 +2081,7 @@ const EditMailingListView: FC<any> = ({
 									crossAlignment="flex-start"
 									width="100%"
 								>
-									<Row mainAlignment="flex-start" width="60%" crossAlignment="flex-start">
+									<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
 										<Dropdown
 											items={searchMemberItems}
 											placement="bottom-start"
@@ -2107,7 +2107,7 @@ const EditMailingListView: FC<any> = ({
 										</Dropdown>
 									</Row>
 
-									<Row width="40%" mainAlignment="flex-start" crossAlignment="flex-start">
+									<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
 										<Padding left="large" right="large">
 											<Button
 												type="outlined"
@@ -2255,7 +2255,7 @@ const EditMailingListView: FC<any> = ({
 							crossAlignment="flex-start"
 							width="100%"
 						>
-							<Row mainAlignment="flex-start" width="60%" crossAlignment="flex-start">
+							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
 								<Dropdown
 									items={searchOwnerList}
 									placement="bottom-start"
@@ -2281,7 +2281,7 @@ const EditMailingListView: FC<any> = ({
 									/>
 								</Dropdown>
 							</Row>
-							<Row width="40%" mainAlignment="flex-start" crossAlignment="flex-start">
+							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
 								<Padding left="large" right="large">
 									<Button
 										type="outlined"

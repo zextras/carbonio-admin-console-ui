@@ -1147,16 +1147,17 @@ const DomainGalSettings: FC = () => {
 								</Text>
 							</Row>
 							<ListRow>
-								<Container orientation="horizontal" padding={{ all: 'small' }}>
-									<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
-										<Button
-											type="outlined"
-											size="extralarge"
-											label={t('label.change_to', 'CHANGE TO')}
-											icon={open ? 'ChevronUp' : 'ChevronDown'}
-										/>
-									</Dropdown>
-
+								<Container orientation="horizontal">
+									<Container width="15rem" mainAlignment="flex-start">
+										<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
+											<Button
+												type="outlined"
+												size="extralarge"
+												label={t('label.change_to', 'CHANGE TO')}
+												icon={open ? 'ChevronUp' : 'ChevronDown'}
+											/>
+										</Dropdown>
+									</Container>
 									<Padding left="small" width="100%">
 										<Input
 											label={t('label.gal_mode', 'GAL Mode')}
