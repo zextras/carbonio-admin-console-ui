@@ -37,7 +37,7 @@ const DelegateAddSection: FC = () => {
 								<Trans
 									i18nKey="account_details.deligate_abstract_text"
 									defaults="The user {{granteeEmail}} will be able to send mails {{right}} {{targetEmail}}"
-									components={{
+									values={{
 										granteeEmail: deligateDetail?.grantee[0]?.name,
 										targetEmail: accountDetail?.zimbraMailDeliveryAddress,
 										right:

@@ -211,3 +211,4 @@ export const LDAP_BIND_DN_LABLE =
 	'e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com';
 export const LDAP_FILTER_LABEL = 'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))';
 export const LDAP_SEARCH_BASE_LABEL = 'e.g. dc=company,dc=local';
+export const CHECK_OK = 'check.OK';
