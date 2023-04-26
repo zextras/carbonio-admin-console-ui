@@ -13,7 +13,7 @@ export const createAccountRequest = async (
 	password: string
 ): Promise<any> => {
 	const attrList: { n: string; _content: string }[] = [];
-	Object.keys(attr).map((ele: any) => attrList.push({ n: ele, _content: attr[ele] }));
+	Object.keys(attr).forEach((ele: any) => attrList.push({ n: ele, _content: attr[ele] }));
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
 		name,
