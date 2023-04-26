@@ -204,6 +204,7 @@ export const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 export const SAML_METADATA_JSON_FILE = 'saml_metadata.json';
 export const ZIMBRA_PUBLIC_SERVICE_HOSTNAME = 'zimbraPublicServiceHostname';
 export const ZIMBRA_PUBLIC_SERVICE_PROTOCOL = 'zimbraPublicServiceProtocol';
+export const LIST_SERVER = 'listServer';
 export const EXTERNAL_SERVER_EXAMPLE =
 	'e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld';
 export const LDAP_BIND_DN_LABLE =
