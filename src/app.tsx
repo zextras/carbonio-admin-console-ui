@@ -475,7 +475,7 @@ const App: FC = () => {
 				route: STORAGES_ROUTE_ID,
 				position: 3,
 				visible: true,
-				label: t('label.storage', 'Storage'),
+				label: t('label.storage', 'Storage') || '',
 				primaryBar: 'HardDriveOutline',
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
