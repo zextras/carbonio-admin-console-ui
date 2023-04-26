@@ -359,7 +359,7 @@
     "commons": {
         "confirm_connection": "CONFIRM CONNECTION",
         "create_with_there_data": "CREATE WITH THESE DATA",
-        "i_have_sent_data_to_user": "I HAVE SENT THE DATA TO THE USER"
+        "data_already_sent_to_the_user": "DATA ALREADY SENT TO THE USER"
     },
     "connection": {
         "access_key": "Access Key",

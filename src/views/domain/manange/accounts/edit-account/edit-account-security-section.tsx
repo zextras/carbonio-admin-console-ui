@@ -277,7 +277,7 @@ const EditAccountSecuritySection: FC = () => {
 				NextButton: (props: any) => (
 					<Button
 						{...props}
-						label={t('commons.i_have_sent_data_to_user', 'I HAVE SENT THE DATA TO THE USER')}
+						label={t('commons.data_already_sent_to_the_user', 'DATA ALREADY SENT TO THE USER')}
 						icon="PersonOutline"
 						iconPlacement="right"
 						onClick={(): void => setShowCreateOTP(false)}
