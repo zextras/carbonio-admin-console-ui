@@ -40,7 +40,14 @@
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Die Zertifizierung ist gültig, aber sie ist entweder abgelaufen oder es liegt eine nicht vertrauenswürdige Zertifizierungsstelle vor",
         "domain_certificate_removed": "Die Domain-Zertifizierungen wurden entfernt",
         "private_key_certificate_removed": "Der private Schlüssel der Zertifizierung wurde entfernt",
-        "certificate_invalid_error": "Die Zertifizierung ist ungültig , bitte versuchen Sie es mit einer anderen Zertifizierung"
+        "certificate_invalid_error": "Die Zertifizierung ist ungültig , bitte versuchen Sie es mit einer anderen Zertifizierung",
+        "gal_change_mode_both": "Beides",
+        "gal_change_mode_external": "Extern",
+        "gal_change_mode_internal": "Intern",
+        "unit_measure_days": "Tage",
+        "unit_measure_hours": "stunden",
+        "unit_measure_minutes": "Minuten",
+        "unit_measure_seconds": "Sekunden"
     },
     "label": {
         "account": "Account",
@@ -438,7 +445,7 @@
         "volume_name": "Datenträgername",
         "volume_next_step_button": "NÄCHSTER SCHRITT",
         "volume_path": "Pfad",
-        "volume_type": "Datenträgertyp:",
+        "volume_type": "Datenträgertyp",
         "week_day": {
             "friday": "Freitag",
             "monday": "Montag",
@@ -757,7 +764,6 @@
         "ID": "ID",
         "centralized": "Zentralisiert",
         "done": "Fertig",
-        "empty_table_helperText": "Leere Tabelle",
         "external_volume_edited": "{{message}}",
         "general_options": "Allgemeine Optionen",
         "operation": {
@@ -861,7 +867,15 @@
         "restore_select_account_row_2": "<bold>Beachten Sie</bold>, dass alle E-Mails, Termine, Kontakte und Einstellungen des Kontos wiederhergestellt werden, so wie sie zum gewählten Zeitstempel waren.",
         "save_mails_to": "Mails speichern in",
         "sending_options": "Sendeoptionen",
-        "volume_created_msg": "Das Volumen wurde erfolgreich erstellt"
+        "volume_created_msg": "Das Volumen wurde erfolgreich erstellt",
+        "account_name": "Name des Kontos",
+        "aliases": "Aliasnamen",
+        "distribution_list": "Verteilerliste",
+        "dont_save_a_copy_of_sent_messages": "Keine Kopie der gesendeten Nachrichten speichern",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Speichern einer Kopie der gesendeten Nachrichten im Ordner \"Gesendet\" des Delegierten",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Eine Kopie der gesendeten Nachrichten im Ordner \"Gesendet\" speichern",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Speichern einer Kopie der gesendeten Nachrichten in meinem Ordner \"Gesendet\" und im Ordner des Delegierten",
+        "value": "Wert"
     },
     "timezone": {
         "asia_yerevan": "{{value}} Eriwan",
@@ -904,7 +918,7 @@
         "asia_bangkok": "{{value}} Bangkok, Hanoi, Jakarta",
         "asia_beirut": "{{value}} Beirut",
         "asia_chita": "{{value}} Tschita",
-        "asia_colombo": "{{value}} Sri Jayawardenepura Kotte",
+        "asia_colombo": "{{value}} Sri Jayawardenepura",
         "asia_damascus": "{{value}} Damaskus",
         "asia_dhaka": "{{value}} Dhaka",
         "asia_hong_kong": "{{value}} Peking, Chongqing, Hongkong, Urumqi",
@@ -1121,7 +1135,8 @@
             "activate": "Aktivieren",
             "activation": "Aktivierung",
             "deactivate": "Deaktivieren",
-            "order_id": "Bestell- ID"
+            "order_id": "Bestell- ID",
+            "valid": "Gültig"
         }
     },
     "message": {
@@ -1312,13 +1327,13 @@
         "saved_searches": "Gespeicherte Suchabfragen",
         "session_idle_timeout": "Sitzungszeitüberschreitung bei Leerlauf",
         "shortest_allowed_duration_for_any_polling_interval": "Kürzeste erlaubte Dauer für ein Abfrageintervall",
-        "spam_message_lifetime": "Mails im Spam-Ordner löschen nach:",
+        "spam_message_lifetime": "Mails im Spam-Ordner löschen nach",
         "status": "Status",
         "tagging": "Tagging",
         "time_to_lockout_account": "Dauer der Accountsperrung",
         "time_window_failed_logins_must_occur_to_lock_account": "Zeitfenster, in dem die fehlerhafte Anmeldung eine Sperrung des Accounts auslöst:",
         "timeout_policy": "Zeitüberschreitungsregeln",
-        "trashed_message_lifetime": "Mails im Papierkorb löschen nach:",
+        "trashed_message_lifetime": "Mails im Papierkorb löschen nach",
         "user_specific_fowarding_addresses": "Anzahl der Zeichen im Feld für benutzerdefinierte Weiterleitungsadresse beschränken auf",
         "auto_decline_if_inviter_is_blacklisted": "Automatisch ablehnen, wenn der Absender gesperrt ist",
         "initial_search_preference": "Präferenzen initiale Suche",
@@ -1559,7 +1574,15 @@
         "send_read_mails": "Mails senden und lesen (keine Rechte zum Erstellen von Ordnern / Verwalten von Mails)",
         "send_read_manage_mails": "E-Mails senden, lesen und verwalten (alle oben genannten)",
         "set_rights": "RECHTE FESTLEGEN",
-        "type_the_new_alias_name": "Geben Sie den neuen Aliasnamen ein und wählen Sie eine Domain aus, um sie zu Ihren verfügbaren Aliasnamen hinzuzufügen"
+        "type_the_new_alias_name": "Geben Sie den neuen Aliasnamen ein und wählen Sie eine Domain aus, um sie zu Ihren verfügbaren Aliasnamen hinzuzufügen",
+        "DELETE": "LÖSCHEN",
+        "SAVE": "SPEICHERN",
+        "create": "ERSTELLEN",
+        "label": "Label",
+        "remove": "Löschen",
+        "send_check": "Senden",
+        "services": "Dienste",
+        "status": "Status"
     },
     "connection": {
         "access_key": "Access Key",
@@ -1743,7 +1766,6 @@
     },
     "welcome": "Willkommen",
     "operations": {
-        "empty_table_helperText": "Leere Tabelle",
         "label": {
             "Deep": "Tief",
             "notifications": "Benachrichtigungen",
@@ -1795,5 +1817,6 @@
     },
     "to_carbonio": "zu Carbonio!",
     "select_bucket_or_create_bucket": "Es scheint, als hätten Sie keinen Bucket-Typ eingerichtet. \n Klicken Sie auf die Schaltfläche \"ERSTELLEN +\", um einen neuen Typ zu erstellen.",
-    "welcome_to_carbonio_information": "Willkommen bei Carbonio, {{adminName}}!"
+    "welcome_to_carbonio_information": "Willkommen bei Carbonio, {{adminName}}!",
+    "new": "Neu"
 }

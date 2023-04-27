@@ -174,7 +174,8 @@
         "Type": "Tip",
         "contacts": "Contacte",
         "files": "Fisiere",
-        "storage": "Spatiu de stocare"
+        "storage": "Spatiu de stocare",
+        "value": "Valoare"
     },
     "core": {
         "subscription": {
@@ -191,7 +192,10 @@
         "mailbox_quota": "Cotă căsuţă poştală",
         "most_result_return_gal_search": "Majoritatea rezultatelor căutării în GAL",
         "virtual_hosts": "Gazde virtuale",
-        "manage": "Gestionare"
+        "manage": "Gestionare",
+        "gal_change_mode_both": "Ambele",
+        "gal_change_mode_external": "Extern",
+        "gal_change_mode_internal": "Intern"
     },
     "buckets": {
         "connection": {
@@ -203,8 +207,7 @@
     },
     "backup": {
         "schedule": "Planificare",
-        "advanced": "Avansat",
-        "general": "General"
+        "advanced": "Avansat"
     },
     "cos": {
         "calendar_options": "Opţiuni calendar",
@@ -343,10 +346,14 @@
             "work_week": "Vizualizare zile de lucru"
         },
         "enable_smime": "Activare S/MIME",
-        "general": "General",
         "min_new_check_interval_value": "Valoare",
         "domain": "Domeniu",
-        "files": "Fisiere"
+        "files": "Fisiere",
+        "SAVE": "Salveaza",
+        "remove": "Eliminare",
+        "send_check": "Trimite",
+        "services": "Servicii",
+        "status": "Stare"
     },
     "connection": {
         "notes": "Note"
@@ -419,5 +426,6 @@
         },
         "other": "Altele",
         "running": "Executare"
-    }
+    },
+    "new": "Nou"
 }

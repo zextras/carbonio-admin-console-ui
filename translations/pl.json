@@ -257,7 +257,8 @@
             "activate": "Aktywuj",
             "activation": "Aktywacja",
             "deactivate": "Deaktywuj",
-            "order_id": "ID zamówienia"
+            "order_id": "ID zamówienia",
+            "valid": "Ważna"
         }
     },
     "domain": {
@@ -301,12 +302,19 @@
         "certificate_type_use_letsencrypt": "Chcę użyc certyfikatu Let's Encrypt",
         "certificate_valid": "Certyfikat jest prawidłowy",
         "domain_certificate_removed": "Certyfikaty domeny zostały usunięte",
-        "private_key_certificate_removed": "Prywatny klucz certyfikatu został usunięty"
+        "private_key_certificate_removed": "Prywatny klucz certyfikatu został usunięty",
+        "gal_change_mode_both": "Oba rodzaje",
+        "gal_change_mode_external": "Zewnętrzne",
+        "gal_change_mode_internal": "Wewnętrzny",
+        "unit_measure_hours": "Godziny",
+        "unit_measure_minutes": "Minuty",
+        "unit_measure_seconds": "Sekundy",
+        "unit_measure_days": "Dni"
     },
     "label": {
         "account": "Konto",
         "accounts": "Konta",
-        "add": "Dodaj",
+        "add": "Dodawać",
         "app_clicked": "Zaakceptowano prośbę o udostępnienie",
         "app_name": "Zarządzaj",
         "backup": "Kopia zapasowa",
@@ -328,7 +336,7 @@
         "page ": "Zaakceptowano prośbę o udostępnienie",
         "page_": "Zaakceptowano prośbę o udostępnienie",
         "privacy": "Prywatność",
-        "remove": "Usuń",
+        "remove": "Usuwać",
         "save": "Zapisz",
         "signature_required": "Informacje o podpisie są wymagane.",
         "snackbar": {
@@ -720,7 +728,7 @@
         "verify_connector_verified": " ZWERYFIKOWANO",
         "username_without": "nazwa użytkownika bez",
         "username_with": "nazwa użytkownika z",
-        "type_an_account_dot": "Dodaj właścicieli…",
+        "type_an_account_dot": "Wyszukaj konto…",
         "type_accounts_paste_them_here": "Wprowadź konta lub wklej je tutaj",
         "the_has_been_created_success": "{{name}} zostało stworzone pomyślnie",
         "start": "start",
@@ -852,7 +860,7 @@
         "send_new_members_notification_for_share_assigned_to_this_group": "Wysyłaj nowym członkom powiadomienie o udostępnieniu/delegacji przypisanej do tej grupy",
         "detail_error": "{{name}}",
         "enable_current_helptext": "Włączenie tej opcji spowoduje wyłączenie aktywnego bieżącego woluminu.",
-        "required": "Wymagany",
+        "required": "Wymagane",
         "select_a_server": "Wybierz serwer",
         "volume_create": "STWÓRZ",
         "volume_detail_error": "{{message}}",
@@ -1048,7 +1056,6 @@
         "what_inside": "Temat",
         "centralized": "Zcentralizowane",
         "done": "Gotowe",
-        "empty_table_helperText": "Tabela jest pusta",
         "external_volume_edited": "{{message}}",
         "ID": "ID",
         "general_options": "Ustawienia ogólne",
@@ -1122,7 +1129,15 @@
         "storage_primarybar_tooltip": "Zobacz swój <bold>status serwera, woluminy oraz polityki HSM</bold>. Tutaj możesz również połączyć buckety.",
         "subscription_primarybar_tooltip": "Zobacz <bold>szczegóły subskrypcji</bold> oraz aktywuj nową.",
         "web_feature": "Funkcja dla klienta sieciowego",
-        "storage": "Pamięć"
+        "storage": "Pamięć",
+        "account_name": "Nazwa konta",
+        "aliases": "Aliasy",
+        "distribution_list": "Lista dystrybucyjna",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Zapisuj kopię wysyłanych wiadomości do folderu wysłane pełnomocnika",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Zapisuj kopię wysyłanych wiadomości do mojego folderu wysłane",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Zapisuj kopię wysyłanych wiadomości do mojego folderu wysłane i folderu wysłane pełnomocnika",
+        "dont_save_a_copy_of_sent_messages": "Nie zapisuj kopii wysłanych wiadomości",
+        "value": "Wartość"
     },
     "message": {
         "snackbar": {
@@ -1559,7 +1574,15 @@
         "what_rights_will_the_delegate_have": "Jakie uprawnienia będzie miał pełnomocnik?",
         "where_do_we_store_it": "Gdzie mają być przechowane?",
         "where_to_store_sent_emails": "Gdzie mają być przechowywane wysłane e-maile?",
-        "who_will_be_delegates": "Które osoby będą pełnomocnikami?"
+        "who_will_be_delegates": "Które osoby będą pełnomocnikami?",
+        "DELETE": "USUŃ",
+        "SAVE": "ZAPISZ",
+        "create": "STWÓRZ",
+        "label": "Określenie",
+        "remove": "Usuwać",
+        "send_check": "Wyślij",
+        "services": "Usługi",
+        "status": "Status"
     },
     "privacy": {
         "survey_feedback_sub_1": "Nie martw się, ankiety będą szybkie, proste i bardzo pomogą nam zrozumieć co robimy dobrze a co źle.",
@@ -1571,8 +1594,8 @@
     },
     "reminder": {
         "minute_0": "{{count}} minuta",
-        "minute_1": "{{count}} minuty",
-        "minute_2": "{{count}} minut"
+        "minute_1": "",
+        "minute_2": ""
     },
     "connection": {
         "access_key": "Klucz dostępu",
@@ -1730,7 +1753,7 @@
         "copy": "Skopiuj",
         "list": "Lista",
         "manage": "Zarządzaj",
-        "mark_as_read": "Zaznacz jako przeczytane",
+        "mark_as_read": "Oznacz jako przeczytane",
         "mark_as_unread": "Zaznacz jako nieczytane",
         "all": "WSZYSTKO",
         "copy_notification_successfully": "Powiadomienie zostało skopiowane",
@@ -1739,7 +1762,7 @@
         "notification_details": "Szczegóły powiadomienia",
         "notification_mark_read_successfully": "Powiadomienie zostało oznaczone jako przeczytane",
         "notification_mark_unread_successfully": "Powiadomienie zostało oznaczone jako nieprzeczytane",
-        "warning": "UWAGA",
+        "warning": "OSTRZEŻENIE",
         "notifications_list": "Lista powiadomień"
     },
     "cumminity_edition": "CE!",
@@ -1757,7 +1780,6 @@
         "copy_operation_successfully": "Powiadomienie zostało skopiowane",
         "details": "Szczegóły",
         "done": "Gotowe",
-        "empty_table_helperText": "Tabela jest pusta",
         "label": {
             "Deep": "Głęboki",
             "notifications": "Notifications",
@@ -1796,5 +1818,6 @@
         "stop_opearation_btn": "ZATRZYMAJ OPERACJĘ",
         "stopping_operation_model_title": "Zatrzymujesz operację {{OperationName}}",
         "stopping_operation_model_title_helperText": "Zatrzymujesz operację {{operationName}}"
-    }
+    },
+    "new": "Nowy"
 }

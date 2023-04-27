@@ -118,7 +118,8 @@
             "activate": "Activer",
             "activation": "Activation",
             "deactivate": "Désactiver",
-            "order_id": "Identifiant de commande"
+            "order_id": "Identifiant de commande",
+            "valid": "Valide"
         }
     },
     "label": {
@@ -369,7 +370,7 @@
         "delete_cos_succeess": "La COS {{cosname}} a été supprimée avec succès",
         "delete_cos_instruction_msg": "Si vous cliquez sur le bouton \"OUI, SUPPRIMER\", la COS par défaut remplacera la COS supprimée.",
         "delete_bucket_sucess": "Le {{name}} a été supprimé",
-        "location": "Localisation",
+        "location": "Location",
         "mail": "Mail",
         "owners": "Propriétaires",
         "password": "Mot de passe",
@@ -715,7 +716,7 @@
         "last_seen": "vu pour la dernière fois",
         "mailstores": "Mailstores",
         "mobile_password": "Mot de passe mobile",
-        "reset": "Réinitialisation",
+        "reset": "Réinitialiser",
         "reset_device": "Remise à zéro du périphérique",
         "s3_bucket": "Bucket S3",
         "select_an_external_volume": "Sélectionner un volume externe",
@@ -839,7 +840,6 @@
         "stop_operation_helperText": "{{message}}",
         "ID": "ID",
         "done": "Terminé",
-        "empty_table_helperText": "Vider la Table",
         "queued": "Ajouté(e) dans la queue",
         "running": "En cours",
         "use_intelligent_tiering": "Utiliser le Tiering intelligent",
@@ -850,7 +850,7 @@
         "EDIT": "ÉDITER",
         "REMOVE": "SUPPRIMER",
         "Rights": "Droits",
-        "Type": "Type",
+        "Type": "Type de rendez-vous",
         "chats": "Chats",
         "contacts": "Contacts",
         "files": "Fichiers",
@@ -940,7 +940,15 @@
         "want_to_use_this_certifiacte": "JE SOUHAITE UTILISER CE CERTIFICAT",
         "web_feature": "Fonctionnalité Web",
         "storage": "Stockage",
-        "home": "Accueil"
+        "home": "Accueil",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Conserver une copie des messages envoyés dans le dossier Envoyé du compte délégué",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Conserver une copie des messages envoyés dans mon dossier Envoyé",
+        "value": "Valeur",
+        "account_name": "Nom du compte",
+        "aliases": "Alias",
+        "distribution_list": "Liste de distribution",
+        "dont_save_a_copy_of_sent_messages": "Ne pas conserver de copie des messages envoyés",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Conserver une copie des messages envoyés dans mon dossier Envoyé et dans le dossier du compte délégué"
     },
     "message": {
         "snackbar": {
@@ -951,9 +959,9 @@
     },
     "timezone": {
         "africa_algiers": "{{value}} Afrique Central de l'Ouest",
-        "africa_cairo": "{{value}} Égypte",
+        "africa_cairo": "{{value}} Egypte",
         "africa_casablanca": "{{value}} Casablanca",
-        "africa_harare": "{{value}} Harare, Pretoria",
+        "africa_harare": "{{value}} Harare, Pretorija",
         "africa_juba": "{{value}} Juba",
         "africa_khartoum": "{{value}} Khartoum",
         "africa_monrovia": "{{value}} Monrovia",
@@ -985,7 +993,7 @@
         "america_adak": "{{value}} Adak",
         "america_anchorage": "{{value}} Alaska",
         "america_araguaina": "{{value}} Araguaina",
-        "america_argentina_buenos_aires": "{{value}} Argentine",
+        "america_argentina_buenos_aires": "{{value}} Argentina",
         "america_asuncion": "{{value}} Asuncion",
         "america_bahia": "{{value}} Salvador",
         "america_bogota": "{{value}} Colombie",
@@ -1016,7 +1024,7 @@
         "asia_hovd": "{{value}} Hovd",
         "asia_irkutsk": "{{value}} Irkutsk (RTZ 7)",
         "asia_jerusalem": "{{value}} Jerusalem",
-        "asia_kabul": "{{value}} Kaboul",
+        "asia_kabul": "{{value}} Kabul",
         "asia_kamchatka": "{{value}} Anadyr, Petropavlovsk-Kamchatsky (RTZ 11)",
         "asia_karachi": "{{value}} Islamabad, Karachi",
         "asia_kathmandu": "{{value}} Katmandou",
@@ -1129,7 +1137,14 @@
         "certificate_type_use_letsencrypt": "Je souhaite utiliser un certificat Let's Encrypt",
         "certificate_valid": "Le certificat est valide",
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Le certificat est valide, toutefois il expire bientôt ou n'est pas un CA de confiance",
-        "domain_certificate_removed": "Les certificats de domaine ont été supprimés"
+        "domain_certificate_removed": "Les certificats de domaine ont été supprimés",
+        "gal_change_mode_both": "Interne et externe",
+        "unit_measure_seconds": "Secondes",
+        "gal_change_mode_external": "Externe",
+        "gal_change_mode_internal": "Interne",
+        "unit_measure_days": "Jours",
+        "unit_measure_hours": "Heures",
+        "unit_measure_minutes": "Minutes"
     },
     "commons": {
         "confirm_connection": "CONFIRMER LA CONNEXION",
@@ -1558,7 +1573,15 @@
         "click_on_the_pencil_to_edit": "Cliquer sur le pinceau pour éditer les alias disponibles ou cliquer sur la croix pour les supprimer",
         "NEXT": "SUIVANT",
         "abstract": "Abstract",
-        "on_behalf_of": "au nom de"
+        "on_behalf_of": "de la part de",
+        "DELETE": "SUPPRIMER",
+        "SAVE": "SAUVEGARDER",
+        "create": "CRÉER",
+        "label": "Etiquette",
+        "remove": "Supprimer",
+        "send_check": "Envoyer",
+        "services": "Services",
+        "status": "Statut"
     },
     "connection": {
         "access_key": "Clé d’accès",
@@ -1672,7 +1695,7 @@
         "server": "Server",
         "source_volume": "Volume source",
         "this_function_allow_save_disk_copy_msg": "Cette fonction vous permet de sauver de l'espace disque en stockant une seule copie d'un élément.",
-        "type": "Type",
+        "type": "Type de rendez-vous",
         "value": "Valeur",
         "volumes": "Volumes",
         "yes": "Oui",
@@ -1745,7 +1768,6 @@
         "copy_btn": "COPIER",
         "details": "Détails",
         "done": "Terminé",
-        "empty_table_helperText": "Vider la Table",
         "label": {
             "Deep": "Profond",
             "notifications": "Notifications",
@@ -1795,5 +1817,6 @@
         "load_certificate": "CHARGER LE CERTIFICAT"
     },
     "welcome": "Bienvenue",
-    "welcome_to_carbonio_information": "Bienvenue {{adminName}} dans Carbonio !"
+    "welcome_to_carbonio_information": "Bienvenue {{adminName}} dans Carbonio !",
+    "new": "Nouveau"
 }

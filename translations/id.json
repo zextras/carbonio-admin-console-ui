@@ -257,7 +257,8 @@
             "activate": "Aktifkan",
             "activation": "Aktivasi",
             "deactivate": "Deaktivasi",
-            "order_id": "ID Pesanan"
+            "order_id": "ID Pesanan",
+            "valid": "Valid"
         }
     },
     "domain": {
@@ -301,7 +302,14 @@
         "certificate_invalid_error": "Sertifikat tidak valid. Coba lagi dengan sertifikat lain",
         "certificate_saved": "Sertifikat telah disimpan",
         "domain_certificate_removed": "Sertifikat domain telah dihapus",
-        "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Sertifikat valid, tetapi sudah kedaluwarsa atau ada CA yang tidak tepercaya"
+        "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Sertifikat valid, tetapi sudah kedaluwarsa atau ada CA yang tidak tepercaya",
+        "gal_change_mode_both": "Keduanya",
+        "gal_change_mode_external": "Eksternal",
+        "gal_change_mode_internal": "Internal",
+        "unit_measure_days": "Hari",
+        "unit_measure_hours": "Jam",
+        "unit_measure_minutes": "Menit",
+        "unit_measure_seconds": "Detik"
     },
     "label": {
         "account": "Akun",
@@ -909,7 +917,7 @@
         "volume_server_name": "Server",
         "wipe_device": "Hapus Perangkat",
         "advanced_lbl": "Canggih",
-        "reset": "Atur ulang",
+        "reset": "Atur Ulang",
         "failed": "Gagal",
         "remove_button": "HAPUS",
         "session_id": "ID Sesi",
@@ -1025,7 +1033,6 @@
         "use_intelligent_tiering": "Gunakan Tiering Cerdas",
         "ID": "ID",
         "done": "Selesai",
-        "empty_table_helperText": "Kosongkan Tabel",
         "queued": "Diantrekan",
         "stop_operation_helperText": "{{message}}",
         "lockout": "Penguncian",
@@ -1122,7 +1129,15 @@
         "quota_used_lbl": "Kuota digunakan",
         "save_mails_to": "Simpan Email ke",
         "sharing_options": "Opsi Berbagi",
-        "web_feature": "Fitur Web"
+        "web_feature": "Fitur Web",
+        "account_name": "Nama Akun",
+        "aliases": "Alias",
+        "dont_save_a_copy_of_sent_messages": "Jangan simpan salinan pesan terkirim",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Simpan salinan pesan tersimpan ke folder Terkirim delegasi",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Simpan salinan pesan terkirim ke folder Terkirim",
+        "value": "Nilai",
+        "distribution_list": "Daftar distribusi",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Simpan salinan pesan tersimpan ke folder Terkirim dan folder delegasi"
     },
     "message": {
         "snackbar": {
@@ -1559,7 +1574,15 @@
         "delegate_created_successfully": "Delegasi berhasil dibuat",
         "delegate_updated_successfully": "Hak delegasi berhasil diperbarui",
         "i_want_to_create_a_delegate_for": "Saya ingin membuat delegasi untuk",
-        "i_want_to_select": "Saya ingin memilih Folder"
+        "i_want_to_select": "Saya ingin memilih Folder",
+        "label": "Label",
+        "remove": "Hapus",
+        "send_check": "Kirim",
+        "services": "Layanan",
+        "status": "Status",
+        "DELETE": "HAPUS",
+        "SAVE": "SIMPAN",
+        "create": "BUAT"
     },
     "connection": {
         "access_key": "Kunci Akses",
@@ -1745,7 +1768,6 @@
         "copy_btn": "SALIN",
         "details": "Detail",
         "done": "Selesai",
-        "empty_table_helperText": "Kosongkan Tabel",
         "label": {
             "Deep": "Dalam",
             "notifications": "Notifikasi",
@@ -1794,5 +1816,6 @@
     },
     "select_bucket_or_create_bucket": "Sepertinya Anda belum menyiapkan jenis bucket. \n Klik tombol \"BUAT +\" untuk membuat yang baru.",
     "to_carbonio": "ke Carbonio!",
-    "welcome_to_carbonio_information": "Selamat datang {{adminName}} di Carbonio!"
+    "welcome_to_carbonio_information": "Selamat datang {{adminName}} di Carbonio!",
+    "new": "Baru"
 }
