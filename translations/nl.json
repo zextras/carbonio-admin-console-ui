@@ -118,7 +118,8 @@
             "activate": "Activeren",
             "activation": "Activering",
             "deactivate": "Deactiveren",
-            "order_id": "Bestelling Id"
+            "order_id": "Bestelling Id",
+            "valid": "Geldig"
         }
     },
     "label": {
@@ -710,7 +711,7 @@
         "e_mail": "E-mail",
         "eas": "EAS",
         "email_address": "Email address",
-        "enabled": "Geactiveerd",
+        "enabled": "Ingeschakeld",
         "last_seen": "Laatst bekeken",
         "mailstores": "Mailstores",
         "mobile_password": "Mobiel wachtwoord",
@@ -835,7 +836,6 @@
         "Aliases": "Aliassen",
         "ID": "ID",
         "done": "Gedaan",
-        "empty_table_helperText": "Lege Tabel",
         "external_volume_edited": "{{message}}",
         "general_options": "Algemene opties",
         "centralized": "Gecentraliseerd",
@@ -940,7 +940,15 @@
         "sort_by_total_quota": "Sorteren op Totaal Quota",
         "storage_primarybar_tooltip": "Bekijk uw <bold>serverstatus</bold>, uw <bold>volumes</bold> en <bold>HSM-beleidslijnen</bold>. U zult ook in staat zijn om <bold>emmers te verbinden</bold>.",
         "subscription_primarybar_tooltip": "Bekijk uw <bold>abonnementsdetails</bold> en/of <bold>activeer</bold> uw nieuwe.",
-        "web_feature": "Webeigenschap"
+        "web_feature": "Webeigenschap",
+        "account_name": "Accountnaam",
+        "distribution_list": "Distributielijst",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Een kopie van verzonden berichten opslaan in de Verzonden map van de gedelegeerde",
+        "aliases": "Aliassen",
+        "dont_save_a_copy_of_sent_messages": "Bewaar geen kopie van verzonden berichten",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Een kopie van verzonden berichten opslaan in mijn Verzonden map",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Een kopie van verzonden berichten opslaan in mijn map Verzonden en de map van de gedelegeerden",
+        "value": "Waarde"
     },
     "timezone": {
         "europe_belgrade": "{{value}} Belgrado, Bratislava, Boedapest, Ljubljana, Praag",
@@ -1122,7 +1130,14 @@
         "certificate_invalid_error": "Het certificaat is ongeldig, probeer het met een ander certificaat",
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Het certificaat is geldig maar het is ofwel verlopen of er bestaat een niet vertrouwde CA",
         "domain_certificate_removed": "De domeincertificaten zijn verwijderd",
-        "private_key_certificate_removed": "De private sleutel van het certificaat is verwijderd"
+        "private_key_certificate_removed": "De private sleutel van het certificaat is verwijderd",
+        "gal_change_mode_both": "Beide",
+        "gal_change_mode_external": "Extern",
+        "gal_change_mode_internal": "Intern",
+        "unit_measure_days": "Dagen",
+        "unit_measure_hours": "Uren",
+        "unit_measure_minutes": "Minuten",
+        "unit_measure_seconds": "Seconden"
     },
     "message": {
         "snackbar": {
@@ -1277,7 +1292,7 @@
         "email_retention_policy": "Beleid voor behoud van e-mail",
         "enable_failed_login_lockout": "Vergrendeling mislukte aanmeldingen inschakelen",
         "enable_smime": "S/MIME inschakelen",
-        "enabled": "Geactiveerd",
+        "enabled": "Ingeschakeld",
         "failed_login_policy": "Beleid mislukte aanmelding",
         "free_busy_interop": "Interop",
         "html_compose": "Opstellen in HTML",
@@ -1559,7 +1574,15 @@
         "select_mode": "SELECTEER MODUS",
         "send_mails_only": "Alleen mails versturen (geen toegang tot mappen)",
         "send_as_behalf": "Verzenden als (ontvangers krijgen deze e-mail {{targetEmail}}) van de afzender te zien",
-        "who_will_be_delegates": "Wie worden de gedelegeerden?"
+        "who_will_be_delegates": "Wie worden de gedelegeerden?",
+        "DELETE": "VERWIJDEREN",
+        "SAVE": "OPSLAAN",
+        "create": "CREËREN",
+        "label": "Label",
+        "remove": "Verwijderen",
+        "services": "Services",
+        "status": "Status",
+        "send_check": "Versturen"
     },
     "privacy": {
         "allow_data_analytics": "Data-analyse mogelijk maken",
@@ -1745,7 +1768,6 @@
     "operations": {
         "details": "Details",
         "done": "Gedaan",
-        "empty_table_helperText": "Lege Tabel",
         "label": {
             "Deep": "Diep",
             "notifications": "kennisgevingen",
@@ -1795,5 +1817,6 @@
         "load": "LADEN",
         "load_and_verify_certificate": "Certificaat laden en verifiëren",
         "load_certificate": "CERTIFICAAT LADEN"
-    }
+    },
+    "new": "Nieuw"
 }

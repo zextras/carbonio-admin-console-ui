@@ -31,7 +31,7 @@
         "not_set": "सेट नहीं",
         "note": "पर्ची",
         "notification": "सूचना",
-        "of": "का",
+        "of": "में से",
         "page ": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "page_": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "privacy": "गोपनीयता",
@@ -88,7 +88,7 @@
         "volumes": "वॉल्यूम",
         "access_key": "एक्सेस की",
         "account_scan": "AccountScan",
-        "actions": "क्रियाएँ",
+        "actions": "एक्शन्स",
         "address": "पता",
         "advanced": "एड्वान्स्ड",
         "allow_sending_cancellation_email_to_organizer": "आयोजक को रद्द करने की ईमेल भेजने की अनुमति दें",
@@ -723,7 +723,6 @@
         "use_intelligent_tiering": "Intelligent Tiering उपयोग करें",
         "centralized": "केन्द्रित",
         "done": "हो गया",
-        "empty_table_helperText": "खाली टेबल",
         "stop_operation_helperText": "{{message}}",
         "please_wait": "कृपया प्रतीक्षा करें",
         "lockout": "लॉकआउट",
@@ -818,7 +817,15 @@
         "sending_options": "भेजने के ऑप्शन",
         "sharing_options": "शेयर करने के ऑप्शन",
         "sort_by_percentage": "प्रतिशत के हिसाब से जमाएँ",
-        "sort_by_total_quota": "कुल कोटा के हिसाब से जमाएँ"
+        "sort_by_total_quota": "कुल कोटा के हिसाब से जमाएँ",
+        "account_name": "अकाउंट नाम",
+        "distribution_list": "डिस्ट्रिब्यूशन लिस्ट",
+        "dont_save_a_copy_of_sent_messages": "भेजे मैसेजों की कॉपी सेव न करें",
+        "aliases": "उपनाम",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "भेजे गए मैसेज की एक कॉपी डेलीगेट के भेजे फोल्डर में सेव करें",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "भेजे गए मैसेज की एक कॉपी मेरे भेजे फोल्डर में सेव करें",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "भेजे मैसेजों की एक कॉपी मेरे भेजे और डेलीगेट के फोल्डर में सेव करें",
+        "value": "वैल्यू"
     },
     "timezone": {
         "asia_tomsk": "{{value}} तोम्स्क",
@@ -1078,7 +1085,8 @@
             "activate": "एक्टिवेट करें",
             "activation": "एक्टिवेशन",
             "deactivate": "डीएक्टिवेट करें",
-            "order_id": "ऑर्डर आईडी"
+            "order_id": "ऑर्डर आईडी",
+            "valid": "मान्य"
         }
     },
     "domain": {
@@ -1122,7 +1130,14 @@
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "सर्टिफिकेट मान्य है पर यह या तो एक्सपायर हो गया है या कोई नॉन-ट्रस्टेड सीए अस्तित्व में है",
         "certificate_type_use_letsencrypt": "मैं एक Let's इनक्रिप्ट सर्टिफिकेट इस्तेमाल करना चाहता हूँ",
         "domain_certificate_removed": "डोमेन सर्टिफिकेट हटा दिये गए हैं",
-        "private_key_certificate_removed": "सर्टिफिकेट की प्राइवेट की हटा दी गई है"
+        "private_key_certificate_removed": "सर्टिफिकेट की प्राइवेट की हटा दी गई है",
+        "unit_measure_days": "दिन",
+        "gal_change_mode_both": "दोनों",
+        "gal_change_mode_external": "एक्सटर्नल",
+        "gal_change_mode_internal": "आंतरिक",
+        "unit_measure_hours": "घंटे",
+        "unit_measure_minutes": "क्षण",
+        "unit_measure_seconds": "सेकंड"
     },
     "message": {
         "snackbar": {
@@ -1558,7 +1573,15 @@
         "send_recepients_see_the_mail": "भेजें {{right}} (पाने वालों को भेजने वाले की ईमेल {{targetEmail}} दिखाई देगी)",
         "sendin_options": "भेजने के ऑप्शन",
         "sending_options": "भेजने के ऑप्शन",
-        "send_as_behalf": "इनकी ओर से भेजें (पाने वालों को सेंडर {{targetEmail}} दिखेगा)"
+        "send_as_behalf": "इनकी ओर से भेजें (पाने वालों को सेंडर {{targetEmail}} दिखेगा)",
+        "create": "बनाएँ",
+        "label": "लेबल",
+        "remove": "हटाएँ",
+        "send_check": "भेजें",
+        "services": "सेवाएँ",
+        "status": "स्थिति",
+        "DELETE": "डिलीट करें",
+        "SAVE": "सेव करे"
     },
     "privacy": {
         "allow_live_survey_feedbacks": "फीडबैक के लिए सर्वेज़ की अनुमति दें",
@@ -1745,7 +1768,6 @@
         "copy_btn": "कॉपी करें",
         "details": "विवरण",
         "done": "हो गया",
-        "empty_table_helperText": "खाली टेबल",
         "label": {
             "Deep": "गहराई",
             "notifications": "अधिसूचनाएं",
@@ -1794,5 +1816,6 @@
         "load_and_verify_certificate": "सर्टिफिकेट लोड और सत्यापित करें",
         "load_certificate": "सर्टिफिकेट लोड करें",
         "load": "लोड करें"
-    }
+    },
+    "new": "नया"
 }

@@ -22,7 +22,8 @@
                 "confirm": "Bạn có chắc muốn tiếp tục?",
                 "deactivate": "Có, Hủy kích hoạt",
                 "warning": "Bạn đang cố gắng hủy kích hoạt mã thông báo hiện tại. Làm như vậy sẽ vô hiệu hóa tất cả các tính năng đã bật."
-            }
+            },
+            "valid": "Hợp lệ"
         }
     },
     "label": {
@@ -170,7 +171,7 @@
         "yes": "Có",
         "detail": "Chi tiết",
         "device": "Thiết bị",
-        "edit": "Soan thảo",
+        "edit": "Chỉnh sửa",
         "go_back": "Quay trở lại",
         "id_lbl": "ID",
         "language": "Ngôn ngữ",
@@ -648,7 +649,6 @@
         "ID": "ID",
         "centralized": "Tập trung",
         "done": "Hoàn thành",
-        "empty_table_helperText": "Bảng trống",
         "external_volume_edited": "{{message}}",
         "general_options": "Tùy chọn chung",
         "operation": {
@@ -671,7 +671,14 @@
         "mails": "Thư",
         "out_of_the_office_reply": "Trả lời khi không có mặt ở văn phòng",
         "tasks": "Các Nhiệm vụ",
-        "storage": "Kho chứa"
+        "storage": "Kho chứa",
+        "account_name": "Tên tài khoản",
+        "distribution_list": "Danh sách phân phối",
+        "dont_save_a_copy_of_sent_messages": "Không lưu bản sao tin nhắn gửi đi",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi được chỉ định",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi của tôi và thư mục chỉ định",
+        "value": "Giá trị"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -844,7 +851,14 @@
         "send_the_warning_to": "Gửi cảnh báo tới",
         "source_name_internal_gal": "Tên nguồn của GAL nội bộ",
         "type_here_a_domain": "Gõ miền vào đây",
-        "warn_when_reach_space_quota": "Cảnh báo cho tôi khi tôi đạt đến hạn ngạch không gian tổng hợp này"
+        "warn_when_reach_space_quota": "Cảnh báo cho tôi khi tôi đạt đến hạn ngạch không gian tổng hợp này",
+        "gal_change_mode_both": "Cả hai",
+        "gal_change_mode_external": "Mở rộng",
+        "gal_change_mode_internal": "Nội bộ",
+        "unit_measure_days": "Ngày",
+        "unit_measure_hours": "Giờ",
+        "unit_measure_minutes": "Phút",
+        "unit_measure_seconds": "Giây"
     },
     "buckets": {
         "connection": {
@@ -1296,7 +1310,15 @@
         "files": "Tệp",
         "NEXT": "TIẾP",
         "abstract": "Tóm lược",
-        "on_behalf_of": "thay mặt cho"
+        "on_behalf_of": "thay mặt cho",
+        "DELETE": "XOÁ",
+        "SAVE": "LƯU",
+        "create": "TẠO",
+        "label": "Nhãn",
+        "remove": "xoá",
+        "send_check": "Gửi",
+        "status": "Trạng thái",
+        "services": "Dịch vụ"
     },
     "privacy": {
         "full_error_sub_1": "Tất cả chúng ta đều mắc sai lầm nhưng chính cách bạn đối phó với chúng sẽ thay đổi mọi thứ! Chúng tôi muốn học hỏi từ những lỗi của mình, vì vậy hãy cho chúng tôi biết cách chúng tôi có thể sửa chúng",
@@ -1401,7 +1423,7 @@
         "destination_volume": "Tập đích",
         "details": "Thông tin chi tiết",
         "document": "Văn bản",
-        "edit": "Soan thảo",
+        "edit": "Chỉnh sửa",
         "event": "Sự kiện",
         "hours": "Giờ",
         "hsm_policies_list": "Danh sách chính sách HSM",
@@ -1450,7 +1472,6 @@
         "copy_btn": "SAO CHÉP",
         "details": "Thông tin chi tiết",
         "done": "Hoàn thành",
-        "empty_table_helperText": "Bảng trống",
         "label": {
             "Deep": "Sâu",
             "notifications": "Các thông báo",
@@ -1467,5 +1488,6 @@
         "other": "Khác",
         "queued": "Đã xếp hàng",
         "running": "Đang chạy"
-    }
+    },
+    "new": "Mới"
 }

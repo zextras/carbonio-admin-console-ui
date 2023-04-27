@@ -18,5 +18,8 @@
     },
     "operations": {
         "details": "Yksityiskohdat"
+    },
+    "account_details": {
+        "remove": "Poista"
     }
 }

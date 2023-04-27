@@ -257,7 +257,8 @@
             "activate": "เปิดใช้งาน",
             "activation": "การเปิดใช้งาน",
             "deactivate": "ปิดการใช้งาน",
-            "order_id": "รหัสคำสั่ง"
+            "order_id": "รหัสคำสั่ง",
+            "valid": "ถูกต้องแล้ว"
         }
     },
     "domain": {
@@ -301,7 +302,14 @@
         "certificate_saved": "บันทึกใบรับรองแล้ว",
         "certificate_type_use_custom": "ฉันต้องการใช้ใบรับรองที่กำหนดเอง",
         "certificate_valid": "ใบรับรองถูกต้อง",
-        "domain_certificate_removed": "ใบรับรองโดเมนถูกลบแล้ว"
+        "domain_certificate_removed": "ใบรับรองโดเมนถูกลบแล้ว",
+        "unit_measure_days": "วัน",
+        "unit_measure_hours": "ชั่วโมง",
+        "gal_change_mode_both": "ทั้งสอง",
+        "gal_change_mode_external": "ภายนอก",
+        "gal_change_mode_internal": "ภายใน",
+        "unit_measure_minutes": "นาที",
+        "unit_measure_seconds": "วินาที"
     },
     "label": {
         "account": "บัญชีผู้ใช้",
@@ -1026,7 +1034,6 @@
         "use_intelligent_tiering": "ใช้การจัดระดับอัจฉริยะ",
         "centralized": "รวบรวมแล้ว",
         "done": "เสร็จสิ้น",
-        "empty_table_helperText": "โต๊ะว่าง",
         "queued": "อยู่ในคิวแล้ว",
         "stop_operation_helperText": "{{message}}",
         "what_inside": "หัวข้อ",
@@ -1122,7 +1129,15 @@
         "save_mails_to": "บันทึกจดหมายไปที่",
         "sort_by_total_quota": "เรียงตามโควต้าทั้งหมด",
         "storage_primarybar_tooltip": "ดู<bold>สถานะเซิร์ฟเวอร์</bold>, <bold>ปริมาณ</bold> และ <bold>นโยบาย HSM</bold> ของคุณ คุณยังสามารถ<bold>เชื่อมต่อบัคเก็ต</bold>ได้อีกด้วย",
-        "ADD_NEW": "เพิ่มใหม่"
+        "ADD_NEW": "เพิ่มใหม่",
+        "account_name": "ชื่อบัญชี",
+        "distribution_list": "Distribution list",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "บันทึกสำเนาข้อความที่ส่งออกไปยังโฟลเดอร์ส่งออกของผู้รับมอบสิทธิ์",
+        "value": "ค่า",
+        "aliases": "นามแฝง",
+        "dont_save_a_copy_of_sent_messages": "ไม่ต้องบันทึกสำเนาของข้อความที่ส่งออก",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "บันทึกสำเนาข้อความที่ส่งออกไปยังโฟลเดอร์ส่งออก",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "บันทึกสำเนาข้อความที่ส่งออกไปยังโฟลเดอร์ส่งออกและโฟลเดอร์ของผู้รับมอบสิทธิ์"
     },
     "message": {
         "snackbar": {
@@ -1559,7 +1574,15 @@
         "what_rights_will_the_delegate_have": "ผู้รับมอบสิทธิ์จะมีสิทธิอะไรบ้าง?",
         "where_do_we_store_it": "เราเก็บไว้ที่ไหน?",
         "where_to_store_sent_emails": "จะเก็บอีเมลที่ส่งไว้ที่ไหน?",
-        "set_rights": "กำหนดสิทธิ"
+        "set_rights": "กำหนดสิทธิ",
+        "DELETE": "ลบ",
+        "SAVE": "บันทึก",
+        "create": "สร้าง",
+        "label": "ป้ายกำกับ",
+        "remove": "เอาออก",
+        "send_check": "ส่ง",
+        "services": "บริการ",
+        "status": "สถานะ"
     },
     "connection": {
         "access_key": "รหัสการเข้าถึง",
@@ -1745,7 +1768,6 @@
         "copy_btn": "คัดลอก",
         "details": "รายละเอียด",
         "done": "เสร็จสิ้น",
-        "empty_table_helperText": "โต๊ะว่าง",
         "label": {
             "Deep": "ลึก",
             "notifications": "การแจ้งเตือน",
@@ -1794,5 +1816,6 @@
         "load_and_verify_certificate": "โหลดและตรวจสอบใบรับรอง",
         "load_certificate": "โหลดใบรับรอง"
     },
-    "welcome_to_carbonio_information": "ยินดีต้อนรับ {{adminName}} สู่ Carbonio!"
+    "welcome_to_carbonio_information": "ยินดีต้อนรับ {{adminName}} สู่ Carbonio!",
+    "new": "ใหม่"
 }

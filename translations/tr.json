@@ -259,7 +259,7 @@
         "displayed_name": "Görünen Ad",
         "deligated_admin_help_url": "Yetki Verilmiş Yönetici Yardım URL’si",
         "deleting_cos_msg": "<bold>{{cosname}}</bold> siliniyor",
-        "delete_domain_with_account_content_msg": "{{domainName}} boş değil: içinde {{domainAccounts}} sistem hesapları ve {{domainAccounts}} normal hesaplar bulunuyor. Silme işlemine devam etmek istiyor musunuz?",
+        "delete_domain_with_account_content_msg": "{{domainName}} boş değil: içinde {{domainSystemAccounts}} sistem hesapları ve {{domainRegularAccounts}} normal hesaplar bulunuyor. Silme işlemine devam etmek istiyor musunuz?",
         "delete_domain_success_msg": "Alanadı başarıyla silindi",
         "delete_domain_error_msg": "{{domainName}} siliyorsunuz. {{domainName}} silmek istediğinize emin misiniz?",
         "delete_domain": "Alanadını Sil",
@@ -745,7 +745,6 @@
         "ID": "ID",
         "centralized": "Merkezi",
         "done": "Tamamlandı",
-        "empty_table_helperText": "Tabloyu Boşalt",
         "external_volume_edited": "{{message}}",
         "general_options": "Genel Seçenekler",
         "operation": {
@@ -818,7 +817,100 @@
         "operation_primarybar_tooltip": "<bold>İşlemleri başlatma, yönetme</bold> ve <bold>sonlandırma</bold> durumunu görüntüleyin ve yönetin.",
         "privacy_primarybar_tooltip": "<bold>Veri raporları, hata logları</bold> ve <bold>anketler</bold> gibi <bold>Gizlilik</bold> ayarlarını yönetin.",
         "subscription_primarybar_tooltip": "<bold>Abonelik detaylarınızı</bold> görüntüleyin ve/veya yeni aboneliğinizi <bold>etkinleştirin</bold>.",
-        "storage": "Depolama"
+        "storage": "Depolama",
+        "accounts_groups": "Hesaplar / Gruplar",
+        "allow_unsecure": "Güvenli Olmayanlara İzin Ver",
+        "attribute": "Öznitelik",
+        "backup_lbl": "<bold>Yedek</bold>",
+        "bind_dn": "Bind DN",
+        "bind_password": "Bind DN Parolası",
+        "byte_lbl": "BYTE",
+        "change_to": "DEĞİŞTİR",
+        "change_to_external": "DIŞ KULLANIM OLARAK DEĞİŞTİR",
+        "change_to_internal": "İÇ KULLANIM OLARAK DEĞİŞTİR",
+        "changes_save_success_msg": "Değişiklikleriniz kaydedildi!",
+        "class_of_service_lbl": "<bold>Servis Paketleri</bold>",
+        "close": "KAPAT",
+        "close_domain": "ALAN ALANINI KAPAT",
+        "color_code": "Renk kodu",
+        "create_account_name": "HESAP ADI OLUŞTUR",
+        "delegate_send_settings": "Temsilci Gönderme Ayarları",
+        "delete_account": "{{accountId}} hesabını yok etmek istediğinizden emin misiniz?",
+        "delete_configuration": "YAPILANDIRMAYI SİL",
+        "delete_domain_with_all_resources_close_domain": "Emin değilseniz, alanadını sadece kullanıma \"kapatabilir\" ve gerektiğinde içeriğe erişebilirsiniz.",
+        "delete_domain_with_all_resources_permanently_remove": "Veya tüm hesap ve alanadı öğelerini tamamen kaldırabilirsiniz. Bu işlem geri alınamaz.",
+        "delete_domain_with_all_resources_pre_msg": "{{domainName}} alanadı boş değil ve şunları içeriyor",
+        "destroy": "YOK ET",
+        "destroy_account": "Yok et",
+        "destroy_account_button": "EVET, YOK ET",
+        "dn_settings": "DN Ayarları",
+        "domain_close_success_msg": "Alanadı başarıyla kapatıldı",
+        "domains_lbl": "<bold>Alan adları</bold>",
+        "entity_id": "Öğe Kimliği",
+        "entity_id_copied": "Öğe Kimliği kopyalandı",
+        "export_configuration": "YAPILANDIRMAYI DIŞA AKTAR",
+        "external_server_address": "Dış Sunucu Adresi",
+        "frequency_value_also_updated": "GAL Yenileme sıklığı değeri güncellendi",
+        "gal_update_freq_value": "GAL Yenileme Sıklığı Değeri",
+        "gal_update_frequencey_value": "GAL Yenileme Sıklığı Değeri",
+        "galsync_account": "GALSync Hesabı",
+        "generate_sp_certificate": "SP SERTİFİKASI OLUŞTUR",
+        "go_back_button": "GERİ GİT",
+        "here_will_be_shown_the_attribute_value": "Burada Öznitelik Değeri gösterilecektir",
+        "import": "İÇE AKTAR",
+        "import_saml_metadata_from_idp": "SAML Meta Verilerini IDP'den içe aktar",
+        "inactive": "Pasif",
+        "keep_it_button": "HAYIR, KALSIN",
+        "ldap_filter": "LDAP filtresi",
+        "ldap_search_base": "LDAP Arama Tabanı",
+        "ldap_url": "LDAP Url",
+        "measure_unit": "Ölçü Birimi",
+        "model_label_create_account": "Hesap Oluştur",
+        "notification_lbl": "<bold>Bildirimler</bold>",
+        "operation_lbl": "<bold>İşlemler</bold>",
+        "personalisation": "Kişiselleştirme",
+        "prefix_volume": "Önek - {{volumePrefix}}",
+        "primary_color_for_dark_mode": "Koyu Mod için<bold> Birincil</bold> Renk",
+        "primary_color_for_light_mode": "Açık Mod için<bold> Birincil</bold> Renk",
+        "privacy_lbl": "<bold>Gizlilik</bold>",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "Özniteliklerini görmek için lütfen yukarıdaki alana bazı SAML Meta Verilerini içe aktarın",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Gönderilen mesajların bir kopyasını sadece temsilcinin gönderilenler klasörüne kaydet",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Gönderilen mesajların bir kopyasını sadece temsilcinin gönderilenler klasörüne kaydet",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Gönderilmiş mesajların bir kopyasını temsilci ve temsilci gönderilenler klasörüne kaydet",
+        "select_an_attribute_to_show_its_value": "Değerini göstermek için bir Öznitelik seçin",
+        "select_attribute_to_show_its_value": "Değerini göstermek için bir Öznitelik seçin",
+        "server_type": "Sunucu Türü",
+        "service_url": "Servis URL",
+        "service_url_copied": "ServiceURL kopyalandı",
+        "storage_type": "Depolama Türü",
+        "subscription_lbl": "<bold>Abonelik</bold>",
+        "system_account": "Sistem Hesapları",
+        "type_account_name_for_global_address_list": "Global Adres Listesi (GAL) için Hesap Adını girin",
+        "use_dn_password_to_bind_external_server": "Dış sunucuyu bağlanmak için Etki Alanı Adı/Parola kullan",
+        "user_ssl": "SSL Kullan",
+        "volume_detail_success": "Tüm değişiklikler başarıyla kaydedildi",
+        "you_have_added_attribute": "{{ attributeName }} özelliğini eklediniz",
+        "you_have_deleted_the_configuration": "Yapılandırmayı sildiniz",
+        "you_have_generated_the_sp_certificate": "SP Sertifikası oluşturdunuz",
+        "you_have_imported_the_configuration": "Yapılandırmayı içe aktardınız",
+        "you_have_removed_attribute": "{{ attributeName }} özniteliğini kaldırdınız",
+        "you_have_updated_attribute": "{{ attributeName }} özelliğini güncellediniz",
+        "create_account_button": "HESAP OLUŞTUR",
+        "create_galsync_account_success_msg": "GALSync hesap adı oluşturdunuz",
+        "delete_domain_with_all_resources_post_msg": "Emin değilseniz, alanadını sadece kullanıma \"kapatabilir\" ve gerektiğinde içeriğe erişebilirsiniz. Veya tüm hesap ve alanadı öğelerini tamamen kaldırabilirsiniz. Bu işlem geri alınamaz.",
+        "delete_domain_with_all_resources_msg": "Alanadı {{domainName}} boş değil ve {{domainRegularAccounts}} Hesaplar, {{domainSystemAccounts}} Sistem Hesapları, {{distributionList}} Dağıtım listesi, {{aliases}} Takma Ad ve {{resources}} Kaynaklar içeriyor. Emin değilseniz, alanadını sadece kullanıma \"kapatabilir\" ve gerektiğinde içeriğe erişebilirsiniz. Veya tüm hesap ve alanadı öğelerini tamamen kaldırabilirsiniz. Bu işlem geri alınamaz.",
+        "primary_color_hint": "Birincil rengi değiştirmek için lütfen yer tutucu formatındaki gibi bir HEX renk kodu kullanın.",
+        "storage_lbl": "<bold>Depolama</bold>",
+        "you_have_exported_the_configuration": "Yapılandırmayı dışa aktardınız",
+        "account_name": "Hesap Adı",
+        "aliases": "Takma Adlar",
+        "distribution_list": "Dağıtım listesi",
+        "dont_save_a_copy_of_sent_messages": "Gönderilen mesajların kopyasını kaydetme",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Gönderilen mesajların bir kopyasını yardımcımın Gönderilenler klasörüne kaydet",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Gönderilen mesajların bir kopyasını Gönderilenler klasörüme kaydet",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Gönderilen mesajların bir kopyasını Gönderilenler klasörüme ve yardımcımın klasörüne kaydet",
+        "value": "Değer"
     },
     "timezone": {
         "asia_gaza": "{{value}} Gaza",
@@ -1048,7 +1140,8 @@
             "openio_s3": "OpenIO S3",
             "scality_s3": "Scality S3",
             "yandex_s3": "Yandex S3",
-            "amazone_web_service_s3": "Amazon Web Service S3"
+            "amazone_web_service_s3": "Amazon Web Service S3",
+            "minio": "Minio"
         }
     },
     "core": {
@@ -1078,7 +1171,10 @@
             "activate": "Etkinleştir",
             "activation": "Etkinleştirme",
             "deactivate": "Aktif Değil",
-            "order_id": "Sipariş No"
+            "order_id": "Sipariş No",
+            "not_valid": "Geçerli değil",
+            "license_activated_successfully": "Lisans başarıyla etkinleştirildi",
+            "valid": "Geçerli"
         }
     },
     "domain": {
@@ -1122,7 +1218,17 @@
         "certificate_valid": "Sertifika geçerli",
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Sertifika geçerli ancak süresi bitmiş veya güvenilmeyen CA olabilir",
         "domain_certificate_removed": "Alan adı sertifikaları kaldırıldı",
-        "private_key_certificate_removed": "Sertifikanın özel anahtarı kaldırıldı"
+        "private_key_certificate_removed": "Sertifikanın özel anahtarı kaldırıldı",
+        "ldap": "LDAP",
+        "unit_measure_milliseconds": "Milisaniye",
+        "page_size": "Sayfa Boyutu",
+        "gal_change_mode_both": "Her ikisi",
+        "gal_change_mode_external": "Harici",
+        "gal_change_mode_internal": "İç",
+        "unit_measure_days": "Gün",
+        "unit_measure_hours": "Saat",
+        "unit_measure_minutes": "Dakika",
+        "unit_measure_seconds": "Saniye"
     },
     "message": {
         "snackbar": {
@@ -1211,7 +1317,8 @@
         "bucket_configuration": "Bucket Yapılandırması",
         "local_mountpoint": "Lokal Bağlantı Yeri",
         "manage_external_volume": "Dış hacmi yönet",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "yedekleme yapılandırması"
     },
     "cos": {
         "calendar_options": "Takvim Seçenekleri",
@@ -1364,7 +1471,8 @@
         "active_sync": "ActiveSync",
         "activesync_remote_access": "ActiveSync uzaktan erişim",
         "chats": "Sohbetler",
-        "files": "Dosyalar"
+        "files": "Dosyalar",
+        "idp_configuration_saml_notes": "SAML'nizi yapılandırmak ve entityid ve serviceurl değerlerini kopyalamak için IDP'nize gidin"
     },
     "locale": {
         "English": "English",
@@ -1403,7 +1511,8 @@
         "enable_activeSync_remote_access": "ActiveSync uzaktan erişime izin ver",
         "default_COS": "Varsayılan Servis Paketi",
         "change_password_for_next_login": "Sonraki girişte şifre değiştirmek gerekli",
-        "user_will_change_password_on_next_login": "Kullanıcı sonraki girişinde parolasını değiştirecek"
+        "user_will_change_password_on_next_login": "Kullanıcı sonraki girişinde parolasını değiştirecek",
+        "force_change_password": "Parolayı Değiştirmeye Zorla"
     },
     "welcome_to_carbonio": "Hoş geldin {{adminName}}, Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Lütfen sol taraftaki menüden bir bölüm seçin",
@@ -1449,7 +1558,9 @@
             "centralized": "Merkezi",
             "external": "Harici",
             "local": "Lokal",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "local_block_device": "Yerel Blok Cihazı",
+            "object_storage": "Nesne Depolama Alanı"
         },
         "volume_config_header": {
             "name": "Ad",
@@ -1462,7 +1573,8 @@
             "current": "Geçerli",
             "id": "ID",
             "name": "Ad",
-            "path": "Yol"
+            "path": "Yol",
+            "storageType": "Depolama Türü"
         },
         "volume_indexer_header": {
             "current": "Geçerli",
@@ -1477,7 +1589,8 @@
         },
         "indexer_helperText": "İndeksleyici",
         "primary_helperText": "Birincil",
-        "secondary_helperText": "İkincil"
+        "secondary_helperText": "İkincil",
+        "create_storage_volume": "Depolama Birimi Oluştur"
     },
     "privacy": {
         "survey_feedback_sub_1": "Anketler hızlı, kolay ve yapmamız gerekenleri anlamamız için çok kullanışlı olacak.",
@@ -1619,7 +1732,39 @@
         "send_recepients_see_the_mail": "Gönder {{right}} (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)",
         "NEXT": "İLERİ",
         "abstract": "Özet Bilgi",
-        "on_behalf_of": "yerine"
+        "on_behalf_of": "yerine",
+        "account_read_only_rights": "Bu hesabın <bold>Salt Okunur</bold> hakları var",
+        "account_read_write_rights": "Bu hesabın <bold>Okuma / Yazma</bold> hakları var",
+        "account_with_read_only_rights": "<bold>Salt Okunur</bold> haklara sahip hesaplar",
+        "account_with_read_write_rights": "<bold>Okuma/Yazma</bold> haklarına sahip hesaplar",
+        "add_the_account_group_with_selected_rights": "HESABI / GRUBU SEÇİLİ HAKLARLA EKLEYİN",
+        "i_have_copied_the_password": "PAROLAYI KOPYALADIM",
+        "labels_password": "kullanıcı Parolası",
+        "passphrasaId": "Parola Kimliği",
+        "read_only": "Sadece okunur",
+        "read_write": "Oku / Yaz",
+        "remove_all": "HEPSİNİ KALDIR",
+        "send_on_behalf_of_check": "Kişi Adına Gönder",
+        "services_passphrase": "Servis Parolası",
+        "services_passphrase_created_successfully": "Servis Parolası başarıyla oluşturuldu",
+        "services_passphrase_deleted_successfully": "Servis Parolası başarıyla silindi",
+        "start_typing_account": "Haklara eklemek için bir Hesap / Grup yazın",
+        "switch_advanced": "Gelişmiş Görünüme Geç",
+        "able_to_see_password_once": " Lütfen dikkat: Parolayı <bold>yalnızca bir kez </bold>görebileceksiniz.",
+        "account_send_rights": "Bu hesabın <bold>Gönderme</bold> hakları var",
+        "manage_no_rights_to_send_mails": "Yönet (e - posta gönderme hakkı yok)",
+        "password_allow_once_user_to_connect": "Bu parola, kullanıcının güvenilmeyen bir ağdan bile 2FA olmadan bu servise bağlanmasına izin verecektir.",
+        "service_password": "Servis Parolası",
+        "switch_simplified": "Basit Görünüme Geç",
+        "account_with_send_rights": "<bold>Kişi gibi/Kişi adına gönderim hakları</bold> ile hesap",
+        "label": "Etiket",
+        "send_check": "Gönder",
+        "services": "Hizmetler",
+        "status": "Durum",
+        "DELETE": "SİL",
+        "SAVE": "KAYDET",
+        "create": "OLUŞTUR",
+        "remove": "Kaldır"
     },
     "connection": {
         "access_key": "Access Key",
@@ -1756,7 +1901,6 @@
         "copy_operation_successfully": "Bildirim başarıyla kopyalandı",
         "details": "Detaylar",
         "done": "Tamamlandı",
-        "empty_table_helperText": "Tabloyu Boşalt",
         "label": {
             "Deep": "Derinlik",
             "notifications": "Bildirimler",
@@ -1795,5 +1939,19 @@
         "stop_opearation_btn": "İŞLEMİ DURDUR",
         "stopping_operation_model_title": "{{OperationName}} işlemini iptal ediyorsunuz",
         "stopping_operation_model_title_helperText": "{{operationName}} işlemini iptal ediyorsunuz"
-    }
+    },
+    "modal": {
+        "iscurrent_confirm": {
+            "body_message": "Geçerli olan {{type}} {{currentVolumeName}}.<br /> <strong>{{name }}' i geçerli olarak belirlemek</strong> istediğinizden emin misiniz?",
+            "confirm_label": "EVET, DEVAM ET",
+            "secondary_label": "HAYIR, GERİ DÖN",
+            "title": "{{name}} öğesini geçerli olarak ayarlıyorsunuz"
+        }
+    },
+    "the_change_will_not_move_the_data": "Yapılan değişiklik verileri taşımayacak… !!",
+    "warning": {
+        "is_current": "Daha önce geçerli olarak başka bir birim ayarlamanız gerekir."
+    },
+    "this_will_not_affect_data_already_stored": "Bu, önceden depolanmış verileri etkilemez",
+    "new": "Yeni"
 }

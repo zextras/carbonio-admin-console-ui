@@ -26,7 +26,8 @@
             "deactivate": "無効にする",
             "activation": "有効化",
             "activate": "有効にする",
-            "order_id": "オーダーID"
+            "order_id": "オーダーID",
+            "valid": "有効"
         }
     },
     "timezone": {
@@ -301,7 +302,14 @@
         "certificate_valid": "証明書は有効です",
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "証明書は有効ですが、有効期限が切れているか、信頼されていないCAが存在します",
         "domain_certificate_removed": "ドメイン証明書が削除されました",
-        "private_key_certificate_removed": "証明書の秘密鍵が削除されました"
+        "private_key_certificate_removed": "証明書の秘密鍵が削除されました",
+        "gal_change_mode_both": "両方",
+        "gal_change_mode_external": "外部",
+        "gal_change_mode_internal": "内部",
+        "unit_measure_days": "日",
+        "unit_measure_hours": "時間",
+        "unit_measure_minutes": "分",
+        "unit_measure_seconds": "秒"
     },
     "label": {
         "account": "アカウント",
@@ -340,7 +348,7 @@
             }
         },
         "status": "ステータス",
-        "suspended": "保留",
+        "suspended": "サスペンド済み",
         "timezone": "タイムゾーン",
         "unlimited": "無制限",
         "url": "URL",
@@ -1017,7 +1025,6 @@
         "domain_certificate": "ドメインの証明書",
         "centralized": "一元化されました",
         "done": "完了",
-        "empty_table_helperText": "空のテーブル",
         "external_volume_edited": "{{message}}",
         "general_options": "全般オプション",
         "operation": {
@@ -1122,7 +1129,15 @@
         "save_mails_to": "メールの保存先",
         "storage_primarybar_tooltip": "<bold>サーバーステータス</bold>、<bold>ボリューム</bold>、<bold>HSM ポリシー</bold>を表示します。 <bold>バケットを接続</bold>することもできます。",
         "subscription_primarybar_tooltip": "<bold>サブスクリプションの詳細</bold>を表示するか、新しいサブスクリプションを<bold>有効にします</bold>。",
-        "web_feature": "Web機能"
+        "web_feature": "Web機能",
+        "account_name": "アカウント名",
+        "aliases": "エイリアス",
+        "distribution_list": "配布リスト",
+        "dont_save_a_copy_of_sent_messages": "送信されたメッセージのコピーを保存しない",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "送信済みメッセージのコピーを代表者の送信済みフォルダに保存します",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "送信済みメッセージのコピーを送信済みフォルダに保存します",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "送信済みメッセージのコピーを送信済みフォルダと代表者のフォルダに保存します",
+        "value": "価"
     },
     "message": {
         "snackbar": {
@@ -1570,7 +1585,15 @@
         "delegate_updated_successfully": "代理人の権限が更新されました",
         "delegate_deleted_successfully": "代理人の権限が削除されました",
         "deligate_abstract_text": "ユーザー {{granteeEmail}} はメール {{right}} {{targetEmail}} を送信できるようになります",
-        "do_not_save_it": "保存しない"
+        "do_not_save_it": "保存しない",
+        "DELETE": "削除する",
+        "SAVE": "保存",
+        "create": "作成",
+        "label": "ラベル",
+        "remove": "削除する",
+        "send_check": "送信",
+        "services": "サービス",
+        "status": "状態"
     },
     "connection": {
         "access_key": "アクセスキー",
@@ -1742,7 +1765,6 @@
     },
     "welcome": "ようこそ",
     "operations": {
-        "empty_table_helperText": "空のテーブル",
         "label": {
             "Deep": "深い",
             "notifications": "通知",
@@ -1794,5 +1816,6 @@
         "load_certificate": "証明書を読み込む"
     },
     "welcome_to_carbonio_information": "{{adminName}}、Carbonio にようこそ！",
-    "select_bucket_or_create_bucket": "バケットタイプを設定していないようです。\n []CREATE +]をクリックして、新規で作成してください。"
+    "select_bucket_or_create_bucket": "バケットタイプを設定していないようです。\n []CREATE +]をクリックして、新規で作成してください。",
+    "new": "新規作成"
 }

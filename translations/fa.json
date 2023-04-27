@@ -25,7 +25,8 @@
         "theme": "پوسته‌ها",
         "date": "تاریخ",
         "done": "انجام",
-        "Type": "نوع"
+        "Type": "نوع",
+        "distribution_list": "فهرست توزیع"
     },
     "domain": {
         "theme": "پوسته‌ها"
@@ -66,5 +67,9 @@
     "operations": {
         "details": "جزئیات",
         "done": "انجام"
+    },
+    "account_details": {
+        "SAVE": "ذخیره کردن",
+        "send_check": "فرستادن"
     }
 }
