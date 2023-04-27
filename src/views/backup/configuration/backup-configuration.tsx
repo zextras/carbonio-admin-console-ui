@@ -399,7 +399,7 @@ const BackupConfiguration: FC = () => {
 					if (data?.errors && Array.isArray(data?.errors) && data?.errors[0]?.error) {
 						errorMessage = data?.errors[0]?.error;
 					} else if (data?.error) {
-						errorMessage = data?.error;
+						errorMessage = data?.error?.message || data?.error;
 					}
 					createSnackbar({
 						key: 'error',
@@ -631,6 +631,16 @@ const BackupConfiguration: FC = () => {
 					if (isFromInitialize && res && res?.serverId) {
 						setIsBackupInitialized(!isBackupInitialized);
 					}
+					if (res && res?.error && res?.error?.message) {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: res?.error?.details?.cause || res?.error?.message,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
 				})
 				.catch((error: any) => {
 					setIsRequestInProgress(false);
@@ -638,7 +648,7 @@ const BackupConfiguration: FC = () => {
 						key: 'error',
 						type: 'error',
 						label: error
-							? error?.error
+							? error?.error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -656,6 +666,16 @@ const BackupConfiguration: FC = () => {
 		})
 			.then((res: any) => {
 				setIsPurgeRequestRunning(false);
+				if (res && res?.error && res?.error?.message) {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: res?.error?.details?.cause || res?.error?.message,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
 			})
 			.catch((error: any) => {
 				setIsPurgeRequestRunning(false);
