@@ -357,8 +357,8 @@ const Subscription: FC = () => {
 							label={t('core.subscription.status', 'Status')}
 							value={
 								services.response.notYetValid || !services.response.authenticationToken
-									? t('core.subscription.not_valid', 'Not Valid')
-									: t('core.subscription.valid', 'Valid')
+									? t('core.subscription.not_valid', 'Not Valid') || ''
+									: t('core.subscription.valid', 'Valid') || ''
 							}
 						/>
 						<IconInfo

@@ -1184,22 +1184,23 @@ const BackupConfiguration: FC = () => {
 						</ListRow>
 					)}
 
-					{isManageExternalVolumeEnable && destinationSelected?.value === MOVE_TO_EXTERNAL_BUCKET && (
-						<Container>
-							<ListRow>
-								<Container padding={{ bottom: 'large' }}>
-									<Select
-										items={bucketListOption}
-										background="gray5"
-										label={t('backup.bucket_list', 'Buckets List')}
-										showCheckbox={false}
-										selection={bucketConfiguration}
-										onChange={onManageExternalVolumeConfigurationChange}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					)}
+					{isManageExternalVolumeEnable &&
+						destinationSelected?.value === MOVE_TO_EXTERNAL_BUCKET && (
+							<Container>
+								<ListRow>
+									<Container padding={{ bottom: 'large' }}>
+										<Select
+											items={bucketListOption}
+											background="gray5"
+											label={t('backup.bucket_list', 'Buckets List')}
+											showCheckbox={false}
+											selection={bucketConfiguration}
+											onChange={onManageExternalVolumeConfigurationChange}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						)}
 					{isManageExternalVolumeEnable &&
 						destinationSelected?.value === MOVE_TO_LOCAL_MOUNT_POINT && (
 							<Container>

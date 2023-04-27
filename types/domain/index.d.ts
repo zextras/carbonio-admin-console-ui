@@ -17,6 +17,50 @@ export interface ICertificateContent {
 	content: string;
 }
 
+export interface CreateSnackbarType {
+	key: string;
+	type: 'error' | 'success' | 'warning';
+	label: string;
+	autoHideTimeout: number;
+	hideButton: boolean;
+	replace: boolean;
+}
+
+export interface IntervalType {
+	label?: string;
+	value?: string;
+}
+
+export interface GalAccountType {
+	id: string;
+	name: string;
+	server: string;
+}
+
+export interface AccountDataType {
+	id?: string;
+	name?: string;
+	galAccount?: GalAccountType | null;
+}
+
+export interface DomainDataType {
+	zimbraGalMaxResults: string;
+	zimbraGalAccountId?: string;
+	zimbraGalMode?: string;
+	zimbraDataSourcePollingInterval?: string;
+	zimbraGalLdapPageSize: string;
+	zimbraGalLdapURL?: string;
+	zimbraGalLdapStartTlsEnabled?: string;
+	zimbraGalLdapSearchBase?: string;
+	zimbraGalLdapFilter?: string;
+	zimbraGalLdapBindDn?: string;
+	zimbraGalLdapBindPassword?: string;
+	zimbraGalLdapAuthMech?: string;
+	zimbraDataSourceGalPollingInterval?: string;
+	zimbraId?: string;
+	zimbraGalLdapPageSizets?: string;
+}
+
 export type themeConfigStore = {
 	carbonioWebUiDarkMode?: boolean;
 	carbonioWebUiLoginLogo?: string;

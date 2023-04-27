@@ -110,6 +110,7 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 	selectedRows,
 	onSelectionChange
 }) => {
+	const [t] = useTranslation();
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
@@ -150,7 +151,7 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 			/>
 			{tableRows.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text>Empty Table</Text>
+					<Text>{t('label.empty_table', 'Empty Table')}</Text>
 				</Row>
 			)}
 		</Container>

@@ -2033,3 +2033,21 @@ export const ServicesPassphraseServices = (): Array<{ value?: string; label: str
 		value: 'POP3'
 	}
 ];
+
+export const getRights = (
+	rights: Array<Record<string, unknown>>,
+	type: string
+): Array<Record<string, string>> => {
+	let right: Array<Record<string, string>> = [];
+	const filteredType = rights.filter((item: Record<string, unknown>) => item?.type === type);
+	if (filteredType && filteredType.length > 0) {
+		if (
+			filteredType[0]?.all &&
+			Array.isArray(filteredType[0]?.all) &&
+			filteredType[0]?.all.length > 0
+		) {
+			right = filteredType[0]?.all[0].right;
+		}
+	}
+	return right;
+};
