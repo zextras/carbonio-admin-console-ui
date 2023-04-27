@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.17](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.16...v0.9.17) (2023-04-27)
+
+
+### Features
+
+* added create destroy galsync account ([35e6c30](https://github.com/zextras/carbonio-admin-console-ui/commit/35e6c3050e6a1dbca84274dbaffa97e24ab70762))
+* added feature to check and veriify auth h in active directory ([06e7bdc](https://github.com/zextras/carbonio-admin-console-ui/commit/06e7bdc32c4f9bb9824c3adde6c621efe2d46cf2))
+* hide backup feature if listServer right not available ([3ef7c57](https://github.com/zextras/carbonio-admin-console-ui/commit/3ef7c574d7cffc124c28f8aa12d8f903a6d239f2))
+* hide server list if user do not have listserver right ([efc1657](https://github.com/zextras/carbonio-admin-console-ui/commit/efc1657dfcba3cd9731d340cd1412da397d02a1a))
+* hide storage option from primarybar when listServer right not avaiable ([8cca2ce](https://github.com/zextras/carbonio-admin-console-ui/commit/8cca2cebaface45f226b85ffc85a31a0c0cf5869))
+
+
+### Bug Fixes
+
+* also changed in create account ([fde3dec](https://github.com/zextras/carbonio-admin-console-ui/commit/fde3decd27bb8fdf116d68aeb583858ce1cb0e62))
+* backup module enable disable check added ([49cb917](https://github.com/zextras/carbonio-admin-console-ui/commit/49cb917a64b0da174303a4429e4b461a2e709b46))
+* backup module not avaiable when module not license ([2afbac3](https://github.com/zextras/carbonio-admin-console-ui/commit/2afbac324d737fb5887b407f868cb5febf4085cc))
+* domain select is not working ([1f8879f](https://github.com/zextras/carbonio-admin-console-ui/commit/1f8879f6d416f30382fb335189ad74a5c3b932ff))
+* fixed translation issue ([223fea2](https://github.com/zextras/carbonio-admin-console-ui/commit/223fea254fe9c77980992c5ff5eb2cea091c5569))
+* fixed translations and removed duplicates ([7e90454](https://github.com/zextras/carbonio-admin-console-ui/commit/7e904547b1b6bdb037887b7418f2e4d96786824f))
+* fixed type defination ([a3941c2](https://github.com/zextras/carbonio-admin-console-ui/commit/a3941c2817961fc0f757dc406a9bb447315cab2c))
+* gal drop down selection cut label ([25a9486](https://github.com/zextras/carbonio-admin-console-ui/commit/25a948671eb4e5c505a6aa26031c8f9795f1219e))
+* general domain setting filed blinking ([b1e07a8](https://github.com/zextras/carbonio-admin-console-ui/commit/b1e07a871be170cbb75e69faa24a2a18daff0e5d))
+* re-checked and removed unused translations ([48f76a8](https://github.com/zextras/carbonio-admin-console-ui/commit/48f76a83e134e38ec4e829348b6dedd92f09f14a))
+* rem value ([da53001](https://github.com/zextras/carbonio-admin-console-ui/commit/da530013712e8cf0d8782a2772410b7dd44fa545))
+* remove signature feature from resources ([#348](https://github.com/zextras/carbonio-admin-console-ui/issues/348)) ([0cbc1f3](https://github.com/zextras/carbonio-admin-console-ui/commit/0cbc1f3b733c990758c0aa381eb9533e40624ff8))
+* removed target server for global config and added for serever selected config ([c549709](https://github.com/zextras/carbonio-admin-console-ui/commit/c54970915f7a23819d46cd1fca7ce95366fd7990))
+* restore account wizard validation check applied ([04cc730](https://github.com/zextras/carbonio-admin-console-ui/commit/04cc7309622932406ae4f720e278b47a36dfe177))
+
 ### [0.9.16](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.15...v0.9.16) (2023-04-14)
 
 
