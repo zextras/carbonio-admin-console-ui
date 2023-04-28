@@ -408,10 +408,6 @@ const CosServerPools: FC = () => {
 		}
 	}, [zimbraMailHostPoolList, serverList]);
 
-	useEffect(() => {
-		console.log('>>>>>', selectedTableRows);
-	}, [selectedTableRows]);
-
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
