@@ -57,20 +57,40 @@ const CosServerPools: FC = () => {
 			const allRows = serverList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="small" weight="light" key={item?.id} color="gray0">
-						{item?.name}
-					</Text>,
-					<Text key={item?.id}>
-						{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
-							<Text size="small" weight="light">
-								{t('cos.enabled', 'Enabled')}
-							</Text>
-						) : (
-							<Text size="small" weight="light" color="error">
-								{t('cos.disabled', 'Disabled')}
-							</Text>
-						)}
-					</Text>
+					<Container
+						crossAlignment="flex-start"
+						key={item?.id}
+						style={{ cursor: 'pointer' }}
+						onClick={(e: { stopPropagation: () => void }): void => {
+							e.stopPropagation();
+							setSelectedTableRows([item]);
+						}}
+					>
+						<Text size="small" weight="light" key={item?.id} color="gray0">
+							{item?.name}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.id}
+						style={{ cursor: 'pointer' }}
+						onClick={(e: { stopPropagation: () => void }): void => {
+							e.stopPropagation();
+							setSelectedTableRows([item]);
+						}}
+					>
+						<Text key={item?.id}>
+							{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
+								<Text size="small" weight="light">
+									{t('cos.enabled', 'Enabled')}
+								</Text>
+							) : (
+								<Text size="small" weight="light" color="error">
+									{t('cos.disabled', 'Disabled')}
+								</Text>
+							)}
+						</Text>
+					</Container>
 				]
 			}));
 			setServerTableRows(allRows);
@@ -114,20 +134,40 @@ const CosServerPools: FC = () => {
 					.map((item: any) => ({
 						id: item?.id,
 						columns: [
-							<Text size="small" weight="light" key={item?.id} color="gray0">
-								{item?.name}
-							</Text>,
-							<Text key={item?.id}>
-								{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
-									<Text size="small" weight="light">
-										{t('cos.enabled', 'Enabled')}
-									</Text>
-								) : (
-									<Text size="small" weight="light" color="error">
-										{t('cos.disabled', 'Disabled')}
-									</Text>
-								)}
-							</Text>
+							<Container
+								crossAlignment="flex-start"
+								key={item?.id}
+								style={{ cursor: 'pointer' }}
+								onClick={(ev: { stopPropagation: () => void }): void => {
+									ev.stopPropagation();
+									setSelectedTableRows([item]);
+								}}
+							>
+								<Text size="small" weight="light" key={item?.id} color="gray0">
+									{item?.name}
+								</Text>
+							</Container>,
+							<Container
+								crossAlignment="flex-start"
+								key={item?.id}
+								style={{ cursor: 'pointer' }}
+								onClick={(ev: { stopPropagation: () => void }): void => {
+									ev.stopPropagation();
+									setSelectedTableRows([item]);
+								}}
+							>
+								<Text key={item?.id}>
+									{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
+										<Text size="small" weight="light">
+											{t('cos.enabled', 'Enabled')}
+										</Text>
+									) : (
+										<Text size="small" weight="light" color="error">
+											{t('cos.disabled', 'Disabled')}
+										</Text>
+									)}
+								</Text>
+							</Container>
 						]
 					}));
 				setServerTableRows(allRows);
@@ -140,20 +180,40 @@ const CosServerPools: FC = () => {
 					.map((item: any) => ({
 						id: item?.id,
 						columns: [
-							<Text size="small" weight="light" key={item?.id} color="gray0">
-								{item?.name}
-							</Text>,
-							<Text key={item?.id}>
-								{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
-									<Text size="small" weight="light">
-										{t('cos.enabled', 'Enabled')}
-									</Text>
-								) : (
-									<Text size="small" weight="light" color="error">
-										{t('cos.disabled', 'Disabled')}
-									</Text>
-								)}
-							</Text>
+							<Container
+								crossAlignment="flex-start"
+								key={item?.id}
+								style={{ cursor: 'pointer' }}
+								onClick={(ev: { stopPropagation: () => void }): void => {
+									ev.stopPropagation();
+									setSelectedTableRows([item]);
+								}}
+							>
+								<Text size="small" weight="light" key={item?.id} color="gray0">
+									{item?.name}
+								</Text>
+							</Container>,
+							<Container
+								crossAlignment="flex-start"
+								key={item?.id}
+								style={{ cursor: 'pointer' }}
+								onClick={(ev: { stopPropagation: () => void }): void => {
+									ev.stopPropagation();
+									setSelectedTableRows([item]);
+								}}
+							>
+								<Text key={item?.id}>
+									{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
+										<Text size="small" weight="light">
+											{t('cos.enabled', 'Enabled')}
+										</Text>
+									) : (
+										<Text size="small" weight="light" color="error">
+											{t('cos.disabled', 'Disabled')}
+										</Text>
+									)}
+								</Text>
+							</Container>
 						]
 					}));
 				setServerTableRows(allRows);
@@ -291,20 +351,40 @@ const CosServerPools: FC = () => {
 					.map((item: any) => ({
 						id: item?.id,
 						columns: [
-							<Text size="small" weight="light" key={item?.id} color="gray0">
-								{item?.name}
-							</Text>,
-							<Text key={item?.id}>
-								{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
-									<Text size="small" weight="light">
-										{t('cos.enabled', 'Enabled')}
-									</Text>
-								) : (
-									<Text size="small" weight="light" color="error">
-										{t('cos.disabled', 'Disabled')}
-									</Text>
-								)}
-							</Text>
+							<Container
+								crossAlignment="flex-start"
+								key={item?.id}
+								style={{ cursor: 'pointer' }}
+								onClick={(ev: { stopPropagation: () => void }): void => {
+									ev.stopPropagation();
+									setSelectedTableRows([item]);
+								}}
+							>
+								<Text size="small" weight="light" key={item?.id} color="gray0">
+									{item?.name}
+								</Text>
+							</Container>,
+							<Container
+								crossAlignment="flex-start"
+								key={item?.id}
+								style={{ cursor: 'pointer' }}
+								onClick={(ev: { stopPropagation: () => void }): void => {
+									ev.stopPropagation();
+									setSelectedTableRows([item]);
+								}}
+							>
+								<Text key={item?.id}>
+									{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
+										<Text size="small" weight="light">
+											{t('cos.enabled', 'Enabled')}
+										</Text>
+									) : (
+										<Text size="small" weight="light" color="error">
+											{t('cos.disabled', 'Disabled')}
+										</Text>
+									)}
+								</Text>
+							</Container>
 						]
 					}));
 				setServerTableRows(allRows);
@@ -327,6 +407,10 @@ const CosServerPools: FC = () => {
 			}
 		}
 	}, [zimbraMailHostPoolList, serverList]);
+
+	useEffect(() => {
+		console.log('>>>>>', selectedTableRows);
+	}, [selectedTableRows]);
 
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
@@ -453,23 +537,10 @@ const CosServerPools: FC = () => {
 									headers={tableHeader}
 									showCheckbox={false}
 									selectedRows={selectedTableRows}
-									onSelectionChange={(selected: any): void => setSelectedTableRows(selected)}
-									RowFactory={CustomRowFactory}
 									HeaderFactory={CustomHeaderFactory}
+									RowFactory={CustomRowFactory}
 								/>
 							</Row>
-							{/* <ListRow>
-								<Divider />
-							</ListRow>
-							<ListRow>
-								<Paging
-									totalItem={1}
-									pageSize={10}
-									setOffset={(): void => {
-										console.log('setOffset for paging');
-									}}
-								/>
-							</ListRow> */}
 						</>
 					)}
 				</Container>
