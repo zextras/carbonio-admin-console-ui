@@ -6,9 +6,26 @@
 import create from 'zustand';
 import { devtools } from 'zustand/middleware';
 
+export interface Right {
+	type: string;
+	all: {
+		right?: {
+			n: string;
+		}[];
+		setAttrs?: {
+			all: boolean;
+		}[];
+		getAttrs?: {
+			all: boolean;
+		}[];
+	}[];
+}
+
+export type Rights = Right[];
+
 type RightsState = {
-	rights: Array<Record<string, unknown>>;
-	setRights: (rights: Array<Record<string, unknown>>) => void;
+	rights: Rights;
+	setRights: (rights: Rights) => void;
 };
 
 export const useRightsStore = create<RightsState>(

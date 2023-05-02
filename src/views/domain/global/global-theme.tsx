@@ -21,6 +21,9 @@ import { useConfigStore } from '../../../store/config/store';
 import { ResetTheme } from '../theme/theme-reset';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { themeConfigStore } from '../../../../types/domain';
+import { Right, useRightsStore } from '../../../store/rights/store';
+import { getAllRights } from '../../utility/utils';
+import { CONFIG } from '../../../constants';
 
 const GlobalTheme: FC = () => {
 	const [t] = useTranslation();
@@ -32,7 +35,6 @@ const GlobalTheme: FC = () => {
 	const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
 	const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-
 	const [isValidated, setIsValidated] = useState<boolean>(true);
 
 	const setValue = useCallback(
@@ -297,6 +299,7 @@ const GlobalTheme: FC = () => {
 					<Divider color="gray2" />
 				</Row>
 				<ThemeConfigs
+					isGlobalTheme
 					themeConfig={globalTheme}
 					setThemeConfig={setGlobalTheme}
 					setIsValidated={setIsValidated}

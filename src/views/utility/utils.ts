@@ -17,6 +17,7 @@ import {
 	MANAGE_NO_SEND,
 	SEND_READ_MANAGE_MAILS
 } from '../../constants';
+import { Right, Rights } from '../../store/rights/store';
 
 export const timeZoneList = (
 	t: TFunction
@@ -2034,20 +2035,22 @@ export const ServicesPassphraseServices = (): Array<{ value?: string; label: str
 	}
 ];
 
-export const getRights = (
-	rights: Array<Record<string, unknown>>,
-	type: string
-): Array<Record<string, string>> => {
+export const getRights = (rights: Rights, type: string): Array<Record<string, string>> => {
 	let right: Array<Record<string, string>> = [];
-	const filteredType = rights.filter((item: Record<string, unknown>) => item?.type === type);
+	const filteredType = rights.filter((item: Right) => item?.type === type);
 	if (filteredType && filteredType.length > 0) {
 		if (
 			filteredType[0]?.all &&
 			Array.isArray(filteredType[0]?.all) &&
 			filteredType[0]?.all.length > 0
 		) {
-			right = filteredType[0]?.all[0].right;
+			right = filteredType[0]?.all[0].right || [];
 		}
 	}
+	return right;
+};
+
+export const getAllRights = (rights: Rights, type: string): Right[] => {
+	const right = rights.filter((item: Right) => item?.type === type);
 	return right;
 };
