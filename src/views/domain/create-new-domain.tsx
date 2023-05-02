@@ -306,8 +306,8 @@ const CreateDomain: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t(
-										'label.default_mail_quota_for_account_domain',
-										'The default email quota for each account in the domain'
+										'label.maximum_mainbox_quota_for_the_domain_in_bytes',
+										'Maximum mailbox quota for the domain in bytes'
 									)}
 									background="gray5"
 									value={zimbraMailDomainQuota}
