@@ -20,7 +20,6 @@ export interface Right {
 		}[];
 	}[];
 }
-
 export type Rights = Right[];
 
 type RightsState = {

@@ -17,7 +17,7 @@ import {
 	MANAGE_NO_SEND,
 	SEND_READ_MANAGE_MAILS
 } from '../../constants';
-import { Right, Rights } from '../../store/rights/store';
+import { Rights, Right } from '../../store/rights/store';
 
 export const timeZoneList = (
 	t: TFunction
