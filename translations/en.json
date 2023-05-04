@@ -1436,7 +1436,7 @@
                 "accepted": "You have accepted the share request"
             }
         },
-        "soft_deleted": "disabled",
+        "soft_deleted": "Soft-deleted",
         "something_wrong_error_msg": "Something went wrong. Please try again.",
         "something_wrong_wrror_msg": "Something went wrong. Please try again.",
         "sort_by_percentage": "Sort by Percentage",
