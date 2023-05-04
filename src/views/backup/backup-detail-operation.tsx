@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import {
 	ADVANCED,
@@ -23,9 +23,10 @@ import ServerAdvanced from './server-advanced/server-advanced';
 import BackupConfiguration from './configuration/backup-configuration';
 
 const BackupDetailOperation: FC = () => {
-	const { operation }: { operation: string } = useParams();
+	const { operation, server }: { operation: string; server: string } = useParams();
 	const globalConfig = useBackupStore((state) => state.globalConfig);
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
+	const setBackupSelectedServer = useBackupStore((state) => state.setSelectedBackupServer);
 
 	const getGlobalConfig = useCallback((): void => {
 		const serverName = window.location.hostname;
@@ -42,6 +43,12 @@ const BackupDetailOperation: FC = () => {
 	useEffect(() => {
 		!globalConfig?.privateKeyAlgorithm && getGlobalConfig();
 	}, [getGlobalConfig, globalConfig?.privateKeyAlgorithm]);
+
+	useEffect(() => {
+		if (server) {
+			setBackupSelectedServer(server);
+		}
+	}, [server, setBackupSelectedServer]);
 
 	return (
 		<>

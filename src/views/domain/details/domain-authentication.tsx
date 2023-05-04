@@ -25,6 +25,9 @@ import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
 import { isValidLdapBaseDN, isValidLdapBaseUrl } from '../../utility/utils';
+import { CheckAuthConfig } from '../../../services/check-auth-config-service';
+import { Attribute, CreateSnackbarType, objectType } from '../../../../types';
+import { CHECK_OK } from '../../../constants';
 
 const ZimbraAuthMethod = {
 	INTERNAL: 'zimbra',
@@ -32,7 +35,7 @@ const ZimbraAuthMethod = {
 	EXTERNAL: 'ad'
 } as const;
 
-const Tooltip: FC<{ items: any[] }> = ({ items }) => (
+const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
 	<Container
 		orientation="horizontal"
 		mainAlignment="flex-start"
@@ -56,20 +59,26 @@ const Tooltip: FC<{ items: any[] }> = ({ items }) => (
 const DomainAuthentication: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
+	const [zimbraAuthMech, setZimbraAuthMech] = useState<{ label: string; value?: string }>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
 	const [zimbraAdminConsoleLogoutURL, setZimbraAdminConsoleLogoutURL] = useState<string>('');
 	const [zimbraWebClientLogoutURL, setZimbraWebClientLogoutURL] = useState<string>('');
 	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
 	const [zimbraForceClearCookies, setZimbraForceClearCookies] = useState<boolean>(false);
-	const [domainAuthData, setDomainAuthData]: any = useState({});
+	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 	const [zimbraAuthLdapBindDn, setZimbraAuthLdapBindDn] = useState<string>('');
 	const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
 	const [zimbraAuthLdapStartTlsEnabled, setZimbraAuthLdapStartTlsEnabled] =
 		useState<boolean>(false);
 	const [zimbraAuthLdapSearchFilter, setZimbraAuthLdapSearchFilter] = useState<string>('');
 	const [zimbraAuthLdapSearchBase, setZimbraAuthLdapSearchBase] = useState<string>('');
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [userName, setUserName] = useState<string>('');
+	const [password, setPassword] = useState<string>('');
+	const [toggleLoginVerfyBtn, setToggleLoginVerfyBtn] = useState<boolean>(true);
+	const [isSuccessVerify, setIsSuccessVerify] = useState<boolean>(false);
+	const [isValidUserName, setIsValidUserName] = useState<boolean>(true);
+	const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 
@@ -157,13 +166,13 @@ const DomainAuthentication: FC = () => {
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
-			const obj: any = {};
-			domainInformation.forEach((item: any) => {
+			const obj: objectType = {};
+			domainInformation.forEach((item: Attribute) => {
 				obj[item?.n] = item._content;
 			});
 			setZimbraAuthMech(
 				obj.zimbraAuthMech
-					? DOMAIN_AUTH_LIST.find((item: any) => item.value === obj.zimbraAuthMech)
+					? DOMAIN_AUTH_LIST.find((item: { value?: string }) => item.value === obj.zimbraAuthMech)
 					: DOMAIN_AUTH_LIST[0]
 			);
 			if (!obj.zimbraAuthMech) {
@@ -321,7 +330,7 @@ const DomainAuthentication: FC = () => {
 			setZimbraAuthMech(
 				DOMAIN_AUTH_LIST.find(
 					// eslint-disable-next-line max-len
-					(item: any) => item.value === v
+					(item: { value: string }) => item.value === v
 				)
 			);
 			if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
@@ -341,7 +350,9 @@ const DomainAuthentication: FC = () => {
 
 	const onCancel = (): void => {
 		setZimbraAuthMech(
-			DOMAIN_AUTH_LIST.find((item: any) => item.value === domainAuthData.zimbraAuthMech)
+			DOMAIN_AUTH_LIST.find(
+				(item: { value?: string }) => item.value === domainAuthData.zimbraAuthMech
+			)
 		);
 		setZimbraPasswordChangeListener(domainAuthData.zimbraPasswordChangeListener);
 		setZimbraAdminConsoleLogoutURL(domainAuthData.zimbraAdminConsoleLogoutURL);
@@ -359,8 +370,12 @@ const DomainAuthentication: FC = () => {
 	};
 
 	const onSave = (): void => {
-		const body: any = {};
-		const attributes: any[] = [];
+		const body: {
+			id?: string;
+			_jsns?: string;
+			a?: { n: string; _content?: string }[];
+		} = {};
+		const attributes: { n: string; _content?: string }[] = [];
 		body.id = domainAuthData.zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
 
@@ -419,7 +434,7 @@ const DomainAuthentication: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				const domain: any = data?.domain[0];
+				const domain: objectType = data?.domain[0];
 				if (domain) {
 					setDomain(domain);
 				}
@@ -437,6 +452,100 @@ const DomainAuthentication: FC = () => {
 				});
 			});
 	};
+
+	useEffect(() => {
+		if (
+			(zimbraAuthMech?.value === 'ldap' || zimbraAuthMech?.value === 'ad') &&
+			isValidLdapDN &&
+			zimbraAuthLdapBindDn !== '' &&
+			zimbraAuthLdapURL !== '' &&
+			isValidLdapUrl &&
+			userName !== '' &&
+			isValidUserName &&
+			password !== '' &&
+			isValidPassword
+		) {
+			setIsSuccessVerify(false);
+			setToggleLoginVerfyBtn(false);
+		} else {
+			setToggleLoginVerfyBtn(true);
+		}
+	}, [
+		isValidLdapDN,
+		isValidLdapUrl,
+		isValidPassword,
+		isValidUserName,
+		password,
+		userName,
+		zimbraAuthLdapBindDn,
+		zimbraAuthLdapURL,
+		zimbraAuthMech?.value
+	]);
+
+	const handleClickLoginAndVarify = useCallback(() => {
+		setToggleLoginVerfyBtn(true);
+		const body: {
+			name?: string;
+			password?: string;
+			_jsns?: string;
+			a?: { n: string; _content?: string }[];
+		} = {};
+		const attributes: { n: string; _content?: string }[] = [];
+		body._jsns = 'urn:zimbraAdmin';
+
+		attributes.push({
+			n: 'zimbraAuthMech',
+			_content: zimbraAuthMech?.value
+		});
+		attributes.push({
+			n: 'zimbraAuthLdapURL',
+			_content: zimbraAuthLdapURL
+		});
+		attributes.push({
+			n: 'zimbraAuthLdapBindDn',
+			_content: zimbraAuthLdapBindDn
+		});
+		body.a = attributes;
+		body.name = userName;
+		body.password = password;
+		CheckAuthConfig(body)
+			.then((response) => {
+				if (response?.code[0]?._content === CHECK_OK) {
+					setIsSuccessVerify(true);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 5000,
+						hideButton: true,
+						replace: true
+					});
+					setToggleLoginVerfyBtn(false);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 5000,
+					hideButton: true,
+					replace: true
+				});
+				setToggleLoginVerfyBtn(false);
+			});
+	}, [
+		createSnackbar,
+		password,
+		t,
+		userName,
+		zimbraAuthLdapBindDn,
+		zimbraAuthLdapURL,
+		zimbraAuthMech?.value
+	]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -506,7 +615,6 @@ const DomainAuthentication: FC = () => {
 							height="fit"
 							crossAlignment="flex-start"
 							background="gray6"
-							className="ff"
 						>
 							<ListRow>
 								<Padding vertical="large" horizontal="small" width="100%">
@@ -533,7 +641,7 @@ const DomainAuthentication: FC = () => {
 										label={t('label.bind_dn_template', 'Bind Distinguished Name (DN) Template')}
 										value={zimbraAuthLdapBindDn}
 										background="gray5"
-										onChange={(e: any): any => {
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value) {
 												const validLdapDn = isValidLdapBaseDN(e.target.value);
 												setIsValidLdapDn(validLdapDn);
@@ -548,7 +656,7 @@ const DomainAuthentication: FC = () => {
 											setZimbraAuthLdapBindDn(e.target.value);
 										}}
 										hasError={!isValidLdapDN}
-										CustomIcon={(): any => (
+										CustomIcon={(): React.ReactElement => (
 											<Container
 												ref={iconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setOpen(true)}
@@ -594,7 +702,7 @@ const DomainAuthentication: FC = () => {
 										label={t('label.url', 'URL')}
 										value={zimbraAuthLdapURL}
 										background="gray5"
-										onChange={(e: any): any => {
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value) {
 												const validLdapUrl = isValidLdapBaseUrl(e.target.value);
 												setIsValidLdapUrl(validLdapUrl);
@@ -609,7 +717,7 @@ const DomainAuthentication: FC = () => {
 											setZimbraAuthLdapURL(e.target.value);
 										}}
 										hasError={!isValidLdapUrl}
-										CustomIcon={(): any => (
+										CustomIcon={(): React.ReactElement => (
 											<Container
 												ref={ldapUrlIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setLdapUrlOpen(true)}
@@ -655,10 +763,10 @@ const DomainAuthentication: FC = () => {
 										label={t('label.filter', 'Filter')}
 										value={zimbraAuthLdapSearchFilter}
 										background="gray5"
-										onChange={(e: any): any => {
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraAuthLdapSearchFilter(e.target.value);
 										}}
-										CustomIcon={(): any => (
+										CustomIcon={(): React.ReactElement => (
 											<Container
 												ref={filterIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setFilterOpen(true)}
@@ -685,18 +793,108 @@ const DomainAuthentication: FC = () => {
 										label={t('label.search_base', 'Basic Search')}
 										value={zimbraAuthLdapSearchBase}
 										background="gray5"
-										onChange={(e: any): any => {
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraAuthLdapSearchBase(e.target.value);
 										}}
 									/>
 								</Padding>
 							</ListRow>
 							<ListRow>
+								<Padding vertical="small" horizontal="small" width="38%">
+									<Input
+										label={t('label.username', 'Username')}
+										value={userName}
+										background="gray5"
+										inputName="username"
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											if (e.target.value !== '') {
+												setIsValidUserName(true);
+											} else {
+												setIsValidUserName(false);
+											}
+											setUserName(e.target.value);
+										}}
+										hasError={!isValidUserName}
+									/>
+									{!isValidUserName && (
+										<Row>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												width="fill"
+											>
+												<Padding top="small">
+													<Text size="extrasmall" weight="regular" color="error">
+														{t('label.required', 'Required')}
+													</Text>
+												</Padding>
+											</Container>
+										</Row>
+									)}
+								</Padding>
+								<Padding vertical="small" horizontal="small" width="38%">
+									<Input
+										label={t('label.password', 'Password')}
+										background="gray5"
+										inputName="zimbraQuotaWarnInterval"
+										value={password}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											if (e.target.value !== '') {
+												setIsValidPassword(true);
+											} else {
+												setIsValidPassword(false);
+											}
+											setPassword(e.target.value);
+										}}
+										hasError={!isValidPassword}
+									/>
+									{!isValidPassword && (
+										<Row>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												width="fill"
+											>
+												<Padding top="small">
+													<Text size="extrasmall" weight="regular" color="error">
+														{t('label.required', 'Required')}
+													</Text>
+												</Padding>
+											</Container>
+										</Row>
+									)}
+								</Padding>
+								<Padding vertical="small" horizontal="small" width="24%">
+									<Button
+										type="outlined"
+										label={
+											isSuccessVerify
+												? t('label.login_verified_button_title', 'LOGIN VERIFIED')
+												: t('label.login_verify_button_title', 'LOGIN AND VERIFY')
+										}
+										icon="CheckmarkOutline"
+										iconPlacement="right"
+										color={isSuccessVerify ? 'success' : 'primary'}
+										width="fill"
+										size="extralarge"
+										onClick={handleClickLoginAndVarify}
+										disabled={toggleLoginVerfyBtn}
+									/>
+								</Padding>
+							</ListRow>
+							<ListRow>
+								<Padding vertical="small" horizontal="small" width="100%">
+									<Divider color="gray2" />
+								</Padding>
+							</ListRow>
+							<Padding horizontal="small" width="90%"></Padding>
+							<ListRow>
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Switch
 										value={zimbraAuthLdapStartTlsEnabled}
 										label={t('label.enable_start_tls', 'Enable StartTLS')}
 										onClick={authLdapStartTlsEnabled}
+										iconColor="primary"
 									/>
 								</Padding>
 							</ListRow>
@@ -709,6 +907,7 @@ const DomainAuthentication: FC = () => {
 											'Try local password management in case of failure with other methods'
 										)}
 										onClick={authFallbackToLocal}
+										iconColor="primary"
 									/>
 								</Padding>
 							</ListRow>
@@ -721,7 +920,7 @@ const DomainAuthentication: FC = () => {
 										)}
 										background="gray5"
 										value={zimbraPasswordChangeListener}
-										onChange={(e: any): any => {
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraPasswordChangeListener(e.target.value);
 										}}
 									/>
@@ -743,7 +942,7 @@ const DomainAuthentication: FC = () => {
 										)}
 										background="gray5"
 										value={zimbraAdminConsoleLogoutURL}
-										onChange={(e: any): any => {
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraAdminConsoleLogoutURL(e.target.value);
 										}}
 									/>
@@ -765,7 +964,7 @@ const DomainAuthentication: FC = () => {
 										)}
 										background="gray5"
 										value={zimbraWebClientLogoutURL}
-										onChange={(e: any): any => {
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraWebClientLogoutURL(e.target.value);
 										}}
 									/>
@@ -777,6 +976,7 @@ const DomainAuthentication: FC = () => {
 										value={zimbraForceClearCookies}
 										label={t('label.auto_logout_users', 'Auto Logout Users')}
 										onClick={forceClearCookies}
+										iconColor="primary"
 									/>
 								</Padding>
 							</ListRow>

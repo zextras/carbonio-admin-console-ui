@@ -19,6 +19,7 @@ import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils'
 import { VolumeContext } from './volume-context';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import {
+	COMPRESSION_THRESHOLD_UNIT,
 	EMPTY_TYPE_VALUE,
 	INDEX_TYPE_VALUE,
 	LOCAL,
@@ -33,7 +34,7 @@ const MailstoresCreate: FC<{
 }> = ({ onSelection, externalData, setCompleteLoading }) => {
 	const context = useContext(VolumeContext);
 	const { t } = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
 	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const { volumeDetail, setVolumeDetail } = context;
@@ -60,9 +61,9 @@ const MailstoresCreate: FC<{
 
 	const changeVolName = useCallback(
 		(e) => {
-			setVolumeDetail((prev: object) => ({ ...prev, volumeName: e.target.value }));
-			onSelection({ volumeName: e.target.value }, true);
-			if (e.target.value !== '') {
+			setVolumeDetail((prev: object) => ({ ...prev, volumeName: e?.target?.value }));
+			onSelection({ volumeName: e?.target?.value }, true);
+			if (e?.target?.value !== '') {
 				setErrName(true);
 			} else {
 				setErrName(false);
@@ -72,9 +73,9 @@ const MailstoresCreate: FC<{
 	);
 	const changeVolPath = useCallback(
 		(e) => {
-			setVolumeDetail((prev: object) => ({ ...prev, path: e.target.value }));
-			onSelection({ path: e.target.value }, true);
-			if (e.target.value !== '') {
+			setVolumeDetail((prev: object) => ({ ...prev, path: e?.target?.value }));
+			onSelection({ path: e?.target?.value }, true);
+			if (e?.target?.value !== '') {
 				setErrPath(true);
 			} else {
 				setErrPath(false);
@@ -84,12 +85,16 @@ const MailstoresCreate: FC<{
 	);
 	const changeVolCompThresold = useCallback(
 		(e) => {
-			setVolumeDetail((prev: object) => ({ ...prev, compressionThreshold: e.target.value }));
-			onSelection({ compressionThreshold: e.target.value }, true);
-			if (e.target.value !== '') {
-				setErrCompressionThreshold(true);
-			} else {
-				setErrCompressionThreshold(false);
+			const regex = /^[0-9]*$/;
+			const result = regex?.test(e?.target?.value);
+			if (result) {
+				setVolumeDetail((prev: object) => ({ ...prev, compressionThreshold: e?.target?.value }));
+				onSelection({ compressionThreshold: e?.target?.value }, true);
+				if (e?.target?.value !== '') {
+					setErrCompressionThreshold(true);
+				} else {
+					setErrCompressionThreshold(false);
+				}
 			}
 		},
 		[onSelection, setVolumeDetail]
@@ -110,17 +115,26 @@ const MailstoresCreate: FC<{
 	};
 
 	useEffect(() => {
-		if (
-			volumeDetail?.volumeName &&
-			volumeDetail?.path &&
-			(volumeDetail?.compressionThreshold || toggleIndexer)
-		) {
-			if (isAdvanced && volumeDetail?.volumeMain) {
-				setCompleteLoading(true);
-			} else if (isAdvanced) {
+		if (volumeDetail?.volumeName && volumeDetail?.path) {
+			if (!volumeDetail?.isCompression) {
+				setErrCompressionThreshold(true);
+				if (isAdvanced && volumeDetail?.volumeMain) {
+					setCompleteLoading(true);
+				} else if (isAdvanced) {
+					setCompleteLoading(false);
+				} else if (!isAdvanced) {
+					setCompleteLoading(true);
+				}
+			} else if (volumeDetail?.compressionThreshold) {
+				if (isAdvanced && volumeDetail?.volumeMain) {
+					setCompleteLoading(true);
+				} else if (isAdvanced) {
+					setCompleteLoading(false);
+				} else if (!isAdvanced) {
+					setCompleteLoading(true);
+				}
+			} else {
 				setCompleteLoading(false);
-			} else if (!isAdvanced) {
-				setCompleteLoading(true);
 			}
 		} else {
 			setCompleteLoading(false);
@@ -128,8 +142,8 @@ const MailstoresCreate: FC<{
 	}, [
 		isAdvanced,
 		setCompleteLoading,
-		toggleIndexer,
 		volumeDetail?.compressionThreshold,
+		volumeDetail?.isCompression,
 		volumeDetail?.path,
 		volumeDetail?.volumeMain,
 		volumeDetail?.volumeName
@@ -149,8 +163,8 @@ const MailstoresCreate: FC<{
 				setVolumeDetail((prev: any) => ({ ...prev, volumeMain: EMPTY_TYPE_VALUE }));
 				onSelection({ volumeMain: EMPTY_TYPE_VALUE }, true);
 			}
-			const volumeTypeObject = volAllocationList.find(
-				(item: any) => item.value === volumeDetail?.volumeAllocation
+			const volumeTypeObject = volAllocationList?.find(
+				(item: any) => item?.value === volumeDetail?.volumeAllocation
 			);
 			setAllocation(volumeTypeObject);
 		}
@@ -176,6 +190,13 @@ const MailstoresCreate: FC<{
 			}
 		}
 	}, [isAdvanced, volumeDetail?.volumeMain]);
+
+	useEffect(() => {
+		if (!volumeDetail?.isCompression) {
+			setVolumeDetail((prev: object) => ({ ...prev, compressionThreshold: '' }));
+			onSelection({ compressionThreshold: '' }, true);
+		}
+	}, [onSelection, setVolumeDetail, volumeDetail?.isCompression]);
 
 	return (
 		<>
@@ -204,8 +225,8 @@ const MailstoresCreate: FC<{
 							items={volTypeList}
 							background="gray5"
 							label={t('label.volume_type', 'Volume Type')}
-							defaultSelection={volTypeList.filter(
-								(items) => items.value === volumeDetail?.volumeMain
+							defaultSelection={volTypeList?.filter(
+								(items) => items?.value === volumeDetail?.volumeMain
 							)}
 							showCheckbox={false}
 							onChange={onVolMainChange}
@@ -255,6 +276,7 @@ const MailstoresCreate: FC<{
 										setSecondaryRadio(false);
 										setIndexRadio(false);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 							<Row width="48%" mainAlignment="flex-start">
@@ -268,6 +290,7 @@ const MailstoresCreate: FC<{
 										setPrimaryRadio(false);
 										setIndexRadio(false);
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</Row>
@@ -282,6 +305,7 @@ const MailstoresCreate: FC<{
 									setPrimaryRadio(false);
 									setSecondaryRadio(false);
 								}}
+								iconColor="primary"
 							/>
 						</Row>
 					</>
@@ -310,6 +334,7 @@ const MailstoresCreate: FC<{
 								value={volumeDetail?.isCompression}
 								label={t('label.enable_compression', 'Enable Compression')}
 								onClick={changeSwitchIsCompression}
+								iconColor="primary"
 							/>
 						</Row>
 						<Padding horizontal="small" />
@@ -321,6 +346,8 @@ const MailstoresCreate: FC<{
 								value={volumeDetail?.compressionThreshold}
 								onChange={changeVolCompThresold}
 								hasError={!errCompressionThreshold}
+								disabled={!volumeDetail?.isCompression}
+								CustomIcon={(): any => <Text color="secondary">{COMPRESSION_THRESHOLD_UNIT}</Text>}
 							/>
 							{!errCompressionThreshold && (
 								<Padding top="extrasmall">
@@ -337,6 +364,7 @@ const MailstoresCreate: FC<{
 						value={volumeDetail?.isCurrent}
 						label={t('label.enable_current', 'Enable as Current')}
 						onClick={changeSwitchIsCurrent}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>

@@ -18,7 +18,18 @@ import {
 import { useTranslation } from 'react-i18next';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
-import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, ERROR, FAIL, SUCCESS } from '../../constants';
+import {
+	ALIBABA,
+	AMAZON_WEB_SERVICE_S3,
+	CUSTOM_S3,
+	ERROR,
+	FAIL,
+	HTTP,
+	HTTPS,
+	SUCCESS,
+	V4
+} from '../../constants';
+import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
@@ -58,7 +69,7 @@ const Connection: FC<{
 	const [prefixConfirm, setprefixConfirm] = useState(true);
 	const [regionSelection, setRegionSelection] = useState<any>(bucketRegions[0]);
 	const bucketType = externalData;
-	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
+	const { selectedServerName } = useBucketVolumeStore((state) => state);
 	const handleVerifyConnector = (): any => {
 		if (bucketName && accessKeyData && secretKey) {
 			const storeType = bucketType || bucketTypeData;
@@ -73,12 +84,14 @@ const Connection: FC<{
 				accessKey: accessKeyData,
 				secret: secretKey,
 				region: regionsData?.value,
+				signatureVersion: V4,
+				protocol: urlInput.startsWith(HTTPS) ? HTTPS : HTTP,
 				url:
 					bucketTypeData === AMAZON_WEB_SERVICE_S3 || bucketType === AMAZON_WEB_SERVICE_S3
 						? ''
 						: urlInput,
 				prefix,
-				targetServer: server
+				targetServer: selectedServerName
 			};
 			if (storeType === CUSTOM_S3) {
 				delete objectToSend.region;
@@ -88,6 +101,11 @@ const Connection: FC<{
 				// @ts-ignore
 				delete objectToSend.prefix;
 			}
+			if (selectedServerName === '') {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				delete objectToSend?.targetServers;
+			}
 
 			fetchSoap('zextras', objectToSend).then((res: any) => {
 				const response = JSON.parse(res.Body.response.content);
@@ -96,18 +114,26 @@ const Connection: FC<{
 					const responseData = data.split("'");
 					setBucketUid(responseData[1]);
 					onSelection({ uuid: responseData[1] }, false);
-					fetchSoap('zextras', {
+					const objToSendTestConnection = {
 						_jsns: 'urn:zimbraAdmin',
 						module: 'ZxCore',
 						action: 'testS3Connection',
-						targetServers: server,
+						targetServers: selectedServerName,
 						bucketId: responseData[1]
-					}).then((responseVerify) => {
+					};
+
+					if (selectedServerName === '') {
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore
+						delete objToSendTestConnection?.targetServers;
+					}
+
+					fetchSoap('zextras', objToSendTestConnection).then((responseVerify) => {
 						const responseVerifyData = JSON.parse(responseVerify.Body.response.content);
 						if (
 							responseVerifyData.ok &&
-							responseVerifyData.response[server] &&
-							responseVerifyData.response[server].ok
+							responseVerifyData.response[selectedServerName] &&
+							responseVerifyData.response[selectedServerName].ok
 						) {
 							setVerifyCheck(SUCCESS);
 							setBucketDetailButton(true);
@@ -125,7 +151,12 @@ const Connection: FC<{
 					});
 				} else {
 					setBucketDetailButton(false);
-					setbothFail(response?.error?.message || response?.error || response?.exception?.message);
+					setbothFail(
+						response?.error?.message ||
+							response?.error ||
+							response?.exception?.message ||
+							response.response[selectedServerName].error.message
+					);
 					setVerifyCheck(FAIL);
 				}
 			});
@@ -479,7 +510,7 @@ const Connection: FC<{
 					}}
 				/>
 			</Row>
-			<Row width="100%" padding={{ top: 'large' }}>
+			<Row width="100%" padding={{ top: 'large' }} style={{ display: 'block' }}>
 				<Button
 					type="outlined"
 					label={buttonDetail}
@@ -487,6 +518,8 @@ const Connection: FC<{
 					iconPlacement="right"
 					color={buttonColor}
 					width="100%"
+					size="large"
+					style={{ width: '100%' }}
 					onClick={handleVerifyConnector}
 					disabled={bucketDetailButton}
 				/>

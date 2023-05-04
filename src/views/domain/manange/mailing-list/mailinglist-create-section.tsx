@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { MailingListContext } from './mailinglist-context';
 import ListRow from '../../../list/list-row';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -22,10 +24,10 @@ const MailingListCreateSection: FC<any> = () => {
 	const { mailingListDetail, setMailingListDetail } = context;
 	const [ownerMember, setOwnerMember] = useState<Array<any>>([]);
 	const [memberList, setMemberList] = useState<Array<any>>([]);
-	const [subscription, setSubscription] = useState<string>('');
-	const [unSubscription, setUnSubscription] = useState<string>('');
+	const [subscription, setSubscription] = useState<string | null>('');
+	const [unSubscription, setUnSubscription] = useState<string | null>('');
 	const [ldapQueryMembers, setLdapQueryMembers] = useState<Array<any>>([]);
-	const [grantEmailType, setGrantEmailType] = useState<string>('');
+	const [grantEmailType, setGrantEmailType] = useState<string | null>('');
 
 	const tableHeader: any[] = useMemo(
 		() => [
@@ -57,7 +59,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = member.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="light" key={item} color="#828282">
 						{item}
 					</Text>
 				]
@@ -72,7 +74,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = ownersList.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item}
 					</Text>
 				]
@@ -87,7 +89,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = member.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item?.name}
 					</Text>
 				]
@@ -228,7 +230,13 @@ const MailingListCreateSection: FC<any> = () => {
 				{!mailingListDetail?.dynamic && (
 					<ListRow>
 						<Container padding={{ bottom: 'medium' }}>
-							<Table rows={memberList} headers={tableHeader} showCheckbox={false} />
+							<Table
+								rows={memberList}
+								headers={tableHeader}
+								showCheckbox={false}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
 						</Container>
 					</ListRow>
 				)}
@@ -329,7 +337,13 @@ const MailingListCreateSection: FC<any> = () => {
 						</Row>
 						<ListRow>
 							<Container padding={{ bottom: 'medium' }}>
-								<Table rows={ldapQueryMembers} headers={tableHeader} showCheckbox={false} />
+								<Table
+									rows={ldapQueryMembers}
+									headers={tableHeader}
+									showCheckbox={false}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
+								/>
 							</Container>
 						</ListRow>
 					</>
@@ -366,7 +380,13 @@ const MailingListCreateSection: FC<any> = () => {
 
 				<ListRow>
 					<Container padding={{ bottom: 'medium', top: 'medium' }}>
-						<Table rows={ownerMember} headers={ownerTableHeader} showCheckbox={false} />
+						<Table
+							rows={ownerMember}
+							headers={ownerTableHeader}
+							showCheckbox={false}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
+						/>
 					</Container>
 				</ListRow>
 

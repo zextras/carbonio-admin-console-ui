@@ -44,6 +44,7 @@ const ListItems: FC<{
 			mainAlignment="flex-start"
 			width="100%"
 			onClick={selectOption(item)}
+			style={{ cursor: 'pointer' }}
 		>
 			<Container padding={{ all: 'small' }} orientation="horizontal" mainAlignment="flex-start">
 				<Padding horizontal="small">

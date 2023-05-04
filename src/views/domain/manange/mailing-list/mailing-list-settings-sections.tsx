@@ -26,6 +26,8 @@ import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -176,7 +178,15 @@ const MailingListSettingsSection: FC<any> = () => {
 			const allRows = ownersList.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text
+						size="medium"
+						weight="light"
+						key={item?.id}
+						color="#828282"
+						onClick={(): void => {
+							setSelectedDistributionListOwner([item]);
+						}}
+					>
 						{item}
 					</Text>
 				]
@@ -281,7 +291,6 @@ const MailingListSettingsSection: FC<any> = () => {
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -307,7 +316,6 @@ const MailingListSettingsSection: FC<any> = () => {
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -407,7 +415,15 @@ const MailingListSettingsSection: FC<any> = () => {
 			const allRows = grantEmailsList.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text
+						size="medium"
+						weight="light"
+						key={item?.id}
+						color="#828282"
+						onClick={(): void => {
+							setSelectedGrantEmail([item]);
+						}}
+					>
 						{item}
 					</Text>
 				]
@@ -463,6 +479,7 @@ const MailingListSettingsSection: FC<any> = () => {
 										!mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
 								}));
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -483,6 +500,7 @@ const MailingListSettingsSection: FC<any> = () => {
 									zimbraHideInGal: !mailingListDetail?.zimbraHideInGal
 								}));
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -503,6 +521,7 @@ const MailingListSettingsSection: FC<any> = () => {
 									zimbraMailStatus: !mailingListDetail?.zimbraMailStatus
 								}));
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -600,7 +619,7 @@ const MailingListSettingsSection: FC<any> = () => {
 							color="primary"
 							icon="PlusOutline"
 							iconPlacement="right"
-							height={44}
+							size="large"
 							onClick={onAdd}
 							disabled={member === ''}
 						/>
@@ -618,7 +637,7 @@ const MailingListSettingsSection: FC<any> = () => {
 							color="error"
 							icon="Trash2Outline"
 							iconPlacement="right"
-							height={44}
+							size="large"
 							onClick={onDeleteFromList}
 							disabled={selectedDistributionListOwner && selectedDistributionListOwner.length === 0}
 						/>
@@ -631,9 +650,8 @@ const MailingListSettingsSection: FC<any> = () => {
 							headers={ownerHeaders}
 							showCheckbox={false}
 							selectedRows={selectedDistributionListOwner}
-							onSelectionChange={(selected: any): void =>
-								setSelectedDistributionListOwner(selected)
-							}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
 				</ListRow>
@@ -733,7 +751,7 @@ const MailingListSettingsSection: FC<any> = () => {
 							color="primary"
 							icon="PlusOutline"
 							iconPlacement="right"
-							height={44}
+							size="large"
 							onClick={onAddGrantEmail}
 							disabled={grantEmailItem === ''}
 						/>
@@ -751,7 +769,7 @@ const MailingListSettingsSection: FC<any> = () => {
 							color="error"
 							icon="Trash2Outline"
 							iconPlacement="right"
-							height={44}
+							size="large"
 							onClick={onDeleteFromGrantEmail}
 							disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
 						/>
@@ -765,7 +783,8 @@ const MailingListSettingsSection: FC<any> = () => {
 							headers={grantEmailHeaders}
 							showCheckbox={false}
 							selectedRows={selectedGrantEmail}
-							onSelectionChange={(selected: any): void => setSelectedGrantEmail(selected)}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
 				</ListRow>

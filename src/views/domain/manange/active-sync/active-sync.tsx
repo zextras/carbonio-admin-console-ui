@@ -24,6 +24,8 @@ import gardian from '../../../../assets/gardian.svg';
 import { getAllDevices } from '../../../../services/get-all-devices';
 import ActiveDeviceDetail from './active-device-detail';
 import { ZX_MOBILE } from '../../../../constants';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 type MobileDevice = {
 	accountEmail: string;
@@ -45,7 +47,6 @@ type MobileDevice = {
 
 const ActiveSync: FC = () => {
 	const [t] = useTranslation();
-	const [offset, setOffset] = useState<number>(0);
 	const [allMobileDevices, setAllMobileDevices] = useState<Array<MobileDevice>>([]);
 	const [allDeviceRow, setAllDeviceRow] = useState<Array<any>>([]);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -183,72 +184,78 @@ const ActiveSync: FC = () => {
 			const allRows = allMobileDevices.map((item: MobileDevice) => ({
 				id: item?.firstSeen,
 				columns: [
-					<Text
-						size="medium"
-						weight="bold"
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{item?.accountName}
-					</Text>,
-					<Text
-						size="medium"
-						weight="bold"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{item?.accountName}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{item?.deviceId}
-					</Text>,
-					<Text
-						size="medium"
-						weight="bold"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{item?.deviceId}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{item?.accountEmail}
-					</Text>,
-					<Text
-						size="medium"
-						weight="bold"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{item?.accountEmail}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{moment(item?.lastSeen).format('YY/MM/DD | hh:mm:ss a')}
-					</Text>,
-					<Text
-						size="medium"
-						weight="bold"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{moment(item?.lastSeen).format('YY/MM/DD | hh:mm:ss a')}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{''}
-					</Text>,
-					<Text
-						size="medium"
-						weight="bold"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{''}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{item?.status === 1 ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
-					</Text>
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{item?.status === 1 ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+						</Text>
+					</Container>
 				]
 			}));
 			setAllDeviceRow(allRows);
@@ -321,27 +328,30 @@ const ActiveSync: FC = () => {
 					padding={{ all: 'large' }}
 				>
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
-						<Input
-							label={t(
-								'label.filter_by_device_type_account',
-								'Filter by device type, account, status'
-							)}
-							background="gray5"
-							onChange={(e: any): any => {
-								setSearchString(e.target.value);
-							}}
-							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-						/>
-
-						<Padding left="medium">
-							<Button
-								type="outlined"
-								label={t('label.remove', 'Remove')}
-								color="error"
-								height="44px"
-								disabled
+						<Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
+							<Input
+								label={t(
+									'label.filter_by_device_type_account',
+									'Filter by device type, account, status'
+								)}
+								background="gray5"
+								onChange={(e: any): any => {
+									setSearchString(e.target.value);
+								}}
+								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 							/>
-						</Padding>
+						</Container>
+						<Container width="12%" crossAlignment="flex-end" mainAlignment="flex-end">
+							<Padding left="medium">
+								<Button
+									type="outlined"
+									label={t('label.remove', 'Remove')}
+									color="error"
+									disabled
+									size="extralarge"
+								/>
+							</Padding>
+						</Container>
 					</Row>
 					<Row
 						takeAvwidth="fill"
@@ -350,7 +360,14 @@ const ActiveSync: FC = () => {
 						wrap="nowrap"
 						padding={{ top: 'large' }}
 					>
-						<Table rows={allDeviceRow} headers={headers} showCheckbox={false} multiSelect={false} />
+						<Table
+							rows={allDeviceRow}
+							headers={headers}
+							showCheckbox={false}
+							multiSelect={false}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
+						/>
 					</Row>
 					{allDeviceRow.length === 0 && (
 						<Container orientation="column" crossAlignment="center" mainAlignment="center">

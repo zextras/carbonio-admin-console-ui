@@ -26,6 +26,7 @@ import {
 	MANAGE_APP_ID,
 	MONITORING,
 	NOTIFICATION_ROUTE_ID,
+	OPERATIONS_ROUTE_ID,
 	PRIVACY_ROUTE_ID,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
@@ -43,6 +44,8 @@ import BucketRoutePanel from './bucket/bucket-route-panel';
 import PrivacyView from './privacy/privacy-view';
 import NotificationsListPanel from './notifications/notifications-list-panel';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
+import OperationsListPanel from './operations/operations-list-panel';
+import OperationsDetailPanel from './operations/operations-detail-panel';
 
 const DetailViewContainer = styled(Container)`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
@@ -151,7 +154,11 @@ const AppView: FC = () => {
 					</Container>
 				</Route>
 				<Route path={`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						style={{ overflow: 'hidden' }}
+					>
 						<Container style={{ maxWidth: '265px' }}>
 							<Suspense fallback={<Spinner />}>
 								<BackupListPanel />
@@ -178,6 +185,22 @@ const AppView: FC = () => {
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
 									<NotificationsDetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
+					</Container>
+				</Route>
+				<Route path={`/${LOG_AND_QUEUES}/${OPERATIONS_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '16.563rem' }}>
+							<Suspense fallback={<Spinner />}>
+								<OperationsListPanel />
+							</Suspense>
+						</Container>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<OperationsDetailPanel />
 								</Suspense>
 							</DetailViewContainer>
 						</Container>

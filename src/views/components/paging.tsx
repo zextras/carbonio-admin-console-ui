@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Container, IconButton, Text, Row } from '@zextras/carbonio-design-system';
 import { FIRST_PAGE } from '../../constants';
@@ -55,12 +55,12 @@ const Paging: FC<{
 		}
 	};
 
-	const onFirstPage = (): void => {
+	const onFirstPage = useCallback((): void => {
 		setCurrentPage(FIRST_PAGE);
 		if (firstPage) {
 			firstPage(FIRST_PAGE);
 		}
-	};
+	}, [firstPage]);
 
 	useEffect(() => {
 		if (currentPage >= totalPages) {
@@ -81,7 +81,12 @@ const Paging: FC<{
 			setIsFirstPageDisabled(true);
 			setIsLastPageDisabled(true);
 		}
-		setOffset(currentPage * pageSize - pageSize);
+		if (totalPages === 0) {
+			setCurrentPage(FIRST_PAGE);
+			setOffset(0);
+		} else {
+			setOffset(currentPage * pageSize - pageSize);
+		}
 	}, [currentPage, totalPages, setOffset, pageSize, totalItem]);
 
 	return (
@@ -90,28 +95,33 @@ const Paging: FC<{
 			crossAlignment="center"
 			mainAlignment="flex-start"
 			width="fit"
+			padding={{ top: 'medium' }}
 		>
-			<IconButton
-				size="large"
-				icon="GoFirstOutline"
-				iconColor="primary"
-				onClick={onFirstPage}
-				disabled={isFirstPageDisabled}
-			/>
-			<IconButton
-				size="large"
-				icon="ChevronLeft"
-				iconColor="primary"
-				onClick={onPreviousPage}
-				disabled={isPreviousPageDisabled}
-			/>
-
+			<Row padding={{ right: 'small' }}>
+				<IconButton
+					size="large"
+					icon="GoFirstOutline"
+					iconColor="primary"
+					onClick={onFirstPage}
+					disabled={isFirstPageDisabled}
+				/>
+			</Row>
+			<Row padding={{ right: 'small' }}>
+				<IconButton
+					size="large"
+					icon="ChevronLeft"
+					iconColor="primary"
+					onClick={onPreviousPage}
+					disabled={isPreviousPageDisabled}
+				/>
+			</Row>
 			<Text size="medium" weight="bold" color="#828282" orientation="horizontal">
 				<span
 					style={{
 						color: 'gray0',
 						width: '41px',
 						height: '23px',
+						padding: '0.25rem 0 0 0',
 						textAlign: 'center',
 						display: 'inline-block',
 						background: '#F5F6F8'
@@ -121,21 +131,24 @@ const Paging: FC<{
 				</span>{' '}
 				{t('label.of', 'of')} {totalPages}
 			</Text>
-
-			<IconButton
-				size="large"
-				icon="ChevronRight"
-				iconColor="primary"
-				onClick={onNextPage}
-				disabled={isNextPageDisabled || currentPage === totalPages}
-			/>
-			<IconButton
-				size="large"
-				icon="GoLastOutline"
-				iconColor="primary"
-				onClick={onLastPage}
-				disabled={isLastPageDisabled || currentPage === totalPages}
-			/>
+			<Row padding={{ left: 'small' }}>
+				<IconButton
+					size="large"
+					icon="ChevronRight"
+					iconColor="primary"
+					onClick={onNextPage}
+					disabled={isNextPageDisabled || currentPage === totalPages}
+				/>
+			</Row>
+			<Row padding={{ left: 'small' }}>
+				<IconButton
+					size="large"
+					icon="GoLastOutline"
+					iconColor="primary"
+					onClick={onLastPage}
+					disabled={isLastPageDisabled || currentPage === totalPages}
+				/>
+			</Row>
 		</Container>
 	);
 };

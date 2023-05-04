@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC } from 'react';
-import { Modal, Row, Button, Text, Padding, Container } from '@zextras/carbonio-design-system';
+import { Modal, Row, Button, Text, Container } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 const DeleteVolumeModel: FC<{
@@ -19,20 +19,20 @@ const DeleteVolumeModel: FC<{
 			<Modal
 				size="medium"
 				title={t('label.delet_volume_header', 'Delete {{name}} ?', {
-					name: volumeDetail.name
+					name: volumeDetail?.name
 				})}
 				open={open}
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
 						<Button
-							style={{ marginLeft: '10px' }}
+							style={{ marginLeft: '0.625rem' }}
 							type="outlined"
 							label={t('label.need_help_button', 'NEED HELP?')}
 							color="primary"
 							onClick={closeHandler}
 						/>
-						<Row style={{ gap: '8px' }}>
-							{volumeDetail.isCurrent ? (
+						<Row style={{ gap: '0.5rem' }}>
+							{volumeDetail?.isCurrent ? (
 								<Button
 									label={t('label.cancle_button_is_current', 'OK, I GOT IT')}
 									color="primary"
@@ -49,7 +49,7 @@ const DeleteVolumeModel: FC<{
 										label={t('label.delete_button', 'DELETE')}
 										color="error"
 										onClick={(): void => {
-											deleteHandler(volumeDetail.id);
+											deleteHandler(volumeDetail);
 										}}
 									/>
 								</>
@@ -63,21 +63,21 @@ const DeleteVolumeModel: FC<{
 				<Text
 					size={'extralarge'}
 					overflow="break-word"
-					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '32px 0' }}
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
 				>
 					{volumeDetail?.isCurrent
 						? t(
 								'label.delete_content_is_current',
 								`You're trying to delete {{name}}. This volume is set as current. You should set a different volume as the current one before deleting it.`,
 								{
-									name: volumeDetail.name
+									name: volumeDetail?.name
 								}
 						  )
 						: t(
 								'label.delete_content',
 								`You are deleting {{name}}. Are you sure you want to delete it?`,
 								{
-									name: volumeDetail.name
+									name: volumeDetail?.name
 								}
 						  )}
 				</Text>

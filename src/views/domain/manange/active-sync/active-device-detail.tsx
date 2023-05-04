@@ -28,21 +28,6 @@ import { resetDevice } from '../../../../services/reset-device';
 import { suspendDevice } from '../../../../services/suspend-device';
 import { wipeDevice } from '../../../../services/wipe-device';
 
-const DeviceDetailContainer = styled(Container)`
-	z-index: 10;
-	position: absolute;
-	top: 43px;
-	right: 0px;
-	bottom: 0px;
-	left: ${'max(calc(100% - 680px), 12px)'};
-	transition: left 0.2s ease-in-out;
-	height: auto;
-	width: auto;
-	max-height: 100%;
-	overflow: hidden;
-	box-shadow: -6px 4px 5px 0px rgba(0, 0, 0, 0.1);
-`;
-
 type MobileDeviceDetail = {
 	accountEmail: string;
 	accountName: string;
@@ -302,14 +287,31 @@ const ActiveDeviceDetail: FC<{
 	}, [operationType, resetDeviceOperation, suspendDeviceOperation, wipeDeviceOperation]);
 
 	return (
-		<DeviceDetailContainer background="gray6" mainAlignment="flex-start">
+		<Container
+			background="gray6"
+			mainAlignment="flex-start"
+			style={{
+				'z-index': '10',
+				position: 'absolute',
+				top: '2.688rem',
+				right: '0',
+				bottom: '0',
+				left: `${'max(calc(100% - 42.5rem), 0.75rem)'}`,
+				transition: 'left 0.2s ease-in-out',
+				height: 'auto',
+				width: 'auto',
+				'max-height': '100%',
+				overflow: 'hidden',
+				'box-shadow': '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)'
+			}}
+		>
 			<Row
 				mainAlignment="flex-start"
 				crossAlignment="center"
 				orientation="horizontal"
 				background="white"
 				width="fill"
-				height="56px"
+				height="3.5rem"
 			>
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
@@ -538,7 +540,7 @@ const ActiveDeviceDetail: FC<{
 					/>
 				)}
 			</Container>
-		</DeviceDetailContainer>
+		</Container>
 	);
 };
 

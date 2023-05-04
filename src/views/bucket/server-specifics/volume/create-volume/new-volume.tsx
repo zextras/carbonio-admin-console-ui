@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, ReactElement, useCallback, useContext, useState } from 'react';
+import React, { FC, useCallback, useContext, useState } from 'react';
 import { Button } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
@@ -48,18 +48,20 @@ const NewVolume: FC<{
 	volName: any;
 	setCreateMailstoresVolumeData: any;
 	CreateVolumeRequest: any;
+	CreateAdvancedRequest: any;
 }> = ({
 	setToggleWizardLocal,
 	setToggleWizardExternal,
 	setDetailsVolume,
 	volName,
 	setCreateMailstoresVolumeData,
-	CreateVolumeRequest
+	CreateVolumeRequest,
+	CreateAdvancedRequest
 }) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 	const context = useContext(VolumeContext);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
 	const { volumeDetail, setVolumeDetail } = context;
 
 	const wizardSteps = [
@@ -87,7 +89,7 @@ const NewVolume: FC<{
 						label={t('label.volume_back_button', 'BACK')}
 						icon={'ChevronLeftOutline'}
 						iconPlacement="left"
-						disable={props.completeLoading}
+						disable={props?.completeLoading}
 						color="secondary"
 						onClick={(): void => {
 							setToggleWizardLocal(false);
@@ -104,7 +106,7 @@ const NewVolume: FC<{
 						label={t('label.volume_create', 'CREATE')}
 						icon={'PowerOutline'}
 						iconPlacement="right"
-						disable={props.completeLoading}
+						disable={props?.completeLoading}
 					/>
 				) : (
 					<Button
@@ -112,7 +114,7 @@ const NewVolume: FC<{
 						label={t('label.volume_create', 'CREATE')}
 						icon={'ChevronRightOutline'}
 						iconPlacement="right"
-						disable={props.completeLoading}
+						disable={props?.completeLoading}
 					/>
 				)
 		}
@@ -126,12 +128,12 @@ const NewVolume: FC<{
 				rootpath: volumeDetail?.path,
 				type: volumeDetail?.volumeMain,
 				compressBlobs: volumeDetail?.isCompression ? 1 : 0,
-				compressionThreshold: volumeDetail?.compressionThreshold,
+				compressionThreshold: volumeDetail?.isCompression ? volumeDetail?.compressionThreshold : 0,
 				isCurrent: volumeDetail?.isCurrent ? 1 : 0
 			});
 			setCreateMailstoresVolumeData(volumeDetail);
 		},
-		[volumeDetail, CreateVolumeRequest, setCreateMailstoresVolumeData]
+		[setCreateMailstoresVolumeData, volumeDetail, CreateVolumeRequest]
 	);
 
 	return (

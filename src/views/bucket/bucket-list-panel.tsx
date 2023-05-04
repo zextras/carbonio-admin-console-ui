@@ -42,6 +42,7 @@ const BucketListPanel: FC = () => {
 	const [searchVolumeName, setSearchVolumeName] = useState('');
 	const [isVolumeListExpand, setIsVolumeListExpand] = useState(false);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const [itemsVolume, setItemsVolume] = useState<any>();
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${STORAGES_ROUTE_ID}`);
@@ -59,31 +60,38 @@ const BucketListPanel: FC = () => {
 		[setSelectedServerName]
 	);
 
-	const itemsVolume = volumeList.map((volume: any, index) => ({
-		id: volume.id,
-		label: volume.name,
-		customComponent: (
-			<SelectItem
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
-				style={{
-					fontFamily: 'roboto',
-					display: 'block',
-					textAlign: 'left',
-					height: 'inherit',
-					padding: '3px',
-					width: 'inherit'
-				}}
-				onClick={(): void => {
-					selectedVolume(volume);
-				}}
-			>
-				{volume?.name}
-			</SelectItem>
-		)
-	}));
+	const addServerToList = useCallback((list: any) => {
+		const data = list.map((volume: any) => ({
+			id: volume.id,
+			label: volume.name,
+			customComponent: (
+				<SelectItem
+					top="9px"
+					right="large"
+					bottom="9px"
+					left="large"
+					style={{
+						display: 'block',
+						textAlign: 'left',
+						height: 'inherit',
+						padding: '3px',
+						width: 'inherit'
+					}}
+					onClick={(): void => {
+						selectedVolume(volume);
+					}}
+				>
+					{volume?.name}
+				</SelectItem>
+			)
+		}));
+		setItemsVolume(data);
+	}, [selectedVolume]);
+
+	useEffect(() => {
+		const filterList = volumeList.filter((item: any) => item.name.includes(searchVolumeName));
+		addServerToList(filterList);
+	}, [searchVolumeName, addServerToList, volumeList]);
 
 	const globalServerOption = useMemo(
 		() => [
@@ -117,11 +125,6 @@ const BucketListPanel: FC = () => {
 				name: t('label.hsm_settings', 'HSM Settings'),
 				isSelected: isStoreVolumeSelect
 			}
-			/* {
-				id: INDEXER_SETTINGS,
-				name: t('label.indexer_settings', 'Indexer Settings'),
-				isSelected: isStoreVolumeSelect
-			} */
 		],
 		[t, isStoreVolumeSelect]
 	);
@@ -209,6 +212,7 @@ const BucketListPanel: FC = () => {
 										<Icon
 											icon="HardDriveOutline"
 											size="large"
+											color="primary"
 											onClick={(): void => {
 												setIsVolumeListExpand(!isVolumeListExpand);
 											}}

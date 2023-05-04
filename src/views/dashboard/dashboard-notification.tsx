@@ -28,7 +28,7 @@ const DashboardNotification: FC<{
 				>
 					<ListRow>
 						<Container mainAlignment="flex-start" crossAlignment="flex-start" width="2.2rem">
-							<Icon icon="BellOutline" height={'1.5rem'} width="1.5rem" />
+							<Icon icon="BellOutline" size="large" />
 						</Container>
 						<Container mainAlignment="center" crossAlignment="flex-start">
 							<Text size="medium" color="gray0" weight="bold">
@@ -47,6 +47,7 @@ const DashboardNotification: FC<{
 						label={t('dashboard.go_to_notification', 'Go to notification')}
 						color="primary"
 						onClick={goToMailNotificationt}
+						size="large"
 					/>
 				</Container>
 			</ListRow>

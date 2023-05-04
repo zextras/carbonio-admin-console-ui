@@ -3,195 +3,171 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import {
-	Container,
-	Row,
-	Input,
-	Padding,
-	Switch,
-	Text,
-	Select,
-	Table
-} from '@zextras/carbonio-design-system';
+import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { Container, Row, Input } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { volumeConfigHeader } from '../../../../../utility/utils';
+import { volumeTypeList } from '../../../../../utility/utils';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
-import { NO, YES } from '../../../../../../constants';
-import logo from '../../../../../../assets/gardian.svg';
-
-const VolumeCreateTable: FC<{
-	volumes: Array<any>;
-	selectedRows: any;
-	onSelectionChange: any;
-	headers: any;
-	onClick: any;
-}> = ({ volumes, selectedRows, onSelectionChange, headers, onClick }) => {
-	const [t] = useTranslation();
-	const tableRows = useMemo(
-		() =>
-			volumes.map((v, i) => ({
-				id: v?.id,
-				columns: [
-					<Row
-						key={i}
-						onClick={(): void => {
-							onClick(i);
-						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-					>
-						{v?.name}
-					</Row>,
-					<Row
-						key={i}
-						onClick={(): void => {
-							onClick(i);
-						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-center' }}
-					>
-						{v?.hsmSchedule === '1' ? YES : NO}
-					</Row>,
-					<Row
-						key={i}
-						onClick={(): void => {
-							onClick(i);
-						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-center' }}
-					>
-						{v?.indexer === '1' ? YES : NO}
-					</Row>
-				],
-				clickable: true
-			})),
-		[onClick, volumes]
-	);
-
-	return (
-		<Container crossAlignment="flex-start">
-			<Table
-				headers={headers}
-				rows={tableRows}
-				showCheckbox={false}
-				multiSelect={false}
-				selectedRows={selectedRows}
-				onSelectionChange={onSelectionChange}
-			/>
-			{tableRows.length === 0 && (
-				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text overflow="break-word" weight="normal" size="large">
-						<Padding top="extralarge" />
-						<Padding top="large" />
-						<img src={logo} alt="logo" />
-					</Text>
-				</Row>
-			)}
-		</Container>
-	);
-};
+import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../../constants';
+import ListRow from '../../../../../list/list-row';
 
 const AdvancedMailstoresCreate: FC<{
-	onSelection: any;
 	externalData: string;
 	setCompleteLoading: any;
-}> = ({ onSelection, externalData, setCompleteLoading }) => {
+}> = ({ externalData, setCompleteLoading }) => {
 	const context = useContext(AdvancedVolumeContext);
 	const { t } = useTranslation();
-	const volConfigHeader = useMemo(() => volumeConfigHeader(t), [t]);
-	// const { advancedVolumeDetail, setAdvancedVolumeDetail } = context;
-	const [volumeCreateSelection, setVolumeCreateSelection] = useState(false);
+	const { advancedVolumeDetail } = context;
+	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+	const [volumeType, setVolumeType] = useState<any>('');
+	const [bucketS3, setBucketS3] = useState(false);
 
-	const volumeCreateList: Array<any> = [
-		{
-			name: 'servername#1',
-			hsmSchedule: '0',
-			indexer: '1'
+	useEffect(() => {
+		if (
+			advancedVolumeDetail?.volumeAllocation &&
+			advancedVolumeDetail?.volumeName &&
+			advancedVolumeDetail?.unusedBucketType &&
+			volumeType
+		) {
+			setCompleteLoading(true);
+		} else {
+			setCompleteLoading(false);
 		}
-	];
+	}, [advancedVolumeDetail, setCompleteLoading, volumeType]);
+
+	useEffect(() => {
+		const volumeTypeObject = volTypeList?.find(
+			(item: any) => item?.value === advancedVolumeDetail?.volumeMain
+		)?.label;
+		setVolumeType(volumeTypeObject);
+	}, [advancedVolumeDetail?.volumeMain, volTypeList]);
+
+	useEffect(() => {
+		if (advancedVolumeDetail?.unusedBucketType === S3) {
+			setBucketS3(true);
+		} else {
+			setBucketS3(false);
+		}
+	}, [advancedVolumeDetail?.unusedBucketType]);
 
 	return (
 		<>
 			<Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
-				<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+				<Row padding={{ top: 'large' }} width="100%">
 					<Input
-						inputName="volumeName"
-						label={t('label.volume_name', 'Volume Name')}
+						inputName="server"
+						label={t('label.volume_server_name', 'Server')}
 						backgroundColor="gray6"
-						value="NewVolume#4"
+						value={externalData}
+					/>
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%">
+					<Input
+						label={t('label.volume_allocation', 'Allocation')}
+						backgroundColor="gray6"
+						value={advancedVolumeDetail?.volumeAllocation}
 						readOnly
 					/>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
-					<Row width="48.6%" mainAlignment="flex-start">
-						<Input
-							label={t('label.volume_type', 'Volume Type')}
-							backgroundColor="gray6"
-							value="Secondary"
-							readOnly
-						/>
-					</Row>
-					<Padding horizontal="small" />
-					<Row width="48.6%" mainAlignment="flex-start">
-						<Input
-							label={t('label.current', 'Current')}
-							backgroundColor="gray6"
-							value="Not current"
-							readOnly
-						/>
-					</Row>
+					<Input
+						label={t('label.volume_name', 'Volume Name')}
+						value={advancedVolumeDetail?.volumeName}
+						backgroundColor="gray6"
+						readOnly
+					/>
 				</Row>
-				<Row padding={{ top: 'large' }} width="100%">
-					<Row width="31.5%" mainAlignment="flex-start">
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ top: 'large', right: 'large' }}
+					>
+						<Input
+							label={t('label.bucket_name', 'Bucket Name')}
+							backgroundColor="gray6"
+							value={advancedVolumeDetail?.bucketName}
+							readOnly
+						/>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ top: 'large', right: 'large' }}
+					>
 						<Input
 							label={t('label.type', 'Type')}
 							backgroundColor="gray6"
-							value="Object Storage"
+							value={advancedVolumeDetail?.unusedBucketType}
 							readOnly
 						/>
-					</Row>
-					<Padding horizontal="small" />
-					<Row width="31.5%" mainAlignment="flex-start">
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ top: 'large' }}
+					>
 						<Input
-							label={t('label.object_storage', 'CurObject Storagerent')}
+							label={t('label.ID', 'ID')}
 							backgroundColor="gray6"
-							value="hsmBucket | S3"
+							value={advancedVolumeDetail?.bucketId}
 							readOnly
 						/>
-					</Row>
-					<Padding horizontal="small" />
-					<Row width="31.5%" mainAlignment="flex-start">
-						<Input
-							label={t('label.prefix', 'Prefix')}
-							backgroundColor="gray6"
-							value="hsms3"
-							readOnly
-						/>
-					</Row>
-				</Row>
-				<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+					</Container>
+				</ListRow>
+				<Row padding={{ top: 'large' }} width="100%">
 					<Input
-						inputName="volumeName"
-						label={t('label.volume_id', 'Volume ID')}
+						label={t('label.type_of_volume', 'Type of Volume')}
+						value={volumeType}
 						backgroundColor="gray6"
-						value="1b26f772-301f-448b-9dd9-2dc75a0d326d"
 						readOnly
 					/>
 				</Row>
-				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-					<Text color="gray0">
-						{t('label.will_be_centralized_in_helptext', 'Will be centralized in')}
-					</Text>
+				<Row padding={{ top: 'large' }} width="100%">
+					<Input
+						label={t(
+							'label.prefix_name',
+							'Prefix - all objects will have this prefix in their name'
+						)}
+						value={advancedVolumeDetail?.prefix}
+						backgroundColor="gray6"
+						readOnly
+					/>
+				</Row>
+				{bucketS3 && (
+					<>
+						<Row padding={{ top: 'large' }} width="100%">
+							<Input
+								label={t('label.infrequent_access', 'Infrequent access')}
+								value={advancedVolumeDetail?.useInfrequentAccess ? ENABLED : DISABLED}
+								backgroundColor="gray6"
+								readOnly
+							/>
+						</Row>
+						<Row padding={{ top: 'large' }} width="100%">
+							<Input
+								label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
+								value={advancedVolumeDetail?.useIntelligentTiering ? ENABLED : DISABLED}
+								backgroundColor="gray6"
+								readOnly
+							/>
+						</Row>
+					</>
+				)}
+				<Row padding={{ top: 'large' }} width="100%">
+					<Input
+						label={t('label.volume_as_current', 'Volum as current')}
+						value={advancedVolumeDetail?.isCurrent ? YES : NO}
+						backgroundColor="gray6"
+						readOnly
+					/>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
-					<VolumeCreateTable
-						volumes={volumeCreateList}
-						headers={volConfigHeader}
-						selectedRows={volumeCreateSelection}
-						onSelectionChange={(selected: any): any => {
-							setVolumeCreateSelection(selected);
-						}}
-						onClick={(i: any): any => {
-							// handleClick(i, volumeList?.primaries);
-						}}
+					<Input
+						label={t('label.centralized', 'Centralized')}
+						value={advancedVolumeDetail?.centralized ? YES : NO}
+						backgroundColor="gray6"
+						readOnly
 					/>
 				</Row>
 			</Container>

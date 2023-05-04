@@ -44,9 +44,9 @@ const DomainDetailPanel: FC = () => {
 					<Container>
 						<Text
 							overflow="break-word"
-							weight="normal"
+							weight="regular"
 							size="large"
-							style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
+							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>
 							<img src={logo} alt="logo" />
 						</Text>
@@ -54,10 +54,10 @@ const DomainDetailPanel: FC = () => {
 							<Text
 								color="gray1"
 								overflow="break-word"
-								weight="normal"
+								weight="regular"
 								size="large"
 								width="60%"
-								style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
+								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>
 								{t(
 									'select_domain_or_create_new',
@@ -75,7 +75,7 @@ const DomainDetailPanel: FC = () => {
 									type="outlined"
 									label={t('label.create_new_domain', 'Creat New Domain')}
 									icon="Plus"
-									color="info"
+									color="primary"
 									onClick={createNewDomain}
 								/>
 							</Text>

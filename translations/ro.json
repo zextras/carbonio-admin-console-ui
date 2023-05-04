@@ -108,7 +108,7 @@
         "signatures": "Semnături",
         "standard": "Standard",
         "user": "Utilizator",
-        "deleteing": "In curs de stergere",
+        "deleteing": "In curs de stergere ",
         "enable_toaster_notification_for_new_calendar_events": "Activare notificare prin Toaster pentru evenimente de calendar noi",
         "search_dot": "Cauta…",
         "volume": "Volum",
@@ -165,7 +165,17 @@
         "bucket_notes": "Note",
         "date": "Dată",
         "notifications": "Notificări",
-        "open": "Deschide"
+        "open": "Deschide",
+        "ID": "ID",
+        "general_options": "Opţiuni generale",
+        "running": "Executare",
+        "done": "Realizat",
+        "Accounts": "Conturi",
+        "Type": "Tip",
+        "contacts": "Contacte",
+        "files": "Fisiere",
+        "storage": "Spatiu de stocare",
+        "value": "Valoare"
     },
     "core": {
         "subscription": {
@@ -182,7 +192,10 @@
         "mailbox_quota": "Cotă căsuţă poştală",
         "most_result_return_gal_search": "Majoritatea rezultatelor căutării în GAL",
         "virtual_hosts": "Gazde virtuale",
-        "manage": "Gestionare"
+        "manage": "Gestionare",
+        "gal_change_mode_both": "Ambele",
+        "gal_change_mode_external": "Extern",
+        "gal_change_mode_internal": "Intern"
     },
     "buckets": {
         "connection": {
@@ -194,8 +207,7 @@
     },
     "backup": {
         "schedule": "Planificare",
-        "advanced": "Avansat",
-        "general": "General"
+        "advanced": "Avansat"
     },
     "cos": {
         "calendar_options": "Opţiuni calendar",
@@ -334,10 +346,14 @@
             "work_week": "Vizualizare zile de lucru"
         },
         "enable_smime": "Activare S/MIME",
-        "general": "General",
         "min_new_check_interval_value": "Valoare",
         "domain": "Domeniu",
-        "files": "Fisiere"
+        "files": "Fisiere",
+        "SAVE": "Salveaza",
+        "remove": "Eliminare",
+        "send_check": "Trimite",
+        "services": "Servicii",
+        "status": "Stare"
     },
     "connection": {
         "notes": "Note"
@@ -373,7 +389,8 @@
             "external": "Extern"
         },
         "volume_config_header": {
-            "name": "Nume"
+            "name": "Nume",
+            "status": "Stare"
         },
         "volume_header": {
             "current": "Actual",
@@ -394,5 +411,21 @@
     "notification": {
         "copy": "Copiaza",
         "manage": "Gestionare"
-    }
+    },
+    "operations": {
+        "details": "Detalii",
+        "done": "Realizat",
+        "label": {
+            "notifications": "Notificări",
+            "status": "Stare"
+        },
+        "operations_list_header": {
+            "author": "Autor",
+            "server": "Server",
+            "status": "Stare"
+        },
+        "other": "Altele",
+        "running": "Executare"
+    },
+    "new": "Nou"
 }

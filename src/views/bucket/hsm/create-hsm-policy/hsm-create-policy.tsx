@@ -57,26 +57,8 @@ const HSMcreatePolicy: FC<any> = () => {
 			hsmDetail?.policyCriteria.forEach((item: any, index: number) => {
 				if (item?.option === 'before') {
 					query += `:${item?.option}:-${item?.dateScale}${item?.scale}`;
-					beforeString.push(
-						`${(
-							<Trans
-								i18nKey="hsm.previous_day_scale"
-								defaults="previous <bold>{{day}}</bod> {{scale}}?"
-								components={{ bold: <strong />, day: item?.dateScale, scale: item?.scale }}
-							/>
-						)}`
-					);
 				} else if (item?.option === 'after') {
 					query += `:${item?.option}:${item?.dateScale}${item?.scale}`;
-					afterString.push(
-						`${(
-							<Trans
-								i18nKey="hsm.next_day_scale"
-								defaults="next <bold>{{day}}</bod> {{scale}?"
-								components={{ bold: <strong />, day: item?.dateScale, scale: item?.scale }}
-							/>
-						)}`
-					);
 				} else if (item?.option === 'larger') {
 					query += `:${item?.option}:${item?.dateScale}${item?.scale}`;
 					largerSmallerString.push(
@@ -124,7 +106,9 @@ const HSMcreatePolicy: FC<any> = () => {
 						i18nKey="hsm.abstract_msg_2"
 						defaults="<b>{{enables}} {{largerSmaller}}</b> stored in {{source}} will be moved to {{destination}}. This will affect data stored in the <bold>{{previous}}</bold> and in the <bold>{{next}}</bold>."
 						components={{
-							bold: <strong />,
+							bold: <strong />
+						}}
+						values={{
 							enables: enabledString.join(', '),
 							largerSmaller: largerSmallerString.join(', '),
 							previous: beforeString.join(', '),
@@ -142,7 +126,9 @@ const HSMcreatePolicy: FC<any> = () => {
 						i18nKey="hsm.abstract_msg_1"
 						defaults="<bold>{{enables}} {{largerSmaller}}</bod>. This will affect data stored in the <bold>{{previous}}</bold> and in the <bold>{{next}}</bold>."
 						components={{
-							bold: <strong />,
+							bold: <strong />
+						}}
+						values={{
 							enables: enabledString.join(', '),
 							largerSmaller: largerSmallerString.join(', '),
 							previous: beforeString.join(', '),

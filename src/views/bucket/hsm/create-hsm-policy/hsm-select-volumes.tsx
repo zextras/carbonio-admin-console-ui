@@ -14,6 +14,8 @@ import {
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
@@ -86,18 +88,18 @@ const HSMselectVolumes: FC<any> = () => {
 			const allRows = volumeList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{''}
 					</Text>,
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{getVoumeType(item?.type)}
 					</Text>,
 					<Text
 						size="medium"
-						weight="bold"
+						weight="medium"
 						key={item}
 						color={item?.isCurrent ? 'gray0' : '#D74942'}
 					>
@@ -179,6 +181,7 @@ const HSMselectVolumes: FC<any> = () => {
 						onClick={(): void => {
 							setShowSourceVolume(!showSourceVolume);
 						}}
+						iconColor="primary"
 					/>
 				</Padding>
 			</ListRow>
@@ -209,6 +212,8 @@ const HSMselectVolumes: FC<any> = () => {
 									setSelectedSourceVolume(selected);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 				</Padding>
@@ -249,6 +254,7 @@ const HSMselectVolumes: FC<any> = () => {
 						onClick={(): void => {
 							setShowDestinationVolume(!showDestinationVolume);
 						}}
+						iconColor="primary"
 					/>
 				</Padding>
 			</ListRow>
@@ -258,7 +264,7 @@ const HSMselectVolumes: FC<any> = () => {
 						<Table
 							rows={volumeRows}
 							headers={headers}
-							showCheckbox={false}
+							showCheckbox
 							multiSelect={false}
 							selectedRows={selectedDestinationVolume}
 							onSelectionChange={(selected: any): void => {
@@ -281,6 +287,8 @@ const HSMselectVolumes: FC<any> = () => {
 									setSelectedDestinationVolume(selected);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 				</Padding>

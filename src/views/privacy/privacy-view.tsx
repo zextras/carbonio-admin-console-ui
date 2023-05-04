@@ -210,13 +210,11 @@ const PrivacyView: FC = () => {
 						>
 							<Switch
 								value={carbonioSendFullErrorStack}
-								label={t(
-									'privacy.send_full_error_data_to_zextras',
-									'Send full error data to Zextras'
-								)}
+								label={t('privacy.send_full_error_data', 'Send full error data')}
 								onClick={(): void => {
 									isChangeItem(CARBONIO_SEND_FULL_ERROR_STACK, !carbonioSendFullErrorStack);
 								}}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
@@ -249,6 +247,7 @@ const PrivacyView: FC = () => {
 								onClick={(): void => {
 									isChangeItem(CARBONIO_SEND_ANALYTICS, !carbonioSendAnalytics);
 								}}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
@@ -281,6 +280,7 @@ const PrivacyView: FC = () => {
 								onClick={(): void => {
 									isChangeItem(CARBONIO_ALLOW_FEEDBACK, !carbonioAllowFeedback);
 								}}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>

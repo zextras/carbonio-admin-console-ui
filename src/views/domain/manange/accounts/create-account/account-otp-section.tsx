@@ -271,7 +271,7 @@ const AccountOtpSection: FC = () => {
 									onChange={(contacts: any): void => {
 										const data: any = [];
 										map(contacts, (contact) => {
-											if (isValidEmail(contact.label)) data.push(contact);
+											if (isValidEmail(contact.label ?? '')) data.push(contact);
 										});
 										setSendEmailTo(data);
 									}}

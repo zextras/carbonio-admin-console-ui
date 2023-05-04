@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	addRoute,
+	removeRoute,
 	registerActions,
 	setAppContext,
 	Spinner,
@@ -21,13 +22,15 @@ import {
 	useAllConfig,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	useIsAdvanced
+	useIsAdvanced,
+	useUserAccounts
 } from '@zextras/carbonio-shell-ui';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { Icon, IconButton } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { MatomoProvider } from '@datapunt/matomo-tracker-react';
+import { find } from 'lodash';
 import {
 	APPLICATION_LOG,
 	APP_ID,
@@ -35,19 +38,22 @@ import {
 	CARBONIO_ALLOW_FEEDBACK,
 	CARBONIO_SEND_ANALYTICS,
 	CARBONIO_SEND_FULL_ERROR_STACK,
+	CONFIG,
 	COS_ROUTE_ID,
 	CREATE_NEW_COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
+	LIST_SERVER,
 	LOG_AND_QUEUES,
 	MANAGE,
 	MANAGE_APP_ID,
 	MONITORING,
 	MTA,
 	NOTIFICATION_ROUTE_ID,
-	OPERATIONS,
+	OPERATIONS_ROUTE_ID,
 	PRIVACY_ROUTE_ID,
+	SERVER,
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID,
@@ -59,12 +65,15 @@ import { useGlobalConfigStore } from './store/global-config/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
 import { useConfigStore } from './store/config/store';
-import { getAllConfig } from './services/get-all-config';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import MatomoTracker from './matomo-tracker';
 import { useMailstoreListStore } from './store/mailstore-list/store';
+import { useModuleLicenseStore } from './store/module-license/store';
+import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
+import { useRightsStore, Right, Rights } from './store/rights/store';
+import { getRights } from './views/utility/utils';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -98,6 +107,26 @@ const App: FC = () => {
 	const allConfig = useAllConfig();
 	const isAdvanced = useIsAdvanced();
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
+	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
+	const accounts = useUserAccounts();
+	const setRights = useRightsStore((state) => state.setRights);
+	const rights: Rights = useRightsStore((state) => state.rights);
+	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+
+	const showSubsciption = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
+	useEffect(() => {
+		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
+			getAllEffectiveRigthsRequest(accounts[0]?.name).then((res) => {
+				setRights(res?.target);
+			});
+		}
+	}, [accounts, setRights]);
 
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
@@ -148,48 +177,25 @@ const App: FC = () => {
 	const backupTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.backup', 'BACKUP'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.global_server_settings', 'Global Server Settings'),
-				options: [
-					{
-						label: t('label.server_config', 'Server Config')
-					},
-					{
-						label: t('label.advanced', 'Advanced')
-					},
-					{
-						label: t('label.servers_list', 'Servers List')
-					}
-				]
-			},
-			{
-				header: t('label.server_specifics', 'Server Specifics'),
-				options: [
-					{
-						label: t('label.configuration_lbl', 'Configuration')
-					},
-					{
-						label: t('label.advanced', 'Advanced')
-					}
-				]
-			} /* ,
-			{
-				header: t('label.actions', 'Actions'),
-				options: [
-					{
-						label: t('label.import_an_external_backup', 'Import an External Backup')
-					}
-				]
-			} */
+				header: (
+					<>
+						<Trans
+							i18nKey="label.backup_lbl"
+							defaults="<bold>Backup</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.backup_primarybar_tooltip"
+							defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
 		],
-		[t]
+		[]
 	);
 
 	const BackupTooltipView: FC = useCallback(
@@ -200,38 +206,25 @@ const App: FC = () => {
 	const cosTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.cos', 'COS'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.details', 'Details'),
-				options: [
-					{
-						label: t('label.general_information', 'General Information')
-					},
-					{
-						label: t('label.features', 'Features')
-					},
-					{
-						label: t('label.preferences', 'Preferences')
-					},
-					{
-						label: t('label.server_pools', 'Server Pools')
-					},
-					{
-						label: t('label.advanced', 'Advanced')
-					} /* ,
-					{
-						label: t('label.retention_policy', 'Retention Policy')
-					} */
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.class_of_service_lbl"
+							defaults="<bold>Class of Service</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.cos_primarybar_tooltip"
+							defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
 	);
 
 	const CosTooltipView: FC = useCallback(
@@ -239,73 +232,109 @@ const App: FC = () => {
 		[cosTooltipItems]
 	);
 
+	const privacyTooltipItems = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.privacy_lbl"
+							defaults="<bold>Privacy</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.privacy_primarybar_tooltip"
+							defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
+	const PrivacyTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={privacyTooltipItems} />,
+		[privacyTooltipItems]
+	);
+
+	const notificationTooltipItems = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.notification_lbl"
+							defaults="<bold>Notifications</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.notification_primarybar_tooltip"
+							defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
+	const NotificationTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={notificationTooltipItems} />,
+		[notificationTooltipItems]
+	);
+
 	const domainsTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.domains', 'DOMAINS'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.details', 'Details'),
-				options: [
-					{
-						label: t('label.domain_status', 'Domain Status')
-					},
-					{
-						label: t('label.general_Settings', 'General Settings')
-					},
-					{
-						label: t('label.gal', 'GAL')
-					},
-					{
-						label: t('label.authentication', 'Authentication')
-					},
-					{
-						label: t('label.virtual_hosts_and_certificates', 'Virtual Hosts & Certificate')
-					},
-					{
-						label: t('label.mailbox_quota', 'Mailbox Quota')
-					}
-				]
-			},
-			{
-				header: t('domain.manage', 'Manage'),
-				options: [
-					{
-						label: t('label.accounts', 'Accounts')
-					},
-					{
-						label: t('label.mailing_list', 'Mailing List')
-					},
-					{
-						label: t('label.resources', 'Resources')
-					},
-					/* {
-						label: t('label.admin_delegates', 'Admin Delegates')
-					},
-					{
-						label: t('label.active_sync', 'ActiveSync')
-					},
-					{
-						label: t('label.account_scan', 'AccountScan')
-					},
-					{
-						label: t('label.export_domain', 'Export Domain')
-					} */
-					{
-						label: t('label.restore_account', 'Restore Account')
-					}
-					/* {
-						label: t('label.restore_deleted_email', 'Restore Deleted E-mail')
-					} */
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.domains_lbl"
+							defaults="<bold>Domains</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.domain_primarybar_tooltip"
+							defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, mailing lists, resources</bold> and <bold>more</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
+	);
+
+	const homeTooltipItems = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.dashboard"
+							defaults="<bold>Dashboard</bold>"
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
+	const HomeTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={homeTooltipItems} />,
+		[homeTooltipItems]
 	);
 
 	const DomainTooltipView: FC = useCallback(
@@ -316,41 +345,25 @@ const App: FC = () => {
 	const storagesTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.mailstores', 'Mailstores'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.global_servers', 'Global Servers'),
-				options: [
-					{
-						label: t('label.servers_list', 'Servers List')
-					},
-					{
-						label: t('label.bucket_list', 'Bucket List')
-					}
-				]
-			},
-			{
-				header: t('label.server_details', 'Server Details'),
-				options: [
-					{
-						label: t('label.data_volumes', 'Data Volumes')
-					}
-					/* ,
-					{
-						label: t('label.hsm_policies', 'HSM Policies')
-					},
-					{
-						label: t('label.indexer_settings', 'Indexer Settings')
-					} */
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.storage_lbl"
+							defaults="<bold>Storage</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.storage_primarybar_tooltip"
+							defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
 	);
 
 	const StorageTooltipView: FC = useCallback(
@@ -361,31 +374,59 @@ const App: FC = () => {
 	const subscriptionTooltipItems = useMemo(
 		() => [
 			{
-				header: t('label.subscriptions', 'SUBSCRIPTIONS'),
-				options: [
-					{
-						label: t('label.here_you_will_find', 'Here you will find')
-					}
-				]
-			},
-			{
-				header: t('label.subscription', 'Subscription'),
-				options: [
-					{
-						label: t('label.details', 'Details')
-					} /* ,
-					{
-						label: t('label.activate_and_update', 'Activate & Update')
-					} */
-				]
+				header: (
+					<>
+						<Trans
+							i18nKey="label.subscription_lbl"
+							defaults="<bold>Subscription</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.subscription_primarybar_tooltip"
+							defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
 			}
 		],
-		[t]
+		[]
 	);
 
 	const SubscriptionTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={subscriptionTooltipItems} />,
 		[subscriptionTooltipItems]
+	);
+
+	const operationTooltipItem = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.operation_lbl"
+							defaults="<bold>Operations</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.operation_primarybar_tooltip"
+							defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
+	const OperationTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={operationTooltipItem} />,
+		[operationTooltipItem]
 	);
 
 	const backupPrimaryBar: FC = useCallback(
@@ -400,28 +441,37 @@ const App: FC = () => {
 	);
 
 	useEffect(() => {
+		if (rights && rights.length > 0) {
+			const right = getRights(rights, SERVER);
+			if (right.length > 0) {
+				const findServerRight = right.find(
+					(item: Record<string, string>) => item?.n && item?.n === LIST_SERVER
+				);
+				if (findServerRight) {
+					sethasListServerRights(true);
+				}
+			}
+		}
+	}, [rights]);
+
+	useEffect(() => {
 		addRoute({
 			route: DASHBOARD,
 			position: 1,
 			visible: true,
-			label: t('label.dashboard', 'Dashboard'),
+			label: t('label.dashboard', 'Dashboard') || '',
 			primaryBar: 'HomeOutline',
-			appView: AppView
-		});
-		addRoute({
-			route: MONITORING,
-			position: 2,
-			visible: false,
-			label: t('label.monitoring', 'Monitoring'),
-			primaryBar: 'ActivityOutline',
-			appView: AppView
+			appView: AppView,
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			tooltip: HomeTooltipView
 		});
 
 		addRoute({
 			route: DOMAINS_ROUTE_ID,
 			position: 1,
 			visible: true,
-			label: t('label.domains', 'Domains'),
+			label: t('label.domains', 'Domains') || '',
 			primaryBar: 'AtOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -429,23 +479,27 @@ const App: FC = () => {
 			primarybarSection: { ...managementSection },
 			tooltip: DomainTooltipView
 		});
-		addRoute({
-			route: STORAGES_ROUTE_ID,
-			position: 2,
-			visible: true,
-			label: t('label.mailstores', 'Mailstores'),
-			primaryBar: 'HardDriveOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...managementSection },
-			tooltip: StorageTooltipView
-		});
+
+		if (hasListServerRights) {
+			addRoute({
+				route: STORAGES_ROUTE_ID,
+				position: 3,
+				visible: true,
+				label: t('label.storage', 'Storage') || '',
+				primaryBar: 'HardDriveOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: StorageTooltipView
+			});
+		}
+
 		addRoute({
 			route: COS_ROUTE_ID,
-			position: 3,
+			position: 2,
 			visible: true,
-			label: t('label.cos', 'COS'),
+			label: t('label.cos', 'COS') || '',
 			primaryBar: 'CosOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -454,24 +508,28 @@ const App: FC = () => {
 			tooltip: CosTooltipView
 		});
 		if (isAdvanced) {
-			addRoute({
-				route: SUBSCRIPTIONS_ROUTE_ID,
-				position: 4,
-				visible: true,
-				label: t('label.subscriptions', 'Subscriptions'),
-				primaryBar: 'AwardOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...managementSection },
-				tooltip: SubscriptionTooltipView
-			});
+			if (showSubsciption) {
+				addRoute({
+					route: SUBSCRIPTIONS_ROUTE_ID,
+					position: 4,
+					visible: true,
+					label: t('label.subscriptions', 'Subscriptions') || '',
+					primaryBar: 'AwardOutline',
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...managementSection },
+					tooltip: SubscriptionTooltipView
+				});
+			} else {
+				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
+			}
 
 			addRoute({
 				route: BACKUP_ROUTE_ID,
 				position: 1,
 				visible: true,
-				label: t('label.backup', 'Backup'),
+				label: t('label.backup', 'Backup') || '',
 				// primaryBar: 'HistoryOutline',
 				primaryBar: backupPrimaryBar,
 				appView: AppView,
@@ -485,49 +543,40 @@ const App: FC = () => {
 				route: NOTIFICATION_ROUTE_ID,
 				position: 1,
 				visible: true,
-				label: t('label.notifications', 'Notifications'),
+				label: t('label.notifications', 'Notifications') || '',
 				primaryBar: 'BellOutline',
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection }
+				primarybarSection: { ...logAndQueuesSection },
+				tooltip: NotificationTooltipView
+			});
+
+			addRoute({
+				route: OPERATIONS_ROUTE_ID,
+				position: 2,
+				visible: true,
+				label: t('label.operations', 'Operations') || '',
+				primaryBar: 'ListOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...logAndQueuesSection },
+				tooltip: OperationTooltipView
 			});
 		}
 		addRoute({
 			route: PRIVACY_ROUTE_ID,
 			position: 5,
 			visible: true,
-			label: t('label.privacy', 'Privacy'),
+			label: t('label.privacy', 'Privacy') || '',
 			primaryBar: 'ShieldOutline',
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			primarybarSection: { ...managementSection }
+			primarybarSection: { ...managementSection },
+			tooltip: PrivacyTooltipView
 		});
-
-		/* addRoute({
-			route: APPLICATION_LOG,
-			position: 2,
-			visible: true,
-			label: t('label.application_log', 'Application Log'),
-			primaryBar: 'FileTextOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...logAndQueuesSection }
-		}); */
-
-		/* addRoute({
-			route: MTA,
-			position: 3,
-			visible: false,
-			label: t('label.mta', 'MTA'),
-			primaryBar: 'MailFolderOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...logAndQueuesSection }
-		}); */
 
 		setAppContext({ cabonio_admin_console_ui: 'cabonio_admin_console_ui' });
 	}, [
@@ -541,7 +590,13 @@ const App: FC = () => {
 		SubscriptionTooltipView,
 		logAndQueuesSection,
 		backupPrimaryBar,
-		isAdvanced
+		isAdvanced,
+		OperationTooltipView,
+		HomeTooltipView,
+		PrivacyTooltipView,
+		NotificationTooltipView,
+		hasListServerRights,
+		showSubsciption
 	]);
 
 	useEffect(() => {
@@ -637,11 +692,35 @@ const App: FC = () => {
 		});
 	}, [setVolumeList, setAllMailstoreList]);
 
+	const getModuleLicense = useCallback(() => {
+		postSoapFetchRequest(`/service/admin/soap/zextras`, {
+			zextras: {
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxCore',
+				action: 'getLicenseInfo'
+			}
+		})
+			.then((res: any) => res.Body)
+			.then((res: any) => {
+				const response = JSON.parse(res.response.content);
+				if (response.ok) {
+					const allModules = Object.keys(response.response.modules).map((module) => ({
+						...response.response.modules[module],
+						name: module
+					}));
+					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
+						setModuleLicense(allModules);
+					}
+				}
+			});
+	}, [setModuleLicense]);
+
 	useEffect(() => {
 		getAllServersRequest();
 		// another call just to get only mailstores can be improvised later
 		getMailstoresServersRequest();
-	}, [getAllServersRequest, getMailstoresServersRequest]);
+		getModuleLicense();
+	}, [getAllServersRequest, getMailstoresServersRequest, getModuleLicense]);
 
 	return null;
 };

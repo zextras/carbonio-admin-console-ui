@@ -1055,6 +1055,7 @@ const CosPreferences: FC = () => {
 								value={cosPreferences?.zimbraPrefMessageViewHtmlPreferred === 'TRUE'}
 								onClick={(): void => changeSwitchOption('zimbraPrefMessageViewHtmlPreferred')}
 								label={t('cos.view_mail_as_html', 'View mail as HTML')}
+								iconColor="primary"
 							/>
 						</Container>
 					</Row>
@@ -1120,6 +1121,7 @@ const CosPreferences: FC = () => {
 											'cos.auto_delete_duplicate_messages',
 											'Auto-Delete duplicate messages'
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1130,6 +1132,7 @@ const CosPreferences: FC = () => {
 											'cos.enable_notification_for_new_email',
 											`Enable notification for new email`
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>
@@ -1255,6 +1258,7 @@ const CosPreferences: FC = () => {
 										value={cosPreferences?.zimbraPrefSaveToSent === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefSaveToSent')}
 										label={t('cos.save_to_Sent', `Save to sent`)}
+										iconColor="primary"
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1265,6 +1269,7 @@ const CosPreferences: FC = () => {
 											'cos.allow_sending_from_any_address',
 											'Allow sending from any address'
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>
@@ -1294,6 +1299,7 @@ const CosPreferences: FC = () => {
 										value={cosPreferences?.zimbraPrefAutoAddAddressEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefAutoAddAddressEnabled')}
 										label={t('cos.enable_auto_add_contacts', `Enable auto-add contacts`)}
+										iconColor="primary"
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1301,6 +1307,7 @@ const CosPreferences: FC = () => {
 										value={cosPreferences?.zimbraPrefGalAutoCompleteEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefGalAutoCompleteEnabled')}
 										label={t('cos.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>
@@ -1485,6 +1492,7 @@ const CosPreferences: FC = () => {
 											'cos.enable_past_due_reminders',
 											`Enable reminders of appointments in the past`
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 								{/* <Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1507,6 +1515,7 @@ const CosPreferences: FC = () => {
 											'cos.allow_sending_cancellation_mail',
 											`Allow sending cancellation mail`
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>
@@ -1530,6 +1539,7 @@ const CosPreferences: FC = () => {
 											'cos.add_forwarded_invites_to_calendar',
 											`Automatically add forwarded appointments to the calendar`
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1542,6 +1552,7 @@ const CosPreferences: FC = () => {
 											'cos.add_invites_with_publish_method',
 											'Add invites with PUBLISH method'
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>
@@ -1583,6 +1594,7 @@ const CosPreferences: FC = () => {
 											'cos.add_appointments_when_invited',
 											`Automatically add appointments when the user is invited`
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1595,6 +1607,7 @@ const CosPreferences: FC = () => {
 											'cos.auto_decline_if_inviter_is_blacklisted',
 											'Auto-decline if the sender is blacklisted'
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>
@@ -1618,6 +1631,7 @@ const CosPreferences: FC = () => {
 											'cos.notify_changes_by_delegated_access',
 											`Notify changes made by delegated accounts`
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 								{/* <Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1638,6 +1652,7 @@ const CosPreferences: FC = () => {
 											'cos.use_ical_delegation_model_for_shared_calendars',
 											`Use iCal delegation model for shared calendars`
 										)}
+										iconColor="primary"
 									/>
 								</Container>
 							</ListRow>

@@ -22,6 +22,9 @@ import { find } from 'lodash';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
 import { ALIBABA, EMC } from '../../constants';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 
 const DetailsHeaders = [
 	{
@@ -103,22 +106,25 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 	selectedRows,
 	onSelectionChange
 }) => {
+	const [t] = useTranslation();
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: v.id,
 				columns: [
-					<Text key={v.id}>{v.name}</Text>,
-					<Text color="text" key={v.version}>
+					<Text key={i} weight="light">
+						{v.name}
+					</Text>,
+					<Text color="text" key={i} weight="light">
 						{v.version}
 					</Text>,
-					<Text color="text" key={v.rtstatus}>
+					<Text color="text" key={i} weight="light">
 						{v.rtstatus}
 					</Text>,
-					<Text style={{ textTransform: 'capitalize' }} key={v.type}>
+					<Text style={{ textTransform: 'capitalize' }} key={i} weight="light">
 						{v.type}
 					</Text>,
-					<Text color="text" key={v.samrtstatus}>
+					<Text color="text" key={i} weight="light">
 						{v.samrtstatus}
 					</Text>
 				],
@@ -136,10 +142,12 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 				multiSelect={false}
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
+				RowFactory={CustomRowFactory}
+				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text>Empty Table</Text>
+					<Text>{t('label.empty_table', 'Empty Table')}</Text>
 				</Row>
 			)}
 		</Container>
@@ -175,18 +183,31 @@ const DetailsPanel: FC<{
 	const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
 
 	const createSnackbar = useSnackbar();
-	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
+	const { selectedServerName } = useBucketVolumeStore((state) => state);
 
 	const verifyConnector = useCallback(() => {
-		fetchSoap('zextras', {
+		const objectToSend = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'testS3Connection',
-			targetServers: server,
+			targetServers: selectedServerName,
 			bucketId: bucketDetail.uuid
-		}).then((res) => {
+		};
+
+		if (selectedServerName === '') {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			delete objectToSend?.targetServers;
+		}
+
+		fetchSoap('zextras', objectToSend).then((res) => {
 			const response = JSON.parse(res.Body.response.content);
-			if (response.ok && response.response[server] && response.response[server].ok) {
+			if (
+				response.ok ||
+				(response.ok === true &&
+					response.response[selectedServerName] &&
+					response.response[selectedServerName].ok)
+			) {
 				setVerify('success');
 				setButtonLabel(t('label.verify_connector_verified', ' VERIFIED'));
 				setButtonIcon('ActivityOutline');
@@ -199,13 +220,16 @@ const DetailsPanel: FC<{
 					key: '1',
 					type: 'error',
 					label: t('label.verify_error', '{{name}}', {
-						name: response.response[server].error
+						name:
+							response.error ||
+							response.response[selectedServerName]?.error ||
+							response.response[selectedServerName]?.error?.message
 					})
 				});
 				setToggleBtn(false);
 			}
 		});
-	}, [bucketDetail.uuid, createSnackbar, server, t]);
+	}, [bucketDetail.uuid, createSnackbar, selectedServerName, t]);
 
 	useEffect(() => {
 		setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
@@ -250,18 +274,21 @@ const DetailsPanel: FC<{
 
 	return (
 		<Container background="gray6">
-			<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="center"
+				orientation="horizontal"
+				background="white"
+				width="fill"
+				height="3rem"
+			>
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
 					<Text size="extralarge" weight="bold">
 						{title}
 					</Text>
 				</Row>
 				<Row padding={{ horizontal: 'small' }}>
-					<IconButton
-						icon="CloseOutline"
-						color="gray1"
-						onClick={(): void => setDetailsBucket(false)}
-					/>
+					<IconButton icon="CloseOutline" onClick={(): void => setDetailsBucket(false)} />
 				</Row>
 			</Row>
 			<Divider />
@@ -274,26 +301,24 @@ const DetailsPanel: FC<{
 				style={{ height: 'fit-content' }}
 			>
 				<Padding right="large">
-					<Container style={{ border: '1px solid #2b73d2' }}>
-						<IconButton
-							iconColor="primary"
-							backgroundColor="gray6"
+					<Container>
+						<Button
+							type="outlined"
+							color="primary"
 							icon="EditAsNewOutline"
-							height={44}
-							width={44}
+							size="large"
 							onClick={(): void => {
 								setShowEditDetailView(true);
 							}}
 						/>
 					</Container>
 				</Padding>
-				<Container width="fit" height="fit" style={{ border: '1px solid #d74942' }}>
-					<IconButton
-						iconColor="error"
-						backgroundColor="gray6"
+				<Container width="fit" height="fit">
+					<Button
+						type="outlined"
+						color="error"
 						icon="Trash2Outline"
-						height={44}
-						width={44}
+						size="large"
 						onClick={(): void => {
 							setBucketDeleteName(bucketDetail);
 							setOpen(true);
@@ -353,16 +378,18 @@ const DetailsPanel: FC<{
 				<Row padding={{ top: 'large' }} width="100%">
 					<Input label={t('label.notes', 'Notes')} value={bucketDetail.notes || ''} readOnly />
 				</Row>
-				<Row width="100%" padding={{ top: 'large' }}>
+				<Row width="100%" padding={{ top: 'large' }} style={{ display: 'block' }}>
 					<Button
+						width="100%"
+						style={{ width: '100%' }}
 						type="outlined"
 						label={ButtonLabel}
 						icon={buttonIcon}
 						iconPlacement="right"
-						size="fill"
 						color={verify}
 						onClick={verifyConnector}
 						disabled={toggleBtn}
+						size="large"
 					/>
 				</Row>
 

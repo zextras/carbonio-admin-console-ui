@@ -40,7 +40,9 @@ import {
 	SERVER,
 	VOLUME_INDEX_TYPE
 } from '../../../constants';
-import { updateBackup } from '../../../services/update-backup';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 
 const HSMsettingPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -133,7 +135,15 @@ const HSMsettingPanel: FC = () => {
 			const allRows = policies.map((item: any) => ({
 				id: item?.hsmQuery,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.hsmQuery} color="#828282">
+					<Text
+						size="medium"
+						weight="medium"
+						key={item?.hsmQuery}
+						color="#828282"
+						onClick={(): void => {
+							setSelectedPolicies([item?.hsmQuery]);
+						}}
+					>
 						{getHSMType(item?.hsmType)}
 						{item?.hsmQuery}
 					</Text>
@@ -277,7 +287,7 @@ const HSMsettingPanel: FC = () => {
 				configType: SERVER
 			}
 		};
-		updateBackup(body)
+		setCoreAttributes(body)
 			.then((data: any) => {
 				setIsRequestInProgress(false);
 				if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
@@ -561,7 +571,10 @@ const HSMsettingPanel: FC = () => {
 									<Trans
 										i18nKey="hsm.name_hsm_policies"
 										defaults="<bold>{{serverName}} HSM Policies</bold>"
-										components={{ bold: <strong />, serverName: server }}
+										components={{ bold: <strong /> }}
+										values={{
+											serverName: server
+										}}
 									/>
 								}
 							</Text>
@@ -599,7 +612,7 @@ const HSMsettingPanel: FC = () => {
 				width="100%"
 				padding={{ all: 'large' }}
 				style={{ overflow: 'auto' }}
-				height="calc(100vh - 160px)"
+				height="calc(100vh - 10.625rem)"
 			>
 				<ListRow>
 					<Padding top="large" bottom="large">
@@ -616,6 +629,7 @@ const HSMsettingPanel: FC = () => {
 							onClick={(): void =>
 								setIsPowerstoreMoveSchedulerEnabled(!isPowerstoreMoveSchedulerEnabled)
 							}
+							iconColor="primary"
 						/>
 					</Padding>
 				</ListRow>
@@ -641,6 +655,7 @@ const HSMsettingPanel: FC = () => {
 						onClick={(): void =>
 							setDeduplicateAfterScheduledMoveBlobs(!deduplicateAfterScheduledMoveBlobs)
 						}
+						iconColor="primary"
 					/>
 				</ListRow>
 				<ListRow>
@@ -725,7 +740,8 @@ const HSMsettingPanel: FC = () => {
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedPolicies}
-						onSelectionChange={(selected: any): void => setSelectedPolicies(selected)}
+						HeaderFactory={CustomHeaderFactory}
+						RowFactory={CustomRowFactory}
 					/>
 				</ListRow>
 

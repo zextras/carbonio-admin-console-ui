@@ -27,6 +27,7 @@ import EditAccountGeneralSection from './edit-account-general-section';
 import EditAccountConfigrationSection from './edit-account-configration-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 import EditAccountSecuritySection from './edit-account-security-section';
+import EditAccountDelegatesSection from './edit-account-delegates-section';
 
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
@@ -35,6 +36,13 @@ import { setPasswordRequest } from '../../../../../services/set-password';
 import { renameAccountRequest } from '../../../../../services/rename-account';
 import { AccountContext } from '../account-context';
 import { getDomainList } from '../../../../../services/search-domain-service';
+import { setCoreAttributes } from '../../../../../services/set-core-attributes';
+import {
+	ACCOUNT,
+	MOBILE_CALENDAR_FEATURE_SYNC,
+	MOBILE_CONTACT_FEATURE_SYNC
+} from '../../../../../constants';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 
 // eslint-disable-next-line no-empty-pattern
 const EditAccount: FC<{
@@ -60,6 +68,7 @@ const EditAccount: FC<{
 	const conext = useContext(AccountContext);
 	const { accountDetail, setAccountDetail, initAccountDetail, setInitAccountDetail } = conext;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const getDomainLists = useCallback(
 		(offset: number): any => {
@@ -87,16 +96,17 @@ const EditAccount: FC<{
 	}, [domainList, getDomainLists]);
 
 	useEffect(() => {
-		const modifiedKeys: any = reduce(
-			accountDetail,
-			function (result, value, key): any {
-				return isEqual(value, initAccountDetail[key]) ? result : [...result, key];
-			},
-			[]
-		);
-		map(modifiedKeys, (ele) => {
-			console.log(ele, initAccountDetail[ele], accountDetail[ele]);
-		});
+		// Uncomment this for debugg change keys
+		// const modifiedKeys: any = reduce(
+		// 	accountDetail,
+		// 	function (result, value, key): any {
+		// 		return isEqual(value, initAccountDetail[key]) ? result : [...result, key];
+		// 	},
+		// 	[]
+		// );
+		// map(modifiedKeys, (ele) => {
+		// 	console.log(ele, initAccountDetail[ele], accountDetail[ele]);
+		// });
 		if (initAccountDetail?.zimbraId && !isEqual(accountDetail, initAccountDetail)) {
 			setIsDirty(true);
 		} else {
@@ -154,6 +164,52 @@ const EditAccount: FC<{
 		}
 	];
 
+	if (isAdvanced) {
+		items.push({
+			id: 'delegates',
+			label: t('label.delegates', 'DELEGATES'),
+			CustomComponent: ReusedDefaultTabBar,
+			icon: 'SharedAccountOutline'
+		});
+	}
+
+	const setSwitchInitOptionValue = useCallback(
+		(key: string, value: string): void => {
+			setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+		},
+		[setInitAccountDetail]
+	);
+
+	const modifyCoreAttributes = useCallback(
+		(body: any): void => {
+			setCoreAttributes(body)
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				.then((data: any) => {
+					setSwitchInitOptionValue(
+						'mobileContactFeatureSync',
+						body?.mobileContactFeatureSync?.value === 'enabled' ? 'TRUE' : 'FALSE'
+					);
+					setSwitchInitOptionValue(
+						'mobileCalendarFeatureSync',
+						body?.mobileCalendarFeatureSync?.value === 'enabled' ? 'TRUE' : 'FALSE'
+					);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, setSwitchInitOptionValue, t]
+	);
+
 	const modifyAccountReq = useCallback((): void => {
 		const modifiedKeys: any = reduce(
 			accountDetail,
@@ -163,7 +219,7 @@ const EditAccount: FC<{
 			[]
 		);
 		const modifiedData: any = {};
-
+		let isPasswordChange = false;
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
 			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
 				if (accountDetail?.password?.length < 6) {
@@ -189,6 +245,7 @@ const EditAccount: FC<{
 					return;
 				}
 				setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password);
+				isPasswordChange = true;
 				remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
 			}
 		}
@@ -217,47 +274,86 @@ const EditAccount: FC<{
 
 			remove(modifiedKeys, (ele) => ele === 'mail');
 		}
+
+		if (
+			(modifiedKeys.includes(MOBILE_CALENDAR_FEATURE_SYNC) ||
+				modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
+			isAdvanced
+		) {
+			const coreAttrBody: any = {
+				mobileCalendarFeatureSync: {
+					value: accountDetail?.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+					objectName: accountDetail?.name,
+					configType: ACCOUNT
+				},
+				mobileContactFeatureSync: {
+					value: accountDetail?.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+					objectName: accountDetail?.name,
+					configType: ACCOUNT
+				}
+			};
+			modifyCoreAttributes(coreAttrBody);
+			remove(modifiedKeys, (ele) => ele === MOBILE_CALENDAR_FEATURE_SYNC);
+			remove(modifiedKeys, (ele) => ele === MOBILE_CONTACT_FEATURE_SYNC);
+		}
 		modifiedKeys.forEach((ele: any) => {
 			modifiedData[ele] = accountDetail[ele];
 		});
 
-		modifyAccountRequest(initAccountDetail?.zimbraId, modifiedData)
-			.then((data) => {
-				if (data) {
-					// setShowCreateAccountView(false);
+		if (modifiedKeys && modifiedKeys?.length > 0) {
+			modifyAccountRequest(initAccountDetail?.zimbraId, modifiedData)
+				.then((data) => {
+					if (data) {
+						// setShowCreateAccountView(false);
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								'label.the_last_changes_has_been_saved_successfully',
+								'Changes have been saved successfully'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+						setInitAccountDetail({ ...accountDetail });
+						getAccountList();
+					}
+				})
+				.catch((error) => {
 					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: t(
-							'label.the_last_changes_has_been_saved_successfully',
-							'Changes have been saved successfully'
-						),
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
-					setInitAccountDetail({ ...accountDetail });
-					getAccountList();
-				}
-			})
-			.catch((error) => {
+				});
+		} else {
+			if (isPasswordChange) {
 				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					key: 'success',
+					type: 'success',
+					label: t('account_details.user_password_set', 'User password set successfully'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
-			});
+				accountDetail.userPassword = 'VALUE-BLOCKED';
+			}
+			setInitAccountDetail({ ...accountDetail });
+		}
 	}, [
 		accountDetail,
 		createSnackbar,
 		domainName,
 		getAccountList,
 		initAccountDetail,
+		isAdvanced,
+		modifyCoreAttributes,
 		setInitAccountDetail,
 		t
 	]);
@@ -272,10 +368,10 @@ const EditAccount: FC<{
 				mainAlignment="flex-start"
 				style={{
 					position: 'absolute',
-					left: `${'max(calc(100% - 840px), 12px)'}`,
+					left: `${'max(calc(100% - 940px), 12px)'}`,
 					top: '43px',
 					height: 'auto',
-					width: '840px',
+					width: '940px',
 					overflow: 'hidden',
 					transition: 'left 0.2s ease-in-out',
 					'box-shadow': '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
@@ -338,10 +434,12 @@ const EditAccount: FC<{
 					<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<TabBar
 							items={items}
-							defaultSelected="general"
-							onChange={setChange}
+							selected={change}
+							onChange={(ev: unknown, selectedId: string): void => {
+								setChange(selectedId);
+							}}
 							onItemClick={setClick}
-							width={785}
+							width={915}
 						/>
 					</Row>
 					<Row width="100%">
@@ -357,6 +455,7 @@ const EditAccount: FC<{
 							/>
 						)}
 						{change === 'security' && <EditAccountSecuritySection />}
+						{change === 'delegates' && <EditAccountDelegatesSection />}
 					</Container>
 				</Container>
 			</Container>

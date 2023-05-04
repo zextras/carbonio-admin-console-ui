@@ -27,7 +27,9 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
 import { searchGal } from '../../../../services/search-gal-service';
 import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
-import { ALL, EMAIL, GRP, MEMBERS_ONLY, PUB } from '../../../../constants';
+import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB } from '../../../../constants';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -41,7 +43,7 @@ const MailingListSection: FC<any> = () => {
 	);
 	const [dynamicListMemberRows, setDynamicListMemberRows] = useState<Array<any>>([]);
 	const [isShowLdapQueryMessage, setIsShowLdapQueryMessage] = useState<boolean>(false);
-	const [ldapQueryErrorMessage, setLdapQueryErrorMessage] = useState<string>('');
+	const [ldapQueryErrorMessage, setLdapQueryErrorMessage] = useState<string | null>('');
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const [member, setMember] = useState<string>('');
 	const [ownersList, setOwnersList] = useState<Array<any>>(
@@ -97,7 +99,15 @@ const MailingListSection: FC<any> = () => {
 			const allRows = ownersList.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text
+						size="medium"
+						weight="light"
+						key={item?.id}
+						color="#828282"
+						onClick={(): void => {
+							setSelectedDistributionListOwner([item]);
+						}}
+					>
 						{item}
 					</Text>
 				]
@@ -182,7 +192,7 @@ const MailingListSection: FC<any> = () => {
 			const searchDlRows = dynamicListMember.map((item: any) => ({
 				id: item?.name,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item?.name}
 					</Text>,
 					''
@@ -242,7 +252,6 @@ const MailingListSection: FC<any> = () => {
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -444,6 +453,7 @@ const MailingListSection: FC<any> = () => {
 											zimbraHideInGal: !mailingListDetail?.zimbraHideInGal
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Container>
 						</ListRow>
@@ -463,6 +473,7 @@ const MailingListSection: FC<any> = () => {
 											zimbraMailStatus: !mailingListDetail?.zimbraMailStatus
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Container>
 						</ListRow>
@@ -491,6 +502,11 @@ const MailingListSection: FC<any> = () => {
 									)}
 								/>
 							</Container>
+						</ListRow>
+						<ListRow>
+							<Text size="small" weight="regular" color="gray1">
+								{`${t('label.example_lbl', 'Example:')} ${LDAP_QUERY}`}
+							</Text>
 						</ListRow>
 						{isShowLdapQueryMessage && (
 							<Row>
@@ -521,6 +537,7 @@ const MailingListSection: FC<any> = () => {
 									dynamic: !mailingListDetail?.dynamic
 								}));
 							}}
+							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -540,7 +557,13 @@ const MailingListSection: FC<any> = () => {
 						</Row>
 						<ListRow>
 							<Container padding={{ top: 'large', bottom: 'large' }}>
-								<Table rows={dynamicListMemberRows} headers={memberHeaders} showCheckbox={false} />
+								<Table
+									rows={dynamicListMemberRows}
+									headers={memberHeaders}
+									showCheckbox={false}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
+								/>
 							</Container>
 						</ListRow>
 						<Row padding={{ top: 'large' }}>
@@ -676,9 +699,8 @@ const MailingListSection: FC<any> = () => {
 									headers={ownerHeaders}
 									showCheckbox={false}
 									selectedRows={selectedDistributionListOwner}
-									onSelectionChange={(selected: any): void =>
-										setSelectedDistributionListOwner(selected)
-									}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
 						</ListRow>
@@ -696,9 +718,9 @@ const MailingListSection: FC<any> = () => {
 						>
 							<Text
 								overflow="break-word"
-								weight="normal"
+								weight="regular"
 								size="large"
-								style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
+								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>
 								<img src={carbonioHelmet} alt="logo" />
 							</Text>

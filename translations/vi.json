@@ -22,7 +22,8 @@
                 "confirm": "Bạn có chắc muốn tiếp tục?",
                 "deactivate": "Có, Hủy kích hoạt",
                 "warning": "Bạn đang cố gắng hủy kích hoạt mã thông báo hiện tại. Làm như vậy sẽ vô hiệu hóa tất cả các tính năng đã bật."
-            }
+            },
+            "valid": "Hợp lệ"
         }
     },
     "label": {
@@ -39,7 +40,7 @@
         "delete": "Xoá",
         "description": "Mô tả",
         "discard_changes": "BỎ QUA CÁC THAY ĐỔI",
-        "external": "Bên ngoài",
+        "external": "Mở rộng",
         "of": "của",
         "page ": "Bạn đã chấp nhận yêu cầu chia sẻ",
         "page_": "Bạn đã chấp nhận yêu cầu chia sẻ",
@@ -170,7 +171,7 @@
         "yes": "Có",
         "detail": "Chi tiết",
         "device": "Thiết bị",
-        "edit": "Soan thảo",
+        "edit": "Chỉnh sửa",
         "go_back": "Quay trở lại",
         "id_lbl": "ID",
         "language": "Ngôn ngữ",
@@ -407,7 +408,7 @@
         "hms_settings": "Cài đặt HSM",
         "hsm_apply": "Chấp thuận HSM",
         "hsm_settings": "Cài đặt HSM",
-        "i_am_looking_for_member": "Tôi đang tìm kiếm thành viên ...",
+        "i_am_looking_for_member": "Tôi đang tìm kiếm thành viên …",
         "internal_users_only": "Chỉ dành cho người dùng nội bộ",
         "ldap_url_is_not_valid": "Địa chỉ URL LDAP không đúng",
         "i_want_to_set_signature": "Tôi muốn đặt một chữ ký",
@@ -458,7 +459,6 @@
         "resource_name": "Tên tài nguyên",
         "resource_remove_correctly": "{{resource_name}} đã được loại bỏ thành công.",
         "repeat_password": "Lặp lại mật khẩu",
-        "reply_to_address_for_receipt": "Địa chỉ trả lời để nhận",
         "schedule_policy": "Đặt chính sách",
         "search_a_signature": "Tìm kiếm một chữ ký",
         "restart_replica": "KHỞI ĐỘNG LẠI REPLICA",
@@ -561,7 +561,7 @@
         "this_account_owner_of_the_list": "tài khoản này sẽ là chủ sở hữu của danh sách",
         "this_is_hidden_from_gal": "Danh sách này ẩn từ GAL",
         "this_list_is_member_of": "Danh sách này là một phần của",
-        "type_an_account_dot": "Gõ một tài khoản...",
+        "type_an_account_dot": "Gõ một tài khoản…",
         "type_accounts_paste_them_here": "Gõ tài khoản hoặc dán chúng vào đây",
         "userName": "tên người dùng (tự động điền)",
         "who_is_in_this_list": "Ai trong danh sách này?",
@@ -645,7 +645,40 @@
         "search_for_user_and_clic_to_add": "Tìm kiếm một người dùng và bấm vào nút THÊM.",
         "there_are_no_owners": "Không có chủ sở hữu nào ở đây.",
         "verify_certificate": "Xác nhận",
-        "who_can_send_mails_to_list ": "Ai có thể gửi thư TO danh sách này?"
+        "who_can_send_mails_to_list ": "Ai có thể gửi thư TO danh sách này?",
+        "ID": "ID",
+        "centralized": "Tập trung",
+        "done": "Hoàn thành",
+        "external_volume_edited": "{{message}}",
+        "general_options": "Tùy chọn chung",
+        "operation": {
+            "get_all_operation_error": "{{name}}",
+            "stop_operation_error": "{{name}}"
+        },
+        "queued": "Đã xếp hàng",
+        "stop_operation_helperText": "{{message}}",
+        "running": "Đang chạy",
+        "use_intelligent_tiering": "Sử dụng phân lớp thông minh",
+        "EDIT": "CHỈNH SỬA",
+        "what_inside": "Chủ đề",
+        "Accounts": "Tài khoản",
+        "Rights": "Quyền",
+        "Type": "Loại",
+        "chats": "Trò chuyện",
+        "contacts": "Danh bạ",
+        "files": "Tệp",
+        "mail_signatures": "Chữ ký thư",
+        "mails": "Thư",
+        "out_of_the_office_reply": "Trả lời khi không có mặt ở văn phòng",
+        "tasks": "Các Nhiệm vụ",
+        "storage": "Kho chứa",
+        "account_name": "Tên tài khoản",
+        "distribution_list": "Danh sách phân phối",
+        "dont_save_a_copy_of_sent_messages": "Không lưu bản sao tin nhắn gửi đi",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi được chỉ định",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi của tôi và thư mục chỉ định",
+        "value": "Giá trị"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -818,7 +851,14 @@
         "send_the_warning_to": "Gửi cảnh báo tới",
         "source_name_internal_gal": "Tên nguồn của GAL nội bộ",
         "type_here_a_domain": "Gõ miền vào đây",
-        "warn_when_reach_space_quota": "Cảnh báo cho tôi khi tôi đạt đến hạn ngạch không gian tổng hợp này"
+        "warn_when_reach_space_quota": "Cảnh báo cho tôi khi tôi đạt đến hạn ngạch không gian tổng hợp này",
+        "gal_change_mode_both": "Cả hai",
+        "gal_change_mode_external": "Mở rộng",
+        "gal_change_mode_internal": "Nội bộ",
+        "unit_measure_days": "Ngày",
+        "unit_measure_hours": "Giờ",
+        "unit_measure_minutes": "Phút",
+        "unit_measure_seconds": "Giây"
     },
     "buckets": {
         "connection": {
@@ -1267,10 +1307,20 @@
         "view_mail_as_html": "Xem thư dưới dạng HTML",
         "Chats": "Trò chuyện",
         "domain": "Miền",
-        "files": "Tệp"
+        "files": "Tệp",
+        "NEXT": "TIẾP",
+        "abstract": "Tóm lược",
+        "on_behalf_of": "thay mặt cho",
+        "DELETE": "XOÁ",
+        "SAVE": "LƯU",
+        "create": "TẠO",
+        "label": "Nhãn",
+        "remove": "xoá",
+        "send_check": "Gửi",
+        "status": "Trạng thái",
+        "services": "Dịch vụ"
     },
     "privacy": {
-        "send_full_error_data_to_zextras": "Gửi dữ liệu lỗi đầy đủ tới Zextras",
         "full_error_sub_1": "Tất cả chúng ta đều mắc sai lầm nhưng chính cách bạn đối phó với chúng sẽ thay đổi mọi thứ! Chúng tôi muốn học hỏi từ những lỗi của mình, vì vậy hãy cho chúng tôi biết cách chúng tôi có thể sửa chúng",
         "allow_data_analytics": "Cho phép phân tích dữ liệu",
         "allow_live_survey_feedbacks": "Cho phải khảo sát phản hồi",
@@ -1302,11 +1352,12 @@
         },
         "volume_allocation_list": {
             "centralized": "Tập trung",
-            "external": "Bên ngoài",
+            "external": "Mở rộng",
             "local": "Cục bộ"
         },
         "volume_config_header": {
-            "name": "Tên"
+            "name": "Tên",
+            "status": "Trạng thái"
         },
         "volume_header": {
             "compression": "Nén",
@@ -1325,7 +1376,9 @@
             "index": "Mục lục",
             "primary": "Đầu tiên",
             "secondary": "Thứ nhì"
-        }
+        },
+        "primary_helperText": "Đầu tiên",
+        "secondary_helperText": "Thứ nhì"
     },
     "account": {
         "new": {
@@ -1370,7 +1423,7 @@
         "destination_volume": "Tập đích",
         "details": "Thông tin chi tiết",
         "document": "Văn bản",
-        "edit": "Soan thảo",
+        "edit": "Chỉnh sửa",
         "event": "Sự kiện",
         "hours": "Giờ",
         "hsm_policies_list": "Danh sách chính sách HSM",
@@ -1412,6 +1465,29 @@
         "list": "Danh sách",
         "manage": "Quản lý",
         "mark_as_read": "Đánh dấu đã đọc",
-        "mark_as_unread": "Đánh dấu là chưa đọc"
-    }
+        "mark_as_unread": "Đánh dấu là chưa đọc",
+        "notifications_list": "Danh sách các thông báo"
+    },
+    "operations": {
+        "copy_btn": "SAO CHÉP",
+        "details": "Thông tin chi tiết",
+        "done": "Hoàn thành",
+        "label": {
+            "Deep": "Sâu",
+            "notifications": "Các thông báo",
+            "status": "Trạng thái"
+        },
+        "operations_list_header": {
+            "author": "Tác giả",
+            "operation": "Hoạt động",
+            "server": "Máy chủ",
+            "start_date": "Ngày bắt đầu",
+            "status": "Trạng thái",
+            "submit_date": "Ngày chấp nhận"
+        },
+        "other": "Khác",
+        "queued": "Đã xếp hàng",
+        "running": "Đang chạy"
+    },
+    "new": "Mới"
 }

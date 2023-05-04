@@ -32,7 +32,7 @@ import { useParams } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 import ListRow from '../../list/list-row';
 import { useServerStore } from '../../../store/server/store';
-import { updateBackup } from '../../../services/update-backup';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
 import {
 	LOCAL_VALUE,
 	MANAGE_EXTERNAL_VOLUME,
@@ -45,6 +45,7 @@ import {
 } from '../../../constants';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { fetchSoap } from '../../../services/bucket-service';
+import { useBackupStore } from '../../../store/backup/store';
 
 const BackupConfiguration: FC = () => {
 	const { server }: { server: string } = useParams();
@@ -88,6 +89,7 @@ const BackupConfiguration: FC = () => {
 	const [manageExternalVolumeNewLocalMountpoint, setManageExternalVolumeNewLocalMountpoint] =
 		useState<string>('');
 	const [rootVolumePath, setRootVolumePath] = useState<string>('');
+	const selectedBackupServer = useBackupStore((state) => state.selectedServer);
 
 	const destinationOptions: any[] = useMemo(
 		() => [
@@ -386,7 +388,7 @@ const BackupConfiguration: FC = () => {
 		};
 
 		setIsSaveRequestInProgress(true);
-		updateBackup(body)
+		setCoreAttributes(body)
 			.then((data: any) => {
 				setIsSaveRequestInProgress(false);
 				if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
@@ -397,7 +399,7 @@ const BackupConfiguration: FC = () => {
 					if (data?.errors && Array.isArray(data?.errors) && data?.errors[0]?.error) {
 						errorMessage = data?.errors[0]?.error;
 					} else if (data?.error) {
-						errorMessage = data?.error;
+						errorMessage = data?.error?.message || data?.error;
 					}
 					createSnackbar({
 						key: 'error',
@@ -438,12 +440,28 @@ const BackupConfiguration: FC = () => {
 			})
 			.catch((error: any) => {
 				setIsSaveRequestInProgress(false);
+				setCurrentBackupValue((prev: any) => ({
+					...prev,
+					moduleEnableStartup,
+					enableRealtimeScanner,
+					runSmartScanStartup,
+					spaceThreshold,
+					isScheduleSmartScan,
+					scheduleSmartScan,
+					scheduleAutomaticRetentionPolicy,
+					retentionPolicySchedule,
+					backupDestPath,
+					keepDeletedItemInBackup,
+					keepDeletedAccountsInBackup
+				}));
+				setIsDirty(false);
 				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					key: 'success',
+					type: 'success',
+					label: t(
+						'label.the_last_changes_has_been_saved_successfully',
+						'Changes have been saved successfully'
+					),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -613,6 +631,16 @@ const BackupConfiguration: FC = () => {
 					if (isFromInitialize && res && res?.serverId) {
 						setIsBackupInitialized(!isBackupInitialized);
 					}
+					if (res && res?.error && res?.error?.message) {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: res?.error?.details?.cause || res?.error?.message,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
 				})
 				.catch((error: any) => {
 					setIsRequestInProgress(false);
@@ -620,7 +648,7 @@ const BackupConfiguration: FC = () => {
 						key: 'error',
 						type: 'error',
 						label: error
-							? error?.error
+							? error?.error?.message
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -638,6 +666,16 @@ const BackupConfiguration: FC = () => {
 		})
 			.then((res: any) => {
 				setIsPurgeRequestRunning(false);
+				if (res && res?.error && res?.error?.message) {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: res?.error?.details?.cause || res?.error?.message,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
 			})
 			.catch((error: any) => {
 				setIsPurgeRequestRunning(false);
@@ -873,7 +911,7 @@ const BackupConfiguration: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="56px">
+					<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
 						<Row orientation="horizontal" width="100%">
 							<Row
 								padding={{ all: 'large' }}
@@ -882,7 +920,7 @@ const BackupConfiguration: FC = () => {
 								crossAlignment="flex-start"
 							>
 								<Text size="medium" weight="bold" color="gray0">
-									{t('backup.server_configuration', 'Server Configuration')}
+									{selectedBackupServer} {t('backup.backup_configuration', 'backup configuration')}
 								</Text>
 							</Row>
 							<Row
@@ -920,7 +958,7 @@ const BackupConfiguration: FC = () => {
 					crossAlignment="flex-end"
 					style={{ overflow: 'auto' }}
 					padding={{ all: 'large' }}
-					height="calc(100vh - 150px)"
+					height="calc(100vh - 9.375rem)"
 				>
 					<Container
 						mainAlignment="flex-end"
@@ -953,6 +991,7 @@ const BackupConfiguration: FC = () => {
 							onClick={serviceStartStop}
 							disabled={isRequestInProgress}
 							loading={isRequestInProgress}
+							size="large"
 						/>
 					</Container>
 
@@ -980,6 +1019,7 @@ const BackupConfiguration: FC = () => {
 								)}
 								value={moduleEnableStartup}
 								onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -987,6 +1027,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
 								value={enableRealtimeScanner}
 								onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
+								iconColor="primary"
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -994,24 +1035,26 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
 								value={runSmartScanStartup}
 								onClick={(): void => setRunSmartScanStartup(!runSmartScanStartup)}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
 
 					<ListRow>
-						<Container padding={{ top: 'large' }}>
+						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
 							<Button
 								type="outlined"
 								label={t('backup.initialize_backup', 'Initialize Backup')}
 								color="primary"
 								icon="PowerOutline"
 								iconPlacement="right"
-								height={36}
 								width="100%"
+								style={{ width: '100%' }}
 								disabled={isBackupInitialized}
 								onClick={(): void => {
 									doInitializeBackup(true);
 								}}
+								size="large"
 							/>
 						</Container>
 					</ListRow>
@@ -1151,22 +1194,23 @@ const BackupConfiguration: FC = () => {
 						</ListRow>
 					)}
 
-					{isManageExternalVolumeEnable && destinationSelected?.value === MOVE_TO_EXTERNAL_BUCKET && (
-						<Container>
-							<ListRow>
-								<Container padding={{ bottom: 'large' }}>
-									<Select
-										items={bucketListOption}
-										background="gray5"
-										label={t('backup.bucket_list', 'Buckets List')}
-										showCheckbox={false}
-										selection={bucketConfiguration}
-										onChange={onManageExternalVolumeConfigurationChange}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					)}
+					{isManageExternalVolumeEnable &&
+						destinationSelected?.value === MOVE_TO_EXTERNAL_BUCKET && (
+							<Container>
+								<ListRow>
+									<Container padding={{ bottom: 'large' }}>
+										<Select
+											items={bucketListOption}
+											background="gray5"
+											label={t('backup.bucket_list', 'Buckets List')}
+											showCheckbox={false}
+											selection={bucketConfiguration}
+											onChange={onManageExternalVolumeConfigurationChange}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						)}
 					{isManageExternalVolumeEnable &&
 						destinationSelected?.value === MOVE_TO_LOCAL_MOUNT_POINT && (
 							<Container>
@@ -1213,7 +1257,7 @@ const BackupConfiguration: FC = () => {
 						</Row>
 					)}
 					<ListRow>
-						<Container padding={{ top: 'large' }}>
+						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
 							{!isSetManageExternalButtonVisible && (
 								<Button
 									type="outlined"
@@ -1225,7 +1269,8 @@ const BackupConfiguration: FC = () => {
 									color="primary"
 									icon="HardDriveOutline"
 									iconPlacement="right"
-									height={36}
+									size="large"
+									style={{ width: '100%' }}
 									width="100%"
 									disabled={!isBackupInitialized}
 									onClick={(): void => {
@@ -1274,6 +1319,7 @@ const BackupConfiguration: FC = () => {
 							label={t('backup.schedule_smartscan', 'Schedule Smartscan')}
 							value={isScheduleSmartScan}
 							onClick={(): void => setIsScheduleSmartScan(!isScheduleSmartScan)}
+							iconColor="primary"
 						/>
 					</Container>
 
@@ -1292,14 +1338,15 @@ const BackupConfiguration: FC = () => {
 					</ListRow>
 
 					<ListRow>
-						<Container padding={{ top: 'large' }}>
+						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
 							<Button
 								type="outlined"
 								label={t('backup.force_start_smartscan_now', 'Force start smartscan now')}
 								color="primary"
 								icon="PowerOutline"
 								iconPlacement="right"
-								height={36}
+								size="large"
+								style={{ width: '100%' }}
 								width="100%"
 								disabled={!isBackupInitialized}
 								onClick={(): void => {
@@ -1346,6 +1393,7 @@ const BackupConfiguration: FC = () => {
 								onClick={(): void =>
 									setScheduleAutomaticRetentionPolicy(!scheduleAutomaticRetentionPolicy)
 								}
+								iconColor="primary"
 							/>
 						</Container>
 					</ListRow>
@@ -1380,6 +1428,12 @@ const BackupConfiguration: FC = () => {
 									setKeepDeletedItemInBackup(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy}
+								description={
+									<Trans
+										i18nKey="backup.back_delete_account_warning_message"
+										defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
+									/>
+								}
 							/>
 						</Container>
 						<Container
@@ -1413,7 +1467,12 @@ const BackupConfiguration: FC = () => {
 									setKeepDeletedAccountsInBackup(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy}
-								description="Optional description"
+								description={
+									<Trans
+										i18nKey="backup.back_delete_account_warning_message"
+										defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
+									/>
+								}
 							/>
 						</Container>
 						<Container
@@ -1430,39 +1489,8 @@ const BackupConfiguration: FC = () => {
 							/>
 						</Container>
 					</ListRow>
-
 					<ListRow>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'small', right: 'large' }}
-							width="50%"
-						>
-							<Text overflow="break-word" size="extrasmall">
-								<Trans
-									i18nKey="backup.back_delete_item_warning_message"
-									defaults="If you set 0, <strong>items</strong> will be kept in backup forever ?"
-								/>
-							</Text>
-						</Container>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'small', right: 'large' }}
-							width="50%"
-						>
-							<Text overflow="break-word" size="extrasmall">
-								<Trans
-									i18nKey="backup.back_delete_account_warning_message"
-									defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
-								/>
-							</Text>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ top: 'large' }}>
+						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
 							<Button
 								type="outlined"
 								label={t('backup.force_backup_purge_now', 'Force backup purge now')}
@@ -1470,12 +1498,14 @@ const BackupConfiguration: FC = () => {
 								icon="PowerOutline"
 								iconPlacement="right"
 								height={36}
+								style={{ width: '100%' }}
 								width="100%"
 								disabled={isPurgeRequestRunning || !isBackupInitialized}
 								loading={isPurgeRequestRunning}
 								onClick={(): void => {
 									doBackupPurge();
 								}}
+								size="large"
 							/>
 						</Container>
 					</ListRow>

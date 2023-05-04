@@ -13,6 +13,8 @@ import {
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
@@ -87,18 +89,18 @@ const EditHsmPolicyVolumesSection: FC<{
 			const allRows = volumeList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{''}
 					</Text>,
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="medium" key={item} color="#828282">
 						{getVoumeType(item?.type)}
 					</Text>,
 					<Text
 						size="medium"
-						weight="bold"
+						weight="medium"
 						key={item}
 						color={item?.isCurrent ? 'gray0' : '#D74942'}
 					>
@@ -217,6 +219,7 @@ const EditHsmPolicyVolumesSection: FC<{
 						onClick={(): void => {
 							setShowSourceVolume(!showSourceVolume);
 						}}
+						iconColor="primary"
 					/>
 				</Padding>
 			</ListRow>
@@ -248,6 +251,8 @@ const EditHsmPolicyVolumesSection: FC<{
 									setSelectedSourceVolume(selected);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 				</Padding>
@@ -288,6 +293,7 @@ const EditHsmPolicyVolumesSection: FC<{
 						onClick={(): void => {
 							setShowDestinationVolume(!showDestinationVolume);
 						}}
+						iconColor="primary"
 					/>
 				</Padding>
 			</ListRow>
@@ -297,7 +303,7 @@ const EditHsmPolicyVolumesSection: FC<{
 						<Table
 							rows={volumeRows}
 							headers={headers}
-							showCheckbox={false}
+							showCheckbox
 							multiSelect={false}
 							selectedRows={selectedDestinationVolume}
 							onSelectionChange={(selected: any): void => {
@@ -321,6 +327,8 @@ const EditHsmPolicyVolumesSection: FC<{
 									setSelectedDestinationVolume(selected);
 								}
 							}}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
 				</Padding>

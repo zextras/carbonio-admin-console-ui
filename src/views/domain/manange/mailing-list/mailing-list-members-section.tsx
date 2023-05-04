@@ -27,6 +27,8 @@ import { MailingListContext } from './mailinglist-context';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 const MailingListMembersSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -62,7 +64,15 @@ const MailingListMembersSection: FC<any> = () => {
 			const allRows = dlm.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text
+						size="medium"
+						weight="light"
+						key={item}
+						color="#828282"
+						onClick={(): void => {
+							setSelectedDistributionListMember([item]);
+						}}
+					>
 						{item}
 					</Text>,
 					''
@@ -169,7 +179,6 @@ const MailingListMembersSection: FC<any> = () => {
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -211,7 +220,7 @@ const MailingListMembersSection: FC<any> = () => {
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large', right: 'small' }}
-						width="65%"
+						width="64%"
 					>
 						<Dropdown
 							items={items}
@@ -236,10 +245,9 @@ const MailingListMembersSection: FC<any> = () => {
 					</Container>
 					<Container
 						mainAlignment="flex-start"
-						crossAlignment="center"
+						padding={{ top: 'large' }}
 						orientation="horizontal"
-						width="fit"
-						padding={{ top: 'large', right: 'small' }}
+						width="35%"
 					>
 						<Button
 							type="outlined"
@@ -247,42 +255,35 @@ const MailingListMembersSection: FC<any> = () => {
 							color="primary"
 							icon="PlusOutline"
 							iconPlacement="right"
-							height={44}
+							size="large"
 							disabled={member === ''}
 							onClick={onAdd}
 						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
-					>
-						<Button
-							type="outlined"
-							label={t('label.delete', 'Delete')}
-							color="error"
-							icon="PlusOutline"
-							iconPlacement="right"
-							height={44}
-							disabled={
-								selectedDistributionListMember && selectedDistributionListMember.length === 0
-							}
-							onClick={onDeleteFromList}
-						/>
+						<Padding left="small">
+							<Button
+								type="outlined"
+								label={t('label.delete', 'Delete')}
+								color="error"
+								icon="PlusOutline"
+								iconPlacement="right"
+								size="large"
+								disabled={
+									selectedDistributionListMember && selectedDistributionListMember.length === 0
+								}
+								onClick={onDeleteFromList}
+							/>
+						</Padding>
 					</Container>
 				</ListRow>
 				<ListRow>
-					<Container padding={{ top: 'large' }}>
+					<Container padding={{ top: 'large', right: 'small' }}>
 						<Table
 							rows={dlmTableRows}
 							headers={memberHeaders}
 							showCheckbox={false}
 							selectedRows={selectedDistributionListMember}
-							onSelectionChange={(selected: any): void =>
-								setSelectedDistributionListMember(selected)
-							}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
 				</ListRow>

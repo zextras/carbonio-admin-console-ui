@@ -16,3 +16,72 @@ export interface ICertificateContent {
 	fileName: string;
 	content: string;
 }
+
+export interface CreateSnackbarType {
+	key: string;
+	type: 'error' | 'success' | 'warning';
+	label: string;
+	autoHideTimeout: number;
+	hideButton: boolean;
+	replace: boolean;
+}
+
+export interface IntervalType {
+	label?: string;
+	value?: string;
+}
+
+export interface GalAccountType {
+	id: string;
+	name: string;
+	server: string;
+}
+
+export interface AccountDataType {
+	id?: string;
+	name?: string;
+	galAccount?: GalAccountType | null;
+}
+
+export interface DomainDataType {
+	zimbraGalMaxResults: string;
+	zimbraGalAccountId?: string;
+	zimbraGalMode?: string;
+	zimbraDataSourcePollingInterval?: string;
+	zimbraGalLdapPageSize: string;
+	zimbraGalLdapURL?: string;
+	zimbraGalLdapStartTlsEnabled?: string;
+	zimbraGalLdapSearchBase?: string;
+	zimbraGalLdapFilter?: string;
+	zimbraGalLdapBindDn?: string;
+	zimbraGalLdapBindPassword?: string;
+	zimbraGalLdapAuthMech?: string;
+	zimbraDataSourceGalPollingInterval?: string;
+	zimbraId?: string;
+	zimbraGalLdapPageSizets?: string;
+}
+
+export type themeConfigStore = {
+	carbonioWebUiDarkMode?: boolean;
+	carbonioWebUiLoginLogo?: string;
+	carbonioWebUiDarkLoginLogo?: string;
+	carbonioWebUiLoginBackground?: string;
+	carbonioWebUiDarkLoginBackground?: string;
+	carbonioWebUiAppLogo?: string;
+	carbonioWebUiDarkAppLogo?: string;
+	carbonioWebUiFavicon?: string;
+	carbonioWebUiTitle?: string;
+	carbonioWebUiDescription?: string;
+	carbonioAdminUiLoginLogo?: string;
+	carbonioAdminUiDarkLoginLogo?: string;
+	carbonioAdminUiAppLogo?: string;
+	carbonioAdminUiDarkAppLogo?: string;
+	carbonioAdminUiBackground?: string;
+	carbonioAdminUiDarkBackground?: string;
+	carbonioAdminUiFavicon?: string;
+	carbonioAdminUiTitle?: string;
+	carbonioAdminUiDescription?: string;
+	carbonioLogoUrl?: string;
+	carbonioWebUiPrimaryColor?: string;
+	carbonioWebUiDarkPrimaryColor?: string;
+};

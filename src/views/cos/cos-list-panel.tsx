@@ -125,7 +125,7 @@ const CosListPanel: FC = () => {
 	);
 
 	useEffect(() => {
-		if (searchCosName && !isCosSelect) {
+		if (!isCosSelect) {
 			searchCosCall(searchCosName);
 		}
 	}, [searchCosName, isCosSelect, searchCosCall]);
@@ -228,7 +228,6 @@ const CosListPanel: FC = () => {
 							bottom="9px"
 							left="large"
 							style={{
-								fontFamily: 'roboto',
 								display: 'block',
 								textAlign: 'left',
 								height: 'inherit',
@@ -277,7 +276,7 @@ const CosListPanel: FC = () => {
 							<CustomIcon
 								icon={isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline'}
 								size="large"
-								color="text"
+								color="primary"
 								onClick={(): void => {
 									setIsCosListExpand(!isCosListExpand);
 								}}

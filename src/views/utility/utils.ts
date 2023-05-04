@@ -4,7 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { TFunction } from 'i18next';
-import { ACTIVE, CLOSED, LOCKED, MAINTENANCE, PENDING, NOT_SET } from '../../constants';
+import {
+	ACTIVE,
+	CLOSED,
+	LOCKED,
+	MAINTENANCE,
+	PENDING,
+	NOT_SET,
+	SEND_MAILS_ONLY,
+	READ_MAILS_ONLY,
+	SEND_READ_MAILS,
+	MANAGE_NO_SEND,
+	SEND_READ_MANAGE_MAILS
+} from '../../constants';
+import { Rights, Right } from '../../store/rights/store';
 
 export const timeZoneList = (
 	t: TFunction
@@ -850,6 +863,28 @@ export const AccountStatus = (t: TFunction): Array<{ value?: string; label: stri
 	}
 ];
 
+export const MeasureUnitItems = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('domain.unit_measure_days', 'Days'),
+		value: 'd'
+	},
+	{
+		label: t('domain.unit_measure_hours', 'Hours'),
+		value: 'h'
+	},
+	{
+		label: t('domain.unit_measure_minutes', 'Minutes'),
+		value: 'm'
+	},
+	{
+		label: t('domain.unit_measure_seconds', 'Seconds'),
+		value: 's'
+	},
+	{
+		label: t('domain.unit_measure_milliseconds', 'Milliseconds'),
+		value: 'ms'
+	}
+];
 export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('buckets.s3_types.alibaba_cloud_s3', 'Alibaba Cloud S3'),
@@ -886,6 +921,10 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 	{
 		label: t('buckets.s3_types.yandex_s3', 'Yandex S3'),
 		value: 'Yandex'
+	},
+	{
+		label: t('buckets.s3_types.minio', 'Minio'),
+		value: 'Minio'
 	}
 ];
 
@@ -908,7 +947,14 @@ export const volTableHeader = (
 	{
 		id: 'name',
 		label: t('volume.volume_header.name', 'Name'),
-		width: '10%',
+		width: '30%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'storeType',
+		label: t('volume.volume_header.storageType', 'Storage Type'),
+		width: '25%',
 		bold: true,
 		align: 'left'
 	},
@@ -954,14 +1000,21 @@ export const indexerHeaders = (
 	{
 		id: 'name',
 		label: t('volume.volume_indexer_header.name', 'Name'),
-		width: '10%',
+		width: '30%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'storeType',
+		label: t('volume.volume_header.storageType', 'Storage Type'),
+		width: '25%',
 		bold: true,
 		align: 'left'
 	},
 	{
 		id: 'path',
 		label: t('volume.volume_indexer_header.path', 'Path'),
-		width: '71%',
+		width: '61%',
 		align: 'left',
 		bold: true
 	},
@@ -991,20 +1044,26 @@ export const volumeTypeList = (t: TFunction): Array<{ label: string; value?: num
 
 export const volumeAllocationList = (t: TFunction): Array<{ label: string; value?: number }> => [
 	{
-		label: t('volume.volume_allocation_list.local', 'Local'),
+		label: t('volume.volume_allocation_list.local_block_device', 'Local Block Device'),
 		value: 1
 	},
 	{
-		label: t('volume.volume_allocation_list.external', 'External'),
+		label: t('volume.volume_allocation_list.object_storage', 'ObjectStorage'),
 		value: 2
+	}
+];
+
+export const GalServerTableheaders = (t: TFunction): Array<object> => [
+	{
+		id: 'server',
+		label: t('label.server', 'Server'),
+		bold: true,
+		width: '30%'
 	},
 	{
-		label: t('volume.volume_allocation_list.sproxy', 'Sproxy'),
-		value: 3
-	},
-	{
-		label: t('volume.volume_allocation_list.centralized', 'Centralized'),
-		value: 4
+		id: 'galsync_account',
+		label: t('label.galsync_account', 'GALSync Account'),
+		bold: true
 	}
 ];
 
@@ -1032,8 +1091,8 @@ export const volumeConfigHeader = (
 		bold: true
 	},
 	{
-		id: 'indexer',
-		label: t('volume.volume_config_header.indexer', 'Indexer'),
+		id: 'status',
+		label: t('volume.volume_config_header.status', 'Status'),
 		width: '33%',
 		align: 'center',
 		bold: true
@@ -1136,6 +1195,118 @@ export const headerCE = (
 		i18nAllLabel: 'All',
 		width: '169px',
 		bold: true
+	}
+];
+
+export const OperationsHeader = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	i18nAllLabel: string;
+	align: string;
+}> => [
+	{
+		id: 'Server',
+		label: t('operations.operations_list_header.server', 'Server'),
+		i18nAllLabel: 'All',
+		width: '127px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Operation',
+		label: t('operations.operations_list_header.operation', 'Operation'),
+		i18nAllLabel: 'All',
+		width: '127px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Secondary',
+		label: t('operations.operations_list_header.author', 'Author'),
+		i18nAllLabel: 'All',
+		width: '177px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Index',
+		label: t('operations.operations_list_header.submit_date', 'Submit date'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true,
+		align: 'center'
+	},
+	{
+		id: 'HSM Scheduling',
+		label: t('operations.operations_list_header.start_date', 'Start date'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true,
+		align: 'center'
+	}
+];
+
+export const OperationsDoneHeader = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	i18nAllLabel: string;
+	align: string;
+}> => [
+	{
+		id: 'Server',
+		label: t('operations.operations_list_header.server', 'Server'),
+		i18nAllLabel: 'All',
+		width: '127px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Operation',
+		label: t('operations.operations_list_header.operation', 'Operation'),
+		i18nAllLabel: 'All',
+		width: '77px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Operation',
+		label: t('operations.operations_list_header.status', 'Status'),
+		i18nAllLabel: 'All',
+		width: '57px',
+		bold: true,
+		align: 'center'
+	},
+	{
+		id: 'Secondary',
+		label: t('operations.operations_list_header.author', 'Author'),
+		i18nAllLabel: 'All',
+		width: '177px',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'Index',
+		label: t('operations.operations_list_header.submit_date', 'Submit date'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true,
+		align: 'center'
+	},
+	{
+		id: 'HSM Scheduling',
+		label: t('operations.operations_list_header.start_date', 'Start date'),
+		i18nAllLabel: 'All',
+		width: '138px',
+		bold: true,
+		align: 'center'
 	}
 ];
 
@@ -1525,6 +1696,11 @@ export const isValidHttpsUrl = (url: string): boolean => {
 	return reqex.test(url);
 };
 
+export const isValidUrl = (url: string): boolean => {
+	const reqex = /^((http|https):\/\/)[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/;
+	return reqex.test(url);
+};
+
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
@@ -1533,6 +1709,74 @@ export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label
 	{
 		label: t('label.conversation', 'Conversation'),
 		value: 'conversation'
+	}
+];
+
+export const deligateSendSettings = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t(
+			'label.save_a_copy_of_sent_messages_only_in_delegates_send_folder',
+			`Save a copy of sent messages only in delegate's send folder`
+		),
+		value: 'owner'
+	},
+	{
+		label: t(
+			'label.save_a_copy_of_sent_messages_only_in_delegateds_send_folder',
+			`Save a copy of sent messages only in delegated's send folder`
+		),
+		value: 'sender'
+	},
+	{
+		label: t(
+			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
+			`Save a copy of sent messages to delegate and delegated send folder`
+		),
+		value: 'both'
+	},
+	{
+		label: t('label.dont_save_a_copy_of_sent_messages', `Don't save a copy of sent messages`),
+		value: 'none'
+	}
+];
+
+export const delegateType = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('account_details.a_user', 'A User'),
+		value: 'usr'
+	},
+	{
+		label: t('account_details.an_existing_group', 'An Existing Group'),
+		value: 'grp'
+	}
+];
+
+export const delegateRightsType = (t: TFunction): Array<{ value?: string; label: string }> => [
+	{
+		label: t('account_details.send_mails_only', 'Send Mails only (no rights to read folders)'),
+		value: SEND_MAILS_ONLY
+	},
+	{
+		label: t('account_details.read_mails_only', 'Read Mails only (no rights to send mails)'),
+		value: READ_MAILS_ONLY
+	},
+	{
+		label: t(
+			'account_details.send_read_mails',
+			'Send and Read Mails (no rights to create folders / manage mails)'
+		),
+		value: SEND_READ_MAILS
+	},
+	{
+		label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
+		value: MANAGE_NO_SEND
+	},
+	{
+		label: t(
+			'account_details.send_read_manage_mails',
+			'Send, Read and Manage Mails (all of the above)'
+		),
+		value: SEND_READ_MANAGE_MAILS
 	}
 ];
 
@@ -1701,4 +1945,107 @@ export const copyTextToClipboard = (text: string): void => {
 	if (navigator) {
 		navigator.clipboard.writeText(text);
 	}
+};
+
+export const download = (content: BlobPart, fileName: string, contentType: string): void => {
+	const a = document.createElement('a');
+	const file = new Blob([content], { type: contentType });
+	a.href = URL.createObjectURL(file);
+	a.download = fileName;
+	a.click();
+};
+
+export const getSPEntityId = (
+	protocol: string,
+	publicServerHostName: string,
+	domain: string
+): string => {
+	let url = '';
+	if (publicServerHostName) {
+		url = `${protocol || 'https'}://${publicServerHostName}/zx/auth/samlMetadata?domain=${domain}`;
+	}
+	return url;
+};
+
+export const getServiceUrl = (protocol: string, publicServerHostName: string): string => {
+	let url = '';
+	if (publicServerHostName) {
+		url = `${protocol || 'https'}://${publicServerHostName}/zx/auth/saml`;
+	}
+	return url;
+};
+
+export const ServicesPassphraseStatus = (
+	t: TFunction
+): Array<{ value?: boolean; label: string }> => [
+	{
+		label: t('label.active', 'Active'),
+		value: true
+	},
+	{
+		label: t('label.inactive', 'Inactive'),
+		value: false
+	}
+];
+
+export const ServicesPassphraseServices = (): Array<{ value?: string; label: string }> => [
+	{
+		label: 'Dav(Web/Card/Cal)',
+		value: 'DAV'
+	},
+	{
+		label: 'EAS',
+		value: 'EAS'
+	},
+	{
+		label: 'WebUI',
+		value: 'WebUI'
+	},
+	{
+		label: 'WebAdminUI',
+		value: 'WebAdminUI'
+	},
+	{
+		label: 'MobileApp',
+		value: 'MobileApp'
+	},
+	{
+		label: 'DesktopApp',
+		value: 'DesktopApp'
+	},
+	{
+		label: 'ZmWebUI',
+		value: 'ZmWebUI'
+	},
+	{
+		label: 'CLI',
+		value: 'CLI'
+	},
+	{
+		label: 'SMTP',
+		value: 'SMTP'
+	},
+	{
+		label: 'IMAP',
+		value: 'IMAP'
+	},
+	{
+		label: 'POP3',
+		value: 'POP3'
+	}
+];
+
+export const getRights = (rights: Rights, type: string): Array<Record<string, string>> => {
+	let right: Array<Record<string, string>> = [];
+	const filteredType = rights.filter((item: Right) => item?.type === type);
+	if (filteredType && filteredType.length > 0) {
+		if (
+			filteredType[0]?.all &&
+			Array.isArray(filteredType[0]?.all) &&
+			filteredType[0]?.all.length > 0
+		) {
+			right = filteredType[0]?.all[0].right || [];
+		}
+	}
+	return right;
 };

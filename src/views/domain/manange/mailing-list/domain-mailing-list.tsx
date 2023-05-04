@@ -39,6 +39,8 @@ import CreateMailingList from './create-mailing-list';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -142,8 +144,7 @@ const DomainMailingList: FC = () => {
 					mList.push({
 						id: item?.id,
 						columns: [
-							<Row
-								mainAlignment="flex-start"
+							<Container
 								crossAlignment="flex-start"
 								key={item?.id}
 								style={{ cursor: 'pointer' }}
@@ -157,9 +158,8 @@ const DomainMailingList: FC = () => {
 								<Text size="medium" weight="light" key={`${item?.id}display-child`} color="gray0">
 									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-address`}
 								style={{ cursor: 'pointer' }}
@@ -173,9 +173,8 @@ const DomainMailingList: FC = () => {
 								<Text size="medium" weight="light" key={`${item?.id}address-child`} color="gray0">
 									{item?.name}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-member`}
 								style={{ cursor: 'pointer' }}
@@ -189,9 +188,8 @@ const DomainMailingList: FC = () => {
 								<Text size="medium" weight="light" key={`${item?.id}member-child`} color="gray0">
 									{''}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-status`}
 								style={{ cursor: 'pointer' }}
@@ -207,9 +205,8 @@ const DomainMailingList: FC = () => {
 										? t('label.can_receive', 'Can receive')
 										: ''}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-gal`}
 								style={{ cursor: 'pointer' }}
@@ -223,9 +220,8 @@ const DomainMailingList: FC = () => {
 								<Text size="medium" weight="light" key={`${item?.id}gal-child`} color="gray0">
 									{''}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-description`}
 								style={{ cursor: 'pointer' }}
@@ -244,7 +240,7 @@ const DomainMailingList: FC = () => {
 								>
 									{item?.a?.find((a: any) => a?.n === 'description')?._content}
 								</Text>
-							</Row>
+							</Container>
 						]
 					});
 				});
@@ -346,6 +342,9 @@ const DomainMailingList: FC = () => {
 							replace: true
 						});
 					}
+				})
+				.catch((error) => {
+					setIsUpdateRecord(true);
 				});
 		},
 		[createSnackbar]
@@ -475,7 +474,7 @@ const DomainMailingList: FC = () => {
 				dl = { by: 'name', _content: name };
 				action = {
 					op: 'setRights',
-					right: { right: 'sendToDistList', grantee: [{ type: 'pub' }] }
+					right: { right: 'sendToDistList', grantee: [] }
 				};
 			} else if (ownerGrantEmailType?.value === GRP) {
 				dl = { by: 'name', _content: name };
@@ -649,6 +648,8 @@ const DomainMailingList: FC = () => {
 										);
 										setSelectedDlRow(selected);
 									}}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
 							{mailingList.length === 0 && (

@@ -21,6 +21,7 @@ import ListRow from '../../list/list-row';
 import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { modifyBackupRequest } from '../../../services/modify-backup';
+import { useModuleLicenseStore } from '../../../store/module-license/store';
 
 const BackupServerConfig: FC = () => {
 	const [t] = useTranslation();
@@ -29,6 +30,8 @@ const BackupServerConfig: FC = () => {
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
 	const [initbackupDetail, setInitBackupDetail] = useState<any>({});
 	const createSnackbar = useSnackbar();
+	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 
 	const onCancel = (): void => {
 		setInitBackupDetail({ ...globalConfig });
@@ -130,238 +133,256 @@ const BackupServerConfig: FC = () => {
 		},
 		[setInitBackupDetail]
 	);
+	useEffect(() => {
+		if (moduleLicense && moduleLicense.length > 0) {
+			const backupModule = moduleLicense.filter(
+				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+			);
+			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+				setIsBackupModuleLicensed(true);
+			}
+		}
+	}, [moduleLicense]);
+
 	return (
 		<>
-			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-				<Row
-					takeAvwidth="fill"
-					mainAlignment="flex-start"
-					width="100%"
-					padding={{ left: 'large', right: 'large' }}
-				>
-					<Container
-						orientation="vertical"
-						mainAlignment="space-around"
-						background="gray6"
-						height="58px"
-					>
-						<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
-							<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
-								<Text size="medium" weight="bold" color="gray0">
-									{t('label.server_config', 'Server Config')}
-								</Text>
-							</Row>
-							<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-								<Padding right="small">
-									{isDirty && (
-										<Button
-											label={t('label.cancel', 'Cancel')}
-											color="secondary"
-											onClick={onCancel}
-										/>
-									)}
-								</Padding>
-								{isDirty && (
-									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
-								)}
-							</Row>
-						</Row>
-					</Container>
-				</Row>
-				<Row orientation="horizontal" width="100%" background="gray6">
-					<Divider />
-				</Row>
-				<Container
-					orientation="column"
-					crossAlignment="flex-start"
-					mainAlignment="flex-start"
-					style={{ overflow: 'auto' }}
-					width="100%"
-					height="calc(100vh - 200px)"
-					padding={{ all: 'large' }}
-				>
+			{isBackupModuleLicensed && (
+				<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 					<Row
 						takeAvwidth="fill"
 						mainAlignment="flex-start"
 						width="100%"
-						padding={{ top: 'large' }}
-					></Row>
-					<ListRow>
-						<Switch
-							label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
-							value={initbackupDetail.ZxBackup_RealTimeScanner}
-							onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
-						/>
-					</ListRow>
-					<ListRow>
-						<Switch
-							value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
-							label={t(
-								'backup.this_module_is_enable_at_the_startup',
-								'This module is enabled at the startup'
-							)}
-							onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
-						/>
-					</ListRow>
-					<ListRow>
-						<Switch
-							value={initbackupDetail.ZxBackup_DoSmartScanOnStartup}
-							label={t(
-								'backup.run_the_smart_scan_at_the_startup',
-								'Run the Smartscan at the startup'
-							)}
-							onClick={(): void => changeSwitchOption('ZxBackup_DoSmartScanOnStartup')}
-						/>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ top: 'large', bottom: 'large' }}>
-							<Divider />
+						padding={{ left: 'large', right: 'large' }}
+					>
+						<Container
+							orientation="vertical"
+							mainAlignment="space-around"
+							background="gray6"
+							height="58px"
+						>
+							<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
+								<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+									<Text size="medium" weight="bold" color="gray0">
+										{t('label.server_config', 'Server Config')}
+									</Text>
+								</Row>
+								<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
+									<Padding right="small">
+										{isDirty && (
+											<Button
+												label={t('label.cancel', 'Cancel')}
+												color="secondary"
+												onClick={onCancel}
+											/>
+										)}
+									</Padding>
+									{isDirty && (
+										<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+									)}
+								</Row>
+							</Row>
 						</Container>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ bottom: 'large' }}>
-							<Input
-								label={t('backup.backup_path', 'Backup Path')}
-								value={initbackupDetail.ZxBackup_DestPath}
-								defaultValue={initbackupDetail.ZxBackup_DestPath}
-								onChange={changeBackupDetail}
-								inputName="ZxBackup_DestPath"
-								background="gray5"
-							/>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ bottom: 'large' }}>
-							<Input
-								label={`${t('backup.minimum_space_threshold', 'Minimum Space Threshold')} (${t(
-									'label.mb',
-									'MB'
-								)})`}
-								value={initbackupDetail.ZxBackup_SpaceThreshold}
-								defaultValue={initbackupDetail.ZxBackup_SpaceThreshold}
-								onChange={changeBackupDetail}
-								inputName="ZxBackup_SpaceThreshold"
-								background="gray5"
-							/>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ bottom: 'medium' }}>
-							<Input
-								label={`${t('backup.local_metadata_threshold', 'Local Metadata Threshold')} (${t(
-									'label.mb',
-									'MB'
-								)})`}
-								value={initbackupDetail.backupLocalMetadataThreshold}
-								defaultValue={initbackupDetail.backupLocalMetadataThreshold}
-								onChange={changeBackupDetail}
-								inputName="backupLocalMetadataThreshold"
-								background="gray5"
-							/>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ top: 'small', bottom: 'large' }}>
-							<Divider />
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Padding bottom="large">
+					</Row>
+					<Row orientation="horizontal" width="100%" background="gray6">
+						<Divider />
+					</Row>
+					<Container
+						orientation="column"
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						style={{ overflow: 'auto' }}
+						width="100%"
+						height="calc(100vh - 200px)"
+						padding={{ all: 'large' }}
+					>
+						<Row
+							takeAvwidth="fill"
+							mainAlignment="flex-start"
+							width="100%"
+							padding={{ top: 'large' }}
+						></Row>
+						<ListRow>
 							<Switch
-								value={initbackupDetail.ZxBackup_SmartScanSchedulingEnabled}
-								onClick={(): void => changeSwitchOption('ZxBackup_SmartScanSchedulingEnabled')}
-								label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
+								label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
+								value={initbackupDetail.ZxBackup_RealTimeScanner}
+								onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
+								iconColor="primary"
 							/>
-						</Padding>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ bottom: 'medium' }}>
-							<Input
-								label={t('backup.schedule', 'Schedule')}
-								value={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
-								defaultValue={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
-								onChange={changeBackupSchedulerDetail}
-								inputName="backupSmartScanScheduler"
-								background="gray5"
-							/>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ top: 'small', bottom: 'extralarge' }}>
-							<Divider />
-						</Container>
-					</ListRow>
-
-					<ListRow>
-						<Padding bottom="medium">
-							<Text size="medium" weight="regular">
-								{t('backup.backup_purge', 'Backup Purge')}
-							</Text>
-						</Padding>
-					</ListRow>
-
-					<ListRow>
-						<Container padding={{ bottom: 'large' }}>
-							<Input
-								label={t('backup.schedule', 'Schedule')}
-								value={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
-								defaultValue={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
-								onChange={changeBackupSchedulerDetail}
-								inputName="backupPurgeScheduler"
-								background="gray5"
-							/>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ bottom: 'small' }}>
-							<Input
-								label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
-								value={initbackupDetail.ZxBackup_DataRetentionDays}
-								defaultValue={initbackupDetail.ZxBackup_DataRetentionDays}
-								onChange={changeBackupDetail}
-								inputName="ZxBackup_DataRetentionDays"
-								background="gray5"
-							/>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Padding bottom="large">
-							<Text size="extrasmall" weight="regular" color="secondary">
-								{t(
-									'backup.set_backup_forever_msg',
-									'If you set 0, your data will be kept in backup forever'
-								)}
-							</Text>
-						</Padding>
-					</ListRow>
-
-					<ListRow>
-						<Container padding={{ bottom: 'small' }}>
-							<Input
+						</ListRow>
+						<ListRow>
+							<Switch
+								value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
 								label={t(
-									'backup.keep_delete_accounts_in_backup',
-									'Keep deleted accounts in the backup'
+									'backup.this_module_is_enable_at_the_startup',
+									'This module is enabled at the startup'
 								)}
-								value={initbackupDetail.backupAccountsRetentionDays}
-								defaultValue={initbackupDetail.backupAccountsRetentionDays}
-								onChange={changeBackupDetail}
-								inputName="backupAccountsRetentionDays"
-								background="gray5"
+								onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
+								iconColor="primary"
 							/>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Padding bottom="large">
-							<Text size="extrasmall" weight="regular" color="secondary">
-								{t(
-									'backup.set_backup_forever_msg',
-									'If you set 0, your data will be kept in backup forever'
+						</ListRow>
+						<ListRow>
+							<Switch
+								value={initbackupDetail.ZxBackup_DoSmartScanOnStartup}
+								label={t(
+									'backup.run_the_smart_scan_at_the_startup',
+									'Run the Smartscan at the startup'
 								)}
-							</Text>
-						</Padding>
-					</ListRow>
+								onClick={(): void => changeSwitchOption('ZxBackup_DoSmartScanOnStartup')}
+								iconColor="primary"
+							/>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ top: 'large', bottom: 'large' }}>
+								<Divider />
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ bottom: 'large' }}>
+								<Input
+									label={t('backup.backup_path', 'Backup Path')}
+									value={initbackupDetail.ZxBackup_DestPath}
+									defaultValue={initbackupDetail.ZxBackup_DestPath}
+									onChange={changeBackupDetail}
+									inputName="ZxBackup_DestPath"
+									background="gray5"
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ bottom: 'large' }}>
+								<Input
+									label={`${t('backup.minimum_space_threshold', 'Minimum Space Threshold')} (${t(
+										'label.mb',
+										'MB'
+									)})`}
+									value={initbackupDetail.ZxBackup_SpaceThreshold}
+									defaultValue={initbackupDetail.ZxBackup_SpaceThreshold}
+									onChange={changeBackupDetail}
+									inputName="ZxBackup_SpaceThreshold"
+									background="gray5"
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ bottom: 'medium' }}>
+								<Input
+									label={`${t('backup.local_metadata_threshold', 'Local Metadata Threshold')} (${t(
+										'label.mb',
+										'MB'
+									)})`}
+									value={initbackupDetail.backupLocalMetadataThreshold}
+									defaultValue={initbackupDetail.backupLocalMetadataThreshold}
+									onChange={changeBackupDetail}
+									inputName="backupLocalMetadataThreshold"
+									background="gray5"
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ top: 'small', bottom: 'large' }}>
+								<Divider />
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Padding bottom="large">
+								<Switch
+									value={initbackupDetail.ZxBackup_SmartScanSchedulingEnabled}
+									onClick={(): void => changeSwitchOption('ZxBackup_SmartScanSchedulingEnabled')}
+									label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
+									iconColor="primary"
+								/>
+							</Padding>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ bottom: 'medium' }}>
+								<Input
+									label={t('backup.schedule', 'Schedule')}
+									value={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
+									defaultValue={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
+									onChange={changeBackupSchedulerDetail}
+									inputName="backupSmartScanScheduler"
+									background="gray5"
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ top: 'small', bottom: 'extralarge' }}>
+								<Divider />
+							</Container>
+						</ListRow>
+
+						<ListRow>
+							<Padding bottom="medium">
+								<Text size="medium" weight="regular">
+									{t('backup.backup_purge', 'Backup Purge')}
+								</Text>
+							</Padding>
+						</ListRow>
+
+						<ListRow>
+							<Container padding={{ bottom: 'large' }}>
+								<Input
+									label={t('backup.schedule', 'Schedule')}
+									value={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
+									defaultValue={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
+									onChange={changeBackupSchedulerDetail}
+									inputName="backupPurgeScheduler"
+									background="gray5"
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ bottom: 'small' }}>
+								<Input
+									label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
+									value={initbackupDetail.ZxBackup_DataRetentionDays}
+									defaultValue={initbackupDetail.ZxBackup_DataRetentionDays}
+									onChange={changeBackupDetail}
+									inputName="ZxBackup_DataRetentionDays"
+									background="gray5"
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Padding bottom="large">
+								<Text size="extrasmall" weight="regular" color="secondary">
+									{t(
+										'backup.set_backup_forever_msg',
+										'If you set 0, your data will be kept in backup forever'
+									)}
+								</Text>
+							</Padding>
+						</ListRow>
+
+						<ListRow>
+							<Container padding={{ bottom: 'small' }}>
+								<Input
+									label={t(
+										'backup.keep_delete_accounts_in_backup',
+										'Keep deleted accounts in the backup'
+									)}
+									value={initbackupDetail.backupAccountsRetentionDays}
+									defaultValue={initbackupDetail.backupAccountsRetentionDays}
+									onChange={changeBackupDetail}
+									inputName="backupAccountsRetentionDays"
+									background="gray5"
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Padding bottom="large">
+								<Text size="extrasmall" weight="regular" color="secondary">
+									{t(
+										'backup.set_backup_forever_msg',
+										'If you set 0, your data will be kept in backup forever'
+									)}
+								</Text>
+							</Padding>
+						</ListRow>
+					</Container>
 				</Container>
-			</Container>
+			)}
+
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
 				<Text>
 					{t(

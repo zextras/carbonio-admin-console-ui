@@ -46,7 +46,10 @@ const CreateAccountDetailSection: FC = () => {
 	const changeAccName = useCallback(
 		(e) => {
 			setAccountDetail((prev: any) => ({ ...prev, changeNameBool: true }));
-			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[e.target.name]: e.target.value?.replace(/ /g, '')?.toLowerCase()
+			}));
 		},
 		[setAccountDetail]
 	);
@@ -62,9 +65,9 @@ const CreateAccountDetailSection: FC = () => {
 	const combineName = useMemo(
 		() =>
 			!accountDetail?.changeNameBool
-				? `${accountDetail?.givenName || ''}${accountDetail?.initials || ''}${
-						accountDetail?.sn || ''
-				  }`
+				? `${accountDetail?.givenName?.replace(/ /g, '')?.toLowerCase() || ''}${
+						accountDetail?.initials?.replace(/ /g, '')?.toLowerCase() || ''
+				  }${accountDetail?.sn?.replace(/ /g, '')?.toLowerCase() || ''}`
 				: accountDetail?.name,
 		[
 			accountDetail?.changeNameBool,
@@ -77,9 +80,9 @@ const CreateAccountDetailSection: FC = () => {
 
 	const combineDisplayName = useMemo(
 		() =>
-			`${accountDetail?.givenName || ''} ${accountDetail?.initials || ''} ${
-				accountDetail?.sn || ''
-			}`,
+			`${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}${
+				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
+			}${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
 		[accountDetail?.givenName, accountDetail?.initials, accountDetail?.sn]
 	);
 	useEffect(() => {
@@ -196,6 +199,7 @@ const CreateAccountDetailSection: FC = () => {
 						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"
+						autoComplete="new-password"
 					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -206,6 +210,7 @@ const CreateAccountDetailSection: FC = () => {
 							onChange={changeAccDetail}
 							inputName="password"
 							defaultValue={accountDetail?.password || ''}
+							autoComplete="new-password"
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -219,23 +224,17 @@ const CreateAccountDetailSection: FC = () => {
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="100%" mainAlignment="flex-start">
 						<Switch
 							value={accountDetail?.zimbraPasswordMustChange}
 							onClick={(): void => changeSwitchOption('zimbraPasswordMustChange')}
 							label={t(
-								'accountDetails.change_password_for_next_login',
-								'Must change password on the next login'
+								'accountDetails.user_will_change_password_on_next_login',
+								'User will change password on next login'
 							)}
+							iconColor="primary"
 						/>
 					</Row>
-					{/* <Row width="48%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.generateFirst2FAToken}
-							onClick={(): void => changeSwitchOption('generateFirst2FAToken')}
-							label={t('accountDetails.generate_first_2FA_token', 'Generate first 2FA token')}
-						/>
-					</Row> */}
 				</Row>
 			</Row>
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
@@ -245,7 +244,7 @@ const CreateAccountDetailSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="100%" mainAlignment="flex-start">
 						<Select
 							items={ACCOUNT_STATUS}
 							background="gray5"
@@ -258,7 +257,7 @@ const CreateAccountDetailSection: FC = () => {
 							padding={{ right: 'medium' }}
 						/>
 					</Row>
-					<Row width="32%" mainAlignment="flex-start">
+					{/* <Row width="32%" mainAlignment="flex-start">
 						<Select
 							items={localeZone}
 							background="gray5"
@@ -283,7 +282,7 @@ const CreateAccountDetailSection: FC = () => {
 							)}
 							onChange={onPrefTimeZoneChange}
 						/>
-					</Row>
+					</Row> */}
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="flex-start">
@@ -291,6 +290,7 @@ const CreateAccountDetailSection: FC = () => {
 							value={accountDetail?.defaultCOS}
 							onClick={(): void => changeSwitchOption('defaultCOS')}
 							label={t('accountDetails.default_COS', 'Default COS')}
+							iconColor="primary"
 						/>
 					</Row>
 					<Row width="64%" mainAlignment="flex-start">

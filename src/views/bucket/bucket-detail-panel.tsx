@@ -28,6 +28,10 @@ import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import { AbsoluteContainer } from '../components/styled';
+import ListRow from '../list/list-row';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -74,7 +78,7 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							{v.label}
+							<Text weight="light">{v.label}</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
@@ -88,7 +92,7 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							{v.bucketName}
+							<Text weight="light">{v.bucketName}</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={v.storeType}>
@@ -102,7 +106,7 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							{v.storeType}
+							<Text weight="light">{v.storeType}</Text>
 						</Row>
 					</Tooltip>
 				],
@@ -112,25 +116,38 @@ const BucketListTable: FC<{
 	);
 
 	return (
-		<Container crossAlignment="flex-start">
-			<Table
-				headers={headers(t)}
-				rows={tableRows}
-				showCheckbox={false}
-				multiSelect={false}
-				selectedRows={selectedRows}
-				onSelectionChange={onSelectionChange}
-			/>
+		<Container mainAlignment="flex-start" crossAlignment="flex-start">
+			<ListRow>
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					maxHeight="calc(100vh - 25rem)"
+					minHeight="auto"
+				>
+					<Table
+						headers={headers(t)}
+						rows={tableRows}
+						showCheckbox={false}
+						multiSelect={false}
+						selectedRows={selectedRows}
+						onSelectionChange={onSelectionChange}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
+					/>
+				</Container>
+			</ListRow>
 			{tableRows.length === 0 && (
-				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '64px' }}>
-					<Text overflow="break-word" weight="normal" size="large">
+				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '4rem' }}>
+					<Text overflow="break-word" weight="regular" size="large">
 						<img src={logo} alt="logo" />
 					</Text>
-					<Padding all="medium" width="494px">
+					<Padding all="medium" width="30.875rem">
 						<Text
 							color="gray1"
 							overflow="break-word"
-							weight="normal"
+							weight="regular"
 							size="large"
 							width="60%"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
@@ -170,6 +187,7 @@ const BucketDetailPanel: FC = () => {
 	};
 
 	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
+	const { selectedServerName } = useBucketVolumeStore((state) => state);
 
 	const getBucketListType = useCallback((): void => {
 		fetchSoap('zextras', {
@@ -194,14 +212,21 @@ const BucketDetailPanel: FC = () => {
 		// eslint-disable-next-line no-restricted-syntax
 		// delete  api call here
 		setOpen(false);
-		fetchSoap('zextras', {
+		const objectToSendDeleteBucket = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'doDeleteBucket',
 			storeType: bucketDeleteName?.storeType,
 			bucketConfigurationId: bucketDeleteName?.uuid,
-			targetServer: server
-		}).then((res: any) => {
+			targetServer: selectedServerName
+		};
+
+		if (selectedServerName === '') {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			delete objectToSend?.targetServers;
+		}
+		fetchSoap('zextras', objectToSendDeleteBucket).then((res: any) => {
 			const response = JSON.parse(res.Body.response.content);
 			if (response.ok) {
 				getBucketListType();
@@ -229,7 +254,7 @@ const BucketDetailPanel: FC = () => {
 		bucketDeleteName?.storeType,
 		bucketDeleteName?.uuid,
 		bucketDeleteName?.bucketName,
-		server,
+		selectedServerName,
 		getBucketListType,
 		createSnackbar,
 		t
@@ -334,7 +359,7 @@ const BucketDetailPanel: FC = () => {
 					mainAlignment="flex-end"
 					orientation="horizontal"
 					padding={{ top: 'extralarge', right: 'large', left: 'large' }}
-					style={{ gap: '16px' }}
+					style={{ gap: '1rem' }}
 				>
 					<Button
 						type="outlined"
@@ -355,15 +380,15 @@ const BucketDetailPanel: FC = () => {
 						BucketDetail={bucketDeleteName}
 					/>
 				)}
-				<Row width="100%" style={{ padding: '16px 13px' }}>
+				<Row width="100%" style={{ padding: '1rem 0.813rem' }}>
 					<Input
 						background="gray5"
 						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
-						CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="grey" />}
+						CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 						onChange={filterBucketList}
 					/>
 				</Row>
-				<Row style={{ padding: '0px 14px 0px 14px' }} width="100%">
+				<Row style={{ padding: '0 0.875rem 0 0.875rem' }} width="100%">
 					<BucketListTable
 						volumes={bucketList}
 						selectedRows={bucketselection}

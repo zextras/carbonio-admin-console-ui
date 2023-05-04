@@ -30,6 +30,8 @@ import { createResource } from '../../../../services/create-cal-resource-service
 import { createSignature } from '../../../../services/create-signature-service';
 import CreateResource from './create-resource';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -122,76 +124,76 @@ const DomainResources: FC = () => {
 						rList.push({
 							id: item?.id,
 							columns: [
-								<Text
-									size="medium"
-									weight="light"
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+									</Text>
+								</Container>,
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.name}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.name}
+									</Text>
+								</Container>,
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
+									</Text>
+								</Container>,
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
-										? moment(
-												item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content,
-												'YYYYMMDDHHmmss.Z'
-										  ).format('YY/MM/DD | hh:MM')
-										: t('label.never_logged_in', 'Never logged In')}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
+											? moment(
+													item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content,
+													'YYYYMMDDHHmmss.Z'
+											  ).format('YY/MM/DD | hh:MM')
+											: t('label.never_logged_in', 'Never logged In')}
+									</Text>
+								</Container>,
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'description')?._content}
-								</Text>
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'description')?._content}
+									</Text>
+								</Container>
 							],
 							item,
 							clickable: true
@@ -409,7 +411,6 @@ const DomainResources: FC = () => {
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
-				style={{ overflow: 'auto' }}
 				width="100%"
 				height="calc(100vh - 200px)"
 				padding={{ top: 'large' }}
@@ -454,6 +455,8 @@ const DomainResources: FC = () => {
 									showCheckbox
 									multiSelect
 									style={{ overflow: 'auto', height: '100%' }}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
 							{resourceList.length === 0 && (
@@ -494,7 +497,7 @@ const DomainResources: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							padding={{ top: 'large', bottom: 'large' }}
+							padding={{ all: 'large' }}
 						>
 							{resourceList && resourceList.length > 0 && (
 								<Row

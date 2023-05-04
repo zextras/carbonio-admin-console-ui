@@ -17,25 +17,28 @@ import {
 	Modal
 } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
-import { orderBy } from 'lodash';
+import { find, orderBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { fetchSoap } from '../../../services/subscription-service';
 import MatomoTracker from '../../../matomo-tracker';
-import { SUBSCRIPTIONS_ROUTE_ID } from '../../../constants';
+import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const VerticalBar = styled(Container)`
-	background-color: rgba(0, 80, 109, ${({ licensed }): number => (licensed ? 1 : 0.33)});
+	background-color: ${({ theme }): string => theme.palette.primary.regular};
 	width: 4px;
 	height: auto;
 	border-top-left-radius: 10px;
 	border-top-right-radius: 10px;
+	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
 `;
 
 const ServiceName = styled(Text)`
-	color: rgba(0, 80, 109, ${({ licensed }): number => (licensed ? 1 : 0.33)});
+	color: ${({ theme }): string => theme.palette.primary.regular};
 	font-weight: bold;
+	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
 `;
 
 const CollapseText = styled(Text)`
@@ -122,6 +125,15 @@ const Subscription: FC = () => {
 	const [version, setVersion] = useState();
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
 	const createSnackbar = useSnackbar();
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetSubsciption = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${SUBSCRIPTIONS_ROUTE_ID}`);
@@ -208,14 +220,18 @@ const Subscription: FC = () => {
 				createSnackbar({
 					key: 1,
 					type: 'success',
-					label: response.message,
+					label:
+						response.message ||
+						t('core.subscription.license_activated_successfully', 'License activated successfully'),
 					replace: true
 				});
 			} else {
 				createSnackbar({
 					key: 1,
 					type: 'error',
-					label: response.message,
+					label:
+						response.message ||
+						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					replace: true
 				});
 			}
@@ -272,40 +288,41 @@ const Subscription: FC = () => {
 					crossAlignment="flex-start"
 					style={{ padding: '8px 0 16px 0' }}
 				>
-					<Row width="calc(100% - 145px)">
+					<Row width="83%">
 						<Input
 							label={t('core.subscription.token', 'Token')}
 							backgroundColor="gray5"
 							value={licenseKey}
+							disabled={!allowSetSubsciption}
 							onChange={(e: any): void => setLicenseKey(e.target.value)}
 						/>
 					</Row>
-					<Row width="145px" mainAlignment="flex-end" crossAlignment="flex-end">
+					<Row width="17%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<Button
 							label={
 								services &&
 								services.response &&
-								(services.response.expired || services.response.type === 'Trial')
+								(services.response.expired || services.response.type !== 'Purchased')
 									? t('core.subscription.activate', 'Activate')
 									: t('core.subscription.deactivate', 'Deactivate')
 							}
-							disabled={!licenseKey || disableActiveBtn}
+							disabled={!allowSetSubsciption || !licenseKey || disableActiveBtn}
 							type="outlined"
 							color={
 								services &&
 								services.response &&
-								(services.response.expired || services.response.type === 'Trial')
+								(services.response.expired || services.response.type !== 'Purchased')
 									? 'primary'
 									: 'error'
 							}
 							onClick={
 								services &&
 								services.response &&
-								(services.response.expired || services.response.type === 'Trial')
+								(services.response.expired || services.response.type !== 'Purchased')
 									? (): void => activeLicence()
 									: (): void => setOpen(true)
 							}
-							style={{ padding: '12px 12px' }}
+							size="extralarge"
 						/>
 					</Row>
 				</Container>
@@ -326,21 +343,6 @@ const Subscription: FC = () => {
 								<ServiceStatus key={module.name} name={module.name} licensed={module.licensed} />
 							)
 					)}
-					{/* <Row
-							width="100%"
-							mainAlignment="flex-start"
-							style={{ padding: '0 0 32px 0' }}
-							onClick={(): void => setShowDisabledModules((prev) => !prev)}
-						>
-							<CollapseText color="primary" size="small">
-								{showDisabledModules
-									? t('core.subscription.hide', 'Hide')
-									: t('core.subscription.features', 'Other features')}
-							</CollapseText>
-							<Padding left="small">
-								<Icon icon={showDisabledModules ? 'ChevronUp' : 'ChevronDown'} color="primary" />
-							</Padding>
-						</Row> */}
 				</Container>
 				{services && services.response /* && showDisabledModules */ && (
 					<Container
@@ -356,13 +358,6 @@ const Subscription: FC = () => {
 							label={t('core.subscription.subscription_type', 'Subscription Type')}
 							value={services.response.type}
 						/>
-						{/* <IconInfo
-								icon="CalendarOutline"
-								label={t('core.subscription.valid_through', 'Valid Through')}
-								value={`
-								${formatShortDate(services.response.dateStart)} - 
-								${formatShortDate(services.response.dateEnd)}`}
-							/> */}
 						<IconInfo
 							icon="PersonOutline"
 							label={t('core.subscription.customer', 'Customer')}
@@ -371,7 +366,11 @@ const Subscription: FC = () => {
 						<IconInfo
 							icon="CheckmarkCircleOutline"
 							label={t('core.subscription.status', 'Status')}
-							value={services.response.notYetValid ? 'Not Valid' : 'Valid'}
+							value={
+								services.response.notYetValid || !services.response.authenticationToken
+									? t('core.subscription.not_valid', 'Not Valid') || ''
+									: t('core.subscription.valid', 'Valid') || ''
+							}
 						/>
 						<IconInfo
 							icon="EmailOutline"
@@ -418,7 +417,11 @@ const Subscription: FC = () => {
 						<IconInfo
 							icon="AppointmentOutline"
 							label={t('core.subscription.emissionDate', 'Emission date')}
-							value={moment(services.response.dateEnd).format('DD-MMM-YYYY')}
+							value={
+								services.response.dateEnd
+									? moment(services.response.dateEnd).format('DD-MMM-YYYY')
+									: ''
+							}
 						/>
 						<IconInfo
 							icon="EmailOutline"

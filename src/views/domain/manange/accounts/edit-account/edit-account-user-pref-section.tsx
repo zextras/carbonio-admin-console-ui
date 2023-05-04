@@ -272,6 +272,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={accountDetail?.zimbraPrefMessageViewHtmlPreferred === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefMessageViewHtmlPreferred')}
 						label={t('account_details.view_mail_as_html', 'View mail as HTML')}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -312,6 +313,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.auto_delete_duplicate_messages',
 							'Auto-Delete duplicate messages'
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -319,6 +321,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={accountDetail?.zimbraPrefMailToasterEnabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefMailToasterEnabled')}
 						label={t('account_details.enable_toast_for_new_emails', `Enable toast for new emails`)}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -356,6 +359,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.allow_user_check_minimum_interval',
 							'Allow the user to change the minimum checking interval'
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="32%" mainAlignment="flex-start">
@@ -397,6 +401,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.enable_address_for_new_email_notifications',
 							`Enable address for new email notifications`
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -420,6 +425,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.can_send_auto_reply_messages',
 							`Can send auto-reply messages`
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -468,17 +474,10 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={accountDetail?.zimbraFeatureReadReceiptsEnabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraFeatureReadReceiptsEnabled')}
 						label={t('account_details.send_read_receipts', `Send read receipts`)}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
-					{/* <Input
-						onChange={changeAccDetail}
-						inputName="zimbraPrefReadReceiptsToAddress"
-						label={t('label.reply_to_address_for_receipt', 'Reply-to address for receipt')}
-						backgroundColor="gray5"
-						defaultValue={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
-						value={accountDetail?.zimbraPrefReadReceiptsToAddress || ''}
-					/> */}
 					<ChipInput
 						disabled={accountDetail?.zimbraFeatureReadReceiptsEnabled !== 'TRUE'}
 						placeholder={t(
@@ -489,7 +488,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onChange={(contacts: any): void => {
 							const data: any = [];
 							map(contacts, (contact) => {
-								if (isValidEmail(contact.label)) data.push(contact);
+								if (isValidEmail(contact.label ?? '')) data.push(contact);
 							});
 							setPrefReadReceiptsToAddress(data);
 							setAccountDetail((prev: any) => ({
@@ -519,6 +518,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={accountDetail?.zimbraPrefSaveToSent === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefSaveToSent')}
 						label={t('account_details.save_to_sent', 'Save to sent')}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -529,6 +529,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.allow_sending_from_any_address',
 							`Allow sending from any address`
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -540,7 +541,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onChange={(contacts: any): void => {
 							const data: any = [];
 							map(contacts, (contact) => {
-								if (isValidEmail(contact.label)) data.push(contact);
+								if (isValidEmail(contact.label ?? '')) data.push(contact);
 							});
 							setZimbraAllowFromAddress(data);
 							setAccountDetail((prev: any) => ({
@@ -570,6 +571,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={accountDetail?.zimbraPrefMailSignatureEnabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefMailSignatureEnabled')}
 						label={t('account_details.mail_signature', 'Mail Signature')}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -597,6 +599,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={accountDetail?.zimbraPrefAutoAddAddressEnabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefAutoAddAddressEnabled')}
 						label={t('account_details.enable_auto_add_contacts', `Enable auto-add contacts`)}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -604,6 +607,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={accountDetail?.zimbraPrefGalAutoCompleteEnabled === 'TRUE'}
 						onClick={(): void => changeSwitchOption('zimbraPrefGalAutoCompleteEnabled')}
 						label={t('account_details.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -718,6 +722,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.enable_past_due_reminders',
 							'Enable reminders of appointments in the past'
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 				{/* <Row width="48%" mainAlignment="flex-start">
@@ -735,6 +740,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.allow_sending_cancellation_mail',
 							'Allow sending cancellation mail'
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -747,6 +753,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.add_forwarded_invites_to_calendar',
 							'Automatically add forwarded appointments to the calendar'
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -757,6 +764,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.add_invites_with_publish_method',
 							`Add invites with PUBLISH method`
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -791,6 +799,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.add_appointments_when_invited',
 							'Automatically add appointments when the user is invited'
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -801,6 +810,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.auto_decline_if_inviter_is_blacklisted',
 							`Auto-decline if the sender is blacklisted`
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 			</Row>
@@ -838,6 +848,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.notify_changes_by_delegated_access',
 							`Notify changes made by delegated accounts`
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -848,6 +859,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.use_ical_delegation_model_for_shared_calendars',
 							'Use iCal delegation model for shared calendars'
 						)}
+						iconColor="primary"
 					/>
 				</Row>
 				{/* <Row width="48%" mainAlignment="flex-start">

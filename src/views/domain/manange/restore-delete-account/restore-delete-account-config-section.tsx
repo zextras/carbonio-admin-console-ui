@@ -122,7 +122,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 							<Container
 								crossAlignment="flex-start"
 								padding={{ top: 'extralarge', bottom: 'medium' }}
-								width="30%"
+								width="50%"
 							>
 								<Switch
 									value={restoreAccountDetail?.lastAvailableStatus}
@@ -133,9 +133,10 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 											lastAvailableStatus: !restoreAccountDetail?.lastAvailableStatus
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Container>
-							<Container>
+							<Container width="47.8%">
 								<DatePickerContainer
 									crossAlignment="flex-start"
 									padding={{ top: 'large', bottom: 'medium' }}
@@ -165,6 +166,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 											hsmApply: !restoreAccountDetail?.hsmApply
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</ListRow>
@@ -184,6 +186,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 											isEmailNotificationEnable: !restoreAccountDetail?.isEmailNotificationEnable
 										}));
 									}}
+									iconColor="primary"
 								/>
 							</Row>
 						</ListRow>

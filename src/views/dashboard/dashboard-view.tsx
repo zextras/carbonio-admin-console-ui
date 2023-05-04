@@ -14,6 +14,7 @@ import {
 	useDomainInformation
 } from '@zextras/carbonio-shell-ui';
 import { useHistory } from 'react-router-dom';
+import { string } from 'prop-types';
 import packageJson from '../../../package.json';
 import MatomoTracker from '../../matomo-tracker';
 import {
@@ -21,10 +22,12 @@ import {
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
 	LIST,
+	LIST_SERVER,
 	LOG_AND_QUEUES,
 	MAILING_LIST,
 	MANAGE,
 	NOTIFICATION_ROUTE_ID,
+	SERVER,
 	SERVERS_LIST,
 	STORAGES_ROUTE_ID
 } from '../../constants';
@@ -36,6 +39,8 @@ import DashboardNotification from './dashboard-notification';
 import DashboardServerList from './dashboard-server-list-view';
 import { useDomainStore } from '../../store/domain/store';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useRightsStore } from '../../store/rights/store';
+import { getRights } from '../utility/utils';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
@@ -71,6 +76,8 @@ const Dashboard: FC = () => {
 		}
 	]);
 	const domainInformation = useDomainInformation();
+	const rights = useRightsStore((state) => state.rights);
+	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
 	const openOperationView = useCallback(
 		(operation: string) => {
@@ -116,6 +123,20 @@ const Dashboard: FC = () => {
 		history.push(`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}/${LIST}`);
 	}, [history]);
 
+	useEffect(() => {
+		if (rights && rights.length > 0) {
+			const right = getRights(rights, SERVER);
+			if (right.length > 0) {
+				const findServerRight = right.find(
+					(item: Record<string, string>) => item?.n && item?.n === LIST_SERVER
+				);
+				if (findServerRight) {
+					sethasListServerRights(true);
+				}
+			}
+		}
+	}, [rights]);
+
 	return (
 		<Container>
 			<Divider color="gray6" />
@@ -146,12 +167,13 @@ const Dashboard: FC = () => {
 						</Container>
 					</ListRow>
 				)}
-
-				<ListRow>
-					<Container padding={{ all: 'extralarge' }}>
-						<DashboardServerList goToMailStoreServerList={goToMailStoreServerList} />
-					</Container>
-				</ListRow>
+				{hasListServerRights && (
+					<ListRow>
+						<Container padding={{ all: 'extralarge' }}>
+							<DashboardServerList goToMailStoreServerList={goToMailStoreServerList} />
+						</Container>
+					</ListRow>
+				)}
 			</Container>
 		</Container>
 	);

@@ -26,12 +26,15 @@ import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import logo from '../../../../../assets/gardian.svg';
+import { ServicesPassphrase } from './services-passphrase';
 import { Section } from '../../../../app/component/section';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { emailContent } from '../create-account/email-content';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import ListRow from '../../../../list/list-row';
+import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import { isValidEmail } from '../../../../utility/utils';
 
 const StaticCodesContainer = styled(Row)`
@@ -216,7 +219,7 @@ const EditAccountSecuritySection: FC = () => {
 										onChange={(contacts: any): void => {
 											const data: any = [];
 											map(contacts, (contact) => {
-												if (isValidEmail(contact.label)) data.push(contact);
+												if (isValidEmail(contact.label ?? '')) data.push(contact);
 											});
 											setSendEmailTo(data);
 										}}
@@ -230,6 +233,7 @@ const EditAccountSecuritySection: FC = () => {
 									<Button
 										label={t('account_details.send', 'SEND')}
 										icon="PaperPlaneOutline"
+										size="large"
 										iconPlacement="right"
 										onClick={(): void => {
 											sendMail('SendMsgRequest', {
@@ -269,7 +273,7 @@ const EditAccountSecuritySection: FC = () => {
 				NextButton: (props: any) => (
 					<Button
 						{...props}
-						label={t('commons.i_have_sent_data_to_user', 'I HAVE SENT THE DATA TO THE USER')}
+						label={t('commons.data_already_sent_to_the_user', 'DATA ALREADY SENT TO THE USER')}
 						icon="PersonOutline"
 						iconPlacement="right"
 						onClick={(): void => setShowCreateOTP(false)}
@@ -460,6 +464,7 @@ const EditAccountSecuritySection: FC = () => {
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
 			style={{ overflow: 'auto' }}
 		>
+			{isAdvanced && <ServicesPassphrase />}
 			{isAdvanced && (
 				<>
 					{!showCreateOTP && (
@@ -521,6 +526,8 @@ const EditAccountSecuritySection: FC = () => {
 												multiSelect={false}
 												onSelectionChange={setSelectedRows}
 												style={{ overflow: 'auto', height: '100%' }}
+												RowFactory={CustomRowFactory}
+												HeaderFactory={CustomHeaderFactory}
 											/>
 										)}
 										{otpList.length === 0 && (
@@ -644,6 +651,7 @@ const EditAccountSecuritySection: FC = () => {
 											)}
 											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 											onClick={() => changeSwitchOption('zimbraPasswordLocked')}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>
@@ -815,6 +823,7 @@ const EditAccountSecuritySection: FC = () => {
 											label={t('cos.reject_common_passwords', 'Reject common passwords')}
 											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 											onClick={() => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>
@@ -844,6 +853,7 @@ const EditAccountSecuritySection: FC = () => {
 											label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
 											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 											onClick={() => changeSwitchOption('zimbraPasswordLockoutEnabled')}
+											iconColor="primary"
 										/>
 									</Container>
 								</ListRow>
