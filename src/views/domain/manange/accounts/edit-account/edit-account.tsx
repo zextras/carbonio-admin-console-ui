@@ -219,7 +219,7 @@ const EditAccount: FC<{
 			[]
 		);
 		const modifiedData: any = {};
-
+		let isPasswordChange = false;
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
 			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
 				if (accountDetail?.password?.length < 6) {
@@ -245,6 +245,7 @@ const EditAccount: FC<{
 					return;
 				}
 				setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password);
+				isPasswordChange = true;
 				remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
 			}
 		}
@@ -332,6 +333,17 @@ const EditAccount: FC<{
 					});
 				});
 		} else {
+			if (isPasswordChange) {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('account_details.user_password_set', 'User password set successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				accountDetail.userPassword = 'VALUE-BLOCKED';
+			}
 			setInitAccountDetail({ ...accountDetail });
 		}
 	}, [

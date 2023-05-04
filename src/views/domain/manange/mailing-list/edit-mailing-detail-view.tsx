@@ -104,13 +104,13 @@ const EditMailingListView: FC<any> = ({
 	const [memberURL, setMemberURL] = useState<string>();
 	const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
 	const [searchOwnerMemberOfList, setSearchOwnerMemberOfList] = useState<any[]>([]);
-	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string>('');
+	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
 	const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const [searchOwnerResult, setSearchOwnerResult] = useState<Array<any>>([]);
 	const [isShowMemberError, setIsShowMemberError] = useState<boolean>(false);
 	const [isShowOwnerError, setIsShowOwnerError] = useState<boolean>(false);
-	const [memberErrorMessage, setMemberErrorMessage] = useState<string>('');
+	const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
 	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const domainList = useDomainStore((state) => state.domainList);
@@ -813,7 +813,6 @@ const EditMailingListView: FC<any> = ({
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -1446,7 +1445,6 @@ const EditMailingListView: FC<any> = ({
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -1472,7 +1470,6 @@ const EditMailingListView: FC<any> = ({
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -2084,7 +2081,7 @@ const EditMailingListView: FC<any> = ({
 									crossAlignment="flex-start"
 									width="100%"
 								>
-									<Row mainAlignment="flex-start" width="60%" crossAlignment="flex-start">
+									<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
 										<Dropdown
 											items={searchMemberItems}
 											placement="bottom-start"
@@ -2110,7 +2107,7 @@ const EditMailingListView: FC<any> = ({
 										</Dropdown>
 									</Row>
 
-									<Row width="40%" mainAlignment="flex-start" crossAlignment="flex-start">
+									<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
 										<Padding left="large" right="large">
 											<Button
 												type="outlined"
@@ -2258,7 +2255,7 @@ const EditMailingListView: FC<any> = ({
 							crossAlignment="flex-start"
 							width="100%"
 						>
-							<Row mainAlignment="flex-start" width="60%" crossAlignment="flex-start">
+							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
 								<Dropdown
 									items={searchOwnerList}
 									placement="bottom-start"
@@ -2284,7 +2281,7 @@ const EditMailingListView: FC<any> = ({
 									/>
 								</Dropdown>
 							</Row>
-							<Row width="40%" mainAlignment="flex-start" crossAlignment="flex-start">
+							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
 								<Padding left="large" right="large">
 									<Button
 										type="outlined"

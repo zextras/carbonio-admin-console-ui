@@ -137,7 +137,7 @@ const HSMsettingPanel: FC = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="medium"
 						key={item?.hsmQuery}
 						color="#828282"
 						onClick={(): void => {
@@ -571,7 +571,10 @@ const HSMsettingPanel: FC = () => {
 									<Trans
 										i18nKey="hsm.name_hsm_policies"
 										defaults="<bold>{{serverName}} HSM Policies</bold>"
-										components={{ bold: <strong />, serverName: server }}
+										components={{ bold: <strong /> }}
+										values={{
+											serverName: server
+										}}
 									/>
 								}
 							</Text>

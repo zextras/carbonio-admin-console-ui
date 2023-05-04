@@ -110,20 +110,25 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 	selectedRows,
 	onSelectionChange
 }) => {
+	const [t] = useTranslation();
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: v.id,
 				columns: [
-					<Text key={i}>{v.name}</Text>,
-					<Text color="text" key={i}>
+					<Text key={i} weight="light">
+						{v.name}
+					</Text>,
+					<Text color="text" key={i} weight="light">
 						{v.version}
 					</Text>,
-					<Text color="text" key={i}>
+					<Text color="text" key={i} weight="light">
 						{v.rtstatus}
 					</Text>,
-					<Text key={i}>{v.type}</Text>,
-					<Text color="text" key={i}>
+					<Text key={i} weight="light">
+						{v.type}
+					</Text>,
+					<Text color="text" key={i} weight="light">
 						{v.samrtstatus}
 					</Text>
 				],
@@ -146,7 +151,7 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 			/>
 			{tableRows.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text>Empty Table</Text>
+					<Text>{t('label.empty_table', 'Empty Table')}</Text>
 				</Row>
 			)}
 		</Container>

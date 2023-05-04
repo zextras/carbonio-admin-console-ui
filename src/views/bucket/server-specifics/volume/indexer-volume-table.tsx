@@ -30,7 +30,7 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						{v?.id}
+						<Text weight="light">{v?.id}</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -39,7 +39,7 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						{v?.name}
+						<Text weight="light">{v?.name}</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -48,9 +48,11 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						{v?.storeType === LOCAL_VALUE
-							? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
-							: t('volume.volume_allocation_list.object_storage', 'ObjectStorage')}
+						<Text weight="light">
+							{v?.storeType === LOCAL_VALUE
+								? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
+								: t('volume.volume_allocation_list.object_storage', 'ObjectStorage')}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -59,11 +61,13 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						{v?.storeType === LOCAL_VALUE
-							? v?.path
-							: t('label.prefix_volume', 'Prefix - {{volumePrefix}}', {
-									volumePrefix: v?.volumePrefix
-							  })}
+						<Text weight="light">
+							{v?.storeType === LOCAL_VALUE
+								? v?.path
+								: t('label.prefix_volume', 'Prefix - {{volumePrefix}}', {
+										volumePrefix: v?.volumePrefix
+								  })}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -72,7 +76,9 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text color={v?.isCurrent ? 'text' : 'error'}>{v?.isCurrent ? YES : NO}</Text>
+						<Text color={v?.isCurrent ? 'text' : 'error'} weight="light">
+							{v?.isCurrent ? YES : NO}
+						</Text>
 					</Row>
 				],
 				clickable: true
@@ -93,7 +99,7 @@ const IndexerVolumeTable: FC<{
 			/>
 			{tableRows?.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text>{t('label.empty_table_helperText', 'Empty Table')}</Text>
+					<Text>{t('label.empty_table', 'Empty Table')}</Text>
 				</Row>
 			)}
 		</Container>

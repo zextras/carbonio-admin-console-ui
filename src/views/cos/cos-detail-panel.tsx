@@ -54,9 +54,9 @@ const CosDetailPanel: FC = () => {
 							<Container>
 								<Text
 									overflow="break-word"
-									weight="normal"
+									weight="regular"
 									size="large"
-									style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
+									style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 								>
 									<img src={logo} alt="logo" />
 								</Text>
@@ -64,10 +64,10 @@ const CosDetailPanel: FC = () => {
 									<Text
 										color="gray1"
 										overflow="break-word"
-										weight="normal"
+										weight="regular"
 										size="large"
 										width="60%"
-										style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
+										style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 									>
 										{t(
 											'select_cos_or_create_new_cos',

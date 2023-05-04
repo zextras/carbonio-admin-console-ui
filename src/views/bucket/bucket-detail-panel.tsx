@@ -78,7 +78,7 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							{v.label}
+							<Text weight="light">{v.label}</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={i}>
@@ -92,7 +92,7 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							{v.bucketName}
+							<Text weight="light">{v.bucketName}</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={i}>
@@ -106,7 +106,7 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							{v.storeType}
+							<Text weight="light">{v.storeType}</Text>
 						</Row>
 					</Tooltip>
 				],
@@ -140,14 +140,14 @@ const BucketListTable: FC<{
 			</ListRow>
 			{tableRows.length === 0 && (
 				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '4rem' }}>
-					<Text overflow="break-word" weight="normal" size="large">
+					<Text overflow="break-word" weight="regular" size="large">
 						<img src={logo} alt="logo" />
 					</Text>
 					<Padding all="medium" width="30.875rem">
 						<Text
 							color="gray1"
 							overflow="break-word"
-							weight="normal"
+							weight="regular"
 							size="large"
 							width="60%"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}

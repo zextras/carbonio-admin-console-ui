@@ -24,10 +24,10 @@ const MailingListCreateSection: FC<any> = () => {
 	const { mailingListDetail, setMailingListDetail } = context;
 	const [ownerMember, setOwnerMember] = useState<Array<any>>([]);
 	const [memberList, setMemberList] = useState<Array<any>>([]);
-	const [subscription, setSubscription] = useState<string>('');
-	const [unSubscription, setUnSubscription] = useState<string>('');
+	const [subscription, setSubscription] = useState<string | null>('');
+	const [unSubscription, setUnSubscription] = useState<string | null>('');
 	const [ldapQueryMembers, setLdapQueryMembers] = useState<Array<any>>([]);
-	const [grantEmailType, setGrantEmailType] = useState<string>('');
+	const [grantEmailType, setGrantEmailType] = useState<string | null>('');
 
 	const tableHeader: any[] = useMemo(
 		() => [
@@ -59,7 +59,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = member.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item} color="#828282">
+					<Text size="medium" weight="light" key={item} color="#828282">
 						{item}
 					</Text>
 				]
@@ -74,7 +74,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = ownersList.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item}
 					</Text>
 				]
@@ -89,7 +89,7 @@ const MailingListCreateSection: FC<any> = () => {
 			const allRows = member.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item?.name}
 					</Text>
 				]

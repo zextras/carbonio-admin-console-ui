@@ -25,7 +25,7 @@ const CarbonioVersionInformation: FC<{
 				overflow="break-word"
 				weight="light"
 				size="large"
-				style={{ fontSize: '2.25rem', fontFamily: 'roboto' }}
+				style={{ fontSize: '2.25rem' }}
 			>
 				{t('welcome', 'Welcome')}
 			</Text>
@@ -34,7 +34,7 @@ const CarbonioVersionInformation: FC<{
 				overflow="break-word"
 				weight="light"
 				size="large"
-				style={{ fontSize: '2.25rem', fontFamily: 'roboto' }}
+				style={{ fontSize: '2.25rem' }}
 			>
 				{userName}
 			</Text>
@@ -44,7 +44,7 @@ const CarbonioVersionInformation: FC<{
 					overflow="break-word"
 					weight="light"
 					size="large"
-					style={{ fontSize: '2.25rem', fontFamily: 'roboto' }}
+					style={{ fontSize: '2.25rem' }}
 				>
 					{t('cumminity_edition', 'Community Edition!')}
 				</Text>

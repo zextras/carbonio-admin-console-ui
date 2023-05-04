@@ -106,7 +106,9 @@ const HSMcreatePolicy: FC<any> = () => {
 						i18nKey="hsm.abstract_msg_2"
 						defaults="<b>{{enables}} {{largerSmaller}}</b> stored in {{source}} will be moved to {{destination}}. This will affect data stored in the <bold>{{previous}}</bold> and in the <bold>{{next}}</bold>."
 						components={{
-							bold: <strong />,
+							bold: <strong />
+						}}
+						values={{
 							enables: enabledString.join(', '),
 							largerSmaller: largerSmallerString.join(', '),
 							previous: beforeString.join(', '),
@@ -124,7 +126,9 @@ const HSMcreatePolicy: FC<any> = () => {
 						i18nKey="hsm.abstract_msg_1"
 						defaults="<bold>{{enables}} {{largerSmaller}}</bod>. This will affect data stored in the <bold>{{previous}}</bold> and in the <bold>{{next}}</bold>."
 						components={{
-							bold: <strong />,
+							bold: <strong />
+						}}
+						values={{
 							enables: enabledString.join(', '),
 							largerSmaller: largerSmallerString.join(', '),
 							previous: beforeString.join(', '),

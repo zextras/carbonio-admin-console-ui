@@ -40,7 +40,14 @@
         "certificate_type_use_letsencrypt": "我想要使用Let‘s Encrypt证书",
         "certificate_valid": "证书有效",
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "证书有效但其可能已过期或存在不受信任的CA",
-        "domain_certificate_removed": "域证书已被移除"
+        "domain_certificate_removed": "域证书已被移除",
+        "gal_change_mode_both": "两个",
+        "gal_change_mode_external": "外部",
+        "gal_change_mode_internal": "内部",
+        "unit_measure_days": "天",
+        "unit_measure_hours": "小时",
+        "unit_measure_minutes": "分钟",
+        "unit_measure_seconds": "秒"
     },
     "label": {
         "account": "账户",
@@ -341,7 +348,7 @@
         "auto_accept": "自动接受",
         "auth_method": "认证方式",
         "are_you_sure_deleting_cos": "确定要删除此服务类吗？",
-        "always_compose_mail_using": "总是使用以下工具撰写邮件：",
+        "always_compose_mail_using": "总是使用以下工具撰写邮件",
         "allow_send_receive": "允许发送/接收",
         "alias_in_the_list": "列表中的别名",
         "aggrigated_space_criteria": "聚合空间标准",
@@ -757,7 +764,6 @@
         "ID": "ID",
         "centralized": "中心化",
         "done": "完成",
-        "empty_table_helperText": "空表格",
         "external_volume_edited": "{{message}}",
         "general_options": "一般选项",
         "operation": {
@@ -861,7 +867,15 @@
         "backup_primarybar_tooltip": "管理您的<bold>备份服务，查看</bold>其<bold>状态</bold>、<bold>服务器列表</bold>或<bold>导入现有选项</bold>。",
         "cos_primarybar_tooltip": "查看并管理您的<bold>服务类</bold>详情、<bold>功能、服务器池</bold>以及<bold>高级</bold>设置。",
         "notification_primarybar_tooltip": "查看您的<bold>消息通知</bold>，将其标记为<bold>已读</bold>或<bold>复制</bold>以对其进行分享。",
-        "privacy_primarybar_tooltip": "管理<bold>隐私</bold>设置，如<bold>数据报告、错误日志</bold>以及<bold>调查</bold>。"
+        "privacy_primarybar_tooltip": "管理<bold>隐私</bold>设置，如<bold>数据报告、错误日志</bold>以及<bold>调查</bold>。",
+        "account_name": "账户名称",
+        "aliases": "别名",
+        "distribution_list": "通讯组列表",
+        "dont_save_a_copy_of_sent_messages": "不要保存已发送消息副本",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "将已发送消息副本保存至委派“已发送”文件夹",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "将已发送消息副本保存至我的“已发送”文件夹",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "将已发送消息副本保存至我的“已发送”文件夹与委派文件夹",
+        "value": "值"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",
@@ -1121,7 +1135,8 @@
             "activate": "激活",
             "activation": "激活",
             "deactivate": "停用",
-            "order_id": "订单ID"
+            "order_id": "订单ID",
+            "valid": "有效"
         }
     },
     "message": {
@@ -1515,8 +1530,8 @@
         "search_fro_people": "搜索人脉",
         "show_time_zone_lists_in_view": "在预约视图中显示时区列表",
         "sms_reminder": "SMS 提醒",
-        "this_account_is_a_direct_member_of": "此账户为直接成员：",
-        "this_account_is_a_in_direct_member_of": "此账户为间接成员：",
+        "this_account_is_a_direct_member_of": "此账户为直接成员",
+        "this_account_is_a_in_direct_member_of": "此账户为间接成员",
         "use_quickadd_dialog_in_creation": "创建中使用 QuickAdd 对话框",
         "view_mail_as_html": "以 HTML 形式查看邮件",
         "this_is_global_administrator": "这是全局管理员 ",
@@ -1546,7 +1561,7 @@
         "delegate_rights": "被委派人权限",
         "delegate_updated_successfully": "被委派人权限已更新成功",
         "deligate_abstract_text": "用户{{granteeEmail}}将可发送邮件至 {{right}} {{targetEmail}}",
-        "i_want_to_create_a_delegate_for": "我想创建被委派人：",
+        "i_want_to_create_a_delegate_for": "我想创建被委派人",
         "i_want_to_select": "我想选择文件夹",
         "save_it_to_delegate_sent_folder": "将其保存在发送者和被委派人已发送文件夹）",
         "save_it_to_sent_folder": "将其保存至已发送文件夹",
@@ -1570,7 +1585,15 @@
         "add_user_on_delegates_list": "在被委派人列表中添加用户",
         "all_folders": "所有文件夹（其中还包括将在稍后创建的文件夹）",
         "an_existing_group": "一个现有群组",
-        "as": "为"
+        "as": "为",
+        "DELETE": "删除",
+        "SAVE": "保存",
+        "create": "创建",
+        "label": "标签",
+        "remove": "移除",
+        "send_check": "发送",
+        "services": "服务",
+        "status": "状态"
     },
     "connection": {
         "access_key": "访问密钥",
@@ -1720,7 +1743,7 @@
         "go_to_notification": "前往消息通知",
         "new_notifications": "新消息通知",
         "quick_access_default_domain": "{defaultDomain}快速访问权限",
-        "quick_access_to": "快速访问权限：",
+        "quick_access_to": "快速访问权限",
         "server_ip": "服务器IP",
         "your_notifications": "您的消息通知"
     },
@@ -1745,7 +1768,6 @@
         "copy_btn": "复制",
         "details": "详细资料",
         "done": "完成",
-        "empty_table_helperText": "空表格",
         "label": {
             "Deep": "深度",
             "notifications": "通知",
@@ -1794,5 +1816,6 @@
         "load_certificate": "加载证书"
     },
     "cumminity_edition": "Community Edition！",
-    "welcome_to_carbonio_information": "欢迎{{adminName}}来到Carbonio！"
+    "welcome_to_carbonio_information": "欢迎{{adminName}}来到Carbonio！",
+    "new": "新建"
 }

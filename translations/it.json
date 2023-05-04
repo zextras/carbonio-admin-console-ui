@@ -118,7 +118,8 @@
             "activate": "Attiva",
             "activation": "Attivazione",
             "deactivate": "Disattiva",
-            "order_id": "Id Ordine"
+            "order_id": "Id Ordine",
+            "valid": "Valida"
         }
     },
     "domain": {
@@ -162,7 +163,14 @@
         "domain_certificate_removed": "I certificati del dominio sono stati rimossi",
         "certificate_content_error": "Il certificato del dominio, la gerarchia certificati o la chiave privata sono invalidi",
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "Il certificato è valido ma potrebbe essere scaduto oppure includere un ente certificatore sconosciuto",
-        "private_key_certificate_removed": "La chiave privata del certificato è stata rimossa"
+        "private_key_certificate_removed": "La chiave privata del certificato è stata rimossa",
+        "gal_change_mode_both": "Entrambe",
+        "gal_change_mode_external": "Esterna",
+        "gal_change_mode_internal": "Interna",
+        "unit_measure_days": "Giorni",
+        "unit_measure_hours": "Ore",
+        "unit_measure_minutes": "Minuti",
+        "unit_measure_seconds": "Secondi"
     },
     "label": {
         "account": "Profilo",
@@ -528,7 +536,7 @@
         "mailing_options": "Opzioni Mail",
         "message": "Messaggio",
         "mta": "MTA",
-        "never": "mai",
+        "never": "Mai",
         "new_volume_create": "CREA",
         "next": "SUCCESSIVO",
         "path": "Percorso",
@@ -661,7 +669,7 @@
         "contact_options": "Opzioni Contatto",
         "who_is_in_this_list": "Chi è in questa lista?",
         "who_needs_receive_this_email": "Chi deve ricevere questa e-mail?",
-        "disabled": "Disabilitato",
+        "disabled": "Disabiliato",
         "local": "Locale",
         "na": "N/D",
         "purge": "Elimina",
@@ -889,7 +897,6 @@
         "ID": "ID",
         "centralized": "Centralizzato",
         "done": "Fine",
-        "empty_table_helperText": "Tabella vuota",
         "general_options": "Opzioni generali",
         "operation": {
             "get_all_operation_error": "{{name}}",
@@ -978,7 +985,15 @@
         "ADD_NEW": "AGGIUNGI NUOVO",
         "cos_primarybar_tooltip": "Visualizza e gestisci i dettagli della tue <bold>Classi di Servizio</bold>, <bold>funzionalità, server pool</bold>e funzionalità <bold>avanzate</bold>.",
         "delegates": "DELEGATI",
-        "backup_primarybar_tooltip": "Gestisci i <bold>servizi backup</bold>, visualizza il loro <bold>stato</bold>, la <bold>lista dei server</bold>o <bold>importa un backup esistente</bold>."
+        "backup_primarybar_tooltip": "Gestisci i <bold>servizi backup</bold>, visualizza il loro <bold>stato</bold>, la <bold>lista dei server</bold>o <bold>importa un backup esistente</bold>.",
+        "account_name": "Nome Account",
+        "aliases": "Alias",
+        "distribution_list": "Lista di Distribuzione",
+        "dont_save_a_copy_of_sent_messages": "Non salvare una copia dei messaggi inviati",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salva una copia dei messaggi inviati della cartella dei messaggi inviati del delegato",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Salva una copia dei messaggi inviati nella mia cartella \"Inviato\"",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salva una copia dei messaggi inviati sia nella mia cartella dei messaggi inviati che in quella del delegato",
+        "value": "Valore"
     },
     "message": {
         "snackbar": {
@@ -1279,7 +1294,7 @@
             "work_week": "Vista settimana lavorativa"
         },
         "disable_attachment_viewing_from_web_mail_ui": "Disattiva la visualizzazione degli allegati dall’interfaccia di posta Web",
-        "disabled": "Disabilitato",
+        "disabled": "Disabiliato",
         "email_message_lifetime": "Durata mail",
         "email_retention_policy": "Criteri di conservazione delle mail",
         "enable_failed_login_lockout": "Attiva blocco per accesso non riuscito",
@@ -1330,7 +1345,7 @@
         "user_specific_fowarding_addresses": "Limita il campo degli indirizzi di inoltro specificati dall’utente a (caratt.)",
         "name_server": "Nome Server",
         "minimum_duration_of_time_between_quota_warnings": "Intervallo minimo fra avvisi per spazio a disposizione",
-        "limt_serverpool_avaiable_create_user": "Limita il pool di server disponibili per creare nuovi utenti in questo COS:",
+        "limt_serverpool_avaiable_create_user": "Limita il pool di server disponibili per creare nuovi utenti in questo COS",
         "legacy_exchange_dn_attribute": "O e OU usati nell’attributo legacyExchangeDN",
         "initial_search_preference": "Preferenza di Ricerca Iniziale",
         "external_pop_access": "Accesso POP Esterno",
@@ -1433,8 +1448,9 @@
         "send_full_error_data": "Invia dati completi relativi all'errore"
     },
     "reminder": {
-        "minute": "{{count}} minuto",
-        "minute_plural": ""
+        "minute_0": "{{count}} minuto",
+        "minute_1": "",
+        "minute_2": ""
     },
     "account_details": {
         "advanced_search": "Ricerca avanzata",
@@ -1564,7 +1580,15 @@
         "select_mode": "SELEZIONA MODALITÀ",
         "send_mails_only": "Solo invio mail (nessun accesso alle cartelle)",
         "where_to_store_sent_emails": "Dove vengono salvate le mail inviate?",
-        "who_will_be_delegates": "Chi sono i delegati?"
+        "who_will_be_delegates": "Chi sono i delegati?",
+        "DELETE": "ELIMINA",
+        "remove": "Rimuovi",
+        "send_check": "Invia",
+        "status": "Stato",
+        "SAVE": "SALVA",
+        "create": "CREA",
+        "label": "Etichetta",
+        "services": "Servizi"
     },
     "connection": {
         "access_key": "Chiave d'Accesso",
@@ -1741,7 +1765,6 @@
         "copy_btn": "COPIA",
         "details": "Dettagli",
         "done": "Fine",
-        "empty_table_helperText": "Tabella vuota",
         "label": {
             "Deep": "Approfondito",
             "notifications": "Notifiche",
@@ -1787,5 +1810,6 @@
         "load": "CARICA",
         "load_and_verify_certificate": "Carica e Verifica certificato",
         "load_certificate": "CARICA CERTIFICATO"
-    }
+    },
+    "new": "Nuovo"
 }

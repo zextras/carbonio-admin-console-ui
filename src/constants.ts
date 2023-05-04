@@ -216,8 +216,18 @@ export const REJECT_NON_FQDN_HELO_HOSTNAME = 'reject_non_fqdn_helo_hostname';
 export const REJECT_UNKNOWN_HELO_HOSTNAME = 'reject_unknown_helo_hostname';
 export const REJECT_UNKNOWN_SENDER_DOMAIN = 'reject_unknown_sender_domain';
 export const REJECT_NON_FQDN_SENDER = 'reject_non_fqdn_sender';
+export const ZIMBRA = 'zimbra';
 export const SAML = 'saml';
 export const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 export const SAML_METADATA_JSON_FILE = 'saml_metadata.json';
 export const ZIMBRA_PUBLIC_SERVICE_HOSTNAME = 'zimbraPublicServiceHostname';
 export const ZIMBRA_PUBLIC_SERVICE_PROTOCOL = 'zimbraPublicServiceProtocol';
+export const LIST_SERVER = 'listServer';
+export const EXTERNAL_SERVER_EXAMPLE =
+	'e.g. ldap://192.168.1.151:3268 or ldaps://ldap.internal.tld';
+export const LDAP_BIND_DN_LABLE =
+	'e.g. CN=galsync, OU=Service Accounts, OU=Servers, DC=Corp, DC=domain, DC=com';
+export const LDAP_FILTER_LABEL = 'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%s*)))';
+export const LDAP_SEARCH_BASE_LABEL = 'e.g. dc=company,dc=local';
+export const CHECK_OK = 'check.OK';
+export const CONFIG = 'config';

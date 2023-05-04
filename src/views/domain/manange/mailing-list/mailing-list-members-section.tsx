@@ -66,7 +66,7 @@ const MailingListMembersSection: FC<any> = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
 						key={item}
 						color="#828282"
 						onClick={(): void => {
@@ -179,7 +179,6 @@ const MailingListMembersSection: FC<any> = () => {
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -221,7 +220,7 @@ const MailingListMembersSection: FC<any> = () => {
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large', right: 'small' }}
-						width="65%"
+						width="64%"
 					>
 						<Dropdown
 							items={items}
@@ -246,10 +245,9 @@ const MailingListMembersSection: FC<any> = () => {
 					</Container>
 					<Container
 						mainAlignment="flex-start"
-						crossAlignment="center"
+						padding={{ top: 'large' }}
 						orientation="horizontal"
-						width="fit"
-						padding={{ top: 'large', right: 'small' }}
+						width="35%"
 					>
 						<Button
 							type="outlined"
@@ -261,30 +259,24 @@ const MailingListMembersSection: FC<any> = () => {
 							disabled={member === ''}
 							onClick={onAdd}
 						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
-					>
-						<Button
-							type="outlined"
-							label={t('label.delete', 'Delete')}
-							color="error"
-							icon="PlusOutline"
-							iconPlacement="right"
-							size="large"
-							disabled={
-								selectedDistributionListMember && selectedDistributionListMember.length === 0
-							}
-							onClick={onDeleteFromList}
-						/>
+						<Padding left="small">
+							<Button
+								type="outlined"
+								label={t('label.delete', 'Delete')}
+								color="error"
+								icon="PlusOutline"
+								iconPlacement="right"
+								size="large"
+								disabled={
+									selectedDistributionListMember && selectedDistributionListMember.length === 0
+								}
+								onClick={onDeleteFromList}
+							/>
+						</Padding>
 					</Container>
 				</ListRow>
 				<ListRow>
-					<Container padding={{ top: 'large' }}>
+					<Container padding={{ top: 'large', right: 'small' }}>
 						<Table
 							rows={dlmTableRows}
 							headers={memberHeaders}

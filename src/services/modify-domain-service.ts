@@ -6,7 +6,11 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
-export const modifyDomain = async (body: JSON): Promise<any> =>
+export const modifyDomain = async (body: {
+	id?: string;
+	_jsns?: string;
+	a?: { n: string; _content?: string }[];
+}): Promise<any> =>
 	soapFetch(`ModifyDomain`, {
 		...body
 	});

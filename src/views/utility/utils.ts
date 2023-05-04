@@ -17,6 +17,7 @@ import {
 	MANAGE_NO_SEND,
 	SEND_READ_MANAGE_MAILS
 } from '../../constants';
+import { Rights, Right } from '../../store/rights/store';
 
 export const timeZoneList = (
 	t: TFunction
@@ -1052,6 +1053,20 @@ export const volumeAllocationList = (t: TFunction): Array<{ label: string; value
 	}
 ];
 
+export const GalServerTableheaders = (t: TFunction): Array<object> => [
+	{
+		id: 'server',
+		label: t('label.server', 'Server'),
+		bold: true,
+		width: '30%'
+	},
+	{
+		id: 'galsync_account',
+		label: t('label.galsync_account', 'GALSync Account'),
+		bold: true
+	}
+];
+
 export const volumeConfigHeader = (
 	t: TFunction
 ): Array<{
@@ -2019,3 +2034,18 @@ export const ServicesPassphraseServices = (): Array<{ value?: string; label: str
 		value: 'POP3'
 	}
 ];
+
+export const getRights = (rights: Rights, type: string): Array<Record<string, string>> => {
+	let right: Array<Record<string, string>> = [];
+	const filteredType = rights.filter((item: Right) => item?.type === type);
+	if (filteredType && filteredType.length > 0) {
+		if (
+			filteredType[0]?.all &&
+			Array.isArray(filteredType[0]?.all) &&
+			filteredType[0]?.all.length > 0
+		) {
+			right = filteredType[0]?.all[0].right || [];
+		}
+	}
+	return right;
+};

@@ -114,6 +114,8 @@ const DomainListPanel: FC = () => {
 			if (domainInformation?.id) {
 				setDomainId(domainInformation?.id);
 			}
+		} else {
+			setIsDomainSelect(false);
 		}
 	}, [domainInformation?.id, domainInformation?.name]);
 
@@ -364,7 +366,6 @@ const DomainListPanel: FC = () => {
 							bottom="9px"
 							left="large"
 							style={{
-								fontFamily: 'roboto',
 								display: 'block',
 								textAlign: 'left',
 								height: 'inherit',

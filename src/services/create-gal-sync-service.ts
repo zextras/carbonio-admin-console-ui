@@ -8,22 +8,24 @@ import { soapFetch } from '@zextras/carbonio-shell-ui';
 
 export const createGalSyncAccount = async (
 	name: string,
-	folder: string,
-	domainName: string,
+	domainName: string | undefined,
 	server: string,
 	account: Array<any>,
 	type: string,
-	a?: Array<any>
+	a?: { n: string; _content: string }[],
+	folder?: string
 ): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
 		name,
-		folder,
 		domain: domainName,
 		server,
 		type,
 		account
 	};
+	if (folder) {
+		request.folder = folder;
+	}
 	if (a) {
 		request.a = a;
 	}

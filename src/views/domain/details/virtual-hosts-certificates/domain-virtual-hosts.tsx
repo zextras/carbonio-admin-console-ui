@@ -416,7 +416,7 @@ const DomainVirtualHosts: FC = () => {
 						</Padding>
 						<Padding vertical="large" width="100%">
 							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
-								<Container width="85%">
+								<Container width="80%">
 									<Input
 										label={t(
 											'label.new_virtual_host_name',
@@ -435,7 +435,7 @@ const DomainVirtualHosts: FC = () => {
 									/>
 								</Container>
 
-								<Padding left="large">
+								<Container width="10%">
 									<Button
 										type="ghost"
 										label={t('label.add', 'Add')}
@@ -444,8 +444,8 @@ const DomainVirtualHosts: FC = () => {
 										height="44px"
 										onClick={addVirtualHost}
 									/>
-								</Padding>
-								<Padding left="large">
+								</Container>
+								<Container width="10%">
 									<Button
 										type="ghost"
 										label={t('label.remove', 'Remove')}
@@ -454,7 +454,7 @@ const DomainVirtualHosts: FC = () => {
 										disabled={removeVirtualBtnDisabled}
 										onClick={removeVirtualHost}
 									/>
-								</Padding>
+								</Container>
 							</Row>
 						</Padding>
 						<Table

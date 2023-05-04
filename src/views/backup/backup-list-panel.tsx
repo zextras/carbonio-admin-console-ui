@@ -13,6 +13,8 @@ import {
 	ADVANCED_LBL,
 	BACKUP_ROUTE_ID,
 	CONFIGURATION_BACKUP,
+	LIST_SERVER,
+	SERVER,
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
@@ -21,6 +23,8 @@ import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
+import { useRightsStore } from '../../store/rights/store';
+import { getRights } from '../utility/utils';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -38,6 +42,8 @@ const BackupListPanel: FC = () => {
 	const [serverNames, setServerNames] = useState<any>();
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const rights = useRightsStore((state) => state.rights);
+	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${BACKUP_ROUTE_ID}`);
@@ -74,6 +80,19 @@ const BackupListPanel: FC = () => {
 		],
 		[t, isBackupModuleLicensed]
 	);
+
+	const [defaultOptions, setDefaultOptions] =
+		useState<Array<Record<string, unknown>>>(defaultSettingsOptions);
+
+	useEffect(() => {
+		if (!hasListServerRights) {
+			setDefaultOptions(
+				defaultSettingsOptions.filter((item: Record<string, unknown>) => item?.id !== SERVERS_LIST)
+			);
+		} else {
+			setDefaultOptions(defaultSettingsOptions);
+		}
+	}, [hasListServerRights, defaultSettingsOptions]);
 
 	const serverSettingsOptions = useMemo(
 		() => [
@@ -120,16 +139,15 @@ const BackupListPanel: FC = () => {
 			label: serverItem?.name,
 			customComponent: (
 				<Row
-					top="9px"
+					top="0.56rem"
 					right="large"
-					bottom="9px"
+					bottom="0.56rem"
 					left="large"
 					style={{
-						fontFamily: 'roboto',
 						display: 'block',
 						textAlign: 'left',
 						height: 'inherit',
-						padding: '3px',
+						padding: '0.18rem',
 						width: 'inherit'
 					}}
 					onClick={(): void => {
@@ -150,6 +168,20 @@ const BackupListPanel: FC = () => {
 		addServerToList(filterList);
 	}, [searchServer, addServerToList, serverList]);
 
+	useEffect(() => {
+		if (rights && rights.length > 0) {
+			const right = getRights(rights, SERVER);
+			if (right.length > 0) {
+				const findServerRight = right.find(
+					(item: Record<string, string>) => item?.n && item?.n === LIST_SERVER
+				);
+				if (findServerRight) {
+					sethasListServerRights(true);
+				}
+			}
+		}
+	}, [rights]);
+
 	return (
 		<Container
 			orientation="column"
@@ -165,53 +197,58 @@ const BackupListPanel: FC = () => {
 			/>
 			{isDefaultSettingsExpanded && (
 				<ListItems
-					items={defaultSettingsOptions}
+					items={defaultOptions}
 					selectedOperationItem={selectedOperationItem}
 					setSelectedOperationItem={setSelectedOperationItem}
 				/>
 			)}
 
-			<ListPanelItem
-				title={t('label.server_specifics', 'Server Specifics')}
-				isListExpanded={isServerSpecificsExpanded}
-				setToggleView={toggleServerSpecific}
-			/>
+			{hasListServerRights && (
+				<Container mainAlignment="flex-start">
+					<ListPanelItem
+						title={t('label.server_specifics', 'Server Specifics')}
+						isListExpanded={isServerSpecificsExpanded}
+						setToggleView={toggleServerSpecific}
+					/>
+					{isServerSpecificsExpanded && (
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Dropdown
+								items={isBackupModuleLicensed ? serverNames : []}
+								placement="bottom-start"
+								maxWidth="18.75rem"
+								disableAutoFocus
+								width="16.56rem"
+								style={{
+									width: '100%'
+								}}
+							>
+								<Input
+									label={t(
+										'label.I_want_to_see_this_server_details',
+										'i want to see this server’s details'
+									)}
+									value={searchServer}
+									CustomIcon={(): any => (
+										<Icon icon="HardDriveOutline" size="large" color="primary" />
+									)}
+									backgroundColor="gray5"
+									onChange={(e: any): any => {
+										setSearchServer(e.target.value);
+									}}
+									disabled={!isBackupModuleLicensed}
+								/>
+							</Dropdown>
+						</Row>
+					)}
 
-			{isServerSpecificsExpanded && (
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Dropdown
-						items={isBackupModuleLicensed ? serverNames : []}
-						placement="bottom-start"
-						maxWidth="300px"
-						disableAutoFocus
-						width="265px"
-						style={{
-							width: '100%'
-						}}
-					>
-						<Input
-							label={t(
-								'label.I_want_to_see_this_server_details',
-								'i want to see this server’s details'
-							)}
-							value={searchServer}
-							CustomIcon={(): any => <Icon icon="HardDriveOutline" size="large" color="primary" />}
-							backgroundColor="gray5"
-							onChange={(e: any): any => {
-								setSearchServer(e.target.value);
-							}}
-							disabled={!isBackupModuleLicensed}
+					{isServerSpecificsExpanded && (
+						<ListItems
+							items={serverSettingsOptions}
+							selectedOperationItem={selectedOperationItem}
+							setSelectedOperationItem={setSelectedOperationItem}
 						/>
-					</Dropdown>
-				</Row>
-			)}
-
-			{isServerSpecificsExpanded && (
-				<ListItems
-					items={serverSettingsOptions}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
-				/>
+					)}
+				</Container>
 			)}
 		</Container>
 	);

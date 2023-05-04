@@ -4,20 +4,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
-import { Input, Row, Text, Select, Button, useSnackbar } from '@zextras/carbonio-design-system';
-
-import { useTranslation } from 'react-i18next';
+import {
+	Input,
+	Row,
+	Text,
+	Select,
+	Button,
+	useSnackbar,
+	Modal,
+	Container,
+	Icon
+} from '@zextras/carbonio-design-system';
+import { Trans, useTranslation } from 'react-i18next';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
 
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 
+interface CredentialTextDataType {
+	password?: string;
+}
+
 interface CredentialType {
 	id?: string;
 	label?: string;
 	services?: string;
 	enabled?: boolean;
+	// eslint-disable-next-line camelcase
+	text_data?: CredentialTextDataType;
 }
 
 interface SelectServiceType {
@@ -32,6 +47,11 @@ interface SelectStatusType {
 
 interface AddCredentialApiType {
 	ok?: boolean;
+	response?: {
+		list?: CredentialType;
+		// eslint-disable-next-line camelcase
+		text_data: { password: '' };
+	};
 }
 
 export const ServicesPassphrase: FC = () => {
@@ -40,12 +60,18 @@ export const ServicesPassphrase: FC = () => {
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
+	const [createCredentialModal, setCreateCredentialModal] = useState<boolean>(false);
 
 	const SERVICE_PASSPHRASE_STATUS = useMemo(() => ServicesPassphraseStatus(t), [t]);
 	const SERVICE_PASSPHRASE_SERVICES = useMemo(() => ServicesPassphraseServices(), []);
 	const [createCredential, setCreateCredential] = useState<CredentialType>({
 		label: '',
 		services: SERVICE_PASSPHRASE_SERVICES[0].value
+	});
+
+	const [createCredentialResponse, setCreateCredentialResponse] = useState<CredentialType>({
+		label: '',
+		services: ''
 	});
 
 	const changeCredLabel = useCallback(
@@ -69,6 +95,12 @@ export const ServicesPassphrase: FC = () => {
 			...createCredential
 		}).then((res: AddCredentialApiType) => {
 			if (res.ok) {
+				setCreateCredentialResponse({
+					label: res?.response?.list?.label,
+					services: res?.response?.list?.label,
+					text_data: res?.response?.text_data
+				});
+				setCreateCredential((prev: CredentialType) => ({ ...prev, label: '' }));
 				getCredentialList(`${accountDetail?.uid}@${domainName}`);
 				setCreateCredential({
 					label: '',
@@ -85,6 +117,7 @@ export const ServicesPassphrase: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				setCreateCredentialModal(true);
 			} else {
 				createSnackbar({
 					key: 'error',
@@ -144,6 +177,7 @@ export const ServicesPassphrase: FC = () => {
 		},
 		[accountDetail?.uid, createCredential, createSnackbar, domainName, getCredentialList, t]
 	);
+
 	return (
 		<>
 			<Row mainAlignment="flex-start" width="100%">
@@ -221,6 +255,7 @@ export const ServicesPassphrase: FC = () => {
 							inputName="label"
 							label={t('account_details.label', 'Label')}
 							backgroundColor="gray5"
+							value={createCredential.label}
 						/>
 					</Row>
 					<Row width="19%" mainAlignment="space-between">
@@ -238,7 +273,7 @@ export const ServicesPassphrase: FC = () => {
 					<Row width="19%" mainAlignment="space-between">
 						<Button
 							type="outlined"
-							label={t('account_details.SAVE', 'SAVE')}
+							label={t('account_details.create', 'CREATE')}
 							color="primary"
 							onClick={onSave}
 						/>
@@ -247,6 +282,80 @@ export const ServicesPassphrase: FC = () => {
 					<Row width="19%" mainAlignment="space-between"></Row>
 				</Row>
 			</Row>
+			<Modal
+				size="medium"
+				title={`${createCredentialResponse.label} ${t(
+					'account_details.labels_password',
+					'’s Password'
+				)}`}
+				open={createCredentialModal}
+				customFooter={
+					<Container orientation="horizontal" mainAlignment="flex-end">
+						<Row style={{ gap: '1rem' }}>
+							<Button
+								label={t(
+									'account_details.i_have_copied_the_password',
+									'I HAVE COPIED THE PASSWORD'
+								)}
+								color="primary"
+								onClick={(): void => setCreateCredentialModal(false)}
+							/>
+						</Row>
+					</Container>
+				}
+				showCloseIcon
+				onClose={(): void => setCreateCredentialModal(false)}
+			>
+				<Row padding={{ vertical: 'extralarge' }} mainAlignment="center" crossAlignment="center">
+					<Row
+						width="80%"
+						mainAlignment="center"
+						crossAlignment="center"
+						padding={{ bottom: 'large' }}
+					>
+						<Text size={'extralarge'} overflow="break-word">
+							{t(
+								'account_details.password_allow_once_user_to_connect',
+								`This password will allow user to connect to this service without the 2FA even from an un-trusted network.`
+							)}
+						</Text>
+					</Row>
+					<Row width="80%" mainAlignment="center" crossAlignment="center">
+						<Text size={'extralarge'} overflow="break-word">
+							<Trans
+								i18nKey="account_details.able_to_see_password_once"
+								defaults=" Please note: you'll be able to see the password <bold>just once.</bold>"
+								components={{ bold: <strong /> }}
+							/>
+						</Text>
+					</Row>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<Input
+							label={t('account_details.service_password', 'Service Password')}
+							backgroundColor="gray5"
+							value={createCredentialResponse.text_data?.password}
+							CustomIcon={(): any => (
+								<Icon
+									icon="CopyOutline"
+									size="large"
+									color="Gray0"
+									onClick={(e: React.MouseEvent<HTMLElement>): any => {
+										e.preventDefault();
+										e.stopPropagation();
+										navigator.clipboard.writeText(
+											createCredentialResponse.text_data?.password || ''
+										);
+									}}
+									style={{ cursor: 'pointer' }}
+								/>
+							)}
+							readOnly
+							disabled
+							textColor={'gray1'}
+						/>
+					</Row>
+				</Row>
+			</Modal>
 		</>
 	);
 };

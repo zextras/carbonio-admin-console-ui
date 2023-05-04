@@ -190,12 +190,12 @@ const CreateDomain: FC = () => {
 					});
 					createGalSyncAccount(
 						dataSourceName,
-						`_${dataSourceName}`,
 						domainName,
 						zimbraPublisServiceHostname.value,
 						account,
 						GAL_MODE.INTERNAL,
-						attributes
+						attributes,
+						`_${dataSourceName}`
 					).then((resp) => {
 						showSuccessSnackBar();
 						routeToDomain(data);
@@ -305,10 +305,10 @@ const CreateDomain: FC = () => {
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={`${t(
+									label={t(
 										'label.default_mail_quota_for_account_domain',
 										'The default email quota for each account in the domain'
-									)} (${t('label.byte_lbl', 'BYTE')})`}
+									)}
 									background="gray5"
 									value={zimbraMailDomainQuota}
 									onChange={(e: any): any => {

@@ -17,13 +17,14 @@ import {
 	Modal
 } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
-import { orderBy } from 'lodash';
+import { find, orderBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { fetchSoap } from '../../../services/subscription-service';
 import MatomoTracker from '../../../matomo-tracker';
-import { SUBSCRIPTIONS_ROUTE_ID } from '../../../constants';
+import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const VerticalBar = styled(Container)`
 	background-color: ${({ theme }): string => theme.palette.primary.regular};
@@ -124,6 +125,15 @@ const Subscription: FC = () => {
 	const [version, setVersion] = useState();
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
 	const createSnackbar = useSnackbar();
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetSubsciption = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${SUBSCRIPTIONS_ROUTE_ID}`);
@@ -278,15 +288,16 @@ const Subscription: FC = () => {
 					crossAlignment="flex-start"
 					style={{ padding: '8px 0 16px 0' }}
 				>
-					<Row width="calc(100% - 145px)">
+					<Row width="83%">
 						<Input
 							label={t('core.subscription.token', 'Token')}
 							backgroundColor="gray5"
 							value={licenseKey}
+							disabled={!allowSetSubsciption}
 							onChange={(e: any): void => setLicenseKey(e.target.value)}
 						/>
 					</Row>
-					<Row width="145px" mainAlignment="flex-end" crossAlignment="flex-end">
+					<Row width="17%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<Button
 							label={
 								services &&
@@ -295,7 +306,7 @@ const Subscription: FC = () => {
 									? t('core.subscription.activate', 'Activate')
 									: t('core.subscription.deactivate', 'Deactivate')
 							}
-							disabled={!licenseKey || disableActiveBtn}
+							disabled={!allowSetSubsciption || !licenseKey || disableActiveBtn}
 							type="outlined"
 							color={
 								services &&
@@ -357,8 +368,8 @@ const Subscription: FC = () => {
 							label={t('core.subscription.status', 'Status')}
 							value={
 								services.response.notYetValid || !services.response.authenticationToken
-									? t('core.subscription.not_valid', 'Not Valid')
-									: t('core.subscription.valid', 'Valid')
+									? t('core.subscription.not_valid', 'Not Valid') || ''
+									: t('core.subscription.valid', 'Valid') || ''
 							}
 						/>
 						<IconInfo

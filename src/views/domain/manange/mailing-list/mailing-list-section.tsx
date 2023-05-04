@@ -43,7 +43,7 @@ const MailingListSection: FC<any> = () => {
 	);
 	const [dynamicListMemberRows, setDynamicListMemberRows] = useState<Array<any>>([]);
 	const [isShowLdapQueryMessage, setIsShowLdapQueryMessage] = useState<boolean>(false);
-	const [ldapQueryErrorMessage, setLdapQueryErrorMessage] = useState<string>('');
+	const [ldapQueryErrorMessage, setLdapQueryErrorMessage] = useState<string | null>('');
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const [member, setMember] = useState<string>('');
 	const [ownersList, setOwnersList] = useState<Array<any>>(
@@ -101,7 +101,7 @@ const MailingListSection: FC<any> = () => {
 				columns: [
 					<Text
 						size="medium"
-						weight="bold"
+						weight="light"
 						key={item?.id}
 						color="#828282"
 						onClick={(): void => {
@@ -192,7 +192,7 @@ const MailingListSection: FC<any> = () => {
 			const searchDlRows = dynamicListMember.map((item: any) => ({
 				id: item?.name,
 				columns: [
-					<Text size="medium" weight="bold" key={item?.id} color="#828282">
+					<Text size="medium" weight="light" key={item?.id} color="#828282">
 						{item?.name}
 					</Text>,
 					''
@@ -252,7 +252,6 @@ const MailingListSection: FC<any> = () => {
 				bottom="9px"
 				left="large"
 				style={{
-					fontFamily: 'roboto',
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
@@ -719,9 +718,9 @@ const MailingListSection: FC<any> = () => {
 						>
 							<Text
 								overflow="break-word"
-								weight="normal"
+								weight="regular"
 								size="large"
-								style={{ whiteSpace: 'pre-line', textAlign: 'center', fontFamily: 'roboto' }}
+								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>
 								<img src={carbonioHelmet} alt="logo" />
 							</Text>
