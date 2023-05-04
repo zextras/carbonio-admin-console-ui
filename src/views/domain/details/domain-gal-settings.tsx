@@ -335,7 +335,7 @@ const DomainGalSettings: FC = () => {
 			} = data?.dataSource[0];
 			if (dataSource && dataSource?.id) {
 				// eslint-disable-next-line array-callback-return, consistent-return
-				zimbraGalAccountIdArray.map((item) => {
+				zimbraGalAccountIdArray.forEach((item) => {
 					if (item._content === accountId) {
 						zimbraAccountDataSourceId.push({
 							id: item._content,
@@ -432,7 +432,7 @@ const DomainGalSettings: FC = () => {
 		if (zimbraGalAccountId !== '') {
 			getGalAccount(zimbraGalAccountId);
 			// eslint-disable-next-line array-callback-return
-			zimbraGalAccountIdArray.map((items) => {
+			zimbraGalAccountIdArray.forEach((items) => {
 				getDomainDataSource(items?._content);
 			});
 		} else {
@@ -599,7 +599,7 @@ const DomainGalSettings: FC = () => {
 		if (zimbraGalAccountId !== '') {
 			if (zimbraGalAccountIdArray?.length !== 0 && zimbraAccountDataSourceId?.length !== 0) {
 				// eslint-disable-next-line array-callback-return
-				zimbraGalAccountIdArray.map((items) => {
+				zimbraGalAccountIdArray.forEach((items) => {
 					interface DataSourceId {
 						dataSourceId?: string;
 						id?: number;
@@ -657,7 +657,7 @@ const DomainGalSettings: FC = () => {
 			});
 		if (zimbraGalAccountIdArray?.length !== 0) {
 			// eslint-disable-next-line array-callback-return
-			zimbraGalAccountIdArray.map((items) => {
+			zimbraGalAccountIdArray.forEach((items) => {
 				modifyAccountRequest(items?._content, {
 					zimbraDataSourceGalPollingInterval
 				}).catch((error) => {
