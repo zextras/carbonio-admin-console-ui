@@ -510,8 +510,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
-											'label.maximum_mainbox_quota_for_the_domain_in_bytes',
-											'Maximum mailbox quota for the domain in bytes'
+											'label.max_mainbox_quota_for_the_domain_in_bytes',
+											'Max mailbox quota for the domain in bytes'
 										)}
 										value={zimbraMailDomainQuota}
 										background="gray5"
