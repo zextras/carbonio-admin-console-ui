@@ -80,19 +80,28 @@ const DomainGeneralSettings: FC = () => {
 				value: ACTIVE
 			},
 			{
-				label: t('label.closed', 'Closed'),
+				label: `${t('label.closed', 'Closed')} (${t('label.soft_deleted', 'Soft-deleted')})`,
 				value: CLOSED
 			},
 			{
-				label: t('label.locked', 'Locked'),
+				label: `${t('label.locked', 'Locked')} (${t(
+					'label.login_is_disabled',
+					'Login is disabled'
+				)})`,
 				value: LOCKED
 			},
 			{
-				label: t('label.maintenance', 'Maintenance'),
+				label: `${t('label.in_maintenance', 'In maintenance')} (${t(
+					'label.login_is_disabled',
+					'Login is disabled'
+				)})`,
 				value: MAINTENANCE
 			},
 			{
-				label: t('label.suspended', 'Suspended'),
+				label: `${t('label.suspended', 'Suspended')} (${t(
+					'label.login_is_disabled',
+					'Login is disabled'
+				)})`,
 				value: SUSPENDED
 			}
 		],
@@ -836,54 +845,6 @@ const DomainGeneralSettings: FC = () => {
 							>
 								<Divider />
 							</Container>
-
-							<ListRow>
-								<Container
-									orientation="horizontal"
-									width="99%"
-									crossAlignment="center"
-									mainAlignment="space-between"
-									background="#D3EBF8"
-									padding={{
-										all: 'large'
-									}}
-									style={{ margin: '8px' }}
-								>
-									<Row takeAvwidth="fill" mainAlignment="flex-start">
-										<Padding horizontal="small">
-											<CustomIcon icon="InfoOutline"></CustomIcon>
-										</Padding>
-									</Row>
-									<Row
-										takeAvwidth="fill"
-										mainAlignment="flex-start"
-										width="100%"
-										padding={{
-											all: 'small'
-										}}
-									>
-										<Text overflow="break-word">
-											{t(
-												'label.mx_record_information_msg',
-												'If your MX records point to a spam-relay or any other external server, enter the name of that server in "Inbound SMTP Host Name" field.'
-											)}
-										</Text>
-									</Row>
-								</Container>
-							</ListRow>
-
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.inbound_smtp_host_name', 'Inbound SMTP Host Name')}
-										value={zimbraDNSCheckHostname}
-										background="gray5"
-										onChange={(e: any): any => {
-											setZimbraDNSCheckHostname(e.target.value);
-										}}
-									/>
-								</Container>
-							</ListRow>
 
 							<ListRow>
 								<Container padding={{ all: 'small' }}>

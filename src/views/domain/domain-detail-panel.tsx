@@ -3,25 +3,38 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
-import { Container, Padding, Text, Button } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import React, { FC, useMemo, useState } from 'react';
+import { Container, Padding, Text, Button, Row, Icon } from '@zextras/carbonio-design-system';
+import { Trans, useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { cloneDeep, find } from 'lodash';
 import logo from '../../assets/ninja_robo.svg';
 import DomainOperations from './domain-detail-operation';
 import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 import CreateDomain from './create-new-domain';
 import GlobalOperations from './global-operation';
+import { useDomainStore } from '../../store/domain/store';
+import { useLocalStorage } from '../utility/utils';
 
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const { path } = useRouteMatch();
+	const domain = useDomainStore((state) => state.domain);
+	const [domainLocalValue, setDomainLocalValue] = useLocalStorage('close_domain_never_show', {});
+	const [showDomainClose, setShowDomainClose] = useState<boolean>(
+		domain.name ? !domainLocalValue[domain.name] : true
+	);
 
 	const createNewDomain = (): void => {
 		replaceHistory(`/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
 	};
-
+	const isDomainClosed = useMemo(() => {
+		const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
+		if (domainStatus?._content === 'closed' && domain.name && !domainLocalValue[domain.name])
+			return true;
+		return false;
+	}, [domain?.a, domain.name, domainLocalValue]);
 	return (
 		<Container
 			orientation="column"
@@ -30,6 +43,51 @@ const DomainDetailPanel: FC = () => {
 			style={{ overflowY: 'hidden' }}
 			background="gray6"
 		>
+			{isDomainClosed && showDomainClose ? (
+				<Row background="warning" width="100%" padding="small" mainAlignment="space-between">
+					<Row mainAlignment="flex-start">
+						<Icon icon="CloseCircleOutline" size="large" color="white" />
+						<Padding left="large">
+							<Trans
+								i18nKey="label.this_domain_is_closed"
+								defaults="<text>The domain  <bold> {{domain}} </bold>  is closed</text>"
+								components={{ bold: <strong />, text: <Text color="white" /> }}
+								values={{
+									domain: ` ${domain?.name} ` ?? ''
+								}}
+							/>
+						</Padding>
+					</Row>
+
+					<Row mainAlignment="flex-end">
+						<Padding right="large">
+							<Button
+								type="outlined"
+								label={t('label.never_show_this_again', 'NEVER SHOW THIS AGAIN')}
+								color="white"
+								backgroundColor="warning"
+								onClick={(): void => {
+									setShowDomainClose(false);
+									const domainLocal = cloneDeep(domainLocalValue);
+									if (domain?.name) {
+										domainLocal[domain.name] = true;
+									}
+									setDomainLocalValue(domainLocal);
+								}}
+							/>
+						</Padding>
+						<Icon
+							icon="Close"
+							size="large"
+							color="white"
+							style={{ cursor: 'pointer' }}
+							onClick={(): void => setShowDomainClose(false)}
+						/>
+					</Row>
+				</Row>
+			) : (
+				<></>
+			)}
 			<Switch>
 				<Route exact path={`${path}/${GLOBAL_ROUTE}/:operation`}>
 					<GlobalOperations />
