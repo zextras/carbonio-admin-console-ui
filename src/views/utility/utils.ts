@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { TFunction } from 'i18next';
+import { useState } from 'react';
 import {
 	ACTIVE,
 	CLOSED,
@@ -2051,3 +2052,20 @@ export const getRights = (
 	}
 	return right;
 };
+
+export function useLocalStorage<T>(key: string, initialValue: T): any {
+	const [storedValue, setStoredValue] = useState<T>(() => {
+		try {
+			const item = window.localStorage.getItem(key);
+			return item ? JSON.parse(item) : initialValue;
+		} catch (error) {
+			return initialValue;
+		}
+	});
+	const setValue = (value: T | ((val: T) => T)): any => {
+		const valueToStore = value instanceof Function ? value(storedValue) : value;
+		setStoredValue(valueToStore);
+		localStorage.setItem(key, JSON.stringify(valueToStore));
+	};
+	return [storedValue, setValue] as const;
+}
