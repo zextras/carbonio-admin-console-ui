@@ -68,6 +68,8 @@
         "delegate_deleted_successfully": "Delegate's rights deleted successfully",
         "delegate_rights": "Delegate's rights",
         "delegate_updated_successfully": "Delegate's rights updated successfully",
+        "delete_password": "Delete Password",
+        "delete_password_of_user": "You are deleting password of <bold>{{name}}</bold>. Are you sure you want to delete it?",
         "delete_user_password": "DELETE USER PASSWORD FROM THE LDAP",
         "deligate_abstract_text": "The user {{granteeEmail}} will be able to send mails {{right}} {{targetEmail}}",
         "display_external_image_as_html": "Display external image as HTML",

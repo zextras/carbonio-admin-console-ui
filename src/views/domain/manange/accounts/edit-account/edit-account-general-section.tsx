@@ -16,9 +16,10 @@ import {
 	Tooltip,
 	ChipInput,
 	Button,
-	useSnackbar
+	useSnackbar,
+	Modal
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { map } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
@@ -42,11 +43,11 @@ const EditAccountGeneralSection: FC = () => {
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
+	const [showDeletePasswordModal, setShowDeletePasswordModal] = useState<boolean>(false);
 
 	const [t] = useTranslation();
 	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
-	console.log('accountDetail ==>', accountDetail);
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
 			setAccountDetail((prev: AccountType) => ({
@@ -105,6 +106,7 @@ const EditAccountGeneralSection: FC = () => {
 		setDefaultCOS(!defaultCOS);
 	};
 	const deleteUserPassword = (): void => {
+		setShowDeletePasswordModal(false);
 		modifyAccountRequest(accountDetail?.zimbraId, { userPassword: '' })
 			.then((data) => {
 				setAccountDetail((prev: AccountType) => ({ ...prev, userPassword: '' }));
@@ -318,7 +320,7 @@ const EditAccountGeneralSection: FC = () => {
 					label={t('account_details.delete_user_password', 'DELETE USER PASSWORD FROM THE LDAP')}
 					color="error"
 					width="fill"
-					onClick={(): void => deleteUserPassword()}
+					onClick={(): void => setShowDeletePasswordModal(true)}
 				/>
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
@@ -465,6 +467,46 @@ const EditAccountGeneralSection: FC = () => {
 					/>
 				</Row>
 			</Row>
+			<Modal
+				size="medium"
+				title={t('account_details.delete_password', 'Delete Password', {
+					name: accountDetail?.givenName
+				})}
+				open={showDeletePasswordModal}
+				customFooter={
+					<Container orientation="horizontal" mainAlignment="flex-end">
+						<Row style={{ gap: '0.5rem' }}>
+							<Button
+								label={t('label.cancle_button', 'NO')}
+								color="secondary"
+								onClick={(): void => setShowDeletePasswordModal(false)}
+							/>
+							<Button
+								label={t('label.delete_button', 'DELETE')}
+								color="error"
+								onClick={(): void => deleteUserPassword()}
+							/>
+						</Row>
+					</Container>
+				}
+				showCloseIcon
+				onClick={(): void => setShowDeletePasswordModal(false)}
+			>
+				<Text
+					size={'extralarge'}
+					overflow="break-word"
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
+				>
+					<Trans
+						i18nKey="account_details.delete_password_of_user"
+						defaults="You are deleting password of <bold>{{name}}</bold>. Are you sure you want to delete it?"
+						components={{ bold: <strong /> }}
+						values={{
+							name: accountDetail?.givenName
+						}}
+					/>
+				</Text>
+			</Modal>
 		</Container>
 	);
 };
