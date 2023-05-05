@@ -22,161 +22,166 @@ export const OperationsTable: FC<{
 }> = ({ operations, headers, donePanel, selectedRows, onSelectionChange, onClick }) => {
 	const [t] = useTranslation();
 
-	const tableRows = donePanel
-		? useMemo(
-				() =>
-					operations?.map((v, i) => ({
-						id: i?.toString(),
-						columns: [
-							<Row
-								style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-								key={i}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.host || ''}</Text>
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.name || ''}</Text>
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-center'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								{v?.state === STOPPING && (
-									<Icon icon="StopCircleOutline" size="medium" color="secondary" />
-								)}
-								{v?.state === DISMMISED && (
-									<Icon icon="CloseCircleOutline" size="medium" color="error" />
-								)}
-								{v?.state === STARTED && (
-									<Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
-								)}
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.parameters?.requesterAddress}</Text>
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-center'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}</Text>
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-center'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}</Text>
-							</Row>
-						],
-						clickable: true
-					})),
-				[onClick, operations]
-		  )
-		: useMemo(
-				() =>
-					operations?.map((v, i) => ({
-						id: i?.toString(),
-						columns: [
-							<Row
-								style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-								key={i}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.host || ''}</Text>
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.name || ''}</Text>
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-start'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.parameters?.requesterAddress}</Text>
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-center'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}</Text>
-							</Row>,
-							<Row
-								key={i}
-								style={{
-									textAlign: 'left',
-									justifyContent: 'flex-center'
-								}}
-								onClick={(): any => {
-									onClick(i);
-								}}
-							>
-								<Text weight="light">{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}</Text>
-							</Row>
-						],
-						clickable: true
-					})),
-				[onClick, operations]
-		  );
+	const doneTableRowPanel = useMemo(
+		() =>
+			operations?.map((v, i) => ({
+				id: i?.toString(),
+				columns: [
+					<Row
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						key={i}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.host || ''}</Text>
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.name || ''}</Text>
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-center'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						{v?.state === STOPPING && (
+							<Icon icon="StopCircleOutline" size="medium" color="secondary" />
+						)}
+						{v?.state === DISMMISED && (
+							<Icon icon="CloseCircleOutline" size="medium" color="error" />
+						)}
+						{v?.state === STARTED && (
+							<Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
+						)}
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.parameters?.requesterAddress}</Text>
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-center'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}</Text>
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-center'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}</Text>
+					</Row>
+				],
+				clickable: true
+			})),
+		[onClick, operations]
+	);
+
+	const unDoneTableRowsPanel = useMemo(
+		() =>
+			operations?.map((v, i) => ({
+				id: i?.toString(),
+				columns: [
+					<Row
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						key={i}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.host || ''}</Text>
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.name || ''}</Text>
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-start'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.parameters?.requesterAddress}</Text>
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-center'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}</Text>
+					</Row>,
+					<Row
+						key={i}
+						style={{
+							textAlign: 'left',
+							justifyContent: 'flex-center'
+						}}
+						onClick={(): any => {
+							onClick(i);
+						}}
+					>
+						<Text weight="light">{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}</Text>
+					</Row>
+				],
+				clickable: true
+			})),
+		[onClick, operations]
+	);
+
+	const tableRows = useMemo(
+		() => (donePanel ? doneTableRowPanel : unDoneTableRowsPanel),
+		[donePanel, doneTableRowPanel, unDoneTableRowsPanel]
+	);
 
 	return (
 		<Container crossAlignment="flex-start">
