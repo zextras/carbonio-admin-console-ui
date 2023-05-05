@@ -293,8 +293,8 @@ const CreateDomain: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t(
-										'label.max_number_account_of_this_domain_manage',
-										'The max number of accounts this domain can manage'
+										'label.max_manageable_account_for_the_domain',
+										'Max manageable account for the domain'
 									)}
 									background="gray5"
 									value={zimbraDomainMaxAccounts}
@@ -307,7 +307,7 @@ const CreateDomain: FC = () => {
 								<Input
 									label={t(
 										'label.max_mainbox_quota_for_the_domain_in_bytes',
-										'Max mailbox quota for the domain in bytes'
+										'Max mailbox quota for the domain (bytes)'
 									)}
 									background="gray5"
 									value={zimbraMailDomainQuota}
