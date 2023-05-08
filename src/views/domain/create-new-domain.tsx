@@ -368,7 +368,7 @@ const CreateDomain: FC = () => {
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.gay_sync_account_name', 'GAL Sync Account Name')}
+									label={t('label.gal_folder_name', 'GAL folder name')}
 									background="gray5"
 									value={galSyncAccountName}
 									onChange={(e: any): any => {
@@ -391,10 +391,7 @@ const CreateDomain: FC = () => {
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t(
-										'label.datasource_name_for_internal_gal',
-										'Datasource name for internal GAL'
-									)}
+									label={t('label.datasource_name', 'Datasource name')}
 									background="gray5"
 									value={dataSourceName}
 									onChange={(e: any): any => {

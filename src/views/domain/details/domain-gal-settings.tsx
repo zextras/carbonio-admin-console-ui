@@ -1172,8 +1172,8 @@ const DomainGalSettings: FC = () => {
 								<Input
 									type="number"
 									label={t(
-										'domain.max_result_return_gal_search',
-										'Max results returned by GAL search'
+										'label.limit_search_results_from_address_book_list_to',
+										'Limit search results from  Address Book List to'
 									)}
 									value={zimbraGalMaxResults}
 									background="gray5"
@@ -1220,7 +1220,7 @@ const DomainGalSettings: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.gal_update_frequencey_value', 'GAL Update Frequency Value')}
+										label={t('label.gal_update_frequencey_value', 'GAL Update Frequency (value)')}
 										value={freqValue?.digits}
 										background="gray5"
 										onChange={onFreqDigitsChange}
@@ -1230,7 +1230,7 @@ const DomainGalSettings: FC = () => {
 									<Select
 										items={measureUnitItems}
 										background="gray5"
-										label={t('label.measure_unit', 'Measure Unit')}
+										label={t('label.interval', 'Interval')}
 										onChange={onFreqTimeUnitChange}
 										showCheckbox={false}
 										selection={measureUnitSelection}
