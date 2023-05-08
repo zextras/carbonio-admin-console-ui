@@ -227,7 +227,8 @@
             "emc_s3": "EMC S3",
             "openio_s3": "OpenIO S3",
             "scality_s3": "Scality S3",
-            "yandex_s3": "Yandex S3"
+            "yandex_s3": "Yandex S3",
+            "minio": "Minio"
         }
     },
     "core": {
@@ -258,7 +259,9 @@
             "activation": "Aktywacja",
             "deactivate": "Deaktywuj",
             "order_id": "ID zamówienia",
-            "valid": "Ważna"
+            "valid": "Ważna",
+            "license_activated_successfully": "Licencja została aktywowana",
+            "not_valid": "Nieważna"
         }
     },
     "domain": {
@@ -309,7 +312,10 @@
         "unit_measure_hours": "Godziny",
         "unit_measure_minutes": "Minuty",
         "unit_measure_seconds": "Sekundy",
-        "unit_measure_days": "Dni"
+        "unit_measure_days": "Dni",
+        "ldap": "LDAP",
+        "page_size": "Rozmiar strony",
+        "unit_measure_milliseconds": "Milisekundy"
     },
     "label": {
         "account": "Konto",
@@ -482,7 +488,7 @@
         "virtual_host_name": "Nazwa wirtualnego hosta",
         "viewed_name_auto_fill": "Wyświetlana nazwa (automatyczne uzupełnianie)",
         "viewed_name": "Wyświetlana nazwa (automatyczne uzupełnianie)",
-        "view_mail": "WYŚWIETL E-MAILA",
+        "view_mail": "PRZEJDŹ DO SKRZYNKI",
         "view": "To jest widok",
         "verify_error": "{{name}}",
         "verify_connector_fail": "WERYFIKACJA SIĘ NIE POWIODŁA",
@@ -590,7 +596,7 @@
         "displayed_name": "Wyświetlana nazwa",
         "deligated_admin_help_url": "URL pomocy dla delegowanego administratora",
         "deleting_cos_msg": "Usuwanie <bold>{{cosname}}</bold>",
-        "delete_domain_with_account_content_msg": "{{domainName}} nie jest puste: zawiera {{domainAccounts}} kont systemowych i {{domainAccounts}} regularnych kont. Czy na pewno chcesz kontynuować usuwanie?",
+        "delete_domain_with_account_content_msg": "{{domainName}} nie jest puste: zawiera {{domainSystemAccounts}} kont systemowych i {{domainRegularAccounts}} regularnych kont. Czy na pewno chcesz kontynuować usuwanie?",
         "delete_domain_success_msg": "Domena została usunięta",
         "delete_domain_error_msg": "Usuwasz {{domainName}}. Czy na pewno chcesz usunąć {{domainName}}?",
         "delete_domain": "Usuń domenę",
@@ -643,7 +649,7 @@
         "activate_and_update": "Aktywuj i zaktualizuj",
         "account_created_successfully": "Konto zostało stworzone pomyślnie",
         "block_send": "Blokuj wysyłanie",
-        "bind_dn_template": "Podłącz szablon DN",
+        "bind_dn_template": "Szablon Bind DN",
         "auto_refuse": "Automatycznie odrzucaj",
         "auto_negation": "Automatycznie odrzucaj",
         "auto_logout_users": "Automatyczne wylogowywanie użytkowników",
@@ -1137,7 +1143,92 @@
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Zapisuj kopię wysyłanych wiadomości do mojego folderu wysłane",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Zapisuj kopię wysyłanych wiadomości do mojego folderu wysłane i folderu wysłane pełnomocnika",
         "dont_save_a_copy_of_sent_messages": "Nie zapisuj kopii wysłanych wiadomości",
-        "value": "Wartość"
+        "value": "Wartość",
+        "accounts_groups": "Konta/grupy",
+        "attribute": "Atrybut",
+        "allow_unsecure": "Zezwalaj na niezabezpieczone",
+        "backup_lbl": "<bold>Kopia zapasowa</bold>",
+        "bind_dn": "Bind DN",
+        "bind_password": "Bind password",
+        "byte_lbl": "BAJT",
+        "change_to": "ZMIEŃ NA",
+        "change_to_external": "ZMIEŃ NA ZEWNĘTRZNE",
+        "change_to_internal": "ZMIEŃ NA WEWNĘTRZNE",
+        "changes_save_success_msg": "Zmiany zostały zapisane!",
+        "class_of_service_lbl": "<bold>Klasa usługi</bold>",
+        "close": "ZAMKNIJ",
+        "close_domain": "ZAMKNIJ DOMENĘ",
+        "color_code": "Kod koloru",
+        "create_account_button": "STWÓRZ KONTO",
+        "create_account_name": "STWÓRZ NAZWĘ KONTA",
+        "create_galsync_account_success_msg": "Nazwa konta GLASync została stworzona",
+        "delegate_send_settings": "Deleguj ustawienia wysyłania",
+        "delete_account": "Czy na pewno chcesz usunąć {{accountId}}?",
+        "delete_configuration": "USUŃ KONFIGURACJĘ",
+        "delete_domain_with_all_resources_permanently_remove": "Możesz też trwale usunąć wszystkie konta i obiekty domeny. Tej operacji nie da się cofnąć.",
+        "delete_domain_with_all_resources_post_msg": "Jeżeli nie jesteś pewien, możesz zamknąć domenę. W ten sposób unikniesz kolejnych interakcji z nią a wszystkie zasoby pozostaną dostępne w razie potrzeby. Możesz też trwale usunąć wszystkie konta i obiekty domeny. Tej operacji nie da się cofnąć.",
+        "delete_domain_with_all_resources_pre_msg": "Domena {{domainName}} nie jest pusta i zawiera",
+        "destroy": "USUŃ",
+        "destroy_account": "Usuń",
+        "destroy_account_button": "TAK, USUŃ",
+        "dn_settings": "Ustawienia DN",
+        "domain_close_success_msg": "Domena została zamknięta",
+        "domains_lbl": "<bold>Domeny</bold>",
+        "entity_id": "ID jednostki",
+        "entity_id_copied": "EntityID zostało skopiowane",
+        "export_configuration": "EKSPORTUJ KONFIGURACJĘ",
+        "external_server_address": "Adres serwera zewnętrznego",
+        "frequency_value_also_updated": "Częstotliwość aktualizacji GLA została zaktualizowana",
+        "galsync_account": "Konto GLASync",
+        "gal_update_freq_value": "Częstotliwość aktualizacji GLA",
+        "go_back_button": "POWRÓT",
+        "import": "IMPORTUJ",
+        "import_saml_metadata_from_idp": "Importuj metadane SAML od dostawcy tożsamości",
+        "inactive": "Nieaktywne",
+        "ldap_filter": "Filtr LDAP",
+        "ldap_search_base": "Baza wyszukiwania LDAP",
+        "ldap_url": "URL LDAP",
+        "model_label_create_account": "Stwórz konto",
+        "operation_lbl": "<bold>Operacje</bold>",
+        "personalisation": "Personalizacja",
+        "prefix_volume": "Prefiks - {{volumePrefix}}",
+        "primary_color_for_dark_mode": "<bold>Główny</bold> kolor dla trybu ciemnego",
+        "primary_color_for_light_mode": "<bold>Główny</bold> kolor dla trybu jasnego",
+        "privacy_lbl": "<bold>Prywatność</bold>",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "Aby zobaczyć atrybuty, zaimportuj metadane SAML w polu powyżej",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Zapisuj kopię wysyłanych wiadomości jedynie do folderu delegowanego wysyłania",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Zapisuj kopię wysyłanych wiadomości jedynie do folderu wysłane pełnomocnika",
+        "select_an_attribute_to_show_its_value": "Wybierz atrybut, aby wyświetlić jego wartość",
+        "server_type": "Typ serwera",
+        "service_url": "URL usługi",
+        "service_url_copied": "URL usługi zostało skopiowane",
+        "storage_lbl": "<bold>Pamięć</bold>",
+        "storage_type": "Typ pamięci",
+        "subscription_lbl": "<bold>Subskrypcja</bold>",
+        "system_account": "Konta systemowe",
+        "user_ssl": "Używaj SSL",
+        "volume_detail_success": "Wszystkie zmiany zostały zapisane",
+        "you_have_added_attribute": "Dodałeś atrybut {{ attributeName }}",
+        "you_have_deleted_the_configuration": "Usunąłeś konfigurację",
+        "you_have_exported_the_configuration": "Wyeksportowałeś konfigurację",
+        "you_have_generated_the_sp_certificate": "Wygenerowałeś certyfikat SP",
+        "you_have_imported_the_configuration": "Zaimportowałeś konfigurację",
+        "you_have_updated_attribute": "Zaktualizowałeś atrybut {{ attributeName }}",
+        "delete_domain_with_all_resources_msg": "Domena {{domainName}} nie jest pusta i zawiera {{domainRegularAccounts}} kont, {{domainSystemAccounts}} kont systemowych, {{distributionList}} list dystrybucyjnych, {{aliases}} aliasów i {{resources}} zasobów. Jeżeli nie jesteś pewien czy chcesz ją usunąć, możesz ją zamknąć. W ten sposób unikniesz kolejnych interakcji z nią a wszystkie zasoby pozostaną dostępne w razie potrzeby. Możesz też trwale usunąć wszystkie konta i obiekty domeny. Tej operacji nie da się cofnąć.",
+        "generate_sp_certificate": "WYGENERUJ CERTYFIKAT SP",
+        "here_will_be_shown_the_attribute_value": "Tutaj wyświetli się wartość atrybutu",
+        "keep_it_button": "NIE, ZACHOWAJ JE",
+        "measure_unit": "Jednostka miary",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Zapisuj kopię wysyłanych wiadomości do folderu wysłane pełnomocnika i folderu delegowanego wysyłania",
+        "select_attribute_to_show_its_value": "Wybierz atrybut, aby wyświetlić jego wartość",
+        "type_account_name_for_global_address_list": "Wpisz nazwę konta dla Globalnej Listy Adresów (GLA)",
+        "notification_lbl": "<bold>Powiadomienia</bold>",
+        "you_have_removed_attribute": "Usunąłeś atrybut {{ attributeName }}",
+        "delete_domain_with_all_resources_close_domain": "Jeśli nie jesteś pewien, możesz zamknąć domenę. W ten sposób unikniesz kolejnych interakcji z nią a wszystkie zasoby pozostaną dostępne w razie potrzeby.",
+        "gal_update_frequencey_value": "Częstotliwość aktualizacji GLA",
+        "primary_color_hint": "Aby zmienić główny kolor, użyj kodu koloru HEX w formacie placeholder.",
+        "use_dn_password_to_bind_external_server": "Używaj DN/hasła do podłączenia do serwera zewnętrznego"
     },
     "message": {
         "snackbar": {
@@ -1226,7 +1317,8 @@
         "bucket_configuration": "Konfiguracja bucketa",
         "local_mountpoint": "Lokalny mountpoint",
         "manage_external_volume": "Zarządzaj woluminem zewnętrznym",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "konfiguracja kopii zapasowej"
     },
     "cos": {
         "calendar_options": "Ustawienia kalendarza",
@@ -1379,7 +1471,8 @@
         "dark_mode": "Tryb ciemny",
         "activesync_remote_access": "Zdalny dostęp ActiveSync",
         "chats": "Czaty",
-        "files": "Pliki"
+        "files": "Pliki",
+        "idp_configuration_saml_notes": "Udaj się do swojego dostawcy tożsamości, aby skonfigurować SAML oraz skopiować wartości entityid i serviceurl"
     },
     "locale": {
         "label_italian": "Włoski - {{value}}",
@@ -1418,7 +1511,8 @@
         "enable_activeSync_remote_access": "Włącz zdalny dostęp ActiveSync",
         "default_COS": "Domyślne COS",
         "change_password_for_next_login": "Musi zmienić hasło przy nastepnym logowaniu",
-        "user_will_change_password_on_next_login": "Użytkownik musi zmienić hasło przy następnym logowaniu"
+        "user_will_change_password_on_next_login": "Użytkownik musi zmienić hasło przy następnym logowaniu",
+        "force_change_password": "Wymuś zmianę hasła"
     },
     "welcome_to_carbonio": "{{adminName}}, witaj w Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Wybierz sekcję z menu po lewej stronie",
@@ -1582,7 +1676,31 @@
         "remove": "Usuwać",
         "send_check": "Wyślij",
         "services": "Usługi",
-        "status": "Status"
+        "status": "Status",
+        "able_to_see_password_once": " Uwaga: będziesz w stanie zobaczyć hasło <bold>tylko raz.</bold>",
+        "account_read_write_rights": "To konto ma uprawnienia <bold>wyświetlanie/pisanie</bold>",
+        "account_send_rights": "To konto ma uprawnienia <bold>wysyłanie</bold>",
+        "account_with_read_only_rights": "Konta z uprawnieniami <bold>tylko wyświetlanie</bold>",
+        "account_with_read_write_rights": "Konta z uprawnieniami <bold>wyświetlanie/pisanie</bold>",
+        "account_with_send_rights": "Konto z uprawnieniami <bold>wyślij jako/wyślij w imieniu</bold>",
+        "add_the_account_group_with_selected_rights": "DODAJ KONTO/GRUPĘ Z WYBRANYMI UPRAWNIENIAMI",
+        "i_have_copied_the_password": "SKOPIOWAŁEM HASŁO",
+        "manage_no_rights_to_send_mails": "Zarządzanie (brak uprawnień do wysyłania e-maili)",
+        "password_allow_once_user_to_connect": "To hasło pozwoli użytkownikowi połączyć się z usługą bez weryfikacji dwuetapowej, nawet poprzez niezaufaną sieć.",
+        "read_only": "Tylko wyświetlanie",
+        "read_write": "Wyświetlanie/pisanie",
+        "remove_all": "USUŃ WSZYSTKO",
+        "services_passphrase_created_successfully": "Hasło usług zostało stworzone",
+        "services_passphrase_deleted_successfully": "Hasło usług zostało usunięte",
+        "start_typing_account": "Zacznij wpisywać konto lub grupę, aby nadać im uprawnienia",
+        "switch_simplified": "Przełącz na uproszczony widok",
+        "switch_advanced": "Przełącz na zaawansowany widok",
+        "labels_password": "hasło użytkownika",
+        "account_read_only_rights": "To konto ma uprawnienia <bold>tylko wyświetlanie</bold>",
+        "passphrasaId": "ID hasła",
+        "send_on_behalf_of_check": "Wysyłanie w imieniu",
+        "service_password": "Hasło usługi",
+        "services_passphrase": "Hasło usług"
     },
     "privacy": {
         "survey_feedback_sub_1": "Nie martw się, ankiety będą szybkie, proste i bardzo pomogą nam zrozumieć co robimy dobrze a co źle.",
@@ -1594,8 +1712,8 @@
     },
     "reminder": {
         "minute_0": "{{count}} minuta",
-        "minute_1": "",
-        "minute_2": ""
+        "minute_1": "{{count}} minuty",
+        "minute_2": "{{count}} minut"
     },
     "connection": {
         "access_key": "Klucz dostępu",
@@ -1624,7 +1742,9 @@
             "centralized": "Zcentralizowane",
             "external": "Zewnętrzne",
             "local": "Lokalne",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "local_block_device": "Lokalne urządzenie blokowe",
+            "object_storage": "Pamięć obiektów"
         },
         "volume_config_header": {
             "name": "Imię",
@@ -1637,7 +1757,8 @@
             "current": "Aktualne",
             "id": "ID",
             "name": "Imię",
-            "path": "Ścieżka"
+            "path": "Ścieżka",
+            "storageType": "Typ pamięci"
         },
         "volume_indexer_header": {
             "current": "Aktualne",
@@ -1652,7 +1773,8 @@
         },
         "primary_helperText": "Pierwszorzędny",
         "secondary_helperText": "Drugorzędny",
-        "indexer_helperText": "Indeksowanie"
+        "indexer_helperText": "Indeksowanie",
+        "create_storage_volume": "Stwórz wolumin"
     },
     "have_not_setup_bucket_type": "Wygląda na to, że nie ustawiłeś typu bucketu",
     "click_new_bucket_button_to_create_new_one": "Kliknij przycisk NOWY BUCKET, aby stworzyć nowy.",
@@ -1819,5 +1941,18 @@
         "stopping_operation_model_title": "Zatrzymujesz operację {{OperationName}}",
         "stopping_operation_model_title_helperText": "Zatrzymujesz operację {{operationName}}"
     },
-    "new": "Nowy"
+    "new": "Nowy",
+    "modal": {
+        "iscurrent_confirm": {
+            "confirm_label": "TAK, KONTYNUUJ",
+            "secondary_label": "NIE, POWRÓT",
+            "title": "Ustawiasz {{name}} jako aktualny",
+            "body_message": "Aktualny {{type}} to {{currentVolumeName}}.<br />Czy na pewno chcesz <strong>ustawić {{name}} jako aktualny</strong>?"
+        }
+    },
+    "the_change_will_not_move_the_data": "Uwaga: Zmiana nie spowoduje przeniesienia danych!",
+    "this_will_not_affect_data_already_stored": "To nie będzie miało wpływu na obecnie przechowywane dane",
+    "warning": {
+        "is_current": "Musisz najpierw ustawić inny wolumin jako aktualny."
+    }
 }
