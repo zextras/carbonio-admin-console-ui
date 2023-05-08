@@ -761,7 +761,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t(
 											'label.max_manageable_account_for_the_domain',
-											'Max manageable account for the domain'
+											'Max manageable account for the domain (0=unlimited)'
 										)}
 										value={zimbraDomainMaxAccounts}
 										background="gray6"
@@ -772,7 +772,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t(
 											'label.max_mainbox_quota_for_the_domain_in_bytes',
-											'Max mailbox quota for the domain (bytes)'
+											'Max mailbox quota for the domain (bytes) (0=unlimited)'
 										)}
 										value={zimbraMailDomainQuota}
 										background="gray6"
