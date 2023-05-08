@@ -2051,6 +2051,11 @@ export const getRights = (rights: Rights, type: string): Array<Record<string, st
 	return right;
 };
 
+export const getAllRights = (rights: Rights, type: string): Right[] => {
+	const right = rights.filter((item: Right) => item?.type === type);
+	return right;
+};
+
 export function useLocalStorage<T>(key: string, initialValue: T): any {
 	const [storedValue, setStoredValue] = useState<T>(() => {
 		try {

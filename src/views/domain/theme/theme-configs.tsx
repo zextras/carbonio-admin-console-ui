@@ -18,8 +18,10 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import ListRow from '../../list/list-row';
-import { isValidHttpsUrl } from '../../utility/utils';
+import { getAllRights, isValidHttpsUrl } from '../../utility/utils';
 import { themeConfigStore } from '../../../../types/domain';
+import { CONFIG } from '../../../constants';
+import { Right, useRightsStore } from '../../../store/rights/store';
 
 const HttpsErrorMessage: FC = () => {
 	const [t] = useTranslation();
@@ -60,7 +62,8 @@ export const ThemeConfigs: FC<{
 	setThemeConfig: CallableFunction;
 	setIsValidated: CallableFunction;
 	onResetTheme: CallableFunction;
-}> = ({ themeConfig, setThemeConfig, setIsValidated, onResetTheme }) => {
+	isGlobalTheme?: boolean;
+}> = ({ themeConfig, setThemeConfig, setIsValidated, onResetTheme, isGlobalTheme = false }) => {
 	const [t] = useTranslation();
 
 	const [isValidCarbonioWebUiLoginLogo, setIsValidCarbonioWebUiLoginLogo] = useState<boolean>(true);
@@ -89,6 +92,31 @@ export const ThemeConfigs: FC<{
 	const [isValidCarbonioAdminUiFavicon, setIsValidCarbonioAdminUiFavicon] = useState<boolean>(true);
 	const [change, setChange] = useState('end_user');
 	const [click, setClick] = useState('');
+
+	const [hasModifyRights, setHasModifyRights] = useState<boolean>(false);
+	const rights = useRightsStore((state) => state.rights);
+
+	useEffect(() => {
+		if (rights && rights.length > 0 && isGlobalTheme) {
+			const allRights = getAllRights(rights, CONFIG);
+			if (allRights && allRights.length > 0) {
+				const right: Right = allRights[0];
+				if (
+					right?.all &&
+					Array.isArray(right?.all) &&
+					right?.all.length > 0 &&
+					right?.all[0].setAttrs &&
+					right?.all[0].setAttrs.length > 0
+				) {
+					right?.all[0].setAttrs.forEach((item: Record<string, unknown>) => {
+						if (item?.all && item?.all === true) {
+							setHasModifyRights(true);
+						}
+					});
+				}
+			}
+		}
+	}, [rights, isGlobalTheme]);
 
 	const items = [
 		{
@@ -198,6 +226,7 @@ export const ThemeConfigs: FC<{
 								(item: any) => item.value === themeConfig?.carbonioWebUiDarkMode
 							)}
 							onChange={onThemeModeChange}
+							disabled={isGlobalTheme && !hasModifyRights}
 						/>
 					</ListRow>
 					<ListRow>
@@ -217,6 +246,7 @@ export const ThemeConfigs: FC<{
 							value={themeConfig.carbonioLogoUrl}
 							inputName="carbonioLogoUrl"
 							onChange={onChangeDomainThemeDetail}
+							disabled={isGlobalTheme && !hasModifyRights}
 						/>
 					</ListRow>
 					<ListRow>
@@ -274,6 +304,7 @@ export const ThemeConfigs: FC<{
 								onChange={(e: any): any => {
 									onChangeDomainThemeDetail(e);
 								}}
+								disabled={isGlobalTheme && !hasModifyRights}
 							/>
 						</Container>
 						<Container padding={{ all: 'small' }}>
@@ -285,6 +316,7 @@ export const ThemeConfigs: FC<{
 								onChange={(e: any): any => {
 									onChangeDomainThemeDetail(e);
 								}}
+								disabled={isGlobalTheme && !hasModifyRights}
 							/>
 						</Container>
 					</ListRow>
@@ -349,6 +381,7 @@ export const ThemeConfigs: FC<{
 											value={themeConfig.carbonioWebUiTitle}
 											inputName="carbonioWebUiTitle"
 											onChange={onChangeDomainThemeDetail}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 									</Container>
 								</ListRow>
@@ -374,6 +407,7 @@ export const ThemeConfigs: FC<{
 											value={themeConfig.carbonioWebUiDescription}
 											inputName="carbonioWebUiDescription"
 											onChange={onChangeDomainThemeDetail}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 									</Container>
 								</ListRow>
@@ -462,6 +496,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioWebUiLoginLogo}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiLoginLogo && <HttpsErrorMessage />}
 									</Container>
@@ -481,6 +516,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioWebUiDarkLoginLogo}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiDarkLoginLogo && <HttpsErrorMessage />}
 									</Container>
@@ -532,6 +568,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioWebUiAppLogo}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiAppLogo && <HttpsErrorMessage />}
 									</Container>
@@ -551,6 +588,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioWebUiDarkAppLogo}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiDarkAppLogo && <HttpsErrorMessage />}
 									</Container>
@@ -596,6 +634,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioWebUiFavicon}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiFavicon && <HttpsErrorMessage />}
 									</Container>
@@ -671,6 +710,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioWebUiLoginBackground}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiLoginBackground && <HttpsErrorMessage />}
 									</Container>
@@ -690,6 +730,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioWebUiDarkLoginBackground}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiDarkLoginBackground && <HttpsErrorMessage />}
 									</Container>
@@ -737,6 +778,7 @@ export const ThemeConfigs: FC<{
 											value={themeConfig.carbonioAdminUiTitle}
 											inputName="carbonioAdminUiTitle"
 											onChange={onChangeDomainThemeDetail}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 									</Container>
 								</ListRow>
@@ -762,6 +804,7 @@ export const ThemeConfigs: FC<{
 											value={themeConfig.carbonioAdminUiDescription}
 											inputName="carbonioAdminUiDescription"
 											onChange={onChangeDomainThemeDetail}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 									</Container>
 								</ListRow>
@@ -850,6 +893,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioAdminUiLoginLogo}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiLoginLogo && <HttpsErrorMessage />}
 									</Container>
@@ -869,6 +913,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioAdminUiDarkLoginLogo}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiDarkLoginLogo && <HttpsErrorMessage />}
 									</Container>
@@ -920,6 +965,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioAdminUiAppLogo}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiAppLogo && <HttpsErrorMessage />}
 									</Container>
@@ -939,6 +985,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioAdminUiDarkAppLogo}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiDarkAppLogo && <HttpsErrorMessage />}
 									</Container>
@@ -984,6 +1031,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioAdminUiFavicon}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiFavicon && <HttpsErrorMessage />}
 									</Container>
@@ -1059,6 +1107,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioAdminUiBackground}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiBackground && <HttpsErrorMessage />}
 									</Container>
@@ -1078,6 +1127,7 @@ export const ThemeConfigs: FC<{
 												onChangeDomainThemeDetail(e);
 											}}
 											hasError={!isValidCarbonioAdminUiDarkBackground}
+											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiDarkBackground && <HttpsErrorMessage />}
 									</Container>
@@ -1099,6 +1149,7 @@ export const ThemeConfigs: FC<{
 									width="100%"
 									onClick={onResetTheme}
 									style={{ width: '100%' }}
+									disabled={isGlobalTheme && !hasModifyRights}
 								/>
 							</Padding>
 						</Container>
