@@ -468,7 +468,7 @@ const EditAccountGeneralSection: FC = () => {
 				</Row>
 			</Row>
 			<Modal
-				size="medium"
+				size="small"
 				title={t('account_details.delete_password', 'Delete Password', {
 					name: accountDetail?.givenName
 				})}
@@ -477,12 +477,12 @@ const EditAccountGeneralSection: FC = () => {
 					<Container orientation="horizontal" mainAlignment="flex-end">
 						<Row style={{ gap: '0.5rem' }}>
 							<Button
-								label={t('label.cancle_button', 'NO')}
+								label={t('label.no_go_back', 'No, go back')}
 								color="secondary"
 								onClick={(): void => setShowDeletePasswordModal(false)}
 							/>
 							<Button
-								label={t('label.delete_button', 'DELETE')}
+								label={t('label.yes_delete_it', 'Yes, delete it')}
 								color="error"
 								onClick={(): void => deleteUserPassword()}
 							/>
@@ -495,11 +495,11 @@ const EditAccountGeneralSection: FC = () => {
 				<Text
 					size={'extralarge'}
 					overflow="break-word"
-					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 1rem' }}
 				>
 					<Trans
-						i18nKey="account_details.delete_password_of_user"
-						defaults="You are deleting password of <bold>{{name}}</bold>. Are you sure you want to delete it?"
+						i18nKey="account_details.delete_password_of_user_ldap"
+						defaults="You are deleting the password of <bold>{{name}}</bold> from the LDAP. Are you sure you want to delete it?"
 						components={{ bold: <strong /> }}
 						values={{
 							name: accountDetail?.givenName
