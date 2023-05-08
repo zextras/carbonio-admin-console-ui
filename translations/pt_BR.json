@@ -221,7 +221,8 @@
             "emc_s3": "EMC S3",
             "openio_s3": "OpenIO S3",
             "scality_s3": "Scality S3",
-            "yandex_s3": "Yandex S3"
+            "yandex_s3": "Yandex S3",
+            "minio": "MinIO"
         },
         "invalid_compression_thresold": "Requer limiar de compressão",
         "invalid_prefix": "O prefixo não pode conter espaços. As letras permitidas são \"a-z\", \"A-Z\" e os caracteres especiais \"/-\".",
@@ -258,7 +259,9 @@
             "activation": "Ativação",
             "deactivate": "Desativar",
             "order_id": "Nº de licença",
-            "valid": "Válida"
+            "valid": "Válida",
+            "license_activated_successfully": "Licença ativada com sucesso",
+            "not_valid": "Não é válida"
         }
     },
     "domain": {
@@ -309,7 +312,10 @@
         "gal_change_mode_external": "Externo",
         "gal_change_mode_internal": "Interno",
         "unit_measure_days": "Dias",
-        "unit_measure_hours": "Horas"
+        "unit_measure_hours": "Horas",
+        "ldap": "LDAP",
+        "page_size": "Tamanho de página",
+        "unit_measure_milliseconds": "Milissegundos"
     },
     "label": {
         "account": "Conta",
@@ -434,7 +440,7 @@
         "domain_quota_settings": "Cotas de domínio",
         "deligated_admin_help_url": "URL de ajuda do Administrador delegado",
         "deleteing": "Excluindo ",
-        "delete_domain_with_account_content_msg": "{{domainName}} não está vazio: ele contém {{domainAccounts}} contas de sistema e {{domainAccounts}} contas de usuário. Tem certeza que deseja continuar?",
+        "delete_domain_with_account_content_msg": "O domínio {{domainName}} não está vazio: ele contém {{domainSystemAccounts}} contas de sistema e {{domainRegularAccounts}} contas de usuário. Tem certeza que deseja continuar?",
         "access_key": "Chave de acesso",
         "account_scan": "AccountScan",
         "actions": "Ações",
@@ -1137,7 +1143,92 @@
         "distribution_list": "Lista de distribuição",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salvar uma cópia das mensagens enviadas na pasta de Enviados do delegado",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas",
-        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na dos delegados"
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na dos delegados",
+        "accounts_groups": "Contas/grupos",
+        "allow_unsecure": "Permitir \"não seguro\"",
+        "attribute": "Atributo",
+        "backup_lbl": "<bold>Backup</bold>",
+        "here_will_be_shown_the_attribute_value": "Aqui será exibido o valor do atributo",
+        "primary_color_for_dark_mode": "Cor <bold>primário</bold> para o tema escuro",
+        "primary_color_hint": "Para alterar a cor primária, use o formato de código HEX.",
+        "saml_metadata_attribute_notes": "Importe alguns metadados SAML no campo acima para ver seus atributos",
+        "select_an_attribute_to_show_its_value": "Selecione um atributo para mostrar o valor",
+        "delete_domain_with_all_resources_close_domain": "Se não tiver certeza, você pode \"fechar\" o domínio para evitar qualquer outra interação, deixando todos os recursos disponíveis em caso de necessidade.",
+        "use_dn_password_to_bind_external_server": "Usar DN/senha para se vincular ao servidor externo",
+        "delete_domain_with_all_resources_msg": "O domínio {{domainName}} não está vazio e contém {{domainRegularAccounts}} contas de usuário, {{domainSystemAccounts}} contas de sistema, {{distributionList}} listas de distribuição, {{aliases}} aliases e {{resources}} recursos. Se você não tiver certeza, pode \"fechar\" o domínio para impedir qualquer outra interação, deixando todos os itens disponíveis, se necessário. Caso contrário, você pode excluir permanentemente todas as contas e itens do domínio. Essa operação não pode ser revertida.",
+        "bind_dn": "Vincular DN",
+        "bind_password": "Vincular senha",
+        "byte_lbl": "BYTE",
+        "change_to": "Mudar para",
+        "change_to_external": "Mudar para externo",
+        "change_to_internal": "Mudar para interno",
+        "changes_save_success_msg": "Suas alterações foram salvas!",
+        "class_of_service_lbl": "<bold>Classe de Serviço</bold>",
+        "close": "Fechar",
+        "close_domain": "Fechar domínio",
+        "color_code": "Código de cores",
+        "create_account_button": "Criar conta",
+        "create_account_name": "Criar nome de conta",
+        "create_galsync_account_success_msg": "Você criou o nome da conta da GALSync",
+        "delegate_send_settings": "Configurações de envio delegado",
+        "delete_account": "Tem certeza de que deseja excluir {{accountId}}?",
+        "delete_configuration": "Excluir configuração",
+        "delete_domain_with_all_resources_permanently_remove": "Caso contrário, você pode remover permanentemente todas as contas e objetos no domínio. Essa operação não pode ser revertida.",
+        "delete_domain_with_all_resources_post_msg": "Se não tiver certeza, você ainda pode \"fechar\" o domínio para evitar qualquer interação, deixando todos os recursos disponíveis em caso de necessidade. Caso contrário, você pode remover permanentemente todas as contas e objetos do domínio. Essa operação não pode ser revertida.",
+        "delete_domain_with_all_resources_pre_msg": "O domínio {{domainName}} não está vazio e contém",
+        "destroy": "Excluir",
+        "destroy_account": "Excluir",
+        "destroy_account_button": "Sim, excluir",
+        "dn_settings": "Configurações de DN",
+        "domain_close_success_msg": "O domínio foi fechado com sucesso",
+        "domains_lbl": "<bold>Domínios</bold>",
+        "entity_id": "ID da entidade",
+        "entity_id_copied": "ID da entidade copiado",
+        "export_configuration": "Exportar configurações",
+        "external_server_address": "Endereço do servidor externo",
+        "gal_update_freq_value": "Valor da frequência de atualização da GAL",
+        "frequency_value_also_updated": "O valor da frequência da GAL foi atualizado",
+        "gal_update_frequencey_value": "Valor da frequência de atualização da GAL",
+        "galsync_account": "Conta GALSync",
+        "generate_sp_certificate": "Gerar certificado SP",
+        "go_back_button": "Voltar",
+        "import": "Importar",
+        "import_saml_metadata_from_idp": "Importar os metadados SAML desde o IDP",
+        "inactive": "Inativo",
+        "keep_it_button": "Não, manter",
+        "ldap_filter": "Filtro LDAP",
+        "ldap_search_base": "Base de busca LDAP",
+        "ldap_url": "URL do LDAP",
+        "measure_unit": "Unidade de medida",
+        "model_label_create_account": "Criar conta",
+        "notification_lbl": "<bold>Notificações</bold>",
+        "operation_lbl": "<bold>Operações</bold>",
+        "personalisation": "Personalização",
+        "prefix_volume": "Prefixo - {{volumePrefix}}",
+        "primary_color_for_light_mode": "Cor <bold>Primário</bold> para o tema claro",
+        "privacy_lbl": "<bold>Privacidade</bold>",
+        "saml": "SAML",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Salvar uma cópia das mensagens somente na pasta Enviadas do delegado",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Salvar uma cópia das mensagens somente na pasta Enviadas do delegado",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Salvar uma cópia das mensagens somente na pasta Enviadas do delegado",
+        "select_attribute_to_show_its_value": "Selecione um atributo para mostrar o valor",
+        "server_type": "Tipo de servidor",
+        "service_url": "URL do serviço",
+        "service_url_copied": "URL do serviço copiado",
+        "storage_lbl": "<bold>Storage</bold>",
+        "storage_type": "Tipo de Storage",
+        "subscription_lbl": "<bold>Suscrições</bold>",
+        "system_account": "Contas do sistema",
+        "type_account_name_for_global_address_list": "Digite o nome da conta para a Lista de endereços global (GAL)",
+        "user_ssl": "Usar SSL",
+        "volume_detail_success": "Todas as alterações foram salvas com sucesso",
+        "you_have_added_attribute": "Você adicionou o atributo {{ attributeName }}",
+        "you_have_deleted_the_configuration": "A configuração foi excluída",
+        "you_have_exported_the_configuration": "A configuração foi exportada",
+        "you_have_generated_the_sp_certificate": "Você gerou o certificado SP",
+        "you_have_imported_the_configuration": "A configuração foi importada",
+        "you_have_removed_attribute": "Você removeu o atributo {{ attributeName }}",
+        "you_have_updated_attribute": "Você atualizou o atributo {{ attributeName }}"
     },
     "message": {
         "snackbar": {
@@ -1239,7 +1330,8 @@
         "bucket_configuration": "Configuração do Bucket",
         "local_mountpoint": "Ponto de montagem local",
         "manage_external_volume": "Gerenciar volume externo",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "Configuração do backup"
     },
     "cos": {
         "calendar_options": "Opções de calendário",
@@ -1392,7 +1484,8 @@
         "dark_mode": "Modo escuro",
         "activesync_remote_access": "Sincronização ActiveSync",
         "chats": "Chats",
-        "files": "Files"
+        "files": "Files",
+        "idp_configuration_saml_notes": "Acesse o seu provedor de identidade (IdP) para configurar o SAML e copiar os valores de EntityId e URL de serviço"
     },
     "welcome_to_carbonio": "Bem-vindo {{adminName}} ao Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Favor selecionar uma seção do menu da esquerda",
@@ -1403,7 +1496,8 @@
         "change_password_for_next_login": "Deve alterar a senha no próximo login",
         "enable_activeSync_remote_access": "Sincronização remota ActiveSync",
         "default_COS": "COS padrão",
-        "user_will_change_password_on_next_login": "O usuário precisará alterar a senha no próximo login"
+        "user_will_change_password_on_next_login": "O usuário precisará alterar a senha no próximo login",
+        "force_change_password": "Forçar mudança de senha"
     },
     "locale": {
         "English": "Inglês",
@@ -1582,7 +1676,31 @@
         "label": "Etiqueta",
         "remove": "Remover",
         "DELETE": "EXCLUIR",
-        "SAVE": "SALVAR"
+        "SAVE": "SALVAR",
+        "read_write": "Leitura/escrita",
+        "service_password": "Senha do serviço",
+        "services_passphrase_deleted_successfully": "Frase-passe excluida com sucesso",
+        "start_typing_account": "Comece a digitar uma conta/grupo para adicioná-la aos direitos",
+        "switch_simplified": "Alternar para a visualização simplificada",
+        "manage_no_rights_to_send_mails": "Administrar (sem direito de enviar emails)",
+        "remove_all": "Remover todas",
+        "send_on_behalf_of_check": "Enviar em nome de",
+        "services_passphrase": "Frase-passe do serviço",
+        "services_passphrase_created_successfully": "Frase-passe criada com sucesso",
+        "switch_advanced": "Alternar para a visualização avançada",
+        "able_to_see_password_once": " Observação: você poderá ver a senha <bold>apenas uma vez.</bold>",
+        "account_read_only_rights": "Essa conta tem direitos de <bold>somente leitura</bold> em",
+        "account_read_write_rights": "Essa conta tem direitos de <bold>leitura/escrita</bold> em",
+        "account_send_rights": "Essa conta tem direitos de <bold>envio</bold> em",
+        "account_with_read_only_rights": "Contas com direitos de <bold>somente leitura</bold>",
+        "account_with_read_write_rights": "Contas com direitos de <bold>leitura/escrita</bold>",
+        "account_with_send_rights": "Conta com direitos de <bold>Enviar como/Enviar em nome de</bold> em",
+        "add_the_account_group_with_selected_rights": "Adicionar conta/grupo com os direitos selecionados",
+        "i_have_copied_the_password": "Já copiei a senha",
+        "labels_password": "Senha de",
+        "passphrasaId": "ID da Frase-passe",
+        "password_allow_once_user_to_connect": "Essa senha permitirá que o usuário se conecte a esse serviço sem 2FA, mesmo em uma rede não confiável.",
+        "read_only": "Somente leitura"
     },
     "connection": {
         "access_key": "Chave de acesso",
@@ -1623,7 +1741,9 @@
             "centralized": "Centralizado",
             "external": "Externo",
             "local": "Local",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "local_block_device": "Dispositivo de bloco local",
+            "object_storage": "ObjectStorage"
         },
         "volume_config_header": {
             "name": "Nome",
@@ -1636,7 +1756,8 @@
             "current": "Atual",
             "id": "ID",
             "name": "Nome",
-            "path": "Caminho"
+            "path": "Caminho",
+            "storageType": "Tipo de Storage"
         },
         "volume_indexer_header": {
             "current": "Atual",
@@ -1651,7 +1772,8 @@
         },
         "indexer_helperText": "Indexador",
         "primary_helperText": "Primário",
-        "secondary_helperText": "Secundário"
+        "secondary_helperText": "Secundário",
+        "create_storage_volume": "Criar volume de armazenamento"
     },
     "click_new_bucket_button_to_create_new_one": "Clique no botão NOVO BUCKET para criar um.",
     "have_not_setup_bucket_type": "Parece que você não configurou ainda um Bucket",
@@ -1818,5 +1940,18 @@
         "load_and_verify_certificate": "Carregar e verificar certificado",
         "load_certificate": "CARREGAR CERTIFICADO"
     },
-    "new": "Novo"
+    "new": "Novo",
+    "warning": {
+        "is_current": "Você precisa definir outro volume como o atual."
+    },
+    "modal": {
+        "iscurrent_confirm": {
+            "body_message": "O {{type}}{{currentVolumeName}} atual. <br />Você tem certeza que quer <strong>definir {{name}} como atual</strong>?",
+            "confirm_label": "Sim, continuar",
+            "secondary_label": "Não, voltar",
+            "title": "Você está definindo {{name}} como atual"
+        }
+    },
+    "the_change_will_not_move_the_data": "A alteração não moverá os dados... !!!",
+    "this_will_not_affect_data_already_stored": "Isso não afetará os dados já armazenados"
 }

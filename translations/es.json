@@ -82,7 +82,8 @@
             "emc_s3": "EMC S3",
             "openio_s3": "OpenIO S3",
             "amazone_web_service_s3": "Amazon Web Service S3",
-            "scality_s3": "Scality S3"
+            "scality_s3": "Scality S3",
+            "minio": "MinIO"
         },
         "invalid_compression_thresold": "Requiere umbral de compresión",
         "invalid_volume_name": "Complete el campo con el nombre del volumen.",
@@ -139,7 +140,10 @@
         "unit_measure_hours": "Horas",
         "unit_measure_minutes": "Minutos",
         "unit_measure_seconds": "Segundos",
-        "gal_change_mode_internal": "Interno"
+        "gal_change_mode_internal": "Interno",
+        "ldap": "LDAP",
+        "page_size": "Tamaño de página",
+        "unit_measure_milliseconds": "Milisegundos"
     },
     "label": {
         "account": "Cuenta",
@@ -261,7 +265,7 @@
         "virtual_host_user_msg": "Los usuarios que inicien sesión utilizando alguna de las URLs de los hostnames listados abajo, se asumirá que están en el dominio {{domainName}}",
         "web_client": "Cliente web",
         "your_auth_method_is": "Su método de autenticación es",
-        "delete_domain_with_account_content_msg": "El dominio {{domainName}} no está vacío: contiene {{domainAccounts}} cuentas del sistema y {{domainAccounts}} cuentas de usuario. ¿Seguro que quiere continuar?",
+        "delete_domain_with_account_content_msg": "El dominio {{domainName}} no está vacío: contiene {{domainSystemAccounts}} cuentas del sistema y {{domainRegularAccounts}} cuentas de usuario. ¿Seguro que quiere continuar?",
         "mx_record_information_msg": "Si sus registros MX apuntan a un spam-relay o a cualquier otro servidor externo, introduzca el nombre de ese servidor en el campo \"Nombre del host del SMTP entrante\".",
         "virtual_host_info_msg": "Los hosts virtuales permiten definir un dominio predeterminado para el inicio de sesión de los usuarios.",
         "virtual_host_note": "Tenga en cuenta que la remoción de un Host Virtual tendrá efecto solo desupués de reiniciar el servidor.",
@@ -964,10 +968,95 @@
         "aliases": "Alias",
         "distribution_list": "Lista de distribución",
         "dont_save_a_copy_of_sent_messages": "No guardar copia de los mensajes enviados",
-        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Guardar una copia de los mensajes enviados en la carpeta Enviados del Delegado",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Guardar una copia de los mensajes en la carpeta Enviados de quien delega",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Guardar una copia de los mensajes en mi carpeta de Enviados",
-        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Guardar una copia de los mensajes enviados en mi carpeta Enviados y en la del delegado",
-        "value": "Valor"
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Guardar una copia de los mensajes en mi carpeta Enviados y en la del delegado",
+        "value": "Valor",
+        "delete_domain_with_all_resources_msg": "El dominio {{domainName}} no está vacío y contiene {{domainRegularAccounts}} cuentas de usuario, {{domainSystemAccounts}} cuentas del sistema, {{distributionList}} listas de distribución, {{aliases}} alias y {{resources}} recursos. Si no está seguro, puede \"cerrar\" el dominio para evitar cualquier interacción posterior, dejando todos los elementos disponibles en caso de necesidad. De lo contrario, puede eliminar permanentemente todas las cuentas y elementos del dominio. Esta operación no se puede revertir.",
+        "accounts_groups": "Cuentas/Grupos",
+        "allow_unsecure": "Permitir \"no seguro\"",
+        "attribute": "Atributo",
+        "backup_lbl": "<bold>Backup</bold>",
+        "bind_dn": "Vincular DN",
+        "bind_password": "Vincular contraseña",
+        "byte_lbl": "BYTE",
+        "change_to": "Cambiar a",
+        "change_to_external": "Cambiar a externo",
+        "change_to_internal": "Cambiar a interno",
+        "changes_save_success_msg": "¡Los cambis han sido guardados!",
+        "class_of_service_lbl": "<bold>Clase de servicio</bold>",
+        "close": "Cerrar",
+        "close_domain": "Cerrar dominio",
+        "color_code": "Código de colores",
+        "create_account_button": "Crear cuenta",
+        "create_account_name": "Crear nombre de cuenta",
+        "create_galsync_account_success_msg": "Se ha creado el nombre de cuenta de la GalSync",
+        "delegate_send_settings": "Ajustes de envío delegado",
+        "delete_account": "¿Está seguro que quiere eliminar {{accountId}}?",
+        "delete_configuration": "Eliminar configuración",
+        "delete_domain_with_all_resources_close_domain": "Si no está seguro, puede \"cerrar\" el dominio para evitar cualquier interacción posterior, dejando todos los recursos disponibles en caso de necesidad.",
+        "delete_domain_with_all_resources_permanently_remove": "De lo contrario, puede eliminar permanentemente todas las cuentas y elementos del dominio. Esta operación no se puede revertir.",
+        "delete_domain_with_all_resources_post_msg": "Si no está seguro, puede \"cerrar\" el dominio para evitar cualquier interacción posterior, dejando todos los elementos disponibles en caso de necesidad. De lo contrario, puede eliminar permanentemente todas las cuentas y elementos del dominio. Esta operación no se puede revertir.",
+        "delete_domain_with_all_resources_pre_msg": "El dominio {{domainName}} no está vacío y contiene",
+        "destroy": "Eliminar",
+        "destroy_account": "Eliminar",
+        "destroy_account_button": "Sí, eliminar",
+        "dn_settings": "Ajustes del DN",
+        "domain_close_success_msg": "El dominio ha sido cerrado",
+        "domains_lbl": "<bold>Dominios</bold>",
+        "entity_id": "ID de la entidad",
+        "entity_id_copied": "EntityID copiado",
+        "export_configuration": "Exportar configuración",
+        "external_server_address": "Dirección del servidor externo",
+        "frequency_value_also_updated": "El valor de la frecuencia de la GAL ha sido actualizado",
+        "gal_update_freq_value": "Valor de frecuencia de actualización de la GAL",
+        "gal_update_frequencey_value": "Valor de frecuencia de actualización de la GAL",
+        "galsync_account": "Cuenta GALSync",
+        "generate_sp_certificate": "Generar certificado SP",
+        "go_back_button": "Atrás",
+        "here_will_be_shown_the_attribute_value": "Aquí se mostrará el valor del atributo",
+        "import": "Importar",
+        "import_saml_metadata_from_idp": "Importar los metadatos SAML desde el IdP",
+        "inactive": "Inactivo",
+        "keep_it_button": "No, mantener",
+        "ldap_filter": "Filtro LDAP",
+        "ldap_search_base": "Base de búsqueda LDAP",
+        "ldap_url": "Url del LDAP",
+        "measure_unit": "Unidad de medida",
+        "model_label_create_account": "Crear cuenta",
+        "notification_lbl": "<bold>Notificaciones</bold>",
+        "operation_lbl": "<bold>Operaciones</bold>",
+        "personalisation": "Personalización",
+        "prefix_volume": "Prefijo - {{volumePrefix}}",
+        "primary_color_for_dark_mode": "Color <bold>primario</bold> del tema oscuro",
+        "primary_color_for_light_mode": "Color <bold>primario</bold> del tema claro",
+        "primary_color_hint": "Para cambiar el color primario, use el formato de códigos HEX.",
+        "privacy_lbl": "<bold>Privacidad</bold>",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "Importe algunos metadatos SAML en el campo de arriba para ver sus atributos",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Guardar una copia de los mensajes sólo en la carpeta Enviados del delegado",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Guardar una copia de los mensajes sólo en la carpeta Enviados del delegado",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Guardar una copia de los mensajes sólo en la carpeta Enviados del delegado",
+        "select_an_attribute_to_show_its_value": "Seleccione un atributo para mostrar el valor",
+        "select_attribute_to_show_its_value": "Seleccione un atributo para mostrar el valor",
+        "server_type": "Tipo de servidor",
+        "service_url": "URL del servicio",
+        "service_url_copied": "URL del servicio copiado",
+        "storage_lbl": "<bold>Storage</bold>",
+        "storage_type": "Tipo de Storage",
+        "subscription_lbl": "<bold>Suscripciones</bold>",
+        "system_account": "Cuentas del sistema",
+        "type_account_name_for_global_address_list": "Ingrese el nombre de la cuenta para la GAL",
+        "use_dn_password_to_bind_external_server": "Usar DN/contraseña para vincular a un servidor externo",
+        "user_ssl": "Usar SSL",
+        "volume_detail_success": "Los cambios han sido guardados",
+        "you_have_added_attribute": "Se ha añadido el atributo {{ attributeName }}",
+        "you_have_deleted_the_configuration": "Se ha eliminado la configuración",
+        "you_have_exported_the_configuration": "La configuración ha sido exportada",
+        "you_have_generated_the_sp_certificate": "El certificado SP ha sido generado",
+        "you_have_imported_the_configuration": "La configuración ha sido importada",
+        "you_have_removed_attribute": "El atributo {{ attributeName }} ha sido removido",
+        "you_have_updated_attribute": "El atributo {{ attributeName }} ha sido actualizado"
     },
     "timezone": {
         "indian_mauritius": "{{value}} Port Louis",
@@ -1136,7 +1225,9 @@
             "activation": "Activación",
             "deactivate": "Desactivar",
             "order_id": "Nº de licencia",
-            "valid": "Válida"
+            "valid": "Válida",
+            "license_activated_successfully": "La licencia ha sido activada",
+            "not_valid": "No es válida"
         }
     },
     "message": {
@@ -1239,7 +1330,8 @@
         "local_mountpoint": "Punto de montaje local",
         "bucket_configuration": "Configuración del Bucket",
         "manage_external_volume": "Administrar volumen externo",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "Configuración del Backup"
     },
     "cos": {
         "calendar_options": "Opciones del calendario",
@@ -1392,7 +1484,8 @@
         "active_sync": "ActiveSync",
         "activesync_remote_access": "Sincronización ActiveSync",
         "chats": "Chats",
-        "files": "Files"
+        "files": "Files",
+        "idp_configuration_saml_notes": "Acceda a su proveedor de identidades (IdP) para configurar SAML y copie los valores del EntityId y service URL"
     },
     "select_section_from_left_menu": "Elija una sección del menú de la izquierda",
     "select_cos_or_create_new_cos": "Seleccione una Clase de Servicio para administrarla, o haga clic en el botón \"Crear\" para añadir una nueva.",
@@ -1403,7 +1496,8 @@
         "enable_activeSync_remote_access": "Sincronización remota ActiveSync",
         "default_COS": "COS por defecto",
         "change_password_for_next_login": "Forzar cambio de contraseña en el siguiente inicio de sesión",
-        "user_will_change_password_on_next_login": "El usuario deberá cambiar la contraseña en el siguiente inicio de sesión"
+        "user_will_change_password_on_next_login": "El usuario deberá cambiar la contraseña en el siguiente inicio de sesión",
+        "force_change_password": "Forzar cambio de contraseña"
     },
     "locale": {
         "English": "Inglés",
@@ -1595,7 +1689,31 @@
         "remove": "Eliminar",
         "send_check": "Enviar",
         "status": "Estado",
-        "services": "Servicios"
+        "services": "Servicios",
+        "able_to_see_password_once": " Importante: solo podrá ver la contraseña <bold>una vez.</bold>",
+        "account_read_only_rights": "Esta cuenta tiene permiso de <bold>solo lectura</bold> en",
+        "account_read_write_rights": "Esta cuenta tiene permiso de <bold>lectura/escritura</bold> en",
+        "account_send_rights": "Esta cuenta tiene permiso de<bold>envío</bold> en",
+        "account_with_read_only_rights": "Cuentas con derecho de <bold>solo lectura</bold>",
+        "account_with_read_write_rights": "Cuentas con derecho de <bold>lectura/escritura</bold>",
+        "account_with_send_rights": "Cuenta con derecho de <bold>envíar como/enviar en nombre de</bold>",
+        "i_have_copied_the_password": "He copiado la contraseña",
+        "add_the_account_group_with_selected_rights": "Añadir cuenta/grupo con los derechos seleccionados",
+        "labels_password": "Contraseña de",
+        "manage_no_rights_to_send_mails": "Administrar (sin derecho a enviar mails)",
+        "passphrasaId": "ID de frase de contraseña",
+        "password_allow_once_user_to_connect": "Esta contraseña permitirá al usuario conectarse a este servicio sin el 2FA incluso desde una red que no sea de confianza.",
+        "read_only": "Solo lectura",
+        "read_write": "Lectura/escritura",
+        "remove_all": "Remover todas",
+        "send_on_behalf_of_check": "Enviar en nombre de",
+        "service_password": "Contraseña del servicio",
+        "services_passphrase": "Frase de contraseña del servicio",
+        "services_passphrase_created_successfully": "Frase de contraseña creada correctamente",
+        "services_passphrase_deleted_successfully": "Frase de contraseña del servicio eliminada",
+        "start_typing_account": "Comience a escribir una cuenta/grupo para agregarlo a los derechos",
+        "switch_advanced": "Cambiar a la vista avanzada",
+        "switch_simplified": "Cambiar a la vista simplificada"
     },
     "connection": {
         "access_key": "Clave de acceso",
@@ -1624,7 +1742,9 @@
             "centralized": "Centralizado",
             "external": "Externo",
             "local": "Local",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "local_block_device": "Dispositivo de bloque local",
+            "object_storage": "ObjectStorage"
         },
         "volume_config_header": {
             "name": "Nombre",
@@ -1637,7 +1757,8 @@
             "current": "Actual",
             "name": "Nombre",
             "path": "Ruta",
-            "id": "ID"
+            "id": "ID",
+            "storageType": "Tipo de Storage"
         },
         "volume_indexer_header": {
             "current": "Actual",
@@ -1652,7 +1773,8 @@
         },
         "primary_helperText": "Principal",
         "secondary_helperText": "Secundario",
-        "indexer_helperText": "Indexador"
+        "indexer_helperText": "Indexador",
+        "create_storage_volume": "Crear volumen de almacenamiento"
     },
     "click_new_bucket_button_to_create_new_one": "Haga clic en el botón NUEVO BUCKET para crearlo.",
     "have_not_setup_bucket_type": "No se ha configurado ningún Bucket aún",
@@ -1819,5 +1941,18 @@
     },
     "welcome_to_carbonio_information": "¡Bienvenido a Carbonio, {{adminName}}!",
     "cumminity_edition": "¡Community Edition!",
-    "new": "Nuevo"
+    "new": "Nuevo",
+    "modal": {
+        "iscurrent_confirm": {
+            "body_message": "El {{type}} {{currentVolumeName}} actual.<br />¿Está seguro que quiere <strong>definir {{name}} como actual</strong>?",
+            "confirm_label": "Sí, proceder",
+            "secondary_label": "No, atrás",
+            "title": "Está estableciendo {{name}} como actual"
+        }
+    },
+    "the_change_will_not_move_the_data": "¡Este cambio no moverá ningún dato!",
+    "this_will_not_affect_data_already_stored": "Este cambio no afectará los datos almacenados",
+    "warning": {
+        "is_current": "Ya se ha establecido otro volumen como Actual."
+    }
 }

@@ -27,7 +27,9 @@
             "activation": "有効化",
             "activate": "有効にする",
             "order_id": "オーダーID",
-            "valid": "有効"
+            "valid": "有効",
+            "license_activated_successfully": "ライセンスが有効化されました",
+            "not_valid": "有効ではありません"
         }
     },
     "timezone": {
@@ -252,7 +254,8 @@
             "yandex_s3": "Yandex S3",
             "emc_s3": "EMC S3",
             "openio_s3": "OpenIO S3",
-            "scality_s3": "Scality S3"
+            "scality_s3": "Scality S3",
+            "minio": "Minio"
         },
         "invalid_volume_name": "ボリューム名欄に入力してください。",
         "invalid_volume_path": "ボリュームパスは必須です",
@@ -309,7 +312,10 @@
         "unit_measure_days": "日",
         "unit_measure_hours": "時間",
         "unit_measure_minutes": "分",
-        "unit_measure_seconds": "秒"
+        "unit_measure_seconds": "秒",
+        "page_size": "ページサイズ",
+        "ldap": "LDAP",
+        "unit_measure_milliseconds": "ミリ秒"
     },
     "label": {
         "account": "アカウント",
@@ -580,7 +586,7 @@
         "servers_list": "サーバーリスト",
         "deligated_admin_help_url": "委任された管理者ヘルプURL",
         "deleting_cos_msg": "<bold>{{cosname}}</bold>を削除しています",
-        "delete_domain_with_account_content_msg": "{{domainName}}は空ではありません: {{domainAccounts}}システムアカウントと{{domainAccounts}}通常のアカウントが含まれています。本当に 削除しますか？",
+        "delete_domain_with_account_content_msg": "{{domainName}}は空ではありません: {{domainSystemAccounts}}システムアカウントと{{domainRegularAccounts}}通常のアカウントが含まれています。本当に 削除しますか？",
         "delete_domain_success_msg": "ドメインが削除されました",
         "delete_domain_error_msg": "{{domainName}}を削除しています。本当に{{domainName}}を削除しますか？",
         "delete_domain": "ドメインを削除する",
@@ -1121,7 +1127,7 @@
         "logo_redirection": "ロゴのリダイレクト",
         "logo_redirection_title": "ロゴをクリックすると、ユーザーは次の場所にリダイレクトされます…",
         "sort_by_total_quota": "総クォータで並べ替える",
-        "backup_primarybar_tooltip": "<bold>バックアップ サービス、表示<bold>、ステータス</bold>、</bold>、<bold>サーバーのリスト</bold>、<bold>既存のサービスのインポート</bold>を管理します。",
+        "backup_primarybar_tooltip": "<bold>バックアップ サービス、表示<bold>ステータス</bold>、</bold>、<bold>サーバーのリスト</bold>、<bold>既存のバックアップ</bold>を管理します。",
         "cos_primarybar_tooltip": "<bold>サービス クラス</bold>、<bold>機能、サーバープール</bold>、および<bold>詳細</bold>設定を表示および管理します。",
         "delegates": "代理人",
         "notification_primarybar_tooltip": "<bold>通知</bold>を表示し、<bold>既読</bold>または<bold>コピー</bold>としてマークして共有します。",
@@ -1137,7 +1143,92 @@
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "送信済みメッセージのコピーを代表者の送信済みフォルダに保存します",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "送信済みメッセージのコピーを送信済みフォルダに保存します",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "送信済みメッセージのコピーを送信済みフォルダと代表者のフォルダに保存します",
-        "value": "価"
+        "value": "価",
+        "allow_unsecure": "非セキュアを許可",
+        "attribute": "属性",
+        "backup_lbl": "<bold>バックアップ</bold>",
+        "bind_dn": "バインドDN",
+        "byte_lbl": "BYTB",
+        "change_to": "変更",
+        "change_to_external": "外部への変更",
+        "change_to_internal": "内部への変更",
+        "changes_save_success_msg": "変更内容が保存されました！",
+        "class_of_service_lbl": "<bold>サービスクラス</bold>",
+        "close": "閉じる",
+        "color_code": "カラーコード",
+        "create_account_name": "アカウント名を作成する",
+        "delegate_send_settings": "代理送信の設定",
+        "delete_account": "本当に {{accountId}} を破棄しますか？",
+        "delete_configuration": "構成を削除する",
+        "destroy": "破棄する",
+        "destroy_account": "破棄する",
+        "destroy_account_button": "はい、破棄します",
+        "dn_settings": "DN設定",
+        "domain_close_success_msg": "ドメインが閉鎖されました",
+        "domains_lbl": "<bold>ドメイン</bold>",
+        "entity_id": "エンティティ ID",
+        "entity_id_copied": "エンティティIDをコピーしました",
+        "export_configuration": "構成のエクスポート",
+        "external_server_address": "外部サーバーのアドレス",
+        "gal_update_freq_value": "GAL更新頻度の値",
+        "gal_update_frequencey_value": "GAL更新頻度の値",
+        "galsync_account": "GALSyncアカウント",
+        "generate_sp_certificate": "SP証明書の生成",
+        "go_back_button": "戻る",
+        "here_will_be_shown_the_attribute_value": "ここに属性値が表示されます",
+        "import": "インポート",
+        "import_saml_metadata_from_idp": "IDPからSAMLメタデータをインポートする",
+        "inactive": "非アクティブ化",
+        "keep_it_button": "いいえ、保存します",
+        "ldap_filter": "LDAPフィルター",
+        "ldap_url": "LDAP Url",
+        "notification_lbl": "<bold>通知</bold>",
+        "operation_lbl": "<bold>操作</bold>",
+        "primary_color_for_dark_mode": "ダークモードの<bold>プライマリー</bold>カラー",
+        "primary_color_for_light_mode": "ライトモードの<bold>プライマリー</bold>カラー",
+        "privacy_lbl": "<bold>プライマリー</bold>",
+        "saml": "SAML",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "送信済みメッセージのコピーを委任先の送信フォルダーにのみ保存する",
+        "select_attribute_to_show_its_value": "属性を選択してその値を表示します",
+        "server_type": "サーバーの種類",
+        "service_url": "サーバーのURL",
+        "service_url_copied": "サーバーのURLをコピーしました",
+        "storage_lbl": "<bold>ストレージ</bold>",
+        "subscription_lbl": "<bold>サブスクリプション</bold>",
+        "system_account": "システムアカウント",
+        "you_have_deleted_the_configuration": "構成を削除しました",
+        "you_have_generated_the_sp_certificate": "SP証明書を生成しました",
+        "you_have_imported_the_configuration": "構成をインポートしました",
+        "you_have_removed_attribute": "{{ attributeName }} 属性を削除しました",
+        "you_have_updated_attribute": "{{ attributeName }} 属性を更新しました",
+        "bind_password": "バインドパスワード",
+        "close_domain": "ドメインを閉じる",
+        "create_account_button": "アカウントを作成する",
+        "create_galsync_account_success_msg": "GALSyncアカウント名を作成しました",
+        "accounts_groups": "アカウント/グループ",
+        "delete_domain_with_all_resources_close_domain": "よくわからない場合は、必要に応じてすべてのリソースを利用できるようにし、それ以上のやり取りを避けるためにドメインを「閉じる」ことができます。",
+        "delete_domain_with_all_resources_msg": "ドメイン {{domainName}} は空ではなく、{{domainRegularAccounts}} アカウント、{{domainSystemAccounts}} システム アカウント、{{distributionList}} 配布リスト、{{aliases}} エイリアス、{{resources}} リソースを含んでいます。よくわからない場合は、必要に応じてすべてのリソースを利用できるようにし、それ以上のやり取りを避けるためにドメインを「閉じる」ことができます。それ以外の場合は、すべてのアカウントとドメインオブジェクトを完全に削除できます。この操作は元に戻せません。",
+        "delete_domain_with_all_resources_permanently_remove": "それ以外の場合は、すべてのアカウントとドメインオブジェクトを完全に削除できます。この操作は元に戻せません。",
+        "delete_domain_with_all_resources_post_msg": "よくわからない場合は、必要に応じてすべてのリソースを利用できるようにし、それ以上のやり取りを避けるためにドメインを「閉じる」ことができます。それ以外の場合は、すべてのアカウントとドメイン オブジェクトを完全に削除できます。この操作は元に戻せません。",
+        "ldap_search_base": "LDAP検索ベース",
+        "measure_unit": "測定単位",
+        "delete_domain_with_all_resources_pre_msg": "ドメイン {{domainName}} は空ではなく、埋まっています",
+        "frequency_value_also_updated": "GAL頻度の値が更新されました",
+        "personalisation": "カスタマイズ",
+        "primary_color_hint": "プライマリーカラーを変更するには、プレースホルダー形式のようにHEXカラーコードを使用してください。",
+        "model_label_create_account": "アカウントを作成する",
+        "prefix_volume": "プレフィックス - {{volumePrefix}}",
+        "saml_metadata_attribute_notes": "属性を表示するには、上のフィールドにSAMLメタデータをインポートしてください",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "送信済みメッセージのコピーを代理人の送信フォルダーにのみ保存する",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "送信済みメッセージのコピーを代理人および委任先の送信フォルダーに保存する",
+        "storage_type": "ストレージの種類",
+        "type_account_name_for_global_address_list": "グローバルアドレス一覧 (GAL) のアカウント名を入力します",
+        "select_an_attribute_to_show_its_value": "属性を選択してその値を表示します",
+        "use_dn_password_to_bind_external_server": "DN/パスワードを使用して外部サーバーにバインドする",
+        "user_ssl": "SSLを使用する",
+        "volume_detail_success": "すべての変更内容が保存されました",
+        "you_have_added_attribute": "{{ attributeName }} 属性を追加しました",
+        "you_have_exported_the_configuration": "構成をエクスポートしました"
     },
     "message": {
         "snackbar": {
@@ -1226,7 +1317,8 @@
         "bucket_configuration": "バケット構成",
         "local_mountpoint": "ローカルマウントポイント",
         "manage_external_volume": "外部ボリュームの管理",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "バックアップ構成"
     },
     "cos": {
         "calendar_options": "カレンダーのオプション",
@@ -1379,7 +1471,8 @@
         "active_sync": "ActiveSync",
         "activesync_remote_access": "ActiveSync リモートアクセス",
         "chats": "チャット",
-        "files": "ファイル"
+        "files": "ファイル",
+        "idp_configuration_saml_notes": "IDPに移動してSAMLを構成し、entityidとserviceurlの値をコピーします"
     },
     "locale": {
         "English": "英語",
@@ -1418,7 +1511,8 @@
         "enable_activeSync_remote_access": "ActiveSyncリモートアクセスを有効にする",
         "default_COS": "デフォルトのCOS",
         "change_password_for_next_login": "次回のログイン時にパスワードを変更する必要があります",
-        "user_will_change_password_on_next_login": "ユーザーは次回のログイン時にパスワードを変更します"
+        "user_will_change_password_on_next_login": "ユーザーは次回のログイン時にパスワードを変更します",
+        "force_change_password": "パスワードの強制変更"
     },
     "create_new_domain": "新しいドメインを作成する",
     "create_new_cos": "新しいCOSを作成する",
@@ -1593,7 +1687,31 @@
         "remove": "削除する",
         "send_check": "送信",
         "services": "サービス",
-        "status": "状態"
+        "status": "状態",
+        "able_to_see_password_once": " 注意: パスワードは<bold>一度だけ</bold>表示されます",
+        "account_read_only_rights": "このアカウントには<bold>読み取り専用</bold>権限があります",
+        "account_read_write_rights": "このアカウントには<bold>読み取り/書き込み</bold>権限があります",
+        "account_send_rights": "このアカウントには <bold>送信</bold>権限があります",
+        "account_with_read_only_rights": "<bold>読み取り専用</bold>権限を持つアカウント",
+        "account_with_read_write_rights": "<bold>読み取り/書き込み</bold>権限を持つアカウント",
+        "account_with_send_rights": "<bold>送信/代理送信</bold>権限を持つアカウント",
+        "add_the_account_group_with_selected_rights": "選択した権利を持つアカウント/グループを追加",
+        "i_have_copied_the_password": "パスワードをコピーしました",
+        "labels_password": "のパスワード",
+        "manage_no_rights_to_send_mails": "管理 (メールを送信する権限なし)",
+        "passphrasaId": "パスフレーズ ID",
+        "password_allow_once_user_to_connect": "このパスワードにより、ユーザーは信頼できないネットワークからでも2FAなしでこのサービスにアクセスできます。",
+        "read_only": "読み取り専用",
+        "read_write": "読み取り/書き込み",
+        "remove_all": "すべて削除する",
+        "send_on_behalf_of_check": "代理送信",
+        "service_password": "サービスパスワード",
+        "services_passphrase": "サービスパスフレーズ",
+        "services_passphrase_created_successfully": "サービスパスフレーズが作成されました",
+        "services_passphrase_deleted_successfully": "サービス パスフレーズが削除されました",
+        "start_typing_account": "アカウント/グループの入力を開始して、権限に追加します",
+        "switch_advanced": "詳細ビューに切り替える",
+        "switch_simplified": "簡易表示に切り替える"
     },
     "connection": {
         "access_key": "アクセスキー",
@@ -1614,7 +1732,8 @@
             "id": "ID",
             "name": "名前",
             "compression": "圧縮",
-            "path": "パス"
+            "path": "パス",
+            "storageType": "ストレージの種類"
         },
         "server_list_header": {
             "description": "説明",
@@ -1630,7 +1749,9 @@
             "centralized": "一元化されました",
             "external": "外部",
             "local": "ローカル",
-            "sproxy": "プロキシ"
+            "sproxy": "プロキシ",
+            "object_storage": "オブジェクトストレージ",
+            "local_block_device": "ローカル ブロック デバイス"
         },
         "volume_config_header": {
             "name": "名前",
@@ -1651,7 +1772,8 @@
         },
         "primary_helperText": "プライマリー",
         "secondary_helperText": "セカンダリー",
-        "indexer_helperText": "インデクサー"
+        "indexer_helperText": "インデクサー",
+        "create_storage_volume": "ストレージボリュームを作成する"
     },
     "click_new_bucket_button_to_create_new_one": "[新しいバケット]をクリックして新しいバケットを作成します。",
     "hsm": {
@@ -1817,5 +1939,18 @@
     },
     "welcome_to_carbonio_information": "{{adminName}}、Carbonio にようこそ！",
     "select_bucket_or_create_bucket": "バケットタイプを設定していないようです。\n []CREATE +]をクリックして、新規で作成してください。",
-    "new": "新規作成"
+    "new": "新規作成",
+    "modal": {
+        "iscurrent_confirm": {
+            "confirm_label": "はい、続行する",
+            "secondary_label": "いいえ、戻る",
+            "title": "{{name}}を現行として設定しています",
+            "body_message": "現在の{{type}} {{currentVolumeName}}です。本当に<br /><strong>{{name}}を現在のボリュームとして設定</strong>しますか？"
+        }
+    },
+    "this_will_not_affect_data_already_stored": "これは、すでに保存されているデータには影響しません",
+    "the_change_will_not_move_the_data": "変更してもデータは移動しません… !!",
+    "warning": {
+        "is_current": "以前に別のボリュームを現在のボリュームとして設定する必要があります。"
+    }
 }

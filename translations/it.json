@@ -119,7 +119,9 @@
             "activation": "Attivazione",
             "deactivate": "Disattiva",
             "order_id": "Id Ordine",
-            "valid": "Valida"
+            "valid": "Valida",
+            "license_activated_successfully": "Licenza attivata con successo",
+            "not_valid": "Non valido"
         }
     },
     "domain": {
@@ -170,7 +172,10 @@
         "unit_measure_days": "Giorni",
         "unit_measure_hours": "Ore",
         "unit_measure_minutes": "Minuti",
-        "unit_measure_seconds": "Secondi"
+        "unit_measure_seconds": "Secondi",
+        "ldap": "LDAP",
+        "page_size": "Dimensione pagina",
+        "unit_measure_milliseconds": "Millisecondi"
     },
     "label": {
         "account": "Profilo",
@@ -438,7 +443,7 @@
         "create_new_cos": "Crea Nuova COS",
         "connector_is_not_created_and_verification_failed": "CONNETTORE NON CREATO E VERIFICA FALLITA",
         "deleteing": "Eliminazione ",
-        "delete_domain_with_account_content_msg": "{{domainName}} non è vuoto: contiene {{domainAccounts}} account di sistema e {{domainAccounts}} account normali. Vuoi procedere con l'eliminazione?",
+        "delete_domain_with_account_content_msg": "{{domainName}} non è vuoto: contiene {{domainSystemAccounts}} account di sistema e {{domainRegularAccounts}} account normali. Vuoi procedere con l'eliminazione?",
         "delete_cos_succeess": "{{cosname}} è stata eliminata con successo",
         "delete_cos_instruction_msg": "Se clicchi il bottone \"SÌ,ELIMINA\", la COS predefinita sostituirà la COS eliminata.",
         "enter_email_address": "Inserisci indirizzo e-mail",
@@ -993,7 +998,63 @@
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salva una copia dei messaggi inviati della cartella dei messaggi inviati del delegato",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Salva una copia dei messaggi inviati nella mia cartella \"Inviato\"",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salva una copia dei messaggi inviati sia nella mia cartella dei messaggi inviati che in quella del delegato",
-        "value": "Valore"
+        "value": "Valore",
+        "import": "IMPORTA",
+        "import_saml_metadata_from_idp": "Importa i metadati SAML dall'IDP",
+        "accounts_groups": "Account / Gruppi",
+        "attribute": "Attributo",
+        "backup_lbl": "<bold>Backup</bold>",
+        "byte_lbl": "BYTE",
+        "change_to": "MODIFICA IN",
+        "changes_save_success_msg": "Modifiche salvate!",
+        "class_of_service_lbl": "<bold>Classe di Servizio</bold>",
+        "close": "CHIUDI",
+        "close_domain": "CHIUDI DOMINIO",
+        "color_code": "Codice colore",
+        "create_account_button": "CREA ACCOUNT",
+        "create_account_name": "CREA NOME ACCOUNT",
+        "delete_configuration": "ELIMINA CONFIGURAZIONE",
+        "delete_domain_with_all_resources_permanently_remove": "In caso contrario, è possibile rimuovere permanentemente tutti gli account e gli oggetti di dominio. Questa operazione è irreversibile.",
+        "delete_domain_with_all_resources_pre_msg": "Il dominio {{domainName}} non è vuoto e contiene",
+        "dn_settings": "Impostazioni DN",
+        "domains_lbl": "<bold>Domini</bold>",
+        "entity_id_copied": "EntityID copiato",
+        "export_configuration": "ESPORTA CONFIGURAZIONE",
+        "external_server_address": "Indirizzo Server Esterno",
+        "frequency_value_also_updated": "Il valore di frequenza della GAL è stato aggiornato",
+        "generate_sp_certificate": "GENERA CERTIFICATO SP",
+        "go_back_button": "INDIETRO",
+        "inactive": "Inattivo",
+        "keep_it_button": "NO, MANTIENI",
+        "ldap_filter": "Filtro LDAP",
+        "ldap_url": "Url LDAP",
+        "logo_redirection": "Reindirizzamento Logo",
+        "model_label_create_account": "Crea Account",
+        "notification_lbl": "<bold>Notifiche</bold>",
+        "operation_lbl": "<bold>Operazioni</bold>",
+        "prefix_volume": "Prefisso - {{volumePrefix}}",
+        "primary_color_for_dark_mode": "Colore <bold>primario</bold> per il tema scuro",
+        "primary_color_for_light_mode": "Colore <bold>primario</bold> per il tema chiaro",
+        "privacy_lbl": "<bold>Privacy</bold>",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "Si prega di importare alcuni metadati SAML nel campo sopra per vedere i suoi attributi",
+        "select_an_attribute_to_show_its_value": "Seleziona un attributo per visualizzarne il valore",
+        "select_attribute_to_show_its_value": "Seleziona un attributo per visualizzarne il valore",
+        "server_type": "Tipo di server",
+        "storage_lbl": "<bold>Storage</bold>",
+        "storage_type": "Tipo di storage",
+        "subscription_lbl": "<bold>Sottoscrizione</bold>",
+        "system_account": "Account di sistema",
+        "type_account_name_for_global_address_list": "Digita il nome dell'account dell'elenco indirizzi globale (GAL)",
+        "user_ssl": "Usa SSL",
+        "volume_detail_success": "Tutte le modifiche sono state salvate con successo",
+        "you_have_added_attribute": "Hai aggiunto l'attributo {{ attributeName }}",
+        "you_have_deleted_the_configuration": "Hai eliminato la configurazione",
+        "you_have_exported_the_configuration": "Hai esportato la configurazione",
+        "you_have_generated_the_sp_certificate": "Hai generato il certificato SP",
+        "you_have_imported_the_configuration": "Hai importato la configurazione",
+        "you_have_removed_attribute": "Hai rimosso l'attributo {{ attributeName }}",
+        "you_have_updated_attribute": "Hai aggiornato l'attributo {{ attributeName }}"
     },
     "message": {
         "snackbar": {
@@ -1233,7 +1294,8 @@
         "bucket_configuration": "Configurazione Bucket",
         "manage_external_volume": "Gestisci volume esterno",
         "ms": "MS",
-        "local_mountpoint": "Mountpoint Locale"
+        "local_mountpoint": "Mountpoint Locale",
+        "backup_configuration": "configurazione backup"
     },
     "cos": {
         "maximum_number_of_items_to_display_per_page": "Numero massimo di elementi da visualizzare per pagina",
@@ -1588,7 +1650,17 @@
         "SAVE": "SALVA",
         "create": "CREA",
         "label": "Etichetta",
-        "services": "Servizi"
+        "services": "Servizi",
+        "able_to_see_password_once": " Attenzione: sarà possibile visualizzare la password solo <bold>una volta.</bold>",
+        "account_read_only_rights": "Questo account ha i permessi di <bold>Sola lettura</bold> su",
+        "account_send_rights": "Questo account ha i permessi di <bold>Invio</bold> su",
+        "account_with_read_only_rights": "Account che hanno permessi di <bold>Sola lettura</bold>",
+        "account_with_send_rights": "Account che hanno permessi di<bold>Invia come/Invia per conto di</bold>",
+        "add_the_account_group_with_selected_rights": "AGGIUNGI ACCOUNT/ GRUPPO AVENTE I PERMESSI SELEZIONATI",
+        "manage_no_rights_to_send_mails": "Gestisci (nessun diritto di invio di e-mail)",
+        "passphrasaId": "ID passphrase",
+        "password_allow_once_user_to_connect": "Questa password consentirà all'utente di connettersi al servizio senza l'utilizzo di autenticazione 2FA anche da una rete non attendibile.",
+        "read_only": "Sola lettura"
     },
     "connection": {
         "access_key": "Chiave d'Accesso",
@@ -1626,7 +1698,8 @@
             "current": "Corrente",
             "id": "ID",
             "name": "Nome",
-            "path": "Percorso"
+            "path": "Percorso",
+            "storageType": "Tipo di storage"
         },
         "volume_indexer_header": {
             "current": "Corrente",
@@ -1647,7 +1720,8 @@
         },
         "indexer_helperText": "Indexer",
         "primary_helperText": "Primario",
-        "secondary_helperText": "Secondario"
+        "secondary_helperText": "Secondario",
+        "create_storage_volume": "Crea volume storage"
     },
     "hsm": {
         "all": "Tutto",
@@ -1811,5 +1885,12 @@
         "load_and_verify_certificate": "Carica e Verifica certificato",
         "load_certificate": "CARICA CERTIFICATO"
     },
-    "new": "Nuovo"
+    "new": "Nuovo",
+    "modal": {
+        "iscurrent_confirm": {
+            "confirm_label": "SÌ, PROCEDI",
+            "secondary_label": "NO, INDIETRO"
+        }
+    },
+    "this_will_not_affect_data_already_stored": "Ciò non influirà sui dati già salvati"
 }

@@ -879,7 +879,7 @@
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Сохранять копии отправленных сообщений в папке «Отправленные»",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Сохранять копии отправленных сообщений в папке «Отправленные» и в папке делегата",
         "accounts_groups": "Учетные записи/Группы",
-        "allow_unsecure": "Разрешить незащищенный",
+        "allow_unsecure": "Разрешить небезопасные",
         "bind_password": "Привязать пароль",
         "backup_lbl": "<bold>Резервное копирование</bold>",
         "bind_dn": "Привязать DN",
@@ -906,7 +906,7 @@
         "external_server_address": "Адрес внешнего сервера",
         "galsync_account": "Учетная запись GALSync",
         "go_back_button": "НАЗАД",
-        "import": "ИМПОРТИРОВАТЬ",
+        "import": "ИМПОРТ",
         "import_saml_metadata_from_idp": "Импорт метаданных SAML из IDP",
         "inactive": "Неактивный",
         "keep_it_button": "НЕТ, СОХРАНИТЬ",
@@ -932,7 +932,32 @@
         "delete_domain_with_all_resources_permanently_remove": "В противном случае вы можете безвозвратно удалить все учетные записи и объекты домена. Эта операция не может быть отменена.",
         "generate_sp_certificate": "СОЗДАТЬ СЕРТИФИКАТ СЕРВИС ПРОВАЙДЕРА",
         "delete_domain_with_all_resources_post_msg": "Если вы не уверены, вы все равно можете «закрыть» домен, чтобы избежать дальнейшего взаимодействия, оставив все ресурсы доступными в случае необходимости. В противном случае вы можете безвозвратно удалить все учетные записи и объекты домена. Эта операция не может быть отменена.",
-        "here_will_be_shown_the_attribute_value": "Здесь будет показано значение атрибута"
+        "here_will_be_shown_the_attribute_value": "Здесь будет показано значение атрибута",
+        "select_an_attribute_to_show_its_value": "Выберите атрибут, чтобы показать его значение",
+        "select_attribute_to_show_its_value": "Выберите атрибут, чтобы показать его значение",
+        "volume_detail_success": "Все изменения успешно сохранены",
+        "service_url_copied": "URL службы скопирован",
+        "you_have_added_attribute": "Вы добавили атрибут {{ attributeName }}",
+        "you_have_exported_the_configuration": "Вы экспортировали конфигурацию",
+        "you_have_updated_attribute": "Вы обновили атрибут {{ attributeName }}",
+        "attribute": "Атрибут",
+        "color_code": "Списки цветовых кодов",
+        "entity_id": "Код объекта",
+        "entity_id_copied": "Код объекта скопирован",
+        "frequency_value_also_updated": "Значение частоты GAL обновлено.",
+        "gal_update_freq_value": "Значение частоты обновления глобального списка адресов",
+        "server_type": "Тип сервера",
+        "service_url": "URL службы",
+        "storage_lbl": "<bold>Хранилище</bold>",
+        "storage_type": "Тип хранилища",
+        "subscription_lbl": "<bold>Подписка</bold>",
+        "system_account": "Системные учетные записи",
+        "type_account_name_for_global_address_list": "Введите имя учетной записи для глобального списка адресов (GAL).",
+        "use_dn_password_to_bind_external_server": "Используйте DN/пароль для привязки к внешнему серверу",
+        "user_ssl": "Использовать SSL",
+        "you_have_deleted_the_configuration": "Вы удалили конфигурацию",
+        "you_have_imported_the_configuration": "Вы импортировали конфигурацию",
+        "you_have_removed_attribute": "Вы удалили атрибут {{ attributeName }}"
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
@@ -1527,7 +1552,9 @@
             "centralized": "Централизованный",
             "external": "Внешний",
             "local": "Локальный",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "local_block_device": "Локальное блочное устройство",
+            "object_storage": "Объектное хранилище"
         },
         "volume_config_header": {
             "name": "имя",
@@ -1540,7 +1567,8 @@
             "current": "Текущее",
             "id": "ID",
             "name": "имя",
-            "path": "Путь"
+            "path": "Путь",
+            "storageType": "Тип Хранилища"
         },
         "volume_indexer_header": {
             "current": "Текущее",
@@ -1555,7 +1583,8 @@
         },
         "indexer_helperText": "Индексатор",
         "primary_helperText": "Первичный",
-        "secondary_helperText": "Вторичный"
+        "secondary_helperText": "Вторичный",
+        "create_storage_volume": "Создать том хранилища"
     },
     "have_not_setup_bucket_type": "Похоже, вы не настроили тип Бакета",
     "click_new_bucket_button_to_create_new_one": "Для создания нажмите кнопку NEW BUCKET.",
@@ -1705,7 +1734,7 @@
         "account_with_send_rights": "Учетные записи с правами <bold>Отправить как/Отправить от имени</bold>",
         "i_have_copied_the_password": "Я СКОПИРОВАЛ ПАРОЛЬ",
         "labels_password": "Пароль",
-        "passphrasaId": "ID фразы-пароля",
+        "passphrasaId": "ID Парольной фразы",
         "password_allow_once_user_to_connect": "Этот пароль позволит пользователю подключаться к этому сервису без двухфакторной аутентификации даже из ненадежной сети.",
         "read_only": "Только чтение",
         "read_write": "Читать/Писать",
@@ -1718,7 +1747,10 @@
         "able_to_see_password_once": " Обратите внимание: вы сможете увидеть пароль <bold>только один раз</bold>",
         "account_read_only_rights": "У этой учетной записи есть права <bold>Только чтение</bold>",
         "account_with_read_write_rights": "Учетные записи с правами <bold>Читать/Писать</bold>",
-        "manage_no_rights_to_send_mails": "Управлять (нет прав на отправку писем)"
+        "manage_no_rights_to_send_mails": "Управлять (нет прав на отправку писем)",
+        "services_passphrase": "Сервисы Парольная фраза",
+        "services_passphrase_created_successfully": "Сервисы Парольной фразы успешно созданы",
+        "services_passphrase_deleted_successfully": "Сервисы Парольной фразы успешно удалены"
     },
     "privacy": {
         "survey_feedback_sub_1": "Помогите нам стать лучше. Пройдите быстрый опрос.",
@@ -1903,5 +1935,15 @@
         "stopping_operation_model_title": "Вы останавливаете {{OperationName}}",
         "stopping_operation_model_title_helperText": "Вы останавливаете {{operationName}}"
     },
-    "new": "Новый"
+    "new": "Новый",
+    "modal": {
+        "iscurrent_confirm": {
+            "body_message": "Текущий {{type}} {{currentVolumeName}}.<br />Вы действительно хотите <strong>установить {{name}} в качестве текущего</strong>?",
+            "confirm_label": "ДА, ПРОДОЛЖИТЬ",
+            "secondary_label": "НАЗАД",
+            "title": "Вы устанавливаете {{name}} в качестве текущего"
+        }
+    },
+    "the_change_will_not_move_the_data": "Это изменение не приведет к перемещению данных... !!",
+    "this_will_not_affect_data_already_stored": "Это не повлияет на уже сохраненные данные."
 }
