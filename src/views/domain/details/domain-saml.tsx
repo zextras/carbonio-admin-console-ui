@@ -768,7 +768,7 @@ const DomainSaml: FC = () => {
 									<Input
 										label={t(
 											'label.here_will_be_shown_the_attribute_value',
-											'Here will be shown the Attribute Value'
+											'The Attribute Value will be displayed here'
 										)}
 										background="gray5"
 										value={samlAttrValue}

@@ -968,7 +968,7 @@
         "destination_account": "Destination Account",
         "destroy": "DELETE",
         "destroy_account": "Destroy",
-        "destroy_account_button": "YES, DESTROY IT",
+        "destroy_account_button": "YES, DELETE IT",
         "detail": "Detail",
         "detail_error": "{{name}}",
         "details": "Details",
@@ -1068,7 +1068,6 @@
         "gal": "GAL",
         "gal_mode": "GAL Mode",
         "gal_settings": "GAL Settings",
-        "gal_update_freq_value": "GAL Update Frequency Value",
         "gal_update_frequencey_value": "GAL Update Frequency Value",
         "galsync_account": "GALSync Account",
         "gay_sync_account_name": "GAL Sync Account Name",
@@ -1087,7 +1086,7 @@
         "group_by": "Group by",
         "helo": "Help",
         "help": "Help",
-        "here_will_be_shown_the_attribute_value": "Here will be shown the Attribute Value",
+        "here_will_be_shown_the_attribute_value": "The Attribute Value will be displayed here",
         "here_you_will_find": "Here you will find",
         "hidden_from_gal": "Hidden from GAL",
         "hms_settings": "HSM Settings",
@@ -1195,7 +1194,7 @@
         "maximum_conflict_allowed": "Maximum Conflict Allowed",
         "maximum_length_of_mail_signature": "Maximum length of mail signature",
         "mb": "MB",
-        "measure_unit": "Measure Unit",
+        "measure_unit": "Unit of measurement ",
         "members": "Members",
         "members_only": "Members only",
         "message": "Message",
@@ -1360,7 +1359,7 @@
         "saml": "SAML",
         "saml_metadata_attribute_notes": "Please import some SAML Metadata in the field above to see its attributes",
         "save": "Save",
-        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Save a copy of sent messages only in delegated's send folder",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Save a copy of sent messages to delegate's Sent folder",
         "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Save a copy of sent messages only in delegate's send folder",
         "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Save a copy of sent messages to delegate and delegated send folder",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Save a copy of sent messages to delegate’s Sent folder",
@@ -1773,7 +1772,7 @@
             "whenToUse": ""
         }
     },
-    "the_change_will_not_move_the_data": "The change will not move the data… !!",
+    "the_change_will_not_move_the_data": "The change will not move the data",
     "this_will_not_affect_data_already_stored": "This will not affect data already stored",
     "timezone": {
         "africa_algiers": "{{value}} West Central Africa",
@@ -1945,7 +1944,7 @@
             "external": "External",
             "local": "Local",
             "local_block_device": "Local Block Device",
-            "object_storage": "ObjectStorage",
+            "object_storage": "Object Storage",
             "sproxy": "Sproxy"
         },
         "volume_config_header": {
@@ -1975,7 +1974,7 @@
         }
     },
     "warning": {
-        "is_current": "You have to set another volume as current before."
+        "is_current": "Firstly, you have to set another volume as the current one."
     },
     "welcome": "Welcome",
     "welcome_to_carbonio": "Welcome {{adminName}} to Carbonio {{carbonioVersion}}!",

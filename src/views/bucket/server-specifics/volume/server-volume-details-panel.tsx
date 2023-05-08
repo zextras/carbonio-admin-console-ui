@@ -503,7 +503,7 @@ const ServerVolumeDetailsPanel: FC<{
 							<Input
 								label={t('label.storage_type', 'Storage Type')}
 								backgroundColor="gray6"
-								value={t('volume.volume_allocation_list.object_storage', 'ObjectStorage')}
+								value={t('volume.volume_allocation_list.object_storage', 'Object Storage')}
 								readOnly
 							/>
 						</Row>
