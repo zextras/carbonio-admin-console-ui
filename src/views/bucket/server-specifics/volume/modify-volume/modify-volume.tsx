@@ -662,7 +662,7 @@ const ModifyVolume: FC<{
 						</Row>
 						<Padding top="extrasmall">
 							<Text color="secondary" overflow="break-word" size="extrasmall">
-								{t('the_change_will_not_move_the_data', 'The change will not move the data… !!')}
+								{t('the_change_will_not_move_the_data', 'The change will not move the data')}
 							</Text>
 						</Padding>
 						<Row
@@ -724,7 +724,7 @@ const ModifyVolume: FC<{
 									placement="top"
 									label={t(
 										'warning.is_current',
-										'You have to set another volume as current before.'
+										'Firstly, you have to set another volume as the current one.'
 									)}
 									maxWidth="auto"
 									disabled={!isCurrent}
@@ -819,10 +819,7 @@ const ModifyVolume: FC<{
 								</Row>
 								<Padding top="extrasmall">
 									<Text color="secondary" overflow="break-word" size="extrasmall">
-										{t(
-											'the_change_will_not_move_the_data',
-											'The change will not move the data… !!'
-										)}
+										{t('the_change_will_not_move_the_data', 'The change will not move the data')}
 									</Text>
 								</Padding>
 							</>
@@ -913,7 +910,7 @@ const ModifyVolume: FC<{
 						</Row>
 						<Padding top="extrasmall">
 							<Text color="secondary" overflow="break-word" size="extrasmall">
-								{t('the_change_will_not_move_the_data', 'The change will not move the data… !!')}
+								{t('the_change_will_not_move_the_data', 'The change will not move the data')}
 							</Text>
 						</Padding>
 						{bucketS3 && (
@@ -988,7 +985,10 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
 							<Tooltip
 								placement="top"
-								label={t('warning.is_current', 'You have to set another volume as current before.')}
+								label={t(
+									'warning.is_current',
+									'Firstly, you have to set another volume as the current one.'
+								)}
 								maxWidth="auto"
 								disabled={!isCurrent}
 							>

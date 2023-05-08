@@ -342,7 +342,7 @@
             "cloudian_s3": "Cloudian S3",
             "custom_s3": "Custom S3",
             "emc_s3": "EMC S3",
-            "minio": "Minio",
+            "minio": "minIO",
             "openio_s3": "OpenIO S3",
             "scality_s3": "Scality S3",
             "yandex_s3": "Yandex S3"
@@ -475,7 +475,7 @@
         "highlight_the_Mail_tab_when_message_arrives": "Highlight the Mail tab when a message arrives",
         "html_compose": "HTML compose",
         "i_want_to_see_this_cos": "I want to see this COS",
-        "idp_configuration_saml_notes": "Go to your IDP to configure your SAML and copy the entityid and serviceurl values",
+        "idp_configuration_saml_notes": "Go to your IDP to configure your SAML and copy the EntityID and ServiceURL values",
         "imap_polling_interval": "IMAP polling interval",
         "index_junk_messages": "Index Junk Messages",
         "initial_search_preference": "Initial Search Preference",
@@ -850,8 +850,6 @@
         "certificates": "Certificates",
         "change_save_success_msg": "The change has been saved successfully",
         "change_to": "CHANGE TO",
-        "change_to_external": "CHANGE TO EXTERNAL",
-        "change_to_internal": "CHANGE TO INTERNAL",
         "changes_have_been_saved": "The changes have been saved",
         "changes_have_been_updated": "{{message}}",
         "changes_save_success_msg": "Your changes has been saved!",
@@ -933,7 +931,7 @@
         "delet_bucket_header": "Removing {{name}}",
         "delet_volume_header": "Delete {{name}} ?",
         "delete": "Delete",
-        "delete_account": "Are you sure you want to destroy {{accountId}}?",
+        "delete_account": "Are you sure you want to delete {{accountId}}?",
         "delete_bucket_fail": "The {{name}} has not been removed",
         "delete_bucket_sucess": "The {{name}} has been removed",
         "delete_button": "DELETE",
@@ -968,9 +966,9 @@
         "description": "Description",
         "destination": "Destination",
         "destination_account": "Destination Account",
-        "destroy": "DESTROY",
+        "destroy": "DELETE",
         "destroy_account": "Destroy",
-        "destroy_account_button": "YES, DESTROY IT",
+        "destroy_account_button": "YES, DELETE IT",
         "detail": "Detail",
         "detail_error": "{{name}}",
         "details": "Details",
@@ -1070,7 +1068,6 @@
         "gal": "GAL",
         "gal_mode": "GAL Mode",
         "gal_settings": "GAL Settings",
-        "gal_update_freq_value": "GAL Update Frequency Value",
         "gal_update_frequencey_value": "GAL Update Frequency Value",
         "galsync_account": "GALSync Account",
         "gay_sync_account_name": "GAL Sync Account Name",
@@ -1089,7 +1086,7 @@
         "group_by": "Group by",
         "helo": "Help",
         "help": "Help",
-        "here_will_be_shown_the_attribute_value": "Here will be shown the Attribute Value",
+        "here_will_be_shown_the_attribute_value": "The Attribute Value will be displayed here",
         "here_you_will_find": "Here you will find",
         "hidden_from_gal": "Hidden from GAL",
         "hms_settings": "HSM Settings",
@@ -1197,7 +1194,7 @@
         "maximum_conflict_allowed": "Maximum Conflict Allowed",
         "maximum_length_of_mail_signature": "Maximum length of mail signature",
         "mb": "MB",
-        "measure_unit": "Measure Unit",
+        "measure_unit": "Unit of measurement ",
         "members": "Members",
         "members_only": "Members only",
         "message": "Message",
@@ -1362,7 +1359,7 @@
         "saml": "SAML",
         "saml_metadata_attribute_notes": "Please import some SAML Metadata in the field above to see its attributes",
         "save": "Save",
-        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Save a copy of sent messages only in delegated's send folder",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Save a copy of sent messages to delegate's Sent folder",
         "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Save a copy of sent messages only in delegate's send folder",
         "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Save a copy of sent messages to delegate and delegated send folder",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Save a copy of sent messages to delegate’s Sent folder",
@@ -1775,7 +1772,7 @@
             "whenToUse": ""
         }
     },
-    "the_change_will_not_move_the_data": "The change will not move the data… !!",
+    "the_change_will_not_move_the_data": "The change will not move the data",
     "this_will_not_affect_data_already_stored": "This will not affect data already stored",
     "timezone": {
         "africa_algiers": "{{value}} West Central Africa",
@@ -1947,7 +1944,7 @@
             "external": "External",
             "local": "Local",
             "local_block_device": "Local Block Device",
-            "object_storage": "ObjectStorage",
+            "object_storage": "Object Storage",
             "sproxy": "Sproxy"
         },
         "volume_config_header": {
@@ -1977,7 +1974,7 @@
         }
     },
     "warning": {
-        "is_current": "You have to set another volume as current before."
+        "is_current": "Firstly, you have to set another volume as the current one."
     },
     "welcome": "Welcome",
     "welcome_to_carbonio": "Welcome {{adminName}} to Carbonio {{carbonioVersion}}!",

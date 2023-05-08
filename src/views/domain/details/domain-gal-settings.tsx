@@ -1101,7 +1101,7 @@ const DomainGalSettings: FC = () => {
 						/>
 						<Button
 							type="ghost"
-							label={t('label.destroy', 'DESTROY')}
+							label={t('label.destroy', 'DELETE')}
 							color="error"
 							onClick={(): void => {
 								setToggleDestroyGalSyncAccModel(true);
@@ -1230,7 +1230,7 @@ const DomainGalSettings: FC = () => {
 									<Select
 										items={measureUnitItems}
 										background="gray5"
-										label={t('label.measure_unit', 'Measure Unit')}
+										label={t('label.measure_unit', 'Unit of measurement')}
 										onChange={onFreqTimeUnitChange}
 										showCheckbox={false}
 										selection={measureUnitSelection}
