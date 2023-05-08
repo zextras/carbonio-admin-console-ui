@@ -924,7 +924,7 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 		value: 'Yandex'
 	},
 	{
-		label: t('buckets.s3_types.minio', 'Minio'),
+		label: t('buckets.s3_types.minio', 'minIO'),
 		value: 'Minio'
 	}
 ];

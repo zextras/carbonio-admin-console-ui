@@ -1101,7 +1101,7 @@ const DomainGalSettings: FC = () => {
 						/>
 						<Button
 							type="ghost"
-							label={t('label.destroy', 'DESTROY')}
+							label={t('label.destroy', 'DELETE')}
 							color="error"
 							onClick={(): void => {
 								setToggleDestroyGalSyncAccModel(true);

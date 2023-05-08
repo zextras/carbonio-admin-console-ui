@@ -461,7 +461,7 @@ const DomainSaml: FC = () => {
 										<Text overflow="break-word">
 											{t(
 												'cos.idp_configuration_saml_notes',
-												'Go to your IDP to configure your SAML and copy the entityid and serviceurl values'
+												'Go to your IDP to configure your SAML and copy the EntityID and ServiceURL values'
 											)}
 										</Text>
 									</Row>
