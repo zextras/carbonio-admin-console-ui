@@ -171,33 +171,33 @@ const ModifyVolume: FC<{
 					obj.useIntelligentTiering = useIntelligentTiering;
 				}
 				if (externalVolDetail?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
-					obj.volumePath = '/tmp/store2';
-					obj.volumeCompressed = false;
-					obj.compressionThreshold = 'abc';
+					obj.volumePath = rootpath;
+					obj.volumeCompressed = compressBlobs;
+					obj.compressionThreshold = compressionThreshold;
 				}
 				if (externalVolDetail?.storeType?.toUpperCase() === OPENIO?.toUpperCase()) {
-					obj.url = '/tmp/store2';
-					obj.account = 'abc';
-					obj.namespace = 'abc';
+					obj.url = '';
+					obj.account = '';
+					obj.namespace = '';
 					obj.proxyPort = 1;
 					obj.accountPort = 1;
 				}
 				if (externalVolDetail?.storeType?.toUpperCase() === SWIFT?.toUpperCase()) {
-					obj.url = '/tmp/store2';
-					obj.username = 'abc';
-					obj.password = 'abc';
-					obj.authenticationMethod = 'BASIC';
-					obj.authenticationMethodScope = 'DEFAULT';
-					obj.tenantId = '12';
-					obj.tenantName = '12';
-					obj.domain = '12';
-					obj.proxyHost = '12';
+					obj.url = '';
+					obj.username = '';
+					obj.password = '';
+					obj.authenticationMethod = '';
+					obj.authenticationMethodScope = '';
+					obj.tenantId = '';
+					obj.tenantName = '';
+					obj.domain = '';
+					obj.proxyHost = '';
 					obj.proxyPort = 10;
-					obj.proxyUsername = 'abc';
-					obj.proxyPassword = 'abc';
-					obj.publicHost = 'abc';
-					obj.privateHost = 'abc';
-					obj.region = 'abc';
+					obj.proxyUsername = '';
+					obj.proxyPassword = '';
+					obj.publicHost = '';
+					obj.privateHost = '';
+					obj.region = '';
 					obj.maxDeleteObjectsCount = 10;
 				}
 			}
