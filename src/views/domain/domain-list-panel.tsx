@@ -262,11 +262,12 @@ const DomainListPanel: FC = () => {
 				name: t('label.mailing_list', 'Mailing List'),
 				isSelected: isDomainSelect
 			},
-			{
-				id: RESOURCES,
-				name: t('label.resources', 'Resources'),
-				isSelected: isDomainSelect
-			},
+			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
+			// {
+			// 	id: RESOURCES,
+			// 	name: t('label.resources', 'Resources'),
+			// 	isSelected: isDomainSelect
+			// },
 			{
 				id: ACTIVE_SYNC,
 				name: t('label.active_sync', 'ActiveSync'),
