@@ -221,7 +221,8 @@
             "openio_s3": "OpenIO S3",
             "scality_s3": "Scality S3",
             "yandex_s3": "Yandex S3",
-            "cloudian_s3": "Cloudian S3"
+            "cloudian_s3": "Cloudian S3",
+            "minio": "Minio"
         },
         "invalid_compression_thresold": "Batas Kompresi diperlukan",
         "invalid_volume_name": "Isi kolom nama volume.",
@@ -258,7 +259,9 @@
             "activation": "Aktivasi",
             "deactivate": "Deaktivasi",
             "order_id": "ID Pesanan",
-            "valid": "Valid"
+            "valid": "Valid",
+            "license_activated_successfully": "Lisensi berhasil diaktifkan",
+            "not_valid": "Tidak Valid"
         }
     },
     "domain": {
@@ -309,7 +312,10 @@
         "unit_measure_days": "Hari",
         "unit_measure_hours": "Jam",
         "unit_measure_minutes": "Menit",
-        "unit_measure_seconds": "Detik"
+        "unit_measure_seconds": "Detik",
+        "ldap": "LDAP",
+        "page_size": "Ukuran Halaman",
+        "unit_measure_milliseconds": "Milidetik"
     },
     "label": {
         "account": "Akun",
@@ -627,7 +633,7 @@
         "domain_quota_settings": "Pengaturan Kuota Domain",
         "domain_name": "Nama Domain",
         "displayed_name": "Nama yang Ditampilkan",
-        "delete_domain_with_account_content_msg": "{{domainName}} tidak kosong: ini berisi akun sistem {{domainAccounts}} dan akun reguler {{domainAccounts}}. Anda yakin ingin melanjutkan penghapusan?",
+        "delete_domain_with_account_content_msg": "{{domainName}} tidak kosong: ini berisi akun sistem {{domainSystemAccounts}} dan akun reguler {{domainRegularAccounts}}. Anda yakin ingin melanjutkan penghapusan?",
         "delete_domain_success_msg": "Domain berhasil dihapus",
         "delete_domain_error_msg": "Anda menghapus {{domainName}}. Anda yakin ingin menghapus {{domainName}}?",
         "delete_bucket_sucess": "{{name}} telah dihapus",
@@ -1118,7 +1124,7 @@
         "sort_by_total_quota": "Urutkan berdasarkan Total Kuota",
         "storage_primarybar_tooltip": "Lihat <bold>status server</bold>, <bold>volume</bold> dan <bold>kebijakan HSM</bold>. Anda juga bisa <bold>menghubungkan bucket</bold>.",
         "subscription_primarybar_tooltip": "Lihat <bold>detail langganan</bold> dan/atau <bold>aktifkan</bold> yang baru.",
-        "backup_primarybar_tooltip": "Kelola <bold>layanan backup, lihat</bold> <bold>status</bold> mereka, <bold>daftar server</bold> atau <bold>impor yang sudah ada</bold>.",
+        "backup_primarybar_tooltip": "Kelola <bold>layanan cadangan</bold>, lihat <bold>status</bold> mereka, <bold>daftar server</bold> atau <bold>impor yang sudah ada</bold>.",
         "domain_primarybar_tooltip": "Lihat <bold>detail domain</bold> dan <bold>kelola</bold> sumber daya seperti <bold>akun, milis, sumber daya</bold> dan <bold>banyak lagi</bold>.",
         "example_lbl": "Contoh:",
         "sending_options": "Opsi Kirim",
@@ -1137,7 +1143,92 @@
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Simpan salinan pesan terkirim ke folder Terkirim",
         "value": "Nilai",
         "distribution_list": "Daftar distribusi",
-        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Simpan salinan pesan tersimpan ke folder Terkirim dan folder delegasi"
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Simpan salinan pesan tersimpan ke folder Terkirim dan folder delegasi",
+        "change_to_internal": "UBAH KE INTERNAL",
+        "create_account_name": "BUAT NAMA AKUN",
+        "delete_domain_with_all_resources_msg": "Domain {{domainName}} tidak kosong dan berisi Akun {{domainRegularAccounts}}, Akun Sistem {{domainSystemAccounts}}, Daftar Distribusi {{distributionList}}, Alias {{aliases}}, dan Sumber Daya {{resources}}. Jika tidak yakin, Anda masih bisa \"menutup\" domain untuk menghindari interaksi lebih lanjut, meninggalkan semua sumber daya yang tersedia jika dibutuhkan. Atau, Anda bisa menghapus permanen semua akun dan objek domain. Tindakan ini tidak dapat dikembalikan.",
+        "entity_id": "ID Entitas",
+        "frequency_value_also_updated": "Nilai Frekuensi GAL telah diperbarui",
+        "here_will_be_shown_the_attribute_value": "Di sini akan ditampilkan Nilai Atribut",
+        "personalisation": "Personalisasi",
+        "primary_color_for_light_mode": "Warna <bold>Utama</bold> untuk Mode Terang",
+        "service_url_copied": "ServiceURL disalin",
+        "prefix_volume": "Awalan - {{volumePrefix}}",
+        "accounts_groups": "Akun / Grup",
+        "allow_unsecure": "Izinkan Tidak Aman",
+        "attribute": "Atribut",
+        "backup_lbl": "<bold>Cadangan</bold>",
+        "bind_dn": "Ikat DN",
+        "bind_password": "Ikat Kata Sandi",
+        "byte_lbl": "BYTE",
+        "change_to": "UBAH KE",
+        "change_to_external": "UBAH KE EKSTERNAL",
+        "changes_save_success_msg": "Perubahan Anda sudah disimpan!",
+        "class_of_service_lbl": "<bold>Kelas Layanan</bold>",
+        "close": "TUTUP",
+        "close_domain": "TUTUP DOMAIN",
+        "color_code": "Kode warna",
+        "create_account_button": "BUAT AKUN",
+        "create_galsync_account_success_msg": "Anda telah membuat nama akun GALSync",
+        "delegate_send_settings": "Delegasikan Pengaturan Pengiriman",
+        "delete_account": "Anda yakin ingin menghancurkan {{accountId}}?",
+        "delete_configuration": "HAPUS KONFIGURASI",
+        "delete_domain_with_all_resources_close_domain": "Jika tidak yakin, Anda masih dapat \"menutup\" domain untuk menghindari interaksi lebih lanjut, meninggalkan semua sumber daya yang tersedia jika diperlukan.",
+        "delete_domain_with_all_resources_permanently_remove": "Atau, Anda dapat menghapus permanen semua akun dan objek domain. Tindakan ini tidak bisa dikembalikan.",
+        "delete_domain_with_all_resources_post_msg": "Jika tidak yakin, Anda masih dapat \"menutup\" domain untuk menghindari interaksi lebih lanjut, meninggalkan semua sumber daya yang tersedia jika diperlukan. Atau, Anda bida menghapus permanen semua akun dan objek domain. Tindakan ini tidak bisa dikembalikan.",
+        "delete_domain_with_all_resources_pre_msg": "Domain {{domainName}} tidak kosong dan berisi",
+        "destroy": "HANCURKAN",
+        "destroy_account": "Hancurkan",
+        "destroy_account_button": "YA, HANCURKAN",
+        "dn_settings": "Pengaturan DN",
+        "domain_close_success_msg": "Domain berhasil ditutup",
+        "domains_lbl": "<bold>Domain</bold>",
+        "entity_id_copied": "EntityID disalin",
+        "export_configuration": "KONFIGURASI EKSPOR",
+        "external_server_address": "Alamat Server Eksternal",
+        "gal_update_freq_value": "Nilai Frekuensi Pembaruan GAL",
+        "gal_update_frequencey_value": "Nilai Frekuensi Pembaruan GAL",
+        "galsync_account": "Akun GALSync",
+        "generate_sp_certificate": "HASILKAN SERTIFIKAT SP",
+        "go_back_button": "KEMBALI",
+        "import": "IMPOR",
+        "import_saml_metadata_from_idp": "Impor Metadata SAML dari IDP",
+        "inactive": "Tidak Aktif",
+        "keep_it_button": "TIDAK, SIMPAN SAJA",
+        "ldap_filter": "Filter LDAP",
+        "ldap_search_base": "Dasar Pencarian LDAP",
+        "ldap_url": "URL LDAP",
+        "measure_unit": "Satuan Ukur",
+        "model_label_create_account": "Buat Akun",
+        "notification_lbl": "<bold>Notifikasi</bold>",
+        "operation_lbl": "<bold>Operasi</bold>",
+        "primary_color_for_dark_mode": "Warna <bold>Utama</bold> untuk Mode Gelap",
+        "primary_color_hint": "Untuk mengubah warna Primer, gunakan kode warna HEX seperti dalam format placeholder.",
+        "privacy_lbl": "<bold>Privasi</bold>",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "Harap impor beberapa Metadata SAML pada kolom di atas untuk melihat atributnya",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Simpan salinan pesan terkirim hanya di folder kirim yang didelegasikan",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Simpan salinan pesan terkirim ke delegasi dan folder kirim yang didelegasikan",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Simpan salinan pesan terkirim hanya di folder kirim delegasi",
+        "select_an_attribute_to_show_its_value": "Pilih Atribut untuk menampilkan nilainya",
+        "select_attribute_to_show_its_value": "Pilih Atribut untuk menampilkan nilainya",
+        "server_type": "Jenis Server",
+        "service_url": "URL Layanan",
+        "storage_lbl": "<bold>Penyimpanan</bold>",
+        "storage_type": "Jenis Penyimpanan",
+        "subscription_lbl": "<bold>Langganan</bold>",
+        "system_account": "Akun Sistem",
+        "type_account_name_for_global_address_list": "Ketik Nama Akun untuk Daftar Alamat Global (GAL)",
+        "use_dn_password_to_bind_external_server": "Gunakan DN/Kata Sandi untuk mengikat ke server eksternal",
+        "user_ssl": "Gunakan SSL",
+        "volume_detail_success": "Semua perubahan berhasil disimpan",
+        "you_have_added_attribute": "Anda telah menambahkan atribut {{ attributeName }}",
+        "you_have_deleted_the_configuration": "Anda telah menghapus konfigurasi",
+        "you_have_exported_the_configuration": "Anda telah mengekspor konfigurasi",
+        "you_have_generated_the_sp_certificate": "Anda telah membuat Sertifikat SP",
+        "you_have_imported_the_configuration": "Anda telah mengimpor konfigurasi",
+        "you_have_removed_attribute": "Anda telah menambahkan atribut {{ attributeName }}",
+        "you_have_updated_attribute": "Anda telah memperbarui atribut {{ attributeName }}"
     },
     "message": {
         "snackbar": {
@@ -1297,7 +1388,8 @@
         "dark_mode": "Mode Gelap",
         "activesync_remote_access": "Akses jarak jauh ActiveSync",
         "chats": "Chats",
-        "files": "Drive"
+        "files": "Drive",
+        "idp_configuration_saml_notes": "Buka IDP Anda untuk mengonfigurasi SAML Anda dan salin nilai entityid dan serviceurl"
     },
     "backup": {
         "backup_path": "Jalur Backup",
@@ -1379,13 +1471,15 @@
         "bucket_configuration": "Konfigurasi Bucket",
         "local_mountpoint": "Mountpoint Lokal",
         "manage_external_volume": "Kelola volume eksternal",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "konfigurasi cadangan"
     },
     "accountDetails": {
         "enable_activeSync_remote_access": "Aktifkan akses jarak jauh ActiveSync",
         "default_COS": "COS Default",
         "change_password_for_next_login": "Harus mengubah kata sandi saat berikutnya masuk",
-        "user_will_change_password_on_next_login": "Pengguna akan mengubah kata sandi saat berikutnya masuk"
+        "user_will_change_password_on_next_login": "Pengguna akan mengubah kata sandi saat berikutnya masuk",
+        "force_change_password": "Paksa Ganti Kata Sandi"
     },
     "locale": {
         "English": "Inggris",
@@ -1582,7 +1676,31 @@
         "status": "Status",
         "DELETE": "HAPUS",
         "SAVE": "SIMPAN",
-        "create": "BUAT"
+        "create": "BUAT",
+        "password_allow_once_user_to_connect": "Kata sandi ini akan memungkinkan pengguna untuk terhubung ke layanan ini tanpa 2FA bahkan dari jaringan yang tidak dipercaya.",
+        "able_to_see_password_once": " Catatan: Anda hanya akan melihat kata sandi <bold>sekali.</bold>",
+        "account_read_only_rights": "Akun ini memiliki hak <bold>Hanya Baca</bold> aktif",
+        "account_read_write_rights": "Akun ini memiliki hak <bold>Baca/Tulis</bold> aktif",
+        "account_send_rights": "Akun ini memiliki hak <bold>Kirim</bold> aktif",
+        "account_with_read_only_rights": "Akun dengan hak <bold>Baca Saja</bold>",
+        "account_with_read_write_rights": "Akun dengan hak <bold>Baca/Tulis</bold>",
+        "account_with_send_rights": "Akun dengan hak <bold>KirimSebagai/KirimAtasNama</bold> aktif",
+        "add_the_account_group_with_selected_rights": "TAMBAHKAN AKUN / GRUP DENGAN HAK YANG DIPILIH",
+        "i_have_copied_the_password": "SAYA TELAH MENYALIN KATA SANDI",
+        "labels_password": "Kata Sandi",
+        "manage_no_rights_to_send_mails": "Kelola (tidak ada hak untuk mengirim email)",
+        "passphrasaId": "ID Frasa Sandi",
+        "read_only": "Hanya baca",
+        "read_write": "Baca/Tulis",
+        "remove_all": "HAPUS SEMUA",
+        "send_on_behalf_of_check": "Kirim Atas Nama",
+        "service_password": "Kata Sandi Layanan",
+        "services_passphrase": "Frasa Sandi Layanan",
+        "services_passphrase_created_successfully": "Frasa Sandi Layanan berhasil dibuat",
+        "services_passphrase_deleted_successfully": "Frasa Sandi Layanan berhasil dihapus",
+        "start_typing_account": "Mulai ketik Akun/Grup untuk menambahkannya ke hak",
+        "switch_advanced": "Beralih ke Tampilan Lanjutan",
+        "switch_simplified": "Beralih ke Tampilan Sederhana"
     },
     "connection": {
         "access_key": "Kunci Akses",
@@ -1624,7 +1742,9 @@
             "centralized": "Terpusat",
             "external": "Eksternal",
             "local": "Lokal",
-            "sproxy": "Sproksi"
+            "sproxy": "Sproksi",
+            "local_block_device": "Perangkat Blok Lokal",
+            "object_storage": "ObjectStorage"
         },
         "volume_config_header": {
             "name": "Nama",
@@ -1637,7 +1757,8 @@
             "current": "Saat ini",
             "id": "ID",
             "name": "Nama",
-            "path": "Jalur"
+            "path": "Jalur",
+            "storageType": "Jenis Penyimpanan"
         },
         "volume_indexer_header": {
             "current": "Saat ini",
@@ -1652,7 +1773,8 @@
         },
         "indexer_helperText": "Pengindeks",
         "primary_helperText": "Utama",
-        "secondary_helperText": "Sekunder"
+        "secondary_helperText": "Sekunder",
+        "create_storage_volume": "Buat Volume Penyimpanan"
     },
     "hsm": {
         "all": "Semua",
@@ -1817,5 +1939,18 @@
     "select_bucket_or_create_bucket": "Sepertinya Anda belum menyiapkan jenis bucket. \n Klik tombol \"BUAT +\" untuk membuat yang baru.",
     "to_carbonio": "ke Carbonio!",
     "welcome_to_carbonio_information": "Selamat datang {{adminName}} di Carbonio!",
-    "new": "Baru"
+    "new": "Baru",
+    "the_change_will_not_move_the_data": "Perubahan tidak akan memindahkan data… !!",
+    "modal": {
+        "iscurrent_confirm": {
+            "body_message": "{{type}} {{currentVolumeName}} saat ini.<br />Anda yakin ingin <strong>mengatur {{name}} sebagai saat ini</strong>?",
+            "confirm_label": "YA, LANJUTKAN",
+            "secondary_label": "TIDAK, KEMBALI",
+            "title": "Anda menetapkan {{name}} sebagai saat ini"
+        }
+    },
+    "this_will_not_affect_data_already_stored": "Ini tidak akan memengaruhi data yang sudah disimpan",
+    "warning": {
+        "is_current": "Anda harus mengatur volume lain seperti saat ini sebelumnya."
+    }
 }
