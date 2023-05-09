@@ -104,7 +104,7 @@ const EditAccountDelegatesSection: FC = () => {
 
 	useEffect(() => {
 		const identitiesArr: any = [];
-		identitiesList.map((item: any): any => {
+		identitiesList.forEach((item: any): any => {
 			identitiesArr.push({
 				id: item?.grantee?.[0]?.id,
 				columns: [

@@ -78,9 +78,8 @@ const GlobalTheme: FC = () => {
 	useEffect(() => {
 		if (!!configInformation && configInformation.length > 0) {
 			const obj: any = {};
-			configInformation.map((item: any) => {
+			configInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			if (!obj.carbonioWebUiDarkMode) {
 				obj.carbonioWebUiDarkMode = 'FALSE';
@@ -243,7 +242,7 @@ const GlobalTheme: FC = () => {
 			carbonioWebUiPrimaryColor: '',
 			carbonioWebUiDarkPrimaryColor: ''
 		};
-		Object.keys(domainDefaultElements).map((ele: any) =>
+		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
 		);
 		modifyConfigRequest(attributes);

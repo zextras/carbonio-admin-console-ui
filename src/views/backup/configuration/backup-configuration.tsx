@@ -48,7 +48,7 @@ import { fetchSoap } from '../../../services/bucket-service';
 import { useBackupStore } from '../../../store/backup/store';
 
 const BackupConfiguration: FC = () => {
-	const { operation, server }: { operation: string; server: string } = useParams();
+	const { server }: { server: string } = useParams();
 	const [t] = useTranslation();
 	const allServers = useServerStore((state) => state.serverList);
 	const createSnackbar: any = useContext(SnackbarManagerContext);

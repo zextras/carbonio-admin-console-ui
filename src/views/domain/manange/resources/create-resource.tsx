@@ -237,7 +237,9 @@ const CreateResource: FC<{
 										resourceDetail?.schedulePolicyType?.value === (1 || 2) ? 'TRUE' : 'FALSE'
 								};
 								const attrList: { n: string; _content: string }[] = [];
-								Object.keys(attr).map((ele: any) => attrList.push({ n: ele, _content: attr[ele] }));
+								Object.keys(attr).forEach((ele: any) =>
+									attrList.push({ n: ele, _content: attr[ele] })
+								);
 								resourceDetail?.sendInviteList.forEach((item: any) => {
 									attrList.push({
 										n: 'zimbraPrefCalendarForwardInvitesTo',

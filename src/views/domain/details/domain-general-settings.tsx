@@ -201,9 +201,8 @@ const DomainGeneralSettings: FC = () => {
 		});
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
-			domainInformation.map((item: any) => {
+			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			setDomainName(obj.zimbraDomainName);
 			if (obj.zimbraPrefTimeZoneId) {
@@ -502,19 +501,19 @@ const DomainGeneralSettings: FC = () => {
 		const dlDeleteBatch: any[] = [];
 		const resourceDeleteBatch: any[] = [];
 
-		domainDirectoies.account.map((item: any): any =>
+		domainDirectoies.account.forEach((item: any): any =>
 			accountDeleteBatch.push({
 				id: item?.id,
 				_jsns: 'urn:zimbraAdmin'
 			})
 		);
-		domainDirectoies.dl.map((item: any): any =>
+		domainDirectoies.dl.forEach((item: any): any =>
 			dlDeleteBatch.push({
 				id: { _content: item?.id },
 				_jsns: 'urn:zimbraAdmin'
 			})
 		);
-		domainDirectoies.calresource.map((item: any): any =>
+		domainDirectoies.calresource.forEach((item: any): any =>
 			resourceDeleteBatch.push({
 				id: item?.id,
 				_jsns: 'urn:zimbraAdmin'
@@ -553,7 +552,7 @@ const DomainGeneralSettings: FC = () => {
 				(data: SearchDomainDirectoies) => {
 					setIsRequestInProgress(false);
 					if (data?.account?.length) {
-						data.account.map((item: AccountDlAlias) => {
+						data.account.forEach((item: AccountDlAlias) => {
 							const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
 							if (zimbraIsSystemAccount) {
 								// eslint-disable-next-line no-param-reassign

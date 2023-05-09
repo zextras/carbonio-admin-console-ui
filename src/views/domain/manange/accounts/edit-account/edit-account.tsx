@@ -263,12 +263,12 @@ const EditAccount: FC<{
 				initAccountDetail.mail.split(',')
 			);
 			// eslint-disable-next-line array-callback-return
-			deleteAliasArr.map((aliasName) => {
+			deleteAliasArr.forEach((aliasName) => {
 				deleteAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`).then();
 			});
 
 			// eslint-disable-next-line array-callback-return
-			addAliasArr.map((aliasName) => {
+			addAliasArr.forEach((aliasName) => {
 				addAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`).then();
 			});
 
