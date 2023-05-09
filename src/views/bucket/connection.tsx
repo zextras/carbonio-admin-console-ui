@@ -58,7 +58,7 @@ const Connection: FC<{
 	const [urlInput, setUrlInput] = useState('');
 	const [prefix, setPrefix] = useState('');
 	const [BucketUid, setBucketUid] = useState('');
-	const [bucketTypeData, setBucketTypeData] = useState();
+	const [bucketTypeData, setBucketTypeData] = useState<any>(bucketTypeItems[1]?.value);
 	const [verifyCheck, setVerifyCheck] = useState<string>('');
 	const [verifyFailErr, setverifyFailErr] = useState('');
 	const [bothFail, setbothFail] = useState('');
@@ -87,7 +87,10 @@ const Connection: FC<{
 				signatureVersion: V4,
 				protocol: urlInput.startsWith(HTTPS) ? HTTPS : HTTP,
 				url:
-					bucketTypeData === AMAZON_WEB_SERVICE_S3 || bucketType === AMAZON_WEB_SERVICE_S3
+					bucketTypeData === AMAZON_WEB_SERVICE_S3 ||
+					bucketType === AMAZON_WEB_SERVICE_S3 ||
+					bucketTypeData === ALIBABA ||
+					bucketType === ALIBABA
 						? ''
 						: urlInput,
 				prefix,
@@ -164,6 +167,14 @@ const Connection: FC<{
 	};
 
 	useEffect(() => {
+		if (regionsData === undefined) {
+			const volumeObject =
+				bucketType === ALIBABA || bucketTypeData === ALIBABA
+					? bucketRegionsInAlibaba[0]
+					: bucketRegions[0];
+			setRegionsData(volumeObject);
+		}
+
 		if (
 			(bucketTypeData === AMAZON_WEB_SERVICE_S3 || bucketType === AMAZON_WEB_SERVICE_S3) &&
 			bucketName &&
@@ -200,10 +211,13 @@ const Connection: FC<{
 	}, [
 		accessKeyData,
 		bucketName,
+		bucketRegions,
+		bucketRegionsInAlibaba,
 		bucketType,
 		bucketTypeData,
 		prefix,
 		prefixConfirm,
+		regionsData,
 		regionsData?.value,
 		secretKey,
 		urlInput
@@ -282,6 +296,11 @@ const Connection: FC<{
 					? bucketRegionsInAlibaba[0]
 					: bucketRegions[0]
 			);
+			setRegionsData(
+				bucketType === ALIBABA || volumeObject?.value === ALIBABA
+					? bucketRegionsInAlibaba[0]
+					: bucketRegions[0]
+			);
 		},
 		[
 			bucketRegions,
@@ -300,6 +319,7 @@ const Connection: FC<{
 					? bucketRegionsInAlibaba.find((s: any) => s.value === e)
 					: bucketRegions.find((s: any) => s.value === e);
 			setRegionsData(volumeObject);
+			setRegionSelection(volumeObject);
 			onSelection({ region: volumeObject?.value }, false);
 		},
 		[bucketRegions, bucketRegionsInAlibaba, bucketType, bucketTypeData, onSelection]
@@ -374,7 +394,7 @@ const Connection: FC<{
 						items={bucketTypeItems}
 						background="gray5"
 						label={t('buckets.bucket_type', 'Bucket Type')}
-						selection={bucketTypeItems[1]}
+						defaultSelection={bucketTypeItems?.filter((items) => items?.value === bucketTypeData)}
 						onChange={onSelectBucketTypeChange}
 						showCheckbox={false}
 						padding={{ right: 'medium' }}
