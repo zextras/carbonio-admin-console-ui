@@ -58,7 +58,9 @@ const Connection: FC<{
 	const [urlInput, setUrlInput] = useState('');
 	const [prefix, setPrefix] = useState('');
 	const [BucketUid, setBucketUid] = useState('');
-	const [bucketTypeData, setBucketTypeData] = useState<any>(bucketTypeItems[1]?.value);
+	const [bucketTypeData, setBucketTypeData] = useState<string | undefined>(
+		bucketTypeItems[1]?.value
+	);
 	const [verifyCheck, setVerifyCheck] = useState<string>('');
 	const [verifyFailErr, setverifyFailErr] = useState('');
 	const [bothFail, setbothFail] = useState('');
