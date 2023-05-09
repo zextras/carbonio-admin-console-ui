@@ -20,7 +20,7 @@ import {
 	Select
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { find, get, unset } from 'lodash';
+import { find, get } from 'lodash';
 import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 import { fetchSoap } from '../../services/bucket-service';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC } from '../../constants';
@@ -199,9 +199,6 @@ const EditBucketDetailPanel: FC<{
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const bucketRegions = useMemo(() => BucketRegions(t), [t]);
 	const bucketRegionsInAlibaba = useMemo(() => BucketRegionsInAlibaba(t), [t]);
-	const [showPrefix, setShowPrefix] = useState(false);
-	const [prefix, setPrefix] = useState(bucketDetail?.prefix);
-	const [prefixConfirm, setprefixConfirm] = useState(true);
 	const [modifiedBucketDetails, setModifiedBucketDetails] = useState<any>({
 		_jsns: 'urn:zimbraAdmin',
 		module: 'ZxCore',
@@ -493,15 +490,15 @@ const EditBucketDetailPanel: FC<{
 		setBucketType(bucketTypeValue);
 	}, [bucketDetail, bucketRegions, bucketRegionsInAlibaba, bucketTypeItems]);
 
-	useEffect(() => {
-		if (bucketDetail.storeType !== '') {
-			if (bucketDetail.storeType === undefined) {
-				setShowPrefix(false);
-			} else {
-				setShowPrefix(true);
-			}
-		}
-	}, [bucketType, bucketDetail]);
+	// useEffect(() => {
+	// 	if (bucketDetail.storeType !== '') {
+	// 		if (bucketDetail.storeType === undefined) {
+	// 			setShowPrefix(false);
+	// 		} else {
+	// 			setShowPrefix(true);
+	// 		}
+	// 	}
+	// }, [bucketType, bucketDetail]);
 
 	return (
 		<Container background="gray6">

@@ -89,9 +89,8 @@ const DomainTheme: FC = () => {
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
-			domainInformation.map((item: any) => {
+			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			setZimbraId(obj?.zimbraId);
 			if (!obj.carbonioWebUiDarkMode) {
@@ -259,7 +258,7 @@ const DomainTheme: FC = () => {
 			carbonioWebUiPrimaryColor: '',
 			carbonioWebUiDarkPrimaryColor: ''
 		};
-		Object.keys(domainDefaultElements).map((ele: any) =>
+		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
 		);
 		body.a = attributes;

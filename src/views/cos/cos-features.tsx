@@ -107,9 +107,8 @@ const CosFeatures: FC = () => {
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
-			cosInformation.map((item: any) => {
+			cosInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			setZimbraId(obj?.zimbraId);
 			setInitalValues(obj);

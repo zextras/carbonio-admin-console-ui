@@ -318,7 +318,6 @@ const AccountOtpSection: FC = () => {
 					</Container>
 				</>
 			)}
-			{!showOtpOptionSection ? <></> : <></>}
 		</Container>
 	);
 };

@@ -15,6 +15,7 @@ import {
 	Switch
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { find } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from './account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
@@ -22,6 +23,8 @@ import { timeZoneList, localeList, AccountStatus } from '../../../../utility/uti
 const CreateAccountDetailSection: FC = () => {
 	const conext = useContext(AccountContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const domain = useDomainStore((state) => state.domain);
+
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const { accountDetail, setAccountDetail } = conext;
@@ -30,6 +33,14 @@ const CreateAccountDetailSection: FC = () => {
 	const timezones = useMemo(() => timeZoneList(t), [t]);
 	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
+
+	const domainStatus = useMemo(() => {
+		const status = find(domain?.a, { n: 'zimbraDomainStatus' });
+		if (status?._content === 'closed') {
+			return true;
+		}
+		return false;
+	}, [domain]);
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
@@ -185,7 +196,7 @@ const CreateAccountDetailSection: FC = () => {
 							<Input
 								label={t('label.domain_name', 'Domain Name')}
 								background="gray6"
-								value={domainName}
+								value={`${domainName} ${domainStatus ? `(${t('label.closed', 'Closed')})` : ''}`}
 								disabled
 							/>
 						</Row>

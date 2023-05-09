@@ -85,7 +85,8 @@
             "scality_s3": "Scality S3",
             "yandex_s3": "Yandex S3",
             "amazone_web_service_s3": "Amazon Web Service S3",
-            "alibaba_cloud_s3": "Alibaba Cloud S3"
+            "alibaba_cloud_s3": "Alibaba Cloud S3",
+            "minio": "Minio"
         },
         "invalid_volume_path": "Volumepad is vereist",
         "serverName#1_volumes": "ServerName#1 Volumes",
@@ -119,7 +120,9 @@
             "activation": "Activering",
             "deactivate": "Deactiveren",
             "order_id": "Bestelling Id",
-            "valid": "Geldig"
+            "valid": "Geldig",
+            "not_valid": "Niet Geldig",
+            "license_activated_successfully": "Licentie met succes geactiveerd"
         }
     },
     "label": {
@@ -288,7 +291,7 @@
         "mailing_list_not_exists_error_msg": "De Mailinglijst / Gebruiker bestaat niet. Controleer de spelling en probeer het opnieuw.",
         "mailing_list_already_in_list_error": "De Mailinglijst / Gebruiker staat al in de lijst",
         "fall_back_to_local_msg": "Probeer lokaal wachtwoordbeheer als andere methoden niet werken",
-        "delete_domain_with_account_content_msg": "{{domainName}} is niet leeg: het bevat {{domainAccounts}} systeemaccounts en {{domainAccounts}} gewone accounts. Weet u zeker dat u door wilt gaan met het verwijderen?",
+        "delete_domain_with_account_content_msg": "{{domainName}} is niet leeg: het bevat {{domainsSystemAccounts}} systeemaccounts en {{domainRegularAccounts}} gewone accounts. Weet u zeker dat u door wilt gaan met het verwijderen?",
         "delete_domain_error_msg": "U bent {{domainName}} aan het verwijderen. Weet u zeker dat u {{domainName}} wilt verwijderen?",
         "delete_cos_instruction_msg": "Als u op de knop JA, VERWIJDEREN klikt, zal de Standaard COS de verwijderde COS vervangen.",
         "public_service_hostname": "Public service-hostnaam",
@@ -924,10 +927,10 @@
         "ADD_NEW": "NIEUW TOEVOEGEN",
         "cos_primarybar_tooltip": "Bekijk en manage uw <bold>Dienstenklasse</bold> details, <bold>kenmerken, Server Pools</bold> en <bold>Geavanceerde</bold> settings.",
         "domain_primarybar_tooltip": "Bekijk uw <bold>domeindetails</bold> en <bold>manage</bold>hun hulpbronnen zoals <bold>accounts, mailinglijsten, hulpbronnen</bold> en <bold>meer</bold>.",
-        "logo_redirection_title": "Door op het logo te klikken worden de gebruikers doorverwezen naar…",
+        "logo_redirection_title": "Door op het Logo te klikken worden de gebruikers doorverwezen naar…",
         "quota": "Quota",
         "save_mails_to": "Mails opslaan in",
-        "backup_primarybar_tooltip": "Manage uw <bold>backup-services, bekijk</bold> hun<bold>status</bold>, de <bold>lijst met servers</bold> of <bold>importeer een bestaande</bold>.",
+        "backup_primarybar_tooltip": "Manage uw <bold>backup-services, </bold> bekijk hun<bold>status</bold>, de <bold>lijst met servers</bold> of <bold>importeer een bestaande</bold>.",
         "delegates": "GEDELEGEERDEN",
         "example_lbl": "Voorbeeld:",
         "mobile_app": "Mobiele app",
@@ -948,7 +951,92 @@
         "dont_save_a_copy_of_sent_messages": "Bewaar geen kopie van verzonden berichten",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Een kopie van verzonden berichten opslaan in mijn Verzonden map",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Een kopie van verzonden berichten opslaan in mijn map Verzonden en de map van de gedelegeerden",
-        "value": "Waarde"
+        "value": "Waarde",
+        "accounts_groups": "Accounts/Groepen",
+        "allow_unsecure": "Onveilig toestaan",
+        "backup_lbl": "<bold>Backup</bold>",
+        "bind_dn": "DN binden",
+        "byte_lbl": "BYTE",
+        "change_to_external": "WIJZIGIGEN NAAR EXTERN",
+        "change_to_internal": "WIJZIGIGEN NAAR EXTERN",
+        "close": "SLUITEN",
+        "close_domain": "DOMEIN SLUITEN",
+        "delete_account": "Weet u zeker dat u {{accountId}} wilt vernietigen?",
+        "delete_configuration": "CONFIGURATIE VERWIJDEREN",
+        "delete_domain_with_all_resources_post_msg": "Als u het niet zeker weet, kunt u het domein nog steeds \"sluiten\" om verdere interactie te voorkomen, waardoor alle beschikbare middelen overblijven in geval van behoeften. Deze operatie kan niet worden teruggedraaid.",
+        "delete_domain_with_all_resources_pre_msg": "Domein {{domainName}} is niet leeg en bevat",
+        "destroy_account": "Vernietigen",
+        "dn_settings": "DN-instellingen",
+        "domain_close_success_msg": "Domein is met succes gesloten",
+        "domains_lbl": "<bold>Domeinen</bold>",
+        "entity_id": "Entiteit-ID",
+        "entity_id_copied": "Entiteit-ID gekopieerd",
+        "export_configuration": "EXPORTCONFIGURATIE",
+        "external_server_address": "Extern serveradres",
+        "frequency_value_also_updated": "De GAL-frequentiewaarde is bijgewerkt",
+        "gal_update_freq_value": "GAL Update Frequentiewaarde",
+        "galsync_account": "GALSync-account",
+        "generate_sp_certificate": "SP-CERTIFICAAT GENEREREN",
+        "go_back_button": "GA TERUG",
+        "import": "IMPORT",
+        "inactive": "Inactief",
+        "keep_it_button": "NEE, HOUD HET",
+        "ldap_filter": "LDAP-filter",
+        "ldap_search_base": "LDAP-zoekbasis",
+        "ldap_url": "LDAP Url",
+        "notification_lbl": "<bold>Meldingen</bold>",
+        "operation_lbl": "<bold>Operaties</bold>",
+        "personalisation": "Personalisering",
+        "prefix_volume": "Voorvoegsel - {{volumePrefix}}",
+        "primary_color_for_dark_mode": "<bold>Primaire</bold> kleur voor donkere modus",
+        "primary_color_for_light_mode": "<bold>Primaire</bold> kleur voor lichte modus",
+        "primary_color_hint": "Om de Primaire kleur te veranderen, gebruik een HEX-kleurcode zoals in de plaatsaanduiding.",
+        "privacy_lbl": "<bold>Privacy</bold>",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "Importeer wat SAML-metagegevens in het bovenstaande veld om de kenmerken te zien",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Een kopie van verzonden berichten alleen opslaan in de verzendmap van gedelegeerde",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Een kopie van verzonden berichten opslaan in de map voor te delegeren en gedelegeerde berichten",
+        "select_an_attribute_to_show_its_value": "Selecteer een attribuut om de waarde ervan te tonen",
+        "select_attribute_to_show_its_value": "Selecteer een attribuut om de waarde ervan te tonen",
+        "server_type": "Servertype",
+        "service_url": "Service URL",
+        "service_url_copied": "ServiceURL gekopieerd",
+        "storage_lbl": "<bold>Opslag</bold>",
+        "storage_type": "Opslagstype",
+        "subscription_lbl": "<bold>Abonnementen</bold>",
+        "system_account": "Systeemaccounts",
+        "type_account_name_for_global_address_list": "Typ de accountnaam voor de Global Address List (GAL)",
+        "use_dn_password_to_bind_external_server": "DN/wachtwoord gebruiken voor binding met externe server",
+        "user_ssl": "SSL gebruiken",
+        "you_have_deleted_the_configuration": "U hebt de configuratie verwijderd",
+        "you_have_exported_the_configuration": "U hebt de configuratie geëxporteerd",
+        "you_have_generated_the_sp_certificate": "U hebt het SP-certificaat gegenereerd",
+        "you_have_imported_the_configuration": "U hebt de configuratie geïmporteerd",
+        "you_have_updated_attribute": "U hebt het attribuut {{ attributeName }} toegevoegd",
+        "attribute": "Attribuut",
+        "bind_password": "Wachtwoord binden",
+        "change_to": "WIJZIGEN IN",
+        "changes_save_success_msg": "Uw wijzigingen zijn opgeslagen!",
+        "color_code": "Kleurcode",
+        "class_of_service_lbl": "<bold>Klasse van dienstverlening</bold>",
+        "create_galsync_account_success_msg": "U hebt de GALSync-accountnaam gecreëerd",
+        "create_account_button": "ACCOUNT CREËREN",
+        "create_account_name": "ACCOUNTNAAM CREËREN",
+        "delegate_send_settings": "verzendingsinstellingen delegeren",
+        "delete_domain_with_all_resources_close_domain": "Als u het niet zeker weet, kunt u het domein nog steeds \"sluiten\" om verdere interactie te voorkomen, waardoor alle beschikbare middelen overblijven in geval van behoeften.",
+        "delete_domain_with_all_resources_msg": "Domein {{domainName}} is niet leeg en bevat {{domainRegularAccounts}} Accounts, {{domainSystemAccounts}} Systeemaccounts, {{distributionList}} Distributielijst, {{aliases}} Aliassen en {{resources}} Bronnen. Als u niet zeker bent, kunt u nog steeds het domein \"sluiten\" om verdere interactie te voorkomen, waarbij alle middelen beschikbaar blijven in geval van nood. Anders kunt u alle accounts en domein objecten permanent verwijderen. Deze operatie kan niet worden teruggedraaid.",
+        "delete_domain_with_all_resources_permanently_remove": "Anders kunt u alle accounts en domeinobjecten permanent verwijderen. Deze operatie kan niet worden teruggedraaid.",
+        "destroy": "VERNIETIGEN",
+        "destroy_account_button": "JA, VERNIETIG HET",
+        "gal_update_frequencey_value": "GAL Update Frequentiewaarde",
+        "volume_detail_success": "Alle wijzigingen zijn met succes opgeslagen",
+        "here_will_be_shown_the_attribute_value": "Hier wordt de Attribuutwaarde weergegeven",
+        "you_have_added_attribute": "U hebt het attribuut {{ attributeName }} toegevoegd",
+        "import_saml_metadata_from_idp": "Importeer de SAML-metadata uit de IDP",
+        "you_have_removed_attribute": "U hebt het attribuut {{ attributeName }} verwijderd",
+        "measure_unit": "Meeteenheid",
+        "model_label_create_account": "Account creëren",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Een kopie van verzonden berichten alleen opslaan in de verzendmap van gedelegeerde"
     },
     "timezone": {
         "europe_belgrade": "{{value}} Belgrado, Bratislava, Boedapest, Ljubljana, Praag",
@@ -1137,7 +1225,10 @@
         "unit_measure_days": "Dagen",
         "unit_measure_hours": "Uren",
         "unit_measure_minutes": "Minuten",
-        "unit_measure_seconds": "Seconden"
+        "unit_measure_seconds": "Seconden",
+        "ldap": "LDAP",
+        "unit_measure_milliseconds": "Milliseconden",
+        "page_size": "Paginagrootte"
     },
     "message": {
         "snackbar": {
@@ -1226,7 +1317,8 @@
         "bucket_configuration": "Bucketconfiguratie",
         "local_mountpoint": "Lokaal Mountpunt",
         "manage_external_volume": "Extern volume beheren",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "backup-configuratie"
     },
     "cos": {
         "calendar_options": "Agendaopties",
@@ -1379,7 +1471,8 @@
         "active_sync": "ActiveSync",
         "activesync_remote_access": "ActiveSync toegang op afstand",
         "files": "Drive",
-        "chats": "Chats"
+        "chats": "Chats",
+        "idp_configuration_saml_notes": "Ga naar uw IDP om uw SAML te configureren en de entiteit-id en serviceurl-waarden te kopiëren"
     },
     "locale": {
         "English": "Engels",
@@ -1418,7 +1511,8 @@
         "enable_activeSync_remote_access": "ActiveSync toegang op afstand inschakelen",
         "default_COS": "Standaard COS",
         "change_password_for_next_login": "Moet wachtwoord veranderen bij de volgende login",
-        "user_will_change_password_on_next_login": "Gebruiker wijzigt wachtwoord bij volgende aanmelding"
+        "user_will_change_password_on_next_login": "Gebruiker wijzigt wachtwoord bij volgende aanmelding",
+        "force_change_password": "Wijziging wachtwoord forceren"
     },
     "account": {
         "new": {
@@ -1582,7 +1676,31 @@
         "remove": "Verwijderen",
         "services": "Services",
         "status": "Status",
-        "send_check": "Versturen"
+        "send_check": "Versturen",
+        "able_to_see_password_once": " Let op: u kunt het wachtwoord <bold>slechts één keer zien.</bold>",
+        "account_with_read_write_rights": "Accounts met <bold>Lees7Schrijf-/</bold>rechten",
+        "add_the_account_group_with_selected_rights": "ACCOUNT/GROEP MET GESELECTEERDE RECHTEN TOEVOEGEN",
+        "account_read_only_rights": "Dit account heeft <bold>Alleen-lezen</bold> rechten op",
+        "account_read_write_rights": "Dit account heeft <bold>Lees/Schrijfrechten</bold> op",
+        "account_send_rights": "Dit account heeft <bold>Verzend</bold> rechten op",
+        "account_with_read_only_rights": "Accounts met <bold>Alleen-lezen</bold> rechten",
+        "passphrasaId": "Wachtwoordzin-ID",
+        "read_only": "Alleen lezen",
+        "read_write": "Lezen/Schrijven",
+        "remove_all": "ALLES VERWIJDEREN",
+        "send_on_behalf_of_check": "Verzenden namens",
+        "service_password": "Servicewachtwoord",
+        "services_passphrase": "Services-wachtwoordzin",
+        "services_passphrase_deleted_successfully": "Services Wachtwoordzin met succes verwijderd",
+        "start_typing_account": "Begin met het typen van een account/Groep om deze toe te voegen aan de rechten",
+        "switch_advanced": "Overschakelen naar Geavanceerde weergave",
+        "account_with_send_rights": "Account bij <bold>Zendenals/ZendenVoor</bold> rechten op",
+        "i_have_copied_the_password": "IK HEB HET WACHTWOORD GEKOPIEERD",
+        "labels_password": "Wachtwoord van",
+        "manage_no_rights_to_send_mails": "Beheren (geen rechten om e-mails te verzenden)",
+        "password_allow_once_user_to_connect": "Met dit wachtwoord kan de gebruiker verbinding maken met deze service zonder de 2FA, zelfs vanaf een niet-vertrouwd netwerk.",
+        "services_passphrase_created_successfully": "Services Wachtwoordzin met succes aangemaakt",
+        "switch_simplified": "Overschakelen naar vereenvoudigde weergave"
     },
     "privacy": {
         "allow_data_analytics": "Data-analyse mogelijk maken",
@@ -1625,14 +1743,17 @@
             "centralized": "Gecentraliseerd",
             "external": "Extern",
             "local": "Locaal",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "local_block_device": "Lokaal blokapparaat",
+            "object_storage": "Object Opslag"
         },
         "volume_header": {
             "id": "ID",
             "name": "Naam",
             "path": "Traject",
             "compression": "Compressie",
-            "current": "Huidig"
+            "current": "Huidig",
+            "storageType": "Opslagtype"
         },
         "volume_indexer_header": {
             "current": "Huidig",
@@ -1653,7 +1774,8 @@
         },
         "indexer_helperText": "Indexer",
         "primary_helperText": "Primair",
-        "secondary_helperText": "Secundair"
+        "secondary_helperText": "Secundair",
+        "create_storage_volume": "Opslagvolume creëren"
     },
     "hsm": {
         "all": "Alle",
@@ -1818,5 +1940,18 @@
         "load_and_verify_certificate": "Certificaat laden en verifiëren",
         "load_certificate": "CERTIFICAAT LADEN"
     },
-    "new": "Nieuw"
+    "new": "Nieuw",
+    "modal": {
+        "iscurrent_confirm": {
+            "confirm_label": "JA, GA VERDER",
+            "secondary_label": "NEE, GA TERUG",
+            "title": "U stelt {{name}} in als huidige",
+            "body_message": "De huidige {{type}} {{currentVolumeName}}.<br />Weet u zeker dat u <strong>{{name}} als actueel wilt instellen</strong>?"
+        }
+    },
+    "the_change_will_not_move_the_data": "De verandering zal de gegevens niet verplaatsen… !!",
+    "this_will_not_affect_data_already_stored": "Dit heeft geen invloed op reeds opgeslagen gegevens",
+    "warning": {
+        "is_current": "U moet eerder een ander volume als stroom instellen."
+    }
 }

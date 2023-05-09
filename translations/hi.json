@@ -825,7 +825,92 @@
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "भेजे गए मैसेज की एक कॉपी डेलीगेट के भेजे फोल्डर में सेव करें",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "भेजे गए मैसेज की एक कॉपी मेरे भेजे फोल्डर में सेव करें",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "भेजे मैसेजों की एक कॉपी मेरे भेजे और डेलीगेट के फोल्डर में सेव करें",
-        "value": "वैल्यू"
+        "value": "वैल्यू",
+        "backup_lbl": "<bold> बैकअप</bold>",
+        "delete_account": "क्या आप वाकई में {{accountId}} को ख़त्म करना चाहते हैं?",
+        "change_to_external": "बाहरी में बदलें",
+        "delete_domain_with_all_resources_close_domain": "यदि आप सुनिश्चित नहीं हैं, तो आप अभी भी किसी भी आगे की बातचीत से बचने के लिए डोमेन को \"बंद\" कर सकते हैं और जरूरतों के मामलों में उपलब्ध सभी संसाधनों को छोड़ सकते हैं।",
+        "close_domain": "डोमेन बंद करें",
+        "delete_domain_with_all_resources_msg": "डोमेन {{domainName}} खाली नहीं है और इसमें {{domainRegularAccounts}} अकाउंट, {{domainSystemAccounts}} सिस्टम अकाउंट, {{distributionList}} डिस्ट्रिब्यूशन लिस्ट, {{aliases}} उपनाम और {{resources}} संसाधन शामिल हैं। यदि आप सुनिश्चित नहीं हैं, तो आप अभी भी किसी भी आगे की बातचीत से बचने के लिए डोमेन को \"बंद\" कर सकते हैं और जरूरतों के मामलों में उपलब्ध सभी संसाधनों को छोड़ सकते हैं। आप सभी अकाउंट और डोमेन ऑब्जेक्ट स्थायी रूप से हटा भी सकते हैं। यह ऑपरेशन वापस रिवर्स नहीं किया जा सकेगा।",
+        "delete_domain_with_all_resources_post_msg": "यदि आप सुनिश्चित नहीं हैं, तो आप अभी भी किसी भी आगे की बातचीत से बचने के लिए डोमेन को \"बंद\" कर सकते हैं और जरूरतों के मामलों में उपलब्ध सभी संसाधनों को छोड़ सकते हैं। आप सभी अकाउंट और डोमेन ऑब्जेक्ट स्थायी रूप से हटा भी सकते हैं। यह ऑपरेशन वापस रिवर्स नहीं किया जा सकेगा।",
+        "destroy": "नष्ट करें",
+        "notification_lbl": "<bold>नोटिफ़िकेशन्स</bold>",
+        "primary_color_hint": "प्राथमिक रंग बदलने के लिए, कृपया प्लेसहोल्डर फॉर्मेट में HEX रंग कोड का उपयोग करें।",
+        "destroy_account": "नष्ट करें",
+        "operation_lbl": "<bold>ऑपरेशंस</bold>",
+        "primary_color_for_dark_mode": "डार्क मोड के लिए<bold> प्राथमिक</bold> रंग",
+        "system_account": "सिस्टम अकाउंट्स",
+        "select_an_attribute_to_show_its_value": "किसी एट्रिब्यूट की वैल्यू देखने के लिए उसे चुनें",
+        "you_have_exported_the_configuration": "आपने कॉन्फ़िगरेशन एक्सपोर्ट कर दिया है",
+        "you_have_removed_attribute": "आपने {{attributeName}} एट्रिब्यूट हटा दिया है",
+        "type_account_name_for_global_address_list": "ग्लोबल एड्रेस लिस्ट (GAL) के लिए अकाउंट का नाम टाइप करें",
+        "use_dn_password_to_bind_external_server": "बाहरी सर्वर को बाइंड करने के लिए DN/पासवर्ड का उपयोग करें",
+        "volume_detail_success": "सभी बदलाव सेव हो गए हैं",
+        "you_have_added_attribute": "आपने {{attributeName}} एट्रिब्यूट जोड़ा है",
+        "accounts_groups": "अकाउंट / ग्रुप",
+        "allow_unsecure": "अनसिक्योर की अनुमति दें",
+        "attribute": "एट्रीब्यूट",
+        "bind_dn": "DN बाइंड करें",
+        "bind_password": "पासवर्ड बाइंड करें",
+        "byte_lbl": "बाइट",
+        "change_to": "बदल कर यह करें",
+        "change_to_internal": "आंतरिक में बदलें",
+        "changes_save_success_msg": "आपके बदलाव सेव हो गए हैं!",
+        "class_of_service_lbl": "<bold>Class of Service</bold>",
+        "close": "बंद करें",
+        "color_code": "रंग कोड",
+        "create_account_button": "अकाउंट बनाएँ",
+        "create_account_name": "अकाउंट नाम बनाएँ",
+        "create_galsync_account_success_msg": "आपने GALSync अकाउंट नेम बनाया है",
+        "delegate_send_settings": "डेलिगेट भेजने की सेटिंग्स",
+        "delete_configuration": "कॉन्फ़िगरेशन डिलीट करें",
+        "delete_domain_with_all_resources_permanently_remove": "आप सभी अकाउंट और डोमेन ऑब्जेक्ट स्थायी रूप से हटा भी सकते हैं। यह ऑपरेशन वापस रिवर्स नहीं किया जा सकेगा।",
+        "delete_domain_with_all_resources_pre_msg": "डोमेन {{domainName}} खाली नहीं है और इसमें",
+        "destroy_account_button": "हाँ, इसे नष्ट करें",
+        "dn_settings": "DN सेटिंग्स",
+        "domain_close_success_msg": "डोमेन बंद कर दिया गया",
+        "domains_lbl": "<bold>डोमेन</bold>",
+        "entity_id": "एंटिटी आईडी",
+        "entity_id_copied": "एंटिटी आईडी कॉपी की गई",
+        "export_configuration": "कॉन्फ़िगरेशन एक्सपोर्ट करें",
+        "external_server_address": "एक्सटर्नल सर्वर एड्रेस",
+        "frequency_value_also_updated": "GAL फ्रीक्वेंसी वैल्यू अपडेट कर दी गई है",
+        "gal_update_freq_value": "गैल अपडेट फ्रीक्वेंसी वैल्यू",
+        "gal_update_frequencey_value": "गैल अपडेट फ्रीक्वेंसी वैल्यू",
+        "galsync_account": "GALSync अकाउंट",
+        "generate_sp_certificate": "SP सर्टिफिकेट जनरेट करें",
+        "go_back_button": "वापस जाएँ",
+        "here_will_be_shown_the_attribute_value": "यहां एट्रिब्यूट वैल्यू दिखाई जाएगी",
+        "import": "इम्पोर्ट करें",
+        "import_saml_metadata_from_idp": "IDP से SAML मेटाडाटा इम्पोर्ट करें",
+        "inactive": "निष्क्रिय",
+        "keep_it_button": "नहीं, इसे रखें",
+        "ldap_filter": "LDAP फ़िल्टर",
+        "ldap_search_base": "LDAP सर्च बेस",
+        "ldap_url": "LDAP Url",
+        "measure_unit": "मापने की इकाई",
+        "model_label_create_account": "अकाउंट बनाएँ",
+        "personalisation": "वैयक्तिकरण",
+        "prefix_volume": "प्रीफ़िक्स - {{volumePrefix}}",
+        "primary_color_for_light_mode": "लाइट मोड के लिए<bold> प्राथमिक</bold> रंग",
+        "privacy_lbl": "<bold>गोपनीयता</bold>",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "कृपया इसके एट्रिब्यूट देखने के लिए ऊपर फ़ील्ड में कुछ SAML मेटाडेटा इम्पोर्ट करें",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "भेजे गए मैसेजेस की कॉपी को केवल डेलिगेटेड प्रेषित फ़ोल्डर में सेव करें",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "भेजे गए मैसेजेस की कॉपी को केवल डेलिगेट के भेजे गए फ़ोल्डर में सेव करें",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "भेजे गए मैसेजेस की कॉपी को डेलीगेट और डेलीगेट किए गए फ़ोल्डर में सेव करें",
+        "select_attribute_to_show_its_value": "किसी एट्रिब्यूट की वैल्यू देखने के लिए उसे चुनें",
+        "server_type": "सर्वर प्रकार",
+        "service_url": "सर्विस यूआरएल",
+        "service_url_copied": "ServiceURL कॉपी हुआ",
+        "storage_lbl": "<bold>स्टोरेज</bold>",
+        "storage_type": "स्टोरेज प्रकार",
+        "subscription_lbl": "<bold>सब्स्क्रिप्शन</bold>",
+        "user_ssl": "SSL का उपयोग करें",
+        "you_have_deleted_the_configuration": "आपने कॉन्फ़िगरेशन डिलीट कर दिया है",
+        "you_have_generated_the_sp_certificate": "आपने SP सर्टिफिकेट जनरेट कर लिया है",
+        "you_have_imported_the_configuration": "आपने कॉन्फ़िगरेशन इम्पोर्ट कर लिया है",
+        "you_have_updated_attribute": "आपने {{ attributeName }} एट्रिब्यूट अपडेट कर लिया है"
     },
     "timezone": {
         "asia_tomsk": "{{value}} तोम्स्क",
@@ -1049,7 +1134,8 @@
             "emc_s3": "EMC S3",
             "scality_s3": "Scality S3",
             "openio_s3": "OpenIO S3",
-            "yandex_s3": "Yandex S3"
+            "yandex_s3": "Yandex S3",
+            "minio": "मिनियो"
         },
         "invalid_compression_thresold": "कंप्रेशन की सीमा जरूरी है",
         "invalid_prefix": "प्रीफ़िक्स में स्पेस नहीं होने चाहिए। सिर्फ a-z, A-Z अक्षर और स्पेशल कैरक्टर /- की ही अनुमति है।",
@@ -1086,7 +1172,9 @@
             "activation": "एक्टिवेशन",
             "deactivate": "डीएक्टिवेट करें",
             "order_id": "ऑर्डर आईडी",
-            "valid": "मान्य"
+            "valid": "मान्य",
+            "license_activated_successfully": "लाइसेंस एक्टिवेट हो गया",
+            "not_valid": "मान्य नहीं है"
         }
     },
     "domain": {
@@ -1137,7 +1225,10 @@
         "gal_change_mode_internal": "आंतरिक",
         "unit_measure_hours": "घंटे",
         "unit_measure_minutes": "क्षण",
-        "unit_measure_seconds": "सेकंड"
+        "unit_measure_seconds": "सेकंड",
+        "ldap": "LDAP",
+        "page_size": "पेज साइज़",
+        "unit_measure_milliseconds": "मिलीसेकंड"
     },
     "message": {
         "snackbar": {
@@ -1226,7 +1317,8 @@
         "bucket_configuration": "बकेट कॉन्फ़िगुरेशन",
         "local_mountpoint": "लोकल माउंटपॉइंट",
         "manage_external_volume": "एक्सटर्नल वॉल्यूम मैनेज करें",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "बैकअप कॉन्फ़िगुरेशन"
     },
     "cos": {
         "calendar_options": "कैलेंडर विकल्प",
@@ -1379,13 +1471,15 @@
         "dark_mode": "डार्क मोड",
         "activesync_remote_access": "ActiveSync रिमोट एक्सेस",
         "chats": "चैट",
-        "files": "फाइलें"
+        "files": "फाइलें",
+        "idp_configuration_saml_notes": "अपने SAML को कॉन्फ़िगर करने के लिए अपनी IDP पर जाएं और entityid और serviceurl कॉपी करें"
     },
     "accountDetails": {
         "enable_activeSync_remote_access": "ActiveSync रिमोट एक्सेस चालू करें",
         "default_COS": "डिफ़ाल्ट COS",
         "change_password_for_next_login": "अगले लॉगिन में पासवर्ड बदलना जरूरी है",
-        "user_will_change_password_on_next_login": "यूज़र अगले लॉगिन पर अपना पासवर्ड बदलेगा"
+        "user_will_change_password_on_next_login": "यूज़र अगले लॉगिन पर अपना पासवर्ड बदलेगा",
+        "force_change_password": "पासवर्ड बदलने के लिए फोर्स करें"
     },
     "locale": {
         "English": "अँग्रेजी",
@@ -1581,7 +1675,32 @@
         "services": "सेवाएँ",
         "status": "स्थिति",
         "DELETE": "डिलीट करें",
-        "SAVE": "सेव करे"
+        "SAVE": "सेव करे",
+        "able_to_see_password_once": " कृपया ध्यान देंः आप <bold>केवल एक बार</bold> पासवर्ड देख पाएंगे।",
+        "account_read_only_rights": "इस अकाउंट में <bold>केवल पढ़ने</bold> के अधिकार हैं",
+        "account_read_write_rights": "इस अकाउंट में <bold>पढ़ने / लिखने </bold> के अधिकार हैं",
+        "account_send_rights": "इस अकाउंट में <bold>भेजने</bold> के अधिकार हैं",
+        "account_with_read_only_rights": "<bold>केवल पढ़ने</bold> के अधिकार वाले अकाउंट",
+        "account_with_read_write_rights": "<bold>पढ़ने/लिखने</bold> के अधिकार वाले अकाउंट",
+        "account_with_send_rights": "<bold>इस रूप में भेजें / इनके लिए भेजें</bold> अधिकारों वाले अकाउंट",
+        "add_the_account_group_with_selected_rights": "चुने हुए अधिकारों वाले अकाउंट / ग्रुप जोड़ें",
+        "i_have_copied_the_password": "मैंने पासवर्ड कॉपी कर लिया है",
+        "labels_password": "का पासवर्ड",
+        "manage_no_rights_to_send_mails": "मैनेज करें (मेल भेजने के कोई अधिकार नहीं)",
+        "passphrasaId": "पासफ्रेज आईडी",
+        "password_allow_once_user_to_connect": "इस पासवर्ड से यूज़र को एक गैर - विश्वसनीय नेटवर्क से भी 2FA के बिना इस सर्विस से कनेक्ट कर सकेगा।",
+        "read_only": "सिर्फ पढ़ने के लिए",
+        "read_write": "पढ़ना / लिखना",
+        "remove_all": "सभी हटाएं",
+        "services_passphrase_deleted_successfully": "सर्विस पासफ़्रेज़ डिलीट किया गया",
+        "send_on_behalf_of_check": "इनकी ओर से भेजें",
+        "service_password": "सर्विस पासवर्ड",
+        "services_passphrase": "सर्विस पासफ़्रेज़",
+        "services_passphrase_created_successfully": "सर्विस पासफ़्रेज़ सफलतापूर्वक बनाया गया",
+        "start_typing_account": "अधिकारों में जोड़ने के लिए कोई अकाउंट / ग्रुप टाइप करना शुरू करें",
+        "switch_simplified": "सरलीकृत व्यू में ले जाएँ",
+        "switch_advanced": "एड्वान्स्ड व्यू में ले जाएँ",
+        "as": "जैसे"
     },
     "privacy": {
         "allow_live_survey_feedbacks": "फीडबैक के लिए सर्वेज़ की अनुमति दें",
@@ -1623,7 +1742,9 @@
             "centralized": "केन्द्रित",
             "external": "एक्सटर्नल",
             "local": "लोकल",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "local_block_device": "लोकल ब्लॉक डिवाइस",
+            "object_storage": "ऑब्जेक्ट स्टोरेज"
         },
         "volume_config_header": {
             "name": "नाम",
@@ -1636,7 +1757,8 @@
             "current": "वर्तमान",
             "id": "आईडी",
             "name": "नाम",
-            "path": "पाथ"
+            "path": "पाथ",
+            "storageType": "स्टोरेज प्रकार"
         },
         "volume_indexer_header": {
             "current": "वर्तमान",
@@ -1651,7 +1773,8 @@
         },
         "indexer_helperText": "इंडेक्सर",
         "primary_helperText": "प्राइमरी",
-        "secondary_helperText": "सेकंडरी"
+        "secondary_helperText": "सेकंडरी",
+        "create_storage_volume": "स्टोरेज वॉल्यूम बनाएँ"
     },
     "click_new_bucket_button_to_create_new_one": "नई बकेट बटन क्लिक करके एक नई बनाएँ।",
     "hsm": {
@@ -1817,5 +1940,18 @@
         "load_certificate": "सर्टिफिकेट लोड करें",
         "load": "लोड करें"
     },
-    "new": "नया"
+    "new": "नया",
+    "modal": {
+        "iscurrent_confirm": {
+            "body_message": "वर्तमान {{type }}{{currentVolumeName}}.<br />क्या आप वाकई में <strong>{{name}} को मौजूदा नाम के रूप में सेट करना चाहते हैं</strong> ?",
+            "confirm_label": "हाँ, आगे बढ़ें",
+            "secondary_label": "नहीं, वापस जाएँ",
+            "title": "आप {{name}} को वर्तमान नाम के रूप में सेट कर रहे हैं"
+        }
+    },
+    "warning": {
+        "is_current": "आपको पहले कोई और वॉल्यूम मौजूदा के रूप में सेट करना होगा।"
+    },
+    "the_change_will_not_move_the_data": "इस बदलाव से डेटा स्थानांतरित नहीं होगा... !!",
+    "this_will_not_affect_data_already_stored": "यह पहले से स्टोर डेटा को प्रभावित नहीं करेगा"
 }

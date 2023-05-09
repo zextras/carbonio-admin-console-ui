@@ -44,9 +44,8 @@ const CosGeneralInformation: FC = () => {
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
-			cosInformation.map((item: any) => {
+			cosInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			setCosName(obj.cn);
 			if (obj.zimbraNotes) {

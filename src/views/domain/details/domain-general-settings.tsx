@@ -80,19 +80,28 @@ const DomainGeneralSettings: FC = () => {
 				value: ACTIVE
 			},
 			{
-				label: t('label.closed', 'Closed'),
+				label: `${t('label.closed', 'Closed')} (${t('label.soft_deleted', 'Soft-deleted')})`,
 				value: CLOSED
 			},
 			{
-				label: t('label.locked', 'Locked'),
+				label: `${t('label.locked', 'Locked')} (${t(
+					'label.login_is_disabled',
+					'Login is disabled'
+				)})`,
 				value: LOCKED
 			},
 			{
-				label: t('label.maintenance', 'Maintenance'),
+				label: `${t('label.in_maintenance', 'In maintenance')} (${t(
+					'label.login_is_disabled',
+					'Login is disabled'
+				)})`,
 				value: MAINTENANCE
 			},
 			{
-				label: t('label.suspended', 'Suspended'),
+				label: `${t('label.suspended', 'Suspended')} (${t(
+					'label.login_is_disabled',
+					'Login is disabled'
+				)})`,
 				value: SUSPENDED
 			}
 		],
@@ -192,9 +201,8 @@ const DomainGeneralSettings: FC = () => {
 		});
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
-			domainInformation.map((item: any) => {
+			domainInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			setDomainName(obj.zimbraDomainName);
 			if (obj.zimbraPrefTimeZoneId) {
@@ -493,19 +501,19 @@ const DomainGeneralSettings: FC = () => {
 		const dlDeleteBatch: any[] = [];
 		const resourceDeleteBatch: any[] = [];
 
-		domainDirectoies.account.map((item: any): any =>
+		domainDirectoies.account.forEach((item: any): any =>
 			accountDeleteBatch.push({
 				id: item?.id,
 				_jsns: 'urn:zimbraAdmin'
 			})
 		);
-		domainDirectoies.dl.map((item: any): any =>
+		domainDirectoies.dl.forEach((item: any): any =>
 			dlDeleteBatch.push({
 				id: { _content: item?.id },
 				_jsns: 'urn:zimbraAdmin'
 			})
 		);
-		domainDirectoies.calresource.map((item: any): any =>
+		domainDirectoies.calresource.forEach((item: any): any =>
 			resourceDeleteBatch.push({
 				id: item?.id,
 				_jsns: 'urn:zimbraAdmin'
@@ -544,7 +552,7 @@ const DomainGeneralSettings: FC = () => {
 				(data: SearchDomainDirectoies) => {
 					setIsRequestInProgress(false);
 					if (data?.account?.length) {
-						data.account.map((item: AccountDlAlias) => {
+						data.account.forEach((item: AccountDlAlias) => {
 							const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
 							if (zimbraIsSystemAccount) {
 								// eslint-disable-next-line no-param-reassign
@@ -836,54 +844,6 @@ const DomainGeneralSettings: FC = () => {
 							>
 								<Divider />
 							</Container>
-
-							<ListRow>
-								<Container
-									orientation="horizontal"
-									width="99%"
-									crossAlignment="center"
-									mainAlignment="space-between"
-									background="#D3EBF8"
-									padding={{
-										all: 'large'
-									}}
-									style={{ margin: '8px' }}
-								>
-									<Row takeAvwidth="fill" mainAlignment="flex-start">
-										<Padding horizontal="small">
-											<CustomIcon icon="InfoOutline"></CustomIcon>
-										</Padding>
-									</Row>
-									<Row
-										takeAvwidth="fill"
-										mainAlignment="flex-start"
-										width="100%"
-										padding={{
-											all: 'small'
-										}}
-									>
-										<Text overflow="break-word">
-											{t(
-												'label.mx_record_information_msg',
-												'If your MX records point to a spam-relay or any other external server, enter the name of that server in "Inbound SMTP Host Name" field.'
-											)}
-										</Text>
-									</Row>
-								</Container>
-							</ListRow>
-
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.inbound_smtp_host_name', 'Inbound SMTP Host Name')}
-										value={zimbraDNSCheckHostname}
-										background="gray5"
-										onChange={(e: any): any => {
-											setZimbraDNSCheckHostname(e.target.value);
-										}}
-									/>
-								</Container>
-							</ListRow>
 
 							<ListRow>
 								<Container padding={{ all: 'small' }}>

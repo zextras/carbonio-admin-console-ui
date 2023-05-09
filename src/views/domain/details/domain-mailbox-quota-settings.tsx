@@ -219,11 +219,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	}, [offset, limit, selectedSortType, domainData?.zimbraDomainName, getQuotaData]);
 
 	useEffect(() => {
-		if (selectedSortType) {
-			getQuotaUsageInformation();
-		} else {
-			getQuotaUsageInformation();
-		}
+		getQuotaUsageInformation();
 	}, [selectedSortType, getQuotaUsageInformation]);
 
 	useEffect(() => {
