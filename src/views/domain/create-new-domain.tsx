@@ -293,8 +293,8 @@ const CreateDomain: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t(
-										'label.max_number_account_of_this_domain_manage',
-										'The max number of accounts this domain can manage'
+										'label.max_manageable_account_for_the_domain',
+										'Max manageable account for the domain (0=unlimited)'
 									)}
 									background="gray5"
 									value={zimbraDomainMaxAccounts}
@@ -306,8 +306,8 @@ const CreateDomain: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t(
-										'label.default_mail_quota_for_account_domain',
-										'The default email quota for each account in the domain'
+										'label.max_mainbox_quota_for_the_domain_in_bytes',
+										'Max mailbox quota for the domain (bytes) (0=unlimited)'
 									)}
 									background="gray5"
 									value={zimbraMailDomainQuota}
@@ -368,7 +368,7 @@ const CreateDomain: FC = () => {
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.gay_sync_account_name', 'GAL Sync Account Name')}
+									label={t('label.gal_folder_name', 'GAL folder name')}
 									background="gray5"
 									value={galSyncAccountName}
 									onChange={(e: any): any => {
@@ -391,10 +391,7 @@ const CreateDomain: FC = () => {
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t(
-										'label.datasource_name_for_internal_gal',
-										'Datasource name for internal GAL'
-									)}
+									label={t('label.datasource_name', 'Datasource name')}
 									background="gray5"
 									value={dataSourceName}
 									onChange={(e: any): any => {

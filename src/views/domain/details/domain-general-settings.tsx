@@ -768,23 +768,23 @@ const DomainGeneralSettings: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
-											'label.max_number_account_of_this_domain_manage',
-											'The max number of accounts this domain can manage'
+											'label.max_manageable_account_for_the_domain',
+											'Max manageable account for the domain (0=unlimited)'
 										)}
 										value={zimbraDomainMaxAccounts}
 										background="gray6"
-										readOnly
+										disabled
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={`${t(
-											'label.default_mail_quota_for_account_domain',
-											'The default email quota for each account in the domain'
-										)} (${t('label.byte_lbl', 'BYTE')})`}
+										label={t(
+											'label.max_mainbox_quota_for_the_domain_in_bytes',
+											'Max mailbox quota for the domain (bytes) (0=unlimited)'
+										)}
 										value={zimbraMailDomainQuota}
 										background="gray6"
-										readOnly
+										disabled
 									/>
 								</Container>
 							</ListRow>

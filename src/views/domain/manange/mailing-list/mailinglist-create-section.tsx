@@ -189,24 +189,6 @@ const MailingListCreateSection: FC<any> = () => {
 						/>
 					</Container>
 				</ListRow>
-
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Input
-							label={t('label.description', 'Description')}
-							backgroundColor="gray6"
-							size="medium"
-							value={mailingListDetail?.description}
-							readOnly
-						/>
-					</Container>
-				</ListRow>
-
 				{!mailingListDetail?.dynamic && (
 					<Row>
 						<Container
