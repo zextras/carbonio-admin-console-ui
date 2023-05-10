@@ -31,7 +31,7 @@ interface VolumeDetailObj {
 }
 
 const BucketOperation: FC = () => {
-	const { operation, server }: { operation: string; server: string } = useParams();
+	const { operation }: { operation: string } = useParams();
 	const [volumeDetail, setVolumeDetail] = useState<VolumeDetailObj>({
 		id: '',
 		volumeName: '',

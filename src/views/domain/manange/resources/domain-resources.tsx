@@ -124,76 +124,76 @@ const DomainResources: FC = () => {
 						rList.push({
 							id: item?.id,
 							columns: [
-								<Text
-									size="medium"
-									weight="light"
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+									</Text>
+								</Container>,
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.name}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.name}
+									</Text>
+								</Container>,
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
+									</Text>
+								</Container>,
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
-										? moment(
-												item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content,
-												'YYYYMMDDHHmmss.Z'
-										  ).format('YY/MM/DD | hh:MM')
-										: t('label.never_logged_in', 'Never logged In')}
-								</Text>,
-								<Text
-									size="medium"
-									weight="light"
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
+											? moment(
+													item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content,
+													'YYYYMMDDHHmmss.Z'
+											  ).format('YY/MM/DD | hh:MM')
+											: t('label.never_logged_in', 'Never logged In')}
+									</Text>
+								</Container>,
+								<Container
 									key={item?.id}
-									color="gray0"
+									crossAlignment="flex-start"
 									onClick={(e: { stopPropagation: () => void }): void => {
 										e.stopPropagation();
 										setSelectedResourceList(item);
 										handleClick(e);
 									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'description')?._content}
-								</Text>
+									<Text size="medium" weight="light" key={item?.id} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'description')?._content}
+									</Text>
+								</Container>
 							],
 							item,
 							clickable: true
@@ -330,7 +330,7 @@ const DomainResources: FC = () => {
 													: ''
 										};
 										const attrList: { n: string; _content: string }[] = [];
-										Object.keys(signtureAttr).map((ele: any) =>
+										Object.keys(signtureAttr).forEach((ele: any) =>
 											attrList.push({ n: ele, _content: signtureAttr[ele] })
 										);
 										modifyCalendarResource(resourceId, attrList)

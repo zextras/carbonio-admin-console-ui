@@ -47,7 +47,10 @@
         "unit_measure_days": "天",
         "unit_measure_hours": "小时",
         "unit_measure_minutes": "分钟",
-        "unit_measure_seconds": "秒"
+        "unit_measure_seconds": "秒",
+        "ldap": "LDAP",
+        "page_size": "页面大小",
+        "unit_measure_milliseconds": "毫秒"
     },
     "label": {
         "account": "账户",
@@ -377,7 +380,7 @@
         "displayed_name": "显示名称",
         "deligated_admin_help_url": "委派管理员帮助URL",
         "deleting_cos_msg": "正在删除 <bold>{{cosname}}</bold>",
-        "delete_domain_with_account_content_msg": "{{domainName}}不为空：其中包含{{domainAccounts}}系统账户和{{domainAccounts}}普通账户。确定要继续删除吗？",
+        "delete_domain_with_account_content_msg": "{{domainName}}不为空：其中包含{{domainSystemAccounts}}系统账户和{{domainRegularAccounts}}普通账户。确定要继续删除吗？",
         "delete_domain_success_msg": "域已成功删除",
         "delete_domain_error_msg": "您正在删除{{domainName}}。确定要删除{{domainName}}吗？",
         "delete_domain": "删除域",
@@ -864,7 +867,7 @@
         "operation_primarybar_tooltip": "查看并管理<bold>操作，可运行、管理</bold>或<bold>结束</bold>操作。",
         "storage_primarybar_tooltip": "查看您的<bold>服务器状态</bold>、<bold>卷</bold>以及 <bold>HSM 策略</bold>。您还可<bold>连接数据桶</bold>。",
         "subscription_primarybar_tooltip": "查看您的<bold>订阅详情</bold>且/或<bold>激活</bold>新的订阅。",
-        "backup_primarybar_tooltip": "管理您的<bold>备份服务，查看</bold>其<bold>状态</bold>、<bold>服务器列表</bold>或<bold>导入现有选项</bold>。",
+        "backup_primarybar_tooltip": "管理您的<bold>备份服务</bold>，查看其<bold>状态</bold>、<bold>服务器列表</bold>或<bold>导入现有备份</bold>。",
         "cos_primarybar_tooltip": "查看并管理您的<bold>服务类</bold>详情、<bold>功能、服务器池</bold>以及<bold>高级</bold>设置。",
         "notification_primarybar_tooltip": "查看您的<bold>消息通知</bold>，将其标记为<bold>已读</bold>或<bold>复制</bold>以对其进行分享。",
         "privacy_primarybar_tooltip": "管理<bold>隐私</bold>设置，如<bold>数据报告、错误日志</bold>以及<bold>调查</bold>。",
@@ -875,7 +878,92 @@
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "将已发送消息副本保存至委派“已发送”文件夹",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "将已发送消息副本保存至我的“已发送”文件夹",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "将已发送消息副本保存至我的“已发送”文件夹与委派文件夹",
-        "value": "值"
+        "value": "值",
+        "change_to_external": "更改为外部",
+        "change_to_internal": "更改为内部",
+        "close_domain": "关闭域",
+        "class_of_service_lbl": "<bold>服务类</bold>",
+        "color_code": "颜色代码",
+        "create_account_button": "创建账户",
+        "create_account_name": "创建账户名",
+        "create_galsync_account_success_msg": "您已创建GALSync账户名",
+        "delegate_send_settings": "委派发送设置",
+        "delete_account": "确定要销毁{{accountId}}吗？",
+        "delete_configuration": "删除配置",
+        "delete_domain_with_all_resources_close_domain": "如果您不确定，则可“关闭”此域以避免一切进一步交互，保留所有资源以备不时之需。",
+        "delete_domain_with_all_resources_msg": "域{{domainName}}不为空且包含{{domainRegularAccounts}}账户、{{domainSystemAccounts}}系统账户、{{distributionList}}分发列表、{{aliases}}别名以及{{resources}}资源。如果您不确定，则可“关闭”此域以避免一切进一步交互，保留所有资源以备不时之需。或者，您可永久移除所有账户和域对象。此操作无法撤销。",
+        "delete_domain_with_all_resources_permanently_remove": "或者，您可永久移除所有账户和域对象。此操作无法撤销。",
+        "dn_settings": "DN设置",
+        "domain_close_success_msg": "域已成功关闭",
+        "entity_id": "实体ID",
+        "entity_id_copied": "实体ID已复制",
+        "export_configuration": "导出配置",
+        "external_server_address": "外部服务器地址",
+        "gal_update_freq_value": "GAL更新频率值",
+        "gal_update_frequencey_value": "GAL更新频率值",
+        "galsync_account": "GALSync账户",
+        "generate_sp_certificate": "生成SP证书",
+        "here_will_be_shown_the_attribute_value": "这里将展示属性值",
+        "import": "导入",
+        "import_saml_metadata_from_idp": "从IdP导入SAML元数据",
+        "inactive": "不活动",
+        "keep_it_button": "不，保留",
+        "ldap_filter": "LDAP过滤条件",
+        "ldap_search_base": "LDAP搜索库",
+        "ldap_url": "LDAP URL",
+        "server_type": "服务器类型",
+        "primary_color_hint": "如需更改主色调，请根据占位符的格式使用HEX颜色代码。",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "在委派人与被委派人的发送文件夹中保存已发送消息的副本",
+        "select_an_attribute_to_show_its_value": "选择一个属性以展示其值",
+        "select_attribute_to_show_its_value": "选择一个属性以展示其值",
+        "service_url": "服务URL",
+        "service_url_copied": "服务URL已复制",
+        "you_have_deleted_the_configuration": "您已删除配置",
+        "you_have_exported_the_configuration": "您已导出配置",
+        "primary_color_for_light_mode": "浅色模式<bold>主</bold>色调",
+        "you_have_imported_the_configuration": "您已导入配置",
+        "you_have_generated_the_sp_certificate": "您已生成SP证书",
+        "you_have_removed_attribute": "您已移除{{ attributeName }}属性",
+        "you_have_updated_attribute": "您已更新{{ attributeName }}属性",
+        "domains_lbl": "<bold>域</bold>",
+        "primary_color_for_dark_mode": "深色模式<bold>主</bold>色调",
+        "accounts_groups": "账户/群组",
+        "allow_unsecure": "允许不安全连接",
+        "attribute": "属性",
+        "bind_dn": "绑定DN",
+        "bind_password": "绑定密码",
+        "backup_lbl": "<bold>备份</bold>",
+        "byte_lbl": "字节",
+        "change_to": "更改为",
+        "changes_save_success_msg": "您的变更已保存！",
+        "close": "关闭",
+        "delete_domain_with_all_resources_post_msg": "如果您不确定，则可“关闭”此域以避免一切进一步交互，保留所有资源以备不时之需。或者，您可永久移除所有账户和域对象。此操作无法撤销。",
+        "delete_domain_with_all_resources_pre_msg": "域{{domainName}}不为空且包含",
+        "destroy": "销毁",
+        "destroy_account": "销毁",
+        "destroy_account_button": "是的，销毁",
+        "frequency_value_also_updated": "GAL频率值已更新",
+        "go_back_button": "返回",
+        "measure_unit": "度量单位",
+        "model_label_create_account": "创建账户",
+        "notification_lbl": "<bold>通知</bold>",
+        "operation_lbl": "<bold>操作</bold>",
+        "personalisation": "个性化",
+        "prefix_volume": "前缀 - {{volumePrefix}}",
+        "privacy_lbl": "<bold>隐私</bold>",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "仅在被委派人的发送文件夹中保存已发送消息的副本",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "请在上方的字段中导入一些SAML元数据以查看其属性",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "仅在委派人的发送文件夹中保存已发送消息的副本",
+        "storage_type": "存储类型",
+        "system_account": "系统账户",
+        "type_account_name_for_global_address_list": "输入全局地址列表（GAL）账户名称",
+        "storage_lbl": "<bold>存储</bold>",
+        "subscription_lbl": "<bold>订阅</bold>",
+        "use_dn_password_to_bind_external_server": "使用DN/密码以绑定外部服务器",
+        "user_ssl": "使用SSL",
+        "volume_detail_success": "所有变更均已成功保存",
+        "you_have_added_attribute": "您已添加{{ attributeName }}属性"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",
@@ -1099,7 +1187,8 @@
             "openio_s3": "OpenIO S3",
             "custom_s3": "Custom S3",
             "scality_s3": "Scality S3",
-            "yandex_s3": "Yandex S3"
+            "yandex_s3": "Yandex S3",
+            "minio": "Minio"
         },
         "invalid_compression_thresold": "需要压缩阈值",
         "invalid_volume_name": "请填写卷名称字段。",
@@ -1136,7 +1225,9 @@
             "activation": "激活",
             "deactivate": "停用",
             "order_id": "订单ID",
-            "valid": "有效"
+            "valid": "有效",
+            "license_activated_successfully": "许可激活成功",
+            "not_valid": "无效"
         }
     },
     "message": {
@@ -1226,7 +1317,8 @@
         "bucket_configuration": "桶配置",
         "local_mountpoint": "本地挂载点",
         "ms": "MS",
-        "manage_external_volume": "管理外部卷"
+        "manage_external_volume": "管理外部卷",
+        "backup_configuration": "备份配置"
     },
     "cos": {
         "calendar_options": "日历选项",
@@ -1379,13 +1471,15 @@
         "dark_mode": "深色模式",
         "activesync_remote_access": "ActiveSync远程访问",
         "chats": "聊天",
-        "files": "文件"
+        "files": "文件",
+        "idp_configuration_saml_notes": "前往您的IdP以配置SAML并复制entityid与serviceurl值"
     },
     "accountDetails": {
         "enable_activeSync_remote_access": "启用ActiveSync远程访问",
         "default_COS": "默认COS",
         "change_password_for_next_login": "必须在下次登录时更改密码",
-        "user_will_change_password_on_next_login": "用户将在下次登录时更改密码"
+        "user_will_change_password_on_next_login": "用户将在下次登录时更改密码",
+        "force_change_password": "强制更改密码"
     },
     "locale": {
         "English": "英语",
@@ -1593,7 +1687,31 @@
         "remove": "移除",
         "send_check": "发送",
         "services": "服务",
-        "status": "状态"
+        "status": "状态",
+        "add_the_account_group_with_selected_rights": "添加带有所选权限的账户/群组",
+        "account_with_send_rights": "开启<bold>发送/代表发送</bold>权限的账户",
+        "account_with_read_write_rights": "开启<bold>读取/写入</bold>权限的账户",
+        "able_to_see_password_once": " 请注意：此密码将仅展示<bold>一次</bold>。",
+        "account_read_only_rights": "此账户已开启<bold>只读</bold>权限",
+        "account_read_write_rights": "此账户已开启<bold>读取/写入</bold>权限",
+        "account_send_rights": "此账户已开启<bold>发送</bold>权限",
+        "account_with_read_only_rights": "开启<bold>只读</bold>权限的账户",
+        "i_have_copied_the_password": "我已复制密码",
+        "labels_password": "的密码",
+        "manage_no_rights_to_send_mails": "管理（无邮件发送权限）",
+        "passphrasaId": "密码词组ID",
+        "password_allow_once_user_to_connect": "该密码将允许用户在没有2FA的情况下连接至此服务（可从不受信任的网络中进行连接）。",
+        "read_only": "只读",
+        "read_write": "读取/写入",
+        "remove_all": "移除全部",
+        "send_on_behalf_of_check": "代表发送",
+        "service_password": "服务密码",
+        "services_passphrase": "服务密码词组",
+        "services_passphrase_created_successfully": "服务密码词组创建成功",
+        "services_passphrase_deleted_successfully": "服务密码词组删除成功",
+        "start_typing_account": "输入账户/群组以为其添加权限",
+        "switch_advanced": "转用高级视图",
+        "switch_simplified": "转用简洁视图"
     },
     "connection": {
         "access_key": "访问密钥",
@@ -1622,7 +1740,9 @@
             "local": "本地",
             "centralized": "中心化",
             "external": "外部",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "local_block_device": "本地块设备",
+            "object_storage": "对象存储"
         },
         "volume_type": {
             "secondary": "次要",
@@ -1640,7 +1760,8 @@
             "current": "当前",
             "id": "ID",
             "name": "名称",
-            "path": "路径"
+            "path": "路径",
+            "storageType": "存储类型"
         },
         "volume_indexer_header": {
             "current": "当前",
@@ -1650,7 +1771,8 @@
         },
         "indexer_helperText": "索引器",
         "primary_helperText": "主要",
-        "secondary_helperText": "次要"
+        "secondary_helperText": "次要",
+        "create_storage_volume": "创建存储卷"
     },
     "click_new_bucket_button_to_create_new_one": "点击“新存储桶”按钮以新建。",
     "have_not_setup_bucket_type": "似乎您还没有设置存储桶类型",
@@ -1817,5 +1939,18 @@
     },
     "cumminity_edition": "Community Edition！",
     "welcome_to_carbonio_information": "欢迎{{adminName}}来到Carbonio！",
-    "new": "新建"
+    "new": "新建",
+    "modal": {
+        "iscurrent_confirm": {
+            "secondary_label": "不，返回",
+            "title": "您正在将{{name}}设为当前项",
+            "confirm_label": "是的，继续",
+            "body_message": "当前{{type}}{{currentVolumeName}}。<br />确定要<strong>将{{name}}设为当前项</strong>吗？"
+        }
+    },
+    "warning": {
+        "is_current": "您之前必须将另一个卷设为当前项。"
+    },
+    "the_change_will_not_move_the_data": "此变更将不会移动数据...！！",
+    "this_will_not_affect_data_already_stored": "这不会影响已存储的数据"
 }

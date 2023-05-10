@@ -26,7 +26,6 @@ import {
 	AUTHENTICATION,
 	DOMAINS_ROUTE_ID,
 	GAL,
-	GENERAL_INFORMATION,
 	GENERAL_SETTINGS,
 	GLOBAL_THEME_ROUTE,
 	MAILBOX_QUOTA,
@@ -35,10 +34,10 @@ import {
 	MAX_DOMAIN_DISPLAY,
 	RESOURCES,
 	RESTORE_ACCOUNT,
-	RESTORE_DELETED_EMAIL,
 	THEME,
 	VIRTUAL_HOSTS,
-	SAML
+	SAML,
+	CONFIG
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -49,6 +48,8 @@ import { useGlobalConfigStore } from '../../store/global-config/store';
 import GlobalListPanel from './global-list-panel';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
+import { Right, useRightsStore } from '../../store/rights/store';
+import { getAllRights } from '../utility/utils';
 
 const SelectItem = styled(Row)``;
 
@@ -78,6 +79,30 @@ const DomainListPanel: FC = () => {
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 	const [manageOptions, setManageOptions] = useState<any>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
+	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
+	const rights = useRightsStore((state) => state.rights);
+
+	useEffect(() => {
+		if (rights && rights.length > 0) {
+			const allRights = getAllRights(rights, CONFIG);
+			if (allRights && allRights.length > 0) {
+				const right: Right = allRights[0];
+				if (
+					right?.all &&
+					Array.isArray(right?.all) &&
+					right?.all.length > 0 &&
+					right?.all[0].getAttrs &&
+					right?.all[0].getAttrs.length > 0
+				) {
+					right?.all[0].getAttrs.forEach((item: Record<string, unknown>) => {
+						if (item?.all && item?.all === true) {
+							setIsShowGlobalConfig(true);
+						}
+					});
+				}
+			}
+		}
+	}, [rights]);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${DOMAINS_ROUTE_ID}`);
@@ -237,11 +262,12 @@ const DomainListPanel: FC = () => {
 				name: t('label.mailing_list', 'Mailing List'),
 				isSelected: isDomainSelect
 			},
-			{
-				id: RESOURCES,
-				name: t('label.resources', 'Resources'),
-				isSelected: isDomainSelect
-			},
+			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
+			// {
+			// 	id: RESOURCES,
+			// 	name: t('label.resources', 'Resources'),
+			// 	isSelected: isDomainSelect
+			// },
 			{
 				id: ACTIVE_SYNC,
 				name: t('label.active_sync', 'ActiveSync'),
@@ -389,11 +415,14 @@ const DomainListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
-			<GlobalListPanel
-				globalOptionItems={globalOptionsItems}
-				selectedOperationItem={selectedOperationItem}
-				setSelectedOperationItem={setSelectedOperationItem}
-			/>
+			{isShowGlobalConfig && (
+				<GlobalListPanel
+					globalOptionItems={globalOptionsItems}
+					selectedOperationItem={selectedOperationItem}
+					setSelectedOperationItem={setSelectedOperationItem}
+				/>
+			)}
+
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 				<Dropdown
 					items={items}

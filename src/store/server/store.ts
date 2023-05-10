@@ -7,7 +7,7 @@ import create from 'zustand';
 import produce from 'immer';
 import { devtools } from 'zustand/middleware';
 import { Server } from '../../../types';
-import { DOMAIN_DETAIL_VIEW, SERVER_DETAIL_VIEW } from '../../constants';
+import { SERVER_DETAIL_VIEW } from '../../constants';
 
 type ServerState = {
 	server: Server;

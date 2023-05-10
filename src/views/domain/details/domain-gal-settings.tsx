@@ -309,9 +309,8 @@ const DomainGalSettings: FC = () => {
 				setZimbraGalAccountName(galAccount?.name);
 				if (galAccount?.a) {
 					const obj: objectType = {};
-					galAccount?.a.map((item: Attribute) => {
+					galAccount?.a.forEach((item: Attribute) => {
 						obj[item?.n] = item._content;
-						return '';
 					});
 					if (obj?.zimbraMailHost) {
 						setMailServerName(obj?.zimbraMailHost);
@@ -336,7 +335,7 @@ const DomainGalSettings: FC = () => {
 			} = data?.dataSource[0];
 			if (dataSource && dataSource?.id) {
 				// eslint-disable-next-line array-callback-return, consistent-return
-				zimbraGalAccountIdArray.map((item) => {
+				zimbraGalAccountIdArray.forEach((item) => {
 					if (item._content === accountId) {
 						zimbraAccountDataSourceId.push({
 							id: item._content,
@@ -433,7 +432,7 @@ const DomainGalSettings: FC = () => {
 		if (zimbraGalAccountId !== '') {
 			getGalAccount(zimbraGalAccountId);
 			// eslint-disable-next-line array-callback-return
-			zimbraGalAccountIdArray.map((items) => {
+			zimbraGalAccountIdArray.forEach((items) => {
 				getDomainDataSource(items?._content);
 			});
 		} else {
@@ -600,7 +599,7 @@ const DomainGalSettings: FC = () => {
 		if (zimbraGalAccountId !== '') {
 			if (zimbraGalAccountIdArray?.length !== 0 && zimbraAccountDataSourceId?.length !== 0) {
 				// eslint-disable-next-line array-callback-return
-				zimbraGalAccountIdArray.map((items) => {
+				zimbraGalAccountIdArray.forEach((items) => {
 					interface DataSourceId {
 						dataSourceId?: string;
 						id?: number;
@@ -658,7 +657,7 @@ const DomainGalSettings: FC = () => {
 			});
 		if (zimbraGalAccountIdArray?.length !== 0) {
 			// eslint-disable-next-line array-callback-return
-			zimbraGalAccountIdArray.map((items) => {
+			zimbraGalAccountIdArray.forEach((items) => {
 				modifyAccountRequest(items?._content, {
 					zimbraDataSourceGalPollingInterval
 				}).catch((error) => {
@@ -1101,7 +1100,7 @@ const DomainGalSettings: FC = () => {
 						/>
 						<Button
 							type="ghost"
-							label={t('label.destroy', 'DESTROY')}
+							label={t('label.destroy', 'DELETE')}
 							color="error"
 							onClick={(): void => {
 								setToggleDestroyGalSyncAccModel(true);

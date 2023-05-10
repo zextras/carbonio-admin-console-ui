@@ -42,7 +42,7 @@ const DistroyGalsyncAccountModel: FC<{
 								onClick={closeHandler}
 							/>
 							<Button
-								label={t('label.destroy_account_button', 'YES, DESTROY IT')}
+								label={t('label.destroy_account_button', 'YES, DELETE IT')}
 								color="error"
 								type="outlined"
 								onClick={(): void => {
@@ -60,7 +60,7 @@ const DistroyGalsyncAccountModel: FC<{
 					overflow="break-word"
 					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
 				>
-					{t('label.delete_account', `Are you sure you want to destroy {{accountId}}?`, {
+					{t('label.delete_account', `Are you sure you want to delete {{accountId}}?`, {
 						accountId: accountData?.galAccount?.name
 					})}
 				</Text>

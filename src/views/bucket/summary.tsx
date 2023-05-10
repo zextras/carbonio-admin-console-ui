@@ -46,7 +46,7 @@ const Summary: FC<{
 				<Row width="48%" mainAlignment="flex-start">
 					<PasswordInput
 						label={t('buckets.connection.access_key', 'Access Key')}
-						value="ABC123"
+						value=""
 						readOnly
 					/>
 				</Row>
@@ -54,7 +54,7 @@ const Summary: FC<{
 				<Row width="48%" mainAlignment="flex-end">
 					<PasswordInput
 						label={t('buckets.connection.secret_key', 'Secret Key')}
-						value="ABC123"
+						value=""
 						readOnly
 					/>
 				</Row>

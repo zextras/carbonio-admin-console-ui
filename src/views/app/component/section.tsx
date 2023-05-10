@@ -6,7 +6,6 @@
  */
 import React, { FC } from 'react';
 import { Container, Divider, Text, Row, IconButton } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 
 export const SectionHeader: FC<any> = ({
 	title,
@@ -17,27 +16,23 @@ export const SectionHeader: FC<any> = ({
 	isDisabled,
 	onClose,
 	showClose
-}) => {
-	const { t } = useTranslation();
-
-	return (
-		<>
-			<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
-				<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
-					<Text size="extralarge" weight="bold">
-						{title}
-					</Text>
-				</Row>
-				{showClose && (
-					<Row padding={{ horizontal: 'small' }}>
-						<IconButton icon="CloseOutline" onClick={onClose} size="large" />
-					</Row>
-				)}
+}) => (
+	<>
+		<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
+			<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
+				<Text size="extralarge" weight="bold">
+					{title}
+				</Text>
 			</Row>
-			{divider && <Divider />}
-		</>
+			{showClose && (
+			<Row padding={{ horizontal: 'small' }}>
+				<IconButton icon="CloseOutline" onClick={onClose} size="large" />
+			</Row>
+				)}
+		</Row>
+		{divider && <Divider />}
+	</>
 	);
-};
 
 export const SectionBody: FC<{ padding: any; children: any }> = ({ padding, children }) => (
 	<Container mainAlignment="flex-start" padding={padding} style={{ overflowY: 'auto' }}>

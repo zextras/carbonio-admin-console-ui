@@ -461,7 +461,7 @@ const DomainSaml: FC = () => {
 										<Text overflow="break-word">
 											{t(
 												'cos.idp_configuration_saml_notes',
-												'Go to your IDP to configure your SAML and copy the entityid and serviceurl values'
+												'Go to your IDP to configure your SAML and copy the EntityID and ServiceURL values'
 											)}
 										</Text>
 									</Row>
@@ -768,7 +768,7 @@ const DomainSaml: FC = () => {
 									<Input
 										label={t(
 											'label.here_will_be_shown_the_attribute_value',
-											'Here will be shown the Attribute Value'
+											'The Attribute Value will be displayed here'
 										)}
 										background="gray5"
 										value={samlAttrValue}

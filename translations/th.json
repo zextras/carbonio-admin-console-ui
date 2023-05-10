@@ -195,7 +195,8 @@
             "emc_s3": "EMC S3",
             "openio_s3": "OpenIO S3",
             "scality_s3": "Scality S3",
-            "yandex_s3": "Yandex S3"
+            "yandex_s3": "Yandex S3",
+            "minio": "Minio"
         },
         "amazon_regions": {
             "af_south_1": "แอฟริกา (เคปทาวน์)",
@@ -258,7 +259,9 @@
             "activation": "การเปิดใช้งาน",
             "deactivate": "ปิดการใช้งาน",
             "order_id": "รหัสคำสั่ง",
-            "valid": "ถูกต้องแล้ว"
+            "valid": "ถูกต้องแล้ว",
+            "license_activated_successfully": "เปิดใช้งานใบอนุญาตเรียบร้อยแล้ว",
+            "not_valid": "ไม่ถูกต้อง"
         }
     },
     "domain": {
@@ -309,7 +312,10 @@
         "gal_change_mode_external": "ภายนอก",
         "gal_change_mode_internal": "ภายใน",
         "unit_measure_minutes": "นาที",
-        "unit_measure_seconds": "วินาที"
+        "unit_measure_seconds": "วินาที",
+        "ldap": "LDAP",
+        "page_size": "ขนาดของหน้า",
+        "unit_measure_milliseconds": "มิลลิวินาที"
     },
     "label": {
         "account": "บัญชีผู้ใช้",
@@ -636,7 +642,7 @@
         "displayed_name": "ชื่อที่แสดง",
         "deligated_admin_help_url": "URL ความช่วยเหลือสำหรับผู้ดูแลระบบที่ได้รับมอบสิทธิ์",
         "deleting_cos_msg": "กำลังลบ <bold>{{cosname}}</bold>",
-        "delete_domain_with_account_content_msg": "{{domainName}} ไม่ว่าง: ประกอบด้วยบัญชีระบบ {{domainAccounts}} และบัญชีปกติ {{domainAccounts}} คุณแน่ใจหรือไม่ว่าจะดำเนินการลบต่อ?",
+        "delete_domain_with_account_content_msg": "{{domainName}} ไม่ว่าง: ประกอบด้วย {{domainSystemAccounts}} บัญชีระบบและ {{domainRegularAccounts}} บัญชีปกติ คุณแน่ใจหรือไม่ว่าจะดำเนินการลบต่อ?",
         "delete_domain_success_msg": "โดเมนถูกลบเรียบร้อยแล้ว",
         "delete_domain_error_msg": "คุณกำลังลบ {{domainName}} คุณแน่ใจหรือไม่ว่าต้องการลบ {{domainName}}?",
         "delete_domain": "ลบโดเมน",
@@ -1137,7 +1143,92 @@
         "aliases": "นามแฝง",
         "dont_save_a_copy_of_sent_messages": "ไม่ต้องบันทึกสำเนาของข้อความที่ส่งออก",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "บันทึกสำเนาข้อความที่ส่งออกไปยังโฟลเดอร์ส่งออก",
-        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "บันทึกสำเนาข้อความที่ส่งออกไปยังโฟลเดอร์ส่งออกและโฟลเดอร์ของผู้รับมอบสิทธิ์"
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "บันทึกสำเนาข้อความที่ส่งออกไปยังโฟลเดอร์ส่งออกและโฟลเดอร์ของผู้รับมอบสิทธิ์",
+        "allow_unsecure": "การอนุญาตที่ไม่ปลอดภัย",
+        "change_to_external": "เปลี่ยนเป็นภายนอก",
+        "changes_save_success_msg": "การเปลี่ยนแปลงของคุณถูกบันทึกแล้ว!",
+        "create_account_button": "สร้างบัญชี",
+        "delete_domain_with_all_resources_close_domain": "หากคุณไม่แน่ใจ คุณยังคงสามารถ \"ปิด\" โดเมนเพื่อหลีกเลี่ยงการโต้ตอบใดๆ เพิ่มเติม โดยทิ้งทรัพยากรทั้งหมด ในกรณีที่มีความจำเป็น",
+        "create_account_name": "สร้างชื่อบัญชี",
+        "domain_close_success_msg": "โดเมนถูกปิดเรียบร้อยแล้ว",
+        "create_galsync_account_success_msg": "คุณได้สร้างชื่อบัญชี GALSync",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "บันทึกสำเนาของข้อความที่ส่งในโฟลเดอร์ส่งออกของผู้รับมอบสิทธิ์เท่านั้น",
+        "delegate_send_settings": "การตั้งค่าการส่งของผู้รับมอบสิทธิ์",
+        "delete_account": "คุณแน่ใจหรือไม่ว่าต้องการทำลาย {{accountId}}?",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "บันทึกสำเนาของข้อความที่ส่งไปยังผู้รับมอบสิทธิ์และโฟลเดอร์ส่งที่ได้รับมอบสิทธิ์",
+        "select_an_attribute_to_show_its_value": "เลือกแอตทริบิวต์เพื่อแสดงค่า",
+        "system_account": "บัญชีระบบ",
+        "delete_domain_with_all_resources_post_msg": "คุณไม่แน่ใจ คุณยังคงสามารถ \"ปิด\" โดเมนเพื่อหลีกเลี่ยงการโต้ตอบใดๆ เพิ่มเติม โดยทิ้งทรัพยากรทั้งหมด ในกรณีที่มีความจำเป็น มิฉะนั้น คุณสามารถลบบัญชีและวัตถุโดเมนทั้งหมดอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+        "delete_domain_with_all_resources_pre_msg": "โดเมน {{domainName}} ไม่ว่างและประกอบด้วย",
+        "delete_domain_with_all_resources_msg": "โดเมน {{domainName}} ไม่ว่างและประกอบด้วย {{domainRegularAccounts}} บัญชี, {{domainSystemAccounts}} บัญชีระบบ, {{distributionList}} รายการการแจกจ่าย, {{aliases}} นามแฝง และ {{resources}} ทรัพยากร หากคุณไม่แน่ใจ คุณยังคงสามารถ \"ปิด\" โดเมนเพื่อหลีกเลี่ยงการโต้ตอบใดๆ เพิ่มเติม โดยทิ้งทรัพยากรทั้งหมด ในกรณีที่มีความจำเป็น มิฉะนั้น คุณสามารถลบบัญชีและวัตถุโดเมนทั้งหมดอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+        "accounts_groups": "บัญชี/กลุ่ม",
+        "attribute": "คุณสมบัติ",
+        "backup_lbl": "<bold>สำรองข้อมูล</bold>",
+        "bind_dn": "Bind DN",
+        "bind_password": "รหัสผ่าน Bind:",
+        "byte_lbl": "ไบต์",
+        "change_to": "เปลี่ยนเป็น",
+        "change_to_internal": "เปลี่ยนเป็นภายใน",
+        "class_of_service_lbl": "<bold>ระดับการให้บริการ</bold>",
+        "close": "ปิด",
+        "close_domain": "ปิดโดเมน",
+        "color_code": "รหัสสี",
+        "delete_configuration": "ลบการกำหนดค่า",
+        "delete_domain_with_all_resources_permanently_remove": "มิฉะนั้น คุณสามารถลบบัญชีและวัตถุโดเมนทั้งหมดอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้",
+        "destroy": "ทำลาย",
+        "destroy_account": "ทำลาย",
+        "destroy_account_button": "ใช่ ทำลายมัน",
+        "dn_settings": "การตั้งค่า DN",
+        "domains_lbl": "<bold>โดเมน</bold>",
+        "entity_id": "รหัสเอนทิตี",
+        "entity_id_copied": "คัดลอก EntityID แล้ว",
+        "export_configuration": "การกำหนดค่าการส่งออก",
+        "external_server_address": "ที่อยู่เซิร์ฟเวอร์ภายนอก",
+        "frequency_value_also_updated": "อัปเดตค่าความถี่ GAL แล้ว",
+        "gal_update_freq_value": "ค่าความถี่ในการอัปเดต GAL",
+        "gal_update_frequencey_value": "ค่าความถี่ในการอัปเดต GAL",
+        "galsync_account": "บัญชี GALSync",
+        "generate_sp_certificate": "สร้างใบรับรอง SP",
+        "go_back_button": "ย้อนกลับ",
+        "here_will_be_shown_the_attribute_value": "ที่นี่จะแสดงค่าแอตทริบิวต์",
+        "import": "นำเข้า",
+        "import_saml_metadata_from_idp": "นำเข้า SAML Metadata จาก IDP",
+        "inactive": "ไม่ใช้งาน",
+        "keep_it_button": "ไม่ เก็บมันไว้",
+        "ldap_filter": "ตัวกรอง LDAP",
+        "ldap_search_base": "เกณฑ์การค้นหา LDAP",
+        "ldap_url": "LDAP URL",
+        "measure_unit": "หน่วยการวัด",
+        "model_label_create_account": "สร้างบัญชี",
+        "notification_lbl": "<bold>การแจ้งเตือน</bold>",
+        "operation_lbl": "<bold>การดำเนินการ</bold>",
+        "personalisation": "ส่วนบุคคล",
+        "prefix_volume": "คำนำหน้า - {{volumePrefix}}",
+        "primary_color_for_dark_mode": "สี<bold>หลัก</bold>สำหรับโหมดมืด",
+        "primary_color_for_light_mode": "สี<bold>หลัก</bold>สำหรับโหมดสว่าง",
+        "primary_color_hint": "หากต้องการเปลี่ยนสีหลัก โปรดใช้รหัสสี HEX ในรูปแบบตัวยึด",
+        "privacy_lbl": "<bold>ความเป็นส่วนตัว</bold>",
+        "saml": "SAML",
+        "saml_metadata_attribute_notes": "โปรดนำเข้า SAML Metadata บางส่วนในช่องด้านบนเพื่อดูแอตทริบิวต์",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "บันทึกสำเนาของข้อความที่ส่งในโฟลเดอร์ส่งออกของผู้รับมอบสิทธิ์เท่านั้น",
+        "select_attribute_to_show_its_value": "เลือกแอตทริบิวต์เพื่อแสดงค่า",
+        "server_type": "ชนิดของเซิร์ฟเวอร์",
+        "service_url": "URL บริการ",
+        "service_url_copied": "คัดลอก ServiceURL แล้ว",
+        "storage_lbl": "<bold>ที่เก็บข้อมูล</bold>",
+        "storage_type": "ประเภทการจัดเก็บ",
+        "subscription_lbl": "<bold>การสมัครสมาชิก</bold>",
+        "type_account_name_for_global_address_list": "พิมพ์ชื่อบัญชีสำหรับรายการที่อยู่ส่วนกลาง (GAL)",
+        "use_dn_password_to_bind_external_server": "ใช้ DN/รหัสผ่าน เพื่อเชื่อมโยงกับเซิร์ฟเวอร์ภายนอก",
+        "user_ssl": "ใช้ SSL",
+        "volume_detail_success": "บันทึกการเปลี่ยนแปลงทั้งหมดเรียบร้อยแล้ว",
+        "you_have_added_attribute": "คุณได้เพิ่มแอตทริบิวต์ {{ attributeName }}",
+        "you_have_deleted_the_configuration": "คุณได้ลบการกำหนดค่า",
+        "you_have_exported_the_configuration": "คุณได้ส่งออกการกำหนดค่า",
+        "you_have_generated_the_sp_certificate": "คุณได้สร้างใบรับรอง SP แล้ว",
+        "you_have_imported_the_configuration": "คุณได้นำเข้าการกำหนดค่า",
+        "you_have_removed_attribute": "คุณได้ลบแอตทริบิวต์ {{ attributeName }} แล้ว",
+        "you_have_updated_attribute": "คุณได้อัปเดตแอตทริบิวต์ {{ attributeName }} แล้ว"
     },
     "message": {
         "snackbar": {
@@ -1226,7 +1317,8 @@
         "bucket_configuration": "การกำหนดค่า Bucket",
         "local_mountpoint": "จุดเชื่อมต่อแบบโลคอล",
         "manage_external_volume": "จัดการไดรฟ์ข้อมูลภายนอก",
-        "ms": "MS"
+        "ms": "MS",
+        "backup_configuration": "การกำหนดค่าการสำรองข้อมูล"
     },
     "cos": {
         "calendar_options": "ตัวเลือกปฏิทิน",
@@ -1379,13 +1471,15 @@
         "active_sync": "ActiveSync",
         "activesync_remote_access": "การเข้าถึงระยะไกล ActiveSync",
         "chats": "Chats",
-        "files": "Drive"
+        "files": "Drive",
+        "idp_configuration_saml_notes": "ไปที่ IDP ของคุณเพื่อกำหนดค่า SAML และคัดลอกค่า entityid และ serviceurl"
     },
     "accountDetails": {
         "enable_activeSync_remote_access": "เปิดใช้งานการเข้าถึงระยะไกล ActiveSync",
         "default_COS": "COS เริ่มต้น",
         "change_password_for_next_login": "ต้องเปลี่ยนรหัสผ่านในการเข้าสู่ระบบครั้งต่อไป",
-        "user_will_change_password_on_next_login": "ผู้ใช้จะเปลี่ยนรหัสผ่านในการเข้าสู่ระบบครั้งต่อไป"
+        "user_will_change_password_on_next_login": "ผู้ใช้จะเปลี่ยนรหัสผ่านในการเข้าสู่ระบบครั้งต่อไป",
+        "force_change_password": "จำเป็นต้องเปลี่ยนรหัสผ่าน"
     },
     "locale": {
         "English": "ภาษาอังกฤษ",
@@ -1582,7 +1676,31 @@
         "remove": "เอาออก",
         "send_check": "ส่ง",
         "services": "บริการ",
-        "status": "สถานะ"
+        "status": "สถานะ",
+        "able_to_see_password_once": " โปรดทราบ: คุณจะเห็นรหัสผ่าน <bold>เพียงครั้งเดียว</bold>",
+        "account_send_rights": "บัญชีนี้มีสิทธิ์ในการ<bold>ส่ง</bold>",
+        "add_the_account_group_with_selected_rights": "เพิ่มบัญชี/กลุ่มที่มีสิทธิ์ที่เลือกไว้",
+        "services_passphrase_created_successfully": "สร้างรหัสผ่านบริการ Passphrase สำเร็จแล้ว",
+        "switch_simplified": "สลับไปยังมุมมองแบบง่าย",
+        "account_read_only_rights": "บัญชีนี้มีสิทธิ์<bold>อ่านอย่างเดียว</bold>ใน",
+        "account_read_write_rights": "บัญชีนี้มีสิทธิ์<bold>อ่าน / เขียน</bold>ใน",
+        "account_with_read_only_rights": "บัญชีที่มีสิทธิ์<bold>อ่านอย่างเดียว</bold>",
+        "account_with_read_write_rights": "บัญชีที่มีสิทธิ์ในการ<bold>อ่าน/เขียน</bold>",
+        "account_with_send_rights": "บัญชีที่มีสิทธิ์ <bold>SendAs/SendonBehalf</bold>",
+        "i_have_copied_the_password": "ฉันคัดลอกรหัสผ่านแล้ว",
+        "labels_password": "รหัสผ่านของ",
+        "manage_no_rights_to_send_mails": "จัดการ (ไม่มีสิทธิ์ในการส่งอีเมล)",
+        "passphrasaId": "รหัส Passphrase",
+        "password_allow_once_user_to_connect": "รหัสผ่านนี้จะอนุญาตให้ผู้ใช้เชื่อมต่อกับบริการนี้โดยไม่มี 2FA แม้จะมาจากเครือข่ายที่ไม่น่าเชื่อถือ",
+        "read_only": "อ่านเท่านั้น",
+        "read_write": "อ่าน/เขียน",
+        "remove_all": "ลบทั้งหมด",
+        "send_on_behalf_of_check": "ส่งในนาม",
+        "service_password": "รหัสผ่านสำหรับบริการ",
+        "services_passphrase": "บริการ Passphrase",
+        "services_passphrase_deleted_successfully": "ลบรหัสผ่านบริการ Passphrase สำเร็จแล้ว",
+        "start_typing_account": "เริ่มพิมพ์บัญชี / กลุ่มเพื่อเพิ่มลงในสิทธิ์",
+        "switch_advanced": "สลับไปยังมุมมองขั้นสูง"
     },
     "connection": {
         "access_key": "รหัสการเข้าถึง",
@@ -1622,7 +1740,9 @@
             "centralized": "รวบรวมแล้ว",
             "external": "ภายนอก",
             "local": "โลคอล",
-            "sproxy": "สปร็อกซี่"
+            "sproxy": "สปร็อกซี่",
+            "local_block_device": "อุปกรณ์บล็อกภายใน",
+            "object_storage": "ObjectStorage"
         },
         "volume_config_header": {
             "name": "ชื่อ",
@@ -1635,7 +1755,8 @@
             "current": "ปัจจุบัน",
             "id": "ID",
             "name": "ชื่อ",
-            "path": "เส้นทาง"
+            "path": "เส้นทาง",
+            "storageType": "ประเภทการจัดเก็บ"
         },
         "volume_indexer_header": {
             "current": "ปัจจุบัน",
@@ -1650,7 +1771,8 @@
         },
         "indexer_helperText": "ตัวทำดัชนี",
         "primary_helperText": "หลัก",
-        "secondary_helperText": "รอง"
+        "secondary_helperText": "รอง",
+        "create_storage_volume": "สร้างปริมาณการจัดเก็บ"
     },
     "click_new_bucket_button_to_create_new_one": "คลิกปุ่ม NEW BUCKET เพื่อสร้างใหม่",
     "have_not_setup_bucket_type": "ดูเหมือนว่าคุณยังไม่ได้ตั้งค่าประเภท bucket",
@@ -1817,5 +1939,18 @@
         "load_certificate": "โหลดใบรับรอง"
     },
     "welcome_to_carbonio_information": "ยินดีต้อนรับ {{adminName}} สู่ Carbonio!",
-    "new": "ใหม่"
+    "new": "ใหม่",
+    "modal": {
+        "iscurrent_confirm": {
+            "title": "คุณกำลังตั้งค่า {{name}} เป็นปัจจุบัน",
+            "body_message": "{{type}} {{currentVolumeName}} ปัจจุบัน <br />คุณแน่ใจหรือไม่ว่าต้องการ<strong>ตั้งค่า{{name}}เป็นปัจจุบัน</strong>?",
+            "confirm_label": "ใช่ ดำเนินการต่อ",
+            "secondary_label": "ไม่ ย้อนกลับ"
+        }
+    },
+    "the_change_will_not_move_the_data": "การเปลี่ยนแปลงจะไม่ย้ายข้อมูล… !!",
+    "this_will_not_affect_data_already_stored": "สิ่งนี้จะไม่ส่งผลกระทบต่อข้อมูลที่เก็บไว้",
+    "warning": {
+        "is_current": "คุณต้องตั้งค่าระดับวอลุ่มอื่นเป็นปัจจุบันก่อน"
+    }
 }

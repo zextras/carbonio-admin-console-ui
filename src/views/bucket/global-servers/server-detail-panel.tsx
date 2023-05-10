@@ -184,7 +184,7 @@ const ServersListTable: FC<{
 	);
 };
 
-const serverDetailPanel: FC = () => {
+const ServerDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const allServersList = useMailstoreListStore((state) => state.allMailstoreList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -382,4 +382,4 @@ const serverDetailPanel: FC = () => {
 	);
 };
 
-export default serverDetailPanel;
+export default ServerDetailPanel;

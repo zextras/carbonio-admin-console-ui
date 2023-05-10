@@ -167,9 +167,8 @@ const DomainAuthentication: FC = () => {
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: objectType = {};
-			domainInformation.map((item: Attribute) => {
+			domainInformation.forEach((item: Attribute) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			setZimbraAuthMech(
 				obj.zimbraAuthMech
