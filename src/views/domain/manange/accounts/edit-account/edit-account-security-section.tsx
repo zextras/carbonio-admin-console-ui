@@ -81,6 +81,7 @@ const EditAccountSecuritySection: FC = () => {
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');
+	const [secrateCode, setSecrateCode] = useState('');
 	const [sendEmailTo, setSendEmailTo] = useState('');
 	const [pinCodes, setPinCodes] = useState<any>([]);
 	const [selectedRows, setSelectedRows] = useState([]);
@@ -157,7 +158,7 @@ const EditAccountSecuritySection: FC = () => {
 												bottom: 'small'
 											}}
 										>
-											<Text>{qrData}</Text>
+											<Text>{secrateCode}</Text>
 										</Row>
 									</Container>
 								</Row>
@@ -254,7 +255,7 @@ const EditAccountSecuritySection: FC = () => {
 															ct: 'text/html',
 															body: true,
 															content: {
-																_content: emailContent(qrData, pinCodes)
+																_content: emailContent(pinCodes, secrateCode)
 															}
 														}
 													]
@@ -281,7 +282,7 @@ const EditAccountSecuritySection: FC = () => {
 				)
 			}
 		],
-		[accountDetail?.name, domainName, pinCodes, qrData, sendEmailTo, t]
+		[accountDetail?.name, domainName, pinCodes, qrData, secrateCode, sendEmailTo, t]
 	);
 	const [zimbraPasswordLockoutDurationNum, setZimbraPasswordLockoutDurationNum] = useState(
 		accountDetail?.zimbraPasswordLockoutDuration?.slice(0, -1)
@@ -357,10 +358,11 @@ const EditAccountSecuritySection: FC = () => {
 				setQrData(
 					`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
 						res.response.secret
-					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits==${
+					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${
 						res.response.digits_length
-					}&period==${res.response.period}`
+					}&period=${res.response.period}`
 				);
+				setSecrateCode(res.response.secret);
 				setPinCodes(res.response.static_otp_codes);
 				setShowCreateOTP(true);
 				getListOtp(`${accountDetail?.uid}@${domainName}`);

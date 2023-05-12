@@ -49,6 +49,7 @@ const AccountOtpSection: FC = () => {
 	const [showOtpOptionSection, setShowOtpOptionSection] = useState<boolean>(true);
 	const [qrData, setQrData] = useState('');
 	const [sendEmailTo, setSendEmailTo] = useState('');
+	const [secrateCode, setSecrateCode] = useState('');
 	const [pinCodes, setPinCodes] = useState<any>([]);
 	const [t] = useTranslation();
 
@@ -63,10 +64,11 @@ const AccountOtpSection: FC = () => {
 				setQrData(
 					`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
 						res.response.secret
-					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits==${
+					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${
 						res.response.digits_length
-					}&period==${res.response.period}`
+					}&period=${res.response.period}`
 				);
+				setSecrateCode(res.response.secret);
 				setPinCodes(res.response.static_otp_codes);
 				setShowOtpOptionSection(false);
 			} else {
@@ -215,7 +217,7 @@ const AccountOtpSection: FC = () => {
 											bottom: 'small'
 										}}
 									>
-										<Text>{qrData}</Text>
+										<Text>{secrateCode}</Text>
 									</Row>
 								</Container>
 							</Row>
@@ -311,7 +313,7 @@ const AccountOtpSection: FC = () => {
 														ct: 'text/html',
 														body: true,
 														content: {
-															_content: emailContent(qrData, pinCodes)
+															_content: emailContent(pinCodes, secrateCode)
 														}
 													}
 												]
