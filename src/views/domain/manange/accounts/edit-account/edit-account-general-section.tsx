@@ -46,7 +46,6 @@ const EditAccountGeneralSection: FC = () => {
 	const [t] = useTranslation();
 	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
-	console.log('accountDetail ==>', accountDetail);
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
 			setAccountDetail((prev: AccountType) => ({
