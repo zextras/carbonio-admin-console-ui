@@ -190,14 +190,26 @@ const BucketDetailPanel: FC = () => {
 	const { selectedServerName } = useBucketVolumeStore((state) => state);
 
 	const getBucketListType = useCallback((): void => {
-		fetchSoap('zextras', {
+		const objToSend: {
+			_jsns: string;
+			module: string;
+			action: string;
+			type: string;
+			showSecrets: boolean;
+			targetServer?: string;
+		} = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',
-			targetServer: server,
 			showSecrets: true
-		}).then((res: any) => {
+		};
+
+		if (selectedServerName !== '') {
+			objToSend.targetServer = selectedServerName;
+		}
+
+		fetchSoap('zextras', objToSend).then((res: any) => {
 			const response = JSON.parse(res.Body.response.content);
 			if (response.ok) {
 				setBucketList(response.response.values);
@@ -206,7 +218,7 @@ const BucketDetailPanel: FC = () => {
 				setBucketList([]);
 			}
 		});
-	}, [server]);
+	}, [selectedServerName]);
 
 	const deleteHandler = useCallback(() => {
 		// eslint-disable-next-line no-restricted-syntax
