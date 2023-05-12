@@ -334,7 +334,7 @@
         "hours": "Godziny",
         "mb": "MB",
         "minutes": "Minuty",
-        "name": "Imię",
+        "name": "Nazwa",
         "not_set": "Nie ustawiono",
         "note": "Notatka",
         "notification": "Powiadomienie",
@@ -342,7 +342,7 @@
         "page ": "Zaakceptowano prośbę o udostępnienie",
         "page_": "Zaakceptowano prośbę o udostępnienie",
         "privacy": "Prywatność",
-        "remove": "Usuwać",
+        "remove": "Usuń",
         "save": "Zapisz",
         "signature_required": "Informacje o podpisie są wymagane.",
         "snackbar": {
@@ -354,7 +354,7 @@
         "suspended": "Zawieszone",
         "timezone": "Strefa czasowa",
         "unlimited": "Nielimitowane",
-        "url": "Adres URL",
+        "url": "URL",
         "active": "Aktywne",
         "authentication": "Uwierzytelnianie",
         "available_space": "Dostępna przestrzeń",
@@ -455,7 +455,7 @@
         "id_lbl": "ID",
         "language": "Język",
         "location": "Lokalizacja",
-        "mail": "E-mail",
+        "mail": "Skrzynka pocztowa",
         "no": "NIE",
         "owners": "Właściciele",
         "password": "Hasło",
@@ -649,7 +649,7 @@
         "activate_and_update": "Aktywuj i zaktualizuj",
         "account_created_successfully": "Konto zostało stworzone pomyślnie",
         "block_send": "Blokuj wysyłanie",
-        "bind_dn_template": "Szablon Bind DN",
+        "bind_dn_template": "Szablon powiązanego DN (nazwy wyróżniającej)",
         "auto_refuse": "Automatycznie odrzucaj",
         "auto_negation": "Automatycznie odrzucaj",
         "auto_logout_users": "Automatyczne wylogowywanie użytkowników",
@@ -1148,8 +1148,8 @@
         "attribute": "Atrybut",
         "allow_unsecure": "Zezwalaj na niezabezpieczone",
         "backup_lbl": "<bold>Kopia zapasowa</bold>",
-        "bind_dn": "Bind DN",
-        "bind_password": "Bind password",
+        "bind_dn": "Powiązane DN",
+        "bind_password": "Powiązane hasło",
         "byte_lbl": "BAJT",
         "change_to": "ZMIEŃ NA",
         "change_to_external": "ZMIEŃ NA ZEWNĘTRZNE",
@@ -1227,8 +1227,8 @@
         "you_have_removed_attribute": "Usunąłeś atrybut {{ attributeName }}",
         "delete_domain_with_all_resources_close_domain": "Jeśli nie jesteś pewien, możesz zamknąć domenę. W ten sposób unikniesz kolejnych interakcji z nią a wszystkie zasoby pozostaną dostępne w razie potrzeby.",
         "gal_update_frequencey_value": "Częstotliwość aktualizacji GLA",
-        "primary_color_hint": "Aby zmienić główny kolor, użyj kodu koloru HEX w formacie placeholder.",
-        "use_dn_password_to_bind_external_server": "Używaj DN/hasła do podłączenia do serwera zewnętrznego"
+        "primary_color_hint": "Aby zmienić główny kolor, użyj kodu koloru w formacie HEX.",
+        "use_dn_password_to_bind_external_server": "Użyj DN/hasła do powiązania z serwerem zewnętrznym"
     },
     "message": {
         "snackbar": {
@@ -1398,7 +1398,7 @@
         "free_busy_interop": "Współdziałanie z Wolny/zajęty",
         "html_compose": "Tworzenie HTML",
         "imap_polling_interval": "Interwał sprawdzania serwera IMAP",
-        "mail": "E-mail",
+        "mail": "Skrzynka pocztowa",
         "manuallly": "Ręcznie",
         "maximum_number_of_contacts_allowed_in_folder": "Max. liczba kontaktów w książce adresowej",
         "maximum_number_of_user_specific_forwarding_addresses": "Max. liczba adresów przekazywania dalej określanych przez użytkownika",
@@ -1558,7 +1558,7 @@
         "enable_smime": "Włącz S/MIME",
         "general": "Ogólne",
         "hide_in_gal": "Ukryj w GLA",
-        "mail": "E-mail",
+        "mail": "Skrzynka pocztowa",
         "manuallly": "Ręcznie",
         "message_priority": "Priorytet wiadomości",
         "offline_support_for_advanced_ajax_client": "Wsparcie offline dla zaawansowanego klienta Ajax",
@@ -1673,7 +1673,7 @@
         "SAVE": "ZAPISZ",
         "create": "STWÓRZ",
         "label": "Określenie",
-        "remove": "Usuwać",
+        "remove": "Usuń",
         "send_check": "Wyślij",
         "services": "Usługi",
         "status": "Status",
@@ -1712,8 +1712,8 @@
     },
     "reminder": {
         "minute_0": "{{count}} minuta",
-        "minute_1": "{{count}} minuty",
-        "minute_2": "{{count}} minut"
+        "minute_1": "",
+        "minute_2": ""
     },
     "connection": {
         "access_key": "Klucz dostępu",
@@ -1747,7 +1747,7 @@
             "object_storage": "Pamięć obiektów"
         },
         "volume_config_header": {
-            "name": "Imię",
+            "name": "Nazwa",
             "hsm_scheduled": "HSM zostało zaplanowane",
             "indexer": "Indeksowanie",
             "status": "Status"
@@ -1756,14 +1756,14 @@
             "compression": "Kompresja",
             "current": "Aktualne",
             "id": "ID",
-            "name": "Imię",
+            "name": "Nazwa",
             "path": "Ścieżka",
             "storageType": "Typ pamięci"
         },
         "volume_indexer_header": {
             "current": "Aktualne",
             "id": "ID",
-            "name": "Imię",
+            "name": "Nazwa",
             "path": "Ścieżka"
         },
         "volume_type": {
@@ -1774,7 +1774,7 @@
         "primary_helperText": "Pierwszorzędny",
         "secondary_helperText": "Drugorzędny",
         "indexer_helperText": "Indeksowanie",
-        "create_storage_volume": "Stwórz wolumin"
+        "create_storage_volume": "Stwórz wolumin pamięci"
     },
     "have_not_setup_bucket_type": "Wygląda na to, że nie ustawiłeś typu bucketu",
     "click_new_bucket_button_to_create_new_one": "Kliknij przycisk NOWY BUCKET, aby stworzyć nowy.",
@@ -1805,7 +1805,7 @@
         "minimum_space_threshold": "Próg minimalnej przestrzeni",
         "minutes": "Minuty",
         "months": "Miesiące",
-        "name": "Imię",
+        "name": "Nazwa",
         "new_policy_summary": "Podsumowanie nowej polityki",
         "no": "Nie",
         "option": "Opcja",
