@@ -60,7 +60,13 @@ const AccountOtpSection: FC = () => {
 			account: `${accountDetail?.name}@${domainName}`
 		}).then((res) => {
 			if (res.ok) {
-				setQrData(res.response.secret);
+				setQrData(
+					`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
+						res.response.secret
+					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits==${
+						res.response.digits_length
+					}&period==${res.response.period}`
+				);
 				setPinCodes(res.response.static_otp_codes);
 				setShowOtpOptionSection(false);
 			} else {
