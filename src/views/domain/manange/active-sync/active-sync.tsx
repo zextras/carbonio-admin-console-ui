@@ -278,7 +278,7 @@ const ActiveSync: FC = () => {
 	}, [selectedMobileDevice, allMobileDevices]);
 
 	return (
-		<Container background="gray6" mainAlignment="flex-start">
+		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			<Container
 				orientation="column"
 				background="gray6"
@@ -286,37 +286,19 @@ const ActiveSync: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="56px">
-						<Row orientation="horizontal" width="100%">
-							<Row
-								padding={{ all: 'large' }}
-								mainAlignment="flex-start"
-								width="50%"
-								crossAlignment="flex-start"
-							>
+					<Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
+						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+							<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 								<Text size="medium" weight="bold" color="gray0">
 									{t('label.active_sync', 'ActiveSync')}
 								</Text>
 							</Row>
-							<Row
-								padding={{ all: 'large' }}
-								width="50%"
-								mainAlignment="flex-end"
-								crossAlignment="flex-end"
-							>
-								<Button
-									type="outlined"
-									label={t('label.bulk_actions', 'Bulk Actions')}
-									icon="ArrowIosDownward"
-									iconPlacement="right"
-									color="primary"
-									disabled
-									height={36}
-								/>
-							</Row>
+							<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end"></Row>
 						</Row>
 					</Container>
-					<Divider color="gray2" />
+				</Row>
+				<Row orientation="horizontal" width="100%" background="gray6">
+					<Divider />
 				</Row>
 				<Container
 					orientation="column"
