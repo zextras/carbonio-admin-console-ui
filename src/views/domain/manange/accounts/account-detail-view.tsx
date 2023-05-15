@@ -165,7 +165,7 @@ const AccountDetailView: FC<any> = ({
 		if (cosDetail?.zimbraMailQuota) {
 			calculateaSize = (cosDetail.zimbraMailQuota / 1048576).toFixed(3);
 		}
-		return `${(usedQuota / 1048576).toFixed(3)} MB ${
+		return `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of', 'of')} ${
 			calculateaSize ? `${calculateaSize} MB` : t('label.of_unlimited', 'of Unlimited')
 		}`;
 	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, t, usedQuota]);
