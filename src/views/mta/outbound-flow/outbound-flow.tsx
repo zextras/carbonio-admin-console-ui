@@ -432,7 +432,7 @@ const MTAOutBoundFlow: FC = () => {
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
 					height="auto"
-					padding={{ top: 'large', bottom: 'extralarge' }}
+					padding={{ top: 'medium', bottom: 'extralarge' }}
 				>
 					<Text size="small" weight="bold" color="gray0">
 						{t('label.general_lbl', 'General')}
@@ -442,7 +442,7 @@ const MTAOutBoundFlow: FC = () => {
 					orientation="horizontal"
 					mainAlignment="space-between"
 					crossAlignment="flex-start"
-					padding={{ top: 'large', bottom: 'extralarge' }}
+					padding={{ bottom: 'extralarge' }}
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
@@ -564,7 +564,7 @@ const MTAOutBoundFlow: FC = () => {
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
 					height="auto"
-					padding={{ top: 'large', bottom: 'extralarge' }}
+					padding={{ top: 'extralarge', bottom: 'extralarge' }}
 				>
 					<Text size="small" weight="bold" color="gray0">
 						{t('mta.instances', 'Instances')}
