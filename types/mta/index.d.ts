@@ -31,3 +31,17 @@ export type MtaOutboundFlow = {
 	zimbraMtaRelayHost: string;
 	zimbraMtaMyOrigin: string;
 };
+
+export type MtaAntivirusAndAntispam = {
+	zimbraSpamTagPercent: string;
+	zimbraSpamSubjectTag: string;
+	zimbraSpamKillPercent: string;
+	zimbraAmavisFinalSpamDestiny: string;
+	zimbraAmavisOriginatingBypassSA: boolean;
+	zimbraAmavisEnableDKIMVerification: boolean;
+	zimbraClamAVDatabaseMirror: string;
+	zimbraVirusDefinitionsUpdateFrequency: string;
+	zimbraVirusWarnRecipient: boolean;
+	zimbraVirusBlockEncryptedArchive: boolean;
+	zimbraVirusWarnAdmin: boolean;
+};

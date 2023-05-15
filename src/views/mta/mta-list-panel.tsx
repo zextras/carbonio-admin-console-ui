@@ -7,7 +7,13 @@ import { Container } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { GENERAL, MTA_ROUTE_ID, OUTBOUND_FLOW, POSTSCREEN_TUNING } from '../../constants';
+import {
+	ANTIVIRUS_AND_ANTISPAM,
+	GENERAL,
+	MTA_ROUTE_ID,
+	OUTBOUND_FLOW,
+	POSTSCREEN_TUNING
+} from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import ListItems from '../list/list-items';
@@ -37,6 +43,11 @@ const MTAListPanel: FC = () => {
 			{
 				id: OUTBOUND_FLOW,
 				name: t('mta.outbound_flow', 'Outbound Flow'),
+				isSelected: true
+			},
+			{
+				id: ANTIVIRUS_AND_ANTISPAM,
+				name: t('mta.antivirus_and_antispam', 'Antivirus & Antispam'),
 				isSelected: true
 			}
 		],
