@@ -231,3 +231,14 @@ export const LDAP_FILTER_LABEL = 'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%
 export const LDAP_SEARCH_BASE_LABEL = 'e.g. dc=company,dc=local';
 export const CHECK_OK = 'check.OK';
 export const CONFIG = 'config';
+export const POSTSCREEN_TUNING = 'postscreen_tuning';
+export const OUTBOUND_FLOW = 'outbound_flow';
+export const ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP = 'zimbraSmtpSendAddOriginatingIP';
+export const ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER = 'zimbraSmtpSendAddAuthenticatedUser';
+export const ZIMBRA_MTA_AUTH_ENABLED = 'zimbraMtaAuthEnabled';
+export const ZIMBRA_MTA_MY_NETWORKS = 'zimbraMtaMyNetworks';
+export const ZIMBRA_MTA_SMTP_HELLO_NAME = 'zimbraMtaSmtpHeloName';
+export const ZIMBRA_MTA_MY_HOSTNAME = 'zimbraMtaMyHostname';
+export const ZIMBRA_MTA_FALLBACK_RELAY_HOST = 'zimbraMtaFallbackRelayHost';
+export const ZIMBRA_MTA_MY_ORIGIN = 'zimbraMtaMyOrigin';
+export const ZIMBRA_MTA_RELAY_HOST = 'zimbraMtaRelayHost';

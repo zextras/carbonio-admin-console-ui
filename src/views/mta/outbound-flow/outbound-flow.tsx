@@ -1,0 +1,594 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import {
+	Container,
+	Row,
+	Text,
+	Padding,
+	Button,
+	Divider,
+	Switch,
+	SnackbarManagerContext,
+	Input,
+	Table
+} from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { isEqual } from 'lodash';
+import ListRow from '../../list/list-row';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import { useConfigStore } from '../../../store/config/store';
+import { MtaOutboundFlow } from '../../../../types';
+import {
+	FALSE,
+	TRUE,
+	ZIMBRA_MTA_AUTH_ENABLED,
+	ZIMBRA_MTA_FALLBACK_RELAY_HOST,
+	ZIMBRA_MTA_MY_HOSTNAME,
+	ZIMBRA_MTA_MY_NETWORKS,
+	ZIMBRA_MTA_MY_ORIGIN,
+	ZIMBRA_MTA_RELAY_HOST,
+	ZIMBRA_MTA_SMTP_HELLO_NAME,
+	ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
+	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP
+} from '../../../constants';
+import { useBucketServersListStore } from '../../../store/bucket-server-list/store';
+import { modifyConfig } from '../../../services/modify-config';
+
+const MTAOutBoundFlow: FC = () => {
+	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const configInformation = useConfigStore((state) => state.config);
+	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const allServersList = useBucketServersListStore((state) => state.allServersList);
+	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
+
+	const [mtaOutboundFlowInitialDetail, setMtaOutboundFlowInitialDetail] =
+		useState<MtaOutboundFlow>();
+	const [mtaOutboundDetail, setMtaOutboundDetail] = useState<MtaOutboundFlow>();
+
+	const setInitialValue = useCallback((key: string, value: any): void => {
+		setMtaOutboundFlowInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+	}, []);
+
+	const setValue = useCallback((key: string, value: any): void => {
+		setMtaOutboundDetail((prev: any) => ({ ...prev, [key]: value }));
+	}, []);
+
+	const setInitialAndCurrentValue = useCallback(
+		(key, value) => {
+			setInitialValue(key, value);
+			setValue(key, value);
+		},
+		[setInitialValue, setValue]
+	);
+
+	useEffect(() => {
+		if (allServersList && allServersList.length > 0) {
+			const tableRow: any = [];
+			allServersList.forEach((server: Record<string, unknown>) => {
+				if (server && server?.a && Array.isArray(server?.a) && server?.a.length > 0) {
+					const serviceEnabled = server?.a.filter(
+						(item: Record<string, unknown>) => item?.n === 'zimbraServiceEnabled'
+					);
+					const zimbraMtaAuthEnabled = server?.a.find(
+						(item: Record<string, unknown>) => item?.n === 'zimbraMtaAuthEnabled'
+					);
+					let antivirus = [];
+					let antispam = [];
+					let opendkim = [];
+					if (serviceEnabled && serviceEnabled.length > 0) {
+						antivirus = serviceEnabled.filter(
+							(item: Record<string, unknown>) => item?.n === 'antivirus'
+						);
+						antispam = serviceEnabled.filter(
+							(item: Record<string, unknown>) => item?.n === 'antispam'
+						);
+						opendkim = serviceEnabled.filter(
+							(item: Record<string, unknown>) => item?.n === 'opendkim'
+						);
+					}
+					let isAuthEnable = t('label.disabled', 'Disabled');
+					if (
+						zimbraMtaAuthEnabled &&
+						zimbraMtaAuthEnabled._content &&
+						zimbraMtaAuthEnabled._content === TRUE
+					) {
+						isAuthEnable = t('label.enabled', 'Enabled');
+					}
+					tableRow.push({
+						id: server?.id,
+						columns: [
+							<Text size="medium" weight="light" key={server?.name} color="gray0">
+								{server?.name}
+							</Text>,
+							<Text size="medium" weight="light" key={server?.name} color="gray0">
+								{antispam && antispam.length > 0
+									? t('label.active', 'Active')
+									: t('label.inactive', 'Inactive')}
+							</Text>,
+							<Text size="medium" weight="light" key={server?.name} color="gray0">
+								{antivirus && antivirus.length > 0
+									? t('label.active', 'Active')
+									: t('label.inactive', 'Inactive')}
+							</Text>,
+							<Text size="medium" weight="light" key={server?.name} color="gray0">
+								{isAuthEnable}
+							</Text>,
+							<Text size="medium" weight="light" key={server?.name} color="gray0">
+								{opendkim && opendkim.length > 0
+									? t('label.enabled', 'Enabled')
+									: t('label.disabled', 'Disabled')}
+							</Text>
+						]
+					});
+				}
+				setInstancesTableRows(tableRow);
+			});
+		}
+	}, [allServersList, t]);
+
+	useEffect(() => {
+		if (configInformation && configInformation.length > 0) {
+			const originatingIp = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP
+			);
+			if (originatingIp && originatingIp?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
+					originatingIp?._content === TRUE
+				);
+			}
+			const authenticatedUser = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER
+			);
+			if (authenticatedUser && authenticatedUser?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
+					authenticatedUser?._content === TRUE
+				);
+			}
+			const mtaAuthEnabled = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_AUTH_ENABLED
+			);
+			if (mtaAuthEnabled && mtaAuthEnabled?._content) {
+				setInitialAndCurrentValue(ZIMBRA_MTA_AUTH_ENABLED, mtaAuthEnabled?._content === TRUE);
+			}
+			const zimbraMtaMyNetworks = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
+			);
+			if (zimbraMtaMyNetworks && zimbraMtaMyNetworks?._content) {
+				setInitialAndCurrentValue(ZIMBRA_MTA_MY_NETWORKS, zimbraMtaMyNetworks?._content);
+			}
+
+			const smtpHelloName = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTP_HELLO_NAME
+			);
+			if (smtpHelloName && smtpHelloName?._content) {
+				setInitialAndCurrentValue(ZIMBRA_MTA_SMTP_HELLO_NAME, smtpHelloName?._content);
+			}
+
+			const mtaMyHostname = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_HOSTNAME
+			);
+			if (mtaMyHostname && mtaMyHostname?._content) {
+				setInitialAndCurrentValue(ZIMBRA_MTA_MY_HOSTNAME, mtaMyHostname?._content);
+			}
+
+			const mtaFallBackRelayHost = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST
+			);
+			if (mtaFallBackRelayHost && mtaFallBackRelayHost?._content) {
+				setInitialAndCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
+			}
+
+			const mtaMyOrigin = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_ORIGIN
+			);
+			if (mtaMyOrigin && mtaMyOrigin?._content) {
+				setInitialAndCurrentValue(ZIMBRA_MTA_MY_ORIGIN, mtaMyOrigin?._content);
+			}
+
+			const mtaRelayHost = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RELAY_HOST
+			);
+			if (mtaRelayHost && mtaRelayHost?._content) {
+				setInitialAndCurrentValue(ZIMBRA_MTA_RELAY_HOST, mtaRelayHost?._content);
+			}
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
+
+	useEffect(() => {
+		if (mtaOutboundDetail && !isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail)) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [mtaOutboundDetail, mtaOutboundFlowInitialDetail]);
+
+	const updateGlobalConfig = useCallback(
+		(attributes: Array<Record<string, string>>): void => {
+			attributes.forEach((ele: Record<string, string>) => {
+				updateConfig(ele?.n, ele._content);
+			});
+		},
+		[updateConfig]
+	);
+
+	const modifyConfigRequest = useCallback(
+		(attributes: Array<Record<string, string>>): void => {
+			modifyConfig(attributes)
+				.then((data) => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					updateGlobalConfig(attributes);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, t, updateGlobalConfig]
+	);
+
+	const onSave = useCallback(() => {
+		const attributes: Array<Record<string, string>> = [];
+		attributes.push({
+			n: ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
+			_content: mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP ? TRUE : FALSE
+		});
+		attributes.push({
+			n: ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
+			_content: mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser ? TRUE : FALSE
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_AUTH_ENABLED,
+			_content: mtaOutboundDetail?.zimbraMtaAuthEnabled ? TRUE : FALSE
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_MY_NETWORKS,
+			_content: mtaOutboundDetail?.zimbraMtaMyNetworks || ''
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_SMTP_HELLO_NAME,
+			_content: mtaOutboundDetail?.zimbraMtaSmtpHeloName || ''
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_MY_HOSTNAME,
+			_content: mtaOutboundDetail?.zimbraMtaMyHostname || ''
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_FALLBACK_RELAY_HOST,
+			_content: mtaOutboundDetail?.zimbraMtaFallbackRelayHost || ''
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_RELAY_HOST,
+			_content: mtaOutboundDetail?.zimbraMtaRelayHost || ''
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_MY_ORIGIN,
+			_content: mtaOutboundDetail?.zimbraMtaMyOrigin || ''
+		});
+		modifyConfigRequest(attributes);
+	}, [mtaOutboundDetail, modifyConfigRequest]);
+
+	const onCancel = useCallback(() => {
+		setMtaOutboundDetail(mtaOutboundFlowInitialDetail);
+		setValue(
+			ZIMBRA_MTA_MY_NETWORKS,
+			mtaOutboundFlowInitialDetail?.zimbraMtaMyNetworks
+				? mtaOutboundFlowInitialDetail?.zimbraMtaMyNetworks
+				: ''
+		);
+		setValue(
+			ZIMBRA_MTA_SMTP_HELLO_NAME,
+			mtaOutboundFlowInitialDetail?.zimbraMtaSmtpHeloName
+				? mtaOutboundFlowInitialDetail?.zimbraMtaSmtpHeloName
+				: ''
+		);
+		setValue(
+			ZIMBRA_MTA_MY_HOSTNAME,
+			mtaOutboundFlowInitialDetail?.zimbraMtaMyHostname
+				? mtaOutboundFlowInitialDetail?.zimbraMtaMyNetworks
+				: ''
+		);
+		setValue(
+			ZIMBRA_MTA_FALLBACK_RELAY_HOST,
+			mtaOutboundFlowInitialDetail?.zimbraMtaFallbackRelayHost
+				? mtaOutboundFlowInitialDetail?.zimbraMtaFallbackRelayHost
+				: ''
+		);
+		setValue(
+			ZIMBRA_MTA_RELAY_HOST,
+			mtaOutboundFlowInitialDetail?.zimbraMtaRelayHost
+				? mtaOutboundFlowInitialDetail?.zimbraMtaRelayHost
+				: ''
+		);
+		setValue(
+			ZIMBRA_MTA_MY_ORIGIN,
+			mtaOutboundFlowInitialDetail?.zimbraMtaMyOrigin
+				? mtaOutboundFlowInitialDetail?.zimbraMtaMyOrigin
+				: ''
+		);
+		setTimeout(() => {
+			setIsDirty(false);
+		}, 10);
+	}, [mtaOutboundFlowInitialDetail, setValue]);
+
+	const instanceTableHeader: any[] = useMemo(
+		() => [
+			{
+				id: 'servername',
+				label: t('mta.server_name', 'Server Name'),
+				width: '30%',
+				bold: true
+			},
+			{
+				id: 'antispam',
+				label: t('mta.antispam', 'Antispam'),
+				width: '20%',
+				bold: true
+			},
+			{
+				id: 'antivirus',
+				label: t('mta.antivirus', 'Antivirus'),
+				width: '15%',
+				bold: true
+			},
+			{
+				id: 'authentication',
+				label: t('mta.authentication', 'Authentication'),
+				width: '20%',
+				bold: true
+			},
+			{
+				id: 'dkim',
+				label: t('mta.dkim', 'DKIM'),
+				width: '15%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	return (
+		<Container background="gray6" mainAlignment="flex-start">
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="center"
+				orientation="horizontal"
+				background="gray6"
+				width="fill"
+				height="3.5rem"
+			>
+				<Row padding={{ horizontal: 'small' }}></Row>
+				<Row takeAvailableSpace mainAlignment="flex-start">
+					<Text size="medium" overflow="ellipsis" weight="bold">
+						{t('mta.outbound_flow', 'Outbound Flow')}
+					</Text>
+				</Row>
+				<Row>
+					{isDirty && (
+						<Container
+							orientation="horizontal"
+							mainAlignment="flex-end"
+							crossAlignment="flex-end"
+							background="gray6"
+						>
+							<Padding right="small">
+								{isDirty && (
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										height={36}
+										onClick={onCancel}
+									/>
+								)}
+							</Padding>
+							<Padding right="small">
+								{isDirty && (
+									<Button
+										label={t('label.save', 'Save')}
+										color="primary"
+										height={36}
+										onClick={onSave}
+									/>
+								)}
+							</Padding>
+						</Container>
+					)}
+				</Row>
+			</Row>
+			<ListRow>
+				<Divider />
+			</ListRow>
+			<Container
+				padding={{ all: 'extralarge' }}
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				height="calc(100vh - 10.5rem)"
+				style={{ overflow: 'auto' }}
+			>
+				<Container
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					height="auto"
+					padding={{ top: 'large', bottom: 'extralarge' }}
+				>
+					<Text size="small" weight="bold" color="gray0">
+						{t('label.general_lbl', 'General')}
+					</Text>
+				</Container>
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					padding={{ top: 'large', bottom: 'extralarge' }}
+					height="auto"
+				>
+					<Container crossAlignment="flex-start">
+						<Switch
+							label={t('mta.add_client_ip_to_header', 'Add client IP to the header')}
+							value={mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP}
+							onClick={(): void =>
+								setValue(
+									ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
+									!mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP
+								)
+							}
+						/>
+					</Container>
+					<Container crossAlignment="flex-start">
+						<Switch
+							label={t('mta.add_username_to_header', 'Add username to the header')}
+							value={mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser}
+							onClick={(): void =>
+								setValue(
+									ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
+									!mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser
+								)
+							}
+						/>
+					</Container>
+				</Container>
+				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
+					<Switch
+						label={t('mta.enable_authentication', 'Enable Authentication')}
+						value={mtaOutboundDetail?.zimbraMtaAuthEnabled}
+						onClick={(): void =>
+							setValue(ZIMBRA_MTA_AUTH_ENABLED, !mtaOutboundDetail?.zimbraMtaAuthEnabled)
+						}
+					/>
+				</Container>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					height="auto"
+					padding={{ top: 'large' }}
+				>
+					<Input
+						label={t('mta.my_netword', 'MyNetwork')}
+						value={mtaOutboundDetail?.zimbraMtaMyNetworks}
+						onChange={(e: any): any => {
+							setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
+						}}
+					/>
+				</Container>
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					padding={{ top: 'large' }}
+					height="auto"
+				>
+					<Container padding={{ right: 'medium' }}>
+						<Input
+							label={t('mta.smtp_helo_name', 'SMTP Helo Name')}
+							value={mtaOutboundDetail?.zimbraMtaSmtpHeloName}
+							onChange={(e: any): any => {
+								setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
+							}}
+						/>
+					</Container>
+					<Container>
+						<Input
+							label={t('mta.my_hostname', 'My Hostname')}
+							value={mtaOutboundDetail?.zimbraMtaMyHostname}
+							onChange={(e: any): any => {
+								setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
+							}}
+						/>
+					</Container>
+				</Container>
+
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					padding={{ top: 'large' }}
+					height="auto"
+				>
+					<Container padding={{ right: 'medium' }}>
+						<Input
+							label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
+							value={mtaOutboundDetail?.zimbraMtaFallbackRelayHost}
+							onChange={(e: any): any => {
+								setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
+							}}
+						/>
+					</Container>
+					<Container>
+						<Input
+							label={t('mta.relay_host', 'Relay Host')}
+							value={mtaOutboundDetail?.zimbraMtaRelayHost}
+							onChange={(e: any): any => {
+								setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
+							}}
+						/>
+					</Container>
+				</Container>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					height="auto"
+					padding={{ top: 'large' }}
+				>
+					<Input
+						label={t('mta.my_origin', 'My Origin')}
+						value={mtaOutboundDetail?.zimbraMtaMyOrigin}
+						onChange={(e: any): any => {
+							setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
+						}}
+					/>
+				</Container>
+				<Container
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					height="auto"
+					padding={{ top: 'large', bottom: 'extralarge' }}
+				>
+					<Text size="small" weight="bold" color="gray0">
+						{t('mta.instances', 'Instances')}
+					</Text>
+				</Container>
+				<ListRow>
+					<Container
+						padding={{
+							top: 'small',
+							bottom: 'small'
+						}}
+						mainAlignment="flex-start"
+					>
+						<Table
+							rows={instancesTableRows}
+							headers={instanceTableHeader}
+							showCheckbox={false}
+							RowFactory={CustomRowFactory}
+							HeaderFactory={CustomHeaderFactory}
+						/>
+					</Container>
+				</ListRow>
+			</Container>
+		</Container>
+	);
+};
+export default MTAOutBoundFlow;

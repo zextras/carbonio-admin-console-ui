@@ -19,3 +19,15 @@ export type MtaInboundSecurity = {
 	rejectUnknownSenderDomain: boolean;
 	rejectNonFqdnSender: boolean;
 };
+
+export type MtaOutboundFlow = {
+	zimbraSmtpSendAddOriginatingIP: boolean;
+	zimbraSmtpSendAddAuthenticatedUser: boolean;
+	zimbraMtaAuthEnabled: boolean;
+	zimbraMtaMyNetworks: string;
+	zimbraMtaSmtpHeloName: string;
+	zimbraMtaMyHostname: string;
+	zimbraMtaFallbackRelayHost: string;
+	zimbraMtaRelayHost: string;
+	zimbraMtaMyOrigin: string;
+};
