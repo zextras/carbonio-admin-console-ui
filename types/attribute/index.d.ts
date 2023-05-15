@@ -10,3 +10,5 @@ export type Attribute = {
 };
 
 export type objectType = { [key: string]: string };
+
+export type objAll = { [key: string]: string | boolean | number };

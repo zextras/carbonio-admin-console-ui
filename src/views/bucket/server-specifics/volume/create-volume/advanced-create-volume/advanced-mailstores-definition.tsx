@@ -8,15 +8,21 @@ import { Container, Row, Input, Select, Padding, Text } from '@zextras/carbonio-
 import { useTranslation } from 'react-i18next';
 import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
 import { VolumeContext } from '../volume-context';
-import { LOCAL_TYPE_VALUE, UNUSED, USAGE_IN_EXTERNAL_BACKUP } from '../../../../../../constants';
+import {
+	LOCAL_TYPE_VALUE,
+	EXTERNAL_TYPE_VALUE,
+	UNUSED,
+	USAGE_IN_EXTERNAL_BACKUP
+} from '../../../../../../constants';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { fetchSoap } from '../../../../../../services/bucket-service';
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
+import { objectType } from '../../../../../../../types';
 
 const AdvancedMailstoresDefinition: FC<{
-	externalData: any;
-	setCompleteLoading: any;
-	setToggleNextBtn: any;
+	externalData: objectType;
+	setCompleteLoading: (newValue: boolean) => void;
+	setToggleNextBtn: (newValue: boolean) => void;
 }> = ({ externalData, setToggleNextBtn, setCompleteLoading }) => {
 	const { t } = useTranslation();
 	const context = useContext(VolumeContext);
@@ -28,17 +34,15 @@ const AdvancedMailstoresDefinition: FC<{
 	);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
-	const [allocation, setAllocation] = useState<any>();
-	const [unusedType, setUnusedType] = useState<any>();
+	const [allocation, setAllocation] = useState<{ label: string; value?: number }>();
+	const [unusedType, setUnusedType] = useState<objectType>();
 	const [errName, setErrName] = useState(true);
-	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
-
-	const server = document?.location?.hostname; // 'nbm-s02.demo.zextras.io';
+	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<objectType[]>([]);
 
 	const changeVolName = useCallback(
 		(e) => {
-			setVolumeDetail((prev: any) => ({ ...prev, volumeName: e?.target?.value }));
-			setAdvancedVolumeDetail((prev: any) => ({ ...prev, volumeName: e?.target?.value }));
+			setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
+			setAdvancedVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
 			if (e?.target?.value !== '') {
 				setErrName(true);
 			} else {
@@ -48,10 +52,15 @@ const AdvancedMailstoresDefinition: FC<{
 		[setAdvancedVolumeDetail, setVolumeDetail]
 	);
 
-	const onVolAllocationChange = (v: any): any => {
-		setVolumeDetail((prev: any) => ({ ...prev, volumeAllocation: v }));
-		const volumeTypeObject = volAllocationList?.find((item: any) => item?.value === v)?.label;
-		setAdvancedVolumeDetail((prev: any) => ({ ...prev, volumeAllocation: volumeTypeObject }));
+	const onVolAllocationChange = (v: number): void => {
+		setVolumeDetail((prev: objectType) => ({ ...prev, volumeAllocation: v }));
+		const volumeTypeObject = volAllocationList?.find(
+			(item: { label: string; value?: number }) => item?.value === v
+		)?.label;
+		setAdvancedVolumeDetail((prev: objectType) => ({
+			...prev,
+			volumeAllocation: volumeTypeObject
+		}));
 		if (v === LOCAL_TYPE_VALUE) {
 			setToggleNextBtn(true);
 		} else {
@@ -59,9 +68,11 @@ const AdvancedMailstoresDefinition: FC<{
 		}
 	};
 
-	const onUnusedBucketListChange = (e: any): any => {
-		const selectedBucketDetail = isVolumeAllDetail?.filter((item: any) => item?.uuid === e)[0];
-		setAdvancedVolumeDetail((prev: any) => ({
+	const onUnusedBucketListChange = (e: string): void => {
+		const selectedBucketDetail = isVolumeAllDetail?.filter(
+			(item: objectType) => item?.uuid === e
+		)[0];
+		setAdvancedVolumeDetail((prev: objectType) => ({
 			...prev,
 			bucketName: selectedBucketDetail?.bucketName,
 			unusedBucketType: selectedBucketDetail?.storeType,
@@ -75,16 +86,15 @@ const AdvancedMailstoresDefinition: FC<{
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',
-			targetServer: server,
 			showSecrets: true
-		}).then((res: any) => {
+		}).then((res) => {
 			const response = JSON.parse(res?.Body?.response?.content);
 			if (response?.ok && response?.response?.values?.lenght !== 0) {
-				const volUnusedBucketList: any = [];
+				const volUnusedBucketList: objectType[] = [];
 				const allData = response?.response?.values
-					?.filter((items: any) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
-					.map((items: any) => {
-						const volumeObject: any = bucketTypeItems?.find(
+					?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
+					.map((items: objectType) => {
+						const volumeObject: string | undefined = bucketTypeItems?.find(
 							(s) => s?.value?.toLowerCase() === items?.storeType?.toLowerCase()
 						)?.label;
 						volUnusedBucketList.push({
@@ -97,11 +107,11 @@ const AdvancedMailstoresDefinition: FC<{
 				setBackupUnusedBucketList(volUnusedBucketList);
 			}
 		});
-	}, [bucketTypeItems, server, setIsVolumeAllDetail]);
+	}, [bucketTypeItems, setIsVolumeAllDetail]);
 
 	useEffect(() => {
 		const volumeTypeObject = volAllocationList?.find(
-			(item: any) => item?.value === volumeDetail?.volumeAllocation
+			(item: { label: string; value?: number }) => item?.value === volumeDetail?.volumeAllocation
 		);
 		setAllocation(volumeTypeObject);
 	}, [volAllocationList, volumeDetail?.volumeAllocation]);
@@ -111,7 +121,7 @@ const AdvancedMailstoresDefinition: FC<{
 			if (volumeDetail?.volumeAllocation === LOCAL_TYPE_VALUE) {
 				setCompleteLoading(true);
 				setIsAllocationToggle(true);
-			} else if (advancedVolumeDetail?.unusedBucketType) {
+			} else if (advancedVolumeDetail?.unusedBucketType && backupUnusedBucketList?.length !== 0) {
 				setCompleteLoading(true);
 				setIsAllocationToggle(false);
 			} else {
@@ -124,7 +134,8 @@ const AdvancedMailstoresDefinition: FC<{
 		}
 	}, [
 		advancedVolumeDetail?.unusedBucketType,
-		advancedVolumeDetail?.volumeAllocation,
+		advancedVolumeDetail.volumeAllocation,
+		backupUnusedBucketList?.length,
 		setCompleteLoading,
 		setIsAllocationToggle,
 		volumeDetail?.volumeAllocation,
@@ -132,11 +143,16 @@ const AdvancedMailstoresDefinition: FC<{
 	]);
 
 	useEffect(() => {
-		const volumeTypeObject = backupUnusedBucketList?.find(
-			(item: any) => item?.value === advancedVolumeDetail?.unusedBucketType
-		);
+		const volumeTypeObject = isVolumeAllDetail?.filter(
+			(item: { uuid: string }) => item?.uuid === advancedVolumeDetail?.bucketId
+		)[0];
 		setUnusedType(volumeTypeObject);
-	}, [backupUnusedBucketList, advancedVolumeDetail?.unusedBucketType]);
+	}, [
+		backupUnusedBucketList,
+		advancedVolumeDetail?.unusedBucketType,
+		advancedVolumeDetail?.bucketId,
+		isVolumeAllDetail
+	]);
 
 	useEffect(() => {
 		getBucketListType();
@@ -183,7 +199,7 @@ const AdvancedMailstoresDefinition: FC<{
 					/>
 				</Row>
 				{advancedVolumeDetail?.volumeAllocation !== undefined &&
-					volumeDetail?.volumeAllocation !== LOCAL_TYPE_VALUE &&
+					volumeDetail?.volumeAllocation === EXTERNAL_TYPE_VALUE &&
 					backupUnusedBucketList?.length !== 0 && (
 						<Row padding={{ top: 'large' }} width="100%">
 							<Select

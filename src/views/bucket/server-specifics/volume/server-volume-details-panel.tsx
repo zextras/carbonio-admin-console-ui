@@ -32,21 +32,20 @@ import {
 	SECONDARY_TYPE_VALUE
 } from '../../../../constants';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
-import { useBucketServersListStore } from '../../../../store/bucket-server-list/store';
-import { useServerStore } from '../../../../store/server/store';
 import { fetchSoap } from '../../../../services/bucket-service';
 import ListRow from '../../../list/list-row';
+import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
+import { Volume, objAll, typeVolApiProperty } from '../../../../../types';
 
 const ServerVolumeDetailsPanel: FC<{
-	setToggleDetailPage: any;
-	volumeDetail: any;
-	modifyVolumeToggle: any;
-	setmodifyVolumeToggle: any;
-	setOpen: any;
-	changeSelectedVolume: any;
-	getAllVolumesRequest: any;
-	detailData: any;
-	setDetailData: any;
+	setToggleDetailPage: (newValue: boolean) => void;
+	volumeDetail: Volume;
+	modifyVolumeToggle: boolean;
+	setmodifyVolumeToggle: (newValue: boolean) => void;
+	setOpen: (newValue: boolean) => void;
+	getAllVolumesRequest: () => void;
+	detailData: objAll;
+	setDetailData: (newValue: objAll) => void;
 	selectedServerId: string;
 }> = ({
 	setToggleDetailPage,
@@ -54,7 +53,6 @@ const ServerVolumeDetailsPanel: FC<{
 	modifyVolumeToggle,
 	setmodifyVolumeToggle,
 	setOpen,
-	changeSelectedVolume,
 	getAllVolumesRequest,
 	detailData,
 	setDetailData,
@@ -62,17 +60,13 @@ const ServerVolumeDetailsPanel: FC<{
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
-	const serverList = useServerStore((state) => state?.serverList);
-	const serverName = useBucketServersListStore((state) => state?.volumeList)[0].name;
+	const { selectedServerName } = useBucketVolumeStore((state) => state);
 	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
 	const [typeLabel, setTypeLabel] = useState('');
 	const [toggleSetAsBtnLabel, setToggleSetAsBtnLabel] = useState(
 		t('label.set_as_secondary_button', 'SET AS SECONDARY')
 	);
 	const [toggleSetAsIcon, setToggleSetAsIcon] = useState('ArrowheadDown');
-	const [type, setType] = useState<any>();
-	const [externalVolDetail, setExternalVolDetail] = useState<any>('');
-	const [bucketList, setBucketList] = useState<Array<object | any>>([]);
 	const [bucketName, setBucketName] = useState('');
 	const [bucketS3, setBucketS3] = useState(false);
 	const [primaryRadio, setPrimaryRadio] = useState(false);
@@ -91,18 +85,19 @@ const ServerVolumeDetailsPanel: FC<{
 			// @ts-ignore
 			selectedServerId
 		)
-			.then((response: any) => {
-				if (response?.volume[0]?.type === 1) {
+			.then((response) => {
+				const typedResponse = response as { volume: Volume[]; _jsns: string };
+				if (typedResponse?.volume[0]?.type === 1) {
 					setTypeLabel(PRIMARIES);
-				} else if (response?.volume[0]?.type === 2) {
+				} else if (typedResponse?.volume[0]?.type === 2) {
 					setTypeLabel(SECONDARIES);
-				} else if (response?.volume[0]?.type === 10) {
+				} else if (typedResponse?.volume[0]?.type === 10) {
 					setTypeLabel(INDEXERES);
 				}
-				const volData = response?.volume[0];
+				const volData = typedResponse?.volume[0];
 				setDetailData(volData);
 			})
-			.catch((error) => {
+			.catch(() => {
 				createSnackbar({
 					key: 'error',
 					type: 'error',
@@ -124,33 +119,30 @@ const ServerVolumeDetailsPanel: FC<{
 		getAllVolumesRequest
 	]);
 
-	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
-
 	const getAllBuckets = useCallback(() => {
 		fetchSoap('zextras', {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',
-			targetServer: server,
+			targetServer: selectedServerName,
 			showSecrets: true
-		}).then((res: any) => {
+		}).then((res) => {
 			const response = JSON.parse(res.Body.response.content);
 			if (response.ok) {
-				setBucketList(response.response.values);
 				const bucName =
-					response.response.values.find((b: any) => b?.uuid === volumeDetail?.bucketConfigurationId)
-						?.bucketName || '';
+					response.response.values.find(
+						(b: { uuid: string }) => b?.uuid === volumeDetail?.bucketConfigurationId
+					)?.bucketName || '';
 				setBucketName(bucName);
-			} else {
-				setBucketList([]);
 			}
 		});
-	}, [server, volumeDetail?.bucketConfigurationId]);
+	}, [selectedServerName, volumeDetail?.bucketConfigurationId]);
 
 	useEffect(() => {
 		getVolumeDetailData();
-		getAllBuckets();
+		detailData && volumeDetail?.storeType !== LOCAL_VALUE && getAllBuckets();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [getVolumeDetailData, volumeDetail, modifyVolumeToggle, getAllBuckets]);
 
 	useEffect(() => {
@@ -171,23 +163,24 @@ const ServerVolumeDetailsPanel: FC<{
 
 	const handleTypeToggleClick = useCallback(async (): Promise<void> => {
 		if (isAdvanced) {
-			const obj: any = {};
-			obj._jsns = 'urn:zimbraAdmin';
-			obj.module = 'ZxPowerstore';
-			obj.action = 'doUpdateVolume';
-			obj.targetServers = serverName;
-			obj.volumeType =
+			const obj = {};
+			const typeObj = obj as typeVolApiProperty;
+			typeObj._jsns = 'urn:zimbraAdmin';
+			typeObj.module = 'ZxPowerstore';
+			typeObj.action = 'doUpdateVolume';
+			typeObj.targetServers = selectedServerName;
+			typeObj.volumeType =
 				volumeDetail?.volumeType === PRIMARIES.toLocaleLowerCase()
 					? SECONDARIES.toLocaleLowerCase()
 					: PRIMARIES.toLocaleLowerCase();
-			obj.storeType = volumeDetail?.storeType;
-			obj.isCurrent = volumeDetail?.isCurrent;
-			obj.currentVolumeName = volumeDetail?.name;
+			typeObj.storeType = volumeDetail?.storeType;
+			typeObj.isCurrent = volumeDetail?.isCurrent;
+			typeObj.currentVolumeName = volumeDetail?.name;
 
-			await fetchSoap('zextras', obj)
-				.then((res: any) => {
+			await fetchSoap('zextras', typeObj)
+				.then((res) => {
 					const result = JSON.parse(res?.Body?.response?.content);
-					const updateResponse = result?.response?.[serverName];
+					const updateResponse = result?.response?.[selectedServerName];
 					if (updateResponse?.ok) {
 						createSnackbar({
 							key: '1',
@@ -197,7 +190,7 @@ const ServerVolumeDetailsPanel: FC<{
 						getAllVolumesRequest();
 						setmodifyVolumeToggle(false);
 						setTypeLabel(
-							obj.volumeType === PRIMARIES.toLocaleLowerCase() ? SECONDARIES : PRIMARIES
+							typeObj.volumeType === PRIMARIES.toLocaleLowerCase() ? SECONDARIES : PRIMARIES
 						);
 						setToggleDetailPage(false);
 					} else {
@@ -212,7 +205,7 @@ const ServerVolumeDetailsPanel: FC<{
 						setmodifyVolumeToggle(false);
 					}
 				})
-				.catch((error: any) => {
+				.catch(() => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -250,7 +243,7 @@ const ServerVolumeDetailsPanel: FC<{
 					getAllVolumesRequest();
 					getVolumeDetailData();
 				})
-				.catch((error) => {
+				.catch(() => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -263,7 +256,7 @@ const ServerVolumeDetailsPanel: FC<{
 		}
 	}, [
 		isAdvanced,
-		serverName,
+		selectedServerName,
 		volumeDetail?.volumeType,
 		volumeDetail?.storeType,
 		volumeDetail?.isCurrent,
@@ -494,7 +487,7 @@ const ServerVolumeDetailsPanel: FC<{
 							<Input
 								inputName="server"
 								label={t('label.volume_server_name', 'Server')}
-								value={serverName}
+								value={selectedServerName}
 								backgroundColor="gray5"
 								readyOnly
 							/>

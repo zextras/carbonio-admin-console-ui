@@ -56,18 +56,9 @@ interface VolumeDetailObj {
 const CreateMailstoresVolume: FC<{
 	setToggleWizardExternal: any;
 	setToggleWizardLocal: any;
-	setDetailsVolume: any;
 	volName: any;
-	setCreateMailstoresVolumeData: any;
 	CreateAdvancedRequest: any;
-}> = ({
-	setToggleWizardExternal,
-	setToggleWizardLocal,
-	setDetailsVolume,
-	volName,
-	setCreateMailstoresVolumeData,
-	CreateAdvancedRequest
-}) => {
+}> = ({ setToggleWizardExternal, setToggleWizardLocal, volName, CreateAdvancedRequest }) => {
 	const { t } = useTranslation();
 	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
 	const isAllocationToggle = useBucketVolumeStore((state) => state?.isAllocationToggle);
@@ -221,9 +212,8 @@ const CreateMailstoresVolume: FC<{
 				useInfrequentAccess: advancedVolumeDetail?.useInfrequentAccess,
 				useIntelligentTiering: advancedVolumeDetail?.useIntelligentTiering
 			});
-			setCreateMailstoresVolumeData(advancedVolumeDetail);
 		},
-		[CreateAdvancedRequest, advancedVolumeDetail, setCreateMailstoresVolumeData, volTypeList]
+		[CreateAdvancedRequest, advancedVolumeDetail, volTypeList]
 	);
 
 	return (
