@@ -157,19 +157,21 @@ const AccountDetailView: FC<any> = ({
 		[t]
 	);
 
-	const calculateQuotaSize: string = useMemo(() => {
-		let calculateaSize;
+	const calculatedQuotaSize: string = useMemo(() => {
+		let calculatedSize = 0;
 		if (selectedAccount?.zimbraMailQuota) {
-			calculateaSize = (selectedAccount.zimbraMailQuota / 1048576).toFixed(3);
+			calculatedSize = selectedAccount.zimbraMailQuota / 1048576;
 		}
 		if (cosDetail?.zimbraMailQuota) {
-			calculateaSize = (cosDetail.zimbraMailQuota / 1048576).toFixed(3);
+			calculatedSize = cosDetail.zimbraMailQuota / 1048576;
 		}
-		return `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of', 'of')} ${
-			calculateaSize ? `${calculateaSize} MB` : t('label.of_unlimited', 'of Unlimited')
+		return `${(usedQuota / 1048576).toFixed(3)} MB ${
+			calculatedSize > 0
+				? `${t('label.of', 'of')} ${calculatedSize.toFixed(3)} MB`
+				: t('label.of_unlimited', 'of Unlimited')
 		}`;
 	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, t, usedQuota]);
-	const calculateQuotaSizePercentage: number = useMemo(() => {
+	const calculatedQuotaSizePercentage: number = useMemo(() => {
 		let calculateaSize;
 		if (selectedAccount?.zimbraMailQuota) {
 			calculateaSize = (selectedAccount.zimbraMailQuota / 1048576).toFixed(3);
@@ -610,9 +612,9 @@ const AccountDetailView: FC<any> = ({
 									readOnly
 									label={t('label.space', 'Space')}
 									backgroundColor="gray6"
-									value={calculateQuotaSize}
+									value={calculatedQuotaSize}
 								/>
-								<Quota fill={calculateQuotaSizePercentage} background="gray5" />
+								<Quota fill={calculatedQuotaSizePercentage} background="gray5" />
 							</Row>
 						</Row>
 					</Row>
