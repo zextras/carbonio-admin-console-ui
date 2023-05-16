@@ -16,14 +16,31 @@ import {
 	Select,
 	Table
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isEqual } from 'lodash';
 import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import { HIGH, LOW, MEDIUM } from '../../../constants';
+import {
+	FALSE,
+	HIGH,
+	LOW,
+	MEDIUM,
+	TRUE,
+	ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+	ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
+	ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+	ZIMBRA_CLAM_AVDATABASE_MIRROR,
+	ZIMBRA_SPAM_SUBJECT_TAG,
+	ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
+	ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
+	ZIMBRA_VIRUS_WARN_ADMIN,
+	ZIMBRA_VIRUS_WARN_RECIPIENT
+} from '../../../constants';
 import { useConfigStore } from '../../../store/config/store';
 import { MtaAntivirusAndAntispam } from '../../../../types';
+import { modifyConfig } from '../../../services/modify-config';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
@@ -35,6 +52,13 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<MtaAntivirusAndAntispam>();
 	const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
 		useState<MtaAntivirusAndAntispam>();
+	const [additionalVirusDefinitionsTableRow, setAdditionalVirusDefinitionsTableRow] = useState<
+		Array<any>
+	>([]);
+	const [selectedAdditionalVirusDefinition, setSelectedAdditionalVirusDefinition] = useState<any[]>(
+		[]
+	);
+	const [additionalVirusAddText, setAdditionalVirusAddText] = useState<string>('');
 
 	const setInitialValue = useCallback((key: string, value: any): void => {
 		setMtaAntiVirusAndAntispamInitialDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -44,6 +68,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		setMtaAntiVirusAndAntispamDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
 
+	const [updateFrequncy, setUpdateFrequncy] = useState<string>('');
+
 	const setInitialAndCurrentValue = useCallback(
 		(key, value) => {
 			setInitialValue(key, value);
@@ -52,13 +78,109 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		[setInitialValue, setValue]
 	);
 
+	const updateGlobalConfig = useCallback(
+		(attributes: Array<Record<string, string>>): void => {
+			attributes.forEach((ele: Record<string, string>) => {
+				updateConfig(ele?.n, ele._content);
+			});
+		},
+		[updateConfig]
+	);
+
+	const modifyConfigRequest = useCallback(
+		(attributes: Array<Record<string, string>>): void => {
+			modifyConfig(attributes)
+				.then((data) => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					updateGlobalConfig(attributes);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, t, updateGlobalConfig]
+	);
+
 	const onSave = useCallback(() => {
-		console.log('save');
-	}, []);
+		const attributes: Array<Record<string, string>> = [];
+		if (mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny) {
+			attributes.push({
+				n: ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
+				_content: mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
+			});
+		}
+		attributes.push({
+			n: ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+			_content: mtaAntiVirusAndAntispamDetail?.zimbraAmavisOriginatingBypassSA ? TRUE : FALSE
+		});
+
+		attributes.push({
+			n: ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+			_content: mtaAntiVirusAndAntispamDetail?.zimbraAmavisEnableDKIMVerification ? TRUE : FALSE
+		});
+
+		attributes.push({
+			n: ZIMBRA_VIRUS_WARN_RECIPIENT,
+			_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnRecipient ? TRUE : FALSE
+		});
+		attributes.push({
+			n: ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
+			_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusBlockEncryptedArchive ? TRUE : FALSE
+		});
+		attributes.push({
+			n: ZIMBRA_VIRUS_WARN_ADMIN,
+			_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin ? TRUE : FALSE
+		});
+		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
+			attributes.push({
+				n: ZIMBRA_CLAM_AVDATABASE_MIRROR,
+				_content: mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror
+			});
+		}
+		if (mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency) {
+			attributes.push({
+				n: ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
+				_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency
+			});
+		}
+		modifyConfigRequest(attributes);
+	}, [mtaAntiVirusAndAntispamDetail, modifyConfigRequest]);
 
 	const onCancel = useCallback(() => {
-		console.log('cancel');
-	}, []);
+		setMtaAntiVirusAndAntispamDetail(mtaAntiVirusAndAntispamInitialDetail);
+
+		setValue(
+			ZIMBRA_SPAM_SUBJECT_TAG,
+			mtaAntiVirusAndAntispamInitialDetail?.zimbraSpamSubjectTag
+				? mtaAntiVirusAndAntispamInitialDetail?.zimbraSpamSubjectTag
+				: ''
+		);
+		setValue(
+			ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
+			mtaAntiVirusAndAntispamInitialDetail?.zimbraVirusDefinitionsUpdateFrequency
+				? mtaAntiVirusAndAntispamInitialDetail?.zimbraVirusDefinitionsUpdateFrequency
+				: ''
+		);
+		setTimeout(() => {
+			setIsDirty(false);
+		}, 10);
+	}, [mtaAntiVirusAndAntispamInitialDetail, setValue]);
 
 	const antiVirusMirrorHeader: any[] = useMemo(
 		() => [
@@ -71,6 +193,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		],
 		[t]
 	);
+
 	const additionalVirusDefinitionHeader: any[] = useMemo(
 		() => [
 			{
@@ -82,6 +205,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		],
 		[t]
 	);
+
 	const limitOptions = useMemo(
 		() => [
 			{
@@ -113,6 +237,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		],
 		[t]
 	);
+
 	const intervalOptions = useMemo(
 		() => [
 			{
@@ -138,6 +263,204 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		],
 		[t]
 	);
+
+	const [updateMesurementUnit, setUpdateMesurementUnit] = useState(intervalOptions[2]);
+
+	useEffect(() => {
+		if (configInformation && configInformation.length > 0) {
+			const zimbraSpamSubjectTag = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_SPAM_SUBJECT_TAG
+			);
+			if (zimbraSpamSubjectTag && zimbraSpamSubjectTag?._content) {
+				setInitialAndCurrentValue(ZIMBRA_SPAM_SUBJECT_TAG, zimbraSpamSubjectTag?._content);
+			}
+
+			const zimbraAmavisSpamDestiny = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY
+			);
+			if (zimbraAmavisSpamDestiny && zimbraAmavisSpamDestiny?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
+					zimbraAmavisSpamDestiny?._content
+				);
+			}
+
+			const zimbraAmavisOriginatingBypassSA = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
+			);
+			if (zimbraAmavisOriginatingBypassSA && zimbraAmavisOriginatingBypassSA?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+					zimbraAmavisOriginatingBypassSA?._content === TRUE
+				);
+			}
+
+			const zimbraAmavisEnableDKIMVerification = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION
+			);
+			if (zimbraAmavisEnableDKIMVerification && zimbraAmavisEnableDKIMVerification?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+					zimbraAmavisEnableDKIMVerification?._content === TRUE
+				);
+			}
+
+			const zimbraVirusWarnRecipient = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_WARN_RECIPIENT
+			);
+			if (zimbraVirusWarnRecipient && zimbraVirusWarnRecipient?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_VIRUS_WARN_RECIPIENT,
+					zimbraVirusWarnRecipient?._content === TRUE
+				);
+			}
+
+			const zimbraVirusBlockEncryptedArchive = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE
+			);
+			if (zimbraVirusBlockEncryptedArchive && zimbraVirusBlockEncryptedArchive?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
+					zimbraVirusBlockEncryptedArchive?._content === TRUE
+				);
+			}
+
+			const zimbraVirusWarnAdmin = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_WARN_ADMIN
+			);
+			if (zimbraVirusWarnAdmin && zimbraVirusWarnAdmin?._content) {
+				setInitialAndCurrentValue(ZIMBRA_VIRUS_WARN_ADMIN, zimbraVirusWarnAdmin?._content === TRUE);
+			}
+
+			const zimbraClamAVDatabaseMirror = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_CLAM_AVDATABASE_MIRROR
+			);
+			if (zimbraClamAVDatabaseMirror && zimbraClamAVDatabaseMirror?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_CLAM_AVDATABASE_MIRROR,
+					zimbraClamAVDatabaseMirror?._content
+				);
+			}
+
+			const zimbraVirusDefinitionsUpdateFrequency = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY
+			);
+
+			if (
+				zimbraVirusDefinitionsUpdateFrequency &&
+				zimbraVirusDefinitionsUpdateFrequency?._content
+			) {
+				setInitialAndCurrentValue(
+					ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
+					zimbraVirusDefinitionsUpdateFrequency?._content
+				);
+			}
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
+
+	useEffect(() => {
+		if (
+			mtaAntiVirusAndAntispamDetail &&
+			!isEqual(mtaAntiVirusAndAntispamDetail, mtaAntiVirusAndAntispamInitialDetail)
+		) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [mtaAntiVirusAndAntispamDetail, mtaAntiVirusAndAntispamInitialDetail]);
+
+	const onSpamDestinyChange = useCallback(
+		(v: any): any => {
+			setValue(ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY, v);
+		},
+		[setValue]
+	);
+
+	useEffect(() => {
+		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
+			const calmDatabaseMirror =
+				mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
+			if (calmDatabaseMirror && calmDatabaseMirror.length > 0) {
+				const tableRow: any = [];
+				calmDatabaseMirror.forEach((item: string) => {
+					tableRow.push({
+						id: item,
+						columns: [
+							<Container
+								crossAlignment="flex-start"
+								key={`${item}`}
+								style={{ cursor: 'pointer' }}
+								onClick={(): void => {
+									setSelectedAdditionalVirusDefinition([item]);
+								}}
+							>
+								<Text size="medium" weight="light" key={item} color="gray0">
+									{item}
+								</Text>
+							</Container>
+						]
+					});
+				});
+				setAdditionalVirusDefinitionsTableRow(tableRow);
+			}
+		} else {
+			setAdditionalVirusDefinitionsTableRow([]);
+		}
+	}, [mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror]);
+
+	const onAddAdditionalVirusDefinition = useCallback(() => {
+		const calmDatabaseMirror = mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
+		if (calmDatabaseMirror) {
+			calmDatabaseMirror?.push(additionalVirusAddText);
+			setValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, calmDatabaseMirror.join(','));
+		}
+		setSelectedAdditionalVirusDefinition([]);
+		setAdditionalVirusAddText('');
+	}, [additionalVirusAddText, mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror, setValue]);
+
+	const onRemoveAdditionalVirusDefinition = useCallback(() => {
+		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
+			const calmDatabaseMirror =
+				mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
+			const filterItems = calmDatabaseMirror.filter(
+				(item: any) => !selectedAdditionalVirusDefinition.includes(item)
+			);
+
+			setValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, filterItems.join(','));
+		}
+		setSelectedAdditionalVirusDefinition([]);
+	}, [
+		mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror,
+		selectedAdditionalVirusDefinition,
+		setValue
+	]);
+
+	useEffect(() => {
+		if (mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency) {
+			const val = mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency.replace(
+				/[^0-9]/g,
+				''
+			);
+			setUpdateFrequncy(val);
+
+			const unit = mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency.replace(
+				/[^a-zA-Z]/g,
+				''
+			);
+			const findOption = intervalOptions.find((item: any) => item?.value === unit);
+			setUpdateMesurementUnit(findOption || intervalOptions[2]);
+		}
+	}, [mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency, intervalOptions]);
+
+	const onUpdateMesurementChange = useCallback(
+		(v): any => {
+			const findOption = intervalOptions.find((item: any) => item?.value === v);
+			setUpdateMesurementUnit(findOption || intervalOptions[2]);
+			setValue(ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY, `${updateFrequncy}${findOption?.value}`);
+		},
+		[updateFrequncy, setValue, intervalOptions]
+	);
+
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -228,6 +551,10 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								'Add this prefix to the Spam mail subject'
 							)}
 							background="gray5"
+							value={mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag}
+							onChange={(e: any): any => {
+								setValue(ZIMBRA_SPAM_SUBJECT_TAG, e.target.value);
+							}}
 						/>
 					</Container>
 				</Container>
@@ -253,6 +580,11 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							background="gray5"
 							label={t('mta.hard_spam_destiny', 'Hard Spam destiny')}
 							showCheckbox={false}
+							selection={discardPassOptions.find(
+								(item: any) =>
+									item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
+							)}
+							onChange={onSpamDestinyChange}
 						/>
 					</Container>
 				</Container>
@@ -265,10 +597,28 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-						<Switch label={t('mta.also_check_outbound_messages', 'Also check outbound messages')} />
+						<Switch
+							label={t('mta.also_check_outbound_messages', 'Also check outbound messages')}
+							value={mtaAntiVirusAndAntispamDetail?.zimbraAmavisOriginatingBypassSA}
+							onClick={(): void =>
+								setValue(
+									ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+									!mtaAntiVirusAndAntispamDetail?.zimbraAmavisOriginatingBypassSA
+								)
+							}
+						/>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch label={t('mta.verify_dkim_validity', 'Verify DKIM validity')} />
+						<Switch
+							label={t('mta.verify_dkim_validity', 'Verify DKIM validity')}
+							value={mtaAntiVirusAndAntispamDetail?.zimbraAmavisEnableDKIMVerification}
+							onClick={(): void =>
+								setValue(
+									ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+									!mtaAntiVirusAndAntispamDetail?.zimbraAmavisEnableDKIMVerification
+								)
+							}
+						/>
 					</Container>
 				</Container>
 
@@ -319,10 +669,20 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								<Input
 									label={t('mta.additional_virus_definition', 'Additional Virus Definition')}
 									background="gray5"
+									value={additionalVirusAddText}
+									onChange={(e: any): any => {
+										setAdditionalVirusAddText(e.target.value);
+									}}
 								/>
 							</Container>
 							<Container width="15%" crossAlignment="flex-start">
-								<Button type="outlined" size="large" label={t('mta.add', 'Add')} color="primary" />
+								<Button
+									type="outlined"
+									size="large"
+									label={t('mta.add', 'Add')}
+									color="primary"
+									onClick={onAddAdditionalVirusDefinition}
+								/>
 							</Container>
 							<Container width="25%" crossAlignment="flex-start" mainAlignment="flex-start">
 								<Button
@@ -330,6 +690,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									size="large"
 									label={t('mta.remove', 'Remove')}
 									color="primary"
+									disabled={selectedAdditionalVirusDefinition.length === 0}
+									onClick={onRemoveAdditionalVirusDefinition}
 								/>
 							</Container>
 						</Container>
@@ -367,9 +729,10 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
-							rows={[]}
+							rows={additionalVirusDefinitionsTableRow}
 							headers={additionalVirusDefinitionHeader}
 							showCheckbox={false}
+							selectedRows={selectedAdditionalVirusDefinition}
 							RowFactory={CustomRowFactory}
 							HeaderFactory={CustomHeaderFactory}
 						/>
@@ -386,10 +749,24 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						<Input
 							label={t('mta.definition_update_frequency', 'Definition Update Frenquency')}
 							background="gray5"
+							value={updateFrequncy}
+							onChange={(e: any): void => {
+								setUpdateFrequncy(e.target.value);
+								setValue(
+									ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
+									`${e.target.value}${updateMesurementUnit?.value}`
+								);
+							}}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start" width="30%">
-						<Select items={intervalOptions} background="gray5" showCheckbox={false} />
+						<Select
+							items={intervalOptions}
+							background="gray5"
+							showCheckbox={false}
+							selection={updateMesurementUnit}
+							onChange={onUpdateMesurementChange}
+						/>
 					</Container>
 				</Container>
 
@@ -406,11 +783,25 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								'mta.warn_recipients_when_is_quarantined',
 								'Warn recipients when something is quarantined'
 							)}
+							value={mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnRecipient}
+							onClick={(): void =>
+								setValue(
+									ZIMBRA_VIRUS_WARN_RECIPIENT,
+									!mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnRecipient
+								)
+							}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
 						<Switch
 							label={t('mta.virus_block_encrypted_archive', 'Virus Block Encrypted Archive')}
+							value={mtaAntiVirusAndAntispamDetail?.zimbraVirusBlockEncryptedArchive}
+							onClick={(): void =>
+								setValue(
+									ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
+									!mtaAntiVirusAndAntispamDetail?.zimbraVirusBlockEncryptedArchive
+								)
+							}
 						/>
 					</Container>
 				</Container>
@@ -421,6 +812,13 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							'mta.warn_admins_when_something_quarntined',
 							'Warn admins when something is quarantined'
 						)}
+						value={mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin}
+						onClick={(): void =>
+							setValue(
+								ZIMBRA_VIRUS_WARN_ADMIN,
+								!mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin
+							)
+						}
 					/>
 				</Container>
 			</Container>
