@@ -22,7 +22,7 @@ import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { useConfigStore } from '../../../store/config/store';
-import { MtaOutboundFlow } from '../../../../types';
+import { MtaOutboundFlow, TRow } from '../../../../types';
 import {
 	FALSE,
 	TRUE,
@@ -46,17 +46,17 @@ const MTAOutBoundFlow: FC = () => {
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const allServersList = useBucketServersListStore((state) => state.allServersList);
-	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
+	const [instancesTableRows, setInstancesTableRows] = useState<Array<TRow>>([]);
 
 	const [mtaOutboundFlowInitialDetail, setMtaOutboundFlowInitialDetail] =
 		useState<MtaOutboundFlow>();
 	const [mtaOutboundDetail, setMtaOutboundDetail] = useState<MtaOutboundFlow>();
 
-	const setInitialValue = useCallback((key: string, value: any): void => {
+	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaOutboundFlowInitialDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
 
-	const setValue = useCallback((key: string, value: any): void => {
+	const setValue = useCallback((key: string, value: unknown): void => {
 		setMtaOutboundDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
 
@@ -70,7 +70,7 @@ const MTAOutBoundFlow: FC = () => {
 
 	useEffect(() => {
 		if (allServersList && allServersList.length > 0) {
-			const tableRow: any = [];
+			const tableRow: Array<TRow> = [];
 			allServersList.forEach((server: Record<string, unknown>) => {
 				if (server && server?.a && Array.isArray(server?.a) && server?.a.length > 0) {
 					const serviceEnabled = server?.a.filter(
@@ -334,7 +334,7 @@ const MTAOutBoundFlow: FC = () => {
 		}, 10);
 	}, [mtaOutboundFlowInitialDetail, setValue]);
 
-	const instanceTableHeader: any[] = useMemo(
+	const instanceTableHeader = useMemo(
 		() => [
 			{
 				id: 'servername',
@@ -488,7 +488,7 @@ const MTAOutBoundFlow: FC = () => {
 					<Input
 						label={t('mta.my_netword', 'MyNetwork')}
 						value={mtaOutboundDetail?.zimbraMtaMyNetworks}
-						onChange={(e: any): any => {
+						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 							setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
 						}}
 					/>
@@ -504,7 +504,7 @@ const MTAOutBoundFlow: FC = () => {
 						<Input
 							label={t('mta.smtp_helo_name', 'SMTP Helo Name')}
 							value={mtaOutboundDetail?.zimbraMtaSmtpHeloName}
-							onChange={(e: any): any => {
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
 							}}
 						/>
@@ -513,7 +513,7 @@ const MTAOutBoundFlow: FC = () => {
 						<Input
 							label={t('mta.my_hostname', 'My Hostname')}
 							value={mtaOutboundDetail?.zimbraMtaMyHostname}
-							onChange={(e: any): any => {
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
 							}}
 						/>
@@ -531,7 +531,7 @@ const MTAOutBoundFlow: FC = () => {
 						<Input
 							label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
 							value={mtaOutboundDetail?.zimbraMtaFallbackRelayHost}
-							onChange={(e: any): any => {
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
 							}}
 						/>
@@ -540,7 +540,7 @@ const MTAOutBoundFlow: FC = () => {
 						<Input
 							label={t('mta.relay_host', 'Relay Host')}
 							value={mtaOutboundDetail?.zimbraMtaRelayHost}
-							onChange={(e: any): any => {
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
 							}}
 						/>
@@ -555,7 +555,7 @@ const MTAOutBoundFlow: FC = () => {
 					<Input
 						label={t('mta.my_origin', 'My Origin')}
 						value={mtaOutboundDetail?.zimbraMtaMyOrigin}
-						onChange={(e: any): any => {
+						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 							setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
 						}}
 					/>

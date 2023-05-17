@@ -7,13 +7,7 @@ import { Container } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import {
-	ANTIVIRUS_AND_ANTISPAM,
-	GENERAL,
-	MTA_ROUTE_ID,
-	OUTBOUND_FLOW,
-	POSTSCREEN_TUNING
-} from '../../constants';
+import { ANTIVIRUS_AND_ANTISPAM, GENERAL, MTA_ROUTE_ID, OUTBOUND_FLOW } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import ListItems from '../list/list-items';

@@ -56,11 +56,11 @@ const MTAInboundFlowSecurity: FC = () => {
 		useState<MtaInboundSecurity>();
 	const [mtaInboundSecurityDetail, setMtaInboundSecurityDetail] = useState<MtaInboundSecurity>();
 
-	const setInitialValue = useCallback((key: string, value: any): void => {
+	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaInboundSecurityInitialDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
 
-	const setValue = useCallback((key: string, value: any): void => {
+	const setValue = useCallback((key: string, value: unknown): void => {
 		setMtaInboundSecurityDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
 

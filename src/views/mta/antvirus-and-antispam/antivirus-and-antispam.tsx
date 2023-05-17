@@ -39,7 +39,7 @@ import {
 	ZIMBRA_VIRUS_WARN_RECIPIENT
 } from '../../../constants';
 import { useConfigStore } from '../../../store/config/store';
-import { MtaAntivirusAndAntispam } from '../../../../types';
+import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
 import { modifyConfig } from '../../../services/modify-config';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
@@ -53,18 +53,21 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
 		useState<MtaAntivirusAndAntispam>();
 	const [additionalVirusDefinitionsTableRow, setAdditionalVirusDefinitionsTableRow] = useState<
-		Array<any>
+		Array<TRow>
 	>([]);
 	const [selectedAdditionalVirusDefinition, setSelectedAdditionalVirusDefinition] = useState<any[]>(
 		[]
 	);
 	const [additionalVirusAddText, setAdditionalVirusAddText] = useState<string>('');
 
-	const setInitialValue = useCallback((key: string, value: any): void => {
-		setMtaAntiVirusAndAntispamInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+	const setInitialValue = useCallback((key: string, value: unknown): void => {
+		setMtaAntiVirusAndAntispamInitialDetail((prev: any) => ({
+			...prev,
+			[key]: value
+		}));
 	}, []);
 
-	const setValue = useCallback((key: string, value: any): void => {
+	const setValue = useCallback((key: string, value: unknown): void => {
 		setMtaAntiVirusAndAntispamDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
 
@@ -182,7 +185,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		}, 10);
 	}, [mtaAntiVirusAndAntispamInitialDetail, setValue]);
 
-	const antiVirusMirrorHeader: any[] = useMemo(
+	const antiVirusMirrorHeader = useMemo(
 		() => [
 			{
 				id: 'antivirus_mirrors',
@@ -194,7 +197,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		[t]
 	);
 
-	const additionalVirusDefinitionHeader: any[] = useMemo(
+	const additionalVirusDefinitionHeader = useMemo(
 		() => [
 			{
 				id: 'additional_virus_definition',
@@ -370,7 +373,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	}, [mtaAntiVirusAndAntispamDetail, mtaAntiVirusAndAntispamInitialDetail]);
 
 	const onSpamDestinyChange = useCallback(
-		(v: any): any => {
+		(v: string) => {
 			setValue(ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY, v);
 		},
 		[setValue]
@@ -381,7 +384,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 			const calmDatabaseMirror =
 				mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
 			if (calmDatabaseMirror && calmDatabaseMirror.length > 0) {
-				const tableRow: any = [];
+				const tableRow: Array<TRow> = [];
 				calmDatabaseMirror.forEach((item: string) => {
 					tableRow.push({
 						id: item,
@@ -423,7 +426,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 			const calmDatabaseMirror =
 				mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
 			const filterItems = calmDatabaseMirror.filter(
-				(item: any) => !selectedAdditionalVirusDefinition.includes(item)
+				(item: string) => !selectedAdditionalVirusDefinition.includes(item)
 			);
 
 			setValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, filterItems.join(','));
@@ -447,14 +450,16 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				/[^a-zA-Z]/g,
 				''
 			);
-			const findOption = intervalOptions.find((item: any) => item?.value === unit);
+			const findOption = intervalOptions.find(
+				(item: Record<string, string>) => item?.value === unit
+			);
 			setUpdateMesurementUnit(findOption || intervalOptions[2]);
 		}
 	}, [mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency, intervalOptions]);
 
 	const onUpdateMesurementChange = useCallback(
-		(v): any => {
-			const findOption = intervalOptions.find((item: any) => item?.value === v);
+		(v) => {
+			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
 			setUpdateMesurementUnit(findOption || intervalOptions[2]);
 			setValue(ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY, `${updateFrequncy}${findOption?.value}`);
 		},
@@ -552,7 +557,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							)}
 							background="gray5"
 							value={mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag}
-							onChange={(e: any): any => {
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_SPAM_SUBJECT_TAG, e.target.value);
 							}}
 						/>
@@ -581,7 +586,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							label={t('mta.hard_spam_destiny', 'Hard Spam destiny')}
 							showCheckbox={false}
 							selection={discardPassOptions.find(
-								(item: any) =>
+								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
 							)}
 							onChange={onSpamDestinyChange}
@@ -670,7 +675,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									label={t('mta.additional_virus_definition', 'Additional Virus Definition')}
 									background="gray5"
 									value={additionalVirusAddText}
-									onChange={(e: any): any => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setAdditionalVirusAddText(e.target.value);
 									}}
 								/>
@@ -750,7 +755,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							label={t('mta.definition_update_frequency', 'Definition Update Frenquency')}
 							background="gray5"
 							value={updateFrequncy}
-							onChange={(e: any): void => {
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setUpdateFrequncy(e.target.value);
 								setValue(
 									ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
