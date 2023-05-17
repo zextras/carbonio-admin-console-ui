@@ -74,7 +74,7 @@
         "page ": "Sie haben den Antrag auf Freigabe angenommen",
         "page_": "Sie haben den Antrag auf Freigabe angenommen",
         "privacy": "Privatssphäre",
-        "remove": "Löschen",
+        "remove": "Entfernen",
         "save": "Speichern",
         "signature_required": "Unterschriftsangaben sind erforderlich.",
         "snackbar": {
@@ -1579,7 +1579,7 @@
         "SAVE": "SPEICHERN",
         "create": "ERSTELLEN",
         "label": "Label",
-        "remove": "Löschen",
+        "remove": "Entfernen",
         "send_check": "Senden",
         "services": "Dienste",
         "status": "Status"

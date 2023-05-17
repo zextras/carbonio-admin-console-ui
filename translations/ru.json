@@ -302,7 +302,7 @@
         "automatically_accept": "Автоматически принимать",
         "automatically_reject": "Автоматически отклонять",
         "bucket_cancel_button": "ОТМЕНИТЬ",
-        "bucket_done_button": "Готово",
+        "bucket_done_button": "Вход",
         "bucket_need_help_button": "НУЖНА ПОМОЩЬ?",
         "class_of_service": "Класс Обслуживания",
         "content": "Содержание",
@@ -796,7 +796,7 @@
         "want_to_use_this_certifiacte": "Я ХОЧУ ИСПОЛЬЗОВАТЬ ЭТОТ СЕРТИФИКАТ",
         "what_inside": "Тема",
         "centralized": "Централизованный",
-        "done": "Готово",
+        "done": "Вход",
         "external_volume_edited": "{{message}}",
         "general_options": "Общие параметры",
         "operation": {
@@ -952,12 +952,16 @@
         "storage_type": "Тип хранилища",
         "subscription_lbl": "<bold>Подписка</bold>",
         "system_account": "Системные учетные записи",
-        "type_account_name_for_global_address_list": "Введите имя учетной записи для глобального списка адресов (GAL).",
+        "type_account_name_for_global_address_list": "Введите имя учетной записи для глобального адресной книги (GAL).",
         "use_dn_password_to_bind_external_server": "Используйте DN/пароль для привязки к внешнему серверу",
         "user_ssl": "Использовать SSL",
         "you_have_deleted_the_configuration": "Вы удалили конфигурацию",
         "you_have_imported_the_configuration": "Вы импортировали конфигурацию",
-        "you_have_removed_attribute": "Вы удалили атрибут {{ attributeName }}"
+        "you_have_removed_attribute": "Вы удалили атрибут {{ attributeName }}",
+        "delete_domain_with_all_resources_msg": "Домен {{domainName}} не пуст и содержит {{domainRegularAccounts}} учетных записей, {{domainSystemAccounts}} системных учетных записей, {{distributionList}} список рассылки, {{aliases}} псевдонимов и {{resources}} ресурсов. Если вы не уверены, вы все равно можете «закрыть» домен, чтобы избежать дальнейшего взаимодействия, оставив все ресурсы доступными в случае необходимости. В противном случае вы можете безвозвратно удалить все учетные записи и объекты домена. Эта операция не может быть отменена.",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Сохранение копии отправленных сообщений только в папке отправки делегата",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Сохраняйте копии отправленных сообщений в папку делегирования и делегированной отправки",
+        "you_have_generated_the_sp_certificate": "Вы создали сертификат SP"
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
@@ -994,7 +998,7 @@
         "america_cayenne": "{{value}} Кайенна, Форталеза",
         "america_chicago": "{{value}} US/Canada Central",
         "america_chihuahua": "{{value}} Чиуауа, Ла-Пас, Масатлан",
-        "america_cuiaba": "{{value}} Куяба",
+        "america_cuiaba": "{{value}} Куйаба",
         "america_denver": "{{value}} US/Canada Mountain",
         "america_fort_nelson": "{{value}} Форт Нельсон",
         "america_grand_turk": "{{value}} Острова Теркс и Кайкос",
@@ -1029,12 +1033,12 @@
         "asia_damascus": "{{value}} Дамаск",
         "asia_dhaka": "{{value}} Дакка",
         "asia_gaza": "{{value}} Газа",
-        "asia_hong_kong": "{{value}} Пекин, Чунцин, Гонконг, Уру М Фаза",
+        "asia_hong_kong": "{{value}} Пекин, Чунцин, Гонконг, Урумчи",
         "asia_hovd": "{{value}} Ховд",
         "asia_irkutsk": "{{value}} Иркутск (RTZ 7)",
         "asia_jerusalem": "{{value}} Иерусалим",
         "asia_kabul": "{{value}} Кабул",
-        "asia_kamchatka": "{{value}} Анадырь, Петропавловск-Камчатский (RTZ 11)",
+        "asia_kamchatka": "{{value}} Анадырь, Петропавловск-Камчатский",
         "asia_karachi": "{{value}} Исламабад, Карачи",
         "asia_kathmandu": "{{value}} Катманду",
         "asia_kolkata": "{{value}} Ченнаи, Калькутта, Мумбаи, Нью-Дели",
@@ -1402,7 +1406,7 @@
         "backup_path": "Путь резервирования",
         "backup_purge": "Очистка резервной копии",
         "compression_level": "Уровень сжатия",
-        "keep_delete_accounts_in_backup": "Хранить удаленные учетные записи в резервной копии",
+        "keep_delete_accounts_in_backup": "Хранить удаленные аккаунты в резервной копии",
         "keep_delted_items_backup": "Хранить удаленные элементы в резервной копии",
         "ldap_dump": "LDAP Dump",
         "local_metadata_threshold": "Локальный порог метаданных",
@@ -1436,7 +1440,7 @@
         "keep_deleted_account_in_the_backup": "Хранить удаленную учетную запись в резервной копии",
         "ldap_working_properly": "Ldap работает корректно",
         "local_volume": "Локальный Том",
-        "maximum_operation_per_account": "Максимальное количество операций для учетной записи",
+        "maximum_operation_per_account": "Максимальное количество операций для аккаунта",
         "metadata_archiving": "Архивирование метаданных",
         "module_is_enabled_at_startup": "Этот модуль активируется при запуске",
         "purge_old_configuration": "Очистить старые конфигурации",
@@ -1568,7 +1572,7 @@
             "id": "ID",
             "name": "имя",
             "path": "Путь",
-            "storageType": "Тип Хранилища"
+            "storageType": "Тип хранилища"
         },
         "volume_indexer_header": {
             "current": "Текущее",
@@ -1895,7 +1899,7 @@
         "copy_btn": "КОПИЯ",
         "copy_operation_successfully": "Уведомление успешно скопировано",
         "details": "Детали",
-        "done": "Готово",
+        "done": "Вход",
         "label": {
             "Deep": "Глубокий",
             "notifications": "Оповещения",
@@ -1941,9 +1945,12 @@
             "body_message": "Текущий {{type}} {{currentVolumeName}}.<br />Вы действительно хотите <strong>установить {{name}} в качестве текущего</strong>?",
             "confirm_label": "ДА, ПРОДОЛЖИТЬ",
             "secondary_label": "НАЗАД",
-            "title": "Вы устанавливаете {{name}} в качестве текущего"
+            "title": "Вы настраиваете {{name}} в качестве текущего"
         }
     },
     "the_change_will_not_move_the_data": "Это изменение не приведет к перемещению данных... !!",
-    "this_will_not_affect_data_already_stored": "Это не повлияет на уже сохраненные данные."
+    "this_will_not_affect_data_already_stored": "Это не повлияет на уже сохраненные данные",
+    "warning": {
+        "is_current": "Вы должны настроить другой том в качестве текущего ранее."
+    }
 }

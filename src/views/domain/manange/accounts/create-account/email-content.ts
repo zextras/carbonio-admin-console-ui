@@ -27,7 +27,7 @@ const codeRows = (pinCodes: any): string => `<tr>
 				<td style="color:#696969;">${pinCodes?.[10]?.code || ''}</td>
 				<td style="color:#696969;">${pinCodes?.[11]?.code || ''}</td>
 			</tr>`;
-export const emailContent = (qrData: unknown, pinCodes: unknown): string => `<html>
+export const emailContent = (pinCodes: unknown, secrateCode: string): string => `<html>
 
 <head>
     <meta charset="utf-8">
@@ -63,7 +63,7 @@ export const emailContent = (qrData: unknown, pinCodes: unknown): string => `<ht
                             <td colspan="2" style="text-align: center; font-weight: bold; padding-top:10px;">Secret Code</td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="text-align: center;">${qrData}</td>
+                            <td colspan="2" style="text-align: center;">${secrateCode}</td>
                         </tr>
                     </table>
                 </td>

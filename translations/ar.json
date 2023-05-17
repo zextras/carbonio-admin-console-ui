@@ -43,7 +43,8 @@
     },
     "account_details": {
         "Chats": "دردشات",
-        "status": "الحالة"
+        "status": "الحالة",
+        "general": "عام"
     },
     "volume": {
         "volume_config_header": {
@@ -69,5 +70,8 @@
         "operations_list_header": {
             "status": "الحالة"
         }
+    },
+    "backup": {
+        "general": "عام"
     }
 }
