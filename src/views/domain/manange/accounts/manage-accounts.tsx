@@ -619,7 +619,7 @@ const ManageAccounts: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="58px"
+					height="3.625rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
@@ -628,7 +628,7 @@ const ManageAccounts: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="large">
+							<Padding>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
@@ -638,17 +638,6 @@ const ManageAccounts: FC = () => {
 									onClick={(): void => {
 										setShowCreateAccountView(true);
 									}}
-								/>
-							</Padding>
-							<Padding right="large">
-								<Button
-									type="outlined"
-									label={t('label.bulk_actions', 'BULK ACTIONS')}
-									icon="ChevronDownOutline"
-									iconPlacement="right"
-									color="primary"
-									height={36}
-									disabled
 								/>
 							</Padding>
 						</Row>
