@@ -18,11 +18,12 @@ import {
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isEqual } from 'lodash';
+import { filter, isEqual } from 'lodash';
 import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import {
+	CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
 	FALSE,
 	HIGH,
 	LOW,
@@ -32,7 +33,9 @@ import {
 	ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
 	ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
 	ZIMBRA_CLAM_AVDATABASE_MIRROR,
+	ZIMBRA_SPAM_KILL_PERCENT,
 	ZIMBRA_SPAM_SUBJECT_TAG,
+	ZIMBRA_SPAM_TAG_PERCENT,
 	ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
 	ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
 	ZIMBRA_VIRUS_WARN_ADMIN,
@@ -52,13 +55,15 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<MtaAntivirusAndAntispam>();
 	const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
 		useState<MtaAntivirusAndAntispam>();
-	const [additionalVirusDefinitionsTableRow, setAdditionalVirusDefinitionsTableRow] = useState<
-		Array<TRow>
-	>([]);
-	const [selectedAdditionalVirusDefinition, setSelectedAdditionalVirusDefinition] = useState<any[]>(
-		[]
-	);
-	const [additionalVirusAddText, setAdditionalVirusAddText] = useState<string>('');
+	const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<TRow>>([]);
+	const [selectedAntivirusMirrors, setSelectedAntivirusMirrors] = useState<any[]>([]);
+	const [antiVirusMirrorsAddText, setAntiVirusMirrorsAddText] = useState<string>('');
+	const [additionalAntiVirusDefinitionTableRow, setAdditionalAntiVirusDefinitionTableRow] =
+		useState<Array<TRow>>([]);
+	const [selectedAdditionalAntivirusDefinition, setSelectedAdditionalAntivirusDefinition] =
+		useState<any[]>([]);
+	const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
+		useState<string>('');
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaAntiVirusAndAntispamInitialDetail((prev: any) => ({
@@ -162,6 +167,34 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency
 			});
 		}
+		if (mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent) {
+			attributes.push({
+				n: ZIMBRA_SPAM_TAG_PERCENT,
+				_content: mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
+			});
+		}
+		if (
+			mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent &&
+			mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny &&
+			mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny !== 'D_PASS'
+		) {
+			attributes.push({
+				n: ZIMBRA_SPAM_KILL_PERCENT,
+				_content: mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent
+			});
+		}
+
+		if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL) {
+			attributes.push({
+				n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+				_content: mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL
+			});
+		} else if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL === '') {
+			attributes.push({
+				n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+				_content: ''
+			});
+		}
 		modifyConfigRequest(attributes);
 	}, [mtaAntiVirusAndAntispamDetail, modifyConfigRequest]);
 
@@ -209,19 +242,37 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		[t]
 	);
 
-	const limitOptions = useMemo(
+	const spamTagPercentOptions = useMemo(
 		() => [
 			{
 				label: t('mta.low', 'Low'),
-				value: LOW
+				value: '33'
 			},
 			{
 				label: t('mta.medium', 'Medium'),
-				value: MEDIUM
+				value: '20'
 			},
 			{
 				label: t('mta.high', 'High'),
-				value: HIGH
+				value: '16'
+			}
+		],
+		[t]
+	);
+
+	const spamKillPercentOptions = useMemo(
+		() => [
+			{
+				label: t('mta.low', 'Low'),
+				value: '90'
+			},
+			{
+				label: t('mta.medium', 'Medium'),
+				value: '75'
+			},
+			{
+				label: t('mta.high', 'High'),
+				value: '66'
 			}
 		],
 		[t]
@@ -235,7 +286,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 			},
 			{
 				label: t('mta.pass', 'Pass'),
-				value: 'P_PASS'
+				value: 'D_PASS'
 			}
 		],
 		[t]
@@ -343,6 +394,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					ZIMBRA_CLAM_AVDATABASE_MIRROR,
 					zimbraClamAVDatabaseMirror?._content
 				);
+			} else {
+				setInitialAndCurrentValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, '');
 			}
 
 			const zimbraVirusDefinitionsUpdateFrequency = configInformation.find(
@@ -357,6 +410,35 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
 					zimbraVirusDefinitionsUpdateFrequency?._content
 				);
+			}
+
+			const zimbraSpamTagPercent = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_SPAM_TAG_PERCENT
+			);
+
+			if (zimbraSpamTagPercent && zimbraSpamTagPercent?._content) {
+				setInitialAndCurrentValue(ZIMBRA_SPAM_TAG_PERCENT, zimbraSpamTagPercent?._content);
+			}
+
+			const zimbraSpamKillPercent = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_SPAM_KILL_PERCENT
+			);
+
+			if (zimbraSpamKillPercent && zimbraSpamKillPercent?._content) {
+				setInitialAndCurrentValue(ZIMBRA_SPAM_KILL_PERCENT, zimbraSpamKillPercent?._content);
+			}
+
+			const carbonioClamAVDatabaseCustomURL = configInformation.find(
+				(item: Record<string, string>) => item?.n === CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL
+			);
+
+			if (carbonioClamAVDatabaseCustomURL && carbonioClamAVDatabaseCustomURL?._content) {
+				setInitialAndCurrentValue(
+					CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+					carbonioClamAVDatabaseCustomURL?._content
+				);
+			} else {
+				setInitialAndCurrentValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, '');
 			}
 		}
 	}, [configInformation, setInitialAndCurrentValue]);
@@ -379,6 +461,20 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		[setValue]
 	);
 
+	const onSpamKillPercentChange = useCallback(
+		(v: string) => {
+			setValue(ZIMBRA_SPAM_KILL_PERCENT, v);
+		},
+		[setValue]
+	);
+
+	const onSpamTagPercentChange = useCallback(
+		(v: string) => {
+			setValue(ZIMBRA_SPAM_TAG_PERCENT, v);
+		},
+		[setValue]
+	);
+
 	useEffect(() => {
 		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
 			const calmDatabaseMirror =
@@ -394,7 +490,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								key={`${item}`}
 								style={{ cursor: 'pointer' }}
 								onClick={(): void => {
-									setSelectedAdditionalVirusDefinition([item]);
+									setSelectedAntivirusMirrors([item]);
 								}}
 							>
 								<Text size="medium" weight="light" key={item} color="gray0">
@@ -404,37 +500,115 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						]
 					});
 				});
-				setAdditionalVirusDefinitionsTableRow(tableRow);
+				setAntiVirusMirrorTableRow(tableRow);
 			}
 		} else {
-			setAdditionalVirusDefinitionsTableRow([]);
+			setAntiVirusMirrorTableRow([]);
 		}
 	}, [mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror]);
 
-	const onAddAdditionalVirusDefinition = useCallback(() => {
-		const calmDatabaseMirror = mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
-		if (calmDatabaseMirror) {
-			calmDatabaseMirror?.push(additionalVirusAddText);
-			setValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, calmDatabaseMirror.join(','));
+	const onAddAntivirusMirrors = useCallback(() => {
+		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
+			const calmDatabaseMirror =
+				mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
+			if (calmDatabaseMirror) {
+				calmDatabaseMirror?.push(antiVirusMirrorsAddText);
+				setValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, calmDatabaseMirror.join(','));
+			}
+		} else {
+			setValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, antiVirusMirrorsAddText);
 		}
-		setSelectedAdditionalVirusDefinition([]);
-		setAdditionalVirusAddText('');
-	}, [additionalVirusAddText, mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror, setValue]);
 
-	const onRemoveAdditionalVirusDefinition = useCallback(() => {
+		setSelectedAntivirusMirrors([]);
+		setAntiVirusMirrorsAddText('');
+	}, [
+		antiVirusMirrorsAddText,
+		mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror,
+		setValue
+	]);
+
+	const onRemoveAntivirusMirrors = useCallback(() => {
 		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
 			const calmDatabaseMirror =
 				mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
 			const filterItems = calmDatabaseMirror.filter(
-				(item: string) => !selectedAdditionalVirusDefinition.includes(item)
+				(item: string) => !selectedAntivirusMirrors.includes(item)
 			);
 
 			setValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, filterItems.join(','));
 		}
-		setSelectedAdditionalVirusDefinition([]);
+		setSelectedAntivirusMirrors([]);
 	}, [
 		mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror,
-		selectedAdditionalVirusDefinition,
+		selectedAntivirusMirrors,
+		setValue
+	]);
+
+	useEffect(() => {
+		if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL) {
+			const calmDatabaseMirror =
+				mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
+			if (calmDatabaseMirror && calmDatabaseMirror.length > 0) {
+				const tableRow: Array<TRow> = [];
+				calmDatabaseMirror.forEach((item: string) => {
+					tableRow.push({
+						id: item,
+						columns: [
+							<Container
+								crossAlignment="flex-start"
+								key={`${item}`}
+								style={{ cursor: 'pointer' }}
+								onClick={(): void => {
+									setSelectedAdditionalAntivirusDefinition([item]);
+								}}
+							>
+								<Text size="medium" weight="light" key={item} color="gray0">
+									{item}
+								</Text>
+							</Container>
+						]
+					});
+				});
+				setAdditionalAntiVirusDefinitionTableRow(tableRow);
+			}
+		} else {
+			setAdditionalAntiVirusDefinitionTableRow([]);
+		}
+	}, [mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL]);
+
+	const onAddAdditionalAntivirusDefinition = useCallback(() => {
+		if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL) {
+			const calmDatabaseMirror =
+				mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
+			if (calmDatabaseMirror) {
+				calmDatabaseMirror?.push(additionalAntiVirusDefinitionAddText);
+				setValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, calmDatabaseMirror.join(','));
+			}
+		} else {
+			setValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, additionalAntiVirusDefinitionAddText);
+		}
+
+		setSelectedAdditionalAntivirusDefinition([]);
+		setAdditionalAntiVirusDefinitionAddText('');
+	}, [
+		additionalAntiVirusDefinitionAddText,
+		mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL,
+		setValue
+	]);
+
+	const onRemoveAdditionalAntivirusDefinition = useCallback(() => {
+		if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL) {
+			const calmDatabaseMirror =
+				mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
+			const filterItems = calmDatabaseMirror.filter(
+				(item: string) => !selectedAdditionalAntivirusDefinition.includes(item)
+			);
+			setValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, filterItems.join(','));
+		}
+		setSelectedAdditionalAntivirusDefinition([]);
+	}, [
+		mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL,
+		selectedAdditionalAntivirusDefinition,
 		setValue
 	]);
 
@@ -542,14 +716,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-						<Select
-							items={limitOptions}
-							background="gray5"
-							label={t('mta.light_span_limit', 'Light Spam limit')}
-							showCheckbox={false}
-						/>
-					</Container>
-					<Container crossAlignment="flex-start">
 						<Input
 							label={t(
 								'mta.add_this_prefix_to_spam_mail_subject',
@@ -560,6 +726,19 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_SPAM_SUBJECT_TAG, e.target.value);
 							}}
+						/>
+					</Container>
+					<Container crossAlignment="flex-start">
+						<Select
+							items={spamTagPercentOptions}
+							background="gray5"
+							label={t('mta.spam_to_junk_tolerance', 'Spam to Junk tolerance')}
+							showCheckbox={false}
+							selection={spamTagPercentOptions.find(
+								(item: Record<string, string>) =>
+									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
+							)}
+							onChange={onSpamTagPercentChange}
 						/>
 					</Container>
 				</Container>
@@ -573,23 +752,29 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
 						<Select
-							items={limitOptions}
-							background="gray5"
-							label={t('mta.hard_spam_limit', 'Hard Spam limit')}
-							showCheckbox={false}
-						/>
-					</Container>
-					<Container crossAlignment="flex-start">
-						<Select
 							items={discardPassOptions}
 							background="gray5"
-							label={t('mta.hard_spam_destiny', 'Hard Spam destiny')}
+							label={t('mta.block_spam_destiny', 'Block Spam destiny')}
 							showCheckbox={false}
 							selection={discardPassOptions.find(
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
 							)}
 							onChange={onSpamDestinyChange}
+						/>
+					</Container>
+					<Container crossAlignment="flex-start">
+						<Select
+							items={spamKillPercentOptions}
+							background="gray5"
+							label={t('mta.hard_spam_tolerance', 'Block Spam tolerance')}
+							showCheckbox={false}
+							selection={spamKillPercentOptions.find(
+								(item: Record<string, string>) =>
+									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent
+							)}
+							onChange={onSpamKillPercentChange}
+							disabled={mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === 'D_PASS'}
 						/>
 					</Container>
 				</Container>
@@ -653,13 +838,34 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						height="auto"
 					>
 						<Container width="60%" padding={{ right: 'medium' }}>
-							<Input label={t('mta.definition_mirrors', 'Definition Mirrors')} background="gray5" />
+							<Input
+								label={t('mta.definition_mirrors', 'Definition Mirrors')}
+								background="gray5"
+								value={antiVirusMirrorsAddText}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									setAntiVirusMirrorsAddText(e.target.value);
+								}}
+							/>
 						</Container>
 						<Container width="15%" crossAlignment="flex-start">
-							<Button type="outlined" size="large" label={t('mta.add', 'Add')} color="primary" />
+							<Button
+								type="outlined"
+								size="large"
+								label={t('mta.add', 'Add')}
+								color="primary"
+								onClick={onAddAntivirusMirrors}
+								disabled={antiVirusMirrorsAddText === ''}
+							/>
 						</Container>
 						<Container width="25%" crossAlignment="flex-start" mainAlignment="flex-start">
-							<Button type="ghost" size="large" label={t('mta.remove', 'Remove')} color="primary" />
+							<Button
+								type="ghost"
+								size="large"
+								label={t('mta.remove', 'Remove')}
+								color="primary"
+								disabled={selectedAntivirusMirrors.length === 0}
+								onClick={onRemoveAntivirusMirrors}
+							/>
 						</Container>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -674,9 +880,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								<Input
 									label={t('mta.additional_virus_definition', 'Additional Virus Definition')}
 									background="gray5"
-									value={additionalVirusAddText}
+									value={additionalAntiVirusDefinitionAddText}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setAdditionalVirusAddText(e.target.value);
+										setAdditionalAntiVirusDefinitionAddText(e.target.value);
 									}}
 								/>
 							</Container>
@@ -686,7 +892,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									size="large"
 									label={t('mta.add', 'Add')}
 									color="primary"
-									onClick={onAddAdditionalVirusDefinition}
+									disabled={additionalAntiVirusDefinitionAddText === ''}
+									onClick={onAddAdditionalAntivirusDefinition}
 								/>
 							</Container>
 							<Container width="25%" crossAlignment="flex-start" mainAlignment="flex-start">
@@ -695,8 +902,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									size="large"
 									label={t('mta.remove', 'Remove')}
 									color="primary"
-									disabled={selectedAdditionalVirusDefinition.length === 0}
-									onClick={onRemoveAdditionalVirusDefinition}
+									disabled={selectedAdditionalAntivirusDefinition.length === 0}
+									onClick={onRemoveAdditionalAntivirusDefinition}
 								/>
 							</Container>
 						</Container>
@@ -719,9 +926,10 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
-							rows={[]}
+							rows={antiVirusMirrorTableRow}
 							headers={antiVirusMirrorHeader}
 							showCheckbox={false}
+							selectedRows={selectedAntivirusMirrors}
 							RowFactory={CustomRowFactory}
 							HeaderFactory={CustomHeaderFactory}
 						/>
@@ -734,10 +942,10 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
-							rows={additionalVirusDefinitionsTableRow}
+							rows={additionalAntiVirusDefinitionTableRow}
 							headers={additionalVirusDefinitionHeader}
 							showCheckbox={false}
-							selectedRows={selectedAdditionalVirusDefinition}
+							selectedRows={selectedAdditionalAntivirusDefinition}
 							RowFactory={CustomRowFactory}
 							HeaderFactory={CustomHeaderFactory}
 						/>

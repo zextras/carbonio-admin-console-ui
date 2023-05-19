@@ -257,3 +257,6 @@ export const ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE = 'zimbraVirusBlockEncryptedAr
 export const ZIMBRA_VIRUS_WARN_ADMIN = 'zimbraVirusWarnAdmin';
 export const ZIMBRA_CLAM_AVDATABASE_MIRROR = 'zimbraClamAVDatabaseMirror';
 export const ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY = 'zimbraVirusDefinitionsUpdateFrequency';
+export const ZIMBRA_SPAM_TAG_PERCENT = 'zimbraSpamTagPercent';
+export const ZIMBRA_SPAM_KILL_PERCENT = 'zimbraSpamKillPercent';
+export const CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL = 'carbonioClamAVDatabaseCustomURL';
