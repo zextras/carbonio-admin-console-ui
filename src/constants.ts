@@ -260,3 +260,5 @@ export const ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY = 'zimbraVirusDefinitions
 export const ZIMBRA_SPAM_TAG_PERCENT = 'zimbraSpamTagPercent';
 export const ZIMBRA_SPAM_KILL_PERCENT = 'zimbraSpamKillPercent';
 export const CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL = 'carbonioClamAVDatabaseCustomURL';
+export const D_DISCARD = 'D_DISCARD';
+export const D_PASS = 'D_PASS';

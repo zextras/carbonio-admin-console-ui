@@ -14,20 +14,20 @@ import {
 	SnackbarManagerContext,
 	Input,
 	Select,
-	Table
+	Table,
+	Modal
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import { filter, isEqual } from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
+import { isEqual } from 'lodash';
 import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import {
 	CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+	D_DISCARD,
+	D_PASS,
 	FALSE,
-	HIGH,
-	LOW,
-	MEDIUM,
 	TRUE,
 	ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
 	ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
@@ -44,6 +44,7 @@ import {
 import { useConfigStore } from '../../../store/config/store';
 import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
 import { modifyConfig } from '../../../services/modify-config';
+import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
@@ -64,6 +65,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<any[]>([]);
 	const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
 		useState<string>('');
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaAntiVirusAndAntispamInitialDetail((prev: any) => ({
@@ -176,7 +179,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		if (
 			mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent &&
 			mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny &&
-			mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny !== 'D_PASS'
+			mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny !== D_PASS
 		) {
 			attributes.push({
 				n: ZIMBRA_SPAM_KILL_PERCENT,
@@ -282,11 +285,11 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		() => [
 			{
 				label: t('mta.discard', 'Discard'),
-				value: 'D_DISCARD'
+				value: D_DISCARD
 			},
 			{
 				label: t('mta.pass', 'Pass'),
-				value: 'D_PASS'
+				value: D_PASS
 			}
 		],
 		[t]
@@ -596,7 +599,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		setValue
 	]);
 
-	const onRemoveAdditionalAntivirusDefinition = useCallback(() => {
+	const removeAdditionalAntivirusDefinition = useCallback(() => {
 		if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL) {
 			const calmDatabaseMirror =
 				mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
@@ -606,11 +609,20 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 			setValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, filterItems.join(','));
 		}
 		setSelectedAdditionalAntivirusDefinition([]);
+		setIsShowRemoveAlertDialog(false);
 	}, [
 		mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL,
 		selectedAdditionalAntivirusDefinition,
 		setValue
 	]);
+
+	const onRemoveAdditionalAntivirusDefinition = useCallback(() => {
+		if (isAdvanced) {
+			setIsShowRemoveAlertDialog(true);
+		} else {
+			removeAdditionalAntivirusDefinition();
+		}
+	}, [isAdvanced, removeAdditionalAntivirusDefinition]);
 
 	useEffect(() => {
 		if (mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency) {
@@ -774,7 +786,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent
 							)}
 							onChange={onSpamKillPercentChange}
-							disabled={mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === 'D_PASS'}
+							disabled={mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === D_PASS}
 						/>
 					</Container>
 				</Container>
@@ -1034,6 +1046,77 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						}
 					/>
 				</Container>
+
+				<Modal
+					title={
+						<Trans
+							i18nKey="mta.remove_virus_difinition_warning_title"
+							defaults="You are removing <bold>{{name}}</bold> definition"
+							components={{ bold: <strong /> }}
+							values={{
+								name: selectedAdditionalAntivirusDefinition[0]
+							}}
+						/>
+					}
+					open={isShowRemoveAlertDialog}
+					showCloseIcon
+					onClose={(): void => {
+						setIsShowRemoveAlertDialog(false);
+					}}
+					size="medium"
+					customFooter={
+						<Container orientation="horizontal" mainAlignment="space-between">
+							<Container orientation="horizontal" mainAlignment="flex-end">
+								<Padding all="small">
+									<Button
+										label={t('label.yes_remove_it', 'Yes, Remove it')}
+										color="primary"
+										type="outlined"
+										size="medium"
+										onClick={(): void => {
+											removeAdditionalAntivirusDefinition();
+										}}
+									/>
+								</Padding>
+								<Button
+									color="primary"
+									type="outlined"
+									label={t('label.keep_it_button', 'NO, KEEP IT')}
+									onClick={(): void => {
+										setIsShowRemoveAlertDialog(false);
+									}}
+								/>
+							</Container>
+						</Container>
+					}
+				>
+					<Container>
+						<Text overflow="break-word" weight="regular">
+							{t(
+								'mta.remove_virus_difinition_warning_line_1',
+								'Removing a virus definition will reduce the chance to detect potential threats. This operation is not reversible'
+							)}
+						</Text>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ top: 'extralarge', bottom: 'extralarge' }}
+					>
+						<Text overflow="break-word" weight="regular">
+							{
+								<Trans
+									i18nKey="mta.remove_virus_difinition_warning_line_2"
+									defaults="Are you sure you want to remove the <bold>{{name}}</bold> definition?"
+									components={{ bold: <strong /> }}
+									values={{
+										name: selectedAdditionalAntivirusDefinition[0]
+									}}
+								/>
+							}
+						</Text>
+					</Container>
+				</Modal>
 			</Container>
 		</Container>
 	);
