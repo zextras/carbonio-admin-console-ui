@@ -579,6 +579,8 @@
     "domain": {
         "account_gal_synchronization": "Account Name of GAL Synchronization",
         "account_list": "Accounts List",
+        "active_sync": "ActiveSync",
+        "admin_api": "Admin API",
         "advanced": "Advanced",
         "authentication": "Authentication",
         "certificate_content_error": "Domain certificate , CA Chain or Private key is invalid",
@@ -606,6 +608,7 @@
         "mailbox_quota": "Mailbox Quota",
         "manage": "Manage",
         "many_domain_info_msg": "So many domains! Which one would you like to see? Start typing to filter.",
+        "mobile_apps": "Mobile Apps",
         "most_result_return_gal_search": "Most results returned by GAL search",
         "page_size": "Page Size",
         "private_key_certificate_removed": "The certificate's private key has been removed",
@@ -626,10 +629,12 @@
         "unit_measure_minutes": "Minutes",
         "unit_measure_seconds": "Seconds",
         "virtual_hosts": "Virtual Hosts",
-        "warn_when_reach_space_quota": "Warn me when I reach this aggregated space quota"
+        "warn_when_reach_space_quota": "Warn me when I reach this aggregated space quota",
+        "web_ui": "WebUI"
     },
     "error": {
-        "alreadyInUse": ""
+        "alreadyInUse": "",
+        "one_or_more_ip_invalid": "One or more IP are invalid"
     },
     "have_not_setup_bucket_type": "It seems like you haven't setup a bucket type",
     "hsm": {
@@ -710,6 +715,8 @@
         "yes": "Yes"
     },
     "label": {
+        "2-factor-authentication": "2-Factor-Authentication",
+        "2fa": "2-Factor-Authentication",
         "ADD_NEW": "ADD NEW",
         "Accounts": "Accounts",
         "Aliases": "Aliases",
@@ -776,6 +783,7 @@
         "apperance": "Apperance",
         "application_log": "Application Log",
         "apply_hsm_policy_after_the_restore": "Apply HSM Policies after the restore",
+        "apply_to_all": "APPLY TO ALL SERVICES",
         "appointment_reminder_in_minutes": "Appointment Reminder (minutes before)",
         "appointments_default_duration": "Appointment’s Default Duration",
         "are_you_sure_delete_distribution_list": "Are you sure you want to delete <bold>{{name}}</bold> ?",
@@ -868,6 +876,7 @@
         "compression_threshold": "Compression Threshold",
         "config": "Config",
         "configuration": "CONFIGURATION",
+        "configuration_help_text": "Setup the networks or the devices (IPs) that will not require the 2FA authentication",
         "configuration_lbl": "Configuration",
         "connect_buckets": "Connect Buckets",
         "connection_is_created_verify_connector_fail": "CONNECTOR IS CREATED BUT VERIFICATION HAS FAILED",
@@ -974,6 +983,7 @@
         "device": "Device",
         "device_id": "Device ID",
         "disable": "disable",
+        "disable_2fa": "Disable 2FA",
         "disable_it_instead": "Disable it",
         "disable_the_account": "Disable the account",
         "disabled": "Disabled",
@@ -1494,6 +1504,9 @@
         "title_theme_note": "The title is the name that will appear on the browser tab",
         "total_acc_rights_with_delete_distribution_list_helper_text": "This list has <bold>{{totalAccRights}}</bold> shared accounts. <br /> If you delete it, the shares will be lost.",
         "true": "True",
+        "trust_ip": "Trust the IP",
+        "trust_the_device": "Trust the device",
+        "trusted_network_ip": "Trusted Networks (IP ranges)",
         "type": "Type",
         "type_account_name_for_global_address_list": "Type the Account Name for the Global Address List (GAL)",
         "type_accounts_paste_them_here": "Type the Accounts or paste them here",
@@ -1601,6 +1614,7 @@
         },
         "what_inside": "Subject",
         "what_is_a_gal": "What's a GAL?",
+        "what_to_trust": "What to trust?",
         "who_can_send_mails_to_list ": "Who can send mails TO this list?",
         "who_can_send_mails_to_this_list": "Who can send mails TO this list?",
         "who_is_in_this_list": "Who's in this list?",

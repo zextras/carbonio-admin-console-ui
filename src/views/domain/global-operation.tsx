@@ -6,18 +6,22 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { THEME } from '../../constants';
+import { THEME, TWO_FACTOR_AUTHENTICATION } from '../../constants';
 import GlobalTheme from './global/global-theme';
+import GlobalTwoFactorAuthentcation from './global/global-two-factor-auth';
 
 const GlobalOperations: FC = () => {
 	const [t] = useTranslation();
 	const { operation }: { operation: string } = useParams();
+
 	return (
 		<>
 			{((): any => {
 				switch (operation) {
 					case THEME:
 						return <GlobalTheme />;
+					case TWO_FACTOR_AUTHENTICATION:
+						return <GlobalTwoFactorAuthentcation />;
 					default:
 						return null;
 				}

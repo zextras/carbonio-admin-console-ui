@@ -37,7 +37,9 @@ import {
 	THEME,
 	VIRTUAL_HOSTS,
 	SAML,
-	CONFIG
+	CONFIG,
+	GLOBAL_2FA_ROUTE,
+	TWO_FACTOR_AUTHENTICATION
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -195,6 +197,8 @@ const DomainListPanel: FC = () => {
 					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 				if (selectedOperationItem === GLOBAL_THEME_ROUTE) {
 					replaceHistory(`/${selectedOperationItem}`);
+				} else if (selectedOperationItem === GLOBAL_2FA_ROUTE) {
+					replaceHistory(`/${selectedOperationItem}`);
 				} else {
 					replaceHistory(`/${domainId}/${selectedOperationItem}`);
 				}
@@ -239,6 +243,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: THEME,
 				name: t('label.theme', 'Theme'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: TWO_FACTOR_AUTHENTICATION,
+				name: t('label.2-factor-authentication', '2-Factor-Authentication'),
 				isSelected: isDomainSelect
 			},
 			{
@@ -287,6 +296,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: GLOBAL_THEME_ROUTE,
 				name: t('label.theme', 'Theme'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_2FA_ROUTE,
+				name: t('label.2fa', '2-Factor-Authentication'),
 				isSelected: true
 			}
 		],

@@ -85,3 +85,27 @@ export type themeConfigStore = {
 	carbonioWebUiPrimaryColor?: string;
 	carbonioWebUiDarkPrimaryColor?: string;
 };
+
+export interface IpRangeValue {
+	label?: string;
+	value?: string;
+}
+
+export type TwoFactorAuthPolicyValues = {
+	EAS?: TwoFactorAuthPolicyValueChild;
+	WebUI?: TwoFactorAuthPolicyValueChild;
+	WebAdminUI?: TwoFactorAuthPolicyValueChild;
+	MobileApp?: TwoFactorAuthPolicyValueChild;
+	DesktopApp?: TwoFactorAuthPolicyValueChild;
+	ZmWebUI?: TwoFactorAuthPolicyValueChild;
+	Dav?: TwoFactorAuthPolicyValueChild;
+	Cli?: TwoFactorAuthPolicyValueChild;
+	Smtp?: TwoFactorAuthPolicyValueChild;
+	Imap?: TwoFactorAuthPolicyValueChild;
+	Pop3?: TwoFactorAuthPolicyValueChild;
+};
+
+export type TwoFactorAuthPolicyValueChild = {
+	trustedIPRange: string[];
+	trustedDevice: number;
+};
