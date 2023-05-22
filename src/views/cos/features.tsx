@@ -88,55 +88,53 @@ export const Features: FC<{
 						</Row>
 					)}
 				</Container>
-				{isAdvanced && (
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						width="50%"
-						orientation="vertical"
-						padding={{ bottom: 'large' }}
-					>
-						<Text size="extralarge" weight="bold">
-							{t('label.chats', 'Chats')}
-						</Text>
-						{isAdvanced && (
-							<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-								<Switch
-									value={featuresDetail.carbonioFeatureTeamEnabled === 'TRUE'}
-									// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-									onClick={() => changeSwitchOption('carbonioFeatureTeamEnabled')}
-									label={t('label.web_feature', 'Web Feature')}
-									iconColor="primary"
-								/>
-							</Row>
-						)}
-						{!isAdvanced && (
-							<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-								<Switch
-									value={featuresDetail.carbonioFeatureChatsEnabled === 'TRUE'}
-									// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-									onClick={() => changeSwitchOption('carbonioFeatureChatsEnabled')}
-									label={t('label.web_feature', 'Web Feature')}
-									iconColor="primary"
-								/>
-							</Row>
-						)}
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="50%"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<Text size="extralarge" weight="bold">
+						{t('label.chats', 'Chats')}
+					</Text>
+					{isAdvanced && (
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<Switch
-								value={featuresDetail.carbonioFeatureChatsAppEnabled === 'TRUE'}
+								value={featuresDetail.carbonioFeatureTeamEnabled === 'TRUE'}
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-								onClick={() => changeSwitchOption('carbonioFeatureChatsAppEnabled')}
-								label={t('label.mobile_app', 'Mobile App')}
-								disabled={featuresDetail.carbonioFeatureChatsEnabled !== 'TRUE'}
+								onClick={() => changeSwitchOption('carbonioFeatureTeamEnabled')}
+								label={t('label.web_feature', 'Web Feature')}
 								iconColor="primary"
 							/>
 						</Row>
-					</Container>
-				)}
+					)}
+					{!isAdvanced && (
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<Switch
+								value={featuresDetail.carbonioFeatureChatsEnabled === 'TRUE'}
+								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+								onClick={() => changeSwitchOption('carbonioFeatureChatsEnabled')}
+								label={t('label.web_feature', 'Web Feature')}
+								iconColor="primary"
+							/>
+						</Row>
+					)}
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
+						<Switch
+							value={featuresDetail.carbonioFeatureChatsAppEnabled === 'TRUE'}
+							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+							onClick={() => changeSwitchOption('carbonioFeatureChatsAppEnabled')}
+							label={t('label.mobile_app', 'Mobile App')}
+							disabled={
+								isAdvanced
+									? featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE'
+									: featuresDetail.carbonioFeatureChatsEnabled !== 'TRUE'
+							}
+							iconColor="primary"
+						/>
+					</Row>
+				</Container>
 				<Divider />
 			</Row>
 			<Row
