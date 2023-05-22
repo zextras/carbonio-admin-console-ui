@@ -24,20 +24,24 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { useConfigStore } from '../../../store/config/store';
 import { MtaOutboundFlow, TRow } from '../../../../types';
 import {
+	ANTISPAM,
+	ANTIVIRUS,
 	FALSE,
+	OPENDKIM,
 	TRUE,
-	ZIMBRA_MTA_AUTH_ENABLED,
 	ZIMBRA_MTA_FALLBACK_RELAY_HOST,
 	ZIMBRA_MTA_MY_HOSTNAME,
 	ZIMBRA_MTA_MY_NETWORKS,
 	ZIMBRA_MTA_MY_ORIGIN,
 	ZIMBRA_MTA_RELAY_HOST,
+	ZIMBRA_MTA_SASL_AUTH_ENABLED,
 	ZIMBRA_MTA_SMTP_HELLO_NAME,
 	ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
 	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP
 } from '../../../constants';
-import { useBucketServersListStore } from '../../../store/bucket-server-list/store';
 import { modifyConfig } from '../../../services/modify-config';
+import { getAllServers } from '../../../services/get-all-servers-service';
+import { useServerStore } from '../../../store/server/store';
 
 const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
@@ -45,7 +49,8 @@ const MTAOutBoundFlow: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
-	const allServersList = useBucketServersListStore((state) => state.allServersList);
+	const allServersList = useServerStore((state) => state.serverList);
+	const setServerList = useServerStore((state) => state.setServerList);
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<TRow>>([]);
 
 	const [mtaOutboundFlowInitialDetail, setMtaOutboundFlowInitialDetail] =
@@ -68,6 +73,19 @@ const MTAOutBoundFlow: FC = () => {
 		[setInitialValue, setValue]
 	);
 
+	const getAllServersRequest = useCallback(() => {
+		getAllServers().then((data) => {
+			const server = data?.server;
+			if (server && Array.isArray(server) && server.length > 0) {
+				setServerList(server);
+			}
+		});
+	}, [setServerList]);
+
+	useEffect(() => {
+		getAllServersRequest();
+	}, [getAllServersRequest]);
+
 	useEffect(() => {
 		if (allServersList && allServersList.length > 0) {
 			const tableRow: Array<TRow> = [];
@@ -77,27 +95,27 @@ const MTAOutBoundFlow: FC = () => {
 						(item: Record<string, unknown>) => item?.n === 'zimbraServiceEnabled'
 					);
 					const zimbraMtaAuthEnabled = server?.a.find(
-						(item: Record<string, unknown>) => item?.n === 'zimbraMtaAuthEnabled'
+						(item: Record<string, unknown>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED
 					);
 					let antivirus = [];
 					let antispam = [];
 					let opendkim = [];
 					if (serviceEnabled && serviceEnabled.length > 0) {
 						antivirus = serviceEnabled.filter(
-							(item: Record<string, unknown>) => item?.n === 'antivirus'
+							(item: Record<string, unknown>) => item?._content === ANTIVIRUS
 						);
 						antispam = serviceEnabled.filter(
-							(item: Record<string, unknown>) => item?.n === 'antispam'
+							(item: Record<string, unknown>) => item?._content === ANTISPAM
 						);
 						opendkim = serviceEnabled.filter(
-							(item: Record<string, unknown>) => item?.n === 'opendkim'
+							(item: Record<string, unknown>) => item?._content === OPENDKIM
 						);
 					}
 					let isAuthEnable = t('label.disabled', 'Disabled');
 					if (
 						zimbraMtaAuthEnabled &&
 						zimbraMtaAuthEnabled._content &&
-						zimbraMtaAuthEnabled._content === TRUE
+						zimbraMtaAuthEnabled._content === 'yes'
 					) {
 						isAuthEnable = t('label.enabled', 'Enabled');
 					}
@@ -154,10 +172,11 @@ const MTAOutBoundFlow: FC = () => {
 				);
 			}
 			const mtaAuthEnabled = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_AUTH_ENABLED
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED
 			);
+
 			if (mtaAuthEnabled && mtaAuthEnabled?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_AUTH_ENABLED, mtaAuthEnabled?._content === TRUE);
+				setInitialAndCurrentValue(ZIMBRA_MTA_SASL_AUTH_ENABLED, mtaAuthEnabled?._content);
 			}
 			const zimbraMtaMyNetworks = configInformation.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
@@ -260,10 +279,13 @@ const MTAOutBoundFlow: FC = () => {
 			n: ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
 			_content: mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser ? TRUE : FALSE
 		});
-		attributes.push({
-			n: ZIMBRA_MTA_AUTH_ENABLED,
-			_content: mtaOutboundDetail?.zimbraMtaAuthEnabled ? TRUE : FALSE
-		});
+		if (mtaOutboundDetail?.zimbraMtaSaslAuthEnable) {
+			attributes.push({
+				n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
+				_content: mtaOutboundDetail?.zimbraMtaSaslAuthEnable
+			});
+		}
+
 		attributes.push({
 			n: ZIMBRA_MTA_MY_NETWORKS,
 			_content: mtaOutboundDetail?.zimbraMtaMyNetworks || ''
@@ -473,9 +495,12 @@ const MTAOutBoundFlow: FC = () => {
 				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 					<Switch
 						label={t('mta.enable_authentication', 'Enable Authentication')}
-						value={mtaOutboundDetail?.zimbraMtaAuthEnabled}
+						value={mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes'}
 						onClick={(): void =>
-							setValue(ZIMBRA_MTA_AUTH_ENABLED, !mtaOutboundDetail?.zimbraMtaAuthEnabled)
+							setValue(
+								ZIMBRA_MTA_SASL_AUTH_ENABLED,
+								mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes' ? 'no' : 'yes'
+							)
 						}
 					/>
 				</Container>

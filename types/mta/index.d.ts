@@ -23,7 +23,7 @@ export type MtaInboundSecurity = {
 export type MtaOutboundFlow = {
 	zimbraSmtpSendAddOriginatingIP: boolean;
 	zimbraSmtpSendAddAuthenticatedUser: boolean;
-	zimbraMtaAuthEnabled: boolean;
+	zimbraMtaSaslAuthEnable: string;
 	zimbraMtaMyNetworks: string;
 	zimbraMtaSmtpHeloName: string;
 	zimbraMtaMyHostname: string;

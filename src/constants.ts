@@ -262,3 +262,7 @@ export const ZIMBRA_SPAM_KILL_PERCENT = 'zimbraSpamKillPercent';
 export const CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL = 'carbonioClamAVDatabaseCustomURL';
 export const D_DISCARD = 'D_DISCARD';
 export const D_PASS = 'D_PASS';
+export const ZIMBRA_MTA_SASL_AUTH_ENABLED = 'zimbraMtaSaslAuthEnable';
+export const ANTIVIRUS = 'antivirus';
+export const ANTISPAM = 'antispam';
+export const OPENDKIM = 'opendkim';
