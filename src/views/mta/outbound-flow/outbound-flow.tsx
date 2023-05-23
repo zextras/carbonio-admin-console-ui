@@ -13,7 +13,8 @@ import {
 	Switch,
 	SnackbarManagerContext,
 	Input,
-	Table
+	Table,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -468,41 +469,68 @@ const MTAOutBoundFlow: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch
-							label={t('mta.add_client_ip_to_header', 'Add client IP to the header')}
-							value={mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
-									!mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP
-								)
-							}
-						/>
+						<Tooltip
+							placement="bottom"
+							label={t(
+								'mta.include_originating_ip_address_in_smtp_header_outgoing_emails',
+								'Include the originating IP address in the SMTP headers of outgoing emails'
+							)}
+							maxWidth="auto"
+						>
+							<Switch
+								label={t('mta.add_client_ip_to_header', 'Add client IP to the header')}
+								value={mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
+										!mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch
-							label={t('mta.add_username_to_header', 'Add username to the header')}
-							value={mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
-									!mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser
-								)
-							}
-						/>
+						<Tooltip
+							placement="bottom"
+							label={t(
+								'mta.include_authenticated_user_information_in_smtp_header_for_outgoing_emails',
+								'Include the authenticated user information in the SMTP headers of outgoing emails'
+							)}
+							maxWidth="auto"
+						>
+							<Switch
+								label={t('mta.add_username_to_header', 'Add username to the header')}
+								value={mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
+										!mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 				</Container>
 				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-					<Switch
-						label={t('mta.enable_authentication', 'Enable Authentication')}
-						value={mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes'}
-						onClick={(): void =>
-							setValue(
-								ZIMBRA_MTA_SASL_AUTH_ENABLED,
-								mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes' ? 'no' : 'yes'
-							)
-						}
-					/>
+					<Tooltip
+						placement="bottom"
+						label={t(
+							'mta.enable_or_disable_authentication_for_email_transfer_agent',
+							'Enable or disable authentication for the Mail Transfer Agent (MTA)'
+						)}
+						maxWidth="auto"
+					>
+						<Switch
+							label={t('mta.enable_authentication', 'Enable Authentication')}
+							value={mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes'}
+							onClick={(): void =>
+								setValue(
+									ZIMBRA_MTA_SASL_AUTH_ENABLED,
+									mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes' ? 'no' : 'yes'
+								)
+							}
+						/>
+					</Tooltip>
 				</Container>
 				<Container
 					mainAlignment="flex-start"

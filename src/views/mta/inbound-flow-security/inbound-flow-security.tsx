@@ -12,11 +12,12 @@ import {
 	Divider,
 	Switch,
 	ChipInput,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { isEqual } from 'lodash';
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { MtaInboundSecurity } from '../../../../types';
 import {
 	FALSE,
@@ -551,6 +552,7 @@ const MTAInboundFlowSecurity: FC = () => {
 			<ListRow>
 				<Divider />
 			</ListRow>
+
 			<Container
 				padding={{ all: 'extralarge' }}
 				mainAlignment="flex-start"
@@ -558,6 +560,25 @@ const MTAInboundFlowSecurity: FC = () => {
 				height="calc(100vh - 10.5rem)"
 				style={{ overflow: 'auto' }}
 			>
+				<Container
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					height="auto"
+					padding={{
+						bottom: 'extralarge'
+					}}
+				>
+					<Text size="small">
+						<Trans
+							i18nKey="mta.important_mta_reboot_information_message"
+							defaults="<bold>IMPORTANT: Any changes made on this page will require a reboot of the MTA</bold> for them to take effect. Simply saving the changes will not suffice."
+							components={{ bold: <strong /> }}
+						/>
+					</Text>
+				</Container>
+				<Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
+					<Divider />
+				</Container>
 				<Container
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
@@ -585,34 +606,52 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch
+						<Tooltip
+							placement="bottom"
 							label={t(
-								'mta.notify_admins_about_block_extensions',
-								'Notify admins about blocked extensions'
+								'mta.notify_administrators_of_blocked_file_extension_incoming_emails',
+								'Notify administrators of blocked file extensions in incoming emails'
 							)}
-							value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
-									!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin
-								)
-							}
-						/>
+							maxWidth="auto"
+						>
+							<Switch
+								label={t(
+									'mta.notify_admins_about_block_extensions',
+									'Notify admins about blocked extensions'
+								)}
+								value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
+										!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 					<Container crossAlignment="flex-start" height="auto">
-						<Switch
+						<Tooltip
+							placement="bottom"
 							label={t(
-								'mta.notify_users_about_block_extensions',
-								'Notify users about blocked extensions'
+								'mta.notify_recipients_of_blocked_file_extension_incoming_emails',
+								'Notify recipients of blocked file extensions in incoming emails'
 							)}
-							value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
-									!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient
-								)
-							}
-						/>
+							maxWidth="auto"
+						>
+							<Switch
+								label={t(
+									'mta.notify_users_about_block_extensions',
+									'Notify users about blocked extensions'
+								)}
+								value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
+										!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 				</Container>
 				<ListRow>
@@ -636,43 +675,70 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch
-							label={t('mta.reject_unlisted_sender', 'Reject unlisted Sender')}
-							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
-									!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender
-								)
-							}
-						/>
-					</Container>
-					<Container crossAlignment="flex-start">
-						<Switch
-							label={t('mta.reject_unlisted_recipient', 'Reject unlisted Recipient')}
-							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
-									!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient
-								)
-							}
-						/>
-					</Container>
-					<Container crossAlignment="flex-start">
-						<Switch
+						<Tooltip
+							placement="bottom"
 							label={t(
-								'mta.reject_sender_login_mismatch_or_empty',
-								'Reject Sender login mismatch or empty '
+								'mta.reject_emails_from_unlisted_senders',
+								'Reject emails from unlisted senders'
 							)}
-							value={mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-									!mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions
-								)
-							}
-						/>
+							maxWidth="auto"
+						>
+							<Switch
+								label={t('mta.reject_unlisted_sender', 'Reject unlisted Sender')}
+								value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
+										!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender
+									)
+								}
+							/>
+						</Tooltip>
+					</Container>
+					<Container crossAlignment="flex-start">
+						<Tooltip
+							placement="bottom"
+							label={t(
+								'mta.reject_emails_addressed_to_unlisted_recipients',
+								'Reject emails addressed to unlisted recipients'
+							)}
+							maxWidth="auto"
+						>
+							<Switch
+								label={t('mta.reject_unlisted_recipient', 'Reject unlisted Recipient')}
+								value={mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
+										!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient
+									)
+								}
+							/>
+						</Tooltip>
+					</Container>
+					<Container crossAlignment="flex-start">
+						<Tooltip
+							placement="bottom"
+							label={t(
+								'mta.reject_emails_when_sender_login_does_not_match_authenticated_user',
+								`Reject emails when the sender's login does not match the authenticated user`
+							)}
+							maxWidth="auto"
+						>
+							<Switch
+								label={t(
+									'mta.reject_sender_login_mismatch_or_empty',
+									'Reject Sender login mismatch or empty '
+								)}
+								value={mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
+										!mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 				</Container>
 				<ListRow>
@@ -696,31 +762,49 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch
-							label={t('mta.clients_ip_address', 'Client’s IP address')}
-							value={mtaInboundSecurityDetail?.rejectUnknownClientHostname}
-							onClick={(): void =>
-								setValue(
-									_REJECT_UNKNOWN_CLIENT_HOSTNAME,
-									!mtaInboundSecurityDetail?.rejectUnknownClientHostname
-								)
-							}
-						/>
+						<Tooltip
+							placement="bottom"
+							label={t(
+								'mta.reject_emails_from_client_hostnames',
+								`Rejects emails from clients with unknown or unresolvable hostnames`
+							)}
+							maxWidth="auto"
+						>
+							<Switch
+								label={t('mta.clients_ip_address', 'Client’s IP address')}
+								value={mtaInboundSecurityDetail?.rejectUnknownClientHostname}
+								onClick={(): void =>
+									setValue(
+										_REJECT_UNKNOWN_CLIENT_HOSTNAME,
+										!mtaInboundSecurityDetail?.rejectUnknownClientHostname
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch
+						<Tooltip
+							placement="bottom"
 							label={t(
-								'mta.client_must_greet_with_resolving_hostname',
-								'Client must greet with a resolving hostname'
+								'mta.reject_emails_from_client_with_inresolved_helo_hostnames',
+								`Rejects emails from clients with unresolvable HELO/EHLO hostnames`
 							)}
-							value={mtaInboundSecurityDetail?.rejectUnknownHeloHostname}
-							onClick={(): void =>
-								setValue(
-									'rejectUnknownHeloHostname',
-									!mtaInboundSecurityDetail?.rejectUnknownHeloHostname
-								)
-							}
-						/>
+							maxWidth="auto"
+						>
+							<Switch
+								label={t(
+									'mta.client_must_greet_with_resolving_hostname',
+									'Client must greet with a resolving hostname'
+								)}
+								value={mtaInboundSecurityDetail?.rejectUnknownHeloHostname}
+								onClick={(): void =>
+									setValue(
+										'rejectUnknownHeloHostname',
+										!mtaInboundSecurityDetail?.rejectUnknownHeloHostname
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 				</Container>
 				<Container
@@ -731,28 +815,46 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch
-							label={t('mta.hostname_in_greetings', 'Hostname in greetings')}
-							value={mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname}
-							onClick={(): void =>
-								setValue(
-									'rejectUnknownReverseClientHostname',
-									!mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname
-								)
-							}
-						/>
+						<Tooltip
+							placement="bottom"
+							label={t(
+								'mta.reject_emails_from_client_with_unknown_unresolvable_reverse_hostname',
+								`Rejects emails from clients with unknown or unresolvable reverse hostnames`
+							)}
+							maxWidth="auto"
+						>
+							<Switch
+								label={t('mta.hostname_in_greetings', 'Hostname in greetings')}
+								value={mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname}
+								onClick={(): void =>
+									setValue(
+										'rejectUnknownReverseClientHostname',
+										!mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch
-							label={t('mta.senders_domain', 'Sender’s Domain')}
-							value={mtaInboundSecurityDetail?.rejectUnknownSenderDomain}
-							onClick={(): void =>
-								setValue(
-									'rejectUnknownSenderDomain',
-									!mtaInboundSecurityDetail?.rejectUnknownSenderDomain
-								)
-							}
-						/>
+						<Tooltip
+							placement="bottom"
+							label={t(
+								'mta.reject_emails_from_unknown_or_unresolvable_sender_domains',
+								`Rejects emails from unknown or unresolvable sender domains`
+							)}
+							maxWidth="auto"
+						>
+							<Switch
+								label={t('mta.senders_domain', 'Sender’s Domain')}
+								value={mtaInboundSecurityDetail?.rejectUnknownSenderDomain}
+								onClick={(): void =>
+									setValue(
+										'rejectUnknownSenderDomain',
+										!mtaInboundSecurityDetail?.rejectUnknownSenderDomain
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 				</Container>
 				<Container
@@ -763,31 +865,49 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch
+						<Tooltip
+							placement="bottom"
 							label={t(
-								'mta.hostname_in_greeting_violates_rfc',
-								'Hostname in greeting violates RFC'
+								'mta.reject_emails_with_an_invalid_or_unresolvable_helo_hostname',
+								`Reject emails with an invalid or unresolvable HELO hostname`
 							)}
-							value={mtaInboundSecurityDetail?.rejectInvalidHeloHostname}
-							onClick={(): void =>
-								setValue(
-									'rejectInvalidHeloHostname',
-									!mtaInboundSecurityDetail?.rejectInvalidHeloHostname
-								)
-							}
-						/>
+							maxWidth="auto"
+						>
+							<Switch
+								label={t(
+									'mta.hostname_in_greeting_violates_rfc',
+									'Hostname in greeting violates RFC'
+								)}
+								value={mtaInboundSecurityDetail?.rejectInvalidHeloHostname}
+								onClick={(): void =>
+									setValue(
+										'rejectInvalidHeloHostname',
+										!mtaInboundSecurityDetail?.rejectInvalidHeloHostname
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch
+						<Tooltip
+							placement="bottom"
 							label={t(
-								'mta.senders_address_must_fully_qualified',
-								'Sender address must be fully qualified'
+								'mta.reject_emails_with_non_fully_qualified_domain_name_sender_address',
+								`Rejects emails with non fully qualified domain name (FQDN) sender addresses`
 							)}
-							value={mtaInboundSecurityDetail?.rejectNonFqdnSender}
-							onClick={(): void =>
-								setValue('rejectNonFqdnSender', !mtaInboundSecurityDetail?.rejectNonFqdnSender)
-							}
-						/>
+							maxWidth="auto"
+						>
+							<Switch
+								label={t(
+									'mta.senders_address_must_fully_qualified',
+									'Sender address must be fully qualified'
+								)}
+								value={mtaInboundSecurityDetail?.rejectNonFqdnSender}
+								onClick={(): void =>
+									setValue('rejectNonFqdnSender', !mtaInboundSecurityDetail?.rejectNonFqdnSender)
+								}
+							/>
+						</Tooltip>
 					</Container>
 				</Container>
 				<Container
@@ -798,19 +918,28 @@ const MTAInboundFlowSecurity: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Switch
+						<Tooltip
+							placement="bottom"
 							label={t(
-								'mta.client_must_greet_with_fully_qualified_hostname',
-								'Client must greet with a fully qualified hostname'
+								'mta.reject_emails_from_client_domain_hostname',
+								`Rejects emails from clients with non fully qualified domain name (FQDN) in their HELO/EHLO hostname`
 							)}
-							value={mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname}
-							onClick={(): void =>
-								setValue(
-									'rejectNonFqdnHeloHostname',
-									!mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname
-								)
-							}
-						/>
+							maxWidth="auto"
+						>
+							<Switch
+								label={t(
+									'mta.client_must_greet_with_fully_qualified_hostname',
+									'Client must greet with a fully qualified hostname'
+								)}
+								value={mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname}
+								onClick={(): void =>
+									setValue(
+										'rejectNonFqdnHeloHostname',
+										!mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname
+									)
+								}
+							/>
+						</Tooltip>
 					</Container>
 				</Container>
 			</Container>
