@@ -10,6 +10,7 @@ import {
 	Padding,
 	Button,
 	Divider,
+	Select,
 	Switch,
 	SnackbarManagerContext,
 	Input,
@@ -37,6 +38,7 @@ import {
 	ZIMBRA_MTA_RELAY_HOST,
 	ZIMBRA_MTA_SASL_AUTH_ENABLED,
 	ZIMBRA_MTA_SMTP_HELLO_NAME,
+	ZIMBRA_MTA_TLS_SECURITY_LEVEL,
 	ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
 	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP
 } from '../../../constants';
@@ -220,6 +222,16 @@ const MTAOutBoundFlow: FC = () => {
 			if (mtaRelayHost && mtaRelayHost?._content) {
 				setInitialAndCurrentValue(ZIMBRA_MTA_RELAY_HOST, mtaRelayHost?._content);
 			}
+
+			const zimbraMtaTlsSecurityLevel = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_TLS_SECURITY_LEVEL
+			);
+			if (zimbraMtaTlsSecurityLevel && zimbraMtaTlsSecurityLevel?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_TLS_SECURITY_LEVEL,
+					zimbraMtaTlsSecurityLevel?._content
+				);
+			}
 		}
 	}, [configInformation, setInitialAndCurrentValue]);
 
@@ -311,6 +323,10 @@ const MTAOutBoundFlow: FC = () => {
 			n: ZIMBRA_MTA_MY_ORIGIN,
 			_content: mtaOutboundDetail?.zimbraMtaMyOrigin || ''
 		});
+		attributes.push({
+			n: ZIMBRA_MTA_TLS_SECURITY_LEVEL,
+			_content: mtaOutboundDetail?.zimbraMtaTlsSecurityLevel || ''
+		});
 		modifyConfigRequest(attributes);
 	}, [mtaOutboundDetail, modifyConfigRequest]);
 
@@ -391,6 +407,27 @@ const MTAOutBoundFlow: FC = () => {
 			}
 		],
 		[t]
+	);
+
+	const tlsSecurityOptions = useMemo(
+		() => [
+			{
+				label: t('mta.may', 'May'),
+				value: 'may'
+			},
+			{
+				label: t('mta.none', 'None'),
+				value: 'none'
+			}
+		],
+		[t]
+	);
+
+	const onTlsSecurityOptions = useCallback(
+		(v: string) => {
+			setValue(ZIMBRA_MTA_TLS_SECURITY_LEVEL, v);
+		},
+		[setValue]
 	);
 
 	return (
@@ -511,26 +548,47 @@ const MTAOutBoundFlow: FC = () => {
 						</Tooltip>
 					</Container>
 				</Container>
-				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-					<Tooltip
-						placement="bottom"
-						label={t(
-							'mta.enable_or_disable_authentication_for_email_transfer_agent',
-							'Enable or disable authentication for the Mail Transfer Agent (MTA)'
-						)}
-						maxWidth="auto"
-					>
-						<Switch
-							label={t('mta.enable_authentication', 'Enable Authentication')}
-							value={mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes'}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_MTA_SASL_AUTH_ENABLED,
-									mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes' ? 'no' : 'yes'
-								)
-							}
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					padding={{ bottom: 'extralarge' }}
+					height="auto"
+				>
+					<Container crossAlignment="flex-start">
+						<Tooltip
+							placement="bottom"
+							label={t(
+								'mta.enable_or_disable_authentication_for_email_transfer_agent',
+								'Enable or disable authentication for the Mail Transfer Agent (MTA)'
+							)}
+							maxWidth="auto"
+						>
+							<Switch
+								label={t('mta.enable_authentication', 'Enable Authentication')}
+								value={mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes'}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_SASL_AUTH_ENABLED,
+										mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes' ? 'no' : 'yes'
+									)
+								}
+							/>
+						</Tooltip>
+					</Container>
+					<Container crossAlignment="flex-start">
+						<Select
+							items={tlsSecurityOptions}
+							background="gray5"
+							label={t('mta.tls_security_level', 'TLS Security Level')}
+							showCheckbox={false}
+							selection={tlsSecurityOptions.find(
+								(item: Record<string, string>) =>
+									item.value === mtaOutboundDetail?.zimbraMtaTlsSecurityLevel
+							)}
+							onChange={onTlsSecurityOptions}
 						/>
-					</Tooltip>
+					</Container>
 				</Container>
 				<Container
 					mainAlignment="flex-start"

@@ -30,6 +30,7 @@ export type MtaOutboundFlow = {
 	zimbraMtaFallbackRelayHost: string;
 	zimbraMtaRelayHost: string;
 	zimbraMtaMyOrigin: string;
+	zimbraMtaTlsSecurityLevel: string;
 };
 
 export type MtaAntivirusAndAntispam = {
