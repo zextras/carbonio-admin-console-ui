@@ -67,7 +67,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 					</Container>
 					<Divider color="gray2" />
 				</Row>
-				<TwoFactorAuthencationConfig />
+				{/* <TwoFactorAuthencationConfig /> */}
 			</Container>
 			<RouteLeavingGuard
 				when={isDirty}

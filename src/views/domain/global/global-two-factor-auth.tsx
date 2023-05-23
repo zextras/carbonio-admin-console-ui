@@ -23,7 +23,7 @@ const GlobalTwoFactorAuthentcation: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const [arrPolicies, setArrPolicies] = useState<TwoFactorAuthPolicyValues>({});
+	const [arrPolicies, setArrPolicies] = useState<TwoFactorAuthPolicyValues[]>([]);
 	const [arrPoliciesToModify, setArrPoliciesToModify] = useState<TwoFactorAuthPolicyValues>({});
 
 	const listGlobalPolicies = useCallback(() => {
@@ -51,8 +51,9 @@ const GlobalTwoFactorAuthentcation: FC = () => {
 			});
 	}, [t, createSnackbar]);
 
-	const modifyPolicies = (): void => {
-		console.log('_dd modifyPolicy called');
+	const modifyPolicies = (newPolicies: TwoFactorAuthPolicyValues): void => {
+		setArrPoliciesToModify(newPolicies);
+		setIsDirty(true);
 	};
 
 	useEffect(() => {

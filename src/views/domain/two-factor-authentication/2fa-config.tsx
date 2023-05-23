@@ -33,30 +33,44 @@ import { TwoFactorWhatToTrust, isValidIpRange } from '../../utility/utils';
 import { IpRangeValue, TwoFactorAuthPolicyValues } from '../../../../types';
 
 export const TwoFactorAuthencationConfig: FC<{
-	policies: TwoFactorAuthPolicyValues;
+	policies: TwoFactorAuthPolicyValues[];
 	modifyPolicies: any;
 }> = ({ policies, modifyPolicies }) => {
 	const [t] = useTranslation();
 	const WHAT_TO_TRUST = useMemo(() => TwoFactorWhatToTrust(t), [t]);
-	const [allWhatToTrust, setAllWhatToTrust] = useState();
-	const [allIpRange, setAllIpRange] = useState<
-		[
+	const [applyAllValues, setApplyAllValues] = useState<{
+		whatToTrust?: object;
+		ipRange?: [
 			{
 				value: string;
 				error: boolean;
 			}
-		]
-	>();
-
-	console.log('_dd policies', policies);
+		];
+	}>({});
 
 	const applyToAll = (): void => {
-		console.log('_dd applyToAll');
+		const modifiedPolicy = map(policies, (policy) => ({
+			[Object.keys(policy)[0]]: {
+				trustedDevice: applyAllValues.whatToTrust,
+				trustedIpRange: applyAllValues.ipRange
+			}
+		}));
+		modifyPolicies(modifiedPolicy);
+	};
+
+	const applyToIndividual = (): void => {
+		const modifiedPolicy = map(policies, (policy) => ({
+			[Object.keys(policy)[0]]: {
+				trustedDevice: applyAllValues.whatToTrust,
+				trustedIpRange: applyAllValues.ipRange
+			}
+		}));
+		modifyPolicies(modifiedPolicy);
 	};
 
 	useEffect(() => {
-		console.log('_dd allIpRange', allIpRange);
-	}, [allIpRange]);
+		console.log('_dd applyAllvalues', applyAllValues);
+	}, [applyAllValues]);
 
 	return (
 		<Container
@@ -92,8 +106,8 @@ export const TwoFactorAuthencationConfig: FC<{
 							<Select
 								items={WHAT_TO_TRUST}
 								label={t('label.what_to_trust', 'What to trust?')}
-								onChange={(): void => {
-									console.log('_dd onchange');
+								onChange={(item: any): void => {
+									setApplyAllValues((prev) => ({ ...prev, whatToTrust: item }));
 								}}
 								showCheckbox={false}
 							/>
@@ -109,10 +123,10 @@ export const TwoFactorAuthencationConfig: FC<{
 											? data.push(ip)
 											: data.push({ ...ip, error: true });
 									});
-									setAllIpRange(data);
+									setApplyAllValues((prev) => ({ ...prev, ipRange: data }));
 								}}
-								hasError={some(allIpRange || [], { error: true })}
-								value={allIpRange}
+								hasError={some(applyAllValues.ipRange || [], { error: true })}
+								value={applyAllValues.ipRange}
 								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
 							/>
 						</Padding>
@@ -125,45 +139,6 @@ export const TwoFactorAuthencationConfig: FC<{
 							color="primary"
 							onClick={applyToAll}
 						/>
-					</ListRow>
-					<ListRow padding={{ top: 'large' }} orientation="horizontal" crossAlignment="center">
-						<Container
-							width="15%"
-							crossAlignment="flex-start"
-							mainAlignment="flex-start"
-							height="fill"
-						>
-							<Text>{t('domain.admin_api', 'Admin API')}</Text>
-						</Container>
-
-						<Padding right="large" width="30%">
-							<Select
-								items={WHAT_TO_TRUST}
-								label={t('label.what_to_trust', 'What to trust?')}
-								onChange={(): void => {
-									console.log('_dd onchange');
-								}}
-								showCheckbox={false}
-							/>
-						</Padding>
-						<Padding width="65%">
-							<ChipInput
-								background="gray5"
-								placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
-								onChange={(ips: [IpRangeValue]): void => {
-									const data: any = [];
-									map(ips, (ip: IpRangeValue) => {
-										isValidIpRange(ip.label ?? '')
-											? data.push(ip)
-											: data.push({ ...ip, error: true });
-									});
-									setAllIpRange(data);
-								}}
-								hasError={some(allIpRange || [], { error: true })}
-								value={allIpRange}
-								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
-							/>
-						</Padding>
 					</ListRow>
 					<ListRow padding={{ top: 'large' }} orientation="horizontal" crossAlignment="center">
 						<Container
@@ -182,16 +157,13 @@ export const TwoFactorAuthencationConfig: FC<{
 								onChange={(): void => {
 									console.log('_dd onchange');
 								}}
-								/* defaultSelection={WHAT_TO_TRUST.find((item: any) => {
-									const objWebUi = find(policies, (obj) => has(obj, 'WebUI'));
-									
-
-									console.log(
-										'_dd item.trustedDevice === policies?.WebUI?.trustedDevice',
-										item.value,
-										objWebUi?.trustedDevice
+								selection={WHAT_TO_TRUST.find((item: any) => {
+									const webUIObject = policies.find((obj) =>
+										Object.prototype.hasOwnProperty.call(obj, 'WebUI')
 									);
-								})} */
+									return item.value === webUIObject?.WebUI.trustedDevice;
+								})}
+								defaultSelection={WHAT_TO_TRUST[0]}
 								showCheckbox={false}
 							/>
 						</Padding>
@@ -206,88 +178,14 @@ export const TwoFactorAuthencationConfig: FC<{
 											? data.push(ip)
 											: data.push({ ...ip, error: true });
 									});
-									setAllIpRange(data);
+									setApplyAllValues((prev) => ({ ...prev, ipRange: data }));
 								}}
-								hasError={some(allIpRange || [], { error: true })}
-								value={allIpRange}
-								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
-							/>
-						</Padding>
-					</ListRow>
-					<ListRow padding={{ top: 'large' }} orientation="horizontal" crossAlignment="center">
-						<Container
-							crossAlignment="flex-start"
-							width="15%"
-							mainAlignment="flex-start"
-							height="fill"
-						>
-							<Text>{t('domain.mobile_apps', 'Mobile Apps')}</Text>
-						</Container>
-
-						<Padding right="large" width="30%">
-							<Select
-								items={WHAT_TO_TRUST}
-								label={t('label.what_to_trust', 'What to trust?')}
-								onChange={(): void => {
-									console.log('_dd onchange');
-								}}
-								showCheckbox={false}
-							/>
-						</Padding>
-						<Padding width="65%">
-							<ChipInput
-								background="gray5"
-								placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
-								onChange={(ips: [IpRangeValue]): void => {
-									const data: any = [];
-									map(ips, (ip: IpRangeValue) => {
-										isValidIpRange(ip.label ?? '')
-											? data.push(ip)
-											: data.push({ ...ip, error: true });
-									});
-									setAllIpRange(data);
-								}}
-								hasError={some(allIpRange || [], { error: true })}
-								value={allIpRange}
-								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
-							/>
-						</Padding>
-					</ListRow>
-					<ListRow padding={{ top: 'large' }} orientation="horizontal" crossAlignment="center">
-						<Container
-							crossAlignment="flex-start"
-							width="15%"
-							mainAlignment="flex-start"
-							height="fill"
-						>
-							<Text>{t('domain.active_sync', 'ActiveSync')}</Text>
-						</Container>
-
-						<Padding right="large" width="30%">
-							<Select
-								items={WHAT_TO_TRUST}
-								label={t('label.what_to_trust', 'What to trust?')}
-								onChange={(): void => {
-									console.log('_dd onchange');
-								}}
-								showCheckbox={false}
-							/>
-						</Padding>
-						<Padding width="65%">
-							<ChipInput
-								background="gray5"
-								placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
-								onChange={(ips: [IpRangeValue]): void => {
-									const data: any = [];
-									map(ips, (ip: IpRangeValue) => {
-										isValidIpRange(ip.label ?? '')
-											? data.push(ip)
-											: data.push({ ...ip, error: true });
-									});
-									setAllIpRange(data);
-								}}
-								hasError={some(allIpRange || [], { error: true })}
-								value={allIpRange}
+								hasError={some(applyAllValues.ipRange || [], { error: true })}
+								value={map(
+									policies.find((obj) => Object.prototype.hasOwnProperty.call(obj, 'WebUI'))?.WebUI
+										.trustedIpRange,
+									(ip: string) => ({ label: ip })
+								)}
 								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
 							/>
 						</Padding>

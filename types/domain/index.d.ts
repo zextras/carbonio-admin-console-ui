@@ -91,9 +91,9 @@ export interface IpRangeValue {
 	value?: string;
 }
 
-export type TwoFactorAuthPolicyValues = {
+/* export type TwoFactorAuthPolicyValues = {
 	EAS?: TwoFactorAuthPolicyValueChild;
-	WebUI?: TwoFactorAuthPolicyValueChild;
+	WebUI?: TwoFactorAuthPolicyValueChild[];
 	WebAdminUI?: TwoFactorAuthPolicyValueChild;
 	MobileApp?: TwoFactorAuthPolicyValueChild;
 	DesktopApp?: TwoFactorAuthPolicyValueChild;
@@ -106,6 +106,17 @@ export type TwoFactorAuthPolicyValues = {
 };
 
 export type TwoFactorAuthPolicyValueChild = {
-	trustedIPRange: string[];
-	trustedDevice: number;
+	[key: string]: {
+		trustedIpRange?: string[];
+		trustedDevice?: number;
+	};
+}; */
+
+interface ChildObject {
+	trustedIpRange?: string[];
+	trustedDevice?: number;
+}
+
+type TwoFactorAuthPolicyValues = {
+	[key: string]: ChildObject;
 };
