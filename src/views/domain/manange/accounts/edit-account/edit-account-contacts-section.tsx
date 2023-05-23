@@ -3,16 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext } from 'react';
+import React, { FC, useCallback, useState, useContext } from 'react';
 import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
+import { isValidNumber } from '../../../../utility/utils';
 
 const EditAccountContactsSection: FC = () => {
 	const conext = useContext(AccountContext);
 	const { accountDetail, setAccountDetail } = conext;
 	const [t] = useTranslation();
+	const [isValidPhone, setIsValidPhone] = useState<boolean>(true);
+	const [isValidHomePhone, setIsValidHomePhone] = useState<boolean>(true);
+	const [isValidMobile, setIsValidMobile] = useState<boolean>(true);
+	const [isValidPager, setIsValidPager] = useState<boolean>(true);
+	const [isValidFaxNumber, setIsValidFaxNumber] = useState<boolean>(true);
 
 	const changeAccDetail = useCallback(
 		(e) => {
@@ -36,7 +42,18 @@ const EditAccountContactsSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="48%" mainAlignment="space-between">
 						<Input
-							onChange={changeAccDetail}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								if (e.target.value) {
+									const validPhone = isValidNumber(e.target.value);
+									setIsValidPhone(validPhone);
+									if (validPhone) {
+										changeAccDetail(e);
+									}
+								} else {
+									changeAccDetail(e);
+								}
+							}}
+							hasError={!isValidPhone}
 							inputName="telephoneNumber"
 							label={t('label.phone', 'Phone')}
 							backgroundColor="gray5"
@@ -46,9 +63,20 @@ const EditAccountContactsSection: FC = () => {
 					</Row>
 					<Row width="48%" mainAlignment="space-between">
 						<Input
-							label={t('label.home_phone', 'Home Phone')}
+							label={t('label.home', 'Home')}
 							backgroundColor="gray5"
-							onChange={changeAccDetail}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								if (e.target.value) {
+									const validPhone = isValidNumber(e.target.value);
+									setIsValidHomePhone(validPhone);
+									if (validPhone) {
+										changeAccDetail(e);
+									}
+								} else {
+									changeAccDetail(e);
+								}
+							}}
+							hasError={!isValidHomePhone}
 							inputName="homePhone"
 							defaultValue={accountDetail?.homePhone || ''}
 							value={accountDetail?.homePhone || ''}
@@ -60,7 +88,18 @@ const EditAccountContactsSection: FC = () => {
 						<Input
 							background="gray5"
 							label={t('label.mobile', 'Mobile')}
-							onChange={changeAccDetail}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								if (e.target.value) {
+									const validPhone = isValidNumber(e.target.value);
+									setIsValidMobile(validPhone);
+									if (validPhone) {
+										changeAccDetail(e);
+									}
+								} else {
+									changeAccDetail(e);
+								}
+							}}
+							hasError={!isValidMobile}
 							inputName="mobile"
 							defaultValue={accountDetail?.mobile || ''}
 							value={accountDetail?.mobile || ''}
@@ -70,7 +109,18 @@ const EditAccountContactsSection: FC = () => {
 						<Input
 							background="gray5"
 							label={t('label.pager', 'Pager')}
-							onChange={changeAccDetail}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								if (e.target.value) {
+									const validPhone = isValidNumber(e.target.value);
+									setIsValidPager(validPhone);
+									if (validPhone) {
+										changeAccDetail(e);
+									}
+								} else {
+									changeAccDetail(e);
+								}
+							}}
+							hasError={!isValidPager}
 							inputName="pager"
 							defaultValue={accountDetail?.pager || ''}
 							value={accountDetail?.pager || ''}
@@ -82,7 +132,18 @@ const EditAccountContactsSection: FC = () => {
 						<Input
 							background="gray5"
 							label={t('label.fax_number', 'Fax Number')}
-							onChange={changeAccDetail}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								if (e.target.value) {
+									const validPhone = isValidNumber(e.target.value);
+									setIsValidFaxNumber(validPhone);
+									if (validPhone) {
+										changeAccDetail(e);
+									}
+								} else {
+									changeAccDetail(e);
+								}
+							}}
+							hasError={!isValidFaxNumber}
 							inputName="facsimileTelephoneNumber"
 							defaultValue={accountDetail?.facsimileTelephoneNumber || ''}
 							value={accountDetail?.facsimileTelephoneNumber || ''}

@@ -1709,6 +1709,11 @@ export const isValidUrl = (url: string): boolean => {
 	return reqex.test(url);
 };
 
+export const isValidNumber = (str: string): boolean => {
+	const reqex = /^[0-9-+()]*$/;
+	return reqex.test(str);
+};
+
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
