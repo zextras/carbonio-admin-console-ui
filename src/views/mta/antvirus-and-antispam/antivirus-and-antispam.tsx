@@ -580,6 +580,21 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	}, [mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL]);
 
 	const onAddAdditionalAntivirusDefinition = useCallback(() => {
+		if (!additionalAntiVirusDefinitionAddText.startsWith('http')) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t(
+					'mta.additional_virus_definition_start_with_http_https',
+					'Additional Virus Definition should start with http'
+				),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			return;
+		}
+
 		if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL) {
 			const calmDatabaseMirror =
 				mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
@@ -596,7 +611,9 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	}, [
 		additionalAntiVirusDefinitionAddText,
 		mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL,
-		setValue
+		setValue,
+		t,
+		createSnackbar
 	]);
 
 	const removeAdditionalAntivirusDefinition = useCallback(() => {
