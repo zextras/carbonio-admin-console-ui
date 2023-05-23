@@ -734,9 +734,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.name', 'Name')}
 										value={domainName}
 										background="gray6"
-										disabled
-										// eslint-disable-next-line @typescript-eslint/no-empty-function
-										onChange={(e: any): any => {}}
+										readOnly
 									/>
 								</Container>
 							</ListRow>
@@ -747,9 +745,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
 										background="gray6"
-										disabled
-										// eslint-disable-next-line @typescript-eslint/no-empty-function
-										onChange={(e: any): any => {}}
+										readOnly
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -757,9 +753,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.creation_date', 'Creation Date')}
 										value={domainCreationDate}
 										background="gray6"
-										disabled
-										// eslint-disable-next-line @typescript-eslint/no-empty-function
-										onChange={(e: any): any => {}}
+										readOnly
 									/>
 								</Container>
 							</ListRow>
@@ -773,7 +767,7 @@ const DomainGeneralSettings: FC = () => {
 										)}
 										value={zimbraDomainMaxAccounts}
 										background="gray6"
-										disabled
+										readOnly
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -784,7 +778,7 @@ const DomainGeneralSettings: FC = () => {
 										)}
 										value={zimbraMailDomainQuota}
 										background="gray6"
-										disabled
+										readOnly
 									/>
 								</Container>
 							</ListRow>
