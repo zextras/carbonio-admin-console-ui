@@ -677,8 +677,8 @@ const MTAInboundFlowSecurity: FC = () => {
 						>
 							<Switch
 								label={t(
-									'mta.notify_users_about_block_extensions',
-									'Notify users about blocked extensions'
+									'mta.notify_external_recipient_about_block_extensions',
+									'Notify external recipient about blocked extensions'
 								)}
 								value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
 								onClick={(): void =>

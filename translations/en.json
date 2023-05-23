@@ -1748,6 +1748,7 @@
         "none": "None",
         "notify_administrators_of_blocked_file_extension_incoming_emails": "Notify administrators of blocked file extensions in incoming emails",
         "notify_admins_about_block_extensions": "Notify admins about blocked extensions",
+        "notify_external_recipient_about_block_extensions": "Notify external recipient about blocked extensions",
         "notify_recipients_of_blocked_file_extension_incoming_emails": "Notify recipients of blocked file extensions in incoming emails",
         "notify_users_about_block_extensions": "Notify users about blocked extensions",
         "outbound_flow": "Outbound Flow",
