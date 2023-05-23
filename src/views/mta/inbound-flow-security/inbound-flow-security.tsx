@@ -33,6 +33,7 @@ import {
 	ZIMBRA_MTA_BLOCKED_EXTENSION,
 	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN,
 	ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_RECIPIENT,
+	ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION,
 	ZIMBRA_MTA_RESTRICTION,
 	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
 	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
@@ -56,6 +57,7 @@ const MTAInboundFlowSecurity: FC = () => {
 	const [mtaInboundSecurityInitialDetail, setMtaInboundSecurityInitialDetail] =
 		useState<MtaInboundSecurity>();
 	const [mtaInboundSecurityDetail, setMtaInboundSecurityDetail] = useState<MtaInboundSecurity>();
+	const [commonBlockedExtensions, setCommonBlockedExtensions] = useState<Array<string>>([]);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaInboundSecurityInitialDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -94,6 +96,12 @@ const MTAInboundFlowSecurity: FC = () => {
 					);
 				}
 				setMtaBlockExtension(allExtensions);
+			}
+			const findCommonBlockExtension = configInformation.filter(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION
+			);
+			if (findCommonBlockExtension && findCommonBlockExtension.length > 0) {
+				setCommonBlockedExtensions(findCommonBlockExtension.map((item: any) => item?._content));
 			}
 			const zimbraMtaBlockedExtensionWarnAdmin = configInformation.filter(
 				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_BLOCKED_EXTENSION_WARN_ADMIN
@@ -501,6 +509,15 @@ const MTAInboundFlowSecurity: FC = () => {
 		[setValue]
 	);
 
+	const onCommonBlockExtensionAdd = useCallback(() => {
+		const allExtension = [
+			...mtaBlockExtension.map((item: Record<string, string>) => item?.label),
+			...commonBlockedExtensions
+		];
+		setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, allExtension);
+		setMtaBlockExtension(allExtension.map((item: string) => ({ label: item })));
+	}, [setValue, mtaBlockExtension, commonBlockedExtensions]);
+
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -589,14 +606,34 @@ const MTAInboundFlowSecurity: FC = () => {
 						{t('mta.settings', 'Settings')}
 					</Text>
 				</Container>
-				<Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-					<ChipInput
-						placeholder={t('mta.add_here_any_blocked_extension', 'Add here any Blocked Extension')}
-						background="gray5"
-						requireUniqueChips
-						value={mtaBlockExtension}
-						onChange={onBlockExtensionChange}
-					/>
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					padding={{ top: 'large', bottom: 'extralarge' }}
+					height="auto"
+				>
+					<Container crossAlignment="flex-start" width="70%" padding={{ right: 'medium' }}>
+						<ChipInput
+							placeholder={t(
+								'mta.add_here_any_blocked_extension',
+								'Add here any Blocked Extension'
+							)}
+							background="gray5"
+							requireUniqueChips
+							value={mtaBlockExtension}
+							onChange={onBlockExtensionChange}
+						/>
+					</Container>
+					<Container crossAlignment="flex-start" width="30%">
+						<Button
+							label={t('mta.add_commonly_blocked_extensions', 'Add commonly blocked extensions')}
+							color="primary"
+							size="medium"
+							type="outlined"
+							onClick={onCommonBlockExtensionAdd}
+						/>
+					</Container>
 				</Container>
 				<Container
 					orientation="horizontal"

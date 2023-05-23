@@ -1695,6 +1695,7 @@
     "mta": {
         "add": "Add",
         "add_client_ip_to_header": "Add client IP to the header",
+        "add_commonly_blocked_extensions": "Add commonly blocked extensions",
         "add_here_any_blocked_extension": "Add here any Blocked Extension",
         "add_this_prefix_to_spam_mail_subject": "Add this prefix to the Spam mail subject",
         "add_username_to_header": "Add username to the header",
