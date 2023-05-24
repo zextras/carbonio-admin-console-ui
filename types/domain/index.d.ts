@@ -99,3 +99,8 @@ interface ChildObject {
 type TwoFactorAuthPolicyValues = {
 	[key: string]: ChildObject;
 };
+
+type TwoFactorPolicy = {
+	label: string;
+	keyToGet: string;
+};
