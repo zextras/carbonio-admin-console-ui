@@ -906,6 +906,7 @@
         "create_resource_success_msg": "{{resourceName}} has been created successfully",
         "creation_date": "Creation Date",
         "current": "Current",
+        "customization": "Customization",
         "dark_mode": "<bold>Dark</bold> Mode",
         "dashboard": "Dashboard",
         "data_volume": "Data Volume",
@@ -947,7 +948,7 @@
         "delete_domain_error_msg": "You are deleting {{domainName}}. Are you sure you want to delete {{domainName}}?",
         "delete_domain_success_msg": "Domain has been deleted successfully",
         "delete_domain_with_account_content_msg": "{{domainName}} is not empty: it contains {{domainSystemAccounts}} system accounts and {{domainRegularAccounts}} regular accounts. Are you sure to continue the deletion?",
-        "delete_domain_with_all_resources_close_domain": "If you are not sure, you still can “close” the domain to avoid any further interaction, leaving all the resources available in case of needs.",
+        "delete_domain_with_all_resources_close_domain": "If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.",
         "delete_domain_with_all_resources_permanently_remove": "Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.",
         "delete_domain_with_all_resources_pre_msg": "Domain {{domainName}} is not empty and contains",
         "delete_it_instead": "Delete it",
@@ -1132,7 +1133,7 @@
         "last_seen": "Last seen",
         "ldap_example_query": "Example: ldap:///??sub?(&(objectClass=zimbraAccount)(ZimbraAccountStatus=active))",
         "ldap_filter": "LDAP Filter",
-        "ldap_search_base": "LDAP Search Base",
+        "ldap_search_base": "LDAP based search",
         "ldap_url": "LDAP Url",
         "ldap_url_is_not_valid": "Ldap url is not valid",
         "leave_anyway": "Leave anyway",
@@ -1302,7 +1303,6 @@
         "pending": "Pending",
         "percentage_maximum_conflict": "% Maximum Conflict",
         "percentage_maximum_conflict_allowed": "% Maximum Conflict Allowed",
-        "personalisation": "Personalisation",
         "please_wait": "Please wait",
         "preferences": "Preferences",
         "prefix": "Prefix",
@@ -1372,7 +1372,7 @@
         "save": "Save",
         "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Save a copy of sent messages to delegate's Sent folder",
         "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Save a copy of sent messages only in delegate's send folder",
-        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Save a copy of sent messages to delegate and delegated send folder",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Save a copy of sent messages to delegate's Sent folder",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Save a copy of sent messages to delegate’s Sent folder",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Save a copy of sent messages to my Sent folder",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Save a copy of sent messages to my Sent folder and delegate’s folder",
@@ -1424,7 +1424,7 @@
         "servers_list": "Servers List",
         "service": "Service",
         "service_status": "Service Status",
-        "service_url": "Service URL",
+        "service_url": "ServiceURL",
         "service_url_copied": "ServiceURL copied",
         "services": "Services",
         "session_end_success": "Session ended successfully",
@@ -1686,10 +1686,10 @@
     },
     "modal": {
         "iscurrent_confirm": {
-            "body_message": "The current {{type}} {{currentVolumeName}}.<br />Are you sure you want to <strong>set {{name}} as current</strong>?",
+            "body_message": "The {{currentVolumeName}} is the current volume.<br />Are you sure you want to <strong>set {{name}} as current one</strong>?",
             "confirm_label": "YES, PROCEED",
             "secondary_label": "NO, GO BACK",
-            "title": "You are setting {{name}} as current"
+            "title": "You are setting {{name}} as the current volume"
         }
     },
     "mta": {

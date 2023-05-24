@@ -488,7 +488,7 @@ const DomainSaml: FC = () => {
 										>
 											<Button
 												type="outlined"
-												label={t('label.service_url', 'Service URL')}
+												label={t('label.service_url', 'ServiceURL')}
 												color="#2196D3"
 												size="medium"
 												backgroundColor="#D3EBF8"
