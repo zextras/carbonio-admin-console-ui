@@ -231,6 +231,12 @@ export const LDAP_FILTER_LABEL = 'e.g. (&(|(cn=%s*)(sn=%s*)(giveName=%s*)(mail=%
 export const LDAP_SEARCH_BASE_LABEL = 'e.g. dc=company,dc=local';
 export const CHECK_OK = 'check.OK';
 export const CONFIG = 'config';
+export const GENERAL_SECTION = 'general';
+export const CONTACTS = 'contacts';
+export const CONFIGURATION = 'configuration';
+export const USER_PREFERENCES = 'user_preferences';
+export const SECURITY = 'security';
+export const DELEGATES = 'delegates';
 export const POSTSCREEN_TUNING = 'postscreen_tuning';
 export const OUTBOUND_FLOW = 'outbound_flow';
 export const ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP = 'zimbraSmtpSendAddOriginatingIP';
