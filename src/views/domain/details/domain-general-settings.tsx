@@ -1071,7 +1071,7 @@ const DomainGeneralSettings: FC = () => {
 											<Text overflow="break-word" weight="regular">
 												{t('label.delete_domain_with_all_resources_close_domain', {
 													defaultValue:
-														'If you are not sure, you still can “close” the domain to avoid any further interaction, leaving all the resources available in case of needs.'
+														'If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.'
 												})}
 											</Text>
 											<br />
