@@ -91,27 +91,6 @@ export interface IpRangeValue {
 	value?: string;
 }
 
-/* export type TwoFactorAuthPolicyValues = {
-	EAS?: TwoFactorAuthPolicyValueChild;
-	WebUI?: TwoFactorAuthPolicyValueChild[];
-	WebAdminUI?: TwoFactorAuthPolicyValueChild;
-	MobileApp?: TwoFactorAuthPolicyValueChild;
-	DesktopApp?: TwoFactorAuthPolicyValueChild;
-	ZmWebUI?: TwoFactorAuthPolicyValueChild;
-	Dav?: TwoFactorAuthPolicyValueChild;
-	Cli?: TwoFactorAuthPolicyValueChild;
-	Smtp?: TwoFactorAuthPolicyValueChild;
-	Imap?: TwoFactorAuthPolicyValueChild;
-	Pop3?: TwoFactorAuthPolicyValueChild;
-};
-
-export type TwoFactorAuthPolicyValueChild = {
-	[key: string]: {
-		trustedIpRange?: string[];
-		trustedDevice?: number;
-	};
-}; */
-
 interface ChildObject {
 	trustedIpRange?: string[];
 	trustedDevice?: number;
