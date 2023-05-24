@@ -1579,7 +1579,7 @@ const CosAdvanced: FC = () => {
 							<ListRow>
 								<Container padding={{ right: 'small' }}>
 									<Input
-										label={t('cos.account_quota', 'Account quota')}
+										label={`${t('cos.account_quota', 'Account quota')} (MB)`}
 										value={zimbraMailQuota}
 										background="gray5"
 										inputName="zimbraMailQuota"

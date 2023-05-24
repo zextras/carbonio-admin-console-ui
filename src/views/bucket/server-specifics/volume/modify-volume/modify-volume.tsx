@@ -1015,9 +1015,13 @@ const ModifyVolume: FC<{
 				)}
 				<Modal
 					open={isCurrentToggle && !isCurrent}
-					title={t('modal.iscurrent_confirm.title', 'You are setting {{name}} as current', {
-						name
-					})}
+					title={t(
+						'modal.iscurrent_confirm.title',
+						'You are setting {{name}} as the current volume',
+						{
+							name
+						}
+					)}
 					onClose={(): void => setIsCurrentToggle(false)}
 					onConfirm={(): void => {
 						setIsCurrent(true);
@@ -1032,7 +1036,7 @@ const ModifyVolume: FC<{
 						<Text>
 							<Trans
 								i18nKey="modal.iscurrent_confirm.body_message"
-								defaults="The current {{type}} {{currentVolumeName}}.<br />Are you sure you want to <strong>set {{name}} as current</strong>?"
+								defaults="The {{currentVolumeName}} is the current volume.<br />Are you sure you want to <strong>set {{name}} as current one</strong>?"
 								components={{ break: <br />, bold: <strong /> }}
 								values={{ type: type?.label, currentVolumeName: currentVolume?.name, name }}
 							/>

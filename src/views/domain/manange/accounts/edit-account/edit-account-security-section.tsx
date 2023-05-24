@@ -103,12 +103,7 @@ const EditAccountSecuritySection: FC = () => {
 								mainAlignment="space-between"
 							>
 								<Row width="40%" mainAlignment="flex-start">
-									<QRCode
-										data-testid="qrcode-password"
-										size={179}
-										bgColor="transparent"
-										value={qrData}
-									/>
+									<QRCode data-testid="qrcode-password" size={179} value={qrData} />
 								</Row>
 								<Row width="60%" mainAlignment="flex-start">
 									<Container>

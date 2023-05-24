@@ -31,6 +31,11 @@ import { useDomainStore } from '../../../../store/domain/store';
 import Paging from '../../../components/paging';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { getAccountRequest } from '../../../../services/get-account';
+import {
+	getCosGeneralInformation,
+	GetCosResponse,
+	CosA
+} from '../../../../services/cos-general-information-service';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getSingatures } from '../../../../services/get-signature-service';
 import AccountDetailView from './account-detail-view';
@@ -48,6 +53,7 @@ const ManageAccounts: FC = () => {
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [accountDetail, setAccountDetail] = useState<any>({});
+	const [cosDetail, setCosDetail] = useState<any>({});
 	const [directMemberList, setDirectMemberList] = useState<any>({});
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
@@ -168,6 +174,26 @@ const ManageAccounts: FC = () => {
 		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
 		return 'Normal';
 	}, []);
+	const getCosDetail = useCallback((id): void => {
+		getCosGeneralInformation(id).then((data: GetCosResponse) => {
+			const obj: any = {};
+			data?.cos?.[0]?.a?.forEach((ele: CosA) => {
+				if (obj[ele.n]) {
+					obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
+				} else {
+					obj[ele.n] = ele._content;
+				}
+			});
+			obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
+				? obj.zimbraPrefMailForwardingAddress
+				: '';
+			obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
+				? obj.zimbraPrefCalendarForwardInvitesTo
+				: '';
+
+			setCosDetail({ ...obj });
+		});
+	}, []);
 	const getAccountDetail = useCallback(
 		(id): void => {
 			getAccountRequest(id)
@@ -193,6 +219,7 @@ const ManageAccounts: FC = () => {
 					obj.name = data?.account?.[0]?.name;
 					setInitAccountDetail({ ...obj });
 					setAccountDetail({ ...obj });
+					getCosDetail(obj.zimbraCOSId);
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
 				.catch((error) => {
@@ -208,7 +235,7 @@ const ManageAccounts: FC = () => {
 					});
 				});
 		},
-		[setAccountDetail, createSnackbar, t]
+		[getCosDetail, createSnackbar, t]
 	);
 	const getAccountMembership = useCallback(
 		(id): void => {
@@ -592,7 +619,7 @@ const ManageAccounts: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="58px"
+					height="3.625rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
@@ -601,7 +628,7 @@ const ManageAccounts: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="large">
+							<Padding>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
@@ -611,17 +638,6 @@ const ManageAccounts: FC = () => {
 									onClick={(): void => {
 										setShowCreateAccountView(true);
 									}}
-								/>
-							</Padding>
-							<Padding right="large">
-								<Button
-									type="outlined"
-									label={t('label.bulk_actions', 'BULK ACTIONS')}
-									icon="ChevronDownOutline"
-									iconPlacement="right"
-									color="primary"
-									height={36}
-									disabled
 								/>
 							</Padding>
 						</Row>
@@ -757,6 +773,7 @@ const ManageAccounts: FC = () => {
 										setShowEditAccountView={setShowEditAccountView}
 										STATUS_COLOR={STATUS_COLOR}
 										getAccountList={getAccountList}
+										cosDetail={cosDetail}
 									/>
 								)}
 

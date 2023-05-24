@@ -251,7 +251,7 @@ const MailstoresCreate: FC<{
 						label={t('label.volume_name', 'Volume Name')}
 						backgroundColor="gray5"
 						value={volumeDetail?.volumeName}
-						onChange={changeVolName}
+						readOnly
 						hasError={!errName}
 					/>
 					{!errName && (

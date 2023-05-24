@@ -42,7 +42,7 @@ import {
 	CONFIGURATION,
 	CONTACTS,
 	DELEGATES,
-	GENERAL,
+	GENERAL_SECTION,
 	MOBILE_CALENDAR_FEATURE_SYNC,
 	MOBILE_CONTACT_FEATURE_SYNC,
 	SECURITY,
@@ -459,7 +459,7 @@ const EditAccount: FC<{
 						<Divider color="gray2" />
 					</Row>
 					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
-						{change === GENERAL && <EditAccountGeneralSection />}
+						{change === GENERAL_SECTION && <EditAccountGeneralSection />}
 						{change === CONTACTS && <EditAccountContactsSection />}
 						{change === CONFIGURATION && <EditAccountConfigrationSection />}
 						{change === USER_PREFERENCES && (

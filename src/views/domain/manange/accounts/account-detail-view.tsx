@@ -112,7 +112,8 @@ const AccountDetailView: FC<any> = ({
 	setShowAccountDetailView,
 	setShowEditAccountView,
 	STATUS_COLOR,
-	getAccountList
+	getAccountList,
+	cosDetail
 }) => {
 	const [t] = useTranslation();
 	const [usedQuota, setUsedQuota] = useState(0);
@@ -156,6 +157,37 @@ const AccountDetailView: FC<any> = ({
 		[t]
 	);
 
+	const calculatedQuotaSize: string = useMemo(() => {
+		let calculatedSize = 0;
+		if (selectedAccount?.zimbraMailQuota) {
+			calculatedSize = selectedAccount.zimbraMailQuota / 1048576;
+		}
+		if (cosDetail?.zimbraMailQuota) {
+			calculatedSize = cosDetail.zimbraMailQuota / 1048576;
+		}
+		return `${(usedQuota / 1048576).toFixed(3)} MB ${
+			calculatedSize > 0
+				? `${t('label.of', 'of')} ${calculatedSize.toFixed(3)} MB`
+				: t('label.of_unlimited', 'of Unlimited')
+		}`;
+	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, t, usedQuota]);
+	const calculatedQuotaSizePercentage: number = useMemo(() => {
+		let calculateaSize;
+		if (selectedAccount?.zimbraMailQuota) {
+			calculateaSize = (selectedAccount.zimbraMailQuota / 1048576).toFixed(3);
+		}
+		if (cosDetail?.zimbraMailQuota) {
+			calculateaSize = (cosDetail.zimbraMailQuota / 1048576).toFixed(3);
+		}
+		if (calculateaSize) {
+			return (
+				(selectedAccount.zimbraMailQuota
+					? usedQuota / selectedAccount.zimbraMailQuota
+					: usedQuota / cosDetail.zimbraMailQuota) * 100
+			);
+		}
+		return 1;
+	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, usedQuota]);
 	const getDataSourceDetail = useCallback((): void => {
 		getMailboxQuota(selectedAccount?.id).then((data) => {
 			setUsedQuota(data?.mbox?.[0]?.s || 0);
@@ -580,20 +612,9 @@ const AccountDetailView: FC<any> = ({
 									readOnly
 									label={t('label.space', 'Space')}
 									backgroundColor="gray6"
-									value={`${(usedQuota / 1048576).toFixed(3)} MB of ${
-										selectedAccount?.zimbraMailQuota
-											? `${(selectedAccount.zimbraMailQuota / 1048576).toFixed(3)} MB`
-											: t('label.unlimited', 'Unlimited')
-									}`}
+									value={calculatedQuotaSize}
 								/>
-								<Quota
-									fill={
-										!selectedAccount?.zimbraMailQuota
-											? 1
-											: (usedQuota / selectedAccount.zimbraMailQuota) * 100
-									}
-									background="gray5"
-								/>
+								<Quota fill={calculatedQuotaSizePercentage} background="gray5" />
 							</Row>
 						</Row>
 					</Row>
