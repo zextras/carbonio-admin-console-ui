@@ -1155,7 +1155,7 @@
         "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "บันทึกสำเนาของข้อความที่ส่งในโฟลเดอร์ส่งออกของผู้รับมอบสิทธิ์เท่านั้น",
         "delegate_send_settings": "การตั้งค่าการส่งของผู้รับมอบสิทธิ์",
         "delete_account": "คุณแน่ใจหรือไม่ว่าต้องการทำลาย {{accountId}}?",
-        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "บันทึกสำเนาของข้อความที่ส่งไปยังผู้รับมอบสิทธิ์และโฟลเดอร์ส่งที่ได้รับมอบสิทธิ์",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "เก็บสำเนาข้อความที่ส่งไว้ในโฟลเดอร์ส่งแล้วของผู้รับมอบสิทธิ์",
         "select_an_attribute_to_show_its_value": "เลือกแอตทริบิวต์เพื่อแสดงค่า",
         "system_account": "บัญชีระบบ",
         "delete_domain_with_all_resources_post_msg": "คุณไม่แน่ใจ คุณยังคงสามารถ \"ปิด\" โดเมนเพื่อหลีกเลี่ยงการโต้ตอบใดๆ เพิ่มเติม โดยทิ้งทรัพยากรทั้งหมด ในกรณีที่มีความจำเป็น มิฉะนั้น คุณสามารถลบบัญชีและวัตถุโดเมนทั้งหมดอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้",
@@ -1175,8 +1175,8 @@
         "color_code": "รหัสสี",
         "delete_configuration": "ลบการกำหนดค่า",
         "delete_domain_with_all_resources_permanently_remove": "มิฉะนั้น คุณสามารถลบบัญชีและวัตถุโดเมนทั้งหมดอย่างถาวร การดำเนินการนี้ไม่สามารถย้อนกลับได้",
-        "destroy": "ทำลาย",
-        "destroy_account": "ทำลาย",
+        "destroy": "ลบ",
+        "destroy_account": "ลบ",
         "destroy_account_button": "ใช่ ทำลายมัน",
         "dn_settings": "การตั้งค่า DN",
         "domains_lbl": "<bold>โดเมน</bold>",
@@ -1210,7 +1210,7 @@
         "privacy_lbl": "<bold>ความเป็นส่วนตัว</bold>",
         "saml": "SAML",
         "saml_metadata_attribute_notes": "โปรดนำเข้า SAML Metadata บางส่วนในช่องด้านบนเพื่อดูแอตทริบิวต์",
-        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "บันทึกสำเนาของข้อความที่ส่งในโฟลเดอร์ส่งออกของผู้รับมอบสิทธิ์เท่านั้น",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "เก็บสำเนาข้อความที่ส่งไว้ในโฟลเดอร์ส่งแล้วของผู้รับมอบสิทธิ์",
         "select_attribute_to_show_its_value": "เลือกแอตทริบิวต์เพื่อแสดงค่า",
         "server_type": "ชนิดของเซิร์ฟเวอร์",
         "service_url": "URL บริการ",
@@ -1742,7 +1742,7 @@
             "local": "โลคอล",
             "sproxy": "สปร็อกซี่",
             "local_block_device": "อุปกรณ์บล็อกภายใน",
-            "object_storage": "ObjectStorage"
+            "object_storage": "การจัดเก็บวัตถุ"
         },
         "volume_config_header": {
             "name": "ชื่อ",
