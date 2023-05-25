@@ -126,7 +126,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="56px">
+					<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
 						<Row orientation="horizontal" width="100%">
 							<Row
 								padding={{ all: 'large' }}

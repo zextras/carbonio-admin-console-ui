@@ -87,7 +87,7 @@ export const TwoFactorAuthencationConfig: FC<{
 			mainAlignment="flex-start"
 			style={{ overflow: 'auto' }}
 			width="100%"
-			height="calc(100vh - 150px)"
+			height="calc(100vh - 9.375rem)"
 		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
 				<Container
