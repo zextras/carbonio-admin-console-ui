@@ -1729,7 +1729,7 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_only_in_delegates_send_folder',
-			`Save a copy of sent messages only in delegate's send folder`
+			`Save a copy of sent messages only in delegate's Sent folder`
 		),
 		value: 'owner'
 	},

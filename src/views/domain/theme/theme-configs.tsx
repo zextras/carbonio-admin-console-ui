@@ -261,7 +261,7 @@ export const ThemeConfigs: FC<{
 							<Text size="small" color="gray0">
 								{t(
 									'label.primary_color_hint',
-									'To change the Primary color, please use an HEX color code as in the placeholder format.'
+									'To change the Primary color, please use a HEX color code.'
 								)}
 							</Text>
 						</Padding>
