@@ -15,8 +15,8 @@
 		"lint": "eslint --ext .js,.jsx,.ts,.tsx --resolve-plugins-relative-to node_modules/@zextras/carbonio-ui-configs src",
 		"test": "echo jest",
 		"sdk-setup": "npm ci --prefix sdk",
-		"pull-translations": "git subtree pull -P translations git@bitbucket.org:zextras/admin-manage-ui.git main --squash",
-		"push-translations": "git subtree push -P translations git@bitbucket.org:zextras/admin-manage-ui.git"
+		"pull-translations": "git subtree pull -P translations git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git master --squash",
+		"push-translations": "git subtree push -P translations git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git"
 	},
 	"keywords": [],
 	"author": "Zextras NP Team <https://www.zextras.com/carbonio/>",
