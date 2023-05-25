@@ -678,7 +678,9 @@
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi được chỉ định",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi của tôi và thư mục chỉ định",
-        "value": "Giá trị"
+        "value": "Giá trị",
+        "destroy_account": "Xoá",
+        "destroy": "XOÁ"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",

@@ -99,7 +99,6 @@
         "id_lbl": "ID",
         "language": "Limba",
         "location": "Locaţie",
-        "mail": "Mesaje",
         "no": "Nu.",
         "owners": "Deţinători",
         "password": "Parola",
@@ -175,12 +174,17 @@
         "contacts": "Contacte",
         "files": "Fisiere",
         "storage": "Spatiu de stocare",
-        "value": "Valoare"
+        "value": "Valoare",
+        "destroy_account": "Ştergere",
+        "cancle_button": "Nu."
     },
     "core": {
         "subscription": {
             "status": "Stare",
-            "hide": "Ascundere"
+            "hide": "Ascundere",
+            "modal": {
+                "cancel": "Nu."
+            }
         }
     },
     "domain": {
@@ -267,7 +271,6 @@
         "free_busy_interop": "Interop liber / ocupat",
         "html_compose": "Alcătuire în HTML",
         "imap_polling_interval": "Interval de interogare ciclică IMAP",
-        "mail": "Mesaje",
         "manuallly": "Manual",
         "maximum_number_of_contacts_allowed_in_folder": "Număr maxim de persoane de contact permise în folder",
         "maximum_number_of_user_specific_forwarding_addresses": "Număr maxim de adrese de redirecţionare specificate de utilizator",
@@ -305,7 +308,8 @@
         "timeout_policy": "Politica privind expirarea sesiunii",
         "trashed_message_lifetime": "Durata mesajelor din coş",
         "user_specific_fowarding_addresses": "Limitare câmp adresă de redirecţionare specificată de utilizator la (caractere)",
-        "files": "Fisiere"
+        "files": "Fisiere",
+        "enable_past_due_reminders": "Activare mementouri pentru scadenţe depăşite"
     },
     "locale": {
         "English": "engleză",
@@ -325,7 +329,6 @@
         "turkish": "turcă"
     },
     "account_details": {
-        "mail": "Mesaje",
         "manuallly": "Manual",
         "message_priority": "Prioritate mesaj",
         "offline_support_for_advanced_ajax_client": "Suport offline pentru clientul Advanced (Ajax)",
@@ -353,7 +356,8 @@
         "remove": "Eliminare",
         "send_check": "Trimite",
         "services": "Servicii",
-        "status": "Stare"
+        "status": "Stare",
+        "enable_past_due_reminders": "Activare mementouri pentru scadenţe depăşite"
     },
     "connection": {
         "notes": "Note"
