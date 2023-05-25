@@ -849,7 +849,6 @@
         "delegates": "Bevollmächtigte",
         "domain_certificate_ca_chain": "Domänenzertifikat CA-Kette",
         "infrequent_access": "Seltener Zugriff",
-        "ldap_example_query": "Example: ldap:///??sub?(&(objectClass=zimbraAccount)(ZimbraAccountStatus=active))",
         "load_and_verify_certificate": "ZERTIFIKAT HOCHLADEN UND VERIFIZIEREN",
         "load_FILE": "DATEI HOCHLADEN",
         "load_copy_certi": "Laden oder kopieren Sie Ihr Zertifikat",
