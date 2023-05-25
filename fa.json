@@ -21,12 +21,16 @@
         "disabled": "غیرفعال",
         "purge": "پاکسازی",
         "enabled": "فعال",
-        "reset": "تنظیم مجدد",
+        "reset": "ریست",
         "theme": "پوسته‌ها",
         "date": "تاریخ",
         "done": "انجام",
         "Type": "نوع",
-        "distribution_list": "فهرست توزیع"
+        "distribution_list": "فهرست توزیع",
+        "add": "اضافه کردن",
+        "yes": "بله",
+        "destroy_account": "حذف",
+        "open": "باز کردن"
     },
     "domain": {
         "theme": "پوسته‌ها"
@@ -40,7 +44,9 @@
         "details": "جزئیات",
         "edit": "ویرایش",
         "name": "نام",
-        "type": "نوع"
+        "type": "نوع",
+        "yes": "بله",
+        "no": "خیر"
     },
     "volume": {
         "server_list_header": {

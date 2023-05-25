@@ -948,7 +948,11 @@
         "aliases": "Alias",
         "distribution_list": "Liste de distribution",
         "dont_save_a_copy_of_sent_messages": "Ne pas conserver de copie des messages envoyés",
-        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Conserver une copie des messages envoyés dans mon dossier Envoyé et dans le dossier du compte délégué"
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Conserver une copie des messages envoyés dans mon dossier Envoyé et dans le dossier du compte délégué",
+        "destroy": "SUPPRIMER",
+        "destroy_account": "Effacer",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Enregistrer une copie des messages dans le dossier délégué Envoyé",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Enregistrer une copie des messages dans le dossier délégué Envoyé"
     },
     "message": {
         "snackbar": {
@@ -1624,7 +1628,8 @@
             "centralized": "Centralisé",
             "external": "Externe",
             "local": "Local",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "object_storage": "Stockage Objet"
         },
         "volume_config_header": {
             "name": "Nom",

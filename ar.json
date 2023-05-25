@@ -39,7 +39,8 @@
         "notifications": "إعلامات",
         "search": "البحث",
         "status_lbl": "الحالة",
-        "chats": "دردشات"
+        "chats": "دردشات",
+        "destroy_account": "حذف"
     },
     "account_details": {
         "Chats": "دردشات",
