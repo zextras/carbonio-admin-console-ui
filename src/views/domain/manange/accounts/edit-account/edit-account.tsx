@@ -40,7 +40,7 @@ import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import {
 	ACCOUNT,
 	CONFIGURATION,
-	CONTACTS,
+	PROFILE,
 	DELEGATES,
 	GENERAL_SECTION,
 	MOBILE_CALENDAR_FEATURE_SYNC,
@@ -152,10 +152,10 @@ const EditAccount: FC<{
 			icon: 'InfoOutline'
 		},
 		{
-			id: 'contacts',
-			label: t('label.contacts_lbl', 'CONTACTS'),
+			id: 'profile',
+			label: t('label.profile', 'PROFILE'),
 			CustomComponent: ReusedDefaultTabBar,
-			icon: 'PersonOutline'
+			icon: 'AddressBookOutline'
 		},
 		{
 			id: 'configuration',
@@ -460,7 +460,7 @@ const EditAccount: FC<{
 					</Row>
 					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
 						{change === GENERAL_SECTION && <EditAccountGeneralSection />}
-						{change === CONTACTS && <EditAccountContactsSection />}
+						{change === PROFILE && <EditAccountContactsSection />}
 						{change === CONFIGURATION && <EditAccountConfigrationSection />}
 						{change === USER_PREFERENCES && (
 							<EditAccountUserPrefrencesSection

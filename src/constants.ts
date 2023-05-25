@@ -232,7 +232,7 @@ export const LDAP_SEARCH_BASE_LABEL = 'e.g. dc=company,dc=local';
 export const CHECK_OK = 'check.OK';
 export const CONFIG = 'config';
 export const GENERAL_SECTION = 'general';
-export const CONTACTS = 'contacts';
+export const PROFILE = 'profile';
 export const CONFIGURATION = 'configuration';
 export const USER_PREFERENCES = 'user_preferences';
 export const SECURITY = 'security';
