@@ -159,7 +159,7 @@ const ModifyVolume: FC<{
 			if (Object.keys(externalVolDetail)?.length === 0) {
 				obj.volumePath = rootpath;
 				obj.volumeCompressed = compressBlobs;
-				obj.volumeThreshold = compressionThreshold;
+				obj.volumeThreshold = compressionThreshold || 0;
 			} else {
 				if (
 					externalVolDetail?.storeType?.toUpperCase() === ALIBABA?.toUpperCase() ||
@@ -182,7 +182,7 @@ const ModifyVolume: FC<{
 				if (externalVolDetail?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
 					obj.volumePath = rootpath;
 					obj.volumeCompressed = compressBlobs;
-					obj.volumeThreshold = compressionThreshold;
+					obj.volumeThreshold = compressionThreshold || 0;
 				}
 				if (externalVolDetail?.storeType?.toUpperCase() === OPENIO?.toUpperCase()) {
 					obj.url = '';
