@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { TFunction } from 'i18next';
+import { useState } from 'react';
 import {
 	ACTIVE,
 	CLOSED,
@@ -17,6 +18,7 @@ import {
 	MANAGE_NO_SEND,
 	SEND_READ_MANAGE_MAILS
 } from '../../constants';
+import { Rights, Right } from '../../store/rights/store';
 
 export const timeZoneList = (
 	t: TFunction
@@ -922,7 +924,7 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 		value: 'Yandex'
 	},
 	{
-		label: t('buckets.s3_types.minio', 'Minio'),
+		label: t('buckets.s3_types.minio', 'minIO'),
 		value: 'Minio'
 	}
 ];
@@ -1047,7 +1049,7 @@ export const volumeAllocationList = (t: TFunction): Array<{ label: string; value
 		value: 1
 	},
 	{
-		label: t('volume.volume_allocation_list.object_storage', 'ObjectStorage'),
+		label: t('volume.volume_allocation_list.object_storage', 'Object Storage'),
 		value: 2
 	}
 ];
@@ -1376,6 +1378,13 @@ export const localeList = (
 		value: 'pt'
 	},
 	{
+		id: 'pl',
+		name: 'polski',
+		localName: t('locale.polish', 'Polish'),
+		label: 'Polish - polski',
+		value: 'pl'
+	},
+	{
 		id: 'pt_BR',
 		name: 'português (Brasil)',
 		localName: t('locale.portuguese_brazil', 'Portuguese (Brazil)'),
@@ -1700,6 +1709,11 @@ export const isValidUrl = (url: string): boolean => {
 	return reqex.test(url);
 };
 
+export const isValidNumber = (str: string): boolean => {
+	const reqex = /^[0-9-+()]*$/;
+	return reqex.test(str);
+};
+
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
@@ -1715,21 +1729,21 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_only_in_delegates_send_folder',
-			`Save a copy of sent messages only in delegate's send folder`
+			`Save a copy of sent messages only in delegate's Sent folder`
 		),
 		value: 'owner'
 	},
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_only_in_delegateds_send_folder',
-			`Save a copy of sent messages only in delegated's send folder`
+			`Save a copy of sent messages to delegate's Sent folder`
 		),
 		value: 'sender'
 	},
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
-			`Save a copy of sent messages to delegate and delegated send folder`
+			`Save a copy of sent messages to delegate's Sent folder`
 		),
 		value: 'both'
 	},
@@ -2034,20 +2048,39 @@ export const ServicesPassphraseServices = (): Array<{ value?: string; label: str
 	}
 ];
 
-export const getRights = (
-	rights: Array<Record<string, unknown>>,
-	type: string
-): Array<Record<string, string>> => {
+export const getRights = (rights: Rights, type: string): Array<Record<string, string>> => {
 	let right: Array<Record<string, string>> = [];
-	const filteredType = rights.filter((item: Record<string, unknown>) => item?.type === type);
+	const filteredType = rights.filter((item: Right) => item?.type === type);
 	if (filteredType && filteredType.length > 0) {
 		if (
 			filteredType[0]?.all &&
 			Array.isArray(filteredType[0]?.all) &&
 			filteredType[0]?.all.length > 0
 		) {
-			right = filteredType[0]?.all[0].right;
+			right = filteredType[0]?.all[0].right || [];
 		}
 	}
 	return right;
 };
+
+export const getAllRights = (rights: Rights, type: string): Right[] => {
+	const right = rights.filter((item: Right) => item?.type === type);
+	return right;
+};
+
+export function useLocalStorage<T>(key: string, initialValue: T): any {
+	const [storedValue, setStoredValue] = useState<T>(() => {
+		try {
+			const item = window.localStorage.getItem(key);
+			return item ? JSON.parse(item) : initialValue;
+		} catch (error) {
+			return initialValue;
+		}
+	});
+	const setValue = (value: T | ((val: T) => T)): any => {
+		const valueToStore = value instanceof Function ? value(storedValue) : value;
+		setStoredValue(valueToStore);
+		localStorage.setItem(key, JSON.stringify(valueToStore));
+	};
+	return [storedValue, setValue] as const;
+}

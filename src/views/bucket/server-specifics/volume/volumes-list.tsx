@@ -103,7 +103,7 @@ const VolumeListTable: FC<{
 						<Text weight="light">
 							{v?.storeType === LOCAL_VALUE
 								? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
-								: t('volume.volume_allocation_list.object_storage', 'ObjectStorage')}
+								: t('volume.volume_allocation_list.object_storage', 'Object Storage')}
 						</Text>
 					</Row>,
 					<Row

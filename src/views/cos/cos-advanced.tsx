@@ -15,15 +15,13 @@ import {
 	Input,
 	Select,
 	Icon,
-	SnackbarManagerContext,
-	Table
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import _ from 'lodash';
 import ListRow from '../list/list-row';
 import { useCosStore } from '../../store/cos/store';
-import logo from '../../assets/gardian.svg';
 import { modifyCos } from '../../services/modify-cos-service';
 
 const CustomIcon = styled(Icon)`
@@ -407,9 +405,8 @@ const CosAdvanced: FC = () => {
 			// generateProxyAllowedDomainList(proxyAllowedDomains);
 			// setZimbraProxyAllowedDomains(proxyAllowedDomains);
 			const obj: any = {};
-			cosInformation.map((item: any) => {
+			cosInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			/* if (!obj.zimbraAttachmentsBlocked) {
 				obj.zimbraAttachmentsBlocked = 'FALSE';
@@ -1424,7 +1421,7 @@ const CosAdvanced: FC = () => {
 			_content: cosData.zimbraId
 		};
 		body.id = id;
-		Object.keys(cosAdvanced).map((ele: any) =>
+		Object.keys(cosAdvanced).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: cosAdvanced[ele] })
 		);
 		// proxyAllowedDomainList.forEach((item: any) => {
@@ -1582,7 +1579,7 @@ const CosAdvanced: FC = () => {
 							<ListRow>
 								<Container padding={{ right: 'small' }}>
 									<Input
-										label={t('cos.account_quota', 'Account quota')}
+										label={`${t('cos.account_quota', 'Account quota')} (MB)`}
 										value={zimbraMailQuota}
 										background="gray5"
 										inputName="zimbraMailQuota"

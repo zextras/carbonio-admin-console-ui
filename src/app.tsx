@@ -7,6 +7,7 @@
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import {
 	addRoute,
+	removeRoute,
 	registerActions,
 	setAppContext,
 	Spinner,
@@ -29,6 +30,7 @@ import { useHistory } from 'react-router-dom';
 import { Icon, IconButton } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { MatomoProvider } from '@datapunt/matomo-tracker-react';
+import { find } from 'lodash';
 import {
 	APPLICATION_LOG,
 	APP_ID,
@@ -36,6 +38,7 @@ import {
 	CARBONIO_ALLOW_FEEDBACK,
 	CARBONIO_SEND_ANALYTICS,
 	CARBONIO_SEND_FULL_ERROR_STACK,
+	CONFIG,
 	COS_ROUTE_ID,
 	CREATE_NEW_COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
@@ -47,6 +50,7 @@ import {
 	MANAGE_APP_ID,
 	MONITORING,
 	MTA,
+	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIVACY_ROUTE_ID,
@@ -69,7 +73,7 @@ import MatomoTracker from './matomo-tracker';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
-import { useRightsStore } from './store/rights/store';
+import { useRightsStore, Right, Rights } from './store/rights/store';
 import { getRights } from './views/utility/utils';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
@@ -107,9 +111,16 @@ const App: FC = () => {
 	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
 	const accounts = useUserAccounts();
 	const setRights = useRightsStore((state) => state.setRights);
-	const rights = useRightsStore((state) => state.rights);
+	const rights: Rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 
+	const showSubsciption = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 	useEffect(() => {
 		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
 			getAllEffectiveRigthsRequest(accounts[0]?.name).then((res) => {
@@ -414,9 +425,38 @@ const App: FC = () => {
 		[]
 	);
 
+	const mtaTooltipItem = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.mta_lbl"
+							defaults="<bold>MTA</bold>"
+							components={{ bold: <strong /> }}
+						/>
+						{'\n\n'}
+						<Trans
+							i18nKey="label.mta_primarybar_tooltip"
+							defaults="Mail Transfer Agent"
+							components={{ bold: <strong /> }}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[]
+	);
+
 	const OperationTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={operationTooltipItem} />,
 		[operationTooltipItem]
+	);
+
+	const MTATooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={mtaTooltipItem} />,
+		[mtaTooltipItem]
 	);
 
 	const backupPrimaryBar: FC = useCallback(
@@ -498,18 +538,22 @@ const App: FC = () => {
 			tooltip: CosTooltipView
 		});
 		if (isAdvanced) {
-			addRoute({
-				route: SUBSCRIPTIONS_ROUTE_ID,
-				position: 4,
-				visible: true,
-				label: t('label.subscriptions', 'Subscriptions') || '',
-				primaryBar: 'AwardOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...managementSection },
-				tooltip: SubscriptionTooltipView
-			});
+			if (showSubsciption) {
+				addRoute({
+					route: SUBSCRIPTIONS_ROUTE_ID,
+					position: 4,
+					visible: true,
+					label: t('label.subscriptions', 'Subscriptions') || '',
+					primaryBar: 'AwardOutline',
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...managementSection },
+					tooltip: SubscriptionTooltipView
+				});
+			} else {
+				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
+			}
 
 			addRoute({
 				route: BACKUP_ROUTE_ID,
@@ -550,6 +594,19 @@ const App: FC = () => {
 				primarybarSection: { ...logAndQueuesSection },
 				tooltip: OperationTooltipView
 			});
+
+			addRoute({
+				route: MTA_ROUTE_ID,
+				position: 3,
+				visible: true,
+				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
+				primaryBar: 'MailFolderOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...logAndQueuesSection },
+				tooltip: MTATooltipView
+			});
 		}
 		addRoute({
 			route: PRIVACY_ROUTE_ID,
@@ -581,7 +638,9 @@ const App: FC = () => {
 		HomeTooltipView,
 		PrivacyTooltipView,
 		NotificationTooltipView,
-		hasListServerRights
+		hasListServerRights,
+		showSubsciption,
+		MTATooltipView
 	]);
 
 	useEffect(() => {

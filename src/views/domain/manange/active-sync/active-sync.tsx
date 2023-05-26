@@ -47,7 +47,6 @@ type MobileDevice = {
 
 const ActiveSync: FC = () => {
 	const [t] = useTranslation();
-	const [offset, setOffset] = useState<number>(0);
 	const [allMobileDevices, setAllMobileDevices] = useState<Array<MobileDevice>>([]);
 	const [allDeviceRow, setAllDeviceRow] = useState<Array<any>>([]);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -185,78 +184,78 @@ const ActiveSync: FC = () => {
 			const allRows = allMobileDevices.map((item: MobileDevice) => ({
 				id: item?.firstSeen,
 				columns: [
-					<Text
-						size="medium"
-						weight="light"
-						color="gray0"
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{item?.accountName}
-					</Text>,
-					<Text
-						size="medium"
-						weight="light"
-						color="gray0"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{item?.accountName}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{item?.deviceId}
-					</Text>,
-					<Text
-						size="medium"
-						weight="light"
-						color="gray0"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{item?.deviceId}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{item?.accountEmail}
-					</Text>,
-					<Text
-						size="medium"
-						weight="light"
-						color="gray0"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{item?.accountEmail}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{moment(item?.lastSeen).format('YY/MM/DD | hh:mm:ss a')}
-					</Text>,
-					<Text
-						size="medium"
-						weight="light"
-						color="gray0"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{moment(item?.lastSeen).format('YY/MM/DD | hh:mm:ss a')}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{''}
-					</Text>,
-					<Text
-						size="medium"
-						weight="light"
-						color="gray0"
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{''}
+						</Text>
+					</Container>,
+					<Container
 						key={item}
+						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						{item?.status === 1 ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
-					</Text>
+						<Text size="medium" weight="light" color="gray0" key={item}>
+							{item?.status === 1 ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+						</Text>
+					</Container>
 				]
 			}));
 			setAllDeviceRow(allRows);
@@ -279,7 +278,7 @@ const ActiveSync: FC = () => {
 	}, [selectedMobileDevice, allMobileDevices]);
 
 	return (
-		<Container background="gray6" mainAlignment="flex-start">
+		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			<Container
 				orientation="column"
 				background="gray6"
@@ -287,37 +286,19 @@ const ActiveSync: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="56px">
-						<Row orientation="horizontal" width="100%">
-							<Row
-								padding={{ all: 'large' }}
-								mainAlignment="flex-start"
-								width="50%"
-								crossAlignment="flex-start"
-							>
+					<Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
+						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+							<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 								<Text size="medium" weight="bold" color="gray0">
 									{t('label.active_sync', 'ActiveSync')}
 								</Text>
 							</Row>
-							<Row
-								padding={{ all: 'large' }}
-								width="50%"
-								mainAlignment="flex-end"
-								crossAlignment="flex-end"
-							>
-								<Button
-									type="outlined"
-									label={t('label.bulk_actions', 'Bulk Actions')}
-									icon="ArrowIosDownward"
-									iconPlacement="right"
-									color="primary"
-									disabled
-									height={36}
-								/>
-							</Row>
+							<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end"></Row>
 						</Row>
 					</Container>
-					<Divider color="gray2" />
+				</Row>
+				<Row orientation="horizontal" width="100%" background="gray6">
+					<Divider />
 				</Row>
 				<Container
 					orientation="column"

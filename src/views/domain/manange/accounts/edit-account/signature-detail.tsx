@@ -482,22 +482,14 @@ export const SignatureDetail: FC<any> = ({
 							/>
 						</Container>
 						<Container>
-							{/* <Textarea
-								background="gray5"
-								label={t('label.content', 'Content')}
-								value={signatureContent}
-								onChange={(e: any): any => {
-									setSignatureContent(e.target.value);
-								}}
-							/> */}
 							{composerIsAvailable && (
 								<EditorWrapper>
 									<Composer
 										// eslint-disable-next-line no-use-before-define, @typescript-eslint/ban-ts-comment
 										// @ts-ignore
-										value={unescape(defaultSignatureContent)}
+										value={defaultSignatureContent}
 										onEditorChange={(ev: any): void => {
-											setSignatureContent(escape(ev[1]));
+											setSignatureContent(ev[1]);
 										}}
 									/>
 								</EditorWrapper>

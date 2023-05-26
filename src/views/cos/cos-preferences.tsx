@@ -450,9 +450,8 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
-			cosInformation.map((item: any) => {
+			cosInformation.forEach((item: any) => {
 				obj[item?.n] = item._content;
-				return '';
 			});
 			if (!obj.zimbraPrefMessageViewHtmlPreferred) {
 				obj.zimbraPrefMessageViewHtmlPreferred = 'FALSE';
@@ -921,7 +920,7 @@ const CosPreferences: FC = () => {
 			_content: cosData.zimbraId
 		};
 		body.id = id;
-		Object.keys(cosPreferences).map((ele: any) =>
+		Object.keys(cosPreferences).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: cosPreferences[ele] })
 		);
 		body.a = attributes;

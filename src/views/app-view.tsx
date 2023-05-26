@@ -25,6 +25,7 @@ import {
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
 	MONITORING,
+	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	PRIVACY_ROUTE_ID,
@@ -46,6 +47,8 @@ import NotificationsListPanel from './notifications/notifications-list-panel';
 import NotificationsDetailPanel from './notifications/notifications-detail-panel';
 import OperationsListPanel from './operations/operations-list-panel';
 import OperationsDetailPanel from './operations/operations-detail-panel';
+import MTAListPanel from './mta/mta-list-panel';
+import MTADetailPanel from './mta/mta-detail-panel';
 
 const DetailViewContainer = styled(Container)`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
@@ -201,6 +204,22 @@ const AppView: FC = () => {
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
 									<OperationsDetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
+					</Container>
+				</Route>
+				<Route path={`/${LOG_AND_QUEUES}/${MTA_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '16.563rem' }}>
+							<Suspense fallback={<Spinner />}>
+								<MTAListPanel />
+							</Suspense>
+						</Container>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<MTADetailPanel />
 								</Suspense>
 							</DetailViewContainer>
 						</Container>

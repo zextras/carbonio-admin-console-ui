@@ -39,10 +39,17 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import {
 	ACCOUNT,
+	CONFIGURATION,
+	PROFILE,
+	DELEGATES,
+	GENERAL_SECTION,
 	MOBILE_CALENDAR_FEATURE_SYNC,
-	MOBILE_CONTACT_FEATURE_SYNC
+	MOBILE_CONTACT_FEATURE_SYNC,
+	SECURITY,
+	USER_PREFERENCES
 } from '../../../../../constants';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import EditAccountContactsSection from './edit-account-contacts-section';
 
 // eslint-disable-next-line no-empty-pattern
 const EditAccount: FC<{
@@ -143,6 +150,12 @@ const EditAccount: FC<{
 			label: t('label.general', 'GENERAL'),
 			CustomComponent: ReusedDefaultTabBar,
 			icon: 'InfoOutline'
+		},
+		{
+			id: 'profile',
+			label: t('label.profile', 'PROFILE'),
+			CustomComponent: ReusedDefaultTabBar,
+			icon: 'AddressBookOutline'
 		},
 		{
 			id: 'configuration',
@@ -263,12 +276,12 @@ const EditAccount: FC<{
 				initAccountDetail.mail.split(',')
 			);
 			// eslint-disable-next-line array-callback-return
-			deleteAliasArr.map((aliasName) => {
+			deleteAliasArr.forEach((aliasName) => {
 				deleteAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`).then();
 			});
 
 			// eslint-disable-next-line array-callback-return
-			addAliasArr.map((aliasName) => {
+			addAliasArr.forEach((aliasName) => {
 				addAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`).then();
 			});
 
@@ -446,16 +459,17 @@ const EditAccount: FC<{
 						<Divider color="gray2" />
 					</Row>
 					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
-						{change === 'general' && <EditAccountGeneralSection />}
-						{change === 'configuration' && <EditAccountConfigrationSection />}
-						{change === 'user_preferences' && (
+						{change === GENERAL_SECTION && <EditAccountGeneralSection />}
+						{change === PROFILE && <EditAccountContactsSection />}
+						{change === CONFIGURATION && <EditAccountConfigrationSection />}
+						{change === USER_PREFERENCES && (
 							<EditAccountUserPrefrencesSection
 								signatureItems={signatureItems}
 								signatureList={signatureList}
 							/>
 						)}
-						{change === 'security' && <EditAccountSecuritySection />}
-						{change === 'delegates' && <EditAccountDelegatesSection />}
+						{change === SECURITY && <EditAccountSecuritySection />}
+						{change === DELEGATES && <EditAccountDelegatesSection />}
 					</Container>
 				</Container>
 			</Container>

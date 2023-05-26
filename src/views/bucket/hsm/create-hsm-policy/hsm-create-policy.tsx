@@ -19,8 +19,6 @@ const HSMcreatePolicy: FC<any> = () => {
 	const [destinationVolumeNames, setDestinationVolumeNames] = useState<string>('');
 	useEffect(() => {
 		const enabledString: string[] = [];
-		const beforeString: string[] = [];
-		const afterString: string[] = [];
 		const largerSmallerString: string[] = [];
 		const sourceString: string[] = [];
 		const destinationString: string[] = [];
@@ -111,8 +109,8 @@ const HSMcreatePolicy: FC<any> = () => {
 						values={{
 							enables: enabledString.join(', '),
 							largerSmaller: largerSmallerString.join(', '),
-							previous: beforeString.join(', '),
-							next: afterString.join(', '),
+							previous: '',
+							next: '',
 							source: sourceString.join(', '),
 							destination: destinationString.join(', ')
 						}}
@@ -131,8 +129,8 @@ const HSMcreatePolicy: FC<any> = () => {
 						values={{
 							enables: enabledString.join(', '),
 							largerSmaller: largerSmallerString.join(', '),
-							previous: beforeString.join(', '),
-							next: afterString.join(', ')
+							previous: '',
+							next: ''
 						}}
 					/>
 				)}`

@@ -309,9 +309,8 @@ const DomainGalSettings: FC = () => {
 				setZimbraGalAccountName(galAccount?.name);
 				if (galAccount?.a) {
 					const obj: objectType = {};
-					galAccount?.a.map((item: Attribute) => {
+					galAccount?.a.forEach((item: Attribute) => {
 						obj[item?.n] = item._content;
-						return '';
 					});
 					if (obj?.zimbraMailHost) {
 						setMailServerName(obj?.zimbraMailHost);
@@ -336,7 +335,7 @@ const DomainGalSettings: FC = () => {
 			} = data?.dataSource[0];
 			if (dataSource && dataSource?.id) {
 				// eslint-disable-next-line array-callback-return, consistent-return
-				zimbraGalAccountIdArray.map((item) => {
+				zimbraGalAccountIdArray.forEach((item) => {
 					if (item._content === accountId) {
 						zimbraAccountDataSourceId.push({
 							id: item._content,
@@ -433,7 +432,7 @@ const DomainGalSettings: FC = () => {
 		if (zimbraGalAccountId !== '') {
 			getGalAccount(zimbraGalAccountId);
 			// eslint-disable-next-line array-callback-return
-			zimbraGalAccountIdArray.map((items) => {
+			zimbraGalAccountIdArray.forEach((items) => {
 				getDomainDataSource(items?._content);
 			});
 		} else {
@@ -600,7 +599,7 @@ const DomainGalSettings: FC = () => {
 		if (zimbraGalAccountId !== '') {
 			if (zimbraGalAccountIdArray?.length !== 0 && zimbraAccountDataSourceId?.length !== 0) {
 				// eslint-disable-next-line array-callback-return
-				zimbraGalAccountIdArray.map((items) => {
+				zimbraGalAccountIdArray.forEach((items) => {
 					interface DataSourceId {
 						dataSourceId?: string;
 						id?: number;
@@ -658,7 +657,7 @@ const DomainGalSettings: FC = () => {
 			});
 		if (zimbraGalAccountIdArray?.length !== 0) {
 			// eslint-disable-next-line array-callback-return
-			zimbraGalAccountIdArray.map((items) => {
+			zimbraGalAccountIdArray.forEach((items) => {
 				modifyAccountRequest(items?._content, {
 					zimbraDataSourceGalPollingInterval
 				}).catch((error) => {
@@ -1101,7 +1100,7 @@ const DomainGalSettings: FC = () => {
 						/>
 						<Button
 							type="ghost"
-							label={t('label.destroy', 'DESTROY')}
+							label={t('label.destroy', 'DELETE')}
 							color="error"
 							onClick={(): void => {
 								setToggleDestroyGalSyncAccModel(true);
@@ -1172,8 +1171,8 @@ const DomainGalSettings: FC = () => {
 								<Input
 									type="number"
 									label={t(
-										'domain.max_result_return_gal_search',
-										'Max results returned by GAL search'
+										'label.limit_search_results_from_address_book_list_to',
+										'Limit search results from  Address Book List to'
 									)}
 									value={zimbraGalMaxResults}
 									background="gray5"
@@ -1220,7 +1219,7 @@ const DomainGalSettings: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.gal_update_frequencey_value', 'GAL Update Frequency Value')}
+										label={t('label.gal_update_frequencey_value', 'GAL Update Frequency (value)')}
 										value={freqValue?.digits}
 										background="gray5"
 										onChange={onFreqDigitsChange}
@@ -1230,7 +1229,7 @@ const DomainGalSettings: FC = () => {
 									<Select
 										items={measureUnitItems}
 										background="gray5"
-										label={t('label.measure_unit', 'Measure Unit')}
+										label={t('label.interval', 'Interval')}
 										onChange={onFreqTimeUnitChange}
 										showCheckbox={false}
 										selection={measureUnitSelection}
@@ -1352,7 +1351,7 @@ const DomainGalSettings: FC = () => {
 									</Container>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.ldap_search_base', 'LDAP Search Base')}
+											label={t('label.ldap_search_base', 'LDAP based search')}
 											value={domainData?.zimbraGalLdapSearchBase}
 											background="gray5"
 											onChange={onZimbraGalLdapSearchBaseChange}

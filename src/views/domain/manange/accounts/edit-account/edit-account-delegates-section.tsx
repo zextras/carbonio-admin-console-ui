@@ -104,7 +104,7 @@ const EditAccountDelegatesSection: FC = () => {
 
 	useEffect(() => {
 		const identitiesArr: any = [];
-		identitiesList.map((item: any): any => {
+		identitiesList.forEach((item: any): any => {
 			identitiesArr.push({
 				id: item?.grantee?.[0]?.id,
 				columns: [
@@ -1001,7 +1001,7 @@ const EditAccountDelegatesSection: FC = () => {
 										}
 										setSendBehalfRightCheck(!sendBehalfRightCheck);
 									}}
-									label={t('account_details.send_on_behalf_of_check', 'Send on Behalf')}
+									label={t('account_details.send_on_behalf_of_check', 'Send on Behalf of')}
 								/>
 							</Row>
 						</Row>

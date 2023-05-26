@@ -12,7 +12,6 @@ import {
 } from '@zextras/carbonio-shell-ui';
 
 export const modifyBackupRequest = async (modifiedData: any): Promise<any> => {
-	// const attrList: { attribute: string; value: string }[] = [];
 	const request: any = {};
 	Object.keys(modifiedData).forEach((ele: any): void => {
 		request[ele] = {

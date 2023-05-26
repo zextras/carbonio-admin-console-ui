@@ -171,33 +171,33 @@ const ModifyVolume: FC<{
 					obj.useIntelligentTiering = useIntelligentTiering;
 				}
 				if (externalVolDetail?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
-					obj.volumePath = '/tmp/store2';
-					obj.volumeCompressed = false;
-					obj.compressionThreshold = 'abc';
+					obj.volumePath = rootpath;
+					obj.volumeCompressed = compressBlobs;
+					obj.compressionThreshold = compressionThreshold;
 				}
 				if (externalVolDetail?.storeType?.toUpperCase() === OPENIO?.toUpperCase()) {
-					obj.url = '/tmp/store2';
-					obj.account = 'abc';
-					obj.namespace = 'abc';
+					obj.url = '';
+					obj.account = '';
+					obj.namespace = '';
 					obj.proxyPort = 1;
 					obj.accountPort = 1;
 				}
 				if (externalVolDetail?.storeType?.toUpperCase() === SWIFT?.toUpperCase()) {
-					obj.url = '/tmp/store2';
-					obj.username = 'abc';
-					obj.password = 'abc';
-					obj.authenticationMethod = 'BASIC';
-					obj.authenticationMethodScope = 'DEFAULT';
-					obj.tenantId = '12';
-					obj.tenantName = '12';
-					obj.domain = '12';
-					obj.proxyHost = '12';
+					obj.url = '';
+					obj.username = '';
+					obj.password = '';
+					obj.authenticationMethod = '';
+					obj.authenticationMethodScope = '';
+					obj.tenantId = '';
+					obj.tenantName = '';
+					obj.domain = '';
+					obj.proxyHost = '';
 					obj.proxyPort = 10;
-					obj.proxyUsername = 'abc';
-					obj.proxyPassword = 'abc';
-					obj.publicHost = 'abc';
-					obj.privateHost = 'abc';
-					obj.region = 'abc';
+					obj.proxyUsername = '';
+					obj.proxyPassword = '';
+					obj.publicHost = '';
+					obj.privateHost = '';
+					obj.region = '';
 					obj.maxDeleteObjectsCount = 10;
 				}
 			}
@@ -662,7 +662,7 @@ const ModifyVolume: FC<{
 						</Row>
 						<Padding top="extrasmall">
 							<Text color="secondary" overflow="break-word" size="extrasmall">
-								{t('the_change_will_not_move_the_data', 'The change will not move the data… !!')}
+								{t('the_change_will_not_move_the_data', 'The change will not move the data')}
 							</Text>
 						</Padding>
 						<Row
@@ -724,7 +724,7 @@ const ModifyVolume: FC<{
 									placement="top"
 									label={t(
 										'warning.is_current',
-										'You have to set another volume as current before.'
+										'Firstly, you have to set another volume as the current one.'
 									)}
 									maxWidth="auto"
 									disabled={!isCurrent}
@@ -819,10 +819,7 @@ const ModifyVolume: FC<{
 								</Row>
 								<Padding top="extrasmall">
 									<Text color="secondary" overflow="break-word" size="extrasmall">
-										{t(
-											'the_change_will_not_move_the_data',
-											'The change will not move the data… !!'
-										)}
+										{t('the_change_will_not_move_the_data', 'The change will not move the data')}
 									</Text>
 								</Padding>
 							</>
@@ -913,7 +910,7 @@ const ModifyVolume: FC<{
 						</Row>
 						<Padding top="extrasmall">
 							<Text color="secondary" overflow="break-word" size="extrasmall">
-								{t('the_change_will_not_move_the_data', 'The change will not move the data… !!')}
+								{t('the_change_will_not_move_the_data', 'The change will not move the data')}
 							</Text>
 						</Padding>
 						{bucketS3 && (
@@ -988,7 +985,10 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
 							<Tooltip
 								placement="top"
-								label={t('warning.is_current', 'You have to set another volume as current before.')}
+								label={t(
+									'warning.is_current',
+									'Firstly, you have to set another volume as the current one.'
+								)}
 								maxWidth="auto"
 								disabled={!isCurrent}
 							>
@@ -1015,9 +1015,13 @@ const ModifyVolume: FC<{
 				)}
 				<Modal
 					open={isCurrentToggle && !isCurrent}
-					title={t('modal.iscurrent_confirm.title', 'You are setting {{name}} as current', {
-						name
-					})}
+					title={t(
+						'modal.iscurrent_confirm.title',
+						'You are setting {{name}} as the current volume',
+						{
+							name
+						}
+					)}
 					onClose={(): void => setIsCurrentToggle(false)}
 					onConfirm={(): void => {
 						setIsCurrent(true);
@@ -1032,7 +1036,7 @@ const ModifyVolume: FC<{
 						<Text>
 							<Trans
 								i18nKey="modal.iscurrent_confirm.body_message"
-								defaults="The current {{type}} {{currentVolumeName}}.<br />Are you sure you want to <strong>set {{name}} as current</strong>?"
+								defaults="The {{currentVolumeName}} is the current volume.<br />Are you sure you want to <strong>set {{name}} as current one</strong>?"
 								components={{ break: <br />, bold: <strong /> }}
 								values={{ type: type?.label, currentVolumeName: currentVolume?.name, name }}
 							/>

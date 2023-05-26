@@ -144,8 +144,7 @@ const DomainMailingList: FC = () => {
 					mList.push({
 						id: item?.id,
 						columns: [
-							<Row
-								mainAlignment="flex-start"
+							<Container
 								crossAlignment="flex-start"
 								key={item?.id}
 								style={{ cursor: 'pointer' }}
@@ -159,9 +158,8 @@ const DomainMailingList: FC = () => {
 								<Text size="medium" weight="light" key={`${item?.id}display-child`} color="gray0">
 									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-address`}
 								style={{ cursor: 'pointer' }}
@@ -175,9 +173,8 @@ const DomainMailingList: FC = () => {
 								<Text size="medium" weight="light" key={`${item?.id}address-child`} color="gray0">
 									{item?.name}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-member`}
 								style={{ cursor: 'pointer' }}
@@ -191,9 +188,8 @@ const DomainMailingList: FC = () => {
 								<Text size="medium" weight="light" key={`${item?.id}member-child`} color="gray0">
 									{''}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-status`}
 								style={{ cursor: 'pointer' }}
@@ -209,9 +205,8 @@ const DomainMailingList: FC = () => {
 										? t('label.can_receive', 'Can receive')
 										: ''}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-gal`}
 								style={{ cursor: 'pointer' }}
@@ -225,9 +220,8 @@ const DomainMailingList: FC = () => {
 								<Text size="medium" weight="light" key={`${item?.id}gal-child`} color="gray0">
 									{''}
 								</Text>
-							</Row>,
-							<Row
-								mainAlignment="flex-start"
+							</Container>,
+							<Container
 								crossAlignment="flex-start"
 								key={`${item?.id}-description`}
 								style={{ cursor: 'pointer' }}
@@ -246,7 +240,7 @@ const DomainMailingList: FC = () => {
 								>
 									{item?.a?.find((a: any) => a?.n === 'description')?._content}
 								</Text>
-							</Row>
+							</Container>
 						]
 					});
 				});
@@ -569,7 +563,7 @@ const DomainMailingList: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="58px"
+					height="3.625rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
@@ -578,7 +572,7 @@ const DomainMailingList: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="large">
+							<Padding>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
@@ -586,17 +580,6 @@ const DomainMailingList: FC = () => {
 									height={36}
 									width={36}
 									onClick={onAddClick}
-								/>
-							</Padding>
-							<Padding right="large">
-								<Button
-									type="outlined"
-									label={t('label.bulk_actions', 'Bulk Actions')}
-									icon="ArrowIosDownward"
-									iconPlacement="right"
-									color="primary"
-									disabled
-									height={36}
 								/>
 							</Padding>
 						</Row>
