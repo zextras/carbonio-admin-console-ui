@@ -20,7 +20,8 @@ import {
 
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { filter, includes } from 'lodash';
+import { filter } from 'lodash';
+import { TFunction } from 'i18next';
 import logo from '../../assets/ninja_robo.svg';
 import NewBucket from './new-bucket';
 import BucketDeleteModel from './delete-bucket-model';
@@ -32,12 +33,13 @@ import ListRow from '../list/list-row';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import { objectType } from '../../../types';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-const headers = (t: any): Array<object> => [
+const headers = (t: TFunction): Array<object> => [
 	{
 		id: 'label',
 		label: t('label.label', 'Label'),
@@ -56,11 +58,11 @@ const headers = (t: any): Array<object> => [
 ];
 
 const BucketListTable: FC<{
-	volumes: Array<any>;
-	selectedRows: any;
-	onSelectionChange: any;
-	onDoubleClick: any;
-	onClick: any;
+	volumes: objectType[];
+	selectedRows: string[];
+	onSelectionChange: (selected: string[]) => void;
+	onDoubleClick: (i: number) => void;
+	onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick, onClick }) => {
 	const [t] = useTranslation();
 	const tableRows = useMemo(
@@ -68,12 +70,12 @@ const BucketListTable: FC<{
 			volumes.map((v, i) => ({
 				id: i,
 				columns: [
-					<Tooltip placement="bottom" label={v.notes} key={i}>
+					<Tooltip placement="bottom" label={v.notes} key={v.label}>
 						<Row
-							onDoubleClick={(): any => {
+							onDoubleClick={(): void => {
 								onDoubleClick(i);
 							}}
-							onClick={(): any => {
+							onClick={(): void => {
 								onClick(i);
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
@@ -81,13 +83,13 @@ const BucketListTable: FC<{
 							<Text weight="light">{v.label}</Text>
 						</Row>
 					</Tooltip>,
-					<Tooltip placement="bottom" label={v.notes} key={i}>
+					<Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
 						<Row
 							key={i}
-							onDoubleClick={(): any => {
+							onDoubleClick={(): void => {
 								onDoubleClick(i);
 							}}
-							onClick={(): any => {
+							onClick={(): void => {
 								onClick(i);
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
@@ -95,13 +97,13 @@ const BucketListTable: FC<{
 							<Text weight="light">{v.bucketName}</Text>
 						</Row>
 					</Tooltip>,
-					<Tooltip placement="bottom" label={v.notes} key={i}>
+					<Tooltip placement="bottom" label={v.notes} key={v.storeType}>
 						<Row
 							key={i}
-							onDoubleClick={(): any => {
+							onDoubleClick={(): void => {
 								onDoubleClick(i);
 							}}
-							onClick={(): any => {
+							onClick={(): void => {
 								onClick(i);
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
@@ -167,26 +169,25 @@ const BucketListTable: FC<{
 const BucketDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const [bucketselection, setBucketselection] = useState([]);
-	const [bucketDeleteName, setBucketDeleteName] = useState<object | any>({});
+	const [bucketselection, setBucketselection] = useState<string[]>([]);
+	const [bucketDeleteName, setBucketDeleteName] = useState<objectType | undefined>({});
 	const [bucketType, setBucketType] = useState('');
-	const [bucketList, setBucketList] = useState<Array<object | any>>([]);
+	const [bucketList, setBucketList] = useState<objectType[]>([]);
 	const [allBucketList, setAllBucketList] = useState([]);
-	const [connectionData, setConnectionData] = useState();
+	const [connectionData, setConnectionData] = useState<objectType | undefined>();
 	const [detailsBucket, setDetailsBucket] = useState(false);
 	const [toggleWizardSection, setToggleWizardSection] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
 	const [showEditDetailView, setShowEditDetailView] = useState(false);
 	const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
-	const [selectedRow, setSelectedRow] = useState<any>();
+	const [selectedRow, setSelectedRow] = useState<objectType>();
 
-	const closeHandler = (): any => {
+	const closeHandler = (): void => {
 		setOpen(false);
 		setShowDetails(!showDetails);
 	};
 
-	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
 	const { selectedServerName } = useBucketVolumeStore((state) => state);
 
 	const getBucketListType = useCallback((): void => {
@@ -238,7 +239,7 @@ const BucketDetailPanel: FC = () => {
 			// @ts-ignore
 			delete objectToSend?.targetServers;
 		}
-		fetchSoap('zextras', objectToSendDeleteBucket).then((res: any) => {
+		fetchSoap('zextras', objectToSendDeleteBucket).then((res) => {
 			const response = JSON.parse(res.Body.response.content);
 			if (response.ok) {
 				getBucketListType();
@@ -271,15 +272,15 @@ const BucketDetailPanel: FC = () => {
 		createSnackbar,
 		t
 	]);
-	const handleDoubleClick = (i: any): any => {
-		const volumeObject: any = bucketList.find((s, index) => index === i);
+	const handleDoubleClick = (i: number): void => {
+		const volumeObject: objectType | undefined = bucketList.find((s, index) => index === i);
 		setConnectionData(volumeObject);
 		setShowEditDetailView(true);
 		setDetailsBucket(false);
 		setShowDetails(true);
 	};
-	const handleClick = (i: any): any => {
-		const volumeObject: any = bucketList.find((s, index) => index === i);
+	const handleClick = (i: number): void => {
+		const volumeObject: objectType | undefined = bucketList.find((s, index) => index === i);
 		setConnectionData(volumeObject);
 		setDetailsBucket(true);
 		setShowEditDetailView(false);
@@ -288,8 +289,10 @@ const BucketDetailPanel: FC = () => {
 
 	useEffect(() => {
 		if (selectedRow !== undefined) {
-			const getIndex = bucketList.findIndex((data: any) => data.uuid === selectedRow.uuid);
-			const volumeObject: any = bucketList.find((s, index) => index === getIndex);
+			const getIndex = bucketList.findIndex((data: objectType) => data.uuid === selectedRow.uuid);
+			const volumeObject: objectType | undefined = bucketList.find(
+				(s, index) => index === getIndex
+			);
 			setConnectionData(volumeObject);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -300,7 +303,7 @@ const BucketDetailPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [toggleWizardSection]);
 
-	const filterBucketList = (e: any): void => {
+	const filterBucketList = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		if (e.target.value !== '') {
 			setBucketList(
 				filter(
@@ -396,7 +399,9 @@ const BucketDetailPanel: FC = () => {
 					<Input
 						background="gray5"
 						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
-						CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+						CustomIcon={(): JSX.Element => (
+							<Icon icon="FunnelOutline" size="large" color="primary" />
+						)}
 						onChange={filterBucketList}
 					/>
 				</Row>
@@ -404,16 +409,18 @@ const BucketDetailPanel: FC = () => {
 					<BucketListTable
 						volumes={bucketList}
 						selectedRows={bucketselection}
-						onSelectionChange={(selected: any): any => {
+						onSelectionChange={(selected: any): void => {
 							setBucketselection(selected);
-							const volumeObject: any = bucketList.find((s, index) => index === selected[0]);
+							const volumeObject: objectType | undefined = bucketList.find(
+								(s, index) => index === selected[0]
+							);
 							setShowDetails(false);
 							setBucketDeleteName(volumeObject);
 						}}
-						onDoubleClick={(i: any): any => {
+						onDoubleClick={(i: number): void => {
 							handleDoubleClick(i);
 						}}
-						onClick={(i: any): any => {
+						onClick={(i: number): void => {
 							handleClick(i);
 						}}
 					/>
