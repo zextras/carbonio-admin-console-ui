@@ -232,7 +232,7 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Padding vertical="large" horizontal="small" width="100%">
 							<Text size="small" color="gray0" weight="bold">
-								{t('label.logo_redirection', 'Logo Redirection')}
+								{t('label.logo_url_destination', 'Logo URL Destination')}
 							</Text>
 						</Padding>
 					</ListRow>
