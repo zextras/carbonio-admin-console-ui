@@ -252,7 +252,7 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Padding vertical="large" horizontal="small" width="100%">
 							<Text size="small" color="gray0" weight="bold">
-								{t('label.customization', 'Customization')}
+								{t('label.color_scheme', 'Color Scheme')}
 							</Text>
 						</Padding>
 					</ListRow>
