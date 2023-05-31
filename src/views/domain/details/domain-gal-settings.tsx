@@ -1306,7 +1306,7 @@ const DomainGalSettings: FC = () => {
 										</Container>
 
 										<Container
-											width="20%"
+											width="10%"
 											orientation="horizontal"
 											mainAlignment="flex-start"
 											crossAlignment="center"
