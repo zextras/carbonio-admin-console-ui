@@ -1017,6 +1017,7 @@
 		"email_addready_exists": "Email address {{name}} already exists",
 		"email_address": "Email address",
 		"email_notification": "E-mail Notifications",
+		"empty_all_fields": "Empty all fields",
 		"empty_table": "Empty Table",
 		"enabed_address": "Enabled Address",
 		"enable": "enable",

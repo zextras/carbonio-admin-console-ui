@@ -1143,7 +1143,7 @@ export const ThemeConfigs: FC<{
 							<Padding vertical="large" width="100%">
 								<Button
 									type="outlined"
-									label={t('label.reset', 'Reset')}
+									label={t('label.empty_all_fields', 'Empty all fields')}
 									color="error"
 									size="large"
 									width="100%"
