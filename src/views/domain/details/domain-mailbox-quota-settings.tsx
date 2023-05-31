@@ -439,7 +439,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 							crossAlignment="flex-start"
 						>
 							<Text size="medium" weight="bold" color="gray0">
-								{t('domain.mailbox_quota', 'Mailbox Quota')}
+								{t('domain.aggregated_space_quota', 'Aggregated Space Quota')}
 							</Text>
 						</Row>
 						<Row

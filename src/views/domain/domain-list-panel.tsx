@@ -233,7 +233,7 @@ const DomainListPanel: FC = () => {
 			},
 			{
 				id: MAILBOX_QUOTA,
-				name: t('label.mailbox_quota', 'Mailbox Quota'),
+				name: t('label.aggregated_space_quota', 'Aggregated Space Quota'),
 				isSelected: isDomainSelect
 			},
 			{
