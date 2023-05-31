@@ -1831,9 +1831,6 @@ const EditMailingListView: FC<any> = ({
 				</Row>
 
 				<ListRow>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'EyeOutline'} size="large" />
-					</Container>
 					<Container>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
@@ -1843,9 +1840,6 @@ const EditMailingListView: FC<any> = ({
 								setDisplayName(e.target.value);
 							}}
 						/>
-					</Container>
-					<Container width="64px" padding={{ right: 'small', left: 'medium' }}>
-						<Icon icon={'EmailOutline'} size="large" />
 					</Container>
 					<Container padding={{ all: 'small' }}>
 						<Input
@@ -1859,9 +1853,6 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 				<ListRow>
-					<Container width="64px" padding={{ right: 'small' }}>
-						<Icon icon={'CheckmarkCircleOutline'} size="large" />
-					</Container>
 					<Container>
 						<Select
 							items={subscriptionUnsubscriptionRequestOptions}
@@ -1871,9 +1862,6 @@ const EditMailingListView: FC<any> = ({
 							onChange={onSubscriptionChange}
 							selection={zimbraDistributionListSubscriptionPolicy}
 						/>
-					</Container>
-					<Container width="64px" padding={{ right: 'small', left: 'medium' }}>
-						<Icon icon={'CloseCircleOutline'} size="large" />
 					</Container>
 					<Container padding={{ all: 'small' }}>
 						<Select
@@ -1887,9 +1875,6 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 				<ListRow>
-					<Container width="fit" padding={{ right: 'small' }}>
-						<Icon icon={'OptionsOutline'} size="large" />
-					</Container>
 					<Container padding={{ right: 'small', top: 'small' }}>
 						<Select
 							items={rightsOptions}
@@ -1969,9 +1954,6 @@ const EditMailingListView: FC<any> = ({
 				)}
 				<ListRow>
 					<Container padding={{ top: 'small', bottom: 'small' }} orientation="horizontal">
-						<Container width="54px">
-							<Icon icon={'PeopleOutline'} size="large" />
-						</Container>
 						<Container padding={{ all: 'small' }}>
 							<Input
 								label={t('label.members', 'Members')}
@@ -1979,9 +1961,6 @@ const EditMailingListView: FC<any> = ({
 								background="gray5"
 								disabled
 							/>
-						</Container>
-						<Container width="64px" padding={{ right: 'medium' }}>
-							<Icon icon={'CornerUpRight'} size="large" />
 						</Container>
 						<Container>
 							<Input
@@ -1996,14 +1975,8 @@ const EditMailingListView: FC<any> = ({
 
 				<ListRow>
 					<Container padding={{ bottom: 'small' }} orientation="horizontal">
-						<Container width="54px">
-							<Icon icon={'FingerPrintOutline'} size="large" />
-						</Container>
 						<Container padding={{ all: 'small' }}>
 							<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray5" disabled />
-						</Container>
-						<Container width="64px" padding={{ right: 'small' }}>
-							<Icon icon={'CalendarOutline'} size="large" />
 						</Container>
 						<Container>
 							<Input
