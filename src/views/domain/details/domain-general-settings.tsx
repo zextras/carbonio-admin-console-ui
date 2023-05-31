@@ -888,7 +888,6 @@ const DomainGeneralSettings: FC = () => {
 									<Button
 										type="outlined"
 										label={t('label.delete_domain', 'Delete Domain')}
-										icon="Close"
 										color="error"
 										size="extralarge"
 										width="100%"
