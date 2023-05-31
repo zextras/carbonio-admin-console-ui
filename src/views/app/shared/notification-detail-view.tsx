@@ -102,7 +102,7 @@ const NotificationDetail: FC<{
 									? t('notification.mark_as_unread', 'Mark as unread')
 									: t('notification.mark_as_read', 'Mark as read')
 							}
-							icon="EmailReadOutline"
+							icon={notification?.ack ? 'EmailOutline' : 'EmailReadOutline'}
 							iconPlacement="right"
 							color="primary"
 							disabled={isRequestInProgress}
