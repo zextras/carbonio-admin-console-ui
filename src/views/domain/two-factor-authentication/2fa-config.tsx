@@ -70,7 +70,7 @@ export const TwoFactorAuthencationConfig: FC<{
 				}
 				return {
 					[key]: {
-						trustedDevice: whatToTrust !== undefined ? whatToTrust : policy.trustedDevice,
+						trustedDevice: whatToTrust !== undefined ? whatToTrust : policy[key].trustedDevice,
 						trustedIpRange: flatIpRange
 					}
 				};
