@@ -69,7 +69,9 @@ const GlobalTwoFactorAuthentcation: FC = () => {
 				'',
 				Object.keys(policy)[0],
 				policy[Object.keys(policy)[0]]?.trustedDevice,
-				policy[Object.keys(policy)[0]]?.trustedIpRange?.toString()
+				policy[Object.keys(policy)[0]]?.trustedIpRange?.length !== 0
+					? policy[Object.keys(policy)[0]]?.trustedIpRange?.toString()
+					: 'empty'
 			)
 				.then((res) => {
 					const response = JSON.parse(res?.Body?.response?.content);

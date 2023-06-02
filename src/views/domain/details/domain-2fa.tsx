@@ -76,7 +76,9 @@ const DomainTwoFactorAuthentication: FC = () => {
 				domainName,
 				Object.keys(policy)[0],
 				policy[Object.keys(policy)[0]]?.trustedDevice,
-				policy[Object.keys(policy)[0]]?.trustedIpRange?.toString()
+				policy[Object.keys(policy)[0]]?.trustedIpRange?.length !== 0
+					? policy[Object.keys(policy)[0]]?.trustedIpRange?.toString()
+					: 'empty'
 			)
 				.then((res) => {
 					if (res?.Body?.response?.content) {
