@@ -23,6 +23,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { isEmpty } from 'lodash';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { fetchSoap } from '../../../../../services/bucket-service';
@@ -493,8 +494,11 @@ const ModifyVolume: FC<{
 	}, [volTypeList, volumeDetail]);
 
 	useEffect(() => {
-		getAllBuckets();
-	}, [getAllBuckets, externalVolDetail]);
+		if (!isEmpty(externalVolDetail)) {
+			getAllBuckets();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [externalVolDetail]);
 
 	useEffect(() => {
 		setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
