@@ -368,7 +368,7 @@ const CosAdvanced: FC = () => {
 				);
 				setZimbraMailMessageLifetimeNum(obj?.zimbraMailMessageLifetime?.slice(0, -1));
 				setZimbraMailMessageLifetimeType(
-					obj?.zimbraMailMessageLifetime?.slice(-1)
+					obj?.zimbraMailMessageLifetime !== '0' && obj?.zimbraMailMessageLifetime?.slice(-1)
 						? obj?.zimbraMailMessageLifetime?.slice(-1)
 						: timeItems[0]?.value
 				);
@@ -543,8 +543,7 @@ const CosAdvanced: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraMailQuota !== undefined &&
-			cosData.zimbraMailQuota !==
-				(parseInt(cosAdvanced.zimbraMailQuota, 10) * 1024 * 1024).toString()
+			cosData.zimbraMailQuota !== cosAdvanced.zimbraMailQuota
 		) {
 			setIsDirty(true);
 		}
