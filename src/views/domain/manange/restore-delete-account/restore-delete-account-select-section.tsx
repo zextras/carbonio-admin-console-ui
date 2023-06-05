@@ -30,7 +30,7 @@ import { getFormatedShortDate } from '../../../utility/utils';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
-const RestoreDeleteAccountSelectSection: FC<any> = () => {
+const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const [accounts, setAccounts] = useState<Array<any>>([]);
 	const [accountRows, setAccountRows] = useState<Array<any>>([]);
@@ -328,4 +328,4 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 		</Container>
 	);
 };
-export default RestoreDeleteAccountSelectSection;
+export default RestoreDeleteInheritedSelectSection;
