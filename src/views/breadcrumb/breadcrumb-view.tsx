@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { Container, Text, Row, Padding } from '@zextras/carbonio-design-system';
+import { Container, Text, Row, Padding, Icon } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
@@ -28,7 +28,7 @@ const BreadCrumb: FC = () => {
 			splitRoute.forEach((item: any, index: number) => {
 				if (index === 0) {
 					_storeTempRoute.push({
-						label: t('label.home', 'Home'),
+						label: <Icon icon="HomeOutline" size="large" />,
 						path: `/${item}`,
 						homePath: `/${DASHBOARD}`
 					});
@@ -40,7 +40,11 @@ const BreadCrumb: FC = () => {
 						path: `${path[index - 1]}/${item}`,
 						homePath: `/${DASHBOARD}`
 					});
-					if (_storeTempRoute.find((sr) => sr?.label.startsWith('label.'))) {
+					if (
+						_storeTempRoute.find(
+							(sr) => typeof sr?.label === 'string' && sr?.label.startsWith('label.')
+						)
+					) {
 						_storeTempRoute.splice(index, 1);
 					}
 				}
@@ -88,7 +92,7 @@ const BreadCrumb: FC = () => {
 						{index !== splitRoutes.length - 1 && (
 							<Padding left="extrasmall" right="extrasmall">
 								<BreadCrumbText size="medium" weight="regular" isLast={false}>
-									/
+									&nbsp;/&nbsp;
 								</BreadCrumbText>
 							</Padding>
 						)}
