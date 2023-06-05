@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC } from 'react';
-import { Input, Tooltip, IconCheckbox, Text, Row } from '@zextras/carbonio-design-system';
+import { Input, Tooltip, IconCheckbox, Text, Row, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 const InheritedInput: FC<{
@@ -52,15 +52,17 @@ const InheritedInput: FC<{
 											</Text>
 											<Text>{`  ${cosValue}`}</Text>
 										</Row>
-										<Text weight="bold">
-											{t('account_details.click_to_revert', 'Click to revert.')}
-										</Text>
+										<Padding top="small">
+											<Text weight="bold">
+												{t('account_details.click_to_revert', 'Click to revert.')}
+											</Text>
+										</Padding>
 									</>
 								}
 							>
 								<IconCheckbox
 									icon="RefreshOutline"
-									size="large"
+									size="medium"
 									onClick={onChangeReset}
 									style={{ cursor: 'pointer' }}
 								/>

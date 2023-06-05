@@ -10,7 +10,8 @@ import {
 	IconCheckbox,
 	Text,
 	Row,
-	Container
+	Container,
+	Padding
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
@@ -59,7 +60,11 @@ const InheritedSwitch: FC<{
 									cosValue === 'TRUE' ? t('label.true', 'true') : t('label.false', 'false')
 								}`}</Text>
 							</Row>
-							<Text weight="bold">{t('account_details.click_to_revert', 'Click to revert.')}</Text>
+							<Padding top="small">
+								<Text weight="bold">
+									{t('account_details.click_to_revert', 'Click to revert.')}
+								</Text>
+							</Padding>
 						</>
 					}
 				>
