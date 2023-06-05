@@ -70,13 +70,13 @@ const BreadCrumb: FC = () => {
 			<Container
 				orientation="horizontal"
 				background="gray5"
-				mainAlignment="flex-start"
 				crossAlignment="center"
+				mainAlignment="flex-start"
 				height="44px"
 				padding={{ left: 'large', right: 'large' }}
 			>
 				{splitRoutes.map((item: any, index) => (
-					<Row key={item?.label}>
+					<Row key={item?.path}>
 						<BreadCrumbText
 							size="medium"
 							weight="regular"
@@ -89,6 +89,7 @@ const BreadCrumb: FC = () => {
 						>
 							{item?.label}
 						</BreadCrumbText>
+
 						{index !== splitRoutes.length - 1 && (
 							<Padding left="extrasmall" right="extrasmall">
 								<BreadCrumbText size="medium" weight="regular" isLast={false}>
@@ -98,6 +99,11 @@ const BreadCrumb: FC = () => {
 						)}
 					</Row>
 				))}
+				{splitRoutes.length === 1 && (
+					<Container mainAlignment="center" crossAlignment="flex-start" padding={{ left: 'small' }}>
+						{t('label.home', 'Home')}
+					</Container>
+				)}
 			</Container>
 		</Container>
 	);
