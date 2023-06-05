@@ -342,31 +342,36 @@ const ServerDetailPanel: FC = () => {
 					height="calc(100vh - 200px)"
 					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-						<Container height="fit" crossAlignment="flex-start" background="gray6">
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								padding={{ top: 'small', bottom: 'large' }}
-							>
-								<Container>
-									<Input
-										label={t('label.search_for_a_Server', `Search for a Server`)}
-										background="gray5"
-										CustomIcon={(): any => (
-											<Icon icon="FunnelOutline" size="large" color="primary" />
-										)}
-										value={searchServer}
-										onChange={(e: any): void => {
-											setSearchServer(e.target.value);
-										}}
-									/>
-								</Container>
-							</Row>
-						</Container>
-					</Row>
+					{serversList.length === 0 && searchServer.length === 0 ? (
+						<></>
+					) : (
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Container height="fit" crossAlignment="flex-start" background="gray6">
+								<Row
+									orientation="horizontal"
+									mainAlignment="space-between"
+									crossAlignment="flex-start"
+									width="fill"
+									padding={{ top: 'small', bottom: 'large' }}
+								>
+									<Container>
+										<Input
+											label={t('label.search_for_a_Server', `Search for a Server`)}
+											background="gray5"
+											CustomIcon={(): any => (
+												<Icon icon="FunnelOutline" size="large" color="primary" />
+											)}
+											value={searchServer}
+											onChange={(e: any): void => {
+												setSearchServer(e.target.value);
+											}}
+										/>
+									</Container>
+								</Row>
+							</Container>
+						</Row>
+					)}
+
 					<Row width="100%">
 						<ServersListTable
 							volumes={serversList}

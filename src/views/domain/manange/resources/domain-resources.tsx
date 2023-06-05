@@ -412,24 +412,31 @@ const DomainResources: FC = () => {
 					padding={{ top: 'large' }}
 				>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
-						<Row
-							orientation="horizontal"
-							mainAlignment="space-between"
-							crossAlignment="flex-start"
-							width="fill"
-							padding={{ bottom: 'large' }}
-						>
-							<Container>
-								<Input
-									backgroundColor="gray5"
-									label={t('label.search_dot', 'Search…')}
-									onChange={(e: any): any => {
-										setSearchString(e.target.value);
-									}}
-									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-								/>
-							</Container>
-						</Row>
+						{resourceList.length === 0 && searchString.length === 0 ? (
+							<></>
+						) : (
+							<Row
+								orientation="horizontal"
+								mainAlignment="space-between"
+								crossAlignment="flex-start"
+								width="fill"
+								padding={{ bottom: 'large' }}
+							>
+								<Container>
+									<Input
+										backgroundColor="gray5"
+										label={t('label.search_dot', 'Search…')}
+										onChange={(e: any): any => {
+											setSearchString(e.target.value);
+										}}
+										CustomIcon={(): any => (
+											<Icon icon="FunnelOutline" size="large" color="primary" />
+										)}
+									/>
+								</Container>
+							</Row>
+						)}
+
 						<Row
 							orientation="horizontal"
 							mainAlignment="space-between"

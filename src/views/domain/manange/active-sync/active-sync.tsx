@@ -309,32 +309,37 @@ const ActiveSync: FC = () => {
 					style={{ overflow: 'auto' }}
 					padding={{ all: 'large' }}
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
-						<Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
-							<Input
-								label={t(
-									'label.filter_by_device_type_account',
-									'Filter by device type, account, status'
-								)}
-								background="gray5"
-								onChange={(e: any): any => {
-									setSearchString(e.target.value);
-								}}
-								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-							/>
-						</Container>
-						<Container width="12%" crossAlignment="flex-end" mainAlignment="flex-end">
-							<Padding left="medium">
-								<Button
-									type="outlined"
-									label={t('label.remove', 'Remove')}
-									color="error"
-									disabled
-									size="extralarge"
+					{allDeviceRow.length === 0 && searchString.length === 0 ? (
+						<></>
+					) : (
+						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
+							<Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
+								<Input
+									label={t(
+										'label.filter_by_device_type_account',
+										'Filter by device type, account, status'
+									)}
+									background="gray5"
+									onChange={(e: any): any => {
+										setSearchString(e.target.value);
+									}}
+									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								/>
-							</Padding>
-						</Container>
-					</Row>
+							</Container>
+							<Container width="12%" crossAlignment="flex-end" mainAlignment="flex-end">
+								<Padding left="medium">
+									<Button
+										type="outlined"
+										label={t('label.remove', 'Remove')}
+										color="error"
+										disabled
+										size="extralarge"
+									/>
+								</Padding>
+							</Container>
+						</Row>
+					)}
+
 					<Row
 						takeAvwidth="fill"
 						mainAlignment="flex-start"

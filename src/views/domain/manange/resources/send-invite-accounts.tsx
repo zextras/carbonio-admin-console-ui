@@ -264,29 +264,32 @@ export const SendInviteAccounts: FC<any> = ({
 					</Row>
 				</ListRow>
 			)}
-			{!hideSearchBar && (
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large' }}
-					>
-						<Row width="100%">
-							<Input
-								label={t('label.search_an_account', 'Search for an account')}
-								backgroundColor="gray5"
-								value={searchAccountName}
-								size="medium"
-								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-								onChange={(e: any): any => {
-									setSearchAccountName(e.target.value);
-								}}
-							/>
-						</Row>
-					</Container>
-				</ListRow>
-			)}
+			{!hideSearchBar &&
+				(sendInviteRows.length === 0 && searchAccountName.length === 0 ? (
+					<></>
+				) : (
+					<ListRow>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large' }}
+						>
+							<Row width="100%">
+								<Input
+									label={t('label.search_an_account', 'Search for an account')}
+									backgroundColor="gray5"
+									value={searchAccountName}
+									size="medium"
+									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+									onChange={(e: any): any => {
+										setSearchAccountName(e.target.value);
+									}}
+								/>
+							</Row>
+						</Container>
+					</ListRow>
+				))}
 			<ListRow>
 				<Container
 					mainAlignment="flex-start"
