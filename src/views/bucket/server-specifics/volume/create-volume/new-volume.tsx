@@ -44,25 +44,14 @@ const WizardInSection: FC<any> = ({
 const NewVolume: FC<{
 	setToggleWizardLocal: any;
 	setToggleWizardExternal: any;
-	setDetailsVolume: any;
 	volName: any;
-	setCreateMailstoresVolumeData: any;
 	CreateVolumeRequest: any;
-	CreateAdvancedRequest: any;
-}> = ({
-	setToggleWizardLocal,
-	setToggleWizardExternal,
-	setDetailsVolume,
-	volName,
-	setCreateMailstoresVolumeData,
-	CreateVolumeRequest,
-	CreateAdvancedRequest
-}) => {
+}> = ({ setToggleWizardLocal, setToggleWizardExternal, volName, CreateVolumeRequest }) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 	const context = useContext(VolumeContext);
 	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
-	const { volumeDetail, setVolumeDetail } = context;
+	const { volumeDetail } = context;
 
 	const wizardSteps = [
 		{
@@ -131,9 +120,8 @@ const NewVolume: FC<{
 				compressionThreshold: volumeDetail?.isCompression ? volumeDetail?.compressionThreshold : 0,
 				isCurrent: volumeDetail?.isCurrent ? 1 : 0
 			});
-			setCreateMailstoresVolumeData(volumeDetail);
 		},
-		[setCreateMailstoresVolumeData, volumeDetail, CreateVolumeRequest]
+		[volumeDetail, CreateVolumeRequest]
 	);
 
 	return (

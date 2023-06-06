@@ -42,7 +42,7 @@ import { AbsoluteContainer } from '../../../components/styled';
 import ServerVolumeDetailsPanel from './server-volume-details-panel';
 import { fetchSoap } from '../../../../services/bucket-service';
 import IndexerVolumeTable from './indexer-volume-table';
-import { volTableHeader, indexerHeaders, volumeTypeList } from '../../../utility/utils';
+import { volTableHeader, indexerHeaders } from '../../../utility/utils';
 import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
 import NewVolume from './create-volume/new-volume';
 import ModifyVolume from './modify-volume/modify-volume';
@@ -51,25 +51,30 @@ import { useServerStore } from '../../../../store/server/store';
 import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
 import { VolumeContext } from './create-volume/volume-context';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
-import { useBucketServersListStore } from '../../../../store/bucket-server-list/store';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import { Volume, objAll, objectType } from '../../../../../types';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
 const VolumeListTable: FC<{
-	volumes: Array<any>;
-	selectedRows: any;
-	onSelectionChange: any;
-	headers: any;
-	onClick: any;
+	volumes: Array<Volume>;
+	selectedRows: string[];
+	onSelectionChange: (selected: string[]) => void;
+	headers: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+		align: string;
+	}[];
+	onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick }) => {
 	const [t] = useTranslation();
-	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
 	const tableRows = useMemo(
 		() =>
 			volumes.map((v, i) => ({
@@ -171,39 +176,24 @@ const VolumeListTable: FC<{
 };
 
 const VolumesDetailPanel: FC = () => {
-	const { operation, server }: { operation: string; server: string } = useParams();
+	const { server }: { operation: string; server: string } = useParams();
 	const [t] = useTranslation();
 	const context = useContext(VolumeContext);
-	const { volumeDetail, setVolumeDetail } = context;
+	const { setVolumeDetail } = context;
 	const { isVolumeAllDetail, selectedServerName } = useBucketVolumeStore((state) => state);
 	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
 	const volIndexerHeaders = useMemo(() => indexerHeaders(t), [t]);
 	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t), [t]);
-	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
 	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);
 	const [secondaryVolumeSelection, setSecondaryVolumeSelection] = useState<string[]>([]);
 	const [indexerVolumeSelection, setIndexerVolumeSelection] = useState<string[]>([]);
 	const [toggleWizardLocal, setToggleWizardLocal] = useState(false);
 	const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
-	const [detailsVolume, setDetailsVolume] = useState(false);
-	const [createMailstoresVolumeData, setCreateMailstoresVolumeData] = useState();
-	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState(false);
-	const [toggleDetailPage, setToggleDetailPage] = useState(false);
+	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
+	const [toggleDetailPage, setToggleDetailPage] = useState<boolean>(false);
 	const serverList = useServerStore((state) => state.serverList);
 	const [selectedServerId, setSelectedServerId] = useState<string>('');
-	const [volume, setVolume] = useState<{
-		compressBlobs: string;
-		compressionThreshold: string;
-		fbits: number;
-		fgbits: number;
-		id: number;
-		isCurrent: true;
-		mbits: number;
-		mgbits: number;
-		name: string;
-		rootpath: string;
-		type: number;
-	}>({
+	const [volume, setVolume] = useState<Volume | undefined>({
 		compressBlobs: '',
 		compressionThreshold: '',
 		fbits: 0,
@@ -216,8 +206,8 @@ const VolumesDetailPanel: FC = () => {
 		rootpath: '',
 		type: 0
 	});
-	const [open, setOpen] = useState(false);
-	const [detailData, setDetailData] = useState({
+	const [open, setOpen] = useState<boolean>(false);
+	const [detailData, setDetailData] = useState<objAll>({
 		name: '',
 		id: 0,
 		type: 0,
@@ -226,23 +216,32 @@ const VolumesDetailPanel: FC = () => {
 		rootpath: '',
 		compressionThreshold: ''
 	});
-	const [volumeList, setVolumeList] = useState<object | any>({
+	const [volumeList, setVolumeList] = useState<{
+		primaries: Volume[];
+		indexes: Volume[];
+		secondaries: Volume[];
+	}>({
 		primaries: [],
 		indexes: [],
 		secondaries: []
 	});
 	const createSnackbar = useSnackbar();
-	const serverName = useBucketServersListStore((state) => state?.volumeList)[0].name;
 
 	const changeSelectedVolume = (): void => {
 		if (detailData?.type === 1 && detailData?.id !== 0) {
-			const volumeObject: any = volumeList?.primaries?.find((s: any) => s?.id === detailData?.id);
+			const volumeObject: Volume | undefined = volumeList?.primaries?.find(
+				(s: Volume) => s?.id === detailData?.id
+			);
 			setVolume(volumeObject);
 		} else if (detailData?.type === 2 && detailData?.id !== 0) {
-			const volumeObject: any = volumeList?.secondaries?.find((s: any) => s?.id === detailData?.id);
+			const volumeObject: Volume | undefined = volumeList?.secondaries?.find(
+				(s: Volume) => s?.id === detailData?.id
+			);
 			setVolume(volumeObject);
 		} else if (detailData?.type === 10 && detailData?.id !== 0) {
-			const volumeObject: any = volumeList?.indexes?.find((s: any) => s?.id === detailData?.id);
+			const volumeObject: Volume | undefined = volumeList?.indexes?.find(
+				(s: Volume) => s?.id === detailData?.id
+			);
 			setVolume(volumeObject);
 		}
 	};
@@ -259,7 +258,7 @@ const VolumesDetailPanel: FC = () => {
 				action: 'getAllVolumes',
 				targetServers: selectedServerName
 			})
-				.then((res: any) => {
+				.then((res) => {
 					const result = JSON.parse(res?.Body?.response?.content);
 					const getAllVolResponse = Object.keys(result?.response).map(
 						(key) => result?.response[key]
@@ -283,7 +282,7 @@ const VolumesDetailPanel: FC = () => {
 						});
 					}
 				})
-				.catch((error) => {
+				.catch(() => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -304,17 +303,18 @@ const VolumesDetailPanel: FC = () => {
 				// @ts-ignore
 				selectedServerId
 			)
-				.then((response: any) => {
-					const primaries = response?.volume?.filter((item: any) => item?.type === 1);
-					const secondaries = response?.volume?.filter((item: any) => item?.type === 2);
-					const indexes = response?.volume?.filter((item: any) => item?.type === 10);
+				.then((response) => {
+					const typedResponse = response as { volume: Volume[]; _jsns: string };
+					const primaries = typedResponse?.volume?.filter((item: Volume) => item?.type === 1);
+					const secondaries = typedResponse?.volume?.filter((item: Volume) => item?.type === 2);
+					const indexes = typedResponse?.volume?.filter((item: Volume) => item?.type === 10);
 					setVolumeList({
 						primaries,
 						indexes,
 						secondaries
 					});
 				})
-				.catch((error) => {
+				.catch(() => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -327,7 +327,7 @@ const VolumesDetailPanel: FC = () => {
 		}
 	}, [isAdvanced, selectedServerName, selectedServerId, createSnackbar, t]);
 
-	const deleteHandler = async (data: any): Promise<any> => {
+	const deleteHandler = async (data: { name: string; id: number }): Promise<void> => {
 		if (isAdvanced) {
 			await fetchSoap('zextras', {
 				_jsns: 'urn:zimbraAdmin',
@@ -336,7 +336,7 @@ const VolumesDetailPanel: FC = () => {
 				targetServers: selectedServerName,
 				volumeName: data?.name
 			})
-				.then((res: any) => {
+				.then((res) => {
 					const result = JSON.parse(res?.Body?.response?.content);
 					const deleteResponse = Object.keys(result?.response).map(
 						(key) => result?.response[key]
@@ -362,7 +362,7 @@ const VolumesDetailPanel: FC = () => {
 						setToggleDetailPage(false);
 					}
 				})
-				.catch((error: any) => {
+				.catch(() => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -390,8 +390,9 @@ const VolumesDetailPanel: FC = () => {
 				// @ts-ignore
 				selectedServerId
 			)
-				.then((res: any) => {
-					if (res?._jsns === 'urn:zimbraAdmin') {
+				.then((res) => {
+					const typeResponse = res as { _jsns: string };
+					if (typeResponse?._jsns === 'urn:zimbraAdmin') {
 						createSnackbar({
 							key: '1',
 							type: 'success',
@@ -402,7 +403,7 @@ const VolumesDetailPanel: FC = () => {
 					setOpen(false);
 					setToggleDetailPage(false);
 				})
-				.catch((error) => {
+				.catch(() => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -436,19 +437,23 @@ const VolumesDetailPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const CreateAdvancedRequest = async (attr: any): Promise<any> => {
+	const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
 		const bucketDetails = isVolumeAllDetail?.filter(
-			(items: any) => items?.uuid === attr?.bucketConfigurationId
+			(items: objectType) => items?.uuid === attr?.bucketConfigurationId
 		);
-		const obj: any = {};
+		const obj: { [key: string]: string | boolean | number | undefined } = {};
 		obj._jsns = 'urn:zimbraAdmin';
 		obj.module = 'ZxPowerstore';
 		obj.action = 'doCreateVolume';
-		obj.targetServers = attr?.serverName;
+		obj.targetServers = selectedServerName;
 		obj.volumeName = attr?.volumeName;
 		obj.volumeType = attr?.volumeType;
 		obj.storeType = attr?.storeType;
 		obj.isCurrent = attr?.isCurrent === 1;
+		obj.accessKey = bucketDetails[0]?.accessKey;
+		obj.secret = bucketDetails[0]?.secret;
+		obj.bucketName = bucketDetails[0]?.bucketName;
+		obj.url = bucketDetails[0]?.url;
 
 		if (
 			attr?.storeType?.toUpperCase() === ALIBABA?.toUpperCase() ||
@@ -474,7 +479,7 @@ const VolumesDetailPanel: FC = () => {
 		if (attr?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
 			obj.volumePath = '';
 			obj.volumeCompressed = false;
-			obj.compressionThresholdBytes = 4096;
+			obj.volumeThreshold = 4096;
 		}
 		if (attr?.storeType?.toUpperCase() === CENTRALIZED?.toUpperCase()) {
 			obj.serverName = attr?.serverName;
@@ -509,18 +514,27 @@ const VolumesDetailPanel: FC = () => {
 		}
 
 		await fetchSoap('zextras', obj)
-			.then(async (res: any) => {
+			.then(async (res) => {
 				const result = JSON.parse(res?.Body?.response?.content);
 				if (result?.ok) {
-					getAllVolumesRequest();
-					createSnackbar({
-						key: '1',
-						type: 'success',
-						label: t('label.volume_created_msg', 'The volume has been created successfully')
-					});
-					setToggleWizardLocal(false);
-					setToggleWizardExternal(false);
-					setDetailsVolume(false);
+					if (result?.response[selectedServerName]?.ok) {
+						getAllVolumesRequest();
+						createSnackbar({
+							key: '1',
+							type: 'success',
+							label: t('label.volume_created_msg', 'The volume has been created successfully')
+						});
+						setToggleWizardLocal(false);
+						setToggleWizardExternal(false);
+					} else {
+						createSnackbar({
+							key: '1',
+							type: 'error',
+							label: t('label.volume_detail_error', '{{message}}', {
+								message: result?.response[selectedServerName]?.error?.message
+							})
+						});
+					}
 				} else {
 					createSnackbar({
 						key: '1',
@@ -547,7 +561,7 @@ const VolumesDetailPanel: FC = () => {
 			});
 	};
 
-	const CreateVolumeRequest = async (attr: any): Promise<any> => {
+	const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
 		if (isAdvanced) {
 			let volType = 'primary';
 			if (attr?.type === 2) {
@@ -567,14 +581,15 @@ const VolumesDetailPanel: FC = () => {
 					storeType: 'FILE_BLOB',
 					volumePath: attr?.rootpath,
 					volumeCompressed: attr?.compressBlobs,
-					compressionThresholdBytes: attr?.compressionThreshold,
+					volumeThreshold: attr?.compressionThreshold,
 					isCurrent: attr?.isCurrent === 1
 				},
 				'zextras'
-			).then(async (res: any) => {
+			).then(async (res: { Body: { response: { content: string } } }) => {
 				const result = JSON.parse(res?.Body?.response?.content);
-				const responseData: any = Object.values(result?.response)[0];
-				if (responseData && responseData?.ok === true) {
+				const responseData = Object.values(result?.response)[0];
+				const typeRes = responseData as { ok: boolean; error: string };
+				if (typeRes && typeRes?.ok === true) {
 					if (attr?.isCurrent) {
 						await postSoapFetchRequest(
 							`/service/admin/soap/zextras`,
@@ -587,7 +602,7 @@ const VolumesDetailPanel: FC = () => {
 							},
 							'zextras'
 						)
-							.then((re: any) => {
+							.then(() => {
 								createSnackbar({
 									key: '1',
 									type: 'success',
@@ -596,7 +611,7 @@ const VolumesDetailPanel: FC = () => {
 									})
 								});
 							})
-							.catch((error: any) => {
+							.catch(() => {
 								createSnackbar({
 									key: 'error',
 									type: 'error',
@@ -615,8 +630,7 @@ const VolumesDetailPanel: FC = () => {
 					});
 					setToggleWizardLocal(false);
 					setToggleWizardExternal(false);
-					setDetailsVolume(false);
-				} else if (responseData && responseData?.ok === false && responseData?.error) {
+				} else if (typeRes && typeRes?.ok === false && typeRes?.error) {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -629,7 +643,7 @@ const VolumesDetailPanel: FC = () => {
 			});
 		} else {
 			await createVoume(attr)
-				.then(async (res: any) => {
+				.then(async (res) => {
 					if (res?.volume && Array.isArray(res?.volume)) {
 						const vol = res?.volume[0];
 						if (vol && vol?.id) {
@@ -644,7 +658,7 @@ const VolumesDetailPanel: FC = () => {
 											})
 										});
 									})
-									.catch((error) => {
+									.catch(() => {
 										createSnackbar({
 											key: 'error',
 											type: 'error',
@@ -665,7 +679,6 @@ const VolumesDetailPanel: FC = () => {
 					});
 					setToggleWizardLocal(false);
 					setToggleWizardExternal(false);
-					setDetailsVolume(false);
 					return res;
 				})
 				.catch((error) => {
@@ -684,15 +697,16 @@ const VolumesDetailPanel: FC = () => {
 		}
 	};
 
-	const handleClick = (i: number, data: any): void => {
-		const volumeObject: any = data?.find((s: any, index: any) => index === i);
-		setVolume(volumeObject);
+	const handleClick = (i: number, data: Volume[]): void => {
+		const volumeObject = data?.find((s: Volume, index: number) => index === i);
+		const typeVol = volumeObject as Volume;
+		setVolume(typeVol);
 		setToggleDetailPage(true);
 	};
 
 	useEffect(() => {
 		if (serverList && serverList?.length > 0) {
-			const serverData = serverList?.find((s: any) => s?.name === server);
+			const serverData = serverList?.find((s: { name?: string }) => s?.name === server);
 			if (serverData && serverData?.id) {
 				setSelectedServerId(serverData?.id);
 			}
@@ -711,8 +725,6 @@ const VolumesDetailPanel: FC = () => {
 					<CreateMailstoresVolume
 						setToggleWizardExternal={setToggleWizardExternal}
 						setToggleWizardLocal={setToggleWizardLocal}
-						setDetailsVolume={setDetailsVolume}
-						setCreateMailstoresVolumeData={setCreateMailstoresVolumeData}
 						volName={selectedServerName}
 						CreateAdvancedRequest={CreateAdvancedRequest}
 					/>
@@ -723,11 +735,8 @@ const VolumesDetailPanel: FC = () => {
 					<NewVolume
 						setToggleWizardLocal={setToggleWizardLocal}
 						setToggleWizardExternal={setToggleWizardExternal}
-						setDetailsVolume={setDetailsVolume}
-						setCreateMailstoresVolumeData={setCreateMailstoresVolumeData}
 						volName={selectedServerName}
 						CreateVolumeRequest={CreateVolumeRequest}
-						CreateAdvancedRequest={CreateAdvancedRequest}
 					/>
 				</AbsoluteContainer>
 			)}
@@ -741,7 +750,6 @@ const VolumesDetailPanel: FC = () => {
 						setOpen={setOpen}
 						detailData={detailData}
 						setDetailData={setDetailData}
-						changeSelectedVolume={changeSelectedVolume}
 						getAllVolumesRequest={getAllVolumesRequest}
 						selectedServerId={selectedServerId}
 					/>
@@ -752,7 +760,6 @@ const VolumesDetailPanel: FC = () => {
 					<ModifyVolume
 						volumeDetail={detailData}
 						setmodifyVolumeToggle={setmodifyVolumeToggle}
-						changeSelectedVolume={changeSelectedVolume}
 						getAllVolumesRequest={getAllVolumesRequest}
 						selectedServerId={selectedServerId}
 						volumeList={volumeList}
