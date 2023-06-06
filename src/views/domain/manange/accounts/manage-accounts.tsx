@@ -54,6 +54,7 @@ const ManageAccounts: FC = () => {
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
+	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
 	const [directMemberList, setDirectMemberList] = useState<any>({});
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
@@ -174,6 +175,23 @@ const ManageAccounts: FC = () => {
 		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
 		return 'Normal';
 	}, []);
+	const getAccountSpecificDetail = useCallback((id): void => {
+		getAccountRequest(id, 0)
+			.then((res: any) => {
+				const accountObj: any = {};
+				// eslint-disable-next-line array-callback-return
+				res?.account?.[0]?.a?.forEach((ele: any) => {
+					if (accountObj[ele.n]) {
+						accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
+					} else {
+						accountObj[ele.n] = ele._content;
+					}
+				});
+				setAccSpecificDetail({ ...accountObj });
+			})
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			.catch((error) => {});
+	}, []);
 	const getCosDetail = useCallback((id): void => {
 		getCosGeneralInformation(id).then((data: GetCosResponse) => {
 			const obj: any = {};
@@ -196,7 +214,7 @@ const ManageAccounts: FC = () => {
 	}, []);
 	const getAccountDetail = useCallback(
 		(id): void => {
-			getAccountRequest(id)
+			getAccountRequest(id, 1)
 				.then((data: any) => {
 					const obj: any = {};
 					// eslint-disable-next-line array-callback-return
@@ -219,6 +237,7 @@ const ManageAccounts: FC = () => {
 					obj.name = data?.account?.[0]?.name;
 					setInitAccountDetail({ ...obj });
 					setAccountDetail({ ...obj });
+					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -235,7 +254,7 @@ const ManageAccounts: FC = () => {
 					});
 				});
 		},
-		[getCosDetail, createSnackbar, t]
+		[getAccountSpecificDetail, getCosDetail, createSnackbar, t]
 	);
 	const getAccountMembership = useCallback(
 		(id): void => {
@@ -619,7 +638,7 @@ const ManageAccounts: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="58px"
+					height="3.625rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
@@ -628,7 +647,7 @@ const ManageAccounts: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="large">
+							<Padding>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
@@ -638,17 +657,6 @@ const ManageAccounts: FC = () => {
 									onClick={(): void => {
 										setShowCreateAccountView(true);
 									}}
-								/>
-							</Padding>
-							<Padding right="large">
-								<Button
-									type="outlined"
-									label={t('label.bulk_actions', 'BULK ACTIONS')}
-									icon="ChevronDownOutline"
-									iconPlacement="right"
-									color="primary"
-									height={36}
-									disabled
 								/>
 							</Padding>
 						</Row>
@@ -756,7 +764,10 @@ const ManageAccounts: FC = () => {
 							<AccountContext.Provider
 								value={{
 									accountDetail,
+									cosDetail,
 									setAccountDetail,
+									accSpecificDetail,
+									setAccSpecificDetail,
 									directMemberList,
 									inDirectMemberList,
 									setDirectMemberList,
@@ -795,6 +806,7 @@ const ManageAccounts: FC = () => {
 										getAccountList={getAccountList}
 										signatureList={signatureList}
 										signatureItems={signatureItems}
+										getAccountDetail={getAccountDetail}
 									/>
 								)}
 							</AccountContext.Provider>

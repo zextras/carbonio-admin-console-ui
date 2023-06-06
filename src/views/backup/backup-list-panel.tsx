@@ -223,10 +223,7 @@ const BackupListPanel: FC = () => {
 								}}
 							>
 								<Input
-									label={t(
-										'label.I_want_to_see_this_server_details',
-										'i want to see this server’s details'
-									)}
+									label={t('label.select_a_server', 'Select a Server')}
 									value={searchServer}
 									CustomIcon={(): any => (
 										<Icon icon="HardDriveOutline" size="large" color="primary" />

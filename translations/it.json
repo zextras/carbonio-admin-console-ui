@@ -84,7 +84,8 @@
             "emc_s3": "EMC S3",
             "openio_s3": "OpenIO S3",
             "scality_s3": "Scality S3",
-            "yandex_s3": "Yandex S3"
+            "yandex_s3": "Yandex S3",
+            "minio": "MinIO"
         },
         "serverName_volumes": "Volumi {{serverName}}",
         "invalid_compression_thresold": "La soglia di compressione è obbligatoria",
@@ -1054,7 +1055,11 @@
         "you_have_generated_the_sp_certificate": "Hai generato il certificato SP",
         "you_have_imported_the_configuration": "Hai importato la configurazione",
         "you_have_removed_attribute": "Hai rimosso l'attributo {{ attributeName }}",
-        "you_have_updated_attribute": "Hai aggiornato l'attributo {{ attributeName }}"
+        "you_have_updated_attribute": "Hai aggiornato l'attributo {{ attributeName }}",
+        "destroy_account": "Elimina",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Salva una copia dei messaggi inviati nella cartella Inviati del delegato",
+        "destroy": "ELIMINA",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Salva una copia dei messaggi inviati nella cartella Inviati del delegato"
     },
     "message": {
         "snackbar": {
@@ -1660,7 +1665,17 @@
         "manage_no_rights_to_send_mails": "Gestisci (nessun diritto di invio di e-mail)",
         "passphrasaId": "ID passphrase",
         "password_allow_once_user_to_connect": "Questa password consentirà all'utente di connettersi al servizio senza l'utilizzo di autenticazione 2FA anche da una rete non attendibile.",
-        "read_only": "Sola lettura"
+        "read_only": "Sola lettura",
+        "labels_password": "Password di",
+        "account_read_write_rights": "Questo account ha i permessi di <bold>Lettura / Scrittura</bold> su",
+        "i_have_copied_the_password": "HO COPIATO LA PASSWORD",
+        "remove_all": "RIMUOVI TUTTO",
+        "account_with_read_write_rights": "Account che hanno permessi di <bold>Lettura / Scrittura</bold>",
+        "read_write": "Lettura / Scrittura",
+        "services_passphrase": "Passphrase per i Servizi",
+        "start_typing_account": "Inizia a digitare il nome di un Account / Gruppo per aggiungerlo ai permessi",
+        "switch_advanced": "Passa a Vista avanzata",
+        "switch_simplified": "Passa a Vista semplificata"
     },
     "connection": {
         "access_key": "Chiave d'Accesso",
@@ -1691,7 +1706,8 @@
             "centralized": "Centralizzato",
             "external": "Esterna",
             "local": "Locale",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "object_storage": "Object Storage"
         },
         "volume_header": {
             "compression": "Compressione",

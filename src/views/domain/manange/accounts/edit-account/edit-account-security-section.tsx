@@ -13,10 +13,7 @@ import {
 	useSnackbar,
 	Table,
 	ChipInput,
-	Icon,
-	Switch,
-	Input,
-	Select
+	Icon
 } from '@zextras/carbonio-design-system';
 import QRCode from 'qrcode.react';
 import styled from 'styled-components';
@@ -36,6 +33,9 @@ import ListRow from '../../../../list/list-row';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import { isValidEmail } from '../../../../utility/utils';
+import InheritedInput from './inherited-components/inherited-input';
+import InheritedSwitch from './inherited-components/inherited-switch';
+import InheritedSelect from './inherited-components/inherited-select';
 
 const StaticCodesContainer = styled(Row)`
 	max-width: 350px;
@@ -77,7 +77,8 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 
 const EditAccountSecuritySection: FC = () => {
 	const conext = useContext(AccountContext);
-	const { otpList, accountDetail, setAccountDetail, getListOtp } = conext;
+	const { otpList, accountDetail, setAccountDetail, getListOtp, accSpecificDetail, cosDetail } =
+		conext;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');
@@ -103,12 +104,7 @@ const EditAccountSecuritySection: FC = () => {
 								mainAlignment="space-between"
 							>
 								<Row width="40%" mainAlignment="flex-start">
-									<QRCode
-										data-testid="qrcode-password"
-										size={179}
-										bgColor="transparent"
-										value={qrData}
-									/>
+									<QRCode data-testid="qrcode-password" size={179} value={qrData} />
 								</Row>
 								<Row width="60%" mainAlignment="flex-start">
 									<Container>
@@ -408,6 +404,13 @@ const EditAccountSecuritySection: FC = () => {
 		[setAccountDetail]
 	);
 
+	const setEmptyValue = useCallback(
+		(keyName) => {
+			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
+		},
+		[setAccountDetail]
+	);
+
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
 			setAccountDetail((prev: any) => ({
@@ -651,15 +654,18 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container crossAlignment="flex-start">
-										<Switch
-											value={accountDetail.zimbraPasswordLocked === 'TRUE'}
+										<InheritedSwitch
+											accountValue={accountDetail?.zimbraPasswordLocked}
+											onChange={changeSwitchOption}
 											label={t(
 												'cos.prevent_user_from_changing_password',
 												'Prevent user from changing password'
 											)}
-											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-											onClick={() => changeSwitchOption('zimbraPasswordLocked')}
 											iconColor="primary"
+											cosValue={cosDetail.zimbraPasswordLocked}
+											fromAccount={accSpecificDetail?.zimbraPasswordLocked}
+											inputName={'zimbraPasswordLocked'}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordLocked')}
 										/>
 									</Container>
 								</ListRow>
@@ -674,21 +680,27 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container padding={{ right: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('cos.minimum_password_length', 'Minimum password length')}
-											value={accountDetail.zimbraPasswordMinLength}
+											accountValue={accountDetail.zimbraPasswordMinLength}
+											cosValue={cosDetail.zimbraPasswordMinLength}
+											fromAccount={accSpecificDetail?.zimbraPasswordMinLength}
 											background="gray5"
 											inputName="zimbraPasswordMinLength"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinLength')}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('cos.maximum_password_length', 'Maximum password length')}
-											value={accountDetail.zimbraPasswordMaxLength}
+											accountValue={accountDetail.zimbraPasswordMaxLength}
+											cosValue={cosDetail.zimbraPasswordMaxLength}
+											fromAccount={accSpecificDetail?.zimbraPasswordMaxLength}
 											background="gray5"
 											inputName="zimbraPasswordMaxLength"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMaxLength')}
 										/>
 									</Container>
 								</ListRow>
@@ -703,27 +715,33 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container padding={{ right: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t(
 												'cos.minimum_upper_case_characters',
 												'Minimum upper case characters'
 											)}
-											value={accountDetail.zimbraPasswordMinUpperCaseChars}
+											accountValue={accountDetail.zimbraPasswordMinUpperCaseChars}
+											cosValue={cosDetail.zimbraPasswordMinUpperCaseChars}
+											fromAccount={accSpecificDetail?.zimbraPasswordMinUpperCaseChars}
 											background="gray5"
 											inputName="zimbraPasswordMinUpperCaseChars"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinUpperCaseChars')}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t(
 												'cos.minimum_lower_case_characters',
 												'Minimum lower case characters'
 											)}
-											value={accountDetail.zimbraPasswordMinLowerCaseChars}
+											accountValue={accountDetail.zimbraPasswordMinLowerCaseChars}
+											cosValue={cosDetail.zimbraPasswordMinLowerCaseChars}
+											fromAccount={accSpecificDetail?.zimbraPasswordMinLowerCaseChars}
 											background="gray5"
 											inputName="zimbraPasswordMinLowerCaseChars"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinLowerCaseChars')}
 										/>
 									</Container>
 								</ListRow>
@@ -738,21 +756,27 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container padding={{ right: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
-											value={accountDetail.zimbraPasswordMinPunctuationChars}
+											accountValue={accountDetail.zimbraPasswordMinPunctuationChars}
+											cosValue={cosDetail.zimbraPasswordMinPunctuationChars}
+											fromAccount={accSpecificDetail?.zimbraPasswordMinPunctuationChars}
 											background="gray5"
 											inputName="zimbraPasswordMinPunctuationChars"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinPunctuationChars')}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
-											value={accountDetail.zimbraPasswordMinNumericChars}
+											accountValue={accountDetail.zimbraPasswordMinNumericChars}
+											cosValue={cosDetail.zimbraPasswordMinNumericChars}
+											fromAccount={accSpecificDetail?.zimbraPasswordMinNumericChars}
 											background="gray5"
 											inputName="zimbraPasswordMinNumericChars"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinNumericChars')}
 										/>
 									</Container>
 								</ListRow>
@@ -767,21 +791,27 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container padding={{ right: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
-											value={accountDetail.zimbraPasswordMinAge}
+											accountValue={accountDetail.zimbraPasswordMinAge}
+											cosValue={cosDetail.zimbraPasswordMinAge}
+											fromAccount={accSpecificDetail?.zimbraPasswordMinAge}
 											background="gray5"
 											inputName="zimbraPasswordMinAge"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinAge')}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
-											value={accountDetail.zimbraPasswordMaxAge}
+											accountValue={accountDetail.zimbraPasswordMaxAge}
+											cosValue={cosDetail.zimbraPasswordMaxAge}
+											fromAccount={accSpecificDetail?.zimbraPasswordMaxAge}
 											background="gray5"
 											inputName="zimbraPasswordMaxAge"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMaxAge')}
 										/>
 									</Container>
 								</ListRow>
@@ -796,27 +826,33 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container padding={{ right: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t(
 												'cos.minimum_numeric_characters_or_punctuation_symbols',
 												'Minimum numeric characters or punctuation symbols'
 											)}
-											value={accountDetail.zimbraPasswordMinDigitsOrPuncs}
+											accountValue={accountDetail.zimbraPasswordMinDigitsOrPuncs}
+											cosValue={cosDetail.zimbraPasswordMinDigitsOrPuncs}
+											fromAccount={accSpecificDetail?.zimbraPasswordMinDigitsOrPuncs}
 											background="gray5"
 											inputName="zimbraPasswordMinDigitsOrPuncs"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinDigitsOrPuncs')}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t(
 												'cos.minimum_number_of_unique_password_history',
 												'Minimum number of unique passwords history'
 											)}
-											value={accountDetail.zimbraPasswordEnforceHistory}
+											accountValue={accountDetail.zimbraPasswordEnforceHistory}
+											cosValue={cosDetail.zimbraPasswordEnforceHistory}
+											fromAccount={accSpecificDetail?.zimbraPasswordEnforceHistory}
 											background="gray5"
 											inputName="zimbraPasswordEnforceHistory"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordEnforceHistory')}
 										/>
 									</Container>
 								</ListRow>
@@ -826,12 +862,15 @@ const EditAccountSecuritySection: FC = () => {
 							<Container height="fit" crossAlignment="flex-start" background="gray6">
 								<ListRow>
 									<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
-										<Switch
-											value={accountDetail.zimbraPasswordBlockCommonEnabled === 'TRUE'}
+										<InheritedSwitch
+											accountValue={accountDetail?.zimbraPasswordBlockCommonEnabled}
+											onChange={changeSwitchOption}
 											label={t('cos.reject_common_passwords', 'Reject common passwords')}
-											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-											onClick={() => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
 											iconColor="primary"
+											cosValue={cosDetail.zimbraPasswordBlockCommonEnabled}
+											fromAccount={accSpecificDetail?.zimbraPasswordBlockCommonEnabled}
+											inputName={'zimbraPasswordBlockCommonEnabled'}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordBlockCommonEnabled')}
 										/>
 									</Container>
 								</ListRow>
@@ -856,12 +895,15 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container crossAlignment="flex-start">
-										<Switch
-											value={accountDetail.zimbraPasswordLockoutEnabled === 'TRUE'}
+										<InheritedSwitch
+											accountValue={accountDetail?.zimbraPasswordLockoutEnabled}
+											onChange={changeSwitchOption}
 											label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
-											// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-											onClick={() => changeSwitchOption('zimbraPasswordLockoutEnabled')}
 											iconColor="primary"
+											cosValue={cosDetail.zimbraPasswordLockoutEnabled}
+											fromAccount={accSpecificDetail?.zimbraPasswordLockoutEnabled}
+											inputName={'zimbraPasswordLockoutEnabled'}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutEnabled')}
 										/>
 									</Container>
 								</ListRow>
@@ -876,15 +918,18 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container crossAlignment="flex-start">
-										<Input
+										<InheritedInput
 											label={t(
 												'cos.number_of_consecutive_failed_login_allowed',
 												'Number of consecutive failed logins allowed'
 											)}
-											value={accountDetail.zimbraPasswordLockoutMaxFailures}
+											accountValue={accountDetail.zimbraPasswordLockoutMaxFailures}
+											cosValue={cosDetail.zimbraPasswordLockoutMaxFailures}
+											fromAccount={accSpecificDetail?.zimbraPasswordLockoutMaxFailures}
 											background="gray5"
 											inputName="zimbraPasswordLockoutMaxFailures"
 											onChange={changeValue}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutMaxFailures')}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
 										/>
 									</Container>
@@ -900,30 +945,29 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container width="75%" padding={{ right: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-											value={zimbraPasswordLockoutDurationNum}
+											accountValue={accountDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
+											cosValue={cosDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
+											fromAccount={accSpecificDetail?.zimbraPasswordLockoutDuration}
 											background="gray5"
 											inputName="zimbraPasswordLockoutDuration"
 											onChange={onZimbraPasswordLockoutDurationNumChange}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
 										/>
 									</Container>
 									<Container width="25%" padding={{ left: 'small' }}>
-										<Select
-											items={timeItems}
-											background="gray5"
+										<InheritedSelect
 											label={t('cos.time_range', 'Time Range')}
-											selection={
-												zimbraPasswordLockoutDurationType === ''
-													? timeItems[-1]
-													: timeItems.find(
-															// eslint-disable-next-line max-len
-															(item: any) => item.value === zimbraPasswordLockoutDurationType
-													  )
-											}
-											showCheckbox={false}
+											items={timeItems}
+											accountValue={accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || ''}
+											cosValue={cosDetail.zimbraPasswordLockoutDuration?.slice(-1) || ''}
+											fromAccount={accSpecificDetail?.zimbraPasswordLockoutDuration}
+											background="gray5"
+											selectName="zimbraPasswordLockoutDuration"
 											onChange={onZimbraPasswordLockoutDurationTypeChange}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
 										/>
 									</Container>
@@ -939,34 +983,41 @@ const EditAccountSecuritySection: FC = () => {
 							>
 								<ListRow>
 									<Container width="75%" padding={{ right: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t(
 												'cos.time_window_failed_logins_must_occur_to_lock_account',
 												'Time window in which the failed logins must occur to lock the account:'
 											)}
-											value={zimbraPasswordLockoutFailureLifetimeNum}
+											accountValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(
+												0,
+												-1
+											)}
+											cosValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
+											fromAccount={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
 											background="gray5"
 											inputName="zimbraPasswordLockoutFailureLifetime"
 											onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
+											onChangeReset={(): void =>
+												setEmptyValue('zimbraPasswordLockoutFailureLifetime')
+											}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
 										/>
 									</Container>
 									<Container width="25%" padding={{ left: 'small' }}>
-										<Select
-											items={timeItems}
-											background="gray5"
+										<InheritedSelect
 											label={t('cos.time_range', 'Time Range')}
-											selection={
-												zimbraPasswordLockoutFailureLifetimeType === ''
-													? timeItems[-1]
-													: timeItems.find(
-															(item: any) =>
-																// eslint-disable-next-line max-len
-																item.value === zimbraPasswordLockoutFailureLifetimeType
-													  )
+											items={timeItems}
+											accountValue={
+												accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
 											}
-											showCheckbox={false}
+											cosValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''}
+											fromAccount={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
+											background="gray5"
+											selectName="zimbraPasswordLockoutFailureLifetime"
 											onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
+											onChangeReset={(): void =>
+												setEmptyValue('zimbraPasswordLockoutFailureLifetime')
+											}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
 										/>
 									</Container>

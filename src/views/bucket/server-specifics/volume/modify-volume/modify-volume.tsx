@@ -23,6 +23,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { isEmpty } from 'lodash';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { fetchSoap } from '../../../../../services/bucket-service';
@@ -493,8 +494,11 @@ const ModifyVolume: FC<{
 	}, [volTypeList, volumeDetail]);
 
 	useEffect(() => {
-		getAllBuckets();
-	}, [getAllBuckets, externalVolDetail]);
+		if (!isEmpty(externalVolDetail)) {
+			getAllBuckets();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [externalVolDetail]);
 
 	useEffect(() => {
 		setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
@@ -1015,9 +1019,13 @@ const ModifyVolume: FC<{
 				)}
 				<Modal
 					open={isCurrentToggle && !isCurrent}
-					title={t('modal.iscurrent_confirm.title', 'You are setting {{name}} as current', {
-						name
-					})}
+					title={t(
+						'modal.iscurrent_confirm.title',
+						'You are setting {{name}} as the current volume',
+						{
+							name
+						}
+					)}
 					onClose={(): void => setIsCurrentToggle(false)}
 					onConfirm={(): void => {
 						setIsCurrent(true);
@@ -1032,7 +1040,7 @@ const ModifyVolume: FC<{
 						<Text>
 							<Trans
 								i18nKey="modal.iscurrent_confirm.body_message"
-								defaults="The current {{type}} {{currentVolumeName}}.<br />Are you sure you want to <strong>set {{name}} as current</strong>?"
+								defaults="The {{currentVolumeName}} is the current volume.<br />Are you sure you want to <strong>set {{name}} as current one</strong>?"
 								components={{ break: <br />, bold: <strong /> }}
 								values={{ type: type?.label, currentVolumeName: currentVolume?.name, name }}
 							/>

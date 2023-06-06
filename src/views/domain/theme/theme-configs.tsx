@@ -252,7 +252,7 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Padding vertical="large" horizontal="small" width="100%">
 							<Text size="small" color="gray0" weight="bold">
-								{t('label.personalisation', 'Personalisation')}
+								{t('label.customization', 'Customization')}
 							</Text>
 						</Padding>
 					</ListRow>
@@ -261,7 +261,7 @@ export const ThemeConfigs: FC<{
 							<Text size="small" color="gray0">
 								{t(
 									'label.primary_color_hint',
-									'To change the Primary color, please use an HEX color code as in the placeholder format.'
+									'To change the Primary color, please use a HEX color code.'
 								)}
 							</Text>
 						</Padding>

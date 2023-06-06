@@ -1351,7 +1351,7 @@ const DomainGalSettings: FC = () => {
 									</Container>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.ldap_search_base', 'LDAP Search Base')}
+											label={t('label.ldap_search_base', 'LDAP based search')}
 											value={domainData?.zimbraGalLdapSearchBase}
 											background="gray5"
 											onChange={onZimbraGalLdapSearchBaseChange}

@@ -1715,6 +1715,11 @@ export const isValidUrl = (url: string): boolean => {
 	return reqex.test(url);
 };
 
+export const isValidNumber = (str: string): boolean => {
+	const reqex = /^[0-9-+()]*$/;
+	return reqex.test(str);
+};
+
 export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
@@ -1730,7 +1735,7 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_only_in_delegates_send_folder',
-			`Save a copy of sent messages only in delegate's send folder`
+			`Save a copy of sent messages only in delegate's Sent folder`
 		),
 		value: 'owner'
 	},
@@ -1744,7 +1749,7 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
-			`Save a copy of sent messages to delegate and delegated send folder`
+			`Save a copy of sent messages to delegate's Sent folder`
 		),
 		value: 'both'
 	},

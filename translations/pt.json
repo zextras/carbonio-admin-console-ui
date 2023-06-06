@@ -315,7 +315,7 @@
         "account": "Conta",
         "accounts": "Contas",
         "active": "Ativo",
-        "add": "Adicionar",
+        "add": "Aceitar",
         "app_clicked": "Você aceitou este pedido de compartilhamento",
         "app_name": "Gerenciar",
         "available_space": "Espaço Disponível",
@@ -662,7 +662,7 @@
         "click_here": "Clique aqui",
         "compression": "Compressão",
         "compression_threshold": "Limite de compressão",
-        "contact": "Contacto",
+        "contact": "Contato",
         "conversation": "Conversa",
         "current": "Atual",
         "date_creation": "Criação de Dados",
@@ -901,7 +901,7 @@
         "e_mail": "E-mail",
         "eas": "EAS",
         "email_address": "Endereço de e-mail",
-        "enabled": "Ativado",
+        "enabled": "Habilitado",
         "global": "Global",
         "last_seen": "Visto pela última vez",
         "mailstores": "Mailstores",
@@ -1137,7 +1137,11 @@
         "distribution_list": "Lista de distribuição",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salvar uma cópia das mensagens na pasta Enviadas do delegado",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas",
-        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na dos delegados"
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na dos delegados",
+        "destroy": "EXCLUIR",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Salvar uma cópia na pasta Enviadas do delegado",
+        "destroy_account": "Excluir",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Salvar uma cópia na pasta Enviadas do delegado"
     },
     "message": {
         "snackbar": {
@@ -1304,7 +1308,7 @@
         "email_retention_policy": "Políticas de retenção",
         "enable_failed_login_lockout": "Permitir o bloqueio de login falhado",
         "enable_smime": "Ativar S/MIME",
-        "enabled": "Ativado",
+        "enabled": "Habilitado",
         "failed_login_policy": "Política de login incorreto",
         "free_busy_interop": "Interoperabilidade livre/ocupado",
         "html_compose": "Escrever como HTML",
@@ -1449,7 +1453,7 @@
         "as_new_mail_arrives": "Ao que novos emails cheguem",
         "autocomplete_from_GAL": "Autocompletar da GAL",
         "calendar": "Calendário",
-        "contact": "Contacto",
+        "contact": "Contato",
         "default_COS": "COS padrão",
         "default_view": {
             "day": "Modo claro",
@@ -1623,7 +1627,8 @@
             "centralized": "Centralizado",
             "external": "Externo",
             "local": "Local",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "object_storage": "Armazenamento de objetos"
         },
         "volume_config_header": {
             "name": "Nome",
@@ -1659,7 +1664,7 @@
         "all": "Tudo",
         "allocation": "Alocação",
         "apply_duplication_after_scheduledhsm": "Aplicar a Desduplicação após o HSM programado",
-        "contact": "Contacto",
+        "contact": "Contato",
         "create_policy": "Criar política",
         "criteria": "Critério de aplicação",
         "current": "Atual",

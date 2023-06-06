@@ -368,7 +368,7 @@ const DomainResources: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="58px"
+					height="3.625rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
@@ -377,7 +377,7 @@ const DomainResources: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding right="large">
+							<Padding>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
@@ -387,17 +387,6 @@ const DomainResources: FC = () => {
 									onClick={(): void => {
 										setShowCreateResourceView(true);
 									}}
-								/>
-							</Padding>
-							<Padding right="large">
-								<Button
-									type="outlined"
-									label={t('label.bulk_actions', 'Bulk Actions')}
-									icon="ArrowIosDownward"
-									iconPlacement="right"
-									color="primary"
-									disabled
-									height={36}
 								/>
 							</Padding>
 						</Row>

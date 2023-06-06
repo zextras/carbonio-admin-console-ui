@@ -7,11 +7,14 @@ import { createContext } from 'react';
 
 type AccountContext = {
 	accountDetail: any;
+	cosDetail: any;
+	accSpecificDetail: any;
 	directMemberList: any[];
 	inDirectMemberList: any[];
 	setSignatureItems: (arg: any) => void;
 	setSignatureList: (arg: any) => void;
 	setAccountDetail: (arg: any) => void;
+	setAccSpecificDetail: (arg: any) => void;
 	setDirectMemberList: (arg: any) => void;
 	setInDirectMemberList: (arg: any) => void;
 	setInitAccountDetail: (arg: any) => void;
