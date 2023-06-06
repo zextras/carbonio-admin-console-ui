@@ -23,6 +23,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { isEmpty } from 'lodash';
 import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { fetchSoap } from '../../../../../services/bucket-service';
@@ -44,31 +45,36 @@ import {
 	UNUSED,
 	USAGE_IN_EXTERNAL_BACKUP
 } from '../../../../../constants';
-import { useBucketServersListStore } from '../../../../../store/bucket-server-list/store';
-import { useServerStore } from '../../../../../store/server/store';
 import ListRow from '../../../../list/list-row';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import { Bucket, BucketVolume, Volume, VolumeType } from '../../../../../../types';
+import {
+	Bucket,
+	BucketVolume,
+	Volume,
+	VolumeType,
+	objAll,
+	objectType
+} from '../../../../../../types';
 
 const ModifyVolume: FC<{
-	setmodifyVolumeToggle: any;
-	volumeDetail: any;
-	changeSelectedVolume: any;
-	getAllVolumesRequest: any;
+	setmodifyVolumeToggle: (newValue: boolean) => void;
+	volumeDetail: objAll;
+	getAllVolumesRequest: () => void;
 	selectedServerId: string;
-	volumeList: any;
+	volumeList: {
+		primaries: Volume[];
+		indexes: Volume[];
+		secondaries: Volume[];
+	};
 }> = ({
 	setmodifyVolumeToggle,
 	volumeDetail,
-	changeSelectedVolume,
 	getAllVolumesRequest,
 	selectedServerId,
 	volumeList
 }) => {
 	const { t } = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
-	const serverName = useBucketServersListStore((state) => state?.volumeList)[0].name;
-	const serverList = useServerStore((state) => state.serverList);
 	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
@@ -85,11 +91,9 @@ const ModifyVolume: FC<{
 		volumeDetail?.compressionThreshold
 	);
 	const [previousDetail, setPreviousDetail] = useState<any>({});
-	// const [currentVolumeName, setCurrentVolumeName] = useState('');
 	const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
 	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<Array<Bucket>>([]);
-	const [allocation, setAllocation] = useState<any>();
-	const [bucketList, setBucketList] = useState<Array<object | Bucket>>([]);
+	const [allocation, setAllocation] = useState<VolumeType>();
 	const [bucketName, setBucketName] = useState('');
 	const [storeType, setStoreType] = useState<string | undefined>('');
 	const [bucketConfigurationId, setBucketConfigurationId] = useState<string | undefined>();
@@ -109,8 +113,9 @@ const ModifyVolume: FC<{
 	const [isCurrentToggle, setIsCurrentToggle] = useState<boolean>(false);
 	const [currentVolume, setCurrentVolume] = useState<Volume>();
 	const createSnackbar = useSnackbar();
-	const { isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore((state) => state);
-
+	const { selectedServerName, isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore(
+		(state) => state
+	);
 	const onUnusedBucketListChange = (e: string): void => {
 		const selectedBucketDetail = isVolumeAllDetail?.filter(
 			(item: BucketVolume) => item?.uuid === e
@@ -122,7 +127,7 @@ const ModifyVolume: FC<{
 	};
 
 	const updatePreviousDetail = (): void => {
-		const latestData: any = {};
+		const latestData: { [key: string]: string | boolean | number | undefined | VolumeType } = {};
 		latestData.name = name;
 		latestData.type = type;
 		latestData.id = id;
@@ -130,17 +135,22 @@ const ModifyVolume: FC<{
 		latestData.compressBlobs = compressBlobs;
 		latestData.isCurrent = isCurrent;
 		latestData.compressionThreshold = compressionThreshold;
+		latestData.volumePrefix = volumePrefix;
+		latestData.infrequentAccessThreshold = infrequentAccessThreshold;
+		latestData.bucketConfigurationId = bucketConfigurationId;
+		latestData.useInfrequentAccess = useInfrequentAccess;
+		latestData.useIntelligentTiering = useIntelligentTiering;
 		setPreviousDetail(latestData);
 		setIsDirty(false);
 	};
 
 	const onSave = async (): Promise<void> => {
 		if (isAdvanced) {
-			const obj: any = {};
+			const obj: { [key: string]: string | boolean | number | undefined } = {};
 			obj._jsns = 'urn:zimbraAdmin';
 			obj.module = 'ZxPowerstore';
 			obj.action = 'doUpdateVolume';
-			obj.targetServers = serverName;
+			obj.targetServers = selectedServerName;
 			obj.currentVolumeName = volumeDetail?.name;
 			obj.volumeName = name;
 			obj.volumeType = type?.label?.toLowerCase();
@@ -150,7 +160,7 @@ const ModifyVolume: FC<{
 			if (Object.keys(externalVolDetail)?.length === 0) {
 				obj.volumePath = rootpath;
 				obj.volumeCompressed = compressBlobs;
-				obj.compressionThreshold = compressionThreshold;
+				obj.volumeThreshold = compressionThreshold || 0;
 			} else {
 				if (
 					externalVolDetail?.storeType?.toUpperCase() === ALIBABA?.toUpperCase() ||
@@ -173,7 +183,7 @@ const ModifyVolume: FC<{
 				if (externalVolDetail?.storeType?.toUpperCase() === FILEBLOB?.toUpperCase()) {
 					obj.volumePath = rootpath;
 					obj.volumeCompressed = compressBlobs;
-					obj.compressionThreshold = compressionThreshold;
+					obj.volumeThreshold = compressionThreshold || 0;
 				}
 				if (externalVolDetail?.storeType?.toUpperCase() === OPENIO?.toUpperCase()) {
 					obj.url = '';
@@ -203,9 +213,9 @@ const ModifyVolume: FC<{
 			}
 
 			await fetchSoap('zextras', obj)
-				.then((res: any) => {
+				.then((res) => {
 					const result = JSON.parse(res?.Body?.response?.content);
-					const updateResponse = result?.response?.[serverName];
+					const updateResponse = result?.response?.[selectedServerName];
 					if (updateResponse?.ok) {
 						createSnackbar({
 							key: '1',
@@ -226,7 +236,7 @@ const ModifyVolume: FC<{
 						setmodifyVolumeToggle(false);
 					}
 				})
-				.catch((error: any) => {
+				.catch(() => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -275,7 +285,7 @@ const ModifyVolume: FC<{
 							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore
 							selectedServerId
-						).catch((error) => {
+						).catch(() => {
 							createSnackbar({
 								key: 'error',
 								type: 'error',
@@ -294,7 +304,7 @@ const ModifyVolume: FC<{
 					getAllVolumesRequest();
 					setmodifyVolumeToggle(false);
 				})
-				.catch((error) => {
+				.catch(() => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -328,6 +338,21 @@ const ModifyVolume: FC<{
 		previousDetail?.compressionThreshold
 			? setCompressionThreshold(previousDetail?.compressionThreshold)
 			: setCompressionThreshold(volumeDetail?.compressionThreshold);
+		previousDetail?.bucketConfigurationId
+			? setBucketConfigurationId(previousDetail?.bucketConfigurationId)
+			: setBucketConfigurationId(externalVolDetail?.bucketConfigurationId);
+		previousDetail?.volumePrefix
+			? setVolumePrefix(previousDetail?.volumePrefix)
+			: setVolumePrefix(externalVolDetail?.volumePrefix);
+		previousDetail?.infrequentAccessThreshold
+			? setInfrequentAccessThreshold(previousDetail?.infrequentAccessThreshold)
+			: setInfrequentAccessThreshold(externalVolDetail?.infrequentAccessThreshold);
+		previousDetail?.useInfrequentAccess
+			? setUseInfrequentAccess(previousDetail?.useInfrequentAccess)
+			: setUseInfrequentAccess(externalVolDetail?.useInfrequentAccess);
+		previousDetail?.useIntelligentTiering
+			? setUseIntelligentTiering(previousDetail?.useIntelligentTiering)
+			: setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
 		setIsDirty(false);
 	};
 
@@ -341,22 +366,19 @@ const ModifyVolume: FC<{
 		[volTypeList]
 	);
 
-	const server = document.location.hostname; // 'nbm-s02.demo.zextras.io';
-
 	const getAllBuckets = useCallback(() => {
 		fetchSoap('zextras', {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'listBuckets',
 			type: 'all',
-			targetServer: server,
+			targetServer: selectedServerName,
 			showSecrets: true
-		}).then((res: any) => {
+		}).then((res) => {
 			const response = JSON.parse(res.Body.response.content);
 			if (response.ok) {
-				setBucketList(response.response.values);
 				const bucName = response.response.values.find(
-					(b: any) => b?.uuid === externalVolDetail?.bucketConfigurationId
+					(b: objectType) => b?.uuid === externalVolDetail?.bucketConfigurationId
 				)?.bucketName;
 				setBucketName(bucName);
 				setStoreType(externalVolDetail?.storeType);
@@ -364,8 +386,8 @@ const ModifyVolume: FC<{
 
 				const volUnusedBucketList: object[] = [];
 				const allData = response?.response?.values
-					?.filter((items: any) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
-					.map((items: any) => {
+					?.filter((items: objectType) => items[USAGE_IN_EXTERNAL_BACKUP] === UNUSED)
+					.map((items: objectType) => {
 						const volumeObject: string | undefined = bucketTypeItems?.find(
 							(s) => s?.value?.toLowerCase() === items?.storeType?.toLowerCase()
 						)?.label;
@@ -377,15 +399,13 @@ const ModifyVolume: FC<{
 					});
 				setIsVolumeAllDetail(allData);
 				setBackupUnusedBucketList(volUnusedBucketList);
-			} else {
-				setBucketList([]);
 			}
 		});
 	}, [
 		bucketTypeItems,
 		externalVolDetail?.bucketConfigurationId,
 		externalVolDetail?.storeType,
-		server,
+		selectedServerName,
 		setIsVolumeAllDetail
 	]);
 
@@ -394,13 +414,21 @@ const ModifyVolume: FC<{
 			setIsDirty(true);
 		}
 
-		if (externalVolDetail !== undefined && externalVolDetail?.name !== name) {
+		if (
+			externalVolDetail?.name !== undefined &&
+			name !== undefined &&
+			externalVolDetail?.name !== name
+		) {
 			setIsDirty(true);
 		}
 	}, [externalVolDetail, name, volumeDetail]);
 
 	useEffect(() => {
-		if (volumeDetail !== undefined && volumeDetail?.type !== type?.value) {
+		if (
+			volumeDetail !== undefined &&
+			type?.value !== undefined &&
+			volumeDetail?.type !== type?.value
+		) {
 			setIsDirty(true);
 		}
 	}, [type?.value, volumeDetail]);
@@ -454,6 +482,7 @@ const ModifyVolume: FC<{
 	useEffect(() => {
 		if (
 			externalVolDetail !== undefined &&
+			useInfrequentAccess !== undefined &&
 			externalVolDetail?.useInfrequentAccess !== useInfrequentAccess
 		) {
 			setIsDirty(true);
@@ -463,6 +492,7 @@ const ModifyVolume: FC<{
 	useEffect(() => {
 		if (
 			externalVolDetail !== undefined &&
+			useIntelligentTiering !== undefined &&
 			externalVolDetail?.useIntelligentTiering !== useIntelligentTiering
 		) {
 			setIsDirty(true);
@@ -472,6 +502,7 @@ const ModifyVolume: FC<{
 	useEffect(() => {
 		if (
 			externalVolDetail !== undefined &&
+			infrequentAccessThreshold !== undefined &&
 			externalVolDetail?.infrequentAccessThreshold !== infrequentAccessThreshold
 		) {
 			setIsDirty(true);
@@ -493,8 +524,11 @@ const ModifyVolume: FC<{
 	}, [volTypeList, volumeDetail]);
 
 	useEffect(() => {
-		getAllBuckets();
-	}, [getAllBuckets, externalVolDetail]);
+		if (!isEmpty(externalVolDetail)) {
+			getAllBuckets();
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [externalVolDetail]);
 
 	useEffect(() => {
 		setUseIntelligentTiering(externalVolDetail?.useIntelligentTiering);
@@ -517,8 +551,6 @@ const ModifyVolume: FC<{
 	useEffect(() => {
 		if (isAdvanced) {
 			if (volumeDetail?.type === 1) {
-				// const volName = volumeList?.primaries?.filter((items: any) => items?.isCurrent)[0]?.name;
-				// setCurrentVolumeName(volName);
 				const volDetail = volumeList?.primaries?.filter(
 					(items: Volume) => items?.id === volumeDetail?.id
 				)[0];
@@ -532,8 +564,6 @@ const ModifyVolume: FC<{
 				setCurrentVolume(volume);
 			}
 			if (volumeDetail?.type === 2) {
-				// const volName = volumeList?.secondaries?.filter((items: any) => items?.isCurrent)[0]?.name;
-				// setCurrentVolumeName(volName);
 				const volDetail = volumeList?.secondaries?.filter(
 					(items: Volume) => items?.id === volumeDetail?.id
 				)[0];
@@ -548,8 +578,6 @@ const ModifyVolume: FC<{
 				setCurrentVolume(volume);
 			}
 			if (volumeDetail?.type === 10) {
-				// const volName = volumeList?.indexes?.filter((items: any) => items?.isCurrent)[0]?.name;
-				// setCurrentVolumeName(volName);
 				const volDetail = volumeList?.indexes?.filter(
 					(items: Volume) => items?.id === volumeDetail?.id
 				)[0];
@@ -775,7 +803,7 @@ const ModifyVolume: FC<{
 							<Input
 								inputName="server"
 								label={t('label.volume_server_name', 'Server')}
-								value={serverName}
+								value={selectedServerName}
 								backgroundColor="gray5"
 								readyOnly
 							/>

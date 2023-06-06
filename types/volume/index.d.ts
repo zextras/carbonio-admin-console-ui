@@ -5,15 +5,23 @@
  */
 
 export type Volume = {
+	id?: number;
+	name?: string;
+	rootpath?: string;
+	type?: number;
+	compressBlobs?: string;
+	compressionThreshold?: string;
+	mgbits?: number;
+	mbits?: number;
+	fgbits?: number;
+	fbits?: number;
+	isCurrent?: boolean | number;
 	availableSpace?: number;
 	bucketConfigurationId?: string;
 	centralized?: boolean;
 	compressed?: boolean;
-	id?: number;
 	infrequentAccessThreshold?: number;
-	isCurrent?: boolean;
 	isDrivePrimary?: boolean;
-	name?: string;
 	path?: string;
 	storeType?: string;
 	threshold?: number;
@@ -22,6 +30,8 @@ export type Volume = {
 	useIntelligentTiering?: boolean;
 	volumePrefix?: string;
 	volumeType?: string;
+	volumeName?: string;
+	serverName?: string;
 };
 
 export type VolumeType =
@@ -50,4 +60,29 @@ export type BucketVolume = {
 export type Bucket = {
 	label?: string;
 	value?: string;
+};
+
+interface VolumeDetails {
+	id: number;
+	name: string;
+	rootpath: string;
+	type: number;
+	compressBlobs: boolean;
+	compressionThreshold: number;
+	mgbits: number;
+	mbits: number;
+	fgbits: number;
+	fbits: number;
+	isCurrent: boolean;
+}
+
+export type typeVolApiProperty = {
+	_jsns: string;
+	module: string;
+	action: string;
+	targetServers: string;
+	volumeType: string;
+	storeType?: string;
+	isCurrent?: boolean | number;
+	currentVolumeName?: string;
 };
