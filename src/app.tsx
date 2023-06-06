@@ -184,19 +184,21 @@ const App: FC = () => {
 							i18nKey="label.backup_lbl"
 							defaults="<bold>Backup</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.backup_primarybar_tooltip"
 							defaults="Manage your <bold>backup services</bold>, view their <bold>status</bold>, the <bold>servers list</bold> or <bold>import an existing backup</bold>."
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const BackupTooltipView: FC = useCallback(
@@ -213,19 +215,21 @@ const App: FC = () => {
 							i18nKey="label.class_of_service_lbl"
 							defaults="<bold>Class of Service</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.cos_primarybar_tooltip"
 							defaults="View and manage your <bold>Class of Services</bold> details, <bold>features, Server Pools</bold> and <bold>Advanced</bold> settings."
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const CosTooltipView: FC = useCallback(
@@ -242,19 +246,21 @@ const App: FC = () => {
 							i18nKey="label.privacy_lbl"
 							defaults="<bold>Privacy</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.privacy_primarybar_tooltip"
 							defaults="Manage the <bold>Privacy</bold> settings such as <bold>data reports, error logs</bold> and <bold>surveys</bold>."
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const PrivacyTooltipView: FC = useCallback(
@@ -271,19 +277,21 @@ const App: FC = () => {
 							i18nKey="label.notification_lbl"
 							defaults="<bold>Notifications</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.notification_primarybar_tooltip"
 							defaults="View your <bold>notifications</bold>, mark them as <bold>read</bold> or <bold>copy</bold> to share them."
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const NotificationTooltipView: FC = useCallback(
@@ -300,19 +308,21 @@ const App: FC = () => {
 							i18nKey="label.domains_lbl"
 							defaults="<bold>Domains</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.domain_primarybar_tooltip"
 							defaults="View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, mailing lists, resources</bold> and <bold>more</bold>."
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const homeTooltipItems = useMemo(
@@ -324,13 +334,14 @@ const App: FC = () => {
 							i18nKey="label.dashboard"
 							defaults="<bold>Dashboard</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const HomeTooltipView: FC = useCallback(
@@ -352,19 +363,21 @@ const App: FC = () => {
 							i18nKey="label.storage_lbl"
 							defaults="<bold>Storage</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.storage_primarybar_tooltip"
 							defaults="View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>."
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const StorageTooltipView: FC = useCallback(
@@ -381,19 +394,21 @@ const App: FC = () => {
 							i18nKey="label.subscription_lbl"
 							defaults="<bold>Subscription</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.subscription_primarybar_tooltip"
 							defaults="View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one."
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const SubscriptionTooltipView: FC = useCallback(
@@ -410,19 +425,21 @@ const App: FC = () => {
 							i18nKey="label.operation_lbl"
 							defaults="<bold>Operations</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.operation_primarybar_tooltip"
 							defaults="View and manage the <bold>operations, run, manage</bold> and <bold>end them</bold>."
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const mtaTooltipItem = useMemo(
@@ -434,19 +451,21 @@ const App: FC = () => {
 							i18nKey="label.mta_lbl"
 							defaults="<bold>MTA</bold>"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 						{'\n\n'}
 						<Trans
 							i18nKey="label.mta_primarybar_tooltip"
 							defaults="Mail Transfer Agent"
 							components={{ bold: <strong /> }}
+							t={t}
 						/>
 					</>
 				),
 				options: []
 			}
 		],
-		[]
+		[t]
 	);
 
 	const OperationTooltipView: FC = useCallback(

@@ -433,7 +433,8 @@ const VolumesDetailPanel: FC = () => {
 
 	useEffect(() => {
 		getAllVolumesRequest();
-	}, [getAllVolumesRequest]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	const CreateAdvancedRequest = async (attr: any): Promise<any> => {
 		const bucketDetails = isVolumeAllDetail?.filter(

@@ -4,14 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback } from 'react';
-import { Container, Row, Text, Divider, Switch } from '@zextras/carbonio-design-system';
+import { Container, Row, Text, Divider } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import InheritedSwitch from '../domain/manange/accounts/edit-account/inherited-components/inherited-switch';
 
 export const Features: FC<{
 	featuresDetail: Record<string, string>;
 	setFeaturesDetail: CallableFunction;
-}> = ({ featuresDetail, setFeaturesDetail }) => {
+	cosDetail?: Record<string, string>;
+	accSpecificDetail?: Record<string, string>;
+	setEmptyValue?: CallableFunction;
+}> = ({ featuresDetail, setFeaturesDetail, cosDetail, accSpecificDetail, setEmptyValue }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
@@ -50,40 +54,60 @@ export const Features: FC<{
 						{t('label.mail', 'Mail')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<Switch
-							value={featuresDetail.carbonioFeatureMailsAppEnabled === 'TRUE'}
-							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('carbonioFeatureMailsAppEnabled')}
+						<InheritedSwitch
+							accountValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
+							onChange={changeSwitchOption}
 							label={t('label.mobile_app', 'Mobile App')}
 							iconColor="primary"
+							cosValue={cosDetail?.carbonioFeatureMailsAppEnabled}
+							fromAccount={accSpecificDetail?.carbonioFeatureMailsAppEnabled}
+							inputName={'carbonioFeatureMailsAppEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('carbonioFeatureMailsAppEnabled')
+							}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<Switch
-							value={featuresDetail.zimbraFeatureSignaturesEnabled === 'TRUE'}
-							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('zimbraFeatureSignaturesEnabled')}
+						<InheritedSwitch
+							accountValue={featuresDetail?.zimbraFeatureSignaturesEnabled}
+							onChange={changeSwitchOption}
 							label={t('label.mail_signatures', 'Mail Signatures')}
 							iconColor="primary"
+							cosValue={cosDetail?.zimbraFeatureSignaturesEnabled}
+							fromAccount={accSpecificDetail?.zimbraFeatureSignaturesEnabled}
+							inputName={'zimbraFeatureSignaturesEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('zimbraFeatureSignaturesEnabled')
+							}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<Switch
-							value={featuresDetail.zimbraFeatureOutOfOfficeReplyEnabled === 'TRUE'}
-							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('zimbraFeatureOutOfOfficeReplyEnabled')}
+						<InheritedSwitch
+							accountValue={featuresDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+							onChange={changeSwitchOption}
 							label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
 							iconColor="primary"
+							cosValue={cosDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+							fromAccount={accSpecificDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+							inputName={'zimbraFeatureOutOfOfficeReplyEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('zimbraFeatureOutOfOfficeReplyEnabled')
+							}
 						/>
 					</Row>
 					{isAdvanced && (
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<Switch
-								value={featuresDetail.zimbraFeatureMobileSyncEnabled === 'TRUE'}
-								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-								onClick={() => changeSwitchOption('zimbraFeatureMobileSyncEnabled')}
+							<InheritedSwitch
+								accountValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
+								onChange={changeSwitchOption}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
 								iconColor="primary"
+								cosValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
+								fromAccount={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
+								inputName={'zimbraFeatureMobileSyncEnabled'}
+								onChangeReset={(): void =>
+									setEmptyValue && setEmptyValue('zimbraFeatureMobileSyncEnabled')
+								}
 							/>
 						</Row>
 					)}
@@ -100,12 +124,17 @@ export const Features: FC<{
 							{t('label.chats', 'Chats')}
 						</Text>
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<Switch
-								value={featuresDetail.carbonioFeatureTeamEnabled === 'TRUE'}
-								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-								onClick={() => changeSwitchOption('carbonioFeatureTeamEnabled')}
+							<InheritedSwitch
+								accountValue={featuresDetail?.carbonioFeatureTeamEnabled}
+								onChange={changeSwitchOption}
 								label={t('label.web_feature', 'Web Feature')}
 								iconColor="primary"
+								cosValue={cosDetail?.carbonioFeatureTeamEnabled}
+								fromAccount={accSpecificDetail?.carbonioFeatureTeamEnabled}
+								inputName={'carbonioFeatureTeamEnabled'}
+								onChangeReset={(): void =>
+									setEmptyValue && setEmptyValue('carbonioFeatureTeamEnabled')
+								}
 							/>
 						</Row>
 						<Row
@@ -113,13 +142,18 @@ export const Features: FC<{
 							mainAlignment="flex-start"
 							padding={{ top: 'large', bottom: 'large' }}
 						>
-							<Switch
-								value={featuresDetail.carbonioFeatureChatsAppEnabled === 'TRUE'}
-								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-								onClick={() => changeSwitchOption('carbonioFeatureChatsAppEnabled')}
+							<InheritedSwitch
+								accountValue={featuresDetail?.carbonioFeatureChatsAppEnabled}
+								onChange={changeSwitchOption}
 								label={t('label.mobile_app', 'Mobile App')}
-								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE'}
 								iconColor="primary"
+								cosValue={cosDetail?.carbonioFeatureChatsAppEnabled}
+								fromAccount={accSpecificDetail?.carbonioFeatureChatsAppEnabled}
+								inputName={'carbonioFeatureChatsAppEnabled'}
+								onChangeReset={(): void =>
+									setEmptyValue && setEmptyValue('carbonioFeatureChatsAppEnabled')
+								}
+								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE'}
 							/>
 						</Row>
 					</Container>
@@ -143,23 +177,33 @@ export const Features: FC<{
 						{t('label.contacts', 'Contacts')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<Switch
-							value={featuresDetail.zimbraFeatureContactsEnabled === 'TRUE'}
-							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('zimbraFeatureContactsEnabled')}
+						<InheritedSwitch
+							accountValue={featuresDetail?.zimbraFeatureContactsEnabled}
+							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
+							cosValue={cosDetail?.zimbraFeatureContactsEnabled}
+							fromAccount={accSpecificDetail?.zimbraFeatureContactsEnabled}
+							inputName={'zimbraFeatureContactsEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('zimbraFeatureContactsEnabled')
+							}
 						/>
 					</Row>
 					{isAdvanced && (
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<Switch
-								value={featuresDetail.mobileContactFeatureSync === 'TRUE'}
-								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-								onClick={() => changeSwitchOption('mobileContactFeatureSync')}
+							<InheritedSwitch
+								accountValue={featuresDetail?.mobileContactFeatureSync}
+								onChange={changeSwitchOption}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
-								disabled={featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE'}
 								iconColor="primary"
+								cosValue={cosDetail?.mobileContactFeatureSync}
+								fromAccount={accSpecificDetail?.mobileContactFeatureSync}
+								inputName={'mobileContactFeatureSync'}
+								onChangeReset={(): void =>
+									setEmptyValue && setEmptyValue('mobileContactFeatureSync')
+								}
+								disabled={featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE'}
 							/>
 						</Row>
 					)}
@@ -175,23 +219,33 @@ export const Features: FC<{
 						{t('label.calendar', 'Calendar')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<Switch
-							value={featuresDetail.zimbraFeatureCalendarEnabled === 'TRUE'}
-							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('zimbraFeatureCalendarEnabled')}
+						<InheritedSwitch
+							accountValue={featuresDetail?.zimbraFeatureCalendarEnabled}
+							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
+							cosValue={cosDetail?.zimbraFeatureCalendarEnabled}
+							fromAccount={accSpecificDetail?.zimbraFeatureCalendarEnabled}
+							inputName={'zimbraFeatureCalendarEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('zimbraFeatureCalendarEnabled')
+							}
 						/>
 					</Row>
 					{isAdvanced && (
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-							<Switch
-								value={featuresDetail.mobileCalendarFeatureSync === 'TRUE'}
-								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-								onClick={() => changeSwitchOption('mobileCalendarFeatureSync')}
+							<InheritedSwitch
+								accountValue={featuresDetail?.mobileCalendarFeatureSync}
+								onChange={changeSwitchOption}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
-								disabled={featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE'}
 								iconColor="primary"
+								cosValue={cosDetail?.mobileCalendarFeatureSync}
+								fromAccount={accSpecificDetail?.mobileCalendarFeatureSync}
+								inputName={'mobileCalendarFeatureSync'}
+								onChangeReset={(): void =>
+									setEmptyValue && setEmptyValue('mobileCalendarFeatureSync')
+								}
+								disabled={featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE'}
 							/>
 						</Row>
 					)}
@@ -215,22 +269,32 @@ export const Features: FC<{
 						{t('label.files', 'Files')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<Switch
-							value={featuresDetail.carbonioFeatureFilesEnabled === 'TRUE'}
-							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('carbonioFeatureFilesEnabled')}
+						<InheritedSwitch
+							accountValue={featuresDetail?.carbonioFeatureFilesEnabled}
+							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
+							cosValue={cosDetail?.carbonioFeatureFilesEnabled}
+							fromAccount={accSpecificDetail?.carbonioFeatureFilesEnabled}
+							inputName={'carbonioFeatureFilesEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('carbonioFeatureFilesEnabled')
+							}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<Switch
-							value={featuresDetail.carbonioFeatureFilesAppEnabled === 'TRUE'}
-							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('carbonioFeatureFilesAppEnabled')}
+						<InheritedSwitch
+							accountValue={featuresDetail?.carbonioFeatureFilesAppEnabled}
+							onChange={changeSwitchOption}
 							label={t('label.mobile_app', 'Mobile App')}
-							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE'}
 							iconColor="primary"
+							cosValue={cosDetail?.carbonioFeatureFilesAppEnabled}
+							fromAccount={accSpecificDetail?.carbonioFeatureFilesAppEnabled}
+							inputName={'carbonioFeatureFilesAppEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('carbonioFeatureFilesAppEnabled')
+							}
+							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE'}
 						/>
 					</Row>
 				</Container>
@@ -245,12 +309,17 @@ export const Features: FC<{
 						{t('label.tasks', 'Tasks')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<Switch
-							value={featuresDetail.zimbraFeatureTasksEnabled === 'TRUE'}
-							// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-							onClick={() => changeSwitchOption('zimbraFeatureTasksEnabled')}
+						<InheritedSwitch
+							accountValue={featuresDetail?.zimbraFeatureTasksEnabled}
+							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
+							cosValue={cosDetail?.zimbraFeatureTasksEnabled}
+							fromAccount={accSpecificDetail?.zimbraFeatureTasksEnabled}
+							inputName={'zimbraFeatureTasksEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('zimbraFeatureTasksEnabled')
+							}
 						/>
 					</Row>
 				</Container>

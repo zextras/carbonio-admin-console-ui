@@ -27,6 +27,7 @@ import { localeList, AccountStatus } from '../../../../utility/utils';
 import ManageAliases from '../../../../components/manageAliases';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { AccountType } from '../account-types/account-types';
+import InheritedSelect from './inherited-components/inherited-select';
 
 const EditAccountGeneralSection: FC = () => {
 	const createSnackbar = useSnackbar();
@@ -36,7 +37,9 @@ const EditAccountGeneralSection: FC = () => {
 		setAccountDetail,
 		directMemberList,
 		inDirectMemberList,
-		setInitAccountDetail
+		setInitAccountDetail,
+		accSpecificDetail,
+		cosDetail
 	} = conext;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
@@ -139,6 +142,12 @@ const EditAccountGeneralSection: FC = () => {
 				});
 			});
 	};
+	const setEmptyValue = useCallback(
+		(keyName) => {
+			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
+		},
+		[setAccountDetail]
+	);
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -391,16 +400,16 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="100%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId && localeZone?.length ? (
-							<Select
-								items={localeZone}
-								background="gray5"
+							<InheritedSelect
 								label={t('label.language', 'Language')}
-								showCheckbox={false}
-								defaultSelection={localeZone.find(
-									(item: any) => item.value === accountDetail?.zimbraPrefLocale
-								)}
+								items={localeZone}
+								accountValue={accountDetail.zimbraPrefLocale}
+								cosValue={cosDetail.zimbraPrefLocale}
+								fromAccount={accSpecificDetail?.zimbraPrefLocale}
+								background="gray5"
+								selectName="zimbraPrefLocale"
 								onChange={onPrefLocaleChange}
-								padding={{ right: 'medium' }}
+								onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
 							/>
 						) : (
 							<></>
