@@ -58,12 +58,14 @@ const EditAccount: FC<{
 	getAccountList: any;
 	signatureItems: any;
 	signatureList: any;
+	getAccountDetail: any;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
 	getAccountList,
 	signatureItems,
-	signatureList
+	signatureList,
+	getAccountDetail
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -331,6 +333,7 @@ const EditAccount: FC<{
 						});
 						setInitAccountDetail({ ...accountDetail });
 						getAccountList();
+						getAccountDetail(initAccountDetail?.zimbraId);
 					}
 				})
 				.catch((error) => {
@@ -363,6 +366,7 @@ const EditAccount: FC<{
 		accountDetail,
 		createSnackbar,
 		domainName,
+		getAccountDetail,
 		getAccountList,
 		initAccountDetail,
 		isAdvanced,

@@ -23,8 +23,7 @@ import {
 	Table,
 	Divider,
 	ChipInput,
-	Checkbox,
-	Select
+	Checkbox
 } from '@zextras/carbonio-design-system';
 import { find, filter, map, debounce, cloneDeep, findIndex, pullAt } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -53,6 +52,7 @@ import {
 	MANAGE_NO_SEND,
 	SEND_READ_MANAGE_MAILS
 } from '../../../../../constants';
+import InheritedSelect from './inherited-components/inherited-select';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -82,7 +82,9 @@ const EditAccountDelegatesSection: FC = () => {
 		deligateDetail,
 		setDeligateDetail,
 		folderList,
-		setAccountDetail
+		setAccountDetail,
+		cosDetail,
+		accSpecificDetail
 	} = conext;
 	const [showCreateIdentity, setShowCreateIdentity] = useState<boolean>(false);
 	const [editMode, setEditMode] = useState<boolean>(false);
@@ -811,6 +813,12 @@ const EditAccountDelegatesSection: FC = () => {
 	const onDeligateSendSettingsChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefDelegatedSendSaveTarget: v }));
 	};
+	const setEmptyValue = useCallback(
+		(keyName) => {
+			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
+		},
+		[setAccountDetail]
+	);
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -835,16 +843,16 @@ const EditAccountDelegatesSection: FC = () => {
 				mainAlignment="space-between"
 			>
 				<Row width="100%" mainAlignment="flex-start">
-					<Select
-						background="gray5"
+					<InheritedSelect
 						label={t('label.delegate_send_settings', 'Delegate Send Settings')}
-						showCheckbox={false}
-						padding={{ right: 'medium' }}
-						defaultSelection={DELEGATE_SEND_SETTINGS.find(
-							(item: any) => item.value === accountDetail?.zimbraPrefDelegatedSendSaveTarget
-						)}
-						onChange={onDeligateSendSettingsChange}
 						items={DELEGATE_SEND_SETTINGS}
+						accountValue={accountDetail?.zimbraPrefDelegatedSendSaveTarget}
+						cosValue={cosDetail.zimbraPrefDelegatedSendSaveTarget}
+						fromAccount={accSpecificDetail?.zimbraPrefDelegatedSendSaveTarget}
+						background="gray5"
+						selectName="zimbraPrefTimeZoneId"
+						onChange={onDeligateSendSettingsChange}
+						onChangeReset={(): void => setEmptyValue('zimbraPrefTimeZoneId')}
 					/>
 				</Row>
 			</Row>
