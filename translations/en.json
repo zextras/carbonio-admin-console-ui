@@ -582,6 +582,7 @@
         "account_list": "Accounts List",
         "advanced": "Advanced",
         "aggregated_space_quota": "Aggregated Space Quota",
+        "aggregated_space_quota_warning": "Aggregated space quota warning",
         "authentication": "Authentication",
         "certificate_content_error": "Domain certificate , CA Chain or Private key is invalid",
         "certificate_invalid_error": "The certificate is invalid , please try with other certificate",
@@ -627,8 +628,7 @@
         "unit_measure_milliseconds": "Milliseconds",
         "unit_measure_minutes": "Minutes",
         "unit_measure_seconds": "Seconds",
-        "virtual_hosts": "Virtual Hosts",
-        "warn_when_reach_space_quota": "Warn me when I reach this aggregated space quota"
+        "virtual_hosts": "Virtual Hosts"
     },
     "error": {
         "alreadyInUse": ""
