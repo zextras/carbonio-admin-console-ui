@@ -357,32 +357,30 @@ export const SignatureDetail: FC<any> = ({
 					</Row>
 				</ListRow>
 			)}
-			{!hideSearchBar &&
-				(signatureListRows.length === 0 && searchSignatureName.length === 0 ? (
-					<></>
-				) : (
-					<ListRow>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large' }}
-						>
-							<Row width="100%">
-								<Input
-									label={t('label.search_a_signature', 'Search for a signature')}
-									backgroundColor="gray5"
-									value={searchSignatureName}
-									size="medium"
-									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-									onChange={(e: any): any => {
-										setSearchSignatureName(e.target.value);
-									}}
-								/>
-							</Row>
-						</Container>
-					</ListRow>
-				))}
+			{!hideSearchBar && (
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large' }}
+					>
+						<Row width="100%">
+							<Input
+								disabled={signatureListRows.length === 0 && searchSignatureName.length === 0}
+								label={t('label.search_a_signature', 'Search for a signature')}
+								backgroundColor="gray5"
+								value={searchSignatureName}
+								size="medium"
+								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+								onChange={(e: any): any => {
+									setSearchSignatureName(e.target.value);
+								}}
+							/>
+						</Row>
+					</Container>
+				</ListRow>
+			)}
 			<ListRow>
 				<Container
 					mainAlignment="flex-start"

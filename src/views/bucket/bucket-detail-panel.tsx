@@ -359,7 +359,7 @@ const BucketDetailPanel: FC = () => {
 				<Row
 					width="100%"
 					mainAlignment="flex-end"
-					style={{ paddingBottom: '0.813rem', gap: '1rem' }}
+					style={{ gap: '1rem' }}
 					orientation="horizontal"
 					padding={{ top: 'extralarge', right: 'large', left: 'large' }}
 				>
@@ -382,18 +382,15 @@ const BucketDetailPanel: FC = () => {
 						BucketDetail={bucketDeleteName}
 					/>
 				)}
-				{bucketList.length === 0 && searchBucket.length === 0 ? (
-					<></>
-				) : (
-					<Row width="100%" style={{ padding: '0rem 0.813rem 1rem 1rem' }}>
-						<Input
-							background="gray5"
-							label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
-							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-							onChange={filterBucketList}
-						/>
-					</Row>
-				)}
+				<Row width="100%" padding={{ all: 'large' }}>
+					<Input
+						disabled={bucketList.length === 0 && searchBucket.length === 0}
+						background="gray5"
+						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
+						CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+						onChange={filterBucketList}
+					/>
+				</Row>
 
 				<Row style={{ padding: '0 0.875rem 0 0.875rem' }} width="100%">
 					<BucketListTable

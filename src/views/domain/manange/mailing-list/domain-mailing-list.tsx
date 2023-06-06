@@ -599,31 +599,25 @@ const DomainMailingList: FC = () => {
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
-						{mailingList.length === 0 && searchString.length === 0 ? (
-							<></>
-						) : (
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								padding={{ bottom: 'large' }}
-							>
-								<Container>
-									<Input
-										backgroundColor="gray5"
-										label={t('label.search_dot', 'Search…')}
-										onChange={(e: any): any => {
-											setSearchString(e.target.value);
-										}}
-										CustomIcon={(): any => (
-											<Icon icon="FunnelOutline" size="large" color="primary" />
-										)}
-									/>
-								</Container>
-							</Row>
-						)}
-
+						<Row
+							orientation="horizontal"
+							mainAlignment="space-between"
+							crossAlignment="flex-start"
+							width="fill"
+							padding={{ bottom: 'large' }}
+						>
+							<Container>
+								<Input
+									disabled={mailingList.length === 0 && searchString.length === 0}
+									backgroundColor="gray5"
+									label={t('label.search_dot', 'Search…')}
+									onChange={(e: any): any => {
+										setSearchString(e.target.value);
+									}}
+									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+								/>
+							</Container>
+						</Row>
 						<Row
 							orientation="horizontal"
 							mainAlignment="space-between"

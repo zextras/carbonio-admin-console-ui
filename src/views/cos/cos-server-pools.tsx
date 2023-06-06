@@ -468,60 +468,57 @@ const CosServerPools: FC = () => {
 					</ListRow>
 					{zimbraMailHostPool && (
 						<>
-							{serverTableRows.length === 0 && searchServer.length === 0 ? (
-								<></>
-							) : (
-								<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-									<Container orientation="vertical" mainAlignment="space-around" height="56px">
-										<Row orientation="horizontal" width="100%">
-											<Row
-												padding={{ right: 'small' }}
-												mainAlignment="flex-start"
-												width="65%"
-												crossAlignment="flex-start"
-											>
-												<Input
-													value={searchServer}
-													label={t('cos.search_a_specific_server', 'Search for a specific server')}
-													CustomIcon={(): any => (
-														<Icon icon="FunnelOutline" size="large" color="primary" />
-													)}
-													onChange={(e: any): any => {
-														setSearchServer(e.target.value);
-													}}
-												/>
-											</Row>
-											<Row padding={{ all: 'small' }} width="35%">
-												<Padding left="small" right="large">
-													<Button
-														type="outlined"
-														key="add-button"
-														label={t('label.enable', 'enable')}
-														color="primary"
-														icon="CheckmarkCircleOutline"
-														iconPlacement="right"
-														disabled={!enable}
-														onClick={onEnable}
-														size="extralarge"
-													/>
-												</Padding>
-
+							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+								<Container orientation="vertical" mainAlignment="space-around" height="56px">
+									<Row orientation="horizontal" width="100%">
+										<Row
+											padding={{ right: 'small' }}
+											mainAlignment="flex-start"
+											width="65%"
+											crossAlignment="flex-start"
+										>
+											<Input
+												value={searchServer}
+												disabled={serverTableRows.length === 0 && searchServer.length === 0}
+												label={t('cos.search_a_specific_server', 'Search for a specific server')}
+												CustomIcon={(): any => (
+													<Icon icon="FunnelOutline" size="large" color="primary" />
+												)}
+												onChange={(e: any): any => {
+													setSearchServer(e.target.value);
+												}}
+											/>
+										</Row>
+										<Row padding={{ all: 'small' }} width="35%">
+											<Padding left="small" right="large">
 												<Button
 													type="outlined"
 													key="add-button"
-													label={t('label.disable', 'disable')}
-													color="error"
-													icon="CloseCircleOutline"
+													label={t('label.enable', 'enable')}
+													color="primary"
+													icon="CheckmarkCircleOutline"
 													iconPlacement="right"
+													disabled={!enable}
+													onClick={onEnable}
 													size="extralarge"
-													disabled={!disable}
-													onClick={onDisable}
 												/>
-											</Row>
+											</Padding>
+
+											<Button
+												type="outlined"
+												key="add-button"
+												label={t('label.disable', 'disable')}
+												color="error"
+												icon="CloseCircleOutline"
+												iconPlacement="right"
+												size="extralarge"
+												disabled={!disable}
+												onClick={onDisable}
+											/>
 										</Row>
-									</Container>
-								</Row>
-							)}
+									</Row>
+								</Container>
+							</Row>
 
 							<Row
 								orientation="horizontal"

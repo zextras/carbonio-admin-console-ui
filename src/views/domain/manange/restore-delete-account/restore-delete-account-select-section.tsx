@@ -263,22 +263,18 @@ const RestoreDeleteAccountSelectSection: FC<any> = () => {
 								</Text>
 							}
 						</Container>
-						{accountRows.length === 0 && !searchString ? (
-							<></>
-						) : (
-							<Container padding={{ bottom: 'medium', top: 'large' }}>
-								<Input
-									backgroundColor="gray5"
-									value={searchString}
-									onChange={(e: any): void => {
-										setSearchString(e.target.value);
-									}}
-									label={t('label.filter_account_list', 'Filter Account List')}
-									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-								/>
-							</Container>
-						)}
-
+						<Container padding={{ bottom: 'medium', top: 'large' }}>
+							<Input
+								disabled={accountRows.length === 0 && !searchString}
+								backgroundColor="gray5"
+								value={searchString}
+								onChange={(e: any): void => {
+									setSearchString(e.target.value);
+								}}
+								label={t('label.filter_account_list', 'Filter Account List')}
+								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+							/>
+						</Container>
 						<ListRow>
 							<Row height={isRequestInProgress ? 'fit' : 'calc(100vh - 35.625em)'}>
 								<Table
