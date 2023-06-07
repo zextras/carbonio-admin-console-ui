@@ -21,7 +21,8 @@ import {
 	RESTORE_DELETED_EMAIL,
 	ACTIVE_SYNC,
 	THEME,
-	SAML
+	SAML,
+	TWO_FACTOR_AUTHENTICATION
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -37,6 +38,7 @@ import RestoreAccount from './manange/restore-delete-account/restore-delete-acco
 import ActiveSync from './manange/active-sync/active-sync';
 import DomainTheme from './details/domain-theme';
 import DomainSaml from './details/domain-saml';
+import DomainTwoFactorAuthentication from './details/domain-2fa';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
@@ -92,6 +94,8 @@ const DomainOperations: FC = () => {
 						return <DomainVirtualHosts />;
 					case MAILBOX_QUOTA:
 						return <DomainMailboxQuotaSetting />;
+					case TWO_FACTOR_AUTHENTICATION:
+						return <DomainTwoFactorAuthentication />;
 					case THEME:
 						return <DomainTheme />;
 					case SAML:
