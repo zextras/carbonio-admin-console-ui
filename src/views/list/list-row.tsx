@@ -6,13 +6,26 @@
 import React, { FC } from 'react';
 import { Row } from '@zextras/carbonio-design-system';
 
-const ListRow: FC<{ children?: any; wrap?: any }> = ({ children, wrap }) => (
+const ListRow: FC<{
+	children?: any;
+	wrap?: any;
+	orientation?: string;
+	crossAlignment?: string;
+	padding?: string | object | number;
+}> = ({
+	children,
+	wrap,
+	orientation = 'horizontal',
+	crossAlignment = 'flex-start',
+	padding = 'inherit'
+}) => (
 	<Row
-		orientation="horizontal"
+		orientation={orientation}
 		mainAlignment="space-between"
-		crossAlignment="flex-start"
+		crossAlignment={crossAlignment}
 		width="fill"
 		wrap={wrap || 'nowrap'}
+		padding={padding}
 	>
 		{children}
 	</Row>

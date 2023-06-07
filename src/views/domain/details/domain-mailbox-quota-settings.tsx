@@ -522,8 +522,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
-											'domain.warn_when_reach_space_quota',
-											'Warn me when I reach this aggregated space quota'
+											'domain.aggregated_space_quota_warning',
+											'Aggregated space quota warning (%)'
 										)}
 										value={zimbraDomainAggregateQuotaWarnPercent}
 										defaultValue={zimbraDomainAggregateQuotaWarnPercent}

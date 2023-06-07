@@ -19,6 +19,7 @@ import {
 	SEND_READ_MANAGE_MAILS
 } from '../../constants';
 import { Rights, Right } from '../../store/rights/store';
+import { TwoFactorPolicy } from '../../../types';
 
 export const timeZoneList = (
 	t: TFunction
@@ -1674,6 +1675,11 @@ export const isValidEmail = (email: string): boolean => {
 	return re.test(email);
 };
 
+export const isValidIpRange = (ipRange: string): boolean => {
+	const re = /^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/gim;
+	return re.test(ipRange);
+};
+
 export const isValidLdapBaseUrl = (url: string): boolean => {
 	const reqex =
 		// eslint-disable-next-line max-len
@@ -2001,6 +2007,21 @@ export const ServicesPassphraseStatus = (
 	}
 ];
 
+export const TwoFactorWhatToTrust = (t: TFunction): Array<{ value?: number; label: string }> => [
+	{
+		label: t('label.disable_2fa', 'Disable 2FA'),
+		value: 0
+	},
+	{
+		label: t('label.trust_ip', 'Trust the IP'),
+		value: 1
+	},
+	{
+		label: t('label.trust_the_device', 'Trust the device'),
+		value: 2
+	}
+];
+
 export const ServicesPassphraseServices = (): Array<{ value?: string; label: string }> => [
 	{
 		label: 'Dav(Web/Card/Cal)',
@@ -2084,3 +2105,42 @@ export function useLocalStorage<T>(key: string, initialValue: T): any {
 	};
 	return [storedValue, setValue] as const;
 }
+
+export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
+	{
+		label: t('domain.admin_api', 'Admin API'),
+		keyToGet: 'WebAdminUI'
+	},
+	{
+		label: t('domain.web_ui', 'WebUI'),
+		keyToGet: 'WebUI'
+	},
+	{
+		label: t('domain.mobile_apps', 'Mobile Apps'),
+		keyToGet: 'MobileApp'
+	},
+	{
+		label: t('domain.active_sync', 'ActiveSync'),
+		keyToGet: 'EAS'
+	},
+	{
+		label: t('domain.desktop_sync', 'DesktopSync'),
+		keyToGet: 'DesktopApp'
+	},
+	{
+		label: t('domain.dav', 'DAV'),
+		keyToGet: 'Dav'
+	},
+	{
+		label: t('domain.pop', 'POP'),
+		keyToGet: 'Pop3'
+	},
+	{
+		label: t('domain.imap', 'IMAP'),
+		keyToGet: 'Imap'
+	},
+	{
+		label: t('domain.smtp', 'SMTP'),
+		keyToGet: 'Smtp'
+	}
+];
