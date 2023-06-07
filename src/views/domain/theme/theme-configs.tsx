@@ -232,7 +232,7 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Padding vertical="large" horizontal="small" width="100%">
 							<Text size="small" color="gray0" weight="bold">
-								{t('label.logo_redirection', 'Logo Redirection')}
+								{t('label.logo_url_destination', 'Logo URL Destination')}
 							</Text>
 						</Padding>
 					</ListRow>
@@ -252,7 +252,7 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Padding vertical="large" horizontal="small" width="100%">
 							<Text size="small" color="gray0" weight="bold">
-								{t('label.customization', 'Customization')}
+								{t('label.color_scheme', 'Color Scheme')}
 							</Text>
 						</Padding>
 					</ListRow>
@@ -374,6 +374,20 @@ export const ThemeConfigs: FC<{
 									</Padding>
 								</ListRow>
 								<ListRow>
+									<Container
+										mainAlignment="flex-start"
+										crossAlignment="flex-start"
+										padding={{ all: 'small' }}
+									>
+										<Text size="small" color="gray0">
+											{t(
+												'label.title_theme_note',
+												'The title is the name that will appear on the browser tab'
+											)}
+										</Text>
+									</Container>
+								</ListRow>
+								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('label.title', 'Title')}
@@ -393,8 +407,8 @@ export const ThemeConfigs: FC<{
 									>
 										<Text size="small" color="gray0">
 											{t(
-												'label.title_theme_note',
-												'The title is the name that will appear on the browser tab'
+												'label.copyrights_theme_note',
+												'The copyrights information will appear on the login box footer'
 											)}
 										</Text>
 									</Container>
@@ -409,20 +423,6 @@ export const ThemeConfigs: FC<{
 											onChange={onChangeDomainThemeDetail}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
-									</Container>
-								</ListRow>
-								<ListRow>
-									<Container
-										mainAlignment="flex-start"
-										crossAlignment="flex-start"
-										padding={{ all: 'small' }}
-									>
-										<Text size="small" color="gray0">
-											{t(
-												'label.copyrights_theme_note',
-												'The copyrights information will appear on the login box footer'
-											)}
-										</Text>
 									</Container>
 								</ListRow>
 								<Container padding={{ top: 'small' }}>
@@ -770,6 +770,21 @@ export const ThemeConfigs: FC<{
 										</Text>
 									</Padding>
 								</ListRow>
+
+								<ListRow>
+									<Container
+										mainAlignment="flex-start"
+										crossAlignment="flex-start"
+										padding={{ all: 'small' }}
+									>
+										<Text size="small" color="gray0">
+											{t(
+												'label.title_theme_note',
+												'The title is the name that will appear on the browser tab'
+											)}
+										</Text>
+									</Container>
+								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
@@ -790,8 +805,8 @@ export const ThemeConfigs: FC<{
 									>
 										<Text size="small" color="gray0">
 											{t(
-												'label.title_theme_note',
-												'The title is the name that will appear on the browser tab'
+												'label.copyrights_theme_note',
+												'The copyrights information will appear on the login box footer'
 											)}
 										</Text>
 									</Container>
@@ -806,20 +821,6 @@ export const ThemeConfigs: FC<{
 											onChange={onChangeDomainThemeDetail}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
-									</Container>
-								</ListRow>
-								<ListRow>
-									<Container
-										mainAlignment="flex-start"
-										crossAlignment="flex-start"
-										padding={{ all: 'small' }}
-									>
-										<Text size="small" color="gray0">
-											{t(
-												'label.copyrights_theme_note',
-												'The copyrights information will appear on the login box footer'
-											)}
-										</Text>
 									</Container>
 								</ListRow>
 								<Container padding={{ top: 'small' }}>
@@ -1143,7 +1144,7 @@ export const ThemeConfigs: FC<{
 							<Padding vertical="large" width="100%">
 								<Button
 									type="outlined"
-									label={t('label.reset', 'Reset')}
+									label={t('label.empty_all_fields', 'Empty all fields')}
 									color="error"
 									size="large"
 									width="100%"

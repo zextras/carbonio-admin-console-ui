@@ -838,20 +838,6 @@ const DomainGeneralSettings: FC = () => {
 							>
 								<Divider />
 							</Container>
-
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.note', 'Note')}
-										value={zimbraNotes}
-										background="gray5"
-										onChange={(e: any): any => {
-											setZimbraNotes(e.target.value);
-										}}
-									/>
-								</Container>
-							</ListRow>
-
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Select
@@ -884,11 +870,23 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 							</ListRow>
 							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.note', 'Note')}
+										value={zimbraNotes}
+										background="gray5"
+										onChange={(e: any): any => {
+											setZimbraNotes(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+
+							<ListRow>
 								<Container padding={{ all: 'small' }} width="100%" style={{ display: 'block' }}>
 									<Button
 										type="outlined"
 										label={t('label.delete_domain', 'Delete Domain')}
-										icon="Close"
 										color="error"
 										size="extralarge"
 										width="100%"

@@ -1306,7 +1306,7 @@ const DomainGalSettings: FC = () => {
 										</Container>
 
 										<Container
-											width="20%"
+											width="10%"
 											orientation="horizontal"
 											mainAlignment="flex-start"
 											crossAlignment="center"
@@ -1402,7 +1402,7 @@ const DomainGalSettings: FC = () => {
 								padding={{ all: 'small' }}
 							>
 								<Text size="small" weight="bold">
-									{t('label.dn_settings', 'DN Settings')}
+									{t('label.authentication_settings', 'Authentication Settings')}
 								</Text>
 							</Row>
 							<ListRow>
@@ -1416,8 +1416,8 @@ const DomainGalSettings: FC = () => {
 										defaultChecked={zimbraGalLdapAuthMech}
 										onClick={onZimbraGalLdapAuthMechChange}
 										label={t(
-											'label.use_dn_password_to_bind_external_server',
-											'Use DN/Password to bind to external server'
+											'label.external_server_needs_authentication',
+											'External Server needs authentication'
 										)}
 									/>
 								</Container>
@@ -1455,7 +1455,7 @@ const DomainGalSettings: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.bind_password', 'Bind Password')}
+										label={t('label.password', 'Password')}
 										value={domainData?.zimbraGalLdapBindPassword}
 										background="gray5"
 										onChange={onZimbraGalLdapBindPasswordChange}

@@ -470,6 +470,8 @@ const NotificationView: FC<{
 			<ListRow>
 				<Divider />
 			</ListRow>
+			{/* 
+			Ac-589 Hide the Copy/Mark as Read buttons in the table until we'll have the multiple selection available
 			<ListRow>
 				<Container
 					mainAlignment="flex-end"
@@ -506,7 +508,7 @@ const NotificationView: FC<{
 						/>
 					</Padding>
 				</Container>
-			</ListRow>
+			</ListRow> */}
 			<ListRow>
 				<Container
 					orientation="horizontal"

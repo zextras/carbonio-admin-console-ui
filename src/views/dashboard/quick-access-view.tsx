@@ -88,7 +88,7 @@ const QuickAccess: FC<{
 										</Container>
 									</Container>
 									<Container crossAlignment="flex-end" padding={{ right: 'large' }}>
-										<Icon color="gray6" icon={item?.operationIcon} height="2rem" width="2rem" />
+										<Icon color="gray6" icon={item?.operationIcon} size="large" />
 									</Container>
 								</ListRow>
 								<ListRow>
