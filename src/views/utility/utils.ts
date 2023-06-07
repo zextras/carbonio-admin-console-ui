@@ -1676,7 +1676,7 @@ export const isValidEmail = (email: string): boolean => {
 };
 
 export const isValidIpRange = (ipRange: string): boolean => {
-	const re = /^([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/gim;
+	const re = /^(?!0\.0\.0\.0$)([0-9]{1,3}\.){3}[0-9]{1,3}(\/([0-9]|[1-2][0-9]|3[0-2]))?$/gim;
 	return re.test(ipRange);
 };
 
