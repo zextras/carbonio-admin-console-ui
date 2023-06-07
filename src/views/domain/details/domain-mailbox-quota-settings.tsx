@@ -523,7 +523,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 									<Input
 										label={t(
 											'domain.aggregated_space_quota_warning',
-											'Aggregated space quota warning'
+											'Aggregated space quota warning (%)'
 										)}
 										value={zimbraDomainAggregateQuotaWarnPercent}
 										defaultValue={zimbraDomainAggregateQuotaWarnPercent}
