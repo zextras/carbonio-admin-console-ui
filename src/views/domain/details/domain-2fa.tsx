@@ -23,6 +23,7 @@ import { TwoFactorAuthPolicyValues } from '../../../../types';
 import { TwoFactorPolicyArray, isValidIpRange } from '../../utility/utils';
 import { set2faPolicies } from '../../../services/set-2fa-policies';
 import { useDomainStore } from '../../../store/domain/store';
+import { OK } from '../../../constants';
 
 const DomainTwoFactorAuthentication: FC = () => {
 	const [t] = useTranslation();
@@ -81,19 +82,34 @@ const DomainTwoFactorAuthentication: FC = () => {
 					: 'empty'
 			)
 				.then((res) => {
-					if (res?.Body?.response?.content) {
+					const response = JSON.parse(res?.Body?.response?.content);
+					if (response?.ok) {
 						createSnackbar({
 							key: 'policy-success',
-							type: 'success',
-							label: t(
-								'label.2fa-policy-updated-successfully',
-								'The settings have been applied to all services'
-							),
+							type: response?.message !== OK ? 'warning' : 'success',
+							label:
+								response?.message !== OK
+									? response?.message
+									: t(
+											'label.2fa-policy-updated-successfully',
+											'The settings have been applied to all services'
+									  ),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
 						});
 						setIsDirty(false);
+					} else {
+						createSnackbar({
+							key: 'policy-error',
+							type: 'error',
+							label: response?.error
+								? response?.error
+								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
 					}
 				})
 				.catch((error: any) => {

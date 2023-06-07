@@ -22,6 +22,7 @@ import { list2faPolicies } from '../../../services/list-2fa-policies';
 import { TwoFactorAuthPolicyValues } from '../../../../types';
 import { TwoFactorPolicyArray, isValidIpRange } from '../../utility/utils';
 import { set2faPolicies } from '../../../services/set-2fa-policies';
+import { OK } from '../../../constants';
 
 const GlobalTwoFactorAuthentcation: FC = () => {
 	const [t] = useTranslation();
@@ -78,11 +79,14 @@ const GlobalTwoFactorAuthentcation: FC = () => {
 					if (response?.ok) {
 						createSnackbar({
 							key: 'policy-success',
-							type: 'success',
-							label: t(
-								'label.2fa-policy-updated-successfully',
-								'The settings have been applied to all services'
-							),
+							type: response?.message !== OK ? 'warning' : 'success',
+							label:
+								response?.message !== OK
+									? response?.message
+									: t(
+											'label.2fa-policy-updated-successfully',
+											'The settings have been applied to all services'
+									  ),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
@@ -92,8 +96,8 @@ const GlobalTwoFactorAuthentcation: FC = () => {
 						createSnackbar({
 							key: 'policy-error',
 							type: 'error',
-							label: response?.message
-								? response?.message
+							label: response?.error
+								? response?.error
 								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
