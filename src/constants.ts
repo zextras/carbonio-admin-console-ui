@@ -274,3 +274,5 @@ export const ANTISPAM = 'antispam';
 export const OPENDKIM = 'opendkim';
 export const ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION = 'zimbraMtaCommonBlockedExtension';
 export const ZIMBRA_MTA_TLS_SECURITY_LEVEL = 'zimbraMtaTlsSecurityLevel';
+export const DOMAIN_NAME = 'domainName';
+export const UID = 'uid';
