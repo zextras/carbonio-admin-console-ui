@@ -85,3 +85,22 @@ export type themeConfigStore = {
 	carbonioWebUiPrimaryColor?: string;
 	carbonioWebUiDarkPrimaryColor?: string;
 };
+
+export interface IpRangeValue {
+	label?: string;
+	value?: string;
+}
+
+interface ChildObject {
+	trustedIpRange?: string[];
+	trustedDevice?: number;
+}
+
+type TwoFactorAuthPolicyValues = {
+	[key: string]: ChildObject;
+};
+
+type TwoFactorPolicy = {
+	label: string;
+	keyToGet: string;
+};
