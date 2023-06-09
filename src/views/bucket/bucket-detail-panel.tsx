@@ -305,7 +305,7 @@ const BucketDetailPanel: FC = () => {
 	}, [toggleWizardSection]);
 
 	const filterBucketList = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setSearchBucket(e.target.value);
+		setSearchBucket(e.target.value);
 		if (e.target.value !== '') {
 			setBucketList(
 				filter(
