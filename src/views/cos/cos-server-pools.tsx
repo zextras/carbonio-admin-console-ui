@@ -479,6 +479,7 @@ const CosServerPools: FC = () => {
 										>
 											<Input
 												value={searchServer}
+												disabled={serverTableRows.length === 0 && searchServer.length === 0}
 												label={t('cos.search_a_specific_server', 'Search for a specific server')}
 												CustomIcon={(): any => (
 													<Icon icon="FunnelOutline" size="large" color="primary" />
@@ -518,6 +519,7 @@ const CosServerPools: FC = () => {
 									</Row>
 								</Container>
 							</Row>
+
 							<Row
 								orientation="horizontal"
 								mainAlignment="space-between"

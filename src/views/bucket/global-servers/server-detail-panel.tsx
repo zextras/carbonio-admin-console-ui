@@ -353,6 +353,7 @@ const ServerDetailPanel: FC = () => {
 							>
 								<Container>
 									<Input
+										disabled={serversList.length === 0 && searchServer.length === 0}
 										label={t('label.search_for_a_Server', `Search for a Server`)}
 										background="gray5"
 										CustomIcon={(): any => (

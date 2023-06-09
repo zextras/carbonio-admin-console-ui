@@ -179,6 +179,7 @@ const BucketDetailPanel: FC = () => {
 	const [toggleWizardSection, setToggleWizardSection] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
+	const [searchBucket, setSearchBucket] = useState('');
 	const [showEditDetailView, setShowEditDetailView] = useState(false);
 	const [toggleForGetAPICall, setToggleForGetAPICall] = useState(false);
 	const [selectedRow, setSelectedRow] = useState<objectType>();
@@ -304,6 +305,7 @@ const BucketDetailPanel: FC = () => {
 	}, [toggleWizardSection]);
 
 	const filterBucketList = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    setSearchBucket(e.target.value);
 		if (e.target.value !== '') {
 			setBucketList(
 				filter(
@@ -372,9 +374,9 @@ const BucketDetailPanel: FC = () => {
 				<Row
 					width="100%"
 					mainAlignment="flex-end"
+					style={{ gap: '1rem' }}
 					orientation="horizontal"
 					padding={{ top: 'extralarge', right: 'large', left: 'large' }}
-					style={{ gap: '1rem' }}
 				>
 					<Button
 						type="outlined"
@@ -395,8 +397,9 @@ const BucketDetailPanel: FC = () => {
 						BucketDetail={bucketDeleteName}
 					/>
 				)}
-				<Row width="100%" style={{ padding: '1rem 0.813rem' }}>
+				<Row width="100%" padding={{ all: 'large' }}>
 					<Input
+						disabled={bucketList.length === 0 && searchBucket.length === 0}
 						background="gray5"
 						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
 						CustomIcon={(): JSX.Element => (
@@ -405,6 +408,7 @@ const BucketDetailPanel: FC = () => {
 						onChange={filterBucketList}
 					/>
 				</Row>
+
 				<Row style={{ padding: '0 0.875rem 0 0.875rem' }} width="100%">
 					<BucketListTable
 						volumes={bucketList}

@@ -274,6 +274,7 @@ export const SendInviteAccounts: FC<any> = ({
 					>
 						<Row width="100%">
 							<Input
+								disabled={sendInviteRows.length === 0 && searchAccountName.length === 0}
 								label={t('label.search_an_account', 'Search for an account')}
 								backgroundColor="gray5"
 								value={searchAccountName}
