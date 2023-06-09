@@ -101,9 +101,9 @@ export const Features: FC<{
 						</Text>
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<Switch
-								value={featuresDetail.carbonioFeatureChatsEnabled === 'TRUE'}
+								value={featuresDetail.carbonioFeatureTeamEnabled === 'TRUE'}
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-								onClick={() => changeSwitchOption('carbonioFeatureChatsEnabled')}
+								onClick={() => changeSwitchOption('carbonioFeatureTeamEnabled')}
 								label={t('label.web_feature', 'Web Feature')}
 								iconColor="primary"
 							/>
@@ -118,7 +118,7 @@ export const Features: FC<{
 								// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 								onClick={() => changeSwitchOption('carbonioFeatureChatsAppEnabled')}
 								label={t('label.mobile_app', 'Mobile App')}
-								disabled={featuresDetail.carbonioFeatureChatsEnabled !== 'TRUE'}
+								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE'}
 								iconColor="primary"
 							/>
 						</Row>
