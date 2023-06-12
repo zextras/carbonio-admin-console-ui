@@ -17,11 +17,27 @@ import {
 	Input,
 	Switch
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { isEqual } from 'lodash';
 import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
+import { MtaPostTuning } from '../../../../types';
+import {
+	ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST,
+	ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
+	ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,
+	ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION,
+	ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
+	ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
+	ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES,
+	ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,
+	ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
+	ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,
+	ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
+	ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE
+} from '../../../constants';
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;
@@ -34,12 +50,341 @@ const MTAPostScreenTuning: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
-	const onCancel = useCallback(() => {
-		console.log('xxxxx');
+	const [mtaPostTuningInitialDetail, setMtaPostTuningInitialDetail] = useState<MtaPostTuning>();
+	const [mtaPostTuningDetail, setMtaPostTuningDetail] = useState<MtaPostTuning>();
+
+	const setInitialValue = useCallback((key: string, value: unknown): void => {
+		setMtaPostTuningInitialDetail((prev: any) => ({
+			...prev,
+			[key]: value
+		}));
 	}, []);
+	const setValue = useCallback((key: string, value: unknown): void => {
+		setMtaPostTuningDetail((prev: any) => ({ ...prev, [key]: value }));
+	}, []);
+
+	const setInitialAndCurrentValue = useCallback(
+		(key, value) => {
+			setInitialValue(key, value);
+			setValue(key, value);
+		},
+		[setInitialValue, setValue]
+	);
+
+	useEffect(() => {
+		if (mtaPostTuningDetail && !isEqual(mtaPostTuningDetail, mtaPostTuningInitialDetail)) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [mtaPostTuningDetail, mtaPostTuningInitialDetail]);
+
+	const ignoreEnforceDropOptions = useMemo(
+		() => [
+			{
+				label: t('mta.ignore', 'Ignore'),
+				value: 'ignore'
+			},
+			{
+				label: t('mta.enforce', 'Enforce'),
+				value: 'enforce'
+			},
+			{
+				label: t('mta.drop', 'Drop'),
+				value: 'drop'
+			}
+		],
+		[t]
+	);
+
+	const ignoreDropOptions = useMemo(
+		() => [
+			{
+				label: t('mta.ignore', 'Ignore'),
+				value: 'ignore'
+			},
+			{
+				label: t('mta.drop', 'Drop'),
+				value: 'drop'
+			}
+		],
+		[t]
+	);
+
+	const intervalOptions = useMemo(
+		() => [
+			{
+				label: t('mta.seconds', 'Seconds'),
+				value: 's'
+			},
+			{
+				label: t('mta.minutes', 'Minutes'),
+				value: 'm'
+			},
+			{
+				label: t('mta.hours', 'Hours'),
+				value: 'h'
+			},
+			{
+				label: t('mta.days', 'Days'),
+				value: 'd'
+			},
+			{
+				label: t('mta.weeks', 'Weeks'),
+				value: 'w'
+			}
+		],
+		[t]
+	);
+	const [dnsblMinTTLUnit, setDnsblMinTTLUnit] = useState(intervalOptions[2]);
+	const [dnsblMaxTTLUnit, setDnsblMaxTTLUnit] = useState(intervalOptions[2]);
+	const [dnsblTTLUnit, setDnsblTTLUnit] = useState(intervalOptions[2]);
+
+	useEffect(() => {
+		if (configInformation && configInformation.length > 0) {
+			const zimbraMtaPostscreenBlacklistAction = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION
+			);
+			if (zimbraMtaPostscreenBlacklistAction && zimbraMtaPostscreenBlacklistAction?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,
+					zimbraMtaPostscreenBlacklistAction?._content
+				);
+			}
+
+			const zimbraMtaPostscreenAccessList = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST
+			);
+			if (zimbraMtaPostscreenAccessList && zimbraMtaPostscreenAccessList?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST,
+					zimbraMtaPostscreenAccessList?._content
+				);
+			}
+
+			const zimbraMtaPostscreenDnsblAction = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION
+			);
+			if (zimbraMtaPostscreenDnsblAction && zimbraMtaPostscreenDnsblAction?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION,
+					zimbraMtaPostscreenDnsblAction?._content
+				);
+			}
+
+			const zimbraMtaPostscreenDnsblSites = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES
+			);
+			if (zimbraMtaPostscreenDnsblSites && zimbraMtaPostscreenDnsblSites?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES,
+					zimbraMtaPostscreenDnsblSites?._content
+				);
+			} else {
+				setInitialAndCurrentValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES, '');
+			}
+
+			const zimbraMtaPostscreenDnsblThreshold = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD
+			);
+			if (zimbraMtaPostscreenDnsblThreshold && zimbraMtaPostscreenDnsblThreshold?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,
+					zimbraMtaPostscreenDnsblThreshold?._content
+				);
+			} else {
+				setInitialAndCurrentValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD, '');
+			}
+
+			const zimbraMtaPostscreenDnsblWhitelistThreshold = configInformation.find(
+				(item: Record<string, string>) =>
+					item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD
+			);
+			if (
+				zimbraMtaPostscreenDnsblWhitelistThreshold &&
+				zimbraMtaPostscreenDnsblWhitelistThreshold?._content
+			) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,
+					zimbraMtaPostscreenDnsblWhitelistThreshold?._content
+				);
+			}
+
+			const zimbraMtaPostscreenDnsblMinTTL = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL
+			);
+			if (zimbraMtaPostscreenDnsblMinTTL && zimbraMtaPostscreenDnsblMinTTL?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
+					zimbraMtaPostscreenDnsblMinTTL?._content
+				);
+			}
+
+			const zimbraMtaPostscreenDnsblMaxTTL = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL
+			);
+			if (zimbraMtaPostscreenDnsblMaxTTL && zimbraMtaPostscreenDnsblMaxTTL?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
+					zimbraMtaPostscreenDnsblMaxTTL?._content
+				);
+			}
+
+			const zimbraMtaPostscreenDnsblTTL = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL
+			);
+			if (zimbraMtaPostscreenDnsblTTL && zimbraMtaPostscreenDnsblTTL?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
+					zimbraMtaPostscreenDnsblTTL?._content
+				);
+			}
+
+			const zimbraMtaPostscreenBareNewlineEnable = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE
+			);
+			if (zimbraMtaPostscreenBareNewlineEnable && zimbraMtaPostscreenBareNewlineEnable?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
+					zimbraMtaPostscreenBareNewlineEnable?._content === 'yes'
+				);
+			}
+
+			const zimbraMtaPostscreenNonSmtpCommandEnable = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE
+			);
+			if (
+				zimbraMtaPostscreenNonSmtpCommandEnable &&
+				zimbraMtaPostscreenNonSmtpCommandEnable?._content
+			) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
+					zimbraMtaPostscreenNonSmtpCommandEnable?._content === 'yes'
+				);
+			}
+
+			const zimbraMtaPostscreenPipeliningEnable = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE
+			);
+			if (zimbraMtaPostscreenPipeliningEnable && zimbraMtaPostscreenPipeliningEnable?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,
+					zimbraMtaPostscreenPipeliningEnable?._content === 'yes'
+				);
+			}
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
+
+	useEffect(() => {
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL) {
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replace(/[^a-zA-Z]/g, '');
+			const findOption = intervalOptions.find(
+				(item: Record<string, string>) => item?.value === unit
+			);
+			setDnsblMinTTLUnit(findOption || intervalOptions[2]);
+		}
+	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL, intervalOptions]);
+
+	useEffect(() => {
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL) {
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replace(/[^a-zA-Z]/g, '');
+			const findOption = intervalOptions.find(
+				(item: Record<string, string>) => item?.value === unit
+			);
+			setDnsblMaxTTLUnit(findOption || intervalOptions[2]);
+		}
+	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL, intervalOptions]);
+
+	useEffect(() => {
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL) {
+			const unit = mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replace(/[^a-zA-Z]/g, '');
+			const findOption = intervalOptions.find(
+				(item: Record<string, string>) => item?.value === unit
+			);
+			setDnsblTTLUnit(findOption || intervalOptions[2]);
+		}
+	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL, intervalOptions]);
+
+	const onBlackListActionChange = useCallback(
+		(v: string) => {
+			setValue(ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION, v);
+		},
+		[setValue]
+	);
+
+	const onDNSBlackListActionChange = useCallback(
+		(v: string) => {
+			setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION, v);
+		},
+		[setValue]
+	);
+
+	const onDNSBlSiteChange = useCallback(
+		(v: string) => {
+			setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES, v);
+		},
+		[setValue]
+	);
+
+	const onDNSMinTTLUnitChange = useCallback(
+		(v) => {
+			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
+			setDnsblMinTTLUnit(findOption || intervalOptions[2]);
+			setValue(
+				ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replace(/[^0-9]/g, '')}${
+					findOption?.value
+				}`
+			);
+		},
+		[intervalOptions, setValue, mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL]
+	);
+
+	const onDNSMaxTTLUnitChange = useCallback(
+		(v) => {
+			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
+			setDnsblMaxTTLUnit(findOption || intervalOptions[2]);
+			setValue(
+				ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replace(/[^0-9]/g, '')}${
+					findOption?.value
+				}`
+			);
+		},
+		[intervalOptions, setValue, mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL]
+	);
+
+	const onDNSTTLUnitChange = useCallback(
+		(v) => {
+			const findOption = intervalOptions.find((item: Record<string, string>) => item?.value === v);
+			setDnsblTTLUnit(findOption || intervalOptions[2]);
+			setValue(
+				ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
+				`${mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replace(/[^0-9]/g, '')}${
+					findOption?.value
+				}`
+			);
+		},
+		[intervalOptions, setValue, mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL]
+	);
+
+	useEffect(() => {
+		console.log('>>>>>', mtaPostTuningDetail);
+	}, [mtaPostTuningDetail]);
+	const onCancel = useCallback(() => {
+		setMtaPostTuningDetail(mtaPostTuningInitialDetail);
+		setValue(
+			ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES,
+			mtaPostTuningInitialDetail?.zimbraMtaPostscreenDnsblSites
+				? mtaPostTuningInitialDetail?.zimbraMtaPostscreenDnsblSites
+				: ''
+		);
+	}, [mtaPostTuningInitialDetail, setValue]);
+
 	const onSave = useCallback(() => {
 		console.log('xxxxx');
 	}, []);
+
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -162,14 +507,26 @@ const MTAPostScreenTuning: FC = () => {
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
 						<Select
-							items={[]}
+							items={ignoreEnforceDropOptions}
 							background="gray5"
 							label={t('mta.black_list_action', 'Blacklist Action')}
 							showCheckbox={false}
+							selection={ignoreEnforceDropOptions.find(
+								(item: Record<string, string>) =>
+									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction
+							)}
+							onChange={onBlackListActionChange}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Input label={t('mta.access_list_path', 'Access List Path')} background="gray5" />
+						<Input
+							label={t('mta.access_list_path', 'Access List Path')}
+							background="gray5"
+							value={mtaPostTuningDetail?.zimbraMtaPostscreenAccessList}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setValue(ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST, e.target.value);
+							}}
+						/>
 					</Container>
 				</Container>
 				<Container
@@ -191,18 +548,28 @@ const MTAPostScreenTuning: FC = () => {
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
 						<Select
-							items={[]}
+							items={ignoreDropOptions}
 							background="gray5"
 							label={t('mta.dns_blacklist_sites', 'DNS Blacklist Sites')}
 							showCheckbox={false}
+							selection={ignoreDropOptions.find(
+								(item: Record<string, string>) =>
+									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites
+							)}
+							onChange={onDNSBlSiteChange}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
 						<Select
-							items={[]}
+							items={ignoreEnforceDropOptions}
 							background="gray5"
 							label={t('mta.dns_blacklist_action', 'DNS Blacklist Action')}
 							showCheckbox={false}
+							selection={ignoreEnforceDropOptions.find(
+								(item: Record<string, string>) =>
+									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction
+							)}
+							onChange={onDNSBlackListActionChange}
 						/>
 					</Container>
 				</Container>
@@ -218,6 +585,10 @@ const MTAPostScreenTuning: FC = () => {
 						<Input
 							label={t('mta.dns_blacklist_threshold_value', 'DNS Blacklist Threshold (value)')}
 							background="gray5"
+							value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD, e.target.value);
+							}}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -227,6 +598,10 @@ const MTAPostScreenTuning: FC = () => {
 								'DNS Blacklist Whitelist Threshold  (value)'
 							)}
 							background="gray5"
+							value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD, e.target.value);
+							}}
 						/>
 					</Container>
 				</Container>
@@ -258,14 +633,20 @@ const MTAPostScreenTuning: FC = () => {
 									'DNS Blacklist Min Time to Live (value)'
 								)}
 								background="gray5"
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replace(/[^0-9]/g, '')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL, e.target.value);
+								}}
 							/>
 						</Container>
 						<Container crossAlignment="flex-start" mainAlignment="flex-start" width="25%">
 							<Select
-								items={[]}
+								items={intervalOptions}
 								background="gray5"
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
+								selection={dnsblMinTTLUnit}
+								onChange={onDNSMinTTLUnitChange}
 							/>
 						</Container>
 					</Container>
@@ -282,14 +663,20 @@ const MTAPostScreenTuning: FC = () => {
 									'DNS Blacklist Max Time to Live (value)'
 								)}
 								background="gray5"
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replace(/[^0-9]/g, '')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL, e.target.value);
+								}}
 							/>
 						</Container>
 						<Container width="25%">
 							<Select
-								items={[]}
+								items={intervalOptions}
 								background="gray5"
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
+								selection={dnsblMaxTTLUnit}
+								onChange={onDNSMaxTTLUnitChange}
 							/>
 						</Container>
 					</Container>
@@ -313,14 +700,23 @@ const MTAPostScreenTuning: FC = () => {
 							<Input
 								label={t('mta.dns_blacklist_time_to_live', 'DNS Blacklist Time to Live (value)')}
 								background="gray5"
+								value={
+									mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL &&
+									mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replace(/[^0-9]/g, '')
+								}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL, e.target.value);
+								}}
 							/>
 						</Container>
 						<Container width="25%">
 							<Select
-								items={[]}
+								items={intervalOptions}
 								background="gray5"
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
+								selection={dnsblTTLUnit}
+								onChange={onDNSTTLUnitChange}
 							/>
 						</Container>
 					</Container>
@@ -352,11 +748,20 @@ const MTAPostScreenTuning: FC = () => {
 						padding={{ right: 'medium' }}
 					>
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start">
-							<Switch label={t('mta.bare_newline', 'Bare Newline')} value={false} />
+							<Switch
+								label={t('mta.bare_newline', 'Bare Newline')}
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineEnable}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
+										!mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineEnable
+									)
+								}
+							/>
 						</Container>
 						<Container crossAlignment="flex-end">
 							<Select
-								items={[]}
+								items={ignoreEnforceDropOptions}
 								background="gray5"
 								label={t('mta.action', 'Action')}
 								showCheckbox={false}
@@ -376,7 +781,7 @@ const MTAPostScreenTuning: FC = () => {
 						</Container>
 						<Container crossAlignment="flex-end">
 							<Select
-								items={[]}
+								items={intervalOptions}
 								background="gray5"
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
@@ -399,11 +804,20 @@ const MTAPostScreenTuning: FC = () => {
 						padding={{ right: 'medium' }}
 					>
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start">
-							<Switch label={t('mta.non_smtp_command', 'NonSMTP Command')} value={false} />
+							<Switch
+								label={t('mta.non_smtp_command', 'NonSMTP Command')}
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandEnable}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
+										!mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandEnable
+									)
+								}
+							/>
 						</Container>
 						<Container crossAlignment="flex-end">
 							<Select
-								items={[]}
+								items={ignoreEnforceDropOptions}
 								background="gray5"
 								label={t('mta.action', 'Action')}
 								showCheckbox={false}
@@ -423,7 +837,7 @@ const MTAPostScreenTuning: FC = () => {
 						</Container>
 						<Container crossAlignment="flex-end">
 							<Select
-								items={[]}
+								items={intervalOptions}
 								background="gray5"
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
@@ -446,11 +860,20 @@ const MTAPostScreenTuning: FC = () => {
 						padding={{ right: 'medium' }}
 					>
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start">
-							<Switch label={t('mta.pipelining', 'Pipelining')} value={false} />
+							<Switch
+								label={t('mta.pipelining', 'Pipelining')}
+								value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningEnable}
+								onClick={(): void =>
+									setValue(
+										ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,
+										!mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningEnable
+									)
+								}
+							/>
 						</Container>
 						<Container crossAlignment="flex-end">
 							<Select
-								items={[]}
+								items={ignoreEnforceDropOptions}
 								background="gray5"
 								label={t('mta.action', 'Action')}
 								showCheckbox={false}
@@ -470,7 +893,7 @@ const MTAPostScreenTuning: FC = () => {
 						</Container>
 						<Container crossAlignment="flex-end">
 							<Select
-								items={[]}
+								items={intervalOptions}
 								background="gray5"
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}

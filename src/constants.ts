@@ -277,3 +277,17 @@ export const OPENDKIM = 'opendkim';
 export const ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION = 'zimbraMtaCommonBlockedExtension';
 export const ZIMBRA_MTA_TLS_SECURITY_LEVEL = 'zimbraMtaTlsSecurityLevel';
 export const OK = 'ok';
+export const ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION = 'zimbraMtaPostscreenBlacklistAction';
+export const ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST = 'zimbraMtaPostscreenAccessList';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION = 'zimbraMtaPostscreenDnsblAction';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES = 'zimbraMtaPostscreenDnsblSites';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD = 'zimbraMtaPostscreenDnsblThreshold';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD =
+	'zimbraMtaPostscreenDnsblWhitelistThreshold';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL = 'zimbraMtaPostscreenDnsblMinTTL';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL = 'zimbraMtaPostscreenDnsblMaxTTL';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL = 'zimbraMtaPostscreenDnsblTTL';
+export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE = 'zimbraMtaPostscreenBareNewlineEnable';
+export const ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE =
+	'zimbraMtaPostscreenNonSmtpCommandEnable';
+export const ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE = 'zimbraMtaPostscreenPipeliningEnable';

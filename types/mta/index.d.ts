@@ -47,3 +47,18 @@ export type MtaAntivirusAndAntispam = {
 	zimbraVirusWarnAdmin: boolean;
 	carbonioClamAVDatabaseCustomURL: string;
 };
+
+export type MtaPostTuning = {
+	zimbraMtaPostscreenBlacklistAction: string;
+	zimbraMtaPostscreenAccessList: string;
+	zimbraMtaPostscreenDnsblAction: string;
+	zimbraMtaPostscreenDnsblSites: string;
+	zimbraMtaPostscreenDnsblThreshold: string;
+	zimbraMtaPostscreenDnsblWhitelistThreshold: string;
+	zimbraMtaPostscreenDnsblMinTTL: string;
+	zimbraMtaPostscreenDnsblMaxTTL: string;
+	zimbraMtaPostscreenDnsblTTL: string;
+	zimbraMtaPostscreenBareNewlineEnable: boolean;
+	zimbraMtaPostscreenNonSmtpCommandEnable: boolean;
+	zimbraMtaPostscreenPipeliningEnable: boolean;
+};
