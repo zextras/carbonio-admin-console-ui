@@ -291,3 +291,10 @@ export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE = 'zimbraMtaPostscreenB
 export const ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE =
 	'zimbraMtaPostscreenNonSmtpCommandEnable';
 export const ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE = 'zimbraMtaPostscreenPipeliningEnable';
+export const ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION = 'zimbraMtaPostscreenPipeliningAction';
+export const ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION =
+	'zimbraMtaPostscreenNonSmtpCommandAction';
+export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION = 'zimbraMtaPostscreenBareNewlineAction';
+export const ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL = 'zimbraMtaPostscreenPipeliningTTL';
+export const ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL = 'zimbraMtaPostscreenNonSmtpCommandTTL';
+export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL = 'zimbraMtaPostscreenBareNewlineTTL';

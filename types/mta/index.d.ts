@@ -61,4 +61,10 @@ export type MtaPostTuning = {
 	zimbraMtaPostscreenBareNewlineEnable: boolean;
 	zimbraMtaPostscreenNonSmtpCommandEnable: boolean;
 	zimbraMtaPostscreenPipeliningEnable: boolean;
+	zimbraMtaPostscreenPipeliningAction: string;
+	zimbraMtaPostscreenNonSmtpCommandAction: string;
+	zimbraMtaPostscreenBareNewlineAction: string;
+	zimbraMtaPostscreenPipeliningTTL: string;
+	zimbraMtaPostscreenNonSmtpCommandTTL: string;
+	zimbraMtaPostscreenBareNewlineTTL: string;
 };
