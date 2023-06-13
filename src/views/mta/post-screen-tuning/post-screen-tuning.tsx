@@ -354,9 +354,9 @@ const MTAPostScreenTuning: FC = () => {
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
-			setDnsblMinTTLUnit(findOption || intervalOptions[2]);
+			setDnsblMinTTLUnit(findOption || dnsblMinTTLUnit);
 		}
-	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL, intervalOptions]);
+	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL, intervalOptions, dnsblMinTTLUnit]);
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL) {
@@ -364,9 +364,9 @@ const MTAPostScreenTuning: FC = () => {
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
-			setDnsblMaxTTLUnit(findOption || intervalOptions[2]);
+			setDnsblMaxTTLUnit(findOption || dnsblMaxTTLUnit);
 		}
-	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL, intervalOptions]);
+	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL, intervalOptions, dnsblMaxTTLUnit]);
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL) {
@@ -374,9 +374,9 @@ const MTAPostScreenTuning: FC = () => {
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
-			setDnsblTTLUnit(findOption || intervalOptions[2]);
+			setDnsblTTLUnit(findOption || dnsblTTLUnit);
 		}
-	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL, intervalOptions]);
+	}, [mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL, intervalOptions, dnsblTTLUnit]);
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL) {
@@ -384,9 +384,9 @@ const MTAPostScreenTuning: FC = () => {
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
-			setPipeliningTTLUnit(findOption || intervalOptions[2]);
+			setPipeliningTTLUnit(findOption || pipeliningTTLUnit);
 		}
-	}, [mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL, intervalOptions]);
+	}, [mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL, intervalOptions, pipeliningTTLUnit]);
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL) {
@@ -397,9 +397,13 @@ const MTAPostScreenTuning: FC = () => {
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
-			setNonSMTPCommandTTLUnit(findOption || intervalOptions[2]);
+			setNonSMTPCommandTTLUnit(findOption || nonSMTPCommandTTLUnit);
 		}
-	}, [mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL, intervalOptions]);
+	}, [
+		mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL,
+		intervalOptions,
+		nonSMTPCommandTTLUnit
+	]);
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL) {
@@ -407,9 +411,9 @@ const MTAPostScreenTuning: FC = () => {
 			const findOption = intervalOptions.find(
 				(item: Record<string, string>) => item?.value === unit
 			);
-			setBareNewLineTTLUnit(findOption || intervalOptions[2]);
+			setBareNewLineTTLUnit(findOption || bareNewLineTTLUnit);
 		}
-	}, [mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL, intervalOptions]);
+	}, [mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL, intervalOptions, bareNewLineTTLUnit]);
 
 	const onBlackListActionChange = useCallback(
 		(v: string) => {
