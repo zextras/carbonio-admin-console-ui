@@ -1089,8 +1089,8 @@ const DomainGalSettings: FC = () => {
 						style={{ gap: '1rem' }}
 					>
 						<Button
-							type="ghost"
-							label={t('label.create_account_name', 'CREATE ACCOUNT NAME')}
+							type="outlined"
+							label={t('label.create', 'CREATE')}
 							color="primary"
 							onClick={(): void => {
 								setToggleCreateGalSyncAccModel(true);
