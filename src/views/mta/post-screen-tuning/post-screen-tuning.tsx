@@ -44,6 +44,7 @@ import {
 	ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
 	ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
 } from '../../../constants';
+import { modifyConfig } from '../../../services/modify-config';
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;
@@ -551,9 +552,151 @@ const MTAPostScreenTuning: FC = () => {
 		);
 	}, [mtaPostTuningInitialDetail, setValue]);
 
+	const updateGlobalConfig = useCallback(
+		(attributes: Array<Record<string, string>>): void => {
+			attributes.forEach((ele: Record<string, string>) => {
+				updateConfig(ele?.n, ele._content);
+			});
+		},
+		[updateConfig]
+	);
+
+	const modifyConfigRequest = useCallback(
+		(attributes: Array<Record<string, string>>): void => {
+			modifyConfig(attributes)
+				.then(() => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					updateGlobalConfig(attributes);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, t, updateGlobalConfig]
+	);
+
 	const onSave = useCallback(() => {
-		console.log('xxxxx');
-	}, []);
+		const attributes: Array<Record<string, string>> = [];
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenAccessList) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenAccessList
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL
+			});
+		}
+		attributes.push({
+			n: ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
+			_content: mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineEnable ? 'yes' : 'no'
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
+			_content: mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandEnable ? 'yes' : 'no'
+		});
+		attributes.push({
+			n: ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,
+			_content: mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningEnable ? 'yes' : 'no'
+		});
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningAction) {
+			attributes.push({
+				n: ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningAction
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandAction) {
+			attributes.push({
+				n: ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandAction
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineAction) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineAction
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL
+			});
+		}
+		if (mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL) {
+			attributes.push({
+				n: ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,
+				_content: mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL
+			});
+		}
+		modifyConfigRequest(attributes);
+	}, [mtaPostTuningDetail, modifyConfigRequest]);
 
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
