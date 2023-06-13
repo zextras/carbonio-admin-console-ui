@@ -1089,7 +1089,7 @@ const DomainGalSettings: FC = () => {
 						style={{ gap: '1rem' }}
 					>
 						<Button
-							type="ghost"
+							type="outlined"
 							label={t('label.create', 'CREATE')}
 							color="primary"
 							onClick={(): void => {
