@@ -776,8 +776,8 @@ const MTAPostScreenTuning: FC = () => {
 					style={{
 						borderRadius: '0.125rem 0.125rem 0 0',
 						borderBottom: '0.063rem solid #2196D3',
-						marginTop: '15px',
-						marginBottom: '15px'
+						marginTop: '0.938rem',
+						marginBottom: '0.938rem'
 					}}
 				>
 					<Container
