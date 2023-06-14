@@ -19,7 +19,7 @@ import {
 	Button
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import _ from 'lodash';
+import { isEqual, find } from 'lodash';
 import ListRow from '../list/list-row';
 import {
 	appointmentReminder,
@@ -30,6 +30,8 @@ import {
 } from '../utility/utils';
 import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
+import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import { COS } from '../../constants';
 
 const CosPreferences: FC = () => {
 	const [t] = useTranslation();
@@ -39,6 +41,16 @@ const CosPreferences: FC = () => {
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
 	const localeZone = useMemo(() => localeList(t), [t]);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const readonlyCOS = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return false;
+		}
+		return true;
+	}, [rights]);
+
 	const [cosPreferences, setCosPreferences] = useState<any>({
 		zimbraPrefLocale: '',
 		zimbraPrefMessageViewHtmlPreferred: 'FALSE',
@@ -571,7 +583,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefLocale !== undefined &&
-			!_.isEqual(cosData.zimbraPrefLocale, cosPreferences.zimbraPrefLocale)
+			!isEqual(cosData.zimbraPrefLocale, cosPreferences.zimbraPrefLocale)
 		) {
 			setIsDirty(true);
 		}
@@ -580,7 +592,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefGroupMailBy !== undefined &&
-			!_.isEqual(cosData.zimbraPrefGroupMailBy, cosPreferences.zimbraPrefGroupMailBy)
+			!isEqual(cosData.zimbraPrefGroupMailBy, cosPreferences.zimbraPrefGroupMailBy)
 		) {
 			setIsDirty(true);
 		}
@@ -589,7 +601,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailDefaultCharset !== undefined &&
-			!_.isEqual(cosData.zimbraPrefMailDefaultCharset, cosPreferences.zimbraPrefMailDefaultCharset)
+			!isEqual(cosData.zimbraPrefMailDefaultCharset, cosPreferences.zimbraPrefMailDefaultCharset)
 		) {
 			setIsDirty(true);
 		}
@@ -620,10 +632,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailPollingInterval !== undefined &&
-			!_.isEqual(
-				cosData.zimbraPrefMailPollingInterval,
-				cosPreferences.zimbraPrefMailPollingInterval
-			)
+			!isEqual(cosData.zimbraPrefMailPollingInterval, cosPreferences.zimbraPrefMailPollingInterval)
 		) {
 			setIsDirty(true);
 		}
@@ -641,7 +650,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefMailSendReadReceipts !== undefined &&
-			!_.isEqual(
+			!isEqual(
 				cosData.zimbraPrefMailSendReadReceipts,
 				cosPreferences.zimbraPrefMailSendReadReceipts
 			)
@@ -689,7 +698,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarFirstDayOfWeek !== undefined &&
-			!_.isEqual(
+			!isEqual(
 				cosData.zimbraPrefCalendarFirstDayOfWeek,
 				cosPreferences.zimbraPrefCalendarFirstDayOfWeek
 			)
@@ -701,7 +710,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefTimeZoneId !== undefined &&
-			!_.isEqual(cosData.zimbraPrefTimeZoneId, cosPreferences.zimbraPrefTimeZoneId)
+			!isEqual(cosData.zimbraPrefTimeZoneId, cosPreferences.zimbraPrefTimeZoneId)
 		) {
 			setIsDirty(true);
 		}
@@ -710,10 +719,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarInitialView !== undefined &&
-			!_.isEqual(
-				cosData.zimbraPrefCalendarInitialView,
-				cosPreferences.zimbraPrefCalendarInitialView
-			)
+			!isEqual(cosData.zimbraPrefCalendarInitialView, cosPreferences.zimbraPrefCalendarInitialView)
 		) {
 			setIsDirty(true);
 		}
@@ -722,7 +728,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarApptVisibility !== undefined &&
-			!_.isEqual(
+			!isEqual(
 				cosData.zimbraPrefCalendarApptVisibility,
 				cosPreferences.zimbraPrefCalendarApptVisibility
 			)
@@ -734,7 +740,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarDefaultApptDuration !== undefined &&
-			!_.isEqual(
+			!isEqual(
 				cosData.zimbraPrefCalendarDefaultApptDuration,
 				cosPreferences.zimbraPrefCalendarDefaultApptDuration
 			)
@@ -749,7 +755,7 @@ const CosPreferences: FC = () => {
 	useEffect(() => {
 		if (
 			cosData.zimbraPrefCalendarApptReminderWarningTime !== undefined &&
-			!_.isEqual(
+			!isEqual(
 				cosData.zimbraPrefCalendarApptReminderWarningTime,
 				cosPreferences.zimbraPrefCalendarApptReminderWarningTime
 			)
@@ -1028,6 +1034,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onPrefLocaleChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1056,6 +1063,7 @@ const CosPreferences: FC = () => {
 								onClick={(): void => changeSwitchOption('zimbraPrefMessageViewHtmlPreferred')}
 								label={t('cos.view_mail_as_html', 'View mail as HTML')}
 								iconColor="primary"
+								disabled={readonlyCOS}
 							/>
 						</Container>
 					</Row>
@@ -1082,6 +1090,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onGroupByChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1100,6 +1109,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onCharactorSetChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1122,6 +1132,7 @@ const CosPreferences: FC = () => {
 											'Auto-Delete duplicate messages'
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1133,6 +1144,7 @@ const CosPreferences: FC = () => {
 											`Enable notification for new email`
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1165,6 +1177,7 @@ const CosPreferences: FC = () => {
 										value={zimbraPrefMailPollingIntervalNum}
 										type="number"
 										onChange={onPrefMailPollingIntervalNumChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1182,6 +1195,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onPrefMailPollingIntervalTypeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1211,6 +1225,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onPollingIntervalChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1229,6 +1244,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onMailSendReadReceipts}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1259,6 +1275,7 @@ const CosPreferences: FC = () => {
 										onClick={(): void => changeSwitchOption('zimbraPrefSaveToSent')}
 										label={t('cos.save_to_Sent', `Save to sent`)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1270,6 +1287,7 @@ const CosPreferences: FC = () => {
 											'Allow sending from any address'
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1300,6 +1318,7 @@ const CosPreferences: FC = () => {
 										onClick={(): void => changeSwitchOption('zimbraPrefAutoAddAddressEnabled')}
 										label={t('cos.enable_auto_add_contacts', `Enable auto-add contacts`)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1308,6 +1327,7 @@ const CosPreferences: FC = () => {
 										onClick={(): void => changeSwitchOption('zimbraPrefGalAutoCompleteEnabled')}
 										label={t('cos.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1347,6 +1367,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onPrefTimeZoneChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1368,6 +1389,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onCalendarDefaultApptDurationChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1401,6 +1423,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onReminderWarningTimeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1419,6 +1442,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onCalendarInitialViewChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1448,6 +1472,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onFirstDayOfWeekChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1469,6 +1494,7 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onAppointmentVisibilityChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1493,18 +1519,9 @@ const CosPreferences: FC = () => {
 											`Enable reminders of appointments in the past`
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
-								{/* <Container crossAlignment="flex-start" padding={{ left: 'small' }}>
-									<Switch
-										value={cosPreferences?.zimbraPrefCalendarToasterEnabled === 'TRUE'}
-										onClick={(): void => changeSwitchOption('zimbraPrefCalendarToasterEnabled')}
-										label={t(
-											'cos.enable_notification_for_new_appointment',
-											'Enable notification for new appointment'
-										)}
-									/>
-								</Container> */}
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
 										value={cosPreferences?.zimbraPrefCalendarAllowCancelEmailToSelf === 'TRUE'}
@@ -1516,6 +1533,7 @@ const CosPreferences: FC = () => {
 											`Allow sending cancellation mail`
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1540,6 +1558,7 @@ const CosPreferences: FC = () => {
 											`Automatically add forwarded appointments to the calendar`
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1553,31 +1572,12 @@ const CosPreferences: FC = () => {
 											'Add invites with PUBLISH method'
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
 						</Container>
 					</Row>
-					{/* <Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
-									<Switch
-										value={cosPreferences?.zimbraPrefCalendarReminderSoundsEnabled === 'TRUE'}
-										onClick={(): void =>
-											changeSwitchOption('zimbraPrefCalendarReminderSoundsEnabled')
-										}
-										label={t('cos.audible_reminder_notification', 'Audible reminder notification')}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row> */}
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
@@ -1595,6 +1595,7 @@ const CosPreferences: FC = () => {
 											`Automatically add appointments when the user is invited`
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
@@ -1608,6 +1609,7 @@ const CosPreferences: FC = () => {
 											'Auto-decline if the sender is blacklisted'
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1632,18 +1634,9 @@ const CosPreferences: FC = () => {
 											`Notify changes made by delegated accounts`
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
-								{/* <Container crossAlignment="flex-start" padding={{ left: 'small' }}>
-									<Switch
-										value={cosPreferences?.zimbraPrefCalendarUseQuickAdd === 'TRUE'}
-										onClick={(): void => changeSwitchOption('zimbraPrefCalendarUseQuickAdd')}
-										label={t(
-											'cos.use_quickadd_dialog_in_creation',
-											'Use QuickAdd dialog in creation'
-										)}
-									/>
-								</Container> */}
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
 										value={cosPreferences?.zimbraPrefAppleIcalDelegationEnabled === 'TRUE'}
@@ -1653,29 +1646,12 @@ const CosPreferences: FC = () => {
 											`Use iCal delegation model for shared calendars`
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
 						</Container>
 					</Row>
-					{/* <Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-						<Container
-							height="fit"
-							crossAlignment="flex-start"
-							background="gray6"
-							padding={{ top: 'large', bottom: 'large' }}
-						>
-							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
-									<Switch
-										value={cosPreferences?.zimbraPrefUseTimeZoneListInCalendar === 'TRUE'}
-										onClick={(): void => changeSwitchOption('zimbraPrefUseTimeZoneListInCalendar')}
-										label={t('cos.show_time_zone_lists_in_view', 'Show time zone lists in view')}
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					</Row> */}
 				</Row>
 			</Container>
 		</Container>
