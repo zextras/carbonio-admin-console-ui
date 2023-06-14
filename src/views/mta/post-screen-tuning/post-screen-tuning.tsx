@@ -25,6 +25,7 @@ import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
 import { MtaPostTuning } from '../../../../types';
 import {
+	IS_SHOW_POST_TUNING_BANNER,
 	ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION,
 	ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST,
 	ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION,
@@ -45,6 +46,7 @@ import {
 	ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
+import { useLocalStorage } from '../../utility/utils';
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;
@@ -59,6 +61,7 @@ const MTAPostScreenTuning: FC = () => {
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const [mtaPostTuningInitialDetail, setMtaPostTuningInitialDetail] = useState<MtaPostTuning>();
 	const [mtaPostTuningDetail, setMtaPostTuningDetail] = useState<MtaPostTuning>();
+	const [isShowBanner, setIsShowBanner] = useLocalStorage(IS_SHOW_POST_TUNING_BANNER, true);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaPostTuningInitialDetail((prev: any) => ({
@@ -760,57 +763,65 @@ const MTAPostScreenTuning: FC = () => {
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
 					height="auto"
-					padding={{ top: 'medium' }}
+					padding={{ top: 'medium', bottom: isShowBanner ? 'extrasmall' : 'large' }}
 				>
 					<Text size="small" weight="bold" color="gray0">
 						{t('mta.blacklisting', 'Blacklisting')}
 					</Text>
 				</Container>
-				<Container
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="100%"
-					background="#D3EBF8"
-					padding={{ all: 'small' }}
-					style={{
-						borderRadius: '0.125rem 0.125rem 0 0',
-						borderBottom: '0.063rem solid #2196D3',
-						marginTop: '0.938rem',
-						marginBottom: '0.938rem'
-					}}
-				>
+				{isShowBanner && (
 					<Container
-						crossAlignment="flex-start"
 						orientation="horizontal"
 						mainAlignment="space-between"
+						crossAlignment="flex-start"
 						width="100%"
+						background="#D3EBF8"
+						padding={{ all: 'small' }}
+						style={{
+							borderRadius: '0.125rem 0.125rem 0 0',
+							borderBottom: '0.063rem solid #2196D3',
+							marginTop: '0.938rem',
+							marginBottom: '0.938rem'
+						}}
 					>
-						<Container width="5%" padding={{ left: 'extralarge', right: 'extralarge' }}>
-							<Padding horizontal="small">
-								<CustomIcon icon="InfoOutline" color="#2196D3"></CustomIcon>
-							</Padding>
-						</Container>
 						<Container
-							padding={{
-								top: 'small',
-								bottom: 'small'
-							}}
 							crossAlignment="flex-start"
+							orientation="horizontal"
+							mainAlignment="space-between"
+							width="100%"
 						>
-							<Text overflow="break-word">
-								{t(
-									'mta.graylisting_disabled_warning_message',
-									'This is a form of greylisting, so you need to disable other forms of greylisting.'
-								)}
-							</Text>
+							<Container width="5%" padding={{ left: 'extralarge', right: 'extralarge' }}>
+								<Padding horizontal="small">
+									<CustomIcon icon="InfoOutline" color="#2196D3"></CustomIcon>
+								</Padding>
+							</Container>
+							<Container
+								padding={{
+									top: 'small',
+									bottom: 'small'
+								}}
+								crossAlignment="flex-start"
+							>
+								<Text overflow="break-word">
+									{t(
+										'mta.graylisting_disabled_warning_message',
+										'This is a form of greylisting, so you need to disable other forms of greylisting.'
+									)}
+								</Text>
+							</Container>
+						</Container>
+
+						<Container width="auto" padding={{ right: 'small' }}>
+							<IconButton
+								icon="CloseOutline"
+								size="large"
+								onClick={(): void => {
+									setIsShowBanner(false);
+								}}
+							/>
 						</Container>
 					</Container>
-
-					<Container width="auto" padding={{ right: 'small' }}>
-						<IconButton icon="CloseOutline" size="large" />
-					</Container>
-				</Container>
+				)}
 				<Container
 					crossAlignment="flex-start"
 					orientation="horizontal"
