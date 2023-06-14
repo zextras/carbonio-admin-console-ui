@@ -15,8 +15,8 @@ import {
 	SnackbarManagerContext,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { isEqual } from 'lodash';
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { isEqual, find } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { MtaInboundSecurity } from '../../../../types';
 import {
@@ -38,11 +38,13 @@ import {
 	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_RECIPIENT,
 	ZIMBRA_MTA_SMTPD_REJECT_UNLISTED_SENDER,
 	ZIMBRA_MTA_SMTPD_SENDER_RESTRICTIONS,
-	_REJECT_UNKNOWN_CLIENT_HOSTNAME
+	_REJECT_UNKNOWN_CLIENT_HOSTNAME,
+	CONFIG
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
@@ -58,6 +60,15 @@ const MTAInboundFlowSecurity: FC = () => {
 		useState<MtaInboundSecurity>();
 	const [mtaInboundSecurityDetail, setMtaInboundSecurityDetail] = useState<MtaInboundSecurity>();
 	const [commonBlockedExtensions, setCommonBlockedExtensions] = useState<Array<string>>([]);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetMTA = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaInboundSecurityInitialDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -613,7 +624,12 @@ const MTAInboundFlowSecurity: FC = () => {
 					padding={{ top: 'large', bottom: 'extralarge' }}
 					height="auto"
 				>
-					<Container crossAlignment="flex-start" width="70%" padding={{ right: 'medium' }}>
+					<Container
+						crossAlignment="flex-start"
+						width="70%"
+						padding={{ right: 'medium' }}
+						style={allowSetMTA ? {} : { pointerEvents: 'none', cursor: 'pointer' }}
+					>
 						<ChipInput
 							placeholder={t(
 								'mta.add_here_any_blocked_extension',
@@ -623,6 +639,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							requireUniqueChips
 							value={mtaBlockExtension}
 							onChange={onBlockExtensionChange}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start" width="30%">
@@ -632,6 +649,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							size="medium"
 							type="outlined"
 							onClick={onCommonBlockExtensionAdd}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 				</Container>
@@ -663,6 +681,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnAdmin
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -687,6 +706,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -729,6 +749,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedSender
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -750,6 +771,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.zimbraMtaSmtpdRejectUnlistedRecipient
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -774,6 +796,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.zimbraMtaSmtpdSenderRestrictions
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -816,6 +839,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.rejectUnknownClientHostname
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -840,6 +864,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.rejectUnknownHeloHostname
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -869,6 +894,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -890,6 +916,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.rejectUnknownSenderDomain
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -922,6 +949,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.rejectInvalidHeloHostname
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -943,6 +971,7 @@ const MTAInboundFlowSecurity: FC = () => {
 								onClick={(): void =>
 									setValue('rejectNonFqdnSender', !mtaInboundSecurityDetail?.rejectNonFqdnSender)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -975,6 +1004,7 @@ const MTAInboundFlowSecurity: FC = () => {
 										!mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
