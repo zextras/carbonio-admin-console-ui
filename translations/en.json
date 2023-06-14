@@ -591,6 +591,8 @@
         "certificate_saved": "The certificates have been saved",
         "certificate_type_use_custom": "I want to use a Custom Certificate",
         "certificate_type_use_letsencrypt": "I want to use a Let’s Encrypt Certificate",
+        "certificate_type_use_letsencrypt_long_chain": "I want to use a Let’s Encrypt (longChain) certificate",
+        "certificate_type_use_letsencrypt_short_chain": "I want to use a Let’s Encrypt (shortChain) certificate",
         "certificate_valid": "The certificate is valid",
         "certificate_valid_but_either_expired_or_exists_non_trusted_CA": "The certificate is valid but it's either expired or exists a non trusted CA",
         "create_new_domain": "CREATE NEW DOMAIN",

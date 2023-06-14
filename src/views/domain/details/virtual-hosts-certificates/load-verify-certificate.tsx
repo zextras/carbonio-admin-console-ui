@@ -11,29 +11,30 @@ import {
 	Input,
 	Text,
 	Padding,
-	Row,
 	Select,
 	Container
 } from '@zextras/carbonio-design-system';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { postSoapFetchRequest, soapFetch } from '@zextras/carbonio-shell-ui';
+import { soapFetch } from '@zextras/carbonio-shell-ui';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ICertificateContent } from '../../../../../types';
+import { CreateSnackbarType, ICertificateContent } from '../../../../../types';
 import {
 	DOMAIN_CERTIFICATE,
 	DOMAIN_CERTIFICATE_CA_CHAIN,
 	DOMAIN_CERTIFICATE_PRIVATE_KEY,
 	INVALID,
+	LONG,
+	SHORT,
 	ZIMBRA_ID
 } from '../../../../constants';
-import { getDomainInformation } from '../../../../services/domain-information-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { CertificateTypes } from '../../../utility/utils';
+import { IssueCertiRequest } from '../../../../services/virtual-host-service';
 
 const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> = ({
 	setToggleWizardSection,
@@ -41,12 +42,15 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 }) => {
 	let fileReader: FileReader;
 	const { t } = useTranslation();
-	const domainInformation: any = useDomainStore((state) => state.domain?.a);
-	const [selectedCertType, setSelectedCertType] = useState<any>();
+	const domain = useDomainStore((state) => state.domain);
+	const certificateTypes = useMemo(() => CertificateTypes(t), [t]);
+	const domainInformation = useDomainStore((state) => state.domain?.a);
+	const [selectedCertType, setSelectedCertType] = useState<string | undefined>(
+		certificateTypes[2]?.value
+	);
 	const [verifyBtnLoading, setVerifyBtnLoading] = useState(false);
 	const [uploadBtnTgl, setUploadBtnTgl] = useState(false);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const certificateTypes = useMemo(() => CertificateTypes(t), [t]);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const [domainCertiErr, setDomainCertiErr] = useState(true);
 	const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
 	const [privateKeyErr, setPrivateKeyErr] = useState(true);
@@ -65,6 +69,26 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			fileName: '',
 			content: ''
 		});
+
+	const emptyCertiState = (): void => {
+		setObjDomainCertificate({
+			content: '',
+			fileName: ''
+		});
+		setObjDomainCertificateCaChain({
+			content: '',
+			fileName: ''
+		});
+		setObjDomainCertificatePrivateKey({
+			content: '',
+			fileName: ''
+		});
+	};
+
+	const isCustomCerti = useCallback(
+		() => selectedCertType === certificateTypes[2]?.value,
+		[certificateTypes, selectedCertType]
+	);
 
 	const setStatesForFileContent = (fieldName: string, fileName: string, content: any): void => {
 		switch (fieldName) {
@@ -162,18 +186,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 						hideButton: true,
 						replace: true
 					});
-					setObjDomainCertificate({
-						content: '',
-						fileName: ''
-					});
-					setObjDomainCertificateCaChain({
-						content: '',
-						fileName: ''
-					});
-					setObjDomainCertificatePrivateKey({
-						content: '',
-						fileName: ''
-					});
+					emptyCertiState();
+
 					setVerifyBtnLoading(false);
 				} else if (data?.verifyResult === INVALID) {
 					createSnackbar({
@@ -187,18 +201,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 						hideButton: true,
 						replace: true
 					});
-					setObjDomainCertificate({
-						content: '',
-						fileName: ''
-					});
-					setObjDomainCertificateCaChain({
-						content: '',
-						fileName: ''
-					});
-					setObjDomainCertificatePrivateKey({
-						content: '',
-						fileName: ''
-					});
+					emptyCertiState();
 					setVerifyBtnLoading(false);
 				}
 			});
@@ -212,50 +215,78 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	]);
 
 	const uploadClickHandler = (): any => {
-		const zimbraId =
-			domainInformation &&
-			domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
-		const concatedCertiFile = objDomainCertificate?.content.concat(
-			objDomainCertificateCaChain.content
-		);
-		const body: any = {};
-		const attributes: any[] = [];
-		body.id = zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
-		attributes.push({
-			n: 'zimbraSSLCertificate',
-			_content: concatedCertiFile
-		});
-		attributes.push({
-			n: 'zimbraSSLPrivateKey',
-			_content: objDomainCertificatePrivateKey?.content
-		});
-		body.a = attributes;
-		modifyDomain(body)
-			.then(() => {
-				createSnackbar({
-					key: 'success',
-					type: 'success',
-					label: t('domain.certificate_saved', `The certificates have been saved`),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-				externalData(true);
-				setToggleWizardSection(false);
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+		if (isCustomCerti()) {
+			const zimbraId =
+				domainInformation &&
+				domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
+			const concatedCertiFile = objDomainCertificate?.content.concat(
+				objDomainCertificateCaChain.content
+			);
+			const body: any = {};
+			const attributes: any[] = [];
+			body.id = zimbraId;
+			body._jsns = 'urn:zimbraAdmin';
+			attributes.push({
+				n: 'zimbraSSLCertificate',
+				_content: concatedCertiFile
 			});
+			attributes.push({
+				n: 'zimbraSSLPrivateKey',
+				_content: objDomainCertificatePrivateKey?.content
+			});
+			body.a = attributes;
+			modifyDomain(body)
+				.then(() => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('domain.certificate_saved', `The certificates have been saved`),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					externalData(true);
+					setToggleWizardSection(false);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		} else {
+			let chainType = '';
+			selectedCertType === certificateTypes[0]?.value ? (chainType = LONG) : (chainType = SHORT);
+			IssueCertiRequest(domain.id, chainType)
+				.then((res) => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: res?.message[0]?._content,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		}
 	};
 
 	useEffect(() => {
@@ -274,6 +305,15 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		objDomainCertificatePrivateKey.content
 	]);
 
+	useEffect(() => {
+		if (!isCustomCerti()) {
+			emptyCertiState();
+			setUploadBtnTgl(true);
+		} else {
+			setUploadBtnTgl(false);
+		}
+	}, [isCustomCerti, selectedCertType]);
+
 	return (
 		<Container padding={{ all: 'small' }}>
 			<ListRow>
@@ -282,13 +322,13 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 						items={certificateTypes}
 						background="gray5"
 						label={t('label.certificate_type', 'Certificate Type')}
-						onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+						onChange={(e: string): void => {
 							setSelectedCertType(e);
 						}}
-						defaultSelection={certificateTypes[1]}
+						defaultSelection={certificateTypes?.filter(
+							(items) => items?.value === selectedCertType
+						)}
 						showCheckbox={false}
-						readOnly
-						disabled
 					/>
 				</Padding>
 			</ListRow>
@@ -308,7 +348,14 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							value={objDomainCertificate.content || ''}
 							size="medium"
 							inputName="zimbraNotes"
-							readOnly
+							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								isCustomCerti() &&
+									setStatesForFileContent(
+										DOMAIN_CERTIFICATE,
+										objDomainCertificate.fileName,
+										e.target.value
+									);
+							}}
 							hasError={!domainCertiErr}
 						/>
 						{!domainCertiErr && (
@@ -326,8 +373,14 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							label={t('label.load_your_cert_file', 'Load your certificate file')}
 							type="text"
 							backgroundColor="gray5"
-							value={objDomainCertificate.fileName || ''}
-							readOnly
+							value={objDomainCertificate.fileName}
+							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								isCustomCerti() &&
+									setObjDomainCertificate({
+										...objDomainCertificate,
+										fileName: e.target.value
+									});
+							}}
 						/>
 					</Padding>
 					<Padding vertical="small" horizontal="small">
@@ -336,9 +389,12 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							size="extralarge"
 							type="outlined"
 							color="primary"
-							onChange={(e: any): any =>
-								readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE)
-							}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								if (e?.target?.files) {
+									isCustomCerti() &&
+										readFileContentHandler(e?.target?.files[0], DOMAIN_CERTIFICATE);
+								}
+							}}
 						/>
 					</Padding>
 				</ListRow>
@@ -359,7 +415,14 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							value={objDomainCertificateCaChain.content || ''}
 							size="medium"
 							inputName="zimbraNotes"
-							readOnly
+							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								isCustomCerti() &&
+									setStatesForFileContent(
+										DOMAIN_CERTIFICATE_CA_CHAIN,
+										objDomainCertificateCaChain.fileName,
+										e.target.value
+									);
+							}}
 							hasError={!domainCertiCaChainErr}
 						/>
 						{!domainCertiCaChainErr && (
@@ -378,7 +441,13 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							type="text"
 							backgroundColor="gray5"
 							value={objDomainCertificateCaChain.fileName || ''}
-							readOnly
+							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								isCustomCerti() &&
+									setObjDomainCertificateCaChain({
+										...objDomainCertificateCaChain,
+										fileName: e.target.value
+									});
+							}}
 						/>
 					</Padding>
 					<Padding vertical="small" horizontal="small">
@@ -387,9 +456,12 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							size="extralarge"
 							type="outlined"
 							color="primary"
-							onChange={(e: any): any =>
-								readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_CA_CHAIN)
-							}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								if (e?.target?.files) {
+									isCustomCerti() &&
+										readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_CA_CHAIN);
+								}
+							}}
 						/>
 					</Padding>
 				</ListRow>
@@ -410,7 +482,14 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							value={objDomainCertificatePrivateKey.content || ''}
 							size="medium"
 							inputName="zimbraNotes"
-							readOnly
+							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								isCustomCerti() &&
+									setStatesForFileContent(
+										DOMAIN_CERTIFICATE_PRIVATE_KEY,
+										objDomainCertificatePrivateKey.fileName,
+										e.target.value
+									);
+							}}
 							hasError={!privateKeyErr}
 						/>
 						{!privateKeyErr && (
@@ -429,7 +508,13 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							type="text"
 							backgroundColor="gray5"
 							value={objDomainCertificatePrivateKey.fileName || ''}
-							readOnly
+							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								isCustomCerti() &&
+									setObjDomainCertificatePrivateKey({
+										...objDomainCertificatePrivateKey,
+										fileName: e.target.value
+									});
+							}}
 						/>
 					</Padding>
 					<Padding vertical="small" horizontal="small">
@@ -438,9 +523,12 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 							size="extralarge"
 							type="outlined"
 							color="primary"
-							onChange={(e: any): any =>
-								readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_PRIVATE_KEY)
-							}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								if (e?.target?.files) {
+									isCustomCerti() &&
+										readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_PRIVATE_KEY);
+								}
+							}}
 						/>
 					</Padding>
 				</ListRow>
