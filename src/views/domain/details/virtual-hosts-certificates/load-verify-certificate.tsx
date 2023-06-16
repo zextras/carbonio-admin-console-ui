@@ -215,78 +215,81 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	]);
 
 	const uploadClickHandler = (): any => {
-		if (isCustomCerti()) {
-			const zimbraId =
-				domainInformation &&
-				domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
-			const concatedCertiFile = objDomainCertificate?.content.concat(
-				objDomainCertificateCaChain.content
-			);
-			const body: any = {};
-			const attributes: any[] = [];
-			body.id = zimbraId;
-			body._jsns = 'urn:zimbraAdmin';
-			attributes.push({
-				n: 'zimbraSSLCertificate',
-				_content: concatedCertiFile
-			});
-			attributes.push({
-				n: 'zimbraSSLPrivateKey',
-				_content: objDomainCertificatePrivateKey?.content
-			});
-			body.a = attributes;
-			modifyDomain(body)
-				.then(() => {
-					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: t('domain.certificate_saved', `The certificates have been saved`),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					externalData(true);
-					setToggleWizardSection(false);
-				})
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+		const zimbraId =
+			domainInformation &&
+			domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
+		const concatedCertiFile = objDomainCertificate?.content.concat(
+			objDomainCertificateCaChain.content
+		);
+		const body: any = {};
+		const attributes: any[] = [];
+		body.id = zimbraId;
+		body._jsns = 'urn:zimbraAdmin';
+		attributes.push({
+			n: 'zimbraSSLCertificate',
+			_content: concatedCertiFile
+		});
+		attributes.push({
+			n: 'zimbraSSLPrivateKey',
+			_content: objDomainCertificatePrivateKey?.content
+		});
+		body.a = attributes;
+		modifyDomain(body)
+			.then(() => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('domain.certificate_saved', `The certificates have been saved`),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
 				});
-		} else {
-			let chainType = '';
-			selectedCertType === certificateTypes[0]?.value ? (chainType = LONG) : (chainType = SHORT);
-			IssueCertiRequest(domain.id, chainType)
-				.then((res) => {
-					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: res?.message[0]?._content,
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				})
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+				externalData(true);
+				setToggleWizardSection(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
 				});
-		}
+			});
+	};
+
+	const requestCertiClickHandler = (): void => {
+		setVerifyBtnLoading(true);
+		let chainType = '';
+		selectedCertType === certificateTypes[0]?.value ? (chainType = LONG) : (chainType = SHORT);
+		IssueCertiRequest(domain.id, chainType)
+			.then((res) => {
+				setVerifyBtnLoading(false);
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: res?.message[0]?._content,
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setToggleWizardSection(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
 	};
 
 	useEffect(() => {
@@ -308,249 +311,267 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	useEffect(() => {
 		if (!isCustomCerti()) {
 			emptyCertiState();
-			setUploadBtnTgl(true);
-		} else {
-			setUploadBtnTgl(false);
 		}
 	}, [isCustomCerti, selectedCertType]);
 
 	return (
 		<Container padding={{ all: 'small' }}>
 			<ListRow>
-				<Padding vertical="small" horizontal="small" width="100%">
-					<Select
-						items={certificateTypes}
-						background="gray5"
-						label={t('label.certificate_type', 'Certificate Type')}
-						onChange={(e: string): void => {
-							setSelectedCertType(e);
-						}}
-						defaultSelection={certificateTypes?.filter(
-							(items) => items?.value === selectedCertType
-						)}
-						showCheckbox={false}
-					/>
-				</Padding>
+				<Select
+					style={{ zIndex: '1' }}
+					items={certificateTypes}
+					background="gray5"
+					label={t('label.certificate_type', 'Certificate Type')}
+					onChange={(e: string): void => {
+						setSelectedCertType(e);
+					}}
+					defaultSelection={certificateTypes?.filter((items) => items?.value === selectedCertType)}
+					showCheckbox={false}
+				/>
 			</ListRow>
-			<Container>
-				<ListRow>
-					<Padding vertical="large" horizontal="small" width="100%">
-						<Text weight="bold" size="medium">
-							{t('label.domain_certificate', 'Domain Certificate')}
-						</Text>
-					</Padding>
-				</ListRow>
-				<ListRow>
-					<Padding vertical="small" horizontal="small" width="100%">
-						<Textarea
-							label={t('label.load_copy_certi', 'Load or copy your certificate')}
-							backgroundColor="gray5"
-							value={objDomainCertificate.content || ''}
-							size="medium"
-							inputName="zimbraNotes"
-							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-								isCustomCerti() &&
+			<Container
+				style={{
+					transform: !isCustomCerti() ? 'translateY(0rem)' : 'translateY(-3.5rem)',
+					transition: 'all 0.5s ease-in-out',
+					zIndex: '0',
+					position: 'relative'
+				}}
+			>
+				<Container width="100%" style={{ display: 'block' }} padding={{ horizontal: 'small' }}>
+					<Button
+						style={{
+							width: '100%'
+						}}
+						width="100%"
+						size="large"
+						label={t('label.generate_certifiacte', 'GENERATE CERTIFICATE')}
+						onClick={requestCertiClickHandler}
+						loading={verifyBtnLoading}
+						type="outlined"
+						disabled={isCustomCerti()}
+					/>
+				</Container>
+				<Container>
+					<ListRow>
+						<Padding vertical="large" horizontal="small" width="100%">
+							<Text weight="bold" size="medium" disabled={!isCustomCerti()}>
+								{t('label.domain_certificate', 'Domain Certificate')}
+							</Text>
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Padding vertical="small" horizontal="small" width="100%">
+							<Textarea
+								label={t('label.load_copy_certi', 'Load or copy your certificate')}
+								backgroundColor="gray5"
+								value={objDomainCertificate.content || ''}
+								size="medium"
+								inputName="zimbraNotes"
+								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setStatesForFileContent(
 										DOMAIN_CERTIFICATE,
 										objDomainCertificate.fileName,
 										e.target.value
 									);
-							}}
-							hasError={!domainCertiErr}
-						/>
-						{!domainCertiErr && (
-							<Padding top="extrasmall">
-								<Text color="error" overflow="break-word" size="extrasmall">
-									{t('label.certificate_invalid', 'The certificate is invalid')}
-								</Text>
-							</Padding>
-						)}
-					</Padding>
-				</ListRow>
-				<ListRow>
-					<Padding vertical="small" horizontal="small" width="100%">
-						<Input
-							label={t('label.load_your_cert_file', 'Load your certificate file')}
-							type="text"
-							backgroundColor="gray5"
-							value={objDomainCertificate.fileName}
-							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-								isCustomCerti() &&
+								}}
+								disabled={!isCustomCerti()}
+								hasError={!domainCertiErr}
+							/>
+							{!domainCertiErr && (
+								<Padding top="extrasmall">
+									<Text color="error" overflow="break-word" size="extrasmall">
+										{t('label.certificate_invalid', 'The certificate is invalid')}
+									</Text>
+								</Padding>
+							)}
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Padding vertical="small" horizontal="small" width="100%">
+							<Input
+								label={t('label.load_your_cert_file', 'Load your certificate file')}
+								type="text"
+								backgroundColor="gray5"
+								value={objDomainCertificate.fileName}
+								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setObjDomainCertificate({
 										...objDomainCertificate,
 										fileName: e.target.value
 									});
-							}}
-						/>
-					</Padding>
-					<Padding vertical="small" horizontal="small">
-						<FileLoader
-							label={''}
-							size="extralarge"
-							type="outlined"
-							color="primary"
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (e?.target?.files) {
-									isCustomCerti() &&
+								}}
+								disabled={!isCustomCerti()}
+							/>
+						</Padding>
+						<Padding vertical="small" horizontal="small">
+							<FileLoader
+								label={''}
+								size="extralarge"
+								type="outlined"
+								color="primary"
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e?.target?.files) {
 										readFileContentHandler(e?.target?.files[0], DOMAIN_CERTIFICATE);
-								}
-							}}
-						/>
-					</Padding>
-				</ListRow>
-			</Container>
-			<Container>
-				<ListRow>
-					<Padding vertical="large" horizontal="small" width="100%">
-						<Text weight="bold" size="medium">
-							{t('label.domain_certificate_ca_chain', 'Domain Certificate CA Chain')}
-						</Text>
-					</Padding>
-				</ListRow>
-				<ListRow>
-					<Padding vertical="small" horizontal="small" width="100%">
-						<Textarea
-							label={t('label.load_copy_certi', 'Load or copy your certificate')}
-							backgroundColor="gray5"
-							value={objDomainCertificateCaChain.content || ''}
-							size="medium"
-							inputName="zimbraNotes"
-							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-								isCustomCerti() &&
+									}
+								}}
+								disabled={!isCustomCerti()}
+							/>
+						</Padding>
+					</ListRow>
+				</Container>
+				<Container>
+					<ListRow>
+						<Padding vertical="large" horizontal="small" width="100%">
+							<Text weight="bold" size="medium" disabled={!isCustomCerti()}>
+								{t('label.domain_certificate_ca_chain', 'Domain Certificate CA Chain')}
+							</Text>
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Padding vertical="small" horizontal="small" width="100%">
+							<Textarea
+								label={t('label.load_copy_certi', 'Load or copy your certificate')}
+								backgroundColor="gray5"
+								value={objDomainCertificateCaChain.content || ''}
+								size="medium"
+								inputName="zimbraNotes"
+								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setStatesForFileContent(
 										DOMAIN_CERTIFICATE_CA_CHAIN,
 										objDomainCertificateCaChain.fileName,
 										e.target.value
 									);
-							}}
-							hasError={!domainCertiCaChainErr}
-						/>
-						{!domainCertiCaChainErr && (
-							<Padding top="extrasmall">
-								<Text color="error" overflow="break-word" size="extrasmall">
-									{t('label.certificate_invalid', 'The certificate is invalid')}
-								</Text>
-							</Padding>
-						)}
-					</Padding>
-				</ListRow>
-				<ListRow>
-					<Padding vertical="small" horizontal="small" width="100%">
-						<Input
-							label={t('label.load_your_cert_file', 'Load your certificate file')}
-							type="text"
-							backgroundColor="gray5"
-							value={objDomainCertificateCaChain.fileName || ''}
-							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-								isCustomCerti() &&
+								}}
+								disabled={!isCustomCerti()}
+								hasError={!domainCertiCaChainErr}
+							/>
+							{!domainCertiCaChainErr && (
+								<Padding top="extrasmall">
+									<Text color="error" overflow="break-word" size="extrasmall">
+										{t('label.certificate_invalid', 'The certificate is invalid')}
+									</Text>
+								</Padding>
+							)}
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Padding vertical="small" horizontal="small" width="100%">
+							<Input
+								label={t('label.load_your_cert_file', 'Load your certificate file')}
+								type="text"
+								backgroundColor="gray5"
+								value={objDomainCertificateCaChain.fileName || ''}
+								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setObjDomainCertificateCaChain({
 										...objDomainCertificateCaChain,
 										fileName: e.target.value
 									});
-							}}
-						/>
-					</Padding>
-					<Padding vertical="small" horizontal="small">
-						<FileLoader
-							label={''}
-							size="extralarge"
-							type="outlined"
-							color="primary"
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (e?.target?.files) {
-									isCustomCerti() &&
+								}}
+								disabled={!isCustomCerti()}
+							/>
+						</Padding>
+						<Padding vertical="small" horizontal="small">
+							<FileLoader
+								label={''}
+								size="extralarge"
+								type="outlined"
+								color="primary"
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e?.target?.files) {
 										readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_CA_CHAIN);
-								}
-							}}
-						/>
-					</Padding>
-				</ListRow>
-			</Container>
-			<Container>
-				<ListRow>
-					<Padding vertical="large" horizontal="small" width="100%">
-						<Text weight="bold" size="medium">
-							{t('label.domain_certificate_private_key', 'Domain Private Key')}
-						</Text>
-					</Padding>
-				</ListRow>
-				<ListRow>
-					<Padding vertical="small" horizontal="small" width="100%">
-						<Textarea
-							label={t('label.load_copy_certi', 'Load or copy your certificate')}
-							backgroundColor="gray5"
-							value={objDomainCertificatePrivateKey.content || ''}
-							size="medium"
-							inputName="zimbraNotes"
-							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-								isCustomCerti() &&
+									}
+								}}
+								disabled={!isCustomCerti()}
+							/>
+						</Padding>
+					</ListRow>
+				</Container>
+				<Container>
+					<ListRow>
+						<Padding vertical="large" horizontal="small" width="100%">
+							<Text weight="bold" size="medium" disabled={!isCustomCerti()}>
+								{t('label.domain_certificate_private_key', 'Domain Private Key')}
+							</Text>
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Padding vertical="small" horizontal="small" width="100%">
+							<Textarea
+								label={t('label.load_copy_certi', 'Load or copy your certificate')}
+								backgroundColor="gray5"
+								value={objDomainCertificatePrivateKey.content || ''}
+								size="medium"
+								inputName="zimbraNotes"
+								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setStatesForFileContent(
 										DOMAIN_CERTIFICATE_PRIVATE_KEY,
 										objDomainCertificatePrivateKey.fileName,
 										e.target.value
 									);
-							}}
-							hasError={!privateKeyErr}
-						/>
-						{!privateKeyErr && (
-							<Padding top="extrasmall">
-								<Text color="error" overflow="break-word" size="extrasmall">
-									{t('label.certificate_invalid', 'The certificate is invalid')}
-								</Text>
-							</Padding>
-						)}
-					</Padding>
-				</ListRow>
-				<ListRow>
-					<Padding vertical="small" horizontal="small" width="100%">
-						<Input
-							label={t('label.load_your_private_file', 'Load your Domain Private Key')}
-							type="text"
-							backgroundColor="gray5"
-							value={objDomainCertificatePrivateKey.fileName || ''}
-							onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-								isCustomCerti() &&
+								}}
+								disabled={!isCustomCerti()}
+								hasError={!privateKeyErr}
+							/>
+							{!privateKeyErr && (
+								<Padding top="extrasmall">
+									<Text color="error" overflow="break-word" size="extrasmall">
+										{t('label.certificate_invalid', 'The certificate is invalid')}
+									</Text>
+								</Padding>
+							)}
+						</Padding>
+					</ListRow>
+					<ListRow>
+						<Padding vertical="small" horizontal="small" width="100%">
+							<Input
+								label={t('label.load_your_private_file', 'Load your Domain Private Key')}
+								type="text"
+								backgroundColor="gray5"
+								value={objDomainCertificatePrivateKey.fileName || ''}
+								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setObjDomainCertificatePrivateKey({
 										...objDomainCertificatePrivateKey,
 										fileName: e.target.value
 									});
-							}}
-						/>
-					</Padding>
-					<Padding vertical="small" horizontal="small">
-						<FileLoader
-							label={''}
-							size="extralarge"
-							type="outlined"
-							color="primary"
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (e?.target?.files) {
-									isCustomCerti() &&
+								}}
+								disabled={!isCustomCerti()}
+							/>
+						</Padding>
+						<Padding vertical="small" horizontal="small">
+							<FileLoader
+								label={''}
+								size="extralarge"
+								type="outlined"
+								color="primary"
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									if (e?.target?.files) {
 										readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_PRIVATE_KEY);
-								}
-							}}
-						/>
-					</Padding>
-				</ListRow>
-			</Container>
-			<Container
-				width="100%"
-				style={{ display: 'block' }}
-				padding={{ top: 'large', bottom: 'small' }}
-			>
-				<Button
-					style={{ width: '100%' }}
+									}
+								}}
+								disabled={!isCustomCerti()}
+							/>
+						</Padding>
+					</ListRow>
+				</Container>
+				<Container
 					width="100%"
-					size="large"
-					label={
-						uploadBtnTgl
-							? t('label.want_to_use_this_certifiacte', 'I WANT TO USE THIS CERTIFICATE')
-							: t('label.verify', 'Verify')
-					}
-					onClick={uploadBtnTgl ? uploadClickHandler : verifyCertificateHandler}
-					loading={verifyBtnLoading}
-					type={uploadBtnTgl ? 'outlined' : 'default'}
-				/>
+					style={{ display: 'block' }}
+					padding={{ top: 'large', bottom: 'small' }}
+				>
+					<Button
+						style={{ width: '100%' }}
+						width="100%"
+						size="large"
+						label={
+							uploadBtnTgl
+								? t('label.want_to_use_this_certifiacte', 'I WANT TO USE THIS CERTIFICATE')
+								: t('label.verify', 'Verify')
+						}
+						onClick={uploadBtnTgl ? uploadClickHandler : verifyCertificateHandler}
+						loading={verifyBtnLoading}
+						type={uploadBtnTgl ? 'outlined' : 'default'}
+						disabled={!isCustomCerti()}
+					/>
+				</Container>
 			</Container>
 		</Container>
 	);
