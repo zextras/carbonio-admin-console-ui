@@ -238,7 +238,7 @@ const BucketDetailPanel: FC = () => {
 		if (selectedServerName === '') {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			delete objectToSend?.targetServers;
+			delete objectToSendDeleteBucket?.targetServers;
 		}
 		fetchSoap('zextras', objectToSendDeleteBucket).then((res) => {
 			const response = JSON.parse(res.Body.response.content);

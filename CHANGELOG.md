@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.22](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.21...v0.9.22) (2023-06-16)
+
+
+### Bug Fixes
+
+* fixed bucket label and item value undefined error ([a843298](https://github.com/zextras/carbonio-admin-console-ui/commit/a84329818cf2065859ea749a9ccf7f208f1d31ac))
+
 ### [0.9.21](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.20...v0.9.21) (2023-06-09)
 
 
