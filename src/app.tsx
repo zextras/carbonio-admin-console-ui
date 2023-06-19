@@ -590,19 +590,23 @@ const App: FC = () => {
 				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
 			}
 
-			addRoute({
-				route: BACKUP_ROUTE_ID,
-				position: 1,
-				visible: true,
-				label: t('label.backup', 'Backup') || '',
-				// primaryBar: 'HistoryOutline',
-				primaryBar: backupPrimaryBar,
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...servicesSection },
-				tooltip: BackupTooltipView
-			});
+			if (hasConfigRights) {
+				addRoute({
+					route: BACKUP_ROUTE_ID,
+					position: 1,
+					visible: true,
+					label: t('label.backup', 'Backup') || '',
+					// primaryBar: 'HistoryOutline',
+					primaryBar: backupPrimaryBar,
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...servicesSection },
+					tooltip: BackupTooltipView
+				});
+			} else {
+				removeRoute(BACKUP_ROUTE_ID);
+			}
 
 			addRoute({
 				route: NOTIFICATION_ROUTE_ID,
