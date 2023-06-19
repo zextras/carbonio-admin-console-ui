@@ -299,3 +299,5 @@ export const ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL = 'zimbraMtaPostscreenPipeli
 export const ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL = 'zimbraMtaPostscreenNonSmtpCommandTTL';
 export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL = 'zimbraMtaPostscreenBareNewlineTTL';
 export const IS_SHOW_POST_TUNING_BANNER = 'isShowPostTuningBanner';
+export const SHORT = 'short';
+export const LONG = 'long';

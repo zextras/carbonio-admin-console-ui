@@ -5,7 +5,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
 import {
 	Container,
 	Row,
@@ -17,7 +17,7 @@ import {
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import _, { isEqual, reduce } from 'lodash';
+import _, { isEqual, reduce, find } from 'lodash';
 import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
@@ -26,6 +26,7 @@ import { Features } from './features';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { COS, MOBILE_CALENDAR_FEATURE_SYNC, MOBILE_CONTACT_FEATURE_SYNC } from '../../constants';
 import { setCoreAttributes } from '../../services/set-core-attributes';
+import { useRightsStore, Right, Rights } from '../../store/rights/store';
 
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
@@ -38,6 +39,15 @@ const CosFeatures: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 	const [cosFeatures, setCosFeatures] = useState<any>({});
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const readonlyCOS = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return false;
+		}
+		return true;
+	}, [rights]);
 
 	const setSwitchOptionValue = useCallback(
 		(key: string, value: string): void => {
@@ -96,7 +106,7 @@ const CosFeatures: FC = () => {
 				setSwitchOptionValue('zimbraFeatureCalendarEnabled', obj?.zimbraFeatureCalendarEnabled);
 				setSwitchOptionValue('carbonioFeatureFilesAppEnabled', obj?.carbonioFeatureFilesAppEnabled);
 				setSwitchOptionValue('carbonioFeatureFilesEnabled', obj?.carbonioFeatureFilesEnabled);
-				setSwitchOptionValue('carbonioFeatureChatsEnabled', obj?.carbonioFeatureChatsEnabled);
+				setSwitchOptionValue('carbonioFeatureTeamEnabled', obj?.carbonioFeatureTeamEnabled);
 				setSwitchOptionValue('carbonioFeatureChatsAppEnabled', obj?.carbonioFeatureChatsAppEnabled);
 				setSwitchOptionValue('zimbraFeatureTasksEnabled', obj?.zimbraFeatureTasksEnabled);
 			}
@@ -263,7 +273,11 @@ const CosFeatures: FC = () => {
 			<Row orientation="horizontal" width="100%" background="gray6">
 				<Divider />
 			</Row>
-			<Features featuresDetail={cosFeatures} setFeaturesDetail={setCosFeatures} />
+			<Features
+				featuresDetail={cosFeatures}
+				setFeaturesDetail={setCosFeatures}
+				readonlyFeatures={readonlyCOS}
+			/>
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
 				<Text>
 					{t(

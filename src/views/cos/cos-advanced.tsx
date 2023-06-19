@@ -19,10 +19,12 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import _ from 'lodash';
+import { find } from 'lodash';
 import ListRow from '../list/list-row';
 import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
+import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import { COS } from '../../constants';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -36,6 +38,15 @@ const CosAdvanced: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const readonlyCOS = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return false;
+		}
+		return true;
+	}, [rights]);
 	const timeItems: any[] = useMemo(
 		() => [
 			{
@@ -1122,6 +1133,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraMailForwardingAddressMaxLength"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1134,6 +1146,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraMailForwardingAddressMaxNumAddrs"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1154,6 +1167,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraMailQuota"
 										onChange={onZimbraMailQuotaChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1166,6 +1180,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraContactMaxNumEntries"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1189,6 +1204,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraQuotaWarnPercent"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
@@ -1201,6 +1217,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraQuotaWarnInterval"
 										onChange={onZimbraQuotaWarnIntervalNumChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container width="26%" padding={{ left: 'small' }}>
@@ -1217,6 +1234,7 @@ const CosAdvanced: FC = () => {
 										showCheckbox={false}
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onChange={onZimbraQuotaWarnIntervalTypeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1240,6 +1258,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraQuotaWarnMessage"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1315,6 +1334,7 @@ const CosAdvanced: FC = () => {
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => changeSwitchOption('zimbraPasswordLocked')}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1335,6 +1355,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMinLength"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small', right: 'small' }}>
@@ -1344,6 +1365,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMaxLength"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small', right: 'small' }}>
@@ -1353,6 +1375,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMinUpperCaseChars"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1362,6 +1385,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMinLowerCaseChars"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1382,6 +1406,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMinPunctuationChars"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small', right: 'small' }}>
@@ -1391,6 +1416,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMinNumericChars"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small', right: 'small' }}>
@@ -1400,6 +1426,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMinAge"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1409,6 +1436,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMaxAge"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1432,6 +1460,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordMinDigitsOrPuncs"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container padding={{ left: 'small' }}>
@@ -1444,6 +1473,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordEnforceHistory"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1464,6 +1494,7 @@ const CosAdvanced: FC = () => {
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1495,6 +1526,7 @@ const CosAdvanced: FC = () => {
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => changeSwitchOption('zimbraPasswordLockoutEnabled')}
 										iconColor="primary"
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1518,7 +1550,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordLockoutMaxFailures"
 										onChange={changeValue}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1539,7 +1571,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordLockoutDuration"
 										onChange={onZimbraPasswordLockoutDurationNumChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
@@ -1557,7 +1589,7 @@ const CosAdvanced: FC = () => {
 										}
 										showCheckbox={false}
 										onChange={onZimbraPasswordLockoutDurationTypeChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
 								</Container>
 								<Container width="72%" padding={{ left: 'small', right: 'small' }}>
@@ -1570,7 +1602,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraPasswordLockoutFailureLifetime"
 										onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
 								</Container>
 								<Container width="28%" padding={{ left: 'small' }}>
@@ -1588,7 +1620,7 @@ const CosAdvanced: FC = () => {
 										}
 										showCheckbox={false}
 										onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
-										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE'}
+										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1623,6 +1655,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraAdminAuthTokenLifetime"
 										onChange={onZimbraAdminAuthTokenLifetimeNumChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
@@ -1640,6 +1673,7 @@ const CosAdvanced: FC = () => {
 										}
 										showCheckbox={false}
 										onChange={onZimbraAdminAuthTokenLifetimeTypeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1660,6 +1694,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraAuthTokenLifetime"
 										onChange={onZimbraAuthTokenLifetimeNumChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
@@ -1677,6 +1712,7 @@ const CosAdvanced: FC = () => {
 										}
 										showCheckbox={false}
 										onChange={onZimbraAuthTokenLifetimeTypeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1697,6 +1733,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraMailIdleSessionTimeout"
 										onChange={onZimbraMailIdleSessionTimeoutNumChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
@@ -1714,6 +1751,7 @@ const CosAdvanced: FC = () => {
 										}
 										showCheckbox={false}
 										onChange={onZimbraMailIdleSessionTimeoutTypeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1745,6 +1783,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraMailMessageLifetime"
 										onChange={onZimbraMailMessageLifetimeNumChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
@@ -1762,6 +1801,7 @@ const CosAdvanced: FC = () => {
 										}
 										showCheckbox={false}
 										onChange={onZimbraMailMessageLifetimeTypeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1782,6 +1822,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraMailTrashLifetime"
 										onChange={onZimbraMailTrashLifetimeNumChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
@@ -1799,6 +1840,7 @@ const CosAdvanced: FC = () => {
 										}
 										showCheckbox={false}
 										onChange={onZimbraMailTrashLifetimeTypeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1819,6 +1861,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraMailSpamLifetime"
 										onChange={onZimbraMailSpamLifetimeNumChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
@@ -1836,6 +1879,7 @@ const CosAdvanced: FC = () => {
 										}
 										showCheckbox={false}
 										onChange={onZimbraMailSpamLifetimeTypeChange}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>
@@ -1870,6 +1914,7 @@ const CosAdvanced: FC = () => {
 										background="gray5"
 										inputName="zimbraFreebusyExchangeUserOrg"
 										onChange={changeValue}
+										disabled={readonlyCOS}
 									/>
 								</Container>
 							</ListRow>

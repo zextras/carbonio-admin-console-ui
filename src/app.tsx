@@ -39,6 +39,7 @@ import {
 	CARBONIO_SEND_ANALYTICS,
 	CARBONIO_SEND_FULL_ERROR_STACK,
 	CONFIG,
+	COS,
 	COS_ROUTE_ID,
 	CREATE_NEW_COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
@@ -113,10 +114,20 @@ const App: FC = () => {
 	const setRights = useRightsStore((state) => state.setRights);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
-
-	const showSubsciption = useMemo(() => {
+	const hasConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		if (rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
+	const showCOS = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		if (
+			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ||
+			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ||
+			find(rightsConfig?.all?.[0]?.right, { n: 'listCos' })
+		) {
 			return true;
 		}
 		return false;
@@ -544,20 +555,25 @@ const App: FC = () => {
 			});
 		}
 
-		addRoute({
-			route: COS_ROUTE_ID,
-			position: 2,
-			visible: true,
-			label: t('label.cos', 'COS') || '',
-			primaryBar: 'CosOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...managementSection },
-			tooltip: CosTooltipView
-		});
+		if (showCOS) {
+			addRoute({
+				route: COS_ROUTE_ID,
+				position: 2,
+				visible: true,
+				label: t('label.cos', 'COS') || '',
+				primaryBar: 'CosOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: CosTooltipView
+			});
+		} else {
+			removeRoute(COS_ROUTE_ID);
+		}
+
 		if (isAdvanced) {
-			if (showSubsciption) {
+			if (hasConfigRights) {
 				addRoute({
 					route: SUBSCRIPTIONS_ROUTE_ID,
 					position: 4,
@@ -614,18 +630,22 @@ const App: FC = () => {
 				tooltip: OperationTooltipView
 			});
 
-			addRoute({
-				route: MTA_ROUTE_ID,
-				position: 3,
-				visible: true,
-				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
-				primaryBar: 'MailFolderOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection },
-				tooltip: MTATooltipView
-			});
+			if (hasConfigRights) {
+				addRoute({
+					route: MTA_ROUTE_ID,
+					position: 3,
+					visible: true,
+					label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
+					primaryBar: 'MailFolderOutline',
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...logAndQueuesSection },
+					tooltip: MTATooltipView
+				});
+			} else {
+				removeRoute(MTA_ROUTE_ID);
+			}
 		}
 		addRoute({
 			route: PRIVACY_ROUTE_ID,
@@ -658,8 +678,9 @@ const App: FC = () => {
 		PrivacyTooltipView,
 		NotificationTooltipView,
 		hasListServerRights,
-		showSubsciption,
-		MTATooltipView
+		MTATooltipView,
+		showCOS,
+		hasConfigRights
 	]);
 
 	useEffect(() => {

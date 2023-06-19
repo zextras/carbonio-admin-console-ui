@@ -272,6 +272,7 @@ const EditBucketDetailPanel: FC<{
 	const updatePreviousDetail = (): void => {
 		const latestData: any = {};
 		latestData.bucketName = bucketName;
+		latestData.bucketLabel = bucketLabel;
 		latestData.regionData = bucketDetail?.region !== undefined && regionData;
 		latestData.accessKeyData = accessKeyData;
 		latestData.secretKey = secretKey;
@@ -346,6 +347,9 @@ const EditBucketDetailPanel: FC<{
 		previousDetail?.bucketType
 			? setBucketType(previousDetail?.bucketType)
 			: setBucketType(bucketTypeValue);
+		previousDetail?.bucketLabel
+			? setBucketLabel(previousDetail?.bucketLabel)
+			: setBucketLabel(bucketDetail?.label);
 		previousDetail?.bucketName
 			? setBucketName(previousDetail?.bucketName)
 			: setBucketName(bucketDetail?.bucketName);
@@ -449,6 +453,12 @@ const EditBucketDetailPanel: FC<{
 		bucketRegionsInAlibaba,
 		regionData
 	]);
+
+	useEffect(() => {
+		if (bucketLabel !== bucketDetail?.label) {
+			setIsDirty(true);
+		}
+	}, [bucketDetail?.label, bucketLabel]);
 
 	useEffect(() => {
 		if (accessKeyData !== undefined && bucketDetail?.accessKey !== accessKeyData) {
