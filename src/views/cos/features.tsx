@@ -15,7 +15,15 @@ export const Features: FC<{
 	cosDetail?: Record<string, string>;
 	accSpecificDetail?: Record<string, string>;
 	setEmptyValue?: CallableFunction;
-}> = ({ featuresDetail, setFeaturesDetail, cosDetail, accSpecificDetail, setEmptyValue }) => {
+	readonlyFeatures?: boolean;
+}> = ({
+	featuresDetail,
+	setFeaturesDetail,
+	cosDetail,
+	accSpecificDetail,
+	setEmptyValue,
+	readonlyFeatures = false
+}) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
@@ -65,6 +73,7 @@ export const Features: FC<{
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('carbonioFeatureMailsAppEnabled')
 							}
+							disabled={readonlyFeatures}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -79,6 +88,7 @@ export const Features: FC<{
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureSignaturesEnabled')
 							}
+							disabled={readonlyFeatures}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -93,6 +103,7 @@ export const Features: FC<{
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureOutOfOfficeReplyEnabled')
 							}
+							disabled={readonlyFeatures}
 						/>
 					</Row>
 					{isAdvanced && (
@@ -108,6 +119,7 @@ export const Features: FC<{
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('zimbraFeatureMobileSyncEnabled')
 								}
+								disabled={readonlyFeatures}
 							/>
 						</Row>
 					)}
@@ -135,6 +147,7 @@ export const Features: FC<{
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('carbonioFeatureTeamEnabled')
 								}
+								disabled={readonlyFeatures}
 							/>
 						</Row>
 						<Row
@@ -153,7 +166,7 @@ export const Features: FC<{
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('carbonioFeatureChatsAppEnabled')
 								}
-								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE'}
+								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE' || readonlyFeatures}
 							/>
 						</Row>
 					</Container>
@@ -188,6 +201,7 @@ export const Features: FC<{
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureContactsEnabled')
 							}
+							disabled={readonlyFeatures}
 						/>
 					</Row>
 					{isAdvanced && (
@@ -203,7 +217,9 @@ export const Features: FC<{
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('mobileContactFeatureSync')
 								}
-								disabled={featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE'}
+								disabled={
+									featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE' || readonlyFeatures
+								}
 							/>
 						</Row>
 					)}
@@ -230,6 +246,7 @@ export const Features: FC<{
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureCalendarEnabled')
 							}
+							disabled={readonlyFeatures}
 						/>
 					</Row>
 					{isAdvanced && (
@@ -245,7 +262,9 @@ export const Features: FC<{
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('mobileCalendarFeatureSync')
 								}
-								disabled={featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE'}
+								disabled={
+									featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE' || readonlyFeatures
+								}
 							/>
 						</Row>
 					)}
@@ -280,6 +299,7 @@ export const Features: FC<{
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('carbonioFeatureFilesEnabled')
 							}
+							disabled={readonlyFeatures}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -294,7 +314,7 @@ export const Features: FC<{
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('carbonioFeatureFilesAppEnabled')
 							}
-							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE'}
+							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE' || readonlyFeatures}
 						/>
 					</Row>
 				</Container>
@@ -320,6 +340,7 @@ export const Features: FC<{
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureTasksEnabled')
 							}
+							disabled={readonlyFeatures}
 						/>
 					</Row>
 				</Container>

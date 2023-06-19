@@ -312,6 +312,7 @@ const ActiveSync: FC = () => {
 					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
 						<Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
 							<Input
+								disabled={allDeviceRow.length === 0 && searchString.length === 0}
 								label={t(
 									'label.filter_by_device_type_account',
 									'Filter by device type, account, status'

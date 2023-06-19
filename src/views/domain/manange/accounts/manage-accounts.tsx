@@ -686,6 +686,7 @@ const ManageAccounts: FC = () => {
 							<Container>
 								<Input
 									label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
+									disabled={accountList.length === 0 && searchString.length === 0}
 									value={searchString}
 									background="gray5"
 									onChange={(e: any): any => {
@@ -695,7 +696,6 @@ const ManageAccounts: FC = () => {
 								/>
 							</Container>
 						</Row>
-
 						<Row
 							orientation="horizontal"
 							mainAlignment="space-between"

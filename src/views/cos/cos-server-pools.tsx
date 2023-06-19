@@ -20,16 +20,17 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { debounce } from 'lodash';
+import { debounce, find } from 'lodash';
 import ListRow from '../list/list-row';
 import Paging from '../components/paging';
 import { useCosStore } from '../../store/cos/store';
 import { getAllServers } from '../../services/get-all-servers-service';
 import { modifyCos } from '../../services/modify-cos-service';
-import { DISABLED, ENABLED } from '../../constants';
+import { DISABLED, ENABLED, COS } from '../../constants';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import { useRightsStore, Right, Rights } from '../../store/rights/store';
 
 const CosServerPools: FC = () => {
 	const [t] = useTranslation();
@@ -45,6 +46,15 @@ const CosServerPools: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 	const [searchServer, setSearchServer] = useState<string>('');
 	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const readonlyCOS = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return false;
+		}
+		return true;
+	}, [rights]);
 
 	useEffect(() => {
 		if (allMailStoreList && allMailStoreList.length > 0) {
@@ -479,6 +489,10 @@ const CosServerPools: FC = () => {
 										>
 											<Input
 												value={searchServer}
+												disabled={
+													// eslint-disable-next-line max-len
+													(serverTableRows.length === 0 && searchServer.length === 0) || readonlyCOS
+												}
 												label={t('cos.search_a_specific_server', 'Search for a specific server')}
 												CustomIcon={(): any => (
 													<Icon icon="FunnelOutline" size="large" color="primary" />
@@ -497,7 +511,7 @@ const CosServerPools: FC = () => {
 													color="primary"
 													icon="CheckmarkCircleOutline"
 													iconPlacement="right"
-													disabled={!enable}
+													disabled={!enable || readonlyCOS}
 													onClick={onEnable}
 													size="extralarge"
 												/>
@@ -511,13 +525,14 @@ const CosServerPools: FC = () => {
 												icon="CloseCircleOutline"
 												iconPlacement="right"
 												size="extralarge"
-												disabled={!disable}
+												disabled={!disable || readonlyCOS}
 												onClick={onDisable}
 											/>
 										</Row>
 									</Row>
 								</Container>
 							</Row>
+
 							<Row
 								orientation="horizontal"
 								mainAlignment="space-between"

@@ -265,6 +265,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						</Container>
 						<Container padding={{ bottom: 'medium', top: 'large' }}>
 							<Input
+								disabled={accountRows.length === 0 && !searchString}
 								backgroundColor="gray5"
 								value={searchString}
 								onChange={(e: any): void => {

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import { find } from 'lodash';
 import {
 	Container,
 	Divider,
@@ -23,9 +24,10 @@ import { getFormatedDate, getDateFromStr } from '../utility/utils';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 import { modifyCos } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
-import { DEFAULT } from '../../constants';
+import { DEFAULT, COS } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
 import ListRow from '../list/list-row';
+import { useRightsStore, Right, Rights } from '../../store/rights/store';
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
@@ -40,6 +42,15 @@ const CosGeneralInformation: FC = () => {
 	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const totalAccount = useCosStore((state) => state.totalAccount);
 	const totalDomain = useCosStore((state) => state.totalDomain);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const readonlyCOS = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return false;
+		}
+		return true;
+	}, [rights]);
 
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
@@ -270,7 +281,7 @@ const CosGeneralInformation: FC = () => {
 									onChange={(e: any): any => {
 										setCosName(e.target.value);
 									}}
-									disabled={canDeleteCOS}
+									disabled={canDeleteCOS || readonlyCOS}
 								/>
 							</Container>
 						</ListRow>
@@ -323,6 +334,7 @@ const CosGeneralInformation: FC = () => {
 									onChange={(e: any): any => {
 										setZimbraNotes(e.target.value);
 									}}
+									disabled={readonlyCOS}
 								/>
 							</Container>
 						</ListRow>
@@ -342,7 +354,7 @@ const CosGeneralInformation: FC = () => {
 					size="large"
 					width="100%"
 					style={{ width: '100%' }}
-					disabled={canDeleteCOS}
+					disabled={canDeleteCOS || readonlyCOS}
 					onClick={onDeleteCOSConfirmation}
 				/>
 			</Row>

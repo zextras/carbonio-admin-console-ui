@@ -608,6 +608,7 @@ const DomainMailingList: FC = () => {
 						>
 							<Container>
 								<Input
+									disabled={mailingList.length === 0 && searchString.length === 0}
 									backgroundColor="gray5"
 									label={t('label.search_dot', 'Search…')}
 									onChange={(e: any): any => {

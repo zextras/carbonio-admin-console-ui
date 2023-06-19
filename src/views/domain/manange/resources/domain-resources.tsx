@@ -421,6 +421,7 @@ const DomainResources: FC = () => {
 						>
 							<Container>
 								<Input
+									disabled={resourceList.length === 0 && searchString.length === 0}
 									backgroundColor="gray5"
 									label={t('label.search_dot', 'Search…')}
 									onChange={(e: any): any => {
@@ -430,6 +431,7 @@ const DomainResources: FC = () => {
 								/>
 							</Container>
 						</Row>
+
 						<Row
 							orientation="horizontal"
 							mainAlignment="space-between"

@@ -344,6 +344,7 @@ export const SignatureDetail: FC<any> = ({
 					>
 						<Row width="100%">
 							<Input
+								disabled={signatureListRows.length === 0 && searchSignatureName.length === 0}
 								label={t('label.search_a_signature', 'Search for a signature')}
 								backgroundColor="gray5"
 								value={searchSignatureName}
