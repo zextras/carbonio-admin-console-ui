@@ -1634,14 +1634,21 @@ export const BucketRegionsInAlibaba = (t: TFunction): Array<{ value?: string; la
 export const CertificateTypes = (t: TFunction): Array<{ value?: string; label: string }> => [
 	{
 		label: t(
-			'domain.certificate_type_use_letsencrypt',
-			'I want to use a Let’s Encrypt Certificate'
+			'domain.certificate_type_use_letsencrypt_long_chain',
+			'I want to use a Let’s Encrypt (longChain) certificate'
 		),
 		value: '1'
 	},
 	{
-		label: t('domain.certificate_type_use_custom', 'I want to use a Custom Certificate'),
+		label: t(
+			'domain.certificate_type_use_letsencrypt_short_chain',
+			'I want to use a Let’s Encrypt (shortChain) certificate'
+		),
 		value: '2'
+	},
+	{
+		label: t('domain.certificate_type_use_custom', 'I want to use a Custom Certificate'),
+		value: '3'
 	}
 ];
 

@@ -19,7 +19,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { isEqual } from 'lodash';
+import { isEqual, find } from 'lodash';
 import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -39,12 +39,14 @@ import {
 	ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
 	ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
 	ZIMBRA_VIRUS_WARN_ADMIN,
-	ZIMBRA_VIRUS_WARN_RECIPIENT
+	ZIMBRA_VIRUS_WARN_RECIPIENT,
+	CONFIG
 } from '../../../constants';
 import { useConfigStore } from '../../../store/config/store';
 import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
 import { modifyConfig } from '../../../services/modify-config';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
@@ -67,6 +69,15 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<string>('');
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetMTA = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaAntiVirusAndAntispamInitialDetail((prev: any) => ({
@@ -755,6 +766,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_SPAM_SUBJECT_TAG, e.target.value);
 							}}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -768,6 +780,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
 							)}
 							onChange={onSpamTagPercentChange}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 				</Container>
@@ -790,6 +803,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
 							)}
 							onChange={onSpamDestinyChange}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -803,7 +817,10 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent
 							)}
 							onChange={onSpamKillPercentChange}
-							disabled={mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === D_PASS}
+							disabled={
+								mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === D_PASS ||
+								!allowSetMTA
+							}
 						/>
 					</Container>
 				</Container>
@@ -825,6 +842,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									!mtaAntiVirusAndAntispamDetail?.zimbraAmavisOriginatingBypassSA
 								)
 							}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -837,6 +855,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									!mtaAntiVirusAndAntispamDetail?.zimbraAmavisEnableDKIMVerification
 								)
 							}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 				</Container>
@@ -874,6 +893,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setAntiVirusMirrorsAddText(e.target.value);
 								}}
+								disabled={!allowSetMTA}
 							/>
 						</Container>
 						<Container width="15%" crossAlignment="flex-start">
@@ -883,7 +903,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								label={t('mta.add', 'Add')}
 								color="primary"
 								onClick={onAddAntivirusMirrors}
-								disabled={antiVirusMirrorsAddText === ''}
+								disabled={antiVirusMirrorsAddText === '' || !allowSetMTA}
 							/>
 						</Container>
 						<Container width="25%" crossAlignment="flex-start" mainAlignment="flex-start">
@@ -892,7 +912,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								size="large"
 								label={t('mta.remove', 'Remove')}
 								color="primary"
-								disabled={selectedAntivirusMirrors.length === 0}
+								disabled={selectedAntivirusMirrors.length === 0 || !allowSetMTA}
 								onClick={onRemoveAntivirusMirrors}
 							/>
 						</Container>
@@ -913,6 +933,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setAdditionalAntiVirusDefinitionAddText(e.target.value);
 									}}
+									disabled={!allowSetMTA}
 								/>
 							</Container>
 							<Container width="15%" crossAlignment="flex-start">
@@ -921,7 +942,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									size="large"
 									label={t('mta.add', 'Add')}
 									color="primary"
-									disabled={additionalAntiVirusDefinitionAddText === ''}
+									disabled={additionalAntiVirusDefinitionAddText === '' || !allowSetMTA}
 									onClick={onAddAdditionalAntivirusDefinition}
 								/>
 							</Container>
@@ -931,7 +952,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									size="large"
 									label={t('mta.remove', 'Remove')}
 									color="primary"
-									disabled={selectedAdditionalAntivirusDefinition.length === 0}
+									disabled={selectedAdditionalAntivirusDefinition.length === 0 || !allowSetMTA}
 									onClick={onRemoveAdditionalAntivirusDefinition}
 								/>
 							</Container>
@@ -999,6 +1020,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									`${e.target.value}${updateMesurementUnit?.value}`
 								);
 							}}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start" width="30%">
@@ -1008,6 +1030,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							showCheckbox={false}
 							selection={updateMesurementUnit}
 							onChange={onUpdateMesurementChange}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 				</Container>
@@ -1032,6 +1055,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									!mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnRecipient
 								)
 							}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -1044,6 +1068,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									!mtaAntiVirusAndAntispamDetail?.zimbraVirusBlockEncryptedArchive
 								)
 							}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 				</Container>
@@ -1061,6 +1086,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								!mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin
 							)
 						}
+						disabled={!allowSetMTA}
 					/>
 				</Container>
 

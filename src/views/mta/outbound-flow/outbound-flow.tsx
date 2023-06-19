@@ -19,7 +19,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { isEqual } from 'lodash';
+import { isEqual, find } from 'lodash';
 import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -40,11 +40,13 @@ import {
 	ZIMBRA_MTA_SMTP_HELLO_NAME,
 	ZIMBRA_MTA_TLS_SECURITY_LEVEL,
 	ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
-	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP
+	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
+	CONFIG
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import { getAllServers } from '../../../services/get-all-servers-service';
 import { useServerStore } from '../../../store/server/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
@@ -55,6 +57,15 @@ const MTAOutBoundFlow: FC = () => {
 	const allServersList = useServerStore((state) => state.serverList);
 	const setServerList = useServerStore((state) => state.setServerList);
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<TRow>>([]);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetMTA = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	const [mtaOutboundFlowInitialDetail, setMtaOutboundFlowInitialDetail] =
 		useState<MtaOutboundFlow>();
@@ -523,6 +534,7 @@ const MTAOutBoundFlow: FC = () => {
 										!mtaOutboundDetail?.zimbraSmtpSendAddOriginatingIP
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -544,6 +556,7 @@ const MTAOutBoundFlow: FC = () => {
 										!mtaOutboundDetail?.zimbraSmtpSendAddAuthenticatedUser
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -573,6 +586,7 @@ const MTAOutBoundFlow: FC = () => {
 										mtaOutboundDetail?.zimbraMtaSaslAuthEnable === 'yes' ? 'no' : 'yes'
 									)
 								}
+								disabled={!allowSetMTA}
 							/>
 						</Tooltip>
 					</Container>
@@ -587,6 +601,7 @@ const MTAOutBoundFlow: FC = () => {
 									item.value === mtaOutboundDetail?.zimbraMtaTlsSecurityLevel
 							)}
 							onChange={onTlsSecurityOptions}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 				</Container>
@@ -598,10 +613,11 @@ const MTAOutBoundFlow: FC = () => {
 				>
 					<Input
 						label={t('mta.my_netword', 'MyNetwork')}
-						value={mtaOutboundDetail?.zimbraMtaMyNetworks}
+						value={mtaOutboundDetail?.zimbraMtaMyNetworks || ''}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-							setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
+							allowSetMTA ?? setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
 						}}
+						readOnly
 					/>
 				</Container>
 				<Container
@@ -614,18 +630,18 @@ const MTAOutBoundFlow: FC = () => {
 					<Container padding={{ right: 'medium' }}>
 						<Input
 							label={t('mta.smtp_helo_name', 'SMTP Helo Name')}
-							value={mtaOutboundDetail?.zimbraMtaSmtpHeloName}
+							value={mtaOutboundDetail?.zimbraMtaSmtpHeloName || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
+								allowSetMTA ?? setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
 							}}
 						/>
 					</Container>
 					<Container>
 						<Input
 							label={t('mta.my_hostname', 'My Hostname')}
-							value={mtaOutboundDetail?.zimbraMtaMyHostname}
+							value={mtaOutboundDetail?.zimbraMtaMyHostname || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
+								allowSetMTA ?? setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
 							}}
 						/>
 					</Container>
@@ -641,18 +657,18 @@ const MTAOutBoundFlow: FC = () => {
 					<Container padding={{ right: 'medium' }}>
 						<Input
 							label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
-							value={mtaOutboundDetail?.zimbraMtaFallbackRelayHost}
+							value={mtaOutboundDetail?.zimbraMtaFallbackRelayHost || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
+								allowSetMTA ?? setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
 							}}
 						/>
 					</Container>
 					<Container>
 						<Input
 							label={t('mta.relay_host', 'Relay Host')}
-							value={mtaOutboundDetail?.zimbraMtaRelayHost}
+							value={mtaOutboundDetail?.zimbraMtaRelayHost || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
+								allowSetMTA ?? setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
 							}}
 						/>
 					</Container>
@@ -665,9 +681,9 @@ const MTAOutBoundFlow: FC = () => {
 				>
 					<Input
 						label={t('mta.my_origin', 'My Origin')}
-						value={mtaOutboundDetail?.zimbraMtaMyOrigin}
+						value={mtaOutboundDetail?.zimbraMtaMyOrigin || ''}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-							setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
+							allowSetMTA ?? setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
 						}}
 					/>
 				</Container>
