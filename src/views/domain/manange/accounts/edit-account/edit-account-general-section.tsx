@@ -17,10 +17,13 @@ import {
 	ChipInput,
 	Button,
 	useSnackbar,
-	Modal
+	Modal,
+	Dropdown,
+	Padding
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import { map } from 'lodash';
+import { debounce, map } from 'lodash';
+import styled from 'styled-components';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
 import { localeList, AccountStatus } from '../../../../utility/utils';
@@ -28,6 +31,16 @@ import ManageAliases from '../../../../components/manageAliases';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { AccountType } from '../account-types/account-types';
 import InheritedSelect from './inherited-components/inherited-select';
+import { getDomainList } from '../../../../../services/search-domain-service';
+import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
+import { objectType } from '../../../../../../types';
+
+const SelectItem = styled(Row)``;
+
+const CustomIcon = styled(Icon)`
+	width: 20px;
+	height: 20px;
+`;
 
 const EditAccountGeneralSection: FC = () => {
 	const createSnackbar = useSnackbar();
@@ -43,14 +56,51 @@ const EditAccountGeneralSection: FC = () => {
 	} = conext;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
+	const [t] = useTranslation();
+	const localeZone = useMemo(() => localeList(t), [t]);
+	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
 	const [showDeletePasswordModal, setShowDeletePasswordModal] = useState<boolean>(false);
+	const [domainList, setDomainList] = useState([]);
+	const [isDomainSelect, setIsDomainSelect] = useState(false);
+	const [searchDomainName, setSearchDomainName] = useState(domainName);
 
-	const [t] = useTranslation();
-	const localeZone = useMemo(() => localeList(t), [t]);
-	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
+	const getDomainLists = useCallback((domain: string | undefined): void => {
+		getDomainList(domain, 0).then((data) => {
+			const searchResponse = data;
+			if (!!searchResponse && searchResponse?.searchTotal > 0) {
+				setDomainList(searchResponse?.domain);
+			} else {
+				setDomainList([]);
+			}
+		});
+	}, []);
+
+	const selectedDomain = useCallback(
+		(domain: string) => {
+			setIsDomainSelect(true);
+			setSearchDomainName(domain);
+			setAccountDetail((prev: AccountType) => ({ ...prev, domainName: domain }));
+		},
+		[setAccountDetail]
+	);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchDomainCall = useCallback(
+		debounce((domain) => {
+			getDomainLists(domain);
+		}, 700),
+		[debounce]
+	);
+
+	useEffect(() => {
+		if (!isDomainSelect) {
+			searchDomainCall(searchDomainName);
+		}
+	}, [searchDomainName, isDomainSelect, searchDomainCall]);
+
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
 			setAccountDetail((prev: AccountType) => ({
@@ -148,6 +198,72 @@ const EditAccountGeneralSection: FC = () => {
 		},
 		[setAccountDetail]
 	);
+
+	const items =
+		domainList.length > MAX_DOMAIN_DISPLAY
+			? [
+					{
+						customComponent: (
+							<>
+								<Row takeAvwidth="fill" mainAlignment="flex-start">
+									<Padding horizontal="small">
+										<CustomIcon icon="InfoOutline"></CustomIcon>
+									</Padding>
+								</Row>
+								<Row
+									takeAvwidth="fill"
+									mainAlignment="flex-start"
+									width="100%"
+									padding={{
+										all: 'small'
+									}}
+								>
+									<Text overflow="break-word">
+										{t(
+											'many_domain_info_msg',
+											'So many domains! Which one would you like to see? Start typing to filter.'
+										)}
+									</Text>
+								</Row>
+							</>
+						)
+					}
+			  ]
+			: domainList.map((domain: objectType, index) => ({
+					id: domain.id,
+					label: domain.name,
+					customComponent: (
+						<SelectItem
+							top="9px"
+							right="large"
+							bottom="9px"
+							left="large"
+							style={{
+								display: 'block',
+								textAlign: 'left',
+								height: 'inherit',
+								padding: '3px',
+								width: 'inherit'
+							}}
+							onClick={(): void => {
+								selectedDomain(domain?.name);
+							}}
+						>
+							{domain?.name}
+						</SelectItem>
+					)
+			  }));
+
+	useEffect(() => {
+		selectedDomain(accountDetail?.domainName);
+	}, [accountDetail?.domainName, selectedDomain]);
+
+	useEffect(() => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, domainName }));
+		setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, domainName }));
+		getDomainLists(domainName);
+	}, [domainName, getDomainLists, setAccountDetail, setInitAccountDetail]);
+
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -213,13 +329,36 @@ const EditAccountGeneralSection: FC = () => {
 						>
 							<Icon icon="AtOutline" size="large" />
 						</Row>
-						<Row width="90%" mainAlignment="flex-start" crossAlignment="flex-start">
-							<Input
-								label={t('label.domain_name', 'Domain Name')}
-								background="gray6"
-								value={domainName}
-								disabled
-							/>
+						<Row
+							takeAvwidth="fill"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							width="90%"
+						>
+							<Dropdown
+								items={items}
+								placement="bottom-start"
+								maxWidth="400px"
+								disableAutoFocus
+								width="365px"
+								style={{
+									width: '100%'
+								}}
+							>
+								<Input
+									label={
+										isDomainSelect
+											? t('label.domain_name', 'Domain Name')
+											: t('domain.type_here_a_domain', 'Type here a domain')
+									}
+									onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+										setIsDomainSelect(false);
+										setSearchDomainName(ev.target.value);
+									}}
+									value={searchDomainName}
+									backgroundColor="gray5"
+								/>
+							</Dropdown>
 						</Row>
 					</Row>
 				</Row>
