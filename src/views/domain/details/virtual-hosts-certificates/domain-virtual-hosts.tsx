@@ -21,6 +21,7 @@ import {
 import { Trans, useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { useParams } from 'react-router-dom';
 import {
 	ZIMBRA_DOMAIN_NAME,
 	ZIMBRA_ID,
@@ -31,63 +32,62 @@ import {
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import logo from '../../../../assets/helmet_logo.svg';
-import logoGardian from '../../../../assets/gardian.svg';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { AbsoluteContainer } from '../../../components/styled';
 import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
-import Textarea from '../../../components/textarea';
 import DeleteCertificateModel from './delete-certificate-model';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import ListRow from '../../../list/list-row';
+import { objectType } from '../../../../../types';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
+	const { domainId }: { domainId: string } = useParams();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const domainInformation: any = useDomainStore((state) => state.domain?.a);
+	const setDomain = useDomainStore((state) => state.setDomain);
 	const [selectedRows, setSelectedRows] = useState<any>([]);
 	const [addButtonDisabled, setAddButtonDisabled] = useState(true);
 	const [removeVirtualBtnDisabled, setRemoveVirtualBtnDisabled] = useState(true);
-	const [removeDomainCerti, setRemoveDomainCerti] = useState(true);
-	const [removePrivateKey, setRemovePrivateKey] = useState(true);
-	const [toggleDownloadDomainCertiBtn, setToggleDownloadDomainCertiBtn] = useState(true);
-	const [toggleDownloadPrivateKeyCerti, setToggleDownloadPrivateKeyCerti] = useState(true);
+	const [toggleCertiBtn, setToggleCertiBtn] = useState(true);
 	const [virtualHostValue, setVirutalHostValue] = useState('');
 	const [items, setItems] = useState<any>([]);
 	const [defaultItems, setDefaultItems] = useState<any>([]);
 	const [domainName, setDomainName] = useState<string>('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [zimbraId, setZimbraId] = useState('');
-	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const domainInformation: any = useDomainStore((state) => state.domain?.a);
-	const setDomain = useDomainStore((state) => state.setDomain);
 	const [toggleLoadVerifyCertWizard, setToggleLoadVerifyCertWizard] = useState(false);
 	const [domainCertificate, setDomainCertificate] = useState<any>(null);
-	const [privateKey, setPrivateKey] = useState<any>(null);
 	const [open, setOpen] = useState(false);
 	const [alertToggle, setAlertToggle] = useState(false);
-	const [closeCertiDetail, setCloseCertiDetail] = useState<any>();
+	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
 
-	const closeHandler = (): any => {
+	const closeHandler = (): void => {
 		setOpen(false);
 	};
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
-			const zimbraIdArray = domainInformation.filter((domain: any) => domain.n === ZIMBRA_ID);
+			const zimbraIdArray = domainInformation.filter(
+				(domainData: any) => domainData.n === ZIMBRA_ID
+			);
 			if (zimbraIdArray && zimbraIdArray.length > 0) {
 				setZimbraId(zimbraIdArray[0]._content);
 			}
 			const domainNameArray = domainInformation.filter(
-				(domain: any) => domain.n === ZIMBRA_DOMAIN_NAME
+				(domainData: any) => domainData.n === ZIMBRA_DOMAIN_NAME
 			);
 			if (domainNameArray && domainNameArray.length > 0) {
 				setDomainName(domainNameArray[0]._content);
 			}
 			const domainVirtualHostArray = domainInformation.filter(
-				(domain: any) => domain.n === ZIMBRA_VIRTUAL_HOSTNAME
+				(domainData: any) => domainData.n === ZIMBRA_VIRTUAL_HOSTNAME
 			);
 			if (domainVirtualHostArray && domainVirtualHostArray.length > 0) {
-				const virtualHostItems = domainVirtualHostArray.map((domain: any, index: any) => ({
+				const virtualHostItems = domainVirtualHostArray.map((domainData: any, index: any) => ({
 					id: (index + 1)?.toString(),
-					columns: [domain._content]
+					columns: [domainData._content]
 				}));
 				setItems(virtualHostItems);
 				setDefaultItems(virtualHostItems);
@@ -147,8 +147,12 @@ const DomainVirtualHosts: FC = () => {
 	};
 
 	const onSave = (): void => {
-		const body: any = {};
-		const attributes: any[] = [];
+		const body: {
+			id?: string;
+			_jsns?: string;
+			a?: { n: string; _content?: string }[];
+		} = {};
+		const attributes: { n: string; _content?: string }[] = [];
 		body.id = zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
 		items.forEach((item: any) => {
@@ -174,9 +178,9 @@ const DomainVirtualHosts: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				const domain: any = data?.domain[0];
-				if (domain) {
-					setDomain(domain);
+				const domainData: any = data?.domain[0];
+				if (domainData) {
+					setDomain(domainData);
 				}
 			})
 			.catch((error) => {
@@ -197,35 +201,17 @@ const DomainVirtualHosts: FC = () => {
 		setToggleLoadVerifyCertWizard(!toggleLoadVerifyCertWizard);
 	};
 
-	const getAllCertiDetailsAPICall = useCallback((): any => {
-		const zimbraData =
-			domainInformation &&
-			domainInformation.filter((item: any) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
-		soapFetch(`GetDomain`, {
+	const getAllCertiDetailsAPICall = useCallback((): void => {
+		soapFetch('GetDomainCert', {
 			_jsns: 'urn:zimbraAdmin',
-			attrs: 'zimbraSSLCertificate,zimbraSSLPrivateKey',
-			domain: {
-				by: 'name',
-				_content: zimbraData
-			}
+			domain: domainId
 		})
-			.then((response: any) => {
-				if (response?.domain[0]?.a) {
-					// eslint-disable-next-line array-callback-return
-					response?.domain[0]?.a?.map((item: any) => {
-						if (item?.n === ZIMBRA_SSL_CERTIFICATE) {
-							setDomainCertificate(item);
-							setToggleDownloadDomainCertiBtn(false);
-							setRemoveDomainCerti(false);
-						} else if (item?.n === ZIMBRA_SSL_PRIVATE_KEY) {
-							setPrivateKey(item);
-							setToggleDownloadPrivateKeyCerti(false);
-							setRemovePrivateKey(false);
-						}
-					});
-				}
+			.then((res: any) => {
+				const data = _.mapValues(res?.cert[0], (value) => value[0]._content);
+				setDomainCertiDetails(data);
+				setToggleCertiBtn(false);
 			})
-			.catch((error: any) => {
+			.catch((error) => {
 				createSnackbar({
 					key: 'error',
 					type: 'error',
@@ -237,60 +223,76 @@ const DomainVirtualHosts: FC = () => {
 					replace: true
 				});
 			});
-	}, [createSnackbar, domainInformation, t]);
+		const zimbraData =
+			domainInformation &&
+			domainInformation.filter((item: objectType) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
+		soapFetch(`GetDomain`, {
+			_jsns: 'urn:zimbraAdmin',
+			attrs: 'zimbraSSLCertificate,zimbraSSLPrivateKey',
+			domain: {
+				by: 'name',
+				_content: zimbraData
+			}
+		})
+			.then((response: any) => {
+				if (response?.domain[0]?.a) {
+					const certificates = _.reduce(
+						response?.domain[0]?.a,
+						(result, item) => ({ ...result, [item.n]: item._content }),
+						{}
+					);
+					setDomainCertificate(certificates);
+				} else {
+					setDomainCertificate(null);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, domainId, domainInformation, t]);
 
-	const deleteHandler = (field: any): any => {
-		const body: any = {};
-		const attributes: any[] = [];
+	const deleteHandler = (): void => {
+		const body: {
+			id?: string;
+			_jsns?: string;
+			a?: { n: string; _content?: string }[];
+		} = {};
+		const attributes: { n: string; _content?: string }[] = [];
 		body.id = zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
-		if (field === ZIMBRA_SSL_CERTIFICATE) {
-			attributes.push({
-				n: ZIMBRA_SSL_CERTIFICATE,
-				_content: ''
-			});
-		} else if (field === ZIMBRA_SSL_PRIVATE_KEY) {
-			attributes.push({
-				n: ZIMBRA_SSL_PRIVATE_KEY,
-				_content: ''
-			});
-		}
+		attributes.push({
+			n: ZIMBRA_SSL_CERTIFICATE,
+			_content: ''
+		});
+		attributes.push({
+			n: ZIMBRA_SSL_PRIVATE_KEY,
+			_content: ''
+		});
 		body.a = attributes;
 		modifyDomain(body)
 			.then(() => {
-				if (field === ZIMBRA_SSL_CERTIFICATE) {
-					setRemoveDomainCerti(true);
-					setToggleDownloadDomainCertiBtn(true);
-					setDomainCertificate(null);
-					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: t(
-							'domain.domain_certificate_removed',
-							`The domain certificates has been removed`
-						),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				} else if (field === ZIMBRA_SSL_PRIVATE_KEY) {
-					setRemovePrivateKey(true);
-					setToggleDownloadPrivateKeyCerti(true);
-					setPrivateKey(null);
-					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: t(
-							'domain.private_key_certificate_removed',
-							`The private key certificate has been removed`
-						),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				}
+				setDomainCertificate(null);
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('domain.certificate_removed', `The certificates has been removed`),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
 				setOpen(false);
 				getAllCertiDetailsAPICall();
+				setDomainCertiDetails({});
+				setToggleCertiBtn(true);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -306,33 +308,30 @@ const DomainVirtualHosts: FC = () => {
 			});
 	};
 
-	const downloadTxtHandler = (field: any): any => {
-		if (field === ZIMBRA_SSL_CERTIFICATE) {
-			const element = document.createElement('a');
-			const file = new Blob([domainCertificate?._content], {
-				type: 'text/plain;charset=utf-8'
-			});
-			element.href = URL.createObjectURL(file);
-			element.download = `certificate-${domainName}.txt`;
-			document.body.appendChild(element);
-			element.click();
-		}
-		if (field === ZIMBRA_SSL_PRIVATE_KEY) {
-			const element = document.createElement('a');
-			const file = new Blob([privateKey?._content], {
-				type: 'text/plain;charset=utf-8'
-			});
-			element.href = URL.createObjectURL(file);
-			element.download = `private-key-${domainName}.txt`;
-			document.body.appendChild(element);
-			element.click();
-		}
+	const downloadTxtHandler = (): void => {
+		const elementCerti = document.createElement('a');
+		const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate], {
+			type: 'text/plain;charset=utf-8'
+		});
+		elementCerti.href = URL.createObjectURL(fileCerti);
+		elementCerti.download = `certificate-${domainName}.txt`;
+		document.body.appendChild(elementCerti);
+		elementCerti.click();
+
+		const elementPrivateKey = document.createElement('a');
+		const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey], {
+			type: 'text/plain;charset=utf-8'
+		});
+		elementPrivateKey.href = URL.createObjectURL(fileKey);
+		elementPrivateKey.download = `private-key-${domainName}.txt`;
+		document.body.appendChild(elementPrivateKey);
+		elementPrivateKey.click();
 	};
 
 	useEffect(() => {
 		getAllCertiDetailsAPICall();
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [toggleLoadVerifyCertWizard]);
+	}, [alertToggle]);
 
 	return (
 		<Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
@@ -355,7 +354,6 @@ const DomainVirtualHosts: FC = () => {
 						open={open}
 						closeHandler={closeHandler}
 						deleteHandler={deleteHandler}
-						certiDetails={closeCertiDetail}
 					/>
 				)}
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -561,7 +559,7 @@ const DomainVirtualHosts: FC = () => {
 						>
 							<Row>
 								<Text size="medium" color="gray0" weight="bold">
-									{t('label.domain_certificate', 'Domain Certificate')}
+									{t('label.certificate', 'Certificate')}
 								</Text>
 							</Row>
 							<Row>
@@ -579,9 +577,9 @@ const DomainVirtualHosts: FC = () => {
 										type="ghost"
 										label={t('label.download', 'DOWNLOAD')}
 										color="primary"
-										disabled={toggleDownloadDomainCertiBtn}
+										disabled={toggleCertiBtn}
 										height="44px"
-										onClick={(): any => downloadTxtHandler(ZIMBRA_SSL_CERTIFICATE)}
+										onClick={downloadTxtHandler}
 									/>
 								</Padding>
 								<Padding left="large">
@@ -590,144 +588,70 @@ const DomainVirtualHosts: FC = () => {
 										label={t('label.remove', 'Remove')}
 										color="error"
 										height="44px"
-										disabled={removeDomainCerti}
-										onClick={(): any => {
+										disabled={toggleCertiBtn}
+										onClick={(): void => {
 											setOpen(true);
-											setCloseCertiDetail(ZIMBRA_SSL_CERTIFICATE);
 										}}
 									/>
 								</Padding>
 							</Row>
 						</Row>
-					</Container>
-					<Container
-						padding={{ top: 'large', bottom: 'extralarge', horizontal: 'large' }}
-						background="gray6"
-						mainAlignment="start"
-						crossAlignment="start"
-					>
-						{domainCertificate ? (
-							<Container
-								background="gray6"
-								padding={{ all: 'large' }}
-								width="100%"
-								mainAlignment="start"
-								crossAlignment="start"
-								height="unset"
-							>
-								<Textarea
-									value={domainCertificate._content}
-									backgroundColor="gray5"
-									rows={5}
-									readOnly
+						<ListRow padding={{ top: 'extralarge' }}>
+							<Container padding={{ horizontal: 'small', top: 'small' }}>
+								<Input
+									label={t(
+										'label.subject_name_cname',
+										'Subject Name (Canonical Name record - CNAME)'
+									)}
+									background="gray6"
+									name="subject_name"
+									value={domainCertiDetails?.subject || ''}
+									readyOnly
 								/>
 							</Container>
-						) : (
-							<Container orientation="column" crossAlignment="center" mainAlignment="start">
-								<Row>
-									<img src={logoGardian} alt="logo" />
-								</Row>
-								<Row
-									orientation="vertical"
-									crossAlignment="center"
-									style={{ textAlign: 'center' }}
-									padding={{ top: 'extralarge' }}
-									width="53%"
-								>
-									<Text weight="light" color="#828282" size="large" overflow="break-word">
-										<Trans
-											i18nKey="label.load_certificate_message"
-											defaults="Load a certificates to see its details!<br />Click on the <strong>“LOAD AND VERIFY CERTIFICATE +”</strong> to start"
-											components={{ break: <br />, bold: <strong /> }}
-										/>
-									</Text>
-								</Row>
+							<Container padding={{ horizontal: 'small', top: 'small' }}>
+								<Input
+									label={t(
+										'label.subject_name_fqdn',
+										'Subject Alt Name (Fully Qualified Domain Name - FQDN)'
+									)}
+									background="gray6"
+									name="key_id"
+									value={domainCertiDetails?.SubjectAltName || ''}
+									readyOnly
+								/>
 							</Container>
-						)}
-					</Container>
-					<Container
-						padding={{ all: 'large' }}
-						height="fit"
-						crossAlignment="flex-start"
-						background="gray6"
-					>
-						<Row
-							padding={{ top: 'large' }}
-							width="100%"
-							mainAlignment="space-between"
-							crossAlignment="start"
-						>
-							<Row>
-								<Text size="medium" color="gray0" weight="bold">
-									{t('label.private_key_certificate', 'Private Key Certificate')}
-								</Text>
-							</Row>
-							<Row>
-								<Padding left="large">
-									<Button
-										type="ghost"
-										label={t('label.download', 'DOWNLOAD')}
-										color="primary"
-										disabled={toggleDownloadPrivateKeyCerti}
-										height="44px"
-										onClick={(): any => downloadTxtHandler(ZIMBRA_SSL_PRIVATE_KEY)}
-									/>
-								</Padding>
-								<Padding left="large">
-									<Button
-										type="ghost"
-										label={t('label.remove', 'Remove')}
-										color="error"
-										height="44px"
-										disabled={removePrivateKey}
-										onClick={(): any => {
-											setOpen(true);
-											setCloseCertiDetail(ZIMBRA_SSL_PRIVATE_KEY);
-										}}
-									/>
-								</Padding>
-							</Row>
-						</Row>
-					</Container>
-					<Container
-						padding={{ top: 'large', bottom: 'extralarge', horizontal: 'large' }}
-						background="gray6"
-						mainAlignment="start"
-						crossAlignment="start"
-					>
-						{privateKey ? (
-							<Container
-								background="gray6"
-								padding={{ all: 'large' }}
-								width="100%"
-								mainAlignment="start"
-								crossAlignment="start"
-								height="unset"
-							>
-								<Textarea value={privateKey?._content} backgroundColor="gray5" rows={5} readOnly />
+						</ListRow>
+						<ListRow padding={{ top: 'large' }}>
+							<Container padding={{ horizontal: 'small' }}>
+								<Input
+									background="gray6"
+									label={t('label.issuer', 'Issuer')}
+									value={domainCertiDetails?.issuer || ''}
+									readyOnly
+								/>
 							</Container>
-						) : (
-							<Container orientation="column" crossAlignment="center" mainAlignment="start">
-								<Row>
-									<img src={logoGardian} alt="logo" />
-								</Row>
-								<Row
-									orientation="vertical"
-									crossAlignment="center"
-									style={{ textAlign: 'center' }}
-									padding={{ top: 'extralarge' }}
-									width="53%"
-								>
-									<Text weight="light" color="#828282" size="large" overflow="break-word">
-										<Trans
-											i18nKey="label.load_certificate_message"
-											defaults="Load a certificates to see its details!<br />Click on the <strong>“LOAD AND VERIFY CERTIFICATE +”</strong> to start"
-											components={{ break: <br />, bold: <strong /> }}
-										/>
-									</Text>
-								</Row>
+						</ListRow>
+						<ListRow padding={{ top: 'large' }}>
+							<Container padding={{ horizontal: 'small' }}>
+								<Input
+									label={t('label.valid_not_before', 'Valid from (not before)')}
+									background="gray6"
+									name="subject_name"
+									value={domainCertiDetails?.notBefore || ''}
+									readyOnly
+								/>
 							</Container>
-						)}
+							<Container padding={{ horizontal: 'small' }}>
+								<Input
+									label={t('label.valid_not_after', 'Valid until (not after)')}
+									background="gray6"
+									name="key_id"
+									value={domainCertiDetails?.notAfter || ''}
+									readyOnly
+								/>
+							</Container>
+						</ListRow>
 					</Container>
 				</Container>
 			</Container>
