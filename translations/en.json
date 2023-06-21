@@ -1571,6 +1571,7 @@
         "userName": "username (Auto-fill)",
         "userName_auto_fill": "username (Auto-fill)",
         "user_agent": "User Agent",
+        "user_cannot_perform_the_action": "User cannot perform the action",
         "user_preferences": "USER PREFERENCES",
         "user_ssl": "Use SSL",
         "username": "Username",
