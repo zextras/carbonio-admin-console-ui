@@ -211,18 +211,9 @@ const DomainVirtualHosts: FC = () => {
 				setDomainCertiDetails(data);
 				setToggleCertiBtn(false);
 			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
+			// TODO: On no cert found server always returns error so used empty catch for now
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			.catch(() => {});
 		const zimbraData =
 			domainInformation &&
 			domainInformation.filter((item: objectType) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
