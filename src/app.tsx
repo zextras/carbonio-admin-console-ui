@@ -647,18 +647,22 @@ const App: FC = () => {
 				removeRoute(MTA_ROUTE_ID);
 			}
 		}
-		addRoute({
-			route: PRIVACY_ROUTE_ID,
-			position: 5,
-			visible: true,
-			label: t('label.privacy', 'Privacy') || '',
-			primaryBar: 'ShieldOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...managementSection },
-			tooltip: PrivacyTooltipView
-		});
+		if (hasConfigRights) {
+			addRoute({
+				route: PRIVACY_ROUTE_ID,
+				position: 5,
+				visible: true,
+				label: t('label.privacy', 'Privacy') || '',
+				primaryBar: 'ShieldOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: PrivacyTooltipView
+			});
+		} else {
+			removeRoute(PRIVACY_ROUTE_ID);
+		}
 
 		setAppContext({ cabonio_admin_console_ui: 'cabonio_admin_console_ui' });
 	}, [
