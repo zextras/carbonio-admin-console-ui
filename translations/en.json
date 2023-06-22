@@ -1677,6 +1677,7 @@
         "you_have_exported_the_configuration": "You have exported the configuration",
         "you_have_generated_the_sp_certificate": "You have generated the SP Certificate",
         "you_have_imported_the_configuration": "You have imported the configuration",
+        "you_have_no_sufficient_administrationr_rights_to_see_this_section": "You have no sufficient administration rights to see this section",
         "you_have_removed_attribute": "You have removed the {{ attributeName }} attribute",
         "you_have_updated_attribute": "You have updated the {{ attributeName }} attribute",
         "your_auth_method_is": "Your Auth Method is"

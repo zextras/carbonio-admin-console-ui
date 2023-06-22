@@ -46,7 +46,10 @@ const BackupDetailPanel: FC = () => {
 						<Icon icon="CloseCircleOutline" size="large" color="white" />
 						<Padding left="large">
 							<Text color="white">
-								{t('label.user_cannot_perform_the_action', 'User cannot perform the action')}
+								{t(
+									'label.you_have_no_sufficient_administrationr_rights_to_see_this_section',
+									'You have no sufficient administration rights to see this section'
+								)}
 							</Text>
 						</Padding>
 					</Row>
