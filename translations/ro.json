@@ -7,7 +7,7 @@
         "delete": "Ştergere",
         "description": "Descriere",
         "of": "a",
-        "save": "Salveaza",
+        "save": "Salvați",
         "status": "Stare",
         "account": "Cont",
         "accounts": "Conturi",
@@ -142,7 +142,7 @@
         "prompt": "Întreabă",
         "public": "Public",
         "quotas": "Cote",
-        "settings": "Configurari",
+        "settings": "Setari",
         "always": "Întotdeauna",
         "calendar": "Calendar",
         "calendar_options": "Opţiuni calendar",
@@ -176,7 +176,9 @@
         "storage": "Spatiu de stocare",
         "value": "Valoare",
         "destroy_account": "Ştergere",
-        "cancle_button": "Nu."
+        "cancle_button": "Nu.",
+        "username": "Nume utilizator",
+        "state": "Stare"
     },
     "core": {
         "subscription": {
@@ -431,5 +433,12 @@
         "other": "Altele",
         "running": "Executare"
     },
-    "new": "Nou"
+    "new": "Nou",
+    "mta": {
+        "add": "Adăugare",
+        "authentication": "Autentificare",
+        "discard": "Renunta",
+        "remove": "Eliminare",
+        "settings": "Setari"
+    }
 }
