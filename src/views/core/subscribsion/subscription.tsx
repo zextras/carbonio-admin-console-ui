@@ -86,7 +86,10 @@ const moduleNames: any = {
 	ZxDrive: 'Files',
 	ZxDocs: 'Docs',
 	ZxChat: 'Chats',
-	ZxHA: 'HA'
+	ZxHA: 'HA',
+	Powerstore: 'Storage',
+	Drive: 'Files',
+	Chat: 'Chats'
 };
 
 const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): ReactElement => (
@@ -154,8 +157,9 @@ const Subscription: FC = () => {
 					name: module
 				}));
 				const orderModules: any = orderBy(formatModules, 'licensed', 'desc');
+				const filterModules: any = orderModules.filter((module: any) => module.name !== 'SproxyD');
 				setServices(response);
-				setModules(orderModules);
+				setModules(filterModules);
 				setLicenseKey(response.response.authenticationToken);
 			}
 		});
