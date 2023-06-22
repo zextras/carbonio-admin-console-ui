@@ -290,7 +290,6 @@
         "list_details": "Detalhes da lista",
         "total_domain_space": "Espaço total de domínio (Bytes)",
         "i_want_to_generate_an_otp_code": "GERAR SENHA DE USO ÚNICO (OTP)",
-        "max_result_return_gal_search": "Resultados máximos devolvidos pela busca na GAL",
         "single_account_domain_space_byte": "Espaço de domínio de conta única (byte)",
         "the_account_has_been_successfully_created": "A conta foi criada com sucesso",
         "proceed_without_generating_an_otp_code": "CONTINUAR SEM GERAR SENHA OTP",
@@ -437,7 +436,7 @@
         "delete_domain_with_account_content_msg": "{{domainName}} não está vazio: ele contém {{domainAccounts}} contas de sistema e {{domainAccounts}} contas de usuário. Tem certeza que deseja continuar?",
         "access_key": "Chave de acesso",
         "account_scan": "AccountScan",
-        "actions": "Ações",
+        "actions": "Acções",
         "address": "Endereço",
         "advanced": "Avançado",
         "allow_sending_cancellation_email_to_organizer": "Permitir o envio de email de cancelamento para o organizador",
@@ -491,7 +490,7 @@
         "restore_account": "Restaurar conta",
         "retention_policy": "Política de retenção",
         "save_and_leave": "Salvar e sair",
-        "search": "Busca",
+        "search": "Pesquisa",
         "secret_key": "Chave secreta",
         "server": "Servidor",
         "servers": "Servidores",
@@ -901,11 +900,11 @@
         "e_mail": "E-mail",
         "eas": "EAS",
         "email_address": "Endereço de e-mail",
-        "enabled": "Ativado",
+        "enabled": "Habilitado",
         "global": "Global",
-        "last_seen": "Visto pela última vez",
+        "last_seen": "Última vez visto",
         "mailstores": "Mailstores",
-        "mobile_password": "Senha Móvel",
+        "mobile_password": "Senha móvel",
         "reset": "Redefinir",
         "reset_device": "Resetar dispositivo",
         "service": "Serviço",
@@ -914,7 +913,7 @@
         "update": "Atualizar",
         "volume_next_button": "PRÓXIMO",
         "volume_server_name": "Servidor",
-        "wipe_device": "Formatar dispositivo",
+        "wipe_device": "Limpar dispositivo",
         "s3_bucket": "Bucket S3",
         "select_an_external_volume": "Selecionar um Volume Externo",
         "theme": "Tema",
@@ -1047,7 +1046,6 @@
         "certificate_type": "Tipo de certificado",
         "copyrights_information": "Informação de direitos autorais",
         "copyrights_theme_note": "As informações de direitos autorais estarão no rodapé da caixa de login",
-        "default_mail_quota_for_account_domain": "A cota padrão para cada conta no domínio",
         "delete_domain_certificate_content": "Você está excluindo o certificado de domínio.<br /> Tem certeza que deseja continuar?",
         "delete_domain_certificate_header": "Excluir certificado de domínio?",
         "delete_private_key_certificate_content": "Você está excluindo a chave privada do certificado.<br /> Tem certeza que deseja continuar?",
@@ -1057,7 +1055,6 @@
         "download": "DOWNLOAD",
         "download_pdf": "BAIXAR PDF",
         "infrequent_access": "S3 – Acesso ocasional",
-        "ldap_example_query": "Exemplo: ldap:///??sub?(&(objectClass=carbonioAccount)(CarbonioAccountStatus=active))",
         "load_FILE": "CARREGAR ARQUIVO",
         "load_and_verify_certificate": "CARREGAR E VERIFICAR CERTIFICADO",
         "load_certificate_message": "Carregue um certificado para ver seus detalhes!<br />Clique em <strong>“CARREGAR E VERIFICAR CERTIFICADO +”</strong> para iniciar",
@@ -1065,7 +1062,6 @@
         "load_you_cert_file": "Arquivo do certificado",
         "load_your_cert_file": "Arquivo do certificado",
         "load_your_private_file": "Arquivo do certificado",
-        "max_number_account_of_this_domain_manage": "O número máximo de contas que este domínio pode gerenciar",
         "new_virtual_host_name": "Digite o nome do novo Host Virtual e clique em “Adicionar +” para adicioná-lo à lista",
         "no_virtual_host_message": "Não há anfitriões virtuais aqui.<br />Clique no botão ADICIONAR para habilitar um novo.",
         "private_key_certificate": "Chave privada do certificado",
@@ -1135,9 +1131,23 @@
         "dont_save_a_copy_of_sent_messages": "Não salvar uma cópia das mensagens enviadas",
         "value": "Valor",
         "distribution_list": "Lista de distribuição",
-        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salvar uma cópia das mensagens na pasta Enviadas do delegado",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salvar uma cópia das mensagens enviadas na pasta de Enviados do delegado",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas",
-        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na dos delegados"
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na dos delegados",
+        "destroy": "EXCLUIR",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Salvar uma cópia na pasta Enviadas do delegado",
+        "destroy_account": "Excluir",
+        "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Salvar uma cópia na pasta Enviadas do delegado",
+        "city": "Cidade",
+        "company": "Empresa",
+        "country": "País",
+        "general_lbl": "Geral",
+        "interval": "Intervalo",
+        "mobile": "Dispositivo Móvel",
+        "phone": "Telefone",
+        "state": "Estado",
+        "username": "Nome de usuário",
+        "pager": "Pager"
     },
     "message": {
         "snackbar": {
@@ -1148,8 +1158,7 @@
     },
     "commons": {
         "confirm_connection": "CONFIRMAR CONEXÃO",
-        "create_with_there_data": "CRIAR",
-        "i_have_sent_data_to_user": "JÁ ENVIEI OS DADOS AO USUÁRIO"
+        "create_with_there_data": "CRIAR"
     },
     "create_new_bucket": "NOVO BUCKET",
     "create_new_domain": "Crear novo domínio",
@@ -1304,7 +1313,7 @@
         "email_retention_policy": "Políticas de retenção",
         "enable_failed_login_lockout": "Permitir o bloqueio de login falhado",
         "enable_smime": "Ativar S/MIME",
-        "enabled": "Ativado",
+        "enabled": "Habilitado",
         "failed_login_policy": "Política de login incorreto",
         "free_busy_interop": "Interoperabilidade livre/ocupado",
         "html_compose": "Escrever como HTML",
@@ -1403,7 +1412,8 @@
         "change_password_for_next_login": "Deve alterar a senha no próximo login",
         "enable_activeSync_remote_access": "Sincronização remota ActiveSync",
         "default_COS": "COS padrão",
-        "user_will_change_password_on_next_login": "O usuário precisará alterar a senha no próximo login"
+        "user_will_change_password_on_next_login": "O usuário precisará alterar a senha no próximo login",
+        "force_change_password": "Forçar a mudança da senha"
     },
     "locale": {
         "English": "Inglês",
@@ -1436,7 +1446,8 @@
         "spanish": "Espanhol",
         "thai": "Tailandês",
         "turkish": "Turco",
-        "vietnamese": "Vietnamita"
+        "vietnamese": "Vietnamita",
+        "polish": "Polonês"
     },
     "account": {
         "new": {
@@ -1556,7 +1567,6 @@
         "i_want_to_select": "Eu quero selecionar as pastas",
         "read_mails_only": "Ler emails apenas (sem direito de enviar)",
         "save_it_to_sent_folder": "Salvar na pasta de Enviados",
-        "save_it_to_delegate_sent_folder": "Salvar na pasta de Enviados do remetente e do delegado",
         "search_here_for_an_account": "Buscar aqui a conta desejada",
         "select_delegate_folder": "Selecionar quais pastas o delegado pode ver",
         "select_mode": "SELECIONAR MODO",
@@ -1582,7 +1592,19 @@
         "label": "Etiqueta",
         "remove": "Remover",
         "DELETE": "EXCLUIR",
-        "SAVE": "SALVAR"
+        "SAVE": "SALVAR",
+        "able_to_see_password_once": " Atenção: senha é visivel <bold>apenas uma vez.</bold>",
+        "account_with_read_only_rights": "Contas com permissões de <bold>leitura</bold>",
+        "account_send_rights": "Esta conta tem permissões de <bold>envio</bold> em",
+        "account_read_only_rights": "Esta conta tem direitos de <bold>leitura</bold> em",
+        "account_with_read_write_rights": "Contas com permissões de <bold>leitura/escrita</bold>",
+        "account_with_send_rights": "Conta com permissões de <bold>Enviar como/Enviar em nome de</bold> em",
+        "delete_user_password": "APAGAR DO LDAP A SENHA DO UTILIZADOR",
+        "delete_password": "Apagar Senha",
+        "delete_password_of_user_ldap": "Está a apagar a senha de <bold>{{name}}</bold> do LDAP. Confirma que deseja continuar?",
+        "account_read_write_rights": "Esta conta tem permissões de <bold>leitura/escrita</bold> em",
+        "add_the_account_group_with_selected_rights": "Adicionar conta/grupo com os direitos selecionados",
+        "delete_password_of_user": "Está a apagar a senha de <bold>{{name}}</bold>. Confirma que deseja continuar?"
     },
     "connection": {
         "access_key": "Chave de acesso",
@@ -1623,7 +1645,8 @@
             "centralized": "Centralizado",
             "external": "Externo",
             "local": "Local",
-            "sproxy": "Sproxy"
+            "sproxy": "Sproxy",
+            "object_storage": "Armazenamento de objetos"
         },
         "volume_config_header": {
             "name": "Nome",
@@ -1667,7 +1690,7 @@
         "delete": "Excluir",
         "destination_volume": "Volume de Destino",
         "details": "Detalhes",
-        "document": "Texto",
+        "document": "Documento",
         "edit": "Editar",
         "event": "Evento",
         "gb": "GB",
@@ -1818,5 +1841,23 @@
         "load_and_verify_certificate": "Carregar e verificar certificado",
         "load_certificate": "CARREGAR CERTIFICADO"
     },
-    "new": "Novo"
+    "new": "Novo",
+    "mta": {
+        "add": "Adicionar",
+        "authentication": "Autenticação",
+        "days": "Dias",
+        "discard": "Descartar",
+        "high": "Alta",
+        "hours": "Horas",
+        "low": "Baixa",
+        "may": "Maio",
+        "medium": "Médio",
+        "minutes": "Minutos",
+        "none": "Nenhum",
+        "remove": "Remover",
+        "seconds": "Segundos",
+        "server_name": "Nome do servidor",
+        "settings": "Configurações",
+        "weeks": "Semanas"
+    }
 }

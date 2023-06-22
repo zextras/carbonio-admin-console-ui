@@ -56,7 +56,7 @@
         "suspended": "Đình chỉ",
         "timezone": "Múi giờ",
         "unlimited": "Không giới hạn",
-        "url": "URL",
+        "url": "Url",
         "active": "Đang hoạt động",
         "app_name": "Quản lý",
         "hours": "Giờ",
@@ -87,7 +87,7 @@
         "volumes": "Dung lượng",
         "access_key": "Khoá truy cập",
         "account_scan": "Quét Tài khoản",
-        "actions": "Thao tác",
+        "actions": "Các tác vụ",
         "address": "Địa chỉ",
         "advanced": "Nâng cao",
         "allow_sending_cancellation_email_to_organizer": "Cho phép gửi thư hủy tới người tổ chức",
@@ -210,7 +210,7 @@
         "invites": "Mời",
         "list_name": "Tên danh sách",
         "mailing_options": "Tùy chọn thư",
-        "message": "Thư",
+        "message": "Thông điệp",
         "mta": "MTA",
         "never": "Không bao giờ",
         "path": "Đường dẫn",
@@ -640,7 +640,7 @@
         "bucket_notes": "Ghi chú",
         "date": "Ngày",
         "label": "Nhãn",
-        "notifications": "Các thông báo",
+        "notifications": "Thông báo",
         "open": "Mở",
         "search_for_user_and_clic_to_add": "Tìm kiếm một người dùng và bấm vào nút THÊM.",
         "there_are_no_owners": "Không có chủ sở hữu nào ở đây.",
@@ -678,7 +678,19 @@
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi được chỉ định",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Lưu bản sao của các tin nhắn đã gửi vào thư mục Đã gửi của tôi và thư mục chỉ định",
-        "value": "Giá trị"
+        "value": "Giá trị",
+        "destroy_account": "Xoá",
+        "destroy": "XOÁ",
+        "city": "Thành phố",
+        "company": "Công ty",
+        "country": "Quốc gia",
+        "general_lbl": "Chung",
+        "interval": "Khoảng thời gian",
+        "mobile": "Di động",
+        "pager": "Máy nhắn tin",
+        "phone": "Điện thoại",
+        "state": "Tiểu bang",
+        "username": "Tên người dùng"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -831,7 +843,6 @@
         "most_result_return_gal_search": "Hầu hết các kết quả được trả về bởi tìm kiếm GAL",
         "virtual_hosts": "Máy chủ ảo",
         "manage": "Quản lý",
-        "max_result_return_gal_search": "Kết quả tối đa được trả về bởi tìm kiếm GAL",
         "single_account_domain_space_byte": "Không gian miền tài khoản đơn (Byte)",
         "total_domain_space": "Tổng không gian miền (Byte)",
         "i_want_to_see_this_domain": "Tôi muốn xem miền này",
@@ -1095,7 +1106,7 @@
         "data_source": "Nguồn dữ liệu",
         "default_view": {
             "day": "Xem theo ngày",
-            "list": "Xem theo danh sách",
+            "list": "Xem danh sách",
             "month": "Xem theo tháng",
             "week": "Xem theo tuần",
             "work_week": "Xem theo tuần làm việc"
@@ -1220,7 +1231,8 @@
         "spanish": "Tây Ban Nha",
         "thai": "Thái",
         "turkish": "Thổ Nhĩ Kỳ",
-        "vietnamese": "Việt Nam"
+        "vietnamese": "Việt Nam",
+        "polish": "Tiếng Ba Lan"
     },
     "account_details": {
         "hide_in_gal": "Ẩn trong GAL",
@@ -1240,7 +1252,7 @@
         "contact": "Liên hệ",
         "default_view": {
             "day": "Xem theo ngày",
-            "list": "Xem theo danh sách",
+            "list": "Xem danh sách",
             "month": "Xem theo tháng",
             "week": "Xem theo tuần",
             "work_week": "Xem theo tuần làm việc"
@@ -1400,7 +1412,6 @@
     "click_new_bucket_button_to_create_new_one": "Bấm vào nút NHÓM MỚI để tạo mới.",
     "commons": {
         "create_with_there_data": "TẠO VỚI NHỮNG DỮ LIỆU NÀY",
-        "i_have_sent_data_to_user": "TÔI SẼ GỬI DỮ LIỆU ĐẾN NGƯỜI DÙNG",
         "confirm_connection": "XÁC NHẬN KẾT NỐI"
     },
     "create_new_bucket": "NHÓM MỚI",
@@ -1432,7 +1443,7 @@
         "items": "Các mục",
         "kb": "KB",
         "mb": "MB",
-        "message": "Thư",
+        "message": "Thông điệp",
         "minimum_space_threshold": "Hạn mức không gian tối thiểu",
         "minutes": "Phút",
         "months": "Tháng",
@@ -1474,7 +1485,7 @@
         "done": "Hoàn thành",
         "label": {
             "Deep": "Sâu",
-            "notifications": "Các thông báo",
+            "notifications": "Thông báo",
             "status": "Trạng thái"
         },
         "operations_list_header": {
@@ -1489,5 +1500,21 @@
         "queued": "Đã xếp hàng",
         "running": "Đang chạy"
     },
-    "new": "Mới"
+    "new": "Mới",
+    "mta": {
+        "remove": "xoá",
+        "seconds": "Giây",
+        "settings": "Cài đặt",
+        "weeks": "Tuần",
+        "add": "Thêm vào",
+        "authentication": "Xác thực",
+        "days": "Ngày",
+        "discard": "Bỏ qua",
+        "high": "Cao",
+        "hours": "Giờ",
+        "low": "Thấp",
+        "may": "Tháng Năm",
+        "minutes": "Phút",
+        "none": "Không"
+    }
 }
