@@ -279,3 +279,5 @@ export const ZIMBRA_MTA_TLS_SECURITY_LEVEL = 'zimbraMtaTlsSecurityLevel';
 export const OK = 'ok';
 export const SHORT = 'short';
 export const LONG = 'long';
+export const DOMAIN_NAME = 'domainName';
+export const UID = 'uid';
