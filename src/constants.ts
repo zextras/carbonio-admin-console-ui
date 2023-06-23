@@ -301,3 +301,5 @@ export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL = 'zimbraMtaPostscreenBare
 export const IS_SHOW_POST_TUNING_BANNER = 'isShowPostTuningBanner';
 export const SHORT = 'short';
 export const LONG = 'long';
+export const DOMAIN_NAME = 'domainName';
+export const UID = 'uid';

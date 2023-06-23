@@ -46,7 +46,9 @@ import {
 	MOBILE_CALENDAR_FEATURE_SYNC,
 	MOBILE_CONTACT_FEATURE_SYNC,
 	SECURITY,
-	USER_PREFERENCES
+	USER_PREFERENCES,
+	DOMAIN_NAME,
+	UID
 } from '../../../../../constants';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import EditAccountContactsSection from './edit-account-contacts-section';
@@ -69,7 +71,6 @@ const EditAccount: FC<{
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
-	const domainName = useDomainStore((state) => state.domain?.name);
 	const domainList = useDomainStore((state) => state.domainList);
 	const [change, setChange] = useState('general');
 	const [click, setClick] = useState('');
@@ -225,7 +226,7 @@ const EditAccount: FC<{
 		[createSnackbar, setSwitchInitOptionValue, t]
 	);
 
-	const modifyAccountReq = useCallback((): void => {
+	const modifyAccountReq = useCallback(async () => {
 		const modifiedKeys: any = reduce(
 			accountDetail,
 			function (result, value, key): any {
@@ -264,9 +265,42 @@ const EditAccount: FC<{
 				remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
 			}
 		}
-		if (modifiedKeys.includes('uid')) {
-			renameAccountRequest(initAccountDetail?.zimbraId, `${accountDetail?.uid}@${domainName}`);
-			remove(modifiedKeys, (ele) => ele === 'uid');
+		if (modifiedKeys.includes('uid') || modifiedKeys.includes(DOMAIN_NAME)) {
+			await renameAccountRequest(
+				initAccountDetail?.zimbraId,
+				`${accountDetail?.uid}@${accountDetail?.domainName}`
+			)
+				.then(() => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t(
+							'label.the_last_changes_has_been_saved_successfully',
+							'Changes have been saved successfully'
+						),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+			await getAccountList();
+			remove(modifiedKeys, (ele) => ele === UID);
+			if (modifiedKeys.includes(DOMAIN_NAME)) {
+				remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
+				setShowEditAccountView(false);
+			}
 		}
 		if (modifiedKeys.includes('mail')) {
 			const deleteAliasArr = differenceBy(
@@ -365,13 +399,13 @@ const EditAccount: FC<{
 	}, [
 		accountDetail,
 		createSnackbar,
-		domainName,
 		getAccountDetail,
 		getAccountList,
 		initAccountDetail,
 		isAdvanced,
 		modifyCoreAttributes,
 		setInitAccountDetail,
+		setShowEditAccountView,
 		t
 	]);
 	const onUndo = (): void => {

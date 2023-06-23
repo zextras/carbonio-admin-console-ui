@@ -590,19 +590,23 @@ const App: FC = () => {
 				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
 			}
 
-			addRoute({
-				route: BACKUP_ROUTE_ID,
-				position: 1,
-				visible: true,
-				label: t('label.backup', 'Backup') || '',
-				// primaryBar: 'HistoryOutline',
-				primaryBar: backupPrimaryBar,
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...servicesSection },
-				tooltip: BackupTooltipView
-			});
+			if (hasConfigRights) {
+				addRoute({
+					route: BACKUP_ROUTE_ID,
+					position: 1,
+					visible: true,
+					label: t('label.backup', 'Backup') || '',
+					// primaryBar: 'HistoryOutline',
+					primaryBar: backupPrimaryBar,
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...servicesSection },
+					tooltip: BackupTooltipView
+				});
+			} else {
+				removeRoute(BACKUP_ROUTE_ID);
+			}
 
 			addRoute({
 				route: NOTIFICATION_ROUTE_ID,
@@ -647,18 +651,22 @@ const App: FC = () => {
 				removeRoute(MTA_ROUTE_ID);
 			}
 		}
-		addRoute({
-			route: PRIVACY_ROUTE_ID,
-			position: 5,
-			visible: true,
-			label: t('label.privacy', 'Privacy') || '',
-			primaryBar: 'ShieldOutline',
-			appView: AppView,
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			primarybarSection: { ...managementSection },
-			tooltip: PrivacyTooltipView
-		});
+		if (hasConfigRights) {
+			addRoute({
+				route: PRIVACY_ROUTE_ID,
+				position: 5,
+				visible: true,
+				label: t('label.privacy', 'Privacy') || '',
+				primaryBar: 'ShieldOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: PrivacyTooltipView
+			});
+		} else {
+			removeRoute(PRIVACY_ROUTE_ID);
+		}
 
 		setAppContext({ cabonio_admin_console_ui: 'cabonio_admin_console_ui' });
 	}, [

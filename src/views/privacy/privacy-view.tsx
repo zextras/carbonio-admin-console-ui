@@ -16,6 +16,7 @@ import {
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import { find } from 'lodash';
 import ListRow from '../list/list-row';
 import { modifyConfig } from '../../services/modify-config';
 import {
@@ -24,10 +25,12 @@ import {
 	CARBONIO_SEND_FULL_ERROR_STACK,
 	FALSE,
 	PRIVACY_ROUTE_ID,
-	TRUE
+	TRUE,
+	CONFIG
 } from '../../constants';
 import { useConfigStore } from '../../store/config/store';
 import MatomoTracker from '../../matomo-tracker';
+import { useRightsStore, Right, Rights } from '../../store/rights/store';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
@@ -44,6 +47,15 @@ const PrivacyView: FC = () => {
 		CARBONIO_SEND_FULL_ERROR_STACK: false,
 		CARBONIO_ALLOW_FEEDBACK: false
 	});
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetPrivacy = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	useEffect(() => {
 		carbonioSendAnalytics && matomo.trackPageView(`${PRIVACY_ROUTE_ID}`);
@@ -215,6 +227,7 @@ const PrivacyView: FC = () => {
 									isChangeItem(CARBONIO_SEND_FULL_ERROR_STACK, !carbonioSendFullErrorStack);
 								}}
 								iconColor="primary"
+								disabled={!allowSetPrivacy}
 							/>
 						</Container>
 					</ListRow>
@@ -248,6 +261,7 @@ const PrivacyView: FC = () => {
 									isChangeItem(CARBONIO_SEND_ANALYTICS, !carbonioSendAnalytics);
 								}}
 								iconColor="primary"
+								disabled={!allowSetPrivacy}
 							/>
 						</Container>
 					</ListRow>
@@ -281,6 +295,7 @@ const PrivacyView: FC = () => {
 									isChangeItem(CARBONIO_ALLOW_FEEDBACK, !carbonioAllowFeedback);
 								}}
 								iconColor="primary"
+								disabled={!allowSetPrivacy}
 							/>
 						</Container>
 					</ListRow>

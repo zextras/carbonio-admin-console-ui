@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback } from 'react';
+import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
 	Container,
@@ -16,12 +16,14 @@ import {
 	Input,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep } from 'lodash';
+import { isEqual, reduce, cloneDeep, find } from 'lodash';
+import { CONFIG } from '../../../constants';
 import ListRow from '../../list/list-row';
 import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { modifyBackupRequest } from '../../../services/modify-backup';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const BackupServerConfig: FC = () => {
 	const [t] = useTranslation();
@@ -32,6 +34,14 @@ const BackupServerConfig: FC = () => {
 	const createSnackbar = useSnackbar();
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
+	const rights: Rights = useRightsStore((state) => state.rights);
+	const allowSetBackup = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	const onCancel = (): void => {
 		setInitBackupDetail({ ...globalConfig });
@@ -78,7 +88,6 @@ const BackupServerConfig: FC = () => {
 				}
 			})
 			.catch((err) => {
-				console.log('[Error]: ', err);
 				createSnackbar({
 					key: 'error',
 					type: 'error',
@@ -207,6 +216,7 @@ const BackupServerConfig: FC = () => {
 								value={initbackupDetail.ZxBackup_RealTimeScanner}
 								onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</ListRow>
 						<ListRow>
@@ -218,6 +228,7 @@ const BackupServerConfig: FC = () => {
 								)}
 								onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</ListRow>
 						<ListRow>
@@ -229,6 +240,7 @@ const BackupServerConfig: FC = () => {
 								)}
 								onClick={(): void => changeSwitchOption('ZxBackup_DoSmartScanOnStartup')}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</ListRow>
 						<ListRow>
@@ -245,6 +257,7 @@ const BackupServerConfig: FC = () => {
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_DestPath"
 									background="gray5"
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
@@ -260,6 +273,7 @@ const BackupServerConfig: FC = () => {
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_SpaceThreshold"
 									background="gray5"
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
@@ -275,6 +289,7 @@ const BackupServerConfig: FC = () => {
 									onChange={changeBackupDetail}
 									inputName="backupLocalMetadataThreshold"
 									background="gray5"
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
@@ -290,6 +305,7 @@ const BackupServerConfig: FC = () => {
 									onClick={(): void => changeSwitchOption('ZxBackup_SmartScanSchedulingEnabled')}
 									label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
 									iconColor="primary"
+									disabled={!allowSetBackup}
 								/>
 							</Padding>
 						</ListRow>
@@ -302,6 +318,7 @@ const BackupServerConfig: FC = () => {
 									onChange={changeBackupSchedulerDetail}
 									inputName="backupSmartScanScheduler"
 									background="gray5"
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
@@ -328,6 +345,7 @@ const BackupServerConfig: FC = () => {
 									onChange={changeBackupSchedulerDetail}
 									inputName="backupPurgeScheduler"
 									background="gray5"
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
@@ -340,6 +358,7 @@ const BackupServerConfig: FC = () => {
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_DataRetentionDays"
 									background="gray5"
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
@@ -366,6 +385,7 @@ const BackupServerConfig: FC = () => {
 									onChange={changeBackupDetail}
 									inputName="backupAccountsRetentionDays"
 									background="gray5"
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
