@@ -29,7 +29,7 @@ import {
 	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
 import { useParams } from 'react-router-dom';
-import { isEmpty } from 'lodash';
+import { isEmpty, find } from 'lodash';
 import ListRow from '../../list/list-row';
 import { useServerStore } from '../../../store/server/store';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
@@ -41,11 +41,13 @@ import {
 	MOVE_TO_LOCAL_MOUNT_POINT,
 	S3,
 	S3_BUCKET,
-	SERVER
+	SERVER,
+	CONFIG
 } from '../../../constants';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useBackupStore } from '../../../store/backup/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const BackupConfiguration: FC = () => {
 	const { server }: { server: string } = useParams();
@@ -90,6 +92,15 @@ const BackupConfiguration: FC = () => {
 		useState<string>('');
 	const [rootVolumePath, setRootVolumePath] = useState<string>('');
 	const selectedBackupServer = useBackupStore((state) => state.selectedServer);
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetBackup = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	const destinationOptions: any[] = useMemo(
 		() => [
@@ -989,7 +1000,7 @@ const BackupConfiguration: FC = () => {
 							width="fit"
 							height={44}
 							onClick={serviceStartStop}
-							disabled={isRequestInProgress}
+							disabled={isRequestInProgress || !allowSetBackup}
 							loading={isRequestInProgress}
 							size="large"
 						/>
@@ -1020,6 +1031,7 @@ const BackupConfiguration: FC = () => {
 								value={moduleEnableStartup}
 								onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -1028,6 +1040,7 @@ const BackupConfiguration: FC = () => {
 								value={enableRealtimeScanner}
 								onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -1036,6 +1049,7 @@ const BackupConfiguration: FC = () => {
 								value={runSmartScanStartup}
 								onClick={(): void => setRunSmartScanStartup(!runSmartScanStartup)}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -1050,7 +1064,7 @@ const BackupConfiguration: FC = () => {
 								iconPlacement="right"
 								width="100%"
 								style={{ width: '100%' }}
-								disabled={isBackupInitialized}
+								disabled={isBackupInitialized || !allowSetBackup}
 								onClick={(): void => {
 									doInitializeBackup(true);
 								}}
@@ -1063,11 +1077,12 @@ const BackupConfiguration: FC = () => {
 						<Container padding={{ top: 'large' }}>
 							<Input
 								label={t('backup.local_volume', 'Local Volume')}
-								value={backupDestPath}
+								value={backupDestPath || ''}
 								background="gray5"
 								onChange={(e: any): any => {
-									setBackupDestPath(e.target.value);
+									!allowSetBackup ?? setBackupDestPath(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -1079,8 +1094,9 @@ const BackupConfiguration: FC = () => {
 								value={spaceThreshold}
 								background="gray5"
 								onChange={(e: any): any => {
-									setSpaceThreshold(e.target.value);
+									!allowSetBackup ?? setSpaceThreshold(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -1124,6 +1140,7 @@ const BackupConfiguration: FC = () => {
 									showCheckbox={false}
 									onChange={onExternalVolumeChange}
 									selection={externalVolume}
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
@@ -1133,10 +1150,10 @@ const BackupConfiguration: FC = () => {
 						<Container>
 							<Input
 								label={t('label.path', 'Path')}
-								value={rootVolumePath}
+								value={rootVolumePath || ''}
 								background="gray5"
 								onChange={(e: any): any => {
-									setRootVolumePath(e.target.value);
+									!allowSetBackup ?? setRootVolumePath(e.target.value);
 								}}
 							/>
 						</Container>
@@ -1149,6 +1166,7 @@ const BackupConfiguration: FC = () => {
 							showCheckbox={false}
 							selection={bucketConfiguration}
 							onChange={onBucketConfigurationChange}
+							disabled={!allowSetBackup}
 						/>
 					)}
 
@@ -1166,6 +1184,7 @@ const BackupConfiguration: FC = () => {
 									onClick={(): void => {
 										setIsShowSetExternalVolume(false);
 									}}
+									disabled={!allowSetBackup}
 								/>
 							</Padding>
 
@@ -1173,7 +1192,7 @@ const BackupConfiguration: FC = () => {
 								label={t('label.migrate', 'Migrate')}
 								color="primary"
 								onClick={onSaveSetExternal}
-								disabled={isExternalVolumeRequestRunning}
+								disabled={isExternalVolumeRequestRunning || !allowSetBackup}
 								loading={isExternalVolumeRequestRunning}
 							/>
 						</Row>
@@ -1189,6 +1208,7 @@ const BackupConfiguration: FC = () => {
 									showCheckbox={false}
 									onChange={onDestinationChange}
 									selection={destinationSelected}
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 						</ListRow>
@@ -1206,6 +1226,7 @@ const BackupConfiguration: FC = () => {
 											showCheckbox={false}
 											selection={bucketConfiguration}
 											onChange={onManageExternalVolumeConfigurationChange}
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -1218,10 +1239,11 @@ const BackupConfiguration: FC = () => {
 									<Container padding={{ bottom: 'large' }}>
 										<Input
 											label={t('backup.local_mountpoint', 'Local Mountpoint')}
-											value={manageExternalVolumeNewLocalMountpoint}
+											value={manageExternalVolumeNewLocalMountpoint || ''}
 											background="gray5"
 											onChange={(e: any): any => {
-												setManageExternalVolumeNewLocalMountpoint(e.target.value);
+												!allowSetBackup ??
+													setManageExternalVolumeNewLocalMountpoint(e.target.value);
 											}}
 										/>
 									</Container>
@@ -1243,6 +1265,7 @@ const BackupConfiguration: FC = () => {
 									onClick={(): void => {
 										setIsManageExternalVolumeEnable(false);
 									}}
+									disabled={!allowSetBackup}
 								/>
 							</Container>
 
@@ -1251,7 +1274,7 @@ const BackupConfiguration: FC = () => {
 								color="primary"
 								width="50%"
 								onClick={onSaveManageExternalVolume}
-								disabled={isExternalVolumeRequestRunning}
+								disabled={isExternalVolumeRequestRunning || !allowSetBackup}
 								loading={isExternalVolumeRequestRunning}
 							/>
 						</Row>
@@ -1272,7 +1295,7 @@ const BackupConfiguration: FC = () => {
 									size="large"
 									style={{ width: '100%' }}
 									width="100%"
-									disabled={!isBackupInitialized}
+									disabled={!isBackupInitialized || !allowSetBackup}
 									onClick={(): void => {
 										if (!isBackArchivingStoreEmpty) {
 											setIsManageExternalVolumeEnable(true);
@@ -1320,6 +1343,7 @@ const BackupConfiguration: FC = () => {
 							value={isScheduleSmartScan}
 							onClick={(): void => setIsScheduleSmartScan(!isScheduleSmartScan)}
 							iconColor="primary"
+							disabled={!allowSetBackup}
 						/>
 					</Container>
 
@@ -1332,7 +1356,7 @@ const BackupConfiguration: FC = () => {
 								onChange={(e: any): any => {
 									setScheduleSmartScan(e.target.value);
 								}}
-								disabled={!isScheduleSmartScan}
+								disabled={!isScheduleSmartScan || !allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -1348,7 +1372,7 @@ const BackupConfiguration: FC = () => {
 								size="large"
 								style={{ width: '100%' }}
 								width="100%"
-								disabled={!isBackupInitialized}
+								disabled={!isBackupInitialized || !allowSetBackup}
 								onClick={(): void => {
 									doInitializeBackup();
 								}}
@@ -1394,6 +1418,7 @@ const BackupConfiguration: FC = () => {
 									setScheduleAutomaticRetentionPolicy(!scheduleAutomaticRetentionPolicy)
 								}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -1407,7 +1432,7 @@ const BackupConfiguration: FC = () => {
 								onChange={(e: any): any => {
 									setRetentionPolicySchedule(e.target.value);
 								}}
-								disabled={!scheduleAutomaticRetentionPolicy}
+								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -1427,7 +1452,7 @@ const BackupConfiguration: FC = () => {
 								onChange={(e: any): any => {
 									setKeepDeletedItemInBackup(e.target.value);
 								}}
-								disabled={!scheduleAutomaticRetentionPolicy}
+								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
 								description={
 									<Trans
 										i18nKey="backup.back_delete_account_warning_message"
@@ -1447,6 +1472,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.range', 'Range')}
 								background="gray5"
 								value={t('label.days', 'Days')}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container
@@ -1466,7 +1492,7 @@ const BackupConfiguration: FC = () => {
 								onChange={(e: any): any => {
 									setKeepDeletedAccountsInBackup(e.target.value);
 								}}
-								disabled={!scheduleAutomaticRetentionPolicy}
+								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
 								description={
 									<Trans
 										i18nKey="backup.back_delete_account_warning_message"
@@ -1486,6 +1512,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.range', 'Range')}
 								background="gray5"
 								value={t('label.days', 'Days')}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -1500,7 +1527,7 @@ const BackupConfiguration: FC = () => {
 								height={36}
 								style={{ width: '100%' }}
 								width="100%"
-								disabled={isPurgeRequestRunning || !isBackupInitialized}
+								disabled={isPurgeRequestRunning || !isBackupInitialized || !allowSetBackup}
 								loading={isPurgeRequestRunning}
 								onClick={(): void => {
 									doBackupPurge();

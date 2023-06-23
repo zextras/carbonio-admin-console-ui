@@ -17,11 +17,13 @@ import {
 	Switch,
 	Select
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep } from 'lodash';
+import { isEqual, reduce, cloneDeep, find } from 'lodash';
+import { CONFIG } from '../../../constants';
 import ListRow from '../../list/list-row';
 import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { modifyBackupRequest } from '../../../services/modify-backup';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const BackupAdvanced: FC = () => {
 	const [t] = useTranslation();
@@ -30,9 +32,16 @@ const BackupAdvanced: FC = () => {
 	const setGlobalConfig = useBackupStore((state) => state.setGlobalConfig);
 	const [initbackupDetail, setInitBackupDetail] = useState<any>({});
 	const createSnackbar = useSnackbar();
+	const rights: Rights = useRightsStore((state) => state.rights);
+	const allowSetBackup = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	const onCancel = (): void => {
-		console.log('onCancel');
 		setInitBackupDetail({ ...globalConfig });
 	};
 	const onSave = (): void => {
@@ -205,6 +214,7 @@ const BackupAdvanced: FC = () => {
 											onChange={changeBackupDetail}
 											inputName="backupLatencyHighThreshold"
 											background="gray5"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -220,6 +230,7 @@ const BackupAdvanced: FC = () => {
 											onChange={changeBackupDetail}
 											inputName="backupLatencyLowThreshold"
 											background="gray5"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -235,6 +246,7 @@ const BackupAdvanced: FC = () => {
 											onClick={(): void => changeSwitchOption('ldapDumpEnabled')}
 											label={t('backup.ldap_dump', 'LDAP Dump')}
 											iconColor="primary"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -253,6 +265,7 @@ const BackupAdvanced: FC = () => {
 												'Store Server Configuration in the backup'
 											)}
 											iconColor="primary"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -268,6 +281,7 @@ const BackupAdvanced: FC = () => {
 											onClick={(): void => changeSwitchOption('ZxBackup_PurgeCustomizations')}
 											label={t('backup.purge_old_configurations', 'Purge Old Configurations')}
 											iconColor="primary"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -283,6 +297,7 @@ const BackupAdvanced: FC = () => {
 											onClick={(): void => changeSwitchOption('backupSaveIndex')}
 											label={t('backup.save_index', 'Save Index')}
 											iconColor="primary"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -295,6 +310,7 @@ const BackupAdvanced: FC = () => {
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxMetadataSize"
 											background="gray5"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -310,6 +326,7 @@ const BackupAdvanced: FC = () => {
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxWaitingTime"
 											background="gray5"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -322,6 +339,7 @@ const BackupAdvanced: FC = () => {
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxOperationPerAccount"
 											background="gray5"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -336,6 +354,7 @@ const BackupAdvanced: FC = () => {
 											)}
 											onChange={onBackupCompressionLevelChange}
 											showCheckbox={false}
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -348,6 +367,7 @@ const BackupAdvanced: FC = () => {
 											onChange={changeBackupDetail}
 											inputName="backupNumberThreadsForAccounts"
 											background="gray5"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -360,6 +380,7 @@ const BackupAdvanced: FC = () => {
 											onChange={changeBackupDetail}
 											inputName="backupNumberThreadsForAccounts"
 											background="gray5"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -378,6 +399,7 @@ const BackupAdvanced: FC = () => {
 												'Flash metadata in the disk at every save'
 											)}
 											iconColor="primary"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
@@ -396,6 +418,7 @@ const BackupAdvanced: FC = () => {
 												'Archive user metadata folder in the remote backup'
 											)}
 											iconColor="primary"
+											disabled={!allowSetBackup}
 										/>
 									</Container>
 								</ListRow>
