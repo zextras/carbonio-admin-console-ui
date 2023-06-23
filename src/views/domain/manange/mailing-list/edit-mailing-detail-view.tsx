@@ -743,7 +743,27 @@ const EditMailingListView: FC<any> = ({
 						}));
 					} else if (grant.length === 1) {
 						const granteeType = grant[0]?.grantee[0]?.type;
-						if (
+						if (grant[0].grantee?.[0]?.type === 'gst') {
+							onGrantTypeChange(EMAIL);
+							const emails: Array<any> = [];
+							grant.forEach((grItem: any) => {
+								emails.push({
+									id: grItem?.grantee[0]?.id,
+									name: grItem?.grantee[0]?.name
+								});
+							});
+							setGrantEmails(emails);
+							setGrantEmailsList(emails.map((item: any) => item?.name));
+							const it = grantTypeOptions.find((item: any) => item.value === EMAIL);
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantType: it
+							}));
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantEmails: emails
+							}));
+						} else if (
 							grant[0]?.grantee[0]?.name &&
 							grant[0]?.grantee[0]?.name !== selectedMailingList?.name
 						) {
