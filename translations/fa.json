@@ -77,5 +77,10 @@
     "account_details": {
         "SAVE": "ذخیره کردن",
         "send_check": "فرستادن"
+    },
+    "mta": {
+        "discard": "لغو",
+        "add": "اضافه کردن",
+        "settings": "تنظیمات"
     }
 }
