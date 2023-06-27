@@ -1769,6 +1769,7 @@
         "days": "Days",
         "definition_mirrors": "Definition Mirrors",
         "definition_update_frequency": "Definition Update Frenquency",
+        "disable_virus_check": "Disable Virus Check",
         "discard": "Discard",
         "dkim": "DKIM",
         "enable_accounting_quota_checks": "Enable Accounting quota checks",
