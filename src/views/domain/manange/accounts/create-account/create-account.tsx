@@ -230,7 +230,7 @@ const CreateAccount: FC<{
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxAuth',
 			action: 'totp_generate_command',
-			account: `${accountDetail?.name}@${domainName}`
+			account: `${accountDetail?.name}`
 		}).then((res) => {
 			if (res.ok) {
 				setAccountDetail((prev: any) => ({
@@ -246,7 +246,7 @@ const CreateAccount: FC<{
 				}));
 			}
 		});
-	}, [accountDetail, domainName]);
+	}, [accountDetail]);
 
 	const handleNext = useCallback((): void => {
 		if (accountDetail?.generateOTP && accountDetail?.showOtpOptionSection) {
