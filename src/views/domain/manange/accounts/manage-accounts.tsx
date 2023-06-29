@@ -36,17 +36,16 @@ import {
 	GetCosResponse,
 	CosA
 } from '../../../../services/cos-general-information-service';
+import EditAccount from './edit-account/edit-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getSingatures } from '../../../../services/get-signature-service';
 import AccountDetailView from './account-detail-view';
 import CreateAccount from './create-account/create-account';
-import EditAccount from './edit-account/edit-account';
 import { AccountContext } from './account-context';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import useOutsideClick from '../../../app/hooks/useoutsideclick';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -55,6 +54,7 @@ const ManageAccounts: FC = () => {
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
+	const [defaultTab, setDefaultTab] = useState('general');
 	const [directMemberList, setDirectMemberList] = useState<any>({});
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
@@ -120,6 +120,14 @@ const ManageAccounts: FC = () => {
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
+	const [initialGlobalRights, setinitialGlobalRights] = useState({
+		setGlobalConfig: false,
+		getGlobalConfig: false
+	});
+	const [globalRights, setGlobalRights] = useState({
+		setGlobalConfig: false,
+		getGlobalConfig: false
+	});
 
 	const [signatureList, setSignatureList] = useState<any[]>([]);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
@@ -785,7 +793,11 @@ const ManageAccounts: FC = () => {
 									folderList,
 									setFolderList,
 									credentialList,
-									getCredentialList
+									getCredentialList,
+									initialGlobalRights,
+									setinitialGlobalRights,
+									globalRights,
+									setGlobalRights
 								}}
 							>
 								{showAccountDetailView && (
@@ -807,6 +819,7 @@ const ManageAccounts: FC = () => {
 										signatureList={signatureList}
 										signatureItems={signatureItems}
 										getAccountDetail={getAccountDetail}
+										defaultTab={defaultTab}
 									/>
 								)}
 							</AccountContext.Provider>
@@ -818,6 +831,10 @@ const ManageAccounts: FC = () => {
 				<CreateAccount
 					setShowCreateAccountView={setShowCreateAccountView}
 					getAccountList={getAccountList}
+					setShowEditAccountView={setShowEditAccountView}
+					openDetailView={openDetailView}
+					setShowAccountDetailView={setShowAccountDetailView}
+					setDefaultTab={setDefaultTab}
 				/>
 			)}
 		</Container>

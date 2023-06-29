@@ -481,7 +481,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="100%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
@@ -497,17 +497,6 @@ const EditAccountGeneralSection: FC = () => {
 						) : (
 							<></>
 						)}
-					</Row>
-					<Row width="48%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraIsAdminAccount')}
-							label={t(
-								'account_details.this_is_global_administrator',
-								'This is a Global Administrator '
-							)}
-							iconColor="primary"
-						/>
 					</Row>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">

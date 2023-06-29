@@ -177,7 +177,7 @@ const CreateAccountDetailSection: FC = () => {
 						<Input
 							background="gray5"
 							label={t('label.userName_auto_fill', 'username (Auto-fill)')}
-							value={accountDetail.name}
+							value={accountDetail?.name}
 							onChange={changeAccName}
 							inputName="name"
 							// defaultValue={accountDetail?.name || ''}
@@ -206,7 +206,7 @@ const CreateAccountDetailSection: FC = () => {
 					<Input
 						label={t('label.viewed_name_auto_fill', 'Viewed Name (Auto-fill)')}
 						backgroundColor="gray5"
-						value={accountDetail.displayName || combineDisplayName}
+						value={accountDetail?.displayName || combineDisplayName}
 						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"

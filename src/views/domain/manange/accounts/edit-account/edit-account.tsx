@@ -19,10 +19,10 @@ import {
 	Padding,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, remove, map, differenceBy } from 'lodash';
+import styled, { keyframes } from 'styled-components';
+import { isEqual, reduce, remove, differenceBy } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
-
 import EditAccountGeneralSection from './edit-account-general-section';
 import EditAccountConfigrationSection from './edit-account-configration-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
@@ -48,12 +48,60 @@ import {
 	SECURITY,
 	USER_PREFERENCES,
 	DOMAIN_NAME,
-	UID
+	UID,
+	ADMINISTRATION
 } from '../../../../../constants';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import EditAccountContactsSection from './edit-account-contacts-section';
+import EditAccountAdministrationSection from './edit-account-administration-section';
 
-// eslint-disable-next-line no-empty-pattern
+const OverlayContainer = styled(Container)`
+	position: fixed;
+	width: 940px;
+	top: 6.438rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
+const rotateKeyframes = keyframes`
+from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+    }
+`;
+const KeyFrameContainer = styled(Container)`
+	width: 3rem;
+	height: 3rem;
+	border-radius: 50%;
+	display: inline-block;
+	border-top: 0.188rem solid #fff;
+	border-right: 0.188rem solid transparent;
+	box-sizing: border-box;
+	animation: ${rotateKeyframes} 1s linear infinite;
+`;
+
+const OverlayDivision: FC = () => {
+	const [t] = useTranslation();
+	return (
+		<OverlayContainer>
+			<KeyFrameContainer></KeyFrameContainer>
+			<Container height="auto" padding={{ top: 'small' }}>
+				<Text color="gray5" size="medium" weight="bold">
+					{t('label.please_wait', 'Please wait')}
+				</Text>
+			</Container>
+		</OverlayContainer>
+	);
+};
+
 const EditAccount: FC<{
 	setShowEditAccountView: any;
 	selectedAccount: any;
@@ -61,22 +109,32 @@ const EditAccount: FC<{
 	signatureItems: any;
 	signatureList: any;
 	getAccountDetail: any;
+	defaultTab: string;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
 	getAccountList,
 	signatureItems,
 	signatureList,
-	getAccountDetail
+	getAccountDetail,
+	defaultTab
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainList = useDomainStore((state) => state.domainList);
-	const [change, setChange] = useState('general');
+	const [change, setChange] = useState(defaultTab);
 	const [click, setClick] = useState('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const conext = useContext(AccountContext);
-	const { accountDetail, setAccountDetail, initAccountDetail, setInitAccountDetail } = conext;
+	const {
+		accountDetail,
+		setAccountDetail,
+		initAccountDetail,
+		setInitAccountDetail,
+		globalRights,
+		initialGlobalRights,
+		setGlobalRights
+	} = conext;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
@@ -177,6 +235,12 @@ const EditAccount: FC<{
 			label: t('label.security', 'SECURITY'),
 			CustomComponent: ReusedDefaultTabBar,
 			icon: 'LockOutline'
+		},
+		{
+			id: 'administration',
+			label: t('label.administration', 'ADMINISTRATION'),
+			CustomComponent: ReusedDefaultTabBar,
+			icon: 'CoffeeOutline'
 		}
 	];
 
@@ -414,6 +478,7 @@ const EditAccount: FC<{
 
 	return (
 		<>
+			{!accountDetail?.zimbraId && <OverlayDivision />}
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"
@@ -474,7 +539,24 @@ const EditAccount: FC<{
 				<Row>
 					<Divider color="gray3" />
 				</Row>
-
+				<Container
+					padding={{ all: 'small', bottom: '-17' }}
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					background="white"
+					style={{ overflowX: 'scroll' }}
+				>
+					<TabBar
+						items={items}
+						selected={change}
+						onChange={(ev: unknown, selectedId: string): void => {
+							setChange(selectedId);
+						}}
+						onItemClick={setClick}
+						width={1060}
+					/>
+					<Divider style={{ width: '114%' }} color="gray2" />
+				</Container>
 				<Container
 					padding={{ all: 'small' }}
 					mainAlignment="flex-start"
@@ -482,20 +564,6 @@ const EditAccount: FC<{
 					height="calc(100vh - 152px)"
 					background="white"
 				>
-					<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
-						<TabBar
-							items={items}
-							selected={change}
-							onChange={(ev: unknown, selectedId: string): void => {
-								setChange(selectedId);
-							}}
-							onItemClick={setClick}
-							width={915}
-						/>
-					</Row>
-					<Row width="100%">
-						<Divider color="gray2" />
-					</Row>
 					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
 						{change === GENERAL_SECTION && <EditAccountGeneralSection />}
 						{change === PROFILE && <EditAccountContactsSection />}
@@ -508,6 +576,7 @@ const EditAccount: FC<{
 						)}
 						{change === SECURITY && <EditAccountSecuritySection />}
 						{change === DELEGATES && <EditAccountDelegatesSection />}
+						{change === ADMINISTRATION && <EditAccountAdministrationSection />}
 					</Container>
 				</Container>
 			</Container>
