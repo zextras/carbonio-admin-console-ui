@@ -951,7 +951,7 @@
         "you_have_deleted_the_configuration": "Вы удалили конфигурацию",
         "you_have_imported_the_configuration": "Вы импортировали конфигурацию",
         "you_have_removed_attribute": "Вы удалили атрибут {{ attributeName }}",
-        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Сохранение копии отправленных сообщений только в папке отправки делегата",
+        "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Сохранить копию отправленных сообщений только в папке отправленные делегата",
         "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Сохранить копию отправленных сообщений в папку \"Отправленные\" делегата",
         "you_have_generated_the_sp_certificate": "Вы создали сертификат SP",
         "gal_update_frequencey_value": "Периодичность обновления GAL (значение)",
