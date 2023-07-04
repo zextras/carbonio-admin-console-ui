@@ -1501,12 +1501,12 @@
     },
     "locale": {
         "English": "English",
-        "chinese_china": "Çince (Çin)",
+        "chinese_china": "Chinese (China)",
         "dutch": "Dutch",
         "french": "Fransızca",
         "german": "German",
         "hindi": "Hindi",
-        "italian": "İtalyanca",
+        "italian": "Italian",
         "japanese": "Japonca",
         "label_chinese": "Chinese (China) - {{value}}",
         "label_dutch": "Dutch - {{value}}",
@@ -1528,7 +1528,7 @@
         "romanian": "Romanian",
         "russian": "Russian",
         "spanish": "Spanish",
-        "thai": "Tay dili",
+        "thai": "Thai",
         "turkish": "Türkçe",
         "vietnamese": "Vietnamese",
         "polish": "Polish"
@@ -1806,7 +1806,7 @@
     },
     "reminder": {
         "minute": "{{count}} dakika",
-        "minute_plural": ""
+        "minute_plural": "{{count}} dakika"
     },
     "hsm": {
         "allocation": "Kaynak Kullanımı",
@@ -1885,7 +1885,7 @@
         "volume_already_selected_in_source": "Bu hacim kaynak hacim olarak seçilmiş",
         "years": "Yıl"
     },
-    "select_bucket_or_create_new_bucket_helperText": "Bucket türü belirlememişsiniz. \n\t\t\t\t\t\t\t\t\tYeni oluşturmak için \"YENİ BUCKET\" tuşuna tıklayın…",
+    "select_bucket_or_create_new_bucket_helperText": "Bucket türü belirlememişsiniz. \n\t\t\t\t\t\t\t\t\tYeni oluşturmak için \"YENİ BUCKET\" tuşuna tıklayın.",
     "welcome_to_carbonio_display_name": "Hoşgeldiniz {{adminName}}!",
     "dashboard": {
         "carbonio": "Carbonio",
