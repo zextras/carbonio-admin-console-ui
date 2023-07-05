@@ -43,15 +43,18 @@ import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import { AccountContext } from './account-context';
 import { fetchSoap } from '../../../../services/listOTP-service';
+import { fetchSoapData } from '../../../../services/fetch-soap';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import useOutsideClick from '../../../app/hooks/useoutsideclick';
+import { useRightsStore } from '../../../../store/rights/store';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
@@ -630,6 +633,21 @@ const ManageAccounts: FC = () => {
 			window.removeEventListener('keydown', handleKeyEvent);
 		};
 	}, [handleKeyEvent]);
+
+	const getInfoDetail = useCallback(() => {
+		fetchSoapData('GetInfoRequest', {
+			rights: 'sendAs,sendAsDistList,viewFreeBusy,sendOnBehalfOf,sendOnBehalfOfDistList',
+			_jsns: 'urn:zimbraAccount'
+		}).then((res) => {
+			const data = res?.Body?.GetInfoResponse?.attrs?._attrs;
+			setUserType(data && accountUserType(data));
+		});
+	}, [accountUserType, setUserType]);
+
+	useEffect(() => {
+		getInfoDetail();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
