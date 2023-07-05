@@ -540,11 +540,10 @@ const EditAccount: FC<{
 					<Divider color="gray3" />
 				</Row>
 				<Container
-					padding={{ all: 'small', bottom: '-17' }}
+					padding={{ all: 'small' }}
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
 					background="white"
-					style={{ overflowX: 'scroll' }}
 				>
 					<TabBar
 						items={items}
