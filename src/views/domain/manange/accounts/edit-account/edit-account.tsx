@@ -553,9 +553,9 @@ const EditAccount: FC<{
 							setChange(selectedId);
 						}}
 						onItemClick={setClick}
-						width={1060}
+						width="100%"
 					/>
-					<Divider style={{ width: '114%' }} color="gray2" />
+					<Divider color="gray2" />
 				</Container>
 				<Container
 					padding={{ all: 'small' }}

@@ -309,6 +309,7 @@ const EditAccountAdministrationSection: FC = () => {
 						</Row>
 					</Row>
 					{accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
+						initAccountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' &&
 						accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
 							<Row width="100%" mainAlignment="start" padding={{ top: 'large', bottom: 'large' }}>
 								<Row
