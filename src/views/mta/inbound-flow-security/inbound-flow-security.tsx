@@ -665,7 +665,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							placement="bottom"
 							label={t(
 								'mta.notify_administrators_of_blocked_file_extension_incoming_emails',
-								'Notify administrators of blocked file extensions in incoming emails'
+								'Notify administrators about blocked file extensions in incoming emails'
 							)}
 							maxWidth="auto"
 						>
@@ -690,14 +690,14 @@ const MTAInboundFlowSecurity: FC = () => {
 							placement="bottom"
 							label={t(
 								'mta.notify_recipients_of_blocked_file_extension_incoming_emails',
-								'Notify recipients of blocked file extensions in incoming emails'
+								'Notify recipients about blocked file extensions in incoming emails'
 							)}
 							maxWidth="auto"
 						>
 							<Switch
 								label={t(
 									'mta.notify_external_recipient_about_block_extensions',
-									'Notify external recipient about blocked extensions'
+									'Notify external recepients about blocked extensions'
 								)}
 								value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
 								onClick={(): void =>
@@ -855,7 +855,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							<Switch
 								label={t(
 									'mta.client_must_greet_with_resolving_hostname',
-									'Client must greet with a resolving hostname'
+									'Client should have a resolving hostname'
 								)}
 								value={mtaInboundSecurityDetail?.rejectUnknownHeloHostname}
 								onClick={(): void =>
@@ -995,7 +995,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							<Switch
 								label={t(
 									'mta.client_must_greet_with_fully_qualified_hostname',
-									'Client must greet with a fully qualified hostname'
+									'Client should have a quilified hostname'
 								)}
 								value={mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname}
 								onClick={(): void =>

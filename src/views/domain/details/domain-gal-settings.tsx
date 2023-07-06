@@ -1172,7 +1172,7 @@ const DomainGalSettings: FC = () => {
 									type="number"
 									label={t(
 										'label.limit_search_results_from_address_book_list_to',
-										'Limit search results from  Address Book List to'
+										'Max number of results given by search in the Address Book list'
 									)}
 									value={zimbraGalMaxResults}
 									background="gray5"
