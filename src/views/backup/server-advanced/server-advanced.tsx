@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import {
@@ -22,12 +22,14 @@ import {
 	// @ts-ignore
 	getSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
+import { find } from 'lodash';
 import ListRow from '../../list/list-row';
 import { useServerStore } from '../../../store/server/store';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import { SERVER } from '../../../constants';
+import { SERVER, CONFIG } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const ServerAdvanced: FC = () => {
 	const { server }: { server: string } = useParams();
@@ -52,6 +54,14 @@ const ServerAdvanced: FC = () => {
 	const [scheduledMetadataArchivingEnabled, setScheduledMetadataArchivingEnabled] =
 		useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const rights: Rights = useRightsStore((state) => state.rights);
+	const allowSetBackup = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
+			return true;
+		}
+		return false;
+	}, [rights]);
 
 	useEffect(() => {
 		if (allServers && allServers.length > 0) {
@@ -653,6 +663,7 @@ const ServerAdvanced: FC = () => {
 								value={ldapDumpEnabled}
 								onClick={(): void => setLdapDumpEnabled(!ldapDumpEnabled)}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -661,6 +672,7 @@ const ServerAdvanced: FC = () => {
 								value={serverConfiguration}
 								onClick={(): void => setServerConfiguration(!serverConfiguration)}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -669,6 +681,7 @@ const ServerAdvanced: FC = () => {
 								value={purgeOldConfiguration}
 								onClick={(): void => setPurgeOldConfiguration(!purgeOldConfiguration)}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container padding={{ top: 'large' }}>
@@ -677,6 +690,7 @@ const ServerAdvanced: FC = () => {
 								value={includeIndex}
 								onClick={(): void => setIncludeIndex(!includeIndex)}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -695,7 +709,7 @@ const ServerAdvanced: FC = () => {
 								icon="ActivityOutline"
 								iconPlacement="right"
 								onClick={checkLdapStatus}
-								disabled={isRequestInProgress}
+								disabled={isRequestInProgress || !allowSetBackup}
 								loading={isRequestInProgress}
 								style={{ width: '100%' }}
 								width="100%"
@@ -741,6 +755,7 @@ const ServerAdvanced: FC = () => {
 								onChange={(e: any): any => {
 									setBackupLatencyHighThreshold(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container
@@ -757,6 +772,7 @@ const ServerAdvanced: FC = () => {
 								onChange={(e: any): any => {
 									setBackupLatencyLowThreshold(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -788,6 +804,7 @@ const ServerAdvanced: FC = () => {
 								onChange={(e: any): any => {
 									setBackupMaxWaitTime(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -818,6 +835,7 @@ const ServerAdvanced: FC = () => {
 								onChange={(e: any): any => {
 									setBackupMaxMetaDataSize(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -835,6 +853,7 @@ const ServerAdvanced: FC = () => {
 								value={backupOnTheFlyMetadata}
 								onClick={(): void => setBackupOnTheFlyMetadata(!backupOnTheFlyMetadata)}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -854,6 +873,7 @@ const ServerAdvanced: FC = () => {
 									setScheduledMetadataArchivingEnabled(!scheduledMetadataArchivingEnabled)
 								}
 								iconColor="primary"
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -884,6 +904,7 @@ const ServerAdvanced: FC = () => {
 								onChange={(e: any): any => {
 									setBackupMaxOperationPerAccount(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container
@@ -900,6 +921,7 @@ const ServerAdvanced: FC = () => {
 								onChange={(e: any): any => {
 									setBackupCompressionLevel(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
@@ -919,6 +941,7 @@ const ServerAdvanced: FC = () => {
 								onChange={(e: any): any => {
 									setBackupNumberThreadsForItems(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 						<Container
@@ -935,6 +958,7 @@ const ServerAdvanced: FC = () => {
 								onChange={(e: any): any => {
 									setBackupNumberThreadsForAccounts(e.target.value);
 								}}
+								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
