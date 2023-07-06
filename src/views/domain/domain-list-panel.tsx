@@ -33,7 +33,6 @@ import {
 	ACL_LIST,
 	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
-	RESOURCES,
 	RESTORE_ACCOUNT,
 	THEME,
 	VIRTUAL_HOSTS,
@@ -324,7 +323,10 @@ const DomainListPanel: FC = () => {
 	);
 
 	const detailItems = useMemo(
-		() => (!isAdvanced ? detailOptions.filter((item: any) => item?.id !== THEME) : detailOptions),
+		() =>
+			!isAdvanced
+				? detailOptions.filter((item: any) => item?.id !== THEME && item?.id !== SAML)
+				: detailOptions,
 		[detailOptions, isAdvanced]
 	);
 

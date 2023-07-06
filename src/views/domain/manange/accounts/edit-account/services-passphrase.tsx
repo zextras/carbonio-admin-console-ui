@@ -284,10 +284,9 @@ export const ServicesPassphrase: FC = () => {
 			</Row>
 			<Modal
 				size="medium"
-				title={`${createCredentialResponse.label} ${t(
-					'account_details.labels_password',
-					'’s Password'
-				)}`}
+				title={t('account_details.service_label_password', ' {{ service_label }}’s Password', {
+					service_label: createCredentialResponse?.label
+				})}
 				open={createCredentialModal}
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="flex-end">
