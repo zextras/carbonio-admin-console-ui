@@ -21,13 +21,13 @@ import { AccountContext } from './account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
 
 const CreateAccountDetailSection: FC = () => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const domain = useDomainStore((state) => state.domain);
 
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
-	const { accountDetail, setAccountDetail } = conext;
+	const { accountDetail, setAccountDetail } = context;
 
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);

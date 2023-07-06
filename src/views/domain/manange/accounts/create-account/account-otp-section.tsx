@@ -43,8 +43,8 @@ const StaticCode = styled.label`
 	padding: 4.95px 0;
 `;
 const AccountOtpSection: FC = () => {
-	const conext = useContext(AccountContext);
-	const { accountDetail, setAccountDetail } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail, setAccountDetail } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [sendEmailTo, setSendEmailTo] = useState('');
 	const [t] = useTranslation();

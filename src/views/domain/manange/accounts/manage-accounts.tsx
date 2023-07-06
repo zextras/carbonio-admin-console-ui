@@ -63,6 +63,7 @@ const ManageAccounts: FC = () => {
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
+	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
 
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -195,6 +196,12 @@ const ManageAccounts: FC = () => {
 						accountObj[ele.n] = ele._content;
 					}
 				});
+				if (accountObj.zimbraIsAdminAccount === undefined) {
+					accountObj.zimbraIsAdminAccount = 'FALSE';
+				}
+				if (accountObj.zimbraIsDelegatedAdminAccount === undefined) {
+					accountObj.zimbraIsDelegatedAdminAccount = 'FALSE';
+				}
 				setAccSpecificDetail({ ...accountObj });
 			})
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -243,6 +250,12 @@ const ManageAccounts: FC = () => {
 					obj.password = '';
 					obj.repeatPassword = '';
 					obj.name = data?.account?.[0]?.name;
+					if (obj.zimbraIsAdminAccount === undefined) {
+						obj.zimbraIsAdminAccount = 'FALSE';
+					}
+					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
+						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
+					}
 					setInitAccountDetail({ ...obj });
 					setAccountDetail({ ...obj });
 					getAccountSpecificDetail(id);
@@ -797,7 +810,9 @@ const ManageAccounts: FC = () => {
 									initialGlobalRights,
 									setinitialGlobalRights,
 									globalRights,
-									setGlobalRights
+									setGlobalRights,
+									deleteAdministrationRights,
+									setDeleteAdministrationRights
 								}}
 							>
 								{showAccountDetailView && (
@@ -820,6 +835,7 @@ const ManageAccounts: FC = () => {
 										signatureItems={signatureItems}
 										getAccountDetail={getAccountDetail}
 										defaultTab={defaultTab}
+										setDefaultTab={setDefaultTab}
 									/>
 								)}
 							</AccountContext.Provider>

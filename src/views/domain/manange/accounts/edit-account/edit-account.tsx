@@ -19,7 +19,6 @@ import {
 	Padding,
 	Icon
 } from '@zextras/carbonio-design-system';
-import styled, { keyframes } from 'styled-components';
 import { isEqual, reduce, remove, differenceBy } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
@@ -54,53 +53,8 @@ import {
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountAdministrationSection from './edit-account-administration-section';
-
-const OverlayContainer = styled(Container)`
-	position: fixed;
-	width: 940px;
-	top: 6.438rem;
-	right: 0;
-	bottom: 0;
-	height: auto;
-	max-height: 100%;
-	overflow: hidden;
-	background: #0d0d0d;
-	opacity: 0.4;
-	z-index: 11;
-	padding-top: 2rem;
-`;
-const rotateKeyframes = keyframes`
-from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-    }
-`;
-const KeyFrameContainer = styled(Container)`
-	width: 3rem;
-	height: 3rem;
-	border-radius: 50%;
-	display: inline-block;
-	border-top: 0.188rem solid #fff;
-	border-right: 0.188rem solid transparent;
-	box-sizing: border-box;
-	animation: ${rotateKeyframes} 1s linear infinite;
-`;
-
-const OverlayDivision: FC = () => {
-	const [t] = useTranslation();
-	return (
-		<OverlayContainer>
-			<KeyFrameContainer></KeyFrameContainer>
-			<Container height="auto" padding={{ top: 'small' }}>
-				<Text color="gray5" size="medium" weight="bold">
-					{t('label.please_wait', 'Please wait')}
-				</Text>
-			</Container>
-		</OverlayContainer>
-	);
-};
+import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
+import OverlayDivision from '../../../../components/overlayDivision';
 
 const EditAccount: FC<{
 	setShowEditAccountView: any;
@@ -110,6 +64,7 @@ const EditAccount: FC<{
 	signatureList: any;
 	getAccountDetail: any;
 	defaultTab: string;
+	setDefaultTab: any;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
@@ -117,7 +72,8 @@ const EditAccount: FC<{
 	signatureItems,
 	signatureList,
 	getAccountDetail,
-	defaultTab
+	defaultTab,
+	setDefaultTab
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -125,16 +81,14 @@ const EditAccount: FC<{
 	const [change, setChange] = useState(defaultTab);
 	const [click, setClick] = useState('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const {
 		accountDetail,
 		setAccountDetail,
 		initAccountDetail,
 		setInitAccountDetail,
-		globalRights,
-		initialGlobalRights,
-		setGlobalRights
-	} = conext;
+		deleteAdministrationRights
+	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
@@ -289,6 +243,51 @@ const EditAccount: FC<{
 		},
 		[createSnackbar, setSwitchInitOptionValue, t]
 	);
+	const onDeleteFromList = useCallback(
+		(lists: any) => {
+			if (lists?.length > 0) {
+				lists.forEach((item: any) => {
+					const id: any = {
+						n: 'id',
+						_content: item.id
+					};
+					const dlmItem: any = {
+						n: 'dlm',
+						_content: accountDetail?.name
+					};
+					removeDistributionListMember(id, dlmItem)
+						.then((data: any) => {
+							if (data) {
+								createSnackbar({
+									key: 'success',
+									type: 'success',
+									label: t(
+										'account_details.right_for_selected_user_deleted_successfully',
+										'Right for selected user deleted successfully'
+									),
+									autoHideTimeout: 3000,
+									hideButton: true,
+									replace: true
+								});
+							}
+						})
+						.catch((error: any) => {
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: error?.message
+									? error?.message
+									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						});
+				});
+			}
+		},
+		[t, accountDetail, createSnackbar]
+	);
 
 	const modifyAccountReq = useCallback(async () => {
 		const modifiedKeys: any = reduce(
@@ -298,6 +297,9 @@ const EditAccount: FC<{
 			},
 			[]
 		);
+		if (deleteAdministrationRights.length > 0 && modifiedKeys.includes('zimbraIsAdminAccount')) {
+			onDeleteFromList(deleteAdministrationRights);
+		}
 		const modifiedData: any = {};
 		let isPasswordChange = false;
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
@@ -470,6 +472,8 @@ const EditAccount: FC<{
 		modifyCoreAttributes,
 		setInitAccountDetail,
 		setShowEditAccountView,
+		deleteAdministrationRights,
+		onDeleteFromList,
 		t
 	]);
 	const onUndo = (): void => {
@@ -478,7 +482,7 @@ const EditAccount: FC<{
 
 	return (
 		<>
-			{!accountDetail?.zimbraId && <OverlayDivision />}
+			{!accountDetail?.zimbraId && <OverlayDivision ovelayWidth="58.75rem" />}
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"
@@ -532,7 +536,10 @@ const EditAccount: FC<{
 						<IconButton
 							size="medium"
 							icon="CloseOutline"
-							onClick={(): void => setShowEditAccountView(false)}
+							onClick={(): void => {
+								setShowEditAccountView(false);
+								setDefaultTab('general');
+							}}
 						/>
 					</Row>
 				</Row>

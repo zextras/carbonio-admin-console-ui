@@ -235,7 +235,7 @@ const CreateAccount: FC<{
 			if (res.ok) {
 				setAccountDetail((prev: any) => ({
 					...prev,
-					qrData: !`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
+					qrData: `otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
 						res.response.secret
 					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${
 						res.response.digits_length

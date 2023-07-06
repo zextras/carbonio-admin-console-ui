@@ -22,7 +22,7 @@ import {
 	Table
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { getMailboxQuota } from '../../../../services/account-list-directory-service';
 import { AccountContext } from './account-context';
 import { deleteAccount } from '../../../../services/delete-account-service';
@@ -34,6 +34,7 @@ import { getSessions } from '../../../../services/get-sessions';
 import Paging from '../../../components/paging';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import OverlayDivision from '../../../components/overlayDivision';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -58,55 +59,6 @@ type UserSession = {
 	service: string;
 };
 
-const OverlayContainer = styled(Container)`
-	position: fixed;
-	width: 42.6rem;
-	top: 6.438rem;
-	right: 0;
-	bottom: 0;
-	height: auto;
-	max-height: 100%;
-	overflow: hidden;
-	background: #0d0d0d;
-	opacity: 0.4;
-	z-index: 11;
-	padding-top: 2rem;
-`;
-
-const rotateKeyframes = keyframes`
-from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-    }
-`;
-
-const KeyFrameContainer = styled(Container)`
-	width: 3rem;
-	height: 3rem;
-	border-radius: 50%;
-	display: inline-block;
-	border-top: 0.188rem solid #fff;
-	border-right: 0.188rem solid transparent;
-	box-sizing: border-box;
-	animation: ${rotateKeyframes} 1s linear infinite;
-`;
-
-const OverlayDivision: FC = () => {
-	const [t] = useTranslation();
-	return (
-		<OverlayContainer>
-			<KeyFrameContainer></KeyFrameContainer>
-			<Container height="auto" padding={{ top: 'small' }}>
-				<Text color="gray5" size="medium" weight="bold">
-					{t('label.please_wait', 'Please wait')}
-				</Text>
-			</Container>
-		</OverlayContainer>
-	);
-};
-
 const AccountDetailView: FC<any> = ({
 	selectedAccount,
 	setShowAccountDetailView,
@@ -117,8 +69,8 @@ const AccountDetailView: FC<any> = ({
 }) => {
 	const [t] = useTranslation();
 	const [usedQuota, setUsedQuota] = useState(0);
-	const conext = useContext(AccountContext);
-	const { accountDetail } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail } = context;
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -429,7 +381,7 @@ const AccountDetailView: FC<any> = ({
 	return (
 		<>
 			{(!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id) && (
-				<OverlayDivision />
+				<OverlayDivision ovelayWidth="42.6rem" />
 			)}
 			<AccountDetailContainer background="gray5" mainAlignment="flex-start">
 				<Row

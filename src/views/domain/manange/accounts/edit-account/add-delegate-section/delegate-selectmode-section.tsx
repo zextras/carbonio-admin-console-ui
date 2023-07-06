@@ -39,8 +39,8 @@ const DelegateSelectModeSection: FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(20);
-	const conext = useContext(AccountContext);
-	const { deligateDetail, setDeligateDetail, accountDetail } = conext;
+	const context = useContext(AccountContext);
+	const { deligateDetail, setDeligateDetail, accountDetail } = context;
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(

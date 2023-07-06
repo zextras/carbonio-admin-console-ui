@@ -44,7 +44,7 @@ const CustomIcon = styled(Icon)`
 
 const EditAccountGeneralSection: FC = () => {
 	const createSnackbar = useSnackbar();
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const {
 		accountDetail,
 		setAccountDetail,
@@ -53,7 +53,7 @@ const EditAccountGeneralSection: FC = () => {
 		setInitAccountDetail,
 		accSpecificDetail,
 		cosDetail
-	} = conext;
+	} = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
 	const [t] = useTranslation();

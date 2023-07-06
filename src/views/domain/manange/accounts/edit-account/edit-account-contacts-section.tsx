@@ -11,8 +11,8 @@ import { AccountType } from '../account-types/account-types';
 import { isValidNumber } from '../../../../utility/utils';
 
 const EditAccountContactsSection: FC = () => {
-	const conext = useContext(AccountContext);
-	const { accountDetail, setAccountDetail } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail, setAccountDetail } = context;
 	const [t] = useTranslation();
 	const [isValidPhone, setIsValidPhone] = useState<boolean>(true);
 	const [isValidHomePhone, setIsValidHomePhone] = useState<boolean>(true);

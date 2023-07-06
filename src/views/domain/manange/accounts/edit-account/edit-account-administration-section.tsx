@@ -34,7 +34,8 @@ import { removeDistributionListMember } from '../../../../../services/remove-dis
 const EditAccountAdministrationSection: FC = () => {
 	const context = useContext(AccountContext);
 	const createSnackbar = useSnackbar();
-	const { accountDetail, setAccountDetail, initAccountDetail } = context;
+	const { accountDetail, setAccountDetail, initAccountDetail, setDeleteAdministrationRights } =
+		context;
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
 	const [domainList, setDomainList] = useState([]);
@@ -49,7 +50,7 @@ const EditAccountAdministrationSection: FC = () => {
 		() => [
 			{
 				id: 'rights',
-				label: t('label.rights_access_control_lists', 'Rights  (Access Control Lists)'),
+				label: t('label.rights_access_control_lists', 'Rights (Access Control Lists)'),
 				width: '48%',
 				bold: true
 			},
@@ -91,7 +92,7 @@ const EditAccountAdministrationSection: FC = () => {
 			const data = res?.dl?.filter((item: any) => item?.via === undefined);
 			setAccountDistributionList(data);
 		});
-	}, [accountDetail]);
+	}, [accountDetail?.zimbraId]);
 
 	const onAdd = useCallback((): void => {
 		const id: any = {
@@ -133,7 +134,7 @@ const EditAccountAdministrationSection: FC = () => {
 			});
 	}, [t, accountDetail, selectedOption, getAccountDistributionList, createSnackbar]);
 
-	const fetchDistributionList = useCallback((name: string): void => {
+	const fetchDistributionList = (name: string): void => {
 		const attrs =
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
@@ -141,7 +142,7 @@ const EditAccountAdministrationSection: FC = () => {
 		searchDirectory(attrs, types, name || '', query, 0, 6, 'name').then((res) => {
 			setDistributionList(res?.dl);
 		});
-	}, []);
+	};
 
 	const tableRows = useMemo(
 		() =>
@@ -165,15 +166,15 @@ const EditAccountAdministrationSection: FC = () => {
 		label: domain.name,
 		customComponent: (
 			<Row
-				top="9px"
+				top="0.18rem"
 				right="large"
-				bottom="9px"
+				bottom="0.18rem"
 				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
-					padding: '3px',
+					padding: '0.3rem',
 					width: '100%'
 				}}
 				onClick={(): void => {
@@ -231,6 +232,7 @@ const EditAccountAdministrationSection: FC = () => {
 						});
 				});
 			}
+			setSendSelectedRows([]);
 		},
 		[t, accountDetail, getAccountDistributionList, createSnackbar]
 	);
@@ -283,12 +285,16 @@ const EditAccountAdministrationSection: FC = () => {
 							<Switch
 								value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
 								onClick={(): void => {
+									if (accountDetail?.zimbraIsAdminAccount === 'FALSE') {
+										setDeleteAdministrationRights(accountDistributionList);
+									} else {
+										setDeleteAdministrationRights([]);
+									}
 									changeSwitchOption('zimbraIsAdminAccount');
 									setAccountDetail((prev: AccountType) => ({
 										...prev,
-										zimbraIsDelegatedAdminAccount: 'FALSE'
+										zimbraIsDelegatedAdminAccount: initAccountDetail?.zimbraIsDelegatedAdminAccount
 									}));
-									onDeleteFromList(accountDistributionList, 'all');
 								}}
 								label={t('account_details.global_administration', 'Global administration')}
 								iconColor="primary"
@@ -309,7 +315,6 @@ const EditAccountAdministrationSection: FC = () => {
 						</Row>
 					</Row>
 					{accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
-						initAccountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' &&
 						accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
 							<Row width="100%" mainAlignment="start" padding={{ top: 'large', bottom: 'large' }}>
 								<Row
@@ -320,9 +325,8 @@ const EditAccountAdministrationSection: FC = () => {
 									<Dropdown
 										items={items}
 										placement="bottom-start"
-										maxWidth="300px"
 										disableAutoFocus
-										width="265px"
+										width="100%"
 										style={{
 											width: '100%'
 										}}
@@ -348,7 +352,7 @@ const EditAccountAdministrationSection: FC = () => {
 										disabled={options?.length < 1}
 										items={options}
 										background="gray5"
-										label={t('label.rights_access_control_lists)', 'Rights (Access Control Lists)')}
+										label={t('label.rights_access_control_lists', 'Rights (Access Control Lists)')}
 										showCheckbox={false}
 										selection={selectedOption}
 										onChange={onOptionChange}
@@ -367,18 +371,13 @@ const EditAccountAdministrationSection: FC = () => {
 							</Row>
 						)}
 				</Row>
-				{accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
-					initAccountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' &&
-					accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
-						<Row width="100%" padding={{ top: '30px' }}>
-							<Divider color="gray2" />
-						</Row>
-					)}
 				{accountDistributionList?.length > 0 &&
 					accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
-					initAccountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' &&
 					accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
 						<>
+							<Row width="100%" padding={{ top: '2rem' }}>
+								<Divider color="gray2" />
+							</Row>
 							<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
 								<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 									<Text size="small" color="gray0" weight="bold">
@@ -409,7 +408,7 @@ const EditAccountAdministrationSection: FC = () => {
 								width="100%"
 								mainAlignment="flex-start"
 								crossAlignment="center"
-								padding={{ top: 'large', bottom: '50px' }}
+								padding={{ top: 'large', bottom: '3rem' }}
 							>
 								<Row padding={{ right: 'small' }} width="49%">
 									<Button
