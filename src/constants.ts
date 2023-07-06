@@ -45,6 +45,7 @@ export const FIRST_PAGE = 1;
 export const DOMAIN_DETAIL_VIEW = 'detail';
 export const DOMAIN_MANAGE_VIEW = 'manage';
 export const ACCOUNTS = 'accounts';
+export const ACL_LIST = 'acl_list';
 export const MAILING_LIST = 'mailing_list';
 export const RESOURCES = 'resources';
 export const ADMIN_DELEGATES = 'admin_delegates';

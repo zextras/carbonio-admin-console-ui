@@ -30,6 +30,7 @@ import {
 	GLOBAL_THEME_ROUTE,
 	MAILBOX_QUOTA,
 	MAILING_LIST,
+	ACL_LIST,
 	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
 	RESOURCES,
@@ -269,6 +270,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: MAILING_LIST,
 				name: t('label.mailing_list', 'Mailing List'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: ACL_LIST,
+				name: t('label.acl_list', 'ACL (Access Control List)'),
 				isSelected: isDomainSelect
 			},
 			// AC622 - Hide resources from AdminUI until they are not managed by the webUI

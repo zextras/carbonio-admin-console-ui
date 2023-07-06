@@ -15,6 +15,7 @@ import {
 	AUTHENTICATION,
 	MAILBOX_QUOTA,
 	ACCOUNTS,
+	ACL_LIST,
 	MAILING_LIST,
 	RESOURCES,
 	RESTORE_ACCOUNT,
@@ -32,6 +33,7 @@ import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
 import ManageAccounts from './manange/accounts/manage-accounts';
 import DomainVirtualHosts from './details/virtual-hosts-certificates/domain-virtual-hosts';
 import { useDomainStore } from '../../store/domain/store';
+import DomainAclList from './manange/acl-groups/domain-acl-list';
 import DomainMailingList from './manange/mailing-list/domain-mailing-list';
 import DomainResources from './manange/resources/domain-resources';
 import RestoreAccount from './manange/restore-delete-account/restore-delete-account';
@@ -104,6 +106,8 @@ const DomainOperations: FC = () => {
 						return <ManageAccounts />;
 					case MAILING_LIST:
 						return <DomainMailingList />;
+					case ACL_LIST:
+						return <DomainAclList />;
 					case RESOURCES:
 						return <DomainResources />;
 					case RESTORE_ACCOUNT:
