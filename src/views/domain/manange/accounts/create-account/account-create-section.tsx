@@ -12,8 +12,8 @@ import { AccountContext } from './account-context';
 import { AccountStatus, localeList } from '../../../../utility/utils';
 
 const AccountCreateSection: FC = () => {
-	const conext = useContext(AccountContext);
-	const { accountDetail } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);

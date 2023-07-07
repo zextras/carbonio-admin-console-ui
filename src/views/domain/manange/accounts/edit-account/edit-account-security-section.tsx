@@ -76,9 +76,9 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 };
 
 const EditAccountSecuritySection: FC = () => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const { otpList, accountDetail, setAccountDetail, getListOtp, accSpecificDetail, cosDetail } =
-		conext;
+		context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');

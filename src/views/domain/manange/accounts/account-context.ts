@@ -29,5 +29,11 @@ type AccountContext = {
 	setDeligateDetail: (arg: any) => void;
 	credentialList: any;
 	getCredentialList: any;
+	initialGlobalRights: any;
+	setinitialGlobalRights: (arg: any) => void;
+	globalRights: any;
+	setGlobalRights: (arg: any) => void;
+	deleteAdministrationRights: any[];
+	setDeleteAdministrationRights: (arg: any) => void;
 };
 export const AccountContext = createContext({} as AccountContext);

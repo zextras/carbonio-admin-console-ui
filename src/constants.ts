@@ -239,6 +239,7 @@ export const CONFIGURATION = 'configuration';
 export const USER_PREFERENCES = 'user_preferences';
 export const SECURITY = 'security';
 export const DELEGATES = 'delegates';
+export const ADMINISTRATION = 'administration';
 export const POSTSCREEN_TUNING = 'postscreen_tuning';
 export const OUTBOUND_FLOW = 'outbound_flow';
 export const ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP = 'zimbraSmtpSendAddOriginatingIP';

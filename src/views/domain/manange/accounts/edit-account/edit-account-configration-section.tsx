@@ -26,11 +26,11 @@ import InheritedSwitch from './inherited-components/inherited-switch';
 import InheritedInput from './inherited-components/inherited-input';
 
 const EditAccountConfigrationSection: FC = () => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [t] = useTranslation();
 	const { accountDetail, setAccountDetail, setInitAccountDetail, accSpecificDetail, cosDetail } =
-		conext;
+		context;
 	const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
 	const [mailForwardingAddress, setMailForwardingAddress] = useState<any[]>([]);
 	const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useState<any[]>([]);

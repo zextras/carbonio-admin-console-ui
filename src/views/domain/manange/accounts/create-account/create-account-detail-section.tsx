@@ -21,13 +21,13 @@ import { AccountContext } from './account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
 
 const CreateAccountDetailSection: FC = () => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const domain = useDomainStore((state) => state.domain);
 
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
-	const { accountDetail, setAccountDetail } = conext;
+	const { accountDetail, setAccountDetail } = context;
 
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
@@ -177,7 +177,7 @@ const CreateAccountDetailSection: FC = () => {
 						<Input
 							background="gray5"
 							label={t('label.userName_auto_fill', 'username (Auto-fill)')}
-							value={accountDetail.name}
+							value={accountDetail?.name}
 							onChange={changeAccName}
 							inputName="name"
 							// defaultValue={accountDetail?.name || ''}
@@ -206,7 +206,7 @@ const CreateAccountDetailSection: FC = () => {
 					<Input
 						label={t('label.viewed_name_auto_fill', 'Viewed Name (Auto-fill)')}
 						backgroundColor="gray5"
-						value={accountDetail.displayName || combineDisplayName}
+						value={accountDetail?.displayName || combineDisplayName}
 						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"
