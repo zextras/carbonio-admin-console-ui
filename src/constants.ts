@@ -303,3 +303,4 @@ export const SHORT = 'short';
 export const LONG = 'long';
 export const DOMAIN_NAME = 'domainName';
 export const UID = 'uid';
+export const CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK = 'carbonioAmavisDisableVirusCheck';

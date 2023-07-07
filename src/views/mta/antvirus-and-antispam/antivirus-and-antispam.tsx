@@ -40,7 +40,8 @@ import {
 	ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
 	ZIMBRA_VIRUS_WARN_ADMIN,
 	ZIMBRA_VIRUS_WARN_RECIPIENT,
-	CONFIG
+	CONFIG,
+	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 } from '../../../constants';
 import { useConfigStore } from '../../../store/config/store';
 import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
@@ -209,6 +210,10 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				_content: ''
 			});
 		}
+		attributes.push({
+			n: CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+			_content: mtaAntiVirusAndAntispamDetail?.carbonioAmavisDisableVirusCheck ? TRUE : FALSE
+		});
 		modifyConfigRequest(attributes);
 	}, [mtaAntiVirusAndAntispamDetail, modifyConfigRequest]);
 
@@ -453,6 +458,16 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				);
 			} else {
 				setInitialAndCurrentValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, '');
+			}
+
+			const carbonioAmavisDisableVirusCheck = configInformation.find(
+				(item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
+			);
+			if (carbonioAmavisDisableVirusCheck && carbonioAmavisDisableVirusCheck?._content) {
+				setInitialAndCurrentValue(
+					CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+					carbonioAmavisDisableVirusCheck?._content === TRUE
+				);
 			}
 		}
 	}, [configInformation, setInitialAndCurrentValue]);
@@ -869,6 +884,20 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					<Text size="small" weight="bold" color="gray0">
 						{t('label.antivirus_definitions', 'Antivirus Definitions')}
 					</Text>
+				</Container>
+
+				<Container crossAlignment="flex-start" padding={{ bottom: 'large' }}>
+					<Switch
+						label={t('mta.disable_virus_check', 'Disable Virus Check')}
+						value={mtaAntiVirusAndAntispamDetail?.carbonioAmavisDisableVirusCheck}
+						onClick={(): void =>
+							setValue(
+								CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+								!mtaAntiVirusAndAntispamDetail?.carbonioAmavisDisableVirusCheck
+							)
+						}
+						disabled={!allowSetMTA}
+					/>
 				</Container>
 
 				<Container
