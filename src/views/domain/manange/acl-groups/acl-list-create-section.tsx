@@ -18,18 +18,28 @@ export enum SUBSCRIBE_UNSUBSCRIBE {
 	APPROVAL = 'APPROVAL',
 	REJECT = 'REJECT'
 }
-const AclListCreateSection: FC<any> = () => {
+type MemberOwnerList = {
+	id: string;
+	name?: string;
+	columns: [];
+};
+const AclListCreateSection: FC = () => {
 	const { t } = useTranslation();
 	const context = useContext(AclListContext);
 	const { aclListDetail, setAclListDetail } = context;
-	const [ownerMember, setOwnerMember] = useState<Array<any>>([]);
-	const [memberList, setMemberList] = useState<Array<any>>([]);
+	const [ownerMember, setOwnerMember] = useState<MemberOwnerList[]>([]);
+	const [memberList, setMemberList] = useState<MemberOwnerList[]>([]);
 	const [subscription, setSubscription] = useState<string | null>('');
 	const [unSubscription, setUnSubscription] = useState<string | null>('');
-	const [ldapQueryMembers, setLdapQueryMembers] = useState<Array<any>>([]);
+	const [ldapQueryMembers, setLdapQueryMembers] = useState<MemberOwnerList[]>([]);
 	const [grantEmailType, setGrantEmailType] = useState<string | null>('');
 
-	const tableHeader: any[] = useMemo(
+	const tableHeader: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
 		() => [
 			{
 				id: 'members',
@@ -41,7 +51,12 @@ const AclListCreateSection: FC<any> = () => {
 		[t]
 	);
 
-	const ownerTableHeader: any[] = useMemo(
+	const ownerTableHeader: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
 		() => [
 			{
 				id: 'members',
@@ -56,7 +71,7 @@ const AclListCreateSection: FC<any> = () => {
 	useEffect(() => {
 		const member = aclListDetail?.members;
 		if (member && member.length > 0) {
-			const allRows = member.map((item: any) => ({
+			const allRows = member.map((item: MemberOwnerList) => ({
 				id: item,
 				columns: [
 					<Text size="medium" weight="light" key={item} color="#828282">
@@ -71,7 +86,7 @@ const AclListCreateSection: FC<any> = () => {
 	useEffect(() => {
 		const ownersList = aclListDetail?.owners;
 		if (ownersList && ownersList.length > 0) {
-			const allRows = ownersList.map((item: any) => ({
+			const allRows = ownersList.map((item: MemberOwnerList) => ({
 				id: item,
 				columns: [
 					<Text size="medium" weight="light" key={item?.id} color="#828282">
@@ -86,7 +101,7 @@ const AclListCreateSection: FC<any> = () => {
 	useEffect(() => {
 		const member = aclListDetail?.ldapQueryMembers;
 		if (member && member.length > 0) {
-			const allRows = member.map((item: any) => ({
+			const allRows = member.map((item: MemberOwnerList) => ({
 				id: item?.id,
 				columns: [
 					<Text size="medium" weight="light" key={item?.id} color="#828282">
@@ -137,9 +152,9 @@ const AclListCreateSection: FC<any> = () => {
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 300px)"
+				height="calc(100vh - 18.75rem)"
 				background="white"
-				style={{ overflow: 'auto', padding: '16px' }}
+				style={{ overflow: 'auto', padding: '1rem' }}
 			>
 				<ListRow>
 					<Container

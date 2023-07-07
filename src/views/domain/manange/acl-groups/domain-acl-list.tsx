@@ -598,7 +598,7 @@ const DomainAclList: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -627,7 +627,7 @@ const DomainAclList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 340px)"
+							height="calc(100vh - 21.25rem)"
 						>
 							{aclList && aclList.length > 0 && (
 								<Table

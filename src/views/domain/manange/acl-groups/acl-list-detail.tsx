@@ -32,6 +32,7 @@ import { deleteDistributionList } from '../../../../services/delete-distribution
 import { getGrant } from '../../../../services/get-grant';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import { CreateSnackbarType } from '../../../../../types';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -57,7 +58,7 @@ const AclListDetail: FC<any> = ({
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [totalGrantRights, setTotalGrantRights] = useState(0);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const dlCreateDate = useMemo(
 		() =>
 			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
@@ -66,7 +67,12 @@ const AclListDetail: FC<any> = ({
 		[zimbraCreateTimestamp]
 	);
 
-	const memberHeaders: any[] = useMemo(
+	const memberHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
 		() => [
 			{
 				id: 'members',
@@ -84,7 +90,12 @@ const AclListDetail: FC<any> = ({
 		[t]
 	);
 
-	const ownerHeaders: any[] = useMemo(
+	const ownerHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
 		() => [
 			{
 				id: 'owners',
@@ -96,7 +107,10 @@ const AclListDetail: FC<any> = ({
 		[t]
 	);
 
-	const subscriptionUnsubscriptionRequestOptions: any[] = useMemo(
+	const subscriptionUnsubscriptionRequestOptions: {
+		label: string;
+		value: string;
+	}[] = useMemo(
 		() => [
 			{
 				label: t('label.automatically_accept', 'Automatically accept'),
@@ -114,7 +128,10 @@ const AclListDetail: FC<any> = ({
 		[t]
 	);
 
-	const rightsOptions: any[] = useMemo(
+	const rightsOptions: {
+		label: string;
+		value: string;
+	}[] = useMemo(
 		() => [
 			{
 				label: t('label.can_send_receiver', 'Can Send & Receive'),
@@ -128,7 +145,12 @@ const AclListDetail: FC<any> = ({
 		[t]
 	);
 
-	const listMemberOfHeaders: any[] = useMemo(
+	const listMemberOfHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
 		() => [
 			{
 				id: 'members',
@@ -139,7 +161,10 @@ const AclListDetail: FC<any> = ({
 		],
 		[t]
 	);
-	const [zimbraMailStatus, setZimbraMailStatus] = useState<any>(rightsOptions[1]);
+	const [zimbraMailStatus, setZimbraMailStatus] = useState<{
+		label: string;
+		value: string;
+	}>(rightsOptions[1]);
 	const [zimbraDistributionListSubscriptionPolicy, setZimbraDistributionListSubscriptionPolicy] =
 		useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
 	const [
@@ -171,8 +196,10 @@ const AclListDetail: FC<any> = ({
 
 	const onRightsChange = useCallback(
 		(v: any): any => {
-			const it = rightsOptions.find((item: any) => item.value === v);
-			setZimbraMailStatus(it);
+			const it = rightsOptions.find((item: { label: string; value: string }) => item.value === v);
+			if (it) {
+				setZimbraMailStatus(it);
+			}
 		},
 		[rightsOptions]
 	);
@@ -528,8 +555,8 @@ const AclListDetail: FC<any> = ({
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 680px), 12px)'}`,
-				top: '43px',
+				left: `${'max(calc(100% - 42.5rem), 0.75rem)'}`,
+				top: '2.7rem',
 				height: 'auto',
 				width: 'auto',
 				overflow: 'hidden',
@@ -543,7 +570,7 @@ const AclListDetail: FC<any> = ({
 				orientation="horizontal"
 				background="white"
 				width="fill"
-				height="48px"
+				height="2.7rem"
 			>
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
@@ -844,12 +871,12 @@ const AclListDetail: FC<any> = ({
 					customFooter={
 						<Container orientation="horizontal" mainAlignment="space-between">
 							<Button
-								style={{ marginLeft: '10px' }}
+								style={{ marginLeft: '0.6rem' }}
 								type="outlined"
 								label={t('label.help', 'Help')}
 								color="primary"
 							/>
-							<Row style={{ gap: '8px' }}>
+							<Row style={{ gap: '0.5rem' }}>
 								<Button
 									label={t('label.cancel', 'Cancel')}
 									color="secondary"

@@ -256,15 +256,15 @@ const AclListMembersSection: FC<any> = () => {
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
+				top="0.5rem"
 				right="large"
-				bottom="9px"
+				bottom="0.5rem"
 				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
-					padding: '3px',
+					padding: '0.2rem',
 					width: 'inherit'
 				}}
 				onClick={(): void => {
@@ -281,15 +281,15 @@ const AclListMembersSection: FC<any> = () => {
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
+				top="0.5rem"
 				right="large"
-				bottom="9px"
+				bottom="0.5rem"
 				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
-					padding: '3px',
+					padding: '0.2rem',
 					width: 'inherit'
 				}}
 				onClick={(): void => {
@@ -348,9 +348,9 @@ const AclListMembersSection: FC<any> = () => {
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 300px)"
+				height="calc(100vh - 18.75rem)"
 				background="white"
-				style={{ overflow: 'auto', padding: '16px' }}
+				style={{ overflow: 'auto', padding: '1rem' }}
 			>
 				<Row>
 					<Text
@@ -374,9 +374,9 @@ const AclListMembersSection: FC<any> = () => {
 						<Dropdown
 							items={items}
 							placement="bottom-start"
-							maxWidth="300px"
+							maxWidth="18.75rem"
 							disableAutoFocus
-							width="265px"
+							width="16.5rem"
 							style={{
 								width: '100%'
 							}}
@@ -444,7 +444,7 @@ const AclListMembersSection: FC<any> = () => {
 							mainAlignment="center"
 							crossAlignment="center"
 						>
-							<Padding value="57px 0 0 0" width="100%">
+							<Padding value="3.5rem 0 0 0" width="100%">
 								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
@@ -506,9 +506,9 @@ const AclListMembersSection: FC<any> = () => {
 						<Dropdown
 							items={ownersItems}
 							placement="bottom-start"
-							maxWidth="300px"
+							maxWidth="18.75rem"
 							disableAutoFocus
-							width="265px"
+							width="16.5rem"
 							style={{
 								width: '100%'
 							}}
@@ -576,7 +576,7 @@ const AclListMembersSection: FC<any> = () => {
 							mainAlignment="center"
 							crossAlignment="center"
 						>
-							<Padding value="57px 0 0 0" width="100%">
+							<Padding value="3.5rem 0 0 0" width="100%">
 								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
