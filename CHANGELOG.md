@@ -2,6 +2,46 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.23](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.22...v0.9.23) (2023-07-06)
+
+
+### Features
+
+* added feature to display certificate details ([2d8db7a](https://github.com/zextras/carbonio-admin-console-ui/commit/2d8db7a83d31c486740a7cf2862265b2d7677acc))
+* added feature to use letencrypt and copy paste raw content ([7889ff3](https://github.com/zextras/carbonio-admin-console-ui/commit/7889ff3e84fa68880f1d87e007acb50abc3e814e))
+* added modify policy changes ([790a4d5](https://github.com/zextras/carbonio-admin-console-ui/commit/790a4d5ee417c02a672b80e4a0fc872d6a8d4e3b))
+* added Ui and list policies ([6444758](https://github.com/zextras/carbonio-admin-console-ui/commit/6444758d7f6246a14bd860195d164876483513ab))
+* allowed admin to configure 2fa global and domain ([dca6076](https://github.com/zextras/carbonio-admin-console-ui/commit/dca6076976d8b51201771446b2c72bd33d4907f9))
+* amavis anivirus check attribute added in mta ([5dabf77](https://github.com/zextras/carbonio-admin-console-ui/commit/5dabf77e0586696c7e6ccc852fd3f79507f52e88))
+
+
+### Bug Fixes
+
+* checked new message with backend messages ([aae2761](https://github.com/zextras/carbonio-admin-console-ui/commit/aae27619ee5ae706c5c5e2dbb4255f50ee5f3942))
+* conflict resolved ([d063c33](https://github.com/zextras/carbonio-admin-console-ui/commit/d063c33a4b415069d9d15cc1190aace4c03c471b))
+* conflicts resolved ([938d744](https://github.com/zextras/carbonio-admin-console-ui/commit/938d744b5552049d65fe920ba1fbf544f4f77940))
+* conflicts resolved ([9c7744c](https://github.com/zextras/carbonio-admin-console-ui/commit/9c7744ce481f1f7858186ee0909b221edeb3e833))
+* conflicts resolved ([55cf7a5](https://github.com/zextras/carbonio-admin-console-ui/commit/55cf7a50b249c685ee6aa4b0360bc631dbf597d3))
+* default 0 compression threshold ([cbe22cf](https://github.com/zextras/carbonio-admin-console-ui/commit/cbe22cf80f2ef61718911789927128cb0b11ee2f))
+* default show mesure unit in cos advance ([#394](https://github.com/zextras/carbonio-admin-console-ui/issues/394)) ([5c8f309](https://github.com/zextras/carbonio-admin-console-ui/commit/5c8f309c9d67ba0c2b42cda1db7d0f9d0a71c31c))
+* disable search ([841065e](https://github.com/zextras/carbonio-admin-console-ui/commit/841065eb03154158c8b173e6f14d62a7d7f31787))
+* fixed emptying ip range ([cccbd4b](https://github.com/zextras/carbonio-admin-console-ui/commit/cccbd4b0e549c0147475537d77765682f3e0b2f0))
+* fixed error message from backend ([ac274bb](https://github.com/zextras/carbonio-admin-console-ui/commit/ac274bba462c1dc26877d654f84dca1e3f15fbe5))
+* fixed error snackbar ([9988abb](https://github.com/zextras/carbonio-admin-console-ui/commit/9988abba5e4b50c02545c55fad42f89d892d1227))
+* fixed leading 0 ip range regex ([6cd1d70](https://github.com/zextras/carbonio-admin-console-ui/commit/6cd1d700b200a6221c66f2a601f365f4b9085a5a))
+* fixed list bucket proxy server issue ([8305d2e](https://github.com/zextras/carbonio-admin-console-ui/commit/8305d2e1fb5293915433f19129020bb944c23204))
+* fixed only one value updating issue ([2630138](https://github.com/zextras/carbonio-admin-console-ui/commit/2630138a093d7fcd6d35ed03291825fd75c2f0ad))
+* fixed px to rem issue ([48b288f](https://github.com/zextras/carbonio-admin-console-ui/commit/48b288ff440966203bb309fb459922beba359fe2))
+* fixed un necessary snackbar removal ([b672261](https://github.com/zextras/carbonio-admin-console-ui/commit/b672261f6ff21352dcb7819e24ed901c1dfc510f))
+* fixed volume threhold update and defined types ([d65058b](https://github.com/zextras/carbonio-admin-console-ui/commit/d65058be1733abce079d98d06acbee2272bec243))
+* fixed with new layout smooth button show ([c1d2470](https://github.com/zextras/carbonio-admin-console-ui/commit/c1d247082c4a1888bca0de6af19068ff576d12fd))
+* remove double api call for getallservers ([51bcb6b](https://github.com/zextras/carbonio-admin-console-ui/commit/51bcb6b49653b6ba82dfbcb14e427821b0fb64b9))
+* reverted old backup and fixed ([33f2d3c](https://github.com/zextras/carbonio-admin-console-ui/commit/33f2d3cec54a12c5bccd0c3c80bf1fa0d7619f45))
+* run all hsm policies ([f3f6e1a](https://github.com/zextras/carbonio-admin-console-ui/commit/f3f6e1aa170a10442f1708b3dfac688c3c8734eb))
+* saml option remove if carbonio CE avaiable ([3e24dc5](https://github.com/zextras/carbonio-admin-console-ui/commit/3e24dc521e7203e3f7d582809e10043e8b856f29))
+* trans string issue ([#414](https://github.com/zextras/carbonio-admin-console-ui/issues/414)) ([e3dcc04](https://github.com/zextras/carbonio-admin-console-ui/commit/e3dcc0418be4a7930a51d81ab0e0ec29ffe4b6a5))
+* type for policy array ([61897a4](https://github.com/zextras/carbonio-admin-console-ui/commit/61897a4bcf853bc662edf6ab1f7cb5a0c295ab3a))
+
 ### [0.9.22](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.21...v0.9.22) (2023-06-16)
 
 

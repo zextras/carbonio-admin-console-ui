@@ -24,11 +24,15 @@ export type Rights = Right[];
 type RightsState = {
 	rights: Rights;
 	setRights: (rights: Rights) => void;
+	userType: string;
+	setUserType: (userType: string) => void;
 };
 
 export const useRightsStore = create<RightsState>(
 	devtools((set) => ({
 		rights: [],
-		setRights: (rights): void => set({ rights }, false, 'setRights')
+		setRights: (rights): void => set({ rights }, false, 'setRights'),
+		userType: '',
+		setUserType: (userType): void => set({ userType }, false, 'setUserType')
 	}))
 );

@@ -35,6 +35,7 @@ import Paging from '../../../components/paging';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import OverlayDivision from '../../../components/overlayDivision';
+import { useRightsStore } from '../../../../store/rights/store';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -71,7 +72,9 @@ const AccountDetailView: FC<any> = ({
 	const [usedQuota, setUsedQuota] = useState(0);
 	const context = useContext(AccountContext);
 	const { accountDetail } = context;
+	const { userType } = useRightsStore((state) => state);
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+	const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
@@ -156,9 +159,30 @@ const AccountDetailView: FC<any> = ({
 		}
 	}, [accountDetail?.mail]);
 
-	const onDeleteAccount = useCallback(() => {
-		setIsOpenDeleteDialog(true);
+	const accountUserType = useCallback((item): string => {
+		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
+		return 'Normal';
 	}, []);
+
+	const onDeleteAccount = useCallback(() => {
+		if (userType === 'DelegatedAdmin' || userType === 'System') {
+			if (
+				accountUserType(selectedAccount) === 'DelegatedAdmin' ||
+				accountUserType(selectedAccount) === 'System'
+			) {
+				setisOpenDeleteHintModel(true);
+			} else {
+				setIsOpenDeleteDialog(true);
+			}
+		} else if (userType === 'Normal') {
+			setisOpenDeleteHintModel(true);
+		} else {
+			setIsOpenDeleteDialog(true);
+		}
+	}, [accountUserType, selectedAccount, userType]);
 	const onViewMail = useCallback(() => {
 		getDelegateAuthRequest(selectedAccount?.id)
 			.then((data: any) => {
@@ -777,7 +801,19 @@ const AccountDetailView: FC<any> = ({
 						onClose={closeHandler}
 					>
 						<Container>
-							<Padding bottom="medium" top="medium">
+							{userType === 'Admin' &&
+								(accountUserType(selectedAccount) === 'System' ||
+									accountUserType(selectedAccount) === 'DelegatedAdmin') && (
+									<Padding bottom="medium" top="medium">
+										<Text color="warning" size="extralarge" overflow="break-word">
+											{t(
+												'label.deleting_account_warning_content',
+												'Deleting the system account could impact the system stability.'
+											)}
+										</Text>
+									</Padding>
+								)}
+							<Padding bottom="medium">
 								<Text size={'extralarge'} overflow="break-word">
 									<Trans
 										i18nKey="label.deleting_account_content_1"
@@ -811,6 +847,44 @@ const AccountDetailView: FC<any> = ({
 									style={{ height: '48px', width: '48px' }}
 								/>
 							</Row>
+						</Container>
+					</Modal>
+				)}
+				{isOpenDeleteHintModel && (
+					<Modal
+						size="medium"
+						title={selectedAccount?.name}
+						open={isOpenDeleteHintModel}
+						customFooter={
+							<Container orientation="horizontal" mainAlignment="flex-end">
+								<Button
+									label={t('label.close', 'Close')}
+									color="primary"
+									onClick={(): void => {
+										setisOpenDeleteHintModel(false);
+									}}
+									disabled={
+										isRequestInProgress ||
+										STATUS_COLOR[selectedAccount?.zimbraAccountStatus]?.label ===
+											STATUS_COLOR?.closed?.label
+									}
+								/>
+							</Container>
+						}
+						showCloseIcon
+						onClose={(): void => {
+							setisOpenDeleteHintModel(false);
+						}}
+					>
+						<Container>
+							<Padding bottom="medium" top="medium">
+								<Text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word">
+									{t(
+										'label.delete_delegated_account_content',
+										`The system accounts can't be deleted from here. Please visit the respective module to manage the account.`
+									)}
+								</Text>
+							</Padding>
 						</Container>
 					</Modal>
 				)}

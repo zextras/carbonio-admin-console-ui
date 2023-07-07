@@ -46,4 +46,5 @@ export type MtaAntivirusAndAntispam = {
 	zimbraVirusBlockEncryptedArchive: boolean;
 	zimbraVirusWarnAdmin: boolean;
 	carbonioClamAVDatabaseCustomURL: string;
+	carbonioAmavisDisableVirusCheck: boolean;
 };

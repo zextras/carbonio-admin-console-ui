@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -67,6 +67,7 @@ const HSMsettingPanel: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
 	const [isEditSaveInProgress, setIsEditSaveInProgress] = useState<boolean>(false);
+	const timer = useRef<any>();
 
 	const headers = useMemo(
 		() => [
@@ -130,6 +131,26 @@ const HSMsettingPanel: FC = () => {
 		return hsmTypeString;
 	};
 
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	const doClickAction = useCallback((): void => {}, []);
+
+	const doDoubleClickAction = useCallback((): void => {
+		setShowEditHsmPolicyView(true);
+	}, []);
+
+	const handleClick = useCallback(
+		(event: any) => {
+			event.stopPropagation();
+			clearTimeout(timer.current);
+			if (event.detail === 1) {
+				timer.current = setTimeout(doClickAction, 300);
+			} else if (event.detail === 2) {
+				doDoubleClickAction();
+			}
+		},
+		[doClickAction, doDoubleClickAction]
+	);
+
 	useEffect(() => {
 		if (policies.length > 0) {
 			const allRows = policies.map((item: any) => ({
@@ -140,8 +161,10 @@ const HSMsettingPanel: FC = () => {
 						weight="medium"
 						key={item?.hsmQuery}
 						color="#828282"
-						onClick={(): void => {
+						onClick={(e: { stopPropagation: () => void }): void => {
+							e.stopPropagation();
 							setSelectedPolicies([item?.hsmQuery]);
+							handleClick(e);
 						}}
 					>
 						{getHSMType(item?.hsmType)}
@@ -153,7 +176,7 @@ const HSMsettingPanel: FC = () => {
 		} else {
 			setPoliciesRow([]);
 		}
-	}, [policies]);
+	}, [handleClick, policies]);
 
 	const getZxPowerStoreServers = useCallback(() => {
 		getSoapFetchRequest(
@@ -550,6 +573,49 @@ const HSMsettingPanel: FC = () => {
 		},
 		[createHSMpolicy]
 	);
+
+	const runAllHSMpolicy = useCallback(() => {
+		setIsRequestInProgress(true);
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxPowerstore',
+			action: 'doMoveBlobs',
+			command: 'start',
+			targetServer: server
+		})
+			.then((res: any) => {
+				setIsRequestInProgress(false);
+				if (res?.Body?.response?.content) {
+					const info = JSON.parse(res?.Body?.response?.content);
+					if (info?.ok) {
+						setIsEditSaveInProgress(false);
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t('hsm.policies_are_running', 'The HSM Policies are running'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
+				}
+			})
+			.catch((error) => {
+				setIsRequestInProgress(false);
+				setIsEditSaveInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, server, t]);
+
 	return (
 		<Container mainAlignment="flex-start" width="100%">
 			<Row
@@ -689,44 +755,45 @@ const HSMsettingPanel: FC = () => {
 								</Text>
 							</Row>
 							<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
-								<Padding right="small">
+								<Padding right="medium">
 									<Button
-										label={t('hsm.delete', 'Delete')}
-										color="error"
+										label={t('hsm.new', 'New')}
+										icon=""
 										type="outlined"
-										icon="CloseOutline"
+										color="primary"
 										height={36}
 										onClick={(): void => {
-											setShowDeletePolicyView(true);
+											setShowCreateHsmPolicyView(true);
 										}}
-										disabled={selectedPolicies.length === 0}
+										loading={isVolumeInProgress}
+										disabled={isVolumeInProgress}
 									/>
 								</Padding>
-								<Padding right="small">
+								<Padding right="medium">
 									<Button
-										label={t('hsm.edit', 'Edit')}
+										label={t('hsm.run_all', 'Run All')}
 										type="outlined"
-										icon="EditOutline"
-										color="secondary"
+										icon=""
+										color="primary"
 										height={36}
 										onClick={(): void => {
-											setShowEditHsmPolicyView(true);
+											runAllHSMpolicy();
 										}}
-										disabled={selectedPolicies.length === 0 || isVolumeInProgress}
+										disabled={policiesRow.length === 0}
 										loading={isVolumeInProgress}
 									/>
 								</Padding>
 								<Button
-									label={t('hsm.new_policy', 'New Policy')}
-									icon="Plus"
+									label={t('hsm.delete', 'Delete')}
+									color="error"
 									type="outlined"
-									color="primary"
+									icon=""
 									height={36}
 									onClick={(): void => {
-										setShowCreateHsmPolicyView(true);
+										setShowDeletePolicyView(true);
 									}}
+									disabled={selectedPolicies.length === 0}
 									loading={isVolumeInProgress}
-									disabled={isVolumeInProgress}
 								/>
 							</Row>
 						</Row>
