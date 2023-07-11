@@ -297,7 +297,7 @@ const EditAccount: FC<{
 			},
 			[]
 		);
-		if (deleteAdministrationRights.length > 0 && modifiedKeys.includes('zimbraIsAdminAccount')) {
+		if (deleteAdministrationRights?.length > 0 && modifiedKeys.includes('zimbraIsAdminAccount')) {
 			onDeleteFromList(deleteAdministrationRights);
 		}
 		const modifiedData: any = {};
