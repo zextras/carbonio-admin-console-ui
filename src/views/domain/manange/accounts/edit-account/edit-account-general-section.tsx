@@ -411,17 +411,7 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 					</Row>
-					<Row width="37%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraPasswordLocked === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraPasswordLocked')}
-							label={t(
-								'account_details.prevent_user_from_changing_password',
-								'Prevent user from changing password'
-							)}
-							iconColor="primary"
-						/>
-					</Row>
+					<Row width="37%" mainAlignment="flex-start"></Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
