@@ -1308,7 +1308,7 @@ const EditMailingListView: FC<any> = ({
 					grantee: grantEmails.map((item: any) => ({
 						type: 'email',
 						by: 'name',
-						_content: item
+						_content: item?.name ? item?.name : item
 					}))
 				}
 			};
