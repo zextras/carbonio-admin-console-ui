@@ -10,5 +10,5 @@ import {
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 
-export const fetchSoap = async (api: string, body: unknown): Promise<any> =>
+export const fetchSoapData = async (api: string, body: unknown): Promise<any> =>
 	postSoapFetchRequest(`/service/admin/soap/${api}`, body, api);

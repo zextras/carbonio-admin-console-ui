@@ -4,7 +4,8 @@
         "search": "Hae",
         "details": "Yksityiskohdat",
         "password": "Salasana",
-        "reset": "Resetoi"
+        "reset": "Resetoi",
+        "username": "Käyttäjänimi"
     },
     "cos": {
         "password": "Salasana"
@@ -20,6 +21,9 @@
         "details": "Yksityiskohdat"
     },
     "account_details": {
+        "remove": "Poista"
+    },
+    "mta": {
         "remove": "Poista"
     }
 }

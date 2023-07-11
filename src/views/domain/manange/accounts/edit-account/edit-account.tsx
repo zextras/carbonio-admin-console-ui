@@ -19,10 +19,9 @@ import {
 	Padding,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, remove, map, differenceBy } from 'lodash';
+import { isEqual, reduce, remove, differenceBy } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
-
 import EditAccountGeneralSection from './edit-account-general-section';
 import EditAccountConfigrationSection from './edit-account-configration-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
@@ -48,12 +47,15 @@ import {
 	SECURITY,
 	USER_PREFERENCES,
 	DOMAIN_NAME,
-	UID
+	UID,
+	ADMINISTRATION
 } from '../../../../../constants';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import EditAccountContactsSection from './edit-account-contacts-section';
+import EditAccountAdministrationSection from './edit-account-administration-section';
+import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
+import OverlayDivision from '../../../../components/overlayDivision';
 
-// eslint-disable-next-line no-empty-pattern
 const EditAccount: FC<{
 	setShowEditAccountView: any;
 	selectedAccount: any;
@@ -61,22 +63,32 @@ const EditAccount: FC<{
 	signatureItems: any;
 	signatureList: any;
 	getAccountDetail: any;
+	defaultTab: string;
+	setDefaultTab: any;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
 	getAccountList,
 	signatureItems,
 	signatureList,
-	getAccountDetail
+	getAccountDetail,
+	defaultTab,
+	setDefaultTab
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainList = useDomainStore((state) => state.domainList);
-	const [change, setChange] = useState('general');
+	const [change, setChange] = useState(defaultTab);
 	const [click, setClick] = useState('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const conext = useContext(AccountContext);
-	const { accountDetail, setAccountDetail, initAccountDetail, setInitAccountDetail } = conext;
+	const context = useContext(AccountContext);
+	const {
+		accountDetail,
+		setAccountDetail,
+		initAccountDetail,
+		setInitAccountDetail,
+		deleteAdministrationRights
+	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
@@ -177,6 +189,12 @@ const EditAccount: FC<{
 			label: t('label.security', 'SECURITY'),
 			CustomComponent: ReusedDefaultTabBar,
 			icon: 'LockOutline'
+		},
+		{
+			id: 'administration',
+			label: t('label.administration', 'ADMINISTRATION'),
+			CustomComponent: ReusedDefaultTabBar,
+			icon: 'CoffeeOutline'
 		}
 	];
 
@@ -225,6 +243,51 @@ const EditAccount: FC<{
 		},
 		[createSnackbar, setSwitchInitOptionValue, t]
 	);
+	const onDeleteFromList = useCallback(
+		(lists: any) => {
+			if (lists?.length > 0) {
+				lists.forEach((item: any) => {
+					const id: any = {
+						n: 'id',
+						_content: item.id
+					};
+					const dlmItem: any = {
+						n: 'dlm',
+						_content: accountDetail?.name
+					};
+					removeDistributionListMember(id, dlmItem)
+						.then((data: any) => {
+							if (data) {
+								createSnackbar({
+									key: 'success',
+									type: 'success',
+									label: t(
+										'account_details.right_for_selected_user_deleted_successfully',
+										'Right for selected user deleted successfully'
+									),
+									autoHideTimeout: 3000,
+									hideButton: true,
+									replace: true
+								});
+							}
+						})
+						.catch((error: any) => {
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: error?.message
+									? error?.message
+									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						});
+				});
+			}
+		},
+		[t, accountDetail, createSnackbar]
+	);
 
 	const modifyAccountReq = useCallback(async () => {
 		const modifiedKeys: any = reduce(
@@ -234,6 +297,9 @@ const EditAccount: FC<{
 			},
 			[]
 		);
+		if (deleteAdministrationRights.length > 0 && modifiedKeys.includes('zimbraIsAdminAccount')) {
+			onDeleteFromList(deleteAdministrationRights);
+		}
 		const modifiedData: any = {};
 		let isPasswordChange = false;
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
@@ -406,6 +472,8 @@ const EditAccount: FC<{
 		modifyCoreAttributes,
 		setInitAccountDetail,
 		setShowEditAccountView,
+		deleteAdministrationRights,
+		onDeleteFromList,
 		t
 	]);
 	const onUndo = (): void => {
@@ -414,6 +482,7 @@ const EditAccount: FC<{
 
 	return (
 		<>
+			{!accountDetail?.zimbraId && <OverlayDivision ovelayWidth="58.75rem" />}
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"
@@ -467,14 +536,33 @@ const EditAccount: FC<{
 						<IconButton
 							size="medium"
 							icon="CloseOutline"
-							onClick={(): void => setShowEditAccountView(false)}
+							onClick={(): void => {
+								setShowEditAccountView(false);
+								setDefaultTab('general');
+							}}
 						/>
 					</Row>
 				</Row>
 				<Row>
 					<Divider color="gray3" />
 				</Row>
-
+				<Container
+					padding={{ all: 'small' }}
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					background="white"
+				>
+					<TabBar
+						items={items}
+						selected={change}
+						onChange={(ev: unknown, selectedId: string): void => {
+							setChange(selectedId);
+						}}
+						onItemClick={setClick}
+						width="100%"
+					/>
+					<Divider color="gray2" />
+				</Container>
 				<Container
 					padding={{ all: 'small' }}
 					mainAlignment="flex-start"
@@ -482,20 +570,6 @@ const EditAccount: FC<{
 					height="calc(100vh - 152px)"
 					background="white"
 				>
-					<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
-						<TabBar
-							items={items}
-							selected={change}
-							onChange={(ev: unknown, selectedId: string): void => {
-								setChange(selectedId);
-							}}
-							onItemClick={setClick}
-							width={915}
-						/>
-					</Row>
-					<Row width="100%">
-						<Divider color="gray2" />
-					</Row>
 					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
 						{change === GENERAL_SECTION && <EditAccountGeneralSection />}
 						{change === PROFILE && <EditAccountContactsSection />}
@@ -508,6 +582,7 @@ const EditAccount: FC<{
 						)}
 						{change === SECURITY && <EditAccountSecuritySection />}
 						{change === DELEGATES && <EditAccountDelegatesSection />}
+						{change === ADMINISTRATION && <EditAccountAdministrationSection />}
 					</Container>
 				</Container>
 			</Container>
