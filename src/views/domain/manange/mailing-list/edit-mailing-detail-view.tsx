@@ -743,7 +743,7 @@ const EditMailingListView: FC<any> = ({
 						}));
 					} else if (grant.length === 1) {
 						const granteeType = grant[0]?.grantee[0]?.type;
-						if (grant[0].grantee?.[0]?.type === 'gst') {
+						if (grant[0].grantee?.[0]?.type === 'gst' || grant[0].grantee?.[0]?.type === 'usr') {
 							onGrantTypeChange(EMAIL);
 							const emails: Array<any> = [];
 							grant.forEach((grItem: any) => {
