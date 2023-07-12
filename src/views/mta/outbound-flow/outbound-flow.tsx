@@ -612,7 +612,7 @@ const MTAOutBoundFlow: FC = () => {
 					padding={{ top: 'large' }}
 				>
 					<Input
-						label={t('mta.my_netword', 'MyNetwork')}
+						label={t('mta.my_netword', 'My Network')}
 						value={mtaOutboundDetail?.zimbraMtaMyNetworks || ''}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 							allowSetMTA ?? setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
@@ -629,7 +629,7 @@ const MTAOutBoundFlow: FC = () => {
 				>
 					<Container padding={{ right: 'medium' }}>
 						<Input
-							label={t('mta.smtp_helo_name', 'SMTP Helo Name')}
+							label={t('mta.smtp_helo_name', 'SMTP HELO Name')}
 							value={mtaOutboundDetail?.zimbraMtaSmtpHeloName || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								allowSetMTA ?? setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);

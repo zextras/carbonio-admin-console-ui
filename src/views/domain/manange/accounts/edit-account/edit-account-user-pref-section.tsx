@@ -24,7 +24,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 	signatureItems,
 	signatureList
 }) => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const [t] = useTranslation();
 	const {
 		accountDetail,
@@ -33,7 +33,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 		setSignatureList,
 		cosDetail,
 		accSpecificDetail
-	} = conext;
+	} = context;
 	const [zimbraPrefMailPollingIntervalNum, setZimbraPrefMailPollingIntervalNum] = useState(
 		accountDetail?.zimbraPrefMailPollingInterval?.slice(0, -1)
 	);

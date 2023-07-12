@@ -55,8 +55,8 @@ interface AddCredentialApiType {
 }
 
 export const ServicesPassphrase: FC = () => {
-	const conext = useContext(AccountContext);
-	const { accountDetail, credentialList, getCredentialList } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail, credentialList, getCredentialList } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
