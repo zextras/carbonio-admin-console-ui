@@ -12,8 +12,7 @@ import {
 	Icon,
 	Table,
 	Button,
-	Padding,
-	Dropdown
+	Padding
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -24,6 +23,7 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import DropDownInput from '../../../components/dropDownInput';
 
 export const SendInviteAccounts: FC<any> = ({
 	isEditable,
@@ -209,28 +209,22 @@ export const SendInviteAccounts: FC<any> = ({
 						padding={{ top: 'large' }}
 					>
 						<Row mainAlignment="flex-start" style={{ width: '60%' }}>
-							<Dropdown
-								items={searchMemberItems}
-								placement="bottom-start"
-								disableAutoFocus
+							<DropDownInput
 								maxWidth="19rem"
 								width="19rem"
-								style={{ width: '100%' }}
-							>
-								<Input
-									label={t('label.enter_email_address', 'Enter E-mail address')}
-									background="gray5"
-									value={newSentInviteValue}
-									onChange={(e: any): any => {
-										setNewSentInviteValue(e.target.value);
-										if (isValidEmail(e.target.value)) {
-											setSendInviteAddBtnDisabled(false);
-										} else {
-											setSendInviteAddBtnDisabled(true);
-										}
-									}}
-								/>
-							</Dropdown>
+								items={searchMemberItems}
+								inputLabel={t('label.enter_email_address', 'Enter E-mail address')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									setNewSentInviteValue(e.target.value);
+									if (isValidEmail(e.target.value)) {
+										setSendInviteAddBtnDisabled(false);
+									} else {
+										setSendInviteAddBtnDisabled(true);
+									}
+								}}
+								inputValue={newSentInviteValue}
+								isCustomIcon={false}
+							/>
 						</Row>
 						<Row
 							orientation="horizontal"

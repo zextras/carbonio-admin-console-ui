@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo, useContext, useState, useEffect, useCallback } from 'react';
-import {
-	Container,
-	Input,
-	Row,
-	Select,
-	Text,
-	Icon,
-	Dropdown
-} from '@zextras/carbonio-design-system';
+import { Container, Row, Select, Text } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
@@ -20,12 +12,9 @@ import { useDomainStore } from '../../../../../../store/domain/store';
 import { accountListDirectory } from '../../../../../../services/account-list-directory-service';
 import { AccountContext } from '../../account-context';
 import { delegateType } from '../../../../../utility/utils';
+import DropDownInput from '../../../../../components/dropDownInput';
 
 const SelectItem = styled(Row)``;
-const CustomIcon = styled(Icon)`
-	width: 20px;
-	height: 20px;
-`;
 
 const DelegateSelectModeSection: FC = () => {
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -39,8 +28,8 @@ const DelegateSelectModeSection: FC = () => {
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(20);
-	const conext = useContext(AccountContext);
-	const { deligateDetail, setDeligateDetail, accountDetail } = conext;
+	const context = useContext(AccountContext);
+	const { deligateDetail, setDeligateDetail, accountDetail } = context;
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
@@ -133,6 +122,18 @@ const DelegateSelectModeSection: FC = () => {
 		setSearchDelegateAccountName(undefined);
 		getAccountList();
 	};
+
+	const customIconDetail = {
+		icon: 'GlobeOutline',
+		color: 'text',
+		onClick: (): void => {
+			setIsDelegateAccountListExpand(!isDelegateAccountListExpand);
+		},
+		style: {
+			width: '20px',
+			height: '20px'
+		}
+	};
 	return (
 		<>
 			<Container
@@ -163,43 +164,26 @@ const DelegateSelectModeSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="100%" mainAlignment="flex-start">
-						<Dropdown
+						<DropDownInput
 							items={delegateAccountList}
-							placement="bottom-start"
 							maxWidth="19rem"
-							disableAutoFocus
 							width="17rem"
-							style={{
-								width: '100%'
+							inputLabel={t(
+								'account_details.search_here_for_an_account',
+								'Search here for an Account'
+							)}
+							onChange={(ev: any): void => {
+								setIsDelegateSelect(false);
+								setSearchDelegateAccountName(ev.target.value);
 							}}
-						>
-							<Input
-								label={t(
-									'account_details.search_here_for_an_account',
-									'Search here for an Account'
-								)}
-								onChange={(ev: any): void => {
-									setIsDelegateSelect(false);
-									setSearchDelegateAccountName(ev.target.value);
-								}}
-								CustomIcon={(): any => (
-									<CustomIcon
-										icon="GlobeOutline"
-										size="large"
-										color="text"
-										onClick={(): void => {
-											setIsDelegateAccountListExpand(!isDelegateAccountListExpand);
-										}}
-									/>
-								)}
-								value={
-									searchDelegateAccountName === undefined
-										? deligateDetail?.grantee?.[0]?.name || ''
-										: searchDelegateAccountName
-								}
-								backgroundColor="gray5"
-							/>
-						</Dropdown>
+							inputValue={
+								searchDelegateAccountName === undefined
+									? deligateDetail?.grantee?.[0]?.name || ''
+									: searchDelegateAccountName
+							}
+							isCustomIcon
+							customIconDetail={customIconDetail}
+						/>
 					</Row>
 				</Row>
 			</Container>
