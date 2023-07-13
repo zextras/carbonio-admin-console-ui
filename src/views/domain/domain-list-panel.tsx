@@ -319,7 +319,10 @@ const DomainListPanel: FC = () => {
 	const detailItems = useMemo(
 		() =>
 			!isAdvanced
-				? detailOptions.filter((item: any) => item?.id !== THEME && item?.id !== SAML)
+				? detailOptions.filter(
+						(item: any) =>
+							item?.id !== THEME && item?.id !== SAML && item?.id !== TWO_FACTOR_AUTHENTICATION
+				  )
 				: detailOptions,
 		[detailOptions, isAdvanced]
 	);
@@ -327,7 +330,9 @@ const DomainListPanel: FC = () => {
 	const globalOptionsItems = useMemo(
 		() =>
 			!isAdvanced
-				? globalOptionItems.filter((item: any) => item?.id !== GLOBAL_THEME_ROUTE)
+				? globalOptionItems.filter(
+						(item: any) => item?.id !== GLOBAL_THEME_ROUTE && item?.id !== GLOBAL_2FA_ROUTE
+				  )
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
 	);
@@ -431,7 +436,7 @@ const DomainListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
-			{isShowGlobalConfig && (
+			{isShowGlobalConfig && globalOptionsItems.length > 0 && (
 				<GlobalListPanel
 					globalOptionItems={globalOptionsItems}
 					selectedOperationItem={selectedOperationItem}
