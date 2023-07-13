@@ -436,7 +436,7 @@ const DomainListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
-			{isShowGlobalConfig && (
+			{isShowGlobalConfig && globalOptionsItems.length > 0 && (
 				<GlobalListPanel
 					globalOptionItems={globalOptionsItems}
 					selectedOperationItem={selectedOperationItem}
