@@ -2107,7 +2107,6 @@ const EditMailingListView: FC<any> = ({
 												key="add-button"
 												label={t('label.add', 'Add')}
 												color="primary"
-												icon="PlusOutline"
 												height={44}
 												iconPlacement="right"
 												onClick={onAdd}
@@ -2121,7 +2120,6 @@ const EditMailingListView: FC<any> = ({
 											key="add-button"
 											label={t('label.delete', 'Delete')}
 											color="error"
-											icon="Trash2Outline"
 											iconPlacement="right"
 											size="extralarge"
 											disabled={selectedDistributionListMember.length === 0}
@@ -2281,7 +2279,6 @@ const EditMailingListView: FC<any> = ({
 										key="add-button"
 										label={t('label.add', 'Add')}
 										color="primary"
-										icon="PlusOutline"
 										height={44}
 										iconPlacement="right"
 										onClick={onAddOwner}
@@ -2289,13 +2286,11 @@ const EditMailingListView: FC<any> = ({
 										disabled={searchOwner === ''}
 									/>
 								</Padding>
-
 								<Button
 									type="outlined"
 									key="add-button"
 									label={t('label.delete', 'Delete')}
 									color="error"
-									icon="Trash2Outline"
 									iconPlacement="right"
 									size="extralarge"
 									disabled={selectedOwnerListMember.length === 0}
@@ -2435,33 +2430,26 @@ const EditMailingListView: FC<any> = ({
 						mainAlignment="flex-start"
 						crossAlignment="center"
 						orientation="horizontal"
-						width="fit"
 						padding={{ top: 'large', right: 'small' }}
+						width="40%"
 					>
-						<Button
-							type="outlined"
-							label={t('label.add', 'Add')}
-							color="primary"
-							icon="PlusOutline"
-							iconPlacement="right"
-							height={44}
-							onClick={onAddGrantEmail}
-							size="extralarge"
-							disabled={grantEmailItem === ''}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
-					>
+						<Padding right="small">
+							<Button
+								type="outlined"
+								label={t('label.add', 'Add')}
+								color="primary"
+								iconPlacement="right"
+								height={44}
+								onClick={onAddGrantEmail}
+								size="extralarge"
+								disabled={grantEmailItem === ''}
+							/>
+						</Padding>
+
 						<Button
 							type="outlined"
 							label={t('label.delete', 'Delete')}
 							color="error"
-							icon="Trash2Outline"
 							iconPlacement="right"
 							height={44}
 							size="extralarge"
