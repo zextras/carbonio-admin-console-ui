@@ -105,8 +105,8 @@ const DomainAclList: FC = () => {
 	);
 
 	const doClickAction = useCallback((): void => {
-		setShowAclListDetailView(true);
-		setShowEditAclView(false);
+		setShowEditAclView(true);
+		setShowAclListDetailView(false);
 	}, []);
 
 	const doDoubleClickAction = useCallback((): void => {
