@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.24](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.23...v0.9.24) (2023-07-14)
+
+
+### Bug Fixes
+
+* replaced dropdown with dropdowninput ([#433](https://github.com/zextras/carbonio-admin-console-ui/issues/433)) ([66f3de9](https://github.com/zextras/carbonio-admin-console-ui/commit/66f3de995f8692fba05357bed7e3925e82845148))
+
 ### [0.9.23](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.22...v0.9.23) (2023-07-06)
 
 

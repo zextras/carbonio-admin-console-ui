@@ -18,7 +18,6 @@ import {
 	Button,
 	useSnackbar,
 	Modal,
-	Dropdown,
 	Padding
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
@@ -34,6 +33,7 @@ import InheritedSelect from './inherited-components/inherited-select';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { objectType } from '../../../../../../types';
+import DropDownInput from '../../../../components/dropDownInput';
 
 const SelectItem = styled(Row)``;
 
@@ -335,30 +335,22 @@ const EditAccountGeneralSection: FC = () => {
 							crossAlignment="flex-start"
 							width="90%"
 						>
-							<Dropdown
+							<DropDownInput
 								items={items}
-								placement="bottom-start"
 								maxWidth="400px"
-								disableAutoFocus
 								width="365px"
-								style={{
-									width: '100%'
+								inputLabel={
+									isDomainSelect
+										? t('label.domain_name', 'Domain Name')
+										: t('domain.type_here_a_domain', 'Type here a domain')
+								}
+								onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+									setIsDomainSelect(false);
+									setSearchDomainName(ev.target.value);
 								}}
-							>
-								<Input
-									label={
-										isDomainSelect
-											? t('label.domain_name', 'Domain Name')
-											: t('domain.type_here_a_domain', 'Type here a domain')
-									}
-									onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-										setIsDomainSelect(false);
-										setSearchDomainName(ev.target.value);
-									}}
-									value={searchDomainName}
-									backgroundColor="gray5"
-								/>
-							</Dropdown>
+								inputValue={searchDomainName}
+								isCustomIcon={false}
+							/>
 						</Row>
 					</Row>
 				</Row>
