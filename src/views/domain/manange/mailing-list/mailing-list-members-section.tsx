@@ -8,10 +8,8 @@ import {
 	Container,
 	Row,
 	Text,
-	Input,
 	Button,
 	Table,
-	Dropdown,
 	SnackbarManagerContext,
 	Padding
 } from '@zextras/carbonio-design-system';
@@ -29,6 +27,7 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import DropDownInput from '../../../components/dropDownInput';
 
 const MailingListMembersSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -222,26 +221,17 @@ const MailingListMembersSection: FC<any> = () => {
 						padding={{ top: 'large', right: 'small' }}
 						width="64%"
 					>
-						<Dropdown
+						<DropDownInput
+							width="100%"
 							items={items}
-							placement="bottom-start"
-							maxWidth="300px"
-							disableAutoFocus
-							width="265px"
-							style={{
-								width: '100%'
+							inputLabel={t('label.type_an_account_dot', 'Type an account ...')}
+							size="medium"
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setMember(e.target.value);
 							}}
-						>
-							<Input
-								label={t('label.type_an_account_dot', 'Type an account ...')}
-								backgroundColor="gray5"
-								size="medium"
-								value={member}
-								onChange={(e: any): void => {
-									setMember(e.target.value);
-								}}
-							/>
-						</Dropdown>
+							inputValue={member}
+							isCustomIcon={false}
+						/>
 					</Container>
 					<Container
 						mainAlignment="flex-start"

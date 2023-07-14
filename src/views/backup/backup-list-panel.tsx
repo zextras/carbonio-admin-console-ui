@@ -5,7 +5,7 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, Dropdown, Row, Input, Icon } from '@zextras/carbonio-design-system';
+import { Container, Row } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import ListPanelItem from '../list/list-panel-item';
 import {
@@ -25,6 +25,7 @@ import { useBucketServersListStore } from '../../store/bucket-server-list/store'
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { useRightsStore } from '../../store/rights/store';
 import { getRights } from '../utility/utils';
+import DropDownInput from '../components/dropDownInput';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -182,6 +183,10 @@ const BackupListPanel: FC = () => {
 		}
 	}, [rights]);
 
+	const customIconDetail = {
+		icon: 'HardDriveOutline'
+	};
+
 	return (
 		<Container
 			orientation="column"
@@ -212,29 +217,19 @@ const BackupListPanel: FC = () => {
 					/>
 					{isServerSpecificsExpanded && (
 						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-							<Dropdown
+							<DropDownInput
 								items={isBackupModuleLicensed ? serverNames : []}
-								placement="bottom-start"
 								maxWidth="18.75rem"
-								disableAutoFocus
 								width="16.56rem"
-								style={{
-									width: '100%'
+								inputLabel={t('label.select_a_server', 'Select a Server')}
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									setSearchServer(e.target.value);
 								}}
-							>
-								<Input
-									label={t('label.select_a_server', 'Select a Server')}
-									value={searchServer}
-									CustomIcon={(): any => (
-										<Icon icon="HardDriveOutline" size="large" color="primary" />
-									)}
-									backgroundColor="gray5"
-									onChange={(e: any): any => {
-										setSearchServer(e.target.value);
-									}}
-									disabled={!isBackupModuleLicensed}
-								/>
-							</Dropdown>
+								inputValue={searchServer}
+								isCustomIcon
+								inputDisabled={!isBackupModuleLicensed}
+								customIconDetail={customIconDetail}
+							/>
 						</Row>
 					)}
 

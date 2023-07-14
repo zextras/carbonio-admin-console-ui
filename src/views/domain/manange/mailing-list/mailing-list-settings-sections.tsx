@@ -11,9 +11,7 @@ import {
 	Switch,
 	Select,
 	Table,
-	Input,
 	Button,
-	Dropdown,
 	Padding,
 	SnackbarManagerContext,
 	Divider
@@ -28,6 +26,7 @@ import { searchGal } from '../../../../services/search-gal-service';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import DropDownInput from '../../../components/dropDownInput';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -585,26 +584,17 @@ const MailingListSettingsSection: FC<any> = () => {
 						padding={{ top: 'medium', right: 'small' }}
 						width="65%"
 					>
-						<Dropdown
+						<DropDownInput
+							width="100%"
 							items={items}
-							placement="bottom-start"
-							maxWidth="300px"
-							disableAutoFocus
-							width="265px"
-							style={{
-								width: '100%'
+							inputLabel={t('label.type_an_account_dot', 'Type an account ...')}
+							size="medium"
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setMember(e.target.value);
 							}}
-						>
-							<Input
-								label={t('label.type_an_account_dot', 'Type an account ...')}
-								backgroundColor="gray5"
-								size="medium"
-								value={member}
-								onChange={(e: any): void => {
-									setMember(e.target.value);
-								}}
-							/>
-						</Dropdown>
+							inputValue={member}
+							isCustomIcon={false}
+						/>
 					</Container>
 					<Container
 						mainAlignment="flex-start"
@@ -713,30 +703,21 @@ const MailingListSettingsSection: FC<any> = () => {
 						padding={{ top: 'large', right: 'small' }}
 						width="65%"
 					>
-						<Dropdown
+						<DropDownInput
+							width="100%"
 							items={grantItems}
-							placement="bottom-start"
-							maxWidth="300px"
-							disableAutoFocus
-							width="265px"
-							style={{
-								width: '100%'
+							inputLabel={t(
+								'label.type_an_account_add_senders_list',
+								'Type an account to add it to the sender for the list'
+							)}
+							size="medium"
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setGrantEmailItem(e.target.value);
 							}}
-						>
-							<Input
-								label={t(
-									'label.type_an_account_add_senders_list',
-									'Type an account to add it to the sender for the list'
-								)}
-								backgroundColor="gray5"
-								size="medium"
-								value={grantEmailItem}
-								onChange={(e: any): void => {
-									setGrantEmailItem(e.target.value);
-								}}
-								disabled={grantType?.value !== EMAIL}
-							/>
-						</Dropdown>
+							inputValue={grantEmailItem}
+							isCustomIcon={false}
+							inputDisabled={grantType?.value !== EMAIL}
+						/>
 					</Container>
 					<Container
 						mainAlignment="flex-start"
