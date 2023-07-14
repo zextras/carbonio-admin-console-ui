@@ -180,7 +180,7 @@
     "label": {
         "account": "Account",
         "accounts": "Account",
-        "cancel": "Elimina",
+        "cancel": "Annulla",
         "configuration": "CONFIGURAZIONE",
         "core": "Core",
         "days": "Giorni",
@@ -413,7 +413,7 @@
         "auto": "Auto",
         "automatically_accept": "Accetta automaticamente",
         "automatically_reject": "Rifiuta automaticamente",
-        "bucket_cancel_button": "CANCELLA",
+        "bucket_cancel_button": "ANNULLA",
         "bucket_done_button": "Fine",
         "bucket_need_help_button": "HAI BISOGNO DI AIUTO?",
         "class_of_service": "Classe di servizio",
@@ -436,7 +436,7 @@
         "standard": "Standard",
         "surname": "Cognome",
         "user": "Utente",
-        "wizard_cancel_button": "CANCELLA",
+        "wizard_cancel_button": "ANNULLA",
         "yes": "Sì",
         "delete_bucket_sucess": "{{name}} è stato rimosso",
         "delete_bucket_fail": "{{name}} non è stato rimosso",
@@ -557,7 +557,7 @@
         "volume": "Volume",
         "volume_allocation": "Allocazione",
         "volume_available_space": "Spazio Disponibile",
-        "volume_cancel_button": "CANCELLA",
+        "volume_cancel_button": "ANNULLA",
         "volume_compression_thresold": "Limite di Compressione",
         "volume_create_with_this_data_button": "CREA CON QUESTI DATI",
         "volume_id": "Volume ID",
@@ -1109,7 +1109,9 @@
         "bind_password": "Bind Password",
         "mail_transfer_agent": "Mail Transfer Agent (MTA)",
         "mta_primarybar_tooltip": "Mail Transfer Agent",
-        "of_unlimited": "di Illimitato"
+        "of_unlimited": "di Illimitato",
+        "mail_trans_agent": "Mail Trans. Agent",
+        "create_galsync_account_success_msg": "Hai creato il nome account GALSync"
     },
     "message": {
         "snackbar": {
@@ -1736,8 +1738,8 @@
         "user_password_set": "Password utente impostata con successo",
         "send_on_behalf_of_check": "Invia per conto di",
         "service_password": "Password del servizio",
-        "services_passphrase_created_successfully": "Password del servizio creata con successo",
-        "services_passphrase_deleted_successfully": "Password del servizio eliminata con successo",
+        "services_passphrase_created_successfully": "Passphrase dei servizi creata con successo",
+        "services_passphrase_deleted_successfully": "Passphrase dei servizi eliminata con successo",
         "user_password_deleted": "Password utente eliminata con successo"
     },
     "connection": {
@@ -1924,7 +1926,7 @@
             "status": "Stato",
             "remote_metadata_upload": "Caricamento Metdata remoti",
             "action(M)": "Azione (M)",
-            "cancel_operation_btn": "CANCELLA OPRAZIONE",
+            "cancel_operation_btn": "ANNULLA OPERAZIONE",
             "create_fake_blob": "Crea un Blob finto",
             "let_it_run_btn": "AVVIA",
             "operation_model_message": "{{OperationMsg}}",
@@ -1947,7 +1949,7 @@
         "running": "Avviato",
         "cancel_operation_model_title_helperText": "Stai cancellando {{operationName}}",
         "stopping_operation_model_title": "Stai fermando {{OperationName}}",
-        "cancel_opearation_btn": "CANCELLA OPRAZIONE",
+        "cancel_opearation_btn": "ANNULLA OPRAZIONE",
         "cancel_operation_model_title": "Stai cancellando {{OperationName}}",
         "copy_operation_successfully": "Notifica copiata con successo",
         "done_panel_heading": "Operazioni Concluse",
@@ -2024,9 +2026,36 @@
         "senders_domain": "Dominio del mittente",
         "tls_security_level": "Livello di sicurezza TLS",
         "verify_dkim_validity": "Verifica validità DKIM",
-        "mail_transfer_agent_mta": "Mail Transfer Agent (MTA)"
+        "mail_transfer_agent_mta": "Mail Transfer Agent (MTA)",
+        "enable_or_disable_authentication_for_email_transfer_agent": "Abilita o disabilita l'autenticazione per Mail Transfer Agent (MTA)",
+        "include_authenticated_user_information_in_smtp_header_for_outgoing_emails": "Includi le informazioni dell'utente autenticato nell'intestazione SMPT delle email in uscita",
+        "include_originating_ip_address_in_smtp_header_outgoing_emails": "Includi l'indirizzo IP di origine nell'intestazione SMPT delle email in uscita",
+        "notify_admins_about_block_extensions": "Notifica gli amministratori riguardo le estensioni bloccate",
+        "notify_external_recipient_about_block_extensions": "Notifica destinatari esterni riguardo le estensioni bloccate",
+        "notify_users_about_block_extensions": "Notifica gli utenti riguardo alle estensioni bloccate",
+        "reject_emails_addressed_to_unlisted_recipients": "Rifiuta le email indirizzate ai destinatari che non sono nella lista",
+        "reject_emails_from_client_domain_hostname": "Rifiuta le email provenienti da client che non presentano un dominio pienamente qualificato (FQDN) nell'hostname HELO/EHLO",
+        "reject_emails_from_client_hostnames": "Rifiuta le email provenienti da client che presentano hostname sconosciuti o irrisolvibili",
+        "reject_emails_from_client_with_inresolved_helo_hostnames": "Rifiuta le email provenienti da client che presentano hostname HELO/ EHLO irrisolvibili",
+        "reject_emails_from_unknown_or_unresolvable_sender_domains": "Rifiuta le email provenienti da domini sconosciuti o irrisolvibili",
+        "reject_emails_from_unlisted_senders": "Rifiuta le email provenienti da mittenti non inclusi nella lista",
+        "reject_emails_when_sender_login_does_not_match_authenticated_user": "Rifiuta le email quando l'accesso del mittente non corrisponde all'utente autenticato",
+        "reject_emails_with_an_invalid_or_unresolvable_helo_hostname": "Rifiuta le email che presentano un hostname HELO invalido o irrisolvibile",
+        "reject_unlisted_recipient": "Rifiuta destinatario non incluso nella lista",
+        "reject_unlisted_sender": "Rifiuta mittente non incluso nella lista",
+        "remove_virus_difinition_warning_line_1": "La rimozione della definizione di virus ridurrà la possibilità di rilevare potenziali minacce. L'operazione non è reversibile",
+        "warn_admins_when_something_quarntined": "Avvisa gli amministratori quando un elemento viene messo in quarantena",
+        "warn_recipients_when_is_quarantined": "Avvisa i destinatari quando un elemento viene messo in quarantena",
+        "client_must_greet_with_fully_qualified_hostname": "Il Client deve presentarsi con un hostname qualificato",
+        "antivirus_mirrors": "Mirros Antivirus",
+        "my_netword": "Il mio network",
+        "pass": "Consegna"
     },
     "mat": {
         "add_here_any_blocked_extension": "Aggiungi qui qualsiasi estensione bloccata"
+    },
+    "the_change_will_not_move_the_data": "La modifica non sposterà i dati",
+    "warning": {
+        "is_current": "Prima devi impostare un altro volume come quello corrente."
     }
 }
