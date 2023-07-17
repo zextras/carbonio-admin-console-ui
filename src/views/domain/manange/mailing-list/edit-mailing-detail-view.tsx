@@ -724,10 +724,16 @@ const EditMailingListView: FC<any> = ({
 						}
 						const emails: Array<any> = [];
 						grant.forEach((grItem: any) => {
-							emails.push({
-								id: grItem?.grantee[0]?.id,
-								name: grItem?.grantee[0]?.name
-							});
+							if (
+								grItem?.right &&
+								Array.isArray(grItem?.right) &&
+								grItem?.right[0]?._content === 'sendToDistList'
+							) {
+								emails.push({
+									id: grItem?.grantee[0]?.id,
+									name: grItem?.grantee[0]?.name
+								});
+							}
 						});
 						setGrantEmails(emails);
 						setGrantEmailsList(emails.map((item: any) => item?.name));
@@ -742,7 +748,33 @@ const EditMailingListView: FC<any> = ({
 						}));
 					} else if (grant.length === 1) {
 						const granteeType = grant[0]?.grantee[0]?.type;
-						if (
+						if (grant[0].grantee?.[0]?.type === 'gst' || grant[0].grantee?.[0]?.type === 'usr') {
+							onGrantTypeChange(EMAIL);
+							const emails: Array<any> = [];
+							grant.forEach((grItem: any) => {
+								if (
+									grItem?.right &&
+									Array.isArray(grItem?.right) &&
+									grItem?.right[0]?._content === 'sendToDistList'
+								) {
+									emails.push({
+										id: grItem?.grantee[0]?.id,
+										name: grItem?.grantee[0]?.name
+									});
+								}
+							});
+							setGrantEmails(emails);
+							setGrantEmailsList(emails.map((item: any) => item?.name));
+							const it = grantTypeOptions.find((item: any) => item.value === EMAIL);
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantType: it
+							}));
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantEmails: emails
+							}));
+						} else if (
 							grant[0]?.grantee[0]?.name &&
 							grant[0]?.grantee[0]?.name !== selectedMailingList?.name
 						) {
@@ -1287,7 +1319,7 @@ const EditMailingListView: FC<any> = ({
 					grantee: grantEmails.map((item: any) => ({
 						type: 'email',
 						by: 'name',
-						_content: item
+						_content: item?.name ? item?.name : item
 					}))
 				}
 			};
@@ -2077,7 +2109,6 @@ const EditMailingListView: FC<any> = ({
 												key="add-button"
 												label={t('label.add', 'Add')}
 												color="primary"
-												icon="PlusOutline"
 												height={44}
 												iconPlacement="right"
 												onClick={onAdd}
@@ -2091,7 +2122,6 @@ const EditMailingListView: FC<any> = ({
 											key="add-button"
 											label={t('label.delete', 'Delete')}
 											color="error"
-											icon="Trash2Outline"
 											iconPlacement="right"
 											size="extralarge"
 											disabled={selectedDistributionListMember.length === 0}
@@ -2242,7 +2272,6 @@ const EditMailingListView: FC<any> = ({
 										key="add-button"
 										label={t('label.add', 'Add')}
 										color="primary"
-										icon="PlusOutline"
 										height={44}
 										iconPlacement="right"
 										onClick={onAddOwner}
@@ -2250,13 +2279,11 @@ const EditMailingListView: FC<any> = ({
 										disabled={searchOwner === ''}
 									/>
 								</Padding>
-
 								<Button
 									type="outlined"
 									key="add-button"
 									label={t('label.delete', 'Delete')}
 									color="error"
-									icon="Trash2Outline"
 									iconPlacement="right"
 									size="extralarge"
 									disabled={selectedOwnerListMember.length === 0}
@@ -2387,33 +2414,26 @@ const EditMailingListView: FC<any> = ({
 						mainAlignment="flex-start"
 						crossAlignment="center"
 						orientation="horizontal"
-						width="fit"
 						padding={{ top: 'large', right: 'small' }}
+						width="40%"
 					>
-						<Button
-							type="outlined"
-							label={t('label.add', 'Add')}
-							color="primary"
-							icon="PlusOutline"
-							iconPlacement="right"
-							height={44}
-							onClick={onAddGrantEmail}
-							size="extralarge"
-							disabled={grantEmailItem === ''}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
-					>
+						<Padding right="small">
+							<Button
+								type="outlined"
+								label={t('label.add', 'Add')}
+								color="primary"
+								iconPlacement="right"
+								height={44}
+								onClick={onAddGrantEmail}
+								size="extralarge"
+								disabled={grantEmailItem === ''}
+							/>
+						</Padding>
+
 						<Button
 							type="outlined"
 							label={t('label.delete', 'Delete')}
 							color="error"
-							icon="Trash2Outline"
 							iconPlacement="right"
 							height={44}
 							size="extralarge"
