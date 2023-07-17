@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo, useRef, useContext } from 'react';
-import {
-	Container,
-	Input,
-	Icon,
-	Row,
-	Dropdown,
-	Padding,
-	Text
-} from '@zextras/carbonio-design-system';
+import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
 
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -35,6 +27,7 @@ import { useCosStore } from '../../store/cos/store';
 import ListItems from '../list/list-items';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
+import DropDownInput from '../components/dropDownInput';
 
 const SelectItem = styled(Row)``;
 
@@ -188,6 +181,17 @@ const CosListPanel: FC = () => {
 		[t, isCosSelect]
 	);
 
+	const customIconDetail = {
+		icon: isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline',
+		onClick: (): void => {
+			setIsCosListExpand(!isCosListExpand);
+		},
+		style: {
+			width: '20px',
+			height: '20px'
+		}
+	};
+
 	const items =
 		cosList.length > MAX_COS_DISPLAY
 			? [
@@ -252,40 +256,21 @@ const CosListPanel: FC = () => {
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Dropdown
+				<DropDownInput
 					items={items}
-					placement="bottom-start"
-					maxWidth="300px"
-					disableAutoFocus
-					width="265px"
-					style={{
-						width: '100%'
+					inputLabel={
+						isCosSelect
+							? t('cos.i_want_to_see_this_cos', 'I want to see this COS')
+							: t('cos.search_class_of_service', 'Select a Class of Service')
+					}
+					onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+						setIsCosSelect(false);
+						setSearchCosName(ev.target.value);
 					}}
-				>
-					<Input
-						label={
-							isCosSelect
-								? t('cos.i_want_to_see_this_cos', 'I want to see this COS')
-								: t('cos.search_class_of_service', 'Select a Class of Service')
-						}
-						onChange={(ev: any): void => {
-							setIsCosSelect(false);
-							setSearchCosName(ev.target.value);
-						}}
-						CustomIcon={(): any => (
-							<CustomIcon
-								icon={isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline'}
-								size="large"
-								color="primary"
-								onClick={(): void => {
-									setIsCosListExpand(!isCosListExpand);
-								}}
-							/>
-						)}
-						value={searchCosName}
-						backgroundColor="gray5"
-					/>
-				</Dropdown>
+					inputValue={searchCosName}
+					isCustomIcon
+					customIconDetail={customIconDetail}
+				/>
 			</Row>
 			<Row
 				padding={{ all: 'medium' }}
