@@ -297,7 +297,7 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Container padding={{ all: 'small' }}>
 							<Input
-								label={t('label.color_code', 'Color code')}
+								label="ex. #HEX123"
 								background="gray5"
 								value={themeConfig.carbonioWebUiPrimaryColor}
 								inputName="carbonioWebUiPrimaryColor"
@@ -309,7 +309,7 @@ export const ThemeConfigs: FC<{
 						</Container>
 						<Container padding={{ all: 'small' }}>
 							<Input
-								label={t('label.color_code', 'Color code')}
+								label="ex. #HEX123"
 								background="gray5"
 								value={themeConfig.carbonioWebUiDarkPrimaryColor}
 								inputName="carbonioWebUiDarkPrimaryColor"
