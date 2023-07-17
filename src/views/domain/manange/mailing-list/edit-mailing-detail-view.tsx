@@ -16,11 +16,9 @@ import {
 	Text,
 	Select,
 	Switch,
-	Dropdown,
 	Button,
 	SnackbarManagerContext,
-	Icon,
-	ChipInput
+	Icon
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -48,6 +46,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ManageAliases from '../../../components/manageAliases';
 import { useDomainStore } from '../../../../store/domain/store';
+import DropDownInput from '../../../components/dropDownInput';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -2087,29 +2086,20 @@ const EditMailingListView: FC<any> = ({
 									width="100%"
 								>
 									<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
-										<Dropdown
+										<DropDownInput
+											width="100%"
 											items={searchMemberItems}
-											placement="bottom-start"
-											maxWidth="300px"
-											disableAutoFocus
-											width="265px"
-											style={{
-												width: '100%'
+											inputLabel={t(
+												'label.type_accounts_paste_them_here',
+												'Type the Accounts or paste them here'
+											)}
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+												setSearchMember(e.target.value);
 											}}
-										>
-											<Input
-												label={t(
-													'label.type_accounts_paste_them_here',
-													'Type the Accounts or paste them here'
-												)}
-												value={searchMember}
-												background="gray5"
-												onChange={(e: any): any => {
-													setSearchMember(e.target.value);
-												}}
-												hasError={isShowMemberError}
-											/>
-										</Dropdown>
+											inputValue={searchMember}
+											isCustomIcon={false}
+											hasError={isShowMemberError}
+										/>
 									</Row>
 
 									<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
@@ -2259,30 +2249,21 @@ const EditMailingListView: FC<any> = ({
 							width="100%"
 						>
 							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
-								<Dropdown
+								<DropDownInput
+									width="100%"
 									items={searchOwnerList}
-									placement="bottom-start"
-									maxWidth="300px"
-									disableAutoFocus
-									width="265px"
-									style={{
-										width: '100%'
+									inputLabel={t(
+										'label.type_accounts_paste_them_here',
+										'Type the Accounts or paste them here'
+									)}
+									size="medium"
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+										setSearchOwner(e.target.value);
 									}}
-								>
-									<Input
-										label={t(
-											'label.type_accounts_paste_them_here',
-											'Type the Accounts or paste them here'
-										)}
-										backgroundColor="gray5"
-										size="medium"
-										value={searchOwner}
-										onChange={(e: any): void => {
-											setSearchOwner(e.target.value);
-										}}
-										hasError={isShowOwnerError}
-									/>
-								</Dropdown>
+									inputValue={searchOwner}
+									isCustomIcon={false}
+									hasError={isShowOwnerError}
+								/>
 							</Row>
 							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
 								<Padding left="large" right="large">
@@ -2413,30 +2394,21 @@ const EditMailingListView: FC<any> = ({
 						padding={{ top: 'large', right: 'small' }}
 						width="60%"
 					>
-						<Dropdown
+						<DropDownInput
+							width="100%"
 							items={grantItems}
-							placement="bottom-start"
-							maxWidth="300px"
-							disableAutoFocus
-							width="265px"
-							style={{
-								width: '100%'
+							inputLabel={t(
+								'label.type_an_account_add_senders_list',
+								'Type an account to add it to the sender for the list'
+							)}
+							size="medium"
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setGrantEmailItem(e.target.value);
 							}}
-						>
-							<Input
-								label={t(
-									'label.type_an_account_add_senders_list',
-									'Type an account to add it to the sender for the list'
-								)}
-								backgroundColor="gray5"
-								size="medium"
-								value={grantEmailItem}
-								onChange={(e: any): void => {
-									setGrantEmailItem(e.target.value);
-								}}
-								disabled={grantType?.value !== EMAIL}
-							/>
-						</Dropdown>
+							inputValue={grantEmailItem}
+							isCustomIcon={false}
+							inputDisabled={grantType?.value !== EMAIL}
+						/>
 					</Container>
 					<Container
 						mainAlignment="flex-start"

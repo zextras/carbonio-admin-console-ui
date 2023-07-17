@@ -14,7 +14,6 @@ import {
 	Table,
 	Padding,
 	Button,
-	Dropdown,
 	SnackbarManagerContext,
 	Select,
 	ChipInput
@@ -30,6 +29,7 @@ import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
 import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import DropDownInput from '../../../components/dropDownInput';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -631,26 +631,17 @@ const MailingListSection: FC<any> = () => {
 								padding={{ top: 'medium', right: 'small' }}
 								width="65%"
 							>
-								<Dropdown
+								<DropDownInput
+									width="100%"
 									items={items}
-									placement="bottom-start"
-									maxWidth="300px"
-									disableAutoFocus
-									width="265px"
-									style={{
-										width: '100%'
+									inputLabel={t('label.type_an_account_dot', 'Type an account ...')}
+									size="medium"
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+										setMember(e.target.value);
 									}}
-								>
-									<Input
-										label={t('label.type_an_account_dot', 'Type an account ...')}
-										backgroundColor="gray5"
-										size="medium"
-										value={member}
-										onChange={(e: any): void => {
-											setMember(e.target.value);
-										}}
-									/>
-								</Dropdown>
+									inputValue={member}
+									isCustomIcon={false}
+								/>
 							</Container>
 							<Container
 								mainAlignment="flex-start"

@@ -302,7 +302,7 @@ const EditAccountAdministrationSection: FC = () => {
 						</Row>
 					</Row>
 					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="start">
-						<Row width="40%" padding={{ top: 'large' }} mainAlignment="start">
+						<Row width="40%" mainAlignment="start">
 							{accountDetail?.zimbraIsAdminAccount !== 'TRUE' && (
 								<Switch
 									disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
@@ -362,7 +362,7 @@ const EditAccountAdministrationSection: FC = () => {
 									<Button
 										label={t('label.add', 'Add')}
 										onClick={onAdd}
-										disabled={domainId === '' || selectedOption === undefined}
+										disabled={domainId === '' || selectedOption?.length === 0}
 										type="outlined"
 										color="primary"
 										size="extralarge"
