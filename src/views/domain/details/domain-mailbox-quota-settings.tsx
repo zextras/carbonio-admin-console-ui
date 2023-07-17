@@ -492,10 +492,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
-											'label.max_manageable_account_for_the_domain',
-											'Max manageable account for the domain (0=unlimited)'
-										)}
+										label={t('label.domain_space', 'Domain Space')}
 										value={zimbraDomainMaxAccounts}
 										background="gray6"
 										onChange={(e: any): any => {
@@ -506,8 +503,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
-											'label.max_mainbox_quota_for_the_domain_in_bytes',
-											'Max mailbox quota for the domain (bytes) (0=unlimited)'
+											'label.max_mainbox_quota_for_the_mails',
+											'Max mailbox quota for the Mails (bytes)'
 										)}
 										value={zimbraMailDomainQuota}
 										background="gray5"
@@ -521,10 +518,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
-											'domain.aggregated_space_quota_warning',
-											'Aggregated space quota warning (%)'
-										)}
+										label={t('domain.mail_space_quota_threshold', 'Mail Space Quota threshold (%)')}
 										value={zimbraDomainAggregateQuotaWarnPercent}
 										defaultValue={zimbraDomainAggregateQuotaWarnPercent}
 										background="gray5"
@@ -534,27 +528,30 @@ const DomainMailboxQuotaSetting: FC = () => {
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('domain.send_the_warning_to', 'Send the warning to')}
-										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
-										defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
+									<Select
+										items={quotaPolicy}
 										background="gray5"
-										onChange={(e: any): any => {
-											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
-										}}
+										label={t('label.mail_over_quota_criteria', 'Mail Over-quota Criteria')}
+										showCheckbox={false}
+										selection={zimbraDomainAggregateQuotaPolicy}
+										onChange={onZimbraDomainAggregateQuotaPolicy}
 									/>
 								</Container>
 							</ListRow>
 
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
-									<Select
-										items={quotaPolicy}
+									<Input
+										label={t(
+											'domain.receiver_of_quota_warning_email',
+											'Receiver of Quota warning (email)'
+										)}
+										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
+										defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
 										background="gray5"
-										label={t('label.aggrigated_space_criteria', 'Aggregated Space Criteria')}
-										showCheckbox={false}
-										selection={zimbraDomainAggregateQuotaPolicy}
-										onChange={onZimbraDomainAggregateQuotaPolicy}
+										onChange={(e: any): any => {
+											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
+										}}
 									/>
 								</Container>
 							</ListRow>
