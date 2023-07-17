@@ -44,12 +44,23 @@ import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';
 import { getAllRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
+import OverlayDivision from '../components/overlayDivision';
 
 const SelectItem = styled(Row)``;
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
 	height: 20px;
+`;
+const ovelayStyle = styled(Container)`
+	width: 256px;
+	right: 0;
+	bottom: 0;
+	height: 105px;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
 `;
 
 const DomainListPanel: FC = () => {
@@ -75,6 +86,18 @@ const DomainListPanel: FC = () => {
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
 	const rights = useRightsStore((state) => state.rights);
+	const [isShowError, setIsShowError] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+
+	const loadingComponent = [
+		{
+			customComponent: (
+				<Container>
+					<OverlayDivision ovelayStyle={ovelayStyle} />
+				</Container>
+			)
+		}
+	];
 
 	useEffect(() => {
 		if (rights && rights.length > 0) {
@@ -110,12 +133,19 @@ const DomainListPanel: FC = () => {
 
 	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
 	const getDomainLists = useCallback((domainName: string): any => {
+		setIsLoading(true);
 		getDomainList(domainName, 0).then((data) => {
 			const searchResponse: any = data;
 			if (!!searchResponse && searchResponse?.searchTotal > 0) {
 				setDomainList(searchResponse?.domain);
+				setIsLoading(false);
+			} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
+				setIsShowError(true);
+				setDomainList([]);
+				setIsLoading(false);
 			} else {
 				setDomainList([]);
+				setIsLoading(false);
 			}
 		});
 	}, []);
@@ -365,14 +395,22 @@ const DomainListPanel: FC = () => {
 	const toggleManageView = (): void => {
 		setIsManageListExpanded(!isManageListExpanded);
 	};
+
 	const customIconDetail = {
 		onClick: (): void => {
-			setIsDomainListExpand(!isDomainListExpand);
+			setIsShowError(false);
+			if (searchDomainName === '') {
+				setIsDomainListExpand(!isDomainListExpand);
+			} else {
+				setSearchDomainName('');
+				setIsDomainSelect(false);
+			}
 		},
 		style: {
 			width: '20px',
 			height: '20px'
-		}
+		},
+		icon: searchDomainName === '' ? 'GlobeOutline' : 'CloseOutline'
 	};
 
 	const items =
@@ -448,12 +486,13 @@ const DomainListPanel: FC = () => {
 
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 				<DropDownInput
-					items={items}
+					items={isLoading ? loadingComponent : items}
 					inputLabel={
 						isDomainSelect
 							? t('domain.i_want_to_see_this_domain', 'I want to see this domain')
-							: t('domain.type_here_a_domain', 'Type here a domain')
+							: t('domain.type_the exact_domain_name', 'Type the exact domain name')
 					}
+					hasError={isShowError}
 					onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
 						setIsDomainSelect(false);
 						setSearchDomainName(ev.target.value);
@@ -463,6 +502,18 @@ const DomainListPanel: FC = () => {
 					customIconDetail={customIconDetail}
 				/>
 			</Row>
+			{isShowError && (
+				<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+					<Padding top="large" left="small">
+						<Text size="extrasmall" weight="regular" color="error">
+							{t(
+								'label.not_found_check_the_text_and_try_again',
+								'Not found - check the text and try again'
+							)}
+						</Text>
+					</Padding>
+				</Container>
+			)}
 			<ListPanelItem
 				title={t('label.details', 'Details')}
 				isListExpanded={isDetailListExpanded}

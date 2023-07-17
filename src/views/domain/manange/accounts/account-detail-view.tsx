@@ -60,6 +60,21 @@ type UserSession = {
 	service: string;
 };
 
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 42.6rem;
+	top: 6.438rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
+
 const AccountDetailView: FC<any> = ({
 	selectedAccount,
 	setShowAccountDetailView,
@@ -410,7 +425,7 @@ const AccountDetailView: FC<any> = ({
 	return (
 		<>
 			{(!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id) && (
-				<OverlayDivision ovelayWidth="42.6rem" />
+				<OverlayDivision ovelayStyle={ovelayStyle} />
 			)}
 			<AccountDetailContainer background="gray5" mainAlignment="flex-start">
 				<Row
