@@ -725,10 +725,16 @@ const EditMailingListView: FC<any> = ({
 						}
 						const emails: Array<any> = [];
 						grant.forEach((grItem: any) => {
-							emails.push({
-								id: grItem?.grantee[0]?.id,
-								name: grItem?.grantee[0]?.name
-							});
+							if (
+								grItem?.right &&
+								Array.isArray(grItem?.right) &&
+								grItem?.right[0]?._content === 'sendToDistList'
+							) {
+								emails.push({
+									id: grItem?.grantee[0]?.id,
+									name: grItem?.grantee[0]?.name
+								});
+							}
 						});
 						setGrantEmails(emails);
 						setGrantEmailsList(emails.map((item: any) => item?.name));
@@ -747,10 +753,16 @@ const EditMailingListView: FC<any> = ({
 							onGrantTypeChange(EMAIL);
 							const emails: Array<any> = [];
 							grant.forEach((grItem: any) => {
-								emails.push({
-									id: grItem?.grantee[0]?.id,
-									name: grItem?.grantee[0]?.name
-								});
+								if (
+									grItem?.right &&
+									Array.isArray(grItem?.right) &&
+									grItem?.right[0]?._content === 'sendToDistList'
+								) {
+									emails.push({
+										id: grItem?.grantee[0]?.id,
+										name: grItem?.grantee[0]?.name
+									});
+								}
 							});
 							setGrantEmails(emails);
 							setGrantEmailsList(emails.map((item: any) => item?.name));
