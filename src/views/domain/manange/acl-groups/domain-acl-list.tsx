@@ -22,7 +22,7 @@ import { debounce } from 'lodash';
 import logo from '../../../../assets/gardian.svg';
 import Paging from '../../../components/paging';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import EditMailingListView from './edit-mailing-detail-view';
+import EditAclListView from './edit-acl-detail-view';
 import { useDomainStore } from '../../../../store/domain/store';
 import {
 	ALL,
@@ -34,33 +34,33 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE
 } from '../../../../constants';
-import MailingListDetail from './mailing-list-detail';
-import CreateMailingList from './create-mailing-list';
-import { createMailingList } from '../../../../services/create-mailing-list-service';
+import AclListDetail from './acl-list-detail';
+import CreateAclList from './create-acl-list';
+import { createAclList } from '../../../../services/create-acl-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
-const DomainMailingList: FC = () => {
+const DomainAclList: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const [mailingList, setMailingList] = useState<any[]>([]);
+	const [aclList, setAclList] = useState<any[]>([]);
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
-	const [selectedMailingList, setSelectedMailingList] = useState<any>({});
-	const [showMailingListDetailView, setShowMailingListDetailView] = useState<any>();
-	const [showEditMailingView, setShowEditMailingView] = useState<any>();
+	const [selectedAclList, setSelectedAclList] = useState<any>({});
+	const [showAclListDetailView, setShowAclListDetailView] = useState<any>();
+	const [showEditAclView, setShowEditAclView] = useState<any>();
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
-	const [mailingListItem, setMailingListItem] = useState([]);
+	const [aclListItem, setAclListItem] = useState([]);
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
-	const [editMailingList, setEditMailingList] = useState<boolean>(false);
+	const [editAclList, setEditAclList] = useState<boolean>(false);
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
-	const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
+	const [showCreateAclListView, setShowCreateAclListView] = useState<boolean>(false);
 	const timer = useRef<any>();
 	const headers: any[] = useMemo(
 		() => [
@@ -105,13 +105,13 @@ const DomainMailingList: FC = () => {
 	);
 
 	const doClickAction = useCallback((): void => {
-		setShowMailingListDetailView(true);
-		setShowEditMailingView(false);
+		setShowEditAclView(true);
+		setShowAclListDetailView(false);
 	}, []);
 
 	const doDoubleClickAction = useCallback((): void => {
-		setShowEditMailingView(true);
-		setShowMailingListDetailView(false);
+		setShowEditAclView(true);
+		setShowAclListDetailView(false);
 	}, []);
 
 	const handleClick = useCallback(
@@ -127,12 +127,12 @@ const DomainMailingList: FC = () => {
 		[doClickAction, doDoubleClickAction]
 	);
 
-	const getMailingList = useCallback((): void => {
+	const getAclList = useCallback((): void => {
 		const attrs =
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
-		const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
-		setMailingListItem([]);
+		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE))(zimbraIsAdminGroup=TRUE))`;
+		setAclListItem([]);
 		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name').then((data) => {
 			const dlList = data?.dl;
 			if (dlList) {
@@ -150,7 +150,7 @@ const DomainMailingList: FC = () => {
 								style={{ cursor: 'pointer' }}
 								onClick={(e: { stopPropagation: () => void }): void => {
 									e.stopPropagation();
-									setSelectedMailingList(item);
+									setSelectedAclList(item);
 									setSelectedFromRow(item);
 									handleClick(e);
 								}}
@@ -165,7 +165,7 @@ const DomainMailingList: FC = () => {
 								style={{ cursor: 'pointer' }}
 								onClick={(e: { stopPropagation: () => void }): void => {
 									e.stopPropagation();
-									setSelectedMailingList(item);
+									setSelectedAclList(item);
 									setSelectedFromRow(item);
 									handleClick(e);
 								}}
@@ -180,7 +180,7 @@ const DomainMailingList: FC = () => {
 								style={{ cursor: 'pointer' }}
 								onClick={(e: { stopPropagation: () => void }): void => {
 									e.stopPropagation();
-									setSelectedMailingList(item);
+									setSelectedAclList(item);
 									setSelectedFromRow(item);
 									handleClick(e);
 								}}
@@ -195,7 +195,7 @@ const DomainMailingList: FC = () => {
 								style={{ cursor: 'pointer' }}
 								onClick={(e: { stopPropagation: () => void }): void => {
 									e.stopPropagation();
-									setSelectedMailingList(item);
+									setSelectedAclList(item);
 									setSelectedFromRow(item);
 									handleClick(e);
 								}}
@@ -212,7 +212,7 @@ const DomainMailingList: FC = () => {
 								style={{ cursor: 'pointer' }}
 								onClick={(e: { stopPropagation: () => void }): void => {
 									e.stopPropagation();
-									setSelectedMailingList(item);
+									setSelectedAclList(item);
 									setSelectedFromRow(item);
 									handleClick(e);
 								}}
@@ -227,7 +227,7 @@ const DomainMailingList: FC = () => {
 								style={{ cursor: 'pointer' }}
 								onClick={(e: { stopPropagation: () => void }): void => {
 									e.stopPropagation();
-									setSelectedMailingList(item);
+									setSelectedAclList(item);
 									setSelectedFromRow(item);
 									handleClick(e);
 								}}
@@ -244,23 +244,23 @@ const DomainMailingList: FC = () => {
 						]
 					});
 				});
-				setMailingList(mList);
-				setMailingListItem(dlList);
+				setAclList(mList);
+				setAclListItem(dlList);
 				setIsUpdateRecord(false);
 			} else {
 				setTotalAccount(0);
-				setMailingList([]);
+				setAclList([]);
 				setIsUpdateRecord(false);
 			}
 		});
 	}, [t, offset, limit, domainName, searchQuery, handleClick]);
 
 	useEffect(() => {
-		getMailingList();
-	}, [offset, getMailingList]);
+		getAclList();
+	}, [offset, getAclList]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const searchMailingListQuery = useCallback(
+	const searchAclListQuery = useCallback(
 		debounce((searchText) => {
 			if (searchText) {
 				setOffset(0);
@@ -276,45 +276,45 @@ const DomainMailingList: FC = () => {
 	);
 
 	useEffect(() => {
-		searchMailingListQuery(searchString);
-	}, [searchString, searchMailingListQuery]);
+		searchAclListQuery(searchString);
+	}, [searchString, searchAclListQuery]);
 
 	useEffect(() => {
-		if (showEditMailingView !== undefined && !showEditMailingView) {
-			getMailingList();
+		if (showEditAclView !== undefined && !showEditAclView) {
+			getAclList();
 		}
-	}, [showEditMailingView, getMailingList]);
+	}, [showEditAclView, getAclList]);
 
 	const onDetailClick = useCallback(() => {
-		const selectedTableItem = mailingListItem.find((item: any) => selectedDlRow[0] === item?.id);
+		const selectedTableItem = aclListItem.find((item: any) => selectedDlRow[0] === item?.id);
 		setSelectedFromRow(selectedTableItem);
-		setSelectedMailingList(selectedTableItem);
-		setShowMailingListDetailView(true);
-		setShowMailingListDetailView(true);
-	}, [selectedDlRow, mailingListItem]);
+		setSelectedAclList(selectedTableItem);
+		setShowAclListDetailView(true);
+		setShowAclListDetailView(true);
+	}, [selectedDlRow, aclListItem]);
 
 	useEffect(() => {
-		if (showMailingListDetailView !== undefined && !showMailingListDetailView) {
-			setShowMailingListDetailView(false);
+		if (showAclListDetailView !== undefined && !showAclListDetailView) {
+			setShowAclListDetailView(false);
 		}
-	}, [showMailingListDetailView]);
+	}, [showAclListDetailView]);
 
 	useEffect(() => {
-		if (editMailingList) {
-			setShowMailingListDetailView(false);
-			setEditMailingList(false);
-			setShowEditMailingView(true);
+		if (editAclList) {
+			setShowAclListDetailView(false);
+			setEditAclList(false);
+			setShowEditAclView(true);
 		}
-	}, [editMailingList]);
+	}, [editAclList]);
 
 	useEffect(() => {
 		if (isUpdateRecord) {
-			getMailingList();
+			getAclList();
 		}
-	}, [isUpdateRecord, getMailingList]);
+	}, [isUpdateRecord, getAclList]);
 
 	const onAddClick = useCallback(() => {
-		setShowCreateMailingListView(true);
+		setShowCreateAclListView(true);
 	}, []);
 
 	const callAllRequest = useCallback(
@@ -360,7 +360,7 @@ const DomainMailingList: FC = () => {
 		return type;
 	}, []);
 
-	const addMemberToMailingList = useCallback(
+	const addMemberToAclList = useCallback(
 		(members: any, owners: any, mlId: string, ownersList: Array<any>): void => {
 			const request: any[] = [];
 			if (members.length > 0 && mlId) {
@@ -403,7 +403,7 @@ const DomainMailingList: FC = () => {
 		[callAllRequest, getOwnerType]
 	);
 
-	const createMailingListReq = useCallback(
+	const createAclListReq = useCallback(
 		(
 			name,
 			description,
@@ -439,6 +439,10 @@ const DomainMailingList: FC = () => {
 			attributes.push({
 				n: 'zimbraMailStatus',
 				_content: zimbraMailStatus ? 'enabled' : 'disabled'
+			});
+			attributes.push({
+				n: 'zimbraIsAdminGroup',
+				_content: TRUE
 			});
 			if (dynamic) {
 				attributes.push({
@@ -505,14 +509,14 @@ const DomainMailingList: FC = () => {
 					}
 				};
 			}
-			createMailingList(dynamic, name, attributes)
+			createAclList(dynamic, name, attributes)
 				.then((data) => {
 					const type = 'success';
 					let message = '';
 					const mlId = data?.dl[0]?.id;
-					addMemberToMailingList(members, owners, mlId, allOwnersList);
+					addMemberToAclList(members, owners, mlId, allOwnersList);
 					callAllRequest([distributionListAction(dl, action)]);
-					setShowCreateMailingListView(false);
+					setShowCreateAclListView(false);
 					message = t('label.the_has_been_created_success', {
 						name,
 						defaultValue: 'The {{name}} has been created successfully'
@@ -553,7 +557,7 @@ const DomainMailingList: FC = () => {
 					});
 				});
 		},
-		[createSnackbar, t, addMemberToMailingList, callAllRequest]
+		[createSnackbar, t, addMemberToAclList, callAllRequest]
 	);
 
 	return (
@@ -568,7 +572,7 @@ const DomainMailingList: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('label.mailing_list', 'Mailing List')}
+								{t('label.acl_list', 'Acl List')}
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
@@ -594,7 +598,7 @@ const DomainMailingList: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -608,7 +612,7 @@ const DomainMailingList: FC = () => {
 						>
 							<Container>
 								<Input
-									disabled={mailingList.length === 0 && searchString.length === 0}
+									disabled={aclList.length === 0 && searchString.length === 0}
 									backgroundColor="gray5"
 									label={t('label.search_dot', 'Search…')}
 									onChange={(e: any): any => {
@@ -623,26 +627,24 @@ const DomainMailingList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 340px)"
+							height="calc(100vh - 21.25rem)"
 						>
-							{mailingList && mailingList.length > 0 && (
+							{aclList && aclList.length > 0 && (
 								<Table
-									rows={mailingList}
+									rows={aclList}
 									headers={headers}
 									showCheckbox
 									style={{ overflow: 'auto', height: '100%' }}
 									selectedRows={selectedDlRow}
 									onSelectionChange={(selected: any): void => {
-										setSelectedFromRow(
-											mailingListItem.find((item: any) => selected[0] === item?.id)
-										);
+										setSelectedFromRow(aclListItem.find((item: any) => selected[0] === item?.id));
 										setSelectedDlRow(selected);
 									}}
 									RowFactory={CustomRowFactory}
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
-							{mailingList.length === 0 && (
+							{aclList.length === 0 && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -666,8 +668,8 @@ const DomainMailingList: FC = () => {
 									>
 										<Text weight="light" color="#828282" size="large" overflow="break-word">
 											<Trans
-												i18nKey="label.create_mailing_list_msg"
-												defaults="You can create a new Mailing List by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
+												i18nKey="label.create_acl_list_msg"
+												defaults="You can create a new Acl List by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
 												components={{ bold: <strong /> }}
 											/>
 										</Text>
@@ -682,38 +684,38 @@ const DomainMailingList: FC = () => {
 							width="fill"
 							padding={{ all: 'large' }}
 						>
-							{mailingList && mailingList.length > 0 && (
+							{aclList && aclList.length > 0 && (
 								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 							)}
 						</Row>
 					</Container>
 				</Row>
 			</Container>
-			{showEditMailingView && (
-				<EditMailingListView
-					selectedMailingList={selectedMailingList}
-					setShowEditMailingList={setShowEditMailingView}
+			{showEditAclView && (
+				<EditAclListView
+					selectedAclList={selectedAclList}
+					setShowEditAclList={setShowEditAclView}
 					setIsUpdateRecord={setIsUpdateRecord}
 				/>
 			)}
 
-			{showMailingListDetailView && (
-				<MailingListDetail
-					selectedMailingList={selectedFromRow}
-					setShowMailingListDetailView={setShowMailingListDetailView}
-					setEditMailingList={setEditMailingList}
+			{showAclListDetailView && (
+				<AclListDetail
+					selectedAclList={selectedFromRow}
+					setShowAclListDetailView={setShowAclListDetailView}
+					setEditAclList={setEditAclList}
 					setIsUpdateRecord={setIsUpdateRecord}
 				/>
 			)}
 
-			{showCreateMailingListView && (
-				<CreateMailingList
-					setShowCreateMailingListView={setShowCreateMailingListView}
-					createMailingListReq={createMailingListReq}
+			{showCreateAclListView && (
+				<CreateAclList
+					setShowCreateAclListView={setShowCreateAclListView}
+					createAclListReq={createAclListReq}
 				/>
 			)}
 		</Container>
 	);
 };
 
-export default DomainMailingList;
+export default DomainAclList;
