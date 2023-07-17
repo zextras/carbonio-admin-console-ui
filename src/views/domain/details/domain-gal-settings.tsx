@@ -1147,7 +1147,7 @@ const DomainGalSettings: FC = () => {
 							</Row>
 							<ListRow>
 								<Container orientation="horizontal">
-									<Container width="15rem" mainAlignment="flex-start">
+									<Container width="15rem" style={{ minWidth: '11rem' }} mainAlignment="flex-start">
 										<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
 											<Button
 												type="outlined"

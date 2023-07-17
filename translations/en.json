@@ -1047,7 +1047,6 @@
         "domain_certificate_private_key": "Domain Private Key",
         "domain_close_success_msg": "Domain has been closed successfully",
         "domain_name": "Domain Name",
-        "domain_not_found_check_the_text_and_try_again": "Domain not found-check the text and try again",
         "domain_primarybar_tooltip": "View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, mailing lists,resources</bold> and <bold>more</bold>.",
         "domain_quota_settings": "Domain Quota Settings",
         "domain_space": "Domain Space",
