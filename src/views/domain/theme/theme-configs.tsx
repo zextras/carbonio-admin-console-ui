@@ -482,7 +482,7 @@ export const ThemeConfigs: FC<{
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.logo_path', 'Logo Path')}
+											label={t('label.logo_path', 'Ex. https://upload.yourlogo.com/')}
 											background="gray5"
 											value={themeConfig.carbonioWebUiLoginLogo}
 											inputName="carbonioWebUiLoginLogo"
@@ -502,7 +502,7 @@ export const ThemeConfigs: FC<{
 									</Container>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.logo_path', 'Logo Path')}
+											label={t('label.logo_path', 'Ex. https://upload.yourlogo.com/')}
 											background="gray5"
 											value={themeConfig.carbonioWebUiDarkLoginLogo}
 											inputName="carbonioWebUiDarkLoginLogo"
@@ -554,7 +554,7 @@ export const ThemeConfigs: FC<{
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.logo_path', 'Logo Path')}
+											label={t('label.logo_path', 'Ex. https://upload.yourlogo.com/')}
 											background="gray5"
 											value={themeConfig.carbonioWebUiAppLogo}
 											inputName="carbonioWebUiAppLogo"
@@ -574,7 +574,7 @@ export const ThemeConfigs: FC<{
 									</Container>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.logo_path', 'Logo Path')}
+											label={t('label.logo_path', 'Ex. https://upload.yourlogo.com/')}
 											background="gray5"
 											value={themeConfig.carbonioWebUiDarkAppLogo}
 											inputName="carbonioWebUiDarkAppLogo"
@@ -620,7 +620,7 @@ export const ThemeConfigs: FC<{
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.favicon_path', 'Favicon Path')}
+											label={t('label.favicon_path', 'Ex. https://upload.yourfavicon.com/')}
 											background="gray5"
 											value={themeConfig.carbonioWebUiFavicon}
 											inputName="carbonioWebUiFavicon"
@@ -696,7 +696,7 @@ export const ThemeConfigs: FC<{
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.image_path', 'Image Path')}
+											label={t('label.image_path', 'Ex. https://upload.yourimage.com/')}
 											background="gray5"
 											value={themeConfig.carbonioWebUiLoginBackground}
 											inputName="carbonioWebUiLoginBackground"
@@ -716,7 +716,7 @@ export const ThemeConfigs: FC<{
 									</Container>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.image_path', 'Image Path')}
+											label={t('label.image_path', 'Ex. https://upload.yourimage.com/')}
 											background="gray5"
 											value={themeConfig.carbonioWebUiDarkLoginBackground}
 											inputName="carbonioWebUiDarkLoginBackground"
@@ -880,7 +880,7 @@ export const ThemeConfigs: FC<{
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.logo_path', 'Logo Path')}
+											label={t('label.logo_path', 'Ex. https://upload.yourlogo.com/')}
 											background="gray5"
 											value={themeConfig.carbonioAdminUiLoginLogo}
 											inputName="carbonioAdminUiLoginLogo"
@@ -900,7 +900,7 @@ export const ThemeConfigs: FC<{
 									</Container>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.logo_path', 'Logo Path')}
+											label={t('label.logo_path', 'Ex. https://upload.yourlogo.com/')}
 											background="gray5"
 											value={themeConfig.carbonioAdminUiDarkLoginLogo}
 											inputName="carbonioAdminUiDarkLoginLogo"
@@ -952,7 +952,7 @@ export const ThemeConfigs: FC<{
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.logo_path', 'Logo Path')}
+											label={t('label.logo_path', 'Ex. https://upload.yourlogo.com/')}
 											background="gray5"
 											value={themeConfig.carbonioAdminUiAppLogo}
 											inputName="carbonioAdminUiAppLogo"
@@ -972,7 +972,7 @@ export const ThemeConfigs: FC<{
 									</Container>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.logo_path', 'Logo Path')}
+											label={t('label.logo_path', 'Ex. https://upload.yourlogo.com/')}
 											background="gray5"
 											value={themeConfig.carbonioAdminUiDarkAppLogo}
 											inputName="carbonioAdminUiDarkAppLogo"
@@ -1018,7 +1018,7 @@ export const ThemeConfigs: FC<{
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.favicon_path', 'Favicon Path')}
+											label={t('label.favicon_path', 'Ex. https://upload.yourfavicon.com/')}
 											background="gray5"
 											value={themeConfig.carbonioAdminUiFavicon}
 											inputName="carbonioAdminUiFavicon"
@@ -1094,7 +1094,7 @@ export const ThemeConfigs: FC<{
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.image_path', 'Image Path')}
+											label={t('label.image_path', 'Ex. https://upload.yourimage.com/')}
 											background="gray5"
 											value={themeConfig.carbonioAdminUiBackground}
 											inputName="carbonioAdminUiBackground"
@@ -1114,7 +1114,7 @@ export const ThemeConfigs: FC<{
 									</Container>
 									<Container padding={{ all: 'small' }}>
 										<Input
-											label={t('label.image_path', 'Image Path')}
+											label={t('label.image_path', 'Ex. https://upload.yourimage.com/')}
 											background="gray5"
 											value={themeConfig.carbonioAdminUiDarkBackground}
 											inputName="carbonioAdminUiDarkBackground"
