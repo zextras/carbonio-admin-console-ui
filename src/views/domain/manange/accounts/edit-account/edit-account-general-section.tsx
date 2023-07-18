@@ -309,7 +309,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="47%" mainAlignment="flex-start">
 						<Input
 							background="gray5"
 							label={t('label.userName', 'username')}
@@ -320,20 +320,15 @@ const EditAccountGeneralSection: FC = () => {
 							autoComplete="new-password"
 						/>
 					</Row>
-					<Row width="48%" mainAlignment="flex-start">
-						<Row
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							width="10%"
-							padding={{ top: 'small' }}
-						>
-							<Icon icon="AtOutline" size="large" />
-						</Row>
+					<Row mainAlignment="flex-center" crossAlignment="flex-center" padding={{ top: 'small' }}>
+						<Icon icon="AtOutline" size="large" />
+					</Row>
+					<Row width="47%" mainAlignment="flex-start">
 						<Row
 							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
-							width="90%"
+							width="100%"
 						>
 							<DropDownInput
 								items={items}
@@ -406,7 +401,7 @@ const EditAccountGeneralSection: FC = () => {
 					<Row width="37%" mainAlignment="flex-start"></Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start">
 						<Input
 							background="gray5"
 							label={t('label.password', 'Password')}
@@ -424,7 +419,7 @@ const EditAccountGeneralSection: FC = () => {
 							}
 						/>
 					</Row>
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start">
 						<Input
 							background="gray5"
 							label={t('label.repeat_password', 'Repeat Password')}
@@ -482,7 +477,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Row>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="15.5%" mainAlignment="flex-start">
 						<Switch
 							defaultValue={defaultCOS}
 							onClick={onCOSSwitchChanges}
@@ -490,7 +485,7 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 					</Row>
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="84.5%" mainAlignment="flex-start">
 						{cosItems?.length ? (
 							<Select
 								items={cosItems}
@@ -566,15 +561,16 @@ const EditAccountGeneralSection: FC = () => {
 			</Row>
 			<Row
 				mainAlignment="flex-start"
-				padding={{ top: 'large', left: 'small', bottom: 'large' }}
+				padding={{ top: 'large', left: 'small' }}
 				width="100%"
+				style={{ paddingBottom: '3.4rem' }}
 			>
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" color="gray0" weight="bold">
 						{t('label.notes', 'Notes')}
 					</Text>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large', bottom: 'large' }} width="100%">
+				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
 					<Input
 						background="gray5"
 						height="85px"

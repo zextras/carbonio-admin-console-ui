@@ -460,6 +460,7 @@ const DomainListPanel: FC = () => {
 								width: 'inherit'
 							}}
 							onClick={(): void => {
+								setIsShowError(false);
 								selectedDomain(domain);
 							}}
 						>
@@ -495,6 +496,7 @@ const DomainListPanel: FC = () => {
 					hasError={isShowError}
 					onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
 						setIsDomainSelect(false);
+						setIsShowError(false);
 						setSearchDomainName(ev.target.value);
 					}}
 					inputValue={searchDomainName}

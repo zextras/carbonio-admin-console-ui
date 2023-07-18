@@ -40,7 +40,7 @@ const ManageAliases: FC<{
 	return (
 		<>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }}>
-				<Row width="76%" mainAlignment="flex-start" crossAlignment="flex-start">
+				<Row width="82%" mainAlignment="flex-start" crossAlignment="flex-start">
 					<Row padding={{ left: 'large', bottom: 'small' }}>
 						<Text size="small" color="secondary">
 							{t('account_details.aliases', 'Aliases')}
@@ -66,7 +66,7 @@ const ManageAliases: FC<{
 						</Container>
 					</Row>
 				</Row>
-				<Row width="24%">
+				<Row width="18%" style={{ justifyContent: 'flex-end' }}>
 					<Button
 						type="outlined"
 						label={t('account_details.manage_aliases', 'MANAGE ALIAS')}
