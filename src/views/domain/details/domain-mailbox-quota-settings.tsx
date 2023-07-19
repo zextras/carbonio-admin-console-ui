@@ -132,15 +132,15 @@ const DomainMailboxQuotaSetting: FC = () => {
 				key: 'name'
 			},
 			{
-				label: t('label.quota', 'Quota'),
+				label: t('label.quota_mb', 'Quota (MB)'),
 				key: 'quota'
 			},
 			{
-				label: t('label.mail_size', 'Mail Size'),
+				label: t('label.mails_mb', 'Mails (MB)'),
 				key: 'mailSize'
 			},
 			{
-				label: t('label.quota_used_lbl', 'Quota used'),
+				label: t('label.mail_quota', 'Mails Quota (%)'),
 				key: 'quotaUsedPercentage'
 			}
 		],
@@ -170,9 +170,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 					}
 					percentage = ((diskUsed * 100) / quotaLimit).toFixed();
 				}
-				diskUsed += ` ${t('label.mb', 'MB')}`;
-				quotaLimit += ` ${t('label.mb', 'MB')}`;
-				percentage += '%';
 				quota.push({
 					name: item?.name,
 					quota: quotaLimit,
