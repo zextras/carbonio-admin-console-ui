@@ -789,13 +789,7 @@ const AccountDetailView: FC<any> = ({
 						})}
 						open={isOpenDeleteDialog}
 						customFooter={
-							<Container orientation="horizontal" mainAlignment="space-between">
-								<Button
-									style={{ marginLeft: '10px' }}
-									type="outlined"
-									label={t('label.help', 'Help')}
-									color="primary"
-								/>
+							<Container orientation="horizontal" mainAlignment="flex-end">
 								<Row style={{ gap: '8px' }}>
 									<Button
 										label={t('label.delete_it_instead', 'Delete it instead')}

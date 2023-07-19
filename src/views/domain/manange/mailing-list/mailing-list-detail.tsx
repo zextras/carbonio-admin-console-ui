@@ -842,13 +842,7 @@ const MailingListDetail: FC<any> = ({
 					})}
 					open={isOpenDeleteDialog}
 					customFooter={
-						<Container orientation="horizontal" mainAlignment="space-between">
-							<Button
-								style={{ marginLeft: '10px' }}
-								type="outlined"
-								label={t('label.help', 'Help')}
-								color="primary"
-							/>
+						<Container orientation="horizontal" mainAlignment="flex-end">
 							<Row style={{ gap: '8px' }}>
 								<Button
 									label={t('label.cancel', 'Cancel')}
