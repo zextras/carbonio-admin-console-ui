@@ -31,7 +31,6 @@ const BackupDetailPanel: FC = () => {
 	useEffect(() => {
 		!globalConfig?.privateKeyAlgorithm && getGlobalConfig();
 	}, [getGlobalConfig, globalConfig?.privateKeyAlgorithm]);
-	console.log('==>', Object.keys(globalConfig).length, globalConfig);
 	return (
 		<Container
 			orientation="column"

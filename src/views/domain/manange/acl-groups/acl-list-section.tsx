@@ -9,37 +9,33 @@ import {
 	Text,
 	Input,
 	Row,
-	Switch,
 	Icon,
 	Table,
-	Padding,
 	Button,
+	Dropdown,
 	SnackbarManagerContext,
 	Select,
 	ChipInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { debounce, sortedUniq, uniq } from 'lodash';
-import { MailingListContext } from './mailinglist-context';
+import { AclListContext } from './acl-list-context';
 import ListRow from '../../../list/list-row';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
 import { searchGal } from '../../../../services/search-gal-service';
-import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
-import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB } from '../../../../constants';
+import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import DropDownInput from '../../../components/dropDownInput';
 
-const MailingListSection: FC<any> = () => {
+const AclListSection: FC<any> = () => {
 	const { t } = useTranslation();
-	const context = useContext(MailingListContext);
+	const context = useContext(AclListContext);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const [domainList, setDomainList] = useState([]);
 	const [isValidQuery, setIsValidQuery] = useState<boolean>(true);
-	const { mailingListDetail, setMailingListDetail } = context;
+	const { aclListDetail, setAclListDetail } = context;
 	const [dynamicListMember, setDynamicListMember] = useState<Array<any>>(
-		mailingListDetail?.ldapQueryMembers
+		aclListDetail?.ldapQueryMembers
 	);
 	const [dynamicListMemberRows, setDynamicListMemberRows] = useState<Array<any>>([]);
 	const [isShowLdapQueryMessage, setIsShowLdapQueryMessage] = useState<boolean>(false);
@@ -47,14 +43,14 @@ const MailingListSection: FC<any> = () => {
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const [member, setMember] = useState<string>('');
 	const [ownersList, setOwnersList] = useState<Array<any>>(
-		mailingListDetail?.owners ? mailingListDetail?.owners : []
+		aclListDetail?.owners ? aclListDetail?.owners : []
 	);
 	const [selectedDistributionListOwner, setSelectedDistributionListOwner] = useState<Array<any>>(
 		[]
 	);
 	const [ownerTableRows, setOwnerTableRows] = useState<Array<any>>([]);
 	const [grantEmailsList, setGrantEmailsList] = useState<any>([]);
-	const [grantEmails, setGrantEmails] = useState<any>(mailingListDetail?.ownerGrantEmails);
+	const [grantEmails, setGrantEmails] = useState<any>(aclListDetail?.ownerGrantEmails);
 	const ownerHeaders: any[] = useMemo(
 		() => [
 			{
@@ -88,11 +84,11 @@ const MailingListSection: FC<any> = () => {
 		[t]
 	);
 
-	const [grantType, setGrantType] = useState<any>(mailingListDetail?.ownerGrantEmailType);
+	const [grantType, setGrantType] = useState<any>(aclListDetail?.ownerGrantEmailType);
 
 	useEffect(() => {
 		if (ownersList && ownersList.length > 0) {
-			setMailingListDetail((prev: any) => ({
+			setAclListDetail((prev: any) => ({
 				...prev,
 				owners: ownersList
 			}));
@@ -114,13 +110,13 @@ const MailingListSection: FC<any> = () => {
 			}));
 			setOwnerTableRows(allRows);
 		} else {
-			setMailingListDetail((prev: any) => ({
+			setAclListDetail((prev: any) => ({
 				...prev,
 				owners: []
 			}));
 			setOwnerTableRows([]);
 		}
-	}, [ownersList, setMailingListDetail]);
+	}, [ownersList, setAclListDetail]);
 
 	const changeResourceDetail = useCallback(
 		(e) => {
@@ -129,9 +125,9 @@ const MailingListSection: FC<any> = () => {
 				setIsValidQuery(validQuery);
 				setIsShowLdapQueryMessage(!validQuery);
 			}
-			setMailingListDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setAclListDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
-		[setMailingListDetail]
+		[setAclListDetail]
 	);
 
 	const memberHeaders: any[] = useMemo(
@@ -146,47 +142,6 @@ const MailingListSection: FC<any> = () => {
 		[t]
 	);
 
-	const getMemberFromLdapQuery = useCallback(() => {
-		const query = mailingListDetail?.memberURL.replace('ldap:///??sub?', '');
-		searchDirectory(
-			'cn,description,name,zimbraId',
-			'accounts,distributionlists,dynamicgroups,accounts,aliases,dynamicgroups,resources',
-			'',
-			query
-		).then((data) => {
-			const allList: any[] = [];
-			const account = data?.account;
-			const dl = data?.dl;
-			const alias = data?.alias;
-			const calresource = data?.calresource;
-			const errorFault = data?.Body?.Fault;
-			if (errorFault) {
-				setIsShowLdapQueryMessage(true);
-				setLdapQueryErrorMessage(t('label.query_is_not_valid', 'Query is not valid'));
-			} else {
-				setIsShowLdapQueryMessage(false);
-				setLdapQueryErrorMessage('');
-			}
-			if (dl) {
-				dl.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
-			}
-			if (account) {
-				account.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
-			}
-			if (alias) {
-				alias.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
-			}
-			if (calresource) {
-				calresource.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
-			}
-			if (allList && allList.length > 0) {
-				setDynamicListMember(allList);
-			} else {
-				setDynamicListMember([]);
-			}
-		});
-	}, [mailingListDetail?.memberURL, t]);
-
 	useEffect(() => {
 		if (dynamicListMember && dynamicListMember.length > 0) {
 			const searchDlRows = dynamicListMember.map((item: any) => ({
@@ -199,12 +154,12 @@ const MailingListSection: FC<any> = () => {
 				]
 			}));
 			setDynamicListMemberRows(searchDlRows);
-			setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: dynamicListMember }));
+			setAclListDetail((prev: any) => ({ ...prev, ldapQueryMembers: dynamicListMember }));
 		} else {
 			setDynamicListMemberRows([]);
-			setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: [] }));
+			setAclListDetail((prev: any) => ({ ...prev, ldapQueryMembers: [] }));
 		}
-	}, [dynamicListMember, setMailingListDetail]);
+	}, [dynamicListMember, setAclListDetail]);
 
 	const getSearchMemberList = useCallback(
 		(searchKeyword) => {
@@ -217,16 +172,16 @@ const MailingListSection: FC<any> = () => {
 						name: item?._attrs?.email
 					}));
 					setSearchMemberResult(result);
-					setMailingListDetail((prev: any) => ({
+					setAclListDetail((prev: any) => ({
 						...prev,
-						allOwnersList: mailingListDetail?.allOwnersList.concat(contactList)
+						allOwnersList: aclListDetail?.allOwnersList.concat(contactList)
 					}));
 				} else {
 					setSearchMemberResult([]);
 				}
 			});
 		},
-		[setMailingListDetail, mailingListDetail?.allOwnersList]
+		[setAclListDetail, aclListDetail?.allOwnersList]
 	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -247,15 +202,15 @@ const MailingListSection: FC<any> = () => {
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="9px"
+				top="0.5rem"
 				right="large"
-				bottom="9px"
+				bottom="0.5rem"
 				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
-					padding: '3px',
+					padding: '0.2rem',
 					width: 'inherit'
 				}}
 				onClick={(): void => {
@@ -314,24 +269,24 @@ const MailingListSection: FC<any> = () => {
 		(v: any): any => {
 			const it = grantTypeOptions.find((item: any) => item.value === v);
 
-			setMailingListDetail((prev: any) => ({
+			setAclListDetail((prev: any) => ({
 				...prev,
 				ownerGrantEmailType: it
 			}));
 			setGrantType(it);
 		},
-		[grantTypeOptions, setMailingListDetail]
+		[grantTypeOptions, setAclListDetail]
 	);
 
 	const onEmailAdd = useCallback(
 		(v) => {
 			setGrantEmails(v);
-			setMailingListDetail((prev: any) => ({
+			setAclListDetail((prev: any) => ({
 				...prev,
 				ownerGrantEmails: v
 			}));
 		},
-		[setMailingListDetail]
+		[setAclListDetail]
 	);
 
 	const searchEmailFromGal = useCallback((searchKeyword) => {
@@ -363,9 +318,9 @@ const MailingListSection: FC<any> = () => {
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 300px)"
+				height="calc(100vh - 18.75rem)"
 				background="white"
-				style={{ overflow: 'auto', padding: '16px' }}
+				style={{ overflow: 'auto', padding: '1rem' }}
 			>
 				<Row>
 					<Text
@@ -375,7 +330,7 @@ const MailingListSection: FC<any> = () => {
 						orientation="horizontal"
 						weight="bold"
 					>
-						{t('label.mailing_list_name', 'Mailing List Name')}
+						{t('label.acl_list_name', 'Acl List Name')}
 					</Text>
 				</Row>
 				<ListRow>
@@ -388,7 +343,7 @@ const MailingListSection: FC<any> = () => {
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							backgroundColor="gray5"
-							value={mailingListDetail?.displayName}
+							value={aclListDetail?.displayName}
 							size="medium"
 							inputName="displayName"
 							onChange={changeResourceDetail}
@@ -406,7 +361,7 @@ const MailingListSection: FC<any> = () => {
 						<Input
 							label={t('label.list_name', 'List Name')}
 							backgroundColor="gray5"
-							value={mailingListDetail?.prefixName}
+							value={aclListDetail?.prefixName}
 							size="medium"
 							inputName="prefixName"
 							onChange={changeResourceDetail}
@@ -429,120 +384,14 @@ const MailingListSection: FC<any> = () => {
 					>
 						<Input
 							label={t('domain.type_here_a_domain', 'Type here a domain')}
-							value={mailingListDetail?.suffixName}
+							value={aclListDetail?.suffixName}
 							readOnly
 							backgroundColor="gray5"
 						/>
 					</Container>
 				</ListRow>
-				{mailingListDetail?.dynamic && (
-					<>
-						<ListRow>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								padding={{ top: 'medium', bottom: 'medium' }}
-							>
-								<Switch
-									value={mailingListDetail?.zimbraHideInGal}
-									label={t('label.hidden_from_gal', 'Hidden from GAL')}
-									onClick={(): void => {
-										setMailingListDetail((prev: any) => ({
-											...prev,
-											zimbraHideInGal: !mailingListDetail?.zimbraHideInGal
-										}));
-									}}
-									iconColor="primary"
-								/>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								padding={{ top: 'medium', bottom: 'medium' }}
-							>
-								<Switch
-									value={mailingListDetail?.zimbraMailStatus}
-									label={t('label.can_receive_email', 'Can receive email')}
-									onClick={(): void => {
-										setMailingListDetail((prev: any) => ({
-											...prev,
-											zimbraMailStatus: !mailingListDetail?.zimbraMailStatus
-										}));
-									}}
-									iconColor="primary"
-								/>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								padding={{ top: 'small', bottom: 'medium' }}
-							>
-								<Input
-									label={t('label.list_url', "Mailing List's URL")}
-									backgroundColor="gray5"
-									value={mailingListDetail?.memberURL}
-									size="medium"
-									inputName="memberURL"
-									onChange={changeResourceDetail}
-									hasError={!isValidQuery}
-									CustomIcon={(): any => (
-										<Icon
-											icon="CheckmarkOutline"
-											size="large"
-											color="grey"
-											onClick={getMemberFromLdapQuery}
-										/>
-									)}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Text size="small" weight="regular" color="gray1">
-								{`${t('label.example_lbl', 'Example:')} ${LDAP_QUERY}`}
-							</Text>
-						</ListRow>
-						{isShowLdapQueryMessage && (
-							<Row>
-								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-									<Padding>
-										<Text size="extrasmall" weight="regular" color="error">
-											{ldapQueryErrorMessage}
-										</Text>
-									</Padding>
-								</Container>
-							</Row>
-						)}
-					</>
-				)}
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'medium', bottom: 'medium' }}
-					>
-						<Switch
-							value={mailingListDetail?.dynamic}
-							label={t('label.dynamic_mode', 'Dynamic Mode')}
-							onClick={(): void => {
-								setMailingListDetail((prev: any) => ({
-									...prev,
-									dynamic: !mailingListDetail?.dynamic
-								}));
-							}}
-							iconColor="primary"
-						/>
-					</Container>
-				</ListRow>
 
-				{mailingListDetail?.dynamic && (
+				{aclListDetail?.dynamic && (
 					<>
 						<Row padding={{ top: 'large' }}>
 							<Text
@@ -588,7 +437,7 @@ const MailingListSection: FC<any> = () => {
 							>
 								{t(
 									'label.owners_description',
-									"Owners can manage the mailing list's members (adding and removing emails) and modify its options."
+									"Owners can manage the acl list's members (adding and removing emails) and modify its options."
 								)}
 							</Text>
 						</Row>
@@ -631,17 +480,26 @@ const MailingListSection: FC<any> = () => {
 								padding={{ top: 'medium', right: 'small' }}
 								width="65%"
 							>
-								<DropDownInput
-									width="100%"
+								<Dropdown
 									items={items}
-									inputLabel={t('label.type_an_account_dot', 'Type an account ...')}
-									size="medium"
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setMember(e.target.value);
+									placement="bottom-start"
+									maxWidth="18.75rem"
+									disableAutoFocus
+									width="16.5rem"
+									style={{
+										width: '100%'
 									}}
-									inputValue={member}
-									isCustomIcon={false}
-								/>
+								>
+									<Input
+										label={t('label.type_an_account_dot', 'Type an account ...')}
+										backgroundColor="gray5"
+										size="medium"
+										value={member}
+										onChange={(e: any): void => {
+											setMember(e.target.value);
+										}}
+									/>
+								</Dropdown>
 							</Container>
 							<Container
 								mainAlignment="flex-start"
@@ -697,50 +555,57 @@ const MailingListSection: FC<any> = () => {
 						</ListRow>
 					</>
 				)}
-
-				{ownerTableRows.length === 0 && mailingListDetail?.dynamic && (
-					<ListRow>
+				<ListRow>
+					{!aclListDetail?.dynamic && (
 						<Container
-							height="100%"
-							mainAlignment="center"
-							crossAlignment="center"
-							background="gray6"
-							padding={{ top: 'large' }}
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large', right: 'small' }}
 						>
-							<Text
-								overflow="break-word"
-								weight="regular"
-								size="large"
-								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
-							>
-								<img src={carbonioHelmet} alt="logo" />
-							</Text>
-							<Padding bottom="medium">
-								<Text
-									color="#828282"
-									overflow="break-word"
-									weight="light"
-									style={{ fontSize: '18px' }}
-								>
-									{t('label.there_are_not_owner_here', 'There aren’t owners here.')}
-								</Text>
-							</Padding>
-							<Padding bottom="small">
-								<Text
-									color="#828282"
-									overflow="break-word"
-									weight="light"
-									style={{ fontSize: '18px' }}
-								>
-									{t(
-										'label.search_for_user_add_button',
-										'Search for a user and click on the ADD button.'
-									)}
-								</Text>
-							</Padding>
+							<Input
+								label={t('label.share_message_to_new_member', 'Share message to new members')}
+								backgroundColor="gray6"
+								size="medium"
+								value={
+									aclListDetail?.zimbraDistributionListSendShareMessageToNewMembers
+										? t('label.yes', 'Yes')
+										: t('label.no', 'No')
+								}
+								readOnly
+							/>
 						</Container>
-					</ListRow>
-				)}
+					)}
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Input
+							label={t('label.hidden_from_gal', 'Hidden from GAL')}
+							backgroundColor="gray6"
+							size="medium"
+							value={aclListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
+							readOnly
+						/>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Input
+							label={t('label.this_list_can_receive_email', 'This list can receive Emails')}
+							backgroundColor="gray6"
+							size="medium"
+							value={aclListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')}
+							readOnly
+						/>
+					</Container>
+				</ListRow>
+
 				<ListRow>
 					<Container
 						mainAlignment="flex-start"
@@ -751,7 +616,7 @@ const MailingListSection: FC<any> = () => {
 						<Input
 							label={t('label.notes', 'Notes')}
 							backgroundColor="gray5"
-							value={mailingListDetail?.zimbraNotes}
+							value={aclListDetail?.zimbraNotes}
 							size="medium"
 							inputName="zimbraNotes"
 							onChange={changeResourceDetail}
@@ -763,4 +628,4 @@ const MailingListSection: FC<any> = () => {
 	);
 };
 
-export default MailingListSection;
+export default AclListSection;

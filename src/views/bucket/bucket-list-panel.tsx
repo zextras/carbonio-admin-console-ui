@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
-import { Container, Icon, Input, Dropdown, Row } from '@zextras/carbonio-design-system';
+import { Container, Row } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import styled from 'styled-components';
@@ -23,6 +23,7 @@ import { useBucketServersListStore } from '../../store/bucket-server-list/store'
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import DropDownInput from '../components/dropDownInput';
 
 const SelectItem = styled(Row)``;
 
@@ -60,33 +61,36 @@ const BucketListPanel: FC = () => {
 		[setSelectedServerName]
 	);
 
-	const addServerToList = useCallback((list: any) => {
-		const data = list.map((volume: any) => ({
-			id: volume.id,
-			label: volume.name,
-			customComponent: (
-				<SelectItem
-					top="9px"
-					right="large"
-					bottom="9px"
-					left="large"
-					style={{
-						display: 'block',
-						textAlign: 'left',
-						height: 'inherit',
-						padding: '3px',
-						width: 'inherit'
-					}}
-					onClick={(): void => {
-						selectedVolume(volume);
-					}}
-				>
-					{volume?.name}
-				</SelectItem>
-			)
-		}));
-		setItemsVolume(data);
-	}, [selectedVolume]);
+	const addServerToList = useCallback(
+		(list: any) => {
+			const data = list.map((volume: any) => ({
+				id: volume.id,
+				label: volume.name,
+				customComponent: (
+					<SelectItem
+						top="9px"
+						right="large"
+						bottom="9px"
+						left="large"
+						style={{
+							display: 'block',
+							textAlign: 'left',
+							height: 'inherit',
+							padding: '3px',
+							width: 'inherit'
+						}}
+						onClick={(): void => {
+							selectedVolume(volume);
+						}}
+					>
+						{volume?.name}
+					</SelectItem>
+				)
+			}));
+			setItemsVolume(data);
+		},
+		[selectedVolume]
+	);
 
 	useEffect(() => {
 		const filterList = volumeList.filter((item: any) => item.name.includes(searchVolumeName));
@@ -109,8 +113,13 @@ const BucketListPanel: FC = () => {
 		[t, isStoreSelect]
 	);
 
-	const globalOptions = useMemo(() => !isAdvanced ? globalServerOption.filter((item: any) => item?.id !== BUCKET_LIST)
-		: globalServerOption, [isAdvanced, globalServerOption]);
+	const globalOptions = useMemo(
+		() =>
+			!isAdvanced
+				? globalServerOption.filter((item: any) => item?.id !== BUCKET_LIST)
+				: globalServerOption,
+		[isAdvanced, globalServerOption]
+	);
 
 	const serverSpecificOption = useMemo(
 		() => [
@@ -118,8 +127,7 @@ const BucketListPanel: FC = () => {
 				id: DATA_VOLUMES,
 				name: t('label.data_volumes', 'Data Volumes'),
 				isSelected: isStoreVolumeSelect
-			}
-			 ,
+			},
 			{
 				id: HSM_SETTINGS,
 				name: t('label.hsm_settings', 'HSM Settings'),
@@ -129,9 +137,13 @@ const BucketListPanel: FC = () => {
 		[t, isStoreVolumeSelect]
 	);
 
-	const serverOptions = useMemo(() => !isAdvanced ?
-		serverSpecificOption.filter((item: any) => item?.id !== HSM_SETTINGS)
-	: serverSpecificOption , [isAdvanced, serverSpecificOption]);
+	const serverOptions = useMemo(
+		() =>
+			!isAdvanced
+				? serverSpecificOption.filter((item: any) => item?.id !== HSM_SETTINGS)
+				: serverSpecificOption,
+		[isAdvanced, serverSpecificOption]
+	);
 
 	useEffect(() => {
 		setIsStoreSelect(true);
@@ -166,6 +178,13 @@ const BucketListPanel: FC = () => {
 		setIsServerSpecificListExpand(!isServerSpecificListExpand);
 	};
 
+	const customIconDetail = {
+		icon: 'HardDriveOutline',
+		onClick: (): void => {
+			setIsVolumeListExpand(!isVolumeListExpand);
+		}
+	};
+
 	return (
 		<Container
 			orientation="column"
@@ -196,35 +215,16 @@ const BucketListPanel: FC = () => {
 				{isServerSpecificListExpand && (
 					<>
 						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-							<Dropdown
+							<DropDownInput
 								items={itemsVolume}
-								placement="bottom-start"
-								maxWidth="300px"
-								disableAutoFocus
-								width="265px"
-								style={{
-									width: '100%'
+								inputLabel={t('label.select_a_server', 'Select a Server')}
+								onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+									setSearchVolumeName(ev.target.value);
 								}}
-							>
-								<Input
-									label={t('label.select_a_server', 'Select a Server')}
-									CustomIcon={(): any => (
-										<Icon
-											icon="HardDriveOutline"
-											size="large"
-											color="primary"
-											onClick={(): void => {
-												setIsVolumeListExpand(!isVolumeListExpand);
-											}}
-										/>
-									)}
-									onChange={(ev: any): void => {
-										setSearchVolumeName(ev.target.value);
-									}}
-									value={searchVolumeName}
-									backgroundColor="gray5"
-								/>
-							</Dropdown>
+								inputValue={searchVolumeName}
+								isCustomIcon
+								customIconDetail={customIconDetail}
+							/>
 						</Row>
 						<ListItems
 							items={serverOptions}

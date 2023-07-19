@@ -16,9 +16,11 @@ import {
 	Text,
 	Select,
 	Switch,
+	Dropdown,
 	Button,
 	SnackbarManagerContext,
-	Icon
+	Icon,
+	ChipInput
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
@@ -31,8 +33,8 @@ import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../ut
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
 import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { addMailingListAliasRequest } from '../../../../services/add-mailing-list-alias';
-import { deleteMailingListAliasRequest } from '../../../../services/delete-mailing-list-alias';
+import { addAclListAliasRequest } from '../../../../services/add-acl-list-alias';
+import { deleteAclListAliasRequest } from '../../../../services/delete-acl-list-alias';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
@@ -44,9 +46,8 @@ import { getGrant } from '../../../../services/get-grant';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import ManageAliases from '../../../components/manageAliases';
 import { useDomainStore } from '../../../../store/domain/store';
-import DropDownInput from '../../../components/dropDownInput';
+import Textarea from '../../../components/textarea';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -61,17 +62,14 @@ export enum TRUE_FALSE {
 	FALSE = 'FALSE'
 }
 
-const EditMailingListView: FC<any> = ({
-	selectedMailingList,
-	setShowEditMailingList,
-	setIsUpdateRecord
-}) => {
+const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUpdateRecord }) => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [memberOffset, setMemberOffset] = useState<number>(0);
 	const [ownerOffset, setOwnerOffset] = useState<number>(0);
 	const [displayName, setDisplayName] = useState<string>('');
 	const [distributionName, setDistributionName] = useState<string>('');
+	const [distributionDomain, setDistributionDomain] = useState<string>('');
 	const [
 		zimbraDistributionListSendShareMessageToNewMembers,
 		setZimbraDistributionListSendShareMessageToNewMembers
@@ -92,17 +90,16 @@ const EditMailingListView: FC<any> = ({
 	const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<any[]>([]);
 	const [searchMemberList, setSearchMemberList] = useState<any[]>([]);
 	const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
-	const [openAddMailingListDialog, setOpenAddMailingListDialog] = useState<boolean>(false);
+	const [openAddAclListDialog, setOpenAddAclListDialog] = useState<boolean>(false);
 	const [isRequstInProgress, setIsRequstInProgress] = useState<boolean>(false);
 	const [isAddToOwnerList, setIsAddToOwnerList] = useState<boolean>(false);
-	const [searchMailingListOrUser, setSearchMailingListOrUser] = useState<string>('');
+	const [searchAclListOrUser, setSearchAclListOrUser] = useState<string>('');
 	const [isShowError, setIsShowError] = useState<boolean>(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [searchMember, setSearchMember] = useState<string>('');
 	const [searchOwner, setSearchOwner] = useState<string>('');
 	const [memberURL, setMemberURL] = useState<string>();
 	const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
-	const [searchOwnerMemberOfList, setSearchOwnerMemberOfList] = useState<any[]>([]);
 	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
 	const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
 	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
@@ -111,17 +108,8 @@ const EditMailingListView: FC<any> = ({
 	const [isShowOwnerError, setIsShowOwnerError] = useState<boolean>(false);
 	const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
 	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
-	const domainName = useDomainStore((state) => state.domain?.name);
 	const domainList = useDomainStore((state) => state.domainList);
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
-
-	const dlCreateDate = useMemo(
-		() =>
-			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
-				? moment(getDateFromStr(zimbraCreateTimestamp)).format('DD MMM YYYY - hh:MM')
-				: '',
-		[zimbraCreateTimestamp]
-	);
 
 	const memberHeaders: any[] = useMemo(
 		() => [
@@ -129,12 +117,6 @@ const EditMailingListView: FC<any> = ({
 				id: 'members',
 				label: t('label.members', 'Members'),
 				width: '80%',
-				bold: true
-			},
-			{
-				id: 'address',
-				label: t('label.type', 'Type'),
-				width: '20%',
 				bold: true
 			}
 		],
@@ -146,18 +128,6 @@ const EditMailingListView: FC<any> = ({
 			{
 				id: 'owners',
 				label: t('label.owners', 'Owners'),
-				width: '100%',
-				bold: true
-			}
-		],
-		[t]
-	);
-
-	const grantEmailHeaders: any[] = useMemo(
-		() => [
-			{
-				id: 'grantEmail',
-				label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
 				width: '100%',
 				bold: true
 			}
@@ -292,7 +262,7 @@ const EditMailingListView: FC<any> = ({
 		[rightsOptions]
 	);
 
-	const getMailingList = useCallback(
+	const getAclList = useCallback(
 		(id: string, name: string): void => {
 			getDistributionList(id, name).then((data) => {
 				const distributionListMembers = data?.dl[0];
@@ -302,7 +272,7 @@ const EditMailingListView: FC<any> = ({
 					}
 					if (distributionListMembers?.dlm) {
 						const _dlm = distributionListMembers?.dlm.map((item: any) => item?._content);
-						if (!selectedMailingList?.dynamic) {
+						if (!selectedAclList?.dynamic) {
 							setDlm(_dlm);
 							setPreviousDetail((prevState: any) => ({
 								...prevState,
@@ -322,12 +292,12 @@ const EditMailingListView: FC<any> = ({
 								ownerOfList: allMembers
 							}));
 						}
-					} else if (!selectedMailingList?.dynamic) {
+					} else if (!selectedAclList?.dynamic) {
 						setPreviousDetail((prevState: any) => ({
 							...prevState,
 							dlm: []
 						}));
-					} else if (selectedMailingList?.dynamic) {
+					} else if (selectedAclList?.dynamic) {
 						setPreviousDetail((prevState: any) => ({
 							...prevState,
 							ownerOfList: []
@@ -396,7 +366,7 @@ const EditMailingListView: FC<any> = ({
 						}
 
 						const _zimbraMailAlias = distributionListMembers?.a?.filter(
-							(a: any) => a?.n === 'zimbraMailAlias' && a?._content !== selectedMailingList?.name
+							(a: any) => a?.n === 'zimbraMailAlias' && a?._content !== selectedAclList?.name
 						);
 						if (_zimbraMailAlias && _zimbraMailAlias.length > 0) {
 							const allAlias = _zimbraMailAlias.map((ele: any) => ({ label: ele?._content }));
@@ -481,7 +451,7 @@ const EditMailingListView: FC<any> = ({
 								...prevState,
 								memberURL: _memberURL
 							}));
-						} else if (selectedMailingList?.dynamic) {
+						} else if (selectedAclList?.dynamic) {
 							setPreviousDetail((prevState: any) => ({
 								...prevState,
 								memberURL: ''
@@ -499,13 +469,13 @@ const EditMailingListView: FC<any> = ({
 			});
 		},
 		[
-			selectedMailingList?.name,
+			selectedAclList?.name,
 			subscriptionUnsubscriptionRequestOptions,
 			onSubscriptionChange,
 			onUnSubscriptionChange,
 			rightsOptions,
 			onRightsChange,
-			selectedMailingList?.dynamic
+			selectedAclList?.dynamic
 		]
 	);
 
@@ -537,8 +507,8 @@ const EditMailingListView: FC<any> = ({
 	}, []);
 
 	useEffect(() => {
-		if (selectedMailingList?.a) {
-			const dsName = selectedMailingList?.a?.find((a: any) => a?.n === 'displayName')?._content;
+		if (selectedAclList?.a) {
+			const dsName = selectedAclList?.a?.find((a: any) => a?.n === 'displayName')?._content;
 			if (dsName) {
 				setDisplayName(dsName);
 				setPreviousDetail((prevState: any) => ({
@@ -553,16 +523,17 @@ const EditMailingListView: FC<any> = ({
 				}));
 			}
 		}
-		setDistributionName(selectedMailingList?.name);
+		setDistributionName(selectedAclList?.name?.split('@')?.[0]);
+		setDistributionDomain(selectedAclList?.name?.split('@')?.[1]);
 		setPreviousDetail((prevState: any) => ({
 			...prevState,
-			distributionName: selectedMailingList?.name
+			distributionName: selectedAclList?.name?.split('@')?.[0]
 		}));
-		getMailingList(selectedMailingList?.id, selectedMailingList?.name);
-		if (!selectedMailingList?.dynamic) {
-			getDistributionListMembershipList(selectedMailingList?.id);
+		getAclList(selectedAclList?.id, selectedAclList?.name);
+		if (!selectedAclList?.dynamic) {
+			getDistributionListMembershipList(selectedAclList?.id);
 		}
-	}, [selectedMailingList, getMailingList, getDistributionListMembershipList]);
+	}, [selectedAclList, getAclList, getDistributionListMembershipList]);
 
 	useEffect(() => {
 		if (dlm && dlm.length > 0) {
@@ -579,8 +550,7 @@ const EditMailingListView: FC<any> = ({
 						}}
 					>
 						{item}
-					</Text>,
-					''
+					</Text>
 				]
 			}));
 			setDlmTableRows(allRows);
@@ -626,49 +596,46 @@ const EditMailingListView: FC<any> = ({
 	const onAddToList = useCallback((): void => {
 		const attrs = '';
 		const types = 'distributionlists,aliases,accounts,resources,dynamicgroups';
-		const query = `(mail=${searchMailingListOrUser})`;
+		const query = `(mail=${searchAclListOrUser})`;
 		searchDirectory(attrs, types, '', query, 0, 2).then((data) => {
 			const accountExists = data?.dl || data?.account;
 			if (!!accountExists && accountExists[0]) {
 				setIsShowError(false);
 				if (isAddToOwnerList) {
-					if (ownersList.find((item: any) => item?.name === searchMailingListOrUser)) {
+					if (ownersList.find((item: any) => item?.name === searchAclListOrUser)) {
 						setIsShowError(true);
 						setOwnerErrorMessage(
 							t(
-								'label.mailing_list_already_in_list_error',
-								'The Mailing List / User is already in the list'
+								'label.acl_list_already_in_list_error',
+								'The Acl List / User is already in the list'
 							)
 						);
 					} else {
 						setOwnersList(
 							ownersList.concat({ id: accountExists[0]?.id, name: accountExists[0]?.name })
 						);
-						setOpenAddMailingListDialog(false);
+						setOpenAddAclListDialog(false);
 					}
-				} else if (dlm.find((item: any) => item === searchMailingListOrUser)) {
+				} else if (dlm.find((item: any) => item === searchAclListOrUser)) {
 					setIsShowError(true);
 					setOwnerErrorMessage(
-						t(
-							'label.mailing_list_already_in_list_error',
-							'The Mailing List / User is already in the list'
-						)
+						t('label.acl_list_already_in_list_error', 'The Acl List / User is already in the list')
 					);
 				} else {
 					setDlm(dlm.concat(accountExists[0]?.name));
-					setOpenAddMailingListDialog(false);
+					setOpenAddAclListDialog(false);
 				}
 			} else {
 				setIsShowError(true);
 				setOwnerErrorMessage(
 					t(
-						'label.mailing_list_not_exists_error_msg',
-						'The Mailing List / User does not exist. Please check the spelling and try again.'
+						'label.acl_list_not_exists_error_msg',
+						'The Acl List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 			}
 		});
-	}, [t, isAddToOwnerList, searchMailingListOrUser, dlm, ownersList]);
+	}, [t, isAddToOwnerList, searchAclListOrUser, dlm, ownersList]);
 
 	const onDeleteFromList = (): void => {
 		if (selectedDistributionListMember.length > 0) {
@@ -709,7 +676,7 @@ const EditMailingListView: FC<any> = ({
 		const target = {
 			type: 'dl',
 			by: 'name',
-			_content: selectedMailingList?.name
+			_content: selectedAclList?.name
 		};
 		getGrantBody.target = target;
 		getGrant(getGrantBody)
@@ -724,16 +691,10 @@ const EditMailingListView: FC<any> = ({
 						}
 						const emails: Array<any> = [];
 						grant.forEach((grItem: any) => {
-							if (
-								grItem?.right &&
-								Array.isArray(grItem?.right) &&
-								grItem?.right[0]?._content === 'sendToDistList'
-							) {
-								emails.push({
-									id: grItem?.grantee[0]?.id,
-									name: grItem?.grantee[0]?.name
-								});
-							}
+							emails.push({
+								id: grItem?.grantee[0]?.id,
+								name: grItem?.grantee[0]?.name
+							});
 						});
 						setGrantEmails(emails);
 						setGrantEmailsList(emails.map((item: any) => item?.name));
@@ -748,35 +709,9 @@ const EditMailingListView: FC<any> = ({
 						}));
 					} else if (grant.length === 1) {
 						const granteeType = grant[0]?.grantee[0]?.type;
-						if (grant[0].grantee?.[0]?.type === 'gst' || grant[0].grantee?.[0]?.type === 'usr') {
-							onGrantTypeChange(EMAIL);
-							const emails: Array<any> = [];
-							grant.forEach((grItem: any) => {
-								if (
-									grItem?.right &&
-									Array.isArray(grItem?.right) &&
-									grItem?.right[0]?._content === 'sendToDistList'
-								) {
-									emails.push({
-										id: grItem?.grantee[0]?.id,
-										name: grItem?.grantee[0]?.name
-									});
-								}
-							});
-							setGrantEmails(emails);
-							setGrantEmailsList(emails.map((item: any) => item?.name));
-							const it = grantTypeOptions.find((item: any) => item.value === EMAIL);
-							setPreviousDetail((prevState: any) => ({
-								...prevState,
-								grantType: it
-							}));
-							setPreviousDetail((prevState: any) => ({
-								...prevState,
-								grantEmails: emails
-							}));
-						} else if (
+						if (
 							grant[0]?.grantee[0]?.name &&
-							grant[0]?.grantee[0]?.name !== selectedMailingList?.name
+							grant[0]?.grantee[0]?.name !== selectedAclList?.name
 						) {
 							onGrantTypeChange(PUB);
 							const it = grantTypeOptions.find((item: any) => item.value === EMAIL);
@@ -824,7 +759,7 @@ const EditMailingListView: FC<any> = ({
 					replace: true
 				});
 			});
-	}, [createSnackbar, t, selectedMailingList?.name, onGrantTypeChange, grantTypeOptions]);
+	}, [createSnackbar, t, selectedAclList?.name, onGrantTypeChange, grantTypeOptions]);
 	useEffect(() => {
 		getGrantML();
 	}, [getGrantML]);
@@ -903,7 +838,7 @@ const EditMailingListView: FC<any> = ({
 		latestData.zimbraDistributionListSubscriptionPolicy = zimbraDistributionListSubscriptionPolicy;
 		latestData.zimbraMailStatus = zimbraMailStatus;
 
-		if (selectedMailingList?.dynamic) {
+		if (selectedAclList?.dynamic) {
 			latestData.memberURL = memberURL;
 			ownerOfList ? (latestData.ownerOffset = ownerOfList) : (latestData.ownerOffset = []);
 		}
@@ -916,7 +851,7 @@ const EditMailingListView: FC<any> = ({
 
 	const onUndo = (): void => {
 		previousDetail?.displayName ? setDisplayName(previousDetail?.displayName) : setDisplayName('');
-		if (selectedMailingList?.dynamic) {
+		if (selectedAclList?.dynamic) {
 			previousDetail?.memberURL ? setMemberURL(previousDetail?.memberURL) : setMemberURL('');
 		}
 		setDistributionName(previousDetail?.distributionName);
@@ -945,7 +880,7 @@ const EditMailingListView: FC<any> = ({
 		previousDetail?.zimbraMailStatus !== undefined
 			? setZimbraMailStatus(previousDetail?.zimbraMailStatus)
 			: setZimbraMailStatus(rightsOptions[1]);
-		if (selectedMailingList?.dynamic) {
+		if (selectedAclList?.dynamic) {
 			previousDetail?.ownerOfList !== undefined
 				? setOwnerOfList(previousDetail?.ownerOfList)
 				: setOwnerOfList([]);
@@ -1050,14 +985,14 @@ const EditMailingListView: FC<any> = ({
 			n: 'zimbraHideInGal',
 			_content: zimbraHideInGal ? 'TRUE' : 'FALSE'
 		});
-		if (!selectedMailingList?.dynamic) {
+		if (!selectedAclList?.dynamic) {
 			attributes.push({
 				n: 'zimbraDistributionListSendShareMessageToNewMembers',
 				_content: zimbraDistributionListSendShareMessageToNewMembers ? 'TRUE' : 'FALSE'
 			});
 		}
 
-		if (selectedMailingList?.dynamic && !zimbraIsACLGroup) {
+		if (selectedAclList?.dynamic && !zimbraIsACLGroup) {
 			attributes.push({
 				n: 'memberURL',
 				_content: memberURL
@@ -1069,12 +1004,17 @@ const EditMailingListView: FC<any> = ({
 			_content: zimbraNotes
 		});
 
-		request.push(modifyDistributionList(selectedMailingList?.id, attributes));
+		request.push(modifyDistributionList(selectedAclList?.id, attributes));
 		if (
 			previousDetail?.distributionName !== undefined &&
 			previousDetail?.distributionName !== distributionName
 		) {
-			request.push(renameDistributionList(selectedMailingList?.id, distributionName));
+			request.push(
+				renameDistributionList(
+					selectedAclList?.id,
+					`${distributionName.trim()}@${distributionDomain}`
+				)
+			);
 		}
 
 		/* Member Of List */
@@ -1144,7 +1084,7 @@ const EditMailingListView: FC<any> = ({
 				newAddedMember.forEach((item: any) => {
 					const id: any = {
 						n: 'id',
-						_content: selectedMailingList?.id
+						_content: selectedAclList?.id
 					};
 					const dlmItem: any = {
 						n: 'dlm',
@@ -1158,7 +1098,7 @@ const EditMailingListView: FC<any> = ({
 				removeMember.forEach((item: any) => {
 					const id: any = {
 						n: 'id',
-						_content: selectedMailingList?.id
+						_content: selectedAclList?.id
 					};
 					const dlmItem: any = {
 						n: 'dlm',
@@ -1191,7 +1131,7 @@ const EditMailingListView: FC<any> = ({
 				newAddedOwnerMember.forEach((item: any) => {
 					const dl: any = {
 						by: 'id',
-						_content: selectedMailingList?.id
+						_content: selectedAclList?.id
 					};
 					const action: any = {
 						op: 'addOwners',
@@ -1209,7 +1149,7 @@ const EditMailingListView: FC<any> = ({
 				removeOwnerMember.forEach((item: any) => {
 					const dl: any = {
 						by: 'id',
-						_content: selectedMailingList?.id
+						_content: selectedAclList?.id
 					};
 					const action: any = {
 						op: 'removeOwners',
@@ -1226,7 +1166,7 @@ const EditMailingListView: FC<any> = ({
 
 		/* Dynamic Member List */
 		if (
-			selectedMailingList?.dynamic &&
+			selectedAclList?.dynamic &&
 			previousDetail?.ownerOfList !== undefined &&
 			!isEqual(previousDetail?.ownerOfList, ownerOfList)
 		) {
@@ -1248,7 +1188,7 @@ const EditMailingListView: FC<any> = ({
 				newAddedMember.forEach((item: any) => {
 					const id: any = {
 						n: 'id',
-						_content: selectedMailingList?.id
+						_content: selectedAclList?.id
 					};
 					const dlmItem: any = {
 						n: 'dlm',
@@ -1262,7 +1202,7 @@ const EditMailingListView: FC<any> = ({
 				removeMember.forEach((item: any) => {
 					const id: any = {
 						n: 'id',
-						_content: selectedMailingList?.id
+						_content: selectedAclList?.id
 					};
 					const dlmItem: any = {
 						n: 'dlm',
@@ -1278,40 +1218,40 @@ const EditMailingListView: FC<any> = ({
 			const addAliasArr = differenceBy(zimbraMailAlias, zimbraDefaultMailAlias, 'label');
 			// eslint-disable-next-line array-callback-return
 			deleteAliasArr.forEach((aliasName: any) => {
-				deleteMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`).then();
+				deleteAclListAliasRequest(selectedAclList?.id, `${aliasName?.label}`).then();
 			});
 
 			// eslint-disable-next-line array-callback-return
 			addAliasArr.forEach((aliasName: any) => {
-				addMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`).then();
+				addAclListAliasRequest(selectedAclList?.id, `${aliasName?.label}`).then();
 			});
 		}
 
 		let dl: any = {};
 		let action: any = {};
 		if (grantType?.value === PUB) {
-			dl = { by: 'name', _content: selectedMailingList?.name };
+			dl = { by: 'name', _content: selectedAclList?.name };
 			action = {
 				op: 'setRights',
 				right: { right: 'sendToDistList', grantee: [] }
 			};
 		} else if (grantType?.value === GRP) {
-			dl = { by: 'name', _content: selectedMailingList?.name };
+			dl = { by: 'name', _content: selectedAclList?.name };
 			action = {
 				op: 'setRights',
 				right: {
 					right: 'sendToDistList',
-					grantee: [{ type: 'grp', by: 'name', _content: selectedMailingList?.name }]
+					grantee: [{ type: 'grp', by: 'name', _content: selectedAclList?.name }]
 				}
 			};
 		} else if (grantType?.value === ALL) {
-			dl = { by: 'name', _content: selectedMailingList?.name };
+			dl = { by: 'name', _content: selectedAclList?.name };
 			action = {
 				op: 'setRights',
 				right: { right: 'sendToDistList', grantee: [{ type: 'all' }] }
 			};
 		} else if (grantType?.value === EMAIL) {
-			dl = { by: 'name', _content: selectedMailingList?.name };
+			dl = { by: 'name', _content: selectedAclList?.name };
 			action = {
 				op: 'setRights',
 				right: {
@@ -1319,7 +1259,7 @@ const EditMailingListView: FC<any> = ({
 					grantee: grantEmails.map((item: any) => ({
 						type: 'email',
 						by: 'name',
-						_content: item?.name ? item?.name : item
+						_content: item
 					}))
 				}
 			};
@@ -1454,17 +1394,17 @@ const EditMailingListView: FC<any> = ({
 	}, [previousDetail?.memberURL, memberURL]);
 
 	useEffect(() => {
-		if (openAddMailingListDialog) {
-			setSearchMailingListOrUser('');
+		if (openAddAclListDialog) {
+			setSearchAclListOrUser('');
 			setIsShowError(false);
 		}
-	}, [openAddMailingListDialog]);
+	}, [openAddAclListDialog]);
 
 	useEffect(() => {
-		if (selectedMailingList?.dynamic) {
+		if (selectedAclList?.dynamic) {
 			setIsAddToOwnerList(true);
 		}
-	}, [selectedMailingList?.dynamic]);
+	}, [selectedAclList?.dynamic]);
 
 	const searchMemberItems = searchMemberResult.map((item: any, index) => ({
 		id: item.id,
@@ -1565,17 +1505,14 @@ const EditMailingListView: FC<any> = ({
 					setIsShowMemberError(true);
 					setMemberErrorMessage(
 						t(
-							'label.mailing_list_not_exists_error_msg',
-							'The Mailing List / User does not exist. Please check the spelling and try again.'
+							'label.acl_list_not_exists_error_msg',
+							'The Acl List / User does not exist. Please check the spelling and try again.'
 						)
 					);
 				} else if (dlm.find((item: any) => item === searchMember)) {
 					setIsShowMemberError(true);
 					setMemberErrorMessage(
-						t(
-							'label.mailing_list_already_in_list_error',
-							'The Mailing List / User is already in the list'
-						)
+						t('label.acl_list_already_in_list_error', 'The Acl List / User is already in the list')
 					);
 				} else {
 					const sortedList = sortedUniq(allEmails);
@@ -1587,8 +1524,8 @@ const EditMailingListView: FC<any> = ({
 			} else if (allEmails === undefined) {
 				setMemberErrorMessage(
 					t(
-						'label.mailing_list_not_exists_error_msg',
-						'The Mailing List / User does not exist. Please check the spelling and try again.'
+						'label.acl_list_not_exists_error_msg',
+						'The Acl List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 				setIsShowMemberError(true);
@@ -1608,17 +1545,14 @@ const EditMailingListView: FC<any> = ({
 					setIsShowOwnerError(true);
 					setOwnerErrorMessage(
 						t(
-							'label.mailing_list_not_exists_error_msg',
-							'The Mailing List / User does not exist. Please check the spelling and try again.'
+							'label.acl_list_not_exists_error_msg',
+							'The Acl List / User does not exist. Please check the spelling and try again.'
 						)
 					);
 				} else if (ownersList.find((item: any) => item?.name === searchOwner)) {
 					setIsShowOwnerError(true);
 					setOwnerErrorMessage(
-						t(
-							'label.mailing_list_already_in_list_error',
-							'The Mailing List / User is already in the list'
-						)
+						t('label.acl_list_already_in_list_error', 'The Acl List / User is already in the list')
 					);
 				} else {
 					setIsShowOwnerError(false);
@@ -1633,8 +1567,8 @@ const EditMailingListView: FC<any> = ({
 				setIsShowOwnerError(true);
 				setOwnerErrorMessage(
 					t(
-						'label.mailing_list_not_exists_error_msg',
-						'The Mailing List / User does not exist. Please check the spelling and try again.'
+						'label.acl_list_not_exists_error_msg',
+						'The Acl List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 			}
@@ -1672,6 +1606,30 @@ const EditMailingListView: FC<any> = ({
 		[allOwnerList]
 	);
 
+	// const getSearchOwnerList = useCallback((mem) => {
+	// 	const attrs =
+	// 		'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+	// 	const types = 'accounts,distributionlists,aliases';
+	// 	const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+
+	// 	searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name').then((data) => {
+	// 		const result: any[] = [];
+	// 		const dl = data?.dl;
+	// 		const account = data?.account;
+	// 		const alias = data?.alias;
+	// 		if (dl) {
+	// 			dl.map((item: any) => result.push(item));
+	// 		}
+	// 		if (account) {
+	// 			account.map((item: any) => result.push(item));
+	// 		}
+	// 		if (alias) {
+	// 			alias.map((item: any) => result.push(item));
+	// 		}
+	// 		setSearchOwnerResult(result);
+	// 	});
+	// }, []);
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchOwnerCall = useCallback(
 		debounce((mem) => {
@@ -1698,56 +1656,6 @@ const EditMailingListView: FC<any> = ({
 			searchGrantEmail(grantEmailItem);
 		}
 	}, [grantEmailItem, searchGrantEmail]);
-
-	const onAddGrantEmail = useCallback(() => {
-		if (grantEmailItem !== '') {
-			const specialChars = /[ `'"<>,;]/;
-			const allEmails: any[] = specialChars.test(grantEmailItem)
-				? getAllEmailFromString(grantEmailItem)
-				: [grantEmailItem];
-			if (allEmails !== null && allEmails !== undefined) {
-				const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
-				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
-							inValidEmailAddress[0]
-						}`,
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				} else {
-					setGrantEmailItem('');
-					const sortedList = sortedUniq(allEmails);
-					const emails = uniq(grantEmailsList.concat(sortedList));
-					setGrantEmailsList(emails);
-					setGrantEmails(emails);
-					setIsDirty(true);
-				}
-			} else if (allEmails === undefined) {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: `${t('label.invalid_email_address', 'Invalid email address')} ${grantEmailItem}`,
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			}
-		}
-	}, [grantEmailsList, createSnackbar, grantEmailItem, t]);
-
-	const onDeleteFromGrantEmail = useCallback(() => {
-		if (selectedGrantEmail.length > 0) {
-			const _dlm = grantEmailsList.filter((item: any) => !selectedGrantEmail.includes(item));
-			setGrantEmailsList(_dlm);
-			setSelectedGrantEmail([]);
-			setGrantEmails(_dlm);
-			setIsDirty(true);
-		}
-	}, [selectedGrantEmail, grantEmailsList]);
 
 	useMemo(() => {
 		if (grantEmailsList && grantEmailsList.length > 0) {
@@ -1800,8 +1708,8 @@ const EditMailingListView: FC<any> = ({
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
 					<Text size="medium" overflow="ellipsis" weight="bold">
-						{selectedMailingList?.name} (
-						{selectedMailingList?.dynamic
+						{selectedAclList?.name} (
+						{selectedAclList?.dynamic
 							? t('label.dynamic', 'Dynamic')
 							: t('label.standard', 'Standard')}
 						)
@@ -1840,7 +1748,7 @@ const EditMailingListView: FC<any> = ({
 					<IconButton
 						size="medium"
 						icon="CloseOutline"
-						onClick={(): void => setShowEditMailingList(false)}
+						onClick={(): void => setShowEditAclList(false)}
 					/>
 				</Row>
 			</Row>
@@ -1855,14 +1763,13 @@ const EditMailingListView: FC<any> = ({
 				background="white"
 				style={{ overflow: 'auto' }}
 			>
-				<Row>
-					<Text size="medium" weight="bold" color="gray0">
-						{t('domain.list_details', 'List Details')}
-					</Text>
-				</Row>
-
-				<ListRow>
-					<Container>
+				<ListRow padding={0}>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
@@ -1872,166 +1779,104 @@ const EditMailingListView: FC<any> = ({
 							}}
 						/>
 					</Container>
-					<Container padding={{ all: 'small' }}>
+				</ListRow>
+				<ListRow padding={0}>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
 						<Input
-							label={t('label.address', 'Address')}
+							label={t('label.list_name', 'List Name')}
+							backgroundColor="gray5"
 							value={distributionName}
-							background="gray5"
+							size="medium"
+							inputName="prefixName"
 							onChange={(e: any): any => {
 								setDistributionName(e.target.value);
 							}}
 						/>
 					</Container>
-				</ListRow>
-				<ListRow>
-					<Container>
-						<Select
-							items={subscriptionUnsubscriptionRequestOptions}
-							background="gray5"
-							label={t('label.new_subscription_requests', 'New subscriptions requests')}
-							showCheckbox={false}
-							onChange={onSubscriptionChange}
-							selection={zimbraDistributionListSubscriptionPolicy}
-						/>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="center"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+						width="fit"
+					>
+						<Icon icon="AtOutline" size="large" />
 					</Container>
-					<Container padding={{ all: 'small' }}>
-						<Select
-							items={subscriptionUnsubscriptionRequestOptions}
-							background="gray5"
-							label={t('label.unsubscribe_request', 'Unsubscription requests')}
-							showCheckbox={false}
-							onChange={onUnSubscriptionChange}
-							selection={zimbraDistributionListUnsubscriptionPolicy}
-						/>
-					</Container>
-				</ListRow>
-				<ListRow>
-					<Container padding={{ right: 'small', top: 'small' }}>
-						<Select
-							items={rightsOptions}
-							background="gray5"
-							label={t('label.rights', 'Rights')}
-							showCheckbox={false}
-							onChange={onRightsChange}
-							selection={zimbraMailStatus}
-						/>
-					</Container>
-				</ListRow>
-				<ListRow>
-					<ManageAliases
-						listAliases={zimbraMailAlias}
-						setListAliases={setZimbraMailAlias}
-						setAliasChange={(): void => ((): any => true)()}
-					/>
-				</ListRow>
-				<ListRow>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
+						orientation="horizontal"
+						padding={{ top: 'large', left: 'small' }}
 					>
-						<Switch
-							value={zimbraDistributionListSendShareMessageToNewMembers}
-							label={t(
-								'label.send_new_members_notification_for_share_assigned_to_this_group',
-								'Send new members a notification for the share/delegation assigned to this group'
-							)}
-							onClick={(): void => {
-								setIsDirty(true);
-								setZimbraDistributionListSendShareMessageToNewMembers(
-									!zimbraDistributionListSendShareMessageToNewMembers
-								);
-							}}
-							iconColor="primary"
+						<Input
+							label={t('domain.domain_name', 'Domain Name')}
+							value={distributionDomain}
+							readOnly
+							backgroundColor="gray5"
 						/>
-					</Container>
-				</ListRow>
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
-					>
-						<Switch
-							value={zimbraHideInGal}
-							label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
-							onClick={(): void => {
-								setIsDirty(true);
-								setZimbraHideInGal(!zimbraHideInGal);
-							}}
-							iconColor="primary"
-						/>
-					</Container>
-				</ListRow>
-				{selectedMailingList?.dynamic && (
-					<ListRow>
-						<Container padding={{ top: 'small', bottom: 'small' }} orientation="horizontal">
-							<Container width="fit" padding={{ right: 'small' }}>
-								<Icon icon={'Link2Outline'} size="large" />
-							</Container>
-							<Container>
-								<Input
-									label={t('label.list_url', "Mailing List's URL")}
-									value={memberURL}
-									background="gray5"
-									onChange={(e: any): any => {
-										setMemberURL(e.target.value);
-									}}
-									disabled={zimbraIsACLGroup}
-								/>
-							</Container>
-						</Container>
-					</ListRow>
-				)}
-				<ListRow>
-					<Container padding={{ top: 'small', bottom: 'small' }} orientation="horizontal">
-						<Container padding={{ all: 'small' }}>
-							<Input
-								label={t('label.members', 'Members')}
-								value={dlm.length}
-								background="gray5"
-								disabled
-							/>
-						</Container>
-						<Container>
-							<Input
-								label={t('label.alias_in_the_list', 'Alias in the List')}
-								value={zimbraMailAlias.length}
-								background="gray5"
-								disabled
-							/>
-						</Container>
 					</Container>
 				</ListRow>
 
-				<ListRow>
-					<Container padding={{ bottom: 'small' }} orientation="horizontal">
-						<Container padding={{ all: 'small' }}>
-							<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray5" disabled />
-						</Container>
-						<Container>
-							<Input
-								label={t('label.creation_date', 'Creation Date')}
-								value={dlCreateDate}
-								background="gray5"
-								disabled
-							/>
-						</Container>
+				<ListRow padding={0}>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Input
+							label={t('label.share_message_to_new_member', 'Share message to new members')}
+							backgroundColor="gray6"
+							size="medium"
+							value={
+								zimbraDistributionListSendShareMessageToNewMembers
+									? t('label.yes', 'Yes')
+									: t('label.no', 'No')
+							}
+							readOnly
+						/>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Input
+							label={t('label.hidden_from_gal', 'Hidden from GAL')}
+							backgroundColor="gray6"
+							size="medium"
+							value={zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
+							readOnly
+						/>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'large', right: 'small' }}
+					>
+						<Input
+							label={t('label.can_receive_email', 'Can receive email')}
+							backgroundColor="gray6"
+							size="medium"
+							value={
+								zimbraMailStatus?.value === 'TRUE' ? t('label.yes', 'Yes') : t('label.no', 'No')
+							}
+							readOnly
+						/>
 					</Container>
 				</ListRow>
-				<Row padding={{ top: 'small', bottom: 'medium' }}>
-					<Text size="medium" weight="bold" color="gray0">
-						{t('label.notes', 'Notes')}
-					</Text>
-				</Row>
-				<ListRow>
+				<ListRow padding={0}>
 					<Container padding={{ top: 'small', bottom: 'medium' }}>
-						<Input
+						<Textarea
 							value={zimbraNotes}
-							label={t(
-								'label.note_label',
-								'Write something that will easily make you remember this element'
-							)}
+							label={t('label.notes', 'Notes')}
 							background="gray5"
 							onChange={(e: any): any => {
 								setZimbraNotes(e.target.value);
@@ -2040,31 +1885,11 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 
-				{!selectedMailingList?.dynamic && (
-					<>
-						<Row padding={{ top: 'small', bottom: 'small' }}>
-							<Text size="medium" weight="bold" color="gray0">
-								{t('label.who_is_in_this_list', "Who's in this list?")}
-							</Text>
-						</Row>
-						<ListRow>
-							<Container padding={{ top: 'small', bottom: 'small' }}>
-								<Input
-									label={t('label.this_list_is_member_of', 'This List is part of')}
-									value={dlMembershipListNames}
-									background="gray5"
-									readOnly
-								/>
-							</Container>
-						</ListRow>
-					</>
-				)}
-
-				{!selectedMailingList?.dynamic && (
+				{!selectedAclList?.dynamic && (
 					<>
 						<Row padding={{ top: 'small', bottom: 'medium' }}>
 							<Text size="medium" weight="bold" color="gray0">
-								{t('label.accounts', 'Accounts')}
+								{t('label.members', 'Members')}
 							</Text>
 						</Row>
 						<Row
@@ -2086,20 +1911,29 @@ const EditMailingListView: FC<any> = ({
 									width="100%"
 								>
 									<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
-										<DropDownInput
-											width="100%"
+										<Dropdown
 											items={searchMemberItems}
-											inputLabel={t(
-												'label.type_accounts_paste_them_here',
-												'Type the Accounts or paste them here'
-											)}
-											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-												setSearchMember(e.target.value);
+											placement="bottom-start"
+											maxWidth="300px"
+											disableAutoFocus
+											width="265px"
+											style={{
+												width: '100%'
 											}}
-											inputValue={searchMember}
-											isCustomIcon={false}
-											hasError={isShowMemberError}
-										/>
+										>
+											<Input
+												label={t(
+													'label.type_accounts_paste_them_here',
+													'Type the Accounts or paste them here'
+												)}
+												value={searchMember}
+												background="gray5"
+												onChange={(e: any): any => {
+													setSearchMember(e.target.value);
+												}}
+												hasError={isShowMemberError}
+											/>
+										</Dropdown>
 									</Row>
 
 									<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
@@ -2109,6 +1943,7 @@ const EditMailingListView: FC<any> = ({
 												key="add-button"
 												label={t('label.add', 'Add')}
 												color="primary"
+												icon="PlusOutline"
 												height={44}
 												iconPlacement="right"
 												onClick={onAdd}
@@ -2122,6 +1957,7 @@ const EditMailingListView: FC<any> = ({
 											key="add-button"
 											label={t('label.delete', 'Delete')}
 											color="error"
+											icon="Trash2Outline"
 											iconPlacement="right"
 											size="extralarge"
 											disabled={selectedDistributionListMember.length === 0}
@@ -2145,21 +1981,18 @@ const EditMailingListView: FC<any> = ({
 						)}
 					</>
 				)}
-				<ListRow>
-					{!selectedMailingList?.dynamic && (
-						<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
-							<Table
-								rows={dlmTableRows}
-								headers={memberHeaders}
-								showCheckbox={false}
-								selectedRows={selectedDistributionListMember}
-								RowFactory={CustomRowFactory}
-								HeaderFactory={CustomHeaderFactory}
-							/>
-						</Container>
-					)}
-				</ListRow>
-				{dlmTableRows.length === 0 && !selectedMailingList?.dynamic && (
+				<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
+					<Table
+						rows={dlmTableRows}
+						headers={memberHeaders}
+						showCheckbox={false}
+						selectedRows={selectedDistributionListMember}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
+					/>
+				</Container>
+
+				{dlmTableRows.length === 0 && !selectedAclList?.dynamic && (
 					<ListRow>
 						<Container
 							background="gray6"
@@ -2191,7 +2024,7 @@ const EditMailingListView: FC<any> = ({
 					</ListRow>
 				)}
 				<ListRow>
-					{!selectedMailingList?.dynamic && (
+					{!selectedAclList?.dynamic && (
 						<Container
 							padding={{ all: 'small' }}
 							mainAlignment="flex-end"
@@ -2249,21 +2082,30 @@ const EditMailingListView: FC<any> = ({
 							width="100%"
 						>
 							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
-								<DropDownInput
-									width="100%"
+								<Dropdown
 									items={searchOwnerList}
-									inputLabel={t(
-										'label.type_accounts_paste_them_here',
-										'Type the Accounts or paste them here'
-									)}
-									size="medium"
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setSearchOwner(e.target.value);
+									placement="bottom-start"
+									maxWidth="300px"
+									disableAutoFocus
+									width="265px"
+									style={{
+										width: '100%'
 									}}
-									inputValue={searchOwner}
-									isCustomIcon={false}
-									hasError={isShowOwnerError}
-								/>
+								>
+									<Input
+										label={t(
+											'label.type_accounts_paste_them_here',
+											'Type the Accounts or paste them here'
+										)}
+										backgroundColor="gray5"
+										size="medium"
+										value={searchOwner}
+										onChange={(e: any): void => {
+											setSearchOwner(e.target.value);
+										}}
+										hasError={isShowOwnerError}
+									/>
+								</Dropdown>
 							</Row>
 							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
 								<Padding left="large" right="large">
@@ -2272,6 +2114,7 @@ const EditMailingListView: FC<any> = ({
 										key="add-button"
 										label={t('label.add', 'Add')}
 										color="primary"
+										icon="PlusOutline"
 										height={44}
 										iconPlacement="right"
 										onClick={onAddOwner}
@@ -2279,11 +2122,13 @@ const EditMailingListView: FC<any> = ({
 										disabled={searchOwner === ''}
 									/>
 								</Padding>
+
 								<Button
 									type="outlined"
 									key="add-button"
 									label={t('label.delete', 'Delete')}
 									color="error"
+									icon="Trash2Outline"
 									iconPlacement="right"
 									size="extralarge"
 									disabled={selectedOwnerListMember.length === 0}
@@ -2306,25 +2151,22 @@ const EditMailingListView: FC<any> = ({
 					)}
 				</Row>
 
-				<ListRow>
-					<Container
-						padding={{
-							left: !selectedMailingList?.dynamic ? 'small' : '',
-							top: 'small',
-							bottom: 'small'
-						}}
-						mainAlignment="flex-start"
-					>
-						<Table
-							rows={ownerTableRows}
-							headers={ownerHeaders}
-							showCheckbox={false}
-							selectedRows={selectedOwnerListMember}
-							RowFactory={CustomRowFactory}
-							HeaderFactory={CustomHeaderFactory}
-						/>
-					</Container>
-				</ListRow>
+				<Container
+					padding={{
+						top: 'small',
+						bottom: 'small'
+					}}
+					mainAlignment="flex-start"
+				>
+					<Table
+						rows={ownerTableRows}
+						headers={ownerHeaders}
+						showCheckbox={false}
+						selectedRows={selectedOwnerListMember}
+						RowFactory={CustomRowFactory}
+						HeaderFactory={CustomHeaderFactory}
+					/>
+				</Container>
 
 				{ownerTableRows.length === 0 && (
 					<ListRow>
@@ -2361,144 +2203,25 @@ const EditMailingListView: FC<any> = ({
 				<ListRow>
 					<Container
 						padding={{ all: 'small' }}
-						mainAlignment={selectedMailingList?.dynamic ? 'flex-start' : 'flex-end'}
-						crossAlignment={selectedMailingList?.dynamic ? 'flex-start' : 'flex-end'}
+						mainAlignment={selectedAclList?.dynamic ? 'flex-start' : 'flex-end'}
+						crossAlignment={selectedAclList?.dynamic ? 'flex-start' : 'flex-end'}
 					>
 						<Paging totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
 					</Container>
 				</ListRow>
-
-				<ListRow>
-					<Container padding={{ top: 'large', bottom: 'large' }}>
-						<Divider />
-					</Container>
-				</ListRow>
-
-				<ListRow>
-					<Container>
-						<Select
-							items={grantTypeOptions}
-							background="gray5"
-							label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
-							showCheckbox={false}
-							onChange={onGrantTypeChange}
-							selection={grantType}
-						/>
-					</Container>
-				</ListRow>
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="60%"
-					>
-						<DropDownInput
-							width="100%"
-							items={grantItems}
-							inputLabel={t(
-								'label.type_an_account_add_senders_list',
-								'Type an account to add it to the sender for the list'
-							)}
-							size="medium"
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								setGrantEmailItem(e.target.value);
-							}}
-							inputValue={grantEmailItem}
-							isCustomIcon={false}
-							inputDisabled={grantType?.value !== EMAIL}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="40%"
-					>
-						<Padding right="small">
-							<Button
-								type="outlined"
-								label={t('label.add', 'Add')}
-								color="primary"
-								iconPlacement="right"
-								height={44}
-								onClick={onAddGrantEmail}
-								size="extralarge"
-								disabled={grantEmailItem === ''}
-							/>
-						</Padding>
-
-						<Button
-							type="outlined"
-							label={t('label.delete', 'Delete')}
-							color="error"
-							iconPlacement="right"
-							height={44}
-							size="extralarge"
-							onClick={onDeleteFromGrantEmail}
-							disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
-						/>
-					</Container>
-				</ListRow>
-
-				<ListRow>
-					<Container padding={{ top: 'large', bottom: 'large' }}>
-						<Table
-							rows={grantEmailTableRows}
-							headers={grantEmailHeaders}
-							showCheckbox={false}
-							selectedRows={selectedGrantEmail}
-							RowFactory={CustomRowFactory}
-							HeaderFactory={CustomHeaderFactory}
-						/>
-					</Container>
-				</ListRow>
-				{grantEmailTableRows.length === 0 && (
-					<ListRow>
-						<Container
-							background="gray6"
-							height="fit-content"
-							mainAlignment="center"
-							crossAlignment="center"
-						>
-							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<img src={helmetLogo} alt="logo" />
-								</Row>
-							</Padding>
-							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<Text size="large" color="secondary" weight="regular">
-										{t('label.there_are_not_member_here', 'There aren’t members here.')}
-									</Text>
-								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<Text size="large" color="secondary" weight="regular">
-										{t(
-											'label.search_for_user_and_clic_to_add',
-											'Search for a user and click on the ADD button.'
-										)}
-									</Text>
-								</Row>
-							</Padding>
-						</Container>
-					</ListRow>
-				)}
 			</Container>
 			<Modal
 				title={
 					<Trans
 						i18nKey="label.would_you_like_to_add_ml"
-						defaults="<bold>Who would you like to add to the Mailing List?</bold>"
+						defaults="<bold>Who would you like to add to the Acl List?</bold>"
 						components={{ bold: <strong /> }}
 					/>
 				}
-				open={openAddMailingListDialog}
+				open={openAddAclListDialog}
 				showCloseIcon
 				onClose={(): void => {
-					setOpenAddMailingListDialog(false);
+					setOpenAddAclListDialog(false);
 				}}
 				size="medium"
 				customFooter={
@@ -2511,7 +2234,7 @@ const EditMailingListView: FC<any> = ({
 									color="secondary"
 									size="medium"
 									onClick={(): void => {
-										setOpenAddMailingListDialog(false);
+										setOpenAddAclListDialog(false);
 									}}
 								/>
 							</Padding>
@@ -2532,8 +2255,8 @@ const EditMailingListView: FC<any> = ({
 				>
 					<Text overflow="break-word" weight="regular">
 						{t(
-							'label.add_in_mailing_list_or_both',
-							'You add another Mailing List or a User. Both of them can be a Owner of the list.'
+							'label.add_in_acl_list_or_both',
+							'You add another Acl List or a User. Both of them can be a Owner of the list.'
 						)}
 					</Text>
 
@@ -2544,13 +2267,13 @@ const EditMailingListView: FC<any> = ({
 						padding={{ top: 'medium' }}
 					>
 						<Input
-							value={searchMailingListOrUser}
+							value={searchAclListOrUser}
 							background="gray5"
 							onChange={(e: any): void => {
-								setSearchMailingListOrUser(e.target.value);
+								setSearchAclListOrUser(e.target.value);
 							}}
 							hasError={isShowError}
-							label={t('label.mailing_list_user', 'Mailing List / User')}
+							label={t('label.acl_list_user', 'Acl List / User')}
 						/>
 					</Container>
 					{isShowError && (
@@ -2577,7 +2300,7 @@ const EditMailingListView: FC<any> = ({
 							onClick={(): void => {
 								setIsAddToOwnerList(!isAddToOwnerList);
 							}}
-							disabled={selectedMailingList?.dynamic}
+							disabled={selectedAclList?.dynamic}
 							iconColor="primary"
 						/>
 					</Container>
@@ -2595,4 +2318,4 @@ const EditMailingListView: FC<any> = ({
 		</Container>
 	);
 };
-export default EditMailingListView;
+export default EditAclListView;

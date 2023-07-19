@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
-import {
-	Container,
-	Input,
-	Icon,
-	Row,
-	Padding,
-	Text,
-	Dropdown
-} from '@zextras/carbonio-design-system';
+import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
 
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
@@ -30,6 +22,7 @@ import {
 	GLOBAL_THEME_ROUTE,
 	MAILBOX_QUOTA,
 	MAILING_LIST,
+	ACL_LIST,
 	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
 	RESTORE_ACCOUNT,
@@ -51,6 +44,7 @@ import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';
 import { getAllRights } from '../utility/utils';
+import DropDownInput from '../components/dropDownInput';
 
 const SelectItem = styled(Row)``;
 
@@ -270,6 +264,11 @@ const DomainListPanel: FC = () => {
 				name: t('label.mailing_list', 'Mailing List'),
 				isSelected: isDomainSelect
 			},
+			{
+				id: ACL_LIST,
+				name: t('label.acl_list', 'ACL (Access Control List)'),
+				isSelected: isDomainSelect
+			},
 			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
 			// {
 			// 	id: RESOURCES,
@@ -319,7 +318,10 @@ const DomainListPanel: FC = () => {
 	const detailItems = useMemo(
 		() =>
 			!isAdvanced
-				? detailOptions.filter((item: any) => item?.id !== THEME && item?.id !== SAML)
+				? detailOptions.filter(
+						(item: any) =>
+							item?.id !== THEME && item?.id !== SAML && item?.id !== TWO_FACTOR_AUTHENTICATION
+				  )
 				: detailOptions,
 		[detailOptions, isAdvanced]
 	);
@@ -327,7 +329,9 @@ const DomainListPanel: FC = () => {
 	const globalOptionsItems = useMemo(
 		() =>
 			!isAdvanced
-				? globalOptionItems.filter((item: any) => item?.id !== GLOBAL_THEME_ROUTE)
+				? globalOptionItems.filter(
+						(item: any) => item?.id !== GLOBAL_THEME_ROUTE && item?.id !== GLOBAL_2FA_ROUTE
+				  )
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
 	);
@@ -366,6 +370,15 @@ const DomainListPanel: FC = () => {
 
 	const toggleManageView = (): void => {
 		setIsManageListExpanded(!isManageListExpanded);
+	};
+	const customIconDetail = {
+		onClick: (): void => {
+			setIsDomainListExpand(!isDomainListExpand);
+		},
+		style: {
+			width: '20px',
+			height: '20px'
+		}
 	};
 
 	const items =
@@ -431,7 +444,7 @@ const DomainListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
-			{isShowGlobalConfig && (
+			{isShowGlobalConfig && globalOptionsItems.length > 0 && (
 				<GlobalListPanel
 					globalOptionItems={globalOptionsItems}
 					selectedOperationItem={selectedOperationItem}
@@ -440,40 +453,21 @@ const DomainListPanel: FC = () => {
 			)}
 
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-				<Dropdown
+				<DropDownInput
 					items={items}
-					placement="bottom-start"
-					maxWidth="300px"
-					disableAutoFocus
-					width="265px"
-					style={{
-						width: '100%'
+					inputLabel={
+						isDomainSelect
+							? t('domain.i_want_to_see_this_domain', 'I want to see this domain')
+							: t('domain.type_here_a_domain', 'Type here a domain')
+					}
+					onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+						setIsDomainSelect(false);
+						setSearchDomainName(ev.target.value);
 					}}
-				>
-					<Input
-						label={
-							isDomainSelect
-								? t('domain.i_want_to_see_this_domain', 'I want to see this domain')
-								: t('domain.type_here_a_domain', 'Type here a domain')
-						}
-						onChange={(ev: any): void => {
-							setIsDomainSelect(false);
-							setSearchDomainName(ev.target.value);
-						}}
-						CustomIcon={(): any => (
-							<CustomIcon
-								icon="GlobeOutline"
-								size="large"
-								color="primary"
-								onClick={(): void => {
-									setIsDomainListExpand(!isDomainListExpand);
-								}}
-							/>
-						)}
-						value={searchDomainName}
-						backgroundColor="gray5"
-					/>
-				</Dropdown>
+					inputValue={searchDomainName}
+					isCustomIcon
+					customIconDetail={customIconDetail}
+				/>
 			</Row>
 			<ListPanelItem
 				title={t('label.details', 'Details')}

@@ -6,13 +6,14 @@
 
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, Button, useSnackbar } from '@zextras/carbonio-design-system';
+import { Container, Button, useSnackbar, Padding } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import CreateAccountDetailSection from './create-account-detail-section';
 import { Section } from '../../../../app/component/section';
 import CreateAccountSectionView from './account-create-section';
+import { fetchSoap } from '../../../../../services/generateOTP-service';
 import CreateOtpSectionView from './account-otp-section';
 import { AccountContext } from './account-context';
 import { createAccountRequest } from '../../../../../services/create-account';
@@ -69,13 +70,30 @@ interface AccountDetailObj {
 	zimbraCOSId: string;
 	changeNameBool: boolean;
 	changeDisplayNameBool: boolean;
+	generateOTP: boolean;
+	administrationRigths: boolean;
+	qrData: string;
+	secrateCode: string;
+	pinCodes: string;
+	showOtpOptionSection: boolean;
 }
 
 // eslint-disable-next-line no-empty-pattern
 const CreateAccount: FC<{
 	setShowCreateAccountView: any;
 	getAccountList: any;
-}> = ({ setShowCreateAccountView, getAccountList }) => {
+	setShowEditAccountView: any;
+	openDetailView: any;
+	setShowAccountDetailView: any;
+	setDefaultTab: any;
+}> = ({
+	setShowCreateAccountView,
+	getAccountList,
+	setShowEditAccountView,
+	openDetailView,
+	setShowAccountDetailView,
+	setDefaultTab
+}) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -96,14 +114,19 @@ const CreateAccount: FC<{
 		displayName: '',
 		zimbraCOSId: '',
 		changeNameBool: false,
-		changeDisplayNameBool: false
+		changeDisplayNameBool: false,
+		generateOTP: false,
+		administrationRigths: false,
+		qrData: '',
+		secrateCode: '',
+		pinCodes: '',
+		showOtpOptionSection: true
 	});
-
 	const [wizardData, setWizardData] = useState();
 	const [activeStep, setActiveStep] = useState('');
 	const [accountCreate, setAccountCreate] = useState('');
-	const goToStep = (step: string): string => step;
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const [showNext, setShowNext] = useState(false);
 
 	const createAccountAPI = useCallback((): void => {
 		createAccountRequest(
@@ -130,6 +153,12 @@ const CreateAccount: FC<{
 					} else {
 						setShowCreateAccountView(false);
 					}
+					setAccountDetail((prev) => ({
+						...prev,
+						id: data?.account[0]?.id,
+						name: data?.account[0]?.name
+					}));
+
 					createSnackbar({
 						key: 'success',
 						type: 'success',
@@ -165,12 +194,94 @@ const CreateAccount: FC<{
 		setShowCreateAccountView,
 		t
 	]);
+
+	const createNewAccount = useCallback((): void => {
+		setAccountDetail({
+			name: '',
+			givenName: '',
+			initials: '',
+			sn: '',
+			zimbraPasswordMustChange: true,
+			generateFirst2FAToken: true,
+			defaultCOS: true,
+			zimbraAccountStatus: '',
+			zimbraPrefLocale: '',
+			zimbraPrefTimeZoneId: '',
+			zimbraNotes: '',
+			password: '',
+			repeatPassword: '',
+			displayName: '',
+			zimbraCOSId: '',
+			changeNameBool: false,
+			changeDisplayNameBool: false,
+			generateOTP: false,
+			administrationRigths: false,
+			qrData: '',
+			secrateCode: '',
+			pinCodes: '',
+			showOtpOptionSection: true
+		});
+		setActiveStep('details');
+		setAccountCreate('');
+	}, [setActiveStep]);
+
+	const handleOnGenerateOTP = useCallback((): void => {
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxAuth',
+			action: 'totp_generate_command',
+			account: `${accountDetail?.name}`
+		}).then((res) => {
+			if (res.ok) {
+				setAccountDetail((prev: any) => ({
+					...prev,
+					qrData: `otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
+						res.response.secret
+					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${
+						res.response.digits_length
+					}&period=${res.response.period}`,
+					secrateCode: res.response.secret,
+					pinCodes: res.response.static_otp_codes,
+					showOtpOptionSection: false
+				}));
+			}
+		});
+	}, [accountDetail]);
+
+	const handleNext = useCallback((): void => {
+		if (accountDetail?.generateOTP && accountDetail?.showOtpOptionSection) {
+			handleOnGenerateOTP();
+		} else if (
+			(!accountDetail.generateOTP && accountDetail?.administrationRigths) ||
+			(!accountDetail?.showOtpOptionSection && accountDetail?.administrationRigths)
+		) {
+			setShowCreateAccountView(false);
+			openDetailView(accountDetail);
+			setShowAccountDetailView(false);
+			setShowEditAccountView(true);
+			setDefaultTab('administration');
+		} else {
+			setShowCreateAccountView(false);
+		}
+	}, [
+		accountDetail,
+		handleOnGenerateOTP,
+		setShowCreateAccountView,
+		openDetailView,
+		setShowAccountDetailView,
+		setShowEditAccountView,
+		setDefaultTab
+	]);
+
 	useEffect(() => {
 		if (accountCreate === 'create') {
 			setAccountCreate('');
 			createAccountAPI();
+		} else if (accountCreate === 'next') {
+			setAccountCreate('');
+			handleNext();
 		}
-	}, [accountCreate, accountDetail, createAccountAPI]);
+	}, [accountCreate, accountDetail, createAccountAPI, handleNext]);
 
 	const wizardSteps = useMemo(
 		() => [
@@ -238,19 +349,31 @@ const CreateAccount: FC<{
 				view: CreateOtpSectionView,
 				clickDisabled: true,
 				CancelButton: () => <></>,
-				PrevButton: (): ReactElement => <></>,
-				NextButton: (props: any) => (
+				PrevButton: (): ReactElement => (
+					<>
+						<Padding right="small">
+							<Button
+								type="outlined"
+								disabled={accountDetail?.administrationRigths}
+								label={t('label.create_another_account', 'CREATE ANOTHER ACCOUNT')}
+								onClick={(): void => createNewAccount()}
+							/>
+						</Padding>
+					</>
+				),
+				NextButton: () => (
 					<Button
-						{...props}
-						label={t('commons.data_already_sent_to_the_user', 'DATA ALREADY SENT TO THE USER')}
-						icon="PersonOutline"
-						iconPlacement="right"
-						onClick={(): void => setShowCreateAccountView(false)}
+						label={t('commons.next', 'NEXT')}
+						onClick={(): void => {
+							setAccountCreate('next');
+						}}
 					/>
 				)
 			}
 		],
-		[t, setShowCreateAccountView, accountDetail, createSnackbar]
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[t, createSnackbar]
 	);
 
 	const onComplete = useCallback(() => {

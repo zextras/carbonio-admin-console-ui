@@ -31,8 +31,8 @@ const DelegateSetRightsSection: FC = () => {
 	const [t] = useTranslation();
 	const [sendingOption, setSendingOption] = useState('');
 	const DELEGETES_RIGHTS_TYPE = useMemo(() => delegateRightsType(t), [t]);
-	const conext = useContext(AccountContext);
-	const { accountDetail, deligateDetail, setDeligateDetail, folderList, setFolderList } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail, deligateDetail, setDeligateDetail, folderList, setFolderList } = context;
 
 	const onWhoDelegateChange = (v: any): any => {
 		setDeligateDetail((prev: any) => ({ ...prev, delegeteRights: v }));

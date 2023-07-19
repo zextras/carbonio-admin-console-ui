@@ -18,7 +18,6 @@ import {
 	Button,
 	useSnackbar,
 	Modal,
-	Dropdown,
 	Padding
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
@@ -34,6 +33,7 @@ import InheritedSelect from './inherited-components/inherited-select';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { objectType } from '../../../../../../types';
+import DropDownInput from '../../../../components/dropDownInput';
 
 const SelectItem = styled(Row)``;
 
@@ -44,7 +44,7 @@ const CustomIcon = styled(Icon)`
 
 const EditAccountGeneralSection: FC = () => {
 	const createSnackbar = useSnackbar();
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const {
 		accountDetail,
 		setAccountDetail,
@@ -53,7 +53,7 @@ const EditAccountGeneralSection: FC = () => {
 		setInitAccountDetail,
 		accSpecificDetail,
 		cosDetail
-	} = conext;
+	} = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
 	const [t] = useTranslation();
@@ -335,30 +335,22 @@ const EditAccountGeneralSection: FC = () => {
 							crossAlignment="flex-start"
 							width="90%"
 						>
-							<Dropdown
+							<DropDownInput
 								items={items}
-								placement="bottom-start"
 								maxWidth="400px"
-								disableAutoFocus
 								width="365px"
-								style={{
-									width: '100%'
+								inputLabel={
+									isDomainSelect
+										? t('label.domain_name', 'Domain Name')
+										: t('domain.type_here_a_domain', 'Type here a domain')
+								}
+								onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+									setIsDomainSelect(false);
+									setSearchDomainName(ev.target.value);
 								}}
-							>
-								<Input
-									label={
-										isDomainSelect
-											? t('label.domain_name', 'Domain Name')
-											: t('domain.type_here_a_domain', 'Type here a domain')
-									}
-									onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-										setIsDomainSelect(false);
-										setSearchDomainName(ev.target.value);
-									}}
-									value={searchDomainName}
-									backgroundColor="gray5"
-								/>
-							</Dropdown>
+								inputValue={searchDomainName}
+								isCustomIcon={false}
+							/>
 						</Row>
 					</Row>
 				</Row>
@@ -411,17 +403,7 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 					</Row>
-					<Row width="37%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraPasswordLocked === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraPasswordLocked')}
-							label={t(
-								'account_details.prevent_user_from_changing_password',
-								'Prevent user from changing password'
-							)}
-							iconColor="primary"
-						/>
-					</Row>
+					<Row width="37%" mainAlignment="flex-start"></Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
@@ -481,7 +463,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="48%" mainAlignment="flex-start">
+					<Row width="100%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
@@ -497,17 +479,6 @@ const EditAccountGeneralSection: FC = () => {
 						) : (
 							<></>
 						)}
-					</Row>
-					<Row width="48%" mainAlignment="flex-start">
-						<Switch
-							value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
-							onClick={(): void => changeSwitchOption('zimbraIsAdminAccount')}
-							label={t(
-								'account_details.this_is_global_administrator',
-								'This is a Global Administrator '
-							)}
-							iconColor="primary"
-						/>
 					</Row>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">

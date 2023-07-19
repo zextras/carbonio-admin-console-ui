@@ -73,7 +73,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 };
 
 const EditAccountDelegatesSection: FC = () => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const {
 		identitiesList,
@@ -85,7 +85,7 @@ const EditAccountDelegatesSection: FC = () => {
 		setAccountDetail,
 		cosDetail,
 		accSpecificDetail
-	} = conext;
+	} = context;
 	const [showCreateIdentity, setShowCreateIdentity] = useState<boolean>(false);
 	const [editMode, setEditMode] = useState<boolean>(false);
 	const [selectedRows, setSelectedRows] = useState([]);
