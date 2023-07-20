@@ -39,7 +39,7 @@ const ManageAliases: FC<{
 
 	return (
 		<>
-			<Row width="100%" padding={{ top: 'large', left: 'large' }}>
+			<Row width="100%">
 				<Row width="82%" mainAlignment="flex-start" crossAlignment="flex-start">
 					<Row padding={{ left: 'large', bottom: 'small' }}>
 						<Text size="small" color="secondary">

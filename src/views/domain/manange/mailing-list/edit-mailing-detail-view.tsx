@@ -1829,8 +1829,8 @@ const EditMailingListView: FC<any> = ({
 					</Text>
 				</Row>
 
-				<ListRow>
-					<Container>
+				<ListRow padding={{ all: 'small' }}>
+					<Container padding={{ top: 'small' }}>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
@@ -1840,7 +1840,7 @@ const EditMailingListView: FC<any> = ({
 							}}
 						/>
 					</Container>
-					<Container padding={{ all: 'small' }}>
+					<Container padding={{ left: 'large', top: 'small' }}>
 						<Input
 							label={t('label.address', 'Address')}
 							value={distributionName}
@@ -1851,8 +1851,8 @@ const EditMailingListView: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
-					<Container>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
+					<Container padding={{ top: 'small' }}>
 						<Select
 							items={subscriptionUnsubscriptionRequestOptions}
 							background="gray5"
@@ -1862,7 +1862,7 @@ const EditMailingListView: FC<any> = ({
 							selection={zimbraDistributionListSubscriptionPolicy}
 						/>
 					</Container>
-					<Container padding={{ all: 'small' }}>
+					<Container padding={{ left: 'large', top: 'small' }}>
 						<Select
 							items={subscriptionUnsubscriptionRequestOptions}
 							background="gray5"
@@ -1873,8 +1873,8 @@ const EditMailingListView: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
-					<Container padding={{ right: 'small', top: 'small' }}>
+				<ListRow padding={{ all: 'small' }}>
+					<Container padding={{ top: 'small' }}>
 						<Select
 							items={rightsOptions}
 							background="gray5"
@@ -1885,18 +1885,18 @@ const EditMailingListView: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<Container height="fit" padding={{ left: 'small', top: 'small', right: 'small' }}>
 					<ManageAliases
 						listAliases={zimbraMailAlias}
 						setListAliases={setZimbraMailAlias}
 						setAliasChange={(): void => ((): any => true)()}
 					/>
-				</ListRow>
-				<ListRow>
+				</Container>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
+						padding={{ top: 'small' }}
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
 					>
 						<Switch
 							value={zimbraDistributionListSendShareMessageToNewMembers}
@@ -1914,12 +1914,8 @@ const EditMailingListView: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
-					>
+				<ListRow padding={{ left: 'small', right: 'small', bottom: 'small' }}>
+					<Container mainAlignment="flex-start" crossAlignment="flex-start">
 						<Switch
 							value={zimbraHideInGal}
 							label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
@@ -1932,8 +1928,8 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 				{selectedMailingList?.dynamic && (
-					<ListRow>
-						<Container padding={{ top: 'small', bottom: 'small' }} orientation="horizontal">
+					<ListRow padding={{ all: 'small' }}>
+						<Container orientation="horizontal">
 							<Container width="fit" padding={{ right: 'small' }}>
 								<Icon icon={'Link2Outline'} size="large" />
 							</Container>
@@ -1951,9 +1947,9 @@ const EditMailingListView: FC<any> = ({
 						</Container>
 					</ListRow>
 				)}
-				<ListRow>
-					<Container padding={{ top: 'small', bottom: 'small' }} orientation="horizontal">
-						<Container padding={{ all: 'small' }}>
+				<ListRow padding={{ all: 'small' }}>
+					<Container orientation="horizontal">
+						<Container padding={{ right: 'large' }}>
 							<Input
 								label={t('label.members', 'Members')}
 								value={dlm.length}
@@ -1972,9 +1968,9 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container padding={{ bottom: 'small' }} orientation="horizontal">
-						<Container padding={{ all: 'small' }}>
+						<Container padding={{ right: 'large' }}>
 							<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray5" disabled />
 						</Container>
 						<Container>
@@ -1987,13 +1983,13 @@ const EditMailingListView: FC<any> = ({
 						</Container>
 					</Container>
 				</ListRow>
-				<Row padding={{ top: 'small', bottom: 'medium' }}>
+				<Row padding={{ top: 'large' }}>
 					<Text size="medium" weight="bold" color="gray0">
 						{t('label.notes', 'Notes')}
 					</Text>
 				</Row>
-				<ListRow>
-					<Container padding={{ top: 'small', bottom: 'medium' }}>
+				<ListRow padding={{ all: 'small' }}>
+					<Container padding={{ bottom: 'medium' }}>
 						<Input
 							value={zimbraNotes}
 							label={t(
@@ -2010,13 +2006,13 @@ const EditMailingListView: FC<any> = ({
 
 				{!selectedMailingList?.dynamic && (
 					<>
-						<Row padding={{ top: 'small', bottom: 'small' }}>
+						<Row padding={{ top: 'small' }}>
 							<Text size="medium" weight="bold" color="gray0">
 								{t('label.who_is_in_this_list', "Who's in this list?")}
 							</Text>
 						</Row>
-						<ListRow>
-							<Container padding={{ top: 'small', bottom: 'small' }}>
+						<ListRow padding={{ all: 'small' }}>
+							<Container padding={{ bottom: 'small' }}>
 								<Input
 									label={t('label.this_list_is_member_of', 'This List is part of')}
 									value={dlMembershipListNames}
@@ -2030,16 +2026,18 @@ const EditMailingListView: FC<any> = ({
 
 				{!selectedMailingList?.dynamic && (
 					<>
-						<Row padding={{ top: 'small', bottom: 'medium' }}>
+						<Row padding={{ bottom: 'medium' }}>
 							<Text size="medium" weight="bold" color="gray0">
 								{t('label.accounts', 'Accounts')}
 							</Text>
 						</Row>
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							width="100%"
-							padding={{ top: 'small', bottom: isShowMemberError ? 'extrasmall' : 'small' }}
+						<ListRow
+							padding={{
+								top: 'small',
+								bottom: isShowMemberError ? 'extrasmall' : 'small',
+								left: 'small',
+								right: 'small'
+							}}
 						>
 							<Container
 								orientation="vertical"
@@ -2101,7 +2099,7 @@ const EditMailingListView: FC<any> = ({
 									</Row>
 								</Row>
 							</Container>
-						</Row>
+						</ListRow>
 						{isShowMemberError && (
 							<Row>
 								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
@@ -2115,7 +2113,7 @@ const EditMailingListView: FC<any> = ({
 						)}
 					</>
 				)}
-				<ListRow>
+				<Row padding={{ all: 'small' }}>
 					{!selectedMailingList?.dynamic && (
 						<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
 							<Table
@@ -2128,9 +2126,9 @@ const EditMailingListView: FC<any> = ({
 							/>
 						</Container>
 					)}
-				</ListRow>
+				</Row>
 				{dlmTableRows.length === 0 && !selectedMailingList?.dynamic && (
-					<ListRow>
+					<ListRow padding={{ all: 'small' }}>
 						<Container
 							background="gray6"
 							height="fit-content"
@@ -2160,7 +2158,7 @@ const EditMailingListView: FC<any> = ({
 						</Container>
 					</ListRow>
 				)}
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					{!selectedMailingList?.dynamic && (
 						<Container
 							padding={{ all: 'small' }}
@@ -2172,7 +2170,7 @@ const EditMailingListView: FC<any> = ({
 					)}
 				</ListRow>
 
-				<Row padding={{ top: 'small', bottom: 'medium' }}>
+				<Row padding={{ bottom: 'medium' }}>
 					<Text
 						size="medium"
 						mainAlignment="flex-start"
@@ -2183,7 +2181,7 @@ const EditMailingListView: FC<any> = ({
 						{t('label.owners_settings_lbl', 'Owners’ Settings')}
 					</Text>
 				</Row>
-				<Row>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Text
 						size="medium"
 						mainAlignment="flex-start"
@@ -2198,14 +2196,9 @@ const EditMailingListView: FC<any> = ({
 							'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.'
 						)}
 					</Text>
-				</Row>
+				</ListRow>
 
-				<Row
-					takeAvwidth="fill"
-					mainAlignment="flex-start"
-					width="100%"
-					padding={{ top: 'small', bottom: isShowOwnerError ? 'extrasmall' : 'small' }}
-				>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
 						orientation="vertical"
 						mainAlignment="space-around"
@@ -2277,13 +2270,11 @@ const EditMailingListView: FC<any> = ({
 							</Container>
 						</Row>
 					)}
-				</Row>
+				</ListRow>
 
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
 						padding={{
-							left: !selectedMailingList?.dynamic ? 'small' : '',
-							top: 'small',
 							bottom: 'small'
 						}}
 						mainAlignment="flex-start"
@@ -2300,7 +2291,7 @@ const EditMailingListView: FC<any> = ({
 				</ListRow>
 
 				{ownerTableRows.length === 0 && (
-					<ListRow>
+					<ListRow padding={{ all: 'small' }}>
 						<Container
 							background="gray6"
 							height="fit-content"
@@ -2331,7 +2322,7 @@ const EditMailingListView: FC<any> = ({
 					</ListRow>
 				)}
 
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
 						padding={{ all: 'small' }}
 						mainAlignment={selectedMailingList?.dynamic ? 'flex-start' : 'flex-end'}
@@ -2341,13 +2332,18 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 
-				<ListRow>
-					<Container padding={{ top: 'large', bottom: 'large' }}>
+				<Row
+					takeAvwidth="fill"
+					mainAlignment="flex-start"
+					width="100%"
+					padding={{ top: 'small', bottom: 'small' }}
+				>
+					<Container padding={{ bottom: 'small' }}>
 						<Divider />
 					</Container>
-				</ListRow>
+				</Row>
 
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container>
 						<Select
 							items={grantTypeOptions}
@@ -2359,72 +2355,69 @@ const EditMailingListView: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="60%"
+						orientation="vertical"
+						mainAlignment="space-around"
+						background="gray6"
+						height="58px"
 					>
-						<DropDownInput
+						<Row
+							orientation="horizontal"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
 							width="100%"
-							items={grantItems}
-							inputLabel={t(
-								'label.type_an_account_add_senders_list',
-								'Type an account to add it to the sender for the list'
-							)}
-							size="medium"
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								setGrantEmailItem(e.target.value);
-							}}
-							inputValue={grantEmailItem}
-							isCustomIcon={false}
-							inputDisabled={grantType?.value !== EMAIL}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						width="fit"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Button
-							type="outlined"
-							label={t('label.add', 'Add')}
-							color="primary"
-							icon="PlusOutline"
-							iconPlacement="right"
-							height={44}
-							onClick={onAddGrantEmail}
-							size="extralarge"
-							disabled={grantEmailItem === ''}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
-					>
-						<Button
-							type="outlined"
-							label={t('label.delete', 'Delete')}
-							color="error"
-							icon="Trash2Outline"
-							iconPlacement="right"
-							height={44}
-							size="extralarge"
-							onClick={onDeleteFromGrantEmail}
-							disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
-						/>
+						>
+							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
+								<DropDownInput
+									width="100%"
+									items={grantItems}
+									inputLabel={t(
+										'label.type_an_account_add_senders_list',
+										'Type an account to add it to the sender for the list'
+									)}
+									size="medium"
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+										setGrantEmailItem(e.target.value);
+									}}
+									inputValue={grantEmailItem}
+									isCustomIcon={false}
+									inputDisabled={grantType?.value !== EMAIL}
+								/>
+							</Row>
+							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
+								<Padding left="large" right="large">
+									<Button
+										type="outlined"
+										label={t('label.add', 'Add')}
+										color="primary"
+										icon="PlusOutline"
+										iconPlacement="right"
+										height={44}
+										onClick={onAddGrantEmail}
+										size="extralarge"
+										disabled={grantEmailItem === ''}
+									/>
+								</Padding>
+
+								<Button
+									type="outlined"
+									label={t('label.delete', 'Delete')}
+									color="error"
+									icon="Trash2Outline"
+									iconPlacement="right"
+									height={44}
+									size="extralarge"
+									onClick={onDeleteFromGrantEmail}
+									disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
+								/>
+							</Row>
+						</Row>
 					</Container>
 				</ListRow>
 
-				<ListRow>
-					<Container padding={{ top: 'large', bottom: 'large' }}>
+				<ListRow padding={{ all: 'small' }}>
+					<Container padding={{ bottom: 'large' }}>
 						<Table
 							rows={grantEmailTableRows}
 							headers={grantEmailHeaders}
@@ -2436,7 +2429,7 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 				{grantEmailTableRows.length === 0 && (
-					<ListRow>
+					<ListRow padding={{ all: 'small' }}>
 						<Container
 							background="gray6"
 							height="fit-content"

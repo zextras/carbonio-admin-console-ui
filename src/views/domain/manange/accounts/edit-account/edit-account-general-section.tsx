@@ -349,17 +349,20 @@ const EditAccountGeneralSection: FC = () => {
 						</Row>
 					</Row>
 				</Row>
-				<ManageAliases
-					aliasType="accounts"
-					listAliases={accountAliases}
-					setListAliases={setAccountAliases}
-					setAliasChange={(aliaes): void =>
-						setAccountDetail((prev: AccountType) => ({
-							...prev,
-							mail: map(aliaes, 'label').join(', ')
-						}))
-					}
-				/>
+				<Container height="fit" padding={{ left: 'large', top: 'large' }}>
+					<ManageAliases
+						aliasType="accounts"
+						listAliases={accountAliases}
+						setListAliases={setAccountAliases}
+						setAliasChange={(aliaes): void =>
+							setAccountDetail((prev: AccountType) => ({
+								...prev,
+								mail: map(aliaes, 'label').join(', ')
+							}))
+						}
+					/>
+				</Container>
+
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
 						label={t('label.viewed_name', 'Viewed Name')}
