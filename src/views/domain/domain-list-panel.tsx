@@ -54,10 +54,10 @@ const CustomIcon = styled(Icon)`
 	height: 20px;
 `;
 const ovelayStyle = styled(Container)`
-	width: 256px;
+	width: 20rem;
 	right: 0;
 	bottom: 0;
-	height: 105px;
+	height: 8rem;
 	overflow: hidden;
 	background: #0d0d0d;
 	opacity: 0.4;
