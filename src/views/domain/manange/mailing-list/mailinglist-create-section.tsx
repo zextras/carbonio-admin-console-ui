@@ -12,12 +12,6 @@ import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 
-// eslint-disable-next-line no-shadow
-export enum SUBSCRIBE_UNSUBSCRIBE {
-	ACCEPT = 'ACCEPT',
-	APPROVAL = 'APPROVAL',
-	REJECT = 'REJECT'
-}
 const MailingListCreateSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(MailingListContext);
@@ -97,29 +91,6 @@ const MailingListCreateSection: FC<any> = () => {
 			setLdapQueryMembers(allRows);
 		}
 	}, [mailingListDetail?.ldapQueryMembers]);
-
-	useEffect(() => {
-		const subscriptionPolicy = mailingListDetail?.zimbraDistributionListSubscriptionPolicy?.value;
-		if (subscriptionPolicy && subscriptionPolicy === SUBSCRIBE_UNSUBSCRIBE.ACCEPT) {
-			setSubscription(t('label.automatically_accept', 'Automatically accept'));
-		} else if (subscriptionPolicy && subscriptionPolicy === SUBSCRIBE_UNSUBSCRIBE.APPROVAL) {
-			setSubscription(t('label.require_list_owner_approval', 'Require list owner approval'));
-		} else if (subscriptionPolicy && subscriptionPolicy === SUBSCRIBE_UNSUBSCRIBE.REJECT) {
-			setSubscription(t('label.automatically_reject', 'Automatically reject'));
-		}
-	}, [mailingListDetail?.zimbraDistributionListSubscriptionPolicy, t]);
-
-	useEffect(() => {
-		const unSubscriptionPolicy =
-			mailingListDetail?.zimbraDistributionListUnsubscriptionPolicy?.value;
-		if (unSubscriptionPolicy && unSubscriptionPolicy === SUBSCRIBE_UNSUBSCRIBE.ACCEPT) {
-			setUnSubscription(t('label.automatically_accept', 'Automatically accept'));
-		} else if (unSubscriptionPolicy && unSubscriptionPolicy === SUBSCRIBE_UNSUBSCRIBE.APPROVAL) {
-			setUnSubscription(t('label.require_list_owner_approval', 'Require list owner approval'));
-		} else if (unSubscriptionPolicy && unSubscriptionPolicy === SUBSCRIBE_UNSUBSCRIBE.REJECT) {
-			setUnSubscription(t('label.automatically_reject', 'Automatically reject'));
-		}
-	}, [mailingListDetail?.zimbraDistributionListUnsubscriptionPolicy, t]);
 
 	useEffect(() => {
 		if (mailingListDetail?.ownerGrantEmailType?.value === PUB) {
