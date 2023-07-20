@@ -17,7 +17,7 @@ const ListRow: FC<{
 	wrap,
 	orientation = 'horizontal',
 	crossAlignment = 'flex-start',
-	padding = 'inherit'
+	padding = 'unset'
 }) => (
 	<Row
 		orientation={orientation}
