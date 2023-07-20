@@ -417,8 +417,6 @@ const DomainMailingList: FC = () => {
 			members,
 			zimbraDistributionListSendShareMessageToNewMembers,
 			owners,
-			zimbraDistributionListSubscriptionPolicy,
-			zimbraDistributionListUnsubscriptionPolicy,
 			allOwnersList,
 			ownerGrantEmailType,
 			ownerGrantEmails
@@ -457,15 +455,6 @@ const DomainMailingList: FC = () => {
 				attributes.push({
 					n: 'zimbraDistributionListSendShareMessageToNewMembers',
 					_content: zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE
-				});
-				attributes.push({
-					n: 'zimbraDistributionListUnsubscriptionPolicy',
-					_content: zimbraDistributionListUnsubscriptionPolicy?.value
-				});
-
-				attributes.push({
-					n: 'zimbraDistributionListSubscriptionPolicy',
-					_content: zimbraDistributionListSubscriptionPolicy?.value
 				});
 			}
 			let dl: any = {};

@@ -258,30 +258,6 @@ const EditMailingListView: FC<any> = ({
 
 	const [previousDetail, setPreviousDetail] = useState<any>({});
 
-	const [zimbraDistributionListSubscriptionPolicy, setZimbraDistributionListSubscriptionPolicy] =
-		useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
-
-	const [
-		zimbraDistributionListUnsubscriptionPolicy,
-		setZimbraDistributionListUnsubscriptionPolicy
-	] = useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
-
-	const onSubscriptionChange = useCallback(
-		(v: any): any => {
-			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
-			setZimbraDistributionListSubscriptionPolicy(it);
-		},
-		[subscriptionUnsubscriptionRequestOptions]
-	);
-
-	const onUnSubscriptionChange = useCallback(
-		(v: any): any => {
-			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
-			setZimbraDistributionListUnsubscriptionPolicy(it);
-		},
-		[subscriptionUnsubscriptionRequestOptions]
-	);
-
 	const [zimbraMailStatus, setZimbraMailStatus] = useState<any>(rightsOptions[1]);
 
 	const onRightsChange = useCallback(
@@ -410,51 +386,7 @@ const EditMailingListView: FC<any> = ({
 							? setZimbraCreateTimestamp(_zimbraCreateTimestamp)
 							: setZimbraCreateTimestamp('');
 
-						const _zimbraDistributionListSubscriptionPolicy = distributionListMembers?.a?.find(
-							(a: any) => a?.n === 'zimbraDistributionListSubscriptionPolicy'
-						)?._content;
-						if (_zimbraDistributionListSubscriptionPolicy) {
-							onSubscriptionChange(_zimbraDistributionListSubscriptionPolicy);
-							const it = subscriptionUnsubscriptionRequestOptions.find(
-								(item: any) => item.value === _zimbraDistributionListSubscriptionPolicy
-							);
-							setPreviousDetail((prevState: any) => ({
-								...prevState,
-								zimbraDistributionListSubscriptionPolicy: it
-							}));
-						} else {
-							const value = subscriptionUnsubscriptionRequestOptions[0]?.value;
-							onSubscriptionChange(value);
-							setPreviousDetail((prevState: any) => ({
-								...prevState,
-								zimbraDistributionListSubscriptionPolicy:
-									subscriptionUnsubscriptionRequestOptions[0]
-							}));
-						}
-
-						const _zimbraDistributionListUnsubscriptionPolicy = distributionListMembers?.a?.find(
-							(a: any) => a?.n === 'zimbraDistributionListUnsubscriptionPolicy'
-						)?._content;
-						if (_zimbraDistributionListUnsubscriptionPolicy) {
-							onUnSubscriptionChange(_zimbraDistributionListUnsubscriptionPolicy);
-							const it = subscriptionUnsubscriptionRequestOptions.find(
-								(item: any) => item.value === _zimbraDistributionListUnsubscriptionPolicy
-							);
-							setPreviousDetail((prevState: any) => ({
-								...prevState,
-								zimbraDistributionListUnsubscriptionPolicy: it
-							}));
-						} else {
-							const value = subscriptionUnsubscriptionRequestOptions[0]?.value;
-							onUnSubscriptionChange(value);
-							setPreviousDetail((prevState: any) => ({
-								...prevState,
-								zimbraDistributionListUnsubscriptionPolicy:
-									subscriptionUnsubscriptionRequestOptions[0]
-							}));
-						}
 						/* Mail status */
-
 						const _zimbraMailStatus = distributionListMembers?.a?.find(
 							(a: any) => a?.n === 'zimbraMailStatus'
 						)?._content;
@@ -498,15 +430,7 @@ const EditMailingListView: FC<any> = ({
 				}
 			});
 		},
-		[
-			selectedMailingList?.name,
-			subscriptionUnsubscriptionRequestOptions,
-			onSubscriptionChange,
-			onUnSubscriptionChange,
-			rightsOptions,
-			onRightsChange,
-			selectedMailingList?.dynamic
-		]
+		[selectedMailingList?.name, rightsOptions, onRightsChange, selectedMailingList?.dynamic]
 	);
 
 	const getDistributionListMembershipList = useCallback((id: string): void => {
@@ -898,9 +822,6 @@ const EditMailingListView: FC<any> = ({
 		zimbraDistributionListSendShareMessageToNewMembers
 			? (latestData.zimbraDistributionListSendShareMessageToNewMembers = true)
 			: (latestData.zimbraDistributionListSendShareMessageToNewMember = false);
-		latestData.zimbraDistributionListUnsubscriptionPolicy =
-			zimbraDistributionListUnsubscriptionPolicy;
-		latestData.zimbraDistributionListSubscriptionPolicy = zimbraDistributionListSubscriptionPolicy;
 		latestData.zimbraMailStatus = zimbraMailStatus;
 
 		if (selectedMailingList?.dynamic) {
@@ -932,16 +853,6 @@ const EditMailingListView: FC<any> = ({
 		previousDetail?.zimbraDistributionListSendShareMessageToNewMembers
 			? setZimbraDistributionListSendShareMessageToNewMembers(true)
 			: setZimbraDistributionListSendShareMessageToNewMembers(false);
-		previousDetail?.zimbraDistributionListUnsubscriptionPolicy
-			? setZimbraDistributionListUnsubscriptionPolicy(
-					previousDetail?.zimbraDistributionListUnsubscriptionPolicy
-			  )
-			: setZimbraDistributionListUnsubscriptionPolicy(subscriptionUnsubscriptionRequestOptions[0]);
-		previousDetail?.zimbraDistributionListSubscriptionPolicy
-			? setZimbraDistributionListSubscriptionPolicy(
-					previousDetail?.zimbraDistributionListSubscriptionPolicy
-			  )
-			: setZimbraDistributionListSubscriptionPolicy(subscriptionUnsubscriptionRequestOptions[0]);
 		previousDetail?.zimbraMailStatus !== undefined
 			? setZimbraMailStatus(previousDetail?.zimbraMailStatus)
 			: setZimbraMailStatus(rightsOptions[1]);
@@ -1030,17 +941,6 @@ const EditMailingListView: FC<any> = ({
 			n: 'description',
 			_content: zimbraNotes
 		});
-
-		attributes.push({
-			n: 'zimbraDistributionListUnsubscriptionPolicy',
-			_content: zimbraDistributionListUnsubscriptionPolicy?.value
-		});
-
-		attributes.push({
-			n: 'zimbraDistributionListSubscriptionPolicy',
-			_content: zimbraDistributionListSubscriptionPolicy?.value
-		});
-
 		attributes.push({
 			n: 'zimbraMailStatus',
 			_content: zimbraMailStatus?.value === TRUE_FALSE.TRUE ? 'enabled' : 'disabled'
@@ -1410,32 +1310,6 @@ const EditMailingListView: FC<any> = ({
 	}, [
 		previousDetail?.zimbraDistributionListSendShareMessageToNewMembers,
 		zimbraDistributionListSendShareMessageToNewMembers
-	]);
-
-	useEffect(() => {
-		if (
-			previousDetail?.zimbraDistributionListSubscriptionPolicy !== undefined &&
-			previousDetail?.zimbraDistributionListSubscriptionPolicy.value !==
-				zimbraDistributionListSubscriptionPolicy.value
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		previousDetail?.zimbraDistributionListSubscriptionPolicy,
-		zimbraDistributionListSubscriptionPolicy
-	]);
-
-	useEffect(() => {
-		if (
-			previousDetail?.zimbraDistributionListUnsubscriptionPolicy !== undefined &&
-			previousDetail?.zimbraDistributionListUnsubscriptionPolicy.value !==
-				zimbraDistributionListUnsubscriptionPolicy.value
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		previousDetail?.zimbraDistributionListUnsubscriptionPolicy,
-		zimbraDistributionListUnsubscriptionPolicy
 	]);
 
 	useEffect(() => {
@@ -1880,28 +1754,6 @@ const EditMailingListView: FC<any> = ({
 							onChange={(e: any): any => {
 								setDistributionName(e.target.value);
 							}}
-						/>
-					</Container>
-				</ListRow>
-				<ListRow>
-					<Container>
-						<Select
-							items={subscriptionUnsubscriptionRequestOptions}
-							background="gray5"
-							label={t('label.new_subscription_requests', 'New subscriptions requests')}
-							showCheckbox={false}
-							onChange={onSubscriptionChange}
-							selection={zimbraDistributionListSubscriptionPolicy}
-						/>
-					</Container>
-					<Container padding={{ all: 'small' }}>
-						<Select
-							items={subscriptionUnsubscriptionRequestOptions}
-							background="gray5"
-							label={t('label.unsubscribe_request', 'Unsubscription requests')}
-							showCheckbox={false}
-							onChange={onUnSubscriptionChange}
-							selection={zimbraDistributionListUnsubscriptionPolicy}
 						/>
 					</Container>
 				</ListRow>
