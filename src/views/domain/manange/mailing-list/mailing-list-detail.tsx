@@ -140,12 +140,6 @@ const MailingListDetail: FC<any> = ({
 		[t]
 	);
 	const [zimbraMailStatus, setZimbraMailStatus] = useState<any>(rightsOptions[1]);
-	const [zimbraDistributionListSubscriptionPolicy, setZimbraDistributionListSubscriptionPolicy] =
-		useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
-	const [
-		zimbraDistributionListUnsubscriptionPolicy,
-		setZimbraDistributionListUnsubscriptionPolicy
-	] = useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
 	const [dlId, setdlId] = useState<string>('');
 	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
 	const [dlmTableRows, setDlmTableRows] = useState<any>([]);
@@ -175,22 +169,6 @@ const MailingListDetail: FC<any> = ({
 			setZimbraMailStatus(it);
 		},
 		[rightsOptions]
-	);
-
-	const onSubscriptionChange = useCallback(
-		(v: any): any => {
-			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
-			setZimbraDistributionListSubscriptionPolicy(it);
-		},
-		[subscriptionUnsubscriptionRequestOptions]
-	);
-
-	const onUnSubscriptionChange = useCallback(
-		(v: any): any => {
-			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
-			setZimbraDistributionListUnsubscriptionPolicy(it);
-		},
-		[subscriptionUnsubscriptionRequestOptions]
 	);
 
 	const getMailingList = useCallback(
@@ -249,26 +227,6 @@ const MailingListDetail: FC<any> = ({
 						_zimbraCreateTimestamp
 							? setZimbraCreateTimestamp(_zimbraCreateTimestamp)
 							: setZimbraCreateTimestamp('');
-
-						const _zimbraDistributionListSubscriptionPolicy = distributionListMembers?.a?.find(
-							(a: any) => a?.n === 'zimbraDistributionListSubscriptionPolicy'
-						)?._content;
-						if (_zimbraDistributionListSubscriptionPolicy) {
-							onSubscriptionChange(_zimbraDistributionListSubscriptionPolicy);
-							const it = subscriptionUnsubscriptionRequestOptions.find(
-								(item: any) => item.value === _zimbraDistributionListSubscriptionPolicy
-							);
-						}
-
-						const _zimbraDistributionListUnsubscriptionPolicy = distributionListMembers?.a?.find(
-							(a: any) => a?.n === 'zimbraDistributionListUnsubscriptionPolicy'
-						)?._content;
-						if (_zimbraDistributionListUnsubscriptionPolicy) {
-							onUnSubscriptionChange(_zimbraDistributionListUnsubscriptionPolicy);
-							const it = subscriptionUnsubscriptionRequestOptions.find(
-								(item: any) => item.value === _zimbraDistributionListUnsubscriptionPolicy
-							);
-						}
 						/* Mail status */
 
 						const _zimbraMailStatus = distributionListMembers?.a?.find(
@@ -288,14 +246,7 @@ const MailingListDetail: FC<any> = ({
 				}
 			});
 		},
-		[
-			selectedMailingList?.name,
-			subscriptionUnsubscriptionRequestOptions,
-			onSubscriptionChange,
-			onUnSubscriptionChange,
-			rightsOptions,
-			onRightsChange
-		]
+		[selectedMailingList?.name, rightsOptions, onRightsChange]
 	);
 
 	const getDistributionListMembershipList = useCallback((id: string): void => {
@@ -626,27 +577,8 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow padding={{ left: 'small', right: 'small' }}>
-					<Container>
-						<Input
-							background="gray6"
-							label={t('label.new_subscription_requests', 'New subscriptions requests')}
-							readOnly
-							value={zimbraDistributionListSubscriptionPolicy?.label}
-						/>
-					</Container>
-
-					<Container padding={{ top: 'small', bottom: 'small', left: 'large' }}>
-						<Input
-							background="gray6"
-							label={t('label.unsubscribe_request', 'Unsubscription requests')}
-							readOnly
-							value={zimbraDistributionListUnsubscriptionPolicy?.label}
-						/>
-					</Container>
-				</ListRow>
-				<ListRow padding={{ left: 'small', right: 'small' }}>
-					<Container>
+				<ListRow>
+					<Container padding={{ right: 'small', top: 'small' }}>
 						<Input
 							background="gray6"
 							label={t('label.rights', 'Rights')}

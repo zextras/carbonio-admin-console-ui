@@ -28,13 +28,6 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import DropDownInput from '../../../components/dropDownInput';
 
-// eslint-disable-next-line no-shadow
-export enum SUBSCRIBE_UNSUBSCRIBE {
-	ACCEPT = 'ACCEPT',
-	APPROVAL = 'APPROVAL',
-	REJECT = 'REJECT'
-}
-
 const MailingListSettingsSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -58,25 +51,6 @@ const MailingListSettingsSection: FC<any> = () => {
 	const [grantEmailsList, setGrantEmailsList] = useState<any>(
 		mailingListDetail?.ownerGrantEmails ? mailingListDetail?.ownerGrantEmails : []
 	);
-
-	const subscriptionUnsubscriptionRequestOptions: any[] = useMemo(
-		() => [
-			{
-				label: t('label.automatically_accept', 'Automatically accept'),
-				value: SUBSCRIBE_UNSUBSCRIBE.ACCEPT
-			},
-			{
-				label: t('label.require_list_owner_approval', 'Require list owner approval'),
-				value: SUBSCRIBE_UNSUBSCRIBE.APPROVAL
-			},
-			{
-				label: t('label.automatically_reject', 'Automatically reject'),
-				value: SUBSCRIBE_UNSUBSCRIBE.REJECT
-			}
-		],
-		[t]
-	);
-
 	const ownerHeaders: any[] = useMemo(
 		() => [
 			{
@@ -134,38 +108,6 @@ const MailingListSettingsSection: FC<any> = () => {
 			setGrantType(it);
 		},
 		[grantTypeOptions, setMailingListDetail]
-	);
-
-	const [zimbraDistributionListSubscriptionPolicy, setZimbraDistributionListSubscriptionPolicy] =
-		useState<any>(mailingListDetail?.zimbraDistributionListSubscriptionPolicy);
-
-	const [
-		zimbraDistributionListUnsubscriptionPolicy,
-		setZimbraDistributionListUnsubscriptionPolicy
-	] = useState<any>(mailingListDetail?.zimbraDistributionListUnsubscriptionPolicy);
-
-	const onSubscriptionChange = useCallback(
-		(v: any): any => {
-			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
-			setZimbraDistributionListSubscriptionPolicy(it);
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				zimbraDistributionListSubscriptionPolicy: it
-			}));
-		},
-		[subscriptionUnsubscriptionRequestOptions, setMailingListDetail]
-	);
-
-	const onUnSubscriptionChange = useCallback(
-		(v: any): any => {
-			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
-			setZimbraDistributionListUnsubscriptionPolicy(it);
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				zimbraDistributionListUnsubscriptionPolicy: it
-			}));
-		},
-		[subscriptionUnsubscriptionRequestOptions, setMailingListDetail]
 	);
 
 	useEffect(() => {
@@ -521,30 +463,6 @@ const MailingListSettingsSection: FC<any> = () => {
 								}));
 							}}
 							iconColor="primary"
-						/>
-					</Container>
-				</ListRow>
-
-				<ListRow>
-					<Container>
-						<Select
-							items={subscriptionUnsubscriptionRequestOptions}
-							background="gray5"
-							label={t('label.new_subscription_requests', 'New subscriptions requests')}
-							showCheckbox={false}
-							onChange={onSubscriptionChange}
-							selection={zimbraDistributionListSubscriptionPolicy}
-						/>
-					</Container>
-
-					<Container padding={{ all: 'small' }}>
-						<Select
-							items={subscriptionUnsubscriptionRequestOptions}
-							background="gray5"
-							label={t('label.unsubscribe_request', 'Unsubscription requests')}
-							showCheckbox={false}
-							onChange={onUnSubscriptionChange}
-							selection={zimbraDistributionListUnsubscriptionPolicy}
 						/>
 					</Container>
 				</ListRow>
