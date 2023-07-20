@@ -18,8 +18,6 @@ const MailingListCreateSection: FC<any> = () => {
 	const { mailingListDetail, setMailingListDetail } = context;
 	const [ownerMember, setOwnerMember] = useState<Array<any>>([]);
 	const [memberList, setMemberList] = useState<Array<any>>([]);
-	const [subscription, setSubscription] = useState<string | null>('');
-	const [unSubscription, setUnSubscription] = useState<string | null>('');
 	const [ldapQueryMembers, setLdapQueryMembers] = useState<Array<any>>([]);
 	const [grantEmailType, setGrantEmailType] = useState<string | null>('');
 
@@ -394,38 +392,6 @@ const MailingListCreateSection: FC<any> = () => {
 								value={
 									mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
-								readOnly
-							/>
-						</Container>
-					</ListRow>
-				)}
-				{!mailingListDetail?.dynamic && (
-					<ListRow>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'small' }}
-						>
-							<Input
-								label={t('label.new_subscription_requests', 'New subscriptions requests')}
-								backgroundColor="gray6"
-								size="medium"
-								value={subscription}
-								readOnly
-							/>
-						</Container>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'small' }}
-						>
-							<Input
-								label={t('label.unsubscribe_request', 'Unsubscription requests')}
-								backgroundColor="gray6"
-								size="medium"
-								value={unSubscription}
 								readOnly
 							/>
 						</Container>
