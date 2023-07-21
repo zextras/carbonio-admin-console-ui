@@ -344,8 +344,7 @@
         "s3_types": {
             "alibaba_cloud_s3": "Alibaba Cloud S3",
             "amazone_web_service_s3": "Amazon Web Service S3",
-            "ceph": "Ceph",
-            "ceph_s3": "Ceph S3",
+            "ceph": "Ceph",            
             "cloudian_s3": "Cloudian S3",
             "custom_s3": "Custom S3",
             "emc_s3": "EMC S3",
