@@ -489,7 +489,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.domain_space', 'Domain Space')}
+										label={t('label.domain_space_accounts', 'Domain Space (Accounts)')}
 										value={zimbraDomainMaxAccounts}
 										background="gray6"
 										onChange={(e: any): any => {

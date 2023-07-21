@@ -1058,6 +1058,7 @@
         "domain_primarybar_tooltip": "View your <bold>domains details</bold> and <bold>manage</bold> their resources such as <bold>accounts, mailing lists,resources</bold> and <bold>more</bold>.",
         "domain_quota_settings": "Domain Quota Settings",
         "domain_space": "Domain Space",
+        "domain_space_accounts": "Domain Space (Accounts)",
         "domain_status": "Domain Status",
         "domains": "Domains",
         "domains_lbl": "<bold>Domains</bold>",
