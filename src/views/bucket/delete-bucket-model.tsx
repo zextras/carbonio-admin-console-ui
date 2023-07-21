@@ -23,14 +23,7 @@ const DeleteBucketModel: FC<{
 				})}
 				open={open}
 				customFooter={
-					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button
-							style={{ marginLeft: '10px' }}
-							type="outlined"
-							label={t('label.need_help_button', 'NEED HELP?')}
-							color="primary"
-							onClick={closeHandler}
-						/>
+					<Container orientation="horizontal" mainAlignment="flex-end">
 						<Row style={{ gap: '8px' }}>
 							<Button
 								label={t('label.cancle_button', 'NO')}

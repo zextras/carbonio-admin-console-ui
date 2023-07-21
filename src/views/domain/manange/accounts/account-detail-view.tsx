@@ -60,6 +60,21 @@ type UserSession = {
 	service: string;
 };
 
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 42.6rem;
+	top: 6.438rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
+
 const AccountDetailView: FC<any> = ({
 	selectedAccount,
 	setShowAccountDetailView,
@@ -410,7 +425,7 @@ const AccountDetailView: FC<any> = ({
 	return (
 		<>
 			{(!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id) && (
-				<OverlayDivision ovelayWidth="42.6rem" />
+				<OverlayDivision ovelayStyle={ovelayStyle} />
 			)}
 			<AccountDetailContainer background="gray5" mainAlignment="flex-start">
 				<Row
@@ -774,13 +789,7 @@ const AccountDetailView: FC<any> = ({
 						})}
 						open={isOpenDeleteDialog}
 						customFooter={
-							<Container orientation="horizontal" mainAlignment="space-between">
-								<Button
-									style={{ marginLeft: '10px' }}
-									type="outlined"
-									label={t('label.help', 'Help')}
-									color="primary"
-								/>
+							<Container orientation="horizontal" mainAlignment="flex-end">
 								<Row style={{ gap: '8px' }}>
 									<Button
 										label={t('label.delete_it_instead', 'Delete it instead')}

@@ -19,6 +19,7 @@ import {
 	Padding,
 	Icon
 } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import { isEqual, reduce, remove, differenceBy } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
@@ -55,6 +56,21 @@ import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import OverlayDivision from '../../../../components/overlayDivision';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 58.75rem;
+	top: 6.438rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const EditAccount: FC<{
 	setShowEditAccountView: any;
@@ -482,7 +498,7 @@ const EditAccount: FC<{
 
 	return (
 		<>
-			{!accountDetail?.zimbraId && <OverlayDivision ovelayWidth="58.75rem" />}
+			{!accountDetail?.zimbraId && <OverlayDivision ovelayStyle={ovelayStyle} />}
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"

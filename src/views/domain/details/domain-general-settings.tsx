@@ -62,11 +62,11 @@ const DomainGeneralSettings: FC = () => {
 				label: t('label.not_set', 'Not Set')
 			},
 			{
-				label: t('label.https', 'https'),
+				label: `${t('label.https', 'https')} (${t('label.secure', 'secure')})`,
 				value: HTTPS
 			},
 			{
-				label: t('label.http', 'http'),
+				label: `${t('label.http', 'http')} (${t('label.unsecure', 'unsecure')})`,
 				value: HTTP
 			}
 		],

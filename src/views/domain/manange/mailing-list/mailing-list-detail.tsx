@@ -559,8 +559,8 @@ const MailingListDetail: FC<any> = ({
 						{t('domain.list_details', 'List Details')}
 					</Text>
 				</Row>
-				<ListRow>
-					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
+					<Container>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
@@ -569,7 +569,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 
-					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+					<Container padding={{ top: 'small', bottom: 'small', left: 'large' }}>
 						<Input
 							label={t('label.address', 'Address')}
 							value={distributionName}
@@ -587,7 +587,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container
 						orientation="vertical"
 						mainAlignment="flex-start"
@@ -618,11 +618,11 @@ const MailingListDetail: FC<any> = ({
 						</Row>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small', top: 'large' }}>
 					<Container
+						padding={{ top: 'small' }}
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
 					>
 						<Switch
 							value={zimbraDistributionListSendShareMessageToNewMembers}
@@ -635,7 +635,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
@@ -649,7 +649,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input
 							label={t('label.members', 'Members')}
@@ -668,7 +668,7 @@ const MailingListDetail: FC<any> = ({
 					</Container>
 				</ListRow>
 				{selectedMailingList?.dynamic && (
-					<ListRow>
+					<ListRow padding={{ left: 'small', right: 'small' }}>
 						<Container>
 							<Input
 								label={t('label.list_url', "Mailing List's URL")}
@@ -682,7 +682,7 @@ const MailingListDetail: FC<any> = ({
 						</Container>
 					</ListRow>
 				)}
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray6" readOnly />
 					</Container>
@@ -701,7 +701,7 @@ const MailingListDetail: FC<any> = ({
 					</Text>
 				</Row>
 				{!selectedMailingList?.dynamic && (
-					<ListRow>
+					<ListRow padding={{ left: 'small', right: 'small' }}>
 						<Container
 							mainAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'small' }}
@@ -718,7 +718,7 @@ const MailingListDetail: FC<any> = ({
 						</Container>
 					</ListRow>
 				)}
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small', top: 'large' }}>
 					{!selectedMailingList?.dynamic && (
 						<Container
 							mainAlignment="flex-start"
@@ -754,7 +754,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container padding={{ top: 'large' }}>
 						<Input
 							value={zimbraNotes}
@@ -774,13 +774,7 @@ const MailingListDetail: FC<any> = ({
 					})}
 					open={isOpenDeleteDialog}
 					customFooter={
-						<Container orientation="horizontal" mainAlignment="space-between">
-							<Button
-								style={{ marginLeft: '10px' }}
-								type="outlined"
-								label={t('label.help', 'Help')}
-								color="primary"
-							/>
+						<Container orientation="horizontal" mainAlignment="flex-end">
 							<Row style={{ gap: '8px' }}>
 								<Button
 									label={t('label.cancel', 'Cancel')}
