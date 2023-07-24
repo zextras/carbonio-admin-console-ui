@@ -34,6 +34,7 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { objectType } from '../../../../../../types';
 import DropDownInput from '../../../../components/dropDownInput';
+import CustomChip from '../../../../components/customChip';
 
 const SelectItem = styled(Row)``;
 
@@ -543,6 +544,7 @@ const EditAccountGeneralSection: FC = () => {
 						background="gray5"
 						defaultValue={directMemberList}
 						disabled
+						ChipComponent={CustomChip}
 					/>
 				</Row>
 			</Row>
@@ -556,6 +558,7 @@ const EditAccountGeneralSection: FC = () => {
 						background="gray5"
 						defaultValue={inDirectMemberList}
 						disabled
+						ChipComponent={CustomChip}
 					/>
 				</Row>
 			</Row>

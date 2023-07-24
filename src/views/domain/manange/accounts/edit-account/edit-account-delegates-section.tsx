@@ -53,6 +53,7 @@ import {
 	SEND_READ_MANAGE_MAILS
 } from '../../../../../constants';
 import InheritedSelect from './inherited-components/inherited-select';
+import CustomChip from '../../../../components/customChip';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -952,6 +953,7 @@ const EditAccountDelegatesSection: FC = () => {
 								setSearchQuery('');
 							}}
 							requireUniqueChips
+							ChipComponent={CustomChip}
 						/>
 					</Container>
 					<Container mainAlignment="flex-start">

@@ -21,6 +21,10 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useDomainStore } from '../../store/domain/store';
 
+export const copyClipboard = (label: string): any => {
+	navigator.clipboard.writeText(label);
+};
+
 const ManageAliases: FC<{
 	listAliases: Array<{ label: string }>;
 	setListAliases: (arg: Array<{ label: string }>) => void;
@@ -57,7 +61,17 @@ const ManageAliases: FC<{
 							{listAliases?.map(
 								(ele, index) =>
 									(aliasType !== 'accounts' || index > 0) && (
-										<Chip key={`chip${index}`} label={ele.label} />
+										<Chip
+											key={`chip${index}`}
+											label={ele.label}
+											actions={[
+												{
+													type: 'button',
+													icon: 'CopyOutline',
+													onClick: () => copyClipboard(ele.label)
+												}
+											]}
+										/>
 									)
 							)}
 							<Row width="100%" padding={{ top: 'medium' }}>

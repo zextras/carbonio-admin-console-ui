@@ -34,6 +34,10 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import { CreateSnackbarType } from '../../../../../types';
 
+export const copyClipboard = (label: string): any => {
+	navigator.clipboard.writeText(label);
+};
+
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
 	ACCEPT = 'ACCEPT',
@@ -704,7 +708,17 @@ const AclListDetail: FC<any> = ({
 								padding={{ left: 'large' }}
 							>
 								{zimbraMailAlias?.map((ele, index) => (
-									<Chip key={`chip${index}`} label={ele.label} />
+									<Chip
+										key={`chip${index}`}
+										label={ele.label}
+										actions={[
+											{
+												type: 'button',
+												icon: 'CopyOutline',
+												onClick: () => copyClipboard(ele.label)
+											}
+										]}
+									/>
 								))}
 							</Container>
 							<Row width="100%" padding={{ top: 'medium' }}>

@@ -19,6 +19,7 @@ import {
 import InheritedSwitch from './inherited-components/inherited-switch';
 import InheritedSelect from './inherited-components/inherited-select';
 import InheritedInput from './inherited-components/inherited-input';
+import CustomChip from '../../../../components/customChip';
 
 const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList: any }> = ({
 	signatureItems,
@@ -527,6 +528,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						defaultValue={prefReadReceiptsToAddress}
 						value={prefReadReceiptsToAddress}
 						hasError={some(prefReadReceiptsToAddress || [], { error: true })}
+						ChipComponent={CustomChip}
 					/>
 				</Row>
 			</Row>
@@ -588,6 +590,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						defaultValue={zimbraAllowFromAddress}
 						value={zimbraAllowFromAddress}
 						hasError={some(zimbraAllowFromAddress || [], { error: true })}
+						ChipComponent={CustomChip}
 					/>
 				</Row>
 			</Row>

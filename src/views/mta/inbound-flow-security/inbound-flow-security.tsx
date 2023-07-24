@@ -45,6 +45,7 @@ import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import CustomChip from '../../components/customChip';
 
 const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
@@ -640,6 +641,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							value={mtaBlockExtension}
 							onChange={onBlockExtensionChange}
 							disabled={!allowSetMTA}
+							ChipComponent={CustomChip}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start" width="30%">

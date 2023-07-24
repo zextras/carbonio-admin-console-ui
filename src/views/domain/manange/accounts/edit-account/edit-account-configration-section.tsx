@@ -24,6 +24,7 @@ import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { isValidEmail } from '../../../../utility/utils';
 import InheritedSwitch from './inherited-components/inherited-switch';
 import InheritedInput from './inherited-components/inherited-input';
+import CustomChip from '../../../../components/customChip';
 
 const EditAccountConfigrationSection: FC = () => {
 	const context = useContext(AccountContext);
@@ -207,6 +208,7 @@ const EditAccountConfigrationSection: FC = () => {
 									zimbraPrefMailForwardingAddress: map(data, 'label').join(', ')
 								}));
 							}}
+							ChipComponent={CustomChip}
 							defaultValue={prefMailForwardingAddress}
 							value={prefMailForwardingAddress}
 							background="gray5"
@@ -236,6 +238,7 @@ const EditAccountConfigrationSection: FC = () => {
 							value={mailForwardingAddress}
 							background="gray5"
 							hasError={some(mailForwardingAddress || [], { error: true })}
+							ChipComponent={CustomChip}
 						/>
 					</Row>
 				</Row>
@@ -261,6 +264,7 @@ const EditAccountConfigrationSection: FC = () => {
 							value={prefCalendarForwardInvitesTo}
 							background="gray5"
 							hasError={some(prefCalendarForwardInvitesTo || [], { error: true })}
+							ChipComponent={CustomChip}
 						/>
 					</Row>
 				</Row>
