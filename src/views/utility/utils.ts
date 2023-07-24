@@ -1515,6 +1515,10 @@ export const BucketRegions = (t: TFunction): Array<{ value?: string; label: stri
 		value: 'EU_WEST_3'
 	},
 	{
+		label: t('buckets.amazon_regions.eu_south_2', 'EU (Spain)'),
+		value: 'EU_SOUTH_2'
+	},
+	{
 		label: t('buckets.amazon_regions.govcloud', 'AWS GovCloud (US)'),
 		value: 'GovCloud'
 	},
