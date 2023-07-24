@@ -140,12 +140,6 @@ const MailingListDetail: FC<any> = ({
 		[t]
 	);
 	const [zimbraMailStatus, setZimbraMailStatus] = useState<any>(rightsOptions[1]);
-	const [zimbraDistributionListSubscriptionPolicy, setZimbraDistributionListSubscriptionPolicy] =
-		useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
-	const [
-		zimbraDistributionListUnsubscriptionPolicy,
-		setZimbraDistributionListUnsubscriptionPolicy
-	] = useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
 	const [dlId, setdlId] = useState<string>('');
 	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
 	const [dlmTableRows, setDlmTableRows] = useState<any>([]);
@@ -175,22 +169,6 @@ const MailingListDetail: FC<any> = ({
 			setZimbraMailStatus(it);
 		},
 		[rightsOptions]
-	);
-
-	const onSubscriptionChange = useCallback(
-		(v: any): any => {
-			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
-			setZimbraDistributionListSubscriptionPolicy(it);
-		},
-		[subscriptionUnsubscriptionRequestOptions]
-	);
-
-	const onUnSubscriptionChange = useCallback(
-		(v: any): any => {
-			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
-			setZimbraDistributionListUnsubscriptionPolicy(it);
-		},
-		[subscriptionUnsubscriptionRequestOptions]
 	);
 
 	const getMailingList = useCallback(
@@ -249,26 +227,6 @@ const MailingListDetail: FC<any> = ({
 						_zimbraCreateTimestamp
 							? setZimbraCreateTimestamp(_zimbraCreateTimestamp)
 							: setZimbraCreateTimestamp('');
-
-						const _zimbraDistributionListSubscriptionPolicy = distributionListMembers?.a?.find(
-							(a: any) => a?.n === 'zimbraDistributionListSubscriptionPolicy'
-						)?._content;
-						if (_zimbraDistributionListSubscriptionPolicy) {
-							onSubscriptionChange(_zimbraDistributionListSubscriptionPolicy);
-							const it = subscriptionUnsubscriptionRequestOptions.find(
-								(item: any) => item.value === _zimbraDistributionListSubscriptionPolicy
-							);
-						}
-
-						const _zimbraDistributionListUnsubscriptionPolicy = distributionListMembers?.a?.find(
-							(a: any) => a?.n === 'zimbraDistributionListUnsubscriptionPolicy'
-						)?._content;
-						if (_zimbraDistributionListUnsubscriptionPolicy) {
-							onUnSubscriptionChange(_zimbraDistributionListUnsubscriptionPolicy);
-							const it = subscriptionUnsubscriptionRequestOptions.find(
-								(item: any) => item.value === _zimbraDistributionListUnsubscriptionPolicy
-							);
-						}
 						/* Mail status */
 
 						const _zimbraMailStatus = distributionListMembers?.a?.find(
@@ -288,14 +246,7 @@ const MailingListDetail: FC<any> = ({
 				}
 			});
 		},
-		[
-			selectedMailingList?.name,
-			subscriptionUnsubscriptionRequestOptions,
-			onSubscriptionChange,
-			onUnSubscriptionChange,
-			rightsOptions,
-			onRightsChange
-		]
+		[selectedMailingList?.name, rightsOptions, onRightsChange]
 	);
 
 	const getDistributionListMembershipList = useCallback((id: string): void => {
@@ -608,8 +559,8 @@ const MailingListDetail: FC<any> = ({
 						{t('domain.list_details', 'List Details')}
 					</Text>
 				</Row>
-				<ListRow>
-					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
+					<Container>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
@@ -618,30 +569,11 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 
-					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+					<Container padding={{ top: 'small', bottom: 'small', left: 'large' }}>
 						<Input
 							label={t('label.address', 'Address')}
 							value={distributionName}
 							background="gray6"
-						/>
-					</Container>
-				</ListRow>
-				<ListRow>
-					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
-						<Input
-							background="gray6"
-							label={t('label.new_subscription_requests', 'New subscriptions requests')}
-							readOnly
-							value={zimbraDistributionListSubscriptionPolicy?.label}
-						/>
-					</Container>
-
-					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
-						<Input
-							background="gray6"
-							label={t('label.unsubscribe_request', 'Unsubscription requests')}
-							readOnly
-							value={zimbraDistributionListUnsubscriptionPolicy?.label}
 						/>
 					</Container>
 				</ListRow>
@@ -655,7 +587,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container
 						orientation="vertical"
 						mainAlignment="flex-start"
@@ -686,11 +618,11 @@ const MailingListDetail: FC<any> = ({
 						</Row>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small', top: 'large' }}>
 					<Container
+						padding={{ top: 'small' }}
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
 					>
 						<Switch
 							value={zimbraDistributionListSendShareMessageToNewMembers}
@@ -703,7 +635,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
@@ -717,7 +649,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input
 							label={t('label.members', 'Members')}
@@ -736,7 +668,7 @@ const MailingListDetail: FC<any> = ({
 					</Container>
 				</ListRow>
 				{selectedMailingList?.dynamic && (
-					<ListRow>
+					<ListRow padding={{ left: 'small', right: 'small' }}>
 						<Container>
 							<Input
 								label={t('label.list_url', "Mailing List's URL")}
@@ -750,7 +682,7 @@ const MailingListDetail: FC<any> = ({
 						</Container>
 					</ListRow>
 				)}
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray6" readOnly />
 					</Container>
@@ -769,7 +701,7 @@ const MailingListDetail: FC<any> = ({
 					</Text>
 				</Row>
 				{!selectedMailingList?.dynamic && (
-					<ListRow>
+					<ListRow padding={{ left: 'small', right: 'small' }}>
 						<Container
 							mainAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'small' }}
@@ -786,7 +718,7 @@ const MailingListDetail: FC<any> = ({
 						</Container>
 					</ListRow>
 				)}
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small', top: 'large' }}>
 					{!selectedMailingList?.dynamic && (
 						<Container
 							mainAlignment="flex-start"
@@ -822,7 +754,7 @@ const MailingListDetail: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Container padding={{ top: 'large' }}>
 						<Input
 							value={zimbraNotes}
@@ -842,13 +774,7 @@ const MailingListDetail: FC<any> = ({
 					})}
 					open={isOpenDeleteDialog}
 					customFooter={
-						<Container orientation="horizontal" mainAlignment="space-between">
-							<Button
-								style={{ marginLeft: '10px' }}
-								type="outlined"
-								label={t('label.help', 'Help')}
-								color="primary"
-							/>
+						<Container orientation="horizontal" mainAlignment="flex-end">
 							<Row style={{ gap: '8px' }}>
 								<Button
 									label={t('label.cancel', 'Cancel')}

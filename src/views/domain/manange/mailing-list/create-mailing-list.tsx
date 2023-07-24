@@ -17,13 +17,6 @@ import MailingListCreateSection from './mailinglist-create-section';
 import { useDomainStore } from '../../../../store/domain/store';
 import { PUB } from '../../../../constants';
 
-// eslint-disable-next-line no-shadow
-export enum SUBSCRIBE_UNSUBSCRIBE {
-	ACCEPT = 'ACCEPT',
-	APPROVAL = 'APPROVAL',
-	REJECT = 'REJECT'
-}
-
 interface MailingListDetailObj {
 	name: string;
 	dynamic: boolean;
@@ -37,8 +30,6 @@ interface MailingListDetailObj {
 	members: Array<any>;
 	zimbraDistributionListSendShareMessageToNewMembers: boolean;
 	owners: Array<any>;
-	zimbraDistributionListSubscriptionPolicy: any;
-	zimbraDistributionListUnsubscriptionPolicy: any;
 	prefixName: string;
 	suffixName: string;
 	ldapQueryMembers: Array<any>;
@@ -87,14 +78,6 @@ const CreateMailingList: FC<{
 		members: [],
 		zimbraDistributionListSendShareMessageToNewMembers: true,
 		owners: [],
-		zimbraDistributionListSubscriptionPolicy: {
-			label: t('label.automatically_accept', 'Automatically accept'),
-			value: SUBSCRIBE_UNSUBSCRIBE.ACCEPT
-		},
-		zimbraDistributionListUnsubscriptionPolicy: {
-			label: t('label.automatically_accept', 'Automatically accept'),
-			value: SUBSCRIBE_UNSUBSCRIBE.ACCEPT
-		},
 		prefixName: '',
 		suffixName: '',
 		ldapQueryMembers: [],
@@ -120,8 +103,6 @@ const CreateMailingList: FC<{
 			mailingListDetail?.members,
 			mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers,
 			mailingListDetail?.owners,
-			mailingListDetail?.zimbraDistributionListSubscriptionPolicy,
-			mailingListDetail?.zimbraDistributionListUnsubscriptionPolicy,
 			mailingListDetail?.allOwnersList,
 			mailingListDetail?.ownerGrantEmailType,
 			mailingListDetail?.ownerGrantEmails

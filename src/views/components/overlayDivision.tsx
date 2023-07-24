@@ -28,22 +28,9 @@ const KeyFrameContainer = styled(Container)`
 	animation: ${rotateKeyframes} 1s linear infinite;
 `;
 
-const OverlayDivision: FC<{ ovelayWidth: string }> = ({ ovelayWidth }) => {
+const OverlayDivision: FC<{ ovelayStyle: any }> = ({ ovelayStyle }) => {
 	const [t] = useTranslation();
-	const OverlayContainer = styled(Container)`
-		position: fixed;
-		width: ${ovelayWidth};
-		top: 6.438rem;
-		right: 0;
-		bottom: 0;
-		height: auto;
-		max-height: 100%;
-		overflow: hidden;
-		background: #0d0d0d;
-		opacity: 0.4;
-		z-index: 11;
-		padding-top: 2rem;
-	`;
+	const OverlayContainer = ovelayStyle;
 	return (
 		<OverlayContainer>
 			<KeyFrameContainer></KeyFrameContainer>
