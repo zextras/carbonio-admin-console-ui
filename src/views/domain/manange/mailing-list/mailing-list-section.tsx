@@ -20,13 +20,14 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { debounce, sortedUniq, uniq } from 'lodash';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { MailingListContext } from './mailinglist-context';
 import ListRow from '../../../list/list-row';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
 import { searchGal } from '../../../../services/search-gal-service';
 import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
-import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB } from '../../../../constants';
+import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB, TRUE } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
@@ -89,6 +90,16 @@ const MailingListSection: FC<any> = () => {
 	);
 
 	const [grantType, setGrantType] = useState<any>(mailingListDetail?.ownerGrantEmailType);
+	const userSetting = useUserSettings();
+	const [isDelegatedAdmin, setIsDelegatedAdmin] = useState<boolean>(false);
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsDelegatedAdminAccount;
+			if (account && account === TRUE) {
+				setIsDelegatedAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	useEffect(() => {
 		if (ownersList && ownersList.length > 0) {
@@ -521,26 +532,28 @@ const MailingListSection: FC<any> = () => {
 						)}
 					</>
 				)}
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'medium', bottom: 'medium' }}
-					>
-						<Switch
-							value={mailingListDetail?.dynamic}
-							label={t('label.dynamic_mode', 'Dynamic Mode')}
-							onClick={(): void => {
-								setMailingListDetail((prev: any) => ({
-									...prev,
-									dynamic: !mailingListDetail?.dynamic
-								}));
-							}}
-							iconColor="primary"
-						/>
-					</Container>
-				</ListRow>
+				{!isDelegatedAdmin && (
+					<ListRow>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'medium', bottom: 'medium' }}
+						>
+							<Switch
+								value={mailingListDetail?.dynamic}
+								label={t('label.dynamic_mode', 'Dynamic Mode')}
+								onClick={(): void => {
+									setMailingListDetail((prev: any) => ({
+										...prev,
+										dynamic: !mailingListDetail?.dynamic
+									}));
+								}}
+								iconColor="primary"
+							/>
+						</Container>
+					</ListRow>
+				)}
 
 				{mailingListDetail?.dynamic && (
 					<>
