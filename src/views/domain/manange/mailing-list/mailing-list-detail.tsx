@@ -17,14 +17,12 @@ import {
 	Icon,
 	SnackbarManagerContext,
 	Modal,
-	Button,
-	Chip
+	Button
 } from '@zextras/carbonio-design-system';
 import { useTranslation, Trans } from 'react-i18next';
 import moment from 'moment';
 
 import ListRow from '../../../list/list-row';
-import Paging from '../../../components/paging';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
 import { getDateFromStr } from '../../../utility/utils';
@@ -32,6 +30,7 @@ import { deleteDistributionList } from '../../../../services/delete-distribution
 import { getGrant } from '../../../../services/get-grant';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomChip from '../../../components/customChip';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -609,7 +608,7 @@ const MailingListDetail: FC<any> = ({
 								padding={{ left: 'large' }}
 							>
 								{zimbraMailAlias?.map((ele, index) => (
-									<Chip key={`chip${index}`} label={ele.label} />
+									<CustomChip key={`chip${index}`} label={ele.label} />
 								))}
 							</Container>
 							<Row width="100%" padding={{ top: 'medium' }}>

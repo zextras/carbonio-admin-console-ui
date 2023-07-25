@@ -30,6 +30,7 @@ import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB } from '../../../../cons
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
+import CustomChip from '../../../components/customChip';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -619,6 +620,7 @@ const MailingListSection: FC<any> = () => {
 									onInputType={(e: any): void => {
 										searchEmailFromGal(e?.textContent);
 									}}
+									ChipComponent={CustomChip}
 								/>
 							</Container>
 						</ListRow>

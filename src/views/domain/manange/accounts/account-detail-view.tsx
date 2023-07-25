@@ -36,6 +36,7 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import OverlayDivision from '../../../components/overlayDivision';
 import { useRightsStore } from '../../../../store/rights/store';
+import CustomChip from '../../../components/customChip';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -572,7 +573,8 @@ const AccountDetailView: FC<any> = ({
 									padding={{ left: 'large' }}
 								>
 									{accountAliases?.map(
-										(ele, index) => index > 0 && <Chip key={`chip${index}`} label={ele.label} />
+										(ele, index) =>
+											index > 0 && <CustomChip key={`chip${index}`} label={ele.label} />
 									)}
 								</Container>
 								<Row width="100%" padding={{ top: 'medium' }}>

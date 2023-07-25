@@ -27,6 +27,7 @@ import { searchGal } from '../../../../services/search-gal-service';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import CustomChip from '../../../components/customChip';
 
 const AclListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -468,6 +469,7 @@ const AclListSection: FC<any> = () => {
 									onInputType={(e: any): void => {
 										searchEmailFromGal(e?.textContent);
 									}}
+									ChipComponent={CustomChip}
 								/>
 							</Container>
 						</ListRow>
