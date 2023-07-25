@@ -17,14 +17,12 @@ import {
 	Icon,
 	SnackbarManagerContext,
 	Modal,
-	Button,
-	Chip
+	Button
 } from '@zextras/carbonio-design-system';
 import { useTranslation, Trans } from 'react-i18next';
 import moment from 'moment';
 
 import ListRow from '../../../list/list-row';
-import Paging from '../../../components/paging';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
 import { getDateFromStr } from '../../../utility/utils';
@@ -33,10 +31,7 @@ import { getGrant } from '../../../../services/get-grant';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import { CreateSnackbarType } from '../../../../../types';
-
-export const copyClipboard = (label: string): any => {
-	navigator.clipboard.writeText(label);
-};
+import CustomChip from '../../../components/customChip';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -708,17 +703,7 @@ const AclListDetail: FC<any> = ({
 								padding={{ left: 'large' }}
 							>
 								{zimbraMailAlias?.map((ele, index) => (
-									<Chip
-										key={`chip${index}`}
-										label={ele.label}
-										actions={[
-											{
-												type: 'button',
-												icon: 'CopyOutline',
-												onClick: () => copyClipboard(ele.label)
-											}
-										]}
-									/>
+									<CustomChip key={`chip${index}`} label={ele.label} />
 								))}
 							</Container>
 							<Row width="100%" padding={{ top: 'medium' }}>

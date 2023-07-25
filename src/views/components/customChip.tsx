@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
+import React from 'react';
 import { Chip } from '@zextras/carbonio-design-system';
 
 export const copyClipboard = (label: string): any => {
@@ -14,18 +14,16 @@ export const copyClipboard = (label: string): any => {
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const CustomChip = (props: any): any => {
 	const label = props?.label;
-	return (
-		<Chip
-			{...props}
-			actions={[
+	const actions = props?.actions
+		? props?.actions
+		: [
 				{
 					type: 'button',
 					icon: 'CopyOutline',
 					onClick: () => copyClipboard(label)
 				}
-			]}
-		></Chip>
-	);
+		  ];
+	return <Chip {...props} actions={actions}></Chip>;
 };
 
 export default CustomChip;
