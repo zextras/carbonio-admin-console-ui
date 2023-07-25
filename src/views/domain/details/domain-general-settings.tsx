@@ -32,7 +32,8 @@ import {
 	LOCKED,
 	MAINTENANCE,
 	NOT_SET,
-	SUSPENDED
+	SUSPENDED,
+	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../constants';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
@@ -41,6 +42,8 @@ import { batchService } from '../../../services/batch-service';
 import { useDomainStore } from '../../../store/domain/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
+import DomainCosLink from './domain-cos-link';
+import { CosMaxAccountValues } from '../../../../types';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -140,6 +143,7 @@ const DomainGeneralSettings: FC = () => {
 	const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
 	const [openDeleteDomainConfirmDialog, setOpenDeleteDomainConfirmDialog] =
 		useState<boolean>(false);
+	const [cosMaxAccountValue, SetCosMaxAccountValue] = useState<Array<CosMaxAccountValues>>([]);
 	interface Attribute {
 		n: string;
 		_content: string;
@@ -295,10 +299,29 @@ const DomainGeneralSettings: FC = () => {
 				setZimbraMailDomainQuota('');
 			}
 
+			const domainCosMaxAccountArray = domainInformation.filter(
+				(domainContent: any) => domainContent.n === ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
+			);
+			if (domainCosMaxAccountArray && domainCosMaxAccountArray.length > 0) {
+				const domainCosMaxAccounts = domainCosMaxAccountArray.map(
+					(domainContent: any, index: any) => ({
+						id: domainContent._content?.split(':')[0],
+						name:
+							cosList.find((cos) => cos.id === domainContent._content?.split(':')[0])?.name || '',
+						value: domainContent._content?.split(':')[1]
+							? domainContent._content?.split(':')[1]
+							: -1
+					})
+				);
+				SetCosMaxAccountValue(domainCosMaxAccounts);
+			} else {
+				SetCosMaxAccountValue([]);
+			}
+
 			setDomainData(obj);
 			setIsDirty(false);
 		}
-	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems, cosItems]);
+	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems, cosItems, cosList]);
 
 	const onTimeZoneChange = useCallback(
 		(v: any): any => {
@@ -881,7 +904,12 @@ const DomainGeneralSettings: FC = () => {
 									/>
 								</Container>
 							</ListRow>
-
+							<DomainCosLink
+								cosMaxAccountValue={cosMaxAccountValue}
+								domainId={domainData.zimbraId}
+								defaultCosId={zimbraDomainDefaultCOSId}
+								domainName={domainName}
+							/>
 							<ListRow>
 								<Container padding={{ all: 'small' }} width="100%" style={{ display: 'block' }}>
 									<Button

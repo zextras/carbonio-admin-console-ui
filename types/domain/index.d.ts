@@ -104,3 +104,9 @@ type TwoFactorPolicy = {
 	label: string;
 	keyToGet: string;
 };
+
+export type CosMaxAccountValues = {
+	id: string;
+	name: string;
+	value: string;
+};
