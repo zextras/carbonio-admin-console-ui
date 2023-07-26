@@ -151,14 +151,18 @@ const CustomHeaderFactory = ({
 								/>
 							</Container>
 						)}
-						{!hasItems && <Text weight={column.bold ? 'bold' : 'regular'}>{column.label}</Text>}
+						{!hasItems && (
+							<Text weight={column.bold ? 'bold' : 'regular'} size="small">
+								{column.label}
+							</Text>
+						)}
 					</th>
 				);
 			}),
 		[headers, LabelFactory]
 	);
 	return (
-		<tr ref={trRef}>
+		<tr ref={trRef} style={{ height: '3rem' }}>
 			<th align="center" style={{ width: '30px' }}>
 				{showCheckbox && multiSelect && (showCkb || selectionMode || allSelected) && (
 					<Checkbox
