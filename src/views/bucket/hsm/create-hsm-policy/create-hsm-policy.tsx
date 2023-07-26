@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Button } from '@zextras/carbonio-design-system';
+import { Container, Button, Padding } from '@zextras/carbonio-design-system';
 import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -51,7 +51,8 @@ const CreateHsmPolicy: FC<{
 	setShowCreateHsmPolicyView: any;
 	volumeList: Array<any>;
 	createHSMpolicy: any;
-}> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy }) => {
+	runCustomHSMpolicy: any;
+}> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
 	const [wizardData, setWizardData] = useState();
 	const [hsmDetail, setHsmDetail] = useState<hsmDetailObj>({
 		allVolumes: volumeList,
@@ -69,6 +70,10 @@ const CreateHsmPolicy: FC<{
 	const onCreate = useCallback(() => {
 		createHSMpolicy(hsmDetail);
 	}, [createHSMpolicy, hsmDetail]);
+
+	const onRunCustomPolicy = useCallback(() => {
+		runCustomHSMpolicy(hsmDetail);
+	}, [runCustomHSMpolicy, hsmDetail]);
 
 	const standardHsmPolicyWizardStep = useMemo(
 		() => [
@@ -158,17 +163,27 @@ const CreateHsmPolicy: FC<{
 					/>
 				),
 				NextButton: (props: any) => (
-					<Button
-						{...props}
-						label={t('label.create', 'CREATE')}
-						icon="PowerOutline"
-						iconPlacement="right"
-						onClick={onCreate}
-					/>
+					<>
+						<Padding right="medium">
+							<Button
+								{...props}
+								label={t('label.run_only', 'RUN ONLY (SKIP CREATE)')}
+								iconPlacement="left"
+								onClick={onRunCustomPolicy}
+							/>
+						</Padding>
+						<Button
+							{...props}
+							label={t('label.create', 'CREATE')}
+							icon="PowerOutline"
+							iconPlacement="right"
+							onClick={onCreate}
+						/>
+					</>
 				)
 			}
 		],
-		[t, onCreate]
+		[t, onRunCustomPolicy, onCreate]
 	);
 
 	const onComplete = useCallback(() => {
