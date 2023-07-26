@@ -784,7 +784,7 @@ const EditAccountDelegatesSection: FC = () => {
 		const type = 'distributionlists,accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domainName, searchQuery, 0, 10).then((data) => {
+		accountListDirectory(attrs, type, '', searchQuery, 0, 10).then((data) => {
 			const accountListArr: any[] = [];
 			data?.account?.map(
 				(delegateAccount: any) =>
@@ -806,7 +806,7 @@ const EditAccountDelegatesSection: FC = () => {
 			);
 			setOptions(accountListArr);
 		});
-	}, [accountDetail.zimbraId, domainName, searchQuery]);
+	}, [accountDetail.zimbraId, searchQuery]);
 
 	useEffect(() => {
 		if (searchQuery) getAccountList();
