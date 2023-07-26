@@ -192,7 +192,7 @@ const ActiveSync: FC = () => {
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={item}>
 							{item?.accountName}
 						</Text>
 					</Container>,
@@ -204,7 +204,7 @@ const ActiveSync: FC = () => {
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={item}>
 							{item?.deviceId}
 						</Text>
 					</Container>,
@@ -216,7 +216,7 @@ const ActiveSync: FC = () => {
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={item}>
 							{item?.accountEmail}
 						</Text>
 					</Container>,
@@ -228,7 +228,7 @@ const ActiveSync: FC = () => {
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={item}>
 							{moment(item?.lastSeen).format('YY/MM/DD | hh:mm:ss a')}
 						</Text>
 					</Container>,
@@ -240,7 +240,7 @@ const ActiveSync: FC = () => {
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={item}>
 							{''}
 						</Text>
 					</Container>,
@@ -252,7 +252,7 @@ const ActiveSync: FC = () => {
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={item}>
 							{item?.status === 1 ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
 						</Text>
 					</Container>

@@ -87,7 +87,11 @@ const DomainVirtualHosts: FC = () => {
 			if (domainVirtualHostArray && domainVirtualHostArray.length > 0) {
 				const virtualHostItems = domainVirtualHostArray.map((domainData: any, index: any) => ({
 					id: (index + 1)?.toString(),
-					columns: [domainData._content]
+					columns: [
+						<Text key={index + 1} color="gray0" weight="light">
+							{domainData._content}
+						</Text>
+					]
 				}));
 				setItems(virtualHostItems);
 				setDefaultItems(virtualHostItems);

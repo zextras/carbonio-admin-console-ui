@@ -502,7 +502,7 @@ const ManageAccounts: FC = () => {
 						id: item?.id,
 						columns: [
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
 								weight="light"
@@ -513,7 +513,7 @@ const ManageAccounts: FC = () => {
 								{item?.name || ' '}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
 								weight="light"
@@ -534,7 +534,7 @@ const ManageAccounts: FC = () => {
 											maxWidth="auto"
 										>
 											<Text
-												size="medium"
+												size="small"
 												weight="light"
 												key={item?.id}
 												color="#828282"
@@ -550,7 +550,7 @@ const ManageAccounts: FC = () => {
 										</Tooltip>
 									) : (
 										<Text
-											size="medium"
+											size="small"
 											key={item?.id}
 											color="#828282"
 											weight="light"
@@ -564,7 +564,7 @@ const ManageAccounts: FC = () => {
 								}
 							</>,
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
 								weight="light"
@@ -575,7 +575,7 @@ const ManageAccounts: FC = () => {
 								{accountUserType(item)}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								weight="light"
 								key={item?.id}
 								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
@@ -586,7 +586,7 @@ const ManageAccounts: FC = () => {
 								{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								weight="light"
 								key={item?.id}
 								color="gray0"

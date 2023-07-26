@@ -146,7 +146,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="medium" weight="light" key={item?.name} color="gray0">
+						<Text size="small" weight="light" key={item?.name} color="gray0">
 							{item?.name}
 						</Text>
 					</Container>,
@@ -157,7 +157,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="medium" weight="light" key={item?.status} color="gray0">
+						<Text size="small" weight="light" key={item?.status} color="gray0">
 							{item?.status}
 						</Text>
 					</Container>,
@@ -168,7 +168,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="medium" weight="light" key={item?.creationTimestamp} color="gray0">
+						<Text size="small" weight="light" key={item?.creationTimestamp} color="gray0">
 							{getFormatedShortDate(new Date(item?.creationTimestamp))}
 						</Text>
 					</Container>,
@@ -179,7 +179,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="medium" weight="light" key={item?.id} color="gray0">
+						<Text size="small" weight="light" key={item?.id} color="gray0">
 							{item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}
 						</Text>
 					</Container>

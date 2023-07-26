@@ -494,7 +494,7 @@ const EditMailingListView: FC<any> = ({
 				id: item,
 				columns: [
 					<Text
-						size="medium"
+						size="small"
 						weight="light"
 						key={item}
 						color="gray0"
@@ -519,7 +519,7 @@ const EditMailingListView: FC<any> = ({
 				id: item?.name,
 				columns: [
 					<Text
-						size="medium"
+						size="small"
 						weight="light"
 						key={item?.id}
 						color="gray0"
@@ -1629,7 +1629,7 @@ const EditMailingListView: FC<any> = ({
 				id: item,
 				columns: [
 					<Text
-						size="medium"
+						size="small"
 						weight="light"
 						key={item}
 						color="gray0"
