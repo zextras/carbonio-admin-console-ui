@@ -36,8 +36,8 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 const SelectItem = styled(Row)``;
 
 const CustomIcon = styled(Icon)`
-	width: 20px;
-	height: 20px;
+	width: 1.25rem;
+	height: 1.25rem;
 `;
 const DomainCosLink: FC<{
 	cosMaxAccountValue: Array<CosMaxAccountValues>;
@@ -62,8 +62,8 @@ const DomainCosLink: FC<{
 			setIsCosListExpand(!isCosListExpand);
 		},
 		style: {
-			width: '20px',
-			height: '20px'
+			width: '1.25rem',
+			height: '1.25rem'
 		}
 	};
 
@@ -532,15 +532,15 @@ const DomainCosLink: FC<{
 					label: cos.name,
 					customComponent: (
 						<SelectItem
-							top="9px"
+							top="0.563rem"
 							right="large"
-							bottom="9px"
+							bottom="0.563rem"
 							left="large"
 							style={{
 								display: 'block',
 								textAlign: 'left',
 								height: 'inherit',
-								padding: '3px',
+								padding: '0.188rem',
 								width: 'inherit'
 							}}
 							onClick={(): void => {
