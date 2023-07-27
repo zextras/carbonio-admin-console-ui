@@ -72,7 +72,65 @@ const ManageAccounts: FC = () => {
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const tableRef = useRef(null);
+	const [typeFilter, setTypeFilter] = useState<string>('');
+	const [statusFilter, setStatusFilter] = useState<string>('');
 
+	const accountTypeFilter: any = useMemo(
+		() => [
+			{
+				label: 'Admin',
+				value: '(&(zimbraIsAdminAccount=TRUE))'
+			},
+			{
+				label: 'DelegatedAdmin',
+				value: '(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE)))'
+			},
+			{
+				label: 'External',
+				value: '(&(zimbraIsExternalVirtualAccount=TRUE))'
+			},
+			{
+				label: 'System',
+				value: '(&(zimbraIsSystemAccount=TRUE))'
+			},
+			{
+				label: 'Normal',
+				value:
+					'(&(!(zimbraIsAdminAccount=TRUE))(!(zimbraIsDelegatedAdminAccount=TRUE))(!(zimbraIsSystemAccount=TRUE))(!(zimbraIsExternalVirtualAccount=TRUE)))'
+			}
+		],
+		[]
+	);
+
+	const accountStatusFilter: any = useMemo(
+		() => [
+			{
+				label: t('label.active', 'Active'),
+				value: '(&(zimbraAccountStatus=active))'
+			},
+			{
+				label: t('label.in_maintenance', 'In maintenance'),
+				value: '(&(zimbraAccountStatus=maintenance))'
+			},
+			{
+				label: t('label.locked', 'Locked'),
+				value: '(&(zimbraAccountStatus=locked))'
+			},
+			{
+				label: t('label.closed', 'Closed'),
+				value: '(&(zimbraAccountStatus=closed))'
+			},
+			{
+				label: t('label.pending', 'Pending'),
+				value: '(&(zimbraAccountStatus=pending))'
+			},
+			{
+				label: t('label.lockout', 'Lockout'),
+				value: '(&(zimbraAccountStatus=lockout))'
+			}
+		],
+		[t]
+	);
 	const headers: any = useMemo(
 		() => [
 			{
@@ -96,14 +154,61 @@ const ManageAccounts: FC = () => {
 			{
 				id: 'type',
 				label: t('label.type', 'Type'),
+				i18nAllLabel: 'All',
 				width: '10%',
-				bold: true
+				bold: true,
+				items: [
+					{ label: accountTypeFilter[0].label, value: accountTypeFilter[0].value },
+					{ label: accountTypeFilter[1].label, value: accountTypeFilter[1].value },
+					{ label: accountTypeFilter[2].label, value: accountTypeFilter[2].value },
+					{ label: accountTypeFilter[3].label, value: accountTypeFilter[3].value },
+					{ label: accountTypeFilter[4].label, value: accountTypeFilter[4].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let typeQuery = '';
+						e.forEach((item: { value: string }) => {
+							typeQuery += item.value;
+						});
+						if (e?.length > 1) {
+							typeQuery = `(|${typeQuery})`;
+						}
+						setTypeFilter(typeQuery);
+					} else {
+						setTypeFilter('');
+					}
+				}
 			},
 			{
 				id: 'status',
 				label: t('label.status', 'Status'),
 				width: '10%',
-				bold: true
+				i18nAllLabel: 'All',
+				bold: true,
+				items: [
+					{ label: accountStatusFilter[0].label, value: accountStatusFilter[0].value },
+					{ label: accountStatusFilter[1].label, value: accountStatusFilter[1].value },
+					{ label: accountStatusFilter[2].label, value: accountStatusFilter[2].value },
+					{ label: accountStatusFilter[3].label, value: accountStatusFilter[3].value },
+					{ label: accountStatusFilter[4].label, value: accountStatusFilter[4].value },
+					{ label: accountStatusFilter[5].label, value: accountStatusFilter[5].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let statusQuery = '';
+						e.forEach((item: { value: string }) => {
+							statusQuery += item.value;
+						});
+						if (e?.length > 1) {
+							statusQuery = `(|${statusQuery})`;
+						}
+						setStatusFilter(statusQuery);
+					} else {
+						setStatusFilter('');
+					}
+				}
 			},
 			{
 				id: 'description',
@@ -112,7 +217,7 @@ const ManageAccounts: FC = () => {
 				bold: true
 			}
 		],
-		[t]
+		[accountStatusFilter, accountTypeFilter, t]
 	);
 
 	const [accountList, setAccountList] = useState<any[]>([]);
@@ -608,22 +713,37 @@ const ManageAccounts: FC = () => {
 		});
 	}, [STATUS_COLOR, accountUserType, domainName, limit, offset, openDetailView, searchQuery]);
 
+	const generateSearchFilterQuery = (): string => {
+		let filterQuery = '';
+		if (typeFilter) {
+			filterQuery += typeFilter;
+		}
+		if (statusFilter) {
+			filterQuery += statusFilter;
+		}
+		if (searchString) {
+			filterQuery += `(|(mail=*${searchString}*)(cn=*${searchString}*)(sn=*${searchString}*)(gn=*${searchString}*)(displayName=*${searchString}*)(zimbraMailDeliveryAddress=*${searchString}*))`;
+		}
+		if (
+			(typeFilter && statusFilter) ||
+			(statusFilter && searchString) ||
+			(typeFilter && searchString)
+		) {
+			return `(&${filterQuery})`;
+		}
+		return filterQuery;
+	};
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
-		debounce((searchText) => {
-			if (searchText) {
-				setSearchQuery(
-					`(|(mail=*${searchText}*)(cn=*${searchText}*)(sn=*${searchText}*)(gn=*${searchText}*)(displayName=*${searchText}*)(zimbraMailDeliveryAddress=*${searchText}*))`
-				);
-			} else {
-				setSearchQuery('');
-			}
+		debounce(() => {
+			setSearchQuery(generateSearchFilterQuery());
 		}, 700),
-		[debounce]
+		[debounce, generateSearchFilterQuery]
 	);
 	useEffect(() => {
-		searchAccountList(searchString);
-	}, [accountList, limit, offset, searchAccountList, searchString]);
+		searchAccountList();
+	}, [accountList, limit, offset, searchAccountList, searchString, typeFilter, statusFilter]);
 
 	useEffect(() => {
 		if (domainName) {

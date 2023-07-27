@@ -140,8 +140,9 @@ const CustomHeaderFactory = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
-									false
+									multiple
 									items={column.items}
+									i18nAllLabel={column.i18nAllLabel || 'All'}
 									dropdownWidth="auto"
 									onChange={column.onChange}
 									display={column.align ? 'inline-block' : 'block'}
