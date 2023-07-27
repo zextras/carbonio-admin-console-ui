@@ -62,7 +62,7 @@ const CustomHeaderFactory = ({
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const [showCkb, setShowCkb] = useState(false);
 	const LabelFactory = useCallback(
-		({ label, open, focus, bold }: any) => (
+		({ label, open, focus, bold, size }: any) => (
 			<Container
 				orientation="horizontal"
 				width="fill"
@@ -80,7 +80,7 @@ const CustomHeaderFactory = ({
 					width="auto"
 				>
 					<Text
-						size="medium"
+						size={size || 'medium'}
 						weight={bold ? 'bold' : 'regular'}
 						color={open || focus ? 'primary' : 'text'}
 					>
@@ -146,7 +146,7 @@ const CustomHeaderFactory = ({
 									onChange={column.onChange}
 									display={column.align ? 'inline-block' : 'block'}
 									LabelFactory={(props: any): JSX.Element =>
-										LabelFactory({ ...props, bold: column.bold })
+										LabelFactory({ ...props, bold: column.bold, size: 'small' })
 									}
 								/>
 							</Container>
@@ -166,7 +166,7 @@ const CustomHeaderFactory = ({
 			<th align="center" style={{ width: '30px' }}>
 				{showCheckbox && multiSelect && (showCkb || selectionMode || allSelected) && (
 					<Checkbox
-						size={'small'}
+						size="small"
 						value={allSelected}
 						onClick={onChange}
 						iconColor={selectionMode ? 'primary' : 'text'}
