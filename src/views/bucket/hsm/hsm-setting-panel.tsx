@@ -588,7 +588,7 @@ const HSMsettingPanel: FC = () => {
 							createSnackbar({
 								key: 'success',
 								type: 'success',
-								label: t('hsm.policy_run_successfully', 'Policy have been run successfully'),
+								label: t('hsm.policy_is_correctly_running', 'The policy is correctly running'),
 								autoHideTimeout: 3000,
 								hideButton: true,
 								replace: true
