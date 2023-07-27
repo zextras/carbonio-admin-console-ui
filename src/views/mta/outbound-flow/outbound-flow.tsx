@@ -136,23 +136,23 @@ const MTAOutBoundFlow: FC = () => {
 					tableRow.push({
 						id: server?.id,
 						columns: [
-							<Text size="medium" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={server?.name} color="gray0">
 								{server?.name}
 							</Text>,
-							<Text size="medium" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={server?.name} color="gray0">
 								{antispam && antispam.length > 0
 									? t('label.active', 'Active')
 									: t('label.inactive', 'Inactive')}
 							</Text>,
-							<Text size="medium" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={server?.name} color="gray0">
 								{antivirus && antivirus.length > 0
 									? t('label.active', 'Active')
 									: t('label.inactive', 'Inactive')}
 							</Text>,
-							<Text size="medium" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={server?.name} color="gray0">
 								{isAuthEnable}
 							</Text>,
-							<Text size="medium" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={server?.name} color="gray0">
 								{opendkim && opendkim.length > 0
 									? t('label.enabled', 'Enabled')
 									: t('label.disabled', 'Disabled')}

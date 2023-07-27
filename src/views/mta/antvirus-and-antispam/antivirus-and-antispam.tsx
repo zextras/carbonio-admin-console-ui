@@ -522,7 +522,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									setSelectedAntivirusMirrors([item]);
 								}}
 							>
-								<Text size="medium" weight="light" key={item} color="gray0">
+								<Text size="small" weight="light" key={item} color="gray0">
 									{item}
 								</Text>
 							</Container>
