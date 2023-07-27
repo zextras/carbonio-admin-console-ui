@@ -435,7 +435,7 @@ const EditAccountGeneralSection: FC = () => {
 									placement="top"
 									label={t(
 										'label.try_local_password_management_ldap',
-										'“Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
+										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
 									)}
 								>
 									<Input
@@ -462,7 +462,7 @@ const EditAccountGeneralSection: FC = () => {
 									placement="top"
 									label={t(
 										'label.try_local_password_management_ldap',
-										'“Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
+										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
 									)}
 								>
 									<Input
@@ -535,7 +535,7 @@ const EditAccountGeneralSection: FC = () => {
 						placement="top"
 						label={t(
 							'label.try_local_password_management_ldap',
-							'“Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
+							'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
 						)}
 					>
 						<Row width="100%" mainAlignment="space-between">
