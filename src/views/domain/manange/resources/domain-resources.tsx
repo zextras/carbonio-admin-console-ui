@@ -48,7 +48,24 @@ const DomainResources: FC = () => {
 	const [isEditMode, setIsEditMode] = useState<boolean>(false);
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateResourceView, setShowCreateResourceView] = useState<boolean>(false);
+	const [statusFilter, setStatusFilter] = useState<string>('');
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const timer = useRef<any>();
+
+	const resourceStatusFilter: any[] = useMemo(
+		() => [
+			{
+				label: t('label.active', 'Active'),
+				value: '(&(zimbraAccountStatus=active))'
+			},
+			{
+				label: t('label.closed', 'Closed'),
+				value: '(&(zimbraAccountStatus=closed))'
+			}
+		],
+		[t]
+	);
+
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -67,7 +84,27 @@ const DomainResources: FC = () => {
 				id: 'status',
 				label: t('label.status', 'Status'),
 				width: '10%',
-				bold: true
+				i18nAllLabel: t('label.all', 'All'),
+				bold: true,
+				items: [
+					{ label: resourceStatusFilter[0].label, value: resourceStatusFilter[0].value },
+					{ label: resourceStatusFilter[1].label, value: resourceStatusFilter[1].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let statusQuery = '';
+						e.forEach((item: { value: string }) => {
+							statusQuery += item.value;
+						});
+						if (e?.length > 1) {
+							statusQuery = `(|${statusQuery})`;
+						}
+						setStatusFilter(statusQuery);
+					} else {
+						setStatusFilter('');
+					}
+				}
 			},
 			{
 				id: 'last_access',
@@ -82,7 +119,7 @@ const DomainResources: FC = () => {
 				bold: true
 			}
 		],
-		[t]
+		[resourceStatusFilter, t]
 	);
 
 	const doClickAction = useCallback((): void => {
@@ -114,7 +151,8 @@ const DomainResources: FC = () => {
 				'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraLastLogonTimestamp,zimbraAccountStatus';
 			const types = 'resources';
 			const query = `${queryString}(&(!(zimbraIsSystemAccount=TRUE)))`;
-
+			setResourceList([]);
+			setIsRequestInProgress(true);
 			searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, 'name').then((data) => {
 				const resourceListResponse = data?.calresource || [];
 				if (resourceListResponse && Array.isArray(resourceListResponse)) {
@@ -202,6 +240,7 @@ const DomainResources: FC = () => {
 					setResourceList(rList);
 					setIsUpdateRecord(false);
 				}
+				setIsRequestInProgress(false);
 			});
 		},
 		[offset, limit, t, handleClick]
@@ -217,23 +256,31 @@ const DomainResources: FC = () => {
 		}
 	}, [isUpdateRecord, getResourceList, domainName, searchQuery]);
 
+	const generateSearchFilterQuery = (): string => {
+		let filterQuery = '';
+		if (statusFilter) {
+			filterQuery += statusFilter;
+		}
+		if (searchString) {
+			filterQuery += `(|(mail=*${searchString}*)(cn=*${searchString}*)(sn=*${searchString}*)(gn=*${searchString}*)(displayName=*${searchString}*)(zimbraMailDeliveryAddress=*${searchString}*))`;
+		}
+		if (statusFilter && searchString) {
+			return `(&${filterQuery})`;
+		}
+		return filterQuery;
+	};
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchResourceQuery = useCallback(
-		debounce((searchText) => {
-			if (searchText) {
-				setSearchQuery(
-					`(|(mail=*${searchText}*)(cn=*${searchText}*)(sn=*${searchText}*)(gn=*${searchText}*)(displayName=*${searchText}*)(zimbraMailDeliveryAddress=*${searchText}*))`
-				);
-			} else {
-				setSearchQuery('');
-			}
+		debounce(() => {
+			setSearchQuery(generateSearchFilterQuery());
 		}, 700),
-		[debounce]
+		[debounce, generateSearchFilterQuery]
 	);
 
 	useEffect(() => {
-		searchResourceQuery(searchString);
-	}, [searchString, searchResourceQuery]);
+		searchResourceQuery();
+	}, [searchString, searchResourceQuery, statusFilter]);
 
 	const successSnackBar = useCallback(
 		(resourceName: any): void => {
@@ -401,16 +448,10 @@ const DomainResources: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row
-					takeAvwidth="fill"
-					mainAlignment="flex-start"
-					width="100%"
-					height="100%"
-					padding={{ top: 'large' }}
-				>
+				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -437,20 +478,37 @@ const DomainResources: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 340px)"
+							style={{
+								height:
+									resourceList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+							}}
 						>
-							{resourceList && resourceList.length > 0 && (
-								<Table
-									rows={resourceList}
-									headers={headers}
-									showCheckbox
-									multiSelect
-									style={{ overflow: 'auto', height: '100%' }}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={resourceList}
+								headers={headers}
+								showCheckbox
+								style={{ overflow: 'auto', height: '100%' }}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										iconColor="primary"
+										height={36}
+										label=""
+										width={36}
+										loading
+									/>
+								</Container>
 							)}
-							{resourceList.length === 0 && (
+							{resourceList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -491,16 +549,7 @@ const DomainResources: FC = () => {
 							padding={{ all: 'large' }}
 						>
 							{resourceList && resourceList.length > 0 && (
-								<Row
-									orientation="horizontal"
-									crossAlignment="flex-start"
-									mainAlignment="flex-start"
-									width="100%"
-									background="gray6"
-								>
-									<Divider />
-									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-								</Row>
+								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 							)}
 						</Row>
 					</Container>
