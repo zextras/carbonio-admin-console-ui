@@ -74,6 +74,7 @@ const ManageAccounts: FC = () => {
 	const tableRef = useRef(null);
 	const [typeFilter, setTypeFilter] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<string>('');
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -154,7 +155,7 @@ const ManageAccounts: FC = () => {
 			{
 				id: 'type',
 				label: t('label.type', 'Type'),
-				i18nAllLabel: 'All',
+				i18nAllLabel: t('label.all', 'All'),
 				width: '10%',
 				bold: true,
 				items: [
@@ -184,7 +185,7 @@ const ManageAccounts: FC = () => {
 				id: 'status',
 				label: t('label.status', 'Status'),
 				width: '10%',
-				i18nAllLabel: 'All',
+				i18nAllLabel: t('label.all', 'All'),
 				bold: true,
 				items: [
 					{ label: accountStatusFilter[0].label, value: accountStatusFilter[0].value },
@@ -581,6 +582,8 @@ const ManageAccounts: FC = () => {
 		]
 	);
 	const getAccountList = useCallback((): void => {
+		setIsRequestInProgress(true);
+		setAccountList([]);
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
@@ -710,6 +713,7 @@ const ManageAccounts: FC = () => {
 				// setAccountList([]);
 				setAccountList(accountListArr);
 			}
+			setIsRequestInProgress(false);
 		});
 	}, [STATUS_COLOR, accountUserType, domainName, limit, offset, openDetailView, searchQuery]);
 
@@ -861,21 +865,39 @@ const ManageAccounts: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 340px)"
+							style={{
+								height:
+									accountList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+							}}
 							ref={tableRef}
 						>
-							{accountList.length !== 0 && (
-								<Table
-									rows={accountList}
-									headers={headers}
-									showCheckbox={false}
-									multiSelect={false}
-									style={{ overflow: 'auto', height: '100%' }}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={accountList}
+								headers={headers}
+								showCheckbox={false}
+								multiSelect={false}
+								style={{ overflow: 'auto', height: '100%' }}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										iconColor="primary"
+										height={36}
+										label=""
+										width={36}
+										loading
+									/>
+								</Container>
 							)}
-							{accountList.length === 0 && (
+							{accountList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -907,15 +929,6 @@ const ManageAccounts: FC = () => {
 									</Row>
 								</Container>
 							)}
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								padding={{ top: 'medium' }}
-							>
-								<Divider />
-							</Row>
 							{accountList.length !== 0 && (
 								<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
 									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />

@@ -62,6 +62,23 @@ const DomainAclList: FC = () => {
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateAclListView, setShowCreateAclListView] = useState<boolean>(false);
 	const timer = useRef<any>();
+	const [statusFilter, setStatusFilter] = useState<string>('');
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+
+	const aclListStatusFilter: any = useMemo(
+		() => [
+			{
+				label: t('label.can_send_receiver', 'Can Send & Receive'),
+				value: '(&(zimbraMailStatus=enabled))'
+			},
+			{
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
+				value: '(&(zimbraMailStatus=disabled))'
+			}
+		],
+		[t]
+	);
+
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -86,7 +103,27 @@ const DomainAclList: FC = () => {
 				id: 'status',
 				label: t('label.status', 'Status'),
 				width: '15%',
-				bold: true
+				i18nAllLabel: t('label.all', 'All'),
+				bold: true,
+				items: [
+					{ label: aclListStatusFilter[0].label, value: aclListStatusFilter[0].value },
+					{ label: aclListStatusFilter[1].label, value: aclListStatusFilter[1].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let statusQuery = '';
+						e.forEach((item: { value: string }) => {
+							statusQuery += item.value;
+						});
+						if (e?.length > 1) {
+							statusQuery = `(|${statusQuery})`;
+						}
+						setStatusFilter(statusQuery);
+					} else {
+						setStatusFilter('');
+					}
+				}
 			},
 			{
 				id: 'gal',
@@ -101,7 +138,7 @@ const DomainAclList: FC = () => {
 				bold: true
 			}
 		],
-		[t]
+		[aclListStatusFilter, t]
 	);
 
 	const doClickAction = useCallback((): void => {
@@ -133,6 +170,8 @@ const DomainAclList: FC = () => {
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE))(zimbraIsAdminGroup=TRUE))`;
 		setAclListItem([]);
+		setAclList([]);
+		setIsRequestInProgress(true);
 		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name').then((data) => {
 			const dlList = data?.dl;
 			if (dlList) {
@@ -202,8 +241,8 @@ const DomainAclList: FC = () => {
 							>
 								<Text size="medium" weight="light" key={`${item?.id}status-child`} color="gray0">
 									{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-										? t('label.can_receive', 'Can receive')
-										: ''}
+										? t('label.can_send_receiver', 'Can Send & Receive')
+										: t('label.cant_send_receiver', "Can't Send & Receive")}
 								</Text>
 							</Container>,
 							<Container
@@ -252,6 +291,7 @@ const DomainAclList: FC = () => {
 				setAclList([]);
 				setIsUpdateRecord(false);
 			}
+			setIsRequestInProgress(false);
 		});
 	}, [t, offset, limit, domainName, searchQuery, handleClick]);
 
@@ -259,25 +299,31 @@ const DomainAclList: FC = () => {
 		getAclList();
 	}, [offset, getAclList]);
 
+	const generateSearchFilterQuery = (): string => {
+		let filterQuery = '';
+		if (statusFilter) {
+			filterQuery += statusFilter;
+		}
+		if (searchString) {
+			filterQuery += `(|(mail=*${searchString}*)(cn=*${searchString}*)(sn=*${searchString}*)(gn=*${searchString}*)(displayName=*${searchString}*)(zimbraMailDeliveryAddress=*${searchString}*))`;
+		}
+		if (statusFilter && searchString) {
+			return `(&${filterQuery})`;
+		}
+		return filterQuery;
+	};
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAclListQuery = useCallback(
-		debounce((searchText) => {
-			if (searchText) {
-				setOffset(0);
-				setSearchQuery(
-					`(|(mail=*${searchText}*)(cn=*${searchText}*)(sn=*${searchText}*)(gn=*${searchText}*)(displayName=*${searchText}*)(zimbraMailDeliveryAddress=*${searchText}*))`
-				);
-			} else {
-				setOffset(0);
-				setSearchQuery('');
-			}
+		debounce(() => {
+			setOffset(0);
+			setSearchQuery(generateSearchFilterQuery());
 		}, 700),
-		[debounce]
+		[debounce, generateSearchFilterQuery]
 	);
 
 	useEffect(() => {
-		searchAclListQuery(searchString);
-	}, [searchString, searchAclListQuery]);
+		searchAclListQuery();
+	}, [searchString, searchAclListQuery, statusFilter]);
 
 	useEffect(() => {
 		if (showEditAclView !== undefined && !showEditAclView) {
@@ -627,24 +673,41 @@ const DomainAclList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 21.25rem)"
+							style={{
+								height: aclList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+							}}
 						>
-							{aclList && aclList.length > 0 && (
-								<Table
-									rows={aclList}
-									headers={headers}
-									showCheckbox
-									style={{ overflow: 'auto', height: '100%' }}
-									selectedRows={selectedDlRow}
-									onSelectionChange={(selected: any): void => {
-										setSelectedFromRow(aclListItem.find((item: any) => selected[0] === item?.id));
-										setSelectedDlRow(selected);
-									}}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={aclList}
+								headers={headers}
+								showCheckbox
+								style={{ overflow: 'auto', height: '100%' }}
+								selectedRows={selectedDlRow}
+								onSelectionChange={(selected: any): void => {
+									setSelectedFromRow(aclListItem.find((item: any) => selected[0] === item?.id));
+									setSelectedDlRow(selected);
+								}}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										iconColor="primary"
+										height={36}
+										label=""
+										width={36}
+										loading
+									/>
+								</Container>
 							)}
-							{aclList.length === 0 && (
+							{aclList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
