@@ -1599,6 +1599,7 @@
         "trust_ip": "Trust the IP",
         "trust_the_device": "Trust the device",
         "trusted_network_ip": "Trusted Networks (IP ranges)",
+        "try_local_password_management_ldap": "Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields",
         "type": "Type",
         "type_account_name_for_global_address_list": "Type the Account Name for the Global Address List (GAL)",
         "type_accounts_paste_them_here": "Type the Accounts or paste them here",
