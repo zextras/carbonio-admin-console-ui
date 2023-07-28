@@ -112,10 +112,27 @@ const DomainCosLink: FC<{
 		const attributes: Attribute[] = [];
 		body.id = domainId;
 		body._jsns = 'urn:zimbraAdmin';
-		attributes.push({
-			n: '+zimbraDomainCOSMaxAccounts',
-			_content: `${cosId}:${maxAccountValue}`
-		});
+		const isOverride = cosMaxAccountValue.some((item) => item.id === cosId);
+		if (isOverride) {
+			cosMaxAccountValue.forEach((item) => {
+				if (item.id !== cosId) {
+					attributes.push({
+						n: 'zimbraDomainCOSMaxAccounts',
+						_content: `${item.id}:${item.value}`
+					});
+				}
+			});
+			attributes.push({
+				n: 'zimbraDomainCOSMaxAccounts',
+				_content: `${cosId}:${maxAccountValue}`
+			});
+		} else {
+			attributes.push({
+				n: '+zimbraDomainCOSMaxAccounts',
+				_content: `${cosId}:${maxAccountValue}`
+			});
+		}
+
 		body.a = attributes;
 		const target = {
 			_content: cosId,
