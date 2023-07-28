@@ -4,7 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
-import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Input,
+	Icon,
+	Row,
+	Padding,
+	Text,
+	Dropdown
+} from '@zextras/carbonio-design-system';
 
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +39,8 @@ import {
 	SAML,
 	CONFIG,
 	GLOBAL_2FA_ROUTE,
-	TWO_FACTOR_AUTHENTICATION
+	TWO_FACTOR_AUTHENTICATION,
+	DELEGATES
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -178,6 +187,17 @@ const DomainListPanel: FC = () => {
 
 	useEffect(() => {
 		if (
+			locationService.pathname.split('/').pop() &&
+			locationService.pathname !== `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}/${DOMAINS_ROUTE_ID}` &&
+			locationService.pathname !== `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}/${GLOBAL_THEME_ROUTE}` &&
+			locationService.pathname !== `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}/${GLOBAL_2FA_ROUTE}`
+		) {
+			setSelectedOperationItem(locationService.pathname.split('/').pop());
+		}
+	}, [locationService.pathname]);
+
+	useEffect(() => {
+		if (
 			locationService.pathname &&
 			locationService.pathname === `/${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`
 		) {
@@ -287,6 +307,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: ACCOUNTS,
 				name: t('label.accounts', 'Accounts'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: DELEGATES,
+				name: t('label.delegates_title', 'Delegates'),
 				isSelected: isDomainSelect
 			},
 			{
