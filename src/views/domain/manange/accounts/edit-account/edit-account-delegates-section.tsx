@@ -1042,7 +1042,7 @@ const EditAccountDelegatesSection: FC = () => {
 					<Container mainAlignment="flex-start">
 						<Row
 							width="100%"
-							padding={{ top: 'large', left: 'large' }}
+							padding={{ top: 'large' }}
 							margin={{ top: 'large' }}
 							mainAlignment="space-between"
 						>
