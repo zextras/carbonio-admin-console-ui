@@ -164,22 +164,46 @@ const DomainCosLink: FC<{
 				type: 'grp',
 				_content: `__domain_admins@${domainName}`
 			};
-			requests.push(modifyDomain(body));
-			requests.push(
-				postSoapFetchRequest(
-					`/service/admin/soap/GrantRightRequest`,
-					{
-						_jsns: 'urn:zimbraAdmin',
-						target,
-						grantee,
-						right: {
-							_content: 'getCos'
-						}
-					},
-					'GrantRightRequest'
-				)
-			);
-			requests.push(
+			modifyDomain(body)
+				.then((data) => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					const domain: any = data?.domain[0];
+					if (domain) {
+						setDomain(domain);
+					}
+					setMaxAccountValue('');
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+			postSoapFetchRequest(
+				`/service/admin/soap/GrantRightRequest`,
+				{
+					_jsns: 'urn:zimbraAdmin',
+					target,
+					grantee,
+					right: {
+						_content: 'getCos'
+					}
+				},
+				'GrantRightRequest'
+			).then(() => {
 				postSoapFetchRequest(
 					`/service/admin/soap/GrantRightRequest`,
 					{
@@ -191,61 +215,9 @@ const DomainCosLink: FC<{
 						}
 					},
 					'GrantRightRequest'
-				)
-			);
-			Promise.all(requests)
-				.then((response: any) => Promise.all(response))
-				.then((data: any) => {
-					// eslint-disable-next-line no-shadow
-					let isError = false;
-					let errorMessage = '';
-					data.forEach((item: any) => {
-						if (item?.Fault) {
-							isError = true;
-							errorMessage = item?.Fault?.Reason?.Text;
-						}
-					});
-					if (isError) {
-						createSnackbar({
-							key: 'error',
-							type: 'error',
-							label: errorMessage,
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-					} else {
-						const response: {
-							a: Attribute[];
-							id: string;
-							name: string;
-						} = data[0]?.domain[0];
-						if (response) {
-							setDomain(response);
-						}
-						createSnackbar({
-							key: 'success',
-							type: 'success',
-							label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-						setMaxAccountValue('');
-					}
-				})
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error.message
-							? error.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
+				).then(() => {});
+			});
 		},
 		[cosMaxAccountList, createSnackbar, domainId, domainName, setDomain, t]
 	);
@@ -307,21 +279,46 @@ const DomainCosLink: FC<{
 				type: 'grp',
 				_content: `__domain_admins@${domainName}`
 			};
-			requests.push(
-				postSoapFetchRequest(
-					`/service/admin/soap/RevokeRightRequest`,
-					{
-						_jsns: 'urn:zimbraAdmin',
-						target,
-						grantee,
-						right: {
-							_content: 'getCos'
-						}
-					},
-					'RevokeRightRequest'
-				)
-			);
-			requests.push(
+			modifyDomain(body)
+				.then((data) => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					const domain: any = data?.domain[0];
+					if (domain) {
+						setDomain(domain);
+					}
+					setMaxAccountValue('');
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+			postSoapFetchRequest(
+				`/service/admin/soap/RevokeRightRequest`,
+				{
+					_jsns: 'urn:zimbraAdmin',
+					target,
+					grantee,
+					right: {
+						_content: 'getCos'
+					}
+				},
+				'RevokeRightRequest'
+			).then(() => {
 				postSoapFetchRequest(
 					`/service/admin/soap/RevokeRightRequest`,
 					{
@@ -333,61 +330,9 @@ const DomainCosLink: FC<{
 						}
 					},
 					'RevokeRightRequest'
-				)
-			);
-			requests.push(modifyDomain(body));
-			Promise.all(requests)
-				.then((response: any) => Promise.all(response))
-				.then((data: any) => {
-					// eslint-disable-next-line no-shadow
-					let isError = false;
-					let errorMessage = '';
-					data.forEach((item: any) => {
-						if (item?.Fault) {
-							isError = true;
-							errorMessage = item?.Fault?.Reason?.Text;
-						}
-					});
-					if (isError) {
-						createSnackbar({
-							key: 'error',
-							type: 'error',
-							label: errorMessage,
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-					} else {
-						const response: {
-							a: Attribute[];
-							id: string;
-							name: string;
-						} = data[2]?.domain[0];
-						if (response) {
-							setDomain(response);
-						}
-						createSnackbar({
-							key: 'success',
-							type: 'success',
-							label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-					}
-				})
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error.message
-							? error.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
+					// eslint-disable-next-line @typescript-eslint/no-empty-function
+				).then(() => {});
+			});
 		},
 		[createSnackbar, domainId, domainName, setDomain, t]
 	);
