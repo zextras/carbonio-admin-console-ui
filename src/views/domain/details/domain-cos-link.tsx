@@ -482,9 +482,7 @@ const DomainCosLink: FC<{
 	);
 
 	useEffect(() => {
-		if (cosMaxAccountValue && defaultCosId) {
-			generateCosLinkTable(cosMaxAccountValue, defaultCosId);
-		}
+		generateCosLinkTable(cosMaxAccountValue, defaultCosId);
 	}, [generateCosLinkTable, cosMaxAccountValue, defaultCosId]);
 
 	const headers: any[] = useMemo(
