@@ -32,6 +32,8 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { Attribute } from '../../../../types/attribute';
 import { useDomainStore } from '../../../store/domain/store';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { copyCos } from '../../../services/copy-cos-service';
+import { Cos } from '../../../../types/cos';
 
 const SelectItem = styled(Row)``;
 
@@ -40,18 +42,19 @@ const CustomIcon = styled(Icon)`
 	height: 1.25rem;
 `;
 const DomainCosLink: FC<{
-	cosMaxAccountValue: Array<CosMaxAccountValues>;
+	cosMaxAccountList: Array<CosMaxAccountValues>;
 	defaultCosId: string;
 	domainId: string;
 	domainName: string;
-}> = ({ cosMaxAccountValue, defaultCosId, domainId, domainName }) => {
+}> = ({ cosMaxAccountList, defaultCosId, domainId, domainName }) => {
 	const [t] = useTranslation();
 	const [isCosSelect, setIsCosSelect] = useState(false);
-	const [cosList, setCosList] = useState([]);
+	const [cosList, setCosList] = useState<Array<Cos>>([]);
 	const [isCosListExpand, setIsCosListExpand] = useState(false);
 	const [searchCosName, setSearchCosName] = useState('');
 	const [cosId, setCosId] = useState('');
 	const [maxAccountValue, setMaxAccountValue] = useState('');
+	const [domainCosMaxAccountList, setDomainCosMaxAccountList] = useState<Array<any>>([]);
 	const [cosMaxAccountListRow, setCosMaxAccountListRow] = useState<Array<any>>([]);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -66,6 +69,22 @@ const DomainCosLink: FC<{
 			height: '1.25rem'
 		}
 	};
+
+	useEffect(() => {
+		const domainMaxAccountList: Array<CosMaxAccountValues> = [];
+		cosMaxAccountList.forEach((item) => {
+			domainMaxAccountList.push({
+				id: item?.id,
+				name: cosList.find((c) => c.id === item.id)?.name,
+				value: item?.value
+			});
+		});
+		if (domainMaxAccountList.length > 0) {
+			setDomainCosMaxAccountList(domainMaxAccountList);
+		} else {
+			setDomainCosMaxAccountList([]);
+		}
+	}, [cosMaxAccountList, cosList]);
 
 	const getCosLists = (cos: string): any => {
 		getCosList(cos).then((data) => {
@@ -99,140 +118,170 @@ const DomainCosLink: FC<{
 		setCosId(cos?.id);
 	}, []);
 
-	const onSaveCosLinkToDomain = (): void => {
-		const requests = [];
-		if (!cosId || !maxAccountValue) {
-			return;
-		}
-		const body: {
-			id?: string;
-			_jsns?: string;
-			a?: { n: string; _content?: string }[];
-		} = {};
-		const attributes: Attribute[] = [];
-		body.id = domainId;
-		body._jsns = 'urn:zimbraAdmin';
-		const isOverride = cosMaxAccountValue.some((item) => item.id === cosId);
-		if (isOverride) {
-			cosMaxAccountValue.forEach((item) => {
-				if (item.id !== cosId) {
-					attributes.push({
-						n: 'zimbraDomainCOSMaxAccounts',
-						_content: `${item.id}:${item.value}`
-					});
-				}
-			});
-			attributes.push({
-				n: 'zimbraDomainCOSMaxAccounts',
-				_content: `${cosId}:${maxAccountValue}`
-			});
-		} else {
-			attributes.push({
-				n: '+zimbraDomainCOSMaxAccounts',
-				_content: `${cosId}:${maxAccountValue}`
-			});
-		}
-
-		body.a = attributes;
-		const target = {
-			_content: cosId,
-			type: 'cos',
-			by: 'id'
-		};
-		const grantee = {
-			by: 'name',
-			type: 'grp',
-			_content: `__domain_admins@${domainName}`
-		};
-		requests.push(modifyDomain(body));
-		requests.push(
-			postSoapFetchRequest(
-				`/service/admin/soap/GrantRightRequest`,
-				{
-					_jsns: 'urn:zimbraAdmin',
-					target,
-					grantee,
-					right: {
-						_content: 'getCos'
-					}
-				},
-				'GrantRightRequest'
-			)
-		);
-		requests.push(
-			postSoapFetchRequest(
-				`/service/admin/soap/GrantRightRequest`,
-				{
-					_jsns: 'urn:zimbraAdmin',
-					target,
-					grantee,
-					right: {
-						_content: 'listCos'
-					}
-				},
-				'GrantRightRequest'
-			)
-		);
-		Promise.all(requests)
-			.then((response: any) => Promise.all(response))
-			.then((data: any) => {
-				// eslint-disable-next-line no-shadow
-				let isError = false;
-				let errorMessage = '';
-				data.forEach((item: any) => {
-					if (item?.Fault) {
-						isError = true;
-						errorMessage = item?.Fault?.Reason?.Text;
+	const onSaveCosLinkToDomain = useCallback(
+		(cId: string, cosMaxAccValue: string): void => {
+			const requests = [];
+			if (!cId || !cosMaxAccValue) {
+				return;
+			}
+			const body: {
+				id?: string;
+				_jsns?: string;
+				a?: { n: string; _content?: string }[];
+			} = {};
+			const attributes: Attribute[] = [];
+			body.id = domainId;
+			body._jsns = 'urn:zimbraAdmin';
+			const isOverride = cosMaxAccountList.some((item) => item.id === cId);
+			if (isOverride) {
+				cosMaxAccountList.forEach((item) => {
+					if (item.id !== cId) {
+						attributes.push({
+							n: 'zimbraDomainCOSMaxAccounts',
+							_content: `${item.id}:${item.value}`
+						});
 					}
 				});
-				if (isError) {
+				attributes.push({
+					n: 'zimbraDomainCOSMaxAccounts',
+					_content: `${cId}:${cosMaxAccValue}`
+				});
+			} else {
+				attributes.push({
+					n: '+zimbraDomainCOSMaxAccounts',
+					_content: `${cId}:${cosMaxAccValue}`
+				});
+			}
+
+			body.a = attributes;
+			const target = {
+				_content: cId,
+				type: 'cos',
+				by: 'id'
+			};
+			const grantee = {
+				by: 'name',
+				type: 'grp',
+				_content: `__domain_admins@${domainName}`
+			};
+			requests.push(modifyDomain(body));
+			requests.push(
+				postSoapFetchRequest(
+					`/service/admin/soap/GrantRightRequest`,
+					{
+						_jsns: 'urn:zimbraAdmin',
+						target,
+						grantee,
+						right: {
+							_content: 'getCos'
+						}
+					},
+					'GrantRightRequest'
+				)
+			);
+			requests.push(
+				postSoapFetchRequest(
+					`/service/admin/soap/GrantRightRequest`,
+					{
+						_jsns: 'urn:zimbraAdmin',
+						target,
+						grantee,
+						right: {
+							_content: 'listCos'
+						}
+					},
+					'GrantRightRequest'
+				)
+			);
+			Promise.all(requests)
+				.then((response: any) => Promise.all(response))
+				.then((data: any) => {
+					// eslint-disable-next-line no-shadow
+					let isError = false;
+					let errorMessage = '';
+					data.forEach((item: any) => {
+						if (item?.Fault) {
+							isError = true;
+							errorMessage = item?.Fault?.Reason?.Text;
+						}
+					});
+					if (isError) {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: errorMessage,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					} else {
+						const response: {
+							a: Attribute[];
+							id: string;
+							name: string;
+						} = data[0]?.domain[0];
+						if (response) {
+							setDomain(response);
+						}
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+						setMaxAccountValue('');
+					}
+				})
+				.catch((error) => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: errorMessage,
+						label: error.message
+							? error.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
-				} else {
-					const response: {
-						a: Attribute[];
-						id: string;
-						name: string;
-					} = data[0]?.domain[0];
-					if (response) {
-						setDomain(response);
-					}
-					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					setIsCosSelect(false);
-					setMaxAccountValue('');
-				}
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error.message
-						? error.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
 				});
-			});
-	};
+		},
+		[cosMaxAccountList, createSnackbar, domainId, domainName, setDomain, t]
+	);
+
+	const onDuplicate = useCallback(
+		(cId: string, cosMaxAccValue: string, cosName: string): void => {
+			if (!cId || !cosMaxAccValue) {
+				return;
+			}
+			const newName = `${cosName}.${domainName}`;
+			copyCos(newName, cId)
+				.then((data) => {
+					const cosDetail = data?.cos[0];
+					getCosLists('');
+					onSaveCosLinkToDomain(cosDetail?.id, cosMaxAccValue);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, domainName, t, onSaveCosLinkToDomain]
+	);
 
 	const onRemoveCosLinkToDomain = useCallback(
-		(cId: string, maxAccValue: string): void => {
+		(cId: string, cosMaxAccValue: string): void => {
 			const requests = [];
-			if (!cId || !maxAccValue) {
+			if (!cId || !cosMaxAccValue) {
 				return;
 			}
 			const body: {
@@ -245,7 +294,7 @@ const DomainCosLink: FC<{
 			body._jsns = 'urn:zimbraAdmin';
 			attributes.push({
 				n: '-zimbraDomainCOSMaxAccounts',
-				_content: `${cId}:${maxAccValue}`
+				_content: `${cId}:${cosMaxAccValue}`
 			});
 			body.a = attributes;
 			const target = {
@@ -482,8 +531,8 @@ const DomainCosLink: FC<{
 	);
 
 	useEffect(() => {
-		generateCosLinkTable(cosMaxAccountValue, defaultCosId);
-	}, [generateCosLinkTable, cosMaxAccountValue, defaultCosId]);
+		generateCosLinkTable(domainCosMaxAccountList, defaultCosId);
+	}, [generateCosLinkTable, domainCosMaxAccountList, defaultCosId]);
 
 	const headers: any[] = useMemo(
 		() => [
@@ -615,14 +664,20 @@ const DomainCosLink: FC<{
 								type="outlined"
 								label={t('label.duplicate', 'Duplicate')}
 								color="primary"
-								disabled
+								onClick={(event: { stopPropagation: () => void }): void => {
+									event.stopPropagation();
+									onDuplicate(cosId, maxAccountValue, searchCosName);
+								}}
 							/>
 						</Padding>
 						<Button
 							type="outlined"
 							label={t('label.link', 'Link')}
 							color="primary"
-							onClick={onSaveCosLinkToDomain}
+							onClick={(event: { stopPropagation: () => void }): void => {
+								event.stopPropagation();
+								onSaveCosLinkToDomain(cosId, maxAccountValue);
+							}}
 						/>
 					</Row>
 				</Container>

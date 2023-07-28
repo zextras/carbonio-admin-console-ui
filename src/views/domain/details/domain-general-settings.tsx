@@ -143,7 +143,7 @@ const DomainGeneralSettings: FC = () => {
 	const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
 	const [openDeleteDomainConfirmDialog, setOpenDeleteDomainConfirmDialog] =
 		useState<boolean>(false);
-	const [cosMaxAccountValue, SetCosMaxAccountValue] = useState<Array<CosMaxAccountValues>>([]);
+	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
 	interface Attribute {
 		n: string;
 		_content: string;
@@ -306,22 +306,20 @@ const DomainGeneralSettings: FC = () => {
 				const domainCosMaxAccounts = domainCosMaxAccountArray.map(
 					(domainContent: any, index: any) => ({
 						id: domainContent._content?.split(':')[0],
-						name:
-							cosList.find((cos) => cos.id === domainContent._content?.split(':')[0])?.name || '',
 						value: domainContent._content?.split(':')[1]
 							? domainContent._content?.split(':')[1]
 							: -1
 					})
 				);
-				SetCosMaxAccountValue(domainCosMaxAccounts);
+				SetCosMaxAccountList(domainCosMaxAccounts);
 			} else {
-				SetCosMaxAccountValue([]);
+				SetCosMaxAccountList([]);
 			}
 
 			setDomainData(obj);
 			setIsDirty(false);
 		}
-	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems, cosItems, cosList]);
+	}, [domainInformation, timezones, serviceProtocolItems, domainStatusItems, cosItems]);
 
 	const onTimeZoneChange = useCallback(
 		(v: any): any => {
@@ -905,7 +903,7 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 							</ListRow>
 							<DomainCosLink
-								cosMaxAccountValue={cosMaxAccountValue}
+								cosMaxAccountList={cosMaxAccountList}
 								domainId={domainData.zimbraId}
 								defaultCosId={zimbraDomainDefaultCOSId}
 								domainName={domainName}

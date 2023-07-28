@@ -107,6 +107,6 @@ type TwoFactorPolicy = {
 
 export type CosMaxAccountValues = {
 	id: string;
-	name: string;
+	name?: string;
 	value: string;
 };
