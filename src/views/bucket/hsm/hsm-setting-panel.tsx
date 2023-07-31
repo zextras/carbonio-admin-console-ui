@@ -473,50 +473,53 @@ const HSMsettingPanel: FC = () => {
 		[server, selectedPolicies, t, createSnackbar, getHSMPolicyList, policies]
 	);
 
+	const generatePolicyString = useCallback((hsmPolicyDetail: any) => {
+		let policy = '';
+		const criteriaScale: string[] = [];
+		if (hsmPolicyDetail?.isAllEnabled) {
+			policy += 'document,message,contact,appointment:';
+		} else {
+			if (hsmPolicyDetail?.isMessageEnabled) {
+				criteriaScale.push('message');
+			}
+			if (hsmPolicyDetail?.isEventEnabled) {
+				criteriaScale.push('appointment');
+			}
+			if (hsmPolicyDetail?.isContactEnabled) {
+				criteriaScale.push('contact');
+			}
+			if (hsmPolicyDetail?.isDocumentEnabled) {
+				criteriaScale.push('document');
+			}
+		}
+		if (criteriaScale.length > 0) {
+			policy += `${criteriaScale.toString()}:`;
+		}
+		if (hsmPolicyDetail?.policyCriteria.length > 0) {
+			hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
+				if (item?.option === 'before') {
+					policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
+				} else if (item?.option === 'after') {
+					policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
+				} else if (item?.option === 'larger' || item?.option === 'smaller') {
+					policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
+				}
+			});
+		}
+		if (hsmPolicyDetail?.sourceVolume?.length > 0) {
+			policy += ` source:${hsmPolicyDetail?.sourceVolume.map((item: any) => item?.id).toString()}`;
+		}
+		if (hsmPolicyDetail?.destinationVolume?.length > 0) {
+			policy += ` destination:${hsmPolicyDetail?.destinationVolume
+				.map((item: any) => item?.id)
+				.toString()}`;
+		}
+		return policy;
+	}, []);
+
 	const createHSMpolicy = useCallback(
 		(hsmPolicyDetail: any, isEditSave?: boolean) => {
-			let policy = '';
-			const criteriaScale: string[] = [];
-			if (hsmPolicyDetail?.isAllEnabled) {
-				policy += 'document,message,contact,appointment:';
-			} else {
-				if (hsmPolicyDetail?.isMessageEnabled) {
-					criteriaScale.push('message');
-				}
-				if (hsmPolicyDetail?.isEventEnabled) {
-					criteriaScale.push('appointment');
-				}
-				if (hsmPolicyDetail?.isContactEnabled) {
-					criteriaScale.push('contact');
-				}
-				if (hsmPolicyDetail?.isDocumentEnabled) {
-					criteriaScale.push('document');
-				}
-			}
-			if (criteriaScale.length > 0) {
-				policy += `${criteriaScale.toString()}:`;
-			}
-			if (hsmPolicyDetail?.policyCriteria.length > 0) {
-				hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
-					if (item?.option === 'before') {
-						policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
-					} else if (item?.option === 'after') {
-						policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
-					} else if (item?.option === 'larger' || item?.option === 'smaller') {
-						policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
-					}
-				});
-			}
-			if (hsmPolicyDetail?.sourceVolume?.length > 0) {
-				policy += ` source:${hsmPolicyDetail?.sourceVolume
-					.map((item: any) => item?.id)
-					.toString()}`;
-			}
-			if (hsmPolicyDetail?.destinationVolume?.length > 0) {
-				policy += ` destination:${hsmPolicyDetail?.destinationVolume
-					.map((item: any) => item?.id)
-					.toString()}`;
-			}
+			const policy = generatePolicyString(hsmPolicyDetail);
 			fetchSoap('zextras', {
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxPowerstore',
@@ -563,7 +566,51 @@ const HSMsettingPanel: FC = () => {
 					});
 				});
 		},
-		[server, createSnackbar, t, getHSMPolicyList, onDeletePolicy]
+		[generatePolicyString, server, onDeletePolicy, getHSMPolicyList, createSnackbar, t]
+	);
+
+	const runCustomHSMpolicy = useCallback(
+		(hsmPolicyDetail: any) => {
+			const policy = generatePolicyString(hsmPolicyDetail);
+			fetchSoap('zextras', {
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxPowerstore',
+				action: 'doMoveBlobs',
+				command: 'start',
+				customHSMPolicy: policy,
+				targetServer: server
+			})
+				.then((res: any) => {
+					if (res?.Body?.response?.content) {
+						const info = JSON.parse(res?.Body?.response?.content);
+						if (info?.ok) {
+							setShowCreateHsmPolicyView(false);
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t('hsm.policy_is_correctly_running', 'The policy is correctly running'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						}
+					}
+				})
+				.catch((error) => {
+					setIsEditSaveInProgress(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[generatePolicyString, server, createSnackbar, t]
 	);
 
 	const onEditSave = useCallback(
@@ -830,6 +877,7 @@ const HSMsettingPanel: FC = () => {
 					setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
 					volumeList={volumeList}
 					createHSMpolicy={createHSMpolicy}
+					runCustomHSMpolicy={runCustomHSMpolicy}
 				/>
 			)}
 			{showEditHsmPolicyView && (
