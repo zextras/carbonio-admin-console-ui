@@ -152,7 +152,7 @@ const CustomRowFactory = ({
 						iconColor={(multiSelect && selectionMode) || selected ? 'primary' : 'text'}
 					/>
 				) : (
-					<Text size="small" weight="regular">
+					<Text size="small" weight="light">
 						{index}
 					</Text>
 				)}
