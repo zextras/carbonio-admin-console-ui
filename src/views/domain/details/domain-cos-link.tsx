@@ -192,18 +192,8 @@ const DomainCosLink: FC<{
 						replace: true
 					});
 				});
-			postSoapFetchRequest(
-				`/service/admin/soap/GrantRightRequest`,
-				{
-					_jsns: 'urn:zimbraAdmin',
-					target,
-					grantee,
-					right: {
-						_content: 'getCos'
-					}
-				},
-				'GrantRightRequest'
-			).then(() => {
+			// If it override that case no need to assign further rights
+			if (!isOverride) {
 				postSoapFetchRequest(
 					`/service/admin/soap/GrantRightRequest`,
 					{
@@ -211,13 +201,40 @@ const DomainCosLink: FC<{
 						target,
 						grantee,
 						right: {
-							_content: 'listCos'
+							_content: 'getCos'
 						}
 					},
 					'GrantRightRequest'
-					// eslint-disable-next-line @typescript-eslint/no-empty-function
-				).then(() => {});
-			});
+				).then(() => {
+					postSoapFetchRequest(
+						`/service/admin/soap/GrantRightRequest`,
+						{
+							_jsns: 'urn:zimbraAdmin',
+							target,
+							grantee,
+							right: {
+								_content: 'listCos'
+							}
+						},
+						'GrantRightRequest'
+						// eslint-disable-next-line @typescript-eslint/no-empty-function
+					).then(() => {
+						postSoapFetchRequest(
+							`/service/admin/soap/GrantRightRequest`,
+							{
+								_jsns: 'urn:zimbraAdmin',
+								target,
+								grantee,
+								right: {
+									_content: 'assignCos'
+								}
+							},
+							'GrantRightRequest'
+							// eslint-disable-next-line @typescript-eslint/no-empty-function
+						).then(() => {});
+					});
+				});
+			}
 		},
 		[cosMaxAccountList, createSnackbar, domainId, domainName, setDomain, t]
 	);
@@ -331,7 +348,21 @@ const DomainCosLink: FC<{
 					},
 					'RevokeRightRequest'
 					// eslint-disable-next-line @typescript-eslint/no-empty-function
-				).then(() => {});
+				).then(() => {
+					postSoapFetchRequest(
+						`/service/admin/soap/RevokeRightRequest`,
+						{
+							_jsns: 'urn:zimbraAdmin',
+							target,
+							grantee,
+							right: {
+								_content: 'assignCos'
+							}
+						},
+						'RevokeRightRequest'
+						// eslint-disable-next-line @typescript-eslint/no-empty-function
+					).then(() => {});
+				});
 			});
 		},
 		[createSnackbar, domainId, domainName, setDomain, t]
