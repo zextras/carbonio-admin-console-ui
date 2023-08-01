@@ -32,7 +32,7 @@ import { AccountType } from '../account-types/account-types';
 import InheritedSelect from './inherited-components/inherited-select';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
-import { objectType } from '../../../../../../types';
+import { objectType, Attribute } from '../../../../../../types';
 import DropDownInput from '../../../../components/dropDownInput';
 import CustomChip from '../../../../components/customChip';
 
@@ -42,6 +42,12 @@ const CustomIcon = styled(Icon)`
 	width: 20px;
 	height: 20px;
 `;
+
+const ZimbraAuthMethod = {
+	INTERNAL: 'zimbra',
+	LDAP: 'ldap',
+	EXTERNAL: 'ad'
+} as const;
 
 const EditAccountGeneralSection: FC = () => {
 	const createSnackbar = useSnackbar();
@@ -55,6 +61,7 @@ const EditAccountGeneralSection: FC = () => {
 		accSpecificDetail,
 		cosDetail
 	} = context;
+	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
 	const [t] = useTranslation();
@@ -67,6 +74,22 @@ const EditAccountGeneralSection: FC = () => {
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
+
+	const isHidePassword = useMemo(() => {
+		if (!!domainInformation && domainInformation.length > 0) {
+			const obj: objectType = {};
+			domainInformation.forEach((item: Attribute) => {
+				obj[item?.n] = item._content;
+			});
+			if (
+				obj?.zimbraAuthMech === ZimbraAuthMethod.LDAP &&
+				obj.zimbraAuthFallbackToLocal !== 'TRUE'
+			) {
+				return true;
+			}
+		}
+		return false;
+	}, [domainInformation]);
 
 	const getDomainLists = useCallback((domain: string | undefined): void => {
 		getDomainList(domain, 0).then((data) => {
@@ -405,52 +428,145 @@ const EditAccountGeneralSection: FC = () => {
 					<Row width="37%" mainAlignment="flex-start"></Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="49%" mainAlignment="flex-start">
-						<Input
-							background="gray5"
-							label={t('label.password', 'Password')}
-							onChange={changeAccDetail}
-							inputName="password"
-							type="password"
-							autoComplete="new-password"
-							value={
-								// eslint-disable-next-line no-nested-ternary
-								accountDetail?.password
-									? accountDetail.password
-									: accountDetail?.userPassword
-									? '******'
-									: ''
-							}
-						/>
-					</Row>
-					<Row width="49%" mainAlignment="flex-start">
-						<Input
-							background="gray5"
-							label={t('label.repeat_password', 'Repeat Password')}
-							onChange={changeAccDetail}
-							inputName="repeatPassword"
-							type="password"
-							autoComplete="new-password"
-							value={
-								// eslint-disable-next-line no-nested-ternary
-								accountDetail?.repeatPassword
-									? accountDetail.repeatPassword
-									: accountDetail?.userPassword
-									? '******'
-									: ''
-							}
-						/>
-					</Row>
+					{isHidePassword ? (
+						<>
+							<Row width="49%" mainAlignment="flex-start">
+								<Tooltip
+									placement="top"
+									label={t(
+										'label.try_local_password_management_ldap',
+										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
+									)}
+								>
+									<Input
+										background="gray5"
+										label={t('label.password', 'Password')}
+										onChange={changeAccDetail}
+										inputName="password"
+										type="password"
+										autoComplete="new-password"
+										value={
+											// eslint-disable-next-line no-nested-ternary
+											accountDetail?.password
+												? accountDetail.password
+												: accountDetail?.userPassword
+												? '******'
+												: ''
+										}
+										disabled={isHidePassword}
+									/>
+								</Tooltip>
+							</Row>
+							<Row width="49%" mainAlignment="flex-start">
+								<Tooltip
+									placement="top"
+									label={t(
+										'label.try_local_password_management_ldap',
+										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
+									)}
+								>
+									<Input
+										background="gray5"
+										label={t('label.repeat_password', 'Repeat Password')}
+										onChange={changeAccDetail}
+										inputName="repeatPassword"
+										type="password"
+										autoComplete="new-password"
+										value={
+											// eslint-disable-next-line no-nested-ternary
+											accountDetail?.repeatPassword
+												? accountDetail.repeatPassword
+												: accountDetail?.userPassword
+												? '******'
+												: ''
+										}
+										disabled={isHidePassword}
+									/>
+								</Tooltip>
+							</Row>
+						</>
+					) : (
+						<>
+							<Row width="49%" mainAlignment="flex-start">
+								<Input
+									background="gray5"
+									label={t('label.password', 'Password')}
+									onChange={changeAccDetail}
+									inputName="password"
+									type="password"
+									autoComplete="new-password"
+									value={
+										// eslint-disable-next-line no-nested-ternary
+										accountDetail?.password
+											? accountDetail.password
+											: accountDetail?.userPassword
+											? '******'
+											: ''
+									}
+									disabled={isHidePassword}
+								/>
+							</Row>
+							<Row width="49%" mainAlignment="flex-start">
+								<Input
+									background="gray5"
+									label={t('label.repeat_password', 'Repeat Password')}
+									onChange={changeAccDetail}
+									inputName="repeatPassword"
+									type="password"
+									autoComplete="new-password"
+									value={
+										// eslint-disable-next-line no-nested-ternary
+										accountDetail?.repeatPassword
+											? accountDetail.repeatPassword
+											: accountDetail?.userPassword
+											? '******'
+											: ''
+									}
+									disabled={isHidePassword}
+								/>
+							</Row>
+						</>
+					)}
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				<Button
-					type="outlined"
-					label={t('account_details.delete_user_password', 'DELETE USER PASSWORD FROM THE LDAP')}
-					color="error"
-					width="fill"
-					onClick={(): void => setShowDeletePasswordModal(true)}
-				/>
+				{isHidePassword ? (
+					<Tooltip
+						placement="top"
+						label={t(
+							'label.try_local_password_management_ldap',
+							'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
+						)}
+					>
+						<Row width="100%" mainAlignment="space-between">
+							<Button
+								type="outlined"
+								label={t(
+									'account_details.delete_user_password',
+									'DELETE USER PASSWORD FROM THE LDAP'
+								)}
+								color="error"
+								width="fill"
+								onClick={(): void => setShowDeletePasswordModal(true)}
+								disabled={isHidePassword}
+							/>
+						</Row>
+					</Tooltip>
+				) : (
+					<Row width="100%" mainAlignment="space-between">
+						<Button
+							type="outlined"
+							label={t(
+								'account_details.delete_user_password',
+								'DELETE USER PASSWORD FROM THE LDAP'
+							)}
+							color="error"
+							width="fill"
+							onClick={(): void => setShowDeletePasswordModal(true)}
+							disabled={isHidePassword}
+						/>
+					</Row>
+				)}
 			</Row>
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
