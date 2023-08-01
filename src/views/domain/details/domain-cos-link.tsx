@@ -391,7 +391,7 @@ const DomainCosLink: FC<{
 					createSnackbar({
 						key: 'success',
 						type: 'success',
-						label: t('label.domain_close_success_msg', 'Domain has been closed successfully'),
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
