@@ -495,7 +495,7 @@ const EditMailingListView: FC<any> = ({
 				columns: [
 					<Text
 						size="small"
-						weight="light"
+						weight="regular"
 						key={item}
 						color="gray0"
 						onClick={(): void => {
@@ -520,7 +520,7 @@ const EditMailingListView: FC<any> = ({
 				columns: [
 					<Text
 						size="small"
-						weight="light"
+						weight="regular"
 						key={item?.id}
 						color="gray0"
 						onClick={(): void => {
@@ -1630,7 +1630,7 @@ const EditMailingListView: FC<any> = ({
 				columns: [
 					<Text
 						size="small"
-						weight="light"
+						weight="regular"
 						key={item}
 						color="gray0"
 						onClick={(): void => {

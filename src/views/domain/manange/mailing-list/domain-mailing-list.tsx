@@ -155,7 +155,7 @@ const DomainMailingList: FC = () => {
 									handleClick(e);
 								}}
 							>
-								<Text size="small" weight="light" key={`${item?.id}display-child`} color="gray0">
+								<Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
 									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
 								</Text>
 							</Container>,

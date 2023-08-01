@@ -57,7 +57,7 @@ const ServersListTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-						<Text size="small" weight="light">
+						<Text size="small" weight="regular">
 							{v?.name}
 						</Text>
 					</Row>,
@@ -147,7 +147,7 @@ const ServersListTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-						<Text size="small" weight="light">
+						<Text size="small" weight="regular">
 							{v?.name}
 						</Text>
 					</Row>,

@@ -88,7 +88,7 @@ const DomainVirtualHosts: FC = () => {
 				const virtualHostItems = domainVirtualHostArray.map((domainData: any, index: any) => ({
 					id: (index + 1)?.toString(),
 					columns: [
-						<Text key={index + 1} color="gray0" weight="light">
+						<Text key={index + 1} color="gray0" weight="regular">
 							{domainData._content}
 						</Text>
 					]

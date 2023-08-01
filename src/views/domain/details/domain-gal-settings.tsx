@@ -82,14 +82,14 @@ const ServerListTable: FC<{
 				columns: [
 					<Tooltip placement="bottom" label={v?.name} key={i}>
 						<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-							<Text color="gray0" weight="light">
+							<Text color="gray0" weight="regular">
 								{v?.name}
 							</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v?.name} key={i}>
 						<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-							<Text color="gray0" weight="light">
+							<Text color="gray0" weight="regular">
 								{v?.galAccount !== null ? v?.galAccount?.name : '-'}
 							</Text>
 						</Row>

@@ -146,7 +146,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="small" weight="light" key={item?.name} color="gray0">
+						<Text size="small" weight="regular" key={item?.name} color="gray0">
 							{item?.name}
 						</Text>
 					</Container>,

@@ -200,7 +200,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 						quotaData.push({
 							id: index.toString(),
 							columns: [
-								<Text color="gray0" weight="light" key={item?.id}>
+								<Text color="gray0" weight="regular" key={item?.id}>
 									{item?.name}
 								</Text>,
 								<Text color="gray0" weight="light" key={item?.id}>
