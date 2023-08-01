@@ -80,7 +80,7 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text size="small" weight="light">
+							<Text size="small" weight="regular">
 								{v.label}
 							</Text>
 						</Row>

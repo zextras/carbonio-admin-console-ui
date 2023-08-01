@@ -192,7 +192,7 @@ const ActiveSync: FC = () => {
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="small" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="regular" color="gray0" key={item}>
 							{item?.accountName}
 						</Text>
 					</Container>,

@@ -156,7 +156,7 @@ const DomainSaml: FC = () => {
 									openSamlValue(item);
 								}}
 							>
-								<Text size="small" weight="light" color="gray0">
+								<Text size="small" weight="regular" color="gray0">
 									{item?.attribute}
 								</Text>
 							</Container>,

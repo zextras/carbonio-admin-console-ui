@@ -136,7 +136,7 @@ const MTAOutBoundFlow: FC = () => {
 					tableRow.push({
 						id: server?.id,
 						columns: [
-							<Text size="small" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="regular" key={server?.name} color="gray0">
 								{server?.name}
 							</Text>,
 							<Text size="small" weight="light" key={server?.name} color="gray0">

@@ -117,7 +117,7 @@ const BackupServersListTable: FC<{
 			serverList.map((s, i) => ({
 				id: i?.toString(),
 				columns: [
-					<Text size="small" weight="light" key={s?.name} color="gray0">
+					<Text size="small" weight="regular" key={s?.name} color="gray0">
 						{s?.name}
 					</Text>,
 					<Text

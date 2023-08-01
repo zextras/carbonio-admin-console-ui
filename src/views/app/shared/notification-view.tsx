@@ -347,7 +347,7 @@ const NotificationView: FC<{
 					<Text
 						size="small"
 						color="gray0"
-						weight={item?.ack ? 'light' : 'medium'}
+						weight="regular"
 						key={item}
 						onClick={(event: any): void => {
 							setSelectedNotification(item);

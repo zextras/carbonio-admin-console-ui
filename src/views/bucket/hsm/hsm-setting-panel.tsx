@@ -158,7 +158,7 @@ const HSMsettingPanel: FC = () => {
 				columns: [
 					<Text
 						size="small"
-						weight="light"
+						weight="regular"
 						key={item?.hsmQuery}
 						onClick={(e: { stopPropagation: () => void }): void => {
 							e.stopPropagation();

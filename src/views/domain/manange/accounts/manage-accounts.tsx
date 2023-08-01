@@ -505,7 +505,7 @@ const ManageAccounts: FC = () => {
 								size="small"
 								key={item?.id}
 								color="gray0"
-								weight="light"
+								weight="regular"
 								onClick={(): void => {
 									openDetailView(item);
 								}}

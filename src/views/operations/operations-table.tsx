@@ -34,7 +34,7 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light" size="small">
+						<Text weight="light" size="regular">
 							{v?.host || ''}
 						</Text>
 					</Row>,
@@ -132,7 +132,7 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light" size="small">
+						<Text weight="light" size="regular">
 							{v?.host || ''}
 						</Text>
 					</Row>,
