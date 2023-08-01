@@ -3,19 +3,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useRef } from 'react';
-import { Modal, Row, Button, Text, Container } from '@zextras/carbonio-design-system';
+import React, { FC } from 'react';
+import { Modal, Row, Button, Text, Container, Padding } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
+import { Domain } from '../../../../../types';
 
 const DisableDelegateAdminModel: FC<{
 	open: boolean;
 	closeHandler: () => void;
 	saveHandler: () => void;
 	removeAllACLs: () => void;
-	modelDetail: any;
+	modelDetail: Domain;
 }> = ({ open, closeHandler, removeAllACLs, saveHandler, modelDetail }) => {
-	const buttonRef = useRef();
 	const [t] = useTranslation();
+	const domainName = modelDetail?.name;
 	return (
 		<>
 			<Modal
@@ -24,13 +25,13 @@ const DisableDelegateAdminModel: FC<{
 					'label.disable_delegated_administration',
 					'Disable delegated administration for {{name}}?',
 					{
-						name: modelDetail
+						name: domainName
 					}
 				)}
 				open={open}
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="flex-end" cros>
-						<Row style={{ gap: '8px' }}>
+						<Row style={{ gap: '0.5rem' }}>
 							<Button
 								style={{ fontWeight: '900' }}
 								label={
@@ -66,21 +67,23 @@ const DisableDelegateAdminModel: FC<{
 				showCloseIcon
 				onClose={closeHandler}
 			>
-				<Text
-					size={'extralarge'}
-					overflow="break-word"
-					style={{ whiteSpace: 'pre-line', textAlign: 'left', padding: '32px 0' }}
-				>
-					<Trans
-						i18nKey="label.delegated_administration_helper_text"
-						defaults="Delegated administration for {{domainName}} will be disabled. <br /> You have two options: <br /><br /> 1. Remove all ACLs (Access Control Lists) from the domain. <br /> 2.Keep the ACLs (Access Control Lists) in the domain, but disable the associated rights. <br /><br /> How would you like to proceed?"
-						components={{ break: <br /> }}
-						t={t}
-						values={{
-							domainName: modelDetail
-						}}
-					/>
-				</Text>
+				<Padding vertical="extralarge">
+					<Text
+						size={'extralarge'}
+						overflow="break-word"
+						style={{ whiteSpace: 'pre-line', textAlign: 'left' }}
+					>
+						<Trans
+							i18nKey="label.delegated_administration_helper_message"
+							defaults="Delegated administration for {{domainName}} will be disabled. <br /> You have two options: <br /><br /> 1. Remove all ACLs (Access Control Lists) from the domain. <br /> 2. Keep the ACLs (Access Control Lists) in the domain, but disable the associated rights. <br /><br /> How would you like to proceed?"
+							components={{ break: <br /> }}
+							t={t}
+							values={{
+								domainName
+							}}
+						/>
+					</Text>
+				</Padding>
 			</Modal>
 		</>
 	);

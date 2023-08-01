@@ -374,7 +374,7 @@ const ManageDelegates: FC = () => {
 					closeHandler={closeHandler}
 					removeAllACLs={removeAllACLs}
 					saveHandler={deleteHandler}
-					modelDetail={domain.name}
+					modelDetail={domain}
 				/>
 			)}
 			<Container

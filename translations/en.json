@@ -991,6 +991,7 @@
         "default_settings": "Default Settings",
         "delegate_send_settings": "Delegate Send Settings",
         "delegated": "Delegated",
+        "delegated_administration_helper_message": "Delegated administration for {{domainName}} will be disabled. <br /> You have two options: <br /><br /> 1. Remove all ACLs (Access Control Lists) from the domain. <br /> 2. Keep the ACLs (Access Control Lists) in the domain, but disable the associated rights. <br /><br /> How would you like to proceed?",
         "delegated_administration_helper_text": "Delegated administration for {{domainName}} will be disabled. <br /> You have two options: <br /><br /> 1. Remove all ACLs (Access Control Lists) from the domain. <br /> 2.Keep the ACLs (Access Control Lists) in the domain, but disable the associated rights. <br /><br /> How would you like to proceed?",
         "delegates": "DELEGATES",
         "delegates_title": "Delegates",
