@@ -87,7 +87,9 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">{v?.id}</Text>
+						<Text size="small" weight="light">
+							{v?.id}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -96,7 +98,9 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">{v?.name}</Text>
+						<Text size="small" weight="light">
+							{v?.name}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -105,7 +109,7 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">
+						<Text size="small" weight="light">
 							{v?.storeType === LOCAL_VALUE
 								? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
 								: t('volume.volume_allocation_list.object_storage', 'Object Storage')}
@@ -118,7 +122,7 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">
+						<Text size="small" weight="light">
 							{v?.storeType === LOCAL_VALUE
 								? v?.path
 								: t('label.prefix_volume', 'Prefix - {{volumePrefix}}', {
@@ -133,7 +137,7 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text color={v?.isCurrent ? 'text' : 'error'} weight="light">
+						<Text color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
 							{v?.isCurrent ? YES : NO}
 						</Text>
 					</Row>,
@@ -144,7 +148,7 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text color={v?.compressBlobs ? 'text' : 'error'} weight="light">
+						<Text color={v?.compressBlobs ? 'text' : 'error'} size="small" weight="light">
 							{v?.compressBlobs ? YES : NO}
 						</Text>
 					</Row>

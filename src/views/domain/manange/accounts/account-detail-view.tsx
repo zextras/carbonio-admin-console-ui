@@ -342,16 +342,16 @@ const AccountDetailView: FC<any> = ({
 			const allRows = userSessionList.map((item: UserSession) => ({
 				id: item?.sid,
 				columns: [
-					<Text size="medium" weight="light" key={item?.zid} color="#828282">
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="light" key={item?.zid} color="#828282">
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
 						{item?.sid}
 					</Text>,
-					<Text size="medium" weight="light" key={item?.zid} color="#828282">
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
 						{''}
 					</Text>,
-					<Text size="medium" weight="light" key={item?.zid} color="#828282">
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
 						{''}
 					</Text>
 				]

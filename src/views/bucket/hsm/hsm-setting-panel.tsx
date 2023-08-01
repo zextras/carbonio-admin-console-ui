@@ -157,10 +157,9 @@ const HSMsettingPanel: FC = () => {
 				id: item?.hsmQuery,
 				columns: [
 					<Text
-						size="medium"
-						weight="medium"
+						size="small"
+						weight="light"
 						key={item?.hsmQuery}
-						color="#828282"
 						onClick={(e: { stopPropagation: () => void }): void => {
 							e.stopPropagation();
 							setSelectedPolicies([item?.hsmQuery]);

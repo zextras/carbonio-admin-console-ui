@@ -34,7 +34,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.host || ''}</Text>
+						<Text weight="light" size="small">
+							{v?.host || ''}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -46,7 +48,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.name || ''}</Text>
+						<Text weight="light" size="small">
+							{v?.name || ''}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -78,7 +82,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.parameters?.requesterAddress}</Text>
+						<Text weight="light" size="small">
+							{v?.parameters?.requesterAddress}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -90,7 +96,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}</Text>
+						<Text weight="light" size="small">
+							{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -102,7 +110,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}</Text>
+						<Text weight="light" size="small">
+							{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
+						</Text>
 					</Row>
 				],
 				clickable: true
@@ -122,7 +132,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.host || ''}</Text>
+						<Text weight="light" size="small">
+							{v?.host || ''}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -134,7 +146,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.name || ''}</Text>
+						<Text weight="light" size="small">
+							{v?.name || ''}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -146,7 +160,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.parameters?.requesterAddress}</Text>
+						<Text weight="light" size="small">
+							{v?.parameters?.requesterAddress}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -158,7 +174,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}</Text>
+						<Text weight="light" size="small">
+							{v?.startTime ? MiliSecondToDate(v?.startTime) : ''}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -170,7 +188,9 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						<Text weight="light">{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}</Text>
+						<Text weight="light" size="small">
+							{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
+						</Text>
 					</Row>
 				],
 				clickable: true
@@ -197,7 +217,9 @@ export const OperationsTable: FC<{
 			/>
 			{tableRows.length === 0 && (
 				<Row padding={{ top: 'extralarge', horizontal: 'extralarge' }} width="fill">
-					<Text>{t('label.empty_table', 'Empty Table')}</Text>
+					<Text weight="light" size="small">
+						{t('label.empty_table', 'Empty Table')}
+					</Text>
 				</Row>
 			)}
 		</Container>

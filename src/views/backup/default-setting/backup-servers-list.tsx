@@ -117,21 +117,21 @@ const BackupServersListTable: FC<{
 			serverList.map((s, i) => ({
 				id: i?.toString(),
 				columns: [
-					<Text size="medium" weight="light" key={s?.name} color="gray0">
+					<Text size="small" weight="light" key={s?.name} color="gray0">
 						{s?.name}
 					</Text>,
 					<Text
-						size="medium"
+						size="small"
 						weight="light"
 						key={s?.name}
 						color={s?.backupAtStartup ? 'gray0' : 'error'}
 					>
 						{s?.backupAtStartup ? s?.backupAtStartup : t('label.na', 'N/A')}
 					</Text>,
-					<Text size="medium" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
+					<Text size="small" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
 						{s?.rtStatus ? s?.rtStatus : t('label.na', 'N/A')}
 					</Text>,
-					<Text size="medium" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
+					<Text size="small" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
 						{s?.type ? s?.type : t('label.na', 'N/A')}
 					</Text>,
 					<Tooltip
@@ -139,7 +139,7 @@ const BackupServersListTable: FC<{
 						label={s?.smartScanTooltip ? s?.smartScanTooltip : t('label.na', 'N/A')}
 						key={s?.name}
 					>
-						<Text size="medium" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
+						<Text size="small" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
 							{s?.smartScan ? s?.smartScan : t('label.na', 'N/A')}
 						</Text>
 					</Tooltip>,
@@ -148,11 +148,11 @@ const BackupServersListTable: FC<{
 						label={s?.purgeTooltip ? s?.purgeTooltip : t('label.na', 'N/A')}
 						key={s?.name}
 					>
-						<Text size="medium" weight="light" color={s?.purge ? 'gray0' : 'error'}>
+						<Text size="small" weight="light" color={s?.purge ? 'gray0' : 'error'}>
 							{s?.purge ? s?.purge : t('label.na', 'N/A')}
 						</Text>
 					</Tooltip>,
-					<Text size="medium" weight="light" key={s?.name} color="gray0">
+					<Text size="small" weight="light" key={s?.name} color="gray0">
 						{s?.description}
 					</Text>,
 					<Row mainAlignment="flex-start" width="100%" key={s?.name}>
@@ -167,7 +167,7 @@ const BackupServersListTable: FC<{
 								}
 							>
 								<Text
-									size="medium"
+									size="small"
 									weight="light"
 									color={s?.availableMetadataSpace ? 'gray0' : 'error'}
 								>
@@ -188,7 +188,7 @@ const BackupServersListTable: FC<{
 								}
 							>
 								<Text
-									size="medium"
+									size="small"
 									weight="light"
 									color={s?.availableBackupSpace ? 'gray0' : 'error'}
 								>

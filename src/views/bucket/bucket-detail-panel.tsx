@@ -80,7 +80,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.label}</Text>
+							<Text size="small" weight="light">
+								{v.label}
+							</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
@@ -94,7 +96,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.bucketName}</Text>
+							<Text size="small" weight="light">
+								{v.bucketName}
+							</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={v.storeType}>
@@ -108,7 +112,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.storeType}</Text>
+							<Text size="small" weight="light">
+								{v.storeType}
+							</Text>
 						</Row>
 					</Tooltip>
 				],

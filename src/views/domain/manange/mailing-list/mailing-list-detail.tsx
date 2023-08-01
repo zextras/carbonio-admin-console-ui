@@ -284,7 +284,7 @@ const MailingListDetail: FC<any> = ({
 			const allRows = dlMembershipList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="light" key={item?.id} color="gray0">
+					<Text size="small" weight="light" key={item?.id} color="gray0">
 						{item?.label}
 					</Text>,
 					''
@@ -301,7 +301,7 @@ const MailingListDetail: FC<any> = ({
 			const allRows = dlm.map((item: any) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="light" key={item} color="gray0">
+					<Text size="small" weight="light" key={item} color="gray0">
 						{item}
 					</Text>,
 					''
@@ -318,7 +318,7 @@ const MailingListDetail: FC<any> = ({
 			const allRows = ownersList.map((item: any) => ({
 				id: item?.name,
 				columns: [
-					<Text size="medium" weight="light" key={item?.id} color="gray0">
+					<Text size="small" weight="light" key={item?.id} color="gray0">
 						{item?.name}
 					</Text>
 				]

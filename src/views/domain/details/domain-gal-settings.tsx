@@ -81,11 +81,17 @@ const ServerListTable: FC<{
 				id: i,
 				columns: [
 					<Tooltip placement="bottom" label={v?.name} key={i}>
-						<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>{v?.name}</Row>
+						<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+							<Text color="gray0" weight="light">
+								{v?.name}
+							</Text>
+						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v?.name} key={i}>
 						<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-							{v?.galAccount !== null ? v?.galAccount?.name : '-'}
+							<Text color="gray0" weight="light">
+								{v?.galAccount !== null ? v?.galAccount?.name : '-'}
+							</Text>
 						</Row>
 					</Tooltip>
 				],
