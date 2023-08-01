@@ -21,10 +21,11 @@ import styled from 'styled-components';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	postSoapFetchRequest
+	postSoapFetchRequest,
+	useUserSettings
 } from '@zextras/carbonio-shell-ui';
 import { getCosList } from '../../../services/search-cos-service';
-import { MAX_COS_DISPLAY } from '../../../constants';
+import { MAX_COS_DISPLAY, TRUE } from '../../../constants';
 import DropDownInput from '../../components/dropDownInput';
 import { CosMaxAccountValues } from '../../../../types/domain';
 import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
@@ -58,6 +59,16 @@ const DomainCosLink: FC<{
 	const [cosMaxAccountListRow, setCosMaxAccountListRow] = useState<Array<any>>([]);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const userSetting = useUserSettings();
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const customIconDetail = {
 		icon: isCosListExpand ? 'ArrowIosUpward' : 'ArrowIosDownwardOutline',
@@ -467,7 +478,7 @@ const DomainCosLink: FC<{
 							</Container>
 						],
 						hoverContent:
-							defaultDomainCosId !== item.id ? (
+							defaultDomainCosId !== item.id && isGlobalAdmin ? (
 								<Container>
 									<Row>
 										<Padding right="small">
@@ -503,7 +514,7 @@ const DomainCosLink: FC<{
 				setCosMaxAccountListRow([]);
 			}
 		},
-		[markAsDefaultCosToDomain, removeCosLinkRows, t]
+		[isGlobalAdmin, markAsDefaultCosToDomain, removeCosLinkRows, t]
 	);
 
 	useEffect(() => {
@@ -605,64 +616,66 @@ const DomainCosLink: FC<{
 					{t('label.class_of_service', 'Class of Service (cos)')}
 				</Text>
 			</Row>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Container padding={{ all: 'small' }} width="48%">
-					<DropDownInput
-						items={items}
-						inputLabel={t(
-							'cos.select_cos_to_include_in_domain',
-							'Select a COS to include in this domain'
-						)}
-						onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-							setIsCosSelect(false);
-							setSearchCosName(ev.target.value);
-						}}
-						inputValue={searchCosName}
-						isCustomIcon
-						customIconDetail={customIconDetail}
-					/>
-				</Container>
+			{isGlobalAdmin && (
+				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Container padding={{ all: 'small' }} width="48%">
+						<DropDownInput
+							items={items}
+							inputLabel={t(
+								'cos.select_cos_to_include_in_domain',
+								'Select a COS to include in this domain'
+							)}
+							onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+								setIsCosSelect(false);
+								setSearchCosName(ev.target.value);
+							}}
+							inputValue={searchCosName}
+							isCustomIcon
+							customIconDetail={customIconDetail}
+						/>
+					</Container>
 
-				<Container padding={{ all: 'small' }} width="34%">
-					<Input
-						label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
-						value={maxAccountValue}
-						background="gray6"
-						onChange={(e: any): any => {
-							setMaxAccountValue(e.target.value);
-						}}
-					/>
-				</Container>
-				<Container crossAlignment="flex-end" padding={{ all: 'small' }} width="18%">
-					<Row>
-						<Padding right="medium">
+					<Container padding={{ all: 'small' }} width="34%">
+						<Input
+							label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
+							value={maxAccountValue}
+							background="gray6"
+							onChange={(e: any): any => {
+								setMaxAccountValue(e.target.value);
+							}}
+						/>
+					</Container>
+					<Container crossAlignment="flex-end" padding={{ all: 'small' }} width="18%">
+						<Row>
+							<Padding right="medium">
+								<Button
+									type="outlined"
+									label={t('label.duplicate', 'Duplicate')}
+									color="primary"
+									onClick={(event: { stopPropagation: () => void }): void => {
+										event.stopPropagation();
+										onDuplicate(cosId, maxAccountValue, searchCosName);
+									}}
+								/>
+							</Padding>
 							<Button
 								type="outlined"
-								label={t('label.duplicate', 'Duplicate')}
+								label={t('label.link', 'Link')}
 								color="primary"
 								onClick={(event: { stopPropagation: () => void }): void => {
 									event.stopPropagation();
-									onDuplicate(cosId, maxAccountValue, searchCosName);
+									onSaveCosLinkToDomain(cosId, maxAccountValue);
 								}}
 							/>
-						</Padding>
-						<Button
-							type="outlined"
-							label={t('label.link', 'Link')}
-							color="primary"
-							onClick={(event: { stopPropagation: () => void }): void => {
-								event.stopPropagation();
-								onSaveCosLinkToDomain(cosId, maxAccountValue);
-							}}
-						/>
-					</Row>
-				</Container>
-			</Row>
+						</Row>
+					</Container>
+				</Row>
+			)}
 			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
 				<Table
 					rows={cosMaxAccountListRow}
 					headers={headers}
-					showCheckbox
+					showCheckbox={isGlobalAdmin}
 					multiSelect={false}
 					style={{ overflow: 'auto', height: '100%' }}
 					RowFactory={HoverContentRowFactory}
