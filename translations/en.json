@@ -1467,7 +1467,7 @@
         "save": "Save",
         "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Save a copy of sent messages to delegate's Sent folder",
         "save_a_copy_of_sent_messages_only_in_delegates_send_folder": "Save a copy of sent messages only in delegate's Sent folder",
-        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Save a copy of sent messages to delegate's Sent folder",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Save a copy of sent messages to delegate's and delegated Sent folder",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Save a copy of sent messages to delegate’s Sent folder",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Save a copy of sent messages to my Sent folder",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Save a copy of sent messages to my Sent folder and delegate’s folder",

@@ -1760,7 +1760,7 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
-			`Save a copy of sent messages to delegate's Sent folder`
+			`Save a copy of sent messages to delegate's and delegated Sent folder`
 		),
 		value: 'both'
 	},
