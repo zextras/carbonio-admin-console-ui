@@ -930,6 +930,45 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 	}
 ];
 
+export const delegateDomainHeaders = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	align: string;
+}> => [
+	{
+		id: 'id',
+		label: t('label.account', 'Account'),
+		width: '20%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'name',
+		label: t('label.access_control_lists', 'Rights (Access Control Lists)'),
+		width: '30%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'storeType',
+		label: t('label.domain', 'Domain'),
+		width: '20%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'path',
+		label: t('label.description', 'Description'),
+		width: '40%',
+		bold: true,
+		align: 'left'
+	}
+];
+
 export const volTableHeader = (
 	t: TFunction
 ): Array<{
