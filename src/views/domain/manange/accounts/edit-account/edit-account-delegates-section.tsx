@@ -53,6 +53,7 @@ import {
 	SEND_READ_MANAGE_MAILS
 } from '../../../../../constants';
 import InheritedSelect from './inherited-components/inherited-select';
+import CustomChip from '../../../../components/customChip';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -783,7 +784,7 @@ const EditAccountDelegatesSection: FC = () => {
 		const type = 'distributionlists,accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domainName, searchQuery, 0, 10).then((data) => {
+		accountListDirectory(attrs, type, '', searchQuery, 0, 10).then((data) => {
 			const accountListArr: any[] = [];
 			data?.account?.map(
 				(delegateAccount: any) =>
@@ -805,7 +806,7 @@ const EditAccountDelegatesSection: FC = () => {
 			);
 			setOptions(accountListArr);
 		});
-	}, [accountDetail.zimbraId, domainName, searchQuery]);
+	}, [accountDetail.zimbraId, searchQuery]);
 
 	useEffect(() => {
 		if (searchQuery) getAccountList();
@@ -826,39 +827,6 @@ const EditAccountDelegatesSection: FC = () => {
 			orientation="vertical"
 			style={{ overflow: 'auto' }}
 		>
-			<Row
-				padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-				mainAlignment="flex-start"
-				width="100%"
-			>
-				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-					<Text size="small" color="gray0" weight="bold">
-						{t('label.delegate_send_settings', 'Delegate Send Settings')}
-					</Text>
-				</Row>
-			</Row>
-			<Row
-				width="100%"
-				padding={{ bottom: 'extralarge', right: 'extralarge', left: 'large' }}
-				mainAlignment="space-between"
-			>
-				<Row width="100%" mainAlignment="flex-start">
-					<InheritedSelect
-						label={t('label.delegate_send_settings', 'Delegate Send Settings')}
-						items={DELEGATE_SEND_SETTINGS}
-						accountValue={accountDetail?.zimbraPrefDelegatedSendSaveTarget}
-						cosValue={cosDetail.zimbraPrefDelegatedSendSaveTarget}
-						fromAccount={accSpecificDetail?.zimbraPrefDelegatedSendSaveTarget}
-						background="gray5"
-						selectName="zimbraPrefTimeZoneId"
-						onChange={onDeligateSendSettingsChange}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefTimeZoneId')}
-					/>
-				</Row>
-			</Row>
-			<Row width="100%" padding={{ top: 'medium' }}>
-				<Divider color="gray2" />
-			</Row>
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
@@ -893,6 +861,39 @@ const EditAccountDelegatesSection: FC = () => {
 					)}
 				</Row>
 			</Container>
+			<Row
+				padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+				mainAlignment="flex-start"
+				width="100%"
+			>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t(`label.delegate's_general_send_settings`, `Delegate's general Send Settings`)}
+					</Text>
+				</Row>
+			</Row>
+			<Row
+				width="100%"
+				padding={{ bottom: 'extralarge', right: 'extralarge', left: 'large' }}
+				mainAlignment="space-between"
+			>
+				<Row width="100%" mainAlignment="flex-start">
+					<InheritedSelect
+						label={t('label.delegate_send_settings', 'Delegate Send Settings')}
+						items={DELEGATE_SEND_SETTINGS}
+						accountValue={accountDetail?.zimbraPrefDelegatedSendSaveTarget}
+						cosValue={cosDetail.zimbraPrefDelegatedSendSaveTarget}
+						fromAccount={accSpecificDetail?.zimbraPrefDelegatedSendSaveTarget}
+						background="gray5"
+						selectName="zimbraPrefTimeZoneId"
+						onChange={onDeligateSendSettingsChange}
+						onChangeReset={(): void => setEmptyValue('zimbraPrefTimeZoneId')}
+					/>
+				</Row>
+			</Row>
+			<Row width="100%" padding={{ top: 'medium' }}>
+				<Divider color="gray2" />
+			</Row>
 
 			{isSimplified && (
 				<Container
@@ -900,6 +901,15 @@ const EditAccountDelegatesSection: FC = () => {
 					height="auto"
 					padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
 				>
+					<Row
+						padding={{ right: 'extralarge', bottom: 'large', top: 'large' }}
+						mainAlignment="flex-start"
+						width="100%"
+					>
+						<Text size="small" color="gray0" weight="bold">
+							{t(`label.delegate's_rights`, `Delegate's Rights`)}
+						</Text>
+					</Row>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
@@ -952,15 +962,30 @@ const EditAccountDelegatesSection: FC = () => {
 								setSearchQuery('');
 							}}
 							requireUniqueChips
+							ChipComponent={CustomChip}
 						/>
 					</Container>
 					<Container mainAlignment="flex-start">
-						<Row
-							width="100%"
-							padding={{ top: 'large', left: 'large' }}
-							mainAlignment="space-between"
-						>
-							<Row width="24%" mainAlignment="flex-start">
+						<Row width="100%" padding={{ top: 'large' }} mainAlignment="space-between">
+							<Row
+								width="50%"
+								mainAlignment="flex-start"
+								padding={{ top: 'large', bottom: 'large' }}
+							>
+								<Text size="small" color="gray0" weight="bold">
+									{t('label.read_options', 'Read options')}
+								</Text>
+							</Row>
+							<Row
+								width="50%"
+								mainAlignment="flex-start"
+								padding={{ top: 'large', bottom: 'large' }}
+							>
+								<Text size="small" color="gray0" weight="bold">
+									{t('label.send_options', 'Send options')}
+								</Text>
+							</Row>
+							<Row width="25%" mainAlignment="flex-start">
 								<Checkbox
 									iconColor="primary"
 									value={readRightWriteCheck}
@@ -973,7 +998,7 @@ const EditAccountDelegatesSection: FC = () => {
 									label={t('account_details.read_write', 'Read / Write')}
 								/>
 							</Row>
-							<Row width="24%" mainAlignment="flex-start">
+							<Row width="25%" mainAlignment="flex-start">
 								<Checkbox
 									iconColor="primary"
 									value={readRightCheck}
@@ -986,7 +1011,7 @@ const EditAccountDelegatesSection: FC = () => {
 									label={t('account_details.read_only', 'Read Only')}
 								/>
 							</Row>
-							<Row width="24%" mainAlignment="flex-start">
+							<Row width="25%" mainAlignment="flex-start">
 								<Checkbox
 									iconColor="primary"
 									value={sendRightCheck}
@@ -999,7 +1024,7 @@ const EditAccountDelegatesSection: FC = () => {
 									label={t('account_details.send_check', 'Send')}
 								/>
 							</Row>
-							<Row width="24%" mainAlignment="flex-start">
+							<Row width="25%" mainAlignment="flex-start">
 								<Checkbox
 									iconColor="primary"
 									value={sendBehalfRightCheck}
@@ -1017,7 +1042,7 @@ const EditAccountDelegatesSection: FC = () => {
 					<Container mainAlignment="flex-start">
 						<Row
 							width="100%"
-							padding={{ top: 'large', left: 'large' }}
+							padding={{ top: 'large' }}
 							margin={{ top: 'large' }}
 							mainAlignment="space-between"
 						>
@@ -1043,7 +1068,7 @@ const EditAccountDelegatesSection: FC = () => {
 					<Row width="100%" padding={{ top: 'medium' }}>
 						<Divider color="gray2" />
 					</Row>
-					<Container mainAlignment="flex-start" height="auto" padding={{ bottom: 'large' }}>
+					<Container mainAlignment="flex-start" height="auto" padding={{ bottom: '3rem' }}>
 						<Container
 							width="100%"
 							padding={{ top: 'large', left: 'large' }}

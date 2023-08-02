@@ -15,11 +15,11 @@ import {
 	Input,
 	Icon,
 	Select,
-	Chip,
 	Divider,
 	Button
 } from '@zextras/carbonio-design-system';
 import { useDomainStore } from '../../store/domain/store';
+import CustomChip from './customChip';
 
 const ManageAliases: FC<{
 	listAliases: Array<{ label: string }>;
@@ -57,7 +57,7 @@ const ManageAliases: FC<{
 							{listAliases?.map(
 								(ele, index) =>
 									(aliasType !== 'accounts' || index > 0) && (
-										<Chip key={`chip${index}`} label={ele.label} />
+										<CustomChip key={`chip${index}`} label={ele?.label} />
 									)
 							)}
 							<Row width="100%" padding={{ top: 'medium' }}>
@@ -183,7 +183,7 @@ const ManageAliases: FC<{
 								{listAliases?.map(
 									(ele, index) =>
 										(aliasType !== 'accounts' || index > 0) && (
-											<Chip
+											<CustomChip
 												key={`chip${index}`}
 												label={ele.label}
 												onClose={(): void => {

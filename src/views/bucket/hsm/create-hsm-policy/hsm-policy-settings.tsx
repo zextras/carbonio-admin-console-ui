@@ -182,10 +182,9 @@ const HSMpolicySettings: FC<any> = () => {
 					id: index,
 					columns: [
 						<Text
-							size="medium"
-							weight="medium"
+							size="small"
+							weight="regular"
 							key={index}
-							color="#828282"
 							onClick={(): void => {
 								setSelectedPolicies([index]);
 							}}

@@ -23,6 +23,7 @@ import { AccountContext } from './account-context';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { emailContent } from './email-content';
 import { isValidEmail } from '../../../../utility/utils';
+import CustomChip from '../../../../components/customChip';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -255,6 +256,7 @@ const AccountOtpSection: FC = () => {
 									defaultValue={sendEmailTo}
 									value={sendEmailTo}
 									background="gray5"
+									ChipComponent={CustomChip}
 									// hasError={some(sendEmailTo || [], { error: true })}
 								/>
 							</Row>

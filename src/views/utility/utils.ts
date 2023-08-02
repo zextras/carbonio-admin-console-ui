@@ -897,7 +897,7 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 		value: 'S3'
 	},
 	{
-		label: t('buckets.s3_types.ceph_s3', 'Ceph S3'),
+		label: t('buckets.s3_types.ceph', 'Ceph'),
 		value: 'Ceph'
 	},
 	{
@@ -927,6 +927,45 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 	{
 		label: t('buckets.s3_types.minio', 'minIO'),
 		value: 'Minio'
+	}
+];
+
+export const delegateDomainHeaders = (
+	t: TFunction
+): Array<{
+	id: string;
+	label: string;
+	width: string;
+	bold: boolean;
+	align: string;
+}> => [
+	{
+		id: 'id',
+		label: t('label.account', 'Account'),
+		width: '20%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'name',
+		label: t('label.access_control_lists', 'Rights (Access Control Lists)'),
+		width: '30%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'storeType',
+		label: t('label.domain', 'Domain'),
+		width: '20%',
+		bold: true,
+		align: 'left'
+	},
+	{
+		id: 'path',
+		label: t('label.description', 'Description'),
+		width: '40%',
+		bold: true,
+		align: 'left'
 	}
 ];
 
@@ -1515,6 +1554,10 @@ export const BucketRegions = (t: TFunction): Array<{ value?: string; label: stri
 		value: 'EU_WEST_3'
 	},
 	{
+		label: t('buckets.amazon_regions.eu_south_2', 'EU (Spain)'),
+		value: 'EU_SOUTH_2'
+	},
+	{
 		label: t('buckets.amazon_regions.govcloud', 'AWS GovCloud (US)'),
 		value: 'GovCloud'
 	},
@@ -1756,7 +1799,7 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
-			`Save a copy of sent messages to delegate's Sent folder`
+			`Save a copy of sent messages to delegate's and delegated Sent folder`
 		),
 		value: 'both'
 	},
