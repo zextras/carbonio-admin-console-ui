@@ -23,18 +23,14 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, filter, find, isEqual } from 'lodash';
-import { useHistory } from 'react-router-dom';
 import { timeZoneList, getFormatedDate, getDateFromStr } from '../../utility/utils';
 import {
 	ACTIVE,
 	CLOSED,
-	DELEGATES,
-	DOMAINS_ROUTE_ID,
 	HTTP,
 	HTTPS,
 	LOCKED,
 	MAINTENANCE,
-	MANAGE,
 	NOT_SET,
 	SUSPENDED
 } from '../../../constants';
@@ -53,11 +49,9 @@ const CustomIcon = styled(Icon)`
 
 const DomainGeneralSettings: FC = () => {
 	const [t] = useTranslation();
-	const history = useHistory();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
 	const cosList = useDomainStore((state) => state.cosList);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
-	const domainInformationData = useDomainStore((state) => state.domain);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const removeDomain = useDomainStore((state) => state.removeDomain);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -728,19 +722,6 @@ const DomainGeneralSettings: FC = () => {
 						width="100%"
 						padding={{ top: 'large' }}
 					>
-						<ListRow>
-							<Container crossAlignment="flex-start" padding={{ horizontal: 'large' }}>
-								<Text
-									style={{ cursor: 'pointer' }}
-									color="primary"
-									onClick={(): void => {
-										history.push(
-											`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformationData?.id}/${DELEGATES}`
-										);
-									}}
-								>{`This domain has {number of} delegated administrators. Click here to manage them`}</Text>
-							</Container>
-						</ListRow>
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
