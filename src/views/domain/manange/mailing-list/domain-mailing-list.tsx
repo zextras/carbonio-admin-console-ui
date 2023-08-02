@@ -170,8 +170,6 @@ const DomainMailingList: FC = () => {
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
-		setMailingListItem([]);
-		setMailingList([]);
 		setIsRequestInProgress(true);
 		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name').then((data) => {
 			const dlList = data?.dl;
@@ -298,7 +296,7 @@ const DomainMailingList: FC = () => {
 
 	useEffect(() => {
 		getMailingList();
-	}, [offset, getMailingList]);
+	}, [getMailingList]);
 
 	const generateSearchFilterQuery = (): string => {
 		let filterQuery = '';
@@ -316,7 +314,6 @@ const DomainMailingList: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchMailingListQuery = useCallback(
 		debounce(() => {
-			setOffset(0);
 			setSearchQuery(generateSearchFilterQuery());
 		}, 700),
 		[debounce, generateSearchFilterQuery]
@@ -661,11 +658,13 @@ const DomainMailingList: FC = () => {
 							width="fill"
 							style={{
 								height:
-									mailingList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+									mailingList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
 							}}
 						>
 							<Table
-								rows={mailingList}
+								rows={!isRequestInProgress ? mailingList : []}
 								headers={headers}
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}

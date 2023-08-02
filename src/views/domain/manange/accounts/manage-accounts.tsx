@@ -583,7 +583,6 @@ const ManageAccounts: FC = () => {
 	);
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
-		setAccountList([]);
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
@@ -867,12 +866,14 @@ const ManageAccounts: FC = () => {
 							width="fill"
 							style={{
 								height:
-									accountList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+									accountList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
 							}}
 							ref={tableRef}
 						>
 							<Table
-								rows={accountList}
+								rows={!isRequestInProgress ? accountList : []}
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}

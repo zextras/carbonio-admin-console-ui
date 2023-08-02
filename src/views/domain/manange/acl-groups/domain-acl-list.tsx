@@ -169,8 +169,6 @@ const DomainAclList: FC = () => {
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE))(zimbraIsAdminGroup=TRUE))`;
-		setAclListItem([]);
-		setAclList([]);
 		setIsRequestInProgress(true);
 		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name').then((data) => {
 			const dlList = data?.dl;
@@ -315,7 +313,6 @@ const DomainAclList: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAclListQuery = useCallback(
 		debounce(() => {
-			setOffset(0);
 			setSearchQuery(generateSearchFilterQuery());
 		}, 700),
 		[debounce, generateSearchFilterQuery]
@@ -674,11 +671,14 @@ const DomainAclList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: aclList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+								height:
+									aclList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
 							}}
 						>
 							<Table
-								rows={aclList}
+								rows={!isRequestInProgress ? aclList : []}
 								headers={headers}
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}
