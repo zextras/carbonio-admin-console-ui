@@ -411,7 +411,7 @@ const ManageDelegates: FC = () => {
 					background="gray6"
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
-					height="calc(100% - 70px)"
+					height="calc(100% - 4.375rem)"
 					style={{ overflow: 'auto' }}
 					padding={{ all: 'large' }}
 				>
