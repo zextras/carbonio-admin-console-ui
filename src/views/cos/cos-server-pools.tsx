@@ -76,7 +76,7 @@ const CosServerPools: FC = () => {
 							setSelectedTableRows([item]);
 						}}
 					>
-						<Text size="small" weight="light" key={item?.id} color="gray0">
+						<Text size="small" weight="regular" key={item?.id} color="gray0">
 							{item?.name}
 						</Text>
 					</Container>,
@@ -153,7 +153,7 @@ const CosServerPools: FC = () => {
 									setSelectedTableRows([item]);
 								}}
 							>
-								<Text size="small" weight="light" key={item?.id} color="gray0">
+								<Text size="small" weight="regular" key={item?.id} color="gray0">
 									{item?.name}
 								</Text>
 							</Container>,
@@ -199,7 +199,7 @@ const CosServerPools: FC = () => {
 									setSelectedTableRows([item]);
 								}}
 							>
-								<Text size="small" weight="light" key={item?.id} color="gray0">
+								<Text size="small" weight="regular" key={item?.id} color="gray0">
 									{item?.name}
 								</Text>
 							</Container>,
@@ -370,7 +370,7 @@ const CosServerPools: FC = () => {
 									setSelectedTableRows([item]);
 								}}
 							>
-								<Text size="small" weight="light" key={item?.id} color="gray0">
+								<Text size="small" weight="regular" key={item?.id} color="gray0">
 									{item?.name}
 								</Text>
 							</Container>,

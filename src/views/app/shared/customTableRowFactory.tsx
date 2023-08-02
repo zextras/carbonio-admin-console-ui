@@ -37,6 +37,7 @@ const TableRow = styled.tr<{
 		css`
 			cursor: pointer;
 		`};
+	height: 2.75rem;
 `;
 
 type TRow = {
@@ -126,7 +127,7 @@ const CustomRowFactory = ({
 	const rowData = useMemo(
 		() =>
 			row.columns.map((column, i) => (
-				<td style={{ height: '2.5rem', cursor: 'pointer' }} key={i}>
+				<td style={{ height: '2.5rem', cursor: 'pointer', color: '#414141' }} key={i}>
 					{typeof column === 'string' ? <Text>{column}</Text> : column}
 				</td>
 			)),
@@ -151,7 +152,9 @@ const CustomRowFactory = ({
 						iconColor={(multiSelect && selectionMode) || selected ? 'primary' : 'text'}
 					/>
 				) : (
-					<Text>{index}</Text>
+					<Text size="small" weight="light">
+						{index}
+					</Text>
 				)}
 			</td>
 			{rowData}

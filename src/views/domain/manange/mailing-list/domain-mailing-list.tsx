@@ -155,7 +155,7 @@ const DomainMailingList: FC = () => {
 									handleClick(e);
 								}}
 							>
-								<Text size="medium" weight="light" key={`${item?.id}display-child`} color="gray0">
+								<Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
 									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
 								</Text>
 							</Container>,
@@ -170,7 +170,7 @@ const DomainMailingList: FC = () => {
 									handleClick(e);
 								}}
 							>
-								<Text size="medium" weight="light" key={`${item?.id}address-child`} color="gray0">
+								<Text size="small" weight="light" key={`${item?.id}address-child`} color="gray0">
 									{item?.name}
 								</Text>
 							</Container>,
@@ -185,7 +185,7 @@ const DomainMailingList: FC = () => {
 									handleClick(e);
 								}}
 							>
-								<Text size="medium" weight="light" key={`${item?.id}member-child`} color="gray0">
+								<Text size="small" weight="light" key={`${item?.id}member-child`} color="gray0">
 									{''}
 								</Text>
 							</Container>,
@@ -200,7 +200,7 @@ const DomainMailingList: FC = () => {
 									handleClick(e);
 								}}
 							>
-								<Text size="medium" weight="light" key={`${item?.id}status-child`} color="gray0">
+								<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
 									{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
 										? t('label.can_receive', 'Can receive')
 										: ''}
@@ -217,7 +217,7 @@ const DomainMailingList: FC = () => {
 									handleClick(e);
 								}}
 							>
-								<Text size="medium" weight="light" key={`${item?.id}gal-child`} color="gray0">
+								<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
 									{''}
 								</Text>
 							</Container>,
@@ -233,7 +233,7 @@ const DomainMailingList: FC = () => {
 								}}
 							>
 								<Text
-									size="medium"
+									size="small"
 									weight="light"
 									key={`${item?.id}description-child`}
 									color="gray0"

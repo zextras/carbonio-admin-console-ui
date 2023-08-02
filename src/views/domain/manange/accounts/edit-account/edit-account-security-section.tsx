@@ -36,6 +36,7 @@ import { isValidEmail } from '../../../../utility/utils';
 import InheritedInput from './inherited-components/inherited-input';
 import InheritedSwitch from './inherited-components/inherited-switch';
 import InheritedSelect from './inherited-components/inherited-select';
+import CustomChip from '../../../../components/customChip';
 
 const StaticCodesContainer = styled(Row)`
 	max-width: 350px;
@@ -223,6 +224,7 @@ const EditAccountSecuritySection: FC = () => {
 										defaultValue={sendEmailTo}
 										value={sendEmailTo}
 										background="gray5"
+										ChipComponent={CustomChip}
 										// hasError={some(sendEmailTo || [], { error: true })}
 									/>
 								</Row>

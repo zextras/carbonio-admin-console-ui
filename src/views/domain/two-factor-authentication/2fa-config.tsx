@@ -18,6 +18,7 @@ import { map, some } from 'lodash';
 import ListRow from '../../list/list-row';
 import { TwoFactorWhatToTrust, isValidIpRange } from '../../utility/utils';
 import { IpRangeValue, TwoFactorAuthPolicyValues } from '../../../../types';
+import CustomChip from '../../components/customChip';
 
 export const TwoFactorAuthencationConfig: FC<{
 	policies: TwoFactorAuthPolicyValues[];
@@ -136,6 +137,7 @@ export const TwoFactorAuthencationConfig: FC<{
 								hasError={some(applyAllValues.ipRange || [], { error: true })}
 								value={applyAllValues.ipRange}
 								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
+								ChipComponent={CustomChip}
 							/>
 						</Padding>
 					</ListRow>
@@ -210,6 +212,7 @@ export const TwoFactorAuthencationConfig: FC<{
 												(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
 											)}
 											errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
+											ChipComponent={CustomChip}
 										/>
 									</Padding>
 								</ListRow>

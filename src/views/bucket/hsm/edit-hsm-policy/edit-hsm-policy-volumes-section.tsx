@@ -89,18 +89,18 @@ const EditHsmPolicyVolumesSection: FC<{
 			const allRows = volumeList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="medium" key={item} color="#828282">
+					<Text size="small" weight="regular" key={item}>
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="medium" key={item} color="#828282">
+					<Text size="small" weight="light" key={item}>
 						{''}
 					</Text>,
-					<Text size="medium" weight="medium" key={item} color="#828282">
+					<Text size="small" weight="light" key={item}>
 						{getVoumeType(item?.type)}
 					</Text>,
 					<Text
-						size="medium"
-						weight="medium"
+						size="small"
+						weight="light"
 						key={item}
 						color={item?.isCurrent ? 'gray0' : '#D74942'}
 					>
