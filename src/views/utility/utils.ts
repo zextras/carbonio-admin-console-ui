@@ -897,7 +897,7 @@ export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: st
 		value: 'S3'
 	},
 	{
-		label: t('buckets.s3_types.ceph_s3', 'Ceph S3'),
+		label: t('buckets.s3_types.ceph', 'Ceph'),
 		value: 'Ceph'
 	},
 	{
