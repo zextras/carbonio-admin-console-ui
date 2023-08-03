@@ -105,6 +105,12 @@ type TwoFactorPolicy = {
 	keyToGet: string;
 };
 
+export type CosMaxAccountValues = {
+	id: string;
+	name?: string;
+	value: string;
+};
+
 type DomainResponse = {
 	domain: {
 		name: string;
