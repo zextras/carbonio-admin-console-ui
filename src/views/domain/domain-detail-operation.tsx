@@ -23,7 +23,8 @@ import {
 	ACTIVE_SYNC,
 	THEME,
 	SAML,
-	TWO_FACTOR_AUTHENTICATION
+	TWO_FACTOR_AUTHENTICATION,
+	DELEGATES
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -41,6 +42,7 @@ import ActiveSync from './manange/active-sync/active-sync';
 import DomainTheme from './details/domain-theme';
 import DomainSaml from './details/domain-saml';
 import DomainTwoFactorAuthentication from './details/domain-2fa';
+import ManageDelegates from './manange/delegates/manage-delegates';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
@@ -104,6 +106,8 @@ const DomainOperations: FC = () => {
 						return <DomainSaml />;
 					case ACCOUNTS:
 						return <ManageAccounts />;
+					case DELEGATES:
+						return <ManageDelegates />;
 					case MAILING_LIST:
 						return <DomainMailingList />;
 					case ACL_LIST:

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -15,7 +15,8 @@ import {
 	Select,
 	Padding,
 	Divider,
-	Tooltip
+	Tooltip,
+	Switch
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -23,9 +24,19 @@ import { useHistory } from 'react-router-dom';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
-import { ACTIVE, DOMAINS_ROUTE_ID, HTTPS, INTERNAL_GAL, MANAGE } from '../../constants';
+import {
+	ACTIVE,
+	DOMAINS_ROUTE_ID,
+	GENERAL_SETTINGS,
+	HTTPS,
+	INTERNAL_GAL,
+	MANAGE
+} from '../../constants';
 import ListRow from '../list/list-row';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
+import { useDomainStore } from '../../store/domain/store';
+import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../../../types';
+import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
 
 // eslint-disable-next-line no-shadow
 export enum GAL_MODE {
@@ -36,7 +47,7 @@ export enum GAL_MODE {
 
 const CreateDomain: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const history = useHistory();
 	const galModes = useMemo(
 		() => [
@@ -55,10 +66,22 @@ const CreateDomain: FC = () => {
 		],
 		[t]
 	);
-	const [createObjectAttributeData, setCreateObjectAttributeData] = useState<any>({});
+	const setIsDomainSupportDelegatedAdmin = useDomainStore(
+		(state) => state.setIsDomainSupportDelegatedAdmin
+	);
+	const [createObjectAttributeData, setCreateObjectAttributeData] = useState<{
+		[key: string]: string | string[];
+	}>({});
 	const [zimbraGalMode, setZimbraGalMode] = useState<string>('Internal');
-	const [zimbraPublicServiceHostnameList, setZimbraPublicServiceHostnameList] = useState<any>([]);
-	const [zimbraPublisServiceHostname, setZimbraPublisServiceHostname] = useState<any>({});
+	const [zimbraPublicServiceHostnameList, setZimbraPublicServiceHostnameList] = useState<
+		{ [key: string]: string }[]
+	>([]);
+	const [zimbraPublisServiceHostname, setZimbraPublisServiceHostname] = useState<
+		| {
+				[key: string]: string;
+		  }
+		| undefined
+	>({});
 	const [galSyncAccountName, setGalSyncAccountName] = useState<string>('galsync');
 	const [dataSourceName, setDataSourceName] = useState<string>(INTERNAL_GAL);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
@@ -66,10 +89,10 @@ const CreateDomain: FC = () => {
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
 	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
-
+	const [isDomainDelegatedAdmin, setIsDomainDelegatedAdmin] = useState(false);
 	useEffect(() => {
 		if (allMailStoreList && allMailStoreList.length > 0) {
-			const data = allMailStoreList.map((item: any) => ({
+			const data = allMailStoreList.map((item: { [key: string]: string }) => ({
 				label: item?.name,
 				value: item?.name
 			}));
@@ -93,10 +116,12 @@ const CreateDomain: FC = () => {
 			}
 		];
 		createObjectAttribute(target, domain).then((data) => {
-			const obj: any = {};
+			const obj: {
+				[key: string]: string | string[];
+			} = {};
 			const allData = data?.setAttrs[0]?.a;
 			if (allData && allData.length > 0) {
-				allData.forEach((item: any) => {
+				allData.forEach((item: { [key: string]: string }) => {
 					if (item?.default) {
 						obj[item?.n] = item.default;
 					} else {
@@ -108,8 +133,10 @@ const CreateDomain: FC = () => {
 		});
 	};
 
-	const onPublicServiceProtocolChange = (v: any): any => {
-		const item = zimbraPublicServiceHostnameList.find((itemList: any) => itemList.value === v);
+	const onPublicServiceProtocolChange = (v: string): void => {
+		const item = zimbraPublicServiceHostnameList.find(
+			(itemList: { [key: string]: string }) => itemList.value === v
+		);
 		setZimbraPublisServiceHostname(item);
 	};
 
@@ -131,17 +158,51 @@ const CreateDomain: FC = () => {
 		});
 	};
 
-	const routeToDomain = (resp: any): void => {
+	const routeToDomain = (resp: DomainResponse): void => {
 		const domainId = resp?.domain[0]?.id;
 		if (domainId) {
-			replaceHistory(`/${domainId}/general_settings`);
+			replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 		} else {
 			replaceHistory(`/`);
 		}
 	};
 
+	const handleRevokesGrants = useCallback(() => {
+		InitDomainForDelegation('/admin/initDomainForDelegation', {
+			_jsns: 'urn:zimbraAdmin',
+			domain: domainName
+		})
+			.then((res: objectType) => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: res?.message
+						? res?.message
+						: t(
+								'label.the_last_changes_has_been_saved_successfully',
+								'Changes have been saved successfully'
+						  ),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, domainName, t]);
+
 	const onCreate = (): void => {
-		let attributes: any[] = [];
+		let attributes: Attribute[] = [];
 		attributes.push({
 			n: 'zimbraNotes',
 			_content: zimbraNotes
@@ -197,11 +258,14 @@ const CreateDomain: FC = () => {
 						attributes,
 						`_${dataSourceName}`
 					).then((resp) => {
+						if (isDomainDelegatedAdmin) {
+							handleRevokesGrants();
+						}
 						showSuccessSnackBar();
 						routeToDomain(data);
 					});
 				} else {
-					const domain: any = data?.domain[0];
+					const domain: Attribute = data?.domain[0];
 					if (domain) {
 						showSuccessSnackBar();
 						routeToDomain(data);
@@ -235,13 +299,17 @@ const CreateDomain: FC = () => {
 		history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}`);
 	};
 
+	useEffect(() => {
+		setIsDomainSupportDelegatedAdmin(!isDomainDelegatedAdmin);
+	}, [isDomainDelegatedAdmin, setIsDomainSupportDelegatedAdmin]);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Container
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				background="gray6"
-				height="58px"
+				height="3.625rem"
 			>
 				<Row width="100%" mainAlignment="flex-start">
 					<Padding all="large">
@@ -258,7 +326,7 @@ const CreateDomain: FC = () => {
 				mainAlignment="flex-start"
 				style={{ overflow: 'auto' }}
 				width="100%"
-				height="calc(100vh - 150px)"
+				height="calc(100vh - 9.375rem)"
 				padding={{ top: 'large' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
@@ -283,7 +351,7 @@ const CreateDomain: FC = () => {
 									)}
 									background="gray5"
 									value={domainName}
-									onChange={(e: any): any => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setDomainName(e.target.value);
 									}}
 								/>
@@ -298,7 +366,7 @@ const CreateDomain: FC = () => {
 									)}
 									background="gray5"
 									value={zimbraDomainMaxAccounts}
-									onChange={(e: any): any => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setZimbraDomainMaxAccounts(e.target.value);
 									}}
 								/>
@@ -311,19 +379,19 @@ const CreateDomain: FC = () => {
 									)}
 									background="gray5"
 									value={zimbraMailDomainQuota}
-									onChange={(e: any): any => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setZimbraMailDomainQuota(e.target.value);
 									}}
 								/>
 							</Container>
 						</ListRow>
 						<ListRow>
-							<Container padding={{ all: 'small' }}>
+							<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
 								<Input
 									label={t('label.note', 'Note')}
 									background="gray5"
 									value={zimbraNotes}
-									onChange={(e: any): any => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setZimbraNotes(e.target.value);
 									}}
 								/>
@@ -331,7 +399,13 @@ const CreateDomain: FC = () => {
 						</ListRow>
 					</Container>
 				</Row>
-
+				<Row
+					width="100%"
+					mainAlignment="flex-start"
+					padding={{ vertical: 'large', horizontal: 'small' }}
+				>
+					<Divider />
+				</Row>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
@@ -360,7 +434,7 @@ const CreateDomain: FC = () => {
 									disabled
 									label={t('label.gal_mode', 'GAL Mode')}
 									background="gray5"
-									onChange={(e: any): any => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setZimbraGalMode(e.target.value);
 									}}
 									disable
@@ -371,7 +445,7 @@ const CreateDomain: FC = () => {
 									label={t('label.gal_folder_name', 'GAL folder name')}
 									background="gray5"
 									value={galSyncAccountName}
-									onChange={(e: any): any => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setGalSyncAccountName(e.target.value);
 									}}
 								/>
@@ -389,14 +463,48 @@ const CreateDomain: FC = () => {
 									onChange={onPublicServiceProtocolChange}
 								/>
 							</Container>
-							<Container padding={{ all: 'small' }}>
+							<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
 								<Input
 									label={t('label.datasource_name', 'Datasource name')}
 									background="gray5"
 									value={dataSourceName}
-									onChange={(e: any): any => {
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setDataSourceName(e.target.value);
 									}}
+								/>
+							</Container>
+						</ListRow>
+						<Row
+							width="100%"
+							mainAlignment="flex-start"
+							padding={{ vertical: 'large', horizontal: 'small' }}
+						>
+							<Divider />
+						</Row>
+						<Row
+							takeAvwidth="fill"
+							mainAlignment="flex-start"
+							width="100%"
+							background="gray6"
+							padding={{ left: 'large', top: 'large' }}
+						>
+							<Text size="small" weight="bold" color="gray0">
+								{t('label.delegated_administration_title', 'Delegated Administration')}
+							</Text>
+						</Row>
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
+							>
+								<Switch
+									label={t(
+										'label.domain_support_delegated_administration',
+										'This domain supports delegated administration'
+									)}
+									onClick={(): void => setIsDomainDelegatedAdmin(!isDomainDelegatedAdmin)}
+									iconColor="primary"
 								/>
 							</Container>
 						</ListRow>
@@ -408,7 +516,7 @@ const CreateDomain: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-end"
 				background="gray6"
-				height="58px"
+				height="3.625rem"
 				padding={{ top: 'small', right: 'large' }}
 			>
 				<Padding right="medium">
