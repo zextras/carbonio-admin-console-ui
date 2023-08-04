@@ -50,7 +50,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	const { t } = useTranslation();
 	return (
 		<Section
-			title={t('label.new_acl_list', 'New Acl List')}
+			title={t('label.new_security_group', 'New Security Group')}
 			padding={{ all: '0' }}
 			footer={wizardFooter}
 			divider
@@ -131,7 +131,7 @@ const CreateAclList: FC<{
 		() => [
 			{
 				name: 'details',
-				label: t('label.acl_list', 'Acl List'),
+				label: t('label.security_group', 'Security Group'),
 				icon: 'ListOutline',
 				view: AclListSection,
 				CancelButton: (props: any): ReactElement => (
