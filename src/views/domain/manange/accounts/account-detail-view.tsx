@@ -130,11 +130,11 @@ const AccountDetailView: FC<any> = ({
 
 	const calculatedQuotaSize: string = useMemo(() => {
 		let calculatedSize = 0;
-		if (selectedAccount?.zimbraMailQuota) {
-			calculatedSize = selectedAccount.zimbraMailQuota / 1048576;
-		}
 		if (cosDetail?.zimbraMailQuota) {
 			calculatedSize = cosDetail.zimbraMailQuota / 1048576;
+		}
+		if (selectedAccount?.zimbraMailQuota) {
+			calculatedSize = selectedAccount.zimbraMailQuota / 1048576;
 		}
 		const message =
 			calculatedSize > 0
@@ -149,11 +149,11 @@ const AccountDetailView: FC<any> = ({
 	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, t, usedQuota]);
 	const calculatedQuotaSizePercentage: number = useMemo(() => {
 		let calculateaSize;
-		if (selectedAccount?.zimbraMailQuota) {
-			calculateaSize = (selectedAccount.zimbraMailQuota / 1048576).toFixed(3);
-		}
 		if (cosDetail?.zimbraMailQuota) {
 			calculateaSize = (cosDetail.zimbraMailQuota / 1048576).toFixed(3);
+		}
+		if (selectedAccount?.zimbraMailQuota) {
+			calculateaSize = (selectedAccount.zimbraMailQuota / 1048576).toFixed(3);
 		}
 		if (calculateaSize) {
 			return (
