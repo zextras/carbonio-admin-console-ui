@@ -41,6 +41,7 @@ import { distributionListAction } from '../../../../services/distribution-list-a
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import SideModel from '../../../components/sideModel';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -679,27 +680,33 @@ const DomainMailingList: FC = () => {
 				</Row>
 			</Container>
 			{showEditMailingView && (
-				<EditMailingListView
-					selectedMailingList={selectedMailingList}
-					setShowEditMailingList={setShowEditMailingView}
-					setIsUpdateRecord={setIsUpdateRecord}
-				/>
+				<SideModel setOpen={setShowEditMailingView} open={showEditMailingView}>
+					<EditMailingListView
+						selectedMailingList={selectedMailingList}
+						setShowEditMailingList={setShowEditMailingView}
+						setIsUpdateRecord={setIsUpdateRecord}
+					/>
+				</SideModel>
 			)}
 
 			{showMailingListDetailView && (
-				<MailingListDetail
-					selectedMailingList={selectedFromRow}
-					setShowMailingListDetailView={setShowMailingListDetailView}
-					setEditMailingList={setEditMailingList}
-					setIsUpdateRecord={setIsUpdateRecord}
-				/>
+				<SideModel setOpen={setShowMailingListDetailView} open={showMailingListDetailView}>
+					<MailingListDetail
+						selectedMailingList={selectedFromRow}
+						setShowMailingListDetailView={setShowMailingListDetailView}
+						setEditMailingList={setEditMailingList}
+						setIsUpdateRecord={setIsUpdateRecord}
+					/>
+				</SideModel>
 			)}
 
 			{showCreateMailingListView && (
-				<CreateMailingList
-					setShowCreateMailingListView={setShowCreateMailingListView}
-					createMailingListReq={createMailingListReq}
-				/>
+				<SideModel setOpen={setShowCreateMailingListView} open={showCreateMailingListView}>
+					<CreateMailingList
+						setShowCreateMailingListView={setShowCreateMailingListView}
+						createMailingListReq={createMailingListReq}
+					/>
+				</SideModel>
 			)}
 		</Container>
 	);

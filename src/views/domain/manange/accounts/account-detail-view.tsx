@@ -41,16 +41,15 @@ import CustomChip from '../../../components/customChip';
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
 	position: absolute;
-	top: 2.688rem;
-	right: 0.75rem;
+	top: 0;
+	right: 0;
 	bottom: 0;
-	left: ${'max(calc(100% - 42.5rem), 0.75rem)'};
 	transition: left 0.2s ease-in-out;
 	height: auto;
-	width: 42rem;
+	/* width: auto; */
 	max-height: 100%;
 	overflow: hidden;
-	box-shadow: -0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1);
+	/* box-shadow: -0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1); */
 `;
 
 type UserSession = {
@@ -62,9 +61,8 @@ type UserSession = {
 };
 
 const ovelayStyle = styled(Container)`
-	position: fixed;
-	width: 42.6rem;
-	top: 6.438rem;
+	position: absolute;
+	top: 0;
 	right: 0;
 	bottom: 0;
 	height: auto;
@@ -73,7 +71,6 @@ const ovelayStyle = styled(Container)`
 	background: #0d0d0d;
 	opacity: 0.4;
 	z-index: 11;
-	padding-top: 2rem;
 `;
 
 const AccountDetailView: FC<any> = ({
@@ -512,6 +509,7 @@ const AccountDetailView: FC<any> = ({
 					height="calc(100% - 64px)"
 					background="white"
 					style={{ overflow: 'auto' }}
+					width="100%"
 				>
 					<Row padding={{ top: 'extralarge' }}>
 						<Text
@@ -563,7 +561,7 @@ const AccountDetailView: FC<any> = ({
 									{t('account_details.aliases', 'Aliases')}
 								</Text>
 							</Row>
-							<Row width="95%">
+							<Row width="97%">
 								<Container
 									orientation="horizontal"
 									wrap="wrap"
@@ -697,11 +695,11 @@ const AccountDetailView: FC<any> = ({
 					</Row>
 					<Row
 						padding={{ top: 'extralarge' }}
-						width="100%"
+						width="97%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>
-						<Container width="70%">
+						<Container width="69%">
 							<Input
 								label={t('label.i_m_looking_for_the_session', 'I`m looking for the session ...')}
 								backgroundColor="gray5"
@@ -709,7 +707,8 @@ const AccountDetailView: FC<any> = ({
 								value=""
 							></Input>
 						</Container>
-						<Container width="30%" mainAlignment="flex-end" crossAlignment="flex-end">
+						<Padding horizontal="small" />
+						<Container width="28%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Button
 								label={t('label.end_session', 'End Session')}
 								color="error"
@@ -725,7 +724,7 @@ const AccountDetailView: FC<any> = ({
 					</Row>
 					<Row
 						padding={{ top: 'extralarge' }}
-						width="100%"
+						width="97%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>
@@ -745,7 +744,7 @@ const AccountDetailView: FC<any> = ({
 
 					<Row
 						padding={{ top: 'extralarge' }}
-						width="100%"
+						width="97%"
 						mainAlignment="flex-end"
 						crossAlignment="flex-end"
 					>
@@ -770,7 +769,7 @@ const AccountDetailView: FC<any> = ({
 					</Row>
 					<Row
 						padding={{ top: 'extralarge', bottom: 'extralarge' }}
-						width="100%"
+						width="97%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>

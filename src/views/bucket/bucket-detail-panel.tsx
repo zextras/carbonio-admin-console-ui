@@ -28,12 +28,12 @@ import BucketDeleteModel from './delete-bucket-model';
 import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
-import { AbsoluteContainer } from '../components/styled';
 import ListRow from '../list/list-row';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { objectType } from '../../../types';
+import SideModel from '../components/sideModel';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -329,17 +329,17 @@ const BucketDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardSection && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setToggleWizardSection} open={toggleWizardSection}>
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
 						setDetailsBucket={setDetailsBucket}
 						setConnectionData={setConnectionData}
 						bucketType={bucketType}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 			{detailsBucket && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setDetailsBucket} open={detailsBucket}>
 					<DetailsPanel
 						setDetailsBucket={setDetailsBucket}
 						title="Bucket Connection"
@@ -348,10 +348,10 @@ const BucketDetailPanel: FC = () => {
 						setOpen={setOpen}
 						setShowEditDetailView={setShowEditDetailView}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 			{showEditDetailView && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setShowEditDetailView} open={showEditDetailView}>
 					<EditBucketDetailPanel
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
@@ -361,7 +361,7 @@ const BucketDetailPanel: FC = () => {
 						setToggleForGetAPICall={setToggleForGetAPICall}
 						toggleForGetAPICall={toggleForGetAPICall}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 			<RelativeContainer
 				orientation="column"

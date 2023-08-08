@@ -478,237 +478,279 @@ const MailingListDetail: FC<any> = ({
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 680px), 12px)'}`,
-				top: '43px',
-				height: 'auto',
-				width: 'auto',
+				top: '0rem',
 				overflow: 'hidden',
-				transition: 'left 0.2s ease-in-out',
-				'box-shadow': '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+				transition: 'left 0.2s ease-in-out'
 			}}
 		>
-			<Row
-				mainAlignment="flex-start"
-				crossAlignment="center"
-				orientation="horizontal"
-				background="white"
-				width="fill"
-				height="48px"
-			>
-				<Row padding={{ horizontal: 'small' }}></Row>
-				<Row takeAvailableSpace mainAlignment="flex-start">
-					<Text size="medium" overflow="ellipsis" weight="bold">
-						{selectedMailingList?.name} (
-						{selectedMailingList?.dynamic
-							? t('label.dynamic', 'Dynamic')
-							: t('label.standard', 'Standard')}
-						)
-					</Text>
-				</Row>
-				<Row padding={{ right: 'extrasmall' }}>
-					<IconButton
-						size="medium"
-						icon="CloseOutline"
-						onClick={(): void => setShowMailingListDetailView(false)}
-					/>
-				</Row>
-			</Row>
-			<Row>
-				<Divider color="gray3" />
-			</Row>
 			<Container
-				orientation="horizontal"
-				mainAlignment="flex-end"
-				crossAlignment="flex-end"
-				background="gray6"
-				padding={{ all: 'extralarge' }}
+				background="gray5"
+				mainAlignment="flex-start"
+				style={{
+					position: 'absolute',
+					top: '0rem',
+					height: 'auto',
+					transition: 'left 0.2s ease-in-out'
+				}}
 			>
-				<Padding right="large">
-					<Container>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="center"
+					orientation="horizontal"
+					background="white"
+					width="fill"
+					height="48px"
+				>
+					<Row padding={{ horizontal: 'small' }}></Row>
+					<Row takeAvailableSpace mainAlignment="flex-start">
+						<Text size="medium" overflow="ellipsis" weight="bold">
+							{selectedMailingList?.name} (
+							{selectedMailingList?.dynamic
+								? t('label.dynamic', 'Dynamic')
+								: t('label.standard', 'Standard')}
+							)
+						</Text>
+					</Row>
+					<Row padding={{ right: 'extrasmall' }}>
+						<IconButton
+							size="medium"
+							icon="CloseOutline"
+							onClick={(): void => setShowMailingListDetailView(false)}
+						/>
+					</Row>
+				</Row>
+				<Row>
+					<Divider color="gray3" />
+				</Row>
+				<Container
+					orientation="horizontal"
+					mainAlignment="flex-end"
+					crossAlignment="flex-end"
+					background="gray6"
+					padding={{ all: 'extralarge' }}
+				>
+					<Padding right="large">
+						<Container>
+							<Button
+								type="outlined"
+								color="primary"
+								icon="EditAsNewOutline"
+								onClick={onEditMailingList}
+								size="large"
+							/>
+						</Container>
+					</Padding>
+					<Container width="fit">
 						<Button
 							type="outlined"
-							color="primary"
-							icon="EditAsNewOutline"
-							onClick={onEditMailingList}
+							color="error"
+							icon="Trash2Outline"
+							loading={isDeleteBtnLoading}
+							onClick={handleClickDeleteEvent}
 							size="large"
 						/>
 					</Container>
-				</Padding>
-				<Container width="fit">
-					<Button
-						type="outlined"
-						color="error"
-						icon="Trash2Outline"
-						loading={isDeleteBtnLoading}
-						onClick={handleClickDeleteEvent}
-						size="large"
-					/>
 				</Container>
-			</Container>
-			<Container
-				padding={{ all: 'extralarge' }}
-				mainAlignment="flex-start"
-				crossAlignment="flex-start"
-				height="calc(100vh - 14.375rem)"
-				background="white"
-				style={{ overflow: 'auto' }}
-			>
-				<Row>
-					<Text size="medium" weight="bold" color="gray0">
-						{t('domain.list_details', 'List Details')}
-					</Text>
-				</Row>
-				<ListRow padding={{ left: 'small', right: 'small' }}>
-					<Container>
-						<Input
-							label={t('label.displayed_name', 'Displayed Name')}
-							value={displayName}
-							background="gray6"
-							readOnly
-						/>
-					</Container>
-
-					<Container padding={{ top: 'small', bottom: 'small', left: 'large' }}>
-						<Input
-							label={t('label.address', 'Address')}
-							value={distributionName}
-							background="gray6"
-						/>
-					</Container>
-				</ListRow>
-				<ListRow>
-					<Container padding={{ right: 'small', top: 'small' }}>
-						<Input
-							background="gray6"
-							label={t('label.rights', 'Rights')}
-							readOnly
-							value={zimbraMailStatus?.label}
-						/>
-					</Container>
-				</ListRow>
-				<ListRow padding={{ left: 'small', right: 'small' }}>
-					<Container
-						orientation="vertical"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ right: 'small', top: 'small' }}
-					>
-						<Row padding={{ left: 'large', bottom: 'small' }}>
-							<Text size="small" color="secondary">
-								{t('label.aliases', 'Aliases')}
-							</Text>
-						</Row>
-						<Row width="100%">
-							<Container
-								orientation="horizontal"
-								wrap="wrap"
-								mainAlignment="flex-start"
-								maxWidth="44rem"
-								style={{ gap: '0.5rem' }}
-								padding={{ left: 'large' }}
-							>
-								{zimbraMailAlias?.map((ele, index) => (
-									<CustomChip key={`chip${index}`} label={ele.label} />
-								))}
-							</Container>
-							<Row width="100%" padding={{ top: 'medium' }}>
-								<Divider color="gray2" />
-							</Row>
-						</Row>
-					</Container>
-				</ListRow>
-				<ListRow padding={{ left: 'small', right: 'small', top: 'large' }}>
-					<Container
-						padding={{ top: 'small' }}
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-					>
-						<Switch
-							value={zimbraDistributionListSendShareMessageToNewMembers}
-							label={t(
-								'label.send_new_members_notification_for_share_assigned_to_this_group',
-								'Send new members a notification for the share/delegation assigned to this group'
-							)}
-							disabled
-							iconColor="primary"
-						/>
-					</Container>
-				</ListRow>
-				<ListRow padding={{ left: 'small', right: 'small' }}>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
-					>
-						<Switch
-							value={zimbraHideInGal}
-							label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
-							disabled
-							iconColor="primary"
-						/>
-					</Container>
-				</ListRow>
-				<ListRow padding={{ left: 'small', right: 'small' }}>
-					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
-						<Input
-							label={t('label.members', 'Members')}
-							value={dlm.length}
-							background="gray6"
-							readOnly
-						/>
-					</Container>
-					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
-						<Input
-							label={t('label.alias_in_the_list', 'Alias in the List')}
-							value={zimbraMailAlias.length}
-							background="gray6"
-							readOnly
-						/>
-					</Container>
-				</ListRow>
-				{selectedMailingList?.dynamic && (
+				<Container
+					padding={{ all: 'extralarge' }}
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					background="white"
+					style={{ height: 'calc(100vh - 7rem)', overflowY: 'scroll' }}
+				>
+					<Row>
+						<Text size="medium" weight="bold" color="gray0">
+							{t('domain.list_details', 'List Details')}
+						</Text>
+					</Row>
 					<ListRow padding={{ left: 'small', right: 'small' }}>
 						<Container>
 							<Input
-								label={t('label.list_url', "Mailing List's URL")}
-								value={memberURL}
+								label={t('label.displayed_name', 'Displayed Name')}
+								value={displayName}
 								background="gray6"
 								readOnly
-								CustomIcon={(): any => (
-									<Icon icon="CopyOutline" size="large" color="grey" onClick={onCopyLink} />
-								)}
+							/>
+						</Container>
+
+						<Container padding={{ top: 'small', bottom: 'small', left: 'large' }}>
+							<Input
+								label={t('label.address', 'Address')}
+								value={distributionName}
+								background="gray6"
 							/>
 						</Container>
 					</ListRow>
-				)}
-				<ListRow padding={{ left: 'small', right: 'small' }}>
-					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
-						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray6" readOnly />
-					</Container>
-					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
-						<Input
-							label={t('label.creation_date', 'Creation Date')}
-							value={dlCreateDate}
-							background="gray6"
-							readOnly
-						/>
-					</Container>
-				</ListRow>
-				<Row padding={{ top: 'small', bottom: 'small' }}>
-					<Text size="medium" weight="bold" color="gray0">
-						{t('label.manage_list', 'Manage List')}
-					</Text>
-				</Row>
-				{!selectedMailingList?.dynamic && (
+					<ListRow>
+						<Container padding={{ right: 'small', top: 'small' }}>
+							<Input
+								background="gray6"
+								label={t('label.rights', 'Rights')}
+								readOnly
+								value={zimbraMailStatus?.label}
+							/>
+						</Container>
+					</ListRow>
+					<ListRow padding={{ left: 'small', right: 'small' }}>
+						<Container
+							orientation="vertical"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ right: 'small', top: 'small' }}
+						>
+							<Row padding={{ left: 'large', bottom: 'small' }}>
+								<Text size="small" color="secondary">
+									{t('label.aliases', 'Aliases')}
+								</Text>
+							</Row>
+							<Row width="100%">
+								<Container
+									orientation="horizontal"
+									wrap="wrap"
+									mainAlignment="flex-start"
+									maxWidth="44rem"
+									style={{ gap: '0.5rem' }}
+									padding={{ left: 'large' }}
+								>
+									{zimbraMailAlias?.map((ele, index) => (
+										<CustomChip key={`chip${index}`} label={ele.label} />
+									))}
+								</Container>
+								<Row width="100%" padding={{ top: 'medium' }}>
+									<Divider color="gray2" />
+								</Row>
+							</Row>
+						</Container>
+					</ListRow>
+					<ListRow padding={{ left: 'small', right: 'small', top: 'large' }}>
+						<Container
+							padding={{ top: 'small' }}
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+						>
+							<Switch
+								value={zimbraDistributionListSendShareMessageToNewMembers}
+								label={t(
+									'label.send_new_members_notification_for_share_assigned_to_this_group',
+									'Send new members a notification for the share/delegation assigned to this group'
+								)}
+								disabled
+								iconColor="primary"
+							/>
+						</Container>
+					</ListRow>
 					<ListRow padding={{ left: 'small', right: 'small' }}>
 						<Container
 							mainAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'small' }}
+							crossAlignment="flex-start"
+							padding={{ top: 'large', bottom: 'medium' }}
+						>
+							<Switch
+								value={zimbraHideInGal}
+								label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
+								disabled
+								iconColor="primary"
+							/>
+						</Container>
+					</ListRow>
+					<ListRow padding={{ left: 'small', right: 'small' }}>
+						<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+							<Input
+								label={t('label.members', 'Members')}
+								value={dlm.length}
+								background="gray6"
+								readOnly
+							/>
+						</Container>
+						<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+							<Input
+								label={t('label.alias_in_the_list', 'Alias in the List')}
+								value={zimbraMailAlias.length}
+								background="gray6"
+								readOnly
+							/>
+						</Container>
+					</ListRow>
+					{selectedMailingList?.dynamic && (
+						<ListRow padding={{ left: 'small', right: 'small' }}>
+							<Container>
+								<Input
+									label={t('label.list_url', "Mailing List's URL")}
+									value={memberURL}
+									background="gray6"
+									readOnly
+									CustomIcon={(): any => (
+										<Icon icon="CopyOutline" size="large" color="grey" onClick={onCopyLink} />
+									)}
+								/>
+							</Container>
+						</ListRow>
+					)}
+					<ListRow padding={{ left: 'small', right: 'small' }}>
+						<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+							<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray6" readOnly />
+						</Container>
+						<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+							<Input
+								label={t('label.creation_date', 'Creation Date')}
+								value={dlCreateDate}
+								background="gray6"
+								readOnly
+							/>
+						</Container>
+					</ListRow>
+					<Row padding={{ top: 'small', bottom: 'small' }}>
+						<Text size="medium" weight="bold" color="gray0">
+							{t('label.manage_list', 'Manage List')}
+						</Text>
+					</Row>
+					{!selectedMailingList?.dynamic && (
+						<ListRow padding={{ left: 'small', right: 'small' }}>
+							<Container
+								mainAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small' }}
+								maxHeight="10rem"
+							>
+								<Table
+									rows={dlmMemberOfRows}
+									headers={listMemberOfHeaders}
+									showCheckbox={false}
+									style={{ overflow: 'auto', height: '100%' }}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
+								/>
+							</Container>
+						</ListRow>
+					)}
+					<ListRow padding={{ left: 'small', right: 'small', top: 'large' }}>
+						{!selectedMailingList?.dynamic && (
+							<Container
+								mainAlignment="flex-start"
+								padding={{ top: 'small', bottom: 'small' }}
+								maxHeight="10rem"
+							>
+								<Table
+									rows={dlmTableRows}
+									headers={memberHeaders}
+									showCheckbox={false}
+									style={{ overflow: 'auto', height: '100%' }}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
+								/>
+							</Container>
+						)}
+						<Container
+							padding={{
+								left: !selectedMailingList?.dynamic ? 'small' : '',
+								top: 'small',
+								bottom: 'small'
+							}}
+							mainAlignment="flex-start"
 							maxHeight="10rem"
 						>
 							<Table
-								rows={dlmMemberOfRows}
-								headers={listMemberOfHeaders}
+								rows={ownerTableRows}
+								headers={ownerHeaders}
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
@@ -716,120 +758,84 @@ const MailingListDetail: FC<any> = ({
 							/>
 						</Container>
 					</ListRow>
-				)}
-				<ListRow padding={{ left: 'small', right: 'small', top: 'large' }}>
-					{!selectedMailingList?.dynamic && (
-						<Container
-							mainAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'small' }}
-							maxHeight="10rem"
-						>
-							<Table
-								rows={dlmTableRows}
-								headers={memberHeaders}
-								showCheckbox={false}
-								style={{ overflow: 'auto', height: '100%' }}
-								RowFactory={CustomRowFactory}
-								HeaderFactory={CustomHeaderFactory}
+					<ListRow padding={{ left: 'small', right: 'small' }}>
+						<Container padding={{ vertical: 'large' }}>
+							<Input
+								value={zimbraNotes}
+								label={t('label.notes', 'Notes')}
+								background="gray6"
+								readOnly
 							/>
 						</Container>
-					)}
-					<Container
-						padding={{
-							left: !selectedMailingList?.dynamic ? 'small' : '',
-							top: 'small',
-							bottom: 'small'
-						}}
-						mainAlignment="flex-start"
-						maxHeight="10rem"
-					>
-						<Table
-							rows={ownerTableRows}
-							headers={ownerHeaders}
-							showCheckbox={false}
-							style={{ overflow: 'auto', height: '100%' }}
-							RowFactory={CustomRowFactory}
-							HeaderFactory={CustomHeaderFactory}
-						/>
-					</Container>
-				</ListRow>
-				<ListRow padding={{ left: 'small', right: 'small' }}>
-					<Container padding={{ top: 'large' }}>
-						<Input
-							value={zimbraNotes}
-							label={t('label.notes', 'Notes')}
-							background="gray6"
-							readOnly
-						/>
-					</Container>
-				</ListRow>
-			</Container>
+					</ListRow>
+				</Container>
 
-			{isOpenDeleteDialog && (
-				<Modal
-					size="medium"
-					title={t('label.you_are_deleting_ml', 'You are deleting {{name}}', {
-						name: displayName || distributionName
-					})}
-					open={isOpenDeleteDialog}
-					customFooter={
-						<Container orientation="horizontal" mainAlignment="flex-end">
-							<Row style={{ gap: '8px' }}>
-								<Button
-									label={t('label.cancel', 'Cancel')}
-									color="secondary"
-									type="outlined"
-									onClick={closeHandler}
-									disabled={isRequestInProgress}
-								/>
-								<Button
-									label={t('label.yes_delete_it', 'Yes, Delete it')}
-									color="error"
-									onClick={onDeleteHandler}
-									disabled={isRequestInProgress}
-								/>
-							</Row>
-						</Container>
-					}
-					showCloseIcon
-					onClose={closeHandler}
-				>
-					<Container
-						padding={{ top: 'extralarge', bottom: 'extralarge' }}
-						style={{ textAlign: 'center' }}
+				{isOpenDeleteDialog && (
+					<Modal
+						size="medium"
+						title={t('label.you_are_deleting_ml', 'You are deleting {{name}}', {
+							name: displayName || distributionName
+						})}
+						open={isOpenDeleteDialog}
+						customFooter={
+							<Container orientation="horizontal" mainAlignment="flex-end">
+								<Row style={{ gap: '8px' }}>
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										type="outlined"
+										onClick={closeHandler}
+										disabled={isRequestInProgress}
+									/>
+									<Button
+										label={t('label.yes_delete_it', 'Yes, Delete it')}
+										color="error"
+										onClick={onDeleteHandler}
+										disabled={isRequestInProgress}
+									/>
+								</Row>
+							</Container>
+						}
+						showCloseIcon
+						onClose={closeHandler}
 					>
-						<Padding bottom="small">
-							{totalGrantRights !== 0 && (
-								<Container padding={{ bottom: 'extralarge' }}>
-									<Text size={'extralarge'} overflow="break-word">
-										<Trans
-											i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
-											defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. <br /> If you delete it all rights will be lost."
-											components={{
-												bold: <strong />,
-												br: <br />
-											}}
-											values={{
-												totalAccRights: totalGrantRights
-											}}
-										/>
-									</Text>
-								</Container>
-							)}
-							<Text size={'extralarge'} overflow="break-word">
-								<Trans
-									i18nKey="label.are_you_sure_delete_distribution_list"
-									defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
-									components={{ bold: <strong /> }}
-									values={{
-										name: displayName || distributionName
-									}}
-								/>
-							</Text>
-						</Padding>
-					</Container>
-				</Modal>
-			)}
+						<Container
+							padding={{ top: 'extralarge', bottom: 'extralarge' }}
+							style={{ textAlign: 'center' }}
+						>
+							<Padding bottom="small">
+								{totalGrantRights !== 0 && (
+									<Container padding={{ bottom: 'extralarge' }}>
+										<Text size={'extralarge'} overflow="break-word">
+											<Trans
+												i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
+												defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. <br /> If you delete it all rights will be lost."
+												components={{
+													bold: <strong />,
+													br: <br />
+												}}
+												values={{
+													totalAccRights: totalGrantRights
+												}}
+											/>
+										</Text>
+									</Container>
+								)}
+								<Text size={'extralarge'} overflow="break-word">
+									<Trans
+										i18nKey="label.are_you_sure_delete_distribution_list"
+										defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
+										components={{ bold: <strong /> }}
+										values={{
+											name: displayName || distributionName
+										}}
+									/>
+								</Text>
+							</Padding>
+						</Container>
+					</Modal>
+				)}
+			</Container>
 		</Container>
 	);
 };

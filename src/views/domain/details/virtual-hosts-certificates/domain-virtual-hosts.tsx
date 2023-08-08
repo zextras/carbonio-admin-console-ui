@@ -33,13 +33,13 @@ import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import logo from '../../../../assets/helmet_logo.svg';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { AbsoluteContainer } from '../../../components/styled';
 import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 import DeleteCertificateModel from './delete-certificate-model';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../list/list-row';
 import { objectType } from '../../../../../types';
+import SideModel from '../../../components/sideModel';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -331,12 +331,12 @@ const DomainVirtualHosts: FC = () => {
 	return (
 		<Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
 			{toggleLoadVerifyCertWizard && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setToggleLoadVerifyCertWizard} open={toggleLoadVerifyCertWizard}>
 					<LoadVerifyCertificateWizard
 						setToggleWizard={setToggleLoadVerifyCertWizard}
 						setAlertToggle={setAlertToggle}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 			<Container
 				orientation="column"

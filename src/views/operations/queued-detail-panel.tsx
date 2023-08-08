@@ -19,10 +19,10 @@ import { OperationsTable } from './operations-table';
 import { OperationsHeader } from '../utility/utils';
 import DeleteOpearationsModel from './delete-operations-model';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
-import { AbsoluteContainer } from '../components/styled';
 import { useOperationStore } from '../../store/operation/store';
 import { stopOperations } from '../../services/stop-operation';
 import { useServerStore } from '../../store/server/store';
+import SideModel from '../components/sideModel';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -96,13 +96,13 @@ const QuededDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 	return (
 		<>
 			{wizardDetailToggle && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setWizardDetailToggle} open={wizardDetailToggle}>
 					<OperationsWizardDetailPanel
 						setWizardDetailToggle={setWizardDetailToggle}
 						setOpen={setOpen}
 						selectedData={selectedData}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 			<RelativeContainer
 				orientation="column"

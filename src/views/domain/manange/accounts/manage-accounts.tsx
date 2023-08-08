@@ -49,6 +49,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import useOutsideClick from '../../../app/hooks/useoutsideclick';
 import { useRightsStore } from '../../../../store/rights/store';
+import SideModel from '../../../components/sideModel';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -835,27 +836,35 @@ const ManageAccounts: FC = () => {
 								}}
 							>
 								{showAccountDetailView && (
-									<AccountDetailView
-										selectedAccount={selectedAccount}
-										setShowAccountDetailView={setShowAccountDetailView}
-										setShowEditAccountView={setShowEditAccountView}
-										STATUS_COLOR={STATUS_COLOR}
-										getAccountList={getAccountList}
-										cosDetail={cosDetail}
-									/>
+									<SideModel setOpen={setShowAccountDetailView} open={showAccountDetailView}>
+										<AccountDetailView
+											selectedAccount={selectedAccount}
+											setShowAccountDetailView={setShowAccountDetailView}
+											setShowEditAccountView={setShowEditAccountView}
+											STATUS_COLOR={STATUS_COLOR}
+											getAccountList={getAccountList}
+											cosDetail={cosDetail}
+										/>
+									</SideModel>
 								)}
 
 								{showEditAccountView && (
-									<EditAccount
-										setShowEditAccountView={setShowEditAccountView}
-										selectedAccount={selectedAccount}
-										getAccountList={getAccountList}
-										signatureList={signatureList}
-										signatureItems={signatureItems}
-										getAccountDetail={getAccountDetail}
-										defaultTab={defaultTab}
-										setDefaultTab={setDefaultTab}
-									/>
+									<SideModel
+										setOpen={setShowEditAccountView}
+										open={showEditAccountView}
+										maxWidth="58.75rem"
+									>
+										<EditAccount
+											setShowEditAccountView={setShowEditAccountView}
+											selectedAccount={selectedAccount}
+											getAccountList={getAccountList}
+											signatureList={signatureList}
+											signatureItems={signatureItems}
+											getAccountDetail={getAccountDetail}
+											defaultTab={defaultTab}
+											setDefaultTab={setDefaultTab}
+										/>
+									</SideModel>
 								)}
 							</AccountContext.Provider>
 						</Row>
@@ -863,14 +872,16 @@ const ManageAccounts: FC = () => {
 				</Row>
 			</Container>
 			{showCreateAccountView && (
-				<CreateAccount
-					setShowCreateAccountView={setShowCreateAccountView}
-					getAccountList={getAccountList}
-					setShowEditAccountView={setShowEditAccountView}
-					openDetailView={openDetailView}
-					setShowAccountDetailView={setShowAccountDetailView}
-					setDefaultTab={setDefaultTab}
-				/>
+				<SideModel setOpen={setShowCreateAccountView} open={showCreateAccountView}>
+					<CreateAccount
+						setShowCreateAccountView={setShowCreateAccountView}
+						getAccountList={getAccountList}
+						setShowEditAccountView={setShowEditAccountView}
+						openDetailView={openDetailView}
+						setShowAccountDetailView={setShowAccountDetailView}
+						setDefaultTab={setDefaultTab}
+					/>
+				</SideModel>
 			)}
 		</Container>
 	);

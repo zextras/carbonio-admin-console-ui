@@ -196,16 +196,13 @@ const CreateHsmPolicy: FC<{
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				top: '43px',
-				right: '0px',
-				bottom: '0px',
-				left: `${'max(calc(100% - 680px), 12px)'}`,
+				top: '0rem',
+				right: '0rem',
+				bottom: '0rem',
 				transition: 'left 0.2s ease-in-out',
-				height: 'auto',
-				width: 'auto',
 				maxHeight: '100%',
 				overflow: 'hidden',
-				boxShadow: '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+				inset: '0rem'
 			}}
 		>
 			<HSMContext.Provider value={{ hsmDetail, setHsmDetail }}>

@@ -38,7 +38,6 @@ import {
 	SCALITYS3,
 	LOCAL_VALUE
 } from '../../../../constants';
-import { AbsoluteContainer } from '../../../components/styled';
 import ServerVolumeDetailsPanel from './server-volume-details-panel';
 import { fetchSoap } from '../../../../services/bucket-service';
 import IndexerVolumeTable from './indexer-volume-table';
@@ -56,6 +55,7 @@ import { setCurrentVolumeRequest } from '../../../../services/set-current-volume
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import { Volume, objAll, objectType } from '../../../../../types';
+import SideModel from '../../../components/sideModel';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -725,27 +725,27 @@ const VolumesDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardExternal && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setToggleWizardExternal} open={toggleWizardExternal}>
 					<CreateMailstoresVolume
 						setToggleWizardExternal={setToggleWizardExternal}
 						setToggleWizardLocal={setToggleWizardLocal}
 						volName={selectedServerName}
 						CreateAdvancedRequest={CreateAdvancedRequest}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 			{toggleWizardLocal && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setToggleWizardLocal} open={toggleWizardLocal}>
 					<NewVolume
 						setToggleWizardLocal={setToggleWizardLocal}
 						setToggleWizardExternal={setToggleWizardExternal}
 						volName={selectedServerName}
 						CreateVolumeRequest={CreateVolumeRequest}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 			{toggleDetailPage && volume && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setToggleDetailPage} open={toggleDetailPage}>
 					<ServerVolumeDetailsPanel
 						volumeDetail={volume}
 						setToggleDetailPage={setToggleDetailPage}
@@ -757,10 +757,10 @@ const VolumesDetailPanel: FC = () => {
 						getAllVolumesRequest={getAllVolumesRequest}
 						selectedServerId={selectedServerId}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 			{modifyVolumeToggle && volume && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<SideModel setOpen={setmodifyVolumeToggle} open={modifyVolumeToggle}>
 					<ModifyVolume
 						volumeDetail={detailData}
 						setmodifyVolumeToggle={setmodifyVolumeToggle}
@@ -768,7 +768,7 @@ const VolumesDetailPanel: FC = () => {
 						selectedServerId={selectedServerId}
 						volumeList={volumeList}
 					/>
-				</AbsoluteContainer>
+				</SideModel>
 			)}
 
 			<RelativeContainer
