@@ -16,10 +16,6 @@ const ModalOverlay: FC<ModalOverlayProps> = ({ children, open, setOpen, maxWidth
 	const ref = useRef<any>(null);
 
 	const handleClickOutside = (event: any): void => {
-		console.log(
-			'__event.target',
-			event.target.closest('.styled__SideSubModelContainer-sc-881g33-2')
-		);
 		if (
 			ref.current &&
 			!ref.current.contains(event.srcElement as Node) &&
