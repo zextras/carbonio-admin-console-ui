@@ -39,7 +39,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../list/list-row';
 import { objectType } from '../../../../../types';
-import SideModel from '../../../components/sideModel';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -331,12 +331,12 @@ const DomainVirtualHosts: FC = () => {
 	return (
 		<Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
 			{toggleLoadVerifyCertWizard && (
-				<SideModel setOpen={setToggleLoadVerifyCertWizard} open={toggleLoadVerifyCertWizard}>
+				<ModalOverlay setOpen={setToggleLoadVerifyCertWizard} open={toggleLoadVerifyCertWizard}>
 					<LoadVerifyCertificateWizard
 						setToggleWizard={setToggleLoadVerifyCertWizard}
 						setAlertToggle={setAlertToggle}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			<Container
 				orientation="column"

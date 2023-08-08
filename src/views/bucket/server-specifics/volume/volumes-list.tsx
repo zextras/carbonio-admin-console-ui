@@ -55,7 +55,7 @@ import { setCurrentVolumeRequest } from '../../../../services/set-current-volume
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import { Volume, objAll, objectType } from '../../../../../types';
-import SideModel from '../../../components/sideModel';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -725,27 +725,27 @@ const VolumesDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardExternal && (
-				<SideModel setOpen={setToggleWizardExternal} open={toggleWizardExternal}>
+				<ModalOverlay setOpen={setToggleWizardExternal} open={toggleWizardExternal}>
 					<CreateMailstoresVolume
 						setToggleWizardExternal={setToggleWizardExternal}
 						setToggleWizardLocal={setToggleWizardLocal}
 						volName={selectedServerName}
 						CreateAdvancedRequest={CreateAdvancedRequest}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			{toggleWizardLocal && (
-				<SideModel setOpen={setToggleWizardLocal} open={toggleWizardLocal}>
+				<ModalOverlay setOpen={setToggleWizardLocal} open={toggleWizardLocal}>
 					<NewVolume
 						setToggleWizardLocal={setToggleWizardLocal}
 						setToggleWizardExternal={setToggleWizardExternal}
 						volName={selectedServerName}
 						CreateVolumeRequest={CreateVolumeRequest}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			{toggleDetailPage && volume && (
-				<SideModel setOpen={setToggleDetailPage} open={toggleDetailPage}>
+				<ModalOverlay setOpen={setToggleDetailPage} open={toggleDetailPage}>
 					<ServerVolumeDetailsPanel
 						volumeDetail={volume}
 						setToggleDetailPage={setToggleDetailPage}
@@ -757,10 +757,10 @@ const VolumesDetailPanel: FC = () => {
 						getAllVolumesRequest={getAllVolumesRequest}
 						selectedServerId={selectedServerId}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			{modifyVolumeToggle && volume && (
-				<SideModel setOpen={setmodifyVolumeToggle} open={modifyVolumeToggle}>
+				<ModalOverlay setOpen={setmodifyVolumeToggle} open={modifyVolumeToggle}>
 					<ModifyVolume
 						volumeDetail={detailData}
 						setmodifyVolumeToggle={setmodifyVolumeToggle}
@@ -768,7 +768,7 @@ const VolumesDetailPanel: FC = () => {
 						selectedServerId={selectedServerId}
 						volumeList={volumeList}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 
 			<RelativeContainer

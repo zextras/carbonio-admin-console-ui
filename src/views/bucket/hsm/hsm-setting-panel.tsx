@@ -43,7 +43,7 @@ import {
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import SideModel from '../../components/sideModel';
+import ModalOverlay from '../../components/ModalOverlay';
 
 const HSMsettingPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -873,14 +873,14 @@ const HSMsettingPanel: FC = () => {
 				</ListRow>
 			</Container>
 			{showCreateHsmPolicyView && (
-				<SideModel setOpen={setShowCreateHsmPolicyView} open={showCreateHsmPolicyView}>
+				<ModalOverlay setOpen={setShowCreateHsmPolicyView} open={showCreateHsmPolicyView}>
 					<CreateHsmPolicy
 						setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
 						volumeList={volumeList}
 						createHSMpolicy={createHSMpolicy}
 						runCustomHSMpolicy={runCustomHSMpolicy}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			{showEditHsmPolicyView && (
 				<EditHsmPolicy

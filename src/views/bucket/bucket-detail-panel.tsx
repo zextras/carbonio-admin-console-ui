@@ -33,7 +33,7 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { objectType } from '../../../types';
-import SideModel from '../components/sideModel';
+import ModalOverlay from '../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -329,17 +329,17 @@ const BucketDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardSection && (
-				<SideModel setOpen={setToggleWizardSection} open={toggleWizardSection}>
+				<ModalOverlay setOpen={setToggleWizardSection} open={toggleWizardSection}>
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
 						setDetailsBucket={setDetailsBucket}
 						setConnectionData={setConnectionData}
 						bucketType={bucketType}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			{detailsBucket && (
-				<SideModel setOpen={setDetailsBucket} open={detailsBucket}>
+				<ModalOverlay setOpen={setDetailsBucket} open={detailsBucket}>
 					<DetailsPanel
 						setDetailsBucket={setDetailsBucket}
 						title="Bucket Connection"
@@ -348,10 +348,10 @@ const BucketDetailPanel: FC = () => {
 						setOpen={setOpen}
 						setShowEditDetailView={setShowEditDetailView}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			{showEditDetailView && (
-				<SideModel setOpen={setShowEditDetailView} open={showEditDetailView}>
+				<ModalOverlay setOpen={setShowEditDetailView} open={showEditDetailView}>
 					<EditBucketDetailPanel
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
@@ -361,7 +361,7 @@ const BucketDetailPanel: FC = () => {
 						setToggleForGetAPICall={setToggleForGetAPICall}
 						toggleForGetAPICall={toggleForGetAPICall}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			<RelativeContainer
 				orientation="column"

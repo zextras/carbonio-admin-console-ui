@@ -41,7 +41,7 @@ import { distributionListAction } from '../../../../services/distribution-list-a
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import SideModel from '../../../components/sideModel';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const DomainAclList: FC = () => {
 	const [t] = useTranslation();
@@ -693,13 +693,13 @@ const DomainAclList: FC = () => {
 				</Row>
 			</Container>
 			{showEditAclView && (
-				<SideModel setOpen={setShowEditAclView} open={showEditAclView} maxWidth="40.375rem">
+				<ModalOverlay setOpen={setShowEditAclView} open={showEditAclView} maxWidth="40.375rem">
 					<EditAclListView
 						selectedAclList={selectedAclList}
 						setShowEditAclList={setShowEditAclView}
 						setIsUpdateRecord={setIsUpdateRecord}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 
 			{showAclListDetailView && (
@@ -712,12 +712,12 @@ const DomainAclList: FC = () => {
 			)}
 
 			{showCreateAclListView && (
-				<SideModel setOpen={setShowCreateAclListView} open={showCreateAclListView}>
+				<ModalOverlay setOpen={setShowCreateAclListView} open={showCreateAclListView}>
 					<CreateAclList
 						setShowCreateAclListView={setShowCreateAclListView}
 						createAclListReq={createAclListReq}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

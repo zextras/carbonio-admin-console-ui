@@ -22,7 +22,7 @@ import DeleteOpearationsModel from './delete-operations-model';
 import { useOperationStore } from '../../store/operation/store';
 import { stopOperations } from '../../services/stop-operation';
 import { useServerStore } from '../../store/server/store';
-import SideModel from '../components/sideModel';
+import ModalOverlay from '../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -96,13 +96,13 @@ const RunningDetailPanel: FC<{ getAllOperationAPICallHandler: any }> = ({
 	return (
 		<>
 			{wizardDetailToggle && (
-				<SideModel setOpen={setWizardDetailToggle} open={wizardDetailToggle}>
+				<ModalOverlay setOpen={setWizardDetailToggle} open={wizardDetailToggle}>
 					<OperationsWizardDetailPanel
 						setWizardDetailToggle={setWizardDetailToggle}
 						setOpen={setOpen}
 						selectedData={selectedData}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			<RelativeContainer
 				orientation="column"

@@ -41,7 +41,7 @@ import { distributionListAction } from '../../../../services/distribution-list-a
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import SideModel from '../../../components/sideModel';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -680,33 +680,33 @@ const DomainMailingList: FC = () => {
 				</Row>
 			</Container>
 			{showEditMailingView && (
-				<SideModel setOpen={setShowEditMailingView} open={showEditMailingView}>
+				<ModalOverlay setOpen={setShowEditMailingView} open={showEditMailingView}>
 					<EditMailingListView
 						selectedMailingList={selectedMailingList}
 						setShowEditMailingList={setShowEditMailingView}
 						setIsUpdateRecord={setIsUpdateRecord}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 
 			{showMailingListDetailView && (
-				<SideModel setOpen={setShowMailingListDetailView} open={showMailingListDetailView}>
+				<ModalOverlay setOpen={setShowMailingListDetailView} open={showMailingListDetailView}>
 					<MailingListDetail
 						selectedMailingList={selectedFromRow}
 						setShowMailingListDetailView={setShowMailingListDetailView}
 						setEditMailingList={setEditMailingList}
 						setIsUpdateRecord={setIsUpdateRecord}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 
 			{showCreateMailingListView && (
-				<SideModel setOpen={setShowCreateMailingListView} open={showCreateMailingListView}>
+				<ModalOverlay setOpen={setShowCreateMailingListView} open={showCreateMailingListView}>
 					<CreateMailingList
 						setShowCreateMailingListView={setShowCreateMailingListView}
 						createMailingListReq={createMailingListReq}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

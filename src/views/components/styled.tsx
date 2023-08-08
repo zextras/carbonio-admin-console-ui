@@ -17,7 +17,7 @@ export const AbsoluteContainer = styled(Container)`
 	height: auto;
 `;
 
-export const SideModelContainer = styled.div`
+export const ModalOverlayContainer = styled.div`
 	position: fixed;
 	width: 100%;
 	height: 100%;
@@ -31,7 +31,7 @@ export const SideModelContainer = styled.div`
 	z-index: 998;
 `;
 
-export const SideSubModelContainer = styled.div`
+export const ModalSubOverlayContainer = styled.div`
 	max-width: ${(props: { maxWidth?: string }): any =>
 		props.maxWidth ? props.maxWidth : '39.375rem'};
 	width: 100%;

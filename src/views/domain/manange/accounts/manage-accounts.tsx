@@ -49,7 +49,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import useOutsideClick from '../../../app/hooks/useoutsideclick';
 import { useRightsStore } from '../../../../store/rights/store';
-import SideModel from '../../../components/sideModel';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -836,7 +836,7 @@ const ManageAccounts: FC = () => {
 								}}
 							>
 								{showAccountDetailView && (
-									<SideModel setOpen={setShowAccountDetailView} open={showAccountDetailView}>
+									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
 										<AccountDetailView
 											selectedAccount={selectedAccount}
 											setShowAccountDetailView={setShowAccountDetailView}
@@ -845,11 +845,11 @@ const ManageAccounts: FC = () => {
 											getAccountList={getAccountList}
 											cosDetail={cosDetail}
 										/>
-									</SideModel>
+									</ModalOverlay>
 								)}
 
 								{showEditAccountView && (
-									<SideModel
+									<ModalOverlay
 										setOpen={setShowEditAccountView}
 										open={showEditAccountView}
 										maxWidth="58.75rem"
@@ -864,7 +864,7 @@ const ManageAccounts: FC = () => {
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
 										/>
-									</SideModel>
+									</ModalOverlay>
 								)}
 							</AccountContext.Provider>
 						</Row>
@@ -872,7 +872,7 @@ const ManageAccounts: FC = () => {
 				</Row>
 			</Container>
 			{showCreateAccountView && (
-				<SideModel setOpen={setShowCreateAccountView} open={showCreateAccountView}>
+				<ModalOverlay setOpen={setShowCreateAccountView} open={showCreateAccountView}>
 					<CreateAccount
 						setShowCreateAccountView={setShowCreateAccountView}
 						getAccountList={getAccountList}
@@ -881,7 +881,7 @@ const ManageAccounts: FC = () => {
 						setShowAccountDetailView={setShowAccountDetailView}
 						setDefaultTab={setDefaultTab}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

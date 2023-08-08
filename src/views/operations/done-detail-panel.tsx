@@ -12,7 +12,7 @@ import { OperationsTable } from './operations-table';
 import { OperationsDoneHeader } from '../utility/utils';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 import { useOperationStore } from '../../store/operation/store';
-import SideModel from '../components/sideModel';
+import ModalOverlay from '../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -35,13 +35,13 @@ const DoneDetailPanel: FC = () => {
 	return (
 		<>
 			{wizardDetailToggle && (
-				<SideModel setOpen={setWizardDetailToggle} open={wizardDetailToggle}>
+				<ModalOverlay setOpen={setWizardDetailToggle} open={wizardDetailToggle}>
 					<OperationsWizardDetailPanel
 						setWizardDetailToggle={setWizardDetailToggle}
 						setOpen=""
 						selectedData={selectedData}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 			<RelativeContainer
 				orientation="column"

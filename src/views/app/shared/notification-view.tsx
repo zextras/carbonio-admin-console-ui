@@ -42,7 +42,7 @@ import { copyTextToClipboard } from '../../utility/utils';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
 import CustomRowFactory from './customTableRowFactory';
 import CustomHeaderFactory from './customTableHeaderFactory';
-import SideModel from '../../components/sideModel';
+import ModalOverlay from '../../components/ModalOverlay';
 
 const ReusedDefaultTabBar: FC<{
 	item: any;
@@ -533,7 +533,7 @@ const NotificationView: FC<{
 				</Container>
 			</ListRow>
 			{showNotificationDetail && (
-				<SideModel setOpen={setShowNotificationDetail} open={showNotificationDetail}>
+				<ModalOverlay setOpen={setShowNotificationDetail} open={showNotificationDetail}>
 					<NotificationDetail
 						notification={selectedNotification}
 						setShowNotificationDetail={setShowNotificationDetail}
@@ -541,7 +541,7 @@ const NotificationView: FC<{
 						markAsReadUnread={markAsReadUnread}
 						isRequestInProgress={isRequestInProgress}
 					/>
-				</SideModel>
+				</ModalOverlay>
 			)}
 		</Container>
 	);
