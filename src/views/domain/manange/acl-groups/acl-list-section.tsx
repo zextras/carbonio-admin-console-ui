@@ -331,7 +331,7 @@ const AclListSection: FC<any> = () => {
 						orientation="horizontal"
 						weight="bold"
 					>
-						{t('label.acl_list_name', 'Acl List Name')}
+						{t('label.security_group_name', 'Security Group Name')}
 					</Text>
 				</Row>
 				<ListRow>

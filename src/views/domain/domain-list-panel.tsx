@@ -40,7 +40,8 @@ import {
 	CONFIG,
 	GLOBAL_2FA_ROUTE,
 	TWO_FACTOR_AUTHENTICATION,
-	DELEGATES
+	DELEGATES,
+	SECURITY_GROUP
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -323,8 +324,8 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: ACL_LIST,
-				name: t('label.acl_list', 'ACL (Access Control List)'),
+				id: SECURITY_GROUP,
+				name: t('label.security_group', 'Security Groups'),
 				isSelected: isDomainSelect
 			},
 			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
