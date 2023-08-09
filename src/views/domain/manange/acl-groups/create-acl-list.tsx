@@ -131,7 +131,7 @@ const CreateAclList: FC<{
 		() => [
 			{
 				name: 'details',
-				label: t('label.security_group', 'Security Group'),
+				label: t('label.security_group', 'Security Groups'),
 				icon: 'ListOutline',
 				view: AclListSection,
 				CancelButton: (props: any): ReactElement => (

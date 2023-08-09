@@ -325,7 +325,7 @@ const DomainListPanel: FC = () => {
 			},
 			{
 				id: SECURITY_GROUP,
-				name: t('label.security_group', 'Security Group'),
+				name: t('label.security_group', 'Security Groups'),
 				isSelected: isDomainSelect
 			},
 			// AC622 - Hide resources from AdminUI until they are not managed by the webUI

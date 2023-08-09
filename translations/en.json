@@ -1519,7 +1519,7 @@
         "secret_key": "Secret Key",
         "secure": "secure",
         "security": "SECURITY",
-        "security_group": "Security Group",
+        "security_group": "Security Groups",
         "security_group_name": "Security Group Name",
         "select_a_bucket_configuration": "Select a Bucket Configuration",
         "select_a_server": "Select a Server",

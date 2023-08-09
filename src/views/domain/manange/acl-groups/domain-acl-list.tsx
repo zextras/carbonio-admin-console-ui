@@ -572,7 +572,7 @@ const DomainAclList: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('label.security_group', 'Security Group')}
+								{t('label.security_group', 'Security Groups')}
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
