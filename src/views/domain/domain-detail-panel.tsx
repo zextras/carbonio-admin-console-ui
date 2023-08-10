@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState, useCallback, useEffect } from 'react';
 import { Container, Padding, Text, Button, Row, Icon } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom';
@@ -22,7 +22,10 @@ const DomainDetailPanel: FC = () => {
 	const { path } = useRouteMatch();
 	const location = useLocation();
 	const domain = useDomainStore((state) => state.domain);
+	const closeDomainBanner = useDomainStore((state) => state.closeDomainBanner);
+	const setCloseDomainBanner = useDomainStore((state) => state.setCloseDomainBanner);
 	const [domainLocalValue, setDomainLocalValue] = useLocalStorage('close_domain_never_show', {});
+
 	const [showDomainClose, setShowDomainClose] = useState<boolean>(
 		domain.name ? !domainLocalValue[domain.name] : true
 	);
@@ -36,11 +39,23 @@ const DomainDetailPanel: FC = () => {
 			domainStatus?._content === 'closed' &&
 			domain.name &&
 			!domainLocalValue[domain.name] &&
-			!location.pathname.includes('domains/global')
+			!location.pathname.includes('domains/global') &&
+			closeDomainBanner !== domain.name
 		)
 			return true;
 		return false;
-	}, [domain?.a, domain.name, domainLocalValue, location.pathname]);
+	}, [closeDomainBanner, domain?.a, domain.name, domainLocalValue, location.pathname]);
+	const setCloseDomainNameBanner = useCallback(
+		(domainName: string) => {
+			setCloseDomainBanner(domainName);
+		},
+		[setCloseDomainBanner]
+	);
+	useEffect(() => {
+		if (domain?.name !== closeDomainBanner) {
+			setCloseDomainNameBanner('');
+		}
+	}, [closeDomainBanner, domain, setCloseDomainNameBanner]);
 	return (
 		<Container
 			orientation="column"
@@ -87,7 +102,10 @@ const DomainDetailPanel: FC = () => {
 							size="large"
 							color="white"
 							style={{ cursor: 'pointer' }}
-							onClick={(): void => setShowDomainClose(false)}
+							onClick={(): void => {
+								setShowDomainClose(false);
+								setCloseDomainNameBanner(domain?.name || '');
+							}}
 						/>
 					</Row>
 				</Row>
