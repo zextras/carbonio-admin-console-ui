@@ -21,6 +21,8 @@ type DomainState = {
 	setDomainView: (domainView: string) => void;
 	isDomainSupportDelegatedAdmin: boolean;
 	setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
+	closeDomainBanner: string;
+	setCloseDomainBanner: (domainName: string) => void;
 };
 
 export const useDomainStore = create<DomainState>(
@@ -48,6 +50,15 @@ export const useDomainStore = create<DomainState>(
 				'setDomainView'
 			),
 		setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin): void =>
-			set({ isDomainSupportDelegatedAdmin }, false, 'setIsDomainSupportDelegatedAdmin')
+			set({ isDomainSupportDelegatedAdmin }, false, 'setIsDomainSupportDelegatedAdmin'),
+		closeDomainBanner: '',
+		setCloseDomainBanner: (domainName): void =>
+			set(
+				produce((state) => {
+					state.closeDomainBanner = domainName;
+				}),
+				false,
+				'setCloseDomainBanner'
+			)
 	}))
 );
