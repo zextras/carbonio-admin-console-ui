@@ -46,10 +46,8 @@ const AccountDetailContainer = styled(Container)`
 	bottom: 0;
 	transition: left 0.2s ease-in-out;
 	height: auto;
-	/* width: auto; */
 	max-height: 100%;
 	overflow: hidden;
-	/* box-shadow: -0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1); */
 `;
 
 type UserSession = {
