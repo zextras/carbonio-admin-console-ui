@@ -418,6 +418,12 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.abq_status', 'ABQ Status')}
 							showCheckbox={false}
 							selection={abqStatus}
+							onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void => {
+								const dataItem = abqStatusOptions.find((item) => item?.value === ev);
+								if (dataItem) {
+									setAbqStatus(dataItem);
+								}
+							}}
 						/>
 					</Container>
 				</ListRow>
@@ -457,6 +463,12 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.status_lbl', 'Status')}
 							showCheckbox={false}
 							selection={status}
+							onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void => {
+								const dataItem = statusOptions.find((item) => item?.value === ev);
+								if (dataItem) {
+									setStatus(dataItem);
+								}
+							}}
 						/>
 					</Container>
 					<Container padding={{ top: 'large', left: 'extralarge' }}>
