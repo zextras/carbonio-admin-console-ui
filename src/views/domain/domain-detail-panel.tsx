@@ -6,7 +6,7 @@
 import React, { FC, useMemo, useState } from 'react';
 import { Container, Padding, Text, Button, Row, Icon } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, find } from 'lodash';
 import logo from '../../assets/ninja_robo.svg';
@@ -20,6 +20,7 @@ import { useLocalStorage } from '../utility/utils';
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const { path } = useRouteMatch();
+	const location = useLocation();
 	const domain = useDomainStore((state) => state.domain);
 	const [domainLocalValue, setDomainLocalValue] = useLocalStorage('close_domain_never_show', {});
 	const [showDomainClose, setShowDomainClose] = useState<boolean>(
@@ -31,10 +32,15 @@ const DomainDetailPanel: FC = () => {
 	};
 	const isDomainClosed = useMemo(() => {
 		const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
-		if (domainStatus?._content === 'closed' && domain.name && !domainLocalValue[domain.name])
+		if (
+			domainStatus?._content === 'closed' &&
+			domain.name &&
+			!domainLocalValue[domain.name] &&
+			!location.pathname.includes('domains/global')
+		)
 			return true;
 		return false;
-	}, [domain?.a, domain.name, domainLocalValue]);
+	}, [domain?.a, domain.name, domainLocalValue, location.pathname]);
 	return (
 		<Container
 			orientation="column"
