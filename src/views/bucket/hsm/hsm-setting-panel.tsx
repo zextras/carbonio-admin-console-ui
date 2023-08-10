@@ -43,6 +43,7 @@ import {
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import ModalOverlay from '../../components/ModalOverlay';
 
 const HSMsettingPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -872,12 +873,14 @@ const HSMsettingPanel: FC = () => {
 				</ListRow>
 			</Container>
 			{showCreateHsmPolicyView && (
-				<CreateHsmPolicy
-					setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
-					volumeList={volumeList}
-					createHSMpolicy={createHSMpolicy}
-					runCustomHSMpolicy={runCustomHSMpolicy}
-				/>
+				<ModalOverlay setOpen={setShowCreateHsmPolicyView} open={showCreateHsmPolicyView}>
+					<CreateHsmPolicy
+						setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
+						volumeList={volumeList}
+						createHSMpolicy={createHSMpolicy}
+						runCustomHSMpolicy={runCustomHSMpolicy}
+					/>
+				</ModalOverlay>
 			)}
 			{showEditHsmPolicyView && (
 				<EditHsmPolicy

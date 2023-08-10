@@ -554,13 +554,9 @@ const AclListDetail: FC<any> = ({
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 42.5rem), 0.75rem)'}`,
-				top: '2.7rem',
-				height: 'auto',
-				width: 'auto',
+				top: '0rem',
 				overflow: 'hidden',
-				transition: 'left 0.2s ease-in-out',
-				'box-shadow': '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+				transition: 'left 0.2s ease-in-out'
 			}}
 		>
 			<Row

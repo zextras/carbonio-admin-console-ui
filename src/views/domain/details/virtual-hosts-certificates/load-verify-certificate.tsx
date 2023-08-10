@@ -337,7 +337,11 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					position: 'relative'
 				}}
 			>
-				<Container width="100%" style={{ display: 'block' }} padding={{ horizontal: 'small' }}>
+				<Container
+					width="100%"
+					style={{ display: 'block', paddingTop: '0.5rem' }}
+					padding={{ horizontal: 'small' }}
+				>
 					<Button
 						style={{
 							width: '100%'

@@ -22,13 +22,10 @@ import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
 	position: absolute;
-	top: 2.688rem;
-	right: 0.75rem;
+	top: 0;
+	right: 0;
 	bottom: 0;
-	left: ${'max(calc(100% - 42.5rem), 0.75rem)'};
 	transition: left 0.2s ease-in-out;
-	height: auto;
-	width: 42rem;
 	max-height: 100%;
 	overflow: hidden;
 	box-shadow: -0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1);

@@ -504,13 +504,11 @@ const EditAccount: FC<{
 				mainAlignment="flex-start"
 				style={{
 					position: 'absolute',
-					left: `${'max(calc(100% - 940px), 12px)'}`,
-					top: '43px',
+					top: '0rem',
 					height: 'auto',
-					width: '940px',
 					overflow: 'hidden',
 					transition: 'left 0.2s ease-in-out',
-					'box-shadow': '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+					maxHeight: '100%'
 				}}
 			>
 				<Row
@@ -583,7 +581,7 @@ const EditAccount: FC<{
 					padding={{ all: 'small' }}
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					height="calc(100vh - 152px)"
+					height="calc(100vh - 7.5rem)"
 					background="white"
 				>
 					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
