@@ -298,29 +298,30 @@ const DomainMailingList: FC = () => {
 		getMailingList();
 	}, [getMailingList]);
 
-	const generateSearchFilterQuery = (): string => {
+	const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
 		let filterQuery = '';
-		if (statusFilter) {
-			filterQuery += statusFilter;
+		if (sfilter) {
+			filterQuery += sfilter;
 		}
-		if (searchString) {
-			filterQuery += `(|(mail=*${searchString}*)(cn=*${searchString}*)(sn=*${searchString}*)(gn=*${searchString}*)(displayName=*${searchString}*)(zimbraMailDeliveryAddress=*${searchString}*))`;
+		if (searchStr) {
+			filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
 		}
-		if (statusFilter && searchString) {
+		if (sfilter && searchStr) {
 			return `(&${filterQuery})`;
 		}
 		return filterQuery;
-	};
+	}, []);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchMailingListQuery = useCallback(
-		debounce(() => {
-			setSearchQuery(generateSearchFilterQuery());
+		debounce((searchStr: string, sfilter: string) => {
+			setOffset(0);
+			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
 	);
 
 	useEffect(() => {
-		searchMailingListQuery();
+		searchMailingListQuery(searchString, statusFilter);
 	}, [searchString, searchMailingListQuery, statusFilter]);
 
 	useEffect(() => {
