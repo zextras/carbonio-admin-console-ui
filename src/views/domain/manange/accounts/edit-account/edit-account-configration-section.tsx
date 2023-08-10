@@ -25,6 +25,7 @@ import { isValidEmail } from '../../../../utility/utils';
 import InheritedSwitch from './inherited-components/inherited-switch';
 import InheritedInput from './inherited-components/inherited-input';
 import CustomChip from '../../../../components/customChip';
+import { AccountType } from '../account-types/account-types';
 
 const EditAccountConfigrationSection: FC = () => {
 	const context = useContext(AccountContext);
@@ -145,6 +146,12 @@ const EditAccountConfigrationSection: FC = () => {
 		},
 		[setAccountDetail]
 	);
+	const changeAccDetail = useCallback(
+		(e) => {
+			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
+		},
+		[setAccountDetail]
+	);
 
 	return (
 		<Container
@@ -164,8 +171,8 @@ const EditAccountConfigrationSection: FC = () => {
 							accountValue={accountDetail?.zimbraFeatureMailForwardingEnabled}
 							onChange={changeSwitchOption}
 							label={t(
-								'account_details.can_specify_forwarding_address',
-								'Can specify forwarding address'
+								'account_details.user_can_specify_forwarding_address',
+								'User can specify forwarding address'
 							)}
 							iconColor="primary"
 							cosValue={cosDetail.zimbraFeatureMailForwardingEnabled}
@@ -187,6 +194,25 @@ const EditAccountConfigrationSection: FC = () => {
 							fromAccount={accSpecificDetail?.zimbraPrefMailLocalDeliveryDisabled}
 							inputName={'zimbraPrefMailLocalDeliveryDisabled'}
 							onChangeReset={(): void => setEmptyValue('zimbraPrefMailLocalDeliveryDisabled')}
+						/>
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						<InheritedSwitch
+							accountValue={accountDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
+							onChange={changeSwitchOption}
+							label={t(
+								'account_details.user_can_specify_mail_forwarding_filter',
+								'User can specify mail forwarding filter'
+							)}
+							iconColor="primary"
+							cosValue={cosDetail.zimbraFeatureMailForwardingInFiltersEnabled}
+							fromAccount={accSpecificDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
+							inputName={'zimbraFeatureMailForwardingInFiltersEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue('zimbraFeatureMailForwardingInFiltersEnabled')
+							}
 						/>
 					</Row>
 				</Row>
@@ -267,6 +293,24 @@ const EditAccountConfigrationSection: FC = () => {
 							ChipComponent={CustomChip}
 						/>
 					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.mail_transport', 'Mail Transport')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
+					<Input
+						onChange={changeAccDetail}
+						inputName="zimbraMailTransport"
+						label={t('label.mail_transport_map', 'Mail Transport Map')}
+						backgroundColor="gray5"
+						defaultValue={accountDetail?.zimbraMailTransport || ''}
+						value={accountDetail?.zimbraMailTransport || ''}
+					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
