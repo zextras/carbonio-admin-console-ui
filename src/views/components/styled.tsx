@@ -25,7 +25,7 @@ export const ModalOverlayContainer = styled.div`
 	left: 0;
 	right: 0;
 	bottom: 0;
-	background: rgba(0, 0, 0, 0.05);
+	background: rgba(0, 0, 0, 0.15);
 	box-shadow: 0 0 12px -1px #888;
 	cursor: pointer;
 	z-index: 998;
