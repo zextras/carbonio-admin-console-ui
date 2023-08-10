@@ -137,7 +137,7 @@ const DomainList: FC = () => {
 	);
 
 	const getAllDomainList = useCallback((): void => {
-		getDomainList(searchQuery, offset, 20).then((data) => {
+		getDomainList(searchQuery, offset, 10).then((data) => {
 			const domainListResponse: ZimbraDomainResponse = data?.domain || [];
 			if (domainListResponse && Array.isArray(domainListResponse)) {
 				const domainListArr: {
@@ -334,7 +334,7 @@ const DomainList: FC = () => {
 							</Row>
 							{domainList.length !== 0 && (
 								<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
-									<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={20} />
+									<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={10} />
 								</Row>
 							)}
 						</Row>
