@@ -480,11 +480,13 @@ const DomainResources: FC = () => {
 							width="fill"
 							style={{
 								height:
-									resourceList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+									resourceList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
 							}}
 						>
 							<Table
-								rows={resourceList}
+								rows={!isRequestInProgress ? resourceList : []}
 								headers={headers}
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}
@@ -546,7 +548,7 @@ const DomainResources: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							padding={{ all: 'large' }}
+							style={{ position: 'absolute', bottom: '0.25rem' }}
 						>
 							{resourceList && resourceList.length > 0 && (
 								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />

@@ -716,37 +716,37 @@ const ManageAccounts: FC = () => {
 		});
 	}, [STATUS_COLOR, accountUserType, domainName, limit, offset, openDetailView, searchQuery]);
 
-	const generateSearchFilterQuery = (): string => {
-		let filterQuery = '';
-		if (typeFilter) {
-			filterQuery += typeFilter;
-		}
-		if (statusFilter) {
-			filterQuery += statusFilter;
-		}
-		if (searchString) {
-			filterQuery += `(|(mail=*${searchString}*)(cn=*${searchString}*)(sn=*${searchString}*)(gn=*${searchString}*)(displayName=*${searchString}*)(zimbraMailDeliveryAddress=*${searchString}*))`;
-		}
-		if (
-			(typeFilter && statusFilter) ||
-			(statusFilter && searchString) ||
-			(typeFilter && searchString)
-		) {
-			return `(&${filterQuery})`;
-		}
-		return filterQuery;
-	};
+	const generateSearchFilterQuery = useCallback(
+		(searchStr: string, sfilter: string, tfilter: string): string => {
+			let filterQuery = '';
+			if (tfilter) {
+				filterQuery += tfilter;
+			}
+			if (sfilter) {
+				filterQuery += sfilter;
+			}
+			if (searchStr) {
+				filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+			}
+			if ((tfilter && sfilter) || (sfilter && searchStr) || (tfilter && searchStr)) {
+				return `(&${filterQuery})`;
+			}
+			return filterQuery;
+		},
+		[]
+	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
-		debounce(() => {
-			setSearchQuery(generateSearchFilterQuery());
+		debounce((searchStr: string, sfilter: string, tfilter: string) => {
+			setTotalAccount(0);
+			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter, tfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
 	);
 	useEffect(() => {
-		searchAccountList();
-	}, [accountList, limit, offset, searchAccountList, searchString, typeFilter, statusFilter]);
+		searchAccountList(searchString, statusFilter, typeFilter);
+	}, [searchAccountList, searchString, typeFilter, statusFilter]);
 
 	useEffect(() => {
 		if (domainName) {
@@ -834,7 +834,7 @@ const ManageAccounts: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -931,7 +931,12 @@ const ManageAccounts: FC = () => {
 								</Container>
 							)}
 							{accountList.length !== 0 && (
-								<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
+								<Row
+									orientation="horizontal"
+									mainAlignment="flex-start"
+									width="100%"
+									style={{ position: 'absolute', bottom: '0.25rem' }}
+								>
 									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 								</Row>
 							)}

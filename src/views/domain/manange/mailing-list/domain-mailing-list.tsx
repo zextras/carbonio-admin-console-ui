@@ -628,7 +628,7 @@ const DomainMailingList: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -659,11 +659,13 @@ const DomainMailingList: FC = () => {
 							width="fill"
 							style={{
 								height:
-									mailingList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+									mailingList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
 							}}
 						>
 							<Table
-								rows={mailingList}
+								rows={!isRequestInProgress ? mailingList : []}
 								headers={headers}
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}
@@ -730,7 +732,7 @@ const DomainMailingList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							padding={{ all: 'large' }}
+							style={{ position: 'absolute', bottom: '0.25rem' }}
 						>
 							{mailingList && mailingList.length > 0 && (
 								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />

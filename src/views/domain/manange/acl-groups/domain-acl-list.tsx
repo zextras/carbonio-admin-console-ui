@@ -672,11 +672,14 @@ const DomainAclList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: aclList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
+								height:
+									aclList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
 							}}
 						>
 							<Table
-								rows={aclList}
+								rows={!isRequestInProgress ? aclList : []}
 								headers={headers}
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}
@@ -743,7 +746,7 @@ const DomainAclList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							padding={{ all: 'large' }}
+							style={{ position: 'absolute', bottom: '0.25rem' }}
 						>
 							{aclList && aclList.length > 0 && (
 								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
