@@ -96,7 +96,7 @@ const DeleteHsmPolicy: FC<{
 						label={t('label.help', 'Help')}
 						color="primary"
 					/>
-					<Row style={{ gap: '8px' }}>
+					<Row style={{ gap: '1rem' }}>
 						<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={closeHandler} />
 						<Button
 							label={t('hsm.delete', 'Delete')}

@@ -27,8 +27,7 @@ import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC } from '../../constants'
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-
-const prefixRegex = /^[A-Za-z0-9_./-]*$/;
+import Displayer from '../components/displayer';
 
 const DetailsHeaders = [
 	{
@@ -161,7 +160,9 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 const EditBucketDetailPanel: FC<{
 	setShowEditDetailView: any;
 	title: string;
+	setBucketDeleteName: any;
 	bucketDetail: any;
+	setOpen: any;
 	getBucketListType: any;
 	setSelectedRow: any;
 	setToggleForGetAPICall: any;
@@ -170,6 +171,8 @@ const EditBucketDetailPanel: FC<{
 	setShowEditDetailView,
 	title,
 	bucketDetail,
+	setBucketDeleteName,
+	setOpen,
 	getBucketListType,
 	setSelectedRow,
 	setToggleForGetAPICall,
@@ -510,6 +513,18 @@ const EditBucketDetailPanel: FC<{
 	// 	}
 	// }, [bucketType, bucketDetail]);
 
+	const buttons = [
+		{
+			align: 'right',
+			color: 'error',
+			label: t('label.delete', 'delete'),
+			onClick: (): void => {
+				setBucketDeleteName(bucketDetail);
+				setOpen(true);
+			}
+		}
+	];
+
 	return (
 		<Container background="gray6">
 			<Row
@@ -518,33 +533,32 @@ const EditBucketDetailPanel: FC<{
 				orientation="horizontal"
 				background="white"
 				width="fill"
-				height="3rem"
+				height="4.15rem"
 			>
 				<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
 					<Text size="extralarge" weight="bold">
 						{title}
 					</Text>
 				</Row>
+				<Row
+					padding={{ all: 'small' }}
+					width="50%"
+					mainAlignment="flex-end"
+					crossAlignment="flex-end"
+				>
+					<Padding right="small">
+						{isDirty && (
+							<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
+						)}
+					</Padding>
+					{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
+				</Row>
 				<Row padding={{ horizontal: 'small' }}>
 					<IconButton icon="CloseOutline" onClick={(): any => setShowEditDetailView(false)} />
 				</Row>
 			</Row>
 			<Divider />
-			<Container
-				orientation="horizontal"
-				mainAlignment="flex-end"
-				crossAlignment="flex-end"
-				background="gray6"
-				padding={{ all: 'extralarge' }}
-				height="85px"
-			>
-				<Padding right="small">
-					{isDirty && (
-						<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
-					)}
-				</Padding>
-				{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
-			</Container>
+			<Displayer buttons={buttons} pinIcon={false} />
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
 				<Row padding={{ top: 'small' }} width="100%">
 					<Input
