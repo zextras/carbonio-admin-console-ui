@@ -33,13 +33,13 @@ import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import logo from '../../../../assets/helmet_logo.svg';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { AbsoluteContainer } from '../../../components/styled';
 import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 import DeleteCertificateModel from './delete-certificate-model';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ListRow from '../../../list/list-row';
 import { objectType } from '../../../../../types';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -87,7 +87,11 @@ const DomainVirtualHosts: FC = () => {
 			if (domainVirtualHostArray && domainVirtualHostArray.length > 0) {
 				const virtualHostItems = domainVirtualHostArray.map((domainData: any, index: any) => ({
 					id: (index + 1)?.toString(),
-					columns: [domainData._content]
+					columns: [
+						<Text key={index + 1} color="gray0" weight="regular">
+							{domainData._content}
+						</Text>
+					]
 				}));
 				setItems(virtualHostItems);
 				setDefaultItems(virtualHostItems);
@@ -327,12 +331,12 @@ const DomainVirtualHosts: FC = () => {
 	return (
 		<Container padding={{ vertical: 'large' }} background="gray6" mainAlignment="flex-start">
 			{toggleLoadVerifyCertWizard && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setToggleLoadVerifyCertWizard} open={toggleLoadVerifyCertWizard}>
 					<LoadVerifyCertificateWizard
 						setToggleWizard={setToggleLoadVerifyCertWizard}
 						setAlertToggle={setAlertToggle}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			<Container
 				orientation="column"

@@ -28,12 +28,12 @@ import BucketDeleteModel from './delete-bucket-model';
 import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
-import { AbsoluteContainer } from '../components/styled';
 import ListRow from '../list/list-row';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { objectType } from '../../../types';
+import ModalOverlay from '../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -80,7 +80,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.label}</Text>
+							<Text size="small" weight="regular">
+								{v.label}
+							</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
@@ -94,7 +96,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.bucketName}</Text>
+							<Text size="small" weight="light">
+								{v.bucketName}
+							</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={v.storeType}>
@@ -108,7 +112,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.storeType}</Text>
+							<Text size="small" weight="light">
+								{v.storeType}
+							</Text>
 						</Row>
 					</Tooltip>
 				],
@@ -323,17 +329,17 @@ const BucketDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardSection && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setToggleWizardSection} open={toggleWizardSection}>
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
 						setDetailsBucket={setDetailsBucket}
 						setConnectionData={setConnectionData}
 						bucketType={bucketType}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			{detailsBucket && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setDetailsBucket} open={detailsBucket}>
 					<DetailsPanel
 						setDetailsBucket={setDetailsBucket}
 						title="Bucket Connection"
@@ -342,10 +348,10 @@ const BucketDetailPanel: FC = () => {
 						setOpen={setOpen}
 						setShowEditDetailView={setShowEditDetailView}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			{showEditDetailView && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setShowEditDetailView} open={showEditDetailView}>
 					<EditBucketDetailPanel
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
@@ -355,7 +361,7 @@ const BucketDetailPanel: FC = () => {
 						setToggleForGetAPICall={setToggleForGetAPICall}
 						toggleForGetAPICall={toggleForGetAPICall}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			<RelativeContainer
 				orientation="column"

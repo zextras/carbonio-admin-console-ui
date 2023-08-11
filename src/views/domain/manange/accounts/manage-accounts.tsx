@@ -49,6 +49,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import useOutsideClick from '../../../app/hooks/useoutsideclick';
 import { useRightsStore } from '../../../../store/rights/store';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -609,10 +610,10 @@ const ManageAccounts: FC = () => {
 						id: item?.id,
 						columns: [
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
-								weight="light"
+								weight="regular"
 								onClick={(): void => {
 									openDetailView(item);
 								}}
@@ -620,7 +621,7 @@ const ManageAccounts: FC = () => {
 								{item?.name || ' '}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
 								weight="light"
@@ -641,7 +642,7 @@ const ManageAccounts: FC = () => {
 											maxWidth="auto"
 										>
 											<Text
-												size="medium"
+												size="small"
 												weight="light"
 												key={item?.id}
 												color="#828282"
@@ -657,7 +658,7 @@ const ManageAccounts: FC = () => {
 										</Tooltip>
 									) : (
 										<Text
-											size="medium"
+											size="small"
 											key={item?.id}
 											color="#828282"
 											weight="light"
@@ -671,7 +672,7 @@ const ManageAccounts: FC = () => {
 								}
 							</>,
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
 								weight="light"
@@ -682,7 +683,7 @@ const ManageAccounts: FC = () => {
 								{accountUserType(item)}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								weight="light"
 								key={item?.id}
 								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
@@ -693,7 +694,7 @@ const ManageAccounts: FC = () => {
 								{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								weight="light"
 								key={item?.id}
 								color="gray0"
@@ -974,27 +975,35 @@ const ManageAccounts: FC = () => {
 								}}
 							>
 								{showAccountDetailView && (
-									<AccountDetailView
-										selectedAccount={selectedAccount}
-										setShowAccountDetailView={setShowAccountDetailView}
-										setShowEditAccountView={setShowEditAccountView}
-										STATUS_COLOR={STATUS_COLOR}
-										getAccountList={getAccountList}
-										cosDetail={cosDetail}
-									/>
+									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
+										<AccountDetailView
+											selectedAccount={selectedAccount}
+											setShowAccountDetailView={setShowAccountDetailView}
+											setShowEditAccountView={setShowEditAccountView}
+											STATUS_COLOR={STATUS_COLOR}
+											getAccountList={getAccountList}
+											cosDetail={cosDetail}
+										/>
+									</ModalOverlay>
 								)}
 
 								{showEditAccountView && (
-									<EditAccount
-										setShowEditAccountView={setShowEditAccountView}
-										selectedAccount={selectedAccount}
-										getAccountList={getAccountList}
-										signatureList={signatureList}
-										signatureItems={signatureItems}
-										getAccountDetail={getAccountDetail}
-										defaultTab={defaultTab}
-										setDefaultTab={setDefaultTab}
-									/>
+									<ModalOverlay
+										setOpen={setShowEditAccountView}
+										open={showEditAccountView}
+										maxWidth="58.75rem"
+									>
+										<EditAccount
+											setShowEditAccountView={setShowEditAccountView}
+											selectedAccount={selectedAccount}
+											getAccountList={getAccountList}
+											signatureList={signatureList}
+											signatureItems={signatureItems}
+											getAccountDetail={getAccountDetail}
+											defaultTab={defaultTab}
+											setDefaultTab={setDefaultTab}
+										/>
+									</ModalOverlay>
 								)}
 							</AccountContext.Provider>
 						</Row>
@@ -1002,14 +1011,16 @@ const ManageAccounts: FC = () => {
 				</Row>
 			</Container>
 			{showCreateAccountView && (
-				<CreateAccount
-					setShowCreateAccountView={setShowCreateAccountView}
-					getAccountList={getAccountList}
-					setShowEditAccountView={setShowEditAccountView}
-					openDetailView={openDetailView}
-					setShowAccountDetailView={setShowAccountDetailView}
-					setDefaultTab={setDefaultTab}
-				/>
+				<ModalOverlay setOpen={setShowCreateAccountView} open={showCreateAccountView}>
+					<CreateAccount
+						setShowCreateAccountView={setShowCreateAccountView}
+						getAccountList={getAccountList}
+						setShowEditAccountView={setShowEditAccountView}
+						openDetailView={openDetailView}
+						setShowAccountDetailView={setShowAccountDetailView}
+						setDefaultTab={setDefaultTab}
+					/>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

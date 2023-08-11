@@ -1687,13 +1687,9 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 680px), 12px)'}`,
-				top: '2.688rem',
-				height: 'auto',
-				width: 'auto',
+				top: '0rem',
 				overflow: 'hidden',
 				transition: 'left 0.2s ease-in-out',
-				'box-shadow': '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)',
 				right: 0
 			}}
 		>
@@ -1759,7 +1755,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				padding={{ all: 'extralarge' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 145px)"
+				height="100vh"
 				background="white"
 				style={{ overflow: 'auto' }}
 			>

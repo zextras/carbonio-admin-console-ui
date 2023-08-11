@@ -3,10 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Text, Checkbox } from '@zextras/carbonio-design-system';
+
+import { Text, Checkbox, Row } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CSVDownload } from 'react-csv';
 import styled, { css, SimpleInterpolation } from 'styled-components';
+
+export const HoverRowContainer = styled(Row)``;
 
 const TableRow = styled.tr<{
 	selected?: boolean;
@@ -27,6 +29,15 @@ const TableRow = styled.tr<{
 			background-color: ${({ theme }): string => theme.palette.gray5.hover};
 		}
 	}
+	${HoverRowContainer} {
+		display: none;
+	}
+
+	&:hover {
+		${HoverRowContainer} {
+			display: flex;
+		}
+	}
 	${({ selected, highlight, theme }): SimpleInterpolation =>
 		(selected || highlight) &&
 		css`
@@ -37,7 +48,6 @@ const TableRow = styled.tr<{
 		css`
 			cursor: pointer;
 		`};
-	height: 2.75rem;
 `;
 
 type TRow = {
@@ -52,6 +62,8 @@ type TRow = {
 	onClick?: React.ReactEventHandler;
 	/** Index/counter of the row shown as first column when checkboxes are hidden */
 	index?: number;
+	/** Hover content */
+	hoverContent?: string | React.ReactElement;
 };
 
 interface TRowProps {
@@ -64,7 +76,7 @@ interface TRowProps {
 	showCheckbox: boolean;
 }
 
-const CustomRowFactory = ({
+const HoverContentRowFactory = ({
 	index,
 	row,
 	onChange,
@@ -75,6 +87,7 @@ const CustomRowFactory = ({
 }: TRowProps): JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const ckbRef = useRef<HTMLDivElement>(null);
+	const [isHovered, setIsHovered] = useState<boolean>(false);
 	const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);
 	const clickableRow = useMemo(
 		() => (!showCheckbox && typeof row.clickable === undefined) || row.clickable,
@@ -100,10 +113,12 @@ const CustomRowFactory = ({
 
 	const displayCheckbox = useCallback(() => {
 		setShowCkb(true);
+		setIsHovered(true);
 	}, []);
 
 	const hideCheckbox = useCallback(() => {
 		setShowCkb(false);
+		setIsHovered(false);
 	}, []);
 
 	useEffect(() => {
@@ -126,8 +141,8 @@ const CustomRowFactory = ({
 
 	const rowData = useMemo(
 		() =>
-			row.columns.map((column, i) => (
-				<td style={{ height: '2.5rem', cursor: 'pointer', color: '#414141' }} key={i}>
+			row.columns.slice(0, -1).map((column, i) => (
+				<td style={{ height: '2.5rem', cursor: 'pointer' }} key={i}>
 					{typeof column === 'string' ? <Text>{column}</Text> : column}
 				</td>
 			)),
@@ -152,14 +167,35 @@ const CustomRowFactory = ({
 						iconColor={(multiSelect && selectionMode) || selected ? 'primary' : 'text'}
 					/>
 				) : (
-					<Text size="small" weight="light">
-						{index}
-					</Text>
+					<Text>{index}</Text>
 				)}
 			</td>
 			{rowData}
+			<td
+				style={{
+					height: '2.5rem',
+					cursor: 'pointer',
+					display: isHovered && row.hoverContent ? 'none' : 'block'
+				}}
+				key={row.columns.length - 1}
+			>
+				{typeof row.columns[row.columns.length - 1] === 'string' ? (
+					<Text>{row.columns[row.columns.length - 1]}</Text>
+				) : (
+					row.columns[row.columns.length - 1]
+				)}
+			</td>
+			<td
+				style={{
+					height: '2.5rem',
+					cursor: 'pointer',
+					display: isHovered && row.hoverContent ? 'block' : 'none'
+				}}
+				key={row.columns.length}
+			>
+				{row.hoverContent}
+			</td>
 		</TableRow>
 	);
 };
-
-export default CustomRowFactory;
+export default HoverContentRowFactory;

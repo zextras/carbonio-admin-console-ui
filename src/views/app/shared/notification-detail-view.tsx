@@ -39,13 +39,9 @@ const NotificationDetail: FC<{
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 42.5rem), 0.75rem)'}`,
 				top: '0rem',
-				height: '100%',
-				width: `42rem`,
 				overflow: 'hidden',
 				transition: 'left 0.2s ease-in-out',
-				'box-shadow': '-0.375rem 0.25rem 0.313rem 0rem rgba(0, 0, 0, 0.1)',
 				'z-index': '9'
 			}}
 		>

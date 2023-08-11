@@ -19,6 +19,10 @@ type DomainState = {
 	setDomainList: (domainList: Array<Domain>) => void;
 	removeDomain: () => void;
 	setDomainView: (domainView: string) => void;
+	isDomainSupportDelegatedAdmin: boolean;
+	setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
+	closeDomainBanner: string;
+	setCloseDomainBanner: (domainName: string) => void;
 };
 
 export const useDomainStore = create<DomainState>(
@@ -28,6 +32,7 @@ export const useDomainStore = create<DomainState>(
 		domainView: DOMAIN_DETAIL_VIEW,
 		setDomain: (domain): void => set({ domain }, false, 'setDomain'),
 		domainList: [],
+		isDomainSupportDelegatedAdmin: false,
 		setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
@@ -43,6 +48,17 @@ export const useDomainStore = create<DomainState>(
 				}),
 				false,
 				'setDomainView'
+			),
+		setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin): void =>
+			set({ isDomainSupportDelegatedAdmin }, false, 'setIsDomainSupportDelegatedAdmin'),
+		closeDomainBanner: '',
+		setCloseDomainBanner: (domainName): void =>
+			set(
+				produce((state) => {
+					state.closeDomainBanner = domainName;
+				}),
+				false,
+				'setCloseDomainBanner'
 			)
 	}))
 );

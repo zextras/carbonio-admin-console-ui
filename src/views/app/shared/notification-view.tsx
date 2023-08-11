@@ -42,6 +42,7 @@ import { copyTextToClipboard } from '../../utility/utils';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
 import CustomRowFactory from './customTableRowFactory';
 import CustomHeaderFactory from './customTableHeaderFactory';
+import ModalOverlay from '../../components/ModalOverlay';
 
 const ReusedDefaultTabBar: FC<{
 	item: any;
@@ -346,8 +347,8 @@ const NotificationView: FC<{
 				columns: [
 					<Text
 						size="small"
-						color={item?.ack ? 'secondary' : 'bold'}
-						weight={item?.ack ? 'light' : 'medium'}
+						color="gray0"
+						weight="regular"
 						key={item}
 						onClick={(event: any): void => {
 							setSelectedNotification(item);
@@ -362,7 +363,7 @@ const NotificationView: FC<{
 					</Text>,
 					<Text
 						size="small"
-						color={item?.ack ? 'secondary' : 'bold'}
+						color="gray0"
 						weight={item?.ack ? 'light' : 'medium'}
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
@@ -378,8 +379,8 @@ const NotificationView: FC<{
 					</Text>,
 					<Text
 						size="small"
+						color="gray0"
 						weight={item?.ack ? 'light' : 'medium'}
-						color={item?.ack ? 'secondary' : 'bold'}
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							setSelectedNotification(item);
@@ -394,8 +395,8 @@ const NotificationView: FC<{
 					</Text>,
 					<Text
 						size="small"
+						color="gray0"
 						weight={item?.ack ? 'light' : 'medium'}
-						color={item?.ack ? 'secondary' : 'bold'}
 						key={item}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							setSelectedNotification(item);
@@ -532,13 +533,15 @@ const NotificationView: FC<{
 				</Container>
 			</ListRow>
 			{showNotificationDetail && (
-				<NotificationDetail
-					notification={selectedNotification}
-					setShowNotificationDetail={setShowNotificationDetail}
-					copyNotificationOperation={copyNotificationOperation}
-					markAsReadUnread={markAsReadUnread}
-					isRequestInProgress={isRequestInProgress}
-				/>
+				<ModalOverlay setOpen={setShowNotificationDetail} open={showNotificationDetail}>
+					<NotificationDetail
+						notification={selectedNotification}
+						setShowNotificationDetail={setShowNotificationDetail}
+						copyNotificationOperation={copyNotificationOperation}
+						markAsReadUnread={markAsReadUnread}
+						isRequestInProgress={isRequestInProgress}
+					/>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

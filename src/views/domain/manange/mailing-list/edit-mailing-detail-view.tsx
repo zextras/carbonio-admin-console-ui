@@ -494,8 +494,8 @@ const EditMailingListView: FC<any> = ({
 				id: item,
 				columns: [
 					<Text
-						size="medium"
-						weight="light"
+						size="small"
+						weight="regular"
 						key={item}
 						color="gray0"
 						onClick={(): void => {
@@ -519,8 +519,8 @@ const EditMailingListView: FC<any> = ({
 				id: item?.name,
 				columns: [
 					<Text
-						size="medium"
-						weight="light"
+						size="small"
+						weight="regular"
 						key={item?.id}
 						color="gray0"
 						onClick={(): void => {
@@ -1629,8 +1629,8 @@ const EditMailingListView: FC<any> = ({
 				id: item,
 				columns: [
 					<Text
-						size="medium"
-						weight="light"
+						size="small"
+						weight="regular"
 						key={item}
 						color="gray0"
 						onClick={(): void => {
@@ -1653,8 +1653,7 @@ const EditMailingListView: FC<any> = ({
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 680px), 12px)'}`,
-				top: '2.688rem',
+				top: '0rem',
 				height: 'auto',
 				width: 'auto',
 				overflow: 'hidden',
@@ -1725,7 +1724,7 @@ const EditMailingListView: FC<any> = ({
 				padding={{ all: 'extralarge' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 145px)"
+				height="calc(100vh - 3.6rem)"
 				background="white"
 				style={{ overflow: 'auto' }}
 			>

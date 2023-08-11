@@ -38,7 +38,6 @@ import {
 	SCALITYS3,
 	LOCAL_VALUE
 } from '../../../../constants';
-import { AbsoluteContainer } from '../../../components/styled';
 import ServerVolumeDetailsPanel from './server-volume-details-panel';
 import { fetchSoap } from '../../../../services/bucket-service';
 import IndexerVolumeTable from './indexer-volume-table';
@@ -56,6 +55,7 @@ import { setCurrentVolumeRequest } from '../../../../services/set-current-volume
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import { Volume, objAll, objectType } from '../../../../../types';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -87,7 +87,9 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">{v?.id}</Text>
+						<Text size="small" weight="regular">
+							{v?.id}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -96,7 +98,9 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">{v?.name}</Text>
+						<Text size="small" weight="light">
+							{v?.name}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -105,7 +109,7 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">
+						<Text size="small" weight="light">
 							{v?.storeType === LOCAL_VALUE
 								? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
 								: t('volume.volume_allocation_list.object_storage', 'Object Storage')}
@@ -118,7 +122,7 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">
+						<Text size="small" weight="light">
 							{v?.storeType === LOCAL_VALUE
 								? v?.path
 								: t('label.prefix_volume', 'Prefix - {{volumePrefix}}', {
@@ -133,7 +137,7 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text color={v?.isCurrent ? 'text' : 'error'} weight="light">
+						<Text color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
 							{v?.isCurrent ? YES : NO}
 						</Text>
 					</Row>,
@@ -144,7 +148,7 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text color={v?.compressBlobs ? 'text' : 'error'} weight="light">
+						<Text color={v?.compressBlobs ? 'text' : 'error'} size="small" weight="light">
 							{v?.compressBlobs ? YES : NO}
 						</Text>
 					</Row>
@@ -721,27 +725,27 @@ const VolumesDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardExternal && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setToggleWizardExternal} open={toggleWizardExternal}>
 					<CreateMailstoresVolume
 						setToggleWizardExternal={setToggleWizardExternal}
 						setToggleWizardLocal={setToggleWizardLocal}
 						volName={selectedServerName}
 						CreateAdvancedRequest={CreateAdvancedRequest}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			{toggleWizardLocal && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setToggleWizardLocal} open={toggleWizardLocal}>
 					<NewVolume
 						setToggleWizardLocal={setToggleWizardLocal}
 						setToggleWizardExternal={setToggleWizardExternal}
 						volName={selectedServerName}
 						CreateVolumeRequest={CreateVolumeRequest}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			{toggleDetailPage && volume && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setToggleDetailPage} open={toggleDetailPage}>
 					<ServerVolumeDetailsPanel
 						volumeDetail={volume}
 						setToggleDetailPage={setToggleDetailPage}
@@ -753,10 +757,10 @@ const VolumesDetailPanel: FC = () => {
 						getAllVolumesRequest={getAllVolumesRequest}
 						selectedServerId={selectedServerId}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			{modifyVolumeToggle && volume && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setmodifyVolumeToggle} open={modifyVolumeToggle}>
 					<ModifyVolume
 						volumeDetail={detailData}
 						setmodifyVolumeToggle={setmodifyVolumeToggle}
@@ -764,7 +768,7 @@ const VolumesDetailPanel: FC = () => {
 						selectedServerId={selectedServerId}
 						volumeList={volumeList}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 
 			<RelativeContainer

@@ -4,7 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
-import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Input,
+	Icon,
+	Row,
+	Padding,
+	Text,
+	Dropdown
+} from '@zextras/carbonio-design-system';
 
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
@@ -30,8 +38,11 @@ import {
 	VIRTUAL_HOSTS,
 	SAML,
 	CONFIG,
+	GLOBAL_DOMAIN_ROUTE,
 	GLOBAL_2FA_ROUTE,
-	TWO_FACTOR_AUTHENTICATION
+	TWO_FACTOR_AUTHENTICATION,
+	DELEGATES,
+	SECURITY_GROUP
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -46,12 +57,13 @@ import { Right, useRightsStore } from '../../store/rights/store';
 import { getAllRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
+import { DomainResponse } from '../../../types';
 
 const SelectItem = styled(Row)``;
 
 const CustomIcon = styled(Icon)`
-	width: 20px;
-	height: 20px;
+	width: 1.25rem;
+	height: 1.25rem;
 `;
 const ovelayStyle = styled(Container)`
 	width: 20rem;
@@ -64,6 +76,10 @@ const ovelayStyle = styled(Container)`
 	z-index: 11;
 `;
 
+interface ManageOptions {
+	[key: string]: string | boolean;
+}
+
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const locationService = useLocation();
@@ -74,16 +90,23 @@ const DomainListPanel: FC = () => {
 	const [isDomainListExpand, setIsDomainListExpand] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState('');
 	const [domainId, setDomainId] = useState('');
-	const [domainList, setDomainList] = useState([]);
+	const [domainList, setDomainList] = useState<
+		{
+			name: string;
+			id: string;
+			a: { n: string; _content: string }[];
+		}[]
+	>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const [selectedOperationItem, setSelectedOperationItem] = useState('');
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const domainInformation = useDomainStore((state) => state.domain);
+	const domainView = useDomainStore((state) => state.domainView);
+	const setDomainView = useDomainStore((state) => state.setDomainView);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
-	const [manageOptions, setManageOptions] = useState<any>([]);
+	const [manageOptions, setManageOptions] = useState<ManageOptions[]>([]);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
 	const [isShowGlobalConfig, setIsShowGlobalConfig] = useState<boolean>(false);
 	const rights = useRightsStore((state) => state.rights);
@@ -133,10 +156,10 @@ const DomainListPanel: FC = () => {
 	}, [domainInformation]);
 
 	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
-	const getDomainLists = useCallback((domainName: string): any => {
+	const getDomainLists = useCallback((domainName: string): void => {
 		setIsLoading(true);
 		getDomainList(domainName, 0).then((data) => {
-			const searchResponse: any = data;
+			const searchResponse: DomainResponse = data;
 			if (!!searchResponse && searchResponse?.searchTotal > 0) {
 				setDomainList(searchResponse?.domain);
 				setIsLoading(false);
@@ -170,11 +193,11 @@ const DomainListPanel: FC = () => {
 	}, [domainInformation?.id, domainInformation?.name]);
 
 	useMemo(() => {
-		if (selectedOperationItem === '') {
+		if (domainView === '') {
 			const operationItem = locationService?.pathname.split('/').pop();
-			setSelectedOperationItem(operationItem || '');
+			setDomainView(operationItem || '');
 		}
-	}, [locationService?.pathname, selectedOperationItem]);
+	}, [domainView, locationService?.pathname, setDomainView]);
 
 	useEffect(() => {
 		if (
@@ -185,11 +208,11 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setSelectedOperationItem('');
+			setDomainView('');
 			setDomainId('');
 			setDomain({});
 		}
-	}, [locationService, setDomain]);
+	}, [locationService, setDomain, setDomainView]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchDomainCall = useCallback(
@@ -205,36 +228,39 @@ const DomainListPanel: FC = () => {
 		}
 	}, [searchDomainName, isDomainSelect, searchDomainCall]);
 
-	const selectedDomain = useCallback((domain: any) => {
-		setIsDomainSelect(true);
-		setSearchDomainName(domain?.name);
-		setIsDomainListExpand(false);
-		setDomainId(domain?.id);
-		setSelectedOperationItem(GENERAL_SETTINGS);
-	}, []);
+	const selectedDomain = useCallback(
+		(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => {
+			setIsDomainSelect(true);
+			setSearchDomainName(domain?.name);
+			setIsDomainListExpand(false);
+			setDomainId(domain?.id);
+			setDomainView(GENERAL_SETTINGS);
+		},
+		[setDomainView]
+	);
 
 	useEffect(() => {
 		if (isDomainSelect && domainId) {
-			if (selectedOperationItem) {
-				globalCarbonioSendAnalytics &&
-					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
-				if (selectedOperationItem === GLOBAL_THEME_ROUTE) {
-					replaceHistory(`/${selectedOperationItem}`);
-				} else if (selectedOperationItem === GLOBAL_2FA_ROUTE) {
-					replaceHistory(`/${selectedOperationItem}`);
+			if (domainView) {
+				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
+				if (domainView === GLOBAL_THEME_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_2FA_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_DOMAIN_ROUTE) {
+					replaceHistory(`/${domainView}`);
 				} else {
-					replaceHistory(`/${domainId}/${selectedOperationItem}`);
+					replaceHistory(`/${domainId}/${domainView}`);
 				}
 			} else {
-				globalCarbonioSendAnalytics &&
-					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
+				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
 				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 			}
-		} else if (selectedOperationItem) {
-			globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
-			replaceHistory(`/${selectedOperationItem}`);
+		} else if (domainView) {
+			globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
+			replaceHistory(`/${domainView}`);
 		}
-	}, [isDomainSelect, domainId, selectedOperationItem, matomo, globalCarbonioSendAnalytics]);
+	}, [isDomainSelect, domainId, domainView, matomo, globalCarbonioSendAnalytics]);
 
 	const detailOptions = useMemo(
 		() => [
@@ -290,13 +316,18 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
+				id: DELEGATES,
+				name: t('label.delegates_title', 'Delegates'),
+				isSelected: isDomainSelect
+			},
+			{
 				id: MAILING_LIST,
 				name: t('label.mailing_list', 'Mailing List'),
 				isSelected: isDomainSelect
 			},
 			{
-				id: ACL_LIST,
-				name: t('label.acl_list', 'ACL (Access Control List)'),
+				id: SECURITY_GROUP,
+				name: t('label.security_group', 'Security Groups'),
 				isSelected: isDomainSelect
 			},
 			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
@@ -327,6 +358,11 @@ const DomainListPanel: FC = () => {
 				isSelected: true
 			},
 			{
+				id: GLOBAL_DOMAIN_ROUTE,
+				name: t('label.domains', 'Domains'),
+				isSelected: true
+			},
+			{
 				id: GLOBAL_2FA_ROUTE,
 				name: t('label.2fa', '2-Factor-Authentication'),
 				isSelected: true
@@ -339,7 +375,7 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? allManageOptions.filter(
-						(item: any) => item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC
+						(item: ManageOptions) => item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
@@ -349,7 +385,7 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? detailOptions.filter(
-						(item: any) =>
+						(item: ManageOptions) =>
 							item?.id !== THEME && item?.id !== SAML && item?.id !== TWO_FACTOR_AUTHENTICATION
 				  )
 				: detailOptions,
@@ -360,7 +396,8 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? globalOptionItems.filter(
-						(item: any) => item?.id !== GLOBAL_THEME_ROUTE && item?.id !== GLOBAL_2FA_ROUTE
+						(item: ManageOptions) =>
+							item?.id !== GLOBAL_THEME_ROUTE && item?.id !== GLOBAL_2FA_ROUTE
 				  )
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
@@ -368,14 +405,14 @@ const DomainListPanel: FC = () => {
 
 	useEffect(() => {
 		if (!getBackupModuleEnable && !isBackupModuleLicensed) {
-			const options = manageItems.filter((item: any) => item?.id !== RESTORE_ACCOUNT);
+			const options = manageItems.filter((item: ManageOptions) => item?.id !== RESTORE_ACCOUNT);
 			setManageOptions(options);
 		}
 	}, [getBackupModuleEnable, manageItems, isBackupModuleLicensed, isDomainSelect]);
 
 	useMemo(() => {
 		setManageOptions(
-			manageItems.map((item: any) => {
+			manageItems.map((item: ManageOptions) => {
 				// eslint-disable-next-line no-param-reassign
 				item.isSelected = isDomainSelect;
 				return item;
@@ -413,8 +450,8 @@ const DomainListPanel: FC = () => {
 			}
 		},
 		style: {
-			width: '20px',
-			height: '20px'
+			width: '1.25rem',
+			height: '1.25rem'
 		},
 		icon: searchDomainName === '' ? 'GlobeOutline' : 'CloseOutline'
 	};
@@ -449,31 +486,40 @@ const DomainListPanel: FC = () => {
 						)
 					}
 			  ]
-			: domainList.map((domain: any, index) => ({
-					id: domain.id,
-					label: domain.name,
-					customComponent: (
-						<SelectItem
-							top="9px"
-							right="large"
-							bottom="9px"
-							left="large"
-							style={{
-								display: 'block',
-								textAlign: 'left',
-								height: 'inherit',
-								padding: '3px',
-								width: 'inherit'
-							}}
-							onClick={(): void => {
-								setIsShowError(false);
-								selectedDomain(domain);
-							}}
-						>
-							{domain?.name}
-						</SelectItem>
-					)
-			  }));
+			: domainList.map(
+					(
+						domain: {
+							name: string;
+							id: string;
+							a: { n: string; _content: string }[];
+						},
+						index
+					) => ({
+						id: domain.id,
+						label: domain.name,
+						customComponent: (
+							<SelectItem
+								top="0.563rem"
+								right="large"
+								bottom="0.563rem"
+								left="large"
+								style={{
+									display: 'block',
+									textAlign: 'left',
+									height: 'inherit',
+									padding: '0.188rem',
+									width: 'inherit'
+								}}
+								onClick={(): void => {
+									setIsShowError(false);
+									selectedDomain(domain);
+								}}
+							>
+								{domain?.name}
+							</SelectItem>
+						)
+					})
+			  );
 
 	return (
 		<Container
@@ -481,13 +527,13 @@ const DomainListPanel: FC = () => {
 			crossAlignment="flex-start"
 			mainAlignment="flex-start"
 			background="gray5"
-			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
+			style={{ overflow: 'auto', borderTop: '0.063rem solid #FFFFFF' }}
 		>
 			{isShowGlobalConfig && globalOptionsItems.length > 0 && (
 				<GlobalListPanel
 					globalOptionItems={globalOptionsItems}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
 				/>
 			)}
 
@@ -530,8 +576,8 @@ const DomainListPanel: FC = () => {
 			{isDetailListExpanded && (
 				<ListItems
 					items={detailItems}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
 				/>
 			)}
 			<ListPanelItem
@@ -542,8 +588,8 @@ const DomainListPanel: FC = () => {
 			{isManageListExpanded && (
 				<ListItems
 					items={manageOptions}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
 				/>
 			)}
 		</Container>
