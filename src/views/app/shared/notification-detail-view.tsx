@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import ListRow from '../../list/list-row';
 import Displayer from '../../components/displayer';
+import { useStickyBarStore } from '../../../store/sticky-bar/store';
 
 const NotificationDetail: FC<{
 	notification: any;
@@ -25,7 +26,7 @@ const NotificationDetail: FC<{
 	isRequestInProgress
 }) => {
 	const [t] = useTranslation();
-	const [pinButtons, setPinButtons] = useState(true);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 	const buttons = [
 		{
 			align: 'right',
@@ -47,9 +48,9 @@ const NotificationDetail: FC<{
 		},
 		{
 			align: 'left',
-			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
-				setPinButtons(!pinButtons);
+				setIsSticky(!isSticky);
 			}
 		}
 	];
@@ -93,9 +94,9 @@ const NotificationDetail: FC<{
 			<ListRow>
 				<Divider />
 			</ListRow>
-			<Container>
-				<Displayer buttons={buttons} pinIcon={pinButtons} />
-			</Container>
+			<Row width="100%" padding={{ all: 'small' }}>
+				<Displayer buttons={buttons} pinIcon={isSticky} />
+			</Row>
 			<ListRow>
 				<Container padding={{ bottom: 'large', right: 'small', left: 'extralarge' }}>
 					<Input

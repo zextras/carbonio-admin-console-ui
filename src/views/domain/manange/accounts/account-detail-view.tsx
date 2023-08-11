@@ -37,6 +37,7 @@ import OverlayDivision from '../../../components/overlayDivision';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomChip from '../../../components/customChip';
 import Displayer from '../../../components/displayer';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -92,7 +93,7 @@ const AccountDetailView: FC<any> = ({
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
-	const [pinButtons, setPinButtons] = useState(true);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 
 	const sessionTableHeader: any[] = useMemo(
 		() => [
@@ -444,9 +445,9 @@ const AccountDetailView: FC<any> = ({
 		},
 		{
 			align: 'left',
-			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
-				setPinButtons(!pinButtons);
+				setIsSticky(!isSticky);
 			}
 		}
 	];
@@ -489,7 +490,7 @@ const AccountDetailView: FC<any> = ({
 					style={{ overflow: 'auto' }}
 					width="100%"
 				>
-					<Displayer buttons={buttons} pinIcon={pinButtons} />
+					<Displayer buttons={buttons} pinIcon={isSticky} />
 					<Row>
 						<Text
 							size="small"

@@ -32,6 +32,7 @@ import { SendInviteAccounts } from './send-invite-accounts';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
 import Displayer from '../../../components/displayer';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -82,7 +83,7 @@ const ResourceEditDetailView: FC<any> = ({
 		useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [pinButtons, setPinButtons] = useState(true);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 
 	const STATUS_COLOR: any = useMemo(
 		() => ({
@@ -693,9 +694,9 @@ const ResourceEditDetailView: FC<any> = ({
 		},
 		{
 			align: 'left',
-			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
-				setPinButtons(!pinButtons);
+				setIsSticky(!isSticky);
 			}
 		}
 	];
@@ -779,7 +780,7 @@ const ResourceEditDetailView: FC<any> = ({
 				background="white"
 				style={{ overflow: 'auto' }}
 			>
-				<Displayer buttons={buttons} pinIcon={pinButtons} />
+				<Displayer buttons={buttons} pinIcon={isSticky} />
 				<Row>
 					<Text
 						size="small"

@@ -58,6 +58,7 @@ import {
 } from '../../../../../../types';
 import OverlayDivision from '../../../../components/overlayDivision';
 import Displayer from '../../../../components/displayer';
+import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -145,7 +146,7 @@ const ModifyVolume: FC<{
 	const { selectedServerName, isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore(
 		(state) => state
 	);
-	const [pinButtons, setPinButtons] = useState(true);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 	const onUnusedBucketListChange = (e: string): void => {
 		const selectedBucketDetail = isVolumeAllDetail?.filter(
 			(item: BucketVolume) => item?.uuid === e
@@ -407,9 +408,9 @@ const ModifyVolume: FC<{
 		},
 		{
 			align: 'left',
-			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
-				setPinButtons(!pinButtons);
+				setIsSticky(!isSticky);
 			}
 		}
 	];
@@ -739,7 +740,7 @@ const ModifyVolume: FC<{
 					</Row>
 				</Row>
 				<Divider />
-				<Displayer buttons={buttons} pinIcon={pinButtons} />
+				<Displayer buttons={buttons} pinIcon={isSticky} />
 				{Object.keys(externalVolDetail)?.length === 0 ? (
 					<Container
 						padding={{ horizontal: 'large', bottom: 'large' }}

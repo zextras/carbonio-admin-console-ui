@@ -49,6 +49,7 @@ import { useDomainStore } from '../../../../store/domain/store';
 import DropDownInput from '../../../components/dropDownInput';
 import { deleteDistributionList } from '../../../../services/delete-distribution-list';
 import Displayer from '../../../components/displayer';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -122,7 +123,7 @@ const EditMailingListView: FC<any> = ({
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
 	const [totalGrantRights, setTotalGrantRights] = useState(0);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-	const [pinButtons, setPinButtons] = useState(true);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 
 	const dlCreateDate = useMemo(
 		() =>
@@ -1800,9 +1801,9 @@ const EditMailingListView: FC<any> = ({
 		},
 		{
 			align: 'left',
-			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
-				setPinButtons(!pinButtons);
+				setIsSticky(!isSticky);
 			}
 		}
 	];
@@ -1889,7 +1890,7 @@ const EditMailingListView: FC<any> = ({
 				background="white"
 				style={{ overflow: 'auto' }}
 			>
-				<Displayer buttons={buttons} pinIcon={pinButtons} />
+				<Displayer buttons={buttons} pinIcon={isSticky} />
 				<Row>
 					<Text size="medium" weight="bold" color="gray0">
 						{t('domain.list_details', 'List Details')}

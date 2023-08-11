@@ -28,6 +28,7 @@ import { resetDevice } from '../../../../services/reset-device';
 import { suspendDevice } from '../../../../services/suspend-device';
 import { wipeDevice } from '../../../../services/wipe-device';
 import Displayer from '../../../components/displayer';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 
 type MobileDeviceDetail = {
 	accountEmail: string;
@@ -70,7 +71,7 @@ const ActiveDeviceDetail: FC<{
 	const [isDetailRequestInProgess, setIsDetailRequestInProgess] = useState<boolean>(false);
 	const [isOperationRequestInProgress, setIsOperationRequestInProgress] = useState<boolean>(false);
 	const [wipeDeviceConfirmation, setWipeDeviceConfirmation] = useState<boolean>(false);
-	const [pinButtons, setPinButtons] = useState(true);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 
 	const abqStatusOptions: any[] = useMemo(
 		() => [
@@ -330,9 +331,9 @@ const ActiveDeviceDetail: FC<{
 		},
 		{
 			align: 'left',
-			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
-				setPinButtons(!pinButtons);
+				setIsSticky(!isSticky);
 			}
 		}
 	];
@@ -378,7 +379,7 @@ const ActiveDeviceDetail: FC<{
 			</Row>
 			<Divider />
 			<ListRow>
-				<Displayer buttons={buttons} pinIcon={pinButtons} />
+				<Displayer buttons={buttons} pinIcon={isSticky} />
 			</ListRow>
 			<Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
 				<ListRow>
