@@ -2255,7 +2255,7 @@ const EditMailingListView: FC<any> = ({
 							crossAlignment="flex-start"
 							width="100%"
 						>
-							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
+							<Row mainAlignment="flex-start" width="66%" crossAlignment="flex-start">
 								<DropDownInput
 									width="100%"
 									items={searchOwnerList}
@@ -2272,7 +2272,7 @@ const EditMailingListView: FC<any> = ({
 									hasError={isShowOwnerError}
 								/>
 							</Row>
-							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
+							<Row width="34%" mainAlignment="flex-start" crossAlignment="flex-start">
 								<Padding left="large" right="large">
 									<Button
 										type="outlined"
@@ -2409,9 +2409,8 @@ const EditMailingListView: FC<any> = ({
 							crossAlignment="flex-start"
 							width="100%"
 						>
-							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
+							<Row mainAlignment="flex-start" width="57%" crossAlignment="flex-start">
 								<DropDownInput
-									width="100%"
 									items={grantItems}
 									inputLabel={t(
 										'label.type_an_account_add_senders_list',
@@ -2426,7 +2425,7 @@ const EditMailingListView: FC<any> = ({
 									inputDisabled={grantType?.value !== EMAIL}
 								/>
 							</Row>
-							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
+							<Row width="43%" mainAlignment="flex-start" crossAlignment="flex-start">
 								<Padding left="large" right="large">
 									<Button
 										type="outlined"
@@ -2615,7 +2614,7 @@ const EditMailingListView: FC<any> = ({
 					open={isOpenDeleteDialog}
 					customFooter={
 						<Container orientation="horizontal" mainAlignment="flex-end">
-							<Row style={{ gap: '8px' }}>
+							<Row style={{ gap: '1rem' }}>
 								<Button
 									label={t('label.cancel', 'Cancel')}
 									color="secondary"

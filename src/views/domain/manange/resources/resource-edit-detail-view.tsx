@@ -1110,7 +1110,7 @@ const ResourceEditDetailView: FC<any> = ({
 					open={isOpenDeleteDialog}
 					customFooter={
 						<Container orientation="horizontal" mainAlignment="flex-end">
-							<Row style={{ gap: '8px' }}>
+							<Row style={{ gap: '1rem' }}>
 								<Button
 									label={t('label.delete_it_instead', 'Delete it instead')}
 									color="error"
