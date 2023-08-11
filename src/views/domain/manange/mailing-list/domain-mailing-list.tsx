@@ -314,7 +314,7 @@ const DomainMailingList: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchMailingListQuery = useCallback(
 		debounce((searchStr: string, sfilter: string) => {
-			setOffset(0);
+			setTotalAccount(0);
 			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
@@ -659,13 +659,11 @@ const DomainMailingList: FC = () => {
 							width="fill"
 							style={{
 								height:
-									mailingList.length > 0 && !isRequestInProgress
-										? 'calc(100vh - 21.25rem)'
-										: 'calc(100vh - 40.625rem)'
+									mailingList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
 							}}
 						>
 							<Table
-								rows={!isRequestInProgress ? mailingList : []}
+								rows={mailingList}
 								headers={headers}
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}

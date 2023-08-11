@@ -295,31 +295,32 @@ const DomainAclList: FC = () => {
 
 	useEffect(() => {
 		getAclList();
-	}, [offset, getAclList]);
+	}, [getAclList]);
 
-	const generateSearchFilterQuery = (): string => {
+	const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
 		let filterQuery = '';
-		if (statusFilter) {
-			filterQuery += statusFilter;
+		if (sfilter) {
+			filterQuery += sfilter;
 		}
-		if (searchString) {
-			filterQuery += `(|(mail=*${searchString}*)(cn=*${searchString}*)(sn=*${searchString}*)(gn=*${searchString}*)(displayName=*${searchString}*)(zimbraMailDeliveryAddress=*${searchString}*))`;
+		if (searchStr) {
+			filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
 		}
-		if (statusFilter && searchString) {
+		if (sfilter && searchStr) {
 			return `(&${filterQuery})`;
 		}
 		return filterQuery;
-	};
+	}, []);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAclListQuery = useCallback(
-		debounce(() => {
-			setSearchQuery(generateSearchFilterQuery());
+		debounce((searchStr: string, sfilter: string) => {
+			setTotalAccount(0);
+			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
 	);
 
 	useEffect(() => {
-		searchAclListQuery();
+		searchAclListQuery(searchString, statusFilter);
 	}, [searchString, searchAclListQuery, statusFilter]);
 
 	useEffect(() => {
@@ -671,14 +672,11 @@ const DomainAclList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height:
-									aclList.length > 0 && !isRequestInProgress
-										? 'calc(100vh - 21.25rem)'
-										: 'calc(100vh - 40.625rem)'
+								height: aclList.length > 0 ? 'calc(100vh - 21.25rem)' : 'calc(100vh - 40.625rem)'
 							}}
 						>
 							<Table
-								rows={!isRequestInProgress ? aclList : []}
+								rows={aclList}
 								headers={headers}
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}
