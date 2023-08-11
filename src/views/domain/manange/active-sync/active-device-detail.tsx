@@ -27,6 +27,7 @@ import ActiveDeviceConfirmation from './active-device-confirmation';
 import { resetDevice } from '../../../../services/reset-device';
 import { suspendDevice } from '../../../../services/suspend-device';
 import { wipeDevice } from '../../../../services/wipe-device';
+import Displayer from '../../../components/displayer';
 
 type MobileDeviceDetail = {
 	accountEmail: string;
@@ -69,6 +70,7 @@ const ActiveDeviceDetail: FC<{
 	const [isDetailRequestInProgess, setIsDetailRequestInProgess] = useState<boolean>(false);
 	const [isOperationRequestInProgress, setIsOperationRequestInProgress] = useState<boolean>(false);
 	const [wipeDeviceConfirmation, setWipeDeviceConfirmation] = useState<boolean>(false);
+	const [pinButtons, setPinButtons] = useState(true);
 
 	const abqStatusOptions: any[] = useMemo(
 		() => [
@@ -286,6 +288,55 @@ const ActiveDeviceDetail: FC<{
 		}
 	}, [operationType, resetDeviceOperation, suspendDeviceOperation, wipeDeviceOperation]);
 
+	const buttons = [
+		{
+			align: 'right',
+			label: t('label.wipe_device', 'Wipe Device'),
+			tooltiplabel: t(
+				'label.wipe_device_factory_settings',
+				'Wipe the device to the factory settings'
+			),
+			loading: isDetailRequestInProgess,
+			disable: isDetailRequestInProgess,
+			onClick: (): void => {
+				setOperationType(WIPE_DEVICE);
+				setIsShowConfirmBox(true);
+			}
+		},
+		{
+			align: 'right',
+			label: t('label.reset_device', 'Reset Device'),
+			tooltiplabel: t('label.logoff_from_every_device', 'Log off from every device'),
+			color: 'primary',
+			onClick: (): void => {
+				setOperationType(RESET_DEVICE);
+				setIsShowConfirmBox(true);
+			},
+			loading: isDetailRequestInProgess,
+			disable: isDetailRequestInProgess
+		},
+		{
+			align: 'right',
+			color: 'primary',
+			label: t('label.suspend', 'Suspend'),
+			tooltiplabel: t('label.active_sync_active_paused', 'The activesync is active / paused'),
+			onClick: (): void => {
+				setIsOperationRequestInProgress(true);
+				setOperationType(SUSPEND_DEVICE);
+				suspendDeviceOperation();
+			},
+			loading: isDetailRequestInProgess || isOperationRequestInProgress,
+			disable: isDetailRequestInProgess || isOperationRequestInProgress
+		},
+		{
+			align: 'left',
+			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setPinButtons(!pinButtons);
+			}
+		}
+	];
+
 	return (
 		<Container
 			background="gray6"
@@ -327,79 +378,7 @@ const ActiveDeviceDetail: FC<{
 			</Row>
 			<Divider />
 			<ListRow>
-				<Container padding={{ top: 'large' }}>
-					<Tooltip
-						placement="bottom"
-						label={t(
-							'label.wipe_device_factory_settings',
-							'Wipe the device to the factory settings'
-						)}
-					>
-						<Button
-							type="outlined"
-							key="add-button"
-							label={t('label.wipe_device', 'Wipe Device')}
-							color="primary"
-							icon="SmartphoneOutline"
-							height={44}
-							width={186}
-							iconPlacement="right"
-							loading={isDetailRequestInProgess}
-							disable={isDetailRequestInProgess}
-							onClick={(): void => {
-								setOperationType(WIPE_DEVICE);
-								setIsShowConfirmBox(true);
-							}}
-						/>
-					</Tooltip>
-				</Container>
-				<Container padding={{ top: 'large' }}>
-					<Tooltip
-						placement="bottom"
-						label={t('label.logoff_from_every_device', 'Log off from every device')}
-					>
-						<Button
-							type="outlined"
-							key="add-button"
-							label={t('label.reset_device', 'Reset Device')}
-							color="primary"
-							icon="HistoryOutline"
-							height={44}
-							width={186}
-							iconPlacement="right"
-							onClick={(): void => {
-								setOperationType(RESET_DEVICE);
-								setIsShowConfirmBox(true);
-							}}
-							loading={isDetailRequestInProgess}
-							disable={isDetailRequestInProgess}
-						/>
-					</Tooltip>
-				</Container>
-				<Container padding={{ top: 'large' }}>
-					<Tooltip
-						placement="top"
-						label={t('label.active_sync_active_paused', 'The activesync is active / paused')}
-					>
-						<Button
-							type="outlined"
-							key="add-button"
-							label={t('label.suspend', 'Suspend')}
-							color="primary"
-							icon="AlertTriangleOutline"
-							height={44}
-							width={186}
-							iconPlacement="right"
-							onClick={(): void => {
-								setIsOperationRequestInProgress(true);
-								setOperationType(SUSPEND_DEVICE);
-								suspendDeviceOperation();
-							}}
-							loading={isDetailRequestInProgess || isOperationRequestInProgress}
-							disable={isDetailRequestInProgess || isOperationRequestInProgress}
-						/>
-					</Tooltip>
-				</Container>
+				<Displayer buttons={buttons} pinIcon={pinButtons} />
 			</ListRow>
 			<Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
 				<ListRow>

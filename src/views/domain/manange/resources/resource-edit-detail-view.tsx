@@ -31,6 +31,7 @@ import Textarea from '../../../components/textarea';
 import { SendInviteAccounts } from './send-invite-accounts';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
+import Displayer from '../../../components/displayer';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -61,8 +62,6 @@ export enum SCHEDULE_POLITY_TYPE {
 const ResourceEditDetailView: FC<any> = ({
 	selectedResourceList,
 	setShowResourceEditDetailView,
-	isEditMode,
-	setIsEditMode,
 	setIsUpdateRecord
 }) => {
 	const [t] = useTranslation();
@@ -83,6 +82,7 @@ const ResourceEditDetailView: FC<any> = ({
 		useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [pinButtons, setPinButtons] = useState(true);
 
 	const STATUS_COLOR: any = useMemo(
 		() => ({
@@ -495,7 +495,7 @@ const ResourceEditDetailView: FC<any> = ({
 	};
 
 	const callAllRequest = (requests: any): void => {
-		Promise.all(requests).then((response: any) => {
+		Promise.all(requests).then(() => {
 			createSnackbar({
 				key: 'success',
 				type: 'success',
@@ -505,7 +505,6 @@ const ResourceEditDetailView: FC<any> = ({
 				replace: true
 			});
 			setIsDirty(false);
-			setShowResourceEditDetailView(false);
 			setIsUpdateRecord(true);
 		});
 	};
@@ -621,7 +620,7 @@ const ResourceEditDetailView: FC<any> = ({
 	const onDeleteHandler = useCallback(() => {
 		setIsRequestInProgress(true);
 		deleteCalendarResource(selectedResourceList?.id)
-			.then((data: any) => {
+			.then(() => {
 				onSuccess(
 					t(
 						'label.resource_deleted_successfully',
@@ -684,6 +683,23 @@ const ResourceEditDetailView: FC<any> = ({
 			});
 	}, [selectedResourceList?.id, selectedResourceList?.name, onSuccess, t, createSnackbar]);
 
+	const buttons = [
+		{
+			align: 'right',
+			type: 'outlined',
+			color: 'error',
+			onClick: onDeleteResource,
+			label: t('label.delete', 'delete')
+		},
+		{
+			align: 'left',
+			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setPinButtons(!pinButtons);
+			}
+		}
+	];
+
 	return (
 		<Container
 			background="gray5"
@@ -717,7 +733,7 @@ const ResourceEditDetailView: FC<any> = ({
 					</Text>
 				</Row>
 				<Row>
-					{isEditMode && isDirty && (
+					{isDirty && (
 						<Container
 							orientation="horizontal"
 							mainAlignment="flex-end"
@@ -747,7 +763,6 @@ const ResourceEditDetailView: FC<any> = ({
 						icon="CloseOutline"
 						onClick={(): void => {
 							setShowResourceEditDetailView(false);
-							setIsEditMode(false);
 						}}
 					/>
 				</Row>
@@ -755,52 +770,17 @@ const ResourceEditDetailView: FC<any> = ({
 			<Row>
 				<Divider color="gray3" />
 			</Row>
-			{!isEditMode && (
-				<Row
-					mainAlignment="flex-end"
-					crossAlignment="flex-end"
-					orientation="horizontal"
-					background="white"
-					height="fit"
-					padding={{ top: 'extralarge', left: 'large', right: 'large', bottom: 'large' }}
-					width="100%"
-				>
-					<Padding right="large">
-						<Container width="fit" height="fit">
-							<Button
-								type="outlined"
-								color="primary"
-								icon="EditAsNewOutline"
-								size="large"
-								onClick={(): void => setIsEditMode(true)}
-							/>
-						</Container>
-					</Padding>
-
-					<Padding right="large">
-						<Container width="fit" height="fit">
-							<Button
-								type="outlined"
-								iconColor="error"
-								color="error"
-								icon="Trash2Outline"
-								size="large"
-								onClick={onDeleteResource}
-							/>
-						</Container>
-					</Padding>
-				</Row>
-			)}
 
 			<Container
-				padding={{ left: 'large' }}
+				padding={{ left: 'large', right: 'large' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
 				height="calc(100% - 64px)"
 				background="white"
-				style={{ overflow: 'auto', padding: '16px' }}
+				style={{ overflow: 'auto' }}
 			>
-				<Row padding={{ top: 'extralarge' }}>
+				<Displayer buttons={buttons} pinIcon={pinButtons} />
+				<Row>
 					<Text
 						size="small"
 						mainAlignment="flex-start"
@@ -821,17 +801,12 @@ const ResourceEditDetailView: FC<any> = ({
 						<Row width="100%" padding={{ right: 'small' }}>
 							<Input
 								label={t('label.name', 'Name')}
-								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
+								backgroundColor="gray5"
 								value={resourceName}
 								size="medium"
-								readOnly={!isEditMode}
-								onChange={
-									isEditMode
-										? (e: any): any => {
-												setResourceName(e.target.value);
-										  }
-										: undefined
-								}
+								onChange={(e: any): any => {
+									setResourceName(e.target.value);
+								}}
 							/>
 						</Row>
 					</Container>
@@ -844,17 +819,12 @@ const ResourceEditDetailView: FC<any> = ({
 						<Row width="100%" padding={{ left: 'small' }}>
 							<Input
 								label={t('label.email', 'Email')}
-								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
+								backgroundColor="gray5"
 								value={resourceMail}
 								size="medium"
-								readOnly={!isEditMode}
-								onChange={
-									isEditMode
-										? (e: any): any => {
-												setResourceMail(e.target.value);
-										  }
-										: undefined
-								}
+								onChange={(e: any): any => {
+									setResourceMail(e.target.value);
+								}}
 							/>
 						</Row>
 					</Container>
@@ -883,25 +853,14 @@ const ResourceEditDetailView: FC<any> = ({
 						padding={{ top: 'large' }}
 					>
 						<Row width="100%" padding={{ left: 'small' }}>
-							{isEditMode && (
-								<Select
-									items={resourceTypeOptions}
-									background="gray5"
-									label={t('label.type', 'Type')}
-									showCheckbox={false}
-									onChange={onResouseTypeChange}
-									selection={zimbraCalResType}
-								/>
-							)}
-							{!isEditMode && (
-								<Input
-									label={t('label.type', 'Type')}
-									backgroundColor="gray6"
-									value={zimbraCalResType.label}
-									size="medium"
-									readOnly
-								/>
-							)}
+							<Select
+								items={resourceTypeOptions}
+								background="gray5"
+								label={t('label.type', 'Type')}
+								showCheckbox={false}
+								onChange={onResouseTypeChange}
+								selection={zimbraCalResType}
+							/>
 						</Row>
 					</Container>
 				</ListRow>
@@ -913,25 +872,14 @@ const ResourceEditDetailView: FC<any> = ({
 						padding={{ top: 'large' }}
 					>
 						<Row width="100%" padding={{ right: 'small' }}>
-							{isEditMode && (
-								<Select
-									items={accountStatusOptions}
-									background="gray5"
-									label={t('label.status', 'Status')}
-									showCheckbox={false}
-									onChange={onAccountStatusChange}
-									selection={zimbraAccountStatus}
-								/>
-							)}
-							{!isEditMode && (
-								<Input
-									label={t('label.status', 'Status')}
-									backgroundColor="gray6"
-									value={zimbraAccountStatus?.label}
-									size="medium"
-									readOnly
-								/>
-							)}
+							<Select
+								items={accountStatusOptions}
+								background="gray5"
+								label={t('label.status', 'Status')}
+								showCheckbox={false}
+								onChange={onAccountStatusChange}
+								selection={zimbraAccountStatus}
+							/>
 						</Row>
 					</Container>
 					<Container
@@ -941,25 +889,14 @@ const ResourceEditDetailView: FC<any> = ({
 						padding={{ top: 'large' }}
 					>
 						<Row width="100%" padding={{ left: 'small' }}>
-							{isEditMode && (
-								<Select
-									items={cosItems}
-									background="gray5"
-									label={t('label.class_of_service', 'Class of Service')}
-									showCheckbox={false}
-									onChange={onCosChange}
-									selection={zimbraCOSId}
-								/>
-							)}
-							{!isEditMode && (
-								<Input
-									label={t('label.class_of_service', 'Class of Service')}
-									backgroundColor="gray6"
-									value={zimbraCOSId?.label}
-									size="medium"
-									readOnly
-								/>
-							)}
+							<Select
+								items={cosItems}
+								background="gray5"
+								label={t('label.class_of_service', 'Class of Service')}
+								showCheckbox={false}
+								onChange={onCosChange}
+								selection={zimbraCOSId}
+							/>
 						</Row>
 					</Container>
 				</ListRow>
@@ -971,25 +908,14 @@ const ResourceEditDetailView: FC<any> = ({
 						padding={{ top: 'large' }}
 					>
 						<Row width="100%">
-							{isEditMode && (
-								<Select
-									items={autoRefuseOption}
-									background="gray5"
-									label={t('label.auto_refuse', 'Auto-Refuse')}
-									showCheckbox={false}
-									onChange={onAutoRefuseChange}
-									selection={zimbraCalResAutoDeclineRecurring}
-								/>
-							)}
-							{!isEditMode && (
-								<Input
-									label={t('label.auto_refuse', 'Auto-Refuse')}
-									backgroundColor="gray6"
-									value={zimbraCalResAutoDeclineRecurring?.label}
-									size="medium"
-									readOnly
-								/>
-							)}
+							<Select
+								items={autoRefuseOption}
+								background="gray5"
+								label={t('label.auto_refuse', 'Auto-Refuse')}
+								showCheckbox={false}
+								onChange={onAutoRefuseChange}
+								selection={zimbraCalResAutoDeclineRecurring}
+							/>
 						</Row>
 					</Container>
 				</ListRow>
@@ -1001,25 +927,14 @@ const ResourceEditDetailView: FC<any> = ({
 						padding={{ top: 'large' }}
 					>
 						<Row width="100%">
-							{isEditMode && (
-								<Select
-									items={schedulePolicyItems}
-									background="gray5"
-									label={t('label.schedule_policy', 'Set Policy')}
-									showCheckbox={false}
-									onChange={onSchedulePolicyChange}
-									selection={schedulePolicyType}
-								/>
-							)}
-							{!isEditMode && (
-								<Input
-									label={t('label.schedule_policy', 'Set Policy')}
-									backgroundColor="gray6"
-									value={schedulePolicyType?.label}
-									size="medium"
-									readOnly
-								/>
-							)}
+							<Select
+								items={schedulePolicyItems}
+								background="gray5"
+								label={t('label.schedule_policy', 'Set Policy')}
+								showCheckbox={false}
+								onChange={onSchedulePolicyChange}
+								selection={schedulePolicyType}
+							/>
 						</Row>
 					</Container>
 				</ListRow>
@@ -1033,17 +948,12 @@ const ResourceEditDetailView: FC<any> = ({
 						<Row width="100%" padding={{ right: 'small' }}>
 							<Input
 								label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
-								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
+								backgroundColor="gray5"
 								value={zimbraCalResMaxNumConflictsAllowed}
 								size="medium"
-								onChange={
-									isEditMode
-										? (e: any): any => {
-												setZimbraCalResMaxNumConflictsAllowed(e.target.value);
-										  }
-										: undefined
-								}
-								readOnly={!isEditMode}
+								onChange={(e: any): any => {
+									setZimbraCalResMaxNumConflictsAllowed(e.target.value);
+								}}
 							/>
 						</Row>
 					</Container>
@@ -1056,16 +966,11 @@ const ResourceEditDetailView: FC<any> = ({
 						<Row width="100%" padding={{ left: 'small' }}>
 							<Input
 								label={t('label.percentage_maximum_conflict_allowed', '% Maximum Conflict Allowed')}
-								backgroundColor={!isEditMode ? 'gray6' : 'gray5'}
+								backgroundColor="gray5"
 								value={zimbraCalResMaxPercentConflictsAllowed}
-								onChange={
-									isEditMode
-										? (e: any): any => {
-												setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
-										  }
-										: undefined
-								}
-								readOnly={!isEditMode}
+								onChange={(e: any): any => {
+									setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
+								}}
 							/>
 						</Row>
 					</Container>
@@ -1109,110 +1014,91 @@ const ResourceEditDetailView: FC<any> = ({
 						</Row>
 					</Container>
 				</ListRow>
-				{isEditMode && (
-					<>
-						<Row width="100%" padding={{ top: 'medium' }}>
-							<Divider color="gray3" />
-						</Row>
-						<Row padding={{ top: 'extralarge' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
-								{t('label.password', 'Password')}
-							</Text>
-						</Row>
-						<ListRow>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								padding={{ top: 'large' }}
-							>
-								<Row width="100%">
-									<Input
-										label={t('label.password', 'Password')}
-										backgroundColor="gray5"
-										value={password}
-										inputName="password"
-										type="password"
-										onChange={(e: any): any => {
-											setPassword(e.target.value);
-											setIsDirty(true);
-										}}
-									/>
-								</Row>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Container
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								padding={{ top: 'large' }}
-							>
-								<Row width="100%">
-									<Input
-										label={t('label.repeat_password', 'Repeat Password')}
-										backgroundColor="gray5"
-										value={repeatPassword}
-										inputName="repeatPassword"
-										type="password"
-										onChange={(e: any): any => {
-											setRepeatPassword(e.target.value);
-											setIsDirty(true);
-										}}
-									/>
-								</Row>
-							</Container>
-						</ListRow>
-					</>
-				)}
+
+				<>
+					<Row width="100%" padding={{ top: 'medium' }}>
+						<Divider color="gray3" />
+					</Row>
+					<Row padding={{ top: 'extralarge' }}>
+						<Text
+							size="small"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							weight="bold"
+						>
+							{t('label.password', 'Password')}
+						</Text>
+					</Row>
+					<ListRow>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large' }}
+						>
+							<Row width="100%">
+								<Input
+									label={t('label.password', 'Password')}
+									backgroundColor="gray5"
+									value={password}
+									inputName="password"
+									type="password"
+									onChange={(e: any): any => {
+										setPassword(e.target.value);
+										setIsDirty(true);
+									}}
+								/>
+							</Row>
+						</Container>
+					</ListRow>
+					<ListRow>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large' }}
+						>
+							<Row width="100%">
+								<Input
+									label={t('label.repeat_password', 'Repeat Password')}
+									backgroundColor="gray5"
+									value={repeatPassword}
+									inputName="repeatPassword"
+									type="password"
+									onChange={(e: any): any => {
+										setRepeatPassword(e.target.value);
+										setIsDirty(true);
+									}}
+								/>
+							</Row>
+						</Container>
+					</ListRow>
+				</>
+
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
 				</Row>
 				<SendInviteAccounts
-					isEditable={isEditMode}
+					isEditable
 					sendInviteList={sendInviteList}
 					setSendInviteList={setSendInviteList}
 				/>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray3" />
 				</Row>
-				{isEditMode && (
-					<Row padding={{ top: 'extralarge' }} width="100%">
-						<Textarea
-							label={t('label.notes', 'Notes')}
-							backgroundColor="gray5"
-							value={zimbraNotes}
-							size="medium"
-							onChange={(e: any): any => {
-								setZimbraNotes(e.target.value);
-							}}
-						/>
-					</Row>
-				)}
-				{!isEditMode && (
-					<>
-						<Row padding={{ top: 'extralarge' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
-								{t('label.notes', 'Notes')}
-							</Text>
-						</Row>
-						<Row padding={{ top: 'small', bottom: 'small', left: 'medium', right: 'medium' }}>
-							<Text size="small">{resourceDetailData?.zimbraNotes}</Text>
-						</Row>
-					</>
-				)}
+
+				<Row padding={{ top: 'extralarge' }} width="100%">
+					<Textarea
+						label={t('label.notes', 'Notes')}
+						backgroundColor="gray5"
+						value={zimbraNotes}
+						size="medium"
+						onChange={(e: any): any => {
+							setZimbraNotes(e.target.value);
+						}}
+					/>
+				</Row>
 			</Container>
 			{isOpenDeleteDialog && (
 				<Modal
@@ -1222,13 +1108,7 @@ const ResourceEditDetailView: FC<any> = ({
 					})}
 					open={isOpenDeleteDialog}
 					customFooter={
-						<Container orientation="horizontal" mainAlignment="space-between">
-							<Button
-								style={{ marginLeft: '10px' }}
-								type="outlined"
-								label={t('label.help', 'Help')}
-								color="primary"
-							/>
+						<Container orientation="horizontal" mainAlignment="flex-end">
 							<Row style={{ gap: '8px' }}>
 								<Button
 									label={t('label.delete_it_instead', 'Delete it instead')}

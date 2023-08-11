@@ -47,6 +47,8 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ManageAliases from '../../../components/manageAliases';
 import { useDomainStore } from '../../../../store/domain/store';
 import DropDownInput from '../../../components/dropDownInput';
+import { deleteDistributionList } from '../../../../services/delete-distribution-list';
+import Displayer from '../../../components/displayer';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -63,8 +65,8 @@ export enum TRUE_FALSE {
 
 const EditMailingListView: FC<any> = ({
 	selectedMailingList,
-	setShowEditMailingList,
-	setIsUpdateRecord
+	setIsUpdateRecord,
+	setShowMailingListDetailView
 }) => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -114,6 +116,13 @@ const EditMailingListView: FC<any> = ({
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const domainList = useDomainStore((state) => state.domainList);
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
+	const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState<boolean>(false);
+	const [granteeTotalRights, setGranteeTotalRights] = useState(0);
+	const [targetTotalRights, setTargetTotalRights] = useState(0);
+	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+	const [totalGrantRights, setTotalGrantRights] = useState(0);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [pinButtons, setPinButtons] = useState(true);
 
 	const dlCreateDate = useMemo(
 		() =>
@@ -1647,6 +1656,157 @@ const EditMailingListView: FC<any> = ({
 		}
 	}, [grantEmailsList]);
 
+	const handleClickDeleteEvent = useCallback(() => {
+		setIsDeleteBtnLoading(true);
+		const getGrantBody: any = {};
+		const grantee = {
+			type: 'grp',
+			by: 'name',
+			_content: selectedMailingList?.name,
+			all: false
+		};
+		getGrantBody.grantee = grantee;
+		getGrant(getGrantBody)
+			.then((data: any) => {
+				if (data && data?.grant && Array.isArray(data?.grant)) {
+					let granteeTotal = 0;
+
+					const granteeRights = data?.grant?.map((items: any) => items?.right?.length);
+					const granteeRightLenght = granteeRights?.values();
+
+					// eslint-disable-next-line no-restricted-syntax
+					for (const value of granteeRightLenght) {
+						granteeTotal += value;
+					}
+					setGranteeTotalRights(granteeTotal);
+				}
+				setIsOpenDeleteDialog(true);
+				setIsDeleteBtnLoading(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setIsDeleteBtnLoading(false);
+			});
+
+		// get grants' rights as target
+		const getGrantBodyTarget: any = {};
+		const target = {
+			type: 'dl',
+			by: 'name',
+			_content: selectedMailingList?.name
+		};
+		getGrantBodyTarget.target = target;
+		getGrant(getGrantBodyTarget)
+			.then((resFromTarget: any) => {
+				if (resFromTarget && resFromTarget?.grant && Array.isArray(resFromTarget?.grant)) {
+					let targetTotal = 0;
+					const targetRights = resFromTarget?.grant?.map((items: any) => items?.right?.length);
+					const targetRightLenght = targetRights?.values();
+
+					// eslint-disable-next-line no-restricted-syntax
+					for (const value of targetRightLenght) {
+						targetTotal += value;
+					}
+					setTargetTotalRights(targetTotal);
+				}
+				setIsOpenDeleteDialog(true);
+				setIsDeleteBtnLoading(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setIsDeleteBtnLoading(false);
+			});
+	}, [createSnackbar, selectedMailingList?.name, t]);
+
+	const closeHandler = useCallback(() => {
+		setIsOpenDeleteDialog(false);
+	}, []);
+
+	const onSuccess = useCallback(
+		(message) => {
+			createSnackbar({
+				key: 'success',
+				type: 'success',
+				label: message,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			setIsRequestInProgress(false);
+			closeHandler();
+			setShowMailingListDetailView(false);
+			setIsUpdateRecord(true);
+		},
+		[closeHandler, createSnackbar, setIsUpdateRecord, setShowMailingListDetailView]
+	);
+
+	const onDeleteHandler = useCallback(() => {
+		setIsRequestInProgress(true);
+		deleteDistributionList(dlId)
+			.then((data: any) => {
+				onSuccess(
+					t('label.dl_delete_successfull', '{{name}} has been deleted successfully', {
+						name: distributionName
+					})
+				);
+			})
+			.then((error: any) => {
+				setIsRequestInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error.message
+						? error.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, onSuccess, t, dlId, distributionName]);
+
+	useEffect(() => {
+		const totalRights = targetTotalRights + granteeTotalRights;
+		setTotalGrantRights(totalRights);
+	}, [granteeTotalRights, targetTotalRights]);
+
+	const buttons = [
+		{
+			align: 'right',
+			type: 'outlined',
+			color: 'error',
+			loading: isDeleteBtnLoading,
+			onClick: handleClickDeleteEvent,
+			label: t('label.delete', 'delete')
+		},
+		{
+			align: 'left',
+			icon: pinButtons ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setPinButtons(!pinButtons);
+			}
+		}
+	];
+
 	return (
 		<Container
 			background="gray5"
@@ -1713,28 +1873,30 @@ const EditMailingListView: FC<any> = ({
 					<IconButton
 						size="medium"
 						icon="CloseOutline"
-						onClick={(): void => setShowEditMailingList(false)}
+						onClick={(): void => setShowMailingListDetailView(false)}
 					/>
 				</Row>
 			</Row>
 			<Row>
 				<Divider color="gray3" />
 			</Row>
+
 			<Container
-				padding={{ all: 'extralarge' }}
+				padding={{ left: 'large', right: 'large' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
 				height="calc(100vh - 3.6rem)"
 				background="white"
 				style={{ overflow: 'auto' }}
 			>
+				<Displayer buttons={buttons} pinIcon={pinButtons} />
 				<Row>
 					<Text size="medium" weight="bold" color="gray0">
 						{t('domain.list_details', 'List Details')}
 					</Text>
 				</Row>
 
-				<ListRow padding={{ all: 'small' }}>
+				<ListRow padding={{ right: 'small', bottom: 'small' }}>
 					<Container padding={{ top: 'small' }}>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
@@ -2443,6 +2605,71 @@ const EditMailingListView: FC<any> = ({
 				</Text>
 				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
 			</RouteLeavingGuard>
+			{isOpenDeleteDialog && (
+				<Modal
+					size="medium"
+					title={t('label.you_are_deleting_ml', 'You are deleting {{name}}', {
+						name: displayName || distributionName
+					})}
+					open={isOpenDeleteDialog}
+					customFooter={
+						<Container orientation="horizontal" mainAlignment="flex-end">
+							<Row style={{ gap: '8px' }}>
+								<Button
+									label={t('label.cancel', 'Cancel')}
+									color="secondary"
+									type="outlined"
+									onClick={closeHandler}
+									disabled={isRequestInProgress}
+								/>
+								<Button
+									label={t('label.yes_delete_it', 'Yes, Delete it')}
+									color="error"
+									onClick={onDeleteHandler}
+									disabled={isRequestInProgress}
+								/>
+							</Row>
+						</Container>
+					}
+					showCloseIcon
+					onClose={closeHandler}
+				>
+					<Container
+						padding={{ top: 'extralarge', bottom: 'extralarge' }}
+						style={{ textAlign: 'center' }}
+					>
+						<Padding bottom="small">
+							{totalGrantRights !== 0 && (
+								<Container padding={{ bottom: 'extralarge' }}>
+									<Text size={'extralarge'} overflow="break-word">
+										<Trans
+											i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
+											defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. <br /> If you delete it all rights will be lost."
+											components={{
+												bold: <strong />,
+												br: <br />
+											}}
+											values={{
+												totalAccRights: totalGrantRights
+											}}
+										/>
+									</Text>
+								</Container>
+							)}
+							<Text size={'extralarge'} overflow="break-word">
+								<Trans
+									i18nKey="label.are_you_sure_delete_distribution_list"
+									defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
+									components={{ bold: <strong /> }}
+									values={{
+										name: displayName || distributionName
+									}}
+								/>
+							</Text>
+						</Padding>
+					</Container>
+				</Modal>
+			)}
 		</Container>
 	);
 };
