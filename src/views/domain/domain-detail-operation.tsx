@@ -24,7 +24,8 @@ import {
 	THEME,
 	SAML,
 	TWO_FACTOR_AUTHENTICATION,
-	DELEGATES
+	DELEGATES,
+	SECURITY_GROUP
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -110,7 +111,7 @@ const DomainOperations: FC = () => {
 						return <ManageDelegates />;
 					case MAILING_LIST:
 						return <DomainMailingList />;
-					case ACL_LIST:
+					case SECURITY_GROUP:
 						return <DomainAclList />;
 					case RESOURCES:
 						return <DomainResources />;

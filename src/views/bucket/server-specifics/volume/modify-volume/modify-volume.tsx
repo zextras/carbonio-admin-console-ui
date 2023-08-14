@@ -21,6 +21,7 @@ import {
 	Tooltip,
 	Link
 } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 import { isEmpty } from 'lodash';
@@ -55,10 +56,28 @@ import {
 	objAll,
 	objectType
 } from '../../../../../../types';
+import OverlayDivision from '../../../../components/overlayDivision';
+import Displayer from '../../../../components/displayer';
+import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 39.4rem;
+	top: 0rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const ModifyVolume: FC<{
+	volumeId: any;
 	setmodifyVolumeToggle: (newValue: boolean) => void;
-	volumeDetail: objAll;
 	getAllVolumesRequest: () => void;
 	selectedServerId: string;
 	volumeList: {
@@ -66,12 +85,14 @@ const ModifyVolume: FC<{
 		indexes: Volume[];
 		secondaries: Volume[];
 	};
+	setOpen: (newValue: boolean) => void;
 }> = ({
+	volumeId,
 	setmodifyVolumeToggle,
-	volumeDetail,
 	getAllVolumesRequest,
 	selectedServerId,
-	volumeList
+	volumeList,
+	setOpen
 }) => {
 	const { t } = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
@@ -79,6 +100,15 @@ const ModifyVolume: FC<{
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const [isDirty, setIsDirty] = useState(false);
+	const [volumeDetail, setVolumeDetail] = useState<objAll>({
+		name: '',
+		id: 0,
+		type: 0,
+		compressBlobs: false,
+		isCurrent: false,
+		rootpath: '',
+		compressionThreshold: ''
+	});
 	const [name, setName] = useState(volumeDetail?.name);
 	const [type, setType] = useState<VolumeType>();
 	const [id, setId] = useState(volumeDetail?.id);
@@ -86,7 +116,6 @@ const ModifyVolume: FC<{
 	const [compressBlobs, setCompressBlobs] = useState(volumeDetail?.compressBlobs);
 	const [isCurrent, setIsCurrent] = useState(volumeDetail?.isCurrent);
 	const isCurrentRef = useRef(undefined);
-
 	const [compressionThreshold, setCompressionThreshold] = useState(
 		volumeDetail?.compressionThreshold
 	);
@@ -98,6 +127,7 @@ const ModifyVolume: FC<{
 	const [storeType, setStoreType] = useState<string | undefined>('');
 	const [bucketConfigurationId, setBucketConfigurationId] = useState<string | undefined>();
 	const [bucketS3, setBucketS3] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [volumePrefix, setVolumePrefix] = useState<string | undefined>(
 		externalVolDetail?.volumePrefix
 	);
@@ -116,6 +146,7 @@ const ModifyVolume: FC<{
 	const { selectedServerName, isVolumeAllDetail, setIsVolumeAllDetail } = useBucketVolumeStore(
 		(state) => state
 	);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 	const onUnusedBucketListChange = (e: string): void => {
 		const selectedBucketDetail = isVolumeAllDetail?.filter(
 			(item: BucketVolume) => item?.uuid === e
@@ -365,6 +396,24 @@ const ModifyVolume: FC<{
 		},
 		[volTypeList]
 	);
+	const buttons = [
+		{
+			align: 'right',
+			color: 'error',
+			label: t('label.delete', 'delete'),
+			loading: !volumeDetail?.id,
+			onClick: (): void => {
+				setOpen(true);
+			}
+		},
+		{
+			align: 'left',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setIsSticky(!isSticky);
+			}
+		}
+	];
 
 	const getAllBuckets = useCallback(() => {
 		fetchSoap('zextras', {
@@ -607,15 +656,65 @@ const ModifyVolume: FC<{
 		setAllocation(volumeTypeObject);
 	}, [volAllocationList, volumeDetail?.type]);
 
+	const getVolumeDetailData = useCallback(
+		(volId): void => {
+			setIsLoading(true);
+			soapFetch(
+				'GetVolume',
+				{
+					_jsns: 'urn:zimbraAdmin',
+					module: 'ZxPowerstore',
+					id: volId
+				},
+				undefined,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				selectedServerId
+			)
+				.then((response) => {
+					const typedResponse = response as { volume: Volume[]; _jsns: string };
+					const volData = typedResponse?.volume[0];
+					setVolumeDetail(volData);
+					setmodifyVolumeToggle(true);
+					setIsLoading(false);
+				})
+				.catch(() => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: t('label.volume_detail_error', '{{message}}', {
+							message: 'Something went wrong, please try again'
+						}),
+						autoHideTimeout: 5000
+					});
+					getAllVolumesRequest();
+					setIsLoading(false);
+				});
+		},
+		[
+			setVolumeDetail,
+			setmodifyVolumeToggle,
+			createSnackbar,
+			t,
+			getAllVolumesRequest,
+			selectedServerId
+		]
+	);
+
+	useEffect(() => {
+		if (volumeId) getVolumeDetailData(volumeId);
+	}, [volumeId, getVolumeDetailData]);
+
 	return (
 		<>
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
 			<Container
 				background="gray6"
 				mainAlignment="flex-start"
 				orientation="vertical"
 				style={{ overflowY: 'auto' }}
 			>
-				<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
+				<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="4.15rem">
 					<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
 						<Text size="extralarge" weight="bold">
 							{t('label.volume_detail_page_title', '{{message}} Details', {
@@ -623,26 +722,25 @@ const ModifyVolume: FC<{
 							})}
 						</Text>
 					</Row>
+					<Row
+						padding={{ all: 'small' }}
+						width="50%"
+						mainAlignment="flex-end"
+						crossAlignment="flex-end"
+					>
+						<Padding right="small">
+							{isDirty && (
+								<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
+							)}
+						</Padding>
+						{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
+					</Row>
 					<Row padding={{ horizontal: 'small' }}>
 						<IconButton icon="CloseOutline" onClick={(): void => setmodifyVolumeToggle(false)} />
 					</Row>
 				</Row>
 				<Divider />
-				<Container
-					orientation="horizontal"
-					mainAlignment="flex-end"
-					crossAlignment="flex-end"
-					background="gray6"
-					padding={{ all: 'extralarge' }}
-					height="5.313rem"
-				>
-					<Padding right="small">
-						{isDirty && (
-							<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
-						)}
-					</Padding>
-					{isDirty && <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />}
-				</Container>
+				<Displayer buttons={buttons} pinIcon={isSticky} />
 				{Object.keys(externalVolDetail)?.length === 0 ? (
 					<Container
 						padding={{ horizontal: 'large', bottom: 'large' }}

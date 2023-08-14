@@ -41,6 +41,7 @@ import { distributionListAction } from '../../../../services/distribution-list-a
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const DomainAclList: FC = () => {
 	const [t] = useTranslation();
@@ -572,7 +573,7 @@ const DomainAclList: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('label.acl_list', 'Acl List')}
+								{t('label.security_group', 'Security Groups')}
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
@@ -692,11 +693,13 @@ const DomainAclList: FC = () => {
 				</Row>
 			</Container>
 			{showEditAclView && (
-				<EditAclListView
-					selectedAclList={selectedAclList}
-					setShowEditAclList={setShowEditAclView}
-					setIsUpdateRecord={setIsUpdateRecord}
-				/>
+				<ModalOverlay setOpen={setShowEditAclView} open={showEditAclView} maxWidth="40.375rem">
+					<EditAclListView
+						selectedAclList={selectedAclList}
+						setShowEditAclList={setShowEditAclView}
+						setIsUpdateRecord={setIsUpdateRecord}
+					/>
+				</ModalOverlay>
 			)}
 
 			{showAclListDetailView && (
@@ -709,10 +712,12 @@ const DomainAclList: FC = () => {
 			)}
 
 			{showCreateAclListView && (
-				<CreateAclList
-					setShowCreateAclListView={setShowCreateAclListView}
-					createAclListReq={createAclListReq}
-				/>
+				<ModalOverlay setOpen={setShowCreateAclListView} open={showCreateAclListView}>
+					<CreateAclList
+						setShowCreateAclListView={setShowCreateAclListView}
+						createAclListReq={createAclListReq}
+					/>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

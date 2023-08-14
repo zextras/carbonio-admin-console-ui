@@ -229,6 +229,7 @@ const BucketListPanel: FC = () => {
 								items={itemsVolume}
 								inputLabel={t('label.select_a_server', 'Select a Server')}
 								onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+									setIsShowError(false);
 									setSearchVolumeName(ev.target.value);
 								}}
 								hasError={isShowError}
