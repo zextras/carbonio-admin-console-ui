@@ -675,7 +675,7 @@ const HSMsettingPanel: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="40px"
+					height="2.5rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
