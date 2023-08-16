@@ -693,6 +693,7 @@
         "editing_policy": "Edit Policy",
         "enable_scheduler": "Enable Schedule",
         "event": "Event",
+        "example_shedule": "E.g. 0 2 * * 3",
         "gb": "GB",
         "hours": "Hours",
         "hsm_policies_list": "HSM Policies List",

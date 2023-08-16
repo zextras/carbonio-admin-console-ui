@@ -749,7 +749,10 @@ const HSMsettingPanel: FC = () => {
 				<ListRow>
 					<Container padding={{ bottom: 'large' }}>
 						<Input
-							label={t('hsm.schedule', 'Schedule')}
+							label={`${t('hsm.schedule', 'Schedule')} (${t(
+								'hsm.example_shedule',
+								'E.g. 0 2 * * 3'
+							)})`}
 							background="gray5"
 							value={powerstoreMoveSchedulerValue}
 							onChange={(e: any): void => {
