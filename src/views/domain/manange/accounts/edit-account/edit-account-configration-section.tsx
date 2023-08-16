@@ -9,10 +9,11 @@ import {
 	Row,
 	Text,
 	ChipInput,
-	Switch,
+	Icon,
 	Divider,
 	Input,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -310,6 +311,19 @@ const EditAccountConfigrationSection: FC = () => {
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.zimbraMailTransport || ''}
 						value={accountDetail?.zimbraMailTransport || ''}
+						CustomIcon={(): React.ReactElement => (
+							<Tooltip
+								placement="top"
+								label={`${t('label.format', 'Format')} :  ${t(
+									'label.protocol_server_port',
+									'protocol:server:port'
+								)}${` | `}:${` lmtp:server.demo.zextras.io:7025`}`}
+							>
+								<Text>
+									<Icon icon="InfoOutline" size="large" color="secondary" />
+								</Text>
+							</Tooltip>
+						)}
 					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
