@@ -634,7 +634,8 @@ const DomainAclList: FC = () => {
 								<Table
 									rows={aclList}
 									headers={headers}
-									showCheckbox
+									showCheckbox={false}
+									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
 									selectedRows={selectedDlRow}
 									onSelectionChange={(selected: any): void => {

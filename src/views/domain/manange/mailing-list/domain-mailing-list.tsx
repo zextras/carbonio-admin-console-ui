@@ -618,7 +618,8 @@ const DomainMailingList: FC = () => {
 								<Table
 									rows={mailingList}
 									headers={headers}
-									showCheckbox
+									showCheckbox={false}
+									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
 									selectedRows={selectedDlRow}
 									onSelectionChange={(selected: any): void => {
