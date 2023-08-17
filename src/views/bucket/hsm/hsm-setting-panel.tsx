@@ -43,6 +43,7 @@ import {
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import ModalOverlay from '../../components/ModalOverlay';
 
 const HSMsettingPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -674,7 +675,7 @@ const HSMsettingPanel: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="40px"
+					height="2.5rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
@@ -748,7 +749,10 @@ const HSMsettingPanel: FC = () => {
 				<ListRow>
 					<Container padding={{ bottom: 'large' }}>
 						<Input
-							label={t('hsm.schedule', 'Schedule')}
+							label={`${t('hsm.schedule', 'Schedule')} (${t(
+								'hsm.example_shedule',
+								'E.g. 0 2 * * 3'
+							)})`}
 							background="gray5"
 							value={powerstoreMoveSchedulerValue}
 							onChange={(e: any): void => {
@@ -792,10 +796,15 @@ const HSMsettingPanel: FC = () => {
 						orientation="vertical"
 						mainAlignment="space-around"
 						background="gray6"
-						padding={{ top: 'large', bottom: 'large' }}
+						padding={{ top: 'large' }}
 					>
 						<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
-							<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+							<Row
+								mainAlignment="flex-start"
+								width="50%"
+								crossAlignment="flex-start"
+								style={{ alignSelf: 'end' }}
+							>
 								<Text size="medium" weight="bold" color="gray0">
 									{t('hsm.hsm_policies_list', 'HSM Policies List')}
 								</Text>
@@ -845,6 +854,22 @@ const HSMsettingPanel: FC = () => {
 						</Row>
 					</Container>
 				</Row>
+				<ListRow>
+					<Padding left="extrasmall" bottom="medium">
+						<Text
+							size="small"
+							weight="light"
+							color="gray0"
+							crossAlignment="flex-start"
+							mainAlignment="flex-start"
+						>
+							{t(
+								'hsm.default_hsm_policy_warning_message',
+								'At least one policy will always stay up. If you delete the last one, another will be generated'
+							)}
+						</Text>
+					</Padding>
+				</ListRow>
 
 				<ListRow>
 					<Table
@@ -857,7 +882,6 @@ const HSMsettingPanel: FC = () => {
 						RowFactory={CustomRowFactory}
 					/>
 				</ListRow>
-
 				<ListRow>
 					<Container padding={{ top: 'large' }}>
 						<Input
@@ -872,12 +896,14 @@ const HSMsettingPanel: FC = () => {
 				</ListRow>
 			</Container>
 			{showCreateHsmPolicyView && (
-				<CreateHsmPolicy
-					setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
-					volumeList={volumeList}
-					createHSMpolicy={createHSMpolicy}
-					runCustomHSMpolicy={runCustomHSMpolicy}
-				/>
+				<ModalOverlay setOpen={setShowCreateHsmPolicyView} open={showCreateHsmPolicyView}>
+					<CreateHsmPolicy
+						setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
+						volumeList={volumeList}
+						createHSMpolicy={createHSMpolicy}
+						runCustomHSMpolicy={runCustomHSMpolicy}
+					/>
+				</ModalOverlay>
 			)}
 			{showEditHsmPolicyView && (
 				<EditHsmPolicy

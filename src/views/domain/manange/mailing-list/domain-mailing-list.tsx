@@ -34,13 +34,13 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE
 } from '../../../../constants';
-import MailingListDetail from './mailing-list-detail';
 import CreateMailingList from './create-mailing-list';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -678,28 +678,23 @@ const DomainMailingList: FC = () => {
 					</Container>
 				</Row>
 			</Container>
-			{showEditMailingView && (
-				<EditMailingListView
-					selectedMailingList={selectedMailingList}
-					setShowEditMailingList={setShowEditMailingView}
-					setIsUpdateRecord={setIsUpdateRecord}
-				/>
-			)}
-
 			{showMailingListDetailView && (
-				<MailingListDetail
-					selectedMailingList={selectedFromRow}
-					setShowMailingListDetailView={setShowMailingListDetailView}
-					setEditMailingList={setEditMailingList}
-					setIsUpdateRecord={setIsUpdateRecord}
-				/>
+				<ModalOverlay setOpen={setShowMailingListDetailView} open={showMailingListDetailView}>
+					<EditMailingListView
+						selectedMailingList={selectedMailingList}
+						setIsUpdateRecord={setIsUpdateRecord}
+						setShowMailingListDetailView={setShowMailingListDetailView}
+					/>
+				</ModalOverlay>
 			)}
 
 			{showCreateMailingListView && (
-				<CreateMailingList
-					setShowCreateMailingListView={setShowCreateMailingListView}
-					createMailingListReq={createMailingListReq}
-				/>
+				<ModalOverlay setOpen={setShowCreateMailingListView} open={showCreateMailingListView}>
+					<CreateMailingList
+						setShowCreateMailingListView={setShowCreateMailingListView}
+						createMailingListReq={createMailingListReq}
+					/>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

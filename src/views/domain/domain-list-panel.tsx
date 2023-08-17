@@ -38,9 +38,11 @@ import {
 	VIRTUAL_HOSTS,
 	SAML,
 	CONFIG,
+	GLOBAL_DOMAIN_ROUTE,
 	GLOBAL_2FA_ROUTE,
 	TWO_FACTOR_AUTHENTICATION,
-	DELEGATES
+	DELEGATES,
+	SECURITY_GROUP
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -96,9 +98,10 @@ const DomainListPanel: FC = () => {
 		}[]
 	>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const [selectedOperationItem, setSelectedOperationItem] = useState('');
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const domainInformation = useDomainStore((state) => state.domain);
+	const domainView = useDomainStore((state) => state.domainView);
+	const setDomainView = useDomainStore((state) => state.setDomainView);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -190,11 +193,11 @@ const DomainListPanel: FC = () => {
 	}, [domainInformation?.id, domainInformation?.name]);
 
 	useMemo(() => {
-		if (selectedOperationItem === '') {
+		if (domainView === '') {
 			const operationItem = locationService?.pathname.split('/').pop();
-			setSelectedOperationItem(operationItem || '');
+			setDomainView(operationItem || '');
 		}
-	}, [locationService?.pathname, selectedOperationItem]);
+	}, [domainView, locationService?.pathname, setDomainView]);
 
 	useEffect(() => {
 		if (
@@ -205,11 +208,11 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setSelectedOperationItem('');
+			setDomainView('');
 			setDomainId('');
 			setDomain({});
 		}
-	}, [locationService, setDomain]);
+	}, [locationService, setDomain, setDomainView]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchDomainCall = useCallback(
@@ -231,33 +234,33 @@ const DomainListPanel: FC = () => {
 			setSearchDomainName(domain?.name);
 			setIsDomainListExpand(false);
 			setDomainId(domain?.id);
-			setSelectedOperationItem(GENERAL_SETTINGS);
+			setDomainView(GENERAL_SETTINGS);
 		},
-		[]
+		[setDomainView]
 	);
 
 	useEffect(() => {
 		if (isDomainSelect && domainId) {
-			if (selectedOperationItem) {
-				globalCarbonioSendAnalytics &&
-					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
-				if (selectedOperationItem === GLOBAL_THEME_ROUTE) {
-					replaceHistory(`/${selectedOperationItem}`);
-				} else if (selectedOperationItem === GLOBAL_2FA_ROUTE) {
-					replaceHistory(`/${selectedOperationItem}`);
+			if (domainView) {
+				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
+				if (domainView === GLOBAL_THEME_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_2FA_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_DOMAIN_ROUTE) {
+					replaceHistory(`/${domainView}`);
 				} else {
-					replaceHistory(`/${domainId}/${selectedOperationItem}`);
+					replaceHistory(`/${domainId}/${domainView}`);
 				}
 			} else {
-				globalCarbonioSendAnalytics &&
-					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
+				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
 				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 			}
-		} else if (selectedOperationItem) {
-			globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
-			replaceHistory(`/${selectedOperationItem}`);
+		} else if (domainView) {
+			globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
+			replaceHistory(`/${domainView}`);
 		}
-	}, [isDomainSelect, domainId, selectedOperationItem, matomo, globalCarbonioSendAnalytics]);
+	}, [isDomainSelect, domainId, domainView, matomo, globalCarbonioSendAnalytics]);
 
 	const detailOptions = useMemo(
 		() => [
@@ -323,8 +326,8 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: ACL_LIST,
-				name: t('label.acl_list', 'ACL (Access Control List)'),
+				id: SECURITY_GROUP,
+				name: t('label.security_group', 'Security Groups'),
 				isSelected: isDomainSelect
 			},
 			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
@@ -352,6 +355,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: GLOBAL_THEME_ROUTE,
 				name: t('label.theme', 'Theme'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_DOMAIN_ROUTE,
+				name: t('label.domains', 'Domains'),
 				isSelected: true
 			},
 			{
@@ -524,8 +532,8 @@ const DomainListPanel: FC = () => {
 			{isShowGlobalConfig && globalOptionsItems.length > 0 && (
 				<GlobalListPanel
 					globalOptionItems={globalOptionsItems}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
 				/>
 			)}
 
@@ -568,8 +576,8 @@ const DomainListPanel: FC = () => {
 			{isDetailListExpanded && (
 				<ListItems
 					items={detailItems}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
 				/>
 			)}
 			<ListPanelItem
@@ -580,8 +588,8 @@ const DomainListPanel: FC = () => {
 			{isManageListExpanded && (
 				<ListItems
 					items={manageOptions}
-					selectedOperationItem={selectedOperationItem}
-					setSelectedOperationItem={setSelectedOperationItem}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
 				/>
 			)}
 		</Container>

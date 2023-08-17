@@ -10,9 +10,9 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { OperationsTable } from './operations-table';
 import { OperationsDoneHeader } from '../utility/utils';
-import { AbsoluteContainer } from '../components/styled';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 import { useOperationStore } from '../../store/operation/store';
+import ModalOverlay from '../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -35,13 +35,13 @@ const DoneDetailPanel: FC = () => {
 	return (
 		<>
 			{wizardDetailToggle && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setWizardDetailToggle} open={wizardDetailToggle}>
 					<OperationsWizardDetailPanel
 						setWizardDetailToggle={setWizardDetailToggle}
 						setOpen=""
 						selectedData={selectedData}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			<RelativeContainer
 				orientation="column"

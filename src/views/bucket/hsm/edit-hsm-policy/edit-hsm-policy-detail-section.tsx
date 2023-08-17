@@ -406,9 +406,9 @@ const EditHsmPolicyDetailSection: FC<{
 		<Container
 			mainAlignment="flex-start"
 			crossAlignment="flex-start"
-			height="calc(100vh - 300px)"
+			height="calc(100vh - 18.75rem)"
 			background="white"
-			style={{ overflow: 'auto', padding: '16px' }}
+			style={{ overflow: 'auto', padding: '1rem' }}
 		>
 			<ListRow>
 				<Container padding={{ bottom: 'large' }}>
@@ -597,7 +597,7 @@ const EditHsmPolicyDetailSection: FC<{
 					<Container
 						width="3rem"
 						height="fit"
-						style={{ border: '1px solid #d74942', margin: '4px 0 0 0' }}
+						style={{ border: '0.063rem solid #d74942', margin: '0.25rem 0 0 0' }}
 					>
 						<IconButton
 							iconColor="error"
