@@ -17,7 +17,6 @@ import {
 	Button,
 	Modal,
 	SnackbarManagerContext,
-	Chip,
 	Divider,
 	Table
 } from '@zextras/carbonio-design-system';
@@ -37,6 +36,8 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import OverlayDivision from '../../../components/overlayDivision';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomChip from '../../../components/customChip';
+import Displayer from '../../../components/displayer';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -92,6 +93,7 @@ const AccountDetailView: FC<any> = ({
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 
 	const sessionTableHeader: any[] = useMemo(
 		() => [
@@ -418,6 +420,38 @@ const AccountDetailView: FC<any> = ({
 			});
 	}, [selectedAccount?.id, selectedSession, selectedAccount?.name, t, createSnackbar]);
 
+	const buttons = [
+		{
+			align: 'right',
+			label: t('label.advanced_edit', 'ADVANCED EDIT'),
+			onClick: (): void => {
+				setShowAccountDetailView(false);
+				setShowEditAccountView(true);
+			},
+			disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
+		},
+		{
+			align: 'right',
+			label: t('label.view_mail', 'VIEW MAIL'),
+			color: 'primary',
+			onClick: onViewMail
+		},
+		{
+			align: 'right',
+			color: 'error',
+			label: t('label.delete', 'delete'),
+			disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id,
+			onClick: onDeleteAccount
+		},
+		{
+			align: 'left',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setIsSticky(!isSticky);
+			}
+		}
+	];
+
 	return (
 		<>
 			{(!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id) && (
@@ -447,59 +481,6 @@ const AccountDetailView: FC<any> = ({
 						/>
 					</Row>
 				</Row>
-
-				<Row
-					mainAlignment="flex-end"
-					crossAlignment="flex-end"
-					orientation="horizontal"
-					background="white"
-					height="fit"
-					padding={{ top: 'extralarge', left: 'large', right: 'large', bottom: 'large' }}
-					width="100%"
-				>
-					<Padding right="large">
-						<Container width="fit" height="fit">
-							<Button
-								type="outlined"
-								color="primary"
-								icon="EditAsNewOutline"
-								size="large"
-								onClick={(): void => {
-									setShowAccountDetailView(false);
-									setShowEditAccountView(true);
-								}}
-								disabled={
-									!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-								}
-								loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
-							/>
-						</Container>
-					</Padding>
-					<Padding right="large">
-						<Container width="fit" height="fit">
-							<Button
-								type="outlined"
-								color="error"
-								icon="Trash2Outline"
-								size="large"
-								disabled={
-									!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-								}
-								onClick={onDeleteAccount}
-							/>
-						</Container>
-					</Padding>
-
-					<Button
-						type="outlined"
-						label={t('label.view_mail', 'VIEW MAIL')}
-						icon="EmailReadOutline"
-						iconPlacement="right"
-						color="primary"
-						size="large"
-						onClick={onViewMail}
-					/>
-				</Row>
 				<Container
 					padding={{ left: 'large' }}
 					mainAlignment="flex-start"
@@ -509,7 +490,8 @@ const AccountDetailView: FC<any> = ({
 					style={{ overflow: 'auto' }}
 					width="100%"
 				>
-					<Row padding={{ top: 'extralarge' }}>
+					<Displayer buttons={buttons} pinIcon={isSticky} />
+					<Row>
 						<Text
 							size="small"
 							mainAlignment="flex-start"
@@ -789,7 +771,7 @@ const AccountDetailView: FC<any> = ({
 						open={isOpenDeleteDialog}
 						customFooter={
 							<Container orientation="horizontal" mainAlignment="flex-end">
-								<Row style={{ gap: '8px' }}>
+								<Row style={{ gap: '1rem' }}>
 									<Button
 										label={t('label.delete_it_instead', 'Delete it instead')}
 										color="error"

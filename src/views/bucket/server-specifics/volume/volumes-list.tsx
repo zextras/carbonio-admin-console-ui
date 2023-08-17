@@ -38,7 +38,6 @@ import {
 	SCALITYS3,
 	LOCAL_VALUE
 } from '../../../../constants';
-import ServerVolumeDetailsPanel from './server-volume-details-panel';
 import { fetchSoap } from '../../../../services/bucket-service';
 import IndexerVolumeTable from './indexer-volume-table';
 import { volTableHeader, indexerHeaders } from '../../../utility/utils';
@@ -54,7 +53,7 @@ import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import { Volume, objAll, objectType } from '../../../../../types';
+import { Volume, objectType } from '../../../../../types';
 import ModalOverlay from '../../../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
@@ -194,7 +193,6 @@ const VolumesDetailPanel: FC = () => {
 	const [toggleWizardLocal, setToggleWizardLocal] = useState(false);
 	const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
 	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
-	const [toggleDetailPage, setToggleDetailPage] = useState<boolean>(false);
 	const serverList = useServerStore((state) => state.serverList);
 	const [selectedServerId, setSelectedServerId] = useState<string>('');
 	const [volume, setVolume] = useState<Volume | undefined>({
@@ -211,15 +209,6 @@ const VolumesDetailPanel: FC = () => {
 		type: 0
 	});
 	const [open, setOpen] = useState<boolean>(false);
-	const [detailData, setDetailData] = useState<objAll>({
-		name: '',
-		id: 0,
-		type: 0,
-		compressBlobs: false,
-		isCurrent: false,
-		rootpath: '',
-		compressionThreshold: ''
-	});
 	const [volumeList, setVolumeList] = useState<{
 		primaries: Volume[];
 		indexes: Volume[];
@@ -230,25 +219,6 @@ const VolumesDetailPanel: FC = () => {
 		secondaries: []
 	});
 	const createSnackbar = useSnackbar();
-
-	const changeSelectedVolume = (): void => {
-		if (detailData?.type === 1 && detailData?.id !== 0) {
-			const volumeObject: Volume | undefined = volumeList?.primaries?.find(
-				(s: Volume) => s?.id === detailData?.id
-			);
-			setVolume(volumeObject);
-		} else if (detailData?.type === 2 && detailData?.id !== 0) {
-			const volumeObject: Volume | undefined = volumeList?.secondaries?.find(
-				(s: Volume) => s?.id === detailData?.id
-			);
-			setVolume(volumeObject);
-		} else if (detailData?.type === 10 && detailData?.id !== 0) {
-			const volumeObject: Volume | undefined = volumeList?.indexes?.find(
-				(s: Volume) => s?.id === detailData?.id
-			);
-			setVolume(volumeObject);
-		}
-	};
 
 	const closeHandler = (): void => {
 		setOpen(false);
@@ -352,8 +322,8 @@ const VolumesDetailPanel: FC = () => {
 							label: t('label.volume_deleted', 'Volume deleted successfully')
 						});
 						getAllVolumesRequest();
+						setmodifyVolumeToggle(false);
 						setOpen(false);
-						setToggleDetailPage(false);
 					} else {
 						createSnackbar({
 							key: '1',
@@ -363,7 +333,6 @@ const VolumesDetailPanel: FC = () => {
 							})
 						});
 						setOpen(false);
-						setToggleDetailPage(false);
 					}
 				})
 				.catch(() => {
@@ -377,7 +346,6 @@ const VolumesDetailPanel: FC = () => {
 					});
 					getAllVolumesRequest();
 					setOpen(false);
-					setToggleDetailPage(false);
 				});
 		} else {
 			const { id } = data;
@@ -404,8 +372,8 @@ const VolumesDetailPanel: FC = () => {
 						});
 					}
 					getAllVolumesRequest();
+					setmodifyVolumeToggle(false);
 					setOpen(false);
-					setToggleDetailPage(false);
 				})
 				.catch(() => {
 					createSnackbar({
@@ -429,9 +397,9 @@ const VolumesDetailPanel: FC = () => {
 						rootpath: '',
 						type: 0
 					});
+					setmodifyVolumeToggle(false);
 					getAllVolumesRequest();
 					setOpen(false);
-					setToggleDetailPage(false);
 				});
 		}
 	};
@@ -705,7 +673,7 @@ const VolumesDetailPanel: FC = () => {
 		const volumeObject = data?.find((s: Volume, index: number) => index === i);
 		const typeVol = volumeObject as Volume;
 		setVolume(typeVol);
-		setToggleDetailPage(true);
+		setmodifyVolumeToggle(true);
 	};
 
 	useEffect(() => {
@@ -716,11 +684,6 @@ const VolumesDetailPanel: FC = () => {
 			}
 		}
 	}, [serverList, server]);
-
-	useEffect(() => {
-		changeSelectedVolume();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [modifyVolumeToggle, detailData, volumeList]);
 
 	return (
 		<>
@@ -744,25 +707,11 @@ const VolumesDetailPanel: FC = () => {
 					/>
 				</ModalOverlay>
 			)}
-			{toggleDetailPage && volume && (
-				<ModalOverlay setOpen={setToggleDetailPage} open={toggleDetailPage}>
-					<ServerVolumeDetailsPanel
-						volumeDetail={volume}
-						setToggleDetailPage={setToggleDetailPage}
-						modifyVolumeToggle={modifyVolumeToggle}
-						setmodifyVolumeToggle={setmodifyVolumeToggle}
-						setOpen={setOpen}
-						detailData={detailData}
-						setDetailData={setDetailData}
-						getAllVolumesRequest={getAllVolumesRequest}
-						selectedServerId={selectedServerId}
-					/>
-				</ModalOverlay>
-			)}
 			{modifyVolumeToggle && volume && (
 				<ModalOverlay setOpen={setmodifyVolumeToggle} open={modifyVolumeToggle}>
 					<ModifyVolume
-						volumeDetail={detailData}
+						volumeId={volume?.id}
+						setOpen={setOpen}
 						setmodifyVolumeToggle={setmodifyVolumeToggle}
 						getAllVolumesRequest={getAllVolumesRequest}
 						selectedServerId={selectedServerId}

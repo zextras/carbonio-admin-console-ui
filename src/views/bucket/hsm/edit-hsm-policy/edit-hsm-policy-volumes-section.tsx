@@ -183,9 +183,9 @@ const EditHsmPolicyVolumesSection: FC<{
 		<Container
 			mainAlignment="flex-start"
 			crossAlignment="flex-start"
-			height="calc(100vh - 300px)"
+			height="calc(100vh - 18.75rem)"
 			background="white"
-			style={{ overflow: 'auto', padding: '16px' }}
+			style={{ overflow: 'auto', padding: '1rem' }}
 		>
 			<ListRow>
 				<Padding bottom="large">

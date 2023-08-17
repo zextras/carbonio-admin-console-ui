@@ -35,7 +35,6 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE
 } from '../../../../constants';
-import MailingListDetail from './mailing-list-detail';
 import CreateMailingList from './create-mailing-list';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
@@ -742,23 +741,12 @@ const DomainMailingList: FC = () => {
 					</Container>
 				</Row>
 			</Container>
-			{showEditMailingView && (
-				<ModalOverlay setOpen={setShowEditMailingView} open={showEditMailingView}>
-					<EditMailingListView
-						selectedMailingList={selectedMailingList}
-						setShowEditMailingList={setShowEditMailingView}
-						setIsUpdateRecord={setIsUpdateRecord}
-					/>
-				</ModalOverlay>
-			)}
-
 			{showMailingListDetailView && (
 				<ModalOverlay setOpen={setShowMailingListDetailView} open={showMailingListDetailView}>
-					<MailingListDetail
-						selectedMailingList={selectedFromRow}
-						setShowMailingListDetailView={setShowMailingListDetailView}
-						setEditMailingList={setEditMailingList}
+					<EditMailingListView
+						selectedMailingList={selectedMailingList}
 						setIsUpdateRecord={setIsUpdateRecord}
+						setShowMailingListDetailView={setShowMailingListDetailView}
 					/>
 				</ModalOverlay>
 			)}

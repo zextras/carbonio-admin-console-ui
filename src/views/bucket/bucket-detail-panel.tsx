@@ -25,7 +25,6 @@ import { TFunction } from 'i18next';
 import logo from '../../assets/ninja_robo.svg';
 import NewBucket from './new-bucket';
 import BucketDeleteModel from './delete-bucket-model';
-import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import ListRow from '../list/list-row';
@@ -181,7 +180,6 @@ const BucketDetailPanel: FC = () => {
 	const [bucketList, setBucketList] = useState<objectType[]>([]);
 	const [allBucketList, setAllBucketList] = useState([]);
 	const [connectionData, setConnectionData] = useState<objectType | undefined>();
-	const [detailsBucket, setDetailsBucket] = useState(false);
 	const [toggleWizardSection, setToggleWizardSection] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
@@ -258,7 +256,7 @@ const BucketDetailPanel: FC = () => {
 					}),
 					autoHideTimeout: 2000
 				});
-				setDetailsBucket(false);
+				setShowEditDetailView(false);
 			} else {
 				createSnackbar({
 					key: 1,
@@ -279,18 +277,10 @@ const BucketDetailPanel: FC = () => {
 		createSnackbar,
 		t
 	]);
-	const handleDoubleClick = (i: number): void => {
-		const volumeObject: objectType | undefined = bucketList.find((s, index) => index === i);
-		setConnectionData(volumeObject);
-		setShowEditDetailView(true);
-		setDetailsBucket(false);
-		setShowDetails(true);
-	};
 	const handleClick = (i: number): void => {
 		const volumeObject: objectType | undefined = bucketList.find((s, index) => index === i);
 		setConnectionData(volumeObject);
-		setDetailsBucket(true);
-		setShowEditDetailView(false);
+		setShowEditDetailView(true);
 		setShowDetails(true);
 	};
 
@@ -332,27 +322,17 @@ const BucketDetailPanel: FC = () => {
 				<ModalOverlay setOpen={setToggleWizardSection} open={toggleWizardSection}>
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
-						setDetailsBucket={setDetailsBucket}
+						setDetailsBucket={setShowEditDetailView}
 						setConnectionData={setConnectionData}
 						bucketType={bucketType}
-					/>
-				</ModalOverlay>
-			)}
-			{detailsBucket && (
-				<ModalOverlay setOpen={setDetailsBucket} open={detailsBucket}>
-					<DetailsPanel
-						setDetailsBucket={setDetailsBucket}
-						title="Bucket Connection"
-						bucketDetail={connectionData}
-						setBucketDeleteName={setBucketDeleteName}
-						setOpen={setOpen}
-						setShowEditDetailView={setShowEditDetailView}
 					/>
 				</ModalOverlay>
 			)}
 			{showEditDetailView && (
 				<ModalOverlay setOpen={setShowEditDetailView} open={showEditDetailView}>
 					<EditBucketDetailPanel
+						setBucketDeleteName={setBucketDeleteName}
+						setOpen={setOpen}
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
 						bucketDetail={connectionData}
@@ -428,7 +408,7 @@ const BucketDetailPanel: FC = () => {
 							setBucketDeleteName(volumeObject);
 						}}
 						onDoubleClick={(i: number): void => {
-							handleDoubleClick(i);
+							handleClick(i);
 						}}
 						onClick={(i: number): void => {
 							handleClick(i);

@@ -62,6 +62,8 @@ const CosPreferences: FC = () => {
 		zimbraMailMinPollingInterval: '',
 		zimbraPrefMailSendReadReceipts: '',
 		zimbraPrefSaveToSent: 'FALSE',
+		zimbraFeatureMailForwardingEnabled: 'FALSE',
+		zimbraFeatureMailForwardingInFiltersEnabled: 'FALSE',
 		zimbraAllowAnyFromAddress: 'FALSE',
 		zimbraPrefAutoAddAddressEnabled: 'FALSE',
 		zimbraPrefGalAutoCompleteEnabled: 'FALSE',
@@ -349,6 +351,18 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefSaveToSent ? obj?.zimbraPrefSaveToSent : 'FALSE'
 				);
 				setValue(
+					'zimbraFeatureMailForwardingEnabled',
+					obj?.zimbraFeatureMailForwardingEnabled
+						? obj?.zimbraFeatureMailForwardingEnabled
+						: 'FALSE'
+				);
+				setValue(
+					'zimbraFeatureMailForwardingInFiltersEnabled',
+					obj?.zimbraFeatureMailForwardingInFiltersEnabled
+						? obj?.zimbraFeatureMailForwardingInFiltersEnabled
+						: 'FALSE'
+				);
+				setValue(
 					'zimbraAllowAnyFromAddress',
 					obj?.zimbraAllowAnyFromAddress ? obj?.zimbraAllowAnyFromAddress : 'FALSE'
 				);
@@ -495,6 +509,12 @@ const CosPreferences: FC = () => {
 			}
 			if (!obj.zimbraPrefSaveToSent) {
 				obj.zimbraPrefSaveToSent = 'FALSE';
+			}
+			if (!obj.zimbraFeatureMailForwardingInFiltersEnabled) {
+				obj.zimbraFeatureMailForwardingInFiltersEnabled = 'FALSE';
+			}
+			if (!obj.zimbraFeatureMailForwardingEnabled) {
+				obj.zimbraFeatureMailForwardingEnabled = 'FALSE';
 			}
 			if (!obj.zimbraAllowAnyFromAddress) {
 				obj.zimbraAllowAnyFromAddress = 'FALSE';
@@ -667,6 +687,31 @@ const CosPreferences: FC = () => {
 			setIsDirty(true);
 		}
 	}, [cosData.zimbraPrefSaveToSent, cosPreferences.zimbraPrefSaveToSent]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraFeatureMailForwardingEnabled !== undefined &&
+			cosData.zimbraFeatureMailForwardingEnabled !==
+				cosPreferences.zimbraFeatureMailForwardingEnabled
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosData.zimbraFeatureMailForwardingEnabled,
+		cosPreferences.zimbraFeatureMailForwardingEnabled
+	]);
+	useEffect(() => {
+		if (
+			cosData.zimbraFeatureMailForwardingInFiltersEnabled !== undefined &&
+			cosData.zimbraFeatureMailForwardingInFiltersEnabled !==
+				cosPreferences.zimbraFeatureMailForwardingInFiltersEnabled
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosData.zimbraFeatureMailForwardingInFiltersEnabled,
+		cosPreferences.zimbraFeatureMailForwardingInFiltersEnabled
+	]);
 
 	useEffect(() => {
 		if (
@@ -1244,6 +1289,54 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onMailSendReadReceipts}
+										disabled={readonlyCOS}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					<Divider />
+				</Row>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ all: 'large' }}
+					width="100%"
+				>
+					<Text size="extralarge" weight="bold">
+						{t('label.forwarding', 'Forwarding')}
+					</Text>
+					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ top: 'large', bottom: 'large' }}
+						>
+							<ListRow>
+								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
+									<Switch
+										value={cosPreferences?.zimbraFeatureMailForwardingEnabled === 'TRUE'}
+										onClick={(): void => changeSwitchOption('zimbraFeatureMailForwardingEnabled')}
+										label={t(
+											'cos.user_can_specify_forwarding_address',
+											`User can specify forwarding address`
+										)}
+										iconColor="primary"
+										disabled={readonlyCOS}
+									/>
+								</Container>
+								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
+									<Switch
+										value={cosPreferences?.zimbraFeatureMailForwardingInFiltersEnabled === 'TRUE'}
+										onClick={(): void =>
+											changeSwitchOption('zimbraFeatureMailForwardingInFiltersEnabled')
+										}
+										label={t(
+											'cos.user_can_specify_mail_forwarding_filter',
+											'User can specify mail forwarding filter'
+										)}
+										iconColor="primary"
 										disabled={readonlyCOS}
 									/>
 								</Container>

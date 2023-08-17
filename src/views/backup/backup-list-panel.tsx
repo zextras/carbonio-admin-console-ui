@@ -236,6 +236,7 @@ const BackupListPanel: FC = () => {
 									width="16.56rem"
 									inputLabel={t('label.select_a_server', 'Select a Server')}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+										setIsShowError(false);
 										setSearchServer(e.target.value);
 									}}
 									inputValue={searchServer}
