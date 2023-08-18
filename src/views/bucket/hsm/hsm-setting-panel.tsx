@@ -227,7 +227,7 @@ const HSMsettingPanel: FC = () => {
 
 								if (attributes?.deduplicateAfterScheduledMoveBlobs) {
 									const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
-									if (duplicate) {
+									if (duplicate?.value) {
 										setDeduplicateAfterScheduledMoveBlobs(true);
 										olderValues.deduplicateAfterScheduledMoveBlobs = true;
 									} else {
