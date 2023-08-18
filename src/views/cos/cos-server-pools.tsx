@@ -110,14 +110,15 @@ const CosServerPools: FC = () => {
 	const enable = useMemo(
 		() =>
 			selectedTableRows.length > 0 &&
-			!zimbraMailHostPoolList.find((sp: any) => selectedTableRows[0] === sp?._content)?.c,
+			!zimbraMailHostPoolList.find((sp: any) => selectedTableRows[0]?.id === sp?._content)?.c,
 		[selectedTableRows, zimbraMailHostPoolList]
 	);
 
 	const disable = useMemo(
 		() =>
-			selectedTableRows.length > 0 &&
-			zimbraMailHostPoolList.find((sp: any) => selectedTableRows[0] === sp?._content)?.c,
+			(selectedTableRows.length > 0 &&
+				zimbraMailHostPoolList.find((sp: any) => selectedTableRows[0]?.id === sp?._content)?.c) ||
+			false,
 		[selectedTableRows, zimbraMailHostPoolList]
 	);
 
@@ -312,18 +313,18 @@ const CosServerPools: FC = () => {
 		});
 		attributes.push({
 			n: 'zimbraMailHostPool',
-			_content: selectedTableRows[0]
+			_content: selectedTableRows[0]?.id
 		});
 		body.a = attributes;
 		body.id = {
 			_content: cosId
 		};
 		onModifyCOS(body);
-	}, [selectedTableRows, zimbraMailHostPoolList, onModifyCOS, cosId]);
+	}, [selectedTableRows, onModifyCOS, zimbraMailHostPoolList, cosId]);
 
 	const onDisableServer = useCallback(() => {
 		const allServers = zimbraMailHostPoolList.filter(
-			(item: any) => item?._content !== selectedTableRows[0]
+			(item: any) => item?._content !== selectedTableRows[0]?.id
 		);
 		const attributes: any[] = [];
 		const body: any = {};
