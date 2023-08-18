@@ -1391,6 +1391,7 @@
         "number_of_items_to_fetch_when_scrolling": "Number of items to fetch when scrolling",
         "object_storage": "Object Storage",
         "of": "of",
+        "of_unlimited": "of unlimited",
         "on_startup_and_scheduled": "On Startup & Scheduled",
         "on_startup_only": "On Startup Only",
         "only_there_users": "Only these users",
