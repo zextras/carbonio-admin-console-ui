@@ -139,7 +139,7 @@ const AccountDetailView: FC<any> = ({
 						'label.of',
 						'Of'
 				  )} MB ${calculatedSize.toFixed(3)}`
-				: `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of_unlimited', 'Of unlimited')}`;
+				: `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of_unlimited', 'of unlimited')}`;
 		return message;
 	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, t, usedQuota]);
 	const calculatedQuotaSizePercentage: number = useMemo(() => {
