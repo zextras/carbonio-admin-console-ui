@@ -1600,7 +1600,7 @@
         "standard": "Standard",
         "start": "start",
         "state": "State",
-        "status": "status",
+        "status": "Status",
         "status_lbl": "Status",
         "stop_operation_helperText": "{{message}}",
         "stop_operation_sucess": "The {{name}} operation has been stopped successfully",
