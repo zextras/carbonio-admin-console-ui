@@ -41,6 +41,7 @@ const CosServerPools: FC = () => {
 	const [zimbraMailHostPoolList, setZimbraMailHostPoolList] = useState<Array<any>>([]);
 	const [serverTableRows, setServerTableRows] = useState<Array<any>>([]);
 	const [selectedTableRows, setSelectedTableRows] = useState<Array<any>>([]);
+	const [selectedTableRowsId, setSelectedTableRowsId] = useState<Array<any>>([]);
 	const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const setCos = useCosStore((state) => state.setCos);
@@ -74,6 +75,7 @@ const CosServerPools: FC = () => {
 						onClick={(e: { stopPropagation: () => void }): void => {
 							e.stopPropagation();
 							setSelectedTableRows([item]);
+							setSelectedTableRowsId([item?.id]);
 						}}
 					>
 						<Text size="small" weight="regular" key={item?.id} color="gray0">
@@ -87,6 +89,7 @@ const CosServerPools: FC = () => {
 						onClick={(e: { stopPropagation: () => void }): void => {
 							e.stopPropagation();
 							setSelectedTableRows([item]);
+							setSelectedTableRowsId([item?.id]);
 						}}
 					>
 						<Text key={item?.id}>
@@ -152,6 +155,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text size="small" weight="regular" key={item?.id} color="gray0">
@@ -165,6 +169,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text key={item?.id}>
@@ -198,6 +203,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text size="small" weight="regular" key={item?.id} color="gray0">
@@ -211,6 +217,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text key={item?.id}>
@@ -284,6 +291,7 @@ const CosServerPools: FC = () => {
 					}
 					setOpenConfirmDialog(false);
 					setSelectedTableRows([]);
+					setSelectedTableRowsId([]);
 				})
 				.catch((error) => {
 					createSnackbar({
@@ -369,6 +377,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text size="small" weight="regular" key={item?.id} color="gray0">
@@ -382,6 +391,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text key={item?.id}>
@@ -548,7 +558,7 @@ const CosServerPools: FC = () => {
 									rows={serverTableRows}
 									headers={tableHeader}
 									showCheckbox={false}
-									selectedRows={selectedTableRows}
+									selectedRows={selectedTableRowsId}
 									HeaderFactory={CustomHeaderFactory}
 									RowFactory={CustomRowFactory}
 								/>
@@ -566,14 +576,17 @@ const CosServerPools: FC = () => {
 					setOpenConfirmDialog(false);
 				}}
 				customFooter={
-					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button
-							label={t('label.helo', 'Help')}
-							type="outlined"
-							color="primary"
-							onClick={hideConfirmDialog}
-						/>
-						<Container orientation="horizontal" mainAlignment="flex-end">
+					<Container orientation="horizontal" mainAlignment="space-between" width="100%">
+						<Container orientation="horizontal" mainAlignment="flex-start" width="25%">
+							<Button
+								label={t('label.helo', 'Help')}
+								type="outlined"
+								color="primary"
+								onClick={hideConfirmDialog}
+							/>
+						</Container>
+
+						<Container orientation="horizontal" mainAlignment="flex-end" width="75%">
 							<Padding all="small">
 								<Button
 									label={t('label.no_go_back', 'No, Go Back')}
