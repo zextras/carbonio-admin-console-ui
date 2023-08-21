@@ -137,7 +137,7 @@ const AclListDetail: FC<any> = ({
 				value: TRUE_FALSE.TRUE
 			},
 			{
-				label: t('label.not_send_receive', 'Not Send & Receive'),
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
 				value: TRUE_FALSE.FALSE
 			}
 		],
