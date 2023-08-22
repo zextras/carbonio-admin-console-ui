@@ -1078,7 +1078,7 @@
         "max_manageable_account_for_the_domain": "Máximo de cuentas administrables para el dominio (0=ilimitado)",
         "mta_lbl": "<bold>MTA</bold>",
         "never_show_this_again": "No motrar de nuevo",
-        "of_unlimited": "de Ilimitado",
+        "of_unlimited": "de ilimitado",
         "postal_code": "Código postal",
         "this_domain_is_closed": "<text>El dominio  <bold>{{domain}}</bold>  está cerrado</text>",
         "yes_remove_it": "Sí, remover"

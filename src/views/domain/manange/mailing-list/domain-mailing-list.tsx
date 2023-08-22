@@ -19,6 +19,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
+import styled from 'styled-components';
 import logo from '../../../../assets/gardian.svg';
 import Paging from '../../../components/paging';
 import { searchDirectory } from '../../../../services/search-directory-service';
@@ -62,6 +63,23 @@ const DomainMailingList: FC = () => {
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
 	const timer = useRef<any>();
+	const [statusFilter, setStatusFilter] = useState<string>('');
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+
+	const mailingListStatusFilter: any = useMemo(
+		() => [
+			{
+				label: t('label.can_send_receiver', 'Can Send & Receive'),
+				value: '(&(zimbraMailStatus=enabled))'
+			},
+			{
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
+				value: '(&(zimbraMailStatus=disabled))'
+			}
+		],
+		[t]
+	);
+
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -86,7 +104,27 @@ const DomainMailingList: FC = () => {
 				id: 'status',
 				label: t('label.status', 'Status'),
 				width: '15%',
-				bold: true
+				i18nAllLabel: t('label.all', 'All'),
+				bold: true,
+				items: [
+					{ label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
+					{ label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let statusQuery = '';
+						e.forEach((item: { value: string }) => {
+							statusQuery += item.value;
+						});
+						if (e?.length > 1) {
+							statusQuery = `(|${statusQuery})`;
+						}
+						setStatusFilter(statusQuery);
+					} else {
+						setStatusFilter('');
+					}
+				}
 			},
 			{
 				id: 'gal',
@@ -101,7 +139,7 @@ const DomainMailingList: FC = () => {
 				bold: true
 			}
 		],
-		[t]
+		[mailingListStatusFilter, t]
 	);
 
 	const doClickAction = useCallback((): void => {
@@ -132,7 +170,7 @@ const DomainMailingList: FC = () => {
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
-		setMailingListItem([]);
+		setIsRequestInProgress(true);
 		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name').then((data) => {
 			const dlList = data?.dl;
 			if (dlList) {
@@ -202,8 +240,8 @@ const DomainMailingList: FC = () => {
 							>
 								<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
 									{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-										? t('label.can_receive', 'Can receive')
-										: ''}
+										? t('label.can_send_receiver', 'Can Send & Receive')
+										: t('label.cant_send_receiver', "Can't Send & Receive")}
 								</Text>
 							</Container>,
 							<Container
@@ -252,32 +290,39 @@ const DomainMailingList: FC = () => {
 				setMailingList([]);
 				setIsUpdateRecord(false);
 			}
+			setIsRequestInProgress(false);
 		});
 	}, [t, offset, limit, domainName, searchQuery, handleClick]);
 
 	useEffect(() => {
 		getMailingList();
-	}, [offset, getMailingList]);
+	}, [getMailingList]);
 
+	const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
+		let filterQuery = '';
+		if (sfilter) {
+			filterQuery += sfilter;
+		}
+		if (searchStr) {
+			filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+		}
+		if (sfilter && searchStr) {
+			return `(&${filterQuery})`;
+		}
+		return filterQuery;
+	}, []);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchMailingListQuery = useCallback(
-		debounce((searchText) => {
-			if (searchText) {
-				setOffset(0);
-				setSearchQuery(
-					`(|(mail=*${searchText}*)(cn=*${searchText}*)(sn=*${searchText}*)(gn=*${searchText}*)(displayName=*${searchText}*)(zimbraMailDeliveryAddress=*${searchText}*))`
-				);
-			} else {
-				setOffset(0);
-				setSearchQuery('');
-			}
+		debounce((searchStr: string, sfilter: string) => {
+			setTotalAccount(0);
+			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
 		}, 700),
-		[debounce]
+		[debounce, generateSearchFilterQuery]
 	);
 
 	useEffect(() => {
-		searchMailingListQuery(searchString);
-	}, [searchString, searchMailingListQuery]);
+		searchMailingListQuery(searchString, statusFilter);
+	}, [searchString, searchMailingListQuery, statusFilter]);
 
 	useEffect(() => {
 		if (showEditMailingView !== undefined && !showEditMailingView) {
@@ -583,7 +628,7 @@ const DomainMailingList: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -612,26 +657,44 @@ const DomainMailingList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 340px)"
+							style={{
+								height:
+									mailingList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
+							}}
 						>
-							{mailingList && mailingList.length > 0 && (
-								<Table
-									rows={mailingList}
-									headers={headers}
-									showCheckbox
-									style={{ overflow: 'auto', height: '100%' }}
-									selectedRows={selectedDlRow}
-									onSelectionChange={(selected: any): void => {
-										setSelectedFromRow(
-											mailingListItem.find((item: any) => selected[0] === item?.id)
-										);
-										setSelectedDlRow(selected);
-									}}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={!isRequestInProgress ? mailingList : []}
+								headers={headers}
+								showCheckbox
+								style={{ overflow: 'auto', height: '100%' }}
+								selectedRows={selectedDlRow}
+								onSelectionChange={(selected: any): void => {
+									setSelectedFromRow(mailingListItem.find((item: any) => selected[0] === item?.id));
+									setSelectedDlRow(selected);
+								}}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										iconColor="primary"
+										height={36}
+										label=""
+										width={36}
+										loading
+									/>
+								</Container>
 							)}
-							{mailingList.length === 0 && (
+							{mailingList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -669,7 +732,7 @@ const DomainMailingList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							padding={{ all: 'large' }}
+							style={{ position: 'absolute', bottom: '0.25rem' }}
 						>
 							{mailingList && mailingList.length > 0 && (
 								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />

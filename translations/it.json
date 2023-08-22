@@ -1109,7 +1109,7 @@
         "bind_password": "Bind Password",
         "mail_transfer_agent": "Mail Transfer Agent (MTA)",
         "mta_primarybar_tooltip": "Mail Transfer Agent",
-        "of_unlimited": "di Illimitato",
+        "of_unlimited": "di illimitato",
         "mail_trans_agent": "Mail Trans. Agent",
         "create_galsync_account_success_msg": "Hai creato il nome account GALSync"
     },

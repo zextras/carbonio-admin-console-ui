@@ -972,7 +972,7 @@
         "antivirus_definitions": "Antivirus-Definitionen",
         "never_show_this_again": "NICHT MEHR ANZEIGEN",
         "backup_lbl": "<bold>Backup</bold>",
-        "of_unlimited": "von Unbegrenzt",
+        "of_unlimited": "von unbegrenzt",
         "bind_password": "Passwort verknüpfen",
         "prefix_volume": "Präfix – {{volumePrefix}}",
         "primary_color_hint": "Verwenden Sie zum Ändern der Primärfarbe bitte einen HEX-Farbcode",
