@@ -703,14 +703,13 @@ const ManageAccounts: FC = () => {
 									openDetailView(item);
 								}}
 							>
-								{item?.description || <>&nbsp;</>}
+								{item?.zimbraNotes || <>&nbsp;</>}
 							</Text>
 						],
 						item,
 						clickable: true
 					});
 				});
-				// setAccountList([]);
 				setAccountList(accountListArr);
 			}
 			setIsRequestInProgress(false);
