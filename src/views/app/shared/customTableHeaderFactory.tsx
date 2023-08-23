@@ -140,7 +140,6 @@ const CustomHeaderFactory = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
-									false
 									items={column.items}
 									dropdownWidth="auto"
 									onChange={column.onChange}

@@ -158,14 +158,7 @@ const HSMselectVolumes: FC<any> = () => {
 			</ListRow>
 			<ListRow>
 				<Padding bottom="large">
-					<Text
-						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						color="secondary"
-						style={{ 'white-space': 'normal' }}
-					>
+					<Text size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
 						{t(
 							'hsm.all_primary_volume_used_source_msg',
 							'All primary volumes will be used as source by default. Or select manually other volumes.'
@@ -213,6 +206,8 @@ const HSMselectVolumes: FC<any> = () => {
 								}
 							}}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
@@ -228,14 +223,7 @@ const HSMselectVolumes: FC<any> = () => {
 			</ListRow>
 			<ListRow>
 				<Padding bottom="large">
-					<Text
-						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						color="secondary"
-						style={{ 'white-space': 'normal' }}
-					>
+					<Text size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
 						{t(
 							'hsm.all_secondary_volume_used_source_msg',
 							'The current secondary volume will be used as a destination. Or select manually other volumes.'
@@ -288,6 +276,8 @@ const HSMselectVolumes: FC<any> = () => {
 								}
 							}}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}

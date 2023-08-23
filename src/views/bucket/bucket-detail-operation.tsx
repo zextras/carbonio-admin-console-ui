@@ -6,7 +6,7 @@
 import React, { FC, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Container } from '@zextras/carbonio-design-system';
+import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
@@ -14,7 +14,11 @@ import VolumesDetailPanel from './server-specifics/volume/volumes-list';
 import HSMsettingPanel from './hsm/hsm-setting-panel';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
 
-const DetailViewContainer = styled(Container)`
+interface ContainerExtendProps extends ContainerProps {
+	isPrimaryBarExpanded?: boolean;
+}
+
+const DetailViewContainer = styled(Container)<ContainerExtendProps>`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
 	transition: width 300ms;
 `;
