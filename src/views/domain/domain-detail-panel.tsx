@@ -16,6 +16,7 @@ import CreateDomain from './create-new-domain';
 import GlobalOperations from './global-operation';
 import { useDomainStore } from '../../store/domain/store';
 import { useLocalStorage } from '../utility/utils';
+import GlobalDetailPanel from './global/global-detail-panel';
 
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();
@@ -113,6 +114,9 @@ const DomainDetailPanel: FC = () => {
 				<></>
 			)}
 			<Switch>
+				<Route exact path={`${path}/${GLOBAL_ROUTE}`}>
+					<GlobalDetailPanel />
+				</Route>
 				<Route exact path={`${path}/${GLOBAL_ROUTE}/:operation`}>
 					<GlobalOperations />
 				</Route>
