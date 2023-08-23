@@ -788,7 +788,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						<Select
 							items={spamTagPercentOptions}
 							background="gray5"
-							label={t('mta.spam_to_junk_tolerance', 'Spam to Junk tolerance')}
+							label={t('mta.tolerance_for_spam_delivery', 'Tolerance for Spam Delivery')}
 							showCheckbox={false}
 							selection={spamTagPercentOptions.find(
 								(item: Record<string, string>) =>
@@ -825,7 +825,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						<Select
 							items={spamKillPercentOptions}
 							background="gray5"
-							label={t('mta.hard_spam_tolerance', 'Block Spam tolerance')}
+							label={t('mta.tolerance_for_spam_blocking', 'Tolerance for Spam Blocking')}
 							showCheckbox={false}
 							selection={spamKillPercentOptions.find(
 								(item: Record<string, string>) =>
