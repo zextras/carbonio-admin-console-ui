@@ -160,7 +160,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				value: TRUE_FALSE.TRUE
 			},
 			{
-				label: t('label.not_send_receive', 'Not Send & Receive'),
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
 				value: TRUE_FALSE.FALSE
 			}
 		],
@@ -1872,7 +1872,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					<Container padding={{ top: 'small', bottom: 'medium' }}>
 						<Textarea
 							value={zimbraNotes}
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							background="gray5"
 							onChange={(e: any): any => {
 								setZimbraNotes(e.target.value);

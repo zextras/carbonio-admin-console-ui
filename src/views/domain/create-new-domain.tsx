@@ -388,7 +388,7 @@ const CreateDomain: FC = () => {
 						<ListRow>
 							<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
 								<Input
-									label={t('label.note', 'Note')}
+									label={t('label.description', 'Description')}
 									background="gray5"
 									value={zimbraNotes}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

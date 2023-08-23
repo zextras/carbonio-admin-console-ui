@@ -195,7 +195,7 @@ const ResourceCreateSection: FC = () => {
 						orientation="horizontal"
 						weight="bold"
 					>
-						{t('label.notes', 'Notes')}
+						{t('label.description', 'Description')}
 					</Text>
 				</Row>
 				<ListRow>

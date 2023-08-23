@@ -73,7 +73,66 @@ const ManageAccounts: FC = () => {
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const tableRef = useRef(null);
+	const [typeFilter, setTypeFilter] = useState<string>('');
+	const [statusFilter, setStatusFilter] = useState<string>('');
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
+	const accountTypeFilter: any = useMemo(
+		() => [
+			{
+				label: 'Admin',
+				value: '(&(zimbraIsAdminAccount=TRUE))'
+			},
+			{
+				label: 'DelegatedAdmin',
+				value: '(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE)))'
+			},
+			{
+				label: 'External',
+				value: '(&(zimbraIsExternalVirtualAccount=TRUE))'
+			},
+			{
+				label: 'System',
+				value: '(&(zimbraIsSystemAccount=TRUE))'
+			},
+			{
+				label: 'Normal',
+				value:
+					'(&(!(zimbraIsAdminAccount=TRUE))(!(zimbraIsDelegatedAdminAccount=TRUE))(!(zimbraIsSystemAccount=TRUE))(!(zimbraIsExternalVirtualAccount=TRUE)))'
+			}
+		],
+		[]
+	);
+
+	const accountStatusFilter: any = useMemo(
+		() => [
+			{
+				label: t('label.active', 'Active'),
+				value: '(&(zimbraAccountStatus=active))'
+			},
+			{
+				label: t('label.in_maintenance', 'In maintenance'),
+				value: '(&(zimbraAccountStatus=maintenance))'
+			},
+			{
+				label: t('label.locked', 'Locked'),
+				value: '(&(zimbraAccountStatus=locked))'
+			},
+			{
+				label: t('label.closed', 'Closed'),
+				value: '(&(zimbraAccountStatus=closed))'
+			},
+			{
+				label: t('label.pending', 'Pending'),
+				value: '(&(zimbraAccountStatus=pending))'
+			},
+			{
+				label: t('label.lockout', 'Lockout'),
+				value: '(&(zimbraAccountStatus=lockout))'
+			}
+		],
+		[t]
+	);
 	const headers: any = useMemo(
 		() => [
 			{
@@ -97,14 +156,61 @@ const ManageAccounts: FC = () => {
 			{
 				id: 'type',
 				label: t('label.type', 'Type'),
+				i18nAllLabel: t('label.all', 'All'),
 				width: '10%',
-				bold: true
+				bold: true,
+				items: [
+					{ label: accountTypeFilter[0].label, value: accountTypeFilter[0].value },
+					{ label: accountTypeFilter[1].label, value: accountTypeFilter[1].value },
+					{ label: accountTypeFilter[2].label, value: accountTypeFilter[2].value },
+					{ label: accountTypeFilter[3].label, value: accountTypeFilter[3].value },
+					{ label: accountTypeFilter[4].label, value: accountTypeFilter[4].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let typeQuery = '';
+						e.forEach((item: { value: string }) => {
+							typeQuery += item.value;
+						});
+						if (e?.length > 1) {
+							typeQuery = `(|${typeQuery})`;
+						}
+						setTypeFilter(typeQuery);
+					} else {
+						setTypeFilter('');
+					}
+				}
 			},
 			{
 				id: 'status',
 				label: t('label.status', 'Status'),
 				width: '10%',
-				bold: true
+				i18nAllLabel: t('label.all', 'All'),
+				bold: true,
+				items: [
+					{ label: accountStatusFilter[0].label, value: accountStatusFilter[0].value },
+					{ label: accountStatusFilter[1].label, value: accountStatusFilter[1].value },
+					{ label: accountStatusFilter[2].label, value: accountStatusFilter[2].value },
+					{ label: accountStatusFilter[3].label, value: accountStatusFilter[3].value },
+					{ label: accountStatusFilter[4].label, value: accountStatusFilter[4].value },
+					{ label: accountStatusFilter[5].label, value: accountStatusFilter[5].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let statusQuery = '';
+						e.forEach((item: { value: string }) => {
+							statusQuery += item.value;
+						});
+						if (e?.length > 1) {
+							statusQuery = `(|${statusQuery})`;
+						}
+						setStatusFilter(statusQuery);
+					} else {
+						setStatusFilter('');
+					}
+				}
 			},
 			{
 				id: 'description',
@@ -113,7 +219,7 @@ const ManageAccounts: FC = () => {
 				bold: true
 			}
 		],
-		[t]
+		[accountStatusFilter, accountTypeFilter, t]
 	);
 
 	const [accountList, setAccountList] = useState<any[]>([]);
@@ -477,6 +583,7 @@ const ManageAccounts: FC = () => {
 		]
 	);
 	const getAccountList = useCallback((): void => {
+		setIsRequestInProgress(true);
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
@@ -596,35 +703,50 @@ const ManageAccounts: FC = () => {
 									openDetailView(item);
 								}}
 							>
-								{item?.description || <>&nbsp;</>}
+								{item?.zimbraNotes || <>&nbsp;</>}
 							</Text>
 						],
 						item,
 						clickable: true
 					});
 				});
-				// setAccountList([]);
 				setAccountList(accountListArr);
 			}
+			setIsRequestInProgress(false);
 		});
 	}, [STATUS_COLOR, accountUserType, domainName, limit, offset, openDetailView, searchQuery]);
 
+	const generateSearchFilterQuery = useCallback(
+		(searchStr: string, sfilter: string, tfilter: string): string => {
+			let filterQuery = '';
+			if (tfilter) {
+				filterQuery += tfilter;
+			}
+			if (sfilter) {
+				filterQuery += sfilter;
+			}
+			if (searchStr) {
+				filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+			}
+			if ((tfilter && sfilter) || (sfilter && searchStr) || (tfilter && searchStr)) {
+				return `(&${filterQuery})`;
+			}
+			return filterQuery;
+		},
+		[]
+	);
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
-		debounce((searchText) => {
-			if (searchText) {
-				setSearchQuery(
-					`(|(mail=*${searchText}*)(cn=*${searchText}*)(sn=*${searchText}*)(gn=*${searchText}*)(displayName=*${searchText}*)(zimbraMailDeliveryAddress=*${searchText}*))`
-				);
-			} else {
-				setSearchQuery('');
-			}
+		debounce((searchStr: string, sfilter: string, tfilter: string) => {
+			setTotalAccount(0);
+			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter, tfilter));
 		}, 700),
-		[debounce]
+		[debounce, generateSearchFilterQuery]
 	);
 	useEffect(() => {
-		searchAccountList(searchString);
-	}, [accountList, limit, offset, searchAccountList, searchString]);
+		searchAccountList(searchString, statusFilter, typeFilter);
+	}, [searchAccountList, searchString, typeFilter, statusFilter]);
 
 	useEffect(() => {
 		if (domainName) {
@@ -712,7 +834,7 @@ const ManageAccounts: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
 				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -742,21 +864,41 @@ const ManageAccounts: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 340px)"
+							style={{
+								height:
+									accountList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
+							}}
 							ref={tableRef}
 						>
-							{accountList.length !== 0 && (
-								<Table
-									rows={accountList}
-									headers={headers}
-									showCheckbox={false}
-									multiSelect={false}
-									style={{ overflow: 'auto', height: '100%' }}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={!isRequestInProgress ? accountList : []}
+								headers={headers}
+								showCheckbox={false}
+								multiSelect={false}
+								style={{ overflow: 'auto', height: '100%' }}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										iconColor="primary"
+										height={36}
+										label=""
+										width={36}
+										loading
+									/>
+								</Container>
 							)}
-							{accountList.length === 0 && (
+							{accountList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -788,17 +930,13 @@ const ManageAccounts: FC = () => {
 									</Row>
 								</Container>
 							)}
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								padding={{ top: 'medium' }}
-							>
-								<Divider />
-							</Row>
 							{accountList.length !== 0 && (
-								<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
+								<Row
+									orientation="horizontal"
+									mainAlignment="flex-start"
+									width="100%"
+									style={{ position: 'absolute', bottom: '0.25rem' }}
+								>
 									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 								</Row>
 							)}

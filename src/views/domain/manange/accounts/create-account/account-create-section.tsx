@@ -185,7 +185,7 @@ const AccountCreateSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.notes', 'Notes')}
+						label={t('label.description', 'Description')}
 						backgroundColor="gray6"
 						value={accountDetail?.zimbraNotes}
 						readOnly

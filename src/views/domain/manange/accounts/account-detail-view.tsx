@@ -135,13 +135,11 @@ const AccountDetailView: FC<any> = ({
 		}
 		const message =
 			calculatedSize > 0
-				? t('label.fixed_size_quota', '{{usedQuota}} MB of {{calculatedSize}} MB', {
-						usedQuota: (usedQuota / 1048576).toFixed(3),
-						calculatedSize: calculatedSize.toFixed(3)
-				  })
-				: t('label.unlimited_size_quota', '{{usedQuota}} MB of Unlimited', {
-						usedQuota: (usedQuota / 1048576).toFixed(3)
-				  });
+				? `${(usedQuota / 1048576).toFixed(3)} MB ${t(
+						'label.of',
+						'Of'
+				  )} MB ${calculatedSize.toFixed(3)}`
+				: `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of_unlimited', 'of unlimited')}`;
 		return message;
 	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, t, usedQuota]);
 	const calculatedQuotaSizePercentage: number = useMemo(() => {
@@ -744,7 +742,7 @@ const AccountDetailView: FC<any> = ({
 							orientation="horizontal"
 							weight="bold"
 						>
-							{t('label.notes', 'Notes')}
+							{t('label.description', 'Description')}
 						</Text>
 					</Row>
 					<Row
@@ -754,7 +752,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 					>
 						<Input
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							width="100%"
 							value={selectedAccount?.zimbraNotes || ''}
