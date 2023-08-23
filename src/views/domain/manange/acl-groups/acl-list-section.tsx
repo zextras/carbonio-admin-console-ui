@@ -616,7 +616,7 @@ const AclListSection: FC<any> = () => {
 						padding={{ top: 'small', bottom: 'medium' }}
 					>
 						<Input
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray5"
 							value={aclListDetail?.zimbraNotes}
 							size="medium"
