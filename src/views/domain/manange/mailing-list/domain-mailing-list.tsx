@@ -53,7 +53,6 @@ const DomainMailingList: FC = () => {
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [selectedMailingList, setSelectedMailingList] = useState<any>({});
 	const [showMailingListDetailView, setShowMailingListDetailView] = useState<any>();
-	const [showEditMailingView, setShowEditMailingView] = useState<any>();
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
@@ -144,12 +143,10 @@ const DomainMailingList: FC = () => {
 
 	const doClickAction = useCallback((): void => {
 		setShowMailingListDetailView(true);
-		setShowEditMailingView(false);
 	}, []);
 
 	const doDoubleClickAction = useCallback((): void => {
-		setShowEditMailingView(true);
-		setShowMailingListDetailView(false);
+		setShowMailingListDetailView(true);
 	}, []);
 
 	const handleClick = useCallback(
@@ -324,12 +321,6 @@ const DomainMailingList: FC = () => {
 		searchMailingListQuery(searchString, statusFilter);
 	}, [searchString, searchMailingListQuery, statusFilter]);
 
-	useEffect(() => {
-		if (showEditMailingView !== undefined && !showEditMailingView) {
-			getMailingList();
-		}
-	}, [showEditMailingView, getMailingList]);
-
 	const onDetailClick = useCallback(() => {
 		const selectedTableItem = mailingListItem.find((item: any) => selectedDlRow[0] === item?.id);
 		setSelectedFromRow(selectedTableItem);
@@ -343,14 +334,6 @@ const DomainMailingList: FC = () => {
 			setShowMailingListDetailView(false);
 		}
 	}, [showMailingListDetailView]);
-
-	useEffect(() => {
-		if (editMailingList) {
-			setShowMailingListDetailView(false);
-			setEditMailingList(false);
-			setShowEditMailingView(true);
-		}
-	}, [editMailingList]);
 
 	useEffect(() => {
 		if (isUpdateRecord) {
@@ -667,7 +650,8 @@ const DomainMailingList: FC = () => {
 							<Table
 								rows={!isRequestInProgress ? mailingList : []}
 								headers={headers}
-								showCheckbox
+								showCheckbox={false}
+								multiSelect={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								selectedRows={selectedDlRow}
 								onSelectionChange={(selected: any): void => {
