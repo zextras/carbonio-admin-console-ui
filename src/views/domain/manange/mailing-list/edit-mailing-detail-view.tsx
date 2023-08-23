@@ -2031,7 +2031,7 @@ const EditMailingListView: FC<any> = ({
 				</ListRow>
 				<Row padding={{ top: 'large' }}>
 					<Text size="medium" weight="bold" color="gray0">
-						{t('label.notes', 'Notes')}
+						{t('label.description', 'Description')}
 					</Text>
 				</Row>
 				<ListRow padding={{ all: 'small' }}>

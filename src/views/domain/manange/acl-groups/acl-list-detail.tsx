@@ -848,7 +848,7 @@ const AclListDetail: FC<any> = ({
 					<Container padding={{ top: 'large' }}>
 						<Input
 							value={zimbraNotes}
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							background="gray6"
 							readOnly
 						/>

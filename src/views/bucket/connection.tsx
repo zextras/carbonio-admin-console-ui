@@ -524,7 +524,7 @@ const Connection: FC<{
 			<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 				<Input
 					background="gray5"
-					label={t('label.bucket_notes', 'Notes')}
+					label={t('label.description', 'Description')}
 					name="notes"
 					value={bucketNotes}
 					onChange={(ev: any): any => {

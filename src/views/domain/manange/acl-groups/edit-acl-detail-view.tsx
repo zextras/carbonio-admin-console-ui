@@ -1872,7 +1872,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					<Container padding={{ top: 'small', bottom: 'medium' }}>
 						<Textarea
 							value={zimbraNotes}
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							background="gray5"
 							onChange={(e: any): any => {
 								setZimbraNotes(e.target.value);
