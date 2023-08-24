@@ -638,6 +638,14 @@ const EditMailingListView: FC<any> = ({
 		[grantTypeOptions]
 	);
 
+	useEffect(() => {
+		if (grantType && grantType?.value === 'all') {
+			setTimeout(() => {
+				setGrantEmailsList([]);
+			}, 100);
+		}
+	}, [grantType]);
+
 	const getGrantML = useCallback(() => {
 		const getGrantBody: any = {};
 		const target = {
@@ -651,12 +659,26 @@ const EditMailingListView: FC<any> = ({
 				if (data && data?.grant && Array.isArray(data?.grant)) {
 					const grant = data?.grant;
 					if (grant.length > 1) {
-						if (grant[1].grantee?.[0]?.type === 'all') {
-							onGrantTypeChange(ALL);
-						} else {
-							onGrantTypeChange(EMAIL);
-						}
 						const emails: Array<any> = [];
+						const sendToListItems = grant.filter(
+							(item: any) => item?.right[0]?._content === 'sendToDistList'
+						);
+						if (sendToListItems && sendToListItems.length > 0) {
+							const type = sendToListItems[0]?.grantee[0]?.type;
+							if (
+								(type === 'grp' || type === 'dl' || type === 'usr') &&
+								sendToListItems.length > 1
+							) {
+								onGrantTypeChange(EMAIL);
+							} else if (
+								(type === 'grp' || type === 'dl' || type === 'usr') &&
+								sendToListItems.length === 1
+							) {
+								onGrantTypeChange(GRP);
+							} else {
+								onGrantTypeChange(ALL);
+							}
+						}
 						grant.forEach((grItem: any) => {
 							if (
 								grItem?.right &&
@@ -683,7 +705,9 @@ const EditMailingListView: FC<any> = ({
 					} else if (grant.length === 1) {
 						const granteeType = grant[0]?.grantee[0]?.type;
 						if (grant[0].grantee?.[0]?.type === 'gst' || grant[0].grantee?.[0]?.type === 'usr') {
-							onGrantTypeChange(EMAIL);
+							if (grant[0]?.right[0]?._content === 'sendToDistList') {
+								onGrantTypeChange(EMAIL);
+							}
 							const emails: Array<any> = [];
 							grant.forEach((grItem: any) => {
 								if (
@@ -745,6 +769,7 @@ const EditMailingListView: FC<any> = ({
 						grantType: it
 					}));
 				}
+				setIsDirty(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -881,6 +906,9 @@ const EditMailingListView: FC<any> = ({
 				// eslint-disable-next-line no-shadow
 				let isError = false;
 				let errorMessage = '';
+				if (grantType?.value !== EMAIL) {
+					setGrantEmailTableRows([]);
+				}
 				data.forEach((item: any) => {
 					if (item?.Fault) {
 						isError = true;
