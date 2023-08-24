@@ -60,6 +60,7 @@ import {
 import { getDomainInformation } from '../../../services/domain-information-service';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import { flushCache } from '../../../services/flush-cache-service';
+import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
@@ -1017,6 +1018,33 @@ const DomainGalSettings: FC = () => {
 			});
 	};
 
+	const handleReSyncGalAccount = async (): Promise<any> => {
+		try {
+			await Promise.all(
+				serverList?.map(async (item) => {
+					item?.galAccount?.id && (await reSyncGalAccount(item?.galAccount?.id));
+				})
+			);
+			createSnackbar({
+				key: 'success',
+				type: 'success',
+				label: t('label.gal_successfully_re_synced', 'GAL successfully re-synced'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		} catch (error: any) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+				autoHideTimeout: 5000,
+				hideButton: true,
+				replace: true
+			});
+		}
+	};
+
 	useEffect(() => {
 		getDomainWithGAlSyncList(domainInformation);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1103,6 +1131,12 @@ const DomainGalSettings: FC = () => {
 								setOpenAccModel(true);
 							}}
 							disabled={isCreateAccBtnDisable}
+						/>
+						<Button
+							type="outlined"
+							label={t('label.re_sync', 'RE-SYNC')}
+							color="primary"
+							onClick={handleReSyncGalAccount}
 						/>
 						<Button
 							type="ghost"
