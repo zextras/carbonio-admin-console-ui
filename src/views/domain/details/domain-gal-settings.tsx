@@ -1022,13 +1022,13 @@ const DomainGalSettings: FC = () => {
 		try {
 			await Promise.all(
 				serverList?.map(async (item) => {
-					await reSyncGalAccount(item?.galAccount?.id);
+					item?.galAccount?.id && (await reSyncGalAccount(item?.galAccount?.id));
 				})
 			);
 			createSnackbar({
 				key: 'success',
 				type: 'success',
-				label: t('label.changes_save_success_msg', 'Your changes have been saved!'),
+				label: t('label.gal_successfully_re_synced', 'GAL successfully re-synced'),
 				autoHideTimeout: 3000,
 				hideButton: true,
 				replace: true

@@ -1172,6 +1172,7 @@
         "gal_folder_name": "GAL Folder Name",
         "gal_mode": "GAL Mode",
         "gal_settings": "GAL Settings",
+        "gal_successfully_re_synced": "GAL successfully re-synced",
         "gal_update_freq_value": "GAL Update Frequency Value",
         "gal_update_frequencey_value": "GAL Update Frequency (value)",
         "galsync_account": "GALSync Account",
