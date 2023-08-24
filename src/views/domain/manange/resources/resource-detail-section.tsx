@@ -239,13 +239,7 @@ const ResourceDetailSection: FC = () => {
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.details', 'Details')}
 					</Text>
 				</Row>
@@ -260,7 +254,6 @@ const ResourceDetailSection: FC = () => {
 							label={t('label.resource_name', 'ResourceName')}
 							backgroundColor="gray5"
 							value={resourceDetail?.displayName}
-							size="medium"
 							inputName="displayName"
 							onChange={changeResourceDetail}
 						/>
@@ -268,7 +261,7 @@ const ResourceDetailSection: FC = () => {
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -278,7 +271,6 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.name', 'Name')}
 								backgroundColor="gray5"
 								value={resourceDetail?.name}
-								size="medium"
 								inputName="name"
 								onChange={changeResourceName}
 							/>
@@ -291,7 +283,6 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.domain', 'Domain')}
 								backgroundColor="gray5"
 								value={resourceDetail?.domain}
-								size="medium"
 								inputName="domain"
 								disabled
 							/>
@@ -300,10 +291,10 @@ const ResourceDetailSection: FC = () => {
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
-						padding={{ top: 'large', width: '100%' }}
+						padding={{ top: 'large' }}
 					>
 						<Container padding={{ right: 'large' }}>
 							<Select
@@ -311,6 +302,8 @@ const ResourceDetailSection: FC = () => {
 								background="gray5"
 								label={t('label.type', 'Type')}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onResourceTypeChange}
 								selection={resourceDetail?.zimbraCalResType}
 							/>
@@ -322,6 +315,8 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.status', 'Status')}
 								showCheckbox={false}
 								selection={resourceDetail?.zimbraAccountStatus}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onAccountStatusChange}
 							/>
 						</Container>
@@ -332,6 +327,8 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.class_of_service', 'Class of Service')}
 								showCheckbox={false}
 								selection={resourceDetail?.zimbraCOSId}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onCOSIdChange}
 							/>
 						</Container>
@@ -339,7 +336,7 @@ const ResourceDetailSection: FC = () => {
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -351,6 +348,8 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								showCheckbox={false}
 								selection={resourceDetail?.zimbraCalResAutoDeclineRecurring}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onAutoRefuseChange}
 							/>
 						</Container>
@@ -376,7 +375,7 @@ const ResourceDetailSection: FC = () => {
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -387,6 +386,8 @@ const ResourceDetailSection: FC = () => {
 							label={t('label.schedule_policy', 'Set Policy')}
 							showCheckbox={false}
 							selection={resourceDetail?.schedulePolicyType}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSchedulePolicyChange}
 						/>
 					</Container>
@@ -395,19 +396,13 @@ const ResourceDetailSection: FC = () => {
 					<Divider color="gray3" />
 				</Row>
 				<Row padding={{ top: 'large' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.password', 'Password')}
 					</Text>
 				</Row>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -437,7 +432,7 @@ const ResourceDetailSection: FC = () => {
 				</Row>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}

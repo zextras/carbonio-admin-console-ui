@@ -71,10 +71,10 @@ const AclListCreateSection: FC = () => {
 	useEffect(() => {
 		const member = aclListDetail?.members;
 		if (member && member.length > 0) {
-			const allRows = member.map((item: MemberOwnerList) => ({
+			const allRows = member.map((item: MemberOwnerList, index: number) => ({
 				id: item,
 				columns: [
-					<Text size="medium" weight="light" key={item} color="#828282">
+					<Text size="medium" weight="light" key={index} color="#828282">
 						{item}
 					</Text>
 				]
@@ -166,7 +166,6 @@ const AclListCreateSection: FC = () => {
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							backgroundColor="gray6"
-							size="medium"
 							value={aclListDetail?.displayName}
 							readOnly
 						/>
@@ -180,7 +179,6 @@ const AclListCreateSection: FC = () => {
 						<Input
 							label={t('label.address', 'Address')}
 							backgroundColor="gray6"
-							size="medium"
 							value={`${aclListDetail?.prefixName}@${aclListDetail?.suffixName}`}
 							readOnly
 						/>
@@ -196,7 +194,6 @@ const AclListCreateSection: FC = () => {
 						<Input
 							label={t('label.share_message_to_new_member', 'Share message to new members')}
 							backgroundColor="gray6"
-							size="medium"
 							value={
 								aclListDetail?.zimbraDistributionListSendShareMessageToNewMembers
 									? t('label.yes', 'Yes')
@@ -214,7 +211,6 @@ const AclListCreateSection: FC = () => {
 						<Input
 							label={t('label.hidden_from_gal', 'Hidden from GAL')}
 							backgroundColor="gray6"
-							size="medium"
 							value={aclListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
 							readOnly
 						/>
@@ -228,7 +224,6 @@ const AclListCreateSection: FC = () => {
 						<Input
 							label={t('label.this_list_can_receive_email', 'This list can receive Emails')}
 							backgroundColor="gray6"
-							size="medium"
 							value={aclListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')}
 							readOnly
 						/>
@@ -244,7 +239,6 @@ const AclListCreateSection: FC = () => {
 						<Input
 							label={t('label.notes', 'Notes')}
 							backgroundColor="gray6"
-							size="medium"
 							value={aclListDetail?.zimbraNotes}
 							readOnly
 						/>
@@ -257,13 +251,7 @@ const AclListCreateSection: FC = () => {
 						orientation="horizontal"
 						padding={{ top: 'extralarge', bottom: 'medium' }}
 					>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.members', 'Members')}
 						</Text>
 					</Container>
@@ -275,6 +263,8 @@ const AclListCreateSection: FC = () => {
 							headers={tableHeader}
 							showCheckbox={false}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -287,13 +277,7 @@ const AclListCreateSection: FC = () => {
 						orientation="horizontal"
 						padding={{ top: 'extralarge', bottom: 'medium' }}
 					>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.owners', 'Owners')}
 						</Text>
 					</Container>
@@ -306,6 +290,8 @@ const AclListCreateSection: FC = () => {
 							headers={ownerTableHeader}
 							showCheckbox={false}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

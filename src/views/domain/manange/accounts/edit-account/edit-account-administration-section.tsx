@@ -166,10 +166,6 @@ const EditAccountAdministrationSection: FC = () => {
 		label: domain.name,
 		customComponent: (
 			<Row
-				top="0.18rem"
-				right="large"
-				bottom="0.18rem"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -280,8 +276,8 @@ const EditAccountAdministrationSection: FC = () => {
 							{t('label.roles', 'Roles')}
 						</Text>
 					</Row>
-					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="start">
-						<Row width="40%" padding={{ top: 'large' }} mainAlignment="start">
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
+						<Row width="40%" padding={{ top: 'large' }} mainAlignment="flex-start">
 							<Switch
 								value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
 								onClick={(): void => {
@@ -301,8 +297,8 @@ const EditAccountAdministrationSection: FC = () => {
 							/>
 						</Row>
 					</Row>
-					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="start">
-						<Row width="40%" mainAlignment="start">
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
+						<Row width="40%" mainAlignment="flex-start">
 							{accountDetail?.zimbraIsAdminAccount !== 'TRUE' && (
 								<Switch
 									disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
@@ -316,7 +312,11 @@ const EditAccountAdministrationSection: FC = () => {
 					</Row>
 					{accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
 						accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
-							<Row width="100%" mainAlignment="start" padding={{ top: 'large', bottom: 'large' }}>
+							<Row
+								width="100%"
+								mainAlignment="flex-start"
+								padding={{ top: 'large', bottom: 'large' }}
+							>
 								<Row
 									width="45%"
 									padding={{ top: 'large', right: 'large' }}
@@ -398,9 +398,13 @@ const EditAccountAdministrationSection: FC = () => {
 									rows={tableRows}
 									headers={headers}
 									showCheckbox={false}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setSendSelectedRows}
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Row>
@@ -411,15 +415,16 @@ const EditAccountAdministrationSection: FC = () => {
 								padding={{ top: 'large', bottom: '3rem' }}
 							>
 								<Row padding={{ right: 'small' }} width="49%">
-									<Button
-										disabled={sendSelectedRows?.length < 1}
-										type="ghost"
-										onClick={(): void => onDeleteFromList(sendSelectedRows, 'one')}
-										padding={{ all: 'small' }}
-										label={t('label.remove', 'REMOVE')}
-										color="error"
-										width="fill"
-									/>
+									<Padding all={'small'}>
+										<Button
+											disabled={sendSelectedRows?.length < 1}
+											type="ghost"
+											onClick={(): void => onDeleteFromList(sendSelectedRows, 'one')}
+											label={t('label.remove', 'REMOVE')}
+											color="error"
+											width="fill"
+										/>
+									</Padding>
 								</Row>
 
 								<Row width="49%">

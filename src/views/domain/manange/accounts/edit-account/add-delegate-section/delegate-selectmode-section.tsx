@@ -150,7 +150,8 @@ const DelegateSelectModeSection: FC = () => {
 							background="gray5"
 							label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
 							showCheckbox={false}
-							padding={{ right: 'medium' }}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							defaultSelection={DELEGETES_TYPE.find(
 								(item: any) => item.value === deligateDetail?.grantee?.[0]?.type
 							)}

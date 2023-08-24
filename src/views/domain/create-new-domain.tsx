@@ -329,10 +329,9 @@ const CreateDomain: FC = () => {
 				height="calc(100vh - 9.375rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
-							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							width="100%"
 							background="gray6"
@@ -349,7 +348,7 @@ const CreateDomain: FC = () => {
 										'label.type_name_your_domain_will_have',
 										'Type the name your domain will have'
 									)}
-									background="gray5"
+									backgroundColor="gray5"
 									value={domainName}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setDomainName(e.target.value);
@@ -364,7 +363,7 @@ const CreateDomain: FC = () => {
 										'label.max_manageable_account_for_the_domain',
 										'Max manageable account for the domain (0=unlimited)'
 									)}
-									background="gray5"
+									backgroundColor="gray5"
 									value={zimbraDomainMaxAccounts}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setZimbraDomainMaxAccounts(e.target.value);
@@ -377,7 +376,7 @@ const CreateDomain: FC = () => {
 										'label.max_mainbox_quota_for_the_domain_in_bytes',
 										'Max mailbox quota for the domain (bytes) (0=unlimited)'
 									)}
-									background="gray5"
+									backgroundColor="gray5"
 									value={zimbraMailDomainQuota}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setZimbraMailDomainQuota(e.target.value);
@@ -389,7 +388,7 @@ const CreateDomain: FC = () => {
 							<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
 								<Input
 									label={t('label.note', 'Note')}
-									background="gray5"
+									backgroundColor="gray5"
 									value={zimbraNotes}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setZimbraNotes(e.target.value);
@@ -406,10 +405,9 @@ const CreateDomain: FC = () => {
 				>
 					<Divider />
 				</Row>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
-							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							width="100%"
 							background="gray6"
@@ -422,7 +420,7 @@ const CreateDomain: FC = () => {
 								placement="top"
 								label={t('label.global_address_list', 'Global Address List')}
 							>
-								<Text size="small" color="gray0" style={{ 'text-decoration': 'underline' }}>
+								<Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
 									({t('label.what_is_a_gal', "What's a GAL?")})
 								</Text>
 							</Tooltip>
@@ -433,17 +431,16 @@ const CreateDomain: FC = () => {
 									value={zimbraGalMode}
 									disabled
 									label={t('label.gal_mode', 'GAL Mode')}
-									background="gray5"
+									backgroundColor="gray5"
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setZimbraGalMode(e.target.value);
 									}}
-									disable
 								/>
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.gal_folder_name', 'GAL folder name')}
-									background="gray5"
+									backgroundColor="gray5"
 									value={galSyncAccountName}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setGalSyncAccountName(e.target.value);
@@ -455,18 +452,24 @@ const CreateDomain: FC = () => {
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Select
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									items={zimbraPublicServiceHostnameList}
-									background="gray5"
+									backgroundColor="gray5"
 									label={t('domain.mail_server', 'Mail Server')}
 									showCheckbox={false}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									selection={zimbraPublisServiceHostname}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									onChange={onPublicServiceProtocolChange}
 								/>
 							</Container>
 							<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
 								<Input
 									label={t('label.datasource_name', 'Datasource name')}
-									background="gray5"
+									backgroundColor="gray5"
 									value={dataSourceName}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setDataSourceName(e.target.value);
@@ -482,7 +485,6 @@ const CreateDomain: FC = () => {
 							<Divider />
 						</Row>
 						<Row
-							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							width="100%"
 							background="gray6"

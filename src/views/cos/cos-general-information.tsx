@@ -224,7 +224,7 @@ const CosGeneralInformation: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -265,7 +265,7 @@ const CosGeneralInformation: FC = () => {
 				width="100%"
 				// height="calc(100vh - 230px)"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container
 						height="fit"
 						crossAlignment="flex-start"
@@ -276,7 +276,7 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.name', 'Name')}
-									background={canDeleteCOS ? 'gray6' : 'gray5'}
+									backgroundColor={canDeleteCOS ? 'gray6' : 'gray5'}
 									value={cosName}
 									onChange={(e: any): any => {
 										setCosName(e.target.value);
@@ -289,7 +289,7 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.id_lbl', 'ID')}
-									background="gray6"
+									backgroundColor="gray6"
 									value={cosData.zimbraId}
 									disabled
 									// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -300,7 +300,7 @@ const CosGeneralInformation: FC = () => {
 								<Input
 									label={t('label.creation_date', 'Creation Date')}
 									value={cosCreationDate}
-									background="gray6"
+									backgroundColor="gray6"
 									disabled
 									// eslint-disable-next-line @typescript-eslint/no-empty-function
 									onChange={(e: any): any => {}}
@@ -311,7 +311,7 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.accounts_that_use_this_cos', 'Accounts that use this CoS')}
-									background="gray6"
+									backgroundColor="gray6"
 									value={totalAccount}
 									disabled
 								/>
@@ -320,7 +320,7 @@ const CosGeneralInformation: FC = () => {
 								<Input
 									label={t('label.domains_that_use_this_cos', 'Domains that use this CoS')}
 									value={totalDomain}
-									background="gray6"
+									backgroundColor="gray6"
 									disabled
 								/>
 							</Container>
@@ -329,7 +329,7 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.notes', 'Notes')}
-									background="gray5"
+									backgroundColor="gray5"
 									value={zimbraNotes}
 									onChange={(e: any): any => {
 										setZimbraNotes(e.target.value);
@@ -352,7 +352,7 @@ const CosGeneralInformation: FC = () => {
 					icon="CloseOutline"
 					color="error"
 					size="large"
-					width="100%"
+					width="fill"
 					style={{ width: '100%' }}
 					disabled={canDeleteCOS || readonlyCOS}
 					onClick={onDeleteCOSConfirmation}
@@ -377,7 +377,12 @@ const CosGeneralInformation: FC = () => {
 				size="medium"
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button label={t('label.help', 'Help')} type="outlined" color="primary" isSmall />
+						<Button
+							label={t('label.help', 'Help')}
+							type="outlined"
+							color="primary"
+							onClick={(): null => null}
+						/>
 						<Container orientation="horizontal" mainAlignment="flex-end">
 							<Padding all="small">
 								<Button

@@ -32,7 +32,6 @@ const InheritedSelect: FC<{
 	accountValue,
 	cosValue,
 	background,
-	selectName,
 	onChange,
 	onChangeReset,
 	fromAccount,
@@ -54,9 +53,7 @@ const InheritedSelect: FC<{
 					items={items}
 					showCheckbox={false}
 					selection={selectedValue}
-					padding={{ right: 'medium' }}
 					background={background}
-					selectName={selectName}
 					onChange={onChange}
 					disabled={disabled}
 				/>
@@ -87,6 +84,7 @@ const InheritedSelect: FC<{
 						size="large"
 						onClick={onChangeReset}
 						style={{ cursor: 'pointer' }}
+						onChange={(): null => null}
 					/>
 				</Tooltip>
 			) : (

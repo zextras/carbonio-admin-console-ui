@@ -683,7 +683,7 @@ const DomainGeneralSettings: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -737,12 +737,7 @@ const DomainGeneralSettings: FC = () => {
 						</Shimmer.FormSection>
 					</Container>
 				) : (
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -754,7 +749,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.name', 'Name')}
 										value={domainName}
-										background="gray6"
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
@@ -765,7 +760,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
-										background="gray6"
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
@@ -773,7 +768,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.creation_date', 'Creation Date')}
 										value={domainCreationDate}
-										background="gray6"
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
@@ -787,7 +782,7 @@ const DomainGeneralSettings: FC = () => {
 											'Max manageable account for the domain (0=unlimited)'
 										)}
 										value={zimbraDomainMaxAccounts}
-										background="gray6"
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
@@ -798,7 +793,7 @@ const DomainGeneralSettings: FC = () => {
 											'Max mailbox quota for the domain (bytes) (0=unlimited)'
 										)}
 										value={zimbraMailDomainQuota}
-										background="gray6"
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
@@ -819,7 +814,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.public_service_hostname', 'Public Service Host Name')}
 										value={publicServiceHostName}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setPublicServiceHostName(e.target.value);
 										}}
@@ -830,7 +825,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.public_service_port', 'Public Service Port')}
 										value={zimbraPublicServicePort}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraPublicServicePort(e.target.value);
 										}}
@@ -895,7 +890,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.note', 'Note')}
 										value={zimbraNotes}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraNotes(e.target.value);
 										}}
@@ -915,7 +910,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.delete_domain', 'Delete Domain')}
 										color="error"
 										size="extralarge"
-										width="100%"
+										width="fill"
 										onClick={onDeleteDomain}
 										style={{ width: '100%' }}
 									/>
@@ -937,7 +932,6 @@ const DomainGeneralSettings: FC = () => {
 														label={t('label.need_help', 'NEED HELP?')}
 														type="outlined"
 														color="primary"
-														isSmall
 														onClick={(): void => {
 															setOpenConfirmDialog(false);
 														}}
@@ -949,7 +943,6 @@ const DomainGeneralSettings: FC = () => {
 														<Button
 															label={t('label.cancel', 'CANCEL')}
 															color="secondary"
-															isSmall
 															onClick={(): void => {
 																setOpenConfirmDialog(false);
 															}}
@@ -959,7 +952,6 @@ const DomainGeneralSettings: FC = () => {
 													<Button
 														label={t('label.delete', 'DELETE')}
 														color="error"
-														isSmall
 														onClick={onDeleteDomain}
 														disabled={isRequstInProgress}
 													/>
@@ -1003,7 +995,6 @@ const DomainGeneralSettings: FC = () => {
 													<Button
 														label={t('label.cancel', 'CANCEL')}
 														color="secondary"
-														isSmall
 														onClick={(): void => {
 															setOpenDeleteDomainConfirmDialog(false);
 															setDomainDirectoies({
@@ -1021,7 +1012,6 @@ const DomainGeneralSettings: FC = () => {
 															<Button
 																label={t('label.close_domain', 'CLOSE DOMAIN')}
 																color="primary"
-																isSmall
 																onClick={onCloseDomain}
 																disabled={isRequstInProgress}
 															/>
@@ -1032,7 +1022,6 @@ const DomainGeneralSettings: FC = () => {
 													<Button
 														label={t('label.force_delete', 'Force Delete')}
 														color="error"
-														isSmall
 														onClick={onDeleteAccountAndDomain}
 														disabled={isRequstInProgress}
 													/>

@@ -563,7 +563,7 @@ const DomainAclList: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -577,13 +577,11 @@ const DomainAclList: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding>
+							<Padding all="small">
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
 									icon="Plus"
-									height={36}
-									width={36}
 									onClick={onAddClick}
 								/>
 							</Padding>
@@ -602,7 +600,7 @@ const DomainAclList: FC = () => {
 				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -642,6 +640,8 @@ const DomainAclList: FC = () => {
 										setSelectedDlRow(selected);
 									}}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}

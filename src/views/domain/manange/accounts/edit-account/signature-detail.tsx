@@ -290,20 +290,13 @@ export const SignatureDetail: FC<any> = ({
 		<>
 			{isEditable && (
 				<ListRow>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-end"
-						width="100%"
-						wrap="nowrap"
-						padding={{ top: 'large' }}
-					>
-						<Padding>
+					<Row mainAlignment="flex-end" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
+						<Padding all={'small'}>
 							<Button
 								type="outlined"
 								label={t('label.add', 'Add')}
 								icon="Plus"
 								color="primary"
-								height="44px"
 								onClick={(): void => {
 									setIsOpenCreateEditSignatureDialog(true);
 								}}
@@ -315,7 +308,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.edit', 'Edit')}
 								icon="Edit"
 								color="secondary"
-								height="44px"
 								disabled={selectedSignature.length === 0 || selectedSignature.length > 1}
 								onClick={onEditSignature}
 							/>
@@ -326,7 +318,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.delete', 'Delete')}
 								icon="Close"
 								color="error"
-								height="44px"
 								disabled={selectedSignature.length === 0}
 								onClick={onDeleteSignature}
 							/>
@@ -348,7 +339,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.search_a_signature', 'Search for a signature')}
 								backgroundColor="gray5"
 								value={searchSignatureName}
-								size="medium"
 								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								onChange={(e: any): any => {
 									setSearchSignatureName(e.target.value);
@@ -374,6 +364,8 @@ export const SignatureDetail: FC<any> = ({
 							selectedRows={selectedSignature}
 							onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
@@ -446,7 +438,12 @@ export const SignatureDetail: FC<any> = ({
 					size="large"
 					customFooter={
 						<Container orientation="horizontal" mainAlignment="space-between">
-							<Button label={t('label.help', 'Help')} type="outlined" color="primary" />
+							<Button
+								label={t('label.help', 'Help')}
+								type="outlined"
+								color="primary"
+								onClick={(): null => null}
+							/>
 							<Container orientation="horizontal" mainAlignment="flex-end">
 								<Padding all="small">
 									<Button
@@ -476,7 +473,7 @@ export const SignatureDetail: FC<any> = ({
 							<Input
 								label={t('label.name_of_signature', 'Name of Signature')}
 								value={signatureName}
-								background="gray5"
+								backgroundColor="gray5"
 								onChange={(e: any): any => {
 									setSignatureName(e.target.value);
 								}}

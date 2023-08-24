@@ -742,19 +742,9 @@ const ResourceEditDetailView: FC<any> = ({
 							background="gray6"
 						>
 							<Padding right="large">
-								<Button
-									label={t('label.cancel', 'Cancel')}
-									color="secondary"
-									height="44px"
-									onClick={onCancel}
-								/>
+								<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
 							</Padding>
-							<Button
-								label={t('label.save', 'Save')}
-								color="primary"
-								height="44px"
-								onClick={onSave}
-							/>
+							<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 						</Container>
 					)}
 				</Row>
@@ -782,13 +772,7 @@ const ResourceEditDetailView: FC<any> = ({
 			>
 				<Displayer buttons={buttons} pinIcon={isSticky} />
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.resource', 'Resource')}
 					</Text>
 				</Row>
@@ -804,7 +788,6 @@ const ResourceEditDetailView: FC<any> = ({
 								label={t('label.name', 'Name')}
 								backgroundColor="gray5"
 								value={resourceName}
-								size="medium"
 								onChange={(e: any): any => {
 									setResourceName(e.target.value);
 								}}
@@ -822,7 +805,6 @@ const ResourceEditDetailView: FC<any> = ({
 								label={t('label.email', 'Email')}
 								backgroundColor="gray5"
 								value={resourceMail}
-								size="medium"
 								onChange={(e: any): any => {
 									setResourceMail(e.target.value);
 								}}
@@ -842,7 +824,6 @@ const ResourceEditDetailView: FC<any> = ({
 								label={t('label.server', 'Server')}
 								backgroundColor="gray6"
 								value={resourceDetailData?.zimbraMailHost}
-								size="medium"
 								readOnly
 							/>
 						</Row>
@@ -951,7 +932,6 @@ const ResourceEditDetailView: FC<any> = ({
 								label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
 								backgroundColor="gray5"
 								value={zimbraCalResMaxNumConflictsAllowed}
-								size="medium"
 								onChange={(e: any): any => {
 									setZimbraCalResMaxNumConflictsAllowed(e.target.value);
 								}}
@@ -988,7 +968,6 @@ const ResourceEditDetailView: FC<any> = ({
 								label={t('label.id_lbl', 'ID')}
 								backgroundColor="gray6"
 								value={selectedResourceList?.id}
-								size="medium"
 								readOnly
 							/>
 						</Row>
@@ -1021,13 +1000,7 @@ const ResourceEditDetailView: FC<any> = ({
 						<Divider color="gray3" />
 					</Row>
 					<Row padding={{ top: 'extralarge' }}>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.password', 'Password')}
 						</Text>
 					</Row>

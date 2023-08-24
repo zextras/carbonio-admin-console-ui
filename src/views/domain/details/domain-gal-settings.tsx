@@ -112,13 +112,23 @@ const ServerListTable: FC<{
 					minHeight="auto"
 				>
 					<Table
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						headers={GalServerTableheaders(t)}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						rows={tableRows}
 						showCheckbox={false}
 						multiSelect={false}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						selectedRows={selectedRows}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						onSelectionChange={onSelectionChange}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -131,7 +141,6 @@ const ServerListTable: FC<{
 							overflow="break-word"
 							weight="normal"
 							size="large"
-							width="60%"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>
 							{t('label.empty_table', 'Empty Table')}
@@ -1024,7 +1033,7 @@ const DomainGalSettings: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container orientation="vertical" mainAlignment="space-around" height="4rem">
 					<Row orientation="horizontal" width="100%">
 						<Row
@@ -1133,15 +1142,9 @@ const DomainGalSettings: FC = () => {
 					width="100%"
 					height="fit"
 				>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
@@ -1154,12 +1157,19 @@ const DomainGalSettings: FC = () => {
 							<ListRow>
 								<Container orientation="horizontal">
 									<Container width="15rem" minWidth="11rem" mainAlignment="flex-start">
-										<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
+										<Dropdown
+											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// @ts-ignore // Need to fix it with custom soultion
+											items={changeGalModeBtnItems}
+											onOpen={onOpen}
+											onClose={onClose}
+										>
 											<Button
 												type="outlined"
 												size="extralarge"
 												label={t('label.change_to', 'CHANGE TO')}
 												icon={open ? 'ChevronUp' : 'ChevronDown'}
+												onClick={(): null => null}
 											/>
 										</Dropdown>
 									</Container>
@@ -1167,7 +1177,7 @@ const DomainGalSettings: FC = () => {
 										<Input
 											label={t('label.gal_mode', 'GAL Mode')}
 											value={zimbraGalMode}
-											background="gray6"
+											backgroundColor="gray6"
 											readOnly
 										/>
 									</Padding>
@@ -1181,7 +1191,7 @@ const DomainGalSettings: FC = () => {
 										'Max number of results given by search in the Address Book list'
 									)}
 									value={zimbraGalMaxResults}
-									background="gray5"
+									backgroundColor="gray5"
 									onChange={onZimbraGalMaxResultChange}
 								/>
 							</Container>
@@ -1190,7 +1200,7 @@ const DomainGalSettings: FC = () => {
 									type="number"
 									label={t('domain.page_size', 'Page Size')}
 									value={zimbraGalLdapPageSize}
-									background="gray5"
+									backgroundColor="gray5"
 									onChange={onZimbraGalLdapPageSizeChange}
 								/>
 							</Container>
@@ -1204,15 +1214,9 @@ const DomainGalSettings: FC = () => {
 					width="100%"
 					height="fit"
 				>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
@@ -1227,17 +1231,23 @@ const DomainGalSettings: FC = () => {
 									<Input
 										label={t('label.gal_update_frequencey_value', 'GAL Update Frequency (value)')}
 										value={freqValue?.digits}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={onFreqDigitsChange}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Select
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										items={measureUnitItems}
 										background="gray5"
 										label={t('label.interval', 'Interval')}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onFreqTimeUnitChange}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										selection={measureUnitSelection}
 									/>
 								</Container>
@@ -1255,15 +1265,9 @@ const DomainGalSettings: FC = () => {
 							width="100%"
 							height="fit"
 						>
-							<Row
-								takeAvwidth="fill"
-								mainAlignment="flex-start"
-								width="100%"
-								padding={{ top: 'large' }}
-							>
+							<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 								<Container height="fit" crossAlignment="flex-start" background="gray6">
 									<Row
-										takeAvwidth="fill"
 										mainAlignment="flex-start"
 										width="100%"
 										background="gray6"
@@ -1284,7 +1288,7 @@ const DomainGalSettings: FC = () => {
 											<Input
 												label={t('label.external_server_address', 'External Server Address')}
 												value={domainData?.zimbraGalLdapURL}
-												background="gray5"
+												backgroundColor="gray5"
 												onChange={onZimbraGalLdapUrlChange}
 												CustomIcon={({
 													hasFocus
@@ -1329,7 +1333,7 @@ const DomainGalSettings: FC = () => {
 										<Input
 											label={t('label.ldap_filter', 'LDAP Filter')}
 											value={domainData?.zimbraGalLdapFilter}
-											background="gray5"
+											backgroundColor="gray5"
 											onChange={onZimbraGalLdapFilterChange}
 											CustomIcon={({
 												hasFocus
@@ -1359,7 +1363,7 @@ const DomainGalSettings: FC = () => {
 										<Input
 											label={t('label.ldap_search_base', 'LDAP based search')}
 											value={domainData?.zimbraGalLdapSearchBase}
-											background="gray5"
+											backgroundColor="gray5"
 											onChange={onZimbraGalLdapSearchBaseChange}
 											CustomIcon={({
 												hasFocus
@@ -1401,7 +1405,6 @@ const DomainGalSettings: FC = () => {
 							height="fit"
 						>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
@@ -1433,7 +1436,7 @@ const DomainGalSettings: FC = () => {
 									<Input
 										label={t('label.bind_dn', 'Bind DN')}
 										value={domainData?.zimbraGalLdapBindDn}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={onZimbraGalLdapBindDnChange}
 										CustomIcon={({
 											hasFocus
@@ -1463,7 +1466,7 @@ const DomainGalSettings: FC = () => {
 									<Input
 										label={t('label.password', 'Password')}
 										value={domainData?.zimbraGalLdapBindPassword}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={onZimbraGalLdapBindPasswordChange}
 									/>
 								</Container>

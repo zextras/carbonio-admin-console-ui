@@ -302,27 +302,15 @@ export const SignatureDetail: FC<any> = ({
 		<>
 			{!hideHeaderBar && (
 				<Row padding={{ top: 'extralarge' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.signatures', 'Signatures')}
 					</Text>
 				</Row>
 			)}
 			{isEditable && (
 				<ListRow>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-end"
-						width="100%"
-						wrap="nowrap"
-						padding={{ top: 'large' }}
-					>
-						<Padding>
+					<Row mainAlignment="flex-end" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
+						<Padding all={'small'}>
 							<Button
 								type="outlined"
 								label={t('label.add', 'Add')}
@@ -349,7 +337,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.delete', 'Delete')}
 								icon="Close"
 								color="error"
-								height="44px"
 								disabled={selectedSignature.length === 0}
 								onClick={onDeleteSignature}
 							/>
@@ -371,7 +358,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.search_a_signature', 'Search for a signature')}
 								backgroundColor="gray5"
 								value={searchSignatureName}
-								size="medium"
 								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								onChange={(e: any): any => {
 									setSearchSignatureName(e.target.value);
@@ -396,6 +382,8 @@ export const SignatureDetail: FC<any> = ({
 						selectedRows={selectedSignature}
 						onSelectionChange={(selected: any): void => setSelectedSignature(selected)}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -472,7 +460,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.auto_accept', 'Auto-Accept')}
 								backgroundColor="gray6"
 								value={zimbraPrefCalendarAutoAcceptSignatureId?.label}
-								size="medium"
 								readOnly
 							/>
 						)}
@@ -493,7 +480,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								backgroundColor="gray6"
 								value={zimbraPrefCalendarAutoDeclineSignatureId?.label}
-								size="medium"
 								readOnly
 							/>
 						)}
@@ -514,7 +500,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.auto_negation', 'Auto-Negation')}
 								backgroundColor="gray6"
 								value={zimbraPrefCalendarAutoDenySignatureId?.label}
-								size="medium"
 								readOnly
 							/>
 						)}
@@ -547,7 +532,11 @@ export const SignatureDetail: FC<any> = ({
 					customFooter={
 						<Container orientation="horizontal" mainAlignment="space-between">
 							<Container orientation="horizontal" mainAlignment="flex-start">
-								<Button label={t('label.help', 'Help')} type="outlined" />
+								<Button
+									label={t('label.help', 'Help')}
+									type="outlined"
+									onClick={(): null => null}
+								/>
 							</Container>
 
 							<Container orientation="horizontal" mainAlignment="flex-end">
@@ -579,7 +568,7 @@ export const SignatureDetail: FC<any> = ({
 							<Input
 								label={t('label.name_of_signature', 'Name of Signature')}
 								value={signatureName}
-								background="gray5"
+								backgroundColor="gray5"
 								onChange={(e: any): any => {
 									setSignatureName(e.target.value);
 								}}

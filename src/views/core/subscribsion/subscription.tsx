@@ -14,7 +14,9 @@ import {
 	Text,
 	Input,
 	useSnackbar,
-	Modal
+	Modal,
+	ContainerProps,
+	TextProps
 } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { find, orderBy } from 'lodash';
@@ -26,7 +28,10 @@ import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
-const VerticalBar = styled(Container)`
+interface ContainerExtendProps extends ContainerProps {
+	licensed?: string;
+}
+const VerticalBar = styled(Container)<ContainerExtendProps>`
 	background-color: ${({ theme }): string => theme.palette.primary.regular};
 	width: 4px;
 	height: auto;
@@ -34,8 +39,10 @@ const VerticalBar = styled(Container)`
 	border-top-right-radius: 10px;
 	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
 `;
-
-const ServiceName = styled(Text)`
+interface TextExtendProps extends TextProps {
+	licensed?: string;
+}
+const ServiceName = styled(Text)<TextExtendProps>`
 	color: ${({ theme }): string => theme.palette.primary.regular};
 	font-weight: bold;
 	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
@@ -192,14 +199,14 @@ const Subscription: FC = () => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
 					createSnackbar({
-						key: 1,
+						key: '1',
 						type: 'success',
 						label: response.message,
 						replace: true
 					});
 				} else {
 					createSnackbar({
-						key: 1,
+						key: '1',
 						type: 'error',
 						label:
 							response.message ||
@@ -222,7 +229,7 @@ const Subscription: FC = () => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
 				createSnackbar({
-					key: 1,
+					key: '1',
 					type: 'success',
 					label:
 						response.message ||
@@ -231,7 +238,7 @@ const Subscription: FC = () => {
 				});
 			} else {
 				createSnackbar({
-					key: 1,
+					key: '1',
 					type: 'error',
 					label:
 						response.message ||
@@ -246,7 +253,7 @@ const Subscription: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
