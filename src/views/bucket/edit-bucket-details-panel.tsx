@@ -674,7 +674,7 @@ const EditBucketDetailPanel: FC<{
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 					<Input
 						backgroundColor="gray5"
-						label={t('label.bucket_notes', 'Notes')}
+						label={t('label.description', 'Description')}
 						name="notes"
 						value={bucketNotes}
 						onChange={(ev: any): any => {

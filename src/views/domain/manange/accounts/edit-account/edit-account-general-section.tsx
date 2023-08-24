@@ -685,14 +685,14 @@ const EditAccountGeneralSection: FC = () => {
 			>
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" color="gray0" weight="bold">
-						{t('label.notes', 'Notes')}
+						{t('label.description', 'Description')}
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
 					<Input
 						backgroundColor="gray5"
 						height="85px"
-						label={t('label.notes', 'Notes')}
+						label={t('label.description', 'Description')}
 						defaultValue={accountDetail?.zimbraNotes}
 						value={accountDetail?.zimbraNotes}
 						onChange={changeAccDetail}

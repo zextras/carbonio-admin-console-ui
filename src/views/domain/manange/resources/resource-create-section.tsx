@@ -174,7 +174,7 @@ const ResourceCreateSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" weight="bold">
-						{t('label.notes', 'Notes')}
+						{t('label.description', 'Description')}
 					</Text>
 				</Row>
 				<ListRow>

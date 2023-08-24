@@ -237,7 +237,7 @@ const AclListCreateSection: FC = () => {
 						padding={{ top: 'large', right: 'small' }}
 					>
 						<Input
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							value={aclListDetail?.zimbraNotes}
 							readOnly

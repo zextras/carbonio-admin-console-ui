@@ -148,7 +148,7 @@ const MailingListCreateSection: FC<any> = () => {
 						padding={{ top: 'large', right: 'small' }}
 					>
 						<Input
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							value={mailingListDetail?.zimbraNotes}
 							readOnly

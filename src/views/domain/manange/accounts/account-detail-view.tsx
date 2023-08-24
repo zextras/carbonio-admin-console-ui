@@ -721,7 +721,7 @@ const AccountDetailView: FC<any> = ({
 
 					<Row padding={{ top: 'extralarge' }}>
 						<Text size="small" weight="bold">
-							{t('label.notes', 'Notes')}
+							{t('label.description', 'Description')}
 						</Text>
 					</Row>
 					<Row
@@ -731,7 +731,7 @@ const AccountDetailView: FC<any> = ({
 						crossAlignment="flex-start"
 					>
 						<Input
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							width="100%"
 							value={selectedAccount?.zimbraNotes || ''}

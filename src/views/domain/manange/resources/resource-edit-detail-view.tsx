@@ -1064,7 +1064,7 @@ const ResourceEditDetailView: FC<any> = ({
 
 				<Row padding={{ top: 'extralarge' }} width="100%">
 					<Textarea
-						label={t('label.notes', 'Notes')}
+						label={t('label.description', 'Description')}
 						backgroundColor="gray5"
 						value={zimbraNotes}
 						size="medium"

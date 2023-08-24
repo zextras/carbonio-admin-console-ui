@@ -200,7 +200,7 @@ const EditMailingListView: FC<any> = ({
 				value: TRUE_FALSE.TRUE
 			},
 			{
-				label: t('label.not_send_receive', 'Not Send & Receive'),
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
 				value: TRUE_FALSE.FALSE
 			}
 		],
@@ -2014,7 +2014,7 @@ const EditMailingListView: FC<any> = ({
 				</ListRow>
 				<Row padding={{ top: 'large' }}>
 					<Text size="medium" weight="bold" color="gray0">
-						{t('label.notes', 'Notes')}
+						{t('label.description', 'Description')}
 					</Text>
 				</Row>
 				<ListRow padding={{ all: 'small' }}>

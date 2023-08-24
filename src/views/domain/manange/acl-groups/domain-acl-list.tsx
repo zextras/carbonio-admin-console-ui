@@ -34,7 +34,6 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE
 } from '../../../../constants';
-import AclListDetail from './acl-list-detail';
 import CreateAclList from './create-acl-list';
 import { createAclList } from '../../../../services/create-acl-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
@@ -53,7 +52,6 @@ const DomainAclList: FC = () => {
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [selectedAclList, setSelectedAclList] = useState<any>({});
 	const [showAclListDetailView, setShowAclListDetailView] = useState<any>();
-	const [showEditAclView, setShowEditAclView] = useState<any>();
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
@@ -63,6 +61,23 @@ const DomainAclList: FC = () => {
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateAclListView, setShowCreateAclListView] = useState<boolean>(false);
 	const timer = useRef<any>();
+	const [statusFilter, setStatusFilter] = useState<string>('');
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+
+	const aclListStatusFilter: any = useMemo(
+		() => [
+			{
+				label: t('label.can_send_receiver', 'Can Send & Receive'),
+				value: '(&(zimbraMailStatus=enabled))'
+			},
+			{
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
+				value: '(&(zimbraMailStatus=disabled))'
+			}
+		],
+		[t]
+	);
+
 	const headers: any[] = useMemo(
 		() => [
 			{
@@ -87,7 +102,27 @@ const DomainAclList: FC = () => {
 				id: 'status',
 				label: t('label.status', 'Status'),
 				width: '15%',
-				bold: true
+				i18nAllLabel: t('label.all', 'All'),
+				bold: true,
+				items: [
+					{ label: aclListStatusFilter[0].label, value: aclListStatusFilter[0].value },
+					{ label: aclListStatusFilter[1].label, value: aclListStatusFilter[1].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let statusQuery = '';
+						e.forEach((item: { value: string }) => {
+							statusQuery += item.value;
+						});
+						if (e?.length > 1) {
+							statusQuery = `(|${statusQuery})`;
+						}
+						setStatusFilter(statusQuery);
+					} else {
+						setStatusFilter('');
+					}
+				}
 			},
 			{
 				id: 'gal',
@@ -102,17 +137,15 @@ const DomainAclList: FC = () => {
 				bold: true
 			}
 		],
-		[t]
+		[aclListStatusFilter, t]
 	);
 
 	const doClickAction = useCallback((): void => {
-		setShowEditAclView(true);
-		setShowAclListDetailView(false);
+		setShowAclListDetailView(true);
 	}, []);
 
 	const doDoubleClickAction = useCallback((): void => {
-		setShowEditAclView(true);
-		setShowAclListDetailView(false);
+		setShowAclListDetailView(true);
 	}, []);
 
 	const handleClick = useCallback(
@@ -133,7 +166,7 @@ const DomainAclList: FC = () => {
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE))(zimbraIsAdminGroup=TRUE))`;
-		setAclListItem([]);
+		setIsRequestInProgress(true);
 		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name').then((data) => {
 			const dlList = data?.dl;
 			if (dlList) {
@@ -203,8 +236,8 @@ const DomainAclList: FC = () => {
 							>
 								<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
 									{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-										? t('label.can_receive', 'Can receive')
-										: ''}
+										? t('label.can_send_receiver', 'Can Send & Receive')
+										: t('label.cant_send_receiver', "Can't Send & Receive")}
 								</Text>
 							</Container>,
 							<Container
@@ -253,38 +286,39 @@ const DomainAclList: FC = () => {
 				setAclList([]);
 				setIsUpdateRecord(false);
 			}
+			setIsRequestInProgress(false);
 		});
 	}, [t, offset, limit, domainName, searchQuery, handleClick]);
 
 	useEffect(() => {
 		getAclList();
-	}, [offset, getAclList]);
+	}, [getAclList]);
 
+	const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
+		let filterQuery = '';
+		if (sfilter) {
+			filterQuery += sfilter;
+		}
+		if (searchStr) {
+			filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+		}
+		if (sfilter && searchStr) {
+			return `(&${filterQuery})`;
+		}
+		return filterQuery;
+	}, []);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAclListQuery = useCallback(
-		debounce((searchText) => {
-			if (searchText) {
-				setOffset(0);
-				setSearchQuery(
-					`(|(mail=*${searchText}*)(cn=*${searchText}*)(sn=*${searchText}*)(gn=*${searchText}*)(displayName=*${searchText}*)(zimbraMailDeliveryAddress=*${searchText}*))`
-				);
-			} else {
-				setOffset(0);
-				setSearchQuery('');
-			}
+		debounce((searchStr: string, sfilter: string) => {
+			setTotalAccount(0);
+			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
 		}, 700),
-		[debounce]
+		[debounce, generateSearchFilterQuery]
 	);
 
 	useEffect(() => {
-		searchAclListQuery(searchString);
-	}, [searchString, searchAclListQuery]);
-
-	useEffect(() => {
-		if (showEditAclView !== undefined && !showEditAclView) {
-			getAclList();
-		}
-	}, [showEditAclView, getAclList]);
+		searchAclListQuery(searchString, statusFilter);
+	}, [searchString, searchAclListQuery, statusFilter]);
 
 	const onDetailClick = useCallback(() => {
 		const selectedTableItem = aclListItem.find((item: any) => selectedDlRow[0] === item?.id);
@@ -299,14 +333,6 @@ const DomainAclList: FC = () => {
 			setShowAclListDetailView(false);
 		}
 	}, [showAclListDetailView]);
-
-	useEffect(() => {
-		if (editAclList) {
-			setShowAclListDetailView(false);
-			setEditAclList(false);
-			setShowEditAclView(true);
-		}
-	}, [editAclList]);
 
 	useEffect(() => {
 		if (isUpdateRecord) {
@@ -626,26 +652,46 @@ const DomainAclList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 21.25rem)"
+							style={{
+								height:
+									aclList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
+							}}
 						>
-							{aclList && aclList.length > 0 && (
-								<Table
-									rows={aclList}
-									headers={headers}
-									showCheckbox
-									style={{ overflow: 'auto', height: '100%' }}
-									selectedRows={selectedDlRow}
-									onSelectionChange={(selected: any): void => {
-										setSelectedFromRow(aclListItem.find((item: any) => selected[0] === item?.id));
-										setSelectedDlRow(selected);
-									}}
-									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={!isRequestInProgress ? aclList : []}
+								headers={headers}
+								showCheckbox={false}
+								multiSelect={false}
+								style={{ overflow: 'auto', height: '100%' }}
+								selectedRows={selectedDlRow}
+								onSelectionChange={(selected: any): void => {
+									setSelectedFromRow(aclListItem.find((item: any) => selected[0] === item?.id));
+									setSelectedDlRow(selected);
+								}}
+								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										color="primary"
+										label=""
+										loading
+										onClick={(): null => null}
+									/>
+								</Container>
 							)}
-							{aclList.length === 0 && (
+							{aclList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -683,7 +729,7 @@ const DomainAclList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							padding={{ all: 'large' }}
+							style={{ position: 'absolute', bottom: '0.25rem' }}
 						>
 							{aclList && aclList.length > 0 && (
 								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
@@ -692,25 +738,19 @@ const DomainAclList: FC = () => {
 					</Container>
 				</Row>
 			</Container>
-			{showEditAclView && (
-				<ModalOverlay setOpen={setShowEditAclView} open={showEditAclView} maxWidth="40.375rem">
+			{showAclListDetailView && (
+				<ModalOverlay
+					setOpen={showAclListDetailView}
+					open={showAclListDetailView}
+					maxWidth="40.375rem"
+				>
 					<EditAclListView
 						selectedAclList={selectedAclList}
-						setShowEditAclList={setShowEditAclView}
+						setShowEditAclList={setShowAclListDetailView}
 						setIsUpdateRecord={setIsUpdateRecord}
 					/>
 				</ModalOverlay>
 			)}
-
-			{showAclListDetailView && (
-				<AclListDetail
-					selectedAclList={selectedFromRow}
-					setShowAclListDetailView={setShowAclListDetailView}
-					setEditAclList={setEditAclList}
-					setIsUpdateRecord={setIsUpdateRecord}
-				/>
-			)}
-
 			{showCreateAclListView && (
 				<ModalOverlay setOpen={setShowCreateAclListView} open={showCreateAclListView}>
 					<CreateAclList

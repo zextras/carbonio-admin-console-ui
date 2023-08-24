@@ -141,7 +141,7 @@ const CreateCos: FC = () => {
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.notes', 'Notes')}
+									label={t('label.description', 'Description')}
 									backgroundColor="gray5"
 									value={zimbraNotes}
 									onChange={(e: any): any => {

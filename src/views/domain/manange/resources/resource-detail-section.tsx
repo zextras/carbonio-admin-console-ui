@@ -438,7 +438,7 @@ const ResourceDetailSection: FC = () => {
 						padding={{ top: 'large' }}
 					>
 						<Textarea
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray5"
 							value={resourceDetail.zimbraNotes}
 							size="medium"

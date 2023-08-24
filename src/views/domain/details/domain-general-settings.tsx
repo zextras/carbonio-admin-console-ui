@@ -888,7 +888,7 @@ const DomainGeneralSettings: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.note', 'Note')}
+										label={t('label.description', 'Description')}
 										value={zimbraNotes}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
