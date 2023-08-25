@@ -38,7 +38,7 @@ import { removeDistributionListMember } from '../../../../services/remove-distri
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { ALL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { ALL, DL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT, USR } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
 import { getGrant } from '../../../../services/get-grant';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
@@ -639,7 +639,7 @@ const EditMailingListView: FC<any> = ({
 	);
 
 	useEffect(() => {
-		if (grantType && grantType?.value === 'all') {
+		if (grantType && grantType?.value === ALL) {
 			setTimeout(() => {
 				setGrantEmailsList([]);
 			}, 100);
@@ -649,7 +649,7 @@ const EditMailingListView: FC<any> = ({
 	const getGrantML = useCallback(() => {
 		const getGrantBody: any = {};
 		const target = {
-			type: 'dl',
+			type: DL,
 			by: 'name',
 			_content: selectedMailingList?.name
 		};
@@ -665,13 +665,10 @@ const EditMailingListView: FC<any> = ({
 						);
 						if (sendToListItems && sendToListItems.length > 0) {
 							const type = sendToListItems[0]?.grantee[0]?.type;
-							if (
-								(type === 'grp' || type === 'dl' || type === 'usr') &&
-								sendToListItems.length > 1
-							) {
+							if ((type === GRP || type === DL || type === USR) && sendToListItems.length > 1) {
 								onGrantTypeChange(EMAIL);
 							} else if (
-								(type === 'grp' || type === 'dl' || type === 'usr') &&
+								(type === GRP || type === DL || type === USR) &&
 								sendToListItems.length === 1
 							) {
 								onGrantTypeChange(GRP);
@@ -704,7 +701,7 @@ const EditMailingListView: FC<any> = ({
 						}));
 					} else if (grant.length === 1) {
 						const granteeType = grant[0]?.grantee[0]?.type;
-						if (grant[0].grantee?.[0]?.type === 'gst' || grant[0].grantee?.[0]?.type === 'usr') {
+						if (grant[0].grantee?.[0]?.type === 'gst' || grant[0].grantee?.[0]?.type === USR) {
 							if (grant[0]?.right[0]?._content === 'sendToDistList') {
 								onGrantTypeChange(EMAIL);
 							}
@@ -959,7 +956,7 @@ const EditMailingListView: FC<any> = ({
 			const all = [..._allOwnerLists, ...allOwnerList];
 			all.forEach((item: any) => {
 				if (item?.id && item?.type && item?.email === email) {
-					type = item?.type === 'group' || item?.type === 'grp' ? 'grp' : 'usr';
+					type = item?.type === 'group' || item?.type === GRP ? GRP : USR;
 				}
 			});
 			return type;
@@ -1239,14 +1236,14 @@ const EditMailingListView: FC<any> = ({
 				op: 'setRights',
 				right: {
 					right: 'sendToDistList',
-					grantee: [{ type: 'grp', by: 'name', _content: selectedMailingList?.name }]
+					grantee: [{ type: GRP, by: 'name', _content: selectedMailingList?.name }]
 				}
 			};
 		} else if (grantType?.value === ALL) {
 			dl = { by: 'name', _content: selectedMailingList?.name };
 			action = {
 				op: 'setRights',
-				right: { right: 'sendToDistList', grantee: [{ type: 'all' }] }
+				right: { right: 'sendToDistList', grantee: [{ type: ALL }] }
 			};
 		} else if (grantType?.value === EMAIL) {
 			dl = { by: 'name', _content: selectedMailingList?.name };
@@ -1689,7 +1686,7 @@ const EditMailingListView: FC<any> = ({
 		setIsDeleteBtnLoading(true);
 		const getGrantBody: any = {};
 		const grantee = {
-			type: 'grp',
+			type: GRP,
 			by: 'name',
 			_content: selectedMailingList?.name,
 			all: false
@@ -1729,7 +1726,7 @@ const EditMailingListView: FC<any> = ({
 		// get grants' rights as target
 		const getGrantBodyTarget: any = {};
 		const target = {
-			type: 'dl',
+			type: DL,
 			by: 'name',
 			_content: selectedMailingList?.name
 		};
