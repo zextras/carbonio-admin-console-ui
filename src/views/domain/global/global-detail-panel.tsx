@@ -32,7 +32,9 @@ const GlobalDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const [carbonioNotificationData, setCarbonioNotificationData] = useState<any>({});
-	const [initCarbonioNotificationData, setinitCarbonioNotificationData] = useState<any>({});
+	const [initCarbonioNotificationData, setinitCarbonioNotificationData] = useState<{
+		[key: string]: string | { label: string }[];
+	}>({});
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	const [isDirty, setIsDirty] = useState(false);
 
@@ -77,7 +79,7 @@ const GlobalDetailPanel: FC = () => {
 		getAllConfig().then((res) => {
 			const propertiesToExtract = ['carbonioNotificationFrom', 'carbonioNotificationRecipients'];
 
-			const obj: Record<string, any> = {};
+			const obj: { [key: string]: string | { label: string }[] } = {};
 			propertiesToExtract.forEach((property) => {
 				const items = filter(res.a, { n: property });
 				if (property === 'carbonioNotificationRecipients') {
@@ -187,7 +189,7 @@ const GlobalDetailPanel: FC = () => {
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
 					width="100%"
-					height="calc(100vh - 200px)"
+					height="calc(100vh - 12.5rem)"
 					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
 				>
 					<Row
