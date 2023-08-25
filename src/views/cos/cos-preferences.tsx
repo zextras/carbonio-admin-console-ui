@@ -149,9 +149,9 @@ const CosPreferences: FC = () => {
 
 	const SEND_READ_RECEIPTS = useMemo(
 		() => [
-			{ label: t('label.prompt', 'Prompt'), value: 'prompt' },
-			{ label: t('label.always', 'Always'), value: 'always' },
-			{ label: t('label.never', 'Never'), value: 'never' }
+			{ label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
+			{ label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
+			{ label: t('label.ask_me', 'Ask me'), value: 'prompt' }
 		],
 		[t]
 	);
@@ -1254,7 +1254,7 @@ const CosPreferences: FC = () => {
 							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
+								<Container crossAlignment="flex-start">
 									<Select
 										items={POLLING_INTERVAL}
 										background="gray5"
@@ -1270,25 +1270,6 @@ const CosPreferences: FC = () => {
 												  )
 										}
 										onChange={onPollingIntervalChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Select
-										items={SEND_READ_RECEIPTS}
-										background="gray5"
-										label={t('cos.send_read_receipts', 'Send read receipts')}
-										showCheckbox={false}
-										selection={
-											cosPreferences?.zimbraPrefMailSendReadReceipts === ''
-												? SEND_READ_RECEIPTS[-1]
-												: SEND_READ_RECEIPTS.find(
-														(item: any) =>
-															// eslint-disable-next-line max-len
-															item.value === cosPreferences?.zimbraPrefMailSendReadReceipts
-												  )
-										}
-										onChange={onMailSendReadReceipts}
 										disabled={readonlyCOS}
 									/>
 								</Container>
@@ -1362,7 +1343,7 @@ const CosPreferences: FC = () => {
 							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
+								<Container crossAlignment="flex-start">
 									<Switch
 										value={cosPreferences?.zimbraPrefSaveToSent === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefSaveToSent')}
@@ -1371,7 +1352,18 @@ const CosPreferences: FC = () => {
 										disabled={readonlyCOS}
 									/>
 								</Container>
-								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
+							</ListRow>
+						</Container>
+					</Row>
+					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ bottom: 'large' }}
+						>
+							<ListRow>
+								<Container crossAlignment="flex-start">
 									<Switch
 										value={cosPreferences?.zimbraAllowAnyFromAddress === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraAllowAnyFromAddress')}
@@ -1380,6 +1372,36 @@ const CosPreferences: FC = () => {
 											'Allow sending from any address'
 										)}
 										iconColor="primary"
+										disabled={readonlyCOS}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ bottom: 'large' }}
+						>
+							<ListRow>
+								<Container>
+									<Select
+										items={SEND_READ_RECEIPTS}
+										background="gray5"
+										label={t('cos.read_receipt_settings', 'Read Receipt settings')}
+										showCheckbox={false}
+										selection={
+											cosPreferences?.zimbraPrefMailSendReadReceipts === ''
+												? SEND_READ_RECEIPTS[-1]
+												: SEND_READ_RECEIPTS.find(
+														(item: any) =>
+															// eslint-disable-next-line max-len
+															item.value === cosPreferences?.zimbraPrefMailSendReadReceipts
+												  )
+										}
+										onChange={onMailSendReadReceipts}
 										disabled={readonlyCOS}
 									/>
 								</Container>
