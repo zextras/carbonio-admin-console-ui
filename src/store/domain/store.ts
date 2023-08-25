@@ -23,6 +23,8 @@ type DomainState = {
 	setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
 	closeDomainBanner: string;
 	setCloseDomainBanner: (domainName: string) => void;
+	sslCertificate: { [key: string]: string };
+	setSSLCertificate: (sslCertificate: { [key: string]: string }) => void;
 };
 
 export const useDomainStore = create<DomainState>(
@@ -33,6 +35,7 @@ export const useDomainStore = create<DomainState>(
 		setDomain: (domain): void => set({ domain }, false, 'setDomain'),
 		domainList: [],
 		isDomainSupportDelegatedAdmin: false,
+		sslCertificate: {},
 		setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
@@ -59,6 +62,7 @@ export const useDomainStore = create<DomainState>(
 				}),
 				false,
 				'setCloseDomainBanner'
-			)
+			),
+		setSSLCertificate: (sslCertificate): void => set({ sslCertificate }, false, 'setSSLCertificate')
 	}))
 );

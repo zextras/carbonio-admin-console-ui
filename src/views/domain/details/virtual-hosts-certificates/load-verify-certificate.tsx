@@ -19,6 +19,7 @@ import {
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { join } from 'lodash';
 import { CreateSnackbarType, ICertificateContent } from '../../../../../types';
 import {
 	DOMAIN_CERTIFICATE,
@@ -42,7 +43,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 }) => {
 	let fileReader: FileReader;
 	const { t } = useTranslation();
-	const domain = useDomainStore((state) => state.domain);
+	const { domain, sslCertificate } = useDomainStore((state) => state);
 	const certificateTypes = useMemo(() => CertificateTypes(t), [t]);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [selectedCertType, setSelectedCertType] = useState<string | undefined>(
@@ -55,19 +56,19 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
 	const [privateKeyErr, setPrivateKeyErr] = useState(true);
 	const [objDomainCertificate, setObjDomainCertificate] = useState<ICertificateContent>({
-		fileName: '',
-		content: ''
+		fileName: sslCertificate?.sslCertificateFileName,
+		content: sslCertificate?.sslCertificate
 	});
 	const [objDomainCertificateCaChain, setObjDomainCertificateCaChain] =
 		useState<ICertificateContent>({
-			fileName: '',
-			content: ''
+			fileName: sslCertificate?.sslCaCertificateFileName,
+			content: sslCertificate?.sslCaCertificate
 		});
 
 	const [objDomainCertificatePrivateKey, setObjDomainCertificatePrivateKey] =
 		useState<ICertificateContent>({
-			fileName: '',
-			content: ''
+			fileName: sslCertificate?.sslPrivateKeyFileName,
+			content: sslCertificate?.sslPrivateKey
 		});
 
 	const emptyCertiState = (): void => {
@@ -218,8 +219,9 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		const zimbraId =
 			domainInformation &&
 			domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
-		const concatedCertiFile = objDomainCertificate?.content.concat(
-			objDomainCertificateCaChain.content
+		const concatedCertiFile = join(
+			[objDomainCertificate?.content, objDomainCertificateCaChain.content],
+			','
 		);
 		const body: any = {};
 		const attributes: any[] = [];
@@ -307,12 +309,6 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		objDomainCertificateCaChain.content,
 		objDomainCertificatePrivateKey.content
 	]);
-
-	useEffect(() => {
-		if (!isCustomCerti()) {
-			emptyCertiState();
-		}
-	}, [isCustomCerti, selectedCertType]);
 
 	return (
 		<Container padding={{ all: 'small' }}>
