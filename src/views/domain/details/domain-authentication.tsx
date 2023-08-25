@@ -61,10 +61,7 @@ const DomainAuthentication: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [zimbraAuthMech, setZimbraAuthMech] = useState<{ label: string; value?: string }>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
-	const [zimbraAdminConsoleLogoutURL, setZimbraAdminConsoleLogoutURL] = useState<string>('');
-	const [zimbraWebClientLogoutURL, setZimbraWebClientLogoutURL] = useState<string>('');
 	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
-	const [zimbraForceClearCookies, setZimbraForceClearCookies] = useState<boolean>(false);
 	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 	const [zimbraAuthLdapBindDn, setZimbraAuthLdapBindDn] = useState<string>('');
 	const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
@@ -183,21 +180,8 @@ const DomainAuthentication: FC = () => {
 			} else {
 				obj.zimbraPasswordChangeListener = '';
 			}
-			if (obj.zimbraAdminConsoleLogoutURL) {
-				setZimbraAdminConsoleLogoutURL(obj.zimbraAdminConsoleLogoutURL);
-			} else {
-				obj.zimbraAdminConsoleLogoutURL = '';
-			}
-			if (obj.zimbraWebClientLogoutURL) {
-				setZimbraWebClientLogoutURL(obj.zimbraWebClientLogoutURL);
-			} else {
-				obj.zimbraWebClientLogoutURL = '';
-			}
 			if (obj.zimbraAuthFallbackToLocal) {
 				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
-			}
-			if (obj.zimbraForceClearCookies) {
-				setZimbraForceClearCookies(obj.zimbraForceClearCookies === 'TRUE');
 			}
 			if (obj.zimbraAuthLdapBindDn) {
 				setZimbraAuthLdapBindDn(obj.zimbraAuthLdapBindDn);
@@ -254,31 +238,6 @@ const DomainAuthentication: FC = () => {
 
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
-			if (domainAuthData.zimbraAdminConsoleLogoutURL !== zimbraAdminConsoleLogoutURL) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraAdminConsoleLogoutURL]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
-			if (domainAuthData.zimbraWebClientLogoutURL !== zimbraWebClientLogoutURL) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraWebClientLogoutURL]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
-			const oldForceClearCookiesValue = domainAuthData.zimbraForceClearCookies === 'TRUE';
-			if (oldForceClearCookiesValue !== zimbraForceClearCookies) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraForceClearCookies]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapBindDn !== zimbraAuthLdapBindDn) {
 				setIsDirty(true);
 			}
@@ -318,7 +277,6 @@ const DomainAuthentication: FC = () => {
 		}
 	}, [domainAuthData, zimbraAuthLdapStartTlsEnabled]);
 
-	const forceClearCookies = useCallback(() => setZimbraForceClearCookies((c) => !c), []);
 	const authFallbackToLocal = useCallback(() => setZimbraAuthFallbackToLocal((c) => !c), []);
 	const authLdapStartTlsEnabled = useCallback(
 		() => setZimbraAuthLdapStartTlsEnabled((c) => !c),
@@ -355,10 +313,7 @@ const DomainAuthentication: FC = () => {
 			)
 		);
 		setZimbraPasswordChangeListener(domainAuthData.zimbraPasswordChangeListener);
-		setZimbraAdminConsoleLogoutURL(domainAuthData.zimbraAdminConsoleLogoutURL);
-		setZimbraWebClientLogoutURL(domainAuthData.zimbraWebClientLogoutURL);
 		setZimbraAuthFallbackToLocal(domainAuthData.zimbraAuthFallbackToLocal === 'TRUE');
-		setZimbraForceClearCookies(domainAuthData.zimbraForceClearCookies === 'TRUE');
 		setZimbraAuthLdapBindDn(domainAuthData.zimbraAuthLdapBindDn);
 		setZimbraAuthLdapSearchBase(domainAuthData.zimbraAuthLdapSearchBase);
 		setZimbraAuthLdapSearchFilter(domainAuthData.zimbraAuthLdapSearchFilter);
@@ -388,20 +343,8 @@ const DomainAuthentication: FC = () => {
 			_content: zimbraPasswordChangeListener
 		});
 		attributes.push({
-			n: 'zimbraAdminConsoleLogoutURL',
-			_content: zimbraAdminConsoleLogoutURL
-		});
-		attributes.push({
-			n: 'zimbraWebClientLogoutURL',
-			_content: zimbraWebClientLogoutURL
-		});
-		attributes.push({
 			n: 'zimbraAuthFallbackToLocal',
 			_content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE'
-		});
-		attributes.push({
-			n: 'zimbraForceClearCookies',
-			_content: zimbraForceClearCookies ? 'TRUE' : 'FALSE'
 		});
 		attributes.push({
 			n: 'zimbraAuthLdapBindDn',
@@ -923,60 +866,6 @@ const DomainAuthentication: FC = () => {
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraPasswordChangeListener(e.target.value);
 										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.console_redirection', 'Console Redirection')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
-										label={t(
-											'label.sso_logout_redirect_admin_to_msg',
-											'On Logout, the admin will be redirected to this URL'
-										)}
-										background="gray5"
-										value={zimbraAdminConsoleLogoutURL}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-											setZimbraAdminConsoleLogoutURL(e.target.value);
-										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.web_client', 'Web Client')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
-										label={t(
-											'label.logout_redirect_url',
-											'On Logout, the user will be redirected to this URL'
-										)}
-										background="gray5"
-										value={zimbraWebClientLogoutURL}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-											setZimbraWebClientLogoutURL(e.target.value);
-										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Switch
-										value={zimbraForceClearCookies}
-										label={t('label.auto_logout_users', 'Auto Logout Users')}
-										onClick={forceClearCookies}
-										iconColor="primary"
 									/>
 								</Padding>
 							</ListRow>

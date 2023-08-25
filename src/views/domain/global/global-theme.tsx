@@ -13,7 +13,7 @@ import {
 	Button,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { modifyConfig } from '../../../services/modify-config';
@@ -21,9 +21,6 @@ import { useConfigStore } from '../../../store/config/store';
 import { ResetTheme } from '../theme/theme-reset';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { themeConfigStore } from '../../../../types/domain';
-import { Right, useRightsStore } from '../../../store/rights/store';
-import { getAllRights } from '../../utility/utils';
-import { CONFIG } from '../../../constants';
 
 const GlobalTheme: FC = () => {
 	const [t] = useTranslation();
@@ -70,6 +67,8 @@ const GlobalTheme: FC = () => {
 				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
 				setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor);
 				setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor);
+				setValue('zimbraAdminConsoleLogoutURL', obj?.zimbraAdminConsoleLogoutURL);
+				setValue('zimbraWebClientLogoutURL', obj?.zimbraWebClientLogoutURL);
 			}
 		},
 		[setValue]
@@ -146,6 +145,12 @@ const GlobalTheme: FC = () => {
 			}
 			if (!obj.carbonioWebUiDarkPrimaryColor) {
 				obj.carbonioWebUiDarkPrimaryColor = '';
+			}
+			if (!obj.zimbraAdminConsoleLogoutURL) {
+				obj.zimbraAdminConsoleLogoutURL = '';
+			}
+			if (!obj.zimbraWebClientLogoutURL) {
+				obj.zimbraWebClientLogoutURL = '';
 			}
 			setInitalValues(obj);
 			setIsDirty(false);
@@ -240,7 +245,9 @@ const GlobalTheme: FC = () => {
 			carbonioAdminUiDescription: '',
 			carbonioLogoUrl: '',
 			carbonioWebUiPrimaryColor: '',
-			carbonioWebUiDarkPrimaryColor: ''
+			carbonioWebUiDarkPrimaryColor: '',
+			zimbraAdminConsoleLogoutURL: '',
+			zimbraWebClientLogoutURL: ''
 		};
 		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
