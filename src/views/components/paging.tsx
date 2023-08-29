@@ -115,7 +115,7 @@ const Paging: FC<{
 					disabled={isPreviousPageDisabled}
 				/>
 			</Row>
-			<Text size="medium" weight="bold" color="#828282" orientation="horizontal">
+			<Text size="medium" weight="bold" color="#828282">
 				<span
 					style={{
 						color: 'gray0',

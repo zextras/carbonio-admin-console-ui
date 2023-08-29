@@ -222,9 +222,13 @@ const MailstoresCreate: FC<{
 				{!isAdvanced && (
 					<Row padding={{ top: 'large' }} width="100%">
 						<Select
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							items={volTypeList}
 							background="gray5"
 							label={t('label.volume_type', 'Volume Type')}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							defaultSelection={volTypeList?.filter(
 								(items) => items?.value === volumeDetail?.volumeMain
 							)}
@@ -236,6 +240,8 @@ const MailstoresCreate: FC<{
 				{isAdvanced && (
 					<Row padding={{ top: 'large' }} width="100%">
 						<Select
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							items={volAllocationList}
 							background="gray5"
 							label={t('label.volume_allocation', 'Allocation')}
@@ -269,6 +275,8 @@ const MailstoresCreate: FC<{
 								<Radio
 									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={PRIMARY_TYPE_VALUE}
 									checked={primaryRadio}
 									onClick={(): any => {
@@ -283,6 +291,8 @@ const MailstoresCreate: FC<{
 								<Radio
 									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={SECONDARY_TYPE_VALUE}
 									checked={secondaryRadio}
 									onClick={(): any => {
@@ -298,6 +308,8 @@ const MailstoresCreate: FC<{
 							<Radio
 								inputName="index"
 								label={t('label.index_volume', 'This is a Index Volume')}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								value={INDEX_TYPE_VALUE}
 								checked={indexRadio}
 								onClick={(): any => {

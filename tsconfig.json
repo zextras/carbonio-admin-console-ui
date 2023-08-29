@@ -4,6 +4,6 @@
 		"skipLibCheck": true,
 		"jsx": "react"
 	},
-	"include": ["src/**/*.ts", "src/**/*.tsx", "src/custom.d.ts"],
+	"include": ["src/**/*.ts", "src/**/*.tsx", "src/custom.d.ts", "types/i18next.d.ts"],
 	"exclude": ["./node_modules/*"]
 }

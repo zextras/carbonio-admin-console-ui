@@ -796,7 +796,7 @@ const ManageAccounts: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -810,13 +810,11 @@ const ManageAccounts: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding>
+							<Padding all={'0'}>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
 									icon="Plus"
-									height={36}
-									width={36}
 									onClick={(): void => {
 										setShowCreateAccountView(true);
 									}}
@@ -837,7 +835,7 @@ const ManageAccounts: FC = () => {
 				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -851,7 +849,7 @@ const ManageAccounts: FC = () => {
 									label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
 									disabled={accountList.length === 0 && searchString.length === 0}
 									value={searchString}
-									background="gray5"
+									backgroundColor="gray5"
 									onChange={(e: any): any => {
 										setSearchString(e.target.value);
 									}}
@@ -879,6 +877,8 @@ const ManageAccounts: FC = () => {
 								multiSelect={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (
@@ -890,11 +890,10 @@ const ManageAccounts: FC = () => {
 								>
 									<Button
 										type="ghost"
-										iconColor="primary"
-										height={36}
+										color="primary"
 										label=""
-										width={36}
 										loading
+										onClick={(): null => null}
 									/>
 								</Container>
 							)}

@@ -666,7 +666,7 @@ const HSMsettingPanel: FC = () => {
 	return (
 		<Container mainAlignment="flex-start" width="100%">
 			<Row
-				takeAvwidth="fill"
+				takeAvailableSpace
 				mainAlignment="flex-start"
 				width="100%"
 				padding={{ left: 'large', right: 'large', bottom: 'medium', top: 'medium' }}
@@ -753,7 +753,7 @@ const HSMsettingPanel: FC = () => {
 								'hsm.example_shedule',
 								'E.g. 0 2 * * 3'
 							)})`}
-							background="gray5"
+							backgroundColor="gray5"
 							value={powerstoreMoveSchedulerValue}
 							onChange={(e: any): void => {
 								setPowerstoreMoveSchedulerValue(e.target.value);
@@ -791,7 +791,7 @@ const HSMsettingPanel: FC = () => {
 					</Container>
 				</ListRow>
 
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container
 						orientation="vertical"
 						mainAlignment="space-around"
@@ -816,7 +816,6 @@ const HSMsettingPanel: FC = () => {
 										icon=""
 										type="outlined"
 										color="primary"
-										height={36}
 										onClick={(): void => {
 											setShowCreateHsmPolicyView(true);
 										}}
@@ -830,7 +829,6 @@ const HSMsettingPanel: FC = () => {
 										type="outlined"
 										icon=""
 										color="primary"
-										height={36}
 										onClick={(): void => {
 											runAllHSMpolicy();
 										}}
@@ -843,7 +841,6 @@ const HSMsettingPanel: FC = () => {
 									color="error"
 									type="outlined"
 									icon=""
-									height={36}
 									onClick={(): void => {
 										setShowDeletePolicyView(true);
 									}}
@@ -856,13 +853,7 @@ const HSMsettingPanel: FC = () => {
 				</Row>
 				<ListRow>
 					<Padding left="extrasmall" bottom="medium">
-						<Text
-							size="small"
-							weight="light"
-							color="gray0"
-							crossAlignment="flex-start"
-							mainAlignment="flex-start"
-						>
+						<Text size="small" weight="light" color="gray0">
 							{t(
 								'hsm.default_hsm_policy_warning_message',
 								'At least one policy will always stay up. If you delete the last one, another will be generated'
@@ -878,6 +869,8 @@ const HSMsettingPanel: FC = () => {
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedPolicies}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 						RowFactory={CustomRowFactory}
 					/>
@@ -886,7 +879,7 @@ const HSMsettingPanel: FC = () => {
 					<Container padding={{ top: 'large' }}>
 						<Input
 							label={t('hsm.minimum_space_threshold', 'Minimum Space Threshold')}
-							background="gray5"
+							backgroundColor="gray5"
 							value={powerstoreSpaceThreshold}
 							onChange={(e: any): void => {
 								setPowerstoreSpaceThreshold(e.target.value);

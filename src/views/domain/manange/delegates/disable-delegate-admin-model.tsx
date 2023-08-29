@@ -30,10 +30,12 @@ const DisableDelegateAdminModel: FC<{
 				)}
 				open={open}
 				customFooter={
-					<Container orientation="horizontal" mainAlignment="flex-end" cros>
+					<Container orientation="horizontal" mainAlignment="flex-end">
 						<Row style={{ gap: '0.5rem' }}>
 							<Button
 								style={{ fontWeight: '900' }}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								label={
 									<Trans
 										i18nKey="label.remove_all_acl"
@@ -47,6 +49,8 @@ const DisableDelegateAdminModel: FC<{
 								onClick={removeAllACLs}
 							/>
 							<Button
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								label={
 									<Trans
 										i18nKey="label.keep_acls_&_disbale_rigths"
