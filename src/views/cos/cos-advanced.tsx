@@ -28,8 +28,8 @@ import { COS } from '../../constants';
 import Textarea from '../components/textarea';
 
 const CustomIcon = styled(Icon)`
-	width: 20px;
-	height: 20px;
+	width: 1.25rem;
+	height: 1.25rem;
 `;
 
 const CosAdvanced: FC = () => {
@@ -1209,7 +1209,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t(
 											'cos.percentage_threshold_for_quota_warning',
-											'Percentage threshold for quota warning messages'
+											'Percentage threshold for quota warning messages (%)'
 										)}
 										value={cosAdvanced.zimbraQuotaWarnPercent}
 										backgroundColor="gray5"
