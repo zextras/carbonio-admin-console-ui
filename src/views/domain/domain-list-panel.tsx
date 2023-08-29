@@ -42,7 +42,8 @@ import {
 	GLOBAL_2FA_ROUTE,
 	TWO_FACTOR_AUTHENTICATION,
 	DELEGATES,
-	SECURITY_GROUP
+	SECURITY_GROUP,
+	GLOBAL_ROUTE
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -243,7 +244,9 @@ const DomainListPanel: FC = () => {
 		if (isDomainSelect && domainId) {
 			if (domainView) {
 				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
-				if (domainView === GLOBAL_THEME_ROUTE) {
+				if (domainView === GLOBAL_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_THEME_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_2FA_ROUTE) {
 					replaceHistory(`/${domainView}`);
@@ -352,6 +355,11 @@ const DomainListPanel: FC = () => {
 
 	const globalOptionItems = useMemo(
 		() => [
+			{
+				id: GLOBAL_ROUTE,
+				name: t('label.global', 'Global'),
+				isSelected: true
+			},
 			{
 				id: GLOBAL_THEME_ROUTE,
 				name: t('label.theme', 'Theme'),

@@ -16,11 +16,13 @@ import {
 	Padding,
 	Divider,
 	Tooltip,
-	Switch
+	Switch,
+	ChipInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useHistory } from 'react-router-dom';
+import { map, some } from 'lodash';
 import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { createDomain } from '../../services/create-domain';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
@@ -37,6 +39,7 @@ import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import { useDomainStore } from '../../store/domain/store';
 import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../../../types';
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
+import { isValidEmail } from '../utility/utils';
 
 // eslint-disable-next-line no-shadow
 export enum GAL_MODE {
@@ -90,6 +93,11 @@ const CreateDomain: FC = () => {
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
 	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
 	const [isDomainDelegatedAdmin, setIsDomainDelegatedAdmin] = useState(false);
+	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
+	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
+		{ label: string }[]
+	>([]);
+	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	useEffect(() => {
 		if (allMailStoreList && allMailStoreList.length > 0) {
 			const data = allMailStoreList.map((item: { [key: string]: string }) => ({
@@ -202,97 +210,117 @@ const CreateDomain: FC = () => {
 	}, [createSnackbar, domainName, t]);
 
 	const onCreate = (): void => {
-		let attributes: Attribute[] = [];
-		attributes.push({
-			n: 'zimbraNotes',
-			_content: zimbraNotes
-		});
-		attributes.push({
-			n: 'zimbraGalMode',
-			_content: GAL_MODE.INTERNAL
-		});
-		attributes.push({
-			n: 'zimbraGalMaxResults',
-			_content: ''
-		});
-		attributes.push({
-			n: 'zimbraAuthMech',
-			_content: GAL_MODE.INTERNAL
-		});
-		attributes.push({
-			n: 'zimbraDomainMaxAccounts',
-			_content: zimbraDomainMaxAccounts
-		});
-		attributes.push({
-			n: 'zimbraMailDomainQuota',
-			_content: zimbraMailDomainQuota
-		});
-		attributes.push({
-			n: 'zimbraDomainStatus',
-			_content: ACTIVE
-		});
-		attributes.push({
-			n: 'zimbraPublicServiceProtocol',
-			_content: HTTPS
-		});
-
-		createDomain(domainName, attributes)
-			.then((data) => {
-				if (zimbraPublisServiceHostname && galSyncAccountName !== '' && dataSourceName) {
-					attributes = [];
-					const account = [];
-					attributes.push({
-						n: 'zimbraDataSourcePollingInterval',
-						_content: '1d'
-					});
-					account.push({
-						by: 'name',
-						_content: `${galSyncAccountName}@${domainName}`
-					});
-					createGalSyncAccount(
-						dataSourceName,
-						domainName,
-						zimbraPublisServiceHostname.value,
-						account,
-						GAL_MODE.INTERNAL,
-						attributes,
-						`_${dataSourceName}`
-					).then((resp) => {
-						if (isDomainDelegatedAdmin) {
-							handleRevokesGrants();
-						}
-						showSuccessSnackBar();
-						routeToDomain(data);
-					});
-				} else {
-					const domain: Attribute = data?.domain[0];
-					if (domain) {
-						showSuccessSnackBar();
-						routeToDomain(data);
-					} else {
-						createSnackbar({
-							key: 'error',
-							type: 'error',
-							label: data?.Body?.Fault?.Reason?.Text,
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-					}
-				}
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
+		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
+			setHasCarbonioNotificationFromError(false);
+			let attributes: Attribute[] &
+				{
+					n: string;
+					_content: string[];
+				}[] = [];
+			attributes.push({
+				n: 'zimbraNotes',
+				_content: zimbraNotes
+			});
+			attributes.push({
+				n: 'zimbraGalMode',
+				_content: GAL_MODE.INTERNAL
+			});
+			attributes.push({
+				n: 'zimbraGalMaxResults',
+				_content: ''
+			});
+			attributes.push({
+				n: 'zimbraAuthMech',
+				_content: GAL_MODE.INTERNAL
+			});
+			attributes.push({
+				n: 'zimbraDomainMaxAccounts',
+				_content: zimbraDomainMaxAccounts
+			});
+			attributes.push({
+				n: 'zimbraMailDomainQuota',
+				_content: zimbraMailDomainQuota
+			});
+			attributes.push({
+				n: 'zimbraDomainStatus',
+				_content: ACTIVE
+			});
+			attributes.push({
+				n: 'zimbraPublicServiceProtocol',
+				_content: HTTPS
+			});
+			attributes.push({
+				n: 'carbonioNotificationFrom',
+				_content: carbonioNotificationFrom
+			});
+			// eslint-disable-next-line array-callback-return
+			carbonioNotificationRecipients.map((item: { label: string }): void => {
+				attributes.push({
+					n: 'carbonioNotificationRecipients',
+					_content: item?.label
 				});
 			});
+
+			createDomain(domainName, attributes)
+				.then((data) => {
+					if (zimbraPublisServiceHostname && galSyncAccountName !== '' && dataSourceName) {
+						attributes = [];
+						const account = [];
+						attributes.push({
+							n: 'zimbraDataSourcePollingInterval',
+							_content: '1d'
+						});
+						account.push({
+							by: 'name',
+							_content: `${galSyncAccountName}@${domainName}`
+						});
+						createGalSyncAccount(
+							dataSourceName,
+							domainName,
+							zimbraPublisServiceHostname.value,
+							account,
+							GAL_MODE.INTERNAL,
+							attributes,
+							`_${dataSourceName}`
+						).then((resp) => {
+							if (isDomainDelegatedAdmin) {
+								handleRevokesGrants();
+							}
+							showSuccessSnackBar();
+							routeToDomain(data);
+						});
+					} else {
+						const domain: Attribute = data?.domain[0];
+						if (domain) {
+							showSuccessSnackBar();
+							routeToDomain(data);
+						} else {
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: data?.Body?.Fault?.Reason?.Text,
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						}
+					}
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		} else {
+			setHasCarbonioNotificationFromError(true);
+		}
 	};
 
 	const onCancel = (): void => {
@@ -507,6 +535,69 @@ const CreateDomain: FC = () => {
 									)}
 									onClick={(): void => setIsDomainDelegatedAdmin(!isDomainDelegatedAdmin)}
 									iconColor="primary"
+								/>
+							</Container>
+						</ListRow>
+						<Row
+							width="100%"
+							mainAlignment="flex-start"
+							padding={{ vertical: 'large', horizontal: 'small' }}
+						>
+							<Divider />
+						</Row>
+						<Row
+							mainAlignment="flex-start"
+							width="100%"
+							background="gray6"
+							padding={{ left: 'large', top: 'large' }}
+						>
+							<Text size="small" weight="bold" color="gray0">
+								{t('label.domain_system_notifications', 'Domain System Notifications')}
+							</Text>
+						</Row>
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
+							>
+								<Input
+									label={t('label.notification_sender', 'Notification Sender')}
+									backgroundColor="gray5"
+									value={carbonioNotificationFrom}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+										setCarbonioNotificationFrom(e.target.value);
+									}}
+									hasError={hasCarbonioNotificationFromError}
+									description={
+										hasCarbonioNotificationFromError
+											? t('label.notification_error_msg', 'Enter a valid email address.')
+											: undefined
+									}
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
+							>
+								<ChipInput
+									placeholder={t('label.send_notifications_to', 'Send notifications to...')}
+									background="gray5"
+									defaultValue={carbonioNotificationRecipients}
+									value={carbonioNotificationRecipients}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
+									onChange={(emails: { label: string }[]): void => {
+										const data: { label: string }[] = [];
+										map(emails, (email) => {
+											if (isValidEmail(email.label ?? '')) data.push(email);
+										});
+										setCarbonioNotificationRecipients(data);
+									}}
+									hasError={some(carbonioNotificationRecipients || [], { error: true })}
 								/>
 							</Container>
 						</ListRow>
