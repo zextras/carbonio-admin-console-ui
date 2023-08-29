@@ -69,10 +69,6 @@ const BucketListPanel: FC = () => {
 				label: volume.name,
 				customComponent: (
 					<SelectItem
-						top="9px"
-						right="large"
-						bottom="9px"
-						left="large"
 						style={{
 							display: 'block',
 							textAlign: 'left',
@@ -224,7 +220,7 @@ const BucketListPanel: FC = () => {
 				/>
 				{isServerSpecificListExpand && (
 					<>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row  mainAlignment="flex-start" width="100%">
 							<DropDownInput
 								items={itemsVolume}
 								inputLabel={t('label.select_a_server', 'Select a Server')}

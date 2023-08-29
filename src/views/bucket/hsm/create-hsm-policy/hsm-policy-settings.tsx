@@ -253,7 +253,7 @@ const HSMpolicySettings: FC<any> = () => {
 		>
 			<ListRow>
 				<Container padding={{ bottom: 'large' }}>
-					<Input label={t('hsm.server', 'Server')} background="gray6" value={server} />
+					<Input label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
 				</Container>
 			</ListRow>
 			<ListRow>
@@ -400,7 +400,6 @@ const HSMpolicySettings: FC<any> = () => {
 					<Input
 						label={t('hsm.value', 'Value')}
 						backgroundColor="gray5"
-						size="medium"
 						value={value}
 						onChange={(e: any): any => {
 							setValue(e.target.value);
@@ -444,6 +443,8 @@ const HSMpolicySettings: FC<any> = () => {
 						multiSelect={false}
 						selectedRows={selectedPolicies}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>

@@ -33,7 +33,7 @@ const Summary: FC<{
 				<Row width="48%" mainAlignment="flex-start">
 					<Input label={t('buckets.connection.arn_name', 'Arn / Name')} value="s3aws" readOnly />
 				</Row>
-				<Padding width="4%" />
+				<Padding horizontal={'small'} />
 				<Row width="48%" mainAlignment="flex-end">
 					<Input
 						label={t('buckets.connection.arn_name', 'Arn / Name')}
@@ -50,7 +50,7 @@ const Summary: FC<{
 						readOnly
 					/>
 				</Row>
-				<Padding width="4%" />
+				<Padding horizontal={'small'} />
 				<Row width="48%" mainAlignment="flex-end">
 					<PasswordInput
 						label={t('buckets.connection.secret_key', 'Secret Key')}

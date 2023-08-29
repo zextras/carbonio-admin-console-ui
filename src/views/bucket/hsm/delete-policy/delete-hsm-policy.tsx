@@ -95,6 +95,7 @@ const DeleteHsmPolicy: FC<{
 						type="outlined"
 						label={t('label.help', 'Help')}
 						color="primary"
+						onClick={(): null => null}
 					/>
 					<Row style={{ gap: '1rem' }}>
 						<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={closeHandler} />
@@ -122,11 +123,7 @@ const DeleteHsmPolicy: FC<{
 					</Padding>
 				</Container>
 
-				<Container
-					padding={{ top: 'small', bottom: 'small' }}
-					orientation="flex-start"
-					mainAlignment="flex-start"
-				>
+				<Container padding={{ top: 'small', bottom: 'small' }} mainAlignment="flex-start">
 					<Text size="small">
 						<Trans
 							i18nKey="hsm.copy_hsm_policy_from_clipboard_msg"
@@ -137,7 +134,7 @@ const DeleteHsmPolicy: FC<{
 
 				<Container padding={{ top: 'small', bottom: 'small' }}>
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('hsm.hsm_policy', 'HSM Policy')}
 						value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
 						CustomIcon={(): any => (

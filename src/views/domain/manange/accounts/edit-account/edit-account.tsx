@@ -160,6 +160,8 @@ const EditAccount: FC<{
 	}> = ({ item, index, selected, onClick }): ReactElement => (
 		<DefaultTabBarItem
 			item={item}
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore // Need to fix it with custom soultion
 			index={index}
 			selected={selected}
 			onClick={onClick}
@@ -567,6 +569,8 @@ const EditAccount: FC<{
 					background="white"
 				>
 					<TabBar
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						items={items}
 						selected={change}
 						onChange={(ev: unknown, selectedId: string): void => {

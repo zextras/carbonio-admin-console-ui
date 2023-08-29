@@ -498,7 +498,7 @@ const DomainAuthentication: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="56px">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -547,12 +547,7 @@ const DomainAuthentication: FC = () => {
 					width="100%"
 					height="calc(100vh - 150px)"
 				>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'small' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
 						<Container
 							padding={{ all: 'small' }}
 							height="fit"
@@ -573,7 +568,11 @@ const DomainAuthentication: FC = () => {
 										label={t('label.your_auth_method_is', 'Your Auth Method is')}
 										showCheckbox={false}
 										items={DOMAIN_AUTH_LIST}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										selection={zimbraAuthMech}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onAuthMethodChange}
 									></Select>
 								</Padding>
@@ -583,7 +582,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.bind_dn_template', 'Bind Distinguished Name (DN) Template')}
 										value={zimbraAuthLdapBindDn}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value) {
 												const validLdapDn = isValidLdapBaseDN(e.target.value);
@@ -601,6 +600,8 @@ const DomainAuthentication: FC = () => {
 										hasError={!isValidLdapDN}
 										CustomIcon={(): React.ReactElement => (
 											<Container
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												ref={iconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setOpen(true)}
 												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -629,6 +630,8 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={open}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={iconRef}
 										placement="top-end"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -644,7 +647,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.url', 'URL')}
 										value={zimbraAuthLdapURL}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value) {
 												const validLdapUrl = isValidLdapBaseUrl(e.target.value);
@@ -662,6 +665,8 @@ const DomainAuthentication: FC = () => {
 										hasError={!isValidLdapUrl}
 										CustomIcon={(): React.ReactElement => (
 											<Container
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												ref={ldapUrlIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setLdapUrlOpen(true)}
 												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -690,6 +695,8 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={ldapUrlOpen}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={ldapUrlIconRef}
 										placement="top-end"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -705,12 +712,14 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.filter', 'Filter')}
 										value={zimbraAuthLdapSearchFilter}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraAuthLdapSearchFilter(e.target.value);
 										}}
 										CustomIcon={(): React.ReactElement => (
 											<Container
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												ref={filterIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setFilterOpen(true)}
 												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -722,6 +731,8 @@ const DomainAuthentication: FC = () => {
 									/>
 									<Popper
 										open={filterOpen}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={filterIconRef}
 										placement="top-end"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -735,7 +746,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.search_base', 'Basic Search')}
 										value={zimbraAuthLdapSearchBase}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraAuthLdapSearchBase(e.target.value);
 										}}
@@ -747,7 +758,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.username', 'Username')}
 										value={userName}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="username"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value !== '') {
@@ -778,7 +789,7 @@ const DomainAuthentication: FC = () => {
 								<Padding vertical="small" horizontal="small" width="38%">
 									<Input
 										label={t('label.password', 'Password')}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnInterval"
 										value={password}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -861,7 +872,7 @@ const DomainAuthentication: FC = () => {
 											'label.external_password_change_listener',
 											'Endpoint to be used for password change'
 										)}
-										background="gray5"
+										backgroundColor="gray5"
 										value={zimbraPasswordChangeListener}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraPasswordChangeListener(e.target.value);

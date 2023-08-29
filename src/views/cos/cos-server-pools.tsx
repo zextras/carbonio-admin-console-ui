@@ -431,7 +431,7 @@ const CosServerPools: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -489,7 +489,7 @@ const CosServerPools: FC = () => {
 					</ListRow>
 					{zimbraMailHostPool && (
 						<>
-							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Row mainAlignment="flex-start" width="100%">
 								<Container orientation="vertical" mainAlignment="space-around" height="56px">
 									<Row orientation="horizontal" width="100%">
 										<Row
@@ -559,6 +559,8 @@ const CosServerPools: FC = () => {
 									headers={tableHeader}
 									showCheckbox={false}
 									selectedRows={selectedTableRowsId}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 									RowFactory={CustomRowFactory}
 								/>

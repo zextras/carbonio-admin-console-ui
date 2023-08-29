@@ -23,7 +23,7 @@ import { TwoFactorPolicy } from '../../../types';
 
 export const timeZoneList = (
 	t: TFunction
-): Array<{ value?: string; label: string; offSet?: string }> => [
+): Array<{ value: string; label: string; offSet?: string }> => [
 	{
 		value: NOT_SET,
 		label: t('label.not_set', 'Not Set')
@@ -836,7 +836,7 @@ export const timeZoneList = (
 	}
 ];
 
-export const AccountStatus = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const AccountStatus = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('label.active', 'Active'),
 		value: ACTIVE
@@ -865,7 +865,7 @@ export const AccountStatus = (t: TFunction): Array<{ value?: string; label: stri
 	}
 ];
 
-export const MeasureUnitItems = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const MeasureUnitItems = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('domain.unit_measure_days', 'Days'),
 		value: 'd'
@@ -887,7 +887,7 @@ export const MeasureUnitItems = (t: TFunction): Array<{ value?: string; label: s
 		value: 'ms'
 	}
 ];
-export const BucketTypeItems = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const BucketTypeItems = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('buckets.s3_types.alibaba_cloud_s3', 'Alibaba Cloud S3'),
 		value: 'Alibaba'
@@ -1068,7 +1068,7 @@ export const indexerHeaders = (
 	}
 ];
 
-export const volumeTypeList = (t: TFunction): Array<{ label: string; value?: number }> => [
+export const volumeTypeList = (t: TFunction): Array<{ label: string; value: number }> => [
 	{
 		label: t('volume.volume_type.primary', 'Primary'),
 		value: 1
@@ -1083,7 +1083,7 @@ export const volumeTypeList = (t: TFunction): Array<{ label: string; value?: num
 	}
 ];
 
-export const volumeAllocationList = (t: TFunction): Array<{ label: string; value?: number }> => [
+export const volumeAllocationList = (t: TFunction): Array<{ label: string; value: number }> => [
 	{
 		label: t('volume.volume_allocation_list.local_block_device', 'Local Block Device'),
 		value: 1
@@ -1488,7 +1488,7 @@ export const localeList = (
 	}
 ];
 
-export const BucketRegions = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const BucketRegions = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('buckets.amazon_regions.af_south_1', 'Africa (Cape Town)'),
 		value: 'AF_SOUTH_1'
@@ -1591,7 +1591,7 @@ export const BucketRegions = (t: TFunction): Array<{ value?: string; label: stri
 	}
 ];
 
-export const BucketRegionsInAlibaba = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const BucketRegionsInAlibaba = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('buckets.alibaba_regions.cn_hangzhou', 'China (Hangzhou)'),
 		value: 'oss-cn-hangzhou'
@@ -1674,7 +1674,7 @@ export const BucketRegionsInAlibaba = (t: TFunction): Array<{ value?: string; la
 	}
 ];
 
-export const CertificateTypes = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const CertificateTypes = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t(
 			'domain.certificate_type_use_letsencrypt_long_chain',
@@ -1770,7 +1770,7 @@ export const isValidNumber = (str: string): boolean => {
 	return reqex.test(str);
 };
 
-export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const conversationGroupBy = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('label.message', 'Message'),
 		value: 'message'
@@ -1781,7 +1781,7 @@ export const conversationGroupBy = (t: TFunction): Array<{ value?: string; label
 	}
 ];
 
-export const deligateSendSettings = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const deligateSendSettings = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t(
 			'label.save_a_copy_of_sent_messages_only_in_delegates_send_folder',
@@ -1809,7 +1809,7 @@ export const deligateSendSettings = (t: TFunction): Array<{ value?: string; labe
 	}
 ];
 
-export const delegateType = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const delegateType = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('account_details.a_user', 'A User'),
 		value: 'usr'
@@ -1820,7 +1820,7 @@ export const delegateType = (t: TFunction): Array<{ value?: string; label: strin
 	}
 ];
 
-export const delegateRightsType = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const delegateRightsType = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('account_details.send_mails_only', 'Send Mails only (no rights to read folders)'),
 		value: SEND_MAILS_ONLY
@@ -1849,7 +1849,7 @@ export const delegateRightsType = (t: TFunction): Array<{ value?: string; label:
 	}
 ];
 
-export const appointmentReminder = (t: TFunction): Array<{ value?: string; label: string }> => [
+export const appointmentReminder = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('label.never', 'Never'),
 		value: '0'
@@ -1900,7 +1900,7 @@ export const appointmentReminder = (t: TFunction): Array<{ value?: string; label
 	}
 ];
 
-export const charactorSet = (): Array<{ value?: string; label: string }> => [
+export const charactorSet = (): Array<{ value: string; label: string }> => [
 	{ label: 'Big5', value: 'Big5' },
 	{ label: 'Big5-HKSCS', value: 'Big5-HKSCS' },
 	{ label: 'EUC-JP', value: 'EUC-JP' },
@@ -2046,7 +2046,7 @@ export const getServiceUrl = (protocol: string, publicServerHostName: string): s
 
 export const ServicesPassphraseStatus = (
 	t: TFunction
-): Array<{ value?: boolean; label: string }> => [
+): Array<{ value: boolean; label: string }> => [
 	{
 		label: t('label.active', 'Active'),
 		value: true
@@ -2057,7 +2057,7 @@ export const ServicesPassphraseStatus = (
 	}
 ];
 
-export const TwoFactorWhatToTrust = (t: TFunction): Array<{ value?: number; label: string }> => [
+export const TwoFactorWhatToTrust = (t: TFunction): Array<{ value: number; label: string }> => [
 	{
 		label: t('label.disable_2fa', 'Disable 2FA'),
 		value: 0
@@ -2072,7 +2072,7 @@ export const TwoFactorWhatToTrust = (t: TFunction): Array<{ value?: number; labe
 	}
 ];
 
-export const ServicesPassphraseServices = (): Array<{ value?: string; label: string }> => [
+export const ServicesPassphraseServices = (): Array<{ value: string; label: string }> => [
 	{
 		label: 'Dav(Web/Card/Cal)',
 		value: 'DAV'

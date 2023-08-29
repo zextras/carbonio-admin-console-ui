@@ -72,7 +72,7 @@ const AccountOtpSection: FC = () => {
 						}}
 						style={{ borderRadius: '2px 2px 0px 0px' }}
 					>
-						<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+						<Row mainAlignment="center" width="100%">
 							<Padding horizontal="small">
 								<CustomIcon icon="InfoOutline" color="success"></CustomIcon>
 							</Padding>
@@ -161,7 +161,6 @@ const AccountOtpSection: FC = () => {
 									mainAlignment="space-between"
 								>
 									<Row
-										takeAvwidth="fill"
 										mainAlignment="center"
 										width="100%"
 										padding={{
@@ -179,7 +178,6 @@ const AccountOtpSection: FC = () => {
 									mainAlignment="space-between"
 								>
 									<Row
-										takeAvwidth="fill"
 										mainAlignment="center"
 										width="100%"
 										padding={{
@@ -199,7 +197,6 @@ const AccountOtpSection: FC = () => {
 							mainAlignment="space-between"
 						>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="center"
 								width="100%"
 								padding={{
@@ -222,7 +219,6 @@ const AccountOtpSection: FC = () => {
 							mainAlignment="space-between"
 						>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="center"
 								width="100%"
 								padding={{
@@ -253,7 +249,11 @@ const AccountOtpSection: FC = () => {
 										});
 										setSendEmailTo(data);
 									}}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									defaultValue={sendEmailTo}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={sendEmailTo}
 									background="gray5"
 									ChipComponent={CustomChip}

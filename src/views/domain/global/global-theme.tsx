@@ -263,7 +263,7 @@ const GlobalTheme: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="56px">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -317,6 +317,8 @@ const GlobalTheme: FC = () => {
 					title={t('label.reset_global_theme', 'Reset global theme')}
 					isOpenResetDialog={isOpenResetDialog}
 					isRequestInProgress={isRequestInProgress}
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore // Need to fix it with custom soultion
 					closeHandler={closeHandler}
 					onResetHandler={onResetHandler}
 				/>

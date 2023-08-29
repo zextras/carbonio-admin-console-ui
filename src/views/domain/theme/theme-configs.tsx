@@ -44,6 +44,8 @@ const ReusedDefaultTabBar: FC<{
 }> = ({ item, index, selected, onClick }): ReactElement => (
 	<DefaultTabBarItem
 		item={item}
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore // Need to fix it with custom soultion
 		index={index}
 		selected={selected}
 		onClick={onClick}
@@ -124,12 +126,12 @@ export const ThemeConfigs: FC<{
 	const items = [
 		{
 			id: 'end_user',
-			label: t('label.end_user_title', 'END USER'),
+			label: `${t('label.end_user_title', 'END USER')}`,
 			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'admin_panel',
-			label: t('label.admin_panel_title', 'ADMIN PANEL'),
+			label: `${t('label.admin_panel_title', 'ADMIN PANEL')}`,
 			CustomComponent: ReusedDefaultTabBar
 		}
 	];
@@ -208,7 +210,7 @@ export const ThemeConfigs: FC<{
 			width="100%"
 			height="calc(100vh - 150px)"
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
+			<Row mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
 				<Container
 					padding={{ all: 'small' }}
 					height="fit"
@@ -224,7 +226,7 @@ export const ThemeConfigs: FC<{
 					</ListRow>
 					<ListRow>
 						<Select
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('cos.dark_mode', 'Dark Mode')}
 							showCheckbox={false}
 							items={THEME_MODE}
@@ -232,6 +234,8 @@ export const ThemeConfigs: FC<{
 								// eslint-disable-next-line max-len
 								(item: any) => item.value === themeConfig?.carbonioWebUiDarkMode
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onThemeModeChange}
 							disabled={isGlobalTheme && !hasModifyRights}
 						/>
@@ -249,7 +253,7 @@ export const ThemeConfigs: FC<{
 								'label.logo_redirection_title',
 								'Clicking on the Logo will redirect the users to...'
 							)}
-							background="gray5"
+							backgroundColor="gray5"
 							value={themeConfig.carbonioLogoUrl}
 							inputName="carbonioLogoUrl"
 							onChange={onChangeDomainThemeDetail}
@@ -305,7 +309,7 @@ export const ThemeConfigs: FC<{
 						<Container padding={{ all: 'small' }}>
 							<Input
 								label="ex. #HEX123"
-								background="gray5"
+								backgroundColor="gray5"
 								value={themeConfig.carbonioWebUiPrimaryColor}
 								inputName="carbonioWebUiPrimaryColor"
 								onChange={(e: any): any => {
@@ -317,7 +321,7 @@ export const ThemeConfigs: FC<{
 						<Container padding={{ all: 'small' }}>
 							<Input
 								label="ex. #HEX123"
-								background="gray5"
+								backgroundColor="gray5"
 								value={themeConfig.carbonioWebUiDarkPrimaryColor}
 								inputName="carbonioWebUiDarkPrimaryColor"
 								onChange={(e: any): any => {
@@ -334,6 +338,8 @@ export const ThemeConfigs: FC<{
 						padding={{ top: 'large' }}
 					>
 						<TabBar
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							items={items}
 							selected={change}
 							onChange={(ev: unknown, selectedId: string): void => {
@@ -398,7 +404,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('label.title', 'Title')}
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiTitle}
 											inputName="carbonioWebUiTitle"
 											onChange={onChangeDomainThemeDetail}
@@ -424,7 +430,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('label.copyrights_information', 'Copyrights information')}
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiDescription}
 											inputName="carbonioWebUiDescription"
 											onChange={onChangeDomainThemeDetail}
@@ -490,7 +496,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourlogo.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiLoginLogo}
 											inputName="carbonioWebUiLoginLogo"
 											onChange={(e: any): any => {
@@ -510,7 +516,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourlogo.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiDarkLoginLogo}
 											inputName="carbonioWebUiDarkLoginLogo"
 											onChange={(e: any): any => {
@@ -562,7 +568,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourlogo.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiAppLogo}
 											inputName="carbonioWebUiAppLogo"
 											onChange={(e: any): any => {
@@ -582,7 +588,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourlogo.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiDarkAppLogo}
 											inputName="carbonioWebUiDarkAppLogo"
 											onChange={(e: any): any => {
@@ -628,7 +634,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourfavicon.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiFavicon}
 											inputName="carbonioWebUiFavicon"
 											onChange={(e: any): any => {
@@ -704,7 +710,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourimage.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiLoginBackground}
 											inputName="carbonioWebUiLoginBackground"
 											onChange={(e: any): any => {
@@ -724,7 +730,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourimage.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioWebUiDarkLoginBackground}
 											inputName="carbonioWebUiDarkLoginBackground"
 											onChange={(e: any): any => {
@@ -759,7 +765,7 @@ export const ThemeConfigs: FC<{
 												'label.enduser_logout_redirect_url',
 												'On Logout, redirect the User to (URL)'
 											)}
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.zimbraWebClientLogoutURL}
 											inputName="zimbraWebClientLogoutURL"
 											onChange={(e: any): any => {
@@ -831,7 +837,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('label.title', 'Title')}
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiTitle}
 											inputName="carbonioAdminUiTitle"
 											onChange={onChangeDomainThemeDetail}
@@ -857,7 +863,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label={t('label.copyrights_information', 'Copyrights information')}
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiDescription}
 											inputName="carbonioAdminUiDescription"
 											onChange={onChangeDomainThemeDetail}
@@ -923,7 +929,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourlogo.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiLoginLogo}
 											inputName="carbonioAdminUiLoginLogo"
 											onChange={(e: any): any => {
@@ -943,7 +949,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourlogo.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiDarkLoginLogo}
 											inputName="carbonioAdminUiDarkLoginLogo"
 											onChange={(e: any): any => {
@@ -995,7 +1001,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourlogo.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiAppLogo}
 											inputName="carbonioAdminUiAppLogo"
 											onChange={(e: any): any => {
@@ -1015,7 +1021,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourlogo.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiDarkAppLogo}
 											inputName="carbonioAdminUiDarkAppLogo"
 											onChange={(e: any): any => {
@@ -1061,7 +1067,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourfavicon.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiFavicon}
 											inputName="carbonioAdminUiFavicon"
 											onChange={(e: any): any => {
@@ -1137,7 +1143,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourimage.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiBackground}
 											inputName="carbonioAdminUiBackground"
 											onChange={(e: any): any => {
@@ -1157,7 +1163,7 @@ export const ThemeConfigs: FC<{
 									<Container padding={{ all: 'small' }}>
 										<Input
 											label="Ex. https://upload.yourimage.com/"
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.carbonioAdminUiDarkBackground}
 											inputName="carbonioAdminUiDarkBackground"
 											onChange={(e: any): any => {
@@ -1192,7 +1198,7 @@ export const ThemeConfigs: FC<{
 												'label.admin_logout_redirect_url',
 												'On Logout, redirect the Admin to (URL)'
 											)}
-											background="gray5"
+											backgroundColor="gray5"
 											value={themeConfig.zimbraAdminConsoleLogoutURL}
 											inputName="zimbraAdminConsoleLogoutURL"
 											onChange={(e: any): any => {
@@ -1224,7 +1230,9 @@ export const ThemeConfigs: FC<{
 									label={t('label.empty_all_fields', 'Empty all fields')}
 									color="error"
 									size="large"
-									width="100%"
+									width="fill"
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									onClick={onResetTheme}
 									style={{ width: '100%' }}
 									disabled={isGlobalTheme && !hasModifyRights}

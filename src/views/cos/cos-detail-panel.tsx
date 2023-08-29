@@ -66,7 +66,6 @@ const CosDetailPanel: FC = () => {
 										overflow="break-word"
 										weight="regular"
 										size="large"
-										width="60%"
 										style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 									>
 										{t(

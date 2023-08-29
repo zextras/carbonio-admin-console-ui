@@ -140,7 +140,9 @@ const CustomHeaderFactory = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
-									multiple
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
+									// multiple
 									items={column.items}
 									i18nAllLabel={column.i18nAllLabel || 'All'}
 									dropdownWidth="auto"

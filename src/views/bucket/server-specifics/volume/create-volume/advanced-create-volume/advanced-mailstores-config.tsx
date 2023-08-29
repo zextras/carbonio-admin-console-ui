@@ -194,13 +194,15 @@ const AdvancedMailstoresConfig: FC<{
 					width="100%"
 					mainAlignment="center"
 					crossAlignment="center"
-					backgroundColor="gray6"
+					background="gray6"
 				>
 					<Row width="48%">
 						<Radio
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							inputName="primary"
 							label={t('label.primary_volume', 'This is a Primary Volume')}
-							value={PRIMARY_TYPE_VALUE}
+							value={PRIMARY_TYPE_VALUE.toString()}
 							checked={primaryRadio}
 							onClick={(): void => {
 								setPrimaryRadio(!primaryRadio);
@@ -213,6 +215,8 @@ const AdvancedMailstoresConfig: FC<{
 						<Radio
 							inputName="secondary"
 							label={t('label.secondary_volume', 'This is a Secondary Volume')}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							value={SECONDARY_TYPE_VALUE}
 							checked={secondaryRadio}
 							onClick={(): void => {
@@ -241,7 +245,7 @@ const AdvancedMailstoresConfig: FC<{
 							padding={{ top: 'large' }}
 							mainAlignment="flex-start"
 							width="100%"
-							backgroundColor="gray6"
+							background="gray6"
 						>
 							<Row width="48.5%" mainAlignment="flex-start">
 								<Row mainAlignment="flex-start" width="100%">

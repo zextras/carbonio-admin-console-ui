@@ -117,6 +117,16 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 		],
 		[t]
 	);
+
+	const SEND_READ_RECEIPTS = useMemo(
+		() => [
+			{ label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
+			{ label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
+			{ label: t('label.ask_me', 'Ask me'), value: 'prompt' }
+		],
+		[t]
+	);
+
 	useEffect(() => {
 		setPrefReadReceiptsToAddress(
 			accountDetail?.zimbraPrefReadReceiptsToAddress
@@ -254,6 +264,10 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 	const onPollingIntervalChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
 	};
+	const onReadReceiptChange = (v: string): void => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefMailSendReadReceipts: v }));
+	};
+
 	const setEmptyValue = useCallback(
 		(keyName) => {
 			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
@@ -543,7 +557,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 				</Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
+				<Row width="100%" mainAlignment="flex-start">
 					<InheritedSwitch
 						accountValue={accountDetail?.zimbraPrefSaveToSent}
 						onChange={changeSwitchOption}
@@ -555,7 +569,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onChangeReset={(): void => setEmptyValue('zimbraPrefSaveToSent')}
 					/>
 				</Row>
-				<Row width="48%" mainAlignment="flex-start">
+			</Row>
+			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+				<Row width="35%" mainAlignment="flex-start">
 					<InheritedSwitch
 						accountValue={accountDetail?.zimbraAllowAnyFromAddress}
 						onChange={changeSwitchOption}
@@ -570,9 +586,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onChangeReset={(): void => setEmptyValue('zimbraAllowAnyFromAddress')}
 					/>
 				</Row>
-			</Row>
-			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="100%" mainAlignment="flex-start">
+				<Row width="65%" mainAlignment="flex-start">
 					<ChipInput
 						placeholder={t('label.allowed_sending_addresses', 'Allowed sending Addresses')}
 						background="gray5"
@@ -591,6 +605,21 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={zimbraAllowFromAddress}
 						hasError={some(zimbraAllowFromAddress || [], { error: true })}
 						ChipComponent={CustomChip}
+					/>
+				</Row>
+			</Row>
+			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+				<Row width="100%" mainAlignment="flex-start">
+					<InheritedSelect
+						label={t('label.read_receipt_settings', 'Read Receipt settings')}
+						items={SEND_READ_RECEIPTS}
+						accountValue={accountDetail?.zimbraPrefMailSendReadReceipts}
+						cosValue={cosDetail.zimbraPrefMailSendReadReceipts}
+						fromAccount={accSpecificDetail?.zimbraPrefMailSendReadReceipts}
+						background="gray5"
+						selectName="zimbraPrefMailSendReadReceipts"
+						onChange={onReadReceiptChange}
+						onChangeReset={(): void => setEmptyValue('zimbraPrefMailSendReadReceipts')}
 					/>
 				</Row>
 			</Row>
