@@ -1040,12 +1040,7 @@ const EditAccountDelegatesSection: FC = () => {
 						</Row>
 					</Container>
 					<Container mainAlignment="flex-start">
-						<Row
-							width="100%"
-							padding={{ top: 'large' }}
-							margin={{ top: 'large' }}
-							mainAlignment="space-between"
-						>
+						<Row width="100%" padding={{ top: 'large' }} mainAlignment="space-between">
 							<Button
 								label={t(
 									'account_details.add_the_account_group_with_selected_rights',
@@ -1079,12 +1074,7 @@ const EditAccountDelegatesSection: FC = () => {
 						>
 							<Row width="30%" mainAlignment="flex-start" height="auto">
 								<Row width="11rem" padding={{ bottom: 'large' }}>
-									<Text
-										weight="light"
-										size="large"
-										overflow="break-word"
-										margin={{ bottom: 'large' }}
-									>
+									<Text weight="light" size="large" overflow="break-word">
 										<Trans
 											i18nKey="account_details.account_with_read_write_rights"
 											defaults="Accounts with <bold>Read/Write</bold> rights"
@@ -1096,9 +1086,13 @@ const EditAccountDelegatesSection: FC = () => {
 									rows={filter(identityListItem, { writeFolder: true, readFolder: true })}
 									headers={simplifiedViewTableHeader}
 									multiSelect={false}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setReadWriteSelectedRows}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1133,12 +1127,7 @@ const EditAccountDelegatesSection: FC = () => {
 							</Row>
 							<Row width="30%" mainAlignment="flex-start" height="auto">
 								<Row width="11rem" padding={{ bottom: 'large' }}>
-									<Text
-										weight="light"
-										size="large"
-										overflow="break-word"
-										margin={{ bottom: 'large' }}
-									>
+									<Text weight="light" size="large" overflow="break-word">
 										<Trans
 											i18nKey="account_details.account_with_read_only_rights"
 											defaults="Accounts with <bold>Read Only</bold> rights"
@@ -1150,9 +1139,13 @@ const EditAccountDelegatesSection: FC = () => {
 									rows={filter(identityListItem, { writeFolder: false, readFolder: true })}
 									headers={simplifiedViewTableHeader}
 									multiSelect={false}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setReadSelectedRows}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1187,12 +1180,7 @@ const EditAccountDelegatesSection: FC = () => {
 							</Row>
 							<Row width="30%" mainAlignment="flex-start" height="auto">
 								<Row width="16rem" padding={{ bottom: 'large' }}>
-									<Text
-										weight="light"
-										size="large"
-										overflow="break-word"
-										margin={{ bottom: 'large' }}
-									>
+									<Text weight="light" size="large" overflow="break-word">
 										<Trans
 											i18nKey="account_details.account_with_send_rights"
 											defaults="Account with <bold>SendAs/SendonBehalf</bold> rights on"
@@ -1203,10 +1191,14 @@ const EditAccountDelegatesSection: FC = () => {
 								<Table
 									rows={filter(identityListItem, { sendRights: true })}
 									headers={simplifiedViewTableHeader}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setSendSelectedRows}
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1264,7 +1256,6 @@ const EditAccountDelegatesSection: FC = () => {
 											icon="PlusOutline"
 											iconPlacement="right"
 											color="primary"
-											height={44}
 											onClick={(): void => handleCreateDelegate()}
 										/>
 									</Padding>
@@ -1275,7 +1266,6 @@ const EditAccountDelegatesSection: FC = () => {
 											icon="Edit2Outline"
 											iconPlacement="right"
 											color="secondary"
-											height={44}
 											onClick={(): void => handleEditDelegate()}
 										/>
 									</Padding>
@@ -1285,7 +1275,6 @@ const EditAccountDelegatesSection: FC = () => {
 										icon="CloseOutline"
 										iconPlacement="right"
 										color="error"
-										height={44}
 										disabled={!selectedRows?.length}
 										onClick={(): void => handleDeleteeDelegate()}
 									/>
@@ -1300,9 +1289,13 @@ const EditAccountDelegatesSection: FC = () => {
 											rows={identityListItem}
 											headers={headers}
 											multiSelect={false}
+											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// @ts-ignore // Need to fix it with custom soultion
 											onSelectionChange={setSelectedRows}
 											style={{ overflow: 'auto', height: '100%' }}
 											RowFactory={CustomRowFactory}
+											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// @ts-ignore // Need to fix it with custom soultion
 											HeaderFactory={CustomHeaderFactory}
 										/>
 									)}

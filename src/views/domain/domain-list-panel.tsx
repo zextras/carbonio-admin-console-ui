@@ -462,13 +462,12 @@ const DomainListPanel: FC = () => {
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -499,10 +498,6 @@ const DomainListPanel: FC = () => {
 						label: domain.name,
 						customComponent: (
 							<SelectItem
-								top="0.563rem"
-								right="large"
-								bottom="0.563rem"
-								left="large"
 								style={{
 									display: 'block',
 									textAlign: 'left',
@@ -537,7 +532,7 @@ const DomainListPanel: FC = () => {
 				/>
 			)}
 
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+			<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 				<DropDownInput
 					items={isLoading ? loadingComponent : items}
 					inputLabel={

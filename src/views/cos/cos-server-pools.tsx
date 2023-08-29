@@ -41,6 +41,7 @@ const CosServerPools: FC = () => {
 	const [zimbraMailHostPoolList, setZimbraMailHostPoolList] = useState<Array<any>>([]);
 	const [serverTableRows, setServerTableRows] = useState<Array<any>>([]);
 	const [selectedTableRows, setSelectedTableRows] = useState<Array<any>>([]);
+	const [selectedTableRowsId, setSelectedTableRowsId] = useState<Array<any>>([]);
 	const [openConfirmDialog, setOpenConfirmDialog] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const setCos = useCosStore((state) => state.setCos);
@@ -74,6 +75,7 @@ const CosServerPools: FC = () => {
 						onClick={(e: { stopPropagation: () => void }): void => {
 							e.stopPropagation();
 							setSelectedTableRows([item]);
+							setSelectedTableRowsId([item?.id]);
 						}}
 					>
 						<Text size="small" weight="regular" key={item?.id} color="gray0">
@@ -87,6 +89,7 @@ const CosServerPools: FC = () => {
 						onClick={(e: { stopPropagation: () => void }): void => {
 							e.stopPropagation();
 							setSelectedTableRows([item]);
+							setSelectedTableRowsId([item?.id]);
 						}}
 					>
 						<Text key={item?.id}>
@@ -110,14 +113,15 @@ const CosServerPools: FC = () => {
 	const enable = useMemo(
 		() =>
 			selectedTableRows.length > 0 &&
-			!zimbraMailHostPoolList.find((sp: any) => selectedTableRows[0] === sp?._content)?.c,
+			!zimbraMailHostPoolList.find((sp: any) => selectedTableRows[0]?.id === sp?._content)?.c,
 		[selectedTableRows, zimbraMailHostPoolList]
 	);
 
 	const disable = useMemo(
 		() =>
-			selectedTableRows.length > 0 &&
-			zimbraMailHostPoolList.find((sp: any) => selectedTableRows[0] === sp?._content)?.c,
+			(selectedTableRows.length > 0 &&
+				zimbraMailHostPoolList.find((sp: any) => selectedTableRows[0]?.id === sp?._content)?.c) ||
+			false,
 		[selectedTableRows, zimbraMailHostPoolList]
 	);
 
@@ -151,6 +155,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text size="small" weight="regular" key={item?.id} color="gray0">
@@ -164,6 +169,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text key={item?.id}>
@@ -197,6 +203,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text size="small" weight="regular" key={item?.id} color="gray0">
@@ -210,6 +217,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text key={item?.id}>
@@ -283,6 +291,7 @@ const CosServerPools: FC = () => {
 					}
 					setOpenConfirmDialog(false);
 					setSelectedTableRows([]);
+					setSelectedTableRowsId([]);
 				})
 				.catch((error) => {
 					createSnackbar({
@@ -312,18 +321,18 @@ const CosServerPools: FC = () => {
 		});
 		attributes.push({
 			n: 'zimbraMailHostPool',
-			_content: selectedTableRows[0]
+			_content: selectedTableRows[0]?.id
 		});
 		body.a = attributes;
 		body.id = {
 			_content: cosId
 		};
 		onModifyCOS(body);
-	}, [selectedTableRows, zimbraMailHostPoolList, onModifyCOS, cosId]);
+	}, [selectedTableRows, onModifyCOS, zimbraMailHostPoolList, cosId]);
 
 	const onDisableServer = useCallback(() => {
 		const allServers = zimbraMailHostPoolList.filter(
-			(item: any) => item?._content !== selectedTableRows[0]
+			(item: any) => item?._content !== selectedTableRows[0]?.id
 		);
 		const attributes: any[] = [];
 		const body: any = {};
@@ -368,6 +377,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text size="small" weight="regular" key={item?.id} color="gray0">
@@ -381,6 +391,7 @@ const CosServerPools: FC = () => {
 								onClick={(ev: { stopPropagation: () => void }): void => {
 									ev.stopPropagation();
 									setSelectedTableRows([item]);
+									setSelectedTableRowsId([item?.id]);
 								}}
 							>
 								<Text key={item?.id}>
@@ -420,7 +431,7 @@ const CosServerPools: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -478,7 +489,7 @@ const CosServerPools: FC = () => {
 					</ListRow>
 					{zimbraMailHostPool && (
 						<>
-							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Row mainAlignment="flex-start" width="100%">
 								<Container orientation="vertical" mainAlignment="space-around" height="56px">
 									<Row orientation="horizontal" width="100%">
 										<Row
@@ -547,7 +558,9 @@ const CosServerPools: FC = () => {
 									rows={serverTableRows}
 									headers={tableHeader}
 									showCheckbox={false}
-									selectedRows={selectedTableRows}
+									selectedRows={selectedTableRowsId}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 									RowFactory={CustomRowFactory}
 								/>
@@ -565,14 +578,17 @@ const CosServerPools: FC = () => {
 					setOpenConfirmDialog(false);
 				}}
 				customFooter={
-					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button
-							label={t('label.helo', 'Help')}
-							type="outlined"
-							color="primary"
-							onClick={hideConfirmDialog}
-						/>
-						<Container orientation="horizontal" mainAlignment="flex-end">
+					<Container orientation="horizontal" mainAlignment="space-between" width="100%">
+						<Container orientation="horizontal" mainAlignment="flex-start" width="25%">
+							<Button
+								label={t('label.helo', 'Help')}
+								type="outlined"
+								color="primary"
+								onClick={hideConfirmDialog}
+							/>
+						</Container>
+
+						<Container orientation="horizontal" mainAlignment="flex-end" width="75%">
 							<Padding all="small">
 								<Button
 									label={t('label.no_go_back', 'No, Go Back')}

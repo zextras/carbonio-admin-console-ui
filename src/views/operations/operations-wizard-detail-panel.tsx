@@ -112,7 +112,6 @@ const OperationsWizardDetailPanel: FC<{
 			<Divider />
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
 				<Row
-					takeAvwidth="fill"
 					mainAlignment="flex-end"
 					crossAlignment="flex-end"
 					width="100%"
@@ -151,7 +150,7 @@ const OperationsWizardDetailPanel: FC<{
 						<ListRow>
 							<Container padding={{ right: 'small' }}>
 								<Input
-									background="gray6"
+									backgroundColor="gray6"
 									label={t('operations.label.operation_type', 'Operation Type')}
 									value={selectedData?.module || ''}
 									readOnly
@@ -159,7 +158,7 @@ const OperationsWizardDetailPanel: FC<{
 							</Container>
 							<Container padding={{ right: 'small', left: 'small' }}>
 								<Input
-									background="gray6"
+									backgroundColor="gray6"
 									label={t('operations.label.who_started_it', 'Who started it?')}
 									value={selectedData?.parameters?.requesterAddress || ''}
 									readOnly
@@ -167,7 +166,7 @@ const OperationsWizardDetailPanel: FC<{
 							</Container>
 							<Container padding={{ left: 'small' }}>
 								<Input
-									background="gray6"
+									backgroundColor="gray6"
 									label={t('operations.label.status', 'Status')}
 									value={status || ''}
 									readOnly
@@ -179,7 +178,7 @@ const OperationsWizardDetailPanel: FC<{
 						<ListRow>
 							<Container padding={{ right: 'small' }}>
 								<Input
-									background="gray6"
+									backgroundColor="gray6"
 									label={t('operations.label.submitted_at', 'Submitted at')}
 									value={selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''}
 									readOnly
@@ -187,7 +186,7 @@ const OperationsWizardDetailPanel: FC<{
 							</Container>
 							<Container padding={{ left: 'small' }}>
 								<Input
-									background="gray6"
+									backgroundColor="gray6"
 									label={t('operations.label.started_at', 'Started at')}
 									value={selectedData?.queuedTime ? MiliSecondToDate(selectedData?.queuedTime) : ''}
 									readOnly
@@ -205,7 +204,7 @@ const OperationsWizardDetailPanel: FC<{
 					</Text>
 					<Row width="100%" padding={{ top: 'large' }}>
 						<Input
-							background="gray6"
+							backgroundColor="gray6"
 							label={t('operations.label.notifications', 'Notifications')}
 							value={
 								selectedData?.parameters?.additionalNotificationAddresses &&
@@ -218,7 +217,7 @@ const OperationsWizardDetailPanel: FC<{
 						<ListRow>
 							<Container padding={{ right: 'small' }}>
 								<Input
-									background="gray6"
+									backgroundColor="gray6"
 									label={t('operations.label.create_fake_blob', 'Create Fake Blob')}
 									value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERTION : FALSE_OPERTION}
 									readOnly
@@ -226,7 +225,7 @@ const OperationsWizardDetailPanel: FC<{
 							</Container>
 							<Container padding={{ left: 'small' }}>
 								<Input
-									background="gray6"
+									backgroundColor="gray6"
 									label={t('operations.label.Deep', 'Deep')}
 									value={selectedData?.parameters?.isDeep ? TRUE_OPERTION : FALSE_OPERTION}
 									readOnly

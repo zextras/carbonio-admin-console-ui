@@ -32,13 +32,7 @@ const ResourceCreateSection: FC = () => {
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.details', 'Details')}
 					</Text>
 				</Row>
@@ -53,14 +47,13 @@ const ResourceCreateSection: FC = () => {
 							label={t('label.resource_name', 'ResourceName')}
 							backgroundColor="gray6"
 							value={resourceDetail?.displayName}
-							size="medium"
 							readOnly
 						/>
 					</Container>
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -70,7 +63,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.name', 'Name')}
 								backgroundColor="gray6"
 								value={resourceDetail?.name}
-								size="medium"
 								readOnly
 							/>
 						</Row>
@@ -82,7 +74,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.domain', 'Domain')}
 								backgroundColor="gray6"
 								value={resourceDetail?.domain}
-								size="medium"
 								readOnly
 							/>
 						</Row>
@@ -90,7 +81,7 @@ const ResourceCreateSection: FC = () => {
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -100,7 +91,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.type', 'Type')}
 								backgroundColor="gray6"
 								value={resourceDetail?.zimbraCalResType?.label}
-								size="medium"
 								readOnly
 							/>
 						</Container>
@@ -109,7 +99,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.status', 'Status')}
 								backgroundColor="gray6"
 								value={resourceDetail?.zimbraAccountStatus?.label}
-								size="medium"
 								readOnly
 							/>
 						</Container>
@@ -118,7 +107,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.class_of_service', 'Class of Service')}
 								backgroundColor="gray6"
 								value={resourceDetail?.zimbraCOSId?.label}
-								size="medium"
 								readOnly
 							/>
 						</Container>
@@ -126,7 +114,7 @@ const ResourceCreateSection: FC = () => {
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -136,7 +124,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								backgroundColor="gray6"
 								value={resourceDetail?.zimbraCalResAutoDeclineRecurring?.label}
-								size="medium"
 								readOnly
 							/>
 						</Container>
@@ -145,7 +132,6 @@ const ResourceCreateSection: FC = () => {
 								label={t('label.maximum_conflict', 'Maximum Conflict')}
 								backgroundColor="gray6"
 								value={resourceDetail.zimbraCalResMaxNumConflictsAllowed}
-								size="medium"
 								readOnly
 							/>
 						</Container>
@@ -161,7 +147,7 @@ const ResourceCreateSection: FC = () => {
 				</ListRow>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}
@@ -170,7 +156,6 @@ const ResourceCreateSection: FC = () => {
 							label={t('label.schedule_policy', 'Set Policy')}
 							backgroundColor="gray6"
 							value={resourceDetail?.schedulePolicyType?.label}
-							size="medium"
 							readOnly
 						/>
 					</Container>
@@ -188,19 +173,13 @@ const ResourceCreateSection: FC = () => {
 					<Divider color="gray3" />
 				</Row>
 				<Row padding={{ top: 'large' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
-						{t('label.notes', 'Notes')}
+					<Text size="small" weight="bold">
+						{t('label.description', 'Description')}
 					</Text>
 				</Row>
 				<ListRow>
 					<Container
-						mainAlignment="space-beetween"
+						mainAlignment="space-between"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large' }}

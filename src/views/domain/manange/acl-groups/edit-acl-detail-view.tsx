@@ -160,7 +160,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				value: TRUE_FALSE.TRUE
 			},
 			{
-				label: t('label.not_send_receive', 'Not Send & Receive'),
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
 				value: TRUE_FALSE.FALSE
 			}
 		],
@@ -774,10 +774,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -1411,10 +1407,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -1436,10 +1428,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -1721,21 +1709,11 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.cancel', 'Cancel')}
-										color="secondary"
-										onClick={onUndo}
-										height={36}
-									/>
+									<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
 								)}
 							</Padding>
 							{isDirty && (
-								<Button
-									label={t('label.save', 'Save')}
-									color="primary"
-									onClick={onSave}
-									height={36}
-								/>
+								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 							)}
 						</Container>
 					)}
@@ -1769,7 +1747,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
-							background="gray5"
+							backgroundColor="gray5"
 							onChange={(e: any): any => {
 								setDisplayName(e.target.value);
 							}}
@@ -1787,7 +1765,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							label={t('label.list_name', 'List Name')}
 							backgroundColor="gray5"
 							value={distributionName}
-							size="medium"
 							inputName="prefixName"
 							onChange={(e: any): any => {
 								setDistributionName(e.target.value);
@@ -1828,7 +1805,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						<Input
 							label={t('label.share_message_to_new_member', 'Share message to new members')}
 							backgroundColor="gray6"
-							size="medium"
 							value={
 								zimbraDistributionListSendShareMessageToNewMembers
 									? t('label.yes', 'Yes')
@@ -1846,7 +1822,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						<Input
 							label={t('label.hidden_from_gal', 'Hidden from GAL')}
 							backgroundColor="gray6"
-							size="medium"
 							value={zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
 							readOnly
 						/>
@@ -1860,7 +1835,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						<Input
 							label={t('label.can_receive_email', 'Can receive email')}
 							backgroundColor="gray6"
-							size="medium"
 							value={
 								zimbraMailStatus?.value === 'TRUE' ? t('label.yes', 'Yes') : t('label.no', 'No')
 							}
@@ -1872,7 +1846,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					<Container padding={{ top: 'small', bottom: 'medium' }}>
 						<Textarea
 							value={zimbraNotes}
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							background="gray5"
 							onChange={(e: any): any => {
 								setZimbraNotes(e.target.value);
@@ -1889,7 +1863,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							</Text>
 						</Row>
 						<Row
-							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							width="100%"
 							padding={{ top: 'small', bottom: isShowMemberError ? 'extrasmall' : 'small' }}
@@ -1923,7 +1896,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 													'Type the Accounts or paste them here'
 												)}
 												value={searchMember}
-												background="gray5"
+												backgroundColor="gray5"
 												onChange={(e: any): any => {
 													setSearchMember(e.target.value);
 												}}
@@ -1940,7 +1913,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 												label={t('label.add', 'Add')}
 												color="primary"
 												icon="PlusOutline"
-												height={44}
 												iconPlacement="right"
 												onClick={onAdd}
 												size="extralarge"
@@ -1957,7 +1929,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 											iconPlacement="right"
 											size="extralarge"
 											disabled={selectedDistributionListMember.length === 0}
-											height={44}
 											onClick={onDeleteFromList}
 										/>
 									</Row>
@@ -1967,7 +1938,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						{isShowMemberError && (
 							<Row>
 								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-									<Padding>
+									<Padding all="small">
 										<Text size="extrasmall" weight="regular" color="error">
 											{memberErrorMessage}
 										</Text>
@@ -1984,6 +1955,8 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						showCheckbox={false}
 						selectedRows={selectedDistributionListMember}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -1997,17 +1970,17 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							crossAlignment="center"
 						>
 							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_not_member_here', 'There aren’t members here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',
@@ -2032,24 +2005,15 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				</ListRow>
 
 				<Row padding={{ top: 'small', bottom: 'medium' }}>
-					<Text
-						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						weight="bold"
-						color="gray0"
-					>
+					<Text size="medium" weight="bold" color="gray0">
 						{t('label.owners_settings_lbl', 'Owners’ Settings')}
 					</Text>
 				</Row>
 				<Row>
 					<Text
 						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
 						color="secondary"
-						style={{ 'white-space': 'normal' }}
+						style={{ whiteSpace: 'normal' }}
 						overflow="break-word"
 					>
 						{t(
@@ -2060,7 +2024,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				</Row>
 
 				<Row
-					takeAvwidth="fill"
 					mainAlignment="flex-start"
 					width="100%"
 					padding={{ top: 'small', bottom: isShowOwnerError ? 'extrasmall' : 'small' }}
@@ -2094,7 +2057,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 											'Type the Accounts or paste them here'
 										)}
 										backgroundColor="gray5"
-										size="medium"
 										value={searchOwner}
 										onChange={(e: any): void => {
 											setSearchOwner(e.target.value);
@@ -2111,7 +2073,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 										label={t('label.add', 'Add')}
 										color="primary"
 										icon="PlusOutline"
-										height={44}
 										iconPlacement="right"
 										onClick={onAddOwner}
 										size="extralarge"
@@ -2128,7 +2089,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 									iconPlacement="right"
 									size="extralarge"
 									disabled={selectedOwnerListMember.length === 0}
-									height={44}
 									onClick={onDeleteFromOwnerList}
 								/>
 							</Row>
@@ -2137,7 +2097,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					{isShowOwnerError && (
 						<Row>
 							<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-								<Padding>
+								<Padding all={'0'}>
 									<Text size="extrasmall" weight="regular" color="error">
 										{ownerErrorMessage}
 									</Text>
@@ -2160,6 +2120,8 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						showCheckbox={false}
 						selectedRows={selectedOwnerListMember}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -2173,17 +2135,17 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							crossAlignment="center"
 						>
 							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_no_owners', 'There aren’t owners here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',
@@ -2222,7 +2184,12 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				size="medium"
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button label={t('label.help', 'Help')} type="outlined" color="primary" isSmall />
+						<Button
+							label={t('label.help', 'Help')}
+							type="outlined"
+							color="primary"
+							onClick={(): null => null}
+						/>
 						<Container orientation="horizontal" mainAlignment="flex-end">
 							<Padding all="small">
 								<Button
@@ -2264,7 +2231,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					>
 						<Input
 							value={searchAclListOrUser}
-							background="gray5"
+							backgroundColor="gray5"
 							onChange={(e: any): void => {
 								setSearchAclListOrUser(e.target.value);
 							}}

@@ -80,6 +80,8 @@ const DomainDelegatedTable: FC<{
 	return (
 		<Container crossAlignment="flex-start" style={{ overflowY: 'scroll' }}>
 			<Table
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				headers={headers}
 				rows={tableRows}
 				showCheckbox={false}
@@ -87,6 +89,8 @@ const DomainDelegatedTable: FC<{
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
 				RowFactory={CustomRowFactory}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows?.length === 0 && (
@@ -99,8 +103,6 @@ const DomainDelegatedTable: FC<{
 							color="gray1"
 							overflow="break-word"
 							weight="regular"
-							size="large"
-							width="60%"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>
 							{t(
@@ -383,7 +385,7 @@ const ManageDelegates: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
 						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 							<Row mainAlignment="flex-start" width="80%" crossAlignment="flex-start">
@@ -436,12 +438,7 @@ const ManageDelegates: FC = () => {
 					<Row orientation="horizontal" width="100%" background="gray6">
 						<Divider />
 					</Row>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 						<Row
 							mainAlignment="flex-start"
 							width="100%"
@@ -458,7 +455,7 @@ const ManageDelegates: FC = () => {
 							<Input
 								label={t('label.account', 'Account')}
 								value={accountName}
-								background="gray5"
+								backgroundColor="gray5"
 								inputName="username"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setAccountName(e.target.value);
@@ -473,6 +470,8 @@ const ManageDelegates: FC = () => {
 								background="gray5"
 								showCheckbox={false}
 								selection={selectedOption}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onOptionChange}
 								disabled={isDisableRights}
 								onClick={(): void => {
@@ -492,13 +491,7 @@ const ManageDelegates: FC = () => {
 							/>
 						</Padding>
 					</ListRow>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						wrap="nowrap"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
 						<DomainDelegatedTable
 							domainList={accountDistributionList}
 							headers={delegateDomainHeadersList}

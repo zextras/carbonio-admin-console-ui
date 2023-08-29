@@ -221,7 +221,7 @@ const DomainList: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -248,7 +248,7 @@ const DomainList: FC = () => {
 				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -262,11 +262,11 @@ const DomainList: FC = () => {
 									label={t('label.i_am_looking_for_this_domain', `I'm looking for this domain…`)}
 									disabled={domainList.length === 0 && searchString.length === 0}
 									value={searchString}
-									background="gray5"
+									backgroundColor="gray5"
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setSearchString(e.target.value);
 									}}
-									CustomIcon={(): React.ReactChild => (
+									CustomIcon={(): JSX.Element => (
 										<Icon icon="FunnelOutline" size="large" color="primary" />
 									)}
 								/>
@@ -288,6 +288,8 @@ const DomainList: FC = () => {
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}

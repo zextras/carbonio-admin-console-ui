@@ -750,6 +750,8 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'small' }} width="100%">
 							<Input
 								label={t('label.volume_name', 'Volume Name')}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								value={name}
 								backgroundColor="gray5"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -759,11 +761,17 @@ const ModifyVolume: FC<{
 						</Row>
 						<Row padding={{ top: 'large' }} width="100%">
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={volTypeList}
-								background="gray5"
+								backgroundColor="gray5"
 								label={t('label.volume_main', 'Volume Main')}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								selection={type}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onVolumeTypeChange}
 								disabled
 							/>
@@ -771,6 +779,8 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'large' }} width="100%">
 							<Input
 								label={t('label.volume_id', 'Volume ID')}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								value={id}
 								backgroundColor="gray6"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setId(e?.target?.value)}
@@ -779,6 +789,8 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'large' }} width="100%">
 							<Input
 								label={t('label.path', 'Path')}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								value={rootpath}
 								backgroundColor="gray5"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -796,12 +808,14 @@ const ModifyVolume: FC<{
 							width="100%"
 							mainAlignment="center"
 							crossAlignment="center"
-							backgroundColor="gray6"
+							background="gray6"
 						>
 							<Row width="48%">
 								<Radio
 									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={PRIMARY_TYPE_VALUE}
 									checked={type?.value === 1}
 									onClick={(): void => {
@@ -814,6 +828,8 @@ const ModifyVolume: FC<{
 								<Radio
 									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={SECONDARY_TYPE_VALUE}
 									checked={type?.value === 2}
 									onClick={(): void => {
@@ -828,6 +844,8 @@ const ModifyVolume: FC<{
 								<>
 									<Row width="48%" mainAlignment="flex-start">
 										<Switch
+											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// @ts-ignore // Need to fix it with custom soultion
 											value={compressBlobs}
 											label={t('label.enable_compression', 'Enable Compression')}
 											onClick={(): void => setCompressBlobs(!compressBlobs)}
@@ -842,7 +860,7 @@ const ModifyVolume: FC<{
 											</Text>
 										</Padding>
 									</Row>
-									<Padding width="4%" />
+									<Padding horizontal="small" />
 								</>
 							)}
 							<Row width="48%" mainAlignment="flex-start">
@@ -856,7 +874,11 @@ const ModifyVolume: FC<{
 									disabled={!isCurrent}
 								>
 									<Switch
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										ref={isCurrentRef}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										value={isCurrent}
 										label={t('label.enable_current', 'Enable as Current')}
 										onClick={(): void => {
@@ -872,6 +894,8 @@ const ModifyVolume: FC<{
 								<Row padding={{ top: 'small' }} width="50%">
 									<Input
 										label={t('label.compression_threshold', 'Compression Threshold')}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										value={compressionThreshold}
 										backgroundColor="gray6"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -903,15 +927,18 @@ const ModifyVolume: FC<{
 								label={t('label.volume_server_name', 'Server')}
 								value={selectedServerName}
 								backgroundColor="gray5"
-								readyOnly
 							/>
 						</Row>
 						<Row padding={{ top: 'large' }} width="100%">
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={volAllocationList}
 								background="gray5"
 								label={t('label.storage_type', 'Storage Type')}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								selection={allocation}
 								disabled
 							/>
@@ -919,6 +946,8 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'large' }} width="100%">
 							<Input
 								label={t('label.volume_name', 'Volume Name')}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								value={name}
 								backgroundColor="gray6"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -930,6 +959,8 @@ const ModifyVolume: FC<{
 							<>
 								<Row padding={{ top: 'large' }} width="100%">
 									<Select
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										items={backupUnusedBucketList}
 										background="gray5"
 										label={t(
@@ -937,9 +968,13 @@ const ModifyVolume: FC<{
 											'Available Buckets List (that are not in use in the backup)'
 										)}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										selection={backupUnusedBucketList?.find(
 											(b: Bucket) => b.value === bucketConfigurationId
 										)}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onUnusedBucketListChange}
 									/>
 								</Row>
@@ -993,12 +1028,14 @@ const ModifyVolume: FC<{
 							width="100%"
 							mainAlignment="center"
 							crossAlignment="center"
-							backgroundColor="gray6"
+							background="gray6"
 						>
 							<Row width="48%">
 								<Radio
 									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={PRIMARY_TYPE_VALUE}
 									checked={type?.value === 1}
 									onClick={(): void => {
@@ -1011,6 +1048,8 @@ const ModifyVolume: FC<{
 								<Radio
 									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={SECONDARY_TYPE_VALUE}
 									checked={type?.value === 2}
 									onClick={(): void => {
@@ -1045,7 +1084,7 @@ const ModifyVolume: FC<{
 									padding={{ top: 'large' }}
 									mainAlignment="flex-start"
 									width="100%"
-									backgroundColor="gray6"
+									background="gray6"
 								>
 									<Input
 										inputName="infrequentAccessThreshold"
@@ -1116,7 +1155,11 @@ const ModifyVolume: FC<{
 								disabled={!isCurrent}
 							>
 								<Switch
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									ref={isCurrentRef}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={isCurrent}
 									label={t('label.enable_current', 'Enable as Current')}
 									onClick={(): void => {

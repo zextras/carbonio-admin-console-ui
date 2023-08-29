@@ -33,7 +33,6 @@ const DomainHeader: FC = () => {
 				icon="CheckmarkCircleOutline"
 				iconPlacement="left"
 				color="primary"
-				height="44px"
 				onClick={setDetailView}
 				forceActive={domainView === DOMAIN_DETAIL_VIEW}
 			/>
@@ -43,7 +42,6 @@ const DomainHeader: FC = () => {
 				icon="AdminPanelOutline"
 				iconPlacement="left"
 				color="primary"
-				height="44px"
 				onClick={setManageView}
 				forceActive={domainView === DOMAIN_MANAGE_VIEW}
 			/>

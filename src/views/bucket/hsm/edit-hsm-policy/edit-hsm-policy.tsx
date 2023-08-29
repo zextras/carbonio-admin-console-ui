@@ -87,10 +87,12 @@ const EditHsmPolicy: FC<{
 	}> = ({ item, index, selected, onClick }): ReactElement => (
 		<DefaultTabBarItem
 			item={item}
-			index={index}
 			selected={selected}
 			onClick={onClick}
 			orientation="horizontal"
+			background={'transparent'}
+			underlineColor={'primary'}
+			forceWidthEquallyDistributed={false}
 		>
 			<Row padding="small">
 				<Padding horizontal="small">
@@ -133,7 +135,7 @@ const EditHsmPolicy: FC<{
 					width: '40rem',
 					overflow: 'hidden',
 					transition: 'left 0.2s ease-in-out',
-					'box-shadow': '-0.375rem 0.25rem 0.313rem 0rem rgba(0, 0, 0, 0.1)'
+					boxShadow: '-0.375rem 0.25rem 0.313rem 0rem rgba(0, 0, 0, 0.1)'
 				}}
 			>
 				<Row
@@ -193,6 +195,8 @@ const EditHsmPolicy: FC<{
 				>
 					<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<TabBar
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							items={items}
 							selected={change}
 							onChange={(ev: unknown, selectedId: string): void => {

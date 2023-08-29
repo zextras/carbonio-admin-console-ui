@@ -137,7 +137,7 @@ const AclListDetail: FC<any> = ({
 				value: TRUE_FALSE.TRUE
 			},
 			{
-				label: t('label.not_send_receive', 'Not Send & Receive'),
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
 				value: TRUE_FALSE.FALSE
 			}
 		],
@@ -635,8 +635,7 @@ const AclListDetail: FC<any> = ({
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
-							background="gray6"
-							readOnly
+							backgroundColor="gray6"
 						/>
 					</Container>
 
@@ -644,25 +643,23 @@ const AclListDetail: FC<any> = ({
 						<Input
 							label={t('label.address', 'Address')}
 							value={distributionName}
-							background="gray6"
+							backgroundColor="gray6"
 						/>
 					</Container>
 				</ListRow>
 				<ListRow>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input
-							background="gray6"
+							backgroundColor="gray6"
 							label={t('label.new_subscription_requests', 'New subscriptions requests')}
-							readOnly
 							value={zimbraDistributionListSubscriptionPolicy?.label}
 						/>
 					</Container>
 
 					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
-							background="gray6"
+							backgroundColor="gray6"
 							label={t('label.unsubscribe_request', 'Unsubscription requests')}
-							readOnly
 							value={zimbraDistributionListUnsubscriptionPolicy?.label}
 						/>
 					</Container>
@@ -670,9 +667,8 @@ const AclListDetail: FC<any> = ({
 				<ListRow>
 					<Container padding={{ right: 'small', top: 'small' }}>
 						<Input
-							background="gray6"
+							backgroundColor="gray6"
 							label={t('label.rights', 'Rights')}
-							readOnly
 							value={zimbraMailStatus?.label}
 						/>
 					</Container>
@@ -744,16 +740,14 @@ const AclListDetail: FC<any> = ({
 						<Input
 							label={t('label.members', 'Members')}
 							value={dlm.length}
-							background="gray6"
-							readOnly
+							backgroundColor="gray6"
 						/>
 					</Container>
 					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
 							label={t('label.alias_in_the_list', 'Alias in the List')}
 							value={zimbraMailAlias.length}
-							background="gray6"
-							readOnly
+							backgroundColor="gray6"
 						/>
 					</Container>
 				</ListRow>
@@ -763,7 +757,7 @@ const AclListDetail: FC<any> = ({
 							<Input
 								label={t('label.list_url', "Acl List's URL")}
 								value={memberURL}
-								background="gray6"
+								backgroundColor="gray6"
 								readOnly
 								CustomIcon={(): any => (
 									<Icon icon="CopyOutline" size="large" color="grey" onClick={onCopyLink} />
@@ -774,14 +768,13 @@ const AclListDetail: FC<any> = ({
 				)}
 				<ListRow>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
-						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray6" readOnly />
+						<Input label={t('label.id_lbl', 'ID')} value={dlId} backgroundColor="gray6" readOnly />
 					</Container>
 					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
 							label={t('label.creation_date', 'Creation Date')}
 							value={dlCreateDate}
-							background="gray6"
-							readOnly
+							backgroundColor="gray6"
 						/>
 					</Container>
 				</ListRow>
@@ -803,6 +796,8 @@ const AclListDetail: FC<any> = ({
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
@@ -821,6 +816,8 @@ const AclListDetail: FC<any> = ({
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
@@ -840,6 +837,8 @@ const AclListDetail: FC<any> = ({
 							showCheckbox={false}
 							style={{ overflow: 'auto', height: '100%' }}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -848,8 +847,8 @@ const AclListDetail: FC<any> = ({
 					<Container padding={{ top: 'large' }}>
 						<Input
 							value={zimbraNotes}
-							label={t('label.notes', 'Notes')}
-							background="gray6"
+							label={t('label.description', 'Description')}
+							backgroundColor="gray6"
 							readOnly
 						/>
 					</Container>
@@ -870,6 +869,7 @@ const AclListDetail: FC<any> = ({
 								type="outlined"
 								label={t('label.help', 'Help')}
 								color="primary"
+								onClick={(): null => null}
 							/>
 							<Row style={{ gap: '0.5rem' }}>
 								<Button

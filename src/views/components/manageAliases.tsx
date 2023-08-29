@@ -107,7 +107,6 @@ const ManageAliases: FC<{
 							<Input
 								label={t('account_details.new_alias_name', 'New Alias Name')}
 								backgroundColor="gray5"
-								size="medium"
 								value={aliasNameValue}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setAliasNameValue(e.target.value);
@@ -124,6 +123,8 @@ const ManageAliases: FC<{
 							width="40%"
 						>
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={domainList.map((ele) => ({
 									label: ele.name,
 									value: ele.name
@@ -131,10 +132,14 @@ const ManageAliases: FC<{
 								background="gray5"
 								label={t('account_details.domain', 'Domain')}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								selection={{
 									label: selectedDomainName || domainName,
 									value: selectedDomainName || domainName
 								}}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onDomainOptionChange}
 							/>
 						</Container>

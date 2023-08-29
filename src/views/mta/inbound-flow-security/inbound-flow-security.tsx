@@ -559,19 +559,13 @@ const MTAInboundFlowSecurity: FC = () => {
 									<Button
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
-										height={36}
 										onClick={onCancel}
 									/>
 								)}
 							</Padding>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.save', 'Save')}
-										color="primary"
-										height={36}
-										onClick={onSave}
-									/>
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 								)}
 							</Padding>
 						</Container>
@@ -888,7 +882,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							maxWidth="auto"
 						>
 							<Switch
-								label={t('mta.hostname_in_greetings', 'Hostname in greetings')}
+								label={t('mta.check_client_host_name', 'Check Client Hostname')}
 								value={mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname}
 								onClick={(): void =>
 									setValue(

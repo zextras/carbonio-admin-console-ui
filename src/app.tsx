@@ -492,6 +492,8 @@ const App: FC = () => {
 	const backupPrimaryBar: FC = useCallback(
 		() => (
 			<PrimaryBarIconButton
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				icon={SvgBackupOutline}
 				size="large"
 				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`)}

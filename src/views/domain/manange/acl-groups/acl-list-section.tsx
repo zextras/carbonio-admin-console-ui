@@ -203,10 +203,6 @@ const AclListSection: FC<any> = () => {
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="0.5rem"
-				right="large"
-				bottom="0.5rem"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -324,13 +320,7 @@ const AclListSection: FC<any> = () => {
 				style={{ overflow: 'auto', padding: '1rem' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.security_group_name', 'Security Group Name')}
 					</Text>
 				</Row>
@@ -345,7 +335,6 @@ const AclListSection: FC<any> = () => {
 							label={t('label.displayed_name', 'Displayed Name')}
 							backgroundColor="gray5"
 							value={aclListDetail?.displayName}
-							size="medium"
 							inputName="displayName"
 							onChange={changeResourceDetail}
 						/>
@@ -363,7 +352,6 @@ const AclListSection: FC<any> = () => {
 							label={t('label.list_name', 'List Name')}
 							backgroundColor="gray5"
 							value={aclListDetail?.prefixName}
-							size="medium"
 							inputName="prefixName"
 							onChange={changeResourceDetail}
 						/>
@@ -395,13 +383,7 @@ const AclListSection: FC<any> = () => {
 				{aclListDetail?.dynamic && (
 					<>
 						<Row padding={{ top: 'large' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
+							<Text size="small" weight="bold">
 								{t('label.members', 'Members')}
 							</Text>
 						</Row>
@@ -412,30 +394,19 @@ const AclListSection: FC<any> = () => {
 									headers={memberHeaders}
 									showCheckbox={false}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
 						</ListRow>
 						<Row padding={{ top: 'large' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
+							<Text size="small" weight="bold">
 								{t('label.owners_settings', 'Owners’ Settings')}
 							</Text>
 						</Row>
 						<Row padding={{ top: 'small', bottom: 'medium' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="light"
-								color="#828282"
-							>
+							<Text size="small" weight="light" color="#828282">
 								{t(
 									'label.owners_description',
 									"Owners can manage the acl list's members (adding and removing emails) and modify its options."
@@ -495,7 +466,6 @@ const AclListSection: FC<any> = () => {
 									<Input
 										label={t('label.type_an_account_dot', 'Type an account ...')}
 										backgroundColor="gray5"
-										size="medium"
 										value={member}
 										onChange={(e: any): void => {
 											setMember(e.target.value);
@@ -516,7 +486,6 @@ const AclListSection: FC<any> = () => {
 									color="primary"
 									icon="PlusOutline"
 									iconPlacement="right"
-									height={44}
 									onClick={onAdd}
 									disabled={member === ''}
 								/>
@@ -534,7 +503,6 @@ const AclListSection: FC<any> = () => {
 									color="error"
 									icon="Trash2Outline"
 									iconPlacement="right"
-									height={44}
 									onClick={onDeleteFromList}
 									disabled={
 										selectedDistributionListOwner && selectedDistributionListOwner.length === 0
@@ -551,6 +519,8 @@ const AclListSection: FC<any> = () => {
 									showCheckbox={false}
 									selectedRows={selectedDistributionListOwner}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
@@ -568,7 +538,6 @@ const AclListSection: FC<any> = () => {
 							<Input
 								label={t('label.share_message_to_new_member', 'Share message to new members')}
 								backgroundColor="gray6"
-								size="medium"
 								value={
 									aclListDetail?.zimbraDistributionListSendShareMessageToNewMembers
 										? t('label.yes', 'Yes')
@@ -587,7 +556,6 @@ const AclListSection: FC<any> = () => {
 						<Input
 							label={t('label.hidden_from_gal', 'Hidden from GAL')}
 							backgroundColor="gray6"
-							size="medium"
 							value={aclListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
 							readOnly
 						/>
@@ -601,7 +569,6 @@ const AclListSection: FC<any> = () => {
 						<Input
 							label={t('label.this_list_can_receive_email', 'This list can receive Emails')}
 							backgroundColor="gray6"
-							size="medium"
 							value={aclListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')}
 							readOnly
 						/>
@@ -616,10 +583,9 @@ const AclListSection: FC<any> = () => {
 						padding={{ top: 'small', bottom: 'medium' }}
 					>
 						<Input
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray5"
 							value={aclListDetail?.zimbraNotes}
-							size="medium"
 							inputName="zimbraNotes"
 							onChange={changeResourceDetail}
 						/>

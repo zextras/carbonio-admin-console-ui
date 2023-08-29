@@ -91,7 +91,7 @@ const CreateGalsyncAccountModel: FC<{
 						<Padding top="medium" bottom="small" horizontal="small" width="100%">
 							<Input
 								label={t('label.account_name', 'Account Name')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={galDomainName}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setGalDomainName(e.target.value);
