@@ -19,7 +19,7 @@ import {
 	SnackbarManagerContext,
 	Modal
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, filter, find, isEqual } from 'lodash';
@@ -144,6 +144,7 @@ const DomainGeneralSettings: FC = () => {
 	const [openDeleteDomainConfirmDialog, setOpenDeleteDomainConfirmDialog] =
 		useState<boolean>(false);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
+	const [confirmDomainName, setConfirmDomainName] = useState<string>('');
 	interface Attribute {
 		n: string;
 		_content: string;
@@ -179,7 +180,7 @@ const DomainGeneralSettings: FC = () => {
 		alias: [],
 		calresource: []
 	});
-	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(true);
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
 
@@ -575,7 +576,6 @@ const DomainGeneralSettings: FC = () => {
 				'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
 			searchDirectory(attrs, type, domainName, '', offset, limit).then(
 				(data: SearchDomainDirectoies) => {
-					setIsRequestInProgress(false);
 					if (data?.account?.length) {
 						data.account.forEach((item: AccountDlAlias) => {
 							const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
@@ -923,6 +923,7 @@ const DomainGeneralSettings: FC = () => {
 										open={openConfirmDialog}
 										showCloseIcon
 										onClose={(): void => {
+											setConfirmDomainName('');
 											setOpenConfirmDialog(false);
 										}}
 										customFooter={
@@ -937,6 +938,7 @@ const DomainGeneralSettings: FC = () => {
 														type="outlined"
 														color="primary"
 														onClick={(): void => {
+															setConfirmDomainName('');
 															setOpenConfirmDialog(false);
 														}}
 														width="fill"
@@ -948,6 +950,7 @@ const DomainGeneralSettings: FC = () => {
 															label={t('label.cancel', 'CANCEL')}
 															color="secondary"
 															onClick={(): void => {
+																setConfirmDomainName('');
 																setOpenConfirmDialog(false);
 															}}
 														/>
@@ -981,6 +984,7 @@ const DomainGeneralSettings: FC = () => {
 										open={openDeleteDomainConfirmDialog}
 										showCloseIcon
 										onClose={(): void => {
+											setConfirmDomainName('');
 											setOpenDeleteDomainConfirmDialog(false);
 											setDomainDirectoies({
 												account: [],
@@ -1000,6 +1004,7 @@ const DomainGeneralSettings: FC = () => {
 														label={t('label.cancel', 'CANCEL')}
 														color="secondary"
 														onClick={(): void => {
+															setConfirmDomainName('');
 															setOpenDeleteDomainConfirmDialog(false);
 															setDomainDirectoies({
 																account: [],
@@ -1011,24 +1016,23 @@ const DomainGeneralSettings: FC = () => {
 													/>
 												</Container>
 												<Container orientation="horizontal" mainAlignment="flex-end">
+													<Padding right="small">
+														<Button
+															label={t('label.force_delete', 'Force Delete')}
+															color="error"
+															onClick={onDeleteAccountAndDomain}
+															disabled={isRequstInProgress}
+														/>
+													</Padding>
 													{domainStatus.value !== domainStatusItems[1].value ? (
-														<Padding right="small">
-															<Button
-																label={t('label.close_domain', 'CLOSE DOMAIN')}
-																color="primary"
-																onClick={onCloseDomain}
-																disabled={isRequstInProgress}
-															/>
-														</Padding>
+														<Button
+															label={t('label.close_domain', 'CLOSE DOMAIN')}
+															color="primary"
+															onClick={onCloseDomain}
+														/>
 													) : (
 														<></>
 													)}
-													<Button
-														label={t('label.force_delete', 'Force Delete')}
-														color="error"
-														onClick={onDeleteAccountAndDomain}
-														disabled={isRequstInProgress}
-													/>
 												</Container>
 											</Container>
 										}
@@ -1085,19 +1089,65 @@ const DomainGeneralSettings: FC = () => {
 												<></>
 											)}
 											<br />
+											{domainStatus.value !== domainStatusItems[1].value ? (
+												<>
+													<Text overflow="break-word" weight="regular">
+														{t('label.delete_domain_with_all_resources_close_domain', {
+															defaultValue:
+																'If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.'
+														})}
+													</Text>
+													<br />
+
+													<Text overflow="break-word" weight="regular">
+														{t('label.delete_domain_with_all_resources_permanently_remove', {
+															defaultValue:
+																'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.'
+														})}
+													</Text>
+													<br />
+												</>
+											) : (
+												<>
+													<Text overflow="break-word" weight="regular">
+														{t(
+															'label.permanently_delete_domain_with_all_resources_permanently_remove',
+															{
+																defaultValue:
+																	'Permanently remove all the accounts and domain objects. This operation cannot be reverted.'
+															}
+														)}
+													</Text>
+													<br />
+												</>
+											)}
 											<Text overflow="break-word" weight="regular">
-												{t('label.delete_domain_with_all_resources_close_domain', {
-													defaultValue:
-														'If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.'
-												})}
+												<Trans
+													i18nKey="label.type_domain_name"
+													defaults={`To confirm, type here the domain name <bold>"{{domainName}}"</bold>:`}
+													components={{ bold: <strong /> }}
+													values={{
+														domainName
+													}}
+													t={t}
+												/>
 											</Text>
-											<br />
-											<Text overflow="break-word" weight="regular">
-												{t('label.delete_domain_with_all_resources_permanently_remove', {
-													defaultValue:
-														'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.'
-												})}
-											</Text>
+											<ListRow>
+												<Container padding={{ top: 'large' }}>
+													<Input
+														value={confirmDomainName}
+														backgroundColor="gray5"
+														onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+															setConfirmDomainName(e.target.value);
+															if (isEqual(e.target.value, domainName)) {
+																setIsRequestInProgress(false);
+															} else {
+																setIsRequestInProgress(true);
+															}
+														}}
+													/>
+												</Container>
+											</ListRow>
 										</Padding>
 									</Modal>
 								</Container>
