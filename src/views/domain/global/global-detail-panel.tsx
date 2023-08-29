@@ -158,7 +158,7 @@ const GlobalDetailPanel: FC = () => {
 				style={{ overflowY: 'auto' }}
 				background="white"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
 					<Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
 						<Row orientation="horizontal" width="100%">
 							<Row mainAlignment="flex-start" width="50%" crossAlignment="center">
@@ -193,7 +193,6 @@ const GlobalDetailPanel: FC = () => {
 					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
 				>
 					<Row
-						takeAvwidth="fill"
 						mainAlignment="flex-start"
 						width="100%"
 						background="gray6"
@@ -212,7 +211,7 @@ const GlobalDetailPanel: FC = () => {
 							<Input
 								inputName="carbonioNotificationFrom"
 								label={t('label.notification_sender', 'Notification Sender')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={carbonioNotificationData?.carbonioNotificationFrom}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setCarbonioNotificationData({
@@ -240,6 +239,8 @@ const GlobalDetailPanel: FC = () => {
 								background="gray5"
 								defaultValue={carbonioNotificationData?.carbonioNotificationRecipients}
 								value={carbonioNotificationData?.carbonioNotificationRecipients}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(emails: { label: string }[]): void => {
 									const data: { label: string }[] = [];
 									map(emails, (email) => {

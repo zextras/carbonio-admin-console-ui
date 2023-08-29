@@ -949,7 +949,6 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 							</ListRow>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
@@ -967,7 +966,7 @@ const DomainGeneralSettings: FC = () => {
 								>
 									<Input
 										label={t('label.notification_sender', 'Notification Sender')}
-										background="gray5"
+										backgroundColor="gray5"
 										value={carbonioNotificationFrom}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setCarbonioNotificationFrom(e.target.value);
@@ -992,6 +991,8 @@ const DomainGeneralSettings: FC = () => {
 										background="gray5"
 										defaultValue={carbonioNotificationRecipients}
 										value={carbonioNotificationRecipients}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={(emails: { label: string }[]): void => {
 											const data: { label: string }[] = [];
 											map(emails, (email) => {
