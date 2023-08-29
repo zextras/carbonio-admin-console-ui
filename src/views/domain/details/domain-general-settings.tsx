@@ -17,13 +17,14 @@ import {
 	Icon,
 	Shimmer,
 	SnackbarManagerContext,
-	Modal
+	Modal,
+	ChipInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { cloneDeep, filter, find, isEqual } from 'lodash';
-import { timeZoneList, getFormatedDate, getDateFromStr } from '../../utility/utils';
+import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
+import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
 import {
 	ACTIVE,
 	CLOSED,
@@ -144,6 +145,11 @@ const DomainGeneralSettings: FC = () => {
 	const [openDeleteDomainConfirmDialog, setOpenDeleteDomainConfirmDialog] =
 		useState<boolean>(false);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
+	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
+	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
+	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
+		{ label: string }[]
+	>([]);
 	interface Attribute {
 		n: string;
 		_content: string;
@@ -299,6 +305,23 @@ const DomainGeneralSettings: FC = () => {
 				setZimbraMailDomainQuota('');
 			}
 
+			if (obj.carbonioNotificationFrom) {
+				setCarbonioNotificationFrom(obj.carbonioNotificationFrom);
+			} else {
+				obj.carbonioNotificationFrom = '';
+				setCarbonioNotificationFrom('');
+			}
+
+			if (obj.carbonioNotificationRecipients) {
+				const items = filter(domainInformation, { n: 'carbonioNotificationRecipients' });
+				const data = items.map((item) => ({ label: item._content }));
+				obj.carbonioNotificationRecipients = data;
+				setCarbonioNotificationRecipients(data);
+			} else {
+				obj.carbonioNotificationRecipients = [];
+				setCarbonioNotificationRecipients([]);
+			}
+
 			const domainCosMaxAccountArray = domainInformation.filter(
 				(domainContent: any) => domainContent.n === ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 			);
@@ -356,7 +379,9 @@ const DomainGeneralSettings: FC = () => {
 			zimbraNotes,
 			zimbraHelpAdminURL,
 			zimbraHelpDelegatedURL,
-			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || ''
+			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || '',
+			carbonioNotificationFrom,
+			carbonioNotificationRecipients
 		};
 		const defaultDomainData = {
 			zimbraPrefTimeZoneId: domainData.zimbraPrefTimeZoneId,
@@ -368,7 +393,9 @@ const DomainGeneralSettings: FC = () => {
 			zimbraNotes: domainData.zimbraNotes,
 			zimbraHelpAdminURL: domainData.zimbraHelpAdminURL,
 			zimbraHelpDelegatedURL: domainData.zimbraHelpDelegatedURL,
-			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || ''
+			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || '',
+			carbonioNotificationFrom: domainData.carbonioNotificationFrom,
+			carbonioNotificationRecipients: domainData.carbonioNotificationRecipients
 		};
 		if (!isEqual(defaultDomainData, updatedData)) {
 			setIsDirty(true);
@@ -376,6 +403,8 @@ const DomainGeneralSettings: FC = () => {
 			setIsDirty(false);
 		}
 	}, [
+		carbonioNotificationFrom,
+		carbonioNotificationRecipients,
 		domainData,
 		domainStatus.value,
 		publicServiceHostName,
@@ -412,84 +441,102 @@ const DomainGeneralSettings: FC = () => {
 		} else {
 			setZimbraDomainDefaultCOSId('');
 		}
+		setCarbonioNotificationFrom(domainData.carbonioNotificationFrom);
+		setCarbonioNotificationRecipients(domainData.carbonioNotificationRecipients);
 		setIsDirty(false);
 	};
 
 	const onSave = (): void => {
-		const body: any = {};
-		const attributes: any[] = [];
-		body.id = domainData.zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
-		attributes.push({
-			n: 'zimbraNotes',
-			_content: zimbraNotes
-		});
-		if (selectedTimeZone.value !== NOT_SET) {
+		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
+			setHasCarbonioNotificationFromError(false);
+			const body: any = {};
+			const attributes: any[] = [];
+			body.id = domainData.zimbraId;
+			body._jsns = 'urn:zimbraAdmin';
 			attributes.push({
-				n: 'zimbraPrefTimeZoneId',
-				_content: selectedTimeZone.value
+				n: 'zimbraNotes',
+				_content: zimbraNotes
 			});
-		}
-		if (selectedPublicServiceProtocol.value !== NOT_SET) {
-			attributes.push({
-				n: 'zimbraPublicServiceProtocol',
-				_content: selectedPublicServiceProtocol.value
-			});
-		}
-		attributes.push({
-			n: 'zimbraDomainStatus',
-			_content: domainStatus.value
-		});
-		attributes.push({
-			n: 'zimbraPublicServicePort',
-			_content: zimbraPublicServicePort
-		});
-		attributes.push({
-			n: 'zimbraDNSCheckHostname',
-			_content: zimbraDNSCheckHostname
-		});
-		attributes.push({
-			n: 'zimbraHelpAdminURL',
-			_content: zimbraHelpAdminURL
-		});
-		attributes.push({
-			n: 'zimbraHelpDelegatedURL',
-			_content: zimbraHelpDelegatedURL
-		});
-		if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
-			attributes.push({
-				n: 'zimbraDomainDefaultCOSId',
-				_content: zimbraDomainDefaultCOSId
-			});
-		}
-		body.a = attributes;
-		modifyDomain(body)
-			.then((data) => {
-				createSnackbar({
-					key: 'success',
-					type: 'success',
-					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
+			if (selectedTimeZone.value !== NOT_SET) {
+				attributes.push({
+					n: 'zimbraPrefTimeZoneId',
+					_content: selectedTimeZone.value
 				});
-				const domain: any = data?.domain[0];
-				if (domain) {
-					setDomain(domain);
-				}
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
+			}
+			if (selectedPublicServiceProtocol.value !== NOT_SET) {
+				attributes.push({
+					n: 'zimbraPublicServiceProtocol',
+					_content: selectedPublicServiceProtocol.value
+				});
+			}
+			attributes.push({
+				n: 'zimbraDomainStatus',
+				_content: domainStatus.value
+			});
+			attributes.push({
+				n: 'zimbraPublicServicePort',
+				_content: zimbraPublicServicePort
+			});
+			attributes.push({
+				n: 'zimbraDNSCheckHostname',
+				_content: zimbraDNSCheckHostname
+			});
+			attributes.push({
+				n: 'zimbraHelpAdminURL',
+				_content: zimbraHelpAdminURL
+			});
+			attributes.push({
+				n: 'zimbraHelpDelegatedURL',
+				_content: zimbraHelpDelegatedURL
+			});
+			if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
+				attributes.push({
+					n: 'zimbraDomainDefaultCOSId',
+					_content: zimbraDomainDefaultCOSId
+				});
+			}
+			attributes.push({
+				n: 'carbonioNotificationFrom',
+				_content: carbonioNotificationFrom
+			});
+			// eslint-disable-next-line array-callback-return
+			carbonioNotificationRecipients.map((item: { label: string }): void => {
+				attributes.push({
+					n: 'carbonioNotificationRecipients',
+					_content: item?.label
 				});
 			});
+			body.a = attributes;
+			modifyDomain(body)
+				.then((data) => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					const domain: any = data?.domain[0];
+					if (domain) {
+						setDomain(domain);
+					}
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		} else {
+			setHasCarbonioNotificationFromError(true);
+		}
 	};
 
 	const deleteOnlyDomain = useCallback((): void => {
@@ -899,6 +946,61 @@ const DomainGeneralSettings: FC = () => {
 										onChange={(e: any): any => {
 											setZimbraNotes(e.target.value);
 										}}
+									/>
+								</Container>
+							</ListRow>
+							<Row
+								takeAvwidth="fill"
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<Text size="medium" weight="bold" color="gray0">
+									{t('label.domain_system_notifications', 'Domain System Notifications')}
+								</Text>
+							</Row>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
+								>
+									<Input
+										label={t('label.notification_sender', 'Notification Sender')}
+										background="gray5"
+										value={carbonioNotificationFrom}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setCarbonioNotificationFrom(e.target.value);
+										}}
+										hasError={hasCarbonioNotificationFromError}
+										description={
+											hasCarbonioNotificationFromError
+												? t('label.notification_error_msg', 'Enter a valid email address.')
+												: undefined
+										}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
+								>
+									<ChipInput
+										placeholder={t('label.send_notifications_to', 'Send notifications to...')}
+										background="gray5"
+										defaultValue={carbonioNotificationRecipients}
+										value={carbonioNotificationRecipients}
+										onChange={(emails: { label: string }[]): void => {
+											const data: { label: string }[] = [];
+											map(emails, (email) => {
+												if (isValidEmail(email.label ?? '')) data.push(email);
+											});
+											setCarbonioNotificationRecipients(data);
+										}}
+										hasError={some(carbonioNotificationRecipients || [], { error: true })}
 									/>
 								</Container>
 							</ListRow>
