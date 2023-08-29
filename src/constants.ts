@@ -288,3 +288,5 @@ export const UID = 'uid';
 export const CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK = 'carbonioAmavisDisableVirusCheck';
 export const ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS = 'zimbraDomainCOSMaxAccounts';
 export const SECURITY_GROUP = 'security_group';
+export const DL = 'dl';
+export const USR = 'usr';
