@@ -92,6 +92,9 @@ export const ThemeConfigs: FC<{
 	const [isValidCarbonioAdminUiDarkBackground, setIsValidCarbonioAdminUiDarkBackground] =
 		useState<boolean>(true);
 	const [isValidCarbonioAdminUiFavicon, setIsValidCarbonioAdminUiFavicon] = useState<boolean>(true);
+	const [isValidCarbonioAdminLogoutURL, setIsValidCarbonioAdminLogoutURL] = useState<boolean>(true);
+	const [isValidCarbonioWebClientLogoutURL, setIsValidCarbonioWebClientLogoutURL] =
+		useState<boolean>(true);
 	const [change, setChange] = useState('end_user');
 	const [click, setClick] = useState('');
 
@@ -170,13 +173,16 @@ export const ThemeConfigs: FC<{
 			isValidCarbonioWebUiDarkLoginLogo &&
 			isValidCarbonioWebUiFavicon &&
 			isValidCarbonioWebUiLoginBackground &&
-			isValidCarbonioWebUiLoginLogo
+			isValidCarbonioWebUiLoginLogo &&
+			isValidCarbonioAdminLogoutURL &&
+			isValidCarbonioWebClientLogoutURL
 		) {
 			setIsValidated(true);
 		} else {
 			setIsValidated(false);
 		}
 	}, [
+		isValidCarbonioAdminLogoutURL,
 		isValidCarbonioAdminUiAppLogo,
 		isValidCarbonioAdminUiBackground,
 		isValidCarbonioAdminUiDarkAppLogo,
@@ -184,6 +190,7 @@ export const ThemeConfigs: FC<{
 		isValidCarbonioAdminUiDarkLoginLogo,
 		isValidCarbonioAdminUiFavicon,
 		isValidCarbonioAdminUiLoginLogo,
+		isValidCarbonioWebClientLogoutURL,
 		isValidCarbonioWebUiAppLogo,
 		isValidCarbonioWebUiDarkAppLogo,
 		isValidCarbonioWebUiDarkLoginBackground,
@@ -741,6 +748,41 @@ export const ThemeConfigs: FC<{
 										{!isValidCarbonioWebUiDarkLoginBackground && <HttpsErrorMessage />}
 									</Container>
 								</ListRow>
+								<Container padding={{ top: 'small' }}>
+									<Divider color="gray2" />
+								</Container>
+								<ListRow>
+									<Padding vertical="large" horizontal="small" width="100%">
+										<Text size="small" color="gray0" weight="bold">
+											{t('label.logout', 'Logout')}
+										</Text>
+									</Padding>
+								</ListRow>
+								<ListRow>
+									<Container padding={{ all: 'small' }}>
+										<Input
+											label={t(
+												'label.enduser_logout_redirect_url',
+												'On Logout, redirect the User to (URL)'
+											)}
+											backgroundColor="gray5"
+											value={themeConfig.zimbraWebClientLogoutURL}
+											inputName="zimbraWebClientLogoutURL"
+											onChange={(e: any): any => {
+												if (e.target.value) {
+													const isValid = isValidHttpsUrl(e.target.value);
+													setIsValidCarbonioWebClientLogoutURL(isValid);
+												} else {
+													setIsValidCarbonioWebClientLogoutURL(true);
+												}
+												onChangeDomainThemeDetail(e);
+											}}
+											hasError={!isValidCarbonioWebClientLogoutURL}
+											disabled={isGlobalTheme && !hasModifyRights}
+										/>
+										{!isValidCarbonioWebClientLogoutURL && <HttpsErrorMessage />}
+									</Container>
+								</ListRow>
 							</>
 						)}
 						{change === 'admin_panel' && (
@@ -1137,6 +1179,41 @@ export const ThemeConfigs: FC<{
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiDarkBackground && <HttpsErrorMessage />}
+									</Container>
+								</ListRow>
+								<Container padding={{ top: 'small' }}>
+									<Divider color="gray2" />
+								</Container>
+								<ListRow>
+									<Padding vertical="large" horizontal="small" width="100%">
+										<Text size="small" color="gray0" weight="bold">
+											{t('label.logout', 'Logout')}
+										</Text>
+									</Padding>
+								</ListRow>
+								<ListRow>
+									<Container padding={{ all: 'small' }}>
+										<Input
+											label={t(
+												'label.admin_logout_redirect_url',
+												'On Logout, redirect the Admin to (URL)'
+											)}
+											backgroundColor="gray5"
+											value={themeConfig.zimbraAdminConsoleLogoutURL}
+											inputName="zimbraAdminConsoleLogoutURL"
+											onChange={(e: any): any => {
+												if (e.target.value) {
+													const isValid = isValidHttpsUrl(e.target.value);
+													setIsValidCarbonioAdminLogoutURL(isValid);
+												} else {
+													setIsValidCarbonioAdminLogoutURL(true);
+												}
+												onChangeDomainThemeDetail(e);
+											}}
+											hasError={!isValidCarbonioAdminLogoutURL}
+											disabled={isGlobalTheme && !hasModifyRights}
+										/>
+										{!isValidCarbonioAdminLogoutURL && <HttpsErrorMessage />}
 									</Container>
 								</ListRow>
 							</>
