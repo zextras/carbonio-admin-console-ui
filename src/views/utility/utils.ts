@@ -1002,21 +1002,21 @@ export const volTableHeader = (
 	{
 		id: 'path',
 		label: t('volume.volume_header.path', 'Path'),
-		width: '47%',
+		width: '30%',
 		bold: true,
 		align: 'left'
 	},
 	{
 		id: 'current',
 		label: t('volume.volume_header.current', 'Current'),
-		width: '12%',
+		width: '18%',
 		align: 'left',
 		bold: true
 	},
 	{
 		id: 'compression',
 		label: t('volume.volume_header.compression', 'Compression'),
-		width: '14%',
+		width: '25%',
 		align: 'left',
 		bold: true
 	}

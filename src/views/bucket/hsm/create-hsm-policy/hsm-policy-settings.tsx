@@ -11,9 +11,12 @@ import {
 	Checkbox,
 	Select,
 	Button,
-	IconButton,
+	Switch,
 	Padding,
-	Table
+	Table,
+	Row,
+	SnackbarManagerContext,
+	Divider
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -126,6 +129,122 @@ const HSMpolicySettings: FC<any> = () => {
 	const [selectedScale, setSelectedScale]: any = useState<any>(
 		isShowDateScale ? dateScaleOption[2] : scaleOptions[0]
 	);
+	const [showSourceVolume, setShowSourceVolume] = useState<boolean>(
+		hsmDetail?.sourceVolume.length > 0
+	);
+	const [showDestinationVolume, setShowDestinationVolume] = useState<boolean>(
+		hsmDetail?.destinationVolume.length > 0
+	);
+
+	const [volumeRows, setVolumeRows] = useState<Array<any>>([]);
+	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<any>>(
+		hsmDetail?.destinationVolume.map((item: any) => item?.id)
+	);
+	const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<any>>(
+		hsmDetail?.sourceVolume.map((item: any) => item?.id)
+	);
+	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const header = useMemo(
+		() => [
+			{
+				id: 'name',
+				label: t('hsm.name', 'Name'),
+				width: '25%',
+				bold: true
+			},
+			{
+				id: 'allocation',
+				label: t('hsm.allocation', 'Allocation'),
+				width: '25%',
+				bold: true
+			},
+			{
+				id: 'type',
+				label: t('hsm.type', 'Type'),
+				width: '25%',
+				bold: true
+			},
+			{
+				id: 'current',
+				label: t('hsm.current', 'Current'),
+				width: '25%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	const getVoumeType = useCallback(
+		(type: number): string => {
+			if (type === 1) {
+				return t('hsm.primary', 'Primary');
+			}
+			if (type === 2) {
+				return t('hsm.secondary', 'Secondary');
+			}
+			return t('hsm.indexes', 'Indexes');
+		},
+		[t]
+	);
+
+	useEffect(() => {
+		const volumeList = hsmDetail?.allVolumes;
+		if (volumeList && volumeList.length > 0) {
+			const allRows = volumeList.map((item: any) => ({
+				id: item?.id,
+				columns: [
+					<Text size="small" weight="regular" key={item}>
+						{item?.name}
+					</Text>,
+					<Text size="small" weight="light" key={item}>
+						{''}
+					</Text>,
+					<Text size="small" weight="light" key={item}>
+						{getVoumeType(item?.type)}
+					</Text>,
+					<Text
+						size="small"
+						weight="light"
+						key={item}
+						color={item?.isCurrent ? 'gray0' : '#D74942'}
+					>
+						{item?.isCurrent ? t('hsm.yes', 'Yes') : t('hsm.no', 'No')}
+					</Text>
+				]
+			}));
+			setVolumeRows(allRows);
+		} else {
+			setVolumeRows([]);
+		}
+	}, [hsmDetail?.allVolumes, getVoumeType, t]);
+
+	useEffect(() => {
+		if (Array.isArray(hsmDetail?.allVolumes)) {
+			const sourceVol = hsmDetail?.allVolumes?.filter((item: any) =>
+				selectedSourceVolume?.includes(item?.id)
+			);
+			if (sourceVol) {
+				setHsmDetail((prev: any) => ({
+					...prev,
+					sourceVolume: sourceVol
+				}));
+			}
+		}
+	}, [hsmDetail?.allVolumes, selectedSourceVolume, setHsmDetail]);
+
+	useEffect(() => {
+		if (Array.isArray(hsmDetail?.allVolumes)) {
+			const destVol = hsmDetail?.allVolumes?.filter((item: any) =>
+				selectedDestinationVolume?.includes(item?.id)
+			);
+			if (destVol) {
+				setHsmDetail((prev: any) => ({
+					...prev,
+					destinationVolume: destVol
+				}));
+			}
+		}
+	}, [hsmDetail?.allVolumes, selectedDestinationVolume, setHsmDetail]);
 
 	const onOptionChange = (v: any): any => {
 		const it = options.find((item: any) => item.value === v);
@@ -247,12 +366,12 @@ const HSMpolicySettings: FC<any> = () => {
 		<Container
 			mainAlignment="flex-start"
 			crossAlignment="flex-start"
-			height="calc(100vh - 17.5rem)"
+			height="calc(100vh - 12.5rem)"
 			background="white"
 			style={{ overflow: 'auto', padding: '1rem' }}
 		>
 			<ListRow>
-				<Container padding={{ bottom: 'large' }}>
+				<Container padding={{ bottom: 'extralarge' }}>
 					<Input label={t('hsm.server', 'Server')} background="gray6" value={server} />
 				</Container>
 			</ListRow>
@@ -448,6 +567,195 @@ const HSMpolicySettings: FC<any> = () => {
 					/>
 				</Container>
 			</ListRow>
+			{policyCriteriaRows?.length === 0 && (
+				<Container orientation="column" crossAlignment="center" mainAlignment="center">
+					<Row
+						padding={{ top: 'extralarge' }}
+						orientation="vertical"
+						crossAlignment="center"
+						style={{ textAlign: 'center' }}
+					>
+						<Text weight="light" color="#828282" size="large" overflow="break-word">
+							{t('label.this_list_is_empty', 'This list is empty.')}
+						</Text>
+					</Row>
+					<Row
+						orientation="vertical"
+						crossAlignment="center"
+						style={{ textAlign: 'center' }}
+						padding={{ top: 'small' }}
+						width="53%"
+					>
+						<Text weight="light" color="#828282" size="large" overflow="break-word">
+							<Trans
+								i18nKey="label.do_you_need_more_information"
+								defaults="Do you need more information?"
+							/>
+						</Text>
+					</Row>
+					<Row
+						orientation="vertical"
+						crossAlignment="center"
+						style={{ textAlign: 'center' }}
+						padding={{ top: 'small', bottom: 'small' }}
+						width="53%"
+					>
+						<Text weight="light" color="primary">
+							{t('label.click_here', 'Click here')}
+						</Text>
+					</Row>
+				</Container>
+			)}
+			<Container padding={{ top: 'extralarge', bottom: 'extralarge' }}>
+				<Divider />
+			</Container>
+
+			<Container mainAlignment="flex-start" crossAlignment="flex-start" background="white">
+				<ListRow>
+					<Padding bottom="large">
+						<Text size="medium" weight="bold" color="gray0">
+							{<Trans i18nKey="hsm.source_volume" defaults="Source Volume" />}
+						</Text>
+					</Padding>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						<Text
+							size="medium"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							color="secondary"
+							style={{ 'white-space': 'normal' }}
+						>
+							{t(
+								'hsm.all_primary_volume_used_source_msg',
+								'All primary volumes will be used as source by default. Or select manually other volumes.'
+							)}
+						</Text>
+					</Padding>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						<Switch
+							label={t('hsm.select_manually_source_volumes', 'Select manually source volumes')}
+							value={showSourceVolume}
+							onClick={(): void => {
+								setShowSourceVolume(!showSourceVolume);
+							}}
+							iconColor="primary"
+						/>
+					</Padding>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						{showSourceVolume && (
+							<Table
+								rows={volumeRows}
+								headers={header}
+								selectedRows={selectedSourceVolume}
+								onSelectionChange={(selected: any): void => {
+									const available = selectedDestinationVolume.filter((item: any) =>
+										selected?.includes(item)
+									);
+									if (available.length > 0) {
+										createSnackbar({
+											key: 'error',
+											type: 'error',
+											label: t(
+												'hsm.volume_already_selected_in_destination',
+												'Volume already selected in destination volume'
+											),
+											autoHideTimeout: 3000,
+											hideButton: true,
+											replace: true
+										});
+									} else {
+										setSelectedSourceVolume(selected);
+									}
+								}}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+						)}
+					</Padding>
+				</ListRow>
+
+				<ListRow>
+					<Padding bottom="large">
+						<Text size="medium" weight="bold" color="gray0">
+							{<Trans i18nKey="hsm.destination_volume" defaults="Destination Volume" />}
+						</Text>
+					</Padding>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						<Text
+							size="medium"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							color="secondary"
+							style={{ 'white-space': 'normal' }}
+						>
+							{t(
+								'hsm.all_secondary_volume_used_source_msg',
+								'The current secondary volume will be used as a destination. Or select manually other volumes.'
+							)}
+						</Text>
+					</Padding>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						<Switch
+							label={t(
+								'hsm.select_manually_destination_volumes',
+								'Select manually destination volumes'
+							)}
+							value={showDestinationVolume}
+							onClick={(): void => {
+								setShowDestinationVolume(!showDestinationVolume);
+							}}
+							iconColor="primary"
+						/>
+					</Padding>
+				</ListRow>
+				<ListRow>
+					<Padding bottom="large">
+						{showDestinationVolume && (
+							<Table
+								rows={volumeRows}
+								headers={header}
+								showCheckbox
+								multiSelect={false}
+								selectedRows={selectedDestinationVolume}
+								onSelectionChange={(selected: any): void => {
+									const available = selectedSourceVolume.filter((item: any) =>
+										selected?.includes(item)
+									);
+									if (available.length > 0) {
+										createSnackbar({
+											key: 'error',
+											type: 'error',
+											label: t(
+												'hsm.volume_already_selected_in_source',
+												'Volume already selected in source volume'
+											),
+											autoHideTimeout: 3000,
+											hideButton: true,
+											replace: true
+										});
+									} else {
+										setSelectedDestinationVolume(selected);
+									}
+								}}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+						)}
+					</Padding>
+				</ListRow>
+			</Container>
 		</Container>
 	);
 };

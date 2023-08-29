@@ -11,7 +11,7 @@ import {
 	Padding,
 	Row,
 	Input,
-	Icon,
+	IconButton,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext } from 'react';
@@ -141,7 +141,12 @@ const DeleteHsmPolicy: FC<{
 						label={t('hsm.hsm_policy', 'HSM Policy')}
 						value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
 						CustomIcon={(): any => (
-							<Icon icon="CopyOutline" size="large" color="grey" onClick={copyToClipboard} />
+							<IconButton
+								icon="CopyOutline"
+								size="large"
+								iconColor="grey"
+								onClick={copyToClipboard}
+							/>
 						)}
 					/>
 				</Container>

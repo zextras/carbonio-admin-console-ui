@@ -1047,41 +1047,38 @@ const ModifyVolume: FC<{
 									width="100%"
 									backgroundColor="gray6"
 								>
-									<Row width="48.5%" mainAlignment="flex-start">
-										<Row mainAlignment="flex-start" width="100%">
-											<Switch
-												value={useInfrequentAccess}
-												label={t('label.use_infraquent_access', 'Use infrequent access')}
-												onClick={(): void => setUseInfrequentAccess(!useInfrequentAccess)}
-												iconColor="primary"
-											/>
-										</Row>
-										<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-											<Link
-												color="secondary"
-												href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
-												target="_blank"
-												rel="noopener noreferrer"
-											>
-												<Trans
-													i18nKey="label.use_infraquent_access_helptext"
-													defaults="<underline>Amazon Storage Class Documentation</underline>"
-													components={{ underline: <u /> }}
-												/>
-											</Link>
-										</Row>
-									</Row>
-									<Padding horizontal="small" />
-									<Row width="48.5%" mainAlignment="flex-start">
-										<Input
-											inputName="infrequentAccessThreshold"
-											label={t('label.size_threshold', 'Size Threshold')}
-											backgroundColor="gray5"
-											value={infrequentAccessThreshold}
-											onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-												setInfrequentAccessThreshold(e?.target?.value)
-											}
+									<Input
+										inputName="infrequentAccessThreshold"
+										label={t('label.size_threshold', 'Size Threshold')}
+										backgroundColor="gray5"
+										value={infrequentAccessThreshold}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+											setInfrequentAccessThreshold(e?.target?.value)
+										}
+									/>
+								</Row>
+								<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+									<Row mainAlignment="flex-start" width="100%">
+										<Switch
+											value={useInfrequentAccess}
+											label={t('label.use_infraquent_access', 'Use infrequent access')}
+											onClick={(): void => setUseInfrequentAccess(!useInfrequentAccess)}
+											iconColor="primary"
 										/>
+									</Row>
+									<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+										<Link
+											color="secondary"
+											href={AMAZON_USERGUIDE_STORAGE_CLASS_LINK}
+											target="_blank"
+											rel="noopener noreferrer"
+										>
+											<Trans
+												i18nKey="label.use_infraquent_access_helptext"
+												defaults="<underline>Amazon Storage Class Documentation</underline>"
+												components={{ underline: <u /> }}
+											/>
+										</Link>
 									</Row>
 								</Row>
 								<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
