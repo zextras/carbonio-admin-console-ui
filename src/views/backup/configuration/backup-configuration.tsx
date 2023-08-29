@@ -1023,10 +1023,7 @@ const BackupConfiguration: FC = () => {
 							crossAlignment="flex-start"
 						>
 							<Switch
-								label={t(
-									'backup.module_is_enabled_at_startup',
-									'This module is enabled at startup'
-								)}
+								label={t('backup.backup_is_enabled_at_startup', 'Backup is enabled at startup')}
 								value={moduleEnableStartup}
 								onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
 								iconColor="primary"

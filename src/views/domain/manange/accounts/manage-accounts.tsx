@@ -1000,6 +1000,7 @@ const ManageAccounts: FC = () => {
 											getAccountDetail={getAccountDetail}
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
+											setShowAccountDetailView={setShowAccountDetailView}
 										/>
 									</ModalOverlay>
 								)}

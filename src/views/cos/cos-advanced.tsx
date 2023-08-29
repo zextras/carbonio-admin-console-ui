@@ -25,6 +25,7 @@ import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import { COS } from '../../constants';
+import Textarea from '../components/textarea';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -1113,7 +1114,7 @@ const CosAdvanced: FC = () => {
 					width="100%"
 				>
 					<Text size="extralarge" weight="bold">
-						{t('cos.quotas', 'Quotas')}
+						{t('cos.forwarding', 'Forwarding')}
 					</Text>
 					<Row mainAlignment="flex-start" width="100%">
 						<Container
@@ -1126,8 +1127,8 @@ const CosAdvanced: FC = () => {
 								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t(
-											'cos.user_specific_fowarding_addresses',
-											'Limit user-specified forwarding addresses field to (chars)'
+											'cos.limit_user_specified_forwarding_addresses',
+											'Limit user-specified forwarding addresses to (char)'
 										)}
 										value={cosAdvanced.zimbraMailForwardingAddressMaxLength}
 										backgroundColor="gray5"
@@ -1139,8 +1140,8 @@ const CosAdvanced: FC = () => {
 								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t(
-											'cos.maximum_number_of_user_specific_forwarding_addresses',
-											'Maximum number of user-specified forwarding addresses'
+											'cos.max_user_specific_forwarding_address',
+											'Max user-specific forwarding address'
 										)}
 										value={cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs}
 										backgroundColor="gray5"
@@ -1152,6 +1153,16 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
+				</Row>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ all: 'large' }}
+					width="100%"
+				>
+					<Text size="extralarge" weight="bold">
+						{t('cos.quotas', 'Quotas')}
+					</Text>
 					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
@@ -1173,8 +1184,8 @@ const CosAdvanced: FC = () => {
 								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t(
-											'cos.maximum_number_of_contacts_allowed_in_folder',
-											'Maximum number of contacts allowed in folder'
+											'cos.max_contacts_allowed_in_the_folder',
+											'Max contacts allowed in the folder'
 										)}
 										value={cosAdvanced.zimbraContactMaxNumEntries}
 										backgroundColor="gray5"
@@ -1250,11 +1261,12 @@ const CosAdvanced: FC = () => {
 						>
 							<ListRow>
 								<Container>
-									<Input
+									<Textarea
 										label={t(
 											'cos.quota_warning_message_template',
 											'Quota warning message template'
 										)}
+										// style={{ height: 'fitContent' }}
 										value={cosAdvanced.zimbraQuotaWarnMessage}
 										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnMessage"
@@ -1905,7 +1917,10 @@ const CosAdvanced: FC = () => {
 					width="100%"
 				>
 					<Text size="extralarge" weight="bold">
-						{t('cos.free_busy_interop', 'Free/Busy Interop')}
+						{t(
+							'cos.free_busy_interop',
+							'Free/Busy Interop (O = OutOfOffice), (OU = OutOfOffice, AvailableForUrgentIssues)'
+						)}
 					</Text>
 					<Row mainAlignment="flex-start" width="100%">
 						<Container

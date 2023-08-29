@@ -213,8 +213,8 @@ const BackupServerConfig: FC = () => {
 							<Switch
 								value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
 								label={t(
-									'backup.this_module_is_enable_at_the_startup',
-									'This module is enabled at the startup'
+									'backup.backup_is_enable_at_the_startup',
+									'Backup is enabled at the startup'
 								)}
 								onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
 								iconColor="primary"

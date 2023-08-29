@@ -364,35 +364,40 @@ const Subscription: FC = () => {
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>
-						<IconInfo
-							icon="AwardOutline"
-							label={t('core.subscription.subscription_type', 'Subscription Type')}
-							value={services.response.type}
-						/>
-						<IconInfo
-							icon="PersonOutline"
-							label={t('core.subscription.customer', 'Customer')}
-							value={services.response.customer}
-						/>
-						<IconInfo
-							icon="CheckmarkCircleOutline"
-							label={t('core.subscription.status', 'Status')}
-							value={
-								services.response.notYetValid || !services.response.authenticationToken
-									? t('core.subscription.not_valid', 'Not Valid') || ''
-									: t('core.subscription.valid', 'Valid') || ''
-							}
-						/>
-						<IconInfo
-							icon="EmailOutline"
-							label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
-							value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
-						/>
-						<IconInfo
-							icon="ClockOutline"
-							label={t('core.subscription.subscription_last_check', 'Subscription Last Check')}
-							value=""
-						/>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.subscription_type', 'Subscription Type')}
+								value={services.response.type}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.customer', 'Customer')}
+								value={services.response.customer}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.status', 'Status')}
+								value={
+									services.response.notYetValid || !services.response.authenticationToken
+										? t('core.subscription.not_valid', 'Not Valid') || ''
+										: t('core.subscription.valid', 'Valid') || ''
+								}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
+								value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.subscription_last_check', 'Subscription Last Check')}
+								value=""
+							/>
+						</Row>
 					</Container>
 				)}
 				<Row
@@ -420,35 +425,38 @@ const Subscription: FC = () => {
 						crossAlignment="flex-start"
 						padding={{ top: 'large' }}
 					>
-						<IconInfo
-							icon="AvatarOutline"
-							label={t('core.subscription.company_name', 'Company Name')}
-							value={services.response.company}
-						/>
-						<IconInfo
-							icon="AppointmentOutline"
-							label={t('core.subscription.emissionDate', 'Emission date')}
-							value={
-								services.response.dateEnd
-									? moment(services.response.dateEnd).format('DD-MMM-YYYY')
-									: ''
-							}
-						/>
-						<IconInfo
-							icon="EmailOutline"
-							label={t('core.subscription.email_buyer', 'Email Buyer')}
-							value={services.response?.companyEmail}
-						/>
-						<IconInfo
-							icon="InfoOutline"
-							label={t('core.subscription.version', 'Module version')}
-							value={version}
-						/>
-						<IconInfo
-							icon="PricetagsOutline"
-							label={t('core.subscription.order_id', 'Order Id')}
-							value={services.response.order_id}
-						/>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.company_name', 'Company Name')}
+								value={services.response.company}
+							/>
+						</Row>
+
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.emissionDate', 'Emission date')}
+								value={
+									services.response.dateEnd
+										? moment(services.response.dateEnd).format('DD-MMM-YYYY')
+										: ''
+								}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.email_buyer', 'Email Buyer')}
+								value={services.response?.companyEmail}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input label={t('core.subscription.version', 'Module version')} value={version} />
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.order_id', 'Order Id')}
+								value={services.response.order_id}
+							/>
+						</Row>
 					</Container>
 				)}
 			</Container>

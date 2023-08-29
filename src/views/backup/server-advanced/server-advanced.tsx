@@ -849,7 +849,10 @@ const ServerAdvanced: FC = () => {
 							width="100%"
 						>
 							<Switch
-								label={t('backup.on_the_fly_metadata', 'On the fly metadata')}
+								label={t(
+									'backup.append_metadata_instead_of_rewrite_faster_but_dangerous',
+									'Append metadata instead of rewrite (faster but dangerous)'
+								)}
 								value={backupOnTheFlyMetadata}
 								onClick={(): void => setBackupOnTheFlyMetadata(!backupOnTheFlyMetadata)}
 								iconColor="primary"
@@ -867,7 +870,10 @@ const ServerAdvanced: FC = () => {
 							width="100%"
 						>
 							<Switch
-								label={t('backup.metadata_archiving', 'Metadata archiving')}
+								label={t(
+									'backup.archive_user_metadata_folder_in_the_remote_backup',
+									'Archive user metadata folder in the remote backup'
+								)}
 								value={scheduledMetadataArchivingEnabled}
 								onClick={(): void =>
 									setScheduledMetadataArchivingEnabled(!scheduledMetadataArchivingEnabled)
