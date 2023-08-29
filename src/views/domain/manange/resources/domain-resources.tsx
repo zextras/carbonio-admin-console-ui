@@ -424,7 +424,7 @@ const DomainResources: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding all={'small'}>
+							<Padding all={'0'}>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"

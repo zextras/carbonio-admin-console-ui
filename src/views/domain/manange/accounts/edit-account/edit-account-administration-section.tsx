@@ -415,7 +415,7 @@ const EditAccountAdministrationSection: FC = () => {
 								padding={{ top: 'large', bottom: '3rem' }}
 							>
 								<Row padding={{ right: 'small' }} width="49%">
-									<Padding all={'small'}>
+									<Padding all={'0'}>
 										<Button
 											disabled={sendSelectedRows?.length < 1}
 											type="ghost"

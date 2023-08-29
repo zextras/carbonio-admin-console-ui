@@ -510,7 +510,7 @@ const MailingListSection: FC<any> = () => {
 						{isShowLdapQueryMessage && (
 							<Row>
 								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-									<Padding all={'small'}>
+									<Padding all={'0'}>
 										<Text size="extrasmall" weight="regular" color="error">
 											{ldapQueryErrorMessage}
 										</Text>

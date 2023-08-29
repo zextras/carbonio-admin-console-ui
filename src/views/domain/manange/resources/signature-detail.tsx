@@ -310,7 +310,7 @@ export const SignatureDetail: FC<any> = ({
 			{isEditable && (
 				<ListRow>
 					<Row mainAlignment="flex-end" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
-						<Padding all={'small'}>
+						<Padding all={'0'}>
 							<Button
 								type="outlined"
 								label={t('label.add', 'Add')}
