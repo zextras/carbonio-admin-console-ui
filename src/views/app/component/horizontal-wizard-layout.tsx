@@ -8,13 +8,17 @@
 import React, { FC, useMemo } from 'react';
 import { map } from 'lodash';
 import styled from 'styled-components';
-import { Button, Icon, Padding, Row, Text } from '@zextras/carbonio-design-system';
+import { Button, Icon, Padding, Row, RowProps, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 const StepContainer = styled(Row)``;
 const StepView = styled(Row)``;
 
-export const RowContainer = styled(Row)`
+interface RowExtendProps extends RowProps {
+	isActive: boolean;
+}
+
+export const RowContainer = styled(Row)<RowExtendProps>`
 	border-bottom: ${({ isActive, theme }): string =>
 		isActive ? `2px solid ${theme.palette.primary.regular}` : ''};
 	cursor: pointer;

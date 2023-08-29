@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, Suspense } from 'react';
-import { Container } from '@zextras/carbonio-design-system';
+import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import {
 	Spinner,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -50,7 +50,11 @@ import OperationsDetailPanel from './operations/operations-detail-panel';
 import MTAListPanel from './mta/mta-list-panel';
 import MTADetailPanel from './mta/mta-detail-panel';
 
-const DetailViewContainer = styled(Container)`
+interface ContainerExtendProps extends ContainerProps {
+	isPrimaryBarExpanded?: boolean;
+}
+
+const DetailViewContainer = styled(Container)<ContainerExtendProps>`
 	max-width: ${({ isPrimaryBarExpanded }): number => (isPrimaryBarExpanded ? 981 : 1125)}px;
 	transition: width 300ms;
 `;

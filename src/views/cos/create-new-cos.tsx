@@ -114,10 +114,9 @@ const CreateCos: FC = () => {
 				height="calc(100vh - 150px)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
-							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							width="100%"
 							background="gray6"
@@ -131,7 +130,7 @@ const CreateCos: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.cos_name', 'Cos Name')}
-									background="gray5"
+									backgroundColor="gray5"
 									value={cosName}
 									onChange={(e: any): any => {
 										setCosName(e.target.value);
@@ -143,7 +142,7 @@ const CreateCos: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.description', 'Description')}
-									background="gray5"
+									backgroundColor="gray5"
 									value={zimbraNotes}
 									onChange={(e: any): any => {
 										setZimbraNotes(e.target.value);

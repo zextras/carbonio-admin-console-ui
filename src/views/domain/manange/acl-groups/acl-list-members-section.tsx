@@ -256,10 +256,6 @@ const AclListMembersSection: FC<any> = () => {
 		label: item.name,
 		customComponent: (
 			<Row
-				top="0.5rem"
-				right="large"
-				bottom="0.5rem"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -281,10 +277,6 @@ const AclListMembersSection: FC<any> = () => {
 		label: item.name,
 		customComponent: (
 			<Row
-				top="0.5rem"
-				right="large"
-				bottom="0.5rem"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -353,13 +345,7 @@ const AclListMembersSection: FC<any> = () => {
 				style={{ overflow: 'auto', padding: '1rem' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.members', 'Members')}
 					</Text>
 				</Row>
@@ -384,7 +370,6 @@ const AclListMembersSection: FC<any> = () => {
 							<Input
 								label={t('label.type_an_account_dot', 'Type an account ...')}
 								backgroundColor="gray5"
-								size="medium"
 								value={member}
 								onChange={(e: any): void => {
 									setMember(e.target.value);
@@ -432,6 +417,8 @@ const AclListMembersSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedDistributionListMember}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -445,17 +432,17 @@ const AclListMembersSection: FC<any> = () => {
 							crossAlignment="center"
 						>
 							<Padding value="3.5rem 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_not_member_here', 'There aren’t members here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',
@@ -468,26 +455,12 @@ const AclListMembersSection: FC<any> = () => {
 					</ListRow>
 				)}
 				<Row padding={{ top: 'large' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.owners_settings_lbl', 'Owners’ Settings')}
 					</Text>
 				</Row>
 				<Row padding={{ top: 'small', bottom: 'medium' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="light"
-						color="#828282"
-						overflow="break-word"
-					>
+					<Text size="small" weight="light" color="#828282" overflow="break-word">
 						{t(
 							'label.owners_description_msg_1',
 							'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.'
@@ -516,7 +489,6 @@ const AclListMembersSection: FC<any> = () => {
 							<Input
 								label={t('label.type_an_account_dot', 'Type an account ...')}
 								backgroundColor="gray5"
-								size="medium"
 								value={owner}
 								onChange={(e: any): void => {
 									setOwner(e.target.value);
@@ -564,6 +536,8 @@ const AclListMembersSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedDistributionListOwner}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -577,17 +551,17 @@ const AclListMembersSection: FC<any> = () => {
 							crossAlignment="center"
 						>
 							<Padding value="3.5rem 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_no_owners', 'There aren’t owners here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',

@@ -25,6 +25,7 @@ import { useCosStore } from '../../store/cos/store';
 import { modifyCos } from '../../services/modify-cos-service';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import { COS } from '../../constants';
+import Textarea from '../components/textarea';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -1066,7 +1067,7 @@ const CosAdvanced: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -1113,9 +1114,9 @@ const CosAdvanced: FC = () => {
 					width="100%"
 				>
 					<Text size="extralarge" weight="bold">
-						{t('cos.quotas', 'Quotas')}
+						{t('cos.forwarding', 'Forwarding')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1126,11 +1127,11 @@ const CosAdvanced: FC = () => {
 								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t(
-											'cos.user_specific_fowarding_addresses',
-											'Limit user-specified forwarding addresses field to (chars)'
+											'cos.limit_user_specified_forwarding_addresses',
+											'Limit user-specified forwarding addresses to (char)'
 										)}
 										value={cosAdvanced.zimbraMailForwardingAddressMaxLength}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraMailForwardingAddressMaxLength"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1139,11 +1140,11 @@ const CosAdvanced: FC = () => {
 								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t(
-											'cos.maximum_number_of_user_specific_forwarding_addresses',
-											'Maximum number of user-specified forwarding addresses'
+											'cos.max_user_specific_forwarding_address',
+											'Max user-specific forwarding address'
 										)}
 										value={cosAdvanced.zimbraMailForwardingAddressMaxNumAddrs}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraMailForwardingAddressMaxNumAddrs"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1152,7 +1153,17 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				</Row>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ all: 'large' }}
+					width="100%"
+				>
+					<Text size="extralarge" weight="bold">
+						{t('cos.quotas', 'Quotas')}
+					</Text>
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1164,7 +1175,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={`${t('cos.account_quota', 'Account quota')} (MB)`}
 										value={zimbraMailQuota}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraMailQuota"
 										onChange={onZimbraMailQuotaChange}
 										disabled={readonlyCOS}
@@ -1173,11 +1184,11 @@ const CosAdvanced: FC = () => {
 								<Container padding={{ left: 'small' }}>
 									<Input
 										label={t(
-											'cos.maximum_number_of_contacts_allowed_in_folder',
-											'Maximum number of contacts allowed in folder'
+											'cos.max_contacts_allowed_in_the_folder',
+											'Max contacts allowed in the folder'
 										)}
 										value={cosAdvanced.zimbraContactMaxNumEntries}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraContactMaxNumEntries"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1186,7 +1197,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1201,7 +1212,7 @@ const CosAdvanced: FC = () => {
 											'Percentage threshold for quota warning messages'
 										)}
 										value={cosAdvanced.zimbraQuotaWarnPercent}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnPercent"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1214,7 +1225,7 @@ const CosAdvanced: FC = () => {
 											'Minimum duration of time between quota warnings'
 										)}
 										value={zimbraQuotaWarnIntervalNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnInterval"
 										onChange={onZimbraQuotaWarnIntervalNumChange}
 										disabled={readonlyCOS}
@@ -1223,7 +1234,7 @@ const CosAdvanced: FC = () => {
 								<Container width="26%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraQuotaWarnIntervalType === ''
@@ -1232,7 +1243,8 @@ const CosAdvanced: FC = () => {
 												  timeItems.find((item: any) => item.value === zimbraQuotaWarnIntervalType)
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraQuotaWarnIntervalTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1240,7 +1252,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1249,13 +1261,14 @@ const CosAdvanced: FC = () => {
 						>
 							<ListRow>
 								<Container>
-									<Input
+									<Textarea
 										label={t(
 											'cos.quota_warning_message_template',
 											'Quota warning message template'
 										)}
+										// style={{ height: 'fitContent' }}
 										value={cosAdvanced.zimbraQuotaWarnMessage}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnMessage"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1275,12 +1288,7 @@ const CosAdvanced: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.password', 'Password')}
 					</Text>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 						<Container
 							orientation="horizontal"
 							width="99%"
@@ -1293,13 +1301,12 @@ const CosAdvanced: FC = () => {
 							}}
 							style={{ borderRadius: '2px 2px 0px 0px' }}
 						>
-							<Row takeAvwidth="fill" mainAlignment="flex-start">
+							<Row mainAlignment="flex-start">
 								<Padding horizontal="small">
 									<CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
 								</Padding>
 							</Row>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								padding={{
@@ -1316,7 +1323,7 @@ const CosAdvanced: FC = () => {
 							</Row>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1340,7 +1347,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1352,7 +1359,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.minimum_password_length', 'Minimum password length')}
 										value={cosAdvanced.zimbraPasswordMinLength}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMinLength"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1362,7 +1369,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.maximum_password_length', 'Maximum password length')}
 										value={cosAdvanced.zimbraPasswordMaxLength}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMaxLength"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1372,7 +1379,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.minimum_upper_case_characters', 'Minimum upper case characters')}
 										value={cosAdvanced.zimbraPasswordMinUpperCaseChars}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMinUpperCaseChars"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1382,7 +1389,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.minimum_lower_case_characters', 'Minimum lower case characters')}
 										value={cosAdvanced.zimbraPasswordMinLowerCaseChars}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMinLowerCaseChars"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1391,7 +1398,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1403,7 +1410,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
 										value={cosAdvanced.zimbraPasswordMinPunctuationChars}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMinPunctuationChars"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1413,7 +1420,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
 										value={cosAdvanced.zimbraPasswordMinNumericChars}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMinNumericChars"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1423,7 +1430,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
 										value={cosAdvanced.zimbraPasswordMinAge}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMinAge"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1433,7 +1440,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
 										value={cosAdvanced.zimbraPasswordMaxAge}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMaxAge"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1442,7 +1449,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1457,7 +1464,7 @@ const CosAdvanced: FC = () => {
 											'Minimum numeric characters or punctuation symbols'
 										)}
 										value={cosAdvanced.zimbraPasswordMinDigitsOrPuncs}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordMinDigitsOrPuncs"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1470,7 +1477,7 @@ const CosAdvanced: FC = () => {
 											'Minimum number of unique passwords history'
 										)}
 										value={cosAdvanced.zimbraPasswordEnforceHistory}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordEnforceHistory"
 										onChange={changeValue}
 										disabled={readonlyCOS}
@@ -1479,7 +1486,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1511,7 +1518,7 @@ const CosAdvanced: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.failed_login_policy', 'Failed Login Policy')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1532,7 +1539,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1547,7 +1554,7 @@ const CosAdvanced: FC = () => {
 											'Number of consecutive failed logins allowed'
 										)}
 										value={cosAdvanced.zimbraPasswordLockoutMaxFailures}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordLockoutMaxFailures"
 										onChange={changeValue}
 										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
@@ -1556,7 +1563,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1568,7 +1575,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
 										value={zimbraPasswordLockoutDurationNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordLockoutDuration"
 										onChange={onZimbraPasswordLockoutDurationNumChange}
 										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
@@ -1577,7 +1584,7 @@ const CosAdvanced: FC = () => {
 								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraPasswordLockoutDurationType === ''
@@ -1588,6 +1595,8 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraPasswordLockoutDurationTypeChange}
 										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
@@ -1599,7 +1608,7 @@ const CosAdvanced: FC = () => {
 											'Time window in which the failed logins must occur to lock the account:'
 										)}
 										value={zimbraPasswordLockoutFailureLifetimeNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraPasswordLockoutFailureLifetime"
 										onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
 										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
@@ -1608,7 +1617,7 @@ const CosAdvanced: FC = () => {
 								<Container width="28%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraPasswordLockoutFailureLifetimeType === ''
@@ -1619,6 +1628,8 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
 										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
@@ -1637,7 +1648,7 @@ const CosAdvanced: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.timeout_policy', 'Timeout Policy')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1652,7 +1663,7 @@ const CosAdvanced: FC = () => {
 											'Admin console auth token lifetime'
 										)}
 										value={zimbraAdminAuthTokenLifetimeNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraAdminAuthTokenLifetime"
 										onChange={onZimbraAdminAuthTokenLifetimeNumChange}
 										disabled={readonlyCOS}
@@ -1661,7 +1672,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraAdminAuthTokenLifetimeType === ''
@@ -1672,6 +1683,8 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraAdminAuthTokenLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1679,7 +1692,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1691,7 +1704,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.auth_token_lifetime', 'Auth token lifetime')}
 										value={zimbraAuthTokenLifetimeNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraAuthTokenLifetime"
 										onChange={onZimbraAuthTokenLifetimeNumChange}
 										disabled={readonlyCOS}
@@ -1700,7 +1713,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraAuthTokenLifetimeType === ''
@@ -1711,6 +1724,8 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraAuthTokenLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1718,7 +1733,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1730,7 +1745,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.session_idle_timeout', 'Session idle timeout')}
 										value={zimbraMailIdleSessionTimeoutNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraMailIdleSessionTimeout"
 										onChange={onZimbraMailIdleSessionTimeoutNumChange}
 										disabled={readonlyCOS}
@@ -1739,7 +1754,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailIdleSessionTimeoutType === ''
@@ -1750,6 +1765,8 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraMailIdleSessionTimeoutTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1768,7 +1785,7 @@ const CosAdvanced: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('cos.email_retention_policy', 'Email Retention Policy')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1780,7 +1797,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.email_message_lifetime', 'E-mail message lifetime')}
 										value={zimbraMailMessageLifetimeNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraMailMessageLifetime"
 										onChange={onZimbraMailMessageLifetimeNumChange}
 										disabled={readonlyCOS}
@@ -1789,7 +1806,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailMessageLifetimeType === ''
@@ -1800,6 +1817,8 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraMailMessageLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1807,7 +1826,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1819,7 +1838,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.trashed_message_lifetime', 'Trashed message lifetime')}
 										value={zimbraMailTrashLifetimeNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraMailTrashLifetime"
 										onChange={onZimbraMailTrashLifetimeNumChange}
 										disabled={readonlyCOS}
@@ -1828,7 +1847,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailTrashLifetimeType === ''
@@ -1839,6 +1858,8 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraMailTrashLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1846,7 +1867,7 @@ const CosAdvanced: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1858,7 +1879,7 @@ const CosAdvanced: FC = () => {
 									<Input
 										label={t('cos.spam_message_lifetime', 'Spam message lifetime')}
 										value={zimbraMailSpamLifetimeNum}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraMailSpamLifetime"
 										onChange={onZimbraMailSpamLifetimeNumChange}
 										disabled={readonlyCOS}
@@ -1867,7 +1888,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailSpamLifetimeType === ''
@@ -1878,6 +1899,8 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraMailSpamLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1894,9 +1917,12 @@ const CosAdvanced: FC = () => {
 					width="100%"
 				>
 					<Text size="extralarge" weight="bold">
-						{t('cos.free_busy_interop', 'Free/Busy Interop')}
+						{t(
+							'cos.free_busy_interop',
+							'Free/Busy Interop (O = OutOfOffice), (OU = OutOfOffice, AvailableForUrgentIssues)'
+						)}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1911,7 +1937,7 @@ const CosAdvanced: FC = () => {
 											'O and OU used in legacyExchangeDN attribute'
 										)}
 										value={cosAdvanced.zimbraFreebusyExchangeUserOrg}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraFreebusyExchangeUserOrg"
 										onChange={changeValue}
 										disabled={readonlyCOS}

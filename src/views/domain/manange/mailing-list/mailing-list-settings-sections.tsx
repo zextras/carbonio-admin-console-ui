@@ -227,10 +227,6 @@ const MailingListSettingsSection: FC<any> = () => {
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -252,10 +248,6 @@ const MailingListSettingsSection: FC<any> = () => {
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -389,13 +381,7 @@ const MailingListSettingsSection: FC<any> = () => {
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.main_settings', 'Main Settings')}
 					</Text>
 				</Row>
@@ -467,26 +453,12 @@ const MailingListSettingsSection: FC<any> = () => {
 					</Container>
 				</ListRow>
 				<Row padding={{ top: 'large' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.owners_settings_lbl', 'Owners’ Settings')}
 					</Text>
 				</Row>
 				<Row padding={{ top: 'small', bottom: 'medium' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="light"
-						color="#828282"
-						overflow="break-word"
-					>
+					<Text size="small" weight="light" color="#828282" overflow="break-word">
 						{t(
 							'label.owners_description_msg_1',
 							'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.'
@@ -559,6 +531,8 @@ const MailingListSettingsSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedDistributionListOwner}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -572,17 +546,17 @@ const MailingListSettingsSection: FC<any> = () => {
 							crossAlignment="center"
 						>
 							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_no_owners', 'There aren’t owners here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',
@@ -683,6 +657,8 @@ const MailingListSettingsSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedGrantEmail}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -696,17 +672,17 @@ const MailingListSettingsSection: FC<any> = () => {
 							crossAlignment="center"
 						>
 							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_not_member_here', 'There aren’t members here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',

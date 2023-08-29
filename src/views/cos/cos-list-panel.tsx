@@ -226,13 +226,12 @@ const CosListPanel: FC = () => {
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -255,10 +254,6 @@ const CosListPanel: FC = () => {
 					label: cos.name,
 					customComponent: (
 						<SelectItem
-							top="9px"
-							right="large"
-							bottom="9px"
-							left="large"
 							style={{
 								display: 'block',
 								textAlign: 'left',
@@ -283,7 +278,7 @@ const CosListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<DropDownInput
 					items={isLoading ? loadingComponent : items}
 					inputLabel={
@@ -314,12 +309,7 @@ const CosListPanel: FC = () => {
 					</Container>
 				)}
 			</Row>
-			<Row
-				padding={{ all: 'medium' }}
-				takeAvwidth="fill"
-				width="100%"
-				mainAlignment="space-between"
-			></Row>
+			<Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
 			<ListItems
 				items={detailOptions}
 				selectedOperationItem={selectedOperationItem}

@@ -212,6 +212,8 @@ const BackupServersListTable: FC<{
 			selectedRows={selectedRows}
 			onSelectionChange={onSelectionChange}
 			RowFactory={CustomRowFactory}
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore // Need to fix it with custom soultion
 			HeaderFactory={CustomHeaderFactory}
 		/>
 	);
@@ -368,7 +370,7 @@ const ServersList: FC = () => {
 	return (
 		<>
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container
 						orientation="vertical"
 						mainAlignment="space-around"
@@ -402,12 +404,7 @@ const ServersList: FC = () => {
 					height="calc(100vh - 200px)"
 					padding={{ top: 'large', left: 'small', right: 'small' }}
 				>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 						<BackupServersListTable
 							serverList={serverList}
 							selectedRows={selectedRows}

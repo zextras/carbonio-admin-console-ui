@@ -921,7 +921,7 @@ const BackupConfiguration: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -998,7 +998,6 @@ const BackupConfiguration: FC = () => {
 							}
 							color={backupServiceStart ? 'error' : 'primary'}
 							width="fit"
-							height={44}
 							onClick={serviceStartStop}
 							disabled={isRequestInProgress || !allowSetBackup}
 							loading={isRequestInProgress}
@@ -1024,10 +1023,7 @@ const BackupConfiguration: FC = () => {
 							crossAlignment="flex-start"
 						>
 							<Switch
-								label={t(
-									'backup.module_is_enabled_at_startup',
-									'This module is enabled at startup'
-								)}
+								label={t('backup.backup_is_enabled_at_startup', 'Backup is enabled at startup')}
 								value={moduleEnableStartup}
 								onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
 								iconColor="primary"
@@ -1062,7 +1058,7 @@ const BackupConfiguration: FC = () => {
 								color="primary"
 								icon="PowerOutline"
 								iconPlacement="right"
-								width="100%"
+								width="fill"
 								style={{ width: '100%' }}
 								disabled={isBackupInitialized || !allowSetBackup}
 								onClick={(): void => {
@@ -1078,7 +1074,7 @@ const BackupConfiguration: FC = () => {
 							<Input
 								label={t('backup.local_volume', 'Local Volume')}
 								value={backupDestPath || ''}
-								background="gray5"
+								backgroundColor="gray5"
 								onChange={(e: any): any => {
 									!allowSetBackup ?? setBackupDestPath(e.target.value);
 								}}
@@ -1092,7 +1088,7 @@ const BackupConfiguration: FC = () => {
 							<Input
 								label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
 								value={spaceThreshold}
-								background="gray5"
+								backgroundColor="gray5"
 								onChange={(e: any): any => {
 									!allowSetBackup ?? setSpaceThreshold(e.target.value);
 								}}
@@ -1108,7 +1104,7 @@ const BackupConfiguration: FC = () => {
 									<Input
 										label={t('backup.external_volume', 'External Volume')}
 										value={manageExternalVolumeType}
-										background="gray5"
+										backgroundColor="gray5"
 										readOnly
 									/>
 								</Container>
@@ -1122,7 +1118,7 @@ const BackupConfiguration: FC = () => {
 												? manageExternalVolumeLocalMountpoint
 												: manageExternalVolumeConfiguration?.label
 										}
-										background="gray5"
+										backgroundColor="gray5"
 										readOnly
 									/>
 								</Container>
@@ -1151,7 +1147,7 @@ const BackupConfiguration: FC = () => {
 							<Input
 								label={t('label.path', 'Path')}
 								value={rootVolumePath || ''}
-								background="gray5"
+								backgroundColor="gray5"
 								onChange={(e: any): any => {
 									!allowSetBackup ?? setRootVolumePath(e.target.value);
 								}}
@@ -1240,7 +1236,7 @@ const BackupConfiguration: FC = () => {
 										<Input
 											label={t('backup.local_mountpoint', 'Local Mountpoint')}
 											value={manageExternalVolumeNewLocalMountpoint || ''}
-											background="gray5"
+											backgroundColor="gray5"
 											onChange={(e: any): any => {
 												!allowSetBackup ??
 													setManageExternalVolumeNewLocalMountpoint(e.target.value);
@@ -1261,7 +1257,7 @@ const BackupConfiguration: FC = () => {
 								<Button
 									label={t('label.cancel', 'Cancel')}
 									color="secondary"
-									width="100%"
+									width="fill"
 									onClick={(): void => {
 										setIsManageExternalVolumeEnable(false);
 									}}
@@ -1272,7 +1268,7 @@ const BackupConfiguration: FC = () => {
 							<Button
 								label={t('label.migrate', 'Migrate')}
 								color="primary"
-								width="50%"
+								width="fit"
 								onClick={onSaveManageExternalVolume}
 								disabled={isExternalVolumeRequestRunning || !allowSetBackup}
 								loading={isExternalVolumeRequestRunning}
@@ -1294,7 +1290,7 @@ const BackupConfiguration: FC = () => {
 									iconPlacement="right"
 									size="large"
 									style={{ width: '100%' }}
-									width="100%"
+									width="fill"
 									disabled={!isBackupInitialized || !allowSetBackup}
 									onClick={(): void => {
 										if (!isBackArchivingStoreEmpty) {
@@ -1351,7 +1347,6 @@ const BackupConfiguration: FC = () => {
 						<Container padding={{ top: 'large' }}>
 							<Input
 								label={t('backup.schedule', 'Schedule')}
-								background="gray5"
 								value={scheduleSmartScan}
 								onChange={(e: any): any => {
 									setScheduleSmartScan(e.target.value);
@@ -1371,7 +1366,7 @@ const BackupConfiguration: FC = () => {
 								iconPlacement="right"
 								size="large"
 								style={{ width: '100%' }}
-								width="100%"
+								width="fill"
 								disabled={!isBackupInitialized || !allowSetBackup}
 								onClick={(): void => {
 									doInitializeBackup();
@@ -1427,7 +1422,7 @@ const BackupConfiguration: FC = () => {
 						<Container padding={{ top: 'large' }}>
 							<Input
 								label={t('backup.schedule', 'Schedule')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={retentionPolicySchedule}
 								onChange={(e: any): any => {
 									setRetentionPolicySchedule(e.target.value);
@@ -1447,12 +1442,13 @@ const BackupConfiguration: FC = () => {
 						>
 							<Input
 								label={t('backup.keep_deleted_item_in_backup', 'Keep deleted items in the backup')}
-								background="gray5"
 								value={keepDeletedItemInBackup}
 								onChange={(e: any): any => {
 									setKeepDeletedItemInBackup(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // DS only support string
 								description={
 									<Trans
 										i18nKey="backup.back_delete_account_warning_message"
@@ -1470,7 +1466,6 @@ const BackupConfiguration: FC = () => {
 						>
 							<Input
 								label={t('backup.range', 'Range')}
-								background="gray5"
 								value={t('label.days', 'Days')}
 								disabled={!allowSetBackup}
 							/>
@@ -1487,12 +1482,14 @@ const BackupConfiguration: FC = () => {
 									'backup.keep_deleted_account_in_the_backup',
 									'Keep deleted account in the backup'
 								)}
-								background="gray5"
+								backgroundColor="gray5"
 								value={keepDeletedAccountsInBackup}
 								onChange={(e: any): any => {
 									setKeepDeletedAccountsInBackup(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // DS only support string
 								description={
 									<Trans
 										i18nKey="backup.back_delete_account_warning_message"
@@ -1510,7 +1507,7 @@ const BackupConfiguration: FC = () => {
 						>
 							<Input
 								label={t('backup.range', 'Range')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={t('label.days', 'Days')}
 								disabled={!allowSetBackup}
 							/>
@@ -1524,9 +1521,8 @@ const BackupConfiguration: FC = () => {
 								color="primary"
 								icon="PowerOutline"
 								iconPlacement="right"
-								height={36}
 								style={{ width: '100%' }}
-								width="100%"
+								width="fill"
 								disabled={isPurgeRequestRunning || !isBackupInitialized || !allowSetBackup}
 								loading={isPurgeRequestRunning}
 								onClick={(): void => {
