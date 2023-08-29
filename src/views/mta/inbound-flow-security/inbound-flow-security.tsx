@@ -882,7 +882,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							maxWidth="auto"
 						>
 							<Switch
-								label={t('mta.hostname_in_greetings', 'Hostname in greetings')}
+								label={t('mta.check_client_host_name', 'Check Client Hostname')}
 								value={mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname}
 								onClick={(): void =>
 									setValue(

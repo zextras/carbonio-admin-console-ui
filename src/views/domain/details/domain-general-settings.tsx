@@ -462,6 +462,10 @@ const DomainGeneralSettings: FC = () => {
 				_content: zimbraDomainDefaultCOSId
 			});
 		}
+		attributes.push({
+			n: 'zimbraPublicServiceHostname',
+			_content: publicServiceHostName
+		});
 		body.a = attributes;
 		modifyDomain(body)
 			.then((data) => {
