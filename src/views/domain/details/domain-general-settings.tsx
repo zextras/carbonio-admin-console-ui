@@ -685,6 +685,7 @@ const DomainGeneralSettings: FC = () => {
 	};
 
 	const onCloseDomain = (): void => {
+		setConfirmDomainName('');
 		setOpenDeleteDomainConfirmDialog(false);
 		const body: any = {
 			_jsns: 'urn:zimbraAdmin',
