@@ -30,7 +30,7 @@ type THeader = {
 	i18nAllLabel?: string;
 	bold?: boolean;
 	items?: any;
-	onChange: (value: string | null) => void;
+	onChange: () => void;
 };
 
 interface THeaderProps {
@@ -62,7 +62,7 @@ const CustomHeaderFactory = ({
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const [showCkb, setShowCkb] = useState(false);
 	const LabelFactory = useCallback(
-		({ label, open, focus, bold }: any) => (
+		({ label, open, focus, bold, size }: any) => (
 			<Container
 				orientation="horizontal"
 				width="fill"
@@ -80,7 +80,7 @@ const CustomHeaderFactory = ({
 					width="auto"
 				>
 					<Text
-						size="medium"
+						size={size || 'medium'}
 						weight={bold ? 'bold' : 'regular'}
 						color={open || focus ? 'primary' : 'text'}
 					>
@@ -140,29 +140,36 @@ const CustomHeaderFactory = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
-									false
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
+									multiple
 									items={column.items}
+									i18nAllLabel={column.i18nAllLabel || 'All'}
 									dropdownWidth="auto"
 									onChange={column.onChange}
 									display={column.align ? 'inline-block' : 'block'}
 									LabelFactory={(props: any): JSX.Element =>
-										LabelFactory({ ...props, bold: column.bold })
+										LabelFactory({ ...props, bold: column.bold, size: 'small' })
 									}
 								/>
 							</Container>
 						)}
-						{!hasItems && <Text weight={column.bold ? 'bold' : 'regular'}>{column.label}</Text>}
+						{!hasItems && (
+							<Text weight={column.bold ? 'bold' : 'regular'} size="small">
+								{column.label}
+							</Text>
+						)}
 					</th>
 				);
 			}),
 		[headers, LabelFactory]
 	);
 	return (
-		<tr ref={trRef}>
+		<tr ref={trRef} style={{ height: '3rem' }}>
 			<th align="center" style={{ width: '30px' }}>
 				{showCheckbox && multiSelect && (showCkb || selectionMode || allSelected) && (
 					<Checkbox
-						size={'small'}
+						size="small"
 						value={allSelected}
 						onClick={onChange}
 						iconColor={selectionMode ? 'primary' : 'text'}

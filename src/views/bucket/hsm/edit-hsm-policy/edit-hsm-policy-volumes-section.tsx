@@ -89,18 +89,18 @@ const EditHsmPolicyVolumesSection: FC<{
 			const allRows = volumeList.map((item: any) => ({
 				id: item?.id,
 				columns: [
-					<Text size="medium" weight="medium" key={item} color="#828282">
+					<Text size="small" weight="regular" key={item}>
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="medium" key={item} color="#828282">
+					<Text size="small" weight="light" key={item}>
 						{''}
 					</Text>,
-					<Text size="medium" weight="medium" key={item} color="#828282">
+					<Text size="small" weight="light" key={item}>
 						{getVoumeType(item?.type)}
 					</Text>,
 					<Text
-						size="medium"
-						weight="medium"
+						size="small"
+						weight="light"
 						key={item}
 						color={item?.isCurrent ? 'gray0' : '#D74942'}
 					>
@@ -183,9 +183,9 @@ const EditHsmPolicyVolumesSection: FC<{
 		<Container
 			mainAlignment="flex-start"
 			crossAlignment="flex-start"
-			height="calc(100vh - 300px)"
+			height="calc(100vh - 18.75rem)"
 			background="white"
-			style={{ overflow: 'auto', padding: '16px' }}
+			style={{ overflow: 'auto', padding: '1rem' }}
 		>
 			<ListRow>
 				<Padding bottom="large">
@@ -196,14 +196,7 @@ const EditHsmPolicyVolumesSection: FC<{
 			</ListRow>
 			<ListRow>
 				<Padding bottom="large">
-					<Text
-						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						color="secondary"
-						style={{ 'white-space': 'normal' }}
-					>
+					<Text size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
 						{t(
 							'hsm.all_primary_volume_used_source_msg',
 							'All primary volumes will be used as source by default. Or select manually other volumes.'
@@ -252,6 +245,8 @@ const EditHsmPolicyVolumesSection: FC<{
 								}
 							}}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
@@ -267,14 +262,7 @@ const EditHsmPolicyVolumesSection: FC<{
 			</ListRow>
 			<ListRow>
 				<Padding bottom="large">
-					<Text
-						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						color="secondary"
-						style={{ 'white-space': 'normal' }}
-					>
+					<Text size="medium" color="secondary" style={{ whiteSpace: 'normal' }}>
 						{t(
 							'hsm.all_secondary_volume_used_source_msg',
 							'The current secondary volume will be used as a destination. Or select manually other volumes.'
@@ -328,6 +316,8 @@ const EditHsmPolicyVolumesSection: FC<{
 								}
 							}}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}

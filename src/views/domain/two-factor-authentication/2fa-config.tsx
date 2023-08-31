@@ -18,6 +18,7 @@ import { map, some } from 'lodash';
 import ListRow from '../../list/list-row';
 import { TwoFactorWhatToTrust, isValidIpRange } from '../../utility/utils';
 import { IpRangeValue, TwoFactorAuthPolicyValues } from '../../../../types';
+import CustomChip from '../../components/customChip';
 
 export const TwoFactorAuthencationConfig: FC<{
 	policies: TwoFactorAuthPolicyValues[];
@@ -89,7 +90,7 @@ export const TwoFactorAuthencationConfig: FC<{
 			width="100%"
 			height="calc(100vh - 9.375rem)"
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
+			<Row mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
 				<Container
 					padding={{ all: 'small' }}
 					height="fit"
@@ -112,6 +113,8 @@ export const TwoFactorAuthencationConfig: FC<{
 					<ListRow padding={{ top: 'large' }}>
 						<Padding right="large" width="30%">
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={WHAT_TO_TRUST}
 								label={t('label.what_to_trust', 'What to trust?')}
 								onChange={(item: any): void => {
@@ -120,10 +123,12 @@ export const TwoFactorAuthencationConfig: FC<{
 								showCheckbox={false}
 							/>
 						</Padding>
-						<Padding width="70%">
+						<Padding right="0" width="70%">
 							<ChipInput
-								background="gray5"
+								backgroundColor="gray5"
 								placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(ips: [IpRangeValue]): void => {
 									const data: any = [];
 									map(ips, (ip: IpRangeValue) => {
@@ -136,6 +141,7 @@ export const TwoFactorAuthencationConfig: FC<{
 								hasError={some(applyAllValues.ipRange || [], { error: true })}
 								value={applyAllValues.ipRange}
 								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
+								ChipComponent={CustomChip}
 							/>
 						</Padding>
 					</ListRow>
@@ -167,11 +173,17 @@ export const TwoFactorAuthencationConfig: FC<{
 
 									<Padding right="large" width="30%">
 										<Select
+											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// @ts-ignore // Need to fix it with custom soultion
 											items={WHAT_TO_TRUST}
 											label={t('label.what_to_trust', 'What to trust?')}
+											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// @ts-ignore // Need to fix it with custom soultion
 											onChange={(v: number): void => {
 												applyToIndividual(cVal.keyToGet, v);
 											}}
+											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// @ts-ignore // Need to fix it with custom soultion
 											selection={WHAT_TO_TRUST.find((item: any) => {
 												const tmpObj = arrPoliciesToModify.find((obj) =>
 													Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
@@ -181,10 +193,12 @@ export const TwoFactorAuthencationConfig: FC<{
 											showCheckbox={false}
 										/>
 									</Padding>
-									<Padding width="65%">
+									<Padding right="0" width="65%">
 										<ChipInput
 											background="gray5"
 											placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
+											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// @ts-ignore // Need to fix it with custom soultion
 											onChange={(ips: [IpRangeValue]): void => {
 												const data: any = [];
 												map(ips, (ip: IpRangeValue) => {
@@ -210,6 +224,7 @@ export const TwoFactorAuthencationConfig: FC<{
 												(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
 											)}
 											errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
+											ChipComponent={CustomChip}
 										/>
 									</Padding>
 								</ListRow>

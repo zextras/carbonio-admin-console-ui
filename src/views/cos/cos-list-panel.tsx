@@ -28,6 +28,7 @@ import ListItems from '../list/list-items';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
+import OverlayDivision from '../components/overlayDivision';
 
 const SelectItem = styled(Row)``;
 
@@ -35,6 +36,27 @@ const CustomIcon = styled(Icon)`
 	width: 20px;
 	height: 20px;
 `;
+
+const ovelayStyle = styled(Container)`
+	width: 20rem;
+	right: 0;
+	bottom: 0;
+	height: 8rem;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+`;
+
+const loadingComponent = [
+	{
+		customComponent: (
+			<Container>
+				<OverlayDivision ovelayStyle={ovelayStyle} />
+			</Container>
+		)
+	}
+];
 
 const CosListPanel: FC = () => {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
@@ -53,19 +75,25 @@ const CosListPanel: FC = () => {
 	const setCos = useCosStore((state) => state.setCos);
 	const cosInformation = useCosStore((state) => state.cos);
 	const cosName: any = useCosStore((state) => state.cos?.name);
+	const [isShowError, setIsShowError] = useState(false);
 	const prevCosRef = useRef();
+	const [isLoading, setIsLoading] = useState(false);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${COS_ROUTE_ID}`);
 	}, [globalCarbonioSendAnalytics, matomo]);
 
 	const getCosLists = (cos: string): any => {
+		setIsLoading(true);
 		getCosList(cos).then((data) => {
 			const searchResponse: any = data;
 			if (!!searchResponse && searchResponse?.searchTotal > 0) {
 				setCosList(searchResponse?.cos);
+				setIsLoading(false);
 			} else {
 				setCosList([]);
+				setIsShowError(true);
+				setIsLoading(false);
 			}
 		});
 	};
@@ -198,13 +226,12 @@ const CosListPanel: FC = () => {
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -227,10 +254,6 @@ const CosListPanel: FC = () => {
 					label: cos.name,
 					customComponent: (
 						<SelectItem
-							top="9px"
-							right="large"
-							bottom="9px"
-							left="large"
 							style={{
 								display: 'block',
 								textAlign: 'left',
@@ -255,9 +278,9 @@ const CosListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<DropDownInput
-					items={items}
+					items={isLoading ? loadingComponent : items}
 					inputLabel={
 						isCosSelect
 							? t('cos.i_want_to_see_this_cos', 'I want to see this COS')
@@ -265,19 +288,28 @@ const CosListPanel: FC = () => {
 					}
 					onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
 						setIsCosSelect(false);
+						setIsShowError(false);
 						setSearchCosName(ev.target.value);
 					}}
 					inputValue={searchCosName}
+					hasError={isShowError}
 					isCustomIcon
 					customIconDetail={customIconDetail}
 				/>
+				{isShowError && (
+					<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+						<Padding top="large" left="small">
+							<Text size="extrasmall" weight="regular" color="error">
+								{t(
+									'label.not_found_check_the_text_and_try_again',
+									'Not found - check the text and try again'
+								)}
+							</Text>
+						</Padding>
+					</Container>
+				)}
 			</Row>
-			<Row
-				padding={{ all: 'medium' }}
-				takeAvwidth="fill"
-				width="100%"
-				mainAlignment="space-between"
-			></Row>
+			<Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
 			<ListItems
 				items={detailOptions}
 				selectedOperationItem={selectedOperationItem}

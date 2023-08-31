@@ -14,8 +14,8 @@ import { READ_MAILS_ONLY } from '../../../../../../constants';
 const DelegateAddSection: FC = () => {
 	const [t] = useTranslation();
 	const DELEGETES_RIGHTS_TYPE = useMemo(() => delegateRightsType(t), [t]);
-	const conext = useContext(AccountContext);
-	const { accountDetail, deligateDetail } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail, deligateDetail } = context;
 
 	return (
 		<>

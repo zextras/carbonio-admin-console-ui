@@ -146,7 +146,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="medium" weight="light" key={item?.name} color="gray0">
+						<Text size="small" weight="regular" key={item?.name} color="gray0">
 							{item?.name}
 						</Text>
 					</Container>,
@@ -157,7 +157,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="medium" weight="light" key={item?.status} color="gray0">
+						<Text size="small" weight="light" key={item?.status} color="gray0">
 							{item?.status}
 						</Text>
 					</Container>,
@@ -168,7 +168,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="medium" weight="light" key={item?.creationTimestamp} color="gray0">
+						<Text size="small" weight="light" key={item?.creationTimestamp} color="gray0">
 							{getFormatedShortDate(new Date(item?.creationTimestamp))}
 						</Text>
 					</Container>,
@@ -179,7 +179,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="medium" weight="light" key={item?.id} color="gray0">
+						<Text size="small" weight="light" key={item?.id} color="gray0">
 							{item?.deletedTimestamp ? getFormatedShortDate(new Date(item?.deletedTimestamp)) : ''}
 						</Text>
 					</Container>
@@ -235,7 +235,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 			style={{ overflowY: 'auto' }}
 			maxHeight="calc(100vh - 17.5em)"
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container crossAlignment="flex-start" background="gray6">
 					<Row
 						orientation="horizontal"
@@ -285,6 +285,8 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 									showCheckbox={false}
 									selectedRows={selectedAccountRows}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								{isRequestInProgress && (
@@ -296,11 +298,10 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 									>
 										<Button
 											type="ghost"
-											iconColor="primary"
-											height={36}
+											color="primary"
 											label=""
-											width={36}
 											loading
+											onClick={(): null => null}
 										/>
 									</Container>
 								)}

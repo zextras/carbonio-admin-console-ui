@@ -132,15 +132,15 @@ const DomainMailboxQuotaSetting: FC = () => {
 				key: 'name'
 			},
 			{
-				label: t('label.quota', 'Quota'),
+				label: t('label.quota_mb', 'Quota (MB)'),
 				key: 'quota'
 			},
 			{
-				label: t('label.mail_size', 'Mail Size'),
+				label: t('label.mails_mb', 'Mails (MB)'),
 				key: 'mailSize'
 			},
 			{
-				label: t('label.quota_used_lbl', 'Quota used'),
+				label: t('label.mail_quota', 'Mails Quota (%)'),
 				key: 'quotaUsedPercentage'
 			}
 		],
@@ -170,9 +170,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 					}
 					percentage = ((diskUsed * 100) / quotaLimit).toFixed();
 				}
-				diskUsed += ` ${t('label.mb', 'MB')}`;
-				quotaLimit += ` ${t('label.mb', 'MB')}`;
-				percentage += '%';
 				quota.push({
 					name: item?.name,
 					quota: quotaLimit,
@@ -203,10 +200,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 						quotaData.push({
 							id: index.toString(),
 							columns: [
-								<Text size="medium" weight="light" key={item?.id} color="#828282">
+								<Text color="gray0" weight="regular" key={item?.id}>
 									{item?.name}
 								</Text>,
-								<Text size="medium" weight="light" key={item?.id} color="#828282">
+								<Text color="gray0" weight="light" key={item?.id}>
 									{`${item?.mailSize} / ${item?.quotaUsedPercentage}`}
 								</Text>
 							]
@@ -424,7 +421,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -475,11 +472,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 				width="100%"
 				height="calc(100vh - 9.375rem)"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Container padding={{ all: 'small' }}>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
@@ -492,12 +488,9 @@ const DomainMailboxQuotaSetting: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
-											'label.max_manageable_account_for_the_domain',
-											'Max manageable account for the domain (0=unlimited)'
-										)}
+										label={t('label.domain_space_accounts', 'Domain Space (Accounts)')}
 										value={zimbraDomainMaxAccounts}
-										background="gray6"
+										backgroundColor="gray6"
 										onChange={(e: any): any => {
 											setZimbraDomainMaxAccounts(e.target.value);
 										}}
@@ -506,11 +499,11 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
-											'label.max_mainbox_quota_for_the_domain_in_bytes',
-											'Max mailbox quota for the domain (bytes) (0=unlimited)'
+											'label.max_mainbox_quota_for_the_mails',
+											'Max mailbox quota for the Mails (bytes)'
 										)}
 										value={zimbraMailDomainQuota}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraMailDomainQuota(e.target.value);
 										}}
@@ -521,47 +514,46 @@ const DomainMailboxQuotaSetting: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
-											'domain.aggregated_space_quota_warning',
-											'Aggregated space quota warning (%)'
-										)}
+										label={t('domain.mail_space_quota_threshold', 'Mail Space Quota threshold (%)')}
 										value={zimbraDomainAggregateQuotaWarnPercent}
 										defaultValue={zimbraDomainAggregateQuotaWarnPercent}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
 										}}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('domain.send_the_warning_to', 'Send the warning to')}
-										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
-										defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
-										background="gray5"
-										onChange={(e: any): any => {
-											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
-										}}
-									/>
-								</Container>
-							</ListRow>
-
-							<ListRow>
-								<Container padding={{ all: 'small' }}>
 									<Select
 										items={quotaPolicy}
 										background="gray5"
-										label={t('label.aggrigated_space_criteria', 'Aggregated Space Criteria')}
+										label={t('label.mail_over_quota_criteria', 'Mail Over-quota Criteria')}
 										showCheckbox={false}
 										selection={zimbraDomainAggregateQuotaPolicy}
 										onChange={onZimbraDomainAggregateQuotaPolicy}
 									/>
 								</Container>
 							</ListRow>
+
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t(
+											'domain.receiver_of_quota_warning_email',
+											'Receiver of Quota warning (email)'
+										)}
+										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
+										defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
+										backgroundColor="gray5"
+										onChange={(e: any): any => {
+											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
 						</Container>
 
 						<Row
-							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							width="100%"
 							background="gray6"
@@ -594,6 +586,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 										headers={headers}
 										showCheckbox={false}
 										RowFactory={CustomRowFactory}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										HeaderFactory={CustomHeaderFactory}
 									/>
 									{isRequestInProgress && (
@@ -605,11 +599,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 										>
 											<Button
 												type="ghost"
-												iconColor="primary"
-												height={36}
+												color="primary"
 												label=""
-												width={36}
 												loading
+												onClick={(): null => null}
 											/>
 										</Container>
 									)}

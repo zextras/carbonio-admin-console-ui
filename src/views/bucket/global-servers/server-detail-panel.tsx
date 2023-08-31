@@ -57,7 +57,9 @@ const ServersListTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-						<Text weight="light">{v?.name}</Text>
+						<Text size="small" weight="regular">
+							{v?.name}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -67,7 +69,9 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						<Text weight="light">{v?.primaries}</Text>
+						<Text size="small" weight="light">
+							{v?.primaries}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -77,7 +81,9 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						<Text weight="light">{v?.secondaries}</Text>
+						<Text size="small" weight="light">
+							{v?.secondaries}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -87,7 +93,9 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						<Text weight="light">{v?.indexes}</Text>
+						<Text size="small" weight="light">
+							{v?.indexes}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -97,7 +105,7 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						<Text weight="light">
+						<Text size="small" weight="light">
 							{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
 						</Text>
 					</Row>,
@@ -109,7 +117,7 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						<Text weight="light">
+						<Text size="small" weight="light">
 							{(v.indexer?.could_start && INDEXER_ACTIVE) ||
 								(v.indexer?.could_stop && INDEXER_PAUSED) ||
 								(v.indexer?.running && INDEXER_RUNNING)}
@@ -123,7 +131,9 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						<Text weight="light">{v?.description}</Text>
+						<Text size="small" weight="light">
+							{v?.description}
+						</Text>
 					</Row>
 				],
 				clickable: true
@@ -137,7 +147,9 @@ const ServersListTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
-						<Text weight="light">{v?.name}</Text>
+						<Text size="small" weight="regular">
+							{v?.name}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -147,7 +159,9 @@ const ServersListTable: FC<{
 							textTransform: 'capitalize'
 						}}
 					>
-						<Text weight="light">{v?.description}</Text>
+						<Text size="small" weight="light">
+							{v?.description}
+						</Text>
 					</Row>
 				],
 				clickable: true
@@ -163,6 +177,8 @@ const ServersListTable: FC<{
 				showCheckbox={false}
 				multiSelect={false}
 				RowFactory={CustomRowFactory}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{isRequestInProgress && (
@@ -172,7 +188,7 @@ const ServersListTable: FC<{
 					height="fit"
 					padding={{ top: 'medium' }}
 				>
-					<Button type="ghost" iconColor="primary" height={36} label="" width={36} loading />
+					<Button type="ghost" label={''} loading onClick={(): null => null} />
 				</Container>
 			)}
 			{(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (
@@ -342,7 +358,7 @@ const ServerDetailPanel: FC = () => {
 					height="calc(100vh - 200px)"
 					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
 							<Row
 								orientation="horizontal"
@@ -355,7 +371,7 @@ const ServerDetailPanel: FC = () => {
 									<Input
 										disabled={serversList.length === 0 && searchServer.length === 0}
 										label={t('label.search_for_a_Server', `Search for a Server`)}
-										background="gray5"
+										backgroundColor="gray5"
 										CustomIcon={(): any => (
 											<Icon icon="FunnelOutline" size="large" color="primary" />
 										)}

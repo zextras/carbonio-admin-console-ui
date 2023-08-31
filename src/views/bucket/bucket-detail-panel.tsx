@@ -25,15 +25,14 @@ import { TFunction } from 'i18next';
 import logo from '../../assets/ninja_robo.svg';
 import NewBucket from './new-bucket';
 import BucketDeleteModel from './delete-bucket-model';
-import DetailsPanel from './details-panel';
 import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
-import { AbsoluteContainer } from '../components/styled';
 import ListRow from '../list/list-row';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { objectType } from '../../../types';
+import ModalOverlay from '../components/ModalOverlay';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -80,7 +79,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.label}</Text>
+							<Text size="small" weight="regular">
+								{v.label}
+							</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={v.bucketName}>
@@ -94,7 +95,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.bucketName}</Text>
+							<Text size="small" weight="light">
+								{v.bucketName}
+							</Text>
 						</Row>
 					</Tooltip>,
 					<Tooltip placement="bottom" label={v.notes} key={v.storeType}>
@@ -108,7 +111,9 @@ const BucketListTable: FC<{
 							}}
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
-							<Text weight="light">{v.storeType}</Text>
+							<Text size="small" weight="light">
+								{v.storeType}
+							</Text>
 						</Row>
 					</Tooltip>
 				],
@@ -129,13 +134,19 @@ const BucketListTable: FC<{
 					minHeight="auto"
 				>
 					<Table
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						headers={headers(t)}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						rows={tableRows}
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedRows}
 						onSelectionChange={onSelectionChange}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -151,7 +162,6 @@ const BucketListTable: FC<{
 							overflow="break-word"
 							weight="regular"
 							size="large"
-							width="60%"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>
 							{t(
@@ -175,7 +185,6 @@ const BucketDetailPanel: FC = () => {
 	const [bucketList, setBucketList] = useState<objectType[]>([]);
 	const [allBucketList, setAllBucketList] = useState([]);
 	const [connectionData, setConnectionData] = useState<objectType | undefined>();
-	const [detailsBucket, setDetailsBucket] = useState(false);
 	const [toggleWizardSection, setToggleWizardSection] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [showDetails, setShowDetails] = useState(false);
@@ -245,17 +254,17 @@ const BucketDetailPanel: FC = () => {
 			if (response.ok) {
 				getBucketListType();
 				createSnackbar({
-					key: 1,
+					key: '1',
 					type: 'success',
 					label: t('label.delete_bucket_sucess', 'The {{name}} has been removed', {
 						name: bucketDeleteName?.bucketName
 					}),
 					autoHideTimeout: 2000
 				});
-				setDetailsBucket(false);
+				setShowEditDetailView(false);
 			} else {
 				createSnackbar({
-					key: 1,
+					key: '1',
 					type: 'error',
 					label: t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
 						name: bucketDeleteName?.bucketName
@@ -273,18 +282,10 @@ const BucketDetailPanel: FC = () => {
 		createSnackbar,
 		t
 	]);
-	const handleDoubleClick = (i: number): void => {
-		const volumeObject: objectType | undefined = bucketList.find((s, index) => index === i);
-		setConnectionData(volumeObject);
-		setShowEditDetailView(true);
-		setDetailsBucket(false);
-		setShowDetails(true);
-	};
 	const handleClick = (i: number): void => {
 		const volumeObject: objectType | undefined = bucketList.find((s, index) => index === i);
 		setConnectionData(volumeObject);
-		setDetailsBucket(true);
-		setShowEditDetailView(false);
+		setShowEditDetailView(true);
 		setShowDetails(true);
 	};
 
@@ -323,30 +324,20 @@ const BucketDetailPanel: FC = () => {
 	return (
 		<>
 			{toggleWizardSection && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setToggleWizardSection} open={toggleWizardSection}>
 					<NewBucket
 						setToggleWizardSection={setToggleWizardSection}
-						setDetailsBucket={setDetailsBucket}
+						setDetailsBucket={setShowEditDetailView}
 						setConnectionData={setConnectionData}
 						bucketType={bucketType}
 					/>
-				</AbsoluteContainer>
-			)}
-			{detailsBucket && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
-					<DetailsPanel
-						setDetailsBucket={setDetailsBucket}
-						title="Bucket Connection"
-						bucketDetail={connectionData}
-						setBucketDeleteName={setBucketDeleteName}
-						setOpen={setOpen}
-						setShowEditDetailView={setShowEditDetailView}
-					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			{showEditDetailView && (
-				<AbsoluteContainer orientation="vertical" background="gray5">
+				<ModalOverlay setOpen={setShowEditDetailView} open={showEditDetailView}>
 					<EditBucketDetailPanel
+						setBucketDeleteName={setBucketDeleteName}
+						setOpen={setOpen}
 						setShowEditDetailView={setShowEditDetailView}
 						title="Bucket Connection"
 						bucketDetail={connectionData}
@@ -355,7 +346,7 @@ const BucketDetailPanel: FC = () => {
 						setToggleForGetAPICall={setToggleForGetAPICall}
 						toggleForGetAPICall={toggleForGetAPICall}
 					/>
-				</AbsoluteContainer>
+				</ModalOverlay>
 			)}
 			<RelativeContainer
 				orientation="column"
@@ -400,7 +391,7 @@ const BucketDetailPanel: FC = () => {
 				<Row width="100%" padding={{ all: 'large' }}>
 					<Input
 						disabled={bucketList.length === 0 && searchBucket.length === 0}
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
 						CustomIcon={(): JSX.Element => (
 							<Icon icon="FunnelOutline" size="large" color="primary" />
@@ -422,7 +413,7 @@ const BucketDetailPanel: FC = () => {
 							setBucketDeleteName(volumeObject);
 						}}
 						onDoubleClick={(i: number): void => {
-							handleDoubleClick(i);
+							handleClick(i);
 						}}
 						onClick={(i: number): void => {
 							handleClick(i);

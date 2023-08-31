@@ -36,6 +36,7 @@ import { isValidEmail } from '../../../../utility/utils';
 import InheritedInput from './inherited-components/inherited-input';
 import InheritedSwitch from './inherited-components/inherited-switch';
 import InheritedSelect from './inherited-components/inherited-select';
+import CustomChip from '../../../../components/customChip';
 
 const StaticCodesContainer = styled(Row)`
 	max-width: 350px;
@@ -76,9 +77,9 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 };
 
 const EditAccountSecuritySection: FC = () => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const { otpList, accountDetail, setAccountDetail, getListOtp, accSpecificDetail, cosDetail } =
-		conext;
+		context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');
@@ -128,7 +129,6 @@ const EditAccountSecuritySection: FC = () => {
 										mainAlignment="space-between"
 									>
 										<Row
-											takeAvwidth="fill"
 											mainAlignment="center"
 											width="100%"
 											padding={{
@@ -146,7 +146,6 @@ const EditAccountSecuritySection: FC = () => {
 										mainAlignment="space-between"
 									>
 										<Row
-											takeAvwidth="fill"
 											mainAlignment="center"
 											width="100%"
 											padding={{
@@ -166,7 +165,6 @@ const EditAccountSecuritySection: FC = () => {
 								mainAlignment="space-between"
 							>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="center"
 									width="100%"
 									padding={{
@@ -189,7 +187,6 @@ const EditAccountSecuritySection: FC = () => {
 								mainAlignment="space-between"
 							>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="center"
 									width="100%"
 									padding={{
@@ -220,9 +217,14 @@ const EditAccountSecuritySection: FC = () => {
 											});
 											setSendEmailTo(data);
 										}}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										defaultValue={sendEmailTo}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										value={sendEmailTo}
 										background="gray5"
+										ChipComponent={CustomChip}
 										// hasError={some(sendEmailTo || [], { error: true })}
 									/>
 								</Row>
@@ -503,7 +505,6 @@ const EditAccountSecuritySection: FC = () => {
 											icon="PlusOutline"
 											iconPlacement="right"
 											color="primary"
-											height={44}
 											onClick={(): void => handleOnGenerateOTP()}
 										/>
 									</Padding>
@@ -513,7 +514,6 @@ const EditAccountSecuritySection: FC = () => {
 										icon="CloseOutline"
 										iconPlacement="right"
 										color="error"
-										height={44}
 										disabled={!selectedRows?.length}
 										onClick={(): void => handleDeleteOTP()}
 									/>
@@ -535,9 +535,13 @@ const EditAccountSecuritySection: FC = () => {
 												rows={otpList}
 												headers={headers}
 												multiSelect={false}
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												onSelectionChange={setSelectedRows}
 												style={{ overflow: 'auto', height: '100%' }}
 												RowFactory={CustomRowFactory}
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												HeaderFactory={CustomHeaderFactory}
 											/>
 										)}
@@ -598,7 +602,6 @@ const EditAccountSecuritySection: FC = () => {
 			{!showCreateOTP && (
 				<Row mainAlignment="flex-start" width="100%">
 					<Row
-						takeAvwidth="fill"
 						mainAlignment="flex-start"
 						width="100%"
 						padding={{ top: 'large', left: 'large', right: 'large' }}
@@ -614,13 +617,12 @@ const EditAccountSecuritySection: FC = () => {
 							}}
 							style={{ borderRadius: '2px 2px 0px 0px' }}
 						>
-							<Row takeAvwidth="fill" mainAlignment="flex-start">
+							<Row mainAlignment="flex-start">
 								<Padding horizontal="small">
 									<CustomIcon icon="InfoOutline" color="primary"></CustomIcon>
 								</Padding>
 							</Row>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								padding={{
@@ -645,7 +647,7 @@ const EditAccountSecuritySection: FC = () => {
 						<Text size="extralarge" weight="bold">
 							{t('cos.password', 'Password')}
 						</Text>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -671,7 +673,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -706,7 +708,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -747,7 +749,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -782,7 +784,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -817,7 +819,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -858,7 +860,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container height="fit" crossAlignment="flex-start" background="gray6">
 								<ListRow>
 									<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
@@ -886,7 +888,7 @@ const EditAccountSecuritySection: FC = () => {
 						<Text size="extralarge" weight="bold">
 							{t('cos.failed_login_policy', 'Failed Login Policy')}
 						</Text>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -909,7 +911,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -936,7 +938,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -974,7 +976,7 @@ const EditAccountSecuritySection: FC = () => {
 								</ListRow>
 							</Container>
 						</Row>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
 								crossAlignment="flex-start"

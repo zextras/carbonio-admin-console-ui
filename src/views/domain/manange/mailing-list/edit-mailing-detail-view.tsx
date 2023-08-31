@@ -38,7 +38,7 @@ import { removeDistributionListMember } from '../../../../services/remove-distri
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { ALL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { ALL, DL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT, USR } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
 import { getGrant } from '../../../../services/get-grant';
 import helmetLogo from '../../../../assets/helmet_logo.svg';
@@ -47,6 +47,9 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ManageAliases from '../../../components/manageAliases';
 import { useDomainStore } from '../../../../store/domain/store';
 import DropDownInput from '../../../components/dropDownInput';
+import { deleteDistributionList } from '../../../../services/delete-distribution-list';
+import Displayer from '../../../components/displayer';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -63,8 +66,8 @@ export enum TRUE_FALSE {
 
 const EditMailingListView: FC<any> = ({
 	selectedMailingList,
-	setShowEditMailingList,
-	setIsUpdateRecord
+	setIsUpdateRecord,
+	setShowMailingListDetailView
 }) => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -114,6 +117,13 @@ const EditMailingListView: FC<any> = ({
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const domainList = useDomainStore((state) => state.domainList);
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
+	const [isDeleteBtnLoading, setIsDeleteBtnLoading] = useState<boolean>(false);
+	const [granteeTotalRights, setGranteeTotalRights] = useState(0);
+	const [targetTotalRights, setTargetTotalRights] = useState(0);
+	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+	const [totalGrantRights, setTotalGrantRights] = useState(0);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 
 	const dlCreateDate = useMemo(
 		() =>
@@ -190,7 +200,7 @@ const EditMailingListView: FC<any> = ({
 				value: TRUE_FALSE.TRUE
 			},
 			{
-				label: t('label.not_send_receive', 'Not Send & Receive'),
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
 				value: TRUE_FALSE.FALSE
 			}
 		],
@@ -494,8 +504,8 @@ const EditMailingListView: FC<any> = ({
 				id: item,
 				columns: [
 					<Text
-						size="medium"
-						weight="light"
+						size="small"
+						weight="regular"
 						key={item}
 						color="gray0"
 						onClick={(): void => {
@@ -519,8 +529,8 @@ const EditMailingListView: FC<any> = ({
 				id: item?.name,
 				columns: [
 					<Text
-						size="medium"
-						weight="light"
+						size="small"
+						weight="regular"
 						key={item?.id}
 						color="gray0"
 						onClick={(): void => {
@@ -628,10 +638,18 @@ const EditMailingListView: FC<any> = ({
 		[grantTypeOptions]
 	);
 
+	useEffect(() => {
+		if (grantType && grantType?.value === ALL) {
+			setTimeout(() => {
+				setGrantEmailsList([]);
+			}, 100);
+		}
+	}, [grantType]);
+
 	const getGrantML = useCallback(() => {
 		const getGrantBody: any = {};
 		const target = {
-			type: 'dl',
+			type: DL,
 			by: 'name',
 			_content: selectedMailingList?.name
 		};
@@ -641,17 +659,34 @@ const EditMailingListView: FC<any> = ({
 				if (data && data?.grant && Array.isArray(data?.grant)) {
 					const grant = data?.grant;
 					if (grant.length > 1) {
-						if (grant[1].grantee?.[0]?.type === 'all') {
-							onGrantTypeChange(ALL);
-						} else {
-							onGrantTypeChange(EMAIL);
-						}
 						const emails: Array<any> = [];
+						const sendToListItems = grant.filter(
+							(item: any) => item?.right[0]?._content === 'sendToDistList'
+						);
+						if (sendToListItems && sendToListItems.length > 0) {
+							const type = sendToListItems[0]?.grantee[0]?.type;
+							if ((type === GRP || type === DL || type === USR) && sendToListItems.length > 1) {
+								onGrantTypeChange(EMAIL);
+							} else if (
+								(type === GRP || type === DL || type === USR) &&
+								sendToListItems.length === 1
+							) {
+								onGrantTypeChange(GRP);
+							} else {
+								onGrantTypeChange(ALL);
+							}
+						}
 						grant.forEach((grItem: any) => {
-							emails.push({
-								id: grItem?.grantee[0]?.id,
-								name: grItem?.grantee[0]?.name
-							});
+							if (
+								grItem?.right &&
+								Array.isArray(grItem?.right) &&
+								grItem?.right[0]?._content === 'sendToDistList'
+							) {
+								emails.push({
+									id: grItem?.grantee[0]?.id,
+									name: grItem?.grantee[0]?.name
+								});
+							}
 						});
 						setGrantEmails(emails);
 						setGrantEmailsList(emails.map((item: any) => item?.name));
@@ -666,7 +701,35 @@ const EditMailingListView: FC<any> = ({
 						}));
 					} else if (grant.length === 1) {
 						const granteeType = grant[0]?.grantee[0]?.type;
-						if (
+						if (grant[0].grantee?.[0]?.type === 'gst' || grant[0].grantee?.[0]?.type === USR) {
+							if (grant[0]?.right[0]?._content === 'sendToDistList') {
+								onGrantTypeChange(EMAIL);
+							}
+							const emails: Array<any> = [];
+							grant.forEach((grItem: any) => {
+								if (
+									grItem?.right &&
+									Array.isArray(grItem?.right) &&
+									grItem?.right[0]?._content === 'sendToDistList'
+								) {
+									emails.push({
+										id: grItem?.grantee[0]?.id,
+										name: grItem?.grantee[0]?.name
+									});
+								}
+							});
+							setGrantEmails(emails);
+							setGrantEmailsList(emails.map((item: any) => item?.name));
+							const it = grantTypeOptions.find((item: any) => item.value === EMAIL);
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantType: it
+							}));
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								grantEmails: emails
+							}));
+						} else if (
 							grant[0]?.grantee[0]?.name &&
 							grant[0]?.grantee[0]?.name !== selectedMailingList?.name
 						) {
@@ -703,6 +766,7 @@ const EditMailingListView: FC<any> = ({
 						grantType: it
 					}));
 				}
+				setIsDirty(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -731,10 +795,6 @@ const EditMailingListView: FC<any> = ({
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -839,6 +899,9 @@ const EditMailingListView: FC<any> = ({
 				// eslint-disable-next-line no-shadow
 				let isError = false;
 				let errorMessage = '';
+				if (grantType?.value !== EMAIL) {
+					setGrantEmailTableRows([]);
+				}
 				data.forEach((item: any) => {
 					if (item?.Fault) {
 						isError = true;
@@ -889,7 +952,7 @@ const EditMailingListView: FC<any> = ({
 			const all = [..._allOwnerLists, ...allOwnerList];
 			all.forEach((item: any) => {
 				if (item?.id && item?.type && item?.email === email) {
-					type = item?.type === 'group' || item?.type === 'grp' ? 'grp' : 'usr';
+					type = item?.type === 'group' || item?.type === GRP ? GRP : USR;
 				}
 			});
 			return type;
@@ -1169,14 +1232,14 @@ const EditMailingListView: FC<any> = ({
 				op: 'setRights',
 				right: {
 					right: 'sendToDistList',
-					grantee: [{ type: 'grp', by: 'name', _content: selectedMailingList?.name }]
+					grantee: [{ type: GRP, by: 'name', _content: selectedMailingList?.name }]
 				}
 			};
 		} else if (grantType?.value === ALL) {
 			dl = { by: 'name', _content: selectedMailingList?.name };
 			action = {
 				op: 'setRights',
-				right: { right: 'sendToDistList', grantee: [{ type: 'all' }] }
+				right: { right: 'sendToDistList', grantee: [{ type: ALL }] }
 			};
 		} else if (grantType?.value === EMAIL) {
 			dl = { by: 'name', _content: selectedMailingList?.name };
@@ -1187,7 +1250,7 @@ const EditMailingListView: FC<any> = ({
 					grantee: grantEmails.map((item: any) => ({
 						type: 'email',
 						by: 'name',
-						_content: item
+						_content: item?.name ? item?.name : item
 					}))
 				}
 			};
@@ -1313,10 +1376,6 @@ const EditMailingListView: FC<any> = ({
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -1338,10 +1397,6 @@ const EditMailingListView: FC<any> = ({
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -1597,8 +1652,8 @@ const EditMailingListView: FC<any> = ({
 				id: item,
 				columns: [
 					<Text
-						size="medium"
-						weight="light"
+						size="small"
+						weight="regular"
 						key={item}
 						color="gray0"
 						onClick={(): void => {
@@ -1615,19 +1670,169 @@ const EditMailingListView: FC<any> = ({
 		}
 	}, [grantEmailsList]);
 
+	const handleClickDeleteEvent = useCallback(() => {
+		setIsDeleteBtnLoading(true);
+		const getGrantBody: any = {};
+		const grantee = {
+			type: GRP,
+			by: 'name',
+			_content: selectedMailingList?.name,
+			all: false
+		};
+		getGrantBody.grantee = grantee;
+		getGrant(getGrantBody)
+			.then((data: any) => {
+				if (data && data?.grant && Array.isArray(data?.grant)) {
+					let granteeTotal = 0;
+
+					const granteeRights = data?.grant?.map((items: any) => items?.right?.length);
+					const granteeRightLenght = granteeRights?.values();
+
+					// eslint-disable-next-line no-restricted-syntax
+					for (const value of granteeRightLenght) {
+						granteeTotal += value;
+					}
+					setGranteeTotalRights(granteeTotal);
+				}
+				setIsOpenDeleteDialog(true);
+				setIsDeleteBtnLoading(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setIsDeleteBtnLoading(false);
+			});
+
+		// get grants' rights as target
+		const getGrantBodyTarget: any = {};
+		const target = {
+			type: DL,
+			by: 'name',
+			_content: selectedMailingList?.name
+		};
+		getGrantBodyTarget.target = target;
+		getGrant(getGrantBodyTarget)
+			.then((resFromTarget: any) => {
+				if (resFromTarget && resFromTarget?.grant && Array.isArray(resFromTarget?.grant)) {
+					let targetTotal = 0;
+					const targetRights = resFromTarget?.grant?.map((items: any) => items?.right?.length);
+					const targetRightLenght = targetRights?.values();
+
+					// eslint-disable-next-line no-restricted-syntax
+					for (const value of targetRightLenght) {
+						targetTotal += value;
+					}
+					setTargetTotalRights(targetTotal);
+				}
+				setIsOpenDeleteDialog(true);
+				setIsDeleteBtnLoading(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setIsDeleteBtnLoading(false);
+			});
+	}, [createSnackbar, selectedMailingList?.name, t]);
+
+	const closeHandler = useCallback(() => {
+		setIsOpenDeleteDialog(false);
+	}, []);
+
+	const onSuccess = useCallback(
+		(message) => {
+			createSnackbar({
+				key: 'success',
+				type: 'success',
+				label: message,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			setIsRequestInProgress(false);
+			closeHandler();
+			setShowMailingListDetailView(false);
+			setIsUpdateRecord(true);
+		},
+		[closeHandler, createSnackbar, setIsUpdateRecord, setShowMailingListDetailView]
+	);
+
+	const onDeleteHandler = useCallback(() => {
+		setIsRequestInProgress(true);
+		deleteDistributionList(dlId)
+			.then((data: any) => {
+				onSuccess(
+					t('label.dl_delete_successfull', '{{name}} has been deleted successfully', {
+						name: distributionName
+					})
+				);
+			})
+			.then((error: any) => {
+				setIsRequestInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error.message
+						? error.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, onSuccess, t, dlId, distributionName]);
+
+	useEffect(() => {
+		const totalRights = targetTotalRights + granteeTotalRights;
+		setTotalGrantRights(totalRights);
+	}, [granteeTotalRights, targetTotalRights]);
+
+	const buttons = [
+		{
+			align: 'right',
+			type: 'outlined',
+			color: 'error',
+			loading: isDeleteBtnLoading,
+			onClick: handleClickDeleteEvent,
+			label: t('label.delete', 'delete')
+		},
+		{
+			align: 'left',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setIsSticky(!isSticky);
+			}
+		}
+	];
+
 	return (
 		<Container
 			background="gray5"
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 680px), 12px)'}`,
-				top: '2.688rem',
+				top: '0rem',
 				height: 'auto',
 				width: 'auto',
 				overflow: 'hidden',
 				transition: 'left 0.2s ease-in-out',
-				'box-shadow': '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)',
+				boxShadow: '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)',
 				right: 0
 			}}
 		>
@@ -1659,21 +1864,11 @@ const EditMailingListView: FC<any> = ({
 						>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.cancel', 'Cancel')}
-										color="secondary"
-										onClick={onUndo}
-										height={36}
-									/>
+									<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onUndo} />
 								)}
 							</Padding>
 							{isDirty && (
-								<Button
-									label={t('label.save', 'Save')}
-									color="primary"
-									onClick={onSave}
-									height={36}
-								/>
+								<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 							)}
 						</Container>
 					)}
@@ -1682,43 +1877,45 @@ const EditMailingListView: FC<any> = ({
 					<IconButton
 						size="medium"
 						icon="CloseOutline"
-						onClick={(): void => setShowEditMailingList(false)}
+						onClick={(): void => setShowMailingListDetailView(false)}
 					/>
 				</Row>
 			</Row>
 			<Row>
 				<Divider color="gray3" />
 			</Row>
+
 			<Container
-				padding={{ all: 'extralarge' }}
+				padding={{ left: 'large', right: 'large' }}
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 145px)"
+				height="calc(100vh - 3.6rem)"
 				background="white"
 				style={{ overflow: 'auto' }}
 			>
+				<Displayer buttons={buttons} pinIcon={isSticky} />
 				<Row>
 					<Text size="medium" weight="bold" color="gray0">
 						{t('domain.list_details', 'List Details')}
 					</Text>
 				</Row>
 
-				<ListRow>
-					<Container>
+				<ListRow padding={{ right: 'small', bottom: 'small' }}>
+					<Container padding={{ top: 'small' }}>
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
-							background="gray5"
+							backgroundColor="gray5"
 							onChange={(e: any): any => {
 								setDisplayName(e.target.value);
 							}}
 						/>
 					</Container>
-					<Container padding={{ all: 'small' }}>
+					<Container padding={{ left: 'large', top: 'small' }}>
 						<Input
 							label={t('label.address', 'Address')}
 							value={distributionName}
-							background="gray5"
+							backgroundColor="gray5"
 							onChange={(e: any): any => {
 								setDistributionName(e.target.value);
 							}}
@@ -1737,18 +1934,18 @@ const EditMailingListView: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<Container height="fit" padding={{ left: 'small', top: 'small', right: 'small' }}>
 					<ManageAliases
 						listAliases={zimbraMailAlias}
 						setListAliases={setZimbraMailAlias}
 						setAliasChange={(): void => ((): any => true)()}
 					/>
-				</ListRow>
-				<ListRow>
+				</Container>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
+						padding={{ top: 'small' }}
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
 					>
 						<Switch
 							value={zimbraDistributionListSendShareMessageToNewMembers}
@@ -1766,12 +1963,8 @@ const EditMailingListView: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'large', bottom: 'medium' }}
-					>
+				<ListRow padding={{ left: 'small', right: 'small', bottom: 'small' }}>
+					<Container mainAlignment="flex-start" crossAlignment="flex-start">
 						<Switch
 							value={zimbraHideInGal}
 							label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
@@ -1784,8 +1977,8 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 				{selectedMailingList?.dynamic && (
-					<ListRow>
-						<Container padding={{ top: 'small', bottom: 'small' }} orientation="horizontal">
+					<ListRow padding={{ all: 'small' }}>
+						<Container orientation="horizontal">
 							<Container width="fit" padding={{ right: 'small' }}>
 								<Icon icon={'Link2Outline'} size="large" />
 							</Container>
@@ -1793,7 +1986,7 @@ const EditMailingListView: FC<any> = ({
 								<Input
 									label={t('label.list_url', "Mailing List's URL")}
 									value={memberURL}
-									background="gray5"
+									backgroundColor="gray5"
 									onChange={(e: any): any => {
 										setMemberURL(e.target.value);
 									}}
@@ -1803,13 +1996,13 @@ const EditMailingListView: FC<any> = ({
 						</Container>
 					</ListRow>
 				)}
-				<ListRow>
-					<Container padding={{ top: 'small', bottom: 'small' }} orientation="horizontal">
-						<Container padding={{ all: 'small' }}>
+				<ListRow padding={{ all: 'small' }}>
+					<Container orientation="horizontal">
+						<Container padding={{ right: 'large' }}>
 							<Input
 								label={t('label.members', 'Members')}
 								value={dlm.length}
-								background="gray5"
+								backgroundColor="gray5"
 								disabled
 							/>
 						</Container>
@@ -1817,42 +2010,47 @@ const EditMailingListView: FC<any> = ({
 							<Input
 								label={t('label.alias_in_the_list', 'Alias in the List')}
 								value={zimbraMailAlias.length}
-								background="gray5"
+								backgroundColor="gray5"
 								disabled
 							/>
 						</Container>
 					</Container>
 				</ListRow>
 
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container padding={{ bottom: 'small' }} orientation="horizontal">
-						<Container padding={{ all: 'small' }}>
-							<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray5" disabled />
+						<Container padding={{ right: 'large' }}>
+							<Input
+								label={t('label.id_lbl', 'ID')}
+								value={dlId}
+								backgroundColor="gray5"
+								disabled
+							/>
 						</Container>
 						<Container>
 							<Input
 								label={t('label.creation_date', 'Creation Date')}
 								value={dlCreateDate}
-								background="gray5"
+								backgroundColor="gray5"
 								disabled
 							/>
 						</Container>
 					</Container>
 				</ListRow>
-				<Row padding={{ top: 'small', bottom: 'medium' }}>
+				<Row padding={{ top: 'large' }}>
 					<Text size="medium" weight="bold" color="gray0">
-						{t('label.notes', 'Notes')}
+						{t('label.description', 'Description')}
 					</Text>
 				</Row>
-				<ListRow>
-					<Container padding={{ top: 'small', bottom: 'medium' }}>
+				<ListRow padding={{ all: 'small' }}>
+					<Container padding={{ bottom: 'medium' }}>
 						<Input
 							value={zimbraNotes}
 							label={t(
 								'label.note_label',
 								'Write something that will easily make you remember this element'
 							)}
-							background="gray5"
+							backgroundColor="gray5"
 							onChange={(e: any): any => {
 								setZimbraNotes(e.target.value);
 							}}
@@ -1862,17 +2060,17 @@ const EditMailingListView: FC<any> = ({
 
 				{!selectedMailingList?.dynamic && (
 					<>
-						<Row padding={{ top: 'small', bottom: 'small' }}>
+						<Row padding={{ top: 'small' }}>
 							<Text size="medium" weight="bold" color="gray0">
 								{t('label.who_is_in_this_list', "Who's in this list?")}
 							</Text>
 						</Row>
-						<ListRow>
-							<Container padding={{ top: 'small', bottom: 'small' }}>
+						<ListRow padding={{ all: 'small' }}>
+							<Container padding={{ bottom: 'small' }}>
 								<Input
 									label={t('label.this_list_is_member_of', 'This List is part of')}
 									value={dlMembershipListNames}
-									background="gray5"
+									backgroundColor="gray5"
 									readOnly
 								/>
 							</Container>
@@ -1882,16 +2080,18 @@ const EditMailingListView: FC<any> = ({
 
 				{!selectedMailingList?.dynamic && (
 					<>
-						<Row padding={{ top: 'small', bottom: 'medium' }}>
+						<Row padding={{ bottom: 'medium' }}>
 							<Text size="medium" weight="bold" color="gray0">
 								{t('label.accounts', 'Accounts')}
 							</Text>
 						</Row>
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							width="100%"
-							padding={{ top: 'small', bottom: isShowMemberError ? 'extrasmall' : 'small' }}
+						<ListRow
+							padding={{
+								top: 'small',
+								bottom: isShowMemberError ? 'extrasmall' : 'small',
+								left: 'small',
+								right: 'small'
+							}}
 						>
 							<Container
 								orientation="vertical"
@@ -1929,8 +2129,6 @@ const EditMailingListView: FC<any> = ({
 												key="add-button"
 												label={t('label.add', 'Add')}
 												color="primary"
-												icon="PlusOutline"
-												height={44}
 												iconPlacement="right"
 												onClick={onAdd}
 												size="extralarge"
@@ -1943,21 +2141,19 @@ const EditMailingListView: FC<any> = ({
 											key="add-button"
 											label={t('label.delete', 'Delete')}
 											color="error"
-											icon="Trash2Outline"
 											iconPlacement="right"
 											size="extralarge"
 											disabled={selectedDistributionListMember.length === 0}
-											height={44}
 											onClick={onDeleteFromList}
 										/>
 									</Row>
 								</Row>
 							</Container>
-						</Row>
+						</ListRow>
 						{isShowMemberError && (
 							<Row>
 								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-									<Padding>
+									<Padding right={'0'}>
 										<Text size="extrasmall" weight="regular" color="error">
 											{memberErrorMessage}
 										</Text>
@@ -1967,7 +2163,7 @@ const EditMailingListView: FC<any> = ({
 						)}
 					</>
 				)}
-				<ListRow>
+				<Row padding={{ all: 'small' }}>
 					{!selectedMailingList?.dynamic && (
 						<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
 							<Table
@@ -1976,13 +2172,15 @@ const EditMailingListView: FC<any> = ({
 								showCheckbox={false}
 								selectedRows={selectedDistributionListMember}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
 					)}
-				</ListRow>
+				</Row>
 				{dlmTableRows.length === 0 && !selectedMailingList?.dynamic && (
-					<ListRow>
+					<ListRow padding={{ all: 'small' }}>
 						<Container
 							background="gray6"
 							height="fit-content"
@@ -1990,17 +2188,17 @@ const EditMailingListView: FC<any> = ({
 							crossAlignment="center"
 						>
 							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_not_member_here', 'There aren’t members here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',
@@ -2012,7 +2210,7 @@ const EditMailingListView: FC<any> = ({
 						</Container>
 					</ListRow>
 				)}
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					{!selectedMailingList?.dynamic && (
 						<Container
 							padding={{ all: 'small' }}
@@ -2024,25 +2222,16 @@ const EditMailingListView: FC<any> = ({
 					)}
 				</ListRow>
 
-				<Row padding={{ top: 'small', bottom: 'medium' }}>
-					<Text
-						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						weight="bold"
-						color="gray0"
-					>
+				<Row padding={{ bottom: 'medium' }}>
+					<Text weight="bold" color="gray0">
 						{t('label.owners_settings_lbl', 'Owners’ Settings')}
 					</Text>
 				</Row>
-				<Row>
+				<ListRow padding={{ left: 'small', right: 'small' }}>
 					<Text
 						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
 						color="secondary"
-						style={{ 'white-space': 'normal' }}
+						style={{ whiteSpace: 'normal' }}
 						overflow="break-word"
 					>
 						{t(
@@ -2050,14 +2239,9 @@ const EditMailingListView: FC<any> = ({
 							'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.'
 						)}
 					</Text>
-				</Row>
+				</ListRow>
 
-				<Row
-					takeAvwidth="fill"
-					mainAlignment="flex-start"
-					width="100%"
-					padding={{ top: 'small', bottom: isShowOwnerError ? 'extrasmall' : 'small' }}
-				>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
 						orientation="vertical"
 						mainAlignment="space-around"
@@ -2070,7 +2254,7 @@ const EditMailingListView: FC<any> = ({
 							crossAlignment="flex-start"
 							width="100%"
 						>
-							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
+							<Row mainAlignment="flex-start" width="66%" crossAlignment="flex-start">
 								<DropDownInput
 									width="100%"
 									items={searchOwnerList}
@@ -2087,32 +2271,27 @@ const EditMailingListView: FC<any> = ({
 									hasError={isShowOwnerError}
 								/>
 							</Row>
-							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
+							<Row width="34%" mainAlignment="flex-start" crossAlignment="flex-start">
 								<Padding left="large" right="large">
 									<Button
 										type="outlined"
 										key="add-button"
 										label={t('label.add', 'Add')}
 										color="primary"
-										icon="PlusOutline"
-										height={44}
 										iconPlacement="right"
 										onClick={onAddOwner}
 										size="extralarge"
 										disabled={searchOwner === ''}
 									/>
 								</Padding>
-
 								<Button
 									type="outlined"
 									key="add-button"
 									label={t('label.delete', 'Delete')}
 									color="error"
-									icon="Trash2Outline"
 									iconPlacement="right"
 									size="extralarge"
 									disabled={selectedOwnerListMember.length === 0}
-									height={44}
 									onClick={onDeleteFromOwnerList}
 								/>
 							</Row>
@@ -2121,7 +2300,7 @@ const EditMailingListView: FC<any> = ({
 					{isShowOwnerError && (
 						<Row>
 							<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-								<Padding>
+								<Padding right={'0'}>
 									<Text size="extrasmall" weight="regular" color="error">
 										{ownerErrorMessage}
 									</Text>
@@ -2129,13 +2308,11 @@ const EditMailingListView: FC<any> = ({
 							</Container>
 						</Row>
 					)}
-				</Row>
+				</ListRow>
 
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
 						padding={{
-							left: !selectedMailingList?.dynamic ? 'small' : '',
-							top: 'small',
 							bottom: 'small'
 						}}
 						mainAlignment="flex-start"
@@ -2146,13 +2323,15 @@ const EditMailingListView: FC<any> = ({
 							showCheckbox={false}
 							selectedRows={selectedOwnerListMember}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
 				</ListRow>
 
 				{ownerTableRows.length === 0 && (
-					<ListRow>
+					<ListRow padding={{ all: 'small' }}>
 						<Container
 							background="gray6"
 							height="fit-content"
@@ -2160,17 +2339,17 @@ const EditMailingListView: FC<any> = ({
 							crossAlignment="center"
 						>
 							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_no_owners', 'There aren’t owners here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',
@@ -2183,7 +2362,7 @@ const EditMailingListView: FC<any> = ({
 					</ListRow>
 				)}
 
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
 						padding={{ all: 'small' }}
 						mainAlignment={selectedMailingList?.dynamic ? 'flex-start' : 'flex-end'}
@@ -2193,13 +2372,13 @@ const EditMailingListView: FC<any> = ({
 					</Container>
 				</ListRow>
 
-				<ListRow>
-					<Container padding={{ top: 'large', bottom: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'small', bottom: 'small' }}>
+					<Container padding={{ bottom: 'small' }}>
 						<Divider />
 					</Container>
-				</ListRow>
+				</Row>
 
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container>
 						<Select
 							items={grantTypeOptions}
@@ -2211,84 +2390,80 @@ const EditMailingListView: FC<any> = ({
 						/>
 					</Container>
 				</ListRow>
-				<ListRow>
+				<ListRow padding={{ all: 'small' }}>
 					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="60%"
+						orientation="vertical"
+						mainAlignment="space-around"
+						background="gray6"
+						height="58px"
 					>
-						<DropDownInput
+						<Row
+							orientation="horizontal"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
 							width="100%"
-							items={grantItems}
-							inputLabel={t(
-								'label.type_an_account_add_senders_list',
-								'Type an account to add it to the sender for the list'
-							)}
-							size="medium"
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								setGrantEmailItem(e.target.value);
-							}}
-							inputValue={grantEmailItem}
-							isCustomIcon={false}
-							inputDisabled={grantType?.value !== EMAIL}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						width="fit"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Button
-							type="outlined"
-							label={t('label.add', 'Add')}
-							color="primary"
-							icon="PlusOutline"
-							iconPlacement="right"
-							height={44}
-							onClick={onAddGrantEmail}
-							size="extralarge"
-							disabled={grantEmailItem === ''}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
-					>
-						<Button
-							type="outlined"
-							label={t('label.delete', 'Delete')}
-							color="error"
-							icon="Trash2Outline"
-							iconPlacement="right"
-							height={44}
-							size="extralarge"
-							onClick={onDeleteFromGrantEmail}
-							disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
-						/>
+						>
+							<Row mainAlignment="flex-start" width="57%" crossAlignment="flex-start">
+								<DropDownInput
+									items={grantItems}
+									inputLabel={t(
+										'label.type_an_account_add_senders_list',
+										'Type an account to add it to the sender for the list'
+									)}
+									size="medium"
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+										setGrantEmailItem(e.target.value);
+									}}
+									inputValue={grantEmailItem}
+									isCustomIcon={false}
+									inputDisabled={grantType?.value !== EMAIL}
+								/>
+							</Row>
+							<Row width="43%" mainAlignment="flex-start" crossAlignment="flex-start">
+								<Padding left="large" right="large">
+									<Button
+										type="outlined"
+										label={t('label.add', 'Add')}
+										color="primary"
+										icon="PlusOutline"
+										iconPlacement="right"
+										onClick={onAddGrantEmail}
+										size="extralarge"
+										disabled={grantEmailItem === ''}
+									/>
+								</Padding>
+
+								<Button
+									type="outlined"
+									label={t('label.delete', 'Delete')}
+									color="error"
+									icon="Trash2Outline"
+									iconPlacement="right"
+									size="extralarge"
+									onClick={onDeleteFromGrantEmail}
+									disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
+								/>
+							</Row>
+						</Row>
 					</Container>
 				</ListRow>
 
-				<ListRow>
-					<Container padding={{ top: 'large', bottom: 'large' }}>
+				<ListRow padding={{ all: 'small' }}>
+					<Container padding={{ bottom: 'large' }}>
 						<Table
 							rows={grantEmailTableRows}
 							headers={grantEmailHeaders}
 							showCheckbox={false}
 							selectedRows={selectedGrantEmail}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
 				</ListRow>
 				{grantEmailTableRows.length === 0 && (
-					<ListRow>
+					<ListRow padding={{ all: 'small' }}>
 						<Container
 							background="gray6"
 							height="fit-content"
@@ -2296,17 +2471,17 @@ const EditMailingListView: FC<any> = ({
 							crossAlignment="center"
 						>
 							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_not_member_here', 'There aren’t members here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',
@@ -2335,7 +2510,12 @@ const EditMailingListView: FC<any> = ({
 				size="medium"
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button label={t('label.help', 'Help')} type="outlined" color="primary" isSmall />
+						<Button
+							label={t('label.help', 'Help')}
+							type="outlined"
+							color="primary"
+							onClick={(): null => null}
+						/>
 						<Container orientation="horizontal" mainAlignment="flex-end">
 							<Padding all="small">
 								<Button
@@ -2377,7 +2557,7 @@ const EditMailingListView: FC<any> = ({
 					>
 						<Input
 							value={searchMailingListOrUser}
-							background="gray5"
+							backgroundColor="gray5"
 							onChange={(e: any): void => {
 								setSearchMailingListOrUser(e.target.value);
 							}}
@@ -2424,6 +2604,71 @@ const EditMailingListView: FC<any> = ({
 				</Text>
 				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
 			</RouteLeavingGuard>
+			{isOpenDeleteDialog && (
+				<Modal
+					size="medium"
+					title={t('label.you_are_deleting_ml', 'You are deleting {{name}}', {
+						name: displayName || distributionName
+					})}
+					open={isOpenDeleteDialog}
+					customFooter={
+						<Container orientation="horizontal" mainAlignment="flex-end">
+							<Row style={{ gap: '1rem' }}>
+								<Button
+									label={t('label.cancel', 'Cancel')}
+									color="secondary"
+									type="outlined"
+									onClick={closeHandler}
+									disabled={isRequestInProgress}
+								/>
+								<Button
+									label={t('label.yes_delete_it', 'Yes, Delete it')}
+									color="error"
+									onClick={onDeleteHandler}
+									disabled={isRequestInProgress}
+								/>
+							</Row>
+						</Container>
+					}
+					showCloseIcon
+					onClose={closeHandler}
+				>
+					<Container
+						padding={{ top: 'extralarge', bottom: 'extralarge' }}
+						style={{ textAlign: 'center' }}
+					>
+						<Padding bottom="small">
+							{totalGrantRights !== 0 && (
+								<Container padding={{ bottom: 'extralarge' }}>
+									<Text size={'extralarge'} overflow="break-word">
+										<Trans
+											i18nKey="label.total_acc_rights_with_delete_distribution_list_helper_text"
+											defaults="This list has <bold>{{totalAccRights}}</bold> shared accounts rights. <br /> If you delete it all rights will be lost."
+											components={{
+												bold: <strong />,
+												br: <br />
+											}}
+											values={{
+												totalAccRights: totalGrantRights
+											}}
+										/>
+									</Text>
+								</Container>
+							)}
+							<Text size={'extralarge'} overflow="break-word">
+								<Trans
+									i18nKey="label.are_you_sure_delete_distribution_list"
+									defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
+									components={{ bold: <strong /> }}
+									values={{
+										name: displayName || distributionName
+									}}
+								/>
+							</Text>
+						</Padding>
+					</Container>
+				</Modal>
+			)}
 		</Container>
 	);
 };

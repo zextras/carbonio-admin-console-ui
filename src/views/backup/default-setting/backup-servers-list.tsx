@@ -117,21 +117,21 @@ const BackupServersListTable: FC<{
 			serverList.map((s, i) => ({
 				id: i?.toString(),
 				columns: [
-					<Text size="medium" weight="light" key={s?.name} color="gray0">
+					<Text size="small" weight="regular" key={s?.name} color="gray0">
 						{s?.name}
 					</Text>,
 					<Text
-						size="medium"
+						size="small"
 						weight="light"
 						key={s?.name}
 						color={s?.backupAtStartup ? 'gray0' : 'error'}
 					>
 						{s?.backupAtStartup ? s?.backupAtStartup : t('label.na', 'N/A')}
 					</Text>,
-					<Text size="medium" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
+					<Text size="small" weight="light" key={s?.name} color={s?.rtStatus ? 'gray0' : 'error'}>
 						{s?.rtStatus ? s?.rtStatus : t('label.na', 'N/A')}
 					</Text>,
-					<Text size="medium" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
+					<Text size="small" weight="light" key={s?.name} color={s?.type ? 'gray0' : 'error'}>
 						{s?.type ? s?.type : t('label.na', 'N/A')}
 					</Text>,
 					<Tooltip
@@ -139,7 +139,7 @@ const BackupServersListTable: FC<{
 						label={s?.smartScanTooltip ? s?.smartScanTooltip : t('label.na', 'N/A')}
 						key={s?.name}
 					>
-						<Text size="medium" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
+						<Text size="small" weight="light" color={s?.smartScan ? 'gray0' : 'error'}>
 							{s?.smartScan ? s?.smartScan : t('label.na', 'N/A')}
 						</Text>
 					</Tooltip>,
@@ -148,11 +148,11 @@ const BackupServersListTable: FC<{
 						label={s?.purgeTooltip ? s?.purgeTooltip : t('label.na', 'N/A')}
 						key={s?.name}
 					>
-						<Text size="medium" weight="light" color={s?.purge ? 'gray0' : 'error'}>
+						<Text size="small" weight="light" color={s?.purge ? 'gray0' : 'error'}>
 							{s?.purge ? s?.purge : t('label.na', 'N/A')}
 						</Text>
 					</Tooltip>,
-					<Text size="medium" weight="light" key={s?.name} color="gray0">
+					<Text size="small" weight="light" key={s?.name} color="gray0">
 						{s?.description}
 					</Text>,
 					<Row mainAlignment="flex-start" width="100%" key={s?.name}>
@@ -167,7 +167,7 @@ const BackupServersListTable: FC<{
 								}
 							>
 								<Text
-									size="medium"
+									size="small"
 									weight="light"
 									color={s?.availableMetadataSpace ? 'gray0' : 'error'}
 								>
@@ -188,7 +188,7 @@ const BackupServersListTable: FC<{
 								}
 							>
 								<Text
-									size="medium"
+									size="small"
 									weight="light"
 									color={s?.availableBackupSpace ? 'gray0' : 'error'}
 								>
@@ -212,6 +212,8 @@ const BackupServersListTable: FC<{
 			selectedRows={selectedRows}
 			onSelectionChange={onSelectionChange}
 			RowFactory={CustomRowFactory}
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore // Need to fix it with custom soultion
 			HeaderFactory={CustomHeaderFactory}
 		/>
 	);
@@ -368,7 +370,7 @@ const ServersList: FC = () => {
 	return (
 		<>
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container
 						orientation="vertical"
 						mainAlignment="space-around"
@@ -402,12 +404,7 @@ const ServersList: FC = () => {
 					height="calc(100vh - 200px)"
 					padding={{ top: 'large', left: 'small', right: 'small' }}
 				>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 						<BackupServersListTable
 							serverList={serverList}
 							selectedRows={selectedRows}

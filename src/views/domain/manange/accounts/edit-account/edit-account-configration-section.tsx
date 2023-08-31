@@ -9,10 +9,11 @@ import {
 	Row,
 	Text,
 	ChipInput,
-	Switch,
+	Icon,
 	Divider,
 	Input,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -24,13 +25,15 @@ import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { isValidEmail } from '../../../../utility/utils';
 import InheritedSwitch from './inherited-components/inherited-switch';
 import InheritedInput from './inherited-components/inherited-input';
+import CustomChip from '../../../../components/customChip';
+import { AccountType } from '../account-types/account-types';
 
 const EditAccountConfigrationSection: FC = () => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [t] = useTranslation();
 	const { accountDetail, setAccountDetail, setInitAccountDetail, accSpecificDetail, cosDetail } =
-		conext;
+		context;
 	const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
 	const [mailForwardingAddress, setMailForwardingAddress] = useState<any[]>([]);
 	const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useState<any[]>([]);
@@ -144,6 +147,12 @@ const EditAccountConfigrationSection: FC = () => {
 		},
 		[setAccountDetail]
 	);
+	const changeAccDetail = useCallback(
+		(e) => {
+			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
+		},
+		[setAccountDetail]
+	);
 
 	return (
 		<Container
@@ -163,8 +172,8 @@ const EditAccountConfigrationSection: FC = () => {
 							accountValue={accountDetail?.zimbraFeatureMailForwardingEnabled}
 							onChange={changeSwitchOption}
 							label={t(
-								'account_details.can_specify_forwarding_address',
-								'Can specify forwarding address'
+								'account_details.user_can_specify_forwarding_address',
+								'User can specify forwarding address'
 							)}
 							iconColor="primary"
 							cosValue={cosDetail.zimbraFeatureMailForwardingEnabled}
@@ -189,6 +198,25 @@ const EditAccountConfigrationSection: FC = () => {
 						/>
 					</Row>
 				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="48%" mainAlignment="flex-start">
+						<InheritedSwitch
+							accountValue={accountDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
+							onChange={changeSwitchOption}
+							label={t(
+								'account_details.user_can_specify_mail_forwarding_filter',
+								'User can specify mail forwarding filter'
+							)}
+							iconColor="primary"
+							cosValue={cosDetail.zimbraFeatureMailForwardingInFiltersEnabled}
+							fromAccount={accSpecificDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
+							inputName={'zimbraFeatureMailForwardingInFiltersEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue('zimbraFeatureMailForwardingInFiltersEnabled')
+							}
+						/>
+					</Row>
+				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="100%" mainAlignment="space-between">
 						<ChipInput
@@ -207,6 +235,7 @@ const EditAccountConfigrationSection: FC = () => {
 									zimbraPrefMailForwardingAddress: map(data, 'label').join(', ')
 								}));
 							}}
+							ChipComponent={CustomChip}
 							defaultValue={prefMailForwardingAddress}
 							value={prefMailForwardingAddress}
 							background="gray5"
@@ -236,6 +265,7 @@ const EditAccountConfigrationSection: FC = () => {
 							value={mailForwardingAddress}
 							background="gray5"
 							hasError={some(mailForwardingAddress || [], { error: true })}
+							ChipComponent={CustomChip}
 						/>
 					</Row>
 				</Row>
@@ -261,8 +291,40 @@ const EditAccountConfigrationSection: FC = () => {
 							value={prefCalendarForwardInvitesTo}
 							background="gray5"
 							hasError={some(prefCalendarForwardInvitesTo || [], { error: true })}
+							ChipComponent={CustomChip}
 						/>
 					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'medium' }}>
+					<Divider color="gray2" />
+				</Row>
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.mail_transport', 'Mail Transport')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
+					<Input
+						onChange={changeAccDetail}
+						inputName="zimbraMailTransport"
+						label={t('label.mail_transport_map', 'Mail Transport Map')}
+						backgroundColor="gray5"
+						defaultValue={accountDetail?.zimbraMailTransport || ''}
+						value={accountDetail?.zimbraMailTransport || ''}
+						CustomIcon={(): React.ReactElement => (
+							<Tooltip
+								placement="top"
+								label={`${t('label.format', 'Format')} :  ${t(
+									'label.protocol_server_port',
+									'protocol:server:port'
+								)}${` | `}:${` lmtp:server.demo.zextras.io:7025`}`}
+							>
+								<Text>
+									<Icon icon="InfoOutline" size="large" color="secondary" />
+								</Text>
+							</Tooltip>
+						)}
+					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />

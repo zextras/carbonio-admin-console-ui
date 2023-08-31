@@ -11,8 +11,8 @@ import { AccountType } from '../account-types/account-types';
 import { isValidNumber } from '../../../../utility/utils';
 
 const EditAccountContactsSection: FC = () => {
-	const conext = useContext(AccountContext);
-	const { accountDetail, setAccountDetail } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail, setAccountDetail } = context;
 	const [t] = useTranslation();
 	const [isValidPhone, setIsValidPhone] = useState<boolean>(true);
 	const [isValidHomePhone, setIsValidHomePhone] = useState<boolean>(true);
@@ -86,7 +86,7 @@ const EditAccountContactsSection: FC = () => {
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.mobile', 'Mobile')}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								if (e.target.value) {
@@ -107,7 +107,7 @@ const EditAccountContactsSection: FC = () => {
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.pager', 'Pager')}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								if (e.target.value) {
@@ -130,7 +130,7 @@ const EditAccountContactsSection: FC = () => {
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.fax_number', 'Fax Number')}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								if (e.target.value) {
@@ -160,7 +160,7 @@ const EditAccountContactsSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.company', 'Company')}
 							onChange={changeAccDetail}
 							inputName="company"
@@ -170,7 +170,7 @@ const EditAccountContactsSection: FC = () => {
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.job_title', 'Job Title')}
 							onChange={changeAccDetail}
 							inputName="title"
@@ -189,7 +189,7 @@ const EditAccountContactsSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.country', 'Country')}
 							onChange={changeAccDetail}
 							inputName="co"
@@ -199,7 +199,7 @@ const EditAccountContactsSection: FC = () => {
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.state', 'State')}
 							onChange={changeAccDetail}
 							inputName="st"
@@ -211,7 +211,7 @@ const EditAccountContactsSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.city', 'City')}
 							onChange={changeAccDetail}
 							inputName="l"
@@ -221,7 +221,7 @@ const EditAccountContactsSection: FC = () => {
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.postal_code', 'Postal Code')}
 							onChange={changeAccDetail}
 							inputName="postalCode"
@@ -233,7 +233,7 @@ const EditAccountContactsSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="100%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.address', 'Address')}
 							onChange={changeAccDetail}
 							inputName="street"

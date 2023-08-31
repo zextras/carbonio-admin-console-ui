@@ -21,13 +21,13 @@ import { AccountContext } from './account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
 
 const CreateAccountDetailSection: FC = () => {
-	const conext = useContext(AccountContext);
+	const context = useContext(AccountContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const domain = useDomainStore((state) => state.domain);
 
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
-	const { accountDetail, setAccountDetail } = conext;
+	const { accountDetail, setAccountDetail } = context;
 
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
@@ -175,9 +175,9 @@ const CreateAccountDetailSection: FC = () => {
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.userName_auto_fill', 'username (Auto-fill)')}
-							value={accountDetail.name}
+							value={accountDetail?.name}
 							onChange={changeAccName}
 							inputName="name"
 							// defaultValue={accountDetail?.name || ''}
@@ -195,7 +195,7 @@ const CreateAccountDetailSection: FC = () => {
 						<Row width="90%" mainAlignment="flex-start" crossAlignment="flex-start">
 							<Input
 								label={t('label.domain_name', 'Domain Name')}
-								background="gray6"
+								backgroundColor="gray6"
 								value={`${domainName} ${domainStatus ? `(${t('label.closed', 'Closed')})` : ''}`}
 								disabled
 							/>
@@ -206,7 +206,7 @@ const CreateAccountDetailSection: FC = () => {
 					<Input
 						label={t('label.viewed_name_auto_fill', 'Viewed Name (Auto-fill)')}
 						backgroundColor="gray5"
-						value={accountDetail.displayName || combineDisplayName}
+						value={accountDetail?.displayName || combineDisplayName}
 						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"
@@ -216,7 +216,7 @@ const CreateAccountDetailSection: FC = () => {
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<PasswordInput
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.password', 'Password')}
 							onChange={changeAccDetail}
 							inputName="password"
@@ -226,7 +226,7 @@ const CreateAccountDetailSection: FC = () => {
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
 						<PasswordInput
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.repeat_password', 'Repeat Password')}
 							onChange={changeAccDetail}
 							inputName="repeatPassword"
@@ -265,35 +265,8 @@ const CreateAccountDetailSection: FC = () => {
 							defaultSelection={ACCOUNT_STATUS.find(
 								(item: any) => item.value === accountDetail?.zimbraAccountStatus
 							)}
-							padding={{ right: 'medium' }}
 						/>
 					</Row>
-					{/* <Row width="32%" mainAlignment="flex-start">
-						<Select
-							items={localeZone}
-							background="gray5"
-							label={t('label.language', 'Language')}
-							showCheckbox={false}
-							defaultSelection={localeZone.find(
-								(item: any) => item.value === accountDetail?.zimbraPrefLocale
-							)}
-							onChange={onPrefLocaleChange}
-							padding={{ right: 'medium' }}
-						/>
-					</Row>
-					<Row width="32%" mainAlignment="flex-start">
-						<Select
-							items={timezones}
-							background="gray5"
-							label={t('label.time_zone', 'Time Zone')}
-							showCheckbox={false}
-							padding={{ right: 'medium' }}
-							defaultSelection={timezones.find(
-								(item: any) => item.value === accountDetail?.zimbraPrefTimeZoneId
-							)}
-							onChange={onPrefTimeZoneChange}
-						/>
-					</Row> */}
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="flex-start">
@@ -314,6 +287,8 @@ const CreateAccountDetailSection: FC = () => {
 								defaultSelection={cosItems.find(
 									(item: any) => item.value === accountDetail?.zimbraCOSId
 								)}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onCOSIdChange}
 								disabled={accountDetail?.defaultCOS}
 							/>
@@ -326,14 +301,14 @@ const CreateAccountDetailSection: FC = () => {
 			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" color="gray0" weight="bold">
-						{t('label.notes', 'Notes')}
+						{t('label.description', 'Description')}
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						height="85px"
-						label={t('label.notes', 'Notes')}
+						label={t('label.description', 'Description')}
 						defaultValue={accountDetail?.zimbraNotes || ''}
 						onChange={changeAccDetail}
 						inputName="zimbraNotes"

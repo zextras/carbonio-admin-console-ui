@@ -15,11 +15,11 @@ import {
 	Input,
 	Icon,
 	Select,
-	Chip,
 	Divider,
 	Button
 } from '@zextras/carbonio-design-system';
 import { useDomainStore } from '../../store/domain/store';
+import CustomChip from './customChip';
 
 const ManageAliases: FC<{
 	listAliases: Array<{ label: string }>;
@@ -39,7 +39,7 @@ const ManageAliases: FC<{
 
 	return (
 		<>
-			<Row width="100%" padding={{ top: 'large', left: 'large' }}>
+			<Row width="100%">
 				<Row width="76%" mainAlignment="flex-start" crossAlignment="flex-start">
 					<Row padding={{ left: 'large', bottom: 'small' }}>
 						<Text size="small" color="secondary">
@@ -57,7 +57,7 @@ const ManageAliases: FC<{
 							{listAliases?.map(
 								(ele, index) =>
 									(aliasType !== 'accounts' || index > 0) && (
-										<Chip key={`chip${index}`} label={ele.label} />
+										<CustomChip key={`chip${index}`} label={ele?.label} />
 									)
 							)}
 							<Row width="100%" padding={{ top: 'medium' }}>
@@ -66,7 +66,7 @@ const ManageAliases: FC<{
 						</Container>
 					</Row>
 				</Row>
-				<Row width="24%">
+				<Row width="24%" mainAlignment="flex-end">
 					<Button
 						type="outlined"
 						label={t('account_details.manage_aliases', 'MANAGE ALIAS')}
@@ -107,7 +107,6 @@ const ManageAliases: FC<{
 							<Input
 								label={t('account_details.new_alias_name', 'New Alias Name')}
 								backgroundColor="gray5"
-								size="medium"
 								value={aliasNameValue}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setAliasNameValue(e.target.value);
@@ -124,6 +123,8 @@ const ManageAliases: FC<{
 							width="40%"
 						>
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={domainList.map((ele) => ({
 									label: ele.name,
 									value: ele.name
@@ -131,10 +132,14 @@ const ManageAliases: FC<{
 								background="gray5"
 								label={t('account_details.domain', 'Domain')}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								selection={{
 									label: selectedDomainName || domainName,
 									value: selectedDomainName || domainName
 								}}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onDomainOptionChange}
 							/>
 						</Container>
@@ -183,7 +188,7 @@ const ManageAliases: FC<{
 								{listAliases?.map(
 									(ele, index) =>
 										(aliasType !== 'accounts' || index > 0) && (
-											<Chip
+											<CustomChip
 												key={`chip${index}`}
 												label={ele.label}
 												onClose={(): void => {

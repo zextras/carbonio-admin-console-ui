@@ -5,7 +5,7 @@
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Container, Row } from '@zextras/carbonio-design-system';
+import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import ListPanelItem from '../list/list-panel-item';
 import {
@@ -45,6 +45,7 @@ const BackupListPanel: FC = () => {
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 	const rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+	const [isShowError, setIsShowError] = useState(false);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${BACKUP_ROUTE_ID}`);
@@ -140,10 +141,6 @@ const BackupListPanel: FC = () => {
 			label: serverItem?.name,
 			customComponent: (
 				<Row
-					top="0.56rem"
-					right="large"
-					bottom="0.56rem"
-					left="large"
 					style={{
 						display: 'block',
 						textAlign: 'left',
@@ -167,6 +164,9 @@ const BackupListPanel: FC = () => {
 	useEffect(() => {
 		const filterList = serverList.filter((item: any) => item.name.includes(searchServer));
 		addServerToList(filterList);
+		if (serverList.length > 0 && filterList.length === 0) {
+			setIsShowError(true);
+		}
 	}, [searchServer, addServerToList, serverList]);
 
 	useEffect(() => {
@@ -184,7 +184,15 @@ const BackupListPanel: FC = () => {
 	}, [rights]);
 
 	const customIconDetail = {
-		icon: 'HardDriveOutline'
+		icon: searchServer === '' ? 'HardDriveOutline' : 'CloseOutline',
+		onClick: (): void => {
+			setIsShowError(false);
+			if (searchServer !== '') {
+				setSearchServer('');
+				setIsServerSelect(false);
+				setSelectedOperationItem(SERVER_CONFIG);
+			}
+		}
 	};
 
 	return (
@@ -216,21 +224,37 @@ const BackupListPanel: FC = () => {
 						setToggleView={toggleServerSpecific}
 					/>
 					{isServerSpecificsExpanded && (
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-							<DropDownInput
-								items={isBackupModuleLicensed ? serverNames : []}
-								maxWidth="18.75rem"
-								width="16.56rem"
-								inputLabel={t('label.select_a_server', 'Select a Server')}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-									setSearchServer(e.target.value);
-								}}
-								inputValue={searchServer}
-								isCustomIcon
-								inputDisabled={!isBackupModuleLicensed}
-								customIconDetail={customIconDetail}
-							/>
-						</Row>
+						<>
+							<Row mainAlignment="flex-start" width="100%">
+								<DropDownInput
+									items={isBackupModuleLicensed ? serverNames : []}
+									maxWidth="18.75rem"
+									width="16.56rem"
+									inputLabel={t('label.select_a_server', 'Select a Server')}
+									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+										setIsShowError(false);
+										setSearchServer(e.target.value);
+									}}
+									inputValue={searchServer}
+									isCustomIcon
+									hasError={isShowError}
+									inputDisabled={!isBackupModuleLicensed}
+									customIconDetail={customIconDetail}
+								/>
+								{isShowError && (
+									<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+										<Padding top="large" left="small">
+											<Text size="extrasmall" weight="regular" color="error">
+												{t(
+													'label.not_found_check_the_text_and_try_again',
+													'Not found - check the text and try again'
+												)}
+											</Text>
+										</Padding>
+									</Container>
+								)}
+							</Row>
+						</>
 					)}
 
 					{isServerSpecificsExpanded && (

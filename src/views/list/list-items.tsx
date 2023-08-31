@@ -63,7 +63,13 @@ const ListItems: FC<{
 
 	return (
 		<Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
-			<List items={items} ItemComponent={ListItem} active={selectedOperationItem} />
+			<List
+				items={items}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
+				ItemComponent={ListItem}
+				active={selectedOperationItem}
+			/>
 		</Container>
 	);
 };

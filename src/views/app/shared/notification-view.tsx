@@ -42,6 +42,7 @@ import { copyTextToClipboard } from '../../utility/utils';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
 import CustomRowFactory from './customTableRowFactory';
 import CustomHeaderFactory from './customTableHeaderFactory';
+import ModalOverlay from '../../components/ModalOverlay';
 
 const ReusedDefaultTabBar: FC<{
 	item: any;
@@ -51,17 +52,19 @@ const ReusedDefaultTabBar: FC<{
 }> = ({ item, index, selected, onClick }): ReactElement => (
 	<DefaultTabBarItem
 		item={item}
-		index={index}
 		selected={selected}
 		onClick={onClick}
 		orientation="horizontal"
+		background={'transparent'}
+		underlineColor={'primary'}
+		forceWidthEquallyDistributed={false}
 	>
 		<Container
 			orientation="horizontal"
 			mainAlignment="flex-start"
 			crossAlignment="flex-start"
 			padding={{ all: 'medium' }}
-			takeAvailableSpace
+			width="fill"
 		>
 			<Container width="2rem" padding={{ right: 'small' }}>
 				<Icon
@@ -71,18 +74,8 @@ const ReusedDefaultTabBar: FC<{
 					color={selected ? 'primary' : 'gray'}
 				/>
 			</Container>
-			<Container
-				mainAlignment="flex-start"
-				crossAlignment="flex-start"
-				width="auto"
-				takeAvailableSpace
-			>
-				<Text
-					size="small"
-					weight="regular"
-					color={selected ? 'primary' : 'gray'}
-					takeAvailableSpace
-				>
+			<Container mainAlignment="flex-start" crossAlignment="flex-start" width="auto">
+				<Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
 					{item.label} ({item?.count})
 				</Text>
 			</Container>
@@ -346,9 +339,9 @@ const NotificationView: FC<{
 				columns: [
 					<Text
 						size="small"
-						color={item?.ack ? 'secondary' : 'bold'}
-						weight={item?.ack ? 'light' : 'medium'}
-						key={item}
+						color="gray0"
+						weight="regular"
+						key={item.id}
 						onClick={(event: any): void => {
 							setSelectedNotification(item);
 							handleClick(event);
@@ -362,9 +355,9 @@ const NotificationView: FC<{
 					</Text>,
 					<Text
 						size="small"
-						color={item?.ack ? 'secondary' : 'bold'}
+						color="gray0"
 						weight={item?.ack ? 'light' : 'medium'}
-						key={item}
+						key={item.id}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							setSelectedNotification(item);
 							handleClick(event);
@@ -378,9 +371,9 @@ const NotificationView: FC<{
 					</Text>,
 					<Text
 						size="small"
+						color="gray0"
 						weight={item?.ack ? 'light' : 'medium'}
-						color={item?.ack ? 'secondary' : 'bold'}
-						key={item}
+						key={item.id}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							setSelectedNotification(item);
 							handleClick(event);
@@ -394,9 +387,9 @@ const NotificationView: FC<{
 					</Text>,
 					<Text
 						size="small"
+						color="gray0"
 						weight={item?.ack ? 'light' : 'medium'}
-						color={item?.ack ? 'secondary' : 'bold'}
-						key={item}
+						key={item.id}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							setSelectedNotification(item);
 							handleClick(event);
@@ -457,6 +450,8 @@ const NotificationView: FC<{
 				</Container>
 				<Container mainAlignment="flex-end" crossAlignment="flex-end">
 					<TabBar
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						items={items}
 						selected={change}
 						onChange={(ev: unknown, selectedId: string): void => {
@@ -527,18 +522,22 @@ const NotificationView: FC<{
 						multiSelect={false}
 						style={{ overflow: 'auto', height: '100%' }}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
 			</ListRow>
 			{showNotificationDetail && (
-				<NotificationDetail
-					notification={selectedNotification}
-					setShowNotificationDetail={setShowNotificationDetail}
-					copyNotificationOperation={copyNotificationOperation}
-					markAsReadUnread={markAsReadUnread}
-					isRequestInProgress={isRequestInProgress}
-				/>
+				<ModalOverlay setOpen={setShowNotificationDetail} open={showNotificationDetail}>
+					<NotificationDetail
+						notification={selectedNotification}
+						setShowNotificationDetail={setShowNotificationDetail}
+						copyNotificationOperation={copyNotificationOperation}
+						markAsReadUnread={markAsReadUnread}
+						isRequestInProgress={isRequestInProgress}
+					/>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

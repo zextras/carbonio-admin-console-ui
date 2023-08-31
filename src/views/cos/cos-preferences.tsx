@@ -62,6 +62,8 @@ const CosPreferences: FC = () => {
 		zimbraMailMinPollingInterval: '',
 		zimbraPrefMailSendReadReceipts: '',
 		zimbraPrefSaveToSent: 'FALSE',
+		zimbraFeatureMailForwardingEnabled: 'FALSE',
+		zimbraFeatureMailForwardingInFiltersEnabled: 'FALSE',
 		zimbraAllowAnyFromAddress: 'FALSE',
 		zimbraPrefAutoAddAddressEnabled: 'FALSE',
 		zimbraPrefGalAutoCompleteEnabled: 'FALSE',
@@ -147,9 +149,9 @@ const CosPreferences: FC = () => {
 
 	const SEND_READ_RECEIPTS = useMemo(
 		() => [
-			{ label: t('label.prompt', 'Prompt'), value: 'prompt' },
-			{ label: t('label.always', 'Always'), value: 'always' },
-			{ label: t('label.never', 'Never'), value: 'never' }
+			{ label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
+			{ label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
+			{ label: t('label.ask_me', 'Ask me'), value: 'prompt' }
 		],
 		[t]
 	);
@@ -349,6 +351,18 @@ const CosPreferences: FC = () => {
 					obj?.zimbraPrefSaveToSent ? obj?.zimbraPrefSaveToSent : 'FALSE'
 				);
 				setValue(
+					'zimbraFeatureMailForwardingEnabled',
+					obj?.zimbraFeatureMailForwardingEnabled
+						? obj?.zimbraFeatureMailForwardingEnabled
+						: 'FALSE'
+				);
+				setValue(
+					'zimbraFeatureMailForwardingInFiltersEnabled',
+					obj?.zimbraFeatureMailForwardingInFiltersEnabled
+						? obj?.zimbraFeatureMailForwardingInFiltersEnabled
+						: 'FALSE'
+				);
+				setValue(
 					'zimbraAllowAnyFromAddress',
 					obj?.zimbraAllowAnyFromAddress ? obj?.zimbraAllowAnyFromAddress : 'FALSE'
 				);
@@ -495,6 +509,12 @@ const CosPreferences: FC = () => {
 			}
 			if (!obj.zimbraPrefSaveToSent) {
 				obj.zimbraPrefSaveToSent = 'FALSE';
+			}
+			if (!obj.zimbraFeatureMailForwardingInFiltersEnabled) {
+				obj.zimbraFeatureMailForwardingInFiltersEnabled = 'FALSE';
+			}
+			if (!obj.zimbraFeatureMailForwardingEnabled) {
+				obj.zimbraFeatureMailForwardingEnabled = 'FALSE';
 			}
 			if (!obj.zimbraAllowAnyFromAddress) {
 				obj.zimbraAllowAnyFromAddress = 'FALSE';
@@ -667,6 +687,31 @@ const CosPreferences: FC = () => {
 			setIsDirty(true);
 		}
 	}, [cosData.zimbraPrefSaveToSent, cosPreferences.zimbraPrefSaveToSent]);
+
+	useEffect(() => {
+		if (
+			cosData.zimbraFeatureMailForwardingEnabled !== undefined &&
+			cosData.zimbraFeatureMailForwardingEnabled !==
+				cosPreferences.zimbraFeatureMailForwardingEnabled
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosData.zimbraFeatureMailForwardingEnabled,
+		cosPreferences.zimbraFeatureMailForwardingEnabled
+	]);
+	useEffect(() => {
+		if (
+			cosData.zimbraFeatureMailForwardingInFiltersEnabled !== undefined &&
+			cosData.zimbraFeatureMailForwardingInFiltersEnabled !==
+				cosPreferences.zimbraFeatureMailForwardingInFiltersEnabled
+		) {
+			setIsDirty(true);
+		}
+	}, [
+		cosData.zimbraFeatureMailForwardingInFiltersEnabled,
+		cosPreferences.zimbraFeatureMailForwardingInFiltersEnabled
+	]);
 
 	useEffect(() => {
 		if (
@@ -962,7 +1007,7 @@ const CosPreferences: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -1011,7 +1056,7 @@ const CosPreferences: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('label.general_options', 'General Options')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1033,6 +1078,8 @@ const CosPreferences: FC = () => {
 														(item: any) => item.value === cosPreferences?.zimbraPrefLocale
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPrefLocaleChange}
 										disabled={readonlyCOS}
 									/>
@@ -1051,7 +1098,7 @@ const CosPreferences: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('label.mailing_options', 'Mail Options')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1067,7 +1114,7 @@ const CosPreferences: FC = () => {
 							/>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1081,6 +1128,8 @@ const CosPreferences: FC = () => {
 										label={t('cos.display_by', 'Display by')}
 										showCheckbox={false}
 										items={GROUP_BY}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										selection={
 											cosPreferences?.zimbraPrefGroupMailBy === ''
 												? GROUP_BY[-1]
@@ -1089,6 +1138,8 @@ const CosPreferences: FC = () => {
 														(item: any) => item.value === cosPreferences?.zimbraPrefGroupMailBy
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onGroupByChange}
 										disabled={readonlyCOS}
 									/>
@@ -1099,6 +1150,8 @@ const CosPreferences: FC = () => {
 										label={t('cos.default_charset', 'Default Charset')}
 										showCheckbox={false}
 										items={CHARACTOR_SET}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										selection={
 											cosPreferences?.zimbraPrefMailDefaultCharset === ''
 												? CHARACTOR_SET[-1]
@@ -1108,6 +1161,8 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefMailDefaultCharset
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onCharactorSetChange}
 										disabled={readonlyCOS}
 									/>
@@ -1115,7 +1170,7 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1161,7 +1216,7 @@ const CosPreferences: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('label.receiving_mails', 'Receiving Mails')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1194,6 +1249,8 @@ const CosPreferences: FC = () => {
 														(item: any) => item.value === prefMailPollingIntervalType
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPrefMailPollingIntervalTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1201,7 +1258,7 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+					<Row mainAlignment="center" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1209,7 +1266,7 @@ const CosPreferences: FC = () => {
 							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<ListRow>
-								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
+								<Container crossAlignment="flex-start">
 									<Select
 										items={POLLING_INTERVAL}
 										background="gray5"
@@ -1224,26 +1281,9 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefMailPollingInterval
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPollingIntervalChange}
-										disabled={readonlyCOS}
-									/>
-								</Container>
-								<Container padding={{ left: 'small' }}>
-									<Select
-										items={SEND_READ_RECEIPTS}
-										background="gray5"
-										label={t('cos.send_read_receipts', 'Send read receipts')}
-										showCheckbox={false}
-										selection={
-											cosPreferences?.zimbraPrefMailSendReadReceipts === ''
-												? SEND_READ_RECEIPTS[-1]
-												: SEND_READ_RECEIPTS.find(
-														(item: any) =>
-															// eslint-disable-next-line max-len
-															item.value === cosPreferences?.zimbraPrefMailSendReadReceipts
-												  )
-										}
-										onChange={onMailSendReadReceipts}
 										disabled={readonlyCOS}
 									/>
 								</Container>
@@ -1259,9 +1299,9 @@ const CosPreferences: FC = () => {
 					width="100%"
 				>
 					<Text size="extralarge" weight="bold">
-						{t('label.sending_mails', 'Sending Mails')}
+						{t('label.forwarding', 'Forwarding')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1271,20 +1311,25 @@ const CosPreferences: FC = () => {
 							<ListRow>
 								<Container crossAlignment="flex-start" padding={{ right: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraPrefSaveToSent === 'TRUE'}
-										onClick={(): void => changeSwitchOption('zimbraPrefSaveToSent')}
-										label={t('cos.save_to_Sent', `Save to sent`)}
+										value={cosPreferences?.zimbraFeatureMailForwardingEnabled === 'TRUE'}
+										onClick={(): void => changeSwitchOption('zimbraFeatureMailForwardingEnabled')}
+										label={t(
+											'cos.user_can_specify_forwarding_address',
+											`User can specify forwarding address`
+										)}
 										iconColor="primary"
 										disabled={readonlyCOS}
 									/>
 								</Container>
 								<Container crossAlignment="flex-start" padding={{ left: 'small' }}>
 									<Switch
-										value={cosPreferences?.zimbraAllowAnyFromAddress === 'TRUE'}
-										onClick={(): void => changeSwitchOption('zimbraAllowAnyFromAddress')}
+										value={cosPreferences?.zimbraFeatureMailForwardingInFiltersEnabled === 'TRUE'}
+										onClick={(): void =>
+											changeSwitchOption('zimbraFeatureMailForwardingInFiltersEnabled')
+										}
 										label={t(
-											'cos.allow_sending_from_any_address',
-											'Allow sending from any address'
+											'cos.user_can_specify_mail_forwarding_filter',
+											'User can specify mail forwarding filter'
 										)}
 										iconColor="primary"
 										disabled={readonlyCOS}
@@ -1302,9 +1347,95 @@ const CosPreferences: FC = () => {
 					width="100%"
 				>
 					<Text size="extralarge" weight="bold">
+						{t('label.sending_mails', 'Sending Mails')}
+					</Text>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ top: 'large', bottom: 'large' }}
+						>
+							<ListRow>
+								<Container crossAlignment="flex-start">
+									<Switch
+										value={cosPreferences?.zimbraPrefSaveToSent === 'TRUE'}
+										onClick={(): void => changeSwitchOption('zimbraPrefSaveToSent')}
+										label={t('cos.save_to_Sent', `Save to sent`)}
+										iconColor="primary"
+										disabled={readonlyCOS}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ bottom: 'large' }}
+						>
+							<ListRow>
+								<Container crossAlignment="flex-start">
+									<Switch
+										value={cosPreferences?.zimbraAllowAnyFromAddress === 'TRUE'}
+										onClick={(): void => changeSwitchOption('zimbraAllowAnyFromAddress')}
+										label={t(
+											'cos.allow_sending_from_any_address',
+											'Allow sending from any address'
+										)}
+										iconColor="primary"
+										disabled={readonlyCOS}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ bottom: 'large' }}
+						>
+							<ListRow>
+								<Container>
+									<Select
+										items={SEND_READ_RECEIPTS}
+										background="gray5"
+										label={t('cos.read_receipt_settings', 'Read Receipt settings')}
+										showCheckbox={false}
+										selection={
+											cosPreferences?.zimbraPrefMailSendReadReceipts === ''
+												? SEND_READ_RECEIPTS[-1]
+												: SEND_READ_RECEIPTS.find(
+														(item: any) =>
+															// eslint-disable-next-line max-len
+															item.value === cosPreferences?.zimbraPrefMailSendReadReceipts
+												  )
+										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
+										onChange={onMailSendReadReceipts}
+										disabled={readonlyCOS}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					<Divider />
+				</Row>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ all: 'large' }}
+					width="100%"
+				>
+					<Text size="extralarge" weight="bold">
 						{t('label.contact_options', 'Contact Options')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1344,7 +1475,7 @@ const CosPreferences: FC = () => {
 					<Text size="extralarge" weight="bold">
 						{t('label.calendar_options', 'Calendar Options')}
 					</Text>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1366,6 +1497,8 @@ const CosPreferences: FC = () => {
 														(item: any) => item.value === cosPreferences?.zimbraPrefTimeZoneId
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPrefTimeZoneChange}
 										disabled={readonlyCOS}
 									/>
@@ -1388,6 +1521,8 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefCalendarDefaultApptDuration
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onCalendarDefaultApptDurationChange}
 										disabled={readonlyCOS}
 									/>
@@ -1395,7 +1530,7 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1422,6 +1557,8 @@ const CosPreferences: FC = () => {
 															cosPreferences?.zimbraPrefCalendarApptReminderWarningTime
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onReminderWarningTimeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1441,6 +1578,8 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefCalendarInitialView
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onCalendarInitialViewChange}
 										disabled={readonlyCOS}
 									/>
@@ -1448,7 +1587,7 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1471,6 +1610,8 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefCalendarFirstDayOfWeek
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onFirstDayOfWeekChange}
 										disabled={readonlyCOS}
 									/>
@@ -1493,6 +1634,8 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefCalendarApptVisibility
 												  )
 										}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onAppointmentVisibilityChange}
 										disabled={readonlyCOS}
 									/>
@@ -1500,7 +1643,7 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1539,7 +1682,7 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1578,7 +1721,7 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -1615,7 +1758,7 @@ const CosPreferences: FC = () => {
 							</ListRow>
 						</Container>
 					</Row>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container
 							height="fit"
 							crossAlignment="flex-start"

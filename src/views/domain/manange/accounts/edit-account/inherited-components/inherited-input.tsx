@@ -62,9 +62,9 @@ const InheritedInput: FC<{
 							>
 								<IconCheckbox
 									icon="RefreshOutline"
-									size="medium"
 									onClick={onChangeReset}
 									style={{ cursor: 'pointer' }}
+									onChange={(): null => null}
 								/>
 							</Tooltip>
 						) : (

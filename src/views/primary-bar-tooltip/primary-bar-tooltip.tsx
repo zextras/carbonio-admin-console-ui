@@ -18,12 +18,7 @@ const PrimaryBarTooltip: FC<{ items: any[] }> = ({ items }) => (
 		<Padding left="small" right="small">
 			{items.map((item) => (
 				<Padding bottom="small" key={item.header} all="small">
-					<Text
-						size="medium"
-						color="text"
-						weight="regular"
-						style={{ 'white-space': 'break-spaces' }}
-					>
+					<Text size="medium" color="text" weight="regular" style={{ whiteSpace: 'break-spaces' }}>
 						{item.header}
 					</Text>
 					{item.options.map((v: any) => (

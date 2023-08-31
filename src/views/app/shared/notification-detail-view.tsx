@@ -4,20 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useEffect } from 'react';
-import {
-	Container,
-	Text,
-	Row,
-	IconButton,
-	Divider,
-	Padding,
-	Button,
-	Input
-} from '@zextras/carbonio-design-system';
+import React, { FC, useState } from 'react';
+import { Container, Text, Row, IconButton, Divider, Input } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
 import ListRow from '../../list/list-row';
+import Displayer from '../../components/displayer';
+import { useStickyBarStore } from '../../../store/sticky-bar/store';
 
 const NotificationDetail: FC<{
 	notification: any;
@@ -33,20 +26,44 @@ const NotificationDetail: FC<{
 	isRequestInProgress
 }) => {
 	const [t] = useTranslation();
+	const { isSticky, setIsSticky } = useStickyBarStore();
+	const buttons = [
+		{
+			align: 'right',
+			label: notification?.ack
+				? t('notification.mark_as_unread', 'Mark as unread')
+				: t('notification.mark_as_read', 'Mark as read'),
+			onClick: (): void => {
+				markAsReadUnread(notification);
+			},
+			disabled: isRequestInProgress,
+			loading: isRequestInProgress
+		},
+		{
+			align: 'right',
+			label: t('notification.copy', 'Copy'),
+			onClick: (): void => {
+				copyNotificationOperation(notification);
+			}
+		},
+		{
+			align: 'left',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setIsSticky(!isSticky);
+			}
+		}
+	];
 	return (
 		<Container
 			background="gray6"
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 42.5rem), 0.75rem)'}`,
 				top: '0rem',
-				height: '100%',
-				width: `42rem`,
 				overflow: 'hidden',
 				transition: 'left 0.2s ease-in-out',
-				'box-shadow': '-0.375rem 0.25rem 0.313rem 0rem rgba(0, 0, 0, 0.1)',
-				'z-index': '9'
+				zIndex: '9'
 			}}
 		>
 			<Row
@@ -55,7 +72,7 @@ const NotificationDetail: FC<{
 				orientation="horizontal"
 				background="white"
 				width="fill"
-				height="3.25rem"
+				height="4.15rem"
 			>
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
@@ -77,49 +94,15 @@ const NotificationDetail: FC<{
 			<ListRow>
 				<Divider />
 			</ListRow>
-			<ListRow>
-				<Container
-					mainAlignment="flex-end"
-					crossAlignment="flex-end"
-					orientation="horizontal"
-					padding={{ all: 'extralarge' }}
-				>
-					<Button
-						type="ghost"
-						label={t('notification.copy', 'Copy')}
-						icon="CopyOutline"
-						iconPlacement="right"
-						color="secondary"
-						onClick={(): void => {
-							copyNotificationOperation(notification);
-						}}
-					/>
-					<Padding left="large">
-						<Button
-							type="outlined"
-							label={
-								notification?.ack
-									? t('notification.mark_as_unread', 'Mark as unread')
-									: t('notification.mark_as_read', 'Mark as read')
-							}
-							icon={notification?.ack ? 'EmailOutline' : 'EmailReadOutline'}
-							iconPlacement="right"
-							color="primary"
-							disabled={isRequestInProgress}
-							loading={isRequestInProgress}
-							onClick={(): void => {
-								markAsReadUnread(notification);
-							}}
-						/>
-					</Padding>
-				</Container>
-			</ListRow>
+			<Row width="100%" padding={{ all: 'small' }}>
+				<Displayer buttons={buttons} pinIcon={isSticky} />
+			</Row>
 			<ListRow>
 				<Container padding={{ bottom: 'large', right: 'small', left: 'extralarge' }}>
 					<Input
 						label={t('label.date', 'Date')}
 						value={moment(notification?.date).format('DD-MM-YYYY - HH:mm A')}
-						background="gray6"
+						backgroundColor="gray6"
 						readOnly
 					/>
 				</Container>
@@ -127,7 +110,7 @@ const NotificationDetail: FC<{
 					<Input
 						label={t('label.type', 'Type')}
 						value={notification?.level}
-						background="gray6"
+						backgroundColor="gray6"
 						readOnly
 					/>
 				</Container>
@@ -139,7 +122,7 @@ const NotificationDetail: FC<{
 					<Input
 						label={t('label.what_inside', 'What’s inside?')}
 						value={notification?.subject}
-						background="gray6"
+						backgroundColor="gray6"
 						readOnly
 					/>
 				</Container>

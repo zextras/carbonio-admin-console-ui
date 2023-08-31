@@ -84,6 +84,8 @@ export type themeConfigStore = {
 	carbonioLogoUrl?: string;
 	carbonioWebUiPrimaryColor?: string;
 	carbonioWebUiDarkPrimaryColor?: string;
+	zimbraAdminConsoleLogoutURL?: string;
+	zimbraWebClientLogoutURL?: string;
 };
 
 export interface IpRangeValue {
@@ -103,4 +105,21 @@ type TwoFactorAuthPolicyValues = {
 type TwoFactorPolicy = {
 	label: string;
 	keyToGet: string;
+};
+
+export type CosMaxAccountValues = {
+	id: string;
+	name?: string;
+	value: string;
+};
+
+type DomainResponse = {
+	domain: {
+		name: string;
+		id: string;
+		a: { n: string; _content: string }[];
+	}[];
+	more: boolean;
+	searchTotal: number;
+	_jsns: string;
 };

@@ -17,8 +17,6 @@ import DropDownInput from '../../../../../components/dropDownInput';
 const SelectItem = styled(Row)``;
 
 const DelegateSelectModeSection: FC = () => {
-	const domainName = useDomainStore((state) => state.domain?.name);
-
 	const [t] = useTranslation();
 	const [delegateAccountList, setDelegateAccountList] = useState<any[]>([]);
 	const [searchDelegateAccountName, setSearchDelegateAccountName] = useState(undefined);
@@ -65,7 +63,7 @@ const DelegateSelectModeSection: FC = () => {
 		const type = deligateDetail?.grantee?.[0]?.type === 'grp' ? 'distributionlists' : 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domainName, searchQuery, offset, limit).then((data) => {
+		accountListDirectory(attrs, type, '', searchQuery, offset, limit).then((data) => {
 			const accountListResponse: any = data?.account || [];
 
 			if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -102,7 +100,6 @@ const DelegateSelectModeSection: FC = () => {
 		});
 	}, [
 		deligateDetail?.grantee,
-		domainName,
 		searchQuery,
 		offset,
 		limit,
@@ -153,7 +150,8 @@ const DelegateSelectModeSection: FC = () => {
 							background="gray5"
 							label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
 							showCheckbox={false}
-							padding={{ right: 'medium' }}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							defaultSelection={DELEGETES_TYPE.find(
 								(item: any) => item.value === deligateDetail?.grantee?.[0]?.type
 							)}

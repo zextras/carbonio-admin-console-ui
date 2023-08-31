@@ -36,25 +36,30 @@ import {
 	GetCosResponse,
 	CosA
 } from '../../../../services/cos-general-information-service';
+import EditAccount from './edit-account/edit-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getSingatures } from '../../../../services/get-signature-service';
 import AccountDetailView from './account-detail-view';
 import CreateAccount from './create-account/create-account';
-import EditAccount from './edit-account/edit-account';
 import { AccountContext } from './account-context';
 import { fetchSoap } from '../../../../services/listOTP-service';
+import { fetchSoapData } from '../../../../services/fetch-soap';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import useOutsideClick from '../../../app/hooks/useoutsideclick';
+import { useRightsStore } from '../../../../store/rights/store';
+import ModalOverlay from '../../../components/ModalOverlay';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
+	const [defaultTab, setDefaultTab] = useState('general');
 	const [directMemberList, setDirectMemberList] = useState<any>({});
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
@@ -63,11 +68,71 @@ const ManageAccounts: FC = () => {
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
+	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
 
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const tableRef = useRef(null);
+	const [typeFilter, setTypeFilter] = useState<string>('');
+	const [statusFilter, setStatusFilter] = useState<string>('');
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
+	const accountTypeFilter: any = useMemo(
+		() => [
+			{
+				label: 'Admin',
+				value: '(&(zimbraIsAdminAccount=TRUE))'
+			},
+			{
+				label: 'DelegatedAdmin',
+				value: '(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE)))'
+			},
+			{
+				label: 'External',
+				value: '(&(zimbraIsExternalVirtualAccount=TRUE))'
+			},
+			{
+				label: 'System',
+				value: '(&(zimbraIsSystemAccount=TRUE))'
+			},
+			{
+				label: 'Normal',
+				value:
+					'(&(!(zimbraIsAdminAccount=TRUE))(!(zimbraIsDelegatedAdminAccount=TRUE))(!(zimbraIsSystemAccount=TRUE))(!(zimbraIsExternalVirtualAccount=TRUE)))'
+			}
+		],
+		[]
+	);
+
+	const accountStatusFilter: any = useMemo(
+		() => [
+			{
+				label: t('label.active', 'Active'),
+				value: '(&(zimbraAccountStatus=active))'
+			},
+			{
+				label: t('label.in_maintenance', 'In maintenance'),
+				value: '(&(zimbraAccountStatus=maintenance))'
+			},
+			{
+				label: t('label.locked', 'Locked'),
+				value: '(&(zimbraAccountStatus=locked))'
+			},
+			{
+				label: t('label.closed', 'Closed'),
+				value: '(&(zimbraAccountStatus=closed))'
+			},
+			{
+				label: t('label.pending', 'Pending'),
+				value: '(&(zimbraAccountStatus=pending))'
+			},
+			{
+				label: t('label.lockout', 'Lockout'),
+				value: '(&(zimbraAccountStatus=lockout))'
+			}
+		],
+		[t]
+	);
 	const headers: any = useMemo(
 		() => [
 			{
@@ -91,14 +156,61 @@ const ManageAccounts: FC = () => {
 			{
 				id: 'type',
 				label: t('label.type', 'Type'),
+				i18nAllLabel: t('label.all', 'All'),
 				width: '10%',
-				bold: true
+				bold: true,
+				items: [
+					{ label: accountTypeFilter[0].label, value: accountTypeFilter[0].value },
+					{ label: accountTypeFilter[1].label, value: accountTypeFilter[1].value },
+					{ label: accountTypeFilter[2].label, value: accountTypeFilter[2].value },
+					{ label: accountTypeFilter[3].label, value: accountTypeFilter[3].value },
+					{ label: accountTypeFilter[4].label, value: accountTypeFilter[4].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let typeQuery = '';
+						e.forEach((item: { value: string }) => {
+							typeQuery += item.value;
+						});
+						if (e?.length > 1) {
+							typeQuery = `(|${typeQuery})`;
+						}
+						setTypeFilter(typeQuery);
+					} else {
+						setTypeFilter('');
+					}
+				}
 			},
 			{
 				id: 'status',
 				label: t('label.status', 'Status'),
 				width: '10%',
-				bold: true
+				i18nAllLabel: t('label.all', 'All'),
+				bold: true,
+				items: [
+					{ label: accountStatusFilter[0].label, value: accountStatusFilter[0].value },
+					{ label: accountStatusFilter[1].label, value: accountStatusFilter[1].value },
+					{ label: accountStatusFilter[2].label, value: accountStatusFilter[2].value },
+					{ label: accountStatusFilter[3].label, value: accountStatusFilter[3].value },
+					{ label: accountStatusFilter[4].label, value: accountStatusFilter[4].value },
+					{ label: accountStatusFilter[5].label, value: accountStatusFilter[5].value }
+				],
+				// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+				onChange: (e: any) => {
+					if (e?.length > 0) {
+						let statusQuery = '';
+						e.forEach((item: { value: string }) => {
+							statusQuery += item.value;
+						});
+						if (e?.length > 1) {
+							statusQuery = `(|${statusQuery})`;
+						}
+						setStatusFilter(statusQuery);
+					} else {
+						setStatusFilter('');
+					}
+				}
 			},
 			{
 				id: 'description',
@@ -107,7 +219,7 @@ const ManageAccounts: FC = () => {
 				bold: true
 			}
 		],
-		[t]
+		[accountStatusFilter, accountTypeFilter, t]
 	);
 
 	const [accountList, setAccountList] = useState<any[]>([]);
@@ -120,6 +232,14 @@ const ManageAccounts: FC = () => {
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
+	const [initialGlobalRights, setinitialGlobalRights] = useState({
+		setGlobalConfig: false,
+		getGlobalConfig: false
+	});
+	const [globalRights, setGlobalRights] = useState({
+		setGlobalConfig: false,
+		getGlobalConfig: false
+	});
 
 	const [signatureList, setSignatureList] = useState<any[]>([]);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
@@ -187,6 +307,12 @@ const ManageAccounts: FC = () => {
 						accountObj[ele.n] = ele._content;
 					}
 				});
+				if (accountObj.zimbraIsAdminAccount === undefined) {
+					accountObj.zimbraIsAdminAccount = 'FALSE';
+				}
+				if (accountObj.zimbraIsDelegatedAdminAccount === undefined) {
+					accountObj.zimbraIsDelegatedAdminAccount = 'FALSE';
+				}
 				setAccSpecificDetail({ ...accountObj });
 			})
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -235,6 +361,12 @@ const ManageAccounts: FC = () => {
 					obj.password = '';
 					obj.repeatPassword = '';
 					obj.name = data?.account?.[0]?.name;
+					if (obj.zimbraIsAdminAccount === undefined) {
+						obj.zimbraIsAdminAccount = 'FALSE';
+					}
+					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
+						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
+					}
 					setInitAccountDetail({ ...obj });
 					setAccountDetail({ ...obj });
 					getAccountSpecificDetail(id);
@@ -451,6 +583,7 @@ const ManageAccounts: FC = () => {
 		]
 	);
 	const getAccountList = useCallback((): void => {
+		setIsRequestInProgress(true);
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
@@ -477,10 +610,10 @@ const ManageAccounts: FC = () => {
 						id: item?.id,
 						columns: [
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
-								weight="light"
+								weight="regular"
 								onClick={(): void => {
 									openDetailView(item);
 								}}
@@ -488,7 +621,7 @@ const ManageAccounts: FC = () => {
 								{item?.name || ' '}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
 								weight="light"
@@ -509,7 +642,7 @@ const ManageAccounts: FC = () => {
 											maxWidth="auto"
 										>
 											<Text
-												size="medium"
+												size="small"
 												weight="light"
 												key={item?.id}
 												color="#828282"
@@ -525,7 +658,7 @@ const ManageAccounts: FC = () => {
 										</Tooltip>
 									) : (
 										<Text
-											size="medium"
+											size="small"
 											key={item?.id}
 											color="#828282"
 											weight="light"
@@ -539,7 +672,7 @@ const ManageAccounts: FC = () => {
 								}
 							</>,
 							<Text
-								size="medium"
+								size="small"
 								key={item?.id}
 								color="gray0"
 								weight="light"
@@ -550,7 +683,7 @@ const ManageAccounts: FC = () => {
 								{accountUserType(item)}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								weight="light"
 								key={item?.id}
 								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
@@ -561,7 +694,7 @@ const ManageAccounts: FC = () => {
 								{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
 							</Text>,
 							<Text
-								size="medium"
+								size="small"
 								weight="light"
 								key={item?.id}
 								color="gray0"
@@ -570,35 +703,50 @@ const ManageAccounts: FC = () => {
 									openDetailView(item);
 								}}
 							>
-								{item?.description || <>&nbsp;</>}
+								{item?.zimbraNotes || <>&nbsp;</>}
 							</Text>
 						],
 						item,
 						clickable: true
 					});
 				});
-				// setAccountList([]);
 				setAccountList(accountListArr);
 			}
+			setIsRequestInProgress(false);
 		});
 	}, [STATUS_COLOR, accountUserType, domainName, limit, offset, openDetailView, searchQuery]);
 
+	const generateSearchFilterQuery = useCallback(
+		(searchStr: string, sfilter: string, tfilter: string): string => {
+			let filterQuery = '';
+			if (tfilter) {
+				filterQuery += tfilter;
+			}
+			if (sfilter) {
+				filterQuery += sfilter;
+			}
+			if (searchStr) {
+				filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+			}
+			if ((tfilter && sfilter) || (sfilter && searchStr) || (tfilter && searchStr)) {
+				return `(&${filterQuery})`;
+			}
+			return filterQuery;
+		},
+		[]
+	);
+
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
-		debounce((searchText) => {
-			if (searchText) {
-				setSearchQuery(
-					`(|(mail=*${searchText}*)(cn=*${searchText}*)(sn=*${searchText}*)(gn=*${searchText}*)(displayName=*${searchText}*)(zimbraMailDeliveryAddress=*${searchText}*))`
-				);
-			} else {
-				setSearchQuery('');
-			}
+		debounce((searchStr: string, sfilter: string, tfilter: string) => {
+			setTotalAccount(0);
+			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter, tfilter));
 		}, 700),
-		[debounce]
+		[debounce, generateSearchFilterQuery]
 	);
 	useEffect(() => {
-		searchAccountList(searchString);
-	}, [accountList, limit, offset, searchAccountList, searchString]);
+		searchAccountList(searchString, statusFilter, typeFilter);
+	}, [searchAccountList, searchString, typeFilter, statusFilter]);
 
 	useEffect(() => {
 		if (domainName) {
@@ -631,9 +779,24 @@ const ManageAccounts: FC = () => {
 		};
 	}, [handleKeyEvent]);
 
+	const getInfoDetail = useCallback(() => {
+		fetchSoapData('GetInfoRequest', {
+			rights: 'sendAs,sendAsDistList,viewFreeBusy,sendOnBehalfOf,sendOnBehalfOfDistList',
+			_jsns: 'urn:zimbraAccount'
+		}).then((res) => {
+			const data = res?.Body?.GetInfoResponse?.attrs?._attrs;
+			setUserType(data && accountUserType(data));
+		});
+	}, [accountUserType, setUserType]);
+
+	useEffect(() => {
+		getInfoDetail();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -647,13 +810,11 @@ const ManageAccounts: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding>
+							<Padding all={'0'}>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
 									icon="Plus"
-									height={36}
-									width={36}
 									onClick={(): void => {
 										setShowCreateAccountView(true);
 									}}
@@ -671,10 +832,10 @@ const ManageAccounts: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 200px)"
+				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -688,7 +849,7 @@ const ManageAccounts: FC = () => {
 									label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
 									disabled={accountList.length === 0 && searchString.length === 0}
 									value={searchString}
-									background="gray5"
+									backgroundColor="gray5"
 									onChange={(e: any): any => {
 										setSearchString(e.target.value);
 									}}
@@ -701,21 +862,42 @@ const ManageAccounts: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 340px)"
+							style={{
+								height:
+									accountList.length > 0 && !isRequestInProgress
+										? 'calc(100vh - 21.25rem)'
+										: 'calc(100vh - 40.625rem)'
+							}}
 							ref={tableRef}
 						>
-							{accountList.length !== 0 && (
-								<Table
-									rows={accountList}
-									headers={headers}
-									showCheckbox={false}
-									multiSelect={false}
-									style={{ overflow: 'auto', height: '100%' }}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={!isRequestInProgress ? accountList : []}
+								headers={headers}
+								showCheckbox={false}
+								multiSelect={false}
+								style={{ overflow: 'auto', height: '100%' }}
+								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										color="primary"
+										label=""
+										loading
+										onClick={(): null => null}
+									/>
+								</Container>
 							)}
-							{accountList.length === 0 && (
+							{accountList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -747,17 +929,13 @@ const ManageAccounts: FC = () => {
 									</Row>
 								</Container>
 							)}
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								padding={{ top: 'medium' }}
-							>
-								<Divider />
-							</Row>
 							{accountList.length !== 0 && (
-								<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
+								<Row
+									orientation="horizontal"
+									mainAlignment="flex-start"
+									width="100%"
+									style={{ position: 'absolute', bottom: '0.25rem' }}
+								>
 									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 								</Row>
 							)}
@@ -785,29 +963,46 @@ const ManageAccounts: FC = () => {
 									folderList,
 									setFolderList,
 									credentialList,
-									getCredentialList
+									getCredentialList,
+									initialGlobalRights,
+									setinitialGlobalRights,
+									globalRights,
+									setGlobalRights,
+									deleteAdministrationRights,
+									setDeleteAdministrationRights
 								}}
 							>
 								{showAccountDetailView && (
-									<AccountDetailView
-										selectedAccount={selectedAccount}
-										setShowAccountDetailView={setShowAccountDetailView}
-										setShowEditAccountView={setShowEditAccountView}
-										STATUS_COLOR={STATUS_COLOR}
-										getAccountList={getAccountList}
-										cosDetail={cosDetail}
-									/>
+									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
+										<AccountDetailView
+											selectedAccount={selectedAccount}
+											setShowAccountDetailView={setShowAccountDetailView}
+											setShowEditAccountView={setShowEditAccountView}
+											STATUS_COLOR={STATUS_COLOR}
+											getAccountList={getAccountList}
+											cosDetail={cosDetail}
+										/>
+									</ModalOverlay>
 								)}
 
 								{showEditAccountView && (
-									<EditAccount
-										setShowEditAccountView={setShowEditAccountView}
-										selectedAccount={selectedAccount}
-										getAccountList={getAccountList}
-										signatureList={signatureList}
-										signatureItems={signatureItems}
-										getAccountDetail={getAccountDetail}
-									/>
+									<ModalOverlay
+										setOpen={setShowEditAccountView}
+										open={showEditAccountView}
+										maxWidth="58.75rem"
+									>
+										<EditAccount
+											setShowEditAccountView={setShowEditAccountView}
+											selectedAccount={selectedAccount}
+											getAccountList={getAccountList}
+											signatureList={signatureList}
+											signatureItems={signatureItems}
+											getAccountDetail={getAccountDetail}
+											defaultTab={defaultTab}
+											setDefaultTab={setDefaultTab}
+											setShowAccountDetailView={setShowAccountDetailView}
+										/>
+									</ModalOverlay>
 								)}
 							</AccountContext.Provider>
 						</Row>
@@ -815,10 +1010,16 @@ const ManageAccounts: FC = () => {
 				</Row>
 			</Container>
 			{showCreateAccountView && (
-				<CreateAccount
-					setShowCreateAccountView={setShowCreateAccountView}
-					getAccountList={getAccountList}
-				/>
+				<ModalOverlay setOpen={setShowCreateAccountView} open={showCreateAccountView}>
+					<CreateAccount
+						setShowCreateAccountView={setShowCreateAccountView}
+						getAccountList={getAccountList}
+						setShowEditAccountView={setShowEditAccountView}
+						openDetailView={openDetailView}
+						setShowAccountDetailView={setShowAccountDetailView}
+						setDefaultTab={setDefaultTab}
+					/>
+				</ModalOverlay>
 			)}
 		</Container>
 	);

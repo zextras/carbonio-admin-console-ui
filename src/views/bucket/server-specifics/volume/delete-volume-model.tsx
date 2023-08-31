@@ -23,14 +23,7 @@ const DeleteVolumeModel: FC<{
 				})}
 				open={open}
 				customFooter={
-					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button
-							style={{ marginLeft: '0.625rem' }}
-							type="outlined"
-							label={t('label.need_help_button', 'NEED HELP?')}
-							color="primary"
-							onClick={closeHandler}
-						/>
+					<Container orientation="horizontal" mainAlignment="flex-end">
 						<Row style={{ gap: '0.5rem' }}>
 							{volumeDetail?.isCurrent ? (
 								<Button

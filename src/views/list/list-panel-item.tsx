@@ -26,15 +26,9 @@ const ListPanelItem: FC<{
 			width="100%"
 			style={{ cursor: 'pointer' }}
 		>
+			<Row padding={{ all: 'small' }} width="100%" mainAlignment="space-between"></Row>
 			<Row
 				padding={{ all: 'small' }}
-				takeAvwidth="fill"
-				width="100%"
-				mainAlignment="space-between"
-			></Row>
-			<Row
-				padding={{ all: 'small' }}
-				takeAvwidth="fill"
 				width="100%"
 				mainAlignment="space-between"
 				onClick={setToggleView}

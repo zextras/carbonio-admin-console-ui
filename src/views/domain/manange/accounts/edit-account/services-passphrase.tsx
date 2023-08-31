@@ -36,8 +36,8 @@ interface CredentialType {
 }
 
 interface SelectServiceType {
-	label?: string;
-	value?: string;
+	label: string;
+	value: string;
 }
 
 interface SelectStatusType {
@@ -55,8 +55,8 @@ interface AddCredentialApiType {
 }
 
 export const ServicesPassphrase: FC = () => {
-	const conext = useContext(AccountContext);
-	const { accountDetail, credentialList, getCredentialList } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail, credentialList, getCredentialList } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -209,19 +209,24 @@ export const ServicesPassphrase: FC = () => {
 								label={t('account_details.services', 'Services')}
 								showCheckbox={false}
 								selection={SERVICE_PASSPHRASE_SERVICES.find(
-									(el: SelectServiceType) =>
-										el.value?.toLowerCase() === item.services?.toLowerCase()
+									(el: SelectServiceType) => el.value === item.services
 								)}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								padding={{ right: 'medium' }}
 								disabled
 							/>
 						</Row>
 						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={SERVICE_PASSPHRASE_STATUS}
 								background="gray5"
 								label={t('account_details.status', 'Status')}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								selection={SERVICE_PASSPHRASE_STATUS.find(
 									(el: SelectStatusType) => el.value === item?.enabled
 								)}
@@ -264,6 +269,8 @@ export const ServicesPassphrase: FC = () => {
 							background="gray5"
 							label={t('account_details.services', 'Services')}
 							showCheckbox={false}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onServicesPassphraseServicesChange}
 							defaultSelection={SERVICE_PASSPHRASE_SERVICES[0]}
 							padding={{ right: 'medium' }}
@@ -338,6 +345,8 @@ export const ServicesPassphrase: FC = () => {
 									icon="CopyOutline"
 									size="large"
 									color="Gray0"
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									onClick={(e: React.MouseEvent<HTMLElement>): any => {
 										e.preventDefault();
 										e.stopPropagation();

@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
-import { Container, Row } from '@zextras/carbonio-design-system';
+import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import styled from 'styled-components';
@@ -44,6 +44,7 @@ const BucketListPanel: FC = () => {
 	const [isVolumeListExpand, setIsVolumeListExpand] = useState(false);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [itemsVolume, setItemsVolume] = useState<any>();
+	const [isShowError, setIsShowError] = useState(false);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${STORAGES_ROUTE_ID}`);
@@ -68,10 +69,6 @@ const BucketListPanel: FC = () => {
 				label: volume.name,
 				customComponent: (
 					<SelectItem
-						top="9px"
-						right="large"
-						bottom="9px"
-						left="large"
 						style={{
 							display: 'block',
 							textAlign: 'left',
@@ -95,6 +92,9 @@ const BucketListPanel: FC = () => {
 	useEffect(() => {
 		const filterList = volumeList.filter((item: any) => item.name.includes(searchVolumeName));
 		addServerToList(filterList);
+		if (volumeList.length > 0 && filterList.length === 0) {
+			setIsShowError(true);
+		}
 	}, [searchVolumeName, addServerToList, volumeList]);
 
 	const globalServerOption = useMemo(
@@ -179,9 +179,15 @@ const BucketListPanel: FC = () => {
 	};
 
 	const customIconDetail = {
-		icon: 'HardDriveOutline',
+		icon: searchVolumeName === '' ? 'HardDriveOutline' : 'CloseOutline',
 		onClick: (): void => {
 			setIsVolumeListExpand(!isVolumeListExpand);
+			setIsShowError(false);
+			if (searchVolumeName !== '') {
+				setSearchVolumeName('');
+				setIsStoreVolumeSelect(false);
+				setSelectedOperationItem(SERVERS_LIST);
+			}
 		}
 	};
 
@@ -214,18 +220,32 @@ const BucketListPanel: FC = () => {
 				/>
 				{isServerSpecificListExpand && (
 					<>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row  mainAlignment="flex-start" width="100%">
 							<DropDownInput
 								items={itemsVolume}
 								inputLabel={t('label.select_a_server', 'Select a Server')}
 								onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
+									setIsShowError(false);
 									setSearchVolumeName(ev.target.value);
 								}}
+								hasError={isShowError}
 								inputValue={searchVolumeName}
 								isCustomIcon
 								customIconDetail={customIconDetail}
 							/>
 						</Row>
+						{isShowError && (
+							<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+								<Padding top="large" left="small">
+									<Text size="extrasmall" weight="regular" color="error">
+										{t(
+											'label.not_found_check_the_text_and_try_again',
+											'Not found - check the text and try again'
+										)}
+									</Text>
+								</Padding>
+							</Container>
+						)}
 						<ListItems
 							items={serverOptions}
 							selectedOperationItem={selectedOperationItem}

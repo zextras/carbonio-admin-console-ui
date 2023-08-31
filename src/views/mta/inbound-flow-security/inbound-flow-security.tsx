@@ -45,6 +45,7 @@ import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import CustomChip from '../../components/customChip';
 
 const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
@@ -558,19 +559,13 @@ const MTAInboundFlowSecurity: FC = () => {
 									<Button
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
-										height={36}
 										onClick={onCancel}
 									/>
 								)}
 							</Padding>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.save', 'Save')}
-										color="primary"
-										height={36}
-										onClick={onSave}
-									/>
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 								)}
 							</Padding>
 						</Container>
@@ -640,6 +635,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							value={mtaBlockExtension}
 							onChange={onBlockExtensionChange}
 							disabled={!allowSetMTA}
+							ChipComponent={CustomChip}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start" width="30%">
@@ -665,7 +661,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							placement="bottom"
 							label={t(
 								'mta.notify_administrators_of_blocked_file_extension_incoming_emails',
-								'Notify administrators of blocked file extensions in incoming emails'
+								'Notify administrators about blocked file extensions in incoming emails'
 							)}
 							maxWidth="auto"
 						>
@@ -690,14 +686,14 @@ const MTAInboundFlowSecurity: FC = () => {
 							placement="bottom"
 							label={t(
 								'mta.notify_recipients_of_blocked_file_extension_incoming_emails',
-								'Notify recipients of blocked file extensions in incoming emails'
+								'Notify recipients about blocked file extensions in incoming emails'
 							)}
 							maxWidth="auto"
 						>
 							<Switch
 								label={t(
 									'mta.notify_external_recipient_about_block_extensions',
-									'Notify external recipient about blocked extensions'
+									'Notify external recepients about blocked extensions'
 								)}
 								value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
 								onClick={(): void =>
@@ -855,7 +851,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							<Switch
 								label={t(
 									'mta.client_must_greet_with_resolving_hostname',
-									'Client must greet with a resolving hostname'
+									'Client should have a resolving hostname'
 								)}
 								value={mtaInboundSecurityDetail?.rejectUnknownHeloHostname}
 								onClick={(): void =>
@@ -886,7 +882,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							maxWidth="auto"
 						>
 							<Switch
-								label={t('mta.hostname_in_greetings', 'Hostname in greetings')}
+								label={t('mta.check_client_host_name', 'Check Client Hostname')}
 								value={mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname}
 								onClick={(): void =>
 									setValue(
@@ -995,7 +991,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							<Switch
 								label={t(
 									'mta.client_must_greet_with_fully_qualified_hostname',
-									'Client must greet with a fully qualified hostname'
+									'Client should have a quilified hostname'
 								)}
 								value={mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname}
 								onClick={(): void =>

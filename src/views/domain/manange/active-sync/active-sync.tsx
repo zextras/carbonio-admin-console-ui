@@ -181,78 +181,78 @@ const ActiveSync: FC = () => {
 	useMemo(() => {
 		setAllDeviceRow([]);
 		if (allMobileDevices.length > 0) {
-			const allRows = allMobileDevices.map((item: MobileDevice) => ({
+			const allRows = allMobileDevices.map((item: MobileDevice, index: number) => ({
 				id: item?.firstSeen,
 				columns: [
 					<Container
-						key={item}
+						key={index}
 						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="regular" color="gray0" key={index}>
 							{item?.accountName}
 						</Text>
 					</Container>,
 					<Container
-						key={item}
+						key={index}
 						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={index}>
 							{item?.deviceId}
 						</Text>
 					</Container>,
 					<Container
-						key={item}
+						key={index}
 						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={index}>
 							{item?.accountEmail}
 						</Text>
 					</Container>,
 					<Container
-						key={item}
+						key={index}
 						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={index}>
 							{moment(item?.lastSeen).format('YY/MM/DD | hh:mm:ss a')}
 						</Text>
 					</Container>,
 					<Container
-						key={item}
+						key={index}
 						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={index}>
 							{''}
 						</Text>
 					</Container>,
 					<Container
-						key={item}
+						key={index}
 						crossAlignment="flex-start"
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
 						}}
 					>
-						<Text size="medium" weight="light" color="gray0" key={item}>
+						<Text size="small" weight="light" color="gray0" key={index}>
 							{item?.status === 1 ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
 						</Text>
 					</Container>
@@ -285,7 +285,7 @@ const ActiveSync: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
 						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 							<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
@@ -309,7 +309,7 @@ const ActiveSync: FC = () => {
 					style={{ overflow: 'auto' }}
 					padding={{ all: 'large' }}
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
+					<Row mainAlignment="flex-start" width="100%" wrap="nowrap">
 						<Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
 							<Input
 								disabled={allDeviceRow.length === 0 && searchString.length === 0}
@@ -317,7 +317,7 @@ const ActiveSync: FC = () => {
 									'label.filter_by_device_type_account',
 									'Filter by device type, account, status'
 								)}
-								background="gray5"
+								backgroundColor="gray5"
 								onChange={(e: any): any => {
 									setSearchString(e.target.value);
 								}}
@@ -332,23 +332,20 @@ const ActiveSync: FC = () => {
 									color="error"
 									disabled
 									size="extralarge"
+									onClick={(): null => null}
 								/>
 							</Padding>
 						</Container>
 					</Row>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						wrap="nowrap"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
 						<Table
 							rows={allDeviceRow}
 							headers={headers}
 							showCheckbox={false}
 							multiSelect={false}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Row>

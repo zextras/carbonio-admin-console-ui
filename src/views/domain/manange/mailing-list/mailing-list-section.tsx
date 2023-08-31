@@ -20,16 +20,18 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { debounce, sortedUniq, uniq } from 'lodash';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { MailingListContext } from './mailinglist-context';
 import ListRow from '../../../list/list-row';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
 import { searchGal } from '../../../../services/search-gal-service';
 import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
-import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB } from '../../../../constants';
+import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB, TRUE } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
+import CustomChip from '../../../components/customChip';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -89,6 +91,16 @@ const MailingListSection: FC<any> = () => {
 	);
 
 	const [grantType, setGrantType] = useState<any>(mailingListDetail?.ownerGrantEmailType);
+	const userSetting = useUserSettings();
+	const [isDelegatedAdmin, setIsDelegatedAdmin] = useState<boolean>(false);
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsDelegatedAdminAccount;
+			if (account && account === TRUE) {
+				setIsDelegatedAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	useEffect(() => {
 		if (ownersList && ownersList.length > 0) {
@@ -247,10 +259,6 @@ const MailingListSection: FC<any> = () => {
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -368,13 +376,7 @@ const MailingListSection: FC<any> = () => {
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.mailing_list_name', 'Mailing List Name')}
 					</Text>
 				</Row>
@@ -389,7 +391,6 @@ const MailingListSection: FC<any> = () => {
 							label={t('label.displayed_name', 'Displayed Name')}
 							backgroundColor="gray5"
 							value={mailingListDetail?.displayName}
-							size="medium"
 							inputName="displayName"
 							onChange={changeResourceDetail}
 						/>
@@ -407,7 +408,6 @@ const MailingListSection: FC<any> = () => {
 							label={t('label.list_name', 'List Name')}
 							backgroundColor="gray5"
 							value={mailingListDetail?.prefixName}
-							size="medium"
 							inputName="prefixName"
 							onChange={changeResourceDetail}
 						/>
@@ -488,7 +488,6 @@ const MailingListSection: FC<any> = () => {
 									label={t('label.list_url', "Mailing List's URL")}
 									backgroundColor="gray5"
 									value={mailingListDetail?.memberURL}
-									size="medium"
 									inputName="memberURL"
 									onChange={changeResourceDetail}
 									hasError={!isValidQuery}
@@ -511,7 +510,7 @@ const MailingListSection: FC<any> = () => {
 						{isShowLdapQueryMessage && (
 							<Row>
 								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-									<Padding>
+									<Padding all={'0'}>
 										<Text size="extrasmall" weight="regular" color="error">
 											{ldapQueryErrorMessage}
 										</Text>
@@ -521,37 +520,33 @@ const MailingListSection: FC<any> = () => {
 						)}
 					</>
 				)}
-				<ListRow>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'medium', bottom: 'medium' }}
-					>
-						<Switch
-							value={mailingListDetail?.dynamic}
-							label={t('label.dynamic_mode', 'Dynamic Mode')}
-							onClick={(): void => {
-								setMailingListDetail((prev: any) => ({
-									...prev,
-									dynamic: !mailingListDetail?.dynamic
-								}));
-							}}
-							iconColor="primary"
-						/>
-					</Container>
-				</ListRow>
+				{!isDelegatedAdmin && (
+					<ListRow>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'medium', bottom: 'medium' }}
+						>
+							<Switch
+								value={mailingListDetail?.dynamic}
+								label={t('label.dynamic_mode', 'Dynamic Mode')}
+								onClick={(): void => {
+									setMailingListDetail((prev: any) => ({
+										...prev,
+										dynamic: !mailingListDetail?.dynamic
+									}));
+								}}
+								iconColor="primary"
+							/>
+						</Container>
+					</ListRow>
+				)}
 
 				{mailingListDetail?.dynamic && (
 					<>
 						<Row padding={{ top: 'large' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
+							<Text size="small" weight="bold">
 								{t('label.members', 'Members')}
 							</Text>
 						</Row>
@@ -562,30 +557,19 @@ const MailingListSection: FC<any> = () => {
 									headers={memberHeaders}
 									showCheckbox={false}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
 						</ListRow>
 						<Row padding={{ top: 'large' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
+							<Text size="small" weight="bold">
 								{t('label.owners_settings', 'Owners’ Settings')}
 							</Text>
 						</Row>
 						<Row padding={{ top: 'small', bottom: 'medium' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="light"
-								color="#828282"
-							>
+							<Text size="small" weight="light" color="#828282">
 								{t(
 									'label.owners_description',
 									"Owners can manage the mailing list's members (adding and removing emails) and modify its options."
@@ -619,6 +603,7 @@ const MailingListSection: FC<any> = () => {
 									onInputType={(e: any): void => {
 										searchEmailFromGal(e?.textContent);
 									}}
+									ChipComponent={CustomChip}
 								/>
 							</Container>
 						</ListRow>
@@ -656,7 +641,6 @@ const MailingListSection: FC<any> = () => {
 									color="primary"
 									icon="PlusOutline"
 									iconPlacement="right"
-									height={44}
 									onClick={onAdd}
 									disabled={member === ''}
 								/>
@@ -674,7 +658,6 @@ const MailingListSection: FC<any> = () => {
 									color="error"
 									icon="Trash2Outline"
 									iconPlacement="right"
-									height={44}
 									onClick={onDeleteFromList}
 									disabled={
 										selectedDistributionListOwner && selectedDistributionListOwner.length === 0
@@ -691,6 +674,8 @@ const MailingListSection: FC<any> = () => {
 									showCheckbox={false}
 									selectedRows={selectedDistributionListOwner}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
@@ -749,10 +734,9 @@ const MailingListSection: FC<any> = () => {
 						padding={{ top: 'small', bottom: 'medium' }}
 					>
 						<Input
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray5"
 							value={mailingListDetail?.zimbraNotes}
-							size="medium"
 							inputName="zimbraNotes"
 							onChange={changeResourceDetail}
 						/>

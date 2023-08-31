@@ -156,7 +156,7 @@ const DomainSaml: FC = () => {
 									openSamlValue(item);
 								}}
 							>
-								<Text size="small" weight="light" color="gray0">
+								<Text size="small" weight="regular" color="gray0">
 									{item?.attribute}
 								</Text>
 							</Container>,
@@ -400,7 +400,7 @@ const DomainSaml: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -425,7 +425,7 @@ const DomainSaml: FC = () => {
 					width="100%"
 					height="calc(100vh - 9.375rem)"
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
 							{showBannerText && (
 								<Container
@@ -444,13 +444,12 @@ const DomainSaml: FC = () => {
 										borderBottom: '0.063rem solid #2196D3'
 									}}
 								>
-									<Row takeAvwidth="fill" width="5%" mainAlignment="flex-start">
+									<Row width="5%" mainAlignment="flex-start">
 										<Padding horizontal="small">
 											<CustomIcon icon="CheckmarkCircle2Outline" color="#2196D3"></CustomIcon>
 										</Padding>
 									</Row>
 									<Row
-										takeAvwidth="fill"
 										mainAlignment="flex-start"
 										width="65%"
 										padding={{
@@ -465,7 +464,7 @@ const DomainSaml: FC = () => {
 											)}
 										</Text>
 									</Row>
-									<Row takeAvwidth="fill" width="12%" mainAlignment="flex-start">
+									<Row width="12%" mainAlignment="flex-start">
 										<Tooltip placement="top" label={t('label.entity_id_copied', 'EntityID copied')}>
 											<Button
 												type="outlined"
@@ -481,7 +480,7 @@ const DomainSaml: FC = () => {
 											/>
 										</Tooltip>
 									</Row>
-									<Row takeAvwidth="fill" width="16%" mainAlignment="flex-start">
+									<Row width="16%" mainAlignment="flex-start">
 										<Tooltip
 											placement="top"
 											label={t('label.service_url_copied', 'ServiceURL copied')}
@@ -500,7 +499,7 @@ const DomainSaml: FC = () => {
 											/>
 										</Tooltip>
 									</Row>
-									<Row takeAvwidth="fill" width="4%" mainAlignment="flex-start">
+									<Row width="4%" mainAlignment="flex-start">
 										<IconButton
 											icon="CloseOutline"
 											size="large"
@@ -511,7 +510,6 @@ const DomainSaml: FC = () => {
 								</Container>
 							)}
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
@@ -552,7 +550,7 @@ const DomainSaml: FC = () => {
 											'label.import_saml_metadata_from_idp',
 											'Import the SAML Metadata from the IDP'
 										)}
-										background="gray5"
+										backgroundColor="gray5"
 										value={metadataUrl}
 										onChange={(e: any): any => {
 											setMetadataUrl(e.target.value);
@@ -590,7 +588,6 @@ const DomainSaml: FC = () => {
 										label={t('label.generate_sp_certificate', 'GENERATE SP CERTIFICATE')}
 										color="primary"
 										size="large"
-										height={36}
 										width="fill"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => generateSPCertificates(domainName)}
@@ -602,7 +599,6 @@ const DomainSaml: FC = () => {
 										label={t('label.export_configuration', 'EXPORT CONFIGURATION')}
 										color="primary"
 										size="large"
-										height={36}
 										width="fill"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => exportMetadata(domainName)}
@@ -614,7 +610,6 @@ const DomainSaml: FC = () => {
 										label={t('label.delete_configuration', 'DELETE CONFIGURATION')}
 										color="primary"
 										size="large"
-										height={36}
 										width="fill"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => deleteSAMLConfigurations(domainName)}
@@ -633,6 +628,8 @@ const DomainSaml: FC = () => {
 									showCheckbox={false}
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 									style={samlTableRows?.length > 0 ? { height: '15rem', overflow: 'auto' } : {}}
 								/>
@@ -652,7 +649,6 @@ const DomainSaml: FC = () => {
 											overflow="break-word"
 											weight="regular"
 											size="large"
-											width="60%"
 											style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 										>
 											{t(
@@ -675,7 +671,6 @@ const DomainSaml: FC = () => {
 										label={t('label.add', 'ADD')}
 										color="primary"
 										size="large"
-										height={36}
 										width="fill"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => {
@@ -692,7 +687,6 @@ const DomainSaml: FC = () => {
 										label={t('label.update', 'UPDATE')}
 										color="primary"
 										size="large"
-										height={36}
 										width="fill"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => {
@@ -708,7 +702,6 @@ const DomainSaml: FC = () => {
 										label={t('label.remove', 'Remove')}
 										color="primary"
 										size="large"
-										height={36}
 										width="fill"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 										onClick={() => {
@@ -735,7 +728,7 @@ const DomainSaml: FC = () => {
 											'label.select_an_attribute_to_show_its_value',
 											'Select an Attribute to show its value'
 										)}
-										background="gray5"
+										backgroundColor="gray5"
 										value={samlAttrKey}
 										onChange={(e: any): any => {
 											setSamlAttrKey(e.target.value);
@@ -771,6 +764,8 @@ const DomainSaml: FC = () => {
 											'The Attribute Value will be displayed here'
 										)}
 										background="gray5"
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										value={samlAttrValue}
 										onChange={(e: any): any => {
 											setSamlAttrValue(e.target.value);

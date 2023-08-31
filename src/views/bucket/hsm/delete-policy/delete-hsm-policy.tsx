@@ -11,7 +11,7 @@ import {
 	Padding,
 	Row,
 	Input,
-	Icon,
+	IconButton,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext } from 'react';
@@ -95,8 +95,9 @@ const DeleteHsmPolicy: FC<{
 						type="outlined"
 						label={t('label.help', 'Help')}
 						color="primary"
+						onClick={(): null => null}
 					/>
-					<Row style={{ gap: '8px' }}>
+					<Row style={{ gap: '1rem' }}>
 						<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={closeHandler} />
 						<Button
 							label={t('hsm.delete', 'Delete')}
@@ -122,11 +123,7 @@ const DeleteHsmPolicy: FC<{
 					</Padding>
 				</Container>
 
-				<Container
-					padding={{ top: 'small', bottom: 'small' }}
-					orientation="flex-start"
-					mainAlignment="flex-start"
-				>
+				<Container padding={{ top: 'small', bottom: 'small' }} mainAlignment="flex-start">
 					<Text size="small">
 						<Trans
 							i18nKey="hsm.copy_hsm_policy_from_clipboard_msg"
@@ -137,11 +134,16 @@ const DeleteHsmPolicy: FC<{
 
 				<Container padding={{ top: 'small', bottom: 'small' }}>
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('hsm.hsm_policy', 'HSM Policy')}
 						value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
 						CustomIcon={(): any => (
-							<Icon icon="CopyOutline" size="large" color="grey" onClick={copyToClipboard} />
+							<IconButton
+								icon="CopyOutline"
+								size="large"
+								iconColor="grey"
+								onClick={copyToClipboard}
+							/>
 						)}
 					/>
 				</Container>

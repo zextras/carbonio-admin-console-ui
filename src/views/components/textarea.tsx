@@ -6,9 +6,14 @@
 
 import React, { useCallback, useState } from 'react';
 import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
-import { Container } from '@zextras/carbonio-design-system';
+import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 
-const ContainerEl = styled(Container)`
+interface ContainerExtendProps extends ContainerProps {
+	disabled: boolean;
+	background: string;
+}
+
+const ContainerEl = styled(Container)<ContainerExtendProps>`
 	${(props): FlattenSimpleInterpolation | string =>
 		(props.disabled &&
 			css`

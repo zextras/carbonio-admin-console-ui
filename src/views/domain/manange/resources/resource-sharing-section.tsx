@@ -31,13 +31,7 @@ const ResourceSharingSection: FC = () => {
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.invites', 'Invites')}
 					</Text>
 				</Row>

@@ -17,12 +17,11 @@ import {
 	Button,
 	Modal,
 	SnackbarManagerContext,
-	Chip,
 	Divider,
 	Table
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { getMailboxQuota } from '../../../../services/account-list-directory-service';
 import { AccountContext } from './account-context';
 import { deleteAccount } from '../../../../services/delete-account-service';
@@ -34,20 +33,22 @@ import { getSessions } from '../../../../services/get-sessions';
 import Paging from '../../../components/paging';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import OverlayDivision from '../../../components/overlayDivision';
+import { useRightsStore } from '../../../../store/rights/store';
+import CustomChip from '../../../components/customChip';
+import Displayer from '../../../components/displayer';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
 	position: absolute;
-	top: 2.688rem;
-	right: 0.75rem;
+	top: 0;
+	right: 0;
 	bottom: 0;
-	left: ${'max(calc(100% - 42.5rem), 0.75rem)'};
 	transition: left 0.2s ease-in-out;
 	height: auto;
-	width: 42rem;
 	max-height: 100%;
 	overflow: hidden;
-	box-shadow: -0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1);
 `;
 
 type UserSession = {
@@ -58,10 +59,9 @@ type UserSession = {
 	service: string;
 };
 
-const OverlayContainer = styled(Container)`
-	position: fixed;
-	width: 42.6rem;
-	top: 6.438rem;
+const ovelayStyle = styled(Container)`
+	position: absolute;
+	top: 0;
 	right: 0;
 	bottom: 0;
 	height: auto;
@@ -70,42 +70,7 @@ const OverlayContainer = styled(Container)`
 	background: #0d0d0d;
 	opacity: 0.4;
 	z-index: 11;
-	padding-top: 2rem;
 `;
-
-const rotateKeyframes = keyframes`
-from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-    }
-`;
-
-const KeyFrameContainer = styled(Container)`
-	width: 3rem;
-	height: 3rem;
-	border-radius: 50%;
-	display: inline-block;
-	border-top: 0.188rem solid #fff;
-	border-right: 0.188rem solid transparent;
-	box-sizing: border-box;
-	animation: ${rotateKeyframes} 1s linear infinite;
-`;
-
-const OverlayDivision: FC = () => {
-	const [t] = useTranslation();
-	return (
-		<OverlayContainer>
-			<KeyFrameContainer></KeyFrameContainer>
-			<Container height="auto" padding={{ top: 'small' }}>
-				<Text color="gray5" size="medium" weight="bold">
-					{t('label.please_wait', 'Please wait')}
-				</Text>
-			</Container>
-		</OverlayContainer>
-	);
-};
 
 const AccountDetailView: FC<any> = ({
 	selectedAccount,
@@ -117,15 +82,18 @@ const AccountDetailView: FC<any> = ({
 }) => {
 	const [t] = useTranslation();
 	const [usedQuota, setUsedQuota] = useState(0);
-	const conext = useContext(AccountContext);
-	const { accountDetail } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail } = context;
+	const { userType } = useRightsStore((state) => state);
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+	const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 
 	const sessionTableHeader: any[] = useMemo(
 		() => [
@@ -159,25 +127,28 @@ const AccountDetailView: FC<any> = ({
 
 	const calculatedQuotaSize: string = useMemo(() => {
 		let calculatedSize = 0;
-		if (selectedAccount?.zimbraMailQuota) {
-			calculatedSize = selectedAccount.zimbraMailQuota / 1048576;
-		}
 		if (cosDetail?.zimbraMailQuota) {
 			calculatedSize = cosDetail.zimbraMailQuota / 1048576;
 		}
-		return `${(usedQuota / 1048576).toFixed(3)} MB ${
+		if (selectedAccount?.zimbraMailQuota) {
+			calculatedSize = selectedAccount.zimbraMailQuota / 1048576;
+		}
+		const message =
 			calculatedSize > 0
-				? `${t('label.of', 'of')} ${calculatedSize.toFixed(3)} MB`
-				: t('label.of_unlimited', 'of Unlimited')
-		}`;
+				? `${(usedQuota / 1048576).toFixed(3)} MB ${t(
+						'label.of',
+						'Of'
+				  )} MB ${calculatedSize.toFixed(3)}`
+				: `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of_unlimited', 'of unlimited')}`;
+		return message;
 	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, t, usedQuota]);
 	const calculatedQuotaSizePercentage: number = useMemo(() => {
 		let calculateaSize;
-		if (selectedAccount?.zimbraMailQuota) {
-			calculateaSize = (selectedAccount.zimbraMailQuota / 1048576).toFixed(3);
-		}
 		if (cosDetail?.zimbraMailQuota) {
 			calculateaSize = (cosDetail.zimbraMailQuota / 1048576).toFixed(3);
+		}
+		if (selectedAccount?.zimbraMailQuota) {
+			calculateaSize = (selectedAccount.zimbraMailQuota / 1048576).toFixed(3);
 		}
 		if (calculateaSize) {
 			return (
@@ -204,9 +175,30 @@ const AccountDetailView: FC<any> = ({
 		}
 	}, [accountDetail?.mail]);
 
-	const onDeleteAccount = useCallback(() => {
-		setIsOpenDeleteDialog(true);
+	const accountUserType = useCallback((item): string => {
+		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
+		return 'Normal';
 	}, []);
+
+	const onDeleteAccount = useCallback(() => {
+		if (userType === 'DelegatedAdmin' || userType === 'System') {
+			if (
+				accountUserType(selectedAccount) === 'DelegatedAdmin' ||
+				accountUserType(selectedAccount) === 'System'
+			) {
+				setisOpenDeleteHintModel(true);
+			} else {
+				setIsOpenDeleteDialog(true);
+			}
+		} else if (userType === 'Normal') {
+			setisOpenDeleteHintModel(true);
+		} else {
+			setIsOpenDeleteDialog(true);
+		}
+	}, [accountUserType, selectedAccount, userType]);
 	const onViewMail = useCallback(() => {
 		getDelegateAuthRequest(selectedAccount?.id)
 			.then((data: any) => {
@@ -345,16 +337,16 @@ const AccountDetailView: FC<any> = ({
 			const allRows = userSessionList.map((item: UserSession) => ({
 				id: item?.sid,
 				columns: [
-					<Text size="medium" weight="light" key={item?.zid} color="#828282">
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
 						{item?.name}
 					</Text>,
-					<Text size="medium" weight="light" key={item?.zid} color="#828282">
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
 						{item?.sid}
 					</Text>,
-					<Text size="medium" weight="light" key={item?.zid} color="#828282">
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
 						{''}
 					</Text>,
-					<Text size="medium" weight="light" key={item?.zid} color="#828282">
+					<Text size="small" weight="light" key={item?.zid} color="#828282">
 						{''}
 					</Text>
 				]
@@ -426,10 +418,42 @@ const AccountDetailView: FC<any> = ({
 			});
 	}, [selectedAccount?.id, selectedSession, selectedAccount?.name, t, createSnackbar]);
 
+	const buttons = [
+		{
+			align: 'right',
+			label: t('label.advanced_edit', 'ADVANCED EDIT'),
+			onClick: (): void => {
+				setShowAccountDetailView(false);
+				setShowEditAccountView(true);
+			},
+			disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
+		},
+		{
+			align: 'right',
+			label: t('label.view_mail', 'VIEW MAIL'),
+			color: 'primary',
+			onClick: onViewMail
+		},
+		{
+			align: 'right',
+			color: 'error',
+			label: t('label.delete', 'delete'),
+			disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id,
+			onClick: onDeleteAccount
+		},
+		{
+			align: 'left',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setIsSticky(!isSticky);
+			}
+		}
+	];
+
 	return (
 		<>
 			{(!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id) && (
-				<OverlayDivision />
+				<OverlayDivision ovelayStyle={ovelayStyle} />
 			)}
 			<AccountDetailContainer background="gray5" mainAlignment="flex-start">
 				<Row
@@ -455,59 +479,6 @@ const AccountDetailView: FC<any> = ({
 						/>
 					</Row>
 				</Row>
-
-				<Row
-					mainAlignment="flex-end"
-					crossAlignment="flex-end"
-					orientation="horizontal"
-					background="white"
-					height="fit"
-					padding={{ top: 'extralarge', left: 'large', right: 'large', bottom: 'large' }}
-					width="100%"
-				>
-					<Padding right="large">
-						<Container width="fit" height="fit">
-							<Button
-								type="outlined"
-								color="primary"
-								icon="EditAsNewOutline"
-								size="large"
-								onClick={(): void => {
-									setShowAccountDetailView(false);
-									setShowEditAccountView(true);
-								}}
-								disabled={
-									!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-								}
-								loading={!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id}
-							/>
-						</Container>
-					</Padding>
-					<Padding right="large">
-						<Container width="fit" height="fit">
-							<Button
-								type="outlined"
-								color="error"
-								icon="Trash2Outline"
-								size="large"
-								disabled={
-									!accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-								}
-								onClick={onDeleteAccount}
-							/>
-						</Container>
-					</Padding>
-
-					<Button
-						type="outlined"
-						label={t('label.view_mail', 'VIEW MAIL')}
-						icon="EmailReadOutline"
-						iconPlacement="right"
-						color="primary"
-						size="large"
-						onClick={onViewMail}
-					/>
-				</Row>
 				<Container
 					padding={{ left: 'large' }}
 					mainAlignment="flex-start"
@@ -515,15 +486,11 @@ const AccountDetailView: FC<any> = ({
 					height="calc(100% - 64px)"
 					background="white"
 					style={{ overflow: 'auto' }}
+					width="100%"
 				>
-					<Row padding={{ top: 'extralarge' }}>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+					<Displayer buttons={buttons} pinIcon={isSticky} />
+					<Row>
+						<Text size="small" weight="bold">
 							{t('label.account', 'Account')}
 						</Text>
 					</Row>
@@ -566,7 +533,7 @@ const AccountDetailView: FC<any> = ({
 									{t('account_details.aliases', 'Aliases')}
 								</Text>
 							</Row>
-							<Row width="95%">
+							<Row width="97%">
 								<Container
 									orientation="horizontal"
 									wrap="wrap"
@@ -576,7 +543,8 @@ const AccountDetailView: FC<any> = ({
 									padding={{ left: 'large' }}
 								>
 									{accountAliases?.map(
-										(ele, index) => index > 0 && <Chip key={`chip${index}`} label={ele.label} />
+										(ele, index) =>
+											index > 0 && <CustomChip key={`chip${index}`} label={ele.label} />
 									)}
 								</Container>
 								<Row width="100%" padding={{ top: 'medium' }}>
@@ -687,23 +655,17 @@ const AccountDetailView: FC<any> = ({
 						</Row>
 					</Row>
 					<Row padding={{ top: 'extralarge' }}>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.active_sessions', 'Active Sessions')}
 						</Text>
 					</Row>
 					<Row
 						padding={{ top: 'extralarge' }}
-						width="100%"
+						width="97%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>
-						<Container width="70%">
+						<Container width="69%">
 							<Input
 								label={t('label.i_m_looking_for_the_session', 'I`m looking for the session ...')}
 								backgroundColor="gray5"
@@ -711,7 +673,8 @@ const AccountDetailView: FC<any> = ({
 								value=""
 							></Input>
 						</Container>
-						<Container width="30%" mainAlignment="flex-end" crossAlignment="flex-end">
+						<Padding horizontal="small" />
+						<Container width="28%" mainAlignment="flex-end" crossAlignment="flex-end">
 							<Button
 								label={t('label.end_session', 'End Session')}
 								color="error"
@@ -727,7 +690,7 @@ const AccountDetailView: FC<any> = ({
 					</Row>
 					<Row
 						padding={{ top: 'extralarge' }}
-						width="100%"
+						width="97%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>
@@ -740,6 +703,8 @@ const AccountDetailView: FC<any> = ({
 							onSelectionChange={(selected: any): any => {
 								setSelectedSession(selected);
 							}}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 							RowFactory={CustomRowFactory}
 						></Table>
@@ -747,37 +712,26 @@ const AccountDetailView: FC<any> = ({
 
 					<Row
 						padding={{ top: 'extralarge' }}
-						width="100%"
+						width="97%"
 						mainAlignment="flex-end"
 						crossAlignment="flex-end"
 					>
-						<Paging
-							totalItem={1}
-							setOffset={(): void => {
-								console.log('setOffset for paging');
-							}}
-						/>
+						<Paging totalItem={1} setOffset={(): null => null} />
 					</Row>
 
 					<Row padding={{ top: 'extralarge' }}>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
-							{t('label.notes', 'Notes')}
+						<Text size="small" weight="bold">
+							{t('label.description', 'Description')}
 						</Text>
 					</Row>
 					<Row
 						padding={{ top: 'extralarge', bottom: 'extralarge' }}
-						width="100%"
+						width="97%"
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>
 						<Input
-							label={t('label.notes', 'Notes')}
+							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							width="100%"
 							value={selectedAccount?.zimbraNotes || ''}
@@ -793,14 +747,8 @@ const AccountDetailView: FC<any> = ({
 						})}
 						open={isOpenDeleteDialog}
 						customFooter={
-							<Container orientation="horizontal" mainAlignment="space-between">
-								<Button
-									style={{ marginLeft: '10px' }}
-									type="outlined"
-									label={t('label.help', 'Help')}
-									color="primary"
-								/>
-								<Row style={{ gap: '8px' }}>
+							<Container orientation="horizontal" mainAlignment="flex-end">
+								<Row style={{ gap: '1rem' }}>
 									<Button
 										label={t('label.delete_it_instead', 'Delete it instead')}
 										color="error"
@@ -825,7 +773,19 @@ const AccountDetailView: FC<any> = ({
 						onClose={closeHandler}
 					>
 						<Container>
-							<Padding bottom="medium" top="medium">
+							{userType === 'Admin' &&
+								(accountUserType(selectedAccount) === 'System' ||
+									accountUserType(selectedAccount) === 'DelegatedAdmin') && (
+									<Padding bottom="medium" top="medium">
+										<Text color="warning" size="extralarge" overflow="break-word">
+											{t(
+												'label.deleting_account_warning_content',
+												'Deleting the system account could impact the system stability.'
+											)}
+										</Text>
+									</Padding>
+								)}
+							<Padding bottom="medium">
 								<Text size={'extralarge'} overflow="break-word">
 									<Trans
 										i18nKey="label.deleting_account_content_1"
@@ -859,6 +819,44 @@ const AccountDetailView: FC<any> = ({
 									style={{ height: '48px', width: '48px' }}
 								/>
 							</Row>
+						</Container>
+					</Modal>
+				)}
+				{isOpenDeleteHintModel && (
+					<Modal
+						size="medium"
+						title={selectedAccount?.name}
+						open={isOpenDeleteHintModel}
+						customFooter={
+							<Container orientation="horizontal" mainAlignment="flex-end">
+								<Button
+									label={t('label.close', 'Close')}
+									color="primary"
+									onClick={(): void => {
+										setisOpenDeleteHintModel(false);
+									}}
+									disabled={
+										isRequestInProgress ||
+										STATUS_COLOR[selectedAccount?.zimbraAccountStatus]?.label ===
+											STATUS_COLOR?.closed?.label
+									}
+								/>
+							</Container>
+						}
+						showCloseIcon
+						onClose={(): void => {
+							setisOpenDeleteHintModel(false);
+						}}
+					>
+						<Container>
+							<Padding bottom="medium" top="medium">
+								<Text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word">
+									{t(
+										'label.delete_delegated_account_content',
+										`The system accounts can't be deleted from here. Please visit the respective module to manage the account.`
+									)}
+								</Text>
+							</Padding>
 						</Container>
 					</Modal>
 				)}

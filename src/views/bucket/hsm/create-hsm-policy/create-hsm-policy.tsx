@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Button } from '@zextras/carbonio-design-system';
+import { Container, Button, Padding } from '@zextras/carbonio-design-system';
 import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -13,7 +13,6 @@ import { Section } from '../../../app/component/section';
 import { HSMContext } from '../hsm-context/hsm-context';
 import HSMcreatePolicy from './hsm-create-policy';
 import HSMpolicySettings from './hsm-policy-settings';
-import HSMselectVolumes from './hsm-select-volumes';
 
 interface hsmDetailObj {
 	allVolumes: Array<any>;
@@ -51,7 +50,8 @@ const CreateHsmPolicy: FC<{
 	setShowCreateHsmPolicyView: any;
 	volumeList: Array<any>;
 	createHSMpolicy: any;
-}> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy }) => {
+	runCustomHSMpolicy: any;
+}> = ({ setShowCreateHsmPolicyView, volumeList, createHSMpolicy, runCustomHSMpolicy }) => {
 	const [wizardData, setWizardData] = useState();
 	const [hsmDetail, setHsmDetail] = useState<hsmDetailObj>({
 		allVolumes: volumeList,
@@ -69,6 +69,10 @@ const CreateHsmPolicy: FC<{
 	const onCreate = useCallback(() => {
 		createHSMpolicy(hsmDetail);
 	}, [createHSMpolicy, hsmDetail]);
+
+	const onRunCustomPolicy = useCallback(() => {
+		runCustomHSMpolicy(hsmDetail);
+	}, [runCustomHSMpolicy, hsmDetail]);
 
 	const standardHsmPolicyWizardStep = useMemo(
 		() => [
@@ -88,41 +92,7 @@ const CreateHsmPolicy: FC<{
 						iconPlacement="right"
 					/>
 				),
-				PrevButton: (props: any) => null,
-				NextButton: (props: any) => (
-					<Button
-						{...props}
-						label={t('label.next', 'NEXT')}
-						icon="ChevronRightOutline"
-						iconPlacement="right"
-					/>
-				)
-			},
-			{
-				name: 'hsm-volumes',
-				label: t('hsm.select_volumes', 'Select Volumes'),
-				icon: 'CubeOutline',
-				view: HSMselectVolumes,
-				CancelButton: (props: any): ReactElement => (
-					<Button
-						{...props}
-						type="outlined"
-						key="wizard-cancel"
-						label={t('label.cancel', 'Cancel')}
-						color="secondary"
-						icon="CloseOutline"
-						iconPlacement="right"
-					/>
-				),
-				PrevButton: (props: any) => (
-					<Button
-						{...props}
-						label={t('label.back', 'BACK')}
-						icon="ChevronLeftOutline"
-						color="secondary"
-						iconPlacement="left"
-					/>
-				),
+				PrevButton: () => null,
 				NextButton: (props: any) => (
 					<Button
 						{...props}
@@ -158,17 +128,27 @@ const CreateHsmPolicy: FC<{
 					/>
 				),
 				NextButton: (props: any) => (
-					<Button
-						{...props}
-						label={t('label.create', 'CREATE')}
-						icon="PowerOutline"
-						iconPlacement="right"
-						onClick={onCreate}
-					/>
+					<>
+						<Padding right="medium">
+							<Button
+								{...props}
+								label={t('label.run_only', 'RUN ONLY (SKIP CREATE)')}
+								iconPlacement="left"
+								onClick={onRunCustomPolicy}
+							/>
+						</Padding>
+						<Button
+							{...props}
+							label={t('label.create', 'CREATE')}
+							icon="PowerOutline"
+							iconPlacement="right"
+							onClick={onCreate}
+						/>
+					</>
 				)
 			}
 		],
-		[t, onCreate]
+		[t, onRunCustomPolicy, onCreate]
 	);
 
 	const onComplete = useCallback(() => {
@@ -181,16 +161,13 @@ const CreateHsmPolicy: FC<{
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				top: '43px',
-				right: '0px',
-				bottom: '0px',
-				left: `${'max(calc(100% - 680px), 12px)'}`,
+				top: '0rem',
+				right: '0rem',
+				bottom: '0rem',
 				transition: 'left 0.2s ease-in-out',
-				height: 'auto',
-				width: 'auto',
 				maxHeight: '100%',
 				overflow: 'hidden',
-				boxShadow: '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+				inset: '0rem'
 			}}
 		>
 			<HSMContext.Provider value={{ hsmDetail, setHsmDetail }}>

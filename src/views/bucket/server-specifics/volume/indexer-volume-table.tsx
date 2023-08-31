@@ -30,7 +30,9 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">{v?.id}</Text>
+						<Text size="small" weight="light">
+							{v?.id}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -39,7 +41,9 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">{v?.name}</Text>
+						<Text size="small" weight="light">
+							{v?.name}
+						</Text>
 					</Row>,
 					<Row
 						key={i}
@@ -48,7 +52,7 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">
+						<Text size="small" weight="light">
 							{v?.storeType === LOCAL_VALUE
 								? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
 								: t('volume.volume_allocation_list.object_storage', 'Object Storage')}
@@ -61,7 +65,7 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text weight="light">
+						<Text size="small" weight="light">
 							{v?.storeType === LOCAL_VALUE
 								? v?.path
 								: t('label.prefix_volume', 'Prefix - {{volumePrefix}}', {
@@ -76,7 +80,7 @@ const IndexerVolumeTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text color={v?.isCurrent ? 'text' : 'error'} weight="light">
+						<Text color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
 							{v?.isCurrent ? YES : NO}
 						</Text>
 					</Row>
@@ -95,6 +99,8 @@ const IndexerVolumeTable: FC<{
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
 				RowFactory={CustomRowFactory}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows?.length === 0 && (

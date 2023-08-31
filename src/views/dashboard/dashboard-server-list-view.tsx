@@ -51,9 +51,9 @@ const DashboardServerList: FC<{
 				columns: [
 					<Text
 						size="small"
-						color="gray1"
-						weight="medium"
-						key={item}
+						color="gray0"
+						weight="regular"
+						key={item.id}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 						}}
@@ -88,8 +88,8 @@ const DashboardServerList: FC<{
 					),
 					<Text
 						size="small"
-						weight="medium"
-						color="gray1"
+						color="gray0"
+						weight="light"
 						key={item?.name}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
@@ -186,6 +186,8 @@ const DashboardServerList: FC<{
 						multiSelect={false}
 						style={{ overflow: 'auto', height: '100%' }}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>

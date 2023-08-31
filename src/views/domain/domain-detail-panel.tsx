@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useMemo, useState, useCallback, useEffect } from 'react';
 import { Container, Padding, Text, Button, Row, Icon } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, find } from 'lodash';
 import logo from '../../assets/ninja_robo.svg';
@@ -16,12 +16,17 @@ import CreateDomain from './create-new-domain';
 import GlobalOperations from './global-operation';
 import { useDomainStore } from '../../store/domain/store';
 import { useLocalStorage } from '../utility/utils';
+import GlobalDetailPanel from './global/global-detail-panel';
 
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const { path } = useRouteMatch();
+	const location = useLocation();
 	const domain = useDomainStore((state) => state.domain);
+	const closeDomainBanner = useDomainStore((state) => state.closeDomainBanner);
+	const setCloseDomainBanner = useDomainStore((state) => state.setCloseDomainBanner);
 	const [domainLocalValue, setDomainLocalValue] = useLocalStorage('close_domain_never_show', {});
+
 	const [showDomainClose, setShowDomainClose] = useState<boolean>(
 		domain.name ? !domainLocalValue[domain.name] : true
 	);
@@ -31,10 +36,27 @@ const DomainDetailPanel: FC = () => {
 	};
 	const isDomainClosed = useMemo(() => {
 		const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
-		if (domainStatus?._content === 'closed' && domain.name && !domainLocalValue[domain.name])
+		if (
+			domainStatus?._content === 'closed' &&
+			domain.name &&
+			!domainLocalValue[domain.name] &&
+			!location.pathname.includes('domains/global') &&
+			closeDomainBanner !== domain.name
+		)
 			return true;
 		return false;
-	}, [domain?.a, domain.name, domainLocalValue]);
+	}, [closeDomainBanner, domain?.a, domain.name, domainLocalValue, location.pathname]);
+	const setCloseDomainNameBanner = useCallback(
+		(domainName: string) => {
+			setCloseDomainBanner(domainName);
+		},
+		[setCloseDomainBanner]
+	);
+	useEffect(() => {
+		if (domain?.name !== closeDomainBanner) {
+			setCloseDomainNameBanner('');
+		}
+	}, [closeDomainBanner, domain, setCloseDomainNameBanner]);
 	return (
 		<Container
 			orientation="column"
@@ -81,7 +103,10 @@ const DomainDetailPanel: FC = () => {
 							size="large"
 							color="white"
 							style={{ cursor: 'pointer' }}
-							onClick={(): void => setShowDomainClose(false)}
+							onClick={(): void => {
+								setShowDomainClose(false);
+								setCloseDomainNameBanner(domain?.name || '');
+							}}
 						/>
 					</Row>
 				</Row>
@@ -89,6 +114,9 @@ const DomainDetailPanel: FC = () => {
 				<></>
 			)}
 			<Switch>
+				<Route exact path={`${path}/${GLOBAL_ROUTE}`}>
+					<GlobalDetailPanel />
+				</Route>
 				<Route exact path={`${path}/${GLOBAL_ROUTE}/:operation`}>
 					<GlobalOperations />
 				</Route>
@@ -114,7 +142,6 @@ const DomainDetailPanel: FC = () => {
 								overflow="break-word"
 								weight="regular"
 								size="large"
-								width="60%"
 								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>
 								{t(

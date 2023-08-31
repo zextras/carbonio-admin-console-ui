@@ -322,6 +322,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					items={certificateTypes}
 					background="gray5"
 					label={t('label.certificate_type', 'Certificate Type')}
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore // Need to fix it with custom soultion
 					onChange={(e: string): void => {
 						setSelectedCertType(e);
 					}}
@@ -337,12 +339,16 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					position: 'relative'
 				}}
 			>
-				<Container width="100%" style={{ display: 'block' }} padding={{ horizontal: 'small' }}>
+				<Container
+					width="100%"
+					style={{ display: 'block', paddingTop: '0.5rem' }}
+					padding={{ horizontal: 'small' }}
+				>
 					<Button
 						style={{
 							width: '100%'
 						}}
-						width="100%"
+						width="fill"
 						size="large"
 						label={t('label.generate_certifiacte', 'GENERATE CERTIFICATE')}
 						onClick={requestCertiClickHandler}
@@ -393,6 +399,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificate.fileName}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setObjDomainCertificate({
 										...objDomainCertificate,
@@ -408,6 +416,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								size="extralarge"
 								type="outlined"
 								color="primary"
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									if (e?.target?.files) {
 										readFileContentHandler(e?.target?.files[0], DOMAIN_CERTIFICATE);
@@ -460,6 +470,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificateCaChain.fileName || ''}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setObjDomainCertificateCaChain({
 										...objDomainCertificateCaChain,
@@ -475,6 +487,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								size="extralarge"
 								type="outlined"
 								color="primary"
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									if (e?.target?.files) {
 										readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_CA_CHAIN);
@@ -527,6 +541,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificatePrivateKey.fileName || ''}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
 									setObjDomainCertificatePrivateKey({
 										...objDomainCertificatePrivateKey,
@@ -542,6 +558,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								size="extralarge"
 								type="outlined"
 								color="primary"
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									if (e?.target?.files) {
 										readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_PRIVATE_KEY);
@@ -559,7 +577,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 				>
 					<Button
 						style={{ width: '100%' }}
-						width="100%"
+						width="fill"
 						size="large"
 						label={
 							uploadBtnTgl

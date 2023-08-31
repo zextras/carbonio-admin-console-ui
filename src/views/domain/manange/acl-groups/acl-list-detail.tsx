@@ -17,14 +17,12 @@ import {
 	Icon,
 	SnackbarManagerContext,
 	Modal,
-	Button,
-	Chip
+	Button
 } from '@zextras/carbonio-design-system';
 import { useTranslation, Trans } from 'react-i18next';
 import moment from 'moment';
 
 import ListRow from '../../../list/list-row';
-import Paging from '../../../components/paging';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
 import { getDateFromStr } from '../../../utility/utils';
@@ -32,6 +30,8 @@ import { deleteDistributionList } from '../../../../services/delete-distribution
 import { getGrant } from '../../../../services/get-grant';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import { CreateSnackbarType } from '../../../../../types';
+import CustomChip from '../../../components/customChip';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -46,10 +46,10 @@ export enum TRUE_FALSE {
 	FALSE = 'FALSE'
 }
 
-const MailingListDetail: FC<any> = ({
-	selectedMailingList,
-	setShowMailingListDetailView,
-	setEditMailingList,
+const AclListDetail: FC<any> = ({
+	selectedAclList,
+	setShowAclListDetailView,
+	setEditAclList,
 	setIsUpdateRecord
 }) => {
 	const [t] = useTranslation();
@@ -57,7 +57,7 @@ const MailingListDetail: FC<any> = ({
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [totalGrantRights, setTotalGrantRights] = useState(0);
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const dlCreateDate = useMemo(
 		() =>
 			!!zimbraCreateTimestamp && zimbraCreateTimestamp !== null && zimbraCreateTimestamp !== ''
@@ -66,7 +66,12 @@ const MailingListDetail: FC<any> = ({
 		[zimbraCreateTimestamp]
 	);
 
-	const memberHeaders: any[] = useMemo(
+	const memberHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
 		() => [
 			{
 				id: 'members',
@@ -84,7 +89,12 @@ const MailingListDetail: FC<any> = ({
 		[t]
 	);
 
-	const ownerHeaders: any[] = useMemo(
+	const ownerHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
 		() => [
 			{
 				id: 'owners',
@@ -96,7 +106,10 @@ const MailingListDetail: FC<any> = ({
 		[t]
 	);
 
-	const subscriptionUnsubscriptionRequestOptions: any[] = useMemo(
+	const subscriptionUnsubscriptionRequestOptions: {
+		label: string;
+		value: string;
+	}[] = useMemo(
 		() => [
 			{
 				label: t('label.automatically_accept', 'Automatically accept'),
@@ -114,21 +127,29 @@ const MailingListDetail: FC<any> = ({
 		[t]
 	);
 
-	const rightsOptions: any[] = useMemo(
+	const rightsOptions: {
+		label: string;
+		value: string;
+	}[] = useMemo(
 		() => [
 			{
 				label: t('label.can_send_receiver', 'Can Send & Receive'),
 				value: TRUE_FALSE.TRUE
 			},
 			{
-				label: t('label.not_send_receive', 'Not Send & Receive'),
+				label: t('label.cant_send_receiver', "Can't Send & Receive"),
 				value: TRUE_FALSE.FALSE
 			}
 		],
 		[t]
 	);
 
-	const listMemberOfHeaders: any[] = useMemo(
+	const listMemberOfHeaders: {
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+	}[] = useMemo(
 		() => [
 			{
 				id: 'members',
@@ -139,7 +160,16 @@ const MailingListDetail: FC<any> = ({
 		],
 		[t]
 	);
-	const [zimbraMailStatus, setZimbraMailStatus] = useState<any>(rightsOptions[1]);
+	const [zimbraMailStatus, setZimbraMailStatus] = useState<{
+		label: string;
+		value: string;
+	}>(rightsOptions[1]);
+	const [zimbraDistributionListSubscriptionPolicy, setZimbraDistributionListSubscriptionPolicy] =
+		useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
+	const [
+		zimbraDistributionListUnsubscriptionPolicy,
+		setZimbraDistributionListUnsubscriptionPolicy
+	] = useState<any>(subscriptionUnsubscriptionRequestOptions[0]);
 	const [dlId, setdlId] = useState<string>('');
 	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
 	const [dlmTableRows, setDlmTableRows] = useState<any>([]);
@@ -165,13 +195,31 @@ const MailingListDetail: FC<any> = ({
 
 	const onRightsChange = useCallback(
 		(v: any): any => {
-			const it = rightsOptions.find((item: any) => item.value === v);
-			setZimbraMailStatus(it);
+			const it = rightsOptions.find((item: { label: string; value: string }) => item.value === v);
+			if (it) {
+				setZimbraMailStatus(it);
+			}
 		},
 		[rightsOptions]
 	);
 
-	const getMailingList = useCallback(
+	const onSubscriptionChange = useCallback(
+		(v: any): any => {
+			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
+			setZimbraDistributionListSubscriptionPolicy(it);
+		},
+		[subscriptionUnsubscriptionRequestOptions]
+	);
+
+	const onUnSubscriptionChange = useCallback(
+		(v: any): any => {
+			const it = subscriptionUnsubscriptionRequestOptions.find((item: any) => item.value === v);
+			setZimbraDistributionListUnsubscriptionPolicy(it);
+		},
+		[subscriptionUnsubscriptionRequestOptions]
+	);
+
+	const getAclList = useCallback(
 		(id: string, name: string): void => {
 			getDistributionList(id, name).then((data) => {
 				const distributionListMembers = data?.dl[0];
@@ -215,7 +263,7 @@ const MailingListDetail: FC<any> = ({
 						}
 
 						const _zimbraMailAlias = distributionListMembers?.a?.filter(
-							(a: any) => a?.n === 'zimbraMailAlias' && a?._content !== selectedMailingList?.name
+							(a: any) => a?.n === 'zimbraMailAlias' && a?._content !== selectedAclList?.name
 						);
 						if (_zimbraMailAlias && _zimbraMailAlias.length > 0) {
 							const allAlias = _zimbraMailAlias.map((ele: any) => ({ label: ele?._content }));
@@ -246,7 +294,7 @@ const MailingListDetail: FC<any> = ({
 				}
 			});
 		},
-		[selectedMailingList?.name, rightsOptions, onRightsChange]
+		[selectedAclList?.name, rightsOptions, onRightsChange]
 	);
 
 	const getDistributionListMembershipList = useCallback((id: string): void => {
@@ -266,19 +314,19 @@ const MailingListDetail: FC<any> = ({
 	}, []);
 
 	useEffect(() => {
-		if (selectedMailingList?.a) {
-			const dsName = selectedMailingList?.a?.find((a: any) => a?.n === 'displayName')?._content;
+		if (selectedAclList?.a) {
+			const dsName = selectedAclList?.a?.find((a: any) => a?.n === 'displayName')?._content;
 			if (dsName) {
 				setDisplayName(dsName);
 			} else {
 				setDisplayName('');
 			}
 		}
-		setDistributionName(selectedMailingList?.name);
+		setDistributionName(selectedAclList?.name);
 
-		getMailingList(selectedMailingList?.id, selectedMailingList?.name);
-		getDistributionListMembershipList(selectedMailingList?.id);
-	}, [selectedMailingList, getMailingList, getDistributionListMembershipList]);
+		getAclList(selectedAclList?.id, selectedAclList?.name);
+		getDistributionListMembershipList(selectedAclList?.id);
+	}, [selectedAclList, getAclList, getDistributionListMembershipList]);
 
 	useEffect(() => {
 		if (dlMembershipList && dlMembershipList.length > 0) {
@@ -330,8 +378,8 @@ const MailingListDetail: FC<any> = ({
 		}
 	}, [ownersList]);
 
-	const onEditMailingList = (): void => {
-		setEditMailingList(true);
+	const onEditAclList = (): void => {
+		setEditAclList(true);
 	};
 
 	const onCopyLink = useCallback(() => {
@@ -356,10 +404,10 @@ const MailingListDetail: FC<any> = ({
 			});
 			setIsRequestInProgress(false);
 			closeHandler();
-			setShowMailingListDetailView(false);
+			setShowAclListDetailView(false);
 			setIsUpdateRecord(true);
 		},
-		[closeHandler, createSnackbar, setIsUpdateRecord, setShowMailingListDetailView]
+		[closeHandler, createSnackbar, setIsUpdateRecord, setShowAclListDetailView]
 	);
 
 	const onDeleteHandler = useCallback(() => {
@@ -394,7 +442,7 @@ const MailingListDetail: FC<any> = ({
 		const grantee = {
 			type: 'grp',
 			by: 'name',
-			_content: selectedMailingList?.name,
+			_content: selectedAclList?.name,
 			all: false
 		};
 		getGrantBody.grantee = grantee;
@@ -434,7 +482,7 @@ const MailingListDetail: FC<any> = ({
 		const target = {
 			type: 'dl',
 			by: 'name',
-			_content: selectedMailingList?.name
+			_content: selectedAclList?.name
 		};
 		getGrantBodyTarget.target = target;
 		getGrant(getGrantBodyTarget)
@@ -466,7 +514,7 @@ const MailingListDetail: FC<any> = ({
 				});
 				setIsDeleteBtnLoading(false);
 			});
-	}, [createSnackbar, selectedMailingList?.name, t]);
+	}, [createSnackbar, selectedAclList?.name, t]);
 
 	useEffect(() => {
 		const totalRights = targetTotalRights + granteeTotalRights;
@@ -479,13 +527,9 @@ const MailingListDetail: FC<any> = ({
 			mainAlignment="flex-start"
 			style={{
 				position: 'absolute',
-				left: `${'max(calc(100% - 680px), 12px)'}`,
-				top: '43px',
-				height: 'auto',
-				width: 'auto',
+				top: '0rem',
 				overflow: 'hidden',
-				transition: 'left 0.2s ease-in-out',
-				'box-shadow': '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+				transition: 'left 0.2s ease-in-out'
 			}}
 		>
 			<Row
@@ -494,13 +538,13 @@ const MailingListDetail: FC<any> = ({
 				orientation="horizontal"
 				background="white"
 				width="fill"
-				height="48px"
+				height="2.7rem"
 			>
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
 					<Text size="medium" overflow="ellipsis" weight="bold">
-						{selectedMailingList?.name} (
-						{selectedMailingList?.dynamic
+						{selectedAclList?.name} (
+						{selectedAclList?.dynamic
 							? t('label.dynamic', 'Dynamic')
 							: t('label.standard', 'Standard')}
 						)
@@ -510,7 +554,7 @@ const MailingListDetail: FC<any> = ({
 					<IconButton
 						size="medium"
 						icon="CloseOutline"
-						onClick={(): void => setShowMailingListDetailView(false)}
+						onClick={(): void => setShowAclListDetailView(false)}
 					/>
 				</Row>
 			</Row>
@@ -530,7 +574,7 @@ const MailingListDetail: FC<any> = ({
 							type="outlined"
 							color="primary"
 							icon="EditAsNewOutline"
-							onClick={onEditMailingList}
+							onClick={onEditAclList}
 							size="large"
 						/>
 					</Container>
@@ -564,8 +608,7 @@ const MailingListDetail: FC<any> = ({
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							value={displayName}
-							background="gray6"
-							readOnly
+							backgroundColor="gray6"
 						/>
 					</Container>
 
@@ -573,16 +616,32 @@ const MailingListDetail: FC<any> = ({
 						<Input
 							label={t('label.address', 'Address')}
 							value={distributionName}
-							background="gray6"
+							backgroundColor="gray6"
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
+						<Input
+							backgroundColor="gray6"
+							label={t('label.new_subscription_requests', 'New subscriptions requests')}
+							value={zimbraDistributionListSubscriptionPolicy?.label}
+						/>
+					</Container>
+
+					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
+						<Input
+							backgroundColor="gray6"
+							label={t('label.unsubscribe_request', 'Unsubscription requests')}
+							value={zimbraDistributionListUnsubscriptionPolicy?.label}
 						/>
 					</Container>
 				</ListRow>
 				<ListRow>
 					<Container padding={{ right: 'small', top: 'small' }}>
 						<Input
-							background="gray6"
+							backgroundColor="gray6"
 							label={t('label.rights', 'Rights')}
-							readOnly
 							value={zimbraMailStatus?.label}
 						/>
 					</Container>
@@ -609,7 +668,7 @@ const MailingListDetail: FC<any> = ({
 								padding={{ left: 'large' }}
 							>
 								{zimbraMailAlias?.map((ele, index) => (
-									<Chip key={`chip${index}`} label={ele.label} />
+									<CustomChip key={`chip${index}`} label={ele.label} />
 								))}
 							</Container>
 							<Row width="100%" padding={{ top: 'medium' }}>
@@ -654,26 +713,24 @@ const MailingListDetail: FC<any> = ({
 						<Input
 							label={t('label.members', 'Members')}
 							value={dlm.length}
-							background="gray6"
-							readOnly
+							backgroundColor="gray6"
 						/>
 					</Container>
 					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
 							label={t('label.alias_in_the_list', 'Alias in the List')}
 							value={zimbraMailAlias.length}
-							background="gray6"
-							readOnly
+							backgroundColor="gray6"
 						/>
 					</Container>
 				</ListRow>
-				{selectedMailingList?.dynamic && (
+				{selectedAclList?.dynamic && (
 					<ListRow>
 						<Container>
 							<Input
-								label={t('label.list_url', "Mailing List's URL")}
+								label={t('label.list_url', "Acl List's URL")}
 								value={memberURL}
-								background="gray6"
+								backgroundColor="gray6"
 								readOnly
 								CustomIcon={(): any => (
 									<Icon icon="CopyOutline" size="large" color="grey" onClick={onCopyLink} />
@@ -684,14 +741,13 @@ const MailingListDetail: FC<any> = ({
 				)}
 				<ListRow>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
-						<Input label={t('label.id_lbl', 'ID')} value={dlId} background="gray6" readOnly />
+						<Input label={t('label.id_lbl', 'ID')} value={dlId} backgroundColor="gray6" readOnly />
 					</Container>
 					<Container padding={{ top: 'small', bottom: 'small', left: 'small' }}>
 						<Input
 							label={t('label.creation_date', 'Creation Date')}
 							value={dlCreateDate}
-							background="gray6"
-							readOnly
+							backgroundColor="gray6"
 						/>
 					</Container>
 				</ListRow>
@@ -700,7 +756,7 @@ const MailingListDetail: FC<any> = ({
 						{t('label.manage_list', 'Manage List')}
 					</Text>
 				</Row>
-				{!selectedMailingList?.dynamic && (
+				{!selectedAclList?.dynamic && (
 					<ListRow>
 						<Container
 							mainAlignment="flex-start"
@@ -713,13 +769,15 @@ const MailingListDetail: FC<any> = ({
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
 					</ListRow>
 				)}
 				<ListRow>
-					{!selectedMailingList?.dynamic && (
+					{!selectedAclList?.dynamic && (
 						<Container
 							mainAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'small' }}
@@ -731,13 +789,15 @@ const MailingListDetail: FC<any> = ({
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
 					)}
 					<Container
 						padding={{
-							left: !selectedMailingList?.dynamic ? 'small' : '',
+							left: !selectedAclList?.dynamic ? 'small' : '',
 							top: 'small',
 							bottom: 'small'
 						}}
@@ -750,6 +810,8 @@ const MailingListDetail: FC<any> = ({
 							showCheckbox={false}
 							style={{ overflow: 'auto', height: '100%' }}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -758,8 +820,8 @@ const MailingListDetail: FC<any> = ({
 					<Container padding={{ top: 'large' }}>
 						<Input
 							value={zimbraNotes}
-							label={t('label.notes', 'Notes')}
-							background="gray6"
+							label={t('label.description', 'Description')}
+							backgroundColor="gray6"
 							readOnly
 						/>
 					</Container>
@@ -776,12 +838,13 @@ const MailingListDetail: FC<any> = ({
 					customFooter={
 						<Container orientation="horizontal" mainAlignment="space-between">
 							<Button
-								style={{ marginLeft: '10px' }}
+								style={{ marginLeft: '0.6rem' }}
 								type="outlined"
 								label={t('label.help', 'Help')}
 								color="primary"
+								onClick={(): null => null}
 							/>
-							<Row style={{ gap: '8px' }}>
+							<Row style={{ gap: '0.5rem' }}>
 								<Button
 									label={t('label.cancel', 'Cancel')}
 									color="secondary"
@@ -841,4 +904,4 @@ const MailingListDetail: FC<any> = ({
 	);
 };
 
-export default MailingListDetail;
+export default AclListDetail;

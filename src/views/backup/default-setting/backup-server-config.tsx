@@ -157,12 +157,7 @@ const BackupServerConfig: FC = () => {
 		<>
 			{isBackupModuleLicensed && (
 				<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ left: 'large', right: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ left: 'large', right: 'large' }}>
 						<Container
 							orientation="vertical"
 							mainAlignment="space-around"
@@ -204,12 +199,7 @@ const BackupServerConfig: FC = () => {
 						height="calc(100vh - 200px)"
 						padding={{ all: 'large' }}
 					>
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							width="100%"
-							padding={{ top: 'large' }}
-						></Row>
+						<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}></Row>
 						<ListRow>
 							<Switch
 								label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
@@ -223,8 +213,8 @@ const BackupServerConfig: FC = () => {
 							<Switch
 								value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
 								label={t(
-									'backup.this_module_is_enable_at_the_startup',
-									'This module is enabled at the startup'
+									'backup.backup_is_enable_at_the_startup',
+									'Backup is enabled at the startup'
 								)}
 								onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
 								iconColor="primary"
@@ -256,7 +246,7 @@ const BackupServerConfig: FC = () => {
 									defaultValue={initbackupDetail.ZxBackup_DestPath}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_DestPath"
-									background="gray5"
+									backgroundColor="gray5"
 									disabled={!allowSetBackup}
 								/>
 							</Container>
@@ -272,7 +262,7 @@ const BackupServerConfig: FC = () => {
 									defaultValue={initbackupDetail.ZxBackup_SpaceThreshold}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_SpaceThreshold"
-									background="gray5"
+									backgroundColor="gray5"
 									disabled={!allowSetBackup}
 								/>
 							</Container>
@@ -288,7 +278,7 @@ const BackupServerConfig: FC = () => {
 									defaultValue={initbackupDetail.backupLocalMetadataThreshold}
 									onChange={changeBackupDetail}
 									inputName="backupLocalMetadataThreshold"
-									background="gray5"
+									backgroundColor="gray5"
 									disabled={!allowSetBackup}
 								/>
 							</Container>
@@ -317,7 +307,7 @@ const BackupServerConfig: FC = () => {
 									defaultValue={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									onChange={changeBackupSchedulerDetail}
 									inputName="backupSmartScanScheduler"
-									background="gray5"
+									backgroundColor="gray5"
 									disabled={!allowSetBackup}
 								/>
 							</Container>
@@ -344,7 +334,7 @@ const BackupServerConfig: FC = () => {
 									defaultValue={initbackupDetail.backupPurgeScheduler?.['cron-pattern']}
 									onChange={changeBackupSchedulerDetail}
 									inputName="backupPurgeScheduler"
-									background="gray5"
+									backgroundColor="gray5"
 									disabled={!allowSetBackup}
 								/>
 							</Container>
@@ -357,7 +347,7 @@ const BackupServerConfig: FC = () => {
 									defaultValue={initbackupDetail.ZxBackup_DataRetentionDays}
 									onChange={changeBackupDetail}
 									inputName="ZxBackup_DataRetentionDays"
-									background="gray5"
+									backgroundColor="gray5"
 									disabled={!allowSetBackup}
 								/>
 							</Container>
@@ -384,7 +374,7 @@ const BackupServerConfig: FC = () => {
 									defaultValue={initbackupDetail.backupAccountsRetentionDays}
 									onChange={changeBackupDetail}
 									inputName="backupAccountsRetentionDays"
-									background="gray5"
+									backgroundColor="gray5"
 									disabled={!allowSetBackup}
 								/>
 							</Container>

@@ -43,6 +43,7 @@ import {
 import { setCoreAttributes } from '../../../services/set-core-attributes';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import ModalOverlay from '../../components/ModalOverlay';
 
 const HSMsettingPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -157,10 +158,9 @@ const HSMsettingPanel: FC = () => {
 				id: item?.hsmQuery,
 				columns: [
 					<Text
-						size="medium"
-						weight="medium"
+						size="small"
+						weight="regular"
 						key={item?.hsmQuery}
-						color="#828282"
 						onClick={(e: { stopPropagation: () => void }): void => {
 							e.stopPropagation();
 							setSelectedPolicies([item?.hsmQuery]);
@@ -227,7 +227,7 @@ const HSMsettingPanel: FC = () => {
 
 								if (attributes?.deduplicateAfterScheduledMoveBlobs) {
 									const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
-									if (duplicate) {
+									if (duplicate?.value) {
 										setDeduplicateAfterScheduledMoveBlobs(true);
 										olderValues.deduplicateAfterScheduledMoveBlobs = true;
 									} else {
@@ -473,50 +473,53 @@ const HSMsettingPanel: FC = () => {
 		[server, selectedPolicies, t, createSnackbar, getHSMPolicyList, policies]
 	);
 
+	const generatePolicyString = useCallback((hsmPolicyDetail: any) => {
+		let policy = '';
+		const criteriaScale: string[] = [];
+		if (hsmPolicyDetail?.isAllEnabled) {
+			policy += 'document,message,contact,appointment:';
+		} else {
+			if (hsmPolicyDetail?.isMessageEnabled) {
+				criteriaScale.push('message');
+			}
+			if (hsmPolicyDetail?.isEventEnabled) {
+				criteriaScale.push('appointment');
+			}
+			if (hsmPolicyDetail?.isContactEnabled) {
+				criteriaScale.push('contact');
+			}
+			if (hsmPolicyDetail?.isDocumentEnabled) {
+				criteriaScale.push('document');
+			}
+		}
+		if (criteriaScale.length > 0) {
+			policy += `${criteriaScale.toString()}:`;
+		}
+		if (hsmPolicyDetail?.policyCriteria.length > 0) {
+			hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
+				if (item?.option === 'before') {
+					policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
+				} else if (item?.option === 'after') {
+					policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
+				} else if (item?.option === 'larger' || item?.option === 'smaller') {
+					policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
+				}
+			});
+		}
+		if (hsmPolicyDetail?.sourceVolume?.length > 0) {
+			policy += ` source:${hsmPolicyDetail?.sourceVolume.map((item: any) => item?.id).toString()}`;
+		}
+		if (hsmPolicyDetail?.destinationVolume?.length > 0) {
+			policy += ` destination:${hsmPolicyDetail?.destinationVolume
+				.map((item: any) => item?.id)
+				.toString()}`;
+		}
+		return policy;
+	}, []);
+
 	const createHSMpolicy = useCallback(
 		(hsmPolicyDetail: any, isEditSave?: boolean) => {
-			let policy = '';
-			const criteriaScale: string[] = [];
-			if (hsmPolicyDetail?.isAllEnabled) {
-				policy += 'document,message,contact,appointment:';
-			} else {
-				if (hsmPolicyDetail?.isMessageEnabled) {
-					criteriaScale.push('message');
-				}
-				if (hsmPolicyDetail?.isEventEnabled) {
-					criteriaScale.push('appointment');
-				}
-				if (hsmPolicyDetail?.isContactEnabled) {
-					criteriaScale.push('contact');
-				}
-				if (hsmPolicyDetail?.isDocumentEnabled) {
-					criteriaScale.push('document');
-				}
-			}
-			if (criteriaScale.length > 0) {
-				policy += `${criteriaScale.toString()}:`;
-			}
-			if (hsmPolicyDetail?.policyCriteria.length > 0) {
-				hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
-					if (item?.option === 'before') {
-						policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
-					} else if (item?.option === 'after') {
-						policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
-					} else if (item?.option === 'larger' || item?.option === 'smaller') {
-						policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
-					}
-				});
-			}
-			if (hsmPolicyDetail?.sourceVolume?.length > 0) {
-				policy += ` source:${hsmPolicyDetail?.sourceVolume
-					.map((item: any) => item?.id)
-					.toString()}`;
-			}
-			if (hsmPolicyDetail?.destinationVolume?.length > 0) {
-				policy += ` destination:${hsmPolicyDetail?.destinationVolume
-					.map((item: any) => item?.id)
-					.toString()}`;
-			}
+			const policy = generatePolicyString(hsmPolicyDetail);
 			fetchSoap('zextras', {
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxPowerstore',
@@ -563,7 +566,51 @@ const HSMsettingPanel: FC = () => {
 					});
 				});
 		},
-		[server, createSnackbar, t, getHSMPolicyList, onDeletePolicy]
+		[generatePolicyString, server, onDeletePolicy, getHSMPolicyList, createSnackbar, t]
+	);
+
+	const runCustomHSMpolicy = useCallback(
+		(hsmPolicyDetail: any) => {
+			const policy = generatePolicyString(hsmPolicyDetail);
+			fetchSoap('zextras', {
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxPowerstore',
+				action: 'doMoveBlobs',
+				command: 'start',
+				customHSMPolicy: policy,
+				targetServer: server
+			})
+				.then((res: any) => {
+					if (res?.Body?.response?.content) {
+						const info = JSON.parse(res?.Body?.response?.content);
+						if (info?.ok) {
+							setShowCreateHsmPolicyView(false);
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t('hsm.policy_is_correctly_running', 'The policy is correctly running'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						}
+					}
+				})
+				.catch((error) => {
+					setIsEditSaveInProgress(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[generatePolicyString, server, createSnackbar, t]
 	);
 
 	const onEditSave = useCallback(
@@ -619,7 +666,7 @@ const HSMsettingPanel: FC = () => {
 	return (
 		<Container mainAlignment="flex-start" width="100%">
 			<Row
-				takeAvwidth="fill"
+				takeAvailableSpace
 				mainAlignment="flex-start"
 				width="100%"
 				padding={{ left: 'large', right: 'large', bottom: 'medium', top: 'medium' }}
@@ -628,7 +675,7 @@ const HSMsettingPanel: FC = () => {
 					orientation="vertical"
 					mainAlignment="space-around"
 					background="gray6"
-					height="40px"
+					height="2.5rem"
 				>
 					<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
@@ -702,8 +749,11 @@ const HSMsettingPanel: FC = () => {
 				<ListRow>
 					<Container padding={{ bottom: 'large' }}>
 						<Input
-							label={t('hsm.schedule', 'Schedule')}
-							background="gray5"
+							label={`${t('hsm.schedule', 'Schedule')} (${t(
+								'hsm.example_shedule',
+								'E.g. 0 2 * * 3'
+							)})`}
+							backgroundColor="gray5"
 							value={powerstoreMoveSchedulerValue}
 							onChange={(e: any): void => {
 								setPowerstoreMoveSchedulerValue(e.target.value);
@@ -741,15 +791,20 @@ const HSMsettingPanel: FC = () => {
 					</Container>
 				</ListRow>
 
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container
 						orientation="vertical"
 						mainAlignment="space-around"
 						background="gray6"
-						padding={{ top: 'large', bottom: 'large' }}
+						padding={{ top: 'large' }}
 					>
 						<Row orientation="horizontal" width="100%" padding={{ all: 'extrasmall' }}>
-							<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+							<Row
+								mainAlignment="flex-start"
+								width="50%"
+								crossAlignment="flex-start"
+								style={{ alignSelf: 'end' }}
+							>
 								<Text size="medium" weight="bold" color="gray0">
 									{t('hsm.hsm_policies_list', 'HSM Policies List')}
 								</Text>
@@ -761,7 +816,6 @@ const HSMsettingPanel: FC = () => {
 										icon=""
 										type="outlined"
 										color="primary"
-										height={36}
 										onClick={(): void => {
 											setShowCreateHsmPolicyView(true);
 										}}
@@ -775,7 +829,6 @@ const HSMsettingPanel: FC = () => {
 										type="outlined"
 										icon=""
 										color="primary"
-										height={36}
 										onClick={(): void => {
 											runAllHSMpolicy();
 										}}
@@ -788,7 +841,6 @@ const HSMsettingPanel: FC = () => {
 									color="error"
 									type="outlined"
 									icon=""
-									height={36}
 									onClick={(): void => {
 										setShowDeletePolicyView(true);
 									}}
@@ -799,6 +851,16 @@ const HSMsettingPanel: FC = () => {
 						</Row>
 					</Container>
 				</Row>
+				<ListRow>
+					<Padding left="extrasmall" bottom="medium">
+						<Text size="small" weight="light" color="gray0">
+							{t(
+								'hsm.default_hsm_policy_warning_message',
+								'At least one policy will always stay up. If you delete the last one, another will be generated'
+							)}
+						</Text>
+					</Padding>
+				</ListRow>
 
 				<ListRow>
 					<Table
@@ -807,16 +869,17 @@ const HSMsettingPanel: FC = () => {
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedPolicies}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 						RowFactory={CustomRowFactory}
 					/>
 				</ListRow>
-
 				<ListRow>
 					<Container padding={{ top: 'large' }}>
 						<Input
 							label={t('hsm.minimum_space_threshold', 'Minimum Space Threshold')}
-							background="gray5"
+							backgroundColor="gray5"
 							value={powerstoreSpaceThreshold}
 							onChange={(e: any): void => {
 								setPowerstoreSpaceThreshold(e.target.value);
@@ -826,11 +889,14 @@ const HSMsettingPanel: FC = () => {
 				</ListRow>
 			</Container>
 			{showCreateHsmPolicyView && (
-				<CreateHsmPolicy
-					setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
-					volumeList={volumeList}
-					createHSMpolicy={createHSMpolicy}
-				/>
+				<ModalOverlay setOpen={setShowCreateHsmPolicyView} open={showCreateHsmPolicyView}>
+					<CreateHsmPolicy
+						setShowCreateHsmPolicyView={setShowCreateHsmPolicyView}
+						volumeList={volumeList}
+						createHSMpolicy={createHSMpolicy}
+						runCustomHSMpolicy={runCustomHSMpolicy}
+					/>
+				</ModalOverlay>
 			)}
 			{showEditHsmPolicyView && (
 				<EditHsmPolicy

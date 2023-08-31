@@ -87,10 +87,12 @@ const EditHsmPolicy: FC<{
 	}> = ({ item, index, selected, onClick }): ReactElement => (
 		<DefaultTabBarItem
 			item={item}
-			index={index}
 			selected={selected}
 			onClick={onClick}
 			orientation="horizontal"
+			background={'transparent'}
+			underlineColor={'primary'}
+			forceWidthEquallyDistributed={false}
 		>
 			<Row padding="small">
 				<Padding horizontal="small">
@@ -127,13 +129,13 @@ const EditHsmPolicy: FC<{
 				mainAlignment="flex-start"
 				style={{
 					position: 'absolute',
-					left: `${'max(calc(100% - 640px), 12px)'}`,
-					top: '43px',
+					left: `${'max(calc(100% - 40rem), 0.75rem)'}`,
+					top: '2.688rem',
 					height: 'auto',
-					width: '640px',
+					width: '40rem',
 					overflow: 'hidden',
 					transition: 'left 0.2s ease-in-out',
-					'box-shadow': '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)'
+					boxShadow: '-0.375rem 0.25rem 0.313rem 0rem rgba(0, 0, 0, 0.1)'
 				}}
 			>
 				<Row
@@ -142,7 +144,7 @@ const EditHsmPolicy: FC<{
 					orientation="horizontal"
 					background="white"
 					width="fill"
-					height="48px"
+					height="3rem"
 				>
 					<Row padding={{ horizontal: 'small' }}></Row>
 					<Row takeAvailableSpace mainAlignment="flex-start">
@@ -187,12 +189,14 @@ const EditHsmPolicy: FC<{
 					padding={{ all: 'small' }}
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					height="calc(100vh - 152px)"
+					height="calc(100vh - 9.5rem)"
 					background="white"
 					style={{ overflow: 'auto' }}
 				>
 					<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<TabBar
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							items={items}
 							selected={change}
 							onChange={(ev: unknown, selectedId: string): void => {
@@ -206,7 +210,7 @@ const EditHsmPolicy: FC<{
 						<Divider color="gray2" />
 					</Row>
 					<HSMContext.Provider value={{ hsmDetail, setHsmDetail }}>
-						<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
+						<Container crossAlignment="flex-start" padding={{ all: '0rem' }}>
 							{change === 'details' && (
 								<EditHsmPolicyDetailSection currentPolicy={currentPolicy} setIsDirty={setIsDirty} />
 							)}

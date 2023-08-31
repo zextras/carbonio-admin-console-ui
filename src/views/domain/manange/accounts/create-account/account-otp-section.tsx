@@ -11,6 +11,7 @@ import {
 	Button,
 	Text,
 	Icon,
+	Switch,
 	ChipInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -19,10 +20,10 @@ import QRCode from 'qrcode.react';
 import { map } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from './account-context';
-import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { emailContent } from './email-content';
 import { isValidEmail } from '../../../../utility/utils';
+import CustomChip from '../../../../components/customChip';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -43,39 +44,11 @@ const StaticCode = styled.label`
 	padding: 4.95px 0;
 `;
 const AccountOtpSection: FC = () => {
-	const conext = useContext(AccountContext);
-	const { accountDetail, setShowCreateAccountView } = conext;
+	const context = useContext(AccountContext);
+	const { accountDetail, setAccountDetail } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const [showOtpOptionSection, setShowOtpOptionSection] = useState<boolean>(true);
-	const [qrData, setQrData] = useState('');
 	const [sendEmailTo, setSendEmailTo] = useState('');
-	const [secrateCode, setSecrateCode] = useState('');
-	const [pinCodes, setPinCodes] = useState<any>([]);
 	const [t] = useTranslation();
-
-	const handleOnGenerateOTP = (): void => {
-		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxAuth',
-			action: 'totp_generate_command',
-			account: `${accountDetail?.name}@${domainName}`
-		}).then((res) => {
-			if (res.ok) {
-				setQrData(
-					`otpauth://totp/${encodeURIComponent(res.response.label)}?secret=${
-						res.response.secret
-					}&issuer=${res.response.issuer}&algorithm=${res.response.algorithm}&digits=${
-						res.response.digits_length
-					}&period=${res.response.period}`
-				);
-				setSecrateCode(res.response.secret);
-				setPinCodes(res.response.static_otp_codes);
-				setShowOtpOptionSection(false);
-			} else {
-				// setErrorLabel(t('error.alreadyInUse'));
-			}
-		});
-	};
 
 	return (
 		<Container
@@ -84,11 +57,12 @@ const AccountOtpSection: FC = () => {
 			style={{ overflow: 'auto' }}
 			height="calc(100vh - 18.75rem)"
 		>
-			{showOtpOptionSection ? (
+			{accountDetail?.showOtpOptionSection ? (
 				<>
 					<Container
 						orientation="horizontal"
 						width="99%"
+						height="fit"
 						crossAlignment="center"
 						mainAlignment="space-between"
 						background="#E6F2D8"
@@ -98,15 +72,7 @@ const AccountOtpSection: FC = () => {
 						}}
 						style={{ borderRadius: '2px 2px 0px 0px' }}
 					>
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="center"
-							width="100%"
-							padding={{
-								top: 'small',
-								bottom: 'small'
-							}}
-						>
+						<Row mainAlignment="center" width="100%">
 							<Padding horizontal="small">
 								<CustomIcon icon="InfoOutline" color="success"></CustomIcon>
 							</Padding>
@@ -118,41 +84,50 @@ const AccountOtpSection: FC = () => {
 							</Text>
 						</Row>
 					</Container>
-
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="center"
+					<Container
+						height="fit"
 						width="100%"
-						padding={{
-							top: 'large',
-							bottom: 'large'
-						}}
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						crossAlignment="center"
 					>
-						<Button
-							label={t('domain.i_want_to_generate_an_otp_code', 'I WANT TO GENERATE AN OTP CODE')}
-							onClick={(): void => handleOnGenerateOTP()}
-							width="fill"
-						/>
-					</Row>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="center"
+						<Row>
+							<Switch
+								defaultChecked={accountDetail.generateOTP}
+								onClick={(): void =>
+									setAccountDetail((prev: any) => ({
+										...prev,
+										generateOTP: !accountDetail.generateOTP
+									}))
+								}
+								padding={{ top: 'large' }}
+								label={t('label.create_otp_code', 'Create OTP code')}
+								iconColor="primary"
+							/>
+						</Row>
+					</Container>
+					<Container
+						height="fit"
 						width="100%"
-						padding={{
-							top: 'large',
-							bottom: 'large'
-						}}
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						crossAlignment="center"
 					>
-						<Button
-							label={t(
-								'domain.proceed_without_generating_an_otp_code',
-								'PROCEED WITHOUT GENERATING AN OTP CODE'
-							)}
-							onClick={(): void => setShowCreateAccountView(false)}
-							width="fill"
-							type="outlined"
-						/>
-					</Row>
+						<Row>
+							<Switch
+								defaultChecked={accountDetail.administrationRigths}
+								onClick={(): void =>
+									setAccountDetail((prev: any) => ({
+										...prev,
+										administrationRigths: !accountDetail.administrationRigths
+									}))
+								}
+								padding={{ top: 'large' }}
+								label={t('label.add_administration_rights', 'Add Administration rights')}
+								iconColor="primary"
+							/>
+						</Row>
+					</Container>
 				</>
 			) : (
 				<>
@@ -163,7 +138,7 @@ const AccountOtpSection: FC = () => {
 							mainAlignment="space-between"
 						>
 							<Row width="40%" mainAlignment="flex-start">
-								<QRCode data-testid="qrcode-password" size={179} value={qrData} />
+								<QRCode data-testid="qrcode-password" size={179} value={accountDetail?.qrData} />
 							</Row>
 							<Row width="60%" mainAlignment="flex-start">
 								<Container>
@@ -171,7 +146,7 @@ const AccountOtpSection: FC = () => {
 										<Row mainAlignment="center">
 											<StaticCodesContainer background="gray5">
 												<StaticCodesWrapper>
-													{map(pinCodes, (singleCode: any) => (
+													{map(accountDetail?.pinCodes, (singleCode: any) => (
 														<StaticCode key={singleCode.code}>{singleCode.code}</StaticCode>
 													))}
 												</StaticCodesWrapper>
@@ -186,7 +161,6 @@ const AccountOtpSection: FC = () => {
 									mainAlignment="space-between"
 								>
 									<Row
-										takeAvwidth="fill"
 										mainAlignment="center"
 										width="100%"
 										padding={{
@@ -204,7 +178,6 @@ const AccountOtpSection: FC = () => {
 									mainAlignment="space-between"
 								>
 									<Row
-										takeAvwidth="fill"
 										mainAlignment="center"
 										width="100%"
 										padding={{
@@ -212,7 +185,7 @@ const AccountOtpSection: FC = () => {
 											bottom: 'small'
 										}}
 									>
-										<Text>{secrateCode}</Text>
+										<Text>{accountDetail?.secrateCode}</Text>
 									</Row>
 								</Container>
 							</Row>
@@ -224,7 +197,6 @@ const AccountOtpSection: FC = () => {
 							mainAlignment="space-between"
 						>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="center"
 								width="100%"
 								padding={{
@@ -247,7 +219,6 @@ const AccountOtpSection: FC = () => {
 							mainAlignment="space-between"
 						>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="center"
 								width="100%"
 								padding={{
@@ -278,9 +249,14 @@ const AccountOtpSection: FC = () => {
 										});
 										setSendEmailTo(data);
 									}}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									defaultValue={sendEmailTo}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={sendEmailTo}
 									background="gray5"
+									ChipComponent={CustomChip}
 									// hasError={some(sendEmailTo || [], { error: true })}
 								/>
 							</Row>
@@ -308,7 +284,10 @@ const AccountOtpSection: FC = () => {
 														ct: 'text/html',
 														body: true,
 														content: {
-															_content: emailContent(pinCodes, secrateCode)
+															_content: emailContent(
+																accountDetail?.pinCodes,
+																accountDetail?.secrateCode
+															)
 														}
 													}
 												]
