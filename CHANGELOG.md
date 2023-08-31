@@ -2,6 +2,61 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.26](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.25...v0.9.26) (2023-08-31)
+
+
+### Features
+
+* adde notification fields ([b1afd01](https://github.com/zextras/carbonio-admin-console-ui/commit/b1afd01f3612899728452158e02a664ff30d931e))
+* added feature for enabling domain delegation ([3cc2fe0](https://github.com/zextras/carbonio-admin-console-ui/commit/3cc2fe0f4df265f2aad6ecafa35225f5b6255a0e))
+* added fields to domain details also ([39aa039](https://github.com/zextras/carbonio-admin-console-ui/commit/39aa039018a57f582d857265f16a93e8e361a582))
+* added re-sync feature in galsync ([07ea2af](https://github.com/zextras/carbonio-admin-console-ui/commit/07ea2afa75c30002f15feb0fab59a93b362fc4a8))
+* allow Global and delegate admin to mark an account as delegated admin ([bf3790a](https://github.com/zextras/carbonio-admin-console-ui/commit/bf3790a2462eb7d8ad7d74e5f5a0172a73175399))
+* provide a standard details behaviour and appearance ([f4cc7d8](https://github.com/zextras/carbonio-admin-console-ui/commit/f4cc7d8319caa746f045c3595014e48ef31e0ec5))
+* updated the fields ([cc8fa33](https://github.com/zextras/carbonio-admin-console-ui/commit/cc8fa334bf76a0a0f8f695bb7f6377da6e6f151e))
+
+
+### Bug Fixes
+
+* ac-686: add custom logout into theme ([#477](https://github.com/zextras/carbonio-admin-console-ui/issues/477)) ([51df919](https://github.com/zextras/carbonio-admin-console-ui/commit/51df919dd29516c4cb07310ad7d90b4911fe29df))
+* ac-737: add read receipt pref in cos/account ([#469](https://github.com/zextras/carbonio-admin-console-ui/issues/469)) ([6bbe4fb](https://github.com/zextras/carbonio-admin-console-ui/commit/6bbe4fb55be1e50406aa09cce33948095df1b413))
+* ac-742: notes label replace with description ([9c3a012](https://github.com/zextras/carbonio-admin-console-ui/commit/9c3a0124307f40b271d0e228995924915cd27312))
+* ac-748: mta panel not avaiable on carbonio ce ([f0af8fe](https://github.com/zextras/carbonio-admin-console-ui/commit/f0af8fe4579658d594a67c16adaa850eeaeff265))
+* ac-760: fix issue of mailing list and security groups ([#468](https://github.com/zextras/carbonio-admin-console-ui/issues/468)) ([4d2126b](https://github.com/zextras/carbonio-admin-console-ui/commit/4d2126b5d38e17ac85e27ddef20bc9c1984f0f89))
+* ac-770: public service hostname change not working ([086431c](https://github.com/zextras/carbonio-admin-console-ui/commit/086431c6ef60fe3e3d5ab6f048d62a3f0dd7306b))
+* bugs related to delegate administrator ([4249a30](https://github.com/zextras/carbonio-admin-console-ui/commit/4249a302a52c5a5ffdb8535ce5b4c04fce745a1d))
+* change event not working in active sync ([411ee76](https://github.com/zextras/carbonio-admin-console-ui/commit/411ee765e326bc4a39d33db7cd4ce89fee3a1428))
+* changed ceph s3 to ceph only ([a8063fa](https://github.com/zextras/carbonio-admin-console-ui/commit/a8063fab0bd92b7269b3544dacd8966d97a2641f))
+* conflicts resolved ([377d39b](https://github.com/zextras/carbonio-admin-console-ui/commit/377d39b2aab4e379861810defae447a8de64e616))
+* conflicts resolved ([d2791e9](https://github.com/zextras/carbonio-admin-console-ui/commit/d2791e90e45e66133231ffd4c677b6f7fc3b78bb))
+* correct email to create otp ([eab6e5c](https://github.com/zextras/carbonio-admin-console-ui/commit/eab6e5c388b8520618c9f923f95a08051811938f))
+* edit account tab ([cc23157](https://github.com/zextras/carbonio-admin-console-ui/commit/cc2315759eed9ebaa1fc237e39d117f71b384f57))
+* email address did not pass in request attribute ([433c8bb](https://github.com/zextras/carbonio-admin-console-ui/commit/433c8bb1603a36f24acaf6da647029ff510462af))
+* few required changes ([f8aaefe](https://github.com/zextras/carbonio-admin-console-ui/commit/f8aaefed553b193665a661afbac9743c14063f98))
+* fixed any type change ([d14fa7e](https://github.com/zextras/carbonio-admin-console-ui/commit/d14fa7ec844ec55c399c8d6e7a4f71fffd1a3779))
+* fixed success message shown ([0e4d024](https://github.com/zextras/carbonio-admin-console-ui/commit/0e4d0248a6b568e7c1de62d548e66b71d0279277))
+* hide all the help and documentation links and buttons that provide no link or documentation ([d1091c5](https://github.com/zextras/carbonio-admin-console-ui/commit/d1091c5c2e9d796460152788c8c79a207be9fef7))
+* multi selection issue of table filter ([20ff2b0](https://github.com/zextras/carbonio-admin-console-ui/commit/20ff2b061df66adb147e24c2d7bde7110d0bdad9))
+* not able to save administrations changes for an account ([665af39](https://github.com/zextras/carbonio-admin-console-ui/commit/665af39aaf5c6e717117a2abd2b68c2198820f9b))
+* np-630:add run hsm custom policy ([#446](https://github.com/zextras/carbonio-admin-console-ui/issues/446)) ([db874bc](https://github.com/zextras/carbonio-admin-console-ui/commit/db874bc955f9d9b667ee17c229e6297598faec6c))
+* np-751: fix show wrong account quota information ([#454](https://github.com/zextras/carbonio-admin-console-ui/issues/454)) ([776778b](https://github.com/zextras/carbonio-admin-console-ui/commit/776778b3f8bdeedf5d1836f2998774b37aa20ac3))
+* owner ship issue has been fix ([ba83df8](https://github.com/zextras/carbonio-admin-console-ui/commit/ba83df8d8807076c5381af2f36ecbf7678f5cd4c))
+* related to administaration tab ([bac969f](https://github.com/zextras/carbonio-admin-console-ui/commit/bac969f57600890245054fc5109236bf76265f1b))
+* remoevd string from en.json after run ([1ed0ef4](https://github.com/zextras/carbonio-admin-console-ui/commit/1ed0ef40c1c4f02a6f30e206e64b70ff986793e0))
+* remove duplicate prevent change password option ([#432](https://github.com/zextras/carbonio-admin-console-ui/issues/432)) ([93a1500](https://github.com/zextras/carbonio-admin-console-ui/commit/93a1500bae13dddd49a33ec3b5af3347a27d0ce3))
+* remove owner from send to list based on type ([508e213](https://github.com/zextras/carbonio-admin-console-ui/commit/508e21374fffdf4b318ac6c68dffef96d635f5c2))
+* remove padding and scroll ([64b3579](https://github.com/zextras/carbonio-admin-console-ui/commit/64b35790d0f200d208d7f13967a658a83fa74164))
+* removed comment code ([474cfdc](https://github.com/zextras/carbonio-admin-console-ui/commit/474cfdc20a23c7064e5a76219491d7a3d9f1a9ad))
+* removed fields from create domain ([78c178b](https://github.com/zextras/carbonio-admin-console-ui/commit/78c178b0343f965192e49c6e8e5bdaa17c8c4fc3))
+* removed link from general settings ([ae9d8c0](https://github.com/zextras/carbonio-admin-console-ui/commit/ae9d8c03409691d7d47dac1f8938eb40c202aa54))
+* removed sideModal and console ([1dfd9a2](https://github.com/zextras/carbonio-admin-console-ui/commit/1dfd9a2d3288d09166507b5df029ea33706dd44f))
+* single email getting issue in grantee list ([6b82136](https://github.com/zextras/carbonio-admin-console-ui/commit/6b82136d36b932600158e9145b151dfb39d045f9))
+* style fixes as per ds ([0c2f6e0](https://github.com/zextras/carbonio-admin-console-ui/commit/0c2f6e011afaa4595b935d4bf0f81935252b6466))
+* translation added ([5d30d87](https://github.com/zextras/carbonio-admin-console-ui/commit/5d30d876d42ce6db098e5690352bcb124cf1e7ea))
+* translation not coming issue ([7fd866a](https://github.com/zextras/carbonio-admin-console-ui/commit/7fd866a25a2c075ce583738d8325ca62f6735c3e))
+* type fixed ([d38e629](https://github.com/zextras/carbonio-admin-console-ui/commit/d38e62921b6b6b8efcbfac23f4919f05dde902d1))
+* update translation with neccessary change ([494129d](https://github.com/zextras/carbonio-admin-console-ui/commit/494129df3cc96a17feb0ddeec4bd917f6303ea27))
+
 ### [0.9.25](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.24...v0.9.25) (2023-07-20)
 
 ### [0.9.24](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.23...v0.9.24) (2023-07-14)

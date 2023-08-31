@@ -275,26 +275,6 @@ const AclListDetail: FC<any> = ({
 						_zimbraCreateTimestamp
 							? setZimbraCreateTimestamp(_zimbraCreateTimestamp)
 							: setZimbraCreateTimestamp('');
-
-						const _zimbraDistributionListSubscriptionPolicy = distributionListMembers?.a?.find(
-							(a: any) => a?.n === 'zimbraDistributionListSubscriptionPolicy'
-						)?._content;
-						if (_zimbraDistributionListSubscriptionPolicy) {
-							onSubscriptionChange(_zimbraDistributionListSubscriptionPolicy);
-							const it = subscriptionUnsubscriptionRequestOptions.find(
-								(item: any) => item.value === _zimbraDistributionListSubscriptionPolicy
-							);
-						}
-
-						const _zimbraDistributionListUnsubscriptionPolicy = distributionListMembers?.a?.find(
-							(a: any) => a?.n === 'zimbraDistributionListUnsubscriptionPolicy'
-						)?._content;
-						if (_zimbraDistributionListUnsubscriptionPolicy) {
-							onUnSubscriptionChange(_zimbraDistributionListUnsubscriptionPolicy);
-							const it = subscriptionUnsubscriptionRequestOptions.find(
-								(item: any) => item.value === _zimbraDistributionListUnsubscriptionPolicy
-							);
-						}
 						/* Mail status */
 
 						const _zimbraMailStatus = distributionListMembers?.a?.find(
@@ -314,14 +294,7 @@ const AclListDetail: FC<any> = ({
 				}
 			});
 		},
-		[
-			selectedAclList?.name,
-			subscriptionUnsubscriptionRequestOptions,
-			onSubscriptionChange,
-			onUnSubscriptionChange,
-			rightsOptions,
-			onRightsChange
-		]
+		[selectedAclList?.name, rightsOptions, onRightsChange]
 	);
 
 	const getDistributionListMembershipList = useCallback((id: string): void => {
