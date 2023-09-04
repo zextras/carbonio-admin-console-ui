@@ -1915,6 +1915,7 @@
         "instances": "Instances",
         "light_span_limit": "Light Spam limit",
         "low": "Low",
+        "mail_queue_flush_successfully": "Mail queue flush successfully",
         "mail_server": "Mail Server",
         "mail_transfer_agent_mta": "Mail Transfer Agent (MTA)",
         "may": "May",

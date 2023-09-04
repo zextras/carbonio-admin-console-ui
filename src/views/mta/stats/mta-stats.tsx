@@ -25,17 +25,61 @@ import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import logo from '../../../assets/gardian.svg';
 import ModalOverlay from '../../components/ModalOverlay';
 import MTAStatsDetail from './mta-stats-detail';
+import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
 
 const MTAStats: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [serverTableRow, setServerTableRow] = useState<Array<TRow>>([]);
-	const [selectedServer, setSelectedServer] = useState<any[]>([]);
+	const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
 	const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
 	const [mailServerStats, setMailServerStats] = useState<Array<mtaStats>>([]);
 	const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
 	const [showMtaStatDetail, setShowMtaStatDetail] = useState<boolean>(false);
 	const [currentTime, setCurrentTime] = useState<string | Date>('');
+	const [flushRequestInProgress, setFlushRequestInProgress] = useState<boolean>(false);
+
+	const serverHeader = useMemo(
+		() => [
+			{
+				id: 'mail_server',
+				label: t('mta.mail_server', 'Mail Server'),
+				width: '40%',
+				bold: true
+			},
+			{
+				id: 'queued',
+				label: t('mta.queued', 'Queued'),
+				width: '12%',
+				bold: true
+			},
+			{
+				id: 'corrupt',
+				label: t('mta.corrupt', 'Corrupt'),
+				width: '12%',
+				bold: true
+			},
+			{
+				id: 'deferred',
+				label: t('mta.deferred', 'Deferred'),
+				width: '12%',
+				bold: true
+			},
+			{
+				id: 'incoming',
+				label: t('mta.incoming', 'Incoming'),
+				width: '12%',
+				bold: true
+			},
+			{
+				id: 'hold',
+				label: t('mta.hold', 'Hold'),
+				width: '12%',
+				bold: true
+			}
+		],
+		[t]
+	);
 
 	useMemo(() => {
 		if (selectedServer && selectedServer.length > 0) {
@@ -136,23 +180,32 @@ const MTAStats: FC = () => {
 
 	const scanServer = useCallback(() => {
 		setMailServerStats([]);
-		mtaServerList.forEach((item: any) => {
+		mtaServerList.forEach((item) => {
 			setRequestInprogress(true);
-			getMailqueueInformation(item?.name).then((data: any) => {
+			getMailqueueInformation(item?.name).then((data) => {
 				setRequestInprogress(false);
 				if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
 					data?.server.forEach((queueInfo: any) => {
-						setMailServerStats((prev: any) => [
+						setMailServerStats((prev) => [
 							...prev,
 							...[
 								{
 									id: item?.id,
 									serverName: item?.name,
-									active: queueInfo?.queue.find((info: any) => info?.name === ACTIVE)?.n,
-									corrupt: queueInfo?.queue.find((info: any) => info?.name === CORRUPT)?.n,
-									deferred: queueInfo?.queue.find((info: any) => info?.name === DEFERRED)?.n,
-									hold: queueInfo?.queue.find((info: any) => info?.name === HOLD)?.n,
-									incoming: queueInfo?.queue.find((info: any) => info?.name === INCOMING)?.n
+									active: queueInfo?.queue.find(
+										(info: Record<string, string>) => info?.name === ACTIVE
+									)?.n,
+									corrupt: queueInfo?.queue.find(
+										(info: Record<string, string>) => info?.name === CORRUPT
+									)?.n,
+									deferred: queueInfo?.queue.find(
+										(info: Record<string, string>) => info?.name === DEFERRED
+									)?.n,
+									hold: queueInfo?.queue.find((info: Record<string, string>) => info?.name === HOLD)
+										?.n,
+									incoming: queueInfo?.queue.find(
+										(info: Record<string, string>) => info?.name === INCOMING
+									)?.n
 								}
 							]
 						]);
@@ -171,18 +224,18 @@ const MTAStats: FC = () => {
 	const getAllMTAServers = useCallback(() => {
 		setRequestInprogress(true);
 		getAllServerByService(MTA)
-			.then((data: any) => {
+			.then((data) => {
 				setRequestInprogress(false);
 				if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
 					const serverList = data?.server;
 					const list: Array<Record<string, string>> = [];
-					serverList.forEach((item: any) => {
+					serverList.forEach((item: Record<string, string>) => {
 						list.push({ id: item?.id, name: item?.name });
 					});
 					setMtaServerList(list);
 				}
 			})
-			.catch((error: any) => {
+			.catch((error) => {
 				setRequestInprogress(false);
 				createSnackbar({
 					key: 'error',
@@ -201,51 +254,66 @@ const MTAStats: FC = () => {
 		getAllMTAServers();
 	}, [getAllMTAServers]);
 
-	const serverHeader = useMemo(
-		() => [
-			{
-				id: 'mail_server',
-				label: t('mta.mail_server', 'Mail Server'),
-				width: '40%',
-				bold: true
-			},
-			{
-				id: 'queued',
-				label: t('mta.queued', 'Queued'),
-				width: '12%',
-				bold: true
-			},
-			{
-				id: 'corrupt',
-				label: t('mta.corrupt', 'Corrupt'),
-				width: '12%',
-				bold: true
-			},
-			{
-				id: 'deferred',
-				label: t('mta.deferred', 'Deferred'),
-				width: '12%',
-				bold: true
-			},
-			{
-				id: 'incoming',
-				label: t('mta.incoming', 'Incoming'),
-				width: '12%',
-				bold: true
-			},
-			{
-				id: 'hold',
-				label: t('mta.hold', 'Hold'),
-				width: '12%',
-				bold: true
-			}
-		],
-		[t]
-	);
-
 	const flushQueues = useCallback(() => {
-		console.log('FLUSH');
-	}, []);
+		const flushRequest: any[] = [];
+		if (showMtaStatDetail) {
+			const serverName = mtaServerList.find((item) => item?.id === selectedServer[0])?.name;
+			if (serverName) {
+				flushRequest.push(mailQueueFlushByServer(serverName));
+			}
+		} else {
+			mailServerStats.forEach((item: mtaStats) => {
+				flushRequest.push(mailQueueFlushByServer(item?.serverName));
+			});
+		}
+
+		if (flushRequest && flushRequest.length > 0) {
+			setFlushRequestInProgress(true);
+			Promise.all(flushRequest)
+				.then((response) => Promise.all(response))
+				.then(() => {
+					setFlushRequestInProgress(false);
+					let updatedItem: Array<mtaStats> = [];
+					if (showMtaStatDetail) {
+						updatedItem = mailServerStats.map((item: mtaStats) => {
+							if (item?.id === selectedServer[0]) {
+								return {
+									active: '-',
+									corrupt: '-',
+									deferred: '-',
+									hold: '-',
+									incoming: '-',
+									id: item?.id,
+									serverName: item?.serverName
+								};
+							}
+							return item;
+						});
+					} else {
+						updatedItem = mailServerStats.map((item: mtaStats) => ({
+							active: '-',
+							corrupt: '-',
+							deferred: '-',
+							hold: '-',
+							incoming: '-',
+							id: item?.id,
+							serverName: item?.serverName
+						}));
+					}
+					setSelectedServer([]);
+					setShowMtaStatDetail(false);
+					setMailServerStats(updatedItem);
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('mta.mail_queue_flush_successfully', 'Mail queue flush successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		}
+	}, [mailServerStats, mtaServerList, selectedServer, showMtaStatDetail, t, createSnackbar]);
 
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
@@ -304,7 +372,7 @@ const MTAStats: FC = () => {
 							<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 								<Text size="small" overflow="ellipsis">
 									&nbsp;
-									{currentTime === '' ? '...' : moment(currentTime).format('HH:mm:ss MM dddd YYYY')}
+									{currentTime === '' ? '-' : moment(currentTime).format('HH:mm:ss MM dddd YYYY')}
 								</Text>
 							</Container>
 						</Container>
@@ -364,8 +432,8 @@ const MTAStats: FC = () => {
 								label={t('mta.flush_queues', 'Flush queues')}
 								color="primary"
 								onClick={flushQueues}
-								disabled={mtaServerList.length === 0 || requestInprogress}
-								loading={requestInprogress}
+								disabled={mtaServerList.length === 0 || flushRequestInProgress || requestInprogress}
+								loading={requestInprogress || flushRequestInProgress}
 							/>
 						</Container>
 					</Container>
@@ -432,6 +500,7 @@ const MTAStats: FC = () => {
 								setSelectedServer={setSelectedServer}
 								flushQueues={flushQueues}
 								requestInprogress={requestInprogress}
+								flushRequestInProgress={flushRequestInProgress}
 							/>
 						</ModalOverlay>
 					)}

@@ -14,15 +14,21 @@ import {
 } from '@zextras/carbonio-design-system';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
-
 import { mtaStats } from '../../../../types';
 
 const MTAStatsDetail: FC<{
 	serverState: mtaStats | undefined;
-	setSelectedServer: any;
-	flushQueues: any;
+	setSelectedServer: (server: Array<any>) => void;
+	flushQueues: () => void;
 	requestInprogress: boolean;
-}> = ({ serverState, setSelectedServer, flushQueues, requestInprogress }) => {
+	flushRequestInProgress: boolean;
+}> = ({
+	serverState,
+	setSelectedServer,
+	flushQueues,
+	requestInprogress,
+	flushRequestInProgress
+}) => {
 	const [t] = useTranslation();
 
 	return (
@@ -56,7 +62,11 @@ const MTAStatsDetail: FC<{
 				</Row>
 				<Row></Row>
 				<Row padding={{ right: 'extrasmall', left: 'small' }}>
-					<IconButton size="medium" icon="CloseOutline" onClick={(): void => setSelectedServer()} />
+					<IconButton
+						size="medium"
+						icon="CloseOutline"
+						onClick={(): void => setSelectedServer([])}
+					/>
 				</Row>
 			</Row>
 			<Container>
@@ -77,8 +87,8 @@ const MTAStatsDetail: FC<{
 						label={t('mta.flush_queues', 'Flush queues')}
 						color="primary"
 						onClick={flushQueues}
-						disabled={requestInprogress}
-						loading={requestInprogress}
+						disabled={requestInprogress || flushRequestInProgress}
+						loading={requestInprogress || flushRequestInProgress}
 					/>
 				</Container>
 				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
@@ -98,6 +108,9 @@ const MTAStatsDetail: FC<{
 							label={t('mta.queued_messages', 'Queued Messages')}
 							backgroundColor="gray5"
 							value={serverState?.active}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								null;
+							}}
 						/>
 					</Container>
 					<Container height="auto">
@@ -105,6 +118,9 @@ const MTAStatsDetail: FC<{
 							label={t('mta.corrupted', 'Corrupted')}
 							backgroundColor="gray5"
 							value={serverState?.corrupt}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								null;
+							}}
 						/>
 					</Container>
 				</Container>
@@ -121,6 +137,9 @@ const MTAStatsDetail: FC<{
 							label={t('mta.deferred', 'Deferred')}
 							backgroundColor="gray5"
 							value={serverState?.deferred}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								null;
+							}}
 						/>
 					</Container>
 					<Container height="auto" padding={{ right: 'medium' }}>
@@ -128,6 +147,9 @@ const MTAStatsDetail: FC<{
 							label={t('mta.incoming', 'Incoming')}
 							backgroundColor="gray5"
 							value={serverState?.incoming}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								null;
+							}}
 						/>
 					</Container>
 					<Container height="auto">
@@ -135,6 +157,9 @@ const MTAStatsDetail: FC<{
 							label={t('mta.onhold', 'On Hold')}
 							backgroundColor="gray5"
 							value={serverState?.hold}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								null;
+							}}
 						/>
 					</Container>
 				</Container>
