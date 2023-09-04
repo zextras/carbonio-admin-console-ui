@@ -1721,7 +1721,7 @@
         "viewed_name_auto_fill": "Viewed Name (Auto-fill)",
         "virtual_host_enable_info_msg": "Click the ADD button to enable a new one.",
         "virtual_host_info_msg": "Virtual hosts allow the system to establish a default domain for a user login.",
-        "virtual_host_msg": "Virtual hosts allow the system to establish a default domain for a user login.<br />Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, domain1.local.<br />Please note, that removal of a virtual host takes effect only after mailbox server is restarted.",
+        "virtual_host_msg": "Virtual hosts allow the system to establish a default domain for a user login.<br />Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, domain1.local.<br />Please note, that removal of a virtual host takes effect only after mail server is restarted.",
         "virtual_host_name": "Virtual Host Name",
         "virtual_host_note": "Please note, that removal of a virtual host takes effect only after mailbox server is restarted.",
         "virtual_host_user_msg": "Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, {{domainName}}",
