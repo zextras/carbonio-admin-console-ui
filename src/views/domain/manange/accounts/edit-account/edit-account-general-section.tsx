@@ -435,14 +435,7 @@ const EditAccountGeneralSection: FC = () => {
 										inputName="password"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.password
-												? accountDetail.password
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.password}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -462,14 +455,7 @@ const EditAccountGeneralSection: FC = () => {
 										inputName="repeatPassword"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.repeatPassword
-												? accountDetail.repeatPassword
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.repeatPassword}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -485,14 +471,7 @@ const EditAccountGeneralSection: FC = () => {
 									inputName="password"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.password
-											? accountDetail.password
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.password}
 									disabled={isHidePassword}
 								/>
 							</Row>
@@ -504,14 +483,7 @@ const EditAccountGeneralSection: FC = () => {
 									inputName="repeatPassword"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.repeatPassword
-											? accountDetail.repeatPassword
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.repeatPassword}
 									disabled={isHidePassword}
 								/>
 							</Row>
