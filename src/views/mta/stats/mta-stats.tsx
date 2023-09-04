@@ -14,6 +14,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import moment from 'moment';
 import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -22,6 +23,8 @@ import { getAllServerByService } from '../../../services/get-all-servers-service
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import logo from '../../../assets/gardian.svg';
+import ModalOverlay from '../../components/ModalOverlay';
+import MTAStatsDetail from './mta-stats-detail';
 
 const MTAStats: FC = () => {
 	const [t] = useTranslation();
@@ -31,6 +34,16 @@ const MTAStats: FC = () => {
 	const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
 	const [mailServerStats, setMailServerStats] = useState<Array<mtaStats>>([]);
 	const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
+	const [showMtaStatDetail, setShowMtaStatDetail] = useState<boolean>(false);
+	const [currentTime, setCurrentTime] = useState<string | Date>('');
+
+	useMemo(() => {
+		if (selectedServer && selectedServer.length > 0) {
+			setShowMtaStatDetail(true);
+		} else {
+			setShowMtaStatDetail(false);
+		}
+	}, [selectedServer]);
 
 	useMemo(() => {
 		if (mailServerStats.length > 0) {
@@ -114,6 +127,7 @@ const MTAStats: FC = () => {
 					]
 				});
 			});
+			setCurrentTime(new Date());
 			setServerTableRow(list);
 		} else {
 			setServerTableRow([]);
@@ -228,6 +242,11 @@ const MTAStats: FC = () => {
 		],
 		[t]
 	);
+
+	const flushQueues = useCallback(() => {
+		console.log('FLUSH');
+	}, []);
+
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -267,26 +286,62 @@ const MTAStats: FC = () => {
 						crossAlignment="flex-start"
 						padding={{ right: 'medium' }}
 						orientation="horizontal"
-						mainAlignment="space-between"
+						mainAlignment="flex-end"
+						width="65%"
 					>
-						<Container>
-							<Text size="medium" overflow="ellipsis" weight="bold">
-								{t('mta.updated_at', 'Updated at')}:
-							</Text>
+						<Container
+							crossAlignment="center"
+							padding={{ right: 'extralarge' }}
+							orientation="horizontal"
+							mainAlignment="center"
+							width="auto"
+						>
+							<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
+								<Text size="small" overflow="ellipsis" weight="bold">
+									{t('mta.updated_at', 'Updated at')}:
+								</Text>
+							</Container>
+							<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
+								<Text size="small" overflow="ellipsis">
+									&nbsp;
+									{currentTime === '' ? '...' : moment(currentTime).format('HH:mm:ss MM dddd YYYY')}
+								</Text>
+							</Container>
 						</Container>
-						<Container>
-							<Text size="medium" overflow="ellipsis" weight="bold">
-								{t('mta.status', 'Status')}:
-							</Text>
+						<Container
+							crossAlignment="center"
+							padding={{ right: 'extralarge' }}
+							orientation="horizontal"
+							mainAlignment="flex-end"
+							width="auto"
+						>
+							<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
+								<Text size="small" overflow="ellipsis" weight="bold">
+									{t('mta.status', 'Status')}:
+								</Text>
+							</Container>
+							<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
+								<Text size="small" overflow="ellipsis">
+									&nbsp;
+									{requestInprogress
+										? t('mta.scan_in_progress', 'Scan In progress')
+										: t('mta.scan_completed', 'Scan Completed')}
+								</Text>
+							</Container>
 						</Container>
 					</Container>
 					<Container
-						crossAlignment="flex-start"
-						padding={{ right: 'medium' }}
+						crossAlignment="flex-end"
 						orientation="horizontal"
-						mainAlignment="space-between"
+						mainAlignment="flex-start"
+						width="35%"
 					>
-						<Container>
+						<Container
+							crossAlignment="flex-start"
+							height="auto"
+							width="fit"
+							padding={{ right: 'medium' }}
+						>
 							<Button
 								type="outlined"
 								size="large"
@@ -297,23 +352,30 @@ const MTAStats: FC = () => {
 								loading={requestInprogress}
 							/>
 						</Container>
-						<Container>
+						<Container
+							crossAlignment="flex-start"
+							height="auto"
+							width="fit"
+							padding={{ right: 'large' }}
+						>
 							<Button
 								type="outlined"
 								size="large"
 								label={t('mta.flush_queues', 'Flush queues')}
 								color="primary"
-								onClick={(ev: any): void => {
-									console.log('xxx');
-								}}
+								onClick={flushQueues}
 								disabled={mtaServerList.length === 0 || requestInprogress}
 								loading={requestInprogress}
 							/>
 						</Container>
 					</Container>
 				</Container>
-				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-					<Text size="medium" overflow="ellipsis" weight="regular">
+				<Container
+					crossAlignment="center"
+					height="auto"
+					padding={{ top: 'medium', bottom: 'large' }}
+				>
+					<Text size="small" overflow="ellipsis" weight="light">
 						{t('mta.select_a_mail_server_to_see_stats', 'Select a mail server to see its stats')}
 					</Text>
 				</Container>
@@ -362,6 +424,16 @@ const MTAStats: FC = () => {
 								</Text>
 							</Row>
 						</Container>
+					)}
+					{selectedServer && selectedServer.length > 0 && (
+						<ModalOverlay setOpen={setShowMtaStatDetail} open={showMtaStatDetail}>
+							<MTAStatsDetail
+								serverState={mailServerStats.find((item) => item?.id === selectedServer[0])}
+								setSelectedServer={setSelectedServer}
+								flushQueues={flushQueues}
+								requestInprogress={requestInprogress}
+							/>
+						</ModalOverlay>
 					)}
 				</Container>
 			</Container>
