@@ -18,7 +18,7 @@ import moment from 'moment';
 import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import { TRow, mtaStats } from '../../../../types';
+import { CreateSnackbarType, TRow, mtaStats } from '../../../../types';
 import { getAllServerByService } from '../../../services/get-all-servers-service';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
@@ -29,7 +29,7 @@ import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
 
 const MTAStats: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const [serverTableRow, setServerTableRow] = useState<Array<TRow>>([]);
 	const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
 	const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
