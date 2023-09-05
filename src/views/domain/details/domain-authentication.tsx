@@ -61,10 +61,7 @@ const DomainAuthentication: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [zimbraAuthMech, setZimbraAuthMech] = useState<{ label: string; value?: string }>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
-	const [zimbraAdminConsoleLogoutURL, setZimbraAdminConsoleLogoutURL] = useState<string>('');
-	const [zimbraWebClientLogoutURL, setZimbraWebClientLogoutURL] = useState<string>('');
 	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
-	const [zimbraForceClearCookies, setZimbraForceClearCookies] = useState<boolean>(false);
 	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 	const [zimbraAuthLdapBindDn, setZimbraAuthLdapBindDn] = useState<string>('');
 	const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
@@ -183,21 +180,8 @@ const DomainAuthentication: FC = () => {
 			} else {
 				obj.zimbraPasswordChangeListener = '';
 			}
-			if (obj.zimbraAdminConsoleLogoutURL) {
-				setZimbraAdminConsoleLogoutURL(obj.zimbraAdminConsoleLogoutURL);
-			} else {
-				obj.zimbraAdminConsoleLogoutURL = '';
-			}
-			if (obj.zimbraWebClientLogoutURL) {
-				setZimbraWebClientLogoutURL(obj.zimbraWebClientLogoutURL);
-			} else {
-				obj.zimbraWebClientLogoutURL = '';
-			}
 			if (obj.zimbraAuthFallbackToLocal) {
 				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
-			}
-			if (obj.zimbraForceClearCookies) {
-				setZimbraForceClearCookies(obj.zimbraForceClearCookies === 'TRUE');
 			}
 			if (obj.zimbraAuthLdapBindDn) {
 				setZimbraAuthLdapBindDn(obj.zimbraAuthLdapBindDn);
@@ -254,31 +238,6 @@ const DomainAuthentication: FC = () => {
 
 	useEffect(() => {
 		if (!_.isEmpty(domainAuthData)) {
-			if (domainAuthData.zimbraAdminConsoleLogoutURL !== zimbraAdminConsoleLogoutURL) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraAdminConsoleLogoutURL]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
-			if (domainAuthData.zimbraWebClientLogoutURL !== zimbraWebClientLogoutURL) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraWebClientLogoutURL]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
-			const oldForceClearCookiesValue = domainAuthData.zimbraForceClearCookies === 'TRUE';
-			if (oldForceClearCookiesValue !== zimbraForceClearCookies) {
-				setIsDirty(true);
-			}
-		}
-	}, [domainAuthData, zimbraForceClearCookies]);
-
-	useEffect(() => {
-		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapBindDn !== zimbraAuthLdapBindDn) {
 				setIsDirty(true);
 			}
@@ -318,7 +277,6 @@ const DomainAuthentication: FC = () => {
 		}
 	}, [domainAuthData, zimbraAuthLdapStartTlsEnabled]);
 
-	const forceClearCookies = useCallback(() => setZimbraForceClearCookies((c) => !c), []);
 	const authFallbackToLocal = useCallback(() => setZimbraAuthFallbackToLocal((c) => !c), []);
 	const authLdapStartTlsEnabled = useCallback(
 		() => setZimbraAuthLdapStartTlsEnabled((c) => !c),
@@ -355,10 +313,7 @@ const DomainAuthentication: FC = () => {
 			)
 		);
 		setZimbraPasswordChangeListener(domainAuthData.zimbraPasswordChangeListener);
-		setZimbraAdminConsoleLogoutURL(domainAuthData.zimbraAdminConsoleLogoutURL);
-		setZimbraWebClientLogoutURL(domainAuthData.zimbraWebClientLogoutURL);
 		setZimbraAuthFallbackToLocal(domainAuthData.zimbraAuthFallbackToLocal === 'TRUE');
-		setZimbraForceClearCookies(domainAuthData.zimbraForceClearCookies === 'TRUE');
 		setZimbraAuthLdapBindDn(domainAuthData.zimbraAuthLdapBindDn);
 		setZimbraAuthLdapSearchBase(domainAuthData.zimbraAuthLdapSearchBase);
 		setZimbraAuthLdapSearchFilter(domainAuthData.zimbraAuthLdapSearchFilter);
@@ -388,20 +343,8 @@ const DomainAuthentication: FC = () => {
 			_content: zimbraPasswordChangeListener
 		});
 		attributes.push({
-			n: 'zimbraAdminConsoleLogoutURL',
-			_content: zimbraAdminConsoleLogoutURL
-		});
-		attributes.push({
-			n: 'zimbraWebClientLogoutURL',
-			_content: zimbraWebClientLogoutURL
-		});
-		attributes.push({
 			n: 'zimbraAuthFallbackToLocal',
 			_content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE'
-		});
-		attributes.push({
-			n: 'zimbraForceClearCookies',
-			_content: zimbraForceClearCookies ? 'TRUE' : 'FALSE'
 		});
 		attributes.push({
 			n: 'zimbraAuthLdapBindDn',
@@ -555,7 +498,7 @@ const DomainAuthentication: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="56px">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -604,12 +547,7 @@ const DomainAuthentication: FC = () => {
 					width="100%"
 					height="calc(100vh - 150px)"
 				>
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'small' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
 						<Container
 							padding={{ all: 'small' }}
 							height="fit"
@@ -630,7 +568,11 @@ const DomainAuthentication: FC = () => {
 										label={t('label.your_auth_method_is', 'Your Auth Method is')}
 										showCheckbox={false}
 										items={DOMAIN_AUTH_LIST}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										selection={zimbraAuthMech}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onAuthMethodChange}
 									></Select>
 								</Padding>
@@ -640,7 +582,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.bind_dn_template', 'Bind Distinguished Name (DN) Template')}
 										value={zimbraAuthLdapBindDn}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value) {
 												const validLdapDn = isValidLdapBaseDN(e.target.value);
@@ -658,6 +600,8 @@ const DomainAuthentication: FC = () => {
 										hasError={!isValidLdapDN}
 										CustomIcon={(): React.ReactElement => (
 											<Container
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												ref={iconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setOpen(true)}
 												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -686,6 +630,8 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={open}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={iconRef}
 										placement="top-end"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -701,7 +647,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.url', 'URL')}
 										value={zimbraAuthLdapURL}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value) {
 												const validLdapUrl = isValidLdapBaseUrl(e.target.value);
@@ -719,6 +665,8 @@ const DomainAuthentication: FC = () => {
 										hasError={!isValidLdapUrl}
 										CustomIcon={(): React.ReactElement => (
 											<Container
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												ref={ldapUrlIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setLdapUrlOpen(true)}
 												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -747,6 +695,8 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={ldapUrlOpen}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={ldapUrlIconRef}
 										placement="top-end"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -762,12 +712,14 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.filter', 'Filter')}
 										value={zimbraAuthLdapSearchFilter}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraAuthLdapSearchFilter(e.target.value);
 										}}
 										CustomIcon={(): React.ReactElement => (
 											<Container
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												ref={filterIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 												onMouseEnter={() => setFilterOpen(true)}
 												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -779,6 +731,8 @@ const DomainAuthentication: FC = () => {
 									/>
 									<Popper
 										open={filterOpen}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={filterIconRef}
 										placement="top-end"
 										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -792,7 +746,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.search_base', 'Basic Search')}
 										value={zimbraAuthLdapSearchBase}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraAuthLdapSearchBase(e.target.value);
 										}}
@@ -804,7 +758,7 @@ const DomainAuthentication: FC = () => {
 									<Input
 										label={t('label.username', 'Username')}
 										value={userName}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="username"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value !== '') {
@@ -835,7 +789,7 @@ const DomainAuthentication: FC = () => {
 								<Padding vertical="small" horizontal="small" width="38%">
 									<Input
 										label={t('label.password', 'Password')}
-										background="gray5"
+										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnInterval"
 										value={password}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -918,65 +872,11 @@ const DomainAuthentication: FC = () => {
 											'label.external_password_change_listener',
 											'Endpoint to be used for password change'
 										)}
-										background="gray5"
+										backgroundColor="gray5"
 										value={zimbraPasswordChangeListener}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											setZimbraPasswordChangeListener(e.target.value);
 										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.console_redirection', 'Console Redirection')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
-										label={t(
-											'label.sso_logout_redirect_admin_to_msg',
-											'On Logout, the admin will be redirected to this URL'
-										)}
-										background="gray5"
-										value={zimbraAdminConsoleLogoutURL}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-											setZimbraAdminConsoleLogoutURL(e.target.value);
-										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="large" horizontal="small" width="100%">
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.web_client', 'Web Client')}
-									</Text>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Input
-										label={t(
-											'label.logout_redirect_url',
-											'On Logout, the user will be redirected to this URL'
-										)}
-										background="gray5"
-										value={zimbraWebClientLogoutURL}
-										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-											setZimbraWebClientLogoutURL(e.target.value);
-										}}
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Switch
-										value={zimbraForceClearCookies}
-										label={t('label.auto_logout_users', 'Auto Logout Users')}
-										onClick={forceClearCookies}
-										iconColor="primary"
 									/>
 								</Padding>
 							</ListRow>

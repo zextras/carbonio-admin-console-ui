@@ -27,10 +27,10 @@ const ActiveDeviceConfirmation: FC<{
 	setWipeDeviceConfirmation
 }) => {
 	const [t] = useTranslation();
-	const [title, setTitle] = useState<string | null>('title');
+	const [title, setTitle] = useState<string>('title');
 	const [isRequstInProgress, setIsRequstInProgress] = useState<boolean>(false);
-	const [yesOperationTitle, setYesOperationTitle] = useState<string | null>('operation');
-	const [noOperationTitle, setNoOperationTitle] = useState<string | null>('operation');
+	const [yesOperationTitle, setYesOperationTitle] = useState<string>('operation');
+	const [noOperationTitle, setNoOperationTitle] = useState<string>('operation');
 	const [awareResetSetting, setAwareResetSetting] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -63,7 +63,6 @@ const ActiveDeviceConfirmation: FC<{
 						onClick={(): void => {
 							setIsShowConfirmBox(false);
 						}}
-						height={36}
 					/>
 					<Container orientation="horizontal" mainAlignment="flex-end">
 						<Padding all="small">
@@ -72,7 +71,6 @@ const ActiveDeviceConfirmation: FC<{
 								color="error"
 								loading={isOperationRequestInProgress}
 								disabled={isOperationRequestInProgress}
-								height={36}
 								type="outlined"
 								onClick={(): void => {
 									doDeviceOperation();
@@ -82,7 +80,6 @@ const ActiveDeviceConfirmation: FC<{
 						<Button
 							label={noOperationTitle}
 							color="primary"
-							height={36}
 							onClick={(): void => {
 								setIsShowConfirmBox(false);
 							}}

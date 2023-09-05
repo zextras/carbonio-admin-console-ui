@@ -591,7 +591,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									setSelectedAdditionalAntivirusDefinition([item]);
 								}}
 							>
-								<Text size="medium" weight="regular" key={item} color="gray0">
+								<Text size="small" weight="light" key={item} color="gray0">
 									{item}
 								</Text>
 							</Container>
@@ -724,19 +724,13 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 									<Button
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
-										height={36}
 										onClick={onCancel}
 									/>
 								)}
 							</Padding>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.save', 'Save')}
-										color="primary"
-										height={36}
-										onClick={onSave}
-									/>
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 								)}
 							</Padding>
 						</Container>
@@ -776,7 +770,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								'mta.add_this_prefix_to_spam_mail_subject',
 								'Add this prefix to the Spam mail subject'
 							)}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_SPAM_SUBJECT_TAG, e.target.value);
@@ -788,12 +782,14 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						<Select
 							items={spamTagPercentOptions}
 							background="gray5"
-							label={t('mta.spam_to_junk_tolerance', 'Spam to Junk tolerance')}
+							label={t('mta.tolerance_for_spam_delivery', 'Tolerance for Spam Delivery')}
 							showCheckbox={false}
 							selection={spamTagPercentOptions.find(
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSpamTagPercentChange}
 							disabled={!allowSetMTA}
 						/>
@@ -817,6 +813,8 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSpamDestinyChange}
 							disabled={!allowSetMTA}
 						/>
@@ -825,12 +823,14 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						<Select
 							items={spamKillPercentOptions}
 							background="gray5"
-							label={t('mta.hard_spam_tolerance', 'Block Spam tolerance')}
+							label={t('mta.tolerance_for_spam_blocking', 'Tolerance for Spam Blocking')}
 							showCheckbox={false}
 							selection={spamKillPercentOptions.find(
 								(item: Record<string, string>) =>
 									item.value === mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSpamKillPercentChange}
 							disabled={
 								mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny === D_PASS ||
@@ -917,7 +917,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						<Container width="60%" padding={{ right: 'medium' }}>
 							<Input
 								label={t('mta.definition_mirrors', 'Definition Mirrors')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={antiVirusMirrorsAddText}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setAntiVirusMirrorsAddText(e.target.value);
@@ -957,7 +957,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							<Container width="60%" padding={{ right: 'medium' }}>
 								<Input
 									label={t('mta.additional_virus_definition', 'Additional Virus Definition')}
-									background="gray5"
+									backgroundColor="gray5"
 									value={additionalAntiVirusDefinitionAddText}
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setAdditionalAntiVirusDefinitionAddText(e.target.value);
@@ -1005,11 +1005,15 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							rows={antiVirusMirrorTableRow}
 							headers={antiVirusMirrorHeader}
 							showCheckbox={false}
 							selectedRows={selectedAntivirusMirrors}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -1021,11 +1025,15 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							rows={additionalAntiVirusDefinitionTableRow}
 							headers={additionalVirusDefinitionHeader}
 							showCheckbox={false}
 							selectedRows={selectedAdditionalAntivirusDefinition}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -1040,7 +1048,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="70%">
 						<Input
 							label={t('mta.definition_update_frequency', 'Definition Update Frenquency')}
-							background="gray5"
+							backgroundColor="gray5"
 							value={updateFrequncy}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setUpdateFrequncy(e.target.value);

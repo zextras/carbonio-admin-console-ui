@@ -26,7 +26,7 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 			width="100%"
 			padding={{ top: 'extralarge' }}
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container height="fit" crossAlignment="flex-start" background="gray6">
 					<Row
 						orientation="horizontal"

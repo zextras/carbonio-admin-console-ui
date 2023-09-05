@@ -34,7 +34,6 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE
 } from '../../../../constants';
-import AclListDetail from './acl-list-detail';
 import CreateAclList from './create-acl-list';
 import { createAclList } from '../../../../services/create-acl-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
@@ -53,7 +52,6 @@ const DomainAclList: FC = () => {
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [selectedAclList, setSelectedAclList] = useState<any>({});
 	const [showAclListDetailView, setShowAclListDetailView] = useState<any>();
-	const [showEditAclView, setShowEditAclView] = useState<any>();
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
@@ -143,13 +141,11 @@ const DomainAclList: FC = () => {
 	);
 
 	const doClickAction = useCallback((): void => {
-		setShowEditAclView(true);
-		setShowAclListDetailView(false);
+		setShowAclListDetailView(true);
 	}, []);
 
 	const doDoubleClickAction = useCallback((): void => {
-		setShowEditAclView(true);
-		setShowAclListDetailView(false);
+		setShowAclListDetailView(true);
 	}, []);
 
 	const handleClick = useCallback(
@@ -324,12 +320,6 @@ const DomainAclList: FC = () => {
 		searchAclListQuery(searchString, statusFilter);
 	}, [searchString, searchAclListQuery, statusFilter]);
 
-	useEffect(() => {
-		if (showEditAclView !== undefined && !showEditAclView) {
-			getAclList();
-		}
-	}, [showEditAclView, getAclList]);
-
 	const onDetailClick = useCallback(() => {
 		const selectedTableItem = aclListItem.find((item: any) => selectedDlRow[0] === item?.id);
 		setSelectedFromRow(selectedTableItem);
@@ -343,14 +333,6 @@ const DomainAclList: FC = () => {
 			setShowAclListDetailView(false);
 		}
 	}, [showAclListDetailView]);
-
-	useEffect(() => {
-		if (editAclList) {
-			setShowAclListDetailView(false);
-			setEditAclList(false);
-			setShowEditAclView(true);
-		}
-	}, [editAclList]);
 
 	useEffect(() => {
 		if (isUpdateRecord) {
@@ -607,7 +589,7 @@ const DomainAclList: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -621,13 +603,11 @@ const DomainAclList: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding>
+							<Padding all="small">
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
 									icon="Plus"
-									height={36}
-									width={36}
 									onClick={onAddClick}
 								/>
 							</Padding>
@@ -646,7 +626,7 @@ const DomainAclList: FC = () => {
 				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -682,7 +662,8 @@ const DomainAclList: FC = () => {
 							<Table
 								rows={!isRequestInProgress ? aclList : []}
 								headers={headers}
-								showCheckbox
+								showCheckbox={false}
+								multiSelect={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								selectedRows={selectedDlRow}
 								onSelectionChange={(selected: any): void => {
@@ -690,6 +671,8 @@ const DomainAclList: FC = () => {
 									setSelectedDlRow(selected);
 								}}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (
@@ -701,11 +684,10 @@ const DomainAclList: FC = () => {
 								>
 									<Button
 										type="ghost"
-										iconColor="primary"
-										height={36}
+										color="primary"
 										label=""
-										width={36}
 										loading
+										onClick={(): null => null}
 									/>
 								</Container>
 							)}
@@ -756,25 +738,19 @@ const DomainAclList: FC = () => {
 					</Container>
 				</Row>
 			</Container>
-			{showEditAclView && (
-				<ModalOverlay setOpen={setShowEditAclView} open={showEditAclView} maxWidth="40.375rem">
+			{showAclListDetailView && (
+				<ModalOverlay
+					setOpen={showAclListDetailView}
+					open={showAclListDetailView}
+					maxWidth="40.375rem"
+				>
 					<EditAclListView
 						selectedAclList={selectedAclList}
-						setShowEditAclList={setShowEditAclView}
+						setShowEditAclList={setShowAclListDetailView}
 						setIsUpdateRecord={setIsUpdateRecord}
 					/>
 				</ModalOverlay>
 			)}
-
-			{showAclListDetailView && (
-				<AclListDetail
-					selectedAclList={selectedFromRow}
-					setShowAclListDetailView={setShowAclListDetailView}
-					setEditAclList={setEditAclList}
-					setIsUpdateRecord={setIsUpdateRecord}
-				/>
-			)}
-
 			{showCreateAclListView && (
 				<ModalOverlay setOpen={setShowCreateAclListView} open={showCreateAclListView}>
 					<CreateAclList

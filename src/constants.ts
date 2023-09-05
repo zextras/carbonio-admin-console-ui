@@ -299,3 +299,5 @@ export const ZIMBRA_MITER_NUM_THREADS = 'zimbraMilterNumThreads';
 export const ZIMBRA_MTA_MESSAGE_SIZE = 'zimbraMtaMaxMessageSize';
 export const ZIMBRA_MILTER_MAX_CONNECTIONS = 'zimbraMilterMaxConnections';
 export const ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE = 'zimbraMtaSmtpSaslAuthEnable';
+export const DL = 'dl';
+export const USR = 'usr';

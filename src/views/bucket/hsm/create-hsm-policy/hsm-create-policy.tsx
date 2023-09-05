@@ -190,7 +190,7 @@ const HSMcreatePolicy: FC<any> = () => {
 				<Container padding={{ top: 'large' }}>
 					<Input
 						label={t('hsm.source_volume', 'Source Volume')}
-						background="gray6"
+						backgroundColor="gray6"
 						value={sourceVolumeNames}
 					/>
 				</Container>
@@ -199,7 +199,7 @@ const HSMcreatePolicy: FC<any> = () => {
 				<Container padding={{ top: 'large' }}>
 					<Input
 						label={t('hsm.destination_volume', 'Destination Volume')}
-						background="gray6"
+						backgroundColor="gray6"
 						value={destinationVolumeNames}
 					/>
 				</Container>

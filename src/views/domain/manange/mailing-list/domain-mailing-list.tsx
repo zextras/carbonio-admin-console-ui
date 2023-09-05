@@ -53,7 +53,6 @@ const DomainMailingList: FC = () => {
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [selectedMailingList, setSelectedMailingList] = useState<any>({});
 	const [showMailingListDetailView, setShowMailingListDetailView] = useState<any>();
-	const [showEditMailingView, setShowEditMailingView] = useState<any>();
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
@@ -144,12 +143,10 @@ const DomainMailingList: FC = () => {
 
 	const doClickAction = useCallback((): void => {
 		setShowMailingListDetailView(true);
-		setShowEditMailingView(false);
 	}, []);
 
 	const doDoubleClickAction = useCallback((): void => {
-		setShowEditMailingView(true);
-		setShowMailingListDetailView(false);
+		setShowMailingListDetailView(true);
 	}, []);
 
 	const handleClick = useCallback(
@@ -324,12 +321,6 @@ const DomainMailingList: FC = () => {
 		searchMailingListQuery(searchString, statusFilter);
 	}, [searchString, searchMailingListQuery, statusFilter]);
 
-	useEffect(() => {
-		if (showEditMailingView !== undefined && !showEditMailingView) {
-			getMailingList();
-		}
-	}, [showEditMailingView, getMailingList]);
-
 	const onDetailClick = useCallback(() => {
 		const selectedTableItem = mailingListItem.find((item: any) => selectedDlRow[0] === item?.id);
 		setSelectedFromRow(selectedTableItem);
@@ -343,14 +334,6 @@ const DomainMailingList: FC = () => {
 			setShowMailingListDetailView(false);
 		}
 	}, [showMailingListDetailView]);
-
-	useEffect(() => {
-		if (editMailingList) {
-			setShowMailingListDetailView(false);
-			setEditMailingList(false);
-			setShowEditMailingView(true);
-		}
-	}, [editMailingList]);
 
 	useEffect(() => {
 		if (isUpdateRecord) {
@@ -592,7 +575,7 @@ const DomainMailingList: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -606,13 +589,11 @@ const DomainMailingList: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding>
+							<Padding all={'0'}>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
 									icon="Plus"
-									height={36}
-									width={36}
 									onClick={onAddClick}
 								/>
 							</Padding>
@@ -631,7 +612,7 @@ const DomainMailingList: FC = () => {
 				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -667,7 +648,8 @@ const DomainMailingList: FC = () => {
 							<Table
 								rows={!isRequestInProgress ? mailingList : []}
 								headers={headers}
-								showCheckbox
+								showCheckbox={false}
+								multiSelect={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								selectedRows={selectedDlRow}
 								onSelectionChange={(selected: any): void => {
@@ -675,6 +657,8 @@ const DomainMailingList: FC = () => {
 									setSelectedDlRow(selected);
 								}}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (
@@ -686,11 +670,10 @@ const DomainMailingList: FC = () => {
 								>
 									<Button
 										type="ghost"
-										iconColor="primary"
-										height={36}
+										color="primary"
 										label=""
-										width={36}
 										loading
+										onClick={(): null => null}
 									/>
 								</Container>
 							)}

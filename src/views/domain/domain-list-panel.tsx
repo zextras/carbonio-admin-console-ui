@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
-import {
-	Container,
-	Input,
-	Icon,
-	Row,
-	Padding,
-	Text,
-	Dropdown
-} from '@zextras/carbonio-design-system';
+import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
 
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
@@ -42,7 +34,8 @@ import {
 	GLOBAL_2FA_ROUTE,
 	TWO_FACTOR_AUTHENTICATION,
 	DELEGATES,
-	SECURITY_GROUP
+	SECURITY_GROUP,
+	GLOBAL_ROUTE
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -243,7 +236,9 @@ const DomainListPanel: FC = () => {
 		if (isDomainSelect && domainId) {
 			if (domainView) {
 				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
-				if (domainView === GLOBAL_THEME_ROUTE) {
+				if (domainView === GLOBAL_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_THEME_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_2FA_ROUTE) {
 					replaceHistory(`/${domainView}`);
@@ -352,6 +347,11 @@ const DomainListPanel: FC = () => {
 
 	const globalOptionItems = useMemo(
 		() => [
+			{
+				id: GLOBAL_ROUTE,
+				name: t('label.global', 'Global'),
+				isSelected: true
+			},
 			{
 				id: GLOBAL_THEME_ROUTE,
 				name: t('label.theme', 'Theme'),
@@ -462,13 +462,12 @@ const DomainListPanel: FC = () => {
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -499,10 +498,6 @@ const DomainListPanel: FC = () => {
 						label: domain.name,
 						customComponent: (
 							<SelectItem
-								top="0.563rem"
-								right="large"
-								bottom="0.563rem"
-								left="large"
 								style={{
 									display: 'block',
 									textAlign: 'left',
@@ -537,7 +532,7 @@ const DomainListPanel: FC = () => {
 				/>
 			)}
 
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+			<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 				<DropDownInput
 					items={isLoading ? loadingComponent : items}
 					inputLabel={

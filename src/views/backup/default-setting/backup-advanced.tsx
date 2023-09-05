@@ -119,16 +119,16 @@ const BackupAdvanced: FC = () => {
 	const compressLevelItems = useMemo(
 		() => [
 			{
-				label: 1,
-				value: 1
+				label: '1',
+				value: '1'
 			},
 			{
-				label: 2,
-				value: 2
+				label: '2',
+				value: '2'
 			},
 			{
-				label: 3,
-				value: 3
+				label: '3',
+				value: '3'
 			}
 		],
 		[]
@@ -145,7 +145,7 @@ const BackupAdvanced: FC = () => {
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container orientation="vertical" mainAlignment="space-around" height="56px">
 							<Row orientation="horizontal" width="100%">
 								<Row
@@ -190,12 +190,7 @@ const BackupAdvanced: FC = () => {
 						height="calc(100vh - 200px)"
 						padding={{ top: 'small' }}
 					>
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							width="100%"
-							padding={{ top: 'large' }}
-						>
+						<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 							<Container
 								height="fit"
 								crossAlignment="flex-start"
@@ -213,7 +208,7 @@ const BackupAdvanced: FC = () => {
 											defaultValue={initbackupDetail.backupLatencyHighThreshold}
 											onChange={changeBackupDetail}
 											inputName="backupLatencyHighThreshold"
-											background="gray5"
+											backgroundColor="gray5"
 											disabled={!allowSetBackup}
 										/>
 									</Container>
@@ -229,7 +224,7 @@ const BackupAdvanced: FC = () => {
 											defaultValue={initbackupDetail.backupLatencyLowThreshold}
 											onChange={changeBackupDetail}
 											inputName="backupLatencyLowThreshold"
-											background="gray5"
+											backgroundColor="gray5"
 											disabled={!allowSetBackup}
 										/>
 									</Container>
@@ -309,7 +304,7 @@ const BackupAdvanced: FC = () => {
 											defaultValue={initbackupDetail.ZxBackup_MaxMetadataSize}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxMetadataSize"
-											background="gray5"
+											backgroundColor="gray5"
 											disabled={!allowSetBackup}
 										/>
 									</Container>
@@ -325,7 +320,7 @@ const BackupAdvanced: FC = () => {
 											defaultValue={initbackupDetail.ZxBackup_MaxWaitingTime}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxWaitingTime"
-											background="gray5"
+											backgroundColor="gray5"
 											disabled={!allowSetBackup}
 										/>
 									</Container>
@@ -338,7 +333,7 @@ const BackupAdvanced: FC = () => {
 											defaultValue={initbackupDetail.ZxBackup_MaxOperationPerAccount}
 											onChange={changeBackupDetail}
 											inputName="ZxBackup_MaxOperationPerAccount"
-											background="gray5"
+											backgroundColor="gray5"
 											disabled={!allowSetBackup}
 										/>
 									</Container>
@@ -350,7 +345,8 @@ const BackupAdvanced: FC = () => {
 											background="gray5"
 											label={t('backup.compression_level', 'Compression Level')}
 											defaultSelection={compressLevelItems.find(
-												(item: any) => item.value === globalConfig?.backupCompressionLevel
+												(item: any) =>
+													item.value === globalConfig?.backupCompressionLevel?.toString()
 											)}
 											onChange={onBackupCompressionLevelChange}
 											showCheckbox={false}
@@ -366,7 +362,7 @@ const BackupAdvanced: FC = () => {
 											defaultValue={initbackupDetail.backupNumberThreadsForAccounts}
 											onChange={changeBackupDetail}
 											inputName="backupNumberThreadsForAccounts"
-											background="gray5"
+											backgroundColor="gray5"
 											disabled={!allowSetBackup}
 										/>
 									</Container>
@@ -379,7 +375,7 @@ const BackupAdvanced: FC = () => {
 											defaultValue={initbackupDetail.backupNumberThreadsForAccounts}
 											onChange={changeBackupDetail}
 											inputName="backupNumberThreadsForAccounts"
-											background="gray5"
+											backgroundColor="gray5"
 											disabled={!allowSetBackup}
 										/>
 									</Container>

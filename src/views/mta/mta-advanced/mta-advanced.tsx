@@ -281,7 +281,7 @@ const MTAAdvanced: FC = () => {
 	}, [mtaAdvancedDetail, mtaAdvancedInitialDetail]);
 
 	const onAmavisLogLevelChange = useCallback(
-		(v: string) => {
+		(v: any) => {
 			setValue(ZIMBRA_AMAVIS_LOG_LEVEL, v);
 		},
 		[setValue]
@@ -452,19 +452,13 @@ const MTAAdvanced: FC = () => {
 									<Button
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
-										height={36}
 										onClick={onCancel}
 									/>
 								)}
 							</Padding>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.save', 'Save')}
-										color="primary"
-										height={36}
-										onClick={onSave}
-									/>
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 								)}
 							</Padding>
 						</Container>
@@ -522,10 +516,14 @@ const MTAAdvanced: FC = () => {
 							background="gray5"
 							label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
 							showCheckbox={false}
-							selection={amavisLogLevelOptions.find(
-								(item: Record<string, string>) =>
-									item.value === mtaAdvancedDetail?.zimbraAmavisLogLevel
-							)}
+							selection={
+								amavisLogLevelOptions.find(
+									(item: Record<string, string>) =>
+										item.value === mtaAdvancedDetail?.zimbraAmavisLogLevel
+								) || amavisLogLevelOptions[0]
+							}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onAmavisLogLevelChange}
 							disabled={!allowSetMTA}
 						/>
@@ -541,6 +539,8 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraAmavisSALogLevel
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onAmavisSALogLevelChange}
 							disabled={!allowSetMTA}
 						/>
@@ -567,6 +567,8 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraMtaSmtpdTlsLoglevel
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSMTPClientLogLevelChange}
 							disabled={!allowSetMTA}
 						/>
@@ -585,6 +587,8 @@ const MTAAdvanced: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaAdvancedDetail?.zimbraMtaLmtpTlsLoglevel
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onLMTPTlsLogLevelChange}
 							disabled={!allowSetMTA}
 						/>
@@ -606,7 +610,7 @@ const MTAAdvanced: FC = () => {
 					<Container crossAlignment="flex-start">
 						<Input
 							label={t('mta.max_antivirus_threads', 'Max antivirus threads (value)')}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaAdvancedDetail?.zimbraClamAVMaxThreads}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_CLAM_AV_MAX_THREADS, e.target.value);
@@ -618,7 +622,7 @@ const MTAAdvanced: FC = () => {
 					<Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
 						<Input
 							label={t('mta.lmtp_threads', 'LMTP threads (Value)')}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaAdvancedDetail?.zimbraLmtpNumThreads}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_LMTP_NUM_THREADS, e.target.value);
@@ -629,7 +633,7 @@ const MTAAdvanced: FC = () => {
 					<Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
 						<Input
 							label={t('mta.milter_threads', 'MILTER threads (value)')}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaAdvancedDetail?.zimbraMilterNumThreads}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MITER_NUM_THREADS, e.target.value);
@@ -653,7 +657,7 @@ const MTAAdvanced: FC = () => {
 								'mta.max_size__for_mail_messages',
 								'Max size for mail messages (0 = "no limit")'
 							)}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaAdvancedDetail?.zimbraMtaMaxMessageSize}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_MESSAGE_SIZE, e.target.value);
@@ -668,7 +672,7 @@ const MTAAdvanced: FC = () => {
 								'mta.reject_concurrent_milter_connection_above',
 								'Reject concurrent MILTER connections above (value)'
 							)}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaAdvancedDetail?.zimbraMilterMaxConnections}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MILTER_MAX_CONNECTIONS, e.target.value);
@@ -684,7 +688,7 @@ const MTAAdvanced: FC = () => {
 							'mta.enable_simple_authentication_and_security_layer',
 							'Enable simple authentication and security layer'
 						)}
-						value={mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable}
+						value={!!mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable}
 						onClick={(): void =>
 							setValue(
 								ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE,

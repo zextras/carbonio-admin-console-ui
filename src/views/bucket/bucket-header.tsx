@@ -29,13 +29,21 @@ const BucketHeader: FC = () => {
 		>
 			<Breadcrumbs crumbs={crumbs} />
 			<Container width="auto" mainAlignment="flex-end" orientation="horizontal">
-				<Button type="ghost" label="GLOBAL" icon="Globe" iconPlacement="left" color="primary" />
+				<Button
+					type="ghost"
+					label="GLOBAL"
+					icon="Globe"
+					iconPlacement="left"
+					color="primary"
+					onClick={(): null => null}
+				/>
 				<Button
 					type="ghost"
 					label="ACTIONS"
 					icon="AdminPanelOutline"
 					iconPlacement="left"
 					color="primary"
+					onClick={(): null => null}
 				/>
 			</Container>
 		</Container>

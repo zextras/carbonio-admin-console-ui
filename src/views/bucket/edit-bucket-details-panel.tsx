@@ -146,6 +146,8 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
 				RowFactory={CustomRowFactory}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows.length === 0 && (
@@ -562,7 +564,7 @@ const EditBucketDetailPanel: FC<{
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
 				<Row padding={{ top: 'small' }} width="100%">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.bucket_type', 'Bucket Type')}
 						inputName="label"
 						value={bucketDetail?.storeType || ''}
@@ -571,7 +573,7 @@ const EditBucketDetailPanel: FC<{
 				</Row>
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.label', 'Label')}
 						inputName="label"
 						value={bucketLabel}
@@ -598,10 +600,14 @@ const EditBucketDetailPanel: FC<{
 					</Row>
 					{bucketDetail?.region !== undefined && (
 						<>
-							<Padding width="4%" />
+							<Padding horizontal={'small'} />
 							<Row width="48%" mainAlignment="flex-end">
 								<Select
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									inputName="region"
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									items={
 										bucketDetail.storeType === ALIBABA.toUpperCase()
 											? bucketRegionsInAlibaba
@@ -630,7 +636,7 @@ const EditBucketDetailPanel: FC<{
 							}}
 						/>
 					</Row>
-					<Padding width="4%" />
+					<Padding horizontal={'small'} />
 					<Row width="48%" mainAlignment="flex-end">
 						<PasswordInput
 							inputName="secret"
@@ -658,7 +664,7 @@ const EditBucketDetailPanel: FC<{
 				)}
 				<Row padding={{ top: 'small' }} width="100%">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.prefix', 'Prefix')}
 						inputName="label"
 						value={bucketDetail?.prefix || ''}
@@ -667,7 +673,7 @@ const EditBucketDetailPanel: FC<{
 				</Row>
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
 						name="notes"
 						value={bucketNotes}
@@ -684,7 +690,7 @@ const EditBucketDetailPanel: FC<{
 						icon={buttonIcon}
 						iconPlacement="right"
 						size="large"
-						width="100%"
+						width="fill"
 						style={{ width: '100%' }}
 						color={verify}
 						onClick={verifyConnector}

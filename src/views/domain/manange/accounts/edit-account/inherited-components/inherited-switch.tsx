@@ -73,6 +73,7 @@ const InheritedSwitch: FC<{
 						value={false}
 						onClick={onChangeReset}
 						style={{ cursor: 'pointer' }}
+						onChange={(): null => null}
 					/>
 				</Tooltip>
 			) : (

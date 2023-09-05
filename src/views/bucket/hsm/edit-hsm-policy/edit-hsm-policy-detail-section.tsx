@@ -412,7 +412,12 @@ const EditHsmPolicyDetailSection: FC<{
 		>
 			<ListRow>
 				<Container padding={{ bottom: 'large' }}>
-					<Input label={t('hsm.server', 'Server')} background="gray6" value={server} readOnly />
+					<Input
+						label={t('hsm.server', 'Server')}
+						backgroundColor="gray6"
+						value={server}
+						readOnly
+					/>
 				</Container>
 			</ListRow>
 			<ListRow>
@@ -562,7 +567,6 @@ const EditHsmPolicyDetailSection: FC<{
 					<Input
 						label={t('hsm.value', 'Value')}
 						backgroundColor="gray5"
-						size="medium"
 						value={value}
 						onChange={(e: any): any => {
 							setValue(e.target.value);
@@ -620,6 +624,8 @@ const EditHsmPolicyDetailSection: FC<{
 						selectedRows={selectedPolicies}
 						onSelectionChange={(selected: any): void => setSelectedPolicies(selected)}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Padding>

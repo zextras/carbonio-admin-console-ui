@@ -177,6 +177,8 @@ const ServersListTable: FC<{
 				showCheckbox={false}
 				multiSelect={false}
 				RowFactory={CustomRowFactory}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{isRequestInProgress && (
@@ -186,7 +188,7 @@ const ServersListTable: FC<{
 					height="fit"
 					padding={{ top: 'medium' }}
 				>
-					<Button type="ghost" iconColor="primary" height={36} label="" width={36} loading />
+					<Button type="ghost" label={''} loading onClick={(): null => null} />
 				</Container>
 			)}
 			{(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (
@@ -356,7 +358,7 @@ const ServerDetailPanel: FC = () => {
 					height="calc(100vh - 200px)"
 					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
 							<Row
 								orientation="horizontal"
@@ -369,7 +371,7 @@ const ServerDetailPanel: FC = () => {
 									<Input
 										disabled={serversList.length === 0 && searchServer.length === 0}
 										label={t('label.search_for_a_Server', `Search for a Server`)}
-										background="gray5"
+										backgroundColor="gray5"
 										CustomIcon={(): any => (
 											<Icon icon="FunnelOutline" size="large" color="primary" />
 										)}

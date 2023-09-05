@@ -363,7 +363,7 @@ const Connection: FC<{
 				)
 			);
 			createSnackbar({
-				key: 1,
+				key: '1',
 				type: 'error',
 				label: t('label.verify_error', '{{name}}', {
 					name: bothFail
@@ -393,19 +393,23 @@ const Connection: FC<{
 			) : (
 				<Row padding={{ top: 'extralarge' }} width="100%">
 					<Select
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						items={bucketTypeItems}
 						background="gray5"
 						label={t('buckets.bucket_type', 'Bucket Type')}
-						defaultSelection={bucketTypeItems?.filter((items) => items?.value === bucketTypeData)}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
+						// defaultSelection={bucketTypeItems?.filter((items) => items?.value === bucketTypeData)}
+						defaultSelection={bucketTypeItems[0]}
 						onChange={onSelectBucketTypeChange}
 						showCheckbox={false}
-						padding={{ right: 'medium' }}
 					/>
 				</Row>
 			)}
 			<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 				<Input
-					background="gray5"
+					backgroundColor="gray5"
 					label={t('label.label', 'Label')}
 					name="label"
 					value={bucketLabel}
@@ -417,7 +421,7 @@ const Connection: FC<{
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width={showRegion ? '48%' : '100%'} mainAlignment="flex-start">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.bucket_name', 'Bucket Name')}
 						name="bucketName"
 						value={bucketName}
@@ -429,9 +433,11 @@ const Connection: FC<{
 				</Row>
 				{showRegion && (
 					<>
-						<Padding width="4%" />
+						<Padding horizontal={'small'} />
 						<Row width="48%" mainAlignment="flex-end">
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={
 									bucketTypeData === ALIBABA || bucketType === ALIBABA
 										? bucketRegionsInAlibaba
@@ -442,7 +448,6 @@ const Connection: FC<{
 								selection={regionSelection}
 								onChange={onSelectRegionChange}
 								showCheckbox={false}
-								padding={{ right: 'medium' }}
 							/>
 						</Row>
 					</>
@@ -451,7 +456,7 @@ const Connection: FC<{
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.access_key', 'Access Key')}
 						name="accessKey"
 						value={accessKeyData}
@@ -461,10 +466,10 @@ const Connection: FC<{
 						}}
 					/>
 				</Row>
-				<Padding width="4%" />
+				<Padding horizontal={'small'} />
 				<Row width="48%" mainAlignment="flex-end">
 					<PasswordInput
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.secret_key', 'Secret Key')}
 						name="secretKey"
 						value={secretKey}
@@ -523,7 +528,7 @@ const Connection: FC<{
 			)}
 			<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 				<Input
-					background="gray5"
+					backgroundColor="gray5"
 					label={t('label.description', 'Description')}
 					name="notes"
 					value={bucketNotes}
@@ -539,7 +544,7 @@ const Connection: FC<{
 					icon={icon}
 					iconPlacement="right"
 					color={buttonColor}
-					width="100%"
+					width="fill"
 					size="large"
 					style={{ width: '100%' }}
 					onClick={handleVerifyConnector}

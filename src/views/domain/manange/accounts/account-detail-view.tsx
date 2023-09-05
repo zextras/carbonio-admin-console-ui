@@ -490,13 +490,7 @@ const AccountDetailView: FC<any> = ({
 				>
 					<Displayer buttons={buttons} pinIcon={isSticky} />
 					<Row>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.account', 'Account')}
 						</Text>
 					</Row>
@@ -661,13 +655,7 @@ const AccountDetailView: FC<any> = ({
 						</Row>
 					</Row>
 					<Row padding={{ top: 'extralarge' }}>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.active_sessions', 'Active Sessions')}
 						</Text>
 					</Row>
@@ -715,6 +703,8 @@ const AccountDetailView: FC<any> = ({
 							onSelectionChange={(selected: any): any => {
 								setSelectedSession(selected);
 							}}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 							RowFactory={CustomRowFactory}
 						></Table>
@@ -726,22 +716,11 @@ const AccountDetailView: FC<any> = ({
 						mainAlignment="flex-end"
 						crossAlignment="flex-end"
 					>
-						<Paging
-							totalItem={1}
-							setOffset={(): void => {
-								console.log('setOffset for paging');
-							}}
-						/>
+						<Paging totalItem={1} setOffset={(): null => null} />
 					</Row>
 
 					<Row padding={{ top: 'extralarge' }}>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.description', 'Description')}
 						</Text>
 					</Row>
