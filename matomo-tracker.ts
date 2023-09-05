@@ -9,8 +9,8 @@ export default class MatomoTracker {
 	// matomoInstance;
 
 	matomoInstance = createInstance({
-		urlBase: 'https://analytics.zextras.tools/',
-		siteId: 3,
+		urlBase: 'https://zextras.matomo.cloud/',
+		siteId: 1,
 		heartBeat: {
 			active: false
 		},
