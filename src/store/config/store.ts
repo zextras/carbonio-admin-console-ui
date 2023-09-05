@@ -8,16 +8,20 @@ import { devtools } from 'zustand/middleware';
 
 type ConfigState = {
 	config: Array<any>;
+	userId: string;
 	setConfig: (config: any) => void;
 	addConfig: (config: any) => void;
 	removeConfig: () => void;
 	removeConfigItems: (config: any) => void;
 	updateConfig: (key: any, value: any) => void;
+	setUserId: (userName: string) => void;
 };
 
 export const useConfigStore = create<ConfigState>(
 	devtools((set) => ({
 		config: [],
+		userId: '',
+		setUserId: (userId): void => set({ userId }, false, 'setUserId'),
 		setConfig: (config): void => set({ config }, false, 'setConfig'),
 		addConfig: (config: any): void => {
 			set((state: any) => {

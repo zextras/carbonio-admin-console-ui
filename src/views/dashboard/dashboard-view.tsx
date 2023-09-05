@@ -41,11 +41,14 @@ import { useDomainStore } from '../../store/domain/store';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useRightsStore } from '../../store/rights/store';
 import { getRights } from '../utility/utils';
+import { useConfigStore } from '../../store/config/store';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const userInfo = useConfigStore((state) => state.userId);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const matomo = useMemo(() => new MatomoTracker(userInfo), []);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);

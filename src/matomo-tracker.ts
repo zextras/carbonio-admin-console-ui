@@ -7,16 +7,19 @@ import { createInstance } from '@datapunt/matomo-tracker-react';
 import { MatomoInstance } from '@datapunt/matomo-tracker-react/lib/types';
 
 export default class MatomoTracker {
-	// matomoInstance;
+	matomoInstance;
 
-	matomoInstance = createInstance({
-		urlBase: 'https://analytics.zextras.tools/',
-		siteId: 3,
-		heartBeat: {
-			active: false
-		},
-		linkTracking: false
-	});
+	constructor(userID: string) {
+		this.matomoInstance = createInstance({
+			urlBase: 'https://zextras.matomo.cloud/',
+			userId: userID,
+			siteId: 1,
+			heartBeat: {
+				active: false
+			},
+			linkTracking: false
+		});
+	}
 
 	static matomoInstance: MatomoInstance;
 
