@@ -229,13 +229,12 @@ const EditAccountGeneralSection: FC = () => {
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -258,10 +257,6 @@ const EditAccountGeneralSection: FC = () => {
 					label: domain.name,
 					customComponent: (
 						<SelectItem
-							top="9px"
-							right="large"
-							bottom="9px"
-							left="large"
 							style={{
 								display: 'block',
 								textAlign: 'left',
@@ -335,7 +330,7 @@ const EditAccountGeneralSection: FC = () => {
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="47%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
+							backgroundColor="gray5"
 							label={t('label.userName', 'username')}
 							onChange={changeUserNaneDetail}
 							inputName="uid"
@@ -344,16 +339,11 @@ const EditAccountGeneralSection: FC = () => {
 							autoComplete="new-password"
 						/>
 					</Row>
-					<Row mainAlignment="flex-center" crossAlignment="flex-center" padding={{ top: 'small' }}>
+					<Row mainAlignment="center" crossAlignment="center" padding={{ top: 'small' }}>
 						<Icon icon="AtOutline" size="large" />
 					</Row>
 					<Row width="47%" mainAlignment="flex-start">
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							width="100%"
-						>
+						<Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%">
 							<DropDownInput
 								items={items}
 								maxWidth="400px"
@@ -409,7 +399,7 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
-							<Text size="small" color="gray0" style={{ 'text-decoration': 'underline' }}>
+							<Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
 								({t('label.what_is_a_gal', "What's a GAL?")})
 							</Text>
 						</Tooltip>
@@ -439,20 +429,13 @@ const EditAccountGeneralSection: FC = () => {
 									)}
 								>
 									<Input
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('label.password', 'Password')}
 										onChange={changeAccDetail}
 										inputName="password"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.password
-												? accountDetail.password
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.password}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -466,20 +449,13 @@ const EditAccountGeneralSection: FC = () => {
 									)}
 								>
 									<Input
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('label.repeat_password', 'Repeat Password')}
 										onChange={changeAccDetail}
 										inputName="repeatPassword"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.repeatPassword
-												? accountDetail.repeatPassword
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.repeatPassword}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -489,39 +465,25 @@ const EditAccountGeneralSection: FC = () => {
 						<>
 							<Row width="49%" mainAlignment="flex-start">
 								<Input
-									background="gray5"
+									backgroundColor="gray5"
 									label={t('label.password', 'Password')}
 									onChange={changeAccDetail}
 									inputName="password"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.password
-											? accountDetail.password
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.password}
 									disabled={isHidePassword}
 								/>
 							</Row>
 							<Row width="49%" mainAlignment="flex-start">
 								<Input
-									background="gray5"
+									backgroundColor="gray5"
 									label={t('label.repeat_password', 'Repeat Password')}
 									onChange={changeAccDetail}
 									inputName="repeatPassword"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.repeatPassword
-											? accountDetail.repeatPassword
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.repeatPassword}
 									disabled={isHidePassword}
 								/>
 							</Row>
@@ -582,9 +544,11 @@ const EditAccountGeneralSection: FC = () => {
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
-								background="gray5"
+								backgroundColor="gray5"
 								label={t('label.account_status', 'Account Status')}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onAccountStatusChange}
 								defaultSelection={ACCOUNT_STATUS.find(
 									(item: any) => item.value === accountDetail?.zimbraAccountStatus
@@ -599,6 +563,8 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="15.5%" mainAlignment="flex-start">
 						<Switch
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							defaultValue={defaultCOS}
 							onClick={onCOSSwitchChanges}
 							label={t('account_details.default_COS', 'Default COS')}
@@ -615,6 +581,8 @@ const EditAccountGeneralSection: FC = () => {
 								defaultSelection={cosItems.find(
 									(item: any) => item.value === accountDetail?.zimbraCOSId
 								)}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onCOSIdChange}
 							/>
 						) : (
@@ -694,7 +662,7 @@ const EditAccountGeneralSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						height="85px"
 						label={t('label.description', 'Description')}
 						defaultValue={accountDetail?.zimbraNotes}

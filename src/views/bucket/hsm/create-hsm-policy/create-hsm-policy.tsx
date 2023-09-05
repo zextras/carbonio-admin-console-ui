@@ -13,7 +13,6 @@ import { Section } from '../../../app/component/section';
 import { HSMContext } from '../hsm-context/hsm-context';
 import HSMcreatePolicy from './hsm-create-policy';
 import HSMpolicySettings from './hsm-policy-settings';
-import HSMselectVolumes from './hsm-select-volumes';
 
 interface hsmDetailObj {
 	allVolumes: Array<any>;
@@ -93,41 +92,7 @@ const CreateHsmPolicy: FC<{
 						iconPlacement="right"
 					/>
 				),
-				PrevButton: (props: any) => null,
-				NextButton: (props: any) => (
-					<Button
-						{...props}
-						label={t('label.next', 'NEXT')}
-						icon="ChevronRightOutline"
-						iconPlacement="right"
-					/>
-				)
-			},
-			{
-				name: 'hsm-volumes',
-				label: t('hsm.select_volumes', 'Select Volumes'),
-				icon: 'CubeOutline',
-				view: HSMselectVolumes,
-				CancelButton: (props: any): ReactElement => (
-					<Button
-						{...props}
-						type="outlined"
-						key="wizard-cancel"
-						label={t('label.cancel', 'Cancel')}
-						color="secondary"
-						icon="CloseOutline"
-						iconPlacement="right"
-					/>
-				),
-				PrevButton: (props: any) => (
-					<Button
-						{...props}
-						label={t('label.back', 'BACK')}
-						icon="ChevronLeftOutline"
-						color="secondary"
-						iconPlacement="left"
-					/>
-				),
+				PrevButton: () => null,
 				NextButton: (props: any) => (
 					<Button
 						{...props}

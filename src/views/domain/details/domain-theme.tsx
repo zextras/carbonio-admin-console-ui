@@ -3,29 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	ReactElement,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import {
 	Container,
 	Row,
 	Padding,
 	Divider,
 	Text,
-	Input,
 	Button,
-	SnackbarManagerContext,
-	Select,
-	Icon,
-	Modal
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { useDomainStore } from '../../../store/domain/store';
@@ -81,6 +69,8 @@ const DomainTheme: FC = () => {
 				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
 				setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor);
 				setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor);
+				setValue('zimbraAdminConsoleLogoutURL', obj?.zimbraAdminConsoleLogoutURL);
+				setValue('zimbraWebClientLogoutURL', obj?.zimbraWebClientLogoutURL);
 			}
 		},
 		[setValue]
@@ -158,6 +148,12 @@ const DomainTheme: FC = () => {
 			}
 			if (!obj.carbonioWebUiDarkPrimaryColor) {
 				obj.carbonioWebUiDarkPrimaryColor = '';
+			}
+			if (!obj.zimbraAdminConsoleLogoutURL) {
+				obj.zimbraAdminConsoleLogoutURL = '';
+			}
+			if (!obj.zimbraWebClientLogoutURL) {
+				obj.zimbraWebClientLogoutURL = '';
 			}
 			setInitalValues(obj);
 			setIsDirty(false);
@@ -256,7 +252,9 @@ const DomainTheme: FC = () => {
 			carbonioAdminUiDescription: '',
 			carbonioLogoUrl: '',
 			carbonioWebUiPrimaryColor: '',
-			carbonioWebUiDarkPrimaryColor: ''
+			carbonioWebUiDarkPrimaryColor: '',
+			zimbraAdminConsoleLogoutURL: '',
+			zimbraWebClientLogoutURL: ''
 		};
 		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
@@ -273,7 +271,7 @@ const DomainTheme: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="56px">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -328,6 +326,9 @@ const DomainTheme: FC = () => {
 					})}
 					isOpenResetDialog={isOpenResetDialog}
 					isRequestInProgress={isRequestInProgress}
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore // Need to fix it with custom soultion
+
 					closeHandler={closeHandler}
 					onResetHandler={onResetHandler}
 				/>

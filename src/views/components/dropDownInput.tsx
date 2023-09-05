@@ -8,7 +8,23 @@ import React, { FC } from 'react';
 
 interface DropDownInputType {
 	items: any;
-	placement?: string;
+	placement?:
+		| 'bottom-start'
+		| 'auto'
+		| 'auto-start'
+		| 'auto-end'
+		| 'top'
+		| 'top-start'
+		| 'top-end'
+		| 'bottom'
+		| 'bottom-end'
+		| 'right'
+		| 'right-start'
+		| 'right-end'
+		| 'left'
+		| 'left-start'
+		| 'left-end'
+		| undefined;
 	maxWidth?: string;
 	disableAutoFocus?: boolean;
 	width?: string;
@@ -56,7 +72,8 @@ const DropDownInput: FC<DropDownInputType> = ({
 			<Input
 				label={inputLabel}
 				onChange={onChange}
-				size={size}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				CustomIcon={(): React.ReactChild =>
 					isCustomIcon ? (
 						<Icon

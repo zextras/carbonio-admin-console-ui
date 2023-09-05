@@ -134,25 +134,25 @@ const MTAOutBoundFlow: FC = () => {
 						isAuthEnable = t('label.enabled', 'Enabled');
 					}
 					tableRow.push({
-						id: server?.id,
+						id: server.id,
 						columns: [
-							<Text size="small" weight="regular" key={server?.name} color="gray0">
+							<Text size="small" weight="regular" key={tableRow.length} color="gray0">
 								{server?.name}
 							</Text>,
-							<Text size="small" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={tableRow.length} color="gray0">
 								{antispam && antispam.length > 0
 									? t('label.active', 'Active')
 									: t('label.inactive', 'Inactive')}
 							</Text>,
-							<Text size="small" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={tableRow.length} color="gray0">
 								{antivirus && antivirus.length > 0
 									? t('label.active', 'Active')
 									: t('label.inactive', 'Inactive')}
 							</Text>,
-							<Text size="small" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={tableRow.length} color="gray0">
 								{isAuthEnable}
 							</Text>,
-							<Text size="small" weight="light" key={server?.name} color="gray0">
+							<Text size="small" weight="light" key={tableRow.length} color="gray0">
 								{opendkim && opendkim.length > 0
 									? t('label.enabled', 'Enabled')
 									: t('label.disabled', 'Disabled')}
@@ -470,19 +470,13 @@ const MTAOutBoundFlow: FC = () => {
 									<Button
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
-										height={36}
 										onClick={onCancel}
 									/>
 								)}
 							</Padding>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.save', 'Save')}
-										color="primary"
-										height={36}
-										onClick={onSave}
-									/>
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 								)}
 							</Padding>
 						</Container>
@@ -600,6 +594,8 @@ const MTAOutBoundFlow: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaOutboundDetail?.zimbraMtaTlsSecurityLevel
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onTlsSecurityOptions}
 							disabled={!allowSetMTA}
 						/>
@@ -706,10 +702,14 @@ const MTAOutBoundFlow: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							rows={instancesTableRows}
 							headers={instanceTableHeader}
 							showCheckbox={false}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

@@ -141,10 +141,6 @@ const BackupListPanel: FC = () => {
 			label: serverItem?.name,
 			customComponent: (
 				<Row
-					top="0.56rem"
-					right="large"
-					bottom="0.56rem"
-					left="large"
 					style={{
 						display: 'block',
 						textAlign: 'left',
@@ -229,7 +225,7 @@ const BackupListPanel: FC = () => {
 					/>
 					{isServerSpecificsExpanded && (
 						<>
-							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Row mainAlignment="flex-start" width="100%">
 								<DropDownInput
 									items={isBackupModuleLicensed ? serverNames : []}
 									maxWidth="18.75rem"

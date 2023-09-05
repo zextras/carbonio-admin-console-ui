@@ -167,6 +167,8 @@ const AdvancedMailstoresDefinition: FC<{
 						inputName="server"
 						label={t('label.volume_server_name', 'Server')}
 						backgroundColor="gray6"
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						value={externalData}
 						readOnly
 					/>
@@ -190,11 +192,17 @@ const AdvancedMailstoresDefinition: FC<{
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
 					<Select
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						items={volAllocationList}
 						background="gray5"
 						label={t('label.storage_type', 'Storage Type')}
 						showCheckbox={false}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						selection={allocation}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						onChange={onVolAllocationChange}
 					/>
 				</Row>
@@ -203,6 +211,8 @@ const AdvancedMailstoresDefinition: FC<{
 					backupUnusedBucketList?.length !== 0 && (
 						<Row padding={{ top: 'large' }} width="100%">
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={backupUnusedBucketList}
 								background="gray5"
 								label={t(
@@ -210,7 +220,11 @@ const AdvancedMailstoresDefinition: FC<{
 									'Available Buckets List (that are not in use in the backup)'
 								)}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								selection={unusedType}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onUnusedBucketListChange}
 							/>
 						</Row>

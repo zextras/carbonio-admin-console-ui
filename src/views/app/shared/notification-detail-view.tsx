@@ -63,7 +63,7 @@ const NotificationDetail: FC<{
 				top: '0rem',
 				overflow: 'hidden',
 				transition: 'left 0.2s ease-in-out',
-				'z-index': '9'
+				zIndex: '9'
 			}}
 		>
 			<Row
@@ -102,7 +102,7 @@ const NotificationDetail: FC<{
 					<Input
 						label={t('label.date', 'Date')}
 						value={moment(notification?.date).format('DD-MM-YYYY - HH:mm A')}
-						background="gray6"
+						backgroundColor="gray6"
 						readOnly
 					/>
 				</Container>
@@ -110,7 +110,7 @@ const NotificationDetail: FC<{
 					<Input
 						label={t('label.type', 'Type')}
 						value={notification?.level}
-						background="gray6"
+						backgroundColor="gray6"
 						readOnly
 					/>
 				</Container>
@@ -122,7 +122,7 @@ const NotificationDetail: FC<{
 					<Input
 						label={t('label.what_inside', 'What’s inside?')}
 						value={notification?.subject}
-						background="gray6"
+						backgroundColor="gray6"
 						readOnly
 					/>
 				</Container>

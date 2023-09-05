@@ -121,7 +121,6 @@ const MailingListCreateSection: FC<any> = () => {
 						<Input
 							label={t('label.displayed_name', 'Displayed Name')}
 							backgroundColor="gray6"
-							size="medium"
 							value={mailingListDetail?.displayName}
 							readOnly
 						/>
@@ -135,7 +134,6 @@ const MailingListCreateSection: FC<any> = () => {
 						<Input
 							label={t('label.address', 'Address')}
 							backgroundColor="gray6"
-							size="medium"
 							value={`${mailingListDetail?.prefixName}@${mailingListDetail?.suffixName}`}
 							readOnly
 						/>
@@ -152,7 +150,6 @@ const MailingListCreateSection: FC<any> = () => {
 						<Input
 							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
-							size="medium"
 							value={mailingListDetail?.zimbraNotes}
 							readOnly
 						/>
@@ -166,13 +163,7 @@ const MailingListCreateSection: FC<any> = () => {
 							orientation="horizontal"
 							padding={{ top: 'extralarge', bottom: 'medium' }}
 						>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
+							<Text size="small" weight="bold">
 								{t('label.members', 'Members')}
 							</Text>
 						</Container>
@@ -186,6 +177,8 @@ const MailingListCreateSection: FC<any> = () => {
 								headers={tableHeader}
 								showCheckbox={false}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
@@ -203,7 +196,6 @@ const MailingListCreateSection: FC<any> = () => {
 								<Input
 									label={t('label.share_message_to_new_member', 'Share message to new members')}
 									backgroundColor="gray6"
-									size="medium"
 									value={
 										mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
 											? t('label.yes', 'Yes')
@@ -222,7 +214,6 @@ const MailingListCreateSection: FC<any> = () => {
 							<Input
 								label={t('label.hidden_from_gal', 'Hidden from GAL')}
 								backgroundColor="gray6"
-								size="medium"
 								value={
 									mailingListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
@@ -241,7 +232,6 @@ const MailingListCreateSection: FC<any> = () => {
 									'Send new members a notification for the share/delegation assigned to this group'
 								)}
 								backgroundColor="gray6"
-								size="medium"
 								value={
 									mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
@@ -262,7 +252,6 @@ const MailingListCreateSection: FC<any> = () => {
 								<Input
 									label={t('label.list_url', "Mailing List's URL")}
 									backgroundColor="gray6"
-									size="medium"
 									value={mailingListDetail?.memberURL}
 									readOnly
 								/>
@@ -275,13 +264,7 @@ const MailingListCreateSection: FC<any> = () => {
 								orientation="horizontal"
 								padding={{ top: 'extralarge', bottom: 'medium' }}
 							>
-								<Text
-									size="small"
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									orientation="horizontal"
-									weight="bold"
-								>
+								<Text size="small" weight="bold">
 									{t('label.members', 'Members')}
 								</Text>
 							</Container>
@@ -293,6 +276,8 @@ const MailingListCreateSection: FC<any> = () => {
 									headers={tableHeader}
 									showCheckbox={false}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
@@ -307,13 +292,7 @@ const MailingListCreateSection: FC<any> = () => {
 						orientation="horizontal"
 						padding={{ top: 'extralarge', bottom: 'medium' }}
 					>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.owners_settings', 'Owners’ Settings')}
 						</Text>
 					</Container>
@@ -323,7 +302,8 @@ const MailingListCreateSection: FC<any> = () => {
 					<Input
 						label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
 						backgroundColor="gray6"
-						size="medium"
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						value={grantEmailType}
 						readOnly
 					/>
@@ -336,6 +316,8 @@ const MailingListCreateSection: FC<any> = () => {
 							headers={ownerTableHeader}
 							showCheckbox={false}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -353,7 +335,6 @@ const MailingListCreateSection: FC<any> = () => {
 								<Input
 									label={t('label.share_message_to_new_member', 'Share message to new members')}
 									backgroundColor="gray6"
-									size="medium"
 									value={
 										mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
 											? t('label.yes', 'Yes')
@@ -372,7 +353,6 @@ const MailingListCreateSection: FC<any> = () => {
 							<Input
 								label={t('label.hidden_from_gal', 'Hidden from GAL')}
 								backgroundColor="gray6"
-								size="medium"
 								value={
 									mailingListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
@@ -388,7 +368,6 @@ const MailingListCreateSection: FC<any> = () => {
 							<Input
 								label={t('label.can_receive_email', 'Can receive email')}
 								backgroundColor="gray6"
-								size="medium"
 								value={
 									mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}

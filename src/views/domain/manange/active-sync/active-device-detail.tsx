@@ -343,7 +343,7 @@ const ActiveDeviceDetail: FC<{
 			background="gray6"
 			mainAlignment="flex-start"
 			style={{
-				'z-index': '10',
+				zIndex: '10',
 				position: 'absolute',
 				top: '2.688rem',
 				right: '0',
@@ -352,9 +352,9 @@ const ActiveDeviceDetail: FC<{
 				transition: 'left 0.2s ease-in-out',
 				height: 'auto',
 				width: 'auto',
-				'max-height': '100%',
+				maxHeight: '100%',
 				overflow: 'hidden',
-				'box-shadow': '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)'
+				boxShadow: '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)'
 			}}
 		>
 			<Row
@@ -398,6 +398,8 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.abq_status', 'ABQ Status')}
 							showCheckbox={false}
 							selection={abqStatus}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void => {
 								const dataItem = abqStatusOptions.find((item) => item?.value === ev);
 								if (dataItem) {
@@ -443,6 +445,8 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.status_lbl', 'Status')}
 							showCheckbox={false}
 							selection={status}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void => {
 								const dataItem = statusOptions.find((item) => item?.value === ev);
 								if (dataItem) {

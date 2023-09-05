@@ -81,6 +81,7 @@ const EditAccount: FC<{
 	getAccountDetail: any;
 	defaultTab: string;
 	setDefaultTab: any;
+	setShowAccountDetailView: any;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
@@ -89,6 +90,7 @@ const EditAccount: FC<{
 	signatureList,
 	getAccountDetail,
 	defaultTab,
+	setShowAccountDetailView,
 	setDefaultTab
 }) => {
 	const { t } = useTranslation();
@@ -160,15 +162,14 @@ const EditAccount: FC<{
 	}> = ({ item, index, selected, onClick }): ReactElement => (
 		<DefaultTabBarItem
 			item={item}
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore // Need to fix it with custom soultion
 			index={index}
 			selected={selected}
 			onClick={onClick}
 			orientation="horizontal"
 		>
 			<Row padding="small">
-				<Padding horizontal="small">
-					<Icon size="medium" color={selected ? 'primary' : 'gray'} icon={item.icon} />
-				</Padding>
 				<Text size="small" color={selected ? 'primary' : 'gray'}>
 					{item.label}
 				</Text>
@@ -179,38 +180,32 @@ const EditAccount: FC<{
 		{
 			id: 'general',
 			label: t('label.general', 'GENERAL'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'InfoOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'profile',
 			label: t('label.profile', 'PROFILE'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'AddressBookOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'configuration',
 			label: t('label.configuration', 'CONFIGURATION'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'OptionsOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'user_preferences',
 			label: t('label.user_preferences', 'USER PREFERENCES'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'PersonOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'security',
 			label: t('label.security', 'SECURITY'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'LockOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'administration',
 			label: t('label.administration', 'ADMINISTRATION'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'CoffeeOutline'
+			CustomComponent: ReusedDefaultTabBar
 		}
 	];
 
@@ -218,8 +213,7 @@ const EditAccount: FC<{
 		items.push({
 			id: 'delegates',
 			label: t('label.delegates', 'DELEGATES'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'SharedAccountOutline'
+			CustomComponent: ReusedDefaultTabBar
 		});
 	}
 
@@ -552,6 +546,7 @@ const EditAccount: FC<{
 							icon="CloseOutline"
 							onClick={(): void => {
 								setShowEditAccountView(false);
+								setShowAccountDetailView(true);
 								setDefaultTab('general');
 							}}
 						/>
@@ -567,6 +562,8 @@ const EditAccount: FC<{
 					background="white"
 				>
 					<TabBar
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						items={items}
 						selected={change}
 						onChange={(ev: unknown, selectedId: string): void => {

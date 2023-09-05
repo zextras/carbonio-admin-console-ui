@@ -730,19 +730,13 @@ const MTAPostScreenTuning: FC = () => {
 									<Button
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
-										height={36}
 										onClick={onCancel}
 									/>
 								)}
 							</Padding>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.save', 'Save')}
-										color="primary"
-										height={36}
-										onClick={onSave}
-									/>
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 								)}
 							</Padding>
 						</Container>
@@ -839,13 +833,15 @@ const MTAPostScreenTuning: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onBlackListActionChange}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
 						<Input
 							label={t('mta.access_list_path', 'Access List Path')}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaPostTuningDetail?.zimbraMtaPostscreenAccessList}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST, e.target.value);
@@ -880,6 +876,8 @@ const MTAPostScreenTuning: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onDNSBlSiteChange}
 						/>
 					</Container>
@@ -893,6 +891,8 @@ const MTAPostScreenTuning: FC = () => {
 								(item: Record<string, string>) =>
 									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction
 							)}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onDNSBlackListActionChange}
 						/>
 					</Container>
@@ -908,7 +908,7 @@ const MTAPostScreenTuning: FC = () => {
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
 						<Input
 							label={t('mta.dns_blacklist_threshold_value', 'DNS Blacklist Threshold (value)')}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD, e.target.value);
@@ -921,7 +921,7 @@ const MTAPostScreenTuning: FC = () => {
 								'mta.dns_blacklist_whitelist_threshold_value',
 								'DNS Blacklist Whitelist Threshold  (value)'
 							)}
-							background="gray5"
+							backgroundColor="gray5"
 							value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 								setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD, e.target.value);
@@ -956,7 +956,7 @@ const MTAPostScreenTuning: FC = () => {
 									'mta.dns_blacklist_min_time_to_live',
 									'DNS Blacklist Min Time to Live (value)'
 								)}
-								background="gray5"
+								backgroundColor="gray5"
 								value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL.replace(/[^0-9]/g, '')}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL, e.target.value);
@@ -986,7 +986,7 @@ const MTAPostScreenTuning: FC = () => {
 									'mta.dns_blacklist_max_time_to_live',
 									'DNS Blacklist Max Time to Live (value)'
 								)}
-								background="gray5"
+								backgroundColor="gray5"
 								value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL.replace(/[^0-9]/g, '')}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL, e.target.value);
@@ -1024,7 +1024,7 @@ const MTAPostScreenTuning: FC = () => {
 						<Container padding={{ right: 'small' }} width="75%">
 							<Input
 								label={t('mta.dns_blacklist_time_to_live', 'DNS Blacklist Time to Live (value)')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={
 									mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL &&
 									mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL.replace(/[^0-9]/g, '')
@@ -1094,6 +1094,8 @@ const MTAPostScreenTuning: FC = () => {
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineAction
 								)}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onBareNewLineActionChange}
 							/>
 						</Container>
@@ -1107,7 +1109,7 @@ const MTAPostScreenTuning: FC = () => {
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
 							<Input
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(
 									/[^0-9]/g,
 									''
@@ -1165,6 +1167,8 @@ const MTAPostScreenTuning: FC = () => {
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandAction
 								)}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onNonSMTPCommandActionChange}
 							/>
 						</Container>
@@ -1178,7 +1182,7 @@ const MTAPostScreenTuning: FC = () => {
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
 							<Input
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL.replace(
 									/[^0-9]/g,
 									''
@@ -1236,6 +1240,8 @@ const MTAPostScreenTuning: FC = () => {
 									(item: Record<string, string>) =>
 										item.value === mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningAction
 								)}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onPipeLiningActionChange}
 							/>
 						</Container>
@@ -1249,7 +1255,7 @@ const MTAPostScreenTuning: FC = () => {
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
 							<Input
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL.replace(/[^0-9]/g, '')}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 									setValue(ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL, e.target.value);
