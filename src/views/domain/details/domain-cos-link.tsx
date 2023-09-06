@@ -613,7 +613,7 @@ const DomainCosLink: FC<{
 			</Row>
 			{isGlobalAdmin && (
 				<Row mainAlignment="flex-start" width="100%">
-					<Container padding={{ all: 'small' }} width="48%">
+					<Container padding={{ all: 'small' }} width="45%">
 						<DropDownInput
 							items={items}
 							inputLabel={t(
@@ -630,7 +630,7 @@ const DomainCosLink: FC<{
 						/>
 					</Container>
 
-					<Container padding={{ all: 'small' }} width="34%">
+					<Container padding={{ all: 'small' }} width="35%">
 						<Input
 							label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
 							value={maxAccountValue}
@@ -640,9 +640,14 @@ const DomainCosLink: FC<{
 							}}
 						/>
 					</Container>
-					<Container crossAlignment="flex-end" padding={{ all: 'small' }} width="18%">
+					<Container
+						crossAlignment="flex-end"
+						padding={{ all: 'small' }}
+						width="20%"
+						minWidth="11.5rem"
+					>
 						<Row>
-							<Padding right="medium">
+							<Padding right="large">
 								<Button
 									type="outlined"
 									label={t('label.duplicate', 'Duplicate')}
