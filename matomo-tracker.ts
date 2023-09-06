@@ -4,18 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { createInstance } from '@datapunt/matomo-tracker-react';
+import { MatomoInstance } from '@datapunt/matomo-tracker-react/lib/types';
+import { MATOMO_SITE_ID, MATOMO_URL } from './src/constants';
 
 export default class MatomoTracker {
-	// matomoInstance;
+	matomoInstance;
 
-	matomoInstance = createInstance({
-		urlBase: 'https://zextras.matomo.cloud/',
-		siteId: 1,
-		heartBeat: {
-			active: false
-		},
-		linkTracking: false
-	});
+	constructor(userID: string) {
+		this.matomoInstance = createInstance({
+			urlBase: MATOMO_URL,
+			userId: userID,
+			siteId: MATOMO_SITE_ID,
+			heartBeat: {
+				active: false
+			},
+			linkTracking: false
+		});
+	}
+
+	static matomoInstance: MatomoInstance;
 
 	trackPageView(pageName: string): void {
 		this.matomoInstance.trackPageView({

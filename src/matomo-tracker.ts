@@ -5,15 +5,16 @@
  */
 import { createInstance } from '@datapunt/matomo-tracker-react';
 import { MatomoInstance } from '@datapunt/matomo-tracker-react/lib/types';
+import { MATOMO_SITE_ID, MATOMO_URL } from './constants';
 
 export default class MatomoTracker {
 	matomoInstance;
 
 	constructor(userID: string) {
 		this.matomoInstance = createInstance({
-			urlBase: 'https://zextras.matomo.cloud/',
+			urlBase: MATOMO_URL,
 			userId: userID,
-			siteId: 1,
+			siteId: MATOMO_SITE_ID,
 			heartBeat: {
 				active: false
 			},

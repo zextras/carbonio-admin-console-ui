@@ -290,3 +290,5 @@ export const ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS = 'zimbraDomainCOSMaxAccounts';
 export const SECURITY_GROUP = 'security_group';
 export const DL = 'dl';
 export const USR = 'usr';
+export const MATOMO_URL = 'https://zextras.matomo.cloud/';
+export const MATOMO_SITE_ID = 1;
