@@ -52,7 +52,7 @@ const MTAStatsDetail: FC<{
 				orientation="horizontal"
 				background="white"
 				width="fill"
-				height="56px"
+				height="3.5rem"
 			>
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
