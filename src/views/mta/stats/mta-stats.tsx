@@ -412,7 +412,7 @@ const MTAStats: FC = () => {
 						>
 							<Button
 								type="outlined"
-								size="large"
+								size="medium"
 								label={t('mta.restart_scan', 'Restart Scan')}
 								color="primary"
 								onClick={scanServer}
@@ -428,7 +428,7 @@ const MTAStats: FC = () => {
 						>
 							<Button
 								type="outlined"
-								size="large"
+								size="medium"
 								label={t('mta.flush_queues', 'Flush queues')}
 								color="primary"
 								onClick={flushQueues}
