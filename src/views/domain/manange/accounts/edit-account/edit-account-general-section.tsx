@@ -399,7 +399,11 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
-							<Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
+							<Text
+								size="small"
+								color="gray0"
+								style={{ textDecoration: 'underline', cursor: 'default' }}
+							>
 								({t('label.what_is_a_gal', "What's a GAL?")})
 							</Text>
 						</Tooltip>
@@ -435,14 +439,7 @@ const EditAccountGeneralSection: FC = () => {
 										inputName="password"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.password
-												? accountDetail.password
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.password}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -462,14 +459,7 @@ const EditAccountGeneralSection: FC = () => {
 										inputName="repeatPassword"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.repeatPassword
-												? accountDetail.repeatPassword
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.repeatPassword}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -485,14 +475,7 @@ const EditAccountGeneralSection: FC = () => {
 									inputName="password"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.password
-											? accountDetail.password
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.password}
 									disabled={isHidePassword}
 								/>
 							</Row>
@@ -504,14 +487,7 @@ const EditAccountGeneralSection: FC = () => {
 									inputName="repeatPassword"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.repeatPassword
-											? accountDetail.repeatPassword
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.repeatPassword}
 									disabled={isHidePassword}
 								/>
 							</Row>
