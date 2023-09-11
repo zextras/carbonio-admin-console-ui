@@ -399,7 +399,11 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
-							<Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
+							<Text
+								size="small"
+								color="gray0"
+								style={{ textDecoration: 'underline', cursor: 'default' }}
+							>
 								({t('label.what_is_a_gal', "What's a GAL?")})
 							</Text>
 						</Tooltip>
