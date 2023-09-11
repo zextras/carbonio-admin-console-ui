@@ -401,7 +401,7 @@ const MTAStats: FC = () => {
 					<Container
 						crossAlignment="flex-end"
 						orientation="horizontal"
-						mainAlignment="flex-start"
+						mainAlignment="flex-end"
 						width="35%"
 					>
 						<Container
@@ -420,12 +420,7 @@ const MTAStats: FC = () => {
 								loading={requestInprogress}
 							/>
 						</Container>
-						<Container
-							crossAlignment="flex-start"
-							height="auto"
-							width="fit"
-							padding={{ right: 'large' }}
-						>
+						<Container crossAlignment="flex-start" height="auto" width="fit">
 							<Button
 								type="outlined"
 								size="medium"
