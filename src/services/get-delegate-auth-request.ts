@@ -6,13 +6,13 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
-export const getDelegateAuthRequest = async (id: string): Promise<any> => {
+export const getDelegateAuthRequest = async (id: string, name?: string): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
 		account: [
 			{
-				_content: id,
-				by: 'id'
+				_content: id || name,
+				by: id ? 'id' : 'name'
 			}
 		]
 	};

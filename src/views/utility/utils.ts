@@ -2194,3 +2194,5 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 		keyToGet: 'Smtp'
 	}
 ];
+
+export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);

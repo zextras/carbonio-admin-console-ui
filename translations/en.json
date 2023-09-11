@@ -1464,6 +1464,7 @@
         "public_service_port": "Public Service Port",
         "public_service_protocol": "Public Service Protocol",
         "purge": "Purge",
+        "quarantine": "Quarantine",
         "quarantined": "Quarantined",
         "query_is_not_valid": "Query is not valid",
         "queued": "Queued",
@@ -2031,6 +2032,18 @@
         "full_error_sub_1": "We all make mistakes but it's how you deal with them that changes everything! We want to learn from our errors so let us know how we can fix them",
         "send_full_error_data": "Send full error data",
         "survey_feedback_sub_1": "Don't worry, surveys will be quick, easy and super useful to us to understand how we're going."
+    },
+    "quarantine": {
+        "create_quarantine": "CREATE A QUARANTINE ACCOUNT",
+        "delete_and_recrate_quarantine_account_title": "Delete and re-create quarantine account",
+        "delete_and_recrate_quarantine_account_warning": "Are you sure you want to delete and re-create quarantine account?",
+        "delete_and_recreate_quarantine": "DELETE AND RE-CREATE QUARANTINE ACCOUNT",
+        "destroy_account_recreate_button": "YES, DELETE AND RE-CREATE IT",
+        "not_quarantine_account": "There is not quarantine account in any of the domains, yet. Do you want to create a system quarantine account?",
+        "quarantine": "Quarantine",
+        "quarantine_account": "Quarantine Account",
+        "quarantine_messages": "Quarantined Messages",
+        "to_make_changes_restart_the_MTA": "To make the changes effective, please restart the MTA."
     },
     "reminder": {
         "minute": "{{count}} minute",
