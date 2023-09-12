@@ -351,6 +351,13 @@ const ManageAccounts: FC = () => {
 							obj[ele.n] = ele._content;
 						}
 					});
+					if (obj.userPassword) {
+						obj.password = '******';
+						obj.repeatPassword = '******';
+					} else {
+						obj.password = '';
+						obj.repeatPassword = '';
+					}
 					obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
 						? obj.zimbraPrefMailForwardingAddress
 						: '';
@@ -358,8 +365,6 @@ const ManageAccounts: FC = () => {
 						? obj.zimbraPrefCalendarForwardInvitesTo
 						: '';
 
-					obj.password = '';
-					obj.repeatPassword = '';
 					obj.name = data?.account?.[0]?.name;
 					if (obj.zimbraIsAdminAccount === undefined) {
 						obj.zimbraIsAdminAccount = 'FALSE';
