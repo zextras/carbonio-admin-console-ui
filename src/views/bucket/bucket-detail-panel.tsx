@@ -46,7 +46,7 @@ const headers = (t: TFunction): Array<object> => [
 	},
 	{
 		id: 'name',
-		label: t('label.name', 'Name'),
+		label: t('label.bucket_name', 'Name'),
 		bold: true
 	},
 	{

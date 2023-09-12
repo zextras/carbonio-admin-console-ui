@@ -82,7 +82,7 @@ const DomainAclList: FC = () => {
 		() => [
 			{
 				id: 'name',
-				label: t('label.name', 'Name'),
+				label: t('label.security_group_name', 'Name'),
 				width: '20%',
 				bold: true
 			},

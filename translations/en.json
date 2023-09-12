@@ -1300,6 +1300,9 @@
         "mail_transport": "Mail Transport",
         "mail_transport_map": "Mail Transport Map",
         "mailbox_quota": "Mailbox Quota",
+        "mailing-list": {
+            "object_name": "Object Name"
+        },
         "mailing_list": "Mailing List",
         "mailing_list_already_in_list_error": "The Mailing List / User is already in the list",
         "mailing_list_name": "Mailing List Name",
@@ -1439,7 +1442,10 @@
         "percentage_maximum_conflict": "% Maximum Conflict",
         "percentage_maximum_conflict_allowed": "% Maximum Conflict Allowed",
         "permanently_delete_domain_with_all_resources_permanently_remove": "Permanently remove all the accounts and domain objects. This operation cannot be reverted.",
+        "person_name": "Name",
+        "personal_name": "Personal Name",
         "personalisation": "Customization",
+        "peson_name": "Name",
         "phone": "Phone",
         "please_select_the_measure_unit": "Please select The Measure Unit",
         "please_wait": "Please wait",

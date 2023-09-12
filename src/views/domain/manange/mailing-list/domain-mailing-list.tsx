@@ -83,7 +83,7 @@ const DomainMailingList: FC = () => {
 		() => [
 			{
 				id: 'name',
-				label: t('label.name', 'Name'),
+				label: t('label.mailing_list_name', 'Name'),
 				width: '20%',
 				bold: true
 			},
