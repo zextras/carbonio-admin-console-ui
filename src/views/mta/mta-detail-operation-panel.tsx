@@ -7,6 +7,7 @@ import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import {
+	ADVANCED,
 	ANTIVIRUS_AND_ANTISPAM,
 	GENERAL,
 	OUTBOUND_FLOW,
@@ -16,8 +17,9 @@ import {
 import MTAInboundFlowSecurity from './inbound-flow-security/inbound-flow-security';
 import MTAOutBoundFlow from './outbound-flow/outbound-flow';
 import MTAAntiVirusAndAntiSpam from './antvirus-and-antispam/antivirus-and-antispam';
-import MTAStats from './stats/mta-stats';
+import MTAAdvanced from './mta-advanced/mta-advanced';
 import MTAPostScreenTuning from './post-screen-tuning/post-screen-tuning';
+import MTAStats from './stats/mta-stats';
 
 const MTADetailOperationPanel: FC = () => {
 	const [t] = useTranslation();
@@ -37,6 +39,8 @@ const MTADetailOperationPanel: FC = () => {
 						return <MTAPostScreenTuning />;
 					case STATS:
 						return <MTAStats />;
+					case ADVANCED:
+						return <MTAAdvanced />;
 					default:
 						return null;
 				}

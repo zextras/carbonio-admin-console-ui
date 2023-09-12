@@ -13,7 +13,8 @@ import {
 	MTA_ROUTE_ID,
 	OUTBOUND_FLOW,
 	POSTSCREEN_TUNING,
-	STATS
+	STATS,
+	ADVANCED
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
@@ -61,6 +62,11 @@ const MTAListPanel: FC = () => {
 			{
 				id: STATS,
 				name: t('mta.stats', 'Stats'),
+				isSelected: true
+			},
+			{
+				id: ADVANCED,
+				name: t('label.advanced', 'Advanced'),
 				isSelected: true
 			}
 		],
