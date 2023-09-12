@@ -48,3 +48,13 @@ export type MtaAntivirusAndAntispam = {
 	carbonioClamAVDatabaseCustomURL: string;
 	carbonioAmavisDisableVirusCheck: boolean;
 };
+
+export type mtaStats = {
+	id: string;
+	serverName: string;
+	deferred: string;
+	incoming: string;
+	corrupt: string;
+	active: string;
+	hold: string;
+};
