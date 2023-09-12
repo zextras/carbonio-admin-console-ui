@@ -292,3 +292,5 @@ export const SECURITY_GROUP = 'security_group';
 export const DL = 'dl';
 export const USR = 'usr';
 export const QUARANTINE = 'quarantine';
+export const MATOMO_URL = 'https://zextras.matomo.cloud/';
+export const MATOMO_SITE_ID = 1;

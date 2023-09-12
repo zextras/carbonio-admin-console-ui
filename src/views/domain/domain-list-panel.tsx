@@ -52,6 +52,7 @@ import { getAllRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { DomainResponse } from '../../../types';
+import { useConfigStore } from '../../store/config/store';
 
 const SelectItem = styled(Row)``;
 
@@ -77,7 +78,8 @@ interface ManageOptions {
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const locationService = useLocation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
