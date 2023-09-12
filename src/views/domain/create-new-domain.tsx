@@ -464,8 +464,12 @@ const CreateDomain: FC = () => {
 								background="gray6"
 								padding={{ left: 'large', top: 'large' }}
 							>
-								<Text size="small" weight="bold" color="gray0">
-									{t('label.gal_settings', 'GAL Settings ')}&nbsp;
+								<Text
+									size="small"
+									color="gray0"
+									style={{ textDecoration: 'underline', cursor: 'default' }}
+								>
+									({t('label.what_is_a_gal', "What's a GAL?")})
 								</Text>
 								<Tooltip
 									placement="top"
