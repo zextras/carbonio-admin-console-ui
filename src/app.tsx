@@ -102,7 +102,7 @@ const App: FC = () => {
 	const setIsAdvanced = useAuthIsAdvanced((state) => state.setIsAdvanced);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const { config, setConfig } = useConfigStore((state) => state);
+	const { config, setConfig, setUserId } = useConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);
@@ -121,6 +121,11 @@ const App: FC = () => {
 		}
 		return false;
 	}, [rights]);
+	useEffect(() => {
+		const { id } = accounts[0];
+		setUserId(id);
+	}, [accounts, setUserId]);
+
 	const showCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
 		if (

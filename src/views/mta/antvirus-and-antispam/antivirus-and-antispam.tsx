@@ -142,6 +142,12 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 
 	const onSave = useCallback(() => {
 		const attributes: Array<Record<string, string>> = [];
+		if (mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag) {
+			attributes.push({
+				n: ZIMBRA_SPAM_SUBJECT_TAG,
+				_content: mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag
+			});
+		}
 		if (mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny) {
 			attributes.push({
 				n: ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,

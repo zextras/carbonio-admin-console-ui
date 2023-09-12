@@ -295,3 +295,5 @@ export const CORRUPT = 'corrupt';
 export const DEFERRED = 'deferred';
 export const HOLD = 'hold';
 export const INCOMING = 'incoming';
+export const MATOMO_URL = 'https://zextras.matomo.cloud/';
+export const MATOMO_SITE_ID = 1;

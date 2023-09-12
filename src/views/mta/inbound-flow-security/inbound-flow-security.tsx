@@ -693,7 +693,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							<Switch
 								label={t(
 									'mta.notify_external_recipient_about_block_extensions',
-									'Notify external recepients about blocked extensions'
+									'Notify external recipients about blocked extensions'
 								)}
 								value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
 								onClick={(): void =>
@@ -991,7 +991,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							<Switch
 								label={t(
 									'mta.client_must_greet_with_fully_qualified_hostname',
-									'Client should have a quilified hostname'
+									'Client should have a qualified hostname'
 								)}
 								value={mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname}
 								onClick={(): void =>
