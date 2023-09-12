@@ -4,13 +4,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useState } from 'react';
-import { Button } from '@zextras/carbonio-design-system';
+import { Button, Container } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section';
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import OverlayDivision from '../../../../components/overlayDivision';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 39.4rem;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const WizardInSection: FC<any> = ({
 	wizard,
@@ -46,7 +63,14 @@ const NewVolume: FC<{
 	setToggleWizardExternal: any;
 	volName: any;
 	CreateVolumeRequest: any;
-}> = ({ setToggleWizardLocal, setToggleWizardExternal, volName, CreateVolumeRequest }) => {
+	isLoading: boolean;
+}> = ({
+	setToggleWizardLocal,
+	setToggleWizardExternal,
+	volName,
+	CreateVolumeRequest,
+	isLoading
+}) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 	const context = useContext(VolumeContext);
@@ -125,14 +149,17 @@ const NewVolume: FC<{
 	);
 
 	return (
-		<HorizontalWizard
-			steps={wizardSteps}
-			Wrapper={WizardInSection}
-			onChange={setWizardData}
-			onComplete={onComplete}
-			setToggleWizardSection={setToggleWizardLocal}
-			externalData={volName}
-		/>
+		<>
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<HorizontalWizard
+				steps={wizardSteps}
+				Wrapper={WizardInSection}
+				onChange={setWizardData}
+				onComplete={onComplete}
+				setToggleWizardSection={setToggleWizardLocal}
+				externalData={volName}
+			/>
+		</>
 	);
 };
 

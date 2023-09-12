@@ -19,6 +19,7 @@ import {
 	Switch,
 	ChipInput
 } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useHistory } from 'react-router-dom';
@@ -40,6 +41,22 @@ import { useDomainStore } from '../../store/domain/store';
 import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../../../types';
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
 import { isValidEmail } from '../utility/utils';
+import OverlayDivision from '../components/overlayDivision';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 70.35rem;
+	top: 6.5rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 // eslint-disable-next-line no-shadow
 export enum GAL_MODE {
@@ -93,6 +110,7 @@ const CreateDomain: FC = () => {
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
 	const allMailStoreList = useMailstoreListStore((state) => state.allMailstoreList);
 	const [isDomainDelegatedAdmin, setIsDomainDelegatedAdmin] = useState(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
 	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
 		{ label: string }[]
@@ -212,6 +230,7 @@ const CreateDomain: FC = () => {
 	const onCreate = (): void => {
 		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
 			setHasCarbonioNotificationFromError(false);
+			setIsLoading(true);
 			let attributes: Attribute[] &
 				{
 					n: string;
@@ -305,6 +324,7 @@ const CreateDomain: FC = () => {
 							});
 						}
 					}
+					setIsLoading(false);
 				})
 				.catch((error) => {
 					createSnackbar({
@@ -317,6 +337,7 @@ const CreateDomain: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 		} else {
 			setHasCarbonioNotificationFromError(true);
@@ -332,304 +353,307 @@ const CreateDomain: FC = () => {
 	}, [isDomainDelegatedAdmin, setIsDomainSupportDelegatedAdmin]);
 
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Container
-				crossAlignment="flex-start"
-				mainAlignment="flex-start"
-				background="gray6"
-				height="3.625rem"
-			>
-				<Row width="100%" mainAlignment="flex-start">
-					<Padding all="large">
-						<Text size="medium" weight="bold" color="gray0">
-							{t('label.new_domain', 'New Domain')}
-						</Text>
-					</Padding>
-					<Divider />
-				</Row>
-			</Container>
-			<Container
-				orientation="column"
-				crossAlignment="flex-start"
-				mainAlignment="flex-start"
-				style={{ overflow: 'auto' }}
-				width="100%"
-				height="calc(100vh - 9.375rem)"
-				padding={{ top: 'large' }}
-			>
-				<Row mainAlignment="flex-start" width="100%">
-					<Container height="fit" crossAlignment="flex-start" background="gray6">
-						<Row
-							mainAlignment="flex-start"
-							width="100%"
-							background="gray6"
-							padding={{ left: 'large', top: 'large' }}
-						>
-							<Text size="small" weight="bold" color="gray0">
-								{t('label.general_information', 'General Information')}
-							</Text>
-						</Row>
-						<ListRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t(
-										'label.type_name_your_domain_will_have',
-										'Type the name your domain will have'
-									)}
-									backgroundColor="gray5"
-									value={domainName}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setDomainName(e.target.value);
-									}}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t(
-										'label.max_manageable_account_for_the_domain',
-										'Max manageable account for the domain (0=unlimited)'
-									)}
-									backgroundColor="gray5"
-									value={zimbraDomainMaxAccounts}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setZimbraDomainMaxAccounts(e.target.value);
-									}}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t(
-										'label.max_mainbox_quota_for_the_domain_in_bytes',
-										'Max mailbox quota for the domain (bytes) (0=unlimited)'
-									)}
-									backgroundColor="gray5"
-									value={zimbraMailDomainQuota}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setZimbraMailDomainQuota(e.target.value);
-									}}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
-								<Input
-									label={t('label.description', 'Description')}
-									backgroundColor="gray5"
-									value={zimbraNotes}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setZimbraNotes(e.target.value);
-									}}
-								/>
-							</Container>
-						</ListRow>
-					</Container>
-				</Row>
-				<Row
-					width="100%"
+		<>
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+				<Container
+					crossAlignment="flex-start"
 					mainAlignment="flex-start"
-					padding={{ vertical: 'large', horizontal: 'small' }}
+					background="gray6"
+					height="3.625rem"
 				>
-					<Divider />
-				</Row>
-				<Row mainAlignment="flex-start" width="100%">
-					<Container height="fit" crossAlignment="flex-start" background="gray6">
-						<Row
-							mainAlignment="flex-start"
-							width="100%"
-							background="gray6"
-							padding={{ left: 'large', top: 'large' }}
-						>
-							<Text size="small" weight="bold" color="gray0">
-								{t('label.gal_settings', 'GAL Settings ')}&nbsp;
+					<Row width="100%" mainAlignment="flex-start">
+						<Padding all="large">
+							<Text size="medium" weight="bold" color="gray0">
+								{t('label.new_domain', 'New Domain')}
 							</Text>
-							<Tooltip
-								placement="top"
-								label={t('label.global_address_list', 'Global Address List')}
+						</Padding>
+						<Divider />
+					</Row>
+				</Container>
+				<Container
+					orientation="column"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					style={{ overflow: 'auto' }}
+					width="100%"
+					height="calc(100vh - 9.375rem)"
+					padding={{ top: 'large' }}
+				>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container height="fit" crossAlignment="flex-start" background="gray6">
+							<Row
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ left: 'large', top: 'large' }}
 							>
-								<Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
-									({t('label.what_is_a_gal', "What's a GAL?")})
+								<Text size="small" weight="bold" color="gray0">
+									{t('label.general_information', 'General Information')}
 								</Text>
-							</Tooltip>
-						</Row>
-						<ListRow>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									value={zimbraGalMode}
-									disabled
-									label={t('label.gal_mode', 'GAL Mode')}
-									backgroundColor="gray5"
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setZimbraGalMode(e.target.value);
-									}}
-								/>
-							</Container>
-							<Container padding={{ all: 'small' }}>
-								<Input
-									label={t('label.gal_folder_name', 'GAL folder name')}
-									backgroundColor="gray5"
-									value={galSyncAccountName}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setGalSyncAccountName(e.target.value);
-									}}
-								/>
-							</Container>
-						</ListRow>
+							</Row>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t(
+											'label.type_name_your_domain_will_have',
+											'Type the name your domain will have'
+										)}
+										backgroundColor="gray5"
+										value={domainName}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setDomainName(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t(
+											'label.max_manageable_account_for_the_domain',
+											'Max manageable account for the domain (0=unlimited)'
+										)}
+										backgroundColor="gray5"
+										value={zimbraDomainMaxAccounts}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setZimbraDomainMaxAccounts(e.target.value);
+										}}
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t(
+											'label.max_mainbox_quota_for_the_domain_in_bytes',
+											'Max mailbox quota for the domain (bytes) (0=unlimited)'
+										)}
+										backgroundColor="gray5"
+										value={zimbraMailDomainQuota}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setZimbraMailDomainQuota(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
+									<Input
+										label={t('label.description', 'Description')}
+										backgroundColor="gray5"
+										value={zimbraNotes}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setZimbraNotes(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+					<Row
+						width="100%"
+						mainAlignment="flex-start"
+						padding={{ vertical: 'large', horizontal: 'small' }}
+					>
+						<Divider />
+					</Row>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container height="fit" crossAlignment="flex-start" background="gray6">
+							<Row
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ left: 'large', top: 'large' }}
+							>
+								<Text size="small" weight="bold" color="gray0">
+									{t('label.gal_settings', 'GAL Settings ')}&nbsp;
+								</Text>
+								<Tooltip
+									placement="top"
+									label={t('label.global_address_list', 'Global Address List')}
+								>
+									<Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
+										({t('label.what_is_a_gal', "What's a GAL?")})
+									</Text>
+								</Tooltip>
+							</Row>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										value={zimbraGalMode}
+										disabled
+										label={t('label.gal_mode', 'GAL Mode')}
+										backgroundColor="gray5"
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setZimbraGalMode(e.target.value);
+										}}
+									/>
+								</Container>
+								<Container padding={{ all: 'small' }}>
+									<Input
+										label={t('label.gal_folder_name', 'GAL folder name')}
+										backgroundColor="gray5"
+										value={galSyncAccountName}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setGalSyncAccountName(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
 
-						<ListRow>
-							<Container padding={{ all: 'small' }}>
-								<Select
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
-									items={zimbraPublicServiceHostnameList}
-									backgroundColor="gray5"
-									label={t('domain.mail_server', 'Mail Server')}
-									showCheckbox={false}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
-									selection={zimbraPublisServiceHostname}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
-									onChange={onPublicServiceProtocolChange}
-								/>
-							</Container>
-							<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
-								<Input
-									label={t('label.datasource_name', 'Datasource name')}
-									backgroundColor="gray5"
-									value={dataSourceName}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setDataSourceName(e.target.value);
-									}}
-								/>
-							</Container>
-						</ListRow>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ vertical: 'large', horizontal: 'small' }}
-						>
-							<Divider />
-						</Row>
-						<Row
-							mainAlignment="flex-start"
-							width="100%"
-							background="gray6"
-							padding={{ left: 'large', top: 'large' }}
-						>
-							<Text size="small" weight="bold" color="gray0">
-								{t('label.delegated_administration_title', 'Delegated Administration')}
-							</Text>
-						</Row>
-						<ListRow>
-							<Container
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
+										items={zimbraPublicServiceHostnameList}
+										backgroundColor="gray5"
+										label={t('domain.mail_server', 'Mail Server')}
+										showCheckbox={false}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
+										selection={zimbraPublisServiceHostname}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
+										onChange={onPublicServiceProtocolChange}
+									/>
+								</Container>
+								<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
+									<Input
+										label={t('label.datasource_name', 'Datasource name')}
+										backgroundColor="gray5"
+										value={dataSourceName}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setDataSourceName(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+							<Row
+								width="100%"
 								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
+								padding={{ vertical: 'large', horizontal: 'small' }}
 							>
-								<Switch
-									label={t(
-										'label.domain_support_delegated_administration',
-										'This domain supports delegated administration'
-									)}
-									onClick={(): void => setIsDomainDelegatedAdmin(!isDomainDelegatedAdmin)}
-									iconColor="primary"
-								/>
-							</Container>
-						</ListRow>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							padding={{ vertical: 'large', horizontal: 'small' }}
-						>
-							<Divider />
-						</Row>
-						<Row
-							mainAlignment="flex-start"
-							width="100%"
-							background="gray6"
-							padding={{ left: 'large', top: 'large' }}
-						>
-							<Text size="small" weight="bold" color="gray0">
-								{t('label.domain_system_notifications', 'Domain System Notifications')}
-							</Text>
-						</Row>
-						<ListRow>
-							<Container
+								<Divider />
+							</Row>
+							<Row
 								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
+								width="100%"
+								background="gray6"
+								padding={{ left: 'large', top: 'large' }}
 							>
-								<Input
-									label={t('label.notification_sender', 'Notification Sender')}
-									backgroundColor="gray5"
-									value={carbonioNotificationFrom}
-									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-										setCarbonioNotificationFrom(e.target.value);
-									}}
-									hasError={hasCarbonioNotificationFromError}
-									description={
-										hasCarbonioNotificationFromError
-											? t('label.notification_error_msg', 'Enter a valid email address.')
-											: undefined
-									}
-								/>
-							</Container>
-						</ListRow>
-						<ListRow>
-							<Container
+								<Text size="small" weight="bold" color="gray0">
+									{t('label.delegated_administration_title', 'Delegated Administration')}
+								</Text>
+							</Row>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
+								>
+									<Switch
+										label={t(
+											'label.domain_support_delegated_administration',
+											'This domain supports delegated administration'
+										)}
+										onClick={(): void => setIsDomainDelegatedAdmin(!isDomainDelegatedAdmin)}
+										iconColor="primary"
+									/>
+								</Container>
+							</ListRow>
+							<Row
+								width="100%"
 								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
+								padding={{ vertical: 'large', horizontal: 'small' }}
 							>
-								<ChipInput
-									placeholder={t('label.send_notifications_to', 'Send notifications to...')}
-									background="gray5"
-									defaultValue={carbonioNotificationRecipients}
-									value={carbonioNotificationRecipients}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
-									onChange={(emails: { label: string }[]): void => {
-										const data: { label: string }[] = [];
-										map(emails, (email) => {
-											if (isValidEmail(email.label ?? '')) data.push(email);
-										});
-										setCarbonioNotificationRecipients(data);
-									}}
-									hasError={some(carbonioNotificationRecipients || [], { error: true })}
-								/>
-							</Container>
-						</ListRow>
-					</Container>
-				</Row>
-			</Container>
-			<Container
-				orientation="horizontal"
-				crossAlignment="flex-start"
-				mainAlignment="flex-end"
-				background="gray6"
-				height="3.625rem"
-				padding={{ top: 'small', right: 'large' }}
-			>
-				<Padding right="medium">
+								<Divider />
+							</Row>
+							<Row
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ left: 'large', top: 'large' }}
+							>
+								<Text size="small" weight="bold" color="gray0">
+									{t('label.domain_system_notifications', 'Domain System Notifications')}
+								</Text>
+							</Row>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
+								>
+									<Input
+										label={t('label.notification_sender', 'Notification Sender')}
+										backgroundColor="gray5"
+										value={carbonioNotificationFrom}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setCarbonioNotificationFrom(e.target.value);
+										}}
+										hasError={hasCarbonioNotificationFromError}
+										description={
+											hasCarbonioNotificationFromError
+												? t('label.notification_error_msg', 'Enter a valid email address.')
+												: undefined
+										}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
+								>
+									<ChipInput
+										placeholder={t('label.send_notifications_to', 'Send notifications to...')}
+										background="gray5"
+										defaultValue={carbonioNotificationRecipients}
+										value={carbonioNotificationRecipients}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
+										onChange={(emails: { label: string }[]): void => {
+											const data: { label: string }[] = [];
+											map(emails, (email) => {
+												if (isValidEmail(email.label ?? '')) data.push(email);
+											});
+											setCarbonioNotificationRecipients(data);
+										}}
+										hasError={some(carbonioNotificationRecipients || [], { error: true })}
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+				</Container>
+				<Container
+					orientation="horizontal"
+					crossAlignment="flex-start"
+					mainAlignment="flex-end"
+					background="gray6"
+					height="3.625rem"
+					padding={{ top: 'small', right: 'large' }}
+				>
+					<Padding right="medium">
+						<Button
+							label={t('label.cancel', 'Cancel')}
+							icon="Close"
+							color="secondary"
+							onClick={onCancel}
+						/>
+					</Padding>
+
 					<Button
-						label={t('label.cancel', 'Cancel')}
-						icon="Close"
-						color="secondary"
-						onClick={onCancel}
+						label={t('label.create', 'Create')}
+						icon="CheckmarkCircle"
+						color="primary"
+						disabled={domainName === ''}
+						onClick={onCreate}
 					/>
-				</Padding>
-
-				<Button
-					label={t('label.create', 'Create')}
-					icon="CheckmarkCircle"
-					color="primary"
-					disabled={domainName === ''}
-					onClick={onCreate}
-				/>
+				</Container>
 			</Container>
-		</Container>
+		</>
 	);
 };
 export default CreateDomain;

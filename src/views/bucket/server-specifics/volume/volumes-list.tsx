@@ -201,6 +201,7 @@ const VolumesDetailPanel: FC = () => {
 	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
 	const serverList = useServerStore((state) => state.serverList);
 	const [selectedServerId, setSelectedServerId] = useState<string>('');
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [volume, setVolume] = useState<Volume | undefined>({
 		compressBlobs: '',
 		compressionThreshold: '',
@@ -540,6 +541,7 @@ const VolumesDetailPanel: FC = () => {
 	};
 
 	const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
+		setIsLoading(true);
 		if (isAdvanced) {
 			let volType = 'primary';
 			if (attr?.type === 2) {
@@ -618,6 +620,7 @@ const VolumesDetailPanel: FC = () => {
 						autoHideTimeout: 5000
 					});
 				}
+				setIsLoading(false);
 			});
 		} else {
 			await createVoume(attr)
@@ -657,6 +660,7 @@ const VolumesDetailPanel: FC = () => {
 					});
 					setToggleWizardLocal(false);
 					setToggleWizardExternal(false);
+					setIsLoading(false);
 					return res;
 				})
 				.catch((error) => {
@@ -670,6 +674,7 @@ const VolumesDetailPanel: FC = () => {
 							  }),
 						autoHideTimeout: 5000
 					});
+					setIsLoading(false);
 					return error;
 				});
 		}
@@ -710,6 +715,7 @@ const VolumesDetailPanel: FC = () => {
 						setToggleWizardExternal={setToggleWizardExternal}
 						volName={selectedServerName}
 						CreateVolumeRequest={CreateVolumeRequest}
+						isLoading={isLoading}
 					/>
 				</ModalOverlay>
 			)}
