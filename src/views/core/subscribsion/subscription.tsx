@@ -252,29 +252,28 @@ const Subscription: FC = () => {
 	};
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6">
-			<Row mainAlignment="flex-start" width="100%">
-				<Container
-					orientation="vertical"
-					mainAlignment="space-around"
-					background="gray6"
-					height="58px"
+		<Container maxWidth="100%" mainAlignment="flex-start" background="gray6">
+			<Container
+				orientation="horizontal"
+				mainAlignment="space-around"
+				background="gray6"
+				height="58px"
+			>
+				<Row
+					orientation="horizontal"
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="100%"
+					padding={{ all: 'large' }}
 				>
-					<Row
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						width="100%"
-						padding={{ all: 'large' }}
-					>
-						<Row mainAlignment="flex-start" crossAlignment="flex-start">
-							<Text size="medium" weight="bold" color="gray0">
-								{t('label.details', 'Details')}
-							</Text>
-						</Row>
+					<Row mainAlignment="flex-start" crossAlignment="flex-start">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('label.details', 'Details')}
+						</Text>
 					</Row>
-				</Container>
-			</Row>
+				</Row>
+			</Container>
+
 			<Row orientation="horizontal" width="100%" background="gray6">
 				<Divider />
 			</Row>
