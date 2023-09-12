@@ -6,10 +6,17 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { ANTIVIRUS_AND_ANTISPAM, GENERAL, OUTBOUND_FLOW, POSTSCREEN_TUNING } from '../../constants';
+import {
+	ANTIVIRUS_AND_ANTISPAM,
+	GENERAL,
+	OUTBOUND_FLOW,
+	POSTSCREEN_TUNING,
+	STATS
+} from '../../constants';
 import MTAInboundFlowSecurity from './inbound-flow-security/inbound-flow-security';
 import MTAOutBoundFlow from './outbound-flow/outbound-flow';
 import MTAAntiVirusAndAntiSpam from './antvirus-and-antispam/antivirus-and-antispam';
+import MTAStats from './stats/mta-stats';
 import MTAPostScreenTuning from './post-screen-tuning/post-screen-tuning';
 
 const MTADetailOperationPanel: FC = () => {
@@ -28,6 +35,8 @@ const MTADetailOperationPanel: FC = () => {
 						return <MTAAntiVirusAndAntiSpam />;
 					case POSTSCREEN_TUNING:
 						return <MTAPostScreenTuning />;
+					case STATS:
+						return <MTAStats />;
 					default:
 						return null;
 				}

@@ -26,10 +26,12 @@ import { useModuleLicenseStore } from '../../store/module-license/store';
 import { useRightsStore } from '../../store/rights/store';
 import { getRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
+import { useConfigStore } from '../../store/config/store';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);

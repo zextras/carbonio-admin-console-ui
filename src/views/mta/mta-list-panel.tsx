@@ -12,16 +12,19 @@ import {
 	GENERAL,
 	MTA_ROUTE_ID,
 	OUTBOUND_FLOW,
-	POSTSCREEN_TUNING
+	POSTSCREEN_TUNING,
+	STATS
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
+import { useConfigStore } from '../../store/config/store';
 
 const MTAListPanel: FC = () => {
 	const [t] = useTranslation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const [isMtaSettingsExpanded, setIsMtaSettingsExpanded] = useState(true);
 	const [selectedOperationItem, setSelectedOperationItem] = useState(GENERAL);
 
@@ -53,6 +56,11 @@ const MTAListPanel: FC = () => {
 			{
 				id: ANTIVIRUS_AND_ANTISPAM,
 				name: t('mta.antivirus_and_antispam', 'Antivirus & Antispam'),
+				isSelected: true
+			},
+			{
+				id: STATS,
+				name: t('mta.stats', 'Stats'),
 				isSelected: true
 			}
 		],

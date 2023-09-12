@@ -69,3 +69,13 @@ export type MtaPostTuning = {
 	zimbraMtaPostscreenNonSmtpCommandTTL: string;
 	zimbraMtaPostscreenBareNewlineTTL: string;
 };
+
+export type mtaStats = {
+	id: string;
+	serverName: string;
+	deferred: string;
+	incoming: string;
+	corrupt: string;
+	active: string;
+	hold: string;
+};
