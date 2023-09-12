@@ -76,9 +76,9 @@ const CreateAccountDetailSection: FC = () => {
 	const combineName = useMemo(
 		() =>
 			!accountDetail?.changeNameBool
-				? `${accountDetail?.givenName?.replace(/ /g, '')?.toLowerCase() || ''}${
+				? `${accountDetail?.sn?.replace(/ /g, '')?.toLowerCase() || ''}${
 						accountDetail?.initials?.replace(/ /g, '')?.toLowerCase() || ''
-				  }${accountDetail?.sn?.replace(/ /g, '')?.toLowerCase() || ''}`
+				  }${accountDetail?.givenName?.replace(/ /g, '')?.toLowerCase() || ''}`
 				: accountDetail?.name,
 		[
 			accountDetail?.changeNameBool,
@@ -91,10 +91,10 @@ const CreateAccountDetailSection: FC = () => {
 
 	const combineDisplayName = useMemo(
 		() =>
-			`${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}${
+			`${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}${
 				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
-			}${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
-		[accountDetail?.givenName, accountDetail?.initials, accountDetail?.sn]
+			}${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}`.trim(),
+		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
 	);
 	useEffect(() => {
 		if (!!cosList && cosList.length > 0) {
@@ -146,13 +146,14 @@ const CreateAccountDetailSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							onChange={changeAccDetail}
-							inputName="givenName"
-							label={t('label.name', 'Name')}
+							label={t('label.surname', 'Surname')}
 							backgroundColor="gray5"
-							defaultValue={accountDetail?.givenName || ''}
+							onChange={changeAccDetail}
+							inputName="sn"
+							defaultValue={accountDetail?.sn || ''}
 						/>
 					</Row>
+
 					<Row width="32%" mainAlignment="space-between">
 						<Input
 							label={t('label.second_name_initials', 'Middle Name Initials')}
@@ -164,11 +165,11 @@ const CreateAccountDetailSection: FC = () => {
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							label={t('label.surname', 'Surname')}
-							backgroundColor="gray5"
 							onChange={changeAccDetail}
-							inputName="sn"
-							defaultValue={accountDetail?.sn || ''}
+							inputName="givenName"
+							label={t('label.name', 'Name')}
+							backgroundColor="gray5"
+							defaultValue={accountDetail?.givenName || ''}
 						/>
 					</Row>
 				</Row>

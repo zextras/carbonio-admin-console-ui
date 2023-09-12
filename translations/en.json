@@ -1635,6 +1635,7 @@
         "subscription_primarybar_tooltip": "View your <bold>subscription details</bold> and/or <bold>activate</bold> your new one.",
         "subscriptions": "Subscriptions",
         "surname": "Surname",
+        "surname_required": "Surname is required",
         "suspend": "Suspend",
         "suspended": "Suspended",
         "system_account": "System Accounts",
