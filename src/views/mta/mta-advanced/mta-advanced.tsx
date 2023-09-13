@@ -655,7 +655,7 @@ const MTAAdvanced: FC = () => {
 						<Input
 							label={t(
 								'mta.max_size__for_mail_messages',
-								'Max size for mail messages (0 = "no limit")'
+								'Max size for mail messages (MB, 0 = "no limit")'
 							)}
 							backgroundColor="gray5"
 							value={mtaAdvancedDetail?.zimbraMtaMaxMessageSize}
