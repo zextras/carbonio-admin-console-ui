@@ -152,9 +152,11 @@ const AppView: FC = () => {
 				<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '100%' }}>
-							<Suspense fallback={<Spinner />}>
-								<Subscription />
-							</Suspense>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<Subscription />
+								</Suspense>
+							</DetailViewContainer>
 						</Container>
 					</Container>
 				</Route>

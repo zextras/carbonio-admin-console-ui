@@ -35,6 +35,7 @@ import { useDomainStore } from '../../../store/domain/store';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { copyCos } from '../../../services/copy-cos-service';
 import { Cos } from '../../../../types/cos';
+import ListRow from '../../list/list-row';
 
 const SelectItem = styled(Row)``;
 
@@ -612,8 +613,8 @@ const DomainCosLink: FC<{
 				</Text>
 			</Row>
 			{isGlobalAdmin && (
-				<Row mainAlignment="flex-start" width="100%">
-					<Container padding={{ all: 'small' }} width="45%">
+				<ListRow>
+					<Container padding={{ all: 'small' }}>
 						<DropDownInput
 							items={items}
 							inputLabel={t(
@@ -630,7 +631,7 @@ const DomainCosLink: FC<{
 						/>
 					</Container>
 
-					<Container padding={{ all: 'small' }} width="35%">
+					<Container padding={{ all: 'small' }}>
 						<Input
 							label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
 							value={maxAccountValue}
@@ -643,7 +644,7 @@ const DomainCosLink: FC<{
 					<Container
 						crossAlignment="flex-end"
 						padding={{ all: 'small' }}
-						width="20%"
+						width="17%"
 						minWidth="11.5rem"
 					>
 						<Row>
@@ -669,7 +670,7 @@ const DomainCosLink: FC<{
 							/>
 						</Row>
 					</Container>
-				</Row>
+				</ListRow>
 			)}
 			<Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
 				<Table
