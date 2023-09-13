@@ -905,6 +905,7 @@
         "byte_lbl": "BYTE",
         "calendar": "Calendar",
         "calendar_options": "Calendar Options",
+        "can_access_settings": "Can access Settings",
         "can_not_receiver": "Can't receive",
         "can_receive": "Can receive",
         "can_receive_email": "Can receive email",

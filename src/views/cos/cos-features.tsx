@@ -109,6 +109,7 @@ const CosFeatures: FC = () => {
 				setSwitchOptionValue('carbonioFeatureTeamEnabled', obj?.carbonioFeatureTeamEnabled);
 				setSwitchOptionValue('carbonioFeatureChatsAppEnabled', obj?.carbonioFeatureChatsAppEnabled);
 				setSwitchOptionValue('zimbraFeatureTasksEnabled', obj?.zimbraFeatureTasksEnabled);
+				setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
 			}
 		},
 		[setSwitchOptionValue]
