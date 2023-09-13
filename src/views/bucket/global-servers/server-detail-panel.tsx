@@ -376,7 +376,7 @@ const ServerDetailPanel: FC = () => {
 											<Icon icon="FunnelOutline" size="large" color="primary" />
 										)}
 										value={searchServer}
-										onChange={(e: any): void => {
+										onChange={(e): void => {
 											setSearchServer(e.target.value);
 										}}
 									/>

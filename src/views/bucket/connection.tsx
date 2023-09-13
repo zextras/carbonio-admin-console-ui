@@ -413,7 +413,7 @@ const Connection: FC<{
 					label={t('label.label', 'Label')}
 					name="label"
 					value={bucketLabel}
-					onChange={(ev: any): any => {
+					onChange={(ev): void => {
 						setBucketLabel(ev.target.value);
 					}}
 				/>
@@ -425,7 +425,7 @@ const Connection: FC<{
 						label={t('label.bucket_name', 'Bucket Name')}
 						name="bucketName"
 						value={bucketName}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setBucketName(ev.target.value);
 							onSelection({ bucketName: ev.target.value }, false);
 						}}
@@ -460,7 +460,7 @@ const Connection: FC<{
 						label={t('label.access_key', 'Access Key')}
 						name="accessKey"
 						value={accessKeyData}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setAccessKeyData(ev.target.value);
 							onSelection({ accessKey: ev.target.value }, false);
 						}}
@@ -473,7 +473,7 @@ const Connection: FC<{
 						label={t('label.secret_key', 'Secret Key')}
 						name="secretKey"
 						value={secretKey}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setSecretKey(ev.target.value);
 							onSelection({ secret: ev.target.value }, false);
 						}}
@@ -487,7 +487,7 @@ const Connection: FC<{
 						backgroundColor="gray5"
 						name="url"
 						value={urlInput}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setUrlInput(ev.target.value);
 						}}
 					/>
@@ -500,7 +500,7 @@ const Connection: FC<{
 						backgroundColor="gray5"
 						name="prefix"
 						value={prefix}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setPrefix(ev.target.value);
 							if (ev.target.value !== '') {
 								if (prefixRegex.test(ev.target.value)) {
@@ -532,7 +532,7 @@ const Connection: FC<{
 					label={t('label.description', 'Description')}
 					name="notes"
 					value={bucketNotes}
-					onChange={(ev: any): any => {
+					onChange={(ev): void => {
 						setBucketNotes(ev.target.value);
 					}}
 				/>

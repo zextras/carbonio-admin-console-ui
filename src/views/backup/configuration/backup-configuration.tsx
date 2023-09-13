@@ -1075,7 +1075,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.local_volume', 'Local Volume')}
 								value={backupDestPath || ''}
 								backgroundColor="gray5"
-								onChange={(e: any): any => {
+								onChange={(e): void => {
 									!allowSetBackup ?? setBackupDestPath(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -1089,7 +1089,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
 								value={spaceThreshold}
 								backgroundColor="gray5"
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									!allowSetBackup ?? setSpaceThreshold(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -1148,7 +1148,7 @@ const BackupConfiguration: FC = () => {
 								label={t('label.path', 'Path')}
 								value={rootVolumePath || ''}
 								backgroundColor="gray5"
-								onChange={(e: any): any => {
+								onChange={(e): void => {
 									!allowSetBackup ?? setRootVolumePath(e.target.value);
 								}}
 							/>
@@ -1237,7 +1237,7 @@ const BackupConfiguration: FC = () => {
 											label={t('backup.local_mountpoint', 'Local Mountpoint')}
 											value={manageExternalVolumeNewLocalMountpoint || ''}
 											backgroundColor="gray5"
-											onChange={(e: any): any => {
+											onChange={(e): void => {
 												!allowSetBackup ??
 													setManageExternalVolumeNewLocalMountpoint(e.target.value);
 											}}
@@ -1348,7 +1348,7 @@ const BackupConfiguration: FC = () => {
 							<Input
 								label={t('backup.schedule', 'Schedule')}
 								value={scheduleSmartScan}
-								onChange={(e: any): any => {
+								onChange={(e): void => {
 									setScheduleSmartScan(e.target.value);
 								}}
 								disabled={!isScheduleSmartScan || !allowSetBackup}
@@ -1424,7 +1424,7 @@ const BackupConfiguration: FC = () => {
 								label={t('backup.schedule', 'Schedule')}
 								backgroundColor="gray5"
 								value={retentionPolicySchedule}
-								onChange={(e: any): any => {
+								onChange={(e): void => {
 									setRetentionPolicySchedule(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
@@ -1443,7 +1443,7 @@ const BackupConfiguration: FC = () => {
 							<Input
 								label={t('backup.keep_deleted_item_in_backup', 'Keep deleted items in the backup')}
 								value={keepDeletedItemInBackup}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setKeepDeletedItemInBackup(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
@@ -1484,7 +1484,7 @@ const BackupConfiguration: FC = () => {
 								)}
 								backgroundColor="gray5"
 								value={keepDeletedAccountsInBackup}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setKeepDeletedAccountsInBackup(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}

@@ -17,6 +17,22 @@ import CreateOtpSectionView from './account-otp-section';
 import { AccountContext } from './account-context';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import OverlayDivision from '../../../../components/overlayDivision';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 39.4rem;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -123,8 +139,10 @@ const CreateAccount: FC<{
 	const [accountCreate, setAccountCreate] = useState('');
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [showNext, setShowNext] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const createAccountAPI = useCallback((): void => {
+		setIsLoading(true);
 		createAccountRequest(
 			{
 				givenName: accountDetail?.givenName,
@@ -168,6 +186,7 @@ const CreateAccount: FC<{
 					});
 				}
 				getAccountList();
+				setIsLoading(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -180,6 +199,7 @@ const CreateAccount: FC<{
 					hideButton: true,
 					replace: true
 				});
+				setIsLoading(false);
 			});
 	}, [
 		accountDetail,
@@ -390,20 +410,23 @@ const CreateAccount: FC<{
 		[isAdvanced, wizardSteps]
 	);
 	return (
-		<AccountDetailContainer background="gray5" mainAlignment="flex-start">
-			<AccountContext.Provider
-				value={{ accountDetail, setAccountDetail, setShowCreateAccountView }}
-			>
-				<HorizontalWizard
-					steps={wizardStepItems}
-					Wrapper={WizardInSection}
-					onChange={setWizardData}
-					onComplete={onComplete}
-					activeStep={activeStep}
-					setToggleWizardSection={setShowCreateAccountView}
-				/>
-			</AccountContext.Provider>
-		</AccountDetailContainer>
+		<>
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<AccountDetailContainer background="gray5" mainAlignment="flex-start">
+				<AccountContext.Provider
+					value={{ accountDetail, setAccountDetail, setShowCreateAccountView }}
+				>
+					<HorizontalWizard
+						steps={wizardStepItems}
+						Wrapper={WizardInSection}
+						onChange={setWizardData}
+						onComplete={onComplete}
+						activeStep={activeStep}
+						setToggleWizardSection={setShowCreateAccountView}
+					/>
+				</AccountContext.Provider>
+			</AccountDetailContainer>
+		</>
 	);
 };
 export default CreateAccount;

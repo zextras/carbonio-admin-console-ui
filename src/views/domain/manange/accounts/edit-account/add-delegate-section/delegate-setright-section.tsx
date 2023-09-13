@@ -100,7 +100,7 @@ const DelegateSetRightsSection: FC = () => {
 								<RadioGroup value={sendingOption || deligateDetail?.right?.[0]?._content}>
 									<Radio
 										label={t(
-											'account_details.send_as_recepients',
+											'account_details.send_as_recipients',
 											`Send as (recipients will display this sender email {{targetEmail}})`,
 											{
 												targetEmail: accountDetail?.zimbraMailDeliveryAddress
@@ -118,7 +118,7 @@ const DelegateSetRightsSection: FC = () => {
 									<Radio
 										label={t(
 											'account_details.send_as_behalf',
-											`Send on Behalf of (recepients will see the sender {{targetEmail}})`,
+											`Send on Behalf of (recipients will see the sender {{targetEmail}})`,
 											{
 												targetEmail: accountDetail?.zimbraMailDeliveryAddress
 											}

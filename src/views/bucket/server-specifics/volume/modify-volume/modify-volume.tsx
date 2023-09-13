@@ -176,6 +176,7 @@ const ModifyVolume: FC<{
 	};
 
 	const onSave = async (): Promise<void> => {
+		setIsLoading(true);
 		if (isAdvanced) {
 			const obj: { [key: string]: string | boolean | number | undefined } = {};
 			obj._jsns = 'urn:zimbraAdmin';
@@ -255,6 +256,7 @@ const ModifyVolume: FC<{
 						});
 						getAllVolumesRequest();
 						setmodifyVolumeToggle(false);
+						setIsLoading(false);
 					} else {
 						createSnackbar({
 							key: 'error',
@@ -265,6 +267,7 @@ const ModifyVolume: FC<{
 							autoHideTimeout: 5000
 						});
 						setmodifyVolumeToggle(false);
+						setIsLoading(false);
 					}
 				})
 				.catch(() => {
@@ -277,6 +280,7 @@ const ModifyVolume: FC<{
 						autoHideTimeout: 5000
 					});
 					setmodifyVolumeToggle(false);
+					setIsLoading(false);
 				});
 		} else {
 			await soapFetch(
@@ -325,6 +329,7 @@ const ModifyVolume: FC<{
 								}),
 								autoHideTimeout: 5000
 							});
+							setIsLoading(false);
 						});
 					}
 					createSnackbar({
@@ -334,6 +339,7 @@ const ModifyVolume: FC<{
 					});
 					getAllVolumesRequest();
 					setmodifyVolumeToggle(false);
+					setIsLoading(false);
 				})
 				.catch(() => {
 					createSnackbar({
@@ -345,6 +351,7 @@ const ModifyVolume: FC<{
 						autoHideTimeout: 5000
 					});
 					setmodifyVolumeToggle(false);
+					setIsLoading(false);
 				});
 		}
 		updatePreviousDetail();

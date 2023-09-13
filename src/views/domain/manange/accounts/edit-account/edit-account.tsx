@@ -60,7 +60,7 @@ import OverlayDivision from '../../../../components/overlayDivision';
 const ovelayStyle = styled(Container)`
 	position: fixed;
 	width: 58.75rem;
-	top: 6.438rem;
+	top: 0;
 	right: 0;
 	bottom: 0;
 	height: auto;
@@ -98,6 +98,7 @@ const EditAccount: FC<{
 	const domainList = useDomainStore((state) => state.domainList);
 	const [change, setChange] = useState(defaultTab);
 	const [click, setClick] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const context = useContext(AccountContext);
 	const {
@@ -353,6 +354,7 @@ const EditAccount: FC<{
 			}
 		}
 		if (modifiedKeys.includes('uid') || modifiedKeys.includes(DOMAIN_NAME)) {
+			setIsLoading(true);
 			await renameAccountRequest(
 				initAccountDetail?.zimbraId,
 				`${accountDetail?.uid}@${accountDetail?.domainName}`
@@ -369,6 +371,7 @@ const EditAccount: FC<{
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				})
 				.catch((error) => {
 					createSnackbar({
@@ -381,6 +384,7 @@ const EditAccount: FC<{
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 			await getAccountList();
 			remove(modifiedKeys, (ele) => ele === UID);
@@ -437,6 +441,7 @@ const EditAccount: FC<{
 		});
 
 		if (modifiedKeys && modifiedKeys?.length > 0) {
+			setIsLoading(true);
 			modifyAccountRequest(initAccountDetail?.zimbraId, modifiedData)
 				.then((data) => {
 					if (data) {
@@ -453,6 +458,7 @@ const EditAccount: FC<{
 							replace: true
 						});
 						setInitAccountDetail({ ...accountDetail });
+						setIsLoading(false);
 						getAccountList();
 						getAccountDetail(initAccountDetail?.zimbraId);
 					}
@@ -468,6 +474,7 @@ const EditAccount: FC<{
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 		} else {
 			if (isPasswordChange) {
@@ -495,6 +502,7 @@ const EditAccount: FC<{
 		setShowEditAccountView,
 		deleteAdministrationRights,
 		onDeleteFromList,
+		setIsLoading,
 		t
 	]);
 	const onUndo = (): void => {
@@ -503,7 +511,7 @@ const EditAccount: FC<{
 
 	return (
 		<>
-			{!accountDetail?.zimbraId && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			{(!accountDetail?.zimbraId || isLoading) && <OverlayDivision ovelayStyle={ovelayStyle} />}
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"
@@ -604,7 +612,9 @@ const EditAccount: FC<{
 						)}
 						{change === SECURITY && <EditAccountSecuritySection />}
 						{change === DELEGATES && <EditAccountDelegatesSection />}
-						{change === ADMINISTRATION && <EditAccountAdministrationSection />}
+						{change === ADMINISTRATION && (
+							<EditAccountAdministrationSection setIsLoading={setIsLoading} />
+						)}
 					</Container>
 				</Container>
 			</Container>

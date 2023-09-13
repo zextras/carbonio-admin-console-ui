@@ -35,7 +35,6 @@
         "suspended": "Suspendat",
         "timezone": "Fus orar",
         "url": "URL",
-        "web_client": "Client web",
         "new_cos": "COS nouă",
         "new_domain": "Domeniu nou",
         "notes": "Note",
@@ -139,11 +138,9 @@
         "path": "Cale",
         "prefix": "Prefix",
         "private": "Privat",
-        "prompt": "Întreabă",
         "public": "Public",
         "quotas": "Cote",
         "settings": "Setari",
-        "always": "Întotdeauna",
         "calendar": "Calendar",
         "calendar_options": "Opţiuni calendar",
         "can_receive_email": "Poate primi e-mail",
@@ -178,7 +175,11 @@
         "destroy_account": "Ştergere",
         "cancle_button": "Nu.",
         "username": "Nume utilizator",
-        "state": "Stare"
+        "state": "Stare",
+        "all": "Toate",
+        "close": "Inchide",
+        "link": "Legatura",
+        "logout": "Deconectare"
     },
     "core": {
         "subscription": {
@@ -209,7 +210,8 @@
         },
         "summary": {
             "notes": "Note"
-        }
+        },
+        "global": "Global"
     },
     "backup": {
         "schedule": "Planificare",
@@ -275,7 +277,6 @@
         "imap_polling_interval": "Interval de interogare ciclică IMAP",
         "manuallly": "Manual",
         "maximum_number_of_contacts_allowed_in_folder": "Număr maxim de persoane de contact permise în folder",
-        "maximum_number_of_user_specific_forwarding_addresses": "Număr maxim de adrese de redirecţionare specificate de utilizator",
         "maximum_password_age": "Vechime maximă parolă (zile)",
         "maximum_password_length": "Lungime maximă parolă",
         "message_priority": "Prioritate mesaj",
@@ -309,9 +310,9 @@
         "time_window_failed_logins_must_occur_to_lock_account": "Fereastră de timp în care trebuie să se producă autentificările eşuate pentru a bloca contul:",
         "timeout_policy": "Politica privind expirarea sesiunii",
         "trashed_message_lifetime": "Durata mesajelor din coş",
-        "user_specific_fowarding_addresses": "Limitare câmp adresă de redirecţionare specificată de utilizator la (caractere)",
         "files": "Fisiere",
-        "enable_past_due_reminders": "Activare mementouri pentru scadenţe depăşite"
+        "enable_past_due_reminders": "Activare mementouri pentru scadenţe depăşite",
+        "forwarding": "Redirecţionare"
     },
     "locale": {
         "English": "engleză",
@@ -384,7 +385,8 @@
         "volumes": "Volume",
         "yes": "Da",
         "current": "Actual",
-        "scheduling": "Planificare"
+        "scheduling": "Planificare",
+        "new": "Nou"
     },
     "volume": {
         "server_list_header": {
