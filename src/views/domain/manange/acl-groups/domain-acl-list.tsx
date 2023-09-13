@@ -63,6 +63,7 @@ const DomainAclList: FC = () => {
 	const timer = useRef<any>();
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -450,6 +451,7 @@ const DomainAclList: FC = () => {
 			ownerGrantEmailType,
 			ownerGrantEmails
 		) => {
+			setIsLoading(true);
 			const attributes: any[] = [];
 			attributes.push({
 				n: 'displayName',
@@ -556,6 +558,7 @@ const DomainAclList: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				})
 				.catch((error) => {
 					let message = '';
@@ -582,6 +585,7 @@ const DomainAclList: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 		},
 		[createSnackbar, t, addMemberToAclList, callAllRequest]
@@ -740,7 +744,7 @@ const DomainAclList: FC = () => {
 			</Container>
 			{showAclListDetailView && (
 				<ModalOverlay
-					setOpen={showAclListDetailView}
+					setOpen={setShowAclListDetailView}
 					open={showAclListDetailView}
 					maxWidth="40.375rem"
 				>
@@ -756,6 +760,7 @@ const DomainAclList: FC = () => {
 					<CreateAclList
 						setShowCreateAclListView={setShowCreateAclListView}
 						createAclListReq={createAclListReq}
+						isLoading={isLoading}
 					/>
 				</ModalOverlay>
 			)}

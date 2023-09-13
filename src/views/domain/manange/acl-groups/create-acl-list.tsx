@@ -6,6 +6,7 @@
 
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Container, Button } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import AclListSection from './acl-list-section';
 import { HorizontalWizard } from '../../../app/component/hwizard';
@@ -15,6 +16,7 @@ import AclListMembersSection from './acl-list-members-section';
 import AclListCreateSection from './acl-list-create-section';
 import { useDomainStore } from '../../../../store/domain/store';
 import { PUB } from '../../../../constants';
+import OverlayDivision from '../../../components/overlayDivision';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -22,6 +24,21 @@ export enum SUBSCRIBE_UNSUBSCRIBE {
 	APPROVAL = 'APPROVAL',
 	REJECT = 'REJECT'
 }
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 39.4rem;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 interface AclListDetailObj {
 	name: string;
@@ -68,7 +85,8 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 const CreateAclList: FC<{
 	setShowCreateAclListView: any;
 	createAclListReq: any;
-}> = ({ setShowCreateAclListView, createAclListReq }) => {
+	isLoading: boolean;
+}> = ({ setShowCreateAclListView, createAclListReq, isLoading }) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 	const domainInformation = useDomainStore((state) => state.domain);
@@ -323,29 +341,32 @@ const CreateAclList: FC<{
 	}, [domainInformation?.name]);
 
 	return (
-		<Container
-			background="gray5"
-			mainAlignment="flex-start"
-			style={{
-				position: 'absolute',
-				top: '0rem',
-				right: '0rem',
-				bottom: '0rem',
-				transition: 'left 0.2s ease-in-out',
-				maxHeight: '100%',
-				overflow: 'hidden'
-			}}
-		>
-			<AclListContext.Provider value={{ aclListDetail, setAclListDetail }}>
-				<HorizontalWizard
-					steps={aclListDetail?.dynamic ? dynamicAclListSizardSteps : standardAclListSizardSteps}
-					Wrapper={WizardInSection}
-					onChange={setWizardData}
-					onComplete={onComplete}
-					setToggleWizardSection={setShowCreateAclListView}
-				/>
-			</AclListContext.Provider>
-		</Container>
+		<>
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<Container
+				background="gray5"
+				mainAlignment="flex-start"
+				style={{
+					position: 'absolute',
+					top: '0rem',
+					right: '0rem',
+					bottom: '0rem',
+					transition: 'left 0.2s ease-in-out',
+					maxHeight: '100%',
+					overflow: 'hidden'
+				}}
+			>
+				<AclListContext.Provider value={{ aclListDetail, setAclListDetail }}>
+					<HorizontalWizard
+						steps={aclListDetail?.dynamic ? dynamicAclListSizardSteps : standardAclListSizardSteps}
+						Wrapper={WizardInSection}
+						onChange={setWizardData}
+						onComplete={onComplete}
+						setToggleWizardSection={setShowCreateAclListView}
+					/>
+				</AclListContext.Provider>
+			</Container>
+		</>
 	);
 };
 

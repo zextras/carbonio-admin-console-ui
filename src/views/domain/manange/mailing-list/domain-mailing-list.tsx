@@ -64,6 +64,7 @@ const DomainMailingList: FC = () => {
 	const timer = useRef<any>();
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const mailingListStatusFilter: any = useMemo(
 		() => [
@@ -449,6 +450,7 @@ const DomainMailingList: FC = () => {
 			ownerGrantEmailType,
 			ownerGrantEmails
 		) => {
+			setIsLoading(true);
 			const attributes: any[] = [];
 			attributes.push({
 				n: 'displayName',
@@ -542,6 +544,7 @@ const DomainMailingList: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				})
 				.catch((error) => {
 					let message = '';
@@ -568,6 +571,7 @@ const DomainMailingList: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 		},
 		[createSnackbar, t, addMemberToMailingList, callAllRequest]
@@ -739,6 +743,7 @@ const DomainMailingList: FC = () => {
 					<CreateMailingList
 						setShowCreateMailingListView={setShowCreateMailingListView}
 						createMailingListReq={createMailingListReq}
+						isLoading={isLoading}
 					/>
 				</ModalOverlay>
 			)}

@@ -401,7 +401,7 @@ const DomainVirtualHosts: FC = () => {
 								<Paragraph size="medium" color="secondary">
 									<Trans
 										i18nKey="label.virtual_host_msg"
-										defaults="Virtual hosts allow the system to establish a default domain for a user login.<br />Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, domain1.local.<br />Please note, that removal of a virtual host takes effect only after mailbox server is restarted."
+										defaults="Virtual hosts allow the system to establish a default domain for a user login.<br />Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, domain1.local.<br />Please note, that removal of a virtual host takes effect only after mail server is restarted."
 										components={{ break: <br /> }}
 									/>
 								</Paragraph>

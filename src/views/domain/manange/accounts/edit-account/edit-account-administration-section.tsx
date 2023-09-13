@@ -31,7 +31,7 @@ import { searchDirectory } from '../../../../../services/search-directory-servic
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 
-const EditAccountAdministrationSection: FC = () => {
+const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const context = useContext(AccountContext);
 	const createSnackbar = useSnackbar();
 	const { accountDetail, setAccountDetail, initAccountDetail, setDeleteAdministrationRights } =
@@ -95,6 +95,7 @@ const EditAccountAdministrationSection: FC = () => {
 	}, [accountDetail?.zimbraId]);
 
 	const onAdd = useCallback((): void => {
+		setIsLoading(true);
 		const id: any = {
 			n: 'id',
 			_content: selectedOption.value
@@ -118,6 +119,7 @@ const EditAccountAdministrationSection: FC = () => {
 						replace: true
 					});
 					getAccountDistributionList();
+					setIsLoading(false);
 				}
 			})
 			.catch((error) => {
@@ -131,8 +133,9 @@ const EditAccountAdministrationSection: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				setIsLoading(false);
 			});
-	}, [t, accountDetail, selectedOption, getAccountDistributionList, createSnackbar]);
+	}, [t, accountDetail, selectedOption, getAccountDistributionList, createSnackbar, setIsLoading]);
 
 	const fetchDistributionList = (name: string): void => {
 		const attrs =
@@ -188,6 +191,7 @@ const EditAccountAdministrationSection: FC = () => {
 	const onDeleteFromList = useCallback(
 		(lists: any, type: string) => {
 			if (lists?.length > 0) {
+				setIsLoading(true);
 				lists.forEach((item: any) => {
 					const id: any = {
 						n: 'id',
@@ -212,6 +216,7 @@ const EditAccountAdministrationSection: FC = () => {
 									replace: true
 								});
 								getAccountDistributionList();
+								setIsLoading(false);
 							}
 						})
 						.catch((error) => {
@@ -225,12 +230,13 @@ const EditAccountAdministrationSection: FC = () => {
 								hideButton: true,
 								replace: true
 							});
+							setIsLoading(false);
 						});
 				});
 			}
 			setSendSelectedRows([]);
 		},
-		[t, accountDetail, getAccountDistributionList, createSnackbar]
+		[t, accountDetail, getAccountDistributionList, createSnackbar, setIsLoading]
 	);
 
 	const getDomainLists = useCallback((domain: string): any => {
