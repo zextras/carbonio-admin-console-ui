@@ -281,6 +281,28 @@ export const OPENDKIM = 'opendkim';
 export const ZIMBRA_MTA_COMMON_BLOCKED_EXTENSION = 'zimbraMtaCommonBlockedExtension';
 export const ZIMBRA_MTA_TLS_SECURITY_LEVEL = 'zimbraMtaTlsSecurityLevel';
 export const OK = 'ok';
+export const ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION = 'zimbraMtaPostscreenBlacklistAction';
+export const ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST = 'zimbraMtaPostscreenAccessList';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION = 'zimbraMtaPostscreenDnsblAction';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES = 'zimbraMtaPostscreenDnsblSites';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD = 'zimbraMtaPostscreenDnsblThreshold';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD =
+	'zimbraMtaPostscreenDnsblWhitelistThreshold';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL = 'zimbraMtaPostscreenDnsblMinTTL';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL = 'zimbraMtaPostscreenDnsblMaxTTL';
+export const ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL = 'zimbraMtaPostscreenDnsblTTL';
+export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE = 'zimbraMtaPostscreenBareNewlineEnable';
+export const ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE =
+	'zimbraMtaPostscreenNonSmtpCommandEnable';
+export const ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE = 'zimbraMtaPostscreenPipeliningEnable';
+export const ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION = 'zimbraMtaPostscreenPipeliningAction';
+export const ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION =
+	'zimbraMtaPostscreenNonSmtpCommandAction';
+export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION = 'zimbraMtaPostscreenBareNewlineAction';
+export const ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL = 'zimbraMtaPostscreenPipeliningTTL';
+export const ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL = 'zimbraMtaPostscreenNonSmtpCommandTTL';
+export const ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL = 'zimbraMtaPostscreenBareNewlineTTL';
+export const IS_SHOW_POST_TUNING_BANNER = 'isShowPostTuningBanner';
 export const SHORT = 'short';
 export const LONG = 'long';
 export const DOMAIN_NAME = 'domainName';
