@@ -62,3 +62,13 @@ export type MtaAdvanced = {
 	zimbraMilterMaxConnections: string;
 	zimbraMtaSmtpSaslAuthEnable: string;
 };
+
+export type mtaStats = {
+	id: string;
+	serverName: string;
+	deferred: string;
+	incoming: string;
+	corrupt: string;
+	active: string;
+	hold: string;
+};

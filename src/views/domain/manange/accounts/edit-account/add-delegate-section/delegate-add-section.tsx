@@ -83,7 +83,7 @@ const DelegateAddSection: FC = () => {
 								label={t('account_details.sendin_options', 'Sending Options')}
 								backgroundColor="gray5"
 								defaultValue={t(
-									'account_details.send_recepients_see_the_mail',
+									'account_details.send_recipients_see_the_mail',
 									'Send {{right}} (recipients will display this sender email {{targetEmail}})',
 									{
 										granteeEmail: deligateDetail?.grantee?.[0]?.name,
@@ -95,7 +95,7 @@ const DelegateAddSection: FC = () => {
 									}
 								)}
 								value={t(
-									'account_details.send_recepients_see_the_mail',
+									'account_details.send_recipients_see_the_mail',
 									'Send {{right}} (recipients will display this sender email {{targetEmail}})',
 									{
 										granteeEmail: deligateDetail?.grantee?.[0]?.name,

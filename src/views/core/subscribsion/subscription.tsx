@@ -27,6 +27,7 @@ import MatomoTracker from '../../../matomo-tracker';
 import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useConfigStore } from '../../../store/config/store';
 
 interface ContainerExtendProps extends ContainerProps {
 	licensed?: string;
@@ -122,7 +123,9 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 );
 
 const Subscription: FC = () => {
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const matomo = useMemo(() => new MatomoTracker(userId), []);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);

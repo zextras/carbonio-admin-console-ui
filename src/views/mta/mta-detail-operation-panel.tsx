@@ -6,10 +6,11 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { ADVANCED, ANTIVIRUS_AND_ANTISPAM, GENERAL, OUTBOUND_FLOW } from '../../constants';
+import { ADVANCED, ANTIVIRUS_AND_ANTISPAM, GENERAL, OUTBOUND_FLOW, STATS } from '../../constants';
 import MTAInboundFlowSecurity from './inbound-flow-security/inbound-flow-security';
 import MTAOutBoundFlow from './outbound-flow/outbound-flow';
 import MTAAntiVirusAndAntiSpam from './antvirus-and-antispam/antivirus-and-antispam';
+import MTAStats from './stats/mta-stats';
 import MTAAdvanced from './mta-advanced/mta-advanced';
 
 const MTADetailOperationPanel: FC = () => {
@@ -28,6 +29,8 @@ const MTADetailOperationPanel: FC = () => {
 						return <MTAAntiVirusAndAntiSpam />;
 					case ADVANCED:
 						return <MTAAdvanced />;
+					case STATS:
+						return <MTAStats />;
 					default:
 						return null;
 				}
