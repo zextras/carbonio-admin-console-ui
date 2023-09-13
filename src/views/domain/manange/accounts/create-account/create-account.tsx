@@ -325,7 +325,16 @@ const CreateAccount: FC<{
 						icon="PersonOutline"
 						iconPlacement="right"
 						onClick={(): void => {
-							if (
+							if (!accountDetail?.sn?.trim()) {
+								createSnackbar({
+									key: 'error',
+									type: 'error',
+									label: t('label.surname_required', 'Surname is required'),
+									autoHideTimeout: 3000,
+									hideButton: true,
+									replace: true
+								});
+							} else if (
 								accountDetail?.password &&
 								accountDetail?.repeatPassword &&
 								accountDetail?.password?.length < 6

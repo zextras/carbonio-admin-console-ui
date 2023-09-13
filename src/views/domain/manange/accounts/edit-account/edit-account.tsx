@@ -313,6 +313,17 @@ const EditAccount: FC<{
 		}
 		const modifiedData: any = {};
 		let isPasswordChange = false;
+		if (!accountDetail?.sn?.trim()) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t('label.surname_required', 'Surname is required'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			return;
+		}
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
 			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
 				if (accountDetail?.password?.length < 6) {
