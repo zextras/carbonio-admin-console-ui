@@ -49,6 +49,20 @@ export type MtaAntivirusAndAntispam = {
 	carbonioAmavisDisableVirusCheck: boolean;
 };
 
+export type MtaAdvanced = {
+	zimbraMtaSmtpdClientPortLogging: boolean;
+	zimbraAmavisLogLevel: string;
+	zimbraAmavisSALogLevel: string;
+	zimbraMtaSmtpdTlsLoglevel: string;
+	zimbraMtaLmtpTlsLoglevel: string;
+	zimbraClamAVMaxThreads: string;
+	zimbraLmtpNumThreads: string;
+	zimbraMilterNumThreads: string;
+	zimbraMtaMaxMessageSize: string;
+	zimbraMilterMaxConnections: string;
+	zimbraMtaSmtpSaslAuthEnable: string;
+};
+
 export type mtaStats = {
 	id: string;
 	serverName: string;

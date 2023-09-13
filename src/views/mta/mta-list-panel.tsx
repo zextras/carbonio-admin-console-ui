@@ -12,6 +12,7 @@ import {
 	GENERAL,
 	MTA_ROUTE_ID,
 	OUTBOUND_FLOW,
+	ADVANCED,
 	STATS
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
@@ -50,6 +51,11 @@ const MTAListPanel: FC = () => {
 			{
 				id: ANTIVIRUS_AND_ANTISPAM,
 				name: t('mta.antivirus_and_antispam', 'Antivirus & Antispam'),
+				isSelected: true
+			},
+			{
+				id: ADVANCED,
+				name: t('label.advanced', 'Advanced'),
 				isSelected: true
 			},
 			{
