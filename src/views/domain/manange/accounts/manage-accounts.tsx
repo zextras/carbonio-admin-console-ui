@@ -143,7 +143,7 @@ const ManageAccounts: FC = () => {
 			},
 			{
 				id: 'name',
-				label: t('label.name', 'Name'),
+				label: t('label.person_name', 'Name'),
 				width: '15%',
 				bold: true
 			},
