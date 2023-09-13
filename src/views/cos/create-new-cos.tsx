@@ -155,7 +155,7 @@ const CreateCos: FC = () => {
 										label={t('label.cos_name', 'Cos Name')}
 										backgroundColor="gray5"
 										value={cosName}
-										onChange={(e: any): any => {
+										onChange={(e): void => {
 											setCosName(e.target.value);
 										}}
 									/>

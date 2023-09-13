@@ -577,7 +577,7 @@ const EditBucketDetailPanel: FC<{
 						label={t('label.label', 'Label')}
 						inputName="label"
 						value={bucketLabel}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setBucketLabel(ev.target.value);
 							checkIfChanged(ev.target.name, ev.target.value);
 						}}
@@ -592,7 +592,7 @@ const EditBucketDetailPanel: FC<{
 							label={t('label.bucket_name', 'Bucket Name')}
 							inputName="bucketName"
 							value={bucketName}
-							onChange={(ev: any): any => {
+							onChange={(ev): void => {
 								setBucketName(ev.target.value);
 								checkIfChanged(ev.target.name, ev.target.value);
 							}}
@@ -630,7 +630,7 @@ const EditBucketDetailPanel: FC<{
 							inputName="access_key"
 							label={t('label.access_key', 'Access Key')}
 							value={accessKeyData}
-							onChange={(e: any): void => {
+							onChange={(e): void => {
 								setAccessKeyData(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
@@ -642,7 +642,7 @@ const EditBucketDetailPanel: FC<{
 							inputName="secret"
 							label={t('label.secret_key', 'Secret Key')}
 							value={secretKey}
-							onChange={(e: any): void => {
+							onChange={(e): void => {
 								setSecretKey(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
@@ -655,7 +655,7 @@ const EditBucketDetailPanel: FC<{
 							inputName="url"
 							label={t('label.url', 'URL')}
 							value={urlData}
-							onChange={(e: any): void => {
+							onChange={(e): void => {
 								setUrlData(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
@@ -677,7 +677,7 @@ const EditBucketDetailPanel: FC<{
 						label={t('label.description', 'Description')}
 						name="notes"
 						value={bucketNotes}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setBucketNotes(ev.target.value);
 							checkIfChanged(ev.target.name, ev.target.value);
 						}}
