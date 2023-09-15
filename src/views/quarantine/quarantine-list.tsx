@@ -25,6 +25,7 @@ import { useConfigStore } from '../../store/config/store';
 import { modifyConfig } from '../../services/modify-config';
 import { deleteAccount } from '../../services/delete-account-service';
 import { getAccountRequest } from '../../services/get-account';
+import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 
 const QuarantineList: FC = () => {
 	const [t] = useTranslation();
@@ -92,6 +93,12 @@ const QuarantineList: FC = () => {
 		});
 		if (obj.zimbraAmavisQuarantineAccount) {
 			setQuarantineAccountName(obj.zimbraAmavisQuarantineAccount.toString());
+
+			getAccountRequest('', obj.zimbraAmavisQuarantineAccount.toString(), 0).then((res) => {
+				if (res?.account?.[0]?.id) {
+					getQuarantineMessages(res?.account?.[0]?.id);
+				}
+			});
 		}
 		if (obj.zimbraDefaultDomainName) {
 			setQuarantineDomaintName(obj.zimbraDefaultDomainName.toString());
@@ -276,6 +283,14 @@ const QuarantineList: FC = () => {
 													{t('label.settings', 'Settings')}
 												</Text>
 											</Row>
+										</Row>
+										<Row
+											padding={{ top: 'large' }}
+											orientation="horizontal"
+											width="100%"
+											background="gray6"
+										>
+											<Divider />
 										</Row>
 										<Row width="100%" padding={{ top: 'large' }}>
 											<Button
