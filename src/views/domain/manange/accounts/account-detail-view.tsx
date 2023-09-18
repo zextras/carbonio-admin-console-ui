@@ -503,7 +503,7 @@ const AccountDetailView: FC<any> = ({
 						>
 							<Row width="95%">
 								<Input
-									label={t('label.name', 'Name')}
+									label={t('label.person_name', 'Name')}
 									backgroundColor="gray6"
 									value={selectedAccount?.displayName || ''}
 									readOnly

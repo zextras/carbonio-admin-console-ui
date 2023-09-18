@@ -298,12 +298,12 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							onChange={changeAccDetail}
-							inputName="givenName"
-							label={t('label.name', 'Name')}
+							label={t('label.surname', 'Surname')}
 							backgroundColor="gray5"
-							defaultValue={accountDetail?.givenName || ''}
-							value={accountDetail?.givenName || ''}
+							onChange={changeAccDetail}
+							inputName="sn"
+							defaultValue={accountDetail?.sn || ''}
+							value={accountDetail?.sn || ''}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
@@ -318,12 +318,12 @@ const EditAccountGeneralSection: FC = () => {
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							label={t('label.surname', 'Surname')}
-							backgroundColor="gray5"
 							onChange={changeAccDetail}
-							inputName="sn"
-							defaultValue={accountDetail?.sn || ''}
-							value={accountDetail?.sn || ''}
+							inputName="givenName"
+							label={t('label.person_name', 'Name')}
+							backgroundColor="gray5"
+							defaultValue={accountDetail?.givenName || ''}
+							value={accountDetail?.givenName || ''}
 						/>
 					</Row>
 				</Row>

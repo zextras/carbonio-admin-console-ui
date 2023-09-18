@@ -59,6 +59,39 @@ export const Features: FC<{
 					padding={{ bottom: 'large' }}
 				>
 					<Text size="extralarge" weight="bold">
+						{t('label.general_lbl', 'General')}
+					</Text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<InheritedSwitch
+							accountValue={featuresDetail?.zimbraFeatureOptionsEnabled}
+							onChange={changeSwitchOption}
+							label={t('label.can_access_settings', 'Can access Settings')}
+							iconColor="primary"
+							cosValue={cosDetail?.zimbraFeatureOptionsEnabled}
+							fromAccount={accSpecificDetail?.zimbraFeatureOptionsEnabled}
+							inputName={'zimbraFeatureOptionsEnabled'}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue('zimbraFeatureOptionsEnabled')
+							}
+							disabled={readonlyFeatures}
+						/>
+					</Row>
+				</Container>
+			</Row>
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				width="100%"
+			>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="50%"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<Text size="extralarge" weight="bold">
 						{t('label.mail', 'Mail')}
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>

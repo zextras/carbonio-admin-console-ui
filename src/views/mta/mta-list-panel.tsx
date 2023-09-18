@@ -12,7 +12,9 @@ import {
 	GENERAL,
 	MTA_ROUTE_ID,
 	OUTBOUND_FLOW,
-	STATS
+	ADVANCED,
+	STATS,
+	POSTSCREEN_TUNING
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
@@ -43,6 +45,11 @@ const MTAListPanel: FC = () => {
 				isSelected: true
 			},
 			{
+				id: POSTSCREEN_TUNING,
+				name: t('mta.postscreen_tuning', 'Postscreen Tuning'),
+				isSelected: true
+			},
+			{
 				id: OUTBOUND_FLOW,
 				name: t('mta.outbound_flow', 'Outbound Flow'),
 				isSelected: true
@@ -50,6 +57,11 @@ const MTAListPanel: FC = () => {
 			{
 				id: ANTIVIRUS_AND_ANTISPAM,
 				name: t('mta.antivirus_and_antispam', 'Antivirus & Antispam'),
+				isSelected: true
+			},
+			{
+				id: ADVANCED,
+				name: t('label.advanced', 'Advanced'),
 				isSelected: true
 			},
 			{

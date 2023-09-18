@@ -752,7 +752,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
 								backgroundColor="gray5"
 								value={backupLatencyHighThreshold}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupLatencyHighThreshold(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -769,7 +769,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
 								backgroundColor="gray5"
 								value={backupLatencyLowThreshold}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupLatencyLowThreshold(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -801,7 +801,7 @@ const ServerAdvanced: FC = () => {
 								backgroundColor="gray5"
 								borderColor="gray3"
 								value={backupMaxWaitTime}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupMaxWaitTime(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -832,7 +832,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
 								backgroundColor="gray5"
 								value={backupMaxMetaDataSize}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupMaxMetaDataSize(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -907,7 +907,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
 								backgroundColor="gray5"
 								value={backupMaxOperationPerAccount}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupMaxOperationPerAccount(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -924,7 +924,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.compression_level', 'Compression Level')}
 								backgroundColor="gray5"
 								value={backupCompressionLevel}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupCompressionLevel(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -944,7 +944,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.thread_number_for_items', 'Thread number for items')}
 								backgroundColor="gray5"
 								value={backupNumberThreadsForItems}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupNumberThreadsForItems(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -961,7 +961,7 @@ const ServerAdvanced: FC = () => {
 								label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
 								backgroundColor="gray5"
 								value={backupNumberThreadsForAccounts}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupNumberThreadsForAccounts(e.target.value);
 								}}
 								disabled={!allowSetBackup}
