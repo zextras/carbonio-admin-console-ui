@@ -291,13 +291,49 @@ const CreateAccount: FC<{
 
 	useEffect(() => {
 		if (accountCreate === 'create') {
-			setAccountCreate('');
-			createAccountAPI();
+			if (!accountDetail?.sn?.trim()) {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: t('label.surname_required', 'Surname is required'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setAccountCreate('');
+			} else if (
+				accountDetail?.password &&
+				accountDetail?.repeatPassword &&
+				accountDetail?.password?.length < 6
+			) {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setAccountCreate('');
+			} else if (accountDetail?.password !== accountDetail?.repeatPassword) {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: t('label.password_and repeat_password_not_match', 'Passwords do not match'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setAccountCreate('');
+			} else {
+				setAccountCreate('');
+				createAccountAPI();
+			}
 		} else if (accountCreate === 'next') {
 			setAccountCreate('');
 			handleNext();
 		}
-	}, [accountCreate, accountDetail, createAccountAPI, handleNext]);
+	}, [accountCreate, accountDetail, createAccountAPI, createSnackbar, handleNext, t]);
 
 	const wizardSteps = useMemo(
 		() => [
@@ -325,43 +361,7 @@ const CreateAccount: FC<{
 						icon="PersonOutline"
 						iconPlacement="right"
 						onClick={(): void => {
-							if (!accountDetail?.sn?.trim()) {
-								createSnackbar({
-									key: 'error',
-									type: 'error',
-									label: t('label.surname_required', 'Surname is required'),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
-							} else if (
-								accountDetail?.password &&
-								accountDetail?.repeatPassword &&
-								accountDetail?.password?.length < 6
-							) {
-								createSnackbar({
-									key: 'error',
-									type: 'error',
-									label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
-							} else if (accountDetail?.password !== accountDetail?.repeatPassword) {
-								createSnackbar({
-									key: 'error',
-									type: 'error',
-									label: t(
-										'label.password_and repeat_password_not_match',
-										'Passwords do not match'
-									),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
-							} else {
-								setAccountCreate('create');
-							}
+							setAccountCreate('create');
 						}}
 					/>
 				)
