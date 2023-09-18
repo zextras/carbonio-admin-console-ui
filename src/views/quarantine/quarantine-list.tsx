@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useContext } from 'react';
+import React, { FC, useEffect, useState, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { filter } from 'lodash';
+import { filter, find } from 'lodash';
 import {
 	Container,
 	Input,
@@ -14,11 +14,14 @@ import {
 	Button,
 	Divider,
 	SnackbarManagerContext,
-	Modal
+	Modal,
+	Select,
+	Table
 } from '@zextras/carbonio-design-system';
 
+import moment from 'moment';
 import { createAccountRequest } from '../../services/create-account';
-import { RandomString } from '../utility/utils';
+import { MessageTableHeaders, RandomString } from '../utility/utils';
 import { getAllConfig } from '../../services/get-all-config';
 import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request';
 import { useConfigStore } from '../../store/config/store';
@@ -26,6 +29,95 @@ import { modifyConfig } from '../../services/modify-config';
 import { deleteAccount } from '../../services/delete-account-service';
 import { getAccountRequest } from '../../services/get-account';
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
+import ListRow from '../list/list-row';
+import logo from '../../assets/ninja_robo.svg';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+
+const getDateTime = (d: number): string => {
+	const date = new Date(d);
+	const formattedDate = moment(date).format('DD/MM/YY HH:mm');
+	return formattedDate;
+};
+
+const MessageListTable: FC<{
+	messages: { [key: string]: string }[];
+	selectedRows: string[];
+	onSelectionChange: (selected: string[]) => void;
+}> = ({ messages, selectedRows, onSelectionChange }) => {
+	const [t] = useTranslation();
+	const tableRows = useMemo(
+		() =>
+			messages.map((v: any, i: number) => ({
+				id: i,
+				columns: [
+					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={v.id}>
+						<Text size="small" weight="regular">
+							{getDateTime(v?.d)}
+						</Text>
+					</Row>,
+					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+						<Text size="small" weight="light">
+							{find(v?.e, { t: 't' })?.a}
+						</Text>
+					</Row>,
+					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+						<Text size="small" weight="light">
+							{v.su}
+						</Text>
+					</Row>,
+					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+						<Text size="small" weight="light"></Text>
+					</Row>,
+					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+						<Text size="small" weight="light"></Text>
+					</Row>
+				],
+				clickable: true
+			})),
+		[messages]
+	);
+	return (
+		<Container mainAlignment="flex-start" crossAlignment="flex-start">
+			<ListRow>
+				<Container
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					maxHeight="calc(100vh - 25rem)"
+					minHeight="auto"
+				>
+					{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+					{/* @ts-ignore */}
+					<Table
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
+						headers={MessageTableHeaders(t)}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
+						rows={tableRows}
+						showCheckbox={false}
+						multiSelect={false}
+						selectedRows={selectedRows}
+						onSelectionChange={onSelectionChange}
+						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
+						HeaderFactory={CustomHeaderFactory}
+					/>
+				</Container>
+			</ListRow>
+			{tableRows.length === 0 && (
+				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '3rem' }}>
+					<Text overflow="break-word" weight="regular" size="large">
+						<img src={logo} alt="logo" />
+					</Text>
+				</Container>
+			)}
+		</Container>
+	);
+};
 
 const QuarantineList: FC = () => {
 	const [t] = useTranslation();
@@ -34,7 +126,9 @@ const QuarantineList: FC = () => {
 	const [quarantineDomaintName, setQuarantineDomaintName] = useState<string>('');
 	const [configDataLoaded, setConfigDataLoaded] = useState<boolean>(false);
 	const [deleteQuarantuneAccModal, setDeleteQuarantuneAccModal] = useState<boolean>(false);
+	const [messageListData, setMessageListData] = useState([]);
 	const { config, setConfig } = useConfigStore((state) => state);
+	const [messageSelection, setMessageSelection] = useState<string[]>([]);
 	const onViewMail = useCallback(
 		(name) => {
 			getDelegateAuthRequest('', name)
@@ -96,7 +190,10 @@ const QuarantineList: FC = () => {
 
 			getAccountRequest('', obj.zimbraAmavisQuarantineAccount.toString(), 0).then((res) => {
 				if (res?.account?.[0]?.id) {
-					getQuarantineMessages(res?.account?.[0]?.id);
+					getQuarantineMessages(res?.account?.[0]?.id).then((response: any): void => {
+						const data = response?.Body?.SearchResponse?.m;
+						setMessageListData(data);
+					});
 				}
 			});
 		}
@@ -105,6 +202,10 @@ const QuarantineList: FC = () => {
 		}
 		setConfigDataLoaded(true);
 	}, [config, getAllConfigData]);
+
+	const onChange = (): void => {
+		console.log('__interval change');
+	};
 
 	const createAccountAPI = useCallback((): void => {
 		const deleteAccountName = quarantineAccountName;
@@ -277,22 +378,108 @@ const QuarantineList: FC = () => {
 										>
 											<Divider />
 										</Row>
-										<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
+										<Row orientation="horizontal" width="100%" padding={{ vertical: 'large' }}>
 											<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 												<Text size="medium" weight="bold" color="gray0">
 													{t('label.settings', 'Settings')}
 												</Text>
 											</Row>
 										</Row>
+										<ListRow>
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												orientation="horizontal"
+												padding={{ right: 'small', bottom: 'small' }}
+												width="79%"
+											>
+												<Input
+													label={t('label.retention_period', 'Retention Period (value)')}
+													backgroundColor="gray5"
+													readOnly
+												/>
+											</Container>
+											<Container
+												padding={{ bottom: 'small' }}
+												mainAlignment="flex-start"
+												orientation="horizontal"
+												width="20%"
+											>
+												<Select
+													items={[
+														{
+															label: 'Interval',
+															value: '1'
+														}
+													]}
+													label="Interval"
+													onChange={onChange}
+													showCheckbox={false}
+												/>
+											</Container>
+										</ListRow>
 										<Row
-											padding={{ top: 'large' }}
+											padding={{ vertical: 'extralarge' }}
 											orientation="horizontal"
 											width="100%"
 											background="gray6"
 										>
 											<Divider />
 										</Row>
-										<Row width="100%" padding={{ top: 'large' }}>
+										<Row
+											orientation="horizontal"
+											width="100%"
+											padding={{ top: 'small', bottom: 'large' }}
+										>
+											<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
+												<Text size="medium" weight="bold" color="gray0">
+													{t('label.messages', 'Messages')}
+												</Text>
+											</Row>
+										</Row>
+										<Row
+											width="100%"
+											mainAlignment="flex-end"
+											style={{ gap: '1rem' }}
+											orientation="horizontal"
+											padding={{ bottom: 'large' }}
+										>
+											<Button
+												type="outlined"
+												label={t('label.auto_clean_up', 'AUTO CLEAN-UP')}
+												color="primary"
+												onClick={(): void => {
+													console.log('__clicked');
+												}}
+												disabled
+											/>
+											<Button
+												type="outlined"
+												label={t('label.deliver', 'DELIVER')}
+												color="primary"
+												onClick={(): void => {
+													console.log('__clicked');
+												}}
+											/>
+											<Button
+												type="ghost"
+												label={t('label.delete', 'DELETE')}
+												color="error"
+												onClick={(): void => {
+													console.log('__clicked');
+												}}
+											/>
+										</Row>
+										<Row width="100%" padding={{ bottom: 'extralarge' }}>
+											<MessageListTable
+												messages={messageListData}
+												selectedRows={messageSelection}
+												onSelectionChange={(selected: any): void => {
+													setMessageSelection(selected);
+												}}
+											/>
+										</Row>
+										{/* <Row width="100%" padding={{ top: 'large' }}>
 											<Button
 												type="outlined"
 												label={t('label.view_mail', 'VIEW MAIL')}
@@ -302,7 +489,7 @@ const QuarantineList: FC = () => {
 													onViewMail(quarantineAccountName);
 												}}
 											/>
-										</Row>
+										</Row> */}
 									</>
 								)}
 							</>
