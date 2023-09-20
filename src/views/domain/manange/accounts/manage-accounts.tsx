@@ -50,6 +50,7 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import useOutsideClick from '../../../app/hooks/useoutsideclick';
 import { useRightsStore } from '../../../../store/rights/store';
 import ModalOverlay from '../../../components/ModalOverlay';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -868,10 +869,8 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height:
-									accountList.length > 0 && !isRequestInProgress
-										? 'calc(100vh - 21.25rem)'
-										: 'calc(100vh - 40.625rem)'
+								height: 'calc(100vh - 21.25rem)',
+								position: 'relative'
 							}}
 							ref={tableRef}
 						>
@@ -880,7 +879,10 @@ const ManageAccounts: FC = () => {
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
-								style={{ overflow: 'auto', height: '100%' }}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
+								}}
 								RowFactory={CustomRowFactory}
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-ignore // Need to fix it with custom soultion
@@ -935,14 +937,25 @@ const ManageAccounts: FC = () => {
 								</Container>
 							)}
 							{accountList.length !== 0 && (
-								<Row
+								<Container
 									orientation="horizontal"
-									mainAlignment="flex-start"
+									mainAlignment="space-between"
 									width="100%"
-									style={{ position: 'absolute', bottom: '0.25rem' }}
+									style={{ position: 'absolute', bottom: '-4rem' }}
+									height="auto"
 								>
-									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-								</Row>
+									<Container crossAlignment="flex-start">
+										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+									</Container>
+									<Container
+										crossAlignment="flex-end"
+										orientation="horizontal"
+										mainAlignment="flex-end"
+										padding={{ top: 'small' }}
+									>
+										<TrackNumberPerPage pageSize={limit} />
+									</Container>
+								</Container>
 							)}
 							<AccountContext.Provider
 								value={{
