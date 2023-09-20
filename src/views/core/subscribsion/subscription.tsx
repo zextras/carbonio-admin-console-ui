@@ -436,7 +436,7 @@ const Subscription: FC = () => {
 
 						<Row width="49.5%" padding={{ all: 'large' }}>
 							<Input
-								label={t('core.subscription.emissionDate', 'Emission date')}
+								label={t('core.subscription.endDate', 'End date')}
 								value={
 									services.response.dateEnd
 										? moment(services.response.dateEnd).format('DD-MMM-YYYY')
