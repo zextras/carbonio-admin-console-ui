@@ -183,6 +183,14 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 										}}
 										value={searchDomainName}
 										backgroundColor="gray5"
+										CustomIcon={(): JSX.Element => (
+											<Icon
+												style={{ cursor: 'pointer' }}
+												icon="ArrowIosDownward"
+												size="large"
+												color="primary"
+											/>
+										)}
 									/>
 								</Dropdown>
 							</Container>
