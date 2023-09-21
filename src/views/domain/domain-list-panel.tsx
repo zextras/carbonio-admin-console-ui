@@ -312,11 +312,12 @@ const DomainListPanel: FC = () => {
 				name: t('label.accounts', 'Accounts'),
 				isSelected: isDomainSelect
 			},
-			{
-				id: DELEGATES,
-				name: t('label.delegates_title', 'Delegates'),
-				isSelected: isDomainSelect
-			},
+			// TODO: uncomment once we have the delgates feature completely from backend
+			// {
+			// 	id: DELEGATES,
+			// 	name: t('label.delegates_title', 'Delegates'),
+			// 	isSelected: isDomainSelect
+			// },
 			{
 				id: MAILING_LIST,
 				name: t('label.mailing_list', 'Mailing List'),
@@ -377,7 +378,8 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? allManageOptions.filter(
-						(item: ManageOptions) => item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC
+						(item: ManageOptions) =>
+							item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC && item?.id !== DELEGATES
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
