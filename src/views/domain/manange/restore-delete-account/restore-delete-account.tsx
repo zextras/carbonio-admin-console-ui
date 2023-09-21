@@ -68,7 +68,8 @@ const RestoreDeleteAccount: FC = () => {
 			hsmApply,
 			dataSource,
 			notificationReceiver,
-			isEmailNotificationEnable
+			isEmailNotificationEnable,
+			copyDomain
 		) => {
 			const body: any = {
 				srcAccountName: id,
@@ -79,7 +80,7 @@ const RestoreDeleteAccount: FC = () => {
 				body.notificationMails = [notificationReceiver];
 			}
 			if (copyAccount !== '') {
-				body.dstAccountName = `${copyAccount.split('@')[0]}@${domainName}`;
+				body.dstAccountName = `${copyAccount.split('@')[0]}@${copyDomain}`;
 			}
 			setIsRequestWorkInProgress(true);
 			doRestoreDeleteAccount(body)
@@ -128,7 +129,7 @@ const RestoreDeleteAccount: FC = () => {
 					});
 				});
 		},
-		[createSnackbar, t, domainName]
+		[createSnackbar, t]
 	);
 
 	return (
