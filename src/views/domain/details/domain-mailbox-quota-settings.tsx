@@ -35,6 +35,7 @@ import DownloadCSV from '../../app/shared/download-csv';
 import { MailBoxQuota } from '../../app/types/mailbox_quota';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
@@ -617,9 +618,19 @@ const DomainMailboxQuotaSetting: FC = () => {
 							>
 								<Divider />
 							</Row>
-							<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
-								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-							</Row>
+							<Container orientation="horizontal" mainAlignment="space-between" width="100%">
+								<Container crossAlignment="flex-start">
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ top: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
 						</Container>
 						{isShowDownload && <DownloadCSV data={csvQuotaData} header={csvHeader} />}
 					</Container>
