@@ -375,7 +375,8 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? allManageOptions.filter(
-						(item: ManageOptions) => item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC
+						(item: ManageOptions) =>
+							item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC && item?.id !== DELEGATES
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
