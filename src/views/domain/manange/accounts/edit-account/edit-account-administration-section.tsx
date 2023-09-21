@@ -30,6 +30,7 @@ import { addDistributionListMember } from '../../../../../services/add-distribut
 import { searchDirectory } from '../../../../../services/search-directory-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 
 const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const context = useContext(AccountContext);
@@ -44,6 +45,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const [domainId, setDomainId] = useState('');
 	const [sendSelectedRows, setSendSelectedRows] = useState([]);
 	const [selectedOption, setSelectedOption] = useState<any>([]);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const [t] = useTranslation();
 	const headers: any = useMemo(
@@ -303,19 +305,24 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 							/>
 						</Row>
 					</Row>
-					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
-						<Row width="40%" mainAlignment="flex-start">
-							{accountDetail?.zimbraIsAdminAccount !== 'TRUE' && (
-								<Switch
-									disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
-									value={accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE'}
-									onClick={(): void => changeSwitchOption('zimbraIsDelegatedAdminAccount')}
-									label={t('account_details.delegated_administration', 'Delegated administration')}
-									iconColor="primary"
-								/>
-							)}
+					{isAdvanced && (
+						<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
+							<Row width="40%" mainAlignment="flex-start">
+								{accountDetail?.zimbraIsAdminAccount !== 'TRUE' && (
+									<Switch
+										disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
+										value={accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE'}
+										onClick={(): void => changeSwitchOption('zimbraIsDelegatedAdminAccount')}
+										label={t(
+											'account_details.delegated_administration',
+											'Delegated administration'
+										)}
+										iconColor="primary"
+									/>
+								)}
+							</Row>
 						</Row>
-					</Row>
+					)}
 					{accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
 						accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
 							<Row
