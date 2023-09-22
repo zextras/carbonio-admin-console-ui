@@ -39,9 +39,12 @@ import { Attribute, objectType } from '../../../../../types';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
+import { getAllAdminAccountRequest } from '../../../../services/get-all-admin-account-service';
+import Paging from '../../../components/paging';
+import { modifyAccountRequest } from '../../../../services/modify-account';
 
 const DomainDelegatedTable: FC<{
-	domainList: objectType[];
+	accountList: objectType[];
 	selectedRows: any;
 	onSelectionChange: (selected: string[]) => void;
 	headers: {
@@ -51,30 +54,20 @@ const DomainDelegatedTable: FC<{
 		bold: boolean;
 		align: string;
 	}[];
-}> = ({ domainList, selectedRows, onSelectionChange, headers }) => {
+}> = ({ accountList, selectedRows, onSelectionChange, headers }) => {
 	const [t] = useTranslation();
-	const domain = useDomainStore((state) => state.domain);
 	const tableRows = useMemo(
 		() =>
-			domainList?.map((v: objectType, i: number) => ({
+			accountList?.map((v: objectType, i: number) => ({
 				id: v?.id,
 				columns: [
 					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-						<Text weight="light">{v?.name}</Text>
-					</Row>,
-					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-						<Text weight="light">{v.name.replace(new RegExp('__', 'g'), '').split('@')[0]}</Text>
-					</Row>,
-					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-						<Text weight="light">{domain?.name}</Text>
-					</Row>,
-					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-						<Text weight="light">{v?.description}</Text>
+						<Text weight="light">{v?.name.split('@')[0]}</Text>
 					</Row>
 				],
 				clickable: true
 			})),
-		[domain?.name, domainList]
+		[accountList]
 	);
 
 	return (
@@ -123,76 +116,77 @@ const ManageDelegates: FC = () => {
 	const domain = useDomainStore((state) => state.domain);
 	const delegateDomainHeadersList = useMemo(() => delegateDomainHeaders(t), [t]);
 	const [open, setOpen] = useState(false);
-	const [isDomainDelegatedAdmin, setIsDomainDelegatedAdmin] = useState(false);
 	const [isDisableRights, setisDisableRights] = useState(true);
 	const [accountName, setAccountName] = useState('');
 	const [distributionList, setDistributionList] = useState<objectType[]>([]);
 	const [selectedOption, setSelectedOption] = useState<any>([]);
 	const [accountDistributionList, setAccountDistributionList] = useState([]);
 	const [sendSelectedRows, setSendSelectedRows] = useState([]);
-	const [allAccount, setAllAccount] = useState([]);
+	const [allAccount, setAllAccount] = useState<any>([]);
+	const [allAccountDetails, setAllAccountDetails] = useState<any>([]);
 	const [accountDetail, setaccountDetail] = useState<any>();
 	const [loading, setLoading] = useState(false);
+	// const [offset, setOffset] = useState<number>(0);
+	// const [limit, setLimit] = useState<number>(20);
+	// const [totalAccount, setTotalAccount] = useState<number>(0);
 
-	const handleRevokesGrants = useCallback(() => {
-		setLoading(true);
-		InitDomainForDelegation('/admin/initDomainForDelegation', {
-			_jsns: 'urn:zimbraAdmin',
-			domain: domain?.name
-		})
-			.then((res: objectType) => {
-				setLoading(false);
-				setisDisableRights(false);
-				createSnackbar({
-					key: 'success',
-					type: 'success',
-					label: res?.message
-						? res?.message
-						: t(
-								'label.the_last_changes_has_been_saved_successfully',
-								'Changes have been saved successfully'
-						  ),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			})
-			.catch((error) => {
-				setLoading(false);
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
-	}, [createSnackbar, domain?.name, t]);
+	const getAccountList = useCallback(
+		(offsetData: number, limitData: number): void => {
+			const type = 'accounts';
+			const searchQuery =
+				'(|(&(zimbraIsAdminAccount=TRUE))(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE))))';
+			const attrs =
+				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
+			accountListDirectory(attrs, type, domain.name, searchQuery, offsetData, limitData).then(
+				(response) => {
+					if (response.account) {
+						setAllAccount((accounts: any) => [...accounts, ...response.account]);
+						if (response?.more) {
+							getAccountList(offsetData + limitData, limitData);
+						}
+					}
+				}
+			);
+		},
+		[domain.name]
+	);
 
 	const getAccountDistributionList = useCallback(
 		(id) => {
-			getAccountMembershipRequest(id).then((res) => {
-				const data = res?.dl?.filter((item: objectType) => item?.via === undefined);
-				const tableList = data
-					? data.map((item: objectType) => {
-							const selectedItem: any = distributionList.filter(
-								(i: objectType) => i.name === item.name
-							);
-							const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
-								._content;
-							return {
-								...item,
-								description: des
-							};
-					  })
-					: [];
-				setAccountDistributionList(tableList || []);
-			});
+			getAccountMembershipRequest(id)
+				.then((res) => {
+					const data = res?.dl?.filter((item: objectType) => item?.via === undefined);
+
+					const tableList = data
+						? data.map((item: objectType) => {
+								const selectedItem: any = distributionList.filter(
+									(i: objectType) => i.name === item.name
+								);
+								const des = selectedItem[0].a?.filter((i: Attribute) => i.n === 'description')[0]
+									._content;
+								return {
+									...item,
+									accname: accountName.split('@')[0],
+									description: des
+								};
+						  })
+						: [];
+					setAccountDistributionList(tableList || []);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
 		},
-		[distributionList]
+		[accountName, createSnackbar, distributionList, t]
 	);
 
 	const createObjectData = (listData: { a: objectType[]; id: string; name: string }[]): any =>
@@ -207,10 +201,46 @@ const ManageDelegates: FC = () => {
 			obj.name = item?.name;
 			return obj;
 		});
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const ModifyAccount = (id: any): any => {
+		const modifiedData = {
+			zimbraIsDelegatedAdminAccount: 'TRUE'
+		};
+		modifyAccountRequest(id, modifiedData)
+			.then((data: any) => {
+				if (data) {
+					setAllAccount([]);
+					getAccountList(0, 20);
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t(
+							'label.the_last_changes_has_been_saved_successfully',
+							'Changes have been saved successfully'
+						),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+			})
+			.catch((error: any) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
 
 	const onAdd = useCallback(async (): Promise<void> => {
 		const requests = [];
-		const accountData = allAccount.filter((item: objectType) => item.name === accountName);
+		const accountData = allAccountDetails.filter((item: objectType) => item.name === accountName);
 		const objectData = await createObjectData(accountData);
 		setaccountDetail(objectData[0]);
 		requests.push(objectData);
@@ -239,6 +269,7 @@ const ManageDelegates: FC = () => {
 								replace: true
 							});
 							getAccountDistributionList(result[0][0]?.zimbraId);
+							ModifyAccount(result[0][0]?.zimbraId);
 						}
 					})
 					.catch((error) => {
@@ -256,24 +287,36 @@ const ManageDelegates: FC = () => {
 			}
 		});
 	}, [
-		allAccount,
+		allAccountDetails,
 		accountName,
-		selectedOption.value,
+		selectedOption,
 		createSnackbar,
 		t,
-		getAccountDistributionList
+		getAccountDistributionList,
+		ModifyAccount
 	]);
 
-	const fetchDistributionList = (name: string | undefined): void => {
-		const attrs =
-			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
-		const types = 'distributionlists,dynamicgroups';
-		const query = `(&(!(zimbraIsSystemAccount=TRUE)))`;
-		searchDirectory(attrs, types, name || '', query, 0, 6, 'name').then((res) => {
-			// const list = createObjectData(res.dl);
-			setDistributionList(res?.dl);
-		});
-	};
+	const fetchDistributionList = useCallback(
+		(name: string | undefined, offsetData: number, limitData: number): void => {
+			const attrs =
+				'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
+			const types = 'distributionlists,dynamicgroups';
+			const query = `(&(!(zimbraIsSystemAccount=TRUE)))`;
+			searchDirectory(attrs, types, name || '', query, offsetData, limitData, 'name').then(
+				(res) => {
+					const data = res?.dl;
+					if (data) {
+						setDistributionList((prevDistributionList) => [...prevDistributionList, ...data]);
+						if (res.more) {
+							fetchDistributionList(domain?.name, offsetData + limitData, limitData);
+						}
+						setisDisableRights(false);
+					}
+				}
+			);
+		},
+		[domain?.name]
+	);
 
 	const options =
 		distributionList?.length > 0
@@ -287,6 +330,44 @@ const ManageDelegates: FC = () => {
 		const it = options.find((item: objectType) => item.value === v);
 		setSelectedOption(it);
 	};
+
+	const handleRevokesGrants = useCallback(() => {
+		setLoading(true);
+		InitDomainForDelegation('/admin/initDomainForDelegation', {
+			_jsns: 'urn:zimbraAdmin',
+			domain: domain?.name
+		})
+			.then((res: objectType) => {
+				setLoading(false);
+				fetchDistributionList(domain?.name, 0, 10);
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: res?.message
+						? res?.message
+						: t(
+								'label.the_last_changes_has_been_saved_successfully',
+								'Changes have been saved successfully'
+						  ),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			})
+			.catch((error) => {
+				setLoading(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, domain?.name, fetchDistributionList, t]);
 
 	const onDeleteFromList = useCallback(
 		(lists: objectType[], type: string) => {
@@ -337,7 +418,6 @@ const ManageDelegates: FC = () => {
 	);
 
 	const closeHandler = (): void => {
-		setIsDomainDelegatedAdmin(true);
 		setOpen(false);
 	};
 
@@ -348,23 +428,30 @@ const ManageDelegates: FC = () => {
 	const deleteHandler = (): void => {
 		setAccountName('');
 		setisDisableRights(true);
-		setIsDomainDelegatedAdmin(true);
 		setOpen(false);
 	};
 
-	const getAccountList = useCallback((): void => {
-		const type = 'accounts';
-		const offset = 0;
-		const limit = 100;
-		const attrs =
-			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domain.name, '', offset, limit).then((response) => {
-			setAllAccount(response.account);
-		});
-	}, [domain.name]);
+	const getAllAccountList = useCallback(
+		(offsetData: number, limitData: number): void => {
+			const type = 'accounts';
+			const attrs =
+				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
+			accountListDirectory(attrs, type, domain.name, '', offsetData, limitData).then((response) => {
+				if (response.account) {
+					setAllAccountDetails((accounts: any) => [...accounts, ...response.account]);
+					if (response?.more) {
+						getAllAccountList(offsetData + limitData, limitData);
+					}
+				}
+			});
+		},
+		[domain.name]
+	);
 
 	useEffect(() => {
-		getAccountList();
+		getAllAccountList(0, 20);
+		getAccountList(0, 20);
+		fetchDistributionList(domain?.name, 0, 10);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -388,19 +475,10 @@ const ManageDelegates: FC = () => {
 				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
 						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-							<Row mainAlignment="flex-start" width="80%" crossAlignment="flex-start">
+							<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 								<Text size="medium" weight="bold" color="gray0">
 									{t('label.domain_delegates_title', 'Domain Delegates')}
 								</Text>
-							</Row>
-							<Row mainAlignment="flex-end" crossAlignment="flex-end" width="20%">
-								<Button
-									label={t('label.save', 'Save')}
-									color="primary"
-									onClick={handleRevokesGrants}
-									loading={loading}
-									disabled={!isDomainDelegatedAdmin}
-								/>
 							</Row>
 						</Row>
 					</Container>
@@ -419,19 +497,11 @@ const ManageDelegates: FC = () => {
 				>
 					<ListRow padding={{ vertical: 'large' }}>
 						<Padding bottom="large">
-							<Switch
-								label={t(
-									'label.domain_support_delegated_administration',
-									'This domain supports delegated administration'
-								)}
-								value={isDomainDelegatedAdmin}
-								onClick={(): void => {
-									if (isDomainDelegatedAdmin) {
-										setOpen(true);
-									}
-									setIsDomainDelegatedAdmin(!isDomainDelegatedAdmin);
-								}}
-								iconColor="primary"
+							<Button
+								label={t('label.init_domain', 'INIT DOMAIN')}
+								color="primary"
+								onClick={handleRevokesGrants}
+								loading={loading}
 							/>
 						</Padding>
 					</ListRow>
@@ -474,9 +544,6 @@ const ManageDelegates: FC = () => {
 								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onOptionChange}
 								disabled={isDisableRights}
-								onClick={(): void => {
-									fetchDistributionList(domain?.name);
-								}}
 							/>
 						</Padding>
 						<Padding left="small" width="8%">
@@ -493,15 +560,25 @@ const ManageDelegates: FC = () => {
 					</ListRow>
 					<Row mainAlignment="flex-start" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
 						<DomainDelegatedTable
-							domainList={accountDistributionList}
+							accountList={allAccount}
 							headers={delegateDomainHeadersList}
 							selectedRows={sendSelectedRows}
 							onSelectionChange={(selected: any): void => {
 								setSendSelectedRows(selected);
 							}}
 						/>
+						{/* {allAccount.length !== 0 && (
+							<Row
+								orientation="horizontal"
+								mainAlignment="flex-start"
+								width="100%"
+								style={{ position: 'absolute', bottom: '0.25rem' }}
+							>
+								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+							</Row>
+						)} */}
 					</Row>
-					{accountDistributionList?.length > 0 && (
+					{allAccount?.length > 0 && (
 						<>
 							<ListRow padding={{ top: 'large' }}>
 								<Padding left="small" width="50%">
