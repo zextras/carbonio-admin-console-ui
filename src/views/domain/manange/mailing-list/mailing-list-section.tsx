@@ -32,6 +32,7 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
 import CustomChip from '../../../components/customChip';
+import Textarea from '../../../components/textarea';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -735,6 +736,22 @@ const MailingListSection: FC<any> = () => {
 					>
 						<Input
 							label={t('label.description', 'Description')}
+							backgroundColor="gray5"
+							value={mailingListDetail?.description}
+							inputName="description"
+							onChange={changeResourceDetail}
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'small', bottom: 'medium' }}
+					>
+						<Textarea
+							label={t('label.notes', 'Notes')}
 							backgroundColor="gray5"
 							value={mailingListDetail?.zimbraNotes}
 							inputName="zimbraNotes"

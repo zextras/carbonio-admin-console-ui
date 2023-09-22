@@ -708,7 +708,7 @@ const ManageAccounts: FC = () => {
 									openDetailView(item);
 								}}
 							>
-								{item?.zimbraNotes || <>&nbsp;</>}
+								{item?.description || <>&nbsp;</>}
 							</Text>
 						],
 						item,

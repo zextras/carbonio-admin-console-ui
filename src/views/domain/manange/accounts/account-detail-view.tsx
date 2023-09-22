@@ -38,6 +38,7 @@ import { useRightsStore } from '../../../../store/rights/store';
 import CustomChip from '../../../components/customChip';
 import Displayer from '../../../components/displayer';
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import Textarea from '../../../components/textarea';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -718,7 +719,6 @@ const AccountDetailView: FC<any> = ({
 					>
 						<Paging totalItem={1} setOffset={(): null => null} />
 					</Row>
-
 					<Row padding={{ top: 'extralarge' }}>
 						<Text size="small" weight="bold">
 							{t('label.description', 'Description')}
@@ -734,9 +734,27 @@ const AccountDetailView: FC<any> = ({
 							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							width="100%"
-							value={selectedAccount?.zimbraNotes || ''}
-							readOnly
+							value={selectedAccount?.description || ''}
+							disabled
 						></Input>
+					</Row>
+					<Row padding={{ top: 'extralarge' }}>
+						<Text size="small" weight="bold">
+							{t('label.notes', 'Notes')}
+						</Text>
+					</Row>
+					<Row
+						padding={{ top: 'extralarge', bottom: 'extralarge' }}
+						width="97%"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+					>
+						<Textarea
+							label={t('label.notes', 'Notes')}
+							value={selectedAccount?.zimbraNotes || ''}
+							backgroundColor="gray5"
+							disabled
+						/>
 					</Row>
 				</Container>
 				{isOpenDeleteDialog && (

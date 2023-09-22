@@ -28,6 +28,7 @@ import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../components/customChip';
+import Textarea from '../../../components/textarea';
 
 const AclListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -584,6 +585,22 @@ const AclListSection: FC<any> = () => {
 					>
 						<Input
 							label={t('label.description', 'Description')}
+							backgroundColor="gray5"
+							value={aclListDetail?.description}
+							inputName="description"
+							onChange={changeResourceDetail}
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'small', bottom: 'medium' }}
+					>
+						<Textarea
+							label={t('label.notes', 'Notes')}
 							backgroundColor="gray5"
 							value={aclListDetail?.zimbraNotes}
 							inputName="zimbraNotes"

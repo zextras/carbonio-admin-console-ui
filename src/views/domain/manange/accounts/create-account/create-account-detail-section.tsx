@@ -19,6 +19,7 @@ import { find } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from './account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
+import Textarea from '../../../../components/textarea';
 
 const CreateAccountDetailSection: FC = () => {
 	const context = useContext(AccountContext);
@@ -308,11 +309,26 @@ const CreateAccountDetailSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
 						backgroundColor="gray5"
-						height="85px"
 						label={t('label.description', 'Description')}
-						defaultValue={accountDetail?.zimbraNotes || ''}
+						defaultValue={accountDetail?.description || ''}
 						onChange={changeAccDetail}
+						inputName="description"
+					/>
+				</Row>
+			</Row>
+			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.notes', 'Notes')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
+					<Textarea
+						label={t('label.notes', 'Notes')}
+						value={accountDetail?.zimbraNotes || ''}
+						backgroundColor="gray5"
 						inputName="zimbraNotes"
+						onChange={changeAccDetail}
 					/>
 				</Row>
 			</Row>

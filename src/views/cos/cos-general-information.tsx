@@ -28,6 +28,7 @@ import { DEFAULT, COS } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
 import ListRow from '../list/list-row';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import Textarea from '../components/textarea';
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
@@ -37,6 +38,7 @@ const CosGeneralInformation: FC = () => {
 	const [cosData, setCosData]: any = useState({});
 	const [cosName, setCosName] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const setCos = useCosStore((state) => state.setCos);
 	const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
 	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -65,6 +67,12 @@ const CosGeneralInformation: FC = () => {
 				obj.zimbraNotes = '';
 				setZimbraNotes('');
 			}
+			if (obj.description) {
+				setDescription(obj.description);
+			} else {
+				obj.description = '';
+				setDescription('');
+			}
 			setCosData(obj);
 			setIsDirty(false);
 		}
@@ -82,6 +90,12 @@ const CosGeneralInformation: FC = () => {
 		}
 	}, [cosData.zimbraNotes, zimbraNotes]);
 
+	useEffect(() => {
+		if (cosData.description !== undefined && cosData.description !== description) {
+			setIsDirty(true);
+		}
+	}, [cosData.description, description]);
+
 	const modifyCosInfo = (): void => {
 		const body: any = {};
 		const attributes: any[] = [];
@@ -89,6 +103,10 @@ const CosGeneralInformation: FC = () => {
 		attributes.push({
 			n: 'zimbraNotes',
 			_content: zimbraNotes
+		});
+		attributes.push({
+			n: 'description',
+			_content: description
 		});
 		attributes.push({
 			n: 'cn',
@@ -167,6 +185,7 @@ const CosGeneralInformation: FC = () => {
 	const onCancel = (): void => {
 		setCosName(cosData.cn);
 		setZimbraNotes(cosData.zimbraNotes);
+		setDescription(cosData.description);
 		setIsDirty(false);
 	};
 
@@ -329,6 +348,19 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.description', 'Description')}
+									backgroundColor="gray5"
+									value={description}
+									onChange={(e: any): any => {
+										setDescription(e.target.value);
+									}}
+									disabled={readonlyCOS}
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
+								<Textarea
+									label={t('label.notes', 'Notes')}
 									backgroundColor="gray5"
 									value={zimbraNotes}
 									onChange={(e: any): any => {

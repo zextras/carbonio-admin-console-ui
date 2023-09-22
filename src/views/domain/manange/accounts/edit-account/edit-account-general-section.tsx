@@ -35,6 +35,7 @@ import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { objectType, Attribute } from '../../../../../../types';
 import DropDownInput from '../../../../components/dropDownInput';
 import CustomChip from '../../../../components/customChip';
+import Textarea from '../../../../components/textarea';
 
 const SelectItem = styled(Row)``;
 
@@ -667,15 +668,29 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
 					<Input
 						backgroundColor="gray5"
-						height="85px"
 						label={t('label.description', 'Description')}
-						defaultValue={accountDetail?.zimbraNotes}
-						value={accountDetail?.zimbraNotes}
+						defaultValue={accountDetail?.description}
+						value={accountDetail?.description}
 						onChange={changeAccDetail}
+						inputName="description"
+					/>
+				</Row>
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.notes', 'Notes')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
+					<Textarea
+						label={t('label.notes', 'Notes')}
+						value={accountDetail?.zimbraNotes || ''}
+						backgroundColor="gray5"
 						inputName="zimbraNotes"
+						onChange={changeAccDetail}
 					/>
 				</Row>
 			</Row>
+
 			<Modal
 				size="small"
 				title={t('account_details.delete_password', 'Delete Password', {
