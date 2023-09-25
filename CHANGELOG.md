@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.29](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.28...v0.9.29) (2023-09-22)
+
+
+### Bug Fixes
+
+* enabled delegates and added list of delegate account ([c2a3857](https://github.com/zextras/carbonio-admin-console-ui/commit/c2a38577e996dcb65ae85989b9b95faf8680677f))
+
 ### [0.9.28](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.27...v0.9.28) (2023-09-21)
 
 
