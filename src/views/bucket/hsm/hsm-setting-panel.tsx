@@ -549,6 +549,19 @@ const HSMsettingPanel: FC = () => {
 									replace: true
 								});
 							}
+						} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
+							setIsEditSaveInProgress(false);
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: t(
+									'label.storage_hsm_not_licensed',
+									'Cannot complete operation: storages_hsm not licensed.'
+								),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
 						}
 					}
 				})
