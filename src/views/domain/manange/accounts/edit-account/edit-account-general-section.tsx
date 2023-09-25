@@ -298,12 +298,12 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							onChange={changeAccDetail}
-							inputName="givenName"
-							label={t('label.name', 'Name')}
+							label={t('label.surname', 'Surname')}
 							backgroundColor="gray5"
-							defaultValue={accountDetail?.givenName || ''}
-							value={accountDetail?.givenName || ''}
+							onChange={changeAccDetail}
+							inputName="sn"
+							defaultValue={accountDetail?.sn || ''}
+							value={accountDetail?.sn || ''}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
@@ -318,12 +318,12 @@ const EditAccountGeneralSection: FC = () => {
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							label={t('label.surname', 'Surname')}
-							backgroundColor="gray5"
 							onChange={changeAccDetail}
-							inputName="sn"
-							defaultValue={accountDetail?.sn || ''}
-							value={accountDetail?.sn || ''}
+							inputName="givenName"
+							label={t('label.person_name', 'Name')}
+							backgroundColor="gray5"
+							defaultValue={accountDetail?.givenName || ''}
+							value={accountDetail?.givenName || ''}
 						/>
 					</Row>
 				</Row>
@@ -399,7 +399,11 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
-							<Text size="small" color="gray0" style={{ textDecoration: 'underline' }}>
+							<Text
+								size="small"
+								color="gray0"
+								style={{ textDecoration: 'underline', cursor: 'default' }}
+							>
 								({t('label.what_is_a_gal', "What's a GAL?")})
 							</Text>
 						</Tooltip>
@@ -435,14 +439,7 @@ const EditAccountGeneralSection: FC = () => {
 										inputName="password"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.password
-												? accountDetail.password
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.password}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -462,14 +459,7 @@ const EditAccountGeneralSection: FC = () => {
 										inputName="repeatPassword"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.repeatPassword
-												? accountDetail.repeatPassword
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.repeatPassword}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -485,14 +475,7 @@ const EditAccountGeneralSection: FC = () => {
 									inputName="password"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.password
-											? accountDetail.password
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.password}
 									disabled={isHidePassword}
 								/>
 							</Row>
@@ -504,14 +487,7 @@ const EditAccountGeneralSection: FC = () => {
 									inputName="repeatPassword"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.repeatPassword
-											? accountDetail.repeatPassword
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.repeatPassword}
 									disabled={isHidePassword}
 								/>
 							</Row>

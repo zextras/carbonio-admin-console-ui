@@ -41,6 +41,7 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 
 const DomainAclList: FC = () => {
 	const [t] = useTranslation();
@@ -63,6 +64,7 @@ const DomainAclList: FC = () => {
 	const timer = useRef<any>();
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -82,7 +84,7 @@ const DomainAclList: FC = () => {
 		() => [
 			{
 				id: 'name',
-				label: t('label.name', 'Name'),
+				label: t('label.security_group_name', 'Name'),
 				width: '20%',
 				bold: true
 			},
@@ -450,6 +452,7 @@ const DomainAclList: FC = () => {
 			ownerGrantEmailType,
 			ownerGrantEmails
 		) => {
+			setIsLoading(true);
 			const attributes: any[] = [];
 			attributes.push({
 				n: 'displayName',
@@ -556,6 +559,7 @@ const DomainAclList: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				})
 				.catch((error) => {
 					let message = '';
@@ -582,6 +586,7 @@ const DomainAclList: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 		},
 		[createSnackbar, t, addMemberToAclList, callAllRequest]
@@ -627,7 +632,12 @@ const DomainAclList: FC = () => {
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-					<Container height="fit" crossAlignment="flex-start" background="gray6">
+					<Container
+						height="fit"
+						crossAlignment="flex-start"
+						background="gray6"
+						style={{ position: 'relative' }}
+					>
 						<Row
 							orientation="horizontal"
 							mainAlignment="space-between"
@@ -653,10 +663,7 @@ const DomainAclList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height:
-									aclList.length > 0 && !isRequestInProgress
-										? 'calc(100vh - 21.25rem)'
-										: 'calc(100vh - 40.625rem)'
+								height: 'calc(100vh - 21.25rem)'
 							}}
 						>
 							<Table
@@ -664,7 +671,10 @@ const DomainAclList: FC = () => {
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
-								style={{ overflow: 'auto', height: '100%' }}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || aclList.length === 0 ? '14%' : '100%'
+								}}
 								selectedRows={selectedDlRow}
 								onSelectionChange={(selected: any): void => {
 									setSelectedFromRow(aclListItem.find((item: any) => selected[0] === item?.id));
@@ -724,23 +734,33 @@ const DomainAclList: FC = () => {
 								</Container>
 							)}
 						</Row>
-						<Row
-							orientation="horizontal"
-							mainAlignment="space-between"
-							crossAlignment="flex-start"
-							width="fill"
-							style={{ position: 'absolute', bottom: '0.25rem' }}
-						>
-							{aclList && aclList.length > 0 && (
-								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-							)}
-						</Row>
+						{aclList && aclList.length > 0 && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="space-between"
+								width="100%"
+								style={{ position: 'absolute', bottom: '-4rem' }}
+								height="auto"
+							>
+								<Container crossAlignment="flex-start">
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ top: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
+						)}
 					</Container>
 				</Row>
 			</Container>
 			{showAclListDetailView && (
 				<ModalOverlay
-					setOpen={showAclListDetailView}
+					setOpen={setShowAclListDetailView}
 					open={showAclListDetailView}
 					maxWidth="40.375rem"
 				>
@@ -756,6 +776,7 @@ const DomainAclList: FC = () => {
 					<CreateAclList
 						setShowCreateAclListView={setShowCreateAclListView}
 						createAclListReq={createAclListReq}
+						isLoading={isLoading}
 					/>
 				</ModalOverlay>
 			)}

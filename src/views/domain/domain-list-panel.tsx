@@ -51,6 +51,7 @@ import { getAllRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { DomainResponse } from '../../../types';
+import { useConfigStore } from '../../store/config/store';
 
 const SelectItem = styled(Row)``;
 
@@ -76,7 +77,8 @@ interface ManageOptions {
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const locationService = useLocation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -310,11 +312,12 @@ const DomainListPanel: FC = () => {
 				name: t('label.accounts', 'Accounts'),
 				isSelected: isDomainSelect
 			},
-			{
-				id: DELEGATES,
-				name: t('label.delegates_title', 'Delegates'),
-				isSelected: isDomainSelect
-			},
+			// TODO: uncomment once we have the delgates feature completely from backend
+			// {
+			// 	id: DELEGATES,
+			// 	name: t('label.delegates_title', 'Delegates'),
+			// 	isSelected: isDomainSelect
+			// },
 			{
 				id: MAILING_LIST,
 				name: t('label.mailing_list', 'Mailing List'),

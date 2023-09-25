@@ -45,6 +45,22 @@ import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
 import DomainCosLink from './domain-cos-link';
 import { CosMaxAccountValues } from '../../../../types';
+import OverlayDivision from '../../components/overlayDivision';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 70.35rem;
+	top: 6.5rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -148,6 +164,7 @@ const DomainGeneralSettings: FC = () => {
 	const [confirmDomainName, setConfirmDomainName] = useState<string>('');
 	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
 		{ label: string }[]
 	>([]);
@@ -449,6 +466,7 @@ const DomainGeneralSettings: FC = () => {
 
 	const onSave = (): void => {
 		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
+			setIsLoading(true);
 			setHasCarbonioNotificationFromError(false);
 			const body: any = {};
 			const attributes: any[] = [];
@@ -526,6 +544,7 @@ const DomainGeneralSettings: FC = () => {
 					if (domain) {
 						setDomain(domain);
 					}
+					setIsLoading(false);
 				})
 				.catch((error) => {
 					createSnackbar({
@@ -538,6 +557,7 @@ const DomainGeneralSettings: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 		} else {
 			setHasCarbonioNotificationFromError(true);
@@ -685,6 +705,7 @@ const DomainGeneralSettings: FC = () => {
 	};
 
 	const onCloseDomain = (): void => {
+		setConfirmDomainName('');
 		setOpenDeleteDomainConfirmDialog(false);
 		const body: any = {
 			_jsns: 'urn:zimbraAdmin',
@@ -734,6 +755,7 @@ const DomainGeneralSettings: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"

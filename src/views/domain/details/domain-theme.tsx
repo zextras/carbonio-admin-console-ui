@@ -13,6 +13,7 @@ import {
 	Button,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -21,6 +22,22 @@ import { modifyDomain } from '../../../services/modify-domain-service';
 import { ResetTheme } from '../theme/theme-reset';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { themeConfigStore } from '../../../../types/domain';
+import OverlayDivision from '../../components/overlayDivision';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 70.35rem;
+	top: 6.5rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const DomainTheme: FC = () => {
 	const [t] = useTranslation();
@@ -35,6 +52,7 @@ const DomainTheme: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isValidated, setIsValidated] = useState<boolean>(true);
 	const [zimbraId, setZimbraId] = useState<string>('');
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const setValue = useCallback(
 		(key: string, value: any): void => {
@@ -169,6 +187,7 @@ const DomainTheme: FC = () => {
 	}, [domainTheme, intialThemeConfig]);
 
 	const modifyDomainRequest = (body: any): void => {
+		setIsLoading(true);
 		modifyDomain(body)
 			.then((data) => {
 				createSnackbar({
@@ -183,6 +202,7 @@ const DomainTheme: FC = () => {
 				if (domain) {
 					setDomain(domain);
 				}
+				setIsLoading(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -195,6 +215,7 @@ const DomainTheme: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				setIsLoading(false);
 			});
 	};
 
@@ -264,85 +285,88 @@ const DomainTheme: FC = () => {
 	};
 
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Container
-				orientation="column"
-				background="gray6"
-				crossAlignment="flex-start"
-				mainAlignment="flex-start"
-			>
-				<Row mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="56px">
-						<Row orientation="horizontal" width="100%">
-							<Row
-								padding={{ all: 'large' }}
-								mainAlignment="flex-start"
-								width="50%"
-								crossAlignment="flex-start"
-							>
-								<Text size="medium" weight="bold" color="gray0">
-									{t('label.theme', 'Theme')}
-								</Text>
-							</Row>
-							<Row
-								padding={{ all: 'large' }}
-								width="50%"
-								mainAlignment="flex-end"
-								crossAlignment="flex-end"
-							>
-								<Padding right="small">
+		<>
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+				<Container
+					orientation="column"
+					background="gray6"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+				>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container orientation="vertical" mainAlignment="space-around" height="56px">
+							<Row orientation="horizontal" width="100%">
+								<Row
+									padding={{ all: 'large' }}
+									mainAlignment="flex-start"
+									width="50%"
+									crossAlignment="flex-start"
+								>
+									<Text size="medium" weight="bold" color="gray0">
+										{t('label.theme', 'Theme')}
+									</Text>
+								</Row>
+								<Row
+									padding={{ all: 'large' }}
+									width="50%"
+									mainAlignment="flex-end"
+									crossAlignment="flex-end"
+								>
+									<Padding right="small">
+										{isDirty && (
+											<Button
+												label={t('label.cancel', 'Cancel')}
+												color="secondary"
+												onClick={onCancel}
+											/>
+										)}
+									</Padding>
 									{isDirty && (
 										<Button
-											label={t('label.cancel', 'Cancel')}
-											color="secondary"
-											onClick={onCancel}
+											label={t('label.save', 'Save')}
+											color="primary"
+											onClick={onSave}
+											disabled={!isValidated}
 										/>
 									)}
-								</Padding>
-								{isDirty && (
-									<Button
-										label={t('label.save', 'Save')}
-										color="primary"
-										onClick={onSave}
-										disabled={!isValidated}
-									/>
-								)}
+								</Row>
 							</Row>
-						</Row>
-					</Container>
-					<Divider color="gray2" />
-				</Row>
-				<ThemeConfigs
-					themeConfig={domainTheme}
-					setThemeConfig={setDomainTheme}
-					setIsValidated={setIsValidated}
-					onResetTheme={onResetTheme}
-				/>
-			</Container>
-			{isOpenResetDialog && (
-				<ResetTheme
-					title={t('label.reset_domain_theme', 'Reset {{name}} theme', {
-						name: domainName
-					})}
-					isOpenResetDialog={isOpenResetDialog}
-					isRequestInProgress={isRequestInProgress}
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore // Need to fix it with custom soultion
+						</Container>
+						<Divider color="gray2" />
+					</Row>
+					<ThemeConfigs
+						themeConfig={domainTheme}
+						setThemeConfig={setDomainTheme}
+						setIsValidated={setIsValidated}
+						onResetTheme={onResetTheme}
+					/>
+				</Container>
+				{isOpenResetDialog && (
+					<ResetTheme
+						title={t('label.reset_domain_theme', 'Reset {{name}} theme', {
+							name: domainName
+						})}
+						isOpenResetDialog={isOpenResetDialog}
+						isRequestInProgress={isRequestInProgress}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 
-					closeHandler={closeHandler}
-					onResetHandler={onResetHandler}
-				/>
-			)}
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
-		</Container>
+						closeHandler={closeHandler}
+						onResetHandler={onResetHandler}
+					/>
+				)}
+				<RouteLeavingGuard when={isDirty} onSave={onSave}>
+					<Text>
+						{t(
+							'label.unsaved_changes_line1',
+							'Are you sure you want to leave this page without saving?'
+						)}
+					</Text>
+					<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+				</RouteLeavingGuard>
+			</Container>
+		</>
 	);
 };
 

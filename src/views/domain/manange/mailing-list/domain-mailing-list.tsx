@@ -42,6 +42,7 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 
 const DomainMailingList: FC = () => {
 	const [t] = useTranslation();
@@ -64,6 +65,7 @@ const DomainMailingList: FC = () => {
 	const timer = useRef<any>();
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const mailingListStatusFilter: any = useMemo(
 		() => [
@@ -83,7 +85,7 @@ const DomainMailingList: FC = () => {
 		() => [
 			{
 				id: 'name',
-				label: t('label.name', 'Name'),
+				label: t('label.mailing_list_name', 'Name'),
 				width: '20%',
 				bold: true
 			},
@@ -449,6 +451,7 @@ const DomainMailingList: FC = () => {
 			ownerGrantEmailType,
 			ownerGrantEmails
 		) => {
+			setIsLoading(true);
 			const attributes: any[] = [];
 			attributes.push({
 				n: 'displayName',
@@ -542,6 +545,7 @@ const DomainMailingList: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				})
 				.catch((error) => {
 					let message = '';
@@ -568,6 +572,7 @@ const DomainMailingList: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 		},
 		[createSnackbar, t, addMemberToMailingList, callAllRequest]
@@ -613,7 +618,12 @@ const DomainMailingList: FC = () => {
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-					<Container height="fit" crossAlignment="flex-start" background="gray6">
+					<Container
+						height="fit"
+						crossAlignment="flex-start"
+						background="gray6"
+						style={{ position: 'relative' }}
+					>
 						<Row
 							orientation="horizontal"
 							mainAlignment="space-between"
@@ -639,10 +649,7 @@ const DomainMailingList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height:
-									mailingList.length > 0 && !isRequestInProgress
-										? 'calc(100vh - 21.25rem)'
-										: 'calc(100vh - 40.625rem)'
+								height: 'calc(100vh - 21.25rem)'
 							}}
 						>
 							<Table
@@ -650,7 +657,10 @@ const DomainMailingList: FC = () => {
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
-								style={{ overflow: 'auto', height: '100%' }}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || mailingList.length === 0 ? '14%' : '100%'
+								}}
 								selectedRows={selectedDlRow}
 								onSelectionChange={(selected: any): void => {
 									setSelectedFromRow(mailingListItem.find((item: any) => selected[0] === item?.id));
@@ -664,7 +674,7 @@ const DomainMailingList: FC = () => {
 							{isRequestInProgress && (
 								<Container
 									crossAlignment="center"
-									mainAlignment="center"
+									mainAlignment="flex-start"
 									height="auto"
 									padding={{ top: 'medium' }}
 								>
@@ -710,17 +720,29 @@ const DomainMailingList: FC = () => {
 								</Container>
 							)}
 						</Row>
-						<Row
+
+						<Container
 							orientation="horizontal"
 							mainAlignment="space-between"
-							crossAlignment="flex-start"
-							width="fill"
-							style={{ position: 'absolute', bottom: '0.25rem' }}
+							width="100%"
+							style={{ position: 'absolute', bottom: '-4rem' }}
+							height="auto"
 						>
-							{mailingList && mailingList.length > 0 && (
-								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-							)}
-						</Row>
+							<Container crossAlignment="flex-start">
+								{mailingList && mailingList.length > 0 && (
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								)}
+							</Container>
+
+							<Container
+								crossAlignment="flex-end"
+								orientation="horizontal"
+								mainAlignment="flex-end"
+								padding={{ top: 'small' }}
+							>
+								{mailingList && mailingList.length > 0 && <TrackNumberPerPage pageSize={limit} />}
+							</Container>
+						</Container>
 					</Container>
 				</Row>
 			</Container>
@@ -739,6 +761,7 @@ const DomainMailingList: FC = () => {
 					<CreateMailingList
 						setShowCreateMailingListView={setShowCreateMailingListView}
 						createMailingListReq={createMailingListReq}
+						isLoading={isLoading}
 					/>
 				</ModalOverlay>
 			)}

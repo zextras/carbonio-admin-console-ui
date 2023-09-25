@@ -14,6 +14,7 @@ import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { GENERAL_SETTINGS } from '../../../constants';
 import { useDomainStore } from '../../../store/domain/store';
+import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 
 type StatusItem = {
 	color: string;
@@ -60,6 +61,7 @@ const DomainList: FC = () => {
 	const [t] = useTranslation();
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainView = useDomainStore((state) => state.setDomainView);
+	const [limit, setLimit] = useState<number>(10);
 
 	const tableRef = useRef(null);
 
@@ -137,7 +139,7 @@ const DomainList: FC = () => {
 	);
 
 	const getAllDomainList = useCallback((): void => {
-		getDomainList(searchQuery, offset, 10).then((data) => {
+		getDomainList(searchQuery, offset, limit).then((data) => {
 			const domainListResponse: ZimbraDomainResponse = data?.domain || [];
 			if (domainListResponse && Array.isArray(domainListResponse)) {
 				const domainListArr: {
@@ -204,7 +206,7 @@ const DomainList: FC = () => {
 				setDomainList(domainListArr);
 			}
 		});
-	}, [STATUS_COLOR, offset, onDomainSelect, searchQuery]);
+	}, [STATUS_COLOR, offset, onDomainSelect, searchQuery, limit]);
 	useEffect(() => {
 		getAllDomainList();
 	}, [getAllDomainList]);
@@ -335,9 +337,24 @@ const DomainList: FC = () => {
 								<Divider />
 							</Row>
 							{domainList.length !== 0 && (
-								<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
-									<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={10} />
-								</Row>
+								<Container
+									orientation="horizontal"
+									mainAlignment="space-between"
+									width="100%"
+									height="auto"
+								>
+									<Container crossAlignment="flex-start">
+										<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
+									</Container>
+									<Container
+										crossAlignment="flex-end"
+										orientation="horizontal"
+										mainAlignment="flex-end"
+										padding={{ top: 'small' }}
+									>
+										<TrackNumberPerPage pageSize={limit} />
+									</Container>
+								</Container>
 							)}
 						</Row>
 					</Container>

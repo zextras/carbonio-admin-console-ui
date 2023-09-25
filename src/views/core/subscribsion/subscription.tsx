@@ -27,6 +27,7 @@ import MatomoTracker from '../../../matomo-tracker';
 import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useConfigStore } from '../../../store/config/store';
 
 interface ContainerExtendProps extends ContainerProps {
 	licensed?: string;
@@ -122,7 +123,9 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 );
 
 const Subscription: FC = () => {
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const matomo = useMemo(() => new MatomoTracker(userId), []);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -252,29 +255,28 @@ const Subscription: FC = () => {
 	};
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6">
-			<Row mainAlignment="flex-start" width="100%">
-				<Container
-					orientation="vertical"
-					mainAlignment="space-around"
-					background="gray6"
-					height="58px"
+		<Container maxWidth="100%" mainAlignment="flex-start" background="gray6">
+			<Container
+				orientation="horizontal"
+				mainAlignment="space-around"
+				background="gray6"
+				height="58px"
+			>
+				<Row
+					orientation="horizontal"
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="100%"
+					padding={{ all: 'large' }}
 				>
-					<Row
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						width="100%"
-						padding={{ all: 'large' }}
-					>
-						<Row mainAlignment="flex-start" crossAlignment="flex-start">
-							<Text size="medium" weight="bold" color="gray0">
-								{t('label.details', 'Details')}
-							</Text>
-						</Row>
+					<Row mainAlignment="flex-start" crossAlignment="flex-start">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('label.details', 'Details')}
+						</Text>
 					</Row>
-				</Container>
-			</Row>
+				</Row>
+			</Container>
+
 			<Row orientation="horizontal" width="100%" background="gray6">
 				<Divider />
 			</Row>
@@ -434,7 +436,7 @@ const Subscription: FC = () => {
 
 						<Row width="49.5%" padding={{ all: 'large' }}>
 							<Input
-								label={t('core.subscription.emissionDate', 'Emission date')}
+								label={t('core.subscription.endDate', 'End date')}
 								value={
 									services.response.dateEnd
 										? moment(services.response.dateEnd).format('DD-MMM-YYYY')

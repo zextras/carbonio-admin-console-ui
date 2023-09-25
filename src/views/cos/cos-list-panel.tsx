@@ -29,6 +29,7 @@ import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
+import { useConfigStore } from '../../store/config/store';
 
 const SelectItem = styled(Row)``;
 
@@ -62,7 +63,8 @@ const CosListPanel: FC = () => {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [t] = useTranslation();
 	const locationService = useLocation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
