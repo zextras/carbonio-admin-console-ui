@@ -1647,6 +1647,7 @@
         "storage_centralized": "I want this Storage to be centralized",
         "storage_centralized_helpertext": "<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it’s easier to manage both the hardware and the data itself. ",
         "storage_centralized_helptext": "Centralized data becomes useful when two or more servers need access to the same data. \n By keeping data in one place, it’s easier to manage both the hardware and the data itself. ",
+        "storage_hsm_not_licensed": "Cannot complete operation: storages_hsm not licensed.",
         "storage_lbl": "<bold>Storage</bold>",
         "storage_primarybar_tooltip": "View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>.",
         "storage_type": "Storage Type",

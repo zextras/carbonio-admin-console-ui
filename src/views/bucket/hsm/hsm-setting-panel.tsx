@@ -549,6 +549,19 @@ const HSMsettingPanel: FC = () => {
 									replace: true
 								});
 							}
+						} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
+							setIsEditSaveInProgress(false);
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: t(
+									'label.storage_hsm_not_licensed',
+									'Cannot complete operation: storages_hsm not licensed.'
+								),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
 						}
 					}
 				})
@@ -589,6 +602,19 @@ const HSMsettingPanel: FC = () => {
 								key: 'success',
 								type: 'success',
 								label: t('hsm.policy_is_correctly_running', 'The policy is correctly running'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
+							setIsEditSaveInProgress(false);
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: t(
+									'label.storage_hsm_not_licensed',
+									'Cannot complete operation: storages_hsm not licensed.'
+								),
 								autoHideTimeout: 3000,
 								hideButton: true,
 								replace: true
@@ -640,6 +666,19 @@ const HSMsettingPanel: FC = () => {
 							key: 'success',
 							type: 'success',
 							label: t('hsm.policies_are_running', 'The HSM Policies are running'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
+						setIsEditSaveInProgress(false);
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: t(
+								'label.storage_hsm_not_licensed',
+								'Cannot complete operation: storages_hsm not licensed.'
+							),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
