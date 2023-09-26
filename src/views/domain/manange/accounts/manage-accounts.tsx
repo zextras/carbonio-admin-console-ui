@@ -374,6 +374,7 @@ const ManageAccounts: FC = () => {
 						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
 					}
 					setInitAccountDetail({ ...obj });
+					setSelectedAccount({ ...obj, id });
 					setAccountDetail({ ...obj });
 					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
@@ -567,7 +568,6 @@ const ManageAccounts: FC = () => {
 
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setSelectedAccount(acc);
 			setShowAccountDetailView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
