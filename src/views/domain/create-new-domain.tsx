@@ -42,6 +42,7 @@ import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../..
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
 import { isValidEmail } from '../utility/utils';
 import OverlayDivision from '../components/overlayDivision';
+import Textarea from '../components/textarea';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -105,6 +106,7 @@ const CreateDomain: FC = () => {
 	const [galSyncAccountName, setGalSyncAccountName] = useState<string>('galsync');
 	const [dataSourceName, setDataSourceName] = useState<string>(INTERNAL_GAL);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const [domainName, setDomainName] = useState<string>('');
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
@@ -239,6 +241,10 @@ const CreateDomain: FC = () => {
 			attributes.push({
 				n: 'zimbraNotes',
 				_content: zimbraNotes
+			});
+			attributes.push({
+				n: 'description',
+				_content: description
 			});
 			attributes.push({
 				n: 'zimbraGalMode',
@@ -439,6 +445,18 @@ const CreateDomain: FC = () => {
 								<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
 									<Input
 										label={t('label.description', 'Description')}
+										backgroundColor="gray5"
+										value={description}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setDescription(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
+									<Textarea
+										label={t('label.notes', 'Notes')}
 										backgroundColor="gray5"
 										value={zimbraNotes}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

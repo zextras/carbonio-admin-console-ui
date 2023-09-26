@@ -97,6 +97,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 	const [zimbraMailAlias, setZimbraMailAlias] = useState<any>([]);
 	const [dlm, setDlm] = useState<any[]>([]);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const [zimbraCreateTimestamp, setZimbraCreateTimestamp] = useState<string>('');
 	const [dlId, setdlId] = useState<string>('');
 	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
@@ -368,6 +369,24 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 								zimbraNotes: ''
 							}));
 						}
+
+						const _description = distributionListMembers?.a?.find(
+							(a: any) => a?.n === 'description'
+						)?._content;
+
+						setDescription(_description || '');
+						if (_description) {
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								description: _description
+							}));
+						} else {
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								description: ''
+							}));
+						}
+
 						const _zimbraDistributionListSendShareMessageToNewMembers =
 							distributionListMembers?.a?.find(
 								(a: any) => a?.n === 'zimbraDistributionListSendShareMessageToNewMembers'
@@ -844,6 +863,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 			? (latestData.dlMembershipList = dlMembershipList)
 			: (latestData.dlMembershipList = []);
 		zimbraNotes ? (latestData.zimbraNotes = zimbraNotes) : (latestData.zimbraNotes = '');
+		description ? (latestData.description = description) : (latestData.description = '');
 		zimbraDistributionListSendShareMessageToNewMembers
 			? (latestData.zimbraDistributionListSendShareMessageToNewMembers = true)
 			: (latestData.zimbraDistributionListSendShareMessageToNewMember = false);
@@ -878,6 +898,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 			? setDlMembershipList(previousDetail?.dlMembershipList)
 			: setDlMembershipList([]);
 		previousDetail?.zimbraNotes ? setZimbraNotes(previousDetail?.zimbraNotes) : setZimbraNotes('');
+		previousDetail?.description ? setDescription(previousDetail?.description) : setDescription('');
 		previousDetail?.zimbraDistributionListSendShareMessageToNewMembers
 			? setZimbraDistributionListSendShareMessageToNewMembers(true)
 			: setZimbraDistributionListSendShareMessageToNewMembers(false);
@@ -979,8 +1000,13 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		});
 
 		attributes.push({
-			n: 'description',
+			n: 'zimbraNotes',
 			_content: zimbraNotes
+		});
+
+		attributes.push({
+			n: 'description',
+			_content: description
 		});
 
 		attributes.push({
@@ -1015,11 +1041,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				_content: memberURL
 			});
 		}
-
-		attributes.push({
-			n: 'zimbraNotes',
-			_content: zimbraNotes
-		});
 
 		request.push(modifyDistributionList(selectedAclList?.id, attributes));
 		if (
@@ -1355,6 +1376,12 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 			setIsDirty(true);
 		}
 	}, [previousDetail?.zimbraNotes, zimbraNotes]);
+
+	useEffect(() => {
+		if (previousDetail?.description !== undefined && previousDetail?.description !== description) {
+			setIsDirty(true);
+		}
+	}, [previousDetail?.description, description]);
 
 	useEffect(() => {
 		if (
@@ -1871,9 +1898,21 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					</ListRow>
 					<ListRow padding={0}>
 						<Container padding={{ top: 'small', bottom: 'medium' }}>
+							<Input
+								value={description}
+								label={t('label.description', 'Description')}
+								backgroundColor="gray5"
+								onChange={(e: any): any => {
+									setDescription(e.target.value);
+								}}
+							/>
+						</Container>
+					</ListRow>
+					<ListRow padding={0}>
+						<Container padding={{ top: 'small', bottom: 'medium' }}>
 							<Textarea
 								value={zimbraNotes}
-								label={t('label.description', 'Description')}
+								label={t('label.notes', 'Notes')}
 								background="gray5"
 								onChange={(e: any): any => {
 									setZimbraNotes(e.target.value);
