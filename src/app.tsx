@@ -91,7 +91,7 @@ const PrimaryBarIconButton = styled(IconButton)`
 	&:hover {
 		background: transparent;
 	}
-	@media (max-width: 768px) {
+	@media (max-width: 60rem) {
 		padding: 0 0 0 0.188rem;
 	}
 `;
