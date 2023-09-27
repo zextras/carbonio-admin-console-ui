@@ -168,7 +168,7 @@ const CreateAccountDetailSection: FC = () => {
 						<Input
 							onChange={changeAccDetail}
 							inputName="givenName"
-							label={t('label.peson_name', 'Name')}
+							label={t('label.person_name', 'Name')}
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.givenName || ''}
 						/>
