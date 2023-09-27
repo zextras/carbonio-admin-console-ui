@@ -91,6 +91,9 @@ const PrimaryBarIconButton = styled(IconButton)`
 	&:hover {
 		background: transparent;
 	}
+	@media (max-width: 60rem) {
+		padding: 0 0 0 0.188rem;
+	}
 `;
 
 const App: FC = () => {
