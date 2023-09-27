@@ -578,7 +578,8 @@ const ManageDelegates: FC = () => {
 							</Row>
 						)} */}
 					</Row>
-					{allAccount?.length > 0 && (
+					{/* TODO: uncomment once we fix the delgates feature's bug completely. */}
+					{/* {allAccount?.length > 0 && (
 						<>
 							<ListRow padding={{ top: 'large' }}>
 								<Padding left="small" width="50%">
@@ -606,7 +607,7 @@ const ManageDelegates: FC = () => {
 								</Padding>
 							</ListRow>
 						</>
-					)}
+					)} */}
 				</Container>
 			</Container>
 		</Container>
