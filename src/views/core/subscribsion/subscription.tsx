@@ -22,6 +22,7 @@ import styled from 'styled-components';
 import { find, orderBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { TFunction } from 'i18next';
 import { fetchSoap } from '../../../services/subscription-service';
 import MatomoTracker from '../../../matomo-tracker';
 import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
@@ -100,7 +101,15 @@ const moduleNames: any = {
 	Chat: 'Chats'
 };
 
-const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): ReactElement => (
+const ServiceStatus = ({
+	name,
+	licensed,
+	t
+}: {
+	name: string;
+	licensed: any;
+	t: TFunction;
+}): ReactElement => (
 	<Row
 		width="180px"
 		orientation="horizontal"
@@ -117,7 +126,9 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 			<Padding bottom="extrasmall">
 				<ServiceName licensed={licensed}>{name}</ServiceName>
 			</Padding>
-			<Text color={licensed ? 'text' : 'secondary'}>{licensed ? 'Enabled' : 'Disabled'}</Text>
+			<Text color={licensed ? 'text' : 'secondary'}>
+				{licensed ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+			</Text>
 		</Row>
 	</Row>
 );
@@ -353,7 +364,12 @@ const Subscription: FC = () => {
 					{modules.map(
 						(module: any) =>
 							(module.enabled || (!module.enabled && showDisabledModules)) && (
-								<ServiceStatus key={module.name} name={module.name} licensed={module.enabled} />
+								<ServiceStatus
+									key={module.name}
+									name={module.name}
+									licensed={module.enabled}
+									t={t}
+								/>
 							)
 					)}
 				</Container>
@@ -391,7 +407,7 @@ const Subscription: FC = () => {
 						<Row width="49.5%" padding={{ all: 'large' }}>
 							<Input
 								label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
-								value={`${services.response.accountCount} / ${services.response.Enabled}`}
+								value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
 							/>
 						</Row>
 						<Row width="49.5%" padding={{ all: 'large' }}>

@@ -805,9 +805,9 @@ const App: FC = () => {
 			.then((res: any) => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
-					const allModules = Object.keys(response.response.features).map((module) => ({
-						...response.response.features[module],
-						name: module
+					const allModules = response.response.features.map((module: any) => ({
+						...module,
+						name: module?.name
 					}));
 					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
 						setModuleLicense(allModules);
