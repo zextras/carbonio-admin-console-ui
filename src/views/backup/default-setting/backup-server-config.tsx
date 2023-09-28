@@ -17,7 +17,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { isEqual, reduce, cloneDeep, find } from 'lodash';
-import { CONFIG } from '../../../constants';
+import { BACKUP_BASIC, CONFIG, BACKUP_REALTIME } from '../../../constants';
 import ListRow from '../../list/list-row';
 import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -34,6 +34,8 @@ const BackupServerConfig: FC = () => {
 	const createSnackbar = useSnackbar();
 	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
 	const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
+	const [isBackupRealTimeFeatureLicensed, setBackupRealTimeFeatureLicensed] =
+		useState<boolean>(false);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const allowSetBackup = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -145,10 +147,17 @@ const BackupServerConfig: FC = () => {
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
 			const backupModule = moduleLicense.filter(
-				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
+			}
+
+			const realTime = moduleLicense.filter(
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME
+			);
+			if (realTime && realTime[0] && realTime[0]?.enabled) {
+				setBackupRealTimeFeatureLicensed(true);
 			}
 		}
 	}, [moduleLicense]);
@@ -200,15 +209,17 @@ const BackupServerConfig: FC = () => {
 						padding={{ all: 'large' }}
 					>
 						<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}></Row>
-						<ListRow>
-							<Switch
-								label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
-								value={initbackupDetail.ZxBackup_RealTimeScanner}
-								onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
-								iconColor="primary"
-								disabled={!allowSetBackup}
-							/>
-						</ListRow>
+						{isBackupRealTimeFeatureLicensed && (
+							<ListRow>
+								<Switch
+									label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
+									value={initbackupDetail.ZxBackup_RealTimeScanner}
+									onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
+									iconColor="primary"
+									disabled={!allowSetBackup}
+								/>
+							</ListRow>
+						)}
 						<ListRow>
 							<Switch
 								value={initbackupDetail.ZxBackup_ModuleEnabledAtStartup}
