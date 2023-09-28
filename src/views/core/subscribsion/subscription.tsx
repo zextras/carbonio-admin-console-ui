@@ -170,7 +170,7 @@ const Subscription: FC = () => {
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
-				const formatModules = response.response.features.map((module: any) => ({
+				const formatModules = response?.response?.features?.map((module: any) => ({
 					...module,
 					name: module?.name
 				}));

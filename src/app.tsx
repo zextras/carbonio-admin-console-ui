@@ -797,7 +797,7 @@ const App: FC = () => {
 			.then((res: any) => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
-					const allModules = response.response.features.map((module: any) => ({
+					const allModules = response?.response?.features?.map((module: any) => ({
 						...module,
 						name: module?.name
 					}));
