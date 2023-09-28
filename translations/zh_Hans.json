@@ -995,7 +995,8 @@
         "link": "链接",
         "logout": "注销",
         "never_send_read_receipt": "从不发送已读回执",
-        "remove_all": "移除全部"
+        "remove_all": "移除全部",
+        "read_options": "已读选项"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",

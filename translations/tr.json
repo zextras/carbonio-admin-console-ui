@@ -939,7 +939,8 @@
         "link": "Bağlantı",
         "logout": "Oturumu kapat",
         "never_send_read_receipt": "Hiçbir zaman okundu bilgisi gönderme",
-        "remove_all": "HEPSİNİ KALDIR"
+        "remove_all": "HEPSİNİ KALDIR",
+        "read_options": "Okuma seçenekleri"
     },
     "timezone": {
         "asia_gaza": "{{value}} Gaza",

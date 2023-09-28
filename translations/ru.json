@@ -53,7 +53,12 @@
         "domain_name": "Имя домена",
         "imap": "IMAP",
         "mobile_apps": "Мобильное приложение",
-        "active_sync": "ActiveSync"
+        "active_sync": "ActiveSync",
+        "admin_api": "API администратора",
+        "aggregated_space_quota": "Совокупная квота пространства",
+        "aggregated_space_quota_warning": "Предупреждение о совокупной квоте пространства (%)",
+        "certificate_removed": "Сертификат был удален",
+        "certificate_type_use_letsencrypt_long_chain": "Я хочу использовать сертификат Let’s Encrypt (longChain)"
     },
     "label": {
         "account": "Учетная запись",
@@ -754,7 +759,7 @@
         "search_for_user_and_clic_to_add": "Найдите пользователя и нажмите кнопку ДОБАВИТЬ.",
         "verify": "Проверить",
         "verify_certificate": "Проверить",
-        "Aliases": "Альясы",
+        "Aliases": "Алиасы",
         "delete_domain_certificate_content": "Вы удаляете сертификат домена.<br /> Вы уверены, что хотите его удалить?",
         "load_and_verify_certificate": "ЗАГРУЗИТЬ И ПРОВЕРИТЬ СЕРТИФИКАТ",
         "load_certificate_message": "Загрузите сертификат для просмотра информации!<br />Нажмите <strong>\"ЗАГРУЗИТЬ И ПРОВЕРИТЬ СЕРТИФИКАТ +\"</strong>, чтобы начать",
@@ -862,7 +867,7 @@
         "storage_primarybar_tooltip": "Просмотрите свой <bold>статус сервера</bold>, свои <bold>тома</bold> и <bold>политики HSM</bold>. Вы также сможете <bold>подключать бакеты </bold>.",
         "storage": "Хранилище",
         "account_name": "Имя пользователя",
-        "aliases": "Альясы",
+        "aliases": "Алиасы",
         "distribution_list": "Список распространения",
         "value": "Значение",
         "dont_save_a_copy_of_sent_messages": "Не сохранять копии отправленных сообщений",
@@ -995,7 +1000,9 @@
         "delegated": "Делегированный",
         "delegates_title": "Делегаты",
         "groups": "Группы",
-        "never_send_read_receipt": "Никогда не отправляйте уведомление о прочтении"
+        "never_send_read_receipt": "Никогда не отправляйте уведомление о прочтении",
+        "read_options": "Варианты прочтения",
+        "read_receipt_settings": "Настройки запроса о прочтении"
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
@@ -1211,7 +1218,8 @@
             "ap_northeast_1": "Азиатско-Тихоокеанский регион (Токио)",
             "cn_north_1": "Китай (Пекин)",
             "ap_southeast_1": "Азиатско-Тихоокеанский регион (Сингапур)",
-            "eu_west_1": "Евросоюз (Ирландия)"
+            "eu_west_1": "Евросоюз (Ирландия)",
+            "eu_south_2": "Европа(Испания)"
         },
         "invalid_volume_path": "Укажите путь к тому",
         "s3_types": {
@@ -1223,7 +1231,8 @@
             "openio_s3": "OpenIO S3",
             "scality_s3": "Scality S3",
             "yandex_s3": "Yandex S3",
-            "minio": "MinIO"
+            "minio": "MinIO",
+            "ceph": "Ceph"
         },
         "invalid_compression_thresold": "Требуется порог сжатия",
         "invalid_volume_name": "Заполните поле имя тома.",
@@ -1273,7 +1282,8 @@
         "confirm_connection": "ПОДТВЕРДИТЬ СОЕДИНЕНИЕ",
         "create_with_there_data": "СОЗДАТЬ С ЭТИМИ ДАННЫМИ",
         "data_already_sent_to_the_user": "ДАННЫЕ УЖЕ ОТПРАВЛЕНЫ ПОЛЬЗОВАТЕЛЮ",
-        "next": "Далее"
+        "next": "Далее",
+        "close": "ЗАКРЫТЬ"
     },
     "create_new_bucket": "НОВЫЙ БАКЕТ",
     "create_new_domain": "Создать Новый Домен",
@@ -1334,7 +1344,7 @@
         "legacy_exchange_dn_attribute": "O и OU, используемые в атрибуте legacyExchangeDN",
         "auto_decline_if_inviter_is_blacklisted": "Автоматический отказ, если отправитель находится в черном списке",
         "audible_reminder_notification": "Звуковое уведомление",
-        "percentage_threshold_for_quota_warning": "Процентный порог предупреждений о квотах",
+        "percentage_threshold_for_quota_warning": "Процентный порог предупреждений о квотах (%)",
         "password_set_to_use_external_authentication_information_msg": "Эти параметры не влияют на пароли, установленные пользователями в доменах, которые настроены на использование внешней аутентификации",
         "out_of_the_office_reply": "Ответ вне офиса",
         "notify_changes_by_delegated_access": "Уведомлять об изменениях, внесенных делегированными учетными записями",
@@ -1386,7 +1396,7 @@
         "enable_smime": "Включить S/MIME",
         "enabled": "Включено",
         "failed_login_policy": "Правила для неудачных входов",
-        "free_busy_interop": "Взаимодействие",
+        "free_busy_interop": "Свободен/Занят Interop (O = OutOfOffice), (OU = OutOfOffice, AvailableForUrgentIssues)",
         "html_compose": "Создание HTML",
         "imap_polling_interval": "Интервал опроса IMAP",
         "mail": "Письмо",
@@ -1434,7 +1444,14 @@
         "chats": "Чаты",
         "files": "Файлы",
         "idp_configuration_saml_notes": "Перейдите к своему IDP, чтобы настроить SAML и скопировать значения EntityID и ServiceURL.",
-        "forwarding": "Пересылка"
+        "forwarding": "Пересылка",
+        "max_user_specific_forwarding_address": "Максимальное количество адресов пересылки",
+        "read_receipt_settings": "Настройки запроса о прочтении",
+        "select_cos_to_include_in_domain": "Выберите COS, который нужно включить в этот домен",
+        "user_can_specify_mail_forwarding_filter": "Пользователь может указать фильтр переадресации почты",
+        "max_contacts_allowed_in_the_folder": "Максимальное количество разрешенных контактов в папке",
+        "user_can_specify_forwarding_address": "Пользователь может указать адрес пересылки",
+        "limit_user_specified_forwarding_addresses": "Максимум символов для адреса пересылки"
     },
     "backup": {
         "backup_path": "Путь резервирования",
@@ -1513,7 +1530,10 @@
         "ms": "MS",
         "bucket_configuration": "Конфигурация Бакета",
         "local_mountpoint": "Локальная точка подключения",
-        "backup_configuration": "конфигурация резервирования"
+        "backup_configuration": "конфигурация резервирования",
+        "backup_is_enable_at_the_startup": "Резервное копирование включено при запуске",
+        "append_metadata_instead_of_rewrite_faster_but_dangerous": "Добавлять метаданные вместо перезаписи (быстрее, но опасно)",
+        "backup_is_enabled_at_startup": "Резервное копирование включено при запуске"
     },
     "welcome_to_carbonio": "Добро пожаловать, {{adminName}}, в Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Пожалуйста, выберите раздел в меню слева",
@@ -1711,12 +1731,12 @@
         "domain": "Домен",
         "files": "Файлы",
         "click_on_the_pencil_to_edit": "Нажмите на карандаш, чтобы отредактировать доступный альяс, или нажмите на крестик, чтобы удалить его",
-        "aliases": "Альясы",
+        "aliases": "Алиасы",
         "manage_aliases": "Управлять альясами",
         "manage_the_aliases_for_this_account": "Управление альясами для этой учетной записи",
         "new_alias_name": "Имя нового альяса",
         "type_the_new_alias_name": "Введите новое имя альяса и выберите домен, чтобы добавить его к доступным альясам",
-        "your_available_aliases": "Ваши доступные альясы",
+        "your_available_aliases": "Ваши доступные алиасы",
         "allow_user_check_minimum_interval": "Разрешить пользователю менять минимальный интервал проверки",
         "NEXT": "Далее",
         "abstract": "Абстрактный",
@@ -1789,7 +1809,12 @@
         "delete_password_of_user_ldap": "Вы удаляете пароль <bold>{{name}}</bold> из LDAP. Вы уверены, что хотите это удалить?",
         "delete_user_password": "УДАЛИТЬ ПОЛЬЗОВАТЕЛЬСКИЙ ПАРОЛЬ ИЗ LDAP",
         "user_password_set": "Пароль пользователя успешно установлен",
-        "user_password_deleted": "Пароль пользователя успешно удален"
+        "user_password_deleted": "Пароль пользователя успешно удален",
+        "right_for_selected_user_deleted_successfully": "Право для выбранного пользователя успешно удалено",
+        "user_can_specify_forwarding_address": "Пользователь может указать адрес пересылки",
+        "delegated_administration": "Делегированный администратор",
+        "global_administration": "Глобальный администратор",
+        "service_label_password": " Пароль {{ service_label }}"
     },
     "privacy": {
         "survey_feedback_sub_1": "Помогите нам стать лучше. Пройдите быстрый опрос.",

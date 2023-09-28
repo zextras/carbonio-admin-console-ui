@@ -549,7 +549,7 @@
         "edit_button": "MODIFICA",
         "enable": "abilita",
         "enable_compression": "Abilita Compressione",
-        "forwarding": "Inoltro…",
+        "forwarding": "Inoltro",
         "helo": "Aiuto",
         "invalid_email_address": "Indirizzo email non valido",
         "invites": "Inviti",
@@ -1398,7 +1398,7 @@
         "confirm_connection": "CONFERMA CONNESSIONE",
         "create_with_there_data": "CREA CON QUESTI DATI",
         "data_already_sent_to_the_user": "DATI GIÀ INVIATI ALL'UTENTE",
-        "next": "AVANTI",
+        "next": "SUCCESSIVO",
         "close": "CHIUDI"
     },
     "create_new_bucket": "NUOVO BUCKET",
