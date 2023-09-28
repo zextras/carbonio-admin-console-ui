@@ -35,7 +35,8 @@ import {
 	TWO_FACTOR_AUTHENTICATION,
 	DELEGATES,
 	SECURITY_GROUP,
-	GLOBAL_ROUTE
+	GLOBAL_ROUTE,
+	BACKUP_BASIC
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -427,9 +428,9 @@ const DomainListPanel: FC = () => {
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
 			const backupModule = moduleLicense.filter(
-				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}

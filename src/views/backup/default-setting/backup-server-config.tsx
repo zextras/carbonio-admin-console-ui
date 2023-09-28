@@ -17,7 +17,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { isEqual, reduce, cloneDeep, find } from 'lodash';
-import { CONFIG } from '../../../constants';
+import { BACKUP_BASIC, CONFIG } from '../../../constants';
 import ListRow from '../../list/list-row';
 import { useBackupStore } from '../../../store/backup/store';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -145,9 +145,9 @@ const BackupServerConfig: FC = () => {
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
 			const backupModule = moduleLicense.filter(
-				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
