@@ -16,7 +16,7 @@ import {
 	Input,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep, find } from 'lodash';
+import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
 import { BACKUP_BASIC, CONFIG, BACKUP_REALTIME } from '../../../constants';
 import ListRow from '../../list/list-row';
 import { useBackupStore } from '../../../store/backup/store';
@@ -62,7 +62,7 @@ const BackupServerConfig: FC = () => {
 		});
 		modifyBackupRequest(modifiedData)
 			.then((data) => {
-				if (data.status === 200) {
+				if (data?.status === 200 || isEmpty(data)) {
 					setGlobalConfig(initbackupDetail);
 					createSnackbar({
 						key: 'success',
