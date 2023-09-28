@@ -1261,7 +1261,9 @@
         "logout": "Logout",
         "never_send_read_receipt": "Nunca enviar confirmação de leitura",
         "remove_all": "Remover tudo",
-        "users": "utilizadores"
+        "users": "utilizadores",
+        "read_options": "Opções de leitura",
+        "domain_delegates_title": "Dominios delegados"
     },
     "message": {
         "snackbar": {
