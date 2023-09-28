@@ -115,7 +115,7 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 			padding={{ vertical: 'extrasmall', left: 'small' }}
 		>
 			<Padding bottom="extrasmall">
-				<ServiceName licensed={licensed}>{moduleNames[name] || name}</ServiceName>
+				<ServiceName licensed={licensed}>{name}</ServiceName>
 			</Padding>
 			<Text color={licensed ? 'text' : 'secondary'}>{licensed ? 'Enabled' : 'Disabled'}</Text>
 		</Row>
@@ -162,11 +162,11 @@ const Subscription: FC = () => {
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
-				const formatModules = Object.keys(response.response.modules).map((module) => ({
-					...response.response.modules[module],
-					name: module
+				const formatModules = response.response.features.map((module: any) => ({
+					...module,
+					name: module?.name
 				}));
-				const orderModules: any = orderBy(formatModules, 'licensed', 'desc');
+				const orderModules: any = orderBy(formatModules, 'name', 'desc');
 				const filterModules: any = orderModules.filter((module: any) => module.name !== 'SproxyD');
 				setServices(response);
 				setModules(filterModules);
@@ -352,8 +352,8 @@ const Subscription: FC = () => {
 				>
 					{modules.map(
 						(module: any) =>
-							(module.licensed || (!module.licensed && showDisabledModules)) && (
-								<ServiceStatus key={module.name} name={module.name} licensed={module.licensed} />
+							(module.enabled || (!module.enabled && showDisabledModules)) && (
+								<ServiceStatus key={module.name} name={module.name} licensed={module.enabled} />
 							)
 					)}
 				</Container>
@@ -391,7 +391,7 @@ const Subscription: FC = () => {
 						<Row width="49.5%" padding={{ all: 'large' }}>
 							<Input
 								label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
-								value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
+								value={`${services.response.accountCount} / ${services.response.Enabled}`}
 							/>
 						</Row>
 						<Row width="49.5%" padding={{ all: 'large' }}>

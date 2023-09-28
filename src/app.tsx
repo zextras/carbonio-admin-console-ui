@@ -805,8 +805,8 @@ const App: FC = () => {
 			.then((res: any) => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
-					const allModules = Object.keys(response.response.modules).map((module) => ({
-						...response.response.modules[module],
+					const allModules = Object.keys(response.response.features).map((module) => ({
+						...response.response.features[module],
 						name: module
 					}));
 					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
