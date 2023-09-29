@@ -108,7 +108,7 @@ const moduleNames: any = {
 	backup_ext_volume: 'Backup on External Volumes',
 	storages_conn_sproxyd: 'ScalitySproxyD Connector',
 	activesync_basic: 'ActiveSync',
-	backup_import_external: 'Backup on External Volumes'
+	backup_import_external: 'Import Ext Backup'
 };
 
 const ServiceStatus = ({
@@ -121,7 +121,7 @@ const ServiceStatus = ({
 	t: TFunction;
 }): ReactElement => (
 	<Row
-		width="13.5rem"
+		width="14rem"
 		orientation="horizontal"
 		mainAlignment="flex-start"
 		crossAlignment="stretch"
