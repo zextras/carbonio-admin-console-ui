@@ -290,3 +290,5 @@ export const ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS = 'zimbraDomainCOSMaxAccounts';
 export const SECURITY_GROUP = 'security_group';
 export const DL = 'dl';
 export const USR = 'usr';
+export const BACKUP_BASIC = 'backup_basic';
+export const BACKUP_REALTIME = 'backup_realtime';
