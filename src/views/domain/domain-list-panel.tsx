@@ -313,12 +313,11 @@ const DomainListPanel: FC = () => {
 				name: t('label.accounts', 'Accounts'),
 				isSelected: isDomainSelect
 			},
-			// TODO: uncomment once we have the delgates feature completely from backend
-			// {
-			// 	id: DELEGATES,
-			// 	name: t('label.delegates_title', 'Delegates'),
-			// 	isSelected: isDomainSelect
-			// },
+			{
+				id: DELEGATES,
+				name: t('label.delegates_title', 'Delegates'),
+				isSelected: isDomainSelect
+			},
 			{
 				id: MAILING_LIST,
 				name: t('label.mailing_list', 'Mailing List'),
