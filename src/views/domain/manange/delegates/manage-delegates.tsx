@@ -71,7 +71,16 @@ const DomainDelegatedTable: FC<{
 	);
 
 	return (
-		<Container crossAlignment="flex-start" style={{ overflowY: 'scroll' }}>
+		<Row
+			orientation="horizontal"
+			mainAlignment="space-between"
+			crossAlignment="flex-start"
+			width="fill"
+			style={{
+				height: 'calc(100vh - 21.25rem)',
+				position: 'relative'
+			}}
+		>
 			<Table
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore // Need to fix it with custom soultion
@@ -106,7 +115,7 @@ const DomainDelegatedTable: FC<{
 					</Padding>
 				</Container>
 			)}
-		</Container>
+		</Row>
 	);
 };
 
@@ -126,9 +135,6 @@ const ManageDelegates: FC = () => {
 	const [allAccountDetails, setAllAccountDetails] = useState<any>([]);
 	const [accountDetail, setaccountDetail] = useState<any>();
 	const [loading, setLoading] = useState(false);
-	// const [offset, setOffset] = useState<number>(0);
-	// const [limit, setLimit] = useState<number>(20);
-	// const [totalAccount, setTotalAccount] = useState<number>(0);
 
 	const getAccountList = useCallback(
 		(offsetData: number, limitData: number): void => {
@@ -515,12 +521,13 @@ const ManageDelegates: FC = () => {
 							crossAlignment="flex-start"
 							padding={{ vertical: 'large' }}
 						>
-							<Text size="medium" color="gray0">
+							<Text size="medium" weight="bold" color="gray0">
 								{t('label.administration_rights', 'Administration Rights')}
 							</Text>
 						</Row>
 					</Row>
-					<ListRow padding={{ all: '0' }}>
+					{/* TODO: uncomment once we fix the delgates feature's bug completely. */}
+					{/* <ListRow padding={{ all: '0' }}>
 						<Padding right="small" width="46%">
 							<Input
 								label={t('label.account', 'Account')}
@@ -557,8 +564,15 @@ const ManageDelegates: FC = () => {
 								size="extralarge"
 							/>
 						</Padding>
-					</ListRow>
-					<Row mainAlignment="flex-start" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
+					</ListRow> */}
+					<Row
+						orientation="column"
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						width="100%"
+						height="calc(100% - 4.375rem)"
+						style={{ overflow: 'auto' }}
+					>
 						<DomainDelegatedTable
 							accountList={allAccount}
 							headers={delegateDomainHeadersList}
@@ -567,16 +581,6 @@ const ManageDelegates: FC = () => {
 								setSendSelectedRows(selected);
 							}}
 						/>
-						{/* {allAccount.length !== 0 && (
-							<Row
-								orientation="horizontal"
-								mainAlignment="flex-start"
-								width="100%"
-								style={{ position: 'absolute', bottom: '0.25rem' }}
-							>
-								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-							</Row>
-						)} */}
 					</Row>
 					{/* TODO: uncomment once we fix the delgates feature's bug completely. */}
 					{/* {allAccount?.length > 0 && (
