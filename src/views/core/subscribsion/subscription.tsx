@@ -87,18 +87,28 @@ const IconInfo = ({
 );
 
 const moduleNames: any = {
-	ZxBackup: 'Backup',
-	ZxMobile: 'ActiveSync',
-	ZxAdmin: 'Admins',
-	ZxPowerstore: 'Mailstores',
-	SproxyD: 'SproxyD',
-	ZxDrive: 'Files',
-	ZxDocs: 'Docs',
-	ZxChat: 'Chats',
-	ZxHA: 'HA',
-	Powerstore: 'Storage',
-	Drive: 'Files',
-	Chat: 'Chats'
+	backup_realtime: 'Realtime Backup',
+	chats_recording: 'Video recording',
+	files_basic: 'Files Basics',
+	admins_basic: 'Delegated Administration',
+	storages_basic: 'Storages Basic',
+	appmail_basic: 'MailApp',
+	backup_basic: 'Backup Basic',
+	ha_basic: 'Ha Basic',
+	storages_conn_basic: 'S3 Connectors',
+	storages_centralized: 'Centralized Volumes',
+	appmail_advanced: 'MailApp Advanced',
+	activesync_shared_folder: 'ActiveSync (shared folder)',
+	chats_basic: 'Chats Basic',
+	auth_2fa: '2FA and Policies',
+	storages_hsm: 'Storages HSM',
+	chats_rooms: 'Meeting Rooms',
+	files_docs_balancing: 'Docs Connector',
+	auth_saml: 'SAML Auth',
+	backup_ext_volume: 'Backup on External Volumes',
+	storages_conn_sproxyd: 'ScalitySproxyD Connector',
+	activesync_basic: 'ActiveSync',
+	backup_import_external: 'Import Ext Backup'
 };
 
 const ServiceStatus = ({
@@ -111,11 +121,11 @@ const ServiceStatus = ({
 	t: TFunction;
 }): ReactElement => (
 	<Row
-		width="180px"
+		width="14rem"
 		orientation="horizontal"
 		mainAlignment="flex-start"
 		crossAlignment="stretch"
-		style={{ padding: '0 44px 16px 0' }}
+		style={{ padding: '0 0.25rem 1rem 0' }}
 	>
 		<VerticalBar licensed={licensed} />
 		<Row
@@ -174,8 +184,8 @@ const Subscription: FC = () => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
 				const formatModules = response?.response?.features?.map((module: any) => ({
-					...response.response.modules[module],
-					name: module
+					...module,
+					name: moduleNames[module?.name]
 				}));
 				const orderModules: any = orderBy(formatModules, 'name', 'desc');
 				const filterModules: any = orderModules.filter((module: any) => module.name !== 'SproxyD');
