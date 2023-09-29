@@ -171,8 +171,8 @@ const Subscription: FC = () => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
 				const formatModules = response?.response?.features?.map((module: any) => ({
-					...module,
-					name: module?.name
+					...response.response.modules[module],
+					name: module
 				}));
 				const orderModules: any = orderBy(formatModules, 'name', 'desc');
 				const filterModules: any = orderModules.filter((module: any) => module.name !== 'SproxyD');
