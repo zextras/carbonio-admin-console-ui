@@ -87,28 +87,28 @@ const IconInfo = ({
 );
 
 const moduleNames: any = {
-	backup_realtime: 'Backup Realtime',
-	chats_recording: 'Chats Recordings',
+	backup_realtime: 'Realtime Backup',
+	chats_recording: 'Video recording',
 	files_basic: 'Files Basics',
-	admins_basic: 'Admin Basic',
+	admins_basic: 'Delegated Administration',
 	storages_basic: 'Storages Basic',
-	appmail_basic: 'AppMail Basic',
+	appmail_basic: 'MailApp',
 	backup_basic: 'Backup Basic',
 	ha_basic: 'Ha Basic',
-	storages_conn_basic: 'Storages Connectors',
-	storages_centralized: 'Storages Centralizes',
-	appmail_advanced: 'Appmail Advanced',
-	activesync_shared_folder: 'ActiveSync Shared Folder',
+	storages_conn_basic: 'S3 Connectors',
+	storages_centralized: 'Centralized Volumes',
+	appmail_advanced: 'MailApp Advanced',
+	activesync_shared_folder: 'ActiveSync (shared folder)',
 	chats_basic: 'Chats Basic',
-	auth_2fa: 'Auth 2FA',
+	auth_2fa: '2FA and Policies',
 	storages_hsm: 'Storages HSM',
-	chats_rooms: 'Chats Rooms',
-	files_docs_balancing: 'Files Doc Balancing',
-	auth_saml: 'Auth SAML',
-	backup_ext_volume: 'Backup External Volume',
-	storages_conn_sproxyd: 'Storages SproxyD',
-	activesync_basic: 'ActiveSync Basic',
-	backup_import_external: 'Backup Import External'
+	chats_rooms: 'Meeting Rooms',
+	files_docs_balancing: 'Docs Connector',
+	auth_saml: 'SAML Auth',
+	backup_ext_volume: 'Backup on External Volumes',
+	storages_conn_sproxyd: 'ScalitySproxyD Connector',
+	activesync_basic: 'ActiveSync',
+	backup_import_external: 'Backup on External Volumes'
 };
 
 const ServiceStatus = ({
