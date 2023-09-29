@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.30](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.29...v0.9.30) (2023-09-29)
+
+
+### Bug Fixes
+
+* ac-797: backup module not open in admin ui ([36bbbbc](https://github.com/zextras/carbonio-admin-console-ui/commit/36bbbbc575b1cc7d77dded0ad8d3dcb8a7e2dcd9))
+* on backup save getting error ([487a90a](https://github.com/zextras/carbonio-admin-console-ui/commit/487a90a3e642dff984013547b2f6048a231731e0))
+
 ### [0.9.29](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.28...v0.9.29) (2023-09-22)
 
 

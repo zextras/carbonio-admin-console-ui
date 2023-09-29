@@ -330,3 +330,5 @@ export const HOLD = 'hold';
 export const INCOMING = 'incoming';
 export const MATOMO_URL = 'https://zextras.matomo.cloud/';
 export const MATOMO_SITE_ID = 1;
+export const BACKUP_BASIC = 'backup_basic';
+export const BACKUP_REALTIME = 'backup_realtime';

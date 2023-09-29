@@ -42,12 +42,14 @@ import {
 	S3,
 	S3_BUCKET,
 	SERVER,
-	CONFIG
+	CONFIG,
+	BACKUP_REALTIME
 } from '../../../constants';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useBackupStore } from '../../../store/backup/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useModuleLicenseStore } from '../../../store/module-license/store';
 
 const BackupConfiguration: FC = () => {
 	const { server }: { server: string } = useParams();
@@ -142,6 +144,20 @@ const BackupConfiguration: FC = () => {
 	const [bucketConfiguration, setBucketConfiguration] = useState<any>([]);
 	const [bucketListOption, setBucketListOption] = useState<Array<any>>([]);
 
+	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const [isBackupImportRealtimeFeatureLicensed, setIsBackupImportRealtimeFeatureLicensed] =
+		useState<boolean>(false);
+
+	useEffect(() => {
+		if (moduleLicense && moduleLicense.length > 0) {
+			const backupRealtimeModule = moduleLicense.filter(
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME
+			);
+			if (backupRealtimeModule && backupRealtimeModule[0] && backupRealtimeModule[0]?.enabled) {
+				setIsBackupImportRealtimeFeatureLicensed(true);
+			}
+		}
+	}, [moduleLicense]);
 	const onDestinationChange = useCallback(
 		(v: any): any => {
 			const it = destinationOptions.find((item: any) => item.value === v);
@@ -344,14 +360,9 @@ const BackupConfiguration: FC = () => {
 	]);
 
 	const onSave = useCallback(() => {
-		const body: any = {
+		let body: any = {
 			ZxBackup_ModuleEnabledAtStartup: {
 				value: moduleEnableStartup,
-				objectName: server,
-				configType: SERVER
-			},
-			ZxBackup_RealTimeScanner: {
-				value: enableRealtimeScanner,
 				objectName: server,
 				configType: SERVER
 			},
@@ -398,6 +409,16 @@ const BackupConfiguration: FC = () => {
 			}
 		};
 
+		if (isBackupImportRealtimeFeatureLicensed) {
+			const scanner = {
+				ZxBackup_RealTimeScanner: {
+					value: enableRealtimeScanner,
+					objectName: server,
+					configType: SERVER
+				}
+			};
+			body = { ...body, ...scanner };
+		}
 		setIsSaveRequestInProgress(true);
 		setCoreAttributes(body)
 			.then((data: any) => {
@@ -479,12 +500,9 @@ const BackupConfiguration: FC = () => {
 				});
 			});
 	}, [
-		createSnackbar,
-		t,
-		enableRealtimeScanner,
 		moduleEnableStartup,
-		runSmartScanStartup,
 		server,
+		runSmartScanStartup,
 		spaceThreshold,
 		scheduleSmartScan,
 		isScheduleSmartScan,
@@ -492,7 +510,11 @@ const BackupConfiguration: FC = () => {
 		scheduleAutomaticRetentionPolicy,
 		backupDestPath,
 		keepDeletedItemInBackup,
-		keepDeletedAccountsInBackup
+		keepDeletedAccountsInBackup,
+		isBackupImportRealtimeFeatureLicensed,
+		enableRealtimeScanner,
+		t,
+		createSnackbar
 	]);
 
 	useEffect(() => {
@@ -1030,15 +1052,18 @@ const BackupConfiguration: FC = () => {
 								disabled={!allowSetBackup}
 							/>
 						</Container>
-						<Container padding={{ top: 'large' }}>
-							<Switch
-								label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
-								value={enableRealtimeScanner}
-								onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
-								iconColor="primary"
-								disabled={!allowSetBackup}
-							/>
-						</Container>
+						{isBackupImportRealtimeFeatureLicensed && (
+							<Container padding={{ top: 'large' }}>
+								<Switch
+									label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
+									value={enableRealtimeScanner}
+									onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
+									iconColor="primary"
+									disabled={!allowSetBackup}
+								/>
+							</Container>
+						)}
+
 						<Container padding={{ top: 'large' }}>
 							<Switch
 								label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
