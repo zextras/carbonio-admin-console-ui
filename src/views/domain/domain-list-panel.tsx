@@ -520,6 +520,10 @@ const DomainListPanel: FC = () => {
 					})
 			  );
 
+	useEffect(() => {
+		setDomainView(GLOBAL_DOMAIN_ROUTE);
+	}, [setDomainView]);
+
 	return (
 		<Container
 			orientation="column"
