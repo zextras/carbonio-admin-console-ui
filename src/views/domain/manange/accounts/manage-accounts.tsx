@@ -745,7 +745,6 @@ const ManageAccounts: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
 		debounce((searchStr: string, sfilter: string, tfilter: string) => {
-			setTotalAccount(0);
 			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter, tfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
