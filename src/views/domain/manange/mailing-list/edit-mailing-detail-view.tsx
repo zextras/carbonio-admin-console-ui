@@ -1988,7 +1988,10 @@ const EditMailingListView: FC<any> = ({
 							/>
 						</Container>
 					</ListRow>
-					<Container height="fit" padding={{ left: 'small', top: 'small', right: 'small' }}>
+					<Container
+						height="fit"
+						padding={{ left: 'small', top: 'large', right: 'small', bottom: 'small' }}
+					>
 						<ManageAliases
 							listAliases={zimbraMailAlias}
 							setListAliases={setZimbraMailAlias}
@@ -2292,7 +2295,8 @@ const EditMailingListView: FC<any> = ({
 							</Container>
 						)}
 					</ListRow>
-
+					{/* TODO: (AC-739) uncomment once feature avaiable in IRIS */
+					/*
 					<Row padding={{ bottom: 'medium' }}>
 						<Text weight="bold" color="gray0">
 							{t('label.owners_settings_lbl', 'Owners’ Settings')}
@@ -2448,7 +2452,7 @@ const EditMailingListView: FC<any> = ({
 							<Divider />
 						</Container>
 					</Row>
-
+				*/}
 					<ListRow padding={{ all: 'small' }}>
 						<Container>
 							<Select
