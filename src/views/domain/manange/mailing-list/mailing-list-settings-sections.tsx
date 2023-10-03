@@ -231,7 +231,7 @@ const MailingListSettingsSection: FC<any> = () => {
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
-					padding: '3px',
+					padding: '0.188rem',
 					width: 'inherit'
 				}}
 				onClick={(): void => {
@@ -252,7 +252,7 @@ const MailingListSettingsSection: FC<any> = () => {
 					display: 'block',
 					textAlign: 'left',
 					height: 'inherit',
-					padding: '3px',
+					padding: '0.188rem',
 					width: 'inherit'
 				}}
 				onClick={(): void => {
@@ -376,9 +376,9 @@ const MailingListSettingsSection: FC<any> = () => {
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 300px)"
+				height="calc(100vh - 13.125rem)"
 				background="white"
-				style={{ overflow: 'auto', padding: '16px' }}
+				style={{ overflow: 'auto', padding: '1rem' }}
 			>
 				<Row>
 					<Text size="small" weight="bold">
@@ -452,7 +452,8 @@ const MailingListSettingsSection: FC<any> = () => {
 						/>
 					</Container>
 				</ListRow>
-				<Row padding={{ top: 'large' }}>
+				{/* TODO: (AC-739) uncomment once feature avaiable in IRIS */
+				/* <Row padding={{ top: 'large' }}>
 					<Text size="small" weight="bold">
 						{t('label.owners_settings_lbl', 'Owners’ Settings')}
 					</Text>
@@ -466,7 +467,7 @@ const MailingListSettingsSection: FC<any> = () => {
 					</Text>
 				</Row>
 
-				<ListRow>
+					<ListRow>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
@@ -574,7 +575,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						<Divider />
 					</Container>
 				</ListRow>
-
+			*/}
 				<ListRow>
 					<Container padding={{ top: 'large' }}>
 						<Select
@@ -593,7 +594,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large', right: 'small' }}
-						width="65%"
+						width="100%"
 					>
 						<DropDownInput
 							width="100%"
@@ -615,15 +616,13 @@ const MailingListSettingsSection: FC<any> = () => {
 						mainAlignment="flex-start"
 						crossAlignment="center"
 						orientation="horizontal"
-						width="fit"
-						padding={{ top: 'large', right: 'small' }}
+						width="18%"
+						padding={{ top: 'large' }}
 					>
 						<Button
 							type="outlined"
 							label={t('label.add', 'Add')}
 							color="primary"
-							icon="PlusOutline"
-							iconPlacement="right"
 							size="large"
 							onClick={onAddGrantEmail}
 							disabled={grantEmailItem === ''}
@@ -633,15 +632,13 @@ const MailingListSettingsSection: FC<any> = () => {
 						mainAlignment="flex-start"
 						crossAlignment="center"
 						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
+						padding={{ top: 'large' }}
+						width="25%"
 					>
 						<Button
 							type="outlined"
 							label={t('label.delete', 'Delete')}
 							color="error"
-							icon="Trash2Outline"
-							iconPlacement="right"
 							size="large"
 							onClick={onDeleteFromGrantEmail}
 							disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
@@ -671,7 +668,7 @@ const MailingListSettingsSection: FC<any> = () => {
 							mainAlignment="center"
 							crossAlignment="center"
 						>
-							<Padding value="57px 0 0 0" width="100%">
+							<Padding value="3.563rem 0 0 0" width="100%">
 								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
