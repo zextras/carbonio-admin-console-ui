@@ -155,7 +155,7 @@ const DomainResources: FC = () => {
 			searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, 'name').then((data) => {
 				const resourceListResponse = data?.calresource || [];
 				if (resourceListResponse && Array.isArray(resourceListResponse)) {
-					setTotalAccount(data?.searchTotal);
+					setTotalAccount(data?.searchTotal || 0);
 					const rList: any[] = [];
 					resourceListResponse.forEach((item: any, index: number) => {
 						rList.push({
@@ -272,7 +272,6 @@ const DomainResources: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchResourceQuery = useCallback(
 		debounce((searchStr: string, sfilter: string) => {
-			setTotalAccount(0);
 			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
