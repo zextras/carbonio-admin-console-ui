@@ -49,7 +49,9 @@ import {
 	USER_PREFERENCES,
 	DOMAIN_NAME,
 	UID,
-	ADMINISTRATION
+	ADMINISTRATION,
+	CHANGE_NAME_BOOLEAN,
+	CHANGE_DISPLAY_NAME_BOOLEAN
 } from '../../../../../constants';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import EditAccountContactsSection from './edit-account-contacts-section';
@@ -388,6 +390,8 @@ const EditAccount: FC<{
 				});
 			await getAccountList();
 			remove(modifiedKeys, (ele) => ele === UID);
+			remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
+			remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
 			if (modifiedKeys.includes(DOMAIN_NAME)) {
 				remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
 				setShowEditAccountView(false);

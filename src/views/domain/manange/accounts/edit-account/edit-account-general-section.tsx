@@ -76,6 +76,11 @@ const EditAccountGeneralSection: FC = () => {
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
 
+	useEffect(() => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, changeNameBool: false }));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: objectType = {};
@@ -143,10 +148,19 @@ const EditAccountGeneralSection: FC = () => {
 	);
 	const changeUserNaneDetail = useCallback(
 		(e) => {
+			setAccountDetail((prev: AccountType) => ({ ...prev, changeNameBool: true }));
 			setAccountDetail((prev: AccountType) => ({
 				...prev,
 				uid: e.target.value?.replace(/ /g, '')?.toLowerCase()
 			}));
+		},
+		[setAccountDetail]
+	);
+
+	const changeAccDisplayName = useCallback(
+		(e) => {
+			setAccountDetail((prev: AccountType) => ({ ...prev, changeDisplayNameBool: true }));
+			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
@@ -284,6 +298,42 @@ const EditAccountGeneralSection: FC = () => {
 		getDomainLists(domainName);
 	}, [domainName, getDomainLists, setAccountDetail, setInitAccountDetail]);
 
+	const combineDisplayName = useMemo(
+		() =>
+			`${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}${
+				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
+			}${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}`.trim(),
+		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
+	);
+
+	useEffect(() => {
+		!accountDetail?.changeDisplayNameBool &&
+			setAccountDetail((prev: AccountType) => ({ ...prev, displayName: combineDisplayName }));
+	}, [accountDetail?.changeDisplayNameBool, combineDisplayName, setAccountDetail]);
+
+	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+
+	const combineName = useMemo(() => {
+		const { sn, initials, givenName, changeNameBool, uid } = accountDetail || {};
+
+		if (!changeNameBool) {
+			const userName = [];
+
+			if (sn) userName.push(getModifiedName(sn));
+			if (initials) userName.push(getModifiedName(initials));
+			if (givenName) userName.push(getModifiedName(givenName));
+
+			return userName.join('.');
+		}
+
+		return uid || '';
+	}, [accountDetail]);
+
+	useEffect(() => {
+		!accountDetail?.changeNameBool &&
+			setAccountDetail((prev: AccountType) => ({ ...prev, uid: combineName }));
+	}, [accountDetail?.changeNameBool, combineName, setAccountDetail]);
+
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -383,8 +433,8 @@ const EditAccountGeneralSection: FC = () => {
 						label={t('label.viewed_name', 'Viewed Name')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.displayName}
-						value={accountDetail?.displayName}
-						onChange={changeAccDetail}
+						value={accountDetail?.displayName || combineDisplayName}
+						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"
 						autoComplete="new-password"
