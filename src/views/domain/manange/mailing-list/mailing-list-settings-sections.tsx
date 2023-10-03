@@ -594,7 +594,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'large', right: 'small' }}
-						width="70%"
+						width="100%"
 					>
 						<DropDownInput
 							width="100%"
@@ -617,14 +617,12 @@ const MailingListSettingsSection: FC<any> = () => {
 						crossAlignment="center"
 						orientation="horizontal"
 						width="18%"
-						padding={{ top: 'large', right: 'small' }}
+						padding={{ top: 'large' }}
 					>
 						<Button
 							type="outlined"
 							label={t('label.add', 'Add')}
 							color="primary"
-							icon="PlusOutline"
-							iconPlacement="right"
 							size="large"
 							onClick={onAddGrantEmail}
 							disabled={grantEmailItem === ''}
@@ -634,15 +632,13 @@ const MailingListSettingsSection: FC<any> = () => {
 						mainAlignment="flex-start"
 						crossAlignment="center"
 						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
+						padding={{ top: 'large' }}
 						width="25%"
 					>
 						<Button
 							type="outlined"
 							label={t('label.delete', 'Delete')}
 							color="error"
-							icon="Trash2Outline"
-							iconPlacement="right"
 							size="large"
 							onClick={onDeleteFromGrantEmail}
 							disabled={selectedGrantEmail && selectedGrantEmail.length === 0}

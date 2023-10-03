@@ -2475,13 +2475,14 @@ const EditMailingListView: FC<any> = ({
 							background="gray6"
 							height="58px"
 						>
-							<Row
-								orientation="horizontal"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								width="100%"
-							>
-								<Row mainAlignment="flex-start" width="57%" crossAlignment="flex-start">
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									orientation="horizontal"
+									padding={{ top: 'large', right: 'small' }}
+									width="100%"
+								>
 									<DropDownInput
 										items={grantItems}
 										inputLabel={t(
@@ -2496,33 +2497,40 @@ const EditMailingListView: FC<any> = ({
 										isCustomIcon={false}
 										inputDisabled={grantType?.value !== EMAIL}
 									/>
-								</Row>
-								<Row width="43%" mainAlignment="flex-start" crossAlignment="flex-start">
-									<Padding left="large" right="large">
-										<Button
-											type="outlined"
-											label={t('label.add', 'Add')}
-											color="primary"
-											icon="PlusOutline"
-											iconPlacement="right"
-											onClick={onAddGrantEmail}
-											size="extralarge"
-											disabled={grantEmailItem === ''}
-										/>
-									</Padding>
-
+								</Container>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="center"
+									orientation="horizontal"
+									width="18%"
+									padding={{ top: 'large' }}
+								>
+									<Button
+										type="outlined"
+										label={t('label.add', 'Add')}
+										color="primary"
+										onClick={onAddGrantEmail}
+										size="extralarge"
+										disabled={grantEmailItem === ''}
+									/>
+								</Container>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="center"
+									orientation="horizontal"
+									padding={{ top: 'large' }}
+									width="30%"
+								>
 									<Button
 										type="outlined"
 										label={t('label.delete', 'Delete')}
 										color="error"
-										icon="Trash2Outline"
-										iconPlacement="right"
 										size="extralarge"
 										onClick={onDeleteFromGrantEmail}
 										disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
 									/>
-								</Row>
-							</Row>
+								</Container>
+							</ListRow>
 						</Container>
 					</ListRow>
 
