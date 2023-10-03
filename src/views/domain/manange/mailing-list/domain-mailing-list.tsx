@@ -313,7 +313,6 @@ const DomainMailingList: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchMailingListQuery = useCallback(
 		debounce((searchStr: string, sfilter: string) => {
-			setTotalAccount(0);
 			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
