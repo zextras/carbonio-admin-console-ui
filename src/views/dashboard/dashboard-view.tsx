@@ -81,6 +81,7 @@ const Dashboard: FC = () => {
 	const domainInformation = useDomainInformation();
 	const rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+	const setDomainView = useDomainStore((state) => state.setDomainView);
 
 	const openOperationView = useCallback(
 		(operation: string) => {
@@ -91,13 +92,15 @@ const Dashboard: FC = () => {
 					name: domainInformation?.name
 				});
 				if (operation === 'account') {
+					setDomainView(ACCOUNTS);
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${ACCOUNTS}`);
 				} else if (operation === 'malinglist') {
+					setDomainView(MAILING_LIST);
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${MAILING_LIST}`);
 				}
 			}
 		},
-		[history, domainInformation, setDomain]
+		[history, domainInformation, setDomain, setDomainView]
 	);
 
 	useEffect(() => {
