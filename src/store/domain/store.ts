@@ -23,6 +23,8 @@ type DomainState = {
 	setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
 	closeDomainBanner: string;
 	setCloseDomainBanner: (domainName: string) => void;
+	isQuickAccess: boolean;
+	setIsQuickAccess: (isQuickAccess: boolean) => void;
 };
 
 export const useDomainStore = create<DomainState>(
@@ -33,6 +35,7 @@ export const useDomainStore = create<DomainState>(
 		setDomain: (domain): void => set({ domain }, false, 'setDomain'),
 		domainList: [],
 		isDomainSupportDelegatedAdmin: false,
+		isQuickAccess: false,
 		setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
@@ -59,6 +62,7 @@ export const useDomainStore = create<DomainState>(
 				}),
 				false,
 				'setCloseDomainBanner'
-			)
+			),
+		setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess')
 	}))
 );
