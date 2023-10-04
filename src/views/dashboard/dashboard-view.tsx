@@ -94,14 +94,16 @@ const Dashboard: FC = () => {
 				setIsQuickAccess(true);
 				if (operation === 'account') {
 					setDomainView(ACCOUNTS);
+					setDomainView(ACCOUNTS);
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${ACCOUNTS}`);
 				} else if (operation === 'malinglist') {
+					setDomainView(MAILING_LIST);
 					setDomainView(MAILING_LIST);
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${MAILING_LIST}`);
 				}
 			}
 		},
-		[domainInformation, setDomain, setIsQuickAccess, setDomainView, history]
+		[domainInformation, setDomain, setDomainView, setIsQuickAccess, history]
 	);
 
 	useEffect(() => {
