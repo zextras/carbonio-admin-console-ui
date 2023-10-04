@@ -21,7 +21,7 @@ import {
 	Padding
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import { debounce, map } from 'lodash';
+import { debounce, head, map } from 'lodash';
 import styled from 'styled-components';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
@@ -320,7 +320,7 @@ const EditAccountGeneralSection: FC = () => {
 			const userName = [];
 
 			if (sn) userName.push(getModifiedName(sn));
-			if (initials) userName.push(getModifiedName(initials));
+			if (initials) userName.push(head(getModifiedName(initials)));
 			if (givenName) userName.push(getModifiedName(givenName));
 
 			return userName.join('.');

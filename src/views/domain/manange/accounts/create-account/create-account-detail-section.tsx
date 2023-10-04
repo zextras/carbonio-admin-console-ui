@@ -15,7 +15,7 @@ import {
 	Switch
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { find } from 'lodash';
+import { find, head } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from './account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
@@ -84,7 +84,7 @@ const CreateAccountDetailSection: FC = () => {
 			const userName = [];
 
 			if (sn) userName.push(getModifiedName(sn));
-			if (initials) userName.push(getModifiedName(initials));
+			if (initials) userName.push(head(getModifiedName(initials)));
 			if (givenName) userName.push(getModifiedName(givenName));
 
 			return userName.join('.');
