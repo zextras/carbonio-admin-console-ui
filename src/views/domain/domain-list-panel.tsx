@@ -188,13 +188,6 @@ const DomainListPanel: FC = () => {
 		}
 	}, [domainInformation?.id, domainInformation?.name]);
 
-	useMemo(() => {
-		if (domainView === '') {
-			const operationItem = locationService?.pathname.split('/').pop();
-			setDomainView(operationItem || '');
-		}
-	}, [domainView, locationService?.pathname, setDomainView]);
-
 	useEffect(() => {
 		if (
 			locationService.pathname &&
@@ -204,7 +197,6 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setDomainView('');
 			setDomainId('');
 			setDomain({});
 		}
