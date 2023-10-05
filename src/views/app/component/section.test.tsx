@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *

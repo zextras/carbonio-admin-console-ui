@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -24,8 +25,7 @@ import i18next, { type i18n } from 'i18next';
 import { filter } from 'lodash';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
-import { ModalManager, SnackbarManager } from '@zextras/carbonio-design-system';
-import { ThemeProvider } from '@zextras/carbonio-design-system';
+import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
 
 export type UserEvent = ReturnType<typeof userEvent['setup']> & {
 	readonly rightClick: (target: Element) => Promise<void>;
