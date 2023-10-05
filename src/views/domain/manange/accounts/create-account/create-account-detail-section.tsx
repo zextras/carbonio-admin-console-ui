@@ -15,11 +15,12 @@ import {
 	Switch
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { find } from 'lodash';
+import { find, head } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from './account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
 import Textarea from '../../../../components/textarea';
+import { AccountType } from '../account-types/account-types';
 
 const CreateAccountDetailSection: FC = () => {
 	const context = useContext(AccountContext);
@@ -68,27 +69,29 @@ const CreateAccountDetailSection: FC = () => {
 
 	const changeAccDisplayName = useCallback(
 		(e) => {
-			setAccountDetail((prev: any) => ({ ...prev, changeDisplayNameBool: true }));
-			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setAccountDetail((prev: AccountType) => ({ ...prev, changeDisplayNameBool: true }));
+			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
 
-	const combineName = useMemo(
-		() =>
-			!accountDetail?.changeNameBool
-				? `${accountDetail?.sn?.replace(/ /g, '')?.toLowerCase() || ''}${
-						accountDetail?.initials?.replace(/ /g, '')?.toLowerCase() || ''
-				  }${accountDetail?.givenName?.replace(/ /g, '')?.toLowerCase() || ''}`
-				: accountDetail?.name,
-		[
-			accountDetail?.changeNameBool,
-			accountDetail?.givenName,
-			accountDetail?.initials,
-			accountDetail?.name,
-			accountDetail?.sn
-		]
-	);
+	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+
+	const combineName = useMemo(() => {
+		const { sn, initials, givenName, changeNameBool, name } = accountDetail || {};
+
+		if (!changeNameBool) {
+			const userName = [];
+
+			if (sn) userName.push(getModifiedName(sn));
+			if (initials) userName.push(head(getModifiedName(initials)));
+			if (givenName) userName.push(getModifiedName(givenName));
+
+			return userName.join('.');
+		}
+
+		return name || '';
+	}, [accountDetail]);
 
 	const combineDisplayName = useMemo(
 		() =>
