@@ -10,11 +10,68 @@ import {
 	Button,
 	Divider,
 	IconButton,
-	Input
+	DefaultTabBarItem,
+	TabBar,
+	Table,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import React, { FC } from 'react';
+import React, {
+	FC,
+	ReactElement,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 import { useTranslation } from 'react-i18next';
-import { mtaStats } from '../../../../types';
+import { CreateSnackbarType, MtaMailQueue, MtaMailQueueItem, mtaStats } from '../../../../types';
+import {
+	CORRUPT,
+	DEFERRED,
+	HOLD,
+	INCOMING,
+	ACTIVE,
+	RELEASE,
+	REQUEUE,
+	DELETE
+} from '../../../constants';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import { getMailQueue } from '../../../services/get-mail-queue';
+import { mailQueueAction } from '../../../services/mail-queue-action';
+import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
+
+const ReusedDefaultTabBar: FC<{
+	item: any;
+	index: any;
+	selected: any;
+	onClick: any;
+}> = ({ item, index, selected, onClick }): ReactElement => (
+	<DefaultTabBarItem
+		item={item}
+		selected={selected}
+		onClick={onClick}
+		orientation="horizontal"
+		background={'transparent'}
+		underlineColor={'primary'}
+		forceWidthEquallyDistributed={false}
+	>
+		<Container
+			orientation="horizontal"
+			mainAlignment="flex-start"
+			crossAlignment="flex-start"
+			padding={{ all: 'medium' }}
+			width="fill"
+		>
+			<Container mainAlignment="flex-start" crossAlignment="flex-start" width="auto" height="auto">
+				<Text size="small" weight="regular" color={selected ? 'primary' : 'gray'}>
+					{item.label} ({item?.count})
+				</Text>
+			</Container>
+		</Container>
+	</DefaultTabBarItem>
+);
 
 const MTAStatsDetail: FC<{
 	serverState: mtaStats | undefined;
@@ -30,6 +87,318 @@ const MTAStatsDetail: FC<{
 	flushRequestInProgress
 }) => {
 	const [t] = useTranslation();
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const [change, setChange] = useState(ACTIVE);
+	const [setClick] = useState('');
+	const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
+	const [mailRows, setMailRows] = useState<Array<any>>([]);
+	const [mailStatCount, setMailStatCount] = useState<Record<string, number>>({
+		queued: 0,
+		corrupted: 0,
+		deferred: 0,
+		incoming: 0,
+		onhold: 0
+	});
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [mtaMailQueueRecords, setMtaMailQueueRecords] = useState<MtaMailQueue>();
+
+	const items = useMemo(
+		() => [
+			{
+				id: ACTIVE,
+				label: t('mta.queued', 'Queued'),
+				count: mailStatCount?.queued,
+				CustomComponent: ReusedDefaultTabBar
+			},
+			{
+				id: CORRUPT,
+				label: t('mta.corrupted', 'Corrupted'),
+				count: mailStatCount?.corrupted,
+				CustomComponent: ReusedDefaultTabBar
+			},
+			{
+				id: DEFERRED,
+				label: t('mta.deferred', 'Deferred'),
+				count: mailStatCount?.deferred,
+				CustomComponent: ReusedDefaultTabBar
+			},
+			{
+				id: INCOMING,
+				label: t('mta.incoming', 'Incoming'),
+				count: mailStatCount?.incoming,
+				CustomComponent: ReusedDefaultTabBar
+			},
+			{
+				id: HOLD,
+				label: t('mta.onhold', 'On Hold'),
+				count: mailStatCount?.onhold,
+				CustomComponent: ReusedDefaultTabBar
+			}
+		],
+		[t, mailStatCount]
+	);
+
+	const headers: any[] = useMemo(
+		() => [
+			{
+				id: 'id',
+				label: t('label.ID', 'ID'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'arrivaltime',
+				label: t('label.arrival_time', 'Arrival Time'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'size',
+				label: t('label.size_kb', 'Size (KB)'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'fromdomain',
+				label: t('label.from_domain', 'FromDomain'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'todomain',
+				label: t('label.to_domain', 'ToDomain'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'sender',
+				label: t('label.sender', 'Sender'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'receiver',
+				label: t('label.receiver', 'Receiver'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'hostorigin',
+				label: t('label.host_origin', 'Host (Origin)'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'iporigin',
+				label: t('label.ip_origin', 'IP (Origin)'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'reason',
+				label: t('label.reason', 'Reason'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'filter',
+				label: t('label.filter', 'Filter'),
+				width: '8%',
+				bold: true
+			},
+			{
+				id: 'received',
+				label: t('label.receveid', 'Receveid'),
+				width: '8%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	const setToTable = (qi: Array<MtaMailQueueItem>): void => {
+		if (qi.length === 0) {
+			setMailRows([]);
+		} else {
+			const quotaData: Array<any> = [];
+			qi.forEach((item: MtaMailQueueItem) => {
+				quotaData.push({
+					id: item?.id,
+					columns: [
+						<Text color="gray0" weight="regular" key={item?.id}>
+							{item?.id}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.arrivalTime}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.size}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.fromDomain}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.toDomain}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.sender}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.receiver}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.host}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.ip}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.reason}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.filter}
+						</Text>,
+						<Text color="gray0" weight="light" key={item?.id}>
+							{item?.receiveid}
+						</Text>
+					]
+				});
+			});
+			setMailRows(quotaData);
+		}
+	};
+
+	const getMailQueueCount = useCallback(() => {
+		if (serverState?.serverName) {
+			getMailqueueInformation(serverState?.serverName).then((data) => {
+				if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
+					const queue = data?.server[0]?.queue;
+					if (queue && queue?.length > 0) {
+						setMailStatCount({
+							queued: queue.find((item: any) => item?.name === ACTIVE)?.n || 0,
+							corrupted: queue.find((item: any) => item?.name === CORRUPT)?.n || 0,
+							deferred: queue.find((item: any) => item?.name === DEFERRED)?.n || 0,
+							incoming: queue.find((item: any) => item?.name === INCOMING)?.n || 0,
+							onhold: queue.find((item: any) => item?.name === HOLD)?.n || 0
+						});
+					}
+				}
+			});
+		}
+	}, [serverState?.serverName]);
+
+	const getMailFromMailQueue = useCallback(
+		(queueName) => {
+			getMailQueue(serverState?.serverName || '', queueName).then((data: any) => {
+				if (data?.server && Array.isArray(data?.server)) {
+					const queue: any = data?.server[0]?.queue[0];
+					const queueItem: Array<MtaMailQueueItem> = [];
+					if (queue?.qi && Array.isArray(queue?.qi)) {
+						queue?.qi.forEach((qItem: any) => {
+							queueItem.push({
+								arrivalTime: qItem?.time,
+								filter: qItem?.filter,
+								fromDomain: qItem?.fromdomain,
+								host: qItem?.host,
+								id: qItem?.id,
+								ip: qItem?.ip || '',
+								reason: qItem?.reason,
+								receiveid: qItem?.received,
+								receiver: qItem?.receiver || '',
+								sender: qItem?.from,
+								size: qItem?.size,
+								toDomain: qItem?.todomain
+							});
+						});
+					}
+					const mailQueueData = {
+						name: queue?.name,
+						qi: queueItem,
+						total: queue?.total
+					};
+					setMtaMailQueueRecords(mailQueueData);
+					setToTable(queueItem);
+				}
+			});
+		},
+		[serverState?.serverName]
+	);
+
+	useMemo(() => {
+		if (change === ACTIVE) {
+			getMailFromMailQueue(ACTIVE);
+		} else if (change === CORRUPT) {
+			getMailFromMailQueue(CORRUPT);
+		} else if (change === DEFERRED) {
+			getMailFromMailQueue(DEFERRED);
+		} else if (change === INCOMING) {
+			getMailFromMailQueue(INCOMING);
+		} else if (change === HOLD) {
+			getMailFromMailQueue(HOLD);
+		}
+	}, [change, getMailFromMailQueue]);
+
+	useEffect(() => {
+		if (serverState?.serverName) {
+			getMailQueueCount();
+		}
+	}, [getMailQueueCount, serverState?.serverName]);
+
+	const callAllRequest = useCallback(
+		(request) => {
+			setIsRequestInProgress(true);
+			Promise.all(request)
+				.then((response: any) => Promise.all(response))
+				.then(() => {
+					getMailFromMailQueue(change);
+					getMailQueueCount();
+					setSelectedRow([]);
+					setIsRequestInProgress(false);
+				})
+				.catch((error) => {
+					setIsRequestInProgress(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error
+							? error?.error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[getMailFromMailQueue, change, getMailQueueCount, createSnackbar, t]
+	);
+
+	const mailQueAction = useCallback(
+		(operation) => {
+			if (serverState?.serverName) {
+				const request = selectedRow.map((item: any) =>
+					mailQueueAction(serverState?.serverName, change, operation, item)
+				);
+				callAllRequest(request);
+			}
+		},
+		[callAllRequest, change, selectedRow, serverState?.serverName]
+	);
+
+	const onHoldPress = useCallback(() => {
+		mailQueAction(HOLD);
+	}, [mailQueAction]);
+
+	const onReleasePress = useCallback(() => {
+		mailQueAction(RELEASE);
+	}, [mailQueAction]);
+
+	const onRequeuePress = useCallback(() => {
+		mailQueAction(REQUEUE);
+	}, [mailQueAction]);
+
+	const onDeletePress = useCallback(() => {
+		mailQueAction(DELETE);
+	}, [mailQueAction]);
 
 	return (
 		<Container
@@ -39,7 +408,7 @@ const MTAStatsDetail: FC<{
 				position: 'absolute',
 				top: '0rem',
 				height: 'auto',
-				width: 'auto',
+				width: '62rem',
 				overflow: 'hidden',
 				transition: 'left 0.2s ease-in-out',
 				boxShadow: '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)',
@@ -60,7 +429,16 @@ const MTAStatsDetail: FC<{
 						{serverState?.serverName}
 					</Text>
 				</Row>
-				<Row></Row>
+				<Row>
+					<Button
+						type="ghost"
+						label={t('label.go_back', 'Go Back')}
+						icon="ArrowBackOutline"
+						iconPlacement="left"
+						color="primary"
+						onClick={(): void => setSelectedServer([])}
+					/>
+				</Row>
 				<Row padding={{ right: 'extrasmall', left: 'small' }}>
 					<IconButton
 						size="medium"
@@ -70,7 +448,7 @@ const MTAStatsDetail: FC<{
 				</Row>
 			</Row>
 			<Container>
-				<Divider className="xxxxx" />
+				<Divider />
 			</Container>
 			<Container
 				padding={{ all: 'extralarge' }}
@@ -81,87 +459,93 @@ const MTAStatsDetail: FC<{
 				background="white"
 			>
 				<Container mainAlignment="flex-end" crossAlignment="flex-end" height="auto">
-					<Button
-						type="outlined"
-						size="large"
-						label={t('mta.flush_queues', 'Flush queues')}
-						color="primary"
-						onClick={flushQueues}
-						disabled={requestInprogress || flushRequestInProgress}
-						loading={requestInprogress || flushRequestInProgress}
+					<TabBar
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
+						items={items}
+						selected={change}
+						onChange={(ev: unknown, selectedId: string): void => {
+							setChange(selectedId);
+						}}
+						onItemClick={setClick}
+						underlineColor="primary"
+						height="auto"
 					/>
 				</Container>
-				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-					<Text size="medium" overflow="ellipsis" weight="bold">
-						{t('mta.current_status', 'Current Status')}
-					</Text>
-				</Container>
+
 				<Container
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					padding={{ top: 'large', bottom: 'medium' }}
 					height="auto"
+					crossAlignment="flex-end"
+					mainAlignment="flex-end"
+					orientation="horizontal"
+					padding={{ top: 'large', bottom: 'large' }}
 				>
-					<Container height="auto" padding={{ right: 'medium' }}>
-						<Input
-							label={t('mta.queued_messages', 'Queued Messages')}
-							backgroundColor="gray5"
-							value={serverState?.active}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								null;
-							}}
+					<Container height="auto" width="auto" padding={{ right: 'medium' }}>
+						<Button
+							label={t('mta.hold', 'Hold')}
+							color="primary"
+							size="large"
+							type="outlined"
+							onClick={onHoldPress}
+							loading={isRequestInProgress}
+							disabled={isRequestInProgress}
 						/>
 					</Container>
-					<Container height="auto">
-						<Input
-							label={t('mta.corrupted', 'Corrupted')}
-							backgroundColor="gray5"
-							value={serverState?.corrupt}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								null;
-							}}
+					<Container height="auto" width="auto" padding={{ right: 'medium' }}>
+						<Button
+							label={t('mta.release', 'Release')}
+							color="primary"
+							size="large"
+							type="outlined"
+							onClick={onReleasePress}
+							loading={isRequestInProgress}
+							disabled={isRequestInProgress}
+						/>
+					</Container>
+					<Container height="auto" width="auto" padding={{ right: 'medium' }}>
+						<Button
+							label={t('mta.requeue', 'Requeue')}
+							color="primary"
+							size="large"
+							type="outlined"
+							onClick={onRequeuePress}
+							loading={isRequestInProgress}
+							disabled={isRequestInProgress}
+						/>
+					</Container>
+
+					<Container height="auto" width="auto" padding={{ right: 'medium' }}>
+						<Button
+							label={t('label.delete', 'Delete')}
+							color="error"
+							size="large"
+							type="outlined"
+							onClick={onDeletePress}
+							loading={isRequestInProgress}
+							disabled={isRequestInProgress}
 						/>
 					</Container>
 				</Container>
 
 				<Container
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					padding={{ top: 'medium' }}
 					height="auto"
+					style={{
+						height: 'calc(100vh - 21.25rem)'
+					}}
 				>
-					<Container height="auto" padding={{ right: 'medium' }}>
-						<Input
-							label={t('mta.deferred', 'Deferred')}
-							backgroundColor="gray5"
-							value={serverState?.deferred}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								null;
-							}}
-						/>
-					</Container>
-					<Container height="auto" padding={{ right: 'medium' }}>
-						<Input
-							label={t('mta.incoming', 'Incoming')}
-							backgroundColor="gray5"
-							value={serverState?.incoming}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								null;
-							}}
-						/>
-					</Container>
-					<Container height="auto">
-						<Input
-							label={t('mta.onhold', 'On Hold')}
-							backgroundColor="gray5"
-							value={serverState?.hold}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								null;
-							}}
-						/>
-					</Container>
+					<Table
+						selectedRows={selectedRow}
+						rows={mailRows}
+						headers={headers}
+						onSelectionChange={(selected: any): void => {
+							setSelectedRow(selected);
+						}}
+						style={{ overflow: 'auto', height: '100%' }}
+						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
+						HeaderFactory={CustomHeaderFactory}
+					/>
 				</Container>
 			</Container>
 		</Container>

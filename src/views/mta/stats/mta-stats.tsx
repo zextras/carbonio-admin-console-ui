@@ -182,38 +182,53 @@ const MTAStats: FC = () => {
 		setMailServerStats([]);
 		mtaServerList.forEach((item) => {
 			setRequestInprogress(true);
-			getMailqueueInformation(item?.name).then((data) => {
-				setRequestInprogress(false);
-				if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
-					data?.server.forEach((queueInfo: any) => {
-						setMailServerStats((prev) => [
-							...prev,
-							...[
-								{
-									id: item?.id,
-									serverName: item?.name,
-									active: queueInfo?.queue.find(
-										(info: Record<string, string>) => info?.name === ACTIVE
-									)?.n,
-									corrupt: queueInfo?.queue.find(
-										(info: Record<string, string>) => info?.name === CORRUPT
-									)?.n,
-									deferred: queueInfo?.queue.find(
-										(info: Record<string, string>) => info?.name === DEFERRED
-									)?.n,
-									hold: queueInfo?.queue.find((info: Record<string, string>) => info?.name === HOLD)
-										?.n,
-									incoming: queueInfo?.queue.find(
-										(info: Record<string, string>) => info?.name === INCOMING
-									)?.n
-								}
-							]
-						]);
+			getMailqueueInformation(item?.name)
+				.then((data) => {
+					setRequestInprogress(false);
+					if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
+						data?.server.forEach((queueInfo: any) => {
+							setMailServerStats((prev) => [
+								...prev,
+								...[
+									{
+										id: item?.id,
+										serverName: item?.name,
+										active: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === ACTIVE
+										)?.n,
+										corrupt: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === CORRUPT
+										)?.n,
+										deferred: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === DEFERRED
+										)?.n,
+										hold: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === HOLD
+										)?.n,
+										incoming: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === INCOMING
+										)?.n
+									}
+								]
+							]);
+						});
+					}
+				})
+				.catch((error) => {
+					setRequestInprogress(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error
+							? error?.error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
 					});
-				}
-			});
+				});
 		});
-	}, [mtaServerList]);
+	}, [createSnackbar, mtaServerList, t]);
 
 	useEffect(() => {
 		if (mtaServerList?.length > 0) {
