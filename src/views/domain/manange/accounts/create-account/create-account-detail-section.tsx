@@ -83,9 +83,9 @@ const CreateAccountDetailSection: FC = () => {
 		if (!changeNameBool) {
 			const userName = [];
 
-			if (sn) userName.push(getModifiedName(sn));
-			if (initials) userName.push(head(getModifiedName(initials)));
 			if (givenName) userName.push(getModifiedName(givenName));
+			if (initials) userName.push(head(getModifiedName(initials)));
+			if (sn) userName.push(getModifiedName(sn));
 
 			return userName.join('.');
 		}
@@ -95,9 +95,9 @@ const CreateAccountDetailSection: FC = () => {
 
 	const combineDisplayName = useMemo(
 		() =>
-			`${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}${
+			`${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}${
 				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
-			}${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}`.trim(),
+			}${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
 		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
 	);
 	useEffect(() => {
@@ -150,14 +150,13 @@ const CreateAccountDetailSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							label={t('label.surname', 'Surname')}
-							backgroundColor="gray5"
 							onChange={changeAccDetail}
-							inputName="sn"
-							defaultValue={accountDetail?.sn || ''}
+							inputName="givenName"
+							label={t('label.person_name', 'Name')}
+							backgroundColor="gray5"
+							defaultValue={accountDetail?.givenName || ''}
 						/>
 					</Row>
-
 					<Row width="32%" mainAlignment="space-between">
 						<Input
 							label={t('label.second_name_initials', 'Middle Name Initials')}
@@ -169,11 +168,11 @@ const CreateAccountDetailSection: FC = () => {
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							onChange={changeAccDetail}
-							inputName="givenName"
-							label={t('label.person_name', 'Name')}
+							label={t('label.surname', 'Surname')}
 							backgroundColor="gray5"
-							defaultValue={accountDetail?.givenName || ''}
+							onChange={changeAccDetail}
+							inputName="sn"
+							defaultValue={accountDetail?.sn || ''}
 						/>
 					</Row>
 				</Row>
