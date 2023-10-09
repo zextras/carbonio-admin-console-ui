@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
-import { find } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { debounce, find } from 'lodash';
 import {
 	Container,
 	Divider,
@@ -15,7 +15,9 @@ import {
 	Padding,
 	SnackbarManagerContext,
 	Modal,
-	Icon
+	Icon,
+	Table,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -29,10 +31,18 @@ import { deleteCOS } from '../../services/delete-cos-service';
 import ListRow from '../list/list-row';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import Textarea from '../components/textarea';
+import TrackNumberPerPage from '../app/shared/track-number-per-page';
+import Paging from '../components/paging';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import logo from '../../assets/gardian.svg';
+import { searchDirectory } from '../../services/search-directory-service';
+import { accountListDirectory } from '../../services/account-list-directory-service';
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
 	const cosInformation = useCosStore((state) => state.cos?.a);
+	const cosDetail = useCosStore((state) => state.cos);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [cosData, setCosData]: any = useState({});
@@ -45,6 +55,94 @@ const CosGeneralInformation: FC = () => {
 	const totalAccount = useCosStore((state) => state.totalAccount);
 	const totalDomain = useCosStore((state) => state.totalDomain);
 	const rights: Rights = useRightsStore((state) => state.rights);
+	const [accountList, setAccountList] = useState<any[]>([]);
+	const [offset, setOffset] = useState<number>(0);
+	const [limit, setLimit] = useState<number>(5);
+	const [searchString, setSearchString] = useState<string>('');
+	const [searchQuery, setSearchQuery] = useState<string>('');
+	const [totalAccounts, setTotalAccounts] = useState<number>(0);
+	const tableRef = useRef(null);
+	const [isAccountRequestInProgress, setIsAccountRequestInProgress] = useState<boolean>(false);
+
+	const accountHeaders: any = useMemo(
+		() => [
+			{
+				id: 'email',
+				label: t('label.email', 'Email'),
+				width: '25%',
+				bold: true
+			},
+			{
+				id: 'name',
+				label: t('label.person_name', 'Name'),
+				width: '15%',
+				bold: true
+			},
+			{
+				id: 'aliases',
+				label: t('label.Aliases', 'Aliases'),
+				width: '10%',
+				bold: true
+			},
+			{
+				id: 'type',
+				label: t('label.type', 'Type'),
+				width: '10%',
+				bold: true
+			},
+			{
+				id: 'status',
+				label: t('label.status', 'Status'),
+				width: '10%',
+				bold: true
+			},
+			{
+				id: 'description',
+				label: t('label.description', 'Description'),
+				width: '40%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	const STATUS_COLOR: any = useMemo(
+		() => ({
+			active: {
+				color: '#8BC34A',
+				label: t('label.active', 'Active')
+			},
+			maintenance: {
+				color: '#2196D3',
+				label: t('label.in_maintenance', 'In maintenance')
+			},
+			locked: {
+				color: '#D74942',
+				label: t('label.locked', 'Locked')
+			},
+			closed: {
+				color: '#828282',
+				label: t('label.closed', 'Closed')
+			},
+			pending: {
+				color: '#828282',
+				label: t('label.pending', 'Pending')
+			},
+			lockout: {
+				color: '#D74942',
+				label: t('label.lockout', 'Lockout')
+			}
+		}),
+		[t]
+	);
+
+	const accountUserType = useCallback((item): string => {
+		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
+		return 'Normal';
+	}, []);
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
@@ -241,6 +339,122 @@ const CosGeneralInformation: FC = () => {
 			});
 	};
 
+	const getAccountList = useCallback((): void => {
+		if (!searchQuery) {
+			return;
+		}
+		setIsAccountRequestInProgress(true);
+		const type = 'accounts';
+		const attrs =
+			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
+		searchDirectory(attrs, type, '', searchQuery, offset, limit).then((data) => {
+			const accountListResponse: any = data?.account || [];
+			if (accountListResponse && Array.isArray(accountListResponse)) {
+				const accountListArr: any = [];
+				setTotalAccounts(data.searchTotal || 0);
+				accountListResponse.forEach((item: any): any => {
+					item?.a?.forEach((ele: any) => {
+						if (ele?.n === 'mail') {
+							if (item[ele?.n]) {
+								item[ele?.n].push(ele._content);
+							} else {
+								// eslint-disable-next-line no-param-reassign
+								item[ele?.n] = [ele._content];
+							}
+						} else {
+							// eslint-disable-next-line no-param-reassign
+							item[ele?.n] = ele._content;
+						}
+					});
+					accountListArr.push({
+						id: item?.id,
+						columns: [
+							<Text size="small" key={item?.id} color="gray0" weight="regular">
+								{item?.name || ' '}
+							</Text>,
+							<Text size="small" key={item?.id} color="gray0" weight="light">
+								{item?.displayName || <>&nbsp;</>}
+							</Text>,
+							<>
+								{
+									// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+									item?.mail?.length - 1 || 0 ? (
+										<Tooltip
+											key={item?.id}
+											placement="bottom"
+											label={item?.mail.slice(1).join(', ')}
+											maxWidth="auto"
+										>
+											<Text size="small" weight="light" key={item?.id} color="#828282">
+												{
+													// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+													item?.mail?.length - 1 || 0
+												}
+											</Text>
+										</Tooltip>
+									) : (
+										<Text size="small" key={item?.id} color="#828282" weight="light">
+											0
+										</Text>
+									)
+								}
+							</>,
+							<Text size="small" key={item?.id} color="gray0" weight="light">
+								{accountUserType(item)}
+							</Text>,
+							<Text
+								size="small"
+								weight="light"
+								key={item?.id}
+								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
+							>
+								{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
+							</Text>,
+							<Text size="small" weight="light" key={item?.id} color="gray0">
+								{item?.description || <>&nbsp;</>}
+							</Text>
+						],
+						item,
+						clickable: true
+					});
+				});
+				setAccountList(accountListArr);
+			}
+			setIsAccountRequestInProgress(false);
+		});
+	}, [STATUS_COLOR, accountUserType, limit, offset, searchQuery]);
+
+	useEffect(() => {
+		if (cosDetail?.id) {
+			getAccountList();
+		}
+	}, [cosDetail?.id, getAccountList]);
+
+	const generateSearchFilterQuery = useCallback(
+		(searchStr: string, cosId: string | undefined): string => {
+			let filterQuery = `(&(zimbraCOSId=${cosId})(!(zimbraIsSystemAccount=TRUE)))`;
+			if (searchStr) {
+				filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+			}
+			if (searchStr) {
+				return `(&${filterQuery})`;
+			}
+			return filterQuery;
+		},
+		[]
+	);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchAccountList = useCallback(
+		debounce((searchStr: string, cosId: string | undefined) => {
+			setSearchQuery(generateSearchFilterQuery(searchStr, cosId));
+		}, 700),
+		[debounce]
+	);
+	useEffect(() => {
+		searchAccountList(searchString, cosDetail.id);
+	}, [cosDetail?.id, searchAccountList, searchString]);
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
 			<Row mainAlignment="flex-start" width="100%">
@@ -370,6 +584,110 @@ const CosGeneralInformation: FC = () => {
 								/>
 							</Container>
 						</ListRow>
+					</Container>
+				</Row>
+
+				<Row
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					padding={{ left: 'large', right: 'large', top: 'large' }}
+				>
+					<Container padding={{ all: 'small' }}>
+						<Input
+							label={t('label.search_for_an_account', `Search for an account`)}
+							disabled={accountList.length === 0 && searchString.length === 0}
+							value={searchString}
+							backgroundColor="gray5"
+							onChange={(e: any): any => {
+								setSearchString(e.target.value);
+							}}
+							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+						/>
+					</Container>
+				</Row>
+				<Row
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					style={{
+						height: 'calc(100vh - 21.25rem)',
+						position: 'relative'
+					}}
+					ref={tableRef}
+					padding={{ left: 'large', right: 'large', bottom: 'large' }}
+				>
+					<Container padding={{ all: 'small' }}>
+						<Table
+							rows={!isAccountRequestInProgress ? accountList : []}
+							headers={accountHeaders}
+							showCheckbox={false}
+							multiSelect={false}
+							style={{
+								overflow: 'auto',
+								height: '100%'
+							}}
+							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
+							HeaderFactory={CustomHeaderFactory}
+						/>
+						{isAccountRequestInProgress && (
+							<Container
+								crossAlignment="center"
+								mainAlignment="center"
+								height="auto"
+								padding={{ top: 'medium' }}
+							>
+								<Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+							</Container>
+						)}
+						{accountList.length === 0 && !isAccountRequestInProgress && (
+							<Container
+								orientation="column"
+								crossAlignment="center"
+								mainAlignment="center"
+								style={{ marginTop: '1rem' }}
+							>
+								<Row>
+									<img src={logo} alt="logo" />
+								</Row>
+								<Row
+									padding={{ top: 'extralarge' }}
+									orientation="vertical"
+									crossAlignment="center"
+									style={{ textAlign: 'center' }}
+								>
+									<Text weight="light" color="#828282" size="large" overflow="break-word">
+										{t('label.this_list_is_empty', 'This list is empty.')}
+									</Text>
+								</Row>
+							</Container>
+						)}
+						{accountList.length !== 0 && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="space-between"
+								width="100%"
+								style={{ position: 'absolute', bottom: '-4rem' }}
+								height="auto"
+								padding={{ all: 'large' }}
+							>
+								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+									<Paging totalItem={totalAccounts} setOffset={setOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ all: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
+						)}
 					</Container>
 				</Row>
 			</Container>
