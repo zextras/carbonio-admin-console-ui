@@ -26,6 +26,7 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import styled from 'styled-components';
 import {
 	CreateSnackbarType,
 	MtaMailQueue,
@@ -52,6 +53,13 @@ import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import logo from '../../../assets/gardian.svg';
 import Paging from '../../components/paging';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
+
+export const TableContainer = styled(Table)`
+	width: auto;
+	table {
+		width: auto;
+	}
+`;
 
 const ReusedDefaultTabBar: FC<{
 	item: any;
@@ -163,73 +171,73 @@ const MTAStatsDetail: FC<{
 			{
 				id: 'id',
 				label: t('label.ID', 'ID'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'arrivaltime',
 				label: t('label.arrival_time', 'Arrival Time'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'size',
 				label: t('label.size_kb', 'Size (KB)'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'fromdomain',
 				label: t('label.from_domain', 'FromDomain'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'todomain',
 				label: t('label.to_domain', 'ToDomain'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'sender',
 				label: t('label.sender', 'Sender'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'receiver',
 				label: t('label.receiver', 'Receiver'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'hostorigin',
 				label: t('label.host_origin', 'Host (Origin)'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'iporigin',
 				label: t('label.ip_origin', 'IP (Origin)'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'reason',
 				label: t('label.reason', 'Reason'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'filter',
 				label: t('label.filter', 'Filter'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			},
 			{
 				id: 'received',
 				label: t('label.receveid', 'Receveid'),
-				width: '8%',
+				width: '12%',
 				bold: true
 			}
 		],
@@ -595,14 +603,14 @@ const MTAStatsDetail: FC<{
 						position: 'relative'
 					}}
 				>
-					<Table
+					<TableContainer
 						selectedRows={selectedRow}
 						rows={mailRows}
 						headers={headers}
 						onSelectionChange={(selected): void => {
 							setSelectedRow(selected);
 						}}
-						style={{ overflow: 'auto', height: '100%' }}
+						style={{ overflow: 'auto', height: '100%', width: '100%' }}
 						RowFactory={CustomRowFactory}
 						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 						// @ts-ignore // Need to fix it with custom soultion
