@@ -26,7 +26,13 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { CreateSnackbarType, MtaMailQueue, MtaMailQueueItem, mtaStats } from '../../../../types';
+import {
+	CreateSnackbarType,
+	MtaMailQueue,
+	MtaMailQueueItem,
+	MtaStats,
+	mtaStats
+} from '../../../../types';
 import {
 	CORRUPT,
 	DEFERRED,
@@ -80,17 +86,9 @@ const ReusedDefaultTabBar: FC<{
 
 const MTAStatsDetail: FC<{
 	serverState: mtaStats | undefined;
-	setSelectedServer: (server: Array<any>) => void;
-	flushQueues: () => void;
-	requestInprogress: boolean;
-	flushRequestInProgress: boolean;
-}> = ({
-	serverState,
-	setSelectedServer,
-	flushQueues,
-	requestInprogress,
-	flushRequestInProgress
-}) => {
+	setSelectedServer: (server: Array<string>) => void;
+	updateMailCount: (stat: MtaStats) => void;
+}> = ({ serverState, setSelectedServer, updateMailCount }) => {
 	const [t] = useTranslation();
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const [change, setChange] = useState(ACTIVE);
@@ -98,11 +96,11 @@ const MTAStatsDetail: FC<{
 	const [selectedRow, setSelectedRow] = useState<Array<string>>([]);
 	const [mailRows, setMailRows] = useState<Array<any>>([]);
 	const [mailStatCount, setMailStatCount] = useState<Record<string, number>>({
-		queued: 0,
-		corrupted: 0,
-		deferred: 0,
-		incoming: 0,
-		onhold: 0
+		queued: serverState?.active ? parseInt(serverState?.active, 10) : 0,
+		corrupted: serverState?.corrupt ? parseInt(serverState?.corrupt, 10) : 0,
+		deferred: serverState?.deferred ? parseInt(serverState?.deferred, 10) : 0,
+		incoming: serverState?.incoming ? parseInt(serverState?.incoming, 10) : 0,
+		onhold: serverState?.hold ? parseInt(serverState?.hold, 10) : 0
 	});
 	const [mtaMailQueueRecords, setMtaMailQueueRecords] = useState<MtaMailQueue>();
 	const [isMailQueueLoading, setIsMailQueueLoading] = useState<boolean>(false);
@@ -150,7 +148,17 @@ const MTAStatsDetail: FC<{
 		[t, mailStatCount]
 	);
 
-	const headers: any[] = useMemo(
+	type THeader = {
+		id: string;
+		label: string;
+		align?: React.ThHTMLAttributes<HTMLTableHeaderCellElement>['align'];
+		width?: string;
+		i18nAllLabel?: string;
+		bold?: boolean;
+		items?: any;
+	};
+
+	const headers: THeader[] = useMemo(
 		() => [
 			{
 				id: 'id',
@@ -243,7 +251,7 @@ const MTAStatsDetail: FC<{
 							</Text>
 						</Container>,
 						<Text color="gray0" weight="light" key={item?.id}>
-							{moment(item?.arrivalTime).format('DD/MM/YY - HH:mm')}
+							{moment(parseInt(item?.arrivalTime, 10)).format('DD/MM/YY - HH:mm')}
 						</Text>,
 						<Text color="gray0" weight="light" key={item?.id}>
 							{item?.size}
@@ -290,11 +298,20 @@ const MTAStatsDetail: FC<{
 						const queue = data?.server[0]?.queue;
 						if (queue && queue?.length > 0) {
 							setMailStatCount({
-								queued: queue.find((item: any) => item?.name === ACTIVE)?.n || 0,
-								corrupted: queue.find((item: any) => item?.name === CORRUPT)?.n || 0,
-								deferred: queue.find((item: any) => item?.name === DEFERRED)?.n || 0,
-								incoming: queue.find((item: any) => item?.name === INCOMING)?.n || 0,
-								onhold: queue.find((item: any) => item?.name === HOLD)?.n || 0
+								queued:
+									queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n ||
+									0,
+								corrupted:
+									queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)
+										?.n || 0,
+								deferred:
+									queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)
+										?.n || 0,
+								incoming:
+									queue.find((item: Record<string, string | number>) => item?.name === INCOMING)
+										?.n || 0,
+								onhold:
+									queue.find((item: Record<string, string | number>) => item?.name === HOLD)?.n || 0
 							});
 						}
 					}
@@ -317,16 +334,16 @@ const MTAStatsDetail: FC<{
 	const getMailFromMailQueue = useCallback(() => {
 		setIsMailQueueLoading(true);
 		getMailQueue(serverState?.serverName || '', change, offset, limit)
-			.then((data: any) => {
+			.then((data) => {
 				setIsMailQueueLoading(false);
 				if (data?.server && Array.isArray(data?.server)) {
-					const queue: any = data?.server[0]?.queue[0];
+					const queue = data?.server[0]?.queue[0];
 					if (queue?.total) {
 						setTotalAccount(queue?.total);
 					}
 					const queueItem: Array<MtaMailQueueItem> = [];
 					if (queue?.qi && Array.isArray(queue?.qi)) {
-						queue?.qi.forEach((qItem: any) => {
+						queue?.qi.forEach((qItem: Record<string, string>) => {
 							queueItem.push({
 								arrivalTime: qItem?.time,
 								filter: qItem?.filter,
@@ -376,7 +393,7 @@ const MTAStatsDetail: FC<{
 	const callAllRequest = useCallback(
 		(request) => {
 			Promise.all(request)
-				.then((response: any) => Promise.all(response))
+				.then((response) => Promise.all(response))
 				.then(() => {
 					getMailFromMailQueue();
 					getMailQueueCount();
@@ -385,31 +402,15 @@ const MTAStatsDetail: FC<{
 					setReleaseInProgress(false);
 					setRequeueInProgress(false);
 					setDeleteInProgress(false);
-				})
-				.catch((error) => {
-					setHoldInProgress(false);
-					setReleaseInProgress(false);
-					setRequeueInProgress(false);
-					setDeleteInProgress(false);
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error
-							? error?.error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
 				});
 		},
-		[getMailFromMailQueue, getMailQueueCount, createSnackbar, t]
+		[getMailFromMailQueue, getMailQueueCount]
 	);
 
 	const mailQueAction = useCallback(
 		(operation) => {
 			if (serverState?.serverName) {
-				const request = selectedRow.map((item: any) =>
+				const request = selectedRow.map((item) =>
 					mailQueueAction(serverState?.serverName, change, operation, item)
 				);
 				callAllRequest(request);
@@ -437,6 +438,29 @@ const MTAStatsDetail: FC<{
 		setDeleteInProgress(true);
 		mailQueAction(DELETE);
 	}, [mailQueAction]);
+
+	const closeDialog = useCallback(() => {
+		setSelectedServer([]);
+		updateMailCount({
+			serverName: serverState?.serverName || '',
+			incoming: mailStatCount.incoming.toString() || '0',
+			active: mailStatCount.queued.toString() || '0',
+			corrupt: mailStatCount?.corrupted.toString() || '0',
+			deferred: mailStatCount?.deferred.toString() || '0',
+			hold: mailStatCount?.onhold.toString() || '0',
+			id: serverState?.id || ''
+		});
+	}, [
+		mailStatCount?.corrupted,
+		mailStatCount?.deferred,
+		mailStatCount.incoming,
+		mailStatCount?.onhold,
+		mailStatCount.queued,
+		serverState?.id,
+		serverState?.serverName,
+		setSelectedServer,
+		updateMailCount
+	]);
 
 	return (
 		<Container
@@ -474,15 +498,11 @@ const MTAStatsDetail: FC<{
 						icon="ArrowBackOutline"
 						iconPlacement="left"
 						color="primary"
-						onClick={(): void => setSelectedServer([])}
+						onClick={closeDialog}
 					/>
 				</Row>
 				<Row padding={{ right: 'extrasmall', left: 'small' }}>
-					<IconButton
-						size="medium"
-						icon="CloseOutline"
-						onClick={(): void => setSelectedServer([])}
-					/>
+					<IconButton size="medium" icon="CloseOutline" onClick={closeDialog} />
 				</Row>
 			</Row>
 			<Container>
@@ -529,7 +549,7 @@ const MTAStatsDetail: FC<{
 							type="outlined"
 							onClick={onHoldPress}
 							loading={holdInProgress}
-							disabled={holdInProgress}
+							disabled={holdInProgress || selectedRow.length === 0}
 						/>
 					</Container>
 					<Container height="auto" width="auto" padding={{ right: 'medium' }}>
@@ -540,7 +560,7 @@ const MTAStatsDetail: FC<{
 							type="outlined"
 							onClick={onReleasePress}
 							loading={releaseInProgress}
-							disabled={releaseInProgress}
+							disabled={releaseInProgress || selectedRow.length === 0}
 						/>
 					</Container>
 					<Container height="auto" width="auto" padding={{ right: 'medium' }}>
@@ -551,7 +571,7 @@ const MTAStatsDetail: FC<{
 							type="outlined"
 							onClick={onRequeuePress}
 							loading={requeueInProgress}
-							disabled={requeueInProgress}
+							disabled={requeueInProgress || selectedRow.length === 0}
 						/>
 					</Container>
 
@@ -563,7 +583,7 @@ const MTAStatsDetail: FC<{
 							type="outlined"
 							onClick={onDeletePress}
 							loading={deleteInProgress}
-							disabled={deleteInProgress}
+							disabled={deleteInProgress || selectedRow.length === 0}
 						/>
 					</Container>
 				</Container>
@@ -571,7 +591,7 @@ const MTAStatsDetail: FC<{
 				<Container
 					height="auto"
 					style={{
-						height: 'calc(100vh - 21.25rem)',
+						height: mailRows.length === 0 ? '10rem' : 'calc(100vh - 17.25rem)',
 						position: 'relative'
 					}}
 				>
@@ -579,7 +599,7 @@ const MTAStatsDetail: FC<{
 						selectedRows={selectedRow}
 						rows={mailRows}
 						headers={headers}
-						onSelectionChange={(selected: any): void => {
+						onSelectionChange={(selected): void => {
 							setSelectedRow(selected);
 						}}
 						style={{ overflow: 'auto', height: '100%' }}
@@ -604,8 +624,8 @@ const MTAStatsDetail: FC<{
 					orientation="horizontal"
 					mainAlignment="space-between"
 					width="100%"
-					// style={{ position: 'absolute', bottom: '-4rem' }}
 					height="auto"
+					padding={{ top: 'medium' }}
 				>
 					<Container crossAlignment="flex-start">
 						{mailRows && mailRows.length > 0 && (
@@ -613,12 +633,7 @@ const MTAStatsDetail: FC<{
 						)}
 					</Container>
 
-					<Container
-						crossAlignment="flex-end"
-						orientation="horizontal"
-						mainAlignment="flex-end"
-						padding={{ top: 'small' }}
-					>
+					<Container crossAlignment="flex-end" orientation="horizontal" mainAlignment="flex-end">
 						{mailRows && mailRows.length > 0 && <TrackNumberPerPage pageSize={limit} />}
 					</Container>
 				</Container>

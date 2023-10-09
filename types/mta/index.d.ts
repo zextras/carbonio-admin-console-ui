@@ -70,7 +70,7 @@ export type MtaPostTuning = {
 	zimbraMtaPostscreenBareNewlineTTL: string;
 };
 
-export type mtaStats = {
+export type MtaStats = {
 	id: string;
 	serverName: string;
 	deferred: string;
