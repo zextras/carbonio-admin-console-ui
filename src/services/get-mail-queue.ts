@@ -13,9 +13,10 @@ export const getMailQueue = async (serverName: string, queueName?: string): Prom
 			name: serverName,
 			queue: {
 				name: queueName || 'active',
+				scan: 1,
 				query: {
 					offset: 0,
-					limit: 12
+					limit: 25
 				}
 			}
 		}
