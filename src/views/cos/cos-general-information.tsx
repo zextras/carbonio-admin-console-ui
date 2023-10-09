@@ -347,81 +347,85 @@ const CosGeneralInformation: FC = () => {
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		searchDirectory(attrs, type, '', searchQuery, offset, limit).then((data) => {
-			const accountListResponse: any = data?.account || [];
-			if (accountListResponse && Array.isArray(accountListResponse)) {
-				const accountListArr: any = [];
-				setTotalAccounts(data.searchTotal || 0);
-				accountListResponse.forEach((item: any): any => {
-					item?.a?.forEach((ele: any) => {
-						if (ele?.n === 'mail') {
-							if (item[ele?.n]) {
-								item[ele?.n].push(ele._content);
+		searchDirectory(attrs, type, '', searchQuery, offset, limit)
+			.then((data) => {
+				const accountListResponse: any = data?.account || [];
+				if (accountListResponse && Array.isArray(accountListResponse)) {
+					const accountListArr: any = [];
+					setTotalAccounts(data.searchTotal || 0);
+					accountListResponse.forEach((item: any): any => {
+						item?.a?.forEach((ele: any) => {
+							if (ele?.n === 'mail') {
+								if (item[ele?.n]) {
+									item[ele?.n].push(ele._content);
+								} else {
+									// eslint-disable-next-line no-param-reassign
+									item[ele?.n] = [ele._content];
+								}
 							} else {
 								// eslint-disable-next-line no-param-reassign
-								item[ele?.n] = [ele._content];
+								item[ele?.n] = ele._content;
 							}
-						} else {
-							// eslint-disable-next-line no-param-reassign
-							item[ele?.n] = ele._content;
-						}
-					});
-					accountListArr.push({
-						id: item?.id,
-						columns: [
-							<Text size="small" key={item?.id} color="gray0" weight="regular">
-								{item?.name || ' '}
-							</Text>,
-							<Text size="small" key={item?.id} color="gray0" weight="light">
-								{item?.displayName || <>&nbsp;</>}
-							</Text>,
-							<>
-								{
-									// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
-									item?.mail?.length - 1 || 0 ? (
-										<Tooltip
-											key={item?.id}
-											placement="bottom"
-											label={item?.mail.slice(1).join(', ')}
-											maxWidth="auto"
-										>
-											<Text size="small" weight="light" key={item?.id} color="#828282">
-												{
-													// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
-													item?.mail?.length - 1 || 0
-												}
+						});
+						accountListArr.push({
+							id: item?.id,
+							columns: [
+								<Text size="small" key={item?.id} color="gray0" weight="regular">
+									{item?.name || ' '}
+								</Text>,
+								<Text size="small" key={item?.id} color="gray0" weight="light">
+									{item?.displayName || <>&nbsp;</>}
+								</Text>,
+								<>
+									{
+										// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+										item?.mail?.length - 1 || 0 ? (
+											<Tooltip
+												key={item?.id}
+												placement="bottom"
+												label={item?.mail.slice(1).join(', ')}
+												maxWidth="auto"
+											>
+												<Text size="small" weight="light" key={item?.id} color="#828282">
+													{
+														// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+														item?.mail?.length - 1 || 0
+													}
+												</Text>
+											</Tooltip>
+										) : (
+											<Text size="small" key={item?.id} color="#828282" weight="light">
+												0
 											</Text>
-										</Tooltip>
-									) : (
-										<Text size="small" key={item?.id} color="#828282" weight="light">
-											0
-										</Text>
-									)
-								}
-							</>,
-							<Text size="small" key={item?.id} color="gray0" weight="light">
-								{accountUserType(item)}
-							</Text>,
-							<Text
-								size="small"
-								weight="light"
-								key={item?.id}
-								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
-							>
-								{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
-							</Text>,
-							<Text size="small" weight="light" key={item?.id} color="gray0">
-								{item?.description || <>&nbsp;</>}
-							</Text>
-						],
-						item,
-						clickable: true
+										)
+									}
+								</>,
+								<Text size="small" key={item?.id} color="gray0" weight="light">
+									{accountUserType(item)}
+								</Text>,
+								<Text
+									size="small"
+									weight="light"
+									key={item?.id}
+									color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
+								>
+									{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
+								</Text>,
+								<Text size="small" weight="light" key={item?.id} color="gray0">
+									{item?.description || <>&nbsp;</>}
+								</Text>
+							],
+							item,
+							clickable: true
+						});
 					});
-				});
-				setAccountList(accountListArr);
-			}
-			setIsAccountRequestInProgress(false);
-		});
+					setAccountList(accountListArr);
+				}
+				setIsAccountRequestInProgress(false);
+			})
+			.catch((error) => {
+				setIsAccountRequestInProgress(false);
+			});
 	}, [STATUS_COLOR, accountUserType, limit, offset, searchQuery]);
 
 	useEffect(() => {
