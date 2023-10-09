@@ -6,7 +6,12 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
-export const getMailQueue = async (serverName: string, queueName?: string): Promise<any> => {
+export const getMailQueue = async (
+	serverName: string,
+	queueName?: string,
+	offset?: number,
+	limit?: number
+): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
 		server: {
@@ -15,8 +20,8 @@ export const getMailQueue = async (serverName: string, queueName?: string): Prom
 				name: queueName || 'active',
 				scan: 1,
 				query: {
-					offset: 0,
-					limit: 25
+					offset: offset || 0,
+					limit: limit || 25
 				}
 			}
 		}
