@@ -1179,7 +1179,7 @@
         "administration": "Administración",
         "administration_rights": "Derechos de administración",
         "advanced_edit": "Edición avanzada",
-        "aggregated_space_quota": "Cuota de espacio total",
+        "aggregated_space_quota": "Cuota total de espacio",
         "authentication_settings": "Configuraciones de autenticación",
         "cant_send_receiver": "No puede enviar ni recibir",
         "delegated_administration_helper_text": "La administración delegada de {{domainName}} será desactivada. <br /> Tiene 2 opciones: <br /><br /> 1. Remover todas las LCAs (Listas de control de acceso) del dominio. <br /> 2. Mantener las LCAs en el dominio pero desactivar los derechos asociados. <br /><br /> ¿Cómo quiere proceder?",
@@ -1200,7 +1200,6 @@
         "security_group": "Grupos de seguridad",
         "security_group_name": "Nombre del grupo de seguridad",
         "send_notifications_to": "Enviar notificaciones a…",
-        "send_options": "Opciones de envío",
         "set_as_default": "Establecer como predeterminado",
         "subject_name_cname": "Nombre del asunto (registro de nombre canónico - CNAME)",
         "subject_name_fqdn": "Nombre alternativo del asunto (Nombre de dominio totalmente calificado - FQDN)",
@@ -1215,7 +1214,9 @@
         "valid_not_after": "Válido hasta (no después)",
         "valid_not_before": "Válido desde (no antes)",
         "what_to_trust": "¿En cuál confiar?",
-        "you_have_no_sufficient_administrationr_rights_to_see_this_section": "No tiene suficientes derechos de administración para ver esta sección"
+        "you_have_no_sufficient_administrationr_rights_to_see_this_section": "No tiene suficientes derechos de administración para ver esta sección",
+        "person_name": "Name",
+        "stats": "Estadísticas"
     },
     "timezone": {
         "indian_mauritius": "{{value}} Port Louis",
@@ -1362,7 +1363,6 @@
             "company_name": "Organización",
             "customer": "Cliente",
             "email_buyer": "Email del Comprador",
-            "emissionDate": "Fecha de emisión",
             "features": "Otras características",
             "hide": "Ocultar",
             "less_info": "Menos información",
@@ -1386,7 +1386,8 @@
             "order_id": "Nº de licencia",
             "valid": "Válida",
             "license_activated_successfully": "La licencia ha sido activada",
-            "not_valid": "No es válida"
+            "not_valid": "No es válida",
+            "endDate": "Fecha de finalización"
         }
     },
     "message": {
@@ -1837,11 +1838,9 @@
         "select_delegate_folder": "Seleccionar las carpetas que puede ver el delegado",
         "select_mode": "SELECCIONAR MODO",
         "send_as_behalf": "Enviar en nombre de (los destinatarios verán la dirección {{targetEmail}} como remitente)",
-        "send_as_recepients": "Enviar como (los destinatarios verán la dirección {{targetEmail}} como remitente)",
         "send_mails_only": "Enviar solamente e-mails (sin acceso a carpetas)",
         "send_read_mails": "Enviar y leer e-mails (sin derecho a crear carpetas/administrar mensajes)",
         "send_read_manage_mails": "Enviar, leer y administrar e-mails (todos los anteriores)",
-        "send_recepients_see_the_mail": "Enviar {{right}} (los destinatarios verán la dirección {{targetEmail}} como remitente)",
         "sendin_options": "Opciones de envío",
         "sending_options": "Opciones de envío",
         "set_rights": "ESTABLECER DERECHOS",
@@ -2237,7 +2236,16 @@
         "check_client_host_name": "Comprobar el nombre de host del cliente",
         "disable_virus_check": "Desactivar la comprobación de virus",
         "tolerance_for_spam_blocking": "Tolerancia al bloqueo de spam",
-        "tolerance_for_spam_delivery": "Tolerancia al spam"
+        "tolerance_for_spam_delivery": "Tolerancia al spam",
+        "action": "Acción",
+        "all": "Todo",
+        "current_status": "Estado actual",
+        "info": "Información",
+        "interval": "Intervalo",
+        "queued": "En cola",
+        "status": "Estado",
+        "mail_server": "Servidor de e-mail",
+        "stats": "Estadísticas"
     },
     "mat": {
         "add_here_any_blocked_extension": "Agregar extensiones bloqueadas"

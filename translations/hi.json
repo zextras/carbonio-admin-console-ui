@@ -1037,7 +1037,6 @@
         "remove_all_acl": "सभी ACLs<bold> हटाएँ</bold>",
         "roles": "भूमिकाएँ",
         "send_notifications_to": "नोटिफ़िकेशन यहाँ भेजें…",
-        "send_options": "भेजने के ऑप्शन",
         "subject_name_fqdn": "विषय ऑल्ट नाम (पूरी तरह से योग्य डोमेन नाम - FQDN)",
         "this_listcan_receive_email": "यह लिस्ट ईमेल नहीं पा सकती",
         "trusted_network_ip": "भरोसेमंद नेटवर्क (IP रेंज)",
@@ -1048,7 +1047,9 @@
         "valid_not_before": "यहाँ से मान्य (पहले नहीं)",
         "what_to_trust": "किस पर भरोसा करें?",
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "इस सेक्शन को देखने के लिए आपके पास पर्याप्त एड्मिनिस्ट्रेशन अधिकार नहीं हैं",
-        "please_select_the_measure_unit": "माप की इकाई चुनें"
+        "please_select_the_measure_unit": "माप की इकाई चुनें",
+        "person_name": "नाम",
+        "stats": "आंकड़ें"
     },
     "timezone": {
         "asia_tomsk": "{{value}} तोम्स्क",
@@ -1290,7 +1291,6 @@
             "company_name": "कंपनी नाम",
             "customer": "कस्टमर",
             "email_buyer": "ईमेल खरीददार",
-            "emissionDate": "एमिशन तारीख",
             "features": "और फीचर",
             "hide": "छिपाएँ",
             "less_info": "कम जानकारी",
@@ -1314,7 +1314,8 @@
             "order_id": "ऑर्डर आईडी",
             "valid": "मान्य",
             "license_activated_successfully": "लाइसेंस एक्टिवेट हो गया",
-            "not_valid": "मान्य नहीं है"
+            "not_valid": "मान्य नहीं है",
+            "endDate": "अंत की तिथि"
         }
     },
     "domain": {
@@ -1827,11 +1828,9 @@
         "delegate_updated_successfully": "डेलीगेट के अधिकार अपडेट किए गए",
         "deligate_abstract_text": "यूज़र {{granteeEmail}} मेल {{right}}{{targetEmail}} भेज सकता है",
         "do_not_save_it": "इसे सेव न करें",
-        "send_as_recepients": "इस तरह से भेजें (पाने वालों को भेजने वाले की ईमेल {{targetEmail}} दिखाई देगी)",
         "send_mails_only": "सिर्फ मेल भेजना (फोल्डरों में कोई एक्सेस नहीं)",
         "send_read_mails": "मेल भेजना और पाना (फोल्डर बनाने / मेल मैनेज करने के कोई अधिकार नहीं)",
         "send_read_manage_mails": "मेल भेजना, पढ़ना और मैनेज करना (ऊपर में से सब)",
-        "send_recepients_see_the_mail": "भेजें {{right}} (पाने वालों को भेजने वाले की ईमेल {{targetEmail}} दिखाई देगी)",
         "sendin_options": "भेजने के ऑप्शन",
         "sending_options": "भेजने के ऑप्शन",
         "send_as_behalf": "इनकी ओर से भेजें (पाने वालों को सेंडर {{targetEmail}} दिखेगा)",
@@ -2236,7 +2235,16 @@
         "check_client_host_name": "क्लाइंट होस्टनाम की जाँच करें",
         "disable_virus_check": "वायरस जाँच अक्षम करें",
         "tolerance_for_spam_blocking": "स्पैम ब्लॉकिंग के लिए सहिष्णुता",
-        "tolerance_for_spam_delivery": "स्पैम डिलीवरी के लिए सहिष्णुता"
+        "tolerance_for_spam_delivery": "स्पैम डिलीवरी के लिए सहिष्णुता",
+        "action": "एक्शन",
+        "all": "सभी",
+        "current_status": "वर्तमान स्टेटस",
+        "info": "जानकारी",
+        "queued": "कतार में",
+        "stats": "आंकड़ें",
+        "status": "उपस्थिति",
+        "interval": "इंटरवल",
+        "mail_server": "मेल सर्वर"
     },
     "mat": {
         "add_here_any_blocked_extension": "यहाँ कोई भी ब्लॉक्ड एक्सटेंशन जोड़ें"

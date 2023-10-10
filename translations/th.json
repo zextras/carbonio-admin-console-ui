@@ -239,7 +239,6 @@
             "company_name": "ชื่อบริษัท",
             "customer": "กำหนดเอง",
             "email_buyer": "อีเมลผู้ซื้อ",
-            "emissionDate": "วันที่ปล่อย",
             "features": "คุณสมบัติอื่นๆ",
             "hide": "ซ่อน",
             "less_info": "ข้อมูลน้อยลง",
@@ -263,7 +262,8 @@
             "order_id": "รหัสคำสั่ง",
             "valid": "ถูกต้องแล้ว",
             "license_activated_successfully": "เปิดใช้งานใบอนุญาตเรียบร้อยแล้ว",
-            "not_valid": "ไม่ถูกต้อง"
+            "not_valid": "ไม่ถูกต้อง",
+            "endDate": "วันที่สุดท้าย"
         }
     },
     "domain": {
@@ -1371,7 +1371,6 @@
         "secure": "ปลอดภัย",
         "security_group": "กลุ่มความปลอดภัย",
         "send_notifications_to": "ส่งการแจ้งเตือนไปที่…",
-        "send_options": "ตัวเลือกการส่ง",
         "set_as_default": "ตั้งเป็นค่าเริ่มต้น",
         "subject_name_cname": "ชื่อเรื่อง (Canonical Name record - CNAME)",
         "subject_name_fqdn": "ชื่อ Alt ของหัวเรื่อง (ชื่อโดเมนที่ผ่านการรับรองโดยสมบูรณ์ - FQDN)",
@@ -1387,7 +1386,9 @@
         "valid_not_before": "ใช้ได้ตั้งแต่ (ไม่ใช่ก่อนหน้านั้น)",
         "what_to_trust": "จะเชื่ออะไร?",
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "คุณไม่มีสิทธิ์ในการดูแลระบบสำหรับดูส่วนนี้",
-        "please_select_the_measure_unit": "กรุณาเลือกหน่วยการวัด"
+        "please_select_the_measure_unit": "กรุณาเลือกหน่วยการวัด",
+        "person_name": "ชื่อ",
+        "stats": "สถิติ"
     },
     "message": {
         "snackbar": {
@@ -1828,8 +1829,6 @@
         "search_here_for_an_account": "ค้นหาบัญชีที่นี่",
         "select_delegate_folder": "เลือกโฟลเดอร์ที่ผู้รับมอบสิทธิ์สามารถดูได้",
         "select_mode": "เลือกโหมด",
-        "send_as_recepients": "ส่งในนาม (ผู้รับจะเห็นอีเมลผู้ส่ง {{targetEmail}})",
-        "send_recepients_see_the_mail": "ส่ง {{right}} (ผู้รับจะเห็นอีเมลผู้ส่ง {{targetEmail}})",
         "send_read_mails": "ส่งและอ่านเมล (ไม่มีสิทธิ์สร้างโฟลเดอร์/จัดการเมล)",
         "what_rights_will_the_delegate_have": "ผู้รับมอบสิทธิ์จะมีสิทธิอะไรบ้าง?",
         "where_do_we_store_it": "เราเก็บไว้ที่ไหน?",
@@ -2235,7 +2234,16 @@
         "tolerance_for_spam_blocking": "ความคลาดเคลื่อนที่ยอมรับได้สำหรับการบล็อกสแปม",
         "check_client_host_name": "ตรวจสอบชื่อโฮสต์ของลูกค้า",
         "disable_virus_check": "ปิดการใช้งานการตรวจสอบไวรัส",
-        "tolerance_for_spam_delivery": "ความคลาดเคลื่อนที่ยอมรับได้สำหรับการจัดส่งสแปม"
+        "tolerance_for_spam_delivery": "ความคลาดเคลื่อนที่ยอมรับได้สำหรับการจัดส่งสแปม",
+        "action": "การดำเนินการ",
+        "all": "ทั้งหมด",
+        "current_status": "สถานะปัจจุบัน",
+        "info": "ข้อมูล",
+        "interval": "อยู่ระหว่าง",
+        "mail_server": "เซิร์ฟเวอร์จดหมาย",
+        "queued": "อยู่ในคิวแล้ว",
+        "stats": "สถิติ",
+        "status": "สถานะ"
     },
     "mat": {
         "add_here_any_blocked_extension": "เพิ่มส่วนขยายที่ถูกบล็อกที่นี่"
