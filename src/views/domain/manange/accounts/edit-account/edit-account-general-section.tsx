@@ -613,7 +613,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
@@ -627,6 +627,23 @@ const EditAccountGeneralSection: FC = () => {
 									(item: any) => item.value === accountDetail?.zimbraAccountStatus
 								)}
 								padding={{ right: 'medium' }}
+							/>
+						) : (
+							<></>
+						)}
+					</Row>
+					<Row width="49%" mainAlignment="flex-start">
+						{accountDetail?.zimbraId && localeZone?.length ? (
+							<InheritedSelect
+								label={t('label.language', 'Language')}
+								items={localeZone}
+								accountValue={accountDetail.zimbraPrefLocale}
+								cosValue={cosDetail.zimbraPrefLocale}
+								fromAccount={accSpecificDetail?.zimbraPrefLocale}
+								background="gray5"
+								selectName="zimbraPrefLocale"
+								onChange={onPrefLocaleChange}
+								onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
 							/>
 						) : (
 							<></>
@@ -682,25 +699,11 @@ const EditAccountGeneralSection: FC = () => {
 					/>
 				</Row>
 
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
-						{accountDetail?.zimbraId && localeZone?.length ? (
-							<InheritedSelect
-								label={t('label.language', 'Language')}
-								items={localeZone}
-								accountValue={accountDetail.zimbraPrefLocale}
-								cosValue={cosDetail.zimbraPrefLocale}
-								fromAccount={accSpecificDetail?.zimbraPrefLocale}
-								background="gray5"
-								selectName="zimbraPrefLocale"
-								onChange={onPrefLocaleChange}
-								onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
-							/>
-						) : (
-							<></>
-						)}
-					</Row>
-				</Row>
+				<Row
+					padding={{ top: 'large', left: 'large' }}
+					width="100%"
+					mainAlignment="space-between"
+				></Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Divider color="gray2" />
