@@ -37,7 +37,6 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import logo from '../../assets/gardian.svg';
 import { searchDirectory } from '../../services/search-directory-service';
-import { accountListDirectory } from '../../services/account-list-directory-service';
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
@@ -58,11 +57,17 @@ const CosGeneralInformation: FC = () => {
 	const [accountList, setAccountList] = useState<any[]>([]);
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(5);
-	const [searchString, setSearchString] = useState<string>('');
-	const [searchQuery, setSearchQuery] = useState<string>('');
+	const [searchAccountString, setSearchAccountString] = useState<string>('');
+	const [searchAccountQuery, setSearchAccountQuery] = useState<string>('');
 	const [totalAccounts, setTotalAccounts] = useState<number>(0);
 	const tableRef = useRef(null);
 	const [isAccountRequestInProgress, setIsAccountRequestInProgress] = useState<boolean>(false);
+	const [domainList, setDomainList] = useState<any[]>([]);
+	const [searchDomainString, setSearchDomainString] = useState<string>('');
+	const [searchDomainQuery, setSearchDomainQuery] = useState<string>('');
+	const [totalDomains, setTotalDomains] = useState<number>(0);
+	const [isDomainRequestInProgress, setIsDomainRequestInProgress] = useState<boolean>(false);
+	const [domainOffset, setDomainOffset] = useState<number>(0);
 
 	const accountHeaders: any = useMemo(
 		() => [
@@ -143,6 +148,30 @@ const CosGeneralInformation: FC = () => {
 		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
 		return 'Normal';
 	}, []);
+
+	const domainHeaders: any[] = useMemo(
+		() => [
+			{
+				id: 'domains',
+				label: t('label.domains', 'Domains'),
+				width: '35%',
+				bold: true
+			},
+			{
+				id: 'maximum_accounts',
+				label: t('label.maximum_handled_accounts', 'Maximum Handled Accounts'),
+				width: '45%',
+				bold: true
+			},
+			{
+				id: 'description',
+				label: '',
+				width: '20%',
+				bold: true
+			}
+		],
+		[t]
+	);
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
@@ -340,14 +369,14 @@ const CosGeneralInformation: FC = () => {
 	};
 
 	const getAccountList = useCallback((): void => {
-		if (!searchQuery) {
+		if (!searchAccountQuery) {
 			return;
 		}
 		setIsAccountRequestInProgress(true);
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		searchDirectory(attrs, type, '', searchQuery, offset, limit)
+		searchDirectory(attrs, type, '', searchAccountQuery, offset, limit)
 			.then((data) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -426,7 +455,7 @@ const CosGeneralInformation: FC = () => {
 			.catch((error) => {
 				setIsAccountRequestInProgress(false);
 			});
-	}, [STATUS_COLOR, accountUserType, limit, offset, searchQuery]);
+	}, [STATUS_COLOR, accountUserType, limit, offset, searchAccountQuery]);
 
 	useEffect(() => {
 		if (cosDetail?.id) {
@@ -434,7 +463,7 @@ const CosGeneralInformation: FC = () => {
 		}
 	}, [cosDetail?.id, getAccountList]);
 
-	const generateSearchFilterQuery = useCallback(
+	const generateAccountSearchFilterQuery = useCallback(
 		(searchStr: string, cosId: string | undefined): string => {
 			let filterQuery = `(&(zimbraCOSId=${cosId})(!(zimbraIsSystemAccount=TRUE)))`;
 			if (searchStr) {
@@ -451,13 +480,110 @@ const CosGeneralInformation: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
 		debounce((searchStr: string, cosId: string | undefined) => {
-			setSearchQuery(generateSearchFilterQuery(searchStr, cosId));
+			setSearchAccountQuery(generateAccountSearchFilterQuery(searchStr, cosId));
 		}, 700),
 		[debounce]
 	);
 	useEffect(() => {
-		searchAccountList(searchString, cosDetail.id);
-	}, [cosDetail?.id, searchAccountList, searchString]);
+		searchAccountList(searchAccountString, cosDetail.id);
+	}, [cosDetail?.id, searchAccountList, searchAccountString]);
+
+	const getDomainList = useCallback((): void => {
+		if (!searchDomainQuery) {
+			return;
+		}
+		setIsDomainRequestInProgress(true);
+		const type = 'domains';
+		const attrs =
+			'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraDomainCOSMaxAccounts,zimbraDomainDefaultCOSId';
+		searchDirectory(attrs, type, '', searchDomainQuery, domainOffset, limit)
+			.then((data) => {
+				const domainListResponse: any = data?.domain || [];
+				if (domainListResponse && Array.isArray(domainListResponse)) {
+					const domainListArr: any = [];
+					setTotalDomains(data.searchTotal || 0);
+					domainListResponse.forEach((item: any): any => {
+						item?.a?.forEach((ele: any) => {
+							if (ele?.n === 'zimbraDomainCOSMaxAccounts') {
+								if (item[ele?.n]) {
+									item[ele?.n].push(ele._content);
+								} else {
+									// eslint-disable-next-line no-param-reassign
+									item[ele?.n] = [ele._content];
+								}
+							} else {
+								// eslint-disable-next-line no-param-reassign
+								item[ele?.n] = ele._content;
+							}
+						});
+						const maxAccountValue = item?.zimbraDomainCOSMaxAccounts
+							?.filter((acc: string) => acc?.split(':')[0] === cosDetail?.id)[0]
+							?.split(':')[1];
+						domainListArr.push({
+							id: item?.id,
+							columns: [
+								<Text size="small" key={item?.id} color="gray0" weight="regular">
+									{item?.name || ' '}
+								</Text>,
+								<Text size="small" key={item?.id} color="gray0" weight="light">
+									{maxAccountValue || ' '}
+								</Text>,
+								<Container key={item?.id}>
+									{cosDetail?.id === item?.zimbraDomainDefaultCOSId && (
+										<Row>
+											<Padding right="small">
+												<Text size="small" weight="light" color="gray0">
+													{t('label.default_cos', 'Default COS')}
+												</Text>
+											</Padding>
+											<Icon icon="Star" color="primary" />
+										</Row>
+									)}
+								</Container>
+							],
+							item,
+							clickable: true
+						});
+					});
+					setDomainList(domainListArr);
+				}
+				setIsDomainRequestInProgress(false);
+			})
+			.catch((error) => {
+				setIsDomainRequestInProgress(false);
+			});
+	}, [searchDomainQuery, domainOffset, limit, cosDetail?.id, t]);
+
+	useEffect(() => {
+		if (cosDetail?.id) {
+			getDomainList();
+		}
+	}, [cosDetail?.id, getDomainList]);
+
+	const generateDomainSearchFilterQuery = useCallback(
+		(searchStr: string, cosId: string | undefined): string => {
+			let filterQuery = `(|(zimbraDomainCOSMaxAccounts=${cosId}*)(zimbraDomainDefaultCOSId=${cosId}))`;
+			if (searchStr) {
+				filterQuery += `(|(zimbraDomainName=*${searchStr}*))`;
+			}
+			if (searchStr) {
+				return `(&${filterQuery})`;
+			}
+			return filterQuery;
+		},
+		[]
+	);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchDomainList = useCallback(
+		debounce((searchStr: string, cosId: string | undefined) => {
+			setSearchDomainQuery(generateDomainSearchFilterQuery(searchStr, cosId));
+		}, 700),
+		[debounce]
+	);
+	useEffect(() => {
+		searchDomainList(searchDomainString, cosDetail.id);
+	}, [cosDetail?.id, searchDomainList, searchDomainString]);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
@@ -555,7 +681,10 @@ const CosGeneralInformation: FC = () => {
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.domains_that_use_this_cos', 'Domains that use this CoS')}
+									label={t(
+										'label.domains_that_use_this_cos_as_default',
+										'Domains that use this CoS as default'
+									)}
 									value={totalDomain}
 									backgroundColor="gray6"
 									disabled
@@ -590,7 +719,127 @@ const CosGeneralInformation: FC = () => {
 						</ListRow>
 					</Container>
 				</Row>
-
+				<Row width="100%" padding={{ all: 'large' }}>
+					<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('cos.handled_domains', 'Handled Domains')}
+						</Text>
+					</Row>
+				</Row>
+				<Row
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					padding={{ left: 'large', right: 'large', top: 'large' }}
+				>
+					<Container padding={{ all: 'small' }}>
+						<Input
+							label={t('label.search_for_a_domain', `Search for a domain`)}
+							disabled={domainList.length === 0 && searchDomainString.length === 0}
+							value={searchDomainString}
+							backgroundColor="gray5"
+							onChange={(e: any): any => {
+								setSearchDomainString(e.target.value);
+							}}
+							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+						/>
+					</Container>
+				</Row>
+				<Row
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					style={{
+						height: 'calc(100vh - 21.25rem)',
+						position: 'relative'
+					}}
+					ref={tableRef}
+					padding={{ left: 'large', right: 'large', bottom: 'large' }}
+				>
+					<Container padding={{ all: 'small' }}>
+						<Table
+							rows={!isDomainRequestInProgress ? domainList : []}
+							headers={domainHeaders}
+							showCheckbox={false}
+							multiSelect={false}
+							style={{
+								overflow: 'auto',
+								height: '100%'
+							}}
+							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
+							HeaderFactory={CustomHeaderFactory}
+						/>
+						{isDomainRequestInProgress && (
+							<Container
+								crossAlignment="center"
+								mainAlignment="center"
+								height="auto"
+								padding={{ top: 'medium' }}
+							>
+								<Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+							</Container>
+						)}
+						{domainList.length === 0 && !isDomainRequestInProgress && (
+							<Container
+								orientation="column"
+								crossAlignment="center"
+								mainAlignment="center"
+								style={{ marginTop: '1rem' }}
+							>
+								<Row>
+									<img src={logo} alt="logo" />
+								</Row>
+								<Row
+									padding={{ top: 'extralarge' }}
+									orientation="vertical"
+									crossAlignment="center"
+									style={{ textAlign: 'center' }}
+								>
+									<Text weight="light" color="#828282" size="large" overflow="break-word">
+										{t('label.this_list_is_empty', 'This list is empty.')}
+									</Text>
+								</Row>
+							</Container>
+						)}
+						{domainList.length !== 0 && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="space-between"
+								width="100%"
+								style={{ position: 'absolute', bottom: '-4rem' }}
+								height="auto"
+								padding={{ all: 'large' }}
+							>
+								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+									<Paging totalItem={totalDomains} setOffset={setDomainOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ all: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
+						)}
+					</Container>
+				</Row>
+				<Row
+					width="100%"
+					padding={{ all: 'large' }}
+					style={{ marginTop: domainList.length > 0 ? '3rem' : '0rem' }}
+				>
+					<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('cos.handled_accounts', 'Handled Accounts')}
+						</Text>
+					</Row>
+				</Row>
 				<Row
 					orientation="horizontal"
 					mainAlignment="space-between"
@@ -601,11 +850,11 @@ const CosGeneralInformation: FC = () => {
 					<Container padding={{ all: 'small' }}>
 						<Input
 							label={t('label.search_for_an_account', `Search for an account`)}
-							disabled={accountList.length === 0 && searchString.length === 0}
-							value={searchString}
+							disabled={accountList.length === 0 && searchAccountString.length === 0}
+							value={searchAccountString}
 							backgroundColor="gray5"
 							onChange={(e: any): any => {
-								setSearchString(e.target.value);
+								setSearchAccountString(e.target.value);
 							}}
 							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 						/>
