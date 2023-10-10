@@ -530,7 +530,10 @@ const MTAStats: FC = () => {
 							<MTAStatsDetail
 								serverState={mailServerStats.find((item) => item?.id === selectedServer[0])}
 								setSelectedServer={setSelectedServer}
-								updateMailCount={updateMailCount}
+								flushQueues={flushQueues}
+								requestInprogress={requestInprogress}
+								flushRequestInProgress={flushRequestInProgress}
+								updateCount={updateMailCount}
 							/>
 						</ModalOverlay>
 					)}
