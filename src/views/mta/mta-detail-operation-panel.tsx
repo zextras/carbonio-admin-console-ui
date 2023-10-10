@@ -12,6 +12,7 @@ import {
 	GENERAL,
 	OUTBOUND_FLOW,
 	POSTSCREEN_TUNING,
+	QUEUE,
 	STATS
 } from '../../constants';
 import MTAInboundFlowSecurity from './inbound-flow-security/inbound-flow-security';
@@ -39,7 +40,7 @@ const MTADetailOperationPanel: FC = () => {
 						return <MTAPostScreenTuning />;
 					case ADVANCED:
 						return <MTAAdvanced />;
-					case STATS:
+					case QUEUE:
 						return <MTAStats />;
 					default:
 						return null;

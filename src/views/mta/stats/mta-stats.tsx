@@ -365,7 +365,7 @@ const MTAStats: FC = () => {
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
 					<Text size="medium" overflow="ellipsis" weight="bold">
-						{t('mta.stats', 'Stats')}
+						{t('mta.queue', 'Queue')}
 					</Text>
 				</Row>
 				<Row></Row>

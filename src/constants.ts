@@ -335,3 +335,4 @@ export const BACKUP_REALTIME = 'backup_realtime';
 export const RELEASE = 'release';
 export const REQUEUE = 'requeue';
 export const DELETE = 'delete';
+export const QUEUE = 'queue';
