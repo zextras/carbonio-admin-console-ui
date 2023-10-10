@@ -113,7 +113,7 @@
                 "accepted": "Вы приняли права общего доступа"
             }
         },
-        "status": "Статус",
+        "status": "статусу",
         "suspended": "приостановлена",
         "timezone": "Часовой пояс",
         "unlimited": "Неограниченно",
@@ -652,7 +652,7 @@
         "s3_bucket": "S3 Bucket",
         "select_an_external_volume": "Выберите внешний том",
         "service": "Сервис",
-        "status_lbl": "Статус",
+        "status_lbl": "статусу",
         "theme": "Тема",
         "title": "Заголовок",
         "update": "Обновить",
@@ -1002,7 +1002,9 @@
         "groups": "Группы",
         "never_send_read_receipt": "Никогда не отправляйте уведомление о прочтении",
         "read_options": "Варианты прочтения",
-        "read_receipt_settings": "Настройки запроса о прочтении"
+        "read_receipt_settings": "Настройки запроса о прочтении",
+        "person_name": "Имя",
+        "stats": "Статистика"
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
@@ -1012,7 +1014,7 @@
         "europe_kaliningrad": "{{value}} Калининград (RTZ 1)",
         "europe_london": "{{value}} Великобритания, Ирландия, Португалия",
         "europe_minsk": "{{value}} Минск",
-        "europe_moscow": "{{value}} Москва, Санкт-Петербург, Волгоград (RTZ 2)",
+        "europe_moscow": "{{value}} Москва, Санкт-Петербург, Волгоград(RTZ 2)",
         "europe_samara": "{{value}} Ижевск, Самара (RTZ 3)",
         "europe_saratov": "{{value}} Саратов",
         "europe_volgograd": "{{value}} Волгоград",
@@ -1244,12 +1246,11 @@
             "company_name": "Название компании",
             "customer": "Пользователь",
             "email_buyer": "Электронный адрес покупателя",
-            "emissionDate": "Дата выпуска",
             "features": "Другие функции",
             "hide": "Скрыть",
             "less_info": "Меньше информации",
             "more_info": "Подробная информация",
-            "status": "Статус",
+            "status": "статусу",
             "subscription_Accounts": "Лицензированные учетные записи",
             "subscription_last_check": "Последняя проверка подписки",
             "subscription_type": "Тип подписки",
@@ -1268,7 +1269,8 @@
             "order_id": "Номер заказа",
             "valid": "Действительна",
             "license_activated_successfully": "Лицензия успешно активирована",
-            "not_valid": "Недействительный"
+            "not_valid": "Недействительный",
+            "endDate": "Дата окончания"
         }
     },
     "message": {
@@ -1430,7 +1432,7 @@
         "session_idle_timeout": "Таймаут простоя сеанса",
         "shortest_allowed_duration_for_any_polling_interval": "Самая короткая разрешенная длительность для любого интервала опроса",
         "spam_message_lifetime": "Время жизни спамового сообщения",
-        "status": "Статус",
+        "status": "статусу",
         "tagging": "Установление меток",
         "time_to_lockout_account": "Время блокировки учетной записи",
         "time_window_failed_logins_must_occur_to_lock_account": "Временной интервал с неудачными входами, после которого блокируется учетная запись:",
@@ -1615,7 +1617,7 @@
             "name": "Имя",
             "indexer": "Индексатор",
             "hsm_scheduled": "HSM запланировано",
-            "status": "Статус"
+            "status": "статусу"
         },
         "volume_header": {
             "compression": "Компрессия",
@@ -1758,7 +1760,6 @@
         "search_here_for_an_account": "Искать учетную запись",
         "select_delegate_folder": "Выберите, какие папки может просматривать делегат",
         "select_mode": "ВЫБЕРАТЬ РЕЖИМ",
-        "send_as_recepients": "Отправить как (получатели увидят отправителя {{targetEmail}}",
         "send_mails_only": "Только отправлять письма (без доступа к папкам)",
         "sendin_options": "Параметры отправки",
         "sending_options": "Параметры отправки",
@@ -1771,7 +1772,6 @@
         "delegate_deleted_successfully": "Делегат успешно удален",
         "send_read_mails": "Отправка и чтение писем (нет прав на создание папок/управление письмами)",
         "send_read_manage_mails": "Отправка, чтение и управление письмами (все вышеперечисленное)",
-        "send_recepients_see_the_mail": "Отправить {{right}} получатели будут отображать письмо отправителя {{targetEmail}}",
         "where_do_we_store_it": "Где мы его храним?",
         "remove": "Удалить",
         "DELETE": "УДАЛИТЬ",
@@ -1780,7 +1780,7 @@
         "label": "Метка",
         "send_check": "Отправить",
         "services": "Службы",
-        "status": "Статус",
+        "status": "статусу",
         "add_the_account_group_with_selected_rights": "ДОБАВИТЬ УЧЕТНУЮ ЗАПИСЬ/ГРУППУ С ВЫБРАННЫМИ ПРАВАМИ",
         "account_read_write_rights": "У этой учетной записи есть права <bold>Чтение/Запись</bold>",
         "account_send_rights": "У этой учетной записи есть права <bold>Отправлять</bold>",
@@ -1965,7 +1965,7 @@
         "label": {
             "Deep": "Глубокий",
             "notifications": "Оповещение",
-            "status": "Статус",
+            "status": "статусу",
             "action(M)": "Действие (M)",
             "create_fake_blob": "Создать фальшивый блоб",
             "let_it_run_btn": "ЗАПУСТИТЬ",
@@ -1984,7 +1984,7 @@
             "operation": "Операция",
             "server": "Сервер",
             "start_date": "Дата начала",
-            "status": "Статус",
+            "status": "статусу",
             "submit_date": "Дата отправки"
         },
         "other": "Другой",
@@ -2104,7 +2104,16 @@
         "hard_spam_limit": "Порог явного спама",
         "hostname_in_greeting_violates_rfc": "Имя хоста в приветствии нарушает RFC",
         "instances": "Серверы",
-        "pass": "Пропускать"
+        "pass": "Пропускать",
+        "info": "Информация",
+        "interval": "Интервал",
+        "action": "Действие",
+        "all": "Все",
+        "current_status": "Текущий статус",
+        "mail_server": "Почтовый сервер",
+        "queued": "В очереди",
+        "stats": "Статистика",
+        "status": "статусу"
     },
     "mat": {
         "add_here_any_blocked_extension": "Добавьте сюда любое заблокированное расширение"

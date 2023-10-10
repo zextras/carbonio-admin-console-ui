@@ -31,7 +31,8 @@
         "yes": "بله",
         "destroy_account": "حذف",
         "open": "باز کردن",
-        "logout": "خروج"
+        "logout": "خروج",
+        "person_name": "نام"
     },
     "domain": {
         "theme": "پوسته‌ها"

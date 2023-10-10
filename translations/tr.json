@@ -74,7 +74,7 @@
         "allow_sending_email_from_any_address": "Her adresten e-posta göndermeye izin ver",
         "details": "Detaylar",
         "draft_auto_save_interval": "Taslağı otomatik olarak kaydetme aralığı",
-        "email": "Eposta",
+        "email": "E-Posta",
         "enable_automatic_adding_of_contacts": "Kişileri otomatik eklemeyi etkinleştir",
         "enable_mandatory_spell_check": "Zorunlu yazım denetimini etkinleştir",
         "enable_past_due_reminders": "Geçmiş randevular için anımsatıcıları etkinleştir",
@@ -126,7 +126,7 @@
         "automatically_accept": "Otomatik olarak kabul et",
         "automatically_reject": "Otomatik olarak reddet",
         "bucket_cancel_button": "İPTAL",
-        "bucket_done_button": "Tamamlandı",
+        "bucket_done_button": "Hazır",
         "class_of_service": "Servis Paketi",
         "wizard_cancel_button": "İPTAL",
         "yes": "Evet",
@@ -732,7 +732,7 @@
         "what_inside": "Konu",
         "ID": "ID",
         "centralized": "Merkezi",
-        "done": "Tamamlandı",
+        "done": "Hazır",
         "external_volume_edited": "{{message}}",
         "general_options": "Genel Seçenekler",
         "operation": {
@@ -940,7 +940,11 @@
         "logout": "Oturumu kapat",
         "never_send_read_receipt": "Hiçbir zaman okundu bilgisi gönderme",
         "remove_all": "HEPSİNİ KALDIR",
-        "read_options": "Okuma seçenekleri"
+        "read_options": "Okuma seçenekleri",
+        "person_name": "Ad",
+        "stats": "İstatistik",
+        "2-factor-authentication": "İki Aşamalı Kimlik Doğrulama",
+        "2fa": "İki Aşamalı Kimlik Doğrulama"
     },
     "timezone": {
         "asia_gaza": "{{value}} Gaza",
@@ -1156,7 +1160,8 @@
             "us_west_2": "US West (Oregon)",
             "ap_south_1": "Asia Pacific (Mumbai)",
             "eu_central_1": "EU (Frankfurt)",
-            "us_gov_east_1": "AWS GovCloud (US-East)"
+            "us_gov_east_1": "AWS GovCloud (US-East)",
+            "eu_south_2": "AB (İspanya)"
         },
         "invalid_compression_thresold": "Sıkıştırma Aralığı gereklidir",
         "invalid_volume_name": "Lütfen hacim adı alanını giriniz.",
@@ -1170,7 +1175,8 @@
             "scality_s3": "Scality S3",
             "yandex_s3": "Yandex S3",
             "amazone_web_service_s3": "Amazon Web Service S3",
-            "minio": "MinIO"
+            "minio": "MinIO",
+            "ceph": "Ceph"
         },
         "global": "Global"
     },
@@ -1180,7 +1186,6 @@
             "company_name": "Firma Adı",
             "customer": "Müşteri",
             "email_buyer": "Satınalana e-posta gönder",
-            "emissionDate": "Veriliş tarihi",
             "features": "Diğer Özellikler",
             "hide": "Gizle",
             "less_info": "Daha az bilgi",
@@ -1204,7 +1209,8 @@
             "order_id": "Sipariş No",
             "not_valid": "Geçerli değil",
             "license_activated_successfully": "Lisans başarıyla etkinleştirildi",
-            "valid": "Geçerli"
+            "valid": "Geçerli",
+            "endDate": "Bitiş tarihi"
         }
     },
     "domain": {
@@ -1261,7 +1267,23 @@
         "active_sync": "ActiveSync",
         "domain_name": "Alan Adı",
         "imap": "IMAP",
-        "mobile_apps": "Mobile Apps"
+        "mobile_apps": "Mobile Apps",
+        "admin_api": "Yönetici API",
+        "aggregated_space_quota": "Toplam Kullanım Alanı Kotası",
+        "aggregated_space_quota_warning": "Toplam kullanım alanı kota uyarısı (%)",
+        "certificate_removed": "Sertifika kaldırıldı",
+        "certificate_type_use_letsencrypt_short_chain": "Let's Encrypt (shortChain) sertifikası kullanmak istiyorum",
+        "desktop_app": "DesktopSync",
+        "desktop_sync": "DesktopSync",
+        "domain_list": "Alan adı listesi",
+        "mail_space_quota_threshold": "Posta Alanı Kota eşiği (%)",
+        "certificate_type_use_letsencrypt_long_chain": "Let's Encrypt (longChain) sertifikası kullanmak istiyorum",
+        "receiver_of_quota_warning_email": "Kota uyarısı alan kişi(e - posta)",
+        "dav": "DAV",
+        "pop": "POP",
+        "smtp": "SMTP",
+        "type_the exact_domain_name": "Tam alan adını yazın",
+        "web_ui": "WebUI"
     },
     "message": {
         "snackbar": {
@@ -1401,7 +1423,7 @@
         "search_for_people": "Kişileri Ara",
         "search_a_specific_server": "Belirli bir sunucu ara",
         "reject_common_passwords": "Genel parolaları kabul etme",
-        "percentage_threshold_for_quota_warning": "Kota uyarı mesajları için yüzde aralığı",
+        "percentage_threshold_for_quota_warning": "Kota uyarı mesajları için yüzde aralığı (%)",
         "password_set_to_use_external_authentication_information_msg": "Bu ayarlar dış kimlik doğrulama kullanacak şekilde yapılandırılmış etki alanlarındaki kullanıcılar tarafından belirlenen parolaları etkilemeyecektir",
         "out_of_the_office_reply": "Ofis Dışındayım Yanıtı",
         "notify_changes_by_delegated_access": "Alt yetkili hesaplarla yapılan değişiklikleri bildir",
@@ -1457,7 +1479,7 @@
         "enable_smime": "S/MIME’yi etkinleştir",
         "enabled": "Kullanıma açık",
         "failed_login_policy": "Hatalı Oturum Açma İlkesi",
-        "free_busy_interop": "Uygun/Meşgul Karşılıklı İşlerlik",
+        "free_busy_interop": "Serbest/Meşgul Interop (O = OfisDışında), (OU = OfisDışında, AcilDurumdaErişimeUygun)",
         "html_compose": "HTML oluştur",
         "imap_polling_interval": "IMAP sorgulama aralığı",
         "mail": "E-Posta",
@@ -1505,7 +1527,14 @@
         "idp_configuration_saml_notes": "SAML'nizi yapılandırmak için IDP'nize giderek EntityID ve ServiceURL değerlerini kopyalayın",
         "user_can_specify_forwarding_address": "Kullanıcı yönlendirme adresini belirtebilir",
         "user_can_specify_mail_forwarding_filter": "Kullanıcı posta yönlendirme filtresini belirleyebilir",
-        "forwarding": "İletme"
+        "forwarding": "İletme",
+        "user_specific_fowarding_addresses": "Kullanıcı tarafından belirlenen iletme adreslerini şununla sınırla (karakter)",
+        "limit_user_specified_forwarding_addresses": "Yönlendirme adresi için maksimum karakter",
+        "max_contacts_allowed_in_the_folder": "Klasörde izin verilen maksimum kişi sayısı",
+        "max_user_specific_forwarding_address": "Maksimum sayıda iletim adresleri",
+        "read_receipt_settings": "Alındı ayarlarını oku",
+        "select_cos_to_include_in_domain": "Bu alanadına eklemek için bir Servis Paketi SEÇİN",
+        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "kullanıcı tarafından belirtilen iletme adresleri+ kullanıcıya özgü iletme adreslerinin maksimum sayısı"
     },
     "locale": {
         "English": "English",
@@ -1565,7 +1594,8 @@
         "create_with_there_data": "BU VERİLER İLE OLUŞTUR",
         "confirm_connection": "BAĞLANTIYI ONAYLA",
         "data_already_sent_to_the_user": "VERİ ZATEN KULLANICIYA GÖNDERİLDİ",
-        "next": "İLERİ"
+        "next": "İLERİ",
+        "close": "KAPAT"
     },
     "account": {
         "new": {
@@ -1749,7 +1779,6 @@
         "search_here_for_an_account": "Burada hesap ara",
         "select_delegate_folder": "Alt yetkilinin görebileceği klasörleri seçin",
         "select_mode": "MOD SEÇİN",
-        "send_as_recepients": "Kişi Adından Gönderim (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)",
         "send_mails_only": "Sadece Mesajları Gönder (klasörlere erişim yok)",
         "send_read_mails": "Mesajları Gönder ve Oku (klasör oluşturma / posta yönetme yetkisi yok)",
         "send_read_manage_mails": "Postaları Gönder, Oku ve Yönet (yukarıdakilerin hepsi)",
@@ -1763,7 +1792,6 @@
         "delegate_deleted_successfully": "Alt Yetkili izinleri başarıyla silindi",
         "i_want_to_select": "Klasörleri seçmek istiyorum",
         "send_as_behalf": "Kişi Yerine Gönderim (alanlar gönderen olarak {{targetEmail}} görecek)",
-        "send_recepients_see_the_mail": "Gönder {{right}} (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)",
         "NEXT": "İLERİ",
         "abstract": "Özet Bilgi",
         "on_behalf_of": "yerine",
@@ -1813,7 +1841,9 @@
         "global_administration": "Genel yönetim",
         "service_label_password": " {{service_label}} Parolası",
         "set_global_config": "SetGlobal yapılandırması",
-        "user_can_specify_forwarding_address": "Kullanıcı yönlendirme adresini belirtebilir"
+        "user_can_specify_forwarding_address": "Kullanıcı yönlendirme adresini belirtebilir",
+        "send_recipients_see_the_mail": "Gönder {{right}} (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)",
+        "send_as_recipients": "Kişi Adından Gönderim (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)"
     },
     "connection": {
         "access_key": "Access Key",
@@ -1903,7 +1933,12 @@
         "volume_already_selected_in_source": "Bu hacim kaynak hacim olarak seçilmiş",
         "years": "Yıl",
         "new": "Yeni",
-        "users": "Kullanıcılar"
+        "users": "Kullanıcılar",
+        "example_shedule": "Örn. 0 2 * * 3",
+        "default_hsm_policy_warning_message": "En az bir politika her zaman geçerli olacaktır. Sonuncusunu silerseniz başka oluşturulacak",
+        "policy_is_correctly_running": "Politika doğru şekilde çalışıyor",
+        "policies_are_running": "HSM Politikaları çalışıyor",
+        "run_all": "Hepsini çalıştır"
     },
     "select_bucket_or_create_new_bucket_helperText": "Bucket türü belirlememişsiniz. \n\t\t\t\t\t\t\t\t\tYeni oluşturmak için \"YENİ BUCKET\" tuşuna tıklayın.",
     "welcome_to_carbonio_display_name": "Hoşgeldiniz {{adminName}}!",
@@ -1951,7 +1986,7 @@
         "copy_btn": "KOPYALA",
         "copy_operation_successfully": "Bildirim başarıyla kopyalandı",
         "details": "Detaylar",
-        "done": "Tamamlandı",
+        "done": "Hazır",
         "label": {
             "Deep": "Derinlik",
             "notifications": "Bildirimler",
@@ -2094,9 +2129,21 @@
         "verify_dkim_validity": "DKIM geçerliliğini doğrulayın",
         "reject_emails_from_client_hostnames": "Bilinmeyen veya çözülemeyen sunucu adlarına sahip istemcilerden gelen e-postaları reddeder",
         "warn_recipients_when_is_quarantined": "Bir şey karantinaya alındığında alıcıları uyar",
-        "reject_emails_from_unknown_or_unresolvable_sender_domains": "Bilinmeyen veya çözümlenemeyen gönderici alan adlarından gelen e-postaları reddeder"
+        "reject_emails_from_unknown_or_unresolvable_sender_domains": "Bilinmeyen veya çözümlenemeyen gönderici alan adlarından gelen e-postaları reddeder",
+        "action": "Eylem",
+        "all": "Hepsi",
+        "current_status": "Şu andaki durum",
+        "info": "Bilgi",
+        "interval": "Aralık",
+        "mail_server": "Posta Sunucusu",
+        "queued": "Sırada",
+        "stats": "İstatistik",
+        "status": "Durum"
     },
     "mat": {
         "add_here_any_blocked_extension": "Buraya herhangi bir Engellenen Uzantı ekleyin"
+    },
+    "error": {
+        "one_or_more_ip_invalid": "Bir veya daha fazla IP geçersiz"
     }
 }

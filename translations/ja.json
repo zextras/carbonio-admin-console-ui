@@ -10,7 +10,6 @@
             "company_name": "会社名",
             "customer": "顧客",
             "email_buyer": "メール購入者",
-            "emissionDate": "発行日",
             "features": "その他の機能",
             "hide": "非表示にする",
             "less_info": "不十分な情報",
@@ -29,7 +28,8 @@
             "order_id": "オーダーID",
             "valid": "有効",
             "license_activated_successfully": "ライセンスが有効化されました",
-            "not_valid": "有効ではありません"
+            "not_valid": "有効ではありません",
+            "endDate": "終了日"
         }
     },
     "timezone": {
@@ -413,7 +413,7 @@
         "out_of_office_cache_lifetime": "社内不在時のキャッシュ有効期間",
         "pending": "保留",
         "preferences": "プリファレンス",
-        "region": "リージョン",
+        "region": "地域",
         "reply/forward_using_format_of_the_original_message": "元のメッセージの形式を使用して返信/転送",
         "resources": "リソース",
         "restore_account": "アカウントを復元",
@@ -1366,7 +1366,6 @@
         "security_group": "セキュリティグループ",
         "security_group_name": "セキュリティグループ名",
         "send_notifications_to": "通知を送信します…",
-        "send_options": "送信オプション",
         "set_as_default": "デフォルトとして設定する",
         "subject_name_cname": "サブジェクト名 (正規名レコード - CNAME)",
         "subject_name_fqdn": "サブジェクト代替名 (完全修飾ドメイン名 - FQDN)",
@@ -1387,7 +1386,9 @@
         "cos_not_included_for_domain_notes": "このドメインには COS が含まれていませんドロップダウン メニューから COS を選択し、[複製] または [リンク] をクリックしてください",
         "delegated_administration_helper_text": "{{domainName}} の委任管理は無効になります。 <br /> 2 つのオプションがあります: <br /><br /> 1. ドメインからすべての ACL (アクセス コントロール リスト) を削除します。 <br /> 2.ACL (アクセス制御リスト) をドメイン内に保持しますが、関連付けられている権限を無効にします。 <br /><br /> どちらで続行しますか？",
         "delete_delegated_account_content": "システムアカウントはここからは削除できません。アカウントを管理するには、各モジュールにアクセスしてください。",
-        "found_check_the_text_and_try_again": "見つかりません - テキストを確認して再度お試しください"
+        "found_check_the_text_and_try_again": "見つかりません - テキストを確認して再度お試しください",
+        "person_name": "名前",
+        "stats": "統計"
     },
     "message": {
         "snackbar": {
@@ -1821,7 +1822,6 @@
         "save_it_to_sent_folder": "送信済みフォルダに保存する",
         "search_here_for_an_account": "アカウントの検索はこちら",
         "select_mode": "モードを選択する",
-        "send_as_recepients": "送信者 (受信者はこの送信者のメール {{targetEmail}} を表示します)",
         "send_read_mails": "メールの送受信 (フォルダの作成/メールの管理はできません)",
         "send_read_manage_mails": "メールの送信、閲覧、管理 (上記すべて)",
         "send_as_behalf": "代理送信 (受信者には送信者 {{target Email}} が表示されます)",
@@ -1832,7 +1832,6 @@
         "read_mails_only": "メールの閲覧のみ (メールを送信する権限はありません)",
         "select_delegate_folder": "代理人が表示できるフォルダーを選択する",
         "send_mails_only": "メールの送信のみ (フォルダーへのアクセスなし)",
-        "send_recepients_see_the_mail": "{{right}} の送信 (受信者はこの送信者のメール {{targetEmail}} を表示します)",
         "sendin_options": "送信オプション",
         "set_rights": "権限を設定する",
         "what_rights_will_the_delegate_have": "代理人はどの権限を持ちますか？",
@@ -2235,7 +2234,16 @@
         "check_client_host_name": "クライアントのホスト名を確認する",
         "disable_virus_check": "ウイルスチェックを無効にする",
         "tolerance_for_spam_blocking": "スパムブロックに対する耐性",
-        "tolerance_for_spam_delivery": "スパム配信の許容範囲"
+        "tolerance_for_spam_delivery": "スパム配信の許容範囲",
+        "current_status": "現在の状況",
+        "mail_server": "メールサーバー",
+        "action": "アクション",
+        "all": "すべて",
+        "info": "情報",
+        "interval": "繰り返し間隔",
+        "queued": "キューに入れられました",
+        "stats": "統計",
+        "status": "状態"
     },
     "mat": {
         "add_here_any_blocked_extension": "ブロックされた拡張機能をここに追加します"
