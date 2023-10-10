@@ -94,10 +94,10 @@ const DomainListPanel: FC = () => {
 		}[]
 	>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const setDomain = useDomainStore((state) => state.setDomain);
 	const domainInformation = useDomainStore((state) => state.domain);
-	const domainView = useDomainStore((state) => state.domainView);
-	const setDomainView = useDomainStore((state) => state.setDomainView);
+	const { setDomainView, isQuickAccess, domainView, setDomain, setIsQuickAccess } = useDomainStore(
+		(state) => state
+	);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -511,6 +511,14 @@ const DomainListPanel: FC = () => {
 						)
 					})
 			  );
+
+	useEffect(() => {
+		if (!isQuickAccess) {
+			setDomainView(GLOBAL_DOMAIN_ROUTE);
+		}
+		setIsQuickAccess(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<Container

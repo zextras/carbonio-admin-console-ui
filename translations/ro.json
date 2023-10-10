@@ -179,7 +179,8 @@
         "all": "Toate",
         "close": "Inchide",
         "link": "Legatura",
-        "logout": "Deconectare"
+        "logout": "Deconectare",
+        "person_name": "Nume"
     },
     "core": {
         "subscription": {
@@ -441,6 +442,9 @@
         "authentication": "Autentificare",
         "discard": "Renunta",
         "remove": "Eliminare",
-        "settings": "Setari"
+        "settings": "Setari",
+        "all": "Toate",
+        "info": "Informatii",
+        "status": "Stare"
     }
 }
