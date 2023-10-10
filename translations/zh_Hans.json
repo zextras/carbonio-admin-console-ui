@@ -996,7 +996,9 @@
         "logout": "注销",
         "never_send_read_receipt": "从不发送已读回执",
         "remove_all": "移除全部",
-        "read_options": "已读选项"
+        "read_options": "已读选项",
+        "person_name": "名称",
+        "stats": "数据统计"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",
@@ -1236,7 +1238,6 @@
             "company_name": "公司名称",
             "customer": "客户",
             "email_buyer": "邮件卖家",
-            "emissionDate": "发布日期",
             "features": "其他功能",
             "hide": "隐藏",
             "less_info": "更少信息",
@@ -1260,7 +1261,8 @@
             "order_id": "订单ID",
             "valid": "有效",
             "license_activated_successfully": "许可激活成功",
-            "not_valid": "无效"
+            "not_valid": "无效",
+            "endDate": "结束日期"
         }
     },
     "message": {
@@ -1691,11 +1693,9 @@
         "search_here_for_an_account": "在此处搜索账户",
         "select_delegate_folder": "选择被委派人可查看的文件夹",
         "select_mode": "选择模式",
-        "send_as_recepients": "发送为（收件人将展示此发件人邮件 {{targetEmail}}）",
         "send_mails_only": "仅发送邮件（无文件夹访问权限）",
         "send_read_mails": "发送和读取邮件（无创建文件夹/管理邮件权限）",
         "send_read_manage_mails": "发送、读取以及管理邮件（以上均有）",
-        "send_recepients_see_the_mail": "发送{{right}}（收件人将展示此发件人邮件 {{targetEmail}}）",
         "sendin_options": "发送选项",
         "sending_options": "发送选项",
         "set_rights": "设置权限",
@@ -2078,7 +2078,16 @@
         "smtp_helo_name": "SMTP Helo名",
         "tls_security_level": "TLS安全性级别",
         "verify_dkim_validity": "验证DKIM有效性",
-        "virus_block_encrypted_archive": "防病毒加密档案"
+        "virus_block_encrypted_archive": "防病毒加密档案",
+        "action": "操作",
+        "queued": "已加入队列",
+        "all": "全部",
+        "current_status": "当前状态",
+        "info": "信息",
+        "interval": "间隔",
+        "mail_server": "邮件服务器",
+        "stats": "数据统计",
+        "status": "状态"
     },
     "mat": {
         "add_here_any_blocked_extension": "在此添加任何被阻止的扩展名"
