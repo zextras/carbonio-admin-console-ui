@@ -317,6 +317,9 @@ const EditAccount: FC<{
 		}
 		const modifiedData: any = {};
 		let isPasswordChange = false;
+		remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
+		remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
+		remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
 		if (!accountDetail?.sn?.trim()) {
 			createSnackbar({
 				key: 'error',
@@ -392,9 +395,6 @@ const EditAccount: FC<{
 				});
 			await getAccountList();
 			remove(modifiedKeys, (ele) => ele === UID);
-			remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
-			remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
-			remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
 			if (modifiedKeys.includes(DOMAIN_NAME)) {
 				remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
 				setShowEditAccountView(false);

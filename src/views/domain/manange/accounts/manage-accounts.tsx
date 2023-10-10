@@ -367,6 +367,7 @@ const ManageAccounts: FC = () => {
 						: '';
 
 					obj.name = data?.account?.[0]?.name;
+					obj.domainName = data?.account?.[0]?.name.split('@')[1];
 					if (obj.zimbraIsAdminAccount === undefined) {
 						obj.zimbraIsAdminAccount = 'FALSE';
 					}
