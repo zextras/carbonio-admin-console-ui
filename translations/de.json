@@ -154,7 +154,7 @@
         "general_Settings": "Allgemeine Einstellungen",
         "general_settings": "Allgemeine Einstellungen",
         "help": "Hilfe",
-        "home": "Startseite",
+        "home": "Home",
         "hsm_policies": "HSM-Richtlinien",
         "index_volumes": "Inhaltsverzeichnis Datenträger",
         "indexer_settings": "Einstellungen Inhaltsanzeige",
@@ -1106,7 +1106,6 @@
         "security_group": "Sicherheitsgruppen",
         "security_group_name": "Name der Sicherheitsgruppe",
         "send_notifications_to": "Benachrichtigungen senden an…",
-        "send_options": "Versandoptionen",
         "set_as_default": "Als Standard Einstellen",
         "this_listcan_receive_email": "Diese Liste kann E-Mails empfangen",
         "trust_ip": "Der IP vertrauen",
@@ -1120,7 +1119,9 @@
         "valid_not_after": "Gültig bis (nicht danach)",
         "valid_not_before": "Gültig ab (nicht vorher)",
         "what_to_trust": "Worauf kann man vertrauen?",
-        "you_have_no_sufficient_administrationr_rights_to_see_this_section": "Sie verfügen nicht über ausreichende Administratorrechte, um diesen Abschnitt anzuzeigen"
+        "you_have_no_sufficient_administrationr_rights_to_see_this_section": "Sie verfügen nicht über ausreichende Administratorrechte, um diesen Abschnitt anzuzeigen",
+        "person_name": "Name",
+        "stats": "Statistik"
     },
     "timezone": {
         "asia_yerevan": "{{value}} Eriwan",
@@ -1364,7 +1365,6 @@
             "company_name": "Name des Unternehmens",
             "customer": "Kunde",
             "email_buyer": "E-Mail Käufer",
-            "emissionDate": "Abgabedatum",
             "features": "Andere Funktionalitäten",
             "less_info": "Weniger Informationen",
             "more_info": "Mehr Informationen",
@@ -1386,7 +1386,8 @@
             "order_id": "Bestell-ID",
             "valid": "Gültig",
             "not_valid": "Ungültig",
-            "license_activated_successfully": "Lizenz erfolgreich aktiviert"
+            "license_activated_successfully": "Lizenz erfolgreich aktiviert",
+            "endDate": "Enddatum"
         }
     },
     "message": {
@@ -1813,7 +1814,6 @@
         "deligate_abstract_text": "Der Benutzer {{granteeEmail}} kann E-Mails senden {{right}} {{targetEmail}}",
         "i_want_to_create_a_delegate_for": "Ich möchte eine Vertretung erstellen für",
         "read_mails_only": "Nur E-Mails lesen (keine Berechtigung zum Versenden von Mails)",
-        "send_recepients_see_the_mail": "Senden {{right}} (Empfänger werden diese Absender-E-Mail anzeigen {{targetEmail}})",
         "where_to_store_sent_emails": "Wo sollen gesendete E-Mails gespeichert werden?",
         "i_want_to_select": "Ich möchte die Ordner auswählen",
         "save_it_to_sent_folder": "Im Ordner \"Gesendet\" speichern",
@@ -2223,7 +2223,16 @@
         "check_client_host_name": "Den Client-Hostnamen überprüfen",
         "disable_virus_check": "Virenprüfung deaktivieren",
         "tolerance_for_spam_blocking": "Toleranz für Spam-Blockierung",
-        "tolerance_for_spam_delivery": "Toleranz für Spam-Versand"
+        "tolerance_for_spam_delivery": "Toleranz für Spam-Versand",
+        "action": "Aktion",
+        "all": "Alle",
+        "current_status": "Aktueller Status",
+        "info": "Info",
+        "interval": "Intervall",
+        "mail_server": "E-Mail-Server",
+        "queued": "In der Warteschlange",
+        "stats": "Statistik",
+        "status": "Status"
     },
     "mat": {
         "add_here_any_blocked_extension": "Alle blockierten Erweiterungen hier hinzufügen"
