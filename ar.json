@@ -20,7 +20,8 @@
         "name": "الاسم",
         "delete": "حذف",
         "edit": "تحرير",
-        "message": "رسالة"
+        "message": "رسالة",
+        "document": "المستند"
     },
     "label": {
         "add": "إضافة",
@@ -41,11 +42,15 @@
         "status_lbl": "الحالة",
         "chats": "دردشات",
         "destroy_account": "حذف",
-        "username": "اسم المستخدم"
+        "username": "اسم المستخدم",
+        "general_lbl": "عام",
+        "status": "الحالة",
+        "person_name": "الاسم"
     },
     "account_details": {
         "Chats": "دردشات",
-        "status": "الحالة"
+        "status": "الحالة",
+        "general": "عام"
     },
     "volume": {
         "volume_config_header": {
@@ -73,6 +78,10 @@
         }
     },
     "mta": {
-        "add": "إضافة"
+        "add": "إضافة",
+        "status": "الحالة"
+    },
+    "backup": {
+        "general": "عام"
     }
 }
