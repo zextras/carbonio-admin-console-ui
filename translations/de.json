@@ -1830,7 +1830,6 @@
         "select_delegate_folder": "Wählen Sie aus, welche Ordner der Stellvertreter anschauen kann",
         "select_mode": "MODUS AUSWÄHLEN",
         "send_as_behalf": "Senden im Namen von (Empfänger werden diese Absender-E-Mail anzeigen {{targetEmail}})",
-        "send_as_recepients": "Senden als (Empfänger werden diese Absender-E-Mail anzeigen {{targetEmail}})",
         "send_mails_only": "Nur E-Mails senden (kein Zugriff auf Ordner)",
         "send_read_mails": "Mails senden und lesen (keine Rechte zum Erstellen von Ordnern / Verwalten von E-Mails)",
         "send_read_manage_mails": "E-Mails senden, lesen und verwalten (alle oben genannten)",
