@@ -37,7 +37,6 @@ const EditAccountConfigrationSection: FC = () => {
 	const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useState<any[]>([]);
 	const [mailForwardingAddress, setMailForwardingAddress] = useState<any[]>([]);
 	const [prefCalendarForwardInvitesTo, setPrefCalendarForwardInvitesTo] = useState<any[]>([]);
-	const [accountQuota, setAccountQuota] = useState('');
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	useEffect(() => {
@@ -49,11 +48,6 @@ const EditAccountConfigrationSection: FC = () => {
 				: []
 		);
 	}, [accountDetail?.zimbraPrefMailForwardingAddress]);
-	useEffect(() => {
-		setAccountQuota(
-			accountDetail.zimbraMailQuota ? (accountDetail.zimbraMailQuota / 1048576).toString() : ''
-		);
-	}, [accountDetail?.zimbraMailQuota]);
 	useEffect(() => {
 		setMailForwardingAddress(
 			accountDetail?.zimbraMailForwardingAddress
@@ -81,15 +75,6 @@ const EditAccountConfigrationSection: FC = () => {
 			}));
 		},
 		[accountDetail, setAccountDetail]
-	);
-	const changeAccountQuota = useCallback(
-		(e) => {
-			setAccountDetail((prev: any) => ({
-				...prev,
-				[e.target.name]: (Number(e.target.value) * 1048576).toString()
-			}));
-		},
-		[setAccountDetail]
 	);
 
 	const setSwitchOptionValue = useCallback(
@@ -328,29 +313,6 @@ const EditAccountConfigrationSection: FC = () => {
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
-				</Row>
-				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-					<Text size="small" color="gray0" weight="bold">
-						{t('label.quotas', 'Quotas')}
-					</Text>
-				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%">
-					<InheritedInput
-						label={t('label.account_quota_mb', 'Account Quota (MB)')}
-						accountValue={accountQuota}
-						cosValue={
-							cosDetail.zimbraMailQuota ? (cosDetail.zimbraMailQuota / 1048576).toString() : ''
-						}
-						fromAccount={
-							accSpecificDetail.zimbraMailQuota
-								? (accSpecificDetail.zimbraMailQuota / 1048576).toString()
-								: ''
-						}
-						background="gray5"
-						inputName="zimbraMailQuota"
-						onChange={changeAccountQuota}
-						onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
-					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
 					<Divider color="gray2" />
