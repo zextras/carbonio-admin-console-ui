@@ -3,7 +3,6 @@
         "subscription": {
             "status": "Trạng thái",
             "hide": "Ẩn",
-            "emissionDate": "Ngày phát",
             "features": "Các tính năng khác",
             "less_info": "Ít thông tin hơn",
             "more_info": "Nhiều thông tin hơn",
@@ -23,7 +22,8 @@
                 "deactivate": "Có, Hủy kích hoạt",
                 "warning": "Bạn đang cố gắng hủy kích hoạt mã thông báo hiện tại. Làm như vậy sẽ vô hiệu hóa tất cả các tính năng đã bật."
             },
-            "valid": "Hợp lệ"
+            "valid": "Hợp lệ",
+            "endDate": "Ngày kết thúc"
         }
     },
     "label": {
@@ -695,7 +695,9 @@
         "groups": "Nhóm",
         "link": "Liên kết",
         "logout": "Đăng xuất",
-        "never_send_read_receipt": "Không bảo giờ gửi đánh dấu đã đọc"
+        "never_send_read_receipt": "Không bảo giờ gửi đánh dấu đã đọc",
+        "stats": "Số liệu thống kê",
+        "person_name": "Tên"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -1522,6 +1524,15 @@
         "low": "Thấp",
         "may": "Tháng Năm",
         "minutes": "Phút",
-        "none": "Không"
+        "none": "Không",
+        "action": "Tác vụ",
+        "all": "Tất cả",
+        "current_status": "Trạng thái hiện tại",
+        "info": "Thông tin",
+        "interval": "Khoảng thời gian",
+        "mail_server": "Máy chủ thư",
+        "queued": "Đã xếp hàng",
+        "stats": "Số liệu thống kê",
+        "status": "Trạng thái"
     }
 }
