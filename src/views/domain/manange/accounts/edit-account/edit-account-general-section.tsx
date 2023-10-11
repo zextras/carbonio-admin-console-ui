@@ -36,6 +36,7 @@ import { objectType, Attribute } from '../../../../../../types';
 import DropDownInput from '../../../../components/dropDownInput';
 import CustomChip from '../../../../components/customChip';
 import Textarea from '../../../../components/textarea';
+import InheritedInput from './inherited-components/inherited-input';
 
 const SelectItem = styled(Row)``;
 
@@ -75,11 +76,18 @@ const EditAccountGeneralSection: FC = () => {
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
+	const [accountQuota, setAccountQuota] = useState('');
 
 	useEffect(() => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, changeNameBool: false }));
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
+
+	useEffect(() => {
+		setAccountQuota(
+			accountDetail.zimbraMailQuota ? (accountDetail.zimbraMailQuota / 1048576).toString() : ''
+		);
+	}, [accountDetail?.zimbraMailQuota]);
 
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -107,6 +115,16 @@ const EditAccountGeneralSection: FC = () => {
 			}
 		});
 	}, []);
+
+	const changeAccountQuota = useCallback(
+		(e) => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[e.target.name]: (Number(e.target.value) * 1048576).toString()
+			}));
+		},
+		[setAccountDetail]
+	);
 
 	const selectedDomain = useCallback(
 		(domain: string) => {
@@ -595,7 +613,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
@@ -609,6 +627,23 @@ const EditAccountGeneralSection: FC = () => {
 									(item: any) => item.value === accountDetail?.zimbraAccountStatus
 								)}
 								padding={{ right: 'medium' }}
+							/>
+						) : (
+							<></>
+						)}
+					</Row>
+					<Row width="49%" mainAlignment="flex-start">
+						{accountDetail?.zimbraId && localeZone?.length ? (
+							<InheritedSelect
+								label={t('label.language', 'Language')}
+								items={localeZone}
+								accountValue={accountDetail.zimbraPrefLocale}
+								cosValue={cosDetail.zimbraPrefLocale}
+								fromAccount={accSpecificDetail?.zimbraPrefLocale}
+								background="gray5"
+								selectName="zimbraPrefLocale"
+								onChange={onPrefLocaleChange}
+								onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
 							/>
 						) : (
 							<></>
@@ -645,25 +680,30 @@ const EditAccountGeneralSection: FC = () => {
 						)}
 					</Row>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
-						{accountDetail?.zimbraId && localeZone?.length ? (
-							<InheritedSelect
-								label={t('label.language', 'Language')}
-								items={localeZone}
-								accountValue={accountDetail.zimbraPrefLocale}
-								cosValue={cosDetail.zimbraPrefLocale}
-								fromAccount={accSpecificDetail?.zimbraPrefLocale}
-								background="gray5"
-								selectName="zimbraPrefLocale"
-								onChange={onPrefLocaleChange}
-								onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
-							/>
-						) : (
-							<></>
-						)}
-					</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
+					<InheritedInput
+						label={t('label.account_quota_mb', 'Account Quota (MB)')}
+						accountValue={accountQuota}
+						cosValue={
+							cosDetail.zimbraMailQuota ? (cosDetail.zimbraMailQuota / 1048576).toString() : ''
+						}
+						fromAccount={
+							accSpecificDetail.zimbraMailQuota
+								? (accSpecificDetail.zimbraMailQuota / 1048576).toString()
+								: ''
+						}
+						background="gray5"
+						inputName="zimbraMailQuota"
+						onChange={changeAccountQuota}
+						onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
+					/>
 				</Row>
+
+				<Row
+					padding={{ top: 'large', left: 'large' }}
+					width="100%"
+					mainAlignment="space-between"
+				></Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Divider color="gray2" />
