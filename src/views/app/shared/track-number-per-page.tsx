@@ -22,7 +22,7 @@ const TrackNumberPerPage: FC<{
 			<Row padding={{ right: 'small' }}>
 				<Text size="small">{t('label.showing', 'Showing')}</Text>
 			</Row>
-			<Row padding={{ right: 'small' }} width="15%" height="10%">
+			<Row padding={{ right: 'small' }} width="15%" height="auto">
 				<Input
 					readOnly
 					backgroundColor="gray5"

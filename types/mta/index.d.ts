@@ -70,7 +70,7 @@ export type MtaPostTuning = {
 	zimbraMtaPostscreenBareNewlineTTL: string;
 };
 
-export type mtaStats = {
+export type MtaStats = {
 	id: string;
 	serverName: string;
 	deferred: string;
@@ -102,4 +102,25 @@ export type mtaStats = {
 	corrupt: string;
 	active: string;
 	hold: string;
+};
+
+export type MtaMailQueueItem = {
+	id: string;
+	arrivalTime: string;
+	size: string;
+	fromDomain: string;
+	toDomain: string;
+	sender: string;
+	receiver: string;
+	host: string;
+	ip: string;
+	reason: string;
+	filter: string;
+	receiveid: string;
+};
+
+export type MtaMailQueue = {
+	name: string;
+	qi: Array<mtaMailQueueItem>;
+	total: number;
 };

@@ -18,7 +18,7 @@ import moment from 'moment';
 import ListRow from '../../list/list-row';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import { CreateSnackbarType, TRow, mtaStats } from '../../../../types';
+import { CreateSnackbarType, MtaStats, TRow } from '../../../../types';
 import { getAllServerByService } from '../../../services/get-all-servers-service';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
@@ -33,7 +33,7 @@ const MTAStats: FC = () => {
 	const [serverTableRow, setServerTableRow] = useState<Array<TRow>>([]);
 	const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
 	const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
-	const [mailServerStats, setMailServerStats] = useState<Array<mtaStats>>([]);
+	const [mailServerStats, setMailServerStats] = useState<Array<MtaStats>>([]);
 	const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
 	const [showMtaStatDetail, setShowMtaStatDetail] = useState<boolean>(false);
 	const [currentTime, setCurrentTime] = useState<string | Date>('');
@@ -92,7 +92,7 @@ const MTAStats: FC = () => {
 	useMemo(() => {
 		if (mailServerStats.length > 0) {
 			const list: any[] = [];
-			mailServerStats.forEach((item: mtaStats) => {
+			mailServerStats.forEach((item: MtaStats) => {
 				list.push({
 					id: item?.id,
 					columns: [
@@ -182,38 +182,53 @@ const MTAStats: FC = () => {
 		setMailServerStats([]);
 		mtaServerList.forEach((item) => {
 			setRequestInprogress(true);
-			getMailqueueInformation(item?.name).then((data) => {
-				setRequestInprogress(false);
-				if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
-					data?.server.forEach((queueInfo: any) => {
-						setMailServerStats((prev) => [
-							...prev,
-							...[
-								{
-									id: item?.id,
-									serverName: item?.name,
-									active: queueInfo?.queue.find(
-										(info: Record<string, string>) => info?.name === ACTIVE
-									)?.n,
-									corrupt: queueInfo?.queue.find(
-										(info: Record<string, string>) => info?.name === CORRUPT
-									)?.n,
-									deferred: queueInfo?.queue.find(
-										(info: Record<string, string>) => info?.name === DEFERRED
-									)?.n,
-									hold: queueInfo?.queue.find((info: Record<string, string>) => info?.name === HOLD)
-										?.n,
-									incoming: queueInfo?.queue.find(
-										(info: Record<string, string>) => info?.name === INCOMING
-									)?.n
-								}
-							]
-						]);
+			getMailqueueInformation(item?.name)
+				.then((data) => {
+					setRequestInprogress(false);
+					if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
+						data?.server.forEach((queueInfo: any) => {
+							setMailServerStats((prev) => [
+								...prev,
+								...[
+									{
+										id: item?.id,
+										serverName: item?.name,
+										active: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === ACTIVE
+										)?.n,
+										corrupt: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === CORRUPT
+										)?.n,
+										deferred: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === DEFERRED
+										)?.n,
+										hold: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === HOLD
+										)?.n,
+										incoming: queueInfo?.queue.find(
+											(info: Record<string, string>) => info?.name === INCOMING
+										)?.n
+									}
+								]
+							]);
+						});
+					}
+				})
+				.catch((error) => {
+					setRequestInprogress(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error
+							? error?.error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
 					});
-				}
-			});
+				});
 		});
-	}, [mtaServerList]);
+	}, [createSnackbar, mtaServerList, t]);
 
 	useEffect(() => {
 		if (mtaServerList?.length > 0) {
@@ -262,7 +277,7 @@ const MTAStats: FC = () => {
 				flushRequest.push(mailQueueFlushByServer(serverName));
 			}
 		} else {
-			mailServerStats.forEach((item: mtaStats) => {
+			mailServerStats.forEach((item: MtaStats) => {
 				flushRequest.push(mailQueueFlushByServer(item?.serverName));
 			});
 		}
@@ -273,9 +288,9 @@ const MTAStats: FC = () => {
 				.then((response) => Promise.all(response))
 				.then(() => {
 					setFlushRequestInProgress(false);
-					let updatedItem: Array<mtaStats> = [];
+					let updatedItem: Array<MtaStats> = [];
 					if (showMtaStatDetail) {
-						updatedItem = mailServerStats.map((item: mtaStats) => {
+						updatedItem = mailServerStats.map((item: MtaStats) => {
 							if (item?.id === selectedServer[0]) {
 								return {
 									active: '-',
@@ -290,7 +305,7 @@ const MTAStats: FC = () => {
 							return item;
 						});
 					} else {
-						updatedItem = mailServerStats.map((item: mtaStats) => ({
+						updatedItem = mailServerStats.map((item: MtaStats) => ({
 							active: '-',
 							corrupt: '-',
 							deferred: '-',
@@ -315,6 +330,28 @@ const MTAStats: FC = () => {
 		}
 	}, [mailServerStats, mtaServerList, selectedServer, showMtaStatDetail, t, createSnackbar]);
 
+	const updateMailCount = useCallback(
+		(state: MtaStats) => {
+			let updatedItem: Array<MtaStats> = [];
+			updatedItem = mailServerStats.map((item: MtaStats) => {
+				if (item?.id === state?.id) {
+					return {
+						active: state?.active,
+						corrupt: state?.corrupt,
+						deferred: state?.deferred,
+						hold: state?.hold,
+						incoming: state?.incoming,
+						id: item?.id,
+						serverName: state?.serverName
+					};
+				}
+				return item;
+			});
+			setMailServerStats(updatedItem);
+		},
+		[mailServerStats]
+	);
+
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -328,7 +365,7 @@ const MTAStats: FC = () => {
 				<Row padding={{ horizontal: 'small' }}></Row>
 				<Row takeAvailableSpace mainAlignment="flex-start">
 					<Text size="medium" overflow="ellipsis" weight="bold">
-						{t('mta.stats', 'Stats')}
+						{t('mta.queue', 'Queue')}
 					</Text>
 				</Row>
 				<Row></Row>
@@ -496,6 +533,7 @@ const MTAStats: FC = () => {
 								flushQueues={flushQueues}
 								requestInprogress={requestInprogress}
 								flushRequestInProgress={flushRequestInProgress}
+								updateCount={updateMailCount}
 							/>
 						</ModalOverlay>
 					)}
