@@ -76,20 +76,6 @@ const EditAccountGeneralSection: FC = () => {
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
 
-	useEffect(() => {
-		setAccountDetail((prev: AccountType) => ({
-			...prev,
-			changeNameBool: false,
-			isDefaultUserName: true
-		}));
-		setInitAccountDetail((prev: AccountType) => ({
-			...prev,
-			changeNameBool: false,
-			isDefaultUserName: true
-		}));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: objectType = {};
@@ -155,16 +141,8 @@ const EditAccountGeneralSection: FC = () => {
 		},
 		[setAccountDetail]
 	);
-	const changeAccUserNameDetail = useCallback(
-		(e) => {
-			setAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: false }));
-			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setAccountDetail]
-	);
 	const changeUserNaneDetail = useCallback(
 		(e) => {
-			setAccountDetail((prev: AccountType) => ({ ...prev, changeNameBool: true }));
 			setAccountDetail((prev: AccountType) => ({
 				...prev,
 				uid: e.target.value?.replace(/ /g, '')?.toLowerCase()
@@ -175,7 +153,6 @@ const EditAccountGeneralSection: FC = () => {
 
 	const changeAccDisplayName = useCallback(
 		(e) => {
-			setAccountDetail((prev: AccountType) => ({ ...prev, changeDisplayNameBool: true }));
 			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
@@ -314,49 +291,6 @@ const EditAccountGeneralSection: FC = () => {
 		getDomainLists(domainName);
 	}, [domainName, getDomainLists, setAccountDetail, setInitAccountDetail]);
 
-	const combineDisplayName = useMemo(
-		() =>
-			`${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}${
-				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
-			}${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
-		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
-	);
-
-	useEffect(() => {
-		!accountDetail?.changeDisplayNameBool &&
-			!accountDetail?.isDefaultUserName &&
-			accountDetail?.isDefaultUserName !== undefined &&
-			setAccountDetail((prev: AccountType) => ({ ...prev, displayName: combineDisplayName }));
-	}, [
-		accountDetail?.changeDisplayNameBool,
-		combineDisplayName,
-		setAccountDetail,
-		accountDetail?.isDefaultUserName
-	]);
-
-	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
-
-	const combineName = useMemo(() => {
-		const { sn, initials, givenName, changeNameBool, uid, isDefaultUserName } = accountDetail || {};
-
-		if (!changeNameBool && !isDefaultUserName && isDefaultUserName !== undefined) {
-			const userName = [];
-
-			if (givenName) userName.push(getModifiedName(givenName));
-			if (initials) userName.push(head(getModifiedName(initials)));
-			if (sn) userName.push(getModifiedName(sn));
-
-			return userName.join('.');
-		}
-
-		return uid || '';
-	}, [accountDetail]);
-
-	useEffect(() => {
-		!accountDetail?.changeNameBool &&
-			setAccountDetail((prev: AccountType) => ({ ...prev, uid: combineName }));
-	}, [accountDetail?.changeNameBool, combineName, setAccountDetail]);
-
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -374,7 +308,7 @@ const EditAccountGeneralSection: FC = () => {
 						<Input
 							label={t('label.surname', 'Surname')}
 							backgroundColor="gray5"
-							onChange={changeAccUserNameDetail}
+							onChange={changeAccDetail}
 							inputName="sn"
 							defaultValue={accountDetail?.sn || ''}
 							value={accountDetail?.sn || ''}
@@ -384,7 +318,7 @@ const EditAccountGeneralSection: FC = () => {
 						<Input
 							label={t('label.second_name_initials', 'Middle Name Initials')}
 							backgroundColor="gray5"
-							onChange={changeAccUserNameDetail}
+							onChange={changeAccDetail}
 							inputName="initials"
 							defaultValue={accountDetail?.initials || ''}
 							value={accountDetail?.initials || ''}
@@ -392,7 +326,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							onChange={changeAccUserNameDetail}
+							onChange={changeAccDetail}
 							inputName="givenName"
 							label={t('label.person_name', 'Name')}
 							backgroundColor="gray5"
@@ -456,7 +390,7 @@ const EditAccountGeneralSection: FC = () => {
 						label={t('label.viewed_name', 'Viewed Name')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.displayName}
-						value={accountDetail?.displayName || combineDisplayName}
+						value={accountDetail?.displayName}
 						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"
