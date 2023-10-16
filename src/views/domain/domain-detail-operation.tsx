@@ -21,11 +21,11 @@ import {
 	RESTORE_ACCOUNT,
 	RESTORE_DELETED_EMAIL,
 	ACTIVE_SYNC,
-	THEME,
 	SAML,
 	TWO_FACTOR_AUTHENTICATION,
 	DELEGATES,
-	SECURITY_GROUP
+	SECURITY_GROUP,
+	WHITELABEL_SETTINGS
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -101,7 +101,7 @@ const DomainOperations: FC = () => {
 						return <DomainMailboxQuotaSetting />;
 					case TWO_FACTOR_AUTHENTICATION:
 						return <DomainTwoFactorAuthentication />;
-					case THEME:
+					case WHITELABEL_SETTINGS:
 						return <DomainTheme />;
 					case SAML:
 						return <DomainSaml />;

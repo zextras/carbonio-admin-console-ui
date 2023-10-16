@@ -6,7 +6,7 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { THEME, TWO_FACTOR_AUTHENTICATION, DOMAINS } from '../../constants';
+import { TWO_FACTOR_AUTHENTICATION, DOMAINS, WHITELABEL_SETTINGS } from '../../constants';
 import GlobalTheme from './global/global-theme';
 import DomainList from './domain-list/domain-list';
 import GlobalTwoFactorAuthentcation from './global/global-two-factor-auth';
@@ -19,7 +19,7 @@ const GlobalOperations: FC = () => {
 		<>
 			{((): any => {
 				switch (operation) {
-					case THEME:
+					case WHITELABEL_SETTINGS:
 						return <GlobalTheme />;
 					case TWO_FACTOR_AUTHENTICATION:
 						return <GlobalTwoFactorAuthentcation />;
