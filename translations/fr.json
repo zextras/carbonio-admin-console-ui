@@ -100,7 +100,6 @@
             "company_name": "Nom de l'entreprise",
             "customer": "Client",
             "email_buyer": "Acheteur d'email",
-            "emissionDate": "Date d'émission",
             "features": "Autres fonctionnalités",
             "hide": "Masquer",
             "less_info": "Moins d'information",
@@ -124,7 +123,8 @@
             "order_id": "Identifiant de commande",
             "valid": "Valide",
             "not_valid": "Non valide",
-            "license_activated_successfully": "La licence a été activée avec succès"
+            "license_activated_successfully": "La licence a été activée avec succès",
+            "endDate": "Date de fin"
         }
     },
     "label": {
@@ -263,7 +263,7 @@
         "restore_account": "Restaurer le compte",
         "retention_policy": "Règle de conservation",
         "save_and_leave": "Enregistrer et quitter",
-        "search": "Recherche",
+        "search": "Rechercher",
         "secret_key": "Clé secrète",
         "server": "Server",
         "servers": "Serveurs",
@@ -1139,7 +1139,6 @@
         "security_group": "Groupes de sécurité",
         "security_group_name": "Nom du groupe de sécurité",
         "send_notifications_to": "Envoyer les notifications à…",
-        "send_options": "Options d'envoi",
         "set_as_default": "Définir par défaut",
         "subject_name_cname": "Nom du sujet (Cononical Name record - CNAME)",
         "trust_ip": "Autoriser cette IP",
@@ -1176,7 +1175,9 @@
         "this_listcan_receive_email": "Cette liste peut recevoir des Emails",
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "Vous n'avez pas suffisamment de droit d'administration pour voir cette section",
         "click_to_make_the_button_bar_scroll_with_the_page": "Cliquer pour faire défiler la barre d'outils avec la page",
-        "cos_not_included_for_domain_notes": "Il n'y a pas de COS inclus pour ce domaine, veuillez en sélectionner un dans le menu déroulant et cliquer sur \"DUPLIQUER\" ou \"LIER\""
+        "cos_not_included_for_domain_notes": "Il n'y a pas de COS inclus pour ce domaine, veuillez en sélectionner un dans le menu déroulant et cliquer sur \"DUPLIQUER\" ou \"LIER\"",
+        "person_name": "Nom",
+        "stats": "Statistiques"
     },
     "message": {
         "snackbar": {
@@ -1817,10 +1818,8 @@
         "search_here_for_an_account": "Rechercher ici pour un Compte",
         "select_delegate_folder": "Sélectionner les dossiers délégués pouvant être vus",
         "select_mode": "SÉLECTION DU MODE",
-        "send_as_recepients": "Envoyer en tant que (les destinataires verront l'expéditeur {{targetEmail}})",
         "send_mails_only": "Envoyer les emails seulement (pas de droits d'accès aux dossiers)",
         "send_read_mails": "Envoyé et Lire les emails (pas de droits de créer des dossiers ou de gérer les emails)",
-        "send_recepients_see_the_mail": "Envoyer {{right}} (les destinataires verront cet expéditeur {{targetEmail}})",
         "sendin_options": "Options d'envoi",
         "sending_options": "Options d'envoi",
         "set_rights": "DÉFINITION DES DROITS",
@@ -2224,7 +2223,16 @@
         "check_client_host_name": "Vérifier le Hostname du Client",
         "disable_virus_check": "Désactiver la vérification des virus",
         "tolerance_for_spam_blocking": "Tolérance pour le blocage du Spam",
-        "tolerance_for_spam_delivery": "Tolérance pour la livraison de Spam"
+        "tolerance_for_spam_delivery": "Tolérance pour la livraison de Spam",
+        "action": "Action",
+        "all": "Tous",
+        "current_status": "Statut courant",
+        "info": "Info",
+        "interval": "Intervalle",
+        "mail_server": "Serveur email",
+        "queued": "Ajouté(e) dans la queue",
+        "stats": "Statistiques",
+        "status": "Statut"
     },
     "mat": {
         "add_here_any_blocked_extension": "Ajouter ici toutes les Extensions Bloquées"

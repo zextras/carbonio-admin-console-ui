@@ -239,7 +239,6 @@
             "company_name": "Nama Perusahaan",
             "customer": "Pelanggan",
             "email_buyer": "Pembeli Email",
-            "emissionDate": "Tanggal emisi",
             "features": "Fitur lain",
             "hide": "Sembunyikan",
             "less_info": "Lebih Sedikit Informasi",
@@ -263,7 +262,8 @@
             "order_id": "ID Pesanan",
             "valid": "Valid",
             "license_activated_successfully": "Lisensi berhasil diaktifkan",
-            "not_valid": "Tidak Valid"
+            "not_valid": "Tidak Valid",
+            "endDate": "Tanggal selesai"
         }
     },
     "domain": {
@@ -1370,7 +1370,6 @@
         "security_group": "Grup Keamanan",
         "security_group_name": "Nama Grup Keamanan",
         "send_notifications_to": "Kirimkan pemberitahuan ke…",
-        "send_options": "Opsi kirim",
         "set_as_default": "Atur sebagai Default",
         "subject_name_cname": "Nama Subjek (Catatan Nama Kanonik - CNAME)",
         "subject_name_fqdn": "Nama Alt Subjek (Nama Domain Berkualitas Penuh - FQDN)",
@@ -1387,7 +1386,9 @@
         "valid_not_before": "Berlaku mulai (tidak sebelum)",
         "what_to_trust": "Apa yang harus dipercaya?",
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "Anda tidak memiliki hak administrasi yang cukup untuk melihat bagian ini",
-        "please_select_the_measure_unit": "Pilih satuan pengukuran"
+        "please_select_the_measure_unit": "Pilih satuan pengukuran",
+        "person_name": "Nama",
+        "stats": "Statistik"
     },
     "message": {
         "snackbar": {
@@ -1820,11 +1821,9 @@
         "select_delegate_folder": "Pilih folder mana yang bisa dilihat delegasi",
         "select_mode": "PILIH MODE",
         "send_as_behalf": "Kirim Atas Nama (penerima akan menampilkan email pengirim ini {{targetEmail}})",
-        "send_as_recepients": "Kirim sebagai (penerima akan menampilkan email pengirim ini {{targetEmail}})",
         "send_mails_only": "Kirim Email saja (tak ada akses ke folder)",
         "send_read_mails": "Kirim dan Baca Email (tak ada hak untuk membuat folder/mengelola email)",
         "send_read_manage_mails": "Kirim, Baca dan Kelola Email (semua yang di atas)",
-        "send_recepients_see_the_mail": "Kirim {{right}} (penerima akan menampilkan email pengirim ini {{targetEmail}})",
         "sendin_options": "Opsi Kirim",
         "sending_options": "Opsi Kirim",
         "set_rights": "ATUR HAK",
@@ -2235,7 +2234,16 @@
         "check_client_host_name": "Periksa Nama Host Klien",
         "disable_virus_check": "Nonaktifkan Pemeriksaan Virus",
         "tolerance_for_spam_blocking": "Toleransi Pemblokiran Spam",
-        "tolerance_for_spam_delivery": "Toleransi Pengiriman Spam"
+        "tolerance_for_spam_delivery": "Toleransi Pengiriman Spam",
+        "current_status": "Status Saat Ini",
+        "info": "Info",
+        "interval": "Jarak",
+        "mail_server": "Server Email",
+        "queued": "Diantrekan",
+        "action": "Tindakan",
+        "all": "Semua",
+        "stats": "Statistik",
+        "status": "Status"
     },
     "mat": {
         "add_here_any_blocked_extension": "Tambahkan di sini Ekstensi yang Diblokir"

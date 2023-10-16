@@ -842,21 +842,10 @@ const DomainGeneralSettings: FC = () => {
 										readOnly
 									/>
 								</Container>
-							</ListRow>
-
-							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
-										backgroundColor="gray6"
-										readOnly
-									/>
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.creation_date', 'Creation Date')}
-										value={domainCreationDate}
 										backgroundColor="gray6"
 										readOnly
 									/>
@@ -877,16 +866,15 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
-											'label.max_mainbox_quota_for_the_domain_in_bytes',
-											'Max mailbox quota for the domain (bytes) (0=unlimited)'
-										)}
-										value={zimbraMailDomainQuota}
+										label={t('label.creation_date', 'Creation Date')}
+										value={domainCreationDate}
 										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
 							</ListRow>
+
+							<ListRow></ListRow>
 
 							<ListRow>
 								<Container padding={{ all: 'small' }}>

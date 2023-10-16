@@ -44,7 +44,8 @@
         "destroy_account": "حذف",
         "username": "اسم المستخدم",
         "general_lbl": "عام",
-        "status": "الحالة"
+        "status": "الحالة",
+        "person_name": "الاسم"
     },
     "account_details": {
         "Chats": "دردشات",
@@ -77,7 +78,8 @@
         }
     },
     "mta": {
-        "add": "إضافة"
+        "add": "إضافة",
+        "status": "الحالة"
     },
     "backup": {
         "general": "عام"

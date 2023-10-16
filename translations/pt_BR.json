@@ -239,7 +239,6 @@
             "company_name": "Organização",
             "customer": "Cliente",
             "email_buyer": "E-mail do Comprador",
-            "emissionDate": "Data de Emissão",
             "features": "Outros recursos",
             "hide": "Ocultar",
             "less_info": "Menos Informação",
@@ -263,7 +262,8 @@
             "order_id": "Nº de licença",
             "valid": "Válida",
             "license_activated_successfully": "Licença ativada com sucesso",
-            "not_valid": "Não é válida"
+            "not_valid": "Não é válida",
+            "endDate": "Data final"
         }
     },
     "domain": {
@@ -1339,7 +1339,7 @@
         "format": "Formato",
         "enduser_logout_redirect_url": "Ao fazer logout, redirigir ao usuario para (URL)",
         "external_server_needs_authentication": "O servidor externo necessita autenticação",
-        "found_check_the_text_and_try_again": "Não encontrado - verifique o texto e tente de novo",
+        "found_check_the_text_and_try_again": "Não encontrado - verifique o texto e tente novamente",
         "helpdesk": "Helpdesk",
         "gal_successfully_re_synced": "GAL ressincronizada corretamente",
         "generate_certifiacte": "Gerar certificado",
@@ -1387,7 +1387,8 @@
         "valid_not_after": "Válido até (não depois)",
         "valid_not_before": "Válido a partir de (não antes)",
         "what_to_trust": "Em que confiar?",
-        "send_options": "Opções de envio"
+        "stats": "Estatísticas",
+        "person_name": "Name"
     },
     "message": {
         "snackbar": {
@@ -1832,9 +1833,7 @@
         "where_to_store_sent_emails": "Onde guardar os emails enviados?",
         "who_will_be_delegates": "Quem serão os delegados?",
         "add_user_on_delegates_list": "Adicionar usuário à lista de delegados",
-        "send_recepients_see_the_mail": "Enviar {{right}} (os destinatários verão {{targetEmail}} como remetente)",
         "ADD": "ADICIONAR",
-        "send_as_recepients": "Enviar como (os destinatários verão {{targetEmail}} como remetente)",
         "send_as_behalf": "Enviar em nome de (os destinatários verão o endereço {{targetEmail}} como remetente)",
         "send_check": "Enviar",
         "services": "Serviços",
@@ -2236,7 +2235,16 @@
         "check_client_host_name": "Verificar o nome do host do cliente",
         "disable_virus_check": "Desativar a verificação de vírus",
         "tolerance_for_spam_blocking": "Tolerância para bloqueio de spam",
-        "tolerance_for_spam_delivery": "Tolerância para entrega de spam"
+        "tolerance_for_spam_delivery": "Tolerância para entrega de spam",
+        "stats": "Estatísticas",
+        "status": "Status",
+        "action": "Ação",
+        "all": "Tudo",
+        "current_status": "Estado atual",
+        "info": "Informação",
+        "interval": "Intervalo",
+        "mail_server": "Servidor de email",
+        "queued": "Em fila"
     },
     "mat": {
         "add_here_any_blocked_extension": "Adicionar extensões bloqueadas"

@@ -14,7 +14,8 @@ import {
 	OUTBOUND_FLOW,
 	ADVANCED,
 	STATS,
-	POSTSCREEN_TUNING
+	POSTSCREEN_TUNING,
+	QUEUE
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
@@ -65,8 +66,8 @@ const MTAListPanel: FC = () => {
 				isSelected: true
 			},
 			{
-				id: STATS,
-				name: t('mta.stats', 'Stats'),
+				id: QUEUE,
+				name: t('mta.queue', 'Queue'),
 				isSelected: true
 			}
 		],
