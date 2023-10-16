@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -70,23 +70,8 @@ const CreateDomain: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const history = useHistory();
-	const galModes = useMemo(
-		() => [
-			{
-				label: t('label.internal', 'Internal'),
-				value: GAL_MODE.INTERNAL
-			},
-			{
-				label: t('label.external', 'External'),
-				value: GAL_MODE.EXTERNAL
-			},
-			{
-				label: t('label.both', 'Both'),
-				value: GAL_MODE.BOTH
-			}
-		],
-		[t]
-	);
+	const setDomain = useDomainStore((state) => state.setDomain);
+	const setDomainView = useDomainStore((state) => state.setDomainView);
 	const setIsDomainSupportDelegatedAdmin = useDomainStore(
 		(state) => state.setIsDomainSupportDelegatedAdmin
 	);
@@ -189,7 +174,12 @@ const CreateDomain: FC = () => {
 	const routeToDomain = (resp: DomainResponse): void => {
 		const domainId = resp?.domain[0]?.id;
 		if (domainId) {
-			replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
+			setDomain({
+				a: resp?.domain[0]?.a,
+				id: domainId,
+				name: resp?.domain[0]?.name
+			});
+			setDomainView(GENERAL_SETTINGS);
 		} else {
 			replaceHistory(`/`);
 		}
