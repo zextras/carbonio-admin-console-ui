@@ -338,3 +338,4 @@ export const RELEASE = 'release';
 export const REQUEUE = 'requeue';
 export const DELETE = 'delete';
 export const QUEUE = 'queue';
+export const DELEGATES_DOMAIN_ADMINS = 'delegates_domain_admins';
