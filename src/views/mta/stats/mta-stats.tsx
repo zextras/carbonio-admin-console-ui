@@ -409,7 +409,7 @@ const MTAStats: FC = () => {
 							<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 								<Text size="small" overflow="ellipsis">
 									&nbsp;
-									{currentTime === '' ? '-' : moment(currentTime).format('HH:mm:ss MM dddd YYYY')}
+									{currentTime === '' ? '-' : moment(currentTime).format('HH:mm:ss DD dddd YYYY')}
 								</Text>
 							</Container>
 						</Container>
