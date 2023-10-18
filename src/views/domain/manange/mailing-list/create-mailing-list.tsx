@@ -373,7 +373,7 @@ const CreateMailingList: FC<{
 
 	return (
 		<>
-			{!isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"

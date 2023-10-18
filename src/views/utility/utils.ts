@@ -942,28 +942,7 @@ export const delegateDomainHeaders = (
 	{
 		id: 'id',
 		label: t('label.account', 'Account'),
-		width: '20%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'name',
-		label: t('label.access_control_lists', 'Rights (Access Control Lists)'),
-		width: '30%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'storeType',
-		label: t('label.domain', 'Domain'),
-		width: '20%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'path',
-		label: t('label.description', 'Description'),
-		width: '40%',
+		width: '100%',
 		bold: true,
 		align: 'left'
 	}

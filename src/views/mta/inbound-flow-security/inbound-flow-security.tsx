@@ -636,6 +636,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							onChange={onBlockExtensionChange}
 							disabled={!allowSetMTA}
 							ChipComponent={CustomChip}
+							maxChips={null}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start" width="30%">

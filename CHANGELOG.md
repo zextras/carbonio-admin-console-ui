@@ -2,6 +2,73 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.32](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.31...v0.9.32) (2023-10-10)
+
+### [0.9.31](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.30...v0.9.31) (2023-09-29)
+
+
+### Features
+
+* ac-473: track total iteam each page display ([33ce032](https://github.com/zextras/carbonio-admin-console-ui/commit/33ce032e5877572561879a4c639f579f173edc03))
+* ac-488: mta logging advance functionality added ([11caac6](https://github.com/zextras/carbonio-admin-console-ui/commit/11caac65cbc3ff63af6b8858df854f0008e79e06))
+* ac-728: mail queue flush server added ([884094c](https://github.com/zextras/carbonio-admin-console-ui/commit/884094ca1c49b3c04fd69c97163096a80cedbdbf))
+* ac-728: mta queue status and request cache flush implement ([7d4042c](https://github.com/zextras/carbonio-admin-console-ui/commit/7d4042ca29886e28b75c1609aa2730abc113c6b7))
+* added feature of logging uuid to matomo ([01576a0](https://github.com/zextras/carbonio-admin-console-ui/commit/01576a027e0024f395abbe55a37543f1e6f0e3c9))
+* allow admin to manage both description and notes attribute ([a88eb1e](https://github.com/zextras/carbonio-admin-console-ui/commit/a88eb1e54f0bab1ff31b8c13a27cbface130431c))
+* changed matomo url ([670f453](https://github.com/zextras/carbonio-admin-console-ui/commit/670f453ada3829a2fd40854cecb0aef42fa77d23))
+* loader for api call ([46c1fd7](https://github.com/zextras/carbonio-admin-console-ui/commit/46c1fd7a9443b898384c65e4f57736f88e3722e4))
+* mapping value to design fields ([2f40464](https://github.com/zextras/carbonio-admin-console-ui/commit/2f40464c38966169381b0a9cc65d5df5bc41fdb1))
+* mta postscreen save attribute functionality added ([6387e73](https://github.com/zextras/carbonio-admin-console-ui/commit/6387e736820ae052679bce5959682b9957ae9491))
+* postscreen action tuning added ([825f944](https://github.com/zextras/carbonio-admin-console-ui/commit/825f944f6f8a2719b216c823e0ee8d8a9fec5fae))
+
+
+### Bug Fixes
+
+* ac-470: hsm policy error handling added ([b995de7](https://github.com/zextras/carbonio-admin-console-ui/commit/b995de79971cba8e65dc9bc6aa1fc14ef2bd62d6))
+* ac-696: fix add setting option in cos/account ([#500](https://github.com/zextras/carbonio-admin-console-ui/issues/500)) ([a407288](https://github.com/zextras/carbonio-admin-console-ui/commit/a4072886f98e94168c0e80a7279aa904d09481f1))
+* ac-758: duplicate virus extension added in common blocked extension ([5c5e1af](https://github.com/zextras/carbonio-admin-console-ui/commit/5c5e1af27a163b73e85ce0cf7de759656cf6923a))
+* ac-763: fix spam prefix subject tag issue ([#485](https://github.com/zextras/carbonio-admin-console-ui/issues/485)) ([c593768](https://github.com/zextras/carbonio-admin-console-ui/commit/c593768964e989bdb8b8727a517a5e6e56ae9119))
+* ac:740: error handling in run hsm policy only ([e52bc97](https://github.com/zextras/carbonio-admin-console-ui/commit/e52bc97651f8afb3838e5ac4bd1a79f004e6b58c))
+* account detail view update after edit accout ([94fc2dd](https://github.com/zextras/carbonio-admin-console-ui/commit/94fc2dd22672e6ccd855734bda6ee3734ab96596))
+* change px to rem in margin ([493ca0b](https://github.com/zextras/carbonio-admin-console-ui/commit/493ca0b062024fd311ac3837a781a0c72434fd73))
+* changed px to rem and updated media query ([ee2fe61](https://github.com/zextras/carbonio-admin-console-ui/commit/ee2fe616b46ab9c5f3f2a81f8c036cf82729bfbd))
+* fixed from backup module icon ([17bd9b5](https://github.com/zextras/carbonio-admin-console-ui/commit/17bd9b51cbf2fe5a0e227822a0fe840b96e81792))
+* fixed password not emptying issue ([2159262](https://github.com/zextras/carbonio-admin-console-ui/commit/21592621436c06d9afaa3cd8a3e0713ae8bc9e91))
+* fixed removal of add and remove buttons on delegates ([300b1aa](https://github.com/zextras/carbonio-admin-console-ui/commit/300b1aa6a973e05dcc41681cc300b113e6769d3c))
+* matomo variables converted to constant ([2cc2722](https://github.com/zextras/carbonio-admin-console-ui/commit/2cc272209802e3d0b097237a77a595ba1d936dbc))
+* removed href to tracking urls on all logs ([557fd73](https://github.com/zextras/carbonio-admin-console-ui/commit/557fd73613caf4f1a7b31ca88e09de18b12dd1c8))
+* removed remove buttons from delegates ([ba40d35](https://github.com/zextras/carbonio-admin-console-ui/commit/ba40d3556f7a46895cf6cee010c7673359dc8a5d))
+* removed unused string ([#517](https://github.com/zextras/carbonio-admin-console-ui/issues/517)) ([d7ddd17](https://github.com/zextras/carbonio-admin-console-ui/commit/d7ddd17d0334d993ec0ddf2529855450e892020d))
+* removed unused translation key ([2d57516](https://github.com/zextras/carbonio-admin-console-ui/commit/2d5751649ca82268154530c854c9e5115e3c8470))
+* resolve conflict ([6169ed8](https://github.com/zextras/carbonio-admin-console-ui/commit/6169ed834d5881d6a30b5ea6440a383486bd972a))
+* resolve conflict ([31a10ba](https://github.com/zextras/carbonio-admin-console-ui/commit/31a10baecd3c27cb621a5dd3a7d5add1956e548d))
+* run all hsm policy error handling added ([c65c4bf](https://github.com/zextras/carbonio-admin-console-ui/commit/c65c4bf4207e6ce6329f6a15bceca9aa6a8bc5c8))
+* subscription name does not display properly ([893fa5d](https://github.com/zextras/carbonio-admin-console-ui/commit/893fa5da6364fde25c9b827c09403a28102a8700))
+* translation updated for name for every module ([5a107af](https://github.com/zextras/carbonio-admin-console-ui/commit/5a107afad645af40467f8a8a7f1df72cb07eab06))
+* typo on recipient and qualified terms ([#492](https://github.com/zextras/carbonio-admin-console-ui/issues/492)) ([127628f](https://github.com/zextras/carbonio-admin-console-ui/commit/127628fcb1c170ce085f37fa704d682cfa8f1dbb))
+
+### [0.9.30](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.29...v0.9.30) (2023-09-29)
+
+
+### Bug Fixes
+
+* ac-797: backup module not open in admin ui ([36bbbbc](https://github.com/zextras/carbonio-admin-console-ui/commit/36bbbbc575b1cc7d77dded0ad8d3dcb8a7e2dcd9))
+* on backup save getting error ([487a90a](https://github.com/zextras/carbonio-admin-console-ui/commit/487a90a3e642dff984013547b2f6048a231731e0))
+
+### [0.9.29](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.28...v0.9.29) (2023-09-22)
+
+
+### Bug Fixes
+
+* enabled delegates and added list of delegate account ([c2a3857](https://github.com/zextras/carbonio-admin-console-ui/commit/c2a38577e996dcb65ae85989b9b95faf8680677f))
+
+### [0.9.28](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.27...v0.9.28) (2023-09-21)
+
+
+### Bug Fixes
+
+* commented delegates to avoid using bad feature ([c47cf7a](https://github.com/zextras/carbonio-admin-console-ui/commit/c47cf7a0e4c07065185b56fdda7f88738cc89815))
+
 ### [0.9.27](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.26...v0.9.27) (2023-09-12)
 
 ### [0.9.26](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.25...v0.9.26) (2023-08-31)

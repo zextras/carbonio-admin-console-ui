@@ -52,6 +52,7 @@ import { deleteDistributionList } from '../../../../services/delete-distribution
 import Displayer from '../../../components/displayer';
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 import OverlayDivision from '../../../components/overlayDivision';
+import Textarea from '../../../components/textarea';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -102,6 +103,7 @@ const EditMailingListView: FC<any> = ({
 	const [zimbraMailAlias, setZimbraMailAlias] = useState<any>([]);
 	const [dlm, setDlm] = useState<any[]>([]);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const [zimbraCreateTimestamp, setZimbraCreateTimestamp] = useState<string>('');
 	const [dlId, setdlId] = useState<string>('');
 	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
@@ -384,6 +386,24 @@ const EditMailingListView: FC<any> = ({
 								zimbraNotes: ''
 							}));
 						}
+
+						const _description = distributionListMembers?.a?.find(
+							(a: any) => a?.n === 'description'
+						)?._content;
+
+						setDescription(_description || '');
+						if (_description) {
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								description: _description
+							}));
+						} else {
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								description: ''
+							}));
+						}
+
 						const _zimbraDistributionListSendShareMessageToNewMembers =
 							distributionListMembers?.a?.find(
 								(a: any) => a?.n === 'zimbraDistributionListSendShareMessageToNewMembers'
@@ -865,6 +885,7 @@ const EditMailingListView: FC<any> = ({
 			? (latestData.dlMembershipList = dlMembershipList)
 			: (latestData.dlMembershipList = []);
 		zimbraNotes ? (latestData.zimbraNotes = zimbraNotes) : (latestData.zimbraNotes = '');
+		description ? (latestData.description = description) : (latestData.description = '');
 		zimbraDistributionListSendShareMessageToNewMembers
 			? (latestData.zimbraDistributionListSendShareMessageToNewMembers = true)
 			: (latestData.zimbraDistributionListSendShareMessageToNewMember = false);
@@ -896,6 +917,7 @@ const EditMailingListView: FC<any> = ({
 			? setDlMembershipList(previousDetail?.dlMembershipList)
 			: setDlMembershipList([]);
 		previousDetail?.zimbraNotes ? setZimbraNotes(previousDetail?.zimbraNotes) : setZimbraNotes('');
+		previousDetail?.description ? setDescription(previousDetail?.description) : setDescription('');
 		previousDetail?.zimbraDistributionListSendShareMessageToNewMembers
 			? setZimbraDistributionListSendShareMessageToNewMembers(true)
 			: setZimbraDistributionListSendShareMessageToNewMembers(false);
@@ -990,8 +1012,12 @@ const EditMailingListView: FC<any> = ({
 		});
 
 		attributes.push({
-			n: 'description',
+			n: 'zimbraNotes',
 			_content: zimbraNotes
+		});
+		attributes.push({
+			n: 'description',
+			_content: description
 		});
 		attributes.push({
 			n: 'zimbraMailStatus',
@@ -1015,11 +1041,6 @@ const EditMailingListView: FC<any> = ({
 				_content: memberURL
 			});
 		}
-
-		attributes.push({
-			n: 'zimbraNotes',
-			_content: zimbraNotes
-		});
 
 		request.push(modifyDistributionList(selectedMailingList?.id, attributes));
 		if (
@@ -1350,6 +1371,12 @@ const EditMailingListView: FC<any> = ({
 			setIsDirty(true);
 		}
 	}, [previousDetail?.zimbraNotes, zimbraNotes]);
+
+	useEffect(() => {
+		if (previousDetail?.description !== undefined && previousDetail?.description !== description) {
+			setIsDirty(true);
+		}
+	}, [previousDetail?.description, description]);
 
 	useEffect(() => {
 		if (
@@ -1961,7 +1988,10 @@ const EditMailingListView: FC<any> = ({
 							/>
 						</Container>
 					</ListRow>
-					<Container height="fit" padding={{ left: 'small', top: 'small', right: 'small' }}>
+					<Container
+						height="fit"
+						padding={{ left: 'small', top: 'large', right: 'small', bottom: 'small' }}
+					>
 						<ManageAliases
 							listAliases={zimbraMailAlias}
 							setListAliases={setZimbraMailAlias}
@@ -2072,11 +2102,28 @@ const EditMailingListView: FC<any> = ({
 					<ListRow padding={{ all: 'small' }}>
 						<Container padding={{ bottom: 'medium' }}>
 							<Input
-								value={zimbraNotes}
+								value={description}
 								label={t(
 									'label.note_label',
 									'Write something that will easily make you remember this element'
 								)}
+								backgroundColor="gray5"
+								onChange={(e: any): any => {
+									setDescription(e.target.value);
+								}}
+							/>
+						</Container>
+					</ListRow>
+					<Row padding={{ top: 'large' }}>
+						<Text size="medium" weight="bold" color="gray0">
+							{t('label.notes', 'Notes')}
+						</Text>
+					</Row>
+					<ListRow padding={{ all: 'small' }}>
+						<Container padding={{ bottom: 'medium' }}>
+							<Textarea
+								value={zimbraNotes}
+								label={t('label.notes', 'Notes')}
 								backgroundColor="gray5"
 								onChange={(e: any): any => {
 									setZimbraNotes(e.target.value);
@@ -2248,7 +2295,8 @@ const EditMailingListView: FC<any> = ({
 							</Container>
 						)}
 					</ListRow>
-
+					{/* TODO: (AC-739) uncomment once feature avaiable in IRIS */
+					/*
 					<Row padding={{ bottom: 'medium' }}>
 						<Text weight="bold" color="gray0">
 							{t('label.owners_settings_lbl', 'Owners’ Settings')}
@@ -2404,7 +2452,7 @@ const EditMailingListView: FC<any> = ({
 							<Divider />
 						</Container>
 					</Row>
-
+				*/}
 					<ListRow padding={{ all: 'small' }}>
 						<Container>
 							<Select
@@ -2427,13 +2475,14 @@ const EditMailingListView: FC<any> = ({
 							background="gray6"
 							height="58px"
 						>
-							<Row
-								orientation="horizontal"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								width="100%"
-							>
-								<Row mainAlignment="flex-start" width="57%" crossAlignment="flex-start">
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									orientation="horizontal"
+									padding={{ top: 'large', right: 'small' }}
+									width="100%"
+								>
 									<DropDownInput
 										items={grantItems}
 										inputLabel={t(
@@ -2448,33 +2497,40 @@ const EditMailingListView: FC<any> = ({
 										isCustomIcon={false}
 										inputDisabled={grantType?.value !== EMAIL}
 									/>
-								</Row>
-								<Row width="43%" mainAlignment="flex-start" crossAlignment="flex-start">
-									<Padding left="large" right="large">
-										<Button
-											type="outlined"
-											label={t('label.add', 'Add')}
-											color="primary"
-											icon="PlusOutline"
-											iconPlacement="right"
-											onClick={onAddGrantEmail}
-											size="extralarge"
-											disabled={grantEmailItem === ''}
-										/>
-									</Padding>
-
+								</Container>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="center"
+									orientation="horizontal"
+									width="18%"
+									padding={{ top: 'large' }}
+								>
+									<Button
+										type="outlined"
+										label={t('label.add', 'Add')}
+										color="primary"
+										onClick={onAddGrantEmail}
+										size="extralarge"
+										disabled={grantEmailItem === ''}
+									/>
+								</Container>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="center"
+									orientation="horizontal"
+									padding={{ top: 'large' }}
+									width="30%"
+								>
 									<Button
 										type="outlined"
 										label={t('label.delete', 'Delete')}
 										color="error"
-										icon="Trash2Outline"
-										iconPlacement="right"
 										size="extralarge"
 										onClick={onDeleteFromGrantEmail}
 										disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
 									/>
-								</Row>
-							</Row>
+								</Container>
+							</ListRow>
 						</Container>
 					</ListRow>
 

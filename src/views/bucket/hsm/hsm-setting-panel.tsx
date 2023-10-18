@@ -185,65 +185,63 @@ const HSMsettingPanel: FC = () => {
 			const serv = data?.servers;
 			if (serv && serv.length > 0) {
 				const olderValues: any = {};
-				serverList.forEach((item: any) => {
-					const id = item?.id;
-					const selectedServer = serv.find((sItem: any) => sItem[id]);
-					if (selectedServer && selectedServer[id]) {
-						const values = selectedServer[id];
-						if (values) {
-							const attributes = values?.ZxPowerstore?.attributes;
-							if (attributes) {
-								if (attributes?.powerstoreMoveScheduler) {
-									const schedulerEnabled =
-										attributes?.powerstoreMoveScheduler?.value?.['cron-enabled'];
-									if (schedulerEnabled) {
-										setIsPowerstoreMoveSchedulerEnabled(true);
-										olderValues.isPowerstoreMoveSchedulerEnabled = true;
-									} else {
-										setIsPowerstoreMoveSchedulerEnabled(false);
-										olderValues.isPowerstoreMoveSchedulerEnabled = false;
-									}
-
-									const schedulePattern =
-										attributes?.powerstoreMoveScheduler?.value?.['cron-pattern'];
-									if (schedulePattern) {
-										setPowerstoreMoveSchedulerValue(schedulePattern);
-										olderValues.powerstoreMoveSchedulerValue = schedulePattern;
-									} else {
-										setPowerstoreMoveSchedulerValue('');
-										olderValues.powerstoreMoveSchedulerValue = '';
-									}
-								}
-								if (attributes?.ZxPowerstore_SpaceThreshold) {
-									const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
-									if (spaceThreshold) {
-										setPowerstoreSpaceThreshold(spaceThreshold);
-										olderValues.powerstoreSpaceThreshold = spaceThreshold;
-									} else {
-										setPowerstoreSpaceThreshold(0);
-										olderValues.powerstoreSpaceThreshold = 0;
-									}
+				const object: Array<unknown> = Object.values(serv).map((i: any) => Object.values(i)[0]);
+				const selectedServer = object.find((sItem: any) => sItem.name === server);
+				if (selectedServer) {
+					const values: Record<string, any> = selectedServer;
+					if (values) {
+						const attributes = values?.ZxPowerstore?.attributes;
+						if (attributes) {
+							if (attributes?.powerstoreMoveScheduler) {
+								const schedulerEnabled =
+									attributes?.powerstoreMoveScheduler?.value?.['cron-enabled'];
+								if (schedulerEnabled) {
+									setIsPowerstoreMoveSchedulerEnabled(true);
+									olderValues.isPowerstoreMoveSchedulerEnabled = true;
+								} else {
+									setIsPowerstoreMoveSchedulerEnabled(false);
+									olderValues.isPowerstoreMoveSchedulerEnabled = false;
 								}
 
-								if (attributes?.deduplicateAfterScheduledMoveBlobs) {
-									const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
-									if (duplicate?.value) {
-										setDeduplicateAfterScheduledMoveBlobs(true);
-										olderValues.deduplicateAfterScheduledMoveBlobs = true;
-									} else {
-										setDeduplicateAfterScheduledMoveBlobs(false);
-										olderValues.deduplicateAfterScheduledMoveBlobs = false;
-									}
+								const schedulePattern =
+									attributes?.powerstoreMoveScheduler?.value?.['cron-pattern'];
+								if (schedulePattern) {
+									setPowerstoreMoveSchedulerValue(schedulePattern);
+									olderValues.powerstoreMoveSchedulerValue = schedulePattern;
+								} else {
+									setPowerstoreMoveSchedulerValue('');
+									olderValues.powerstoreMoveSchedulerValue = '';
+								}
+							}
+							if (attributes?.ZxPowerstore_SpaceThreshold) {
+								const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
+								if (spaceThreshold) {
+									setPowerstoreSpaceThreshold(spaceThreshold);
+									olderValues.powerstoreSpaceThreshold = spaceThreshold;
+								} else {
+									setPowerstoreSpaceThreshold(0);
+									olderValues.powerstoreSpaceThreshold = 0;
+								}
+							}
+
+							if (attributes?.deduplicateAfterScheduledMoveBlobs) {
+								const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
+								if (duplicate?.value) {
+									setDeduplicateAfterScheduledMoveBlobs(true);
+									olderValues.deduplicateAfterScheduledMoveBlobs = true;
+								} else {
+									setDeduplicateAfterScheduledMoveBlobs(false);
+									olderValues.deduplicateAfterScheduledMoveBlobs = false;
 								}
 							}
 						}
 					}
-				});
+				}
 				setOldValues(olderValues);
 				setIsDirty(false);
 			}
 		});
-	}, [serverList]);
+	}, [server]);
 
 	const getAllVolumes = useCallback(() => {
 		const serverId = serverList.find((item: any) => item?.name === server);
@@ -549,6 +547,19 @@ const HSMsettingPanel: FC = () => {
 									replace: true
 								});
 							}
+						} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
+							setIsEditSaveInProgress(false);
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: t(
+									'label.storage_hsm_not_licensed',
+									'Cannot complete operation: storages_hsm not licensed.'
+								),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
 						}
 					}
 				})
@@ -589,6 +600,19 @@ const HSMsettingPanel: FC = () => {
 								key: 'success',
 								type: 'success',
 								label: t('hsm.policy_is_correctly_running', 'The policy is correctly running'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
+							setIsEditSaveInProgress(false);
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: t(
+									'label.storage_hsm_not_licensed',
+									'Cannot complete operation: storages_hsm not licensed.'
+								),
 								autoHideTimeout: 3000,
 								hideButton: true,
 								replace: true
@@ -640,6 +664,19 @@ const HSMsettingPanel: FC = () => {
 							key: 'success',
 							type: 'success',
 							label: t('hsm.policies_are_running', 'The HSM Policies are running'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
+						setIsEditSaveInProgress(false);
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: t(
+								'label.storage_hsm_not_licensed',
+								'Cannot complete operation: storages_hsm not licensed.'
+							),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true

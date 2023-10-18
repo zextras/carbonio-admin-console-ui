@@ -982,7 +982,7 @@ const EditAccountDelegatesSection: FC = () => {
 								padding={{ top: 'large', bottom: 'large' }}
 							>
 								<Text size="small" color="gray0" weight="bold">
-									{t('label.send_options', 'Send options')}
+									{t('label.sending_options', 'Send options')}
 								</Text>
 							</Row>
 							<Row width="25%" mainAlignment="flex-start">

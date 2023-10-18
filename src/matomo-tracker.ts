@@ -27,6 +27,7 @@ export default class MatomoTracker {
 	trackPageView(pageName: string): void {
 		this.matomoInstance.trackPageView({
 			documentTitle: pageName,
+			href: '',
 			customDimensions: [
 				{
 					id: 3,
@@ -38,6 +39,7 @@ export default class MatomoTracker {
 
 	trackEvent(category: string, action: string): void {
 		this.matomoInstance.trackEvent({
+			href: '',
 			category,
 			action
 		});

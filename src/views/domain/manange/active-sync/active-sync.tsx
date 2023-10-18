@@ -56,6 +56,7 @@ const ActiveSync: FC = () => {
 	const [refreshDeviceList, setRefreshDeviceList] = useState<boolean>(false);
 	const [searchString, setSearchString] = useState<string>('');
 	const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>([]);
+	const [hasError, setHasError] = useState<boolean>(false);
 
 	const headers: any[] = useMemo(
 		() => [
@@ -139,6 +140,7 @@ const ActiveSync: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				setHasError(true);
 			});
 	}, [t, createSnackbar]);
 
@@ -312,7 +314,7 @@ const ActiveSync: FC = () => {
 					<Row mainAlignment="flex-start" width="100%" wrap="nowrap">
 						<Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
 							<Input
-								disabled={allDeviceRow.length === 0 && searchString.length === 0}
+								disabled={allDeviceRow.length === 0 && searchString.length === 0 && !hasError}
 								label={t(
 									'label.filter_by_device_type_account',
 									'Filter by device type, account, status'

@@ -21,7 +21,7 @@ import {
 	Padding
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import { debounce, map } from 'lodash';
+import { debounce, head, map } from 'lodash';
 import styled from 'styled-components';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
@@ -35,6 +35,8 @@ import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { objectType, Attribute } from '../../../../../../types';
 import DropDownInput from '../../../../components/dropDownInput';
 import CustomChip from '../../../../components/customChip';
+import Textarea from '../../../../components/textarea';
+import InheritedInput from './inherited-components/inherited-input';
 
 const SelectItem = styled(Row)``;
 
@@ -74,6 +76,18 @@ const EditAccountGeneralSection: FC = () => {
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
+	const [accountQuota, setAccountQuota] = useState('');
+
+	useEffect(() => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, changeNameBool: false }));
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
+	useEffect(() => {
+		setAccountQuota(
+			accountDetail.zimbraMailQuota ? (accountDetail.zimbraMailQuota / 1048576).toString() : ''
+		);
+	}, [accountDetail?.zimbraMailQuota]);
 
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -101,6 +115,16 @@ const EditAccountGeneralSection: FC = () => {
 			}
 		});
 	}, []);
+
+	const changeAccountQuota = useCallback(
+		(e) => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[e.target.name]: (Number(e.target.value) * 1048576).toString()
+			}));
+		},
+		[setAccountDetail]
+	);
 
 	const selectedDomain = useCallback(
 		(domain: string) => {
@@ -142,10 +166,19 @@ const EditAccountGeneralSection: FC = () => {
 	);
 	const changeUserNaneDetail = useCallback(
 		(e) => {
+			setAccountDetail((prev: AccountType) => ({ ...prev, changeNameBool: true }));
 			setAccountDetail((prev: AccountType) => ({
 				...prev,
 				uid: e.target.value?.replace(/ /g, '')?.toLowerCase()
 			}));
+		},
+		[setAccountDetail]
+	);
+
+	const changeAccDisplayName = useCallback(
+		(e) => {
+			setAccountDetail((prev: AccountType) => ({ ...prev, changeDisplayNameBool: true }));
+			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
@@ -283,6 +316,42 @@ const EditAccountGeneralSection: FC = () => {
 		getDomainLists(domainName);
 	}, [domainName, getDomainLists, setAccountDetail, setInitAccountDetail]);
 
+	const combineDisplayName = useMemo(
+		() =>
+			`${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}${
+				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
+			}${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}`.trim(),
+		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
+	);
+
+	useEffect(() => {
+		!accountDetail?.changeDisplayNameBool &&
+			setAccountDetail((prev: AccountType) => ({ ...prev, displayName: combineDisplayName }));
+	}, [accountDetail?.changeDisplayNameBool, combineDisplayName, setAccountDetail]);
+
+	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+
+	const combineName = useMemo(() => {
+		const { sn, initials, givenName, changeNameBool, uid } = accountDetail || {};
+
+		if (!changeNameBool) {
+			const userName = [];
+
+			if (sn) userName.push(getModifiedName(sn));
+			if (initials) userName.push(head(getModifiedName(initials)));
+			if (givenName) userName.push(getModifiedName(givenName));
+
+			return userName.join('.');
+		}
+
+		return uid || '';
+	}, [accountDetail]);
+
+	useEffect(() => {
+		!accountDetail?.changeNameBool &&
+			setAccountDetail((prev: AccountType) => ({ ...prev, uid: combineName }));
+	}, [accountDetail?.changeNameBool, combineName, setAccountDetail]);
+
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -382,8 +451,8 @@ const EditAccountGeneralSection: FC = () => {
 						label={t('label.viewed_name', 'Viewed Name')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.displayName}
-						value={accountDetail?.displayName}
-						onChange={changeAccDetail}
+						value={accountDetail?.displayName || combineDisplayName}
+						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"
 						autoComplete="new-password"
@@ -544,7 +613,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
@@ -558,6 +627,23 @@ const EditAccountGeneralSection: FC = () => {
 									(item: any) => item.value === accountDetail?.zimbraAccountStatus
 								)}
 								padding={{ right: 'medium' }}
+							/>
+						) : (
+							<></>
+						)}
+					</Row>
+					<Row width="49%" mainAlignment="flex-start">
+						{accountDetail?.zimbraId && localeZone?.length ? (
+							<InheritedSelect
+								label={t('label.language', 'Language')}
+								items={localeZone}
+								accountValue={accountDetail.zimbraPrefLocale}
+								cosValue={cosDetail.zimbraPrefLocale}
+								fromAccount={accSpecificDetail?.zimbraPrefLocale}
+								background="gray5"
+								selectName="zimbraPrefLocale"
+								onChange={onPrefLocaleChange}
+								onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
 							/>
 						) : (
 							<></>
@@ -594,25 +680,30 @@ const EditAccountGeneralSection: FC = () => {
 						)}
 					</Row>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
-						{accountDetail?.zimbraId && localeZone?.length ? (
-							<InheritedSelect
-								label={t('label.language', 'Language')}
-								items={localeZone}
-								accountValue={accountDetail.zimbraPrefLocale}
-								cosValue={cosDetail.zimbraPrefLocale}
-								fromAccount={accSpecificDetail?.zimbraPrefLocale}
-								background="gray5"
-								selectName="zimbraPrefLocale"
-								onChange={onPrefLocaleChange}
-								onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
-							/>
-						) : (
-							<></>
-						)}
-					</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
+					<InheritedInput
+						label={t('label.account_quota_mb', 'Account Quota (MB)')}
+						accountValue={accountQuota}
+						cosValue={
+							cosDetail.zimbraMailQuota ? (cosDetail.zimbraMailQuota / 1048576).toString() : ''
+						}
+						fromAccount={
+							accSpecificDetail.zimbraMailQuota
+								? (accSpecificDetail.zimbraMailQuota / 1048576).toString()
+								: ''
+						}
+						background="gray5"
+						inputName="zimbraMailQuota"
+						onChange={changeAccountQuota}
+						onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
+					/>
 				</Row>
+
+				<Row
+					padding={{ top: 'large', left: 'large' }}
+					width="100%"
+					mainAlignment="space-between"
+				></Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Divider color="gray2" />
@@ -667,15 +758,29 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
 					<Input
 						backgroundColor="gray5"
-						height="85px"
 						label={t('label.description', 'Description')}
-						defaultValue={accountDetail?.zimbraNotes}
-						value={accountDetail?.zimbraNotes}
+						defaultValue={accountDetail?.description}
+						value={accountDetail?.description}
 						onChange={changeAccDetail}
+						inputName="description"
+					/>
+				</Row>
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.notes', 'Notes')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
+					<Textarea
+						label={t('label.notes', 'Notes')}
+						value={accountDetail?.zimbraNotes || ''}
+						backgroundColor="gray5"
 						inputName="zimbraNotes"
+						onChange={changeAccDetail}
 					/>
 				</Row>
 			</Row>
+
 			<Modal
 				size="small"
 				title={t('account_details.delete_password', 'Delete Password', {

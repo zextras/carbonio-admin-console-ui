@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import {
 	Container,
 	Row,
@@ -42,6 +42,7 @@ import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../..
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
 import { isValidEmail } from '../utility/utils';
 import OverlayDivision from '../components/overlayDivision';
+import Textarea from '../components/textarea';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -69,23 +70,8 @@ const CreateDomain: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const history = useHistory();
-	const galModes = useMemo(
-		() => [
-			{
-				label: t('label.internal', 'Internal'),
-				value: GAL_MODE.INTERNAL
-			},
-			{
-				label: t('label.external', 'External'),
-				value: GAL_MODE.EXTERNAL
-			},
-			{
-				label: t('label.both', 'Both'),
-				value: GAL_MODE.BOTH
-			}
-		],
-		[t]
-	);
+	const setDomain = useDomainStore((state) => state.setDomain);
+	const setDomainView = useDomainStore((state) => state.setDomainView);
 	const setIsDomainSupportDelegatedAdmin = useDomainStore(
 		(state) => state.setIsDomainSupportDelegatedAdmin
 	);
@@ -105,6 +91,7 @@ const CreateDomain: FC = () => {
 	const [galSyncAccountName, setGalSyncAccountName] = useState<string>('galsync');
 	const [dataSourceName, setDataSourceName] = useState<string>(INTERNAL_GAL);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const [domainName, setDomainName] = useState<string>('');
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
@@ -187,7 +174,12 @@ const CreateDomain: FC = () => {
 	const routeToDomain = (resp: DomainResponse): void => {
 		const domainId = resp?.domain[0]?.id;
 		if (domainId) {
-			replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
+			setDomain({
+				a: resp?.domain[0]?.a,
+				id: domainId,
+				name: resp?.domain[0]?.name
+			});
+			setDomainView(GENERAL_SETTINGS);
 		} else {
 			replaceHistory(`/`);
 		}
@@ -239,6 +231,10 @@ const CreateDomain: FC = () => {
 			attributes.push({
 				n: 'zimbraNotes',
 				_content: zimbraNotes
+			});
+			attributes.push({
+				n: 'description',
+				_content: description
 			});
 			attributes.push({
 				n: 'zimbraGalMode',
@@ -439,6 +435,18 @@ const CreateDomain: FC = () => {
 								<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
 									<Input
 										label={t('label.description', 'Description')}
+										backgroundColor="gray5"
+										value={description}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setDescription(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container padding={{ horizontal: 'small', top: 'small', bottom: 'large' }}>
+									<Textarea
+										label={t('label.notes', 'Notes')}
 										backgroundColor="gray5"
 										value={zimbraNotes}
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

@@ -46,6 +46,7 @@ import ListRow from '../../list/list-row';
 import DomainCosLink from './domain-cos-link';
 import { CosMaxAccountValues } from '../../../../types';
 import OverlayDivision from '../../components/overlayDivision';
+import Textarea from '../../components/textarea';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -139,7 +140,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraHelpDelegatedURL: '',
 		zimbraPublicServiceHostname: '',
 		zimbraDomainMaxAccounts: '',
-		zimbraDomainAggregateQuota: ''
+		zimbraDomainAggregateQuota: '',
+		description: ''
 	});
 	const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
 	const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
@@ -151,6 +153,7 @@ const DomainGeneralSettings: FC = () => {
 	const [zimbraPublicServicePort, setZimbraPublicServicePort] = useState<string>('');
 	const [zimbraDNSCheckHostname, setZimbraDNSCheckHostname] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const [zimbraHelpAdminURL, setZimbraHelpAdminURL] = useState<string>('');
 	const [zimbraHelpDelegatedURL, setZimbraHelpDelegatedURL] = useState<string>('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -282,7 +285,12 @@ const DomainGeneralSettings: FC = () => {
 				obj.zimbraNotes = '';
 				setZimbraNotes('');
 			}
-
+			if (obj.description) {
+				setDescription(obj.description);
+			} else {
+				obj.description = '';
+				setDescription('');
+			}
 			if (obj.zimbraHelpAdminURL) {
 				setZimbraHelpAdminURL(obj.zimbraHelpAdminURL);
 			} else {
@@ -395,6 +403,7 @@ const DomainGeneralSettings: FC = () => {
 			zimbraPublicServicePort,
 			zimbraDNSCheckHostname,
 			zimbraNotes,
+			description,
 			zimbraHelpAdminURL,
 			zimbraHelpDelegatedURL,
 			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || '',
@@ -409,6 +418,7 @@ const DomainGeneralSettings: FC = () => {
 			zimbraPublicServicePort: domainData.zimbraPublicServicePort,
 			zimbraDNSCheckHostname: domainData.zimbraDNSCheckHostname,
 			zimbraNotes: domainData.zimbraNotes,
+			description: domainData.description,
 			zimbraHelpAdminURL: domainData.zimbraHelpAdminURL,
 			zimbraHelpDelegatedURL: domainData.zimbraHelpDelegatedURL,
 			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || '',
@@ -433,7 +443,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraHelpAdminURL,
 		zimbraHelpDelegatedURL,
 		zimbraNotes,
-		zimbraPublicServicePort
+		zimbraPublicServicePort,
+		description
 	]);
 	const onCancel = (): void => {
 		setSelectedPublicServiceProtocol(
@@ -446,6 +457,7 @@ const DomainGeneralSettings: FC = () => {
 		setZimbraPublicServicePort(domainData.zimbraPublicServicePort);
 		setZimbraDNSCheckHostname(domainData.zimbraDNSCheckHostname);
 		setZimbraNotes(domainData.zimbraNotes);
+		setDescription(domainData.description);
 		setZimbraHelpAdminURL(domainData.zimbraHelpAdminURL);
 		setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
 		setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
@@ -475,6 +487,10 @@ const DomainGeneralSettings: FC = () => {
 			attributes.push({
 				n: 'zimbraNotes',
 				_content: zimbraNotes
+			});
+			attributes.push({
+				n: 'description',
+				_content: description
 			});
 			if (selectedTimeZone.value !== NOT_SET) {
 				attributes.push({
@@ -826,21 +842,10 @@ const DomainGeneralSettings: FC = () => {
 										readOnly
 									/>
 								</Container>
-							</ListRow>
-
-							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
-										backgroundColor="gray6"
-										readOnly
-									/>
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.creation_date', 'Creation Date')}
-										value={domainCreationDate}
 										backgroundColor="gray6"
 										readOnly
 									/>
@@ -861,16 +866,15 @@ const DomainGeneralSettings: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
-											'label.max_mainbox_quota_for_the_domain_in_bytes',
-											'Max mailbox quota for the domain (bytes) (0=unlimited)'
-										)}
-										value={zimbraMailDomainQuota}
+										label={t('label.creation_date', 'Creation Date')}
+										value={domainCreationDate}
 										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
 							</ListRow>
+
+							<ListRow></ListRow>
 
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
@@ -962,6 +966,18 @@ const DomainGeneralSettings: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.description', 'Description')}
+										value={description}
+										backgroundColor="gray5"
+										onChange={(e: any): any => {
+											setDescription(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Textarea
+										label={t('label.notes', 'Notes')}
 										value={zimbraNotes}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {

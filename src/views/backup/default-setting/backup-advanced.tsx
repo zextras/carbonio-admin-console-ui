@@ -17,7 +17,7 @@ import {
 	Switch,
 	Select
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, cloneDeep, find } from 'lodash';
+import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
 import { CONFIG } from '../../../constants';
 import ListRow from '../../list/list-row';
 import { useBackupStore } from '../../../store/backup/store';
@@ -57,7 +57,7 @@ const BackupAdvanced: FC = () => {
 			modifiedData[ele] = initbackupDetail[ele];
 		});
 		modifyBackupRequest(modifiedData).then((data) => {
-			if (data.status === 200) {
+			if (data?.status === 200 || isEmpty(data)) {
 				setGlobalConfig(initbackupDetail);
 				createSnackbar({
 					key: 'success',

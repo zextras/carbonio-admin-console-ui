@@ -22,6 +22,7 @@ import styled from 'styled-components';
 import { find, orderBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { TFunction } from 'i18next';
 import { fetchSoap } from '../../../services/subscription-service';
 import MatomoTracker from '../../../matomo-tracker';
 import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
@@ -86,27 +87,45 @@ const IconInfo = ({
 );
 
 const moduleNames: any = {
-	ZxBackup: 'Backup',
-	ZxMobile: 'ActiveSync',
-	ZxAdmin: 'Admins',
-	ZxPowerstore: 'Mailstores',
-	SproxyD: 'SproxyD',
-	ZxDrive: 'Files',
-	ZxDocs: 'Docs',
-	ZxChat: 'Chats',
-	ZxHA: 'HA',
-	Powerstore: 'Storage',
-	Drive: 'Files',
-	Chat: 'Chats'
+	backup_realtime: 'Realtime Backup',
+	chats_recording: 'Video recording',
+	files_basic: 'Files Basics',
+	admins_basic: 'Delegated Administration',
+	storages_basic: 'Storages Basic',
+	appmail_basic: 'MailApp',
+	backup_basic: 'Backup Basic',
+	ha_basic: 'Ha Basic',
+	storages_conn_basic: 'S3 Connectors',
+	storages_centralized: 'Centralized Volumes',
+	appmail_advanced: 'MailApp Advanced',
+	activesync_shared_folder: 'ActiveSync (shared folder)',
+	chats_basic: 'Chats Basic',
+	auth_2fa: '2FA and Policies',
+	storages_hsm: 'Storages HSM',
+	chats_rooms: 'Meeting Rooms',
+	files_docs_balancing: 'Docs Connector',
+	auth_saml: 'SAML Auth',
+	backup_ext_volume: 'Backup on External Volumes',
+	storages_conn_sproxyd: 'ScalitySproxyD Connector',
+	activesync_basic: 'ActiveSync',
+	backup_import_external: 'Import Ext Backup'
 };
 
-const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): ReactElement => (
+const ServiceStatus = ({
+	name,
+	licensed,
+	t
+}: {
+	name: string;
+	licensed: any;
+	t: TFunction;
+}): ReactElement => (
 	<Row
-		width="180px"
+		width="14rem"
 		orientation="horizontal"
 		mainAlignment="flex-start"
 		crossAlignment="stretch"
-		style={{ padding: '0 44px 16px 0' }}
+		style={{ padding: '0 0.25rem 1rem 0' }}
 	>
 		<VerticalBar licensed={licensed} />
 		<Row
@@ -117,7 +136,9 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 			<Padding bottom="extrasmall">
 				<ServiceName licensed={licensed}>{moduleNames[name] || name}</ServiceName>
 			</Padding>
-			<Text color={licensed ? 'text' : 'secondary'}>{licensed ? 'Enabled' : 'Disabled'}</Text>
+			<Text color={licensed ? 'text' : 'secondary'}>
+				{licensed ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+			</Text>
 		</Row>
 	</Row>
 );
@@ -162,11 +183,11 @@ const Subscription: FC = () => {
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
-				const formatModules = Object.keys(response.response.modules).map((module) => ({
-					...response.response.modules[module],
-					name: module
+				const formatModules = response?.response?.features?.map((module: any) => ({
+					...module,
+					name: moduleNames[module?.name]
 				}));
-				const orderModules: any = orderBy(formatModules, 'licensed', 'desc');
+				const orderModules: any = orderBy(formatModules, 'name', 'desc');
 				const filterModules: any = orderModules.filter((module: any) => module.name !== 'SproxyD');
 				setServices(response);
 				setModules(filterModules);
@@ -352,8 +373,13 @@ const Subscription: FC = () => {
 				>
 					{modules.map(
 						(module: any) =>
-							(module.licensed || (!module.licensed && showDisabledModules)) && (
-								<ServiceStatus key={module.name} name={module.name} licensed={module.licensed} />
+							(module.enabled || (!module.enabled && showDisabledModules)) && (
+								<ServiceStatus
+									key={module.name}
+									name={module.name}
+									licensed={module.enabled}
+									t={t}
+								/>
 							)
 					)}
 				</Container>
@@ -436,7 +462,7 @@ const Subscription: FC = () => {
 
 						<Row width="49.5%" padding={{ all: 'large' }}>
 							<Input
-								label={t('core.subscription.emissionDate', 'Emission date')}
+								label={t('core.subscription.endDate', 'End date')}
 								value={
 									services.response.dateEnd
 										? moment(services.response.dateEnd).format('DD-MMM-YYYY')

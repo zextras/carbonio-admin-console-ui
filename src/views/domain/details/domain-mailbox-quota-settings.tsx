@@ -35,6 +35,7 @@ import DownloadCSV from '../../app/shared/download-csv';
 import { MailBoxQuota } from '../../app/types/mailbox_quota';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
@@ -488,16 +489,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.domain_space_accounts', 'Domain Space (Accounts)')}
-										value={zimbraDomainMaxAccounts}
-										backgroundColor="gray6"
-										onChange={(e: any): any => {
-											setZimbraDomainMaxAccounts(e.target.value);
-										}}
-									/>
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
 										label={t(
 											'label.max_mainbox_quota_for_the_mails',
 											'Max mailbox quota for the Mails (bytes)'
@@ -509,9 +500,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 										}}
 									/>
 								</Container>
-							</ListRow>
-
-							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('domain.mail_space_quota_threshold', 'Mail Space Quota threshold (%)')}
@@ -523,6 +511,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 										}}
 									/>
 								</Container>
+							</ListRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Select
 										items={quotaPolicy}
@@ -533,9 +523,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 										onChange={onZimbraDomainAggregateQuotaPolicy}
 									/>
 								</Container>
-							</ListRow>
-
-							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
@@ -617,9 +604,19 @@ const DomainMailboxQuotaSetting: FC = () => {
 							>
 								<Divider />
 							</Row>
-							<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
-								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-							</Row>
+							<Container orientation="horizontal" mainAlignment="space-between" width="100%">
+								<Container crossAlignment="flex-start">
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ top: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
 						</Container>
 						{isShowDownload && <DownloadCSV data={csvQuotaData} header={csvHeader} />}
 					</Container>

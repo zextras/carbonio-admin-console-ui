@@ -32,11 +32,8 @@ const CosDetailOperation: FC = () => {
 	const setTotalDomain = useCosStore((state) => state.setTotalDomain);
 
 	const getTotalDomain = useCallback(
-		(id: any, isDefaultCos: boolean): any => {
-			let query = `(zimbraDomainDefaultCOSId=${id})`;
-			if (isDefaultCos) {
-				query = `(|(!(zimbraDomainDefaultCOSId=*))(zimbraDomainDefaultCOSId=${id}))`;
-			}
+		(id: any): any => {
+			const query = `(zimbraDomainDefaultCOSId=${id})`;
 			searchDirectory('', 'domains', '', query, 0, -1).then((data) => {
 				const totalDomain = data?.searchTotal || 0;
 				setTotalDomain(totalDomain);
@@ -46,11 +43,8 @@ const CosDetailOperation: FC = () => {
 	);
 
 	const getTotalAccount = useCallback(
-		(id: any, isDefaultCos: boolean): any => {
-			let query = `(&(zimbraCOSId=${id})(!(zimbraIsSystemAccount=TRUE)))`;
-			if (isDefaultCos) {
-				query = `(&(|(&(!(zimbraCOSId=*))(!(zimbraIsExternalVirtualAccount=TRUE)))(zimbraCOSId=${id}))(!(zimbraIsSystemAccount=TRUE)))`;
-			}
+		(id: any): any => {
+			const query = `(&(zimbraCOSId=${id})(!(zimbraIsSystemAccount=TRUE)))`;
 			searchDirectory('', 'accounts', '', query, 0, -1).then((data) => {
 				const totalAccount = data?.searchTotal || 0;
 				setTotalAccount(totalAccount);
@@ -66,8 +60,8 @@ const CosDetailOperation: FC = () => {
 					const cos = data?.cos[0];
 					if (cos) {
 						setCos(cos);
-						getTotalAccount(cos.id, !!cos?.isDefaultCos);
-						getTotalDomain(cos.id, !!cos?.isDefaultCos);
+						getTotalAccount(cos.id);
+						getTotalDomain(cos.id);
 					}
 				})
 				.catch((error) => {

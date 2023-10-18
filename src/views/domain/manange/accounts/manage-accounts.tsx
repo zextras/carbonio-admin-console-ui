@@ -50,6 +50,7 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import useOutsideClick from '../../../app/hooks/useoutsideclick';
 import { useRightsStore } from '../../../../store/rights/store';
 import ModalOverlay from '../../../components/ModalOverlay';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -76,6 +77,7 @@ const ManageAccounts: FC = () => {
 	const [typeFilter, setTypeFilter] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [hasError, setHasError] = useState<boolean>(false);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -373,6 +375,7 @@ const ManageAccounts: FC = () => {
 						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
 					}
 					setInitAccountDetail({ ...obj });
+					setSelectedAccount({ ...obj, id });
 					setAccountDetail({ ...obj });
 					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
@@ -566,7 +569,6 @@ const ManageAccounts: FC = () => {
 
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setSelectedAccount(acc);
 			setShowAccountDetailView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
@@ -592,134 +594,158 @@ const ManageAccounts: FC = () => {
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domainName, searchQuery, offset, limit).then((data) => {
-			const accountListResponse: any = data?.account || [];
-			if (accountListResponse && Array.isArray(accountListResponse)) {
-				const accountListArr: any = [];
-				setTotalAccount(data.searchTotal || 0);
-				accountListResponse.forEach((item: any): any => {
-					item?.a?.forEach((ele: any) => {
-						if (ele?.n === 'mail') {
-							if (item[ele?.n]) {
-								item[ele?.n].push(ele._content);
+		accountListDirectory(attrs, type, domainName, searchQuery, offset, limit)
+			.then((data) => {
+				const accountListResponse: any = data?.account || [];
+				if (accountListResponse && Array.isArray(accountListResponse)) {
+					const accountListArr: any = [];
+					setTotalAccount(data.searchTotal || 0);
+					accountListResponse.forEach((item: any): any => {
+						item?.a?.forEach((ele: any) => {
+							if (ele?.n === 'mail') {
+								if (item[ele?.n]) {
+									item[ele?.n].push(ele._content);
+								} else {
+									// eslint-disable-next-line no-param-reassign
+									item[ele?.n] = [ele._content];
+								}
 							} else {
 								// eslint-disable-next-line no-param-reassign
-								item[ele?.n] = [ele._content];
+								item[ele?.n] = ele._content;
 							}
-						} else {
-							// eslint-disable-next-line no-param-reassign
-							item[ele?.n] = ele._content;
-						}
-					});
-					accountListArr.push({
-						id: item?.id,
-						columns: [
-							<Text
-								size="small"
-								key={item?.id}
-								color="gray0"
-								weight="regular"
-								onClick={(): void => {
-									openDetailView(item);
-								}}
-							>
-								{item?.name || ' '}
-							</Text>,
-							<Text
-								size="small"
-								key={item?.id}
-								color="gray0"
-								weight="light"
-								onClick={(): void => {
-									openDetailView(item);
-								}}
-							>
-								{item?.displayName || <>&nbsp;</>}
-							</Text>,
-							<>
-								{
-									// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
-									item?.mail?.length - 1 || 0 ? (
-										<Tooltip
-											key={item?.id}
-											placement="bottom"
-											label={item?.mail.slice(1).join(', ')}
-											maxWidth="auto"
-										>
+						});
+						accountListArr.push({
+							id: item?.id,
+							columns: [
+								<Text
+									size="small"
+									key={item?.id}
+									color="gray0"
+									weight="regular"
+									onClick={(): void => {
+										openDetailView(item);
+									}}
+								>
+									{item?.name || ' '}
+								</Text>,
+								<Text
+									size="small"
+									key={item?.id}
+									color="gray0"
+									weight="light"
+									onClick={(): void => {
+										openDetailView(item);
+									}}
+								>
+									{item?.displayName || <>&nbsp;</>}
+								</Text>,
+								<>
+									{
+										// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+										item?.mail?.length - 1 || 0 ? (
+											<Tooltip
+												key={item?.id}
+												placement="bottom"
+												label={item?.mail.slice(1).join(', ')}
+												maxWidth="auto"
+											>
+												<Text
+													size="small"
+													weight="light"
+													key={item?.id}
+													color="#828282"
+													onClick={(): void => {
+														openDetailView(item);
+													}}
+												>
+													{
+														// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+														item?.mail?.length - 1 || 0
+													}
+												</Text>
+											</Tooltip>
+										) : (
 											<Text
 												size="small"
-												weight="light"
 												key={item?.id}
 												color="#828282"
+												weight="light"
 												onClick={(): void => {
 													openDetailView(item);
 												}}
 											>
-												{
-													// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
-													item?.mail?.length - 1 || 0
-												}
+												0
 											</Text>
-										</Tooltip>
-									) : (
-										<Text
-											size="small"
-											key={item?.id}
-											color="#828282"
-											weight="light"
-											onClick={(): void => {
-												openDetailView(item);
-											}}
-										>
-											0
-										</Text>
-									)
-								}
-							</>,
-							<Text
-								size="small"
-								key={item?.id}
-								color="gray0"
-								weight="light"
-								onClick={(): void => {
-									openDetailView(item);
-								}}
-							>
-								{accountUserType(item)}
-							</Text>,
-							<Text
-								size="small"
-								weight="light"
-								key={item?.id}
-								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
-								onClick={(): void => {
-									openDetailView(item);
-								}}
-							>
-								{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
-							</Text>,
-							<Text
-								size="small"
-								weight="light"
-								key={item?.id}
-								color="gray0"
-								onClick={(event: { stopPropagation: () => void }): void => {
-									event.stopPropagation();
-									openDetailView(item);
-								}}
-							>
-								{item?.zimbraNotes || <>&nbsp;</>}
-							</Text>
-						],
-						item,
-						clickable: true
+										)
+									}
+								</>,
+								<Text
+									size="small"
+									key={item?.id}
+									color="gray0"
+									weight="light"
+									onClick={(): void => {
+										openDetailView(item);
+									}}
+								>
+									{accountUserType(item)}
+								</Text>,
+								<Text
+									size="small"
+									weight="light"
+									key={item?.id}
+									color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
+									onClick={(): void => {
+										openDetailView(item);
+									}}
+								>
+									{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
+								</Text>,
+								<Text
+									size="small"
+									weight="light"
+									key={item?.id}
+									color="gray0"
+									onClick={(event: { stopPropagation: () => void }): void => {
+										event.stopPropagation();
+										openDetailView(item);
+									}}
+								>
+									{item?.description || <>&nbsp;</>}
+								</Text>
+							],
+							item,
+							clickable: true
+						});
 					});
+					setAccountList(accountListArr);
+				}
+				setIsRequestInProgress(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error
+						? error?.error
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
 				});
-				setAccountList(accountListArr);
-			}
-			setIsRequestInProgress(false);
-		});
-	}, [STATUS_COLOR, accountUserType, domainName, limit, offset, openDetailView, searchQuery]);
+				setHasError(true);
+			});
+	}, [
+		STATUS_COLOR,
+		accountUserType,
+		domainName,
+		limit,
+		offset,
+		openDetailView,
+		searchQuery,
+		t,
+		createSnackbar
+	]);
 
 	const generateSearchFilterQuery = useCallback(
 		(searchStr: string, sfilter: string, tfilter: string): string => {
@@ -744,7 +770,6 @@ const ManageAccounts: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccountList = useCallback(
 		debounce((searchStr: string, sfilter: string, tfilter: string) => {
-			setTotalAccount(0);
 			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter, tfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
@@ -852,7 +877,7 @@ const ManageAccounts: FC = () => {
 							<Container>
 								<Input
 									label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
-									disabled={accountList.length === 0 && searchString.length === 0}
+									disabled={accountList.length === 0 && searchString.length === 0 && !hasError}
 									value={searchString}
 									backgroundColor="gray5"
 									onChange={(e: any): any => {
@@ -868,10 +893,8 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height:
-									accountList.length > 0 && !isRequestInProgress
-										? 'calc(100vh - 21.25rem)'
-										: 'calc(100vh - 40.625rem)'
+								height: 'calc(100vh - 21.25rem)',
+								position: 'relative'
 							}}
 							ref={tableRef}
 						>
@@ -880,7 +903,10 @@ const ManageAccounts: FC = () => {
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
-								style={{ overflow: 'auto', height: '100%' }}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
+								}}
 								RowFactory={CustomRowFactory}
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-ignore // Need to fix it with custom soultion
@@ -935,14 +961,25 @@ const ManageAccounts: FC = () => {
 								</Container>
 							)}
 							{accountList.length !== 0 && (
-								<Row
+								<Container
 									orientation="horizontal"
-									mainAlignment="flex-start"
+									mainAlignment="space-between"
 									width="100%"
-									style={{ position: 'absolute', bottom: '0.25rem' }}
+									style={{ position: 'absolute', bottom: '-4rem' }}
+									height="auto"
 								>
-									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-								</Row>
+									<Container crossAlignment="flex-start">
+										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+									</Container>
+									<Container
+										crossAlignment="flex-end"
+										orientation="horizontal"
+										mainAlignment="flex-end"
+										padding={{ top: 'small' }}
+									>
+										<TrackNumberPerPage pageSize={limit} />
+									</Container>
+								</Container>
 							)}
 							<AccountContext.Provider
 								value={{

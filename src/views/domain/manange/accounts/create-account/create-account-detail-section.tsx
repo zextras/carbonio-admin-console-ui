@@ -15,10 +15,12 @@ import {
 	Switch
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { find } from 'lodash';
+import { find, head } from 'lodash';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from './account-context';
 import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
+import Textarea from '../../../../components/textarea';
+import { AccountType } from '../account-types/account-types';
 
 const CreateAccountDetailSection: FC = () => {
 	const context = useContext(AccountContext);
@@ -67,27 +69,29 @@ const CreateAccountDetailSection: FC = () => {
 
 	const changeAccDisplayName = useCallback(
 		(e) => {
-			setAccountDetail((prev: any) => ({ ...prev, changeDisplayNameBool: true }));
-			setAccountDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setAccountDetail((prev: AccountType) => ({ ...prev, changeDisplayNameBool: true }));
+			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
 
-	const combineName = useMemo(
-		() =>
-			!accountDetail?.changeNameBool
-				? `${accountDetail?.sn?.replace(/ /g, '')?.toLowerCase() || ''}${
-						accountDetail?.initials?.replace(/ /g, '')?.toLowerCase() || ''
-				  }${accountDetail?.givenName?.replace(/ /g, '')?.toLowerCase() || ''}`
-				: accountDetail?.name,
-		[
-			accountDetail?.changeNameBool,
-			accountDetail?.givenName,
-			accountDetail?.initials,
-			accountDetail?.name,
-			accountDetail?.sn
-		]
-	);
+	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+
+	const combineName = useMemo(() => {
+		const { sn, initials, givenName, changeNameBool, name } = accountDetail || {};
+
+		if (!changeNameBool) {
+			const userName = [];
+
+			if (sn) userName.push(getModifiedName(sn));
+			if (initials) userName.push(head(getModifiedName(initials)));
+			if (givenName) userName.push(getModifiedName(givenName));
+
+			return userName.join('.');
+		}
+
+		return name || '';
+	}, [accountDetail]);
 
 	const combineDisplayName = useMemo(
 		() =>
@@ -167,7 +171,7 @@ const CreateAccountDetailSection: FC = () => {
 						<Input
 							onChange={changeAccDetail}
 							inputName="givenName"
-							label={t('label.peson_name', 'Name')}
+							label={t('label.person_name', 'Name')}
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.givenName || ''}
 						/>
@@ -308,11 +312,26 @@ const CreateAccountDetailSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
 						backgroundColor="gray5"
-						height="85px"
 						label={t('label.description', 'Description')}
-						defaultValue={accountDetail?.zimbraNotes || ''}
+						defaultValue={accountDetail?.description || ''}
 						onChange={changeAccDetail}
+						inputName="description"
+					/>
+				</Row>
+			</Row>
+			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.notes', 'Notes')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
+					<Textarea
+						label={t('label.notes', 'Notes')}
+						value={accountDetail?.zimbraNotes || ''}
+						backgroundColor="gray5"
 						inputName="zimbraNotes"
+						onChange={changeAccDetail}
 					/>
 				</Row>
 			</Row>

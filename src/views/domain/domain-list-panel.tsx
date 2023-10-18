@@ -36,7 +36,8 @@ import {
 	DELEGATES,
 	SECURITY_GROUP,
 	GLOBAL_ROUTE,
-	GLOBAL_QUARANTINE_ROUTE
+	GLOBAL_QUARANTINE_ROUTE,
+	BACKUP_BASIC
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -94,10 +95,10 @@ const DomainListPanel: FC = () => {
 		}[]
 	>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const setDomain = useDomainStore((state) => state.setDomain);
 	const domainInformation = useDomainStore((state) => state.domain);
-	const domainView = useDomainStore((state) => state.domainView);
-	const setDomainView = useDomainStore((state) => state.setDomainView);
+	const { setDomainView, isQuickAccess, domainView, setDomain, setIsQuickAccess } = useDomainStore(
+		(state) => state
+	);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -188,13 +189,6 @@ const DomainListPanel: FC = () => {
 		}
 	}, [domainInformation?.id, domainInformation?.name]);
 
-	useMemo(() => {
-		if (domainView === '') {
-			const operationItem = locationService?.pathname.split('/').pop();
-			setDomainView(operationItem || '');
-		}
-	}, [domainView, locationService?.pathname, setDomainView]);
-
 	useEffect(() => {
 		if (
 			locationService.pathname &&
@@ -204,7 +198,6 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setDomainView('');
 			setDomainId('');
 			setDomain({});
 		}
@@ -385,7 +378,8 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? allManageOptions.filter(
-						(item: ManageOptions) => item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC
+						(item: ManageOptions) =>
+							item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC && item?.id !== DELEGATES
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
@@ -433,9 +427,9 @@ const DomainListPanel: FC = () => {
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
 			const backupModule = moduleLicense.filter(
-				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
@@ -525,6 +519,14 @@ const DomainListPanel: FC = () => {
 						)
 					})
 			  );
+
+	useEffect(() => {
+		if (!isQuickAccess) {
+			setDomainView(GLOBAL_DOMAIN_ROUTE);
+		}
+		setIsQuickAccess(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<Container
