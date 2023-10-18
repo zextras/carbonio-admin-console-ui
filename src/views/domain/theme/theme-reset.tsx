@@ -65,8 +65,8 @@ export const ResetTheme: FC<{
 				<Padding bottom="medium" top="medium">
 					<Text size={'extralarge'} overflow="break-word">
 						<Trans
-							i18nKey="label.reset_theme_content_1"
-							defaults="You are you sure to reset the theme ?"
+							i18nKey="label.reset_whitelabel_settings_content_1"
+							defaults="You are you sure to reset the whitelabel settings ?"
 							components={{}}
 						/>
 					</Text>
@@ -74,7 +74,7 @@ export const ResetTheme: FC<{
 				<Padding bottom="medium">
 					<Text size="extralarge" overflow="break-word">
 						<Trans
-							i18nKey="label.reset_theme_content_2"
+							i18nKey="label.reset_whitelabel_settings_content_2"
 							defaults="If you click YES button all data will be lost."
 							components={{}}
 						/>

@@ -296,7 +296,7 @@ const GlobalTheme: FC = () => {
 									crossAlignment="flex-start"
 								>
 									<Text size="medium" weight="bold" color="gray0">
-										{t('label.theme', 'Theme')}
+										{t('label.whitelabel_settings', 'Whitelabel Settings')}
 									</Text>
 								</Row>
 								<Row
@@ -337,7 +337,7 @@ const GlobalTheme: FC = () => {
 				</Container>
 				{isOpenResetDialog && (
 					<ResetTheme
-						title={t('label.reset_global_theme', 'Reset global theme')}
+						title={t('label.reset_global_whitelabel_settings', 'Reset global whitelabel settings')}
 						isOpenResetDialog={isOpenResetDialog}
 						isRequestInProgress={isRequestInProgress}
 						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
