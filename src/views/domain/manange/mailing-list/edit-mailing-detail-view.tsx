@@ -2036,9 +2036,6 @@ const EditMailingListView: FC<any> = ({
 					{selectedMailingList?.dynamic && (
 						<ListRow padding={{ all: 'small' }}>
 							<Container orientation="horizontal">
-								<Container width="fit" padding={{ right: 'small' }}>
-									<Icon icon={'Link2Outline'} size="large" />
-								</Container>
 								<Container>
 									<Input
 										label={t('label.list_url', "Mailing List's URL")}
@@ -2047,7 +2044,7 @@ const EditMailingListView: FC<any> = ({
 										onChange={(e: any): any => {
 											setMemberURL(e.target.value);
 										}}
-										disabled={zimbraIsACLGroup}
+										disabled
 									/>
 								</Container>
 							</Container>
