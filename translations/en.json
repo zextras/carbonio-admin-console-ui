@@ -192,6 +192,11 @@
         "who_will_be_delegates": "Who will be the delegates?",
         "your_available_aliases": "Your Available Aliases"
     },
+    "action": {
+        "click_open": "Click to open",
+        "click_preview": "Click to preview",
+        "mark_as_non_spam": "Not Spam"
+    },
     "backup": {
         "advanced": "Advanced",
         "append_metadata_instead_of_rewrite_faster_but_dangerous": "Append metadata instead of rewrite (faster but dangerous)",
@@ -843,6 +848,8 @@
         "allowed": "Allowed",
         "allowed_sending_addresses": "Addresses allowed for sending",
         "always": "Always",
+        "always_allow_address": "Always allow from <strong>{{values}}</strong>",
+        "always_allow_domain": "Always allow from <strong>{{values}}</strong> domain",
         "always_compose_in_new_window": "Always compose in new window",
         "always_compose_mail_using": "Always compose mail using",
         "always_send_read_receipt": "Always send a read receipt",
@@ -861,6 +868,10 @@
         "are_you_sure_delete_distribution_list": "Are you sure you want to delete <bold>{{name}}</bold> ?",
         "are_you_sure_deleting_cos": "Are you sure you want to delete this Class of Service?",
         "ask_me": "Ask me",
+        "attachement_unknown": "Unknown <{{mimeType}}>",
+        "attachment": "Attachment",
+        "attachment_plural": "attachments",
+        "attachments_disclaimer": "You are viewing an attached message. The authenticity of the attached messages can not be verified.",
         "attribute": "Attribute",
         "auth_method": "Auth Method",
         "authentication": "Authentication",
@@ -1119,6 +1130,7 @@
         "dont_save_a_copy_of_sent_messages": "Don’t save a copy of sent messages",
         "download": "DOWNLOAD",
         "download_pdf": "DOWNLOAD PDF",
+        "download_plural": "",
         "download_quota_Report": "Download Quota Report",
         "draft_auto_save_interval": "Draft auto save interval",
         "duplicate": "Duplicate",
@@ -1172,6 +1184,9 @@
         "external_server_address": "External Server Address",
         "external_server_needs_authentication": "External Server needs authentication",
         "external_volume_edited": "{{message}}",
+        "extra_window": {
+            "save_to_files_disabled": "Files’ attachments saving is available only from the main tab"
+        },
         "failed": "Failed",
         "fall_back_to_local_msg": "Try local password management in case of failure with other methods",
         "false": "False",
@@ -1255,6 +1270,7 @@
         "internal": "Internal",
         "internal_users_only": "Internal Users only",
         "interval": "Interval",
+        "invalid_destination": "This node is not a valid destination",
         "invalid_email_address": "Invalid email address",
         "invites": "Invites",
         "ip": "IP",
@@ -1500,6 +1516,7 @@
         "read_options": "Reading options",
         "read_receipt_settings": "Read Receipt settings",
         "reason": "Reason",
+        "received": "Received",
         "receiving_mails": "Receiving Mails",
         "region": "Region",
         "registration": "Registration",
@@ -1554,6 +1571,7 @@
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Save a copy of sent messages to my Sent folder and delegate’s folder",
         "save_and_leave": "Save and leave",
         "save_mails_to": "Save Mails to",
+        "save_to_files": "Save to Files",
         "save_to_sent_folder": "Save to Sent Folder",
         "schedule_policy": "Set Policy",
         "scheduled": "Scheduled",
@@ -1585,6 +1603,7 @@
         "select_an_attribute_to_show_its_value": "Select an Attribute to show its value",
         "select_an_external_volume": "Select an External Volume",
         "select_attribute_to_show_its_value": "Select an Attribute to show its value",
+        "select_folder": "Select folder",
         "selected_empty_bucket": "You haven’t selected a bucket. You can start typing in the field above to start viewing them.",
         "send_invite_to": "Send Invite to",
         "send_new_members_notification_for_share_assigned_to_this_group": "Send to new members a notification for the share/delegation assigned to this group",
@@ -1619,6 +1638,8 @@
         "share_message_to_new_member": "Share message to new members",
         "sharing": "SHARING",
         "sharing_options": "Sharing Options",
+        "show_all": "Show all",
+        "show_quoted_text": "Show quoted text",
         "show_reminder": "Show Reminder",
         "show_time_zone_list_in_appointment_view": "Show time zone list in appointment view",
         "signature_required": "Signature information is required.",
@@ -1689,6 +1710,7 @@
         "title": "Title",
         "title_and_copyrights_information": "Title & Copyrights Information",
         "title_theme_note": "The title is the name that will appear on the browser tab",
+        "to": "To",
         "total_acc_rights_with_delete_distribution_list_helper_text": "This list has <bold>{{totalAccRights}}</bold> shared accounts. <br /> If you delete it, the shares will be lost.",
         "true": "True",
         "trust_ip": "Trust the IP",
@@ -1748,6 +1770,7 @@
         "verify_connector_verified": " VERIFIED",
         "verify_error": "{{name}}",
         "view": "This is a view",
+        "view_images": "VIEW IMAGES",
         "view_mail": "VIEW MAIL",
         "viewed_name": "Viewed Name (Auto-fill)",
         "viewed_name_auto_fill": "Viewed Name (Auto-fill)",
@@ -1882,10 +1905,21 @@
         "add_here_any_blocked_extension": "Add here any Blocked Extension"
     },
     "message": {
+        "external_images_blocked": "External images have been blocked to protect you against potential spam",
         "snackbar": {
+            "all_att_saved": "Attachments successfully saved in the selected folder",
+            "att_err": "There seems to be a problem when saving, please try again",
+            "att_saved": "Attachment saved in the selected folder",
             "share": {
                 "accepted": "You have accepted the share request"
-            }
+            },
+            "some_att_fails": "There seems to be a problem when saving some files, please try again"
+        }
+    },
+    "messages": {
+        "no_content": "This message has no text content",
+        "snackbar": {
+            "marked_as_spam": "You’ve marked this e-mail as Spam"
         }
     },
     "modal": {
@@ -2134,6 +2168,7 @@
         "delete_and_recrate_quarantine_account_title": "Delete and re-create quarantine account",
         "delete_and_recrate_quarantine_account_warning": "Are you sure you want to delete and re-create quarantine account?",
         "delete_and_recreate_quarantine": "DELETE AND RE-CREATE QUARANTINE ACCOUNT",
+        "deliver": "DELIVER",
         "destroy_account_recreate_button": "YES, DELETE AND RE-CREATE IT",
         "not_quarantine_account": "There is not quarantine account in any of the domains, yet. Do you want to create a system quarantine account?",
         "quarantine": "Quarantine",

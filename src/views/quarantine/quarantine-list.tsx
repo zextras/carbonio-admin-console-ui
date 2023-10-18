@@ -5,7 +5,8 @@
  */
 import React, { FC, useEffect, useState, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { filter, find } from 'lodash';
+import { getTags } from '@zextras/carbonio-shell-ui';
+import { filter, find, forEach, isArray, isNil, map, omitBy, reduce } from 'lodash';
 import {
 	Container,
 	Input,
@@ -16,9 +17,11 @@ import {
 	SnackbarManagerContext,
 	Modal,
 	Select,
-	Table
+	Table,
+	IconButton,
+	Padding
 } from '@zextras/carbonio-design-system';
-
+import styled from 'styled-components';
 import moment from 'moment';
 import { createAccountRequest } from '../../services/create-account';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
@@ -33,6 +36,133 @@ import ListRow from '../list/list-row';
 import logo from '../../assets/ninja_robo.svg';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import ModalOverlay from '../components/ModalOverlay';
+import MailMessageRenderer from './mail-message-renderer';
+import AttachmentsBlock from './attachments-block';
+import { batchService } from '../../services/batch-service';
+
+export type AttachmentPart = {
+	part?: string;
+	ct?: string;
+	s?: number;
+	size?: number;
+	filename?: string;
+	body?: boolean;
+	contentType?: string;
+	content?: string;
+	name?: string;
+	parts?: Array<AttachmentPart>;
+	ci?: string;
+	disposition?: 'inline' | 'attachment';
+	cd?: 'inline' | 'attachment';
+	mp?: Array<AttachmentPart>;
+};
+
+export type IncompleteMessage = {
+	id: string;
+	did?: string;
+	parent: string;
+	conversation: string;
+	read: boolean | string;
+	size: number;
+	hasAttachment: boolean;
+	flagged: boolean;
+	urgent: boolean;
+	isDeleted: boolean;
+	isSentByMe: boolean;
+	isForwarded: boolean;
+	isInvite: boolean;
+	isDraft: boolean;
+	isScheduled: boolean;
+	autoSendTime?: number;
+	attachments?: Array<AttachmentPart>;
+	participants?: Array<Participant>;
+	date: number;
+	subject: string;
+	fragment?: string;
+	tags: string[];
+	parts: Array<MailMessagePart>;
+	body: {
+		contentType: string;
+		content: string;
+	};
+	invite?: any;
+	shr?: any;
+	isComplete: boolean;
+	isReplied: boolean;
+	isReadReceiptRequested?: boolean;
+	score?: string;
+	reason?: string;
+};
+type EditorAttachmentFiles = {
+	contentType: string;
+	disposition?: string | undefined;
+	fileName?: string | undefined;
+	filename: string;
+	name: string;
+	size: number;
+};
+
+export type SoapEmailParticipantRole = 'f' | 't' | 'c' | 'b' | 'r' | 's' | 'n' | 'rf';
+export type SoapMailParticipant = {
+	/** Address */
+	a: string;
+	/** Display name */
+	d?: string;
+	/** Type:
+	 * (f)rom,
+	 * (t)o,
+	 * (c)c,
+	 * (b)cc,
+	 * (r)eply-to,
+	 * (s)ender,
+	 * read-receipt (n)otification,
+	 * (rf) resent-from
+	 */
+	p: string;
+	t: SoapEmailParticipantRole;
+	isGroup?: 0 | 1;
+};
+export type SoapMailMessagePart = {
+	part: string;
+	/**	Content Type  */ ct: 'multipart/alternative' | string;
+	/**	Size  */ s?: number;
+	/**	Content id (for inline images)  */ ci?: string;
+	/** Content disposition */ cd?: 'inline' | 'attachment';
+	/**	Parts  */ mp?: Array<SoapMailMessagePart>;
+	/**	Set if is the body of the message  */ body?: true;
+	filename?: string;
+	// FIXME see IRIS-4029 Based on the compose settings the content could be a string or an object of type { _content: string }
+	content?: string;
+};
+export type MailMessagePart = {
+	contentType: string;
+	size: number;
+	content?: string;
+	name: string;
+	filename?: string;
+	parts?: Array<MailMessagePart>;
+	ci?: string;
+	cd?: string;
+	disposition?: 'inline' | 'attachment';
+};
+export const ParticipantRole = {
+	FROM: 'f',
+	TO: 't',
+	CARBON_COPY: 'c',
+	BLIND_CARBON_COPY: 'b',
+	REPLY_TO: 'r',
+	SENDER: 's',
+	READ_RECEIPT_NOTIFICATION: 'n',
+	RESENT_FROM: 'rf'
+};
+export type ParticipantRoleType = (typeof ParticipantRole)[keyof typeof ParticipantRole];
+export type Participant = {
+	type: ParticipantRoleType;
+	address: string;
+	name?: string;
+	fullName?: string;
+};
 
 const getDateTime = (d: number): string => {
 	const date = new Date(d);
@@ -44,38 +174,51 @@ const MessageListTable: FC<{
 	messages: { [key: string]: string }[];
 	selectedRows: string[];
 	onSelectionChange: (selected: string[]) => void;
-}> = ({ messages, selectedRows, onSelectionChange }) => {
+	setShowMessageView: (msgView: boolean) => void;
+	setMessage: (messageId: IncompleteMessage) => void;
+}> = ({ messages, selectedRows, onSelectionChange, setMessage, setShowMessageView }) => {
 	const [t] = useTranslation();
 	const tableRows = useMemo(
 		() =>
 			messages.map((v: any, i: number) => ({
 				id: i,
 				columns: [
-					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={v.id}>
+					<Row
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						key={v.id}
+						onClick={(): void => {
+							setShowMessageView(true);
+							setMessage(v);
+						}}
+					>
 						<Text size="small" weight="regular">
-							{getDateTime(v?.d)}
+							{getDateTime(v?.date)}
 						</Text>
 					</Row>,
 					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
 						<Text size="small" weight="light">
-							{find(v?.e, { t: 't' })?.a}
+							{find(v?.participants, { type: 'f' })?.address}
 						</Text>
 					</Row>,
 					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
 						<Text size="small" weight="light">
-							{v.su}
+							{v.subject}
 						</Text>
 					</Row>,
 					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-						<Text size="small" weight="light"></Text>
+						<Text size="small" weight="light">
+							{v.score}
+						</Text>
 					</Row>,
 					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-						<Text size="small" weight="light"></Text>
+						<Text size="small" weight="light">
+							{v.reason}
+						</Text>
 					</Row>
 				],
 				clickable: true
 			})),
-		[messages]
+		[messages, setShowMessageView, setMessage]
 	);
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">
@@ -123,12 +266,43 @@ const QuarantineList: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useContext(SnackbarManagerContext);
 	const [quarantineAccountName, setQuarantineAccountName] = useState<string>('');
+	const [quarantineAccountId, setQuarantineAccountId] = useState<string>('');
 	const [quarantineDomaintName, setQuarantineDomaintName] = useState<string>('');
 	const [configDataLoaded, setConfigDataLoaded] = useState<boolean>(false);
 	const [deleteQuarantuneAccModal, setDeleteQuarantuneAccModal] = useState<boolean>(false);
+	const [showMessageView, setShowMessageView] = useState<boolean>(false);
 	const [messageListData, setMessageListData] = useState([]);
 	const { config, setConfig } = useConfigStore((state) => state);
 	const [messageSelection, setMessageSelection] = useState<string[]>([]);
+	const [message, setMessage] = useState<IncompleteMessage>({
+		id: '',
+		did: '',
+		parent: '',
+		conversation: '',
+		read: '',
+		size: 0,
+		hasAttachment: false,
+		flagged: false,
+		urgent: false,
+		isDeleted: false,
+		isSentByMe: false,
+		isForwarded: false,
+		isInvite: false,
+		isDraft: false,
+		isScheduled: false,
+		date: 0,
+		subject: '',
+		tags: [],
+		parts: [],
+		body: {
+			contentType: '',
+			content: ''
+		},
+		isComplete: true,
+		isReplied: false,
+		score: '',
+		reason: ''
+	});
 	const onViewMail = useCallback(
 		(name) => {
 			getDelegateAuthRequest('', name)
@@ -176,6 +350,326 @@ const QuarantineList: FC = () => {
 			}
 		});
 	}, [setConfig]);
+
+	const participantTypeFromSoap = (ta: SoapEmailParticipantRole): ParticipantRoleType => {
+		switch (ta) {
+			case 'f':
+				return ParticipantRole.FROM;
+			case 't':
+				return ParticipantRole.TO;
+			case 'c':
+				return ParticipantRole.CARBON_COPY;
+			case 'b':
+				return ParticipantRole.BLIND_CARBON_COPY;
+			case 'r':
+				return ParticipantRole.REPLY_TO;
+			case 's':
+				return ParticipantRole.SENDER;
+			case 'n':
+				return ParticipantRole.READ_RECEIPT_NOTIFICATION;
+			case 'rf':
+				return ParticipantRole.RESENT_FROM;
+			default:
+				throw new Error(`Participant type not handled: '${ta}'`);
+		}
+	};
+	const normalizeParticipantsFromSoap = useCallback(
+		(e: SoapMailParticipant): Participant => ({
+			type: participantTypeFromSoap(e.t),
+			address: e.a,
+			name: e.d || e.a,
+			fullName: e.p
+		}),
+		[]
+	);
+	const getTagIdsFromName = (names: string | undefined): Array<string | undefined> => {
+		const tags = getTags();
+		return map(names?.split(','), (name) =>
+			find(tags, { name }) ? find(tags, { name })?.id : `nil:${name}`
+		);
+	};
+
+	const getTagIds = useCallback(
+		(ta: string | undefined, tn: string | undefined): Array<string | undefined> => {
+			if (!isNil(ta)) {
+				return filter(ta.split(','), (tag) => tag !== '');
+			}
+			if (!isNil(tn)) {
+				return getTagIdsFromName(tn);
+			}
+			return [];
+		},
+		[]
+	);
+	const normalizeMailPartMapFn = useCallback((v: SoapMailMessagePart): MailMessagePart => {
+		const ret: MailMessagePart = {
+			contentType: v.ct,
+			size: v.s || 0,
+			name: v.part,
+			disposition: v.cd
+		};
+		if (v.mp) {
+			ret.parts = map(v.mp || [], normalizeMailPartMapFn);
+		}
+		if (v.filename) ret.filename = v.filename;
+		if (v.content) ret.content = v.content;
+		if (v.ci) ret.ci = v.ci;
+		if (v.cd) ret.disposition = v.cd;
+		// console.log('==> ret', ret);
+		// console.log('==> v', v);
+		return ret;
+	}, []);
+	const findBodyPart = useCallback(
+		(
+			mp: Array<SoapMailMessagePart>,
+			acc: { contentType: string; content: string },
+			id: string
+		): { contentType: string; content: string } => {
+			const bodyPart = reduce(
+				mp,
+				(found, part) => {
+					if (part.mp) return findBodyPart(part.mp, found, id);
+					if (part && part.body) {
+						if (!found.contentType.length) {
+							return { contentType: part.ct, content: part.content ?? '' };
+						}
+						if (
+							part.part &&
+							part.part.indexOf('.') === -1 &&
+							part.cd &&
+							part.cd === 'inline' &&
+							!part.ci &&
+							!(part.ct && part.ct === 'text/plain')
+						) {
+							return {
+								...found,
+								content: found.content.concat(
+									`<img src='/service/home/~/?auth=co&loc=en&id=${id}&part=${part?.part}'>` ?? ''
+								)
+							};
+						}
+						return { ...found, content: found.content.concat(part.content ?? '') };
+					}
+					return found;
+				},
+				acc
+			);
+
+			return bodyPart;
+		},
+		[]
+	);
+	const generateBody = useCallback(
+		(
+			mp: Array<SoapMailMessagePart>,
+			id: string
+		): {
+			contentType: string;
+			content: string;
+		} => findBodyPart(mp, { contentType: '', content: '' }, id),
+		[findBodyPart]
+	);
+	const extractAttachmentIdsFromHtmlContent = (content: string): Array<string> => {
+		const matches = content.match(/cid:(.*?)(?="|&)/g);
+		const result = matches ? map(matches, (match) => match.replace('cid:', '')) : [];
+		return result;
+	};
+
+	// examine the multipart and return an array of ids referenced in the body of the html
+	const getAttachmentsAnchoredOnHtmlBody = useCallback(
+		(
+			multipart: Array<SoapMailMessagePart> | undefined | AttachmentPart | Array<AttachmentPart>
+		): Array<string> => {
+			const result: Array<string> = [];
+
+			const extractCid = (
+				mp: Array<SoapMailMessagePart> | undefined | AttachmentPart | Array<AttachmentPart>
+			): void => {
+				forEach(mp, (item: SoapMailMessagePart) => {
+					if (item.mp) {
+						extractCid(item.mp);
+					}
+					if (item.content) {
+						result.push(...extractAttachmentIdsFromHtmlContent(item.content));
+					}
+				});
+			};
+
+			extractCid(multipart);
+			return result;
+		},
+		[]
+	);
+	const cleanUpCi = (id: string): string => id.slice(1, id.indexOf('@'));
+
+	const isIgnoreAttachment = (item: AttachmentPart): boolean => {
+		if ((item && item.ct === 'multipart/appledouble') || item.ct === 'application/applefile') {
+			return true;
+		}
+		if (item.body && (item.ct === 'text/html' || item.ct === 'text/plain')) {
+			return true;
+		}
+		if (item.ct === 'multipart/digest') {
+			return true;
+		}
+		if (item.ci && item.ci === 'text-body') {
+			return true;
+		}
+		if (item.ct === 'text/calendar' && !item.filename) {
+			return true;
+		}
+		return false;
+	};
+	const getAttachmentsFromParts = useCallback(
+		(mailParts: Array<AttachmentPart> | AttachmentPart): Array<AttachmentPart> => {
+			const anchoredAttachmentsList = getAttachmentsAnchoredOnHtmlBody(mailParts);
+			let results: Array<AttachmentPart> = [];
+			if (mailParts) {
+				if (isArray(mailParts)) {
+					forEach(mailParts, (part) => {
+						const attachmentParts = getAttachmentsFromParts(part);
+						forEach(attachmentParts, (attachmentPart: AttachmentPart) => {
+							if (!isIgnoreAttachment(attachmentPart)) {
+								const item = {
+									...attachmentPart,
+									contentType: attachmentPart.ct,
+									name: attachmentPart?.part,
+									size: attachmentPart?.s
+								};
+								if (
+									(item.cd && item.cd === 'attachment') ||
+									(item.ct && (item.ct === 'message/rfc822' || item.ct === 'text/calendar')) ||
+									item.filename ||
+									item.ci
+								) {
+									if (
+										item.cd &&
+										item.cd === 'inline' &&
+										item.ci &&
+										anchoredAttachmentsList.includes(cleanUpCi(item.ci))
+									) {
+										item.cd = 'inline';
+									} else if (
+										part.ct === 'multipart/related' &&
+										item.ci &&
+										item.cd &&
+										item.cd === 'attachment' &&
+										anchoredAttachmentsList.includes(cleanUpCi(item.ci))
+									) {
+										item.cd = 'inline';
+									} else {
+										item.cd = 'attachment';
+									}
+									if (item.ct === 'message/rfc822' && !item.filename) {
+										item.filename = 'Unknown <message/rfc822>';
+									}
+									if (item.ct === 'text/html' && !item.filename) {
+										item.filename = 'Unknown <text/html>';
+									}
+									if (item.ct && item.ct !== 'application/pkcs7-signature') {
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore
+										results.push(item);
+									}
+								}
+							}
+						});
+					});
+				} else if (
+					(mailParts && mailParts.cd && mailParts.cd === 'attachment') ||
+					(mailParts.ct &&
+						(mailParts.ct === 'message/rfc822' || mailParts.ct === 'text/calendar')) ||
+					mailParts.filename ||
+					mailParts.ci
+				) {
+					const updatedMailPart: AttachmentPart = { ...mailParts };
+					if (isIgnoreAttachment(mailParts)) {
+						extractAttachmentIdsFromHtmlContent(updatedMailPart.content || '');
+						if (
+							updatedMailPart.cd &&
+							updatedMailPart.cd === 'inline' &&
+							updatedMailPart.ci &&
+							anchoredAttachmentsList.includes(cleanUpCi(updatedMailPart.ci))
+						) {
+							updatedMailPart.cd = 'inline';
+						} else if (
+							updatedMailPart.ct === 'multipart/related' &&
+							updatedMailPart.ci &&
+							updatedMailPart.cd &&
+							updatedMailPart.cd === 'attachment' &&
+							anchoredAttachmentsList.includes(cleanUpCi(updatedMailPart.ci))
+						) {
+							updatedMailPart.cd = 'inline';
+						} else {
+							updatedMailPart.cd = 'attachment';
+						}
+					}
+					results.push(updatedMailPart);
+				} else if (mailParts.mp) {
+					results = results.concat(getAttachmentsFromParts(mailParts.mp));
+				}
+			}
+			return results;
+		},
+		[getAttachmentsAnchoredOnHtmlBody]
+	);
+	// const getMessage = useCallback(
+	// 	(messageId): void => {
+	// 		getMessageRequest(quarantineAccountId, messageId).then((response: any): void => {
+	// 			// const data = response?.Body?.SearchResponse?.m;
+	// 			// setMessageListData(data);
+	// 			console.log('getMessageRequest ==>', response);
+	// 			const m = response.Body?.GetMsgResponse?.m?.[0];
+	// 			const normalizedMessage = {
+	// 				conversation: m.cid,
+	// 				id: m.id,
+	// 				date: m.d,
+	// 				size: m.s,
+	// 				parent: m.l,
+	// 				fragment: m.fr,
+	// 				subject: m.su,
+	// 				participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
+	// 				tags: getTagIds(m.t, m.tn),
+	// 				parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
+	// 				attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
+	// 				// attachments: undefined,
+	// 				invite: m.inv,
+	// 				shr: m.shr,
+	// 				body: m.mp
+	// 					? generateBody(m.mp || [], m.id)
+	// 					: {
+	// 							contentType: '',
+	// 							content: ''
+	// 					  },
+	// 				isComplete: true,
+	// 				isScheduled: !!m.autoSendTime,
+	// 				autoSendTime: m.autoSendTime,
+	// 				read: !isNil(m.f) ? !/u/.test(m.f) : true,
+	// 				hasAttachment: !isNil(m.f) ? /a/.test(m.f) : false,
+	// 				flagged: !isNil(m.f) ? /f/.test(m.f) : false,
+	// 				urgent: !isNil(m.f) ? /!/.test(m.f) : false,
+	// 				isDeleted: !isNil(m.f) ? /x/.test(m.f) : false,
+	// 				isDraft: !isNil(m.f) ? /d/.test(m.f) : false,
+	// 				isForwarded: !isNil(m.f) ? /w/.test(m.f) : false,
+	// 				isSentByMe: !isNil(m.f) ? /s/.test(m.f) : false,
+	// 				isInvite: !isNil(m.f) ? /v/.test(m.f) : false,
+	// 				isReplied: !isNil(m.f) ? /r/.test(m.f) : false,
+	// 				isReadReceiptRequested: !isNil(m.f) ? !/n/.test(m.f) : true
+	// 			};
+	// 			console.log('normalizedMessage ==>', normalizedMessage);
+	// 			setMessage(normalizedMessage);
+	// 			setShowMessageView(true);
+	// 		});
+	// 	},
+	// 	[
+	// 		generateBody,
+	// 		getAttachmentsFromParts,
+	// 		getTagIds,
+	// 		normalizeMailPartMapFn,
+	// 		normalizeParticipantsFromSoap,
+	// 		quarantineAccountId
+	// 	]
+	// );
 	useEffect(() => {
 		const propertiesToExtract = ['zimbraAmavisQuarantineAccount', 'zimbraDefaultDomainName'];
 
@@ -190,9 +684,93 @@ const QuarantineList: FC = () => {
 
 			getAccountRequest('', obj.zimbraAmavisQuarantineAccount.toString(), 0).then((res) => {
 				if (res?.account?.[0]?.id) {
+					setQuarantineAccountId(res?.account?.[0]?.id);
 					getQuarantineMessages(res?.account?.[0]?.id).then((response: any): void => {
 						const data = response?.Body?.SearchResponse?.m;
-						setMessageListData(data);
+						const messageListArr: any = [];
+						data.forEach((item: any): any =>
+							messageListArr.push({
+								_jsns: 'urn:zimbraMail',
+								m: {
+									html: 1,
+									id: item.id,
+									needExp: 1,
+									header: [
+										{
+											n: 'X-Spam-Status'
+										}
+									]
+								}
+							})
+						);
+						batchService({
+							GetMsgRequest: messageListArr,
+							_jsns: 'urn:zimbra'
+						}).then((msgBatchData) => {
+							console.log('msgBatchData ==>', msgBatchData);
+							const normalizedMessageList: any = [];
+							msgBatchData?.GetMsgResponse?.forEach((item: any) => {
+								const m = item.m?.[0];
+								console.log('==>', m?._attrs?.['X-Spam-Status']);
+								const scoreValueArr: any[] = m?._attrs?.['X-Spam-Status']?.split('score=');
+								const reasonValueArr: any[] = m?._attrs?.['X-Spam-Status']?.split('tests=');
+								let scoreValueString = '';
+								let reasonValueString = '';
+								if (scoreValueArr?.length > 1) {
+									scoreValueString = scoreValueArr[1]?.toString() || '';
+									scoreValueString = scoreValueString.split(' ')?.[0] || '';
+								}
+								if (reasonValueArr?.length > 1) {
+									reasonValueString = reasonValueArr[1]?.toString() || '';
+									reasonValueString = reasonValueString.split(' ')?.[0] || '';
+								}
+								const normalizedMessage = {
+									conversation: m.cid,
+									id: m.id,
+									date: m.d,
+									size: m.s,
+									parent: m.l,
+									fragment: m.fr,
+									subject: m.su,
+									participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
+									tags: getTagIds(m.t, m.tn),
+									parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
+									attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
+									// attachments: undefined,
+									invite: m.inv,
+									shr: m.shr,
+									body: m.mp
+										? generateBody(m.mp || [], m.id)
+										: {
+												contentType: '',
+												content: ''
+										  },
+									isComplete: true,
+									isScheduled: !!m.autoSendTime,
+									autoSendTime: m.autoSendTime,
+									read: !isNil(m.f) ? !/u/.test(m.f) : true,
+									hasAttachment: !isNil(m.f) ? /a/.test(m.f) : false,
+									flagged: !isNil(m.f) ? /f/.test(m.f) : false,
+									urgent: !isNil(m.f) ? /!/.test(m.f) : false,
+									isDeleted: !isNil(m.f) ? /x/.test(m.f) : false,
+									isDraft: !isNil(m.f) ? /d/.test(m.f) : false,
+									isForwarded: !isNil(m.f) ? /w/.test(m.f) : false,
+									isSentByMe: !isNil(m.f) ? /s/.test(m.f) : false,
+									isInvite: !isNil(m.f) ? /v/.test(m.f) : false,
+									isReplied: !isNil(m.f) ? /r/.test(m.f) : false,
+									isReadReceiptRequested: !isNil(m.f) ? !/n/.test(m.f) : true,
+									score: scoreValueString,
+									reason: reasonValueString
+								};
+								normalizedMessageList.push(normalizedMessage);
+							});
+
+							console.log('normalizedMessage ==>', normalizedMessageList);
+							setMessageListData(normalizedMessageList);
+							// deleteOnlyDomain();
+						});
+
+						// setMessageListData(data);
 					});
 				}
 			});
@@ -201,7 +779,15 @@ const QuarantineList: FC = () => {
 			setQuarantineDomaintName(obj.zimbraDefaultDomainName.toString());
 		}
 		setConfigDataLoaded(true);
-	}, [config, getAllConfigData]);
+	}, [
+		config,
+		generateBody,
+		getAllConfigData,
+		getAttachmentsFromParts,
+		getTagIds,
+		normalizeMailPartMapFn,
+		normalizeParticipantsFromSoap
+	]);
 
 	const onChange = (): void => {
 		console.log('__interval change');
@@ -283,6 +869,7 @@ const QuarantineList: FC = () => {
 				});
 			});
 	}, [createSnackbar, getAllConfigData, quarantineAccountName, quarantineDomaintName, t]);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -474,6 +1061,8 @@ const QuarantineList: FC = () => {
 											<MessageListTable
 												messages={messageListData}
 												selectedRows={messageSelection}
+												setMessage={setMessage}
+												setShowMessageView={setShowMessageView}
 												onSelectionChange={(selected: any): void => {
 													setMessageSelection(selected);
 												}}
@@ -559,6 +1148,157 @@ const QuarantineList: FC = () => {
 					)}
 				</Text>
 			</Modal>
+			{showMessageView && message.id && (
+				<ModalOverlay setOpen={setShowMessageView} open={showMessageView} maxWidth="58.75rem">
+					<Container background="white" mainAlignment="flex-start">
+						<Row
+							mainAlignment="flex-start"
+							crossAlignment="center"
+							orientation="horizontal"
+							background="white"
+							width="fill"
+							height="48px"
+							style={{ borderBottom: '1px solid #E6E9ED' }}
+						>
+							<Row padding={{ horizontal: 'small' }}></Row>
+							<Row takeAvailableSpace mainAlignment="flex-start">
+								<Text size="medium" overflow="ellipsis" weight="bold">
+									{`${find(message?.participants, { type: 'f' })?.address} <${message?.subject}>`}
+								</Text>
+							</Row>
+							<Row padding={{ right: 'extrasmall' }}>
+								<IconButton
+									size="medium"
+									icon="CloseOutline"
+									onClick={(): void => setShowMessageView(false)}
+								/>
+							</Row>
+						</Row>
+						<Row
+							mainAlignment="flex-end"
+							orientation="horizontal"
+							width="fill"
+							padding={{ all: 'large' }}
+						>
+							<Button
+								label={t('quarantine.deliver', 'DELIVER')}
+								type="outlined"
+								onClick={(): void => setShowMessageView(false)}
+							/>
+							<Padding left="small">
+								<Button
+									label={t('label.delete_button', 'DELETE')}
+									color="error"
+									type="ghost"
+									onClick={(): void => {
+										setShowMessageView(false);
+									}}
+								/>
+							</Padding>
+						</Row>
+						<Row
+							mainAlignment="flex-start"
+							orientation="horizontal"
+							width="fill"
+							padding={{ all: 'large' }}
+						>
+							<Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
+								<Row
+									width="50%"
+									mainAlignment="flex-start"
+									crossAlignment="center"
+									orientation="horizontal"
+								>
+									<Row width="95%" mainAlignment="flex-start">
+										<Text size="large" weight="bold">
+											{message?.subject}
+										</Text>
+									</Row>
+								</Row>
+								<Row
+									width="50%"
+									mainAlignment="flex-end"
+									crossAlignment="center"
+									orientation="vertical"
+								>
+									<Row width="95%" mainAlignment="flex-end" orientation="horizontal">
+										<Text size="small" weight="bold">
+											{t('label.date', 'Date')} :{' '}
+										</Text>
+										<Text size="small">
+											{' '}
+											{moment(message?.date).format('DD-MM-YYYY - HH:mm A')}
+										</Text>
+									</Row>
+									<Row width="95%" mainAlignment="flex-end" orientation="horizontal">
+										<Text size="small" weight="bold">
+											{t('label.received', 'Received')} :{' '}
+										</Text>
+										<Text size="small">{moment(message?.date).format('DD-MM-YYYY - HH:mm A')}</Text>
+									</Row>
+								</Row>
+								<Row width="100%" padding={{ top: 'medium' }}>
+									<Divider color="gray2" />
+								</Row>
+								<Row
+									width="100%"
+									mainAlignment="flex-start"
+									orientation="horizontal"
+									padding={{ top: 'large' }}
+								>
+									<Text size="small" weight="bold">
+										{find(message?.participants, { type: 'f' })?.name}
+									</Text>
+									<Text size="small">{` <${
+										find(message?.participants, { type: 'f' })?.address
+									}>`}</Text>
+								</Row>
+								<Row
+									width="100%"
+									mainAlignment="flex-start"
+									orientation="horizontal"
+									padding={{ top: 'medium' }}
+								>
+									<Text size="small" weight="bold">
+										{t('label.to', 'To')} :{' '}
+									</Text>
+									<Text size="small"> {find(message?.participants, { type: 't' })?.address}</Text>
+								</Row>
+								<Row
+									width="100%"
+									mainAlignment="flex-start"
+									orientation="horizontal"
+									padding={{ top: 'medium' }}
+								>
+									<AttachmentsBlock
+										message={message}
+										// isExternalMessage={isExternalMessage}
+										// openEmlPreview={openEmlPreview}
+									/>
+									<MailMessageRenderer
+										mailMsg={message}
+										onLoadChange={(): void => {
+											console.log('==>onLoadChange');
+										}}
+										// msgId={message.id}
+										// body={message.body}
+										// // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// // @ts-ignore
+										// parts={findAttachments(message.parts ?? [], [])}
+										// participants={message.participants}
+									/>
+								</Row>
+							</Row>
+							<Row padding={{ all: 'large' }} width="fill"></Row>
+							<Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
+								<Text overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
+									{message?.body?.content}
+								</Text>
+							</Row>
+						</Row>
+					</Container>
+				</ModalOverlay>
+			)}
 		</Container>
 	);
 };
