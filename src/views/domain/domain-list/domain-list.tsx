@@ -3,10 +3,28 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ReactElement } from 'react';
+import React, {
+	FC,
+	useEffect,
+	useState,
+	useMemo,
+	useCallback,
+	useRef,
+	ReactElement,
+	useContext
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import { Container, Input, Row, Text, Table, Divider, Icon } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Input,
+	Row,
+	Text,
+	Table,
+	Divider,
+	Icon,
+	SnackbarManagerContext
+} from '@zextras/carbonio-design-system';
 import logo from '../../../assets/gardian.svg';
 import Paging from '../../components/paging';
 import { getDomainList } from '../../../services/search-domain-service';
@@ -62,6 +80,8 @@ const DomainList: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainView = useDomainStore((state) => state.setDomainView);
 	const [limit, setLimit] = useState<number>(10);
+	const [hasError, setHasError] = useState<boolean>(false);
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 
 	const tableRef = useRef(null);
 
@@ -139,74 +159,88 @@ const DomainList: FC = () => {
 	);
 
 	const getAllDomainList = useCallback((): void => {
-		getDomainList(searchQuery, offset, limit).then((data) => {
-			const domainListResponse: ZimbraDomainResponse = data?.domain || [];
-			if (domainListResponse && Array.isArray(domainListResponse)) {
-				const domainListArr: {
-					id: string;
-					columns: ReactElement[];
-					iteam: ZimbraDomainEntry;
-					clickable: boolean;
-				}[] = [];
-				setTotalDomain(data.searchTotal || 0);
-				domainListResponse.forEach((item: ZimbraDomainEntry) => {
-					const domainIteam: ZimbraDomainEntry = {
-						name: item.name,
-						id: item.id,
-						zimbraDomainType: '',
-						zimbraDomainStatus: 'active',
-						zimbraDomainName: '',
-						zimbraId: '',
-						a: item.a
-					};
-					item?.a?.forEach((ele: ZimbraDomainAttribute) => {
-						if (ele.n === 'zimbraDomainType') {
-							domainIteam.zimbraDomainType = ele._content;
-						} else if (ele.n === 'zimbraDomainStatus') {
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore
-							domainIteam.zimbraDomainStatus = ele._content;
-						} else if (ele.n === 'zimbraDomainName') {
-							domainIteam.zimbraDomainName = ele._content;
-						} else if (ele.n === 'zimbraId') {
-							domainIteam.zimbraId = ele._content;
-						}
-					});
-					domainListArr.push({
-						id: item?.id,
-						columns: [
-							<Text
-								size="small"
-								key={item?.id}
-								color="gray0"
-								weight="regular"
-								onClick={(): void => {
-									onDomainSelect(domainIteam);
-								}}
-							>
-								{item?.name || ' '}
-							</Text>,
+		getDomainList(searchQuery, offset, limit)
+			.then((data) => {
+				const domainListResponse: ZimbraDomainResponse = data?.domain || [];
+				if (domainListResponse && Array.isArray(domainListResponse)) {
+					const domainListArr: {
+						id: string;
+						columns: ReactElement[];
+						iteam: ZimbraDomainEntry;
+						clickable: boolean;
+					}[] = [];
+					setTotalDomain(data.searchTotal || 0);
+					domainListResponse.forEach((item: ZimbraDomainEntry) => {
+						const domainIteam: ZimbraDomainEntry = {
+							name: item.name,
+							id: item.id,
+							zimbraDomainType: '',
+							zimbraDomainStatus: 'active',
+							zimbraDomainName: '',
+							zimbraId: '',
+							a: item.a
+						};
+						item?.a?.forEach((ele: ZimbraDomainAttribute) => {
+							if (ele.n === 'zimbraDomainType') {
+								domainIteam.zimbraDomainType = ele._content;
+							} else if (ele.n === 'zimbraDomainStatus') {
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore
+								domainIteam.zimbraDomainStatus = ele._content;
+							} else if (ele.n === 'zimbraDomainName') {
+								domainIteam.zimbraDomainName = ele._content;
+							} else if (ele.n === 'zimbraId') {
+								domainIteam.zimbraId = ele._content;
+							}
+						});
+						domainListArr.push({
+							id: item?.id,
+							columns: [
+								<Text
+									size="small"
+									key={item?.id}
+									color="gray0"
+									weight="regular"
+									onClick={(): void => {
+										onDomainSelect(domainIteam);
+									}}
+								>
+									{item?.name || ' '}
+								</Text>,
 
-							<Text
-								size="small"
-								weight="light"
-								key={item?.id}
-								color={STATUS_COLOR[domainIteam.zimbraDomainStatus].color}
-								onClick={(): void => {
-									onDomainSelect(domainIteam);
-								}}
-							>
-								{STATUS_COLOR[domainIteam.zimbraDomainStatus].label}
-							</Text>
-						],
-						iteam: domainIteam,
-						clickable: true
+								<Text
+									size="small"
+									weight="light"
+									key={item?.id}
+									color={STATUS_COLOR[domainIteam.zimbraDomainStatus].color}
+									onClick={(): void => {
+										onDomainSelect(domainIteam);
+									}}
+								>
+									{STATUS_COLOR[domainIteam.zimbraDomainStatus].label}
+								</Text>
+							],
+							iteam: domainIteam,
+							clickable: true
+						});
 					});
+					setDomainList(domainListArr);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error
+						? error?.error
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
 				});
-				setDomainList(domainListArr);
-			}
-		});
-	}, [STATUS_COLOR, offset, onDomainSelect, searchQuery, limit]);
+				setHasError(true);
+			});
+	}, [STATUS_COLOR, offset, onDomainSelect, searchQuery, limit, t, createSnackbar]);
 	useEffect(() => {
 		getAllDomainList();
 	}, [getAllDomainList]);
@@ -262,7 +296,7 @@ const DomainList: FC = () => {
 							<Container>
 								<Input
 									label={t('label.i_am_looking_for_this_domain', `I'm looking for this domain…`)}
-									disabled={domainList.length === 0 && searchString.length === 0}
+									disabled={domainList.length === 0 && searchString.length === 0 && !hasError}
 									value={searchString}
 									backgroundColor="gray5"
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

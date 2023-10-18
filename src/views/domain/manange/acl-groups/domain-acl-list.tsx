@@ -65,6 +65,7 @@ const DomainAclList: FC = () => {
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [hasError, setHasError] = useState<boolean>(false);
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -169,128 +170,147 @@ const DomainAclList: FC = () => {
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE))(zimbraIsAdminGroup=TRUE))`;
 		setIsRequestInProgress(true);
-		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name').then((data) => {
-			const dlList = data?.dl;
-			if (dlList) {
-				if (data?.searchTotal) {
-					setTotalAccount(data?.searchTotal);
-				}
-				const mList: any[] = [];
-				dlList.forEach((item: any, index: number) => {
-					mList.push({
-						id: item?.id,
-						columns: [
-							<Container
-								crossAlignment="flex-start"
-								key={item?.id}
-								style={{ cursor: 'pointer' }}
-								onClick={(e: { stopPropagation: () => void }): void => {
-									e.stopPropagation();
-									setSelectedAclList(item);
-									setSelectedFromRow(item);
-									handleClick(e);
-								}}
-							>
-								<Text size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
-									{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-								</Text>
-							</Container>,
-							<Container
-								crossAlignment="flex-start"
-								key={`${item?.id}-address`}
-								style={{ cursor: 'pointer' }}
-								onClick={(e: { stopPropagation: () => void }): void => {
-									e.stopPropagation();
-									setSelectedAclList(item);
-									setSelectedFromRow(item);
-									handleClick(e);
-								}}
-							>
-								<Text size="small" weight="light" key={`${item?.id}address-child`} color="gray0">
-									{item?.name}
-								</Text>
-							</Container>,
-							<Container
-								crossAlignment="flex-start"
-								key={`${item?.id}-member`}
-								style={{ cursor: 'pointer' }}
-								onClick={(e: { stopPropagation: () => void }): void => {
-									e.stopPropagation();
-									setSelectedAclList(item);
-									setSelectedFromRow(item);
-									handleClick(e);
-								}}
-							>
-								<Text size="small" weight="light" key={`${item?.id}member-child`} color="gray0">
-									{''}
-								</Text>
-							</Container>,
-							<Container
-								crossAlignment="flex-start"
-								key={`${item?.id}-status`}
-								style={{ cursor: 'pointer' }}
-								onClick={(e: { stopPropagation: () => void }): void => {
-									e.stopPropagation();
-									setSelectedAclList(item);
-									setSelectedFromRow(item);
-									handleClick(e);
-								}}
-							>
-								<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
-									{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-										? t('label.can_send_receiver', 'Can Send & Receive')
-										: t('label.cant_send_receiver', "Can't Send & Receive")}
-								</Text>
-							</Container>,
-							<Container
-								crossAlignment="flex-start"
-								key={`${item?.id}-gal`}
-								style={{ cursor: 'pointer' }}
-								onClick={(e: { stopPropagation: () => void }): void => {
-									e.stopPropagation();
-									setSelectedAclList(item);
-									setSelectedFromRow(item);
-									handleClick(e);
-								}}
-							>
-								<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
-									{''}
-								</Text>
-							</Container>,
-							<Container
-								crossAlignment="flex-start"
-								key={`${item?.id}-description`}
-								style={{ cursor: 'pointer' }}
-								onClick={(e: { stopPropagation: () => void }): void => {
-									e.stopPropagation();
-									setSelectedAclList(item);
-									setSelectedFromRow(item);
-									handleClick(e);
-								}}
-							>
-								<Text
-									size="small"
-									weight="light"
-									key={`${item?.id}description-child`}
-									color="gray0"
+		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name')
+			.then((data) => {
+				const dlList = data?.dl;
+				if (dlList) {
+					if (data?.searchTotal) {
+						setTotalAccount(data?.searchTotal);
+					}
+					const mList: any[] = [];
+					dlList.forEach((item: any, index: number) => {
+						mList.push({
+							id: item?.id,
+							columns: [
+								<Container
+									crossAlignment="flex-start"
+									key={item?.id}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedAclList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
 								>
-									{item?.a?.find((a: any) => a?.n === 'description')?._content}
-								</Text>
-							</Container>
-						]
+									<Text
+										size="small"
+										weight="regular"
+										key={`${item?.id}display-child`}
+										color="gray0"
+									>
+										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-address`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedAclList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}address-child`} color="gray0">
+										{item?.name}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-member`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedAclList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}member-child`} color="gray0">
+										{''}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-status`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedAclList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
+										{item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
+											? t('label.can_send_receiver', 'Can Send & Receive')
+											: t('label.cant_send_receiver', "Can't Send & Receive")}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-gal`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedAclList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
+										{''}
+									</Text>
+								</Container>,
+								<Container
+									crossAlignment="flex-start"
+									key={`${item?.id}-description`}
+									style={{ cursor: 'pointer' }}
+									onClick={(e: { stopPropagation: () => void }): void => {
+										e.stopPropagation();
+										setSelectedAclList(item);
+										setSelectedFromRow(item);
+										handleClick(e);
+									}}
+								>
+									<Text
+										size="small"
+										weight="light"
+										key={`${item?.id}description-child`}
+										color="gray0"
+									>
+										{item?.a?.find((a: any) => a?.n === 'description')?._content}
+									</Text>
+								</Container>
+							]
+						});
 					});
+					setAclList(mList);
+					setAclListItem(dlList);
+					setIsUpdateRecord(false);
+				} else {
+					setTotalAccount(0);
+					setAclList([]);
+					setIsUpdateRecord(false);
+				}
+				setIsRequestInProgress(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error
+						? error?.error
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
 				});
-				setAclList(mList);
-				setAclListItem(dlList);
-				setIsUpdateRecord(false);
-			} else {
-				setTotalAccount(0);
-				setAclList([]);
-				setIsUpdateRecord(false);
-			}
-			setIsRequestInProgress(false);
-		});
-	}, [t, offset, limit, domainName, searchQuery, handleClick]);
+				setHasError(true);
+			});
+	}, [t, offset, limit, domainName, searchQuery, handleClick, createSnackbar]);
 
 	useEffect(() => {
 		getAclList();
@@ -647,7 +667,7 @@ const DomainAclList: FC = () => {
 						>
 							<Container>
 								<Input
-									disabled={aclList.length === 0 && searchString.length === 0}
+									disabled={aclList.length === 0 && searchString.length === 0 && !hasError}
 									backgroundColor="gray5"
 									label={t('label.search_dot', 'Search…')}
 									onChange={(e: any): any => {
