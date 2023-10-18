@@ -1027,6 +1027,7 @@
         "delegated_administration_helper_text": "Delegated administration for {{domainName}} will be disabled. <br /> You have two options: <br /><br /> 1. Remove all ACLs (Access Control Lists) from the domain. <br /> 2.Keep the ACLs (Access Control Lists) in the domain, but disable the associated rights. <br /><br /> How would you like to proceed?",
         "delegated_administration_title": "Delegated Administration",
         "delegates": "DELEGATES",
+        "delegates_domain_admins": "Delegated Domain Admins",
         "delegates_title": "Delegates",
         "delet_bucket_header": "Removing {{name}}",
         "delet_volume_header": "Delete {{name}} ?",

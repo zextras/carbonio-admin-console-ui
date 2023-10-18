@@ -62,7 +62,7 @@ const DomainDelegatedTable: FC<{
 				id: v?.id,
 				columns: [
 					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
-						<Text weight="light">{v?.name.split('@')[0]}</Text>
+						<Text weight="light">{v?.name}</Text>
 					</Row>
 				],
 				clickable: true
@@ -483,7 +483,7 @@ const ManageDelegates: FC = () => {
 						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 							<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 								<Text size="medium" weight="bold" color="gray0">
-									{t('label.domain_delegates_title', 'Domain Delegates')}
+									{t('label.delegates_domain_admins', 'Delegated Domain Admins')}
 								</Text>
 							</Row>
 						</Row>
