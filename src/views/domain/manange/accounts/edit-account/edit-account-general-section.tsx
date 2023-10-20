@@ -79,11 +79,6 @@ const EditAccountGeneralSection: FC = () => {
 	const [accountQuota, setAccountQuota] = useState('');
 
 	useEffect(() => {
-		setAccountDetail((prev: AccountType) => ({ ...prev, changeNameBool: false }));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
-
-	useEffect(() => {
 		setAccountQuota(
 			accountDetail.zimbraMailQuota ? (accountDetail.zimbraMailQuota / 1048576).toString() : ''
 		);
@@ -166,7 +161,6 @@ const EditAccountGeneralSection: FC = () => {
 	);
 	const changeUserNaneDetail = useCallback(
 		(e) => {
-			setAccountDetail((prev: AccountType) => ({ ...prev, changeNameBool: true }));
 			setAccountDetail((prev: AccountType) => ({
 				...prev,
 				uid: e.target.value?.replace(/ /g, '')?.toLowerCase()
@@ -177,7 +171,6 @@ const EditAccountGeneralSection: FC = () => {
 
 	const changeAccDisplayName = useCallback(
 		(e) => {
-			setAccountDetail((prev: AccountType) => ({ ...prev, changeDisplayNameBool: true }));
 			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
@@ -316,42 +309,6 @@ const EditAccountGeneralSection: FC = () => {
 		getDomainLists(domainName);
 	}, [domainName, getDomainLists, setAccountDetail, setInitAccountDetail]);
 
-	const combineDisplayName = useMemo(
-		() =>
-			`${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}${
-				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
-			}${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}`.trim(),
-		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
-	);
-
-	useEffect(() => {
-		!accountDetail?.changeDisplayNameBool &&
-			setAccountDetail((prev: AccountType) => ({ ...prev, displayName: combineDisplayName }));
-	}, [accountDetail?.changeDisplayNameBool, combineDisplayName, setAccountDetail]);
-
-	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
-
-	const combineName = useMemo(() => {
-		const { sn, initials, givenName, changeNameBool, uid } = accountDetail || {};
-
-		if (!changeNameBool) {
-			const userName = [];
-
-			if (sn) userName.push(getModifiedName(sn));
-			if (initials) userName.push(head(getModifiedName(initials)));
-			if (givenName) userName.push(getModifiedName(givenName));
-
-			return userName.join('.');
-		}
-
-		return uid || '';
-	}, [accountDetail]);
-
-	useEffect(() => {
-		!accountDetail?.changeNameBool &&
-			setAccountDetail((prev: AccountType) => ({ ...prev, uid: combineName }));
-	}, [accountDetail?.changeNameBool, combineName, setAccountDetail]);
-
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -400,7 +357,7 @@ const EditAccountGeneralSection: FC = () => {
 					<Row width="47%" mainAlignment="flex-start">
 						<Input
 							backgroundColor="gray5"
-							label={t('label.userName', 'username')}
+							label={t('label.advance_edit_userName', 'Username')}
 							onChange={changeUserNaneDetail}
 							inputName="uid"
 							defaultValue={accountDetail?.uid}
@@ -448,10 +405,10 @@ const EditAccountGeneralSection: FC = () => {
 
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.viewed_name', 'Viewed Name')}
+						label={t('label.advance_edit_viewed_name', 'Viewed Name')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.displayName}
-						value={accountDetail?.displayName || combineDisplayName}
+						value={accountDetail?.displayName}
 						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"

@@ -308,6 +308,7 @@ export const LONG = 'long';
 export const DOMAIN_NAME = 'domainName';
 export const UID = 'uid';
 export const CHANGE_NAME_BOOLEAN = 'changeNameBool';
+export const IS_DEFAULT_USER_NAME = 'isDefaultUserName';
 export const CHANGE_DISPLAY_NAME_BOOLEAN = 'changeDisplayNameBool';
 export const CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK = 'carbonioAmavisDisableVirusCheck';
 export const ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS = 'zimbraDomainCOSMaxAccounts';
