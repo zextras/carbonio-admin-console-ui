@@ -32,6 +32,7 @@ import CreateResource from './create-resource';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -476,6 +477,7 @@ const DomainResources: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
+								position: 'relative',
 								height:
 									resourceList.length > 0 && !isRequestInProgress
 										? 'calc(100vh - 21.25rem)'
@@ -541,17 +543,28 @@ const DomainResources: FC = () => {
 								</Container>
 							)}
 						</Row>
-						<Row
-							orientation="horizontal"
-							mainAlignment="space-between"
-							crossAlignment="flex-start"
-							width="fill"
-							style={{ position: 'absolute', bottom: '0.25rem' }}
-						>
-							{resourceList && resourceList.length > 0 && (
-								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-							)}
-						</Row>
+
+						{resourceList && resourceList.length > 0 && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="space-between"
+								width="100%"
+								style={{ position: 'absolute', bottom: '0', width: '68rem' }}
+								height="auto"
+							>
+								<Container crossAlignment="flex-start">
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ top: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
+						)}
 					</Container>
 				</Row>
 			</Container>
