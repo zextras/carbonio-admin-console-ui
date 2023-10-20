@@ -2303,7 +2303,9 @@
         "new": {
             "create_mailstores_volume": "Create Mailstores Volume"
         },
+        "not_running": "Not Running",
         "primary_helperText": "Primary",
+        "running": "Running",
         "secondary_helperText": "Secondary",
         "serverName_volumes": "{{serverName}} Volumes",
         "serverName_volumes_create_mailstores_volume": "{{serverName}} Create Mailstores Volume",

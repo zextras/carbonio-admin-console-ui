@@ -24,6 +24,7 @@ import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import ListRow from '../../../list/list-row';
 import Paging from '../../../components/paging';
 import { getDistributionList } from '../../../../services/get-distribution-list';
@@ -144,6 +145,8 @@ const EditMailingListView: FC<any> = ({
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const { isSticky, setIsSticky } = useStickyBarStore();
 	const [isLoading, setIsLoading] = useState(false);
+	const userSetting = useUserSettings();
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 
 	const dlCreateDate = useMemo(
 		() =>
@@ -248,6 +251,15 @@ const EditMailingListView: FC<any> = ({
 		],
 		[t]
 	);
+
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === 'TRUE') {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	type DomainResponse = {
 		domain: [
@@ -2036,9 +2048,6 @@ const EditMailingListView: FC<any> = ({
 					{selectedMailingList?.dynamic && (
 						<ListRow padding={{ all: 'small' }}>
 							<Container orientation="horizontal">
-								<Container width="fit" padding={{ right: 'small' }}>
-									<Icon icon={'Link2Outline'} size="large" />
-								</Container>
 								<Container>
 									<Input
 										label={t('label.list_url', "Mailing List's URL")}
@@ -2047,7 +2056,7 @@ const EditMailingListView: FC<any> = ({
 										onChange={(e: any): any => {
 											setMemberURL(e.target.value);
 										}}
-										disabled={zimbraIsACLGroup}
+										disabled={!isGlobalAdmin}
 									/>
 								</Container>
 							</Container>

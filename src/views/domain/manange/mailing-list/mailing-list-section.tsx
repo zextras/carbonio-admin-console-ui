@@ -372,7 +372,7 @@ const MailingListSection: FC<any> = () => {
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 300px)"
+				height="calc(100vh - 13rem)"
 				background="white"
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
@@ -498,6 +498,7 @@ const MailingListSection: FC<any> = () => {
 											size="large"
 											color="grey"
 											onClick={getMemberFromLdapQuery}
+											style={{ cursor: 'pointer' }}
 										/>
 									)}
 								/>
