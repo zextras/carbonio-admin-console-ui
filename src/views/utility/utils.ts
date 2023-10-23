@@ -1760,30 +1760,32 @@ export const conversationGroupBy = (t: TFunction): Array<{ value: string; label:
 	}
 ];
 
-export const deligateSendSettings = (t: TFunction): Array<{ value: string; label: string }> => [
+export const deligateSendSettings = (
+	t: TFunction,
+	email: string
+): Array<{ value: string; label: string }> => [
 	{
-		label: t(
-			'label.save_a_copy_of_sent_messages_only_in_delegates_send_folder',
-			`Save a copy of sent messages only in delegate's Sent folder`
-		),
+		label: t('label.save_it_only_in_folder', 'Save it only in {{email}} folder', {
+			email
+		}),
 		value: 'owner'
 	},
 	{
 		label: t(
-			'label.save_a_copy_of_sent_messages_only_in_delegateds_send_folder',
-			`Save a copy of sent messages to delegate's Sent folder`
+			'label.save_it_only_in_sender_folder',
+			'Save it in {{email}} and the Delegate`s folder',
+			{
+				email
+			}
 		),
 		value: 'sender'
 	},
 	{
-		label: t(
-			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
-			`Save a copy of sent messages to delegate's and delegated Sent folder`
-		),
+		label: t('label.save_it_only_deligates_folder', 'Save it only in the Delegate`s folder'),
 		value: 'both'
 	},
 	{
-		label: t('label.dont_save_a_copy_of_sent_messages', `Don't save a copy of sent messages`),
+		label: t('label.dont_save_it', `Don't save it`),
 		value: 'none'
 	}
 ];
