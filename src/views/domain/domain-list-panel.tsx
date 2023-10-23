@@ -37,7 +37,8 @@ import {
 	GLOBAL_ROUTE,
 	BACKUP_BASIC,
 	DELEGATES_DOMAIN_ADMINS,
-	GLOBAL_DELEGATES_ROUTE
+	GLOBAL_DELEGATES_ROUTE,
+	RESOURCES
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -323,12 +324,11 @@ const DomainListPanel: FC = () => {
 				name: t('label.security_group', 'Security Groups'),
 				isSelected: isDomainSelect
 			},
-			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
-			// {
-			// 	id: RESOURCES,
-			// 	name: t('label.resources', 'Resources'),
-			// 	isSelected: isDomainSelect
-			// },
+			{
+				id: RESOURCES,
+				name: t('label.resources', 'Resources'),
+				isSelected: isDomainSelect
+			},
 			{
 				id: ACTIVE_SYNC,
 				name: t('label.active_sync', 'ActiveSync'),

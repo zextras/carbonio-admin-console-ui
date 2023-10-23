@@ -386,9 +386,9 @@ const CreateAccount: FC<{
 						</Padding>
 					</>
 				),
-				NextButton: () => (
+				NextButton: (props: { toggleNextBtn: boolean }): ReactElement => (
 					<Button
-						label={t('commons.next', 'NEXT')}
+						label={props?.toggleNextBtn ? t('commons.next', 'NEXT') : t('commons.close', 'CLOSE')}
 						onClick={(): void => {
 							setAccountCreate('next');
 						}}
