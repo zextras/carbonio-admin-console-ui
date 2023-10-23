@@ -103,7 +103,10 @@ const EditAccountDelegatesSection: FC = () => {
 	const [readRightWriteCheck, setReadWriteRightCheck] = useState<boolean>(false);
 	const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
 	const [sendBehalfRightCheck, setSendBehalfRightCheck] = useState<boolean>(false);
-	const DELEGATE_SEND_SETTINGS = useMemo(() => deligateSendSettings(t), [t]);
+	const DELEGATE_SEND_SETTINGS = useMemo(
+		() => deligateSendSettings(t, context?.accSpecificDetail?.mail),
+		[context?.accSpecificDetail?.mail, t]
+	);
 
 	useEffect(() => {
 		const identitiesArr: any = [];
