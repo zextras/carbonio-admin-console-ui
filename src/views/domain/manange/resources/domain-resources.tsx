@@ -32,6 +32,7 @@ import CreateResource from './create-resource';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -155,7 +156,7 @@ const DomainResources: FC = () => {
 			searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, 'name').then((data) => {
 				const resourceListResponse = data?.calresource || [];
 				if (resourceListResponse && Array.isArray(resourceListResponse)) {
-					setTotalAccount(data?.searchTotal);
+					setTotalAccount(data?.searchTotal || 0);
 					const rList: any[] = [];
 					resourceListResponse.forEach((item: any, index: number) => {
 						rList.push({
@@ -272,7 +273,6 @@ const DomainResources: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchResourceQuery = useCallback(
 		debounce((searchStr: string, sfilter: string) => {
-			setTotalAccount(0);
 			setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
 		}, 700),
 		[debounce, generateSearchFilterQuery]
@@ -410,7 +410,7 @@ const DomainResources: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -424,13 +424,11 @@ const DomainResources: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding>
+							<Padding all={'0'}>
 								<IconButton
 									iconColor="gray6"
 									backgroundColor="primary"
 									icon="Plus"
-									height={36}
-									width={36}
 									onClick={(): void => {
 										setShowCreateResourceView(true);
 									}}
@@ -451,7 +449,7 @@ const DomainResources: FC = () => {
 				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -479,6 +477,7 @@ const DomainResources: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
+								position: 'relative',
 								height:
 									resourceList.length > 0 && !isRequestInProgress
 										? 'calc(100vh - 21.25rem)'
@@ -491,6 +490,8 @@ const DomainResources: FC = () => {
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (
@@ -502,11 +503,10 @@ const DomainResources: FC = () => {
 								>
 									<Button
 										type="ghost"
-										iconColor="primary"
-										height={36}
+										color="primary"
 										label=""
-										width={36}
 										loading
+										onClick={(): null => null}
 									/>
 								</Container>
 							)}
@@ -543,17 +543,28 @@ const DomainResources: FC = () => {
 								</Container>
 							)}
 						</Row>
-						<Row
-							orientation="horizontal"
-							mainAlignment="space-between"
-							crossAlignment="flex-start"
-							width="fill"
-							style={{ position: 'absolute', bottom: '0.25rem' }}
-						>
-							{resourceList && resourceList.length > 0 && (
-								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-							)}
-						</Row>
+
+						{resourceList && resourceList.length > 0 && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="space-between"
+								width="100%"
+								style={{ position: 'absolute', bottom: '0', width: '68rem' }}
+								height="auto"
+							>
+								<Container crossAlignment="flex-start">
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ top: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
+						)}
 					</Container>
 				</Row>
 			</Container>

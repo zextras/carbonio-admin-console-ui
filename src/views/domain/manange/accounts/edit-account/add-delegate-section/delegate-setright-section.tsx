@@ -65,7 +65,6 @@ const DelegateSetRightsSection: FC = () => {
 								'What rights will the delegate have?'
 							)}
 							showCheckbox={false}
-							padding={{ right: 'medium' }}
 							defaultSelection={DELEGETES_RIGHTS_TYPE.find(
 								(item: any) => item.value === deligateDetail?.delegeteRights
 							)}
@@ -101,7 +100,7 @@ const DelegateSetRightsSection: FC = () => {
 								<RadioGroup value={sendingOption || deligateDetail?.right?.[0]?._content}>
 									<Radio
 										label={t(
-											'account_details.send_as_recepients',
+											'account_details.send_as_recipients',
 											`Send as (recipients will display this sender email {{targetEmail}})`,
 											{
 												targetEmail: accountDetail?.zimbraMailDeliveryAddress
@@ -119,7 +118,7 @@ const DelegateSetRightsSection: FC = () => {
 									<Radio
 										label={t(
 											'account_details.send_as_behalf',
-											`Send on Behalf of (recepients will see the sender {{targetEmail}})`,
+											`Send on Behalf of (recipients will see the sender {{targetEmail}})`,
 											{
 												targetEmail: accountDetail?.zimbraMailDeliveryAddress
 											}
@@ -165,11 +164,7 @@ const DelegateSetRightsSection: FC = () => {
 							<Row width="100%" mainAlignment="flex-start">
 								<Row width="100%" mainAlignment="space-between">
 									<Row width="100%" mainAlignment="space-between">
-										<RadioGroup
-											value={deligateDetail?.folderSelection}
-											width="100%"
-											mainAlignment="space-between"
-										>
+										<RadioGroup value={deligateDetail?.folderSelection}>
 											<Radio
 												label={t(
 													'account_details.all_folders',
@@ -177,6 +172,8 @@ const DelegateSetRightsSection: FC = () => {
 												)}
 												value="all_folders"
 												width="19rem"
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore // Need to fix it with custom soultion
 												onChange={(newValue: string): void => {
 													setDeligateDetail((prev: any) => ({
 														...prev,
@@ -200,10 +197,10 @@ const DelegateSetRightsSection: FC = () => {
 
 									{deligateDetail?.folderSelection === 'i_want_to_select' ? (
 										<>
-											<Row width="100%" mainAlignment="space-start">
+											<Row width="100%">
 												{folderList.map((ele: any, index) =>
 													ele.id !== '1' ? (
-														<Row key={ele.id} width="200px" mainAlignment="space-start">
+														<Row key={ele.id} width="200px">
 															<Checkbox
 																defaultChecked={ele.selected || false}
 																label={ele.name}

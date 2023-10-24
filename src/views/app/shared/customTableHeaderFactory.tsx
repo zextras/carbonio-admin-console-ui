@@ -30,7 +30,7 @@ type THeader = {
 	i18nAllLabel?: string;
 	bold?: boolean;
 	items?: any;
-	onChange: (value: string | null) => void;
+	onChange: () => void;
 };
 
 interface THeaderProps {
@@ -140,6 +140,8 @@ const CustomHeaderFactory = ({
 							<Container width="4rem">
 								<Select
 									label={column.label}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									multiple
 									items={column.items}
 									i18nAllLabel={column.i18nAllLabel || 'All'}

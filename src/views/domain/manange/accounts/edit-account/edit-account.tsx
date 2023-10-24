@@ -49,18 +49,22 @@ import {
 	USER_PREFERENCES,
 	DOMAIN_NAME,
 	UID,
-	ADMINISTRATION
+	ADMINISTRATION,
+	CHANGE_NAME_BOOLEAN,
+	CHANGE_DISPLAY_NAME_BOOLEAN,
+	IS_DEFAULT_USER_NAME
 } from '../../../../../constants';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import OverlayDivision from '../../../../components/overlayDivision';
+import { AccountType } from '../account-types/account-types';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
 	width: 58.75rem;
-	top: 6.438rem;
+	top: 0;
 	right: 0;
 	bottom: 0;
 	height: auto;
@@ -81,6 +85,7 @@ const EditAccount: FC<{
 	getAccountDetail: any;
 	defaultTab: string;
 	setDefaultTab: any;
+	setShowAccountDetailView: any;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
@@ -89,6 +94,7 @@ const EditAccount: FC<{
 	signatureList,
 	getAccountDetail,
 	defaultTab,
+	setShowAccountDetailView,
 	setDefaultTab
 }) => {
 	const { t } = useTranslation();
@@ -96,6 +102,7 @@ const EditAccount: FC<{
 	const domainList = useDomainStore((state) => state.domainList);
 	const [change, setChange] = useState(defaultTab);
 	const [click, setClick] = useState('');
+	const [isLoading, setIsLoading] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const context = useContext(AccountContext);
 	const {
@@ -160,15 +167,14 @@ const EditAccount: FC<{
 	}> = ({ item, index, selected, onClick }): ReactElement => (
 		<DefaultTabBarItem
 			item={item}
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore // Need to fix it with custom soultion
 			index={index}
 			selected={selected}
 			onClick={onClick}
 			orientation="horizontal"
 		>
 			<Row padding="small">
-				<Padding horizontal="small">
-					<Icon size="medium" color={selected ? 'primary' : 'gray'} icon={item.icon} />
-				</Padding>
 				<Text size="small" color={selected ? 'primary' : 'gray'}>
 					{item.label}
 				</Text>
@@ -179,38 +185,32 @@ const EditAccount: FC<{
 		{
 			id: 'general',
 			label: t('label.general', 'GENERAL'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'InfoOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'profile',
 			label: t('label.profile', 'PROFILE'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'AddressBookOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'configuration',
 			label: t('label.configuration', 'CONFIGURATION'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'OptionsOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'user_preferences',
 			label: t('label.user_preferences', 'USER PREFERENCES'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'PersonOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'security',
 			label: t('label.security', 'SECURITY'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'LockOutline'
+			CustomComponent: ReusedDefaultTabBar
 		},
 		{
 			id: 'administration',
 			label: t('label.administration', 'ADMINISTRATION'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'CoffeeOutline'
+			CustomComponent: ReusedDefaultTabBar
 		}
 	];
 
@@ -218,8 +218,7 @@ const EditAccount: FC<{
 		items.push({
 			id: 'delegates',
 			label: t('label.delegates', 'DELEGATES'),
-			CustomComponent: ReusedDefaultTabBar,
-			icon: 'SharedAccountOutline'
+			CustomComponent: ReusedDefaultTabBar
 		});
 	}
 
@@ -318,6 +317,20 @@ const EditAccount: FC<{
 		}
 		const modifiedData: any = {};
 		let isPasswordChange = false;
+		remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
+		remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
+		remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
+		if (!accountDetail?.sn?.trim()) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t('label.surname_required', 'Surname is required'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			return;
+		}
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
 			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
 				if (accountDetail?.password?.length < 6) {
@@ -348,6 +361,7 @@ const EditAccount: FC<{
 			}
 		}
 		if (modifiedKeys.includes('uid') || modifiedKeys.includes(DOMAIN_NAME)) {
+			setIsLoading(true);
 			await renameAccountRequest(
 				initAccountDetail?.zimbraId,
 				`${accountDetail?.uid}@${accountDetail?.domainName}`
@@ -364,6 +378,7 @@ const EditAccount: FC<{
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				})
 				.catch((error) => {
 					createSnackbar({
@@ -376,6 +391,7 @@ const EditAccount: FC<{
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 			await getAccountList();
 			remove(modifiedKeys, (ele) => ele === UID);
@@ -432,6 +448,7 @@ const EditAccount: FC<{
 		});
 
 		if (modifiedKeys && modifiedKeys?.length > 0) {
+			setIsLoading(true);
 			modifyAccountRequest(initAccountDetail?.zimbraId, modifiedData)
 				.then((data) => {
 					if (data) {
@@ -448,6 +465,7 @@ const EditAccount: FC<{
 							replace: true
 						});
 						setInitAccountDetail({ ...accountDetail });
+						setIsLoading(false);
 						getAccountList();
 						getAccountDetail(initAccountDetail?.zimbraId);
 					}
@@ -463,6 +481,7 @@ const EditAccount: FC<{
 						hideButton: true,
 						replace: true
 					});
+					setIsLoading(false);
 				});
 		} else {
 			if (isPasswordChange) {
@@ -490,15 +509,17 @@ const EditAccount: FC<{
 		setShowEditAccountView,
 		deleteAdministrationRights,
 		onDeleteFromList,
+		setIsLoading,
 		t
 	]);
 	const onUndo = (): void => {
-		setAccountDetail({ ...initAccountDetail });
+		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
+		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
 	};
 
 	return (
 		<>
-			{!accountDetail?.zimbraId && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			{(!accountDetail?.zimbraId || isLoading) && <OverlayDivision ovelayStyle={ovelayStyle} />}
 			<Container
 				background="gray5"
 				mainAlignment="flex-start"
@@ -552,6 +573,7 @@ const EditAccount: FC<{
 							icon="CloseOutline"
 							onClick={(): void => {
 								setShowEditAccountView(false);
+								setShowAccountDetailView(true);
 								setDefaultTab('general');
 							}}
 						/>
@@ -567,6 +589,8 @@ const EditAccount: FC<{
 					background="white"
 				>
 					<TabBar
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						items={items}
 						selected={change}
 						onChange={(ev: unknown, selectedId: string): void => {
@@ -596,7 +620,9 @@ const EditAccount: FC<{
 						)}
 						{change === SECURITY && <EditAccountSecuritySection />}
 						{change === DELEGATES && <EditAccountDelegatesSection />}
-						{change === ADMINISTRATION && <EditAccountAdministrationSection />}
+						{change === ADMINISTRATION && (
+							<EditAccountAdministrationSection setIsLoading={setIsLoading} />
+						)}
 					</Container>
 				</Container>
 			</Container>

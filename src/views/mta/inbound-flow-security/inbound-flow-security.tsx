@@ -15,7 +15,7 @@ import {
 	SnackbarManagerContext,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { isEqual, find } from 'lodash';
+import { isEqual, find, uniq } from 'lodash';
 import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { MtaInboundSecurity } from '../../../../types';
@@ -522,10 +522,10 @@ const MTAInboundFlowSecurity: FC = () => {
 	);
 
 	const onCommonBlockExtensionAdd = useCallback(() => {
-		const allExtension = [
+		const allExtension = uniq([
 			...mtaBlockExtension.map((item: Record<string, string>) => item?.label),
 			...commonBlockedExtensions
-		];
+		]);
 		setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, allExtension);
 		setMtaBlockExtension(allExtension.map((item: string) => ({ label: item })));
 	}, [setValue, mtaBlockExtension, commonBlockedExtensions]);
@@ -559,19 +559,13 @@ const MTAInboundFlowSecurity: FC = () => {
 									<Button
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
-										height={36}
 										onClick={onCancel}
 									/>
 								)}
 							</Padding>
 							<Padding right="small">
 								{isDirty && (
-									<Button
-										label={t('label.save', 'Save')}
-										color="primary"
-										height={36}
-										onClick={onSave}
-									/>
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
 								)}
 							</Padding>
 						</Container>
@@ -642,6 +636,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							onChange={onBlockExtensionChange}
 							disabled={!allowSetMTA}
 							ChipComponent={CustomChip}
+							maxChips={null}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start" width="30%">
@@ -699,7 +694,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							<Switch
 								label={t(
 									'mta.notify_external_recipient_about_block_extensions',
-									'Notify external recepients about blocked extensions'
+									'Notify external recipients about blocked extensions'
 								)}
 								value={mtaInboundSecurityDetail?.zimbraMtaBlockedExtensionWarnRecipient}
 								onClick={(): void =>
@@ -888,7 +883,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							maxWidth="auto"
 						>
 							<Switch
-								label={t('mta.hostname_in_greetings', 'Hostname in greetings')}
+								label={t('mta.check_client_host_name', 'Check Client Hostname')}
 								value={mtaInboundSecurityDetail?.rejectUnknownReverseClientHostname}
 								onClick={(): void =>
 									setValue(
@@ -997,7 +992,7 @@ const MTAInboundFlowSecurity: FC = () => {
 							<Switch
 								label={t(
 									'mta.client_must_greet_with_fully_qualified_hostname',
-									'Client should have a quilified hostname'
+									'Client should have a qualified hostname'
 								)}
 								value={mtaInboundSecurityDetail?.rejectNonFqdnHeloHostname}
 								onClick={(): void =>

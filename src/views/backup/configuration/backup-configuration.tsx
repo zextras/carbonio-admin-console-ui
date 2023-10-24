@@ -42,12 +42,14 @@ import {
 	S3,
 	S3_BUCKET,
 	SERVER,
-	CONFIG
+	CONFIG,
+	BACKUP_REALTIME
 } from '../../../constants';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useBackupStore } from '../../../store/backup/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useModuleLicenseStore } from '../../../store/module-license/store';
 
 const BackupConfiguration: FC = () => {
 	const { server }: { server: string } = useParams();
@@ -142,6 +144,20 @@ const BackupConfiguration: FC = () => {
 	const [bucketConfiguration, setBucketConfiguration] = useState<any>([]);
 	const [bucketListOption, setBucketListOption] = useState<Array<any>>([]);
 
+	const moduleLicense = useModuleLicenseStore((state) => state.moduleLicense);
+	const [isBackupImportRealtimeFeatureLicensed, setIsBackupImportRealtimeFeatureLicensed] =
+		useState<boolean>(false);
+
+	useEffect(() => {
+		if (moduleLicense && moduleLicense.length > 0) {
+			const backupRealtimeModule = moduleLicense.filter(
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME
+			);
+			if (backupRealtimeModule && backupRealtimeModule[0] && backupRealtimeModule[0]?.enabled) {
+				setIsBackupImportRealtimeFeatureLicensed(true);
+			}
+		}
+	}, [moduleLicense]);
 	const onDestinationChange = useCallback(
 		(v: any): any => {
 			const it = destinationOptions.find((item: any) => item.value === v);
@@ -344,14 +360,9 @@ const BackupConfiguration: FC = () => {
 	]);
 
 	const onSave = useCallback(() => {
-		const body: any = {
+		let body: any = {
 			ZxBackup_ModuleEnabledAtStartup: {
 				value: moduleEnableStartup,
-				objectName: server,
-				configType: SERVER
-			},
-			ZxBackup_RealTimeScanner: {
-				value: enableRealtimeScanner,
 				objectName: server,
 				configType: SERVER
 			},
@@ -398,6 +409,16 @@ const BackupConfiguration: FC = () => {
 			}
 		};
 
+		if (isBackupImportRealtimeFeatureLicensed) {
+			const scanner = {
+				ZxBackup_RealTimeScanner: {
+					value: enableRealtimeScanner,
+					objectName: server,
+					configType: SERVER
+				}
+			};
+			body = { ...body, ...scanner };
+		}
 		setIsSaveRequestInProgress(true);
 		setCoreAttributes(body)
 			.then((data: any) => {
@@ -479,12 +500,9 @@ const BackupConfiguration: FC = () => {
 				});
 			});
 	}, [
-		createSnackbar,
-		t,
-		enableRealtimeScanner,
 		moduleEnableStartup,
-		runSmartScanStartup,
 		server,
+		runSmartScanStartup,
 		spaceThreshold,
 		scheduleSmartScan,
 		isScheduleSmartScan,
@@ -492,7 +510,11 @@ const BackupConfiguration: FC = () => {
 		scheduleAutomaticRetentionPolicy,
 		backupDestPath,
 		keepDeletedItemInBackup,
-		keepDeletedAccountsInBackup
+		keepDeletedAccountsInBackup,
+		isBackupImportRealtimeFeatureLicensed,
+		enableRealtimeScanner,
+		t,
+		createSnackbar
 	]);
 
 	useEffect(() => {
@@ -921,7 +943,7 @@ const BackupConfiguration: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -998,7 +1020,6 @@ const BackupConfiguration: FC = () => {
 							}
 							color={backupServiceStart ? 'error' : 'primary'}
 							width="fit"
-							height={44}
 							onClick={serviceStartStop}
 							disabled={isRequestInProgress || !allowSetBackup}
 							loading={isRequestInProgress}
@@ -1024,25 +1045,25 @@ const BackupConfiguration: FC = () => {
 							crossAlignment="flex-start"
 						>
 							<Switch
-								label={t(
-									'backup.module_is_enabled_at_startup',
-									'This module is enabled at startup'
-								)}
+								label={t('backup.backup_is_enabled_at_startup', 'Backup is enabled at startup')}
 								value={moduleEnableStartup}
 								onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
 								iconColor="primary"
 								disabled={!allowSetBackup}
 							/>
 						</Container>
-						<Container padding={{ top: 'large' }}>
-							<Switch
-								label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
-								value={enableRealtimeScanner}
-								onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
-								iconColor="primary"
-								disabled={!allowSetBackup}
-							/>
-						</Container>
+						{isBackupImportRealtimeFeatureLicensed && (
+							<Container padding={{ top: 'large' }}>
+								<Switch
+									label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
+									value={enableRealtimeScanner}
+									onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
+									iconColor="primary"
+									disabled={!allowSetBackup}
+								/>
+							</Container>
+						)}
+
 						<Container padding={{ top: 'large' }}>
 							<Switch
 								label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
@@ -1062,7 +1083,7 @@ const BackupConfiguration: FC = () => {
 								color="primary"
 								icon="PowerOutline"
 								iconPlacement="right"
-								width="100%"
+								width="fill"
 								style={{ width: '100%' }}
 								disabled={isBackupInitialized || !allowSetBackup}
 								onClick={(): void => {
@@ -1078,8 +1099,8 @@ const BackupConfiguration: FC = () => {
 							<Input
 								label={t('backup.local_volume', 'Local Volume')}
 								value={backupDestPath || ''}
-								background="gray5"
-								onChange={(e: any): any => {
+								backgroundColor="gray5"
+								onChange={(e): void => {
 									!allowSetBackup ?? setBackupDestPath(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -1092,8 +1113,8 @@ const BackupConfiguration: FC = () => {
 							<Input
 								label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
 								value={spaceThreshold}
-								background="gray5"
-								onChange={(e: any): any => {
+								backgroundColor="gray5"
+								onChange={(e: any): void => {
 									!allowSetBackup ?? setSpaceThreshold(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -1108,7 +1129,7 @@ const BackupConfiguration: FC = () => {
 									<Input
 										label={t('backup.external_volume', 'External Volume')}
 										value={manageExternalVolumeType}
-										background="gray5"
+										backgroundColor="gray5"
 										readOnly
 									/>
 								</Container>
@@ -1122,7 +1143,7 @@ const BackupConfiguration: FC = () => {
 												? manageExternalVolumeLocalMountpoint
 												: manageExternalVolumeConfiguration?.label
 										}
-										background="gray5"
+										backgroundColor="gray5"
 										readOnly
 									/>
 								</Container>
@@ -1151,8 +1172,8 @@ const BackupConfiguration: FC = () => {
 							<Input
 								label={t('label.path', 'Path')}
 								value={rootVolumePath || ''}
-								background="gray5"
-								onChange={(e: any): any => {
+								backgroundColor="gray5"
+								onChange={(e): void => {
 									!allowSetBackup ?? setRootVolumePath(e.target.value);
 								}}
 							/>
@@ -1240,8 +1261,8 @@ const BackupConfiguration: FC = () => {
 										<Input
 											label={t('backup.local_mountpoint', 'Local Mountpoint')}
 											value={manageExternalVolumeNewLocalMountpoint || ''}
-											background="gray5"
-											onChange={(e: any): any => {
+											backgroundColor="gray5"
+											onChange={(e): void => {
 												!allowSetBackup ??
 													setManageExternalVolumeNewLocalMountpoint(e.target.value);
 											}}
@@ -1261,7 +1282,7 @@ const BackupConfiguration: FC = () => {
 								<Button
 									label={t('label.cancel', 'Cancel')}
 									color="secondary"
-									width="100%"
+									width="fill"
 									onClick={(): void => {
 										setIsManageExternalVolumeEnable(false);
 									}}
@@ -1272,7 +1293,7 @@ const BackupConfiguration: FC = () => {
 							<Button
 								label={t('label.migrate', 'Migrate')}
 								color="primary"
-								width="50%"
+								width="fit"
 								onClick={onSaveManageExternalVolume}
 								disabled={isExternalVolumeRequestRunning || !allowSetBackup}
 								loading={isExternalVolumeRequestRunning}
@@ -1294,7 +1315,7 @@ const BackupConfiguration: FC = () => {
 									iconPlacement="right"
 									size="large"
 									style={{ width: '100%' }}
-									width="100%"
+									width="fill"
 									disabled={!isBackupInitialized || !allowSetBackup}
 									onClick={(): void => {
 										if (!isBackArchivingStoreEmpty) {
@@ -1351,9 +1372,8 @@ const BackupConfiguration: FC = () => {
 						<Container padding={{ top: 'large' }}>
 							<Input
 								label={t('backup.schedule', 'Schedule')}
-								background="gray5"
 								value={scheduleSmartScan}
-								onChange={(e: any): any => {
+								onChange={(e): void => {
 									setScheduleSmartScan(e.target.value);
 								}}
 								disabled={!isScheduleSmartScan || !allowSetBackup}
@@ -1371,7 +1391,7 @@ const BackupConfiguration: FC = () => {
 								iconPlacement="right"
 								size="large"
 								style={{ width: '100%' }}
-								width="100%"
+								width="fill"
 								disabled={!isBackupInitialized || !allowSetBackup}
 								onClick={(): void => {
 									doInitializeBackup();
@@ -1427,9 +1447,9 @@ const BackupConfiguration: FC = () => {
 						<Container padding={{ top: 'large' }}>
 							<Input
 								label={t('backup.schedule', 'Schedule')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={retentionPolicySchedule}
-								onChange={(e: any): any => {
+								onChange={(e): void => {
 									setRetentionPolicySchedule(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
@@ -1447,12 +1467,13 @@ const BackupConfiguration: FC = () => {
 						>
 							<Input
 								label={t('backup.keep_deleted_item_in_backup', 'Keep deleted items in the backup')}
-								background="gray5"
 								value={keepDeletedItemInBackup}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setKeepDeletedItemInBackup(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // DS only support string
 								description={
 									<Trans
 										i18nKey="backup.back_delete_account_warning_message"
@@ -1470,7 +1491,6 @@ const BackupConfiguration: FC = () => {
 						>
 							<Input
 								label={t('backup.range', 'Range')}
-								background="gray5"
 								value={t('label.days', 'Days')}
 								disabled={!allowSetBackup}
 							/>
@@ -1487,12 +1507,14 @@ const BackupConfiguration: FC = () => {
 									'backup.keep_deleted_account_in_the_backup',
 									'Keep deleted account in the backup'
 								)}
-								background="gray5"
+								backgroundColor="gray5"
 								value={keepDeletedAccountsInBackup}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setKeepDeletedAccountsInBackup(e.target.value);
 								}}
 								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // DS only support string
 								description={
 									<Trans
 										i18nKey="backup.back_delete_account_warning_message"
@@ -1510,7 +1532,7 @@ const BackupConfiguration: FC = () => {
 						>
 							<Input
 								label={t('backup.range', 'Range')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={t('label.days', 'Days')}
 								disabled={!allowSetBackup}
 							/>
@@ -1524,9 +1546,8 @@ const BackupConfiguration: FC = () => {
 								color="primary"
 								icon="PowerOutline"
 								iconPlacement="right"
-								height={36}
 								style={{ width: '100%' }}
-								width="100%"
+								width="fill"
 								disabled={isPurgeRequestRunning || !isBackupInitialized || !allowSetBackup}
 								loading={isPurgeRequestRunning}
 								onClick={(): void => {

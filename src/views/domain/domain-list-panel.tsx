@@ -4,15 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
-import {
-	Container,
-	Input,
-	Icon,
-	Row,
-	Padding,
-	Text,
-	Dropdown
-} from '@zextras/carbonio-design-system';
+import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
 
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
@@ -41,8 +33,11 @@ import {
 	GLOBAL_DOMAIN_ROUTE,
 	GLOBAL_2FA_ROUTE,
 	TWO_FACTOR_AUTHENTICATION,
-	DELEGATES,
-	SECURITY_GROUP
+	SECURITY_GROUP,
+	GLOBAL_ROUTE,
+	BACKUP_BASIC,
+	DELEGATES_DOMAIN_ADMINS,
+	RESOURCES
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -58,6 +53,7 @@ import { getAllRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import { DomainResponse } from '../../../types';
+import { useConfigStore } from '../../store/config/store';
 
 const SelectItem = styled(Row)``;
 
@@ -83,7 +79,8 @@ interface ManageOptions {
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const locationService = useLocation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -98,10 +95,10 @@ const DomainListPanel: FC = () => {
 		}[]
 	>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const setDomain = useDomainStore((state) => state.setDomain);
 	const domainInformation = useDomainStore((state) => state.domain);
-	const domainView = useDomainStore((state) => state.domainView);
-	const setDomainView = useDomainStore((state) => state.setDomainView);
+	const { setDomainView, isQuickAccess, domainView, setDomain, setIsQuickAccess } = useDomainStore(
+		(state) => state
+	);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -192,13 +189,6 @@ const DomainListPanel: FC = () => {
 		}
 	}, [domainInformation?.id, domainInformation?.name]);
 
-	useMemo(() => {
-		if (domainView === '') {
-			const operationItem = locationService?.pathname.split('/').pop();
-			setDomainView(operationItem || '');
-		}
-	}, [domainView, locationService?.pathname, setDomainView]);
-
 	useEffect(() => {
 		if (
 			locationService.pathname &&
@@ -208,7 +198,6 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setDomainView('');
 			setDomainId('');
 			setDomain({});
 		}
@@ -243,7 +232,9 @@ const DomainListPanel: FC = () => {
 		if (isDomainSelect && domainId) {
 			if (domainView) {
 				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
-				if (domainView === GLOBAL_THEME_ROUTE) {
+				if (domainView === GLOBAL_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_THEME_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_2FA_ROUTE) {
 					replaceHistory(`/${domainView}`);
@@ -316,8 +307,8 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: DELEGATES,
-				name: t('label.delegates_title', 'Delegates'),
+				id: DELEGATES_DOMAIN_ADMINS,
+				name: t('label.delegates_domain_admins', 'Delegated Domain Admins'),
 				isSelected: isDomainSelect
 			},
 			{
@@ -330,12 +321,11 @@ const DomainListPanel: FC = () => {
 				name: t('label.security_group', 'Security Groups'),
 				isSelected: isDomainSelect
 			},
-			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
-			// {
-			// 	id: RESOURCES,
-			// 	name: t('label.resources', 'Resources'),
-			// 	isSelected: isDomainSelect
-			// },
+			{
+				id: RESOURCES,
+				name: t('label.resources', 'Resources'),
+				isSelected: isDomainSelect
+			},
 			{
 				id: ACTIVE_SYNC,
 				name: t('label.active_sync', 'ActiveSync'),
@@ -352,6 +342,11 @@ const DomainListPanel: FC = () => {
 
 	const globalOptionItems = useMemo(
 		() => [
+			{
+				id: GLOBAL_ROUTE,
+				name: t('label.global', 'Global'),
+				isSelected: true
+			},
 			{
 				id: GLOBAL_THEME_ROUTE,
 				name: t('label.theme', 'Theme'),
@@ -375,7 +370,10 @@ const DomainListPanel: FC = () => {
 		() =>
 			!isAdvanced
 				? allManageOptions.filter(
-						(item: ManageOptions) => item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC
+						(item: ManageOptions) =>
+							item?.id !== RESTORE_ACCOUNT &&
+							item?.id !== ACTIVE_SYNC &&
+							item?.id !== DELEGATES_DOMAIN_ADMINS
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
@@ -423,9 +421,9 @@ const DomainListPanel: FC = () => {
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
 			const backupModule = moduleLicense.filter(
-				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
@@ -462,13 +460,12 @@ const DomainListPanel: FC = () => {
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -499,10 +496,6 @@ const DomainListPanel: FC = () => {
 						label: domain.name,
 						customComponent: (
 							<SelectItem
-								top="0.563rem"
-								right="large"
-								bottom="0.563rem"
-								left="large"
 								style={{
 									display: 'block',
 									textAlign: 'left',
@@ -521,6 +514,14 @@ const DomainListPanel: FC = () => {
 					})
 			  );
 
+	useEffect(() => {
+		if (!isQuickAccess) {
+			setDomainView(GLOBAL_DOMAIN_ROUTE);
+		}
+		setIsQuickAccess(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<Container
 			orientation="column"
@@ -537,7 +538,7 @@ const DomainListPanel: FC = () => {
 				/>
 			)}
 
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+			<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 				<DropDownInput
 					items={isLoading ? loadingComponent : items}
 					inputLabel={

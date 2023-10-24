@@ -158,10 +158,6 @@ export const SendInviteAccounts: FC<any> = ({
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -187,13 +183,7 @@ export const SendInviteAccounts: FC<any> = ({
 		<>
 			{!hideHeaderBar && (
 				<Row padding={{ top: 'extralarge' }}>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.send_invite_to', 'Send Invite To')}
 					</Text>
 				</Row>
@@ -272,7 +262,6 @@ export const SendInviteAccounts: FC<any> = ({
 								label={t('label.search_an_account', 'Search for an account')}
 								backgroundColor="gray5"
 								value={searchAccountName}
-								size="medium"
 								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								onChange={(e: any): any => {
 									setSearchAccountName(e.target.value);
@@ -304,6 +293,8 @@ export const SendInviteAccounts: FC<any> = ({
 							}
 						}}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>

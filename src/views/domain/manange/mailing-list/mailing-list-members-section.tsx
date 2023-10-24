@@ -173,10 +173,6 @@ const MailingListMembersSection: FC<any> = () => {
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -198,18 +194,12 @@ const MailingListMembersSection: FC<any> = () => {
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 300px)"
+				height="calc(100vh - 13rem)"
 				background="white"
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.members', 'Members')}
 					</Text>
 				</Row>
@@ -273,6 +263,8 @@ const MailingListMembersSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedDistributionListMember}
 							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -286,17 +278,17 @@ const MailingListMembersSection: FC<any> = () => {
 							crossAlignment="center"
 						>
 							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<img src={helmetLogo} alt="logo" />
 								</Row>
 							</Padding>
 							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t('label.there_are_not_member_here', 'There aren’t members here.')}
 									</Text>
 								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+								<Row mainAlignment="center" width="100%">
 									<Text size="large" color="secondary" weight="regular">
 										{t(
 											'label.search_for_user_and_clic_to_add',

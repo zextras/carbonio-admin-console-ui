@@ -30,8 +30,9 @@ import { addDistributionListMember } from '../../../../../services/add-distribut
 import { searchDirectory } from '../../../../../services/search-directory-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 
-const EditAccountAdministrationSection: FC = () => {
+const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const context = useContext(AccountContext);
 	const createSnackbar = useSnackbar();
 	const { accountDetail, setAccountDetail, initAccountDetail, setDeleteAdministrationRights } =
@@ -44,6 +45,7 @@ const EditAccountAdministrationSection: FC = () => {
 	const [domainId, setDomainId] = useState('');
 	const [sendSelectedRows, setSendSelectedRows] = useState([]);
 	const [selectedOption, setSelectedOption] = useState<any>([]);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const [t] = useTranslation();
 	const headers: any = useMemo(
@@ -95,6 +97,7 @@ const EditAccountAdministrationSection: FC = () => {
 	}, [accountDetail?.zimbraId]);
 
 	const onAdd = useCallback((): void => {
+		setIsLoading(true);
 		const id: any = {
 			n: 'id',
 			_content: selectedOption.value
@@ -118,6 +121,7 @@ const EditAccountAdministrationSection: FC = () => {
 						replace: true
 					});
 					getAccountDistributionList();
+					setIsLoading(false);
 				}
 			})
 			.catch((error) => {
@@ -131,8 +135,9 @@ const EditAccountAdministrationSection: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				setIsLoading(false);
 			});
-	}, [t, accountDetail, selectedOption, getAccountDistributionList, createSnackbar]);
+	}, [t, accountDetail, selectedOption, getAccountDistributionList, createSnackbar, setIsLoading]);
 
 	const fetchDistributionList = (name: string): void => {
 		const attrs =
@@ -166,10 +171,6 @@ const EditAccountAdministrationSection: FC = () => {
 		label: domain.name,
 		customComponent: (
 			<Row
-				top="0.18rem"
-				right="large"
-				bottom="0.18rem"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -192,6 +193,7 @@ const EditAccountAdministrationSection: FC = () => {
 	const onDeleteFromList = useCallback(
 		(lists: any, type: string) => {
 			if (lists?.length > 0) {
+				setIsLoading(true);
 				lists.forEach((item: any) => {
 					const id: any = {
 						n: 'id',
@@ -216,6 +218,7 @@ const EditAccountAdministrationSection: FC = () => {
 									replace: true
 								});
 								getAccountDistributionList();
+								setIsLoading(false);
 							}
 						})
 						.catch((error) => {
@@ -229,12 +232,13 @@ const EditAccountAdministrationSection: FC = () => {
 								hideButton: true,
 								replace: true
 							});
+							setIsLoading(false);
 						});
 				});
 			}
 			setSendSelectedRows([]);
 		},
-		[t, accountDetail, getAccountDistributionList, createSnackbar]
+		[t, accountDetail, getAccountDistributionList, createSnackbar, setIsLoading]
 	);
 
 	const getDomainLists = useCallback((domain: string): any => {
@@ -280,8 +284,8 @@ const EditAccountAdministrationSection: FC = () => {
 							{t('label.roles', 'Roles')}
 						</Text>
 					</Row>
-					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="start">
-						<Row width="40%" padding={{ top: 'large' }} mainAlignment="start">
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
+						<Row width="40%" padding={{ top: 'large' }} mainAlignment="flex-start">
 							<Switch
 								value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
 								onClick={(): void => {
@@ -301,22 +305,31 @@ const EditAccountAdministrationSection: FC = () => {
 							/>
 						</Row>
 					</Row>
-					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="start">
-						<Row width="40%" mainAlignment="start">
-							{accountDetail?.zimbraIsAdminAccount !== 'TRUE' && (
-								<Switch
-									disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
-									value={accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE'}
-									onClick={(): void => changeSwitchOption('zimbraIsDelegatedAdminAccount')}
-									label={t('account_details.delegated_administration', 'Delegated administration')}
-									iconColor="primary"
-								/>
-							)}
+					{isAdvanced && (
+						<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
+							<Row width="40%" mainAlignment="flex-start">
+								{accountDetail?.zimbraIsAdminAccount !== 'TRUE' && (
+									<Switch
+										disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
+										value={accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE'}
+										onClick={(): void => changeSwitchOption('zimbraIsDelegatedAdminAccount')}
+										label={t(
+											'account_details.delegated_administration',
+											'Delegated administration'
+										)}
+										iconColor="primary"
+									/>
+								)}
+							</Row>
 						</Row>
-					</Row>
+					)}
 					{accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
 						accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
-							<Row width="100%" mainAlignment="start" padding={{ top: 'large', bottom: 'large' }}>
+							<Row
+								width="100%"
+								mainAlignment="flex-start"
+								padding={{ top: 'large', bottom: 'large' }}
+							>
 								<Row
 									width="45%"
 									padding={{ top: 'large', right: 'large' }}
@@ -398,9 +411,13 @@ const EditAccountAdministrationSection: FC = () => {
 									rows={tableRows}
 									headers={headers}
 									showCheckbox={false}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setSendSelectedRows}
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Row>
@@ -411,15 +428,16 @@ const EditAccountAdministrationSection: FC = () => {
 								padding={{ top: 'large', bottom: '3rem' }}
 							>
 								<Row padding={{ right: 'small' }} width="49%">
-									<Button
-										disabled={sendSelectedRows?.length < 1}
-										type="ghost"
-										onClick={(): void => onDeleteFromList(sendSelectedRows, 'one')}
-										padding={{ all: 'small' }}
-										label={t('label.remove', 'REMOVE')}
-										color="error"
-										width="fill"
-									/>
+									<Padding all={'0'}>
+										<Button
+											disabled={sendSelectedRows?.length < 1}
+											type="ghost"
+											onClick={(): void => onDeleteFromList(sendSelectedRows, 'one')}
+											label={t('label.remove', 'REMOVE')}
+											color="error"
+											width="fill"
+										/>
+									</Padding>
 								</Row>
 
 								<Row width="49%">

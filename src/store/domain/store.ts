@@ -7,7 +7,7 @@ import create from 'zustand';
 import produce from 'immer';
 import { devtools } from 'zustand/middleware';
 import { Cos, Domain } from '../../../types';
-import { DOMAIN_DETAIL_VIEW } from '../../constants';
+import { DOMAINS_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 
 type DomainState = {
 	domain: Domain;
@@ -25,17 +25,20 @@ type DomainState = {
 	setCloseDomainBanner: (domainName: string) => void;
 	sslCertificate: { [key: string]: string };
 	setSSLCertificate: (sslCertificate: { [key: string]: string }) => void;
+	isQuickAccess: boolean;
+	setIsQuickAccess: (isQuickAccess: boolean) => void;
 };
 
 export const useDomainStore = create<DomainState>(
 	devtools((set) => ({
 		domain: {},
 		cosList: [],
-		domainView: DOMAIN_DETAIL_VIEW,
+		domainView: `${GLOBAL_ROUTE}/${DOMAINS_ROUTE_ID}`,
 		setDomain: (domain): void => set({ domain }, false, 'setDomain'),
 		domainList: [],
 		isDomainSupportDelegatedAdmin: false,
 		sslCertificate: {},
+		isQuickAccess: false,
 		setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
@@ -63,6 +66,7 @@ export const useDomainStore = create<DomainState>(
 				false,
 				'setCloseDomainBanner'
 			),
+		setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess'),
 		setSSLCertificate: (sslCertificate): void => set({ sslCertificate }, false, 'setSSLCertificate')
 	}))
 );

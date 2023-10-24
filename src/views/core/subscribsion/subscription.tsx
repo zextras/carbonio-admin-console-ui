@@ -14,19 +14,26 @@ import {
 	Text,
 	Input,
 	useSnackbar,
-	Modal
+	Modal,
+	ContainerProps,
+	TextProps
 } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { find, orderBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { TFunction } from 'i18next';
 import { fetchSoap } from '../../../services/subscription-service';
 import MatomoTracker from '../../../matomo-tracker';
 import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useConfigStore } from '../../../store/config/store';
 
-const VerticalBar = styled(Container)`
+interface ContainerExtendProps extends ContainerProps {
+	licensed?: string;
+}
+const VerticalBar = styled(Container)<ContainerExtendProps>`
 	background-color: ${({ theme }): string => theme.palette.primary.regular};
 	width: 4px;
 	height: auto;
@@ -34,8 +41,10 @@ const VerticalBar = styled(Container)`
 	border-top-right-radius: 10px;
 	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
 `;
-
-const ServiceName = styled(Text)`
+interface TextExtendProps extends TextProps {
+	licensed?: string;
+}
+const ServiceName = styled(Text)<TextExtendProps>`
 	color: ${({ theme }): string => theme.palette.primary.regular};
 	font-weight: bold;
 	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
@@ -78,27 +87,45 @@ const IconInfo = ({
 );
 
 const moduleNames: any = {
-	ZxBackup: 'Backup',
-	ZxMobile: 'ActiveSync',
-	ZxAdmin: 'Admins',
-	ZxPowerstore: 'Mailstores',
-	SproxyD: 'SproxyD',
-	ZxDrive: 'Files',
-	ZxDocs: 'Docs',
-	ZxChat: 'Chats',
-	ZxHA: 'HA',
-	Powerstore: 'Storage',
-	Drive: 'Files',
-	Chat: 'Chats'
+	backup_realtime: 'Realtime Backup',
+	chats_recording: 'Video recording',
+	files_basic: 'Files Basics',
+	admins_basic: 'Delegated Administration',
+	storages_basic: 'Storages Basic',
+	appmail_basic: 'MailApp',
+	backup_basic: 'Backup Basic',
+	ha_basic: 'Ha Basic',
+	storages_conn_basic: 'S3 Connectors',
+	storages_centralized: 'Centralized Volumes',
+	appmail_advanced: 'MailApp Advanced',
+	activesync_shared_folder: 'ActiveSync (shared folder)',
+	chats_basic: 'Chats Basic',
+	auth_2fa: '2FA and Policies',
+	storages_hsm: 'Storages HSM',
+	chats_rooms: 'Meeting Rooms',
+	files_docs_balancing: 'Docs Connector',
+	auth_saml: 'SAML Auth',
+	backup_ext_volume: 'Backup on External Volumes',
+	storages_conn_sproxyd: 'ScalitySproxyD Connector',
+	activesync_basic: 'ActiveSync',
+	backup_import_external: 'Import Ext Backup'
 };
 
-const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): ReactElement => (
+const ServiceStatus = ({
+	name,
+	licensed,
+	t
+}: {
+	name: string;
+	licensed: any;
+	t: TFunction;
+}): ReactElement => (
 	<Row
-		width="180px"
+		width="14rem"
 		orientation="horizontal"
 		mainAlignment="flex-start"
 		crossAlignment="stretch"
-		style={{ padding: '0 44px 16px 0' }}
+		style={{ padding: '0 0.25rem 1rem 0' }}
 	>
 		<VerticalBar licensed={licensed} />
 		<Row
@@ -109,13 +136,17 @@ const ServiceStatus = ({ name, licensed }: { name: string; licensed: string }): 
 			<Padding bottom="extrasmall">
 				<ServiceName licensed={licensed}>{moduleNames[name] || name}</ServiceName>
 			</Padding>
-			<Text color={licensed ? 'text' : 'secondary'}>{licensed ? 'Enabled' : 'Disabled'}</Text>
+			<Text color={licensed ? 'text' : 'secondary'}>
+				{licensed ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+			</Text>
 		</Row>
 	</Row>
 );
 
 const Subscription: FC = () => {
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const matomo = useMemo(() => new MatomoTracker(userId), []);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -152,11 +183,11 @@ const Subscription: FC = () => {
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
-				const formatModules = Object.keys(response.response.modules).map((module) => ({
-					...response.response.modules[module],
-					name: module
+				const formatModules = response?.response?.features?.map((module: any) => ({
+					...module,
+					name: moduleNames[module?.name]
 				}));
-				const orderModules: any = orderBy(formatModules, 'licensed', 'desc');
+				const orderModules: any = orderBy(formatModules, 'name', 'desc');
 				const filterModules: any = orderModules.filter((module: any) => module.name !== 'SproxyD');
 				setServices(response);
 				setModules(filterModules);
@@ -192,14 +223,14 @@ const Subscription: FC = () => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
 					createSnackbar({
-						key: 1,
+						key: '1',
 						type: 'success',
 						label: response.message,
 						replace: true
 					});
 				} else {
 					createSnackbar({
-						key: 1,
+						key: '1',
 						type: 'error',
 						label:
 							response.message ||
@@ -222,7 +253,7 @@ const Subscription: FC = () => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
 				createSnackbar({
-					key: 1,
+					key: '1',
 					type: 'success',
 					label:
 						response.message ||
@@ -231,7 +262,7 @@ const Subscription: FC = () => {
 				});
 			} else {
 				createSnackbar({
-					key: 1,
+					key: '1',
 					type: 'error',
 					label:
 						response.message ||
@@ -245,29 +276,28 @@ const Subscription: FC = () => {
 	};
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-				<Container
-					orientation="vertical"
-					mainAlignment="space-around"
-					background="gray6"
-					height="58px"
+		<Container maxWidth="100%" mainAlignment="flex-start" background="gray6">
+			<Container
+				orientation="horizontal"
+				mainAlignment="space-around"
+				background="gray6"
+				height="58px"
+			>
+				<Row
+					orientation="horizontal"
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="100%"
+					padding={{ all: 'large' }}
 				>
-					<Row
-						orientation="horizontal"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						width="100%"
-						padding={{ all: 'large' }}
-					>
-						<Row mainAlignment="flex-start" crossAlignment="flex-start">
-							<Text size="medium" weight="bold" color="gray0">
-								{t('label.details', 'Details')}
-							</Text>
-						</Row>
+					<Row mainAlignment="flex-start" crossAlignment="flex-start">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('label.details', 'Details')}
+						</Text>
 					</Row>
-				</Container>
-			</Row>
+				</Row>
+			</Container>
+
 			<Row orientation="horizontal" width="100%" background="gray6">
 				<Divider />
 			</Row>
@@ -343,8 +373,13 @@ const Subscription: FC = () => {
 				>
 					{modules.map(
 						(module: any) =>
-							(module.licensed || (!module.licensed && showDisabledModules)) && (
-								<ServiceStatus key={module.name} name={module.name} licensed={module.licensed} />
+							(module.enabled || (!module.enabled && showDisabledModules)) && (
+								<ServiceStatus
+									key={module.name}
+									name={module.name}
+									licensed={module.enabled}
+									t={t}
+								/>
 							)
 					)}
 				</Container>
@@ -357,35 +392,40 @@ const Subscription: FC = () => {
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 					>
-						<IconInfo
-							icon="AwardOutline"
-							label={t('core.subscription.subscription_type', 'Subscription Type')}
-							value={services.response.type}
-						/>
-						<IconInfo
-							icon="PersonOutline"
-							label={t('core.subscription.customer', 'Customer')}
-							value={services.response.customer}
-						/>
-						<IconInfo
-							icon="CheckmarkCircleOutline"
-							label={t('core.subscription.status', 'Status')}
-							value={
-								services.response.notYetValid || !services.response.authenticationToken
-									? t('core.subscription.not_valid', 'Not Valid') || ''
-									: t('core.subscription.valid', 'Valid') || ''
-							}
-						/>
-						<IconInfo
-							icon="EmailOutline"
-							label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
-							value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
-						/>
-						<IconInfo
-							icon="ClockOutline"
-							label={t('core.subscription.subscription_last_check', 'Subscription Last Check')}
-							value=""
-						/>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.subscription_type', 'Subscription Type')}
+								value={services.response.type}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.customer', 'Customer')}
+								value={services.response.customer}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.status', 'Status')}
+								value={
+									services.response.notYetValid || !services.response.authenticationToken
+										? t('core.subscription.not_valid', 'Not Valid') || ''
+										: t('core.subscription.valid', 'Valid') || ''
+								}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
+								value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.subscription_last_check', 'Subscription Last Check')}
+								value=""
+							/>
+						</Row>
 					</Container>
 				)}
 				<Row
@@ -413,35 +453,38 @@ const Subscription: FC = () => {
 						crossAlignment="flex-start"
 						padding={{ top: 'large' }}
 					>
-						<IconInfo
-							icon="AvatarOutline"
-							label={t('core.subscription.company_name', 'Company Name')}
-							value={services.response.company}
-						/>
-						<IconInfo
-							icon="AppointmentOutline"
-							label={t('core.subscription.emissionDate', 'Emission date')}
-							value={
-								services.response.dateEnd
-									? moment(services.response.dateEnd).format('DD-MMM-YYYY')
-									: ''
-							}
-						/>
-						<IconInfo
-							icon="EmailOutline"
-							label={t('core.subscription.email_buyer', 'Email Buyer')}
-							value={services.response?.companyEmail}
-						/>
-						<IconInfo
-							icon="InfoOutline"
-							label={t('core.subscription.version', 'Module version')}
-							value={version}
-						/>
-						<IconInfo
-							icon="PricetagsOutline"
-							label={t('core.subscription.order_id', 'Order Id')}
-							value={services.response.order_id}
-						/>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.company_name', 'Company Name')}
+								value={services.response.company}
+							/>
+						</Row>
+
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.endDate', 'End date')}
+								value={
+									services.response.dateEnd
+										? moment(services.response.dateEnd).format('DD-MMM-YYYY')
+										: ''
+								}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.email_buyer', 'Email Buyer')}
+								value={services.response?.companyEmail}
+							/>
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input label={t('core.subscription.version', 'Module version')} value={version} />
+						</Row>
+						<Row width="49.5%" padding={{ all: 'large' }}>
+							<Input
+								label={t('core.subscription.order_id', 'Order Id')}
+								value={services.response.order_id}
+							/>
+						</Row>
 					</Container>
 				)}
 			</Container>

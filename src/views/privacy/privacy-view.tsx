@@ -34,11 +34,11 @@ import { useRightsStore, Right, Rights } from '../../store/rights/store';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId, config } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const [carbonioAllowFeedback, setCarbonioAllowFeedback] = useState<boolean>(false);
 	const [carbonioSendAnalytics, setCarbonioSendAnalytics] = useState<boolean>(false);
 	const [carbonioSendFullErrorStack, setCarbonioSendFullErrorStack] = useState<boolean>(false);
-	const config = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -170,7 +170,7 @@ const PrivacyView: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"

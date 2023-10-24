@@ -35,6 +35,7 @@ import DownloadCSV from '../../app/shared/download-csv';
 import { MailBoxQuota } from '../../app/types/mailbox_quota';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
@@ -421,7 +422,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -472,11 +473,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 				width="100%"
 				height="calc(100vh - 9.375rem)"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Container padding={{ all: 'small' }}>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="flex-start"
 								width="100%"
 								background="gray6"
@@ -489,41 +489,30 @@ const DomainMailboxQuotaSetting: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('label.domain_space_accounts', 'Domain Space (Accounts)')}
-										value={zimbraDomainMaxAccounts}
-										background="gray6"
-										onChange={(e: any): any => {
-											setZimbraDomainMaxAccounts(e.target.value);
-										}}
-									/>
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
 										label={t(
 											'label.max_mainbox_quota_for_the_mails',
 											'Max mailbox quota for the Mails (bytes)'
 										)}
 										value={zimbraMailDomainQuota}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraMailDomainQuota(e.target.value);
 										}}
 									/>
 								</Container>
-							</ListRow>
-
-							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('domain.mail_space_quota_threshold', 'Mail Space Quota threshold (%)')}
 										value={zimbraDomainAggregateQuotaWarnPercent}
 										defaultValue={zimbraDomainAggregateQuotaWarnPercent}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraDomainAggregateQuotaWarnPercent(e.target.value);
 										}}
 									/>
 								</Container>
+							</ListRow>
+							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Select
 										items={quotaPolicy}
@@ -534,9 +523,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 										onChange={onZimbraDomainAggregateQuotaPolicy}
 									/>
 								</Container>
-							</ListRow>
-
-							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
@@ -545,7 +531,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										)}
 										value={zimbraDomainAggregateQuotaWarnEmailRecipient}
 										defaultValue={zimbraDomainAggregateQuotaWarnEmailRecipient}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraDomainAggregateQuotaWarnEmailRecipient(e.target.value);
 										}}
@@ -555,7 +541,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 						</Container>
 
 						<Row
-							takeAvwidth="fill"
 							mainAlignment="flex-start"
 							width="100%"
 							background="gray6"
@@ -588,6 +573,8 @@ const DomainMailboxQuotaSetting: FC = () => {
 										headers={headers}
 										showCheckbox={false}
 										RowFactory={CustomRowFactory}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
 										HeaderFactory={CustomHeaderFactory}
 									/>
 									{isRequestInProgress && (
@@ -599,11 +586,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 										>
 											<Button
 												type="ghost"
-												iconColor="primary"
-												height={36}
+												color="primary"
 												label=""
-												width={36}
 												loading
+												onClick={(): null => null}
 											/>
 										</Container>
 									)}
@@ -618,9 +604,19 @@ const DomainMailboxQuotaSetting: FC = () => {
 							>
 								<Divider />
 							</Row>
-							<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
-								<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-							</Row>
+							<Container orientation="horizontal" mainAlignment="space-between" width="100%">
+								<Container crossAlignment="flex-start">
+									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ top: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
 						</Container>
 						{isShowDownload && <DownloadCSV data={csvQuotaData} header={csvHeader} />}
 					</Container>

@@ -146,6 +146,8 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
 				RowFactory={CustomRowFactory}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows.length === 0 && (
@@ -562,7 +564,7 @@ const EditBucketDetailPanel: FC<{
 			<Container padding={{ all: 'large' }} mainAlignment="flex-start" crossAlignment="flex-start">
 				<Row padding={{ top: 'small' }} width="100%">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.bucket_type', 'Bucket Type')}
 						inputName="label"
 						value={bucketDetail?.storeType || ''}
@@ -571,11 +573,11 @@ const EditBucketDetailPanel: FC<{
 				</Row>
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.label', 'Label')}
 						inputName="label"
 						value={bucketLabel}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setBucketLabel(ev.target.value);
 							checkIfChanged(ev.target.name, ev.target.value);
 						}}
@@ -590,7 +592,7 @@ const EditBucketDetailPanel: FC<{
 							label={t('label.bucket_name', 'Bucket Name')}
 							inputName="bucketName"
 							value={bucketName}
-							onChange={(ev: any): any => {
+							onChange={(ev): void => {
 								setBucketName(ev.target.value);
 								checkIfChanged(ev.target.name, ev.target.value);
 							}}
@@ -598,10 +600,14 @@ const EditBucketDetailPanel: FC<{
 					</Row>
 					{bucketDetail?.region !== undefined && (
 						<>
-							<Padding width="4%" />
+							<Padding horizontal={'small'} />
 							<Row width="48%" mainAlignment="flex-end">
 								<Select
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									inputName="region"
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									items={
 										bucketDetail.storeType === ALIBABA.toUpperCase()
 											? bucketRegionsInAlibaba
@@ -624,19 +630,19 @@ const EditBucketDetailPanel: FC<{
 							inputName="access_key"
 							label={t('label.access_key', 'Access Key')}
 							value={accessKeyData}
-							onChange={(e: any): void => {
+							onChange={(e): void => {
 								setAccessKeyData(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
 						/>
 					</Row>
-					<Padding width="4%" />
+					<Padding horizontal={'small'} />
 					<Row width="48%" mainAlignment="flex-end">
 						<PasswordInput
 							inputName="secret"
 							label={t('label.secret_key', 'Secret Key')}
 							value={secretKey}
-							onChange={(e: any): void => {
+							onChange={(e): void => {
 								setSecretKey(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
@@ -649,7 +655,7 @@ const EditBucketDetailPanel: FC<{
 							inputName="url"
 							label={t('label.url', 'URL')}
 							value={urlData}
-							onChange={(e: any): void => {
+							onChange={(e): void => {
 								setUrlData(e.target.value);
 								checkIfChanged(e.target.name, e.target.value);
 							}}
@@ -658,7 +664,7 @@ const EditBucketDetailPanel: FC<{
 				)}
 				<Row padding={{ top: 'small' }} width="100%">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.prefix', 'Prefix')}
 						inputName="label"
 						value={bucketDetail?.prefix || ''}
@@ -667,11 +673,11 @@ const EditBucketDetailPanel: FC<{
 				</Row>
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
 						name="notes"
 						value={bucketNotes}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setBucketNotes(ev.target.value);
 							checkIfChanged(ev.target.name, ev.target.value);
 						}}
@@ -684,7 +690,7 @@ const EditBucketDetailPanel: FC<{
 						icon={buttonIcon}
 						iconPlacement="right"
 						size="large"
-						width="100%"
+						width="fill"
 						style={{ width: '100%' }}
 						color={verify}
 						onClick={verifyConnector}

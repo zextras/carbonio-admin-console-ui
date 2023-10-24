@@ -30,7 +30,9 @@
         "add": "اضافه کردن",
         "yes": "بله",
         "destroy_account": "حذف",
-        "open": "باز کردن"
+        "open": "باز کردن",
+        "logout": "خروج",
+        "person_name": "نام"
     },
     "domain": {
         "theme": "پوسته‌ها"

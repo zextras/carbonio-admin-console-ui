@@ -44,6 +44,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const [searchString, setSearchString] = useState<string>();
 	const [totalItem, setTotalItem] = useState(1);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [hasError, setHasError] = useState<boolean>(false);
 
 	const accountHeader: any[] = useMemo(
 		() => [
@@ -81,55 +82,57 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 			setAccounts([]);
 			getSoapFetchRequest(
 				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${accountOffset}&pageSize=${accountLimit}&domains=${domainName}&targetServers=all_servers&filter=${searchText}`
-			).then((data: any) => {
-				setIsRequestInProgress(false);
-				const error = data?.all_server?.error?.message;
-				let backupAccounts = data?.accounts;
-				let page = data?.maxPage;
+			)
+				.then((data: any) => {
+					setIsRequestInProgress(false);
+					const error = data?.all_server?.error?.message;
+					let backupAccounts = data?.accounts;
+					let page = data?.maxPage;
 
-				/* Take account list and maxPage from multiserver environment  */
-				if (backupAccounts === undefined && !!data) {
-					const allServers = Object.keys(data);
-					let allServerAccounts: any[] = [];
-					const maxPageList: any[] = [];
-					allServers.forEach((item: string) => {
-						if (data[item]?.response?.accounts) {
-							allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
-						}
-						if (data[item]?.response?.maxPage) {
-							maxPageList.push(data[item]?.response?.maxPage);
-						}
-					});
-					if (allServerAccounts && allServerAccounts.length > 0) {
-						backupAccounts = allServerAccounts;
-						if (maxPageList && maxPageList.length > 0) {
-							const max = Math.max(...maxPageList);
-							if (max) {
-								page = max;
+					/* Take account list and maxPage from multiserver environment  */
+					if (backupAccounts === undefined && !!data) {
+						const allServers = Object.keys(data);
+						let allServerAccounts: any[] = [];
+						const maxPageList: any[] = [];
+						allServers.forEach((item: string) => {
+							if (data[item]?.response?.accounts) {
+								allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
+							}
+							if (data[item]?.response?.maxPage) {
+								maxPageList.push(data[item]?.response?.maxPage);
+							}
+						});
+						if (allServerAccounts && allServerAccounts.length > 0) {
+							backupAccounts = allServerAccounts;
+							if (maxPageList && maxPageList.length > 0) {
+								const max = Math.max(...maxPageList);
+								if (max) {
+									page = max;
+								}
 							}
 						}
 					}
-				}
-				if (error) {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error,
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				}
-				if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
-					setAccounts(backupAccounts);
-				}
-				if (page) {
-					const num: number = page;
-					setTotalItem(num * accountLimit);
-				} else if (page === 0) {
-					setTotalItem(1);
-				}
-			});
+					if (error) {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: error,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}
+					if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
+						setAccounts(backupAccounts);
+					}
+					if (page) {
+						const num: number = page;
+						setTotalItem(num * accountLimit);
+					} else if (page === 0) {
+						setTotalItem(1);
+					}
+				})
+				.catch(() => setHasError(true));
 		},
 		[domainName, createSnackbar, accountLimit, accountOffset]
 	);
@@ -235,7 +238,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 			style={{ overflowY: 'auto' }}
 			maxHeight="calc(100vh - 17.5em)"
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container crossAlignment="flex-start" background="gray6">
 					<Row
 						orientation="horizontal"
@@ -265,7 +268,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						</Container>
 						<Container padding={{ bottom: 'medium', top: 'large' }}>
 							<Input
-								disabled={accountRows.length === 0 && !searchString}
+								disabled={accountRows.length === 0 && !searchString && !hasError}
 								backgroundColor="gray5"
 								value={searchString}
 								onChange={(e: any): void => {
@@ -285,6 +288,8 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 									showCheckbox={false}
 									selectedRows={selectedAccountRows}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								{isRequestInProgress && (
@@ -296,11 +301,10 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 									>
 										<Button
 											type="ghost"
-											iconColor="primary"
-											height={36}
+											color="primary"
 											label=""
-											width={36}
 											loading
+											onClick={(): null => null}
 										/>
 									</Container>
 								)}

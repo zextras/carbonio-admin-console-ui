@@ -22,6 +22,7 @@ import {
 	Icon,
 	ChipInput
 } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
@@ -48,6 +49,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import { useDomainStore } from '../../../../store/domain/store';
 import Textarea from '../../../components/textarea';
+import OverlayDivision from '../../../components/overlayDivision';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -61,6 +63,21 @@ export enum TRUE_FALSE {
 	TRUE = 'TRUE',
 	FALSE = 'FALSE'
 }
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 40.4rem;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUpdateRecord }) => {
 	const [t] = useTranslation();
@@ -80,6 +97,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 	const [zimbraMailAlias, setZimbraMailAlias] = useState<any>([]);
 	const [dlm, setDlm] = useState<any[]>([]);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const [zimbraCreateTimestamp, setZimbraCreateTimestamp] = useState<string>('');
 	const [dlId, setdlId] = useState<string>('');
 	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
@@ -110,6 +128,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
 	const domainList = useDomainStore((state) => state.domainList);
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const memberHeaders: any[] = useMemo(
 		() => [
@@ -350,6 +369,24 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 								zimbraNotes: ''
 							}));
 						}
+
+						const _description = distributionListMembers?.a?.find(
+							(a: any) => a?.n === 'description'
+						)?._content;
+
+						setDescription(_description || '');
+						if (_description) {
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								description: _description
+							}));
+						} else {
+							setPreviousDetail((prevState: any) => ({
+								...prevState,
+								description: ''
+							}));
+						}
+
 						const _zimbraDistributionListSendShareMessageToNewMembers =
 							distributionListMembers?.a?.find(
 								(a: any) => a?.n === 'zimbraDistributionListSendShareMessageToNewMembers'
@@ -774,10 +811,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -830,6 +863,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 			? (latestData.dlMembershipList = dlMembershipList)
 			: (latestData.dlMembershipList = []);
 		zimbraNotes ? (latestData.zimbraNotes = zimbraNotes) : (latestData.zimbraNotes = '');
+		description ? (latestData.description = description) : (latestData.description = '');
 		zimbraDistributionListSendShareMessageToNewMembers
 			? (latestData.zimbraDistributionListSendShareMessageToNewMembers = true)
 			: (latestData.zimbraDistributionListSendShareMessageToNewMember = false);
@@ -864,6 +898,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 			? setDlMembershipList(previousDetail?.dlMembershipList)
 			: setDlMembershipList([]);
 		previousDetail?.zimbraNotes ? setZimbraNotes(previousDetail?.zimbraNotes) : setZimbraNotes('');
+		previousDetail?.description ? setDescription(previousDetail?.description) : setDescription('');
 		previousDetail?.zimbraDistributionListSendShareMessageToNewMembers
 			? setZimbraDistributionListSendShareMessageToNewMembers(true)
 			: setZimbraDistributionListSendShareMessageToNewMembers(false);
@@ -889,6 +924,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 	};
 
 	const callAllRequest = (requests: any): void => {
+		setIsLoading(true);
 		Promise.all(requests)
 			.then((response: any) => Promise.all(response))
 			.then((data: any) => {
@@ -924,6 +960,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					updatePreviousDetail();
 					setIsUpdateRecord(true);
 				}
+				setIsLoading(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -936,6 +973,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					hideButton: true,
 					replace: true
 				});
+				setIsLoading(false);
 			});
 	};
 
@@ -962,8 +1000,13 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		});
 
 		attributes.push({
-			n: 'description',
+			n: 'zimbraNotes',
 			_content: zimbraNotes
+		});
+
+		attributes.push({
+			n: 'description',
+			_content: description
 		});
 
 		attributes.push({
@@ -998,11 +1041,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				_content: memberURL
 			});
 		}
-
-		attributes.push({
-			n: 'zimbraNotes',
-			_content: zimbraNotes
-		});
 
 		request.push(modifyDistributionList(selectedAclList?.id, attributes));
 		if (
@@ -1340,6 +1378,12 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 	}, [previousDetail?.zimbraNotes, zimbraNotes]);
 
 	useEffect(() => {
+		if (previousDetail?.description !== undefined && previousDetail?.description !== description) {
+			setIsDirty(true);
+		}
+	}, [previousDetail?.description, description]);
+
+	useEffect(() => {
 		if (
 			previousDetail?.zimbraDistributionListSendShareMessageToNewMembers !== undefined &&
 			previousDetail?.zimbraDistributionListSendShareMessageToNewMembers !==
@@ -1411,10 +1455,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -1436,10 +1476,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		label: item.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -1682,636 +1718,634 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 	}, [grantEmailsList]);
 
 	return (
-		<Container
-			background="gray5"
-			mainAlignment="flex-start"
-			style={{
-				position: 'absolute',
-				top: '0rem',
-				overflow: 'hidden',
-				transition: 'left 0.2s ease-in-out',
-				right: 0
-			}}
-		>
-			<Row
+		<>
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<Container
+				background="gray5"
 				mainAlignment="flex-start"
-				crossAlignment="center"
-				orientation="horizontal"
-				background="white"
-				width="fill"
-				height="56px"
+				style={{
+					position: 'absolute',
+					top: '0rem',
+					overflow: 'hidden',
+					transition: 'left 0.2s ease-in-out',
+					right: 0
+				}}
 			>
-				<Row padding={{ horizontal: 'small' }}></Row>
-				<Row takeAvailableSpace mainAlignment="flex-start">
-					<Text size="medium" overflow="ellipsis" weight="bold">
-						{selectedAclList?.name} (
-						{selectedAclList?.dynamic
-							? t('label.dynamic', 'Dynamic')
-							: t('label.standard', 'Standard')}
-						)
-					</Text>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="center"
+					orientation="horizontal"
+					background="white"
+					width="fill"
+					height="56px"
+				>
+					<Row padding={{ horizontal: 'small' }}></Row>
+					<Row takeAvailableSpace mainAlignment="flex-start">
+						<Text size="medium" overflow="ellipsis" weight="bold">
+							{selectedAclList?.name} (
+							{selectedAclList?.dynamic
+								? t('label.dynamic', 'Dynamic')
+								: t('label.standard', 'Standard')}
+							)
+						</Text>
+					</Row>
+					<Row>
+						{isDirty && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="flex-end"
+								crossAlignment="flex-end"
+								background="gray6"
+							>
+								<Padding right="small">
+									{isDirty && (
+										<Button
+											label={t('label.cancel', 'Cancel')}
+											color="secondary"
+											onClick={onUndo}
+										/>
+									)}
+								</Padding>
+								{isDirty && (
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+								)}
+							</Container>
+						)}
+					</Row>
+					<Row padding={{ right: 'extrasmall', left: 'small' }}>
+						<IconButton
+							size="medium"
+							icon="CloseOutline"
+							onClick={(): void => setShowEditAclList(false)}
+						/>
+					</Row>
 				</Row>
 				<Row>
-					{isDirty && (
+					<Divider color="gray3" />
+				</Row>
+				<Container
+					padding={{ all: 'extralarge' }}
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					height="100vh"
+					background="white"
+					style={{ overflow: 'auto' }}
+				>
+					<ListRow padding={0}>
 						<Container
-							orientation="horizontal"
-							mainAlignment="flex-end"
-							crossAlignment="flex-end"
-							background="gray6"
-						>
-							<Padding right="small">
-								{isDirty && (
-									<Button
-										label={t('label.cancel', 'Cancel')}
-										color="secondary"
-										onClick={onUndo}
-										height={36}
-									/>
-								)}
-							</Padding>
-							{isDirty && (
-								<Button
-									label={t('label.save', 'Save')}
-									color="primary"
-									onClick={onSave}
-									height={36}
-								/>
-							)}
-						</Container>
-					)}
-				</Row>
-				<Row padding={{ right: 'extrasmall', left: 'small' }}>
-					<IconButton
-						size="medium"
-						icon="CloseOutline"
-						onClick={(): void => setShowEditAclList(false)}
-					/>
-				</Row>
-			</Row>
-			<Row>
-				<Divider color="gray3" />
-			</Row>
-			<Container
-				padding={{ all: 'extralarge' }}
-				mainAlignment="flex-start"
-				crossAlignment="flex-start"
-				height="100vh"
-				background="white"
-				style={{ overflow: 'auto' }}
-			>
-				<ListRow padding={0}>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Input
-							label={t('label.displayed_name', 'Displayed Name')}
-							value={displayName}
-							background="gray5"
-							onChange={(e: any): any => {
-								setDisplayName(e.target.value);
-							}}
-						/>
-					</Container>
-				</ListRow>
-				<ListRow padding={0}>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Input
-							label={t('label.list_name', 'List Name')}
-							backgroundColor="gray5"
-							value={distributionName}
-							size="medium"
-							inputName="prefixName"
-							onChange={(e: any): any => {
-								setDistributionName(e.target.value);
-							}}
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="center"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-						width="fit"
-					>
-						<Icon icon="AtOutline" size="large" />
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', left: 'small' }}
-					>
-						<Input
-							label={t('domain.domain_name', 'Domain Name')}
-							value={distributionDomain}
-							readOnly
-							backgroundColor="gray5"
-						/>
-					</Container>
-				</ListRow>
-
-				<ListRow padding={0}>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Input
-							label={t('label.share_message_to_new_member', 'Share message to new members')}
-							backgroundColor="gray6"
-							size="medium"
-							value={
-								zimbraDistributionListSendShareMessageToNewMembers
-									? t('label.yes', 'Yes')
-									: t('label.no', 'No')
-							}
-							readOnly
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Input
-							label={t('label.hidden_from_gal', 'Hidden from GAL')}
-							backgroundColor="gray6"
-							size="medium"
-							value={zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
-							readOnly
-						/>
-					</Container>
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large', right: 'small' }}
-					>
-						<Input
-							label={t('label.can_receive_email', 'Can receive email')}
-							backgroundColor="gray6"
-							size="medium"
-							value={
-								zimbraMailStatus?.value === 'TRUE' ? t('label.yes', 'Yes') : t('label.no', 'No')
-							}
-							readOnly
-						/>
-					</Container>
-				</ListRow>
-				<ListRow padding={0}>
-					<Container padding={{ top: 'small', bottom: 'medium' }}>
-						<Textarea
-							value={zimbraNotes}
-							label={t('label.description', 'Description')}
-							background="gray5"
-							onChange={(e: any): any => {
-								setZimbraNotes(e.target.value);
-							}}
-						/>
-					</Container>
-				</ListRow>
-
-				{!selectedAclList?.dynamic && (
-					<>
-						<Row padding={{ top: 'small', bottom: 'medium' }}>
-							<Text size="medium" weight="bold" color="gray0">
-								{t('label.members', 'Members')}
-							</Text>
-						</Row>
-						<Row
-							takeAvwidth="fill"
 							mainAlignment="flex-start"
-							width="100%"
-							padding={{ top: 'small', bottom: isShowMemberError ? 'extrasmall' : 'small' }}
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large', right: 'small' }}
 						>
-							<Container
-								orientation="vertical"
-								mainAlignment="space-around"
-								background="gray6"
-								height="58px"
-							>
-								<Row
-									orientation="horizontal"
-									mainAlignment="flex-start"
-									crossAlignment="flex-start"
-									width="100%"
-								>
-									<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
-										<Dropdown
-											items={searchMemberItems}
-											placement="bottom-start"
-											maxWidth="300px"
-											disableAutoFocus
-											width="265px"
-											style={{
-												width: '100%'
-											}}
-										>
-											<Input
-												label={t(
-													'label.type_accounts_paste_them_here',
-													'Type the Accounts or paste them here'
-												)}
-												value={searchMember}
-												background="gray5"
-												onChange={(e: any): any => {
-													setSearchMember(e.target.value);
-												}}
-												hasError={isShowMemberError}
-											/>
-										</Dropdown>
-									</Row>
+							<Input
+								label={t('label.displayed_name', 'Displayed Name')}
+								value={displayName}
+								backgroundColor="gray5"
+								onChange={(e: any): any => {
+									setDisplayName(e.target.value);
+								}}
+							/>
+						</Container>
+					</ListRow>
+					<ListRow padding={0}>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large', right: 'small' }}
+						>
+							<Input
+								label={t('label.list_name', 'List Name')}
+								backgroundColor="gray5"
+								value={distributionName}
+								inputName="prefixName"
+								onChange={(e: any): any => {
+									setDistributionName(e.target.value);
+								}}
+							/>
+						</Container>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="center"
+							orientation="horizontal"
+							padding={{ top: 'large', right: 'small' }}
+							width="fit"
+						>
+							<Icon icon="AtOutline" size="large" />
+						</Container>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large', left: 'small' }}
+						>
+							<Input
+								label={t('domain.domain_name', 'Domain Name')}
+								value={distributionDomain}
+								readOnly
+								backgroundColor="gray5"
+							/>
+						</Container>
+					</ListRow>
 
-									<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
-										<Padding left="large" right="large">
+					<ListRow padding={0}>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large', right: 'small' }}
+						>
+							<Input
+								label={t('label.share_message_to_new_member', 'Share message to new members')}
+								backgroundColor="gray6"
+								value={
+									zimbraDistributionListSendShareMessageToNewMembers
+										? t('label.yes', 'Yes')
+										: t('label.no', 'No')
+								}
+								readOnly
+							/>
+						</Container>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large', right: 'small' }}
+						>
+							<Input
+								label={t('label.hidden_from_gal', 'Hidden from GAL')}
+								backgroundColor="gray6"
+								value={zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
+								readOnly
+							/>
+						</Container>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							orientation="horizontal"
+							padding={{ top: 'large', right: 'small' }}
+						>
+							<Input
+								label={t('label.can_receive_email', 'Can receive email')}
+								backgroundColor="gray6"
+								value={
+									zimbraMailStatus?.value === 'TRUE' ? t('label.yes', 'Yes') : t('label.no', 'No')
+								}
+								readOnly
+							/>
+						</Container>
+					</ListRow>
+					<ListRow padding={0}>
+						<Container padding={{ top: 'small', bottom: 'medium' }}>
+							<Input
+								value={description}
+								label={t('label.description', 'Description')}
+								backgroundColor="gray5"
+								onChange={(e: any): any => {
+									setDescription(e.target.value);
+								}}
+							/>
+						</Container>
+					</ListRow>
+					<ListRow padding={0}>
+						<Container padding={{ top: 'small', bottom: 'medium' }}>
+							<Textarea
+								value={zimbraNotes}
+								label={t('label.notes', 'Notes')}
+								background="gray5"
+								onChange={(e: any): any => {
+									setZimbraNotes(e.target.value);
+								}}
+							/>
+						</Container>
+					</ListRow>
+
+					{!selectedAclList?.dynamic && (
+						<>
+							<Row padding={{ top: 'small', bottom: 'medium' }}>
+								<Text size="medium" weight="bold" color="gray0">
+									{t('label.members', 'Members')}
+								</Text>
+							</Row>
+							<Row
+								mainAlignment="flex-start"
+								width="100%"
+								padding={{ top: 'small', bottom: isShowMemberError ? 'extrasmall' : 'small' }}
+							>
+								<Container
+									orientation="vertical"
+									mainAlignment="space-around"
+									background="gray6"
+									height="58px"
+								>
+									<Row
+										orientation="horizontal"
+										mainAlignment="flex-start"
+										crossAlignment="flex-start"
+										width="100%"
+									>
+										<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
+											<Dropdown
+												items={searchMemberItems}
+												placement="bottom-start"
+												maxWidth="300px"
+												disableAutoFocus
+												width="265px"
+												style={{
+													width: '100%'
+												}}
+											>
+												<Input
+													label={t(
+														'label.type_accounts_paste_them_here',
+														'Type the Accounts or paste them here'
+													)}
+													value={searchMember}
+													backgroundColor="gray5"
+													onChange={(e: any): any => {
+														setSearchMember(e.target.value);
+													}}
+													hasError={isShowMemberError}
+												/>
+											</Dropdown>
+										</Row>
+
+										<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
+											<Padding left="large" right="large">
+												<Button
+													type="outlined"
+													key="add-button"
+													label={t('label.add', 'Add')}
+													color="primary"
+													icon="PlusOutline"
+													iconPlacement="right"
+													onClick={onAdd}
+													size="extralarge"
+													disabled={searchMember === ''}
+												/>
+											</Padding>
+
 											<Button
 												type="outlined"
 												key="add-button"
-												label={t('label.add', 'Add')}
-												color="primary"
-												icon="PlusOutline"
-												height={44}
+												label={t('label.delete', 'Delete')}
+												color="error"
+												icon="Trash2Outline"
 												iconPlacement="right"
-												onClick={onAdd}
 												size="extralarge"
-												disabled={searchMember === ''}
+												disabled={selectedDistributionListMember.length === 0}
+												onClick={onDeleteFromList}
 											/>
+										</Row>
+									</Row>
+								</Container>
+							</Row>
+							{isShowMemberError && (
+								<Row>
+									<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+										<Padding all="small">
+											<Text size="extrasmall" weight="regular" color="error">
+												{memberErrorMessage}
+											</Text>
 										</Padding>
+									</Container>
+								</Row>
+							)}
+						</>
+					)}
+					<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
+						<Table
+							rows={dlmTableRows}
+							headers={memberHeaders}
+							showCheckbox={false}
+							selectedRows={selectedDistributionListMember}
+							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
+							HeaderFactory={CustomHeaderFactory}
+						/>
+					</Container>
 
+					{dlmTableRows.length === 0 && !selectedAclList?.dynamic && (
+						<ListRow>
+							<Container
+								background="gray6"
+								height="fit-content"
+								mainAlignment="center"
+								crossAlignment="center"
+							>
+								<Padding value="57px 0 0 0" width="100%">
+									<Row mainAlignment="center" width="100%">
+										<img src={helmetLogo} alt="logo" />
+									</Row>
+								</Padding>
+								<Padding vertical="extralarge" width="100%">
+									<Row mainAlignment="center" width="100%">
+										<Text size="large" color="secondary" weight="regular">
+											{t('label.there_are_not_member_here', 'There aren’t members here.')}
+										</Text>
+									</Row>
+									<Row mainAlignment="center" width="100%">
+										<Text size="large" color="secondary" weight="regular">
+											{t(
+												'label.search_for_user_and_clic_to_add',
+												'Search for a user and click on the ADD button.'
+											)}
+										</Text>
+									</Row>
+								</Padding>
+							</Container>
+						</ListRow>
+					)}
+					<ListRow>
+						{!selectedAclList?.dynamic && (
+							<Container
+								padding={{ all: 'small' }}
+								mainAlignment="flex-end"
+								crossAlignment="flex-end"
+							>
+								<Paging totalItem={1} pageSize={10} setOffset={setMemberOffset} />
+							</Container>
+						)}
+					</ListRow>
+
+					<Row padding={{ top: 'small', bottom: 'medium' }}>
+						<Text size="medium" weight="bold" color="gray0">
+							{t('label.owners_settings_lbl', 'Owners’ Settings')}
+						</Text>
+					</Row>
+					<Row>
+						<Text
+							size="medium"
+							color="secondary"
+							style={{ whiteSpace: 'normal' }}
+							overflow="break-word"
+						>
+							{t(
+								'label.owners_description_msg_1',
+								'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.'
+							)}
+						</Text>
+					</Row>
+
+					<Row
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'small', bottom: isShowOwnerError ? 'extrasmall' : 'small' }}
+					>
+						<Container
+							orientation="vertical"
+							mainAlignment="space-around"
+							background="gray6"
+							height="58px"
+						>
+							<Row
+								orientation="horizontal"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								width="100%"
+							>
+								<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
+									<Dropdown
+										items={searchOwnerList}
+										placement="bottom-start"
+										maxWidth="300px"
+										disableAutoFocus
+										width="265px"
+										style={{
+											width: '100%'
+										}}
+									>
+										<Input
+											label={t(
+												'label.type_accounts_paste_them_here',
+												'Type the Accounts or paste them here'
+											)}
+											backgroundColor="gray5"
+											value={searchOwner}
+											onChange={(e: any): void => {
+												setSearchOwner(e.target.value);
+											}}
+											hasError={isShowOwnerError}
+										/>
+									</Dropdown>
+								</Row>
+								<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
+									<Padding left="large" right="large">
 										<Button
 											type="outlined"
 											key="add-button"
-											label={t('label.delete', 'Delete')}
-											color="error"
-											icon="Trash2Outline"
+											label={t('label.add', 'Add')}
+											color="primary"
+											icon="PlusOutline"
 											iconPlacement="right"
+											onClick={onAddOwner}
 											size="extralarge"
-											disabled={selectedDistributionListMember.length === 0}
-											height={44}
-											onClick={onDeleteFromList}
+											disabled={searchOwner === ''}
 										/>
-									</Row>
+									</Padding>
+
+									<Button
+										type="outlined"
+										key="add-button"
+										label={t('label.delete', 'Delete')}
+										color="error"
+										icon="Trash2Outline"
+										iconPlacement="right"
+										size="extralarge"
+										disabled={selectedOwnerListMember.length === 0}
+										onClick={onDeleteFromOwnerList}
+									/>
 								</Row>
-							</Container>
-						</Row>
-						{isShowMemberError && (
+							</Row>
+						</Container>
+						{isShowOwnerError && (
 							<Row>
 								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-									<Padding>
+									<Padding all={'0'}>
 										<Text size="extrasmall" weight="regular" color="error">
-											{memberErrorMessage}
+											{ownerErrorMessage}
 										</Text>
 									</Padding>
 								</Container>
 							</Row>
 						)}
-					</>
-				)}
-				<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
-					<Table
-						rows={dlmTableRows}
-						headers={memberHeaders}
-						showCheckbox={false}
-						selectedRows={selectedDistributionListMember}
-						RowFactory={CustomRowFactory}
-						HeaderFactory={CustomHeaderFactory}
-					/>
-				</Container>
+					</Row>
 
-				{dlmTableRows.length === 0 && !selectedAclList?.dynamic && (
+					<Container
+						padding={{
+							top: 'small',
+							bottom: 'small'
+						}}
+						mainAlignment="flex-start"
+					>
+						<Table
+							rows={ownerTableRows}
+							headers={ownerHeaders}
+							showCheckbox={false}
+							selectedRows={selectedOwnerListMember}
+							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
+							HeaderFactory={CustomHeaderFactory}
+						/>
+					</Container>
+
+					{ownerTableRows.length === 0 && (
+						<ListRow>
+							<Container
+								background="gray6"
+								height="fit-content"
+								mainAlignment="center"
+								crossAlignment="center"
+							>
+								<Padding value="57px 0 0 0" width="100%">
+									<Row mainAlignment="center" width="100%">
+										<img src={helmetLogo} alt="logo" />
+									</Row>
+								</Padding>
+								<Padding vertical="extralarge" width="100%">
+									<Row mainAlignment="center" width="100%">
+										<Text size="large" color="secondary" weight="regular">
+											{t('label.there_are_no_owners', 'There aren’t owners here.')}
+										</Text>
+									</Row>
+									<Row mainAlignment="center" width="100%">
+										<Text size="large" color="secondary" weight="regular">
+											{t(
+												'label.search_for_user_and_clic_to_add',
+												'Search for a user and click on the ADD button.'
+											)}
+										</Text>
+									</Row>
+								</Padding>
+							</Container>
+						</ListRow>
+					)}
+
 					<ListRow>
 						<Container
-							background="gray6"
-							height="fit-content"
-							mainAlignment="center"
-							crossAlignment="center"
+							padding={{ all: 'small' }}
+							mainAlignment={selectedAclList?.dynamic ? 'flex-start' : 'flex-end'}
+							crossAlignment={selectedAclList?.dynamic ? 'flex-start' : 'flex-end'}
 						>
-							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<img src={helmetLogo} alt="logo" />
-								</Row>
-							</Padding>
-							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<Text size="large" color="secondary" weight="regular">
-										{t('label.there_are_not_member_here', 'There aren’t members here.')}
-									</Text>
-								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<Text size="large" color="secondary" weight="regular">
-										{t(
-											'label.search_for_user_and_clic_to_add',
-											'Search for a user and click on the ADD button.'
-										)}
-									</Text>
-								</Row>
-							</Padding>
+							<Paging totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
 						</Container>
 					</ListRow>
-				)}
-				<ListRow>
-					{!selectedAclList?.dynamic && (
-						<Container
-							padding={{ all: 'small' }}
-							mainAlignment="flex-end"
-							crossAlignment="flex-end"
-						>
-							<Paging totalItem={1} pageSize={10} setOffset={setMemberOffset} />
-						</Container>
-					)}
-				</ListRow>
-
-				<Row padding={{ top: 'small', bottom: 'medium' }}>
-					<Text
-						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						weight="bold"
-						color="gray0"
-					>
-						{t('label.owners_settings_lbl', 'Owners’ Settings')}
-					</Text>
-				</Row>
-				<Row>
-					<Text
-						size="medium"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						color="secondary"
-						style={{ 'white-space': 'normal' }}
-						overflow="break-word"
-					>
-						{t(
-							'label.owners_description_msg_1',
-							'Owners can add and remove members, change displayname and description, change list visibility (ie. to hide in gal), change the ownership, modify the subscription/unsubscription behaviour.'
-						)}
-					</Text>
-				</Row>
-
-				<Row
-					takeAvwidth="fill"
-					mainAlignment="flex-start"
-					width="100%"
-					padding={{ top: 'small', bottom: isShowOwnerError ? 'extrasmall' : 'small' }}
-				>
-					<Container
-						orientation="vertical"
-						mainAlignment="space-around"
-						background="gray6"
-						height="58px"
-					>
-						<Row
-							orientation="horizontal"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							width="100%"
-						>
-							<Row mainAlignment="flex-start" width="58%" crossAlignment="flex-start">
-								<Dropdown
-									items={searchOwnerList}
-									placement="bottom-start"
-									maxWidth="300px"
-									disableAutoFocus
-									width="265px"
-									style={{
-										width: '100%'
-									}}
-								>
-									<Input
-										label={t(
-											'label.type_accounts_paste_them_here',
-											'Type the Accounts or paste them here'
-										)}
-										backgroundColor="gray5"
-										size="medium"
-										value={searchOwner}
-										onChange={(e: any): void => {
-											setSearchOwner(e.target.value);
-										}}
-										hasError={isShowOwnerError}
-									/>
-								</Dropdown>
-							</Row>
-							<Row width="42%" mainAlignment="flex-start" crossAlignment="flex-start">
-								<Padding left="large" right="large">
+				</Container>
+				<Modal
+					title={
+						<Trans
+							i18nKey="label.would_you_like_to_add_ml"
+							defaults="<bold>Who would you like to add to the Acl List?</bold>"
+							components={{ bold: <strong /> }}
+						/>
+					}
+					open={openAddAclListDialog}
+					showCloseIcon
+					onClose={(): void => {
+						setOpenAddAclListDialog(false);
+					}}
+					size="medium"
+					customFooter={
+						<Container orientation="horizontal" mainAlignment="space-between">
+							<Button
+								label={t('label.help', 'Help')}
+								type="outlined"
+								color="primary"
+								onClick={(): null => null}
+							/>
+							<Container orientation="horizontal" mainAlignment="flex-end">
+								<Padding all="small">
 									<Button
-										type="outlined"
-										key="add-button"
-										label={t('label.add', 'Add')}
-										color="primary"
-										icon="PlusOutline"
-										height={44}
-										iconPlacement="right"
-										onClick={onAddOwner}
-										size="extralarge"
-										disabled={searchOwner === ''}
+										label={t('label.go_back', 'Go Back')}
+										color="secondary"
+										size="medium"
+										onClick={(): void => {
+											setOpenAddAclListDialog(false);
+										}}
 									/>
 								</Padding>
-
 								<Button
-									type="outlined"
-									key="add-button"
-									label={t('label.delete', 'Delete')}
-									color="error"
-									icon="Trash2Outline"
-									iconPlacement="right"
-									size="extralarge"
-									disabled={selectedOwnerListMember.length === 0}
-									height={44}
-									onClick={onDeleteFromOwnerList}
+									label={t('label.add_to_the_list', 'Add to the list')}
+									color="primary"
+									onClick={onAddToList}
+									disabled={isRequstInProgress}
 								/>
-							</Row>
-						</Row>
-					</Container>
-					{isShowOwnerError && (
-						<Row>
+							</Container>
+						</Container>
+					}
+				>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ all: 'medium' }}
+					>
+						<Text overflow="break-word" weight="regular">
+							{t(
+								'label.add_in_acl_list_or_both',
+								'You add another Acl List or a User. Both of them can be a Owner of the list.'
+							)}
+						</Text>
+
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							width="fill"
+							padding={{ top: 'medium' }}
+						>
+							<Input
+								value={searchAclListOrUser}
+								backgroundColor="gray5"
+								onChange={(e: any): void => {
+									setSearchAclListOrUser(e.target.value);
+								}}
+								hasError={isShowError}
+								label={t('label.acl_list_user', 'Acl List / User')}
+							/>
+						</Container>
+						{isShowError && (
 							<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-								<Padding>
+								<Padding top="small">
 									<Text size="extrasmall" weight="regular" color="error">
 										{ownerErrorMessage}
 									</Text>
 								</Padding>
 							</Container>
-						</Row>
-					)}
-				</Row>
+						)}
 
-				<Container
-					padding={{
-						top: 'small',
-						bottom: 'small'
-					}}
-					mainAlignment="flex-start"
-				>
-					<Table
-						rows={ownerTableRows}
-						headers={ownerHeaders}
-						showCheckbox={false}
-						selectedRows={selectedOwnerListMember}
-						RowFactory={CustomRowFactory}
-						HeaderFactory={CustomHeaderFactory}
-					/>
-				</Container>
-
-				{ownerTableRows.length === 0 && (
-					<ListRow>
 						<Container
-							background="gray6"
-							height="fit-content"
-							mainAlignment="center"
-							crossAlignment="center"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small' }}
 						>
-							<Padding value="57px 0 0 0" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<img src={helmetLogo} alt="logo" />
-								</Row>
-							</Padding>
-							<Padding vertical="extralarge" width="100%">
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<Text size="large" color="secondary" weight="regular">
-										{t('label.there_are_no_owners', 'There aren’t owners here.')}
-									</Text>
-								</Row>
-								<Row takeAvwidth="fill" mainAlignment="center" width="100%">
-									<Text size="large" color="secondary" weight="regular">
-										{t(
-											'label.search_for_user_and_clic_to_add',
-											'Search for a user and click on the ADD button.'
-										)}
-									</Text>
-								</Row>
-							</Padding>
-						</Container>
-					</ListRow>
-				)}
-
-				<ListRow>
-					<Container
-						padding={{ all: 'small' }}
-						mainAlignment={selectedAclList?.dynamic ? 'flex-start' : 'flex-end'}
-						crossAlignment={selectedAclList?.dynamic ? 'flex-start' : 'flex-end'}
-					>
-						<Paging totalItem={1} pageSize={10} setOffset={setOwnerOffset} />
-					</Container>
-				</ListRow>
-			</Container>
-			<Modal
-				title={
-					<Trans
-						i18nKey="label.would_you_like_to_add_ml"
-						defaults="<bold>Who would you like to add to the Acl List?</bold>"
-						components={{ bold: <strong /> }}
-					/>
-				}
-				open={openAddAclListDialog}
-				showCloseIcon
-				onClose={(): void => {
-					setOpenAddAclListDialog(false);
-				}}
-				size="medium"
-				customFooter={
-					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button label={t('label.help', 'Help')} type="outlined" color="primary" isSmall />
-						<Container orientation="horizontal" mainAlignment="flex-end">
-							<Padding all="small">
-								<Button
-									label={t('label.go_back', 'Go Back')}
-									color="secondary"
-									size="medium"
-									onClick={(): void => {
-										setOpenAddAclListDialog(false);
-									}}
-								/>
-							</Padding>
-							<Button
-								label={t('label.add_to_the_list', 'Add to the list')}
-								color="primary"
-								onClick={onAddToList}
-								disabled={isRequstInProgress}
+							<Switch
+								value={isAddToOwnerList}
+								label={t(
+									'label.this_account_owner_of_the_list',
+									'this account will be a Owner of the list'
+								)}
+								onClick={(): void => {
+									setIsAddToOwnerList(!isAddToOwnerList);
+								}}
+								disabled={selectedAclList?.dynamic}
+								iconColor="primary"
 							/>
 						</Container>
 					</Container>
-				}
-			>
-				<Container
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'medium' }}
-				>
-					<Text overflow="break-word" weight="regular">
+				</Modal>
+				<RouteLeavingGuard when={isDirty} onSave={onSave}>
+					<Text>
 						{t(
-							'label.add_in_acl_list_or_both',
-							'You add another Acl List or a User. Both of them can be a Owner of the list.'
+							'label.unsaved_changes_line1',
+							'Are you sure you want to leave this page without saving?'
 						)}
 					</Text>
-
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						width="fill"
-						padding={{ top: 'medium' }}
-					>
-						<Input
-							value={searchAclListOrUser}
-							background="gray5"
-							onChange={(e: any): void => {
-								setSearchAclListOrUser(e.target.value);
-							}}
-							hasError={isShowError}
-							label={t('label.acl_list_user', 'Acl List / User')}
-						/>
-					</Container>
-					{isShowError && (
-						<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-							<Padding top="small">
-								<Text size="extrasmall" weight="regular" color="error">
-									{ownerErrorMessage}
-								</Text>
-							</Padding>
-						</Container>
-					)}
-
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'small' }}
-					>
-						<Switch
-							value={isAddToOwnerList}
-							label={t(
-								'label.this_account_owner_of_the_list',
-								'this account will be a Owner of the list'
-							)}
-							onClick={(): void => {
-								setIsAddToOwnerList(!isAddToOwnerList);
-							}}
-							disabled={selectedAclList?.dynamic}
-							iconColor="primary"
-						/>
-					</Container>
-				</Container>
-			</Modal>
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
-		</Container>
+					<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+				</RouteLeavingGuard>
+			</Container>
+		</>
 	);
 };
 export default EditAclListView;

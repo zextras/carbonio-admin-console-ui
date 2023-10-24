@@ -11,6 +11,7 @@ import ListPanelItem from '../list/list-panel-item';
 import {
 	ADVANCED,
 	ADVANCED_LBL,
+	BACKUP_BASIC,
 	BACKUP_ROUTE_ID,
 	CONFIGURATION_BACKUP,
 	LIST_SERVER,
@@ -26,10 +27,12 @@ import { useModuleLicenseStore } from '../../store/module-license/store';
 import { useRightsStore } from '../../store/rights/store';
 import { getRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
+import { useConfigStore } from '../../store/config/store';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -54,9 +57,9 @@ const BackupListPanel: FC = () => {
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
 			const backupModule = moduleLicense.filter(
-				(item: Record<string, string | number | boolean>) => item?.name === 'Backup'
+				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.licensed) {
+			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
@@ -141,10 +144,6 @@ const BackupListPanel: FC = () => {
 			label: serverItem?.name,
 			customComponent: (
 				<Row
-					top="0.56rem"
-					right="large"
-					bottom="0.56rem"
-					left="large"
 					style={{
 						display: 'block',
 						textAlign: 'left',
@@ -229,7 +228,7 @@ const BackupListPanel: FC = () => {
 					/>
 					{isServerSpecificsExpanded && (
 						<>
-							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Row mainAlignment="flex-start" width="100%">
 								<DropDownInput
 									items={isBackupModuleLicensed ? serverNames : []}
 									maxWidth="18.75rem"

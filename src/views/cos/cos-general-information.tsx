@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
-import { find } from 'lodash';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { debounce, find } from 'lodash';
 import {
 	Container,
 	Divider,
@@ -15,7 +15,9 @@ import {
 	Padding,
 	SnackbarManagerContext,
 	Modal,
-	Icon
+	Icon,
+	Table,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
@@ -28,21 +30,148 @@ import { DEFAULT, COS } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
 import ListRow from '../list/list-row';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import Textarea from '../components/textarea';
+import TrackNumberPerPage from '../app/shared/track-number-per-page';
+import Paging from '../components/paging';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import logo from '../../assets/gardian.svg';
+import { searchDirectory } from '../../services/search-directory-service';
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
 	const cosInformation = useCosStore((state) => state.cos?.a);
+	const cosDetail = useCosStore((state) => state.cos);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [cosData, setCosData]: any = useState({});
 	const [cosName, setCosName] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const setCos = useCosStore((state) => state.setCos);
 	const [openDeleteCOSConfirmDialog, setOpenDeleteCOSConfirmDialog] = useState<boolean>(false);
 	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const totalAccount = useCosStore((state) => state.totalAccount);
 	const totalDomain = useCosStore((state) => state.totalDomain);
 	const rights: Rights = useRightsStore((state) => state.rights);
+	const [accountList, setAccountList] = useState<any[]>([]);
+	const [offset, setOffset] = useState<number>(0);
+	const [limit, setLimit] = useState<number>(5);
+	const [searchAccountString, setSearchAccountString] = useState<string>('');
+	const [searchAccountQuery, setSearchAccountQuery] = useState<string>('');
+	const [totalAccounts, setTotalAccounts] = useState<number>(0);
+	const tableRef = useRef(null);
+	const [isAccountRequestInProgress, setIsAccountRequestInProgress] = useState<boolean>(false);
+	const [domainList, setDomainList] = useState<any[]>([]);
+	const [searchDomainString, setSearchDomainString] = useState<string>('');
+	const [searchDomainQuery, setSearchDomainQuery] = useState<string>('');
+	const [totalDomains, setTotalDomains] = useState<number>(0);
+	const [isDomainRequestInProgress, setIsDomainRequestInProgress] = useState<boolean>(false);
+	const [domainOffset, setDomainOffset] = useState<number>(0);
+
+	const accountHeaders: any = useMemo(
+		() => [
+			{
+				id: 'email',
+				label: t('label.email', 'Email'),
+				width: '25%',
+				bold: true
+			},
+			{
+				id: 'name',
+				label: t('label.person_name', 'Name'),
+				width: '15%',
+				bold: true
+			},
+			{
+				id: 'aliases',
+				label: t('label.Aliases', 'Aliases'),
+				width: '10%',
+				bold: true
+			},
+			{
+				id: 'type',
+				label: t('label.type', 'Type'),
+				width: '10%',
+				bold: true
+			},
+			{
+				id: 'status',
+				label: t('label.status', 'Status'),
+				width: '10%',
+				bold: true
+			},
+			{
+				id: 'description',
+				label: t('label.description', 'Description'),
+				width: '40%',
+				bold: true
+			}
+		],
+		[t]
+	);
+
+	const STATUS_COLOR: any = useMemo(
+		() => ({
+			active: {
+				color: '#8BC34A',
+				label: t('label.active', 'Active')
+			},
+			maintenance: {
+				color: '#2196D3',
+				label: t('label.in_maintenance', 'In maintenance')
+			},
+			locked: {
+				color: '#D74942',
+				label: t('label.locked', 'Locked')
+			},
+			closed: {
+				color: '#828282',
+				label: t('label.closed', 'Closed')
+			},
+			pending: {
+				color: '#828282',
+				label: t('label.pending', 'Pending')
+			},
+			lockout: {
+				color: '#D74942',
+				label: t('label.lockout', 'Lockout')
+			}
+		}),
+		[t]
+	);
+
+	const accountUserType = useCallback((item): string => {
+		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
+		return 'Normal';
+	}, []);
+
+	const domainHeaders: any[] = useMemo(
+		() => [
+			{
+				id: 'domains',
+				label: t('label.domains', 'Domains'),
+				width: '35%',
+				bold: true
+			},
+			{
+				id: 'maximum_accounts',
+				label: t('label.maximum_handled_accounts', 'Maximum Handled Accounts'),
+				width: '45%',
+				bold: true
+			},
+			{
+				id: 'description',
+				label: '',
+				width: '20%',
+				bold: true
+			}
+		],
+		[t]
+	);
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
@@ -65,6 +194,12 @@ const CosGeneralInformation: FC = () => {
 				obj.zimbraNotes = '';
 				setZimbraNotes('');
 			}
+			if (obj.description) {
+				setDescription(obj.description);
+			} else {
+				obj.description = '';
+				setDescription('');
+			}
 			setCosData(obj);
 			setIsDirty(false);
 		}
@@ -82,6 +217,12 @@ const CosGeneralInformation: FC = () => {
 		}
 	}, [cosData.zimbraNotes, zimbraNotes]);
 
+	useEffect(() => {
+		if (cosData.description !== undefined && cosData.description !== description) {
+			setIsDirty(true);
+		}
+	}, [cosData.description, description]);
+
 	const modifyCosInfo = (): void => {
 		const body: any = {};
 		const attributes: any[] = [];
@@ -89,6 +230,10 @@ const CosGeneralInformation: FC = () => {
 		attributes.push({
 			n: 'zimbraNotes',
 			_content: zimbraNotes
+		});
+		attributes.push({
+			n: 'description',
+			_content: description
 		});
 		attributes.push({
 			n: 'cn',
@@ -167,6 +312,7 @@ const CosGeneralInformation: FC = () => {
 	const onCancel = (): void => {
 		setCosName(cosData.cn);
 		setZimbraNotes(cosData.zimbraNotes);
+		setDescription(cosData.description);
 		setIsDirty(false);
 	};
 
@@ -222,9 +368,226 @@ const CosGeneralInformation: FC = () => {
 			});
 	};
 
+	const getAccountList = useCallback((): void => {
+		if (!searchAccountQuery) {
+			return;
+		}
+		setIsAccountRequestInProgress(true);
+		const type = 'accounts';
+		const attrs =
+			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
+		searchDirectory(attrs, type, '', searchAccountQuery, offset, limit)
+			.then((data) => {
+				const accountListResponse: any = data?.account || [];
+				if (accountListResponse && Array.isArray(accountListResponse)) {
+					const accountListArr: any = [];
+					setTotalAccounts(data.searchTotal || 0);
+					accountListResponse.forEach((item: any): any => {
+						item?.a?.forEach((ele: any) => {
+							if (ele?.n === 'mail') {
+								if (item[ele?.n]) {
+									item[ele?.n].push(ele._content);
+								} else {
+									// eslint-disable-next-line no-param-reassign
+									item[ele?.n] = [ele._content];
+								}
+							} else {
+								// eslint-disable-next-line no-param-reassign
+								item[ele?.n] = ele._content;
+							}
+						});
+						accountListArr.push({
+							id: item?.id,
+							columns: [
+								<Text size="small" key={item?.id} color="gray0" weight="regular">
+									{item?.name || ' '}
+								</Text>,
+								<Text size="small" key={item?.id} color="gray0" weight="light">
+									{item?.displayName || <>&nbsp;</>}
+								</Text>,
+								<>
+									{
+										// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+										item?.mail?.length - 1 || 0 ? (
+											<Tooltip
+												key={item?.id}
+												placement="bottom"
+												label={item?.mail.slice(1).join(', ')}
+												maxWidth="auto"
+											>
+												<Text size="small" weight="light" key={item?.id} color="#828282">
+													{
+														// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+														item?.mail?.length - 1 || 0
+													}
+												</Text>
+											</Tooltip>
+										) : (
+											<Text size="small" key={item?.id} color="#828282" weight="light">
+												0
+											</Text>
+										)
+									}
+								</>,
+								<Text size="small" key={item?.id} color="gray0" weight="light">
+									{accountUserType(item)}
+								</Text>,
+								<Text
+									size="small"
+									weight="light"
+									key={item?.id}
+									color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
+								>
+									{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
+								</Text>,
+								<Text size="small" weight="light" key={item?.id} color="gray0">
+									{item?.description || <>&nbsp;</>}
+								</Text>
+							],
+							item,
+							clickable: true
+						});
+					});
+					setAccountList(accountListArr);
+				}
+				setIsAccountRequestInProgress(false);
+			})
+			.catch((error) => {
+				setIsAccountRequestInProgress(false);
+			});
+	}, [STATUS_COLOR, accountUserType, limit, offset, searchAccountQuery]);
+
+	useEffect(() => {
+		if (cosDetail?.id) {
+			getAccountList();
+		}
+	}, [cosDetail?.id, getAccountList]);
+
+	const generateAccountSearchFilterQuery = useCallback(
+		(searchStr: string, cosId: string | undefined): string => {
+			let filterQuery = `(&(zimbraCOSId=${cosId})(!(zimbraIsSystemAccount=TRUE)))`;
+			if (searchStr) {
+				filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
+			}
+			if (searchStr) {
+				return `(&${filterQuery})`;
+			}
+			return filterQuery;
+		},
+		[]
+	);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchAccountList = useCallback(
+		debounce((searchStr: string, cosId: string | undefined) => {
+			setSearchAccountQuery(generateAccountSearchFilterQuery(searchStr, cosId));
+		}, 700),
+		[debounce]
+	);
+	useEffect(() => {
+		searchAccountList(searchAccountString, cosDetail.id);
+	}, [cosDetail?.id, searchAccountList, searchAccountString]);
+
+	const getDomainList = useCallback((): void => {
+		if (!searchDomainQuery) {
+			return;
+		}
+		setIsDomainRequestInProgress(true);
+		const type = 'domains';
+		const attrs =
+			'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraDomainCOSMaxAccounts,zimbraDomainDefaultCOSId';
+		searchDirectory(attrs, type, '', searchDomainQuery, domainOffset, limit)
+			.then((data) => {
+				const domainListResponse: any = data?.domain || [];
+				if (domainListResponse && Array.isArray(domainListResponse)) {
+					const domainListArr: any = [];
+					setTotalDomains(data.searchTotal || 0);
+					domainListResponse.forEach((item: any): any => {
+						item?.a?.forEach((ele: any) => {
+							if (ele?.n === 'zimbraDomainCOSMaxAccounts') {
+								if (item[ele?.n]) {
+									item[ele?.n].push(ele._content);
+								} else {
+									// eslint-disable-next-line no-param-reassign
+									item[ele?.n] = [ele._content];
+								}
+							} else {
+								// eslint-disable-next-line no-param-reassign
+								item[ele?.n] = ele._content;
+							}
+						});
+						const maxAccountValue = item?.zimbraDomainCOSMaxAccounts
+							?.filter((acc: string) => acc?.split(':')[0] === cosDetail?.id)[0]
+							?.split(':')[1];
+						domainListArr.push({
+							id: item?.id,
+							columns: [
+								<Text size="small" key={item?.id} color="gray0" weight="regular">
+									{item?.name || ' '}
+								</Text>,
+								<Text size="small" key={item?.id} color="gray0" weight="light">
+									{maxAccountValue || ' '}
+								</Text>,
+								<Container key={item?.id}>
+									{cosDetail?.id === item?.zimbraDomainDefaultCOSId && (
+										<Row>
+											<Padding right="small">
+												<Text size="small" weight="light" color="gray0">
+													{t('label.default_cos', 'Default COS')}
+												</Text>
+											</Padding>
+											<Icon icon="Star" color="primary" />
+										</Row>
+									)}
+								</Container>
+							],
+							item,
+							clickable: true
+						});
+					});
+					setDomainList(domainListArr);
+				}
+				setIsDomainRequestInProgress(false);
+			})
+			.catch((error) => {
+				setIsDomainRequestInProgress(false);
+			});
+	}, [searchDomainQuery, domainOffset, limit, cosDetail?.id, t]);
+
+	useEffect(() => {
+		if (cosDetail?.id) {
+			getDomainList();
+		}
+	}, [cosDetail?.id, getDomainList]);
+
+	const generateDomainSearchFilterQuery = useCallback(
+		(searchStr: string, cosId: string | undefined): string => {
+			let filterQuery = `(|(zimbraDomainCOSMaxAccounts=${cosId}*)(zimbraDomainDefaultCOSId=${cosId}))`;
+			if (searchStr) {
+				filterQuery += `(|(zimbraDomainName=*${searchStr}*))`;
+			}
+			if (searchStr) {
+				return `(&${filterQuery})`;
+			}
+			return filterQuery;
+		},
+		[]
+	);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchDomainList = useCallback(
+		debounce((searchStr: string, cosId: string | undefined) => {
+			setSearchDomainQuery(generateDomainSearchFilterQuery(searchStr, cosId));
+		}, 700),
+		[debounce]
+	);
+	useEffect(() => {
+		searchDomainList(searchDomainString, cosDetail.id);
+	}, [cosDetail?.id, searchDomainList, searchDomainString]);
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -265,7 +628,7 @@ const CosGeneralInformation: FC = () => {
 				width="100%"
 				// height="calc(100vh - 230px)"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container
 						height="fit"
 						crossAlignment="flex-start"
@@ -276,7 +639,7 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.name', 'Name')}
-									background={canDeleteCOS ? 'gray6' : 'gray5'}
+									backgroundColor={canDeleteCOS ? 'gray6' : 'gray5'}
 									value={cosName}
 									onChange={(e: any): any => {
 										setCosName(e.target.value);
@@ -289,7 +652,7 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.id_lbl', 'ID')}
-									background="gray6"
+									backgroundColor="gray6"
 									value={cosData.zimbraId}
 									disabled
 									// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -300,7 +663,7 @@ const CosGeneralInformation: FC = () => {
 								<Input
 									label={t('label.creation_date', 'Creation Date')}
 									value={cosCreationDate}
-									background="gray6"
+									backgroundColor="gray6"
 									disabled
 									// eslint-disable-next-line @typescript-eslint/no-empty-function
 									onChange={(e: any): any => {}}
@@ -311,16 +674,19 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.accounts_that_use_this_cos', 'Accounts that use this CoS')}
-									background="gray6"
+									backgroundColor="gray6"
 									value={totalAccount}
 									disabled
 								/>
 							</Container>
 							<Container padding={{ all: 'small' }}>
 								<Input
-									label={t('label.domains_that_use_this_cos', 'Domains that use this CoS')}
+									label={t(
+										'label.domains_that_use_this_cos_as_default',
+										'Domains that use this CoS as default'
+									)}
 									value={totalDomain}
-									background="gray6"
+									backgroundColor="gray6"
 									disabled
 								/>
 							</Container>
@@ -329,7 +695,20 @@ const CosGeneralInformation: FC = () => {
 							<Container padding={{ all: 'small' }}>
 								<Input
 									label={t('label.description', 'Description')}
-									background="gray5"
+									backgroundColor="gray5"
+									value={description}
+									onChange={(e: any): any => {
+										setDescription(e.target.value);
+									}}
+									disabled={readonlyCOS}
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ all: 'small' }}>
+								<Textarea
+									label={t('label.notes', 'Notes')}
+									backgroundColor="gray5"
 									value={zimbraNotes}
 									onChange={(e: any): any => {
 										setZimbraNotes(e.target.value);
@@ -338,6 +717,230 @@ const CosGeneralInformation: FC = () => {
 								/>
 							</Container>
 						</ListRow>
+					</Container>
+				</Row>
+				<Row width="100%" padding={{ all: 'large' }}>
+					<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('cos.handled_domains', 'Handled Domains')}
+						</Text>
+					</Row>
+				</Row>
+				<Row
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					padding={{ left: 'large', right: 'large', top: 'large' }}
+				>
+					<Container padding={{ all: 'small' }}>
+						<Input
+							label={t('label.search_for_a_domain', `Search for a domain`)}
+							disabled={domainList.length === 0 && searchDomainString.length === 0}
+							value={searchDomainString}
+							backgroundColor="gray5"
+							onChange={(e: any): any => {
+								setSearchDomainString(e.target.value);
+							}}
+							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+						/>
+					</Container>
+				</Row>
+				<Row
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					style={{
+						height: 'calc(100vh - 21.25rem)',
+						position: 'relative'
+					}}
+					ref={tableRef}
+					padding={{ left: 'large', right: 'large', bottom: 'large' }}
+				>
+					<Container padding={{ all: 'small' }}>
+						<Table
+							rows={!isDomainRequestInProgress ? domainList : []}
+							headers={domainHeaders}
+							showCheckbox={false}
+							multiSelect={false}
+							style={{
+								overflow: 'auto',
+								height: '100%'
+							}}
+							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
+							HeaderFactory={CustomHeaderFactory}
+						/>
+						{isDomainRequestInProgress && (
+							<Container
+								crossAlignment="center"
+								mainAlignment="center"
+								height="auto"
+								padding={{ top: 'medium' }}
+							>
+								<Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+							</Container>
+						)}
+						{domainList.length === 0 && !isDomainRequestInProgress && (
+							<Container
+								orientation="column"
+								crossAlignment="center"
+								mainAlignment="center"
+								style={{ marginTop: '1rem' }}
+							>
+								<Row>
+									<img src={logo} alt="logo" />
+								</Row>
+								<Row
+									padding={{ top: 'extralarge' }}
+									orientation="vertical"
+									crossAlignment="center"
+									style={{ textAlign: 'center' }}
+								>
+									<Text weight="light" color="#828282" size="large" overflow="break-word">
+										{t('label.this_list_is_empty', 'This list is empty.')}
+									</Text>
+								</Row>
+							</Container>
+						)}
+						{domainList.length !== 0 && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="space-between"
+								width="100%"
+								style={{ position: 'absolute', bottom: '-4rem' }}
+								height="auto"
+								padding={{ all: 'large' }}
+							>
+								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+									<Paging totalItem={totalDomains} setOffset={setDomainOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ all: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
+						)}
+					</Container>
+				</Row>
+				<Row
+					width="100%"
+					padding={{ all: 'large' }}
+					style={{ marginTop: domainList.length > 0 ? '3rem' : '0rem' }}
+				>
+					<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('cos.handled_accounts', 'Handled Accounts')}
+						</Text>
+					</Row>
+				</Row>
+				<Row
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					padding={{ left: 'large', right: 'large', top: 'large' }}
+				>
+					<Container padding={{ all: 'small' }}>
+						<Input
+							label={t('label.search_for_an_account', `Search for an account`)}
+							disabled={accountList.length === 0 && searchAccountString.length === 0}
+							value={searchAccountString}
+							backgroundColor="gray5"
+							onChange={(e: any): any => {
+								setSearchAccountString(e.target.value);
+							}}
+							CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+						/>
+					</Container>
+				</Row>
+				<Row
+					orientation="horizontal"
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+					width="fill"
+					style={{
+						height: 'calc(100vh - 21.25rem)',
+						position: 'relative'
+					}}
+					ref={tableRef}
+					padding={{ left: 'large', right: 'large', bottom: 'large' }}
+				>
+					<Container padding={{ all: 'small' }}>
+						<Table
+							rows={!isAccountRequestInProgress ? accountList : []}
+							headers={accountHeaders}
+							showCheckbox={false}
+							multiSelect={false}
+							style={{
+								overflow: 'auto',
+								height: '100%'
+							}}
+							RowFactory={CustomRowFactory}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
+							HeaderFactory={CustomHeaderFactory}
+						/>
+						{isAccountRequestInProgress && (
+							<Container
+								crossAlignment="center"
+								mainAlignment="center"
+								height="auto"
+								padding={{ top: 'medium' }}
+							>
+								<Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+							</Container>
+						)}
+						{accountList.length === 0 && !isAccountRequestInProgress && (
+							<Container
+								orientation="column"
+								crossAlignment="center"
+								mainAlignment="center"
+								style={{ marginTop: '1rem' }}
+							>
+								<Row>
+									<img src={logo} alt="logo" />
+								</Row>
+								<Row
+									padding={{ top: 'extralarge' }}
+									orientation="vertical"
+									crossAlignment="center"
+									style={{ textAlign: 'center' }}
+								>
+									<Text weight="light" color="#828282" size="large" overflow="break-word">
+										{t('label.this_list_is_empty', 'This list is empty.')}
+									</Text>
+								</Row>
+							</Container>
+						)}
+						{accountList.length !== 0 && (
+							<Container
+								orientation="horizontal"
+								mainAlignment="space-between"
+								width="100%"
+								style={{ position: 'absolute', bottom: '-4rem' }}
+								height="auto"
+								padding={{ all: 'large' }}
+							>
+								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
+									<Paging totalItem={totalAccounts} setOffset={setOffset} pageSize={limit} />
+								</Container>
+								<Container
+									crossAlignment="flex-end"
+									orientation="horizontal"
+									mainAlignment="flex-end"
+									padding={{ all: 'small' }}
+								>
+									<TrackNumberPerPage pageSize={limit} />
+								</Container>
+							</Container>
+						)}
 					</Container>
 				</Row>
 			</Container>
@@ -352,7 +955,7 @@ const CosGeneralInformation: FC = () => {
 					icon="CloseOutline"
 					color="error"
 					size="large"
-					width="100%"
+					width="fill"
 					style={{ width: '100%' }}
 					disabled={canDeleteCOS || readonlyCOS}
 					onClick={onDeleteCOSConfirmation}
@@ -377,7 +980,12 @@ const CosGeneralInformation: FC = () => {
 				size="medium"
 				customFooter={
 					<Container orientation="horizontal" mainAlignment="space-between">
-						<Button label={t('label.help', 'Help')} type="outlined" color="primary" isSmall />
+						<Button
+							label={t('label.help', 'Help')}
+							type="outlined"
+							color="primary"
+							onClick={(): null => null}
+						/>
 						<Container orientation="horizontal" mainAlignment="flex-end">
 							<Padding all="small">
 								<Button

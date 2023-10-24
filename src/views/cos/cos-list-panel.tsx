@@ -29,6 +29,7 @@ import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
+import { useConfigStore } from '../../store/config/store';
 
 const SelectItem = styled(Row)``;
 
@@ -62,7 +63,8 @@ const CosListPanel: FC = () => {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [t] = useTranslation();
 	const locationService = useLocation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -226,13 +228,12 @@ const CosListPanel: FC = () => {
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -255,10 +256,6 @@ const CosListPanel: FC = () => {
 					label: cos.name,
 					customComponent: (
 						<SelectItem
-							top="9px"
-							right="large"
-							bottom="9px"
-							left="large"
 							style={{
 								display: 'block',
 								textAlign: 'left',
@@ -283,7 +280,7 @@ const CosListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<DropDownInput
 					items={isLoading ? loadingComponent : items}
 					inputLabel={
@@ -314,12 +311,7 @@ const CosListPanel: FC = () => {
 					</Container>
 				)}
 			</Row>
-			<Row
-				padding={{ all: 'medium' }}
-				takeAvwidth="fill"
-				width="100%"
-				mainAlignment="space-between"
-			></Row>
+			<Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
 			<ListItems
 				items={detailOptions}
 				selectedOperationItem={selectedOperationItem}

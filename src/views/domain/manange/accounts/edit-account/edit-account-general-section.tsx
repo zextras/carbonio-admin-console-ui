@@ -21,7 +21,7 @@ import {
 	Padding
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import { debounce, map } from 'lodash';
+import { debounce, head, map } from 'lodash';
 import styled from 'styled-components';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { AccountContext } from '../account-context';
@@ -35,6 +35,8 @@ import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { objectType, Attribute } from '../../../../../../types';
 import DropDownInput from '../../../../components/dropDownInput';
 import CustomChip from '../../../../components/customChip';
+import Textarea from '../../../../components/textarea';
+import InheritedInput from './inherited-components/inherited-input';
 
 const SelectItem = styled(Row)``;
 
@@ -74,6 +76,13 @@ const EditAccountGeneralSection: FC = () => {
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
+	const [accountQuota, setAccountQuota] = useState('');
+
+	useEffect(() => {
+		setAccountQuota(
+			accountDetail.zimbraMailQuota ? (accountDetail.zimbraMailQuota / 1048576).toString() : ''
+		);
+	}, [accountDetail?.zimbraMailQuota]);
 
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -101,6 +110,16 @@ const EditAccountGeneralSection: FC = () => {
 			}
 		});
 	}, []);
+
+	const changeAccountQuota = useCallback(
+		(e) => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[e.target.name]: (Number(e.target.value) * 1048576).toString()
+			}));
+		},
+		[setAccountDetail]
+	);
 
 	const selectedDomain = useCallback(
 		(domain: string) => {
@@ -146,6 +165,13 @@ const EditAccountGeneralSection: FC = () => {
 				...prev,
 				uid: e.target.value?.replace(/ /g, '')?.toLowerCase()
 			}));
+		},
+		[setAccountDetail]
+	);
+
+	const changeAccDisplayName = useCallback(
+		(e) => {
+			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setAccountDetail]
 	);
@@ -229,13 +255,12 @@ const EditAccountGeneralSection: FC = () => {
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -258,10 +283,6 @@ const EditAccountGeneralSection: FC = () => {
 					label: domain.name,
 					customComponent: (
 						<SelectItem
-							top="9px"
-							right="large"
-							bottom="9px"
-							left="large"
 							style={{
 								display: 'block',
 								textAlign: 'left',
@@ -303,12 +324,12 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							onChange={changeAccDetail}
-							inputName="givenName"
-							label={t('label.name', 'Name')}
+							label={t('label.surname', 'Surname')}
 							backgroundColor="gray5"
-							defaultValue={accountDetail?.givenName || ''}
-							value={accountDetail?.givenName || ''}
+							onChange={changeAccDetail}
+							inputName="sn"
+							defaultValue={accountDetail?.sn || ''}
+							value={accountDetail?.sn || ''}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
@@ -323,20 +344,20 @@ const EditAccountGeneralSection: FC = () => {
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
 						<Input
-							label={t('label.surname', 'Surname')}
-							backgroundColor="gray5"
 							onChange={changeAccDetail}
-							inputName="sn"
-							defaultValue={accountDetail?.sn || ''}
-							value={accountDetail?.sn || ''}
+							inputName="givenName"
+							label={t('label.person_name', 'Name')}
+							backgroundColor="gray5"
+							defaultValue={accountDetail?.givenName || ''}
+							value={accountDetail?.givenName || ''}
 						/>
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="47%" mainAlignment="flex-start">
 						<Input
-							background="gray5"
-							label={t('label.userName', 'username')}
+							backgroundColor="gray5"
+							label={t('label.advance_edit_userName', 'Username')}
 							onChange={changeUserNaneDetail}
 							inputName="uid"
 							defaultValue={accountDetail?.uid}
@@ -344,16 +365,11 @@ const EditAccountGeneralSection: FC = () => {
 							autoComplete="new-password"
 						/>
 					</Row>
-					<Row mainAlignment="flex-center" crossAlignment="flex-center" padding={{ top: 'small' }}>
+					<Row mainAlignment="center" crossAlignment="center" padding={{ top: 'small' }}>
 						<Icon icon="AtOutline" size="large" />
 					</Row>
 					<Row width="47%" mainAlignment="flex-start">
-						<Row
-							takeAvwidth="fill"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							width="100%"
-						>
+						<Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%">
 							<DropDownInput
 								items={items}
 								maxWidth="400px"
@@ -389,11 +405,11 @@ const EditAccountGeneralSection: FC = () => {
 
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.viewed_name', 'Viewed Name')}
+						label={t('label.advance_edit_viewed_name', 'Viewed Name')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.displayName}
 						value={accountDetail?.displayName}
-						onChange={changeAccDetail}
+						onChange={changeAccDisplayName}
 						inputName="displayName"
 						name="descriptiveName"
 						autoComplete="new-password"
@@ -409,7 +425,11 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
-							<Text size="small" color="gray0" style={{ 'text-decoration': 'underline' }}>
+							<Text
+								size="small"
+								color="gray0"
+								style={{ textDecoration: 'underline', cursor: 'default' }}
+							>
 								({t('label.what_is_a_gal', "What's a GAL?")})
 							</Text>
 						</Tooltip>
@@ -439,20 +459,13 @@ const EditAccountGeneralSection: FC = () => {
 									)}
 								>
 									<Input
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('label.password', 'Password')}
 										onChange={changeAccDetail}
 										inputName="password"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.password
-												? accountDetail.password
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.password}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -466,20 +479,13 @@ const EditAccountGeneralSection: FC = () => {
 									)}
 								>
 									<Input
-										background="gray5"
+										backgroundColor="gray5"
 										label={t('label.repeat_password', 'Repeat Password')}
 										onChange={changeAccDetail}
 										inputName="repeatPassword"
 										type="password"
 										autoComplete="new-password"
-										value={
-											// eslint-disable-next-line no-nested-ternary
-											accountDetail?.repeatPassword
-												? accountDetail.repeatPassword
-												: accountDetail?.userPassword
-												? '******'
-												: ''
-										}
+										value={accountDetail?.repeatPassword}
 										disabled={isHidePassword}
 									/>
 								</Tooltip>
@@ -489,39 +495,25 @@ const EditAccountGeneralSection: FC = () => {
 						<>
 							<Row width="49%" mainAlignment="flex-start">
 								<Input
-									background="gray5"
+									backgroundColor="gray5"
 									label={t('label.password', 'Password')}
 									onChange={changeAccDetail}
 									inputName="password"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.password
-											? accountDetail.password
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.password}
 									disabled={isHidePassword}
 								/>
 							</Row>
 							<Row width="49%" mainAlignment="flex-start">
 								<Input
-									background="gray5"
+									backgroundColor="gray5"
 									label={t('label.repeat_password', 'Repeat Password')}
 									onChange={changeAccDetail}
 									inputName="repeatPassword"
 									type="password"
 									autoComplete="new-password"
-									value={
-										// eslint-disable-next-line no-nested-ternary
-										accountDetail?.repeatPassword
-											? accountDetail.repeatPassword
-											: accountDetail?.userPassword
-											? '******'
-											: ''
-									}
+									value={accountDetail?.repeatPassword}
 									disabled={isHidePassword}
 								/>
 							</Row>
@@ -578,13 +570,15 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
-								background="gray5"
+								backgroundColor="gray5"
 								label={t('label.account_status', 'Account Status')}
 								showCheckbox={false}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onAccountStatusChange}
 								defaultSelection={ACCOUNT_STATUS.find(
 									(item: any) => item.value === accountDetail?.zimbraAccountStatus
@@ -595,35 +589,7 @@ const EditAccountGeneralSection: FC = () => {
 							<></>
 						)}
 					</Row>
-				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="15.5%" mainAlignment="flex-start">
-						<Switch
-							defaultValue={defaultCOS}
-							onClick={onCOSSwitchChanges}
-							label={t('account_details.default_COS', 'Default COS')}
-							iconColor="primary"
-						/>
-					</Row>
-					<Row width="84.5%" mainAlignment="flex-start">
-						{cosItems?.length ? (
-							<Select
-								items={cosItems}
-								background="gray5"
-								label={t('label.default_class_of_service', 'Default Class of Service')}
-								showCheckbox={false}
-								defaultSelection={cosItems.find(
-									(item: any) => item.value === accountDetail?.zimbraCOSId
-								)}
-								onChange={onCOSIdChange}
-							/>
-						) : (
-							<></>
-						)}
-					</Row>
-				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="100%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId && localeZone?.length ? (
 							<InheritedSelect
 								label={t('label.language', 'Language')}
@@ -641,6 +607,60 @@ const EditAccountGeneralSection: FC = () => {
 						)}
 					</Row>
 				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+					<Row width="15.5%" mainAlignment="flex-start">
+						<Switch
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
+							defaultValue={defaultCOS}
+							onClick={onCOSSwitchChanges}
+							label={t('account_details.default_COS', 'Default COS')}
+							iconColor="primary"
+						/>
+					</Row>
+					<Row width="84.5%" mainAlignment="flex-start">
+						{cosItems?.length ? (
+							<Select
+								items={cosItems}
+								background="gray5"
+								label={t('label.default_class_of_service', 'Default Class of Service')}
+								showCheckbox={false}
+								defaultSelection={cosItems.find(
+									(item: any) => item.value === accountDetail?.zimbraCOSId
+								)}
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
+								onChange={onCOSIdChange}
+							/>
+						) : (
+							<></>
+						)}
+					</Row>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
+					<InheritedInput
+						label={t('label.account_quota_mb', 'Account Quota (MB)')}
+						accountValue={accountQuota}
+						cosValue={
+							cosDetail.zimbraMailQuota ? (cosDetail.zimbraMailQuota / 1048576).toString() : ''
+						}
+						fromAccount={
+							accSpecificDetail.zimbraMailQuota
+								? (accSpecificDetail.zimbraMailQuota / 1048576).toString()
+								: ''
+						}
+						background="gray5"
+						inputName="zimbraMailQuota"
+						onChange={changeAccountQuota}
+						onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
+					/>
+				</Row>
+
+				<Row
+					padding={{ top: 'large', left: 'large' }}
+					width="100%"
+					mainAlignment="space-between"
+				></Row>
 			</Row>
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Divider color="gray2" />
@@ -694,16 +714,30 @@ const EditAccountGeneralSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
 					<Input
-						background="gray5"
-						height="85px"
+						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
-						defaultValue={accountDetail?.zimbraNotes}
-						value={accountDetail?.zimbraNotes}
+						defaultValue={accountDetail?.description}
+						value={accountDetail?.description}
 						onChange={changeAccDetail}
+						inputName="description"
+					/>
+				</Row>
+				<Row padding={{ top: 'large' }}>
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.notes', 'Notes')}
+					</Text>
+				</Row>
+				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
+					<Textarea
+						label={t('label.notes', 'Notes')}
+						value={accountDetail?.zimbraNotes || ''}
+						backgroundColor="gray5"
 						inputName="zimbraNotes"
+						onChange={changeAccDetail}
 					/>
 				</Row>
 			</Row>
+
 			<Modal
 				size="small"
 				title={t('account_details.delete_password', 'Delete Password', {

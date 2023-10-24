@@ -32,6 +32,7 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
 import CustomChip from '../../../components/customChip';
+import Textarea from '../../../components/textarea';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -259,10 +260,6 @@ const MailingListSection: FC<any> = () => {
 		label: item?.name,
 		customComponent: (
 			<Row
-				top="9px"
-				right="large"
-				bottom="9px"
-				left="large"
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -375,18 +372,12 @@ const MailingListSection: FC<any> = () => {
 			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				height="calc(100vh - 300px)"
+				height="calc(100vh - 13rem)"
 				background="white"
 				style={{ overflow: 'auto', padding: '16px' }}
 			>
 				<Row>
-					<Text
-						size="small"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						weight="bold"
-					>
+					<Text size="small" weight="bold">
 						{t('label.mailing_list_name', 'Mailing List Name')}
 					</Text>
 				</Row>
@@ -401,7 +392,6 @@ const MailingListSection: FC<any> = () => {
 							label={t('label.displayed_name', 'Displayed Name')}
 							backgroundColor="gray5"
 							value={mailingListDetail?.displayName}
-							size="medium"
 							inputName="displayName"
 							onChange={changeResourceDetail}
 						/>
@@ -419,7 +409,6 @@ const MailingListSection: FC<any> = () => {
 							label={t('label.list_name', 'List Name')}
 							backgroundColor="gray5"
 							value={mailingListDetail?.prefixName}
-							size="medium"
 							inputName="prefixName"
 							onChange={changeResourceDetail}
 						/>
@@ -500,7 +489,6 @@ const MailingListSection: FC<any> = () => {
 									label={t('label.list_url', "Mailing List's URL")}
 									backgroundColor="gray5"
 									value={mailingListDetail?.memberURL}
-									size="medium"
 									inputName="memberURL"
 									onChange={changeResourceDetail}
 									hasError={!isValidQuery}
@@ -510,6 +498,7 @@ const MailingListSection: FC<any> = () => {
 											size="large"
 											color="grey"
 											onClick={getMemberFromLdapQuery}
+											style={{ cursor: 'pointer' }}
 										/>
 									)}
 								/>
@@ -523,7 +512,7 @@ const MailingListSection: FC<any> = () => {
 						{isShowLdapQueryMessage && (
 							<Row>
 								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-									<Padding>
+									<Padding all={'0'}>
 										<Text size="extrasmall" weight="regular" color="error">
 											{ldapQueryErrorMessage}
 										</Text>
@@ -559,13 +548,7 @@ const MailingListSection: FC<any> = () => {
 				{mailingListDetail?.dynamic && (
 					<>
 						<Row padding={{ top: 'large' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
+							<Text size="small" weight="bold">
 								{t('label.members', 'Members')}
 							</Text>
 						</Row>
@@ -576,30 +559,19 @@ const MailingListSection: FC<any> = () => {
 									headers={memberHeaders}
 									showCheckbox={false}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
 						</ListRow>
 						<Row padding={{ top: 'large' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="bold"
-							>
+							<Text size="small" weight="bold">
 								{t('label.owners_settings', 'Owners’ Settings')}
 							</Text>
 						</Row>
 						<Row padding={{ top: 'small', bottom: 'medium' }}>
-							<Text
-								size="small"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								orientation="horizontal"
-								weight="light"
-								color="#828282"
-							>
+							<Text size="small" weight="light" color="#828282">
 								{t(
 									'label.owners_description',
 									"Owners can manage the mailing list's members (adding and removing emails) and modify its options."
@@ -671,7 +643,6 @@ const MailingListSection: FC<any> = () => {
 									color="primary"
 									icon="PlusOutline"
 									iconPlacement="right"
-									height={44}
 									onClick={onAdd}
 									disabled={member === ''}
 								/>
@@ -689,7 +660,6 @@ const MailingListSection: FC<any> = () => {
 									color="error"
 									icon="Trash2Outline"
 									iconPlacement="right"
-									height={44}
 									onClick={onDeleteFromList}
 									disabled={
 										selectedDistributionListOwner && selectedDistributionListOwner.length === 0
@@ -706,6 +676,8 @@ const MailingListSection: FC<any> = () => {
 									showCheckbox={false}
 									selectedRows={selectedDistributionListOwner}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
@@ -766,8 +738,23 @@ const MailingListSection: FC<any> = () => {
 						<Input
 							label={t('label.description', 'Description')}
 							backgroundColor="gray5"
+							value={mailingListDetail?.description}
+							inputName="description"
+							onChange={changeResourceDetail}
+						/>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						padding={{ top: 'small', bottom: 'medium' }}
+					>
+						<Textarea
+							label={t('label.notes', 'Notes')}
+							backgroundColor="gray5"
 							value={mailingListDetail?.zimbraNotes}
-							size="medium"
 							inputName="zimbraNotes"
 							onChange={changeResourceDetail}
 						/>

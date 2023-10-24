@@ -17,13 +17,14 @@ import {
 	Icon,
 	Shimmer,
 	SnackbarManagerContext,
-	Modal
+	Modal,
+	ChipInput
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { cloneDeep, filter, find, isEqual } from 'lodash';
-import { timeZoneList, getFormatedDate, getDateFromStr } from '../../utility/utils';
+import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
+import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
 import {
 	ACTIVE,
 	CLOSED,
@@ -44,6 +45,23 @@ import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import ListRow from '../../list/list-row';
 import DomainCosLink from './domain-cos-link';
 import { CosMaxAccountValues } from '../../../../types';
+import OverlayDivision from '../../components/overlayDivision';
+import Textarea from '../../components/textarea';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 70.35rem;
+	top: 6.5rem;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -122,7 +140,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraHelpDelegatedURL: '',
 		zimbraPublicServiceHostname: '',
 		zimbraDomainMaxAccounts: '',
-		zimbraDomainAggregateQuota: ''
+		zimbraDomainAggregateQuota: '',
+		description: ''
 	});
 	const [selectedTimeZone, setSelectedTimeZone]: any = useState(timezones[0]);
 	const [selectedPublicServiceProtocol, setSelectedPublicServiceProtocol]: any = useState(
@@ -134,6 +153,7 @@ const DomainGeneralSettings: FC = () => {
 	const [zimbraPublicServicePort, setZimbraPublicServicePort] = useState<string>('');
 	const [zimbraDNSCheckHostname, setZimbraDNSCheckHostname] = useState<string>('');
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
+	const [description, setDescription] = useState<string>('');
 	const [zimbraHelpAdminURL, setZimbraHelpAdminURL] = useState<string>('');
 	const [zimbraHelpDelegatedURL, setZimbraHelpDelegatedURL] = useState<string>('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -144,6 +164,13 @@ const DomainGeneralSettings: FC = () => {
 	const [openDeleteDomainConfirmDialog, setOpenDeleteDomainConfirmDialog] =
 		useState<boolean>(false);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
+	const [confirmDomainName, setConfirmDomainName] = useState<string>('');
+	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
+	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
+		{ label: string }[]
+	>([]);
 	interface Attribute {
 		n: string;
 		_content: string;
@@ -179,7 +206,7 @@ const DomainGeneralSettings: FC = () => {
 		alias: [],
 		calresource: []
 	});
-	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isRequstInProgress, setIsRequestInProgress] = useState<boolean>(true);
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
 
@@ -258,7 +285,12 @@ const DomainGeneralSettings: FC = () => {
 				obj.zimbraNotes = '';
 				setZimbraNotes('');
 			}
-
+			if (obj.description) {
+				setDescription(obj.description);
+			} else {
+				obj.description = '';
+				setDescription('');
+			}
 			if (obj.zimbraHelpAdminURL) {
 				setZimbraHelpAdminURL(obj.zimbraHelpAdminURL);
 			} else {
@@ -297,6 +329,23 @@ const DomainGeneralSettings: FC = () => {
 			} else {
 				obj.zimbraMailDomainQuota = '';
 				setZimbraMailDomainQuota('');
+			}
+
+			if (obj.carbonioNotificationFrom) {
+				setCarbonioNotificationFrom(obj.carbonioNotificationFrom);
+			} else {
+				obj.carbonioNotificationFrom = '';
+				setCarbonioNotificationFrom('');
+			}
+
+			if (obj.carbonioNotificationRecipients) {
+				const items = filter(domainInformation, { n: 'carbonioNotificationRecipients' });
+				const data = items.map((item) => ({ label: item._content }));
+				obj.carbonioNotificationRecipients = data;
+				setCarbonioNotificationRecipients(data);
+			} else {
+				obj.carbonioNotificationRecipients = [];
+				setCarbonioNotificationRecipients([]);
 			}
 
 			const domainCosMaxAccountArray = domainInformation.filter(
@@ -354,9 +403,12 @@ const DomainGeneralSettings: FC = () => {
 			zimbraPublicServicePort,
 			zimbraDNSCheckHostname,
 			zimbraNotes,
+			description,
 			zimbraHelpAdminURL,
 			zimbraHelpDelegatedURL,
-			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || ''
+			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || '',
+			carbonioNotificationFrom,
+			carbonioNotificationRecipients
 		};
 		const defaultDomainData = {
 			zimbraPrefTimeZoneId: domainData.zimbraPrefTimeZoneId,
@@ -366,9 +418,12 @@ const DomainGeneralSettings: FC = () => {
 			zimbraPublicServicePort: domainData.zimbraPublicServicePort,
 			zimbraDNSCheckHostname: domainData.zimbraDNSCheckHostname,
 			zimbraNotes: domainData.zimbraNotes,
+			description: domainData.description,
 			zimbraHelpAdminURL: domainData.zimbraHelpAdminURL,
 			zimbraHelpDelegatedURL: domainData.zimbraHelpDelegatedURL,
-			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || ''
+			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || '',
+			carbonioNotificationFrom: domainData.carbonioNotificationFrom,
+			carbonioNotificationRecipients: domainData.carbonioNotificationRecipients
 		};
 		if (!isEqual(defaultDomainData, updatedData)) {
 			setIsDirty(true);
@@ -376,6 +431,8 @@ const DomainGeneralSettings: FC = () => {
 			setIsDirty(false);
 		}
 	}, [
+		carbonioNotificationFrom,
+		carbonioNotificationRecipients,
 		domainData,
 		domainStatus.value,
 		publicServiceHostName,
@@ -386,7 +443,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraHelpAdminURL,
 		zimbraHelpDelegatedURL,
 		zimbraNotes,
-		zimbraPublicServicePort
+		zimbraPublicServicePort,
+		description
 	]);
 	const onCancel = (): void => {
 		setSelectedPublicServiceProtocol(
@@ -399,6 +457,7 @@ const DomainGeneralSettings: FC = () => {
 		setZimbraPublicServicePort(domainData.zimbraPublicServicePort);
 		setZimbraDNSCheckHostname(domainData.zimbraDNSCheckHostname);
 		setZimbraNotes(domainData.zimbraNotes);
+		setDescription(domainData.description);
 		setZimbraHelpAdminURL(domainData.zimbraHelpAdminURL);
 		setZimbraHelpDelegatedURL(domainData.zimbraHelpDelegatedURL);
 		setPublicServiceHostName(domainData.zimbraPublicServiceHostname);
@@ -412,84 +471,113 @@ const DomainGeneralSettings: FC = () => {
 		} else {
 			setZimbraDomainDefaultCOSId('');
 		}
+		setCarbonioNotificationFrom(domainData.carbonioNotificationFrom);
+		setCarbonioNotificationRecipients(domainData.carbonioNotificationRecipients);
 		setIsDirty(false);
 	};
 
 	const onSave = (): void => {
-		const body: any = {};
-		const attributes: any[] = [];
-		body.id = domainData.zimbraId;
-		body._jsns = 'urn:zimbraAdmin';
-		attributes.push({
-			n: 'zimbraNotes',
-			_content: zimbraNotes
-		});
-		if (selectedTimeZone.value !== NOT_SET) {
+		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
+			setIsLoading(true);
+			setHasCarbonioNotificationFromError(false);
+			const body: any = {};
+			const attributes: any[] = [];
+			body.id = domainData.zimbraId;
+			body._jsns = 'urn:zimbraAdmin';
 			attributes.push({
-				n: 'zimbraPrefTimeZoneId',
-				_content: selectedTimeZone.value
+				n: 'zimbraNotes',
+				_content: zimbraNotes
 			});
-		}
-		if (selectedPublicServiceProtocol.value !== NOT_SET) {
 			attributes.push({
-				n: 'zimbraPublicServiceProtocol',
-				_content: selectedPublicServiceProtocol.value
+				n: 'description',
+				_content: description
 			});
-		}
-		attributes.push({
-			n: 'zimbraDomainStatus',
-			_content: domainStatus.value
-		});
-		attributes.push({
-			n: 'zimbraPublicServicePort',
-			_content: zimbraPublicServicePort
-		});
-		attributes.push({
-			n: 'zimbraDNSCheckHostname',
-			_content: zimbraDNSCheckHostname
-		});
-		attributes.push({
-			n: 'zimbraHelpAdminURL',
-			_content: zimbraHelpAdminURL
-		});
-		attributes.push({
-			n: 'zimbraHelpDelegatedURL',
-			_content: zimbraHelpDelegatedURL
-		});
-		if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
-			attributes.push({
-				n: 'zimbraDomainDefaultCOSId',
-				_content: zimbraDomainDefaultCOSId
-			});
-		}
-		body.a = attributes;
-		modifyDomain(body)
-			.then((data) => {
-				createSnackbar({
-					key: 'success',
-					type: 'success',
-					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
+			if (selectedTimeZone.value !== NOT_SET) {
+				attributes.push({
+					n: 'zimbraPrefTimeZoneId',
+					_content: selectedTimeZone.value
 				});
-				const domain: any = data?.domain[0];
-				if (domain) {
-					setDomain(domain);
-				}
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
+			}
+			if (selectedPublicServiceProtocol.value !== NOT_SET) {
+				attributes.push({
+					n: 'zimbraPublicServiceProtocol',
+					_content: selectedPublicServiceProtocol.value
+				});
+			}
+			attributes.push({
+				n: 'zimbraDomainStatus',
+				_content: domainStatus.value
+			});
+			attributes.push({
+				n: 'zimbraPublicServicePort',
+				_content: zimbraPublicServicePort
+			});
+			attributes.push({
+				n: 'zimbraDNSCheckHostname',
+				_content: zimbraDNSCheckHostname
+			});
+			attributes.push({
+				n: 'zimbraHelpAdminURL',
+				_content: zimbraHelpAdminURL
+			});
+			attributes.push({
+				n: 'zimbraHelpDelegatedURL',
+				_content: zimbraHelpDelegatedURL
+			});
+			if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
+				attributes.push({
+					n: 'zimbraDomainDefaultCOSId',
+					_content: zimbraDomainDefaultCOSId
+				});
+			}
+			attributes.push({
+				n: 'zimbraPublicServiceHostname',
+				_content: publicServiceHostName
+			});
+			attributes.push({
+				n: 'carbonioNotificationFrom',
+				_content: carbonioNotificationFrom
+			});
+			// eslint-disable-next-line array-callback-return
+			carbonioNotificationRecipients.map((item: { label: string }): void => {
+				attributes.push({
+					n: 'carbonioNotificationRecipients',
+					_content: item?.label
 				});
 			});
+			body.a = attributes;
+			modifyDomain(body)
+				.then((data) => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					const domain: any = data?.domain[0];
+					if (domain) {
+						setDomain(domain);
+					}
+					setIsLoading(false);
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					setIsLoading(false);
+				});
+		} else {
+			setHasCarbonioNotificationFromError(true);
+		}
 	};
 
 	const deleteOnlyDomain = useCallback((): void => {
@@ -571,7 +659,6 @@ const DomainGeneralSettings: FC = () => {
 				'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
 			searchDirectory(attrs, type, domainName, '', offset, limit).then(
 				(data: SearchDomainDirectoies) => {
-					setIsRequestInProgress(false);
 					if (data?.account?.length) {
 						data.account.forEach((item: AccountDlAlias) => {
 							const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
@@ -634,6 +721,7 @@ const DomainGeneralSettings: FC = () => {
 	};
 
 	const onCloseDomain = (): void => {
+		setConfirmDomainName('');
 		setOpenDeleteDomainConfirmDialog(false);
 		const body: any = {
 			_jsns: 'urn:zimbraAdmin',
@@ -683,7 +771,8 @@ const DomainGeneralSettings: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -737,12 +826,7 @@ const DomainGeneralSettings: FC = () => {
 						</Shimmer.FormSection>
 					</Container>
 				) : (
-					<Row
-						takeAvwidth="fill"
-						mainAlignment="flex-start"
-						width="100%"
-						padding={{ top: 'large' }}
-					>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 						<Container
 							height="fit"
 							crossAlignment="flex-start"
@@ -754,26 +838,15 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.name', 'Name')}
 										value={domainName}
-										background="gray6"
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
-							</ListRow>
-
-							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
-										background="gray6"
-										readOnly
-									/>
-								</Container>
-								<Container padding={{ all: 'small' }}>
-									<Input
-										label={t('label.creation_date', 'Creation Date')}
-										value={domainCreationDate}
-										background="gray6"
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
@@ -787,22 +860,21 @@ const DomainGeneralSettings: FC = () => {
 											'Max manageable account for the domain (0=unlimited)'
 										)}
 										value={zimbraDomainMaxAccounts}
-										background="gray6"
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t(
-											'label.max_mainbox_quota_for_the_domain_in_bytes',
-											'Max mailbox quota for the domain (bytes) (0=unlimited)'
-										)}
-										value={zimbraMailDomainQuota}
-										background="gray6"
+										label={t('label.creation_date', 'Creation Date')}
+										value={domainCreationDate}
+										backgroundColor="gray6"
 										readOnly
 									/>
 								</Container>
 							</ListRow>
+
+							<ListRow></ListRow>
 
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
@@ -819,7 +891,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.public_service_hostname', 'Public Service Host Name')}
 										value={publicServiceHostName}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setPublicServiceHostName(e.target.value);
 										}}
@@ -830,7 +902,7 @@ const DomainGeneralSettings: FC = () => {
 									<Input
 										label={t('label.public_service_port', 'Public Service Port')}
 										value={zimbraPublicServicePort}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraPublicServicePort(e.target.value);
 										}}
@@ -894,11 +966,79 @@ const DomainGeneralSettings: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t('label.description', 'Description')}
+										value={description}
+										backgroundColor="gray5"
+										onChange={(e: any): any => {
+											setDescription(e.target.value);
+										}}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Textarea
+										label={t('label.notes', 'Notes')}
 										value={zimbraNotes}
-										background="gray5"
+										backgroundColor="gray5"
 										onChange={(e: any): any => {
 											setZimbraNotes(e.target.value);
 										}}
+									/>
+								</Container>
+							</ListRow>
+							<Row
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<Text size="medium" weight="bold" color="gray0">
+									{t('label.domain_system_notifications', 'Domain System Notifications')}
+								</Text>
+							</Row>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
+								>
+									<Input
+										label={t('label.notification_sender', 'Notification Sender')}
+										backgroundColor="gray5"
+										value={carbonioNotificationFrom}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setCarbonioNotificationFrom(e.target.value);
+										}}
+										hasError={hasCarbonioNotificationFromError}
+										description={
+											hasCarbonioNotificationFromError
+												? t('label.notification_error_msg', 'Enter a valid email address.')
+												: undefined
+										}
+									/>
+								</Container>
+							</ListRow>
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
+								>
+									<ChipInput
+										placeholder={t('label.send_notifications_to', 'Send notifications to...')}
+										background="gray5"
+										defaultValue={carbonioNotificationRecipients}
+										value={carbonioNotificationRecipients}
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore // Need to fix it with custom soultion
+										onChange={(emails: { label: string }[]): void => {
+											const data: { label: string }[] = [];
+											map(emails, (email) => {
+												if (isValidEmail(email.label ?? '')) data.push(email);
+											});
+											setCarbonioNotificationRecipients(data);
+										}}
+										hasError={some(carbonioNotificationRecipients || [], { error: true })}
 									/>
 								</Container>
 							</ListRow>
@@ -915,7 +1055,7 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.delete_domain', 'Delete Domain')}
 										color="error"
 										size="extralarge"
-										width="100%"
+										width="fill"
 										onClick={onDeleteDomain}
 										style={{ width: '100%' }}
 									/>
@@ -924,6 +1064,7 @@ const DomainGeneralSettings: FC = () => {
 										open={openConfirmDialog}
 										showCloseIcon
 										onClose={(): void => {
+											setConfirmDomainName('');
 											setOpenConfirmDialog(false);
 										}}
 										customFooter={
@@ -937,8 +1078,8 @@ const DomainGeneralSettings: FC = () => {
 														label={t('label.need_help', 'NEED HELP?')}
 														type="outlined"
 														color="primary"
-														isSmall
 														onClick={(): void => {
+															setConfirmDomainName('');
 															setOpenConfirmDialog(false);
 														}}
 														width="fill"
@@ -949,8 +1090,8 @@ const DomainGeneralSettings: FC = () => {
 														<Button
 															label={t('label.cancel', 'CANCEL')}
 															color="secondary"
-															isSmall
 															onClick={(): void => {
+																setConfirmDomainName('');
 																setOpenConfirmDialog(false);
 															}}
 														/>
@@ -959,7 +1100,6 @@ const DomainGeneralSettings: FC = () => {
 													<Button
 														label={t('label.delete', 'DELETE')}
 														color="error"
-														isSmall
 														onClick={onDeleteDomain}
 														disabled={isRequstInProgress}
 													/>
@@ -985,6 +1125,7 @@ const DomainGeneralSettings: FC = () => {
 										open={openDeleteDomainConfirmDialog}
 										showCloseIcon
 										onClose={(): void => {
+											setConfirmDomainName('');
 											setOpenDeleteDomainConfirmDialog(false);
 											setDomainDirectoies({
 												account: [],
@@ -1003,8 +1144,8 @@ const DomainGeneralSettings: FC = () => {
 													<Button
 														label={t('label.cancel', 'CANCEL')}
 														color="secondary"
-														isSmall
 														onClick={(): void => {
+															setConfirmDomainName('');
 															setOpenDeleteDomainConfirmDialog(false);
 															setDomainDirectoies({
 																account: [],
@@ -1016,26 +1157,23 @@ const DomainGeneralSettings: FC = () => {
 													/>
 												</Container>
 												<Container orientation="horizontal" mainAlignment="flex-end">
+													<Padding right="small">
+														<Button
+															label={t('label.force_delete', 'Force Delete')}
+															color="error"
+															onClick={onDeleteAccountAndDomain}
+															disabled={isRequstInProgress}
+														/>
+													</Padding>
 													{domainStatus.value !== domainStatusItems[1].value ? (
-														<Padding right="small">
-															<Button
-																label={t('label.close_domain', 'CLOSE DOMAIN')}
-																color="primary"
-																isSmall
-																onClick={onCloseDomain}
-																disabled={isRequstInProgress}
-															/>
-														</Padding>
+														<Button
+															label={t('label.close_domain', 'CLOSE DOMAIN')}
+															color="primary"
+															onClick={onCloseDomain}
+														/>
 													) : (
 														<></>
 													)}
-													<Button
-														label={t('label.force_delete', 'Force Delete')}
-														color="error"
-														isSmall
-														onClick={onDeleteAccountAndDomain}
-														disabled={isRequstInProgress}
-													/>
 												</Container>
 											</Container>
 										}
@@ -1092,19 +1230,65 @@ const DomainGeneralSettings: FC = () => {
 												<></>
 											)}
 											<br />
+											{domainStatus.value !== domainStatusItems[1].value ? (
+												<>
+													<Text overflow="break-word" weight="regular">
+														{t('label.delete_domain_with_all_resources_close_domain', {
+															defaultValue:
+																'If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.'
+														})}
+													</Text>
+													<br />
+
+													<Text overflow="break-word" weight="regular">
+														{t('label.delete_domain_with_all_resources_permanently_remove', {
+															defaultValue:
+																'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.'
+														})}
+													</Text>
+													<br />
+												</>
+											) : (
+												<>
+													<Text overflow="break-word" weight="regular">
+														{t(
+															'label.permanently_delete_domain_with_all_resources_permanently_remove',
+															{
+																defaultValue:
+																	'Permanently remove all the accounts and domain objects. This operation cannot be reverted.'
+															}
+														)}
+													</Text>
+													<br />
+												</>
+											)}
 											<Text overflow="break-word" weight="regular">
-												{t('label.delete_domain_with_all_resources_close_domain', {
-													defaultValue:
-														'If you are not sure, you still can close the domain to avoid any further interaction, leaving all the resources available in case of need.'
-												})}
+												<Trans
+													i18nKey="label.type_domain_name"
+													defaults={`To confirm, type here the domain name <bold>"{{domainName}}"</bold>:`}
+													components={{ bold: <strong /> }}
+													values={{
+														domainName
+													}}
+													t={t}
+												/>
 											</Text>
-											<br />
-											<Text overflow="break-word" weight="regular">
-												{t('label.delete_domain_with_all_resources_permanently_remove', {
-													defaultValue:
-														'Otherwise, you can permanently remove all the accounts and domain objects. This operation cannot be reverted.'
-												})}
-											</Text>
+											<ListRow>
+												<Container padding={{ top: 'large' }}>
+													<Input
+														value={confirmDomainName}
+														backgroundColor="gray5"
+														onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+															setConfirmDomainName(e.target.value);
+															if (isEqual(e.target.value, domainName)) {
+																setIsRequestInProgress(false);
+															} else {
+																setIsRequestInProgress(true);
+															}
+														}}
+													/>
+												</Container>
+											</ListRow>
 										</Padding>
 									</Modal>
 								</Container>

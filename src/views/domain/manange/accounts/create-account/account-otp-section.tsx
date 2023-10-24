@@ -43,12 +43,22 @@ const StaticCode = styled.label`
 	font-family: monospace;
 	padding: 4.95px 0;
 `;
-const AccountOtpSection: FC = () => {
+const AccountOtpSection: FC<{
+	setToggleNextBtn: (newValue: boolean) => void;
+}> = ({ setToggleNextBtn }) => {
 	const context = useContext(AccountContext);
 	const { accountDetail, setAccountDetail } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [sendEmailTo, setSendEmailTo] = useState('');
 	const [t] = useTranslation();
+
+	useEffect(() => {
+		if (accountDetail?.generateOTP || accountDetail?.administrationRigths) {
+			setToggleNextBtn(true);
+		} else {
+			setToggleNextBtn(false);
+		}
+	}, [accountDetail?.administrationRigths, accountDetail?.generateOTP, setToggleNextBtn]);
 
 	return (
 		<Container
@@ -72,7 +82,7 @@ const AccountOtpSection: FC = () => {
 						}}
 						style={{ borderRadius: '2px 2px 0px 0px' }}
 					>
-						<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+						<Row mainAlignment="center" width="100%">
 							<Padding horizontal="small">
 								<CustomIcon icon="InfoOutline" color="success"></CustomIcon>
 							</Padding>
@@ -94,12 +104,12 @@ const AccountOtpSection: FC = () => {
 						<Row>
 							<Switch
 								defaultChecked={accountDetail.generateOTP}
-								onClick={(): void =>
+								onClick={(): void => {
 									setAccountDetail((prev: any) => ({
 										...prev,
 										generateOTP: !accountDetail.generateOTP
-									}))
-								}
+									}));
+								}}
 								padding={{ top: 'large' }}
 								label={t('label.create_otp_code', 'Create OTP code')}
 								iconColor="primary"
@@ -116,12 +126,12 @@ const AccountOtpSection: FC = () => {
 						<Row>
 							<Switch
 								defaultChecked={accountDetail.administrationRigths}
-								onClick={(): void =>
+								onClick={(): void => {
 									setAccountDetail((prev: any) => ({
 										...prev,
 										administrationRigths: !accountDetail.administrationRigths
-									}))
-								}
+									}));
+								}}
 								padding={{ top: 'large' }}
 								label={t('label.add_administration_rights', 'Add Administration rights')}
 								iconColor="primary"
@@ -161,7 +171,6 @@ const AccountOtpSection: FC = () => {
 									mainAlignment="space-between"
 								>
 									<Row
-										takeAvwidth="fill"
 										mainAlignment="center"
 										width="100%"
 										padding={{
@@ -179,7 +188,6 @@ const AccountOtpSection: FC = () => {
 									mainAlignment="space-between"
 								>
 									<Row
-										takeAvwidth="fill"
 										mainAlignment="center"
 										width="100%"
 										padding={{
@@ -199,7 +207,6 @@ const AccountOtpSection: FC = () => {
 							mainAlignment="space-between"
 						>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="center"
 								width="100%"
 								padding={{
@@ -222,7 +229,6 @@ const AccountOtpSection: FC = () => {
 							mainAlignment="space-between"
 						>
 							<Row
-								takeAvwidth="fill"
 								mainAlignment="center"
 								width="100%"
 								padding={{
@@ -253,7 +259,11 @@ const AccountOtpSection: FC = () => {
 										});
 										setSendEmailTo(data);
 									}}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									defaultValue={sendEmailTo}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									value={sendEmailTo}
 									background="gray5"
 									ChipComponent={CustomChip}

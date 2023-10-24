@@ -7,15 +7,26 @@ import { Container } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ANTIVIRUS_AND_ANTISPAM, GENERAL, MTA_ROUTE_ID, OUTBOUND_FLOW } from '../../constants';
+import {
+	ANTIVIRUS_AND_ANTISPAM,
+	GENERAL,
+	MTA_ROUTE_ID,
+	OUTBOUND_FLOW,
+	ADVANCED,
+	STATS,
+	POSTSCREEN_TUNING,
+	QUEUE
+} from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
+import { useConfigStore } from '../../store/config/store';
 
 const MTAListPanel: FC = () => {
 	const [t] = useTranslation();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const [isMtaSettingsExpanded, setIsMtaSettingsExpanded] = useState(true);
 	const [selectedOperationItem, setSelectedOperationItem] = useState(GENERAL);
 
@@ -35,6 +46,11 @@ const MTAListPanel: FC = () => {
 				isSelected: true
 			},
 			{
+				id: POSTSCREEN_TUNING,
+				name: t('mta.postscreen_tuning', 'Postscreen Tuning'),
+				isSelected: true
+			},
+			{
 				id: OUTBOUND_FLOW,
 				name: t('mta.outbound_flow', 'Outbound Flow'),
 				isSelected: true
@@ -42,6 +58,16 @@ const MTAListPanel: FC = () => {
 			{
 				id: ANTIVIRUS_AND_ANTISPAM,
 				name: t('mta.antivirus_and_antispam', 'Antivirus & Antispam'),
+				isSelected: true
+			},
+			{
+				id: ADVANCED,
+				name: t('label.advanced', 'Advanced'),
+				isSelected: true
+			},
+			{
+				id: QUEUE,
+				name: t('mta.queue', 'Queue'),
 				isSelected: true
 			}
 		],

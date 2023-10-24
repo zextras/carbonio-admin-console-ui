@@ -381,7 +381,7 @@ const DomainVirtualHosts: FC = () => {
 						deleteHandler={deleteHandler}
 					/>
 				)}
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="56px">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -427,25 +427,25 @@ const DomainVirtualHosts: FC = () => {
 				>
 					<Padding value="large">
 						<Padding vertical="small">
-							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+							<Row mainAlignment="flex-start" width="100%">
 								<Paragraph size="medium" color="secondary">
 									<Trans
 										i18nKey="label.virtual_host_msg"
-										defaults="Virtual hosts allow the system to establish a default domain for a user login.<br />Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, domain1.local.<br />Please note, that removal of a virtual host takes effect only after mailbox server is restarted."
+										defaults="Virtual hosts allow the system to establish a default domain for a user login.<br />Any user that logs in while using a URL with one of the hostnames below will be assumed to be in this domain, domain1.local.<br />Please note, that removal of a virtual host takes effect only after mail server is restarted."
 										components={{ break: <br /> }}
 									/>
 								</Paragraph>
 							</Row>
 						</Padding>
 						<Padding vertical="large" width="100%">
-							<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" wrap="nowrap">
+							<Row mainAlignment="flex-start" width="100%" wrap="nowrap">
 								<Container width="80%">
 									<Input
 										label={t(
 											'label.new_virtual_host_name',
 											'Type a new Virtual Host Name and click on “Add +” to add it to the list'
 										)}
-										background="gray5"
+										backgroundColor="gray5"
 										value={virtualHostValue}
 										onChange={(e: any): any => {
 											setVirutalHostValue(e.target.value);
@@ -464,7 +464,6 @@ const DomainVirtualHosts: FC = () => {
 										label={t('label.add', 'Add')}
 										color="primary"
 										disabled={addButtonDisabled}
-										height="44px"
 										onClick={addVirtualHost}
 									/>
 								</Container>
@@ -473,7 +472,6 @@ const DomainVirtualHosts: FC = () => {
 										type="ghost"
 										label={t('label.remove', 'Remove')}
 										color="error"
-										height="44px"
 										disabled={removeVirtualBtnDisabled}
 										onClick={removeVirtualHost}
 									/>
@@ -492,6 +490,8 @@ const DomainVirtualHosts: FC = () => {
 									setRemoveVirtualBtnDisabled(true);
 								}
 							}}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 							RowFactory={CustomRowFactory}
 						/>
@@ -503,17 +503,12 @@ const DomainVirtualHosts: FC = () => {
 								crossAlignment="center"
 							>
 								<Padding value="57px 0 0 0" width="100%">
-									<Row takeAvwidth="fill" mainAlignment="center" width="100%">
+									<Row mainAlignment="center" width="100%">
 										<img src={logo} alt="logo" />
 									</Row>
 								</Padding>
 								<Padding vertical="extralarge" width="100%">
-									<Row
-										takeAvwidth="fill"
-										mainAlignment="center"
-										crossAlignment="center"
-										width="100%"
-									>
+									<Row mainAlignment="center" crossAlignment="center" width="100%">
 										<Text
 											size="large"
 											color="secondary"
@@ -580,7 +575,7 @@ const DomainVirtualHosts: FC = () => {
 							padding={{ top: 'large' }}
 							width="100%"
 							mainAlignment="space-between"
-							crossAlignment="start"
+							crossAlignment="flex-start"
 						>
 							<Row>
 								<Text size="medium" color="gray0" weight="bold">
@@ -593,7 +588,6 @@ const DomainVirtualHosts: FC = () => {
 										type="ghost"
 										label={t('label.load_and_verify_certificate', 'LOAD AND VERIFY CERTIFICATE')}
 										color="primary"
-										height="44px"
 										onClick={handleLoadAndVerifyCert}
 									/>
 								</Padding>
@@ -603,7 +597,6 @@ const DomainVirtualHosts: FC = () => {
 										label={t('label.download', 'DOWNLOAD')}
 										color="primary"
 										disabled={toggleCertiBtn}
-										height="44px"
 										onClick={downloadTxtHandler}
 									/>
 								</Padding>
@@ -612,7 +605,6 @@ const DomainVirtualHosts: FC = () => {
 										type="ghost"
 										label={t('label.remove', 'Remove')}
 										color="error"
-										height="44px"
 										disabled={toggleCertiBtn}
 										onClick={(): void => {
 											setOpen(true);
@@ -628,10 +620,9 @@ const DomainVirtualHosts: FC = () => {
 										'label.subject_name_cname',
 										'Subject Name (Canonical Name record - CNAME)'
 									)}
-									background="gray6"
+									backgroundColor="gray6"
 									name="subject_name"
 									value={domainCertiDetails?.subject || ''}
-									readyOnly
 								/>
 							</Container>
 							<Container padding={{ horizontal: 'small', top: 'small' }}>
@@ -640,20 +631,18 @@ const DomainVirtualHosts: FC = () => {
 										'label.subject_name_fqdn',
 										'Subject Alt Name (Fully Qualified Domain Name - FQDN)'
 									)}
-									background="gray6"
+									backgroundColor="gray6"
 									name="key_id"
 									value={domainCertiDetails?.SubjectAltName || ''}
-									readyOnly
 								/>
 							</Container>
 						</ListRow>
 						<ListRow padding={{ top: 'large' }}>
 							<Container padding={{ horizontal: 'small' }}>
 								<Input
-									background="gray6"
+									backgroundColor="gray6"
 									label={t('label.issuer', 'Issuer')}
 									value={domainCertiDetails?.issuer || ''}
-									readyOnly
 								/>
 							</Container>
 						</ListRow>
@@ -661,19 +650,17 @@ const DomainVirtualHosts: FC = () => {
 							<Container padding={{ horizontal: 'small' }}>
 								<Input
 									label={t('label.valid_not_before', 'Valid from (not before)')}
-									background="gray6"
+									backgroundColor="gray6"
 									name="subject_name"
 									value={domainCertiDetails?.notBefore || ''}
-									readyOnly
 								/>
 							</Container>
 							<Container padding={{ horizontal: 'small' }}>
 								<Input
 									label={t('label.valid_not_after', 'Valid until (not after)')}
-									background="gray6"
+									backgroundColor="gray6"
 									name="key_id"
 									value={domainCertiDetails?.notAfter || ''}
-									readyOnly
 								/>
 							</Container>
 						</ListRow>

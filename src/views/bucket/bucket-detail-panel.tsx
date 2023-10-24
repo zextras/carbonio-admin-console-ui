@@ -46,7 +46,7 @@ const headers = (t: TFunction): Array<object> => [
 	},
 	{
 		id: 'name',
-		label: t('label.name', 'Name'),
+		label: t('label.bucket_name', 'Name'),
 		bold: true
 	},
 	{
@@ -134,13 +134,19 @@ const BucketListTable: FC<{
 					minHeight="auto"
 				>
 					<Table
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						headers={headers(t)}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						rows={tableRows}
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedRows}
 						onSelectionChange={onSelectionChange}
 						RowFactory={CustomRowFactory}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -156,7 +162,6 @@ const BucketListTable: FC<{
 							overflow="break-word"
 							weight="regular"
 							size="large"
-							width="60%"
 							style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 						>
 							{t(
@@ -249,7 +254,7 @@ const BucketDetailPanel: FC = () => {
 			if (response.ok) {
 				getBucketListType();
 				createSnackbar({
-					key: 1,
+					key: '1',
 					type: 'success',
 					label: t('label.delete_bucket_sucess', 'The {{name}} has been removed', {
 						name: bucketDeleteName?.bucketName
@@ -259,7 +264,7 @@ const BucketDetailPanel: FC = () => {
 				setShowEditDetailView(false);
 			} else {
 				createSnackbar({
-					key: 1,
+					key: '1',
 					type: 'error',
 					label: t('label.delete_bucket_fail', 'The {{name}} has not been removed', {
 						name: bucketDeleteName?.bucketName
@@ -386,7 +391,7 @@ const BucketDetailPanel: FC = () => {
 				<Row width="100%" padding={{ all: 'large' }}>
 					<Input
 						disabled={bucketList.length === 0 && searchBucket.length === 0}
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('buckets.filter_buckets_list', 'Filter Buckets List')}
 						CustomIcon={(): JSX.Element => (
 							<Icon icon="FunnelOutline" size="large" color="primary" />

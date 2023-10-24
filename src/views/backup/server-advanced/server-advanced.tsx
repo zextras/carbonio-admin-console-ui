@@ -601,7 +601,7 @@ const ServerAdvanced: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+				<Row mainAlignment="flex-start" width="100%">
 					<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
 						<Row orientation="horizontal" width="100%">
 							<Row
@@ -712,7 +712,7 @@ const ServerAdvanced: FC = () => {
 								disabled={isRequestInProgress || !allowSetBackup}
 								loading={isRequestInProgress}
 								style={{ width: '100%' }}
-								width="100%"
+								width="fill"
 								size="large"
 							/>
 						</Container>
@@ -750,9 +750,9 @@ const ServerAdvanced: FC = () => {
 						>
 							<Input
 								label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={backupLatencyHighThreshold}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupLatencyHighThreshold(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -767,9 +767,9 @@ const ServerAdvanced: FC = () => {
 						>
 							<Input
 								label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={backupLatencyLowThreshold}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupLatencyLowThreshold(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -798,10 +798,10 @@ const ServerAdvanced: FC = () => {
 						>
 							<Input
 								label={t('backup.max_waiting_time_ms', 'Max Waiting Time (ms)')}
-								background="gray5"
+								backgroundColor="gray5"
 								borderColor="gray3"
 								value={backupMaxWaitTime}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupMaxWaitTime(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -830,9 +830,9 @@ const ServerAdvanced: FC = () => {
 						>
 							<Input
 								label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={backupMaxMetaDataSize}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupMaxMetaDataSize(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -849,7 +849,10 @@ const ServerAdvanced: FC = () => {
 							width="100%"
 						>
 							<Switch
-								label={t('backup.on_the_fly_metadata', 'On the fly metadata')}
+								label={t(
+									'backup.append_metadata_instead_of_rewrite_faster_but_dangerous',
+									'Append metadata instead of rewrite (faster but dangerous)'
+								)}
 								value={backupOnTheFlyMetadata}
 								onClick={(): void => setBackupOnTheFlyMetadata(!backupOnTheFlyMetadata)}
 								iconColor="primary"
@@ -867,7 +870,10 @@ const ServerAdvanced: FC = () => {
 							width="100%"
 						>
 							<Switch
-								label={t('backup.metadata_archiving', 'Metadata archiving')}
+								label={t(
+									'backup.archive_user_metadata_folder_in_the_remote_backup',
+									'Archive user metadata folder in the remote backup'
+								)}
 								value={scheduledMetadataArchivingEnabled}
 								onClick={(): void =>
 									setScheduledMetadataArchivingEnabled(!scheduledMetadataArchivingEnabled)
@@ -899,9 +905,9 @@ const ServerAdvanced: FC = () => {
 						>
 							<Input
 								label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={backupMaxOperationPerAccount}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupMaxOperationPerAccount(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -916,9 +922,9 @@ const ServerAdvanced: FC = () => {
 						>
 							<Input
 								label={t('backup.compression_level', 'Compression Level')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={backupCompressionLevel}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupCompressionLevel(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -936,9 +942,9 @@ const ServerAdvanced: FC = () => {
 						>
 							<Input
 								label={t('backup.thread_number_for_items', 'Thread number for items')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={backupNumberThreadsForItems}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupNumberThreadsForItems(e.target.value);
 								}}
 								disabled={!allowSetBackup}
@@ -953,9 +959,9 @@ const ServerAdvanced: FC = () => {
 						>
 							<Input
 								label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
-								background="gray5"
+								backgroundColor="gray5"
 								value={backupNumberThreadsForAccounts}
-								onChange={(e: any): any => {
+								onChange={(e: any): void => {
 									setBackupNumberThreadsForAccounts(e.target.value);
 								}}
 								disabled={!allowSetBackup}

@@ -3,10 +3,28 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useMemo, useCallback, useRef, ReactElement } from 'react';
+import React, {
+	FC,
+	useEffect,
+	useState,
+	useMemo,
+	useCallback,
+	useRef,
+	ReactElement,
+	useContext
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import { Container, Input, Row, Text, Table, Divider, Icon } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Input,
+	Row,
+	Text,
+	Table,
+	Divider,
+	Icon,
+	SnackbarManagerContext
+} from '@zextras/carbonio-design-system';
 import logo from '../../../assets/gardian.svg';
 import Paging from '../../components/paging';
 import { getDomainList } from '../../../services/search-domain-service';
@@ -14,6 +32,7 @@ import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { GENERAL_SETTINGS } from '../../../constants';
 import { useDomainStore } from '../../../store/domain/store';
+import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 
 type StatusItem = {
 	color: string;
@@ -60,6 +79,9 @@ const DomainList: FC = () => {
 	const [t] = useTranslation();
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainView = useDomainStore((state) => state.setDomainView);
+	const [limit, setLimit] = useState<number>(10);
+	const [hasError, setHasError] = useState<boolean>(false);
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 
 	const tableRef = useRef(null);
 
@@ -137,74 +159,88 @@ const DomainList: FC = () => {
 	);
 
 	const getAllDomainList = useCallback((): void => {
-		getDomainList(searchQuery, offset, 10).then((data) => {
-			const domainListResponse: ZimbraDomainResponse = data?.domain || [];
-			if (domainListResponse && Array.isArray(domainListResponse)) {
-				const domainListArr: {
-					id: string;
-					columns: ReactElement[];
-					iteam: ZimbraDomainEntry;
-					clickable: boolean;
-				}[] = [];
-				setTotalDomain(data.searchTotal || 0);
-				domainListResponse.forEach((item: ZimbraDomainEntry) => {
-					const domainIteam: ZimbraDomainEntry = {
-						name: item.name,
-						id: item.id,
-						zimbraDomainType: '',
-						zimbraDomainStatus: 'active',
-						zimbraDomainName: '',
-						zimbraId: '',
-						a: item.a
-					};
-					item?.a?.forEach((ele: ZimbraDomainAttribute) => {
-						if (ele.n === 'zimbraDomainType') {
-							domainIteam.zimbraDomainType = ele._content;
-						} else if (ele.n === 'zimbraDomainStatus') {
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore
-							domainIteam.zimbraDomainStatus = ele._content;
-						} else if (ele.n === 'zimbraDomainName') {
-							domainIteam.zimbraDomainName = ele._content;
-						} else if (ele.n === 'zimbraId') {
-							domainIteam.zimbraId = ele._content;
-						}
-					});
-					domainListArr.push({
-						id: item?.id,
-						columns: [
-							<Text
-								size="small"
-								key={item?.id}
-								color="gray0"
-								weight="regular"
-								onClick={(): void => {
-									onDomainSelect(domainIteam);
-								}}
-							>
-								{item?.name || ' '}
-							</Text>,
+		getDomainList(searchQuery, offset, limit)
+			.then((data) => {
+				const domainListResponse: ZimbraDomainResponse = data?.domain || [];
+				if (domainListResponse && Array.isArray(domainListResponse)) {
+					const domainListArr: {
+						id: string;
+						columns: ReactElement[];
+						iteam: ZimbraDomainEntry;
+						clickable: boolean;
+					}[] = [];
+					setTotalDomain(data.searchTotal || 0);
+					domainListResponse.forEach((item: ZimbraDomainEntry) => {
+						const domainIteam: ZimbraDomainEntry = {
+							name: item.name,
+							id: item.id,
+							zimbraDomainType: '',
+							zimbraDomainStatus: 'active',
+							zimbraDomainName: '',
+							zimbraId: '',
+							a: item.a
+						};
+						item?.a?.forEach((ele: ZimbraDomainAttribute) => {
+							if (ele.n === 'zimbraDomainType') {
+								domainIteam.zimbraDomainType = ele._content;
+							} else if (ele.n === 'zimbraDomainStatus') {
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore
+								domainIteam.zimbraDomainStatus = ele._content;
+							} else if (ele.n === 'zimbraDomainName') {
+								domainIteam.zimbraDomainName = ele._content;
+							} else if (ele.n === 'zimbraId') {
+								domainIteam.zimbraId = ele._content;
+							}
+						});
+						domainListArr.push({
+							id: item?.id,
+							columns: [
+								<Text
+									size="small"
+									key={item?.id}
+									color="gray0"
+									weight="regular"
+									onClick={(): void => {
+										onDomainSelect(domainIteam);
+									}}
+								>
+									{item?.name || ' '}
+								</Text>,
 
-							<Text
-								size="small"
-								weight="light"
-								key={item?.id}
-								color={STATUS_COLOR[domainIteam.zimbraDomainStatus].color}
-								onClick={(): void => {
-									onDomainSelect(domainIteam);
-								}}
-							>
-								{STATUS_COLOR[domainIteam.zimbraDomainStatus].label}
-							</Text>
-						],
-						iteam: domainIteam,
-						clickable: true
+								<Text
+									size="small"
+									weight="light"
+									key={item?.id}
+									color={STATUS_COLOR[domainIteam.zimbraDomainStatus].color}
+									onClick={(): void => {
+										onDomainSelect(domainIteam);
+									}}
+								>
+									{STATUS_COLOR[domainIteam.zimbraDomainStatus].label}
+								</Text>
+							],
+							iteam: domainIteam,
+							clickable: true
+						});
 					});
+					setDomainList(domainListArr);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error
+						? error?.error
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
 				});
-				setDomainList(domainListArr);
-			}
-		});
-	}, [STATUS_COLOR, offset, onDomainSelect, searchQuery]);
+				setHasError(true);
+			});
+	}, [STATUS_COLOR, offset, onDomainSelect, searchQuery, limit, t, createSnackbar]);
 	useEffect(() => {
 		getAllDomainList();
 	}, [getAllDomainList]);
@@ -221,7 +257,7 @@ const DomainList: FC = () => {
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -248,7 +284,7 @@ const DomainList: FC = () => {
 				height="calc(100vh - 12.5rem)"
 				padding={{ top: 'large' }}
 			>
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -260,13 +296,13 @@ const DomainList: FC = () => {
 							<Container>
 								<Input
 									label={t('label.i_am_looking_for_this_domain', `I'm looking for this domain…`)}
-									disabled={domainList.length === 0 && searchString.length === 0}
+									disabled={domainList.length === 0 && searchString.length === 0 && !hasError}
 									value={searchString}
-									background="gray5"
+									backgroundColor="gray5"
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 										setSearchString(e.target.value);
 									}}
-									CustomIcon={(): React.ReactChild => (
+									CustomIcon={(): JSX.Element => (
 										<Icon icon="FunnelOutline" size="large" color="primary" />
 									)}
 								/>
@@ -288,6 +324,8 @@ const DomainList: FC = () => {
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
 									RowFactory={CustomRowFactory}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
@@ -333,9 +371,24 @@ const DomainList: FC = () => {
 								<Divider />
 							</Row>
 							{domainList.length !== 0 && (
-								<Row orientation="horizontal" mainAlignment="flex-start" width="100%">
-									<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={10} />
-								</Row>
+								<Container
+									orientation="horizontal"
+									mainAlignment="space-between"
+									width="100%"
+									height="auto"
+								>
+									<Container crossAlignment="flex-start">
+										<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
+									</Container>
+									<Container
+										crossAlignment="flex-end"
+										orientation="horizontal"
+										mainAlignment="flex-end"
+										padding={{ top: 'small' }}
+									>
+										<TrackNumberPerPage pageSize={limit} />
+									</Container>
+								</Container>
 							)}
 						</Row>
 					</Container>

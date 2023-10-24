@@ -26,16 +26,7 @@ import { TFunction } from 'i18next';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { headerAdvanced } from '../../utility/utils';
-import {
-	DESCRIPTION,
-	HSM_SCHEDULED_DISABLED,
-	HSM_SCHEDULED_ENABLED,
-	HSM_SCHEDULED_KEY,
-	INDEXER_ACTIVE,
-	INDEXER_MANAGER_KEY,
-	INDEXER_PAUSED,
-	INDEXER_RUNNING
-} from '../../../constants';
+import { DESCRIPTION, HSM_SCHEDULED_KEY, INDEXER_MANAGER_KEY } from '../../../constants';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -106,7 +97,9 @@ const ServersListTable: FC<{
 						}}
 					>
 						<Text size="small" weight="light">
-							{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
+							{v?.hsmScheduled
+								? t('label.scheduled', 'Scheduled')
+								: t('label.disabled', 'Disabled')}
 						</Text>
 					</Row>,
 					<Row
@@ -118,9 +111,9 @@ const ServersListTable: FC<{
 						}}
 					>
 						<Text size="small" weight="light">
-							{(v.indexer?.could_start && INDEXER_ACTIVE) ||
-								(v.indexer?.could_stop && INDEXER_PAUSED) ||
-								(v.indexer?.running && INDEXER_RUNNING)}
+							{v.indexer?.running === true
+								? t('volume.running', 'Running')
+								: t('volume.not_running', 'Not Running')}
 						</Text>
 					</Row>,
 					<Row
@@ -138,7 +131,7 @@ const ServersListTable: FC<{
 				],
 				clickable: true
 			})),
-		[volumes]
+		[volumes, t]
 	);
 
 	const tableRowCe = useMemo(
@@ -177,6 +170,8 @@ const ServersListTable: FC<{
 				showCheckbox={false}
 				multiSelect={false}
 				RowFactory={CustomRowFactory}
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{isRequestInProgress && (
@@ -186,7 +181,7 @@ const ServersListTable: FC<{
 					height="fit"
 					padding={{ top: 'medium' }}
 				>
-					<Button type="ghost" iconColor="primary" height={36} label="" width={36} loading />
+					<Button type="ghost" label={''} loading onClick={(): null => null} />
 				</Container>
 			)}
 			{(tableRowsAdvance.length === 0 || tableRowCe.length === 0) && !isRequestInProgress && (
@@ -356,7 +351,7 @@ const ServerDetailPanel: FC = () => {
 					height="calc(100vh - 200px)"
 					padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
 				>
-					<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="100%">
 						<Container height="fit" crossAlignment="flex-start" background="gray6">
 							<Row
 								orientation="horizontal"
@@ -369,12 +364,12 @@ const ServerDetailPanel: FC = () => {
 									<Input
 										disabled={serversList.length === 0 && searchServer.length === 0}
 										label={t('label.search_for_a_Server', `Search for a Server`)}
-										background="gray5"
+										backgroundColor="gray5"
 										CustomIcon={(): any => (
 											<Icon icon="FunnelOutline" size="large" color="primary" />
 										)}
 										value={searchServer}
-										onChange={(e: any): void => {
+										onChange={(e): void => {
 											setSearchServer(e.target.value);
 										}}
 									/>

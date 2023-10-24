@@ -41,11 +41,14 @@ import { useDomainStore } from '../../store/domain/store';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useRightsStore } from '../../store/rights/store';
 import { getRights } from '../utility/utils';
+import { useConfigStore } from '../../store/config/store';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const userInfo = useConfigStore((state) => state.userId);
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const matomo = useMemo(() => new MatomoTracker(userInfo), []);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -53,8 +56,9 @@ const Dashboard: FC = () => {
 	const [userName, setUserName] = useState<string>('');
 	const [version, setVersion] = useState<string>('');
 
-	const setDomain = useDomainStore((state) => state.setDomain);
+	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
 	const [quickAccessItems, setQuickAccessItems] = useState<Array<any>>([
 		{
 			upperText: t('label.domains', 'Domains'),
@@ -87,14 +91,19 @@ const Dashboard: FC = () => {
 					id: domainInformation?.id,
 					name: domainInformation?.name
 				});
+				setIsQuickAccess(true);
 				if (operation === 'account') {
+					setDomainView(ACCOUNTS);
+					setDomainView(ACCOUNTS);
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${ACCOUNTS}`);
 				} else if (operation === 'malinglist') {
+					setDomainView(MAILING_LIST);
+					setDomainView(MAILING_LIST);
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${MAILING_LIST}`);
 				}
 			}
 		},
-		[history, domainInformation, setDomain]
+		[domainInformation, setDomain, setDomainView, setIsQuickAccess, history]
 	);
 
 	useEffect(() => {

@@ -35,6 +35,7 @@ import { useDomainStore } from '../../../store/domain/store';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { copyCos } from '../../../services/copy-cos-service';
 import { Cos } from '../../../../types/cos';
+import ListRow from '../../list/list-row';
 
 const SelectItem = styled(Row)``;
 
@@ -554,13 +555,12 @@ const DomainCosLink: FC<{
 					{
 						customComponent: (
 							<>
-								<Row takeAvwidth="fill" mainAlignment="flex-start">
+								<Row mainAlignment="flex-start">
 									<Padding horizontal="small">
 										<CustomIcon icon="InfoOutline"></CustomIcon>
 									</Padding>
 								</Row>
 								<Row
-									takeAvwidth="fill"
 									mainAlignment="flex-start"
 									width="100%"
 									padding={{
@@ -583,10 +583,6 @@ const DomainCosLink: FC<{
 					label: cos.name,
 					customComponent: (
 						<SelectItem
-							top="0.563rem"
-							right="large"
-							bottom="0.563rem"
-							left="large"
 							style={{
 								display: 'block',
 								textAlign: 'left',
@@ -617,8 +613,8 @@ const DomainCosLink: FC<{
 				</Text>
 			</Row>
 			{isGlobalAdmin && (
-				<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
-					<Container padding={{ all: 'small' }} width="48%">
+				<ListRow>
+					<Container padding={{ all: 'small' }}>
 						<DropDownInput
 							items={items}
 							inputLabel={t(
@@ -635,19 +631,24 @@ const DomainCosLink: FC<{
 						/>
 					</Container>
 
-					<Container padding={{ all: 'small' }} width="34%">
+					<Container padding={{ all: 'small' }}>
 						<Input
 							label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
 							value={maxAccountValue}
-							background="gray6"
+							backgroundColor="gray6"
 							onChange={(e: any): any => {
 								setMaxAccountValue(e.target.value);
 							}}
 						/>
 					</Container>
-					<Container crossAlignment="flex-end" padding={{ all: 'small' }} width="18%">
+					<Container
+						crossAlignment="flex-end"
+						padding={{ all: 'small' }}
+						width="17%"
+						minWidth="11.5rem"
+					>
 						<Row>
-							<Padding right="medium">
+							<Padding right="large">
 								<Button
 									type="outlined"
 									label={t('label.duplicate', 'Duplicate')}
@@ -669,9 +670,9 @@ const DomainCosLink: FC<{
 							/>
 						</Row>
 					</Container>
-				</Row>
+				</ListRow>
 			)}
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
+			<Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
 				<Table
 					rows={cosMaxAccountListRow}
 					headers={headers}
@@ -679,6 +680,8 @@ const DomainCosLink: FC<{
 					multiSelect={false}
 					style={{ overflow: 'auto', height: '100%' }}
 					RowFactory={HoverContentRowFactory}
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore // Need to fix it with custom soultion
 					HeaderFactory={CustomHeaderFactory}
 				/>
 				{cosMaxAccountListRow.length === 0 && (
@@ -693,7 +696,6 @@ const DomainCosLink: FC<{
 								overflow="break-word"
 								weight="regular"
 								size="large"
-								width="60%"
 								style={{ whiteSpace: 'pre-line', textAlign: 'center' }}
 							>
 								{t(

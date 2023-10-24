@@ -24,6 +24,7 @@ import MatomoTracker from '../../matomo-tracker';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import DropDownInput from '../components/dropDownInput';
+import { useConfigStore } from '../../store/config/store';
 
 const SelectItem = styled(Row)``;
 
@@ -31,7 +32,8 @@ const BucketListPanel: FC = () => {
 	const [t] = useTranslation();
 	const setSelectedServerName = useBucketVolumeStore((state) => state.setSelectedServerName);
 	const volumeList = useBucketServersListStore((state) => state.volumeList);
-	const matomo = useMemo(() => new MatomoTracker(), []);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -69,10 +71,6 @@ const BucketListPanel: FC = () => {
 				label: volume.name,
 				customComponent: (
 					<SelectItem
-						top="9px"
-						right="large"
-						bottom="9px"
-						left="large"
 						style={{
 							display: 'block',
 							textAlign: 'left',
@@ -224,7 +222,7 @@ const BucketListPanel: FC = () => {
 				/>
 				{isServerSpecificListExpand && (
 					<>
-						<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+						<Row mainAlignment="flex-start" width="100%">
 							<DropDownInput
 								items={itemsVolume}
 								inputLabel={t('label.select_a_server', 'Select a Server')}

@@ -363,7 +363,7 @@ const Connection: FC<{
 				)
 			);
 			createSnackbar({
-				key: 1,
+				key: '1',
 				type: 'error',
 				label: t('label.verify_error', '{{name}}', {
 					name: bothFail
@@ -393,23 +393,27 @@ const Connection: FC<{
 			) : (
 				<Row padding={{ top: 'extralarge' }} width="100%">
 					<Select
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
 						items={bucketTypeItems}
 						background="gray5"
 						label={t('buckets.bucket_type', 'Bucket Type')}
-						defaultSelection={bucketTypeItems?.filter((items) => items?.value === bucketTypeData)}
+						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+						// @ts-ignore // Need to fix it with custom soultion
+						// defaultSelection={bucketTypeItems?.filter((items) => items?.value === bucketTypeData)}
+						defaultSelection={bucketTypeItems[0]}
 						onChange={onSelectBucketTypeChange}
 						showCheckbox={false}
-						padding={{ right: 'medium' }}
 					/>
 				</Row>
 			)}
 			<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 				<Input
-					background="gray5"
+					backgroundColor="gray5"
 					label={t('label.label', 'Label')}
 					name="label"
 					value={bucketLabel}
-					onChange={(ev: any): any => {
+					onChange={(ev): void => {
 						setBucketLabel(ev.target.value);
 					}}
 				/>
@@ -417,11 +421,11 @@ const Connection: FC<{
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width={showRegion ? '48%' : '100%'} mainAlignment="flex-start">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.bucket_name', 'Bucket Name')}
 						name="bucketName"
 						value={bucketName}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setBucketName(ev.target.value);
 							onSelection({ bucketName: ev.target.value }, false);
 						}}
@@ -429,9 +433,11 @@ const Connection: FC<{
 				</Row>
 				{showRegion && (
 					<>
-						<Padding width="4%" />
+						<Padding horizontal={'small'} />
 						<Row width="48%" mainAlignment="flex-end">
 							<Select
+								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+								// @ts-ignore // Need to fix it with custom soultion
 								items={
 									bucketTypeData === ALIBABA || bucketType === ALIBABA
 										? bucketRegionsInAlibaba
@@ -442,7 +448,6 @@ const Connection: FC<{
 								selection={regionSelection}
 								onChange={onSelectRegionChange}
 								showCheckbox={false}
-								padding={{ right: 'medium' }}
 							/>
 						</Row>
 					</>
@@ -451,24 +456,24 @@ const Connection: FC<{
 			<Row width="100%" padding={{ top: 'large' }}>
 				<Row width="48%" mainAlignment="flex-start">
 					<Input
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.access_key', 'Access Key')}
 						name="accessKey"
 						value={accessKeyData}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setAccessKeyData(ev.target.value);
 							onSelection({ accessKey: ev.target.value }, false);
 						}}
 					/>
 				</Row>
-				<Padding width="4%" />
+				<Padding horizontal={'small'} />
 				<Row width="48%" mainAlignment="flex-end">
 					<PasswordInput
-						background="gray5"
+						backgroundColor="gray5"
 						label={t('label.secret_key', 'Secret Key')}
 						name="secretKey"
 						value={secretKey}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setSecretKey(ev.target.value);
 							onSelection({ secret: ev.target.value }, false);
 						}}
@@ -482,7 +487,7 @@ const Connection: FC<{
 						backgroundColor="gray5"
 						name="url"
 						value={urlInput}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setUrlInput(ev.target.value);
 						}}
 					/>
@@ -495,7 +500,7 @@ const Connection: FC<{
 						backgroundColor="gray5"
 						name="prefix"
 						value={prefix}
-						onChange={(ev: any): any => {
+						onChange={(ev): void => {
 							setPrefix(ev.target.value);
 							if (ev.target.value !== '') {
 								if (prefixRegex.test(ev.target.value)) {
@@ -523,11 +528,11 @@ const Connection: FC<{
 			)}
 			<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 				<Input
-					background="gray5"
+					backgroundColor="gray5"
 					label={t('label.description', 'Description')}
 					name="notes"
 					value={bucketNotes}
-					onChange={(ev: any): any => {
+					onChange={(ev): void => {
 						setBucketNotes(ev.target.value);
 					}}
 				/>
@@ -539,7 +544,7 @@ const Connection: FC<{
 					icon={icon}
 					iconPlacement="right"
 					color={buttonColor}
-					width="100%"
+					width="fill"
 					size="large"
 					style={{ width: '100%' }}
 					onClick={handleVerifyConnector}

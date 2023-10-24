@@ -27,17 +27,14 @@ import {
 } from '@zextras/carbonio-shell-ui';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { Icon, IconButton } from '@zextras/carbonio-design-system';
+import { IconButton } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { MatomoProvider } from '@datapunt/matomo-tracker-react';
 import { find } from 'lodash';
 import {
-	APPLICATION_LOG,
 	APP_ID,
 	BACKUP_ROUTE_ID,
-	CARBONIO_ALLOW_FEEDBACK,
 	CARBONIO_SEND_ANALYTICS,
-	CARBONIO_SEND_FULL_ERROR_STACK,
 	CONFIG,
 	COS,
 	COS_ROUTE_ID,
@@ -49,8 +46,6 @@ import {
 	LOG_AND_QUEUES,
 	MANAGE,
 	MANAGE_APP_ID,
-	MONITORING,
-	MTA,
 	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
@@ -76,6 +71,7 @@ import { useModuleLicenseStore } from './store/module-license/store';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { getRights } from './views/utility/utils';
+import { useDomainStore } from './store/domain/store';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -91,6 +87,9 @@ const PrimaryBarIconButton = styled(IconButton)`
 	&:hover {
 		background: transparent;
 	}
+	@media (max-width: 60rem) {
+		padding: 0 0 0 0.188rem;
+	}
 `;
 
 const App: FC = () => {
@@ -102,7 +101,7 @@ const App: FC = () => {
 	const setIsAdvanced = useAuthIsAdvanced((state) => state.setIsAdvanced);
 	const setBackupServerList = useBackupModuleStore((state) => state.setBackupServerList);
 	const { setAllServersList, setVolumeList } = useBucketServersListStore((state) => state);
-	const { config, setConfig } = useConfigStore((state) => state);
+	const { config, setConfig, setUserId } = useConfigStore((state) => state);
 	const setGlobalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.setGlobalCarbonioSendAnalytics
 	);
@@ -114,6 +113,7 @@ const App: FC = () => {
 	const setRights = useRightsStore((state) => state.setRights);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
+	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const hasConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		if (rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
@@ -121,6 +121,12 @@ const App: FC = () => {
 		}
 		return false;
 	}, [rights]);
+
+	useEffect(() => {
+		const { id } = accounts[0];
+		setUserId(id);
+	}, [accounts, setUserId]);
+
 	const showCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
 		if (
@@ -132,6 +138,7 @@ const App: FC = () => {
 		}
 		return false;
 	}, [rights]);
+
 	useEffect(() => {
 		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
 			getAllEffectiveRigthsRequest(accounts[0]?.name).then((res) => {
@@ -492,6 +499,8 @@ const App: FC = () => {
 	const backupPrimaryBar: FC = useCallback(
 		() => (
 			<PrimaryBarIconButton
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore // Need to fix it with custom soultion
 				icon={SvgBackupOutline}
 				size="large"
 				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`)}
@@ -633,23 +642,22 @@ const App: FC = () => {
 				primarybarSection: { ...logAndQueuesSection },
 				tooltip: OperationTooltipView
 			});
-
-			if (hasConfigRights) {
-				addRoute({
-					route: MTA_ROUTE_ID,
-					position: 3,
-					visible: true,
-					label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
-					primaryBar: 'MailFolderOutline',
-					appView: AppView,
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					primarybarSection: { ...logAndQueuesSection },
-					tooltip: MTATooltipView
-				});
-			} else {
-				removeRoute(MTA_ROUTE_ID);
-			}
+		}
+		if (hasConfigRights) {
+			addRoute({
+				route: MTA_ROUTE_ID,
+				position: 3,
+				visible: true,
+				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
+				primaryBar: 'MailFolderOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...logAndQueuesSection },
+				tooltip: MTATooltipView
+			});
+		} else {
+			removeRoute(MTA_ROUTE_ID);
 		}
 		if (hasConfigRights) {
 			addRoute({
@@ -699,6 +707,10 @@ const App: FC = () => {
 				icon: '',
 				click: (ev: any): void => {
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
+					setDomain({});
+					setTimeout(() => {
+						setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
+					}, 100);
 				},
 				disabled: false,
 				group: APP_ID,
@@ -723,7 +735,7 @@ const App: FC = () => {
 			type: 'new'
 		});
 		history.push(`/${DASHBOARD}`);
-	}, [t, history]);
+	}, [t, history, setDomainView, setDomain]);
 
 	const checkIsBackupModuleEnable = useCallback(
 		(servers) => {
@@ -796,9 +808,9 @@ const App: FC = () => {
 			.then((res: any) => {
 				const response = JSON.parse(res.response.content);
 				if (response.ok) {
-					const allModules = Object.keys(response.response.modules).map((module) => ({
-						...response.response.modules[module],
-						name: module
+					const allModules = response?.response?.features?.map((module: any) => ({
+						...module,
+						name: module?.name
 					}));
 					if (allModules && Array.isArray(allModules) && allModules.length > 0) {
 						setModuleLicense(allModules);

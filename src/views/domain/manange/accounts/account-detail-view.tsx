@@ -38,6 +38,7 @@ import { useRightsStore } from '../../../../store/rights/store';
 import CustomChip from '../../../components/customChip';
 import Displayer from '../../../components/displayer';
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import Textarea from '../../../components/textarea';
 
 const AccountDetailContainer = styled(Container)`
 	z-index: 10;
@@ -490,13 +491,7 @@ const AccountDetailView: FC<any> = ({
 				>
 					<Displayer buttons={buttons} pinIcon={isSticky} />
 					<Row>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.account', 'Account')}
 						</Text>
 					</Row>
@@ -509,7 +504,7 @@ const AccountDetailView: FC<any> = ({
 						>
 							<Row width="95%">
 								<Input
-									label={t('label.name', 'Name')}
+									label={t('label.person_name', 'Name')}
 									backgroundColor="gray6"
 									value={selectedAccount?.displayName || ''}
 									readOnly
@@ -661,13 +656,7 @@ const AccountDetailView: FC<any> = ({
 						</Row>
 					</Row>
 					<Row padding={{ top: 'extralarge' }}>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.active_sessions', 'Active Sessions')}
 						</Text>
 					</Row>
@@ -715,6 +704,8 @@ const AccountDetailView: FC<any> = ({
 							onSelectionChange={(selected: any): any => {
 								setSelectedSession(selected);
 							}}
+							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 							RowFactory={CustomRowFactory}
 						></Table>
@@ -726,22 +717,10 @@ const AccountDetailView: FC<any> = ({
 						mainAlignment="flex-end"
 						crossAlignment="flex-end"
 					>
-						<Paging
-							totalItem={1}
-							setOffset={(): void => {
-								console.log('setOffset for paging');
-							}}
-						/>
+						<Paging totalItem={1} setOffset={(): null => null} />
 					</Row>
-
 					<Row padding={{ top: 'extralarge' }}>
-						<Text
-							size="small"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							weight="bold"
-						>
+						<Text size="small" weight="bold">
 							{t('label.description', 'Description')}
 						</Text>
 					</Row>
@@ -755,9 +734,27 @@ const AccountDetailView: FC<any> = ({
 							label={t('label.description', 'Description')}
 							backgroundColor="gray6"
 							width="100%"
-							value={selectedAccount?.zimbraNotes || ''}
-							readOnly
+							value={selectedAccount?.description || ''}
+							disabled
 						></Input>
+					</Row>
+					<Row padding={{ top: 'extralarge' }}>
+						<Text size="small" weight="bold">
+							{t('label.notes', 'Notes')}
+						</Text>
+					</Row>
+					<Row
+						padding={{ top: 'extralarge', bottom: 'extralarge' }}
+						width="97%"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+					>
+						<Textarea
+							label={t('label.notes', 'Notes')}
+							value={selectedAccount?.zimbraNotes || ''}
+							backgroundColor="gray5"
+							disabled
+						/>
 					</Row>
 				</Container>
 				{isOpenDeleteDialog && (

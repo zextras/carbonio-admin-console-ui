@@ -6,6 +6,7 @@
 
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 import { Container, Button } from '@zextras/carbonio-design-system';
+import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import MailingListSection from './mailing-list-section';
 import { HorizontalWizard } from '../../../app/component/hwizard';
@@ -16,6 +17,22 @@ import MailingListSettingsSection from './mailing-list-settings-sections';
 import MailingListCreateSection from './mailinglist-create-section';
 import { useDomainStore } from '../../../../store/domain/store';
 import { PUB } from '../../../../constants';
+import OverlayDivision from '../../../components/overlayDivision';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 39.4rem;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 interface MailingListDetailObj {
 	name: string;
@@ -60,7 +77,8 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 const CreateMailingList: FC<{
 	setShowCreateMailingListView: any;
 	createMailingListReq: any;
-}> = ({ setShowCreateMailingListView, createMailingListReq }) => {
+	isLoading: boolean;
+}> = ({ setShowCreateMailingListView, createMailingListReq, isLoading }) => {
 	const { t } = useTranslation();
 	const [wizardData, setWizardData] = useState();
 	const domainInformation = useDomainStore((state) => state.domain);
@@ -354,33 +372,36 @@ const CreateMailingList: FC<{
 	}, [domainInformation?.name]);
 
 	return (
-		<Container
-			background="gray5"
-			mainAlignment="flex-start"
-			style={{
-				position: 'absolute',
-				top: '0rem',
-				right: '0rem',
-				bottom: '0rem',
-				transition: 'left 0.2s ease-in-out',
-				maxHeight: '100%',
-				overflow: 'hidden'
-			}}
-		>
-			<MailingListContext.Provider value={{ mailingListDetail, setMailingListDetail }}>
-				<HorizontalWizard
-					steps={
-						mailingListDetail?.dynamic
-							? dynamicMailingListSizardSteps
-							: standardMailingListSizardSteps
-					}
-					Wrapper={WizardInSection}
-					onChange={setWizardData}
-					onComplete={onComplete}
-					setToggleWizardSection={setShowCreateMailingListView}
-				/>
-			</MailingListContext.Provider>
-		</Container>
+		<>
+			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<Container
+				background="gray5"
+				mainAlignment="flex-start"
+				style={{
+					position: 'absolute',
+					top: '0rem',
+					right: '0rem',
+					bottom: '0rem',
+					transition: 'left 0.2s ease-in-out',
+					maxHeight: '100%',
+					overflow: 'hidden'
+				}}
+			>
+				<MailingListContext.Provider value={{ mailingListDetail, setMailingListDetail }}>
+					<HorizontalWizard
+						steps={
+							mailingListDetail?.dynamic
+								? dynamicMailingListSizardSteps
+								: standardMailingListSizardSteps
+						}
+						Wrapper={WizardInSection}
+						onChange={setWizardData}
+						onComplete={onComplete}
+						setToggleWizardSection={setShowCreateMailingListView}
+					/>
+				</MailingListContext.Provider>
+			</Container>
+		</>
 	);
 };
 

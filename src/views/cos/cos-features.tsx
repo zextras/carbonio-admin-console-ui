@@ -109,6 +109,7 @@ const CosFeatures: FC = () => {
 				setSwitchOptionValue('carbonioFeatureTeamEnabled', obj?.carbonioFeatureTeamEnabled);
 				setSwitchOptionValue('carbonioFeatureChatsAppEnabled', obj?.carbonioFeatureChatsAppEnabled);
 				setSwitchOptionValue('zimbraFeatureTasksEnabled', obj?.zimbraFeatureTasksEnabled);
+				setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
 			}
 		},
 		[setSwitchOptionValue]
@@ -240,7 +241,7 @@ const CosFeatures: FC = () => {
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"

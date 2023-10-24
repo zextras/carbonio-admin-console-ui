@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
 import {
 	Container,
 	Input,
@@ -12,13 +12,16 @@ import {
 	DateTimePicker,
 	Icon,
 	Text,
-	Divider
+	Divider,
+	Dropdown
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+import { debounce } from 'lodash';
 import ListRow from '../../../list/list-row';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import { useDomainStore } from '../../../../store/domain/store';
+import { getDomainList } from '../../../../services/search-domain-service';
 
 const DatePickerContainer = styled(Container)`
 	.react-datepicker__input-container {
@@ -35,7 +38,9 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 	const [date, setDate] = useState(
 		restoreAccountDetail?.dateTime === null ? null : restoreAccountDetail?.dateTime
 	);
+	const [domainList, setDomainList] = useState([]);
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const [searchDomainName, setSearchDomainName] = useState(restoreAccountDetail?.copyDomain);
 	const handleChange = useCallback(
 		(d) => {
 			setDate(d);
@@ -46,6 +51,58 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 		},
 		[setRestoreAccountDetail]
 	);
+	const getDomainLists = useCallback((domain: string): any => {
+		getDomainList(domain, 0).then((data) => {
+			const searchResponse: any = data;
+			if (!!searchResponse && searchResponse?.searchTotal > 0) {
+				setDomainList(searchResponse?.domain);
+			} else {
+				setDomainList([]);
+			}
+		});
+	}, []);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchDomainCall = useCallback(
+		debounce((domain) => {
+			getDomainLists(domain);
+		}, 700),
+		[debounce]
+	);
+
+	useEffect(() => {
+		getDomainLists('');
+	}, [getDomainLists]);
+
+	useEffect(() => {
+		setRestoreAccountDetail((prev: any) => ({
+			...prev,
+			copyDomain: searchDomainName
+		}));
+		searchDomainCall(searchDomainName);
+	}, [searchDomainName, searchDomainCall, setRestoreAccountDetail]);
+
+	const items = domainList?.map((domain: any) => ({
+		id: domain.id,
+		label: domain.name,
+		customComponent: (
+			<Row
+				style={{
+					display: 'block',
+					textAlign: 'left',
+					height: 'inherit',
+					padding: '0.3rem',
+					width: '100%'
+				}}
+				onClick={(): void => {
+					setSearchDomainName(domain?.name);
+				}}
+			>
+				{domain?.name}
+			</Row>
+		)
+	}));
+
 	return (
 		<Container
 			orientation="column"
@@ -54,7 +111,7 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 			width="100%"
 			padding={{ top: 'extralarge' }}
 		>
-			<Row takeAvwidth="fill" mainAlignment="flex-start" width="100%">
+			<Row mainAlignment="flex-start" width="100%">
 				<Container height="fit" crossAlignment="flex-start" background="gray6">
 					<Row
 						orientation="horizontal"
@@ -110,12 +167,32 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 								orientation="horizontal"
 								padding={{ top: 'large', left: 'small' }}
 							>
-								<Input
-									label={t('label.domain_name', 'Domain Name')}
-									value={domainName}
-									readOnly
-									backgroundColor="gray5"
-								/>
+								<Dropdown
+									items={items}
+									placement="bottom-start"
+									disableAutoFocus
+									width="100%"
+									style={{
+										width: '100%'
+									}}
+								>
+									<Input
+										label={t('label.domain', 'Domain')}
+										onChange={(ev: any): void => {
+											setSearchDomainName(ev.target.value);
+										}}
+										value={searchDomainName}
+										backgroundColor="gray5"
+										CustomIcon={(): JSX.Element => (
+											<Icon
+												style={{ cursor: 'pointer' }}
+												icon="ArrowIosDownward"
+												size="large"
+												color="primary"
+											/>
+										)}
+									/>
+								</Dropdown>
 							</Container>
 						</ListRow>
 						<ListRow>
