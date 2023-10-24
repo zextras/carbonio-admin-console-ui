@@ -85,8 +85,10 @@ const GlobalTheme: FC = () => {
 				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
 				setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor);
 				setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor);
-				setValue('zimbraAdminConsoleLogoutURL', obj?.zimbraAdminConsoleLogoutURL);
-				setValue('zimbraWebClientLogoutURL', obj?.zimbraWebClientLogoutURL);
+				setValue('carbonioWebUiLoginURL', obj?.carbonioWebUiLoginURL);
+				setValue('carbonioWebUiLogoutURL', obj?.carbonioWebUiLogoutURL);
+				setValue('carbonioAdminUiLoginURL', obj?.carbonioAdminUiLoginURL);
+				setValue('carbonioAdminUiLogoutURL', obj?.carbonioAdminUiLogoutURL);
 			}
 		},
 		[setValue]
@@ -164,11 +166,17 @@ const GlobalTheme: FC = () => {
 			if (!obj.carbonioWebUiDarkPrimaryColor) {
 				obj.carbonioWebUiDarkPrimaryColor = '';
 			}
-			if (!obj.zimbraAdminConsoleLogoutURL) {
-				obj.zimbraAdminConsoleLogoutURL = '';
+			if (!obj.carbonioWebUiLoginURL) {
+				obj.carbonioWebUiLoginURL = '';
 			}
-			if (!obj.zimbraWebClientLogoutURL) {
-				obj.zimbraWebClientLogoutURL = '';
+			if (!obj.carbonioWebUiLogoutURL) {
+				obj.carbonioWebUiLogoutURL = '';
+			}
+			if (!obj.carbonioAdminUiLoginURL) {
+				obj.carbonioAdminUiLoginURL = '';
+			}
+			if (!obj.carbonioAdminUiLogoutURL) {
+				obj.carbonioAdminUiLogoutURL = '';
 			}
 			setInitalValues(obj);
 			setIsDirty(false);
@@ -267,8 +275,10 @@ const GlobalTheme: FC = () => {
 			carbonioLogoUrl: '',
 			carbonioWebUiPrimaryColor: '',
 			carbonioWebUiDarkPrimaryColor: '',
-			zimbraAdminConsoleLogoutURL: '',
-			zimbraWebClientLogoutURL: ''
+			carbonioWebUiLoginURL: '',
+			carbonioWebUiLogoutURL: '',
+			carbonioAdminUiLoginURL: '',
+			carbonioAdminUiLogoutURL: ''
 		};
 		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })

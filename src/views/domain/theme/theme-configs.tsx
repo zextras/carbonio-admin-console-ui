@@ -752,23 +752,53 @@ export const ThemeConfigs: FC<{
 									<Divider color="gray2" />
 								</Container>
 								<ListRow>
-									<Padding vertical="large" horizontal="small" width="100%">
-										<Text size="small" color="gray0" weight="bold">
-											{t('label.logout', 'Logout')}
-										</Text>
-									</Padding>
-								</ListRow>
-								<ListRow>
 									<Container padding={{ all: 'small' }}>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.login', 'Login')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<Input
+											label={t(
+												'label.enduser_login_redirect_url',
+												'LogIn redirect destination (URL)'
+											)}
+											backgroundColor="gray5"
+											value={themeConfig.carbonioWebUiLoginURL}
+											inputName="carbonioWebUiLoginURL"
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+												if (e.target.value) {
+													const isValid = isValidHttpsUrl(e.target.value);
+													setIsValidCarbonioWebClientLogoutURL(isValid);
+												} else {
+													setIsValidCarbonioWebClientLogoutURL(true);
+												}
+												onChangeDomainThemeDetail(e);
+											}}
+											hasError={!isValidCarbonioWebClientLogoutURL}
+											disabled={isGlobalTheme && !hasModifyRights}
+										/>
+										{!isValidCarbonioWebClientLogoutURL && <HttpsErrorMessage />}
+									</Container>
+									<Container padding={{ all: 'small' }}>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.logout', 'Logout')}
+												</Text>
+											</Padding>
+										</ListRow>
 										<Input
 											label={t(
 												'label.enduser_logout_redirect_url',
 												'On Logout, redirect the User to (URL)'
 											)}
 											backgroundColor="gray5"
-											value={themeConfig.zimbraWebClientLogoutURL}
-											inputName="zimbraWebClientLogoutURL"
-											onChange={(e: any): any => {
+											value={themeConfig?.carbonioWebUiLogoutURL}
+											inputName="carbonioWebUiLogoutURL"
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
 													const isValid = isValidHttpsUrl(e.target.value);
 													setIsValidCarbonioWebClientLogoutURL(isValid);
@@ -1185,23 +1215,53 @@ export const ThemeConfigs: FC<{
 									<Divider color="gray2" />
 								</Container>
 								<ListRow>
-									<Padding vertical="large" horizontal="small" width="100%">
-										<Text size="small" color="gray0" weight="bold">
-											{t('label.logout', 'Logout')}
-										</Text>
-									</Padding>
-								</ListRow>
-								<ListRow>
 									<Container padding={{ all: 'small' }}>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.login', 'Login')}
+												</Text>
+											</Padding>
+										</ListRow>
 										<Input
 											label={t(
-												'label.admin_logout_redirect_url',
-												'On Logout, redirect the Admin to (URL)'
+												'label.enduser_login_redirect_url',
+												'LogIn redirect destination (URL)'
 											)}
 											backgroundColor="gray5"
-											value={themeConfig.zimbraAdminConsoleLogoutURL}
-											inputName="zimbraAdminConsoleLogoutURL"
-											onChange={(e: any): any => {
+											value={themeConfig.carbonioAdminUiLoginURL}
+											inputName="carbonioAdminUiLoginURL"
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+												if (e.target.value) {
+													const isValid = isValidHttpsUrl(e.target.value);
+													setIsValidCarbonioAdminLogoutURL(isValid);
+												} else {
+													setIsValidCarbonioAdminLogoutURL(true);
+												}
+												onChangeDomainThemeDetail(e);
+											}}
+											hasError={!isValidCarbonioAdminLogoutURL}
+											disabled={isGlobalTheme && !hasModifyRights}
+										/>
+										{!isValidCarbonioAdminLogoutURL && <HttpsErrorMessage />}
+									</Container>
+									<Container padding={{ all: 'small' }}>
+										<ListRow>
+											<Padding vertical="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.logout', 'Logout')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<Input
+											label={t(
+												'label.enduser_logout_redirect_url',
+												'On Logout, redirect the User to (URL)'
+											)}
+											backgroundColor="gray5"
+											value={themeConfig?.carbonioAdminUiLogoutURL}
+											inputName="carbonioAdminUiLogoutURL"
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
 													const isValid = isValidHttpsUrl(e.target.value);
 													setIsValidCarbonioAdminLogoutURL(isValid);
