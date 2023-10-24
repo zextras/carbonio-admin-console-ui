@@ -6,7 +6,18 @@
 import React, { FC, useEffect, useState, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getTags } from '@zextras/carbonio-shell-ui';
-import { filter, find, forEach, isArray, isNil, map, omitBy, reduce } from 'lodash';
+import {
+	cloneDeep,
+	filter,
+	find,
+	forEach,
+	isArray,
+	isNil,
+	map,
+	omitBy,
+	reduce,
+	replace
+} from 'lodash';
 import {
 	Container,
 	Input,
@@ -40,6 +51,8 @@ import ModalOverlay from '../components/ModalOverlay';
 import MailMessageRenderer from './mail-message-renderer';
 import AttachmentsBlock from './attachments-block';
 import { batchService } from '../../services/batch-service';
+import { msgActionRequest } from '../../services/message-action';
+import { sendMsgRequest } from '../../services/send-message';
 
 export type AttachmentPart = {
 	part?: string;
@@ -93,6 +106,8 @@ export type IncompleteMessage = {
 	isReadReceiptRequested?: boolean;
 	score?: string;
 	reason?: string;
+	envelopeFrom?: string;
+	envelopeTo?: string;
 };
 type EditorAttachmentFiles = {
 	contentType: string;
@@ -173,10 +188,18 @@ const getDateTime = (d: number): string => {
 const MessageListTable: FC<{
 	messages: { [key: string]: string }[];
 	selectedRows: string[];
+	requestInprogress: boolean;
 	onSelectionChange: (selected: string[]) => void;
 	setShowMessageView: (msgView: boolean) => void;
 	setMessage: (messageId: IncompleteMessage) => void;
-}> = ({ messages, selectedRows, onSelectionChange, setMessage, setShowMessageView }) => {
+}> = ({
+	messages,
+	selectedRows,
+	requestInprogress,
+	onSelectionChange,
+	setMessage,
+	setShowMessageView
+}) => {
 	const [t] = useTranslation();
 	const tableRows = useMemo(
 		() =>
@@ -195,22 +218,50 @@ const MessageListTable: FC<{
 							{getDateTime(v?.date)}
 						</Text>
 					</Row>,
-					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+					<Row
+						key={i}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						onClick={(): void => {
+							setShowMessageView(true);
+							setMessage(v);
+						}}
+					>
 						<Text size="small" weight="light">
 							{find(v?.participants, { type: 'f' })?.address}
 						</Text>
 					</Row>,
-					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+					<Row
+						key={i}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						onClick={(): void => {
+							setShowMessageView(true);
+							setMessage(v);
+						}}
+					>
 						<Text size="small" weight="light">
 							{v.subject}
 						</Text>
 					</Row>,
-					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+					<Row
+						key={i}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						onClick={(): void => {
+							setShowMessageView(true);
+							setMessage(v);
+						}}
+					>
 						<Text size="small" weight="light">
 							{v.score}
 						</Text>
 					</Row>,
-					<Row key={i} style={{ textAlign: 'left', justifyContent: 'flex-start' }}>
+					<Row
+						key={i}
+						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						onClick={(): void => {
+							setShowMessageView(true);
+							setMessage(v);
+						}}
+					>
 						<Text size="small" weight="light">
 							{v.reason}
 						</Text>
@@ -223,14 +274,7 @@ const MessageListTable: FC<{
 	return (
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">
 			<ListRow>
-				<Container
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					width="fill"
-					maxHeight="calc(100vh - 25rem)"
-					minHeight="auto"
-				>
+				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 					{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
 					{/* @ts-ignore */}
 					<Table
@@ -249,6 +293,38 @@ const MessageListTable: FC<{
 						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
+					{requestInprogress && (
+						<Container
+							crossAlignment="center"
+							mainAlignment="center"
+							height="auto"
+							padding={{ top: 'large' }}
+						>
+							<Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
+						</Container>
+					)}
+					{tableRows.length === 0 && !requestInprogress && (
+						<Container
+							orientation="column"
+							crossAlignment="center"
+							mainAlignment="center"
+							padding={{ top: 'large' }}
+						>
+							<Row>
+								<img src={logo} alt="logo" />
+							</Row>
+							<Row
+								padding={{ top: 'extralarge' }}
+								orientation="vertical"
+								crossAlignment="center"
+								style={{ textAlign: 'center' }}
+							>
+								<Text weight="light" color="#828282" size="large" overflow="break-word">
+									{t('label.this_list_is_empty', 'This list is empty.')}
+								</Text>
+							</Row>
+						</Container>
+					)}
 				</Container>
 			</ListRow>
 			{tableRows.length === 0 && (
@@ -274,6 +350,7 @@ const QuarantineList: FC = () => {
 	const [messageListData, setMessageListData] = useState([]);
 	const { config, setConfig } = useConfigStore((state) => state);
 	const [messageSelection, setMessageSelection] = useState<string[]>([]);
+	const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
 	const [message, setMessage] = useState<IncompleteMessage>({
 		id: '',
 		did: '',
@@ -670,7 +747,7 @@ const QuarantineList: FC = () => {
 	// 		quarantineAccountId
 	// 	]
 	// );
-	useEffect(() => {
+	const getQuarantineMsgData = useCallback((): void => {
 		const propertiesToExtract = ['zimbraAmavisQuarantineAccount', 'zimbraDefaultDomainName'];
 
 		const obj: { [key: string]: string | { label: string }[] } = {};
@@ -681,7 +758,7 @@ const QuarantineList: FC = () => {
 		});
 		if (obj.zimbraAmavisQuarantineAccount) {
 			setQuarantineAccountName(obj.zimbraAmavisQuarantineAccount.toString());
-
+			setRequestInprogress(true);
 			getAccountRequest('', obj.zimbraAmavisQuarantineAccount.toString(), 0).then((res) => {
 				if (res?.account?.[0]?.id) {
 					setQuarantineAccountId(res?.account?.[0]?.id);
@@ -697,78 +774,163 @@ const QuarantineList: FC = () => {
 									needExp: 1,
 									header: [
 										{
+											n: 'X-Envelope-From'
+										},
+										{
+											n: 'X-Envelope-To'
+										},
+										{
+											n: 'X-Envelope-To-Blocked'
+										},
+										{
+											n: 'X-Amavis-Alert'
+										},
+										{
+											n: 'X-Spam-Flag'
+										},
+										{
+											n: 'X-Spam-Score'
+										},
+										{
+											n: 'X-Spam-Level'
+										},
+										{
 											n: 'X-Spam-Status'
 										}
 									]
 								}
 							})
 						);
+
 						batchService({
 							GetMsgRequest: messageListArr,
 							_jsns: 'urn:zimbra'
-						}).then((msgBatchData) => {
-							console.log('msgBatchData ==>', msgBatchData);
-							const normalizedMessageList: any = [];
-							msgBatchData?.GetMsgResponse?.forEach((item: any) => {
-								const m = item.m?.[0];
-								console.log('==>', m?._attrs?.['X-Spam-Status']);
-								const scoreValueArr: any[] = m?._attrs?.['X-Spam-Status']?.split('score=');
-								const reasonValueArr: any[] = m?._attrs?.['X-Spam-Status']?.split('tests=');
-								let scoreValueString = '';
-								let reasonValueString = '';
-								if (scoreValueArr?.length > 1) {
-									scoreValueString = scoreValueArr[1]?.toString() || '';
-									scoreValueString = scoreValueString.split(' ')?.[0] || '';
-								}
-								if (reasonValueArr?.length > 1) {
-									reasonValueString = reasonValueArr[1]?.toString() || '';
-									reasonValueString = reasonValueString.split(' ')?.[0] || '';
-								}
-								const normalizedMessage = {
-									conversation: m.cid,
-									id: m.id,
-									date: m.d,
-									size: m.s,
-									parent: m.l,
-									fragment: m.fr,
-									subject: m.su,
-									participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
-									tags: getTagIds(m.t, m.tn),
-									parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
-									attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
-									// attachments: undefined,
-									invite: m.inv,
-									shr: m.shr,
-									body: m.mp
-										? generateBody(m.mp || [], m.id)
-										: {
-												contentType: '',
-												content: ''
-										  },
-									isComplete: true,
-									isScheduled: !!m.autoSendTime,
-									autoSendTime: m.autoSendTime,
-									read: !isNil(m.f) ? !/u/.test(m.f) : true,
-									hasAttachment: !isNil(m.f) ? /a/.test(m.f) : false,
-									flagged: !isNil(m.f) ? /f/.test(m.f) : false,
-									urgent: !isNil(m.f) ? /!/.test(m.f) : false,
-									isDeleted: !isNil(m.f) ? /x/.test(m.f) : false,
-									isDraft: !isNil(m.f) ? /d/.test(m.f) : false,
-									isForwarded: !isNil(m.f) ? /w/.test(m.f) : false,
-									isSentByMe: !isNil(m.f) ? /s/.test(m.f) : false,
-									isInvite: !isNil(m.f) ? /v/.test(m.f) : false,
-									isReplied: !isNil(m.f) ? /r/.test(m.f) : false,
-									isReadReceiptRequested: !isNil(m.f) ? !/n/.test(m.f) : true,
-									score: scoreValueString,
-									reason: reasonValueString
-								};
-								normalizedMessageList.push(normalizedMessage);
-							});
+						})
+							.then((msgBatchData) => {
+								console.log('msgBatchData ==>', msgBatchData);
+								const normalizedMessageList: any = [];
+								msgBatchData?.GetMsgResponse?.forEach((item: any) => {
+									const m = item.m?.[0];
+									console.log('==>', m?._attrs?.['X-Spam-Status']);
+									if (Array.isArray(m?._attrs?.['X-Spam-Status'])) {
+										m._attrs['X-Spam-Status'] = m._attrs['X-Spam-Status'].pop();
+									}
+									if (Array.isArray(m?._attrs?.['X-Spam-Score'])) {
+										m._attrs['X-Spam-Score'] = m?._attrs?.['X-Spam-Score'].pop();
+									}
+									if (Array.isArray(m?._attrs?.['X-Amavis-Alert'])) {
+										m._attrs['X-Amavis-Alert'] = m?._attrs?.['X-Amavis-Alert'].pop();
+									}
+									if (Array.isArray(m?._attrs?.['X-Envelope-From'])) {
+										m._attrs['X-Envelope-From'] = m?._attrs?.['X-Envelope-From'].pop();
+									}
+									if (Array.isArray(m?._attrs?.['X-Envelope-To'])) {
+										m._attrs['X-Envelope-To'] = m?._attrs?.['X-Envelope-To'].pop();
+									}
+									const scoreValueArr: any[] = (m?._attrs?.['X-Spam-Status'] || '')?.split(
+										'score='
+									);
+									const reasonValueArr: any[] = (m?._attrs?.['X-Spam-Status'] || '')?.split(
+										'tests='
+									);
+									let scoreValueString = '';
+									let reasonValueString = '';
+									if (scoreValueArr?.length > 1) {
+										scoreValueString = scoreValueArr[1]?.toString() || '';
+										scoreValueString = scoreValueString.split(' ')?.[0] || '';
+									}
+									if (reasonValueArr?.length > 1) {
+										reasonValueString = reasonValueArr[1]?.toString() || '';
+										reasonValueString = reasonValueString.split(' ')?.[0] || '';
+									}
 
-							console.log('normalizedMessage ==>', normalizedMessageList);
-							setMessageListData(normalizedMessageList);
-							// deleteOnlyDomain();
-						});
+									const normalizedMessage = {
+										conversation: m.cid,
+										id: m.id,
+										date: m.d,
+										size: m.s,
+										parent: m.l,
+										fragment: m.fr,
+										subject: m.su,
+										participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
+										tags: getTagIds(m.t, m.tn),
+										parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
+										attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
+										// attachments: undefined,
+										invite: m.inv,
+										shr: m.shr,
+										body: m.mp
+											? generateBody(m.mp || [], m.id)
+											: {
+													contentType: '',
+													content: ''
+											  },
+										isComplete: true,
+										isScheduled: !!m.autoSendTime,
+										autoSendTime: m.autoSendTime,
+										read: !isNil(m.f) ? !/u/.test(m.f) : true,
+										hasAttachment: !isNil(m.f) ? /a/.test(m.f) : false,
+										flagged: !isNil(m.f) ? /f/.test(m.f) : false,
+										urgent: !isNil(m.f) ? /!/.test(m.f) : false,
+										isDeleted: !isNil(m.f) ? /x/.test(m.f) : false,
+										isDraft: !isNil(m.f) ? /d/.test(m.f) : false,
+										isForwarded: !isNil(m.f) ? /w/.test(m.f) : false,
+										isSentByMe: !isNil(m.f) ? /s/.test(m.f) : false,
+										isInvite: !isNil(m.f) ? /v/.test(m.f) : false,
+										isReplied: !isNil(m.f) ? /r/.test(m.f) : false,
+										isReadReceiptRequested: !isNil(m.f) ? !/n/.test(m.f) : true,
+										score: m?._attrs?.['X-Spam-Score'] || scoreValueString || '',
+										reason: m?._attrs?.['X-Amavis-Alert'] || '',
+										envelopeFrom: replace(m?._attrs?.['X-Envelope-From'] || '', /[<>]/g, ''),
+										envelopeTo: replace(m?._attrs?.['X-Envelope-To'] || '', /[<>]/g, '')
+									};
+									normalizedMessageList.push(normalizedMessage);
+								});
+
+								console.log('normalizedMessage ==>', normalizedMessageList);
+								setMessageListData(normalizedMessageList);
+								console.log('message g ==>', message);
+								// if(message.id){
+								// 	console.log('message.id ==>', message.id)
+								// 	const messageFound = find(normalizedMessageList, {id: message.id})
+								// 	console.log('messageFound ==>', messageFound)
+								// 	if(messageFound?.id){
+								// 		setMessage({
+								// 			id: '',
+								// 			did: '',
+								// 			parent: '',
+								// 			conversation: '',
+								// 			read: '',
+								// 			size: 0,
+								// 			hasAttachment: false,
+								// 			flagged: false,
+								// 			urgent: false,
+								// 			isDeleted: false,
+								// 			isSentByMe: false,
+								// 			isForwarded: false,
+								// 			isInvite: false,
+								// 			isDraft: false,
+								// 			isScheduled: false,
+								// 			date: 0,
+								// 			subject: '',
+								// 			tags: [],
+								// 			parts: [],
+								// 			body: {
+								// 				contentType: '',
+								// 				content: ''
+								// 			},
+								// 			isComplete: true,
+								// 			isReplied: false,
+								// 			score: '',
+								// 			reason: ''
+								// 		})
+								// 		setMessage(cloneDeep(messageFound));
+								// 	}
+								// }
+								setRequestInprogress(false);
+								// deleteOnlyDomain();
+							})
+							.catch((error) => setRequestInprogress(false));
 
 						// setMessageListData(data);
 					});
@@ -782,8 +944,20 @@ const QuarantineList: FC = () => {
 	}, [
 		config,
 		generateBody,
+		getAttachmentsFromParts,
+		getTagIds,
+		message,
+		normalizeMailPartMapFn,
+		normalizeParticipantsFromSoap
+	]);
+	useEffect(() => {
+		getQuarantineMsgData();
+	}, [
+		config,
+		generateBody,
 		getAllConfigData,
 		getAttachmentsFromParts,
+		getQuarantineMsgData,
 		getTagIds,
 		normalizeMailPartMapFn,
 		normalizeParticipantsFromSoap
@@ -869,6 +1043,25 @@ const QuarantineList: FC = () => {
 				});
 			});
 	}, [createSnackbar, getAllConfigData, quarantineAccountName, quarantineDomaintName, t]);
+	const onDeleteMessage = useCallback(
+		(id: string) => {
+			msgActionRequest(id, 'delete').then((res) => {
+				setMessageListData([]);
+				getQuarantineMsgData();
+				setShowMessageView(false);
+			});
+		},
+		[getQuarantineMsgData]
+	);
+
+	const onDeliverMessage = useCallback((msg: IncompleteMessage) => {
+		sendMsgRequest(msg).then((res) => {
+			console.log('sendMsgRequest ==>', res);
+			// setMessageListData([]);
+			// getQuarantineMsgData();
+			// setShowMessageView(false);
+		});
+	}, []);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -1045,7 +1238,7 @@ const QuarantineList: FC = () => {
 												label={t('label.deliver', 'DELIVER')}
 												color="primary"
 												onClick={(): void => {
-													console.log('__clicked');
+													onDeliverMessage(message);
 												}}
 											/>
 											<Button
@@ -1053,7 +1246,7 @@ const QuarantineList: FC = () => {
 												label={t('label.delete', 'DELETE')}
 												color="error"
 												onClick={(): void => {
-													console.log('__clicked');
+													onDeleteMessage(message.id);
 												}}
 											/>
 										</Row>
@@ -1061,6 +1254,7 @@ const QuarantineList: FC = () => {
 											<MessageListTable
 												messages={messageListData}
 												selectedRows={messageSelection}
+												requestInprogress={requestInprogress}
 												setMessage={setMessage}
 												setShowMessageView={setShowMessageView}
 												onSelectionChange={(selected: any): void => {
@@ -1183,7 +1377,9 @@ const QuarantineList: FC = () => {
 							<Button
 								label={t('quarantine.deliver', 'DELIVER')}
 								type="outlined"
-								onClick={(): void => setShowMessageView(false)}
+								onClick={(): void => {
+									onDeliverMessage(message);
+								}}
 							/>
 							<Padding left="small">
 								<Button
@@ -1191,7 +1387,7 @@ const QuarantineList: FC = () => {
 									color="error"
 									type="ghost"
 									onClick={(): void => {
-										setShowMessageView(false);
+										onDeleteMessage(message.id);
 									}}
 								/>
 							</Padding>
@@ -1246,12 +1442,16 @@ const QuarantineList: FC = () => {
 									orientation="horizontal"
 									padding={{ top: 'large' }}
 								>
-									<Text size="small" weight="bold">
+									{/* <Text size="small" weight="bold">
 										{find(message?.participants, { type: 'f' })?.name}
 									</Text>
 									<Text size="small">{` <${
 										find(message?.participants, { type: 'f' })?.address
-									}>`}</Text>
+									}>`}</Text> */}
+									<Text size="small" weight="bold">
+										{t('label.from', 'From')} :{' '}
+									</Text>
+									<Text size="small"> {message.envelopeFrom || ''}</Text>
 								</Row>
 								<Row
 									width="100%"
@@ -1262,7 +1462,7 @@ const QuarantineList: FC = () => {
 									<Text size="small" weight="bold">
 										{t('label.to', 'To')} :{' '}
 									</Text>
-									<Text size="small"> {find(message?.participants, { type: 't' })?.address}</Text>
+									<Text size="small"> {message.envelopeTo || ''}</Text>
 								</Row>
 								<Row
 									width="100%"
@@ -1272,6 +1472,7 @@ const QuarantineList: FC = () => {
 								>
 									<AttachmentsBlock
 										message={message}
+										getQuarantineMsgData={getQuarantineMsgData}
 										// isExternalMessage={isExternalMessage}
 										// openEmlPreview={openEmlPreview}
 									/>

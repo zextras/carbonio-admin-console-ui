@@ -21,6 +21,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
 import React, { FC, ReactElement, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
+import { removeAttachmentsRequest } from '../../services/remove-attachments';
 // import { DefaultTheme } from '../app/shared/customTableHeaderFactory';
 
 // import { getFileExtension } from '../../../../commons/utilities';
@@ -57,6 +58,8 @@ type OpenEmlPreviewType = (
 	emlMessage: MailMessage
 ) => void;
 
+type GetQuarantineMsgData = () => void;
+
 export type MailEditHeaderType = {
 	folderId: string | number;
 	header: string | undefined;
@@ -78,6 +81,7 @@ export type AttachmentType = {
 	iconColors: IconColors;
 	att: EditorAttachmentFiles;
 	openEmlPreview?: OpenEmlPreviewType;
+	getQuarantineMsgData: GetQuarantineMsgData;
 };
 
 export type PreviewPanelActionsType = {
@@ -467,7 +471,8 @@ const Attachment: FC<AttachmentType> = ({
 	part,
 	iconColors,
 	att,
-	openEmlPreview
+	openEmlPreview,
+	getQuarantineMsgData
 }) => {
 	// const { createPreview } = useContext(PreviewsManagerContext);
 	// const { isInsideExtraWindow } = useExtraWindow();
@@ -504,9 +509,12 @@ const Attachment: FC<AttachmentType> = ({
 		: t('action.click_preview', 'Click to preview');
 
 	const onDeleteAttachment = useCallback(() => {
-		console.log('==> Delete att');
-		// dispatch(deleteAttachments({ id: message.id, attachments: [part] }));
-	}, []);
+		console.log('==> Delete att', message.id, [part]);
+		removeAttachmentsRequest(message.id, part).then((res) => {
+			console.log('==> removeAttachmentsRequest', res);
+			getQuarantineMsgData();
+		});
+	}, [getQuarantineMsgData, message.id, part]);
 
 	// const onDownloadAndDelete = useCallback(() => {
 	// 	downloadAttachment();
@@ -790,7 +798,12 @@ const AttachmentsBlock: FC<{
 	message: MailMessage;
 	isExternalMessage?: boolean;
 	openEmlPreview?: OpenEmlPreviewType;
-}> = ({ message, isExternalMessage = false /* openEmlPreview */ }): ReactElement => {
+	getQuarantineMsgData: GetQuarantineMsgData;
+}> = ({
+	message,
+	isExternalMessage = false /* openEmlPreview */,
+	getQuarantineMsgData
+}): ReactElement => {
 	const [t] = useTranslation();
 	const [expanded, setExpanded] = useState(false);
 	const attachments = useMemo(
@@ -943,6 +956,7 @@ const AttachmentsBlock: FC<{
 						// @ts-ignore
 						att={att}
 						// openEmlPreview={openEmlPreview}
+						getQuarantineMsgData={getQuarantineMsgData}
 					/>
 				))}
 			</Container>
