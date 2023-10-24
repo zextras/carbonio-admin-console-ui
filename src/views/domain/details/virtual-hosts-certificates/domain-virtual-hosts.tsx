@@ -19,7 +19,7 @@ import {
 	Icon
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import _, { split } from 'lodash';
+import _ from 'lodash';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 import { useParams } from 'react-router-dom';
 import {
@@ -46,7 +46,6 @@ const DomainVirtualHosts: FC = () => {
 	const { domainId }: { domainId: string } = useParams();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const domainInformation: any = useDomainStore((state) => state.domain?.a);
-	const { setSSLCertificate } = useDomainStore((state) => state);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const [selectedRows, setSelectedRows] = useState<any>([]);
 	const [addButtonDisabled, setAddButtonDisabled] = useState(true);
@@ -63,6 +62,7 @@ const DomainVirtualHosts: FC = () => {
 	const [open, setOpen] = useState(false);
 	const [alertToggle, setAlertToggle] = useState(false);
 	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
+	const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
 
 	const closeHandler = (): void => {
 		setOpen(false);
@@ -215,10 +215,15 @@ const DomainVirtualHosts: FC = () => {
 				const data = _.mapValues(res?.cert[0], (value) => value[0]._content);
 				setDomainCertiDetails(data);
 				setToggleCertiBtn(false);
+				setIsCertificateAvailbale(true);
 			})
 			// TODO: On no cert found server always returns error so used empty catch for now
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			.catch(() => {});
+			.catch((error) => {
+				if (error) {
+					setIsCertificateAvailbale(false);
+				}
+			});
 		const zimbraData =
 			domainInformation &&
 			domainInformation.filter((item: objectType) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
@@ -232,32 +237,13 @@ const DomainVirtualHosts: FC = () => {
 		})
 			.then((response: any) => {
 				if (response?.domain[0]?.a) {
-					const certificates: { [key: string]: string } = _.reduce(
+					const certificates = _.reduce(
 						response?.domain[0]?.a,
 						(result, item) => ({ ...result, [item.n]: item._content }),
 						{}
 					);
-					const separatedValues = split(certificates?.zimbraSSLCertificate, ',');
-					const storeData = {
-						sslCertificate: separatedValues[0],
-						sslCertificateFileName: `certificate-${zimbraData}.pem`,
-						sslCaCertificate: separatedValues[1],
-						sslCaCertificateFileName: `ca-chain-certificate-${zimbraData}.pem`,
-						sslPrivateKey: certificates?.zimbraSSLPrivateKey,
-						sslPrivateKeyFileName: `private-key-${zimbraData}.pem`
-					};
-					setSSLCertificate(storeData);
 					setDomainCertificate(certificates);
 				} else {
-					const storeData = {
-						sslCertificate: '',
-						sslCertificateFileName: '',
-						sslCaCertificate: '',
-						sslCaCertificateFileName: '',
-						sslPrivateKey: '',
-						sslPrivateKeyFileName: ''
-					};
-					setSSLCertificate(storeData);
 					setDomainCertificate(null);
 				}
 			})
@@ -273,7 +259,7 @@ const DomainVirtualHosts: FC = () => {
 					replace: true
 				});
 			});
-	}, [createSnackbar, domainId, domainInformation, setSSLCertificate, t]);
+	}, [createSnackbar, domainId, domainInformation, setIsCertificateAvailbale, t]);
 
 	const deleteHandler = (): void => {
 		const body: {
@@ -308,6 +294,7 @@ const DomainVirtualHosts: FC = () => {
 				getAllCertiDetailsAPICall();
 				setDomainCertiDetails({});
 				setToggleCertiBtn(true);
+				setIsCertificateAvailbale(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -324,31 +311,21 @@ const DomainVirtualHosts: FC = () => {
 	};
 
 	const downloadTxtHandler = (): void => {
-		const separatedValues = split(domainCertificate?.zimbraSSLCertificate, ',');
 		const elementCerti = document.createElement('a');
-		const fileCerti = new Blob([separatedValues[0]], {
+		const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate], {
 			type: 'text/plain;charset=utf-8'
 		});
 		elementCerti.href = URL.createObjectURL(fileCerti);
-		elementCerti.download = `certificate-${domainName}.pem`;
+		elementCerti.download = `certificate-${domainName}.txt`;
 		document.body.appendChild(elementCerti);
 		elementCerti.click();
-
-		const elementCaCerti = document.createElement('a');
-		const fileCaCerti = new Blob([separatedValues[1]], {
-			type: 'text/plain;charset=utf-8'
-		});
-		elementCaCerti.href = URL.createObjectURL(fileCaCerti);
-		elementCaCerti.download = `ca-chain-certificate-${domainName}.pem`;
-		document.body.appendChild(elementCaCerti);
-		elementCaCerti.click();
 
 		const elementPrivateKey = document.createElement('a');
 		const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey], {
 			type: 'text/plain;charset=utf-8'
 		});
 		elementPrivateKey.href = URL.createObjectURL(fileKey);
-		elementPrivateKey.download = `private-key-${domainName}.pem`;
+		elementPrivateKey.download = `private-key-${domainName}.txt`;
 		document.body.appendChild(elementPrivateKey);
 		elementPrivateKey.click();
 	};

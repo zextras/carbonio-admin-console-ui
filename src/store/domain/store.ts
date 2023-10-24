@@ -23,10 +23,10 @@ type DomainState = {
 	setIsDomainSupportDelegatedAdmin: (isDomainSupportDelegatedAdmin: boolean) => void;
 	closeDomainBanner: string;
 	setCloseDomainBanner: (domainName: string) => void;
-	sslCertificate: { [key: string]: string };
-	setSSLCertificate: (sslCertificate: { [key: string]: string }) => void;
 	isQuickAccess: boolean;
 	setIsQuickAccess: (isQuickAccess: boolean) => void;
+	isCertificateAvailbale: boolean;
+	setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
 };
 
 export const useDomainStore = create<DomainState>(
@@ -37,8 +37,8 @@ export const useDomainStore = create<DomainState>(
 		setDomain: (domain): void => set({ domain }, false, 'setDomain'),
 		domainList: [],
 		isDomainSupportDelegatedAdmin: false,
-		sslCertificate: {},
 		isQuickAccess: false,
+		isCertificateAvailbale: false,
 		setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
@@ -67,6 +67,7 @@ export const useDomainStore = create<DomainState>(
 				'setCloseDomainBanner'
 			),
 		setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess'),
-		setSSLCertificate: (sslCertificate): void => set({ sslCertificate }, false, 'setSSLCertificate')
+		setIsCertificateAvailbale: (isCertificateAvailbale): void =>
+			set({ isCertificateAvailbale }, false, 'setIsCertificateAvailbale')
 	}))
 );

@@ -19,7 +19,6 @@ import {
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { join } from 'lodash';
 import { CreateSnackbarType, ICertificateContent } from '../../../../../types';
 import {
 	DOMAIN_CERTIFICATE,
@@ -43,7 +42,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 }) => {
 	let fileReader: FileReader;
 	const { t } = useTranslation();
-	const { domain, sslCertificate } = useDomainStore((state) => state);
+	const domain = useDomainStore((state) => state.domain);
 	const certificateTypes = useMemo(() => CertificateTypes(t), [t]);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [selectedCertType, setSelectedCertType] = useState<string | undefined>(
@@ -55,20 +54,21 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	const [domainCertiErr, setDomainCertiErr] = useState(true);
 	const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
 	const [privateKeyErr, setPrivateKeyErr] = useState(true);
+	const isCertificateAvailbale = useDomainStore((state) => state.isCertificateAvailbale);
 	const [objDomainCertificate, setObjDomainCertificate] = useState<ICertificateContent>({
-		fileName: sslCertificate?.sslCertificateFileName,
-		content: sslCertificate?.sslCertificate
+		fileName: '',
+		content: ''
 	});
 	const [objDomainCertificateCaChain, setObjDomainCertificateCaChain] =
 		useState<ICertificateContent>({
-			fileName: sslCertificate?.sslCaCertificateFileName,
-			content: sslCertificate?.sslCaCertificate
+			fileName: '',
+			content: ''
 		});
 
 	const [objDomainCertificatePrivateKey, setObjDomainCertificatePrivateKey] =
 		useState<ICertificateContent>({
-			fileName: sslCertificate?.sslPrivateKeyFileName,
-			content: sslCertificate?.sslPrivateKey
+			fileName: '',
+			content: ''
 		});
 
 	const emptyCertiState = (): void => {
@@ -133,18 +133,33 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		if (objDomainCertificate.content === '') {
 			setDomainCertiErr(false);
 		}
-		if (objDomainCertificateCaChain.content === '') {
-			setDomainCertiCaChainErr(false);
+
+		if (!isCertificateAvailbale) {
+			if (objDomainCertificateCaChain.content === '') {
+				setDomainCertiCaChainErr(false);
+			}
 		}
 		if (objDomainCertificatePrivateKey.content === '') {
 			setPrivateKeyErr(false);
 		}
 		setVerifyBtnLoading(true);
 		if (
-			objDomainCertificate.content === '' ||
-			objDomainCertificateCaChain.content === '' ||
-			objDomainCertificatePrivateKey.content === ''
+			(objDomainCertificate.content === '' || objDomainCertificatePrivateKey.content === '') &&
+			isCertificateAvailbale
 		) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t(
+					'domain.certificate_content_error_without_ca_chain',
+					'Domain certificate , Private key is invalid'
+				),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			setVerifyBtnLoading(false);
+		} else if (!isCertificateAvailbale && objDomainCertificateCaChain.content === '') {
 			createSnackbar({
 				key: 'error',
 				type: 'error',
@@ -209,6 +224,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		}
 	}, [
 		createSnackbar,
+		isCertificateAvailbale,
 		objDomainCertificate.content,
 		objDomainCertificateCaChain.content,
 		objDomainCertificatePrivateKey.content,
@@ -219,9 +235,8 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		const zimbraId =
 			domainInformation &&
 			domainInformation.filter((item: any) => item.n === ZIMBRA_ID)[0]?._content;
-		const concatedCertiFile = join(
-			[objDomainCertificate?.content, objDomainCertificateCaChain.content],
-			','
+		const concatedCertiFile = objDomainCertificate?.content.concat(
+			objDomainCertificateCaChain.content
 		);
 		const body: any = {};
 		const attributes: any[] = [];
@@ -298,17 +313,28 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		if (objDomainCertificate.content !== '') {
 			setDomainCertiErr(true);
 		}
-		if (objDomainCertificateCaChain.content !== '') {
+		if (!isCertificateAvailbale) {
+			if (objDomainCertificateCaChain.content !== '') {
+				setDomainCertiCaChainErr(true);
+			}
+		} else {
 			setDomainCertiCaChainErr(true);
 		}
 		if (objDomainCertificatePrivateKey.content !== '') {
 			setPrivateKeyErr(true);
 		}
 	}, [
+		isCertificateAvailbale,
 		objDomainCertificate.content,
 		objDomainCertificateCaChain.content,
 		objDomainCertificatePrivateKey.content
 	]);
+
+	useEffect(() => {
+		if (!isCustomCerti()) {
+			emptyCertiState();
+		}
+	}, [isCustomCerti, selectedCertType]);
 
 	return (
 		<Container padding={{ all: 'small' }}>
