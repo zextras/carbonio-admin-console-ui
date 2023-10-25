@@ -27,7 +27,7 @@ import {
 } from '@zextras/carbonio-shell-ui';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { IconButton } from '@zextras/carbonio-design-system';
+import { IconButton, Icon } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { MatomoProvider } from '@datapunt/matomo-tracker-react';
 import { find } from 'lodash';
@@ -64,6 +64,7 @@ import { getAllServers, getMailstoresServers } from './services/get-all-servers-
 import { useConfigStore } from './store/config/store';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import SvgBackupOutline from './icons/outline/BackupOutline';
+import SettingsModOutline from './icons/outline/SettingsModOutline';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import MatomoTracker from './matomo-tracker';
 import { useMailstoreListStore } from './store/mailstore-list/store';
@@ -84,6 +85,14 @@ const AppView: FC = (props) => (
 );
 
 const PrimaryBarIconButton = styled(IconButton)`
+	&:hover {
+		background: transparent;
+	}
+	@media (max-width: 60rem) {
+		padding: 0 0 0 0.188rem;
+	}
+`;
+const PrimaryBarIcon = styled(Icon)`
 	&:hover {
 		background: transparent;
 	}
@@ -509,6 +518,17 @@ const App: FC = () => {
 		[history]
 	);
 
+	const cosPrimaryBar = useCallback(
+		() => (
+			<PrimaryBarIcon
+				icon={SettingsModOutline}
+				size="large"
+				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${COS_ROUTE_ID}`)}
+			/>
+		),
+		[history]
+	);
+
 	useEffect(() => {
 		if (rights && rights.length > 0) {
 			const right = getRights(rights, SERVER);
@@ -570,7 +590,7 @@ const App: FC = () => {
 				position: 2,
 				visible: true,
 				label: t('label.cos', 'COS') || '',
-				primaryBar: 'CosOutline',
+				primaryBar: cosPrimaryBar,
 				appView: AppView,
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
@@ -696,7 +716,8 @@ const App: FC = () => {
 		hasListServerRights,
 		MTATooltipView,
 		showCOS,
-		hasConfigRights
+		hasConfigRights,
+		cosPrimaryBar
 	]);
 
 	useEffect(() => {

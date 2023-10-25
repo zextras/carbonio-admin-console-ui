@@ -6,10 +6,16 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { TWO_FACTOR_AUTHENTICATION, DOMAINS, WHITELABEL_SETTINGS } from '../../constants';
+import {
+	TWO_FACTOR_AUTHENTICATION,
+	DOMAINS,
+	WHITELABEL_SETTINGS,
+	GLOBAL_DELEGATES
+} from '../../constants';
 import GlobalTheme from './global/global-theme';
 import DomainList from './domain-list/domain-list';
 import GlobalTwoFactorAuthentcation from './global/global-two-factor-auth';
+import GlobalDelegates from './global-delegates';
 
 const GlobalOperations: FC = () => {
 	const [t] = useTranslation();
@@ -25,6 +31,8 @@ const GlobalOperations: FC = () => {
 						return <GlobalTwoFactorAuthentcation />;
 					case DOMAINS:
 						return <DomainList />;
+					case GLOBAL_DELEGATES:
+						return <GlobalDelegates />;
 					default:
 						return null;
 				}
