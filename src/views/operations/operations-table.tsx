@@ -8,7 +8,7 @@ import React, { FC, useMemo } from 'react';
 import { Container, Row, Text, Table, Icon } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import MiliSecondToDate from './functions/miliSecondToDate';
-import { DISMMISED, STARTED, STOPPING } from '../../constants';
+import { EXCEPTION, FINISHED, STARTED } from '../../constants';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 
@@ -62,13 +62,11 @@ export const OperationsTable: FC<{
 							onClick(i);
 						}}
 					>
-						{v?.state === STOPPING && (
+						{v?.type === EXCEPTION && (
 							<Icon icon="StopCircleOutline" size="medium" color="secondary" />
 						)}
-						{v?.state === DISMMISED && (
-							<Icon icon="CloseCircleOutline" size="medium" color="error" />
-						)}
-						{v?.state === STARTED && (
+						{v?.type === FINISHED && <Icon icon="CloseCircleOutline" size="medium" color="error" />}
+						{v?.type === STARTED && (
 							<Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
 						)}
 					</Row>,
@@ -111,7 +109,7 @@ export const OperationsTable: FC<{
 						}}
 					>
 						<Text weight="light" size="small">
-							{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
+							{v?.humanStartTime ? v?.humanStartTime : ''}
 						</Text>
 					</Row>
 				],

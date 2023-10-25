@@ -1432,6 +1432,7 @@
         "open": "Open",
         "operation": {
             "get_all_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}",
             "stop_operation_error": "{{name}}"
         },
         "operation_lbl": "<bold>Operations</bold>",
