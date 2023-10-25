@@ -53,7 +53,6 @@ import AccountDetailView from './manange/accounts/account-detail-view';
 const GlobalDelegates: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const { setUserType } = useRightsStore((state: any) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
 	const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
@@ -72,64 +71,7 @@ const GlobalDelegates: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
 	const tableRef = useRef(null);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-	const [hasError, setHasError] = useState<boolean>(false);
 
-	const accountTypeFilter: any = useMemo(
-		() => [
-			{
-				label: 'Admin',
-				value: '(&(zimbraIsAdminAccount=TRUE))'
-			},
-			{
-				label: 'DelegatedAdmin',
-				value: '(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE)))'
-			},
-			{
-				label: 'External',
-				value: '(&(zimbraIsExternalVirtualAccount=TRUE))'
-			},
-			{
-				label: 'System',
-				value: '(&(zimbraIsSystemAccount=TRUE))'
-			},
-			{
-				label: 'Normal',
-				value:
-					'(&(!(zimbraIsAdminAccount=TRUE))(!(zimbraIsDelegatedAdminAccount=TRUE))(!(zimbraIsSystemAccount=TRUE))(!(zimbraIsExternalVirtualAccount=TRUE)))'
-			}
-		],
-		[]
-	);
-
-	const accountStatusFilter: any = useMemo(
-		() => [
-			{
-				label: t('label.active', 'Active'),
-				value: '(&(zimbraAccountStatus=active))'
-			},
-			{
-				label: t('label.in_maintenance', 'In maintenance'),
-				value: '(&(zimbraAccountStatus=maintenance))'
-			},
-			{
-				label: t('label.locked', 'Locked'),
-				value: '(&(zimbraAccountStatus=locked))'
-			},
-			{
-				label: t('label.closed', 'Closed'),
-				value: '(&(zimbraAccountStatus=closed))'
-			},
-			{
-				label: t('label.pending', 'Pending'),
-				value: '(&(zimbraAccountStatus=pending))'
-			},
-			{
-				label: t('label.lockout', 'Lockout'),
-				value: '(&(zimbraAccountStatus=lockout))'
-			}
-		],
-		[t]
-	);
 	const headers: any = useMemo(
 		() => [
 			{
@@ -178,7 +120,6 @@ const GlobalDelegates: FC = () => {
 
 	const [signatureList, setSignatureList] = useState<any[]>([]);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
-	const [signatureData, setSignatureData]: any = useState([]);
 
 	const generateSignatureList = (signatureResponse: any): void => {
 		if (signatureResponse && Array.isArray(signatureResponse)) {
@@ -189,7 +130,6 @@ const GlobalDelegates: FC = () => {
 		getSingatures(id).then((data: any) => {
 			const signatureResponse = data?.Body?.GetSignaturesResponse?.signature || [];
 			generateSignatureList(signatureResponse);
-			setSignatureData(signatureResponse);
 		});
 	}, []);
 
@@ -615,7 +555,6 @@ const GlobalDelegates: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				setHasError(true);
 			});
 	}, [accountUserType, limit, offset, openDetailView, t, createSnackbar]);
 
