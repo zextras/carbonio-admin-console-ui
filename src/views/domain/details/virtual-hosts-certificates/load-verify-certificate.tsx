@@ -159,7 +159,11 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 				replace: true
 			});
 			setVerifyBtnLoading(false);
-		} else if (!isCertificateAvailbale && objDomainCertificateCaChain.content === '') {
+		} else if (
+			(!isCertificateAvailbale && objDomainCertificateCaChain.content === '') ||
+			objDomainCertificate.content === '' ||
+			objDomainCertificatePrivateKey.content === ''
+		) {
 			createSnackbar({
 				key: 'error',
 				type: 'error',
