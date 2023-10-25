@@ -37,6 +37,7 @@ import {
 	GLOBAL_ROUTE,
 	BACKUP_BASIC,
 	DELEGATES_DOMAIN_ADMINS,
+	GLOBAL_DELEGATES_ROUTE,
 	RESOURCES
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
@@ -240,6 +241,8 @@ const DomainListPanel: FC = () => {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_DOMAIN_ROUTE) {
 					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_DELEGATES_ROUTE) {
+					replaceHistory(`/${domainView}`);
 				} else {
 					replaceHistory(`/${domainId}/${domainView}`);
 				}
@@ -345,6 +348,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: GLOBAL_ROUTE,
 				name: t('label.global', 'Global'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_DELEGATES_ROUTE,
+				name: t('label.global_delegates', 'Global Delegates'),
 				isSelected: true
 			},
 			{
