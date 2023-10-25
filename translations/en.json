@@ -609,6 +609,7 @@
         "aggregated_space_quota_warning": "Aggregated space quota warning (%)",
         "authentication": "Authentication",
         "certificate_content_error": "Domain certificate , CA Chain or Private key is invalid",
+        "certificate_content_error_without_ca_chain": "Domain certificate , Private key is invalid",
         "certificate_invalid_error": "The certificate is invalid , please try with other certificate",
         "certificate_removed": "The certificate has been removed",
         "certificate_saved": "The certificates have been saved",
