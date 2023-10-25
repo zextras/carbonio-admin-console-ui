@@ -87,10 +87,10 @@ const DomainTheme: FC = () => {
 				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
 				setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor);
 				setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor);
-				setValue('carbonioWebUiLoginURL', obj?.carbonioWebUiLoginURL);
-				setValue('carbonioWebUiLogoutURL', obj?.carbonioWebUiLogoutURL);
-				setValue('carbonioAdminUiLoginURL', obj?.carbonioAdminUiLoginURL);
-				setValue('carbonioAdminUiLogoutURL', obj?.carbonioAdminUiLogoutURL);
+				setValue('carbonioWebUILoginURL', obj?.carbonioWebUILoginURL);
+				setValue('carbonioWebUILogoutURL', obj?.carbonioWebUILogoutURL);
+				setValue('carbonioAdminUILoginURL', obj?.carbonioAdminUILoginURL);
+				setValue('carbonioAdminUILogoutURL', obj?.carbonioAdminUILogoutURL);
 			}
 		},
 		[setValue]
@@ -169,17 +169,17 @@ const DomainTheme: FC = () => {
 			if (!obj.carbonioWebUiDarkPrimaryColor) {
 				obj.carbonioWebUiDarkPrimaryColor = '';
 			}
-			if (!obj.carbonioWebUiLoginURL) {
-				obj.carbonioWebUiLoginURL = '';
+			if (!obj.carbonioWebUILoginURL) {
+				obj.carbonioWebUILoginURL = '';
 			}
-			if (!obj.carbonioWebUiLogoutURL) {
-				obj.carbonioWebUiLogoutURL = '';
+			if (!obj.carbonioWebUILogoutURL) {
+				obj.carbonioWebUILogoutURL = '';
 			}
-			if (!obj.carbonioAdminUiLoginURL) {
-				obj.carbonioAdminUiLoginURL = '';
+			if (!obj.carbonioAdminUILoginURL) {
+				obj.carbonioAdminUILoginURL = '';
 			}
-			if (!obj.carbonioAdminUiLogoutURL) {
-				obj.carbonioAdminUiLogoutURL = '';
+			if (!obj.carbonioAdminUILogoutURL) {
+				obj.carbonioAdminUILogoutURL = '';
 			}
 			setInitalValues(obj);
 			setIsDirty(false);
@@ -282,10 +282,10 @@ const DomainTheme: FC = () => {
 			carbonioLogoUrl: '',
 			carbonioWebUiPrimaryColor: '',
 			carbonioWebUiDarkPrimaryColor: '',
-			carbonioWebUiLoginURL: '',
-			carbonioWebUiLogoutURL: '',
-			carbonioAdminUiLoginURL: '',
-			carbonioAdminUiLogoutURL: ''
+			carbonioWebUILoginURL: '',
+			carbonioWebUILogoutURL: '',
+			carbonioAdminUILoginURL: '',
+			carbonioAdminUILogoutURL: ''
 		};
 		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })

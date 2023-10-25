@@ -84,10 +84,10 @@ export type themeConfigStore = {
 	carbonioLogoUrl?: string;
 	carbonioWebUiPrimaryColor?: string;
 	carbonioWebUiDarkPrimaryColor?: string;
-	carbonioWebUiLoginURL?: string;
-	carbonioWebUiLogoutURL?: string;
-	carbonioAdminUiLoginURL?: string;
-	carbonioAdminUiLogoutURL?: string;
+	carbonioWebUILoginURL?: string;
+	carbonioWebUILogoutURL?: string;
+	carbonioAdminUILoginURL?: string;
+	carbonioAdminUILogoutURL?: string;
 };
 
 export interface IpRangeValue {

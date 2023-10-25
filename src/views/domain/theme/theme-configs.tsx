@@ -766,8 +766,8 @@ export const ThemeConfigs: FC<{
 												'LogIn redirect destination (URL)'
 											)}
 											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiLoginURL}
-											inputName="carbonioWebUiLoginURL"
+											value={themeConfig.carbonioWebUILoginURL}
+											inputName="carbonioWebUILoginURL"
 											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
 													const isValid = isValidHttpsUrl(e.target.value);
@@ -796,8 +796,8 @@ export const ThemeConfigs: FC<{
 												'On Logout, redirect the User to (URL)'
 											)}
 											backgroundColor="gray5"
-											value={themeConfig?.carbonioWebUiLogoutURL}
-											inputName="carbonioWebUiLogoutURL"
+											value={themeConfig?.carbonioWebUILogoutURL}
+											inputName="carbonioWebUILogoutURL"
 											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
 													const isValid = isValidHttpsUrl(e.target.value);
@@ -1229,8 +1229,8 @@ export const ThemeConfigs: FC<{
 												'LogIn redirect destination (URL)'
 											)}
 											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiLoginURL}
-											inputName="carbonioAdminUiLoginURL"
+											value={themeConfig.carbonioAdminUILoginURL}
+											inputName="carbonioAdminUILoginURL"
 											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
 													const isValid = isValidHttpsUrl(e.target.value);
@@ -1259,8 +1259,8 @@ export const ThemeConfigs: FC<{
 												'On Logout, redirect the User to (URL)'
 											)}
 											backgroundColor="gray5"
-											value={themeConfig?.carbonioAdminUiLogoutURL}
-											inputName="carbonioAdminUiLogoutURL"
+											value={themeConfig?.carbonioAdminUILogoutURL}
+											inputName="carbonioAdminUILogoutURL"
 											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
 													const isValid = isValidHttpsUrl(e.target.value);
