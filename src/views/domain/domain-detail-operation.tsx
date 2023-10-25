@@ -19,9 +19,9 @@ import {
 	RESOURCES,
 	RESTORE_ACCOUNT,
 	ACTIVE_SYNC,
-	THEME,
 	SAML,
 	TWO_FACTOR_AUTHENTICATION,
+	WHITELABEL_SETTINGS,
 	SECURITY_GROUP,
 	DELEGATES_DOMAIN_ADMINS
 } from '../../constants';
@@ -99,7 +99,7 @@ const DomainOperations: FC = () => {
 						return <DomainMailboxQuotaSetting />;
 					case TWO_FACTOR_AUTHENTICATION:
 						return <DomainTwoFactorAuthentication />;
-					case THEME:
+					case WHITELABEL_SETTINGS:
 						return <DomainTheme />;
 					case SAML:
 						return <DomainSaml />;
