@@ -313,19 +313,19 @@ const DomainVirtualHosts: FC = () => {
 	const downloadTxtHandler = (): void => {
 		const elementCerti = document.createElement('a');
 		const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate], {
-			type: 'text/plain;charset=utf-8'
+			type: 'application/x-pem-file'
 		});
 		elementCerti.href = URL.createObjectURL(fileCerti);
-		elementCerti.download = `certificate-${domainName}.txt`;
+		elementCerti.download = `certificate-${domainName}.pem`;
 		document.body.appendChild(elementCerti);
 		elementCerti.click();
 
 		const elementPrivateKey = document.createElement('a');
 		const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey], {
-			type: 'text/plain;charset=utf-8'
+			type: 'application/x-pem-file'
 		});
 		elementPrivateKey.href = URL.createObjectURL(fileKey);
-		elementPrivateKey.download = `private-key-${domainName}.txt`;
+		elementPrivateKey.download = `private-key-${domainName}.pem`;
 		document.body.appendChild(elementPrivateKey);
 		elementPrivateKey.click();
 	};
