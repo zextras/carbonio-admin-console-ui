@@ -77,6 +77,7 @@ const ManageAccounts: FC = () => {
 	const [typeFilter, setTypeFilter] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [hasError, setHasError] = useState<boolean>(false);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -367,6 +368,7 @@ const ManageAccounts: FC = () => {
 						: '';
 
 					obj.name = data?.account?.[0]?.name;
+					obj.domainName = data?.account?.[0]?.name.split('@')[1];
 					if (obj.zimbraIsAdminAccount === undefined) {
 						obj.zimbraIsAdminAccount = 'FALSE';
 					}
@@ -593,134 +595,158 @@ const ManageAccounts: FC = () => {
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domainName, searchQuery, offset, limit).then((data) => {
-			const accountListResponse: any = data?.account || [];
-			if (accountListResponse && Array.isArray(accountListResponse)) {
-				const accountListArr: any = [];
-				setTotalAccount(data.searchTotal || 0);
-				accountListResponse.forEach((item: any): any => {
-					item?.a?.forEach((ele: any) => {
-						if (ele?.n === 'mail') {
-							if (item[ele?.n]) {
-								item[ele?.n].push(ele._content);
+		accountListDirectory(attrs, type, domainName, searchQuery, offset, limit)
+			.then((data) => {
+				const accountListResponse: any = data?.account || [];
+				if (accountListResponse && Array.isArray(accountListResponse)) {
+					const accountListArr: any = [];
+					setTotalAccount(data.searchTotal || 0);
+					accountListResponse.forEach((item: any): any => {
+						item?.a?.forEach((ele: any) => {
+							if (ele?.n === 'mail') {
+								if (item[ele?.n]) {
+									item[ele?.n].push(ele._content);
+								} else {
+									// eslint-disable-next-line no-param-reassign
+									item[ele?.n] = [ele._content];
+								}
 							} else {
 								// eslint-disable-next-line no-param-reassign
-								item[ele?.n] = [ele._content];
+								item[ele?.n] = ele._content;
 							}
-						} else {
-							// eslint-disable-next-line no-param-reassign
-							item[ele?.n] = ele._content;
-						}
-					});
-					accountListArr.push({
-						id: item?.id,
-						columns: [
-							<Text
-								size="small"
-								key={item?.id}
-								color="gray0"
-								weight="regular"
-								onClick={(): void => {
-									openDetailView(item);
-								}}
-							>
-								{item?.name || ' '}
-							</Text>,
-							<Text
-								size="small"
-								key={item?.id}
-								color="gray0"
-								weight="light"
-								onClick={(): void => {
-									openDetailView(item);
-								}}
-							>
-								{item?.displayName || <>&nbsp;</>}
-							</Text>,
-							<>
-								{
-									// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
-									item?.mail?.length - 1 || 0 ? (
-										<Tooltip
-											key={item?.id}
-											placement="bottom"
-											label={item?.mail.slice(1).join(', ')}
-											maxWidth="auto"
-										>
+						});
+						accountListArr.push({
+							id: item?.id,
+							columns: [
+								<Text
+									size="small"
+									key={item?.id}
+									color="gray0"
+									weight="regular"
+									onClick={(): void => {
+										openDetailView(item);
+									}}
+								>
+									{item?.name || ' '}
+								</Text>,
+								<Text
+									size="small"
+									key={item?.id}
+									color="gray0"
+									weight="light"
+									onClick={(): void => {
+										openDetailView(item);
+									}}
+								>
+									{item?.displayName || <>&nbsp;</>}
+								</Text>,
+								<>
+									{
+										// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+										item?.mail?.length - 1 || 0 ? (
+											<Tooltip
+												key={item?.id}
+												placement="bottom"
+												label={item?.mail.slice(1).join(', ')}
+												maxWidth="auto"
+											>
+												<Text
+													size="small"
+													weight="light"
+													key={item?.id}
+													color="#828282"
+													onClick={(): void => {
+														openDetailView(item);
+													}}
+												>
+													{
+														// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
+														item?.mail?.length - 1 || 0
+													}
+												</Text>
+											</Tooltip>
+										) : (
 											<Text
 												size="small"
-												weight="light"
 												key={item?.id}
 												color="#828282"
+												weight="light"
 												onClick={(): void => {
 													openDetailView(item);
 												}}
 											>
-												{
-													// eslint-disable-next-line no-param-reassign, no-unsafe-optional-chaining
-													item?.mail?.length - 1 || 0
-												}
+												0
 											</Text>
-										</Tooltip>
-									) : (
-										<Text
-											size="small"
-											key={item?.id}
-											color="#828282"
-											weight="light"
-											onClick={(): void => {
-												openDetailView(item);
-											}}
-										>
-											0
-										</Text>
-									)
-								}
-							</>,
-							<Text
-								size="small"
-								key={item?.id}
-								color="gray0"
-								weight="light"
-								onClick={(): void => {
-									openDetailView(item);
-								}}
-							>
-								{accountUserType(item)}
-							</Text>,
-							<Text
-								size="small"
-								weight="light"
-								key={item?.id}
-								color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
-								onClick={(): void => {
-									openDetailView(item);
-								}}
-							>
-								{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
-							</Text>,
-							<Text
-								size="small"
-								weight="light"
-								key={item?.id}
-								color="gray0"
-								onClick={(event: { stopPropagation: () => void }): void => {
-									event.stopPropagation();
-									openDetailView(item);
-								}}
-							>
-								{item?.description || <>&nbsp;</>}
-							</Text>
-						],
-						item,
-						clickable: true
+										)
+									}
+								</>,
+								<Text
+									size="small"
+									key={item?.id}
+									color="gray0"
+									weight="light"
+									onClick={(): void => {
+										openDetailView(item);
+									}}
+								>
+									{accountUserType(item)}
+								</Text>,
+								<Text
+									size="small"
+									weight="light"
+									key={item?.id}
+									color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
+									onClick={(): void => {
+										openDetailView(item);
+									}}
+								>
+									{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
+								</Text>,
+								<Text
+									size="small"
+									weight="light"
+									key={item?.id}
+									color="gray0"
+									onClick={(event: { stopPropagation: () => void }): void => {
+										event.stopPropagation();
+										openDetailView(item);
+									}}
+								>
+									{item?.description || <>&nbsp;</>}
+								</Text>
+							],
+							item,
+							clickable: true
+						});
 					});
+					setAccountList(accountListArr);
+				}
+				setIsRequestInProgress(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error
+						? error?.error
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
 				});
-				setAccountList(accountListArr);
-			}
-			setIsRequestInProgress(false);
-		});
-	}, [STATUS_COLOR, accountUserType, domainName, limit, offset, openDetailView, searchQuery]);
+				setHasError(true);
+			});
+	}, [
+		STATUS_COLOR,
+		accountUserType,
+		domainName,
+		limit,
+		offset,
+		openDetailView,
+		searchQuery,
+		t,
+		createSnackbar
+	]);
 
 	const generateSearchFilterQuery = useCallback(
 		(searchStr: string, sfilter: string, tfilter: string): string => {
@@ -852,7 +878,7 @@ const ManageAccounts: FC = () => {
 							<Container>
 								<Input
 									label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
-									disabled={accountList.length === 0 && searchString.length === 0}
+									disabled={accountList.length === 0 && searchString.length === 0 && !hasError}
 									value={searchString}
 									backgroundColor="gray5"
 									onChange={(e: any): any => {
