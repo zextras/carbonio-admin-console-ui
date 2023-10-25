@@ -43,12 +43,22 @@ const StaticCode = styled.label`
 	font-family: monospace;
 	padding: 4.95px 0;
 `;
-const AccountOtpSection: FC = () => {
+const AccountOtpSection: FC<{
+	setToggleNextBtn: (newValue: boolean) => void;
+}> = ({ setToggleNextBtn }) => {
 	const context = useContext(AccountContext);
 	const { accountDetail, setAccountDetail } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [sendEmailTo, setSendEmailTo] = useState('');
 	const [t] = useTranslation();
+
+	useEffect(() => {
+		if (accountDetail?.generateOTP || accountDetail?.administrationRigths) {
+			setToggleNextBtn(true);
+		} else {
+			setToggleNextBtn(false);
+		}
+	}, [accountDetail?.administrationRigths, accountDetail?.generateOTP, setToggleNextBtn]);
 
 	return (
 		<Container
@@ -94,12 +104,12 @@ const AccountOtpSection: FC = () => {
 						<Row>
 							<Switch
 								defaultChecked={accountDetail.generateOTP}
-								onClick={(): void =>
+								onClick={(): void => {
 									setAccountDetail((prev: any) => ({
 										...prev,
 										generateOTP: !accountDetail.generateOTP
-									}))
-								}
+									}));
+								}}
 								padding={{ top: 'large' }}
 								label={t('label.create_otp_code', 'Create OTP code')}
 								iconColor="primary"
@@ -116,12 +126,12 @@ const AccountOtpSection: FC = () => {
 						<Row>
 							<Switch
 								defaultChecked={accountDetail.administrationRigths}
-								onClick={(): void =>
+								onClick={(): void => {
 									setAccountDetail((prev: any) => ({
 										...prev,
 										administrationRigths: !accountDetail.administrationRigths
-									}))
-								}
+									}));
+								}}
 								padding={{ top: 'large' }}
 								label={t('label.add_administration_rights', 'Add Administration rights')}
 								iconColor="primary"

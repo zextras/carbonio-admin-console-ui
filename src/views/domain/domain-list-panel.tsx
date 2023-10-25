@@ -33,11 +33,12 @@ import {
 	GLOBAL_DOMAIN_ROUTE,
 	GLOBAL_2FA_ROUTE,
 	TWO_FACTOR_AUTHENTICATION,
-	DELEGATES,
 	SECURITY_GROUP,
 	GLOBAL_ROUTE,
 	GLOBAL_QUARANTINE_ROUTE,
-	BACKUP_BASIC
+	BACKUP_BASIC,
+	DELEGATES_DOMAIN_ADMINS,
+	RESOURCES
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -309,8 +310,8 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: DELEGATES,
-				name: t('label.delegates_title', 'Delegates'),
+				id: DELEGATES_DOMAIN_ADMINS,
+				name: t('label.delegates_domain_admins', 'Delegated Domain Admins'),
 				isSelected: isDomainSelect
 			},
 			{
@@ -323,12 +324,11 @@ const DomainListPanel: FC = () => {
 				name: t('label.security_group', 'Security Groups'),
 				isSelected: isDomainSelect
 			},
-			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
-			// {
-			// 	id: RESOURCES,
-			// 	name: t('label.resources', 'Resources'),
-			// 	isSelected: isDomainSelect
-			// },
+			{
+				id: RESOURCES,
+				name: t('label.resources', 'Resources'),
+				isSelected: isDomainSelect
+			},
 			{
 				id: ACTIVE_SYNC,
 				name: t('label.active_sync', 'ActiveSync'),
@@ -379,7 +379,9 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? allManageOptions.filter(
 						(item: ManageOptions) =>
-							item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC && item?.id !== DELEGATES
+							item?.id !== RESTORE_ACCOUNT &&
+							item?.id !== ACTIVE_SYNC &&
+							item?.id !== DELEGATES_DOMAIN_ADMINS
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]

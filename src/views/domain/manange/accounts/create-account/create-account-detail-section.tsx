@@ -83,9 +83,9 @@ const CreateAccountDetailSection: FC = () => {
 		if (!changeNameBool) {
 			const userName = [];
 
-			if (sn) userName.push(getModifiedName(sn));
-			if (initials) userName.push(head(getModifiedName(initials)));
 			if (givenName) userName.push(getModifiedName(givenName));
+			if (initials) userName.push(head(getModifiedName(initials)));
+			if (sn) userName.push(getModifiedName(sn));
 
 			return userName.join('.');
 		}
@@ -95,9 +95,9 @@ const CreateAccountDetailSection: FC = () => {
 
 	const combineDisplayName = useMemo(
 		() =>
-			`${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}${
+			`${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}${
 				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
-			}${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}`.trim(),
+			}${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
 		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
 	);
 	useEffect(() => {
@@ -157,7 +157,6 @@ const CreateAccountDetailSection: FC = () => {
 							defaultValue={accountDetail?.sn || ''}
 						/>
 					</Row>
-
 					<Row width="32%" mainAlignment="space-between">
 						<Input
 							label={t('label.second_name_initials', 'Middle Name Initials')}
