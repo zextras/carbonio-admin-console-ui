@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.33](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.32...v0.9.33) (2023-10-26)
+
+
+### Features
+
+* ac-390: added certificate uploading fixes extension pending and merged with devel ([d28d292](https://github.com/zextras/carbonio-admin-console-ui/commit/d28d2921ba587ef9da7768d9aaa0a8a5a87c807a))
+* ac-653: allow Global Admin to list all global and delegated admin in the infrastructure ([5ff1b0c](https://github.com/zextras/carbonio-admin-console-ui/commit/5ff1b0c6608973b53c973f6be464b23e2e33f697))
+* email mta mail queue list and operation on mail added ([2cd7571](https://github.com/zextras/carbonio-admin-console-ui/commit/2cd7571a32ef33808ddabf0742099f864eb8098b))
+* get list of mail from differnt queue ([d81f4c6](https://github.com/zextras/carbonio-admin-console-ui/commit/d81f4c6141b18ac3ecc9f03fa14190ffb92b09bf))
+* refactored name surname and middle name field and email creation ([d2eb0f4](https://github.com/zextras/carbonio-admin-console-ui/commit/d2eb0f4675aa4a073c642adb8fde8843c7443002))
+
+
+### Bug Fixes
+
+* ac-390: added pem extension to certificate files ([58d8713](https://github.com/zextras/carbonio-admin-console-ui/commit/58d8713bb847c080d442230964e8f2abcdca4f78))
+* ac-390: clear the certificate content on reupload ([0f2d0fa](https://github.com/zextras/carbonio-admin-console-ui/commit/0f2d0fa3d81d21c80095705f29b38eefdc29c8f4))
+* ac-796: paging not working properly ([bc09333](https://github.com/zextras/carbonio-admin-console-ui/commit/bc09333b5101bfa6f0b277fa1755346a2e19e851))
+* ac-808: enable schedule toggled in hsm not working ([0d65766](https://github.com/zextras/carbonio-admin-console-ui/commit/0d657663decd43e944894c0b28c276d325019c72))
+* ac-829: mta queue showing wrong date after scan server ([520f004](https://github.com/zextras/carbonio-admin-console-ui/commit/520f004e0a9884ca12966b5f2e99a1144f2ca46b))
+* conflicts resolved ([e499dea](https://github.com/zextras/carbonio-admin-console-ui/commit/e499dea9a97ad0d6a8a98f204fb8ca4702e55707))
+* domains redirect routing fixed ([67f8b81](https://github.com/zextras/carbonio-admin-console-ui/commit/67f8b81f6522952e4617156db66d0f47d231de1f))
+* download changes and extension changed ([9540dfc](https://github.com/zextras/carbonio-admin-console-ui/commit/9540dfc4172a31415513e523dc540c92c7e19378))
+* fixed domain undefined error ([0970755](https://github.com/zextras/carbonio-admin-console-ui/commit/09707559a329ca1b8f8552202c763bc4f97e2c53))
+* quickaccess button from the dashboard ([c2a7879](https://github.com/zextras/carbonio-admin-console-ui/commit/c2a7879a6311718053983db897e2e618ac277ba9))
+* setup unit testing env ([#531](https://github.com/zextras/carbonio-admin-console-ui/issues/531)) ([ed241ba](https://github.com/zextras/carbonio-admin-console-ui/commit/ed241ba65723dcd6d0cddb32aec8580be2f37715))
+
 ### [0.9.32](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.31...v0.9.32) (2023-10-10)
 
 ### [0.9.31](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.30...v0.9.31) (2023-09-29)
