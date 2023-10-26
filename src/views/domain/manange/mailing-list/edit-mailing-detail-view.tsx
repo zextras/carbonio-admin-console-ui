@@ -24,6 +24,7 @@ import styled from 'styled-components';
 import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import ListRow from '../../../list/list-row';
 import Paging from '../../../components/paging';
 import { getDistributionList } from '../../../../services/get-distribution-list';
@@ -144,6 +145,8 @@ const EditMailingListView: FC<any> = ({
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const { isSticky, setIsSticky } = useStickyBarStore();
 	const [isLoading, setIsLoading] = useState(false);
+	const userSetting = useUserSettings();
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 
 	const dlCreateDate = useMemo(
 		() =>
@@ -248,6 +251,15 @@ const EditMailingListView: FC<any> = ({
 		],
 		[t]
 	);
+
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === 'TRUE') {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	type DomainResponse = {
 		domain: [
@@ -1988,7 +2000,10 @@ const EditMailingListView: FC<any> = ({
 							/>
 						</Container>
 					</ListRow>
-					<Container height="fit" padding={{ left: 'small', top: 'small', right: 'small' }}>
+					<Container
+						height="fit"
+						padding={{ left: 'small', top: 'large', right: 'small', bottom: 'small' }}
+					>
 						<ManageAliases
 							listAliases={zimbraMailAlias}
 							setListAliases={setZimbraMailAlias}
@@ -2033,9 +2048,6 @@ const EditMailingListView: FC<any> = ({
 					{selectedMailingList?.dynamic && (
 						<ListRow padding={{ all: 'small' }}>
 							<Container orientation="horizontal">
-								<Container width="fit" padding={{ right: 'small' }}>
-									<Icon icon={'Link2Outline'} size="large" />
-								</Container>
 								<Container>
 									<Input
 										label={t('label.list_url', "Mailing List's URL")}
@@ -2044,7 +2056,7 @@ const EditMailingListView: FC<any> = ({
 										onChange={(e: any): any => {
 											setMemberURL(e.target.value);
 										}}
-										disabled={zimbraIsACLGroup}
+										disabled={!isGlobalAdmin}
 									/>
 								</Container>
 							</Container>
@@ -2292,7 +2304,8 @@ const EditMailingListView: FC<any> = ({
 							</Container>
 						)}
 					</ListRow>
-
+					{/* TODO: (AC-739) uncomment once feature avaiable in IRIS */
+					/*
 					<Row padding={{ bottom: 'medium' }}>
 						<Text weight="bold" color="gray0">
 							{t('label.owners_settings_lbl', 'Owners’ Settings')}
@@ -2448,7 +2461,7 @@ const EditMailingListView: FC<any> = ({
 							<Divider />
 						</Container>
 					</Row>
-
+				*/}
 					<ListRow padding={{ all: 'small' }}>
 						<Container>
 							<Select
@@ -2471,13 +2484,14 @@ const EditMailingListView: FC<any> = ({
 							background="gray6"
 							height="58px"
 						>
-							<Row
-								orientation="horizontal"
-								mainAlignment="flex-start"
-								crossAlignment="flex-start"
-								width="100%"
-							>
-								<Row mainAlignment="flex-start" width="57%" crossAlignment="flex-start">
+							<ListRow>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									orientation="horizontal"
+									padding={{ top: 'large', right: 'small' }}
+									width="100%"
+								>
 									<DropDownInput
 										items={grantItems}
 										inputLabel={t(
@@ -2492,33 +2506,40 @@ const EditMailingListView: FC<any> = ({
 										isCustomIcon={false}
 										inputDisabled={grantType?.value !== EMAIL}
 									/>
-								</Row>
-								<Row width="43%" mainAlignment="flex-start" crossAlignment="flex-start">
-									<Padding left="large" right="large">
-										<Button
-											type="outlined"
-											label={t('label.add', 'Add')}
-											color="primary"
-											icon="PlusOutline"
-											iconPlacement="right"
-											onClick={onAddGrantEmail}
-											size="extralarge"
-											disabled={grantEmailItem === ''}
-										/>
-									</Padding>
-
+								</Container>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="center"
+									orientation="horizontal"
+									width="18%"
+									padding={{ top: 'large' }}
+								>
+									<Button
+										type="outlined"
+										label={t('label.add', 'Add')}
+										color="primary"
+										onClick={onAddGrantEmail}
+										size="extralarge"
+										disabled={grantEmailItem === ''}
+									/>
+								</Container>
+								<Container
+									mainAlignment="flex-start"
+									crossAlignment="center"
+									orientation="horizontal"
+									padding={{ top: 'large' }}
+									width="30%"
+								>
 									<Button
 										type="outlined"
 										label={t('label.delete', 'Delete')}
 										color="error"
-										icon="Trash2Outline"
-										iconPlacement="right"
 										size="extralarge"
 										onClick={onDeleteFromGrantEmail}
 										disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
 									/>
-								</Row>
-							</Row>
+								</Container>
+							</ListRow>
 						</Container>
 					</ListRow>
 

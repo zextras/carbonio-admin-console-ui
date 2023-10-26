@@ -26,16 +26,7 @@ import { TFunction } from 'i18next';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { headerAdvanced } from '../../utility/utils';
-import {
-	DESCRIPTION,
-	HSM_SCHEDULED_DISABLED,
-	HSM_SCHEDULED_ENABLED,
-	HSM_SCHEDULED_KEY,
-	INDEXER_ACTIVE,
-	INDEXER_MANAGER_KEY,
-	INDEXER_PAUSED,
-	INDEXER_RUNNING
-} from '../../../constants';
+import { DESCRIPTION, HSM_SCHEDULED_KEY, INDEXER_MANAGER_KEY } from '../../../constants';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -106,7 +97,9 @@ const ServersListTable: FC<{
 						}}
 					>
 						<Text size="small" weight="light">
-							{v?.hsmScheduled ? HSM_SCHEDULED_ENABLED : HSM_SCHEDULED_DISABLED}
+							{v?.hsmScheduled
+								? t('label.scheduled', 'Scheduled')
+								: t('label.disabled', 'Disabled')}
 						</Text>
 					</Row>,
 					<Row
@@ -118,9 +111,9 @@ const ServersListTable: FC<{
 						}}
 					>
 						<Text size="small" weight="light">
-							{(v.indexer?.could_start && INDEXER_ACTIVE) ||
-								(v.indexer?.could_stop && INDEXER_PAUSED) ||
-								(v.indexer?.running && INDEXER_RUNNING)}
+							{v.indexer?.running === true
+								? t('volume.running', 'Running')
+								: t('volume.not_running', 'Not Running')}
 						</Text>
 					</Row>,
 					<Row
@@ -138,7 +131,7 @@ const ServersListTable: FC<{
 				],
 				clickable: true
 			})),
-		[volumes]
+		[volumes, t]
 	);
 
 	const tableRowCe = useMemo(

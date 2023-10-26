@@ -304,7 +304,7 @@ const DomainTheme: FC = () => {
 									crossAlignment="flex-start"
 								>
 									<Text size="medium" weight="bold" color="gray0">
-										{t('label.theme', 'Theme')}
+										{t('label.whitelabel_settings', 'Whitelabel Settings')}
 									</Text>
 								</Row>
 								<Row
@@ -344,9 +344,13 @@ const DomainTheme: FC = () => {
 				</Container>
 				{isOpenResetDialog && (
 					<ResetTheme
-						title={t('label.reset_domain_theme', 'Reset {{name}} theme', {
-							name: domainName
-						})}
+						title={t(
+							'label.reset_domain_whitelabel_settings',
+							'Reset {{name}} whitelabel settings',
+							{
+								name: domainName
+							}
+						)}
 						isOpenResetDialog={isOpenResetDialog}
 						isRequestInProgress={isRequestInProgress}
 						// eslint-disable-next-line @typescript-eslint/ban-ts-comment

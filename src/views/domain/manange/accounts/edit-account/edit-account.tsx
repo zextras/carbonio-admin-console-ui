@@ -49,13 +49,17 @@ import {
 	USER_PREFERENCES,
 	DOMAIN_NAME,
 	UID,
-	ADMINISTRATION
+	ADMINISTRATION,
+	CHANGE_NAME_BOOLEAN,
+	CHANGE_DISPLAY_NAME_BOOLEAN,
+	IS_DEFAULT_USER_NAME
 } from '../../../../../constants';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountAdministrationSection from './edit-account-administration-section';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import OverlayDivision from '../../../../components/overlayDivision';
+import { AccountType } from '../account-types/account-types';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -313,6 +317,9 @@ const EditAccount: FC<{
 		}
 		const modifiedData: any = {};
 		let isPasswordChange = false;
+		remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
+		remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
+		remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
 		if (!accountDetail?.sn?.trim()) {
 			createSnackbar({
 				key: 'error',
@@ -506,7 +513,8 @@ const EditAccount: FC<{
 		t
 	]);
 	const onUndo = (): void => {
-		setAccountDetail({ ...initAccountDetail });
+		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
+		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
 	};
 
 	return (

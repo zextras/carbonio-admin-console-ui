@@ -19,24 +19,26 @@ import {
 	DOMAINS_ROUTE_ID,
 	GAL,
 	GENERAL_SETTINGS,
-	GLOBAL_THEME_ROUTE,
 	MAILBOX_QUOTA,
 	MAILING_LIST,
 	ACL_LIST,
 	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
 	RESTORE_ACCOUNT,
-	THEME,
 	VIRTUAL_HOSTS,
 	SAML,
 	CONFIG,
 	GLOBAL_DOMAIN_ROUTE,
 	GLOBAL_2FA_ROUTE,
 	TWO_FACTOR_AUTHENTICATION,
-	DELEGATES,
 	SECURITY_GROUP,
 	GLOBAL_ROUTE,
-	BACKUP_BASIC
+	BACKUP_BASIC,
+	WHITELABEL_SETTINGS,
+	GLOBAL_WHITELABEL_SETTINGS,
+	DELEGATES_DOMAIN_ADMINS,
+	GLOBAL_DELEGATES_ROUTE,
+	RESOURCES
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import ListPanelItem from '../list/list-panel-item';
@@ -94,10 +96,10 @@ const DomainListPanel: FC = () => {
 		}[]
 	>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const setDomain = useDomainStore((state) => state.setDomain);
 	const domainInformation = useDomainStore((state) => state.domain);
-	const domainView = useDomainStore((state) => state.domainView);
-	const setDomainView = useDomainStore((state) => state.setDomainView);
+	const { setDomainView, isQuickAccess, domainView, setDomain, setIsQuickAccess } = useDomainStore(
+		(state) => state
+	);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 	const [isManageListExpanded, setIsManageListExpanded] = useState(true);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -188,13 +190,6 @@ const DomainListPanel: FC = () => {
 		}
 	}, [domainInformation?.id, domainInformation?.name]);
 
-	useMemo(() => {
-		if (domainView === '') {
-			const operationItem = locationService?.pathname.split('/').pop();
-			setDomainView(operationItem || '');
-		}
-	}, [domainView, locationService?.pathname, setDomainView]);
-
 	useEffect(() => {
 		if (
 			locationService.pathname &&
@@ -204,7 +199,6 @@ const DomainListPanel: FC = () => {
 			setIsDomainSelect(false);
 			setSearchDomainName('');
 			setIsDomainListExpand(false);
-			setDomainView('');
 			setDomainId('');
 			setDomain({});
 		}
@@ -241,11 +235,13 @@ const DomainListPanel: FC = () => {
 				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
 				if (domainView === GLOBAL_ROUTE) {
 					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_THEME_ROUTE) {
+				} else if (domainView === GLOBAL_WHITELABEL_SETTINGS) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_2FA_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_DOMAIN_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_DELEGATES_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else {
 					replaceHistory(`/${domainId}/${domainView}`);
@@ -288,8 +284,8 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: THEME,
-				name: t('label.theme', 'Theme'),
+				id: WHITELABEL_SETTINGS,
+				name: t('label.whitelabel_settings', 'Whitelabel Settings'),
 				isSelected: isDomainSelect
 			},
 			{
@@ -314,8 +310,8 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: DELEGATES,
-				name: t('label.delegates_title', 'Delegates'),
+				id: DELEGATES_DOMAIN_ADMINS,
+				name: t('label.delegates_domain_admins', 'Delegated Domain Admins'),
 				isSelected: isDomainSelect
 			},
 			{
@@ -328,12 +324,11 @@ const DomainListPanel: FC = () => {
 				name: t('label.security_group', 'Security Groups'),
 				isSelected: isDomainSelect
 			},
-			// AC622 - Hide resources from AdminUI until they are not managed by the webUI
-			// {
-			// 	id: RESOURCES,
-			// 	name: t('label.resources', 'Resources'),
-			// 	isSelected: isDomainSelect
-			// },
+			{
+				id: RESOURCES,
+				name: t('label.resources', 'Resources'),
+				isSelected: isDomainSelect
+			},
 			{
 				id: ACTIVE_SYNC,
 				name: t('label.active_sync', 'ActiveSync'),
@@ -356,8 +351,13 @@ const DomainListPanel: FC = () => {
 				isSelected: true
 			},
 			{
-				id: GLOBAL_THEME_ROUTE,
-				name: t('label.theme', 'Theme'),
+				id: GLOBAL_DELEGATES_ROUTE,
+				name: t('label.global_delegates', 'Global Delegates'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_WHITELABEL_SETTINGS,
+				name: t('label.whitelabel_settings', 'Whitelabel Settings'),
 				isSelected: true
 			},
 			{
@@ -379,7 +379,9 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? allManageOptions.filter(
 						(item: ManageOptions) =>
-							item?.id !== RESTORE_ACCOUNT && item?.id !== ACTIVE_SYNC && item?.id !== DELEGATES
+							item?.id !== RESTORE_ACCOUNT &&
+							item?.id !== ACTIVE_SYNC &&
+							item?.id !== DELEGATES_DOMAIN_ADMINS
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
@@ -390,7 +392,9 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? detailOptions.filter(
 						(item: ManageOptions) =>
-							item?.id !== THEME && item?.id !== SAML && item?.id !== TWO_FACTOR_AUTHENTICATION
+							item?.id !== WHITELABEL_SETTINGS &&
+							item?.id !== SAML &&
+							item?.id !== TWO_FACTOR_AUTHENTICATION
 				  )
 				: detailOptions,
 		[detailOptions, isAdvanced]
@@ -401,7 +405,7 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? globalOptionItems.filter(
 						(item: ManageOptions) =>
-							item?.id !== GLOBAL_THEME_ROUTE && item?.id !== GLOBAL_2FA_ROUTE
+							item?.id !== GLOBAL_WHITELABEL_SETTINGS && item?.id !== GLOBAL_2FA_ROUTE
 				  )
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
@@ -519,6 +523,14 @@ const DomainListPanel: FC = () => {
 						)
 					})
 			  );
+
+	useEffect(() => {
+		if (!isQuickAccess) {
+			setDomainView(GLOBAL_DOMAIN_ROUTE);
+		}
+		setIsQuickAccess(false);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	return (
 		<Container

@@ -62,6 +62,7 @@ const DomainVirtualHosts: FC = () => {
 	const [open, setOpen] = useState(false);
 	const [alertToggle, setAlertToggle] = useState(false);
 	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
+	const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
 
 	const closeHandler = (): void => {
 		setOpen(false);
@@ -214,10 +215,15 @@ const DomainVirtualHosts: FC = () => {
 				const data = _.mapValues(res?.cert[0], (value) => value[0]._content);
 				setDomainCertiDetails(data);
 				setToggleCertiBtn(false);
+				setIsCertificateAvailbale(true);
 			})
 			// TODO: On no cert found server always returns error so used empty catch for now
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			.catch(() => {});
+			.catch((error) => {
+				if (error) {
+					setIsCertificateAvailbale(false);
+				}
+			});
 		const zimbraData =
 			domainInformation &&
 			domainInformation.filter((item: objectType) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
@@ -253,7 +259,7 @@ const DomainVirtualHosts: FC = () => {
 					replace: true
 				});
 			});
-	}, [createSnackbar, domainId, domainInformation, t]);
+	}, [createSnackbar, domainId, domainInformation, setIsCertificateAvailbale, t]);
 
 	const deleteHandler = (): void => {
 		const body: {
@@ -288,6 +294,7 @@ const DomainVirtualHosts: FC = () => {
 				getAllCertiDetailsAPICall();
 				setDomainCertiDetails({});
 				setToggleCertiBtn(true);
+				setIsCertificateAvailbale(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -306,19 +313,19 @@ const DomainVirtualHosts: FC = () => {
 	const downloadTxtHandler = (): void => {
 		const elementCerti = document.createElement('a');
 		const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate], {
-			type: 'text/plain;charset=utf-8'
+			type: 'application/x-pem-file'
 		});
 		elementCerti.href = URL.createObjectURL(fileCerti);
-		elementCerti.download = `certificate-${domainName}.txt`;
+		elementCerti.download = `certificate-${domainName}.pem`;
 		document.body.appendChild(elementCerti);
 		elementCerti.click();
 
 		const elementPrivateKey = document.createElement('a');
 		const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey], {
-			type: 'text/plain;charset=utf-8'
+			type: 'application/x-pem-file'
 		});
 		elementPrivateKey.href = URL.createObjectURL(fileKey);
-		elementPrivateKey.download = `private-key-${domainName}.txt`;
+		elementPrivateKey.download = `private-key-${domainName}.pem`;
 		document.body.appendChild(elementPrivateKey);
 		elementPrivateKey.click();
 	};

@@ -15,17 +15,15 @@ import {
 	AUTHENTICATION,
 	MAILBOX_QUOTA,
 	ACCOUNTS,
-	ACL_LIST,
 	MAILING_LIST,
 	RESOURCES,
 	RESTORE_ACCOUNT,
-	RESTORE_DELETED_EMAIL,
 	ACTIVE_SYNC,
-	THEME,
 	SAML,
 	TWO_FACTOR_AUTHENTICATION,
-	DELEGATES,
-	SECURITY_GROUP
+	WHITELABEL_SETTINGS,
+	SECURITY_GROUP,
+	DELEGATES_DOMAIN_ADMINS
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -101,13 +99,13 @@ const DomainOperations: FC = () => {
 						return <DomainMailboxQuotaSetting />;
 					case TWO_FACTOR_AUTHENTICATION:
 						return <DomainTwoFactorAuthentication />;
-					case THEME:
+					case WHITELABEL_SETTINGS:
 						return <DomainTheme />;
 					case SAML:
 						return <DomainSaml />;
 					case ACCOUNTS:
 						return <ManageAccounts />;
-					case DELEGATES:
+					case DELEGATES_DOMAIN_ADMINS:
 						return <ManageDelegates />;
 					case MAILING_LIST:
 						return <DomainMailingList />;
