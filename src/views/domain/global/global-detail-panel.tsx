@@ -127,7 +127,7 @@ const GlobalDetailPanel: FC = () => {
 				n: 'carbonioNotificationFrom',
 				_content: carbonioNotificationData.carbonioNotificationFrom
 			});
-			carbonioNotificationData.carbonioNotificationRecipients.map(
+			carbonioNotificationData.carbonioNotificationRecipients.forEach(
 				// eslint-disable-next-line array-callback-return
 				(item: { label: string }): void => {
 					attributes.push({
