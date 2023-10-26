@@ -3,7 +3,6 @@
         "subscription": {
             "status": "Trạng thái",
             "hide": "Ẩn",
-            "emissionDate": "Ngày phát",
             "features": "Các tính năng khác",
             "less_info": "Ít thông tin hơn",
             "more_info": "Nhiều thông tin hơn",
@@ -23,11 +22,12 @@
                 "deactivate": "Có, Hủy kích hoạt",
                 "warning": "Bạn đang cố gắng hủy kích hoạt mã thông báo hiện tại. Làm như vậy sẽ vô hiệu hóa tất cả các tính năng đã bật."
             },
-            "valid": "Hợp lệ"
+            "valid": "Hợp lệ",
+            "endDate": "Ngày kết thúc"
         }
     },
     "label": {
-        "status": "trạng thái",
+        "status": "Trạng thái",
         "account": "Tài khoản",
         "accounts": "Tài khoản",
         "add": "Thêm vào",
@@ -45,7 +45,7 @@
         "page ": "Bạn đã chấp nhận yêu cầu chia sẻ",
         "page_": "Bạn đã chấp nhận yêu cầu chia sẻ",
         "privacy": "Sự riêng tư",
-        "remove": "xoá",
+        "remove": "Xoá",
         "save": "Lưu",
         "signature_required": "Yêu cầu thông tin chữ ký.",
         "snackbar": {
@@ -79,7 +79,6 @@
         "locked": "Đã khóa",
         "maintenance": "Bảo trì",
         "services": "Dịch vụ",
-        "web_client": "Ứng dụng web",
         "authentication": "Xác thực",
         "certificate": "Chứng chỉ",
         "closed": "Đã đóng",
@@ -97,7 +96,7 @@
         "automatically_add_forwarded_invites_to_calendar": "Tự động thêm lời mời chuyển tiếp vào lịch",
         "automatically_add_invites_with_PUBLISH_method": "Tự động thêm lời mời với phương thức ĐĂNG TẢI",
         "both": "Cả hai",
-        "bucket_name": "Tên đơn vị lưu trữ dữ liệu",
+        "bucket_name": "Tên đơn vị lưu trữ",
         "create": "Tạo",
         "creation_date": "Ngày tạo",
         "default_appointment_visibility": "Hiển thị cuộc hẹn mặc định",
@@ -133,7 +132,7 @@
         "region": "Vùng",
         "reply/forward_using_format_of_the_original_message": "Trả lời/chuyển tiếp sử dụng định dạng của thư gốc",
         "resources": "Tài nguyên",
-        "restore_account": "Khôi phục tài khoản",
+        "restore_account": "Khôi phục Tài khoản",
         "retention_policy": "Chính sách duy trì",
         "save_and_leave": "Lưu và thoát",
         "search": "Tìm kiếm",
@@ -183,7 +182,6 @@
         "enable_toaster_notification_for_new_calendar_events": "cho phép thông báo nổi đối với sự kiện lịch mới",
         "search_dot": "Tìm…",
         "allocation": "Phân bổ",
-        "always": "Luôn luôn",
         "button_delete": "XOÁ",
         "calendar": "Lịch",
         "calendar_options": "Tuỳ chọn lịch biểu",
@@ -214,22 +212,21 @@
         "mta": "MTA",
         "never": "Không bao giờ",
         "path": "Đường dẫn",
-        "prefix": "Tiền tố",
+        "prefix": "Danh xưng",
         "private": "Riêng tư",
-        "prompt": "Lời nhắc",
         "public": "Công khai",
         "quotas": "Hạn mức",
-        "settings": "Cài đặt",
+        "settings": "Các cài đặt",
         "use_last_available_status": "Sử dụng Trạng thái sẵn sàng cuối cùng",
         "volume": "Dung lượng",
         "volume_allocation": "Phân bổ",
         "volume_available_space": "Dung lượng trống",
         "volume_cancel_button": "HUỶ",
         "volume_compression_thresold": "Ngưỡng nén",
-        "volume_id": "ID Tập",
+        "volume_id": "ID tập",
         "volume_name": "Tên Tập",
         "volume_path": "Đường dẫn",
-        "volume_type": "Kiểu Tập",
+        "volume_type": "Kiểu tập",
         "week_day": {
             "friday": "Thứ Sáu",
             "monday": "Thứ Hai",
@@ -355,7 +352,6 @@
         "serverl_and_volumes": "Máy chủ & Ổ đĩa",
         "servers_list": "Danh sách máy chủ",
         "show_reminder": "Hiển thị nhắc nhở",
-        "sso_logout_redirect_admin_to_msg": "Khi đăng xuất, quản trị viên sẽ chuyển hướng đến URL này",
         "storages": "Nơi lưu giữ",
         "unsubscribe_request": "Yêu cầu hủy đăng ký",
         "virtual_host_note": "Xin lưu ý rằng việc xóa máy chủ ảo chỉ có hiệu lực sau khi máy chủ hộp thư được khởi động lại.",
@@ -372,7 +368,6 @@
         "application_log": "Log ứng dụng",
         "apply_hsm_policy_after_the_restore": "Áp dụng chính sách HSM sau khi phục hồi",
         "appointment_reminder_in_minutes": "Nhắc cuộc hẹn (số phút trước)",
-        "auto_logout_users": "Tự động Logout những người dùng",
         "auto_negation": "Tự động từ chối",
         "auto_refuse": "Tự động từ chối",
         "backup_at_startup": "Sao lưu tại thời điểm khởi động",
@@ -573,7 +568,6 @@
         "admin_help_url": "Đường dẫn URL trợ giúp quản trị",
         "connect_buckets": "Kết nối đơn vị lưu trữ",
         "connector_is_create_and_verified": "CONNECTOR ĐÃ ĐƯỢC TẠO VÀ ĐÃ ĐƯỢC XÁC NHẬN",
-        "console_redirection": "Chuyển hướng bảng điều khiển",
         "example_new": "Ví dụ mới",
         "first_day_of_Week": "Ngày đầu tuần",
         "gal_mode": "Chế độ GAL",
@@ -584,7 +578,6 @@
         "import_an_external_backup": "Nhập vào từ bản sao lưu ngoài",
         "initial_mail_serach": "Bắt đầu tìm thư",
         "log": "Nhật ký Log",
-        "logout_redirect_url": "Khi đăng xuất, người dùng sẽ được chuyển hướng đến URL này",
         "mail_size": "Cỡ thư",
         "main_view": "Đây là một khung xem",
         "inbound_smtp_host_name": "Tên máy chủ SMTP thư đến",
@@ -690,7 +683,21 @@
         "pager": "Máy nhắn tin",
         "phone": "Điện thoại",
         "state": "Tiểu bang",
-        "username": "Tên người dùng"
+        "username": "Tên người dùng",
+        "all": "Tất cả",
+        "always_send_read_receipt": "Luôn gửi đánh dấu đã đọc",
+        "ask_me": "Hỏi tôi",
+        "close": "Đóng",
+        "default_cos": "COS mặc định",
+        "delegated": "Đã uỷ quyền",
+        "delegates_title": "Phân quyền",
+        "duplicate": "Nhân bản",
+        "groups": "Nhóm",
+        "link": "Liên kết",
+        "logout": "Đăng xuất",
+        "never_send_read_receipt": "Không bảo giờ gửi đánh dấu đã đọc",
+        "stats": "Số liệu thống kê",
+        "person_name": "Tên"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -869,7 +876,11 @@
         "unit_measure_days": "Ngày",
         "unit_measure_hours": "Giờ",
         "unit_measure_minutes": "Phút",
-        "unit_measure_seconds": "Giây"
+        "unit_measure_seconds": "Giây",
+        "active_sync": "Kích hoạt đồng bộ",
+        "domain_name": "Tên Miền",
+        "imap": "IMAP",
+        "mobile_apps": "Các Ứng dụng di động"
     },
     "buckets": {
         "connection": {
@@ -942,7 +953,6 @@
         "s3_types": {
             "alibaba_cloud_s3": "Alibaba Cloud S3",
             "amazone_web_service_s3": "Amazon Web Service S3",
-            "ceph_s3": "Ceph S3",
             "cloudian_s3": "Cloudian S3",
             "custom_s3": "Custom S3",
             "emc_s3": "EMC S3",
@@ -961,7 +971,8 @@
         "filter_buckets_list": "Lọc danh sách nhóm",
         "new": {
             "bucket_connection": "Kết nối nhóm"
-        }
+        },
+        "global": "Toàn cầu"
     },
     "message": {
         "snackbar": {
@@ -978,11 +989,11 @@
         "keep_delted_items_backup": "Giữ các mục bị xoá trong Bản sao lưu",
         "ldap_dump": "LDAP Dump",
         "local_metadata_threshold": "Ngưỡng siêu dữ liệu cục bộ",
-        "minimum_space_threshold": "Hạn mức không gian tối thiểu",
+        "minimum_space_threshold": "Ngưỡng tối thiểu của Không gian",
         "module_enable_at_startup": "Mô-đun sẽ chạy trong Startup",
         "purge_old_configurations": "Xoá cấu hình cũ",
         "realtime_scanner": "Quét theo thời gian thực",
-        "schedule": "Lịch trình",
+        "schedule": "Thời gian biểu",
         "advanced": "Nâng cao",
         "data_retention_policies": "Chính sách lưu giữ dữ liệu",
         "force_backup_purge_now": "Buộc thanh lọc sao lưu ngay",
@@ -1013,11 +1024,8 @@
         "keep_deleted_account_in_the_backup": "Giữ tài khoản bị xoá trong bản sao lưu",
         "ldap_working_properly": "LDAP hoạt động bình thường",
         "local_volume": "Ổ đĩa cục bộ",
-        "metadata_archiving": "Lưu trữ siêu dữ liệu",
-        "on_the_fly_metadata": "Siêu dữ liệu trực tuyến",
         "purge_old_configuration": "Xoá cấu hình cũ",
         "range": "Khoảng",
-        "module_is_enabled_at_startup": "Những mô đun này được chạy khi khởi động",
         "run_the_smart_scan_at_the_startup": "Chạy Smartscan khi khởi động",
         "schedule_automatic_retention_policies": "Lập lịch chính sách lưu giữ tự động",
         "schedule_smart_scan": "Lịch chạy Smartscan",
@@ -1034,7 +1042,6 @@
         "enable_realtime_scanner": "Bật quét theo thời gian thực",
         "flash_metadata_in_the_disk_at_every_save": "Siêu dữ liệu flash trong đĩa ở mỗi lần lưu",
         "store_server_configurations_in_the_backup": "Lưu cấu hình máy chủ trong sao lưu",
-        "this_module_is_enable_at_the_startup": "Mô đun này đã được bật khi khởi động",
         "latency_high_threshold": "Ngưỡng độ trễ cao",
         "latency_low_threshold": "Ngưỡng độ trễ thấp",
         "max_operations_account": "Hoạt động tối đa / Tài khoản",
@@ -1092,7 +1099,6 @@
         "time_window_failed_logins_must_occur_to_lock_account": "Khung thời gian mà đăng nhập thất bại phải xảy ra để khoá tài khoản:",
         "timeout_policy": "Chính sách thời gian tạm ngưng",
         "trashed_message_lifetime": "Vòng đời thư được chuyển vào thùng rác",
-        "user_specific_fowarding_addresses": "Giới hạn trường địa chỉ chuyển tiếp do người dùng chỉ định thành (ký tự)",
         "account_quota": "Hạn mức tài khoản",
         "admin_console_auth_token_lifetime": "Vòng đời của mã xác thực bảng điều khiển quản trị viên",
         "advanced": "Nâng cao",
@@ -1125,7 +1131,6 @@
         "mail": "Thư",
         "manuallly": "Thủ công",
         "maximum_number_of_contacts_allowed_in_folder": "Số lượng liên hệ tối đa cho phép trong thư mục",
-        "maximum_number_of_user_specific_forwarding_addresses": "Số lượng tối đa các địa chỉ chuyển tiếp theo người dùng",
         "maximum_password_age": "Thời hạn tối đa của mật khẩu (Ngày)",
         "maximum_password_length": "Độ dài mật khẩu tối đa",
         "message_priority": "Mức độ ưu tiên thư",
@@ -1198,7 +1203,8 @@
         "active_sync": "Kích hoạt đồng bộ",
         "dark_mode": "Chế độ tối",
         "chats": "Trò chuyện",
-        "files": "Tệp"
+        "files": "Tệp",
+        "forwarding": "Chuyển tiếp"
     },
     "locale": {
         "English": "Tiếng Anh",
@@ -1327,7 +1333,7 @@
         "SAVE": "LƯU",
         "create": "TẠO",
         "label": "Nhãn",
-        "remove": "xoá",
+        "remove": "Xoá",
         "send_check": "Gửi",
         "status": "Trạng thái",
         "services": "Dịch vụ"
@@ -1358,7 +1364,7 @@
         "server_list_header": {
             "description": "Mô tả",
             "index": "Mục lục",
-            "primary": "Đầu tiên",
+            "primary": "Chính",
             "secondary": "Thứ nhì",
             "server": "Máy chủ"
         },
@@ -1386,10 +1392,10 @@
         },
         "volume_type": {
             "index": "Mục lục",
-            "primary": "Đầu tiên",
+            "primary": "Chính",
             "secondary": "Thứ nhì"
         },
-        "primary_helperText": "Đầu tiên",
+        "primary_helperText": "Chính",
         "secondary_helperText": "Thứ nhì"
     },
     "account": {
@@ -1412,7 +1418,8 @@
     "click_new_bucket_button_to_create_new_one": "Bấm vào nút NHÓM MỚI để tạo mới.",
     "commons": {
         "create_with_there_data": "TẠO VỚI NHỮNG DỮ LIỆU NÀY",
-        "confirm_connection": "XÁC NHẬN KẾT NỐI"
+        "confirm_connection": "XÁC NHẬN KẾT NỐI",
+        "next": "TIẾP"
     },
     "create_new_bucket": "NHÓM MỚI",
     "create_new_domain": "Tạo miền mới",
@@ -1444,7 +1451,7 @@
         "kb": "KB",
         "mb": "MB",
         "message": "Thông điệp",
-        "minimum_space_threshold": "Hạn mức không gian tối thiểu",
+        "minimum_space_threshold": "Ngưỡng tối thiểu của Không gian",
         "minutes": "Phút",
         "months": "Tháng",
         "name": "Tên",
@@ -1453,8 +1460,8 @@
         "option": "Tuỳ chọn",
         "parameters": "Các thông số",
         "policy_settings": "Các cài đặt chính sách",
-        "primary": "Đầu tiên",
-        "schedule": "Lịch trình",
+        "primary": "Chính",
+        "schedule": "Thời gian biểu",
         "secondary": "Thứ nhì",
         "select_volumes": "Chọn Tập",
         "server": "Máy chủ",
@@ -1466,7 +1473,9 @@
         "yes": "Có",
         "gb": "GB",
         "secondry": "Thứ nhì",
-        "scheduling": "Lịch trình"
+        "scheduling": "Thời gian biểu",
+        "new": "Mới",
+        "users": "Người dùng"
     },
     "dashboard": {
         "description": "Mô tả"
@@ -1502,9 +1511,9 @@
     },
     "new": "Mới",
     "mta": {
-        "remove": "xoá",
+        "remove": "Xoá",
         "seconds": "Giây",
-        "settings": "Cài đặt",
+        "settings": "Các cài đặt",
         "weeks": "Tuần",
         "add": "Thêm vào",
         "authentication": "Xác thực",
@@ -1515,6 +1524,15 @@
         "low": "Thấp",
         "may": "Tháng Năm",
         "minutes": "Phút",
-        "none": "Không"
+        "none": "Không",
+        "action": "Tác vụ",
+        "all": "Tất cả",
+        "current_status": "Trạng thái hiện tại",
+        "info": "Thông tin",
+        "interval": "Khoảng thời gian",
+        "mail_server": "Máy chủ thư",
+        "queued": "Đã xếp hàng",
+        "stats": "Số liệu thống kê",
+        "status": "Trạng thái"
     }
 }
