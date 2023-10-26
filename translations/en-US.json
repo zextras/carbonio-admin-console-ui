@@ -1,0 +1,258 @@
+{
+    "account_details": {
+        "Chats": "Chats",
+        "remove": "Remove",
+        "domain": "Domain",
+        "general": "General",
+        "min_new_check_interval_value": "Value",
+        "status": "Status"
+    },
+    "buckets": {
+        "connection": {
+            "access_key": "Access Key",
+            "notes": "Notes"
+        },
+        "summary": {
+            "access_key": "Access Key",
+            "notes": "Notes"
+        }
+    },
+    "connection": {
+        "access_key": "Access Key",
+        "notes": "Notes"
+    },
+    "label": {
+        "bucket_notes": "Notes",
+        "centralized": "Centralized",
+        "chats": "Chats",
+        "close": "Close",
+        "company": "Company",
+        "contacts": "Contacts",
+        "core": "Core",
+        "country": "Country",
+        "create": "Create",
+        "id_lbl": "ID",
+        "logout": "Logout",
+        "mobile": "Mobile",
+        "mobile_password": "Mobile Password",
+        "na": "N/A",
+        "privacy": "Privacy",
+        "server": "Server",
+        "surname": "Surname",
+        "volume_name": "Volume Name",
+        "volume_path": "Path",
+        "volume_server": "Server",
+        "Accounts": "Accounts",
+        "ID": "ID",
+        "Rights": "Rights",
+        "Type": "Type",
+        "access_key": "Access Key",
+        "account": "Account",
+        "accounts": "Accounts",
+        "add": "Add",
+        "all": "All",
+        "allowed": "Allowed",
+        "app_name": "Manage",
+        "backup": "Backup",
+        "bucket_name": "Bucket Name",
+        "cancel": "Cancel",
+        "current": "Current",
+        "date": "Date",
+        "delete": "Delete",
+        "description": "Description",
+        "destination_account": "Destination Account",
+        "destroy_account": "Delete",
+        "details": "Details",
+        "device": "Device",
+        "device_id": "Device ID",
+        "disable": "disable",
+        "disabled": "Disabled",
+        "distribution_list": "Distribution list",
+        "domain": "Domain",
+        "duplicate": "Duplicate",
+        "eas": "EAS",
+        "edit": "Edit",
+        "email": "Email",
+        "email_address": "Email address",
+        "enable": "enable",
+        "enable_compression": "Enable Compression",
+        "enabled": "Enabled",
+        "external": "External",
+        "general_lbl": "General",
+        "helo": "Help",
+        "help": "Help",
+        "home": "Home",
+        "interval": "Interval",
+        "language": "Language",
+        "last_seen": "Last seen",
+        "link": "Link",
+        "name": "Name",
+        "never": "Never",
+        "not_set": "Not Set",
+        "notes": "Notes",
+        "notifications": "Notifications",
+        "open": "Open",
+        "password": "Password",
+        "path": "Path",
+        "person_name": "Name",
+        "phone": "Phone",
+        "region": "Region",
+        "remove": "Remove",
+        "reset": "Reset",
+        "reset_device": "Reset Device",
+        "restore_account": "Restore Account",
+        "rights": "Rights",
+        "running": "Running",
+        "s3_bucket": "S3 Bucket",
+        "save": "Save",
+        "search": "Search",
+        "search_dot": "Search…",
+        "servers": "Servers",
+        "settings": "Settings",
+        "state": "State",
+        "stats": "Stats",
+        "status": "Status",
+        "status_lbl": "Status",
+        "suspended": "Suspended",
+        "tasks": "Tasks",
+        "title": "Title",
+        "type": "Type",
+        "unlimited": "Unlimited",
+        "update": "Update",
+        "url": "URL",
+        "use_intelligent_tiering": "Use Intelligent Tiering",
+        "username": "Username",
+        "value": "Value",
+        "verify": "Verify",
+        "verify_certificate": "Verify",
+        "volume_id": "Volume ID",
+        "volume_server_name": "Server",
+        "volume_type": "Volume Type",
+        "what_inside": "Subject",
+        "wipe_device": "Wipe Device",
+        "yes": "Yes"
+    },
+    "mta": {
+        "settings": "Settings",
+        "stats": "Stats",
+        "status": "Status",
+        "action": "Action",
+        "add": "Add",
+        "all": "All",
+        "current_status": "Current Status",
+        "info": "Info",
+        "interval": "Interval",
+        "may": "May",
+        "none": "None",
+        "remove": "Remove"
+    },
+    "new": "New",
+    "notification": {
+        "copy": "Copy",
+        "manage": "Manage",
+        "mark_as_read": "Mark as read",
+        "mark_as_unread": "Mark as unread",
+        "notifications_list": "Notifications List"
+    },
+    "operations": {
+        "label": {
+            "notifications": "Notifications",
+            "status": "Status"
+        },
+        "copy_btn": "COPY",
+        "details": "Details",
+        "operations_list_header": {
+            "author": "Author",
+            "operation": "Operation",
+            "server": "Server",
+            "status": "Status"
+        },
+        "running": "Running"
+    },
+    "volume": {
+        "volume_config_header": {
+            "name": "Name",
+            "status": "Status"
+        },
+        "primary_helperText": "Primary",
+        "secondary_helperText": "Secondary",
+        "server_list_header": {
+            "description": "Description",
+            "index": "Index",
+            "primary": "Primary",
+            "secondary": "Secondary",
+            "server": "Server"
+        },
+        "volume_allocation_list": {
+            "centralized": "Centralized",
+            "external": "External"
+        },
+        "volume_header": {
+            "current": "Current",
+            "id": "ID",
+            "name": "Name",
+            "path": "Path"
+        },
+        "volume_indexer_header": {
+            "current": "Current",
+            "id": "ID",
+            "name": "Name",
+            "path": "Path"
+        },
+        "volume_type": {
+            "index": "Index",
+            "primary": "Primary",
+            "secondary": "Secondary"
+        }
+    },
+    "backup": {
+        "backup_path": "Backup Path",
+        "data_retention_policies": "Data Retention Policies",
+        "general": "General",
+        "minimum_space_threshold": "Minimum Space Threshold",
+        "realtime_scanner": "RealTime Scanner"
+    },
+    "core": {
+        "subscription": {
+            "status": "Status",
+            "valid": "Valid"
+        }
+    },
+    "cos": {
+        "chats": "Chats",
+        "contacts": "Contacts",
+        "disabled": "Disabled",
+        "enabled": "Enabled",
+        "language": "Language",
+        "minimum_password_length": "Minimum password length",
+        "password": "Password",
+        "status": "Status"
+    },
+    "dashboard": {
+        "description": "Description"
+    },
+    "domain": {
+        "gal_change_mode_external": "External",
+        "manage": "Manage"
+    },
+    "hsm": {
+        "all": "All",
+        "current": "Current",
+        "delete": "Delete",
+        "details": "Details",
+        "edit": "Edit",
+        "hsm_policy": "HSM Policy",
+        "indexes": "Indexes",
+        "minimum_space_threshold": "Minimum Space Threshold",
+        "name": "Name",
+        "new": "New",
+        "no": "No",
+        "primary": "Primary",
+        "secondary": "Secondary",
+        "secondry": "Secondary",
+        "server": "Server",
+        "type": "Type",
+        "value": "Value",
+        "yes": "Yes"
+    }
+}

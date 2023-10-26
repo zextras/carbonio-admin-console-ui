@@ -1126,7 +1126,7 @@
         "limit_search_results_from_address_book_list_to": "Numero massimo di risultati restituiti dalla ricerca nella Rubrica",
         "after_date": "Dopo (Data)",
         "all": "Tutto",
-        "always_send_read_receipt": "Invia sempre la conferma di lettura",
+        "always_send_read_receipt": "Manda sempre una conferma di lettura",
         "ask_me": "Chiedimi",
         "close": "Chiudi",
         "duplicate": "Duplica",
