@@ -862,7 +862,7 @@
         "storage_primarybar_tooltip": "Visualisez votre <bold>statut du serveur</bold>, vos <bold>volumes</bold> et vos <bold>politiques HSM</bold>. Vous serez également en mesure de <bold>connecter des buckets</bold>.",
         "there_are_not_member_here": "Il n'y a pas de membre.",
         "use_intelligent_tiering_helptext": "<underline>Documentation du Tiering Amazon</underline>",
-        "virtual_host_msg": "Les Virtual Host permettent au système de définir un domaine par défaut pour la connexion d'un utilisateur.<br />Tout utilisateur qui se connecte en utilisant une URL avec l'un des hostname ci-dessous sera supposé être dans ce domaine, domain1.local.<br />Veuillez noter, que la suppression d'un Virtual Host ne prend effet qu'après le redémarrage du serveur mailbox.",
+        "virtual_host_msg": "Les Virtual Host permettent au système de définir un domaine par défaut pour la connexion d'un utilisateur.<br />Tout utilisateur qui se connecte en utilisant une URL avec l'un des hostname ci-dessous sera supposé être dans ce domaine, domain1.local.<br />Veuillez noter, que la suppression d'un Virtual Host ne prend effet qu'après le redémarrage du serveur mail.",
         "delete_private_key_certificate_content": "Vous êtes sur le point de supprimer la clé privé de certificat.<br />Êtes-vous sûr de vouloir la supprimer ?",
         "delete_private_key_certificate_header": "Supprimer la clé privé de certificat ?",
         "restore_config_info_row_1": "<bold>{{accountName}}</bold> sera copié dans le compte que vous avez sélectionné dans le champ ci-dessous.",
@@ -942,7 +942,7 @@
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Conserver une copie des messages envoyés dans mon dossier Envoyé et dans le dossier du compte délégué",
         "destroy": "SUPPRIMER",
         "destroy_account": "Effacer",
-        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Enregistrer une copie des messages dans le dossier délégué Envoyé",
+        "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Sauvegarde d'une copie des messages envoyés dans le dossier Envoyés du délégué et du délégué",
         "save_a_copy_of_sent_messages_only_in_delegateds_send_folder": "Enregistrer une copie des messages dans le dossier délégué Envoyé",
         "city": "Ville",
         "company": "Société",
@@ -1022,7 +1022,7 @@
         "login_verify_button_title": "CONNEXION ET VÉRIFICATION",
         "mail_trans_agent": "Mail Trans. Agent",
         "mail_transfer_agent": "Mail Transfer Agent (MTA)",
-        "delegate_send_settings": "Configuration de l'envoi en délégation",
+        "delegate_send_settings": "Action lors de l'envoi d'un email",
         "delete_configuration": "SUPPRESSION DE LA CONFIGURATION",
         "entity_id": "ID de l'Entité",
         "external_server_address": "Adresse du Serveur Externe",
@@ -1177,7 +1177,18 @@
         "click_to_make_the_button_bar_scroll_with_the_page": "Cliquer pour faire défiler la barre d'outils avec la page",
         "cos_not_included_for_domain_notes": "Il n'y a pas de COS inclus pour ce domaine, veuillez en sélectionner un dans le menu déroulant et cliquer sur \"DUPLIQUER\" ou \"LIER\"",
         "person_name": "Nom",
-        "stats": "Statistiques"
+        "stats": "Statistiques",
+        "can_access_settings": "Peut accéder aux paramètres",
+        "init_domain": "INIT DOMAIN",
+        "prompt": "Prompt",
+        "showing": "Afficher",
+        "items_per_page": "éléments par page",
+        "logout_redirect_url": "Lors d'une déconnexion, l'utilisateur sera redirigé vers cette URL",
+        "mailing-list": {
+            "object_name": "Nom de l'objet"
+        },
+        "storage_hsm_not_licensed": "Impossible de terminer l'opération : Le Stockage HSM n'a pas de licence.",
+        "surname_required": "Le nom de famille est requis"
     },
     "message": {
         "snackbar": {
@@ -1653,7 +1664,8 @@
         "read_receipt_settings": "Paramétrage des accusés de lecture",
         "select_cos_to_include_in_domain": "Sélectionner une COS à inclure dans ce domaine",
         "user_can_specify_mail_forwarding_filter": "L'utilisateur peut définir une adresse de transfert",
-        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "adresses de transfert spécifiées par l'utilisateur+nombre maximal d'adresses de transfert spécifiques à l'utilisateur"
+        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "adresses de transfert spécifiées par l'utilisateur+nombre maximal d'adresses de transfert spécifiques à l'utilisateur",
+        "user_specific_fowarding_addresses": "Limiter le champ des adresses de transfert spécifiées par l'utilisateur à (caractères)"
     },
     "create_new_cos": "CRÉER UNE NOUVELLE COS",
     "select_section_from_left_menu": "Merci de sélectionner une section depuis le menu de gauche",
@@ -1880,7 +1892,9 @@
         "inherited_value_was": "La valeur héritée était",
         "right_for_selected_user_deleted_successfully": "Les droits de l'utilisateur sélectionné ont été supprimés avec succès",
         "service_label_password": " Mot de passe de {{ service_label }}",
-        "user_can_specify_forwarding_address": "L'utilisateur peux spécifier une adresse de transfert"
+        "user_can_specify_forwarding_address": "L'utilisateur peux spécifier une adresse de transfert",
+        "send_as_recipients": "Envoyer en tant que (les destinataires afficheront l'email de l'expéditeur {{targetEmail}})",
+        "send_recipients_see_the_mail": "Envoyer {{right}} (les destinataires afficheront l'email de l'expéditeur {{targetEmail}})"
     },
     "connection": {
         "access_key": "Clé d’accès",
@@ -2232,7 +2246,9 @@
         "mail_server": "Serveur email",
         "queued": "Ajouté(e) dans la queue",
         "stats": "Statistiques",
-        "status": "Statut"
+        "status": "Statut",
+        "access_list_path": "Chemin d'accès à la liste d'accès",
+        "bare_newline": "Nouvelle ligne nue"
     },
     "mat": {
         "add_here_any_blocked_extension": "Ajouter ici toutes les Extensions Bloquées"

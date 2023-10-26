@@ -1,0 +1,122 @@
+{
+    "cos": {
+        "chats": "Csevegések",
+        "enabled": "Engedélyezett",
+        "status": "Státusz",
+        "contacts": "Kapcsolatok",
+        "disabled": "Letiltva"
+    },
+    "hsm": {
+        "message": "Üzenet",
+        "server": "Szerver",
+        "delete": "Törlés",
+        "document": "Dokumentum",
+        "edit": "Szerkesztés",
+        "name": "Név"
+    },
+    "label": {
+        "accounts": "Fiókok",
+        "description": "Leírás",
+        "destroy_account": "Törlés",
+        "disabled": "Letiltva",
+        "enable": "engedélyez",
+        "enabled": "Engedélyezett",
+        "name": "Név",
+        "not_set": "Nem Beállított",
+        "path": "Útvonal",
+        "privacy": "Titoktartás",
+        "search": "Keresés",
+        "tasks": "Feladatok",
+        "username": "Felhasználónév",
+        "volume_path": "Útvonal",
+        "volume_server": "Szerver",
+        "Accounts": "Fiókok",
+        "ID": "ID",
+        "account": "Fiók",
+        "bucket_done_button": "Kész",
+        "cancel": "Törlés",
+        "chats": "Csevegések",
+        "contacts": "Kapcsolatok",
+        "date": "Dátum",
+        "delete": "Törlés",
+        "disable": "letilt",
+        "domain": "Tartomány",
+        "done": "Kész",
+        "edit": "Szerkesztés",
+        "email": "Levél",
+        "email_address": "Email Cím",
+        "general_lbl": "Általános",
+        "id_lbl": "ID",
+        "message": "Üzenet",
+        "notifications": "Értesítések",
+        "person_name": "Név",
+        "running": "Fut",
+        "server": "Szerver",
+        "status": "Státusz",
+        "status_lbl": "Státusz",
+        "unlimited": "Végtelen",
+        "volume_server_name": "Szerver",
+        "add": "Hozzáadás",
+        "go_back": "Vissza",
+        "reset": "Visszaállítás"
+    },
+    "mta": {
+        "status": "Státusz",
+        "add": "Hozzáadás"
+    },
+    "operations": {
+        "operations_list_header": {
+            "operation": "Művelet",
+            "server": "Szerver",
+            "status": "Státusz"
+        },
+        "done": "Kész",
+        "label": {
+            "notifications": "Értesítések",
+            "status": "Státusz"
+        },
+        "running": "Fut"
+    },
+    "volume": {
+        "server_list_header": {
+            "description": "Leírás",
+            "server": "Szerver"
+        },
+        "volume_config_header": {
+            "name": "Név",
+            "status": "Státusz"
+        },
+        "volume_header": {
+            "id": "ID",
+            "path": "Útvonal",
+            "name": "Név"
+        },
+        "volume_indexer_header": {
+            "id": "ID",
+            "name": "Név",
+            "path": "Útvonal"
+        }
+    },
+    "account_details": {
+        "Chats": "Csevegések",
+        "domain": "Tartomány",
+        "general": "Általános",
+        "status": "Státusz"
+    },
+    "backup": {
+        "general": "Általános"
+    },
+    "core": {
+        "subscription": {
+            "status": "Státusz"
+        }
+    },
+    "dashboard": {
+        "description": "Leírás"
+    },
+    "notification": {
+        "copy": "Másolat",
+        "mark_as_read": "Olvasottnak jelöl",
+        "mark_as_unread": "Olvasatlannak jelöl"
+    }
+}

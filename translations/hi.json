@@ -588,7 +588,7 @@
         "s3_bucket": "S3 बकेट",
         "select_an_external_volume": "कोई एक्सटर्नल वॉल्यूम चुनें",
         "service": "सर्विस",
-        "status_lbl": "उपस्थिति",
+        "status_lbl": "स्टेटस",
         "theme": "थीम",
         "title": "शीर्षक",
         "update": "अपडेट करें",
@@ -1295,7 +1295,7 @@
             "hide": "छिपाएँ",
             "less_info": "कम जानकारी",
             "more_info": "और जानकारी",
-            "status": "उपस्थिति",
+            "status": "स्टेटस",
             "subscription_Accounts": "सब्स्क्रिप्शन अकाउंट्स",
             "subscription_last_check": "सब्स्क्रिप्शन पिछला चेक",
             "subscription_type": "सब्स्क्रिप्शन टाइप",
@@ -1578,7 +1578,7 @@
         "session_idle_timeout": "सत्र निष्क्रियता की समय सीमा समाप्‍त",
         "shortest_allowed_duration_for_any_polling_interval": "किसी भी पोलिंग अंतराल के लिए समसे छोटी अनुमत अवधि",
         "spam_message_lifetime": "स्‍पैम मैसेज की समयावधि",
-        "status": "उपस्थिति",
+        "status": "स्टेटस",
         "tagging": "टैगिंग",
         "time_to_lockout_account": "अकाउंट को बंद करने का समय",
         "time_window_failed_logins_must_occur_to_lock_account": "वह समय विंडो जिसमें अकाउंट बंद करने के लिए विफल लॉगइन आने चाहिए:",
@@ -1839,7 +1839,7 @@
         "remove": "हटाएँ",
         "send_check": "भेजें",
         "services": "सेवाएँ",
-        "status": "उपस्थिति",
+        "status": "स्टेटस",
         "DELETE": "डिलीट करें",
         "SAVE": "सेव करे",
         "able_to_see_password_once": " कृपया ध्यान देंः आप <bold>केवल एक बार</bold> पासवर्ड देख पाएंगे।",
@@ -1931,7 +1931,7 @@
             "name": "नाम",
             "hsm_scheduled": "HSM शैड्यूल है",
             "indexer": "इंडेक्सर",
-            "status": "उपस्थिति"
+            "status": "स्टेटस"
         },
         "volume_header": {
             "compression": "कंप्रेशन",
@@ -2082,7 +2082,7 @@
         "label": {
             "Deep": "गहराई",
             "notifications": "सूचनाएं",
-            "status": "उपस्थिति",
+            "status": "स्टेटस",
             "action(M)": "एक्शन (एम)",
             "cancel_operation_btn": "ऑपरेशन कैंसल करें",
             "create_fake_blob": "फेक ब्लॉग बनाएँ",
@@ -2101,7 +2101,7 @@
             "operation": "ऑपरेशन",
             "server": "सर्वर",
             "start_date": "प्रारम्भ तिथि",
-            "status": "उपस्थिति",
+            "status": "स्टेटस",
             "submit_date": "सब्मिट करने की तारीख"
         },
         "other": "अन्य",
@@ -2242,7 +2242,7 @@
         "info": "जानकारी",
         "queued": "कतार में",
         "stats": "आंकड़ें",
-        "status": "उपस्थिति",
+        "status": "स्टेटस",
         "interval": "इंटरवल",
         "mail_server": "मेल सर्वर"
     },
