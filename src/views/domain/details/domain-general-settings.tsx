@@ -538,8 +538,7 @@ const DomainGeneralSettings: FC = () => {
 				n: 'carbonioNotificationFrom',
 				_content: carbonioNotificationFrom
 			});
-			// eslint-disable-next-line array-callback-return
-			carbonioNotificationRecipients.map((item: { label: string }): void => {
+			carbonioNotificationRecipients.forEach((item: { label: string }): void => {
 				attributes.push({
 					n: 'carbonioNotificationRecipients',
 					_content: item?.label

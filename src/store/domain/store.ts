@@ -25,6 +25,8 @@ type DomainState = {
 	setCloseDomainBanner: (domainName: string) => void;
 	isQuickAccess: boolean;
 	setIsQuickAccess: (isQuickAccess: boolean) => void;
+	isCertificateAvailbale: boolean;
+	setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
 };
 
 export const useDomainStore = create<DomainState>(
@@ -36,6 +38,7 @@ export const useDomainStore = create<DomainState>(
 		domainList: [],
 		isDomainSupportDelegatedAdmin: false,
 		isQuickAccess: false,
+		isCertificateAvailbale: false,
 		setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
@@ -63,6 +66,8 @@ export const useDomainStore = create<DomainState>(
 				false,
 				'setCloseDomainBanner'
 			),
-		setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess')
+		setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess'),
+		setIsCertificateAvailbale: (isCertificateAvailbale): void =>
+			set({ isCertificateAvailbale }, false, 'setIsCertificateAvailbale')
 	}))
 );

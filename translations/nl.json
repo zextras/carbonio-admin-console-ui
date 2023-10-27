@@ -821,7 +821,7 @@
         "bucket_delete_button": "VERWIJDEREN",
         "bucket_notes": "Aantekeningen",
         "label": "Label",
-        "notifications": "Notifications",
+        "notifications": "kennisgevingen",
         "search_for_user_and_clic_to_add": "Zoek een gebruiker en klik op de ADD knop.",
         "there_are_no_owners": "Er zijn hier geen eigenaars.",
         "verify_certificate": "Verifiëren",
@@ -2080,7 +2080,7 @@
         "done": "Klaar",
         "label": {
             "Deep": "Diep",
-            "notifications": "Notifications",
+            "notifications": "kennisgevingen",
             "status": "Status",
             "action(M)": "Actie (M)",
             "cancel_operation_btn": "OPERATIE ANNULEREN",
