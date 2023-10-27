@@ -5,15 +5,18 @@
  */
 import { AM, PM } from '../../../constants';
 
-const MiliSecondToDate: any = (time: any) => {
-	const date = new Date(time).toLocaleDateString();
-	let hours = new Date(time).getHours();
+const MiliSecondToDate = (time: number): string => {
+	const date = new Date(time);
+	const formattedDate = date.toLocaleDateString();
+	let hours = date.getHours();
 	const amOrPm = hours >= 12 ? PM : AM;
 	hours = hours % 12 || 12;
-	const minutes = new Date(time).getMinutes();
-	const finalTime = `${hours}:${minutes} ${amOrPm}`;
+	const minutes = date.getMinutes();
+	const finalTime = `${hours.toString().padStart(2, '0')}:${minutes
+		.toString()
+		.padStart(2, '0')} ${amOrPm}`;
 
-	return `${date} - ${finalTime}`;
+	return `${formattedDate} - ${finalTime}`;
 };
 
 export default MiliSecondToDate;

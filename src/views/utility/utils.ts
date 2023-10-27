@@ -1284,7 +1284,7 @@ export const OperationsDoneHeader = (
 		id: 'Server',
 		label: t('operations.operations_list_header.server', 'Server'),
 		i18nAllLabel: 'All',
-		width: '127px',
+		width: '177px',
 		bold: true,
 		align: 'left'
 	},

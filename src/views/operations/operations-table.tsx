@@ -18,7 +18,7 @@ export const OperationsTable: FC<{
 	donePanel: boolean;
 	selectedRows: any;
 	onSelectionChange: any;
-	onClick: any;
+	onClick: (value: number) => void;
 }> = ({ operations, headers, donePanel, selectedRows, onSelectionChange, onClick }) => {
 	const [t] = useTranslation();
 
@@ -30,12 +30,12 @@ export const OperationsTable: FC<{
 					<Row
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={i}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
 						<Text weight="light" size="regular">
-							{v?.host || ''}
+							{v?.serverName || ''}
 						</Text>
 					</Row>,
 					<Row
@@ -44,7 +44,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -58,7 +58,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-center'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -76,7 +76,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -90,7 +90,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-center'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -104,7 +104,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-center'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -126,7 +126,7 @@ export const OperationsTable: FC<{
 					<Row
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={i}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -140,7 +140,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -154,7 +154,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -168,7 +168,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-center'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -182,7 +182,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-center'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
