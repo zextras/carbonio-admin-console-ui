@@ -241,7 +241,7 @@
             "hide": "Ocultar",
             "less_info": "Menos Informação",
             "more_info": "Mais informação",
-            "status": "Status",
+            "status": "Estado",
             "subscription_Accounts": "Contas utilizadas",
             "subscription_last_check": "Última verificação da assinatura",
             "subscription_type": "Tipo de assinatura",
@@ -356,7 +356,7 @@
                 "accepted": "Você aceitou este pedido de compartilhamento"
             }
         },
-        "status": "Status",
+        "status": "Estado",
         "suspended": "Suspendido",
         "timezone": "Fuso horário",
         "unlimited": "Ilimitado",
@@ -911,7 +911,7 @@
         "reset": "Redefinir",
         "reset_device": "Resetar dispositivo",
         "service": "Serviço",
-        "status_lbl": "Status",
+        "status_lbl": "Estado",
         "title": "Título",
         "update": "Atualizar",
         "volume_next_button": "PRÓXIMO",
@@ -1466,7 +1466,7 @@
         "session_idle_timeout": "Tempo limite ocioso da sessão",
         "shortest_allowed_duration_for_any_polling_interval": "Duração mínima permitida para intervalos de consulta",
         "spam_message_lifetime": "Retenção de mensagens de Spam",
-        "status": "Status",
+        "status": "Estado",
         "tagging": "Etiquetas",
         "time_to_lockout_account": "Tempo de bloqueio da conta",
         "time_window_failed_logins_must_occur_to_lock_account": "Intervalo de tempo antes de bloquear a conta para acessos falhados:",
@@ -1702,7 +1702,7 @@
         "send_as_behalf": "Enviar em nome de (os destinatários verão o endereço {{targetEmail}} como remetente)",
         "send_check": "Enviar",
         "services": "Serviços",
-        "status": "Status",
+        "status": "Estado",
         "create": "CRIAR",
         "label": "Etiqueta",
         "remove": "Remover",
@@ -1785,7 +1785,7 @@
             "name": "Nome",
             "hsm_scheduled": "HSM programado",
             "indexer": "Indexador",
-            "status": "Status"
+            "status": "Estado"
         },
         "volume_header": {
             "compression": "Compressão",
@@ -1932,7 +1932,7 @@
         "label": {
             "Deep": "Profundo",
             "notifications": "Notificações",
-            "status": "Status",
+            "status": "Estado",
             "action(M)": "Ação (M)",
             "cancel_operation_btn": "CANCELAR OPERAÇÃO",
             "create_fake_blob": "Criar Blob falso",
@@ -1951,7 +1951,7 @@
             "operation": "Operação",
             "server": "Servidor",
             "start_date": "Data de início",
-            "status": "Status",
+            "status": "Estado",
             "submit_date": "Data de envio"
         },
         "other": "Outro",
@@ -2077,7 +2077,7 @@
         "all": "Tudo",
         "current_status": "Estado atual",
         "mail_server": "Servidor de email",
-        "status": "Status"
+        "status": "Estado"
     },
     "modal": {
         "iscurrent_confirm": {

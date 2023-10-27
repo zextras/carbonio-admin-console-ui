@@ -6,11 +6,18 @@
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { THEME, TWO_FACTOR_AUTHENTICATION, DOMAINS, QUARANTINE } from '../../constants';
+import {
+	TWO_FACTOR_AUTHENTICATION,
+	DOMAINS,
+	WHITELABEL_SETTINGS,
+	GLOBAL_DELEGATES,
+	QUARANTINE
+} from '../../constants';
 import GlobalTheme from './global/global-theme';
 import DomainList from './domain-list/domain-list';
 import QuarantineList from '../quarantine/quarantine-list';
 import GlobalTwoFactorAuthentcation from './global/global-two-factor-auth';
+import GlobalDelegates from './global-delegates';
 
 const GlobalOperations: FC = () => {
 	const [t] = useTranslation();
@@ -20,7 +27,7 @@ const GlobalOperations: FC = () => {
 		<>
 			{((): any => {
 				switch (operation) {
-					case THEME:
+					case WHITELABEL_SETTINGS:
 						return <GlobalTheme />;
 					case TWO_FACTOR_AUTHENTICATION:
 						return <GlobalTwoFactorAuthentcation />;
@@ -28,6 +35,8 @@ const GlobalOperations: FC = () => {
 						return <QuarantineList />;
 					case DOMAINS:
 						return <DomainList />;
+					case GLOBAL_DELEGATES:
+						return <GlobalDelegates />;
 					default:
 						return null;
 				}

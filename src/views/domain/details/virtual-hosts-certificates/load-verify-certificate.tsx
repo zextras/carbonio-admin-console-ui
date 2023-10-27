@@ -54,6 +54,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	const [domainCertiErr, setDomainCertiErr] = useState(true);
 	const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
 	const [privateKeyErr, setPrivateKeyErr] = useState(true);
+	const isCertificateAvailbale = useDomainStore((state) => state.isCertificateAvailbale);
 	const [objDomainCertificate, setObjDomainCertificate] = useState<ICertificateContent>({
 		fileName: '',
 		content: ''
@@ -132,16 +133,35 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		if (objDomainCertificate.content === '') {
 			setDomainCertiErr(false);
 		}
-		if (objDomainCertificateCaChain.content === '') {
-			setDomainCertiCaChainErr(false);
+
+		if (!isCertificateAvailbale) {
+			if (objDomainCertificateCaChain.content === '') {
+				setDomainCertiCaChainErr(false);
+			}
 		}
 		if (objDomainCertificatePrivateKey.content === '') {
 			setPrivateKeyErr(false);
 		}
 		setVerifyBtnLoading(true);
 		if (
+			(objDomainCertificate.content === '' || objDomainCertificatePrivateKey.content === '') &&
+			isCertificateAvailbale
+		) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t(
+					'domain.certificate_content_error_without_ca_chain',
+					'Domain certificate , Private key is invalid'
+				),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			setVerifyBtnLoading(false);
+		} else if (
+			(!isCertificateAvailbale && objDomainCertificateCaChain.content === '') ||
 			objDomainCertificate.content === '' ||
-			objDomainCertificateCaChain.content === '' ||
 			objDomainCertificatePrivateKey.content === ''
 		) {
 			createSnackbar({
@@ -208,6 +228,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		}
 	}, [
 		createSnackbar,
+		isCertificateAvailbale,
 		objDomainCertificate.content,
 		objDomainCertificateCaChain.content,
 		objDomainCertificatePrivateKey.content,
@@ -296,13 +317,18 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 		if (objDomainCertificate.content !== '') {
 			setDomainCertiErr(true);
 		}
-		if (objDomainCertificateCaChain.content !== '') {
+		if (!isCertificateAvailbale) {
+			if (objDomainCertificateCaChain.content !== '') {
+				setDomainCertiCaChainErr(true);
+			}
+		} else {
 			setDomainCertiCaChainErr(true);
 		}
 		if (objDomainCertificatePrivateKey.content !== '') {
 			setPrivateKeyErr(true);
 		}
 	}, [
+		isCertificateAvailbale,
 		objDomainCertificate.content,
 		objDomainCertificateCaChain.content,
 		objDomainCertificatePrivateKey.content

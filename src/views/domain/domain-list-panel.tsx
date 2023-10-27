@@ -19,14 +19,12 @@ import {
 	DOMAINS_ROUTE_ID,
 	GAL,
 	GENERAL_SETTINGS,
-	GLOBAL_THEME_ROUTE,
 	MAILBOX_QUOTA,
 	MAILING_LIST,
 	ACL_LIST,
 	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
 	RESTORE_ACCOUNT,
-	THEME,
 	VIRTUAL_HOSTS,
 	SAML,
 	CONFIG,
@@ -37,7 +35,10 @@ import {
 	GLOBAL_ROUTE,
 	GLOBAL_QUARANTINE_ROUTE,
 	BACKUP_BASIC,
+	WHITELABEL_SETTINGS,
+	GLOBAL_WHITELABEL_SETTINGS,
 	DELEGATES_DOMAIN_ADMINS,
+	GLOBAL_DELEGATES_ROUTE,
 	RESOURCES
 } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
@@ -235,13 +236,15 @@ const DomainListPanel: FC = () => {
 				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
 				if (domainView === GLOBAL_ROUTE) {
 					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_THEME_ROUTE) {
+				} else if (domainView === GLOBAL_WHITELABEL_SETTINGS) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_2FA_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_DOMAIN_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_QUARANTINE_ROUTE) {
+					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_DELEGATES_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else {
 					replaceHistory(`/${domainId}/${domainView}`);
@@ -284,8 +287,8 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: THEME,
-				name: t('label.theme', 'Theme'),
+				id: WHITELABEL_SETTINGS,
+				name: t('label.whitelabel_settings', 'Whitelabel Settings'),
 				isSelected: isDomainSelect
 			},
 			{
@@ -351,8 +354,13 @@ const DomainListPanel: FC = () => {
 				isSelected: true
 			},
 			{
-				id: GLOBAL_THEME_ROUTE,
-				name: t('label.theme', 'Theme'),
+				id: GLOBAL_DELEGATES_ROUTE,
+				name: t('label.global_delegates', 'Global Delegates'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_WHITELABEL_SETTINGS,
+				name: t('label.whitelabel_settings', 'Whitelabel Settings'),
 				isSelected: true
 			},
 			{
@@ -392,7 +400,9 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? detailOptions.filter(
 						(item: ManageOptions) =>
-							item?.id !== THEME && item?.id !== SAML && item?.id !== TWO_FACTOR_AUTHENTICATION
+							item?.id !== WHITELABEL_SETTINGS &&
+							item?.id !== SAML &&
+							item?.id !== TWO_FACTOR_AUTHENTICATION
 				  )
 				: detailOptions,
 		[detailOptions, isAdvanced]
@@ -403,7 +413,7 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? globalOptionItems.filter(
 						(item: ManageOptions) =>
-							item?.id !== GLOBAL_THEME_ROUTE && item?.id !== GLOBAL_2FA_ROUTE
+							item?.id !== GLOBAL_WHITELABEL_SETTINGS && item?.id !== GLOBAL_2FA_ROUTE
 				  )
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
