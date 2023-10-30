@@ -92,6 +92,7 @@ const AccountDetailView: FC<any> = ({
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
+	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
 	const { isSticky, setIsSticky } = useStickyBarStore();
@@ -306,6 +307,7 @@ const AccountDetailView: FC<any> = ({
 	const getAllUserSession = useCallback(() => {
 		const sessionType: string[] = ['admin', 'imap', 'soap'];
 		setUserSessionList([]);
+		setAllUserSessionList([]);
 		sessionType.forEach((item: string) => {
 			getSessions(item, selectedAccount?.name).then((resp: any) => {
 				if (resp && resp?.s) {
@@ -327,40 +329,73 @@ const AccountDetailView: FC<any> = ({
 							});
 						}
 						setUserSessionList((prev: any) => [...prev, ...session]);
+						setAllUserSessionList((prev: any) => [...prev, ...session]);
 					}
 				}
 			});
 		});
 	}, [selectedAccount?.name]);
 
+	const addSelection = useCallback((item) => {
+		setSelectedSession([item?.sid]);
+	}, []);
+
 	useEffect(() => {
 		if (userSessionList && userSessionList.length > 0) {
 			const allRows = userSessionList.map((item: UserSession) => ({
 				id: item?.sid,
 				columns: [
-					<Text size="small" weight="light" key={item?.zid} color="#828282">
-						{item?.name}
-					</Text>,
-					<Text size="small" weight="light" key={item?.zid} color="#828282">
-						{item?.sid}
-					</Text>,
-					<Text size="small" weight="light" key={item?.zid} color="#828282">
-						{''}
-					</Text>,
-					<Text size="small" weight="light" key={item?.zid} color="#828282">
-						{''}
-					</Text>
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" color="#828282">
+							{item?.name}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{item?.sid}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{''}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{''}
+						</Text>
+					</Container>
 				]
 			}));
 			setSessionListRows(allRows);
 		} else {
 			setSessionListRows([]);
 		}
-	}, [userSessionList]);
+	}, [addSelection, userSessionList]);
 
 	useEffect(() => {
 		getAllUserSession();
-	}, [getAllUserSession]);
+	}, [getAllUserSession, selectedAccount?.name]);
 
 	const onEndSession = useCallback(() => {
 		setIsRequestInProgress(true);
@@ -374,6 +409,9 @@ const AccountDetailView: FC<any> = ({
 							setIsRequestInProgress(false);
 							if (resp && resp?._jsns) {
 								setUserSessionList((prev: any) => [
+									...prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+								]);
+								setAllUserSessionList((prev: any) => [
 									...prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
 								]);
 								setSelectedSession([]);
@@ -450,6 +488,18 @@ const AccountDetailView: FC<any> = ({
 			}
 		}
 	];
+
+	const onSessionFilterInputChange = useCallback(
+		(ev) => {
+			setSelectedSession([]);
+			const value = ev?.target?.value || '';
+			const filterdSession = allUserSessionList.filter(
+				(item: UserSession) => item?.name.includes(value) || item?.sid.includes(value)
+			);
+			setUserSessionList(filterdSession);
+		},
+		[allUserSessionList]
+	);
 
 	return (
 		<>
@@ -671,7 +721,7 @@ const AccountDetailView: FC<any> = ({
 								label={t('label.i_m_looking_for_the_session', 'I`m looking for the session ...')}
 								backgroundColor="gray5"
 								width="100%"
-								value=""
+								onChange={onSessionFilterInputChange}
 							></Input>
 						</Container>
 						<Padding horizontal="small" />
@@ -701,9 +751,6 @@ const AccountDetailView: FC<any> = ({
 							showCheckbox={false}
 							selectedRows={selectedSession}
 							multiSelect={false}
-							onSelectionChange={(selected: any): any => {
-								setSelectedSession(selected);
-							}}
 							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
