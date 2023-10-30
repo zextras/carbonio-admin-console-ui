@@ -13,7 +13,7 @@ export const getDomainList = async (
 ): Promise<any> =>
 	soapFetch(`SearchDirectory`, {
 		_jsns: 'urn:zimbraAdmin',
-		limit: limit || '50',
+		limit: limit ?? 50,
 		offset: offset || 0,
 		sortBy: 'zimbraDomainName',
 		sortAscending: '1',
