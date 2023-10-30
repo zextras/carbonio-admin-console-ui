@@ -65,7 +65,7 @@ const DomainOperations: FC = () => {
 		const attrs = 'cn,description';
 		const types = 'coses';
 
-		searchDirectory(attrs, types, '', '').then((data) => {
+		searchDirectory(attrs, types, '', '', 0, 0).then((data) => {
 			const cosLists = data?.cos;
 			if (cosLists) {
 				setCosList(cosLists);

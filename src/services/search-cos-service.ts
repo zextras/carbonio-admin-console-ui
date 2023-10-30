@@ -14,7 +14,7 @@ export const getCosList = async (searchKeyWord: string): Promise<any> =>
 			'Content-Type': 'application/json'
 		},
 		_jsns: 'urn:zimbraAdmin',
-		limit: '50',
+		limit: 0,
 		offset: 0,
 		sortBy: 'cn',
 		sortAscending: '1',
