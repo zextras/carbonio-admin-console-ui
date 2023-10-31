@@ -91,15 +91,21 @@ const DomainMailboxQuotaSetting: FC = () => {
 	);
 
 	const onSortChange = useCallback(
-		(v: string): any => {
-			if (v !== null && domainData?.zimbraDomainName) {
+		(v): any => {
+			if (
+				v &&
+				v.length > 0 &&
+				v !== null &&
+				domainData?.zimbraDomainName &&
+				v[0].value !== selectedSortType
+			) {
 				setOffset(0);
 				setTotalAccount(0);
 				setUsageQuota([]);
-				setSelectedSortType(v);
+				setSelectedSortType(v[0].value);
 			}
 		},
-		[domainData?.zimbraDomainName]
+		[domainData?.zimbraDomainName, selectedSortType]
 	);
 
 	const headers: any = useMemo(
@@ -217,8 +223,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 	}, [offset, limit, selectedSortType, domainData?.zimbraDomainName, getQuotaData]);
 
 	useEffect(() => {
-		getQuotaUsageInformation();
-	}, [selectedSortType, getQuotaUsageInformation]);
+		if (domainData?.zimbraDomainName) {
+			getQuotaUsageInformation();
+		}
+	}, [selectedSortType, getQuotaUsageInformation, domainData?.zimbraDomainName]);
 
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
