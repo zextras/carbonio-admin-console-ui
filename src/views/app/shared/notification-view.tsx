@@ -12,8 +12,6 @@ import {
 	SnackbarManagerContext,
 	Table,
 	Icon,
-	Button,
-	Padding,
 	Divider
 } from '@zextras/carbonio-design-system';
 import React, {
@@ -28,12 +26,13 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { isEmpty } from 'lodash';
+import { orderBy } from 'lodash';
 import {
 	NOTIFICATION_ALL,
 	NOTIFICATION_ERROR,
 	NOTIFICATION_INFORMATION,
-	NOTIFICATION_WARNING
+	NOTIFICATION_WARNING,
+	DESC
 } from '../../../constants';
 import { getAllNotifications } from '../../../services/get-all-notifications';
 import ListRow from '../../list/list-row';
@@ -212,7 +211,9 @@ const NotificationView: FC<{
 								errorCount += error.length;
 							}
 						});
-						setNotificationList(notificationItems);
+						setNotificationList(
+							orderBy(notificationItems, (item: Notification) => new Date(item?.date), [DESC])
+						);
 						setNotificationCount({
 							all: allCount,
 							information: infoCount,
