@@ -1502,9 +1502,9 @@
         "read_options": "Reading options",
         "read_receipt_settings": "Read Receipt settings",
         "reason": "Reason",
+        "received": "Received",
         "receiver": "Receiver",
         "receiving_mails": "Receiving Mails",
-        "received": "Received",
         "region": "Region",
         "registration": "Registration",
         "remind_appointments_timer": "Timer for appointments reminder",
@@ -1641,6 +1641,7 @@
             }
         },
         "soft_deleted": "Soft-deleted",
+        "something_went_wrong_check_data_and_try_again": "SOMETHING WENT WRONG. CHECK DATA AND TRY AGAIN",
         "something_wrong_error_msg": "Something went wrong. Please try again.",
         "something_wrong_wrror_msg": "Something went wrong. Please try again.",
         "sort_by_percentage": "Sort by Percentage",
