@@ -17,35 +17,11 @@ import {
 	useTheme
 } from '@zextras/carbonio-design-system';
 import { getBridgedFunctions, getIntegratedFunction, soapFetch } from '@zextras/carbonio-shell-ui';
-import { useTranslation, Trans } from 'react-i18next';
-// import { PreviewsManagerContext } from '@zextras/carbonio-ui-preview';
-import { filter, find, map, includes, isNil, uniqBy, remove } from 'lodash';
+import { useTranslation } from 'react-i18next';
+import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
 import React, { FC, ReactElement, useCallback, useContext, useMemo, useRef, useState } from 'react';
 import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
 import { removeAttachmentsRequest } from '../../services/remove-attachments';
-// import { DefaultTheme } from '../app/shared/customTableHeaderFactory';
-
-// import { getFileExtension } from '../../../../commons/utilities';
-// import { useAppDispatch } from '../../../../hooks/redux';
-// import { getMsgsForPrint } from '../../../../store/actions';
-// import { deleteAttachments } from '../../../../store/actions/delete-all-attachments';
-// import { StoreProvider } from '../../../../store/redux';
-// import type {
-// 	AttachmentPart,
-// 	AttachmentType,
-// 	CopyToFileResponse,
-// 	MailMessage,
-// 	OpenEmlPreviewType
-// } from '../../../../types';
-// import { useExtraWindow } from '../../extra-windows/use-extra-window';
-// import DeleteAttachmentModal from './delete-attachment-modal';
-// import { humanFileSize, previewType } from './file-preview';
-// import {
-// 	getAttachmentIconColors,
-// 	getAttachmentsDownloadLink,
-// 	getAttachmentsLink,
-// 	getLocationOrigin
-// } from './utils';
 import {
 	MailMessage,
 	EditorAttachmentFiles,
@@ -400,18 +376,6 @@ const getAttachmentIconColors = ({
 		'extension'
 	);
 
-/**
- * The BE currently doesn't support the preview of PDF attachments
- * whose part name consists in more than 2 numbers (which is common
- * for attachments nested inside an EML. Example: 1.3.2)
- *
- * As a workaround we intercept those cases and handle them
- * with the browser pdf preview
- *
- * TODO remove it when IRIS-3918 will be implemented
- */
-const UNSUPPORTED_PDF_ATTACHMENT_PARTNAME_PATTERN = /\d+\.\d+\../;
-
 const AttachmentHoverBarContainer = styled(Container)`
 	display: none;
 	height: 0;
@@ -467,18 +431,14 @@ export const humanFileSize = (inputSize: number): string => {
 const Attachment: FC<AttachmentType> = ({
 	filename,
 	size,
-	link,
 	downloadlink,
 	message,
 	isExternalMessage = false,
 	part,
 	iconColors,
 	att,
-	openEmlPreview,
 	getQuarantineMsgData
 }) => {
-	// const { createPreview } = useContext(PreviewsManagerContext);
-	// const { isInsideExtraWindow } = useExtraWindow();
 	const extension = getFileExtension(att).value;
 
 	const sizeLabel = useMemo(() => humanFileSize(size), [size]);
@@ -486,7 +446,6 @@ const Attachment: FC<AttachmentType> = ({
 	const inputRef2 = useRef<HTMLAnchorElement>(null);
 	const createSnackbar = useContext(SnackbarManagerContext);
 	const [t] = useTranslation();
-	// const dispatch = useAppDispatch();
 
 	const downloadAttachment = useCallback(() => {
 		if (inputRef.current) {
@@ -497,15 +456,6 @@ const Attachment: FC<AttachmentType> = ({
 		}
 	}, [inputRef]);
 
-	// TODO remove it when IRIS-3918 will be implemented
-	const browserPdfPreview = useCallback(() => {
-		if (inputRef2.current) {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
-			inputRef2.current.click();
-		}
-	}, [inputRef2]);
-
 	const isEML = extension === 'EML';
 
 	const actionTooltipText = isEML
@@ -513,13 +463,8 @@ const Attachment: FC<AttachmentType> = ({
 		: t('action.click_preview', 'Click to preview');
 
 	const onDeleteAttachment = useCallback(() => {
-		console.log('==> message', message);
-		console.log('==> Delete att', message.id, [part]);
-		// getQuarantineMsgData();
-		// remove(message.parts?.[0]?.parts, (friend) => friend.friend_id === 14);
 		removeAttachmentsRequest(message.id, part)
-			.then((res) => {
-				console.log('==> removeAttachmentsRequest', res);
+			.then(() => {
 				createSnackbar({
 					key: 'info',
 					type: 'info',
@@ -531,7 +476,6 @@ const Attachment: FC<AttachmentType> = ({
 				getQuarantineMsgData();
 			})
 			.catch((error) => {
-				// setMessageViewLoading(false);
 				createSnackbar({
 					key: 'error',
 					type: 'error',
@@ -544,179 +488,6 @@ const Attachment: FC<AttachmentType> = ({
 				});
 			});
 	}, [createSnackbar, getQuarantineMsgData, message, part, t]);
-
-	// const onDownloadAndDelete = useCallback(() => {
-	// 	downloadAttachment();
-	// 	onDeleteAttachment();
-	// }, [downloadAttachment, onDeleteAttachment]);
-
-	// const removeAttachment = useCallback(() => {
-	// 	const closeModal = getBridgedFunctions()?.createModal(
-	// 		{
-	// 			maxHeight: '90vh',
-	// 			children: (
-	// 				<StoreProvider>
-	// 					<DeleteAttachmentModal
-	// 						// TODO : fix it inside shell
-	// 						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// 						// @ts-ignore
-	// 						onClose={(): void => closeModal()}
-	// 						onDownloadAndDelete={onDownloadAndDelete}
-	// 						onDeleteAttachment={onDeleteAttachment}
-	// 					/>
-	// 				</StoreProvider>
-	// 			)
-	// 		},
-	// 		true
-	// 	);
-	// }, [onDeleteAttachment, onDownloadAndDelete]);
-
-	const confirmAction = useCallback(
-		(nodes) => {
-			soapFetch('CopyToFiles', {
-				_jsns: 'urn:zimbraMail',
-				mid: message.id,
-				part: att.name,
-				destinationFolderId: nodes[0].id
-			})
-				.then((res: any) => {
-					if (!res?.Fault) {
-						getBridgedFunctions()?.createSnackbar({
-							key: `mail-moved-root`,
-							replace: true,
-							type: 'info',
-							hideButton: true,
-							label: t('message.snackbar.att_saved', 'Attachment saved in the selected folder'),
-							autoHideTimeout: 3000
-						});
-					} else {
-						getBridgedFunctions()?.createSnackbar({
-							key: `mail-moved-root`,
-							replace: true,
-							type: 'warning',
-							hideButton: true,
-							label: t(
-								'message.snackbar.att_err',
-								'There seems to be a problem when saving, please try again'
-							),
-							autoHideTimeout: 3000
-						});
-					}
-				})
-				.catch(() => {
-					getBridgedFunctions()?.createSnackbar({
-						key: `calendar-moved-root`,
-						replace: true,
-						type: 'warning',
-						hideButton: true,
-						label: t(
-							'message.snackbar.att_err',
-							'There seems to be a problem when saving, please try again'
-						),
-						autoHideTimeout: 3000
-					});
-				});
-		},
-		[att.name, message.id, t]
-	);
-
-	const isAValidDestination = useCallback((node) => node?.permissions?.can_write_file, []);
-
-	const actionTarget = useMemo(
-		() => ({
-			title: t('label.select_folder', 'Select folder'),
-			confirmAction,
-			confirmLabel: t('label.save', 'Save'),
-			disabledTooltip: t('label.invalid_destination', 'This node is not a valid destination'),
-			allowFiles: false,
-			allowFolders: true,
-			isValidSelection: isAValidDestination,
-			canSelectOpenedFolder: true,
-			maxSelection: 1
-		}),
-		[confirmAction, isAValidDestination, t]
-	);
-
-	const [uploadIntegration, isUploadIntegrationAvailable] = getIntegratedFunction('select-nodes');
-
-	// const showEMLPreview = useCallback(() => {
-	// 	getMsgsForPrint({ ids: [message.id], part: att?.name })
-	// 		.then((res) => {
-	// 			openEmlPreview && openEmlPreview(message.id, att?.name, res[0]);
-	// 		})
-	// 		.catch(() => {
-	// 			getBridgedFunctions()?.createSnackbar({
-	// 				key: `eml-attachment-failed-download`,
-	// 				replace: true,
-	// 				type: 'error',
-	// 				hideButton: true,
-	// 				label: t(
-	// 					'message.snackbar.eml_download_failed',
-	// 					'The EML attachment could not be downloaded. Try later'
-	// 				),
-	// 				autoHideTimeout: 3000
-	// 			});
-	// 		});
-	// }, [att?.name, message.id, openEmlPreview]);
-
-	// const preview = useCallback(
-	// 	(ev) => {
-	// 		ev.preventDefault();
-	// 		const pType = previewType(att.contentType);
-
-	// 		if (pType) {
-	// 			// TODO remove the condition and the conditional block when IRIS-3918 will be implemented
-	// 			if (pType === 'pdf' && att.name.match(UNSUPPORTED_PDF_ATTACHMENT_PARTNAME_PATTERN)) {
-	// 				browserPdfPreview();
-	// 			} else {
-	// 				createPreview({
-	// 					src: link,
-	// 					previewType: pType,
-	// 					/** Left Action for the preview */
-	// 					closeAction: {
-	// 						id: 'close',
-	// 						icon: 'ArrowBack',
-	// 						tooltipLabel: t('preview.close', 'Close Preview')
-	// 					},
-	// 					/** Actions for the preview */
-	// 					actions: [
-	// 						{
-	// 							icon: 'DownloadOutline',
-	// 							tooltipLabel: t('label.download', 'Download'),
-	// 							id: 'DownloadOutline',
-	// 							onClick: downloadAttachment
-	// 						}
-	// 					],
-	// 					/** Extension of the file, shown as info */
-	// 					extension: att.filename.substring(att.filename.lastIndexOf('.') + 1),
-	// 					/** Name of the file, shown as info */
-	// 					filename: att.filename,
-	// 					/** Size of the file, shown as info */
-	// 					size: humanFileSize(att.size)
-	// 				});
-	// 			}
-	// 		} else if (isEML) {
-	// 			showEMLPreview();
-	// 		} else if (inputRef2.current) {
-	// 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// 			// @ts-ignore
-	// 			inputRef2.current.value = null;
-	// 			inputRef2.current.click();
-	// 		}
-	// 	},
-	// 	[
-	// 		att.contentType,
-	// 		att.filename,
-	// 		att.name,
-	// 		att.size,
-	// 		browserPdfPreview,
-	// 		createPreview,
-	// 		downloadAttachment,
-	// 		isEML,
-	// 		link,
-	// 		showEMLPreview
-	// 	]
-	// );
 
 	return (
 		<AttachmentContainer
@@ -756,29 +527,6 @@ const Attachment: FC<AttachmentType> = ({
 			</Tooltip>
 			<Row orientation="horizontal" crossAlignment="center">
 				<AttachmentHoverBarContainer orientation="horizontal">
-					{/* {isUploadIntegrationAvailable && (
-						<Tooltip
-							key={`${message.id}-DriveOutline`}
-							label={
-								isInsideExtraWindow
-									? t(
-											'label.extra_window.save_to_files_disabled',
-											'Files’ attachments saving is available only from the main tab'
-									  )
-									: t('label.save_to_files', 'Save to Files')
-							}
-						>
-							<IconButton
-								size="medium"
-								icon="DriveOutline"
-								onClick={(): void => {
-									uploadIntegration && uploadIntegration(actionTarget);
-								}}
-								disabled={isInsideExtraWindow}
-							/>
-						</Tooltip>
-					)} */}
-
 					<Padding right="small">
 						<Tooltip key={`${message.id}-DownloadOutline`} label={t('label.download', 'Download')}>
 							<IconButton size="medium" icon="DownloadOutline" onClick={downloadAttachment} />
@@ -918,8 +666,6 @@ const AttachmentsBlock: FC<{
 
 	const [uploadIntegration, isUploadIntegrationAvailable] = getIntegratedFunction('select-nodes');
 
-	// const { isInsideExtraWindow } = useExtraWindow();
-
 	const getSaveToFilesLink = useCallback((): ReactElement | null => {
 		if (!isUploadIntegrationAvailable) {
 			return null;
@@ -932,30 +678,11 @@ const AttachmentsBlock: FC<{
 					uploadIntegration && uploadIntegration(actionTarget);
 				}}
 				style={{ paddingLeft: '0.5rem' }}
-				// disabled={isInsideExtraWindow}
 			>
 				{t('label.save_to_files', 'Save to Files')}
 			</Link>
 		);
 		return link;
-		// if (!isInsideExtraWindow) {
-		// 	return link;
-		// }
-		// return (
-		// 	<Tooltip
-		// 		key={`${message.id}-files-saving-disabled`}
-		// 		label={
-		// 			isInsideExtraWindow
-		// 				? t(
-		// 						'label.extra_window.save_to_files_disabled',
-		// 						'Files’ attachments saving is available only from the main tab'
-		// 				  )
-		// 				: ''
-		// 		}
-		// 	>
-		// 		{link}
-		// 	</Tooltip>
-		// );
 	}, [actionTarget, isUploadIntegrationAvailable, t, uploadIntegration]);
 
 	return attachmentsCount > 0 ? (
@@ -984,7 +711,6 @@ const AttachmentsBlock: FC<{
 						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 						// @ts-ignore
 						att={att}
-						// openEmlPreview={openEmlPreview}
 						getQuarantineMsgData={getQuarantineMsgData}
 					/>
 				))}

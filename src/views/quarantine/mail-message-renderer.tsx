@@ -8,29 +8,15 @@ import {
 	Container,
 	Icon,
 	IconButton,
-	MultiButton,
 	Padding,
 	Row,
 	Text
 } from '@zextras/carbonio-design-system';
-import { editSettings, useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash';
-import React, {
-	FC,
-	useCallback,
-	useEffect,
-	useLayoutEffect,
-	useMemo,
-	useRef,
-	useState
-} from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-// import { ParticipantRole } from '../carbonio-ui-commons/constants/participants';
-// import type { EditorAttachmentFiles, MailMessage, MailMessagePart, Participant } from '../types';
-
-// import { getOriginalContent, getQuotedTextOnly } from './get-quoted-text-util';
-// import { isAvailableInTrusteeList } from './utils';
 
 export const _CI_REGEX = /^<(.*)>$/;
 export const _CI_SRC_REGEX = /^cid:(.*)$/;
@@ -172,21 +158,6 @@ const BannerContainer = styled(Container)`
 	border-radius: 0.125rem 0.125rem 0 0;
 `;
 
-const StyledMultiBtn = styled(MultiButton)`
-	border: 0.0625rem solid ${(props): string => props.theme.palette.warning.regular};
-	height: 2rem;
-	& > * {
-		background-color: ${(props): string => props.theme.palette.transparent.regular} !important;
-		cursor: pointer;
-	}
-	&:hover {
-		background-color: ${({ theme }): string => theme.palette.gray6.focus};
-	}
-	svg {
-		padding: 0 !important;
-	}
-`;
-
 const replaceLinkToAnchor = (content: string): string => {
 	if (content === '' || content === undefined) {
 		return '';
@@ -209,7 +180,6 @@ const replaceLinkToAnchor = (content: string): string => {
 const _TextMessageRenderer: FC<{ body: { content: string; contentType: string } }> = ({ body }) => {
 	const [showQuotedText, setShowQuotedText] = useState(false);
 	const orignalText = body.content; // getOriginalContent(body.content, false);
-	const quoted = body.content; // getQuotedTextOnly(body.content, false);
 
 	const contentToDisplay = useMemo(
 		() => (showQuotedText ? body.content : orignalText),
@@ -231,16 +201,6 @@ const _TextMessageRenderer: FC<{ body: { content: string; contentType: string } 
 					__html: convertedHTML
 				}}
 			/>
-			{/* {!showQuotedText && quoted.length > 0 && (
-				<Row mainAlignment="center" crossAlignment="center" padding={{ top: 'medium' }}>
-					<Button
-						label={t('label.show_quoted_text', 'Show quoted text')}
-						icon="EyeOutline"
-						type="outlined"
-						onClick={(): void => setShowQuotedText(true)}
-					/>
-				</Row>
-			)} */}
 		</>
 	);
 };
@@ -263,18 +223,10 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 
 	const settingsPref = useUserSettings()?.prefs;
 	const from = filter(participants, { type: ParticipantRole.FROM })[0]?.address;
-	const domain = from?.substring(from.lastIndexOf('@') + 1);
-
 	const [showExternalImage, setShowExternalImage] = useState(false);
 	const [displayBanner, setDisplayBanner] = useState(true);
-	// const darkMode = useMemo(
-	// 	() => find(settings.props, ['name', 'zappDarkreaderMode'])?._content,
-	// 	[settings]
-	// );
 
 	const orignalText = body.content; // getOriginalContent(body.content, false);
-	const quoted = body.content; // getQuotedTextOnly(body.content, false);
-
 	const contentToDisplay = useMemo(
 		() => (showQuotedText ? body.content : orignalText),
 		[showQuotedText, body.content, orignalText]
@@ -332,56 +284,6 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 		}
 	};
 
-	const saveTrustee = useCallback(
-		(trustee) => {
-			let trusteeAddress: string[] = [];
-			if (settingsPref.zimbraPrefMailTrustedSenderList) {
-				trusteeAddress = isArray(settingsPref.zimbraPrefMailTrustedSenderList)
-					? settingsPref.zimbraPrefMailTrustedSenderList
-					: // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					  // @ts-ignore
-					  settingsPref.zimbraPrefMailTrustedSenderList?.split(',');
-			}
-
-			editSettings({
-				prefs: { zimbraPrefMailTrustedSenderList: [...trusteeAddress, trustee] }
-			}).then((res) => {
-				if (res.type?.includes('fulfilled')) {
-					setShowExternalImage(true);
-				}
-			});
-		},
-		[settingsPref.zimbraPrefMailTrustedSenderList]
-	);
-
-	const items = useMemo<any[]>(
-		() => [
-			{
-				id: 'always-allow-address',
-				label: (
-					<Trans
-						i18nKey="label.always_allow_address"
-						defaults="Always allow from <strong>{{values}}</strong>"
-						values={{ from }}
-					/>
-				),
-				onClick: () => saveTrustee(from)
-			},
-			{
-				id: 'always-allow-domain',
-				label: (
-					<Trans
-						i18nKey="label.always_allow_domain"
-						defaults="Always allow from <strong>{{values}}</strong> domain"
-						values={{ domain }}
-					/>
-				),
-				onClick: () => saveTrustee(domain)
-			}
-		],
-		[from, domain, saveTrustee]
-	);
-
 	const showImage = useMemo(
 		() => showExternalImage && displayBanner,
 		[displayBanner, showExternalImage]
@@ -425,18 +327,6 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 		styleTag.textContent = styles;
 		if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument))
 			iframeRef.current.contentDocument.head.append(styleTag);
-
-		// TODO: fix Dark Reader inside iframes
-		// if (darkMode && darkMode !== 'disabled') {
-		// 	const modeSetting = darkMode === 'enabled' ? 'enable' : 'auto';
-		// 	const darkReaderScript = document.createElement('script');
-		// 	darkReaderScript.src = 'https://cdn.jsdelivr.net/npm/darkreader@4.9.32/darkreader.min.js';
-		// 	darkReaderScript.type = 'application/javascript';
-		// 	iframeRef.current.contentDocument.body.append(darkReaderScript);
-		// 	const darkScriptEnable = document.createElement('script');
-		// 	darkScriptEnable.textContent = `if (document.readyState === 'complete') {document.body.style.visibility = 'visible';} else {window.onload = function(){ DarkReader.${modeSetting}();document.body.style.visibility = 'visible';}}`;
-		// 	iframeRef.current.contentDocument.body.append(darkScriptEnable);
-		// }
 
 		calculateHeight();
 
@@ -552,17 +442,6 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 					maxWidth: '100%'
 				}}
 			/>
-			{/* {!showQuotedText && quoted.length > 0 && (
-				<Row mainAlignment="center" crossAlignment="center">
-					<Button
-						label={t('label.show_quoted_text', 'Show quoted text')}
-						icon="EyeOutline"
-						type="outlined"
-						onClick={(): void => setShowQuotedText(true)}
-						width="fill"
-					/>
-				</Row>
-			)} */}
 		</div>
 	);
 };
@@ -575,24 +454,6 @@ const EmptyBody: FC = () => {
 		</Container>
 	);
 };
-
-// export function findAttachments(
-// 	parts: MailMessagePart[],
-// 	acc: Array<EditorAttachmentFiles>
-// ): Array<EditorAttachmentFiles> {
-// 	console.log('==> findAttachments', parts);
-// 	return reduce(
-// 		parts,
-// 		(found, part: any) => {
-// 			if (part && (part.disposition === 'attachment' || part.disposition === 'inline') && part.ci) {
-// 				found.push(part);
-// 			}
-// 			if (part.parts) return findAttachments(part.parts, found);
-// 			return acc;
-// 		},
-// 		acc
-// 	);
-// }
 const findAttachments = (
 	parts: MailMessagePart[],
 	acc: Array<EditorAttachmentFiles>
@@ -609,16 +470,9 @@ const findAttachments = (
 		},
 		acc
 	);
-const MailMessageRenderer: FC<{ mailMsg: MailMessage; onLoadChange: () => void }> = ({
-	mailMsg,
-	onLoadChange
-}) => {
+const MailMessageRenderer: FC<{ mailMsg: MailMessage }> = ({ mailMsg }) => {
 	const parts = findAttachments(mailMsg.parts ?? [], []);
-	useEffect(() => {
-		if (!mailMsg.read) {
-			onLoadChange();
-		}
-	}, [mailMsg.read, onLoadChange]);
+
 	if (!mailMsg.body?.content?.length && !mailMsg.fragment) {
 		return <EmptyBody />;
 	}
