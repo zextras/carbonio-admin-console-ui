@@ -329,13 +329,6 @@ const MessageListTable: FC<{
 					)}
 				</Container>
 			</ListRow>
-			{tableRows.length === 0 && (
-				<Container crossAlignment="center" mainAlignment="flex-start" style={{ marginTop: '3rem' }}>
-					<Text overflow="break-word" weight="regular" size="large">
-						<img src={logo} alt="logo" />
-					</Text>
-				</Container>
-			)}
 		</Container>
 	);
 };
@@ -696,6 +689,9 @@ const QuarantineList: FC = () => {
 				setZimbraMailMessageLifetimeType(zimbraMailMessageLifetime?.slice(-1));
 				if (res?.account?.[0]?.id) {
 					getQuarantineMessages(res?.account?.[0]?.id).then((response: any): void => {
+						if (!response?.Body?.SearchResponse?.m) {
+							setRequestInprogress(false);
+						}
 						const data = response?.Body?.SearchResponse?.m;
 						const messageListArr: any = [];
 						data.forEach((item: any): any =>
@@ -816,6 +812,8 @@ const QuarantineList: FC = () => {
 							})
 							.catch(() => setRequestInprogress(false));
 					});
+				} else {
+					setRequestInprogress(false);
 				}
 			});
 		}
@@ -878,6 +876,7 @@ const QuarantineList: FC = () => {
 								replace: true
 							});
 							getAllConfigData();
+							getQuarantineMsgData();
 							if (deleteAccountName) {
 								getAccountRequest('', deleteAccountName, 0).then((res) => {
 									if (res?.account?.[0]?.id) {
@@ -914,7 +913,14 @@ const QuarantineList: FC = () => {
 					replace: true
 				});
 			});
-	}, [createSnackbar, getAllConfigData, quarantineAccountName, quarantineDomaintName, t]);
+	}, [
+		createSnackbar,
+		getAllConfigData,
+		getQuarantineMsgData,
+		quarantineAccountName,
+		quarantineDomaintName,
+		t
+	]);
 	const onDeleteMessage = useCallback(
 		(id: string) => {
 			setMessageViewLoading(true);
