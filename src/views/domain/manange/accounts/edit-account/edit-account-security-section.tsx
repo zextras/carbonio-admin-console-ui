@@ -225,7 +225,7 @@ const EditAccountSecuritySection: FC = () => {
 										value={sendEmailTo}
 										background="gray5"
 										ChipComponent={CustomChip}
-										// hasError={some(sendEmailTo || [], { error: true })}
+										maxChips={null}
 									/>
 								</Row>
 								<Row width="20%" mainAlignment="space-between">

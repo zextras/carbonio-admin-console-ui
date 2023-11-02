@@ -543,6 +543,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={prefReadReceiptsToAddress}
 						hasError={some(prefReadReceiptsToAddress || [], { error: true })}
 						ChipComponent={CustomChip}
+						maxChips={null}
 					/>
 				</Row>
 			</Row>
@@ -605,6 +606,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={zimbraAllowFromAddress}
 						hasError={some(zimbraAllowFromAddress || [], { error: true })}
 						ChipComponent={CustomChip}
+						maxChips={null}
 					/>
 				</Row>
 			</Row>

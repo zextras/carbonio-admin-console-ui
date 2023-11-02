@@ -142,6 +142,7 @@ export const TwoFactorAuthencationConfig: FC<{
 								value={applyAllValues.ipRange}
 								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
 								ChipComponent={CustomChip}
+								maxChips={null}
 							/>
 						</Padding>
 					</ListRow>
@@ -225,6 +226,7 @@ export const TwoFactorAuthencationConfig: FC<{
 											)}
 											errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
 											ChipComponent={CustomChip}
+											maxChips={null}
 										/>
 									</Padding>
 								</ListRow>
