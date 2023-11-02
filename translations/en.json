@@ -2183,17 +2183,26 @@
         "survey_feedback_sub_1": "Don't worry, surveys will be quick, easy and super useful to us to understand how we're going."
     },
     "quarantine": {
+        "attachment_deleted": "Attachment deleted",
         "create_quarantine": "CREATE A QUARANTINE ACCOUNT",
         "delete_and_recrate_quarantine_account_title": "Delete and re-create quarantine account",
         "delete_and_recrate_quarantine_account_warning": "Are you sure you want to delete and re-create quarantine account?",
         "delete_and_recreate_quarantine": "DELETE AND RE-CREATE QUARANTINE ACCOUNT",
+        "delete_message": "Delete message",
+        "delete_msg_warning": "Are you sure you want to delete message?",
         "deliver": "DELIVER",
         "destroy_account_recreate_button": "YES, DELETE AND RE-CREATE IT",
+        "hide_source": "Hide source",
+        "message_deleted": "Message deleted",
+        "message_delivered": "Message delivered",
         "not_quarantine_account": "There is not quarantine account in any of the domains, yet. Do you want to create a system quarantine account?",
         "quarantine": "Quarantine",
         "quarantine_account": "Quarantine Account",
         "quarantine_messages": "Quarantined Messages",
-        "to_make_changes_restart_the_MTA": "To make the changes effective, please restart the MTA."
+        "show_images": "Show Images",
+        "show_source": "Show source",
+        "to_make_changes_restart_the_MTA": "To make the changes effective, please restart the MTA.",
+        "yes_delete_message": "YES, DELETE"
     },
     "reminder": {
         "minute": "{{count}} minute",

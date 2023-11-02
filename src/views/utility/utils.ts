@@ -1142,13 +1142,13 @@ export const MessageTableHeaders = (t: TFunction): Array<object> => [
 		id: 'score',
 		label: t('label.score', 'Score'),
 		bold: true,
-		width: '20%'
+		width: '10%'
 	},
 	{
 		id: 'reason',
 		label: t('label.reason', 'Reason'),
 		bold: true,
-		width: '15%'
+		width: '25%'
 	}
 ];
 

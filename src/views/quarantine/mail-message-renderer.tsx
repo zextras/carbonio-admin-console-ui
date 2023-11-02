@@ -287,18 +287,41 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 
 		return some(images, (i) => i.hasAttribute('dfsrc'));
 	}, [contentToDisplay]);
-
-	// const showBanner = useMemo(
-	// 	() =>
-	// 		hasExternalImages &&
-	// 		!isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from) &&
-	// 		displayBanner,
-	// 	[from, hasExternalImages, settingsPref.zimbraPrefMailTrustedSenderList, displayBanner]
-	// );
-	// useEffect(() => {
-	// 	if (isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from))
-	// 		setShowExternalImage(true);
-	// }, [from, settingsPref.zimbraPrefMailTrustedSenderList]);
+	const isAvailableInTrusteeList = (
+		trusteeList: string | number | Array<number | string>,
+		address: string
+	): boolean => {
+		let trusteeAddress: Array<string> = [];
+		let availableInTrusteeList = false;
+		if (trusteeList) {
+			// eslint-disable-next-line no-nested-ternary
+			trusteeAddress = isArray(trusteeList)
+				? (trusteeList as string[])
+				: typeof trusteeList === 'string'
+				? trusteeList?.split(',')
+				: [`${trusteeList}`];
+		}
+		if (trusteeAddress.length > 0) {
+			const domainName = address.substring(address.lastIndexOf('@') + 1);
+			trusteeAddress.forEach((ta) => {
+				if (ta === domainName || ta === address) {
+					availableInTrusteeList = true;
+				}
+			});
+		}
+		return availableInTrusteeList;
+	};
+	const showBanner = useMemo(
+		() =>
+			hasExternalImages &&
+			!isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from) &&
+			displayBanner,
+		[from, hasExternalImages, settingsPref.zimbraPrefMailTrustedSenderList, displayBanner]
+	);
+	useEffect(() => {
+		if (isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from))
+			setShowExternalImage(true);
+	}, [from, settingsPref.zimbraPrefMailTrustedSenderList]);
 
 	const calculateHeight = (): void => {
 		if (!isNull(iframeRef.current)) {
@@ -453,7 +476,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 	const [t] = useTranslation();
 	return (
 		<div ref={divRef} className="force-white-bg" style={{ width: '100%' }}>
-			{/* {showBanner && !showExternalImage && (
+			{showBanner && !showExternalImage && (
 				<BannerContainer
 					orientation="horizontal"
 					mainAlignment="space-between"
@@ -496,21 +519,14 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 							flexDirection: 'row'
 						}}
 					>
-						<StyledMultiBtn
-							background="transparent"
+						<Button
+							backgroundColor="transparent"
 							type="outlined"
-							label={multiBtnLabel}
+							label={t('quarantine.show_images', 'Show Images')}
 							color="warning"
 							onClick={(): void => {
 								setShowExternalImage(true);
 							}}
-							dropdownProps={{
-								maxWidth: '31.25rem',
-								width: 'fit',
-								items,
-								children: <></>
-							}}
-							items={items}
 						/>
 						<IconButton
 							icon="CloseOutline"
@@ -523,7 +539,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 						/>
 					</Row>
 				</BannerContainer>
-			)} */}
+			)}
 			<iframe
 				data-testid="message-renderer-iframe"
 				title={msgId}
@@ -536,7 +552,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 					maxWidth: '100%'
 				}}
 			/>
-			{!showQuotedText && quoted.length > 0 && (
+			{/* {!showQuotedText && quoted.length > 0 && (
 				<Row mainAlignment="center" crossAlignment="center">
 					<Button
 						label={t('label.show_quoted_text', 'Show quoted text')}
@@ -546,7 +562,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 						width="fill"
 					/>
 				</Row>
-			)}
+			)} */}
 		</div>
 	);
 };
@@ -589,7 +605,6 @@ const findAttachments = (
 				found.push(part);
 			}
 			if (part.parts) return findAttachments(part.parts, found);
-			console.log('==> acc', acc);
 			return acc;
 		},
 		acc
@@ -598,9 +613,7 @@ const MailMessageRenderer: FC<{ mailMsg: MailMessage; onLoadChange: () => void }
 	mailMsg,
 	onLoadChange
 }) => {
-	console.log('mailMsg ==>', mailMsg);
 	const parts = findAttachments(mailMsg.parts ?? [], []);
-	console.log('parts ==>', parts);
 	useEffect(() => {
 		if (!mailMsg.read) {
 			onLoadChange();

@@ -6,18 +6,7 @@
 import React, { FC, useEffect, useState, useCallback, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { getTags } from '@zextras/carbonio-shell-ui';
-import {
-	cloneDeep,
-	filter,
-	find,
-	forEach,
-	isArray,
-	isNil,
-	map,
-	omitBy,
-	reduce,
-	replace
-} from 'lodash';
+import { filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
 import {
 	Container,
 	Input,
@@ -30,7 +19,8 @@ import {
 	Select,
 	Table,
 	IconButton,
-	Padding
+	Padding,
+	Collapse
 } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import moment from 'moment';
@@ -53,6 +43,22 @@ import AttachmentsBlock from './attachments-block';
 import { batchService } from '../../services/batch-service';
 import { msgActionRequest } from '../../services/message-action';
 import { sendMsgRequest } from '../../services/send-message';
+import OverlayDivision from '../components/overlayDivision';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 58.75rem;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 export type AttachmentPart = {
 	part?: string;
@@ -227,7 +233,7 @@ const MessageListTable: FC<{
 						}}
 					>
 						<Text size="small" weight="light">
-							{find(v?.participants, { type: 'f' })?.address}
+							{v.envelopeFrom || ''}
 						</Text>
 					</Row>,
 					<Row
@@ -250,7 +256,12 @@ const MessageListTable: FC<{
 							setMessage(v);
 						}}
 					>
-						<Text size="small" weight="light">
+						<Text
+							size="small"
+							weight="bold"
+							// eslint-disable-next-line no-nested-ternary
+							color={v.score > 50 ? 'secondry' : v.score > 35 ? 'warning' : 'error'}
+						>
 							{v.score}
 						</Text>
 					</Row>,
@@ -346,11 +357,16 @@ const QuarantineList: FC = () => {
 	const [quarantineDomaintName, setQuarantineDomaintName] = useState<string>('');
 	const [configDataLoaded, setConfigDataLoaded] = useState<boolean>(false);
 	const [deleteQuarantuneAccModal, setDeleteQuarantuneAccModal] = useState<boolean>(false);
+	const [deleteMsgModal, setDeleteMsgModal] = useState<boolean>(false);
 	const [showMessageView, setShowMessageView] = useState<boolean>(false);
+	const [messageViewLoading, setMessageViewLoading] = useState<boolean>(false);
 	const [messageListData, setMessageListData] = useState([]);
 	const { config, setConfig } = useConfigStore((state) => state);
 	const [messageSelection, setMessageSelection] = useState<string[]>([]);
 	const [requestInprogress, setRequestInprogress] = useState<boolean>(false);
+	const [showTextMsgView, setShowTextMsgView] = useState<boolean>(false);
+	const [zimbraMailMessageLifetimeNum, setZimbraMailMessageLifetimeNum] = useState('');
+	const [zimbraMailMessageLifetimeType, setZimbraMailMessageLifetimeType] = useState('');
 	const [message, setMessage] = useState<IncompleteMessage>({
 		id: '',
 		did: '',
@@ -380,6 +396,27 @@ const QuarantineList: FC = () => {
 		score: '',
 		reason: ''
 	});
+	const timeItems: any[] = useMemo(
+		() => [
+			{
+				label: t('label.seconds', 'Seconds'),
+				value: 's'
+			},
+			{
+				label: t('label.minutes', 'Minutes'),
+				value: 'm'
+			},
+			{
+				label: t('label.hours', 'Hours'),
+				value: 'h'
+			},
+			{
+				label: t('label.days', 'Days'),
+				value: 'd'
+			}
+		],
+		[t]
+	);
 	const onViewMail = useCallback(
 		(name) => {
 			getDelegateAuthRequest('', name)
@@ -760,6 +797,12 @@ const QuarantineList: FC = () => {
 			setQuarantineAccountName(obj.zimbraAmavisQuarantineAccount.toString());
 			setRequestInprogress(true);
 			getAccountRequest('', obj.zimbraAmavisQuarantineAccount.toString(), 0).then((res) => {
+				const zimbraMailMessageLifetimeObject = find(res?.account?.[0]?.a, {
+					n: 'zimbraMailMessageLifetime'
+				});
+				const zimbraMailMessageLifetime = zimbraMailMessageLifetimeObject?._content;
+				setZimbraMailMessageLifetimeNum(zimbraMailMessageLifetime?.slice(0, -1));
+				setZimbraMailMessageLifetimeType(zimbraMailMessageLifetime?.slice(-1));
 				if (res?.account?.[0]?.id) {
 					setQuarantineAccountId(res?.account?.[0]?.id);
 					getQuarantineMessages(res?.account?.[0]?.id).then((response: any): void => {
@@ -809,6 +852,7 @@ const QuarantineList: FC = () => {
 							.then((msgBatchData) => {
 								console.log('msgBatchData ==>', msgBatchData);
 								const normalizedMessageList: any = [];
+								// const messageId = message.id;
 								msgBatchData?.GetMsgResponse?.forEach((item: any) => {
 									const m = item.m?.[0];
 									console.log('==>', m?._attrs?.['X-Spam-Status']);
@@ -844,7 +888,7 @@ const QuarantineList: FC = () => {
 										reasonValueString = reasonValueString.split(' ')?.[0] || '';
 									}
 
-									const normalizedMessage = {
+									const normalizedMessage: IncompleteMessage = {
 										conversation: m.cid,
 										id: m.id,
 										date: m.d,
@@ -853,6 +897,8 @@ const QuarantineList: FC = () => {
 										fragment: m.fr,
 										subject: m.su,
 										participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
+										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+										// @ts-ignore
 										tags: getTagIds(m.t, m.tn),
 										parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
 										attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],
@@ -884,46 +930,56 @@ const QuarantineList: FC = () => {
 										envelopeFrom: replace(m?._attrs?.['X-Envelope-From'] || '', /[<>]/g, ''),
 										envelopeTo: replace(m?._attrs?.['X-Envelope-To'] || '', /[<>]/g, '')
 									};
+
+									// if (m.id === messageId) {
+									// 	console.log('==> Set', m.id, messageId);
+									// 	setShowMessageView(false);
+									// 	setMessage(normalizedMessage);
+									// 	setShowMessageView(true);
+									// }
 									normalizedMessageList.push(normalizedMessage);
 								});
 
 								console.log('normalizedMessage ==>', normalizedMessageList);
 								setMessageListData(normalizedMessageList);
-								console.log('message g ==>', message);
-								// if(message.id){
-								// 	console.log('message.id ==>', message.id)
-								// 	const messageFound = find(normalizedMessageList, {id: message.id})
-								// 	console.log('messageFound ==>', messageFound)
-								// 	if(messageFound?.id){
-								// 		setMessage({
-								// 			id: '',
-								// 			did: '',
-								// 			parent: '',
-								// 			conversation: '',
-								// 			read: '',
-								// 			size: 0,
-								// 			hasAttachment: false,
-								// 			flagged: false,
-								// 			urgent: false,
-								// 			isDeleted: false,
-								// 			isSentByMe: false,
-								// 			isForwarded: false,
-								// 			isInvite: false,
-								// 			isDraft: false,
-								// 			isScheduled: false,
-								// 			date: 0,
-								// 			subject: '',
-								// 			tags: [],
-								// 			parts: [],
-								// 			body: {
-								// 				contentType: '',
-								// 				content: ''
-								// 			},
-								// 			isComplete: true,
-								// 			isReplied: false,
-								// 			score: '',
-								// 			reason: ''
-								// 		})
+								// console.log('message g ==>', message.id);
+								// if (message.id) {
+								// 	console.log('message.id ==>', message.id);
+								// 	const messageFound = find(normalizedMessageList, { id: message.id });
+								// 	console.log(
+								// 		'messageFound find ==>',
+								// 		find(normalizedMessageList, { id: message.id })
+								// 	);
+								// 	if (messageFound?.id) {
+								// 		// setMessage({
+								// 		// 	id: '',
+								// 		// 	did: '',
+								// 		// 	parent: '',
+								// 		// 	conversation: '',
+								// 		// 	read: '',
+								// 		// 	size: 0,
+								// 		// 	hasAttachment: false,
+								// 		// 	flagged: false,
+								// 		// 	urgent: false,
+								// 		// 	isDeleted: false,
+								// 		// 	isSentByMe: false,
+								// 		// 	isForwarded: false,
+								// 		// 	isInvite: false,
+								// 		// 	isDraft: false,
+								// 		// 	isScheduled: false,
+								// 		// 	date: 0,
+								// 		// 	subject: '',
+								// 		// 	tags: [],
+								// 		// 	parts: [],
+								// 		// 	body: {
+								// 		// 		contentType: '',
+								// 		// 		content: ''
+								// 		// 	},
+								// 		// 	isComplete: true,
+								// 		// 	isReplied: false,
+								// 		// 	score: '',
+								// 		// 	reason: ''
+								// 		// });
 								// 		setMessage(cloneDeep(messageFound));
 								// 	}
 								// }
@@ -946,25 +1002,15 @@ const QuarantineList: FC = () => {
 		generateBody,
 		getAttachmentsFromParts,
 		getTagIds,
-		message,
 		normalizeMailPartMapFn,
 		normalizeParticipantsFromSoap
 	]);
 	useEffect(() => {
 		getQuarantineMsgData();
-	}, [
-		config,
-		generateBody,
-		getAllConfigData,
-		getAttachmentsFromParts,
-		getQuarantineMsgData,
-		getTagIds,
-		normalizeMailPartMapFn,
-		normalizeParticipantsFromSoap
-	]);
+	}, [getQuarantineMsgData]);
 
 	const onChange = (): void => {
-		console.log('__interval change');
+		null;
 	};
 
 	const createAccountAPI = useCallback((): void => {
@@ -1045,23 +1091,75 @@ const QuarantineList: FC = () => {
 	}, [createSnackbar, getAllConfigData, quarantineAccountName, quarantineDomaintName, t]);
 	const onDeleteMessage = useCallback(
 		(id: string) => {
-			msgActionRequest(id, 'delete').then((res) => {
-				setMessageListData([]);
-				getQuarantineMsgData();
-				setShowMessageView(false);
-			});
+			setMessageViewLoading(true);
+			setDeleteMsgModal(false);
+			msgActionRequest(id, 'delete')
+				.then((res) => {
+					setMessageListData([]);
+					getQuarantineMsgData();
+					setShowMessageView(false);
+					setMessageViewLoading(false);
+					createSnackbar({
+						key: 'info',
+						type: 'info',
+						label: t('quarantine.message_deleted', 'Message deleted'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				})
+				.catch((error) => {
+					setMessageViewLoading(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
 		},
-		[getQuarantineMsgData]
+		[createSnackbar, getQuarantineMsgData, t]
 	);
 
-	const onDeliverMessage = useCallback((msg: IncompleteMessage) => {
-		sendMsgRequest(msg).then((res) => {
-			console.log('sendMsgRequest ==>', res);
-			// setMessageListData([]);
-			// getQuarantineMsgData();
-			// setShowMessageView(false);
-		});
-	}, []);
+	const onDeliverMessage = useCallback(
+		(msg: IncompleteMessage) => {
+			setMessageViewLoading(true);
+			sendMsgRequest(msg)
+				.then((res) => {
+					setMessageListData([]);
+					getQuarantineMsgData();
+					setShowMessageView(false);
+					setMessageViewLoading(false);
+					createSnackbar({
+						key: 'info',
+						type: 'info',
+						label: t('quarantine.message_delivered', 'Message delivered'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				})
+				.catch((error) => {
+					setMessageViewLoading(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[createSnackbar, getQuarantineMsgData, t]
+	);
+	const setToggleView = (): void => setShowTextMsgView(!showTextMsgView);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -1176,6 +1274,7 @@ const QuarantineList: FC = () => {
 												<Input
 													label={t('label.retention_period', 'Retention Period (value)')}
 													backgroundColor="gray5"
+													value={zimbraMailMessageLifetimeNum}
 													readOnly
 												/>
 											</Container>
@@ -1186,16 +1285,25 @@ const QuarantineList: FC = () => {
 												width="20%"
 											>
 												<Select
-													items={[
-														{
-															label: 'Interval',
-															value: '1'
-														}
-													]}
+													items={timeItems}
 													label="Interval"
 													onChange={onChange}
 													showCheckbox={false}
+													selection={
+														zimbraMailMessageLifetimeType === ''
+															? timeItems[-1]
+															: timeItems.find(
+																	// eslint-disable-next-line max-len
+																	(item: any) => item.value === zimbraMailMessageLifetimeType
+															  )
+													}
 												/>
+												{/* <Input
+													label={t('label.interval', 'Interval')}
+													backgroundColor="gray5"
+													value={setZimbraMailMessageLifetimeType}
+													readOnly
+												/> */}
 											</Container>
 										</ListRow>
 										<Row
@@ -1217,7 +1325,7 @@ const QuarantineList: FC = () => {
 												</Text>
 											</Row>
 										</Row>
-										<Row
+										{/* <Row
 											width="100%"
 											mainAlignment="flex-end"
 											style={{ gap: '1rem' }}
@@ -1249,7 +1357,7 @@ const QuarantineList: FC = () => {
 													onDeleteMessage(message.id);
 												}}
 											/>
-										</Row>
+										</Row> */}
 										<Row width="100%" padding={{ bottom: 'extralarge' }}>
 											<MessageListTable
 												messages={messageListData}
@@ -1342,8 +1450,44 @@ const QuarantineList: FC = () => {
 					)}
 				</Text>
 			</Modal>
+			<Modal
+				size="small"
+				title={`${t('quarantine.delete_message', 'Delete message')}`}
+				open={deleteMsgModal}
+				customFooter={
+					<Container orientation="horizontal" mainAlignment="flex-end">
+						<Row style={{ gap: '0.5rem' }} padding={{ right: 'medium' }}>
+							<Button
+								label={t('label.keep_it_button', 'NO, KEEP IT')}
+								color="primary"
+								type="outlined"
+								onClick={(): void => setDeleteMsgModal(false)}
+							/>
+							<Button
+								label={t('quarantine.yes_delete_message', 'YES, DELETE')}
+								color="error"
+								type="outlined"
+								onClick={(): void => {
+									onDeleteMessage(message.id);
+								}}
+							/>
+						</Row>
+					</Container>
+				}
+				showCloseIcon
+				onClose={(): void => setDeleteQuarantuneAccModal(false)}
+			>
+				<Text
+					size={'extralarge'}
+					overflow="break-word"
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
+				>
+					{t('quarantine.delete_msg_warning', `Are you sure you want to delete message?`)}
+				</Text>
+			</Modal>
 			{showMessageView && message.id && (
 				<ModalOverlay setOpen={setShowMessageView} open={showMessageView} maxWidth="58.75rem">
+					{messageViewLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
 					<Container background="white" mainAlignment="flex-start">
 						<Row
 							mainAlignment="flex-start"
@@ -1387,116 +1531,149 @@ const QuarantineList: FC = () => {
 									color="error"
 									type="ghost"
 									onClick={(): void => {
-										onDeleteMessage(message.id);
+										setDeleteMsgModal(true);
 									}}
 								/>
 							</Padding>
 						</Row>
-						<Row
+						<Container
+							background="white"
 							mainAlignment="flex-start"
-							orientation="horizontal"
-							width="fill"
-							padding={{ all: 'large' }}
+							style={{
+								overflow: 'auto'
+								// position: 'absolute',
+								// top: '0rem',
+								// height: 'auto',
+								// transition: 'left 0.2s ease-in-out',
+								// maxHeight: '100%'
+							}}
 						>
-							<Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
-								<Row
-									width="50%"
-									mainAlignment="flex-start"
-									crossAlignment="center"
-									orientation="horizontal"
-								>
-									<Row width="95%" mainAlignment="flex-start">
-										<Text size="large" weight="bold">
-											{message?.subject}
-										</Text>
+							<Row
+								mainAlignment="flex-start"
+								orientation="horizontal"
+								width="fill"
+								padding={{ all: 'large' }}
+							>
+								<Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
+									<Row
+										width="50%"
+										mainAlignment="flex-start"
+										crossAlignment="center"
+										orientation="horizontal"
+									>
+										<Row width="95%" mainAlignment="flex-start">
+											<Text size="large" weight="bold">
+												{message?.subject}
+											</Text>
+										</Row>
 									</Row>
-								</Row>
-								<Row
-									width="50%"
-									mainAlignment="flex-end"
-									crossAlignment="center"
-									orientation="vertical"
-								>
-									<Row width="95%" mainAlignment="flex-end" orientation="horizontal">
-										<Text size="small" weight="bold">
-											{t('label.date', 'Date')} :{' '}
-										</Text>
-										<Text size="small">
-											{' '}
-											{moment(message?.date).format('DD-MM-YYYY - HH:mm A')}
-										</Text>
+									<Row
+										width="50%"
+										mainAlignment="flex-end"
+										crossAlignment="center"
+										orientation="vertical"
+									>
+										<Row width="95%" mainAlignment="flex-end" orientation="horizontal">
+											<Text size="small" weight="bold">
+												{t('label.date', 'Date')} :{' '}
+											</Text>
+											<Text size="small">
+												{' '}
+												{moment(message?.date).format('DD-MM-YYYY - HH:mm A')}
+											</Text>
+										</Row>
+										<Row width="95%" mainAlignment="flex-end" orientation="horizontal">
+											<Text size="small" weight="bold">
+												{t('label.received', 'Received')} :{' '}
+											</Text>
+											<Text size="small">
+												{moment(message?.date).format('DD-MM-YYYY - HH:mm A')}
+											</Text>
+										</Row>
 									</Row>
-									<Row width="95%" mainAlignment="flex-end" orientation="horizontal">
-										<Text size="small" weight="bold">
-											{t('label.received', 'Received')} :{' '}
-										</Text>
-										<Text size="small">{moment(message?.date).format('DD-MM-YYYY - HH:mm A')}</Text>
+									<Row width="100%" padding={{ top: 'medium' }}>
+										<Divider color="gray2" />
 									</Row>
-								</Row>
-								<Row width="100%" padding={{ top: 'medium' }}>
-									<Divider color="gray2" />
-								</Row>
-								<Row
-									width="100%"
-									mainAlignment="flex-start"
-									orientation="horizontal"
-									padding={{ top: 'large' }}
-								>
-									{/* <Text size="small" weight="bold">
+									<Row
+										width="100%"
+										mainAlignment="flex-start"
+										orientation="horizontal"
+										padding={{ top: 'large' }}
+									>
+										{/* <Text size="small" weight="bold">
 										{find(message?.participants, { type: 'f' })?.name}
 									</Text>
 									<Text size="small">{` <${
 										find(message?.participants, { type: 'f' })?.address
 									}>`}</Text> */}
-									<Text size="small" weight="bold">
-										{t('label.from', 'From')} :{' '}
-									</Text>
-									<Text size="small"> {message.envelopeFrom || ''}</Text>
+										<Text size="small" weight="bold">
+											{t('label.from', 'From')} :{' '}
+										</Text>
+										<Text size="small"> {message.envelopeFrom || ''}</Text>
+									</Row>
+									<Row
+										width="100%"
+										mainAlignment="flex-start"
+										orientation="horizontal"
+										padding={{ top: 'medium' }}
+									>
+										<Text size="small" weight="bold">
+											{t('label.to', 'To')} :{' '}
+										</Text>
+										<Text size="small"> {message.envelopeTo || ''}</Text>
+									</Row>
+									<Row
+										width="100%"
+										mainAlignment="flex-start"
+										orientation="horizontal"
+										padding={{ top: 'medium' }}
+									>
+										<AttachmentsBlock
+											message={message}
+											// getQuarantineMsgData={(): void => {
+											// 	console.log('==> Get Msg Msg');
+											// }}
+											getQuarantineMsgData={getQuarantineMsgData}
+											// isExternalMessage={isExternalMessage}
+											// openEmlPreview={openEmlPreview}
+										/>
+										<MailMessageRenderer
+											mailMsg={message}
+											onLoadChange={(): void => {
+												null;
+											}}
+											// msgId={message.id}
+											// body={message.body}
+											// // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+											// // @ts-ignore
+											// parts={findAttachments(message.parts ?? [], [])}
+											// participants={message.participants}
+										/>
+									</Row>
 								</Row>
-								<Row
-									width="100%"
-									mainAlignment="flex-start"
-									orientation="horizontal"
-									padding={{ top: 'medium' }}
-								>
-									<Text size="small" weight="bold">
-										{t('label.to', 'To')} :{' '}
-									</Text>
-									<Text size="small"> {message.envelopeTo || ''}</Text>
-								</Row>
-								<Row
-									width="100%"
-									mainAlignment="flex-start"
-									orientation="horizontal"
-									padding={{ top: 'medium' }}
-								>
-									<AttachmentsBlock
-										message={message}
-										getQuarantineMsgData={getQuarantineMsgData}
-										// isExternalMessage={isExternalMessage}
-										// openEmlPreview={openEmlPreview}
+								<Row mainAlignment="flex-start" padding={{ all: 'large' }} width="fill">
+									<IconButton
+										icon={showTextMsgView ? 'ChevronUpOutline' : 'ChevronDownOutline'}
+										size="small"
+										onClick={setToggleView}
+										label={
+											showTextMsgView
+												? t('quarantine.hide_source', 'Hide source')
+												: t('quarantine.show_source', 'Show source')
+										}
+										color="primary"
+										type="ghost"
 									/>
-									<MailMessageRenderer
-										mailMsg={message}
-										onLoadChange={(): void => {
-											console.log('==>onLoadChange');
-										}}
-										// msgId={message.id}
-										// body={message.body}
-										// // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// // @ts-ignore
-										// parts={findAttachments(message.parts ?? [], [])}
-										// participants={message.participants}
-									/>
 								</Row>
+								<Collapse orientation="vertical" open={showTextMsgView}>
+									<Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
+										<Text overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
+											{message?.body?.content}
+										</Text>
+									</Row>
+								</Collapse>
 							</Row>
-							<Row padding={{ all: 'large' }} width="fill"></Row>
-							<Row borderColor="gray3" padding={{ all: 'large' }} width="fill">
-								<Text overflow="break-word" color="text" style={{ fontFamily: 'monospace' }}>
-									{message?.body?.content}
-								</Text>
-							</Row>
-						</Row>
+						</Container>
 					</Container>
 				</ModalOverlay>
 			)}

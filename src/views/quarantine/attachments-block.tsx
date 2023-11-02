@@ -11,6 +11,7 @@ import {
 	Link,
 	Padding,
 	Row,
+	SnackbarManagerContext,
 	Text,
 	Tooltip,
 	useTheme
@@ -18,9 +19,9 @@ import {
 import { getBridgedFunctions, getIntegratedFunction, soapFetch } from '@zextras/carbonio-shell-ui';
 import { useTranslation, Trans } from 'react-i18next';
 // import { PreviewsManagerContext } from '@zextras/carbonio-ui-preview';
-import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
+import { filter, find, map, includes, isNil, uniqBy, remove } from 'lodash';
 import React, { FC, ReactElement, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import styled, { DefaultTheme } from 'styled-components';
+import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
 import { removeAttachmentsRequest } from '../../services/remove-attachments';
 // import { DefaultTheme } from '../app/shared/customTableHeaderFactory';
 
@@ -422,13 +423,15 @@ const AttachmentContainer = styled(Container)`
 	transition: 0.2s ease-out;
 	margin-bottom: ${({ theme }): string => theme.sizes.padding.small};
 	&:hover {
-		background-color: ${({ theme }): string => getColor(`currentColor.hover`, theme)};
+		background-color: ${({ theme, background }): SimpleInterpolation =>
+			background && getColor(`${background.toString()}.hover`, theme)};
 		& ${AttachmentHoverBarContainer} {
 			display: flex;
 		}
 	}
 	&:focus {
-		background-color: ${({ theme }): string => getColor(`currentColor.focus`, theme)};
+		background-color: ${({ theme, background }): SimpleInterpolation =>
+			background && getColor(`${background.toString()}.focus`, theme)};};
 	}
 	cursor: pointer;
 `;
@@ -481,6 +484,7 @@ const Attachment: FC<AttachmentType> = ({
 	const sizeLabel = useMemo(() => humanFileSize(size), [size]);
 	const inputRef = useRef<HTMLAnchorElement>(null);
 	const inputRef2 = useRef<HTMLAnchorElement>(null);
+	const createSnackbar = useContext(SnackbarManagerContext);
 	const [t] = useTranslation();
 	// const dispatch = useAppDispatch();
 
@@ -509,12 +513,37 @@ const Attachment: FC<AttachmentType> = ({
 		: t('action.click_preview', 'Click to preview');
 
 	const onDeleteAttachment = useCallback(() => {
+		console.log('==> message', message);
 		console.log('==> Delete att', message.id, [part]);
-		removeAttachmentsRequest(message.id, part).then((res) => {
-			console.log('==> removeAttachmentsRequest', res);
-			getQuarantineMsgData();
-		});
-	}, [getQuarantineMsgData, message.id, part]);
+		// getQuarantineMsgData();
+		// remove(message.parts?.[0]?.parts, (friend) => friend.friend_id === 14);
+		removeAttachmentsRequest(message.id, part)
+			.then((res) => {
+				console.log('==> removeAttachmentsRequest', res);
+				createSnackbar({
+					key: 'info',
+					type: 'info',
+					label: t('quarantine.attachment_deleted', 'Attachment deleted'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				getQuarantineMsgData();
+			})
+			.catch((error) => {
+				// setMessageViewLoading(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, getQuarantineMsgData, message, part, t]);
 
 	// const onDownloadAndDelete = useCallback(() => {
 	// 	downloadAttachment();
