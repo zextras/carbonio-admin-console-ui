@@ -41,7 +41,7 @@ import MailMessageRenderer from './mail-message-renderer';
 import AttachmentsBlock from './attachments-block';
 import { batchService } from '../../services/batch-service';
 import { msgActionRequest } from '../../services/message-action';
-import { sendMsgRequest } from '../../services/send-message';
+import { bounceMsgRequest } from '../../services/bounce-message';
 import OverlayDivision from '../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
@@ -954,7 +954,7 @@ const QuarantineList: FC = () => {
 	const onDeliverMessage = useCallback(
 		(msg: IncompleteMessage) => {
 			setMessageViewLoading(true);
-			sendMsgRequest(msg)
+			bounceMsgRequest(msg)
 				.then(() => {
 					setMessageListData([]);
 					getQuarantineMsgData();
