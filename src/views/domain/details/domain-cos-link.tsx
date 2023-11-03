@@ -99,7 +99,7 @@ const DomainCosLink: FC<{
 	}, [cosMaxAccountList, cosList]);
 
 	const getCosLists = (cos: string): any => {
-		getCosList(cos).then((data) => {
+		getCosList(cos, 0).then((data) => {
 			const searchResponse: any = data;
 			if (!!searchResponse && searchResponse?.searchTotal > 0) {
 				setCosList(searchResponse?.cos);
