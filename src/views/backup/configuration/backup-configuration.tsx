@@ -85,6 +85,7 @@ const BackupConfiguration: FC = () => {
 	const [initializeBackup, setInitializeBackup] = useState(
 		t('backup.initialize_backup', 'Initialize Backup')
 	);
+	const [showIcon, setShowIcon] = useState(true);
 	const [manageExternalVolumeType, setManageExternalVolumeType] = useState<string>('');
 	const [manageExternalVolumeConfiguration, setManageExternalVolumeConfiguration] = useState<any>(
 		{}
@@ -1083,12 +1084,13 @@ const BackupConfiguration: FC = () => {
 								type="outlined"
 								label={initializeBackup}
 								color="primary"
-								icon="PowerOutline"
+								icon={showIcon ? 'PowerOutline' : ''}
 								iconPlacement="right"
 								width="fill"
 								style={{ width: '100%' }}
 								disabled={isBackupInitialized || !allowSetBackup}
 								onClick={(): void => {
+									setShowIcon(false);
 									setInitializeBackup(
 										t(
 											'backup.initialising_backup_check_your_notifications_for_updates',
@@ -1097,6 +1099,7 @@ const BackupConfiguration: FC = () => {
 									);
 									setTimeout(() => {
 										setInitializeBackup(t('backup.initialize_backup', 'Initialize Backup'));
+										setShowIcon(true);
 									}, 10000);
 									doInitializeBackup(true);
 								}}
