@@ -214,6 +214,7 @@
         "general": "General",
         "include_index": "Include index",
         "include_server_configuration": "Include server configuration",
+        "initialising_backup_check_your_notifications_for_updates": "INITIALISING BACKUP... CHECK YOUR NOTIFICATIONS FOR UPDATES",
         "initialize_backup": "Initialize Backup",
         "kb": "KB",
         "keep_delete_accounts_in_backup": "Keep deleted accounts in the backup",

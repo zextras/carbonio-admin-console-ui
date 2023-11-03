@@ -82,7 +82,9 @@ const BackupConfiguration: FC = () => {
 	const [isShowSetExternalVolume, setIsShowSetExternalVolume] = useState<boolean>(false);
 	const [bucketList, setBucketList] = useState<Array<any>>([]);
 	const [backupArchivingStore, setBackupArchivingStore] = useState<any>({});
-
+	const [initializeBackup, setInitializeBackup] = useState(
+		t('backup.initialize_backup', 'Initialize Backup')
+	);
 	const [manageExternalVolumeType, setManageExternalVolumeType] = useState<string>('');
 	const [manageExternalVolumeConfiguration, setManageExternalVolumeConfiguration] = useState<any>(
 		{}
@@ -1079,7 +1081,7 @@ const BackupConfiguration: FC = () => {
 						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
 							<Button
 								type="outlined"
-								label={t('backup.initialize_backup', 'Initialize Backup')}
+								label={initializeBackup}
 								color="primary"
 								icon="PowerOutline"
 								iconPlacement="right"
@@ -1087,6 +1089,15 @@ const BackupConfiguration: FC = () => {
 								style={{ width: '100%' }}
 								disabled={isBackupInitialized || !allowSetBackup}
 								onClick={(): void => {
+									setInitializeBackup(
+										t(
+											'backup.initialising_backup_check_your_notifications_for_updates',
+											'INITIALISING BACKUP... CHECK YOUR NOTIFICATIONS FOR UPDATES'
+										)
+									);
+									setTimeout(() => {
+										setInitializeBackup(t('backup.initialize_backup', 'Initialize Backup'));
+									}, 10000);
 									doInitializeBackup(true);
 								}}
 								size="large"
