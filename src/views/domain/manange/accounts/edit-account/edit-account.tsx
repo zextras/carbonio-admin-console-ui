@@ -17,7 +17,7 @@ import {
 	IconButton,
 	Divider,
 	Padding,
-	Icon
+	Modal
 } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { isEqual, reduce, remove, differenceBy } from 'lodash';
@@ -86,6 +86,10 @@ const EditAccount: FC<{
 	defaultTab: string;
 	setDefaultTab: any;
 	setShowAccountDetailView: any;
+	showModal: boolean;
+	setShowModal: (showModal: boolean) => void;
+	isDirty: boolean;
+	setIsDirty: (isDirty: boolean) => void;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
@@ -95,7 +99,11 @@ const EditAccount: FC<{
 	getAccountDetail,
 	defaultTab,
 	setShowAccountDetailView,
-	setDefaultTab
+	setDefaultTab,
+	showModal,
+	setShowModal,
+	isDirty,
+	setIsDirty
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -103,7 +111,6 @@ const EditAccount: FC<{
 	const [change, setChange] = useState(defaultTab);
 	const [click, setClick] = useState('');
 	const [isLoading, setIsLoading] = useState(false);
-	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const context = useContext(AccountContext);
 	const {
 		accountDetail,
@@ -157,7 +164,7 @@ const EditAccount: FC<{
 		} else {
 			setIsDirty(false);
 		}
-	}, [accountDetail, initAccountDetail]);
+	}, [accountDetail, initAccountDetail, setIsDirty]);
 
 	const ReusedDefaultTabBar: FC<{
 		item: any;
@@ -635,6 +642,49 @@ const EditAccount: FC<{
 				</Text>
 				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
 			</RouteLeavingGuard>
+			<Modal
+				size="small"
+				title={t('label.hey_there_are_unsaved_changes_here', 'Hey! There are unsaved changes here')}
+				open={showModal}
+				customFooter={
+					<Container orientation="horizontal" mainAlignment="flex-end">
+						<Row style={{ gap: '1rem' }}>
+							<Button
+								label={t('label.discard', 'Discard')}
+								color="primary"
+								type="outlined"
+								onClick={(): void => {
+									setShowModal && setShowModal(false);
+									onUndo();
+								}}
+							/>
+							<Button
+								label={t('label.save_the_changes', 'Save the changes')}
+								color="primary"
+								onClick={(): void => {
+									setShowModal && setShowModal(false);
+									modifyAccountReq();
+								}}
+							/>
+						</Row>
+					</Container>
+				}
+				showCloseIcon
+				onClose={(): void => {
+					setShowModal && setShowModal(false);
+				}}
+			>
+				<Text
+					size={'extralarge'}
+					overflow="break-word"
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
+				>
+					{t(
+						'label.are_you_sure_you_want_to_leave_without_saving_he_changes',
+						`Are you sure you want to leave without saving he changes?`
+					)}
+				</Text>
+			</Modal>
 		</>
 	);
 };
