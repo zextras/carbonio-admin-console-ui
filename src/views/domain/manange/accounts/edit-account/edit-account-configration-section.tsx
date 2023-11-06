@@ -225,6 +225,7 @@ const EditAccountConfigrationSection: FC = () => {
 							value={prefMailForwardingAddress}
 							background="gray5"
 							hasError={some(prefMailForwardingAddress || [], { error: true })}
+							maxChips={null}
 						/>
 					</Row>
 				</Row>
@@ -251,6 +252,7 @@ const EditAccountConfigrationSection: FC = () => {
 							background="gray5"
 							hasError={some(mailForwardingAddress || [], { error: true })}
 							ChipComponent={CustomChip}
+							maxChips={null}
 						/>
 					</Row>
 				</Row>
@@ -277,6 +279,7 @@ const EditAccountConfigrationSection: FC = () => {
 							background="gray5"
 							hasError={some(prefCalendarForwardInvitesTo || [], { error: true })}
 							ChipComponent={CustomChip}
+							maxChips={null}
 						/>
 					</Row>
 				</Row>

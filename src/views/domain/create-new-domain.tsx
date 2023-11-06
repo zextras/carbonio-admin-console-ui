@@ -633,6 +633,7 @@ const CreateDomain: FC = () => {
 											setCarbonioNotificationRecipients(data);
 										}}
 										hasError={some(carbonioNotificationRecipients || [], { error: true })}
+										maxChips={null}
 									/>
 								</Container>
 							</ListRow>
