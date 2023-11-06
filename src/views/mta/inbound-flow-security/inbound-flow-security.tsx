@@ -508,10 +508,14 @@ const MTAInboundFlowSecurity: FC = () => {
 	const onBlockExtensionChange = useCallback(
 		(ev) => {
 			if (ev && ev.length > 0) {
-				const extension = ev.map((item: Record<string, string>) => item?.label);
+				const validExtensionExpression = /^[A-Za-z0-9]*$/;
+				const extension = ev
+					.map((item: Record<string, string>) => item?.label)
+					.filter((item: string) => validExtensionExpression.test(item));
 				if (extension && extension.length > 0) {
 					setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, extension);
-					setMtaBlockExtension(ev);
+					const validExtension = extension.map((item: string) => ({ label: item }));
+					setMtaBlockExtension(validExtension);
 				}
 			} else {
 				setValue(ZIMBRA_MTA_BLOCKED_EXTENSION, []);
