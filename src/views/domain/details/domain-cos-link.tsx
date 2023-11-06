@@ -636,8 +636,13 @@ const DomainCosLink: FC<{
 							label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
 							value={maxAccountValue}
 							backgroundColor="gray6"
+							type="number"
 							onChange={(e: any): any => {
-								setMaxAccountValue(e.target.value);
+								if (e.target.value < -1) {
+									setMaxAccountValue('-1');
+								} else {
+									setMaxAccountValue(e.target.value.toString());
+								}
 							}}
 						/>
 					</Container>
