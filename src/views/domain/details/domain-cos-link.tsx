@@ -637,6 +637,29 @@ const DomainCosLink: FC<{
 							value={maxAccountValue}
 							backgroundColor="gray6"
 							type="number"
+							onKeyDown={(e): void => {
+								if (
+									![
+										'Backspace',
+										'Delete',
+										'ArrowLeft',
+										'ArrowRight',
+										'0',
+										'1',
+										'2',
+										'3',
+										'4',
+										'5',
+										'6',
+										'7',
+										'8',
+										'9',
+										'-'
+									].includes(e.key)
+								) {
+									e.preventDefault();
+								}
+							}}
 							onChange={(e: any): any => {
 								if (e.target.value < -1) {
 									setMaxAccountValue('-1');
