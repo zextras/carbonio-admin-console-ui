@@ -147,8 +147,22 @@ const Connection: FC<{
 								setCompleteLoading(true);
 							}
 						} else {
+							const errorResponse = responseVerifyData?.error;
+
+							const errorResponsePart = errorResponse.split(objToSendTestConnection?.bucketId);
+							const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
+
 							setVerifyCheck(ERROR);
-							setverifyFailErr(data);
+							setverifyFailErr(
+								t(
+									'label.bucket_verification_failed_message',
+									'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
+									{
+										bucketType: errorStoreTypeMessage,
+										bucketId: objToSendTestConnection?.bucketId
+									}
+								)
+							);
 							setBucketDetailButton(true);
 							if (isActive) {
 								setCompleteLoading(true);
@@ -292,6 +306,7 @@ const Connection: FC<{
 	const onSelectBucketTypeChange = useCallback(
 		(e: any): void => {
 			const volumeObject: any = bucketTypeItems.find((s: any) => s.value === e);
+			setVerifyCheck('');
 			setBucketTypeData(volumeObject?.value);
 			onSelection({ storeType: bucketTypeData }, false);
 			setRegionSelection(
@@ -557,7 +572,12 @@ const Connection: FC<{
 					style={{ marginTop: '1rem' }}
 				>
 					<Row width="10%" mainAlignment="flex-start">
-						<Icon icon="AlertTriangleOutline" color="gray6" size="large" />
+						<Icon
+							icon="AlertTriangleOutline"
+							color="gray6"
+							size="large"
+							style={{ height: '2rem', width: '2rem' }}
+						/>
 					</Row>
 					<Row width="86%" mainAlignment="flex-end">
 						<Text overflow="break-word" color="gray6">

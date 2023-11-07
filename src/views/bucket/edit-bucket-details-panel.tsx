@@ -243,6 +243,14 @@ const EditBucketDetailPanel: FC<{
 				setButtonIcon('ActivityOutline');
 				setToggleBtn(true);
 			} else {
+				const errorResponse =
+					response.error ||
+					response.response[selectedServerName]?.error ||
+					response.response[selectedServerName]?.error?.message;
+
+				const errorResponsePart = errorResponse.split(bucketDetail.uuid);
+				const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
+
 				setVerify('error');
 				setButtonLabel(
 					t(
@@ -252,9 +260,14 @@ const EditBucketDetailPanel: FC<{
 				);
 				setButtonIcon('alert-triangle');
 				setCheckError(
-					response.error ||
-						response.response[selectedServerName]?.error ||
-						response.response[selectedServerName]?.error?.message
+					t(
+						'label.bucket_verification_failed_message',
+						'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
+						{
+							bucketType: errorStoreTypeMessage,
+							bucketId: bucketDetail.uuid
+						}
+					)
 				);
 				setToggleBtn(false);
 			}
@@ -325,6 +338,7 @@ const EditBucketDetailPanel: FC<{
 					replace: true
 				});
 				updatePreviousDetail();
+				setCheckError('');
 			} else {
 				createSnackbar({
 					key: 'error',
@@ -337,6 +351,7 @@ const EditBucketDetailPanel: FC<{
 					replace: true
 				});
 				setToggleBtn(false);
+				setCheckError('');
 			}
 		});
 	};
@@ -711,7 +726,12 @@ const EditBucketDetailPanel: FC<{
 						style={{ marginTop: '1rem' }}
 					>
 						<Row width="10%" mainAlignment="flex-start">
-							<Icon icon="AlertTriangleOutline" color="gray6" size="large" />
+							<Icon
+								icon="AlertTriangleOutline"
+								color="gray6"
+								size="large"
+								style={{ height: '2rem', width: '2rem' }}
+							/>
 						</Row>
 						<Row width="86%" mainAlignment="flex-end">
 							<Text overflow="break-word" color="gray6">

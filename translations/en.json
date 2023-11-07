@@ -904,6 +904,7 @@
         "bucket_need_help_button": "NEED HELP?",
         "bucket_notes": "Notes",
         "bucket_type": "Bucket Type",
+        "bucket_verification_failed_message": "Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})",
         "bucket_view_details_button": "VIEW DETAILS",
         "buckets": "Buckets",
         "bulk_actions": "Bulk Actions",
