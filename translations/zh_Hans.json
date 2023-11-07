@@ -135,7 +135,7 @@
         "virtual_hosts": "虚拟主机",
         "volumes": "卷",
         "creation_date": "创建日期",
-        "default_appointment_visibility": "约会项的默认可见度",
+        "default_appointment_visibility": "默认预约可见性",
         "details": "详情",
         "draft_auto_save_interval": "草稿自动保存时间间隔",
         "email": "电子邮件",
@@ -686,9 +686,6 @@
         "primary_volume": "这是主要卷",
         "quarantined": "已隔离",
         "registration": "注册",
-        "reset_domain_theme": "重置{{name}}主题",
-        "reset_global_theme": "重置全局主题",
-        "reset_theme_content_1": "确定要重置主题吗？",
         "secondary_volume": "这是次要卷",
         "security": "安全性",
         "selected_empty_bucket": "您尚未选择桶。您可在上方的字段中输入内容以对其进行查看。",
@@ -732,7 +729,6 @@
         "operation_now_in_queue": "此操作已在队列中",
         "otp_deleted_successfully": "OTP已成功删除",
         "owners_description_msg_1": "所有者可添加和删除成员、更改显示名称和描述、更改列表可见性（如：在 GAL 中隐藏）、更改所有权、修改/取消订阅行为。",
-        "reset_theme_content_2": "如果您点击“是”按钮，则所有数据都将丢失。",
         "rest_device_warning_msg_1": "擦除设备会将其恢复至出厂设置。确定要继续吗？ ",
         "select_a_bucket_configuration": "选择桶配置",
         "storage_centralized_helptext": "当两台或多台服务器需要访问相同的数据时，中心化数据存储将非常实用。\n通过将数据保存在同一个位置，您可更轻松地管理硬件和数据本身。 ",
@@ -998,7 +994,10 @@
         "remove_all": "移除全部",
         "read_options": "已读选项",
         "person_name": "名称",
-        "stats": "数据统计"
+        "stats": "数据统计",
+        "advance_edit_userName": "用户名",
+        "search_for_an_account": "搜索账户",
+        "received": "已接收"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",
@@ -1806,7 +1805,8 @@
         "indexer_helperText": "索引器",
         "primary_helperText": "主要",
         "secondary_helperText": "次要",
-        "create_storage_volume": "创建存储卷"
+        "create_storage_volume": "创建存储卷",
+        "running": "运行中"
     },
     "click_new_bucket_button_to_create_new_one": "点击“新存储桶”按钮以新建。",
     "have_not_setup_bucket_type": "似乎您还没有设置存储桶类型",

@@ -169,7 +169,7 @@
         "Accounts": "Conturi",
         "Type": "Tip",
         "contacts": "Contacte",
-        "files": "Fisiere",
+        "files": "Drive",
         "storage": "Spatiu de stocare",
         "value": "Valoare",
         "destroy_account": "Ştergere",
@@ -180,7 +180,8 @@
         "close": "Inchide",
         "link": "Legatura",
         "logout": "Deconectare",
-        "person_name": "Nume"
+        "person_name": "Nume",
+        "advance_edit_userName": "Nume utilizator"
     },
     "core": {
         "subscription": {
@@ -311,7 +312,7 @@
         "time_window_failed_logins_must_occur_to_lock_account": "Fereastră de timp în care trebuie să se producă autentificările eşuate pentru a bloca contul:",
         "timeout_policy": "Politica privind expirarea sesiunii",
         "trashed_message_lifetime": "Durata mesajelor din coş",
-        "files": "Fisiere",
+        "files": "Drive",
         "enable_past_due_reminders": "Activare mementouri pentru scadenţe depăşite",
         "forwarding": "Redirecţionare"
     },
@@ -355,7 +356,7 @@
         "enable_smime": "Activare S/MIME",
         "min_new_check_interval_value": "Valoare",
         "domain": "Domeniu",
-        "files": "Fisiere",
+        "files": "Drive",
         "SAVE": "Salveaza",
         "remove": "Eliminare",
         "send_check": "Trimite",
@@ -412,7 +413,8 @@
             "id": "ID",
             "name": "Nume",
             "path": "Cale"
-        }
+        },
+        "running": "Executare"
     },
     "dashboard": {
         "description": "Descriere"
