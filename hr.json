@@ -1,0 +1,114 @@
+{
+    "account_details": {
+        "Chats": "Razgovori",
+        "general": "Općenito",
+        "remove": "Ukloni",
+        "status": "Status"
+    },
+    "cos": {
+        "language": "Jezik",
+        "password": "Lozinka",
+        "chats": "Razgovori",
+        "status": "Status"
+    },
+    "label": {
+        "current": "Trenutna",
+        "delete": "Izbriši",
+        "general_lbl": "Općenito",
+        "home": "Home",
+        "add": "Dodaj",
+        "cancel": "Odustani",
+        "chats": "Razgovori",
+        "close": "Zatvori",
+        "create": "Stvori",
+        "description": "Opis",
+        "destroy_account": "Izbriši",
+        "edit": "Uredi",
+        "email": "E-pošta",
+        "language": "Jezik",
+        "link": "Poveznica",
+        "logout": "Odjava",
+        "name": "Naziv",
+        "never": "Nikad",
+        "notifications": "Obavijesti",
+        "open": "Otvori",
+        "password": "Lozinka",
+        "person_name": "Naziv",
+        "phone": "Telefon",
+        "remove": "Ukloni",
+        "reset": "Resetiraj",
+        "save": "Spremi",
+        "search": "Pretraži",
+        "search_dot": "Pretraži …",
+        "server": "Server",
+        "status": "Status",
+        "status_lbl": "Status",
+        "title": "Naslov",
+        "update": "Ažuriraj",
+        "username": "Korisničko ime",
+        "volume_server": "Server",
+        "volume_server_name": "Server",
+        "yes": "Da",
+        "advance_edit_userName": "Korisničko ime"
+    },
+    "mta": {
+        "info": "Info",
+        "remove": "Ukloni",
+        "status": "Status",
+        "add": "Dodaj"
+    },
+    "new": "Kreiraj",
+    "volume": {
+        "server_list_header": {
+            "server": "Server",
+            "description": "Opis"
+        },
+        "volume_config_header": {
+            "name": "Naziv",
+            "status": "Status"
+        },
+        "volume_header": {
+            "current": "Trenutna",
+            "name": "Naziv"
+        },
+        "volume_indexer_header": {
+            "current": "Trenutna",
+            "name": "Naziv"
+        }
+    },
+    "backup": {
+        "general": "Općenito"
+    },
+    "core": {
+        "subscription": {
+            "status": "Status"
+        }
+    },
+    "dashboard": {
+        "description": "Opis"
+    },
+    "hsm": {
+        "current": "Trenutna",
+        "delete": "Izbriši",
+        "edit": "Uredi",
+        "name": "Naziv",
+        "new": "Kreiraj",
+        "no": "Ne",
+        "server": "Server",
+        "yes": "Da"
+    },
+    "notification": {
+        "copy": "Kopiraj"
+    },
+    "operations": {
+        "label": {
+            "notifications": "Obavijesti",
+            "status": "Status"
+        },
+        "operations_list_header": {
+            "author": "Vlasnik",
+            "server": "Server",
+            "status": "Status"
+        }
+    }
+}
