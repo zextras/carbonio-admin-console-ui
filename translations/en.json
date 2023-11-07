@@ -940,6 +940,7 @@
         "choose_delegated_administrator": "Choose a delegated administrator",
         "city": "City",
         "class_of_service": "Class of Service",
+        "class_of_service_cos": "Class Of Service (COS)",
         "class_of_service_lbl": "<bold>Class of Service</bold>",
         "click_here": "Click here",
         "click_to_make_the_button_bar_scroll_with_the_page": "Click to make the button bar scroll with the page",
