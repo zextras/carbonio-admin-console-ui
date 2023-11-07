@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
-import produce from 'immer';
+import { create } from 'zustand';
+import { produce } from 'immer';
 import { devtools } from 'zustand/middleware';
 import { Cos } from '../../../types';
 
@@ -18,7 +18,7 @@ type CosState = {
 	setTotalDomain: (totalDomain: number) => void;
 };
 
-export const useCosStore = create<CosState>(
+export const useCosStore = create<CosState>()(
 	devtools((set) => ({
 		cos: {},
 		totalAccount: 0,

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type StickyBar = {
@@ -11,7 +11,7 @@ type StickyBar = {
 	setIsSticky: (isSticky: boolean) => void;
 };
 
-export const useStickyBarStore = create<StickyBar>(
+export const useStickyBarStore = create<StickyBar>()(
 	devtools((set) => ({
 		isSticky: false,
 		setIsSticky: (isSticky): void => set({ isSticky }, false, 'setIsSticky')

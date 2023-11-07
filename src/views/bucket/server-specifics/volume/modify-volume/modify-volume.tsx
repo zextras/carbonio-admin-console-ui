@@ -819,7 +819,6 @@ const ModifyVolume: FC<{
 						>
 							<Row width="48%">
 								<Radio
-									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -833,7 +832,6 @@ const ModifyVolume: FC<{
 							</Row>
 							<Row width="48%">
 								<Radio
-									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -1039,7 +1037,6 @@ const ModifyVolume: FC<{
 						>
 							<Row width="48%">
 								<Radio
-									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -1053,7 +1050,6 @@ const ModifyVolume: FC<{
 							</Row>
 							<Row width="48%">
 								<Radio
-									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion

@@ -229,9 +229,9 @@ const MailstoresCreate: FC<{
 							label={t('label.volume_type', 'Volume Type')}
 							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
-							defaultSelection={volTypeList?.filter(
-								(items) => items?.value === volumeDetail?.volumeMain
-							)}
+							defaultSelection={
+								volTypeList?.filter((items) => items?.value === volumeDetail?.volumeMain)[0]
+							}
 							showCheckbox={false}
 							onChange={onVolMainChange}
 						/>
@@ -273,7 +273,6 @@ const MailstoresCreate: FC<{
 						<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
 							<Row width="48%" mainAlignment="flex-start">
 								<Radio
-									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -289,7 +288,6 @@ const MailstoresCreate: FC<{
 							</Row>
 							<Row width="48%" mainAlignment="flex-start">
 								<Radio
-									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -306,7 +304,6 @@ const MailstoresCreate: FC<{
 						</Row>
 						<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
 							<Radio
-								inputName="index"
 								label={t('label.index_volume', 'This is a Index Volume')}
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-ignore // Need to fix it with custom soultion

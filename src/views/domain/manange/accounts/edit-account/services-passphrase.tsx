@@ -225,12 +225,15 @@ export const ServicesPassphrase: FC = () => {
 								background="gray5"
 								label={t('account_details.status', 'Status')}
 								showCheckbox={false}
+								defaultSelection={
+									SERVICE_PASSPHRASE_STATUS.filter(
+										(el: SelectStatusType) => el.value === item?.enabled
+									)[0]
+								}
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-ignore // Need to fix it with custom soultion
-								selection={SERVICE_PASSPHRASE_STATUS.find(
-									(el: SelectStatusType) => el.value === item?.enabled
-								)}
-								padding={{ right: 'medium' }}
+								onChange={(): null => null}
+								style={{ paddingRight: 'medium' }}
 								disabled
 							/>
 						</Row>

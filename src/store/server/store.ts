@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
-import produce from 'immer';
+import { create } from 'zustand';
+import { produce } from 'immer';
 import { devtools } from 'zustand/middleware';
 import { Server } from '../../../types';
 import { SERVER_DETAIL_VIEW } from '../../constants';
@@ -19,7 +19,7 @@ type ServerState = {
 	setServerView: (serverView: string) => void;
 };
 
-export const useServerStore = create<ServerState>(
+export const useServerStore = create<ServerState>()(
 	devtools((set) => ({
 		server: {},
 		serverList: [],

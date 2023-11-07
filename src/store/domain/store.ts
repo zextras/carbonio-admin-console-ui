@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
-import produce from 'immer';
+import { create } from 'zustand';
+import { produce } from 'immer';
 import { devtools } from 'zustand/middleware';
 import { Cos, Domain } from '../../../types';
 import { DOMAINS_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
@@ -29,7 +29,7 @@ type DomainState = {
 	setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
 };
 
-export const useDomainStore = create<DomainState>(
+export const useDomainStore = create<DomainState>()(
 	devtools((set) => ({
 		domain: {},
 		cosList: [],

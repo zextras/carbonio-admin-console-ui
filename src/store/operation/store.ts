@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type OperationState = {
@@ -17,7 +17,7 @@ type OperationState = {
 	setDoneData: (doneData: Array<any>) => void;
 };
 
-export const useOperationStore = create<OperationState>(
+export const useOperationStore = create<OperationState>()(
 	devtools((set) => ({
 		alloperationDetail: [],
 		setAlloperationDetail: (alloperationDetail): void =>

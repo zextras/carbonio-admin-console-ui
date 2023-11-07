@@ -200,7 +200,6 @@ const AdvancedMailstoresConfig: FC<{
 						<Radio
 							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
-							inputName="primary"
 							label={t('label.primary_volume', 'This is a Primary Volume')}
 							value={PRIMARY_TYPE_VALUE.toString()}
 							checked={primaryRadio}
@@ -213,7 +212,6 @@ const AdvancedMailstoresConfig: FC<{
 					</Row>
 					<Row width="48%">
 						<Radio
-							inputName="secondary"
 							label={t('label.secondary_volume', 'This is a Secondary Volume')}
 							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
