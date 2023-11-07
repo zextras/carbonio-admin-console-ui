@@ -35,7 +35,7 @@
         "page ": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "page_": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "privacy": "गोपनीयता",
-        "status": "उपस्थिति",
+        "status": "स्टेटस",
         "suspended": "निलंबित",
         "timezone": "समय क्षेत्र",
         "unlimited": "असीमित",
@@ -665,10 +665,6 @@
         "primary_volume": "यह एक प्राइमरी वॉल्यूम है",
         "quarantined": "क्वारंटीन है",
         "registration": "रजिस्ट्रेशन",
-        "reset_domain_theme": "{{name}} थीम रीसेट करें",
-        "reset_global_theme": "ग्लोबल थीम रीसेट करें",
-        "reset_theme_content_1": "क्या आप वाकई में थीम रीसेट करना चाहते हैं?",
-        "reset_theme_content_2": "यदि आप हाँ बटन पर क्लिक करेने तो पूरा डाटा उड़ जाएगा।",
         "secondary_volume": "यह एक सेकंडरी वॉल्यूम है",
         "security": "सिक्योरिटी",
         "select_a_bucket_configuration": "कोई बकेट कॉन्फ़िगुरेशन चुनें",
@@ -1033,7 +1029,7 @@
         "configuration_help_text": "उन नेटवर्क या डिवाइसों (IPs) को सेटअप करें जिन्हें 2FA ऑथेन्टिकेशन के जरूरत नहीं होगी",
         "quota_mb": "कोटा (MB)",
         "re_sync": "फिर से सिंक करें",
-        "read_options": "पढ़ने के विकल्प",
+        "read_options": "पढ़ने के ऑप्शन",
         "remove_all_acl": "सभी ACLs<bold> हटाएँ</bold>",
         "roles": "भूमिकाएँ",
         "send_notifications_to": "नोटिफ़िकेशन यहाँ भेजें…",
@@ -1049,7 +1045,10 @@
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "इस सेक्शन को देखने के लिए आपके पास पर्याप्त एड्मिनिस्ट्रेशन अधिकार नहीं हैं",
         "please_select_the_measure_unit": "माप की इकाई चुनें",
         "person_name": "नाम",
-        "stats": "आंकड़ें"
+        "stats": "आंकड़ें",
+        "advance_edit_userName": "यूज़रनेम",
+        "search_for_an_account": "किसी अकाउंट के लिए सर्च करें",
+        "received": "मिल गया"
     },
     "timezone": {
         "asia_tomsk": "{{value}} तोम्स्क",
@@ -1388,7 +1387,8 @@
         "receiver_of_quota_warning_email": "कोटा चेतावनी किसको मिलेगी (ईमेल)",
         "smtp": "SMTP",
         "type_the exact_domain_name": "सटीक डोमेन नाम टाइप करें",
-        "web_ui": "WebUI"
+        "web_ui": "WebUI",
+        "administration_rights": "एडमिनिस्ट्रेशन के अधिकार"
     },
     "message": {
         "snackbar": {
@@ -1955,7 +1955,8 @@
         "indexer_helperText": "इंडेक्सर",
         "primary_helperText": "प्राइमरी",
         "secondary_helperText": "सेकंडरी",
-        "create_storage_volume": "स्टोरेज वॉल्यूम बनाएँ"
+        "create_storage_volume": "स्टोरेज वॉल्यूम बनाएँ",
+        "running": "चालू है"
     },
     "click_new_bucket_button_to_create_new_one": "नई बकेट बटन क्लिक करके एक नई बनाएँ।",
     "hsm": {

@@ -197,12 +197,14 @@
         "type_the exact_domain_name": "Digita il nome di dominio",
         "web_ui": "WebUI",
         "domain_list": "Lista Domini",
-        "certificate_removed": "Il certificato è stato rimosso"
+        "certificate_removed": "Il certificato è stato rimosso",
+        "administration_rights": "Diritti di amministrazione",
+        "certificate_content_error_without_ca_chain": "Certificato di Dominio, chiave privata non valida"
     },
     "label": {
         "account": "Account",
         "accounts": "Account",
-        "cancel": "Annulla",
+        "cancel": "Elimina",
         "configuration": "CONFIGURAZIONE",
         "core": "Core",
         "days": "Giorni",
@@ -855,10 +857,6 @@
         "quarantined": "In quarantena",
         "registration": "Registrazione",
         "remove_button": "RIMUOVI",
-        "reset_domain_theme": "Ripristina il tema {{name}}",
-        "reset_global_theme": "Ripristina il tema globale",
-        "reset_theme_content_1": "Vuoi ripristinare il tema?",
-        "reset_theme_content_2": "Se selezioni SÌ tutti i dati andranno persi.",
         "mountpoint": "Mountpoint",
         "no_donot_wipe_device": "No, non ripristinare",
         "move_item_to_a_local_mountpoint": "Elementi spostati nel Monutpoint locale",
@@ -1258,7 +1256,36 @@
         "showing": "Visualizzazione",
         "can_access_settings": "Può accedere alle Impostazioni",
         "storage_hsm_not_licensed": "Impossibile completare l'operazione: storages_hsm non compreso nella licenza",
-        "surname_required": "Cognome obbligatorio"
+        "surname_required": "Cognome obbligatorio",
+        "advance_edit_userName": "Nome utente",
+        "search_for_an_account": "Cerca un account",
+        "received": "Ricevuto",
+        "domains_that_use_this_cos_as_default": "Domini che usano questo CoS come predefinito",
+        "maximum_handled_accounts": "Numero massimo di Account gestiti",
+        "size_kb": "Dimensione (KB)",
+        "advance_edit_viewed_name": "Nome da visualizzare",
+        "arrival_time": "Ora di arrivo",
+        "delegates_domain_admins": "Amministratori di Dominio delegati",
+        "dont_save_it": "Non salvare",
+        "from_domain": "Da Dominio",
+        "global_delegates": "Delegati globali",
+        "host_origin": "Host (Origine)",
+        "ip_origin": "IP (Origine)",
+        "queue": "Coda",
+        "reason": "Motivo",
+        "receiver": "Destinatario",
+        "reset_global_whitelabel_settings": "Ripristina impostazioni whitelabel globali",
+        "reset_domain_whitelabel_settings": "Ripristina {{name}} impostazioni whitelabel",
+        "reset_whitelabel_settings_content_1": "Sei sicuro di voler ripristinare le impostazioni whitelabel?",
+        "reset_whitelabel_settings_content_2": "Se selezioni SI tutti i dati andranno persi.",
+        "save_it_only_deligates_folder": "Salvalo solo nella cartella del Delegato",
+        "save_it_only_in_folder": "Salvalo solo nella {{email}} cartella",
+        "save_it_only_in_owner_folder": "Salvalo solo nella {{email}} cartella",
+        "save_it_only_in_sender_folder": "Salvalo in {{email}} e nella cartella del Delegato",
+        "search_for_a_domain": "Cerca un Dominio",
+        "sender": "Mittente",
+        "to_domain": "Al Dominio",
+        "whitelabel_settings": "Impostazini whitelabel"
     },
     "message": {
         "snackbar": {
@@ -1662,7 +1689,9 @@
         "user_can_specify_forwarding_address": "L'utente può specificare l'indirizzo di inoltro",
         "user_can_specify_mail_forwarding_filter": "L'utente può specificare il filtro di inoltro per le mail",
         "user_specific_fowarding_addresses": "Numero massimo di indirizzi di inoltro",
-        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "indirizzi di inoltro specifici dell'utente+numero massimo di indirizzi di inoltro"
+        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "indirizzi di inoltro specifici dell'utente+numero massimo di indirizzi di inoltro",
+        "handled_accounts": "Accont gestiti",
+        "handled_domains": "Domini gestiti"
     },
     "accountDetails": {
         "default_COS": "COS Predefinita",
@@ -1968,7 +1997,9 @@
         "indexer_helperText": "Indexer",
         "primary_helperText": "Primario",
         "secondary_helperText": "Secondario",
-        "create_storage_volume": "Crea volume storage"
+        "create_storage_volume": "Crea volume storage",
+        "running": "Avviato",
+        "not_running": "Non in esecuzione"
     },
     "hsm": {
         "all": "Tutto",
@@ -2153,7 +2184,7 @@
         "add": "Aggiungi",
         "authentication": "Autenticazione",
         "days": "Giorni",
-        "discard": "Scarta",
+        "discard": "Abbandona",
         "hours": "Ore",
         "low": "Bassa",
         "may": "Maggio",
@@ -2304,7 +2335,10 @@
         "dns_blacklist_threshold_value": "Threshold per DNS Blacklist (valore)",
         "enforce": "Forza",
         "hold": "Mantieni",
-        "mail_queue_flush_successfully": "Coda mail svuotata correttamente"
+        "mail_queue_flush_successfully": "Coda mail svuotata correttamente",
+        "queue": "Coda",
+        "release": "Rilascio",
+        "requeue": "Rimetti in coda"
     },
     "mat": {
         "add_here_any_blocked_extension": "Aggiungi qui qualsiasi estensione bloccata"
