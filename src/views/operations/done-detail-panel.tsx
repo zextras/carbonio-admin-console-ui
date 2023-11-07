@@ -45,6 +45,7 @@ const DoneDetailPanel: FC = () => {
 	const [doneOperationPaginationData, setDoneOperationPaginationData] = useState<
 		{ [key: string]: string }[]
 	>([]);
+	const [filteredOperationData, setFilteredOperationData] = useState(doneData);
 	const [searchOperation, setSearchOperation] = useState<string>('');
 
 	const getDoneOperationAPICallHandler = useCallback(() => {
@@ -89,29 +90,22 @@ const DoneDetailPanel: FC = () => {
 	useEffect(() => {
 		const startIndex = doneOffset * 1;
 		const endIndex = startIndex + limit;
-		const paginatedData = doneData.slice(startIndex, endIndex);
+		const paginatedData = filteredOperationData.slice(startIndex, endIndex);
 		setDoneOperationPaginationData(paginatedData);
-		setTotalData(doneData?.length);
-	}, [doneData, doneOffset, limit, totalData]);
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const searchDoneOperationList = useCallback(
-		debounce((searchText) => {
-			const filterList = doneData.filter(
-				(item) =>
-					item?.name?.toLocaleLowerCase()?.includes(searchText) ||
-					item?.serverName?.toLocaleLowerCase()?.includes(searchText) ||
-					item.parameters?.requesterAddress?.toLocaleLowerCase()?.includes(searchText)
-			);
-			setDoneData(filterList);
-		}, 500),
-		[debounce]
-	);
+		setTotalData(filteredOperationData?.length);
+	}, [doneOffset, filteredOperationData, limit, totalData]);
 
 	useEffect(() => {
-		const searchOperationText = searchOperation?.toLocaleLowerCase();
-		searchDoneOperationList(searchOperationText);
-	}, [searchDoneOperationList, searchOperation]);
+		const searchText = searchOperation?.toLocaleLowerCase();
+		const filterList = doneData.filter(
+			(item) =>
+				item?.name?.toLowerCase().includes(searchText) ||
+				item?.serverName?.toLowerCase().includes(searchText) ||
+				item.parameters?.requesterAddress?.toLowerCase().includes(searchText)
+		);
+
+		setFilteredOperationData(filterList);
+	}, [doneData, searchOperation]);
 
 	return (
 		<>
@@ -191,7 +185,7 @@ const DoneDetailPanel: FC = () => {
 					>
 						<Divider />
 					</Row>
-					{doneData.length !== 0 && (
+					{filteredOperationData.length !== 0 && (
 						<Container
 							orientation="horizontal"
 							mainAlignment="space-between"
