@@ -126,7 +126,7 @@
         "automatically_accept": "Otomatik olarak kabul et",
         "automatically_reject": "Otomatik olarak reddet",
         "bucket_cancel_button": "İPTAL",
-        "bucket_done_button": "Hazır",
+        "bucket_done_button": "Tamamlandı",
         "class_of_service": "Servis Paketi",
         "wizard_cancel_button": "İPTAL",
         "yes": "Evet",
@@ -604,7 +604,6 @@
         "admin_panel_theme_description": "Bu bölümde Yönetim Panelini firmanızın logo ve resmi ile özelleştirebilirsiniz.",
         "light_mode": "<bold>Açık</bold> Mod",
         "logo_description": "Kullanıcı giriş sayfası için logo URL adresi yapıştırın. Şeffaf arka plan ve boyutları 240x120 pixel olan SVG veya PNG dosya kullanın.",
-        "reset_theme_content_2": "EVET tuşunu seçerseniz tüm veri kaybolacak.",
         "selected_empty_bucket": "Bucket seçmediniz. Yukarıdaki alana yazarak görebilirsiniz.",
         "total_acc_rights_with_delete_distribution_list_helper_text": "Bu listede <bold>{{totalAccRights}}</bold> paylaşılan hesaplar bulunuyor. <br /> Silerseniz, paylaşımlar kaybolacak.",
         "NEW_OTP": "YENİ Tek Kul. Parola",
@@ -662,9 +661,6 @@
         "quarantined": "Karantinada",
         "registration": "Kayıt",
         "remove_button": "KALDIR",
-        "reset_domain_theme": "{{name}} temasını sıfırla",
-        "reset_global_theme": "Global temayı sıfırla",
-        "reset_theme_content_1": "Temayı sıfırlamak istediğinizden emin misiniz?",
         "rest_device_warning_msg_1": "Cihazı silmek fabrika ayarlarına geri döndürecek. Devam etmek istediğinizden emin misiniz? ",
         "secondary_volume": "Bu İkincil Hacimdir",
         "security": "GÜVENLİK",
@@ -732,7 +728,7 @@
         "what_inside": "Konu",
         "ID": "ID",
         "centralized": "Merkezi",
-        "done": "Hazır",
+        "done": "Tamamlandı",
         "external_volume_edited": "{{message}}",
         "general_options": "Genel Seçenekler",
         "operation": {
@@ -992,7 +988,10 @@
         "delete_certificate_header": "Sertifikalar silinsin mi?",
         "delete_delegated_account_content": "Sistem hesapları buradan silinemez. Hesabı yönetmek için lütfen ilgili modüle gidin.",
         "deleting_account_warning_content": "Sistem hesabının silinmesi sistem stabilitesini etkileyebilir.",
-        "read_receipt_settings": "Alındı ayarlarını oku"
+        "read_receipt_settings": "Alındı ayarlarını oku",
+        "search_for_an_account": "Hesap Ara",
+        "advance_edit_userName": "Kullanıcı adı",
+        "received": "Alındı"
     },
     "timezone": {
         "asia_gaza": "{{value}} Gaza",
@@ -1331,7 +1330,8 @@
         "pop": "POP",
         "smtp": "SMTP",
         "type_the exact_domain_name": "Tam alan adını yazın",
-        "web_ui": "WebUI"
+        "web_ui": "WebUI",
+        "administration_rights": "Yönetim Hakları"
     },
     "message": {
         "snackbar": {
@@ -1703,7 +1703,8 @@
         "indexer_helperText": "İndeksleyici",
         "primary_helperText": "Birincil",
         "secondary_helperText": "İkincil",
-        "create_storage_volume": "Depolama Birimi Oluştur"
+        "create_storage_volume": "Depolama Birimi Oluştur",
+        "running": "Çalışıyor"
     },
     "privacy": {
         "survey_feedback_sub_1": "Anketler hızlı, kolay ve yapmamız gerekenleri anlamamız için çok kullanışlı olacak.",
@@ -1921,7 +1922,7 @@
         "gb": "GB",
         "hours": "Saat",
         "hsm_policies_list": "HDY İlkeler Listesi",
-        "hsm_policy": "HSM İlkesi",
+        "hsm_policy": "HDY İlkesi",
         "indexes": "İndeksler",
         "items": "Öğeler",
         "kb": "KB",
@@ -2034,7 +2035,7 @@
         "copy_btn": "KOPYALA",
         "copy_operation_successfully": "Bildirim başarıyla kopyalandı",
         "details": "Detaylar",
-        "done": "Hazır",
+        "done": "Tamamlandı",
         "label": {
             "Deep": "Derinlik",
             "notifications": "Bildirimler",

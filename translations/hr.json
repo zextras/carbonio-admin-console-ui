@@ -28,12 +28,12 @@
         "language": "Jezik",
         "link": "Poveznica",
         "logout": "Odjava",
-        "name": "Ime",
+        "name": "Naziv",
         "never": "Nikad",
         "notifications": "Obavijesti",
         "open": "Otvori",
         "password": "Lozinka",
-        "person_name": "Ime",
+        "person_name": "Naziv",
         "phone": "Telefon",
         "remove": "Ukloni",
         "reset": "Resetiraj",
@@ -48,7 +48,8 @@
         "username": "Korisničko ime",
         "volume_server": "Server",
         "volume_server_name": "Server",
-        "yes": "Da"
+        "yes": "Da",
+        "advance_edit_userName": "Korisničko ime"
     },
     "mta": {
         "info": "Info",
@@ -63,16 +64,16 @@
             "description": "Opis"
         },
         "volume_config_header": {
-            "name": "Ime",
+            "name": "Naziv",
             "status": "Status"
         },
         "volume_header": {
             "current": "Trenutna",
-            "name": "Ime"
+            "name": "Naziv"
         },
         "volume_indexer_header": {
             "current": "Trenutna",
-            "name": "Ime"
+            "name": "Naziv"
         }
     },
     "backup": {
@@ -90,7 +91,7 @@
         "current": "Trenutna",
         "delete": "Izbriši",
         "edit": "Uredi",
-        "name": "Ime",
+        "name": "Naziv",
         "new": "Kreiraj",
         "no": "Ne",
         "server": "Server",
