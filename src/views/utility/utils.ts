@@ -1318,7 +1318,7 @@ export const OperationsDoneHeader = (
 		i18nAllLabel: 'All',
 		width: '138px',
 		bold: true,
-		align: 'center'
+		align: 'left'
 	},
 	{
 		id: 'HSM Scheduling',
@@ -1326,7 +1326,7 @@ export const OperationsDoneHeader = (
 		i18nAllLabel: 'All',
 		width: '138px',
 		bold: true,
-		align: 'center'
+		align: 'left'
 	}
 ];
 

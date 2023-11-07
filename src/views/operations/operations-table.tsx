@@ -88,7 +88,7 @@ export const OperationsTable: FC<{
 						key={i}
 						style={{
 							textAlign: 'left',
-							justifyContent: 'flex-center'
+							justifyContent: 'flex-start'
 						}}
 						onClick={(): void => {
 							onClick(i);
@@ -102,7 +102,7 @@ export const OperationsTable: FC<{
 						key={i}
 						style={{
 							textAlign: 'left',
-							justifyContent: 'flex-center'
+							justifyContent: 'flex-start'
 						}}
 						onClick={(): void => {
 							onClick(i);

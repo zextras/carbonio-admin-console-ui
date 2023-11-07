@@ -5,10 +5,18 @@
  */
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Container, Row, Text, Divider, useSnackbar } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Row,
+	Text,
+	Divider,
+	useSnackbar,
+	Icon,
+	Input
+} from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { find, map } from 'lodash';
+import { debounce, find, map } from 'lodash';
 import { OperationsTable } from './operations-table';
 import { OperationsDoneHeader } from '../utility/utils';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
@@ -16,7 +24,6 @@ import { useOperationStore } from '../../store/operation/store';
 import ModalOverlay from '../components/ModalOverlay';
 import { getAllDoneOperations } from '../../services/get-all-done-operation';
 import Paging from '../components/paging';
-import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 
 const RelativeContainer = styled(Container)`
@@ -38,6 +45,7 @@ const DoneDetailPanel: FC = () => {
 	const [doneOperationPaginationData, setDoneOperationPaginationData] = useState<
 		{ [key: string]: string }[]
 	>([]);
+	const [searchOperation, setSearchOperation] = useState<string>('');
 
 	const getDoneOperationAPICallHandler = useCallback(() => {
 		getAllDoneOperations()
@@ -52,6 +60,7 @@ const DoneDetailPanel: FC = () => {
 						}
 						return item1;
 					});
+					setSearchOperation('');
 					setTotalData(updatedData?.length);
 					setDoneData(updatedData);
 				}
@@ -82,7 +91,27 @@ const DoneDetailPanel: FC = () => {
 		const endIndex = startIndex + limit;
 		const paginatedData = doneData.slice(startIndex, endIndex);
 		setDoneOperationPaginationData(paginatedData);
+		setTotalData(doneData?.length);
 	}, [doneData, doneOffset, limit, totalData]);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchDoneOperationList = useCallback(
+		debounce((searchText) => {
+			const filterList = doneData.filter(
+				(item) =>
+					item?.name?.toLocaleLowerCase()?.includes(searchText) ||
+					item?.serverName?.toLocaleLowerCase()?.includes(searchText) ||
+					item.parameters?.requesterAddress?.toLocaleLowerCase()?.includes(searchText)
+			);
+			setDoneData(filterList);
+		}, 500),
+		[debounce]
+	);
+
+	useEffect(() => {
+		const searchOperationText = searchOperation?.toLocaleLowerCase();
+		searchDoneOperationList(searchOperationText);
+	}, [searchDoneOperationList, searchOperation]);
 
 	return (
 		<>
@@ -114,9 +143,31 @@ const DoneDetailPanel: FC = () => {
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
 					width="100%"
-					height="calc(100vh - 12.5rem)"
 					padding={{ all: 'large' }}
 				>
+					<Row
+						orientation="horizontal"
+						mainAlignment="space-between"
+						crossAlignment="flex-start"
+						width="fill"
+					>
+						<Container>
+							<Input
+								label={t(
+									'label.search_for_a_completed_operation',
+									`Search for a completed operation`
+								)}
+								value={searchOperation}
+								backgroundColor="gray5"
+								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+									setSearchOperation(e.target.value);
+								}}
+								CustomIcon={(): JSX.Element => (
+									<Icon icon="FunnelOutline" size="large" color="primary" />
+								)}
+							/>
+						</Container>
+					</Row>
 					<Row width="100%" padding={{ top: 'large' }}>
 						<OperationsTable
 							operations={doneOperationPaginationData}
@@ -131,29 +182,28 @@ const DoneDetailPanel: FC = () => {
 							}}
 						/>
 					</Row>
-				</Container>
-				{doneData.length !== 0 && (
-					<Container
+					<Row
 						orientation="horizontal"
 						mainAlignment="space-between"
-						width="100%"
-						style={{ position: 'absolute', bottom: '0rem' }}
-						height="auto"
-						padding={{ all: 'large' }}
+						crossAlignment="flex-start"
+						width="fill"
+						padding={{ top: 'large' }}
 					>
-						<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
-							<Paging totalItem={totalData} setOffset={setDoneOffset} pageSize={limit} />
-						</Container>
+						<Divider />
+					</Row>
+					{doneData.length !== 0 && (
 						<Container
-							crossAlignment="flex-end"
 							orientation="horizontal"
-							mainAlignment="flex-end"
-							padding={{ all: 'small' }}
+							mainAlignment="space-between"
+							width="100%"
+							height="auto"
 						>
-							<TrackNumberPerPage pageSize={limit} />
+							<Container crossAlignment="flex-end">
+								<Paging totalItem={totalData} setOffset={setDoneOffset} pageSize={limit} />
+							</Container>
 						</Container>
-					</Container>
-				)}
+					)}
+				</Container>
 			</RelativeContainer>
 		</>
 	);
