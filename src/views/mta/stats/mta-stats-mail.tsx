@@ -3,6 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, {
+	FC,
+	ReactElement,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,18 +25,10 @@ import {
 	Table,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import React, {
-	FC,
-	ReactElement,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
-import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
 import {
 	CreateSnackbarType,
 	MtaMailQueue,
@@ -34,6 +36,7 @@ import {
 	MtaStats,
 	mtaStats
 } from '../../../../types';
+import logo from '../../../assets/gardian.svg';
 import {
 	CORRUPT,
 	DEFERRED,
@@ -45,14 +48,13 @@ import {
 	DELETE,
 	RECORD_DISPLAY_LIMIT
 } from '../../../constants';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { getMailQueue } from '../../../services/get-mail-queue';
-import { mailQueueAction } from '../../../services/mail-queue-action';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import logo from '../../../assets/gardian.svg';
-import Paging from '../../components/paging';
+import { mailQueueAction } from '../../../services/mail-queue-action';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
+import Paging from '../../components/paging';
 
 export const TableContainer = styled(Table)`
 	width: auto;
@@ -298,6 +300,7 @@ const MTAStatsMail: FC<{
 		}
 	}, []);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getMailQueueCount = useCallback(() => {
 		if (serverState?.serverName) {
 			getMailqueueInformation(serverState?.serverName)

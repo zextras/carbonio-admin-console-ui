@@ -3,9 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Text, Padding, Divider, Tooltip, Input } from '@zextras/carbonio-design-system';
 import React, { FC, useContext, useEffect, useState } from 'react';
+
+import { Container, Text, Padding, Divider, Tooltip, Input } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
+
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
@@ -17,6 +19,7 @@ const HSMcreatePolicy: FC<any> = () => {
 	const [hsmQuery, setHsmQuery] = useState<string>('');
 	const [sourceVolumeNames, setSourceVolumeNames] = useState<string>('');
 	const [destinationVolumeNames, setDestinationVolumeNames] = useState<string>('');
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		const enabledString: string[] = [];
 		const largerSmallerString: string[] = [];

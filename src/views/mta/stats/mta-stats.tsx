@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -12,20 +14,20 @@ import {
 	SnackbarManagerContext,
 	Table
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import ListRow from '../../list/list-row';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import { CreateSnackbarType, MtaStats, TRow } from '../../../../types';
-import { getAllServerByService } from '../../../services/get-all-servers-service';
-import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
-import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import logo from '../../../assets/gardian.svg';
-import ModalOverlay from '../../components/ModalOverlay';
+import { useTranslation } from 'react-i18next';
+
 import MTAStatsDetail from './mta-stats-detail';
+import { CreateSnackbarType, MtaStats, TRow } from '../../../../types';
+import logo from '../../../assets/gardian.svg';
+import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
+import { getAllServerByService } from '../../../services/get-all-servers-service';
+import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import ModalOverlay from '../../components/ModalOverlay';
+import ListRow from '../../list/list-row';
 
 const MTAStats: FC = () => {
 	const [t] = useTranslation();

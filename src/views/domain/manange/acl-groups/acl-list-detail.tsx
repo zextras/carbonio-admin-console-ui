@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -19,19 +20,19 @@ import {
 	Modal,
 	Button
 } from '@zextras/carbonio-design-system';
-import { useTranslation, Trans } from 'react-i18next';
 import moment from 'moment';
+import { useTranslation, Trans } from 'react-i18next';
 
-import ListRow from '../../../list/list-row';
+import { CreateSnackbarType } from '../../../../../types';
+import { deleteDistributionList } from '../../../../services/delete-distribution-list';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
-import { getDateFromStr } from '../../../utility/utils';
-import { deleteDistributionList } from '../../../../services/delete-distribution-list';
 import { getGrant } from '../../../../services/get-grant';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import { CreateSnackbarType } from '../../../../../types';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../components/customChip';
+import ListRow from '../../../list/list-row';
+import { getDateFromStr } from '../../../utility/utils';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -220,6 +221,7 @@ const AclListDetail: FC<any> = ({
 	);
 
 	const getAclList = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id: string, name: string): void => {
 			getDistributionList(id, name).then((data) => {
 				const distributionListMembers = data?.dl[0];
@@ -427,7 +429,8 @@ const AclListDetail: FC<any> = ({
 					type: 'error',
 					label: error.message
 						? error.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 
 					autoHideTimeout: 3000,
 					hideButton: true,
@@ -436,6 +439,7 @@ const AclListDetail: FC<any> = ({
 			});
 	}, [createSnackbar, onSuccess, t, dlId, distributionName]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleClickDeleteEvent = useCallback(() => {
 		setIsDeleteBtnLoading(true);
 		const getGrantBody: any = {};

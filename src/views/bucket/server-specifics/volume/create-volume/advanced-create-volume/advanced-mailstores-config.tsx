@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,6 +16,7 @@ import {
 	Link
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
+
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import {
 	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,

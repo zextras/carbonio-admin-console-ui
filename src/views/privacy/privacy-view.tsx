@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,10 +16,9 @@ import {
 	Button,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { find } from 'lodash';
-import ListRow from '../list/list-row';
-import { modifyConfig } from '../../services/modify-config';
+import { useTranslation } from 'react-i18next';
+
 import {
 	CARBONIO_ALLOW_FEEDBACK,
 	CARBONIO_SEND_ANALYTICS,
@@ -28,9 +28,11 @@ import {
 	TRUE,
 	CONFIG
 } from '../../constants';
-import { useConfigStore } from '../../store/config/store';
 import MatomoTracker from '../../matomo-tracker';
+import { modifyConfig } from '../../services/modify-config';
+import { useConfigStore } from '../../store/config/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
@@ -51,10 +53,7 @@ const PrivacyView: FC = () => {
 
 	const allowSetPrivacy = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	useEffect(() => {

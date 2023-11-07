@@ -5,16 +5,18 @@
  */
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import { Container, Icon, Button, Table, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import ListRow from '../list/list-row';
-import { useServerStore } from '../../store/server/store';
+
 import { Server } from '../../../types';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
+import { useServerStore } from '../../store/server/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import ListRow from '../list/list-row';
 
 export const VersionText = styled(Text)`
 	background: ${({ theme }): string => theme.palette.primary.regular};

@@ -4,19 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo, useState, useCallback, useEffect } from 'react';
+
 import { Container, Padding, Text, Button, Row, Icon } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
-import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, find } from 'lodash';
-import logo from '../../assets/ninja_robo.svg';
-import DomainOperations from './domain-detail-operation';
-import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
+import { Trans, useTranslation } from 'react-i18next';
+import { Route, Switch, useRouteMatch, useLocation } from 'react-router-dom';
+
 import CreateDomain from './create-new-domain';
+import DomainOperations from './domain-detail-operation';
+import GlobalDetailPanel from './global/global-detail-panel';
 import GlobalOperations from './global-operation';
+import logo from '../../assets/ninja_robo.svg';
+import { CREATE_NEW_DOMAIN_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 import { useLocalStorage } from '../utility/utils';
-import GlobalDetailPanel from './global/global-detail-panel';
 
 const DomainDetailPanel: FC = () => {
 	const [t] = useTranslation();
@@ -36,15 +38,13 @@ const DomainDetailPanel: FC = () => {
 	};
 	const isDomainClosed = useMemo(() => {
 		const domainStatus = find(domain?.a, { n: 'zimbraDomainStatus' });
-		if (
+		return !!(
 			domainStatus?._content === 'closed' &&
 			domain.name &&
 			!domainLocalValue[domain.name] &&
 			!location.pathname.includes('domains/global') &&
 			closeDomainBanner !== domain.name
-		)
-			return true;
-		return false;
+		);
 	}, [closeDomainBanner, domain?.a, domain.name, domainLocalValue, location.pathname]);
 	const setCloseDomainNameBanner = useCallback(
 		(domainName: string) => {

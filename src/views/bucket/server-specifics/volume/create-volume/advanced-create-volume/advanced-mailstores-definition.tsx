@@ -4,20 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import { Container, Row, Input, Select, Padding, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
-import { VolumeContext } from '../volume-context';
+
+import { AdvancedVolumeContext } from './create-advanced-volume-context';
+import { objectType } from '../../../../../../../types';
 import {
 	LOCAL_TYPE_VALUE,
 	EXTERNAL_TYPE_VALUE,
 	UNUSED,
 	USAGE_IN_EXTERNAL_BACKUP
 } from '../../../../../../constants';
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { fetchSoap } from '../../../../../../services/bucket-service';
-import { AdvancedVolumeContext } from './create-advanced-volume-context';
-import { objectType } from '../../../../../../../types';
+import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
+import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
+import { VolumeContext } from '../volume-context';
 
 const AdvancedMailstoresDefinition: FC<{
 	externalData: objectType;

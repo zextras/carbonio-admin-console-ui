@@ -5,7 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
+
 import {
 	Container,
 	Row,
@@ -16,20 +16,22 @@ import {
 	Table,
 	Button
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	getSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 import { TFunction } from 'i18next';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import { DESCRIPTION, HSM_SCHEDULED_KEY, INDEXER_MANAGER_KEY } from '../../../constants';
 import { fetchSoap } from '../../../services/bucket-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
-import { headerAdvanced } from '../../utility/utils';
-import { DESCRIPTION, HSM_SCHEDULED_KEY, INDEXER_MANAGER_KEY } from '../../../constants';
 import { useMailstoreListStore } from '../../../store/mailstore-list/store';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import { headerAdvanced } from '../../utility/utils';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -47,6 +49,7 @@ const ServersListTable: FC<{
 			volumes.map((v, i) => ({
 				id: i?.toString(),
 				columns: [
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					<Row style={{ textAlign: 'left', justifyContent: 'flex-start' }} key={i}>
 						<Text size="small" weight="regular">
 							{v?.name}
@@ -203,6 +206,7 @@ const ServerDetailPanel: FC = () => {
 	const [searchServer, setSearchServer] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getServersListType = useCallback((): void => {
 		if (isAdvanced) {
 			setIsRequestInProgress(true);
@@ -221,6 +225,7 @@ const ServerDetailPanel: FC = () => {
 							setIsRequestInProgress(false);
 							const powerStoreServer = powerStoreData?.servers.map((s: any) => Object.values(s)[0]);
 							const responseData = JSON.parse(res?.Body?.response?.content);
+							// eslint-disable-next-line sonarjs/no-collapsible-if
 							if (responseData && responseData.ok) {
 								if (allServersList.length > 0) {
 									const serverList = allServersList.map((item) => {
@@ -241,6 +246,7 @@ const ServerDetailPanel: FC = () => {
 													?.value?.[HSM_SCHEDULED_KEY];
 										}
 										if (
+											// eslint-disable-next-line sonarjs/no-gratuitous-expressions
 											responseData &&
 											responseData?.response &&
 											responseData?.response[item.name]
@@ -280,6 +286,7 @@ const ServerDetailPanel: FC = () => {
 				.catch((error: any) => {
 					setIsRequestInProgress(false);
 				});
+			// eslint-disable-next-line sonarjs/no-collapsible-if
 		} else if (!isAdvanced) {
 			if (allServersList.length > 0) {
 				const serverList = allServersList.map((item) => {

@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC } from 'react';
+
 import { Modal, Row, Button, Text, Container } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
+
 import { STARTED } from '../../constants';
 
 const DeleteOpearationsModel: FC<{

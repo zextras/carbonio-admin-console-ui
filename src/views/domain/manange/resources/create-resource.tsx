@@ -5,14 +5,16 @@
  */
 
 import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, Button, useSnackbar } from '@zextras/carbonio-design-system';
-import { Section } from '../../../app/component/section';
+import { useTranslation } from 'react-i18next';
+
 import { ResourceContext } from './resource-context';
-import { HorizontalWizard } from '../../../app/component/hwizard';
+import ResourceCreateSection from './resource-create-section';
 import ResourceDetailSection from './resource-detail-section';
 import ResourceSharingSection from './resource-sharing-section';
-import ResourceCreateSection from './resource-create-section';
+import { HorizontalWizard } from '../../../app/component/hwizard';
+import { Section } from '../../../app/component/section';
 
 interface ResourceDetailObj {
 	name: string;
@@ -90,6 +92,7 @@ const CreateResource: FC<{
 	const [wizardData, setWizardData] = useState();
 
 	const wizardSteps = useMemo(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		() => [
 			{
 				name: 'details',
@@ -111,6 +114,7 @@ const CreateResource: FC<{
 				PrevButton: (props: any) => (
 					<Button
 						{...props}
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.back', 'BACK')}
 						icon="ChevronLeftOutline"
 						color="secondary"

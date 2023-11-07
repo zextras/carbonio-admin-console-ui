@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useContext, useEffect, useMemo, useState, useCallback } from 'react';
+
 import {
 	Container,
 	Input,
@@ -20,11 +21,13 @@ import {
 	Modal,
 	ChipInput
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
-import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
+import { Trans, useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import DomainCosLink from './domain-cos-link';
+import { CosMaxAccountValues } from '../../../../types';
 import {
 	ACTIVE,
 	CLOSED,
@@ -36,17 +39,16 @@ import {
 	SUSPENDED,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../constants';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { deleteDomain } from '../../../services/delete-domain-service';
-import { searchDirectory } from '../../../services/search-directory-service';
 import { batchService } from '../../../services/batch-service';
+import { deleteDomain } from '../../../services/delete-domain-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { searchDirectory } from '../../../services/search-directory-service';
 import { useDomainStore } from '../../../store/domain/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import ListRow from '../../list/list-row';
-import DomainCosLink from './domain-cos-link';
-import { CosMaxAccountValues } from '../../../../types';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -68,6 +70,7 @@ const CustomIcon = styled(Icon)`
 	height: 20px;
 `;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const DomainGeneralSettings: FC = () => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
@@ -106,7 +109,9 @@ const DomainGeneralSettings: FC = () => {
 			},
 			{
 				label: `${t('label.locked', 'Locked')} (${t(
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					'label.login_is_disabled',
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					'Login is disabled'
 				)})`,
 				value: LOCKED
@@ -223,6 +228,7 @@ const DomainGeneralSettings: FC = () => {
 		}
 	}, [cosList]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useMemo(() => {
 		setDomainDirectoies({
 			account: [],
@@ -476,6 +482,7 @@ const DomainGeneralSettings: FC = () => {
 		setIsDirty(false);
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = (): void => {
 		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
 			setIsLoading(true);
@@ -483,6 +490,7 @@ const DomainGeneralSettings: FC = () => {
 			const body: any = {};
 			const attributes: any[] = [];
 			body.id = domainData.zimbraId;
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			body._jsns = 'urn:zimbraAdmin';
 			attributes.push({
 				n: 'zimbraNotes',
@@ -652,6 +660,7 @@ const DomainGeneralSettings: FC = () => {
 			dlListArr: AccountDlAlias[],
 			aliasListArr: AccountDlAlias[],
 			calResourceArr: AccountDlAlias[]
+			// eslint-disable-next-line sonarjs/cognitive-complexity
 		): void => {
 			const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
 			const attrs =
@@ -788,6 +797,7 @@ const DomainGeneralSettings: FC = () => {
 							<Padding right="small">
 								{isDirty && (
 									<Button
+										// eslint-disable-next-line sonarjs/no-duplicate-string
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
 										onClick={onCancel}

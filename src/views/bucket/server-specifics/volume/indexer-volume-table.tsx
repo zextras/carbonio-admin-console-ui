@@ -4,11 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo } from 'react';
+
 import { Container, Row, Text, Table } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import { LOCAL_VALUE, NO, YES } from '../../../../constants';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 
 const IndexerVolumeTable: FC<{
 	volumes: Array<any>;
@@ -28,6 +30,7 @@ const IndexerVolumeTable: FC<{
 						onClick={(): void => {
 							onClick(i);
 						}}
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
 						<Text size="small" weight="light">

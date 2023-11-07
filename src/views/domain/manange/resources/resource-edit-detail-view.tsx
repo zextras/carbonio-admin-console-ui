@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import moment from 'moment';
+
 import {
 	Container,
 	Input,
@@ -19,20 +19,22 @@ import {
 	SnackbarManagerContext,
 	Modal
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
 import _ from 'lodash';
-import ListRow from '../../../list/list-row';
-import { getCalenderResource } from '../../../../services/get-cal-resource-service';
-import { useDomainStore } from '../../../../store/domain/store';
-import { setPasswordRequest } from '../../../../services/set-password-service';
-import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
-import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
-import Textarea from '../../../components/textarea';
+import moment from 'moment';
+import { Trans, useTranslation } from 'react-i18next';
+
 import { SendInviteAccounts } from './send-invite-accounts';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
-import Displayer from '../../../components/displayer';
+import { getCalenderResource } from '../../../../services/get-cal-resource-service';
+import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
+import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
+import { setPasswordRequest } from '../../../../services/set-password-service';
+import { useDomainStore } from '../../../../store/domain/store';
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import Displayer from '../../../components/displayer';
+import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -224,6 +226,7 @@ const ResourceEditDetailView: FC<any> = ({
 		getResourceDetail();
 	}, [getResourceDetail]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!resourceInformation && resourceInformation.length > 0) {
 			const obj: any = {};
@@ -510,6 +513,7 @@ const ResourceEditDetailView: FC<any> = ({
 		});
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = (): void => {
 		if (password !== '' && password?.length < 6) {
 			createSnackbar({

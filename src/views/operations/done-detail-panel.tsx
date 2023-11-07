@@ -5,14 +5,16 @@
  */
 
 import React, { FC, useMemo, useState } from 'react';
+
 import { Container, Row, Text, Divider } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
 import { OperationsTable } from './operations-table';
-import { OperationsDoneHeader } from '../utility/utils';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
 import { useOperationStore } from '../../store/operation/store';
 import ModalOverlay from '../components/ModalOverlay';
+import { OperationsDoneHeader } from '../utility/utils';
 
 const RelativeContainer = styled(Container)`
 	position: relative;

@@ -3,9 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { create } from 'zustand';
 import { produce } from 'immer';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+
 import { Cos, Domain } from '../../../types';
 import { DOMAINS_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 
@@ -44,12 +45,14 @@ export const useDomainStore = create<DomainState>()(
 		removeDomain: (): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.domain = {};
 				})
 			),
 		setDomainView: (domainView): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.domainView = domainView;
 				}),
 				false,
@@ -61,6 +64,7 @@ export const useDomainStore = create<DomainState>()(
 		setCloseDomainBanner: (domainName): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.closeDomainBanner = domainName;
 				}),
 				false,

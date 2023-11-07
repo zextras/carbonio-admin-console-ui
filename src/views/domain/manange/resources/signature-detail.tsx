@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -17,14 +18,15 @@ import {
 	Modal
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import ListRow from '../../../list/list-row';
+
+import logo from '../../../../assets/carbonio_defender.svg';
+import { createSignature } from '../../../../services/create-signature-service';
 import { deleteSignature } from '../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../services/modify-signature-service';
-import { createSignature } from '../../../../services/create-signature-service';
-import Textarea from '../../../components/textarea';
-import logo from '../../../../assets/carbonio_defender.svg';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
 
 export const SignatureDetail: FC<any> = ({
 	isEditable,
@@ -175,6 +177,7 @@ export const SignatureDetail: FC<any> = ({
 				const item = {
 					content: [
 						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							type: 'text/plain',
 							_content: signatureContent
 						}

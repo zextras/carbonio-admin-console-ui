@@ -3,11 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
-import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { CSVDownload } from 'react-csv';
-import styled, { css, SimpleInterpolation } from 'styled-components';
 
 export type IconComponent = (props: SVGProps<SVGSVGElement>) => JSX.Element;
 

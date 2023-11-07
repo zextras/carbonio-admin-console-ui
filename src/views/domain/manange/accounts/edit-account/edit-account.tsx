@@ -5,7 +5,7 @@
  */
 
 import React, { FC, ReactElement, useCallback, useEffect, useState, useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import {
 	Container,
 	Button,
@@ -16,27 +16,19 @@ import {
 	Row,
 	IconButton,
 	Divider,
-	Padding,
-	Icon
+	Padding
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { isEqual, reduce, remove, differenceBy } from 'lodash';
-import { useDomainStore } from '../../../../../store/domain/store';
-import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
-import EditAccountGeneralSection from './edit-account-general-section';
-import EditAccountConfigrationSection from './edit-account-configration-section';
-import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
-import EditAccountSecuritySection from './edit-account-security-section';
-import EditAccountDelegatesSection from './edit-account-delegates-section';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
-import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
-import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
-import { modifyAccountRequest } from '../../../../../services/modify-account';
-import { setPasswordRequest } from '../../../../../services/set-password';
-import { renameAccountRequest } from '../../../../../services/rename-account';
-import { AccountContext } from '../account-context';
-import { getDomainList } from '../../../../../services/search-domain-service';
-import { setCoreAttributes } from '../../../../../services/set-core-attributes';
+import EditAccountAdministrationSection from './edit-account-administration-section';
+import EditAccountConfigrationSection from './edit-account-configration-section';
+import EditAccountContactsSection from './edit-account-contacts-section';
+import EditAccountDelegatesSection from './edit-account-delegates-section';
+import EditAccountGeneralSection from './edit-account-general-section';
+import EditAccountSecuritySection from './edit-account-security-section';
+import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 import {
 	ACCOUNT,
 	CONFIGURATION,
@@ -54,11 +46,19 @@ import {
 	CHANGE_DISPLAY_NAME_BOOLEAN,
 	IS_DEFAULT_USER_NAME
 } from '../../../../../constants';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import EditAccountContactsSection from './edit-account-contacts-section';
-import EditAccountAdministrationSection from './edit-account-administration-section';
+import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
+import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
+import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
+import { renameAccountRequest } from '../../../../../services/rename-account';
+import { getDomainList } from '../../../../../services/search-domain-service';
+import { setCoreAttributes } from '../../../../../services/set-core-attributes';
+import { setPasswordRequest } from '../../../../../services/set-password';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useDomainStore } from '../../../../../store/domain/store';
 import OverlayDivision from '../../../../components/overlayDivision';
+import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
+import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
 const ovelayStyle = styled(Container)`
@@ -249,7 +249,8 @@ const EditAccount: FC<{
 						type: 'error',
 						label: error?.message
 							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -304,6 +305,7 @@ const EditAccount: FC<{
 		[t, accountDetail, createSnackbar]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const modifyAccountReq = useCallback(async () => {
 		const modifiedKeys: any = reduce(
 			accountDetail,
@@ -331,6 +333,7 @@ const EditAccount: FC<{
 			});
 			return;
 		}
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
 			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
 				if (accountDetail?.password?.length < 6) {

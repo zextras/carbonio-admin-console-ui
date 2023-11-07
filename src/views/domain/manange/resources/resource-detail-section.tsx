@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo, useContext, useState, useEffect, useCallback } from 'react';
+
 import {
 	Container,
 	Input,
@@ -15,8 +16,8 @@ import {
 	PasswordInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import { ResourceContext } from './resource-context';
-import ListRow from '../../../list/list-row';
 import {
 	RESOURCE_TYPE,
 	SCHEDULE_POLITY_TYPE,
@@ -25,6 +26,7 @@ import {
 } from './resource-edit-detail-view';
 import { useDomainStore } from '../../../../store/domain/store';
 import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
 
 const ResourceDetailSection: FC = () => {
 	const { t } = useTranslation();

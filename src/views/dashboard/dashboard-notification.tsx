@@ -5,10 +5,12 @@
  */
 
 import React, { FC } from 'react';
+
 import { Container, Icon, Button, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import ListRow from '../list/list-row';
+
 import NotificationView from '../app/shared/notification-view';
+import ListRow from '../list/list-row';
 
 const DashboardNotification: FC<{
 	goToMailNotificationt: () => void;

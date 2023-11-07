@@ -4,10 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useSnackbar } from '@zextras/carbonio-design-system';
 import React, { FC, useCallback, useEffect } from 'react';
+
+import { useSnackbar } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+
+import DoneDetailPanel from './done-detail-panel';
+import QuededDetailPanel from './queued-detail-panel';
+import RunningDetailPanel from './running-detail-panel';
 import {
 	DONE_ROUTE_ID,
 	QUEUED,
@@ -19,9 +24,6 @@ import {
 import { getAllOperations } from '../../services/get-all-operations';
 import { useOperationStore } from '../../store/operation/store';
 import { useServerStore } from '../../store/server/store';
-import DoneDetailPanel from './done-detail-panel';
-import QuededDetailPanel from './queued-detail-panel';
-import RunningDetailPanel from './running-detail-panel';
 
 const OperationsDetailOperation: FC = () => {
 	const [t] = useTranslation();

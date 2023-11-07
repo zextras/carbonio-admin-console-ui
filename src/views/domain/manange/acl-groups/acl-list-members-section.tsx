@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,21 +16,18 @@ import {
 	SnackbarManagerContext,
 	Padding
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { debounce, sortedUniq, uniq } from 'lodash';
-import ListRow from '../../../list/list-row';
-import {
-	getAllEmailFromString,
-	getEmailDisplayNameFromString,
-	isValidEmail
-} from '../../../utility/utils';
+import { useTranslation } from 'react-i18next';
+
 import { AclListContext } from './acl-list-context';
+import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { searchGal } from '../../../../services/search-gal-service';
-import helmetLogo from '../../../../assets/helmet_logo.svg';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import ListRow from '../../../list/list-row';
+import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 
 const AclListMembersSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -151,6 +149,7 @@ const AclListMembersSection: FC<any> = () => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,

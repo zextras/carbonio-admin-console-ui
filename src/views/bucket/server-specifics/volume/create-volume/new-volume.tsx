@@ -4,14 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useState } from 'react';
+
 import { Button, Container } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
-import { Section } from '../../../../app/component/section';
+import styled from 'styled-components';
+
 import MailstoresCreate from './mailstores-create';
 import { VolumeContext } from './volume-context';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { HorizontalWizard } from '../../../../app/component/hwizard';
+import { Section } from '../../../../app/component/section';
 import OverlayDivision from '../../../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`

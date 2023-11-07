@@ -3,9 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { create } from 'zustand';
 import { produce } from 'immer';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+
 import { Server } from '../../../types';
 import { SERVER_DETAIL_VIEW } from '../../constants';
 
@@ -29,12 +30,14 @@ export const useServerStore = create<ServerState>()(
 		removeServer: (): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.server = {};
 				})
 			),
 		setServerView: (serverView): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.serverView = serverView;
 				}),
 				false,
