@@ -64,6 +64,7 @@ const DomainCosLink: FC<{
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const allCosList = useDomainStore((state) => state.cosList);
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -89,7 +90,7 @@ const DomainCosLink: FC<{
 		cosMaxAccountList.forEach((item) => {
 			domainMaxAccountList.push({
 				id: item?.id,
-				name: cosList.find((c) => c.id === item.id)?.name,
+				name: allCosList.find((c) => c.id === item.id)?.name,
 				value: item?.value
 			});
 		});
@@ -98,7 +99,7 @@ const DomainCosLink: FC<{
 		} else {
 			setDomainCosMaxAccountList([]);
 		}
-	}, [cosMaxAccountList, cosList]);
+	}, [cosMaxAccountList, allCosList]);
 
 	const getCosLists = (cos: string): any => {
 		getCosList(cos, 0).then((data) => {
@@ -641,8 +642,36 @@ const DomainCosLink: FC<{
 							label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
 							value={maxAccountValue}
 							backgroundColor="gray6"
+							type="number"
+							onKeyDown={(e): void => {
+								if (
+									![
+										'Backspace',
+										'Delete',
+										'ArrowLeft',
+										'ArrowRight',
+										'0',
+										'1',
+										'2',
+										'3',
+										'4',
+										'5',
+										'6',
+										'7',
+										'8',
+										'9',
+										'-'
+									].includes(e.key)
+								) {
+									e.preventDefault();
+								}
+							}}
 							onChange={(e: any): any => {
-								setMaxAccountValue(e.target.value);
+								if (e.target.value < -1) {
+									setMaxAccountValue('-1');
+								} else {
+									setMaxAccountValue(e.target.value.toString());
+								}
 							}}
 						/>
 					</Container>

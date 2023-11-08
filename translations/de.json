@@ -69,7 +69,8 @@
         "domain_list": "Domänenliste",
         "mail_space_quota_threshold": "Schwellenwert für das E-Mail-Speicherplatzkontingent (%)",
         "pop": "POP",
-        "receiver_of_quota_warning_email": "Empfänger der Kontingentwarnung (E-Mail)"
+        "receiver_of_quota_warning_email": "Empfänger der Kontingentwarnung (E-Mail)",
+        "administration_rights": "Administrationsrechte"
     },
     "label": {
         "account": "Konto",
@@ -219,7 +220,7 @@
         "require_list_owner_approval": "Genehmigung durch Listenbesitzer verlangen",
         "resource": "Ressource",
         "rights": "Rechte",
-        "signatures": "Signaturen",
+        "signatures": "Unterschriften",
         "standard": "Standard",
         "surname": "Nachname",
         "user": "Benutzer",
@@ -456,7 +457,7 @@
         "volume_cancel_button": "ABBRECHEN",
         "volume_compression_thresold": "Komprimierungsschwelle",
         "volume_create_with_this_data_button": "MIT DIESEN DATEN ERSTELLEN",
-        "volume_id": "Datenträger-ID",
+        "volume_id": "Datenträger ID",
         "volume_name": "Datenträgername",
         "volume_next_step_button": "NÄCHSTER SCHRITT",
         "volume_path": "Pfad",
@@ -696,7 +697,6 @@
         "you_are_trying_reset_device": "Sie versuchen ein Gerät zurückzusetzen",
         "logo_description": "Fügen Sie die URL des Logos für die Login Seite ein. Nutzen Sie eine SVG oder PNG Datei mit transparentem Hintergrund, Größe 240x120 Pixel.",
         "operation_now_in_queue": "Dieser Vorgang ist jetzt auf der Warteschleife",
-        "reset_theme_content_1": "Sind Sie sicher, dass Sie dieses Thema zurücksetzen möchten?",
         "rest_device_warning_msg_1": "Wenn Sie ein Gerät löschen, wird dieses auf Werkseinstellungen zurückgesetzt. Sind Sie sich, dass Sie fortfahren möchten? ",
         "total_acc_rights_with_delete_distribution_list_helper_text": "Diese Liste hat <bold>{{totalAccRights}}</bold> geteilte Kontorechte. <br />Wenn Sie diese löschen, sind alle Anteile verloren.",
         "storage_centralized_helptext": "Zentralisierte Daten sind nützliche, wenn zwei oder mehr Server Zugriff auf die gleichen Daten benötigen. \nIndem alle Daten an einem Ort gespeichert werden, ist es einfacher, sowohl die Hardware als auch die Daten selbst zu verwalten. ",
@@ -736,9 +736,6 @@
         "primary_volume": "Dies ist ein primärer Datenträger",
         "quarantined": "In Quarantäne",
         "registration": "Registrierung",
-        "reset_domain_theme": "{{name}} Thema zurücksetzen",
-        "reset_global_theme": "Allgemeines Thema zurücksetzen",
-        "reset_theme_content_2": "Wenn Sie auf den JA Button klicken, sind die Daten verloren.",
         "owners_settings_lbl": "Besitzer-Einstellungen",
         "secondary_volume": "Dies ist ein sekundärer Datenträger",
         "security": "SICHERHEIT",
@@ -1121,7 +1118,9 @@
         "what_to_trust": "Worauf kann man vertrauen?",
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "Sie verfügen nicht über ausreichende Administratorrechte, um diesen Abschnitt anzuzeigen",
         "person_name": "Name",
-        "stats": "Statistik"
+        "stats": "Statistik",
+        "advance_edit_userName": "Benutzername",
+        "search_for_an_account": "Ein Konto suchen"
     },
     "timezone": {
         "asia_yerevan": "{{value}} Eriwan",
@@ -1467,7 +1466,7 @@
         "maximum_operation_per_account": "Maximale Anzahl der Vorgänge pro Konto",
         "running": "aktiv",
         "waiting_time": "Wartezeit",
-        "bucket_list": "Buckets-Liste",
+        "bucket_list": "Buckets Liste",
         "external_volume": "Externer Datenträger",
         "kb": "KB",
         "bucket_configuration": "Bucket-Konfiguration",
@@ -1543,7 +1542,7 @@
         "email_retention_policy": "Regeln für die E-Mail-Speicherung",
         "enable_failed_login_lockout": "Sperrung bei fehlgeschlagener Anmeldung aktivieren",
         "enable_smime": "S/MIME aktivieren",
-        "enabled": "Aktiviert",
+        "enabled": "Geactiveerd",
         "failed_login_policy": "Anmelderegeln nicht erfüllt",
         "free_busy_interop": "Erreichbar/Beschäftigt-Interop (O = AußerhalbDesBüros), (OU = AußerhalbDesBüros, FürDringendeProblemeVerfügbar)",
         "html_compose": "In HTML verfassen",
@@ -1956,7 +1955,8 @@
         "indexer_helperText": "Indexer",
         "primary_helperText": "Primär",
         "secondary_helperText": "Sekundär",
-        "create_storage_volume": "Speichervolume erstellen"
+        "create_storage_volume": "Speichervolume erstellen",
+        "running": "Läuft"
     },
     "hsm": {
         "allocation": "Zuordnung",
@@ -1968,7 +1968,7 @@
         "days": "Tage",
         "delete": "Löschen",
         "destination_volume": "Zieldatenträger",
-        "details": "Gegevens",
+        "details": "Details",
         "document": "Dokument",
         "edit": "Bearbeiten",
         "event": "Event",
@@ -1976,7 +1976,7 @@
         "hsm_policies_list": "Liste HSM Richtlinien",
         "hsm_policy": "HSM-Richtlinie",
         "indexes": "Indexe",
-        "items": "Artikel",
+        "items": "Elemente",
         "kb": "KB",
         "mb": "MB",
         "message": "Nachricht",

@@ -79,6 +79,7 @@ const ManageAccounts: FC = () => {
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
+	const [showModal, setShowModal] = useState(false);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -247,6 +248,7 @@ const ManageAccounts: FC = () => {
 	const [signatureList, setSignatureList] = useState<any[]>([]);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [signatureData, setSignatureData]: any = useState([]);
+	const [isDirty, setIsDirty] = useState<boolean>(false);
 
 	const generateSignatureList = (signatureResponse: any): void => {
 		if (signatureResponse && Array.isArray(signatureResponse)) {
@@ -1038,6 +1040,8 @@ const ManageAccounts: FC = () => {
 										setOpen={setShowEditAccountView}
 										open={showEditAccountView}
 										maxWidth="58.75rem"
+										setShowModal={setShowModal}
+										isDirty={isDirty}
 									>
 										<EditAccount
 											setShowEditAccountView={setShowEditAccountView}
@@ -1049,6 +1053,10 @@ const ManageAccounts: FC = () => {
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
 											setShowAccountDetailView={setShowAccountDetailView}
+											showModal={showModal}
+											setShowModal={setShowModal}
+											isDirty={isDirty}
+											setIsDirty={setIsDirty}
 										/>
 									</ModalOverlay>
 								)}

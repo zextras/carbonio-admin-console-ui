@@ -170,7 +170,7 @@
         "yes": "Có",
         "detail": "Chi tiết",
         "device": "Thiết bị",
-        "edit": "Edit",
+        "edit": "Chỉnh sửa",
         "go_back": "Quay trở lại",
         "id_lbl": "ID",
         "language": "Ngôn ngữ",
@@ -180,7 +180,7 @@
         "owners": "Chủ sở hữu",
         "deleteing": "Đang xoá. ",
         "enable_toaster_notification_for_new_calendar_events": "cho phép thông báo nổi đối với sự kiện lịch mới",
-        "search_dot": "Tìm kiếm…",
+        "search_dot": "Tìm…",
         "allocation": "Phân bổ",
         "button_delete": "XOÁ",
         "calendar": "Lịch",
@@ -224,7 +224,7 @@
         "volume_cancel_button": "HUỶ",
         "volume_compression_thresold": "Ngưỡng nén",
         "volume_id": "ID tập",
-        "volume_name": "Tên Tập",
+        "volume_name": "Tên tập",
         "volume_path": "Đường dẫn",
         "volume_type": "Kiểu tập",
         "week_day": {
@@ -697,7 +697,9 @@
         "logout": "Đăng xuất",
         "never_send_read_receipt": "Không bảo giờ gửi đánh dấu đã đọc",
         "stats": "Số liệu thống kê",
-        "person_name": "Tên"
+        "person_name": "Tên",
+        "advance_edit_userName": "Tên người dùng",
+        "search_for_an_account": "Tìm kiếm một tài khoản"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -1237,7 +1239,7 @@
         "spanish": "Tây Ban Nha",
         "thai": "Thái",
         "turkish": "Thổ Nhĩ Kỳ",
-        "vietnamese": "Việt Nam",
+        "vietnamese": "Tiếng Việt",
         "polish": "Tiếng Ba Lan"
     },
     "account_details": {
@@ -1396,7 +1398,8 @@
             "secondary": "Thứ nhì"
         },
         "primary_helperText": "Chính",
-        "secondary_helperText": "Thứ nhì"
+        "secondary_helperText": "Thứ nhì",
+        "running": "Đang chạy"
     },
     "account": {
         "new": {
@@ -1441,7 +1444,7 @@
         "destination_volume": "Tập đích",
         "details": "Thông tin chi tiết",
         "document": "Văn bản",
-        "edit": "Edit",
+        "edit": "Chỉnh sửa",
         "event": "Sự kiện",
         "hours": "Giờ",
         "hsm_policies_list": "Danh sách chính sách HSM",

@@ -685,6 +685,7 @@ const EditAccountGeneralSection: FC = () => {
 						defaultValue={directMemberList}
 						disabled
 						ChipComponent={CustomChip}
+						maxChips={null}
 					/>
 				</Row>
 			</Row>
@@ -699,6 +700,7 @@ const EditAccountGeneralSection: FC = () => {
 						defaultValue={inDirectMemberList}
 						disabled
 						ChipComponent={CustomChip}
+						maxChips={null}
 					/>
 				</Row>
 			</Row>
