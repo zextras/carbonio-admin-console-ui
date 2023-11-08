@@ -606,6 +606,7 @@ const MailingListSection: FC<any> = () => {
 										searchEmailFromGal(e?.textContent);
 									}}
 									ChipComponent={CustomChip}
+									maxChips={null}
 								/>
 							</Container>
 						</ListRow>

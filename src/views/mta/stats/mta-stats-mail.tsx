@@ -236,7 +236,7 @@ const MTAStatsMail: FC<{
 			},
 			{
 				id: 'received',
-				label: t('label.receveid', 'Receveid'),
+				label: t('label.received', 'Received'),
 				width: '12%',
 				bold: true
 			}

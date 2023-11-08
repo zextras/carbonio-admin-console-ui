@@ -12,8 +12,6 @@ import {
 	SnackbarManagerContext,
 	Table,
 	Icon,
-	Button,
-	Padding,
 	Divider
 } from '@zextras/carbonio-design-system';
 import React, {
@@ -28,12 +26,13 @@ import React, {
 } from 'react';
 import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import { isEmpty } from 'lodash';
+import { orderBy } from 'lodash';
 import {
 	NOTIFICATION_ALL,
 	NOTIFICATION_ERROR,
 	NOTIFICATION_INFORMATION,
-	NOTIFICATION_WARNING
+	NOTIFICATION_WARNING,
+	DESC
 } from '../../../constants';
 import { getAllNotifications } from '../../../services/get-all-notifications';
 import ListRow from '../../list/list-row';
@@ -188,11 +187,15 @@ const NotificationView: FC<{
 				if (res?.Body?.response?.content) {
 					const content = JSON.parse(res?.Body?.response?.content);
 					if (content?.response) {
-						// eslint-disable-next-line array-callback-return
-						Object.keys(content?.response).forEach((ele: any) => {
+						const notificationItems: Array<Notification> = [];
+						let infoCount = 0;
+						let allCount = 0;
+						let warningCount = 0;
+						let errorCount = 0;
+						Object.keys(content?.response).forEach((ele) => {
 							if (content?.response[ele] && content?.response[ele]?.response?.notifications) {
 								const allNotification = content?.response[ele]?.response?.notifications;
-								setNotificationList(allNotification);
+								notificationItems.push(...allNotification);
 								const info = allNotification.filter(
 									(item: Notification) => item?.level === NOTIFICATION_INFORMATION
 								);
@@ -202,14 +205,20 @@ const NotificationView: FC<{
 								const error = allNotification.filter(
 									(item: Notification) => item?.level === NOTIFICATION_ERROR
 								);
-
-								setNotificationCount({
-									all: allNotification.length,
-									information: info.length,
-									warning: warn.length,
-									error: error.length
-								});
+								allCount += allNotification.length;
+								infoCount += info.length;
+								warningCount += warn.length;
+								errorCount += error.length;
 							}
+						});
+						setNotificationList(
+							orderBy(notificationItems, (item: Notification) => new Date(item?.date), [DESC])
+						);
+						setNotificationCount({
+							all: allCount,
+							information: infoCount,
+							warning: warningCount,
+							error: errorCount
 						});
 					}
 				}

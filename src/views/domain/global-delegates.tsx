@@ -5,7 +5,7 @@
  */
 import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { debounce, flatMapDeep, filter } from 'lodash';
+import { debounce, flatMapDeep, filter, isEqual } from 'lodash';
 import {
 	Container,
 	Input,
@@ -66,6 +66,8 @@ const GlobalDelegates: FC = () => {
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
+	const [showModal, setShowModal] = useState(false);
+	const [isDirty, setIsDirty] = useState<boolean>(false);
 
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
@@ -769,6 +771,8 @@ const GlobalDelegates: FC = () => {
 										setOpen={setShowEditAccountView}
 										open={showEditAccountView}
 										maxWidth="58.75rem"
+										setShowModal={setShowModal}
+										isDirty={isDirty}
 									>
 										<EditAccount
 											setShowEditAccountView={setShowEditAccountView}
@@ -780,6 +784,10 @@ const GlobalDelegates: FC = () => {
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
 											setShowAccountDetailView={setShowAccountDetailView}
+											showModal={showModal}
+											setShowModal={setShowModal}
+											isDirty={isDirty}
+											setIsDirty={setIsDirty}
 										/>
 									</ModalOverlay>
 								)}

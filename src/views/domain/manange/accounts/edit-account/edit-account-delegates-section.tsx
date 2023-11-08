@@ -966,6 +966,7 @@ const EditAccountDelegatesSection: FC = () => {
 							}}
 							requireUniqueChips
 							ChipComponent={CustomChip}
+							maxChips={null}
 						/>
 					</Container>
 					<Container mainAlignment="flex-start">

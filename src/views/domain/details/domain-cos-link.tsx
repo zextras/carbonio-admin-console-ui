@@ -99,7 +99,7 @@ const DomainCosLink: FC<{
 	}, [cosMaxAccountList, cosList]);
 
 	const getCosLists = (cos: string): any => {
-		getCosList(cos).then((data) => {
+		getCosList(cos, 0).then((data) => {
 			const searchResponse: any = data;
 			if (!!searchResponse && searchResponse?.searchTotal > 0) {
 				setCosList(searchResponse?.cos);
@@ -636,8 +636,36 @@ const DomainCosLink: FC<{
 							label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
 							value={maxAccountValue}
 							backgroundColor="gray6"
+							type="number"
+							onKeyDown={(e): void => {
+								if (
+									![
+										'Backspace',
+										'Delete',
+										'ArrowLeft',
+										'ArrowRight',
+										'0',
+										'1',
+										'2',
+										'3',
+										'4',
+										'5',
+										'6',
+										'7',
+										'8',
+										'9',
+										'-'
+									].includes(e.key)
+								) {
+									e.preventDefault();
+								}
+							}}
 							onChange={(e: any): any => {
-								setMaxAccountValue(e.target.value);
+								if (e.target.value < -1) {
+									setMaxAccountValue('-1');
+								} else {
+									setMaxAccountValue(e.target.value.toString());
+								}
 							}}
 						/>
 					</Container>

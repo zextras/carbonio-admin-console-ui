@@ -86,6 +86,8 @@ const ManageDelegates: FC = () => {
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
 	const [defaultTab, setDefaultTab] = useState('general');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [showModal, setShowModal] = useState(false);
+	const [isDirty, setIsDirty] = useState<boolean>(false);
 
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -981,6 +983,8 @@ const ManageDelegates: FC = () => {
 								setOpen={setShowEditAccountView}
 								open={showEditAccountView}
 								maxWidth="58.75rem"
+								setShowModal={setShowModal}
+								isDirty={isDirty}
 							>
 								<EditAccount
 									setShowEditAccountView={setShowEditAccountView}
@@ -992,6 +996,10 @@ const ManageDelegates: FC = () => {
 									defaultTab={defaultTab}
 									setDefaultTab={setDefaultTab}
 									setShowAccountDetailView={setShowAccountDetailView}
+									showModal={showModal}
+									setShowModal={setShowModal}
+									isDirty={isDirty}
+									setIsDirty={setIsDirty}
 								/>
 							</ModalOverlay>
 						)}

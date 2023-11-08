@@ -2,7 +2,7 @@
     "core": {
         "subscription": {
             "more_info": "詳細",
-            "status": "状態",
+            "status": "ステータス",
             "subscription_Accounts": "サブスクリプションアカウント",
             "subscription_last_check": "サブスクリプションの最終確認",
             "token": "トークン",
@@ -336,7 +336,8 @@
         "receiver_of_quota_warning_email": "クォータ警告の受信者（メール）",
         "smtp": "SMTP",
         "type_the exact_domain_name": "正確なドメイン名を入力してください",
-        "web_ui": "WebUI"
+        "web_ui": "WebUI",
+        "administration_rights": "管理権限"
     },
     "label": {
         "account": "アカウント",
@@ -374,7 +375,7 @@
                 "accepted": "共有リクエストを承認しました"
             }
         },
-        "status": "状態",
+        "status": "ステータス",
         "suspended": "サスペンド済み",
         "timezone": "タイムゾーン",
         "unlimited": "無制限",
@@ -931,7 +932,7 @@
         "s3_bucket": "S3バケット",
         "select_an_external_volume": "外部ボリュームを選択する",
         "service": "サービス",
-        "status_lbl": "状態",
+        "status_lbl": "ステータス",
         "theme": "テーマ",
         "title": "タイトル",
         "update": "更新する",
@@ -997,10 +998,6 @@
         "primary_volume": "これはプライマリ ボリュームです",
         "quarantined": "隔離済み",
         "registration": "登録",
-        "reset_domain_theme": "{{name}}のテーマをリセットする",
-        "reset_global_theme": "グローバルテーマをリセットする",
-        "reset_theme_content_1": "本当にテーマをリセットしますか？",
-        "reset_theme_content_2": "[はい]をクリックすると、データがすべて失われます。",
         "rest_device_warning_msg_1": "デバイスをワイプすると、デフォルトの設定に復元されます。本当に続行しますか？ ",
         "secondary_volume": "これはセカンダリ ボリュームです",
         "security": "セキュリティ",
@@ -1388,7 +1385,9 @@
         "delete_delegated_account_content": "システムアカウントはここからは削除できません。アカウントを管理するには、各モジュールにアクセスしてください。",
         "found_check_the_text_and_try_again": "見つかりません - テキストを確認して再度お試しください",
         "person_name": "名前",
-        "stats": "統計"
+        "stats": "統計",
+        "advance_edit_userName": "ユーザー名",
+        "search_for_an_account": "アカウントを検索する"
     },
     "message": {
         "snackbar": {
@@ -1541,7 +1540,7 @@
         "session_idle_timeout": "セッションのアイドルタイムアウト",
         "shortest_allowed_duration_for_any_polling_interval": "任意のポーリング間隔の最小許容期間",
         "spam_message_lifetime": "迷惑メールメッセージの有効期間",
-        "status": "状態",
+        "status": "ステータス",
         "tagging": "タグ付け",
         "time_to_lockout_account": "アカウントをロックアウトする時間",
         "time_window_failed_logins_must_occur_to_lock_account": "アカウントをロックするためにログインの失敗が発生しなければならない時間枠：",
@@ -1561,9 +1560,9 @@
         "default_view": {
             "day": "日ビュー",
             "list": "最終閲覧",
-            "month": "月ビュー",
+            "month": "1ヶ月の閲覧",
             "week": "1週間の閲覧",
-            "work_week": "週平日ビュー"
+            "work_week": "平日の閲覧"
         },
         "disable_attachment_viewing_from_web_mail_ui": "ウェブメールで添付ファイルを表示させない",
         "disabled": "無効",
@@ -1728,9 +1727,9 @@
         "default_view": {
             "day": "日ビュー",
             "list": "最終閲覧",
-            "month": "月ビュー",
+            "month": "1ヶ月の閲覧",
             "week": "1週間の閲覧",
-            "work_week": "週平日ビュー"
+            "work_week": "平日の閲覧"
         },
         "enable_smime": "S/MIMEを有効にする",
         "general": "一般設定",
@@ -1852,7 +1851,7 @@
         "remove": "削除する",
         "send_check": "送信",
         "services": "サービス",
-        "status": "状態",
+        "status": "ステータス",
         "able_to_see_password_once": " 注意: パスワードは<bold>一度だけ</bold>表示されます",
         "account_read_only_rights": "このアカウントには<bold>読み取り専用</bold>権限があります",
         "account_read_write_rights": "このアカウントには<bold>読み取り/書き込み</bold>権限があります",
@@ -1938,7 +1937,7 @@
             "name": "名前",
             "hsm_scheduled": "HSM スケジュール済み",
             "indexer": "インデクサー",
-            "status": "状態"
+            "status": "ステータス"
         },
         "volume_indexer_header": {
             "current": "現在",
@@ -1954,7 +1953,8 @@
         "primary_helperText": "プライマリー",
         "secondary_helperText": "セカンダリー",
         "indexer_helperText": "インデクサー",
-        "create_storage_volume": "ストレージボリュームを作成する"
+        "create_storage_volume": "ストレージボリュームを作成する",
+        "running": "稼働中"
     },
     "click_new_bucket_button_to_create_new_one": "[新しいバケット]をクリックして新しいバケットを作成します。",
     "hsm": {
@@ -2078,7 +2078,7 @@
         "label": {
             "Deep": "深い",
             "notifications": "通知",
-            "status": "状態",
+            "status": "ステータス",
             "operation_type": "操作の種類",
             "remote_metadata_upload": "リモートメタデータのアップロード",
             "action(M)": "操作（M）",
@@ -2097,7 +2097,7 @@
             "operation": "オペレーション",
             "server": "サーバー",
             "start_date": "開始日",
-            "status": "状態",
+            "status": "ステータス",
             "submit_date": "送信日"
         },
         "queued": "キューに入れられました",
@@ -2243,7 +2243,7 @@
         "interval": "繰り返し間隔",
         "queued": "キューに入れられました",
         "stats": "統計",
-        "status": "状態"
+        "status": "ステータス"
     },
     "mat": {
         "add_here_any_blocked_extension": "ブロックされた拡張機能をここに追加します"

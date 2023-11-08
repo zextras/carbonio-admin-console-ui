@@ -5,7 +5,8 @@
         "details": "Yksityiskohdat",
         "password": "Salasana",
         "reset": "Resetoi",
-        "username": "Käyttäjänimi"
+        "username": "Käyttäjänimi",
+        "advance_edit_userName": "Käyttäjänimi"
     },
     "cos": {
         "password": "Salasana"
