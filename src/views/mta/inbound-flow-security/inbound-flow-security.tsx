@@ -296,7 +296,9 @@ const MTAInboundFlowSecurity: FC = () => {
 				if (attributeWithExtension.length === 1 && attributeWithExtension[0]?._content === '') {
 					removeConfigItems(attributeWithExtension[0]);
 				} else {
-					addConfig(attributeWithExtension);
+					setTimeout(() => {
+						addConfig(attributeWithExtension);
+					}, 100);
 				}
 			}
 		},
