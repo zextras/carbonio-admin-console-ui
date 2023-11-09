@@ -17,13 +17,15 @@ import {
 	Table,
 	Divider
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import {
 	ALLOW_SEND_RECEIVE,
 	BLOCK_SEND,
 	BLOCK_SEND_RECEIVE,
 	BYTE_PER_MB,
 	PERCENT_USED,
-	TOTAL_USED
+	TOTAL_USED,
+	TRUE
 } from '../../../constants';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
@@ -50,6 +52,17 @@ const DomainMailboxQuotaSetting: FC = () => {
 		zimbraDomainAggregateQuotaWarnEmailRecipient,
 		setZimbraDomainAggregateQuotaWarnEmailRecipient
 	] = useState<string>('');
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const [domainData, setDomainData]: any = useState({
 		zimbraMailDomainQuota: '',
@@ -328,10 +341,12 @@ const DomainMailboxQuotaSetting: FC = () => {
 			n: 'zimbraDomainMaxAccounts',
 			_content: zimbraDomainMaxAccounts
 		});
-		attributes.push({
-			n: 'zimbraMailDomainQuota',
-			_content: zimbraMailDomainQuota
-		});
+		if (isGlobalAdmin) {
+			attributes.push({
+				n: 'zimbraMailDomainQuota',
+				_content: zimbraMailDomainQuota
+			});
+		}
 		attributes.push({
 			n: 'zimbraDomainAggregateQuotaWarnPercent',
 			_content: zimbraDomainAggregateQuotaWarnPercent
@@ -498,6 +513,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										onChange={(e: any): any => {
 											setZimbraMailDomainQuota(e.target.value);
 										}}
+										disabled={!isGlobalAdmin}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
