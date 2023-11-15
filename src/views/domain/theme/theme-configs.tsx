@@ -671,7 +671,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
@@ -1104,7 +1104,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
