@@ -1969,7 +1969,7 @@ const EditMailingListView: FC<any> = ({
 					<ListRow padding={{ right: 'small', bottom: 'small' }}>
 						<Container padding={{ top: 'small' }}>
 							<Input
-								label={t('label.displayed_name', 'Displayed Name')}
+								label={t('label.display_name', 'Display Name')}
 								value={displayName}
 								backgroundColor="gray5"
 								onChange={(e: any): any => {

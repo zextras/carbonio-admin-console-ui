@@ -606,7 +606,7 @@ const AclListDetail: FC<any> = ({
 				<ListRow>
 					<Container padding={{ top: 'small', bottom: 'small', right: 'small' }}>
 						<Input
-							label={t('label.displayed_name', 'Displayed Name')}
+							label={t('label.display_name', 'Display Name')}
 							value={displayName}
 							backgroundColor="gray6"
 						/>

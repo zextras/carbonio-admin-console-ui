@@ -208,7 +208,7 @@ const CreateAccountDetailSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.viewed_name_auto_fill', 'Viewed Name (Auto-fill)')}
+						label={t('label.display_name_auto_fill', 'Display Name (Auto-fill)')}
 						backgroundColor="gray5"
 						value={accountDetail?.displayName || combineDisplayName}
 						onChange={changeAccDisplayName}
