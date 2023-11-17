@@ -62,6 +62,7 @@ const DomainCosLink: FC<{
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const allCosList = useDomainStore((state) => state.cosList);
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -87,7 +88,7 @@ const DomainCosLink: FC<{
 		cosMaxAccountList.forEach((item) => {
 			domainMaxAccountList.push({
 				id: item?.id,
-				name: cosList.find((c) => c.id === item.id)?.name,
+				name: allCosList.find((c) => c.id === item.id)?.name,
 				value: item?.value
 			});
 		});
@@ -96,7 +97,7 @@ const DomainCosLink: FC<{
 		} else {
 			setDomainCosMaxAccountList([]);
 		}
-	}, [cosMaxAccountList, cosList]);
+	}, [cosMaxAccountList, allCosList]);
 
 	const getCosLists = (cos: string): any => {
 		getCosList(cos, 0).then((data) => {
