@@ -177,7 +177,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 				let percentage: any = 0;
 
 				if (item?.used) {
-					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(1);
+					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(0);
 				}
 				if (item?.limit === 0) {
 					quotaLimit = t('label.unlimited', 'Unlimited');
