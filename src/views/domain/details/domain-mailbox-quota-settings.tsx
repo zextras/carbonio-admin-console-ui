@@ -175,20 +175,19 @@ const DomainMailboxQuotaSetting: FC = () => {
 				let diskUsed: any = 0;
 				let quotaLimit: any = 0;
 				let percentage: any = 0;
-
 				if (item?.used) {
 					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(0);
+					if (item?.limit) {
+						percentage = ((item.used / item.limit) * 100).toFixed();
+					}
 				}
 				if (item?.limit === 0) {
 					quotaLimit = t('label.unlimited', 'Unlimited');
 					percentage = 0;
+				} else if (item?.limit >= BYTE_PER_MB) {
+					quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
 				} else {
-					if (item?.limit >= BYTE_PER_MB) {
-						quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
-					} else {
-						quotaLimit = 1;
-					}
-					percentage = ((diskUsed * 100) / quotaLimit).toFixed();
+					quotaLimit = 1;
 				}
 				quota.push({
 					name: item?.name,
@@ -224,7 +223,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 									{item?.name}
 								</Text>,
 								<Text color="gray0" weight="light" key={item?.id}>
-									{`${item?.mailSize} / ${item?.quotaUsedPercentage}`}
+									{`${item?.mailSize} MB / ${item?.quotaUsedPercentage} %`}
 								</Text>
 							]
 						});
