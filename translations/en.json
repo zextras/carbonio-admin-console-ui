@@ -1436,6 +1436,7 @@
         "open": "Open",
         "operation": {
             "get_all_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}",
             "stop_operation_error": "{{name}}"
         },
         "operation_lbl": "<bold>Operations</bold>",
@@ -1574,6 +1575,7 @@
         "search_base": "Basic Search",
         "search_dot": "Search…",
         "search_for_a_Server": "Search for a Server",
+        "search_for_a_completed_operation": "Search for a completed operation",
         "search_for_a_domain": "Search for a Domain",
         "search_for_an_account": "Search for an account",
         "search_for_user_add_button": "Search for a user and click on the ADD button.",

@@ -17,7 +17,7 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import moment from 'moment';
+import { useParams } from 'react-router-dom';
 import ListRow from '../list/list-row';
 import MiliSecondToDate from './functions/miliSecondToDate';
 import {
@@ -26,19 +26,19 @@ import {
 	QUEUED,
 	RUNNING_ROUTE_ID,
 	STARTED,
-	STOPPING,
 	TRUE_OPERTION
 } from '../../constants';
 import { copyTextToClipboard } from '../utility/utils';
 
 const OperationsWizardDetailPanel: FC<{
-	setWizardDetailToggle: any;
-	setOpen: any;
+	setWizardDetailToggle: (value: boolean) => void;
+	setOpen: (value: boolean) => void;
 	selectedData: any;
 }> = ({ setWizardDetailToggle, setOpen, selectedData }) => {
 	const [t] = useTranslation();
 	const [status, setStatus] = useState('');
 	const createSnackbar = useSnackbar();
+	const { operation }: { operation: string } = useParams();
 
 	useEffect(() => {
 		if (selectedData?.state === STARTED) {
@@ -56,12 +56,14 @@ const OperationsWizardDetailPanel: FC<{
 			${t('operations.label.who_started_it', 'Who started it?')} : ${
 			selectedData?.parameters?.requesterAddress || ''
 		} \n
-			${t('operations.label.status', 'Status')} : ${status || ''} \n
+			${t('operations.label.status', 'Status')} : ${
+			(selectedData?.type ? selectedData?.type : status) || ''
+		} \n
 			${t('operations.label.submitted_at', 'Submitted at')}:  ${
 			selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''
 		} \n
 			${t('operations.label.started_at', 'Started at')} : ${
-			selectedData?.queuedTime ? MiliSecondToDate(selectedData?.queuedTime) : ''
+			selectedData?.humanStartTime ? selectedData?.humanStartTime : ''
 		} \n
 			${t('operations.label.notifications', 'Notifications')} : ${
 			selectedData?.parameters?.additionalNotificationAddresses
@@ -97,7 +99,7 @@ const OperationsWizardDetailPanel: FC<{
 					<Text size="extralarge" weight="bold">
 						{t('operations.operationname_on_servername', '{{operationName}} on {{serverName}}', {
 							operationName: selectedData?.name,
-							serverName: selectedData?.host
+							serverName: selectedData?.serverName
 						})}
 					</Text>
 				</Row>
@@ -127,7 +129,7 @@ const OperationsWizardDetailPanel: FC<{
 							onClick={copyOperationHandler}
 						/>
 					</Padding>
-					{selectedData?.state !== STOPPING && (
+					{operation !== DONE_ROUTE_ID && (
 						<Button
 							type="outlined"
 							label={
@@ -168,7 +170,7 @@ const OperationsWizardDetailPanel: FC<{
 								<Input
 									backgroundColor="gray6"
 									label={t('operations.label.status', 'Status')}
-									value={status || ''}
+									value={(selectedData?.type ? selectedData?.type : status) || ''}
 									readOnly
 								/>
 							</Container>
@@ -188,7 +190,7 @@ const OperationsWizardDetailPanel: FC<{
 								<Input
 									backgroundColor="gray6"
 									label={t('operations.label.started_at', 'Started at')}
-									value={selectedData?.queuedTime ? MiliSecondToDate(selectedData?.queuedTime) : ''}
+									value={selectedData?.humanStartTime ? selectedData?.humanStartTime : ''}
 									readOnly
 								/>
 							</Container>
@@ -207,8 +209,9 @@ const OperationsWizardDetailPanel: FC<{
 							backgroundColor="gray6"
 							label={t('operations.label.notifications', 'Notifications')}
 							value={
-								selectedData?.parameters?.additionalNotificationAddresses &&
-								selectedData?.parameters?.additionalNotificationAddresses?.length
+								(selectedData?.parameters?.additionalNotificationAddresses &&
+									selectedData?.parameters?.additionalNotificationAddresses?.length) ||
+								''
 							}
 							readOnly
 						/>
