@@ -18,7 +18,6 @@ export const ADVANCED = 'advanced';
 export const FREE_BUSY = 'free_busy';
 export const MAILBOX_QUOTA = 'mailbox_quota';
 export const WHITELABEL_SETTINGS = 'whitelabel_settings';
-export const THEME = 'theme';
 export const DOMAINS = 'domains';
 export const TWO_FACTOR_AUTHENTICATION = '2-factor-authentication';
 export const NOT_SET = 'not_set';
