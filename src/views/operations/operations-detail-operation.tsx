@@ -13,14 +13,7 @@ import { useParams } from 'react-router-dom';
 import DoneDetailPanel from './done-detail-panel';
 import QuededDetailPanel from './queued-detail-panel';
 import RunningDetailPanel from './running-detail-panel';
-import {
-	DONE_ROUTE_ID,
-	QUEUED,
-	QUEUED_ROUTE_ID,
-	RUNNING_ROUTE_ID,
-	STARTED,
-	STOPPING
-} from '../../constants';
+import { DONE_ROUTE_ID, QUEUED, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID, STARTED } from '../../constants';
 import { getAllOperations } from '../../services/get-all-operations';
 import { useOperationStore } from '../../store/operation/store';
 import { useServerStore } from '../../store/server/store';
@@ -30,7 +23,7 @@ const OperationsDetailOperation: FC = () => {
 	const createSnackbar = useSnackbar();
 	const { operation }: { operation: string } = useParams();
 	const serverList = useServerStore((state) => state?.serverList)[0]?.name;
-	const { setAlloperationDetail, setRunningData, setQueuedData, setDoneData } = useOperationStore(
+	const { setAlloperationDetail, setRunningData, setQueuedData } = useOperationStore(
 		(state) => state
 	);
 
@@ -45,8 +38,6 @@ const OperationsDetailOperation: FC = () => {
 					setRunningData(RunningOperationData);
 					const QueuedOperationData = result?.filter((item: any) => item?.state === QUEUED);
 					setQueuedData(QueuedOperationData);
-					const DoneOperationData = result?.filter((item: any) => item?.state === STOPPING);
-					setDoneData(DoneOperationData);
 				}
 			})
 			.catch((err) => {
@@ -58,15 +49,7 @@ const OperationsDetailOperation: FC = () => {
 					})
 				});
 			});
-	}, [
-		createSnackbar,
-		serverList,
-		setAlloperationDetail,
-		setDoneData,
-		setQueuedData,
-		setRunningData,
-		t
-	]);
+	}, [createSnackbar, serverList, setAlloperationDetail, setQueuedData, setRunningData, t]);
 
 	useEffect(() => {
 		getAllOperationAPICallHandler();

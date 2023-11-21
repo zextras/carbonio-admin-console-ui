@@ -116,7 +116,7 @@ const CreateAccount: FC<{
 		givenName: '',
 		initials: '',
 		sn: '',
-		zimbraPasswordMustChange: true,
+		zimbraPasswordMustChange: false,
 		generateFirst2FAToken: true,
 		defaultCOS: true,
 		zimbraAccountStatus: '',

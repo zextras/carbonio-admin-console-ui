@@ -17,6 +17,7 @@ import {
 	Table,
 	Divider
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -25,7 +26,8 @@ import {
 	BLOCK_SEND_RECEIVE,
 	BYTE_PER_MB,
 	PERCENT_USED,
-	TOTAL_USED
+	TOTAL_USED,
+	TRUE
 } from '../../../constants';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
@@ -52,6 +54,17 @@ const DomainMailboxQuotaSetting: FC = () => {
 		zimbraDomainAggregateQuotaWarnEmailRecipient,
 		setZimbraDomainAggregateQuotaWarnEmailRecipient
 	] = useState<string>('');
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const [domainData, setDomainData]: any = useState({
 		zimbraMailDomainQuota: '',
@@ -164,20 +177,19 @@ const DomainMailboxQuotaSetting: FC = () => {
 				let diskUsed: any = 0;
 				let quotaLimit: any = 0;
 				let percentage: any = 0;
-
 				if (item?.used) {
 					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(2);
+					if (item?.limit) {
+						percentage = ((item.used / item.limit) * 100).toFixed();
+					}
 				}
 				if (item?.limit === 0) {
 					quotaLimit = t('label.unlimited', 'Unlimited');
 					percentage = 0;
+				} else if (item?.limit >= BYTE_PER_MB) {
+					quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
 				} else {
-					if (item?.limit >= BYTE_PER_MB) {
-						quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
-					} else {
-						quotaLimit = 1;
-					}
-					percentage = ((diskUsed * 100) / quotaLimit).toFixed();
+					quotaLimit = 1;
 				}
 				quota.push({
 					name: item?.name,
@@ -213,7 +225,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 									{item?.name}
 								</Text>,
 								<Text color="gray0" weight="light" key={item?.id}>
-									{`${item?.mailSize} / ${item?.quotaUsedPercentage}`}
+									{`${item?.mailSize} MB / ${item?.quotaUsedPercentage} %`}
 								</Text>
 							]
 						});
@@ -339,10 +351,12 @@ const DomainMailboxQuotaSetting: FC = () => {
 			n: 'zimbraDomainMaxAccounts',
 			_content: zimbraDomainMaxAccounts
 		});
-		attributes.push({
-			n: 'zimbraMailDomainQuota',
-			_content: zimbraMailDomainQuota
-		});
+		if (isGlobalAdmin) {
+			attributes.push({
+				n: 'zimbraMailDomainQuota',
+				_content: zimbraMailDomainQuota
+			});
+		}
 		attributes.push({
 			n: 'zimbraDomainAggregateQuotaWarnPercent',
 			_content: zimbraDomainAggregateQuotaWarnPercent
@@ -509,6 +523,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										onChange={(e: any): any => {
 											setZimbraMailDomainQuota(e.target.value);
 										}}
+										disabled={!isGlobalAdmin}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>

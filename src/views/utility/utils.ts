@@ -1287,7 +1287,7 @@ export const OperationsDoneHeader = (
 		id: 'Server',
 		label: t('operations.operations_list_header.server', 'Server'),
 		i18nAllLabel: 'All',
-		width: '127px',
+		width: '177px',
 		bold: true,
 		align: 'left'
 	},
@@ -1321,7 +1321,7 @@ export const OperationsDoneHeader = (
 		i18nAllLabel: 'All',
 		width: '138px',
 		bold: true,
-		align: 'center'
+		align: 'left'
 	},
 	{
 		id: 'HSM Scheduling',
@@ -1329,7 +1329,7 @@ export const OperationsDoneHeader = (
 		i18nAllLabel: 'All',
 		width: '138px',
 		bold: true,
-		align: 'center'
+		align: 'left'
 	}
 ];
 

@@ -21,7 +21,7 @@ import {
 	Modal,
 	ChipInput
 } from '@zextras/carbonio-design-system';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { replaceHistory, useUserSettings } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -37,6 +37,7 @@ import {
 	MAINTENANCE,
 	NOT_SET,
 	SUSPENDED,
+	TRUE,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
@@ -79,6 +80,16 @@ const DomainGeneralSettings: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const removeDomain = useDomainStore((state) => state.removeDomain);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 	const serviceProtocolItems: any = useMemo(
 		() => [
 			{
@@ -414,7 +425,8 @@ const DomainGeneralSettings: FC = () => {
 			zimbraHelpDelegatedURL,
 			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || '',
 			carbonioNotificationFrom,
-			carbonioNotificationRecipients
+			carbonioNotificationRecipients,
+			zimbraDomainMaxAccounts
 		};
 		const defaultDomainData = {
 			zimbraPrefTimeZoneId: domainData.zimbraPrefTimeZoneId,
@@ -429,7 +441,8 @@ const DomainGeneralSettings: FC = () => {
 			zimbraHelpDelegatedURL: domainData.zimbraHelpDelegatedURL,
 			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || '',
 			carbonioNotificationFrom: domainData.carbonioNotificationFrom,
-			carbonioNotificationRecipients: domainData.carbonioNotificationRecipients
+			carbonioNotificationRecipients: domainData.carbonioNotificationRecipients,
+			zimbraDomainMaxAccounts: domainData.zimbraDomainMaxAccounts
 		};
 		if (!isEqual(defaultDomainData, updatedData)) {
 			setIsDirty(true);
@@ -450,7 +463,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraHelpDelegatedURL,
 		zimbraNotes,
 		zimbraPublicServicePort,
-		description
+		description,
+		zimbraDomainMaxAccounts
 	]);
 	const onCancel = (): void => {
 		setSelectedPublicServiceProtocol(
@@ -546,6 +560,13 @@ const DomainGeneralSettings: FC = () => {
 				n: 'carbonioNotificationFrom',
 				_content: carbonioNotificationFrom
 			});
+			if (isGlobalAdmin) {
+				attributes.push({
+					n: 'zimbraDomainMaxAccounts',
+					_content: zimbraDomainMaxAccounts
+				});
+			}
+			// eslint-disable-next-line array-callback-return
 			carbonioNotificationRecipients.forEach((item: { label: string }): void => {
 				attributes.push({
 					n: 'carbonioNotificationRecipients',
@@ -870,7 +891,10 @@ const DomainGeneralSettings: FC = () => {
 										)}
 										value={zimbraDomainMaxAccounts}
 										backgroundColor="gray6"
-										readOnly
+										onChange={(e: any): any => {
+											setZimbraDomainMaxAccounts(e.target.value);
+										}}
+										disabled={!isGlobalAdmin}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
