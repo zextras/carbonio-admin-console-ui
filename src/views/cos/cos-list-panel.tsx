@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
+import GeneralListPanel from './general-list-panel';
 import {
 	GENERAL_INFORMATION,
 	FEATURES,
@@ -20,7 +21,9 @@ import {
 	MANAGE_APP_ID,
 	COS_ROUTE_ID,
 	ADVANCED,
-	SERVER_POOLS
+	SERVER_POOLS,
+	COS,
+	COS_LIST
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getCosList } from '../../services/search-cos-service';
@@ -30,6 +33,7 @@ import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import ListItems from '../list/list-items';
+import ListPanelItem from '../list/list-panel-item';
 
 const SelectItem = styled(Row)``;
 
@@ -69,25 +73,25 @@ const CosListPanel: FC = () => {
 		(state) => state.globalCarbonioSendAnalytics
 	);
 	const [searchCosName, setSearchCosName] = useState('');
-	const [cosId, setCosId] = useState('');
 	const [isCosSelect, setIsCosSelect] = useState(false);
 	const [cosList, setCosList] = useState([]);
 	const [isCosListExpand, setIsCosListExpand] = useState(false);
-	const [selectedOperationItem, setSelectedOperationItem] = useState('');
+	const { cosView, setCosView, cos } = useCosStore();
 	const setCos = useCosStore((state) => state.setCos);
 	const cosInformation = useCosStore((state) => state.cos);
 	const cosName: any = useCosStore((state) => state.cos?.name);
 	const [isShowError, setIsShowError] = useState(false);
 	const prevCosRef = useRef();
 	const [isLoading, setIsLoading] = useState(false);
+	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 
 	useEffect(() => {
 		globalCarbonioSendAnalytics && matomo.trackPageView(`${COS_ROUTE_ID}`);
 	}, [globalCarbonioSendAnalytics, matomo]);
 
-	const getCosLists = (cos: string): any => {
+	const getCosLists = (searchData: string): any => {
 		setIsLoading(true);
-		getCosList(cos).then((data) => {
+		getCosList(searchData).then((data) => {
 			const searchResponse: any = data;
 			if (!!searchResponse && searchResponse?.searchTotal > 0) {
 				setCosList(searchResponse?.cos);
@@ -116,12 +120,12 @@ const CosListPanel: FC = () => {
 			setSearchCosName(cosInformation?.name);
 			setIsCosSelect(true);
 			setIsCosListExpand(false);
-			setSelectedOperationItem(GENERAL_INFORMATION);
+			setCosView(GENERAL_INFORMATION);
 			if (cosInformation?.id) {
-				setCosId(cosInformation?.id);
+				setCos({ name: cosInformation?.name, id: cosInformation?.id });
 			}
 		}
-	}, [cosInformation?.id, cosInformation?.name]);
+	}, [cosInformation?.id, cosInformation?.name, setCos, setCosView]);
 
 	useEffect(() => {
 		if (
@@ -133,16 +137,15 @@ const CosListPanel: FC = () => {
 			setIsCosSelect(false);
 			setSearchCosName('');
 			setIsCosListExpand(false);
-			setSelectedOperationItem('');
-			setCosId('');
+			setCosView('');
 			setCos({});
 		}
-	}, [locationService, setCos]);
+	}, [locationService, setCos, setCosView]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchCosCall = useCallback(
-		debounce((cos) => {
-			getCosLists(cos);
+		debounce((searchData) => {
+			getCosLists(searchData);
 		}, 700),
 		[debounce]
 	);
@@ -153,27 +156,40 @@ const CosListPanel: FC = () => {
 		}
 	}, [searchCosName, isCosSelect, searchCosCall]);
 
-	const selectedCos = useCallback((cos: any) => {
-		setIsCosSelect(true);
-		setSearchCosName(cos?.name);
-		setIsCosListExpand(false);
-		setCosId(cos?.id);
-		setSelectedOperationItem(GENERAL_INFORMATION);
-	}, []);
+	const toggleGeneralView = (): void => {
+		setIsDetailListExpanded(!isDetailListExpanded);
+	};
+
+	const selectedCos = useCallback(
+		(cosData: any) => {
+			setIsCosSelect(true);
+			setSearchCosName(cosData?.name);
+			setIsCosListExpand(false);
+			setCos({
+				a: cosData?.a,
+				id: cosData?.id,
+				name: cosData?.name
+			});
+			setCosView(GENERAL_INFORMATION);
+		},
+		[setCos, setCosView]
+	);
 
 	useEffect(() => {
-		if (isCosSelect && cosId) {
-			if (selectedOperationItem) {
-				globalCarbonioSendAnalytics &&
-					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
-				replaceHistory(`/${cosId}/${selectedOperationItem}`);
+		if (cosView === COS_LIST || cosView === '') {
+			replaceHistory(`/${COS_LIST}`);
+		} else if (isCosSelect && cos?.id) {
+			if (cosView === COS) {
+				replaceHistory(`/cos_list`);
+			} else if (cosView) {
+				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${cosView}`);
+				replaceHistory(`/${cos?.id}/${cosView}`);
 			} else {
-				globalCarbonioSendAnalytics &&
-					matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
-				replaceHistory(`/${cosId}/${GENERAL_INFORMATION}`);
+				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${cosView}`);
+				replaceHistory(`/${cos?.id}/${GENERAL_INFORMATION}`);
 			}
 		}
-	}, [isCosSelect, cosId, selectedOperationItem, matomo, globalCarbonioSendAnalytics]);
+	}, [isCosSelect, cos, cosView, matomo, globalCarbonioSendAnalytics, setCosView]);
 
 	const detailOptions = useMemo<
 		{
@@ -222,6 +238,22 @@ const CosListPanel: FC = () => {
 		}
 	};
 
+	const globalOptionItems = useMemo<
+		{
+			id: string;
+			name: string;
+		}[]
+	>(
+		() => [
+			{
+				id: COS_LIST,
+				name: t('label.Cos_list', 'COS List'),
+				isSelected: true
+			}
+		],
+		[t]
+	);
+
 	const items =
 		cosList.length > MAX_COS_DISPLAY
 			? [
@@ -251,9 +283,9 @@ const CosListPanel: FC = () => {
 						)
 					}
 			  ]
-			: cosList.map((cos: any, index) => ({
-					id: cos.id,
-					label: cos.name,
+			: cosList.map((cosData: any) => ({
+					id: cosData.id,
+					label: cosData.name,
 					customComponent: (
 						<SelectItem
 							style={{
@@ -264,10 +296,10 @@ const CosListPanel: FC = () => {
 								width: 'inherit'
 							}}
 							onClick={(): void => {
-								selectedCos(cos);
+								selectedCos(cosData);
 							}}
 						>
-							{cos?.name}
+							{cosData?.name}
 						</SelectItem>
 					)
 			  }));
@@ -280,6 +312,8 @@ const CosListPanel: FC = () => {
 			background="gray5"
 			style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF' }}
 		>
+			<GeneralListPanel generalOptionItems={globalOptionItems} />
+			<Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
 			<Row mainAlignment="flex-start" width="100%">
 				<DropDownInput
 					items={isLoading ? loadingComponent : items}
@@ -311,12 +345,18 @@ const CosListPanel: FC = () => {
 					</Container>
 				)}
 			</Row>
-			<Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
-			<ListItems
-				items={detailOptions}
-				selectedOperationItem={selectedOperationItem}
-				setSelectedOperationItem={setSelectedOperationItem}
+			<ListPanelItem
+				title={t('label.details', 'Details')}
+				isListExpanded={isDetailListExpanded}
+				setToggleView={toggleGeneralView}
 			/>
+			{isDetailListExpanded && (
+				<ListItems
+					items={detailOptions}
+					selectedOperationItem={cosView}
+					setSelectedOperationItem={setCosView}
+				/>
+			)}
 		</Container>
 	);
 };

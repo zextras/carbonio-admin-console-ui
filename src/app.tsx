@@ -67,6 +67,7 @@ import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
 import { useConfigStore } from './store/config/store';
+import { useCosStore } from './store/cos/store';
 import { useDomainStore } from './store/domain/store';
 import { useGlobalConfigStore } from './store/global-config/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
@@ -121,6 +122,7 @@ const App: FC = () => {
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
 	const accounts = useUserAccounts();
+	const { setCosView } = useCosStore();
 	const setRights = useRightsStore((state) => state.setRights);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
@@ -746,6 +748,7 @@ const App: FC = () => {
 				icon: '',
 				click: (ev: any): void => {
 					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
+					setCosView(CREATE_NEW_COS_ROUTE_ID);
 				},
 				disabled: false,
 				group: APP_ID,
@@ -755,7 +758,7 @@ const App: FC = () => {
 			type: 'new'
 		});
 		history.push(`/${DASHBOARD}`);
-	}, [t, history, setDomainView, setDomain]);
+	}, [t, history, setDomainView, setDomain, setCosView]);
 
 	const checkIsBackupModuleEnable = useCallback(
 		(servers) => {
