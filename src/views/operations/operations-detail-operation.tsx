@@ -28,7 +28,7 @@ const OperationsDetailOperation: FC = () => {
 	const createSnackbar = useSnackbar();
 	const { operation }: { operation: string } = useParams();
 	const serverList = useServerStore((state) => state?.serverList)[0]?.name;
-	const { setAlloperationDetail, setRunningData, setQueuedData, setDoneData } = useOperationStore(
+	const { setAlloperationDetail, setRunningData, setQueuedData } = useOperationStore(
 		(state) => state
 	);
 
@@ -43,8 +43,6 @@ const OperationsDetailOperation: FC = () => {
 					setRunningData(RunningOperationData);
 					const QueuedOperationData = result?.filter((item: any) => item?.state === QUEUED);
 					setQueuedData(QueuedOperationData);
-					const DoneOperationData = result?.filter((item: any) => item?.state === STOPPING);
-					setDoneData(DoneOperationData);
 				}
 			})
 			.catch((err) => {
@@ -56,15 +54,7 @@ const OperationsDetailOperation: FC = () => {
 					})
 				});
 			});
-	}, [
-		createSnackbar,
-		serverList,
-		setAlloperationDetail,
-		setDoneData,
-		setQueuedData,
-		setRunningData,
-		t
-	]);
+	}, [createSnackbar, serverList, setAlloperationDetail, setQueuedData, setRunningData, t]);
 
 	useEffect(() => {
 		getAllOperationAPICallHandler();

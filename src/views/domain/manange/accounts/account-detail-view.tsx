@@ -460,7 +460,7 @@ const AccountDetailView: FC<any> = ({
 	const buttons = [
 		{
 			align: 'right',
-			label: t('label.advanced_edit', 'ADVANCED EDIT'),
+			label: t('label.edit', 'Edit'),
 			onClick: (): void => {
 				setShowAccountDetailView(false);
 				setShowEditAccountView(true);
