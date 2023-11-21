@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useState, useMemo, useContext, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import {
 	Container,
 	Input,
@@ -18,6 +18,8 @@ import {
 	Divider
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
+
 import {
 	ALLOW_SEND_RECEIVE,
 	BLOCK_SEND,
@@ -27,17 +29,17 @@ import {
 	TOTAL_USED,
 	TRUE
 } from '../../../constants';
-import { modifyDomain } from '../../../services/modify-domain-service';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
-import Paging from '../../components/paging';
+import { modifyDomain } from '../../../services/modify-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import ListRow from '../../list/list-row';
-import DownloadCSV from '../../app/shared/download-csv';
-import { MailBoxQuota } from '../../app/types/mailbox_quota';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import DownloadCSV from '../../app/shared/download-csv';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
+import { MailBoxQuota } from '../../app/types/mailbox_quota';
+import Paging from '../../components/paging';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
@@ -240,6 +242,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 		}
 	}, [selectedSortType, getQuotaUsageInformation, domainData?.zimbraDomainName]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};

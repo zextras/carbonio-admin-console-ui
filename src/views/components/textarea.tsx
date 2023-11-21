@@ -5,8 +5,9 @@
  */
 
 import React, { useCallback, useState } from 'react';
-import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
+
 import { Container, ContainerProps } from '@zextras/carbonio-design-system';
+import styled, { css, FlattenSimpleInterpolation } from 'styled-components';
 
 interface ContainerExtendProps extends ContainerProps {
 	disabled: boolean;

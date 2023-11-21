@@ -5,9 +5,11 @@
  */
 
 import React, { FC } from 'react';
+
 import { Container, Text, Icon, Divider, ContainerProps } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
 import ListRow from '../list/list-row';
 
 interface ContainerExtendProps extends ContainerProps {

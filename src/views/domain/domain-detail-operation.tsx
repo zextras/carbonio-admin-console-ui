@@ -4,9 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+
+import DomainTwoFactorAuthentication from './details/domain-2fa';
 import DomainAuthentication from './details/domain-authentication';
+import DomainGalSettings from './details/domain-gal-settings';
+import DomainGeneralSettings from './details/domain-general-settings';
+import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
+import DomainSaml from './details/domain-saml';
+import DomainTheme from './details/domain-theme';
+import DomainVirtualHosts from './details/virtual-hosts-certificates/domain-virtual-hosts';
+import ManageAccounts from './manange/accounts/manage-accounts';
+import DomainAclList from './manange/acl-groups/domain-acl-list';
+import ActiveSync from './manange/active-sync/active-sync';
+import ManageDelegates from './manange/delegates/manage-delegates';
+import DomainMailingList from './manange/mailing-list/domain-mailing-list';
+import DomainResources from './manange/resources/domain-resources';
+import RestoreAccount from './manange/restore-delete-account/restore-delete-account';
 import {
 	GAL,
 	GENERAL_INFORMATION,
@@ -27,21 +43,7 @@ import {
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
-import DomainGalSettings from './details/domain-gal-settings';
-import DomainGeneralSettings from './details/domain-general-settings';
-import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
-import ManageAccounts from './manange/accounts/manage-accounts';
-import DomainVirtualHosts from './details/virtual-hosts-certificates/domain-virtual-hosts';
 import { useDomainStore } from '../../store/domain/store';
-import DomainAclList from './manange/acl-groups/domain-acl-list';
-import DomainMailingList from './manange/mailing-list/domain-mailing-list';
-import DomainResources from './manange/resources/domain-resources';
-import RestoreAccount from './manange/restore-delete-account/restore-delete-account';
-import ActiveSync from './manange/active-sync/active-sync';
-import DomainTheme from './details/domain-theme';
-import DomainSaml from './details/domain-saml';
-import DomainTwoFactorAuthentication from './details/domain-2fa';
-import ManageDelegates from './manange/delegates/manage-delegates';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();

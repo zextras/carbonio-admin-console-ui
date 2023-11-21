@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import ListPanelItem from '../list/list-panel-item';
+import { useTranslation } from 'react-i18next';
+
 import {
 	ADVANCED,
 	ADVANCED_LBL,
@@ -19,15 +20,16 @@ import {
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import ListItems from '../list/list-items';
 import MatomoTracker from '../../matomo-tracker';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
+import { useConfigStore } from '../../store/config/store';
+import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { useRightsStore } from '../../store/rights/store';
-import { getRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
-import { useConfigStore } from '../../store/config/store';
+import ListItems from '../list/list-items';
+import ListPanelItem from '../list/list-panel-item';
+import { getRights } from '../utility/utils';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();

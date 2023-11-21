@@ -13,8 +13,7 @@ import React, {
 	ReactElement,
 	useContext
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
+
 import {
 	Container,
 	Input,
@@ -25,14 +24,17 @@ import {
 	Icon,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
+import { debounce } from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
+
 import logo from '../../../assets/gardian.svg';
-import Paging from '../../components/paging';
-import { getDomainList } from '../../../services/search-domain-service';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { GENERAL_SETTINGS } from '../../../constants';
+import { getDomainList } from '../../../services/search-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
+import Paging from '../../components/paging';
 
 type StatusItem = {
 	color: string;

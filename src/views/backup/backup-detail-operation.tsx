@@ -3,8 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo } from 'react';
+import React, { FC, useEffect } from 'react';
+
 import { useParams } from 'react-router-dom';
+
+import ImportExternalBackup from './actions/import-external-backup';
+import BackupConfiguration from './configuration/backup-configuration';
+import BackupAdvanced from './default-setting/backup-advanced';
+import BackupServerConfig from './default-setting/backup-server-config';
+import ServersList from './default-setting/backup-servers-list';
+import ServerAdvanced from './server-advanced/server-advanced';
 import {
 	ADVANCED,
 	ADVANCED_LBL,
@@ -13,14 +21,7 @@ import {
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import ImportExternalBackup from './actions/import-external-backup';
-import BackupAdvanced from './default-setting/backup-advanced';
-import BackupServerConfig from './default-setting/backup-server-config';
-import ServersList from './default-setting/backup-servers-list';
-
 import { useBackupStore } from '../../store/backup/store';
-import ServerAdvanced from './server-advanced/server-advanced';
-import BackupConfiguration from './configuration/backup-configuration';
 
 const BackupDetailOperation: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();

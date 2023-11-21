@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
-import produce from 'immer';
+import { produce } from 'immer';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 import { CLOBAL_CONFIG_DETAIL_VIEW } from '../../constants';
@@ -21,7 +21,7 @@ type GlobalConfigState = {
 	setGlobalCarbonioSendAnalytics: (globalCarbonioSendAnalytics: boolean) => void;
 };
 
-export const useGlobalConfigStore = create<GlobalConfigState>(
+export const useGlobalConfigStore = create<GlobalConfigState>()(
 	devtools((set) => ({
 		globalConfig: {},
 		globalConfigList: [],
@@ -33,12 +33,14 @@ export const useGlobalConfigStore = create<GlobalConfigState>(
 		removeGlobalConfig: (): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.globalConfig = {};
 				})
 			),
 		setGlobalConfigView: (globalConfigView): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.globalConfigView = globalConfigView;
 				}),
 				false,

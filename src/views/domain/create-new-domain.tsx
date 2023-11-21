@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -19,14 +20,13 @@ import {
 	Switch,
 	ChipInput
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { useHistory } from 'react-router-dom';
 import { map, some } from 'lodash';
-import { createObjectAttribute } from '../../services/create-object-attribute-service';
-import { createDomain } from '../../services/create-domain';
-import { createGalSyncAccount } from '../../services/create-gal-sync-service';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../../../types';
 import {
 	ACTIVE,
 	DOMAINS_ROUTE_ID,
@@ -35,15 +35,17 @@ import {
 	INTERNAL_GAL,
 	MANAGE
 } from '../../constants';
-import ListRow from '../list/list-row';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
-import { useDomainStore } from '../../store/domain/store';
-import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../../../types';
+import { createDomain } from '../../services/create-domain';
+import { createGalSyncAccount } from '../../services/create-gal-sync-service';
+import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
-import { isValidEmail } from '../utility/utils';
+import { getCosList } from '../../services/search-cos-service';
+import { useDomainStore } from '../../store/domain/store';
+import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';
-import { getCosList } from '../../services/search-cos-service';
+import ListRow from '../list/list-row';
+import { isValidEmail } from '../utility/utils';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -243,6 +245,7 @@ const CreateDomain: FC = () => {
 			});
 	}, [createSnackbar, domainName, t]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onCreate = (): void => {
 		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
 			setHasCarbonioNotificationFromError(false);

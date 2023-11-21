@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -12,10 +14,10 @@ import {
 	IconButton,
 	Input
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MtaStats, mtaStats } from '../../../../types';
+
 import MTAStatsMail from './mta-stats-mail';
+import { MtaStats, mtaStats } from '../../../../types';
 
 const MTAStatsDetail: FC<{
 	serverState: mtaStats | undefined;

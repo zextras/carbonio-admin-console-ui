@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type ModuleLicenseState = {
@@ -11,7 +11,7 @@ type ModuleLicenseState = {
 	setModuleLicense: (v: Array<Record<string, string | number | boolean>>) => void;
 };
 
-export const useModuleLicenseStore = create<ModuleLicenseState>(
+export const useModuleLicenseStore = create<ModuleLicenseState>()(
 	devtools((set) => ({
 		moduleLicense: [],
 		setModuleLicense: (moduleLicense): void => set({ moduleLicense }, false, 'setModuleLicense')

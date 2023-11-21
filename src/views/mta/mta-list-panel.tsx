@@ -3,25 +3,26 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useEffect, useMemo, useState } from 'react';
+
 import { Container } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
 import {
 	ANTIVIRUS_AND_ANTISPAM,
 	GENERAL,
 	MTA_ROUTE_ID,
 	OUTBOUND_FLOW,
 	ADVANCED,
-	STATS,
 	POSTSCREEN_TUNING,
 	QUEUE
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
+import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
-import { useConfigStore } from '../../store/config/store';
 
 const MTAListPanel: FC = () => {
 	const [t] = useTranslation();

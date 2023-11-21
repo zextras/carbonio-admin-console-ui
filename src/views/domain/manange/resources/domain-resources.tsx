@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,22 +18,23 @@ import {
 	Text,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
-import moment from 'moment';
 import { debounce } from 'lodash';
-import logo from '../../../../assets/gardian.svg';
-import Paging from '../../../components/paging';
-import { searchDirectory } from '../../../../services/search-directory-service';
-import { useDomainStore } from '../../../../store/domain/store';
+import moment from 'moment';
+import { Trans, useTranslation } from 'react-i18next';
+
+import CreateResource from './create-resource';
 import ResourceEditDetailView from './resource-edit-detail-view';
+import logo from '../../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
-import CreateResource from './create-resource';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import { useDomainStore } from '../../../../store/domain/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
+import Paging from '../../../components/paging';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -324,6 +326,7 @@ const DomainResources: FC = () => {
 			zimbraPrefCalendarAutoAcceptSignatureId,
 			zimbraPrefCalendarAutoDeclineSignatureId,
 			zimbraPrefCalendarAutoDenySignatureId
+			// eslint-disable-next-line sonarjs/cognitive-complexity
 		) => {
 			createResource(name, password, attr)
 				.then((data) => {

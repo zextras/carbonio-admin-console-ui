@@ -4,12 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, Row, Icon, Padding, Text } from '@zextras/carbonio-design-system';
+import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+
 import BackupDetailOperation from './backup-detail-operation';
-import { useBackupStore } from '../../store/backup/store';
 import { dumpGlobalConfig } from '../../services/dump-global-config';
+import { useBackupStore } from '../../store/backup/store';
 
 const BackupDetailPanel: FC = () => {
 	const { path } = useRouteMatch();

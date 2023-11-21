@@ -5,15 +5,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC } from 'react';
+
 import { Container, Padding, Text, Button } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
+import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import logo from '../../assets/ninja_robo.svg';
+import styled from 'styled-components';
+
 import CosOperations from './cos-detail-operation';
-import { CREATE_NEW_COS_ROUTE_ID } from '../../constants';
 import CreateCos from './create-new-cos';
+import logo from '../../assets/ninja_robo.svg';
+import { CREATE_NEW_COS_ROUTE_ID } from '../../constants';
 
 const RelativeContainer = styled(Container)`
 	position: relative;

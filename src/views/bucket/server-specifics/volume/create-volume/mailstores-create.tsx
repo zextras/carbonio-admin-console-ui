@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,9 +16,8 @@ import {
 	Radio
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
+
 import { VolumeContext } from './volume-context';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import {
 	COMPRESSION_THRESHOLD_UNIT,
 	EMPTY_TYPE_VALUE,
@@ -26,6 +26,8 @@ import {
 	PRIMARY_TYPE_VALUE,
 	SECONDARY_TYPE_VALUE
 } from '../../../../../constants';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 
 const MailstoresCreate: FC<{
 	onSelection: any;
@@ -114,6 +116,7 @@ const MailstoresCreate: FC<{
 		setVolumeDetail((prev: any) => ({ ...prev, volumeAllocation: v }));
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (volumeDetail?.volumeName && volumeDetail?.path) {
 			if (!volumeDetail?.isCompression) {
@@ -229,9 +232,9 @@ const MailstoresCreate: FC<{
 							label={t('label.volume_type', 'Volume Type')}
 							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 							// @ts-ignore // Need to fix it with custom soultion
-							defaultSelection={volTypeList?.filter(
-								(items) => items?.value === volumeDetail?.volumeMain
-							)}
+							defaultSelection={
+								volTypeList?.filter((items) => items?.value === volumeDetail?.volumeMain)[0]
+							}
 							showCheckbox={false}
 							onChange={onVolMainChange}
 						/>
@@ -273,7 +276,6 @@ const MailstoresCreate: FC<{
 						<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
 							<Row width="48%" mainAlignment="flex-start">
 								<Radio
-									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -289,7 +291,6 @@ const MailstoresCreate: FC<{
 							</Row>
 							<Row width="48%" mainAlignment="flex-start">
 								<Radio
-									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -306,7 +307,6 @@ const MailstoresCreate: FC<{
 						</Row>
 						<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
 							<Radio
-								inputName="index"
 								label={t('label.index_volume', 'This is a Index Volume')}
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-ignore // Need to fix it with custom soultion

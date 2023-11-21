@@ -5,8 +5,10 @@
  */
 
 import React, { FC } from 'react';
+
 import { Container, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 
 const CarbonioVersionInformation: FC<{

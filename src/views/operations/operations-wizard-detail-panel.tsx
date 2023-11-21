@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -18,7 +19,7 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import ListRow from '../list/list-row';
+
 import MiliSecondToDate from './functions/miliSecondToDate';
 import {
 	DONE_ROUTE_ID,
@@ -28,6 +29,7 @@ import {
 	STARTED,
 	TRUE_OPERTION
 } from '../../constants';
+import ListRow from '../list/list-row';
 import { copyTextToClipboard } from '../utility/utils';
 
 const OperationsWizardDetailPanel: FC<{

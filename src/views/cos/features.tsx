@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback } from 'react';
+
 import { Container, Row, Text, Divider } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import InheritedSwitch from '../domain/manange/accounts/edit-account/inherited-components/inherited-switch';
 
@@ -98,6 +100,7 @@ export const Features: FC<{
 						<InheritedSwitch
 							accountValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
 							onChange={changeSwitchOption}
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label={t('label.mobile_app', 'Mobile App')}
 							iconColor="primary"
 							cosValue={cosDetail?.carbonioFeatureMailsAppEnabled}
@@ -144,6 +147,7 @@ export const Features: FC<{
 							<InheritedSwitch
 								accountValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
 								onChange={changeSwitchOption}
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
 								iconColor="primary"
 								cosValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
@@ -172,6 +176,7 @@ export const Features: FC<{
 							<InheritedSwitch
 								accountValue={featuresDetail?.carbonioFeatureTeamEnabled}
 								onChange={changeSwitchOption}
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('label.web_feature', 'Web Feature')}
 								iconColor="primary"
 								cosValue={cosDetail?.carbonioFeatureTeamEnabled}

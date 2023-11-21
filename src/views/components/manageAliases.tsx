@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useState } from 'react';
-import { cloneDeep, uniqBy } from 'lodash';
-import { useTranslation } from 'react-i18next';
+
 import {
 	Container,
 	IconButton,
@@ -18,8 +17,11 @@ import {
 	Divider,
 	Button
 } from '@zextras/carbonio-design-system';
-import { useDomainStore } from '../../store/domain/store';
+import { cloneDeep, uniqBy } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
 import CustomChip from './customChip';
+import { useDomainStore } from '../../store/domain/store';
 
 const ManageAliases: FC<{
 	listAliases: Array<{ label: string }>;

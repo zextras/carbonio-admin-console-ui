@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
+
 import {
 	Container,
 	Row,
@@ -23,13 +22,16 @@ import {
 	getSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 import { find } from 'lodash';
-import ListRow from '../../list/list-row';
-import { useServerStore } from '../../../store/server/store';
-import { setCoreAttributes } from '../../../services/set-core-attributes';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+
 import { SERVER, CONFIG } from '../../../constants';
 import { checkLdap } from '../../../services/check-ldap';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useServerStore } from '../../../store/server/store';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const ServerAdvanced: FC = () => {
 	const { server }: { server: string } = useParams();
@@ -57,12 +59,10 @@ const ServerAdvanced: FC = () => {
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const allowSetBackup = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (allServers && allServers.length > 0) {
 			const selectedServer = allServers.find((serverItem: any) => serverItem?.name === server);
@@ -231,7 +231,8 @@ const ServerAdvanced: FC = () => {
 							type: 'error',
 							label: error?.message
 								? error?.message
-								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								: // eslint-disable-next-line sonarjs/no-duplicate-string
+								  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true

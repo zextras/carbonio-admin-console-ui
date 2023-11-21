@@ -5,8 +5,9 @@
  */
 
 import React, { FC } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, Text } from '@zextras/carbonio-design-system';
+import { useTranslation } from 'react-i18next';
 
 const MainUtilityView: FC = () => {
 	const [t] = useTranslation();

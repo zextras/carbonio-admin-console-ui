@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -16,17 +17,18 @@ import {
 	Modal,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { useIntegratedComponent } from '@zextras/carbonio-shell-ui';
 import { Trans, useTranslation } from 'react-i18next';
-import ListRow from '../../../../list/list-row';
+import styled from 'styled-components';
+
+import logo from '../../../../../assets/gardian.svg';
+import { createSignature } from '../../../../../services/create-signature-service';
 import { deleteSignature } from '../../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../../services/modify-signature-service';
-import { createSignature } from '../../../../../services/create-signature-service';
 // import Textarea from '../../../../components/textarea';
-import logo from '../../../../../assets/gardian.svg';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import ListRow from '../../../../list/list-row';
 
 const EditorWrapper = styled.div`
 	width: 100%;
@@ -137,6 +139,7 @@ export const SignatureDetail: FC<any> = ({
 				const item = {
 					content: [
 						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							type: 'text/plain',
 							_content: signatureContent
 						}

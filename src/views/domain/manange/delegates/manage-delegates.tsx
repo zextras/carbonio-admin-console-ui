@@ -4,6 +4,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import {
 	Row,
 	Container,
@@ -21,36 +23,36 @@ import {
 	useUserSettings
 } from '@zextras/carbonio-shell-ui';
 import { filter, flatMapDeep } from 'lodash';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import moment from 'moment';
-import logo from '../../../../assets/guardian.svg';
-import ListRow from '../../../list/list-row';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import { Trans, useTranslation } from 'react-i18next';
+
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
-import { searchDirectory } from '../../../../services/search-directory-service';
-import { fetchSoap } from '../../../../services/listOTP-service';
-import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
-import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import { Attribute, objectType } from '../../../../../types';
+import logo from '../../../../assets/guardian.svg';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
-import { useDomainStore } from '../../../../store/domain/store';
-import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
-import Paging from '../../../components/paging';
-import { AccountContext } from '../accounts/account-context';
-import { getAccountRequest } from '../../../../services/get-account';
-import { getSingatures } from '../../../../services/get-signature-service';
 import {
 	GetCosResponse,
 	getCosGeneralInformation,
 	CosA
 } from '../../../../services/cos-general-information-service';
+import { getAccountRequest } from '../../../../services/get-account';
+import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
+import { getSingatures } from '../../../../services/get-signature-service';
+import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
+import { fetchSoap } from '../../../../services/listOTP-service';
+import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
+import { searchDirectory } from '../../../../services/search-directory-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import { useDomainStore } from '../../../../store/domain/store';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
+import Paging from '../../../components/paging';
+import ListRow from '../../../list/list-row';
+import { AccountContext } from '../accounts/account-context';
 import AccountDetailView from '../accounts/account-detail-view';
 import EditAccount from '../accounts/edit-account/edit-account';
-import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 
 const ManageDelegates: FC = () => {
 	const [t] = useTranslation();
@@ -197,6 +199,7 @@ const ManageDelegates: FC = () => {
 		});
 	}, []);
 	const getAccountDetail = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
 			getAccountRequest(id, 1)
 				.then((data: any) => {
@@ -243,7 +246,8 @@ const ManageDelegates: FC = () => {
 						type: 'error',
 						label: error?.message
 							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -287,6 +291,7 @@ const ManageDelegates: FC = () => {
 	const getListOtp = useCallback(
 		(id): void => {
 			fetchSoap('zextras', {
+				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxAuth',
 				action: 'list_totp_command',
@@ -618,6 +623,7 @@ const ManageDelegates: FC = () => {
 		[closeAccountDetailDialog]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
 		const type = 'accounts';

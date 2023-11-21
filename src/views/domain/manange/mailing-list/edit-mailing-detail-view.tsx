@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,43 +18,43 @@ import {
 	Select,
 	Switch,
 	Button,
-	SnackbarManagerContext,
-	Icon
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { Trans, useTranslation } from 'react-i18next';
-import moment from 'moment';
-import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
-import ListRow from '../../../list/list-row';
-import Paging from '../../../components/paging';
+import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
+import moment from 'moment';
+import { Trans, useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import helmetLogo from '../../../../assets/helmet_logo.svg';
+import { ALL, DL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT, USR } from '../../../../constants';
+import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
+import { addMailingListAliasRequest } from '../../../../services/add-mailing-list-alias';
+import { deleteDistributionList } from '../../../../services/delete-distribution-list';
+import { deleteMailingListAliasRequest } from '../../../../services/delete-mailing-list-alias';
+import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
-import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
-import { searchDirectory } from '../../../../services/search-directory-service';
-import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
-import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { addMailingListAliasRequest } from '../../../../services/add-mailing-list-alias';
-import { deleteMailingListAliasRequest } from '../../../../services/delete-mailing-list-alias';
-import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
-import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
-import { distributionListAction } from '../../../../services/distribution-list-action-service';
-import { getDomainList } from '../../../../services/search-domain-service';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { ALL, DL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT, USR } from '../../../../constants';
-import { searchGal } from '../../../../services/search-gal-service';
 import { getGrant } from '../../../../services/get-grant';
-import helmetLogo from '../../../../assets/helmet_logo.svg';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import ManageAliases from '../../../components/manageAliases';
+import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
+import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
+import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import { getDomainList } from '../../../../services/search-domain-service';
+import { searchGal } from '../../../../services/search-gal-service';
 import { useDomainStore } from '../../../../store/domain/store';
-import DropDownInput from '../../../components/dropDownInput';
-import { deleteDistributionList } from '../../../../services/delete-distribution-list';
-import Displayer from '../../../components/displayer';
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import Displayer from '../../../components/displayer';
+import DropDownInput from '../../../components/dropDownInput';
+import ManageAliases from '../../../components/manageAliases';
 import OverlayDivision from '../../../components/overlayDivision';
+import Paging from '../../../components/paging';
 import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -311,6 +312,7 @@ const EditMailingListView: FC<any> = ({
 	);
 
 	const getMailingList = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id: string, name: string): void => {
 			getDistributionList(id, name).then((data) => {
 				const distributionListMembers = data?.dl[0];
@@ -620,7 +622,9 @@ const EditMailingListView: FC<any> = ({
 						setIsShowError(true);
 						setOwnerErrorMessage(
 							t(
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								'label.mailing_list_already_in_list_error',
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								'The Mailing List / User is already in the list'
 							)
 						);
@@ -646,7 +650,9 @@ const EditMailingListView: FC<any> = ({
 				setIsShowError(true);
 				setOwnerErrorMessage(
 					t(
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						'label.mailing_list_not_exists_error_msg',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						'The Mailing List / User does not exist. Please check the spelling and try again.'
 					)
 				);
@@ -696,6 +702,7 @@ const EditMailingListView: FC<any> = ({
 		}
 	}, [grantType]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getGrantML = useCallback(() => {
 		const getGrantBody: any = {};
 		const target = {
@@ -824,7 +831,8 @@ const EditMailingListView: FC<any> = ({
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -1015,6 +1023,7 @@ const EditMailingListView: FC<any> = ({
 		[allOwnerList, _allOwnerLists]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = (): void => {
 		const attributes: any[] = [];
 		const request: any[] = [];
@@ -1730,6 +1739,7 @@ const EditMailingListView: FC<any> = ({
 		}
 	}, [grantEmailsList]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleClickDeleteEvent = useCallback(() => {
 		setIsDeleteBtnLoading(true);
 		const getGrantBody: any = {};
@@ -1870,6 +1880,7 @@ const EditMailingListView: FC<any> = ({
 			color: 'error',
 			loading: isDeleteBtnLoading,
 			onClick: handleClickDeleteEvent,
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			label: t('label.delete', 'delete')
 		},
 		{

@@ -5,6 +5,9 @@
  */
 
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+
+import { MatomoProvider } from '@datapunt/matomo-tracker-react';
+import { IconButton, Icon } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
 	removeRoute,
@@ -25,12 +28,11 @@ import {
 	useIsAdvanced,
 	useUserAccounts
 } from '@zextras/carbonio-shell-ui';
+import { find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { IconButton, Icon } from '@zextras/carbonio-design-system';
 import styled from 'styled-components';
-import { MatomoProvider } from '@datapunt/matomo-tracker-react';
-import { find } from 'lodash';
+
 import {
 	APP_ID,
 	BACKUP_ROUTE_ID,
@@ -56,23 +58,23 @@ import {
 	SUBSCRIPTIONS_ROUTE_ID,
 	TRUE
 } from './constants';
-import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
-import { useServerStore } from './store/server/store';
-import { useGlobalConfigStore } from './store/global-config/store';
-import { useBackupModuleStore } from './store/backup-module/store';
-import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
-import { useConfigStore } from './store/config/store';
-import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
-import { useBucketServersListStore } from './store/bucket-server-list/store';
 import MatomoTracker from './matomo-tracker';
+import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
+import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
+import { useAuthIsAdvanced } from './store/auth-advanced/store';
+import { useBackupModuleStore } from './store/backup-module/store';
+import { useBucketServersListStore } from './store/bucket-server-list/store';
+import { useConfigStore } from './store/config/store';
+import { useDomainStore } from './store/domain/store';
+import { useGlobalConfigStore } from './store/global-config/store';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
-import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import { useRightsStore, Right, Rights } from './store/rights/store';
+import { useServerStore } from './store/server/store';
+import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { getRights } from './views/utility/utils';
-import { useDomainStore } from './store/domain/store';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -125,10 +127,9 @@ const App: FC = () => {
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const hasConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!(
+			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
+		);
 	}, [rights]);
 
 	useEffect(() => {
@@ -138,14 +139,11 @@ const App: FC = () => {
 
 	const showCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		if (
+		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ||
 			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ||
 			find(rightsConfig?.all?.[0]?.right, { n: 'listCos' })
-		) {
-			return true;
-		}
-		return false;
+		);
 	}, [rights]);
 
 	useEffect(() => {
@@ -543,6 +541,7 @@ const App: FC = () => {
 		}
 	}, [rights]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		addRoute({
 			route: DASHBOARD,

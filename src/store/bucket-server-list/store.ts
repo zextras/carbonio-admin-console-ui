@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type BucketVolumeServersListState = {
@@ -13,7 +13,7 @@ type BucketVolumeServersListState = {
 	setVolumeList: (v: Array<any>) => void;
 };
 
-export const useBucketServersListStore = create<BucketVolumeServersListState>(
+export const useBucketServersListStore = create<BucketVolumeServersListState>()(
 	devtools((set) => ({
 		allServersList: [],
 		volumeList: [],

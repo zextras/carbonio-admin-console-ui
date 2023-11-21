@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useContext, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -14,16 +16,16 @@ import {
 	Button,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import { filter, isEqual, map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { filter, isEqual, map } from 'lodash';
+
+import { Attribute, CreateSnackbarType } from '../../../../types';
+import { getAllConfig } from '../../../services/get-all-config';
+import { modifyConfig } from '../../../services/modify-config';
+import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
-import { Attribute, CreateSnackbarType } from '../../../../types';
-import { modifyConfig } from '../../../services/modify-config';
-import { getAllConfig } from '../../../services/get-all-config';
-import OverlayDivision from '../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;

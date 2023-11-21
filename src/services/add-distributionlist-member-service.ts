@@ -5,6 +5,7 @@
  */
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
+
 import { objectType } from '../../types';
 
 export const addDistributionListMember = async (id: objectType, dlm?: objectType): Promise<any> => {

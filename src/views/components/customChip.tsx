@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+
 import { Chip } from '@zextras/carbonio-design-system';
 
 export const copyClipboard = (label: string): any => {

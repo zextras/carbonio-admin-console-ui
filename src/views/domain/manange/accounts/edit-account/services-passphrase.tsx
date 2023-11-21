@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
+
 import {
 	Input,
 	Row,
@@ -16,11 +17,11 @@ import {
 	Icon
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
 
-import { useDomainStore } from '../../../../../store/domain/store';
-import { AccountContext } from '../account-context';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
+import { useDomainStore } from '../../../../../store/domain/store';
+import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
+import { AccountContext } from '../account-context';
 
 interface CredentialTextDataType {
 	password?: string;
@@ -225,12 +226,15 @@ export const ServicesPassphrase: FC = () => {
 								background="gray5"
 								label={t('account_details.status', 'Status')}
 								showCheckbox={false}
+								defaultSelection={
+									SERVICE_PASSPHRASE_STATUS.filter(
+										(el: SelectStatusType) => el.value === item?.enabled
+									)[0]
+								}
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-ignore // Need to fix it with custom soultion
-								selection={SERVICE_PASSPHRASE_STATUS.find(
-									(el: SelectStatusType) => el.value === item?.enabled
-								)}
-								padding={{ right: 'medium' }}
+								onChange={(): null => null}
+								style={{ paddingRight: 'medium' }}
 								disabled
 							/>
 						</Row>

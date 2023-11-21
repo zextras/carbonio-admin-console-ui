@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useContext, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,15 +16,16 @@ import {
 	Padding,
 	Divider
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
-import ListRow from '../list/list-row';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';
+import ListRow from '../list/list-row';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;

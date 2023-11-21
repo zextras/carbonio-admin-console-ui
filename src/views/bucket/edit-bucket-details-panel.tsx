@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -19,15 +20,16 @@ import {
 	useSnackbar,
 	Select
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { find, get } from 'lodash';
-import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
-import { fetchSoap } from '../../services/bucket-service';
+import { useTranslation } from 'react-i18next';
+
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC } from '../../constants';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
 import Displayer from '../components/displayer';
+import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 
 const DetailsHeaders = [
 	{
@@ -64,6 +66,7 @@ const DetailsHeaders = [
 const serverItems = [
 	{
 		id: '1',
+		// eslint-disable-next-line sonarjs/no-duplicate-string
 		name: 'myserver.name',
 		version: '4.0.0',
 		rtstatus: 'Stopped',
@@ -194,6 +197,7 @@ const EditBucketDetailPanel: FC<{
 	const [secretKey, setSecretKey] = useState(bucketDetail?.secret);
 	const [urlData, setUrlData] = useState(bucketDetail?.url !== undefined ? bucketDetail?.url : '');
 	const [verify, setVerify] = useState('primary');
+	// eslint-disable-next-line sonarjs/no-duplicate-string
 	const [ButtonLabel, setButtonLabel] = useState(t('label.verify_connector', 'VERIFY CONNECTOR'));
 	const [buttonIcon, setButtonIcon] = useState<string>('ActivityOutline');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -478,6 +482,7 @@ const EditBucketDetailPanel: FC<{
 	}, [bucketDetail?.secret, secretKey]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (bucketDetail?.url !== undefined) {
 			if (bucketDetail?.url !== urlData) {
 				setIsDirty(true);

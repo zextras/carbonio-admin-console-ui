@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
+
 import {
 	Container,
 	Row,
@@ -16,8 +18,8 @@ import {
 	Tooltip
 } from '@zextras/carbonio-design-system';
 import { isEqual, find, uniq } from 'lodash';
-import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+
 import { MtaInboundSecurity } from '../../../../types';
 import {
 	FALSE,
@@ -43,9 +45,9 @@ import {
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
-import ListRow from '../../list/list-row';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomChip from '../../components/customChip';
+import ListRow from '../../list/list-row';
 
 const MTAInboundFlowSecurity: FC = () => {
 	const [t] = useTranslation();
@@ -65,10 +67,7 @@ const MTAInboundFlowSecurity: FC = () => {
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
@@ -87,6 +86,7 @@ const MTAInboundFlowSecurity: FC = () => {
 		[setInitialValue, setValue]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			const findBlockExtension = configInformation.filter(
@@ -335,6 +335,7 @@ const MTAInboundFlowSecurity: FC = () => {
 		[createSnackbar, t, updateGlobalConfig]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = useCallback(() => {
 		const attributes: Array<Record<string, string>> = [];
 		if (mtaInboundSecurityDetail?.zimbraMtaBlockedExtension) {

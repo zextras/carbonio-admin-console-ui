@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -18,10 +19,15 @@ import {
 	SnackbarManagerContext,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
-import _ from 'lodash';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
+import _ from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+
+import DeleteCertificateModel from './delete-certificate-model';
+import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
+import { objectType } from '../../../../../types';
+import logo from '../../../../assets/helmet_logo.svg';
 import {
 	ZIMBRA_DOMAIN_NAME,
 	ZIMBRA_ID,
@@ -31,15 +37,11 @@ import {
 } from '../../../../constants';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
-import logo from '../../../../assets/helmet_logo.svg';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
-import DeleteCertificateModel from './delete-certificate-model';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import ListRow from '../../../list/list-row';
-import { objectType } from '../../../../../types';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
+import ListRow from '../../../list/list-row';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -159,6 +161,7 @@ const DomainVirtualHosts: FC = () => {
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
 		body.id = zimbraId;
+		// eslint-disable-next-line sonarjs/no-duplicate-string
 		body._jsns = 'urn:zimbraAdmin';
 		items.forEach((item: any) => {
 			attributes.push({
@@ -194,7 +197,8 @@ const DomainVirtualHosts: FC = () => {
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true

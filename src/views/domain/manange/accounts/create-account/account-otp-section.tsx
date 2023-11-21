@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useContext, useState, useEffect } from 'react';
+
 import {
 	Container,
 	Padding,
@@ -14,16 +15,17 @@ import {
 	Switch,
 	ChipInput
 } from '@zextras/carbonio-design-system';
+import { map } from 'lodash';
+import QRCode from 'qrcode.react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import QRCode from 'qrcode.react';
-import { map } from 'lodash';
-import { useDomainStore } from '../../../../../store/domain/store';
+
 import { AccountContext } from './account-context';
-import { sendMail } from '../../../../../services/send-mail-service';
 import { emailContent } from './email-content';
-import { isValidEmail } from '../../../../utility/utils';
+import { sendMail } from '../../../../../services/send-mail-service';
+import { useDomainStore } from '../../../../../store/domain/store';
 import CustomChip from '../../../../components/customChip';
+import { isValidEmail } from '../../../../utility/utils';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
