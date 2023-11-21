@@ -36,6 +36,8 @@ type OpenEmlPreviewType = (
 ) => void;
 
 type GetQuarantineMsgData = () => void;
+type SetShowMessageView = (v: boolean) => void;
+type SetMessageViewLoading = (v: boolean) => void;
 
 export type MailEditHeaderType = {
 	folderId: string | number;
@@ -59,6 +61,8 @@ export type AttachmentType = {
 	att: EditorAttachmentFiles;
 	openEmlPreview?: OpenEmlPreviewType;
 	getQuarantineMsgData: GetQuarantineMsgData;
+	setShowMessageView: SetShowMessageView;
+	setMessageViewLoading: SetMessageViewLoading;
 };
 
 export type PreviewPanelActionsType = {
@@ -437,7 +441,9 @@ const Attachment: FC<AttachmentType> = ({
 	part,
 	iconColors,
 	att,
-	getQuarantineMsgData
+	getQuarantineMsgData,
+	setShowMessageView,
+	setMessageViewLoading
 }) => {
 	const extension = getFileExtension(att).value;
 
@@ -463,6 +469,7 @@ const Attachment: FC<AttachmentType> = ({
 		: t('action.click_preview', 'Click to preview');
 
 	const onDeleteAttachment = useCallback(() => {
+		setMessageViewLoading(true);
 		removeAttachmentsRequest(message.id, part)
 			.then(() => {
 				createSnackbar({
@@ -474,8 +481,10 @@ const Attachment: FC<AttachmentType> = ({
 					replace: true
 				});
 				getQuarantineMsgData();
+				setShowMessageView(false);
 			})
 			.catch((error) => {
+				setMessageViewLoading(false);
 				createSnackbar({
 					key: 'error',
 					type: 'error',
@@ -487,7 +496,15 @@ const Attachment: FC<AttachmentType> = ({
 					replace: true
 				});
 			});
-	}, [createSnackbar, getQuarantineMsgData, message, part, t]);
+	}, [
+		createSnackbar,
+		getQuarantineMsgData,
+		message.id,
+		part,
+		setShowMessageView,
+		setMessageViewLoading,
+		t
+	]);
 
 	return (
 		<AttachmentContainer
@@ -576,10 +593,14 @@ const AttachmentsBlock: FC<{
 	isExternalMessage?: boolean;
 	openEmlPreview?: OpenEmlPreviewType;
 	getQuarantineMsgData: GetQuarantineMsgData;
+	setShowMessageView: SetShowMessageView;
+	setMessageViewLoading: SetMessageViewLoading;
 }> = ({
 	message,
 	isExternalMessage = false /* openEmlPreview */,
-	getQuarantineMsgData
+	getQuarantineMsgData,
+	setShowMessageView,
+	setMessageViewLoading
 }): ReactElement => {
 	const [t] = useTranslation();
 	const [expanded, setExpanded] = useState(false);
@@ -712,6 +733,8 @@ const AttachmentsBlock: FC<{
 						// @ts-ignore
 						att={att}
 						getQuarantineMsgData={getQuarantineMsgData}
+						setShowMessageView={setShowMessageView}
+						setMessageViewLoading={setMessageViewLoading}
 					/>
 				))}
 			</Container>

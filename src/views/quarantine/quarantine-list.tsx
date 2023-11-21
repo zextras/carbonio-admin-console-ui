@@ -670,7 +670,7 @@ const QuarantineList: FC = () => {
 	);
 	const getQuarantineMsgData = useCallback((): void => {
 		const propertiesToExtract = ['zimbraAmavisQuarantineAccount', 'zimbraDefaultDomainName'];
-
+		setMessageListData([]);
 		const obj: { [key: string]: string | { label: string }[] } = {};
 		propertiesToExtract.forEach((property) => {
 			const items = filter(config, { n: property });
@@ -808,6 +808,7 @@ const QuarantineList: FC = () => {
 									normalizedMessageList.push(normalizedMessage);
 								});
 								setMessageListData(normalizedMessageList);
+								setMessageViewLoading(false);
 								setRequestInprogress(false);
 							})
 							.catch(() => setRequestInprogress(false));
@@ -1402,6 +1403,8 @@ const QuarantineList: FC = () => {
 										<AttachmentsBlock
 											message={message}
 											getQuarantineMsgData={getQuarantineMsgData}
+											setShowMessageView={setShowMessageView}
+											setMessageViewLoading={setMessageViewLoading}
 										/>
 										<MailMessageRenderer mailMsg={message} />
 									</Row>
