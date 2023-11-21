@@ -73,6 +73,7 @@ import { getAllEffectiveRigthsRequest } from './services/get-all-effective-right
 import { useRightsStore, Right, Rights } from './store/rights/store';
 import { getRights } from './views/utility/utils';
 import { useDomainStore } from './store/domain/store';
+import { useCosStore } from './store/cos/store';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -119,6 +120,7 @@ const App: FC = () => {
 	const { setAllMailstoreList } = useMailstoreListStore((state) => state);
 	const setModuleLicense = useModuleLicenseStore((state) => state.setModuleLicense);
 	const accounts = useUserAccounts();
+	const { setCosView } = useCosStore();
 	const setRights = useRightsStore((state) => state.setRights);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
@@ -747,6 +749,7 @@ const App: FC = () => {
 				icon: '',
 				click: (ev: any): void => {
 					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
+					setCosView(CREATE_NEW_COS_ROUTE_ID);
 				},
 				disabled: false,
 				group: APP_ID,
@@ -756,7 +759,7 @@ const App: FC = () => {
 			type: 'new'
 		});
 		history.push(`/${DASHBOARD}`);
-	}, [t, history, setDomainView, setDomain]);
+	}, [t, history, setDomainView, setDomain, setCosView]);
 
 	const checkIsBackupModuleEnable = useCallback(
 		(servers) => {
