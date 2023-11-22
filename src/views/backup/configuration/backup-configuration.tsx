@@ -1120,9 +1120,8 @@ const BackupConfiguration: FC = () => {
 								value={backupDestPath || ''}
 								backgroundColor="gray5"
 								onChange={(e): void => {
-									!allowSetBackup ?? setBackupDestPath(e.target.value);
+									setBackupDestPath(e.target.value);
 								}}
-								disabled={!allowSetBackup}
 							/>
 						</Container>
 					</ListRow>
