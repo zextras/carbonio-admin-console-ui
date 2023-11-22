@@ -23,7 +23,8 @@ import {
 	ADVANCED,
 	SERVER_POOLS,
 	COS,
-	COS_LIST
+	COS_LIST,
+	CREATE_NEW_COS_ROUTE_ID
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getCosList } from '../../services/search-cos-service';
@@ -178,6 +179,9 @@ const CosListPanel: FC = () => {
 	useEffect(() => {
 		if (cosView === COS_LIST || cosView === '') {
 			replaceHistory(`/${COS_LIST}`);
+			setCosView(COS_LIST);
+		} else if (cosView === CREATE_NEW_COS_ROUTE_ID) {
+			replaceHistory(`/${cosView}`);
 		} else if (isCosSelect && cos?.id) {
 			if (cosView === COS) {
 				replaceHistory(`/cos_list`);
