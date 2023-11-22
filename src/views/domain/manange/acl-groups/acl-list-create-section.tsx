@@ -166,7 +166,7 @@ const AclListCreateSection: FC = () => {
 						padding={{ top: 'large', right: 'small' }}
 					>
 						<Input
-							label={t('label.displayed_name', 'Displayed Name')}
+							label={t('label.display_name', 'Display Name')}
 							backgroundColor="gray6"
 							value={aclListDetail?.displayName}
 							readOnly

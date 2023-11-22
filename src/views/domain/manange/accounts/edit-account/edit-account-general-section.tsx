@@ -407,7 +407,7 @@ const EditAccountGeneralSection: FC = () => {
 
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.advance_edit_viewed_name', 'Viewed Name')}
+						label={t('label.advance_edit_display_name', 'Display Name')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.displayName}
 						value={accountDetail?.displayName}

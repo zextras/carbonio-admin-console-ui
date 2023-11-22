@@ -1806,7 +1806,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							padding={{ top: 'large', right: 'small' }}
 						>
 							<Input
-								label={t('label.displayed_name', 'Displayed Name')}
+								label={t('label.display_name', 'Display Name')}
 								value={displayName}
 								backgroundColor="gray5"
 								onChange={(e: any): any => {

@@ -391,7 +391,7 @@ const MailingListSection: FC<any> = () => {
 						padding={{ top: 'large' }}
 					>
 						<Input
-							label={t('label.displayed_name', 'Displayed Name')}
+							label={t('label.display_name', 'Display Name')}
 							backgroundColor="gray5"
 							value={mailingListDetail?.displayName}
 							inputName="displayName"
