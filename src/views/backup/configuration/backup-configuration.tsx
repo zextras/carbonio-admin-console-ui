@@ -1136,7 +1136,10 @@ const BackupConfiguration: FC = () => {
 						<ListRow>
 							<Container padding={{ top: 'large' }}>
 								<Input
-									label={t('backup.local_volume', 'Local Volume')}
+									label={t(
+										'backup.local_volume_reload_if_you_changed_this_value',
+										'Local Volume (reload if you changed this value)'
+									)}
 									value={backupDestPath || ''}
 									backgroundColor="gray5"
 									onChange={(e): void => {

@@ -231,6 +231,7 @@
         "local_metadata_threshold": "Local Metadata Threshold",
         "local_mountpoint": "Local Mountpoint",
         "local_volume": "Local Volume",
+        "local_volume_reload_if_you_changed_this_value": "Local Volume (reload if you changed this value)",
         "manage_external_volume": "Manage external volume",
         "max_operations_account": "Max Operations / Account",
         "max_waiting_time": "Max Waiting Time",
