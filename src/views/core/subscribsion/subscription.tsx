@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { useState, FC, ReactElement, useEffect, useCallback, useMemo } from 'react';
+
 import {
 	Button,
 	Container,
@@ -18,17 +19,18 @@ import {
 	ContainerProps,
 	TextProps
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { find, orderBy } from 'lodash';
-import { useTranslation } from 'react-i18next';
-import moment from 'moment';
 import { TFunction } from 'i18next';
-import { fetchSoap } from '../../../services/subscription-service';
-import MatomoTracker from '../../../matomo-tracker';
+import { find, orderBy } from 'lodash';
+import moment from 'moment';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
 import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
+import MatomoTracker from '../../../matomo-tracker';
+import { fetchSoap } from '../../../services/subscription-service';
+import { useConfigStore } from '../../../store/config/store';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
-import { useConfigStore } from '../../../store/config/store';
 
 interface ContainerExtendProps extends ContainerProps {
 	licensed?: string;
@@ -143,6 +145,7 @@ const ServiceStatus = ({
 	</Row>
 );
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const Subscription: FC = () => {
 	const { userId } = useConfigStore((state) => state);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -163,10 +166,7 @@ const Subscription: FC = () => {
 
 	const allowSetSubsciption = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	useEffect(() => {
@@ -177,6 +177,7 @@ const Subscription: FC = () => {
 
 	const getLicence = useCallback(() => {
 		fetchSoap('zextras', {
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'getLicenseInfo'

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -14,42 +15,40 @@ import {
 	Input,
 	Table,
 	Text,
-	Select,
 	Switch,
 	Dropdown,
 	Button,
 	SnackbarManagerContext,
-	Icon,
-	ChipInput
+	Icon
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { Trans, useTranslation } from 'react-i18next';
-import moment from 'moment';
 import { debounce, isEqual, sortedUniq, uniq, uniqBy, differenceBy } from 'lodash';
-import ListRow from '../../../list/list-row';
-import Paging from '../../../components/paging';
+import { Trans, useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import helmetLogo from '../../../../assets/helmet_logo.svg';
+import { ALL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { addAclListAliasRequest } from '../../../../services/add-acl-list-alias';
+import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
+import { deleteAclListAliasRequest } from '../../../../services/delete-acl-list-alias';
+import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
-import { getAllEmailFromString, getDateFromStr, isValidEmail } from '../../../utility/utils';
-import { searchDirectory } from '../../../../services/search-directory-service';
-import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
-import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
-import { addAclListAliasRequest } from '../../../../services/add-acl-list-alias';
-import { deleteAclListAliasRequest } from '../../../../services/delete-acl-list-alias';
-import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
-import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
-import { distributionListAction } from '../../../../services/distribution-list-action-service';
-import { getDomainList } from '../../../../services/search-domain-service';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { ALL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT } from '../../../../constants';
-import { searchGal } from '../../../../services/search-gal-service';
 import { getGrant } from '../../../../services/get-grant';
-import helmetLogo from '../../../../assets/helmet_logo.svg';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import { modifyDistributionList } from '../../../../services/modify-distributionlist-service';
+import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
+import { renameDistributionList } from '../../../../services/rename-distributionlist-service';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import { getDomainList } from '../../../../services/search-domain-service';
+import { searchGal } from '../../../../services/search-gal-service';
 import { useDomainStore } from '../../../../store/domain/store';
-import Textarea from '../../../components/textarea';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import OverlayDivision from '../../../components/overlayDivision';
+import Paging from '../../../components/paging';
+import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 
 // eslint-disable-next-line no-shadow
 export enum SUBSCRIBE_UNSUBSCRIBE {
@@ -282,6 +281,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 	);
 
 	const getAclList = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id: string, name: string): void => {
 			getDistributionList(id, name).then((data) => {
 				const distributionListMembers = data?.dl[0];
@@ -643,7 +643,9 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						setIsShowError(true);
 						setOwnerErrorMessage(
 							t(
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								'label.acl_list_already_in_list_error',
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								'The Acl List / User is already in the list'
 							)
 						);
@@ -666,7 +668,9 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				setIsShowError(true);
 				setOwnerErrorMessage(
 					t(
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						'label.acl_list_not_exists_error_msg',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						'The Acl List / User does not exist. Please check the spelling and try again.'
 					)
 				);
@@ -708,6 +712,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		[grantTypeOptions]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getGrantML = useCallback(() => {
 		const getGrantBody: any = {};
 		const target = {
@@ -883,6 +888,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		setIsDirty(false);
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onUndo = (): void => {
 		previousDetail?.displayName ? setDisplayName(previousDetail?.displayName) : setDisplayName('');
 		if (selectedAclList?.dynamic) {
@@ -991,6 +997,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		[allOwnerList, _allOwnerLists]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = (): void => {
 		const attributes: any[] = [];
 		const request: any[] = [];
@@ -1799,7 +1806,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							padding={{ top: 'large', right: 'small' }}
 						>
 							<Input
-								label={t('label.displayed_name', 'Displayed Name')}
+								label={t('label.display_name', 'Display Name')}
 								value={displayName}
 								backgroundColor="gray5"
 								onChange={(e: any): any => {

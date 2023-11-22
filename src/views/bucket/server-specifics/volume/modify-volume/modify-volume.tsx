@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -21,13 +22,19 @@ import {
 	Tooltip,
 	Link
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { Trans, useTranslation } from 'react-i18next';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 import { isEmpty } from 'lodash';
-import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import { fetchSoap } from '../../../../../services/bucket-service';
+import { Trans, useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import {
+	Bucket,
+	BucketVolume,
+	Volume,
+	VolumeType,
+	objAll,
+	objectType
+} from '../../../../../../types';
 import {
 	ALIBABA,
 	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
@@ -46,19 +53,14 @@ import {
 	UNUSED,
 	USAGE_IN_EXTERNAL_BACKUP
 } from '../../../../../constants';
-import ListRow from '../../../../list/list-row';
+import { fetchSoap } from '../../../../../services/bucket-service';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useBucketVolumeStore } from '../../../../../store/bucket-volume/store';
-import {
-	Bucket,
-	BucketVolume,
-	Volume,
-	VolumeType,
-	objAll,
-	objectType
-} from '../../../../../../types';
-import OverlayDivision from '../../../../components/overlayDivision';
-import Displayer from '../../../../components/displayer';
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
+import Displayer from '../../../../components/displayer';
+import OverlayDivision from '../../../../components/overlayDivision';
+import ListRow from '../../../../list/list-row';
+import { BucketTypeItems, volumeAllocationList, volumeTypeList } from '../../../../utility/utils';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -175,10 +177,12 @@ const ModifyVolume: FC<{
 		setIsDirty(false);
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = async (): Promise<void> => {
 		setIsLoading(true);
 		if (isAdvanced) {
 			const obj: { [key: string]: string | boolean | number | undefined } = {};
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			obj._jsns = 'urn:zimbraAdmin';
 			obj.module = 'ZxPowerstore';
 			obj.action = 'doUpdateVolume';
@@ -261,7 +265,9 @@ const ModifyVolume: FC<{
 						createSnackbar({
 							key: 'error',
 							type: 'error',
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.volume_detail_error', '{{message}}', {
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								message: 'Something went wrong, please try again'
 							}),
 							autoHideTimeout: 5000
@@ -604,6 +610,7 @@ const ModifyVolume: FC<{
 		}
 	}, [externalVolDetail?.storeType]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (isAdvanced) {
 			if (volumeDetail?.type === 1) {
@@ -807,7 +814,11 @@ const ModifyVolume: FC<{
 						</Row>
 						<Padding top="extrasmall">
 							<Text color="secondary" overflow="break-word" size="extrasmall">
-								{t('the_change_will_not_move_the_data', 'The change will not move the data')}
+								{t(
+									'the_change_will_not_move_the_data',
+									// eslint-disable-next-line sonarjs/no-duplicate-string
+									'The change will not move the data'
+								)}
 							</Text>
 						</Padding>
 						<Row
@@ -819,7 +830,6 @@ const ModifyVolume: FC<{
 						>
 							<Row width="48%">
 								<Radio
-									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -833,7 +843,6 @@ const ModifyVolume: FC<{
 							</Row>
 							<Row width="48%">
 								<Radio
-									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -1039,7 +1048,6 @@ const ModifyVolume: FC<{
 						>
 							<Row width="48%">
 								<Radio
-									inputName="primary"
 									label={t('label.primary_volume', 'This is a Primary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion
@@ -1053,7 +1061,6 @@ const ModifyVolume: FC<{
 							</Row>
 							<Row width="48%">
 								<Radio
-									inputName="secondary"
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
 									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 									// @ts-ignore // Need to fix it with custom soultion

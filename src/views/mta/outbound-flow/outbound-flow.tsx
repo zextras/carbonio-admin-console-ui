@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,13 +19,9 @@ import {
 	Table,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { isEqual, find } from 'lodash';
-import ListRow from '../../list/list-row';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import { useConfigStore } from '../../../store/config/store';
+import { useTranslation } from 'react-i18next';
+
 import { MtaOutboundFlow, TRow } from '../../../../types';
 import {
 	ANTISPAM,
@@ -43,10 +41,14 @@ import {
 	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 	CONFIG
 } from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
 import { getAllServers } from '../../../services/get-all-servers-service';
-import { useServerStore } from '../../../store/server/store';
+import { modifyConfig } from '../../../services/modify-config';
+import { useConfigStore } from '../../../store/config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useServerStore } from '../../../store/server/store';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import ListRow from '../../list/list-row';
 
 const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
@@ -61,10 +63,7 @@ const MTAOutBoundFlow: FC = () => {
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const [mtaOutboundFlowInitialDetail, setMtaOutboundFlowInitialDetail] =
@@ -100,6 +99,7 @@ const MTAOutBoundFlow: FC = () => {
 		getAllServersRequest();
 	}, [getAllServersRequest]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (allServersList && allServersList.length > 0) {
 			const tableRow: Array<TRow> = [];
@@ -165,6 +165,7 @@ const MTAOutBoundFlow: FC = () => {
 		}
 	}, [allServersList, t]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			const originatingIp = configInformation.find(

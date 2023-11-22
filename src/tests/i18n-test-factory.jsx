@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import i18next, { i18n } from 'i18next';
+import i18next from 'i18next';
 
 export default class I18nTestFactory {
 	// eslint-disable-next-line class-methods-use-this

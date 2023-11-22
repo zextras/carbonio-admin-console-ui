@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -14,16 +15,17 @@ import {
 	Button,
 	Padding
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import ListRow from '../../../list/list-row';
+import { Trans, useTranslation } from 'react-i18next';
+
 import logo from '../../../../assets/gardian.svg';
-import { isValidEmail } from '../../../utility/utils';
-import { searchDirectory } from '../../../../services/search-directory-service';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import { searchDirectory } from '../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
+import ListRow from '../../../list/list-row';
+import { isValidEmail } from '../../../utility/utils';
 
 export const SendInviteAccounts: FC<any> = ({
 	isEditable,

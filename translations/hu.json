@@ -23,7 +23,7 @@
         "enabled": "Engedélyezett",
         "name": "Név",
         "not_set": "Nem Beállított",
-        "path": "Útvonal",
+        "path": "Elérési út",
         "privacy": "Titoktartás",
         "search": "Keresés",
         "tasks": "Feladatok",
@@ -34,11 +34,11 @@
         "ID": "ID",
         "account": "Fiók",
         "bucket_done_button": "Kész",
-        "cancel": "Törlés",
+        "cancel": "Mégse",
         "chats": "Csevegések",
         "contacts": "Kapcsolatok",
         "date": "Dátum",
-        "delete": "Törlés",
+        "delete": "Töröl",
         "disable": "letilt",
         "domain": "Tartomány",
         "done": "Kész",
@@ -58,7 +58,30 @@
         "volume_server_name": "Szerver",
         "add": "Hozzáadás",
         "go_back": "Vissza",
-        "reset": "Visszaállítás"
+        "reset": "Visszaállítás",
+        "advance_edit_userName": "Felhasználónév",
+        "calendar": "Naptár",
+        "of": "a",
+        "signature_required": "Aláírási adatok megadása kötelező.",
+        "time_zone": "Időzóna",
+        "discard_changes": "Módosítások elvetése",
+        "save": "Mentés",
+        "type": "Típus",
+        "create": "Létrehoz",
+        "private": "Privát",
+        "invites": "Meghívások",
+        "week_day": {
+            "friday": "Péntek",
+            "saturday": "Szombat",
+            "wednesday": "Szerda",
+            "monday": "Hétfő",
+            "sunday": "Vasárnap",
+            "thursday": "Csütörtök",
+            "tuesday": "Kedd"
+        },
+        "days": "Napok",
+        "location": "Helyszín",
+        "required": "Kötelező"
     },
     "mta": {
         "status": "Státusz",
@@ -95,7 +118,8 @@
             "id": "ID",
             "name": "Név",
             "path": "Útvonal"
-        }
+        },
+        "running": "Fut"
     },
     "account_details": {
         "Chats": "Csevegések",
@@ -118,5 +142,12 @@
         "copy": "Másolat",
         "mark_as_read": "Olvasottnak jelöl",
         "mark_as_unread": "Olvasatlannak jelöl"
+    },
+    "message": {
+        "snackbar": {
+            "share": {
+                "accepted": "Elfogadta a megosztási kérést"
+            }
+        }
     }
 }

@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,11 +17,9 @@ import {
 	Input,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { find, isEqual } from 'lodash';
-import { useConfigStore } from '../../../store/config/store';
-import ListRow from '../../list/list-row';
+import { useTranslation } from 'react-i18next';
+
 import { MtaAdvanced } from '../../../../types';
 import {
 	CONFIG,
@@ -35,8 +35,10 @@ import {
 	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 	ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE
 } from '../../../constants';
-import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import { modifyConfig } from '../../../services/modify-config';
+import { useConfigStore } from '../../../store/config/store';
+import { Right, Rights, useRightsStore } from '../../../store/rights/store';
+import ListRow from '../../list/list-row';
 
 const MTAAdvanced: FC = () => {
 	const [t] = useTranslation();
@@ -160,12 +162,10 @@ const MTAAdvanced: FC = () => {
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			const zimbraMtaSmtpdClientPortLogging = configInformation.filter(

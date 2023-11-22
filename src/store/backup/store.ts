@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type BackupState = {
@@ -13,7 +13,7 @@ type BackupState = {
 	setSelectedBackupServer: (server: string) => void;
 };
 
-export const useBackupStore = create<BackupState>(
+export const useBackupStore = create<BackupState>()(
 	devtools((set) => ({
 		globalConfig: {},
 		setGlobalConfig: (globalConfig): void => set({ globalConfig }, false, 'setGlobalConfig'),

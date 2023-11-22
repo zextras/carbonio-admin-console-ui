@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -19,14 +20,13 @@ import {
 	Switch,
 	ChipInput
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { useHistory } from 'react-router-dom';
 import { map, some } from 'lodash';
-import { createObjectAttribute } from '../../services/create-object-attribute-service';
-import { createDomain } from '../../services/create-domain';
-import { createGalSyncAccount } from '../../services/create-gal-sync-service';
+import { useTranslation } from 'react-i18next';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../../../types';
 import {
 	ACTIVE,
 	DOMAINS_ROUTE_ID,
@@ -35,14 +35,17 @@ import {
 	INTERNAL_GAL,
 	MANAGE
 } from '../../constants';
-import ListRow from '../list/list-row';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
-import { useDomainStore } from '../../store/domain/store';
-import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../../../types';
+import { createDomain } from '../../services/create-domain';
+import { createGalSyncAccount } from '../../services/create-gal-sync-service';
+import { createObjectAttribute } from '../../services/create-object-attribute-service';
 import { InitDomainForDelegation } from '../../services/init-domain-for-delegation';
-import { isValidEmail } from '../utility/utils';
+import { getCosList } from '../../services/search-cos-service';
+import { useDomainStore } from '../../store/domain/store';
+import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';
+import ListRow from '../list/list-row';
+import { isValidEmail } from '../utility/utils';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -103,6 +106,11 @@ const CreateDomain: FC = () => {
 		{ label: string }[]
 	>([]);
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
+	const [cosItems, setCosItems] = useState<any[]>([]);
+	const cosList = useDomainStore((state) => state.cosList);
+	const setCosList = useDomainStore((state) => state.setCosList);
+	const [zimbraDomainDefaultCOSId, setZimbraDomainDefaultCOSId] = useState<string>('');
+
 	useEffect(() => {
 		if (allMailStoreList && allMailStoreList.length > 0) {
 			const data = allMailStoreList.map((item: { [key: string]: string }) => ({
@@ -152,6 +160,24 @@ const CreateDomain: FC = () => {
 		);
 		setZimbraPublisServiceHostname(item);
 	};
+
+	const getCosLists = (cos: string): any => {
+		setIsLoading(true);
+		getCosList(cos, 0).then((data) => {
+			const searchResponse: any = data;
+			if (!!searchResponse && searchResponse?.searchTotal > 0) {
+				setCosList(searchResponse?.cos);
+				setIsLoading(false);
+			} else {
+				setCosList([]);
+			}
+		});
+	};
+
+	useEffect(() => {
+		getCosLists('');
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		getCreateObjectAttribute();
@@ -219,6 +245,7 @@ const CreateDomain: FC = () => {
 			});
 	}, [createSnackbar, domainName, t]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onCreate = (): void => {
 		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
 			setHasCarbonioNotificationFromError(false);
@@ -268,6 +295,12 @@ const CreateDomain: FC = () => {
 				n: 'carbonioNotificationFrom',
 				_content: carbonioNotificationFrom
 			});
+			if (zimbraDomainDefaultCOSId && zimbraDomainDefaultCOSId !== '') {
+				attributes.push({
+					n: 'zimbraDomainDefaultCOSId',
+					_content: zimbraDomainDefaultCOSId
+				});
+			}
 			// eslint-disable-next-line array-callback-return
 			carbonioNotificationRecipients.forEach((item: { label: string }): void => {
 				attributes.push({
@@ -347,6 +380,19 @@ const CreateDomain: FC = () => {
 	useEffect(() => {
 		setIsDomainSupportDelegatedAdmin(!isDomainDelegatedAdmin);
 	}, [isDomainDelegatedAdmin, setIsDomainSupportDelegatedAdmin]);
+
+	useEffect(() => {
+		if (!!cosList && cosList.length > 0) {
+			const arrayItem: any[] = [];
+			cosList.forEach((item: any) => {
+				arrayItem.push({
+					label: item.name,
+					value: item.id
+				});
+			});
+			setCosItems(arrayItem);
+		}
+	}, [cosList]);
 
 	return (
 		<>
@@ -554,6 +600,43 @@ const CreateDomain: FC = () => {
 								padding={{ left: 'large', top: 'large' }}
 							>
 								<Text size="small" weight="bold" color="gray0">
+									{t('label.class_of_service_cos', 'Class Of Service (COS)')}
+								</Text>
+							</Row>
+							<ListRow>
+								<Container padding={{ all: 'small' }}>
+									<Select
+										items={cosItems}
+										background="gray5"
+										label={t('label.default_class_of_service', 'Default Class of Service')}
+										showCheckbox={false}
+										onChange={(e: any): any => {
+											setZimbraDomainDefaultCOSId(
+												cosItems.find((item: any) => item.value === e)?.value
+											);
+										}}
+										selection={
+											zimbraDomainDefaultCOSId === ''
+												? cosItems[-1]
+												: cosItems.find((item: any) => item.value === zimbraDomainDefaultCOSId)
+										}
+									/>
+								</Container>
+							</ListRow>
+							<Row
+								width="100%"
+								mainAlignment="flex-start"
+								padding={{ vertical: 'large', horizontal: 'small' }}
+							>
+								<Divider />
+							</Row>
+							<Row
+								mainAlignment="flex-start"
+								width="100%"
+								background="gray6"
+								padding={{ left: 'large', top: 'large' }}
+							>
+								<Text size="small" weight="bold" color="gray0">
 									{t('label.delegated_administration_title', 'Delegated Administration')}
 								</Text>
 							</Row>
@@ -633,6 +716,7 @@ const CreateDomain: FC = () => {
 											setCarbonioNotificationRecipients(data);
 										}}
 										hasError={some(carbonioNotificationRecipients || [], { error: true })}
+										maxChips={null}
 									/>
 								</Container>
 							</ListRow>

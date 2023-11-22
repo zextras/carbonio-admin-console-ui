@@ -6,8 +6,9 @@
  */
 
 import React, { useRef } from 'react';
-import useWizard from '../hooks/usewizard';
+
 import { HorizontalWizardLayout } from './horizontal-wizard-layout';
+import useWizard from '../hooks/usewizard';
 
 type Props = {
 	data: any;

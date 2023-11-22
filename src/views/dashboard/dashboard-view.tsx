@@ -5,18 +5,22 @@
  */
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import { Container, Divider } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import {
 	useUserAccounts,
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	useDomainInformation
 } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
-import { string } from 'prop-types';
+
+import CarbonioVersionInformation from './carbonio-version-information-view';
+import DashboardNotification from './dashboard-notification';
+import DashboardServerList from './dashboard-server-list-view';
+import QuickAccess from './quick-access-view';
 import packageJson from '../../../package.json';
-import MatomoTracker from '../../matomo-tracker';
 import {
 	ACCOUNTS,
 	DASHBOARD,
@@ -31,17 +35,14 @@ import {
 	SERVERS_LIST,
 	STORAGES_ROUTE_ID
 } from '../../constants';
-import { useGlobalConfigStore } from '../../store/global-config/store';
-import ListRow from '../list/list-row';
-import CarbonioVersionInformation from './carbonio-version-information-view';
-import QuickAccess from './quick-access-view';
-import DashboardNotification from './dashboard-notification';
-import DashboardServerList from './dashboard-server-list-view';
-import { useDomainStore } from '../../store/domain/store';
+import MatomoTracker from '../../matomo-tracker';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import { useRightsStore } from '../../store/rights/store';
-import { getRights } from '../utility/utils';
 import { useConfigStore } from '../../store/config/store';
+import { useDomainStore } from '../../store/domain/store';
+import { useGlobalConfigStore } from '../../store/global-config/store';
+import { useRightsStore } from '../../store/rights/store';
+import ListRow from '../list/list-row';
+import { getRights } from '../utility/utils';
 
 const Dashboard: FC = () => {
 	const [t] = useTranslation();

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { debounce, find } from 'lodash';
+
 import {
 	Container,
 	Divider,
@@ -19,24 +19,26 @@ import {
 	Table,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { useCosStore } from '../../store/cos/store';
-import { getFormatedDate, getDateFromStr } from '../utility/utils';
-import { RouteLeavingGuard } from '../ui-extras/nav-guard';
-import { modifyCos } from '../../services/modify-cos-service';
-import { renameCos } from '../../services/rename-cos-service';
+import { debounce, find } from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
+
+import logo from '../../assets/gardian.svg';
 import { DEFAULT, COS } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
-import ListRow from '../list/list-row';
+import { modifyCos } from '../../services/modify-cos-service';
+import { renameCos } from '../../services/rename-cos-service';
+import { searchDirectory } from '../../services/search-directory-service';
+import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
-import Textarea from '../components/textarea';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import logo from '../../assets/gardian.svg';
-import { searchDirectory } from '../../services/search-directory-service';
+import Textarea from '../components/textarea';
+import ListRow from '../list/list-row';
+import { RouteLeavingGuard } from '../ui-extras/nav-guard';
+import { getFormatedDate, getDateFromStr } from '../utility/utils';
 
 const CosGeneralInformation: FC = () => {
 	const [t] = useTranslation();
@@ -175,10 +177,7 @@ const CosGeneralInformation: FC = () => {
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return false;
-		}
-		return true;
+		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	useEffect(() => {
@@ -267,7 +266,8 @@ const CosGeneralInformation: FC = () => {
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -368,6 +368,7 @@ const CosGeneralInformation: FC = () => {
 			});
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		if (!searchAccountQuery) {
 			return;
@@ -488,6 +489,7 @@ const CosGeneralInformation: FC = () => {
 		searchAccountList(searchAccountString, cosDetail.id);
 	}, [cosDetail?.id, searchAccountList, searchAccountString]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getDomainList = useCallback((): void => {
 		if (!searchDomainQuery) {
 			return;

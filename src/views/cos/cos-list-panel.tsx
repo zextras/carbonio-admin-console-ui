@@ -3,14 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo, useRef, useContext } from 'react';
-import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
+import React, { FC, useCallback, useEffect, useState, useMemo, useRef } from 'react';
 
-import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import { debounce } from 'lodash';
+import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { debounce } from 'lodash';
+import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
+
 import {
 	GENERAL_INFORMATION,
 	FEATURES,
@@ -18,18 +19,17 @@ import {
 	MAX_COS_DISPLAY,
 	MANAGE_APP_ID,
 	COS_ROUTE_ID,
-	RETENTION_POLICY,
 	ADVANCED,
 	SERVER_POOLS
 } from '../../constants';
-import { getCosList } from '../../services/search-cos-service';
-import { useCosStore } from '../../store/cos/store';
-import ListItems from '../list/list-items';
 import MatomoTracker from '../../matomo-tracker';
+import { getCosList } from '../../services/search-cos-service';
+import { useConfigStore } from '../../store/config/store';
+import { useCosStore } from '../../store/cos/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
-import { useConfigStore } from '../../store/config/store';
+import ListItems from '../list/list-items';
 
 const SelectItem = styled(Row)``;
 

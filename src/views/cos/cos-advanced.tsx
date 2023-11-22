@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,21 +18,23 @@ import {
 	Icon,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
+import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { find } from 'lodash';
-import ListRow from '../list/list-row';
-import { useCosStore } from '../../store/cos/store';
-import { modifyCos } from '../../services/modify-cos-service';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
+
 import { COS } from '../../constants';
+import { modifyCos } from '../../services/modify-cos-service';
+import { useCosStore } from '../../store/cos/store';
+import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import Textarea from '../components/textarea';
+import ListRow from '../list/list-row';
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;
 	height: 1.25rem;
 `;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const CosAdvanced: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -43,10 +46,7 @@ const CosAdvanced: FC = () => {
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return false;
-		}
-		return true;
+		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 	const timeItems: any[] = useMemo(
 		() => [
@@ -164,6 +164,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setInitalValues = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(obj: any): void => {
 			if (obj) {
 				setValue(
@@ -320,6 +321,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setStateAttrValues = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(obj: any): void => {
 			if (obj) {
 				setZimbraQuotaWarnIntervalNum(obj?.zimbraQuotaWarnInterval?.slice(0, -1));
@@ -389,6 +391,7 @@ const CosAdvanced: FC = () => {
 		[timeItems]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};
@@ -1235,6 +1238,7 @@ const CosAdvanced: FC = () => {
 									<Select
 										items={timeItems}
 										backgroundColor="gray5"
+										// eslint-disable-next-line sonarjs/no-duplicate-string
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraQuotaWarnIntervalType === ''

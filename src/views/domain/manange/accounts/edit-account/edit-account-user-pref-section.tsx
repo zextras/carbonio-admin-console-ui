@@ -4,11 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useMemo, useContext, useState, useEffect } from 'react';
+
 import { Container, Row, Text, Divider, ChipInput } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { AccountContext } from '../account-context';
+
+import InheritedInput from './inherited-components/inherited-input';
+import InheritedSelect from './inherited-components/inherited-select';
+import InheritedSwitch from './inherited-components/inherited-switch';
 import { SignatureDetail } from './signature-detail';
+import CustomChip from '../../../../components/customChip';
 import {
 	timeZoneList,
 	conversationGroupBy,
@@ -16,10 +21,7 @@ import {
 	charactorSet,
 	isValidEmail
 } from '../../../../utility/utils';
-import InheritedSwitch from './inherited-components/inherited-switch';
-import InheritedSelect from './inherited-components/inherited-select';
-import InheritedInput from './inherited-components/inherited-input';
-import CustomChip from '../../../../components/customChip';
+import { AccountContext } from '../account-context';
 
 const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList: any }> = ({
 	signatureItems,
@@ -62,6 +64,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 				value: '',
 				disabled: true
 			},
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
 			{ label: `3 ${t('label.minutes', 'minutes')}`, value: '3m' },
 			{ label: `4 ${t('label.minutes', 'minutes')}`, value: '4m' },
@@ -148,9 +151,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 	const APPOINTMENT_DURATION = useMemo(
 		() => [
 			{
+				// eslint-disable-next-line sonarjs/no-duplicate-string
 				label: t('reminder.minute', {
 					count: 30,
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					defaultValue: '{{count}} minute',
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					defaultValue_plural: '{{count}} minutes'
 				}),
 				value: '30m'
@@ -543,6 +549,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={prefReadReceiptsToAddress}
 						hasError={some(prefReadReceiptsToAddress || [], { error: true })}
 						ChipComponent={CustomChip}
+						maxChips={null}
 					/>
 				</Row>
 			</Row>
@@ -605,6 +612,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						value={zimbraAllowFromAddress}
 						hasError={some(zimbraAllowFromAddress || [], { error: true })}
 						ChipComponent={CustomChip}
+						maxChips={null}
 					/>
 				</Row>
 			</Row>

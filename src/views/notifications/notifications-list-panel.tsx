@@ -5,15 +5,17 @@
  */
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
+
 import { Container } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
+
 import { LIST, NOTIFICATION_ROUTE_ID } from '../../constants';
+import MatomoTracker from '../../matomo-tracker';
+import { useConfigStore } from '../../store/config/store';
+import { useGlobalConfigStore } from '../../store/global-config/store';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
-import MatomoTracker from '../../matomo-tracker';
-import { useGlobalConfigStore } from '../../store/global-config/store';
-import { useConfigStore } from '../../store/config/store';
 
 const NotificationsListPanel: FC = () => {
 	const [t] = useTranslation();

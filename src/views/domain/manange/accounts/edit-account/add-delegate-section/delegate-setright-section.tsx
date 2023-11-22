@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo, useContext, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -14,11 +15,9 @@ import {
 	Radio,
 	RadioGroup
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { cloneDeep } from 'lodash';
+import { useTranslation } from 'react-i18next';
 
-import { delegateRightsType } from '../../../../../utility/utils';
-import { AccountContext } from '../../account-context';
 import {
 	MANAGE_NO_SEND,
 	READ_MAILS_ONLY,
@@ -26,6 +25,8 @@ import {
 	SEND_READ_MAILS,
 	SEND_READ_MANAGE_MAILS
 } from '../../../../../../constants';
+import { delegateRightsType } from '../../../../../utility/utils';
+import { AccountContext } from '../../account-context';
 
 const DelegateSetRightsSection: FC = () => {
 	const [t] = useTranslation();

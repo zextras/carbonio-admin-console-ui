@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
+import React from 'react';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type
 const SettingsModOutline = (props: JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) => (

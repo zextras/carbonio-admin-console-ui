@@ -5,19 +5,21 @@
  */
 
 import React, { FC, useEffect, useMemo, useState } from 'react';
+
 import { Container } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
+
 import {
 	DONE_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
 	QUEUED_ROUTE_ID,
 	RUNNING_ROUTE_ID
 } from '../../constants';
-import ListItems from '../list/list-items';
 import MatomoTracker from '../../matomo-tracker';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useConfigStore } from '../../store/config/store';
+import { useGlobalConfigStore } from '../../store/global-config/store';
+import ListItems from '../list/list-items';
 
 const OperationsListPanel: FC = () => {
 	const [t] = useTranslation();

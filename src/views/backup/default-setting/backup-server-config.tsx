@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import {
 	Container,
 	Row,
@@ -17,13 +17,15 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { isEqual, reduce, cloneDeep, find, isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
 import { BACKUP_BASIC, CONFIG, BACKUP_REALTIME } from '../../../constants';
-import ListRow from '../../list/list-row';
-import { useBackupStore } from '../../../store/backup/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { modifyBackupRequest } from '../../../services/modify-backup';
+import { useBackupStore } from '../../../store/backup/store';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const BackupServerConfig: FC = () => {
 	const [t] = useTranslation();
@@ -39,10 +41,7 @@ const BackupServerConfig: FC = () => {
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const allowSetBackup = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const onCancel = (): void => {
@@ -314,6 +313,7 @@ const BackupServerConfig: FC = () => {
 							<Container padding={{ bottom: 'medium' }}>
 								<Input
 									label={t('backup.schedule', 'Schedule')}
+									// eslint-disable-next-line sonarjs/no-duplicate-string
 									value={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									defaultValue={initbackupDetail.backupSmartScanScheduler?.['cron-pattern']}
 									onChange={changeBackupSchedulerDetail}

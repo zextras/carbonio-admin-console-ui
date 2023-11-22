@@ -5,6 +5,7 @@
  */
 import { createInstance } from '@datapunt/matomo-tracker-react';
 import { MatomoInstance } from '@datapunt/matomo-tracker-react/lib/types';
+
 import { MATOMO_SITE_ID, MATOMO_URL } from './constants';
 
 export default class MatomoTracker {

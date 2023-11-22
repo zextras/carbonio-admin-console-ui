@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+
 import {
 	Container,
 	Row,
@@ -28,11 +28,10 @@ import {
 	// @ts-ignore
 	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
-import { useParams } from 'react-router-dom';
 import { isEmpty, find } from 'lodash';
-import ListRow from '../../list/list-row';
-import { useServerStore } from '../../../store/server/store';
-import { setCoreAttributes } from '../../../services/set-core-attributes';
+import { useTranslation, Trans } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+
 import {
 	LOCAL_VALUE,
 	MANAGE_EXTERNAL_VOLUME,
@@ -45,11 +44,14 @@ import {
 	CONFIG,
 	BACKUP_REALTIME
 } from '../../../constants';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { fetchSoap } from '../../../services/bucket-service';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useServerStore } from '../../../store/server/store';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const BackupConfiguration: FC = () => {
 	const { server }: { server: string } = useParams();
@@ -101,10 +103,7 @@ const BackupConfiguration: FC = () => {
 
 	const allowSetBackup = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const destinationOptions: any[] = useMemo(
@@ -176,6 +175,7 @@ const BackupConfiguration: FC = () => {
 		},
 		[externalVolumeOptions]
 	);
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (allServers && allServers.length > 0) {
 			const selectedServer = allServers.find((serverItem: any) => serverItem?.name === server);
@@ -232,13 +232,15 @@ const BackupConfiguration: FC = () => {
 
 							if (attributes?.backupSmartScanScheduler) {
 								const value = attributes?.backupSmartScanScheduler?.value;
-								if (value && value['cron-enabled']) {
+								// eslint-disable-next-line sonarjs/no-duplicate-string
+								if (value && value?.['cron-enabled']) {
 									setIsScheduleSmartScan(value['cron-enabled']);
 									currentBackupObject.isScheduleSmartScan = true;
 								} else {
 									setIsScheduleSmartScan(false);
 									currentBackupObject.isScheduleSmartScan = false;
 								}
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								if (value && value['cron-pattern']) {
 									setScheduleSmartScan(value['cron-pattern']);
 									currentBackupObject.scheduleSmartScan = value['cron-pattern'];
@@ -325,7 +327,8 @@ const BackupConfiguration: FC = () => {
 							type: 'error',
 							label: error?.message
 								? error?.message
-								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								: // eslint-disable-next-line sonarjs/no-duplicate-string
+								  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
@@ -729,6 +732,7 @@ const BackupConfiguration: FC = () => {
 	}, [server, createSnackbar, t]);
 
 	const onBackupExternalVolume = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(body) => {
 			setIsExternalVolumeRequestRunning(true);
 			fetchExternalSoap(`/service/extension/zextras_admin/backup/migrateBackupVolume`, {
@@ -968,6 +972,7 @@ const BackupConfiguration: FC = () => {
 								<Padding right="small">
 									{isDirty && (
 										<Button
+											// eslint-disable-next-line sonarjs/no-duplicate-string
 											label={t('label.cancel', 'Cancel')}
 											color="secondary"
 											onClick={onCancel}

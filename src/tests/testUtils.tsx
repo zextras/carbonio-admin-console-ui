@@ -21,11 +21,11 @@ import {
 	within
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
 import i18next, { type i18n } from 'i18next';
 import { filter } from 'lodash';
 import { I18nextProvider } from 'react-i18next';
 import { MemoryRouter } from 'react-router-dom';
-import { ModalManager, SnackbarManager, ThemeProvider } from '@zextras/carbonio-design-system';
 
 export type UserEvent = ReturnType<typeof userEvent['setup']> & {
 	readonly rightClick: (target: Element) => Promise<void>;

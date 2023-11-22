@@ -5,18 +5,20 @@
  */
 
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, Button, useSnackbar, Padding } from '@zextras/carbonio-design-system';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
+import { AccountContext } from './account-context';
+import CreateOtpSectionView from './account-otp-section';
+import CreateAccountDetailSection from './create-account-detail-section';
+import { createAccountRequest } from '../../../../../services/create-account';
+import { fetchSoap } from '../../../../../services/generateOTP-service';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
-import CreateAccountDetailSection from './create-account-detail-section';
 import { Section } from '../../../../app/component/section';
-import { fetchSoap } from '../../../../../services/generateOTP-service';
-import CreateOtpSectionView from './account-otp-section';
-import { AccountContext } from './account-context';
-import { createAccountRequest } from '../../../../../services/create-account';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import OverlayDivision from '../../../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
@@ -114,7 +116,7 @@ const CreateAccount: FC<{
 		givenName: '',
 		initials: '',
 		sn: '',
-		zimbraPasswordMustChange: true,
+		zimbraPasswordMustChange: false,
 		generateFirst2FAToken: true,
 		defaultCOS: true,
 		zimbraAccountStatus: '',

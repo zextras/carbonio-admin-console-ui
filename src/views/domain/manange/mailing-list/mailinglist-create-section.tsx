@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useContext, useEffect, useMemo, useState } from 'react';
+
 import { Container, Input, Text, Table, Row } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import { MailingListContext } from './mailinglist-context';
-import ListRow from '../../../list/list-row';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import ListRow from '../../../list/list-row';
 
 const MailingListCreateSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -119,7 +121,7 @@ const MailingListCreateSection: FC<any> = () => {
 						padding={{ top: 'large', right: 'small' }}
 					>
 						<Input
-							label={t('label.displayed_name', 'Displayed Name')}
+							label={t('label.display_name', 'Display Name')}
 							backgroundColor="gray6"
 							value={mailingListDetail?.displayName}
 							readOnly

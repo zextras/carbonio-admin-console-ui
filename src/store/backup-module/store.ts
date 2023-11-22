@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type BackupModuleState = {
@@ -15,7 +15,7 @@ type BackupModuleState = {
 	setIsBackupModuleLicensed: (v: boolean) => void;
 };
 
-export const useBackupModuleStore = create<BackupModuleState>(
+export const useBackupModuleStore = create<BackupModuleState>()(
 	devtools((set) => ({
 		backupModuleEnable: false,
 		backupServerList: [],

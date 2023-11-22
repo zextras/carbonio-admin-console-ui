@@ -130,7 +130,8 @@
         "volume_type": "Volume Type",
         "what_inside": "Subject",
         "wipe_device": "Wipe Device",
-        "yes": "Yes"
+        "yes": "Yes",
+        "advance_edit_userName": "Username"
     },
     "mta": {
         "settings": "Settings",
@@ -203,7 +204,8 @@
             "index": "Index",
             "primary": "Primary",
             "secondary": "Secondary"
-        }
+        },
+        "running": "Running"
     },
     "backup": {
         "backup_path": "Backup Path",

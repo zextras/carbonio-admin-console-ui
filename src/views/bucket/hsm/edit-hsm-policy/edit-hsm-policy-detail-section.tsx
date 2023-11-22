@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -15,12 +17,11 @@ import {
 	Button
 } from '@zextras/carbonio-design-system';
 import { cloneDeep } from 'lodash';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
@@ -66,6 +67,7 @@ const EditHsmPolicyDetailSection: FC<{
 		}
 	}, [isDocument, isContactEnable, isMessageEnable, isEventEnable, setHsmDetail]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useMemo(() => {
 		if (currentPolicy) {
 			if (currentPolicy?.hsmType) {

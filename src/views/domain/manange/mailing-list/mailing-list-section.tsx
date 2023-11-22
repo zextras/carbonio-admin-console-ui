@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Text,
@@ -18,21 +19,22 @@ import {
 	Select,
 	ChipInput
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
-import { debounce, sortedUniq, uniq } from 'lodash';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { debounce, sortedUniq, uniq } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
 import { MailingListContext } from './mailinglist-context';
-import ListRow from '../../../list/list-row';
-import { searchDirectory } from '../../../../services/search-directory-service';
-import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
-import { searchGal } from '../../../../services/search-gal-service';
 import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
-import { ALL, EMAIL, GRP, LDAP_QUERY, MEMBERS_ONLY, PUB, TRUE } from '../../../../constants';
+import { ALL, EMAIL, GRP, LDAP_QUERY, PUB, TRUE } from '../../../../constants';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import { searchGal } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import DropDownInput from '../../../components/dropDownInput';
 import CustomChip from '../../../components/customChip';
+import DropDownInput from '../../../components/dropDownInput';
 import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
+import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
 
 const MailingListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -389,7 +391,7 @@ const MailingListSection: FC<any> = () => {
 						padding={{ top: 'large' }}
 					>
 						<Input
-							label={t('label.displayed_name', 'Displayed Name')}
+							label={t('label.display_name', 'Display Name')}
 							backgroundColor="gray5"
 							value={mailingListDetail?.displayName}
 							inputName="displayName"
@@ -606,6 +608,7 @@ const MailingListSection: FC<any> = () => {
 										searchEmailFromGal(e?.textContent);
 									}}
 									ChipComponent={CustomChip}
+									maxChips={null}
 								/>
 							</Container>
 						</ListRow>

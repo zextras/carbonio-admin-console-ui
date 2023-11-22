@@ -336,7 +336,8 @@
         "receiver_of_quota_warning_email": "ผู้รับคำเตือนโควต้า (อีเมล)",
         "smtp": "SMTP",
         "type_the exact_domain_name": "พิมพ์ชื่อโดเมนให้ถูกต้อง",
-        "web_ui": "WebUI"
+        "web_ui": "WebUI",
+        "administration_rights": "สิทธิในการบริหาร"
     },
     "label": {
         "account": "บัญชีผู้ใช้",
@@ -925,7 +926,7 @@
         "global": "ทั่วโลก",
         "last_seen": "ดูครั้งล่าสุด",
         "mailstores": "Mailstores",
-        "mobile_password": "รหัสผ่านอุปกรณ์พกพา",
+        "mobile_password": "รหัสผ่านของอุปกรณ์พกพา",
         "reset": "รีเซ็ต",
         "reset_device": "รีเซ็ตอุปกรณ์",
         "s3_bucket": "S3 Bucket",
@@ -1002,10 +1003,6 @@
         "primary_volume": "นี่คือวอลุ่มหลัก",
         "quarantined": "ถูกกักกัน",
         "registration": "ลงทะเบียน",
-        "reset_domain_theme": "รีเซ็ตธีม {{name}}",
-        "reset_global_theme": "รีเซ็ตธีมส่วนกลาง",
-        "reset_theme_content_1": "คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตธีม?",
-        "reset_theme_content_2": "หากคุณคลิกที่ปุ่ม ใช่ ข้อมูลทั้งหมดจะหายไป",
         "secondary_volume": "นี่คือวอลุ่มรอง",
         "security": "ความปลอดภัย",
         "select_a_bucket_configuration": "เลือกการกำหนดค่า Bucket",
@@ -1387,7 +1384,9 @@
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "คุณไม่มีสิทธิ์ในการดูแลระบบสำหรับดูส่วนนี้",
         "please_select_the_measure_unit": "กรุณาเลือกหน่วยการวัด",
         "person_name": "ชื่อ",
-        "stats": "สถิติ"
+        "stats": "สถิติ",
+        "advance_edit_userName": "ชื่อผู้ใช้",
+        "search_for_an_account": "ค้นหาบัญชี"
     },
     "message": {
         "snackbar": {
@@ -1950,7 +1949,8 @@
         "indexer_helperText": "ตัวทำดัชนี",
         "primary_helperText": "หลัก",
         "secondary_helperText": "รอง",
-        "create_storage_volume": "สร้างปริมาณการจัดเก็บ"
+        "create_storage_volume": "สร้างปริมาณการจัดเก็บ",
+        "running": "ทำงานอยู่"
     },
     "click_new_bucket_button_to_create_new_one": "คลิกปุ่ม NEW BUCKET เพื่อสร้างใหม่",
     "have_not_setup_bucket_type": "ดูเหมือนว่าคุณยังไม่ได้ตั้งค่าประเภท bucket",

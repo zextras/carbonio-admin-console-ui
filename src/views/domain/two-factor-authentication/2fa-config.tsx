@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -13,12 +14,13 @@ import {
 	Select,
 	ChipInput
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { map, some } from 'lodash';
-import ListRow from '../../list/list-row';
-import { TwoFactorWhatToTrust, isValidIpRange } from '../../utility/utils';
+import { useTranslation } from 'react-i18next';
+
 import { IpRangeValue, TwoFactorAuthPolicyValues } from '../../../../types';
 import CustomChip from '../../components/customChip';
+import ListRow from '../../list/list-row';
+import { TwoFactorWhatToTrust, isValidIpRange } from '../../utility/utils';
 
 export const TwoFactorAuthencationConfig: FC<{
 	policies: TwoFactorAuthPolicyValues[];
@@ -142,6 +144,7 @@ export const TwoFactorAuthencationConfig: FC<{
 								value={applyAllValues.ipRange}
 								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
 								ChipComponent={CustomChip}
+								maxChips={null}
 							/>
 						</Padding>
 					</ListRow>
@@ -225,6 +228,7 @@ export const TwoFactorAuthencationConfig: FC<{
 											)}
 											errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
 											ChipComponent={CustomChip}
+											maxChips={null}
 										/>
 									</Padding>
 								</ListRow>

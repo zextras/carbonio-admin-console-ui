@@ -5,8 +5,10 @@
  */
 
 import React, { FC, useEffect, useState } from 'react';
+
 import { Container, Text, Button, Modal, Padding, Checkbox } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import { RESET_DEVICE, WIPE_DEVICE } from '../../../../constants';
 
 const ActiveDeviceConfirmation: FC<{

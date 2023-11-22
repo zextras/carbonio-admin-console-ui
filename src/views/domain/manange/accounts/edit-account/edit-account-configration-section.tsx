@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useContext, useCallback, useState, useEffect } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,15 +18,15 @@ import {
 } from '@zextras/carbonio-design-system';
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { AccountContext } from '../account-context';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import { Features } from '../../../../cos/features';
+
+import InheritedSwitch from './inherited-components/inherited-switch';
 import { ACCOUNT } from '../../../../../constants';
 import { getCoreAttributes } from '../../../../../services/get-core-attributes';
-import { isValidEmail } from '../../../../utility/utils';
-import InheritedSwitch from './inherited-components/inherited-switch';
-import InheritedInput from './inherited-components/inherited-input';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomChip from '../../../../components/customChip';
+import { Features } from '../../../../cos/features';
+import { isValidEmail } from '../../../../utility/utils';
+import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
 const EditAccountConfigrationSection: FC = () => {
@@ -225,6 +226,7 @@ const EditAccountConfigrationSection: FC = () => {
 							value={prefMailForwardingAddress}
 							background="gray5"
 							hasError={some(prefMailForwardingAddress || [], { error: true })}
+							maxChips={null}
 						/>
 					</Row>
 				</Row>
@@ -251,6 +253,7 @@ const EditAccountConfigrationSection: FC = () => {
 							background="gray5"
 							hasError={some(mailForwardingAddress || [], { error: true })}
 							ChipComponent={CustomChip}
+							maxChips={null}
 						/>
 					</Row>
 				</Row>
@@ -277,6 +280,7 @@ const EditAccountConfigrationSection: FC = () => {
 							background="gray5"
 							hasError={some(prefCalendarForwardInvitesTo || [], { error: true })}
 							ChipComponent={CustomChip}
+							maxChips={null}
 						/>
 					</Row>
 				</Row>
@@ -302,6 +306,7 @@ const EditAccountConfigrationSection: FC = () => {
 								label={`${t('label.format', 'Format')} :  ${t(
 									'label.protocol_server_port',
 									'protocol:server:port'
+									// eslint-disable-next-line sonarjs/no-nested-template-literals
 								)}${` | `}:${` lmtp:server.demo.zextras.io:7025`}`}
 							>
 								<Text>

@@ -44,7 +44,7 @@
         "america_port-au-prince": "{{value}} Porto Príncipe",
         "america_punta_arenas": "{{value}} Punta Arenas",
         "america_regina": "{{value}} Saskatchewan",
-        "america_santiago": "{{value}} Pacífico de América do Sul",
+        "america_santiago": "{{value}} Pacífico América do Sul",
         "america_sao_paulo": "{{value}} Brasília",
         "america_st_johns": "{{value}} Terra Nova",
         "america_tijuana": "{{value}} Baixa Califórnia",
@@ -336,7 +336,8 @@
         "receiver_of_quota_warning_email": "Receptor do aviso de cota (e-mail)",
         "smtp": "SMTP",
         "type_the exact_domain_name": "Digite o nome exato do domínio",
-        "web_ui": "WebUI"
+        "web_ui": "WebUI",
+        "administration_rights": "Direitos de administração"
     },
     "label": {
         "account": "Conta",
@@ -358,7 +359,7 @@
         "hours": "Horas",
         "mb": "MB",
         "minutes": "Minutos",
-        "name": "Name",
+        "name": "Nome",
         "not_set": "Não ativado",
         "note": "Nota",
         "notification": "Notificação",
@@ -999,11 +1000,7 @@
         "primary_volume": "Este é um volume primário",
         "quarantined": "Em quarentena",
         "registration": "Cadastro",
-        "reset_domain_theme": "Redefinir o tema <bold>{{name}}</bold>",
-        "reset_global_theme": "Redefinir o tema globalmente",
         "no_donot_wipe_device": "Não formatar",
-        "reset_theme_content_1": "Tem certeza que deseja redefinir o tema?",
-        "reset_theme_content_2": "Ao clicar no botão \"SIM\", todos os dados serão perdidos.",
         "rest_device_warning_msg_1": "Se formatar um dispositivo, irá restaurar suas configurações de fábrica. Tem certeza que deseja continuar? ",
         "secondary_volume": "Este é um volume secundário",
         "security": "SEGURANÇA",
@@ -1126,7 +1123,7 @@
         "domain_primarybar_tooltip": "Visualizar <bold>detalhes de domínios</bold> e <bold>gerenciar</bold> os recursos como <bold>contas, Listas de distribuição</bold> e <bold>muito mais</bold>.",
         "download_quota_Report": "Baixar relatório de uso de cota",
         "example_lbl": "Exemplo:",
-        "home": "Home",
+        "home": "Início",
         "logo_redirection": "Redirecionamento de logo",
         "logo_redirection_title": "Ao clicar no logo os usuários serão redirecionados para…",
         "mobile_app": "App móvel",
@@ -1146,12 +1143,12 @@
         "sort_by_total_quota": "Ordenar por cota total",
         "account_name": "Nome da conta",
         "aliases": "Alias",
-        "dont_save_a_copy_of_sent_messages": "Não salvar uma cópia das mensagens enviadas",
+        "dont_save_a_copy_of_sent_messages": "Não salvar cópia das mensagens enviadas",
         "value": "Valor",
         "distribution_list": "Lista de distribuição",
-        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salvar uma cópia das mensagens enviadas na pasta de Enviados do delegado",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salvar uma cópia das mensagens na pasta Enviadas do delegado",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas",
-        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na dos delegados",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na do delegado",
         "accounts_groups": "Contas/grupos",
         "allow_unsecure": "Permitir \"não seguro\"",
         "attribute": "Atributo",
@@ -1388,7 +1385,7 @@
         "valid_not_before": "Válido a partir de (não antes)",
         "what_to_trust": "Em que confiar?",
         "stats": "Estatísticas",
-        "person_name": "Name",
+        "person_name": "Nome",
         "can_access_settings": "Pode acessar as configurações",
         "init_domain": "INIT DOMAIN",
         "items_per_page": "itens por página",
@@ -1399,7 +1396,10 @@
         "prompt": "Prompt",
         "showing": "Mostrando",
         "surname_required": "O sobrenome é obrigatório",
-        "storage_hsm_not_licensed": "Não é possível concluir a operação: storages_hsm não licenciado."
+        "storage_hsm_not_licensed": "Não é possível concluir a operação: storages_hsm não licenciado.",
+        "search_for_an_account": "Buscar conta",
+        "advance_edit_userName": "Nome de usuário",
+        "received": "Recebida"
     },
     "message": {
         "snackbar": {
@@ -1432,7 +1432,7 @@
         "ldap_dump": "Despejo LDAP",
         "local_metadata_threshold": "Limite de Metadados Locais",
         "minimum_space_threshold": "Limiar de espaço mínimo",
-        "module_enable_at_startup": "O módulo se ativa ao inicializar",
+        "module_enable_at_startup": "Módulo Ativado na Inicialização",
         "purge_old_configurations": "Limpar configurações antigas",
         "realtime_scanner": "RealTime Scanner",
         "schedule": "Programar",
@@ -1941,7 +1941,7 @@
             "object_storage": "Armazenamento de objetos"
         },
         "volume_config_header": {
-            "name": "Name",
+            "name": "Nome",
             "hsm_scheduled": "HSM programado",
             "indexer": "Indexador",
             "status": "Estado"
@@ -1950,14 +1950,14 @@
             "compression": "Compressão",
             "current": "Atual",
             "id": "ID",
-            "name": "Name",
+            "name": "Nome",
             "path": "Caminho",
             "storageType": "Tipo de Storage"
         },
         "volume_indexer_header": {
             "current": "Atual",
             "id": "ID",
-            "name": "Name",
+            "name": "Nome",
             "path": "Caminho"
         },
         "volume_type": {
@@ -1968,7 +1968,8 @@
         "indexer_helperText": "Indexador",
         "primary_helperText": "Primário",
         "secondary_helperText": "Secundário",
-        "create_storage_volume": "Criar volume de armazenamento"
+        "create_storage_volume": "Criar volume de armazenamento",
+        "running": "Executando"
     },
     "click_new_bucket_button_to_create_new_one": "Clique no botão NOVO BUCKET para criar um.",
     "have_not_setup_bucket_type": "Parece que você não configurou ainda um Bucket",
@@ -1998,7 +1999,7 @@
         "message": "Mensagem",
         "minimum_space_threshold": "Limiar de espaço mínimo",
         "months": "Meses",
-        "name": "Name",
+        "name": "Nome",
         "new_policy_summary": "Resumo da Nova Política",
         "no": "Não",
         "option": "Opção",

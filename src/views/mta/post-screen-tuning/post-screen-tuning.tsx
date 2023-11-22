@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	SnackbarManagerContext,
@@ -17,12 +19,10 @@ import {
 	Input,
 	Switch
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { isEqual } from 'lodash';
-import { useConfigStore } from '../../../store/config/store';
-import ListRow from '../../list/list-row';
+
 import { MtaPostTuning } from '../../../../types';
 import {
 	IS_SHOW_POST_TUNING_BANNER,
@@ -46,6 +46,8 @@ import {
 	ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
+import { useConfigStore } from '../../../store/config/store';
+import ListRow from '../../list/list-row';
 import { useLocalStorage } from '../../utility/utils';
 
 const CustomIcon = styled(Icon)`
@@ -153,6 +155,7 @@ const MTAPostScreenTuning: FC = () => {
 	const [nonSMTPCommandTTLUnit, setNonSMTPCommandTTLUnit] = useState(intervalOptions[2]);
 	const [bareNewLineTTLUnit, setBareNewLineTTLUnit] = useState(intervalOptions[2]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			const zimbraMtaPostscreenBlacklistAction = configInformation.find(
@@ -594,6 +597,7 @@ const MTAPostScreenTuning: FC = () => {
 		[createSnackbar, t, updateGlobalConfig]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = useCallback(() => {
 		const attributes: Array<Record<string, string>> = [];
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction) {
@@ -967,6 +971,7 @@ const MTAPostScreenTuning: FC = () => {
 							<Select
 								items={intervalOptions}
 								background="gray5"
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
 								selection={dnsblMinTTLUnit}
@@ -1088,6 +1093,7 @@ const MTAPostScreenTuning: FC = () => {
 							<Select
 								items={ignoreEnforceDropOptions}
 								background="gray5"
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('mta.action', 'Action')}
 								showCheckbox={false}
 								selection={ignoreEnforceDropOptions.find(
@@ -1108,6 +1114,7 @@ const MTAPostScreenTuning: FC = () => {
 					>
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
 							<Input
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
 								backgroundColor="gray5"
 								value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(

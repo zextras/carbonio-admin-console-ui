@@ -336,7 +336,8 @@
         "mail_space_quota_threshold": "Batas Kuota Ruang Email (%)",
         "pop": "POP",
         "web_ui": "WebUI",
-        "smtp": "SMTP"
+        "smtp": "SMTP",
+        "administration_rights": "Hak Admin"
     },
     "label": {
         "account": "Akun",
@@ -397,7 +398,7 @@
         "space": "Space",
         "subscription": "Langganan",
         "time_zone": "Zona Waktu",
-        "type": "Ketik",
+        "type": "Jenis",
         "unsaved_changes": "Anda memiliki perubahan yang belum disimpan",
         "unsaved_changes_line1": "Yakin ingin keluar dari halaman ini tanpa menyimpan?",
         "unsaved_changes_line2": "Semua perubahan yang tidak disimpan akan hilang",
@@ -423,7 +424,7 @@
         "default_appointment_visibility": "Visibilitas janji temu default",
         "details": "Detail",
         "draft_auto_save_interval": "Interval simpan otomatis draf",
-        "email": "Nama Pengguna",
+        "email": "Email",
         "enable_automatic_adding_of_contacts": "Aktifkan penambahan kontak otomatis",
         "enable_mandatory_spell_check": "Aktifkan pemeriksaan ejaan wajib",
         "enable_past_due_reminders": "Aktifkan pengingat janji temu sebelumnya",
@@ -472,7 +473,7 @@
         "require_list_owner_approval": "Minta persetujuan pemilik daftar",
         "resource": "Sumber",
         "rights": "Hak-hak",
-        "signatures": "Tanda Tangan",
+        "signatures": "Tanda tangan",
         "standard": "Standar",
         "surname": "Nama keluarga",
         "user": "Pengguna",
@@ -739,7 +740,7 @@
         "detail_error": "{{name}}",
         "volume_create": "BUAT",
         "enable_current_helptext": "Mengaktifkan opsi ini akan menonaktifkan volume aktif saat ini.",
-        "required": "Diperlukan",
+        "required": "Wajib",
         "select_a_server": "Pilih Server",
         "volume_server": "Server",
         "configuration_lbl": "Konfigurasi",
@@ -999,10 +1000,6 @@
         "primary_volume": "Ini adalah Volume Pribadi",
         "quarantined": "Dikarantina",
         "registration": "Pendaftaran",
-        "reset_domain_theme": "Reset tema {{name}}",
-        "reset_global_theme": "Reset tema global",
-        "reset_theme_content_1": "Anda yakin ingin mereset tema?",
-        "reset_theme_content_2": "Jika mengklik tombol YA, semua data akan hilang.",
         "rest_device_warning_msg_1": "Menghapus perangkat akan memulihkannya ke pengaturan pabrik. Anda yakin ingin melanjutkan? ",
         "secondary_volume": "Ini adalah Volume Sekunder",
         "security": "KEAMANAN",
@@ -1111,7 +1108,7 @@
         "EDIT": "EDIT",
         "REMOVE": "HAPUS",
         "Rights": "Hak-hak",
-        "Type": "Ketik",
+        "Type": "Jenis",
         "chats": "Chats",
         "contacts": "Kontak",
         "files": "File",
@@ -1388,7 +1385,9 @@
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "Anda tidak memiliki hak administrasi yang cukup untuk melihat bagian ini",
         "please_select_the_measure_unit": "Pilih satuan pengukuran",
         "person_name": "Nama",
-        "stats": "Statistik"
+        "stats": "Statistik",
+        "advance_edit_userName": "Nama Pengguna",
+        "search_for_an_account": "Cari akun"
     },
     "message": {
         "snackbar": {
@@ -1955,7 +1954,8 @@
         "indexer_helperText": "Pengindeks",
         "primary_helperText": "Utama",
         "secondary_helperText": "Sekunder",
-        "create_storage_volume": "Buat Volume Penyimpanan"
+        "create_storage_volume": "Buat Volume Penyimpanan",
+        "running": "Berjalan"
     },
     "hsm": {
         "all": "Semua",
@@ -1997,7 +1997,7 @@
         "server": "Server",
         "source_volume": "Volume Sumber",
         "this_function_allow_save_disk_copy_msg": "Fungsi ini memungkinkanmu meyimpan ruang disk dengan menyimpan satu salinan item.",
-        "type": "Ketik",
+        "type": "Jenis",
         "value": "Nilai",
         "volumes": "Volume",
         "yes": "Ya",
