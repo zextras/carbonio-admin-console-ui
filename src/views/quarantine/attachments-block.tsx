@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, ReactElement, useCallback, useContext, useMemo, useRef, useState } from 'react';
+
 import {
 	Container,
 	getColor,
@@ -17,17 +19,17 @@ import {
 	useTheme
 } from '@zextras/carbonio-design-system';
 import { getBridgedFunctions, getIntegratedFunction, soapFetch } from '@zextras/carbonio-shell-ui';
-import { useTranslation } from 'react-i18next';
 import { filter, find, map, includes, isNil, uniqBy } from 'lodash';
-import React, { FC, ReactElement, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled, { DefaultTheme, SimpleInterpolation } from 'styled-components';
-import { removeAttachmentsRequest } from '../../services/remove-attachments';
+
 import {
 	MailMessage,
 	EditorAttachmentFiles,
 	Conversation,
 	AttachmentPart
 } from './mail-message-renderer';
+import { removeAttachmentsRequest } from '../../services/remove-attachments';
 
 type OpenEmlPreviewType = (
 	parentMessageId: string,
@@ -91,196 +93,134 @@ const FileExtensionRegex = /^.+\.([^.]+)$/;
 const getFileExtension = (
 	file: EditorAttachmentFiles | AttachmentPart
 ): { value: string; displayName?: string } => {
+	// eslint-disable-next-line sonarjs/max-switch-cases
 	switch (file.contentType) {
 		case 'text/html':
 			return { value: 'html' };
-
 		case 'text/css':
 			return { value: 'css' };
-
 		case 'text/xml':
 			return { value: 'xml' };
-
 		case 'image/gif':
 			return { value: 'gif' };
-
 		case 'image/jpeg':
 			return { value: 'jpg' };
-
 		case 'application/x-javascript':
 			return { value: 'js' };
-
 		case 'application/atom+xml':
 			return { value: 'atom' };
-
 		case 'application/rss+xml':
 			return { value: 'rss' };
-
 		case 'text/mathml':
 			return { value: 'mml' };
-
 		case 'text/plain':
 			return { value: 'txt' };
-
 		case 'text/vnd.sun.jme.app-descriptor':
 			return { value: 'jad' };
-
 		case 'text/vnd.wap.wml':
 			return { value: 'wml' };
-
 		case 'text/x-component':
 			return { value: 'htc' };
-
 		case 'image/png':
 			return { value: 'png' };
-
 		case 'image/tiff':
 			return { value: 'tif,tiff', displayName: 'tif' };
-
 		case 'image/vnd.wap.wbmp':
 			return { value: 'wbmp' };
-
 		case 'image/x-icon':
 			return { value: 'ico' };
-
 		case 'image/x-jng':
 			return { value: 'jng' };
-
 		case 'image/x-ms-bmp':
 			return { value: 'bmp' };
-
 		case 'image/svg+xml':
 			return { value: 'svg' };
-
 		case 'image/webp':
 			return { value: 'webp' };
-
 		case 'application/java-archive':
 			return { value: 'jar,war,ear' };
-
 		case 'application/mac-binhex':
 			return { value: 'hqx' };
-
 		case 'application/msword':
 			return { value: 'doc' };
-
 		case 'application/pdf':
 			return { value: 'pdf' };
-
 		case 'application/postscript':
 			return { value: 'ps,eps,ai' };
-
 		case 'application/rtf':
 			return { value: 'rtf' };
-
 		case 'application/vnd.ms-excel':
 			return { value: 'xls' };
-
 		case 'application/vnd.ms-powerpoint':
 			return { value: 'ppt' };
-
 		case 'application/vnd.wap.wmlc':
 			return { value: 'wmlc' };
-
 		case 'application/vnd.google-earth.kml+xml':
 			return { value: 'kml' };
-
 		case 'application/vnd.google-earth.kmz':
 			return { value: 'kmz' };
-
 		case 'application/x-z-compressed':
 			return { value: 'z' };
-
 		case 'application/x-cocoa':
 			return { value: 'cco' };
-
 		case 'application/x-java-archive-diff':
 			return { value: 'jardiff' };
-
 		case 'application/x-java-jnlp-file':
 			return { value: 'jnlp' };
-
 		case 'application/x-makeself':
 			return { value: 'run' };
-
 		case 'application/x-perl':
 			return { value: 'pl,pm' };
-
 		case 'application/x-pilot':
 			return { value: 'prc,pdb' };
-
 		case 'application/x-rar-compressed':
 			return { value: 'rar' };
-
 		case 'application/x-redhat-package-manager':
 			return { value: 'rpm' };
-
 		case 'application/x-sea':
 			return { value: 'sea' };
-
 		case 'application/x-shockwave-flash':
 			return { value: 'swf' };
-
 		case 'application/x-stuffit':
 			return { value: 'sit' };
-
 		case 'application/x-tcl':
 			return { value: 'tcl' };
-
 		case 'application/x-x-ca-cert':
 			return { value: 'der' };
-
 		case 'application/x-xpinstall':
 			return { value: 'xpi' };
-
 		case 'application/xhtml+xml':
 			return { value: 'xhtml' };
-
 		case 'application/zip':
 			return { value: 'zip' };
-
 		case 'audio/midi':
 			return { value: 'midi' };
-
 		case 'audio/mpeg':
 			return { value: 'mp' };
-
 		case 'audio/ogg':
 			return { value: 'ogg' };
-
 		case 'audio/x-realaudio':
 			return { value: 'ra' };
-
 		case 'video/gpp':
 			return { value: 'gp' };
-
 		case 'video/mpeg':
 			return { value: 'mpeg' };
-
 		case 'video/quicktime':
 			return { value: 'mov' };
-
 		case 'video/x-flv':
 			return { value: 'flv' };
-
 		case 'video/x-mng':
 			return { value: 'mng' };
-
 		case 'video/x-ms-asf':
 			return { value: 'asf' };
-
 		case 'video/x-ms-wmv':
 			return { value: 'wmv' };
-
 		case 'video/x-msvideo':
 			return { value: 'avi' };
-
 		case 'video/mp':
 			return { value: 'mp' };
-
 		case 'message/rfc822':
 			return { value: 'EML' };
-
 		default:
 			return {
 				value: isNil(FileExtensionRegex.exec(file?.filename ?? ''))
@@ -601,6 +541,7 @@ const AttachmentsBlock: FC<{
 	getQuarantineMsgData,
 	setShowMessageView,
 	setMessageViewLoading
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 }): ReactElement => {
 	const [t] = useTranslation();
 	const [expanded, setExpanded] = useState(false);
@@ -692,7 +633,7 @@ const AttachmentsBlock: FC<{
 			return null;
 		}
 
-		const link = (
+		return (
 			<Link
 				size="medium"
 				onClick={(): void => {
@@ -703,7 +644,6 @@ const AttachmentsBlock: FC<{
 				{t('label.save_to_files', 'Save to Files')}
 			</Link>
 		);
-		return link;
 	}, [actionTarget, isUploadIntegrationAvailable, t, uploadIntegration]);
 
 	return attachmentsCount > 0 ? (
@@ -745,7 +685,10 @@ const AttachmentsBlock: FC<{
 					)}
 					{attachmentsCount === 2 && (
 						<Text color="gray1">
-							{`${attachmentsCount} ${t('label.attachment_plural', 'Attachments')}`}
+							{
+								// eslint-disable-next-line sonarjs/no-duplicate-string
+								`${attachmentsCount} ${t('label.attachment_plural', 'Attachments')}`
+							}
 						</Text>
 					)}
 					{attachmentsCount > 2 &&
