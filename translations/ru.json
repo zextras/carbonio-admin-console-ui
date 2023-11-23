@@ -58,7 +58,19 @@
         "aggregated_space_quota": "Совокупная квота пространства",
         "aggregated_space_quota_warning": "Предупреждение о совокупной квоте пространства (%)",
         "certificate_removed": "Сертификат был удален",
-        "certificate_type_use_letsencrypt_long_chain": "Я хочу использовать сертификат Let’s Encrypt (longChain)"
+        "certificate_type_use_letsencrypt_long_chain": "Я хочу использовать сертификат Let’s Encrypt (longChain)",
+        "pop": "POP",
+        "type_the exact_domain_name": "Введите точное имя домена",
+        "certificate_type_use_letsencrypt_short_chain": "Я хочу использовать сертификат Let’s Encrypt (shortChain)",
+        "administration_rights": "Права администратора",
+        "certificate_content_error_without_ca_chain": "Сертификат домена, закрытый ключ недействителен",
+        "dav": "DAV",
+        "desktop_app": "DesktopSync",
+        "desktop_sync": "DesktopSync",
+        "domain_list": "Список доменов",
+        "mail_space_quota_threshold": "Пороговое значение квоты почтового пространства (%)",
+        "smtp": "SMTP",
+        "web_ui": "Веб-клиент"
     },
     "label": {
         "account": "Учетная запись",
@@ -113,7 +125,7 @@
                 "accepted": "Вы приняли права общего доступа"
             }
         },
-        "status": "статусу",
+        "status": "Статус",
         "suspended": "приостановлена",
         "timezone": "Часовой пояс",
         "unlimited": "Неограниченно",
@@ -209,7 +221,7 @@
         "default_appointment_visibility": "Видимость встречи по умолчанию",
         "details": "Подробнее",
         "draft_auto_save_interval": "Интервал автоматического сохранения черновика",
-        "email": "Электронная почта",
+        "email": "Электронный адрес",
         "enable_automatic_adding_of_contacts": "Включить автоматическое добавление контактов",
         "enable_mandatory_spell_check": "Включить обязательную проверку правописания",
         "enable_past_due_reminders": "Включить напоминания о просроченных встречах",
@@ -1003,7 +1015,12 @@
         "stats": "Статистика",
         "advance_edit_userName": "Имя пользователя",
         "search_for_an_account": "Поиск учетной записи",
-        "received": "Получено"
+        "received": "Получено",
+        "2-factor-authentication": "Двухфакторная аутентификация",
+        "2fa": "Двухфакторная аутентификация",
+        "2fa-policy-updated-successfully": "Настройки применены ко всем сервисам",
+        "administration_rights": "Права администратора",
+        "aggregated_space_quota": "Совокупная квота пространства"
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
@@ -1449,10 +1466,14 @@
         "max_user_specific_forwarding_address": "Максимальное количество адресов пересылки",
         "read_receipt_settings": "Настройки запроса о прочтении",
         "select_cos_to_include_in_domain": "Выберите COS, который нужно включить в этот домен",
-        "user_can_specify_mail_forwarding_filter": "Пользователь может указать фильтр переадресации почты",
+        "user_can_specify_mail_forwarding_filter": "Пользователь может указать фильтр пересылки почты",
         "max_contacts_allowed_in_the_folder": "Максимальное количество разрешенных контактов в папке",
         "user_can_specify_forwarding_address": "Пользователь может указать адрес пересылки",
-        "limit_user_specified_forwarding_addresses": "Максимум символов для адреса пересылки"
+        "limit_user_specified_forwarding_addresses": "Максимум символов для адреса пересылки",
+        "user_specific_fowarding_addresses": "Ограничить поле адресов пересылки, указанное пользователем, (символами)",
+        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "указанные пользователем адреса пересылки + максимальное количество пользовательских адресов пересылки",
+        "handled_accounts": "обработанные аккаунты",
+        "handled_domains": "управляемые домены"
     },
     "backup": {
         "backup_path": "Путь резервирования",
@@ -1814,7 +1835,12 @@
         "user_can_specify_forwarding_address": "Пользователь может указать адрес пересылки",
         "delegated_administration": "Делегированный администратор",
         "global_administration": "Глобальный администратор",
-        "service_label_password": " Пароль {{ service_label }}"
+        "service_label_password": " Пароль {{ service_label }}",
+        "send_as_recipients": "Отправить как (получатели будут отображать адрес электронной почты отправителя {{targetEmail}})",
+        "send_recipients_see_the_mail": "Отправить {{right}} (получатели будут отображать адрес электронной почты отправителя {{targetEmail}})",
+        "user_can_specify_mail_forwarding_filter": "Пользователь может указать фильтр пересылки почты",
+        "click_to_revert": "Нажмите для возврата",
+        "get_global_config": "Конфигурация GetGlobal"
     },
     "privacy": {
         "survey_feedback_sub_1": "Помогите нам стать лучше. Пройдите быстрый опрос.",
@@ -1913,7 +1939,12 @@
         "volume_already_selected_in_source": "Том уже выбран в исходном томе",
         "scheduling": "Расписание",
         "new": "Создать",
-        "users": "Пользователи"
+        "users": "Пользователи",
+        "default_hsm_policy_warning_message": "По крайней мере, одна политика всегда будет действовать. Если вы удалите последний, будет создан другой",
+        "example_shedule": "E.g. 0 2 * * 3",
+        "policies_are_running": "Политики HSM запущены",
+        "policy_is_correctly_running": "Политика работает корректно",
+        "run_all": "Запустить все"
     },
     "select_bucket_or_create_new_bucket_helperText": "Похоже, вы не настроили тип Бакета.\nДля создания нажмите кнопку «НОВЫЙ БАКЕТ».",
     "welcome_to_carbonio_display_name": "Добро пожаловать, {{adminName}}!",
@@ -1965,7 +1996,7 @@
         "label": {
             "Deep": "Глубокий",
             "notifications": "Оповещение",
-            "status": "статусу",
+            "status": "Статус",
             "action(M)": "Действие (M)",
             "create_fake_blob": "Создать фальшивый блоб",
             "let_it_run_btn": "ЗАПУСТИТЬ",
@@ -2117,5 +2148,8 @@
     },
     "mat": {
         "add_here_any_blocked_extension": "Добавьте сюда любое заблокированное расширение"
+    },
+    "error": {
+        "one_or_more_ip_invalid": "Один или несколько IP-адресов недействительны"
     }
 }
