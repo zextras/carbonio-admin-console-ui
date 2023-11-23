@@ -178,7 +178,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 				let quotaLimit: any = 0;
 				let percentage: any = 0;
 				if (item?.used) {
-					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(2);
+					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(0);
 					if (item?.limit) {
 						percentage = ((item.used / item.limit) * 100).toFixed();
 					}
