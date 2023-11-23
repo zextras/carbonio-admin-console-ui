@@ -4,9 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useState, useCallback, useContext, useMemo } from 'react';
-import { useTranslation } from 'react-i18next';
-import { getTags } from '@zextras/carbonio-shell-ui';
-import { filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
+
 import {
 	Container,
 	Input,
@@ -21,27 +19,31 @@ import {
 	Padding,
 	Collapse
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
+import { getTags } from '@zextras/carbonio-shell-ui';
+import { filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import AttachmentsBlock from './attachments-block';
+import MailMessageRenderer from './mail-message-renderer';
+import logo from '../../assets/ninja_robo.svg';
+import { batchService } from '../../services/batch-service';
+import { bounceMsgRequest } from '../../services/bounce-message';
 import { createAccountRequest } from '../../services/create-account';
-import { MessageTableHeaders, RandomString } from '../utility/utils';
-import { getAllConfig } from '../../services/get-all-config';
-import { useConfigStore } from '../../store/config/store';
-import { modifyConfig } from '../../services/modify-config';
 import { deleteAccount } from '../../services/delete-account-service';
 import { getAccountRequest } from '../../services/get-account';
+import { getAllConfig } from '../../services/get-all-config';
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
-import ListRow from '../list/list-row';
-import logo from '../../assets/ninja_robo.svg';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import ModalOverlay from '../components/ModalOverlay';
-import MailMessageRenderer from './mail-message-renderer';
-import AttachmentsBlock from './attachments-block';
-import { batchService } from '../../services/batch-service';
 import { msgActionRequest } from '../../services/message-action';
-import { bounceMsgRequest } from '../../services/bounce-message';
+import { modifyConfig } from '../../services/modify-config';
+import { useConfigStore } from '../../store/config/store';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import ModalOverlay from '../components/ModalOverlay';
 import OverlayDivision from '../components/overlayDivision';
+import ListRow from '../list/list-row';
+import { MessageTableHeaders, RandomString } from '../utility/utils';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -177,8 +179,7 @@ export type Participant = {
 
 const getDateTime = (d: number): string => {
 	const date = new Date(d);
-	const formattedDate = moment(date).format('DD/MM/YY HH:mm');
-	return formattedDate;
+	return moment(date).format('DD/MM/YY HH:mm');
 };
 
 const MessageListTable: FC<{
@@ -203,6 +204,7 @@ const MessageListTable: FC<{
 				id: i,
 				columns: [
 					<Row
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={v.id}
 						onClick={(): void => {
@@ -479,8 +481,9 @@ const QuarantineList: FC = () => {
 			mp: Array<SoapMailMessagePart>,
 			acc: { contentType: string; content: string },
 			id: string
-		): { contentType: string; content: string } => {
-			const bodyPart = reduce(
+			// eslint-disable-next-line sonarjs/cognitive-complexity
+		): { contentType: string; content: string } =>
+			reduce(
 				mp,
 				(found, part) => {
 					if (part.mp) return findBodyPart(part.mp, found, id);
@@ -508,10 +511,7 @@ const QuarantineList: FC = () => {
 					return found;
 				},
 				acc
-			);
-
-			return bodyPart;
-		},
+			),
 		[]
 	);
 	const generateBody = useCallback(
@@ -526,8 +526,7 @@ const QuarantineList: FC = () => {
 	);
 	const extractAttachmentIdsFromHtmlContent = (content: string): Array<string> => {
 		const matches = content.match(/cid:(.*?)(?="|&)/g);
-		const result = matches ? map(matches, (match) => match.replace('cid:', '')) : [];
-		return result;
+		return matches ? map(matches, (match) => match.replace('cid:', '')) : [];
 	};
 
 	const getAttachmentsAnchoredOnHtmlBody = useCallback(
@@ -569,12 +568,14 @@ const QuarantineList: FC = () => {
 		if (item.ci && item.ci === 'text-body') {
 			return true;
 		}
+		// eslint-disable-next-line sonarjs/prefer-single-boolean-return, sonarjs/no-duplicate-string
 		if (item.ct === 'text/calendar' && !item.filename) {
 			return true;
 		}
 		return false;
 	};
 	const getAttachmentsFromParts = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(mailParts: Array<AttachmentPart> | AttachmentPart): Array<AttachmentPart> => {
 			const anchoredAttachmentsList = getAttachmentsAnchoredOnHtmlBody(mailParts);
 			let results: Array<AttachmentPart> = [];
@@ -592,6 +593,7 @@ const QuarantineList: FC = () => {
 								};
 								if (
 									(item.cd && item.cd === 'attachment') ||
+									// eslint-disable-next-line sonarjs/no-duplicate-string
 									(item.ct && (item.ct === 'message/rfc822' || item.ct === 'text/calendar')) ||
 									item.filename ||
 									item.ci
@@ -630,6 +632,7 @@ const QuarantineList: FC = () => {
 						});
 					});
 				} else if (
+					// eslint-disable-next-line sonarjs/no-gratuitous-expressions
 					(mailParts && mailParts.cd && mailParts.cd === 'attachment') ||
 					(mailParts.ct &&
 						(mailParts.ct === 'message/rfc822' || mailParts.ct === 'text/calendar')) ||
@@ -667,6 +670,7 @@ const QuarantineList: FC = () => {
 		},
 		[getAttachmentsAnchoredOnHtmlBody]
 	);
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getQuarantineMsgData = useCallback((): void => {
 		const propertiesToExtract = ['zimbraAmavisQuarantineAccount', 'zimbraDefaultDomainName'];
 		setMessageListData([]);
@@ -702,27 +706,32 @@ const QuarantineList: FC = () => {
 									needExp: 1,
 									header: [
 										{
+											// eslint-disable-next-line sonarjs/no-duplicate-string
 											n: 'X-Envelope-From'
 										},
 										{
+											// eslint-disable-next-line sonarjs/no-duplicate-string
 											n: 'X-Envelope-To'
 										},
 										{
 											n: 'X-Envelope-To-Blocked'
 										},
 										{
+											// eslint-disable-next-line sonarjs/no-duplicate-string
 											n: 'X-Amavis-Alert'
 										},
 										{
 											n: 'X-Spam-Flag'
 										},
 										{
+											// eslint-disable-next-line sonarjs/no-duplicate-string
 											n: 'X-Spam-Score'
 										},
 										{
 											n: 'X-Spam-Level'
 										},
 										{
+											// eslint-disable-next-line sonarjs/no-duplicate-string
 											n: 'X-Spam-Status'
 										}
 									]
@@ -837,6 +846,7 @@ const QuarantineList: FC = () => {
 		null;
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const createAccountAPI = useCallback((): void => {
 		const deleteAccountName = quarantineAccountName;
 		createAccountRequest(
@@ -891,7 +901,8 @@ const QuarantineList: FC = () => {
 								type: 'error',
 								label: error?.message
 									? error?.message
-									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+									: // eslint-disable-next-line sonarjs/no-duplicate-string
+									  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 								autoHideTimeout: 3000,
 								hideButton: true,
 								replace: true

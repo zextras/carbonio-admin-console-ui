@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+
 import {
 	Button,
 	Container,
@@ -14,7 +16,6 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash';
-import React, { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -289,6 +290,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 		[displayBanner, showExternalImage]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useLayoutEffect(() => {
 		if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument)) {
 			iframeRef.current.contentDocument.open();
@@ -334,6 +336,7 @@ const _HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 			parts,
 			(r, v) => {
 				if (!_CI_REGEX.test(v.ci ?? '')) return r;
+				// eslint-disable-next-line no-param-reassign
 				r[_CI_REGEX.exec(v.ci ?? '')?.[1] ?? ''] = v;
 				return r;
 			},
