@@ -34,6 +34,7 @@ import {
 	TWO_FACTOR_AUTHENTICATION,
 	SECURITY_GROUP,
 	GLOBAL_ROUTE,
+	GLOBAL_QUARANTINE_ROUTE,
 	BACKUP_BASIC,
 	WHITELABEL_SETTINGS,
 	GLOBAL_WHITELABEL_SETTINGS,
@@ -242,6 +243,8 @@ const DomainListPanel: FC = () => {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_DOMAIN_ROUTE) {
 					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_QUARANTINE_ROUTE) {
+					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_DELEGATES_ROUTE) {
 					replaceHistory(`/${domainView}`);
 				} else {
@@ -369,6 +372,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: GLOBAL_2FA_ROUTE,
 				name: t('label.2fa', '2-Factor-Authentication'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_QUARANTINE_ROUTE,
+				name: t('label.quarantine', 'Quarantine'),
 				isSelected: true
 			}
 		],

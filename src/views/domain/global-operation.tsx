@@ -16,8 +16,10 @@ import {
 	TWO_FACTOR_AUTHENTICATION,
 	DOMAINS,
 	WHITELABEL_SETTINGS,
-	GLOBAL_DELEGATES
+	GLOBAL_DELEGATES,
+	QUARANTINE
 } from '../../constants';
+import QuarantineList from '../quarantine/quarantine-list';
 
 const GlobalOperations: FC = () => {
 	const [t] = useTranslation();
@@ -31,6 +33,8 @@ const GlobalOperations: FC = () => {
 						return <GlobalTheme />;
 					case TWO_FACTOR_AUTHENTICATION:
 						return <GlobalTwoFactorAuthentcation />;
+					case QUARANTINE:
+						return <QuarantineList />;
 					case DOMAINS:
 						return <DomainList />;
 					case GLOBAL_DELEGATES:

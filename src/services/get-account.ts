@@ -8,6 +8,7 @@ import { soapFetch } from '@zextras/carbonio-shell-ui';
 
 export const getAccountRequest = async (
 	id: string,
+	name: string,
 	applyCos: number,
 	attrs?: Array<string>
 ): Promise<any> => {
@@ -15,8 +16,8 @@ export const getAccountRequest = async (
 		_jsns: 'urn:zimbraAdmin',
 		account: [
 			{
-				_content: id,
-				by: 'id'
+				_content: id || name,
+				by: id ? 'id' : 'name'
 			}
 		],
 		applyCos

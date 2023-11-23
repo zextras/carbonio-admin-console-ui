@@ -1122,6 +1122,39 @@ export const volumeConfigHeader = (
 	}
 ];
 
+export const MessageTableHeaders = (t: TFunction): Array<object> => [
+	{
+		id: 'date_time',
+		label: t('label.date_time', 'Date & Time'),
+		bold: true,
+		width: '15%'
+	},
+	{
+		id: 'sender',
+		label: t('label.sender', 'Sender'),
+		bold: true,
+		width: '25%'
+	},
+	{
+		id: 'subject',
+		label: t('label.subject', 'Subject'),
+		bold: true,
+		width: '25%'
+	},
+	{
+		id: 'score',
+		label: t('label.score', 'Score'),
+		bold: true,
+		width: '10%'
+	},
+	{
+		id: 'reason',
+		label: t('label.reason', 'Reason'),
+		bold: true,
+		width: '25%'
+	}
+];
+
 export const headerAdvanced = (
 	t: TFunction
 ): Array<{
@@ -2177,3 +2210,5 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 		keyToGet: 'Smtp'
 	}
 ];
+
+export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);

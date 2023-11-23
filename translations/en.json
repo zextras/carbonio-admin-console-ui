@@ -190,6 +190,11 @@
         "who_will_be_delegates": "Who will be the delegates?",
         "your_available_aliases": "Your Available Aliases"
     },
+    "action": {
+        "click_open": "Click to open",
+        "click_preview": "Click to preview",
+        "mark_as_non_spam": "Not Spam"
+    },
     "backup": {
         "advanced": "Advanced",
         "append_metadata_instead_of_rewrite_faster_but_dangerous": "Append metadata instead of rewrite (faster but dangerous)",
@@ -844,6 +849,8 @@
         "allow_unsecure": "Allow Unsecure",
         "allowed": "Allowed",
         "allowed_sending_addresses": "Addresses allowed for sending",
+        "always_allow_address": "Always allow from <strong>{{values}}</strong>",
+        "always_allow_domain": "Always allow from <strong>{{values}}</strong> domain",
         "always_compose_in_new_window": "Always compose in new window",
         "always_compose_mail_using": "Always compose mail using",
         "always_send_read_receipt": "Always send a read receipt",
@@ -864,6 +871,10 @@
         "are_you_sure_you_want_to_leave_without_saving_he_changes": "Are you sure you want to leave without saving he changes?",
         "arrival_time": "Arrival Time",
         "ask_me": "Ask me",
+        "attachement_unknown": "Unknown <{{mimeType}}>",
+        "attachment": "Attachment",
+        "attachment_plural": "attachments",
+        "attachments_disclaimer": "You are viewing an attached message. The authenticity of the attached messages can not be verified.",
         "attribute": "Attribute",
         "auth_method": "Auth Method",
         "authentication": "Authentication",
@@ -872,6 +883,7 @@
         "auto_accept": "Auto-Accept",
         "auto_accept_always": "Always automatically accept if the user is available",
         "auto_accept_auto_decline_on_conflict": "Automatic acceptance if available, automatic rejection in case of conflict",
+        "auto_clean_up": "AUTO CLEAN-UP",
         "auto_negation": "Auto Decline",
         "auto_refuse": "Auto Deny",
         "automatically_accept": "Automatically accept",
@@ -1016,6 +1028,7 @@
         "date": "Date",
         "date_and_hour": "Date & Hour",
         "date_creation": "Data Creation",
+        "date_time": "Date & Time",
         "date_time_picker": "Date and Time Picker",
         "days": "Days",
         "days_hours_minutes_sec": "Days / Hours / Minutes / Sec",
@@ -1076,6 +1089,7 @@
         "deleting_resource_name": "You are deleting {{name}}",
         "deletion_date": "Deletion Date",
         "deligated_admin_help_url": "Delegated Admin Help URL",
+        "deliver": "DELIVER",
         "description": "Description",
         "destination": "Destination",
         "destination_account": "Destination Account",
@@ -1124,6 +1138,7 @@
         "dont_save_it": "Don't save it",
         "download": "DOWNLOAD",
         "download_pdf": "DOWNLOAD PDF",
+        "download_plural": "",
         "download_quota_Report": "Download Quota Report",
         "draft_auto_save_interval": "Draft auto save interval",
         "duplicate": "Duplicate",
@@ -1177,6 +1192,9 @@
         "external_server_address": "External Server Address",
         "external_server_needs_authentication": "External Server needs authentication",
         "external_volume_edited": "{{message}}",
+        "extra_window": {
+            "save_to_files_disabled": "Files’ attachments saving is available only from the main tab"
+        },
         "failed": "Failed",
         "fall_back_to_local_msg": "Try local password management in case of failure with other methods",
         "false": "False",
@@ -1196,6 +1214,7 @@
         "forwarding": "Forwarding",
         "found_check_the_text_and_try_again": "Not found - check the text and try again",
         "frequency_value_also_updated": "The GAL Frequency value has been updated",
+        "from": "From",
         "from_domain": "FromDomain",
         "gal": "GAL",
         "gal_folder_name": "GAL Folder Name",
@@ -1266,6 +1285,7 @@
         "internal": "Internal",
         "internal_users_only": "Internal Users only",
         "interval": "Interval",
+        "invalid_destination": "This node is not a valid destination",
         "invalid_email_address": "Invalid email address",
         "invites": "Invites",
         "ip": "IP",
@@ -1365,6 +1385,7 @@
         "members": "Members",
         "members_only": "Members only",
         "message": "Message",
+        "messages": "Messages",
         "metadata_space": "Metadata Space",
         "migrate": "Migrate",
         "min_Threshold": "Min Threshold",
@@ -1500,6 +1521,7 @@
         "public_service_port": "Public Service Port",
         "public_service_protocol": "Public Service Protocol",
         "purge": "Purge",
+        "quarantine": "Quarantine",
         "quarantined": "Quarantined",
         "query_is_not_valid": "Query is not valid",
         "queue": "Queue",
@@ -1549,6 +1571,7 @@
         "restore_external_data_source": "Restore External Data Sources",
         "restore_select_account_row_1": "Through this tool, you'll be able to restore an entire account from the backup into a new account.",
         "restore_select_account_row_2": "<bold>Note</bold> that all the mails, appointments, contacts, and settings of the account will be restored, as they were at the chosen timestamp.",
+        "retention_period": "Retention Period (value)",
         "retention_policy": "Retention Policy",
         "rights": "Rights",
         "rights_access_control_lists": "Rights  (Access Control Lists)",
@@ -1573,9 +1596,11 @@
         "save_it_only_in_sender_folder": "Save it in {{email}} and the Delegate`s folder",
         "save_mails_to": "Save Mails to",
         "save_the_changes": "Save the changes",
+        "save_to_files": "Save to Files",
         "save_to_sent_folder": "Save to Sent Folder",
         "schedule_policy": "Set Policy",
         "scheduled": "Scheduled",
+        "score": "Score",
         "search": "Search",
         "search_a_signature": "Search for a signature",
         "search_an_account": "Search for an account",
@@ -1606,6 +1631,7 @@
         "select_an_attribute_to_show_its_value": "Select an Attribute to show its value",
         "select_an_external_volume": "Select an External Volume",
         "select_attribute_to_show_its_value": "Select an Attribute to show its value",
+        "select_folder": "Select folder",
         "selected_empty_bucket": "You haven’t selected a bucket. You can start typing in the field above to start viewing them.",
         "send_invite_to": "Send Invite to",
         "send_new_members_notification_for_share_assigned_to_this_group": "Send to new members a notification for the share/delegation assigned to this group",
@@ -1639,6 +1665,8 @@
         "share_message_to_new_member": "Share message to new members",
         "sharing": "SHARING",
         "sharing_options": "Sharing Options",
+        "show_all": "Show all",
+        "show_quoted_text": "Show quoted text",
         "show_reminder": "Show Reminder",
         "show_time_zone_list_in_appointment_view": "Show time zone list in appointment view",
         "showing": "Showing",
@@ -1679,6 +1707,7 @@
         "storage_primarybar_tooltip": "View your <bold>server status</bold>, your <bold>volumes</bold> and <bold>HSM policies</bold>. You’ll also be able to <bold>connect buckets</bold>.",
         "storage_type": "Storage Type",
         "storages": "Storages",
+        "subject": "Subject",
         "subject_name_cname": "Subject Name (Canonical Name record - CNAME)",
         "subject_name_fqdn": "Subject Alt Name (Fully Qualified Domain Name - FQDN)",
         "subscription": "Subscription",
@@ -1710,6 +1739,7 @@
         "title": "Title",
         "title_and_copyrights_information": "Title & Copyrights Information",
         "title_theme_note": "The title is the name that will appear on the browser tab",
+        "to": "To",
         "to_domain": "ToDomain",
         "total_acc_rights_with_delete_distribution_list_helper_text": "This list has <bold>{{totalAccRights}}</bold> shared accounts. <br /> If you delete it, the shares will be lost.",
         "true": "True",
@@ -1770,6 +1800,7 @@
         "verify_connector_verified": " VERIFIED",
         "verify_error": "{{name}}",
         "view": "This is a view",
+        "view_images": "VIEW IMAGES",
         "view_mail": "VIEW MAIL",
         "viewed_name": "Viewed Name (Auto-fill)",
         "viewed_name_auto_fill": "Viewed Name (Auto-fill)",
@@ -1904,10 +1935,21 @@
         "add_here_any_blocked_extension": "Add here any Blocked Extension"
     },
     "message": {
+        "external_images_blocked": "External images have been blocked to protect you against potential spam",
         "snackbar": {
+            "all_att_saved": "Attachments successfully saved in the selected folder",
+            "att_err": "There seems to be a problem when saving, please try again",
+            "att_saved": "Attachment saved in the selected folder",
             "share": {
                 "accepted": "You have accepted the share request"
-            }
+            },
+            "some_att_fails": "There seems to be a problem when saving some files, please try again"
+        }
+    },
+    "messages": {
+        "no_content": "This message has no text content",
+        "snackbar": {
+            "marked_as_spam": "You’ve marked this e-mail as Spam"
         }
     },
     "modal": {
@@ -2151,6 +2193,28 @@
         "full_error_sub_1": "We all make mistakes but it's how you deal with them that changes everything! We want to learn from our errors so let us know how we can fix them",
         "send_full_error_data": "Send full error data",
         "survey_feedback_sub_1": "Don't worry, surveys will be quick, easy and super useful to us to understand how we're going."
+    },
+    "quarantine": {
+        "attachment_deleted": "Attachment deleted",
+        "create_quarantine": "CREATE A QUARANTINE ACCOUNT",
+        "delete_and_recrate_quarantine_account_title": "Delete and re-create quarantine account",
+        "delete_and_recrate_quarantine_account_warning": "Are you sure you want to delete and re-create quarantine account?",
+        "delete_and_recreate_quarantine": "DELETE AND RE-CREATE QUARANTINE ACCOUNT",
+        "delete_message": "Delete message",
+        "delete_msg_warning": "Are you sure you want to delete message?",
+        "deliver": "DELIVER",
+        "destroy_account_recreate_button": "YES, DELETE AND RE-CREATE IT",
+        "hide_source": "Hide source",
+        "message_deleted": "Message deleted",
+        "message_delivered": "Message delivered",
+        "not_quarantine_account": "There is not quarantine account in any of the domains, yet. Do you want to create a system quarantine account?",
+        "quarantine": "Quarantine",
+        "quarantine_account": "Quarantine Account",
+        "quarantine_messages": "Quarantined Messages",
+        "show_images": "Show Images",
+        "show_source": "Show source",
+        "to_make_changes_restart_the_MTA": "To make the changes effective, please restart the MTA.",
+        "yes_delete_message": "YES, DELETE"
     },
     "reminder": {
         "minute": "{{count}} minute",

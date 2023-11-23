@@ -159,7 +159,7 @@ const ManageDelegates: FC = () => {
 	);
 
 	const getAccountSpecificDetail = useCallback((id): void => {
-		getAccountRequest(id, 0).then((res: any) => {
+		getAccountRequest(id, '', 0).then((res: any) => {
 			const accountObj: any = {};
 			// eslint-disable-next-line array-callback-return
 			res?.account?.[0]?.a?.forEach((ele: any) => {
@@ -201,7 +201,7 @@ const ManageDelegates: FC = () => {
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
-			getAccountRequest(id, 1)
+			getAccountRequest(id, '', 1)
 				.then((data: any) => {
 					const obj: any = {};
 					// eslint-disable-next-line array-callback-return
