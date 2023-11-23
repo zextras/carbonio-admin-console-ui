@@ -16,7 +16,6 @@ import {
 	Divider,
 	SnackbarManagerContext,
 	Modal,
-	Select,
 	Table,
 	IconButton,
 	Padding,
@@ -1117,19 +1116,18 @@ const QuarantineList: FC = () => {
 												orientation="horizontal"
 												width="20%"
 											>
-												<Select
-													items={timeItems}
-													label="Interval"
-													onChange={onChange}
-													showCheckbox={false}
-													selection={
+												<Input
+													label={t('label.interval', 'Interval')}
+													backgroundColor="gray5"
+													value={
 														zimbraMailMessageLifetimeType === ''
-															? timeItems[-1]
+															? ''
 															: timeItems.find(
 																	// eslint-disable-next-line max-len
 																	(item: any) => item.value === zimbraMailMessageLifetimeType
-															  )
+															  ).label
 													}
+													readOnly
 												/>
 											</Container>
 										</ListRow>
