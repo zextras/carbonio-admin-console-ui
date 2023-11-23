@@ -6,27 +6,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useState, useMemo } from 'react';
+
 import {
 	Container,
 	Row,
 	Text,
 	Divider,
-	Switch,
 	Padding,
 	Button,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import _, { isEqual, reduce, find } from 'lodash';
-import { useCosStore } from '../../store/cos/store';
-import { modifyCos } from '../../services/modify-cos-service';
-import { RouteLeavingGuard } from '../ui-extras/nav-guard';
-import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useTranslation } from 'react-i18next';
+
 import { Features } from './features';
-import { getCoreAttributes } from '../../services/get-core-attributes';
 import { COS, MOBILE_CALENDAR_FEATURE_SYNC, MOBILE_CONTACT_FEATURE_SYNC } from '../../constants';
+import { getCoreAttributes } from '../../services/get-core-attributes';
+import { modifyCos } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 
 const CosFeatures: FC = () => {
 	const [t] = useTranslation();
@@ -43,10 +44,7 @@ const CosFeatures: FC = () => {
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return false;
-		}
-		return true;
+		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const setSwitchOptionValue = useCallback(
@@ -84,7 +82,8 @@ const CosFeatures: FC = () => {
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true

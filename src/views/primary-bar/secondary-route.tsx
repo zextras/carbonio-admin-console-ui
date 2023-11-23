@@ -5,9 +5,11 @@
  */
 
 import React, { FC, useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, SnackbarManagerContext, IconButton } from '@zextras/carbonio-design-system';
 import { pushHistory } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
+
 import { SECONDARY_ROUTE } from '../../constants';
 
 const SecondaryRouteIconView: FC = () => {

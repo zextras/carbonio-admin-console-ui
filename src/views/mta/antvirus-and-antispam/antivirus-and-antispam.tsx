@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,12 +19,10 @@ import {
 	Table,
 	Modal
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
 import { isEqual, find } from 'lodash';
-import ListRow from '../../list/list-row';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import { Trans, useTranslation } from 'react-i18next';
+
+import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
 import {
 	CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
 	D_DISCARD,
@@ -43,11 +43,13 @@ import {
 	CONFIG,
 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 } from '../../../constants';
-import { useConfigStore } from '../../../store/config/store';
-import { MtaAntivirusAndAntispam, TRow } from '../../../../types';
 import { modifyConfig } from '../../../services/modify-config';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
+import { useConfigStore } from '../../../store/config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import ListRow from '../../list/list-row';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
@@ -74,10 +76,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
@@ -345,6 +344,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 
 	const [updateMesurementUnit, setUpdateMesurementUnit] = useState(intervalOptions[2]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			const zimbraSpamSubjectTag = configInformation.find(

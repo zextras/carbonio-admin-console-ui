@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -14,27 +16,27 @@ import {
 	Table,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { debounce } from 'lodash';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	postSoapFetchRequest,
 	useUserSettings
 } from '@zextras/carbonio-shell-ui';
-import { getCosList } from '../../../services/search-cos-service';
-import { MAX_COS_DISPLAY, TRUE } from '../../../constants';
-import DropDownInput from '../../components/dropDownInput';
-import { CosMaxAccountValues } from '../../../../types/domain';
-import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import { debounce } from 'lodash';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
 import { Attribute } from '../../../../types/attribute';
-import { useDomainStore } from '../../../store/domain/store';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { copyCos } from '../../../services/copy-cos-service';
 import { Cos } from '../../../../types/cos';
+import { CosMaxAccountValues } from '../../../../types/domain';
+import { MAX_COS_DISPLAY, TRUE } from '../../../constants';
+import { copyCos } from '../../../services/copy-cos-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { getCosList } from '../../../services/search-cos-service';
+import { useDomainStore } from '../../../store/domain/store';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
+import DropDownInput from '../../components/dropDownInput';
 import ListRow from '../../list/list-row';
 
 const SelectItem = styled(Row)``;
@@ -144,6 +146,7 @@ const DomainCosLink: FC<{
 			} = {};
 			const attributes: Attribute[] = [];
 			body.id = domainId;
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			body._jsns = 'urn:zimbraAdmin';
 			const isOverride = cosMaxAccountList.some((item) => item.id === cId);
 			if (isOverride) {
@@ -182,6 +185,7 @@ const DomainCosLink: FC<{
 					createSnackbar({
 						key: 'success',
 						type: 'success',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -199,7 +203,8 @@ const DomainCosLink: FC<{
 						type: 'error',
 						label: error?.message
 							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true

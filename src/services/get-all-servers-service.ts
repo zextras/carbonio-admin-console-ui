@@ -8,6 +8,7 @@ import { soapFetch } from '@zextras/carbonio-shell-ui';
 
 export const getAllServers = async (): Promise<any> =>
 	soapFetch(`GetAllServers`, {
+		// eslint-disable-next-line sonarjs/no-duplicate-string
 		_jsns: 'urn:zimbraAdmin',
 		attrs: 'description,zimbraServiceHostname,zimbraId'
 	});

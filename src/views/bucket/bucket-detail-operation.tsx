@@ -4,15 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useState } from 'react';
+
+import { Container, ContainerProps } from '@zextras/carbonio-design-system';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
-import { Container, ContainerProps } from '@zextras/carbonio-design-system';
-import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
+
 import BucketDetailPanel from './bucket-detail-panel';
 import ServersDetailPanel from './global-servers/server-detail-panel';
-import VolumesDetailPanel from './server-specifics/volume/volumes-list';
 import HSMsettingPanel from './hsm/hsm-setting-panel';
 import { VolumeContext } from './server-specifics/volume/create-volume/volume-context';
+import VolumesDetailPanel from './server-specifics/volume/volumes-list';
+import { BUCKET_LIST, DATA_VOLUMES, HSM_SETTINGS, SERVERS_LIST } from '../../constants';
 
 interface ContainerExtendProps extends ContainerProps {
 	isPrimaryBarExpanded?: boolean;

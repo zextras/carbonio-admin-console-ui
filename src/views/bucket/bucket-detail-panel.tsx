@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Padding,
@@ -17,22 +18,22 @@ import {
 	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-
+import { TFunction } from 'i18next';
+import { filter } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { filter } from 'lodash';
-import { TFunction } from 'i18next';
-import logo from '../../assets/ninja_robo.svg';
-import NewBucket from './new-bucket';
+
 import BucketDeleteModel from './delete-bucket-model';
-import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
-import ListRow from '../list/list-row';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import NewBucket from './new-bucket';
 import { objectType } from '../../../types';
+import logo from '../../assets/ninja_robo.svg';
+import { fetchSoap } from '../../services/bucket-service';
+import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ModalOverlay from '../components/ModalOverlay';
+import ListRow from '../list/list-row';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -77,6 +78,7 @@ const BucketListTable: FC<{
 							onClick={(): void => {
 								onClick(i);
 							}}
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
 							<Text size="small" weight="regular">

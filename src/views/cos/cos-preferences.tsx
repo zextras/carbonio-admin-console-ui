@@ -6,6 +6,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Divider,
@@ -18,8 +19,13 @@ import {
 	SnackbarManagerContext,
 	Button
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { isEqual, find } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
+import { COS } from '../../constants';
+import { modifyCos } from '../../services/modify-cos-service';
+import { useCosStore } from '../../store/cos/store';
+import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import {
 	appointmentReminder,
@@ -28,10 +34,6 @@ import {
 	timeZoneList,
 	localeList
 } from '../utility/utils';
-import { useCosStore } from '../../store/cos/store';
-import { modifyCos } from '../../services/modify-cos-service';
-import { useRightsStore, Right, Rights } from '../../store/rights/store';
-import { COS } from '../../constants';
 
 const CosPreferences: FC = () => {
 	const [t] = useTranslation();
@@ -45,10 +47,7 @@ const CosPreferences: FC = () => {
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return false;
-		}
-		return true;
+		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const [cosPreferences, setCosPreferences] = useState<any>({
@@ -101,6 +100,7 @@ const CosPreferences: FC = () => {
 		() => [
 			{ label: `${t('label.days', 'Days')}`, value: 'd' },
 			{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			{ label: `${t('label.minutes', 'Minutes')}`, value: 'm' },
 			{ label: `${t('label.seconds', 'Seconds')}`, value: 's' }
 		],
@@ -309,6 +309,7 @@ const CosPreferences: FC = () => {
 	);
 
 	const setInitalValues = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(obj: any): void => {
 			if (obj) {
 				setValue(
@@ -473,6 +474,7 @@ const CosPreferences: FC = () => {
 		[setValue]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!cosInformation && cosInformation.length > 0) {
 			const obj: any = {};

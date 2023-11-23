@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useCallback, useMemo, useContext, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -20,23 +21,24 @@ import {
 	Modal,
 	Padding
 } from '@zextras/carbonio-design-system';
+import { debounce, map } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
-import { debounce, head, map } from 'lodash';
 import styled from 'styled-components';
-import { useDomainStore } from '../../../../../store/domain/store';
-import { AccountContext } from '../account-context';
-import { localeList, AccountStatus } from '../../../../utility/utils';
-import ManageAliases from '../../../../components/manageAliases';
-import { modifyAccountRequest } from '../../../../../services/modify-account';
-import { AccountType } from '../account-types/account-types';
-import InheritedSelect from './inherited-components/inherited-select';
-import { getDomainList } from '../../../../../services/search-domain-service';
-import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
-import { objectType, Attribute } from '../../../../../../types';
-import DropDownInput from '../../../../components/dropDownInput';
-import CustomChip from '../../../../components/customChip';
-import Textarea from '../../../../components/textarea';
+
 import InheritedInput from './inherited-components/inherited-input';
+import InheritedSelect from './inherited-components/inherited-select';
+import { objectType, Attribute } from '../../../../../../types';
+import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
+import { modifyAccountRequest } from '../../../../../services/modify-account';
+import { getDomainList } from '../../../../../services/search-domain-service';
+import { useDomainStore } from '../../../../../store/domain/store';
+import CustomChip from '../../../../components/customChip';
+import DropDownInput from '../../../../components/dropDownInput';
+import ManageAliases from '../../../../components/manageAliases';
+import Textarea from '../../../../components/textarea';
+import { localeList, AccountStatus } from '../../../../utility/utils';
+import { AccountContext } from '../account-context';
+import { AccountType } from '../account-types/account-types';
 
 const SelectItem = styled(Row)``;
 
@@ -405,7 +407,7 @@ const EditAccountGeneralSection: FC = () => {
 
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.advance_edit_viewed_name', 'Viewed Name')}
+						label={t('label.advance_edit_display_name', 'Display Name')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.displayName}
 						value={accountDetail?.displayName}
@@ -454,7 +456,9 @@ const EditAccountGeneralSection: FC = () => {
 								<Tooltip
 									placement="top"
 									label={t(
+										// eslint-disable-next-line sonarjs/no-duplicate-string
 										'label.try_local_password_management_ldap',
+										// eslint-disable-next-line sonarjs/no-duplicate-string
 										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
 									)}
 								>

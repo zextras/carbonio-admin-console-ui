@@ -5,9 +5,11 @@
  */
 
 import React, { FC } from 'react';
+
 import { Container } from '@zextras/carbonio-design-system';
-import ListRow from '../list/list-row';
+
 import NotificationView from '../app/shared/notification-view';
+import ListRow from '../list/list-row';
 
 const NotificationListView: FC = () => (
 	<Container background="gray6" height="auto" padding={{ top: 'large' }}>

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,11 +18,12 @@ import {
 	TabBar
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import ListRow from '../../list/list-row';
-import { getAllRights, isValidHttpsUrl } from '../../utility/utils';
+
 import { themeConfigStore } from '../../../../types/domain';
 import { CONFIG } from '../../../constants';
 import { Right, useRightsStore } from '../../../store/rights/store';
+import ListRow from '../../list/list-row';
+import { getAllRights, isValidHttpsUrl } from '../../utility/utils';
 
 const HttpsErrorMessage: FC = () => {
 	const [t] = useTranslation();
@@ -474,7 +476,12 @@ export const ThemeConfigs: FC<{
 												defaults="<bold>Light</bold> Mode"
 												components={{ bold: <strong /> }}
 											/>{' '}
-											{t('label.logo_for_login_page', 'Logo for Login Page')}
+											{t(
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'label.logo_for_login_page',
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'Logo for Login Page'
+											)}
 										</Text>
 									</Container>
 									<Container
@@ -546,7 +553,12 @@ export const ThemeConfigs: FC<{
 												defaults="<bold>Light</bold> Mode"
 												components={{ bold: <strong /> }}
 											/>{' '}
-											{t('label.logo_for_webapp', 'Logo for WebApp')}
+											{t(
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'label.logo_for_webapp',
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'Logo for WebApp'
+											)}
 										</Text>
 									</Container>
 									<Container
@@ -671,7 +683,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
@@ -688,7 +700,12 @@ export const ThemeConfigs: FC<{
 												defaults="<bold>Light</bold> Mode"
 												components={{ bold: <strong /> }}
 											/>{' '}
-											{t('label.background_login_page', 'Background Login Page')}
+											{t(
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'label.background_login_page',
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'Background Login Page'
+											)}
 										</Text>
 									</Container>
 									<Container
@@ -1104,7 +1121,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>

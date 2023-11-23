@@ -5,12 +5,14 @@
  */
 
 import React, { FC, useCallback, useContext, useMemo, useState } from 'react';
+
 import { Container, SnackbarManagerContext } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+
+import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreAccountWizard from './restore-delete-account-wizard';
 import { doRestoreDeleteAccount } from '../../../../services/restore-delete-account-service';
-import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import { useDomainStore } from '../../../../store/domain/store';
 
 const RestoreDeleteAccount: FC = () => {

@@ -5,7 +5,6 @@
  */
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
-import { ASC } from '../constants';
 
 export const getQuotaUsage = async (
 	domainName: string,

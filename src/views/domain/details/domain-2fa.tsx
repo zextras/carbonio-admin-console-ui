@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Text,
 	Container,
@@ -13,17 +14,17 @@ import {
 	Divider,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { differenceWith, isEqual, map, some } from 'lodash';
-import { TFunction } from 'i18next';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import { TwoFactorAuthencationConfig } from '../two-factor-authentication/2fa-config';
-import { list2faPolicies } from '../../../services/list-2fa-policies';
+import { useTranslation } from 'react-i18next';
+
 import { TwoFactorAuthPolicyValues } from '../../../../types';
-import { TwoFactorPolicyArray, isValidIpRange } from '../../utility/utils';
+import { OK } from '../../../constants';
+import { list2faPolicies } from '../../../services/list-2fa-policies';
 import { set2faPolicies } from '../../../services/set-2fa-policies';
 import { useDomainStore } from '../../../store/domain/store';
-import { OK } from '../../../constants';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { TwoFactorPolicyArray, isValidIpRange } from '../../utility/utils';
+import { TwoFactorAuthencationConfig } from '../two-factor-authentication/2fa-config';
 
 const DomainTwoFactorAuthentication: FC = () => {
 	const [t] = useTranslation();
@@ -51,7 +52,8 @@ const DomainTwoFactorAuthentication: FC = () => {
 					type: 'error',
 					label: error
 						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -69,6 +71,7 @@ const DomainTwoFactorAuthentication: FC = () => {
 		setIsDirty(dif.length > 0);
 	}, [arrPolicies, arrPoliciesToModify]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleOnSave = (): void => {
 		const dif = differenceWith(arrPoliciesToModify, arrPolicies, isEqual);
 

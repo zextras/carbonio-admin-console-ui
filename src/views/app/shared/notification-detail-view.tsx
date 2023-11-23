@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
+
 import { Container, Text, Row, IconButton, Divider, Input } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import ListRow from '../../list/list-row';
-import Displayer from '../../components/displayer';
+import { useTranslation } from 'react-i18next';
+
 import { useStickyBarStore } from '../../../store/sticky-bar/store';
+import Displayer from '../../components/displayer';
+import ListRow from '../../list/list-row';
 
 const NotificationDetail: FC<{
 	notification: any;

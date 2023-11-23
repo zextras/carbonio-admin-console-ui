@@ -27,14 +27,14 @@ import {
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
-import logo from '../../../assets/gardian.svg';
-import { GENERAL_SETTINGS } from '../../../constants';
-import { getDomainList } from '../../../services/search-domain-service';
-import { useDomainStore } from '../../../store/domain/store';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import TrackNumberPerPage from '../../app/shared/track-number-per-page';
-import Paging from '../../components/paging';
+import logo from '../../assets/gardian.svg';
+import { GENERAL_INFORMATION } from '../../constants';
+import { getCosList } from '../../services/search-cos-service';
+import { useCosStore } from '../../store/cos/store';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import TrackNumberPerPage from '../app/shared/track-number-per-page';
+import Paging from '../components/paging';
 
 type StatusItem = {
 	color: string;
@@ -49,38 +49,37 @@ type StatusTypes = {
 	pending: StatusItem;
 	lockout: StatusItem;
 };
-type ZimbraDomainAttribute = {
+type ZimbraCosAttribute = {
 	n: string;
 	_content: string;
 };
 
-type ZimbraDomain = {
+type ZimbraCos = {
 	name: string;
 	id: string;
-	a: ZimbraDomainAttribute[];
+	a: ZimbraCosAttribute[];
 };
 
-type ZimbraDomainResponse = {
-	domain: ZimbraDomain[];
+type ZimbraCosResponse = {
+	Cos: ZimbraCos[];
 	more: boolean;
 	searchTotal: number;
 	_jsns: string;
 };
 
-type ZimbraDomainEntry = {
+type ZimbraCosEntry = {
 	name: string;
 	id: string;
-	a: ZimbraDomainAttribute[];
-	zimbraDomainType: string;
-	zimbraDomainStatus: 'active' | 'maintenance' | 'locked' | 'closed' | 'pending' | 'lockout';
-	zimbraDomainName: string;
+	a: ZimbraCosAttribute[];
+	zimbraCosType: string;
+	zimbraCosStatus: 'active' | 'maintenance' | 'locked' | 'closed' | 'pending' | 'lockout';
+	zimbraCosName: string;
 	zimbraId: string;
 };
 
-const DomainList: FC = () => {
+const CosList: FC = () => {
 	const [t] = useTranslation();
-	const setDomain = useDomainStore((state) => state.setDomain);
-	const setDomainView = useDomainStore((state) => state.setDomainView);
+	const { setCos, setCosView } = useCosStore();
 	const [limit, setLimit] = useState<number>(10);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -91,7 +90,7 @@ const DomainList: FC = () => {
 		() => [
 			{
 				id: 'name',
-				label: t('label.domain_name', 'Domain Name'),
+				label: t('label.Cos_name', 'Cos Name'),
 				width: '25%',
 				bold: true
 			},
@@ -105,18 +104,18 @@ const DomainList: FC = () => {
 		[t]
 	);
 
-	const [domainList, setDomainList] = useState<
+	const [cosList, setcosList] = useState<
 		{
 			id: string;
 			columns: ReactElement[];
-			iteam: ZimbraDomainEntry;
+			iteam: ZimbraCosEntry;
 			clickable: boolean;
 		}[]
 	>([]);
 	const [offset, setOffset] = useState<number>(0);
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
-	const [totalDomain, setTotalDomain] = useState<number>(0);
+	const [totalCos, setTotalCos] = useState<number>(0);
 
 	const STATUS_COLOR: StatusTypes = useMemo(
 		() => ({
@@ -148,54 +147,54 @@ const DomainList: FC = () => {
 		[t]
 	);
 
-	const onDomainSelect = useCallback(
-		(domain: ZimbraDomainEntry) => {
-			setDomain({
-				a: domain?.a,
-				id: domain?.id,
-				name: domain?.name
+	const onCosSelect = useCallback(
+		(Cos: ZimbraCosEntry) => {
+			setCos({
+				a: Cos?.a,
+				id: Cos?.id,
+				name: Cos?.name
 			});
-			setDomainView(GENERAL_SETTINGS);
+			setCosView(GENERAL_INFORMATION);
 		},
-		[setDomain, setDomainView]
+		[setCos, setCosView]
 	);
 
-	const getAllDomainList = useCallback((): void => {
-		getDomainList(searchQuery, offset, limit)
-			.then((data) => {
-				const domainListResponse: ZimbraDomainResponse = data?.domain || [];
-				if (domainListResponse && Array.isArray(domainListResponse)) {
-					const domainListArr: {
+	const getAllcosList = useCallback((): void => {
+		getCosList(searchQuery, limit, offset)
+			.then((data: any) => {
+				const cosListResponse: ZimbraCosResponse = data?.cos || [];
+				if (cosListResponse && Array.isArray(cosListResponse)) {
+					const cosListArr: {
 						id: string;
 						columns: ReactElement[];
-						iteam: ZimbraDomainEntry;
+						iteam: ZimbraCosEntry;
 						clickable: boolean;
 					}[] = [];
-					setTotalDomain(data.searchTotal || 0);
-					domainListResponse.forEach((item: ZimbraDomainEntry) => {
-						const domainIteam: ZimbraDomainEntry = {
+					setTotalCos(data.searchTotal || 0);
+					cosListResponse.forEach((item: ZimbraCosEntry) => {
+						const CosIteam: ZimbraCosEntry = {
 							name: item.name,
 							id: item.id,
-							zimbraDomainType: '',
-							zimbraDomainStatus: 'active',
-							zimbraDomainName: '',
+							zimbraCosType: '',
+							zimbraCosStatus: 'active',
+							zimbraCosName: '',
 							zimbraId: '',
 							a: item.a
 						};
-						item?.a?.forEach((ele: ZimbraDomainAttribute) => {
-							if (ele.n === 'zimbraDomainType') {
-								domainIteam.zimbraDomainType = ele._content;
-							} else if (ele.n === 'zimbraDomainStatus') {
+						item?.a?.forEach((ele: ZimbraCosAttribute) => {
+							if (ele.n === 'zimbraCosType') {
+								CosIteam.zimbraCosType = ele._content;
+							} else if (ele.n === 'zimbraCosStatus') {
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 								// @ts-ignore
-								domainIteam.zimbraDomainStatus = ele._content;
-							} else if (ele.n === 'zimbraDomainName') {
-								domainIteam.zimbraDomainName = ele._content;
+								CosIteam.zimbraCosStatus = ele._content;
+							} else if (ele.n === 'zimbraCosName') {
+								CosIteam.zimbraCosName = ele._content;
 							} else if (ele.n === 'zimbraId') {
-								domainIteam.zimbraId = ele._content;
+								CosIteam.zimbraId = ele._content;
 							}
 						});
-						domainListArr.push({
+						cosListArr.push({
 							id: item?.id,
 							columns: [
 								<Text
@@ -204,7 +203,7 @@ const DomainList: FC = () => {
 									color="gray0"
 									weight="regular"
 									onClick={(): void => {
-										onDomainSelect(domainIteam);
+										onCosSelect(CosIteam);
 									}}
 								>
 									{item?.name || ' '}
@@ -214,22 +213,22 @@ const DomainList: FC = () => {
 									size="small"
 									weight="light"
 									key={item?.id}
-									color={STATUS_COLOR[domainIteam.zimbraDomainStatus].color}
+									color={STATUS_COLOR[CosIteam.zimbraCosStatus].color}
 									onClick={(): void => {
-										onDomainSelect(domainIteam);
+										onCosSelect(CosIteam);
 									}}
 								>
-									{STATUS_COLOR[domainIteam.zimbraDomainStatus].label}
+									{STATUS_COLOR[CosIteam.zimbraCosStatus].label}
 								</Text>
 							],
-							iteam: domainIteam,
+							iteam: CosIteam,
 							clickable: true
 						});
 					});
-					setDomainList(domainListArr);
+					setcosList(cosListArr);
 				}
 			})
-			.catch((error) => {
+			.catch((error: any) => {
 				createSnackbar({
 					key: 'error',
 					type: 'error',
@@ -242,20 +241,20 @@ const DomainList: FC = () => {
 				});
 				setHasError(true);
 			});
-	}, [STATUS_COLOR, offset, onDomainSelect, searchQuery, limit, t, createSnackbar]);
+	}, [STATUS_COLOR, offset, onCosSelect, searchQuery, limit, t, createSnackbar]);
 	useEffect(() => {
-		getAllDomainList();
-	}, [getAllDomainList]);
+		getAllcosList();
+	}, [getAllcosList]);
 	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const searchDomainList = useCallback(
+	const searchcosList = useCallback(
 		debounce((searchText) => {
 			setSearchQuery(searchText);
 		}, 700),
 		[debounce]
 	);
 	useEffect(() => {
-		searchDomainList(searchString);
-	}, [domainList, offset, searchDomainList, searchString]);
+		searchcosList(searchString);
+	}, [offset, searchcosList, searchString]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -269,7 +268,7 @@ const DomainList: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('domain.domain_list', 'Domains List')}
+								{t('label.Cos_list', 'COS List')}
 							</Text>
 						</Row>
 					</Row>
@@ -297,8 +296,8 @@ const DomainList: FC = () => {
 						>
 							<Container>
 								<Input
-									label={t('label.i_am_looking_for_this_domain', `I'm looking for this domain…`)}
-									disabled={domainList.length === 0 && searchString.length === 0 && !hasError}
+									label={t('label.i_am_looking_for_this_Cos', `I'm looking for this Cos…`)}
+									disabled={cosList.length === 0 && searchString.length === 0 && !hasError}
 									value={searchString}
 									backgroundColor="gray5"
 									onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -318,9 +317,9 @@ const DomainList: FC = () => {
 							height="calc(100vh - 21.25rem)"
 							ref={tableRef}
 						>
-							{domainList.length !== 0 && (
+							{cosList.length !== 0 && (
 								<Table
-									rows={domainList}
+									rows={cosList}
 									headers={headers}
 									showCheckbox={false}
 									multiSelect={false}
@@ -331,7 +330,7 @@ const DomainList: FC = () => {
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
-							{domainList.length === 0 && (
+							{cosList.length === 0 && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -355,8 +354,8 @@ const DomainList: FC = () => {
 									>
 										<Text weight="light" color="#828282" size="large" overflow="break-word">
 											<Trans
-												i18nKey="label.create_domain_list_msg"
-												defaults="You can create a new Domain by clicking on <bold>Create</bold> button on header menu"
+												i18nKey="label.create_Cos_list_msg"
+												defaults="You can create a new Cos by clicking on <bold>Create</bold> button on header menu"
 												components={{ bold: <strong /> }}
 											/>
 										</Text>
@@ -372,7 +371,7 @@ const DomainList: FC = () => {
 							>
 								<Divider />
 							</Row>
-							{domainList.length !== 0 && (
+							{cosList.length !== 0 && (
 								<Container
 									orientation="horizontal"
 									mainAlignment="space-between"
@@ -380,7 +379,7 @@ const DomainList: FC = () => {
 									height="auto"
 								>
 									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
+										<Paging totalItem={totalCos} setOffset={setOffset} pageSize={limit} />
 									</Container>
 									<Container
 										crossAlignment="flex-end"
@@ -400,4 +399,4 @@ const DomainList: FC = () => {
 	);
 };
 
-export default DomainList;
+export default CosList;

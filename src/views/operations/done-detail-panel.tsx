@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -14,17 +15,18 @@ import {
 	Icon,
 	Input
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
+import { find, map } from 'lodash';
 import { useTranslation } from 'react-i18next';
-import { debounce, find, map } from 'lodash';
+import styled from 'styled-components';
+
 import { OperationsTable } from './operations-table';
-import { OperationsDoneHeader } from '../utility/utils';
 import OperationsWizardDetailPanel from './operations-wizard-detail-panel';
+import { getAllDoneOperations } from '../../services/get-all-done-operation';
+import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import { useOperationStore } from '../../store/operation/store';
 import ModalOverlay from '../components/ModalOverlay';
-import { getAllDoneOperations } from '../../services/get-all-done-operation';
 import Paging from '../components/paging';
-import { useMailstoreListStore } from '../../store/mailstore-list/store';
+import { OperationsDoneHeader } from '../utility/utils';
 
 const RelativeContainer = styled(Container)`
 	position: relative;

@@ -4,8 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+
+import DomainList from './domain-list/domain-list';
+import GlobalTheme from './global/global-theme';
+import GlobalTwoFactorAuthentcation from './global/global-two-factor-auth';
+import GlobalDelegates from './global-delegates';
 import {
 	TWO_FACTOR_AUTHENTICATION,
 	DOMAINS,
@@ -13,11 +19,7 @@ import {
 	GLOBAL_DELEGATES,
 	QUARANTINE
 } from '../../constants';
-import GlobalTheme from './global/global-theme';
-import DomainList from './domain-list/domain-list';
 import QuarantineList from '../quarantine/quarantine-list';
-import GlobalTwoFactorAuthentcation from './global/global-two-factor-auth';
-import GlobalDelegates from './global-delegates';
 
 const GlobalOperations: FC = () => {
 	const [t] = useTranslation();

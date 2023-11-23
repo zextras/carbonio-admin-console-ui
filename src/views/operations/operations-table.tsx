@@ -5,12 +5,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo } from 'react';
+
 import { Container, Row, Text, Table, Icon } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import MiliSecondToDate from './functions/miliSecondToDate';
 import { EXCEPTION, FINISHED, STARTED } from '../../constants';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
 
 export const OperationsTable: FC<{
 	operations: Array<any>;
@@ -28,6 +30,7 @@ export const OperationsTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={i}
 						onClick={(): void => {
@@ -56,6 +59,7 @@ export const OperationsTable: FC<{
 						key={i}
 						style={{
 							textAlign: 'left',
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							justifyContent: 'flex-center'
 						}}
 						onClick={(): void => {

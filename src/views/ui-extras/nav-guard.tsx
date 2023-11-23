@@ -5,10 +5,11 @@
  */
 
 import React, { useEffect, useState, FC, useMemo } from 'react';
-import { Location } from 'history';
-import { Prompt, useHistory } from 'react-router-dom';
+
 import { Modal } from '@zextras/carbonio-design-system';
+import { Location } from 'history';
 import { useTranslation } from 'react-i18next';
+import { Prompt, useHistory } from 'react-router-dom';
 
 export const RouteLeavingGuard: FC<{
 	when?: boolean;

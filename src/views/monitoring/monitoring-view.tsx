@@ -5,6 +5,7 @@
  */
 
 import React, { FC } from 'react';
+
 import { Container } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 

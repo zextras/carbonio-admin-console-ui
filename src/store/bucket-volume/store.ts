@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 type BucketVolumeServerNameState = {
@@ -15,7 +15,7 @@ type BucketVolumeServerNameState = {
 	setIsAllocationToggle: (isAllocationToggle: boolean) => void;
 };
 
-export const useBucketVolumeStore = create<BucketVolumeServerNameState>(
+export const useBucketVolumeStore = create<BucketVolumeServerNameState>()(
 	devtools((set) => ({
 		selectedServerName: '',
 		isVolumeAllDetail: [],

@@ -1,10 +1,14 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { TFunction } from 'i18next';
 import { useState } from 'react';
+
+import { TFunction } from 'i18next';
+
+import { TwoFactorPolicy } from '../../../types';
 import {
 	ACTIVE,
 	CLOSED,
@@ -19,7 +23,6 @@ import {
 	SEND_READ_MANAGE_MAILS
 } from '../../constants';
 import { Rights, Right } from '../../store/rights/store';
-import { TwoFactorPolicy } from '../../../types';
 
 export const timeZoneList = (
 	t: TFunction
@@ -2136,6 +2139,7 @@ export const ServicesPassphraseServices = (): Array<{ value: string; label: stri
 export const getRights = (rights: Rights, type: string): Array<Record<string, string>> => {
 	let right: Array<Record<string, string>> = [];
 	const filteredType = rights.filter((item: Right) => item?.type === type);
+	// eslint-disable-next-line sonarjs/no-collapsible-if
 	if (filteredType && filteredType.length > 0) {
 		if (
 			filteredType[0]?.all &&
@@ -2148,10 +2152,8 @@ export const getRights = (rights: Rights, type: string): Array<Record<string, st
 	return right;
 };
 
-export const getAllRights = (rights: Rights, type: string): Right[] => {
-	const right = rights.filter((item: Right) => item?.type === type);
-	return right;
-};
+export const getAllRights = (rights: Rights, type: string): Right[] =>
+	rights.filter((item: Right) => item?.type === type);
 
 export function useLocalStorage<T>(key: string, initialValue: T): any {
 	const [storedValue, setStoredValue] = useState<T>(() => {

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -18,16 +19,17 @@ import {
 	Icon,
 	Popper
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { useDomainStore } from '../../../store/domain/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import ListRow from '../../list/list-row';
-import { isValidLdapBaseDN, isValidLdapBaseUrl } from '../../utility/utils';
-import { CheckAuthConfig } from '../../../services/check-auth-config-service';
+import { useTranslation } from 'react-i18next';
+
 import { Attribute, CreateSnackbarType, objectType } from '../../../../types';
 import { CHECK_OK } from '../../../constants';
+import { CheckAuthConfig } from '../../../services/check-auth-config-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/domain/store';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { isValidLdapBaseDN, isValidLdapBaseUrl } from '../../utility/utils';
 
 const ZimbraAuthMethod = {
 	INTERNAL: 'zimbra',
@@ -105,6 +107,7 @@ const DomainAuthentication: FC = () => {
 		() => [
 			{
 				label: `%n = ${t('label.username_with', 'username with')} @ (${t(
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					'label.example',
 					'example'
 				)} username@domain.tld)`
@@ -161,6 +164,7 @@ const DomainAuthentication: FC = () => {
 
 	const FilterTooltip: FC = useCallback(() => <Tooltip items={FILTER_TOOLTIP} />, [FILTER_TOOLTIP]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: objectType = {};
@@ -212,6 +216,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainInformation, DOMAIN_AUTH_LIST]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthMech !== zimbraAuthMech?.value) {
 				setIsDirty(true);
@@ -220,6 +225,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthMech]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener) {
 				setIsDirty(true);
@@ -237,6 +243,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthFallbackToLocal]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapBindDn !== zimbraAuthLdapBindDn) {
 				setIsDirty(true);
@@ -245,6 +252,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthLdapBindDn]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL) {
 				setIsDirty(true);
@@ -253,6 +261,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthLdapURL]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase) {
 				setIsDirty(true);
@@ -261,6 +270,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthLdapSearchBase]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter) {
 				setIsDirty(true);
@@ -388,7 +398,8 @@ const DomainAuthentication: FC = () => {
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -622,7 +633,8 @@ const DomainAuthentication: FC = () => {
 													<Text size="extrasmall" weight="regular" color="error">
 														{zimbraAuthLdapBindDn
 															? t('label.base_dn_is_not_valid', 'Base DN is not valid')
-															: t('label.required', 'Required')}
+															: // eslint-disable-next-line sonarjs/no-duplicate-string
+															  t('label.required', 'Required')}
 													</Text>
 												</Padding>
 											</Container>

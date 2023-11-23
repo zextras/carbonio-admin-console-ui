@@ -5,8 +5,10 @@
  */
 
 import React, { FC } from 'react';
+
 import { Container } from '@zextras/carbonio-design-system';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
+
 import OperationsDetailOperation from './operations-detail-operation';
 
 const OperationsDetailPanel: FC = () => {

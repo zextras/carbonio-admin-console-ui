@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { debounce, flatMapDeep, filter, isEqual } from 'lodash';
+
 import {
 	Container,
 	Input,
@@ -20,37 +19,39 @@ import {
 	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import moment from 'moment';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
+import { debounce, flatMapDeep, filter } from 'lodash';
+import moment from 'moment';
+import { Trans, useTranslation } from 'react-i18next';
+
+import { AccountContext } from './account-context';
+import AccountDetailView from './account-detail-view';
+import CreateAccount from './create-account/create-account';
+import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
-import { useDomainStore } from '../../../../store/domain/store';
-import Paging from '../../../components/paging';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
-import { getAccountRequest } from '../../../../services/get-account';
 import {
 	getCosGeneralInformation,
 	GetCosResponse,
 	CosA
 } from '../../../../services/cos-general-information-service';
-import EditAccount from './edit-account/edit-account';
+import { fetchSoapData } from '../../../../services/fetch-soap';
+import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getSingatures } from '../../../../services/get-signature-service';
-import AccountDetailView from './account-detail-view';
-import CreateAccount from './create-account/create-account';
-import { AccountContext } from './account-context';
 import { fetchSoap } from '../../../../services/listOTP-service';
-import { fetchSoapData } from '../../../../services/fetch-soap';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import useOutsideClick from '../../../app/hooks/useoutsideclick';
+import { useDomainStore } from '../../../../store/domain/store';
 import { useRightsStore } from '../../../../store/rights/store';
-import ModalOverlay from '../../../components/ModalOverlay';
+import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
+import ModalOverlay from '../../../components/ModalOverlay';
+import Paging from '../../../components/paging';
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -343,6 +344,7 @@ const ManageAccounts: FC = () => {
 		});
 	}, []);
 	const getAccountDetail = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
 			getAccountRequest(id, '', 1)
 				.then((data: any) => {
@@ -390,7 +392,8 @@ const ManageAccounts: FC = () => {
 						type: 'error',
 						label: error?.message
 							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -434,6 +437,7 @@ const ManageAccounts: FC = () => {
 	const getListOtp = useCallback(
 		(id): void => {
 			fetchSoap('zextras', {
+				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxAuth',
 				action: 'list_totp_command',
@@ -592,6 +596,7 @@ const ManageAccounts: FC = () => {
 			getListOtp
 		]
 	);
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
 		const type = 'accounts';

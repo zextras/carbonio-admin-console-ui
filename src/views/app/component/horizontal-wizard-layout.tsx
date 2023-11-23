@@ -6,10 +6,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo } from 'react';
-import { map } from 'lodash';
-import styled from 'styled-components';
+
 import { Button, Icon, Padding, Row, RowProps, Text } from '@zextras/carbonio-design-system';
+import { map } from 'lodash';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
 const StepContainer = styled(Row)``;
 const StepView = styled(Row)``;
@@ -53,20 +54,20 @@ const StepNavigator: FC<{
 		return isDone ? 'secondary' : 'gray1';
 	}, [isActive, isDone]);
 
-	const renderElement = useMemo(() => {
-		if (
-			(currentStepIndex === 0 && (stepIndex === 0 || stepIndex === 1 || stepIndex === 2)) ||
-			(currentStepIndex === steps.length - 1 &&
-				(stepIndex === steps.length - 1 ||
-					stepIndex === steps.length - 2 ||
-					stepIndex === steps.length - 3)) ||
-			currentStepIndex === stepIndex ||
-			currentStepIndex === stepIndex + 1 ||
-			currentStepIndex === stepIndex - 1
-		)
-			return true;
-		return false;
-	}, [currentStepIndex, stepIndex]);
+	const renderElement = useMemo(
+		() =>
+			!!(
+				(currentStepIndex === 0 && (stepIndex === 0 || stepIndex === 1 || stepIndex === 2)) ||
+				(currentStepIndex === steps.length - 1 &&
+					(stepIndex === steps.length - 1 ||
+						stepIndex === steps.length - 2 ||
+						stepIndex === steps.length - 3)) ||
+				currentStepIndex === stepIndex ||
+				currentStepIndex === stepIndex + 1 ||
+				currentStepIndex === stepIndex - 1
+			),
+		[currentStepIndex, stepIndex]
+	);
 
 	return (
 		<RowContainer width={renderElement ? '100%' : '50%'} isActive={isActive}>
@@ -159,8 +160,8 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 					const isDone = stepIndex < currentStepIndex;
 					const isActive = currentStep === step.name;
 
-					const renderElement = (): any => {
-						if (
+					const renderElement = (): any =>
+						!!(
 							(currentStepIndex === 0 && (stepIndex === 0 || stepIndex === 1 || stepIndex === 2)) ||
 							(currentStepIndex === steps.length - 1 &&
 								(stepIndex === steps.length - 1 ||
@@ -169,10 +170,7 @@ export const HorizontalWizardLayout = React.forwardRef<HTMLDivElement, Props>(
 							currentStepIndex === stepIndex ||
 							currentStepIndex === stepIndex + 1 ||
 							currentStepIndex === stepIndex - 1
-						)
-							return true;
-						return false;
-					};
+						);
 
 					return (
 						<StepContainer

@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, IconButton, Text, Row } from '@zextras/carbonio-design-system';
+import { useTranslation } from 'react-i18next';
+
 import { FIRST_PAGE } from '../../constants';
 
 const Paging: FC<{

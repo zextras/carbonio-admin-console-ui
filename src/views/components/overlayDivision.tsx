@@ -5,9 +5,10 @@
  */
 
 import React, { FC } from 'react';
+
 import { Container, Text } from '@zextras/carbonio-design-system';
-import styled, { keyframes } from 'styled-components';
 import { useTranslation } from 'react-i18next';
+import styled, { keyframes } from 'styled-components';
 
 const rotateKeyframes = keyframes`
 from {

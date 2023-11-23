@@ -4,14 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
-import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
 
+import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import { useLocation } from 'react-router-dom';
 import { debounce } from 'lodash';
-import { getDomainList } from '../../services/search-domain-service';
+import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router-dom';
+import styled from 'styled-components';
+
+import GlobalListPanel from './global-list-panel';
+import { DomainResponse } from '../../../types';
 import {
 	ACCOUNTS,
 	ACTIVE_SYNC,
@@ -21,7 +23,6 @@ import {
 	GENERAL_SETTINGS,
 	MAILBOX_QUOTA,
 	MAILING_LIST,
-	ACL_LIST,
 	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
 	RESTORE_ACCOUNT,
@@ -41,21 +42,20 @@ import {
 	GLOBAL_DELEGATES_ROUTE,
 	RESOURCES
 } from '../../constants';
-import { useDomainStore } from '../../store/domain/store';
-import ListPanelItem from '../list/list-panel-item';
-import ListItems from '../list/list-items';
-import { useBackupModuleStore } from '../../store/backup-module/store';
 import MatomoTracker from '../../matomo-tracker';
-import { useGlobalConfigStore } from '../../store/global-config/store';
-import GlobalListPanel from './global-list-panel';
+import { getDomainList } from '../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
+import { useBackupModuleStore } from '../../store/backup-module/store';
+import { useConfigStore } from '../../store/config/store';
+import { useDomainStore } from '../../store/domain/store';
+import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';
-import { getAllRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
-import { DomainResponse } from '../../../types';
-import { useConfigStore } from '../../store/config/store';
+import ListItems from '../list/list-items';
+import ListPanelItem from '../list/list-panel-item';
+import { getAllRights } from '../utility/utils';
 
 const SelectItem = styled(Row)``;
 
@@ -230,6 +230,7 @@ const DomainListPanel: FC = () => {
 		[setDomainView]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (isDomainSelect && domainId) {
 			if (domainView) {

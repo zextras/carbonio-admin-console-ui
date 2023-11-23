@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+
 import {
 	Container,
 	Input,
@@ -16,8 +17,7 @@ import {
 	Text
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
-import { fetchSoap } from '../../services/bucket-service';
+
 import {
 	ALIBABA,
 	AMAZON_WEB_SERVICE_S3,
@@ -29,7 +29,9 @@ import {
 	SUCCESS,
 	V4
 } from '../../constants';
+import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
@@ -47,6 +49,7 @@ const Connection: FC<{
 	const [buttonColor, setButtonColor] = useState<string>('primary');
 	const [icon, setIcon] = useState<string>('ActivityOutline');
 	const [buttonDetail, setButtonDetail] = useState(
+		// eslint-disable-next-line sonarjs/no-duplicate-string
 		t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
 	);
 	const [bucketName, setBucketName] = useState('');
@@ -72,6 +75,7 @@ const Connection: FC<{
 	const [regionSelection, setRegionSelection] = useState<any>(bucketRegions[0]);
 	const bucketType = externalData;
 	const { selectedServerName } = useBucketVolumeStore((state) => state);
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleVerifyConnector = (): any => {
 		if (bucketName && accessKeyData && secretKey) {
 			const storeType = bucketType || bucketTypeData;
