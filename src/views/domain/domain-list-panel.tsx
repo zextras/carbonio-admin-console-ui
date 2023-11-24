@@ -40,7 +40,8 @@ import {
 	GLOBAL_WHITELABEL_SETTINGS,
 	DELEGATES_DOMAIN_ADMINS,
 	GLOBAL_DELEGATES_ROUTE,
-	RESOURCES
+	RESOURCES,
+	DISCLAIMER
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -300,6 +301,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: SAML,
 				name: t('label.saml', 'SAML'),
+				isSelected: isDomainSelect
+			},
+			{
+				id: DISCLAIMER,
+				name: t('label.disclaimer', 'Disclaimer'),
 				isSelected: isDomainSelect
 			}
 		],

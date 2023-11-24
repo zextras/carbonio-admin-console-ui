@@ -1,0 +1,343 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
+import {
+	Container,
+	Button,
+	Row,
+	Padding,
+	Divider,
+	Text,
+	SnackbarManagerContext,
+	Switch,
+	TextArea
+} from '@zextras/carbonio-design-system';
+import { useIntegratedComponent } from '@zextras/carbonio-shell-ui';
+import { isEqual } from 'lodash';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import { DomainDisclaimerType, objectType } from '../../../../types';
+import {
+	FALSE,
+	TRUE,
+	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
+} from '../../../constants';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/domain/store';
+import ListRow from '../../list/list-row';
+
+const EditorWrapper = styled.div`
+	width: 100%;
+	height: 100%;
+	overflow-y: auto;
+	position: relative;
+`;
+
+const DomainDisclaimer: FC = () => {
+	const [t] = useTranslation();
+	const domainInformation = useDomainStore((state) => state.domain?.a);
+	const domainId = useDomainStore((state) => state.domain?.id);
+	const setDomain = useDomainStore((state) => state.setDomain);
+	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [Composer] = useIntegratedComponent('composer');
+	const [defaulRichTextContent, setDefaulRichTextContent] = useState<string>('');
+	const [domainDisclaimerInitialDetail, setDomainDisclaimerInitialDetail] =
+		useState<DomainDisclaimerType>();
+	const [domainDisclaimerDetail, setDomainDisclaimerDetail] = useState<DomainDisclaimerType>();
+	const setInitialValue = useCallback((key: string, value: unknown): void => {
+		setDomainDisclaimerInitialDetail((prev: any) => ({ ...prev, [key]: value }));
+	}, []);
+
+	const setValue = useCallback((key: string, value: unknown): void => {
+		setDomainDisclaimerDetail((prev: any) => ({ ...prev, [key]: value }));
+	}, []);
+
+	const setInitialAndCurrentValue = useCallback(
+		(key, value) => {
+			setInitialValue(key, value);
+			setValue(key, value);
+		},
+		[setInitialValue, setValue]
+	);
+
+	useMemo(() => {
+		if (domainInformation) {
+			const zimbraDomainMandatoryMailSignatureEnabled = domainInformation.filter(
+				(item: Record<string, string>) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
+			);
+			if (
+				zimbraDomainMandatoryMailSignatureEnabled &&
+				zimbraDomainMandatoryMailSignatureEnabled[0]?._content
+			) {
+				setInitialAndCurrentValue(
+					ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+					zimbraDomainMandatoryMailSignatureEnabled[0]?._content === TRUE
+				);
+			} else {
+				setInitialAndCurrentValue(ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED, false);
+			}
+
+			const zimbraAmavisDomainDisclaimerText = domainInformation.filter(
+				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT
+			);
+			if (zimbraAmavisDomainDisclaimerText && zimbraAmavisDomainDisclaimerText[0]?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+					zimbraAmavisDomainDisclaimerText[0]?._content
+				);
+			} else {
+				setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, '');
+			}
+
+			const zimbraAmavisDomainDisclaimerHtml = domainInformation.filter(
+				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML
+			);
+			if (zimbraAmavisDomainDisclaimerHtml && zimbraAmavisDomainDisclaimerHtml[0]?._content) {
+				setInitialAndCurrentValue(
+					ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+					zimbraAmavisDomainDisclaimerHtml[0]?._content
+				);
+				setDefaulRichTextContent(zimbraAmavisDomainDisclaimerHtml[0]?._content);
+			} else {
+				setInitialAndCurrentValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, '');
+				setDefaulRichTextContent('');
+			}
+		}
+	}, [domainInformation, setInitialAndCurrentValue]);
+
+	useEffect(() => {
+		if (domainDisclaimerDetail && !isEqual(domainDisclaimerDetail, domainDisclaimerInitialDetail)) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [domainDisclaimerDetail, domainDisclaimerInitialDetail]);
+
+	const onCancel = useCallback(() => {
+		setDefaulRichTextContent(domainDisclaimerInitialDetail?.zimbraAmavisDomainDisclaimerHTML || '');
+		setDomainDisclaimerDetail(domainDisclaimerInitialDetail);
+	}, [domainDisclaimerInitialDetail]);
+
+	const onSave = useCallback(() => {
+		const body: any = {};
+		const attributes: Array<Record<string, string | undefined>> = [];
+		body.id = domainId;
+		body._jsns = 'urn:zimbraAdmin';
+
+		attributes.push({
+			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+			_content: domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
+		});
+
+		attributes.push({
+			n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
+			_content: domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText
+		});
+
+		attributes.push({
+			n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
+			_content: domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML
+		});
+
+		body.a = attributes;
+		modifyDomain(body)
+			.then((responseData) => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				const domain: objectType = responseData?.domain[0];
+				if (domain) {
+					setDomain(domain);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [
+		createSnackbar,
+		domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML,
+		domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText,
+		domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
+		domainId,
+		setDomain,
+		t
+	]);
+
+	return (
+		<Container background="gray6" mainAlignment="flex-start">
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="center"
+				orientation="horizontal"
+				background="gray6"
+				width="fill"
+				height="56px"
+			>
+				<Row padding={{ horizontal: 'small' }}></Row>
+				<Row takeAvailableSpace mainAlignment="flex-start">
+					<Text size="medium" overflow="ellipsis" weight="bold">
+						{t('label.disclaimer', 'Disclaimer')}
+					</Text>
+				</Row>
+				<Row>
+					{isDirty && (
+						<Container
+							orientation="horizontal"
+							mainAlignment="flex-end"
+							crossAlignment="flex-end"
+							background="gray6"
+						>
+							<Padding right="small">
+								{isDirty && (
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										onClick={onCancel}
+									/>
+								)}
+							</Padding>
+							<Padding right="small">
+								{isDirty && (
+									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+								)}
+							</Padding>
+						</Container>
+					)}
+				</Row>
+			</Row>
+			<ListRow>
+				<Divider />
+			</ListRow>
+
+			<Container
+				padding={{ all: 'extralarge' }}
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				height="calc(100vh - 10.5rem)"
+				style={{ overflow: 'auto' }}
+			>
+				<ListRow>
+					<Container
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{
+							bottom: 'extralarge'
+						}}
+					>
+						<Switch
+							label={t(
+								'label.enable_disclaimers_for_this_domain',
+								'Enable disclaimers for this domain'
+							)}
+							value={domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled}
+							onClick={(): void => {
+								setValue(
+									ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+									!domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled
+								);
+							}}
+						/>
+					</Container>
+					<Container
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{
+							bottom: 'extralarge'
+						}}
+					></Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{
+							bottom: 'extralarge'
+						}}
+					>
+						<Text size="small" weight="bold" color="gray0">
+							{t('label.text_editor', 'Text Editor')}
+						</Text>
+					</Container>
+					<Container
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{
+							bottom: 'extralarge'
+						}}
+					>
+						<Text size="small" weight="bold" color="gray0">
+							{t('label.rich_text_editor', 'Rich Text Editor')}
+						</Text>
+					</Container>
+				</ListRow>
+				<ListRow>
+					<Container
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{
+							bottom: 'extralarge',
+							right: 'extralarge'
+						}}
+					>
+						<TextArea
+							label={''}
+							value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
+							onChange={(event): void => {
+								setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, event.currentTarget.value);
+							}}
+						/>
+					</Container>
+					<Container
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{
+							bottom: 'extralarge'
+						}}
+					>
+						<EditorWrapper>
+							<Composer
+								// eslint-disable-next-line no-use-before-define, @typescript-eslint/ban-ts-comment
+								// @ts-ignore
+								value={defaulRichTextContent}
+								onEditorChange={(ev: any): void => {
+									setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML, ev[1]);
+								}}
+							/>
+						</EditorWrapper>
+					</Container>
+				</ListRow>
+			</Container>
+		</Container>
+	);
+};
+
+export default DomainDisclaimer;

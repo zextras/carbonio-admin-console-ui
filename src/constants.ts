@@ -348,3 +348,9 @@ export const QUEUE = 'queue';
 export const DELEGATES_DOMAIN_ADMINS = 'delegates_domain_admins';
 export const FINISHED = 'Finished';
 export const EXCEPTION = 'Exception';
+export const DISCLAIMER = 'disclaimer';
+export const ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED =
+	'zimbraDomainMandatoryMailSignatureEnabled';
+export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT = 'zimbraAmavisDomainDisclaimerText';
+export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML = 'zimbraAmavisDomainDisclaimerHTML';
+export const ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY = 'zimbraAmavisOutboundDisclaimersOnly';

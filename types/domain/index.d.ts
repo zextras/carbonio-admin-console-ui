@@ -123,3 +123,9 @@ type DomainResponse = {
 	searchTotal: number;
 	_jsns: string;
 };
+
+export type DomainDisclaimerType = {
+	zimbraDomainMandatoryMailSignatureEnabled: boolean;
+	zimbraAmavisDomainDisclaimerText: string;
+	zimbraAmavisDomainDisclaimerHTML: string;
+};
