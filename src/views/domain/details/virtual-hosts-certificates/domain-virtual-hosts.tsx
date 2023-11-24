@@ -13,7 +13,6 @@ import {
 	Divider,
 	Text,
 	Input,
-	Paragraph,
 	Button,
 	Table,
 	SnackbarManagerContext,
@@ -407,6 +406,8 @@ const DomainVirtualHosts: FC = () => {
 					height="calc(100vh - 150px)"
 				>
 					<Padding value="large">
+						{/*
+						// AC-886 Hide sentense until the login page is not able to manage the virtual host.
 						<Padding vertical="small">
 							<Row mainAlignment="flex-start" width="100%">
 								<Paragraph size="medium" color="secondary">
@@ -417,7 +418,7 @@ const DomainVirtualHosts: FC = () => {
 									/>
 								</Paragraph>
 							</Row>
-						</Padding>
+						</Padding> */}
 						<Padding vertical="large" width="100%">
 							<Row mainAlignment="flex-start" width="100%" wrap="nowrap">
 								<Container width="80%">
