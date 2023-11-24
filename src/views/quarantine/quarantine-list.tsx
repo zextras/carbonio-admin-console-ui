@@ -1029,9 +1029,9 @@ const QuarantineList: FC = () => {
 				orientation="column"
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
+				style={{ overflow: 'auto' }}
 				width="100%"
-				height="calc(100vh - 12.5rem)"
-				padding={{ top: 'large' }}
+				height="calc(100vh - 9.375rem)"
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
