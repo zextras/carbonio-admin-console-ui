@@ -150,8 +150,8 @@ const VolumeListTable: FC<{
 						}}
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
-						<Text color={v?.compressBlobs ? 'text' : 'error'} size="small" weight="light">
-							{v?.compressBlobs ? YES : NO}
+						<Text color={v?.compressed ? 'text' : 'error'} size="small" weight="light">
+							{v?.compressed ? YES : NO}
 						</Text>
 					</Row>
 				],
