@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.38](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.37...v0.9.38) (2023-11-28)
+
+
+### Bug Fixes
+
+* ac-885: update attribute wrong way in mta virus defination ([8a99cdf](https://github.com/zextras/carbonio-admin-console-ui/commit/8a99cdfc1c082f4f7f31459157ff081681d0ce1c))
+* ac-886: remove sentense untill login page not manage virutal host ([9a18ba0](https://github.com/zextras/carbonio-admin-console-ui/commit/9a18ba0fa0526ae2ab4e5d60f89882b453506698))
+
 ### [0.9.37](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.36...v0.9.37) (2023-11-23)
 
 ### [0.9.36](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.35...v0.9.36) (2023-11-23)
