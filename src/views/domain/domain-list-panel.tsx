@@ -449,11 +449,23 @@ const DomainListPanel: FC = () => {
 	}, [moduleLicense]);
 
 	const toggleDetailView = (): void => {
-		setIsDetailListExpanded(!isDetailListExpanded);
+		if (isDetailListExpanded) {
+			setIsDetailListExpanded(false);
+			localStorage.setItem('isDetailListExpanded', 'false');
+		} else {
+			setIsDetailListExpanded(true);
+			localStorage.removeItem('isDetailListExpanded');
+		}
 	};
 
 	const toggleManageView = (): void => {
-		setIsManageListExpanded(!isManageListExpanded);
+		if (isManageListExpanded) {
+			setIsManageListExpanded(false);
+			localStorage.setItem('isManageListExpanded', 'false');
+		} else {
+			setIsManageListExpanded(true);
+			localStorage.removeItem('isManageListExpanded');
+		}
 	};
 
 	const customIconDetail = {
@@ -534,6 +546,18 @@ const DomainListPanel: FC = () => {
 			  );
 
 	useEffect(() => {
+		const storedDetailListViewValue = localStorage.getItem('isDetailListExpanded');
+		if (storedDetailListViewValue === 'false') {
+			setIsDetailListExpanded(false);
+		} else {
+			setIsDetailListExpanded(true);
+		}
+		const storedManageListViewValue = localStorage.getItem('isManageListExpanded');
+		if (storedManageListViewValue === 'false') {
+			setIsManageListExpanded(false);
+		} else {
+			setIsManageListExpanded(true);
+		}
 		if (!isQuickAccess) {
 			setDomainView(GLOBAL_DOMAIN_ROUTE);
 		}

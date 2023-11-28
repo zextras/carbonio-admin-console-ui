@@ -176,9 +176,22 @@ const BucketListPanel: FC = () => {
 	}, [isStoreSelect, selectedOperationItem, searchVolumeName, matomo, globalCarbonioSendAnalytics]);
 
 	const toggleServer = (): void => {
-		setIsServerListExpand(!isServerListExpand);
+		if (isServerListExpand) {
+			setIsServerListExpand(false);
+			localStorage.setItem('isServerListExpanded', 'false');
+		} else {
+			setIsServerListExpand(true);
+			localStorage.removeItem('isServerListExpanded');
+		}
 	};
 	const toggleServerSpecific = (): void => {
+		if (isServerSpecificListExpand) {
+			setIsServerSpecificListExpand(false);
+			localStorage.setItem('isServerSpecificListExpanded', 'false');
+		} else {
+			setIsServerSpecificListExpand(true);
+			localStorage.removeItem('isServerSpecificListExpanded');
+		}
 		setIsServerSpecificListExpand(!isServerSpecificListExpand);
 	};
 
@@ -194,6 +207,21 @@ const BucketListPanel: FC = () => {
 			}
 		}
 	};
+
+	useEffect(() => {
+		const storedServerValue = localStorage.getItem('isServerListExpanded');
+		if (storedServerValue === 'false') {
+			setIsServerListExpand(false);
+		} else {
+			setIsServerListExpand(true);
+		}
+		const storedValue = localStorage.getItem('isServerSpecificListExpanded');
+		if (storedValue === 'false') {
+			setIsServerSpecificListExpand(false);
+		} else {
+			setIsServerSpecificListExpand(true);
+		}
+	}, []);
 
 	return (
 		<Container

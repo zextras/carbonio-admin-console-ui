@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -19,9 +19,23 @@ const GlobalListPanel: FC<any> = ({
 	const [isGlobalListExpanded, setIsGlobalListExpanded] = useState(true);
 
 	const toggleGlobalView = (): void => {
-		setIsGlobalListExpanded(!isGlobalListExpanded);
+		if (isGlobalListExpanded) {
+			setIsGlobalListExpanded(false);
+			localStorage.setItem('isGlobalListExpanded', 'false');
+		} else {
+			setIsGlobalListExpanded(true);
+			localStorage.removeItem('isGlobalListExpanded');
+		}
 	};
 
+	useEffect(() => {
+		const storedValue = localStorage.getItem('isGlobalListExpanded');
+		if (storedValue === 'false') {
+			setIsGlobalListExpanded(false);
+		} else {
+			setIsGlobalListExpanded(true);
+		}
+	}, []);
 	return (
 		<>
 			<ListPanelItem

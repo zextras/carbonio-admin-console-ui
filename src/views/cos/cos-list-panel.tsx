@@ -157,7 +157,14 @@ const CosListPanel: FC = () => {
 		}
 	}, [searchCosName, isCosSelect, searchCosCall]);
 
-	const toggleGeneralView = (): void => {
+	const toggleDetailView = (): void => {
+		if (isDetailListExpanded) {
+			setIsDetailListExpanded(false);
+			localStorage.setItem('isCosDetailListExpanded', 'false');
+		} else {
+			setIsDetailListExpanded(true);
+			localStorage.removeItem('isCosDetailListExpanded');
+		}
 		setIsDetailListExpanded(!isDetailListExpanded);
 	};
 
@@ -308,6 +315,15 @@ const CosListPanel: FC = () => {
 					)
 			  }));
 
+	useEffect(() => {
+		const storedValue = localStorage.getItem('isCosDetailListExpanded');
+		if (storedValue === 'false') {
+			setIsDetailListExpanded(false);
+		} else {
+			setIsDetailListExpanded(true);
+		}
+	}, []);
+
 	return (
 		<Container
 			orientation="column"
@@ -352,7 +368,7 @@ const CosListPanel: FC = () => {
 			<ListPanelItem
 				title={t('label.details', 'Details')}
 				isListExpanded={isDetailListExpanded}
-				setToggleView={toggleGeneralView}
+				setToggleView={toggleDetailView}
 			/>
 			{isDetailListExpanded && (
 				<ListItems

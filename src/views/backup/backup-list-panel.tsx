@@ -127,10 +127,23 @@ const BackupListPanel: FC = () => {
 	}, [globalCarbonioSendAnalytics, matomo, selectedOperationItem, selectedServer]);
 
 	const toggleDefaultSettingsView = (): void => {
-		setIsDefaultSettingsExpanded(!isDefaultSettingsExpanded);
+		if (isDefaultSettingsExpanded) {
+			setIsDefaultSettingsExpanded(false);
+			localStorage.setItem('isDefaultSettingsExpanded', 'false');
+		} else {
+			setIsDefaultSettingsExpanded(true);
+			localStorage.removeItem('isDefaultSettingsExpanded');
+		}
 	};
 
 	const toggleServerSpecific = (): void => {
+		if (isServerSpecificsExpanded) {
+			setIsServerSpecificsExpanded(false);
+			localStorage.setItem('isServerSpecificsExpanded', 'false');
+		} else {
+			setIsServerSpecificsExpanded(true);
+			localStorage.removeItem('isServerSpecificsExpanded');
+		}
 		setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
 	};
 
@@ -199,6 +212,21 @@ const BackupListPanel: FC = () => {
 			}
 		}
 	};
+
+	useEffect(() => {
+		const storedValue = localStorage.getItem('isDefaultSettingsExpanded');
+		if (storedValue === 'false') {
+			setIsDefaultSettingsExpanded(false);
+		} else {
+			setIsDefaultSettingsExpanded(true);
+		}
+		const storedServerSpecificsValue = localStorage.getItem('isServerSpecificsExpanded');
+		if (storedServerSpecificsValue === 'false') {
+			setIsServerSpecificsExpanded(false);
+		} else {
+			setIsServerSpecificsExpanded(true);
+		}
+	}, []);
 
 	return (
 		<Container
