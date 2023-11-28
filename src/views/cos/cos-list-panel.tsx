@@ -24,7 +24,8 @@ import {
 	SERVER_POOLS,
 	COS,
 	COS_LIST,
-	CREATE_NEW_COS_ROUTE_ID
+	CREATE_NEW_COS_ROUTE_ID,
+	IS_COS_DETAIL_LIST_EXPANDED
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getCosList } from '../../services/search-cos-service';
@@ -160,10 +161,10 @@ const CosListPanel: FC = () => {
 	const toggleDetailView = (): void => {
 		if (isDetailListExpanded) {
 			setIsDetailListExpanded(false);
-			localStorage.setItem('isCosDetailListExpanded', 'false');
+			localStorage.setItem(IS_COS_DETAIL_LIST_EXPANDED, 'false');
 		} else {
 			setIsDetailListExpanded(true);
-			localStorage.removeItem('isCosDetailListExpanded');
+			localStorage.removeItem(IS_COS_DETAIL_LIST_EXPANDED);
 		}
 		setIsDetailListExpanded(!isDetailListExpanded);
 	};
@@ -316,7 +317,7 @@ const CosListPanel: FC = () => {
 			  }));
 
 	useEffect(() => {
-		const storedValue = localStorage.getItem('isCosDetailListExpanded');
+		const storedValue = localStorage.getItem(IS_COS_DETAIL_LIST_EXPANDED);
 		if (storedValue === 'false') {
 			setIsDetailListExpanded(false);
 		} else {

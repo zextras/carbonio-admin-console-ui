@@ -15,6 +15,8 @@ import {
 	BACKUP_BASIC,
 	BACKUP_ROUTE_ID,
 	CONFIGURATION_BACKUP,
+	IS_DEFAULT_SETTINGS_EXPANDED,
+	IS_SERVER_SPECIFICS_EXPANDED,
 	LIST_SERVER,
 	SERVER,
 	SERVERS_LIST,
@@ -129,20 +131,20 @@ const BackupListPanel: FC = () => {
 	const toggleDefaultSettingsView = (): void => {
 		if (isDefaultSettingsExpanded) {
 			setIsDefaultSettingsExpanded(false);
-			localStorage.setItem('isDefaultSettingsExpanded', 'false');
+			localStorage.setItem(IS_DEFAULT_SETTINGS_EXPANDED, 'false');
 		} else {
 			setIsDefaultSettingsExpanded(true);
-			localStorage.removeItem('isDefaultSettingsExpanded');
+			localStorage.removeItem(IS_DEFAULT_SETTINGS_EXPANDED);
 		}
 	};
 
 	const toggleServerSpecific = (): void => {
 		if (isServerSpecificsExpanded) {
 			setIsServerSpecificsExpanded(false);
-			localStorage.setItem('isServerSpecificsExpanded', 'false');
+			localStorage.setItem(IS_SERVER_SPECIFICS_EXPANDED, 'false');
 		} else {
 			setIsServerSpecificsExpanded(true);
-			localStorage.removeItem('isServerSpecificsExpanded');
+			localStorage.removeItem(IS_SERVER_SPECIFICS_EXPANDED);
 		}
 		setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
 	};
@@ -214,13 +216,13 @@ const BackupListPanel: FC = () => {
 	};
 
 	useEffect(() => {
-		const storedValue = localStorage.getItem('isDefaultSettingsExpanded');
+		const storedValue = localStorage.getItem(IS_DEFAULT_SETTINGS_EXPANDED);
 		if (storedValue === 'false') {
 			setIsDefaultSettingsExpanded(false);
 		} else {
 			setIsDefaultSettingsExpanded(true);
 		}
-		const storedServerSpecificsValue = localStorage.getItem('isServerSpecificsExpanded');
+		const storedServerSpecificsValue = localStorage.getItem(IS_SERVER_SPECIFICS_EXPANDED);
 		if (storedServerSpecificsValue === 'false') {
 			setIsServerSpecificsExpanded(false);
 		} else {

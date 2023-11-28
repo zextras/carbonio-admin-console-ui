@@ -16,7 +16,9 @@ import {
 	SERVERS_LIST,
 	HSM_SETTINGS,
 	DATA_VOLUMES,
-	STORAGES_ROUTE_ID
+	STORAGES_ROUTE_ID,
+	IS_SERVER_LIST_EXPANDED,
+	IS_SERVER_SPECIFIC_LIST_EXPANDED
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
@@ -178,19 +180,19 @@ const BucketListPanel: FC = () => {
 	const toggleServer = (): void => {
 		if (isServerListExpand) {
 			setIsServerListExpand(false);
-			localStorage.setItem('isServerListExpanded', 'false');
+			localStorage.setItem(IS_SERVER_LIST_EXPANDED, 'false');
 		} else {
 			setIsServerListExpand(true);
-			localStorage.removeItem('isServerListExpanded');
+			localStorage.removeItem(IS_SERVER_LIST_EXPANDED);
 		}
 	};
 	const toggleServerSpecific = (): void => {
 		if (isServerSpecificListExpand) {
 			setIsServerSpecificListExpand(false);
-			localStorage.setItem('isServerSpecificListExpanded', 'false');
+			localStorage.setItem(IS_SERVER_SPECIFIC_LIST_EXPANDED, 'false');
 		} else {
 			setIsServerSpecificListExpand(true);
-			localStorage.removeItem('isServerSpecificListExpanded');
+			localStorage.removeItem(IS_SERVER_SPECIFIC_LIST_EXPANDED);
 		}
 		setIsServerSpecificListExpand(!isServerSpecificListExpand);
 	};
@@ -209,13 +211,13 @@ const BucketListPanel: FC = () => {
 	};
 
 	useEffect(() => {
-		const storedServerValue = localStorage.getItem('isServerListExpanded');
+		const storedServerValue = localStorage.getItem(IS_SERVER_LIST_EXPANDED);
 		if (storedServerValue === 'false') {
 			setIsServerListExpand(false);
 		} else {
 			setIsServerListExpand(true);
 		}
-		const storedValue = localStorage.getItem('isServerSpecificListExpanded');
+		const storedValue = localStorage.getItem(IS_SERVER_SPECIFIC_LIST_EXPANDED);
 		if (storedValue === 'false') {
 			setIsServerSpecificListExpand(false);
 		} else {

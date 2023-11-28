@@ -40,7 +40,9 @@ import {
 	GLOBAL_WHITELABEL_SETTINGS,
 	DELEGATES_DOMAIN_ADMINS,
 	GLOBAL_DELEGATES_ROUTE,
-	RESOURCES
+	RESOURCES,
+	IS_DETAIL_LIST_EXPANDED,
+	IS_MANAGE_LIST_EXPANDED
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -451,20 +453,20 @@ const DomainListPanel: FC = () => {
 	const toggleDetailView = (): void => {
 		if (isDetailListExpanded) {
 			setIsDetailListExpanded(false);
-			localStorage.setItem('isDetailListExpanded', 'false');
+			localStorage.setItem(IS_DETAIL_LIST_EXPANDED, 'false');
 		} else {
 			setIsDetailListExpanded(true);
-			localStorage.removeItem('isDetailListExpanded');
+			localStorage.removeItem(IS_DETAIL_LIST_EXPANDED);
 		}
 	};
 
 	const toggleManageView = (): void => {
 		if (isManageListExpanded) {
 			setIsManageListExpanded(false);
-			localStorage.setItem('isManageListExpanded', 'false');
+			localStorage.setItem(IS_MANAGE_LIST_EXPANDED, 'false');
 		} else {
 			setIsManageListExpanded(true);
-			localStorage.removeItem('isManageListExpanded');
+			localStorage.removeItem(IS_MANAGE_LIST_EXPANDED);
 		}
 	};
 
@@ -546,13 +548,13 @@ const DomainListPanel: FC = () => {
 			  );
 
 	useEffect(() => {
-		const storedDetailListViewValue = localStorage.getItem('isDetailListExpanded');
+		const storedDetailListViewValue = localStorage.getItem(IS_DETAIL_LIST_EXPANDED);
 		if (storedDetailListViewValue === 'false') {
 			setIsDetailListExpanded(false);
 		} else {
 			setIsDetailListExpanded(true);
 		}
-		const storedManageListViewValue = localStorage.getItem('isManageListExpanded');
+		const storedManageListViewValue = localStorage.getItem(IS_MANAGE_LIST_EXPANDED);
 		if (storedManageListViewValue === 'false') {
 			setIsManageListExpanded(false);
 		} else {
