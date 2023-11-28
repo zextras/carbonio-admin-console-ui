@@ -73,6 +73,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const rights: Rights = useRightsStore((state) => state.rights);
+	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -103,10 +104,40 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const updateGlobalConfig = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
 			attributes.forEach((ele: Record<string, string>) => {
-				updateConfig(ele?.n, ele._content);
+				if (
+					ele?.n !== CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL &&
+					ele?.n !== ZIMBRA_CLAM_AVDATABASE_MIRROR
+				) {
+					updateConfig(ele?.n, ele._content);
+				}
 			});
+			removeConfigItems({ n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL });
+			removeConfigItems({ n: ZIMBRA_CLAM_AVDATABASE_MIRROR });
+			const customURL = attributes.filter(
+				(item) => item?.n === CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL
+			);
+			if (customURL.length > 0) {
+				updateConfig(
+					CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+					mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL
+				);
+			}
+			const avDatabaseMirror = attributes.filter(
+				(item) => item?.n === ZIMBRA_CLAM_AVDATABASE_MIRROR
+			);
+			if (avDatabaseMirror.length > 0) {
+				updateConfig(
+					ZIMBRA_CLAM_AVDATABASE_MIRROR,
+					mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror
+				);
+			}
 		},
-		[updateConfig]
+		[
+			mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL,
+			mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror,
+			removeConfigItems,
+			updateConfig
+		]
 	);
 
 	const modifyConfigRequest = useCallback(
@@ -139,6 +170,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		[createSnackbar, t, updateGlobalConfig]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = useCallback(() => {
 		const attributes: Array<Record<string, string>> = [];
 		if (mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag) {
@@ -176,9 +208,20 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 			_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin ? TRUE : FALSE
 		});
 		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
+			const calmDatabaseMirror =
+				mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
+			if (calmDatabaseMirror.length > 0) {
+				calmDatabaseMirror.forEach((item: string) => {
+					attributes.push({
+						n: ZIMBRA_CLAM_AVDATABASE_MIRROR,
+						_content: item
+					});
+				});
+			}
+		} else if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror === '') {
 			attributes.push({
 				n: ZIMBRA_CLAM_AVDATABASE_MIRROR,
-				_content: mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror
+				_content: ''
 			});
 		}
 		if (mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency) {
@@ -205,10 +248,16 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		}
 
 		if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL) {
-			attributes.push({
-				n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
-				_content: mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL
-			});
+			const clamAVDatabaseCustomURL =
+				mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
+			if (clamAVDatabaseCustomURL.length > 0) {
+				clamAVDatabaseCustomURL.forEach((item: string) => {
+					attributes.push({
+						n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+						_content: item
+					});
+				});
+			}
 		} else if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL === '') {
 			attributes.push({
 				n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
@@ -411,14 +460,14 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				setInitialAndCurrentValue(ZIMBRA_VIRUS_WARN_ADMIN, zimbraVirusWarnAdmin?._content === TRUE);
 			}
 
-			const zimbraClamAVDatabaseMirror = configInformation.find(
+			const zimbraClamAVDatabaseMirror = configInformation.filter(
 				(item: Record<string, string>) => item?.n === ZIMBRA_CLAM_AVDATABASE_MIRROR
 			);
-			if (zimbraClamAVDatabaseMirror && zimbraClamAVDatabaseMirror?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_CLAM_AVDATABASE_MIRROR,
-					zimbraClamAVDatabaseMirror?._content
+			if (zimbraClamAVDatabaseMirror && zimbraClamAVDatabaseMirror?.length > 0) {
+				const databaseMirrors: Array<unknown> = zimbraClamAVDatabaseMirror.map(
+					(urlItem: Record<string, string>) => urlItem?._content
 				);
+				setInitialAndCurrentValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, databaseMirrors.join(', '));
 			} else {
 				setInitialAndCurrentValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, '');
 			}
@@ -453,19 +502,17 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				setInitialAndCurrentValue(ZIMBRA_SPAM_KILL_PERCENT, zimbraSpamKillPercent?._content);
 			}
 
-			const carbonioClamAVDatabaseCustomURL = configInformation.find(
+			const carbonioClamAVDatabaseCustomURL = configInformation.filter(
 				(item: Record<string, string>) => item?.n === CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL
 			);
-
-			if (carbonioClamAVDatabaseCustomURL && carbonioClamAVDatabaseCustomURL?._content) {
-				setInitialAndCurrentValue(
-					CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
-					carbonioClamAVDatabaseCustomURL?._content
+			if (carbonioClamAVDatabaseCustomURL && carbonioClamAVDatabaseCustomURL.length > 0) {
+				const customURL: Array<unknown> = carbonioClamAVDatabaseCustomURL.map(
+					(urlItem: Record<string, string>) => urlItem?._content
 				);
+				setInitialAndCurrentValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, customURL.join(', '));
 			} else {
 				setInitialAndCurrentValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, '');
 			}
-
 			const carbonioAmavisDisableVirusCheck = configInformation.find(
 				(item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 			);
