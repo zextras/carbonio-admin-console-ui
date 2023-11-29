@@ -39,6 +39,15 @@ const EditorWrapper = styled.div`
 	height: 100%;
 	overflow-y: auto;
 	position: relative;
+	.tox-edit-area {
+		iframe {
+			background: ${({ theme }): string => theme.palette.gray5.regular};
+		}
+	}
+`;
+
+const TextAreaEditor = styled(TextArea)`
+	min-height: 20.5rem;
 `;
 
 const DomainDisclaimer: FC = () => {
@@ -307,12 +316,13 @@ const DomainDisclaimer: FC = () => {
 							right: 'extralarge'
 						}}
 					>
-						<TextArea
+						<TextAreaEditor
 							label={''}
 							value={domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText}
 							onChange={(event): void => {
 								setValue(ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT, event.currentTarget.value);
 							}}
+							maxHeight="20.5rem"
 						/>
 					</Container>
 					<Container
