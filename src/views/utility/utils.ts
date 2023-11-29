@@ -1736,7 +1736,7 @@ export const getFormatedDate = (date: Date): any => {
 
 export const isValidEmail = (email: string): boolean => {
 	const re =
-		/^[_A-Za-z0-9-\\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/;
+		/^[_A-Za-z0-9-\\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
 	return re.test(email);
 };
 

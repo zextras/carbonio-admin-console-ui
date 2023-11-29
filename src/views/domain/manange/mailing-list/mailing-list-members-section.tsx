@@ -25,7 +25,7 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
 import ListRow from '../../../list/list-row';
-import { getAllEmailFromString } from '../../../utility/utils';
+import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 
 const MailingListMembersSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -88,13 +88,11 @@ const MailingListMembersSection: FC<any> = () => {
 	const onAdd = useCallback((): void => {
 		if (member !== '') {
 			const specialChars = /[ `'"<>,;]/;
-			const verifyEmail =
-				/^[_A-Za-z0-9-\\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*(\.[A-Za-z]{2,})$/;
 			const allEmails: string[] = specialChars.test(member)
 				? getAllEmailFromString(member)
 				: [member];
 			if (allEmails !== null && allEmails !== undefined) {
-				const inValidEmailAddress = allEmails.filter((item: string) => !verifyEmail.test(item));
+				const inValidEmailAddress = allEmails.filter((item: string) => !isValidEmail(item));
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
