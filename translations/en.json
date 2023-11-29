@@ -1164,6 +1164,7 @@
         "enable_compression": "Enable Compression",
         "enable_current": "Enable as Current",
         "enable_current_helptext": "Enabling this option will disable the current active volume.",
+        "enable_disclaimers_for_all_domains": "Mandatory disclaimer for all domains",
         "enable_disclaimers_for_this_domain": "Enable disclaimers for this domain",
         "enable_mandatory_spell_check": "Enable mandatory spell check",
         "enable_past_due_reminders": "Enable reminders of appointments in the past",

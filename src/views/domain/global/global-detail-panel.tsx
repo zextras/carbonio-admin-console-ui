@@ -367,8 +367,8 @@ const GlobalDetailPanel: FC = () => {
 					>
 						<Switch
 							label={t(
-								'label.enable_disclaimers_for_this_domain',
-								'Enable disclaimers for this domain'
+								'label.enable_disclaimers_for_all_domains',
+								'Mandatory disclaimer for all domains'
 							)}
 							value={globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled}
 							onClick={(): void => {
