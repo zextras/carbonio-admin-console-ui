@@ -269,7 +269,7 @@ const GlobalDetailPanel: FC = () => {
 					<Row orientation="horizontal" width="100%">
 						<Row mainAlignment="flex-start" width="50%" crossAlignment="center">
 							<Text size="extralarge" weight="bold">
-								{t('buckets.global', 'Global')}
+								{t('label.settings', 'Settings')}
 							</Text>
 						</Row>
 						<Row width="50%" mainAlignment="flex-end" crossAlignment="flex-end">

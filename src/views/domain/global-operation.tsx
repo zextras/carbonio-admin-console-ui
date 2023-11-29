@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import DomainList from './domain-list/domain-list';
+import GlobalDetailPanel from './global/global-detail-panel';
 import GlobalTheme from './global/global-theme';
 import GlobalTwoFactorAuthentcation from './global/global-two-factor-auth';
 import GlobalDelegates from './global-delegates';
@@ -17,7 +18,8 @@ import {
 	DOMAINS,
 	WHITELABEL_SETTINGS,
 	GLOBAL_DELEGATES,
-	QUARANTINE
+	QUARANTINE,
+	SETTINGS
 } from '../../constants';
 import QuarantineList from '../quarantine/quarantine-list';
 
@@ -39,6 +41,8 @@ const GlobalOperations: FC = () => {
 						return <DomainList />;
 					case GLOBAL_DELEGATES:
 						return <GlobalDelegates />;
+					case SETTINGS:
+						return <GlobalDetailPanel />;
 					default:
 						return null;
 				}

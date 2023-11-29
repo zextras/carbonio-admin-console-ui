@@ -354,3 +354,5 @@ export const ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED =
 export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT = 'zimbraAmavisDomainDisclaimerText';
 export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML = 'zimbraAmavisDomainDisclaimerHTML';
 export const ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY = 'zimbraAmavisOutboundDisclaimersOnly';
+export const GLOBAL_SETTINGS_ROUTE = 'global/settings';
+export const SETTINGS = 'settings';

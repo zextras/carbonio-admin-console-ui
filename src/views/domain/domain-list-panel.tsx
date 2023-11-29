@@ -41,7 +41,8 @@ import {
 	DELEGATES_DOMAIN_ADMINS,
 	GLOBAL_DELEGATES_ROUTE,
 	RESOURCES,
-	DISCLAIMER
+	DISCLAIMER,
+	GLOBAL_SETTINGS_ROUTE
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -238,6 +239,8 @@ const DomainListPanel: FC = () => {
 				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
 				if (domainView === GLOBAL_ROUTE) {
 					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_SETTINGS_ROUTE) {
+					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_WHITELABEL_SETTINGS) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_2FA_ROUTE) {
@@ -356,8 +359,8 @@ const DomainListPanel: FC = () => {
 	const globalOptionItems = useMemo(
 		() => [
 			{
-				id: GLOBAL_ROUTE,
-				name: t('label.global', 'Global'),
+				id: GLOBAL_SETTINGS_ROUTE,
+				name: t('label.settings', 'Settings'),
 				isSelected: true
 			},
 			{
