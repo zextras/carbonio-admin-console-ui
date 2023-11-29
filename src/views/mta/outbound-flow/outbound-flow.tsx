@@ -612,7 +612,9 @@ const MTAOutBoundFlow: FC = () => {
 						label={t('mta.my_netword', 'My Network')}
 						value={mtaOutboundDetail?.zimbraMtaMyNetworks || ''}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-							allowSetMTA ?? setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
+							if (allowSetMTA) {
+								setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
+							}
 						}}
 						readOnly
 					/>
@@ -629,7 +631,9 @@ const MTAOutBoundFlow: FC = () => {
 							label={t('mta.smtp_helo_name', 'SMTP HELO Name')}
 							value={mtaOutboundDetail?.zimbraMtaSmtpHeloName || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								allowSetMTA ?? setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
+								if (allowSetMTA) {
+									setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
+								}
 							}}
 						/>
 					</Container>
@@ -638,7 +642,9 @@ const MTAOutBoundFlow: FC = () => {
 							label={t('mta.my_hostname', 'My Hostname')}
 							value={mtaOutboundDetail?.zimbraMtaMyHostname || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								allowSetMTA ?? setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
+								if (allowSetMTA) {
+									setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
+								}
 							}}
 						/>
 					</Container>
@@ -656,7 +662,9 @@ const MTAOutBoundFlow: FC = () => {
 							label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
 							value={mtaOutboundDetail?.zimbraMtaFallbackRelayHost || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								allowSetMTA ?? setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
+								if (allowSetMTA) {
+									setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
+								}
 							}}
 						/>
 					</Container>
@@ -665,7 +673,9 @@ const MTAOutBoundFlow: FC = () => {
 							label={t('mta.relay_host', 'Relay Host')}
 							value={mtaOutboundDetail?.zimbraMtaRelayHost || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								allowSetMTA ?? setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
+								if (allowSetMTA) {
+									setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
+								}
 							}}
 						/>
 					</Container>
@@ -680,7 +690,9 @@ const MTAOutBoundFlow: FC = () => {
 						label={t('mta.my_origin', 'My Origin')}
 						value={mtaOutboundDetail?.zimbraMtaMyOrigin || ''}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-							allowSetMTA ?? setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
+							if (allowSetMTA) {
+								setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
+							}
 						}}
 					/>
 				</Container>
