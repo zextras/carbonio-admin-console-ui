@@ -1244,7 +1244,7 @@ const DomainGeneralSettings: FC = () => {
 											{domainDirectoies.dl.length ? (
 												<Text overflow="break-word" weight="regular">
 													{domainDirectoies.dl.length}{' '}
-													{t('label.distribution_list', 'Distribution list')}
+													{t('label.distribution_list', 'Distribution List')}
 												</Text>
 											) : (
 												<></>

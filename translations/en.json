@@ -1114,7 +1114,7 @@
         "discard_changes": "DISCARD CHANGES",
         "display_name": "Display Name",
         "display_name_auto_fill": "Display Name (Auto-fill)",
-        "distribution_list": "Distribution list",
+        "distribution_list": "Distribution List",
         "distribution_list_already_in_list_error": "The Distribution List / User is already in the list",
         "distribution_list_name": "Distribution List Name",
         "distribution_list_not_exists_error_msg": "The Distribution List / User does not exist. Please check the spelling and try again.",
