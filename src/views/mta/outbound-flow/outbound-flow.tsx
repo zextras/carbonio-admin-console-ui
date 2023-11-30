@@ -617,6 +617,7 @@ const MTAOutBoundFlow: FC = () => {
 							}
 						}}
 						readOnly
+						backgroundColor="gray5"
 					/>
 				</Container>
 				<Container
@@ -635,6 +636,7 @@ const MTAOutBoundFlow: FC = () => {
 									setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
 								}
 							}}
+							backgroundColor="gray5"
 						/>
 					</Container>
 					<Container>
@@ -646,6 +648,7 @@ const MTAOutBoundFlow: FC = () => {
 									setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
 								}
 							}}
+							backgroundColor="gray5"
 						/>
 					</Container>
 				</Container>
@@ -666,6 +669,7 @@ const MTAOutBoundFlow: FC = () => {
 									setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
 								}
 							}}
+							backgroundColor="gray5"
 						/>
 					</Container>
 					<Container>
@@ -677,6 +681,7 @@ const MTAOutBoundFlow: FC = () => {
 									setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
 								}
 							}}
+							backgroundColor="gray5"
 						/>
 					</Container>
 				</Container>
@@ -694,6 +699,7 @@ const MTAOutBoundFlow: FC = () => {
 								setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
 							}
 						}}
+						backgroundColor="gray5"
 					/>
 				</Container>
 				<Container
