@@ -14,7 +14,8 @@ import {
 	PasswordInput,
 	Button,
 	useSnackbar,
-	Text
+	Text,
+	Icon
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
@@ -150,8 +151,22 @@ const Connection: FC<{
 								setCompleteLoading(true);
 							}
 						} else {
+							const errorResponse = responseVerifyData?.error;
+
+							const errorResponsePart = errorResponse.split(objToSendTestConnection?.bucketId);
+							const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
+
 							setVerifyCheck(ERROR);
-							setverifyFailErr(data);
+							setverifyFailErr(
+								t(
+									'label.bucket_verification_failed_message',
+									'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
+									{
+										bucketType: errorStoreTypeMessage,
+										bucketId: objToSendTestConnection?.bucketId
+									}
+								)
+							);
 							setBucketDetailButton(true);
 							if (isActive) {
 								setCompleteLoading(true);
@@ -295,6 +310,7 @@ const Connection: FC<{
 	const onSelectBucketTypeChange = useCallback(
 		(e: any): void => {
 			const volumeObject: any = bucketTypeItems.find((s: any) => s.value === e);
+			setVerifyCheck('');
 			setBucketTypeData(volumeObject?.value);
 			onSelection({ storeType: bucketTypeData }, false);
 			setRegionSelection(
@@ -339,24 +355,14 @@ const Connection: FC<{
 				t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED')
 			);
 		} else if (verifyCheck === ERROR) {
-			setButtonColor('warning');
-			setIcon('alert-triangle');
+			setButtonColor('error');
+			setIcon('AlertTriangle');
 			setButtonDetail(
 				t(
 					'label.connection_is_created_verify_connector_fail',
 					'CONNECTOR IS CREATED BUT VERIFICATION HAS FAILED'
 				)
 			);
-			if (verifyFailErr !== '') {
-				createSnackbar({
-					key: '1',
-					type: 'warning',
-					label: t('label.verify_error', '{{name}}', {
-						name: verifyFailErr
-					}),
-					autoHideTimeout: 5000
-				});
-			}
 		} else if (verifyCheck === FAIL) {
 			setButtonColor('error');
 			setIcon('AlertTriangle');
@@ -559,6 +565,30 @@ const Connection: FC<{
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Input label={t('label.uuid', 'uuid')} value={BucketUid} readOnly />
 				</Row>
+			)}
+			{verifyCheck === ERROR && (
+				<Container
+					background="warning"
+					width="100%"
+					orientation="horizontal"
+					height="auto"
+					padding={{ all: 'large' }}
+					style={{ marginTop: '1rem' }}
+				>
+					<Row width="10%" mainAlignment="flex-start">
+						<Icon
+							icon="AlertTriangleOutline"
+							color="gray6"
+							size="large"
+							style={{ height: '2rem', width: '2rem' }}
+						/>
+					</Row>
+					<Row width="86%" mainAlignment="flex-end">
+						<Text overflow="break-word" color="gray6">
+							{verifyFailErr}
+						</Text>
+					</Row>
+				</Container>
 			)}
 		</Container>
 	);

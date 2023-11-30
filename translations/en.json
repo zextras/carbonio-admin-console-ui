@@ -921,6 +921,7 @@
         "bucket_need_help_button": "NEED HELP?",
         "bucket_notes": "Notes",
         "bucket_type": "Bucket Type",
+        "bucket_verification_failed_message": "Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})",
         "bucket_view_details_button": "VIEW DETAILS",
         "buckets": "Buckets",
         "bulk_actions": "Bulk Actions",
@@ -1683,6 +1684,7 @@
             }
         },
         "soft_deleted": "Soft-deleted",
+        "something_went_wrong_check_data_and_try_again": "SOMETHING WENT WRONG. CHECK DATA AND TRY AGAIN",
         "something_wrong_error_msg": "Something went wrong. Please try again.",
         "something_wrong_wrror_msg": "Something went wrong. Please try again.",
         "sort_by_percentage": "Sort by Percentage",
