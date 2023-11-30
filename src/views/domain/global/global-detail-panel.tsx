@@ -235,6 +235,35 @@ const GlobalDetailPanel: FC = () => {
 						hideButton: true,
 						replace: true
 					});
+					if (globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled) {
+						setTimeout(() => {
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t(
+									'label.mandatory_disclaimer_are_enable_for_all_domain',
+									'The mandatory disclaimers are enabled for all domains'
+								),
+								autoHideTimeout: 2000,
+								hideButton: true,
+								replace: true
+							});
+						}, 2000);
+
+						setTimeout(() => {
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t(
+									'label.mandatory_disclaimer_are_enable_only_for_outbound_deliveries',
+									'The mandatory disclaimers are enabled only for outbound deliveries'
+								),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						}, 4000);
+					}
 					setIsLoading(false);
 				})
 				.catch(() => {

@@ -168,6 +168,21 @@ const DomainDisclaimer: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled) {
+					setTimeout(() => {
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								'label.mandatory_disclaimer_is_enable_for_this_domain',
+								'The mandatory disclaimers is enabled for this domain'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					}, 2000);
+				}
 				const domain: objectType = responseData?.domain[0];
 				if (domain) {
 					setDomain(domain);
