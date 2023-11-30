@@ -36,7 +36,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const [accounts, setAccounts] = useState<Array<any>>([]);
 	const [accountRows, setAccountRows] = useState<Array<any>>([]);
-	const [selectedAccountRows, setSelectedAccountRows] = useState<Array<any>>([]);
+	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const [accountLimit, setAccountLimit] = useState<number>(10);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -291,8 +291,6 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 									showCheckbox={false}
 									selectedRows={selectedAccountRows}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								{isRequestInProgress && (

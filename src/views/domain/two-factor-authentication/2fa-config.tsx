@@ -32,7 +32,7 @@ export const TwoFactorAuthencationConfig: FC<{
 	}>;
 }> = ({ modifyPolicies, arrPoliciesToModify, twoFactorPolicyArray }) => {
 	const [t] = useTranslation();
-	const WHAT_TO_TRUST = useMemo(() => TwoFactorWhatToTrust(t), [t]);
+	const WHAT_TO_TRUST: any = useMemo(() => TwoFactorWhatToTrust(t), [t]);
 
 	const [applyAllValues, setApplyAllValues] = useState<{
 		whatToTrust?: object;
@@ -115,8 +115,6 @@ export const TwoFactorAuthencationConfig: FC<{
 					<ListRow padding={{ top: 'large' }}>
 						<Padding right="large" width="30%">
 							<Select
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								items={WHAT_TO_TRUST}
 								label={t('label.what_to_trust', 'What to trust?')}
 								onChange={(item: any): void => {
@@ -127,11 +125,9 @@ export const TwoFactorAuthencationConfig: FC<{
 						</Padding>
 						<Padding right="0" width="70%">
 							<ChipInput
-								backgroundColor="gray5"
+								background="gray5"
 								placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								onChange={(ips: [IpRangeValue]): void => {
+								onChange={(ips): void => {
 									const data: any = [];
 									map(ips, (ip: IpRangeValue) => {
 										isValidIpRange(ip.label ?? '')
@@ -176,17 +172,11 @@ export const TwoFactorAuthencationConfig: FC<{
 
 									<Padding right="large" width="30%">
 										<Select
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
 											items={WHAT_TO_TRUST}
 											label={t('label.what_to_trust', 'What to trust?')}
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
-											onChange={(v: number): void => {
+											onChange={(v: any): void => {
 												applyToIndividual(cVal.keyToGet, v);
 											}}
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
 											selection={WHAT_TO_TRUST.find((item: any) => {
 												const tmpObj = arrPoliciesToModify.find((obj) =>
 													Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
@@ -200,9 +190,7 @@ export const TwoFactorAuthencationConfig: FC<{
 										<ChipInput
 											background="gray5"
 											placeholder={t('label.trusted_network_ip', 'Trusted Networks (IP ranges)')}
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
-											onChange={(ips: [IpRangeValue]): void => {
+											onChange={(ips): void => {
 												const data: any = [];
 												map(ips, (ip: IpRangeValue) => {
 													isValidIpRange(ip.label ?? '')

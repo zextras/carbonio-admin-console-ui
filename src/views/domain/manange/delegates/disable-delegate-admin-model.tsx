@@ -36,31 +36,27 @@ const DisableDelegateAdminModel: FC<{
 						<Row style={{ gap: '0.5rem' }}>
 							<Button
 								style={{ fontWeight: '900' }}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								label={
+								label={`${(
 									<Trans
 										i18nKey="label.remove_all_acl"
 										defaults="<bold>REMOVE</bold> ALL ACLs"
 										components={{ bold: <strong /> }}
 										t={t}
 									/>
-								}
+								)}`}
 								type="outlined"
 								color="primary"
 								onClick={removeAllACLs}
 							/>
 							<Button
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								label={
+								label={`${(
 									<Trans
 										i18nKey="label.keep_acls_&_disbale_rigths"
 										defaults="<bold>KEEP</bold> ACLs, DISABLE RIGHTS"
 										components={{ bold: <strong /> }}
 										t={t}
 									/>
-								}
+								)}`}
 								type="outlined"
 								color="primary"
 								onClick={(): void => {

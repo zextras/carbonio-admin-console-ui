@@ -3,7 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+	FC,
+	RefObject,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState
+} from 'react';
 
 import {
 	Container,
@@ -61,7 +70,7 @@ const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
 const DomainAuthentication: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [zimbraAuthMech, setZimbraAuthMech] = useState<{ label: string; value?: string }>();
+	const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
 	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
 	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
@@ -82,13 +91,13 @@ const DomainAuthentication: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 
 	const [open, setOpen] = useState(false);
-	const iconRef = useRef(undefined);
+	const iconRef: RefObject<HTMLDivElement> = useRef(null);
 	const [isValidLdapDN, setIsValidLdapDn] = useState<boolean>(true);
 	const [isValidLdapUrl, setIsValidLdapUrl] = useState<boolean>(true);
 	const [ldapUrlOpen, setLdapUrlOpen] = useState(false);
 	const [filterOpen, setFilterOpen] = useState(false);
-	const ldapUrlIconRef = useRef(undefined);
-	const filterIconRef = useRef(undefined);
+	const ldapUrlIconRef: RefObject<HTMLDivElement> = useRef(null);
+	const filterIconRef: RefObject<HTMLDivElement> = useRef(null);
 
 	const DOMAIN_AUTH_LIST = useMemo(
 		() => [
@@ -294,13 +303,8 @@ const DomainAuthentication: FC = () => {
 	);
 
 	const onAuthMethodChange = useCallback(
-		(v: string): void => {
-			setZimbraAuthMech(
-				DOMAIN_AUTH_LIST.find(
-					// eslint-disable-next-line max-len
-					(item: { value: string }) => item.value === v
-				)
-			);
+		(v): void => {
+			setZimbraAuthMech(DOMAIN_AUTH_LIST.find((item: { value: string }) => item.value === v));
 			if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
 				if (!zimbraAuthLdapBindDn) {
 					setIsValidLdapDn(false);
@@ -579,11 +583,7 @@ const DomainAuthentication: FC = () => {
 										label={t('label.your_auth_method_is', 'Your Auth Method is')}
 										showCheckbox={false}
 										items={DOMAIN_AUTH_LIST}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										selection={zimbraAuthMech}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onAuthMethodChange}
 									></Select>
 								</Padding>
@@ -611,12 +611,9 @@ const DomainAuthentication: FC = () => {
 										hasError={!isValidLdapDN}
 										CustomIcon={(): React.ReactElement => (
 											<Container
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
-												ref={iconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseEnter={() => setOpen(true)}
-												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseLeave={() => setOpen(false)}
+												ref={iconRef}
+												onMouseEnter={(): void => setOpen(true)}
+												onMouseLeave={(): void => setOpen(false)}
 											>
 												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
 											</Container>
@@ -642,12 +639,9 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={open}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={iconRef}
 										placement="top-end"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClose={() => setOpen(false)}
+										onClose={(): void => setOpen(false)}
 										disableRestoreFocus
 									>
 										<DnTemplateTooltip />
@@ -677,12 +671,9 @@ const DomainAuthentication: FC = () => {
 										hasError={!isValidLdapUrl}
 										CustomIcon={(): React.ReactElement => (
 											<Container
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
-												ref={ldapUrlIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseEnter={() => setLdapUrlOpen(true)}
-												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseLeave={() => setLdapUrlOpen(false)}
+												ref={ldapUrlIconRef}
+												onMouseEnter={(): void => setLdapUrlOpen(true)}
+												onMouseLeave={(): void => setLdapUrlOpen(false)}
 											>
 												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
 											</Container>
@@ -707,12 +698,9 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={ldapUrlOpen}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={ldapUrlIconRef}
 										placement="top-end"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClose={() => setLdapUrlOpen(false)}
+										onClose={(): void => setLdapUrlOpen(false)}
 										disableRestoreFocus
 									>
 										<LdapUrlTooltip />
@@ -730,12 +718,9 @@ const DomainAuthentication: FC = () => {
 										}}
 										CustomIcon={(): React.ReactElement => (
 											<Container
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
-												ref={filterIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseEnter={() => setFilterOpen(true)}
-												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseLeave={() => setFilterOpen(false)}
+												ref={filterIconRef}
+												onMouseEnter={(): void => setFilterOpen(true)}
+												onMouseLeave={(): void => setFilterOpen(false)}
 											>
 												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
 											</Container>
@@ -743,12 +728,9 @@ const DomainAuthentication: FC = () => {
 									/>
 									<Popper
 										open={filterOpen}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={filterIconRef}
 										placement="top-end"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClose={() => setFilterOpen(false)}
+										onClose={(): void => setFilterOpen(false)}
 										disableRestoreFocus
 									>
 										<FilterTooltip />

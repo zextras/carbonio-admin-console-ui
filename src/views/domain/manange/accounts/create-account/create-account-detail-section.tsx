@@ -137,7 +137,7 @@ const CreateAccountDetailSection: FC = () => {
 	const onPrefTimeZoneChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
 	};
-	const onCOSIdChange = (v: string): void => {
+	const onCOSIdChange = (v: any): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraCOSId: v }));
 	};
 
@@ -297,8 +297,6 @@ const CreateAccountDetailSection: FC = () => {
 								defaultSelection={cosItems.find(
 									(item: any) => item.value === accountDetail?.zimbraCOSId
 								)}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onCOSIdChange}
 								disabled={accountDetail?.defaultCOS}
 							/>

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
@@ -50,14 +50,14 @@ type HeaderFactoryCustomProps = Omit<THeaderProps, 'headers'> & {
 	>;
 };
 
-const CustomHeaderFactory = ({
+const CustomHeaderFactory: FC<any> = ({
 	headers,
 	onChange,
 	allSelected,
 	selectionMode,
 	multiSelect,
 	showCheckbox
-}: THeaderProps): JSX.Element => {
+}): JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const [showCkb, setShowCkb] = useState(false);
 	const LabelFactory = useCallback(
@@ -127,7 +127,7 @@ const CustomHeaderFactory = ({
 
 	const headerData = useMemo(
 		() =>
-			headers.map((column) => {
+			headers.map((column: any) => {
 				const hasItems = !isEmpty(column.items);
 				return (
 					<th
