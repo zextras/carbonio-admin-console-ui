@@ -623,9 +623,9 @@ const EditMailingListView: FC<any> = ({
 						setOwnerErrorMessage(
 							t(
 								// eslint-disable-next-line sonarjs/no-duplicate-string
-								'label.mailing_list_already_in_list_error',
+								'label.distribution_list_already_in_list_error',
 								// eslint-disable-next-line sonarjs/no-duplicate-string
-								'The Mailing List / User is already in the list'
+								'The Distribution List / User is already in the list'
 							)
 						);
 					} else {
@@ -638,8 +638,8 @@ const EditMailingListView: FC<any> = ({
 					setIsShowError(true);
 					setOwnerErrorMessage(
 						t(
-							'label.mailing_list_already_in_list_error',
-							'The Mailing List / User is already in the list'
+							'label.distribution_list_already_in_list_error',
+							'The Distribution List / User is already in the list'
 						)
 					);
 				} else {
@@ -651,9 +651,9 @@ const EditMailingListView: FC<any> = ({
 				setOwnerErrorMessage(
 					t(
 						// eslint-disable-next-line sonarjs/no-duplicate-string
-						'label.mailing_list_not_exists_error_msg',
+						'label.distribution_list_not_exists_error_msg',
 						// eslint-disable-next-line sonarjs/no-duplicate-string
-						'The Mailing List / User does not exist. Please check the spelling and try again.'
+						'The Distribution List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 			}
@@ -1531,16 +1531,16 @@ const EditMailingListView: FC<any> = ({
 					setIsShowMemberError(true);
 					setMemberErrorMessage(
 						t(
-							'label.mailing_list_not_exists_error_msg',
-							'The Mailing List / User does not exist. Please check the spelling and try again.'
+							'label.distribution_list_not_exists_error_msg',
+							'The Distribution List / User does not exist. Please check the spelling and try again.'
 						)
 					);
 				} else if (dlm.find((item: any) => item === searchMember)) {
 					setIsShowMemberError(true);
 					setMemberErrorMessage(
 						t(
-							'label.mailing_list_already_in_list_error',
-							'The Mailing List / User is already in the list'
+							'label.distribution_list_already_in_list_error',
+							'The Distribution List / User is already in the list'
 						)
 					);
 				} else {
@@ -1553,8 +1553,8 @@ const EditMailingListView: FC<any> = ({
 			} else if (allEmails === undefined) {
 				setMemberErrorMessage(
 					t(
-						'label.mailing_list_not_exists_error_msg',
-						'The Mailing List / User does not exist. Please check the spelling and try again.'
+						'label.distribution_list_not_exists_error_msg',
+						'The Distribution List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 				setIsShowMemberError(true);
@@ -1574,16 +1574,16 @@ const EditMailingListView: FC<any> = ({
 					setIsShowOwnerError(true);
 					setOwnerErrorMessage(
 						t(
-							'label.mailing_list_not_exists_error_msg',
-							'The Mailing List / User does not exist. Please check the spelling and try again.'
+							'label.distribution_list_not_exists_error_msg',
+							'The Distribution List / User does not exist. Please check the spelling and try again.'
 						)
 					);
 				} else if (ownersList.find((item: any) => item?.name === searchOwner)) {
 					setIsShowOwnerError(true);
 					setOwnerErrorMessage(
 						t(
-							'label.mailing_list_already_in_list_error',
-							'The Mailing List / User is already in the list'
+							'label.distribution_list_already_in_list_error',
+							'The Distribution List / User is already in the list'
 						)
 					);
 				} else {
@@ -1599,8 +1599,8 @@ const EditMailingListView: FC<any> = ({
 				setIsShowOwnerError(true);
 				setOwnerErrorMessage(
 					t(
-						'label.mailing_list_not_exists_error_msg',
-						'The Mailing List / User does not exist. Please check the spelling and try again.'
+						'label.distribution_list_not_exists_error_msg',
+						'The Distribution List / User does not exist. Please check the spelling and try again.'
 					)
 				);
 			}
@@ -2061,7 +2061,7 @@ const EditMailingListView: FC<any> = ({
 							<Container orientation="horizontal">
 								<Container>
 									<Input
-										label={t('label.list_url', "Mailing List's URL")}
+										label={t('label.distribution_list_url', "Distribution List's URL")}
 										value={memberURL}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
@@ -2604,7 +2604,7 @@ const EditMailingListView: FC<any> = ({
 					title={
 						<Trans
 							i18nKey="label.would_you_like_to_add_ml"
-							defaults="<bold>Who would you like to add to the Mailing List?</bold>"
+							defaults="<bold>Who would you like to add to the Distribution List?</bold>"
 							components={{ bold: <strong /> }}
 						/>
 					}
@@ -2650,8 +2650,8 @@ const EditMailingListView: FC<any> = ({
 					>
 						<Text overflow="break-word" weight="regular">
 							{t(
-								'label.add_in_mailing_list_or_both',
-								'You add another Mailing List or a User. Both of them can be a Owner of the list.'
+								'label.add_in_distribution_list_or_both',
+								'You add another Distribution List or a User. Both of them can be a Owner of the list.'
 							)}
 						</Text>
 
@@ -2668,7 +2668,7 @@ const EditMailingListView: FC<any> = ({
 									setSearchMailingListOrUser(e.target.value);
 								}}
 								hasError={isShowError}
-								label={t('label.mailing_list_user', 'Mailing List / User')}
+								label={t('label.distribution_list_user', 'Distribution List / User')}
 							/>
 						</Container>
 						{isShowError && (

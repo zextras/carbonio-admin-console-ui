@@ -61,7 +61,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	const { t } = useTranslation();
 	return (
 		<Section
-			title={t('label.new_mailing_list', 'New Mailing List')}
+			title={t('label.new_distribution_list', 'New Distribution List')}
 			padding={{ all: '0' }}
 			footer={wizardFooter}
 			divider
@@ -133,7 +133,7 @@ const CreateMailingList: FC<{
 		() => [
 			{
 				name: 'details',
-				label: t('label.mailing_list', 'Mailing List'),
+				label: t('label.distribution_list', 'Distribution List'),
 				icon: 'ListOutline',
 				view: MailingListSection,
 				CancelButton: (props: any): ReactElement => (
@@ -291,7 +291,7 @@ const CreateMailingList: FC<{
 		() => [
 			{
 				name: 'details',
-				label: t('label.mailing_list', 'Mailing List'),
+				label: t('label.distribution_list', 'Distribution List'),
 				icon: 'ListOutline',
 				view: MailingListSection,
 				CancelButton: (props: any): ReactElement => (
