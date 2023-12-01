@@ -30,7 +30,6 @@ import {
 } from '../../../constants';
 import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
-import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
 
@@ -184,6 +183,7 @@ const GlobalDetailPanel: FC = () => {
 		});
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleOnSave = (): void => {
 		const attributes: Attribute[] &
 			{
@@ -235,7 +235,14 @@ const GlobalDetailPanel: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					if (globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled) {
+
+					if (
+						!isEqual(
+							globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
+							globalDisclaimerInitialDetail?.zimbraDomainMandatoryMailSignatureEnabled
+						) &&
+						globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled
+					) {
 						setTimeout(() => {
 							createSnackbar({
 								key: 'success',
@@ -249,7 +256,14 @@ const GlobalDetailPanel: FC = () => {
 								replace: true
 							});
 						}, 2000);
-
+					}
+					if (
+						!isEqual(
+							globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly,
+							globalDisclaimerInitialDetail?.zimbraAmavisOutboundDisclaimersOnly
+						) &&
+						globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly
+					) {
 						setTimeout(() => {
 							createSnackbar({
 								key: 'success',
@@ -292,7 +306,6 @@ const GlobalDetailPanel: FC = () => {
 			style={{ overflowY: 'auto' }}
 			background="white"
 		>
-			{isLoading && <OverlayDivision ovelayStyle={ovelayStyle} />}
 			<Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
 				<Container orientation="vertical" mainAlignment="space-around" height="1.9rem">
 					<Row orientation="horizontal" width="100%">
