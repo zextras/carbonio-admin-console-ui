@@ -224,9 +224,17 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Text color="gray0" weight="regular" key={item?.id}>
 									{item?.name}
 								</Text>,
-								<Text color="gray0" weight="light" key={item?.id}>
-									{`${item?.mailSize} MB / ${item?.quotaUsedPercentage} %`}
-								</Text>
+								<Row key={item?.id} mainAlignment="flex-start" width="100%">
+									<Text color="gray0" weight="light">
+										{`${item?.mailSize} MB /`}&nbsp;
+									</Text>
+									<Text
+										weight="light"
+										color={Number(item?.quotaUsedPercentage) > 100 ? 'error' : 'gray0'}
+									>
+										{`${item?.quotaUsedPercentage}%`}
+									</Text>
+								</Row>
 							]
 						});
 					});
