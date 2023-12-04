@@ -61,11 +61,11 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<MtaAntivirusAndAntispam>();
 	const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
 		useState<MtaAntivirusAndAntispam>();
-	const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<TRow>>([]);
+	const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<any>>([]);
 	const [selectedAntivirusMirrors, setSelectedAntivirusMirrors] = useState<any[]>([]);
 	const [antiVirusMirrorsAddText, setAntiVirusMirrorsAddText] = useState<string>('');
 	const [additionalAntiVirusDefinitionTableRow, setAdditionalAntiVirusDefinitionTableRow] =
-		useState<Array<TRow>>([]);
+		useState<Array<any>>([]);
 	const [selectedAdditionalAntivirusDefinition, setSelectedAdditionalAntivirusDefinition] =
 		useState<any[]>([]);
 	const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
@@ -1082,8 +1082,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							rows={antiVirusMirrorTableRow}
 							headers={antiVirusMirrorHeader}
 							showCheckbox={false}
@@ -1100,8 +1098,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							rows={additionalAntiVirusDefinitionTableRow}
 							headers={additionalVirusDefinitionHeader}
 							showCheckbox={false}

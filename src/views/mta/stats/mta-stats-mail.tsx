@@ -300,7 +300,19 @@ const MTAStatsMail: FC<{
 		}
 	}, []);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const setMailStateCountData = useCallback((queue) => {
+		setMailStatCount({
+			queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
+			corrupted:
+				queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)?.n || 0,
+			deferred:
+				queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)?.n || 0,
+			incoming:
+				queue.find((item: Record<string, string | number>) => item?.name === INCOMING)?.n || 0,
+			onhold: queue.find((item: Record<string, string | number>) => item?.name === HOLD)?.n || 0
+		});
+	}, []);
+
 	const getMailQueueCount = useCallback(() => {
 		if (serverState?.serverName) {
 			getMailqueueInformation(serverState?.serverName)
@@ -308,22 +320,7 @@ const MTAStatsMail: FC<{
 					if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
 						const queue = data?.server[0]?.queue;
 						if (queue && queue?.length > 0) {
-							setMailStatCount({
-								queued:
-									queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n ||
-									0,
-								corrupted:
-									queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)
-										?.n || 0,
-								deferred:
-									queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)
-										?.n || 0,
-								incoming:
-									queue.find((item: Record<string, string | number>) => item?.name === INCOMING)
-										?.n || 0,
-								onhold:
-									queue.find((item: Record<string, string | number>) => item?.name === HOLD)?.n || 0
-							});
+							setMailStateCountData(queue);
 						}
 					}
 				})
@@ -340,7 +337,7 @@ const MTAStatsMail: FC<{
 					});
 				});
 		}
-	}, [createSnackbar, serverState?.serverName, t]);
+	}, [createSnackbar, serverState?.serverName, setMailStateCountData, t]);
 
 	const getMailFromMailQueue = useCallback(() => {
 		setIsMailQueueLoading(true);
@@ -619,8 +616,6 @@ const MTAStatsMail: FC<{
 						}}
 						style={{ overflow: 'auto', height: '100%', width: '100%' }}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 					{isMailQueueLoading && (
