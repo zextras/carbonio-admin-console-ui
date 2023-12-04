@@ -244,7 +244,7 @@ const DomainTheme: FC = () => {
 		setIsOpenResetDialog(true);
 	}, []);
 
-	const closeHandler = useCallback(() => {
+	const closeHandler: () => void = useCallback(() => {
 		setIsOpenResetDialog(false);
 	}, []);
 
@@ -356,9 +356,6 @@ const DomainTheme: FC = () => {
 						)}
 						isOpenResetDialog={isOpenResetDialog}
 						isRequestInProgress={isRequestInProgress}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
-
 						closeHandler={closeHandler}
 						onResetHandler={onResetHandler}
 					/>

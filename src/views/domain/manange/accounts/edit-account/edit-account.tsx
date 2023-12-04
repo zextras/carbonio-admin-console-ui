@@ -110,7 +110,7 @@ const EditAccount: FC<{
 	const createSnackbar = useSnackbar();
 	const domainList = useDomainStore((state) => state.domainList);
 	const [change, setChange] = useState(defaultTab);
-	const [click, setClick] = useState('');
+	const [click, setClick] = useState<any>('');
 	const [isLoading, setIsLoading] = useState(false);
 	const context = useContext(AccountContext);
 	const {
@@ -175,12 +175,13 @@ const EditAccount: FC<{
 	}> = ({ item, index, selected, onClick }): ReactElement => (
 		<DefaultTabBarItem
 			item={item}
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore // Need to fix it with custom soultion
-			index={index}
+			tabIndex={index}
 			selected={selected}
 			onClick={onClick}
 			orientation="horizontal"
+			background="gray6"
+			underlineColor="primary"
+			forceWidthEquallyDistributed={false}
 		>
 			<Row padding="small">
 				<Text size="small" color={selected ? 'primary' : 'gray'}>
@@ -189,7 +190,7 @@ const EditAccount: FC<{
 			</Row>
 		</DefaultTabBarItem>
 	);
-	const items = [
+	const items: any = [
 		{
 			id: 'general',
 			label: t('label.general', 'GENERAL'),
@@ -600,15 +601,14 @@ const EditAccount: FC<{
 					background="white"
 				>
 					<TabBar
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						items={items}
 						selected={change}
 						onChange={(ev: unknown, selectedId: string): void => {
 							setChange(selectedId);
 						}}
-						onItemClick={setClick}
+						onClick={setClick}
 						width="100%"
+						background="gray6"
 					/>
 					<Divider color="gray2" />
 				</Container>

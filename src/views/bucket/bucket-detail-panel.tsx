@@ -26,7 +26,7 @@ import styled from 'styled-components';
 import BucketDeleteModel from './delete-bucket-model';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
 import NewBucket from './new-bucket';
-import { objectType } from '../../../types';
+import { TestConnectionObjectType, objectType } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
@@ -39,7 +39,7 @@ const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-const headers = (t: TFunction): Array<object> => [
+const headers = (t: TFunction): any => [
 	{
 		id: 'label',
 		label: t('label.label', 'Label'),
@@ -59,13 +59,13 @@ const headers = (t: TFunction): Array<object> => [
 
 const BucketListTable: FC<{
 	volumes: objectType[];
-	selectedRows: string[];
+	selectedRows: any;
 	onSelectionChange: (selected: string[]) => void;
 	onDoubleClick: (i: number) => void;
 	onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick, onClick }) => {
 	const [t] = useTranslation();
-	const tableRows = useMemo(
+	const tableRows: any = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: i,
@@ -136,19 +136,13 @@ const BucketListTable: FC<{
 					minHeight="auto"
 				>
 					<Table
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						headers={headers(t)}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						rows={tableRows}
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedRows}
 						onSelectionChange={onSelectionChange}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -237,7 +231,7 @@ const BucketDetailPanel: FC = () => {
 		// eslint-disable-next-line no-restricted-syntax
 		// delete  api call here
 		setOpen(false);
-		const objectToSendDeleteBucket = {
+		const objectToSendDeleteBucket: TestConnectionObjectType = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'doDeleteBucket',
@@ -247,8 +241,6 @@ const BucketDetailPanel: FC = () => {
 		};
 
 		if (selectedServerName === '') {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			delete objectToSendDeleteBucket?.targetServers;
 		}
 		fetchSoap('zextras', objectToSendDeleteBucket).then((res) => {

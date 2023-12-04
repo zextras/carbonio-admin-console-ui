@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Container,
@@ -27,14 +27,7 @@ import { isEmpty } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import {
-	Bucket,
-	BucketVolume,
-	Volume,
-	VolumeType,
-	objAll,
-	objectType
-} from '../../../../../../types';
+import { Bucket, BucketVolume, Volume, VolumeType, objectType } from '../../../../../../types';
 import {
 	ALIBABA,
 	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
@@ -81,7 +74,7 @@ const ModifyVolume: FC<{
 	volumeId: any;
 	setmodifyVolumeToggle: (newValue: boolean) => void;
 	getAllVolumesRequest: () => void;
-	selectedServerId: string;
+	selectedServerId: any;
 	volumeList: {
 		primaries: Volume[];
 		indexes: Volume[];
@@ -102,7 +95,7 @@ const ModifyVolume: FC<{
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const [isDirty, setIsDirty] = useState(false);
-	const [volumeDetail, setVolumeDetail] = useState<objAll>({
+	const [volumeDetail, setVolumeDetail] = useState<any>({
 		name: '',
 		id: 0,
 		type: 0,
@@ -111,20 +104,20 @@ const ModifyVolume: FC<{
 		rootpath: '',
 		compressionThreshold: ''
 	});
-	const [name, setName] = useState(volumeDetail?.name);
-	const [type, setType] = useState<VolumeType>();
-	const [id, setId] = useState(volumeDetail?.id);
-	const [rootpath, setRootpath] = useState(volumeDetail?.rootpath);
-	const [compressBlobs, setCompressBlobs] = useState(volumeDetail?.compressBlobs);
-	const [isCurrent, setIsCurrent] = useState(volumeDetail?.isCurrent);
-	const isCurrentRef = useRef(undefined);
-	const [compressionThreshold, setCompressionThreshold] = useState(
+	const [name, setName] = useState<string>(volumeDetail?.name);
+	const [type, setType] = useState<any>();
+	const [id, setId] = useState<string>(volumeDetail?.id);
+	const [rootpath, setRootpath] = useState<string>(volumeDetail?.rootpath);
+	const [compressBlobs, setCompressBlobs] = useState<boolean>(volumeDetail?.compressBlobs);
+	const [isCurrent, setIsCurrent] = useState<boolean>(volumeDetail?.isCurrent);
+	const isCurrentRef: RefObject<HTMLDivElement> = useRef(null);
+	const [compressionThreshold, setCompressionThreshold] = useState<string>(
 		volumeDetail?.compressionThreshold
 	);
 	const [previousDetail, setPreviousDetail] = useState<any>({});
 	const [externalVolDetail, setExternalVolDetail] = useState<Volume>({});
-	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<Array<Bucket>>([]);
-	const [allocation, setAllocation] = useState<VolumeType>();
+	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
+	const [allocation, setAllocation] = useState<any>();
 	const [bucketName, setBucketName] = useState('');
 	const [storeType, setStoreType] = useState<string | undefined>('');
 	const [bucketConfigurationId, setBucketConfigurationId] = useState<string | undefined>();
@@ -149,7 +142,7 @@ const ModifyVolume: FC<{
 		(state) => state
 	);
 	const { isSticky, setIsSticky } = useStickyBarStore();
-	const onUnusedBucketListChange = (e: string): void => {
+	const onUnusedBucketListChange = (e: any): void => {
 		const selectedBucketDetail = isVolumeAllDetail?.filter(
 			(item: BucketVolume) => item?.uuid === e
 		)[0];
@@ -307,8 +300,6 @@ const ModifyVolume: FC<{
 					}
 				},
 				undefined,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				selectedServerId
 			)
 				.then(() => {
@@ -323,8 +314,6 @@ const ModifyVolume: FC<{
 								type: type?.value
 							},
 							undefined,
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore
 							selectedServerId
 						).catch(() => {
 							createSnackbar({
@@ -401,7 +390,7 @@ const ModifyVolume: FC<{
 	};
 
 	const onVolumeTypeChange = useCallback(
-		(e: number): void => {
+		(e): void => {
 			const volumeObject: VolumeType = volTypeList?.find(
 				(item: VolumeType): boolean => item?.value === e
 			);
@@ -681,8 +670,6 @@ const ModifyVolume: FC<{
 					id: volId
 				},
 				undefined,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				selectedServerId
 			)
 				.then((response) => {
@@ -764,8 +751,6 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'small' }} width="100%">
 							<Input
 								label={t('label.volume_name', 'Volume Name')}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								value={name}
 								backgroundColor="gray5"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -775,17 +760,11 @@ const ModifyVolume: FC<{
 						</Row>
 						<Row padding={{ top: 'large' }} width="100%">
 							<Select
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								items={volTypeList}
-								backgroundColor="gray5"
+								background="gray5"
 								label={t('label.volume_main', 'Volume Main')}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								selection={type}
 								showCheckbox={false}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onVolumeTypeChange}
 								disabled
 							/>
@@ -793,8 +772,6 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'large' }} width="100%">
 							<Input
 								label={t('label.volume_id', 'Volume ID')}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								value={id}
 								backgroundColor="gray6"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setId(e?.target?.value)}
@@ -803,8 +780,6 @@ const ModifyVolume: FC<{
 						<Row padding={{ top: 'large' }} width="100%">
 							<Input
 								label={t('label.path', 'Path')}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								value={rootpath}
 								backgroundColor="gray5"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -831,8 +806,6 @@ const ModifyVolume: FC<{
 							<Row width="48%">
 								<Radio
 									label={t('label.primary_volume', 'This is a Primary Volume')}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									value={PRIMARY_TYPE_VALUE}
 									checked={type?.value === 1}
 									onClick={(): void => {
@@ -844,8 +817,6 @@ const ModifyVolume: FC<{
 							<Row width="48%">
 								<Radio
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									value={SECONDARY_TYPE_VALUE}
 									checked={type?.value === 2}
 									onClick={(): void => {
@@ -860,8 +831,6 @@ const ModifyVolume: FC<{
 								<>
 									<Row width="48%" mainAlignment="flex-start">
 										<Switch
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
 											value={compressBlobs}
 											label={t('label.enable_compression', 'Enable Compression')}
 											onClick={(): void => setCompressBlobs(!compressBlobs)}
@@ -890,11 +859,7 @@ const ModifyVolume: FC<{
 									disabled={!isCurrent}
 								>
 									<Switch
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										ref={isCurrentRef}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										value={isCurrent}
 										label={t('label.enable_current', 'Enable as Current')}
 										onClick={(): void => {
@@ -910,8 +875,6 @@ const ModifyVolume: FC<{
 								<Row padding={{ top: 'small' }} width="50%">
 									<Input
 										label={t('label.compression_threshold', 'Compression Threshold')}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										value={compressionThreshold}
 										backgroundColor="gray6"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -947,23 +910,20 @@ const ModifyVolume: FC<{
 						</Row>
 						<Row padding={{ top: 'large' }} width="100%">
 							<Select
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								items={volAllocationList}
 								background="gray5"
 								label={t('label.storage_type', 'Storage Type')}
 								showCheckbox={false}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								selection={allocation}
 								disabled
+								onChange={(): void => {
+									// console.log('__');
+								}}
 							/>
 						</Row>
 						<Row padding={{ top: 'large' }} width="100%">
 							<Input
 								label={t('label.volume_name', 'Volume Name')}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								value={name}
 								backgroundColor="gray6"
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -975,8 +935,6 @@ const ModifyVolume: FC<{
 							<>
 								<Row padding={{ top: 'large' }} width="100%">
 									<Select
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										items={backupUnusedBucketList}
 										background="gray5"
 										label={t(
@@ -984,13 +942,9 @@ const ModifyVolume: FC<{
 											'Available Buckets List (that are not in use in the backup)'
 										)}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										selection={backupUnusedBucketList?.find(
 											(b: Bucket) => b.value === bucketConfigurationId
 										)}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onUnusedBucketListChange}
 									/>
 								</Row>
@@ -1049,8 +1003,6 @@ const ModifyVolume: FC<{
 							<Row width="48%">
 								<Radio
 									label={t('label.primary_volume', 'This is a Primary Volume')}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									value={PRIMARY_TYPE_VALUE}
 									checked={type?.value === 1}
 									onClick={(): void => {
@@ -1062,8 +1014,6 @@ const ModifyVolume: FC<{
 							<Row width="48%">
 								<Radio
 									label={t('label.secondary_volume', 'This is a Secondary Volume')}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									value={SECONDARY_TYPE_VALUE}
 									checked={type?.value === 2}
 									onClick={(): void => {
@@ -1169,11 +1119,7 @@ const ModifyVolume: FC<{
 								disabled={!isCurrent}
 							>
 								<Switch
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									ref={isCurrentRef}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									value={isCurrent}
 									label={t('label.enable_current', 'Enable as Current')}
 									onClick={(): void => {

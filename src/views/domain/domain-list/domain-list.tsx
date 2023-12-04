@@ -36,18 +36,10 @@ import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import Paging from '../../components/paging';
 
-type StatusItem = {
-	color: string;
-	label: string;
-};
-
 type StatusTypes = {
-	active: StatusItem;
-	maintenance: StatusItem;
-	locked: StatusItem;
-	closed: StatusItem;
-	pending: StatusItem;
-	lockout: StatusItem;
+	[key: string]: {
+		[key: string]: string;
+	};
 };
 type ZimbraDomainAttribute = {
 	n: string;
@@ -72,7 +64,7 @@ type ZimbraDomainEntry = {
 	id: string;
 	a: ZimbraDomainAttribute[];
 	zimbraDomainType: string;
-	zimbraDomainStatus: 'active' | 'maintenance' | 'locked' | 'closed' | 'pending' | 'lockout';
+	zimbraDomainStatus: string;
 	zimbraDomainName: string;
 	zimbraId: string;
 };
@@ -186,8 +178,6 @@ const DomainList: FC = () => {
 							if (ele.n === 'zimbraDomainType') {
 								domainIteam.zimbraDomainType = ele._content;
 							} else if (ele.n === 'zimbraDomainStatus') {
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore
 								domainIteam.zimbraDomainStatus = ele._content;
 							} else if (ele.n === 'zimbraDomainName') {
 								domainIteam.zimbraDomainName = ele._content;
@@ -326,8 +316,6 @@ const DomainList: FC = () => {
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}

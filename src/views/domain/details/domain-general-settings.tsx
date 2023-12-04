@@ -27,7 +27,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import DomainCosLink from './domain-cos-link';
-import { CosMaxAccountValues } from '../../../../types';
+import { CosMaxAccountValues, objectType } from '../../../../types';
 import {
 	ACTIVE,
 	CLOSED,
@@ -185,7 +185,7 @@ const DomainGeneralSettings: FC = () => {
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
-		{ label: string }[]
+		objectType[]
 	>([]);
 	interface Attribute {
 		n: string;
@@ -567,7 +567,7 @@ const DomainGeneralSettings: FC = () => {
 				});
 			}
 			// eslint-disable-next-line array-callback-return
-			carbonioNotificationRecipients.forEach((item: { label: string }): void => {
+			carbonioNotificationRecipients.forEach((item: objectType): void => {
 				attributes.push({
 					n: 'carbonioNotificationRecipients',
 					_content: item?.label
@@ -1062,11 +1062,9 @@ const DomainGeneralSettings: FC = () => {
 										background="gray5"
 										defaultValue={carbonioNotificationRecipients}
 										value={carbonioNotificationRecipients}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
-										onChange={(emails: { label: string }[]): void => {
-											const data: { label: string }[] = [];
-											map(emails, (email) => {
+										onChange={(emails): void => {
+											const data: objectType[] = [];
+											map(emails, (email: objectType) => {
 												if (isValidEmail(email.label ?? '')) data.push(email);
 											});
 											setCarbonioNotificationRecipients(data);

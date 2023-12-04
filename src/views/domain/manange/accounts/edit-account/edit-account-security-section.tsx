@@ -86,9 +86,9 @@ const EditAccountSecuritySection: FC = () => {
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');
 	const [secrateCode, setSecrateCode] = useState('');
-	const [sendEmailTo, setSendEmailTo] = useState('');
+	const [sendEmailTo, setSendEmailTo] = useState<any>('');
 	const [pinCodes, setPinCodes] = useState<any>([]);
-	const [selectedRows, setSelectedRows] = useState([]);
+	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -219,11 +219,7 @@ const EditAccountSecuritySection: FC = () => {
 											});
 											setSendEmailTo(data);
 										}}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										defaultValue={sendEmailTo}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										value={sendEmailTo}
 										background="gray5"
 										ChipComponent={CustomChip}
@@ -537,13 +533,9 @@ const EditAccountSecuritySection: FC = () => {
 												rows={otpList}
 												headers={headers}
 												multiSelect={false}
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
 												onSelectionChange={setSelectedRows}
 												style={{ overflow: 'auto', height: '100%' }}
 												RowFactory={CustomRowFactory}
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
 												HeaderFactory={CustomHeaderFactory}
 											/>
 										)}

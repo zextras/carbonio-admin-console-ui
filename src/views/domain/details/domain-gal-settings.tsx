@@ -74,11 +74,11 @@ export enum RANGE {
 
 const ServerListTable: FC<{
 	volumes: Array<AccountDataType>;
-	selectedRows: number[];
-	onSelectionChange: (selected: number[]) => void;
+	selectedRows: any;
+	onSelectionChange: (selected: any) => void;
 }> = ({ volumes, selectedRows, onSelectionChange }) => {
 	const [t] = useTranslation();
-	const tableRows = useMemo(
+	const tableRows: any = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: i,
@@ -115,23 +115,13 @@ const ServerListTable: FC<{
 					minHeight="auto"
 				>
 					<Table
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						headers={GalServerTableheaders(t)}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						rows={tableRows}
 						showCheckbox={false}
 						multiSelect={false}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						selectedRows={selectedRows}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						onSelectionChange={onSelectionChange}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -237,9 +227,7 @@ const DomainGalSettings: FC = () => {
 	);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const [dataSourceName, setDataSourceName] = useState<string>('');
-	const [measureUnitSelection, setMeasureUnitSelection] = useState<
-		string | IntervalType | undefined
-	>('');
+	const [measureUnitSelection, setMeasureUnitSelection] = useState<any>('');
 
 	const [zimbraGalAccountIdArray, setZimbraGalAccountIdArray] = useState<
 		{
@@ -776,7 +764,7 @@ const DomainGalSettings: FC = () => {
 	);
 
 	const onFreqTimeUnitChange = useCallback(
-		(ev: string) => {
+		(ev) => {
 			setFreqValue({ digits: freqValue.digits, time: ev });
 			const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
 				(item: IntervalType): boolean => item?.value === ev
@@ -1199,13 +1187,7 @@ const DomainGalSettings: FC = () => {
 							<ListRow>
 								<Container orientation="horizontal">
 									<Container width="15rem" minWidth="11rem" mainAlignment="flex-start">
-										<Dropdown
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
-											items={changeGalModeBtnItems}
-											onOpen={onOpen}
-											onClose={onClose}
-										>
+										<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
 											<Button
 												type="outlined"
 												size="extralarge"
@@ -1279,17 +1261,11 @@ const DomainGalSettings: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Select
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										items={measureUnitItems}
 										background="gray5"
 										label={t('label.interval', 'Interval')}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onFreqTimeUnitChange}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										selection={measureUnitSelection}
 									/>
 								</Container>

@@ -64,7 +64,7 @@ export const ServicesPassphrase: FC = () => {
 	const [createCredentialModal, setCreateCredentialModal] = useState<boolean>(false);
 
 	const SERVICE_PASSPHRASE_STATUS = useMemo(() => ServicesPassphraseStatus(t), [t]);
-	const SERVICE_PASSPHRASE_SERVICES = useMemo(() => ServicesPassphraseServices(), []);
+	const SERVICE_PASSPHRASE_SERVICES: any = useMemo(() => ServicesPassphraseServices(), []);
 	const [createCredential, setCreateCredential] = useState<CredentialType>({
 		label: '',
 		services: SERVICE_PASSPHRASE_SERVICES[0].value
@@ -82,7 +82,7 @@ export const ServicesPassphrase: FC = () => {
 		[setCreateCredential]
 	);
 
-	const onServicesPassphraseServicesChange = (v: string): void => {
+	const onServicesPassphraseServicesChange = (v: any): void => {
 		setCreateCredential((prev: CredentialType) => ({ ...prev, services: v }));
 	};
 
@@ -203,7 +203,12 @@ export const ServicesPassphrase: FC = () => {
 								textColor="secondary"
 							/>
 						</Row>
-						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
+						<Row
+							width="19%"
+							mainAlignment="space-between"
+							style={{ pointerEvents: 'none' }}
+							padding={{ right: 'medium' }}
+						>
 							<Select
 								items={SERVICE_PASSPHRASE_SERVICES}
 								background="gray5"
@@ -212,16 +217,14 @@ export const ServicesPassphrase: FC = () => {
 								selection={SERVICE_PASSPHRASE_SERVICES.find(
 									(el: SelectServiceType) => el.value === item.services
 								)}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								padding={{ right: 'medium' }}
 								disabled
+								onChange={(): void => {
+									// console.log('__');
+								}}
 							/>
 						</Row>
 						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
 							<Select
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								items={SERVICE_PASSPHRASE_STATUS}
 								background="gray5"
 								label={t('account_details.status', 'Status')}
@@ -231,8 +234,6 @@ export const ServicesPassphrase: FC = () => {
 										(el: SelectStatusType) => el.value === item?.enabled
 									)[0]
 								}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={(): null => null}
 								style={{ paddingRight: 'medium' }}
 								disabled
@@ -267,17 +268,14 @@ export const ServicesPassphrase: FC = () => {
 							value={createCredential.label}
 						/>
 					</Row>
-					<Row width="19%" mainAlignment="space-between">
+					<Row width="19%" mainAlignment="space-between" padding={{ right: 'medium' }}>
 						<Select
 							items={SERVICE_PASSPHRASE_SERVICES}
 							background="gray5"
 							label={t('account_details.services', 'Services')}
 							showCheckbox={false}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onServicesPassphraseServicesChange}
 							defaultSelection={SERVICE_PASSPHRASE_SERVICES[0]}
-							padding={{ right: 'medium' }}
 						/>
 					</Row>
 
@@ -349,9 +347,7 @@ export const ServicesPassphrase: FC = () => {
 									icon="CopyOutline"
 									size="large"
 									color="Gray0"
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
-									onClick={(e: React.MouseEvent<HTMLElement>): any => {
+									onClick={(e): any => {
 										e.preventDefault();
 										e.stopPropagation();
 										navigator.clipboard.writeText(

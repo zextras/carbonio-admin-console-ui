@@ -91,10 +91,10 @@ const EditAccountDelegatesSection: FC = () => {
 	} = context;
 	const [showCreateIdentity, setShowCreateIdentity] = useState<boolean>(false);
 	const [editMode, setEditMode] = useState<boolean>(false);
-	const [selectedRows, setSelectedRows] = useState([]);
-	const [readWriteSelectedRows, setReadWriteSelectedRows] = useState([]);
-	const [readSelectedRows, setReadSelectedRows] = useState([]);
-	const [sendSelectedRows, setSendSelectedRows] = useState([]);
+	const [selectedRows, setSelectedRows] = useState<string[]>([]);
+	const [readWriteSelectedRows, setReadWriteSelectedRows] = useState<string[]>([]);
+	const [readSelectedRows, setReadSelectedRows] = useState<string[]>([]);
+	const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -1101,13 +1101,9 @@ const EditAccountDelegatesSection: FC = () => {
 									rows={filter(identityListItem, { writeFolder: true, readFolder: true })}
 									headers={simplifiedViewTableHeader}
 									multiSelect={false}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setReadWriteSelectedRows}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1156,13 +1152,9 @@ const EditAccountDelegatesSection: FC = () => {
 									rows={filter(identityListItem, { writeFolder: false, readFolder: true })}
 									headers={simplifiedViewTableHeader}
 									multiSelect={false}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setReadSelectedRows}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1208,14 +1200,10 @@ const EditAccountDelegatesSection: FC = () => {
 								<Table
 									rows={filter(identityListItem, { sendRights: true })}
 									headers={simplifiedViewTableHeader}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setSendSelectedRows}
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1306,13 +1294,9 @@ const EditAccountDelegatesSection: FC = () => {
 											rows={identityListItem}
 											headers={headers}
 											multiSelect={false}
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
 											onSelectionChange={setSelectedRows}
 											style={{ overflow: 'auto', height: '100%' }}
 											RowFactory={CustomRowFactory}
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
 											HeaderFactory={CustomHeaderFactory}
 										/>
 									)}

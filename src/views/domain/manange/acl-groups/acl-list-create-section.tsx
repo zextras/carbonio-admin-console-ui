@@ -265,8 +265,6 @@ const AclListCreateSection: FC = () => {
 							headers={tableHeader}
 							showCheckbox={false}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -292,8 +290,6 @@ const AclListCreateSection: FC = () => {
 							headers={ownerTableHeader}
 							showCheckbox={false}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

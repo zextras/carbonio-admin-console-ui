@@ -173,9 +173,7 @@ const DelegateSetRightsSection: FC = () => {
 												)}
 												value="all_folders"
 												width="19rem"
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
-												onChange={(newValue: string): void => {
+												onChange={(): void => {
 													setDeligateDetail((prev: any) => ({
 														...prev,
 														folderSelection: 'all_folders'

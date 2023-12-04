@@ -26,7 +26,13 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { Attribute, CreateSnackbarType, DomainResponse, objectType } from '../../../types';
+import {
+	Attribute,
+	CreateSnackbarType,
+	DomainResponse,
+	SelectItem,
+	objectType
+} from '../../../types';
 import {
 	ACTIVE,
 	DOMAINS_ROUTE_ID,
@@ -83,14 +89,9 @@ const CreateDomain: FC = () => {
 	}>({});
 	const [zimbraGalMode, setZimbraGalMode] = useState<string>('Internal');
 	const [zimbraPublicServiceHostnameList, setZimbraPublicServiceHostnameList] = useState<
-		{ [key: string]: string }[]
+		SelectItem[]
 	>([]);
-	const [zimbraPublisServiceHostname, setZimbraPublisServiceHostname] = useState<
-		| {
-				[key: string]: string;
-		  }
-		| undefined
-	>({});
+	const [zimbraPublisServiceHostname, setZimbraPublisServiceHostname] = useState<any>();
 	const [galSyncAccountName, setGalSyncAccountName] = useState<string>('galsync');
 	const [dataSourceName, setDataSourceName] = useState<string>(INTERNAL_GAL);
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
@@ -154,9 +155,9 @@ const CreateDomain: FC = () => {
 		});
 	};
 
-	const onPublicServiceProtocolChange = (v: string): void => {
+	const onPublicServiceProtocolChange = (v: any): void => {
 		const item = zimbraPublicServiceHostnameList.find(
-			(itemList: { [key: string]: string }) => itemList.value === v
+			(itemList: SelectItem) => itemList.value === v
 		);
 		setZimbraPublisServiceHostname(item);
 	};
@@ -561,17 +562,11 @@ const CreateDomain: FC = () => {
 							<ListRow>
 								<Container padding={{ all: 'small' }}>
 									<Select
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										items={zimbraPublicServiceHostnameList}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('domain.mail_server', 'Mail Server')}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										selection={zimbraPublisServiceHostname}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPublicServiceProtocolChange}
 									/>
 								</Container>
@@ -706,9 +701,7 @@ const CreateDomain: FC = () => {
 										background="gray5"
 										defaultValue={carbonioNotificationRecipients}
 										value={carbonioNotificationRecipients}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
-										onChange={(emails: { label: string }[]): void => {
+										onChange={(emails: any): void => {
 											const data: { label: string }[] = [];
 											map(emails, (email) => {
 												if (isValidEmail(email.label ?? '')) data.push(email);

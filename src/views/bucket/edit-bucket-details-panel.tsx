@@ -24,6 +24,7 @@ import {
 import { find, get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import { TestConnectionObjectType } from '../../../types';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
@@ -150,8 +151,6 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
 				RowFactory={CustomRowFactory}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows.length === 0 && (
@@ -220,7 +219,7 @@ const EditBucketDetailPanel: FC<{
 	const { selectedServerName } = useBucketVolumeStore((state) => state);
 
 	const verifyConnector = useCallback(() => {
-		const objToSendTestConnection = {
+		const objToSendTestConnection: TestConnectionObjectType = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'testS3Connection',
@@ -229,8 +228,6 @@ const EditBucketDetailPanel: FC<{
 		};
 
 		if (selectedServerName === '') {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			delete objToSendTestConnection?.targetServers;
 		}
 
@@ -623,13 +620,8 @@ const EditBucketDetailPanel: FC<{
 					{bucketDetail?.region !== undefined && (
 						<>
 							<Padding horizontal={'small'} />
-							<Row width="48%" mainAlignment="flex-end">
+							<Row width="48%" mainAlignment="flex-end" padding={{ right: 'medium' }}>
 								<Select
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
-									inputName="region"
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									items={
 										bucketDetail.storeType === ALIBABA.toUpperCase()
 											? bucketRegionsInAlibaba
@@ -640,7 +632,6 @@ const EditBucketDetailPanel: FC<{
 									onChange={onSelectionChange}
 									selection={regionData}
 									showCheckbox={false}
-									padding={{ right: 'medium' }}
 								/>
 							</Row>
 						</>

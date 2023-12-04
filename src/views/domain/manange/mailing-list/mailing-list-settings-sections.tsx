@@ -534,8 +534,6 @@ const MailingListSettingsSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedDistributionListOwner}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -656,8 +654,6 @@ const MailingListSettingsSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedGrantEmail}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

@@ -66,7 +66,7 @@ const HSMsettingPanel: FC = () => {
 	const [oldValues, setOldValues] = useState<any>({});
 	const [volumeList, setVolumeList] = useState<any>([]);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const [selectedPolicies, setSelectedPolicies] = useState<Array<any>>([]);
+	const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
 	const [isEditSaveInProgress, setIsEditSaveInProgress] = useState<boolean>(false);
@@ -248,7 +248,7 @@ const HSMsettingPanel: FC = () => {
 	}, [server]);
 
 	const getAllVolumes = useCallback(() => {
-		const serverId = serverList.find((item: any) => item?.name === server);
+		const serverId: any = serverList.find((item: any) => item?.name === server);
 		setIsVolumeInProgress(true);
 		setVolumeList([]);
 		if (serverId) {
@@ -258,8 +258,6 @@ const HSMsettingPanel: FC = () => {
 					_jsns: 'urn:zimbraAdmin'
 				},
 				undefined,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				serverId
 			).then((response: any) => {
 				setIsVolumeInProgress(false);
@@ -915,8 +913,6 @@ const HSMsettingPanel: FC = () => {
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedPolicies}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 						RowFactory={CustomRowFactory}
 					/>

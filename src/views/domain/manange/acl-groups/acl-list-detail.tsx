@@ -773,8 +773,6 @@ const AclListDetail: FC<any> = ({
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
@@ -793,8 +791,6 @@ const AclListDetail: FC<any> = ({
 								showCheckbox={false}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
@@ -814,8 +810,6 @@ const AclListDetail: FC<any> = ({
 							showCheckbox={false}
 							style={{ overflow: 'auto', height: '100%' }}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
