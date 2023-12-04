@@ -560,7 +560,6 @@ const CosServerPools: FC = () => {
 							>
 								<Table
 									style={{ overflow: 'auto', height: '100%' }}
-									multiSelect={false}
 									rows={serverTableRows}
 									headers={tableHeader}
 									showCheckbox={false}
