@@ -46,12 +46,12 @@ const ReusedDefaultTabBar: FC<{
 }> = ({ item, index, selected, onClick }): ReactElement => (
 	<DefaultTabBarItem
 		item={item}
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore // Need to fix it with custom soultion
-		index={index}
 		selected={selected}
 		onClick={onClick}
 		orientation="horizontal"
+		background="gray6"
+		underlineColor="primary"
+		forceWidthEquallyDistributed={false}
 	>
 		<Row padding="small">
 			<Text size="small" color={selected ? 'primary' : 'gray'}>
@@ -65,7 +65,7 @@ export const ThemeConfigs: FC<{
 	themeConfig: themeConfigStore;
 	setThemeConfig: CallableFunction;
 	setIsValidated: CallableFunction;
-	onResetTheme: CallableFunction;
+	onResetTheme: any;
 	isGlobalTheme?: boolean;
 }> = ({ themeConfig, setThemeConfig, setIsValidated, onResetTheme, isGlobalTheme = false }) => {
 	const [t] = useTranslation();
@@ -98,7 +98,7 @@ export const ThemeConfigs: FC<{
 	const [isValidCarbonioWebClientLogoutURL, setIsValidCarbonioWebClientLogoutURL] =
 		useState<boolean>(true);
 	const [change, setChange] = useState('end_user');
-	const [click, setClick] = useState('');
+	const [click, setClick] = useState<string>('');
 
 	const [hasModifyRights, setHasModifyRights] = useState<boolean>(false);
 	const rights = useRightsStore((state) => state.rights);
@@ -125,7 +125,7 @@ export const ThemeConfigs: FC<{
 		}
 	}, [rights, isGlobalTheme]);
 
-	const items = [
+	const items: any = [
 		{
 			id: 'end_user',
 			label: `${t('label.end_user_title', 'END USER')}`,
@@ -138,7 +138,7 @@ export const ThemeConfigs: FC<{
 		}
 	];
 
-	const THEME_MODE = useMemo(
+	const THEME_MODE: any = useMemo(
 		() => [
 			{ label: `${t('label.disabled', 'Disabled')}`, value: 'FALSE' },
 			{ label: `${t('label.enabled', 'Enabled')}`, value: 'TRUE' }
@@ -147,7 +147,7 @@ export const ThemeConfigs: FC<{
 	);
 
 	const onThemeModeChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setThemeConfig((prev: any) => ({ ...prev, carbonioWebUiDarkMode: v }));
 		},
 		[setThemeConfig]
@@ -228,16 +228,13 @@ export const ThemeConfigs: FC<{
 					</ListRow>
 					<ListRow>
 						<Select
-							backgroundColor="gray5"
+							background="gray5"
 							label={t('cos.dark_mode', 'Dark Mode')}
 							showCheckbox={false}
 							items={THEME_MODE}
 							selection={THEME_MODE.find(
-								// eslint-disable-next-line max-len
 								(item: any) => item.value === themeConfig?.carbonioWebUiDarkMode
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onThemeModeChange}
 							disabled={isGlobalTheme && !hasModifyRights}
 						/>
@@ -340,15 +337,16 @@ export const ThemeConfigs: FC<{
 						padding={{ top: 'large' }}
 					>
 						<TabBar
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							items={items}
 							selected={change}
 							onChange={(ev: unknown, selectedId: string): void => {
 								setChange(selectedId);
 							}}
-							onItemClick={setClick}
+							onClick={(): void => {
+								// console.log('__');
+							}}
 							width={300}
+							background="gray6"
 						/>
 					</Row>
 					<Row width="100%">
@@ -1248,8 +1246,6 @@ export const ThemeConfigs: FC<{
 									color="error"
 									size="large"
 									width="fill"
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onClick={onResetTheme}
 									style={{ width: '100%' }}
 									disabled={isGlobalTheme && !hasModifyRights}

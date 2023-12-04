@@ -12,7 +12,8 @@ import {
 	Divider,
 	Table,
 	Button,
-	useSnackbar
+	useSnackbar,
+	THeader
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -64,19 +65,13 @@ const RelativeContainer = styled(Container)`
 
 const VolumeListTable: FC<{
 	volumes: Array<Volume>;
-	selectedRows: string[];
+	selectedRows: any;
 	onSelectionChange: (selected: string[]) => void;
-	headers: {
-		id: string;
-		label: string;
-		width: string;
-		bold: boolean;
-		align: string;
-	}[];
+	headers: THeader[];
 	onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick }) => {
 	const [t] = useTranslation();
-	const tableRows = useMemo(
+	const tableRows: any = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: v?.id,
@@ -163,19 +158,13 @@ const VolumeListTable: FC<{
 	return (
 		<Container crossAlignment="flex-start">
 			<Table
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
 				headers={headers}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
 				rows={tableRows}
 				showCheckbox={false}
 				multiSelect={false}
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
 				RowFactory={CustomRowFactory}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows?.length === 0 && (
@@ -203,7 +192,7 @@ const VolumesDetailPanel: FC = () => {
 	const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
 	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
 	const serverList = useServerStore((state) => state.serverList);
-	const [selectedServerId, setSelectedServerId] = useState<string>('');
+	const [selectedServerId, setSelectedServerId] = useState<any>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [volume, setVolume] = useState<Volume | undefined>({
 		compressBlobs: '',
@@ -286,8 +275,6 @@ const VolumesDetailPanel: FC = () => {
 					_jsns: 'urn:zimbraAdmin'
 				},
 				undefined,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				selectedServerId
 			)
 				.then((response) => {
@@ -371,8 +358,6 @@ const VolumesDetailPanel: FC = () => {
 					id
 				},
 				undefined,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				selectedServerId
 			)
 				.then((res) => {

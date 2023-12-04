@@ -51,7 +51,7 @@ const AccountOtpSection: FC<{
 	const context = useContext(AccountContext);
 	const { accountDetail, setAccountDetail } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const [sendEmailTo, setSendEmailTo] = useState('');
+	const [sendEmailTo, setSendEmailTo] = useState<any>('');
 	const [t] = useTranslation();
 
 	useEffect(() => {
@@ -261,11 +261,7 @@ const AccountOtpSection: FC<{
 										});
 										setSendEmailTo(data);
 									}}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									defaultValue={sendEmailTo}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									value={sendEmailTo}
 									background="gray5"
 									ChipComponent={CustomChip}

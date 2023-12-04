@@ -99,7 +99,7 @@ export type IncompleteMessage = {
 	date: number;
 	subject: string;
 	fragment?: string;
-	tags: string[];
+	tags: any;
 	parts: Array<MailMessagePart>;
 	body: {
 		contentType: string;
@@ -198,7 +198,7 @@ const MessageListTable: FC<{
 	setShowMessageView
 }) => {
 	const [t] = useTranslation();
-	const tableRows = useMemo(
+	const tableRows: any = useMemo(
 		() =>
 			messages.map((v: any, i: number) => ({
 				id: i,
@@ -278,22 +278,16 @@ const MessageListTable: FC<{
 		<Container mainAlignment="flex-start" crossAlignment="flex-start">
 			<ListRow>
 				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
-					{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-					{/* @ts-ignore */}
 					<Table
 						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 						// @ts-ignore // Need to fix it with custom soultion
 						headers={MessageTableHeaders(t)}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						rows={tableRows}
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedRows}
 						onSelectionChange={onSelectionChange}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 					{requestInprogress && (
@@ -623,8 +617,6 @@ const QuarantineList: FC = () => {
 										item.filename = 'Unknown <text/html>';
 									}
 									if (item.ct && item.ct !== 'application/pkcs7-signature') {
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore
 										results.push(item);
 									}
 								}
@@ -780,8 +772,6 @@ const QuarantineList: FC = () => {
 										fragment: m.fr,
 										subject: m.su,
 										participants: m.e ? map(m.e || [], normalizeParticipantsFromSoap) : [],
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore
 										tags: getTagIds(m.t, m.tn),
 										parts: m.mp ? map(m.mp || [], normalizeMailPartMapFn) : [],
 										attachments: m.mp ? getAttachmentsFromParts(m.mp) : [],

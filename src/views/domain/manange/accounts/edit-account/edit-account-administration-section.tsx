@@ -45,7 +45,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const [distributionList, setDistributionList] = useState<any>([]);
 	const [accountDistributionList, setAccountDistributionList] = useState([]);
 	const [domainId, setDomainId] = useState('');
-	const [sendSelectedRows, setSendSelectedRows] = useState([]);
+	const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
 	const [selectedOption, setSelectedOption] = useState<any>([]);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
@@ -413,13 +413,9 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 									rows={tableRows}
 									headers={headers}
 									showCheckbox={false}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setSendSelectedRows}
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Row>

@@ -42,7 +42,7 @@ const EditHsmPolicyDetailSection: FC<{
 	const [policyCriteria, setPolicyCriteria] = useState<Array<any>>([]);
 	const [isShowDateScale, setIsShowDateScale] = useState<boolean>(true);
 	const [value, setValue] = useState<string>();
-	const [selectedPolicies, setSelectedPolicies] = useState<Array<any>>([]);
+	const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
 	const [isUpdatePolicyCriteria, setIsUpdatePolicyCriteria] = useState<boolean>(false);
 	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<any>>(
 		hsmDetail?.destinationVolume.map((item: any) => item?.id)
@@ -626,8 +626,6 @@ const EditHsmPolicyDetailSection: FC<{
 						selectedRows={selectedPolicies}
 						onSelectionChange={(selected: any): void => setSelectedPolicies(selected)}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Padding>

@@ -6,6 +6,7 @@
  */
 import { useState } from 'react';
 
+import { THeader } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 
 import { TwoFactorPolicy } from '../../../types';
@@ -951,15 +952,7 @@ export const delegateDomainHeaders = (
 	}
 ];
 
-export const volTableHeader = (
-	t: TFunction
-): Array<{
-	id: string;
-	label: string;
-	width: string;
-	bold: boolean;
-	align: string;
-}> => [
+export const volTableHeader = (t: TFunction): THeader[] => [
 	{
 		id: 'id',
 		label: t('volume.volume_header.id', 'ID'),
@@ -1076,7 +1069,7 @@ export const volumeAllocationList = (t: TFunction): Array<{ label: string; value
 	}
 ];
 
-export const GalServerTableheaders = (t: TFunction): Array<object> => [
+export const GalServerTableheaders = (t: TFunction): Array<any> => [
 	{
 		id: 'server',
 		label: t('label.server', 'Server'),

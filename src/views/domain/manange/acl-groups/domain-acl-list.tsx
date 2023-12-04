@@ -695,8 +695,6 @@ const DomainAclList: FC = () => {
 									setSelectedDlRow(selected);
 								}}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (

@@ -400,9 +400,7 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.abq_status', 'ABQ Status')}
 							showCheckbox={false}
 							selection={abqStatus}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void => {
+							onChange={(ev): void => {
 								const dataItem = abqStatusOptions.find((item) => item?.value === ev);
 								if (dataItem) {
 									setAbqStatus(dataItem);
@@ -447,9 +445,7 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.status_lbl', 'Status')}
 							showCheckbox={false}
 							selection={status}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void => {
+							onChange={(ev): void => {
 								const dataItem = statusOptions.find((item) => item?.value === ev);
 								if (dataItem) {
 									setStatus(dataItem);
