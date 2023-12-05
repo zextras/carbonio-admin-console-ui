@@ -767,9 +767,30 @@ export const ThemeConfigs: FC<{
 									<Divider color="gray2" />
 								</Container>
 								<ListRow>
-									<Container padding={{ all: 'small' }}>
+									<ListRow>
+										<Container
+											mainAlignment="flex-start"
+											crossAlignment="flex-start"
+											padding={{ vertical: 'large', horizontal: 'small' }}
+										>
+											<Text size="small" color="gray0">
+												<Trans
+													i18nKey="label.please_note"
+													defaults="<bold>Please note</bold>"
+													components={{ bold: <strong /> }}
+												/>{' '}
+												{t(
+													'label.virtualhost_avaibility_helpertext',
+													'that in order to make the virtualHost available, nginx configuration must be reloaded on all the proxyes first.'
+												)}
+											</Text>
+										</Container>
+									</ListRow>
+								</ListRow>
+								<ListRow>
+									<Container padding={{ bottom: 'small', horizontal: 'small' }}>
 										<ListRow>
-											<Padding vertical="large" horizontal="small" width="100%">
+											<Padding bottom="large" horizontal="small" width="100%">
 												<Text size="small" color="gray0" weight="bold">
 													{t('label.login', 'Login')}
 												</Text>
@@ -797,9 +818,9 @@ export const ThemeConfigs: FC<{
 										/>
 										{!isValidCarbonioWebClientLogoutURL && <HttpsErrorMessage />}
 									</Container>
-									<Container padding={{ all: 'small' }}>
+									<Container padding={{ bottom: 'small', horizontal: 'small' }}>
 										<ListRow>
-											<Padding vertical="large" horizontal="small" width="100%">
+											<Padding bottom="large" horizontal="small" width="100%">
 												<Text size="small" color="gray0" weight="bold">
 													{t('label.logout', 'Logout')}
 												</Text>
@@ -1230,9 +1251,28 @@ export const ThemeConfigs: FC<{
 									<Divider color="gray2" />
 								</Container>
 								<ListRow>
-									<Container padding={{ all: 'small' }}>
+									<Container
+										mainAlignment="flex-start"
+										crossAlignment="flex-start"
+										padding={{ vertical: 'large', horizontal: 'small' }}
+									>
+										<Text size="small" color="gray0">
+											<Trans
+												i18nKey="label.please_note"
+												defaults="<bold>Please note</bold>"
+												components={{ bold: <strong /> }}
+											/>{' '}
+											{t(
+												'label.virtualhost_avaibility_helpertext',
+												'that in order to make the virtualHost available, nginx configuration must be reloaded on all the proxyes first.'
+											)}
+										</Text>
+									</Container>
+								</ListRow>
+								<ListRow>
+									<Container padding={{ bottom: 'small', horizontal: 'small' }}>
 										<ListRow>
-											<Padding vertical="large" horizontal="small" width="100%">
+											<Padding bottom="large" horizontal="small" width="100%">
 												<Text size="small" color="gray0" weight="bold">
 													{t('label.login', 'Login')}
 												</Text>
@@ -1260,9 +1300,9 @@ export const ThemeConfigs: FC<{
 										/>
 										{!isValidCarbonioAdminLogoutURL && <HttpsErrorMessage />}
 									</Container>
-									<Container padding={{ all: 'small' }}>
+									<Container padding={{ bottom: 'small', horizontal: 'small' }}>
 										<ListRow>
-											<Padding vertical="large" horizontal="small" width="100%">
+											<Padding bottom="large" horizontal="small" width="100%">
 												<Text size="small" color="gray0" weight="bold">
 													{t('label.logout', 'Logout')}
 												</Text>
