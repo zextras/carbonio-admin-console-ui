@@ -18,7 +18,7 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
 import MTAStatsDetail from './mta-stats-detail';
-import { CreateSnackbarType, MtaStats, TRow } from '../../../../types';
+import { CreateSnackbarType, MtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
 import { getAllServerByService } from '../../../services/get-all-servers-service';
@@ -32,7 +32,7 @@ import ListRow from '../../list/list-row';
 const MTAStats: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
-	const [serverTableRow, setServerTableRow] = useState<Array<TRow>>([]);
+	const [serverTableRow, setServerTableRow] = useState<Array<any>>([]);
 	const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
 	const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
 	const [mailServerStats, setMailServerStats] = useState<Array<MtaStats>>([]);
@@ -483,16 +483,11 @@ const MTAStats: FC = () => {
 				</Container>
 				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 					<Table
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						rows={serverTableRow}
 						headers={serverHeader}
-						multiSelect={false}
 						selectedRows={selectedServer}
 						showCheckbox={false}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 					{requestInprogress && (
