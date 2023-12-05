@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -12,25 +14,25 @@ import {
 	SnackbarManagerContext,
 	Table
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import moment from 'moment';
-import ListRow from '../../list/list-row';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import { CreateSnackbarType, MtaStats, TRow } from '../../../../types';
-import { getAllServerByService } from '../../../services/get-all-servers-service';
-import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
-import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import logo from '../../../assets/gardian.svg';
-import ModalOverlay from '../../components/ModalOverlay';
+import { useTranslation } from 'react-i18next';
+
 import MTAStatsDetail from './mta-stats-detail';
+import { CreateSnackbarType, MtaStats } from '../../../../types';
+import logo from '../../../assets/gardian.svg';
+import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
+import { getAllServerByService } from '../../../services/get-all-servers-service';
+import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
 import { mailQueueFlushByServer } from '../../../services/mail-queue-flush';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import ModalOverlay from '../../components/ModalOverlay';
+import ListRow from '../../list/list-row';
 
 const MTAStats: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
-	const [serverTableRow, setServerTableRow] = useState<Array<TRow>>([]);
+	const [serverTableRow, setServerTableRow] = useState<Array<any>>([]);
 	const [selectedServer, setSelectedServer] = useState<Array<string>>([]);
 	const [mtaServerList, setMtaServerList] = useState<Array<Record<string, string>>>([]);
 	const [mailServerStats, setMailServerStats] = useState<Array<MtaStats>>([]);
@@ -481,16 +483,11 @@ const MTAStats: FC = () => {
 				</Container>
 				<Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto">
 					<Table
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						rows={serverTableRow}
 						headers={serverHeader}
-						multiSelect={false}
 						selectedRows={selectedServer}
 						showCheckbox={false}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 					{requestInprogress && (

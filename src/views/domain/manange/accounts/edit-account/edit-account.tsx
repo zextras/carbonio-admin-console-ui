@@ -5,7 +5,7 @@
  */
 
 import React, { FC, ReactElement, useCallback, useEffect, useState, useContext } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import {
 	Container,
 	Button,
@@ -17,26 +17,19 @@ import {
 	IconButton,
 	Divider,
 	Padding,
-	Icon
+	Modal
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { isEqual, reduce, remove, differenceBy } from 'lodash';
-import { useDomainStore } from '../../../../../store/domain/store';
-import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
-import EditAccountGeneralSection from './edit-account-general-section';
-import EditAccountConfigrationSection from './edit-account-configration-section';
-import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
-import EditAccountSecuritySection from './edit-account-security-section';
-import EditAccountDelegatesSection from './edit-account-delegates-section';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
-import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
-import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
-import { modifyAccountRequest } from '../../../../../services/modify-account';
-import { setPasswordRequest } from '../../../../../services/set-password';
-import { renameAccountRequest } from '../../../../../services/rename-account';
-import { AccountContext } from '../account-context';
-import { getDomainList } from '../../../../../services/search-domain-service';
-import { setCoreAttributes } from '../../../../../services/set-core-attributes';
+import EditAccountAdministrationSection from './edit-account-administration-section';
+import EditAccountConfigrationSection from './edit-account-configration-section';
+import EditAccountContactsSection from './edit-account-contacts-section';
+import EditAccountDelegatesSection from './edit-account-delegates-section';
+import EditAccountGeneralSection from './edit-account-general-section';
+import EditAccountSecuritySection from './edit-account-security-section';
+import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
 import {
 	ACCOUNT,
 	CONFIGURATION,
@@ -54,11 +47,19 @@ import {
 	CHANGE_DISPLAY_NAME_BOOLEAN,
 	IS_DEFAULT_USER_NAME
 } from '../../../../../constants';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import EditAccountContactsSection from './edit-account-contacts-section';
-import EditAccountAdministrationSection from './edit-account-administration-section';
+import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
+import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
+import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
+import { renameAccountRequest } from '../../../../../services/rename-account';
+import { getDomainList } from '../../../../../services/search-domain-service';
+import { setCoreAttributes } from '../../../../../services/set-core-attributes';
+import { setPasswordRequest } from '../../../../../services/set-password';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useDomainStore } from '../../../../../store/domain/store';
 import OverlayDivision from '../../../../components/overlayDivision';
+import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
+import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
 const ovelayStyle = styled(Container)`
@@ -86,6 +87,10 @@ const EditAccount: FC<{
 	defaultTab: string;
 	setDefaultTab: any;
 	setShowAccountDetailView: any;
+	showModal: boolean;
+	setShowModal: (showModal: boolean) => void;
+	isDirty: boolean;
+	setIsDirty: (isDirty: boolean) => void;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
@@ -95,15 +100,18 @@ const EditAccount: FC<{
 	getAccountDetail,
 	defaultTab,
 	setShowAccountDetailView,
-	setDefaultTab
+	setDefaultTab,
+	showModal,
+	setShowModal,
+	isDirty,
+	setIsDirty
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainList = useDomainStore((state) => state.domainList);
 	const [change, setChange] = useState(defaultTab);
-	const [click, setClick] = useState('');
+	const [click, setClick] = useState<any>('');
 	const [isLoading, setIsLoading] = useState(false);
-	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const context = useContext(AccountContext);
 	const {
 		accountDetail,
@@ -157,7 +165,7 @@ const EditAccount: FC<{
 		} else {
 			setIsDirty(false);
 		}
-	}, [accountDetail, initAccountDetail]);
+	}, [accountDetail, initAccountDetail, setIsDirty]);
 
 	const ReusedDefaultTabBar: FC<{
 		item: any;
@@ -167,12 +175,13 @@ const EditAccount: FC<{
 	}> = ({ item, index, selected, onClick }): ReactElement => (
 		<DefaultTabBarItem
 			item={item}
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore // Need to fix it with custom soultion
-			index={index}
+			tabIndex={index}
 			selected={selected}
 			onClick={onClick}
 			orientation="horizontal"
+			background="gray6"
+			underlineColor="primary"
+			forceWidthEquallyDistributed={false}
 		>
 			<Row padding="small">
 				<Text size="small" color={selected ? 'primary' : 'gray'}>
@@ -181,7 +190,7 @@ const EditAccount: FC<{
 			</Row>
 		</DefaultTabBarItem>
 	);
-	const items = [
+	const items: any = [
 		{
 			id: 'general',
 			label: t('label.general', 'GENERAL'),
@@ -249,7 +258,8 @@ const EditAccount: FC<{
 						type: 'error',
 						label: error?.message
 							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -304,6 +314,7 @@ const EditAccount: FC<{
 		[t, accountDetail, createSnackbar]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const modifyAccountReq = useCallback(async () => {
 		const modifiedKeys: any = reduce(
 			accountDetail,
@@ -331,6 +342,7 @@ const EditAccount: FC<{
 			});
 			return;
 		}
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (accountDetail?.password || accountDetail?.repeatPassword) {
 			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
 				if (accountDetail?.password?.length < 6) {
@@ -589,15 +601,14 @@ const EditAccount: FC<{
 					background="white"
 				>
 					<TabBar
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						items={items}
 						selected={change}
 						onChange={(ev: unknown, selectedId: string): void => {
 							setChange(selectedId);
 						}}
-						onItemClick={setClick}
+						onClick={setClick}
 						width="100%"
+						background="gray6"
 					/>
 					<Divider color="gray2" />
 				</Container>
@@ -635,6 +646,49 @@ const EditAccount: FC<{
 				</Text>
 				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
 			</RouteLeavingGuard>
+			<Modal
+				size="small"
+				title={t('label.hey_there_are_unsaved_changes_here', 'Hey! There are unsaved changes here')}
+				open={showModal}
+				customFooter={
+					<Container orientation="horizontal" mainAlignment="flex-end">
+						<Row style={{ gap: '1rem' }}>
+							<Button
+								label={t('label.discard', 'Discard')}
+								color="primary"
+								type="outlined"
+								onClick={(): void => {
+									setShowModal && setShowModal(false);
+									onUndo();
+								}}
+							/>
+							<Button
+								label={t('label.save_the_changes', 'Save the changes')}
+								color="primary"
+								onClick={(): void => {
+									setShowModal && setShowModal(false);
+									modifyAccountReq();
+								}}
+							/>
+						</Row>
+					</Container>
+				}
+				showCloseIcon
+				onClose={(): void => {
+					setShowModal && setShowModal(false);
+				}}
+			>
+				<Text
+					size={'extralarge'}
+					overflow="break-word"
+					style={{ whiteSpace: 'pre-line', textAlign: 'center', padding: '2rem 0' }}
+				>
+					{t(
+						'label.are_you_sure_you_want_to_leave_without_saving_he_changes',
+						`Are you sure you want to leave without saving he changes?`
+					)}
+				</Text>
+			</Modal>
 		</>
 	);
 };

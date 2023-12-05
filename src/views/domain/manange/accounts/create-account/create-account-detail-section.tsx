@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useCallback, useMemo, useContext, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -14,12 +15,13 @@ import {
 	Icon,
 	Switch
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { find, head } from 'lodash';
-import { useDomainStore } from '../../../../../store/domain/store';
+import { useTranslation } from 'react-i18next';
+
 import { AccountContext } from './account-context';
-import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
+import { useDomainStore } from '../../../../../store/domain/store';
 import Textarea from '../../../../components/textarea';
+import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
 import { AccountType } from '../account-types/account-types';
 
 const CreateAccountDetailSection: FC = () => {
@@ -38,6 +40,7 @@ const CreateAccountDetailSection: FC = () => {
 
 	const domainStatus = useMemo(() => {
 		const status = find(domain?.a, { n: 'zimbraDomainStatus' });
+		// eslint-disable-next-line sonarjs/prefer-single-boolean-return
 		if (status?._content === 'closed') {
 			return true;
 		}
@@ -95,8 +98,10 @@ const CreateAccountDetailSection: FC = () => {
 
 	const combineDisplayName = useMemo(
 		() =>
+			// eslint-disable-next-line sonarjs/no-nested-template-literals
 			`${accountDetail?.givenName ? `${accountDetail?.givenName} ` : ''}${
 				accountDetail?.initials ? `${accountDetail?.initials} ` : ''
+				// eslint-disable-next-line sonarjs/no-nested-template-literals
 			}${accountDetail?.sn ? `${accountDetail?.sn} ` : ''}`.trim(),
 		[accountDetail?.sn, accountDetail?.initials, accountDetail?.givenName]
 	);
@@ -132,7 +137,7 @@ const CreateAccountDetailSection: FC = () => {
 	const onPrefTimeZoneChange = (v: string): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
 	};
-	const onCOSIdChange = (v: string): void => {
+	const onCOSIdChange = (v: any): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraCOSId: v }));
 	};
 
@@ -200,6 +205,7 @@ const CreateAccountDetailSection: FC = () => {
 							<Input
 								label={t('label.domain_name', 'Domain Name')}
 								backgroundColor="gray6"
+								// eslint-disable-next-line sonarjs/no-nested-template-literals
 								value={`${domainName} ${domainStatus ? `(${t('label.closed', 'Closed')})` : ''}`}
 								disabled
 							/>
@@ -208,7 +214,7 @@ const CreateAccountDetailSection: FC = () => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.viewed_name_auto_fill', 'Viewed Name (Auto-fill)')}
+						label={t('label.display_name_auto_fill', 'Display Name (Auto-fill)')}
 						backgroundColor="gray5"
 						value={accountDetail?.displayName || combineDisplayName}
 						onChange={changeAccDisplayName}
@@ -291,8 +297,6 @@ const CreateAccountDetailSection: FC = () => {
 								defaultSelection={cosItems.find(
 									(item: any) => item.value === accountDetail?.zimbraCOSId
 								)}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onCOSIdChange}
 								disabled={accountDetail?.defaultCOS}
 							/>

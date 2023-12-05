@@ -4,18 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-	Container,
-	DefaultTabBarItem,
-	Text,
-	TabBar,
-	SnackbarManagerContext,
-	Table,
-	Icon,
-	Button,
-	Padding,
-	Divider
-} from '@zextras/carbonio-design-system';
 import React, {
 	FC,
 	ReactElement,
@@ -26,23 +14,36 @@ import React, {
 	useRef,
 	useState
 } from 'react';
-import { useTranslation } from 'react-i18next';
+
+import {
+	Container,
+	DefaultTabBarItem,
+	Text,
+	TabBar,
+	SnackbarManagerContext,
+	Table,
+	Icon,
+	Divider
+} from '@zextras/carbonio-design-system';
+import { orderBy } from 'lodash';
 import moment from 'moment';
-import { isEmpty } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
+import CustomHeaderFactory from './customTableHeaderFactory';
+import CustomRowFactory from './customTableRowFactory';
+import NotificationDetail from './notification-detail-view';
 import {
 	NOTIFICATION_ALL,
 	NOTIFICATION_ERROR,
 	NOTIFICATION_INFORMATION,
-	NOTIFICATION_WARNING
+	NOTIFICATION_WARNING,
+	DESC
 } from '../../../constants';
 import { getAllNotifications } from '../../../services/get-all-notifications';
-import ListRow from '../../list/list-row';
-import NotificationDetail from './notification-detail-view';
-import { copyTextToClipboard } from '../../utility/utils';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
-import CustomRowFactory from './customTableRowFactory';
-import CustomHeaderFactory from './customTableHeaderFactory';
 import ModalOverlay from '../../components/ModalOverlay';
+import ListRow from '../../list/list-row';
+import { copyTextToClipboard } from '../../utility/utils';
 
 const ReusedDefaultTabBar: FC<{
 	item: any;
@@ -188,11 +189,15 @@ const NotificationView: FC<{
 				if (res?.Body?.response?.content) {
 					const content = JSON.parse(res?.Body?.response?.content);
 					if (content?.response) {
-						// eslint-disable-next-line array-callback-return
-						Object.keys(content?.response).forEach((ele: any) => {
+						const notificationItems: Array<Notification> = [];
+						let infoCount = 0;
+						let allCount = 0;
+						let warningCount = 0;
+						let errorCount = 0;
+						Object.keys(content?.response).forEach((ele) => {
 							if (content?.response[ele] && content?.response[ele]?.response?.notifications) {
 								const allNotification = content?.response[ele]?.response?.notifications;
-								setNotificationList(allNotification);
+								notificationItems.push(...allNotification);
 								const info = allNotification.filter(
 									(item: Notification) => item?.level === NOTIFICATION_INFORMATION
 								);
@@ -202,14 +207,20 @@ const NotificationView: FC<{
 								const error = allNotification.filter(
 									(item: Notification) => item?.level === NOTIFICATION_ERROR
 								);
-
-								setNotificationCount({
-									all: allNotification.length,
-									information: info.length,
-									warning: warn.length,
-									error: error.length
-								});
+								allCount += allNotification.length;
+								infoCount += info.length;
+								warningCount += warn.length;
+								errorCount += error.length;
 							}
+						});
+						setNotificationList(
+							orderBy(notificationItems, (item: Notification) => new Date(item?.date), [DESC])
+						);
+						setNotificationCount({
+							all: allCount,
+							information: infoCount,
+							warning: warningCount,
+							error: errorCount
 						});
 					}
 				}
@@ -332,6 +343,7 @@ const NotificationView: FC<{
 		[createSnackbar, t, notificationList]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (filterdNotification.length > 0) {
 			const allRows = filterdNotification.map((item: Notification) => ({

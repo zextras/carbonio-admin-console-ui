@@ -3,6 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, {
+	FC,
+	ReactElement,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,18 +25,10 @@ import {
 	Table,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import React, {
-	FC,
-	ReactElement,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
-import { useTranslation } from 'react-i18next';
 import moment from 'moment';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
+
 import {
 	CreateSnackbarType,
 	MtaMailQueue,
@@ -34,6 +36,7 @@ import {
 	MtaStats,
 	mtaStats
 } from '../../../../types';
+import logo from '../../../assets/gardian.svg';
 import {
 	CORRUPT,
 	DEFERRED,
@@ -45,14 +48,13 @@ import {
 	DELETE,
 	RECORD_DISPLAY_LIMIT
 } from '../../../constants';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import { getMailQueue } from '../../../services/get-mail-queue';
-import { mailQueueAction } from '../../../services/mail-queue-action';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import logo from '../../../assets/gardian.svg';
-import Paging from '../../components/paging';
+import { mailQueueAction } from '../../../services/mail-queue-action';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
+import Paging from '../../components/paging';
 
 export const TableContainer = styled(Table)`
 	width: auto;
@@ -236,7 +238,7 @@ const MTAStatsMail: FC<{
 			},
 			{
 				id: 'received',
-				label: t('label.receveid', 'Receveid'),
+				label: t('label.received', 'Received'),
 				width: '12%',
 				bold: true
 			}
@@ -298,6 +300,19 @@ const MTAStatsMail: FC<{
 		}
 	}, []);
 
+	const setMailStateCountData = useCallback((queue) => {
+		setMailStatCount({
+			queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
+			corrupted:
+				queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)?.n || 0,
+			deferred:
+				queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)?.n || 0,
+			incoming:
+				queue.find((item: Record<string, string | number>) => item?.name === INCOMING)?.n || 0,
+			onhold: queue.find((item: Record<string, string | number>) => item?.name === HOLD)?.n || 0
+		});
+	}, []);
+
 	const getMailQueueCount = useCallback(() => {
 		if (serverState?.serverName) {
 			getMailqueueInformation(serverState?.serverName)
@@ -305,22 +320,7 @@ const MTAStatsMail: FC<{
 					if (data && data?.server && Array.isArray(data?.server) && data?.server.length > 0) {
 						const queue = data?.server[0]?.queue;
 						if (queue && queue?.length > 0) {
-							setMailStatCount({
-								queued:
-									queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n ||
-									0,
-								corrupted:
-									queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)
-										?.n || 0,
-								deferred:
-									queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)
-										?.n || 0,
-								incoming:
-									queue.find((item: Record<string, string | number>) => item?.name === INCOMING)
-										?.n || 0,
-								onhold:
-									queue.find((item: Record<string, string | number>) => item?.name === HOLD)?.n || 0
-							});
+							setMailStateCountData(queue);
 						}
 					}
 				})
@@ -337,7 +337,7 @@ const MTAStatsMail: FC<{
 					});
 				});
 		}
-	}, [createSnackbar, serverState?.serverName, t]);
+	}, [createSnackbar, serverState?.serverName, setMailStateCountData, t]);
 
 	const getMailFromMailQueue = useCallback(() => {
 		setIsMailQueueLoading(true);
@@ -616,8 +616,6 @@ const MTAStatsMail: FC<{
 						}}
 						style={{ overflow: 'auto', height: '100%', width: '100%' }}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 					{isMailQueueLoading && (

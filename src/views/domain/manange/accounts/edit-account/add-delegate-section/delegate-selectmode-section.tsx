@@ -4,15 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo, useContext, useState, useEffect, useCallback } from 'react';
+
 import { Container, Row, Select, Text } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import { useDomainStore } from '../../../../../../store/domain/store';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
 import { accountListDirectory } from '../../../../../../services/account-list-directory-service';
-import { AccountContext } from '../../account-context';
-import { delegateType } from '../../../../../utility/utils';
 import DropDownInput from '../../../../../components/dropDownInput';
+import { delegateType } from '../../../../../utility/utils';
+import { AccountContext } from '../../account-context';
 
 const SelectItem = styled(Row)``;
 
@@ -150,8 +151,6 @@ const DelegateSelectModeSection: FC = () => {
 							background="gray5"
 							label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
 							showCheckbox={false}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							defaultSelection={DELEGETES_TYPE.find(
 								(item: any) => item.value === deligateDetail?.grantee?.[0]?.type
 							)}

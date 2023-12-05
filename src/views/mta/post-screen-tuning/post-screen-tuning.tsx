@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	SnackbarManagerContext,
@@ -17,12 +19,10 @@ import {
 	Input,
 	Switch
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { isEqual } from 'lodash';
-import { useConfigStore } from '../../../store/config/store';
-import ListRow from '../../list/list-row';
+
 import { MtaPostTuning } from '../../../../types';
 import {
 	IS_SHOW_POST_TUNING_BANNER,
@@ -46,6 +46,8 @@ import {
 	ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
 } from '../../../constants';
 import { modifyConfig } from '../../../services/modify-config';
+import { useConfigStore } from '../../../store/config/store';
+import ListRow from '../../list/list-row';
 import { useLocalStorage } from '../../utility/utils';
 
 const CustomIcon = styled(Icon)`
@@ -107,20 +109,6 @@ const MTAPostScreenTuning: FC = () => {
 		[t]
 	);
 
-	const ignoreDropOptions = useMemo(
-		() => [
-			{
-				label: t('mta.ignore', 'Ignore'),
-				value: 'ignore'
-			},
-			{
-				label: t('mta.drop', 'Drop'),
-				value: 'drop'
-			}
-		],
-		[t]
-	);
-
 	const intervalOptions = useMemo(
 		() => [
 			{
@@ -153,8 +141,164 @@ const MTAPostScreenTuning: FC = () => {
 	const [nonSMTPCommandTTLUnit, setNonSMTPCommandTTLUnit] = useState(intervalOptions[2]);
 	const [bareNewLineTTLUnit, setBareNewLineTTLUnit] = useState(intervalOptions[2]);
 
+	const setPostScreenData = useCallback(() => {
+		const zimbraMtaPostscreenPipeliningAction = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
+		);
+		if (zimbraMtaPostscreenPipeliningAction && zimbraMtaPostscreenPipeliningAction?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
+				zimbraMtaPostscreenPipeliningAction?._content
+			);
+		}
+
+		const zimbraMtaPostscreenNonSmtpCommandAction = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION
+		);
+		if (
+			zimbraMtaPostscreenNonSmtpCommandAction &&
+			zimbraMtaPostscreenNonSmtpCommandAction?._content
+		) {
+			setInitialAndCurrentValue(
+				ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION,
+				zimbraMtaPostscreenNonSmtpCommandAction?._content
+			);
+		}
+
+		const zimbraMtaPostscreenBareNewlineAction = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION
+		);
+		if (zimbraMtaPostscreenBareNewlineAction && zimbraMtaPostscreenBareNewlineAction?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION,
+				zimbraMtaPostscreenBareNewlineAction?._content
+			);
+		}
+
+		const zimbraMtaPostscreenPipeliningTTL = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL
+		);
+		if (zimbraMtaPostscreenPipeliningTTL && zimbraMtaPostscreenPipeliningTTL?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
+				zimbraMtaPostscreenPipeliningTTL?._content
+			);
+		}
+
+		const zimbraMtaPostscreenNonSmtpCommandTTL = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL
+		);
+		if (zimbraMtaPostscreenNonSmtpCommandTTL && zimbraMtaPostscreenNonSmtpCommandTTL?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,
+				zimbraMtaPostscreenNonSmtpCommandTTL?._content
+			);
+		}
+
+		const zimbraMtaPostscreenBareNewlineTTL = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL
+		);
+		if (zimbraMtaPostscreenBareNewlineTTL && zimbraMtaPostscreenBareNewlineTTL?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,
+				zimbraMtaPostscreenBareNewlineTTL?._content
+			);
+		}
+		const zimbraMtaPostscreenDnsblWhitelistThreshold = configInformation.find(
+			(item: Record<string, string>) =>
+				item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD
+		);
+		if (
+			zimbraMtaPostscreenDnsblWhitelistThreshold &&
+			zimbraMtaPostscreenDnsblWhitelistThreshold?._content
+		) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,
+				zimbraMtaPostscreenDnsblWhitelistThreshold?._content
+			);
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
+
+	const setPostScreenConfigData = useCallback(() => {
+		const zimbraMtaPostscreenDnsblMinTTL = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL
+		);
+		if (zimbraMtaPostscreenDnsblMinTTL && zimbraMtaPostscreenDnsblMinTTL?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
+				zimbraMtaPostscreenDnsblMinTTL?._content
+			);
+		}
+
+		const zimbraMtaPostscreenDnsblMaxTTL = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL
+		);
+		if (zimbraMtaPostscreenDnsblMaxTTL && zimbraMtaPostscreenDnsblMaxTTL?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
+				zimbraMtaPostscreenDnsblMaxTTL?._content
+			);
+		}
+
+		const zimbraMtaPostscreenDnsblTTL = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL
+		);
+		if (zimbraMtaPostscreenDnsblTTL && zimbraMtaPostscreenDnsblTTL?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
+				zimbraMtaPostscreenDnsblTTL?._content
+			);
+		}
+
+		const zimbraMtaPostscreenBareNewlineEnable = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE
+		);
+		if (zimbraMtaPostscreenBareNewlineEnable && zimbraMtaPostscreenBareNewlineEnable?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
+				zimbraMtaPostscreenBareNewlineEnable?._content === 'yes'
+			);
+		}
+
+		const zimbraMtaPostscreenNonSmtpCommandEnable = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE
+		);
+		if (
+			zimbraMtaPostscreenNonSmtpCommandEnable &&
+			zimbraMtaPostscreenNonSmtpCommandEnable?._content
+		) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
+				zimbraMtaPostscreenNonSmtpCommandEnable?._content === 'yes'
+			);
+		}
+
+		const zimbraMtaPostscreenPipeliningEnable = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE
+		);
+		if (zimbraMtaPostscreenPipeliningEnable && zimbraMtaPostscreenPipeliningEnable?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,
+				zimbraMtaPostscreenPipeliningEnable?._content === 'yes'
+			);
+		}
+		const zimbraMtaPostscreenDnsblThreshold = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD
+		);
+		if (zimbraMtaPostscreenDnsblThreshold && zimbraMtaPostscreenDnsblThreshold?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,
+				zimbraMtaPostscreenDnsblThreshold?._content
+			);
+		} else {
+			setInitialAndCurrentValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD, '');
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
+
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
+			setPostScreenConfigData();
+			setPostScreenData();
 			const zimbraMtaPostscreenBlacklistAction = configInformation.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION
 			);
@@ -196,161 +340,8 @@ const MTAPostScreenTuning: FC = () => {
 			} else {
 				setInitialAndCurrentValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES, '');
 			}
-
-			const zimbraMtaPostscreenDnsblThreshold = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD
-			);
-			if (zimbraMtaPostscreenDnsblThreshold && zimbraMtaPostscreenDnsblThreshold?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,
-					zimbraMtaPostscreenDnsblThreshold?._content
-				);
-			} else {
-				setInitialAndCurrentValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD, '');
-			}
-
-			const zimbraMtaPostscreenDnsblWhitelistThreshold = configInformation.find(
-				(item: Record<string, string>) =>
-					item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD
-			);
-			if (
-				zimbraMtaPostscreenDnsblWhitelistThreshold &&
-				zimbraMtaPostscreenDnsblWhitelistThreshold?._content
-			) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,
-					zimbraMtaPostscreenDnsblWhitelistThreshold?._content
-				);
-			}
-
-			const zimbraMtaPostscreenDnsblMinTTL = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL
-			);
-			if (zimbraMtaPostscreenDnsblMinTTL && zimbraMtaPostscreenDnsblMinTTL?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
-					zimbraMtaPostscreenDnsblMinTTL?._content
-				);
-			}
-
-			const zimbraMtaPostscreenDnsblMaxTTL = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL
-			);
-			if (zimbraMtaPostscreenDnsblMaxTTL && zimbraMtaPostscreenDnsblMaxTTL?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
-					zimbraMtaPostscreenDnsblMaxTTL?._content
-				);
-			}
-
-			const zimbraMtaPostscreenDnsblTTL = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL
-			);
-			if (zimbraMtaPostscreenDnsblTTL && zimbraMtaPostscreenDnsblTTL?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
-					zimbraMtaPostscreenDnsblTTL?._content
-				);
-			}
-
-			const zimbraMtaPostscreenBareNewlineEnable = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE
-			);
-			if (zimbraMtaPostscreenBareNewlineEnable && zimbraMtaPostscreenBareNewlineEnable?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
-					zimbraMtaPostscreenBareNewlineEnable?._content === 'yes'
-				);
-			}
-
-			const zimbraMtaPostscreenNonSmtpCommandEnable = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE
-			);
-			if (
-				zimbraMtaPostscreenNonSmtpCommandEnable &&
-				zimbraMtaPostscreenNonSmtpCommandEnable?._content
-			) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE,
-					zimbraMtaPostscreenNonSmtpCommandEnable?._content === 'yes'
-				);
-			}
-
-			const zimbraMtaPostscreenPipeliningEnable = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ENABLE
-			);
-			if (zimbraMtaPostscreenPipeliningEnable && zimbraMtaPostscreenPipeliningEnable?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_ENABLE,
-					zimbraMtaPostscreenPipeliningEnable?._content === 'yes'
-				);
-			}
-
-			const zimbraMtaPostscreenPipeliningAction = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION
-			);
-			if (zimbraMtaPostscreenPipeliningAction && zimbraMtaPostscreenPipeliningAction?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
-					zimbraMtaPostscreenPipeliningAction?._content
-				);
-			}
-
-			const zimbraMtaPostscreenNonSmtpCommandAction = configInformation.find(
-				(item: Record<string, string>) =>
-					item?.n === ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION
-			);
-			if (
-				zimbraMtaPostscreenNonSmtpCommandAction &&
-				zimbraMtaPostscreenNonSmtpCommandAction?._content
-			) {
-				setInitialAndCurrentValue(
-					ZIIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_ACTION,
-					zimbraMtaPostscreenNonSmtpCommandAction?._content
-				);
-			}
-
-			const zimbraMtaPostscreenBareNewlineAction = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION
-			);
-			if (zimbraMtaPostscreenBareNewlineAction && zimbraMtaPostscreenBareNewlineAction?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ACTION,
-					zimbraMtaPostscreenBareNewlineAction?._content
-				);
-			}
-
-			const zimbraMtaPostscreenPipeliningTTL = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL
-			);
-			if (zimbraMtaPostscreenPipeliningTTL && zimbraMtaPostscreenPipeliningTTL?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
-					zimbraMtaPostscreenPipeliningTTL?._content
-				);
-			}
-
-			const zimbraMtaPostscreenNonSmtpCommandTTL = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL
-			);
-			if (zimbraMtaPostscreenNonSmtpCommandTTL && zimbraMtaPostscreenNonSmtpCommandTTL?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_NON_SMTP_COMMAND_TTL,
-					zimbraMtaPostscreenNonSmtpCommandTTL?._content
-				);
-			}
-
-			const zimbraMtaPostscreenBareNewlineTTL = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL
-			);
-			if (zimbraMtaPostscreenBareNewlineTTL && zimbraMtaPostscreenBareNewlineTTL?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_TTL,
-					zimbraMtaPostscreenBareNewlineTTL?._content
-				);
-			}
 		}
-	}, [configInformation, setInitialAndCurrentValue]);
+	}, [configInformation, setInitialAndCurrentValue, setPostScreenConfigData, setPostScreenData]);
 
 	useEffect(() => {
 		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL) {
@@ -429,13 +420,6 @@ const MTAPostScreenTuning: FC = () => {
 	const onDNSBlackListActionChange = useCallback(
 		(v: string) => {
 			setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION, v);
-		},
-		[setValue]
-	);
-
-	const onDNSBlSiteChange = useCallback(
-		(v: string) => {
-			setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES, v);
 		},
 		[setValue]
 	);
@@ -594,62 +578,79 @@ const MTAPostScreenTuning: FC = () => {
 		[createSnackbar, t, updateGlobalConfig]
 	);
 
+	const setSaveValue = useCallback(
+		(attributes) => {
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction
+				});
+			}
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenAccessList) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenAccessList
+				});
+			}
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction
+				});
+			}
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites
+				});
+			}
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold
+				});
+			}
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold
+				});
+			}
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL
+				});
+			}
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL
+				});
+			}
+			if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL) {
+				attributes.push({
+					n: ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
+					_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL
+				});
+			}
+		},
+		[
+			mtaPostTuningDetail?.zimbraMtaPostscreenAccessList,
+			mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction,
+			mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction,
+			mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL,
+			mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL,
+			mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites,
+			mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL,
+			mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold,
+			mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold
+		]
+	);
+
 	const onSave = useCallback(() => {
 		const attributes: Array<Record<string, string>> = [];
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_BLACK_LIST_ACTION,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenBlacklistAction
-			});
-		}
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenAccessList) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_ACCESS_LIST,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenAccessList
-			});
-		}
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblAction
-			});
-		}
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites
-			});
-		}
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_THRESHOLD,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblThreshold
-			});
-		}
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_WHITE_LIST_THRESHOLD,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblWhitelistThreshold
-			});
-		}
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_MIN_TTL,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMinTTL
-			});
-		}
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_MAX_TTL,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblMaxTTL
-			});
-		}
-		if (mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL) {
-			attributes.push({
-				n: ZIMBRA_MTA_POST_SCREEN_DNSBL_TTL,
-				_content: mtaPostTuningDetail?.zimbraMtaPostscreenDnsblTTL
-			});
-		}
+		setSaveValue(attributes);
 		attributes.push({
 			n: ZIMBRA_MTA_POST_SCREEN_BARE_NEW_LINE_ENABLE,
 			_content: mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineEnable ? 'yes' : 'no'
@@ -699,7 +700,19 @@ const MTAPostScreenTuning: FC = () => {
 			});
 		}
 		modifyConfigRequest(attributes);
-	}, [mtaPostTuningDetail, modifyConfigRequest]);
+	}, [
+		setSaveValue,
+		mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineEnable,
+		mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandEnable,
+		mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningEnable,
+		mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningAction,
+		mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandAction,
+		mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineAction,
+		mtaPostTuningDetail?.zimbraMtaPostscreenPipeliningTTL,
+		mtaPostTuningDetail?.zimbraMtaPostscreenNonSmtpCommandTTL,
+		mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL,
+		modifyConfigRequest
+	]);
 
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
@@ -867,18 +880,13 @@ const MTAPostScreenTuning: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-						<Select
-							items={ignoreDropOptions}
-							background="gray5"
+						<Input
 							label={t('mta.dns_blacklist_sites', 'DNS Blacklist Sites')}
-							showCheckbox={false}
-							selection={ignoreDropOptions.find(
-								(item: Record<string, string>) =>
-									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites
-							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={onDNSBlSiteChange}
+							backgroundColor="gray5"
+							value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES, e.target.value);
+							}}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
@@ -967,6 +975,7 @@ const MTAPostScreenTuning: FC = () => {
 							<Select
 								items={intervalOptions}
 								background="gray5"
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('mta.interval', 'Interval')}
 								showCheckbox={false}
 								selection={dnsblMinTTLUnit}
@@ -1088,6 +1097,7 @@ const MTAPostScreenTuning: FC = () => {
 							<Select
 								items={ignoreEnforceDropOptions}
 								background="gray5"
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('mta.action', 'Action')}
 								showCheckbox={false}
 								selection={ignoreEnforceDropOptions.find(
@@ -1108,6 +1118,7 @@ const MTAPostScreenTuning: FC = () => {
 					>
 						<Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
 							<Input
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
 								backgroundColor="gray5"
 								value={mtaPostTuningDetail?.zimbraMtaPostscreenBareNewlineTTL.replace(

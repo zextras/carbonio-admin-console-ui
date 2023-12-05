@@ -4,15 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
+
 import { Button } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { HorizontalWizard } from '../../../../../app/component/hwizard';
-import { Section } from '../../../../../app/component/section';
-import { AdvancedVolumeContext } from './create-advanced-volume-context';
-import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
+
 import AdvancedMailstoresConfig from './advanced-mailstores-config';
 import AdvancedMailstoresCreate from './advanced-mailstores-create';
+import AdvancedMailstoresDefinition from './advanced-mailstores-definition';
+import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
+import { HorizontalWizard } from '../../../../../app/component/hwizard';
+import { Section } from '../../../../../app/component/section';
 import { volumeTypeList } from '../../../../../utility/utils';
 
 const WizardInSection: FC<any> = ({
@@ -90,6 +92,7 @@ const CreateMailstoresVolume: FC<{
 					{...props}
 					type="outlined"
 					key="wizard-cancel"
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					label={t('label.volume_cancel_button', 'CANCEL')}
 					icon={'CloseOutline'}
 					iconPlacement="right"

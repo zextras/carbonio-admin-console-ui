@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Text,
 	Input,
@@ -18,9 +20,9 @@ import {
 	SnackbarManagerContext,
 	Divider
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ListRow from '../../../list/list-row';
@@ -36,9 +38,9 @@ const HSMpolicySettings: FC<any> = () => {
 	const [isEventEnable, setIsEventEnable] = useState<boolean>(hsmDetail?.isEventEnabled);
 	const [isContactEnable, setIsContactEnable] = useState<boolean>(hsmDetail?.isContactEnabled);
 	const [isDocument, setIsDocument] = useState<boolean>(hsmDetail?.isDocumentEnabled);
-	const [policyCriteriaRows, setPolicyCriteriaRows] = useState<Array<any>>();
+	const [policyCriteriaRows, setPolicyCriteriaRows] = useState<any>();
 	const [value, setValue] = useState<string>();
-	const [selectedPolicies, setSelectedPolicies] = useState<Array<any>>([]);
+	const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
 
 	const options: any[] = useMemo(
 		() => [
@@ -137,7 +139,7 @@ const HSMpolicySettings: FC<any> = () => {
 	);
 
 	const [volumeRows, setVolumeRows] = useState<Array<any>>([]);
-	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<any>>(
+	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<any>(
 		hsmDetail?.destinationVolume.map((item: any) => item?.id)
 	);
 	const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<any>>(
@@ -562,8 +564,6 @@ const HSMpolicySettings: FC<any> = () => {
 						multiSelect={false}
 						selectedRows={selectedPolicies}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -669,8 +669,6 @@ const HSMpolicySettings: FC<any> = () => {
 									}
 								}}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						)}
@@ -739,8 +737,6 @@ const HSMpolicySettings: FC<any> = () => {
 									}
 								}}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						)}

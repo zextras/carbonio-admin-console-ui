@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useState, useMemo, useContext, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import {
 	Container,
 	Input,
@@ -17,25 +17,29 @@ import {
 	Table,
 	Divider
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
+
 import {
 	ALLOW_SEND_RECEIVE,
 	BLOCK_SEND,
 	BLOCK_SEND_RECEIVE,
 	BYTE_PER_MB,
 	PERCENT_USED,
-	TOTAL_USED
+	TOTAL_USED,
+	TRUE
 } from '../../../constants';
-import { modifyDomain } from '../../../services/modify-domain-service';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
-import Paging from '../../components/paging';
+import { modifyDomain } from '../../../services/modify-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import ListRow from '../../list/list-row';
-import DownloadCSV from '../../app/shared/download-csv';
-import { MailBoxQuota } from '../../app/types/mailbox_quota';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import DownloadCSV from '../../app/shared/download-csv';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
+import { MailBoxQuota } from '../../app/types/mailbox_quota';
+import Paging from '../../components/paging';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
@@ -50,6 +54,17 @@ const DomainMailboxQuotaSetting: FC = () => {
 		zimbraDomainAggregateQuotaWarnEmailRecipient,
 		setZimbraDomainAggregateQuotaWarnEmailRecipient
 	] = useState<string>('');
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const [domainData, setDomainData]: any = useState({
 		zimbraMailDomainQuota: '',
@@ -91,15 +106,21 @@ const DomainMailboxQuotaSetting: FC = () => {
 	);
 
 	const onSortChange = useCallback(
-		(v: string): any => {
-			if (v !== null && domainData?.zimbraDomainName) {
+		(v): any => {
+			if (
+				v &&
+				v.length > 0 &&
+				v !== null &&
+				domainData?.zimbraDomainName &&
+				v[0].value !== selectedSortType
+			) {
 				setOffset(0);
 				setTotalAccount(0);
 				setUsageQuota([]);
-				setSelectedSortType(v);
+				setSelectedSortType(v[0].value);
 			}
 		},
-		[domainData?.zimbraDomainName]
+		[domainData?.zimbraDomainName, selectedSortType]
 	);
 
 	const headers: any = useMemo(
@@ -156,20 +177,19 @@ const DomainMailboxQuotaSetting: FC = () => {
 				let diskUsed: any = 0;
 				let quotaLimit: any = 0;
 				let percentage: any = 0;
-
 				if (item?.used) {
-					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(2);
+					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(0);
+					if (item?.limit) {
+						percentage = ((item.used / item.limit) * 100).toFixed();
+					}
 				}
 				if (item?.limit === 0) {
 					quotaLimit = t('label.unlimited', 'Unlimited');
 					percentage = 0;
+				} else if (item?.limit >= BYTE_PER_MB) {
+					quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
 				} else {
-					if (item?.limit >= BYTE_PER_MB) {
-						quotaLimit = ((item?.limit || 0) / BYTE_PER_MB).toFixed();
-					} else {
-						quotaLimit = 1;
-					}
-					percentage = ((diskUsed * 100) / quotaLimit).toFixed();
+					quotaLimit = 1;
 				}
 				quota.push({
 					name: item?.name,
@@ -204,9 +224,17 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Text color="gray0" weight="regular" key={item?.id}>
 									{item?.name}
 								</Text>,
-								<Text color="gray0" weight="light" key={item?.id}>
-									{`${item?.mailSize} / ${item?.quotaUsedPercentage}`}
-								</Text>
+								<Row key={item?.id} mainAlignment="flex-start" width="100%">
+									<Text color="gray0" weight="light">
+										{`${item?.mailSize} MB /`}&nbsp;
+									</Text>
+									<Text
+										weight="light"
+										color={Number(item?.quotaUsedPercentage) > 100 ? 'error' : 'gray0'}
+									>
+										{`${item?.quotaUsedPercentage}%`}
+									</Text>
+								</Row>
 							]
 						});
 					});
@@ -217,9 +245,12 @@ const DomainMailboxQuotaSetting: FC = () => {
 	}, [offset, limit, selectedSortType, domainData?.zimbraDomainName, getQuotaData]);
 
 	useEffect(() => {
-		getQuotaUsageInformation();
-	}, [selectedSortType, getQuotaUsageInformation]);
+		if (domainData?.zimbraDomainName) {
+			getQuotaUsageInformation();
+		}
+	}, [selectedSortType, getQuotaUsageInformation, domainData?.zimbraDomainName]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: any = {};
@@ -328,10 +359,12 @@ const DomainMailboxQuotaSetting: FC = () => {
 			n: 'zimbraDomainMaxAccounts',
 			_content: zimbraDomainMaxAccounts
 		});
-		attributes.push({
-			n: 'zimbraMailDomainQuota',
-			_content: zimbraMailDomainQuota
-		});
+		if (isGlobalAdmin) {
+			attributes.push({
+				n: 'zimbraMailDomainQuota',
+				_content: zimbraMailDomainQuota
+			});
+		}
 		attributes.push({
 			n: 'zimbraDomainAggregateQuotaWarnPercent',
 			_content: zimbraDomainAggregateQuotaWarnPercent
@@ -498,6 +531,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 										onChange={(e: any): any => {
 											setZimbraMailDomainQuota(e.target.value);
 										}}
+										disabled={!isGlobalAdmin}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -573,8 +607,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 										headers={headers}
 										showCheckbox={false}
 										RowFactory={CustomRowFactory}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										HeaderFactory={CustomHeaderFactory}
 									/>
 									{isRequestInProgress && (

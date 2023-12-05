@@ -5,15 +5,18 @@
  */
 
 import React, { FC } from 'react';
+
 import { useParams } from 'react-router-dom';
-import { LIST } from '../../constants';
+
 import NotificationListView from './notification-list-view';
+import { LIST } from '../../constants';
 
 const NotificationDetailOperation: FC = () => {
 	const { operation }: { operation: string } = useParams();
 	return (
 		<>
 			{((): any => {
+				// eslint-disable-next-line sonarjs/no-small-switch
 				switch (operation) {
 					case LIST:
 						return <NotificationListView />;

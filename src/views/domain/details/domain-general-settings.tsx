@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useContext, useEffect, useMemo, useState, useCallback } from 'react';
+
 import {
 	Container,
 	Input,
@@ -20,11 +21,13 @@ import {
 	Modal,
 	ChipInput
 } from '@zextras/carbonio-design-system';
+import { replaceHistory, useUserSettings } from '@zextras/carbonio-shell-ui';
+import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import { cloneDeep, filter, find, isEqual, map, some } from 'lodash';
-import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
+
+import DomainCosLink from './domain-cos-link';
+import { CosMaxAccountValues, objectType } from '../../../../types';
 import {
 	ACTIVE,
 	CLOSED,
@@ -34,19 +37,19 @@ import {
 	MAINTENANCE,
 	NOT_SET,
 	SUSPENDED,
+	TRUE,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../constants';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { deleteDomain } from '../../../services/delete-domain-service';
-import { searchDirectory } from '../../../services/search-directory-service';
 import { batchService } from '../../../services/batch-service';
+import { deleteDomain } from '../../../services/delete-domain-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { searchDirectory } from '../../../services/search-directory-service';
 import { useDomainStore } from '../../../store/domain/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import ListRow from '../../list/list-row';
-import DomainCosLink from './domain-cos-link';
-import { CosMaxAccountValues } from '../../../../types';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -68,6 +71,7 @@ const CustomIcon = styled(Icon)`
 	height: 20px;
 `;
 
+// eslint-disable-next-line sonarjs/cognitive-complexity
 const DomainGeneralSettings: FC = () => {
 	const [t] = useTranslation();
 	const timezones = useMemo(() => timeZoneList(t), [t]);
@@ -76,6 +80,16 @@ const DomainGeneralSettings: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const removeDomain = useDomainStore((state) => state.removeDomain);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 	const serviceProtocolItems: any = useMemo(
 		() => [
 			{
@@ -106,7 +120,9 @@ const DomainGeneralSettings: FC = () => {
 			},
 			{
 				label: `${t('label.locked', 'Locked')} (${t(
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					'label.login_is_disabled',
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					'Login is disabled'
 				)})`,
 				value: LOCKED
@@ -169,7 +185,7 @@ const DomainGeneralSettings: FC = () => {
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
-		{ label: string }[]
+		objectType[]
 	>([]);
 	interface Attribute {
 		n: string;
@@ -223,6 +239,7 @@ const DomainGeneralSettings: FC = () => {
 		}
 	}, [cosList]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useMemo(() => {
 		setDomainDirectoies({
 			account: [],
@@ -408,7 +425,8 @@ const DomainGeneralSettings: FC = () => {
 			zimbraHelpDelegatedURL,
 			zimbraDomainDefaultCOSId: zimbraDomainDefaultCOSId || '',
 			carbonioNotificationFrom,
-			carbonioNotificationRecipients
+			carbonioNotificationRecipients,
+			zimbraDomainMaxAccounts
 		};
 		const defaultDomainData = {
 			zimbraPrefTimeZoneId: domainData.zimbraPrefTimeZoneId,
@@ -423,7 +441,8 @@ const DomainGeneralSettings: FC = () => {
 			zimbraHelpDelegatedURL: domainData.zimbraHelpDelegatedURL,
 			zimbraDomainDefaultCOSId: domainData.zimbraDomainDefaultCOSId || '',
 			carbonioNotificationFrom: domainData.carbonioNotificationFrom,
-			carbonioNotificationRecipients: domainData.carbonioNotificationRecipients
+			carbonioNotificationRecipients: domainData.carbonioNotificationRecipients,
+			zimbraDomainMaxAccounts: domainData.zimbraDomainMaxAccounts
 		};
 		if (!isEqual(defaultDomainData, updatedData)) {
 			setIsDirty(true);
@@ -444,7 +463,8 @@ const DomainGeneralSettings: FC = () => {
 		zimbraHelpDelegatedURL,
 		zimbraNotes,
 		zimbraPublicServicePort,
-		description
+		description,
+		zimbraDomainMaxAccounts
 	]);
 	const onCancel = (): void => {
 		setSelectedPublicServiceProtocol(
@@ -476,6 +496,7 @@ const DomainGeneralSettings: FC = () => {
 		setIsDirty(false);
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onSave = (): void => {
 		if (isValidEmail(carbonioNotificationFrom ?? '') || carbonioNotificationFrom === '') {
 			setIsLoading(true);
@@ -483,6 +504,7 @@ const DomainGeneralSettings: FC = () => {
 			const body: any = {};
 			const attributes: any[] = [];
 			body.id = domainData.zimbraId;
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			body._jsns = 'urn:zimbraAdmin';
 			attributes.push({
 				n: 'zimbraNotes',
@@ -538,8 +560,14 @@ const DomainGeneralSettings: FC = () => {
 				n: 'carbonioNotificationFrom',
 				_content: carbonioNotificationFrom
 			});
+			if (isGlobalAdmin) {
+				attributes.push({
+					n: 'zimbraDomainMaxAccounts',
+					_content: zimbraDomainMaxAccounts
+				});
+			}
 			// eslint-disable-next-line array-callback-return
-			carbonioNotificationRecipients.map((item: { label: string }): void => {
+			carbonioNotificationRecipients.forEach((item: objectType): void => {
 				attributes.push({
 					n: 'carbonioNotificationRecipients',
 					_content: item?.label
@@ -653,6 +681,7 @@ const DomainGeneralSettings: FC = () => {
 			dlListArr: AccountDlAlias[],
 			aliasListArr: AccountDlAlias[],
 			calResourceArr: AccountDlAlias[]
+			// eslint-disable-next-line sonarjs/cognitive-complexity
 		): void => {
 			const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
 			const attrs =
@@ -789,6 +818,7 @@ const DomainGeneralSettings: FC = () => {
 							<Padding right="small">
 								{isDirty && (
 									<Button
+										// eslint-disable-next-line sonarjs/no-duplicate-string
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
 										onClick={onCancel}
@@ -861,7 +891,10 @@ const DomainGeneralSettings: FC = () => {
 										)}
 										value={zimbraDomainMaxAccounts}
 										backgroundColor="gray6"
-										readOnly
+										onChange={(e: any): any => {
+											setZimbraDomainMaxAccounts(e.target.value);
+										}}
+										disabled={!isGlobalAdmin}
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -1029,16 +1062,15 @@ const DomainGeneralSettings: FC = () => {
 										background="gray5"
 										defaultValue={carbonioNotificationRecipients}
 										value={carbonioNotificationRecipients}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
-										onChange={(emails: { label: string }[]): void => {
-											const data: { label: string }[] = [];
-											map(emails, (email) => {
+										onChange={(emails): void => {
+											const data: objectType[] = [];
+											map(emails, (email: objectType) => {
 												if (isValidEmail(email.label ?? '')) data.push(email);
 											});
 											setCarbonioNotificationRecipients(data);
 										}}
 										hasError={some(carbonioNotificationRecipients || [], { error: true })}
+										maxChips={null}
 									/>
 								</Container>
 							</ListRow>
@@ -1210,7 +1242,7 @@ const DomainGeneralSettings: FC = () => {
 											{domainDirectoies.dl.length ? (
 												<Text overflow="break-word" weight="regular">
 													{domainDirectoies.dl.length}{' '}
-													{t('label.distribution_list', 'Distribution list')}
+													{t('label.distribution_list', 'Distribution List')}
 												</Text>
 											) : (
 												<></>

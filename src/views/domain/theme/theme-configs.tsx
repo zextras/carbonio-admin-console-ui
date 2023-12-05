@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,11 +18,12 @@ import {
 	TabBar
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
-import ListRow from '../../list/list-row';
-import { getAllRights, isValidHttpsUrl } from '../../utility/utils';
+
 import { themeConfigStore } from '../../../../types/domain';
 import { CONFIG } from '../../../constants';
 import { Right, useRightsStore } from '../../../store/rights/store';
+import ListRow from '../../list/list-row';
+import { getAllRights, isValidHttpsUrl } from '../../utility/utils';
 
 const HttpsErrorMessage: FC = () => {
 	const [t] = useTranslation();
@@ -44,12 +46,12 @@ const ReusedDefaultTabBar: FC<{
 }> = ({ item, index, selected, onClick }): ReactElement => (
 	<DefaultTabBarItem
 		item={item}
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore // Need to fix it with custom soultion
-		index={index}
 		selected={selected}
 		onClick={onClick}
 		orientation="horizontal"
+		background="gray6"
+		underlineColor="primary"
+		forceWidthEquallyDistributed={false}
 	>
 		<Row padding="small">
 			<Text size="small" color={selected ? 'primary' : 'gray'}>
@@ -63,7 +65,7 @@ export const ThemeConfigs: FC<{
 	themeConfig: themeConfigStore;
 	setThemeConfig: CallableFunction;
 	setIsValidated: CallableFunction;
-	onResetTheme: CallableFunction;
+	onResetTheme: any;
 	isGlobalTheme?: boolean;
 }> = ({ themeConfig, setThemeConfig, setIsValidated, onResetTheme, isGlobalTheme = false }) => {
 	const [t] = useTranslation();
@@ -96,7 +98,7 @@ export const ThemeConfigs: FC<{
 	const [isValidCarbonioWebClientLogoutURL, setIsValidCarbonioWebClientLogoutURL] =
 		useState<boolean>(true);
 	const [change, setChange] = useState('end_user');
-	const [click, setClick] = useState('');
+	const [click, setClick] = useState<string>('');
 
 	const [hasModifyRights, setHasModifyRights] = useState<boolean>(false);
 	const rights = useRightsStore((state) => state.rights);
@@ -123,7 +125,7 @@ export const ThemeConfigs: FC<{
 		}
 	}, [rights, isGlobalTheme]);
 
-	const items = [
+	const items: any = [
 		{
 			id: 'end_user',
 			label: `${t('label.end_user_title', 'END USER')}`,
@@ -136,7 +138,7 @@ export const ThemeConfigs: FC<{
 		}
 	];
 
-	const THEME_MODE = useMemo(
+	const THEME_MODE: any = useMemo(
 		() => [
 			{ label: `${t('label.disabled', 'Disabled')}`, value: 'FALSE' },
 			{ label: `${t('label.enabled', 'Enabled')}`, value: 'TRUE' }
@@ -145,7 +147,7 @@ export const ThemeConfigs: FC<{
 	);
 
 	const onThemeModeChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setThemeConfig((prev: any) => ({ ...prev, carbonioWebUiDarkMode: v }));
 		},
 		[setThemeConfig]
@@ -226,16 +228,13 @@ export const ThemeConfigs: FC<{
 					</ListRow>
 					<ListRow>
 						<Select
-							backgroundColor="gray5"
+							background="gray5"
 							label={t('cos.dark_mode', 'Dark Mode')}
 							showCheckbox={false}
 							items={THEME_MODE}
 							selection={THEME_MODE.find(
-								// eslint-disable-next-line max-len
 								(item: any) => item.value === themeConfig?.carbonioWebUiDarkMode
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onThemeModeChange}
 							disabled={isGlobalTheme && !hasModifyRights}
 						/>
@@ -338,15 +337,16 @@ export const ThemeConfigs: FC<{
 						padding={{ top: 'large' }}
 					>
 						<TabBar
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							items={items}
 							selected={change}
 							onChange={(ev: unknown, selectedId: string): void => {
 								setChange(selectedId);
 							}}
-							onItemClick={setClick}
+							onClick={(): void => {
+								// console.log('__');
+							}}
 							width={300}
+							background="gray6"
 						/>
 					</Row>
 					<Row width="100%">
@@ -474,7 +474,12 @@ export const ThemeConfigs: FC<{
 												defaults="<bold>Light</bold> Mode"
 												components={{ bold: <strong /> }}
 											/>{' '}
-											{t('label.logo_for_login_page', 'Logo for Login Page')}
+											{t(
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'label.logo_for_login_page',
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'Logo for Login Page'
+											)}
 										</Text>
 									</Container>
 									<Container
@@ -546,7 +551,12 @@ export const ThemeConfigs: FC<{
 												defaults="<bold>Light</bold> Mode"
 												components={{ bold: <strong /> }}
 											/>{' '}
-											{t('label.logo_for_webapp', 'Logo for WebApp')}
+											{t(
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'label.logo_for_webapp',
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'Logo for WebApp'
+											)}
 										</Text>
 									</Container>
 									<Container
@@ -671,7 +681,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
@@ -688,7 +698,12 @@ export const ThemeConfigs: FC<{
 												defaults="<bold>Light</bold> Mode"
 												components={{ bold: <strong /> }}
 											/>{' '}
-											{t('label.background_login_page', 'Background Login Page')}
+											{t(
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'label.background_login_page',
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												'Background Login Page'
+											)}
 										</Text>
 									</Container>
 									<Container
@@ -1134,7 +1149,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG file, dimension 2560x1440 pixels, 800 KB max.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
@@ -1291,8 +1306,6 @@ export const ThemeConfigs: FC<{
 									color="error"
 									size="large"
 									width="fill"
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onClick={onResetTheme}
 									style={{ width: '100%' }}
 									disabled={isGlobalTheme && !hasModifyRights}

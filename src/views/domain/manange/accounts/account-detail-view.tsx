@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useContext, useMemo } from 'react';
-import moment from 'moment';
+
 import {
 	Container,
 	Input,
@@ -20,24 +20,26 @@ import {
 	Divider,
 	Table
 } from '@zextras/carbonio-design-system';
+import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { getMailboxQuota } from '../../../../services/account-list-directory-service';
+
 import { AccountContext } from './account-context';
-import { deleteAccount } from '../../../../services/delete-account-service';
 import { CLOSED } from '../../../../constants';
-import { modifyAccountRequest } from '../../../../services/modify-account';
-import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
+import { getMailboxQuota } from '../../../../services/account-list-directory-service';
+import { deleteAccount } from '../../../../services/delete-account-service';
 import { endSession } from '../../../../services/end-session';
+import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
 import { getSessions } from '../../../../services/get-sessions';
-import Paging from '../../../components/paging';
+import { modifyAccountRequest } from '../../../../services/modify-account';
+import { useRightsStore } from '../../../../store/rights/store';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-import OverlayDivision from '../../../components/overlayDivision';
-import { useRightsStore } from '../../../../store/rights/store';
 import CustomChip from '../../../components/customChip';
 import Displayer from '../../../components/displayer';
-import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import OverlayDivision from '../../../components/overlayDivision';
+import Paging from '../../../components/paging';
 import Textarea from '../../../components/textarea';
 
 const AccountDetailContainer = styled(Container)`
@@ -92,6 +94,7 @@ const AccountDetailView: FC<any> = ({
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
+	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
 	const { isSticky, setIsSticky } = useStickyBarStore();
@@ -134,14 +137,11 @@ const AccountDetailView: FC<any> = ({
 		if (selectedAccount?.zimbraMailQuota) {
 			calculatedSize = selectedAccount.zimbraMailQuota / 1048576;
 		}
-		const message =
-			calculatedSize > 0
-				? `${(usedQuota / 1048576).toFixed(3)} MB ${t(
-						'label.of',
-						'Of'
-				  )} MB ${calculatedSize.toFixed(3)}`
-				: `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of_unlimited', 'of unlimited')}`;
-		return message;
+		return calculatedSize > 0
+			? `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of', 'Of')} MB ${calculatedSize.toFixed(
+					3
+			  )}`
+			: `${(usedQuota / 1048576).toFixed(3)} MB ${t('label.of_unlimited', 'of unlimited')}`;
 	}, [cosDetail.zimbraMailQuota, selectedAccount.zimbraMailQuota, t, usedQuota]);
 	const calculatedQuotaSizePercentage: number = useMemo(() => {
 		let calculateaSize;
@@ -212,6 +212,7 @@ const AccountDetailView: FC<any> = ({
 					createSnackbar({
 						key: 'error',
 						type: 'error',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
@@ -306,6 +307,7 @@ const AccountDetailView: FC<any> = ({
 	const getAllUserSession = useCallback(() => {
 		const sessionType: string[] = ['admin', 'imap', 'soap'];
 		setUserSessionList([]);
+		setAllUserSessionList([]);
 		sessionType.forEach((item: string) => {
 			getSessions(item, selectedAccount?.name).then((resp: any) => {
 				if (resp && resp?.s) {
@@ -327,40 +329,73 @@ const AccountDetailView: FC<any> = ({
 							});
 						}
 						setUserSessionList((prev: any) => [...prev, ...session]);
+						setAllUserSessionList((prev: any) => [...prev, ...session]);
 					}
 				}
 			});
 		});
 	}, [selectedAccount?.name]);
 
+	const addSelection = useCallback((item) => {
+		setSelectedSession([item?.sid]);
+	}, []);
+
 	useEffect(() => {
 		if (userSessionList && userSessionList.length > 0) {
 			const allRows = userSessionList.map((item: UserSession) => ({
 				id: item?.sid,
 				columns: [
-					<Text size="small" weight="light" key={item?.zid} color="#828282">
-						{item?.name}
-					</Text>,
-					<Text size="small" weight="light" key={item?.zid} color="#828282">
-						{item?.sid}
-					</Text>,
-					<Text size="small" weight="light" key={item?.zid} color="#828282">
-						{''}
-					</Text>,
-					<Text size="small" weight="light" key={item?.zid} color="#828282">
-						{''}
-					</Text>
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" color="#828282">
+							{item?.name}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{item?.sid}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{''}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{''}
+						</Text>
+					</Container>
 				]
 			}));
 			setSessionListRows(allRows);
 		} else {
 			setSessionListRows([]);
 		}
-	}, [userSessionList]);
+	}, [addSelection, userSessionList]);
 
 	useEffect(() => {
 		getAllUserSession();
-	}, [getAllUserSession]);
+	}, [getAllUserSession, selectedAccount?.name]);
 
 	const onEndSession = useCallback(() => {
 		setIsRequestInProgress(true);
@@ -374,6 +409,9 @@ const AccountDetailView: FC<any> = ({
 							setIsRequestInProgress(false);
 							if (resp && resp?._jsns) {
 								setUserSessionList((prev: any) => [
+									...prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+								]);
+								setAllUserSessionList((prev: any) => [
 									...prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
 								]);
 								setSelectedSession([]);
@@ -422,7 +460,7 @@ const AccountDetailView: FC<any> = ({
 	const buttons = [
 		{
 			align: 'right',
-			label: t('label.advanced_edit', 'ADVANCED EDIT'),
+			label: t('label.edit', 'Edit'),
 			onClick: (): void => {
 				setShowAccountDetailView(false);
 				setShowEditAccountView(true);
@@ -450,6 +488,18 @@ const AccountDetailView: FC<any> = ({
 			}
 		}
 	];
+
+	const onSessionFilterInputChange = useCallback(
+		(ev) => {
+			setSelectedSession([]);
+			const value = ev?.target?.value || '';
+			const filterdSession = allUserSessionList.filter(
+				(item: UserSession) => item?.name.includes(value) || item?.sid.includes(value)
+			);
+			setUserSessionList(filterdSession);
+		},
+		[allUserSessionList]
+	);
 
 	return (
 		<>
@@ -671,7 +721,7 @@ const AccountDetailView: FC<any> = ({
 								label={t('label.i_m_looking_for_the_session', 'I`m looking for the session ...')}
 								backgroundColor="gray5"
 								width="100%"
-								value=""
+								onChange={onSessionFilterInputChange}
 							></Input>
 						</Container>
 						<Padding horizontal="small" />
@@ -701,11 +751,6 @@ const AccountDetailView: FC<any> = ({
 							showCheckbox={false}
 							selectedRows={selectedSession}
 							multiSelect={false}
-							onSelectionChange={(selected: any): any => {
-								setSelectedSession(selected);
-							}}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 							RowFactory={CustomRowFactory}
 						></Table>

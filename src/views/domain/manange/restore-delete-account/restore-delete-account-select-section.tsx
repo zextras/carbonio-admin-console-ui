@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Text,
@@ -15,26 +16,27 @@ import {
 	Divider,
 	Button
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	getSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
-import ListRow from '../../../list/list-row';
-import Paging from '../../../components/paging';
-import { useDomainStore } from '../../../../store/domain/store';
+import { debounce } from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
+
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import { getFormatedShortDate } from '../../../utility/utils';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import { useDomainStore } from '../../../../store/domain/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import Paging from '../../../components/paging';
+import ListRow from '../../../list/list-row';
+import { getFormatedShortDate } from '../../../utility/utils';
 
 const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const [accounts, setAccounts] = useState<Array<any>>([]);
 	const [accountRows, setAccountRows] = useState<Array<any>>([]);
-	const [selectedAccountRows, setSelectedAccountRows] = useState<Array<any>>([]);
+	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const [accountLimit, setAccountLimit] = useState<number>(10);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -77,6 +79,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	);
 
 	const getBackupAccounts = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(searchText) => {
 			setIsRequestInProgress(true);
 			setAccounts([]);
@@ -288,8 +291,6 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 									showCheckbox={false}
 									selectedRows={selectedAccountRows}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								{isRequestInProgress && (

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,31 +18,23 @@ import {
 	Text,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import logo from '../../../../assets/gardian.svg';
-import Paging from '../../../components/paging';
-import { searchDirectory } from '../../../../services/search-directory-service';
-import EditAclListView from './edit-acl-detail-view';
-import { useDomainStore } from '../../../../store/domain/store';
-import {
-	ALL,
-	EMAIL,
-	FALSE,
-	GRP,
-	MEMBERS_ONLY,
-	PUB,
-	RECORD_DISPLAY_LIMIT,
-	TRUE
-} from '../../../../constants';
+import { Trans, useTranslation } from 'react-i18next';
+
 import CreateAclList from './create-acl-list';
+import EditAclListView from './edit-acl-detail-view';
+import logo from '../../../../assets/gardian.svg';
+import { ALL, EMAIL, FALSE, GRP, PUB, RECORD_DISPLAY_LIMIT, TRUE } from '../../../../constants';
+import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createAclList } from '../../../../services/create-acl-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
-import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import { searchDirectory } from '../../../../services/search-directory-service';
+import { useDomainStore } from '../../../../store/domain/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import ModalOverlay from '../../../components/ModalOverlay';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
+import ModalOverlay from '../../../components/ModalOverlay';
+import Paging from '../../../components/paging';
 
 const DomainAclList: FC = () => {
 	const [t] = useTranslation();
@@ -471,6 +464,7 @@ const DomainAclList: FC = () => {
 			allOwnersList,
 			ownerGrantEmailType,
 			ownerGrantEmails
+			// eslint-disable-next-line sonarjs/cognitive-complexity
 		) => {
 			setIsLoading(true);
 			const attributes: any[] = [];
@@ -701,8 +695,6 @@ const DomainAclList: FC = () => {
 									setSelectedDlRow(selected);
 								}}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (

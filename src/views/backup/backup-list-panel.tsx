@@ -4,30 +4,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
-import ListPanelItem from '../list/list-panel-item';
+import { useTranslation } from 'react-i18next';
+
 import {
 	ADVANCED,
 	ADVANCED_LBL,
 	BACKUP_BASIC,
 	BACKUP_ROUTE_ID,
 	CONFIGURATION_BACKUP,
+	IS_DEFAULT_SETTINGS_EXPANDED,
+	IS_SERVER_SPECIFICS_EXPANDED,
 	LIST_SERVER,
 	SERVER,
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import ListItems from '../list/list-items';
 import MatomoTracker from '../../matomo-tracker';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
+import { useConfigStore } from '../../store/config/store';
+import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { useRightsStore } from '../../store/rights/store';
-import { getRights } from '../utility/utils';
 import DropDownInput from '../components/dropDownInput';
-import { useConfigStore } from '../../store/config/store';
+import ListItems from '../list/list-items';
+import ListPanelItem from '../list/list-panel-item';
+import { getRights } from '../utility/utils';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
@@ -125,10 +129,23 @@ const BackupListPanel: FC = () => {
 	}, [globalCarbonioSendAnalytics, matomo, selectedOperationItem, selectedServer]);
 
 	const toggleDefaultSettingsView = (): void => {
-		setIsDefaultSettingsExpanded(!isDefaultSettingsExpanded);
+		if (isDefaultSettingsExpanded) {
+			setIsDefaultSettingsExpanded(false);
+			localStorage.setItem(IS_DEFAULT_SETTINGS_EXPANDED, 'false');
+		} else {
+			setIsDefaultSettingsExpanded(true);
+			localStorage.removeItem(IS_DEFAULT_SETTINGS_EXPANDED);
+		}
 	};
 
 	const toggleServerSpecific = (): void => {
+		if (isServerSpecificsExpanded) {
+			setIsServerSpecificsExpanded(false);
+			localStorage.setItem(IS_SERVER_SPECIFICS_EXPANDED, 'false');
+		} else {
+			setIsServerSpecificsExpanded(true);
+			localStorage.removeItem(IS_SERVER_SPECIFICS_EXPANDED);
+		}
 		setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
 	};
 
@@ -197,6 +214,21 @@ const BackupListPanel: FC = () => {
 			}
 		}
 	};
+
+	useEffect(() => {
+		const storedValue = localStorage.getItem(IS_DEFAULT_SETTINGS_EXPANDED);
+		if (storedValue === 'false') {
+			setIsDefaultSettingsExpanded(false);
+		} else {
+			setIsDefaultSettingsExpanded(true);
+		}
+		const storedServerSpecificsValue = localStorage.getItem(IS_SERVER_SPECIFICS_EXPANDED);
+		if (storedServerSpecificsValue === 'false') {
+			setIsServerSpecificsExpanded(false);
+		} else {
+			setIsServerSpecificsExpanded(true);
+		}
+	}, []);
 
 	return (
 		<Container

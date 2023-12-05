@@ -5,12 +5,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo } from 'react';
+
 import { Container, Row, Text, Table, Icon } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import MiliSecondToDate from './functions/miliSecondToDate';
-import { DISMMISED, STARTED, STOPPING } from '../../constants';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
+import { EXCEPTION, FINISHED, STARTED } from '../../constants';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
 
 export const OperationsTable: FC<{
 	operations: Array<any>;
@@ -18,7 +20,7 @@ export const OperationsTable: FC<{
 	donePanel: boolean;
 	selectedRows: any;
 	onSelectionChange: any;
-	onClick: any;
+	onClick: (value: number) => void;
 }> = ({ operations, headers, donePanel, selectedRows, onSelectionChange, onClick }) => {
 	const [t] = useTranslation();
 
@@ -28,14 +30,15 @@ export const OperationsTable: FC<{
 				id: i?.toString(),
 				columns: [
 					<Row
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={i}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
 						<Text weight="light" size="regular">
-							{v?.host || ''}
+							{v?.serverName || ''}
 						</Text>
 					</Row>,
 					<Row
@@ -44,7 +47,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -56,19 +59,18 @@ export const OperationsTable: FC<{
 						key={i}
 						style={{
 							textAlign: 'left',
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							justifyContent: 'flex-center'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
-						{v?.state === STOPPING && (
+						{v?.type === EXCEPTION && (
 							<Icon icon="StopCircleOutline" size="medium" color="secondary" />
 						)}
-						{v?.state === DISMMISED && (
-							<Icon icon="CloseCircleOutline" size="medium" color="error" />
-						)}
-						{v?.state === STARTED && (
+						{v?.type === FINISHED && <Icon icon="CloseCircleOutline" size="medium" color="error" />}
+						{v?.type === STARTED && (
 							<Icon icon="CheckmarkCircleOutline" size="medium" color="success" />
 						)}
 					</Row>,
@@ -78,7 +80,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -90,9 +92,9 @@ export const OperationsTable: FC<{
 						key={i}
 						style={{
 							textAlign: 'left',
-							justifyContent: 'flex-center'
+							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -104,14 +106,14 @@ export const OperationsTable: FC<{
 						key={i}
 						style={{
 							textAlign: 'left',
-							justifyContent: 'flex-center'
+							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
 						<Text weight="light" size="small">
-							{v?.queuedTime ? MiliSecondToDate(v?.queuedTime) : ''}
+							{v?.humanStartTime ? v?.humanStartTime : ''}
 						</Text>
 					</Row>
 				],
@@ -128,7 +130,7 @@ export const OperationsTable: FC<{
 					<Row
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						key={i}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -142,7 +144,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -156,7 +158,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-start'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -170,7 +172,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-center'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>
@@ -184,7 +186,7 @@ export const OperationsTable: FC<{
 							textAlign: 'left',
 							justifyContent: 'flex-center'
 						}}
-						onClick={(): any => {
+						onClick={(): void => {
 							onClick(i);
 						}}
 					>

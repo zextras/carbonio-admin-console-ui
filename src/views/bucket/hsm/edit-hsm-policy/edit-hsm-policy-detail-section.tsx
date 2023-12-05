@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -15,12 +17,11 @@ import {
 	Button
 } from '@zextras/carbonio-design-system';
 import { cloneDeep } from 'lodash';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
-
 import ListRow from '../../../list/list-row';
 import { HSMContext } from '../hsm-context/hsm-context';
 
@@ -41,7 +42,7 @@ const EditHsmPolicyDetailSection: FC<{
 	const [policyCriteria, setPolicyCriteria] = useState<Array<any>>([]);
 	const [isShowDateScale, setIsShowDateScale] = useState<boolean>(true);
 	const [value, setValue] = useState<string>();
-	const [selectedPolicies, setSelectedPolicies] = useState<Array<any>>([]);
+	const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
 	const [isUpdatePolicyCriteria, setIsUpdatePolicyCriteria] = useState<boolean>(false);
 	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<any>>(
 		hsmDetail?.destinationVolume.map((item: any) => item?.id)
@@ -66,6 +67,7 @@ const EditHsmPolicyDetailSection: FC<{
 		}
 	}, [isDocument, isContactEnable, isMessageEnable, isEventEnable, setHsmDetail]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useMemo(() => {
 		if (currentPolicy) {
 			if (currentPolicy?.hsmType) {
@@ -624,8 +626,6 @@ const EditHsmPolicyDetailSection: FC<{
 						selectedRows={selectedPolicies}
 						onSelectionChange={(selected: any): void => setSelectedPolicies(selected)}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Padding>

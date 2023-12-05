@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo, useContext, useState, ReactElement, useCallback } from 'react';
+
 import {
 	Container,
 	Padding,
@@ -15,28 +16,29 @@ import {
 	ChipInput,
 	Icon
 } from '@zextras/carbonio-design-system';
-import QRCode from 'qrcode.react';
-import styled from 'styled-components';
 import { map } from 'lodash';
+import QRCode from 'qrcode.react';
 import { Trans, useTranslation } from 'react-i18next';
-import { useDomainStore } from '../../../../../store/domain/store';
-import { AccountContext } from '../account-context';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
-import logo from '../../../../../assets/gardian.svg';
-import { ServicesPassphrase } from './services-passphrase';
-import { Section } from '../../../../app/component/section';
-import { sendMail } from '../../../../../services/send-mail-service';
-import { emailContent } from '../create-account/email-content';
-import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import ListRow from '../../../../list/list-row';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import { isValidEmail } from '../../../../utility/utils';
+import styled from 'styled-components';
+
 import InheritedInput from './inherited-components/inherited-input';
-import InheritedSwitch from './inherited-components/inherited-switch';
 import InheritedSelect from './inherited-components/inherited-select';
+import InheritedSwitch from './inherited-components/inherited-switch';
+import { ServicesPassphrase } from './services-passphrase';
+import logo from '../../../../../assets/gardian.svg';
+import { fetchSoap } from '../../../../../services/generateOTP-service';
+import { sendMail } from '../../../../../services/send-mail-service';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useDomainStore } from '../../../../../store/domain/store';
+import { HorizontalWizard } from '../../../../app/component/hwizard';
+import { Section } from '../../../../app/component/section';
+import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
+import ListRow from '../../../../list/list-row';
+import { isValidEmail } from '../../../../utility/utils';
+import { AccountContext } from '../account-context';
+import { emailContent } from '../create-account/email-content';
 
 const StaticCodesContainer = styled(Row)`
 	max-width: 350px;
@@ -84,9 +86,9 @@ const EditAccountSecuritySection: FC = () => {
 	const [showCreateOTP, setShowCreateOTP] = useState<boolean>(false);
 	const [qrData, setQrData] = useState('');
 	const [secrateCode, setSecrateCode] = useState('');
-	const [sendEmailTo, setSendEmailTo] = useState('');
+	const [sendEmailTo, setSendEmailTo] = useState<any>('');
 	const [pinCodes, setPinCodes] = useState<any>([]);
-	const [selectedRows, setSelectedRows] = useState([]);
+	const [selectedRows, setSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -217,15 +219,11 @@ const EditAccountSecuritySection: FC = () => {
 											});
 											setSendEmailTo(data);
 										}}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										defaultValue={sendEmailTo}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										value={sendEmailTo}
 										background="gray5"
 										ChipComponent={CustomChip}
-										// hasError={some(sendEmailTo || [], { error: true })}
+										maxChips={null}
 									/>
 								</Row>
 								<Row width="20%" mainAlignment="space-between">
@@ -535,13 +533,9 @@ const EditAccountSecuritySection: FC = () => {
 												rows={otpList}
 												headers={headers}
 												multiSelect={false}
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
 												onSelectionChange={setSelectedRows}
 												style={{ overflow: 'auto', height: '100%' }}
 												RowFactory={CustomRowFactory}
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
 												HeaderFactory={CustomHeaderFactory}
 											/>
 										)}

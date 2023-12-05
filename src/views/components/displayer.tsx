@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Row, Button, Padding, IconButton, Tooltip } from '@zextras/carbonio-design-system';
 import React, { FC } from 'react';
+
+import { Row, Button, Padding, IconButton, Tooltip } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 const Displayer: FC<{ buttons: Array<any>; pinIcon: boolean }> = ({ buttons, pinIcon }): any => {

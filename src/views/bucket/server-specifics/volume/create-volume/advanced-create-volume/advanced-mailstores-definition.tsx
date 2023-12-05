@@ -4,23 +4,25 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import { Container, Row, Input, Select, Padding, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
-import { VolumeContext } from '../volume-context';
+
+import { AdvancedVolumeContext } from './create-advanced-volume-context';
+import { objectType } from '../../../../../../../types';
 import {
 	LOCAL_TYPE_VALUE,
 	EXTERNAL_TYPE_VALUE,
 	UNUSED,
 	USAGE_IN_EXTERNAL_BACKUP
 } from '../../../../../../constants';
-import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
 import { fetchSoap } from '../../../../../../services/bucket-service';
-import { AdvancedVolumeContext } from './create-advanced-volume-context';
-import { objectType } from '../../../../../../../types';
+import { useBucketVolumeStore } from '../../../../../../store/bucket-volume/store';
+import { BucketTypeItems, volumeAllocationList } from '../../../../../utility/utils';
+import { VolumeContext } from '../volume-context';
 
 const AdvancedMailstoresDefinition: FC<{
-	externalData: objectType;
+	externalData: any;
 	setCompleteLoading: (newValue: boolean) => void;
 	setToggleNextBtn: (newValue: boolean) => void;
 }> = ({ externalData, setToggleNextBtn, setCompleteLoading }) => {
@@ -34,10 +36,10 @@ const AdvancedMailstoresDefinition: FC<{
 	);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
-	const [allocation, setAllocation] = useState<{ label: string; value?: number }>();
-	const [unusedType, setUnusedType] = useState<objectType>();
+	const [allocation, setAllocation] = useState<any>();
+	const [unusedType, setUnusedType] = useState<any>();
 	const [errName, setErrName] = useState(true);
-	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<objectType[]>([]);
+	const [backupUnusedBucketList, setBackupUnusedBucketList] = useState<any>([]);
 
 	const changeVolName = useCallback(
 		(e) => {
@@ -52,7 +54,7 @@ const AdvancedMailstoresDefinition: FC<{
 		[setAdvancedVolumeDetail, setVolumeDetail]
 	);
 
-	const onVolAllocationChange = (v: number): void => {
+	const onVolAllocationChange = (v: any): void => {
 		setVolumeDetail((prev: objectType) => ({ ...prev, volumeAllocation: v }));
 		const volumeTypeObject = volAllocationList?.find(
 			(item: { label: string; value?: number }) => item?.value === v
@@ -68,7 +70,7 @@ const AdvancedMailstoresDefinition: FC<{
 		}
 	};
 
-	const onUnusedBucketListChange = (e: string): void => {
+	const onUnusedBucketListChange = (e: any): void => {
 		const selectedBucketDetail = isVolumeAllDetail?.filter(
 			(item: objectType) => item?.uuid === e
 		)[0];
@@ -167,8 +169,6 @@ const AdvancedMailstoresDefinition: FC<{
 						inputName="server"
 						label={t('label.volume_server_name', 'Server')}
 						backgroundColor="gray6"
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						value={externalData}
 						readOnly
 					/>
@@ -192,17 +192,11 @@ const AdvancedMailstoresDefinition: FC<{
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
 					<Select
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						items={volAllocationList}
 						background="gray5"
 						label={t('label.storage_type', 'Storage Type')}
 						showCheckbox={false}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						selection={allocation}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						onChange={onVolAllocationChange}
 					/>
 				</Row>
@@ -211,8 +205,6 @@ const AdvancedMailstoresDefinition: FC<{
 					backupUnusedBucketList?.length !== 0 && (
 						<Row padding={{ top: 'large' }} width="100%">
 							<Select
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								items={backupUnusedBucketList}
 								background="gray5"
 								label={t(
@@ -220,11 +212,7 @@ const AdvancedMailstoresDefinition: FC<{
 									'Available Buckets List (that are not in use in the backup)'
 								)}
 								showCheckbox={false}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								selection={unusedType}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onUnusedBucketListChange}
 							/>
 						</Row>

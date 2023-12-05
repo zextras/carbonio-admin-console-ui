@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useEffect, useCallback, useMemo, useContext, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -20,23 +21,24 @@ import {
 	Modal,
 	Padding
 } from '@zextras/carbonio-design-system';
+import { debounce, map } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
-import { debounce, head, map } from 'lodash';
 import styled from 'styled-components';
-import { useDomainStore } from '../../../../../store/domain/store';
-import { AccountContext } from '../account-context';
-import { localeList, AccountStatus } from '../../../../utility/utils';
-import ManageAliases from '../../../../components/manageAliases';
-import { modifyAccountRequest } from '../../../../../services/modify-account';
-import { AccountType } from '../account-types/account-types';
-import InheritedSelect from './inherited-components/inherited-select';
-import { getDomainList } from '../../../../../services/search-domain-service';
-import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
-import { objectType, Attribute } from '../../../../../../types';
-import DropDownInput from '../../../../components/dropDownInput';
-import CustomChip from '../../../../components/customChip';
-import Textarea from '../../../../components/textarea';
+
 import InheritedInput from './inherited-components/inherited-input';
+import InheritedSelect from './inherited-components/inherited-select';
+import { objectType, Attribute } from '../../../../../../types';
+import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
+import { modifyAccountRequest } from '../../../../../services/modify-account';
+import { getDomainList } from '../../../../../services/search-domain-service';
+import { useDomainStore } from '../../../../../store/domain/store';
+import CustomChip from '../../../../components/customChip';
+import DropDownInput from '../../../../components/dropDownInput';
+import ManageAliases from '../../../../components/manageAliases';
+import Textarea from '../../../../components/textarea';
+import { localeList, AccountStatus } from '../../../../utility/utils';
+import { AccountContext } from '../account-context';
+import { AccountType } from '../account-types/account-types';
 
 const SelectItem = styled(Row)``;
 
@@ -195,13 +197,13 @@ const EditAccountGeneralSection: FC = () => {
 		}
 	}, [cosList]);
 
-	const onAccountStatusChange = (v: string): any => {
+	const onAccountStatusChange = (v: any): any => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraAccountStatus: v }));
 	};
 	const onPrefLocaleChange = (v: string): void => {
 		v && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraPrefLocale: v }));
 	};
-	const onCOSIdChange = (v: string): void => {
+	const onCOSIdChange = (v: any): void => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraCOSId: v }));
 	};
 	const onCOSSwitchChanges = (): void => {
@@ -405,7 +407,7 @@ const EditAccountGeneralSection: FC = () => {
 
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
-						label={t('label.advance_edit_viewed_name', 'Viewed Name')}
+						label={t('label.advance_edit_display_name', 'Display Name')}
 						backgroundColor="gray5"
 						defaultValue={accountDetail?.displayName}
 						value={accountDetail?.displayName}
@@ -454,7 +456,9 @@ const EditAccountGeneralSection: FC = () => {
 								<Tooltip
 									placement="top"
 									label={t(
+										// eslint-disable-next-line sonarjs/no-duplicate-string
 										'label.try_local_password_management_ldap',
+										// eslint-disable-next-line sonarjs/no-duplicate-string
 										'Disable the “Try local password management in case of failure” toggle or change your default Auth method to edit these fields'
 									)}
 								>
@@ -570,20 +574,17 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="49%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start" padding={{ right: 'medium' }}>
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
-								backgroundColor="gray5"
+								background="gray5"
 								label={t('label.account_status', 'Account Status')}
 								showCheckbox={false}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onAccountStatusChange}
 								defaultSelection={ACCOUNT_STATUS.find(
 									(item: any) => item.value === accountDetail?.zimbraAccountStatus
 								)}
-								padding={{ right: 'medium' }}
 							/>
 						) : (
 							<></>
@@ -610,12 +611,11 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="15.5%" mainAlignment="flex-start">
 						<Switch
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							defaultValue={defaultCOS}
+							defaultChecked={defaultCOS}
 							onClick={onCOSSwitchChanges}
 							label={t('account_details.default_COS', 'Default COS')}
 							iconColor="primary"
+							value={defaultCOS}
 						/>
 					</Row>
 					<Row width="84.5%" mainAlignment="flex-start">
@@ -628,8 +628,6 @@ const EditAccountGeneralSection: FC = () => {
 								defaultSelection={cosItems.find(
 									(item: any) => item.value === accountDetail?.zimbraCOSId
 								)}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onCOSIdChange}
 							/>
 						) : (
@@ -667,7 +665,7 @@ const EditAccountGeneralSection: FC = () => {
 			</Row>
 			<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 				<Text size="small" color="gray0" weight="bold">
-					{t('label.mailing_list', 'Mailing List')}
+					{t('label.distribution_list', 'Distribution List')}
 				</Text>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
@@ -681,6 +679,7 @@ const EditAccountGeneralSection: FC = () => {
 						defaultValue={directMemberList}
 						disabled
 						ChipComponent={CustomChip}
+						maxChips={null}
 					/>
 				</Row>
 			</Row>
@@ -695,6 +694,7 @@ const EditAccountGeneralSection: FC = () => {
 						defaultValue={inDirectMemberList}
 						disabled
 						ChipComponent={CustomChip}
+						maxChips={null}
 					/>
 				</Row>
 			</Row>

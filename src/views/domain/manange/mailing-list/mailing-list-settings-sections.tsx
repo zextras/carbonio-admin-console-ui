@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -13,20 +14,20 @@ import {
 	Table,
 	Button,
 	Padding,
-	SnackbarManagerContext,
-	Divider
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { debounce, sortedUniq, uniq } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
 import { MailingListContext } from './mailinglist-context';
-import ListRow from '../../../list/list-row';
-import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
+import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import { searchGal } from '../../../../services/search-gal-service';
-import helmetLogo from '../../../../assets/helmet_logo.svg';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
+import ListRow from '../../../list/list-row';
+import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 
 const MailingListSettingsSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -152,6 +153,7 @@ const MailingListSettingsSection: FC<any> = () => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label: `${t('label.invalid_email_address', 'Invalid email address')} ${
 							inValidEmailAddress[0]
 						}`,
@@ -532,8 +534,6 @@ const MailingListSettingsSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedDistributionListOwner}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -654,8 +654,6 @@ const MailingListSettingsSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedGrantEmail}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

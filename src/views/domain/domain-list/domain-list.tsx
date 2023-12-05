@@ -13,8 +13,7 @@ import React, {
 	ReactElement,
 	useContext
 } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
-import { debounce } from 'lodash';
+
 import {
 	Container,
 	Input,
@@ -25,27 +24,22 @@ import {
 	Icon,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import logo from '../../../assets/gardian.svg';
-import Paging from '../../components/paging';
-import { getDomainList } from '../../../services/search-domain-service';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import { GENERAL_SETTINGS } from '../../../constants';
-import { useDomainStore } from '../../../store/domain/store';
-import TrackNumberPerPage from '../../app/shared/track-number-per-page';
+import { debounce } from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
 
-type StatusItem = {
-	color: string;
-	label: string;
-};
+import logo from '../../../assets/gardian.svg';
+import { GENERAL_SETTINGS } from '../../../constants';
+import { getDomainList } from '../../../services/search-domain-service';
+import { useDomainStore } from '../../../store/domain/store';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import TrackNumberPerPage from '../../app/shared/track-number-per-page';
+import Paging from '../../components/paging';
 
 type StatusTypes = {
-	active: StatusItem;
-	maintenance: StatusItem;
-	locked: StatusItem;
-	closed: StatusItem;
-	pending: StatusItem;
-	lockout: StatusItem;
+	[key: string]: {
+		[key: string]: string;
+	};
 };
 type ZimbraDomainAttribute = {
 	n: string;
@@ -70,7 +64,7 @@ type ZimbraDomainEntry = {
 	id: string;
 	a: ZimbraDomainAttribute[];
 	zimbraDomainType: string;
-	zimbraDomainStatus: 'active' | 'maintenance' | 'locked' | 'closed' | 'pending' | 'lockout';
+	zimbraDomainStatus: string;
 	zimbraDomainName: string;
 	zimbraId: string;
 };
@@ -184,8 +178,6 @@ const DomainList: FC = () => {
 							if (ele.n === 'zimbraDomainType') {
 								domainIteam.zimbraDomainType = ele._content;
 							} else if (ele.n === 'zimbraDomainStatus') {
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore
 								domainIteam.zimbraDomainStatus = ele._content;
 							} else if (ele.n === 'zimbraDomainName') {
 								domainIteam.zimbraDomainName = ele._content;
@@ -324,8 +316,6 @@ const DomainList: FC = () => {
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}

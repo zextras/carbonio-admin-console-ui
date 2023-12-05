@@ -5,10 +5,12 @@
  */
 
 import React, { FC, useCallback, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import { Button } from '@zextras/carbonio-design-system';
-import { HorizontalWizard } from '../app/component/hwizard';
+import { useTranslation } from 'react-i18next';
+
 import Connection from './connection';
+import { HorizontalWizard } from '../app/component/hwizard';
 import { Section } from '../app/component/section';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {

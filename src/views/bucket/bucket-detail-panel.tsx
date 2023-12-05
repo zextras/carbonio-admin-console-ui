@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Padding,
@@ -17,28 +18,28 @@ import {
 	useSnackbar,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-
+import { TFunction } from 'i18next';
+import { filter } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { filter } from 'lodash';
-import { TFunction } from 'i18next';
-import logo from '../../assets/ninja_robo.svg';
-import NewBucket from './new-bucket';
+
 import BucketDeleteModel from './delete-bucket-model';
-import { fetchSoap } from '../../services/bucket-service';
 import EditBucketDetailPanel from './edit-bucket-details-panel';
-import ListRow from '../list/list-row';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import NewBucket from './new-bucket';
+import { TestConnectionObjectType, objectType } from '../../../types';
+import logo from '../../assets/ninja_robo.svg';
+import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import { objectType } from '../../../types';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ModalOverlay from '../components/ModalOverlay';
+import ListRow from '../list/list-row';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
 `;
 
-const headers = (t: TFunction): Array<object> => [
+const headers = (t: TFunction): any => [
 	{
 		id: 'label',
 		label: t('label.label', 'Label'),
@@ -58,13 +59,13 @@ const headers = (t: TFunction): Array<object> => [
 
 const BucketListTable: FC<{
 	volumes: objectType[];
-	selectedRows: string[];
+	selectedRows: any;
 	onSelectionChange: (selected: string[]) => void;
 	onDoubleClick: (i: number) => void;
 	onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, onDoubleClick, onClick }) => {
 	const [t] = useTranslation();
-	const tableRows = useMemo(
+	const tableRows: any = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: i,
@@ -77,6 +78,7 @@ const BucketListTable: FC<{
 							onClick={(): void => {
 								onClick(i);
 							}}
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 						>
 							<Text size="small" weight="regular">
@@ -134,19 +136,13 @@ const BucketListTable: FC<{
 					minHeight="auto"
 				>
 					<Table
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						headers={headers(t)}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						rows={tableRows}
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedRows}
 						onSelectionChange={onSelectionChange}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -235,7 +231,7 @@ const BucketDetailPanel: FC = () => {
 		// eslint-disable-next-line no-restricted-syntax
 		// delete  api call here
 		setOpen(false);
-		const objectToSendDeleteBucket = {
+		const objectToSendDeleteBucket: TestConnectionObjectType = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'doDeleteBucket',
@@ -245,8 +241,6 @@ const BucketDetailPanel: FC = () => {
 		};
 
 		if (selectedServerName === '') {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			delete objectToSendDeleteBucket?.targetServers;
 		}
 		fetchSoap('zextras', objectToSendDeleteBucket).then((res) => {

@@ -788,10 +788,6 @@
         "primary_volume": "Dit is een primair volume",
         "quarantined": "In quarantaine geplaatst",
         "registration": "Registratie",
-        "reset_domain_theme": "{{name}} thema opnieuw instellen",
-        "reset_global_theme": "Globaal thema opnieuw instellen",
-        "reset_theme_content_1": "Weet u zeker dat u het thema opnieuw wilt instellen?",
-        "reset_theme_content_2": "Als u op de knop JA klikt, gaan alle gegevens verloren.",
         "rest_device_warning_msg_1": "Door een apparaat te wissen worden de fabrieksinstellingen hersteld. Weet je zeker dat je door wilt gaan? ",
         "secondary_volume": "Dit is een secundair volume",
         "security": "BEVEILIGING",
@@ -821,7 +817,7 @@
         "bucket_delete_button": "VERWIJDEREN",
         "bucket_notes": "Aantekeningen",
         "label": "Label",
-        "notifications": "Notifications",
+        "notifications": "kennisgevingen",
         "search_for_user_and_clic_to_add": "Zoek een gebruiker en klik op de ADD knop.",
         "there_are_no_owners": "Er zijn hier geen eigenaars.",
         "verify_certificate": "Verifiëren",
@@ -1177,7 +1173,10 @@
         "valid_not_before": "Geldig vanaf (niet eerder)",
         "what_to_trust": "Wat kunt u vertrouwen?",
         "person_name": "Naam",
-        "stats": "Statistieken"
+        "stats": "Statistieken",
+        "advance_edit_userName": "Gebruikersnaam",
+        "search_for_an_account": "Zoeken naar een account",
+        "received": "Ontvangen"
     },
     "timezone": {
         "europe_belgrade": "{{value}} Belgrado, Bratislava, Boedapest, Ljubljana, Praag",
@@ -1388,7 +1387,8 @@
         "pop": "POP",
         "receiver_of_quota_warning_email": "Ontvanger van quotumwaarschuwing (e-mail)",
         "type_the exact_domain_name": "Typ de exacte domeinnaam",
-        "web_ui": "WebUI"
+        "web_ui": "WebUI",
+        "administration_rights": "Beheersrechten"
     },
     "message": {
         "snackbar": {
@@ -1956,7 +1956,8 @@
         "indexer_helperText": "Indexer",
         "primary_helperText": "Primair",
         "secondary_helperText": "Secundair",
-        "create_storage_volume": "Opslagvolume creëren"
+        "create_storage_volume": "Opslagvolume creëren",
+        "running": "Werkt"
     },
     "hsm": {
         "all": "Alle",
@@ -2080,7 +2081,7 @@
         "done": "Klaar",
         "label": {
             "Deep": "Diep",
-            "notifications": "Notifications",
+            "notifications": "kennisgevingen",
             "status": "Status",
             "action(M)": "Actie (M)",
             "cancel_operation_btn": "OPERATIE ANNULEREN",

@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useContext, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,15 +16,17 @@ import {
 	Padding,
 	Divider
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
+
 import { COS_ROUTE_ID, MANAGE } from '../../constants';
 import { createCos } from '../../services/create-cos';
-import ListRow from '../list/list-row';
+import { useCosStore } from '../../store/cos/store';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';
+import ListRow from '../list/list-row';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -48,6 +51,7 @@ const CreateCos: FC = () => {
 	const [description, setDescription] = useState<string>('');
 	const [cosName, setCosName] = useState<string>('');
 	const [isLoading, setIsLoading] = useState(false);
+	const { setCosView, setCos } = useCosStore();
 
 	const showSuccessSnackBar = (): void => {
 		createSnackbar({
@@ -64,9 +68,14 @@ const CreateCos: FC = () => {
 	};
 
 	const routeToCos = (resp: any): void => {
-		const cosId = resp?.Body?.CreateCosResponse?.cos[0]?.id;
-		if (cosId) {
-			replaceHistory(`/${cosId}/general_information`);
+		const cos = resp?.cos[0];
+		if (cos) {
+			setCos({
+				a: cos?.a,
+				id: cos?.id,
+				name: cos?.name
+			});
+			setCosView('general_information');
 		} else {
 			replaceHistory(`/`);
 		}

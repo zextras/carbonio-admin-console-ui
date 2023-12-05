@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useContext, useState, useEffect } from 'react';
+
 import {
 	Container,
 	Padding,
@@ -14,16 +15,17 @@ import {
 	Switch,
 	ChipInput
 } from '@zextras/carbonio-design-system';
+import { map } from 'lodash';
+import QRCode from 'qrcode.react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import QRCode from 'qrcode.react';
-import { map } from 'lodash';
-import { useDomainStore } from '../../../../../store/domain/store';
+
 import { AccountContext } from './account-context';
-import { sendMail } from '../../../../../services/send-mail-service';
 import { emailContent } from './email-content';
-import { isValidEmail } from '../../../../utility/utils';
+import { sendMail } from '../../../../../services/send-mail-service';
+import { useDomainStore } from '../../../../../store/domain/store';
 import CustomChip from '../../../../components/customChip';
+import { isValidEmail } from '../../../../utility/utils';
 
 const CustomIcon = styled(Icon)`
 	width: 20px;
@@ -49,7 +51,7 @@ const AccountOtpSection: FC<{
 	const context = useContext(AccountContext);
 	const { accountDetail, setAccountDetail } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const [sendEmailTo, setSendEmailTo] = useState('');
+	const [sendEmailTo, setSendEmailTo] = useState<any>('');
 	const [t] = useTranslation();
 
 	useEffect(() => {
@@ -259,15 +261,11 @@ const AccountOtpSection: FC<{
 										});
 										setSendEmailTo(data);
 									}}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									defaultValue={sendEmailTo}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									value={sendEmailTo}
 									background="gray5"
 									ChipComponent={CustomChip}
-									// hasError={some(sendEmailTo || [], { error: true })}
+									maxChips={null}
 								/>
 							</Row>
 							<Row width="20%" mainAlignment="space-between">

@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useContext, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -12,18 +14,19 @@ import {
 	ChipInput,
 	Padding,
 	Button,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	ChipItem
 } from '@zextras/carbonio-design-system';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import { filter, isEqual, map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { filter, isEqual, map } from 'lodash';
+
+import { Attribute, CreateSnackbarType } from '../../../../types';
+import { getAllConfig } from '../../../services/get-all-config';
+import { modifyConfig } from '../../../services/modify-config';
+import OverlayDivision from '../../components/overlayDivision';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
-import { Attribute, CreateSnackbarType } from '../../../../types';
-import { modifyConfig } from '../../../services/modify-config';
-import { getAllConfig } from '../../../services/get-all-config';
-import OverlayDivision from '../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -127,7 +130,7 @@ const GlobalDetailPanel: FC = () => {
 				n: 'carbonioNotificationFrom',
 				_content: carbonioNotificationData.carbonioNotificationFrom
 			});
-			carbonioNotificationData.carbonioNotificationRecipients.map(
+			carbonioNotificationData.carbonioNotificationRecipients.forEach(
 				// eslint-disable-next-line array-callback-return
 				(item: { label: string }): void => {
 					attributes.push({
@@ -254,10 +257,8 @@ const GlobalDetailPanel: FC = () => {
 							background="gray5"
 							defaultValue={carbonioNotificationData?.carbonioNotificationRecipients}
 							value={carbonioNotificationData?.carbonioNotificationRecipients}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={(emails: { label: string }[]): void => {
-								const data: { label: string }[] = [];
+							onChange={(emails: ChipItem[]): void => {
+								const data: ChipItem[] = [];
 								map(emails, (email) => {
 									if (isValidEmail(email.label ?? '')) data.push(email);
 								});

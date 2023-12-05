@@ -6,7 +6,11 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
-export const getCosList = async (searchKeyWord: string): Promise<any> =>
+export const getCosList = async (
+	searchKeyWord: string,
+	limit?: number,
+	offset?: number
+): Promise<any> =>
 	soapFetch(`SearchDirectory`, {
 		method: 'POST',
 		credentials: 'include',
@@ -14,8 +18,8 @@ export const getCosList = async (searchKeyWord: string): Promise<any> =>
 			'Content-Type': 'application/json'
 		},
 		_jsns: 'urn:zimbraAdmin',
-		limit: '50',
-		offset: 0,
+		limit: limit ?? 50,
+		offset: offset ?? 0,
 		sortBy: 'cn',
 		sortAscending: '1',
 		applyCos: 'false',

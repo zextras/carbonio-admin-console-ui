@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
 export interface Right {
@@ -28,7 +28,7 @@ type RightsState = {
 	setUserType: (userType: string) => void;
 };
 
-export const useRightsStore = create<RightsState>(
+export const useRightsStore = create<RightsState>()(
 	devtools((set) => ({
 		rights: [],
 		setRights: (rights): void => set({ rights }, false, 'setRights'),

@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Divider,
@@ -17,15 +18,16 @@ import {
 	Icon,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { useTranslation, Trans } from 'react-i18next';
+import { debounce } from 'lodash';
 import moment from 'moment';
-import { cloneDeep, debounce, filter } from 'lodash';
-import gardian from '../../../../assets/gardian.svg';
-import { getAllDevices } from '../../../../services/get-all-devices';
+import { useTranslation, Trans } from 'react-i18next';
+
 import ActiveDeviceDetail from './active-device-detail';
+import gardian from '../../../../assets/gardian.svg';
 import { ZX_MOBILE } from '../../../../constants';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import { getAllDevices } from '../../../../services/get-all-devices';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 
 type MobileDevice = {
 	accountEmail: string;
@@ -100,6 +102,7 @@ const ActiveSync: FC = () => {
 		[t]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAllDeviceList = useCallback(() => {
 		getAllDevices(ZX_MOBILE)
 			.then((res: any) => {
@@ -346,8 +349,6 @@ const ActiveSync: FC = () => {
 							showCheckbox={false}
 							multiSelect={false}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Row>

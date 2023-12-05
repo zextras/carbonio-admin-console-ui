@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -12,10 +14,10 @@ import {
 	IconButton,
 	Input
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MtaStats, mtaStats } from '../../../../types';
+
 import MTAStatsMail from './mta-stats-mail';
+import { MtaStats, mtaStats } from '../../../../types';
 
 const MTAStatsDetail: FC<{
 	serverState: mtaStats | undefined;
@@ -41,7 +43,6 @@ const MTAStatsDetail: FC<{
 
 	const updateMailCount = useCallback(
 		(state: MtaStats) => {
-			console.log('>>>>>>', state);
 			updateCount({
 				serverName: state?.serverName || '',
 				incoming: state.incoming.toString() || '0',
@@ -64,6 +65,10 @@ const MTAStatsDetail: FC<{
 		},
 		[setSelectedServer]
 	);
+
+	const updateOnchange = useCallback(() => {
+		// update change in future requirement
+	}, []);
 
 	return (
 		<>
@@ -144,7 +149,7 @@ const MTAStatsDetail: FC<{
 								backgroundColor="gray5"
 								value={serverState?.active}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-									null;
+									updateOnchange();
 								}}
 								onClick={(): void => openMailDetailDialog(true)}
 							/>
@@ -155,7 +160,7 @@ const MTAStatsDetail: FC<{
 								backgroundColor="gray5"
 								value={serverState?.corrupt}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-									null;
+									updateOnchange();
 								}}
 								onClick={(): void => openMailDetailDialog(true)}
 							/>
@@ -175,7 +180,7 @@ const MTAStatsDetail: FC<{
 								backgroundColor="gray5"
 								value={serverState?.deferred}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-									null;
+									updateOnchange();
 								}}
 								onClick={(): void => openMailDetailDialog(true)}
 							/>
@@ -186,7 +191,7 @@ const MTAStatsDetail: FC<{
 								backgroundColor="gray5"
 								value={serverState?.incoming}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-									null;
+									updateOnchange();
 								}}
 								onClick={(): void => openMailDetailDialog(true)}
 							/>
@@ -197,7 +202,7 @@ const MTAStatsDetail: FC<{
 								backgroundColor="gray5"
 								value={serverState?.hold}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-									null;
+									updateOnchange();
 								}}
 								onClick={(): void => openMailDetailDialog(true)}
 							/>

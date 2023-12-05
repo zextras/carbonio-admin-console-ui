@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -12,16 +13,20 @@ import {
 	Divider,
 	Text,
 	Input,
-	Paragraph,
 	Button,
 	Table,
 	SnackbarManagerContext,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
-import _ from 'lodash';
 import { soapFetch } from '@zextras/carbonio-shell-ui';
+import _ from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
+
+import DeleteCertificateModel from './delete-certificate-model';
+import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
+import { objectType } from '../../../../../types';
+import logo from '../../../../assets/helmet_logo.svg';
 import {
 	ZIMBRA_DOMAIN_NAME,
 	ZIMBRA_ID,
@@ -31,15 +36,11 @@ import {
 } from '../../../../constants';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
-import logo from '../../../../assets/helmet_logo.svg';
-import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
-import DeleteCertificateModel from './delete-certificate-model';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import ListRow from '../../../list/list-row';
-import { objectType } from '../../../../../types';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
+import ListRow from '../../../list/list-row';
+import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -62,6 +63,7 @@ const DomainVirtualHosts: FC = () => {
 	const [open, setOpen] = useState(false);
 	const [alertToggle, setAlertToggle] = useState(false);
 	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
+	const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
 
 	const closeHandler = (): void => {
 		setOpen(false);
@@ -158,6 +160,7 @@ const DomainVirtualHosts: FC = () => {
 		} = {};
 		const attributes: { n: string; _content?: string }[] = [];
 		body.id = zimbraId;
+		// eslint-disable-next-line sonarjs/no-duplicate-string
 		body._jsns = 'urn:zimbraAdmin';
 		items.forEach((item: any) => {
 			attributes.push({
@@ -193,7 +196,8 @@ const DomainVirtualHosts: FC = () => {
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -214,10 +218,15 @@ const DomainVirtualHosts: FC = () => {
 				const data = _.mapValues(res?.cert[0], (value) => value[0]._content);
 				setDomainCertiDetails(data);
 				setToggleCertiBtn(false);
+				setIsCertificateAvailbale(true);
 			})
 			// TODO: On no cert found server always returns error so used empty catch for now
 			// eslint-disable-next-line @typescript-eslint/no-empty-function
-			.catch(() => {});
+			.catch((error) => {
+				if (error) {
+					setIsCertificateAvailbale(false);
+				}
+			});
 		const zimbraData =
 			domainInformation &&
 			domainInformation.filter((item: objectType) => item.n === ZIMBRA_DOMAIN_NAME)[0]?._content;
@@ -253,7 +262,7 @@ const DomainVirtualHosts: FC = () => {
 					replace: true
 				});
 			});
-	}, [createSnackbar, domainId, domainInformation, t]);
+	}, [createSnackbar, domainId, domainInformation, setIsCertificateAvailbale, t]);
 
 	const deleteHandler = (): void => {
 		const body: {
@@ -288,6 +297,7 @@ const DomainVirtualHosts: FC = () => {
 				getAllCertiDetailsAPICall();
 				setDomainCertiDetails({});
 				setToggleCertiBtn(true);
+				setIsCertificateAvailbale(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -306,19 +316,19 @@ const DomainVirtualHosts: FC = () => {
 	const downloadTxtHandler = (): void => {
 		const elementCerti = document.createElement('a');
 		const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate], {
-			type: 'text/plain;charset=utf-8'
+			type: 'application/x-pem-file'
 		});
 		elementCerti.href = URL.createObjectURL(fileCerti);
-		elementCerti.download = `certificate-${domainName}.txt`;
+		elementCerti.download = `certificate-${domainName}.pem`;
 		document.body.appendChild(elementCerti);
 		elementCerti.click();
 
 		const elementPrivateKey = document.createElement('a');
 		const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey], {
-			type: 'text/plain;charset=utf-8'
+			type: 'application/x-pem-file'
 		});
 		elementPrivateKey.href = URL.createObjectURL(fileKey);
-		elementPrivateKey.download = `private-key-${domainName}.txt`;
+		elementPrivateKey.download = `private-key-${domainName}.pem`;
 		document.body.appendChild(elementPrivateKey);
 		elementPrivateKey.click();
 	};
@@ -396,6 +406,8 @@ const DomainVirtualHosts: FC = () => {
 					height="calc(100vh - 150px)"
 				>
 					<Padding value="large">
+						{/*
+						// AC-886 Hide sentense until the login page is not able to manage the virtual host.
 						<Padding vertical="small">
 							<Row mainAlignment="flex-start" width="100%">
 								<Paragraph size="medium" color="secondary">
@@ -406,7 +418,7 @@ const DomainVirtualHosts: FC = () => {
 									/>
 								</Paragraph>
 							</Row>
-						</Padding>
+						</Padding> */}
 						<Padding vertical="large" width="100%">
 							<Row mainAlignment="flex-start" width="100%" wrap="nowrap">
 								<Container width="80%">
@@ -460,8 +472,6 @@ const DomainVirtualHosts: FC = () => {
 									setRemoveVirtualBtnDisabled(true);
 								}
 							}}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 							RowFactory={CustomRowFactory}
 						/>

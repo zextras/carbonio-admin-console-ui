@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -15,13 +16,14 @@ import {
 	Divider,
 	Dropdown
 } from '@zextras/carbonio-design-system';
+import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import { debounce } from 'lodash';
-import ListRow from '../../../list/list-row';
+
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import { useDomainStore } from '../../../../store/domain/store';
 import { getDomainList } from '../../../../services/search-domain-service';
+import { useDomainStore } from '../../../../store/domain/store';
+import ListRow from '../../../list/list-row';
 
 const DatePickerContainer = styled(Container)`
 	.react-datepicker__input-container {

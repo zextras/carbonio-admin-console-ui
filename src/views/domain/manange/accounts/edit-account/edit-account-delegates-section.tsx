@@ -13,6 +13,7 @@ import React, {
 	useCallback,
 	useRef
 } from 'react';
+
 import {
 	Container,
 	Padding,
@@ -25,26 +26,19 @@ import {
 	ChipInput,
 	Checkbox
 } from '@zextras/carbonio-design-system';
-import { find, filter, map, debounce, cloneDeep, findIndex, pullAt } from 'lodash';
-import { Trans, useTranslation } from 'react-i18next';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
-import { useDomainStore } from '../../../../../store/domain/store';
-import { AccountContext } from '../account-context';
-import { HorizontalWizard } from '../../../../app/component/hwizard';
-import logo from '../../../../../assets/gardian.svg';
-import { Section } from '../../../../app/component/section';
-import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { find, filter, map, debounce, cloneDeep, findIndex, pullAt } from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
+
+import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
-import DelegateAddSection from './add-delegate-section/delegate-add-section';
-import { accountListDirectory } from '../../../../../services/account-list-directory-service';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
+import InheritedSelect from './inherited-components/inherited-select';
+import logo from '../../../../../assets/gardian.svg';
 import {
 	SEND_MAILS_ONLY,
 	READ_MAILS_ONLY,
@@ -52,8 +46,16 @@ import {
 	MANAGE_NO_SEND,
 	SEND_READ_MANAGE_MAILS
 } from '../../../../../constants';
-import InheritedSelect from './inherited-components/inherited-select';
+import { accountListDirectory } from '../../../../../services/account-list-directory-service';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useDomainStore } from '../../../../../store/domain/store';
+import { HorizontalWizard } from '../../../../app/component/hwizard';
+import { Section } from '../../../../app/component/section';
+import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
+import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
+import { AccountContext } from '../account-context';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -89,10 +91,10 @@ const EditAccountDelegatesSection: FC = () => {
 	} = context;
 	const [showCreateIdentity, setShowCreateIdentity] = useState<boolean>(false);
 	const [editMode, setEditMode] = useState<boolean>(false);
-	const [selectedRows, setSelectedRows] = useState([]);
-	const [readWriteSelectedRows, setReadWriteSelectedRows] = useState([]);
-	const [readSelectedRows, setReadSelectedRows] = useState([]);
-	const [sendSelectedRows, setSendSelectedRows] = useState([]);
+	const [selectedRows, setSelectedRows] = useState<string[]>([]);
+	const [readWriteSelectedRows, setReadWriteSelectedRows] = useState<string[]>([]);
+	const [readSelectedRows, setReadSelectedRows] = useState<string[]>([]);
+	const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -103,8 +105,12 @@ const EditAccountDelegatesSection: FC = () => {
 	const [readRightWriteCheck, setReadWriteRightCheck] = useState<boolean>(false);
 	const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
 	const [sendBehalfRightCheck, setSendBehalfRightCheck] = useState<boolean>(false);
-	const DELEGATE_SEND_SETTINGS = useMemo(() => deligateSendSettings(t), [t]);
+	const DELEGATE_SEND_SETTINGS = useMemo(
+		() => deligateSendSettings(t, context?.accSpecificDetail?.mail),
+		[context?.accSpecificDetail?.mail, t]
+	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		const identitiesArr: any = [];
 		identitiesList.forEach((item: any): any => {
@@ -223,6 +229,7 @@ const EditAccountDelegatesSection: FC = () => {
 					postSoapFetchRequest(
 						`/service/admin/soap/FolderActionRequest`,
 						{
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							_jsns: 'urn:zimbraMail',
 							action: {
 								op: '!grant',
@@ -244,6 +251,7 @@ const EditAccountDelegatesSection: FC = () => {
 				postSoapFetchRequest(
 					`/service/admin/soap/RevokeRightRequest`,
 					{
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						_jsns: 'urn:zimbraAdmin',
 						target: {
 							_content: accountDetail?.zimbraMailDeliveryAddress,
@@ -284,6 +292,7 @@ const EditAccountDelegatesSection: FC = () => {
 			}
 		}
 	}, [accountDetail, createSnackbar, editMode, getIdentitiesList, identitiesList, selectedRows, t]);
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleCreateDelegateAPI = useCallback((): void => {
 		if (editMode) {
 			handleDeleteeDelegate();
@@ -325,10 +334,12 @@ const EditAccountDelegatesSection: FC = () => {
 					type: 'success',
 					label: editMode
 						? t(
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								'account_details.delegate_updated_successfully',
 								'Delegate`s rights updated successfully'
 						  )
 						: t(
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								'account_details.delegate_created_successfully',
 								'Delegate`s rights created successfully'
 						  ),
@@ -419,6 +430,7 @@ const EditAccountDelegatesSection: FC = () => {
 						{...props}
 						type="outlined"
 						key="wizard-cancel"
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.volume_cancel_button', 'CANCEL')}
 						icon={'CloseOutline'}
 						iconPlacement="right"
@@ -541,6 +553,7 @@ const EditAccountDelegatesSection: FC = () => {
 		},
 		[searchAccountList]
 	);
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const addAccountGroupRights = useCallback((): void => {
 		simpleSelectedList?.forEach((ele: any): void => {
 			if (sendRightCheck || sendBehalfRightCheck) {
@@ -656,6 +669,7 @@ const EditAccountDelegatesSection: FC = () => {
 		t
 	]);
 	const handleSimpleDeleteDelegate = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(single: boolean, rightsType: string): void => {
 			const selectedDelegateArr = [];
 			if (rightsType === 'readWrite') {
@@ -963,6 +977,7 @@ const EditAccountDelegatesSection: FC = () => {
 							}}
 							requireUniqueChips
 							ChipComponent={CustomChip}
+							maxChips={null}
 						/>
 					</Container>
 					<Container mainAlignment="flex-start">
@@ -1086,13 +1101,9 @@ const EditAccountDelegatesSection: FC = () => {
 									rows={filter(identityListItem, { writeFolder: true, readFolder: true })}
 									headers={simplifiedViewTableHeader}
 									multiSelect={false}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setReadWriteSelectedRows}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1103,6 +1114,7 @@ const EditAccountDelegatesSection: FC = () => {
 									<Row width="40%" mainAlignment="space-between">
 										<Button
 											type="ghost"
+											// eslint-disable-next-line sonarjs/no-duplicate-string
 											label={t('account_details.remove', 'REMOVE')}
 											color="error"
 											disabled={!readWriteSelectedRows?.length}
@@ -1112,6 +1124,7 @@ const EditAccountDelegatesSection: FC = () => {
 									<Row width="60%" mainAlignment="space-between">
 										<Button
 											type="outlined"
+											// eslint-disable-next-line sonarjs/no-duplicate-string
 											label={t('account_details.remove_all', 'REMOVE ALL')}
 											color="error"
 											disabled={
@@ -1139,13 +1152,9 @@ const EditAccountDelegatesSection: FC = () => {
 									rows={filter(identityListItem, { writeFolder: false, readFolder: true })}
 									headers={simplifiedViewTableHeader}
 									multiSelect={false}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setReadSelectedRows}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1191,14 +1200,10 @@ const EditAccountDelegatesSection: FC = () => {
 								<Table
 									rows={filter(identityListItem, { sendRights: true })}
 									headers={simplifiedViewTableHeader}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setSendSelectedRows}
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '15rem' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 								<Row
@@ -1289,13 +1294,9 @@ const EditAccountDelegatesSection: FC = () => {
 											rows={identityListItem}
 											headers={headers}
 											multiSelect={false}
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
 											onSelectionChange={setSelectedRows}
 											style={{ overflow: 'auto', height: '100%' }}
 											RowFactory={CustomRowFactory}
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
 											HeaderFactory={CustomHeaderFactory}
 										/>
 									)}

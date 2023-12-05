@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+
 import {
 	Container,
 	Row,
@@ -20,16 +20,10 @@ import {
 	IconButton,
 	Tooltip
 } from '@zextras/carbonio-design-system';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
+
 import logo from '../../../assets/ninja_robo.svg';
-import { useDomainStore } from '../../../store/domain/store';
-import { getSamlConfig } from '../../../services/get-saml-configurations';
-import { importSamlConfig } from '../../../services/import-saml-configurations';
-import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
-import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
-import { updateSamlAttributes } from '../../../services/update-saml-attributes';
 import {
 	SAML_METADATA_JSON_FILE,
 	CONTENT_TYPE_TEXT_PLAIN,
@@ -37,6 +31,14 @@ import {
 	ZIMBRA_PUBLIC_SERVICE_PROTOCOL
 } from '../../../constants';
 import { deleteSamlAttributes } from '../../../services/delete-saml-attributes';
+import { generateSignedCertificate } from '../../../services/generate-signed-certificate';
+import { getSamlConfig } from '../../../services/get-saml-configurations';
+import { importSamlConfig } from '../../../services/import-saml-configurations';
+import { updateSamlAttributes } from '../../../services/update-saml-attributes';
+import { useDomainStore } from '../../../store/domain/store';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
 
 export type SamlAttribute = {
 	attribute: string;
@@ -56,7 +58,7 @@ const DomainSaml: FC = () => {
 	const domainName = useDomainStore((state) => state.domain?.name) || '';
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [samlAttrKey, setSamlAttrKey] = useState<string>('');
-	const [samlAttrValue, setSamlAttrValue] = useState<unknown>('');
+	const [samlAttrValue, setSamlAttrValue] = useState<any>('');
 	const [metadataUrl, setMetadataUrl] = useState<string>('');
 	const [entityId, setEntityId] = useState<string>('');
 	const [serverUrl, setServiceUrl] = useState<string>('');
@@ -628,8 +630,6 @@ const DomainSaml: FC = () => {
 									showCheckbox={false}
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 									style={samlTableRows?.length > 0 ? { height: '15rem', overflow: 'auto' } : {}}
 								/>
@@ -763,9 +763,7 @@ const DomainSaml: FC = () => {
 											'label.here_will_be_shown_the_attribute_value',
 											'The Attribute Value will be displayed here'
 										)}
-										background="gray5"
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
+										backgroundColor="gray5"
 										value={samlAttrValue}
 										onChange={(e: any): any => {
 											setSamlAttrValue(e.target.value);

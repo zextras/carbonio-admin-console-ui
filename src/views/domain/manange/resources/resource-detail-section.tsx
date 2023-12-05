@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useMemo, useContext, useState, useEffect, useCallback } from 'react';
+
 import {
 	Container,
 	Input,
@@ -15,8 +16,8 @@ import {
 	PasswordInput
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
 import { ResourceContext } from './resource-context';
-import ListRow from '../../../list/list-row';
 import {
 	RESOURCE_TYPE,
 	SCHEDULE_POLITY_TYPE,
@@ -25,6 +26,7 @@ import {
 } from './resource-edit-detail-view';
 import { useDomainStore } from '../../../../store/domain/store';
 import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
 
 const ResourceDetailSection: FC = () => {
 	const { t } = useTranslation();
@@ -121,7 +123,7 @@ const ResourceDetailSection: FC = () => {
 	}, [cosList, t]);
 
 	const onCOSIdChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			const objItem = cosItems.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCOSId) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCOSId: objItem }));
@@ -131,7 +133,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onAccountStatusChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			const objItem = accountStatusOptions.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraAccountStatus) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraAccountStatus: objItem }));
@@ -141,7 +143,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onResourceTypeChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			const objItem = resourceTypeOptions.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCalResType) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCalResType: objItem }));
@@ -151,7 +153,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onAutoRefuseChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			const objItem = autoRefuseOption.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.zimbraCalResAutoDeclineRecurring) {
 				setResourceDetail((prev: any) => ({ ...prev, zimbraCalResAutoDeclineRecurring: objItem }));
@@ -161,7 +163,7 @@ const ResourceDetailSection: FC = () => {
 	);
 
 	const onSchedulePolicyChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			const objItem = schedulePolicyItems.find((item: any) => item.value === v);
 			if (objItem !== resourceDetail?.schedulePolicyType) {
 				setResourceDetail((prev: any) => ({ ...prev, schedulePolicyType: objItem }));
@@ -302,8 +304,6 @@ const ResourceDetailSection: FC = () => {
 								background="gray5"
 								label={t('label.type', 'Type')}
 								showCheckbox={false}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onResourceTypeChange}
 								selection={resourceDetail?.zimbraCalResType}
 							/>
@@ -315,8 +315,6 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.status', 'Status')}
 								showCheckbox={false}
 								selection={resourceDetail?.zimbraAccountStatus}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onAccountStatusChange}
 							/>
 						</Container>
@@ -327,8 +325,6 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.class_of_service', 'Class of Service')}
 								showCheckbox={false}
 								selection={resourceDetail?.zimbraCOSId}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onCOSIdChange}
 							/>
 						</Container>
@@ -348,8 +344,6 @@ const ResourceDetailSection: FC = () => {
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								showCheckbox={false}
 								selection={resourceDetail?.zimbraCalResAutoDeclineRecurring}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onAutoRefuseChange}
 							/>
 						</Container>
@@ -386,8 +380,6 @@ const ResourceDetailSection: FC = () => {
 							label={t('label.schedule_policy', 'Set Policy')}
 							showCheckbox={false}
 							selection={resourceDetail?.schedulePolicyType}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onSchedulePolicyChange}
 						/>
 					</Container>

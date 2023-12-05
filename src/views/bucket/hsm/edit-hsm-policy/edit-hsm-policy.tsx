@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Text,
@@ -17,11 +19,11 @@ import {
 	TabBar,
 	Button
 } from '@zextras/carbonio-design-system';
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HSMContext } from '../hsm-context/hsm-context';
+
 import EditHsmPolicyDetailSection from './edit-hsm-policy-detail-section';
 import EditHsmPolicyVolumesSection from './edit-hsm-policy-volumes-section';
+import { HSMContext } from '../hsm-context/hsm-context';
 
 interface hsmDetailObj {
 	allVolumes: Array<any>;
@@ -55,7 +57,6 @@ const EditHsmPolicy: FC<{
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [change, setChange] = useState('details');
-	const [click, setClick] = useState('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [currentPolicy, setCurrentPolicy] = useState<any>();
 	const [hsmDetail, setHsmDetail] = useState<hsmDetailObj>({
@@ -104,7 +105,7 @@ const EditHsmPolicy: FC<{
 			</Row>
 		</DefaultTabBarItem>
 	);
-	const items = [
+	const items: any = [
 		{
 			id: 'details',
 			label: t('hsm.details', 'Details'),
@@ -195,15 +196,16 @@ const EditHsmPolicy: FC<{
 				>
 					<Row width="100%" mainAlignment="flex-end" crossAlignment="flex-end">
 						<TabBar
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							items={items}
 							selected={change}
 							onChange={(ev: unknown, selectedId: string): void => {
 								setChange(selectedId);
 							}}
-							onItemClick={setClick}
 							width={540}
+							onClick={(): void => {
+								// console.log('__');
+							}}
+							background="gray6"
 						/>
 					</Row>
 					<Row width="100%">

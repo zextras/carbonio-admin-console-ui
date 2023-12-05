@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -13,16 +14,17 @@ import {
 	Button,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
+
+import { themeConfigStore } from '../../../../types/domain';
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
-import { ResetTheme } from '../theme/theme-reset';
-import { ThemeConfigs } from '../theme/theme-configs';
-import { themeConfigStore } from '../../../../types/domain';
 import OverlayDivision from '../../components/overlayDivision';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { ThemeConfigs } from '../theme/theme-configs';
+import { ResetTheme } from '../theme/theme-reset';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -94,6 +96,7 @@ const GlobalTheme: FC = () => {
 		[setValue]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!configInformation && configInformation.length > 0) {
 			const obj: any = {};
@@ -245,7 +248,7 @@ const GlobalTheme: FC = () => {
 		setIsOpenResetDialog(true);
 	}, []);
 
-	const closeHandler = useCallback(() => {
+	const closeHandler: () => void = useCallback(() => {
 		setIsOpenResetDialog(false);
 	}, []);
 
@@ -306,7 +309,7 @@ const GlobalTheme: FC = () => {
 									crossAlignment="flex-start"
 								>
 									<Text size="medium" weight="bold" color="gray0">
-										{t('label.theme', 'Theme')}
+										{t('label.whitelabel_settings', 'Whitelabel Settings')}
 									</Text>
 								</Row>
 								<Row
@@ -347,11 +350,9 @@ const GlobalTheme: FC = () => {
 				</Container>
 				{isOpenResetDialog && (
 					<ResetTheme
-						title={t('label.reset_global_theme', 'Reset global theme')}
+						title={t('label.reset_global_whitelabel_settings', 'Reset global whitelabel settings')}
 						isOpenResetDialog={isOpenResetDialog}
 						isRequestInProgress={isRequestInProgress}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						closeHandler={closeHandler}
 						onResetHandler={onResetHandler}
 					/>

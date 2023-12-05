@@ -1,10 +1,15 @@
+/* eslint-disable sonarjs/no-duplicate-string */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { TFunction } from 'i18next';
 import { useState } from 'react';
+
+import { THeader } from '@zextras/carbonio-design-system';
+import { TFunction } from 'i18next';
+
+import { TwoFactorPolicy } from '../../../types';
 import {
 	ACTIVE,
 	CLOSED,
@@ -19,7 +24,6 @@ import {
 	SEND_READ_MANAGE_MAILS
 } from '../../constants';
 import { Rights, Right } from '../../store/rights/store';
-import { TwoFactorPolicy } from '../../../types';
 
 export const timeZoneList = (
 	t: TFunction
@@ -948,15 +952,7 @@ export const delegateDomainHeaders = (
 	}
 ];
 
-export const volTableHeader = (
-	t: TFunction
-): Array<{
-	id: string;
-	label: string;
-	width: string;
-	bold: boolean;
-	align: string;
-}> => [
+export const volTableHeader = (t: TFunction): THeader[] => [
 	{
 		id: 'id',
 		label: t('volume.volume_header.id', 'ID'),
@@ -1073,7 +1069,7 @@ export const volumeAllocationList = (t: TFunction): Array<{ label: string; value
 	}
 ];
 
-export const GalServerTableheaders = (t: TFunction): Array<object> => [
+export const GalServerTableheaders = (t: TFunction): Array<any> => [
 	{
 		id: 'server',
 		label: t('label.server', 'Server'),
@@ -1116,6 +1112,39 @@ export const volumeConfigHeader = (
 		width: '33%',
 		align: 'center',
 		bold: true
+	}
+];
+
+export const MessageTableHeaders = (t: TFunction): Array<object> => [
+	{
+		id: 'date_time',
+		label: t('label.date_time', 'Date & Time'),
+		bold: true,
+		width: '15%'
+	},
+	{
+		id: 'sender',
+		label: t('label.sender', 'Sender'),
+		bold: true,
+		width: '25%'
+	},
+	{
+		id: 'subject',
+		label: t('label.subject', 'Subject'),
+		bold: true,
+		width: '25%'
+	},
+	{
+		id: 'score',
+		label: t('label.score', 'Score'),
+		bold: true,
+		width: '10%'
+	},
+	{
+		id: 'reason',
+		label: t('label.reason', 'Reason'),
+		bold: true,
+		width: '25%'
 	}
 ];
 
@@ -1284,7 +1313,7 @@ export const OperationsDoneHeader = (
 		id: 'Server',
 		label: t('operations.operations_list_header.server', 'Server'),
 		i18nAllLabel: 'All',
-		width: '127px',
+		width: '177px',
 		bold: true,
 		align: 'left'
 	},
@@ -1318,7 +1347,7 @@ export const OperationsDoneHeader = (
 		i18nAllLabel: 'All',
 		width: '138px',
 		bold: true,
-		align: 'center'
+		align: 'left'
 	},
 	{
 		id: 'HSM Scheduling',
@@ -1326,7 +1355,7 @@ export const OperationsDoneHeader = (
 		i18nAllLabel: 'All',
 		width: '138px',
 		bold: true,
-		align: 'center'
+		align: 'left'
 	}
 ];
 
@@ -1760,30 +1789,32 @@ export const conversationGroupBy = (t: TFunction): Array<{ value: string; label:
 	}
 ];
 
-export const deligateSendSettings = (t: TFunction): Array<{ value: string; label: string }> => [
+export const deligateSendSettings = (
+	t: TFunction,
+	email: string
+): Array<{ value: string; label: string }> => [
 	{
-		label: t(
-			'label.save_a_copy_of_sent_messages_only_in_delegates_send_folder',
-			`Save a copy of sent messages only in delegate's Sent folder`
-		),
+		label: t('label.save_it_only_in_folder', 'Save it only in {{email}} folder', {
+			email
+		}),
 		value: 'owner'
 	},
 	{
 		label: t(
-			'label.save_a_copy_of_sent_messages_only_in_delegateds_send_folder',
-			`Save a copy of sent messages to delegate's Sent folder`
+			'label.save_it_only_in_sender_folder',
+			'Save it in {{email}} and the Delegate`s folder',
+			{
+				email
+			}
 		),
 		value: 'sender'
 	},
 	{
-		label: t(
-			'label.save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder',
-			`Save a copy of sent messages to delegate's and delegated Sent folder`
-		),
+		label: t('label.save_it_only_deligates_folder', 'Save it only in the Delegate`s folder'),
 		value: 'both'
 	},
 	{
-		label: t('label.dont_save_a_copy_of_sent_messages', `Don't save a copy of sent messages`),
+		label: t('label.dont_save_it', `Don't save it`),
 		value: 'none'
 	}
 ];
@@ -2101,6 +2132,7 @@ export const ServicesPassphraseServices = (): Array<{ value: string; label: stri
 export const getRights = (rights: Rights, type: string): Array<Record<string, string>> => {
 	let right: Array<Record<string, string>> = [];
 	const filteredType = rights.filter((item: Right) => item?.type === type);
+	// eslint-disable-next-line sonarjs/no-collapsible-if
 	if (filteredType && filteredType.length > 0) {
 		if (
 			filteredType[0]?.all &&
@@ -2113,10 +2145,8 @@ export const getRights = (rights: Rights, type: string): Array<Record<string, st
 	return right;
 };
 
-export const getAllRights = (rights: Rights, type: string): Right[] => {
-	const right = rights.filter((item: Right) => item?.type === type);
-	return right;
-};
+export const getAllRights = (rights: Rights, type: string): Right[] =>
+	rights.filter((item: Right) => item?.type === type);
 
 export function useLocalStorage<T>(key: string, initialValue: T): any {
 	const [storedValue, setStoredValue] = useState<T>(() => {
@@ -2173,3 +2203,5 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 		keyToGet: 'Smtp'
 	}
 ];
+
+export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);

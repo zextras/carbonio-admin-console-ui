@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+
 import {
 	Container,
 	Input,
@@ -13,11 +14,12 @@ import {
 	PasswordInput,
 	Button,
 	useSnackbar,
-	Text
+	Text,
+	Icon
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
-import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
-import { fetchSoap } from '../../services/bucket-service';
+
+import { TestConnectionObjectType } from '../../../types';
 import {
 	ALIBABA,
 	AMAZON_WEB_SERVICE_S3,
@@ -29,7 +31,9 @@ import {
 	SUCCESS,
 	V4
 } from '../../constants';
+import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
+import { BucketRegions, BucketRegionsInAlibaba, BucketTypeItems } from '../utility/utils';
 
 const prefixRegex = /^[A-Za-z0-9_./-]*$/;
 
@@ -47,6 +51,7 @@ const Connection: FC<{
 	const [buttonColor, setButtonColor] = useState<string>('primary');
 	const [icon, setIcon] = useState<string>('ActivityOutline');
 	const [buttonDetail, setButtonDetail] = useState(
+		// eslint-disable-next-line sonarjs/no-duplicate-string
 		t('buckets.connection.create_and_verify_connector', 'CREATE & VERIFY CONNECTOR')
 	);
 	const [bucketName, setBucketName] = useState('');
@@ -72,10 +77,11 @@ const Connection: FC<{
 	const [regionSelection, setRegionSelection] = useState<any>(bucketRegions[0]);
 	const bucketType = externalData;
 	const { selectedServerName } = useBucketVolumeStore((state) => state);
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleVerifyConnector = (): any => {
 		if (bucketName && accessKeyData && secretKey) {
 			const storeType = bucketType || bucketTypeData;
-			const objectToSend = {
+			const objectToSend: TestConnectionObjectType = {
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxCore',
 				action: 'doCreateBucket',
@@ -102,13 +108,9 @@ const Connection: FC<{
 				delete objectToSend.region;
 			}
 			if (prefix === '') {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				delete objectToSend.prefix;
 			}
 			if (selectedServerName === '') {
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				delete objectToSend?.targetServers;
 			}
 
@@ -119,7 +121,7 @@ const Connection: FC<{
 					const responseData = data.split("'");
 					setBucketUid(responseData[1]);
 					onSelection({ uuid: responseData[1] }, false);
-					const objToSendTestConnection = {
+					const objToSendTestConnection: TestConnectionObjectType = {
 						_jsns: 'urn:zimbraAdmin',
 						module: 'ZxCore',
 						action: 'testS3Connection',
@@ -128,8 +130,6 @@ const Connection: FC<{
 					};
 
 					if (selectedServerName === '') {
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore
 						delete objToSendTestConnection?.targetServers;
 					}
 
@@ -146,8 +146,22 @@ const Connection: FC<{
 								setCompleteLoading(true);
 							}
 						} else {
+							const errorResponse = responseVerifyData?.error;
+
+							const errorResponsePart = errorResponse.split(objToSendTestConnection?.bucketId);
+							const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
+
 							setVerifyCheck(ERROR);
-							setverifyFailErr(data);
+							setverifyFailErr(
+								t(
+									'label.bucket_verification_failed_message',
+									'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
+									{
+										bucketType: errorStoreTypeMessage,
+										bucketId: objToSendTestConnection?.bucketId
+									}
+								)
+							);
 							setBucketDetailButton(true);
 							if (isActive) {
 								setCompleteLoading(true);
@@ -291,6 +305,7 @@ const Connection: FC<{
 	const onSelectBucketTypeChange = useCallback(
 		(e: any): void => {
 			const volumeObject: any = bucketTypeItems.find((s: any) => s.value === e);
+			setVerifyCheck('');
 			setBucketTypeData(volumeObject?.value);
 			onSelection({ storeType: bucketTypeData }, false);
 			setRegionSelection(
@@ -335,24 +350,14 @@ const Connection: FC<{
 				t('label.connector_is_create_and_verified', 'CONNECTOR IS CREATED AND VERIFIED')
 			);
 		} else if (verifyCheck === ERROR) {
-			setButtonColor('warning');
-			setIcon('alert-triangle');
+			setButtonColor('error');
+			setIcon('AlertTriangle');
 			setButtonDetail(
 				t(
 					'label.connection_is_created_verify_connector_fail',
 					'CONNECTOR IS CREATED BUT VERIFICATION HAS FAILED'
 				)
 			);
-			if (verifyFailErr !== '') {
-				createSnackbar({
-					key: '1',
-					type: 'warning',
-					label: t('label.verify_error', '{{name}}', {
-						name: verifyFailErr
-					}),
-					autoHideTimeout: 5000
-				});
-			}
 		} else if (verifyCheck === FAIL) {
 			setButtonColor('error');
 			setIcon('AlertTriangle');
@@ -393,13 +398,9 @@ const Connection: FC<{
 			) : (
 				<Row padding={{ top: 'extralarge' }} width="100%">
 					<Select
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						items={bucketTypeItems}
 						background="gray5"
 						label={t('buckets.bucket_type', 'Bucket Type')}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						// defaultSelection={bucketTypeItems?.filter((items) => items?.value === bucketTypeData)}
 						defaultSelection={bucketTypeItems[0]}
 						onChange={onSelectBucketTypeChange}
@@ -436,8 +437,6 @@ const Connection: FC<{
 						<Padding horizontal={'small'} />
 						<Row width="48%" mainAlignment="flex-end">
 							<Select
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								items={
 									bucketTypeData === ALIBABA || bucketType === ALIBABA
 										? bucketRegionsInAlibaba
@@ -555,6 +554,30 @@ const Connection: FC<{
 				<Row width="100%" padding={{ top: 'large' }}>
 					<Input label={t('label.uuid', 'uuid')} value={BucketUid} readOnly />
 				</Row>
+			)}
+			{verifyCheck === ERROR && (
+				<Container
+					background="warning"
+					width="100%"
+					orientation="horizontal"
+					height="auto"
+					padding={{ all: 'large' }}
+					style={{ marginTop: '1rem' }}
+				>
+					<Row width="10%" mainAlignment="flex-start">
+						<Icon
+							icon="AlertTriangleOutline"
+							color="gray6"
+							size="large"
+							style={{ height: '2rem', width: '2rem' }}
+						/>
+					</Row>
+					<Row width="86%" mainAlignment="flex-end">
+						<Text overflow="break-word" color="gray6">
+							{verifyFailErr}
+						</Text>
+					</Row>
+				</Container>
 			)}
 		</Container>
 	);

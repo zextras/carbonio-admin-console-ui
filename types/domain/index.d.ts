@@ -125,3 +125,10 @@ type DomainResponse = {
 	searchTotal: number;
 	_jsns: string;
 };
+
+type SelectItem<T = string> = {
+	label: string;
+	value: T;
+	disabled?: boolean;
+	customComponent?: React.ReactElement;
+};

@@ -17,7 +17,7 @@ export const searchDirectory = async (
 ): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
-		limit: limit || 50,
+		limit: limit ?? 50,
 		offset: offset || 0,
 		sortAscending: '1',
 		applyCos: 'false',

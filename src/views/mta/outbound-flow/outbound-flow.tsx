@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -17,13 +19,9 @@ import {
 	Table,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { isEqual, find } from 'lodash';
-import ListRow from '../../list/list-row';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import { useConfigStore } from '../../../store/config/store';
+import { useTranslation } from 'react-i18next';
+
 import { MtaOutboundFlow, TRow } from '../../../../types';
 import {
 	ANTISPAM,
@@ -43,10 +41,14 @@ import {
 	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 	CONFIG
 } from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
 import { getAllServers } from '../../../services/get-all-servers-service';
-import { useServerStore } from '../../../store/server/store';
+import { modifyConfig } from '../../../services/modify-config';
+import { useConfigStore } from '../../../store/config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useServerStore } from '../../../store/server/store';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import ListRow from '../../list/list-row';
 
 const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
@@ -56,15 +58,12 @@ const MTAOutBoundFlow: FC = () => {
 	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const allServersList = useServerStore((state) => state.serverList);
 	const setServerList = useServerStore((state) => state.setServerList);
-	const [instancesTableRows, setInstancesTableRows] = useState<Array<TRow>>([]);
+	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
 	const rights: Rights = useRightsStore((state) => state.rights);
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const [mtaOutboundFlowInitialDetail, setMtaOutboundFlowInitialDetail] =
@@ -100,73 +99,127 @@ const MTAOutBoundFlow: FC = () => {
 		getAllServersRequest();
 	}, [getAllServersRequest]);
 
+	const setTableValues = useCallback(
+		(server, tableRow) => {
+			const serviceEnabled = server?.a.filter(
+				(item: Record<string, unknown>) => item?.n === 'zimbraServiceEnabled'
+			);
+			const zimbraMtaAuthEnabled = server?.a.find(
+				(item: Record<string, unknown>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED
+			);
+			let antivirus = [];
+			let antispam = [];
+			let opendkim = [];
+			if (serviceEnabled && serviceEnabled.length > 0) {
+				antivirus = serviceEnabled.filter(
+					(item: Record<string, unknown>) => item?._content === ANTIVIRUS
+				);
+				antispam = serviceEnabled.filter(
+					(item: Record<string, unknown>) => item?._content === ANTISPAM
+				);
+				opendkim = serviceEnabled.filter(
+					(item: Record<string, unknown>) => item?._content === OPENDKIM
+				);
+			}
+			let isAuthEnable = t('label.disabled', 'Disabled');
+			if (
+				zimbraMtaAuthEnabled &&
+				zimbraMtaAuthEnabled._content &&
+				zimbraMtaAuthEnabled._content === 'yes'
+			) {
+				isAuthEnable = t('label.enabled', 'Enabled');
+			}
+			tableRow.push({
+				id: server.id,
+				columns: [
+					<Text size="small" weight="regular" key={tableRow.length} color="gray0">
+						{server?.name}
+					</Text>,
+					<Text size="small" weight="light" key={tableRow.length} color="gray0">
+						{antispam && antispam.length > 0
+							? t('label.active', 'Active')
+							: t('label.inactive', 'Inactive')}
+					</Text>,
+					<Text size="small" weight="light" key={tableRow.length} color="gray0">
+						{antivirus && antivirus.length > 0
+							? t('label.active', 'Active')
+							: t('label.inactive', 'Inactive')}
+					</Text>,
+					<Text size="small" weight="light" key={tableRow.length} color="gray0">
+						{isAuthEnable}
+					</Text>,
+					<Text size="small" weight="light" key={tableRow.length} color="gray0">
+						{opendkim && opendkim.length > 0
+							? t('label.enabled', 'Enabled')
+							: t('label.disabled', 'Disabled')}
+					</Text>
+				]
+			});
+		},
+		[t]
+	);
+
 	useEffect(() => {
 		if (allServersList && allServersList.length > 0) {
 			const tableRow: Array<TRow> = [];
 			allServersList.forEach((server: Record<string, unknown>) => {
 				if (server && server?.a && Array.isArray(server?.a) && server?.a.length > 0) {
-					const serviceEnabled = server?.a.filter(
-						(item: Record<string, unknown>) => item?.n === 'zimbraServiceEnabled'
-					);
-					const zimbraMtaAuthEnabled = server?.a.find(
-						(item: Record<string, unknown>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED
-					);
-					let antivirus = [];
-					let antispam = [];
-					let opendkim = [];
-					if (serviceEnabled && serviceEnabled.length > 0) {
-						antivirus = serviceEnabled.filter(
-							(item: Record<string, unknown>) => item?._content === ANTIVIRUS
-						);
-						antispam = serviceEnabled.filter(
-							(item: Record<string, unknown>) => item?._content === ANTISPAM
-						);
-						opendkim = serviceEnabled.filter(
-							(item: Record<string, unknown>) => item?._content === OPENDKIM
-						);
-					}
-					let isAuthEnable = t('label.disabled', 'Disabled');
-					if (
-						zimbraMtaAuthEnabled &&
-						zimbraMtaAuthEnabled._content &&
-						zimbraMtaAuthEnabled._content === 'yes'
-					) {
-						isAuthEnable = t('label.enabled', 'Enabled');
-					}
-					tableRow.push({
-						id: server.id,
-						columns: [
-							<Text size="small" weight="regular" key={tableRow.length} color="gray0">
-								{server?.name}
-							</Text>,
-							<Text size="small" weight="light" key={tableRow.length} color="gray0">
-								{antispam && antispam.length > 0
-									? t('label.active', 'Active')
-									: t('label.inactive', 'Inactive')}
-							</Text>,
-							<Text size="small" weight="light" key={tableRow.length} color="gray0">
-								{antivirus && antivirus.length > 0
-									? t('label.active', 'Active')
-									: t('label.inactive', 'Inactive')}
-							</Text>,
-							<Text size="small" weight="light" key={tableRow.length} color="gray0">
-								{isAuthEnable}
-							</Text>,
-							<Text size="small" weight="light" key={tableRow.length} color="gray0">
-								{opendkim && opendkim.length > 0
-									? t('label.enabled', 'Enabled')
-									: t('label.disabled', 'Disabled')}
-							</Text>
-						]
-					});
+					setTableValues(server, tableRow);
 				}
-				setInstancesTableRows(tableRow);
 			});
+			if (tableRow.length > 0) {
+				setInstancesTableRows(tableRow);
+			}
 		}
-	}, [allServersList, t]);
+	}, [allServersList, setTableValues, t]);
+
+	const setMtaInitialValues = useCallback(() => {
+		const mtaFallBackRelayHost = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST
+		);
+		if (mtaFallBackRelayHost && mtaFallBackRelayHost?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
+		}
+
+		const mtaMyOrigin = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_ORIGIN
+		);
+		if (mtaMyOrigin && mtaMyOrigin?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_MY_ORIGIN, mtaMyOrigin?._content);
+		}
+
+		const mtaRelayHost = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RELAY_HOST
+		);
+		if (mtaRelayHost && mtaRelayHost?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_RELAY_HOST, mtaRelayHost?._content);
+		}
+
+		const zimbraMtaTlsSecurityLevel = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_TLS_SECURITY_LEVEL
+		);
+		if (zimbraMtaTlsSecurityLevel && zimbraMtaTlsSecurityLevel?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_TLS_SECURITY_LEVEL, zimbraMtaTlsSecurityLevel?._content);
+		}
+
+		const smtpHelloName = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTP_HELLO_NAME
+		);
+		if (smtpHelloName && smtpHelloName?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_SMTP_HELLO_NAME, smtpHelloName?._content);
+		}
+
+		const mtaMyHostname = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_HOSTNAME
+		);
+		if (mtaMyHostname && mtaMyHostname?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_MY_HOSTNAME, mtaMyHostname?._content);
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
 
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
+			setMtaInitialValues();
 			const originatingIp = configInformation.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP
 			);
@@ -198,53 +251,8 @@ const MTAOutBoundFlow: FC = () => {
 			if (zimbraMtaMyNetworks && zimbraMtaMyNetworks?._content) {
 				setInitialAndCurrentValue(ZIMBRA_MTA_MY_NETWORKS, zimbraMtaMyNetworks?._content);
 			}
-
-			const smtpHelloName = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTP_HELLO_NAME
-			);
-			if (smtpHelloName && smtpHelloName?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_SMTP_HELLO_NAME, smtpHelloName?._content);
-			}
-
-			const mtaMyHostname = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_HOSTNAME
-			);
-			if (mtaMyHostname && mtaMyHostname?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_MY_HOSTNAME, mtaMyHostname?._content);
-			}
-
-			const mtaFallBackRelayHost = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST
-			);
-			if (mtaFallBackRelayHost && mtaFallBackRelayHost?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
-			}
-
-			const mtaMyOrigin = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_ORIGIN
-			);
-			if (mtaMyOrigin && mtaMyOrigin?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_MY_ORIGIN, mtaMyOrigin?._content);
-			}
-
-			const mtaRelayHost = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RELAY_HOST
-			);
-			if (mtaRelayHost && mtaRelayHost?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_RELAY_HOST, mtaRelayHost?._content);
-			}
-
-			const zimbraMtaTlsSecurityLevel = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_TLS_SECURITY_LEVEL
-			);
-			if (zimbraMtaTlsSecurityLevel && zimbraMtaTlsSecurityLevel?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_TLS_SECURITY_LEVEL,
-					zimbraMtaTlsSecurityLevel?._content
-				);
-			}
 		}
-	}, [configInformation, setInitialAndCurrentValue]);
+	}, [configInformation, setInitialAndCurrentValue, setMtaInitialValues]);
 
 	useEffect(() => {
 		if (mtaOutboundDetail && !isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail)) {
@@ -611,9 +619,12 @@ const MTAOutBoundFlow: FC = () => {
 						label={t('mta.my_netword', 'My Network')}
 						value={mtaOutboundDetail?.zimbraMtaMyNetworks || ''}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-							allowSetMTA ?? setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
+							if (allowSetMTA) {
+								setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
+							}
 						}}
 						readOnly
+						backgroundColor="gray5"
 					/>
 				</Container>
 				<Container
@@ -628,8 +639,11 @@ const MTAOutBoundFlow: FC = () => {
 							label={t('mta.smtp_helo_name', 'SMTP HELO Name')}
 							value={mtaOutboundDetail?.zimbraMtaSmtpHeloName || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								allowSetMTA ?? setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
+								if (allowSetMTA) {
+									setValue(ZIMBRA_MTA_SMTP_HELLO_NAME, e.target.value);
+								}
 							}}
+							backgroundColor="gray5"
 						/>
 					</Container>
 					<Container>
@@ -637,8 +651,11 @@ const MTAOutBoundFlow: FC = () => {
 							label={t('mta.my_hostname', 'My Hostname')}
 							value={mtaOutboundDetail?.zimbraMtaMyHostname || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								allowSetMTA ?? setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
+								if (allowSetMTA) {
+									setValue(ZIMBRA_MTA_MY_HOSTNAME, e.target.value);
+								}
 							}}
+							backgroundColor="gray5"
 						/>
 					</Container>
 				</Container>
@@ -655,8 +672,11 @@ const MTAOutBoundFlow: FC = () => {
 							label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
 							value={mtaOutboundDetail?.zimbraMtaFallbackRelayHost || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								allowSetMTA ?? setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
+								if (allowSetMTA) {
+									setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
+								}
 							}}
+							backgroundColor="gray5"
 						/>
 					</Container>
 					<Container>
@@ -664,8 +684,11 @@ const MTAOutBoundFlow: FC = () => {
 							label={t('mta.relay_host', 'Relay Host')}
 							value={mtaOutboundDetail?.zimbraMtaRelayHost || ''}
 							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								allowSetMTA ?? setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
+								if (allowSetMTA) {
+									setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
+								}
 							}}
+							backgroundColor="gray5"
 						/>
 					</Container>
 				</Container>
@@ -679,8 +702,11 @@ const MTAOutBoundFlow: FC = () => {
 						label={t('mta.my_origin', 'My Origin')}
 						value={mtaOutboundDetail?.zimbraMtaMyOrigin || ''}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-							allowSetMTA ?? setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
+							if (allowSetMTA) {
+								setValue(ZIMBRA_MTA_MY_ORIGIN, e.target.value);
+							}
 						}}
+						backgroundColor="gray5"
 					/>
 				</Container>
 				<Container
@@ -702,14 +728,11 @@ const MTAOutBoundFlow: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
+							multiSelect={false}
 							rows={instancesTableRows}
 							headers={instanceTableHeader}
 							showCheckbox={false}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

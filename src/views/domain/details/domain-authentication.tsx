@@ -3,7 +3,17 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+	FC,
+	RefObject,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState
+} from 'react';
+
 import {
 	Container,
 	Row,
@@ -18,16 +28,17 @@ import {
 	Icon,
 	Popper
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { useDomainStore } from '../../../store/domain/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import ListRow from '../../list/list-row';
-import { isValidLdapBaseDN, isValidLdapBaseUrl } from '../../utility/utils';
-import { CheckAuthConfig } from '../../../services/check-auth-config-service';
+import { useTranslation } from 'react-i18next';
+
 import { Attribute, CreateSnackbarType, objectType } from '../../../../types';
 import { CHECK_OK } from '../../../constants';
+import { CheckAuthConfig } from '../../../services/check-auth-config-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
+import { useDomainStore } from '../../../store/domain/store';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { isValidLdapBaseDN, isValidLdapBaseUrl } from '../../utility/utils';
 
 const ZimbraAuthMethod = {
 	INTERNAL: 'zimbra',
@@ -59,7 +70,7 @@ const Tooltip: FC<{ items: { label?: string }[] }> = ({ items }) => (
 const DomainAuthentication: FC = () => {
 	const [t] = useTranslation();
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [zimbraAuthMech, setZimbraAuthMech] = useState<{ label: string; value?: string }>();
+	const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
 	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
 	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
@@ -80,13 +91,13 @@ const DomainAuthentication: FC = () => {
 	const setDomain = useDomainStore((state) => state.setDomain);
 
 	const [open, setOpen] = useState(false);
-	const iconRef = useRef(undefined);
+	const iconRef: RefObject<HTMLDivElement> = useRef(null);
 	const [isValidLdapDN, setIsValidLdapDn] = useState<boolean>(true);
 	const [isValidLdapUrl, setIsValidLdapUrl] = useState<boolean>(true);
 	const [ldapUrlOpen, setLdapUrlOpen] = useState(false);
 	const [filterOpen, setFilterOpen] = useState(false);
-	const ldapUrlIconRef = useRef(undefined);
-	const filterIconRef = useRef(undefined);
+	const ldapUrlIconRef: RefObject<HTMLDivElement> = useRef(null);
+	const filterIconRef: RefObject<HTMLDivElement> = useRef(null);
 
 	const DOMAIN_AUTH_LIST = useMemo(
 		() => [
@@ -105,6 +116,7 @@ const DomainAuthentication: FC = () => {
 		() => [
 			{
 				label: `%n = ${t('label.username_with', 'username with')} @ (${t(
+					// eslint-disable-next-line sonarjs/no-duplicate-string
 					'label.example',
 					'example'
 				)} username@domain.tld)`
@@ -161,6 +173,7 @@ const DomainAuthentication: FC = () => {
 
 	const FilterTooltip: FC = useCallback(() => <Tooltip items={FILTER_TOOLTIP} />, [FILTER_TOOLTIP]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
 			const obj: objectType = {};
@@ -212,6 +225,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainInformation, DOMAIN_AUTH_LIST]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthMech !== zimbraAuthMech?.value) {
 				setIsDirty(true);
@@ -220,6 +234,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthMech]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraPasswordChangeListener !== zimbraPasswordChangeListener) {
 				setIsDirty(true);
@@ -237,6 +252,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthFallbackToLocal]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapBindDn !== zimbraAuthLdapBindDn) {
 				setIsDirty(true);
@@ -245,6 +261,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthLdapBindDn]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapURL !== zimbraAuthLdapURL) {
 				setIsDirty(true);
@@ -253,6 +270,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthLdapURL]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchBase !== zimbraAuthLdapSearchBase) {
 				setIsDirty(true);
@@ -261,6 +279,7 @@ const DomainAuthentication: FC = () => {
 	}, [domainAuthData, zimbraAuthLdapSearchBase]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (!_.isEmpty(domainAuthData)) {
 			if (domainAuthData.zimbraAuthLdapSearchFilter !== zimbraAuthLdapSearchFilter) {
 				setIsDirty(true);
@@ -284,13 +303,8 @@ const DomainAuthentication: FC = () => {
 	);
 
 	const onAuthMethodChange = useCallback(
-		(v: string): void => {
-			setZimbraAuthMech(
-				DOMAIN_AUTH_LIST.find(
-					// eslint-disable-next-line max-len
-					(item: { value: string }) => item.value === v
-				)
-			);
+		(v): void => {
+			setZimbraAuthMech(DOMAIN_AUTH_LIST.find((item: { value: string }) => item.value === v));
 			if (v === ZimbraAuthMethod.EXTERNAL || v === ZimbraAuthMethod.LDAP) {
 				if (!zimbraAuthLdapBindDn) {
 					setIsValidLdapDn(false);
@@ -388,7 +402,8 @@ const DomainAuthentication: FC = () => {
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -568,11 +583,7 @@ const DomainAuthentication: FC = () => {
 										label={t('label.your_auth_method_is', 'Your Auth Method is')}
 										showCheckbox={false}
 										items={DOMAIN_AUTH_LIST}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										selection={zimbraAuthMech}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onAuthMethodChange}
 									></Select>
 								</Padding>
@@ -600,12 +611,9 @@ const DomainAuthentication: FC = () => {
 										hasError={!isValidLdapDN}
 										CustomIcon={(): React.ReactElement => (
 											<Container
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
-												ref={iconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseEnter={() => setOpen(true)}
-												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseLeave={() => setOpen(false)}
+												ref={iconRef}
+												onMouseEnter={(): void => setOpen(true)}
+												onMouseLeave={(): void => setOpen(false)}
 											>
 												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
 											</Container>
@@ -622,7 +630,8 @@ const DomainAuthentication: FC = () => {
 													<Text size="extrasmall" weight="regular" color="error">
 														{zimbraAuthLdapBindDn
 															? t('label.base_dn_is_not_valid', 'Base DN is not valid')
-															: t('label.required', 'Required')}
+															: // eslint-disable-next-line sonarjs/no-duplicate-string
+															  t('label.required', 'Required')}
 													</Text>
 												</Padding>
 											</Container>
@@ -630,12 +639,9 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={open}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={iconRef}
 										placement="top-end"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClose={() => setOpen(false)}
+										onClose={(): void => setOpen(false)}
 										disableRestoreFocus
 									>
 										<DnTemplateTooltip />
@@ -665,12 +671,9 @@ const DomainAuthentication: FC = () => {
 										hasError={!isValidLdapUrl}
 										CustomIcon={(): React.ReactElement => (
 											<Container
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
-												ref={ldapUrlIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseEnter={() => setLdapUrlOpen(true)}
-												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseLeave={() => setLdapUrlOpen(false)}
+												ref={ldapUrlIconRef}
+												onMouseEnter={(): void => setLdapUrlOpen(true)}
+												onMouseLeave={(): void => setLdapUrlOpen(false)}
 											>
 												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
 											</Container>
@@ -695,12 +698,9 @@ const DomainAuthentication: FC = () => {
 									)}
 									<Popper
 										open={ldapUrlOpen}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={ldapUrlIconRef}
 										placement="top-end"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClose={() => setLdapUrlOpen(false)}
+										onClose={(): void => setLdapUrlOpen(false)}
 										disableRestoreFocus
 									>
 										<LdapUrlTooltip />
@@ -718,12 +718,9 @@ const DomainAuthentication: FC = () => {
 										}}
 										CustomIcon={(): React.ReactElement => (
 											<Container
-												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-												// @ts-ignore // Need to fix it with custom soultion
-												ref={filterIconRef} // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseEnter={() => setFilterOpen(true)}
-												// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-												onMouseLeave={() => setFilterOpen(false)}
+												ref={filterIconRef}
+												onMouseEnter={(): void => setFilterOpen(true)}
+												onMouseLeave={(): void => setFilterOpen(false)}
 											>
 												<Icon icon="QuestionMarkCircleOutline" size="large" color="secondary" />
 											</Container>
@@ -731,12 +728,9 @@ const DomainAuthentication: FC = () => {
 									/>
 									<Popper
 										open={filterOpen}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										anchorEl={filterIconRef}
 										placement="top-end"
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClose={() => setFilterOpen(false)}
+										onClose={(): void => setFilterOpen(false)}
 										disableRestoreFocus
 									>
 										<FilterTooltip />

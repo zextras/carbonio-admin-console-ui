@@ -5,17 +5,19 @@
  */
 
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+
 import { Container, Button } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import AclListSection from './acl-list-section';
-import { HorizontalWizard } from '../../../app/component/hwizard';
+import styled from 'styled-components';
+
 import { AclListContext } from './acl-list-context';
-import { Section } from '../../../app/component/section';
-import AclListMembersSection from './acl-list-members-section';
 import AclListCreateSection from './acl-list-create-section';
-import { useDomainStore } from '../../../../store/domain/store';
+import AclListMembersSection from './acl-list-members-section';
+import AclListSection from './acl-list-section';
 import { PUB } from '../../../../constants';
+import { useDomainStore } from '../../../../store/domain/store';
+import { HorizontalWizard } from '../../../app/component/hwizard';
+import { Section } from '../../../app/component/section';
 import OverlayDivision from '../../../components/overlayDivision';
 
 // eslint-disable-next-line no-shadow
@@ -157,6 +159,7 @@ const CreateAclList: FC<{
 						{...props}
 						type="outlined"
 						key="wizard-cancel"
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.cancel', 'Cancel')}
 						color="secondary"
 						icon="CloseOutline"
@@ -170,6 +173,7 @@ const CreateAclList: FC<{
 				NextButton: (props: any) => (
 					<Button
 						{...props}
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.next', 'NEXT')}
 						icon="ChevronRightOutline"
 						iconPlacement="right"
@@ -198,6 +202,7 @@ const CreateAclList: FC<{
 				PrevButton: (props: any) => (
 					<Button
 						{...props}
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.back', 'BACK')}
 						icon="ChevronLeftOutline"
 						color="secondary"
@@ -215,6 +220,7 @@ const CreateAclList: FC<{
 			},
 			{
 				name: 'create',
+				// eslint-disable-next-line sonarjs/no-duplicate-string
 				label: t('label.create', 'Create'),
 				icon: 'PowerOutline',
 				view: AclListCreateSection,

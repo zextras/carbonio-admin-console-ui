@@ -5,6 +5,7 @@
  */
 
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Input,
@@ -23,13 +24,18 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { getAccount } from '../../../services/get-account-service';
-import { getDatasource } from '../../../services/get-datasource-service';
-import { modifyDomain } from '../../../services/modify-domain-service';
-import { modifyDataSource } from '../../../services/modify-datasource-service';
-import { useDomainStore } from '../../../store/domain/store';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
-import ListRow from '../../list/list-row';
+
+import CreateGalsyncAccountModel from './create-galsync-account-model';
+import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
+import {
+	AccountDataType,
+	Attribute,
+	CreateSnackbarType,
+	DomainDataType,
+	IntervalType,
+	Server,
+	objectType
+} from '../../../../types';
 import {
 	FALSE,
 	TRUE,
@@ -40,27 +46,23 @@ import {
 	LDAP_FILTER_LABEL,
 	LDAP_SEARCH_BASE_LABEL
 } from '../../../constants';
-import { modifyAccountRequest } from '../../../services/modify-account';
-import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
-import CreateGalsyncAccountModel from './create-galsync-account-model';
-import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
-import { destroyAccount } from '../../../services/destroy-account-service';
 import { createGalSyncAccount } from '../../../services/create-gal-sync-service';
-import {
-	AccountDataType,
-	Attribute,
-	CreateSnackbarType,
-	DomainDataType,
-	IntervalType,
-	Server,
-	objectType
-} from '../../../../types';
+import { destroyAccount } from '../../../services/destroy-account-service';
 import { getDomainInformation } from '../../../services/domain-information-service';
-import { useMailstoreListStore } from '../../../store/mailstore-list/store';
 import { flushCache } from '../../../services/flush-cache-service';
+import { getAccount } from '../../../services/get-account-service';
+import { getDatasource } from '../../../services/get-datasource-service';
+import { modifyAccountRequest } from '../../../services/modify-account';
+import { modifyDataSource } from '../../../services/modify-datasource-service';
+import { modifyDomain } from '../../../services/modify-domain-service';
 import { reSyncGalAccount } from '../../../services/re-sync-gal-account-service';
+import { useDomainStore } from '../../../store/domain/store';
+import { useMailstoreListStore } from '../../../store/mailstore-list/store';
+import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { GalServerTableheaders, MeasureUnitItems } from '../../utility/utils';
 
 // eslint-disable-next-line no-shadow
 export enum RANGE {
@@ -72,11 +74,11 @@ export enum RANGE {
 
 const ServerListTable: FC<{
 	volumes: Array<AccountDataType>;
-	selectedRows: number[];
-	onSelectionChange: (selected: number[]) => void;
+	selectedRows: any;
+	onSelectionChange: (selected: any) => void;
 }> = ({ volumes, selectedRows, onSelectionChange }) => {
 	const [t] = useTranslation();
-	const tableRows = useMemo(
+	const tableRows: any = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: i,
@@ -113,23 +115,13 @@ const ServerListTable: FC<{
 					minHeight="auto"
 				>
 					<Table
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						headers={GalServerTableheaders(t)}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						rows={tableRows}
 						showCheckbox={false}
 						multiSelect={false}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						selectedRows={selectedRows}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						onSelectionChange={onSelectionChange}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -235,9 +227,7 @@ const DomainGalSettings: FC = () => {
 	);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const [dataSourceName, setDataSourceName] = useState<string>('');
-	const [measureUnitSelection, setMeasureUnitSelection] = useState<
-		string | IntervalType | undefined
-	>('');
+	const [measureUnitSelection, setMeasureUnitSelection] = useState<any>('');
 
 	const [zimbraGalAccountIdArray, setZimbraGalAccountIdArray] = useState<
 		{
@@ -341,6 +331,7 @@ const DomainGalSettings: FC = () => {
 		});
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getDomainDataSource = (accountId: string): void => {
 		getDatasource(accountId).then((data) => {
 			const dataSource: {
@@ -373,6 +364,7 @@ const DomainGalSettings: FC = () => {
 	};
 
 	const updateDomainInformation = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(data) => {
 			if (!!domainInformation && domainInformation.length > 0) {
 				setZimbraGalAccountId('');
@@ -503,6 +495,7 @@ const DomainGalSettings: FC = () => {
 		}
 		// eslint-disable-next-line array-callback-return
 		domainInformation?.map((item) => {
+			// eslint-disable-next-line sonarjs/no-collapsible-if
 			if (item.n === 'zimbraGalLdapURL') {
 				if (domainData?.zimbraGalLdapURL === item?._content) {
 					setIsDirty(false);
@@ -515,6 +508,7 @@ const DomainGalSettings: FC = () => {
 		if (!isDirty) {
 			// eslint-disable-next-line array-callback-return
 			domainInformation?.map((item) => {
+				// eslint-disable-next-line sonarjs/no-collapsible-if
 				if (
 					item.n === 'zimbraGalLdapURL' ||
 					item.n === 'zimbraGalLdapFilter' ||
@@ -612,6 +606,7 @@ const DomainGalSettings: FC = () => {
 		});
 		body.a = attributes;
 		requests.push(modifyDomain(body));
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (zimbraGalAccountId !== '') {
 			if (zimbraGalAccountIdArray?.length !== 0 && zimbraAccountDataSourceId?.length !== 0) {
 				// eslint-disable-next-line array-callback-return
@@ -682,7 +677,8 @@ const DomainGalSettings: FC = () => {
 						type: 'error',
 						label: error?.message
 							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 5000,
 						hideButton: true,
 						replace: true
@@ -729,6 +725,7 @@ const DomainGalSettings: FC = () => {
 		if (zimbraGalLdapStartTlsEnabled?.current !== zimbraGalLdapStartTlsEnabled?.init) {
 			setIsDirty(true);
 		}
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (zimbraGalAccountId !== '' && pollingIntervalValue !== '') {
 			if (
 				zimbraDataSourcePollingInterval !== `${pollingIntervalValue}${pollingIntervalType?.value}`
@@ -767,7 +764,7 @@ const DomainGalSettings: FC = () => {
 	);
 
 	const onFreqTimeUnitChange = useCallback(
-		(ev: string) => {
+		(ev) => {
 			setFreqValue({ digits: freqValue.digits, time: ev });
 			const measureUnitObject: IntervalType | undefined = measureUnitItems?.find(
 				(item: IntervalType): boolean => item?.value === ev
@@ -904,12 +901,11 @@ const DomainGalSettings: FC = () => {
 							(account) => account?.n === 'zimbraMailHost'
 						);
 
-						const object = {
+						return {
 							accountData,
 							name: galAccount?.name,
 							id: galAccount?.id
 						};
-						return object;
 					})
 					// eslint-disable-next-line @typescript-eslint/no-empty-function
 					.catch(() => {})
@@ -1191,13 +1187,7 @@ const DomainGalSettings: FC = () => {
 							<ListRow>
 								<Container orientation="horizontal">
 									<Container width="15rem" minWidth="11rem" mainAlignment="flex-start">
-										<Dropdown
-											// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-											// @ts-ignore // Need to fix it with custom soultion
-											items={changeGalModeBtnItems}
-											onOpen={onOpen}
-											onClose={onClose}
-										>
+										<Dropdown items={changeGalModeBtnItems} onOpen={onOpen} onClose={onClose}>
 											<Button
 												type="outlined"
 												size="extralarge"
@@ -1271,17 +1261,11 @@ const DomainGalSettings: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Select
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										items={measureUnitItems}
 										background="gray5"
 										label={t('label.interval', 'Interval')}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onFreqTimeUnitChange}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										selection={measureUnitSelection}
 									/>
 								</Container>

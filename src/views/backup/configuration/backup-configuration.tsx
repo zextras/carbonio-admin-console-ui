@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+
 import {
 	Container,
 	Row,
@@ -28,11 +28,11 @@ import {
 	// @ts-ignore
 	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
-import { useParams } from 'react-router-dom';
 import { isEmpty, find } from 'lodash';
-import ListRow from '../../list/list-row';
-import { useServerStore } from '../../../store/server/store';
-import { setCoreAttributes } from '../../../services/set-core-attributes';
+import { useTranslation, Trans } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
 import {
 	LOCAL_VALUE,
 	MANAGE_EXTERNAL_VOLUME,
@@ -45,11 +45,30 @@ import {
 	CONFIG,
 	BACKUP_REALTIME
 } from '../../../constants';
-import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { fetchSoap } from '../../../services/bucket-service';
+import { setCoreAttributes } from '../../../services/set-core-attributes';
 import { useBackupStore } from '../../../store/backup/store';
-import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { useModuleLicenseStore } from '../../../store/module-license/store';
+import { useRightsStore, Right, Rights } from '../../../store/rights/store';
+import { useServerStore } from '../../../store/server/store';
+import OverlayDivision from '../../components/overlayDivision';
+import ListRow from '../../list/list-row';
+import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+
+const ovelayStyle = styled(Container)`
+	position: fixed;
+	width: 70.35rem;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	height: auto;
+	max-height: 100%;
+	overflow: hidden;
+	background: #0d0d0d;
+	opacity: 0.4;
+	z-index: 11;
+	padding-top: 2rem;
+`;
 
 const BackupConfiguration: FC = () => {
 	const { server }: { server: string } = useParams();
@@ -82,7 +101,10 @@ const BackupConfiguration: FC = () => {
 	const [isShowSetExternalVolume, setIsShowSetExternalVolume] = useState<boolean>(false);
 	const [bucketList, setBucketList] = useState<Array<any>>([]);
 	const [backupArchivingStore, setBackupArchivingStore] = useState<any>({});
-
+	const [initializeBackup, setInitializeBackup] = useState(
+		t('backup.initialize_backup', 'Initialize Backup')
+	);
+	const [showIcon, setShowIcon] = useState(true);
 	const [manageExternalVolumeType, setManageExternalVolumeType] = useState<string>('');
 	const [manageExternalVolumeConfiguration, setManageExternalVolumeConfiguration] = useState<any>(
 		{}
@@ -98,10 +120,7 @@ const BackupConfiguration: FC = () => {
 
 	const allowSetBackup = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	const destinationOptions: any[] = useMemo(
@@ -173,6 +192,7 @@ const BackupConfiguration: FC = () => {
 		},
 		[externalVolumeOptions]
 	);
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (allServers && allServers.length > 0) {
 			const selectedServer = allServers.find((serverItem: any) => serverItem?.name === server);
@@ -229,13 +249,15 @@ const BackupConfiguration: FC = () => {
 
 							if (attributes?.backupSmartScanScheduler) {
 								const value = attributes?.backupSmartScanScheduler?.value;
-								if (value && value['cron-enabled']) {
+								// eslint-disable-next-line sonarjs/no-duplicate-string
+								if (value && value?.['cron-enabled']) {
 									setIsScheduleSmartScan(value['cron-enabled']);
 									currentBackupObject.isScheduleSmartScan = true;
 								} else {
 									setIsScheduleSmartScan(false);
 									currentBackupObject.isScheduleSmartScan = false;
 								}
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								if (value && value['cron-pattern']) {
 									setScheduleSmartScan(value['cron-pattern']);
 									currentBackupObject.scheduleSmartScan = value['cron-pattern'];
@@ -322,7 +344,8 @@ const BackupConfiguration: FC = () => {
 							type: 'error',
 							label: error?.message
 								? error?.message
-								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								: // eslint-disable-next-line sonarjs/no-duplicate-string
+								  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
@@ -726,6 +749,7 @@ const BackupConfiguration: FC = () => {
 	}, [server, createSnackbar, t]);
 
 	const onBackupExternalVolume = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(body) => {
 			setIsExternalVolumeRequestRunning(true);
 			fetchExternalSoap(`/service/extension/zextras_admin/backup/migrateBackupVolume`, {
@@ -936,26 +960,279 @@ const BackupConfiguration: FC = () => {
 	);
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6">
-			<Container
-				orientation="column"
-				background="gray6"
-				crossAlignment="flex-start"
-				mainAlignment="flex-start"
-			>
-				<Row mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
-						<Row orientation="horizontal" width="100%">
-							<Row
-								padding={{ all: 'large' }}
+		<>
+			{isSaveRequestInProgress && <OverlayDivision ovelayStyle={ovelayStyle} />}
+			<Container mainAlignment="flex-start" background="gray6">
+				<Container
+					orientation="column"
+					background="gray6"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+				>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
+							<Row orientation="horizontal" width="100%">
+								<Row
+									padding={{ all: 'large' }}
+									mainAlignment="flex-start"
+									width="50%"
+									crossAlignment="flex-start"
+								>
+									<Text size="medium" weight="bold" color="gray0">
+										{selectedBackupServer}{' '}
+										{t('backup.backup_configuration', 'backup configuration')}
+									</Text>
+								</Row>
+								<Row
+									padding={{ all: 'large' }}
+									width="50%"
+									mainAlignment="flex-end"
+									crossAlignment="flex-end"
+								>
+									<Padding right="small">
+										{isDirty && (
+											<Button
+												// eslint-disable-next-line sonarjs/no-duplicate-string
+												label={t('label.cancel', 'Cancel')}
+												color="secondary"
+												onClick={onCancel}
+												disabled={isRequestInProgress}
+											/>
+										)}
+									</Padding>
+									{isDirty && (
+										<Button
+											label={t('label.save', 'Save')}
+											color="primary"
+											onClick={onSave}
+											disabled={isSaveRequestInProgress}
+											loading={isSaveRequestInProgress}
+										/>
+									)}
+								</Row>
+							</Row>
+						</Container>
+						<Divider color="gray2" />
+					</Row>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-end"
+						style={{ overflow: 'auto' }}
+						padding={{ all: 'large' }}
+						height="calc(100vh - 9.375rem)"
+					>
+						<Container
+							mainAlignment="flex-end"
+							crossAlignment="flex-end"
+							padding={{ top: 'large' }}
+							height="fit"
+							orientation="horizontal"
+						>
+							<Text>{t('backup.the_service_is', 'The service is')}</Text>&nbsp;
+							{!backupServiceStart && <Text color="error">{t('backup.stopped', 'stopped')}</Text>}
+							{backupServiceStart && <Text color="primary">{t('backup.running', 'running')}</Text>}
+						</Container>
+
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-end"
+							padding={{ top: 'medium' }}
+							height="fit"
+						>
+							<Button
+								type="outlined"
+								label={
+									backupServiceStart
+										? t('backup.stop_service', 'Stop service')
+										: t('backup.start_service', 'Start service')
+								}
+								color={backupServiceStart ? 'error' : 'primary'}
+								width="fit"
+								onClick={serviceStartStop}
+								disabled={isRequestInProgress || !allowSetBackup}
+								loading={isRequestInProgress}
+								size="large"
+							/>
+						</Container>
+
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'extralarge' }}
+							height="fit"
+						>
+							<Text size="medium" weight="bold">
+								{t('backup.general', 'General')}
+							</Text>
+						</Container>
+
+						<ListRow>
+							<Container
+								padding={{ top: 'large' }}
 								mainAlignment="flex-start"
-								width="50%"
 								crossAlignment="flex-start"
 							>
-								<Text size="medium" weight="bold" color="gray0">
-									{selectedBackupServer} {t('backup.backup_configuration', 'backup configuration')}
-								</Text>
-							</Row>
+								<Switch
+									label={t('backup.backup_is_enabled_at_startup', 'Backup is enabled at startup')}
+									value={moduleEnableStartup}
+									onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
+									iconColor="primary"
+									disabled={!allowSetBackup}
+								/>
+							</Container>
+							{isBackupImportRealtimeFeatureLicensed && (
+								<Container padding={{ top: 'large' }}>
+									<Switch
+										label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
+										value={enableRealtimeScanner}
+										onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
+										iconColor="primary"
+										disabled={!allowSetBackup}
+									/>
+								</Container>
+							)}
+
+							<Container padding={{ top: 'large' }}>
+								<Switch
+									label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
+									value={runSmartScanStartup}
+									onClick={(): void => setRunSmartScanStartup(!runSmartScanStartup)}
+									iconColor="primary"
+									disabled={!allowSetBackup}
+								/>
+							</Container>
+						</ListRow>
+
+						<ListRow>
+							<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
+								<Button
+									type="outlined"
+									label={initializeBackup}
+									color="primary"
+									icon={showIcon ? 'PowerOutline' : ''}
+									iconPlacement="right"
+									width="fill"
+									style={{ width: '100%' }}
+									disabled={isBackupInitialized || !allowSetBackup}
+									onClick={(): void => {
+										setShowIcon(false);
+										setInitializeBackup(
+											t(
+												'backup.initialising_backup_check_your_notifications_for_updates',
+												'INITIALISING BACKUP... CHECK YOUR NOTIFICATIONS FOR UPDATES'
+											)
+										);
+										setTimeout(() => {
+											setInitializeBackup(t('backup.initialize_backup', 'Initialize Backup'));
+											setShowIcon(true);
+										}, 10000);
+										doInitializeBackup(true);
+									}}
+									size="large"
+								/>
+							</Container>
+						</ListRow>
+
+						<ListRow>
+							<Container padding={{ top: 'large' }}>
+								<Input
+									label={t(
+										'backup.local_volume_reload_if_you_changed_this_value',
+										'Local Volume (reload if you changed this value)'
+									)}
+									value={backupDestPath || ''}
+									backgroundColor="gray5"
+									onChange={(e): void => {
+										setBackupDestPath(e.target.value);
+									}}
+								/>
+							</Container>
+						</ListRow>
+
+						<ListRow>
+							<Container padding={{ top: 'large' }}>
+								<Input
+									label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
+									value={spaceThreshold}
+									backgroundColor="gray5"
+									onChange={(e: any): void => {
+										!allowSetBackup ?? setSpaceThreshold(e.target.value);
+									}}
+									disabled={!allowSetBackup}
+								/>
+							</Container>
+						</ListRow>
+
+						{!isBackArchivingStoreEmpty && (
+							<Container>
+								<ListRow>
+									<Container padding={{ top: 'large' }}>
+										<Input
+											label={t('backup.external_volume', 'External Volume')}
+											value={manageExternalVolumeType}
+											backgroundColor="gray5"
+											readOnly
+										/>
+									</Container>
+								</ListRow>
+								<ListRow>
+									<Container padding={{ top: 'large', bottom: 'large' }}>
+										<Input
+											label={t('backup.bucket_configuration', 'Bucket Configuration')}
+											value={
+												manageExternalVolumeType.startsWith('LOCAL')
+													? manageExternalVolumeLocalMountpoint
+													: manageExternalVolumeConfiguration?.label
+											}
+											backgroundColor="gray5"
+											readOnly
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						)}
+
+						{isShowSetExternalVolume && (
+							<ListRow>
+								<Container padding={{ top: 'large', bottom: 'large' }}>
+									<Select
+										items={externalVolumeOptions}
+										background="gray5"
+										label={t('label.select_an_external_volume', 'Select an External Volume')}
+										showCheckbox={false}
+										onChange={onExternalVolumeChange}
+										selection={externalVolume}
+										disabled={!allowSetBackup}
+									/>
+								</Container>
+							</ListRow>
+						)}
+
+						{isShowSetExternalVolume && externalVolume?.value === MOUNTPOINT && (
+							<Container>
+								<Input
+									label={t('label.path', 'Path')}
+									value={rootVolumePath || ''}
+									backgroundColor="gray5"
+									onChange={(e): void => {
+										!allowSetBackup ?? setRootVolumePath(e.target.value);
+									}}
+								/>
+							</Container>
+						)}
+						{isShowSetExternalVolume && externalVolume?.value === S3_BUCKET && (
+							<Select
+								items={bucketListOption}
+								background="gray5"
+								label={t('label.select_a_bucket_configuration', 'Select a Bucket Configuration')}
+								showCheckbox={false}
+								selection={bucketConfiguration}
+								onChange={onBucketConfigurationChange}
+								disabled={!allowSetBackup}
+							/>
+						)}
+
+						{isShowSetExternalVolume && (
 							<Row
 								padding={{ all: 'large' }}
 								width="50%"
@@ -963,612 +1240,380 @@ const BackupConfiguration: FC = () => {
 								crossAlignment="flex-end"
 							>
 								<Padding right="small">
-									{isDirty && (
-										<Button
-											label={t('label.cancel', 'Cancel')}
-											color="secondary"
-											onClick={onCancel}
-											disabled={isRequestInProgress}
-										/>
-									)}
-								</Padding>
-								{isDirty && (
 									<Button
-										label={t('label.save', 'Save')}
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										onClick={(): void => {
+											setIsShowSetExternalVolume(false);
+										}}
+										disabled={!allowSetBackup}
+									/>
+								</Padding>
+
+								<Button
+									label={t('label.migrate', 'Migrate')}
+									color="primary"
+									onClick={onSaveSetExternal}
+									disabled={isExternalVolumeRequestRunning || !allowSetBackup}
+									loading={isExternalVolumeRequestRunning}
+								/>
+							</Row>
+						)}
+
+						{isManageExternalVolumeEnable && (
+							<ListRow>
+								<Container padding={{ bottom: 'large' }}>
+									<Select
+										items={destinationOptions}
+										background="gray5"
+										label={t('label.destination', 'Destination')}
+										showCheckbox={false}
+										onChange={onDestinationChange}
+										selection={destinationSelected}
+										disabled={!allowSetBackup}
+									/>
+								</Container>
+							</ListRow>
+						)}
+
+						{isManageExternalVolumeEnable &&
+							destinationSelected?.value === MOVE_TO_EXTERNAL_BUCKET && (
+								<Container>
+									<ListRow>
+										<Container padding={{ bottom: 'large' }}>
+											<Select
+												items={bucketListOption}
+												background="gray5"
+												label={t('backup.bucket_list', 'Buckets List')}
+												showCheckbox={false}
+												selection={bucketConfiguration}
+												onChange={onManageExternalVolumeConfigurationChange}
+												disabled={!allowSetBackup}
+											/>
+										</Container>
+									</ListRow>
+								</Container>
+							)}
+						{isManageExternalVolumeEnable &&
+							destinationSelected?.value === MOVE_TO_LOCAL_MOUNT_POINT && (
+								<Container>
+									<ListRow>
+										<Container padding={{ bottom: 'large' }}>
+											<Input
+												label={t('backup.local_mountpoint', 'Local Mountpoint')}
+												value={manageExternalVolumeNewLocalMountpoint || ''}
+												backgroundColor="gray5"
+												onChange={(e): void => {
+													!allowSetBackup ??
+														setManageExternalVolumeNewLocalMountpoint(e.target.value);
+												}}
+											/>
+										</Container>
+									</ListRow>
+								</Container>
+							)}
+						{isManageExternalVolumeEnable && (
+							<Row width="100%">
+								<Container
+									padding={{ right: 'extrasmall' }}
+									mainAlignment="flex-start"
+									crossAlignment="flex-start"
+									width="50%"
+								>
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										width="fill"
+										onClick={(): void => {
+											setIsManageExternalVolumeEnable(false);
+										}}
+										disabled={!allowSetBackup}
+									/>
+								</Container>
+
+								<Button
+									label={t('label.migrate', 'Migrate')}
+									color="primary"
+									width="fit"
+									onClick={onSaveManageExternalVolume}
+									disabled={isExternalVolumeRequestRunning || !allowSetBackup}
+									loading={isExternalVolumeRequestRunning}
+								/>
+							</Row>
+						)}
+						<ListRow>
+							<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
+								{!isSetManageExternalButtonVisible && (
+									<Button
+										type="outlined"
+										label={
+											isBackArchivingStoreEmpty
+												? t('backup.set_external_volume', 'Set external volume')
+												: t('backup.manage_external_volume', 'Manage external volume')
+										}
 										color="primary"
-										onClick={onSave}
-										disabled={isSaveRequestInProgress}
-										loading={isSaveRequestInProgress}
+										icon="HardDriveOutline"
+										iconPlacement="right"
+										size="large"
+										style={{ width: '100%' }}
+										width="fill"
+										disabled={!isBackupInitialized || !allowSetBackup}
+										onClick={(): void => {
+											if (!isBackArchivingStoreEmpty) {
+												setIsManageExternalVolumeEnable(true);
+												setIsShowSetExternalVolume(false);
+											} else {
+												setIsShowSetExternalVolume(true);
+												setIsManageExternalVolumeEnable(false);
+											}
+										}}
 									/>
 								)}
-							</Row>
-						</Row>
-					</Container>
-					<Divider color="gray2" />
-				</Row>
-				<Container
-					mainAlignment="flex-start"
-					crossAlignment="flex-end"
-					style={{ overflow: 'auto' }}
-					padding={{ all: 'large' }}
-					height="calc(100vh - 9.375rem)"
-				>
-					<Container
-						mainAlignment="flex-end"
-						crossAlignment="flex-end"
-						padding={{ top: 'large' }}
-						height="fit"
-						orientation="horizontal"
-					>
-						<Text>{t('backup.the_service_is', 'The service is')}</Text>&nbsp;
-						{!backupServiceStart && <Text color="error">{t('backup.stopped', 'stopped')}</Text>}
-						{backupServiceStart && <Text color="primary">{t('backup.running', 'running')}</Text>}
-					</Container>
-
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-end"
-						padding={{ top: 'medium' }}
-						height="fit"
-					>
-						<Button
-							type="outlined"
-							label={
-								backupServiceStart
-									? t('backup.stop_service', 'Stop service')
-									: t('backup.start_service', 'Start service')
-							}
-							color={backupServiceStart ? 'error' : 'primary'}
-							width="fit"
-							onClick={serviceStartStop}
-							disabled={isRequestInProgress || !allowSetBackup}
-							loading={isRequestInProgress}
-							size="large"
-						/>
-					</Container>
-
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'extralarge' }}
-						height="fit"
-					>
-						<Text size="medium" weight="bold">
-							{t('backup.general', 'General')}
-						</Text>
-					</Container>
-
-					<ListRow>
-						<Container
-							padding={{ top: 'large' }}
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-						>
-							<Switch
-								label={t('backup.backup_is_enabled_at_startup', 'Backup is enabled at startup')}
-								value={moduleEnableStartup}
-								onClick={(): void => setModuleEnableStartup(!moduleEnableStartup)}
-								iconColor="primary"
-								disabled={!allowSetBackup}
-							/>
-						</Container>
-						{isBackupImportRealtimeFeatureLicensed && (
-							<Container padding={{ top: 'large' }}>
-								<Switch
-									label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
-									value={enableRealtimeScanner}
-									onClick={(): void => setEnableRealtimeScanner(!enableRealtimeScanner)}
-									iconColor="primary"
-									disabled={!allowSetBackup}
-								/>
-							</Container>
-						)}
-
-						<Container padding={{ top: 'large' }}>
-							<Switch
-								label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
-								value={runSmartScanStartup}
-								onClick={(): void => setRunSmartScanStartup(!runSmartScanStartup)}
-								iconColor="primary"
-								disabled={!allowSetBackup}
-							/>
-						</Container>
-					</ListRow>
-
-					<ListRow>
-						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
-							<Button
-								type="outlined"
-								label={t('backup.initialize_backup', 'Initialize Backup')}
-								color="primary"
-								icon="PowerOutline"
-								iconPlacement="right"
-								width="fill"
-								style={{ width: '100%' }}
-								disabled={isBackupInitialized || !allowSetBackup}
-								onClick={(): void => {
-									doInitializeBackup(true);
-								}}
-								size="large"
-							/>
-						</Container>
-					</ListRow>
-
-					<ListRow>
-						<Container padding={{ top: 'large' }}>
-							<Input
-								label={t('backup.local_volume', 'Local Volume')}
-								value={backupDestPath || ''}
-								backgroundColor="gray5"
-								onChange={(e): void => {
-									!allowSetBackup ?? setBackupDestPath(e.target.value);
-								}}
-								disabled={!allowSetBackup}
-							/>
-						</Container>
-					</ListRow>
-
-					<ListRow>
-						<Container padding={{ top: 'large' }}>
-							<Input
-								label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
-								value={spaceThreshold}
-								backgroundColor="gray5"
-								onChange={(e: any): void => {
-									!allowSetBackup ?? setSpaceThreshold(e.target.value);
-								}}
-								disabled={!allowSetBackup}
-							/>
-						</Container>
-					</ListRow>
-
-					{!isBackArchivingStoreEmpty && (
-						<Container>
-							<ListRow>
-								<Container padding={{ top: 'large' }}>
-									<Input
-										label={t('backup.external_volume', 'External Volume')}
-										value={manageExternalVolumeType}
-										backgroundColor="gray5"
-										readOnly
-									/>
-								</Container>
-							</ListRow>
-							<ListRow>
-								<Container padding={{ top: 'large', bottom: 'large' }}>
-									<Input
-										label={t('backup.bucket_configuration', 'Bucket Configuration')}
-										value={
-											manageExternalVolumeType.startsWith('LOCAL')
-												? manageExternalVolumeLocalMountpoint
-												: manageExternalVolumeConfiguration?.label
-										}
-										backgroundColor="gray5"
-										readOnly
-									/>
-								</Container>
-							</ListRow>
-						</Container>
-					)}
-
-					{isShowSetExternalVolume && (
-						<ListRow>
-							<Container padding={{ top: 'large', bottom: 'large' }}>
-								<Select
-									items={externalVolumeOptions}
-									background="gray5"
-									label={t('label.select_an_external_volume', 'Select an External Volume')}
-									showCheckbox={false}
-									onChange={onExternalVolumeChange}
-									selection={externalVolume}
-									disabled={!allowSetBackup}
-								/>
 							</Container>
 						</ListRow>
-					)}
 
-					{isShowSetExternalVolume && externalVolume?.value === MOUNTPOINT && (
-						<Container>
-							<Input
-								label={t('label.path', 'Path')}
-								value={rootVolumePath || ''}
-								backgroundColor="gray5"
-								onChange={(e): void => {
-									!allowSetBackup ?? setRootVolumePath(e.target.value);
-								}}
-							/>
-						</Container>
-					)}
-					{isShowSetExternalVolume && externalVolume?.value === S3_BUCKET && (
-						<Select
-							items={bucketListOption}
-							background="gray5"
-							label={t('label.select_a_bucket_configuration', 'Select a Bucket Configuration')}
-							showCheckbox={false}
-							selection={bucketConfiguration}
-							onChange={onBucketConfigurationChange}
-							disabled={!allowSetBackup}
-						/>
-					)}
-
-					{isShowSetExternalVolume && (
-						<Row
-							padding={{ all: 'large' }}
-							width="50%"
-							mainAlignment="flex-end"
-							crossAlignment="flex-end"
-						>
-							<Padding right="small">
-								<Button
-									label={t('label.cancel', 'Cancel')}
-									color="secondary"
-									onClick={(): void => {
-										setIsShowSetExternalVolume(false);
-									}}
-									disabled={!allowSetBackup}
-								/>
-							</Padding>
-
-							<Button
-								label={t('label.migrate', 'Migrate')}
-								color="primary"
-								onClick={onSaveSetExternal}
-								disabled={isExternalVolumeRequestRunning || !allowSetBackup}
-								loading={isExternalVolumeRequestRunning}
-							/>
-						</Row>
-					)}
-
-					{isManageExternalVolumeEnable && (
 						<ListRow>
-							<Container padding={{ bottom: 'large' }}>
-								<Select
-									items={destinationOptions}
-									background="gray5"
-									label={t('label.destination', 'Destination')}
-									showCheckbox={false}
-									onChange={onDestinationChange}
-									selection={destinationSelected}
-									disabled={!allowSetBackup}
-								/>
-							</Container>
-						</ListRow>
-					)}
-
-					{isManageExternalVolumeEnable &&
-						destinationSelected?.value === MOVE_TO_EXTERNAL_BUCKET && (
-							<Container>
-								<ListRow>
-									<Container padding={{ bottom: 'large' }}>
-										<Select
-											items={bucketListOption}
-											background="gray5"
-											label={t('backup.bucket_list', 'Buckets List')}
-											showCheckbox={false}
-											selection={bucketConfiguration}
-											onChange={onManageExternalVolumeConfigurationChange}
-											disabled={!allowSetBackup}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						)}
-					{isManageExternalVolumeEnable &&
-						destinationSelected?.value === MOVE_TO_LOCAL_MOUNT_POINT && (
-							<Container>
-								<ListRow>
-									<Container padding={{ bottom: 'large' }}>
-										<Input
-											label={t('backup.local_mountpoint', 'Local Mountpoint')}
-											value={manageExternalVolumeNewLocalMountpoint || ''}
-											backgroundColor="gray5"
-											onChange={(e): void => {
-												!allowSetBackup ??
-													setManageExternalVolumeNewLocalMountpoint(e.target.value);
-											}}
-										/>
-									</Container>
-								</ListRow>
-							</Container>
-						)}
-					{isManageExternalVolumeEnable && (
-						<Row width="100%">
 							<Container
-								padding={{ right: 'extrasmall' }}
 								mainAlignment="flex-start"
 								crossAlignment="flex-start"
-								width="50%"
+								orientation="horizontal"
+								padding={{ top: 'large' }}
 							>
-								<Button
-									label={t('label.cancel', 'Cancel')}
-									color="secondary"
-									width="fill"
-									onClick={(): void => {
-										setIsManageExternalVolumeEnable(false);
+								<Divider />
+							</Container>
+						</ListRow>
+
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'large' }}
+							height="fit"
+						>
+							<Text size="medium" weight="bold">
+								{t('backup.smart_scan_configuration', 'SmartScan Configuration')}
+							</Text>
+						</Container>
+
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'large' }}
+							height="fit"
+						>
+							<Switch
+								label={t('backup.schedule_smartscan', 'Schedule Smartscan')}
+								value={isScheduleSmartScan}
+								onClick={(): void => setIsScheduleSmartScan(!isScheduleSmartScan)}
+								iconColor="primary"
+								disabled={!allowSetBackup}
+							/>
+						</Container>
+
+						<ListRow>
+							<Container padding={{ top: 'large' }}>
+								<Input
+									label={t('backup.schedule', 'Schedule')}
+									value={scheduleSmartScan}
+									onChange={(e): void => {
+										setScheduleSmartScan(e.target.value);
 									}}
-									disabled={!allowSetBackup}
+									disabled={!isScheduleSmartScan || !allowSetBackup}
 								/>
 							</Container>
+						</ListRow>
 
-							<Button
-								label={t('label.migrate', 'Migrate')}
-								color="primary"
-								width="fit"
-								onClick={onSaveManageExternalVolume}
-								disabled={isExternalVolumeRequestRunning || !allowSetBackup}
-								loading={isExternalVolumeRequestRunning}
-							/>
-						</Row>
-					)}
-					<ListRow>
-						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
-							{!isSetManageExternalButtonVisible && (
+						<ListRow>
+							<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
 								<Button
 									type="outlined"
-									label={
-										isBackArchivingStoreEmpty
-											? t('backup.set_external_volume', 'Set external volume')
-											: t('backup.manage_external_volume', 'Manage external volume')
-									}
+									label={t('backup.force_start_smartscan_now', 'Force start smartscan now')}
 									color="primary"
-									icon="HardDriveOutline"
+									icon="PowerOutline"
 									iconPlacement="right"
 									size="large"
 									style={{ width: '100%' }}
 									width="fill"
 									disabled={!isBackupInitialized || !allowSetBackup}
 									onClick={(): void => {
-										if (!isBackArchivingStoreEmpty) {
-											setIsManageExternalVolumeEnable(true);
-											setIsShowSetExternalVolume(false);
-										} else {
-											setIsShowSetExternalVolume(true);
-											setIsManageExternalVolumeEnable(false);
-										}
+										doInitializeBackup();
 									}}
 								/>
-							)}
-						</Container>
-					</ListRow>
+							</Container>
+						</ListRow>
 
-					<ListRow>
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								padding={{ top: 'large' }}
+							>
+								<Divider />
+							</Container>
+						</ListRow>
+
 						<Container
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
-							orientation="horizontal"
 							padding={{ top: 'large' }}
+							height="fit"
 						>
-							<Divider />
+							<Text size="medium" weight="bold">
+								{t('backup.data_retention_policies', 'Data Retention Policies')}
+							</Text>
 						</Container>
-					</ListRow>
 
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'large' }}
-						height="fit"
-					>
-						<Text size="medium" weight="bold">
-							{t('backup.smart_scan_configuration', 'SmartScan Configuration')}
-						</Text>
+						<ListRow>
+							<Container
+								padding={{ top: 'large' }}
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+							>
+								<Switch
+									label={t(
+										'backup.schedule_automatic_retention_policies',
+										'Schedule automatic retention policies'
+									)}
+									value={scheduleAutomaticRetentionPolicy}
+									onClick={(): void =>
+										setScheduleAutomaticRetentionPolicy(!scheduleAutomaticRetentionPolicy)
+									}
+									iconColor="primary"
+									disabled={!allowSetBackup}
+								/>
+							</Container>
+						</ListRow>
+
+						<ListRow>
+							<Container padding={{ top: 'large' }}>
+								<Input
+									label={t('backup.schedule', 'Schedule')}
+									backgroundColor="gray5"
+									value={retentionPolicySchedule}
+									onChange={(e): void => {
+										setRetentionPolicySchedule(e.target.value);
+									}}
+									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
+								/>
+							</Container>
+						</ListRow>
+
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								padding={{ top: 'large', right: 'large' }}
+								width="35%"
+							>
+								<Input
+									label={t(
+										'backup.keep_deleted_item_in_backup',
+										'Keep deleted items in the backup'
+									)}
+									value={keepDeletedItemInBackup}
+									onChange={(e: any): void => {
+										setKeepDeletedItemInBackup(e.target.value);
+									}}
+									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // DS only support string
+									description={
+										<Trans
+											i18nKey="backup.back_delete_account_warning_message"
+											defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
+										/>
+									}
+								/>
+							</Container>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								padding={{ top: 'large', right: 'large' }}
+								width="15%"
+							>
+								<Input
+									label={t('backup.range', 'Range')}
+									value={t('label.days', 'Days')}
+									disabled={!allowSetBackup}
+								/>
+							</Container>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								padding={{ top: 'large', right: 'large' }}
+								width="35%"
+							>
+								<Input
+									label={t(
+										'backup.keep_deleted_account_in_the_backup',
+										'Keep deleted account in the backup'
+									)}
+									backgroundColor="gray5"
+									value={keepDeletedAccountsInBackup}
+									onChange={(e: any): void => {
+										setKeepDeletedAccountsInBackup(e.target.value);
+									}}
+									disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore // DS only support string
+									description={
+										<Trans
+											i18nKey="backup.back_delete_account_warning_message"
+											defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
+										/>
+									}
+								/>
+							</Container>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								orientation="horizontal"
+								padding={{ top: 'large' }}
+								width="15%"
+							>
+								<Input
+									label={t('backup.range', 'Range')}
+									backgroundColor="gray5"
+									value={t('label.days', 'Days')}
+									disabled={!allowSetBackup}
+								/>
+							</Container>
+						</ListRow>
+						<ListRow>
+							<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
+								<Button
+									type="outlined"
+									label={t('backup.force_backup_purge_now', 'Force backup purge now')}
+									color="primary"
+									icon="PowerOutline"
+									iconPlacement="right"
+									style={{ width: '100%' }}
+									width="fill"
+									disabled={isPurgeRequestRunning || !isBackupInitialized || !allowSetBackup}
+									loading={isPurgeRequestRunning}
+									onClick={(): void => {
+										doBackupPurge();
+									}}
+									size="large"
+								/>
+							</Container>
+						</ListRow>
 					</Container>
-
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'large' }}
-						height="fit"
-					>
-						<Switch
-							label={t('backup.schedule_smartscan', 'Schedule Smartscan')}
-							value={isScheduleSmartScan}
-							onClick={(): void => setIsScheduleSmartScan(!isScheduleSmartScan)}
-							iconColor="primary"
-							disabled={!allowSetBackup}
-						/>
-					</Container>
-
-					<ListRow>
-						<Container padding={{ top: 'large' }}>
-							<Input
-								label={t('backup.schedule', 'Schedule')}
-								value={scheduleSmartScan}
-								onChange={(e): void => {
-									setScheduleSmartScan(e.target.value);
-								}}
-								disabled={!isScheduleSmartScan || !allowSetBackup}
-							/>
-						</Container>
-					</ListRow>
-
-					<ListRow>
-						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
-							<Button
-								type="outlined"
-								label={t('backup.force_start_smartscan_now', 'Force start smartscan now')}
-								color="primary"
-								icon="PowerOutline"
-								iconPlacement="right"
-								size="large"
-								style={{ width: '100%' }}
-								width="fill"
-								disabled={!isBackupInitialized || !allowSetBackup}
-								onClick={(): void => {
-									doInitializeBackup();
-								}}
-							/>
-						</Container>
-					</ListRow>
-
-					<ListRow>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large' }}
-						>
-							<Divider />
-						</Container>
-					</ListRow>
-
-					<Container
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'large' }}
-						height="fit"
-					>
-						<Text size="medium" weight="bold">
-							{t('backup.data_retention_policies', 'Data Retention Policies')}
-						</Text>
-					</Container>
-
-					<ListRow>
-						<Container
-							padding={{ top: 'large' }}
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-						>
-							<Switch
-								label={t(
-									'backup.schedule_automatic_retention_policies',
-									'Schedule automatic retention policies'
-								)}
-								value={scheduleAutomaticRetentionPolicy}
-								onClick={(): void =>
-									setScheduleAutomaticRetentionPolicy(!scheduleAutomaticRetentionPolicy)
-								}
-								iconColor="primary"
-								disabled={!allowSetBackup}
-							/>
-						</Container>
-					</ListRow>
-
-					<ListRow>
-						<Container padding={{ top: 'large' }}>
-							<Input
-								label={t('backup.schedule', 'Schedule')}
-								backgroundColor="gray5"
-								value={retentionPolicySchedule}
-								onChange={(e): void => {
-									setRetentionPolicySchedule(e.target.value);
-								}}
-								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-							/>
-						</Container>
-					</ListRow>
-
-					<ListRow>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'large' }}
-							width="35%"
-						>
-							<Input
-								label={t('backup.keep_deleted_item_in_backup', 'Keep deleted items in the backup')}
-								value={keepDeletedItemInBackup}
-								onChange={(e: any): void => {
-									setKeepDeletedItemInBackup(e.target.value);
-								}}
-								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // DS only support string
-								description={
-									<Trans
-										i18nKey="backup.back_delete_account_warning_message"
-										defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
-									/>
-								}
-							/>
-						</Container>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'large' }}
-							width="15%"
-						>
-							<Input
-								label={t('backup.range', 'Range')}
-								value={t('label.days', 'Days')}
-								disabled={!allowSetBackup}
-							/>
-						</Container>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large', right: 'large' }}
-							width="35%"
-						>
-							<Input
-								label={t(
-									'backup.keep_deleted_account_in_the_backup',
-									'Keep deleted account in the backup'
-								)}
-								backgroundColor="gray5"
-								value={keepDeletedAccountsInBackup}
-								onChange={(e: any): void => {
-									setKeepDeletedAccountsInBackup(e.target.value);
-								}}
-								disabled={!scheduleAutomaticRetentionPolicy || !allowSetBackup}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // DS only support string
-								description={
-									<Trans
-										i18nKey="backup.back_delete_account_warning_message"
-										defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
-									/>
-								}
-							/>
-						</Container>
-						<Container
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							orientation="horizontal"
-							padding={{ top: 'large' }}
-							width="15%"
-						>
-							<Input
-								label={t('backup.range', 'Range')}
-								backgroundColor="gray5"
-								value={t('label.days', 'Days')}
-								disabled={!allowSetBackup}
-							/>
-						</Container>
-					</ListRow>
-					<ListRow>
-						<Container padding={{ top: 'large' }} style={{ display: 'block' }}>
-							<Button
-								type="outlined"
-								label={t('backup.force_backup_purge_now', 'Force backup purge now')}
-								color="primary"
-								icon="PowerOutline"
-								iconPlacement="right"
-								style={{ width: '100%' }}
-								width="fill"
-								disabled={isPurgeRequestRunning || !isBackupInitialized || !allowSetBackup}
-								loading={isPurgeRequestRunning}
-								onClick={(): void => {
-									doBackupPurge();
-								}}
-								size="large"
-							/>
-						</Container>
-					</ListRow>
 				</Container>
+				<RouteLeavingGuard when={isDirty} onSave={onSave}>
+					<Text>
+						{t(
+							'label.unsaved_changes_line1',
+							'Are you sure you want to leave this page without saving?'
+						)}
+					</Text>
+					<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
+				</RouteLeavingGuard>
 			</Container>
-			<RouteLeavingGuard when={isDirty} onSave={onSave}>
-				<Text>
-					{t(
-						'label.unsaved_changes_line1',
-						'Are you sure you want to leave this page without saving?'
-					)}
-				</Text>
-				<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
-			</RouteLeavingGuard>
-		</Container>
+		</>
 	);
 };
 export default BackupConfiguration;

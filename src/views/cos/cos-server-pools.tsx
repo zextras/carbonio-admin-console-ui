@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -18,19 +19,18 @@ import {
 	Modal,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
+import { debounce, find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
-import { debounce, find } from 'lodash';
-import ListRow from '../list/list-row';
-import Paging from '../components/paging';
-import { useCosStore } from '../../store/cos/store';
-import { getAllServers } from '../../services/get-all-servers-service';
-import { modifyCos } from '../../services/modify-cos-service';
+
 import { DISABLED, ENABLED, COS } from '../../constants';
+import { modifyCos } from '../../services/modify-cos-service';
+import { useCosStore } from '../../store/cos/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
-import CustomRowFactory from '../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
+import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../app/shared/customTableRowFactory';
+import ListRow from '../list/list-row';
 
 const CosServerPools: FC = () => {
 	const [t] = useTranslation();
@@ -51,10 +51,7 @@ const CosServerPools: FC = () => {
 
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return false;
-		}
-		return true;
+		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
 	useEffect(() => {
@@ -95,11 +92,19 @@ const CosServerPools: FC = () => {
 						<Text key={item?.id}>
 							{zimbraMailHostPoolList.find((sp: any) => item?.id === sp?._content)?.c ? (
 								<Text size="small" weight="light">
-									{t('cos.enabled', 'Enabled')}
+									{t(
+										// eslint-disable-next-line sonarjs/no-duplicate-string
+										'cos.enabled',
+										'Enabled'
+									)}
 								</Text>
 							) : (
 								<Text size="small" weight="light" color="error">
-									{t('cos.disabled', 'Disabled')}
+									{t(
+										// eslint-disable-next-line sonarjs/no-duplicate-string
+										'cos.disabled',
+										'Disabled'
+									)}
 								</Text>
 							)}
 						</Text>
@@ -419,6 +424,7 @@ const CosServerPools: FC = () => {
 	}, [searchServer, searchServerLists, serverList]);
 
 	useEffect(() => {
+		// eslint-disable-next-line sonarjs/no-collapsible-if
 		if (zimbraMailHostPoolList && serverList.length > 0) {
 			if (
 				zimbraMailHostPoolList.length ===
@@ -554,7 +560,6 @@ const CosServerPools: FC = () => {
 							>
 								<Table
 									style={{ overflow: 'auto', height: '100%' }}
-									multiSelect={false}
 									rows={serverTableRows}
 									headers={tableHeader}
 									showCheckbox={false}

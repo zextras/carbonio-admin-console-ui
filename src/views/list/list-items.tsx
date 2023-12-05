@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback } from 'react';
+
 import { Container, Padding, List, Text, Divider } from '@zextras/carbonio-design-system';
 
 const ListItems: FC<{

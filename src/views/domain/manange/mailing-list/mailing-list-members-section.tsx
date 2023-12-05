@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -13,21 +14,18 @@ import {
 	SnackbarManagerContext,
 	Padding
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { debounce, sortedUniq, uniq } from 'lodash';
-import ListRow from '../../../list/list-row';
-import {
-	getAllEmailFromString,
-	getEmailDisplayNameFromString,
-	isValidEmail
-} from '../../../utility/utils';
+import { useTranslation } from 'react-i18next';
+
 import { MailingListContext } from './mailinglist-context';
+import helmetLogo from '../../../../assets/helmet_logo.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
-import helmetLogo from '../../../../assets/helmet_logo.svg';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
+import ListRow from '../../../list/list-row';
+import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 
 const MailingListMembersSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -263,8 +261,6 @@ const MailingListMembersSection: FC<any> = () => {
 							showCheckbox={false}
 							selectedRows={selectedDistributionListMember}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,11 +17,9 @@ import {
 	Input,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { find, isEqual } from 'lodash';
-import { useConfigStore } from '../../../store/config/store';
-import ListRow from '../../list/list-row';
+import { useTranslation } from 'react-i18next';
+
 import { MtaAdvanced } from '../../../../types';
 import {
 	CONFIG,
@@ -35,8 +35,10 @@ import {
 	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 	ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE
 } from '../../../constants';
-import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import { modifyConfig } from '../../../services/modify-config';
+import { useConfigStore } from '../../../store/config/store';
+import { Right, Rights, useRightsStore } from '../../../store/rights/store';
+import ListRow from '../../list/list-row';
 
 const MTAAdvanced: FC = () => {
 	const [t] = useTranslation();
@@ -160,70 +162,79 @@ const MTAAdvanced: FC = () => {
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		if (rightsConfig?.all?.[0]?.setAttrs?.[0]?.all) {
-			return true;
-		}
-		return false;
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
+
+	const setAdavanceLogAndThread = useCallback(() => {
+		const zimbraMtaSmtpdClientPortLogging = configInformation.filter(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING
+		);
+
+		if (zimbraMtaSmtpdClientPortLogging && zimbraMtaSmtpdClientPortLogging[0]?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
+				zimbraMtaSmtpdClientPortLogging[0]?._content === 'yes'
+			);
+		}
+
+		const zimbraAmavisLogLevel = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL
+		);
+
+		if (zimbraAmavisLogLevel && zimbraAmavisLogLevel?._content) {
+			setInitialAndCurrentValue(ZIMBRA_AMAVIS_LOG_LEVEL, zimbraAmavisLogLevel?._content);
+		}
+
+		const zimbraAmavisSALogLevel = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL
+		);
+
+		if (zimbraAmavisSALogLevel && zimbraAmavisSALogLevel?._content) {
+			setInitialAndCurrentValue(ZIMBRA_AMAVIS_SA_LOG_LEVEL, zimbraAmavisSALogLevel?._content);
+		}
+
+		const zimbraMtaSmtpdTlsLoglevel = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL
+		);
+
+		if (zimbraMtaSmtpdTlsLoglevel && zimbraMtaSmtpdTlsLoglevel?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+				zimbraMtaSmtpdTlsLoglevel?._content
+			);
+		}
+
+		const zimbraMtaLmtpTlsLoglevel = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL
+		);
+
+		if (zimbraMtaLmtpTlsLoglevel && zimbraMtaLmtpTlsLoglevel?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL, zimbraMtaLmtpTlsLoglevel?._content);
+		}
+
+		const zimbraClamAVMaxThreads = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_CLAM_AV_MAX_THREADS
+		);
+
+		if (zimbraClamAVMaxThreads && zimbraClamAVMaxThreads?._content) {
+			setInitialAndCurrentValue(ZIMBRA_CLAM_AV_MAX_THREADS, zimbraClamAVMaxThreads?._content);
+		}
+
+		const zimbraMilterNumThreads = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MITER_NUM_THREADS
+		);
+
+		if (zimbraMilterNumThreads && zimbraMilterNumThreads?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MITER_NUM_THREADS, zimbraMilterNumThreads?._content);
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
 
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
-			const zimbraMtaSmtpdClientPortLogging = configInformation.filter(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING
+			setAdavanceLogAndThread();
+			const zimbraMtaMaxMessageSize = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MESSAGE_SIZE
 			);
-
-			if (zimbraMtaSmtpdClientPortLogging && zimbraMtaSmtpdClientPortLogging[0]?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
-					zimbraMtaSmtpdClientPortLogging[0]?._content === 'yes'
-				);
-			}
-
-			const zimbraAmavisLogLevel = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL
-			);
-
-			if (zimbraAmavisLogLevel && zimbraAmavisLogLevel?._content) {
-				setInitialAndCurrentValue(ZIMBRA_AMAVIS_LOG_LEVEL, zimbraAmavisLogLevel?._content);
-			}
-
-			const zimbraAmavisSALogLevel = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL
-			);
-
-			if (zimbraAmavisSALogLevel && zimbraAmavisSALogLevel?._content) {
-				setInitialAndCurrentValue(ZIMBRA_AMAVIS_SA_LOG_LEVEL, zimbraAmavisSALogLevel?._content);
-			}
-
-			const zimbraMtaSmtpdTlsLoglevel = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL
-			);
-
-			if (zimbraMtaSmtpdTlsLoglevel && zimbraMtaSmtpdTlsLoglevel?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-					zimbraMtaSmtpdTlsLoglevel?._content
-				);
-			}
-
-			const zimbraMtaLmtpTlsLoglevel = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL
-			);
-
-			if (zimbraMtaLmtpTlsLoglevel && zimbraMtaLmtpTlsLoglevel?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-					zimbraMtaLmtpTlsLoglevel?._content
-				);
-			}
-
-			const zimbraClamAVMaxThreads = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_CLAM_AV_MAX_THREADS
-			);
-
-			if (zimbraClamAVMaxThreads && zimbraClamAVMaxThreads?._content) {
-				setInitialAndCurrentValue(ZIMBRA_CLAM_AV_MAX_THREADS, zimbraClamAVMaxThreads?._content);
-			}
 
 			const zimbraLmtpNumThreads = configInformation.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_LMTP_NUM_THREADS
@@ -232,19 +243,6 @@ const MTAAdvanced: FC = () => {
 			if (zimbraLmtpNumThreads && zimbraLmtpNumThreads?._content) {
 				setInitialAndCurrentValue(ZIMBRA_LMTP_NUM_THREADS, zimbraLmtpNumThreads?._content);
 			}
-
-			const zimbraMilterNumThreads = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MITER_NUM_THREADS
-			);
-
-			if (zimbraMilterNumThreads && zimbraMilterNumThreads?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MITER_NUM_THREADS, zimbraMilterNumThreads?._content);
-			}
-
-			const zimbraMtaMaxMessageSize = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MESSAGE_SIZE
-			);
-
 			if (zimbraMtaMaxMessageSize && zimbraMtaMaxMessageSize?._content) {
 				setInitialAndCurrentValue(ZIMBRA_MTA_MESSAGE_SIZE, zimbraMtaMaxMessageSize?._content);
 			}
@@ -270,7 +268,7 @@ const MTAAdvanced: FC = () => {
 				);
 			}
 		}
-	}, [configInformation, setInitialAndCurrentValue]);
+	}, [configInformation, setInitialAndCurrentValue, setAdavanceLogAndThread]);
 
 	useEffect(() => {
 		if (mtaAdvancedDetail && !isEqual(mtaAdvancedDetail, mtaAdvancedInitialDetail)) {

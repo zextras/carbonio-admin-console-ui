@@ -5,18 +5,20 @@
  */
 
 import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+
 import { Container, Button } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
-import MailingListSection from './mailing-list-section';
-import { HorizontalWizard } from '../../../app/component/hwizard';
-import { MailingListContext } from './mailinglist-context';
-import { Section } from '../../../app/component/section';
+import styled from 'styled-components';
+
 import MailingListMembersSection from './mailing-list-members-section';
+import MailingListSection from './mailing-list-section';
 import MailingListSettingsSection from './mailing-list-settings-sections';
+import { MailingListContext } from './mailinglist-context';
 import MailingListCreateSection from './mailinglist-create-section';
-import { useDomainStore } from '../../../../store/domain/store';
 import { PUB } from '../../../../constants';
+import { useDomainStore } from '../../../../store/domain/store';
+import { HorizontalWizard } from '../../../app/component/hwizard';
+import { Section } from '../../../app/component/section';
 import OverlayDivision from '../../../components/overlayDivision';
 
 const ovelayStyle = styled(Container)`
@@ -59,7 +61,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	const { t } = useTranslation();
 	return (
 		<Section
-			title={t('label.new_mailing_list', 'New Mailing List')}
+			title={t('label.new_distribution_list', 'New Distribution List')}
 			padding={{ all: '0' }}
 			footer={wizardFooter}
 			divider
@@ -131,7 +133,7 @@ const CreateMailingList: FC<{
 		() => [
 			{
 				name: 'details',
-				label: t('label.mailing_list', 'Mailing List'),
+				label: t('label.distribution_list', 'Distribution List'),
 				icon: 'ListOutline',
 				view: MailingListSection,
 				CancelButton: (props: any): ReactElement => (
@@ -139,6 +141,7 @@ const CreateMailingList: FC<{
 						{...props}
 						type="outlined"
 						key="wizard-cancel"
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.cancel', 'Cancel')}
 						color="secondary"
 						icon="CloseOutline"
@@ -152,6 +155,7 @@ const CreateMailingList: FC<{
 				NextButton: (props: any) => (
 					<Button
 						{...props}
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.next', 'NEXT')}
 						icon="ChevronRightOutline"
 						iconPlacement="right"
@@ -180,6 +184,7 @@ const CreateMailingList: FC<{
 				PrevButton: (props: any) => (
 					<Button
 						{...props}
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						label={t('label.back', 'BACK')}
 						icon="ChevronLeftOutline"
 						color="secondary"
@@ -234,6 +239,7 @@ const CreateMailingList: FC<{
 			},
 			{
 				name: 'create',
+				// eslint-disable-next-line sonarjs/no-duplicate-string
 				label: t('label.create', 'Create'),
 				icon: 'PowerOutline',
 				view: MailingListCreateSection,
@@ -285,7 +291,7 @@ const CreateMailingList: FC<{
 		() => [
 			{
 				name: 'details',
-				label: t('label.mailing_list', 'Mailing List'),
+				label: t('label.distribution_list', 'Distribution List'),
 				icon: 'ListOutline',
 				view: MailingListSection,
 				CancelButton: (props: any): ReactElement => (

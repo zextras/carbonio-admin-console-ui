@@ -5,6 +5,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useContext, useMemo, useState, useEffect, useCallback } from 'react';
+
 import {
 	Container,
 	Row,
@@ -19,18 +20,19 @@ import {
 	Input,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { debounce } from 'lodash';
-import { AccountContext } from '../account-context';
-import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
-import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
-import { getDomainList } from '../../../../../services/search-domain-service';
-import { AccountType } from '../account-types/account-types';
+import { useTranslation } from 'react-i18next';
+
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
-import { searchDirectory } from '../../../../../services/search-directory-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
+import { searchDirectory } from '../../../../../services/search-directory-service';
+import { getDomainList } from '../../../../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import { AccountContext } from '../account-context';
+import { AccountType } from '../account-types/account-types';
 
 const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const context = useContext(AccountContext);
@@ -43,7 +45,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const [distributionList, setDistributionList] = useState<any>([]);
 	const [accountDistributionList, setAccountDistributionList] = useState([]);
 	const [domainId, setDomainId] = useState('');
-	const [sendSelectedRows, setSendSelectedRows] = useState([]);
+	const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
 	const [selectedOption, setSelectedOption] = useState<any>([]);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
@@ -411,13 +413,9 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 									rows={tableRows}
 									headers={headers}
 									showCheckbox={false}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onSelectionChange={setSendSelectedRows}
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Row>

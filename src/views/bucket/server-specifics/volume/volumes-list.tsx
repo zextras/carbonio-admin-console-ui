@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -11,17 +12,26 @@ import {
 	Divider,
 	Table,
 	Button,
-	useSnackbar
+	useSnackbar,
+	THeader
 } from '@zextras/carbonio-design-system';
-import styled from 'styled-components';
-import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	postSoapFetchRequest,
 	soapFetch
 } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+import styled from 'styled-components';
+
+import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
+import NewVolume from './create-volume/new-volume';
+import { VolumeContext } from './create-volume/volume-context';
+import DeleteVolumeModel from './delete-volume-model';
+import IndexerVolumeTable from './indexer-volume-table';
+import ModifyVolume from './modify-volume/modify-volume';
+import { Volume, objectType } from '../../../../../types';
 import {
 	NO,
 	YES,
@@ -39,22 +49,15 @@ import {
 	LOCAL_VALUE
 } from '../../../../constants';
 import { fetchSoap } from '../../../../services/bucket-service';
-import IndexerVolumeTable from './indexer-volume-table';
-import { volTableHeader, indexerHeaders } from '../../../utility/utils';
-import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
-import NewVolume from './create-volume/new-volume';
-import ModifyVolume from './modify-volume/modify-volume';
-import DeleteVolumeModel from './delete-volume-model';
-import { useServerStore } from '../../../../store/server/store';
-import CreateMailstoresVolume from './create-volume/advanced-create-volume/create-mailstores-volume';
-import { VolumeContext } from './create-volume/volume-context';
-import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
 import { createVoume } from '../../../../services/create-volume-service';
 import { setCurrentVolumeRequest } from '../../../../services/set-current-volume-service';
-import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import { useBucketVolumeStore } from '../../../../store/bucket-volume/store';
+import { useServerStore } from '../../../../store/server/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
-import { Volume, objectType } from '../../../../../types';
+import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
+import { volTableHeader, indexerHeaders } from '../../../utility/utils';
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -62,19 +65,13 @@ const RelativeContainer = styled(Container)`
 
 const VolumeListTable: FC<{
 	volumes: Array<Volume>;
-	selectedRows: string[];
+	selectedRows: any;
 	onSelectionChange: (selected: string[]) => void;
-	headers: {
-		id: string;
-		label: string;
-		width: string;
-		bold: boolean;
-		align: string;
-	}[];
+	headers: THeader[];
 	onClick: (i: number) => void;
 }> = ({ volumes, selectedRows, onSelectionChange, headers, onClick }) => {
 	const [t] = useTranslation();
-	const tableRows = useMemo(
+	const tableRows: any = useMemo(
 		() =>
 			volumes.map((v, i) => ({
 				id: v?.id,
@@ -84,6 +81,7 @@ const VolumeListTable: FC<{
 						onClick={(): void => {
 							onClick(i);
 						}}
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
 					>
 						<Text size="small" weight="regular">
@@ -160,19 +158,13 @@ const VolumeListTable: FC<{
 	return (
 		<Container crossAlignment="flex-start">
 			<Table
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
 				headers={headers}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
 				rows={tableRows}
 				showCheckbox={false}
 				multiSelect={false}
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
 				RowFactory={CustomRowFactory}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows?.length === 0 && (
@@ -200,7 +192,7 @@ const VolumesDetailPanel: FC = () => {
 	const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
 	const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
 	const serverList = useServerStore((state) => state.serverList);
-	const [selectedServerId, setSelectedServerId] = useState<string>('');
+	const [selectedServerId, setSelectedServerId] = useState<any>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [volume, setVolume] = useState<Volume | undefined>({
 		compressBlobs: '',
@@ -234,6 +226,7 @@ const VolumesDetailPanel: FC = () => {
 	const getAllVolumesRequest = useCallback((): void => {
 		if (isAdvanced) {
 			fetchSoap('zextras', {
+				// eslint-disable-next-line sonarjs/no-duplicate-string
 				_jsns: 'urn:zimbraAdmin',
 				module: 'ZxPowerstore',
 				action: 'getAllVolumes',
@@ -257,7 +250,9 @@ const VolumesDetailPanel: FC = () => {
 						createSnackbar({
 							key: '1',
 							type: 'error',
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.volume_detail_error', '{{message}}', {
+								// eslint-disable-next-line sonarjs/no-duplicate-string
 								message: 'Something went wrong, please try again'
 							})
 						});
@@ -280,8 +275,6 @@ const VolumesDetailPanel: FC = () => {
 					_jsns: 'urn:zimbraAdmin'
 				},
 				undefined,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				selectedServerId
 			)
 				.then((response) => {
@@ -365,8 +358,6 @@ const VolumesDetailPanel: FC = () => {
 					id
 				},
 				undefined,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				selectedServerId
 			)
 				.then((res) => {
@@ -416,6 +407,7 @@ const VolumesDetailPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const CreateAdvancedRequest = async (attr: Volume): Promise<void> => {
 		const bucketDetails = isVolumeAllDetail?.filter(
 			(items: objectType) => items?.uuid === attr?.bucketConfigurationId
@@ -501,6 +493,7 @@ const VolumesDetailPanel: FC = () => {
 						createSnackbar({
 							key: '1',
 							type: 'success',
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.volume_created_msg', 'The volume has been created successfully')
 						});
 						setToggleWizardLocal(false);
@@ -540,6 +533,7 @@ const VolumesDetailPanel: FC = () => {
 			});
 	};
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const CreateVolumeRequest = async (attr: Volume): Promise<void> => {
 		setIsLoading(true);
 		if (isAdvanced) {
@@ -627,6 +621,7 @@ const VolumesDetailPanel: FC = () => {
 				.then(async (res) => {
 					if (res?.volume && Array.isArray(res?.volume)) {
 						const vol = res?.volume[0];
+						// eslint-disable-next-line sonarjs/no-collapsible-if
 						if (vol && vol?.id) {
 							if (attr?.isCurrent === 1) {
 								await setCurrentVolumeRequest(vol?.id, vol?.type)

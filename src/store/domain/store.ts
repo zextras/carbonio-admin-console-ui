@@ -3,9 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import create from 'zustand';
-import produce from 'immer';
+import { produce } from 'immer';
+import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
+
 import { Cos, Domain } from '../../../types';
 import { DOMAINS_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 
@@ -25,9 +26,11 @@ type DomainState = {
 	setCloseDomainBanner: (domainName: string) => void;
 	isQuickAccess: boolean;
 	setIsQuickAccess: (isQuickAccess: boolean) => void;
+	isCertificateAvailbale: boolean;
+	setIsCertificateAvailbale: (isCertificateAvailbale: boolean) => void;
 };
 
-export const useDomainStore = create<DomainState>(
+export const useDomainStore = create<DomainState>()(
 	devtools((set) => ({
 		domain: {},
 		cosList: [],
@@ -36,17 +39,20 @@ export const useDomainStore = create<DomainState>(
 		domainList: [],
 		isDomainSupportDelegatedAdmin: false,
 		isQuickAccess: false,
+		isCertificateAvailbale: false,
 		setDomainList: (domainList): void => set({ domainList }, false, 'setDomainList'),
 		setCosList: (cosList): void => set({ cosList }, false, 'setCosList'),
 		removeDomain: (): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.domain = {};
 				})
 			),
 		setDomainView: (domainView): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.domainView = domainView;
 				}),
 				false,
@@ -58,11 +64,14 @@ export const useDomainStore = create<DomainState>(
 		setCloseDomainBanner: (domainName): void =>
 			set(
 				produce((state) => {
+					// eslint-disable-next-line no-param-reassign
 					state.closeDomainBanner = domainName;
 				}),
 				false,
 				'setCloseDomainBanner'
 			),
-		setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess')
+		setIsQuickAccess: (isQuickAccess): void => set({ isQuickAccess }, false, 'setIsQuickAccess'),
+		setIsCertificateAvailbale: (isCertificateAvailbale): void =>
+			set({ isCertificateAvailbale }, false, 'setIsCertificateAvailbale')
 	}))
 );

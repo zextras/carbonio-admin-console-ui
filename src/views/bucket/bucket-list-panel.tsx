@@ -5,26 +5,30 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useState, useMemo, useEffect, useCallback } from 'react';
+
 import { Container, Row, Text, Padding } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
-import ListPanelItem from '../list/list-panel-item';
-import ListItems from '../list/list-items';
+
 import {
 	BUCKET_LIST,
 	SERVERS_LIST,
 	HSM_SETTINGS,
 	DATA_VOLUMES,
-	STORAGES_ROUTE_ID
+	STORAGES_ROUTE_ID,
+	IS_SERVER_LIST_EXPANDED,
+	IS_SERVER_SPECIFIC_LIST_EXPANDED
 } from '../../constants';
-import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import MatomoTracker from '../../matomo-tracker';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import DropDownInput from '../components/dropDownInput';
+import { useBucketServersListStore } from '../../store/bucket-server-list/store';
+import { useBucketVolumeStore } from '../../store/bucket-volume/store';
 import { useConfigStore } from '../../store/config/store';
+import { useGlobalConfigStore } from '../../store/global-config/store';
+import DropDownInput from '../components/dropDownInput';
+import ListItems from '../list/list-items';
+import ListPanelItem from '../list/list-panel-item';
 
 const SelectItem = styled(Row)``;
 
@@ -174,9 +178,22 @@ const BucketListPanel: FC = () => {
 	}, [isStoreSelect, selectedOperationItem, searchVolumeName, matomo, globalCarbonioSendAnalytics]);
 
 	const toggleServer = (): void => {
-		setIsServerListExpand(!isServerListExpand);
+		if (isServerListExpand) {
+			setIsServerListExpand(false);
+			localStorage.setItem(IS_SERVER_LIST_EXPANDED, 'false');
+		} else {
+			setIsServerListExpand(true);
+			localStorage.removeItem(IS_SERVER_LIST_EXPANDED);
+		}
 	};
 	const toggleServerSpecific = (): void => {
+		if (isServerSpecificListExpand) {
+			setIsServerSpecificListExpand(false);
+			localStorage.setItem(IS_SERVER_SPECIFIC_LIST_EXPANDED, 'false');
+		} else {
+			setIsServerSpecificListExpand(true);
+			localStorage.removeItem(IS_SERVER_SPECIFIC_LIST_EXPANDED);
+		}
 		setIsServerSpecificListExpand(!isServerSpecificListExpand);
 	};
 
@@ -192,6 +209,21 @@ const BucketListPanel: FC = () => {
 			}
 		}
 	};
+
+	useEffect(() => {
+		const storedServerValue = localStorage.getItem(IS_SERVER_LIST_EXPANDED);
+		if (storedServerValue === 'false') {
+			setIsServerListExpand(false);
+		} else {
+			setIsServerListExpand(true);
+		}
+		const storedValue = localStorage.getItem(IS_SERVER_SPECIFIC_LIST_EXPANDED);
+		if (storedValue === 'false') {
+			setIsServerSpecificListExpand(false);
+		} else {
+			setIsServerSpecificListExpand(true);
+		}
+	}, []);
 
 	return (
 		<Container

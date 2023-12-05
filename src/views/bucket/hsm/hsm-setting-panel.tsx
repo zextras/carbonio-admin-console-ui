@@ -6,6 +6,7 @@
  */
 
 import React, { FC, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -18,20 +19,18 @@ import {
 	Table,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { Trans, useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	getSoapFetchRequest,
 	soapFetch
 } from '@zextras/carbonio-shell-ui';
-import { fetchSoap } from '../../../services/bucket-service';
-import ListRow from '../../list/list-row';
+import { Trans, useTranslation } from 'react-i18next';
+import { useParams } from 'react-router-dom';
+
 import CreateHsmPolicy from './create-hsm-policy/create-hsm-policy';
-import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
 import DeleteHsmPolicy from './delete-policy/delete-hsm-policy';
-import { useServerStore } from '../../../store/server/store';
+import EditHsmPolicy from './edit-hsm-policy/edit-hsm-policy';
 import {
 	APPOINTMENT,
 	CONTACT,
@@ -40,10 +39,13 @@ import {
 	SERVER,
 	VOLUME_INDEX_TYPE
 } from '../../../constants';
+import { fetchSoap } from '../../../services/bucket-service';
 import { setCoreAttributes } from '../../../services/set-core-attributes';
-import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../components/ModalOverlay';
+import ListRow from '../../list/list-row';
 
 const HSMsettingPanel: FC = () => {
 	const { operation, server }: { operation: string; server: string } = useParams();
@@ -64,7 +66,7 @@ const HSMsettingPanel: FC = () => {
 	const [oldValues, setOldValues] = useState<any>({});
 	const [volumeList, setVolumeList] = useState<any>([]);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const [selectedPolicies, setSelectedPolicies] = useState<Array<any>>([]);
+	const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
 	const [isEditSaveInProgress, setIsEditSaveInProgress] = useState<boolean>(false);
@@ -84,6 +86,7 @@ const HSMsettingPanel: FC = () => {
 
 	const getHSMPolicyList = useCallback(() => {
 		fetchSoap('zextras', {
+			// eslint-disable-next-line sonarjs/no-duplicate-string
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxPowerstore',
 			action: 'getHSMPolicy',
@@ -178,6 +181,7 @@ const HSMsettingPanel: FC = () => {
 		}
 	}, [handleClick, policies]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getZxPowerStoreServers = useCallback(() => {
 		getSoapFetchRequest(
 			`/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`
@@ -244,7 +248,7 @@ const HSMsettingPanel: FC = () => {
 	}, [server]);
 
 	const getAllVolumes = useCallback(() => {
-		const serverId = serverList.find((item: any) => item?.name === server);
+		const serverId: any = serverList.find((item: any) => item?.name === server);
 		setIsVolumeInProgress(true);
 		setVolumeList([]);
 		if (serverId) {
@@ -254,8 +258,6 @@ const HSMsettingPanel: FC = () => {
 					_jsns: 'urn:zimbraAdmin'
 				},
 				undefined,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
 				serverId
 			).then((response: any) => {
 				setIsVolumeInProgress(false);
@@ -313,7 +315,9 @@ const HSMsettingPanel: FC = () => {
 				setIsRequestInProgress(false);
 				if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
 					let errorMessage = t(
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						'label.something_wrong_error_msg',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
 						'Something went wrong. Please try again.'
 					);
 					if (data?.errors && Array.isArray(data?.errors) && data?.errors[0]?.error) {
@@ -471,6 +475,7 @@ const HSMsettingPanel: FC = () => {
 		[server, selectedPolicies, t, createSnackbar, getHSMPolicyList, policies]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const generatePolicyString = useCallback((hsmPolicyDetail: any) => {
 		let policy = '';
 		const criteriaScale: string[] = [];
@@ -553,7 +558,9 @@ const HSMsettingPanel: FC = () => {
 								key: 'error',
 								type: 'error',
 								label: t(
+									// eslint-disable-next-line sonarjs/no-duplicate-string
 									'label.storage_hsm_not_licensed',
+									// eslint-disable-next-line sonarjs/no-duplicate-string
 									'Cannot complete operation: storages_hsm not licensed.'
 								),
 								autoHideTimeout: 3000,
@@ -906,8 +913,6 @@ const HSMsettingPanel: FC = () => {
 						showCheckbox={false}
 						multiSelect={false}
 						selectedRows={selectedPolicies}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 						RowFactory={CustomRowFactory}
 					/>

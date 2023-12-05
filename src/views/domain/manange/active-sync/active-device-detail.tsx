@@ -5,30 +5,29 @@
  */
 
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Divider,
 	Row,
 	Text,
-	Button,
 	Input,
 	SnackbarManagerContext,
 	IconButton,
-	Select,
-	Tooltip
+	Select
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 import moment from 'moment';
-import ListRow from '../../../list/list-row';
-import { getMobileDeviceDetail } from '../../../../services/get-mobile-device-detail';
-import { RESET_DEVICE, SUSPEND_DEVICE, WIPE_DEVICE, ZX_MOBILE } from '../../../../constants';
+import { useTranslation } from 'react-i18next';
+
 import ActiveDeviceConfirmation from './active-device-confirmation';
+import { RESET_DEVICE, SUSPEND_DEVICE, WIPE_DEVICE, ZX_MOBILE } from '../../../../constants';
+import { getMobileDeviceDetail } from '../../../../services/get-mobile-device-detail';
 import { resetDevice } from '../../../../services/reset-device';
 import { suspendDevice } from '../../../../services/suspend-device';
 import { wipeDevice } from '../../../../services/wipe-device';
-import Displayer from '../../../components/displayer';
 import { useStickyBarStore } from '../../../../store/sticky-bar/store';
+import Displayer from '../../../components/displayer';
+import ListRow from '../../../list/list-row';
 
 type MobileDeviceDetail = {
 	accountEmail: string;
@@ -108,6 +107,7 @@ const ActiveDeviceDetail: FC<{
 	const [abqStatus, setAbqStatus] = useState<any>(abqStatusOptions[0]);
 	const [status, setStatus] = useState<any>(statusOptions[0]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (selectedMobileDeviceDetail) {
 			setIsDetailRequestInProgess(true);
@@ -137,7 +137,8 @@ const ActiveDeviceDetail: FC<{
 						type: 'error',
 						label: error
 							? error?.error
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -175,6 +176,7 @@ const ActiveDeviceDetail: FC<{
 						createSnackbar({
 							key: 'success',
 							type: 'success',
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label: t('label.change_save_success_msg', 'The change has been saved successfully'),
 							autoHideTimeout: 3000,
 							hideButton: true,
@@ -398,9 +400,7 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.abq_status', 'ABQ Status')}
 							showCheckbox={false}
 							selection={abqStatus}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void => {
+							onChange={(ev): void => {
 								const dataItem = abqStatusOptions.find((item) => item?.value === ev);
 								if (dataItem) {
 									setAbqStatus(dataItem);
@@ -445,9 +445,7 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.status_lbl', 'Status')}
 							showCheckbox={false}
 							selection={status}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={(ev: React.ChangeEvent<HTMLSelectElement>): void => {
+							onChange={(ev): void => {
 								const dataItem = statusOptions.find((item) => item?.value === ev);
 								if (dataItem) {
 									setStatus(dataItem);

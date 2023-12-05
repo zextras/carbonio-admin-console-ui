@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+
 import {
 	Container,
 	Row,
@@ -15,6 +16,7 @@ import {
 	Link
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
+
 import { AdvancedVolumeContext } from './create-advanced-volume-context';
 import {
 	AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
@@ -198,9 +200,6 @@ const AdvancedMailstoresConfig: FC<{
 				>
 					<Row width="48%">
 						<Radio
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							inputName="primary"
 							label={t('label.primary_volume', 'This is a Primary Volume')}
 							value={PRIMARY_TYPE_VALUE.toString()}
 							checked={primaryRadio}
@@ -213,10 +212,7 @@ const AdvancedMailstoresConfig: FC<{
 					</Row>
 					<Row width="48%">
 						<Radio
-							inputName="secondary"
 							label={t('label.secondary_volume', 'This is a Secondary Volume')}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							value={SECONDARY_TYPE_VALUE}
 							checked={secondaryRadio}
 							onClick={(): void => {

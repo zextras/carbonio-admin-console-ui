@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+
 import {
 	Container,
 	Text,
@@ -17,18 +18,18 @@ import {
 	Select,
 	ChipInput
 } from '@zextras/carbonio-design-system';
-import { useTranslation } from 'react-i18next';
 import { debounce, sortedUniq, uniq } from 'lodash';
+import { useTranslation } from 'react-i18next';
+
 import { AclListContext } from './acl-list-context';
-import ListRow from '../../../list/list-row';
-import { searchDirectory } from '../../../../services/search-directory-service';
-import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
-import { searchGal } from '../../../../services/search-gal-service';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
+import { searchGal } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../components/customChip';
 import Textarea from '../../../components/textarea';
+import ListRow from '../../../list/list-row';
+import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
 
 const AclListSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -333,7 +334,7 @@ const AclListSection: FC<any> = () => {
 						padding={{ top: 'large' }}
 					>
 						<Input
-							label={t('label.displayed_name', 'Displayed Name')}
+							label={t('label.display_name', 'Display Name')}
 							backgroundColor="gray5"
 							value={aclListDetail?.displayName}
 							inputName="displayName"
@@ -395,8 +396,6 @@ const AclListSection: FC<any> = () => {
 									headers={memberHeaders}
 									showCheckbox={false}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
@@ -442,6 +441,7 @@ const AclListSection: FC<any> = () => {
 										searchEmailFromGal(e?.textContent);
 									}}
 									ChipComponent={CustomChip}
+									maxChips={null}
 								/>
 							</Container>
 						</ListRow>
@@ -520,8 +520,6 @@ const AclListSection: FC<any> = () => {
 									showCheckbox={false}
 									selectedRows={selectedDistributionListOwner}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>

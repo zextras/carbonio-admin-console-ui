@@ -2,6 +2,80 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.38](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.37...v0.9.38) (2023-11-28)
+
+
+### Bug Fixes
+
+* ac-885: update attribute wrong way in mta virus defination ([8a99cdf](https://github.com/zextras/carbonio-admin-console-ui/commit/8a99cdfc1c082f4f7f31459157ff081681d0ce1c))
+* ac-886: remove sentense untill login page not manage virutal host ([9a18ba0](https://github.com/zextras/carbonio-admin-console-ui/commit/9a18ba0fa0526ae2ab4e5d60f89882b453506698))
+
+### [0.9.37](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.36...v0.9.37) (2023-11-23)
+
+### [0.9.36](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.35...v0.9.36) (2023-11-23)
+
+
+### Features
+
+* ac-317: added done tab in the UI with getoperationlog api ([906ae94](https://github.com/zextras/carbonio-admin-console-ui/commit/906ae94ab43b0fb2e0f48f29a6861207828b42be))
+* ac-840 : cos list in cos tab ([c72e535](https://github.com/zextras/carbonio-admin-console-ui/commit/c72e5358807c397a5eec34679bede8d0a10c6f72))
+* ac-842: add default cos selection in create domain ([63e39e5](https://github.com/zextras/carbonio-admin-console-ui/commit/63e39e5c8c2dc4a4eea104f9d88d43b67dcccf3b))
+* added done tabs along with removed cancel operation and custom details page ([761964c](https://github.com/zextras/carbonio-admin-console-ui/commit/761964ce461c71a79bc4db33a7f04f2c0943fe25))
+
+
+### Bug Fixes
+
+* ac-317: filter renderring issue fixed ([d87d921](https://github.com/zextras/carbonio-admin-console-ui/commit/d87d9218ea5bf70b58b08c1d277d4cb230e39c06))
+* ac-317: removed theme constant ([d330d1a](https://github.com/zextras/carbonio-admin-console-ui/commit/d330d1aa9ff47d0472b8b241f89f05d667d645b7))
+* ac-826: dashboard notification not show latest notificaiton ([2c3fb40](https://github.com/zextras/carbonio-admin-console-ui/commit/2c3fb400c28653b5484dbc3de57a5d73a95e64ce))
+* ac-830: session filter and end session not working ([8d30682](https://github.com/zextras/carbonio-admin-console-ui/commit/8d3068249692e5c013725b6e26fdaf6d5f036d73))
+* ac-838: mailbox quota display all domain record rather than selected domain ([5a15801](https://github.com/zextras/carbonio-admin-console-ui/commit/5a1580185b8c0a8aeba55a6789ae71bbd1a8e441))
+* ac-850: added regular expression for valid extesion allowed ([a5dc095](https://github.com/zextras/carbonio-admin-console-ui/commit/a5dc095555f49b47623eca083b333e78ac6673ef))
+* ac-850: value not update properly in mta extension ([1004ccc](https://github.com/zextras/carbonio-admin-console-ui/commit/1004cccb30bcce086d5aaac784c9222c2c9fbdb1))
+* cos link issue on domain general setting ([#566](https://github.com/zextras/carbonio-admin-console-ui/issues/566)) ([9d10ed9](https://github.com/zextras/carbonio-admin-console-ui/commit/9d10ed964cbe8b6cc4dbe36543dd8de793eb29c5))
+* lint issues ([8099e0a](https://github.com/zextras/carbonio-admin-console-ui/commit/8099e0ab305bbcadb0eb93c8a765c5d2138cd79b))
+* sonarcube bug fix ([b2ca62e](https://github.com/zextras/carbonio-admin-console-ui/commit/b2ca62ed15cfdec4cab33ac9fffd0b0c7cd7be73))
+* translation issue ([#557](https://github.com/zextras/carbonio-admin-console-ui/issues/557)) ([3a6ae2b](https://github.com/zextras/carbonio-admin-console-ui/commit/3a6ae2bc0bd465ebf701ba2be2ad1f2e1059f245))
+* update zustand store and DS issues ([39ea3e8](https://github.com/zextras/carbonio-admin-console-ui/commit/39ea3e8aea512071b8cab27acc6d4d60cf48cc0b))
+* whitelabel login background description ([8f98bfb](https://github.com/zextras/carbonio-admin-console-ui/commit/8f98bfbd2c0f717fb785aff64dfc89207ad57ee4))
+
+### [0.9.35](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.34...v0.9.35) (2023-11-10)
+
+
+### Bug Fixes
+
+* ac-789: general setting and mailbox quota field disable in case of deligated admin ([50cfab7](https://github.com/zextras/carbonio-admin-console-ui/commit/50cfab74a11a91740847cb6db4e514a45d69ebdc))
+* ac-789: global admin should able to update max manageable account ([2168d13](https://github.com/zextras/carbonio-admin-console-ui/commit/2168d13ce326558512702f8190decf7b130a72ed))
+* ac-789: max managable account should be readonly ([fe7842a](https://github.com/zextras/carbonio-admin-console-ui/commit/fe7842acc361f0745f5dd16c2e9da0796742fc6b))
+
+### [0.9.34](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.33...v0.9.34) (2023-11-07)
+
+### [0.9.33](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.32...v0.9.33) (2023-10-26)
+
+
+### Features
+
+* ac-390: added certificate uploading fixes extension pending and merged with devel ([d28d292](https://github.com/zextras/carbonio-admin-console-ui/commit/d28d2921ba587ef9da7768d9aaa0a8a5a87c807a))
+* ac-653: allow Global Admin to list all global and delegated admin in the infrastructure ([5ff1b0c](https://github.com/zextras/carbonio-admin-console-ui/commit/5ff1b0c6608973b53c973f6be464b23e2e33f697))
+* email mta mail queue list and operation on mail added ([2cd7571](https://github.com/zextras/carbonio-admin-console-ui/commit/2cd7571a32ef33808ddabf0742099f864eb8098b))
+* get list of mail from differnt queue ([d81f4c6](https://github.com/zextras/carbonio-admin-console-ui/commit/d81f4c6141b18ac3ecc9f03fa14190ffb92b09bf))
+* refactored name surname and middle name field and email creation ([d2eb0f4](https://github.com/zextras/carbonio-admin-console-ui/commit/d2eb0f4675aa4a073c642adb8fde8843c7443002))
+
+
+### Bug Fixes
+
+* ac-390: added pem extension to certificate files ([58d8713](https://github.com/zextras/carbonio-admin-console-ui/commit/58d8713bb847c080d442230964e8f2abcdca4f78))
+* ac-390: clear the certificate content on reupload ([0f2d0fa](https://github.com/zextras/carbonio-admin-console-ui/commit/0f2d0fa3d81d21c80095705f29b38eefdc29c8f4))
+* ac-796: paging not working properly ([bc09333](https://github.com/zextras/carbonio-admin-console-ui/commit/bc09333b5101bfa6f0b277fa1755346a2e19e851))
+* ac-808: enable schedule toggled in hsm not working ([0d65766](https://github.com/zextras/carbonio-admin-console-ui/commit/0d657663decd43e944894c0b28c276d325019c72))
+* ac-829: mta queue showing wrong date after scan server ([520f004](https://github.com/zextras/carbonio-admin-console-ui/commit/520f004e0a9884ca12966b5f2e99a1144f2ca46b))
+* conflicts resolved ([e499dea](https://github.com/zextras/carbonio-admin-console-ui/commit/e499dea9a97ad0d6a8a98f204fb8ca4702e55707))
+* domains redirect routing fixed ([67f8b81](https://github.com/zextras/carbonio-admin-console-ui/commit/67f8b81f6522952e4617156db66d0f47d231de1f))
+* download changes and extension changed ([9540dfc](https://github.com/zextras/carbonio-admin-console-ui/commit/9540dfc4172a31415513e523dc540c92c7e19378))
+* fixed domain undefined error ([0970755](https://github.com/zextras/carbonio-admin-console-ui/commit/09707559a329ca1b8f8552202c763bc4f97e2c53))
+* quickaccess button from the dashboard ([c2a7879](https://github.com/zextras/carbonio-admin-console-ui/commit/c2a7879a6311718053983db897e2e618ac277ba9))
+* setup unit testing env ([#531](https://github.com/zextras/carbonio-admin-console-ui/issues/531)) ([ed241ba](https://github.com/zextras/carbonio-admin-console-ui/commit/ed241ba65723dcd6d0cddb32aec8580be2f37715))
+
 ### [0.9.32](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.31...v0.9.32) (2023-10-10)
 
 ### [0.9.31](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.30...v0.9.31) (2023-09-29)

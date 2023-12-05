@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import React, { FC, useCallback, useContext } from 'react';
+
 import {
 	Container,
 	Modal,
@@ -14,8 +16,8 @@ import {
 	IconButton,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import React, { FC, useCallback, useContext } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+
 import { MESSAGE, DOCUMENT, CONTACT, APPOINTMENT } from '../../../../constants';
 
 const DeleteHsmPolicy: FC<{

@@ -4,8 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { FC } from 'react';
+
 import { Modal, Row, Button, Text, Container, Padding } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
+
 import { Domain } from '../../../../../types';
 
 const DisableDelegateAdminModel: FC<{
@@ -34,31 +36,27 @@ const DisableDelegateAdminModel: FC<{
 						<Row style={{ gap: '0.5rem' }}>
 							<Button
 								style={{ fontWeight: '900' }}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								label={
+								label={`${(
 									<Trans
 										i18nKey="label.remove_all_acl"
 										defaults="<bold>REMOVE</bold> ALL ACLs"
 										components={{ bold: <strong /> }}
 										t={t}
 									/>
-								}
+								)}`}
 								type="outlined"
 								color="primary"
 								onClick={removeAllACLs}
 							/>
 							<Button
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								label={
+								label={`${(
 									<Trans
 										i18nKey="label.keep_acls_&_disbale_rigths"
 										defaults="<bold>KEEP</bold> ACLs, DISABLE RIGHTS"
 										components={{ bold: <strong /> }}
 										t={t}
 									/>
-								}
+								)}`}
 								type="outlined"
 								color="primary"
 								onClick={(): void => {
