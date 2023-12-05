@@ -109,20 +109,6 @@ const MTAPostScreenTuning: FC = () => {
 		[t]
 	);
 
-	const ignoreDropOptions = useMemo(
-		() => [
-			{
-				label: t('mta.ignore', 'Ignore'),
-				value: 'ignore'
-			},
-			{
-				label: t('mta.drop', 'Drop'),
-				value: 'drop'
-			}
-		],
-		[t]
-	);
-
 	const intervalOptions = useMemo(
 		() => [
 			{
@@ -434,13 +420,6 @@ const MTAPostScreenTuning: FC = () => {
 	const onDNSBlackListActionChange = useCallback(
 		(v: string) => {
 			setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_ACTION, v);
-		},
-		[setValue]
-	);
-
-	const onDNSBlSiteChange = useCallback(
-		(v: string) => {
-			setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES, v);
 		},
 		[setValue]
 	);
@@ -901,18 +880,13 @@ const MTAPostScreenTuning: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-						<Select
-							items={ignoreDropOptions}
-							background="gray5"
+						<Input
 							label={t('mta.dns_blacklist_sites', 'DNS Blacklist Sites')}
-							showCheckbox={false}
-							selection={ignoreDropOptions.find(
-								(item: Record<string, string>) =>
-									item.value === mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites
-							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={onDNSBlSiteChange}
+							backgroundColor="gray5"
+							value={mtaPostTuningDetail?.zimbraMtaPostscreenDnsblSites}
+							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								setValue(ZIMBRA_MTA_POST_SCREEN_DNSBL_SITES, e.target.value);
+							}}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
