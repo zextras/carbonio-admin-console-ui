@@ -22,7 +22,7 @@ import {
 	GAL,
 	GENERAL_SETTINGS,
 	MAILBOX_QUOTA,
-	MAILING_LIST,
+	DISTRIBUTION_LIST,
 	MANAGE_APP_ID,
 	MAX_DOMAIN_DISPLAY,
 	RESTORE_ACCOUNT,
@@ -321,8 +321,8 @@ const DomainListPanel: FC = () => {
 				isSelected: isDomainSelect
 			},
 			{
-				id: MAILING_LIST,
-				name: t('label.mailing_list', 'Mailing List'),
+				id: DISTRIBUTION_LIST,
+				name: t('label.distribution_list', 'Distribution List'),
 				isSelected: isDomainSelect
 			},
 			{

@@ -78,7 +78,7 @@ const DomainMailingList: FC = () => {
 		() => [
 			{
 				id: 'name',
-				label: t('label.mailing_list_name', 'Name'),
+				label: t('label.distribution_list_name', 'Name'),
 				width: '20%',
 				bold: true
 			},
@@ -602,7 +602,7 @@ const DomainMailingList: FC = () => {
 					<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 						<Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
 							<Text size="medium" weight="bold" color="gray0">
-								{t('label.mailing_list', 'Mailing List')}
+								{t('label.distribution_list', 'Distribution List')}
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
@@ -721,8 +721,8 @@ const DomainMailingList: FC = () => {
 									>
 										<Text weight="light" color="#828282" size="large" overflow="break-word">
 											<Trans
-												i18nKey="label.create_mailing_list_msg"
-												defaults="You can create a new Mailing List by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
+												i18nKey="label.create_distribution_list_msg"
+												defaults="You can create a new Distribution List by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
 												components={{ bold: <strong /> }}
 											/>
 										</Text>

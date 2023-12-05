@@ -380,7 +380,7 @@ const MailingListSection: FC<any> = () => {
 			>
 				<Row>
 					<Text size="small" weight="bold">
-						{t('label.mailing_list_name', 'Mailing List Name')}
+						{t('label.distribution_list_name', 'Distribution List Name')}
 					</Text>
 				</Row>
 				<ListRow>
@@ -488,7 +488,7 @@ const MailingListSection: FC<any> = () => {
 								padding={{ top: 'small', bottom: 'medium' }}
 							>
 								<Input
-									label={t('label.list_url', "Mailing List's URL")}
+									label={t('label.distribution_list_url', "Distribution List's URL")}
 									backgroundColor="gray5"
 									value={mailingListDetail?.memberURL}
 									inputName="memberURL"
@@ -574,7 +574,7 @@ const MailingListSection: FC<any> = () => {
 							<Text size="small" weight="light" color="#828282">
 								{t(
 									'label.owners_description',
-									"Owners can manage the mailing list's members (adding and removing emails) and modify its options."
+									"Owners can manage the distribution list's members (adding and removing emails) and modify its options."
 								)}
 							</Text>
 						</Row>

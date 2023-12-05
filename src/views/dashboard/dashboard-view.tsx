@@ -28,7 +28,7 @@ import {
 	LIST,
 	LIST_SERVER,
 	LOG_AND_QUEUES,
-	MAILING_LIST,
+	DISTRIBUTION_LIST,
 	MANAGE,
 	NOTIFICATION_ROUTE_ID,
 	SERVER,
@@ -72,7 +72,7 @@ const Dashboard: FC = () => {
 		},
 		{
 			upperText: t('label.domains', 'Domains'),
-			operationText: t('label.mailing_list', 'Mailing List'),
+			operationText: t('label.distribution_list', 'Distribution List'),
 			bottomText: t('label.open', 'Open'),
 			operationIcon: 'DistributionListOutline',
 			bottomIcon: 'ChevronRightOutline',
@@ -98,9 +98,11 @@ const Dashboard: FC = () => {
 					setDomainView(ACCOUNTS);
 					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${ACCOUNTS}`);
 				} else if (operation === 'malinglist') {
-					setDomainView(MAILING_LIST);
-					setDomainView(MAILING_LIST);
-					history.push(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${MAILING_LIST}`);
+					setDomainView(DISTRIBUTION_LIST);
+					setDomainView(DISTRIBUTION_LIST);
+					history.push(
+						`/${MANAGE}/${DOMAINS_ROUTE_ID}/${domainInformation?.id}/${DISTRIBUTION_LIST}`
+					);
 				}
 			}
 		},

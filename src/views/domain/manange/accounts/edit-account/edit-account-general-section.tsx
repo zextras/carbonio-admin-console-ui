@@ -665,7 +665,7 @@ const EditAccountGeneralSection: FC = () => {
 			</Row>
 			<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 				<Text size="small" color="gray0" weight="bold">
-					{t('label.mailing_list', 'Mailing List')}
+					{t('label.distribution_list', 'Distribution List')}
 				</Text>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
