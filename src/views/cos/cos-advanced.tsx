@@ -785,7 +785,7 @@ const CosAdvanced: FC = () => {
 	}, [cosAdvanced.zimbraFreebusyExchangeUserOrg, cosData.zimbraFreebusyExchangeUserOrg]);
 
 	const onZimbraQuotaWarnIntervalTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraQuotaWarnInterval: zimbraQuotaWarnIntervalNum
@@ -810,7 +810,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraPasswordLockoutDurationTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
@@ -835,7 +835,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraPasswordLockoutFailureLifetimeTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
@@ -860,7 +860,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraAdminAuthTokenLifetimeTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraAdminAuthTokenLifetime: zimbraAdminAuthTokenLifetimeNum
@@ -885,7 +885,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraAuthTokenLifetimeTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraAuthTokenLifetime: zimbraAuthTokenLifetimeNum
@@ -910,7 +910,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraMailIdleSessionTimeoutTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailIdleSessionTimeout: zimbraMailIdleSessionTimeoutNum
@@ -935,7 +935,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraMailTrashLifetimeTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailTrashLifetime: zimbraMailTrashLifetimeNum
@@ -960,7 +960,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraMailSpamLifetimeTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailSpamLifetime: zimbraMailSpamLifetimeNum ? `${zimbraMailSpamLifetimeNum}${v}` : ''
@@ -996,7 +996,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const onZimbraMailMessageLifetimeTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
 				zimbraMailMessageLifetime: zimbraMailMessageLifetimeNum
@@ -1237,7 +1237,7 @@ const CosAdvanced: FC = () => {
 								<Container width="26%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										// eslint-disable-next-line sonarjs/no-duplicate-string
 										label={t('cos.time_range', 'Time Range')}
 										selection={
@@ -1247,8 +1247,6 @@ const CosAdvanced: FC = () => {
 												  timeItems.find((item: any) => item.value === zimbraQuotaWarnIntervalType)
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraQuotaWarnIntervalTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1342,8 +1340,7 @@ const CosAdvanced: FC = () => {
 											'cos.prevent_user_from_changing_password',
 											'Prevent user from changing password'
 										)}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClick={() => changeSwitchOption('zimbraPasswordLocked')}
+										onClick={(): void => changeSwitchOption('zimbraPasswordLocked')}
 										iconColor="primary"
 										disabled={readonlyCOS}
 									/>
@@ -1502,8 +1499,7 @@ const CosAdvanced: FC = () => {
 									<Switch
 										value={cosAdvanced.zimbraPasswordBlockCommonEnabled === 'TRUE'}
 										label={t('cos.reject_common_passwords', 'Reject common passwords')}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClick={() => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
+										onClick={(): void => changeSwitchOption('zimbraPasswordBlockCommonEnabled')}
 										iconColor="primary"
 										disabled={readonlyCOS}
 									/>
@@ -1534,8 +1530,7 @@ const CosAdvanced: FC = () => {
 									<Switch
 										value={cosAdvanced.zimbraPasswordLockoutEnabled === 'TRUE'}
 										label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
-										// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-										onClick={() => changeSwitchOption('zimbraPasswordLockoutEnabled')}
+										onClick={(): void => changeSwitchOption('zimbraPasswordLockoutEnabled')}
 										iconColor="primary"
 										disabled={readonlyCOS}
 									/>
@@ -1588,7 +1583,7 @@ const CosAdvanced: FC = () => {
 								<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraPasswordLockoutDurationType === ''
@@ -1599,8 +1594,6 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraPasswordLockoutDurationTypeChange}
 										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
@@ -1621,7 +1614,7 @@ const CosAdvanced: FC = () => {
 								<Container width="28%" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraPasswordLockoutFailureLifetimeType === ''
@@ -1632,8 +1625,6 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
 										disabled={cosAdvanced.zimbraPasswordLockoutEnabled !== 'TRUE' || readonlyCOS}
 									/>
@@ -1676,7 +1667,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraAdminAuthTokenLifetimeType === ''
@@ -1687,8 +1678,6 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraAdminAuthTokenLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1717,19 +1706,15 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraAuthTokenLifetimeType === ''
 												? timeItems[-1]
-												: timeItems.find(
-														// eslint-disable-next-line max-len
-														(item: any) => item.value === zimbraAuthTokenLifetimeType
-												  )
+												: // eslint-disable-next-line max-len
+												  timeItems.find((item: any) => item.value === zimbraAuthTokenLifetimeType)
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraAuthTokenLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1758,7 +1743,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailIdleSessionTimeoutType === ''
@@ -1769,8 +1754,6 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraMailIdleSessionTimeoutTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1810,7 +1793,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailMessageLifetimeType === ''
@@ -1821,8 +1804,6 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraMailMessageLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1851,7 +1832,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailTrashLifetimeType === ''
@@ -1862,8 +1843,6 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraMailTrashLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1892,7 +1871,7 @@ const CosAdvanced: FC = () => {
 								<Container width="17%" padding={{ left: 'small', right: 'small' }}>
 									<Select
 										items={timeItems}
-										backgroundColor="gray5"
+										background="gray5"
 										label={t('cos.time_range', 'Time Range')}
 										selection={
 											zimbraMailSpamLifetimeType === ''
@@ -1903,8 +1882,6 @@ const CosAdvanced: FC = () => {
 												  )
 										}
 										showCheckbox={false}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onZimbraMailSpamLifetimeTypeChange}
 										disabled={readonlyCOS}
 									/>

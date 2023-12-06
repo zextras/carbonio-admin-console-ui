@@ -36,18 +36,10 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 
-type StatusItem = {
-	color: string;
-	label: string;
-};
-
 type StatusTypes = {
-	active: StatusItem;
-	maintenance: StatusItem;
-	locked: StatusItem;
-	closed: StatusItem;
-	pending: StatusItem;
-	lockout: StatusItem;
+	[key: string]: {
+		[key: string]: string;
+	};
 };
 type ZimbraCosAttribute = {
 	n: string;
@@ -72,7 +64,7 @@ type ZimbraCosEntry = {
 	id: string;
 	a: ZimbraCosAttribute[];
 	zimbraCosType: string;
-	zimbraCosStatus: 'active' | 'maintenance' | 'locked' | 'closed' | 'pending' | 'lockout';
+	zimbraCosStatus: string;
 	zimbraCosName: string;
 	zimbraId: string;
 };
@@ -185,8 +177,6 @@ const CosList: FC = () => {
 							if (ele.n === 'zimbraCosType') {
 								CosIteam.zimbraCosType = ele._content;
 							} else if (ele.n === 'zimbraCosStatus') {
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore
 								CosIteam.zimbraCosStatus = ele._content;
 							} else if (ele.n === 'zimbraCosName') {
 								CosIteam.zimbraCosName = ele._content;
@@ -325,8 +315,6 @@ const CosList: FC = () => {
 									multiSelect={false}
 									style={{ overflow: 'auto', height: '100%' }}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							)}
