@@ -42,7 +42,7 @@ const CosPreferences: FC = () => {
 	const cosInformation = useCosStore((state) => state.cos?.a);
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
-	const localeZone = useMemo(() => localeList(t), [t]);
+	const localeZone: any = useMemo(() => localeList(t), [t]);
 	const rights: Rights = useRightsStore((state) => state.rights);
 
 	const readonlyCOS = useMemo(() => {
@@ -91,12 +91,12 @@ const CosPreferences: FC = () => {
 	const [prefMailPollingIntervalType, setPrefMailPollingIntervalType] = useState(
 		cosPreferences?.zimbraMailMinPollingInterval?.slice(-1) || ''
 	);
-	const GROUP_BY = useMemo(() => conversationGroupBy(t), [t]);
-	const CHARACTOR_SET = useMemo(() => charactorSet(), []);
-	const timezones = useMemo(() => timeZoneList(t), [t]);
-	const APPOINTMENT_REMINDER = useMemo(() => appointmentReminder(t), [t]);
+	const GROUP_BY: any = useMemo(() => conversationGroupBy(t), [t]);
+	const CHARACTOR_SET: any = useMemo(() => charactorSet(), []);
+	const timezones: any = useMemo(() => timeZoneList(t), [t]);
+	const APPOINTMENT_REMINDER: any = useMemo(() => appointmentReminder(t), [t]);
 
-	const TIME_TYPES = useMemo(
+	const TIME_TYPES: any = useMemo(
 		() => [
 			{ label: `${t('label.days', 'Days')}`, value: 'd' },
 			{ label: `${t('label.hours', 'Hours')}`, value: 'h' },
@@ -107,7 +107,7 @@ const CosPreferences: FC = () => {
 		[t]
 	);
 
-	const DefaultViewOptions = useMemo(
+	const DefaultViewOptions: any = useMemo(
 		() => [
 			{ label: t('cos.default_view.month', 'Month View'), value: 'month' },
 			{ label: t('cos.default_view.week', 'Week View'), value: 'week' },
@@ -117,14 +117,14 @@ const CosPreferences: FC = () => {
 		],
 		[t]
 	);
-	const APPOINTMENT_VISIBILITY = useMemo(
+	const APPOINTMENT_VISIBILITY: any = useMemo(
 		() => [
 			{ label: t('label.public', 'Public'), value: 'public' },
 			{ label: t('label.private', 'Private'), value: 'private' }
 		],
 		[t]
 	);
-	const FIRST_DAY_OF_WEEK = useMemo(
+	const FIRST_DAY_OF_WEEK: any = useMemo(
 		() => [
 			{ label: t('label.week_day.sunday', 'Sunday'), value: '0' },
 			{ label: t('label.week_day.monday', 'Monday'), value: '1' },
@@ -137,7 +137,7 @@ const CosPreferences: FC = () => {
 		[t]
 	);
 
-	const DEFAULT_APPOINTMENT_DURATION = useMemo(
+	const DEFAULT_APPOINTMENT_DURATION: any = useMemo(
 		() => [
 			{ label: `30 ${t('label.minutes', 'minutes')}`, value: '30m' },
 			{ label: `60 ${t('label.minutes', 'minutes')}`, value: '60m' },
@@ -147,7 +147,7 @@ const CosPreferences: FC = () => {
 		[t]
 	);
 
-	const SEND_READ_RECEIPTS = useMemo(
+	const SEND_READ_RECEIPTS: any = useMemo(
 		() => [
 			{ label: t('label.never_send_read_receipt', 'Never send a read receipt'), value: 'never' },
 			{ label: t('label.always_send_read_receipt', 'Always send a read receipt'), value: 'always' },
@@ -156,7 +156,7 @@ const CosPreferences: FC = () => {
 		[t]
 	);
 
-	const POLLING_INTERVAL = useMemo(
+	const POLLING_INTERVAL: any = useMemo(
 		() => [
 			{
 				label: t('cos.as_new_mail_arrives', 'As New Mail Arrives'),
@@ -192,35 +192,35 @@ const CosPreferences: FC = () => {
 	);
 
 	const onGroupByChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefGroupMailBy: v }));
 		},
 		[setCosPreferences]
 	);
 
 	const onCharactorSetChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailDefaultCharset: v }));
 		},
 		[setCosPreferences]
 	);
 
 	const onPrefLocaleChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefLocale: v }));
 		},
 		[setCosPreferences]
 	);
 
 	const onPollingIntervalChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefMailPollingInterval: v }));
 		},
 		[setCosPreferences]
 	);
 
 	const onPrefMailPollingIntervalTypeChange = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosPreferences((prev: any) => ({
 				...prev,
 				zimbraMailMinPollingInterval: zimbraPrefMailPollingIntervalNum
@@ -244,7 +244,7 @@ const CosPreferences: FC = () => {
 	);
 
 	const onMailSendReadReceipts = useCallback(
-		(v: string) => {
+		(v) => {
 			setCosPreferences((prev: any) => ({
 				...prev,
 				zimbraPrefMailSendReadReceipts: v
@@ -254,14 +254,14 @@ const CosPreferences: FC = () => {
 	);
 
 	const onPrefTimeZoneChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
 		},
 		[setCosPreferences]
 	);
 
 	const onCalendarDefaultApptDurationChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({
 				...prev,
 				zimbraPrefCalendarDefaultApptDuration: v
@@ -271,7 +271,7 @@ const CosPreferences: FC = () => {
 	);
 
 	const onReminderWarningTimeChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({
 				...prev,
 				zimbraPrefCalendarApptReminderWarningTime: v
@@ -281,21 +281,21 @@ const CosPreferences: FC = () => {
 	);
 
 	const onCalendarInitialViewChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
 		},
 		[setCosPreferences]
 	);
 
 	const onFirstDayOfWeekChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarFirstDayOfWeek: v }));
 		},
 		[setCosPreferences]
 	);
 
 	const onAppointmentVisibilityChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setCosPreferences((prev: any) => ({ ...prev, zimbraPrefCalendarApptVisibility: v }));
 		},
 		[setCosPreferences]
@@ -1080,8 +1080,6 @@ const CosPreferences: FC = () => {
 														(item: any) => item.value === cosPreferences?.zimbraPrefLocale
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPrefLocaleChange}
 										disabled={readonlyCOS}
 									/>
@@ -1130,8 +1128,6 @@ const CosPreferences: FC = () => {
 										label={t('cos.display_by', 'Display by')}
 										showCheckbox={false}
 										items={GROUP_BY}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										selection={
 											cosPreferences?.zimbraPrefGroupMailBy === ''
 												? GROUP_BY[-1]
@@ -1140,8 +1136,6 @@ const CosPreferences: FC = () => {
 														(item: any) => item.value === cosPreferences?.zimbraPrefGroupMailBy
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onGroupByChange}
 										disabled={readonlyCOS}
 									/>
@@ -1152,8 +1146,6 @@ const CosPreferences: FC = () => {
 										label={t('cos.default_charset', 'Default Charset')}
 										showCheckbox={false}
 										items={CHARACTOR_SET}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										selection={
 											cosPreferences?.zimbraPrefMailDefaultCharset === ''
 												? CHARACTOR_SET[-1]
@@ -1163,8 +1155,6 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefMailDefaultCharset
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onCharactorSetChange}
 										disabled={readonlyCOS}
 									/>
@@ -1251,8 +1241,6 @@ const CosPreferences: FC = () => {
 														(item: any) => item.value === prefMailPollingIntervalType
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPrefMailPollingIntervalTypeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1283,8 +1271,6 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefMailPollingInterval
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPollingIntervalChange}
 										disabled={readonlyCOS}
 									/>
@@ -1417,8 +1403,6 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefMailSendReadReceipts
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onMailSendReadReceipts}
 										disabled={readonlyCOS}
 									/>
@@ -1499,8 +1483,6 @@ const CosPreferences: FC = () => {
 														(item: any) => item.value === cosPreferences?.zimbraPrefTimeZoneId
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onPrefTimeZoneChange}
 										disabled={readonlyCOS}
 									/>
@@ -1523,8 +1505,6 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefCalendarDefaultApptDuration
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onCalendarDefaultApptDurationChange}
 										disabled={readonlyCOS}
 									/>
@@ -1559,8 +1539,6 @@ const CosPreferences: FC = () => {
 															cosPreferences?.zimbraPrefCalendarApptReminderWarningTime
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onReminderWarningTimeChange}
 										disabled={readonlyCOS}
 									/>
@@ -1580,8 +1558,6 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefCalendarInitialView
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onCalendarInitialViewChange}
 										disabled={readonlyCOS}
 									/>
@@ -1612,8 +1588,6 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefCalendarFirstDayOfWeek
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onFirstDayOfWeekChange}
 										disabled={readonlyCOS}
 									/>
@@ -1636,8 +1610,6 @@ const CosPreferences: FC = () => {
 															item.value === cosPreferences?.zimbraPrefCalendarApptVisibility
 												  )
 										}
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
 										onChange={onAppointmentVisibilityChange}
 										disabled={readonlyCOS}
 									/>
