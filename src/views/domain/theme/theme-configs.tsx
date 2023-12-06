@@ -635,7 +635,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.favicon_description',
-												'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
+												'Paste the URL of the favicon for the login page. Use an ICO file, dimension 32x32 pixels.'
 											)}
 										</Text>
 									</Container>
@@ -681,7 +681,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x720 pixels, a ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
@@ -1073,7 +1073,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.favicon_description',
-												'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
+												'Paste the URL of the favicon for the login page. Use an ICO file, dimension 32x32 pixels.'
 											)}
 										</Text>
 									</Container>
@@ -1119,7 +1119,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x720 pixels, a ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
