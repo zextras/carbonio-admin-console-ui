@@ -88,9 +88,11 @@ const MailingListMembersSection: FC<any> = () => {
 	const onAdd = useCallback((): void => {
 		if (member !== '') {
 			const specialChars = /[ `'"<>,;]/;
-			const allEmails: any[] = specialChars.test(member) ? getAllEmailFromString(member) : [member];
+			const allEmails: string[] = specialChars.test(member)
+				? getAllEmailFromString(member)
+				: [member];
 			if (allEmails !== null && allEmails !== undefined) {
-				const inValidEmailAddress = allEmails.filter((item: any) => !isValidEmail(item));
+				const inValidEmailAddress = allEmails.filter((item: string) => !isValidEmail(item));
 				if (inValidEmailAddress && inValidEmailAddress.length > 0) {
 					createSnackbar({
 						key: 'error',
