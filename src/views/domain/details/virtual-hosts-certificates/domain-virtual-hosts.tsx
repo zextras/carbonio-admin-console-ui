@@ -163,10 +163,17 @@ const DomainVirtualHosts: FC = () => {
 		// eslint-disable-next-line sonarjs/no-duplicate-string
 		body._jsns = 'urn:zimbraAdmin';
 		items.forEach((item: any) => {
-			attributes.push({
-				n: ZIMBRA_VIRTUAL_HOSTNAME,
-				_content: item.columns[0]
-			});
+			if (item.columns[0]?.props?.children) {
+				attributes.push({
+					n: ZIMBRA_VIRTUAL_HOSTNAME,
+					_content: item.columns[0]?.props?.children
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_VIRTUAL_HOSTNAME,
+					_content: item.columns[0]
+				});
+			}
 		});
 		if (attributes?.length === 0) {
 			attributes.push({
