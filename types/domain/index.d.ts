@@ -84,8 +84,10 @@ export type themeConfigStore = {
 	carbonioLogoUrl?: string;
 	carbonioWebUiPrimaryColor?: string;
 	carbonioWebUiDarkPrimaryColor?: string;
-	zimbraAdminConsoleLogoutURL?: string;
-	zimbraWebClientLogoutURL?: string;
+	carbonioWebUILoginURL?: string;
+	carbonioWebUILogoutURL?: string;
+	carbonioAdminUILoginURL?: string;
+	carbonioAdminUILogoutURL?: string;
 };
 
 export interface IpRangeValue {
