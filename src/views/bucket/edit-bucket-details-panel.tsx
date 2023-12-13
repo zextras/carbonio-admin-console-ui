@@ -18,11 +18,13 @@ import {
 	Text,
 	Table,
 	useSnackbar,
-	Select
+	Select,
+	Icon
 } from '@zextras/carbonio-design-system';
 import { find, get } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import { TestConnectionObjectType } from '../../../types';
 import { ALIBABA, AMAZON_WEB_SERVICE_S3, CUSTOM_S3, EMC } from '../../constants';
 import { fetchSoap } from '../../services/bucket-service';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
@@ -149,8 +151,6 @@ const ServerListTabel: FC<{ volumes: Array<any>; selectedRows: any; onSelectionC
 				selectedRows={selectedRows}
 				onSelectionChange={onSelectionChange}
 				RowFactory={CustomRowFactory}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore // Need to fix it with custom soultion
 				HeaderFactory={CustomHeaderFactory}
 			/>
 			{tableRows.length === 0 && (
@@ -204,6 +204,7 @@ const EditBucketDetailPanel: FC<{
 	const [previousDetail, setPreviousDetail] = useState<any>({});
 	const [showURL, setShowURL] = useState(true);
 	const [toggleBtn, setToggleBtn] = useState(false);
+	const [checkError, setCheckError] = useState<string>('');
 	const createSnackbar = useSnackbar();
 	const bucketTypeItems = useMemo(() => BucketTypeItems(t), [t]);
 	const bucketRegions = useMemo(() => BucketRegions(t), [t]);
@@ -218,7 +219,7 @@ const EditBucketDetailPanel: FC<{
 	const { selectedServerName } = useBucketVolumeStore((state) => state);
 
 	const verifyConnector = useCallback(() => {
-		const objToSendTestConnection = {
+		const objToSendTestConnection: TestConnectionObjectType = {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
 			action: 'testS3Connection',
@@ -227,8 +228,6 @@ const EditBucketDetailPanel: FC<{
 		};
 
 		if (selectedServerName === '') {
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore
 			delete objToSendTestConnection?.targetServers;
 		}
 
@@ -245,23 +244,36 @@ const EditBucketDetailPanel: FC<{
 				setButtonIcon('ActivityOutline');
 				setToggleBtn(true);
 			} else {
+				const errorResponse =
+					response.error ||
+					response.response[selectedServerName]?.error ||
+					response.response[selectedServerName]?.error?.message;
+
+				const errorResponsePart = errorResponse.split(bucketDetail.uuid);
+				const errorStoreTypeMessage = errorResponsePart[1].replace('as', '');
+
 				setVerify('error');
-				setButtonLabel(t('label.verify_connector_fail', 'VERIFICATION FAILED'));
+				setButtonLabel(
+					t(
+						'label.something_went_wrong_check_data_and_try_again',
+						'SOMETHING WENT WRONG. CHECK DATA AND TRY AGAIN'
+					)
+				);
 				setButtonIcon('alert-triangle');
-				createSnackbar({
-					key: '1',
-					type: 'error',
-					label: t('label.verify_error', '{{name}}', {
-						name:
-							response.error ||
-							response.response[selectedServerName]?.error ||
-							response.response[selectedServerName]?.error?.message
-					})
-				});
+				setCheckError(
+					t(
+						'label.bucket_verification_failed_message',
+						'Verification Failed Could not test bucket configuration. {{bucketType}} not supported for this connection (ID: {{bucketId}})',
+						{
+							bucketType: errorStoreTypeMessage,
+							bucketId: bucketDetail.uuid
+						}
+					)
+				);
 				setToggleBtn(false);
 			}
 		});
-	}, [bucketDetail.uuid, createSnackbar, selectedServerName, t]);
+	}, [bucketDetail.uuid, selectedServerName, t]);
 
 	useEffect(() => {
 		setButtonLabel(t('label.verify_connector', 'VERIFY CONNECTOR'));
@@ -327,6 +339,7 @@ const EditBucketDetailPanel: FC<{
 					replace: true
 				});
 				updatePreviousDetail();
+				setCheckError('');
 			} else {
 				createSnackbar({
 					key: 'error',
@@ -339,6 +352,7 @@ const EditBucketDetailPanel: FC<{
 					replace: true
 				});
 				setToggleBtn(false);
+				setCheckError('');
 			}
 		});
 	};
@@ -606,13 +620,8 @@ const EditBucketDetailPanel: FC<{
 					{bucketDetail?.region !== undefined && (
 						<>
 							<Padding horizontal={'small'} />
-							<Row width="48%" mainAlignment="flex-end">
+							<Row width="48%" mainAlignment="flex-end" padding={{ right: 'medium' }}>
 								<Select
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
-									inputName="region"
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									items={
 										bucketDetail.storeType === ALIBABA.toUpperCase()
 											? bucketRegionsInAlibaba
@@ -623,7 +632,6 @@ const EditBucketDetailPanel: FC<{
 									onChange={onSelectionChange}
 									selection={regionData}
 									showCheckbox={false}
-									padding={{ right: 'medium' }}
 								/>
 							</Row>
 						</>
@@ -702,8 +710,32 @@ const EditBucketDetailPanel: FC<{
 						disabled={toggleBtn}
 					/>
 				</Row>
-
 				<Divider color="gray2" />
+
+				{checkError !== '' && (
+					<Container
+						background="warning"
+						width="100%"
+						orientation="horizontal"
+						height="auto"
+						padding={{ all: 'large' }}
+						style={{ marginTop: '1rem' }}
+					>
+						<Row width="10%" mainAlignment="flex-start">
+							<Icon
+								icon="AlertTriangleOutline"
+								color="gray6"
+								size="large"
+								style={{ height: '2rem', width: '2rem' }}
+							/>
+						</Row>
+						<Row width="86%" mainAlignment="flex-end">
+							<Text overflow="break-word" color="gray6">
+								{checkError}
+							</Text>
+						</Row>
+					</Container>
+				)}
 			</Container>
 		</Container>
 	);

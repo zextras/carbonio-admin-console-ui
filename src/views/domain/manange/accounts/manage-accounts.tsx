@@ -916,8 +916,6 @@ const ManageAccounts: FC = () => {
 									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
 								}}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (

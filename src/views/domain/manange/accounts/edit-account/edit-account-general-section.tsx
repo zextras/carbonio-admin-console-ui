@@ -197,13 +197,13 @@ const EditAccountGeneralSection: FC = () => {
 		}
 	}, [cosList]);
 
-	const onAccountStatusChange = (v: string): any => {
+	const onAccountStatusChange = (v: any): any => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraAccountStatus: v }));
 	};
 	const onPrefLocaleChange = (v: string): void => {
 		v && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraPrefLocale: v }));
 	};
-	const onCOSIdChange = (v: string): void => {
+	const onCOSIdChange = (v: any): void => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraCOSId: v }));
 	};
 	const onCOSSwitchChanges = (): void => {
@@ -574,20 +574,17 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="49%" mainAlignment="flex-start">
+					<Row width="49%" mainAlignment="flex-start" padding={{ right: 'medium' }}>
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
-								backgroundColor="gray5"
+								background="gray5"
 								label={t('label.account_status', 'Account Status')}
 								showCheckbox={false}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onAccountStatusChange}
 								defaultSelection={ACCOUNT_STATUS.find(
 									(item: any) => item.value === accountDetail?.zimbraAccountStatus
 								)}
-								padding={{ right: 'medium' }}
 							/>
 						) : (
 							<></>
@@ -614,12 +611,11 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="15.5%" mainAlignment="flex-start">
 						<Switch
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							defaultValue={defaultCOS}
+							defaultChecked={defaultCOS}
 							onClick={onCOSSwitchChanges}
 							label={t('account_details.default_COS', 'Default COS')}
 							iconColor="primary"
+							value={defaultCOS}
 						/>
 					</Row>
 					<Row width="84.5%" mainAlignment="flex-start">
@@ -632,8 +628,6 @@ const EditAccountGeneralSection: FC = () => {
 								defaultSelection={cosItems.find(
 									(item: any) => item.value === accountDetail?.zimbraCOSId
 								)}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								onChange={onCOSIdChange}
 							/>
 						) : (
@@ -671,7 +665,7 @@ const EditAccountGeneralSection: FC = () => {
 			</Row>
 			<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
 				<Text size="small" color="gray0" weight="bold">
-					{t('label.mailing_list', 'Mailing List')}
+					{t('label.distribution_list', 'Distribution List')}
 				</Text>
 			</Row>
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">

@@ -34,10 +34,10 @@ const EditHsmPolicyVolumesSection: FC<{
 		hsmDetail?.destinationVolume.length > 0
 	);
 	const [volumeRows, setVolumeRows] = useState<Array<any>>([]);
-	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<any>>(
+	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<any>(
 		hsmDetail?.destinationVolume.map((item: any) => item?.id)
 	);
-	const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<any>>(
+	const [selectedSourceVolume, setSelectedSourceVolume] = useState<any>(
 		hsmDetail?.sourceVolume.map((item: any) => item?.id)
 	);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -248,8 +248,6 @@ const EditHsmPolicyVolumesSection: FC<{
 								}
 							}}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}
@@ -319,8 +317,6 @@ const EditHsmPolicyVolumesSection: FC<{
 								}
 							}}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					)}

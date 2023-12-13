@@ -61,11 +61,11 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		useState<MtaAntivirusAndAntispam>();
 	const [mtaAntiVirusAndAntispamDetail, setMtaAntiVirusAndAntispamDetail] =
 		useState<MtaAntivirusAndAntispam>();
-	const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<TRow>>([]);
+	const [antiVirusMirrorTableRow, setAntiVirusMirrorTableRow] = useState<Array<any>>([]);
 	const [selectedAntivirusMirrors, setSelectedAntivirusMirrors] = useState<any[]>([]);
 	const [antiVirusMirrorsAddText, setAntiVirusMirrorsAddText] = useState<string>('');
 	const [additionalAntiVirusDefinitionTableRow, setAdditionalAntiVirusDefinitionTableRow] =
-		useState<Array<TRow>>([]);
+		useState<Array<any>>([]);
 	const [selectedAdditionalAntivirusDefinition, setSelectedAdditionalAntivirusDefinition] =
 		useState<any[]>([]);
 	const [additionalAntiVirusDefinitionAddText, setAdditionalAntiVirusDefinitionAddText] =
@@ -73,6 +73,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [isShowRemoveAlertDialog, setIsShowRemoveAlertDialog] = useState<boolean>(false);
 	const rights: Rights = useRightsStore((state) => state.rights);
+	const removeConfigItems = useConfigStore((state) => state.removeConfigItems);
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -103,10 +104,40 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	const updateGlobalConfig = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
 			attributes.forEach((ele: Record<string, string>) => {
-				updateConfig(ele?.n, ele._content);
+				if (
+					ele?.n !== CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL &&
+					ele?.n !== ZIMBRA_CLAM_AVDATABASE_MIRROR
+				) {
+					updateConfig(ele?.n, ele._content);
+				}
 			});
+			removeConfigItems({ n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL });
+			removeConfigItems({ n: ZIMBRA_CLAM_AVDATABASE_MIRROR });
+			const customURL = attributes.filter(
+				(item) => item?.n === CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL
+			);
+			if (customURL.length > 0) {
+				updateConfig(
+					CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+					mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL
+				);
+			}
+			const avDatabaseMirror = attributes.filter(
+				(item) => item?.n === ZIMBRA_CLAM_AVDATABASE_MIRROR
+			);
+			if (avDatabaseMirror.length > 0) {
+				updateConfig(
+					ZIMBRA_CLAM_AVDATABASE_MIRROR,
+					mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror
+				);
+			}
 		},
-		[updateConfig]
+		[
+			mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL,
+			mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror,
+			removeConfigItems,
+			updateConfig
+		]
 	);
 
 	const modifyConfigRequest = useCallback(
@@ -139,8 +170,48 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		[createSnackbar, t, updateGlobalConfig]
 	);
 
+	const setSaveValues = useCallback(
+		(attributes) => {
+			if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
+				const calmDatabaseMirror =
+					mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
+				if (calmDatabaseMirror.length > 0) {
+					calmDatabaseMirror.forEach((item: string) => {
+						attributes.push({
+							n: ZIMBRA_CLAM_AVDATABASE_MIRROR,
+							_content: item
+						});
+					});
+				}
+			} else if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror === '') {
+				attributes.push({
+					n: ZIMBRA_CLAM_AVDATABASE_MIRROR,
+					_content: ''
+				});
+			}
+			if (mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency) {
+				attributes.push({
+					n: ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
+					_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency
+				});
+			}
+			if (mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent) {
+				attributes.push({
+					n: ZIMBRA_SPAM_TAG_PERCENT,
+					_content: mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
+				});
+			}
+		},
+		[
+			mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror,
+			mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent,
+			mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency
+		]
+	);
+
 	const onSave = useCallback(() => {
 		const attributes: Array<Record<string, string>> = [];
+		setSaveValues(attributes);
 		if (mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag) {
 			attributes.push({
 				n: ZIMBRA_SPAM_SUBJECT_TAG,
@@ -175,24 +246,6 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 			n: ZIMBRA_VIRUS_WARN_ADMIN,
 			_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin ? TRUE : FALSE
 		});
-		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
-			attributes.push({
-				n: ZIMBRA_CLAM_AVDATABASE_MIRROR,
-				_content: mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror
-			});
-		}
-		if (mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency) {
-			attributes.push({
-				n: ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
-				_content: mtaAntiVirusAndAntispamDetail?.zimbraVirusDefinitionsUpdateFrequency
-			});
-		}
-		if (mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent) {
-			attributes.push({
-				n: ZIMBRA_SPAM_TAG_PERCENT,
-				_content: mtaAntiVirusAndAntispamDetail?.zimbraSpamTagPercent
-			});
-		}
 		if (
 			mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent &&
 			mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny &&
@@ -205,10 +258,16 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		}
 
 		if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL) {
-			attributes.push({
-				n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
-				_content: mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL
-			});
+			const clamAVDatabaseCustomURL =
+				mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL.split(',');
+			if (clamAVDatabaseCustomURL.length > 0) {
+				clamAVDatabaseCustomURL.forEach((item: string) => {
+					attributes.push({
+						n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
+						_content: item
+					});
+				});
+			}
 		} else if (mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL === '') {
 			attributes.push({
 				n: CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
@@ -220,7 +279,20 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 			_content: mtaAntiVirusAndAntispamDetail?.carbonioAmavisDisableVirusCheck ? TRUE : FALSE
 		});
 		modifyConfigRequest(attributes);
-	}, [mtaAntiVirusAndAntispamDetail, modifyConfigRequest]);
+	}, [
+		setSaveValues,
+		mtaAntiVirusAndAntispamDetail?.zimbraSpamSubjectTag,
+		mtaAntiVirusAndAntispamDetail?.zimbraAmavisFinalSpamDestiny,
+		mtaAntiVirusAndAntispamDetail?.zimbraAmavisOriginatingBypassSA,
+		mtaAntiVirusAndAntispamDetail?.zimbraAmavisEnableDKIMVerification,
+		mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnRecipient,
+		mtaAntiVirusAndAntispamDetail?.zimbraVirusBlockEncryptedArchive,
+		mtaAntiVirusAndAntispamDetail?.zimbraVirusWarnAdmin,
+		mtaAntiVirusAndAntispamDetail?.zimbraSpamKillPercent,
+		mtaAntiVirusAndAntispamDetail?.carbonioClamAVDatabaseCustomURL,
+		mtaAntiVirusAndAntispamDetail?.carbonioAmavisDisableVirusCheck,
+		modifyConfigRequest
+	]);
 
 	const onCancel = useCallback(() => {
 		setMtaAntiVirusAndAntispamDetail(mtaAntiVirusAndAntispamInitialDetail);
@@ -344,99 +416,100 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 
 	const [updateMesurementUnit, setUpdateMesurementUnit] = useState(intervalOptions[2]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const setAmavisValues = useCallback(() => {
+		const zimbraAmavisSpamDestiny = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY
+		);
+		if (zimbraAmavisSpamDestiny && zimbraAmavisSpamDestiny?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
+				zimbraAmavisSpamDestiny?._content
+			);
+		}
+
+		const zimbraAmavisOriginatingBypassSA = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
+		);
+		if (zimbraAmavisOriginatingBypassSA && zimbraAmavisOriginatingBypassSA?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+				zimbraAmavisOriginatingBypassSA?._content === TRUE
+			);
+		}
+
+		const zimbraAmavisEnableDKIMVerification = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION
+		);
+		if (zimbraAmavisEnableDKIMVerification && zimbraAmavisEnableDKIMVerification?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+				zimbraAmavisEnableDKIMVerification?._content === TRUE
+			);
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
+
+	const setAntivirusAndSpamValues = useCallback(() => {
+		const zimbraSpamSubjectTag = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_SPAM_SUBJECT_TAG
+		);
+		if (zimbraSpamSubjectTag && zimbraSpamSubjectTag?._content) {
+			setInitialAndCurrentValue(ZIMBRA_SPAM_SUBJECT_TAG, zimbraSpamSubjectTag?._content);
+		}
+
+		const zimbraVirusWarnRecipient = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_WARN_RECIPIENT
+		);
+		if (zimbraVirusWarnRecipient && zimbraVirusWarnRecipient?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_VIRUS_WARN_RECIPIENT,
+				zimbraVirusWarnRecipient?._content === TRUE
+			);
+		}
+
+		const zimbraVirusBlockEncryptedArchive = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE
+		);
+		if (zimbraVirusBlockEncryptedArchive && zimbraVirusBlockEncryptedArchive?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
+				zimbraVirusBlockEncryptedArchive?._content === TRUE
+			);
+		}
+		const zimbraVirusWarnAdmin = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_WARN_ADMIN
+		);
+		if (zimbraVirusWarnAdmin && zimbraVirusWarnAdmin?._content) {
+			setInitialAndCurrentValue(ZIMBRA_VIRUS_WARN_ADMIN, zimbraVirusWarnAdmin?._content === TRUE);
+		}
+
+		const zimbraClamAVDatabaseMirror = configInformation.filter(
+			(item: Record<string, string>) => item?.n === ZIMBRA_CLAM_AVDATABASE_MIRROR
+		);
+		if (zimbraClamAVDatabaseMirror && zimbraClamAVDatabaseMirror?.length > 0) {
+			const databaseMirrors: Array<unknown> = zimbraClamAVDatabaseMirror.map(
+				(urlItem: Record<string, string>) => urlItem?._content
+			);
+			setInitialAndCurrentValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, databaseMirrors.join(', '));
+		} else {
+			setInitialAndCurrentValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, '');
+		}
+
+		const zimbraVirusDefinitionsUpdateFrequency = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY
+		);
+
+		if (zimbraVirusDefinitionsUpdateFrequency && zimbraVirusDefinitionsUpdateFrequency?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
+				zimbraVirusDefinitionsUpdateFrequency?._content
+			);
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
+
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
-			const zimbraSpamSubjectTag = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_SPAM_SUBJECT_TAG
-			);
-			if (zimbraSpamSubjectTag && zimbraSpamSubjectTag?._content) {
-				setInitialAndCurrentValue(ZIMBRA_SPAM_SUBJECT_TAG, zimbraSpamSubjectTag?._content);
-			}
-
-			const zimbraAmavisSpamDestiny = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY
-			);
-			if (zimbraAmavisSpamDestiny && zimbraAmavisSpamDestiny?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
-					zimbraAmavisSpamDestiny?._content
-				);
-			}
-
-			const zimbraAmavisOriginatingBypassSA = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
-			);
-			if (zimbraAmavisOriginatingBypassSA && zimbraAmavisOriginatingBypassSA?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-					zimbraAmavisOriginatingBypassSA?._content === TRUE
-				);
-			}
-
-			const zimbraAmavisEnableDKIMVerification = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION
-			);
-			if (zimbraAmavisEnableDKIMVerification && zimbraAmavisEnableDKIMVerification?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-					zimbraAmavisEnableDKIMVerification?._content === TRUE
-				);
-			}
-
-			const zimbraVirusWarnRecipient = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_WARN_RECIPIENT
-			);
-			if (zimbraVirusWarnRecipient && zimbraVirusWarnRecipient?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_VIRUS_WARN_RECIPIENT,
-					zimbraVirusWarnRecipient?._content === TRUE
-				);
-			}
-
-			const zimbraVirusBlockEncryptedArchive = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE
-			);
-			if (zimbraVirusBlockEncryptedArchive && zimbraVirusBlockEncryptedArchive?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_VIRUS_BLOCK_ENCRYPTED_ARCHIVE,
-					zimbraVirusBlockEncryptedArchive?._content === TRUE
-				);
-			}
-
-			const zimbraVirusWarnAdmin = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_WARN_ADMIN
-			);
-			if (zimbraVirusWarnAdmin && zimbraVirusWarnAdmin?._content) {
-				setInitialAndCurrentValue(ZIMBRA_VIRUS_WARN_ADMIN, zimbraVirusWarnAdmin?._content === TRUE);
-			}
-
-			const zimbraClamAVDatabaseMirror = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_CLAM_AVDATABASE_MIRROR
-			);
-			if (zimbraClamAVDatabaseMirror && zimbraClamAVDatabaseMirror?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_CLAM_AVDATABASE_MIRROR,
-					zimbraClamAVDatabaseMirror?._content
-				);
-			} else {
-				setInitialAndCurrentValue(ZIMBRA_CLAM_AVDATABASE_MIRROR, '');
-			}
-
-			const zimbraVirusDefinitionsUpdateFrequency = configInformation.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY
-			);
-
-			if (
-				zimbraVirusDefinitionsUpdateFrequency &&
-				zimbraVirusDefinitionsUpdateFrequency?._content
-			) {
-				setInitialAndCurrentValue(
-					ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
-					zimbraVirusDefinitionsUpdateFrequency?._content
-				);
-			}
-
+			setAmavisValues();
+			setAntivirusAndSpamValues();
 			const zimbraSpamTagPercent = configInformation.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_SPAM_TAG_PERCENT
 			);
@@ -453,19 +526,17 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				setInitialAndCurrentValue(ZIMBRA_SPAM_KILL_PERCENT, zimbraSpamKillPercent?._content);
 			}
 
-			const carbonioClamAVDatabaseCustomURL = configInformation.find(
+			const carbonioClamAVDatabaseCustomURL = configInformation.filter(
 				(item: Record<string, string>) => item?.n === CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL
 			);
-
-			if (carbonioClamAVDatabaseCustomURL && carbonioClamAVDatabaseCustomURL?._content) {
-				setInitialAndCurrentValue(
-					CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL,
-					carbonioClamAVDatabaseCustomURL?._content
+			if (carbonioClamAVDatabaseCustomURL && carbonioClamAVDatabaseCustomURL.length > 0) {
+				const customURL: Array<unknown> = carbonioClamAVDatabaseCustomURL.map(
+					(urlItem: Record<string, string>) => urlItem?._content
 				);
+				setInitialAndCurrentValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, customURL.join(', '));
 			} else {
 				setInitialAndCurrentValue(CARBONIO_CLAM_AV_DATABASE_CUSTOM_URL, '');
 			}
-
 			const carbonioAmavisDisableVirusCheck = configInformation.find(
 				(item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 			);
@@ -476,7 +547,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 				);
 			}
 		}
-	}, [configInformation, setInitialAndCurrentValue]);
+	}, [configInformation, setAmavisValues, setAntivirusAndSpamValues, setInitialAndCurrentValue]);
 
 	useEffect(() => {
 		if (
@@ -1011,15 +1082,11 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							rows={antiVirusMirrorTableRow}
 							headers={antiVirusMirrorHeader}
 							showCheckbox={false}
 							selectedRows={selectedAntivirusMirrors}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>
@@ -1031,15 +1098,11 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 						mainAlignment="flex-start"
 					>
 						<Table
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							rows={additionalAntiVirusDefinitionTableRow}
 							headers={additionalVirusDefinitionHeader}
 							showCheckbox={false}
 							selectedRows={selectedAdditionalAntivirusDefinition}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

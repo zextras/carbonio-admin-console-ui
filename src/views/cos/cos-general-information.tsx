@@ -657,8 +657,9 @@ const CosGeneralInformation: FC = () => {
 									backgroundColor="gray6"
 									value={cosData.zimbraId}
 									disabled
-									// eslint-disable-next-line @typescript-eslint/no-empty-function
-									onChange={(e: any): any => {}}
+									onChange={(): void => {
+										//
+									}}
 								/>
 							</Container>
 							<Container padding={{ all: 'small' }}>
@@ -667,8 +668,9 @@ const CosGeneralInformation: FC = () => {
 									value={cosCreationDate}
 									backgroundColor="gray6"
 									disabled
-									// eslint-disable-next-line @typescript-eslint/no-empty-function
-									onChange={(e: any): any => {}}
+									onChange={(): void => {
+										//
+									}}
 								/>
 							</Container>
 						</ListRow>
@@ -771,8 +773,6 @@ const CosGeneralInformation: FC = () => {
 								height: '100%'
 							}}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 						{isDomainRequestInProgress && (
@@ -885,8 +885,6 @@ const CosGeneralInformation: FC = () => {
 								height: '100%'
 							}}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 						{isAccountRequestInProgress && (

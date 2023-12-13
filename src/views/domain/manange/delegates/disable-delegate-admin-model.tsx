@@ -37,7 +37,7 @@ const DisableDelegateAdminModel: FC<{
 							<Button
 								style={{ fontWeight: '900' }}
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
+								// @ts-ignore
 								label={
 									<Trans
 										i18nKey="label.remove_all_acl"
@@ -52,7 +52,7 @@ const DisableDelegateAdminModel: FC<{
 							/>
 							<Button
 								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
+								// @ts-ignore
 								label={
 									<Trans
 										i18nKey="label.keep_acls_&_disbale_rigths"

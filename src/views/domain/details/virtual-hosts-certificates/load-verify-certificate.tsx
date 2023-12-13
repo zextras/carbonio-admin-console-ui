@@ -16,8 +16,6 @@ import {
 	Select,
 	Container
 } from '@zextras/carbonio-design-system';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
@@ -45,11 +43,9 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	let fileReader: FileReader;
 	const { t } = useTranslation();
 	const domain = useDomainStore((state) => state.domain);
-	const certificateTypes = useMemo(() => CertificateTypes(t), [t]);
+	const certificateTypes: any = useMemo(() => CertificateTypes(t), [t]);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
-	const [selectedCertType, setSelectedCertType] = useState<string | undefined>(
-		certificateTypes[2]?.value
-	);
+	const [selectedCertType, setSelectedCertType] = useState(certificateTypes[2]?.value);
 	const [verifyBtnLoading, setVerifyBtnLoading] = useState(false);
 	const [uploadBtnTgl, setUploadBtnTgl] = useState(false);
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
@@ -352,12 +348,12 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					items={certificateTypes}
 					background="gray5"
 					label={t('label.certificate_type', 'Certificate Type')}
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore // Need to fix it with custom soultion
-					onChange={(e: string): void => {
+					onChange={(e): void => {
 						setSelectedCertType(e);
 					}}
-					defaultSelection={certificateTypes?.filter((items) => items?.value === selectedCertType)}
+					defaultSelection={certificateTypes?.filter(
+						(items: { value: string }) => items?.value === selectedCertType
+					)}
 					showCheckbox={false}
 				/>
 			</ListRow>
@@ -435,9 +431,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificate.fileName}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								onChange={(e): void => {
 									setObjDomainCertificate({
 										...objDomainCertificate,
 										fileName: e.target.value
@@ -452,14 +446,16 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								size="extralarge"
 								type="outlined"
 								color="primary"
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								onChange={(e: any): void => {
 									if (e?.target?.files) {
 										readFileContentHandler(e?.target?.files[0], DOMAIN_CERTIFICATE);
 									}
 								}}
 								disabled={!isCustomCerti()}
+								onClick={(): void => {
+									// console.log('__');
+								}}
+								icon="AttachOutline"
 							/>
 						</Padding>
 					</ListRow>
@@ -506,9 +502,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificateCaChain.fileName || ''}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								onChange={(e): void => {
 									setObjDomainCertificateCaChain({
 										...objDomainCertificateCaChain,
 										fileName: e.target.value
@@ -523,14 +517,16 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								size="extralarge"
 								type="outlined"
 								color="primary"
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								icon="AttachOutline"
+								onChange={(e: any): void => {
 									if (e?.target?.files) {
 										readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_CA_CHAIN);
 									}
 								}}
 								disabled={!isCustomCerti()}
+								onClick={(): void => {
+									// console.log('__');
+								}}
 							/>
 						</Padding>
 					</ListRow>
@@ -577,9 +573,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								type="text"
 								backgroundColor="gray5"
 								value={objDomainCertificatePrivateKey.fileName || ''}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
+								onChange={(e): void => {
 									setObjDomainCertificatePrivateKey({
 										...objDomainCertificatePrivateKey,
 										fileName: e.target.value
@@ -594,14 +588,16 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 								size="extralarge"
 								type="outlined"
 								color="primary"
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+								onChange={(e: any): void => {
 									if (e?.target?.files) {
 										readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_PRIVATE_KEY);
 									}
 								}}
 								disabled={!isCustomCerti()}
+								onClick={(): void => {
+									// console.log('__');
+								}}
+								icon="AttachOutline"
 							/>
 						</Padding>
 					</ListRow>

@@ -15,7 +15,8 @@ import {
 	Padding,
 	Button,
 	SnackbarManagerContext,
-	Switch
+	Switch,
+	ChipItem
 } from '@zextras/carbonio-design-system';
 import { filter, isEqual, map } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -382,10 +383,8 @@ const GlobalDetailPanel: FC = () => {
 							background="gray5"
 							defaultValue={carbonioNotificationData?.carbonioNotificationRecipients}
 							value={carbonioNotificationData?.carbonioNotificationRecipients}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={(emails: { label: string }[]): void => {
-								const data: { label: string }[] = [];
+							onChange={(emails: ChipItem[]): void => {
+								const data: ChipItem[] = [];
 								map(emails, (email) => {
 									if (isValidEmail(email.label ?? '')) data.push(email);
 								});

@@ -32,7 +32,7 @@ import {
 	AUTHENTICATION,
 	MAILBOX_QUOTA,
 	ACCOUNTS,
-	MAILING_LIST,
+	DISTRIBUTION_LIST,
 	RESOURCES,
 	RESTORE_ACCOUNT,
 	ACTIVE_SYNC,
@@ -111,7 +111,7 @@ const DomainOperations: FC = () => {
 						return <ManageAccounts />;
 					case DELEGATES_DOMAIN_ADMINS:
 						return <ManageDelegates />;
-					case MAILING_LIST:
+					case DISTRIBUTION_LIST:
 						return <DomainMailingList />;
 					case SECURITY_GROUP:
 						return <DomainAclList />;

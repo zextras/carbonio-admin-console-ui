@@ -38,9 +38,9 @@ const HSMpolicySettings: FC<any> = () => {
 	const [isEventEnable, setIsEventEnable] = useState<boolean>(hsmDetail?.isEventEnabled);
 	const [isContactEnable, setIsContactEnable] = useState<boolean>(hsmDetail?.isContactEnabled);
 	const [isDocument, setIsDocument] = useState<boolean>(hsmDetail?.isDocumentEnabled);
-	const [policyCriteriaRows, setPolicyCriteriaRows] = useState<Array<any>>();
+	const [policyCriteriaRows, setPolicyCriteriaRows] = useState<any>();
 	const [value, setValue] = useState<string>();
-	const [selectedPolicies, setSelectedPolicies] = useState<Array<any>>([]);
+	const [selectedPolicies, setSelectedPolicies] = useState<any>([]);
 
 	const options: any[] = useMemo(
 		() => [
@@ -139,7 +139,7 @@ const HSMpolicySettings: FC<any> = () => {
 	);
 
 	const [volumeRows, setVolumeRows] = useState<Array<any>>([]);
-	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<Array<any>>(
+	const [selectedDestinationVolume, setSelectedDestinationVolume] = useState<any>(
 		hsmDetail?.destinationVolume.map((item: any) => item?.id)
 	);
 	const [selectedSourceVolume, setSelectedSourceVolume] = useState<Array<any>>(
@@ -564,8 +564,6 @@ const HSMpolicySettings: FC<any> = () => {
 						multiSelect={false}
 						selectedRows={selectedPolicies}
 						RowFactory={CustomRowFactory}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						HeaderFactory={CustomHeaderFactory}
 					/>
 				</Container>
@@ -671,8 +669,6 @@ const HSMpolicySettings: FC<any> = () => {
 									}
 								}}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						)}
@@ -741,8 +737,6 @@ const HSMpolicySettings: FC<any> = () => {
 									}
 								}}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						)}

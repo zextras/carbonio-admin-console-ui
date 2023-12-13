@@ -46,12 +46,12 @@ const ReusedDefaultTabBar: FC<{
 }> = ({ item, index, selected, onClick }): ReactElement => (
 	<DefaultTabBarItem
 		item={item}
-		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-		// @ts-ignore // Need to fix it with custom soultion
-		index={index}
 		selected={selected}
 		onClick={onClick}
 		orientation="horizontal"
+		background="gray6"
+		underlineColor="primary"
+		forceWidthEquallyDistributed={false}
 	>
 		<Row padding="small">
 			<Text size="small" color={selected ? 'primary' : 'gray'}>
@@ -65,7 +65,7 @@ export const ThemeConfigs: FC<{
 	themeConfig: themeConfigStore;
 	setThemeConfig: CallableFunction;
 	setIsValidated: CallableFunction;
-	onResetTheme: CallableFunction;
+	onResetTheme: any;
 	isGlobalTheme?: boolean;
 }> = ({ themeConfig, setThemeConfig, setIsValidated, onResetTheme, isGlobalTheme = false }) => {
 	const [t] = useTranslation();
@@ -98,7 +98,7 @@ export const ThemeConfigs: FC<{
 	const [isValidCarbonioWebClientLogoutURL, setIsValidCarbonioWebClientLogoutURL] =
 		useState<boolean>(true);
 	const [change, setChange] = useState('end_user');
-	const [click, setClick] = useState('');
+	const [click, setClick] = useState<string>('');
 
 	const [hasModifyRights, setHasModifyRights] = useState<boolean>(false);
 	const rights = useRightsStore((state) => state.rights);
@@ -125,7 +125,7 @@ export const ThemeConfigs: FC<{
 		}
 	}, [rights, isGlobalTheme]);
 
-	const items = [
+	const items: any = [
 		{
 			id: 'end_user',
 			label: `${t('label.end_user_title', 'END USER')}`,
@@ -138,7 +138,7 @@ export const ThemeConfigs: FC<{
 		}
 	];
 
-	const THEME_MODE = useMemo(
+	const THEME_MODE: any = useMemo(
 		() => [
 			{ label: `${t('label.disabled', 'Disabled')}`, value: 'FALSE' },
 			{ label: `${t('label.enabled', 'Enabled')}`, value: 'TRUE' }
@@ -147,7 +147,7 @@ export const ThemeConfigs: FC<{
 	);
 
 	const onThemeModeChange = useCallback(
-		(v: string): void => {
+		(v): void => {
 			setThemeConfig((prev: any) => ({ ...prev, carbonioWebUiDarkMode: v }));
 		},
 		[setThemeConfig]
@@ -228,16 +228,13 @@ export const ThemeConfigs: FC<{
 					</ListRow>
 					<ListRow>
 						<Select
-							backgroundColor="gray5"
+							background="gray5"
 							label={t('cos.dark_mode', 'Dark Mode')}
 							showCheckbox={false}
 							items={THEME_MODE}
 							selection={THEME_MODE.find(
-								// eslint-disable-next-line max-len
 								(item: any) => item.value === themeConfig?.carbonioWebUiDarkMode
 							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onChange={onThemeModeChange}
 							disabled={isGlobalTheme && !hasModifyRights}
 						/>
@@ -340,15 +337,16 @@ export const ThemeConfigs: FC<{
 						padding={{ top: 'large' }}
 					>
 						<TabBar
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							items={items}
 							selected={change}
 							onChange={(ev: unknown, selectedId: string): void => {
 								setChange(selectedId);
 							}}
-							onItemClick={setClick}
+							onClick={(): void => {
+								// console.log('__');
+							}}
 							width={300}
+							background="gray6"
 						/>
 					</Row>
 					<Row width="100%">
@@ -637,7 +635,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.favicon_description',
-												'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
+												'Paste the URL of the favicon for the login page. Use an ICO file, dimension 32x32 pixels.'
 											)}
 										</Text>
 									</Container>
@@ -683,7 +681,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x720 pixels, a ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
@@ -769,23 +767,74 @@ export const ThemeConfigs: FC<{
 									<Divider color="gray2" />
 								</Container>
 								<ListRow>
-									<Padding vertical="large" horizontal="small" width="100%">
-										<Text size="small" color="gray0" weight="bold">
-											{t('label.logout', 'Logout')}
-										</Text>
-									</Padding>
+									<ListRow>
+										<Container
+											mainAlignment="flex-start"
+											crossAlignment="flex-start"
+											padding={{ vertical: 'large', horizontal: 'small' }}
+										>
+											<Text size="small" color="gray0">
+												<Trans
+													i18nKey="label.please_note"
+													defaults="<bold>Please note</bold>"
+													components={{ bold: <strong /> }}
+												/>{' '}
+												{t(
+													'label.virtualhost_avaibility_helpertext',
+													'that in order to make the virtualHost available, nginx configuration must be reloaded on all the proxyes first.'
+												)}
+											</Text>
+										</Container>
+									</ListRow>
 								</ListRow>
 								<ListRow>
-									<Container padding={{ all: 'small' }}>
+									<Container padding={{ bottom: 'small', horizontal: 'small' }}>
+										<ListRow>
+											<Padding bottom="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.login', 'Login')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<Input
+											label={t(
+												'label.enduser_login_redirect_url',
+												'LogIn redirect destination (URL)'
+											)}
+											backgroundColor="gray5"
+											value={themeConfig.carbonioWebUILoginURL}
+											inputName="carbonioWebUILoginURL"
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+												if (e.target.value) {
+													const isValid = isValidHttpsUrl(e.target.value);
+													setIsValidCarbonioWebClientLogoutURL(isValid);
+												} else {
+													setIsValidCarbonioWebClientLogoutURL(true);
+												}
+												onChangeDomainThemeDetail(e);
+											}}
+											hasError={!isValidCarbonioWebClientLogoutURL}
+											disabled={isGlobalTheme && !hasModifyRights}
+										/>
+										{!isValidCarbonioWebClientLogoutURL && <HttpsErrorMessage />}
+									</Container>
+									<Container padding={{ bottom: 'small', horizontal: 'small' }}>
+										<ListRow>
+											<Padding bottom="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.logout', 'Logout')}
+												</Text>
+											</Padding>
+										</ListRow>
 										<Input
 											label={t(
 												'label.enduser_logout_redirect_url',
 												'On Logout, redirect the User to (URL)'
 											)}
 											backgroundColor="gray5"
-											value={themeConfig.zimbraWebClientLogoutURL}
-											inputName="zimbraWebClientLogoutURL"
-											onChange={(e: any): any => {
+											value={themeConfig?.carbonioWebUILogoutURL}
+											inputName="carbonioWebUILogoutURL"
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
 													const isValid = isValidHttpsUrl(e.target.value);
 													setIsValidCarbonioWebClientLogoutURL(isValid);
@@ -1075,7 +1124,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.favicon_description',
-												'Paste the URL of the favicon for the login page. Use a ICO file, dimension 16x16 pixels.'
+												'Paste the URL of the favicon for the login page. Use an ICO file, dimension 32x32 pixels.'
 											)}
 										</Text>
 									</Container>
@@ -1121,7 +1170,7 @@ export const ThemeConfigs: FC<{
 										<Text size="small" color="gray0">
 											{t(
 												'label.background_description',
-												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a resolution of 1280x720 pixels, ratio of 16:9 and smaller than 800KB.'
+												'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x720 pixels, a ratio of 16:9 and smaller than 800KB.'
 											)}
 										</Text>
 									</Container>
@@ -1202,23 +1251,72 @@ export const ThemeConfigs: FC<{
 									<Divider color="gray2" />
 								</Container>
 								<ListRow>
-									<Padding vertical="large" horizontal="small" width="100%">
-										<Text size="small" color="gray0" weight="bold">
-											{t('label.logout', 'Logout')}
+									<Container
+										mainAlignment="flex-start"
+										crossAlignment="flex-start"
+										padding={{ vertical: 'large', horizontal: 'small' }}
+									>
+										<Text size="small" color="gray0">
+											<Trans
+												i18nKey="label.please_note"
+												defaults="<bold>Please note</bold>"
+												components={{ bold: <strong /> }}
+											/>{' '}
+											{t(
+												'label.virtualhost_avaibility_helpertext',
+												'that in order to make the virtualHost available, nginx configuration must be reloaded on all the proxyes first.'
+											)}
 										</Text>
-									</Padding>
+									</Container>
 								</ListRow>
 								<ListRow>
-									<Container padding={{ all: 'small' }}>
+									<Container padding={{ bottom: 'small', horizontal: 'small' }}>
+										<ListRow>
+											<Padding bottom="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.login', 'Login')}
+												</Text>
+											</Padding>
+										</ListRow>
 										<Input
 											label={t(
-												'label.admin_logout_redirect_url',
-												'On Logout, redirect the Admin to (URL)'
+												'label.enduser_login_redirect_url',
+												'LogIn redirect destination (URL)'
 											)}
 											backgroundColor="gray5"
-											value={themeConfig.zimbraAdminConsoleLogoutURL}
-											inputName="zimbraAdminConsoleLogoutURL"
-											onChange={(e: any): any => {
+											value={themeConfig.carbonioAdminUILoginURL}
+											inputName="carbonioAdminUILoginURL"
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+												if (e.target.value) {
+													const isValid = isValidHttpsUrl(e.target.value);
+													setIsValidCarbonioAdminLogoutURL(isValid);
+												} else {
+													setIsValidCarbonioAdminLogoutURL(true);
+												}
+												onChangeDomainThemeDetail(e);
+											}}
+											hasError={!isValidCarbonioAdminLogoutURL}
+											disabled={isGlobalTheme && !hasModifyRights}
+										/>
+										{!isValidCarbonioAdminLogoutURL && <HttpsErrorMessage />}
+									</Container>
+									<Container padding={{ bottom: 'small', horizontal: 'small' }}>
+										<ListRow>
+											<Padding bottom="large" horizontal="small" width="100%">
+												<Text size="small" color="gray0" weight="bold">
+													{t('label.logout', 'Logout')}
+												</Text>
+											</Padding>
+										</ListRow>
+										<Input
+											label={t(
+												'label.enduser_logout_redirect_url',
+												'On Logout, redirect the User to (URL)'
+											)}
+											backgroundColor="gray5"
+											value={themeConfig?.carbonioAdminUILogoutURL}
+											inputName="carbonioAdminUILogoutURL"
+											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
 													const isValid = isValidHttpsUrl(e.target.value);
 													setIsValidCarbonioAdminLogoutURL(isValid);
@@ -1248,8 +1346,6 @@ export const ThemeConfigs: FC<{
 									color="error"
 									size="large"
 									width="fill"
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									onClick={onResetTheme}
 									style={{ width: '100%' }}
 									disabled={isGlobalTheme && !hasModifyRights}

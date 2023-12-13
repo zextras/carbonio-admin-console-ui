@@ -20,8 +20,8 @@ export const ResetTheme: FC<{
 	title: string;
 	isOpenResetDialog: boolean;
 	isRequestInProgress: boolean;
-	closeHandler: void;
-	onResetHandler: CallableFunction;
+	closeHandler: () => void;
+	onResetHandler: () => void;
 }> = ({ title, isOpenResetDialog, isRequestInProgress, closeHandler, onResetHandler }) => {
 	const [t] = useTranslation();
 	return (
@@ -39,18 +39,10 @@ export const ResetTheme: FC<{
 						onClick={(): null => null}
 					/>
 					<Row style={{ gap: '1rem' }}>
-						<Button
-							label={t('label.cancel', 'Cancel')}
-							color="secondary"
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onClick={closeHandler}
-						/>
+						<Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={closeHandler} />
 						<Button
 							label={t('label.yes', 'Yes')}
 							color="error"
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							onClick={onResetHandler}
 							disabled={isRequestInProgress}
 						/>
@@ -58,8 +50,6 @@ export const ResetTheme: FC<{
 				</Container>
 			}
 			showCloseIcon
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore // Need to fix it with custom soultion
 			onClose={closeHandler}
 		>
 			<Container>

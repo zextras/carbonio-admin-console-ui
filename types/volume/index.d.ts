@@ -86,3 +86,24 @@ export type typeVolApiProperty = {
 	isCurrent?: boolean | number;
 	currentVolumeName?: string;
 };
+
+export type TestConnectionObjectType = {
+	_jsns: string;
+	module?: string;
+	action?: string;
+	targetServers?: string; // This property is optional
+	bucketId?: string;
+	storeType?: string;
+	bucketName?: string;
+	label?: string;
+	notes?: string;
+	accessKey?: string;
+	secret?: string;
+	region?: string;
+	signatureVersion?: string;
+	protocol?: string;
+	url?: string;
+	prefix?: string;
+	targetServer?: string;
+	bucketConfigurationId?: string;
+};

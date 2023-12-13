@@ -84,8 +84,10 @@ export type themeConfigStore = {
 	carbonioLogoUrl?: string;
 	carbonioWebUiPrimaryColor?: string;
 	carbonioWebUiDarkPrimaryColor?: string;
-	zimbraAdminConsoleLogoutURL?: string;
-	zimbraWebClientLogoutURL?: string;
+	carbonioWebUILoginURL?: string;
+	carbonioWebUILogoutURL?: string;
+	carbonioAdminUILoginURL?: string;
+	carbonioAdminUILogoutURL?: string;
 };
 
 export interface IpRangeValue {
@@ -128,4 +130,11 @@ export type DomainDisclaimerType = {
 	zimbraDomainMandatoryMailSignatureEnabled: boolean;
 	zimbraAmavisDomainDisclaimerText: string;
 	zimbraAmavisDomainDisclaimerHTML: string;
+};
+
+type SelectItem<T = string> = {
+	label: string;
+	value: T;
+	disabled?: boolean;
+	customComponent?: React.ReactElement;
 };

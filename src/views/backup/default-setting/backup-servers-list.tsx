@@ -215,8 +215,6 @@ const BackupServersListTable: FC<{
 			selectedRows={selectedRows}
 			onSelectionChange={onSelectionChange}
 			RowFactory={CustomRowFactory}
-			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-			// @ts-ignore // Need to fix it with custom soultion
 			HeaderFactory={CustomHeaderFactory}
 		/>
 	);
@@ -413,8 +411,7 @@ const ServersList: FC = () => {
 						<BackupServersListTable
 							serverList={serverList}
 							selectedRows={selectedRows}
-							// eslint-disable-next-line @typescript-eslint/no-empty-function
-							onSelectionChange={(selected: any): any => {}}
+							onSelectionChange={(selected: any): any => null}
 						/>
 					</Row>
 				</Container>

@@ -87,8 +87,10 @@ const GlobalTheme: FC = () => {
 				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
 				setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor);
 				setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor);
-				setValue('zimbraAdminConsoleLogoutURL', obj?.zimbraAdminConsoleLogoutURL);
-				setValue('zimbraWebClientLogoutURL', obj?.zimbraWebClientLogoutURL);
+				setValue('carbonioWebUILoginURL', obj?.carbonioWebUILoginURL);
+				setValue('carbonioWebUILogoutURL', obj?.carbonioWebUILogoutURL);
+				setValue('carbonioAdminUILoginURL', obj?.carbonioAdminUILoginURL);
+				setValue('carbonioAdminUILogoutURL', obj?.carbonioAdminUILogoutURL);
 			}
 		},
 		[setValue]
@@ -167,11 +169,17 @@ const GlobalTheme: FC = () => {
 			if (!obj.carbonioWebUiDarkPrimaryColor) {
 				obj.carbonioWebUiDarkPrimaryColor = '';
 			}
-			if (!obj.zimbraAdminConsoleLogoutURL) {
-				obj.zimbraAdminConsoleLogoutURL = '';
+			if (!obj.carbonioWebUILoginURL) {
+				obj.carbonioWebUILoginURL = '';
 			}
-			if (!obj.zimbraWebClientLogoutURL) {
-				obj.zimbraWebClientLogoutURL = '';
+			if (!obj.carbonioWebUILogoutURL) {
+				obj.carbonioWebUILogoutURL = '';
+			}
+			if (!obj.carbonioAdminUILoginURL) {
+				obj.carbonioAdminUILoginURL = '';
+			}
+			if (!obj.carbonioAdminUILogoutURL) {
+				obj.carbonioAdminUILogoutURL = '';
 			}
 			setInitalValues(obj);
 			setIsDirty(false);
@@ -240,7 +248,7 @@ const GlobalTheme: FC = () => {
 		setIsOpenResetDialog(true);
 	}, []);
 
-	const closeHandler = useCallback(() => {
+	const closeHandler: () => void = useCallback(() => {
 		setIsOpenResetDialog(false);
 	}, []);
 
@@ -270,8 +278,10 @@ const GlobalTheme: FC = () => {
 			carbonioLogoUrl: '',
 			carbonioWebUiPrimaryColor: '',
 			carbonioWebUiDarkPrimaryColor: '',
-			zimbraAdminConsoleLogoutURL: '',
-			zimbraWebClientLogoutURL: ''
+			carbonioWebUILoginURL: '',
+			carbonioWebUILogoutURL: '',
+			carbonioAdminUILoginURL: '',
+			carbonioAdminUILogoutURL: ''
 		};
 		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
@@ -343,8 +353,6 @@ const GlobalTheme: FC = () => {
 						title={t('label.reset_global_whitelabel_settings', 'Reset global whitelabel settings')}
 						isOpenResetDialog={isOpenResetDialog}
 						isRequestInProgress={isRequestInProgress}
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						closeHandler={closeHandler}
 						onResetHandler={onResetHandler}
 					/>

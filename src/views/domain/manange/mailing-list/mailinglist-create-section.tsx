@@ -21,7 +21,7 @@ const MailingListCreateSection: FC<any> = () => {
 	const [ownerMember, setOwnerMember] = useState<Array<any>>([]);
 	const [memberList, setMemberList] = useState<Array<any>>([]);
 	const [ldapQueryMembers, setLdapQueryMembers] = useState<Array<any>>([]);
-	const [grantEmailType, setGrantEmailType] = useState<string | null>('');
+	const [grantEmailType, setGrantEmailType] = useState<string>('');
 
 	const tableHeader: any[] = useMemo(
 		() => [
@@ -179,8 +179,6 @@ const MailingListCreateSection: FC<any> = () => {
 								headers={tableHeader}
 								showCheckbox={false}
 								RowFactory={CustomRowFactory}
-								// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-								// @ts-ignore // Need to fix it with custom soultion
 								HeaderFactory={CustomHeaderFactory}
 							/>
 						</Container>
@@ -252,7 +250,7 @@ const MailingListCreateSection: FC<any> = () => {
 								padding={{ top: 'small', bottom: 'medium' }}
 							>
 								<Input
-									label={t('label.list_url', "Mailing List's URL")}
+									label={t('label.distribution_list_url', "Distribution List's URL")}
 									backgroundColor="gray6"
 									value={mailingListDetail?.memberURL}
 									readOnly
@@ -278,8 +276,6 @@ const MailingListCreateSection: FC<any> = () => {
 									headers={tableHeader}
 									showCheckbox={false}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 								/>
 							</Container>
@@ -304,8 +300,6 @@ const MailingListCreateSection: FC<any> = () => {
 					<Input
 						label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
 						backgroundColor="gray6"
-						// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-						// @ts-ignore // Need to fix it with custom soultion
 						value={grantEmailType}
 						readOnly
 					/>
@@ -318,8 +312,6 @@ const MailingListCreateSection: FC<any> = () => {
 							headers={ownerTableHeader}
 							showCheckbox={false}
 							RowFactory={CustomRowFactory}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
 							HeaderFactory={CustomHeaderFactory}
 						/>
 					</Container>

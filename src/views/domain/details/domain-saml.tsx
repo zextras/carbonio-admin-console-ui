@@ -58,7 +58,7 @@ const DomainSaml: FC = () => {
 	const domainName = useDomainStore((state) => state.domain?.name) || '';
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [samlAttrKey, setSamlAttrKey] = useState<string>('');
-	const [samlAttrValue, setSamlAttrValue] = useState<unknown>('');
+	const [samlAttrValue, setSamlAttrValue] = useState<any>('');
 	const [metadataUrl, setMetadataUrl] = useState<string>('');
 	const [entityId, setEntityId] = useState<string>('');
 	const [serverUrl, setServiceUrl] = useState<string>('');
@@ -630,8 +630,6 @@ const DomainSaml: FC = () => {
 									showCheckbox={false}
 									multiSelect={false}
 									RowFactory={CustomRowFactory}
-									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-									// @ts-ignore // Need to fix it with custom soultion
 									HeaderFactory={CustomHeaderFactory}
 									style={samlTableRows?.length > 0 ? { height: '15rem', overflow: 'auto' } : {}}
 								/>
@@ -765,9 +763,7 @@ const DomainSaml: FC = () => {
 											'label.here_will_be_shown_the_attribute_value',
 											'The Attribute Value will be displayed here'
 										)}
-										background="gray5"
-										// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-										// @ts-ignore // Need to fix it with custom soultion
+										backgroundColor="gray5"
 										value={samlAttrValue}
 										onChange={(e: any): any => {
 											setSamlAttrValue(e.target.value);
