@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.39](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.38...v0.9.39) (2023-12-14)
+
+
+### Features
+
+* ac-733: changed names and added new attributes for login ([a362ce4](https://github.com/zextras/carbonio-admin-console-ui/commit/a362ce4a945b17d97ef8b373b14d77eaa52d460e))
+* ac-849: store closed or open tabs memory into local storage ([748b7de](https://github.com/zextras/carbonio-admin-console-ui/commit/748b7de74a10f781aaa90c163095279ea805196f))
+* ac-894: added multiple virtualhost creation ([562160b](https://github.com/zextras/carbonio-admin-console-ui/commit/562160b10b926785f1785e971309645f9fd70e6a))
+
+
+### Bug Fixes
+
+* ac-818: eslint ignore type error for backup ([e8af96d](https://github.com/zextras/carbonio-admin-console-ui/commit/e8af96d17af21fabb8bde4328786fca4f0035768))
+* ac-859: global setting not editable ([1e0d3a9](https://github.com/zextras/carbonio-admin-console-ui/commit/1e0d3a9750e5fd08de576283962d415b5d9978b3))
+* ac-871: fixed mailing list subdomain dashed data issue ([415b265](https://github.com/zextras/carbonio-admin-console-ui/commit/415b265ede49942d627c6e2643f4b1302376ed50))
+* ac-884: key changed to display compression fixed ([f92a036](https://github.com/zextras/carbonio-admin-console-ui/commit/f92a0367817527643ceb19ccb8f5a67a823f9607))
+
 ### [0.9.38](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.37...v0.9.38) (2023-11-28)
 
 
