@@ -375,7 +375,6 @@
         "domain_status": "域状态",
         "domain_quota_settings": "域配额设置",
         "domain_name": "域名",
-        "displayed_name": "显示名称",
         "deligated_admin_help_url": "委派管理员帮助URL",
         "deleting_cos_msg": "正在删除 <bold>{{cosname}}</bold>",
         "delete_domain_with_account_content_msg": "{{domainName}}不为空：其中包含{{domainSystemAccounts}}系统账户和{{domainRegularAccounts}}普通账户。确定要继续删除吗？",
@@ -760,7 +759,8 @@
         "general_options": "一般选项",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "queued": "已加入队列",
         "running": "运行中",
@@ -997,7 +997,23 @@
         "stats": "数据统计",
         "advance_edit_userName": "用户名",
         "search_for_an_account": "搜索账户",
-        "received": "已接收"
+        "received": "已接收",
+        "attachement_unknown": "未知 <{{mimeType}}>",
+        "attachment_0": "附件",
+        "discard": "丢弃",
+        "save_to_files": "保存至文件",
+        "Cos_name": "COS名称",
+        "attachments_disclaimer": "您正在查看已附加的消息。附加消息的真实性无法验证。",
+        "from": "发件人",
+        "invalid_destination": "此节点不是有效的目标",
+        "login": "登录",
+        "messages": "消息",
+        "select_folder": "选择文件夹",
+        "show_all": "显示全部",
+        "show_quoted_text": "显示引用文本",
+        "subject": "主题",
+        "to": "至",
+        "view_images": "查看图像"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",
@@ -1268,8 +1284,13 @@
         "snackbar": {
             "share": {
                 "accepted": "您已接受共享请求"
-            }
-        }
+            },
+            "att_saved": "附件已保存在所选文件夹中",
+            "all_att_saved": "附件已成功保存在所选文件夹中",
+            "att_err": "保存时似乎出现错误，请重试",
+            "some_att_fails": "保存一些文件时似乎出现错误，请重试"
+        },
+        "external_images_blocked": "外部图像已被阻止以保护您免受潜在垃圾信息侵扰"
     },
     "backup": {
         "backup_path": "备份路径",
@@ -2091,5 +2112,19 @@
     },
     "mat": {
         "add_here_any_blocked_extension": "在此添加任何被阻止的扩展名"
+    },
+    "action": {
+        "click_open": "点击打开",
+        "click_preview": "点击预览"
+    },
+    "messages": {
+        "no_content": "此消息没有文本内容",
+        "snackbar": {
+            "marked_as_spam": "您已将此邮件标记为垃圾信息"
+        }
+    },
+    "quarantine": {
+        "delete_message": "删除消息",
+        "message_deleted": "消息已删除"
     }
 }

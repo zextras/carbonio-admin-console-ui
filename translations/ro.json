@@ -181,7 +181,9 @@
         "link": "Legatura",
         "logout": "Deconectare",
         "person_name": "Nume",
-        "advance_edit_userName": "Nume utilizator"
+        "advance_edit_userName": "Nume utilizator",
+        "discard": "Renunta",
+        "login": "Autentificare"
     },
     "core": {
         "subscription": {

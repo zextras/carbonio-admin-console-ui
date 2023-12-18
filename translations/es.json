@@ -187,7 +187,7 @@
         "external": "Externo",
         "hours": "Horas",
         "minutes": "Minutos",
-        "name": "Nombre",
+        "name": "Name",
         "not_set": "No establecido",
         "note": "Nota",
         "notification": "Notificación",
@@ -503,7 +503,6 @@
         "enter_email_address": "Introduzca la dirección de e-mail",
         "edit_signature": "<bold>Editar firma</bold>",
         "dynamic": "Dinámico",
-        "displayed_name": "Nombre mostrado",
         "delete_content": "Está a punto de eliminar \"{{name}}\". ¿Seguro que quiere continuar?",
         "allocation": "Ubicación",
         "button_delete": "BORRAR",
@@ -867,7 +866,8 @@
         "domain_certificate_private_key": "Clave privada del dominio",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "running": "Ejecutando",
         "ID": "ID",
@@ -1175,7 +1175,6 @@
         "admin_logout_redirect_url": "Al hacer logout, redirigir al administrador a (URL)",
         "administration": "Administración",
         "administration_rights": "Derechos de administración",
-        "advanced_edit": "Edición avanzada",
         "aggregated_space_quota": "Cuota total de espacio",
         "authentication_settings": "Configuraciones de autenticación",
         "cant_send_receiver": "No puede enviar ni recibir",
@@ -1212,7 +1211,7 @@
         "valid_not_before": "Válido desde (no antes)",
         "what_to_trust": "¿En cuál confiar?",
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "No tiene suficientes derechos de administración para ver esta sección",
-        "person_name": "Nombre",
+        "person_name": "Name",
         "stats": "Estadísticas",
         "can_access_settings": "Puede acceder a las configuraciones",
         "init_domain": "INIT DOMAIN",
@@ -1227,7 +1226,25 @@
         "surname_required": "El apellido es obligatorio",
         "advance_edit_userName": "Nombre de usuario",
         "search_for_an_account": "Buscar una cuenta",
-        "received": "Recibido"
+        "received": "Recibido",
+        "Cos_name": "Nombre de la COS",
+        "from": "De",
+        "invalid_destination": "Este nodo no es un destino válido",
+        "login": "Iniciar sesión",
+        "messages": "Mensajes",
+        "view_images": "Ver imágenes",
+        "discard": "Descartar",
+        "attachement_unknown": "Desconocido <{{mimeType}}>",
+        "attachment_0": "Adjunto",
+        "attachment_1": "",
+        "attachment_2": "adjuntos",
+        "attachments_disclaimer": "Estás viendo un mensaje adjunto. La autenticidad del mismo no se puede verificar.",
+        "save_to_files": "Guardar en Files",
+        "select_folder": "Seleccionar carpeta",
+        "show_all": "Mostrar todo",
+        "show_quoted_text": "Mostrar texto citado",
+        "subject": "Asunto",
+        "to": "Para"
     },
     "timezone": {
         "indian_mauritius": "{{value}} Port Louis",
@@ -1340,7 +1357,7 @@
         "asia_yerevan": "{{value}} Ereván",
         "atlantic_azores": "{{value}} Azores",
         "atlantic_cape_verde": "{{value}} Cabo Verde",
-        "atlantic_south_georgia": "{{value}} Medio Atlántico",
+        "atlantic_south_georgia": "{{value}} Atlántico Medio",
         "australia_adelaide": "{{value}} Adelaida",
         "australia_brisbane": "{{value}} Brisbane",
         "australia_darwin": "{{value}} Darwin",
@@ -1357,7 +1374,7 @@
         "europe_brussels": "{{value}} Bruselas, Copenhague, Madrid, París",
         "europe_bucharest": "{{value}} Bucarest",
         "europe_chisinau": "{{value}} Chisináu",
-        "europe_helsinki": "{{value}} Helsinki, Kiev, Riga, Sofía, Tallin, Vilna",
+        "europe_helsinki": "{{value}} Helsinki, Kiev, Riga, Sofía, Tallin, Vilnius",
         "europe_istanbul": "{{value}} Estambul",
         "europe_kaliningrad": "{{value}} Kaliningrado (RTZ 1)",
         "europe_london": "{{value}} Gran Bretaña, Irlanda, Portugal",
@@ -1405,8 +1422,13 @@
         "snackbar": {
             "share": {
                 "accepted": "Has aceptado la solicitud de acceso compartido"
-            }
-        }
+            },
+            "all_att_saved": "Los adjuntos han sido guardados en la carpeta seleccionada",
+            "att_err": "Se produjo un problema al guardar. Intenta nuevamente",
+            "att_saved": "El adjunto se guardó en la carpeta seleccionada",
+            "some_att_fails": "Parece que hay un problema al guardar los archivos. Intenta nuevamente"
+        },
+        "external_images_blocked": "Las imágenes externas han sido bloqueadas para protección ante posible spam"
     },
     "commons": {
         "confirm_connection": "CONFIRMAR CONEXIÓN",
@@ -1942,7 +1964,7 @@
             "object_storage": "Almacenamiento basado en objetos"
         },
         "volume_config_header": {
-            "name": "Nombre",
+            "name": "Name",
             "hsm_scheduled": "HSM planificado",
             "indexer": "Indexador",
             "status": "Estado"
@@ -1950,7 +1972,7 @@
         "volume_header": {
             "compression": "Compresión",
             "current": "Actual",
-            "name": "Nombre",
+            "name": "Name",
             "path": "Ruta",
             "id": "ID",
             "storageType": "Tipo de Storage"
@@ -1958,7 +1980,7 @@
         "volume_indexer_header": {
             "current": "Actual",
             "id": "ID",
-            "name": "Nombre",
+            "name": "Name",
             "path": "Ruta"
         },
         "volume_type": {
@@ -2001,7 +2023,7 @@
         "minimum_space_threshold": "Umbral de espacio mínimo",
         "minutes": "Minutos",
         "months": "Meses",
-        "name": "Nombre",
+        "name": "Name",
         "new_policy_summary": "Resumen de la nueva política",
         "no": "No",
         "option": "Opción",
@@ -2320,5 +2342,19 @@
     },
     "error": {
         "one_or_more_ip_invalid": "Una o más IPs no son válidas"
+    },
+    "action": {
+        "click_open": "Clic para abrir",
+        "click_preview": "Clic para visualizar"
+    },
+    "messages": {
+        "no_content": "Este mensaje no contiene texto",
+        "snackbar": {
+            "marked_as_spam": "Has clasificado este mensaje como \"Spam\""
+        }
+    },
+    "quarantine": {
+        "delete_message": "Borrar mensaje",
+        "message_deleted": "Mensaje eliminado"
     }
 }
