@@ -4,44 +4,18 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 
 import { Container, Text, Row, Select } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+
+import { paginationItems } from '../../../constants';
 
 const TrackNumberPerPage: FC<{
 	setPageSize: any;
 }> = ({ setPageSize }) => {
 	const [t] = useTranslation();
-	const paginationItems: any[] = useMemo(
-		() => [
-			{
-				label: '5',
-				value: 5
-			},
-			{
-				label: '10',
-				value: 10
-			},
-			{
-				label: '15',
-				value: 15
-			},
-			{
-				label: '25',
-				value: 25
-			},
-			{
-				label: '50',
-				value: 50
-			},
-			{
-				label: '100',
-				value: 100
-			}
-		],
-		[]
-	);
+
 	return (
 		<Container
 			orientation="horizontal"
