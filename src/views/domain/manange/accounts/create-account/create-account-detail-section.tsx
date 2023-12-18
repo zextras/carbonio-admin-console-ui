@@ -79,6 +79,11 @@ const CreateAccountDetailSection: FC = () => {
 	);
 
 	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+	const convertToAscii = (inputString: string): string => {
+		const normalizedString = inputString.normalize('NFKD');
+		// eslint-disable-next-line no-control-regex
+		return normalizedString.replace(/[^\x00-\x7F]/g, '');
+	};
 
 	const combineName = useMemo(() => {
 		const { sn, initials, givenName, changeNameBool, name } = accountDetail || {};
@@ -90,7 +95,7 @@ const CreateAccountDetailSection: FC = () => {
 			if (initials) userName.push(head(getModifiedName(initials)));
 			if (sn) userName.push(getModifiedName(sn));
 
-			return userName.join('.');
+			return convertToAscii(userName.join('.'));
 		}
 
 		return name || '';
