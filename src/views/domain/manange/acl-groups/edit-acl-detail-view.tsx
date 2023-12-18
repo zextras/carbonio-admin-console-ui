@@ -1263,12 +1263,12 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 			const addAliasArr = differenceBy(zimbraMailAlias, zimbraDefaultMailAlias, 'label');
 			// eslint-disable-next-line array-callback-return
 			deleteAliasArr.forEach((aliasName: any) => {
-				deleteAclListAliasRequest(selectedAclList?.id, `${aliasName?.label}`).then();
+				callAllRequest(deleteAclListAliasRequest(selectedAclList?.id, `${aliasName?.label}`));
 			});
 
 			// eslint-disable-next-line array-callback-return
 			addAliasArr.forEach((aliasName: any) => {
-				addAclListAliasRequest(selectedAclList?.id, `${aliasName?.label}`).then();
+				callAllRequest(addAclListAliasRequest(selectedAclList?.id, `${aliasName?.label}`));
 			});
 		}
 

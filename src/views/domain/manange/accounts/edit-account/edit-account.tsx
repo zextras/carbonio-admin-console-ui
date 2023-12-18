@@ -412,23 +412,51 @@ const EditAccount: FC<{
 				setShowEditAccountView(false);
 			}
 		}
+		const deleteAliasArr = differenceBy(
+			initAccountDetail.mail.split(','),
+			accountDetail.mail.split(',')
+		);
+		const addAliasArr = differenceBy(
+			accountDetail.mail.split(','),
+			initAccountDetail.mail.split(',')
+		);
 		if (modifiedKeys.includes('mail')) {
-			const deleteAliasArr = differenceBy(
-				initAccountDetail.mail.split(','),
-				accountDetail.mail.split(',')
-			);
-			const addAliasArr = differenceBy(
-				accountDetail.mail.split(','),
-				initAccountDetail.mail.split(',')
-			);
 			// eslint-disable-next-line array-callback-return
 			deleteAliasArr.forEach((aliasName) => {
-				deleteAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`).then();
+				deleteAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
+					.then()
+					.catch((error) => {
+						createSnackbar({
+							key: `error${aliasName}`,
+							type: 'error',
+							label: error?.message
+								? error?.message
+								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: false
+						});
+						setIsLoading(false);
+					});
 			});
 
 			// eslint-disable-next-line array-callback-return
 			addAliasArr.forEach((aliasName) => {
-				addAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`).then();
+				addAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
+					.then()
+					.catch((error) => {
+						createSnackbar({
+							key: `error${aliasName}`,
+							type: 'error',
+							label: error?.message
+								? error?.message
+								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: false
+						});
+						setIsLoading(false);
+					});
 			});
 
 			remove(modifiedKeys, (ele) => ele === 'mail');
@@ -496,6 +524,12 @@ const EditAccount: FC<{
 					setIsLoading(false);
 				});
 		} else {
+			if (addAliasArr.length || deleteAliasArr.length) {
+				setInitAccountDetail({ ...accountDetail });
+				setIsLoading(false);
+				getAccountList();
+				getAccountDetail(initAccountDetail?.zimbraId);
+			}
 			if (isPasswordChange) {
 				createSnackbar({
 					key: 'success',
