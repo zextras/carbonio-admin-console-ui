@@ -26,6 +26,7 @@ import {
 	BLOCK_SEND_RECEIVE,
 	BYTE_PER_MB,
 	PERCENT_USED,
+	RECORD_DISPLAY_LIMIT,
 	TOTAL_USED,
 	TRUE
 } from '../../../constants';
@@ -77,7 +78,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const [usageQuota, setUsageQuota] = useState<any[]>([]);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(20);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [selectedSortType, setSelectedSortType] = useState<string>('');
@@ -646,7 +647,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 									mainAlignment="flex-end"
 									padding={{ top: 'small' }}
 								>
-									<TrackNumberPerPage pageSize={limit} />
+									<TrackNumberPerPage setPageSize={setLimit} />
 								</Container>
 							</Container>
 						</Container>

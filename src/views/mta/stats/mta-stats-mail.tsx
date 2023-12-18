@@ -644,7 +644,7 @@ const MTAStatsMail: FC<{
 					</Container>
 
 					<Container crossAlignment="flex-end" orientation="horizontal" mainAlignment="flex-end">
-						{mailRows && mailRows.length > 0 && <TrackNumberPerPage pageSize={limit} />}
+						{mailRows && mailRows.length > 0 && <TrackNumberPerPage setPageSize={setLimit} />}
 					</Container>
 				</Container>
 				{mailRows.length === 0 && !isMailQueueLoading && (

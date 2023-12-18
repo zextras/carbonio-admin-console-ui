@@ -28,7 +28,7 @@ import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
-import { GENERAL_INFORMATION } from '../../constants';
+import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { getCosList } from '../../services/search-cos-service';
 import { useCosStore } from '../../store/cos/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
@@ -72,7 +72,7 @@ type ZimbraCosEntry = {
 const CosList: FC = () => {
 	const [t] = useTranslation();
 	const { setCos, setCosView } = useCosStore();
-	const [limit, setLimit] = useState<number>(10);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 
@@ -375,7 +375,7 @@ const CosList: FC = () => {
 										mainAlignment="flex-end"
 										padding={{ top: 'small' }}
 									>
-										<TrackNumberPerPage pageSize={limit} />
+										<TrackNumberPerPage setPageSize={setLimit} />
 									</Container>
 								</Container>
 							)}

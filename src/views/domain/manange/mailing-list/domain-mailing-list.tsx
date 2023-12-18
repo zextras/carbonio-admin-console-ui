@@ -750,7 +750,9 @@ const DomainMailingList: FC = () => {
 								mainAlignment="flex-end"
 								padding={{ top: 'small' }}
 							>
-								{mailingList && mailingList.length > 0 && <TrackNumberPerPage pageSize={limit} />}
+								{mailingList && mailingList.length > 0 && (
+									<TrackNumberPerPage setPageSize={setLimit} />
+								)}
 							</Container>
 						</Container>
 					</Container>
