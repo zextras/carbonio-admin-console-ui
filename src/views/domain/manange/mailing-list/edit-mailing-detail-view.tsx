@@ -1272,12 +1272,12 @@ const EditMailingListView: FC<any> = ({
 			const addAliasArr = differenceBy(zimbraMailAlias, zimbraDefaultMailAlias, 'label');
 			// eslint-disable-next-line array-callback-return
 			deleteAliasArr.forEach((aliasName: any) => {
-				deleteMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`).then();
+				request.push(deleteMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`));
 			});
 
 			// eslint-disable-next-line array-callback-return
 			addAliasArr.forEach((aliasName: any) => {
-				addMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`).then();
+				request.push(addMailingListAliasRequest(selectedMailingList?.id, `${aliasName?.label}`));
 			});
 		}
 
