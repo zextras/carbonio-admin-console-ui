@@ -98,7 +98,17 @@ const MTAStatsMail: FC<{
 	serverState: mtaStats | undefined;
 	updateMailCount: (stat: MtaStats) => void;
 	closeDialogMail: (val?: boolean) => void;
-}> = ({ serverState, updateMailCount, closeDialogMail }) => {
+	flushQueues: () => void;
+	requestInprogress: boolean;
+	flushRequestInProgress: boolean;
+}> = ({
+	serverState,
+	updateMailCount,
+	closeDialogMail,
+	flushQueues,
+	requestInprogress,
+	flushRequestInProgress
+}) => {
 	const [t] = useTranslation();
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const [change, setChange] = useState(ACTIVE);
@@ -503,16 +513,7 @@ const MTAStatsMail: FC<{
 						{serverState?.serverName}
 					</Text>
 				</Row>
-				<Row>
-					<Button
-						type="ghost"
-						label={t('label.go_back', 'Go Back')}
-						icon="ArrowBackOutline"
-						iconPlacement="left"
-						color="primary"
-						onClick={(): void => closeDialog()}
-					/>
-				</Row>
+				<Row></Row>
 				<Row padding={{ right: 'extrasmall', left: 'small' }}>
 					<IconButton size="medium" icon="CloseOutline" onClick={(): void => closeDialog(true)} />
 				</Row>
@@ -596,6 +597,17 @@ const MTAStatsMail: FC<{
 							onClick={onDeletePress}
 							loading={deleteInProgress}
 							disabled={deleteInProgress || selectedRow.length === 0}
+						/>
+					</Container>
+					<Container height="auto" width="auto" padding={{ right: 'medium' }}>
+						<Button
+							label={t('mta.flush_queues', 'Flush queues')}
+							color="primary"
+							size="large"
+							type="outlined"
+							onClick={flushQueues}
+							disabled={requestInprogress || flushRequestInProgress}
+							loading={requestInprogress || flushRequestInProgress}
 						/>
 					</Container>
 				</Container>

@@ -216,6 +216,9 @@ const MTAStatsDetail: FC<{
 						serverState={serverState}
 						updateMailCount={updateMailCount}
 						closeDialogMail={closeDialogMail}
+						flushQueues={flushQueues}
+						requestInprogress={requestInprogress}
+						flushRequestInProgress={flushRequestInProgress}
 					/>
 				)}
 			</Row>
