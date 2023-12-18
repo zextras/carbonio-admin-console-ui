@@ -17,7 +17,7 @@ import {
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import MTAStatsDetail from './mta-stats-detail';
+import MTAStatsMail from './mta-stats-mail';
 import { CreateSnackbarType, MtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import { ACTIVE, CORRUPT, DEFERRED, HOLD, INCOMING, MTA } from '../../../constants';
@@ -354,6 +354,10 @@ const MTAStats: FC = () => {
 		[mailServerStats]
 	);
 
+	const closeDialogMail = useCallback(() => {
+		setSelectedServer([]);
+	}, []);
+
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
 			<Row
@@ -524,13 +528,13 @@ const MTAStats: FC = () => {
 					)}
 					{selectedServer && selectedServer.length > 0 && (
 						<ModalOverlay setOpen={setShowMtaStatDetail} open={showMtaStatDetail}>
-							<MTAStatsDetail
+							<MTAStatsMail
 								serverState={mailServerStats.find((item) => item?.id === selectedServer[0])}
-								setSelectedServer={setSelectedServer}
+								updateMailCount={updateMailCount}
+								closeDialogMail={closeDialogMail}
 								flushQueues={flushQueues}
 								requestInprogress={requestInprogress}
 								flushRequestInProgress={flushRequestInProgress}
-								updateCount={updateMailCount}
 							/>
 						</ModalOverlay>
 					)}
