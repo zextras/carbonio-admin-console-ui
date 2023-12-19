@@ -56,7 +56,7 @@
         "cancel": "Mégse",
         "chats": "Csevegések",
         "contacts": "Kapcsolatok",
-        "date": "Dátum",
+        "date": "dátum",
         "delete": "Töröl",
         "disable": "letilt",
         "domain": "Tartomány",
@@ -133,7 +133,23 @@
         "never": "Soha",
         "service": "Szolgáltatás",
         "title": "Cím",
-        "what_inside": "Tárgy"
+        "what_inside": "Tárgy",
+        "attachment": "",
+        "attachment_plural": "csatolmányok",
+        "discard": "Elvetés",
+        "invalid_destination": "Nem érvényes cél",
+        "save_to_files": "Mentés fájlba",
+        "select_folder": "Mappaválasztás",
+        "subject": "Tárgy",
+        "to": "Címzett",
+        "view_images": "Képek megtekintése",
+        "attachement_unknown": "Ismeretlen <{{mimeType}}>",
+        "attachments_disclaimer": "Csatolt üzenetet tekint meg. A csatolt üzenet valódisága nem ellenőrizhető.",
+        "from": "Feladó",
+        "login": "Bejelentkezés",
+        "messages": "Üzenetek",
+        "show_all": "Összes mutatása",
+        "show_quoted_text": "Idézett szöveg megjelenítése"
     },
     "mta": {
         "status": "Státusz",
@@ -225,8 +241,13 @@
         "snackbar": {
             "share": {
                 "accepted": "Elfogadta a megosztási kérést"
-            }
-        }
+            },
+            "all_att_saved": "Mellékletek mentése a kiválasztott mappába sikeres",
+            "att_err": "Úgy tűnik, probléma merült fel a mentés során, próbálkozzon újra",
+            "att_saved": "A kiválasztott mappába mentett melléklet",
+            "some_att_fails": "Úgy tűnik, probléma merült fel néhány fájl mentésekor, próbálkozzon újra"
+        },
+        "external_images_blocked": "A külső képeket blokkoltuk, hogy megvédjük Önt az esetleges spamektől"
     },
     "domain": {
         "unit_measure_days": "Napok",
@@ -315,5 +336,18 @@
         "africa_windhoek": "{{value}} Namíbia",
         "america_anchorage": "{{value}} Alaszka",
         "etc_gmt+12": "{{value}} Dateline"
+    },
+    "action": {
+        "click_open": "Kattintson a megnyitáshoz",
+        "click_preview": "Kattintson az előnézethez"
+    },
+    "quarantine": {
+        "message_deleted": "Üzenet törölve"
+    },
+    "messages": {
+        "no_content": "Az üzenetben nem található tartalom",
+        "snackbar": {
+            "marked_as_spam": "Ezt az e-mailt nem levélszemétként jelölte meg"
+        }
     }
 }
