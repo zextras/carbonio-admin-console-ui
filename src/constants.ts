@@ -74,7 +74,7 @@ export const SERVICE_STATUS = 'service_status';
 export const SERVER_CONFIG = 'server_config';
 export const IMPORT_EXTERNAL_BACKUP = 'import_an_external_backup';
 export const SERVERS_LIST = 'servers_list';
-export const RECORD_DISPLAY_LIMIT = 20;
+export const RECORD_DISPLAY_LIMIT = 10;
 export const BUCKET_LIST = 'bucket_list';
 export const VOLUME = 'volume';
 export const DATA_VOLUMES = 'data_volumes';
@@ -357,3 +357,29 @@ export const IS_GENERAL_LIST_EXPANDED = 'isGeneralListExpanded';
 export const IS_DETAIL_LIST_EXPANDED = 'isDetailListExpanded';
 export const IS_MANAGE_LIST_EXPANDED = 'isManageListExpanded';
 export const IS_GLOBAL_LIST_EXPANDED = 'isGlobalListExpanded';
+export const paginationItems = [
+	{
+		label: '5',
+		value: 5
+	},
+	{
+		label: '10',
+		value: 10
+	},
+	{
+		label: '15',
+		value: 15
+	},
+	{
+		label: '25',
+		value: 25
+	},
+	{
+		label: '50',
+		value: 50
+	},
+	{
+		label: '100',
+		value: 100
+	}
+];

@@ -763,7 +763,7 @@ const DomainAclList: FC = () => {
 									mainAlignment="flex-end"
 									padding={{ top: 'small' }}
 								>
-									<TrackNumberPerPage pageSize={limit} />
+									<TrackNumberPerPage setPageSize={setLimit} />
 								</Container>
 							</Container>
 						)}

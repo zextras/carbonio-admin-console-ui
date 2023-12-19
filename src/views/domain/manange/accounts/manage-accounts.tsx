@@ -33,6 +33,7 @@ import AccountDetailView from './account-detail-view';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
+import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -229,7 +230,7 @@ const ManageAccounts: FC = () => {
 	const [accountList, setAccountList] = useState<any[]>([]);
 	const [selectedAccount, setSelectedAccount] = useState<any>({});
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(20);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [totalAccount, setTotalAccount] = useState<number>(0);
@@ -983,7 +984,7 @@ const ManageAccounts: FC = () => {
 										mainAlignment="flex-end"
 										padding={{ top: 'small' }}
 									>
-										<TrackNumberPerPage pageSize={limit} />
+										<TrackNumberPerPage setPageSize={setLimit} />
 									</Container>
 								</Container>
 							)}
