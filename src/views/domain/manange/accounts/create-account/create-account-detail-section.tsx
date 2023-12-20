@@ -201,7 +201,10 @@ const CreateAccountDetailSection: FC = () => {
 						/>
 						{(accountDetail?.displayName || combineDisplayName) && showAutoFillAlert && (
 							<Text color="error" size="small">
-								Auto fill user name is disabled
+								{t(
+									'accountDetails.auto_fill_username_is_disabled',
+									'Auto fill username is disabled'
+								)}
 							</Text>
 						)}
 					</Row>
