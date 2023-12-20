@@ -365,3 +365,4 @@ export const IS_GENERAL_LIST_EXPANDED = 'isGeneralListExpanded';
 export const IS_DETAIL_LIST_EXPANDED = 'isDetailListExpanded';
 export const IS_MANAGE_LIST_EXPANDED = 'isManageListExpanded';
 export const IS_GLOBAL_LIST_EXPANDED = 'isGlobalListExpanded';
+export const AMAVIS_DISCLAIMER_OPTIONS = 'amavisDisclaimerOptions';

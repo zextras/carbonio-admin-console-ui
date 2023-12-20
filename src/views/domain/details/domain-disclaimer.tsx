@@ -24,6 +24,7 @@ import styled from 'styled-components';
 
 import { DomainDisclaimerType, objectType } from '../../../../types';
 import {
+	AMAVIS_DISCLAIMER_OPTIONS,
 	FALSE,
 	TRUE,
 	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
@@ -54,6 +55,7 @@ const DomainDisclaimer: FC = () => {
 	const [t] = useTranslation();
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const domainId = useDomainStore((state) => state.domain?.id);
+	const domainName = useDomainStore((state) => state.domain?.name);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
@@ -156,6 +158,17 @@ const DomainDisclaimer: FC = () => {
 			n: ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
 			_content: domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML
 		});
+		if (domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled) {
+			attributes.push({
+				n: AMAVIS_DISCLAIMER_OPTIONS,
+				_content: domainName
+			});
+		} else {
+			attributes.push({
+				n: AMAVIS_DISCLAIMER_OPTIONS,
+				_content: ''
+			});
+		}
 
 		body.a = attributes;
 		modifyDomain(body)
@@ -207,7 +220,8 @@ const DomainDisclaimer: FC = () => {
 		domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
 		domainId,
 		setDomain,
-		t
+		t,
+		domainName
 	]);
 
 	return (
