@@ -21,21 +21,20 @@ import { useTranslation } from 'react-i18next';
 import { AccountContext } from './account-context';
 import { useDomainStore } from '../../../../../store/domain/store';
 import Textarea from '../../../../components/textarea';
-import { timeZoneList, localeList, AccountStatus } from '../../../../utility/utils';
+import { AccountStatus } from '../../../../utility/utils';
 import { AccountType } from '../account-types/account-types';
 
 const CreateAccountDetailSection: FC = () => {
 	const context = useContext(AccountContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const domain = useDomainStore((state) => state.domain);
+	const [showAutoFillAlert, setShowAutoFillAlert] = useState<boolean>(false);
 
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const { accountDetail, setAccountDetail } = context;
 
 	const [t] = useTranslation();
-	const timezones = useMemo(() => timeZoneList(t), [t]);
-	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
 
 	const domainStatus = useMemo(() => {
@@ -79,6 +78,7 @@ const CreateAccountDetailSection: FC = () => {
 	);
 
 	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+	const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(name);
 	const convertToAscii = (inputString: string): string => {
 		const normalizedString = inputString.normalize('NFKD');
 		// eslint-disable-next-line no-control-regex
@@ -93,9 +93,18 @@ const CreateAccountDetailSection: FC = () => {
 
 			if (givenName) userName.push(getModifiedName(givenName));
 			if (initials) userName.push(head(getModifiedName(initials)));
-			if (sn) userName.push(getModifiedName(sn));
-
-			return convertToAscii(userName.join('.'));
+			if (sn) userName.push(String(getModifiedName(sn)));
+			let userNameString = '';
+			userName.forEach((ele) => {
+				userNameString = `${userNameString}${ele}`;
+			});
+			const asciiValue = convertToAscii(userNameString);
+			if (userNameString.length === asciiValue.length && checkValidUserName(asciiValue)) {
+				setShowAutoFillAlert(false);
+				return asciiValue;
+			}
+			setShowAutoFillAlert(true);
+			return '';
 		}
 
 		return name || '';
@@ -135,12 +144,6 @@ const CreateAccountDetailSection: FC = () => {
 
 	const onAccountStatusChange = (v: any): any => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraAccountStatus: v }));
-	};
-	const onPrefLocaleChange = (v: string): void => {
-		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefLocale: v }));
-	};
-	const onPrefTimeZoneChange = (v: string): void => {
-		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefTimeZoneId: v }));
 	};
 	const onCOSIdChange = (v: any): void => {
 		setAccountDetail((prev: any) => ({ ...prev, zimbraCOSId: v }));
@@ -196,6 +199,11 @@ const CreateAccountDetailSection: FC = () => {
 							inputName="name"
 							// defaultValue={accountDetail?.name || ''}
 						/>
+						{(accountDetail?.displayName || combineDisplayName) && showAutoFillAlert && (
+							<Text color="error" size="small">
+								Auto fill user name is disabled
+							</Text>
+						)}
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
 						<Row
