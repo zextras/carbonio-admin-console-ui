@@ -28,7 +28,7 @@ import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
-import { GENERAL_SETTINGS } from '../../../constants';
+import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -73,7 +73,7 @@ const DomainList: FC = () => {
 	const [t] = useTranslation();
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainView = useDomainStore((state) => state.setDomainView);
-	const [limit, setLimit] = useState<number>(10);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 
@@ -376,7 +376,7 @@ const DomainList: FC = () => {
 										mainAlignment="flex-end"
 										padding={{ top: 'small' }}
 									>
-										<TrackNumberPerPage pageSize={limit} />
+										<TrackNumberPerPage setPageSize={setLimit} />
 									</Container>
 								</Container>
 							)}

@@ -27,6 +27,7 @@ import { AccountContext } from './manange/accounts/account-context';
 import AccountDetailView from './manange/accounts/account-detail-view';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
+import { RECORD_DISPLAY_LIMIT } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -101,7 +102,7 @@ const GlobalDelegates: FC = () => {
 	const [accountList, setAccountList] = useState<any[]>([]);
 	const [selectedAccount, setSelectedAccount] = useState<any>({});
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(20);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
@@ -712,7 +713,7 @@ const GlobalDelegates: FC = () => {
 										mainAlignment="flex-end"
 										padding={{ top: 'small' }}
 									>
-										<TrackNumberPerPage pageSize={limit} />
+										<TrackNumberPerPage setPageSize={setLimit} />
 									</Container>
 								</Container>
 							)}

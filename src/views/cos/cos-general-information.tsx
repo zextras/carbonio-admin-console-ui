@@ -24,7 +24,7 @@ import { debounce, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
-import { DEFAULT, COS } from '../../constants';
+import { DEFAULT, COS, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { deleteCOS } from '../../services/delete-cos-service';
 import { modifyCos } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
@@ -58,7 +58,8 @@ const CosGeneralInformation: FC = () => {
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [accountList, setAccountList] = useState<any[]>([]);
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(5);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
+	const [accountLimit, setAccountLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [searchAccountString, setSearchAccountString] = useState<string>('');
 	const [searchAccountQuery, setSearchAccountQuery] = useState<string>('');
 	const [totalAccounts, setTotalAccounts] = useState<number>(0);
@@ -377,7 +378,7 @@ const CosGeneralInformation: FC = () => {
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		searchDirectory(attrs, type, '', searchAccountQuery, offset, limit)
+		searchDirectory(attrs, type, '', searchAccountQuery, offset, accountLimit)
 			.then((data) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -453,10 +454,10 @@ const CosGeneralInformation: FC = () => {
 				}
 				setIsAccountRequestInProgress(false);
 			})
-			.catch((error) => {
+			.catch(() => {
 				setIsAccountRequestInProgress(false);
 			});
-	}, [STATUS_COLOR, accountUserType, limit, offset, searchAccountQuery]);
+	}, [STATUS_COLOR, accountUserType, accountLimit, offset, searchAccountQuery]);
 
 	useEffect(() => {
 		if (cosDetail?.id) {
@@ -825,7 +826,7 @@ const CosGeneralInformation: FC = () => {
 									mainAlignment="flex-end"
 									padding={{ all: 'small' }}
 								>
-									<TrackNumberPerPage pageSize={limit} />
+									<TrackNumberPerPage setPageSize={setLimit} />
 								</Container>
 							</Container>
 						)}
@@ -929,7 +930,7 @@ const CosGeneralInformation: FC = () => {
 								padding={{ all: 'large' }}
 							>
 								<Container crossAlignment="flex-start" padding={{ all: 'small' }}>
-									<Paging totalItem={totalAccounts} setOffset={setOffset} pageSize={limit} />
+									<Paging totalItem={totalAccounts} setOffset={setOffset} pageSize={accountLimit} />
 								</Container>
 								<Container
 									crossAlignment="flex-end"
@@ -937,7 +938,7 @@ const CosGeneralInformation: FC = () => {
 									mainAlignment="flex-end"
 									padding={{ all: 'small' }}
 								>
-									<TrackNumberPerPage pageSize={limit} />
+									<TrackNumberPerPage setPageSize={setAccountLimit} />
 								</Container>
 							</Container>
 						)}

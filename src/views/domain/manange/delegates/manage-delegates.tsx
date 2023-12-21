@@ -29,6 +29,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
 import { Attribute, objectType } from '../../../../../types';
 import logo from '../../../../assets/guardian.svg';
+import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	GetCosResponse,
@@ -80,7 +81,7 @@ const ManageDelegates: FC = () => {
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(20);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
@@ -899,7 +900,7 @@ const ManageDelegates: FC = () => {
 									mainAlignment="flex-end"
 									padding={{ top: 'small' }}
 								>
-									<TrackNumberPerPage pageSize={limit} />
+									<TrackNumberPerPage setPageSize={setLimit} />
 								</Container>
 							</Container>
 						)}
