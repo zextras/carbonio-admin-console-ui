@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 
 import DomainTwoFactorAuthentication from './details/domain-2fa';
 import DomainAuthentication from './details/domain-authentication';
+import DomainDisclaimer from './details/domain-disclaimer';
 import DomainGalSettings from './details/domain-gal-settings';
 import DomainGeneralSettings from './details/domain-general-settings';
 import DomainMailboxQuotaSetting from './details/domain-mailbox-quota-settings';
@@ -39,7 +40,8 @@ import {
 	TWO_FACTOR_AUTHENTICATION,
 	WHITELABEL_SETTINGS,
 	SECURITY_GROUP,
-	DELEGATES_DOMAIN_ADMINS
+	DELEGATES_DOMAIN_ADMINS,
+	DISCLAIMER
 } from '../../constants';
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -119,6 +121,8 @@ const DomainOperations: FC = () => {
 						return <RestoreAccount />;
 					case ACTIVE_SYNC:
 						return <ActiveSync />;
+					case DISCLAIMER:
+						return <DomainDisclaimer />;
 					default:
 						return null;
 				}

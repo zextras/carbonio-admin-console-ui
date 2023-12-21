@@ -41,6 +41,8 @@ import {
 	DELEGATES_DOMAIN_ADMINS,
 	GLOBAL_DELEGATES_ROUTE,
 	RESOURCES,
+	DISCLAIMER,
+	GLOBAL_SETTINGS_ROUTE,
 	IS_DETAIL_LIST_EXPANDED,
 	IS_MANAGE_LIST_EXPANDED
 } from '../../constants';
@@ -239,6 +241,8 @@ const DomainListPanel: FC = () => {
 				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
 				if (domainView === GLOBAL_ROUTE) {
 					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_SETTINGS_ROUTE) {
+					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_WHITELABEL_SETTINGS) {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_2FA_ROUTE) {
@@ -303,6 +307,11 @@ const DomainListPanel: FC = () => {
 				id: SAML,
 				name: t('label.saml', 'SAML'),
 				isSelected: isDomainSelect
+			},
+			{
+				id: DISCLAIMER,
+				name: t('label.disclaimer', 'Disclaimer'),
+				isSelected: isDomainSelect
 			}
 		],
 		[t, isDomainSelect]
@@ -352,8 +361,8 @@ const DomainListPanel: FC = () => {
 	const globalOptionItems = useMemo(
 		() => [
 			{
-				id: GLOBAL_ROUTE,
-				name: t('label.global', 'Global'),
+				id: GLOBAL_SETTINGS_ROUTE,
+				name: t('label.settings', 'Settings'),
 				isSelected: true
 			},
 			{

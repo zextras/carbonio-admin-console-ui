@@ -350,6 +350,14 @@ export const QUEUE = 'queue';
 export const DELEGATES_DOMAIN_ADMINS = 'delegates_domain_admins';
 export const FINISHED = 'Finished';
 export const EXCEPTION = 'Exception';
+export const DISCLAIMER = 'disclaimer';
+export const ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED =
+	'zimbraDomainMandatoryMailSignatureEnabled';
+export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT = 'zimbraAmavisDomainDisclaimerText';
+export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML = 'zimbraAmavisDomainDisclaimerHTML';
+export const ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY = 'zimbraAmavisOutboundDisclaimersOnly';
+export const GLOBAL_SETTINGS_ROUTE = 'global/settings';
+export const SETTINGS = 'settings';
 export const IS_SERVER_LIST_EXPANDED = 'isServerListExpanded';
 export const IS_SERVER_SPECIFIC_LIST_EXPANDED = 'isServerSpecificListExpanded';
 export const IS_COS_DETAIL_LIST_EXPANDED = 'isCosDetailListExpanded';
@@ -357,6 +365,7 @@ export const IS_GENERAL_LIST_EXPANDED = 'isGeneralListExpanded';
 export const IS_DETAIL_LIST_EXPANDED = 'isDetailListExpanded';
 export const IS_MANAGE_LIST_EXPANDED = 'isManageListExpanded';
 export const IS_GLOBAL_LIST_EXPANDED = 'isGlobalListExpanded';
+export const AMAVIS_DISCLAIMER_OPTIONS = 'amavisDisclaimerOptions';
 export const paginationItems = [
 	{
 		label: '5',

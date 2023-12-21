@@ -126,6 +126,12 @@ type DomainResponse = {
 	_jsns: string;
 };
 
+export type DomainDisclaimerType = {
+	zimbraDomainMandatoryMailSignatureEnabled: boolean;
+	zimbraAmavisDomainDisclaimerText: string;
+	zimbraAmavisDomainDisclaimerHTML: string;
+};
+
 type SelectItem<T = string> = {
 	label: string;
 	value: T;
