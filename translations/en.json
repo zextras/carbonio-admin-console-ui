@@ -6,6 +6,7 @@
         }
     },
     "accountDetails": {
+        "auto_fill_username_is_disabled": "Auto fill username is disabled",
         "change_password_for_next_login": "Must change password on the next login",
         "default_COS": "Default COS",
         "enable_activeSync_remote_access": "Enable ActiveSync remote access",
