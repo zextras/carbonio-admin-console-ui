@@ -91,13 +91,11 @@ const CreateAccountDetailSection: FC = () => {
 		if (!changeNameBool) {
 			const userName = [];
 
-			if (givenName) userName.push(getModifiedName(givenName));
-			if (initials) userName.push(head(getModifiedName(initials)));
-			if (sn) userName.push(String(getModifiedName(sn)));
+			if (givenName.trim()) userName.push(getModifiedName(givenName.trim()));
+			if (initials.trim()) userName.push(head(getModifiedName(initials.trim())));
+			if (sn.trim()) userName.push(String(getModifiedName(sn.trim())));
 			let userNameString = '';
-			userName.forEach((ele) => {
-				userNameString = `${userNameString}${ele}`;
-			});
+			userNameString = userName.join('.');
 			const asciiValue = convertToAscii(userNameString);
 			if (userNameString.length === asciiValue.length && checkValidUserName(asciiValue)) {
 				setShowAutoFillAlert(false);
