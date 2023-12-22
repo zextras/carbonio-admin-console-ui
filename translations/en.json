@@ -897,7 +897,7 @@
         "aware_of_doing_device_factory_settings": "I want to reset it to the factory settings",
         "back": "BACK",
         "background": "Background",
-        "background_description": "Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x720 pixels, a ratio of 16:9 and smaller than 800KB.",
+        "background_description": "Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x1080 pixels and a ratio of 16:9",
         "background_for_the_login_page": "Background for the Login Page",
         "background_login_page": "Background Login Page",
         "backup": "Backup",
