@@ -72,6 +72,11 @@ const BackupListPanel: FC = () => {
 	const defaultSettingsOptions = useMemo(
 		() => [
 			{
+				id: SERVERS_LIST,
+				name: t('label.servers_list', 'Servers List'),
+				isSelected: !!isBackupModuleLicensed
+			},
+			{
 				id: SERVER_CONFIG,
 				name: t('label.server_config', 'Server Config'),
 				isSelected: !!isBackupModuleLicensed
@@ -79,11 +84,6 @@ const BackupListPanel: FC = () => {
 			{
 				id: ADVANCED,
 				name: t('label.advanced', 'Advanced'),
-				isSelected: !!isBackupModuleLicensed
-			},
-			{
-				id: SERVERS_LIST,
-				name: t('label.servers_list', 'Servers List'),
 				isSelected: !!isBackupModuleLicensed
 			}
 		],
