@@ -48,9 +48,9 @@ import {
 	DELETE,
 	RECORD_DISPLAY_LIMIT
 } from '../../../constants';
+import { batchService } from '../../../services/batch-service';
 import { getMailQueue } from '../../../services/get-mail-queue';
 import { getMailqueueInformation } from '../../../services/get-mail-queue-info';
-import { mailQueueAction } from '../../../services/mail-queue-action';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
@@ -410,28 +410,49 @@ const MTAStatsMail: FC<{
 
 	const callAllRequest = useCallback(
 		(request) => {
-			Promise.all(request)
-				.then((response) => Promise.all(response))
-				.then(() => {
-					getMailFromMailQueue();
-					getMailQueueCount();
-					setSelectedRow([]);
-					setHoldInProgress(false);
-					setReleaseInProgress(false);
-					setRequeueInProgress(false);
-					setDeleteInProgress(false);
-				});
+			batchService({
+				MailQueueActionRequest: request,
+				_jsns: 'urn:zimbra'
+			}).then(() => {
+				getMailFromMailQueue();
+				getMailQueueCount();
+				setSelectedRow([]);
+				setHoldInProgress(false);
+				setReleaseInProgress(false);
+				setRequeueInProgress(false);
+				setDeleteInProgress(false);
+			});
 		},
 		[getMailFromMailQueue, getMailQueueCount]
 	);
 
 	const mailQueAction = useCallback(
 		(operation) => {
+			const mailActionRequestData: {
+				_jsns: string;
+				server: {
+					name: string;
+					queue: { name: string; action: { op: string; by: string; _content: string } };
+				};
+			}[] = [];
 			if (serverState?.serverName) {
-				const request = selectedRow.map((item) =>
-					mailQueueAction(serverState?.serverName, change, operation, item)
-				);
-				callAllRequest(request);
+				selectedRow.forEach((item) => {
+					mailActionRequestData.push({
+						_jsns: 'urn:zimbraAdmin',
+						server: {
+							name: serverState?.serverName,
+							queue: {
+								name: change,
+								action: {
+									op: operation,
+									by: 'id',
+									_content: item
+								}
+							}
+						}
+					});
+				});
+				callAllRequest(mailActionRequestData);
 			}
 		},
 		[callAllRequest, change, selectedRow, serverState?.serverName]
