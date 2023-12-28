@@ -153,7 +153,7 @@ const DashboardServerList: FC<{
 						</Container>
 						<Container mainAlignment="center" crossAlignment="flex-start">
 							<Text size="medium" color="gray0" weight="bold">
-								{t('label.server_list', 'Servers List')}
+								{t('label.mailstores_list', 'Mailstores List')}
 							</Text>
 						</Container>
 					</ListRow>
