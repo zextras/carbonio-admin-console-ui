@@ -93,8 +93,13 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 
 	const getAccountDistributionList = useCallback(() => {
 		getAccountMembershipRequest(accountDetail?.zimbraId).then((res) => {
-			const data = res?.dl?.filter((item: any) => item?.via === undefined);
-			setAccountDistributionList(data);
+			const lists = res?.dl?.filter(
+				(list: any) =>
+					list.a &&
+					list?.via === undefined &&
+					list?.a?.some((item: any) => item.n === 'zimbraIsAdminGroup' && item._content === 'TRUE')
+			);
+			setAccountDistributionList(lists);
 		});
 	}, [accountDetail?.zimbraId]);
 
