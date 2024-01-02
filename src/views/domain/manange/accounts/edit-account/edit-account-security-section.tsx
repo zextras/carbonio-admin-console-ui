@@ -29,6 +29,7 @@ import InheritedSelect from './inherited-components/inherited-select';
 import InheritedSwitch from './inherited-components/inherited-switch';
 import { ServicesPassphrase } from './services-passphrase';
 import logo from '../../../../../assets/gardian.svg';
+import { DISABLED, ENABLED } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -495,7 +496,7 @@ const EditAccountSecuritySection: FC = () => {
 		(key: string): void => {
 			setAccountDetail((prev: any) => ({
 				...prev,
-				[key]: accountDetail[key] === 'enabled' ? 'disabled' : 'enabled'
+				[key]: accountDetail[key] === ENABLED ? DISABLED : ENABLED
 			}));
 		},
 		[accountDetail, setAccountDetail]
