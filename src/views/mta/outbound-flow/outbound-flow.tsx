@@ -49,6 +49,7 @@ import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
+import { validateIpAddress } from '../../utility/utils';
 
 const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
@@ -60,6 +61,7 @@ const MTAOutBoundFlow: FC = () => {
 	const setServerList = useServerStore((state) => state.setServerList);
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
 	const rights: Rights = useRightsStore((state) => state.rights);
+	const [isShowError, setIsShowError] = useState(false);
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -255,12 +257,16 @@ const MTAOutBoundFlow: FC = () => {
 	}, [configInformation, setInitialAndCurrentValue, setMtaInitialValues]);
 
 	useEffect(() => {
-		if (mtaOutboundDetail && !isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail)) {
+		if (
+			mtaOutboundDetail &&
+			!isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail) &&
+			!isShowError
+		) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
 		}
-	}, [mtaOutboundDetail, mtaOutboundFlowInitialDetail]);
+	}, [isShowError, mtaOutboundDetail, mtaOutboundFlowInitialDetail]);
 
 	const updateGlobalConfig = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
@@ -619,13 +625,25 @@ const MTAOutBoundFlow: FC = () => {
 						label={t('mta.my_netword', 'My Network')}
 						value={mtaOutboundDetail?.zimbraMtaMyNetworks || ''}
 						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+							const inputValue = e.target.value;
+							const isValid = validateIpAddress(inputValue);
+							setIsShowError(!isValid);
 							if (allowSetMTA) {
 								setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
 							}
 						}}
-						readOnly
+						hasError={isShowError}
 						backgroundColor="gray5"
 					/>
+					{isShowError && (
+						<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+							<Padding left="medium">
+								<Text size="extrasmall" weight="regular" color="error">
+									{t('label.validate_ip_Address_text', 'Please enter valid IP address.')}
+								</Text>
+							</Padding>
+						</Container>
+					)}
 				</Container>
 				<Container
 					orientation="horizontal"

@@ -1816,6 +1816,7 @@
         "uuid": "uuid",
         "valid_not_after": "Valid until (not after)",
         "valid_not_before": "Valid from (not before)",
+        "validate_ip_Address_text": "Please enter valid IP address.",
         "value": "Value",
         "verify": "Verify",
         "verify_certificate": "Verify",
