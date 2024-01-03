@@ -2207,6 +2207,6 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
 
 export const IsValidFQDN = (value: string): boolean => {
-	const fqdnRegex = /^(?!:\/\/)([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}(?::\d+)?$/;
+	const fqdnRegex = /^(?!:\/\/)(?=.{1,255}$)([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}$/;
 	return fqdnRegex.test(value);
 };
