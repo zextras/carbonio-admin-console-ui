@@ -8,6 +8,7 @@ import { useState } from 'react';
 
 import { THeader } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
+import { divide, multiply } from 'lodash';
 
 import { TwoFactorPolicy } from '../../../types';
 import {
@@ -2205,3 +2206,9 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 ];
 
 export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const GbToBytes = (data: any): any => multiply(data, 1024 ** 3);
