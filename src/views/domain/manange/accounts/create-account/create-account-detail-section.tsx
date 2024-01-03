@@ -60,6 +60,7 @@ const CreateAccountDetailSection: FC = () => {
 	);
 	const changeAccName = useCallback(
 		(e) => {
+			setShowAutoFillAlert(false);
 			setAccountDetail((prev: any) => ({ ...prev, changeNameBool: true }));
 			setAccountDetail((prev: any) => ({
 				...prev,
