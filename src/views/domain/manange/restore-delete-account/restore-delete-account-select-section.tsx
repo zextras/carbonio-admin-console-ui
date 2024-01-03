@@ -57,8 +57,8 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 				bold: true
 			},
 			{
-				id: 'status',
-				label: t('label.status', 'Status'),
+				id: 'hasBackup',
+				label: t('label.has_backup', 'Has Backup'),
 				width: '20%',
 				bold: true
 			},
@@ -163,8 +163,9 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 						}}
 						crossAlignment="flex-start"
 					>
+						{console.log(item?.status)}
 						<Text size="small" weight="light" key={item?.status} color="gray0">
-							{item?.status}
+							{item?.status === 'Active' ? 'Yes' : 'No'}
 						</Text>
 					</Container>,
 					<Container
