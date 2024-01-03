@@ -750,10 +750,10 @@ const DomainAuthentication: FC = () => {
 							<ListRow>
 								<Padding vertical="small" horizontal="small" width="38%">
 									<Input
-										label={t('label.username', 'Username')}
+										label={t('label.user', 'User')}
 										value={userName}
 										backgroundColor="gray5"
-										inputName="username"
+										inputName="user"
 										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 											if (e.target.value !== '') {
 												setIsValidUserName(true);
