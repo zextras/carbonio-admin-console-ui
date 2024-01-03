@@ -1849,7 +1849,7 @@ const EditAclListView: FC<any> = ({
 				<Container
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					height="calc(100% - 64px)"
+					height="calc(100% - 4.375rem)"
 					background="white"
 					style={{ overflow: 'auto' }}
 					width="100%"
