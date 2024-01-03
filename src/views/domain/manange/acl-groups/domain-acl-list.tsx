@@ -780,6 +780,7 @@ const DomainAclList: FC = () => {
 						selectedAclList={selectedAclList}
 						setShowEditAclList={setShowAclListDetailView}
 						setIsUpdateRecord={setIsUpdateRecord}
+						getAclLists={getAclList}
 					/>
 				</ModalOverlay>
 			)}

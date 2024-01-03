@@ -30,6 +30,7 @@ import { ALL, EMAIL, GRP, PUB, RECORD_DISPLAY_LIMIT } from '../../../../constant
 import { addAclListAliasRequest } from '../../../../services/add-acl-list-alias';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { deleteAclListAliasRequest } from '../../../../services/delete-acl-list-alias';
+import { deleteDistributionList } from '../../../../services/delete-distribution-list';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { getDistributionList } from '../../../../services/get-distribution-list';
 import { getDistributionListMembership } from '../../../../services/get-distributionlists-membership-service';
@@ -41,8 +42,10 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { searchGal } from '../../../../services/search-gal-service';
 import { useDomainStore } from '../../../../store/domain/store';
+import { useStickyBarStore } from '../../../../store/sticky-bar/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import Displayer from '../../../components/displayer';
 import OverlayDivision from '../../../components/overlayDivision';
 import Paging from '../../../components/paging';
 import Textarea from '../../../components/textarea';
@@ -78,12 +81,19 @@ const ovelayStyle = styled(Container)`
 	padding-top: 2rem;
 `;
 
-const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUpdateRecord }) => {
+const EditAclListView: FC<any> = ({
+	selectedAclList,
+	setShowEditAclList,
+	setIsUpdateRecord,
+	getAclLists
+}) => {
 	const [t] = useTranslation();
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [memberOffset, setMemberOffset] = useState<number>(0);
 	const [ownerOffset, setOwnerOffset] = useState<number>(0);
 	const [displayName, setDisplayName] = useState<string>('');
+	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+	const { isSticky, setIsSticky } = useStickyBarStore();
 	const [distributionName, setDistributionName] = useState<string>('');
 	const [distributionDomain, setDistributionDomain] = useState<string>('');
 	const [
@@ -128,6 +138,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 	const domainList = useDomainStore((state) => state.domainList);
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
 	const memberHeaders: any[] = useMemo(
 		() => [
@@ -795,7 +806,8 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -1576,6 +1588,73 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		}
 	}, [searchMember, t, dlm]);
 
+	const buttons = [
+		{
+			align: 'right',
+			color: 'error',
+			// eslint-disable-next-line sonarjs/no-duplicate-string
+			label: t('label.delete', 'Delete'),
+			disabled: !selectedAclList,
+			onClick: (): void => {
+				setIsOpenDeleteDialog(true);
+			}
+		},
+		{
+			align: 'left',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setIsSticky(!isSticky);
+			}
+		}
+	];
+	const closeHandler = useCallback(() => {
+		setIsOpenDeleteDialog(false);
+	}, []);
+	const onSuccess = useCallback(
+		(message) => {
+			createSnackbar({
+				key: 'success',
+				type: 'success',
+				label: message,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			getAclLists();
+			setIsRequestInProgress(false);
+			closeHandler();
+			setShowEditAclList(false)(false);
+			setIsUpdateRecord(true);
+		},
+		[closeHandler, createSnackbar, setIsUpdateRecord, setShowEditAclList, getAclLists]
+	);
+	const onDeleteHandler = useCallback(() => {
+		setIsRequestInProgress(true);
+		deleteDistributionList(dlId)
+			.then(() => {
+				onSuccess(
+					t('label.dl_delete_successfull', '{{name}} has been deleted successfully', {
+						name: distributionName
+					})
+				);
+			})
+			.then((error: any) => {
+				setIsRequestInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error.message
+						? error.message
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, onSuccess, t, dlId, distributionName]);
+
 	const onAddOwner = useCallback((): void => {
 		if (searchOwner !== '') {
 			const specialChars = /[ `'"<>,;]/;
@@ -1648,30 +1727,6 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 		},
 		[allOwnerList]
 	);
-
-	// const getSearchOwnerList = useCallback((mem) => {
-	// 	const attrs =
-	// 		'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-	// 	const types = 'accounts,distributionlists,aliases';
-	// 	const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
-
-	// 	searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name').then((data) => {
-	// 		const result: any[] = [];
-	// 		const dl = data?.dl;
-	// 		const account = data?.account;
-	// 		const alias = data?.alias;
-	// 		if (dl) {
-	// 			dl.map((item: any) => result.push(item));
-	// 		}
-	// 		if (account) {
-	// 			account.map((item: any) => result.push(item));
-	// 		}
-	// 		if (alias) {
-	// 			alias.map((item: any) => result.push(item));
-	// 		}
-	// 		setSearchOwnerResult(result);
-	// 	});
-	// }, []);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchOwnerCall = useCallback(
@@ -1790,15 +1845,17 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 				<Row>
 					<Divider color="gray3" />
 				</Row>
+
 				<Container
-					padding={{ all: 'extralarge' }}
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					height="100vh"
+					height="calc(100% - 64px)"
 					background="white"
 					style={{ overflow: 'auto' }}
+					width="100%"
 				>
-					<ListRow padding={0}>
+					<Displayer buttons={buttons} pinIcon={isSticky} />
+					<ListRow padding={{ left: 'large', right: 'large' }}>
 						<Container
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
@@ -1815,7 +1872,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							/>
 						</Container>
 					</ListRow>
-					<ListRow padding={0}>
+					<ListRow padding={{ left: 'large', right: 'large' }}>
 						<Container
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
@@ -1856,7 +1913,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						</Container>
 					</ListRow>
 
-					<ListRow padding={0}>
+					<ListRow padding={{ left: 'large', right: 'large' }}>
 						<Container
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
@@ -1903,7 +1960,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							/>
 						</Container>
 					</ListRow>
-					<ListRow padding={0}>
+					<ListRow padding={{ left: 'large', right: 'large' }}>
 						<Container padding={{ top: 'small', bottom: 'medium' }}>
 							<Input
 								value={description}
@@ -1915,7 +1972,7 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 							/>
 						</Container>
 					</ListRow>
-					<ListRow padding={0}>
+					<ListRow padding={{ left: 'large', right: 'large' }}>
 						<Container padding={{ top: 'small', bottom: 'medium' }}>
 							<Textarea
 								value={zimbraNotes}
@@ -1929,8 +1986,12 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					</ListRow>
 
 					{!selectedAclList?.dynamic && (
-						<>
-							<Row padding={{ top: 'small', bottom: 'medium' }}>
+						<Container
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ left: 'large', right: 'large' }}
+						>
+							<Row padding={{ top: 'extralarge' }}>
 								<Text size="medium" weight="bold" color="gray0">
 									{t('label.members', 'Members')}
 								</Text>
@@ -2019,9 +2080,12 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 									</Container>
 								</Row>
 							)}
-						</>
+						</Container>
 					)}
-					<Container mainAlignment="flex-start" padding={{ top: 'small', bottom: 'small' }}>
+					<Container
+						mainAlignment="flex-start"
+						padding={{ top: 'small', bottom: 'small', left: 'large', right: 'large' }}
+					>
 						<Table
 							rows={dlmTableRows}
 							headers={memberHeaders}
@@ -2075,12 +2139,12 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 						)}
 					</ListRow>
 
-					<Row padding={{ top: 'small', bottom: 'medium' }}>
+					<Row padding={{ top: 'small', bottom: 'medium', left: 'large', right: 'large' }}>
 						<Text size="medium" weight="bold" color="gray0">
 							{t('label.owners_settings_lbl', 'Owners’ Settings')}
 						</Text>
 					</Row>
-					<Row>
+					<Row padding={{ left: 'large', right: 'large' }}>
 						<Text
 							size="medium"
 							color="secondary"
@@ -2097,7 +2161,12 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					<Row
 						mainAlignment="flex-start"
 						width="100%"
-						padding={{ top: 'small', bottom: isShowOwnerError ? 'extrasmall' : 'small' }}
+						padding={{
+							top: 'small',
+							bottom: isShowOwnerError ? 'extrasmall' : 'small',
+							left: 'large',
+							right: 'large'
+						}}
 					>
 						<Container
 							orientation="vertical"
@@ -2181,7 +2250,9 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					<Container
 						padding={{
 							top: 'small',
-							bottom: 'small'
+							bottom: 'small',
+							left: 'large',
+							right: 'large'
 						}}
 						mainAlignment="flex-start"
 					>
@@ -2347,6 +2418,54 @@ const EditAclListView: FC<any> = ({ selectedAclList, setShowEditAclList, setIsUp
 					</Text>
 					<Text>{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</Text>
 				</RouteLeavingGuard>
+				{isOpenDeleteDialog && (
+					<Modal
+						size="medium"
+						title={t('label.you_are_deleting_ml', 'You are deleting {{name}}', {
+							name: displayName || distributionName
+						})}
+						open={isOpenDeleteDialog}
+						customFooter={
+							<Container orientation="horizontal" mainAlignment="flex-end">
+								<Row style={{ gap: '0.5rem' }}>
+									<Button
+										label={t('label.cancel', 'Cancel')}
+										color="secondary"
+										type="outlined"
+										onClick={(): void => closeHandler()}
+										disabled={isRequestInProgress}
+									/>
+									<Button
+										label={t('label.yes_delete_it', 'Yes, Delete it')}
+										color="error"
+										onClick={(): void => onDeleteHandler()}
+										disabled={isRequestInProgress}
+									/>
+								</Row>
+							</Container>
+						}
+						showCloseIcon
+						onClose={closeHandler}
+					>
+						<Container
+							padding={{ top: 'extralarge', bottom: 'extralarge' }}
+							style={{ textAlign: 'center' }}
+						>
+							<Padding bottom="small">
+								<Text size={'extralarge'} overflow="break-word">
+									<Trans
+										i18nKey="label.are_you_sure_delete_distribution_list"
+										defaults="Are you sure you want to delete <bold>{{name}}</bold> ?"
+										components={{ bold: <strong /> }}
+										values={{
+											name: displayName || distributionName
+										}}
+									/>
+								</Text>
+							</Padding>
+						</Container>
+					</Modal>
+				)}
 			</Container>
 		</>
 	);
