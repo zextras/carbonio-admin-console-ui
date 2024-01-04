@@ -6,7 +6,8 @@
         "password": "Salasana",
         "reset": "Resetoi",
         "username": "Käyttäjänimi",
-        "advance_edit_userName": "Käyttäjänimi"
+        "advance_edit_userName": "Käyttäjänimi",
+        "login": "Kirjaudu"
     },
     "cos": {
         "password": "Salasana"
@@ -26,5 +27,8 @@
     },
     "mta": {
         "remove": "Poista"
+    },
+    "action": {
+        "click_preview": "Klikkaa esikatsellaksesi"
     }
 }

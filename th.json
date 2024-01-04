@@ -655,7 +655,6 @@
         "domain_status": "สถานะโดเมน",
         "domain_quota_settings": "การตั้งค่าโควตาโดเมน",
         "domain_name": "ชื่อโดเมน",
-        "displayed_name": "ชื่อที่แสดง",
         "deligated_admin_help_url": "URL ความช่วยเหลือสำหรับผู้ดูแลระบบที่ได้รับมอบสิทธิ์",
         "deleting_cos_msg": "กำลังลบ <bold>{{cosname}}</bold>",
         "delete_domain_with_account_content_msg": "{{domainName}} ไม่ว่าง: ประกอบด้วย {{domainSystemAccounts}} บัญชีระบบและ {{domainRegularAccounts}} บัญชีปกติ คุณแน่ใจหรือไม่ว่าจะดำเนินการลบต่อ?",
@@ -1041,7 +1040,8 @@
         "general_options": "ตัวเลือกทั่วไป",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "running": "ทำงานอยู่",
         "use_intelligent_tiering": "ใช้การจัดระดับอัจฉริยะ",
@@ -1308,7 +1308,6 @@
         "admin_logout_redirect_url": "เมื่อออกจากระบบ ให้เปลี่ยนเส้นทางผู้ดูแลระบบไปที่ (URL)",
         "administration": "การบริหาร",
         "administration_rights": "สิทธิในการบริหาร",
-        "advanced_edit": "การแก้ไขขั้นสูง",
         "apply_to_all": "ใช้กับบริการทั้งหมด",
         "cant_send_receiver": "ไม่สามารถส่ง & รับได้",
         "choose_delegated_administrator": "เลือกผู้ดูแลระบบที่ได้รับมอบสิทธิ์",
@@ -1386,14 +1385,35 @@
         "person_name": "ชื่อ",
         "stats": "สถิติ",
         "advance_edit_userName": "ชื่อผู้ใช้",
-        "search_for_an_account": "ค้นหาบัญชี"
+        "search_for_an_account": "ค้นหาบัญชี",
+        "Cos_name": "ชื่อ Cos",
+        "attachement_unknown": "ไม่รู้จัก <{{mimeType}}>",
+        "attachment_0": "สิ่งที่แนบมา",
+        "discard": "ยกเลิก",
+        "from": "จาก",
+        "login": "เข้าสู่ระบบ",
+        "select_folder": "เลือกโฟลเดอร์",
+        "view_images": "ดูภาพ",
+        "attachments_disclaimer": "คุณกำลังดูข้อความที่แนบมา ไม่สามารถยืนยันความถูกต้องของข้อความที่แนบมาได้",
+        "invalid_destination": "โหนดนี้ไม่ใช่ปลายทางที่ถูกต้อง",
+        "messages": "ข้อความ",
+        "save_to_files": "บันทึกลงในไฟล์",
+        "show_all": "แสดงทั้งหมด",
+        "show_quoted_text": "แสดงข้อความที่ยกมา",
+        "subject": "หัวข้อ",
+        "to": "ถึง"
     },
     "message": {
         "snackbar": {
             "share": {
                 "accepted": "คุณได้ตอบรับคำขอแชร์แล้ว"
-            }
-        }
+            },
+            "all_att_saved": "บันทึกไฟล์แนบในโฟลเดอร์ที่เลือกสำเร็จแล้ว",
+            "att_err": "ดูเหมือนว่าเกิดปัญหาขึ้นในระหว่างการบันทึก โปรดลองใหม่อีกครั้ง",
+            "att_saved": "บันทึกไฟล์แนบในโฟลเดอร์ที่เลือก",
+            "some_att_fails": "ดูเหมือนว่าจะมีปัญหาในการบันทึกไฟล์บางไฟล์ โปรดลองใหม่อีกครั้ง"
+        },
+        "external_images_blocked": "รูปภาพจากภายนอกถูกบล็อกเพื่อป้องกันคุณจากสแปมที่อาจเกิดขึ้น"
     },
     "backup": {
         "backup_path": "เส้นทางสำรอง",
@@ -2247,5 +2267,19 @@
     },
     "error": {
         "one_or_more_ip_invalid": "IP อย่างน้อยหนึ่งรายการไม่ถูกต้อง"
+    },
+    "action": {
+        "click_open": "คลิกเพื่อเปิด",
+        "click_preview": "คลิกเพื่อดูตัวอย่าง"
+    },
+    "quarantine": {
+        "delete_message": "ลบข้อความ",
+        "message_deleted": "ลบข้อความเรียบร้อยแล้ว"
+    },
+    "messages": {
+        "no_content": "ข้อความไม่มีเนื้อหาที่เป็นข้อความ",
+        "snackbar": {
+            "marked_as_spam": "คุณได้ทำเครื่องหมายอีเมลนี้ว่าเป็นสแปม"
+        }
     }
 }

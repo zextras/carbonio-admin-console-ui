@@ -131,7 +131,9 @@
         "what_inside": "Subject",
         "wipe_device": "Wipe Device",
         "yes": "Yes",
-        "advance_edit_userName": "Username"
+        "advance_edit_userName": "Username",
+        "login": "Login",
+        "subject": "Subject"
     },
     "mta": {
         "settings": "Settings",

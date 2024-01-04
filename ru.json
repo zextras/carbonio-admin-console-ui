@@ -221,7 +221,7 @@
         "default_appointment_visibility": "Видимость встречи по умолчанию",
         "details": "Подробнее",
         "draft_auto_save_interval": "Интервал автоматического сохранения черновика",
-        "email": "Электронный адрес",
+        "email": "Электронная почта",
         "enable_automatic_adding_of_contacts": "Включить автоматическое добавление контактов",
         "enable_mandatory_spell_check": "Включить обязательную проверку правописания",
         "enable_past_due_reminders": "Включить напоминания о просроченных встречах",
@@ -390,7 +390,6 @@
         "enter_email_address": "Введите адрес электронной почты",
         "edit_signature": "<bold>Редактировать подпись</bold>",
         "dynamic": "Динамический",
-        "displayed_name": "Отображаемое имя",
         "delete_cos_instruction_msg": "Если нажать ДА, УДАЛИТЬ, класс обслуживания по умолчанию заменит удаленный класс обслуживания.",
         "delete_content": "Вы удаляете {{name}}. Вы уверены, что хотите продолжить?",
         "default_font_size": "Размер шрифта по умолчанию",
@@ -805,7 +804,8 @@
         "general_options": "Общие параметры",
         "operation": {
             "stop_operation_error": "{{name}}",
-            "get_all_operation_error": "{{name}}"
+            "get_all_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "queued": "В очереди",
         "running": "Работает",
@@ -1020,7 +1020,25 @@
         "2fa": "Двухфакторная аутентификация",
         "2fa-policy-updated-successfully": "Настройки применены ко всем сервисам",
         "administration_rights": "Права администратора",
-        "aggregated_space_quota": "Совокупная квота пространства"
+        "aggregated_space_quota": "Совокупная квота пространства",
+        "Cos_name": "Имя класса сервисов",
+        "attachement_unknown": "Неизвестно <{{mimeType}}>",
+        "attachment_0": "",
+        "attachment_1": "",
+        "attachment_2": "вложения",
+        "attachments_disclaimer": "Вы просматриваете прикрепленное сообщение. Подлинность вложенных сообщений проверить невозможно.",
+        "discard": "Отменить",
+        "from": "От",
+        "login": "Вход",
+        "messages": "Сообщения",
+        "save_to_files": "Сохранить в Files",
+        "select_folder": "Выберите папку",
+        "show_all": "Показать все",
+        "subject": "Тема",
+        "to": "Кому",
+        "view_images": "ПРОСМОТР ИЗОБРАЖЕНИЙ",
+        "invalid_destination": "Этот узел не является допустимым местом назначения",
+        "show_quoted_text": "Показать цитируемый текст"
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
@@ -1293,8 +1311,13 @@
         "snackbar": {
             "share": {
                 "accepted": "Вы приняли права общего доступа"
-            }
-        }
+            },
+            "all_att_saved": "Вложения успешно сохранены в выбранную папку",
+            "att_err": "Возникла проблема при сохранении, попробуйте еще раз",
+            "att_saved": "Вложение сохранено в выбранной папке",
+            "some_att_fails": "Возникла проблема при сохранении некоторых файлов, попробуйте еще раз"
+        },
+        "external_images_blocked": "Внешние изображения заблокированы, чтобы защитить вас от потенциального спама"
     },
     "commons": {
         "confirm_connection": "ПОДТВЕРДИТЬ СОЕДИНЕНИЕ",
@@ -1555,7 +1578,9 @@
         "backup_configuration": "конфигурация резервирования",
         "backup_is_enable_at_the_startup": "Резервное копирование включено при запуске",
         "append_metadata_instead_of_rewrite_faster_but_dangerous": "Добавлять метаданные вместо перезаписи (быстрее, но опасно)",
-        "backup_is_enabled_at_startup": "Резервное копирование включено при запуске"
+        "backup_is_enabled_at_startup": "Резервное копирование включено при запуске",
+        "local_volume_reload_if_you_changed_this_value": "Локальный том (перезагрузите, если вы изменили это значение)",
+        "initialising_backup_check_your_notifications_for_updates": "ИНИЦИАЛИЗАЦИЯ РЕЗЕРВНОГО КОПИРОВАНИЯ... ПРОВЕРЬТЕ ВАШИ УВЕДОМЛЕНИЯ НА ОБНОВЛЕНИЯ"
     },
     "welcome_to_carbonio": "Добро пожаловать, {{adminName}}, в Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Пожалуйста, выберите раздел в меню слева",
@@ -2151,5 +2176,20 @@
     },
     "error": {
         "one_or_more_ip_invalid": "Один или несколько IP-адресов недействительны"
+    },
+    "action": {
+        "click_open": "Нажмите, чтобы открыть",
+        "click_preview": "Нажмите для предпросмотр",
+        "mark_as_non_spam": "Не спам"
+    },
+    "messages": {
+        "snackbar": {
+            "marked_as_spam": "Вы отметили это письмо как Спам"
+        },
+        "no_content": "Это сообщение не имеет текстового содержания"
+    },
+    "quarantine": {
+        "delete_message": "Удалить сообщение",
+        "message_deleted": "Письмо удалено"
     }
 }
