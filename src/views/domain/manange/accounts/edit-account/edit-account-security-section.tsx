@@ -912,7 +912,7 @@ const EditAccountSecuritySection: FC = () => {
 						width="100%"
 					>
 						<Text size="extralarge" weight="bold">
-							{t('label.recovery', 'Recovery')}
+							{t('label.forgotten_password', 'Forgotten Password')}
 						</Text>
 						<Row mainAlignment="center" width="100%">
 							<Container
@@ -926,7 +926,10 @@ const EditAccountSecuritySection: FC = () => {
 										<Switch
 											value={accountDetail?.zimbraFeatureResetPasswordStatus === 'enabled'}
 											onClick={(): void => changeRecoverOption('zimbraFeatureResetPasswordStatus')}
-											label={t('label.can_recover_the_password', 'Can recover the password')}
+											label={t(
+												'label.user_can_ask_for_forgotten_password_token',
+												'User can ask for a forgotten password token'
+											)}
 											iconColor="primary"
 										/>
 									</Container>
