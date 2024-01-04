@@ -1578,7 +1578,9 @@
         "backup_configuration": "конфигурация резервирования",
         "backup_is_enable_at_the_startup": "Резервное копирование включено при запуске",
         "append_metadata_instead_of_rewrite_faster_but_dangerous": "Добавлять метаданные вместо перезаписи (быстрее, но опасно)",
-        "backup_is_enabled_at_startup": "Резервное копирование включено при запуске"
+        "backup_is_enabled_at_startup": "Резервное копирование включено при запуске",
+        "local_volume_reload_if_you_changed_this_value": "Локальный том (перезагрузите, если вы изменили это значение)",
+        "initialising_backup_check_your_notifications_for_updates": "ИНИЦИАЛИЗАЦИЯ РЕЗЕРВНОГО КОПИРОВАНИЯ... ПРОВЕРЬТЕ ВАШИ УВЕДОМЛЕНИЯ НА ОБНОВЛЕНИЯ"
     },
     "welcome_to_carbonio": "Добро пожаловать, {{adminName}}, в Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Пожалуйста, выберите раздел в меню слева",
@@ -2177,7 +2179,8 @@
     },
     "action": {
         "click_open": "Нажмите, чтобы открыть",
-        "click_preview": "Нажмите для предпросмотр"
+        "click_preview": "Нажмите для предпросмотр",
+        "mark_as_non_spam": "Не спам"
     },
     "messages": {
         "snackbar": {
