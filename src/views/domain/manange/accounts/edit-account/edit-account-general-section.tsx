@@ -359,7 +359,7 @@ const EditAccountGeneralSection: FC = () => {
 					<Row width="47%" mainAlignment="flex-start">
 						<Input
 							backgroundColor="gray5"
-							label={t('label.advance_edit_userName', 'Username')}
+							label={t('label.advance_edit_user', 'User')}
 							onChange={changeUserNaneDetail}
 							inputName="uid"
 							defaultValue={accountDetail?.uid}
