@@ -40,7 +40,7 @@ const BackupListPanel: FC = () => {
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
-	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVER_CONFIG);
+	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVERS_LIST);
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
 	const serverList = useBucketServersListStore((state) => state.volumeList || []);
