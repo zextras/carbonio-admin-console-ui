@@ -41,7 +41,6 @@ import {
 	ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 	CONFIG
 } from '../../../constants';
-import { getAllServers } from '../../../services/get-all-servers-service';
 import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
@@ -56,8 +55,7 @@ const MTAOutBoundFlow: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const configInformation = useConfigStore((state) => state.config);
 	const updateConfig = useConfigStore((state) => state.updateConfig);
-	const allServersList = useServerStore((state) => state.serverList);
-	const setServerList = useServerStore((state) => state.setServerList);
+	const mtaServersList = useServerStore((state) => state.mtaServerList);
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
 	const rights: Rights = useRightsStore((state) => state.rights);
 
@@ -85,19 +83,6 @@ const MTAOutBoundFlow: FC = () => {
 		},
 		[setInitialValue, setValue]
 	);
-
-	const getAllServersRequest = useCallback(() => {
-		getAllServers().then((data) => {
-			const server = data?.server;
-			if (server && Array.isArray(server) && server.length > 0) {
-				setServerList(server);
-			}
-		});
-	}, [setServerList]);
-
-	useEffect(() => {
-		getAllServersRequest();
-	}, [getAllServersRequest]);
 
 	const setTableValues = useCallback(
 		(server, tableRow) => {
@@ -160,9 +145,9 @@ const MTAOutBoundFlow: FC = () => {
 	);
 
 	useEffect(() => {
-		if (allServersList && allServersList.length > 0) {
+		if (mtaServersList && mtaServersList.length > 0) {
 			const tableRow: Array<TRow> = [];
-			allServersList.forEach((server: Record<string, unknown>) => {
+			mtaServersList.forEach((server: Record<string, unknown>) => {
 				if (server && server?.a && Array.isArray(server?.a) && server?.a.length > 0) {
 					setTableValues(server, tableRow);
 				}
@@ -171,7 +156,7 @@ const MTAOutBoundFlow: FC = () => {
 				setInstancesTableRows(tableRow);
 			}
 		}
-	}, [allServersList, setTableValues, t]);
+	}, [mtaServersList, setTableValues, t]);
 
 	const setMtaInitialValues = useCallback(() => {
 		const mtaFallBackRelayHost = configInformation.find(
