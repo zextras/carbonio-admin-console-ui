@@ -6,6 +6,7 @@
         }
     },
     "accountDetails": {
+        "auto_fill_user_is_disabled": "Auto fill user is disabled",
         "auto_fill_username_is_disabled": "Auto fill username is disabled",
         "change_password_for_next_login": "Must change password on the next login",
         "default_COS": "Default COS",
@@ -676,6 +677,7 @@
         "unit_measure_milliseconds": "Milliseconds",
         "unit_measure_minutes": "Minutes",
         "unit_measure_seconds": "Seconds",
+        "virtual_host_name_error": "Please enter valid virtual host name!",
         "virtual_hosts": "Virtual Hosts",
         "warn_when_reach_space_quota": "Warn me when I reach this aggregated space quota",
         "web_ui": "WebUI"
@@ -835,6 +837,7 @@
         "administration_rights": "Administration Rights",
         "admins": "Admins",
         "advance_edit_display_name": "Display Name",
+        "advance_edit_user": "User",
         "advance_edit_userName": "Username",
         "advance_edit_viewed_name": "Display Name",
         "advanced": "Advanced",
@@ -1803,6 +1806,7 @@
         "userName": "username (Auto-fill)",
         "userName_auto_fill": "username (Auto-fill)",
         "user_agent": "User Agent",
+        "user_auto_fill": "user (Auto-fill)",
         "user_cannot_perform_the_action": "User cannot perform the action",
         "user_preferences": "USER PREFERENCES",
         "user_ssl": "Use SSL",
