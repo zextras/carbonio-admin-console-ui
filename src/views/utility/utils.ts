@@ -2210,3 +2210,13 @@ export const IsValidFQDN = (value: string): boolean => {
 	const fqdnRegex = /^(?!:\/\/)(?=.{1,255}$)([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}$/;
 	return fqdnRegex.test(value);
 };
+
+export const isSpaceAvailableInString = (value: string): boolean => {
+	const spaceRegex = /^\S*$/;
+	return !spaceRegex.test(value);
+};
+
+export const isValidHostname = (hostname: string): boolean => {
+	const hostnameRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*(?<!-)$/;
+	return hostnameRegex.test(hostname);
+};
