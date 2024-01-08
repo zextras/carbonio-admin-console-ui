@@ -49,6 +49,7 @@ import {
 } from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
+import { flushCache } from '../../../../../services/flush-cache-service';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
@@ -504,6 +505,7 @@ const EditAccount: FC<{
 							hideButton: true,
 							replace: true
 						});
+						flushCache('account');
 						setInitAccountDetail({ ...accountDetail });
 						setIsLoading(false);
 						getAccountList();

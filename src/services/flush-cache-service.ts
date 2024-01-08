@@ -11,6 +11,6 @@ export const flushCache = async (cacheType: string): Promise<any> =>
 		_jsns: 'urn:zimbraAdmin',
 		cache: {
 			type: cacheType,
-			allServers: true
+			allServers: 1
 		}
 	});
