@@ -505,7 +505,7 @@ const EditAccount: FC<{
 							hideButton: true,
 							replace: true
 						});
-						flushCache('account');
+						flushCache('account', 'id', initAccountDetail?.zimbraId);
 						setInitAccountDetail({ ...accountDetail });
 						setIsLoading(false);
 						getAccountList();
