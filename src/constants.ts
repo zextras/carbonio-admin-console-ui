@@ -392,3 +392,5 @@ export const paginationItems = [
 		value: 100
 	}
 ];
+export const ENABLE = 'enable';
+export const DISABLE = 'disable';

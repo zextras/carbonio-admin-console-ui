@@ -483,6 +483,7 @@
         "enable_smime": "Enable S/MIME",
         "enable_toaster_notification_for_new_mail": "Enable toaster notification for new mail",
         "enabled": "Enabled",
+        "enabled_backup": "Enable Backup",
         "external_pop_access": "External POP Access",
         "failed_login_policy": "Failed Login Policy",
         "features": "Features",

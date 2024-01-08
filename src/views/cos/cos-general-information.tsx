@@ -17,15 +17,18 @@ import {
 	Modal,
 	Icon,
 	Table,
-	Tooltip
+	Tooltip,
+	Switch
 } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { debounce, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../assets/gardian.svg';
-import { DEFAULT, COS, RECORD_DISPLAY_LIMIT } from '../../constants';
+import { DEFAULT, COS, RECORD_DISPLAY_LIMIT, ENABLED, ENABLE, DISABLE } from '../../constants';
+import { fetchSoap } from '../../services/bucket-service';
 import { deleteCOS } from '../../services/delete-cos-service';
+import { getCosBackupStatus } from '../../services/get-cos-backup-status-service';
 import { modifyCos } from '../../services/modify-cos-service';
 import { renameCos } from '../../services/rename-cos-service';
 import { searchDirectory } from '../../services/search-directory-service';
@@ -71,6 +74,8 @@ const CosGeneralInformation: FC = () => {
 	const [totalDomains, setTotalDomains] = useState<number>(0);
 	const [isDomainRequestInProgress, setIsDomainRequestInProgress] = useState<boolean>(false);
 	const [domainOffset, setDomainOffset] = useState<number>(0);
+	const [cosBackupStatus, setCosBackupStatus] = useState<any>();
+	const [enableBackup, setEnableBackup] = useState(false);
 
 	const accountHeaders: any = useMemo(
 		() => [
@@ -223,9 +228,16 @@ const CosGeneralInformation: FC = () => {
 		}
 	}, [cosData.description, description]);
 
-	const modifyCosInfo = (): void => {
+	useEffect(() => {
+		if (cosBackupStatus !== undefined && cosBackupStatus !== enableBackup) {
+			setIsDirty(true);
+		}
+	}, [cosBackupStatus, enableBackup]);
+
+	const modifyCosInfo = async (): Promise<void> => {
 		const body: any = {};
 		const attributes: any[] = [];
+		// eslint-disable-next-line sonarjs/no-duplicate-string
 		body._jsns = 'urn:zimbraAdmin';
 		attributes.push({
 			n: 'zimbraNotes',
@@ -245,7 +257,7 @@ const CosGeneralInformation: FC = () => {
 			_content: cosData.zimbraId
 		};
 		body.id = id;
-		modifyCos(body)
+		await modifyCos(body)
 			.then((data) => {
 				createSnackbar({
 					key: 'success',
@@ -276,7 +288,8 @@ const CosGeneralInformation: FC = () => {
 			});
 	};
 
-	const onSave = (): void => {
+	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const onSave = async (): Promise<any> => {
 		if (cosData.cn !== cosName) {
 			const renameBody: any = {};
 			renameBody._jsns = 'urn:zimbraAdmin';
@@ -306,7 +319,54 @@ const CosGeneralInformation: FC = () => {
 					});
 				});
 		} else {
-			modifyCosInfo();
+			await modifyCosInfo();
+			if (cosBackupStatus !== undefined && cosBackupStatus !== enableBackup) {
+				const enableBackupOption = enableBackup ? ENABLE : DISABLE;
+				await fetchSoap('zextras', {
+					_jsns: 'urn:zimbraAdmin',
+					module: 'ZxBackup',
+					action: 'doEnableDisableCOS',
+					COSName: cosName,
+					cos_state: enableBackupOption,
+					enableCOS: enableBackupOption
+				})
+					.then((res) => {
+						const response = JSON.parse(res?.Body?.response?.content);
+						if (response?.ok) {
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						} else {
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: response?.error?.message
+									? response?.error?.message
+									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						}
+					})
+					.catch((error) => {
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: error?.message
+								? error?.message
+								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					});
+			}
 		}
 	};
 
@@ -315,6 +375,7 @@ const CosGeneralInformation: FC = () => {
 		setZimbraNotes(cosData.zimbraNotes);
 		setDescription(cosData.description);
 		setIsDirty(false);
+		cosBackupStatus ? setEnableBackup(true) : setEnableBackup(false);
 	};
 
 	const cosCreationDate = useMemo(
@@ -588,6 +649,40 @@ const CosGeneralInformation: FC = () => {
 		searchDomainList(searchDomainString, cosDetail.id);
 	}, [cosDetail?.id, searchDomainList, searchDomainString]);
 
+	const GetCOSBackupStatus = useCallback(() => {
+		getCosBackupStatus()
+			.then((res: any) => {
+				const response = JSON.parse(res?.Body?.response?.content);
+				if (response?.ok) {
+					if (response?.response?.cosList[cosName].toLowerCase() === ENABLED.toLowerCase()) {
+						setEnableBackup(true);
+						setCosBackupStatus(true);
+					} else {
+						setEnableBackup(false);
+						setCosBackupStatus(false);
+					}
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [cosName, createSnackbar, t]);
+
+	useEffect(() => {
+		if (cosName) {
+			GetCOSBackupStatus();
+		}
+	}, [GetCOSBackupStatus, cosName]);
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
 			<Row mainAlignment="flex-start" width="100%">
@@ -638,6 +733,20 @@ const CosGeneralInformation: FC = () => {
 						background="gray6"
 						padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
 					>
+						<ListRow>
+							<Container
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+								padding={{ all: 'small' }}
+							>
+								<Switch
+									label={t('cos.enabled_backup', 'Enable Backup')}
+									value={enableBackup}
+									onClick={(): void => setEnableBackup(!enableBackup)}
+									iconColor="primary"
+								/>
+							</Container>
+						</ListRow>
 						<ListRow>
 							<Container padding={{ all: 'small' }}>
 								<Input
