@@ -32,6 +32,7 @@ import {
 	ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
 	ZIMBRA_MTA_MESSAGE_SIZE,
 	ZIMBRA_MTA_SMTPD_CLIENT_PORT_LOGGING,
+	ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
 	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 	ZIMBRA_MTA_SMTP_SASL_AUTH_ENABLE
 } from '../../../constants';
@@ -39,6 +40,7 @@ import { modifyConfig } from '../../../services/modify-config';
 import { useConfigStore } from '../../../store/config/store';
 import { Right, Rights, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
+import { isValidProxy } from '../../utility/utils';
 
 const MTAAdvanced: FC = () => {
 	const [t] = useTranslation();
@@ -49,6 +51,8 @@ const MTAAdvanced: FC = () => {
 
 	const [mtaAdvancedInitialDetail, setMtaAdvancedInitialDetail] = useState<MtaAdvanced>();
 	const [mtaAdvancedDetail, setMtaAdvancedDetail] = useState<MtaAdvanced>();
+
+	const [isErrorInSmtpdProxy, setIsErrorInSmtpdProxy] = useState<boolean>(false);
 
 	const setInitialValue = useCallback((key: string, value: unknown): void => {
 		setMtaAdvancedInitialDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -229,6 +233,18 @@ const MTAAdvanced: FC = () => {
 		}
 	}, [configInformation, setInitialAndCurrentValue]);
 
+	const setSMTPDProxySetting = useCallback(() => {
+		const zimbraMtaSmtpdSenderLoginMaps = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS
+		);
+		if (zimbraMtaSmtpdSenderLoginMaps && zimbraMtaSmtpdSenderLoginMaps?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
+				zimbraMtaSmtpdSenderLoginMaps?._content
+			);
+		}
+	}, [configInformation, setInitialAndCurrentValue]);
+
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			setAdavanceLogAndThread();
@@ -267,8 +283,9 @@ const MTAAdvanced: FC = () => {
 					zimbraMtaSmtpSaslAuthEnable[0]?._content === 'yes'
 				);
 			}
+			setSMTPDProxySetting();
 		}
-	}, [configInformation, setInitialAndCurrentValue, setAdavanceLogAndThread]);
+	}, [configInformation, setInitialAndCurrentValue, setAdavanceLogAndThread, setSMTPDProxySetting]);
 
 	useEffect(() => {
 		if (mtaAdvancedDetail && !isEqual(mtaAdvancedDetail, mtaAdvancedInitialDetail)) {
@@ -325,7 +342,7 @@ const MTAAdvanced: FC = () => {
 	const modifyConfigRequest = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
 			modifyConfig(attributes)
-				.then((data) => {
+				.then(() => {
 					createSnackbar({
 						key: 'success',
 						type: 'success',
@@ -418,8 +435,55 @@ const MTAAdvanced: FC = () => {
 			_content: mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable ? 'yes' : 'no'
 		});
 
+		attributes.push({
+			n: ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
+			_content: mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps
+				? mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps
+				: ''
+		});
+		if (isErrorInSmtpdProxy) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t('mta.smtpd_not_valid_error', 'Smtpd sender login maps is not valid'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			return;
+		}
 		modifyConfigRequest(attributes);
-	}, [mtaAdvancedDetail, modifyConfigRequest]);
+	}, [
+		mtaAdvancedDetail?.zimbraMtaSmtpdClientPortLogging,
+		mtaAdvancedDetail?.zimbraAmavisLogLevel,
+		mtaAdvancedDetail?.zimbraAmavisSALogLevel,
+		mtaAdvancedDetail?.zimbraMtaSmtpdTlsLoglevel,
+		mtaAdvancedDetail?.zimbraMtaLmtpTlsLoglevel,
+		mtaAdvancedDetail?.zimbraClamAVMaxThreads,
+		mtaAdvancedDetail?.zimbraLmtpNumThreads,
+		mtaAdvancedDetail?.zimbraMilterNumThreads,
+		mtaAdvancedDetail?.zimbraMtaMaxMessageSize,
+		mtaAdvancedDetail?.zimbraMilterMaxConnections,
+		mtaAdvancedDetail?.zimbraMtaSmtpSaslAuthEnable,
+		mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps,
+		isErrorInSmtpdProxy,
+		modifyConfigRequest,
+		createSnackbar,
+		t
+	]);
+
+	const onSenderLoginMapsChange = useCallback(
+		(e) => {
+			const { value } = e.target;
+			if (!isValidProxy(value)) {
+				setIsErrorInSmtpdProxy(true);
+			} else {
+				setIsErrorInSmtpdProxy(false);
+			}
+			setValue(ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS, value);
+		},
+		[setValue]
+	);
 
 	return (
 		<Container background="gray6" mainAlignment="flex-start">
@@ -678,6 +742,17 @@ const MTAAdvanced: FC = () => {
 							disabled={!allowSetMTA}
 						/>
 					</Container>
+				</Container>
+
+				<Container crossAlignment="flex-start" padding={{ bottom: 'large' }}>
+					<Input
+						label={t('mta.smtpd_sender_login_maps', 'Smtpd sender login maps')}
+						backgroundColor="gray5"
+						value={mtaAdvancedDetail?.zimbraMtaSmtpdSenderLoginMaps}
+						onChange={onSenderLoginMapsChange}
+						disabled={!allowSetMTA}
+						hasError={isErrorInSmtpdProxy}
+					/>
 				</Container>
 
 				<Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">

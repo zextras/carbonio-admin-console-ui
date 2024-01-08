@@ -2210,3 +2210,8 @@ export const IsValidFQDN = (value: string): boolean => {
 	const fqdnRegex = /^(?!:\/\/)(?=.{1,255}$)([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}$/;
 	return fqdnRegex.test(value);
 };
+
+export const isValidProxy = (value: string): boolean => {
+	const validProxyRegex = /^(inline|pcre|proxy|regexp):[^\s/$.?#].[^\s]*$/;
+	return validProxyRegex.test(value);
+};
