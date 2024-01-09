@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import { Server } from '../../../types';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import { useServerStore } from '../../store/server/store';
+import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import ListRow from '../list/list-row';
@@ -31,7 +31,7 @@ const DashboardServerList: FC<{
 	goToMailStoreServerList: () => void;
 }> = ({ goToMailStoreServerList }) => {
 	const [t] = useTranslation();
-	const serverList = useServerStore((state) => state.serverList || []);
+	const mailstoresList = useMailstoreListStore((state) => state.allMailstoreList || []);
 	const [serverListRow, setServerListRow] = useState<Array<any>>([]);
 	const [serverVersion, setServerVersion] = useState<any>({});
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -47,8 +47,8 @@ const DashboardServerList: FC<{
 	}, [getVersionInformation]);
 
 	useEffect(() => {
-		if (serverList.length > 0) {
-			const allRows = serverList.map((item: Server) => ({
+		if (mailstoresList.length > 0) {
+			const allRows = mailstoresList.map((item: Server) => ({
 				id: item?.id,
 				columns: [
 					<Text
@@ -107,7 +107,7 @@ const DashboardServerList: FC<{
 		} else {
 			setServerListRow([]);
 		}
-	}, [serverList, serverVersion, isAdvanced]);
+	}, [mailstoresList, serverVersion, isAdvanced]);
 
 	const headers: any[] = useMemo(
 		() => [
