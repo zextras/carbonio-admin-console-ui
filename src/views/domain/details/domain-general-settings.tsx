@@ -42,6 +42,7 @@ import {
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
+import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { useDomainStore } from '../../../store/domain/store';
@@ -576,6 +577,7 @@ const DomainGeneralSettings: FC = () => {
 			body.a = attributes;
 			modifyDomain(body)
 				.then((data) => {
+					flushCache('domain', 'id', domainData.zimbraId);
 					createSnackbar({
 						key: 'success',
 						type: 'success',
