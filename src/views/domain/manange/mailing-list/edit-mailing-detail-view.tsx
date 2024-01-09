@@ -90,6 +90,10 @@ const EditMailingListView: FC<any> = ({
 	setShowMailingListDetailView
 }) => {
 	const [t] = useTranslation();
+	const searchUserLabelValue = t(
+		'label.search_for_user_and_clic_to_add',
+		'Search for a user and click on the ADD button.'
+	);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [memberOffset, setMemberOffset] = useState<number>(0);
 	const [ownerOffset, setOwnerOffset] = useState<number>(0);
@@ -2292,10 +2296,7 @@ const EditMailingListView: FC<any> = ({
 									</Row>
 									<Row mainAlignment="center" width="100%">
 										<Text size="large" color="secondary" weight="regular">
-											{t(
-												'label.search_for_user_and_clic_to_add1',
-												'Search for a user and click on the ADD button'
-											)}
+											{searchUserLabelValue}
 										</Text>
 									</Row>
 								</Padding>
@@ -2440,10 +2441,7 @@ const EditMailingListView: FC<any> = ({
 									</Row>
 									<Row mainAlignment="center" width="100%">
 										<Text size="large" color="secondary" weight="regular">
-											{t(
-												'label.search_for_user_and_clic_to_add',
-												'Search for a user and click on the ADD button.'
-											)}
+											{searchUserLabelValue}
 										</Text>
 									</Row>
 								</Padding>
@@ -2580,10 +2578,7 @@ const EditMailingListView: FC<any> = ({
 									</Row>
 									<Row mainAlignment="center" width="100%">
 										<Text size="large" color="secondary" weight="regular">
-											{t(
-												'label.search_for_user_and_clic_to_add',
-												'Search for a user and click on the ADD button.'
-											)}
+											{searchUserLabelValue}
 										</Text>
 									</Row>
 								</Padding>
