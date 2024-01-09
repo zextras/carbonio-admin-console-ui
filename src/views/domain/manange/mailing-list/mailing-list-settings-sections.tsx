@@ -14,7 +14,8 @@ import {
 	Table,
 	Button,
 	Padding,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Divider
 } from '@zextras/carbonio-design-system';
 import { debounce, sortedUniq, uniq } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -454,8 +455,7 @@ const MailingListSettingsSection: FC<any> = () => {
 						/>
 					</Container>
 				</ListRow>
-				{/* TODO: (AC-739) uncomment once feature avaiable in IRIS */
-				/* <Row padding={{ top: 'large' }}>
+				<Row padding={{ top: 'large' }}>
 					<Text size="small" weight="bold">
 						{t('label.owners_settings_lbl', 'Owners’ Settings')}
 					</Text>
@@ -469,13 +469,13 @@ const MailingListSettingsSection: FC<any> = () => {
 					</Text>
 				</Row>
 
-					<ListRow>
+				<ListRow>
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"
 						orientation="horizontal"
 						padding={{ top: 'medium', right: 'small' }}
-						width="65%"
+						width="70%"
 					>
 						<DropDownInput
 							width="100%"
@@ -500,8 +500,6 @@ const MailingListSettingsSection: FC<any> = () => {
 							type="outlined"
 							label={t('label.add', 'Add')}
 							color="primary"
-							icon="PlusOutline"
-							iconPlacement="right"
 							size="large"
 							onClick={onAdd}
 							disabled={member === ''}
@@ -518,8 +516,6 @@ const MailingListSettingsSection: FC<any> = () => {
 							type="outlined"
 							label={t('label.delete', 'Delete')}
 							color="error"
-							icon="Trash2Outline"
-							iconPlacement="right"
 							size="large"
 							onClick={onDeleteFromList}
 							disabled={selectedDistributionListOwner && selectedDistributionListOwner.length === 0}
@@ -575,7 +571,6 @@ const MailingListSettingsSection: FC<any> = () => {
 						<Divider />
 					</Container>
 				</ListRow>
-			*/}
 				<ListRow>
 					<Container padding={{ top: 'large' }}>
 						<Select
