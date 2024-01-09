@@ -333,6 +333,7 @@ const CosGeneralInformation: FC = () => {
 					.then((res) => {
 						const response = JSON.parse(res?.Body?.response?.content);
 						if (response?.ok) {
+							setCosBackupStatus(!cosBackupStatus);
 							createSnackbar({
 								key: 'success',
 								type: 'success',
