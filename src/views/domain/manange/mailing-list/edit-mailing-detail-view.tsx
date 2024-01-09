@@ -2293,8 +2293,8 @@ const EditMailingListView: FC<any> = ({
 									<Row mainAlignment="center" width="100%">
 										<Text size="large" color="secondary" weight="regular">
 											{t(
-												'label.search_for_user_and_clic_to_add',
-												'Search for a user and click on the ADD button.'
+												'label.search_for_user_and_clic_to_add1',
+												'Search for a user and click on the ADD button'
 											)}
 										</Text>
 									</Row>
@@ -2313,8 +2313,6 @@ const EditMailingListView: FC<any> = ({
 							</Container>
 						)}
 					</ListRow>
-					{/* TODO: (AC-739) uncomment once feature avaiable in IRIS */
-					/*
 					<Row padding={{ bottom: 'medium' }}>
 						<Text weight="bold" color="gray0">
 							{t('label.owners_settings_lbl', 'Owners’ Settings')}
@@ -2468,7 +2466,6 @@ const EditMailingListView: FC<any> = ({
 							<Divider />
 						</Container>
 					</Row>
-				*/}
 					<ListRow padding={{ all: 'small' }}>
 						<Container>
 							<Select
