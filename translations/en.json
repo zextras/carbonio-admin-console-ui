@@ -1260,6 +1260,7 @@
         "group_by": "Group by",
         "groups": "Groups",
         "handle_accounts": "Handled Accounts (-1 if unlimited)",
+        "has_backup": "Has Backup",
         "helo": "Help",
         "help": "Help",
         "helpdesk": "Helpdesk",
