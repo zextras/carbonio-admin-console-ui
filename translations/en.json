@@ -1397,6 +1397,7 @@
         "max_email_quota_you_can_manage_is": "The max email quota you can manage is…",
         "max_mainbox_quota_for_the_domain_in_bytes": "Max mailbox quota for the domain (bytes) (0=unlimited)",
         "max_mainbox_quota_for_the_mails": "Max mailbox quota for the Mails (bytes)",
+        "max_mainbox_quota_for_the_mails_in_gb": "Max mailbox quota for the Mails (GB)",
         "max_manageable_account_for_the_domain": "Max manageable account for the domain (0=unlimited)",
         "max_quota_allowed": "Max Quota Allowed",
         "maximum_conflict": "Maximum Conflict",

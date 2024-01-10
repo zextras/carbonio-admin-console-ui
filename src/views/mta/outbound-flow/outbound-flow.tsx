@@ -257,7 +257,7 @@ const MTAOutBoundFlow: FC = () => {
 				setInitialAndCurrentValue(ZIMBRA_MTA_MY_NETWORKS, zimbraMtaMyNetworks?._content);
 			}
 			const value = zimbraMtaMyNetworks?._content?.trim()
-				? map(split(zimbraMtaMyNetworks?._content, /, ?/), (ip) => ({
+				? map(split(zimbraMtaMyNetworks?._content, /  ?/), (ip) => ({
 						label: trim(ip)
 				  }))
 				: [];
@@ -269,7 +269,8 @@ const MTAOutBoundFlow: FC = () => {
 		if (
 			mtaOutboundDetail &&
 			!isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail) &&
-			!some(networkValue || [], { error: true })
+			!some(networkValue || [], { error: true }) &&
+			mtaOutboundDetail?.zimbraMtaMyNetworks !== mtaOutboundFlowInitialDetail?.zimbraMtaMyNetworks
 		) {
 			setIsDirty(true);
 		} else {
@@ -402,8 +403,11 @@ const MTAOutBoundFlow: FC = () => {
 				? mtaOutboundFlowInitialDetail?.zimbraMtaMyOrigin
 				: ''
 		);
-		const value = mtaOutboundFlowInitialDetail?.zimbraMtaMyNetworks?.trim()
-			? map(split(mtaOutboundFlowInitialDetail?.zimbraMtaMyNetworks, /, ?/), (ip) => ({
+		const zimbraMtaMyNetworks = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
+		);
+		const value = zimbraMtaMyNetworks?._content?.trim()
+			? map(split(zimbraMtaMyNetworks?._content, /  ?/), (ip) => ({
 					label: trim(ip)
 			  }))
 			: [];
@@ -411,7 +415,7 @@ const MTAOutBoundFlow: FC = () => {
 		setTimeout(() => {
 			setIsDirty(false);
 		}, 10);
-	}, [mtaOutboundFlowInitialDetail, setValue]);
+	}, [configInformation, mtaOutboundFlowInitialDetail, setValue]);
 
 	const instanceTableHeader = useMemo(
 		() => [
@@ -476,7 +480,7 @@ const MTAOutBoundFlow: FC = () => {
 			map(ips, (ip: IpRangeValue) => {
 				validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });
 			});
-			const value = data.length === 0 ? '' : join(map(data, 'label'), ', ');
+			const value = data.length === 0 ? '' : join(map(data, 'label'), '  ');
 			const isErrorValueAvail = some(data || [], { error: true });
 			if (allowSetMTA && !isErrorValueAvail) {
 				setValue(ZIMBRA_MTA_MY_NETWORKS, value);
