@@ -2212,6 +2212,16 @@ export const IsValidFQDN = (value: string): boolean => {
 	return fqdnRegex.test(value);
 };
 
+export const isSpaceAvailableInString = (value: string): boolean => {
+	const spaceRegex = /^\S*$/;
+	return !spaceRegex.test(value);
+};
+
+export const isValidHostname = (hostname: string): boolean => {
+	const hostnameRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)(\.[A-Za-z0-9-]{1,63})*(?<!-)$/;
+	return hostnameRegex.test(hostname);
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);
 
