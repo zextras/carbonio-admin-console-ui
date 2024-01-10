@@ -60,6 +60,7 @@ const CreateAccountDetailSection: FC = () => {
 	);
 	const changeAccName = useCallback(
 		(e) => {
+			setShowAutoFillAlert(false);
 			setAccountDetail((prev: any) => ({ ...prev, changeNameBool: true }));
 			setAccountDetail((prev: any) => ({
 				...prev,
@@ -191,7 +192,7 @@ const CreateAccountDetailSection: FC = () => {
 					<Row width="48%" mainAlignment="flex-start">
 						<Input
 							backgroundColor="gray5"
-							label={t('label.userName_auto_fill', 'username (Auto-fill)')}
+							label={t('label.user_auto_fill', 'user (Auto-fill)')}
 							value={accountDetail?.name}
 							onChange={changeAccName}
 							inputName="name"
@@ -199,10 +200,7 @@ const CreateAccountDetailSection: FC = () => {
 						/>
 						{(accountDetail?.displayName || combineDisplayName) && showAutoFillAlert && (
 							<Text color="error" size="small">
-								{t(
-									'accountDetails.auto_fill_username_is_disabled',
-									'Auto fill username is disabled'
-								)}
+								{t('accountDetails.auto_fill_user_is_disabled', 'Auto fill user is disabled')}
 							</Text>
 						)}
 					</Row>

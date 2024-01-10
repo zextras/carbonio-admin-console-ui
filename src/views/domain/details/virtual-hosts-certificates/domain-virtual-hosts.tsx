@@ -41,6 +41,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import ModalOverlay from '../../../components/ModalOverlay';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+import { IsValidFQDN } from '../../../utility/utils';
 
 const DomainVirtualHosts: FC = () => {
 	const [t] = useTranslation();
@@ -64,6 +65,7 @@ const DomainVirtualHosts: FC = () => {
 	const [alertToggle, setAlertToggle] = useState(false);
 	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
 	const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
+	const [errVirtualHostName, setErrVirtualHostName] = useState(true);
 
 	const closeHandler = (): void => {
 		setOpen(false);
@@ -125,7 +127,7 @@ const DomainVirtualHosts: FC = () => {
 	);
 
 	const addVirtualHost = useCallback((): void => {
-		if (virtualHostValue) {
+		if (virtualHostValue && IsValidFQDN(virtualHostValue)) {
 			const lastId = items.length > 0 ? items[items.length - 1]?.id : '0';
 			const newId = parseInt(lastId, 10) + 1;
 			const item = {
@@ -438,13 +440,28 @@ const DomainVirtualHosts: FC = () => {
 										value={virtualHostValue}
 										onChange={(e: any): any => {
 											setVirutalHostValue(e.target.value);
-											if (e.target.value) {
+											if (e.target.value && IsValidFQDN(e.target.value)) {
 												setAddButtonDisabled(false);
+												setErrVirtualHostName(true);
 											} else {
 												setAddButtonDisabled(true);
+												setErrVirtualHostName(false);
 											}
 										}}
+										hasError={!errVirtualHostName}
 									/>
+									{!errVirtualHostName && (
+										<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+											<Padding top="extrasmall">
+												<Text color="error" overflow="break-word" size="extrasmall">
+													{t(
+														'domain.virtual_host_name_error',
+														'Please enter valid virtual host name!'
+													)}
+												</Text>
+											</Padding>
+										</Container>
+									)}
 								</Container>
 
 								<Container width="10%">

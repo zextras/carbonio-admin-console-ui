@@ -205,6 +205,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 		[t]
 	);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getQuotaUsageInformation = useCallback(() => {
 		setIsRequestInProgress(true);
 		setUsageQuota([]);
@@ -231,7 +232,14 @@ const DomainMailboxQuotaSetting: FC = () => {
 									</Text>
 									<Text
 										weight="light"
-										color={Number(item?.quotaUsedPercentage) > 100 ? 'error' : 'gray0'}
+										color={
+											// eslint-disable-next-line no-nested-ternary
+											Number(item?.quotaUsedPercentage) > 90
+												? 'error'
+												: Number(item?.quotaUsedPercentage) > 70
+												? 'warning'
+												: 'gray0'
+										}
 									>
 										{`${item?.quotaUsedPercentage}%`}
 									</Text>
