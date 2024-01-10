@@ -10,11 +10,6 @@ import {
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 
-declare global {
-	interface Window {
-		csrfToken: string;
-	}
-}
 export const getCosBackupStatus = async (): Promise<any> =>
 	postSoapFetchRequest(`/service/admin/soap/zextras`, {
 		zextras: {
