@@ -61,56 +61,6 @@ const DomainTheme: FC = () => {
 	const [zimbraId, setZimbraId] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	// const setValue = useCallback(
-	// 	(key: string, value: any, forDomain: boolean): void => {
-	// 		setIntialThemeConfig((prev: any) => ({ ...prev, [key]: value }));
-	// 		if (forDomain) {
-	// 			setDomainTheme((prev: any) => ({ ...prev, [key]: value }));
-	// 		} else {
-	// 			setGlobalTheme((prev: any) => ({ ...prev, [key]: value }));
-	// 		}
-	// 	},
-	// 	[setDomainTheme, setGlobalTheme]
-	// );
-
-	// const setInitalValues = useCallback(
-	// 	(obj: any, forDomain: boolean): void => {
-	// 		if (obj) {
-	// 			setValue('carbonioWebUiDarkMode', obj?.carbonioWebUiDarkMode, forDomain);
-	// 			setValue('carbonioWebUiLoginLogo', obj?.carbonioWebUiLoginLogo, forDomain);
-	// 			setValue('carbonioWebUiDarkLoginLogo', obj?.carbonioWebUiDarkLoginLogo, forDomain);
-	// 			setValue('carbonioWebUiLoginBackground', obj?.carbonioWebUiLoginBackground, forDomain);
-	// 			setValue(
-	// 				'carbonioWebUiDarkLoginBackground',
-	// 				obj?.carbonioWebUiDarkLoginBackground,
-	// 				forDomain
-	// 			);
-	// 			setValue('carbonioWebUiAppLogo', obj?.carbonioWebUiAppLogo, forDomain);
-	// 			setValue('carbonioWebUiDarkAppLogo', obj?.carbonioWebUiDarkAppLogo, forDomain);
-	// 			setValue('carbonioWebUiFavicon', obj?.carbonioWebUiFavicon, forDomain);
-	// 			setValue('carbonioWebUiTitle', obj?.carbonioWebUiTitle, forDomain);
-	// 			setValue('carbonioWebUiDescription', obj?.carbonioWebUiDescription, forDomain);
-	// 			setValue('carbonioAdminUiLoginLogo', obj?.carbonioAdminUiLoginLogo, forDomain);
-	// 			setValue('carbonioAdminUiDarkLoginLogo', obj?.carbonioAdminUiDarkLoginLogo, forDomain);
-	// 			setValue('carbonioAdminUiAppLogo', obj?.carbonioAdminUiAppLogo, forDomain);
-	// 			setValue('carbonioAdminUiDarkAppLogo', obj?.carbonioAdminUiDarkAppLogo, forDomain);
-	// 			setValue('carbonioAdminUiBackground', obj?.carbonioAdminUiBackground, forDomain);
-	// 			setValue('carbonioAdminUiDarkBackground', obj?.carbonioAdminUiDarkBackground, forDomain);
-	// 			setValue('carbonioAdminUiFavicon', obj?.carbonioAdminUiFavicon, forDomain);
-	// 			setValue('carbonioAdminUiTitle', obj?.carbonioAdminUiTitle, forDomain);
-	// 			setValue('carbonioAdminUiDescription', obj?.carbonioAdminUiDescription, forDomain);
-	// 			setValue('carbonioLogoUrl', obj?.carbonioLogoUrl, forDomain);
-	// 			setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor, forDomain);
-	// 			setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor, forDomain);
-	// 			setValue('carbonioWebUILoginURL', obj?.carbonioWebUILoginURL, forDomain);
-	// 			setValue('carbonioWebUILogoutURL', obj?.carbonioWebUILogoutURL, forDomain);
-	// 			setValue('carbonioAdminUILoginURL', obj?.carbonioAdminUILoginURL, forDomain);
-	// 			setValue('carbonioAdminUILogoutURL', obj?.carbonioAdminUILogoutURL, forDomain);
-	// 		}
-	// 	},
-	// 	[setValue]
-	// );
-
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
