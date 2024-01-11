@@ -180,7 +180,7 @@
         "owners": "Chủ sở hữu",
         "deleteing": "Đang xoá. ",
         "enable_toaster_notification_for_new_calendar_events": "cho phép thông báo nổi đối với sự kiện lịch mới",
-        "search_dot": "Tìm…",
+        "search_dot": "Tìm kiếm…",
         "allocation": "Phân bổ",
         "button_delete": "XOÁ",
         "calendar": "Lịch",
@@ -224,7 +224,7 @@
         "volume_cancel_button": "HUỶ",
         "volume_compression_thresold": "Ngưỡng nén",
         "volume_id": "ID tập",
-        "volume_name": "Tên Tập",
+        "volume_name": "Tên tập",
         "volume_path": "Đường dẫn",
         "volume_type": "Kiểu tập",
         "week_day": {
@@ -385,7 +385,6 @@
         "delete_bucket_sucess": "{{name}} đã bị xoá",
         "delete_content": "Bạn đang xoá {{name}}. Bạn chắc chắn muốn xoá nó?",
         "deleting_resource_name": "Bạn đang xoá {{name}}",
-        "displayed_name": "Tên hiển thị",
         "dl_delete_successfull": "{{name}} đã được xoá thành công",
         "empty_table": "Bảng trống",
         "ex": "ex.",
@@ -646,7 +645,8 @@
         "general_options": "Tùy chọn chung",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "queued": "Đã xếp hàng",
         "stop_operation_helperText": "{{message}}",
@@ -699,7 +699,23 @@
         "stats": "Số liệu thống kê",
         "person_name": "Tên",
         "advance_edit_userName": "Tên người dùng",
-        "search_for_an_account": "Tìm kiếm một tài khoản"
+        "search_for_an_account": "Tìm kiếm một tài khoản",
+        "discard": "Bỏ qua",
+        "from": "Từ",
+        "messages": "Tin nhắn",
+        "show_all": "Hiện tất cả",
+        "Cos_name": "Tên COS",
+        "attachement_unknown": "Không biết <{{mimeType}}>",
+        "attachment_0": "đính kèm",
+        "invalid_destination": "Chỗ này không phải là đích hợp lệ",
+        "login": "Đăng nhập",
+        "save_to_files": "Lưu vào tệp",
+        "select_folder": "Chọn thư mục",
+        "show_quoted_text": "Hiện văn bản được trích dẫn",
+        "subject": "Chủ đề",
+        "to": "Tới",
+        "view_images": "XEM ẢNH",
+        "advance_edit_user": "Người dùng"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -827,7 +843,7 @@
         "america_caracas": "{{value}} Caracas",
         "america_cayenne": "{{value}} Cayenne, Fortaleza",
         "america_chicago": "{{value}} US/Canada Central",
-        "africa_algiers": "{{value}} West Central Africa",
+        "africa_algiers": "{{value}} Tây Trung Phi",
         "africa_cairo": "{{value}} Ai Cập",
         "africa_casablanca": "{{value}} Casablanca",
         "africa_harare": "{{value}} Harare, Pretoria",
@@ -980,8 +996,13 @@
         "snackbar": {
             "share": {
                 "accepted": "Bạn đã chấp nhận yêu cầu chia sẻ"
-            }
-        }
+            },
+            "all_att_saved": "Lưu đính kèm vào thư mục đã chọn thành công",
+            "att_err": "Có vẻ như có lỗi trong quá trình lưu, vui lòng thử lại lần nữa",
+            "att_saved": "Đã lưu đính kèm trong thư mục đã chọn",
+            "some_att_fails": "Có vẻ có vấn đề khi lưu giữ một số tệp, vui lòng thử lại lần nữa"
+        },
+        "external_images_blocked": "Ảnh bên ngaoif sẽ bị khoá để bảo vệ bạn chống spam"
     },
     "backup": {
         "backup_path": "Đường dẫn sao lưu",
@@ -1239,7 +1260,7 @@
         "spanish": "Tây Ban Nha",
         "thai": "Thái",
         "turkish": "Thổ Nhĩ Kỳ",
-        "vietnamese": "Việt Nam",
+        "vietnamese": "Tiếng Việt",
         "polish": "Tiếng Ba Lan"
     },
     "account_details": {
@@ -1537,5 +1558,18 @@
         "queued": "Đã xếp hàng",
         "stats": "Số liệu thống kê",
         "status": "Trạng thái"
+    },
+    "action": {
+        "click_preview": "Bấm vào để xem trước"
+    },
+    "messages": {
+        "no_content": "Thư này không có nội dung",
+        "snackbar": {
+            "marked_as_spam": "Bạn đã đánh dấu thư này là Spam(thư rác)"
+        }
+    },
+    "quarantine": {
+        "delete_message": "Xoá tin nhắn",
+        "message_deleted": "Đã xoá thư"
     }
 }

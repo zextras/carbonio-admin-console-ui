@@ -44,10 +44,10 @@
         "america_port-au-prince": "{{value}} Porto Príncipe",
         "america_punta_arenas": "{{value}} Punta Arenas",
         "america_regina": "{{value}} Saskatchewan",
-        "america_santiago": "{{value}} Pacífico de América do Sul",
+        "america_santiago": "{{value}} Pacífico América do Sul",
         "america_sao_paulo": "{{value}} Brasília",
         "america_st_johns": "{{value}} Terra Nova",
-        "america_tijuana": "{{value}} Baixa Califórnia",
+        "america_tijuana": "{{value}} Baja Califórnia",
         "america_whitehorse": "{{value}} Yukon",
         "asia_almaty": "{{value}} Nur-Sultã",
         "asia_amman": "{{value}} Jordânia",
@@ -359,7 +359,7 @@
         "hours": "Horas",
         "mb": "MB",
         "minutes": "Minutos",
-        "name": "Nome",
+        "name": "Name",
         "not_set": "Não ativado",
         "note": "Nota",
         "notification": "Notificação",
@@ -658,7 +658,6 @@
         "enter_email_address": "Insira o endereço de email",
         "edit_signature": "<bold>Editar assinatura</bold>",
         "dynamic": "Dinâmico",
-        "displayed_name": "Nome exibido",
         "delete_content": "Você está excluindo {{name}}. Tem certeza que deseja excluí-lo?",
         "create_resource_msg": "Você pode criar um novo Recurso clicando no botão <bold>Criar</bold> (canto superior esquerdo) ou no botão Adicionar (<bold>+</bold>) aqui em cima",
         "create_account_list_msg": "Você pode criar uma conta clicando no botão <bold>Criar</bold> (canto superior esquerdo) ou no botão Adicionar (<bold>+</bold>) aqui em cima",
@@ -1043,7 +1042,8 @@
         "general_options": "Opções gerais",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "queued": "Em fila",
         "running": "Executando",
@@ -1146,7 +1146,7 @@
         "dont_save_a_copy_of_sent_messages": "Não salvar cópia das mensagens enviadas",
         "value": "Valor",
         "distribution_list": "Lista de distribuição",
-        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salvar uma cópia das mensagens enviadas na pasta de Enviados do delegado",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salvar uma cópia das mensagens na pasta Enviadas do delegado",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas e na do delegado",
         "accounts_groups": "Contas/grupos",
@@ -1288,7 +1288,6 @@
         "admin_logout_redirect_url": "No logout, redirigir o Administrador para (URL)",
         "administration": "Administração",
         "administration_rights": "Direitos de administração",
-        "advanced_edit": "Edição avançada",
         "apply_to_all": "Aplicar a todos os serviços",
         "authentication_settings": "Configurações de autenticação",
         "cant_send_receiver": "Não pode enviar nem receber",
@@ -1385,7 +1384,7 @@
         "valid_not_before": "Válido a partir de (não antes)",
         "what_to_trust": "Em que confiar?",
         "stats": "Estatísticas",
-        "person_name": "Nome",
+        "person_name": "Name",
         "can_access_settings": "Pode acessar as configurações",
         "init_domain": "INIT DOMAIN",
         "items_per_page": "itens por página",
@@ -1399,14 +1398,38 @@
         "storage_hsm_not_licensed": "Não é possível concluir a operação: storages_hsm não licenciado.",
         "search_for_an_account": "Buscar conta",
         "advance_edit_userName": "Nome de usuário",
-        "received": "Recebida"
+        "received": "Recebida",
+        "attachement_unknown": "Desconhecido <{{mimeType}}>",
+        "attachment_0": "",
+        "attachment_1": "",
+        "attachment_2": "Anexos",
+        "from": "De",
+        "invalid_destination": "Este elemento não é um destino válido",
+        "login": "Login",
+        "save_to_files": "Salvar no Files",
+        "select_folder": "Selecionar pasta",
+        "show_all": "Mostrar tudo",
+        "show_quoted_text": "Mostrar texto citado",
+        "subject": "Assunto",
+        "to": "Para",
+        "view_images": "Ver imágens",
+        "Cos_name": "Nome da COS",
+        "attachments_disclaimer": "Você está visualizando uma mensagem anexada. Sua autenticidade não pode ser verificada.",
+        "discard": "Descartar",
+        "messages": "Mensagens",
+        "advance_edit_user": "Usuários"
     },
     "message": {
         "snackbar": {
             "share": {
                 "accepted": "Você aceitou este pedido de compartilhamento"
-            }
-        }
+            },
+            "all_att_saved": "Anexos salvos com sucesso na pasta selecionada",
+            "att_err": "Parece haver um problema ao salvar. Tente novamente",
+            "att_saved": "Anexo salvo na pasta selecionada",
+            "some_att_fails": "Parece haver um problema ao salvar alguns arquivos. Tente novamente"
+        },
+        "external_images_blocked": "As imagens externas foram bloqueadas para proteger você ante eventual spam"
     },
     "commons": {
         "confirm_connection": "CONFIRMAR CONEXÃO",
@@ -1941,7 +1964,7 @@
             "object_storage": "Armazenamento de objetos"
         },
         "volume_config_header": {
-            "name": "Nome",
+            "name": "Name",
             "hsm_scheduled": "HSM programado",
             "indexer": "Indexador",
             "status": "Estado"
@@ -1950,14 +1973,14 @@
             "compression": "Compressão",
             "current": "Atual",
             "id": "ID",
-            "name": "Nome",
+            "name": "Name",
             "path": "Caminho",
             "storageType": "Tipo de Storage"
         },
         "volume_indexer_header": {
             "current": "Atual",
             "id": "ID",
-            "name": "Nome",
+            "name": "Name",
             "path": "Caminho"
         },
         "volume_type": {
@@ -1999,7 +2022,7 @@
         "message": "Mensagem",
         "minimum_space_threshold": "Limiar de espaço mínimo",
         "months": "Meses",
-        "name": "Nome",
+        "name": "Name",
         "new_policy_summary": "Resumo da Nova Política",
         "no": "Não",
         "option": "Opção",
@@ -2163,7 +2186,7 @@
         "hours": "Horas",
         "medium": "Médio",
         "minutes": "Minutos",
-        "none": "None",
+        "none": "Nenhum",
         "remove": "Remover",
         "seconds": "Segundos",
         "server_name": "Nome do servidor",
@@ -2319,5 +2342,19 @@
     },
     "error": {
         "one_or_more_ip_invalid": "Um ou mais IPs são inválidos"
+    },
+    "quarantine": {
+        "delete_message": "Apagar mensagem",
+        "message_deleted": "Mensagem excluída"
+    },
+    "action": {
+        "click_open": "Clique para abrir",
+        "click_preview": "Clique para pré-visualizar"
+    },
+    "messages": {
+        "no_content": "Essa mensagem não possui conteúdo de texto",
+        "snackbar": {
+            "marked_as_spam": "Você marcou este e-mail como Spam"
+        }
     }
 }

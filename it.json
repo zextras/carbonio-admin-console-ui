@@ -199,7 +199,8 @@
         "domain_list": "Lista Domini",
         "certificate_removed": "Il certificato è stato rimosso",
         "administration_rights": "Diritti di amministrazione",
-        "certificate_content_error_without_ca_chain": "Certificato di Dominio, chiave privata non valida"
+        "certificate_content_error_without_ca_chain": "Certificato di Dominio, chiave privata non valida",
+        "virtual_host_name_error": "Inserisci un nome virtual host valido!"
     },
     "label": {
         "account": "Account",
@@ -491,7 +492,6 @@
         "name_of_signature": "Nome della Firma",
         "fall_back_to_local_msg": "Ripiega su gestione locale della password in caso di errore",
         "dynamic": "Dinamico",
-        "displayed_name": "Nome Visualizzato",
         "delete_content": "Stai eliminando {{name}}. Vuoi continuare?",
         "create_resource_msg": "Puoi creare una nuova risorsa cliccando sul pulsante <bold>Crea</bold> (angolo in alto a sinistra) o sul pulsante Aggiungi (<bold>+</bold>) qui in alto",
         "create_account_list_msg": "Puoi creare un nuovo Account cliccando sul pulsante <bold>Crea</bold> (angolo in alto a sinistra) o sul pulsante Aggiungi (<bold>+</bold>) qui in alto",
@@ -559,7 +559,7 @@
         "mailing_options": "Opzioni Mail",
         "message": "Messaggio",
         "mta": "MTA",
-        "never": "Mai",
+        "never": "mai",
         "new_volume_create": "CREA",
         "next": "SUCCESSIVO",
         "path": "Percorso",
@@ -784,7 +784,7 @@
         "email_address": "Indirizzo email",
         "enabled": "Abilitato",
         "global": "Globale",
-        "last_seen": "Visto l’ultima volta",
+        "last_seen": "Ultimo accesso",
         "mailstores": "Mailstore",
         "mobile_password": "Mobile Password",
         "reset": "Reimposta",
@@ -813,7 +813,7 @@
         "admin_panel_title": "PANNELLO AMMINISTRATIVO",
         "apperance": "Aspetto",
         "background": "Sfondo",
-        "background_description": "Copia l'URL dell'immagine da utilizzare nella pagina di login. Utilizza un file JPG, dimensione 2560x1440 pixel, max. 800 KB.",
+        "background_description": "Copia l'URL dell'immagine da utilizzare nella pagina di login. Utilizza un file JPG o PNF, con una risoluzione 1280x1080 pixel e proporzione 16:9.",
         "background_for_the_login_page": "Sfondo per la pagina di login",
         "background_login_page": "Sfondo pagina di login",
         "blocked": "Bloccato",
@@ -834,7 +834,7 @@
         "failed": "Fallito",
         "false": "Falso",
         "favicon": "Favicon",
-        "favicon_description": "Incolla l'URL della favicon da utilizzare nella pagina di login. Utilizza un file ICO, dimensione 16x16 pixel.",
+        "favicon_description": "Incolla l'URL della favicon da utilizzare nella pagina di login. Utilizza un file ICO, dimensione 32x32 pixel.",
         "filter_by_device_type_account": "Filtra per tipo di dispositivo, account, stato",
         "ip": "IP",
         "light_mode": "Tema <bold>Chiaro</bold>",
@@ -914,7 +914,8 @@
         "general_options": "Opzioni generali",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "use_intelligent_tiering": "Usa Intelligent Tiering",
         "external_volume_edited": "{{message}}",
@@ -1001,7 +1002,7 @@
         "backup_primarybar_tooltip": "Gestisci i <bold>servizi backup</bold>, visualizza il loro <bold>stato</bold>, la <bold>lista dei server</bold>o <bold>importa un backup esistente</bold>.",
         "account_name": "Nome Account",
         "aliases": "Alias",
-        "distribution_list": "Lista di Distribuzione",
+        "distribution_list": "Distribution List",
         "dont_save_a_copy_of_sent_messages": "Non salvare una copia dei messaggi inviati",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salva una copia dei messaggi inviati della cartella dei messaggi inviati del delegato",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Salva una copia dei messaggi inviati nella mia cartella \"Inviato\"",
@@ -1151,7 +1152,6 @@
         "admin_logout_redirect_url": "All'uscita, reindirizza l'Amministratore a (URL)",
         "administration": "AMMINISTRAZIONE",
         "administration_rights": "Diritti di amministrazione",
-        "advanced_edit": "MODIFICA AVANZATA",
         "aggregated_space_quota": "Quota Spazio Aggregato",
         "apply_to_all": "APPLICA A TUTTI I SERVIZI",
         "authentication_settings": "Impostazioni di Autenticazione",
@@ -1263,7 +1263,7 @@
         "domains_that_use_this_cos_as_default": "Domini che usano questo CoS come predefinito",
         "maximum_handled_accounts": "Numero massimo di Account gestiti",
         "size_kb": "Dimensione (KB)",
-        "advance_edit_viewed_name": "Nome da visualizzare",
+        "advance_edit_viewed_name": "Nome visualizzato",
         "arrival_time": "Ora di arrivo",
         "delegates_domain_admins": "Amministratori di Dominio delegati",
         "dont_save_it": "Non salvare",
@@ -1285,14 +1285,83 @@
         "search_for_a_domain": "Cerca un Dominio",
         "sender": "Mittente",
         "to_domain": "Al Dominio",
-        "whitelabel_settings": "Impostazini whitelabel"
+        "whitelabel_settings": "Impostazioni whitelabel",
+        "discard": "Abbandona",
+        "save_the_changes": "Salva le modifiche",
+        "search_for_a_completed_operation": "Ricerca di un'operazione completata",
+        "display_name": "Nome visualizzato",
+        "Cos_list": "Elenco COS",
+        "Cos_name": "Nome Cos",
+        "are_you_sure_you_want_to_leave_without_saving_he_changes": "Sei sicuro di voler uscire senza salvare le modifiche?",
+        "class_of_service_cos": "Classe di Servizio (COS)",
+        "create_Cos_list_msg": "Puoi creare un nuovo COS cliccando il pulsante <bold>Crea</bold> nel menu di intestazione",
+        "display_name_auto_fill": "Nome visualizzato (riempimento automatico)",
+        "hey_there_are_unsaved_changes_here": "Ehi! Ci sono modifiche non salvate",
+        "i_am_looking_for_this_Cos": "Sto cercando questo COS…",
+        "select_folder": "Seleziona cartella",
+        "show_all": "Mostra tutto",
+        "subject": "Oggetto",
+        "to": "A",
+        "view_images": "VISUALIZZA IMMAGINI",
+        "login": "Accedi",
+        "save_to_files": "Salva su Files",
+        "show_quoted_text": "Mostra testo citato",
+        "advance_edit_display_name": "Nome visualizzato",
+        "attachement_unknown": "Sconosciuto <{{mimeType}}>",
+        "attachment_0": "Allegato",
+        "attachment_1": "",
+        "attachment_2": "allegati",
+        "attachments_disclaimer": "Stai visualizzando un messaggio allegato. L'autenticità di questo messaggio non può essere verificata.",
+        "from": "Da",
+        "invalid_destination": "Questo nodo non risulta essere una destinazione valida",
+        "messages": "Messaggi",
+        "retention_period": "Periodo di conservazione (valore)",
+        "rich_text_editor": "Editor di testo",
+        "add_in_distribution_list_or_both": "Hai aggiunto un'altra Distribution List o uno User. Entrambi possono essere Owner della lista.",
+        "always_allow_address": "Consenti sempre da <strong>{{values}}</strong>",
+        "always_allow_domain": "Consenti sempre dal dominio <strong>{{values}}</strong>",
+        "bucket_verification_failed_message": "Verifica non riuscita Impossibile testare la configurazione del bucket. {{bucketType}} non supportato per questa connessione (ID: {{bucketId}})",
+        "date_time": "Data & Ora",
+        "deliver": "ESEGUI",
+        "distribution_list_name": "Nome della distribution list",
+        "disclaimer": "Esclusione di responsabilità",
+        "distribution_list_not_exists_error_msg": "La distribution list o l'utente non esiste. Controlla e riprova.",
+        "distribution_list_url": "URL della distribution list",
+        "distribution_list_user": "Distribution list / Utente",
+        "enduser_login_redirect_url": "URL di reindirizzamento Login",
+        "mandatory_disclaimer_are_enable_for_all_domain": "Le esclusioni di responsabilità obbligatorie sono abilitate per tutti i domini",
+        "mandatory_disclaimer_is_enable_for_this_domain": "Le esclusioni di responsabilità obbligatorie sono abilitate per questo dominio",
+        "new_distribution_list": "Nuova Distribution List",
+        "please_note": "<bold>Nota bene</bold>",
+        "score": "Partitura",
+        "something_went_wrong_check_data_and_try_again": "SI È VERIFICATO UN ERRORE. CONTROLLA I DATI E RIPROVA",
+        "text_editor": "Editor di testo",
+        "user_auto_fill": "utente (compilazione automatica)",
+        "auto_clean_up": "PULIZIA AUTOMATICA",
+        "create_distribution_list_msg": "Puoi creare una nuova Distribution List cliccando sul pulsante <bold>Crea</bold> (angolo in alto a sinistra) o sul pulsante Aggiungi (<bold>+</bold>) qui sopra.",
+        "distribution_list_already_in_list_error": "La distribution list o l'utente sono già nella lista",
+        "enable_disclaimers_for_this_domain": "Abilita le dichiarazioni di responsabilità per questo dominio",
+        "mandatory_disclaimer_are_enable_only_for_outbound_deliveries": "Le esclusioni di responsabilità obbligatorie sono abilitate solo per le consegne in uscita",
+        "enable_disclaimers_for_all_domains": "Esclusione di responsabilità obbligatoria per tutti i domini",
+        "extra_window": {
+            "save_to_files_disabled": "Il salvataggio dei file allegati è disponibile solo dalla scheda principale"
+        },
+        "only_allow_outbound_disclaimers": "Consenti solo dichiarazioni di non responsabilità in uscita",
+        "quarantine": "Quarantena",
+        "virtualhost_avaibility_helpertext": "per rendere disponibile il vistualHost, ricaricare prima la configurazione di nginx su tutti i proxy.",
+        "advance_edit_user": "Utente"
     },
     "message": {
         "snackbar": {
             "share": {
                 "accepted": "Hai accettato la richiesta di condivisione"
-            }
-        }
+            },
+            "all_att_saved": "Gli allegati sono stati salvati nella cartella selezionata",
+            "some_att_fails": "Sembra esserci stato un problema durante il salvataggio di alcuni file, riprova",
+            "att_err": "Sembra esserci stato un problema durante il salvataggio, riprova",
+            "att_saved": "Allegato salvato nella cartella selezionata"
+        },
+        "external_images_blocked": "Le immagini che provengono dall'esterno sono state bloccate al fine di tutelarti da potenziale spam"
     },
     "timezone": {
         "africa_algiers": "{{value}} Africa Centrale",
@@ -1527,7 +1596,9 @@
         "backup_configuration": "configurazione backup",
         "append_metadata_instead_of_rewrite_faster_but_dangerous": "Aggiungi metadati invece di riscriverli (più veloce ma pericoloso)",
         "backup_is_enable_at_the_startup": "Backup abilitato all'avvio",
-        "backup_is_enabled_at_startup": "Backup abilitato all'avvio"
+        "backup_is_enabled_at_startup": "Backup abilitato all'avvio",
+        "initialising_backup_check_your_notifications_for_updates": "INIZIALIZZAZIONE BACKUP... CONTROLLA LE NOTIFICHE PER RIMANERE AGGIORNATO",
+        "local_volume_reload_if_you_changed_this_value": "Volume locale (ricaricare se è stato modificato questo valore)"
     },
     "cos": {
         "maximum_number_of_items_to_display_per_page": "Numero massimo di elementi da visualizzare per pagina",
@@ -1698,7 +1769,9 @@
         "change_password_for_next_login": "La password dev'essere modificata al prossimo accesso",
         "enable_activeSync_remote_access": "Abilita accesso remoto ActiveSync",
         "user_will_change_password_on_next_login": "L\"utente cambierà password all'accesso successivo",
-        "force_change_password": "Forza Cambio Password"
+        "force_change_password": "Forza Cambio Password",
+        "auto_fill_user_is_disabled": "Riempimento automatico user disabilitato",
+        "auto_fill_username_is_disabled": "Riempimento automatico username disabilitato"
     },
     "many_cos_info_msg": "Sembrano esserci molte COS! Quale vuoi visualizzare? Inizia a digitare il nome per filtrarle.",
     "new_bucket_summary": "RIEPILOGO",
@@ -2349,5 +2422,37 @@
     },
     "error": {
         "one_or_more_ip_invalid": "Uno o più IP non sono validi"
+    },
+    "quarantine": {
+        "delete_message": "Elimina messaggio",
+        "message_deleted": "Messaggio eliminato",
+        "create_quarantine": "CREA UN ACCOUNT DI QUARANTENA",
+        "delete_and_recrate_quarantine_account_title": "Elimina e ricrea l'account di quarantena",
+        "delete_and_recrate_quarantine_account_warning": "Sei sicuro di voler eliminare e ricreare l'account di quarantena?",
+        "delete_and_recreate_quarantine": "ELIMINA E RICREA L'ACCOUNT DI QUARANTENA",
+        "delete_msg_warning": "Sei sicuro di voler eliminare questo messaggio?",
+        "destroy_account_recreate_button": "SÌ, ELIMINALO E RICREALO",
+        "hide_source": "Nascondi origine",
+        "deliver": "ESEGUI",
+        "message_delivered": "Messaggio recapitato",
+        "not_quarantine_account": "Non esiste ancora un account di quarantena in nessuno dei domini. Vuoi creare un account di quarantena di sistema?",
+        "quarantine": "Quarantena",
+        "quarantine_messages": "Messaggi in quarantena",
+        "quarantine_account": "Account quarantena",
+        "show_images": "Mostra immagini",
+        "show_source": "Mostra origine",
+        "to_make_changes_restart_the_MTA": "Per rendere effettivi i cambiamenti, riavviare l'MTA.",
+        "yes_delete_message": "SI, ELIMINA"
+    },
+    "action": {
+        "click_open": "Clicca per aprire",
+        "click_preview": "Clicca per visualizzare l'anteprima",
+        "mark_as_non_spam": "Non Spam"
+    },
+    "messages": {
+        "no_content": "Questo messaggio non ha contenuto",
+        "snackbar": {
+            "marked_as_spam": "Hai contrassegnato questa e-mail come spam"
+        }
     }
 }

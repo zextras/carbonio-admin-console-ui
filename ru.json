@@ -221,7 +221,7 @@
         "default_appointment_visibility": "Видимость встречи по умолчанию",
         "details": "Подробнее",
         "draft_auto_save_interval": "Интервал автоматического сохранения черновика",
-        "email": "Электронный адрес",
+        "email": "Электронная почта",
         "enable_automatic_adding_of_contacts": "Включить автоматическое добавление контактов",
         "enable_mandatory_spell_check": "Включить обязательную проверку правописания",
         "enable_past_due_reminders": "Включить напоминания о просроченных встречах",
@@ -390,7 +390,6 @@
         "enter_email_address": "Введите адрес электронной почты",
         "edit_signature": "<bold>Редактировать подпись</bold>",
         "dynamic": "Динамический",
-        "displayed_name": "Отображаемое имя",
         "delete_cos_instruction_msg": "Если нажать ДА, УДАЛИТЬ, класс обслуживания по умолчанию заменит удаленный класс обслуживания.",
         "delete_content": "Вы удаляете {{name}}. Вы уверены, что хотите продолжить?",
         "default_font_size": "Размер шрифта по умолчанию",
@@ -500,7 +499,7 @@
         "next": "Далее",
         "path": "Путь",
         "prefix": "Обращение",
-        "private": "Личные",
+        "private": "Частный",
         "public": "Публичный",
         "quotas": "Лимиты",
         "restore_data_source": "Восстановить источник данных",
@@ -805,7 +804,8 @@
         "general_options": "Общие параметры",
         "operation": {
             "stop_operation_error": "{{name}}",
-            "get_all_operation_error": "{{name}}"
+            "get_all_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "queued": "В очереди",
         "running": "Работает",
@@ -1020,13 +1020,32 @@
         "2fa": "Двухфакторная аутентификация",
         "2fa-policy-updated-successfully": "Настройки применены ко всем сервисам",
         "administration_rights": "Права администратора",
-        "aggregated_space_quota": "Совокупная квота пространства"
+        "aggregated_space_quota": "Совокупная квота пространства",
+        "Cos_name": "Имя класса сервисов",
+        "attachement_unknown": "Неизвестно <{{mimeType}}>",
+        "attachment_0": "",
+        "attachment_1": "",
+        "attachment_2": "вложения",
+        "attachments_disclaimer": "Вы просматриваете прикрепленное сообщение. Подлинность вложенных сообщений проверить невозможно.",
+        "discard": "Отменить",
+        "from": "От",
+        "login": "Вход",
+        "messages": "Сообщения",
+        "save_to_files": "Сохранить в Files",
+        "select_folder": "Выберите папку",
+        "show_all": "Показать все",
+        "subject": "Тема",
+        "to": "Кому",
+        "view_images": "ПРОСМОТР ИЗОБРАЖЕНИЙ",
+        "invalid_destination": "Этот узел не является допустимым местом назначения",
+        "show_quoted_text": "Показать цитируемый текст",
+        "advance_edit_user": "Пользователь"
     },
     "timezone": {
         "europe_bucharest": "{{value}} Бухарест",
         "europe_chisinau": "{{value}} Кишинев",
         "europe_helsinki": "{{value}} Хельсинки, Киев, Рига, София, Таллинн, Вильнюс",
-        "europe_istanbul": "{{value}} Стамбул",
+        "europe_istanbul": "{{value}}⁣ Стамбул",
         "europe_kaliningrad": "{{value}} Калининград (RTZ 1)",
         "europe_london": "{{value}} Великобритания, Ирландия, Португалия",
         "europe_minsk": "{{value}} Минск",
@@ -1037,7 +1056,7 @@
         "africa_algiers": "{{value}} Западная Центральная Африка",
         "africa_cairo": "{{value}} Египет",
         "africa_casablanca": "{{value}} Касабланка",
-        "africa_harare": "{{value}} Хараре, Претория",
+        "africa_harare": "{{value}} Harare, Pretoria",
         "africa_juba": "{{value}} Джуба",
         "africa_khartoum": "{{value}} Хартум",
         "africa_monrovia": "{{value}} Монровия",
@@ -1054,8 +1073,8 @@
         "america_bogota": "{{value}} Колумбия",
         "america_cancun": "{{value}} Канкун, Четумаль",
         "america_caracas": "{{value}} Каракас",
-        "america_cayenne": "{{value}} Кайенна, Форталеза",
-        "america_chicago": "{{value}} US/Canada Central",
+        "america_cayenne": "{{value}} Кайенна, Фортелеза",
+        "america_chicago": "{{value}} США/Центральная Канада",
         "america_chihuahua": "{{value}} Чиуауа, Ла-Пас, Масатлан",
         "america_cuiaba": "{{value}} Куяба",
         "america_denver": "{{value}} US/Canada Mountain",
@@ -1070,7 +1089,7 @@
         "america_mexico_city": "{{value}} Гвадалахара, Мехико, Монтеррей",
         "america_miquelon": "{{value}} Микелон",
         "america_montevideo": "{{value}} Монтевидео",
-        "america_new_york": "{{value}} Восточная часть США/Канады",
+        "america_new_york": "{{value}} США/Восточная Канада",
         "america_phoenix": "{{value}} Аризона",
         "america_port-au-prince": "{{value}} Порт-о-Пренс",
         "america_punta_arenas": "{{value}} Пунта_Аренас",
@@ -1078,7 +1097,7 @@
         "america_santiago": "{{value}} Тихоокеанский регион Южная Америка",
         "america_sao_paulo": "{{value}} Бразилия",
         "america_st_johns": "{{value}} Ньюфаундленд",
-        "america_tijuana": "{{value}}Нижняя Калифорния",
+        "america_tijuana": "{{value}} Нижняя Калифорния",
         "america_whitehorse": "{{value}}Yukon",
         "asia_almaty": "{{value}} Астана",
         "asia_amman": "{{value}} Иордания",
@@ -1092,7 +1111,7 @@
         "asia_damascus": "{{value}} Дамаск",
         "asia_dhaka": "{{value}} Дакка",
         "asia_gaza": "{{value}} Газа",
-        "asia_hong_kong": "{{value}} Пекин, Чунцин, Гонконг, Уру М Фаза",
+        "asia_hong_kong": "{{value}} Пекин, Чунцин, Гонконг, Урумиай",
         "asia_hovd": "{{value}} Ховд",
         "asia_irkutsk": "{{value}} Иркутск (RTZ 7)",
         "asia_jerusalem": "{{value}} Иерусалим",
@@ -1127,8 +1146,8 @@
         "asia_yekaterinburg": "{{value}} Екатеринбург (RTZ 4)",
         "asia_yerevan": "{{value}} Ереван",
         "atlantic_azores": "{{value}} Азорские острова",
-        "atlantic_cape_verde": "{{value}} Острова Кабо-Верде.",
-        "atlantic_south_georgia": "{{value}} Среднеатлантический регион",
+        "atlantic_cape_verde": "{{value}}Острова Кабо-Верде.",
+        "atlantic_south_georgia": "{{value}} Средняя Атлантика",
         "australia_adelaide": "{{value}} Аделаида",
         "australia_brisbane": "{{value}} Брисбен",
         "australia_darwin": "{{value}} Дарвин",
@@ -1293,8 +1312,13 @@
         "snackbar": {
             "share": {
                 "accepted": "Вы приняли права общего доступа"
-            }
-        }
+            },
+            "all_att_saved": "Вложения успешно сохранены в выбранную папку",
+            "att_err": "Возникла проблема при сохранении, попробуйте еще раз",
+            "att_saved": "Вложение сохранено в выбранной папке",
+            "some_att_fails": "Возникла проблема при сохранении некоторых файлов, попробуйте еще раз"
+        },
+        "external_images_blocked": "Внешние изображения заблокированы, чтобы защитить вас от потенциального спама"
     },
     "commons": {
         "confirm_connection": "ПОДТВЕРДИТЬ СОЕДИНЕНИЕ",
@@ -1555,7 +1579,9 @@
         "backup_configuration": "конфигурация резервирования",
         "backup_is_enable_at_the_startup": "Резервное копирование включено при запуске",
         "append_metadata_instead_of_rewrite_faster_but_dangerous": "Добавлять метаданные вместо перезаписи (быстрее, но опасно)",
-        "backup_is_enabled_at_startup": "Резервное копирование включено при запуске"
+        "backup_is_enabled_at_startup": "Резервное копирование включено при запуске",
+        "local_volume_reload_if_you_changed_this_value": "Локальный том (перезагрузите, если вы изменили это значение)",
+        "initialising_backup_check_your_notifications_for_updates": "ИНИЦИАЛИЗАЦИЯ РЕЗЕРВНОГО КОПИРОВАНИЯ... ПРОВЕРЬТЕ ВАШИ УВЕДОМЛЕНИЯ НА ОБНОВЛЕНИЯ"
     },
     "welcome_to_carbonio": "Добро пожаловать, {{adminName}}, в Carbonio {{carbonioVersion}}!",
     "select_section_from_left_menu": "Пожалуйста, выберите раздел в меню слева",
@@ -1967,7 +1993,7 @@
         "list": "Список",
         "manage": "Управлять",
         "mark_as_read": "Пометить как прочитанное",
-        "mark_as_unread": "Пометить как непрочитанное",
+        "mark_as_unread": "Пометить как не прочитанное",
         "all": "ВСЕ",
         "copy_notification_successfully": "Уведомление успешно скопировано",
         "error": "ОШИБКА",
@@ -2151,5 +2177,20 @@
     },
     "error": {
         "one_or_more_ip_invalid": "Один или несколько IP-адресов недействительны"
+    },
+    "action": {
+        "click_open": "Нажмите, чтобы открыть",
+        "click_preview": "Нажмите для предпросмотр",
+        "mark_as_non_spam": "Не спам"
+    },
+    "messages": {
+        "snackbar": {
+            "marked_as_spam": "Вы отметили это письмо как Спам"
+        },
+        "no_content": "Это сообщение не имеет текстового содержания"
+    },
+    "quarantine": {
+        "delete_message": "Удалить сообщение",
+        "message_deleted": "Письмо удалено"
     }
 }

@@ -253,7 +253,6 @@
         "domain_status": "Alanadı Durumu",
         "domain_quota_settings": "Alanadı Kota Ayarları",
         "domain_name": "Alan Adı",
-        "displayed_name": "Görünen Ad",
         "deligated_admin_help_url": "Yetki Verilmiş Yönetici Yardım URL’si",
         "deleting_cos_msg": "<bold>{{cosname}}</bold> siliniyor",
         "delete_domain_with_account_content_msg": "{{domainName}} boş değil: içinde {{domainSystemAccounts}} sistem hesapları ve {{domainRegularAccounts}} normal hesaplar bulunuyor. Silme işlemine devam etmek istiyor musunuz?",
@@ -733,7 +732,8 @@
         "general_options": "Genel Seçenekler",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "running": "Çalışıyor",
         "stop_operation_helperText": "{{message}}",
@@ -904,7 +904,7 @@
         "mobile": "Cep telefonu",
         "pager": "Çağrı cihazı",
         "phone": "Telefon",
-        "state": "Durum",
+        "state": "Bölge",
         "username": "Kullanıcı adı",
         "limit_search_results_from_address_book_list_to": "Arama sonuçlarını Adres Defteri Listesiyle sınırla",
         "login_verify_button_title": "GİRİŞ YAPIN VE DOĞRULAYIN",
@@ -944,7 +944,6 @@
         "2fa-policy-updated-successfully": "Ayarlar tüm hizmetlere uygulandı",
         "Create_OTP_code": "OTP kodu oluştur",
         "administration": "YÖNETİM",
-        "advanced_edit": "GELİŞMİŞ DÜZENLEME",
         "can_access_settings": "Ayarlara erişebilir",
         "choose_delegated_administrator": "Yetkilendirilmiş bir yönetici seçin",
         "click_to_make_the_button_bar_sticky": "Simge çubuğunu hep görünür hale getirmek için tıklayın",
@@ -1066,7 +1065,27 @@
         "generate_certifiacte": "SERTİFİKA OLUŞTUR",
         "protocol_server_port": "protokol:sunucu:bağlantı noktası",
         "save_it_only_in_sender_folder": "{{email}} adresine ve Temsilcinin klasörüne kaydedin",
-        "please_select_the_measure_unit": "Lütfen ölçüm birimini seçin"
+        "please_select_the_measure_unit": "Lütfen ölçüm birimini seçin",
+        "Cos_name": "Servis Paketi Adı",
+        "discard": "Çöpe At",
+        "display_name": "Görünen Ad",
+        "invalid_destination": "Bu nod geçerli bir hedef değil",
+        "save_to_files": "Dosyalara Kaydet",
+        "select_folder": "Klasör seçin",
+        "show_all": "Hepsini göster",
+        "show_quoted_text": "Alıntı metni göster",
+        "subject": "Konu",
+        "view_images": "RESİMLERİ GÖRÜNTÜLE",
+        "advance_edit_display_name": "Görünen Ad",
+        "attachement_unknown": "Bilinmeyen <{{mimeType}}>",
+        "attachment": "Ek",
+        "attachment_plural": "ekler",
+        "attachments_disclaimer": "Eklenmiş mesajı görüntülüyorsunuz. Ekli mesajların gerçekliği belirlenemez.",
+        "from": "Kimden",
+        "login": "Oturum Aç",
+        "messages": "Mesajlar",
+        "to": "Kime",
+        "advance_edit_user": "Kullanıcı"
     },
     "timezone": {
         "asia_gaza": "{{value}} Gaza",
@@ -1413,8 +1432,13 @@
         "snackbar": {
             "share": {
                 "accepted": "Paylaşım isteğini kabul ettiniz"
-            }
-        }
+            },
+            "all_att_saved": "Ekler seçilen klasöre başarıyla kaydedildi",
+            "att_err": "Kayıt sırasında bir sorun oluştu, lütfen tekrar deneyin",
+            "att_saved": "Ek seçilen klasöre kaydedildi",
+            "some_att_fails": "Bazı dosyaları kaydederken bir sorun oluştu, lütfen tekrar deneyin"
+        },
+        "external_images_blocked": "Potansiyel spam mesajlara karşı korumak için dışarıdan resimler engellendi"
     },
     "backup": {
         "backup_path": "Yedekleme Yolu",
@@ -1591,9 +1615,9 @@
         "default_view": {
             "day": "Gün Görünümü",
             "list": "Liste Görünümü",
-            "month": "Ay Görünümü",
+            "month": "Aylık Görünüm",
             "week": "Haftalık Görünüm",
-            "work_week": "Çalışma Haftası Görünümü"
+            "work_week": "Çalışma Günleri Görünümü"
         },
         "disable_attachment_viewing_from_web_mail_ui": "Web posta kullanıcı arabiriminden ek görüntülemeyi devre dışı bırak",
         "disabled": "Kullanıma kapalı",
@@ -1855,9 +1879,9 @@
         "default_view": {
             "day": "Gün Görünümü",
             "list": "Liste Görünümü",
-            "month": "Ay Görünümü",
+            "month": "Aylık Görünüm",
             "week": "Haftalık Görünüm",
-            "work_week": "Çalışma Haftası Görünümü"
+            "work_week": "Çalışma Günleri Görünümü"
         },
         "enable_smime": "S/MIME’yi etkinleştir",
         "general": "Genel",
@@ -2273,5 +2297,19 @@
     },
     "error": {
         "one_or_more_ip_invalid": "Bir veya daha fazla IP geçersiz"
+    },
+    "action": {
+        "click_open": "Açmak için tıklayın",
+        "click_preview": "Önizleme için tıklayın"
+    },
+    "quarantine": {
+        "delete_message": "Mesajı sil",
+        "message_deleted": "Mesaj silindi"
+    },
+    "messages": {
+        "no_content": "Bu mesajda metin içeriği yok",
+        "snackbar": {
+            "marked_as_spam": "Bu e-postayı Spam olarak işaretlediniz"
+        }
     }
 }

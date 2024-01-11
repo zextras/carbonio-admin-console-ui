@@ -494,7 +494,7 @@
         "resources": "Recursos",
         "restore_account": "Restaurar conta",
         "retention_policy": "Política de retenção",
-        "save_and_leave": "Salvar e sair",
+        "save_and_leave": "Guardar",
         "search": "Pesquisa",
         "secret_key": "Chave secreta",
         "server": "Servidor",
@@ -639,7 +639,6 @@
         "enter_email_address": "Insira o endereço de email",
         "edit_signature": "<bold>Editar assinatura</bold>",
         "dynamic": "Dinâmico",
-        "displayed_name": "Nome exibido",
         "delete_content": "Você está excluindo {{name}}. Tem certeza que deseja excluí-lo?",
         "create_resource_msg": "Você pode criar um novo Recurso clicando no botão <bold>Criar</bold> (canto superior esquerdo) ou no botão Adicionar (<bold>+</bold>) aqui em cima",
         "create_account_list_msg": "Pode criar uma conta através do botão <bold>Criar</bold> (canto superior esquerdo) ou no botão Adicionar (<bold>+</bold>) em cima",
@@ -728,7 +727,7 @@
         "na": "N/A",
         "purge": "Apagar",
         "scheduled": "Programado",
-        "disabled": "Desabilitado",
+        "disabled": "Desativado",
         "local": "Local",
         "accounts_that_are_owners": "Contas proprietárias da Lista de distribuição",
         "contact_options": "Opções de Contatos",
@@ -1024,7 +1023,8 @@
         "general_options": "Opções gerais",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "queued": "Em fila",
         "running": "Executando",
@@ -1128,7 +1128,7 @@
         "value": "Valor",
         "distribution_list": "Lista de distribuição",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Guardar uma cópia das mensagens enviadas na pasta de Enviados do delegado",
-        "save_a_copy_of_sent_messages_to_my_sent_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Guardar uma cópia das mensagens na minha pasta Enviadas",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Guardar uma cópia das mensagens na minha pasta de mensagens Enviadas e na dos delegados",
         "destroy": "EXCLUIR",
         "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Salvar uma cópia na pasta Enviadas do delegado",
@@ -1254,7 +1254,7 @@
         "duplicate": "Duplicar",
         "groups": "Grupos",
         "link": "Link",
-        "logout": "Sair",
+        "logout": "Logout",
         "never_send_read_receipt": "Nunca enviar confirmação de leitura",
         "remove_all": "Remover tudo",
         "users": "utilizadores",
@@ -1264,14 +1264,38 @@
         "stats": "Estatísticas",
         "advance_edit_userName": "Utilizador",
         "search_for_an_account": "Procurar conta",
-        "received": "Recebida"
+        "received": "Recebida",
+        "Cos_name": "Nome da COS",
+        "attachement_unknown": "Desconhecido <{{mimeType}}>",
+        "discard": "Descartar",
+        "from": "De",
+        "login": "Iniciar sessão",
+        "messages": "Mensagens",
+        "save_to_files": "Salvar no Files",
+        "select_folder": "Selecionar pasta",
+        "show_all": "Mostrar tudo",
+        "show_quoted_text": "Mostrar texto citado",
+        "subject": "Assunto",
+        "view_images": "Ver imágens",
+        "attachment_0": "",
+        "attachment_1": "",
+        "attachment_2": "anexos",
+        "attachments_disclaimer": "Você está visualizando uma mensagem anexada. Sua autenticidade não pode ser verificada.",
+        "invalid_destination": "Este elemento não é um destino válido",
+        "to": "Para",
+        "advance_edit_user": "Usuários"
     },
     "message": {
         "snackbar": {
             "share": {
                 "accepted": "Você aceitou este pedido de compartilhamento"
-            }
-        }
+            },
+            "all_att_saved": "Os anexos foram guardados com sucesso na pasta selecionada",
+            "att_err": "Parece haver um problema ao salvar. Tente novamente",
+            "att_saved": "Anexo salvo na pasta selecionada",
+            "some_att_fails": "Parece haver um problema ao salvar alguns arquivos. Tente novamente"
+        },
+        "external_images_blocked": "As imagens externas foram bloqueadas para proteger você ante eventual spam"
     },
     "commons": {
         "confirm_connection": "CONFIRMAR CONEXÃO",
@@ -1421,10 +1445,10 @@
             "list": "Lista",
             "month": "Mês",
             "week": "Semana",
-            "work_week": "Semana útil"
+            "work_week": "Semana de trabalho"
         },
         "disable_attachment_viewing_from_web_mail_ui": "Desativar a visualização de anexos no webmail",
-        "disabled": "Desabilitado",
+        "disabled": "Desativado",
         "email_message_lifetime": "Retenção de emails",
         "email_retention_policy": "Políticas de retenção",
         "enable_failed_login_lockout": "Permitir o bloqueio de login falhado",
@@ -1583,7 +1607,7 @@
             "list": "Lista",
             "month": "Mês",
             "week": "Semana",
-            "work_week": "Semana útil"
+            "work_week": "Semana de trabalho"
         },
         "enable_smime": "Ativar S/MIME",
         "general": "Geral",
@@ -1898,7 +1922,7 @@
         "copy": "Copiar",
         "list": "Lista",
         "manage": "Gerenciar",
-        "mark_as_read": "Marcar como lido",
+        "mark_as_read": "Marcar como lído",
         "mark_as_unread": "Marcar como não lida",
         "notifications_list": "Lista de notificações",
         "warning": "ADVERTÊNCIA",
@@ -2094,5 +2118,19 @@
     "mat": {
         "add_here_any_blocked_extension": "Adicione aqui as extensões bloqueadas"
     },
-    "the_change_will_not_move_the_data": "A alteração não moverá os dados"
+    "the_change_will_not_move_the_data": "A alteração não moverá os dados",
+    "action": {
+        "click_open": "Clique para abrir",
+        "click_preview": "Clique para pré-visualizar"
+    },
+    "messages": {
+        "snackbar": {
+            "marked_as_spam": "Você marcou este e-mail como Spam"
+        },
+        "no_content": "Essa mensagem não possui conteúdo de texto"
+    },
+    "quarantine": {
+        "delete_message": "Eliminar mensagem",
+        "message_deleted": "Mensagem excluída"
+    }
 }
