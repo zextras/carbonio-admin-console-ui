@@ -47,7 +47,7 @@
         "america_santiago": "{{value}} Pacífico América do Sul",
         "america_sao_paulo": "{{value}} Brasília",
         "america_st_johns": "{{value}} Terra Nova",
-        "america_tijuana": "{{value}} Baixa Califórnia",
+        "america_tijuana": "{{value}} Baja Califórnia",
         "america_whitehorse": "{{value}} Yukon",
         "asia_almaty": "{{value}} Nur-Sultã",
         "asia_amman": "{{value}} Jordânia",
@@ -359,7 +359,7 @@
         "hours": "Horas",
         "mb": "MB",
         "minutes": "Minutos",
-        "name": "Nome",
+        "name": "Name",
         "not_set": "Não ativado",
         "note": "Nota",
         "notification": "Notificação",
@@ -1384,7 +1384,7 @@
         "valid_not_before": "Válido a partir de (não antes)",
         "what_to_trust": "Em que confiar?",
         "stats": "Estatísticas",
-        "person_name": "Nome",
+        "person_name": "Name",
         "can_access_settings": "Pode acessar as configurações",
         "init_domain": "INIT DOMAIN",
         "items_per_page": "itens por página",
@@ -1416,7 +1416,8 @@
         "Cos_name": "Nome da COS",
         "attachments_disclaimer": "Você está visualizando uma mensagem anexada. Sua autenticidade não pode ser verificada.",
         "discard": "Descartar",
-        "messages": "Mensagens"
+        "messages": "Mensagens",
+        "advance_edit_user": "Usuários"
     },
     "message": {
         "snackbar": {
@@ -1963,7 +1964,7 @@
             "object_storage": "Armazenamento de objetos"
         },
         "volume_config_header": {
-            "name": "Nome",
+            "name": "Name",
             "hsm_scheduled": "HSM programado",
             "indexer": "Indexador",
             "status": "Estado"
@@ -1972,14 +1973,14 @@
             "compression": "Compressão",
             "current": "Atual",
             "id": "ID",
-            "name": "Nome",
+            "name": "Name",
             "path": "Caminho",
             "storageType": "Tipo de Storage"
         },
         "volume_indexer_header": {
             "current": "Atual",
             "id": "ID",
-            "name": "Nome",
+            "name": "Name",
             "path": "Caminho"
         },
         "volume_type": {
@@ -2021,7 +2022,7 @@
         "message": "Mensagem",
         "minimum_space_threshold": "Limiar de espaço mínimo",
         "months": "Meses",
-        "name": "Nome",
+        "name": "Name",
         "new_policy_summary": "Resumo da Nova Política",
         "no": "Não",
         "option": "Opção",

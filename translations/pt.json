@@ -1128,7 +1128,7 @@
         "value": "Valor",
         "distribution_list": "Lista de distribuição",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Guardar uma cópia das mensagens enviadas na pasta de Enviados do delegado",
-        "save_a_copy_of_sent_messages_to_my_sent_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Guardar uma cópia das mensagens na minha pasta Enviadas",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Guardar uma cópia das mensagens na minha pasta de mensagens Enviadas e na dos delegados",
         "destroy": "EXCLUIR",
         "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Salvar uma cópia na pasta Enviadas do delegado",
@@ -1254,7 +1254,7 @@
         "duplicate": "Duplicar",
         "groups": "Grupos",
         "link": "Link",
-        "logout": "Sair",
+        "logout": "Logout",
         "never_send_read_receipt": "Nunca enviar confirmação de leitura",
         "remove_all": "Remover tudo",
         "users": "utilizadores",
@@ -1282,7 +1282,8 @@
         "attachment_2": "anexos",
         "attachments_disclaimer": "Você está visualizando uma mensagem anexada. Sua autenticidade não pode ser verificada.",
         "invalid_destination": "Este elemento não é um destino válido",
-        "to": "Para"
+        "to": "Para",
+        "advance_edit_user": "Usuários"
     },
     "message": {
         "snackbar": {
@@ -1444,7 +1445,7 @@
             "list": "Lista",
             "month": "Mês",
             "week": "Semana",
-            "work_week": "Semana útil"
+            "work_week": "Semana de trabalho"
         },
         "disable_attachment_viewing_from_web_mail_ui": "Desativar a visualização de anexos no webmail",
         "disabled": "Desativado",
@@ -1606,7 +1607,7 @@
             "list": "Lista",
             "month": "Mês",
             "week": "Semana",
-            "work_week": "Semana útil"
+            "work_week": "Semana de trabalho"
         },
         "enable_smime": "Ativar S/MIME",
         "general": "Geral",
@@ -1921,8 +1922,8 @@
         "copy": "Copiar",
         "list": "Lista",
         "manage": "Gerenciar",
-        "mark_as_read": "Marcar como lido",
-        "mark_as_unread": "Marcar como não lído",
+        "mark_as_read": "Marcar como lído",
+        "mark_as_unread": "Marcar como não lida",
         "notifications_list": "Lista de notificações",
         "warning": "ADVERTÊNCIA",
         "copy_notification_successfully": "Notificação copiada com sucesso",

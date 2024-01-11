@@ -14,7 +14,10 @@ import {
 	useSnackbar,
 	Table,
 	ChipInput,
-	Icon
+	Icon,
+	Switch,
+	Input,
+	Select
 } from '@zextras/carbonio-design-system';
 import { map } from 'lodash';
 import QRCode from 'qrcode.react';
@@ -26,6 +29,7 @@ import InheritedSelect from './inherited-components/inherited-select';
 import InheritedSwitch from './inherited-components/inherited-switch';
 import { ServicesPassphrase } from './services-passphrase';
 import logo from '../../../../../assets/gardian.svg';
+import { DISABLED, ENABLED } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -290,6 +294,7 @@ const EditAccountSecuritySection: FC = () => {
 		useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1));
 	const [zimbraPasswordLockoutFailureLifetimeType, setZimbraPasswordLockoutFailureLifetimeType] =
 		useState(accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '');
+	const [recoveryEmailError, setRecoveryEmailError] = useState<boolean>(false);
 
 	const headers: any = useMemo(
 		() => [
@@ -338,6 +343,20 @@ const EditAccountSecuritySection: FC = () => {
 			{
 				label: t('label.seconds', 'Seconds'),
 				value: 's'
+			}
+		],
+		[t]
+	);
+
+	const recoveryStatus: any[] = useMemo(
+		() => [
+			{
+				label: t('label.pending', 'Pending'),
+				value: 'pending'
+			},
+			{
+				label: t('label.verified', 'Verified'),
+				value: 'verified'
 			}
 		],
 		[t]
@@ -469,6 +488,19 @@ const EditAccountSecuritySection: FC = () => {
 		[zimbraPasswordLockoutFailureLifetimeType, setAccountDetail]
 	);
 
+	const onRecoveryStatusChange = (v: any): any => {
+		setAccountDetail((prev: any) => ({ ...prev, zimbraPrefPasswordRecoveryAddressStatus: v }));
+	};
+
+	const changeRecoverOption = useCallback(
+		(key: string): void => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[key]: accountDetail[key] === ENABLED ? DISABLED : ENABLED
+			}));
+		},
+		[accountDetail, setAccountDetail]
+	);
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -867,6 +899,73 @@ const EditAccountSecuritySection: FC = () => {
 											fromAccount={accSpecificDetail?.zimbraPasswordBlockCommonEnabled}
 											inputName={'zimbraPasswordBlockCommonEnabled'}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordBlockCommonEnabled')}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+					</Row>
+					<Row
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ all: 'large' }}
+						width="100%"
+					>
+						<Text size="extralarge" weight="bold">
+							{t('label.forgotten_password', 'Forgotten Password')}
+						</Text>
+						<Row mainAlignment="center" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container crossAlignment="flex-start" width="30%" padding={{ right: 'small' }}>
+										<Switch
+											value={accountDetail?.zimbraFeatureResetPasswordStatus === 'enabled'}
+											onClick={(): void => changeRecoverOption('zimbraFeatureResetPasswordStatus')}
+											label={t(
+												'label.user_can_ask_for_forgotten_password_token',
+												'User can ask for a forgotten password token'
+											)}
+											iconColor="primary"
+										/>
+									</Container>
+									<Container width="40%" padding={{ right: 'small', left: 'small' }}>
+										<Input
+											backgroundColor="gray5"
+											label={t('label.user_recovery_email', 'User Recovery Email')}
+											defaultValue={accountDetail?.zimbraPrefPasswordRecoveryAddress || ''}
+											onChange={(e): void => {
+												if (isValidEmail(e?.target?.value)) {
+													changeValue(e);
+													setRecoveryEmailError(false);
+												} else {
+													setRecoveryEmailError(true);
+												}
+											}}
+											inputName="zimbraPrefPasswordRecoveryAddress"
+											description={t(
+												'label.enter_valid_email_address',
+												'Enter valid email Address'
+											)}
+											hasError={recoveryEmailError}
+										/>
+									</Container>
+									<Container width="30%" padding={{ left: 'small' }}>
+										<Select
+											items={recoveryStatus}
+											background="gray5"
+											label={t('label.status', 'Status')}
+											showCheckbox={false}
+											onChange={onRecoveryStatusChange}
+											defaultSelection={recoveryStatus.find(
+												(item: any) =>
+													// eslint-disable-next-line max-len
+													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
+											)}
 										/>
 									</Container>
 								</ListRow>
