@@ -1401,7 +1401,8 @@
         "show_all": "แสดงทั้งหมด",
         "show_quoted_text": "แสดงข้อความที่ยกมา",
         "subject": "หัวข้อ",
-        "to": "ถึง"
+        "to": "ถึง",
+        "advance_edit_user": "ผู้ใช้"
     },
     "message": {
         "snackbar": {
