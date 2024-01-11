@@ -10,25 +10,27 @@ import { useTranslation } from 'react-i18next';
 
 const InheritedInput: FC<{
 	label: any;
-	accountValue: any;
-	cosValue: any;
-	background: any;
+	subValue: any;
+	inheritedValue: any;
+	background?: any;
 	inputName: any;
 	onChange: any;
 	onChangeReset: any;
-	fromAccount: any;
+	fromSubValue: any;
 	disabled?: boolean;
+	hasError?: boolean;
 	pref?: any;
 }> = ({
 	label,
-	accountValue,
-	cosValue,
-	background,
+	subValue,
+	inheritedValue,
+	background = 'gray5',
 	inputName,
 	onChange,
 	onChangeReset,
-	fromAccount,
+	fromSubValue,
 	disabled = false,
+	hasError = false,
 	pref = {}
 }) => {
 	const [t] = useTranslation();
@@ -36,14 +38,15 @@ const InheritedInput: FC<{
 		<>
 			<Input
 				label={label}
-				value={accountValue || cosValue}
+				value={subValue === undefined ? inheritedValue || '' : subValue}
 				background={background}
 				inputName={inputName}
 				onChange={onChange}
 				disabled={disabled}
+				hasError={hasError}
 				CustomIcon={(): any => (
 					<>
-						{fromAccount ? (
+						{fromSubValue ? (
 							<Tooltip
 								label={
 									<>
@@ -51,7 +54,7 @@ const InheritedInput: FC<{
 											<Text weight="bold">
 												{t('account_details.inherited_value_was', 'The inherited value was')} :
 											</Text>
-											<Text>{`  ${cosValue}`}</Text>
+											<Text>{`  ${inheritedValue || ''}`}</Text>
 										</Row>
 										<Padding top="small">
 											<Text weight="bold">

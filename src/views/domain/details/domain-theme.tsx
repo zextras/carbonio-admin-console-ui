@@ -14,12 +14,14 @@ import {
 	Button,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import _ from 'lodash';
+import { cloneDeep, isEqual, reduce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { themeConfigStore } from '../../../../types/domain';
+import { getDomainInformation } from '../../../services/domain-information-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { useConfigStore } from '../../../store/config/store';
 import { useDomainStore } from '../../../store/domain/store';
 import OverlayDivision from '../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -28,7 +30,7 @@ import { ResetTheme } from '../theme/theme-reset';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
-	width: 70.35rem;
+	width: calc(100% - 19rem);
 	top: 6.5rem;
 	right: 0;
 	bottom: 0;
@@ -46,8 +48,11 @@ const DomainTheme: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [domainTheme, setDomainTheme] = useState<themeConfigStore>({});
-	const domainInformation = useDomainStore((state) => state.domain?.a);
+	const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
+	const configInformation = useConfigStore((state) => state.config);
+	const domainInformation = useDomainStore((state) => state.domainWithoutConfig?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
+	const setDomainWioutConfig = useDomainStore((state) => state.setDomainWioutConfig);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
 	const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
@@ -56,47 +61,55 @@ const DomainTheme: FC = () => {
 	const [zimbraId, setZimbraId] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 
-	const setValue = useCallback(
-		(key: string, value: any): void => {
-			setIntialThemeConfig((prev: any) => ({ ...prev, [key]: value }));
-			setDomainTheme((prev: any) => ({ ...prev, [key]: value }));
-		},
-		[setDomainTheme]
-	);
+	// const setValue = useCallback(
+	// 	(key: string, value: any, forDomain: boolean): void => {
+	// 		setIntialThemeConfig((prev: any) => ({ ...prev, [key]: value }));
+	// 		if (forDomain) {
+	// 			setDomainTheme((prev: any) => ({ ...prev, [key]: value }));
+	// 		} else {
+	// 			setGlobalTheme((prev: any) => ({ ...prev, [key]: value }));
+	// 		}
+	// 	},
+	// 	[setDomainTheme, setGlobalTheme]
+	// );
 
-	const setInitalValues = useCallback(
-		(obj: any): void => {
-			if (obj) {
-				setValue('carbonioWebUiDarkMode', obj?.carbonioWebUiDarkMode);
-				setValue('carbonioWebUiLoginLogo', obj?.carbonioWebUiLoginLogo);
-				setValue('carbonioWebUiDarkLoginLogo', obj?.carbonioWebUiDarkLoginLogo);
-				setValue('carbonioWebUiLoginBackground', obj?.carbonioWebUiLoginBackground);
-				setValue('carbonioWebUiDarkLoginBackground', obj?.carbonioWebUiDarkLoginBackground);
-				setValue('carbonioWebUiAppLogo', obj?.carbonioWebUiAppLogo);
-				setValue('carbonioWebUiDarkAppLogo', obj?.carbonioWebUiDarkAppLogo);
-				setValue('carbonioWebUiFavicon', obj?.carbonioWebUiFavicon);
-				setValue('carbonioWebUiTitle', obj?.carbonioWebUiTitle);
-				setValue('carbonioWebUiDescription', obj?.carbonioWebUiDescription);
-				setValue('carbonioAdminUiLoginLogo', obj?.carbonioAdminUiLoginLogo);
-				setValue('carbonioAdminUiDarkLoginLogo', obj?.carbonioAdminUiDarkLoginLogo);
-				setValue('carbonioAdminUiAppLogo', obj?.carbonioAdminUiAppLogo);
-				setValue('carbonioAdminUiDarkAppLogo', obj?.carbonioAdminUiDarkAppLogo);
-				setValue('carbonioAdminUiBackground', obj?.carbonioAdminUiBackground);
-				setValue('carbonioAdminUiDarkBackground', obj?.carbonioAdminUiDarkBackground);
-				setValue('carbonioAdminUiFavicon', obj?.carbonioAdminUiFavicon);
-				setValue('carbonioAdminUiTitle', obj?.carbonioAdminUiTitle);
-				setValue('carbonioAdminUiDescription', obj?.carbonioAdminUiDescription);
-				setValue('carbonioLogoUrl', obj?.carbonioLogoUrl);
-				setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor);
-				setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor);
-				setValue('carbonioWebUILoginURL', obj?.carbonioWebUILoginURL);
-				setValue('carbonioWebUILogoutURL', obj?.carbonioWebUILogoutURL);
-				setValue('carbonioAdminUILoginURL', obj?.carbonioAdminUILoginURL);
-				setValue('carbonioAdminUILogoutURL', obj?.carbonioAdminUILogoutURL);
-			}
-		},
-		[setValue]
-	);
+	// const setInitalValues = useCallback(
+	// 	(obj: any, forDomain: boolean): void => {
+	// 		if (obj) {
+	// 			setValue('carbonioWebUiDarkMode', obj?.carbonioWebUiDarkMode, forDomain);
+	// 			setValue('carbonioWebUiLoginLogo', obj?.carbonioWebUiLoginLogo, forDomain);
+	// 			setValue('carbonioWebUiDarkLoginLogo', obj?.carbonioWebUiDarkLoginLogo, forDomain);
+	// 			setValue('carbonioWebUiLoginBackground', obj?.carbonioWebUiLoginBackground, forDomain);
+	// 			setValue(
+	// 				'carbonioWebUiDarkLoginBackground',
+	// 				obj?.carbonioWebUiDarkLoginBackground,
+	// 				forDomain
+	// 			);
+	// 			setValue('carbonioWebUiAppLogo', obj?.carbonioWebUiAppLogo, forDomain);
+	// 			setValue('carbonioWebUiDarkAppLogo', obj?.carbonioWebUiDarkAppLogo, forDomain);
+	// 			setValue('carbonioWebUiFavicon', obj?.carbonioWebUiFavicon, forDomain);
+	// 			setValue('carbonioWebUiTitle', obj?.carbonioWebUiTitle, forDomain);
+	// 			setValue('carbonioWebUiDescription', obj?.carbonioWebUiDescription, forDomain);
+	// 			setValue('carbonioAdminUiLoginLogo', obj?.carbonioAdminUiLoginLogo, forDomain);
+	// 			setValue('carbonioAdminUiDarkLoginLogo', obj?.carbonioAdminUiDarkLoginLogo, forDomain);
+	// 			setValue('carbonioAdminUiAppLogo', obj?.carbonioAdminUiAppLogo, forDomain);
+	// 			setValue('carbonioAdminUiDarkAppLogo', obj?.carbonioAdminUiDarkAppLogo, forDomain);
+	// 			setValue('carbonioAdminUiBackground', obj?.carbonioAdminUiBackground, forDomain);
+	// 			setValue('carbonioAdminUiDarkBackground', obj?.carbonioAdminUiDarkBackground, forDomain);
+	// 			setValue('carbonioAdminUiFavicon', obj?.carbonioAdminUiFavicon, forDomain);
+	// 			setValue('carbonioAdminUiTitle', obj?.carbonioAdminUiTitle, forDomain);
+	// 			setValue('carbonioAdminUiDescription', obj?.carbonioAdminUiDescription, forDomain);
+	// 			setValue('carbonioLogoUrl', obj?.carbonioLogoUrl, forDomain);
+	// 			setValue('carbonioWebUiPrimaryColor', obj?.carbonioWebUiPrimaryColor, forDomain);
+	// 			setValue('carbonioWebUiDarkPrimaryColor', obj?.carbonioWebUiDarkPrimaryColor, forDomain);
+	// 			setValue('carbonioWebUILoginURL', obj?.carbonioWebUILoginURL, forDomain);
+	// 			setValue('carbonioWebUILogoutURL', obj?.carbonioWebUILogoutURL, forDomain);
+	// 			setValue('carbonioAdminUILoginURL', obj?.carbonioAdminUILoginURL, forDomain);
+	// 			setValue('carbonioAdminUILogoutURL', obj?.carbonioAdminUILogoutURL, forDomain);
+	// 		}
+	// 	},
+	// 	[setValue]
+	// );
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
@@ -106,91 +119,21 @@ const DomainTheme: FC = () => {
 				obj[item?.n] = item._content;
 			});
 			setZimbraId(obj?.zimbraId);
-			if (!obj.carbonioWebUiDarkMode) {
-				obj.carbonioWebUiDarkMode = 'FALSE';
-			}
-			if (!obj.carbonioWebUiLoginLogo) {
-				obj.carbonioWebUiLoginLogo = '';
-			}
-			if (!obj.carbonioWebUiDarkLoginLogo) {
-				obj.carbonioWebUiDarkLoginLogo = '';
-			}
-			if (!obj.carbonioWebUiLoginBackground) {
-				obj.carbonioWebUiLoginBackground = '';
-			}
-			if (!obj.carbonioWebUiDarkLoginBackground) {
-				obj.carbonioWebUiDarkLoginBackground = '';
-			}
-			if (!obj.carbonioWebUiAppLogo) {
-				obj.carbonioWebUiAppLogo = '';
-			}
-			if (!obj.carbonioWebUiDarkAppLogo) {
-				obj.carbonioWebUiDarkAppLogo = '';
-			}
-			if (!obj.carbonioWebUiFavicon) {
-				obj.carbonioWebUiFavicon = '';
-			}
-			if (!obj.carbonioWebUiTitle) {
-				obj.carbonioWebUiTitle = '';
-			}
-			if (!obj.carbonioWebUiDescription) {
-				obj.carbonioWebUiDescription = '';
-			}
-			if (!obj.carbonioAdminUiLoginLogo) {
-				obj.carbonioAdminUiLoginLogo = '';
-			}
-			if (!obj.carbonioAdminUiDarkLoginLogo) {
-				obj.carbonioAdminUiDarkLoginLogo = '';
-			}
-			if (!obj.carbonioAdminUiAppLogo) {
-				obj.carbonioAdminUiAppLogo = '';
-			}
-			if (!obj.carbonioAdminUiDarkAppLogo) {
-				obj.carbonioAdminUiDarkAppLogo = '';
-			}
-			if (!obj.carbonioAdminUiBackground) {
-				obj.carbonioAdminUiBackground = '';
-			}
-			if (!obj.carbonioAdminUiDarkBackground) {
-				obj.carbonioAdminUiDarkBackground = '';
-			}
-			if (!obj.carbonioAdminUiFavicon) {
-				obj.carbonioAdminUiFavicon = '';
-			}
-			if (!obj.carbonioAdminUiTitle) {
-				obj.carbonioAdminUiTitle = '';
-			}
-			if (!obj.carbonioAdminUiDescription) {
-				obj.carbonioAdminUiDescription = '';
-			}
-			if (!obj.carbonioLogoUrl) {
-				obj.carbonioLogoUrl = '';
-			}
-			if (!obj.carbonioWebUiPrimaryColor) {
-				obj.carbonioWebUiPrimaryColor = '';
-			}
-			if (!obj.carbonioWebUiDarkPrimaryColor) {
-				obj.carbonioWebUiDarkPrimaryColor = '';
-			}
-			if (!obj.carbonioWebUILoginURL) {
-				obj.carbonioWebUILoginURL = '';
-			}
-			if (!obj.carbonioWebUILogoutURL) {
-				obj.carbonioWebUILogoutURL = '';
-			}
-			if (!obj.carbonioAdminUILoginURL) {
-				obj.carbonioAdminUILoginURL = '';
-			}
-			if (!obj.carbonioAdminUILogoutURL) {
-				obj.carbonioAdminUILogoutURL = '';
-			}
-			setInitalValues(obj);
+			setIntialThemeConfig(cloneDeep(obj));
+			setDomainTheme(cloneDeep(obj));
 			setIsDirty(false);
 		}
-	}, [domainInformation, setInitalValues]);
+		if (!!configInformation && configInformation.length > 0) {
+			const obj: any = {};
+			configInformation.forEach((item: any) => {
+				obj[item?.n] = item._content;
+			});
+			setGlobalTheme(cloneDeep(obj));
+		}
+	}, [configInformation, domainInformation]);
 
 	useEffect(() => {
-		if (domainTheme && !_.isEqual(domainTheme, intialThemeConfig)) {
+		if (domainTheme && !isEqual(domainTheme, intialThemeConfig)) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
@@ -212,6 +155,12 @@ const DomainTheme: FC = () => {
 				const domain: any = data?.domain[0];
 				if (domain) {
 					setDomain(domain);
+					getDomainInformation(domain.id, 0).then((res) => {
+						const domainData = res?.domain[0];
+						if (domainData) {
+							setDomainWioutConfig(domainData);
+						}
+					});
 				}
 				setIsLoading(false);
 			})
@@ -235,16 +184,26 @@ const DomainTheme: FC = () => {
 		const attributes: any[] = [];
 		body.id = zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
-		const entries = Object.entries(domainTheme);
-		entries.forEach(([key, value]) => {
-			attributes.push({ n: key, _content: value });
+		const modifiedKeys: any = reduce(
+			domainTheme,
+			function (result, value, key): any {
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				return isEqual(value, intialThemeConfig[key]) ? result : [...result, key];
+			},
+			[]
+		);
+		modifiedKeys.forEach((ele: any) => {
+			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+			// @ts-ignore
+			attributes.push({ n: ele, _content: domainTheme[ele] });
 		});
 		body.a = attributes;
 		modifyDomainRequest(body);
 	};
 
 	const onCancel = (): void => {
-		setInitalValues(intialThemeConfig);
+		setDomainTheme(cloneDeep(intialThemeConfig));
 		setIsDirty(false);
 	};
 
@@ -263,7 +222,7 @@ const DomainTheme: FC = () => {
 		body.id = zimbraId;
 		body._jsns = 'urn:zimbraAdmin';
 		const domainDefaultElements: any = {
-			carbonioWebUiDarkMode: 'FALSE',
+			carbonioWebUiDarkMode: '',
 			carbonioWebUiLoginLogo: '',
 			carbonioWebUiDarkLoginLogo: '',
 			carbonioWebUiLoginBackground: '',
@@ -350,6 +309,7 @@ const DomainTheme: FC = () => {
 					</Row>
 					<ThemeConfigs
 						themeConfig={domainTheme}
+						globalTheme={globalTheme}
 						setThemeConfig={setDomainTheme}
 						setIsValidated={setIsValidated}
 						onResetTheme={onResetTheme}

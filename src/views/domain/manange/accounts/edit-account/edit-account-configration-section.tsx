@@ -19,12 +19,12 @@ import {
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import InheritedSwitch from './inherited-components/inherited-switch';
 import { ACCOUNT } from '../../../../../constants';
 import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomChip from '../../../../components/customChip';
 import { Features } from '../../../../cos/features';
+import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -129,7 +129,7 @@ const EditAccountConfigrationSection: FC = () => {
 
 	const setEmptyValue = useCallback(
 		(keyName) => {
-			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
+			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
 	);
@@ -155,30 +155,30 @@ const EditAccountConfigrationSection: FC = () => {
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<InheritedSwitch
-							accountValue={accountDetail?.zimbraFeatureMailForwardingEnabled}
+							subValue={accountDetail?.zimbraFeatureMailForwardingEnabled}
 							onChange={changeSwitchOption}
 							label={t(
 								'account_details.user_can_specify_forwarding_address',
 								'User can specify forwarding address'
 							)}
 							iconColor="primary"
-							cosValue={cosDetail.zimbraFeatureMailForwardingEnabled}
-							fromAccount={accSpecificDetail?.zimbraFeatureMailForwardingEnabled}
+							inheritedValue={cosDetail.zimbraFeatureMailForwardingEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureMailForwardingEnabled}
 							inputName={'zimbraFeatureMailForwardingEnabled'}
 							onChangeReset={(): void => setEmptyValue('zimbraFeatureMailForwardingEnabled')}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
 						<InheritedSwitch
-							accountValue={accountDetail?.zimbraPrefMailLocalDeliveryDisabled}
+							subValue={accountDetail?.zimbraPrefMailLocalDeliveryDisabled}
 							onChange={changeSwitchOption}
 							label={t(
 								'account_details.dont_keep_local_copy_of_messages',
 								`Don't Keep local copy of messages`
 							)}
 							iconColor="primary"
-							cosValue={cosDetail.zimbraPrefMailLocalDeliveryDisabled}
-							fromAccount={accSpecificDetail?.zimbraPrefMailLocalDeliveryDisabled}
+							inheritedValue={cosDetail.zimbraPrefMailLocalDeliveryDisabled}
+							fromSubValue={accSpecificDetail?.zimbraPrefMailLocalDeliveryDisabled}
 							inputName={'zimbraPrefMailLocalDeliveryDisabled'}
 							onChangeReset={(): void => setEmptyValue('zimbraPrefMailLocalDeliveryDisabled')}
 						/>
@@ -187,15 +187,15 @@ const EditAccountConfigrationSection: FC = () => {
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="48%" mainAlignment="flex-start">
 						<InheritedSwitch
-							accountValue={accountDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
+							subValue={accountDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
 							onChange={changeSwitchOption}
 							label={t(
 								'account_details.user_can_specify_mail_forwarding_filter',
 								'User can specify mail forwarding filter'
 							)}
 							iconColor="primary"
-							cosValue={cosDetail.zimbraFeatureMailForwardingInFiltersEnabled}
-							fromAccount={accSpecificDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
+							inheritedValue={cosDetail.zimbraFeatureMailForwardingInFiltersEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
 							inputName={'zimbraFeatureMailForwardingInFiltersEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue('zimbraFeatureMailForwardingInFiltersEnabled')
