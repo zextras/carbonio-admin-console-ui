@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.41](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.40...v0.9.41) (2024-01-11)
+
+
+### Bug Fixes
+
+* ac-795: duplicate value remove from translation ([51b6f3a](https://github.com/zextras/carbonio-admin-console-ui/commit/51b6f3a2fbfff6f70ffbb0975a712b6343ffd320))
+* allow domain admin to configure recovery email ([#622](https://github.com/zextras/carbonio-admin-console-ui/issues/622)) ([1458237](https://github.com/zextras/carbonio-admin-console-ui/commit/145823704978b6f651e7c8eaf5c071f750495760))
+
 ### [0.9.40](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.39...v0.9.40) (2024-01-04)
 
 

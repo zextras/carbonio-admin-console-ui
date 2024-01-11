@@ -740,7 +740,7 @@
         "admin_panel_title": "PANEL D'ADMINISTRATION",
         "apperance": "Apparence",
         "background": "Arrière plan",
-        "background_description": "Collez l'URL de l'image pour la page de connexion. Utilisez un fichier JPG ou PNG ayant une résolution minimum de 2560x1440 pixels, un ratio de 16:9 et de moins de 800 Ko.",
+        "background_description": "Collez l'URL de l'image pour la page de connexion. Utilisez un fichier JPG ou PNG ayant une résolution minimum de 2560x1080 pixels ainsi qu'un ratio de 16:9",
         "background_for_the_login_page": "Arrière plan de la page de connexion",
         "background_login_page": "Arrière plan de la page de login",
         "blocked": "Bloqué",
@@ -1274,7 +1274,9 @@
         "virtualhost_avaibility_helpertext": "pour rendre le serveur virtuel disponible, la configuration de nginx doit d'abord être rechargée sur tous les serveurs proxy.",
         "distribution_list_not_exists_error_msg": "La liste de distribution / l'utilisateur n'existe pas. Veuillez vérifier l'orthographe et réessayer.",
         "quarantine": "Quarantaine",
-        "retention_period": "Période de conservation (valeur)"
+        "retention_period": "Période de conservation (valeur)",
+        "advance_edit_user": "Utilisateur",
+        "user_auto_fill": "utilisateur (remplissage automatique)"
     },
     "message": {
         "snackbar": {
@@ -1499,7 +1501,8 @@
         "type_the exact_domain_name": "Taper le nom de domaine exact",
         "web_ui": "Interface Web",
         "administration_rights": "Droits d'administration",
-        "certificate_content_error_without_ca_chain": "Certificats de domaine, la clé privée n'est pas valide"
+        "certificate_content_error_without_ca_chain": "Certificats de domaine, la clé privée n'est pas valide",
+        "virtual_host_name_error": "Merci de saisir un nom de Virtual Host !"
     },
     "commons": {
         "confirm_connection": "CONFIRMER LA CONNEXION",
@@ -1807,7 +1810,9 @@
         "default_COS": "COS par défaut",
         "change_password_for_next_login": "Doit changer son mot de passe à la prochaine connexion",
         "user_will_change_password_on_next_login": "L'utilisateur changera son mot de passe lors de sa prochaine connexion",
-        "force_change_password": "Forcer le changement de mot de passe"
+        "force_change_password": "Forcer le changement de mot de passe",
+        "auto_fill_user_is_disabled": "Le remplissage automatique de l'utilisateur est désactivé",
+        "auto_fill_username_is_disabled": "Le remplissage automatique du nom d'utilisateur est désactivé"
     },
     "account": {
         "new": {
@@ -2428,7 +2433,7 @@
         "mark_as_non_spam": "Non Spam"
     },
     "quarantine": {
-        "delete_message": "Effacer le message",
+        "delete_message": "Effacez le message",
         "message_deleted": "Message supprimé",
         "create_quarantine": "CRÉER UN COMPTE DE QUARANTAINE",
         "delete_and_recrate_quarantine_account_title": "Supprimer et re-créer un compte quarantaine",

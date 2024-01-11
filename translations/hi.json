@@ -11,7 +11,7 @@
         "account": "अकाउंट",
         "accounts": "अकाउंट",
         "active": "एक्टिव",
-        "add": "जोड़ें",
+        "add": "जोड़ें",
         "app_clicked": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "app_name": "मैनेज करें",
         "available_space": "उपलब्ध स्पेस",
@@ -1064,7 +1064,8 @@
         "attachment_plural": "संलग्नक",
         "attachments_disclaimer": "आप एक अटैच किया मैसेज देख रहे हैं। अटैच मैसेज असली हैं या नहीं यह सत्यापित नहीं किया जा सकता।",
         "select_folder": "फोल्डर सिलेक्ट करें",
-        "view_images": "फोटो देखें"
+        "view_images": "फोटो देखें",
+        "advance_edit_user": "यूज़र"
     },
     "timezone": {
         "asia_tomsk": "{{value}} तोम्स्क",
@@ -2165,7 +2166,7 @@
     "the_change_will_not_move_the_data": "इस बदलाव से डेटा स्थानांतरित नहीं होगा",
     "this_will_not_affect_data_already_stored": "यह पहले से स्टोर डेटा को प्रभावित नहीं करेगा",
     "mta": {
-        "add": "जोड़ें",
+        "add": "जोड़ें",
         "discard": "छोड़ें",
         "high": "हाई",
         "may": "मई",
