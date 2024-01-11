@@ -253,6 +253,7 @@ const MTAOutBoundFlow: FC = () => {
 			const zimbraMtaMyNetworks = configInformation.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
 			);
+
 			if (zimbraMtaMyNetworks && zimbraMtaMyNetworks?._content) {
 				setInitialAndCurrentValue(ZIMBRA_MTA_MY_NETWORKS, zimbraMtaMyNetworks?._content);
 			}
@@ -261,6 +262,7 @@ const MTAOutBoundFlow: FC = () => {
 						label: trim(ip)
 				  }))
 				: [];
+
 			setNetworkValue(value);
 		}
 	}, [configInformation, setInitialAndCurrentValue, setMtaInitialValues]);
@@ -480,7 +482,7 @@ const MTAOutBoundFlow: FC = () => {
 			map(ips, (ip: IpRangeValue) => {
 				validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });
 			});
-			const value = data.length === 0 ? '' : join(map(data, 'label'), '  ');
+			const value = data.length === 0 ? '' : join(map(data, 'label'), ' ');
 			const isErrorValueAvail = some(data || [], { error: true });
 			if (allowSetMTA && !isErrorValueAvail) {
 				setValue(ZIMBRA_MTA_MY_NETWORKS, value);
