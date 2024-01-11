@@ -708,8 +708,8 @@
         "new_volume_create": "BUAT",
         "next": "BERIKUTNYA",
         "path": "Jalur",
-        "prefix": "Prefiks",
-        "private": "Pribadi",
+        "prefix": "Awalan",
+        "private": "Privat",
         "public": "Publik",
         "quotas": "Kuota",
         "restore_data_source": "Pulihkan Sumber Data",
@@ -937,7 +937,7 @@
         "volume_server_name": "Server",
         "wipe_device": "Hapus Perangkat",
         "advanced_lbl": "Lanjutan",
-        "reset": "Atur ulang",
+        "reset": "Atur Ulang",
         "failed": "Gagal",
         "remove_button": "HAPUS",
         "session_id": "ID Sesi",
@@ -1235,7 +1235,7 @@
         "pager": "Pager",
         "phone": "Telepon",
         "state": "Status",
-        "username": "Nama Pengguna",
+        "username": "Nama pengguna",
         "city": "Kota",
         "general_lbl": "Umum",
         "antispam": "Antispam",
@@ -1385,7 +1385,7 @@
         "please_select_the_measure_unit": "Pilih satuan pengukuran",
         "person_name": "Nama",
         "stats": "Statistik",
-        "advance_edit_userName": "Nama Pengguna",
+        "advance_edit_userName": "Nama pengguna",
         "search_for_an_account": "Cari akun",
         "Cos_name": "Nama Cos",
         "invalid_destination": "Node ini bukan tujuan yang valid",
@@ -1402,7 +1402,8 @@
         "subject": "Subjek",
         "to": "Kepada",
         "view_images": "LIHAT GAMBAR",
-        "discard": "Hapus"
+        "discard": "Hapus",
+        "advance_edit_user": "Pengguna"
     },
     "message": {
         "snackbar": {

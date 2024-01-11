@@ -199,7 +199,8 @@
         "domain_list": "Lista Domini",
         "certificate_removed": "Il certificato è stato rimosso",
         "administration_rights": "Diritti di amministrazione",
-        "certificate_content_error_without_ca_chain": "Certificato di Dominio, chiave privata non valida"
+        "certificate_content_error_without_ca_chain": "Certificato di Dominio, chiave privata non valida",
+        "virtual_host_name_error": "Inserisci un nome virtual host valido!"
     },
     "label": {
         "account": "Account",
@@ -783,7 +784,7 @@
         "email_address": "Indirizzo email",
         "enabled": "Abilitato",
         "global": "Globale",
-        "last_seen": "Visto l’ultima volta",
+        "last_seen": "Ultimo accesso",
         "mailstores": "Mailstore",
         "mobile_password": "Mobile Password",
         "reset": "Reimposta",
@@ -812,7 +813,7 @@
         "admin_panel_title": "PANNELLO AMMINISTRATIVO",
         "apperance": "Aspetto",
         "background": "Sfondo",
-        "background_description": "Copia l'URL dell'immagine da utilizzare nella pagina di login. Utilizza un file JPG o PNF, con una risoluzione 1280x720 pixel, proporzione 16:9 e inferiore a 800 KB.",
+        "background_description": "Copia l'URL dell'immagine da utilizzare nella pagina di login. Utilizza un file JPG o PNF, con una risoluzione 1280x1080 pixel e proporzione 16:9.",
         "background_for_the_login_page": "Sfondo per la pagina di login",
         "background_login_page": "Sfondo pagina di login",
         "blocked": "Bloccato",
@@ -833,7 +834,7 @@
         "failed": "Fallito",
         "false": "Falso",
         "favicon": "Favicon",
-        "favicon_description": "Incolla l'URL della favicon da utilizzare nella pagina di login. Utilizza un file ICO, dimensione 16x16 pixel.",
+        "favicon_description": "Incolla l'URL della favicon da utilizzare nella pagina di login. Utilizza un file ICO, dimensione 32x32 pixel.",
         "filter_by_device_type_account": "Filtra per tipo di dispositivo, account, stato",
         "ip": "IP",
         "light_mode": "Tema <bold>Chiaro</bold>",
@@ -1001,7 +1002,7 @@
         "backup_primarybar_tooltip": "Gestisci i <bold>servizi backup</bold>, visualizza il loro <bold>stato</bold>, la <bold>lista dei server</bold>o <bold>importa un backup esistente</bold>.",
         "account_name": "Nome Account",
         "aliases": "Alias",
-        "distribution_list": "Lista di Distribuzione",
+        "distribution_list": "Distribution List",
         "dont_save_a_copy_of_sent_messages": "Non salvare una copia dei messaggi inviati",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Salva una copia dei messaggi inviati della cartella dei messaggi inviati del delegato",
         "save_a_copy_of_sent_messages_to_my_sent_folder": "Salva una copia dei messaggi inviati nella mia cartella \"Inviato\"",
@@ -1313,7 +1314,42 @@
         "attachments_disclaimer": "Stai visualizzando un messaggio allegato. L'autenticità di questo messaggio non può essere verificata.",
         "from": "Da",
         "invalid_destination": "Questo nodo non risulta essere una destinazione valida",
-        "messages": "Messaggi"
+        "messages": "Messaggi",
+        "retention_period": "Periodo di conservazione (valore)",
+        "rich_text_editor": "Editor di testo",
+        "add_in_distribution_list_or_both": "Hai aggiunto un'altra Distribution List o uno User. Entrambi possono essere Owner della lista.",
+        "always_allow_address": "Consenti sempre da <strong>{{values}}</strong>",
+        "always_allow_domain": "Consenti sempre dal dominio <strong>{{values}}</strong>",
+        "bucket_verification_failed_message": "Verifica non riuscita Impossibile testare la configurazione del bucket. {{bucketType}} non supportato per questa connessione (ID: {{bucketId}})",
+        "date_time": "Data & Ora",
+        "deliver": "ESEGUI",
+        "distribution_list_name": "Nome della distribution list",
+        "disclaimer": "Esclusione di responsabilità",
+        "distribution_list_not_exists_error_msg": "La distribution list o l'utente non esiste. Controlla e riprova.",
+        "distribution_list_url": "URL della distribution list",
+        "distribution_list_user": "Distribution list / Utente",
+        "enduser_login_redirect_url": "URL di reindirizzamento Login",
+        "mandatory_disclaimer_are_enable_for_all_domain": "Le esclusioni di responsabilità obbligatorie sono abilitate per tutti i domini",
+        "mandatory_disclaimer_is_enable_for_this_domain": "Le esclusioni di responsabilità obbligatorie sono abilitate per questo dominio",
+        "new_distribution_list": "Nuova Distribution List",
+        "please_note": "<bold>Nota bene</bold>",
+        "score": "Partitura",
+        "something_went_wrong_check_data_and_try_again": "SI È VERIFICATO UN ERRORE. CONTROLLA I DATI E RIPROVA",
+        "text_editor": "Editor di testo",
+        "user_auto_fill": "utente (compilazione automatica)",
+        "auto_clean_up": "PULIZIA AUTOMATICA",
+        "create_distribution_list_msg": "Puoi creare una nuova Distribution List cliccando sul pulsante <bold>Crea</bold> (angolo in alto a sinistra) o sul pulsante Aggiungi (<bold>+</bold>) qui sopra.",
+        "distribution_list_already_in_list_error": "La distribution list o l'utente sono già nella lista",
+        "enable_disclaimers_for_this_domain": "Abilita le dichiarazioni di responsabilità per questo dominio",
+        "mandatory_disclaimer_are_enable_only_for_outbound_deliveries": "Le esclusioni di responsabilità obbligatorie sono abilitate solo per le consegne in uscita",
+        "enable_disclaimers_for_all_domains": "Esclusione di responsabilità obbligatoria per tutti i domini",
+        "extra_window": {
+            "save_to_files_disabled": "Il salvataggio dei file allegati è disponibile solo dalla scheda principale"
+        },
+        "only_allow_outbound_disclaimers": "Consenti solo dichiarazioni di non responsabilità in uscita",
+        "quarantine": "Quarantena",
+        "virtualhost_avaibility_helpertext": "per rendere disponibile il vistualHost, ricaricare prima la configurazione di nginx su tutti i proxy.",
+        "advance_edit_user": "Utente"
     },
     "message": {
         "snackbar": {
@@ -1733,7 +1769,9 @@
         "change_password_for_next_login": "La password dev'essere modificata al prossimo accesso",
         "enable_activeSync_remote_access": "Abilita accesso remoto ActiveSync",
         "user_will_change_password_on_next_login": "L\"utente cambierà password all'accesso successivo",
-        "force_change_password": "Forza Cambio Password"
+        "force_change_password": "Forza Cambio Password",
+        "auto_fill_user_is_disabled": "Riempimento automatico user disabilitato",
+        "auto_fill_username_is_disabled": "Riempimento automatico username disabilitato"
     },
     "many_cos_info_msg": "Sembrano esserci molte COS! Quale vuoi visualizzare? Inizia a digitare il nome per filtrarle.",
     "new_bucket_summary": "RIEPILOGO",
@@ -2387,11 +2425,29 @@
     },
     "quarantine": {
         "delete_message": "Elimina messaggio",
-        "message_deleted": "Messaggio eliminato"
+        "message_deleted": "Messaggio eliminato",
+        "create_quarantine": "CREA UN ACCOUNT DI QUARANTENA",
+        "delete_and_recrate_quarantine_account_title": "Elimina e ricrea l'account di quarantena",
+        "delete_and_recrate_quarantine_account_warning": "Sei sicuro di voler eliminare e ricreare l'account di quarantena?",
+        "delete_and_recreate_quarantine": "ELIMINA E RICREA L'ACCOUNT DI QUARANTENA",
+        "delete_msg_warning": "Sei sicuro di voler eliminare questo messaggio?",
+        "destroy_account_recreate_button": "SÌ, ELIMINALO E RICREALO",
+        "hide_source": "Nascondi origine",
+        "deliver": "ESEGUI",
+        "message_delivered": "Messaggio recapitato",
+        "not_quarantine_account": "Non esiste ancora un account di quarantena in nessuno dei domini. Vuoi creare un account di quarantena di sistema?",
+        "quarantine": "Quarantena",
+        "quarantine_messages": "Messaggi in quarantena",
+        "quarantine_account": "Account quarantena",
+        "show_images": "Mostra immagini",
+        "show_source": "Mostra origine",
+        "to_make_changes_restart_the_MTA": "Per rendere effettivi i cambiamenti, riavviare l'MTA.",
+        "yes_delete_message": "SI, ELIMINA"
     },
     "action": {
         "click_open": "Clicca per aprire",
-        "click_preview": "Clicca per visualizzare l'anteprima"
+        "click_preview": "Clicca per visualizzare l'anteprima",
+        "mark_as_non_spam": "Non Spam"
     },
     "messages": {
         "no_content": "Questo messaggio non ha contenuto",

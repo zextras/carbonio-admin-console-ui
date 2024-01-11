@@ -137,7 +137,7 @@
         "app_name": "Beheren",
         "available_space": "Beschikbare ruimte",
         "backup": "Backup",
-        "cancel": "Abbrechen",
+        "cancel": "Annuleren",
         "configuration": "CONFIGURATIE",
         "core": "Core",
         "days": "Dagen",
@@ -164,7 +164,7 @@
             }
         },
         "status": "Status",
-        "suspended": "Tijdelijk stopgezet",
+        "suspended": "Geschorst",
         "timezone": "Tijdzone",
         "unlimited": "Onbeperkt",
         "url": "URL",
@@ -1192,7 +1192,8 @@
         "show_quoted_text": "Geciteerde tekst weergeven",
         "subject": "Onderwerp",
         "to": "Aan",
-        "view_images": "AFBEELDINGEN BEKIJKEN"
+        "view_images": "AFBEELDINGEN BEKIJKEN",
+        "advance_edit_user": "Gebruiker"
     },
     "timezone": {
         "europe_belgrade": "{{value}} Belgrado, Bratislava, Boedapest, Ljubljana, Praag",
