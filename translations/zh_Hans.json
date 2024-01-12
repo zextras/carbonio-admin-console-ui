@@ -1013,7 +1013,8 @@
         "show_quoted_text": "显示引用文本",
         "subject": "主题",
         "to": "至",
-        "view_images": "查看图像"
+        "view_images": "查看图像",
+        "advance_edit_user": "用户"
     },
     "timezone": {
         "asia_tehran": "{{value}} 德黑兰",

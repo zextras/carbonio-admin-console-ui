@@ -50,6 +50,7 @@ import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import ListRow from '../../list/list-row';
+import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 
 const MTAAntiVirusAndAntiSpam: FC = () => {
 	const [t] = useTranslation();
@@ -614,6 +615,32 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 	}, [mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror]);
 
 	const onAddAntivirusMirrors = useCallback(() => {
+		if (isSpaceAvailableInString(antiVirusMirrorsAddText)) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t(
+					'mta.space_not_allowed_in_antivirus_mirror',
+					'Space not allowed in antivirus mirror'
+				),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			return;
+		}
+
+		if (!isValidHostname(antiVirusMirrorsAddText)) {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: t('mta.allowed_valid_antivirus_mirror', 'Antivirus mirror is not valid'),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			return;
+		}
 		if (mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror) {
 			const calmDatabaseMirror =
 				mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror.split(',');
@@ -629,8 +656,10 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 		setAntiVirusMirrorsAddText('');
 	}, [
 		antiVirusMirrorsAddText,
+		createSnackbar,
 		mtaAntiVirusAndAntispamDetail?.zimbraClamAVDatabaseMirror,
-		setValue
+		setValue,
+		t
 	]);
 
 	const onRemoveAntivirusMirrors = useCallback(() => {
