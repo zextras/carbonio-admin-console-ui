@@ -25,8 +25,6 @@ import { debounce, map } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import InheritedInput from './inherited-components/inherited-input';
-import InheritedSelect from './inherited-components/inherited-select';
 import { objectType, Attribute } from '../../../../../../types';
 import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
@@ -36,6 +34,8 @@ import CustomChip from '../../../../components/customChip';
 import DropDownInput from '../../../../components/dropDownInput';
 import ManageAliases from '../../../../components/manageAliases';
 import Textarea from '../../../../components/textarea';
+import InheritedInput from '../../../../utility/inherited-components/inherited-input';
+import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import { localeList, AccountStatus } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -246,7 +246,7 @@ const EditAccountGeneralSection: FC = () => {
 	};
 	const setEmptyValue = useCallback(
 		(keyName) => {
-			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
+			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
 	);
@@ -595,9 +595,9 @@ const EditAccountGeneralSection: FC = () => {
 							<InheritedSelect
 								label={t('label.language', 'Language')}
 								items={localeZone}
-								accountValue={accountDetail.zimbraPrefLocale}
-								cosValue={cosDetail.zimbraPrefLocale}
-								fromAccount={accSpecificDetail?.zimbraPrefLocale}
+								subValue={accountDetail.zimbraPrefLocale}
+								inheritedValue={cosDetail.zimbraPrefLocale}
+								fromSubValue={accSpecificDetail?.zimbraPrefLocale}
 								background="gray5"
 								selectName="zimbraPrefLocale"
 								onChange={onPrefLocaleChange}
@@ -638,11 +638,11 @@ const EditAccountGeneralSection: FC = () => {
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<InheritedInput
 						label={t('label.account_quota_mb', 'Account Quota (MB)')}
-						accountValue={accountQuota}
-						cosValue={
+						subValue={accountQuota}
+						inheritedValue={
 							cosDetail.zimbraMailQuota ? (cosDetail.zimbraMailQuota / 1048576).toString() : ''
 						}
-						fromAccount={
+						fromSubValue={
 							accSpecificDetail.zimbraMailQuota
 								? (accSpecificDetail.zimbraMailQuota / 1048576).toString()
 								: ''

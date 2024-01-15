@@ -37,7 +37,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import DelegateAddSection from './add-delegate-section/delegate-add-section';
 import DelegateSelectModeSection from './add-delegate-section/delegate-selectmode-section';
 import DelegateSetRightsSection from './add-delegate-section/delegate-setright-section';
-import InheritedSelect from './inherited-components/inherited-select';
 import logo from '../../../../../assets/gardian.svg';
 import {
 	SEND_MAILS_ONLY,
@@ -54,6 +53,7 @@ import { Section } from '../../../../app/component/section';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
+import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 
@@ -830,7 +830,7 @@ const EditAccountDelegatesSection: FC = () => {
 	};
 	const setEmptyValue = useCallback(
 		(keyName) => {
-			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
+			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
 	);
@@ -895,9 +895,9 @@ const EditAccountDelegatesSection: FC = () => {
 					<InheritedSelect
 						label={t('label.delegate_send_settings', 'Delegate Send Settings')}
 						items={DELEGATE_SEND_SETTINGS}
-						accountValue={accountDetail?.zimbraPrefDelegatedSendSaveTarget}
-						cosValue={cosDetail.zimbraPrefDelegatedSendSaveTarget}
-						fromAccount={accSpecificDetail?.zimbraPrefDelegatedSendSaveTarget}
+						subValue={accountDetail?.zimbraPrefDelegatedSendSaveTarget}
+						inheritedValue={cosDetail.zimbraPrefDelegatedSendSaveTarget}
+						fromSubValue={accSpecificDetail?.zimbraPrefDelegatedSendSaveTarget}
 						background="gray5"
 						selectName="zimbraPrefTimeZoneId"
 						onChange={onDeligateSendSettingsChange}
