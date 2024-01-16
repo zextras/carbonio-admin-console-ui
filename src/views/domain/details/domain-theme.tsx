@@ -25,6 +25,7 @@ import { useConfigStore } from '../../../store/config/store';
 import { useDomainStore } from '../../../store/domain/store';
 import OverlayDivision from '../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { isValidHexColor } from '../../utility/utils';
 import { ThemeConfigs } from '../theme/theme-configs';
 import { ResetTheme } from '../theme/theme-reset';
 
@@ -129,7 +130,39 @@ const DomainTheme: FC = () => {
 			});
 	};
 
+	const showErrorMessage = useCallback(
+		(msg) => {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: msg,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[createSnackbar]
+	);
+
 	const onSave = (): void => {
+		if (
+			domainTheme?.carbonioWebUiPrimaryColor &&
+			!isValidHexColor(domainTheme?.carbonioWebUiPrimaryColor)
+		) {
+			showErrorMessage(
+				t('label.invalid_primary_color_light_mode', 'Primary Color for Light Mode is not valid')
+			);
+			return;
+		}
+		if (
+			domainTheme?.carbonioWebUiDarkPrimaryColor &&
+			!isValidHexColor(domainTheme?.carbonioWebUiDarkPrimaryColor)
+		) {
+			showErrorMessage(
+				t('label.invalid_primary_color_dark_mode', 'Primary Color for Dark Mode is not valid')
+			);
+			return;
+		}
 		const body: any = {};
 		const attributes: any[] = [];
 		body.id = zimbraId;
