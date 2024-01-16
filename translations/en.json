@@ -684,6 +684,7 @@
     },
     "error": {
         "alreadyInUse": "",
+        "invalid_ip_address_error_text": "Supported ip format for ipv4 is ipv4/netmask and for ipv6 is [ipv6]/netmask",
         "one_or_more_ip_invalid": "One or more IP are invalid"
     },
     "have_not_setup_bucket_type": "It seems like you haven't setup a bucket type",
