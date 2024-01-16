@@ -2213,7 +2213,8 @@ export const IsValidFQDN = (value: string): boolean => {
 };
 
 export const isValidProxy = (value: string): boolean => {
-	const validProxyRegex = /^(inline|pcre|proxy|regexp):[^\s/$.?#].[^\s]*$/;
+	const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';
+	const validProxyRegex = new RegExp(`^${pattern}(( ,|, | , |,)${pattern})*$`);
 	return validProxyRegex.test(value);
 };
 export const isSpaceAvailableInString = (value: string): boolean => {
