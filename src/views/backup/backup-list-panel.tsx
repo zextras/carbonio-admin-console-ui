@@ -40,7 +40,7 @@ const BackupListPanel: FC = () => {
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
-	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVER_CONFIG);
+	const [selectedOperationItem, setSelectedOperationItem] = useState(SERVERS_LIST);
 	const [isDefaultSettingsExpanded, setIsDefaultSettingsExpanded] = useState(true);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
 	const serverList = useBucketServersListStore((state) => state.volumeList || []);
@@ -72,6 +72,11 @@ const BackupListPanel: FC = () => {
 	const defaultSettingsOptions = useMemo(
 		() => [
 			{
+				id: SERVERS_LIST,
+				name: t('label.servers_list', 'Servers List'),
+				isSelected: !!isBackupModuleLicensed
+			},
+			{
 				id: SERVER_CONFIG,
 				name: t('label.server_config', 'Server Config'),
 				isSelected: !!isBackupModuleLicensed
@@ -79,11 +84,6 @@ const BackupListPanel: FC = () => {
 			{
 				id: ADVANCED,
 				name: t('label.advanced', 'Advanced'),
-				isSelected: !!isBackupModuleLicensed
-			},
-			{
-				id: SERVERS_LIST,
-				name: t('label.servers_list', 'Servers List'),
 				isSelected: !!isBackupModuleLicensed
 			}
 		],

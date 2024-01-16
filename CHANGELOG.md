@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.42](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.41...v0.9.42) (2024-01-12)
+
+
+### Features
+
+* ac-903: changed default page opening to server list ([6a0e2cc](https://github.com/zextras/carbonio-admin-console-ui/commit/6a0e2ccb287a600146a849aca3711289ea9d24a0))
+
 ### [0.9.41](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.40...v0.9.41) (2024-01-11)
 
 
