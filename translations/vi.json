@@ -224,7 +224,7 @@
         "volume_cancel_button": "HUỶ",
         "volume_compression_thresold": "Ngưỡng nén",
         "volume_id": "ID tập",
-        "volume_name": "Tên Tập",
+        "volume_name": "Tên tập",
         "volume_path": "Đường dẫn",
         "volume_type": "Kiểu tập",
         "week_day": {
@@ -714,7 +714,8 @@
         "show_quoted_text": "Hiện văn bản được trích dẫn",
         "subject": "Chủ đề",
         "to": "Tới",
-        "view_images": "XEM ẢNH"
+        "view_images": "XEM ẢNH",
+        "advance_edit_user": "Người dùng"
     },
     "timezone": {
         "australia_sydney": "{{value}} Canberra, Melbourne, Sydney",
@@ -842,7 +843,7 @@
         "america_caracas": "{{value}} Caracas",
         "america_cayenne": "{{value}} Cayenne, Fortaleza",
         "america_chicago": "{{value}} US/Canada Central",
-        "africa_algiers": "{{value}} West Central Africa",
+        "africa_algiers": "{{value}} Tây Trung Phi",
         "africa_cairo": "{{value}} Ai Cập",
         "africa_casablanca": "{{value}} Casablanca",
         "africa_harare": "{{value}} Harare, Pretoria",

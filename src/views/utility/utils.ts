@@ -2228,6 +2228,11 @@ export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const GbToBytes = (data: any): any => multiply(data, 1024 ** 3);
 
+export const isValidHexColor = (value: string): boolean => {
+	const regex = /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/;
+	return regex.test(value);
+};
+
 export const validateIpAddress = (value: string): boolean => {
 	const ipv4Regex =
 		// eslint-disable-next-line max-len

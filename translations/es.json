@@ -1244,7 +1244,8 @@
         "show_all": "Mostrar todo",
         "show_quoted_text": "Mostrar texto citado",
         "subject": "Asunto",
-        "to": "Para"
+        "to": "Para",
+        "advance_edit_user": "Usuarios"
     },
     "timezone": {
         "indian_mauritius": "{{value}} Port Louis",
@@ -1425,7 +1426,7 @@
             },
             "all_att_saved": "Los adjuntos han sido guardados en la carpeta seleccionada",
             "att_err": "Se produjo un problema al guardar. Intenta nuevamente",
-            "att_saved": "El adjunto se guardó en la carpeta seleccionada",
+            "att_saved": "Adjunto guardado en la carpeta seleccionada",
             "some_att_fails": "Parece que hay un problema al guardar los archivos. Intenta nuevamente"
         },
         "external_images_blocked": "Las imágenes externas han sido bloqueadas para protección ante posible spam"

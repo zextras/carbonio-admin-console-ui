@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.42](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.41...v0.9.42) (2024-01-12)
+
+
+### Features
+
+* ac-903: changed default page opening to server list ([6a0e2cc](https://github.com/zextras/carbonio-admin-console-ui/commit/6a0e2ccb287a600146a849aca3711289ea9d24a0))
+
+### [0.9.41](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.40...v0.9.41) (2024-01-11)
+
+
+### Bug Fixes
+
+* ac-795: duplicate value remove from translation ([51b6f3a](https://github.com/zextras/carbonio-admin-console-ui/commit/51b6f3a2fbfff6f70ffbb0975a712b6343ffd320))
+* allow domain admin to configure recovery email ([#622](https://github.com/zextras/carbonio-admin-console-ui/issues/622)) ([1458237](https://github.com/zextras/carbonio-admin-console-ui/commit/145823704978b6f651e7c8eaf5c071f750495760))
+
+### [0.9.40](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.39...v0.9.40) (2024-01-04)
+
+
+### Features
+
+* ac-533: manage domain disclaimer and global disclaimer ([e7660e5](https://github.com/zextras/carbonio-admin-console-ui/commit/e7660e5001e207b02a97b3502b50aa7c85b4c18f))
+
+
+### Bug Fixes
+
+* ac-906: regex improvivized for fqdn ([ae71168](https://github.com/zextras/carbonio-admin-console-ui/commit/ae71168e509e2ff51e14533a23a525cdde7faf3b))
+* login background image description ([#614](https://github.com/zextras/carbonio-admin-console-ui/issues/614)) ([79c0e61](https://github.com/zextras/carbonio-admin-console-ui/commit/79c0e6142c3e6bb6fc01a7df3de4e9bf41befb7e))
+
 ### [0.9.39](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.38...v0.9.39) (2023-12-14)
 
 

@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 
 import {
-	Select,
+	Switch,
 	Tooltip,
 	IconCheckbox,
 	Text,
@@ -16,50 +16,40 @@ import {
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-const InheritedSelect: FC<{
+const InheritedSwitch: FC<{
 	label: any;
-	items: any[];
-	accountValue: any;
-	cosValue: any;
-	background: any;
-	selectName: any;
+	subValue: any;
+	inheritedValue: any;
+	inputName: string;
 	onChange: any;
 	onChangeReset: any;
-	fromAccount: any;
+	fromSubValue: any;
+	iconColor: string;
 	disabled?: boolean;
 }> = ({
 	label,
-	items,
-	accountValue,
-	cosValue,
-	background,
+	subValue,
+	inheritedValue,
+	inputName,
 	onChange,
 	onChangeReset,
-	fromAccount,
+	fromSubValue,
+	iconColor,
 	disabled = false
 }) => {
 	const [t] = useTranslation();
-	const selectedValue = useMemo(() => {
-		let selectValue = accountValue;
-		if (!accountValue) {
-			selectValue = cosValue;
-		}
-		return items.find((item: any) => item.value === selectValue);
-	}, [accountValue, cosValue, items]);
 	return (
-		<Container orientation="horizontal">
-			<Row takeAvailableSpace>
-				<Select
+		<Container mainAlignment="flex-start" orientation="horizontal">
+			<Row mainAlignment="flex-start">
+				<Switch
+					value={subValue ? subValue === 'TRUE' : inheritedValue === 'TRUE'}
+					onClick={(): void => onChange(inputName)}
 					label={label}
-					items={items}
-					showCheckbox={false}
-					selection={selectedValue}
-					background={background}
-					onChange={onChange}
+					iconColor={iconColor}
 					disabled={disabled}
 				/>
 			</Row>
-			{fromAccount ? (
+			{fromSubValue ? (
 				<Tooltip
 					label={
 						<>
@@ -68,7 +58,7 @@ const InheritedSelect: FC<{
 									{t('account_details.inherited_value_was', 'The inherited value was')} :
 								</Text>
 								<Text>{`  ${
-									items.find((item: any) => item.value === cosValue)?.label || ''
+									inheritedValue === 'TRUE' ? t('label.true', 'true') : t('label.false', 'false')
 								}`}</Text>
 							</Row>
 							<Padding top="small">
@@ -82,7 +72,6 @@ const InheritedSelect: FC<{
 					<IconCheckbox
 						icon="RefreshOutline"
 						value={false}
-						size="large"
 						onClick={onChangeReset}
 						style={{ cursor: 'pointer' }}
 						onChange={(): null => null}
@@ -94,4 +83,4 @@ const InheritedSelect: FC<{
 		</Container>
 	);
 };
-export default InheritedSelect;
+export default InheritedSwitch;

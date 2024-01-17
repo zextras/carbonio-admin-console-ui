@@ -9,7 +9,7 @@ import { Container, Row, Text, Divider } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import InheritedSwitch from '../domain/manange/accounts/edit-account/inherited-components/inherited-switch';
+import InheritedSwitch from '../utility/inherited-components/inherited-switch';
 
 export const Features: FC<{
 	featuresDetail: Record<string, string>;
@@ -65,12 +65,12 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.zimbraFeatureOptionsEnabled}
+							subValue={featuresDetail?.zimbraFeatureOptionsEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.can_access_settings', 'Can access Settings')}
 							iconColor="primary"
-							cosValue={cosDetail?.zimbraFeatureOptionsEnabled}
-							fromAccount={accSpecificDetail?.zimbraFeatureOptionsEnabled}
+							inheritedValue={cosDetail?.zimbraFeatureOptionsEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureOptionsEnabled}
 							inputName={'zimbraFeatureOptionsEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureOptionsEnabled')
@@ -98,13 +98,13 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
+							subValue={featuresDetail?.carbonioFeatureMailsAppEnabled}
 							onChange={changeSwitchOption}
 							// eslint-disable-next-line sonarjs/no-duplicate-string
 							label={t('label.mobile_app', 'Mobile App')}
 							iconColor="primary"
-							cosValue={cosDetail?.carbonioFeatureMailsAppEnabled}
-							fromAccount={accSpecificDetail?.carbonioFeatureMailsAppEnabled}
+							inheritedValue={cosDetail?.carbonioFeatureMailsAppEnabled}
+							fromSubValue={accSpecificDetail?.carbonioFeatureMailsAppEnabled}
 							inputName={'carbonioFeatureMailsAppEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('carbonioFeatureMailsAppEnabled')
@@ -114,12 +114,12 @@ export const Features: FC<{
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.zimbraFeatureSignaturesEnabled}
+							subValue={featuresDetail?.zimbraFeatureSignaturesEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.mail_signatures', 'Mail Signatures')}
 							iconColor="primary"
-							cosValue={cosDetail?.zimbraFeatureSignaturesEnabled}
-							fromAccount={accSpecificDetail?.zimbraFeatureSignaturesEnabled}
+							inheritedValue={cosDetail?.zimbraFeatureSignaturesEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureSignaturesEnabled}
 							inputName={'zimbraFeatureSignaturesEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureSignaturesEnabled')
@@ -129,12 +129,12 @@ export const Features: FC<{
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+							subValue={featuresDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
 							iconColor="primary"
-							cosValue={cosDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
-							fromAccount={accSpecificDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+							inheritedValue={cosDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
 							inputName={'zimbraFeatureOutOfOfficeReplyEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureOutOfOfficeReplyEnabled')
@@ -145,13 +145,13 @@ export const Features: FC<{
 					{isAdvanced && (
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<InheritedSwitch
-								accountValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
+								subValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
 								onChange={changeSwitchOption}
 								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
 								iconColor="primary"
-								cosValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
-								fromAccount={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
+								inheritedValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
 								inputName={'zimbraFeatureMobileSyncEnabled'}
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('zimbraFeatureMobileSyncEnabled')
@@ -174,13 +174,13 @@ export const Features: FC<{
 						</Text>
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<InheritedSwitch
-								accountValue={featuresDetail?.carbonioFeatureTeamEnabled}
+								subValue={featuresDetail?.carbonioFeatureTeamEnabled}
 								onChange={changeSwitchOption}
 								// eslint-disable-next-line sonarjs/no-duplicate-string
 								label={t('label.web_feature', 'Web Feature')}
 								iconColor="primary"
-								cosValue={cosDetail?.carbonioFeatureTeamEnabled}
-								fromAccount={accSpecificDetail?.carbonioFeatureTeamEnabled}
+								inheritedValue={cosDetail?.carbonioFeatureTeamEnabled}
+								fromSubValue={accSpecificDetail?.carbonioFeatureTeamEnabled}
 								inputName={'carbonioFeatureTeamEnabled'}
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('carbonioFeatureTeamEnabled')
@@ -194,12 +194,12 @@ export const Features: FC<{
 							padding={{ top: 'large', bottom: 'large' }}
 						>
 							<InheritedSwitch
-								accountValue={featuresDetail?.carbonioFeatureChatsAppEnabled}
+								subValue={featuresDetail?.carbonioFeatureChatsAppEnabled}
 								onChange={changeSwitchOption}
 								label={t('label.mobile_app', 'Mobile App')}
 								iconColor="primary"
-								cosValue={cosDetail?.carbonioFeatureChatsAppEnabled}
-								fromAccount={accSpecificDetail?.carbonioFeatureChatsAppEnabled}
+								inheritedValue={cosDetail?.carbonioFeatureChatsAppEnabled}
+								fromSubValue={accSpecificDetail?.carbonioFeatureChatsAppEnabled}
 								inputName={'carbonioFeatureChatsAppEnabled'}
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('carbonioFeatureChatsAppEnabled')
@@ -229,12 +229,12 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.zimbraFeatureContactsEnabled}
+							subValue={featuresDetail?.zimbraFeatureContactsEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
-							cosValue={cosDetail?.zimbraFeatureContactsEnabled}
-							fromAccount={accSpecificDetail?.zimbraFeatureContactsEnabled}
+							inheritedValue={cosDetail?.zimbraFeatureContactsEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureContactsEnabled}
 							inputName={'zimbraFeatureContactsEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureContactsEnabled')
@@ -245,12 +245,12 @@ export const Features: FC<{
 					{isAdvanced && (
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<InheritedSwitch
-								accountValue={featuresDetail?.mobileContactFeatureSync}
+								subValue={featuresDetail?.mobileContactFeatureSync}
 								onChange={changeSwitchOption}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
 								iconColor="primary"
-								cosValue={cosDetail?.mobileContactFeatureSync}
-								fromAccount={accSpecificDetail?.mobileContactFeatureSync}
+								inheritedValue={cosDetail?.mobileContactFeatureSync}
+								fromSubValue={accSpecificDetail?.mobileContactFeatureSync}
 								inputName={'mobileContactFeatureSync'}
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('mobileContactFeatureSync')
@@ -274,12 +274,12 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.zimbraFeatureCalendarEnabled}
+							subValue={featuresDetail?.zimbraFeatureCalendarEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
-							cosValue={cosDetail?.zimbraFeatureCalendarEnabled}
-							fromAccount={accSpecificDetail?.zimbraFeatureCalendarEnabled}
+							inheritedValue={cosDetail?.zimbraFeatureCalendarEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureCalendarEnabled}
 							inputName={'zimbraFeatureCalendarEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureCalendarEnabled')
@@ -290,12 +290,12 @@ export const Features: FC<{
 					{isAdvanced && (
 						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 							<InheritedSwitch
-								accountValue={featuresDetail?.mobileCalendarFeatureSync}
+								subValue={featuresDetail?.mobileCalendarFeatureSync}
 								onChange={changeSwitchOption}
 								label={t('cos.activesync_remote_access', 'ActiveSync remote access')}
 								iconColor="primary"
-								cosValue={cosDetail?.mobileCalendarFeatureSync}
-								fromAccount={accSpecificDetail?.mobileCalendarFeatureSync}
+								inheritedValue={cosDetail?.mobileCalendarFeatureSync}
+								fromSubValue={accSpecificDetail?.mobileCalendarFeatureSync}
 								inputName={'mobileCalendarFeatureSync'}
 								onChangeReset={(): void =>
 									setEmptyValue && setEmptyValue('mobileCalendarFeatureSync')
@@ -327,12 +327,12 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.carbonioFeatureFilesEnabled}
+							subValue={featuresDetail?.carbonioFeatureFilesEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
-							cosValue={cosDetail?.carbonioFeatureFilesEnabled}
-							fromAccount={accSpecificDetail?.carbonioFeatureFilesEnabled}
+							inheritedValue={cosDetail?.carbonioFeatureFilesEnabled}
+							fromSubValue={accSpecificDetail?.carbonioFeatureFilesEnabled}
 							inputName={'carbonioFeatureFilesEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('carbonioFeatureFilesEnabled')
@@ -342,12 +342,12 @@ export const Features: FC<{
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.carbonioFeatureFilesAppEnabled}
+							subValue={featuresDetail?.carbonioFeatureFilesAppEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.mobile_app', 'Mobile App')}
 							iconColor="primary"
-							cosValue={cosDetail?.carbonioFeatureFilesAppEnabled}
-							fromAccount={accSpecificDetail?.carbonioFeatureFilesAppEnabled}
+							inheritedValue={cosDetail?.carbonioFeatureFilesAppEnabled}
+							fromSubValue={accSpecificDetail?.carbonioFeatureFilesAppEnabled}
 							inputName={'carbonioFeatureFilesAppEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('carbonioFeatureFilesAppEnabled')
@@ -368,12 +368,12 @@ export const Features: FC<{
 					</Text>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
 						<InheritedSwitch
-							accountValue={featuresDetail?.zimbraFeatureTasksEnabled}
+							subValue={featuresDetail?.zimbraFeatureTasksEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.web_feature', 'Web Feature')}
 							iconColor="primary"
-							cosValue={cosDetail?.zimbraFeatureTasksEnabled}
-							fromAccount={accSpecificDetail?.zimbraFeatureTasksEnabled}
+							inheritedValue={cosDetail?.zimbraFeatureTasksEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureTasksEnabled}
 							inputName={'zimbraFeatureTasksEnabled'}
 							onChangeReset={(): void =>
 								setEmptyValue && setEmptyValue('zimbraFeatureTasksEnabled')
