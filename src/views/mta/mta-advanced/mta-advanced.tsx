@@ -335,6 +335,14 @@ const MTAAdvanced: FC = () => {
 			attributes.forEach((ele: Record<string, string>) => {
 				updateConfig(ele?.n, ele._content);
 			});
+			setTimeout(() => {
+				if (attributes?.find((ele) => ele?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS)) {
+					updateConfig(
+						ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS,
+						attributes?.find((ele) => ele?.n === ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS)?._content
+					);
+				}
+			}, 10);
 		},
 		[updateConfig]
 	);
