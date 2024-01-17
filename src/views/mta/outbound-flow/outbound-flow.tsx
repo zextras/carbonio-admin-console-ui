@@ -17,12 +17,13 @@ import {
 	SnackbarManagerContext,
 	Input,
 	Table,
-	Tooltip
+	Tooltip,
+	ChipInput
 } from '@zextras/carbonio-design-system';
-import { isEqual, find } from 'lodash';
+import { isEqual, find, some, map, join, split, trim } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { MtaOutboundFlow, TRow } from '../../../../types';
+import { IpRangeValue, MtaOutboundFlow, TRow } from '../../../../types';
 import {
 	ANTISPAM,
 	ANTIVIRUS,
@@ -48,7 +49,9 @@ import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
+import { validateIpAddress } from '../../utility/utils';
 
 const MTAOutBoundFlow: FC = () => {
 	const [t] = useTranslation();
@@ -60,6 +63,7 @@ const MTAOutBoundFlow: FC = () => {
 	const setServerList = useServerStore((state) => state.setServerList);
 	const [instancesTableRows, setInstancesTableRows] = useState<Array<any>>([]);
 	const rights: Rights = useRightsStore((state) => state.rights);
+	const [networkValue, setNetworkValue] = useState<any>([]);
 
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
@@ -217,6 +221,7 @@ const MTAOutBoundFlow: FC = () => {
 		}
 	}, [configInformation, setInitialAndCurrentValue]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (configInformation && configInformation.length > 0) {
 			setMtaInitialValues();
@@ -248,19 +253,32 @@ const MTAOutBoundFlow: FC = () => {
 			const zimbraMtaMyNetworks = configInformation.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
 			);
+
 			if (zimbraMtaMyNetworks && zimbraMtaMyNetworks?._content) {
 				setInitialAndCurrentValue(ZIMBRA_MTA_MY_NETWORKS, zimbraMtaMyNetworks?._content);
 			}
+			const value = zimbraMtaMyNetworks?._content?.trim()
+				? map(split(zimbraMtaMyNetworks?._content, /  ?/), (ip) => ({
+						label: trim(ip)
+				  }))
+				: [];
+
+			setNetworkValue(value);
 		}
 	}, [configInformation, setInitialAndCurrentValue, setMtaInitialValues]);
 
 	useEffect(() => {
-		if (mtaOutboundDetail && !isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail)) {
+		if (
+			mtaOutboundDetail &&
+			!isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail) &&
+			!some(networkValue || [], { error: true }) &&
+			mtaOutboundDetail?.zimbraMtaMyNetworks !== mtaOutboundFlowInitialDetail?.zimbraMtaMyNetworks
+		) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
 		}
-	}, [mtaOutboundDetail, mtaOutboundFlowInitialDetail]);
+	}, [mtaOutboundDetail, mtaOutboundFlowInitialDetail, networkValue]);
 
 	const updateGlobalConfig = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
@@ -387,10 +405,19 @@ const MTAOutBoundFlow: FC = () => {
 				? mtaOutboundFlowInitialDetail?.zimbraMtaMyOrigin
 				: ''
 		);
+		const zimbraMtaMyNetworks = configInformation.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
+		);
+		const value = zimbraMtaMyNetworks?._content?.trim()
+			? map(split(zimbraMtaMyNetworks?._content, /  ?/), (ip) => ({
+					label: trim(ip)
+			  }))
+			: [];
+		setNetworkValue(value);
 		setTimeout(() => {
 			setIsDirty(false);
 		}, 10);
-	}, [mtaOutboundFlowInitialDetail, setValue]);
+	}, [configInformation, mtaOutboundFlowInitialDetail, setValue]);
 
 	const instanceTableHeader = useMemo(
 		() => [
@@ -446,6 +473,23 @@ const MTAOutBoundFlow: FC = () => {
 		(v: string) => {
 			setValue(ZIMBRA_MTA_TLS_SECURITY_LEVEL, v);
 		},
+		[setValue]
+	);
+
+	const onBlockExtensionChange = useCallback(
+		(ips) => {
+			const data: any = [];
+			map(ips, (ip: IpRangeValue) => {
+				validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });
+			});
+			const value = data.length === 0 ? '' : join(map(data, 'label'), ' ');
+			const isErrorValueAvail = some(data || [], { error: true });
+			if (allowSetMTA && !isErrorValueAvail) {
+				setValue(ZIMBRA_MTA_MY_NETWORKS, value);
+			}
+			setNetworkValue(data);
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[setValue]
 	);
 
@@ -615,16 +659,20 @@ const MTAOutBoundFlow: FC = () => {
 					height="auto"
 					padding={{ top: 'large' }}
 				>
-					<Input
-						label={t('mta.my_netword', 'My Network')}
-						value={mtaOutboundDetail?.zimbraMtaMyNetworks || ''}
-						onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-							if (allowSetMTA) {
-								setValue(ZIMBRA_MTA_MY_NETWORKS, e.target.value);
-							}
-						}}
-						readOnly
-						backgroundColor="gray5"
+					<ChipInput
+						placeholder={t('mta.my_netword', 'My Network')}
+						background="gray5"
+						requireUniqueChips
+						value={networkValue}
+						onChange={onBlockExtensionChange}
+						disabled={!allowSetMTA}
+						hasError={some(networkValue || [], { error: true })}
+						ChipComponent={CustomChip}
+						errorLabel={t(
+							'error.invalid_ip_address_error_text',
+							'Supported ip format for ipv4 is ipv4/netmask and for ipv6 is [ipv6]/netmask'
+						)}
+						maxChips={null}
 					/>
 				</Container>
 				<Container
