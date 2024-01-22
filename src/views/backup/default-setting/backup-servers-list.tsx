@@ -37,9 +37,9 @@ import { useBackupModuleStore } from '../../../store/backup-module/store';
 import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
+import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import Paging from '../../components/paging';
 import { bytesToSize, cosBackupHeader } from '../../utility/utils';
-import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 
 // eslint-disable-next-line no-shadow
 export enum SMART_SCAN_TYPE {
