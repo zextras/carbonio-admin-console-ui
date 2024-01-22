@@ -3,7 +3,15 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	FC,
+	ReactElement,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import {
 	Container,
@@ -12,16 +20,26 @@ import {
 	Divider,
 	Table,
 	Tooltip,
-	Icon
+	Icon,
+	Button,
+	Input,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import _ from 'lodash';
-import { useTranslation } from 'react-i18next';
+import _, { debounce, find } from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
 
+import logo from '../../../assets/gardian.svg';
+import { DISABLE, ENABLE, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { fetchSoap } from '../../../services/bucket-service';
+import { getCosBackupStatus } from '../../../services/get-cos-backup-status-service';
+import { getCosList } from '../../../services/search-cos-service';
 import { useBackupModuleStore } from '../../../store/backup-module/store';
 import { useServerStore } from '../../../store/server/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
-import { bytesToSize } from '../../utility/utils';
+import Paging from '../../components/paging';
+import { bytesToSize, cosBackupHeader } from '../../utility/utils';
+import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 
 // eslint-disable-next-line no-shadow
 export enum SMART_SCAN_TYPE {
@@ -46,6 +64,30 @@ type BackupServerType = {
 	smartScanTooltip?: string;
 	availableMetadataSpaceTooltip?: string;
 	availableBackupSpaceTooltip?: string;
+};
+
+type ZimbraCos = {
+	name: string;
+	id: string;
+	a: ZimbraCosAttribute[];
+};
+type ZimbraCosResponse = {
+	Cos: ZimbraCos[];
+	more: boolean;
+	searchTotal: number;
+	_jsns: string;
+};
+type ZimbraCosAttribute = {
+	n: string;
+	_content: string;
+};
+type ZimbraCosEntry = {
+	name: string;
+	id: string;
+	a: ZimbraCosAttribute[];
+	zimbraCosStatus: string;
+	backupStatus: boolean;
+	description: any;
 };
 
 const BackupServersListTable: FC<{
@@ -222,8 +264,25 @@ const BackupServersListTable: FC<{
 
 const ServersList: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const backupServerList = useBackupModuleStore((state) => state.backupServerList);
 	const servers = useServerStore((state) => state.serverList);
+	const [offset, setOffset] = useState<number>(0);
+	const [searchString, setSearchString] = useState<string>('');
+	const [hasError, setHasError] = useState<boolean>(false);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
+	const [searchQuery, setSearchQuery] = useState<string>('');
+	const cosHeaders = useMemo(() => cosBackupHeader(t), [t]);
+	const [selectedRow, setSelectedRow] = useState<any>([]);
+	const [totalCos, setTotalCos] = useState<number>(0);
+	const [cosList, setcosList] = useState<
+		{
+			id: string;
+			columns: ReactElement[];
+			item: ZimbraCosEntry;
+			clickable: boolean;
+		}[]
+	>([]);
 
 	const STATUS: any[] = useMemo(
 		() => [
@@ -370,15 +429,184 @@ const ServersList: FC = () => {
 		}
 	}, [backupServerList, getBackupServerValue, servers]);
 
+	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const getAllcosList = useCallback((): void => {
+		getCosBackupStatus()
+			.then((res) => {
+				const response = JSON.parse(res?.Body?.response?.content);
+				if (response?.ok) {
+					const cosBackupDetail = response?.response?.cosList;
+					getCosList(searchQuery, limit, offset)
+						.then((data: any) => {
+							const cosListResponse: ZimbraCosResponse = data?.cos || [];
+							if (cosListResponse && Array.isArray(cosListResponse)) {
+								const cosListArr: {
+									id: string;
+									columns: ReactElement[];
+									item: ZimbraCosEntry;
+									clickable: boolean;
+								}[] = [];
+								setTotalCos(data.searchTotal || 0);
+								cosListResponse.forEach((item: ZimbraCosEntry) => {
+									const description = find(item?.a, { n: 'description' });
+									const CosIteam: ZimbraCosEntry = {
+										name: item.name,
+										id: item.id,
+										zimbraCosStatus: 'active',
+										a: item.a,
+										backupStatus: cosBackupDetail[item?.name] === 'Enabled',
+										description: ''
+									};
+									item?.a?.forEach((ele: ZimbraCosAttribute) => {
+										if (ele.n === 'zimbraCosStatus') {
+											CosIteam.zimbraCosStatus = ele._content;
+										} else if (ele.n === 'description') {
+											CosIteam.description = ele._content;
+										}
+									});
+									cosListArr.push({
+										id: item?.id,
+										columns: [
+											<Text size="small" key={item?.id} color="gray0" weight="regular">
+												{item?.name || ' '}
+											</Text>,
+											<Text size="small" weight="light" key={item?.id}>
+												{cosBackupDetail[item?.name]}
+											</Text>,
+											<Text size="small" weight="light" key={item?.id}>
+												{description?._content}
+											</Text>
+										],
+										item: CosIteam,
+										clickable: true
+									});
+								});
+								setcosList(cosListArr);
+							}
+						})
+						.catch((error: any) => {
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: error
+									? error?.error
+									: // eslint-disable-next-line sonarjs/no-duplicate-string
+									  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+							setHasError(true);
+						});
+				}
+			})
+			.catch((error: any) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [searchQuery, limit, offset, createSnackbar, t]);
+
+	useEffect(() => {
+		getAllcosList();
+	}, [getAllcosList]);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const searchcosList = useCallback(
+		debounce((searchText) => {
+			setSearchQuery(searchText);
+		}, 700),
+		[debounce]
+	);
+	useEffect(() => {
+		searchcosList(searchString);
+	}, [offset, searchcosList, searchString]);
+
+	const onSelectionChange = useCallback(
+		(item: any): void => {
+			const description = find(cosList, { id: item[0] });
+			if (description?.item) {
+				setSelectedRow([description?.item]);
+			} else {
+				setSelectedRow([]);
+			}
+			// eslint-disable-next-line react-hooks/exhaustive-deps
+		},
+		[cosList]
+	);
+
+	const handleClickedToChangeBackUpStatus = async (): Promise<void> => {
+		const status = selectedRow[0]?.backupStatus ? DISABLE : ENABLE;
+		await fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxBackup',
+			action: 'doEnableDisableCOS',
+			COSName: selectedRow[0]?.name,
+			cos_state: status,
+			enableCOS: status
+		})
+			.then((res) => {
+				const response = JSON.parse(res?.Body?.response?.content);
+				if (response?.ok) {
+					getAllcosList();
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t('label.change_save_success_msg', 'The change has been saved successfully'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: response?.error?.message
+							? response?.error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	};
+
 	return (
 		<>
-			<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+			<Container
+				padding={{ all: 'large' }}
+				mainAlignment="flex-start"
+				background="gray6"
+				style={{ overflow: 'scroll' }}
+			>
 				<Row mainAlignment="flex-start" width="100%">
 					<Container
 						orientation="vertical"
 						mainAlignment="space-around"
 						background="gray6"
-						height="58px"
+						height="3.625rem"
 					>
 						<Row
 							orientation="horizontal"
@@ -398,23 +626,149 @@ const ServersList: FC = () => {
 						<Divider />
 					</Row>
 				</Row>
-				<Container
-					orientation="column"
-					crossAlignment="flex-start"
-					mainAlignment="flex-start"
-					style={{ overflow: 'auto' }}
+				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large', bottom: 'large' }}>
+					<BackupServersListTable
+						serverList={serverList}
+						selectedRows={selectedRows}
+						onSelectionChange={(selected: any): any => null}
+					/>
+				</Row>
+				<Row
+					orientation="horizontal"
 					width="100%"
-					height="calc(100vh - 200px)"
-					padding={{ top: 'large', left: 'small', right: 'small' }}
+					background="gray6"
+					padding={{ top: 'large', bottom: 'large' }}
 				>
-					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-						<BackupServersListTable
-							serverList={serverList}
-							selectedRows={selectedRows}
-							onSelectionChange={(selected: any): any => null}
+					<Divider />
+				</Row>
+				<Row mainAlignment="flex-start" width="100%">
+					<Row mainAlignment="flex-start" width="50%" crossAlignment="flex-start">
+						<Text size="medium" weight="bold" color="gray0">
+							{t('label.cos_to_backup', 'Cos to Backup')}
+						</Text>
+					</Row>
+					<Row mainAlignment="flex-end" width="50%" crossAlignment="flex-start">
+						<Button
+							label={
+								!selectedRow[0]?.backupStatus
+									? t('label.enable', 'ENABLE')
+									: t('label.disable', 'DISABLE')
+							}
+							color={!selectedRow[0]?.backupStatus ? 'primary' : 'error'}
+							type="outlined"
+							onClick={(): void => {
+								handleClickedToChangeBackUpStatus();
+							}}
+							disabled={selectedRow.length === 0}
 						/>
 					</Row>
-				</Container>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+						<Container height="fit" crossAlignment="flex-start" background="gray6">
+							<Row
+								orientation="horizontal"
+								mainAlignment="space-between"
+								crossAlignment="flex-start"
+								width="fill"
+								padding={{ bottom: 'large' }}
+							>
+								<Container>
+									<Input
+										label={t('label.seach_for_cos', `Search for a COS`)}
+										disabled={cosList.length === 0 && searchString.length === 0 && !hasError}
+										value={searchString}
+										backgroundColor="gray5"
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setSearchString(e.target.value);
+										}}
+										CustomIcon={(): JSX.Element => <Icon icon="FunnelOutline" size="large" />}
+									/>
+								</Container>
+							</Row>
+							<Row
+								orientation="horizontal"
+								mainAlignment="space-between"
+								crossAlignment="flex-start"
+								width="fill"
+							>
+								{cosList.length !== 0 && (
+									<Table
+										rows={cosList}
+										headers={cosHeaders}
+										showCheckbox={false}
+										multiSelect={false}
+										style={{ overflow: 'auto', height: '100%' }}
+										RowFactory={CustomRowFactory}
+										onSelectionChange={onSelectionChange}
+										HeaderFactory={CustomHeaderFactory}
+									/>
+								)}
+								{cosList.length === 0 && (
+									<Container orientation="column" crossAlignment="center" mainAlignment="center">
+										<Row>
+											<img src={logo} alt="logo" />
+										</Row>
+										<Row
+											padding={{ top: 'extralarge' }}
+											orientation="vertical"
+											crossAlignment="center"
+											style={{ textAlign: 'center' }}
+										>
+											<Text weight="light" color="#828282" size="large" overflow="break-word">
+												{t('label.this_list_is_empty', 'This list is empty.')}
+											</Text>
+										</Row>
+										<Row
+											orientation="vertical"
+											crossAlignment="center"
+											style={{ textAlign: 'center' }}
+											padding={{ top: 'small' }}
+											width="53%"
+										>
+											<Text weight="light" color="#828282" size="large" overflow="break-word">
+												<Trans
+													i18nKey="label.create_Cos_list_msg"
+													defaults="You can create a new Cos by clicking on <bold>Create</bold> button on header menu"
+													components={{ bold: <strong /> }}
+												/>
+											</Text>
+										</Row>
+									</Container>
+								)}
+								{cosList.length !== 0 && (
+									<>
+										<Row
+											orientation="horizontal"
+											mainAlignment="space-between"
+											crossAlignment="flex-start"
+											width="fill"
+											padding={{ top: 'medium' }}
+										>
+											<Divider />
+										</Row>
+										<Container
+											orientation="horizontal"
+											mainAlignment="space-between"
+											width="100%"
+											height="auto"
+										>
+											<Container crossAlignment="flex-start">
+												<Paging totalItem={totalCos} setOffset={setOffset} pageSize={limit} />
+											</Container>
+											<Container
+												crossAlignment="flex-end"
+												orientation="horizontal"
+												mainAlignment="flex-end"
+												padding={{ top: 'small' }}
+											>
+												<TrackNumberPerPage setPageSize={setLimit} />
+											</Container>
+										</Container>
+									</>
+								)}
+							</Row>
+						</Container>
+					</Row>
+				</Row>
 			</Container>
 		</>
 	);
