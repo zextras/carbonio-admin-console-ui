@@ -15,9 +15,7 @@ import {
 	Text,
 	Input,
 	useSnackbar,
-	Modal,
-	ContainerProps,
-	TextProps
+	Modal
 } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { find, orderBy } from 'lodash';
@@ -31,26 +29,6 @@ import { fetchSoap } from '../../../services/subscription-service';
 import { useConfigStore } from '../../../store/config/store';
 import { useGlobalConfigStore } from '../../../store/global-config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
-
-interface ContainerExtendProps extends ContainerProps {
-	licensed?: string;
-}
-const VerticalBar = styled(Container)<ContainerExtendProps>`
-	background-color: ${({ theme }): string => theme.palette.primary.regular};
-	width: 4px;
-	height: auto;
-	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
-	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
-`;
-interface TextExtendProps extends TextProps {
-	licensed?: string;
-}
-const ServiceName = styled(Text)<TextExtendProps>`
-	color: ${({ theme }): string => theme.palette.primary.regular};
-	font-weight: bold;
-	opacity: ${({ licensed }): number => (licensed ? 1 : 0.33)};
-`;
 
 const CollapseText = styled(Text)`
 	cursor: pointer;
@@ -88,59 +66,94 @@ const IconInfo = ({
 	</Row>
 );
 
-const moduleNames: any = {
-	backup_realtime: 'Realtime Backup',
-	chats_recording: 'Video recording',
-	files_basic: 'Files Basics',
-	admins_basic: 'Delegated Administration',
-	storages_basic: 'Storages Basic',
-	appmail_basic: 'MailApp',
-	backup_basic: 'Backup Basic',
-	ha_basic: 'Ha Basic',
-	storages_conn_basic: 'S3 Connectors',
-	storages_centralized: 'Centralized Volumes',
-	appmail_advanced: 'MailApp Advanced',
-	activesync_shared_folder: 'ActiveSync (shared folder)',
-	chats_basic: 'Chats Basic',
-	auth_2fa: '2FA and Policies',
-	storages_hsm: 'Storages HSM',
-	chats_rooms: 'Meeting Rooms',
-	files_docs_balancing: 'Docs Connector',
-	auth_saml: 'SAML Auth',
-	backup_ext_volume: 'Backup on External Volumes',
-	storages_conn_sproxyd: 'ScalitySproxyD Connector',
-	activesync_basic: 'ActiveSync',
-	backup_import_external: 'Import Ext Backup'
+const moduleName: any = {
+	backup_realtime: { value: 'Realtime', label: 'Backup' },
+	chats_recording: { value: 'Video recording', label: 'Chats' },
+	files_basic: { value: 'Basics', label: 'Files' },
+	admins_basic: { value: 'Delegated Administration', label: 'Admin' },
+	storages_basic: { value: 'Basic', label: 'Storages' },
+	appmail_basic: { value: 'Basic', label: 'MailApp' },
+	backup_basic: { value: 'Basic', label: 'Backup' },
+	ha_basic: { value: 'Basic', label: 'HA' },
+	storages_conn_basic: { value: 'S3 Connectors', label: 'Storages' },
+	storages_centralized: { value: 'Centralized Volumes', label: 'Storages' },
+	appmail_advanced: { value: 'Advanced', label: 'MailApp' },
+	activesync_shared_folder: { value: 'Shared Folder', label: 'ActiveSync' },
+	chats_basic: { value: 'Basic', label: 'Chats' },
+	auth_2fa: { value: '2FA and Policies', label: 'Auth' },
+	storages_hsm: { value: 'HSM', label: 'Storages' },
+	chats_rooms: { value: 'Meeting Rooms', label: 'Chats' },
+	files_docs_balancing: { value: 'Docs Connector', label: 'Files' },
+	auth_saml: { value: 'SAML', label: 'Auth' },
+	backup_ext_volume: { value: 'Export on External', label: 'Backup' },
+	storages_conn_sproxyd: { value: 'Scality SproxyD Connector', label: 'Storages' },
+	activesync_basic: { value: '', label: 'ActiveSync' },
+	backup_import_external: { value: 'Import External', label: 'Backup' }
 };
 
 const ServiceStatus = ({
-	name,
+	data,
 	licensed,
 	t
 }: {
-	name: string;
+	data: any;
 	licensed: any;
 	t: TFunction;
 }): ReactElement => (
 	<Row
-		width="14rem"
+		width="8rem"
+		height="7.688rem"
 		orientation="horizontal"
 		mainAlignment="flex-start"
 		crossAlignment="stretch"
-		style={{ padding: '0 0.25rem 1rem 0' }}
+		borderRadius="regular"
+		style={{
+			padding: '0.75rem 0.75rem 0.75rem 0.5rem',
+			background: '#FFF',
+			boxShadow: `0rem 0rem 0.25rem 0rem rgba(166, 166, 166, 0.50)`
+		}}
 	>
-		<VerticalBar licensed={licensed} />
 		<Row
 			orientation="vertical"
-			crossAlignment="flex-start"
-			padding={{ vertical: 'extrasmall', left: 'small' }}
+			crossAlignment="flex-end"
+			mainAlignment="space-between"
+			width="100%"
 		>
-			<Padding bottom="extrasmall">
-				<ServiceName licensed={licensed}>{moduleNames[name] || name}</ServiceName>
-			</Padding>
-			<Text color={licensed ? 'text' : 'secondary'}>
-				{licensed ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
-			</Text>
+			<Row orientation="vertical" crossAlignment="flex-start" width="100%" gap="0.25rem">
+				<Row
+					borderRadius="regular"
+					style={{
+						background: '#00506D'
+					}}
+					padding={{ horizontal: 'extrasmall' }}
+				>
+					<Text
+						size="small"
+						weight="bold"
+						style={{
+							color: '#FFF',
+							lineHeight: '1.313rem'
+						}}
+					>
+						{data?.name?.label}
+					</Text>
+				</Row>
+				<Row>
+					<Text size="extrasmall" weight="bold" style={{ whiteSpace: 'break-spaces' }}>
+						{data?.name?.value}
+					</Text>
+				</Row>
+			</Row>
+			<Row orientation="vertical" crossAlignment="flex-end" width="100%" gap="1.938rem">
+				<Text size="extrasmall" weight="regular" color={licensed ? 'text' : 'secondary'}>
+					{/* eslint-disable-next-line no-nested-ternary */}
+					{data?.quantity !== 'unlimited'
+						? `${data?.quantity} users`
+						: licensed
+						? t('label.enabled', 'Enabled')
+						: t('label.disabled', 'Disabled')}
+				</Text>
+			</Row>
 		</Row>
 	</Row>
 );
@@ -186,10 +199,12 @@ const Subscription: FC = () => {
 			if (response.ok) {
 				const formatModules = response?.response?.features?.map((module: any) => ({
 					...module,
-					name: moduleNames[module?.name]
+					name: moduleName[module?.name]
 				}));
-				const orderModules: any = orderBy(formatModules, 'name', 'desc');
-				const filterModules: any = orderModules.filter((module: any) => module.name !== 'SproxyD');
+				const orderModules: any = orderBy(formatModules, 'name.label', 'desc');
+				const filterModules: any = orderModules.filter(
+					(module: any) => module.name.value !== 'SproxyD'
+				);
 				setServices(response);
 				setModules(filterModules);
 				setLicenseKey(response.response.authenticationToken);
@@ -363,7 +378,7 @@ const Subscription: FC = () => {
 				</Container>
 				<Divider />
 				<Row width="fill" mainAlignment="flex-start" padding={{ vertical: 'large' }}>
-					<Text weight="bold">{t('core.subscription.bundle', 'Bundle')}</Text>
+					<Text weight="bold">{t('core.subscription.modules', 'Modules')}</Text>
 				</Row>
 				<Container
 					orientation="horizontal"
@@ -371,13 +386,14 @@ const Subscription: FC = () => {
 					crossAlignment="flex-start"
 					wrap="wrap"
 					height="fit"
+					style={{ gap: '2.25rem' }}
 				>
 					{modules.map(
 						(module: any) =>
 							(module.enabled || (!module.enabled && showDisabledModules)) && (
 								<ServiceStatus
-									key={module.name}
-									name={module.name}
+									key={module.name.label}
+									data={module}
 									licensed={module.enabled}
 									t={t}
 								/>
