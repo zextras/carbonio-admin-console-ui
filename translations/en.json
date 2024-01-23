@@ -2145,6 +2145,8 @@
         "settings": "Settings",
         "smtp_client_logging_of_tls_activity": "SMTP client logging of TLS Activity",
         "smtp_helo_name": "SMTP HELO Name",
+        "smtpd_not_valid_error": "Smtpd sender login maps is not valid",
+        "smtpd_sender_login_maps": "Smtpd sender login maps",
         "space_not_allowed_in_antivirus_mirror": "Space not allowed in antivirus mirror",
         "spam_to_junk_tolerance": "Spam to Junk tolerance",
         "stats": "Stats",

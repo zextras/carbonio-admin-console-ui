@@ -2212,6 +2212,11 @@ export const IsValidFQDN = (value: string): boolean => {
 	return fqdnRegex.test(value);
 };
 
+export const isValidProxy = (value: string): boolean => {
+	const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';
+	const validProxyRegex = new RegExp(`^${pattern}(( ,|, | , |,)${pattern})*$`);
+	return validProxyRegex.test(value);
+};
 export const isSpaceAvailableInString = (value: string): boolean => {
 	const spaceRegex = /^\S*$/;
 	return !spaceRegex.test(value);
