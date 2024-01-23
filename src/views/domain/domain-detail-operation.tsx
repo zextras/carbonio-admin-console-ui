@@ -51,18 +51,25 @@ const DomainOperations: FC = () => {
 	const [t] = useTranslation();
 	const { operation, domainId }: { operation: string; domainId: string } = useParams();
 	const setDomain = useDomainStore((state) => state.setDomain);
+	const setDomainWioutConfig = useDomainStore((state) => state.setDomainWioutConfig);
 	const setCosList = useDomainStore((state) => state.setCosList);
 
 	const getSelectedDomainInformation = useCallback(
 		(id: any): any => {
-			getDomainInformation(id).then((data) => {
+			getDomainInformation(id, 1).then((data) => {
 				const domain = data?.domain[0];
 				if (domain) {
 					setDomain(domain);
 				}
 			});
+			getDomainInformation(id, 0).then((data) => {
+				const domain = data?.domain[0];
+				if (domain) {
+					setDomainWioutConfig(domain);
+				}
+			});
 		},
-		[setDomain]
+		[setDomain, setDomainWioutConfig]
 	);
 
 	const getClassOfService = useCallback(() => {

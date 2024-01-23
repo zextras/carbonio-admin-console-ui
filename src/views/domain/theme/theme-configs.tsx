@@ -11,9 +11,7 @@ import {
 	Padding,
 	Divider,
 	Text,
-	Input,
 	Button,
-	Select,
 	DefaultTabBarItem,
 	TabBar
 } from '@zextras/carbonio-design-system';
@@ -23,6 +21,8 @@ import { themeConfigStore } from '../../../../types/domain';
 import { CONFIG } from '../../../constants';
 import { Right, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
+import InheritedInput from '../../utility/inherited-components/inherited-input';
+import InheritedSelect from '../../utility/inherited-components/inherited-select';
 import { getAllRights, isValidHttpsUrl } from '../../utility/utils';
 
 const HttpsErrorMessage: FC = () => {
@@ -63,11 +63,20 @@ const ReusedDefaultTabBar: FC<{
 
 export const ThemeConfigs: FC<{
 	themeConfig: themeConfigStore;
+	globalTheme?: themeConfigStore | undefined;
 	setThemeConfig: CallableFunction;
 	setIsValidated: CallableFunction;
 	onResetTheme: any;
 	isGlobalTheme?: boolean;
-}> = ({ themeConfig, setThemeConfig, setIsValidated, onResetTheme, isGlobalTheme = false }) => {
+}> = ({
+	themeConfig,
+	globalTheme = undefined,
+	setThemeConfig,
+	setIsValidated,
+	onResetTheme,
+	isGlobalTheme = false
+	// eslint-disable-next-line sonarjs/cognitive-complexity
+}) => {
 	const [t] = useTranslation();
 
 	const [isValidCarbonioWebUiLoginLogo, setIsValidCarbonioWebUiLoginLogo] = useState<boolean>(true);
@@ -202,7 +211,12 @@ export const ThemeConfigs: FC<{
 		isValidCarbonioWebUiLoginLogo,
 		setIsValidated
 	]);
-
+	const setEmptyValue = useCallback(
+		(keyName) => {
+			setThemeConfig((prev: any) => ({ ...prev, [keyName]: undefined }));
+		},
+		[setThemeConfig]
+	);
 	return (
 		<Container
 			orientation="column"
@@ -227,16 +241,16 @@ export const ThemeConfigs: FC<{
 						</Padding>
 					</ListRow>
 					<ListRow>
-						<Select
-							background="gray5"
+						<InheritedSelect
 							label={t('cos.dark_mode', 'Dark Mode')}
-							showCheckbox={false}
 							items={THEME_MODE}
-							selection={THEME_MODE.find(
-								(item: any) => item.value === themeConfig?.carbonioWebUiDarkMode
-							)}
+							subValue={themeConfig.carbonioWebUiDarkMode}
+							inheritedValue={globalTheme?.carbonioWebUiDarkMode}
+							fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkMode : ''}
+							background="gray5"
+							selectName="carbonioWebUiDarkMode"
 							onChange={onThemeModeChange}
-							disabled={isGlobalTheme && !hasModifyRights}
+							onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkMode')}
 						/>
 					</ListRow>
 					<ListRow>
@@ -247,16 +261,17 @@ export const ThemeConfigs: FC<{
 						</Padding>
 					</ListRow>
 					<ListRow>
-						<Input
+						<InheritedInput
 							label={t(
 								'label.logo_redirection_title',
 								'Clicking on the Logo will redirect the users to...'
 							)}
-							backgroundColor="gray5"
-							value={themeConfig.carbonioLogoUrl}
+							subValue={themeConfig.carbonioLogoUrl}
+							inheritedValue={globalTheme?.carbonioLogoUrl}
+							fromSubValue={globalTheme ? themeConfig.carbonioLogoUrl : ''}
 							inputName="carbonioLogoUrl"
 							onChange={onChangeDomainThemeDetail}
-							disabled={isGlobalTheme && !hasModifyRights}
+							onChangeReset={(): void => setEmptyValue('carbonioLogoUrl')}
 						/>
 					</ListRow>
 					<ListRow>
@@ -306,27 +321,29 @@ export const ThemeConfigs: FC<{
 					</ListRow>
 					<ListRow>
 						<Container padding={{ all: 'small' }}>
-							<Input
+							<InheritedInput
 								label="ex. #HEX123"
-								backgroundColor="gray5"
-								value={themeConfig.carbonioWebUiPrimaryColor}
+								subValue={themeConfig.carbonioWebUiPrimaryColor}
+								inheritedValue={globalTheme?.carbonioWebUiPrimaryColor}
+								fromSubValue={globalTheme ? themeConfig.carbonioWebUiPrimaryColor : ''}
 								inputName="carbonioWebUiPrimaryColor"
 								onChange={(e: any): any => {
 									onChangeDomainThemeDetail(e);
 								}}
-								disabled={isGlobalTheme && !hasModifyRights}
+								onChangeReset={(): void => setEmptyValue('carbonioWebUiPrimaryColor')}
 							/>
 						</Container>
 						<Container padding={{ all: 'small' }}>
-							<Input
+							<InheritedInput
 								label="ex. #HEX123"
-								backgroundColor="gray5"
-								value={themeConfig.carbonioWebUiDarkPrimaryColor}
+								subValue={themeConfig.carbonioWebUiDarkPrimaryColor}
+								inheritedValue={globalTheme?.carbonioWebUiDarkPrimaryColor}
+								fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkPrimaryColor : ''}
 								inputName="carbonioWebUiDarkPrimaryColor"
 								onChange={(e: any): any => {
 									onChangeDomainThemeDetail(e);
 								}}
-								disabled={isGlobalTheme && !hasModifyRights}
+								onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkPrimaryColor')}
 							/>
 						</Container>
 					</ListRow>
@@ -402,13 +419,14 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('label.title', 'Title')}
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiTitle}
+											subValue={themeConfig.carbonioWebUiTitle}
+											inheritedValue={globalTheme?.carbonioWebUiTitle}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiTitle : ''}
 											inputName="carbonioWebUiTitle"
 											onChange={onChangeDomainThemeDetail}
-											disabled={isGlobalTheme && !hasModifyRights}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiTitle')}
 										/>
 									</Container>
 								</ListRow>
@@ -428,13 +446,14 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('label.copyrights_information', 'Copyrights information')}
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiDescription}
+											subValue={themeConfig.carbonioWebUiDescription}
+											inheritedValue={globalTheme?.carbonioWebUiDescription}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiDescription : ''}
 											inputName="carbonioWebUiDescription"
 											onChange={onChangeDomainThemeDetail}
-											disabled={isGlobalTheme && !hasModifyRights}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiDescription')}
 										/>
 									</Container>
 								</ListRow>
@@ -499,10 +518,11 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label="Ex. https://upload.yourlogo.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiLoginLogo}
+											subValue={themeConfig.carbonioWebUiLoginLogo}
+											inheritedValue={globalTheme?.carbonioWebUiLoginLogo}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiLoginLogo : ''}
 											inputName="carbonioWebUiLoginLogo"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -513,16 +533,18 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiLoginLogo')}
 											hasError={!isValidCarbonioWebUiLoginLogo}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiLoginLogo && <HttpsErrorMessage />}
 									</Container>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label="Ex. https://upload.yourlogo.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiDarkLoginLogo}
+											subValue={themeConfig.carbonioWebUiDarkLoginLogo}
+											inheritedValue={globalTheme?.carbonioWebUiDarkLoginLogo}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkLoginLogo : ''}
 											inputName="carbonioWebUiDarkLoginLogo"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -533,7 +555,8 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
-											hasError={!isValidCarbonioWebUiDarkLoginLogo}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkLoginLogo')}
+											hasError={!isValidCarbonioWebUiLoginLogo}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiDarkLoginLogo && <HttpsErrorMessage />}
@@ -576,10 +599,11 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label="Ex. https://upload.yourlogo.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiAppLogo}
+											subValue={themeConfig.carbonioWebUiAppLogo}
+											inheritedValue={globalTheme?.carbonioWebUiAppLogo}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiAppLogo : ''}
 											inputName="carbonioWebUiAppLogo"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -590,16 +614,18 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiAppLogo')}
 											hasError={!isValidCarbonioWebUiAppLogo}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiAppLogo && <HttpsErrorMessage />}
 									</Container>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label="Ex. https://upload.yourlogo.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiDarkAppLogo}
+											subValue={themeConfig.carbonioWebUiDarkAppLogo}
+											inheritedValue={globalTheme?.carbonioWebUiDarkAppLogo}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkAppLogo : ''}
 											inputName="carbonioWebUiDarkAppLogo"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -610,6 +636,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkAppLogo')}
 											hasError={!isValidCarbonioWebUiDarkAppLogo}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -642,10 +669,11 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
-											label="Ex. https://upload.yourfavicon.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiFavicon}
+										<InheritedInput
+											label="Ex. https://upload.yourlogo.com/"
+											subValue={themeConfig.carbonioWebUiFavicon}
+											inheritedValue={globalTheme?.carbonioWebUiFavicon}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiFavicon : ''}
 											inputName="carbonioWebUiFavicon"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -656,6 +684,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiFavicon')}
 											hasError={!isValidCarbonioWebUiFavicon}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -723,10 +752,11 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
-											label="Ex. https://upload.yourimage.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiLoginBackground}
+										<InheritedInput
+											label="Ex. https://upload.yourlogo.com/"
+											subValue={themeConfig.carbonioWebUiLoginBackground}
+											inheritedValue={globalTheme?.carbonioWebUiLoginBackground}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiLoginBackground : ''}
 											inputName="carbonioWebUiLoginBackground"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -737,16 +767,18 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiLoginBackground')}
 											hasError={!isValidCarbonioWebUiLoginBackground}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioWebUiLoginBackground && <HttpsErrorMessage />}
 									</Container>
 									<Container padding={{ all: 'small' }}>
-										<Input
-											label="Ex. https://upload.yourimage.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUiDarkLoginBackground}
+										<InheritedInput
+											label="Ex. https://upload.yourlogo.com/"
+											subValue={themeConfig.carbonioWebUiDarkLoginBackground}
+											inheritedValue={globalTheme?.carbonioWebUiDarkLoginBackground}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkLoginBackground : ''}
 											inputName="carbonioWebUiDarkLoginBackground"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -757,6 +789,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUiDarkLoginBackground')}
 											hasError={!isValidCarbonioWebUiDarkLoginBackground}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -796,13 +829,14 @@ export const ThemeConfigs: FC<{
 												</Text>
 											</Padding>
 										</ListRow>
-										<Input
+										<InheritedInput
 											label={t(
 												'label.enduser_login_redirect_url',
 												'LogIn redirect destination (URL)'
 											)}
-											backgroundColor="gray5"
-											value={themeConfig.carbonioWebUILoginURL}
+											subValue={themeConfig.carbonioWebUILoginURL}
+											inheritedValue={globalTheme?.carbonioWebUILoginURL}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUILoginURL : ''}
 											inputName="carbonioWebUILoginURL"
 											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
@@ -813,6 +847,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUILoginURL')}
 											hasError={!isValidCarbonioWebClientLogoutURL}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -826,13 +861,14 @@ export const ThemeConfigs: FC<{
 												</Text>
 											</Padding>
 										</ListRow>
-										<Input
+										<InheritedInput
 											label={t(
 												'label.enduser_logout_redirect_url',
 												'On Logout, redirect the User to (URL)'
 											)}
-											backgroundColor="gray5"
-											value={themeConfig?.carbonioWebUILogoutURL}
+											subValue={themeConfig.carbonioWebUILogoutURL}
+											inheritedValue={globalTheme?.carbonioWebUILogoutURL}
+											fromSubValue={globalTheme ? themeConfig.carbonioWebUILogoutURL : ''}
 											inputName="carbonioWebUILogoutURL"
 											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
@@ -843,6 +879,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioWebUILogoutURL')}
 											hasError={!isValidCarbonioWebClientLogoutURL}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -901,12 +938,14 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('label.title', 'Title')}
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiTitle}
+											subValue={themeConfig.carbonioAdminUiTitle}
+											inheritedValue={globalTheme?.carbonioAdminUiTitle}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiTitle : ''}
 											inputName="carbonioAdminUiTitle"
 											onChange={onChangeDomainThemeDetail}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiTitle')}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 									</Container>
@@ -927,12 +966,14 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label={t('label.copyrights_information', 'Copyrights information')}
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiDescription}
+											subValue={themeConfig.carbonioAdminUiDescription}
+											inheritedValue={globalTheme?.carbonioAdminUiDescription}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiDescription : ''}
 											inputName="carbonioAdminUiDescription"
 											onChange={onChangeDomainThemeDetail}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiDescription')}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 									</Container>
@@ -993,10 +1034,11 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label="Ex. https://upload.yourlogo.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiLoginLogo}
+											subValue={themeConfig.carbonioAdminUiLoginLogo}
+											inheritedValue={globalTheme?.carbonioAdminUiLoginLogo}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiLoginLogo : ''}
 											inputName="carbonioAdminUiLoginLogo"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -1007,16 +1049,18 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiLoginLogo')}
 											hasError={!isValidCarbonioAdminUiLoginLogo}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiLoginLogo && <HttpsErrorMessage />}
 									</Container>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label="Ex. https://upload.yourlogo.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiDarkLoginLogo}
+											subValue={themeConfig.carbonioAdminUiDarkLoginLogo}
+											inheritedValue={globalTheme?.carbonioAdminUiDarkLoginLogo}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiDarkLoginLogo : ''}
 											inputName="carbonioAdminUiDarkLoginLogo"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -1027,6 +1071,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiDarkLoginLogo')}
 											hasError={!isValidCarbonioAdminUiDarkLoginLogo}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -1065,10 +1110,11 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label="Ex. https://upload.yourlogo.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiAppLogo}
+											subValue={themeConfig.carbonioAdminUiAppLogo}
+											inheritedValue={globalTheme?.carbonioAdminUiAppLogo}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiAppLogo : ''}
 											inputName="carbonioAdminUiAppLogo"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -1079,16 +1125,18 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiAppLogo')}
 											hasError={!isValidCarbonioAdminUiAppLogo}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiAppLogo && <HttpsErrorMessage />}
 									</Container>
 									<Container padding={{ all: 'small' }}>
-										<Input
+										<InheritedInput
 											label="Ex. https://upload.yourlogo.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiDarkAppLogo}
+											subValue={themeConfig.carbonioAdminUiDarkAppLogo}
+											inheritedValue={globalTheme?.carbonioAdminUiDarkAppLogo}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiDarkAppLogo : ''}
 											inputName="carbonioAdminUiDarkAppLogo"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -1099,6 +1147,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiDarkAppLogo')}
 											hasError={!isValidCarbonioAdminUiDarkAppLogo}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -1131,10 +1180,11 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
-											label="Ex. https://upload.yourfavicon.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiFavicon}
+										<InheritedInput
+											label="Ex. https://upload.yourlogo.com/"
+											subValue={themeConfig.carbonioAdminUiFavicon}
+											inheritedValue={globalTheme?.carbonioAdminUiFavicon}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiFavicon : ''}
 											inputName="carbonioAdminUiFavicon"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -1145,6 +1195,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiFavicon')}
 											hasError={!isValidCarbonioAdminUiFavicon}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -1207,10 +1258,11 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										<Input
-											label="Ex. https://upload.yourimage.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiBackground}
+										<InheritedInput
+											label="Ex. https://upload.yourlogo.com/"
+											subValue={themeConfig.carbonioAdminUiBackground}
+											inheritedValue={globalTheme?.carbonioAdminUiBackground}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiBackground : ''}
 											inputName="carbonioAdminUiBackground"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -1221,16 +1273,18 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiBackground')}
 											hasError={!isValidCarbonioAdminUiBackground}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminUiBackground && <HttpsErrorMessage />}
 									</Container>
 									<Container padding={{ all: 'small' }}>
-										<Input
-											label="Ex. https://upload.yourimage.com/"
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUiDarkBackground}
+										<InheritedInput
+											label="Ex. https://upload.yourlogo.com/"
+											subValue={themeConfig.carbonioAdminUiDarkBackground}
+											inheritedValue={globalTheme?.carbonioAdminUiDarkBackground}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUiDarkBackground : ''}
 											inputName="carbonioAdminUiDarkBackground"
 											onChange={(e: any): any => {
 												if (e.target.value) {
@@ -1241,6 +1295,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUiDarkBackground')}
 											hasError={!isValidCarbonioAdminUiDarkBackground}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -1278,13 +1333,14 @@ export const ThemeConfigs: FC<{
 												</Text>
 											</Padding>
 										</ListRow>
-										<Input
+										<InheritedInput
 											label={t(
 												'label.enduser_login_redirect_url',
 												'LogIn redirect destination (URL)'
 											)}
-											backgroundColor="gray5"
-											value={themeConfig.carbonioAdminUILoginURL}
+											subValue={themeConfig.carbonioAdminUILoginURL}
+											inheritedValue={globalTheme?.carbonioAdminUILoginURL}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUILoginURL : ''}
 											inputName="carbonioAdminUILoginURL"
 											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
@@ -1295,6 +1351,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUILoginURL')}
 											hasError={!isValidCarbonioAdminLogoutURL}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
@@ -1308,13 +1365,14 @@ export const ThemeConfigs: FC<{
 												</Text>
 											</Padding>
 										</ListRow>
-										<Input
+										<InheritedInput
 											label={t(
 												'label.enduser_logout_redirect_url',
 												'On Logout, redirect the User to (URL)'
 											)}
-											backgroundColor="gray5"
-											value={themeConfig?.carbonioAdminUILogoutURL}
+											subValue={themeConfig.carbonioAdminUILogoutURL}
+											inheritedValue={globalTheme?.carbonioAdminUILogoutURL}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminUILogoutURL : ''}
 											inputName="carbonioAdminUILogoutURL"
 											onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 												if (e.target.value) {
@@ -1325,6 +1383,7 @@ export const ThemeConfigs: FC<{
 												}
 												onChangeDomainThemeDetail(e);
 											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminUILogoutURL')}
 											hasError={!isValidCarbonioAdminLogoutURL}
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>

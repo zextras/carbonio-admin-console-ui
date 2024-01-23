@@ -394,3 +394,4 @@ export const paginationItems = [
 ];
 export const ENABLE = 'enable';
 export const DISABLE = 'disable';
+export const ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS = 'zimbraMtaSmtpdSenderLoginMaps';

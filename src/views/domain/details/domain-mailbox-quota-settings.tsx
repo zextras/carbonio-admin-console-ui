@@ -18,6 +18,7 @@ import {
 	Divider
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
+import { divide } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -41,6 +42,7 @@ import { MailBoxQuota } from '../../app/types/mailbox_quota';
 import Paging from '../../components/paging';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
+import { BytesToGB, GbToBytes } from '../../utility/utils';
 
 const DomainMailboxQuotaSetting: FC = () => {
 	const [t] = useTranslation();
@@ -48,6 +50,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const [zimbraMailDomainQuota, setZimbraMailDomainQuota] = useState<string>('');
+	const [zimbramailQuotaGBValue, setZimbramailQuotaGBValue] = useState();
 	const [zimbraDomainMaxAccounts, setZimbraDomainMaxAccounts] = useState<string>('');
 	const [zimbraDomainAggregateQuotaWarnPercent, setZimbraDomainAggregateQuotaWarnPercent] =
 		useState<string>('');
@@ -179,7 +182,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 				let quotaLimit: any = 0;
 				let percentage: any = 0;
 				if (item?.used) {
-					diskUsed = ((item?.used || 0) / BYTE_PER_MB).toFixed(0);
+					diskUsed = divide(item?.used || 0, 1024 ** 3).toFixed(0);
 					if (item?.limit) {
 						percentage = ((item.used / item.limit) * 100).toFixed();
 					}
@@ -205,7 +208,6 @@ const DomainMailboxQuotaSetting: FC = () => {
 		[t]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getQuotaUsageInformation = useCallback(() => {
 		setIsRequestInProgress(true);
 		setUsageQuota([]);
@@ -228,18 +230,11 @@ const DomainMailboxQuotaSetting: FC = () => {
 								</Text>,
 								<Row key={item?.id} mainAlignment="flex-start" width="100%">
 									<Text color="gray0" weight="light">
-										{`${item?.mailSize} MB /`}&nbsp;
+										{`${item?.mailSize} GB /`}&nbsp;
 									</Text>
 									<Text
 										weight="light"
-										color={
-											// eslint-disable-next-line no-nested-ternary
-											Number(item?.quotaUsedPercentage) > 90
-												? 'error'
-												: Number(item?.quotaUsedPercentage) > 70
-												? 'warning'
-												: 'gray0'
-										}
+										color={Number(item?.quotaUsedPercentage) > 100 ? 'error' : 'gray0'}
 									>
 										{`${item?.quotaUsedPercentage}%`}
 									</Text>
@@ -347,6 +342,7 @@ const DomainMailboxQuotaSetting: FC = () => {
 	}, [domainData, zimbraDomainAggregateQuotaPolicy]);
 
 	const onCancel = (): void => {
+		setZimbramailQuotaGBValue(BytesToGB(domainData.zimbraMailDomainQuota).toFixed(2));
 		setZimbraMailDomainQuota(domainData.zimbraMailDomainQuota);
 		setZimbraDomainMaxAccounts(domainData.zimbraDomainMaxAccounts);
 		setZimbraDomainAggregateQuotaWarnPercent(domainData.zimbraDomainAggregateQuotaWarnPercent);
@@ -462,6 +458,13 @@ const DomainMailboxQuotaSetting: FC = () => {
 		totalAccount
 	]);
 
+	useEffect(() => {
+		if (zimbraMailDomainQuota && zimbramailQuotaGBValue === undefined) {
+			setZimbramailQuotaGBValue(BytesToGB(zimbraMailDomainQuota).toFixed(2));
+		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [zimbraMailDomainQuota]);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -532,13 +535,14 @@ const DomainMailboxQuotaSetting: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
-											'label.max_mainbox_quota_for_the_mails',
-											'Max mailbox quota for the Mails (bytes)'
+											'label.max_mainbox_quota_for_the_mails_in_gb',
+											'Max mailbox quota for the Mails (GB)'
 										)}
-										value={zimbraMailDomainQuota}
+										value={zimbramailQuotaGBValue}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
-											setZimbraMailDomainQuota(e.target.value);
+											setZimbramailQuotaGBValue(e.target.value);
+											setZimbraMailDomainQuota(GbToBytes(e.target.value));
 										}}
 										disabled={!isGlobalAdmin}
 									/>
