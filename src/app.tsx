@@ -48,6 +48,7 @@ import {
 	LOG_AND_QUEUES,
 	MANAGE,
 	MANAGE_APP_ID,
+	MTA,
 	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
@@ -62,7 +63,11 @@ import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import MatomoTracker from './matomo-tracker';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
-import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
+import {
+	getAllServerByService,
+	getAllServers,
+	getMailstoresServers
+} from './services/get-all-servers-service';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
@@ -108,6 +113,7 @@ const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const setServerList = useServerStore((state) => state.setServerList);
+	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
 	const setIsAdvanced = useAuthIsAdvanced((state) => state.setIsAdvanced);
@@ -807,7 +813,20 @@ const App: FC = () => {
 				setAllServersList(server);
 			}
 		});
-	}, [setServerList, checkIsBackupModuleEnable, setAllServersList, getGlobalConfig, isAdvanced]);
+		getAllServerByService(MTA).then((data) => {
+			const server = data?.server;
+			if (server && Array.isArray(server) && server.length > 0) {
+				setMtaServerList(server);
+			}
+		});
+	}, [
+		setServerList,
+		isAdvanced,
+		setAllServersList,
+		checkIsBackupModuleEnable,
+		getGlobalConfig,
+		setMtaServerList
+	]);
 
 	const getMailstoresServersRequest = useCallback(() => {
 		getMailstoresServers().then((data) => {
