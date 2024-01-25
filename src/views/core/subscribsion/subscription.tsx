@@ -15,7 +15,8 @@ import {
 	Text,
 	Input,
 	useSnackbar,
-	Modal
+	Modal,
+	Quota
 } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
 import { find, orderBy } from 'lodash';
@@ -171,7 +172,6 @@ const Subscription: FC = () => {
 	const [open, setOpen] = useState(false);
 	const [disableActiveBtn, setDisableActiveBtn] = useState(false);
 	const [showDisabledModules, setShowDisabledModules] = useState(false);
-	const [showInfo, setShowInfo] = useState(false);
 	const [version, setVersion] = useState();
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
 	const createSnackbar = useSnackbar();
@@ -250,6 +250,7 @@ const Subscription: FC = () => {
 						type: 'error',
 						label:
 							response.message ||
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 						replace: true
 					});
@@ -287,6 +288,48 @@ const Subscription: FC = () => {
 				});
 			}
 			setOpen(false);
+			getLicence();
+		});
+	};
+
+	const calculatedAccountQuotaSizePercentage: number = useMemo(() => {
+		const accountCount = services.response?.accountCount;
+		const licensedUsers = services.response?.licensedUsers;
+
+		if (licensedUsers === 0) {
+			// To avoid division by zero, handle this case appropriately
+			return 0;
+		}
+
+		return (accountCount / licensedUsers) * 100;
+	}, [services.response]);
+
+	const refreshLicence = (): void => {
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxCore',
+			action: 'activate-license',
+			token: licenseKey,
+			renewal: true
+		}).then((res) => {
+			const response = JSON.parse(res.response.content);
+			if (response.ok) {
+				createSnackbar({
+					key: '1',
+					type: 'success',
+					label: response.message,
+					replace: true
+				});
+			} else {
+				createSnackbar({
+					key: '1',
+					type: 'error',
+					label:
+						response.message ||
+						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					replace: true
+				});
+			}
 			getLicence();
 		});
 	};
@@ -338,7 +381,7 @@ const Subscription: FC = () => {
 					crossAlignment="flex-start"
 					style={{ padding: '8px 0 16px 0' }}
 				>
-					<Row width="83%">
+					<Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="74%">
 						<Input
 							label={t('core.subscription.token', 'Token')}
 							backgroundColor="gray5"
@@ -346,8 +389,13 @@ const Subscription: FC = () => {
 							disabled={!allowSetSubsciption}
 							onChange={(e: any): void => setLicenseKey(e.target.value)}
 						/>
-					</Row>
-					<Row width="17%" mainAlignment="flex-end" crossAlignment="flex-end">
+					</Container>
+					<Container
+						crossAlignment="flex-start"
+						orientation="horizontal"
+						width="26%"
+						style={{ gap: '0.875rem' }}
+					>
 						<Button
 							label={
 								services &&
@@ -374,10 +422,162 @@ const Subscription: FC = () => {
 							}
 							size="extralarge"
 						/>
-					</Row>
+						<Button
+							label={t('core.subscription.refresh', 'Refresh')}
+							disabled={!allowSetSubsciption || !licenseKey}
+							type="outlined"
+							color="primary"
+							onClick={(): void => refreshLicence()}
+							size="extralarge"
+						/>
+					</Container>
 				</Container>
-				<Divider />
-				<Row width="fill" mainAlignment="flex-start" padding={{ vertical: 'large' }}>
+				{services && services.response /* && showDisabledModules */ && (
+					<Container
+						orientation="horizontal"
+						width="100%"
+						height="fit"
+						wrap="wrap"
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+					>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.company_name', 'Company Name')}
+								value={services.response.company || ''}
+								readOnly
+							/>
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.provider', 'Provider')}
+								value={services.response.customer}
+							/>
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.type', 'Type')}
+								value={services.response.type || ''}
+							/>
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.endDate', 'End date')}
+								value={
+									services.response.dateEnd
+										? moment(services.response.dateEnd).format('DD-MMM-YYYY')
+										: ''
+								}
+								readOnly
+							/>
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.status', 'Status')}
+								value={
+									services.response.notYetValid || !services.response.authenticationToken
+										? ''
+										: `${t('core.subscription.valid_until', 'Valid until') || ''} ${moment(
+												services.response.dateEnd
+										  ).format('DD MMM YYYY')}`
+								}
+							/>
+						</Row>
+						<Row
+							width="49.5%"
+							orientation="vertical"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							style={{ gap: '.5rem', marginLeft: '.5rem' }}
+						>
+							<Text size="small" color="#828282">
+								{t('core.subscription.accounts', 'Accounts')}
+							</Text>
+							<Row
+								orientation="vertical"
+								width="100%"
+								mainAlignment="flex-start"
+								crossAlignment="flex-start"
+							>
+								<Text size="small">{`${services.response.accountCount} / ${services.response.licensedUsers}`}</Text>
+								<Quota fill={calculatedAccountQuotaSizePercentage} background="#F5F6F8" />
+							</Row>
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t(
+									'core.subscription.refresh_subscription_last_check',
+									'Refresh Subscription (Last Check)'
+								)}
+								value={
+									services.response.dateStart
+										? moment(services.response.dateStart).format('DD MMM YYYY')
+										: ''
+								}
+								CustomIcon={(): JSX.Element => <Icon icon="Refresh" size="large" color="primary" />}
+							/>
+						</Row>
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.version', 'Module Version')}
+								value={version}
+								readOnly
+							/>
+						</Row>
+						<Row
+							width="100%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'large', right: 'small' }}
+						>
+							<Input
+								label={t('core.subscription.order_id', 'Order ID')}
+								value={services.response?.infrastructureId || ''}
+							/>
+						</Row>
+					</Container>
+				)}
+				<Row
+					width="fill"
+					mainAlignment="flex-start"
+					padding={{ top: 'large', bottom: 'large', right: 'large' }}
+				>
 					<Text weight="bold">{t('core.subscription.modules', 'Modules')}</Text>
 				</Row>
 				<Container
@@ -400,110 +600,7 @@ const Subscription: FC = () => {
 							)
 					)}
 				</Container>
-				{services && services.response /* && showDisabledModules */ && (
-					<Container
-						orientation="horizontal"
-						width="100%"
-						height="fit"
-						wrap="wrap"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-					>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.subscription_type', 'Subscription Type')}
-								value={services.response.type}
-							/>
-						</Row>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.customer', 'Customer')}
-								value={services.response.customer}
-							/>
-						</Row>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.status', 'Status')}
-								value={
-									services.response.notYetValid || !services.response.authenticationToken
-										? t('core.subscription.not_valid', 'Not Valid') || ''
-										: t('core.subscription.valid', 'Valid') || ''
-								}
-							/>
-						</Row>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.subscription_Accounts', 'Subscription Accounts')}
-								value={`${services.response.accountCount} / ${services.response.licensedUsers}`}
-							/>
-						</Row>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.subscription_last_check', 'Subscription Last Check')}
-								value=""
-							/>
-						</Row>
-					</Container>
-				)}
-				<Row
-					padding={{ top: 'large' }}
-					mainAlignment="flex-start"
-					width="100%"
-					onClick={(): void => setShowInfo((prev) => !prev)}
-				>
-					<CollapseText weight="bold">
-						{showInfo
-							? t('core.subscription.less_info', 'Less Information')
-							: t('core.subscription.more_info', 'More Information')}
-					</CollapseText>
-					<Padding left="small">
-						<Icon icon={showInfo ? 'ChevronUp' : 'ChevronDown'} />
-					</Padding>
-				</Row>
-				{services && services.response && showInfo && (
-					<Container
-						orientation="horizontal"
-						width="100%"
-						height="fit"
-						wrap="wrap"
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ top: 'large' }}
-					>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.company_name', 'Company Name')}
-								value={services.response.company}
-							/>
-						</Row>
-
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.endDate', 'End date')}
-								value={
-									services.response.dateEnd
-										? moment(services.response.dateEnd).format('DD-MMM-YYYY')
-										: ''
-								}
-							/>
-						</Row>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.email_buyer', 'Email Buyer')}
-								value={services.response?.companyEmail}
-							/>
-						</Row>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input label={t('core.subscription.version', 'Module version')} value={version} />
-						</Row>
-						<Row width="49.5%" padding={{ all: 'large' }}>
-							<Input
-								label={t('core.subscription.order_id', 'Order Id')}
-								value={services.response.order_id}
-							/>
-						</Row>
-					</Container>
-				)}
+				<Divider style={{ marginBlockStart: '2rem' }} />
 			</Container>
 			<Modal
 				title={t('core.subscription.modal.label', 'Deactivate Token')}
