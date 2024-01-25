@@ -998,6 +998,27 @@ export const volTableHeader = (t: TFunction): THeader[] => [
 	}
 ];
 
+export const cosBackupHeader = (t: TFunction): THeader[] => [
+	{
+		id: 'name',
+		label: t('label.Cos_name', 'Cos Name'),
+		width: '30%',
+		bold: true
+	},
+	{
+		id: 'backup',
+		label: t('label.backup', 'Backup'),
+		width: '20%',
+		bold: true
+	},
+	{
+		id: 'description',
+		label: t('label.description', 'Description'),
+		width: '50%',
+		bold: true
+	}
+];
+
 export const indexerHeaders = (
 	t: TFunction
 ): Array<{
