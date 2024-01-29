@@ -19,7 +19,7 @@ import {
 	Quota
 } from '@zextras/carbonio-design-system';
 import { TFunction } from 'i18next';
-import { find, orderBy } from 'lodash';
+import { find } from 'lodash';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -92,6 +92,29 @@ const moduleName: any = {
 	backup_import_external: { value: 'Import External', label: 'Backup' }
 };
 
+const getGapColorForLabel = (label: React.Key | null | undefined): string => {
+	switch (label) {
+		case 'Storages':
+			return '#EF9A9A1A';
+		case 'HA':
+			return 'transparent';
+		case 'Backup':
+			return '#CE93D81A';
+		case 'Auth':
+			return '#F48FB11A';
+		case 'MailApp':
+			return '#B39DDB1A';
+		case 'Files':
+			return '#A5D6A71A';
+		case 'ActiveSync':
+			return '#80DEEA1A';
+		case 'Chats':
+			return '#90CAF91A';
+		default:
+			return 'transparent';
+	}
+};
+
 const ServiceStatus = ({
 	data,
 	licensed,
@@ -111,7 +134,8 @@ const ServiceStatus = ({
 		style={{
 			padding: '0.75rem 0.75rem 0.75rem 0.5rem',
 			background: '#FFF',
-			boxShadow: `0rem 0rem 0.25rem 0rem rgba(166, 166, 166, 0.50)`
+			boxShadow: `0rem 0rem 0.25rem 0rem rgba(166, 166, 166, 0.50)`,
+			marginBottom: '2.25rem'
 		}}
 	>
 		<Row
@@ -174,6 +198,7 @@ const Subscription: FC = () => {
 	const [showDisabledModules, setShowDisabledModules] = useState(false);
 	const [version, setVersion] = useState();
 	const [licenseKey, setLicenseKey] = useState(''); // 49b0cb0a-f381-4fc3-bb4e-8dda7e00b4a0
+	const [isLoader, setIsLoader] = useState(false);
 	const createSnackbar = useSnackbar();
 	const rights: Rights = useRightsStore((state) => state.rights);
 
@@ -188,6 +213,48 @@ const Subscription: FC = () => {
 
 	const { t } = useTranslation();
 
+	// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+	const formatAndSetModulesStats = (response: {
+		response: { features: unknown[]; authenticationToken: React.SetStateAction<string> };
+	}) => {
+		const formatModules = response?.response?.features?.map((module: any) => ({
+			...module,
+			name: moduleName[module?.name]
+		}));
+		const predefinedOrder = [
+			'Storages',
+			'HA',
+			'Backup',
+			'Auth',
+			'MailApp',
+			'Files',
+			'ActiveSync',
+			'Chats',
+			'Admin'
+		];
+
+		const ModuleSort = (a: { name: { label: string } }, b: { name: { label: string } }): number => {
+			const indexA = predefinedOrder.indexOf(a.name.label);
+			const indexB = predefinedOrder.indexOf(b.name.label);
+
+			if (indexA === -1 && indexB === -1) {
+				return (formatModules.indexOf(a) as any) - (formatModules.indexOf(b) as any);
+			}
+
+			if (indexA === -1) return 1;
+			if (indexB === -1) return -1;
+
+			return indexA - indexB;
+		};
+
+		const orderModules = formatModules.sort(ModuleSort);
+		const filterModules = orderModules.filter((module: any) => module.name.value !== 'SproxyD');
+
+		setServices(response);
+		setModules(filterModules);
+		setLicenseKey(response.response.authenticationToken);
+	};
+
 	const getLicence = useCallback(() => {
 		fetchSoap('zextras', {
 			// eslint-disable-next-line sonarjs/no-duplicate-string
@@ -197,17 +264,7 @@ const Subscription: FC = () => {
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
-				const formatModules = response?.response?.features?.map((module: any) => ({
-					...module,
-					name: moduleName[module?.name]
-				}));
-				const orderModules: any = orderBy(formatModules, 'name.label', 'desc');
-				const filterModules: any = orderModules.filter(
-					(module: any) => module.name.value !== 'SproxyD'
-				);
-				setServices(response);
-				setModules(filterModules);
-				setLicenseKey(response.response.authenticationToken);
+				formatAndSetModulesStats(response);
 			}
 		});
 		fetchSoap('zextras', {
@@ -305,6 +362,7 @@ const Subscription: FC = () => {
 	}, [services.response]);
 
 	const refreshLicence = (): void => {
+		setIsLoader(true);
 		fetchSoap('zextras', {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxCore',
@@ -314,6 +372,7 @@ const Subscription: FC = () => {
 		}).then((res) => {
 			const response = JSON.parse(res.response.content);
 			if (response.ok) {
+				setIsLoader(false);
 				createSnackbar({
 					key: '1',
 					type: 'success',
@@ -321,6 +380,7 @@ const Subscription: FC = () => {
 					replace: true
 				});
 			} else {
+				setIsLoader(false);
 				createSnackbar({
 					key: '1',
 					type: 'error',
@@ -428,6 +488,7 @@ const Subscription: FC = () => {
 							type="outlined"
 							color="primary"
 							onClick={(): void => refreshLicence()}
+							loading={isLoader}
 							size="extralarge"
 						/>
 					</Container>
@@ -526,7 +587,12 @@ const Subscription: FC = () => {
 								crossAlignment="flex-start"
 							>
 								<Text size="small">{`${services.response.accountCount} / ${services.response.licensedUsers}`}</Text>
-								<Quota fill={calculatedAccountQuotaSizePercentage} background="#F5F6F8" />
+								<Quota
+									fill={calculatedAccountQuotaSizePercentage}
+									background="#F5F6F8"
+									fillBackground="#2B73D2"
+									style={{ borderRadius: '2px' }}
+								/>
 							</Row>
 						</Row>
 						<Row
@@ -586,18 +652,35 @@ const Subscription: FC = () => {
 					crossAlignment="flex-start"
 					wrap="wrap"
 					height="fit"
-					style={{ gap: '2.25rem' }}
 				>
 					{modules.map(
-						(module: any) =>
-							(module.enabled || (!module.enabled && showDisabledModules)) && (
-								<ServiceStatus
-									key={module.name.label}
-									data={module}
-									licensed={module.enabled}
-									t={t}
-								/>
-							)
+						(
+							module: { name: { label: React.Key | null | undefined }; enabled: any },
+							index: number
+						) => (
+							<React.Fragment key={module.name.label}>
+								{index > 0 && (
+									<Container
+										style={{
+											width: '2.25rem',
+											height: '7.688rem',
+											background:
+												module.name.label !== modules[index - 1].name.label
+													? 'transperent'
+													: getGapColorForLabel(module.name.label)
+										}}
+									/>
+								)}
+								{(module.enabled || (!module.enabled && showDisabledModules)) && (
+									<ServiceStatus
+										key={module.name.label}
+										data={module}
+										licensed={module.enabled}
+										t={t}
+									/>
+								)}
+							</React.Fragment>
+						)
 					)}
 				</Container>
 				<Divider style={{ marginBlockStart: '2rem' }} />
