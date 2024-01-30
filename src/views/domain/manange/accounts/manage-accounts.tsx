@@ -81,6 +81,8 @@ const ManageAccounts: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('name');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -141,16 +143,18 @@ const ManageAccounts: FC = () => {
 	const headers: any = useMemo(
 		() => [
 			{
-				id: 'email',
+				id: 'name',
 				label: t('label.email', 'Email'),
 				width: '25%',
-				bold: true
+				bold: true,
+				sortable: true
 			},
 			{
-				id: 'name',
+				id: 'displayName',
 				label: t('label.person_name', 'Name'),
 				width: '15%',
-				bold: true
+				bold: true,
+				sortable: true
 			},
 			{
 				id: 'aliases',
@@ -603,7 +607,16 @@ const ManageAccounts: FC = () => {
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domainName, searchQuery, offset, limit)
+		accountListDirectory(
+			attrs,
+			type,
+			domainName,
+			searchQuery,
+			offset,
+			limit,
+			sortedColumn,
+			sortOrder
+		)
 			.then((data) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -745,15 +758,17 @@ const ManageAccounts: FC = () => {
 				setHasError(true);
 			});
 	}, [
-		STATUS_COLOR,
-		accountUserType,
 		domainName,
-		limit,
-		offset,
-		openDetailView,
 		searchQuery,
-		t,
-		createSnackbar
+		offset,
+		limit,
+		sortedColumn,
+		sortOrder,
+		accountUserType,
+		STATUS_COLOR,
+		openDetailView,
+		createSnackbar,
+		t
 	]);
 
 	const generateSearchFilterQuery = useCallback(
@@ -806,6 +821,15 @@ const ManageAccounts: FC = () => {
 			}
 		},
 		[closeAccountDetailDialog]
+	);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const handleSortChange = useCallback(
+		debounce((id: string, sOrder: 'asc' | 'desc'): void => {
+			setSortedColumn(id);
+			setSortOrder(sOrder);
+		}, 300),
+		[]
 	);
 
 	/** Commented code for fix issue of AC-529 */
@@ -917,7 +941,14 @@ const ManageAccounts: FC = () => {
 									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
 								}}
 								RowFactory={CustomRowFactory}
-								HeaderFactory={CustomHeaderFactory}
+								HeaderFactory={(props): JSX.Element => (
+									<CustomHeaderFactory
+										{...props}
+										onSortChange={handleSortChange}
+										sortedColumn={sortedColumn}
+										sortOrder={sortOrder}
+									/>
+								)}
 							/>
 							{isRequestInProgress && (
 								<Container

@@ -59,6 +59,8 @@ const DomainMailingList: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
 	const mailingListStatusFilter: any = useMemo(
 		() => [
@@ -77,16 +79,18 @@ const DomainMailingList: FC = () => {
 	const headers: any[] = useMemo(
 		() => [
 			{
-				id: 'name',
+				id: 'displayName',
 				label: t('label.distribution_list_name', 'Name'),
 				width: '20%',
-				bold: true
+				bold: true,
+				sortable: true
 			},
 			{
-				id: 'address',
+				id: 'name',
 				label: t('label.address', 'Address'),
 				width: '20%',
-				bold: true
+				bold: true,
+				sortable: true
 			},
 			{
 				id: 'members',
@@ -163,7 +167,7 @@ const DomainMailingList: FC = () => {
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
 		setIsRequestInProgress(true);
-		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name')
+		searchDirectory(attrs, types, domainName || '', query, offset, limit, sortedColumn, sortOrder)
 			.then((data) => {
 				const dlList = data?.dl;
 				if (dlList) {
@@ -303,7 +307,17 @@ const DomainMailingList: FC = () => {
 				});
 				setHasError(true);
 			});
-	}, [t, offset, limit, domainName, searchQuery, handleClick, createSnackbar]);
+	}, [
+		searchQuery,
+		domainName,
+		offset,
+		limit,
+		sortedColumn,
+		sortOrder,
+		t,
+		handleClick,
+		createSnackbar
+	]);
 
 	useEffect(() => {
 		getMailingList();
@@ -353,6 +367,15 @@ const DomainMailingList: FC = () => {
 			getMailingList();
 		}
 	}, [isUpdateRecord, getMailingList]);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const handleSortChange = useCallback(
+		debounce((id: string, sOrder: 'asc' | 'desc'): void => {
+			setSortedColumn(id);
+			setSortOrder(sOrder);
+		}, 300),
+		[]
+	);
 
 	const onAddClick = useCallback(() => {
 		setShowCreateMailingListView(true);
@@ -679,7 +702,14 @@ const DomainMailingList: FC = () => {
 									setSelectedDlRow(selected);
 								}}
 								RowFactory={CustomRowFactory}
-								HeaderFactory={CustomHeaderFactory}
+								HeaderFactory={(props): JSX.Element => (
+									<CustomHeaderFactory
+										{...props}
+										onSortChange={handleSortChange}
+										sortedColumn={sortedColumn}
+										sortOrder={sortOrder}
+									/>
+								)}
 							/>
 							{isRequestInProgress && (
 								<Container

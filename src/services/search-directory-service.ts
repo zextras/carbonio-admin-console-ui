@@ -13,7 +13,8 @@ export const searchDirectory = async (
 	query: string,
 	offset?: number,
 	limit?: number,
-	sortBy?: string
+	sortBy?: string,
+	sortAscending?: string
 ): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
@@ -33,6 +34,9 @@ export const searchDirectory = async (
 	}
 	if (sortBy !== '') {
 		request.sortBy = sortBy;
+	}
+	if (sortAscending !== '') {
+		request.sortAscending = sortAscending === 'asc' ? 1 : 0;
 	}
 	return soapFetch(`SearchDirectory`, {
 		...request

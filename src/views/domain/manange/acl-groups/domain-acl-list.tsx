@@ -59,6 +59,8 @@ const DomainAclList: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -77,16 +79,18 @@ const DomainAclList: FC = () => {
 	const headers: any[] = useMemo(
 		() => [
 			{
-				id: 'name',
+				id: 'displayName',
 				label: t('label.security_group_name', 'Name'),
 				width: '20%',
-				bold: true
+				bold: true,
+				sortable: true
 			},
 			{
-				id: 'address',
+				id: 'name',
 				label: t('label.address', 'Address'),
 				width: '20%',
-				bold: true
+				bold: true,
+				sortable: true
 			},
 			{
 				id: 'members',
@@ -163,7 +167,7 @@ const DomainAclList: FC = () => {
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE))(zimbraIsAdminGroup=TRUE))`;
 		setIsRequestInProgress(true);
-		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name')
+		searchDirectory(attrs, types, domainName || '', query, offset, limit, sortedColumn, sortOrder)
 			.then((data) => {
 				const dlList = data?.dl;
 				if (dlList) {
@@ -303,7 +307,17 @@ const DomainAclList: FC = () => {
 				});
 				setHasError(true);
 			});
-	}, [t, offset, limit, domainName, searchQuery, handleClick, createSnackbar]);
+	}, [
+		searchQuery,
+		domainName,
+		offset,
+		limit,
+		sortedColumn,
+		sortOrder,
+		t,
+		handleClick,
+		createSnackbar
+	]);
 
 	useEffect(() => {
 		getAclList();
@@ -354,6 +368,15 @@ const DomainAclList: FC = () => {
 			getAclList();
 		}
 	}, [isUpdateRecord, getAclList]);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const handleSortChange = useCallback(
+		debounce((id: string, sOrder: 'asc' | 'desc'): void => {
+			setSortedColumn(id);
+			setSortOrder(sOrder);
+		}, 300),
+		[]
+	);
 
 	const onAddClick = useCallback(() => {
 		setShowCreateAclListView(true);
@@ -695,7 +718,14 @@ const DomainAclList: FC = () => {
 									setSelectedDlRow(selected);
 								}}
 								RowFactory={CustomRowFactory}
-								HeaderFactory={CustomHeaderFactory}
+								HeaderFactory={(props): JSX.Element => (
+									<CustomHeaderFactory
+										{...props}
+										onSortChange={handleSortChange}
+										sortedColumn={sortedColumn}
+										sortOrder={sortOrder}
+									/>
+								)}
 							/>
 							{isRequestInProgress && (
 								<Container

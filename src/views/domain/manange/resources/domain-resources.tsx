@@ -54,6 +54,8 @@ const DomainResources: FC = () => {
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const timer = useRef<any>();
+	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
+	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
 	const resourceStatusFilter: any[] = useMemo(
 		() => [
@@ -72,16 +74,18 @@ const DomainResources: FC = () => {
 	const headers: any[] = useMemo(
 		() => [
 			{
-				id: 'resource',
+				id: 'displayName',
 				label: t('label.resource', 'Resource'),
 				width: '15%',
-				bold: true
+				bold: true,
+				sortable: true
 			},
 			{
-				id: 'email',
+				id: 'name',
 				label: t('label.email', 'Email'),
 				width: '25%',
-				bold: true
+				bold: true,
+				sortable: true
 			},
 			{
 				id: 'status',
@@ -149,13 +153,27 @@ const DomainResources: FC = () => {
 	);
 
 	const getResourceList = useCallback(
-		(zimbraDomainName: any, queryString: any): void => {
+		(
+			zimbraDomainName: any,
+			queryString: any,
+			sortBy: string,
+			sortAsceding: 'asc' | 'desc'
+		): void => {
 			const attrs =
 				'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraLastLogonTimestamp,zimbraAccountStatus';
 			const types = 'resources';
 			const query = `${queryString}(&(!(zimbraIsSystemAccount=TRUE)))`;
 			setIsRequestInProgress(true);
-			searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, 'name').then((data) => {
+			searchDirectory(
+				attrs,
+				types,
+				zimbraDomainName,
+				query,
+				offset,
+				limit,
+				sortBy,
+				sortAsceding
+			).then((data) => {
 				const resourceListResponse = data?.calresource || [];
 				if (resourceListResponse && Array.isArray(resourceListResponse)) {
 					setTotalAccount(data?.searchTotal || 0);
@@ -249,14 +267,23 @@ const DomainResources: FC = () => {
 	);
 
 	useEffect(() => {
-		getResourceList(domainName, searchQuery);
-	}, [getResourceList, domainName, searchQuery]);
+		getResourceList(domainName, searchQuery, sortedColumn, sortOrder);
+	}, [getResourceList, domainName, searchQuery, sortedColumn, sortOrder]);
 
 	useEffect(() => {
 		if (isUpdateRecord) {
-			getResourceList(domainName, searchQuery);
+			getResourceList(domainName, searchQuery, sortedColumn, sortOrder);
 		}
-	}, [isUpdateRecord, getResourceList, domainName, searchQuery]);
+	}, [isUpdateRecord, getResourceList, domainName, searchQuery, sortedColumn, sortOrder]);
+
+	// eslint-disable-next-line react-hooks/exhaustive-deps
+	const handleSortChange = useCallback(
+		debounce((id: string, sOrder: 'asc' | 'desc'): void => {
+			setSortedColumn(id);
+			setSortOrder(sOrder);
+		}, 300),
+		[]
+	);
 
 	const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
 		let filterQuery = '';
@@ -493,7 +520,14 @@ const DomainResources: FC = () => {
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
-								HeaderFactory={CustomHeaderFactory}
+								HeaderFactory={(props): JSX.Element => (
+									<CustomHeaderFactory
+										{...props}
+										onSortChange={handleSortChange}
+										sortedColumn={sortedColumn}
+										sortOrder={sortOrder}
+									/>
+								)}
 							/>
 							{isRequestInProgress && (
 								<Container

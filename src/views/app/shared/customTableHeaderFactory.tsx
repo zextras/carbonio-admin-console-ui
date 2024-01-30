@@ -30,8 +30,8 @@ type THeader = {
 	bold?: boolean;
 	items?: any;
 	onChange: () => void;
+	sortable?: boolean;
 };
-
 interface THeaderProps {
 	headers: THeader[];
 	onChange: () => void;
@@ -39,6 +39,9 @@ interface THeaderProps {
 	selectionMode: boolean;
 	multiSelect: boolean;
 	showCheckbox: boolean;
+	onSortChange: (id: string, sortOrder: 'asc' | 'desc') => void;
+	sortedColumn: string;
+	sortOrder: 'asc' | 'desc';
 }
 
 type HeaderFactoryCustomProps = Omit<THeaderProps, 'headers'> & {
@@ -56,10 +59,37 @@ const CustomHeaderFactory: FC<any> = ({
 	allSelected,
 	selectionMode,
 	multiSelect,
-	showCheckbox
+	showCheckbox,
+	onSortChange,
+	sortedColumn,
+	sortOrder
 }): JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const [showCkb, setShowCkb] = useState(false);
+
+	const handleSortChange = useCallback(
+		(id: string) => {
+			// eslint-disable-next-line no-nested-ternary
+			const newSortOrder = id === sortedColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+			onSortChange(id, newSortOrder);
+		},
+		[onSortChange, sortedColumn, sortOrder]
+	);
+
+	const renderSortingIcon = useCallback(
+		(id: string) => {
+			if (id === sortedColumn) {
+				return sortOrder === 'asc' ? (
+					<Icon icon="ChevronSortUpOutline" size="large" />
+				) : (
+					<Icon icon="ChevronSortDownOutline" size="large" />
+				);
+			}
+			return null;
+		},
+		[sortOrder, sortedColumn]
+	);
+
 	const LabelFactory = useCallback(
 		({ label, open, focus, bold, size }: any) => (
 			<Container
@@ -129,11 +159,13 @@ const CustomHeaderFactory: FC<any> = ({
 		() =>
 			headers.map((column: any) => {
 				const hasItems = !isEmpty(column.items);
+				const isSortable = column.sortable === true;
 				return (
 					<th
 						key={column.id}
 						align={column.align || 'left'}
 						style={{ width: column?.width, height: '2.625rem' }}
+						onClick={isSortable ? (): void => handleSortChange(column.id) : undefined}
 					>
 						{hasItems && (
 							<Container width="4rem">
@@ -155,13 +187,18 @@ const CustomHeaderFactory: FC<any> = ({
 						)}
 						{!hasItems && (
 							<Text weight={column.bold ? 'bold' : 'regular'} size="small">
-								{column.label}
+								<Container orientation="horizontal" mainAlignment="flex-start">
+									<Row style={{ cursor: isSortable ? 'pointer' : 'default' }}>
+										{column.label}
+										{isSortable && renderSortingIcon(column.id)}
+									</Row>
+								</Container>
 							</Text>
 						)}
 					</th>
 				);
 			}),
-		[headers, LabelFactory]
+		[headers, renderSortingIcon, handleSortChange, LabelFactory]
 	);
 	return (
 		<tr ref={trRef} style={{ height: '3rem' }}>
