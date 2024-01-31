@@ -543,22 +543,6 @@ const Subscription: FC = () => {
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
 							<Input
-								label={t('core.subscription.endDate', 'End date')}
-								value={
-									services.response.dateEnd
-										? moment(services.response.dateEnd).format('DD-MMM-YYYY')
-										: ''
-								}
-								readOnly
-							/>
-						</Row>
-						<Row
-							width="49.5%"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'small', right: 'small' }}
-						>
-							<Input
 								label={t('core.subscription.status', 'Status')}
 								value={
 									services.response.notYetValid || !services.response.authenticationToken
@@ -567,6 +551,26 @@ const Subscription: FC = () => {
 												services.response.dateEnd
 										  ).format('DD MMM YYYY')}`
 								}
+							/>
+						</Row>
+
+						<Row
+							width="49.5%"
+							mainAlignment="flex-start"
+							crossAlignment="flex-start"
+							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+						>
+							<Input
+								label={t(
+									'core.subscription.refresh_subscription_last_check',
+									'Refresh Subscription (Last Check)'
+								)}
+								value={
+									services.response.dateStart
+										? moment(services.response.dateStart).format('DD MMM YYYY')
+										: ''
+								}
+								CustomIcon={(): JSX.Element => <Icon icon="Refresh" size="large" color="primary" />}
 							/>
 						</Row>
 						<Row
@@ -599,19 +603,11 @@ const Subscription: FC = () => {
 							width="49.5%"
 							mainAlignment="flex-start"
 							crossAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'small', right: 'small' }}
+							padding={{ top: 'small', bottom: 'large', right: 'small' }}
 						>
 							<Input
-								label={t(
-									'core.subscription.refresh_subscription_last_check',
-									'Refresh Subscription (Last Check)'
-								)}
-								value={
-									services.response.dateStart
-										? moment(services.response.dateStart).format('DD MMM YYYY')
-										: ''
-								}
-								CustomIcon={(): JSX.Element => <Icon icon="Refresh" size="large" color="primary" />}
+								label={t('core.subscription.order_id', 'Order ID')}
+								value={services.response?.infrastructureId || ''}
 							/>
 						</Row>
 						<Row
@@ -624,17 +620,6 @@ const Subscription: FC = () => {
 								label={t('core.subscription.version', 'Module Version')}
 								value={version}
 								readOnly
-							/>
-						</Row>
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							crossAlignment="flex-start"
-							padding={{ top: 'small', bottom: 'large', right: 'small' }}
-						>
-							<Input
-								label={t('core.subscription.order_id', 'Order ID')}
-								value={services.response?.infrastructureId || ''}
 							/>
 						</Row>
 					</Container>
