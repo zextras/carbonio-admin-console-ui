@@ -17,7 +17,9 @@ import {
 	Table,
 	IconButton,
 	Padding,
-	Collapse
+	Collapse,
+	Icon,
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import { getTags } from '@zextras/carbonio-shell-ui';
 import { filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
@@ -34,6 +36,7 @@ import { createAccountRequest } from '../../services/create-account';
 import { deleteAccount } from '../../services/delete-account-service';
 import { getAccountRequest } from '../../services/get-account';
 import { getAllConfig } from '../../services/get-all-config';
+import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request';
 import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
 import { msgActionRequest } from '../../services/message-action';
 import { modifyConfig } from '../../services/modify-config';
@@ -332,12 +335,14 @@ const QuarantineList: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useContext(SnackbarManagerContext);
 	const [quarantineAccountName, setQuarantineAccountName] = useState<string>('');
+	const [quarantineAccountId, setQuarantineAccountId] = useState<string>('');
 	const [quarantineDomaintName, setQuarantineDomaintName] = useState<string>('');
 	const [configDataLoaded, setConfigDataLoaded] = useState<boolean>(false);
 	const [deleteQuarantuneAccModal, setDeleteQuarantuneAccModal] = useState<boolean>(false);
 	const [deleteMsgModal, setDeleteMsgModal] = useState<boolean>(false);
 	const [showMessageView, setShowMessageView] = useState<boolean>(false);
 	const [messageViewLoading, setMessageViewLoading] = useState<boolean>(false);
+	const [openDeliverDialog, setOpenDeliverDialog] = useState<boolean>(false);
 	const [messageListData, setMessageListData] = useState([]);
 	const { config, setConfig } = useConfigStore((state) => state);
 	const [messageSelection, setMessageSelection] = useState<string[]>([]);
@@ -683,6 +688,7 @@ const QuarantineList: FC = () => {
 				setZimbraMailMessageLifetimeNum(zimbraMailMessageLifetime?.slice(0, -1));
 				setZimbraMailMessageLifetimeType(zimbraMailMessageLifetime?.slice(-1));
 				if (res?.account?.[0]?.id) {
+					setQuarantineAccountId(res.account[0].id);
 					getQuarantineMessages(res?.account?.[0]?.id).then((response: any): void => {
 						if (!response?.Body?.SearchResponse?.m) {
 							setRequestInprogress(false);
@@ -966,6 +972,7 @@ const QuarantineList: FC = () => {
 					setMessageListData([]);
 					getQuarantineMsgData();
 					setShowMessageView(false);
+					setOpenDeliverDialog(false);
 					setMessageViewLoading(false);
 					createSnackbar({
 						key: 'info',
@@ -978,6 +985,7 @@ const QuarantineList: FC = () => {
 				})
 				.catch((error) => {
 					setMessageViewLoading(false);
+					setOpenDeliverDialog(false);
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -993,6 +1001,45 @@ const QuarantineList: FC = () => {
 		[createSnackbar, getQuarantineMsgData, t]
 	);
 	const setToggleView = (): void => setShowTextMsgView(!showTextMsgView);
+
+	const downloadMail = useCallback(() => {
+		getDelegateAuthRequest(quarantineAccountId)
+			.then((data: any) => {
+				if (data?.authToken?.[0]) {
+					window.open(
+						`https://${window.location.hostname}/service/preauth?authtoken=${
+							data?.authToken?.[0]._content
+						}&isredirect=1&adminPreAuth=1&redirectURL=${encodeURIComponent(
+							'/service/home/~/?auth=co&view=text&id='
+						)}${message.id.split(':')[1]}`,
+						'blank'
+					);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
+						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+			})
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, message.id, quarantineAccountId, t]);
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -1012,6 +1059,7 @@ const QuarantineList: FC = () => {
 					</Row>
 				</Container>
 			</Row>
+
 			<Row orientation="horizontal" width="100%" background="gray6">
 				<Divider />
 			</Row>
@@ -1109,6 +1157,7 @@ const QuarantineList: FC = () => {
 													backgroundColor="gray5"
 													value={zimbraMailMessageLifetimeNum}
 													readOnly
+													style={{ pointerEvents: 'none' }}
 												/>
 											</Container>
 											<Container
@@ -1129,6 +1178,7 @@ const QuarantineList: FC = () => {
 															  ).label
 													}
 													readOnly
+													style={{ pointerEvents: 'none' }}
 												/>
 											</Container>
 										</ListRow>
@@ -1151,6 +1201,19 @@ const QuarantineList: FC = () => {
 												</Text>
 											</Row>
 										</Row>
+										<Row width="100%" padding={{ bottom: 'large' }}>
+											<Container mainAlignment="flex-end" crossAlignment="flex-end">
+												<Button
+													label={t('quarantine.refresh_list', 'REFRESH LIST')}
+													color="primary"
+													type="outlined"
+													onClick={(): void => {
+														getQuarantineMsgData();
+													}}
+												/>
+											</Container>
+										</Row>
+
 										<Row width="100%" padding={{ bottom: 'extralarge' }}>
 											<MessageListTable
 												messages={messageListData}
@@ -1300,13 +1363,56 @@ const QuarantineList: FC = () => {
 							width="fill"
 							padding={{ all: 'large' }}
 						>
+							<Row
+								mainAlignment="flex-start"
+								orientation="horizontal"
+								width="70%"
+								padding={{ all: 'large' }}
+							>
+								<Text size="large">{t('label.score', 'Score')}</Text>
+								{' : '}
+								<Text
+									size="large"
+									weight="bold"
+									// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+									// @ts-ignore
+									// eslint-disable-next-line no-nested-ternary
+									color={message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'}
+									style={{ display: 'flex', paddingLeft: '0.25rem' }}
+								>
+									{message.score}
+								</Text>
+								<Tooltip placement="top" label={message.reason}>
+									<Text style={{ paddingLeft: '0.25rem' }}>
+										<Icon
+											color={
+												// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+												// @ts-ignore
+												// eslint-disable-next-line no-nested-ternary
+												message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
+											}
+											size="large"
+											icon={'QuestionMarkCircleOutline'}
+										/>
+									</Text>
+								</Tooltip>
+							</Row>
 							<Button
-								label={t('quarantine.deliver', 'DELIVER')}
+								label={t('quarantine.download', 'DOWNLOAD')}
 								type="outlined"
 								onClick={(): void => {
-									onDeliverMessage(message);
+									downloadMail();
 								}}
 							/>
+							<Padding left="small">
+								<Button
+									label={t('quarantine.deliver', 'DELIVER')}
+									type="outlined"
+									onClick={(): void => {
+										setOpenDeliverDialog(true);
+									}}
+								/>
+							</Padding>
 							<Padding left="small">
 								<Button
 									label={t('label.delete_button', 'DELETE')}
@@ -1432,6 +1538,48 @@ const QuarantineList: FC = () => {
 							</Row>
 						</Container>
 					</Container>
+					<Modal
+						title={`${t('quarantine.is_content_email_safe', 'Is the content of the email safe?')}`}
+						open={openDeliverDialog}
+						showCloseIcon
+						onClose={(): void => {
+							setOpenDeliverDialog(false);
+						}}
+						customFooter={
+							<Container orientation="horizontal" mainAlignment="space-between">
+								<Container orientation="horizontal" mainAlignment="flex-end">
+									<Padding all="small">
+										<Button
+											label={t('quarantine.no_cancel', 'NO, CANCEL')}
+											color="primary"
+											type="ghost"
+											onClick={(): void => {
+												setOpenDeliverDialog(false);
+											}}
+										/>
+									</Padding>
+
+									<Button
+										label={t('quarantine.yes_deliver', 'YES, DELIVER')}
+										color="primary"
+										type="outlined"
+										onClick={(): void => {
+											onDeliverMessage(message);
+										}}
+									/>
+								</Container>
+							</Container>
+						}
+					>
+						<Padding all="medium">
+							<Text overflow="break-word" weight="regular">
+								{t(
+									'quarantine.please_note_email_contains_dangerous_file_not_be_delivered',
+									'Please note that if the email still contains a dangerous file it will not be delivered'
+								)}
+							</Text>
+						</Padding>
+					</Modal>
 				</ModalOverlay>
 			)}
 		</Container>
