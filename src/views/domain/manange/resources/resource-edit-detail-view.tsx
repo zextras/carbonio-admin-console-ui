@@ -26,6 +26,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { SendInviteAccounts } from './send-invite-accounts';
 import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
 import { getCalenderResource } from '../../../../services/get-cal-resource-service';
+import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
 import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
 import { setPasswordRequest } from '../../../../services/set-password-service';
@@ -35,7 +36,6 @@ import Displayer from '../../../components/displayer';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
-import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -87,7 +87,10 @@ const ResourceEditDetailView: FC<any> = ({
 	const [zimbraNotes, setZimbraNotes] = useState<string>('');
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const { isSticky, setIsSticky } = useStickyBarStore();
-
+	const errorMessage = useMemo(
+		() => t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+		[t]
+	);
 	const STATUS_COLOR: any = useMemo(
 		() => ({
 			active: {
@@ -642,16 +645,21 @@ const ResourceEditDetailView: FC<any> = ({
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: error.message
-						? error.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error.message ? error.message : errorMessage,
 
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
 			});
-	}, [selectedResourceList?.id, selectedResourceList?.name, onSuccess, t, createSnackbar]);
+	}, [
+		selectedResourceList?.id,
+		selectedResourceList?.name,
+		onSuccess,
+		t,
+		createSnackbar,
+		errorMessage
+	]);
 
 	const onDisableResource = useCallback(() => {
 		setIsRequestInProgress(true);
@@ -679,69 +687,76 @@ const ResourceEditDetailView: FC<any> = ({
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error?.message ? error?.message : errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
 			});
-	}, [selectedResourceList?.id, selectedResourceList?.name, onSuccess, t, createSnackbar]);
+	}, [
+		selectedResourceList?.id,
+		selectedResourceList?.name,
+		onSuccess,
+		t,
+		createSnackbar,
+		errorMessage
+	]);
 
 	const onViewMail = useCallback(() => {
-        getDelegateAuthRequest(selectedResourceList?.id)
-            .then((data: any) => {
-                if (data?.authToken?.[0]) {
-                    window.open(
-                        `https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
-                        'blank'
-                    );
-                } else {
-                    createSnackbar({
-                        key: 'error',
-                        type: 'error',
-                        // eslint-disable-next-line sonarjs/no-duplicate-string
-                        label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-                        autoHideTimeout: 3000,
-                        hideButton: true,
-                        replace: true
-                    });
-                }
-            })
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            .catch((error) => {
-                createSnackbar({
-                    key: 'error',
-                    type: 'error',
-                    label: error?.message
-                        ? error?.message
-                        : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-                    autoHideTimeout: 3000,
-                    hideButton: true,
-                    replace: true
-                });
-            });
-    }, [createSnackbar, selectedResourceList?.id, t]);
+		getDelegateAuthRequest(selectedResourceList?.id)
+			.then((data: any) => {
+				if (data?.authToken?.[0]) {
+					window.open(
+						`https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+						'blank'
+					);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
+						label: errorMessage,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+			})
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message ? error?.message : errorMessage,
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, errorMessage, selectedResourceList?.id]);
 
-	const buttons = [{
-            align: 'right',
-            label: t('label.view_mail', 'VIEW MAIL'),
-            color: 'primary',
-            onClick: onViewMail
-        },{
+	const buttons = [
+		{
+			align: 'right',
+			label: t('label.view_mail', 'VIEW MAIL'),
+			color: 'primary',
+			onClick: onViewMail
+		},
+		{
 			align: 'right',
 			type: 'outlined',
 			color: 'error',
 			onClick: onDeleteResource,
 			label: t('label.delete', 'delete')
-		}, {
+		},
+		{
 			align: 'left',
 			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
 				setIsSticky(!isSticky);
 			}
-		}];
+		}
+	];
 
 	return (
 		<Container
