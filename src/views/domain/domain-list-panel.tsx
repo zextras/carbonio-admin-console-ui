@@ -401,7 +401,8 @@ const DomainListPanel: FC = () => {
 						(item: ManageOptions) =>
 							item?.id !== RESTORE_ACCOUNT &&
 							item?.id !== ACTIVE_SYNC &&
-							item?.id !== DELEGATES_DOMAIN_ADMINS
+							item?.id !== DELEGATES_DOMAIN_ADMINS &&
+							item?.id !== SECURITY_GROUP
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
