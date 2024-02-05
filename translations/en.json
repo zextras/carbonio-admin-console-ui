@@ -1699,6 +1699,7 @@
         "sharing": "SHARING",
         "sharing_options": "Sharing Options",
         "show_all": "Show all",
+        "show_forget_password_link": "Show \"Forget Password\" link in the login page",
         "show_quoted_text": "Show quoted text",
         "show_reminder": "Show Reminder",
         "show_time_zone_list_in_appointment_view": "Show time zone list in appointment view",
