@@ -35,6 +35,7 @@ import Displayer from '../../../components/displayer';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
+import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
 
 // eslint-disable-next-line no-shadow
 export enum RESOURCE_TYPE {
@@ -688,22 +689,59 @@ const ResourceEditDetailView: FC<any> = ({
 			});
 	}, [selectedResourceList?.id, selectedResourceList?.name, onSuccess, t, createSnackbar]);
 
-	const buttons = [
-		{
+	const onViewMail = useCallback(() => {
+        getDelegateAuthRequest(selectedResourceList?.id)
+            .then((data: any) => {
+                if (data?.authToken?.[0]) {
+                    window.open(
+                        `https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+                        'blank'
+                    );
+                } else {
+                    createSnackbar({
+                        key: 'error',
+                        type: 'error',
+                        // eslint-disable-next-line sonarjs/no-duplicate-string
+                        label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+                        autoHideTimeout: 3000,
+                        hideButton: true,
+                        replace: true
+                    });
+                }
+            })
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            .catch((error) => {
+                createSnackbar({
+                    key: 'error',
+                    type: 'error',
+                    label: error?.message
+                        ? error?.message
+                        : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+                    autoHideTimeout: 3000,
+                    hideButton: true,
+                    replace: true
+                });
+            });
+    }, [createSnackbar, selectedResourceList?.id, t]);
+
+	const buttons = [{
+            align: 'right',
+            label: t('label.view_mail', 'VIEW MAIL'),
+            color: 'primary',
+            onClick: onViewMail
+        },{
 			align: 'right',
 			type: 'outlined',
 			color: 'error',
 			onClick: onDeleteResource,
 			label: t('label.delete', 'delete')
-		},
-		{
+		}, {
 			align: 'left',
 			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
 				setIsSticky(!isSticky);
 			}
-		}
-	];
+		}];
 
 	return (
 		<Container
