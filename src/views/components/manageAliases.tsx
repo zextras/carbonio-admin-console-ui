@@ -28,7 +28,8 @@ const ManageAliases: FC<{
 	setListAliases: (arg: Array<{ label: string }>) => void;
 	setAliasChange: (arg: Array<{ label: string }>) => void;
 	aliasType?: string;
-}> = ({ listAliases, setListAliases, setAliasChange, aliasType = '' }) => {
+	viewType?: string;
+}> = ({ listAliases, setListAliases, setAliasChange, aliasType = '', viewType = 'large' }) => {
 	const [t] = useTranslation();
 	const [showManageAliesModal, setShowManageAliesModal] = useState<boolean>(false);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -42,40 +43,60 @@ const ManageAliases: FC<{
 	return (
 		<>
 			<Row width="100%">
-				<Row width="76%" mainAlignment="flex-start" crossAlignment="flex-start">
-					<Row padding={{ left: 'large', bottom: 'small' }}>
-						<Text size="small" color="secondary">
-							{t('account_details.aliases', 'Aliases')}
-						</Text>
-					</Row>
-					<Row width="100%">
-						<Container
-							orientation="horizontal"
-							wrap="wrap"
-							mainAlignment="flex-start"
-							maxWidth="44rem"
-							style={{ gap: '0.5rem' }}
-						>
-							{listAliases?.map(
-								(ele, index) =>
-									(aliasType !== 'accounts' || index > 0) && (
-										<CustomChip key={`chip${index}`} label={ele?.label} />
-									)
-							)}
-							<Row width="100%" padding={{ top: 'medium' }}>
-								<Divider color="gray2" />
+				{viewType === 'large' ? (
+					<>
+						<Row width="76%" mainAlignment="flex-start" crossAlignment="flex-start">
+							<Row padding={{ left: 'large', bottom: 'small' }}>
+								<Text size="small" color="secondary">
+									{t('account_details.aliases', 'Aliases')}
+								</Text>
 							</Row>
-						</Container>
-					</Row>
-				</Row>
-				<Row width="24%" mainAlignment="flex-end">
-					<Button
-						type="outlined"
-						label={t('account_details.manage_aliases', 'MANAGE ALIAS')}
-						color="primary"
-						onClick={(): void => setShowManageAliesModal(true)}
-					/>
-				</Row>
+							<Row width="100%">
+								<Container
+									orientation="horizontal"
+									wrap="wrap"
+									mainAlignment="flex-start"
+									maxWidth="44rem"
+									style={{ gap: '0.5rem' }}
+								>
+									{listAliases?.map(
+										(ele, index) =>
+											(aliasType !== 'accounts' || index > 0) && (
+												<CustomChip key={`chip${index}`} label={ele?.label} />
+											)
+									)}
+									<Row width="100%" padding={{ top: 'medium' }}>
+										<Divider color="gray2" />
+									</Row>
+								</Container>
+							</Row>
+						</Row>
+						<Row width="24%" mainAlignment="flex-end">
+							<Button
+								type="outlined"
+								label={t('account_details.manage_aliases', 'MANAGE ALIAS')}
+								color="primary"
+								onClick={(): void => setShowManageAliesModal(true)}
+							/>
+						</Row>
+					</>
+				) : (
+					<>
+						<Input
+							label={t('account_details.aliases', 'Aliases')}
+							value={(listAliases?.length || 1) - 1}
+							CustomIcon={(): any => (
+								<Icon
+									icon="EditAsNewOutline"
+									onClick={(): void => setShowManageAliesModal(true)}
+									style={{ cursor: 'pointer' }}
+									size="large"
+									onChange={(): null => null}
+								/>
+							)}
+						/>
+					</>
+				)}
 			</Row>
 			<Modal
 				title={t(

@@ -38,6 +38,7 @@ import {
 } from '../../../../services/cos-general-information-service';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
+import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -54,6 +55,14 @@ import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
 import AccountDetailView from '../accounts/account-detail-view';
 import EditAccount from '../accounts/edit-account/edit-account';
+
+type UserSession = {
+	name: string;
+	sid: string;
+	zid: string;
+	ip: string;
+	service: string;
+};
 
 const ManageDelegates: FC = () => {
 	const [t] = useTranslation();
@@ -76,6 +85,8 @@ const ManageDelegates: FC = () => {
 	const [directMemberList, setDirectMemberList] = useState<any>({});
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [otpList, setOtpList] = useState<any[]>([]);
+	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
+	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const [credentialList, setCredentialList] = useState<any[]>([]);
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
@@ -429,6 +440,38 @@ const ManageDelegates: FC = () => {
 		[getFolderList]
 	);
 
+	const getAllUserSession = useCallback((acc) => {
+		const sessionType: string[] = ['admin', 'imap', 'soap'];
+		setUserSessionList([]);
+		setAllUserSessionList([]);
+		sessionType.forEach((item: string) => {
+			getSessions(item, acc).then((resp: any) => {
+				if (resp && resp?.s) {
+					const existingSession = resp?.s;
+					if (existingSession) {
+						const session: UserSession[] = [];
+						const filterSession = existingSession.filter(
+							(sessionItem: any) => sessionItem?.name === acc
+						);
+						if (filterSession.length > 0) {
+							filterSession.forEach((element: any) => {
+								session.push({
+									ip: '',
+									name: element?.name,
+									sid: element?.sid,
+									service: '',
+									zid: element?.zid
+								});
+							});
+						}
+						setUserSessionList((prev: any) => [...prev, ...session]);
+						setAllUserSessionList((prev: any) => [...prev, ...session]);
+					}
+				}
+			});
+		});
+	}, []);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setShowAccountDetailView(true);
@@ -436,6 +479,7 @@ const ManageDelegates: FC = () => {
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
 			getIdentitiesList(acc);
+			getAllUserSession(acc?.name);
 			if (isAdvanced) {
 				getListOtp(acc?.name);
 				getCredentialList(acc?.name);
@@ -446,9 +490,10 @@ const ManageDelegates: FC = () => {
 			getSignatureDetail,
 			getAccountMembership,
 			getIdentitiesList,
+			getAllUserSession,
 			isAdvanced,
-			getCredentialList,
-			getListOtp
+			getListOtp,
+			getCredentialList
 		]
 	);
 
@@ -965,7 +1010,11 @@ const ManageDelegates: FC = () => {
 							globalRights,
 							setGlobalRights,
 							deleteAdministrationRights,
-							setDeleteAdministrationRights
+							setDeleteAdministrationRights,
+							userSessionList,
+							setAllUserSessionList,
+							allUserSessionList,
+							setUserSessionList
 						}}
 					>
 						{showAccountDetailView && (
@@ -1003,6 +1052,7 @@ const ManageDelegates: FC = () => {
 									setShowModal={setShowModal}
 									isDirty={isDirty}
 									setIsDirty={setIsDirty}
+									STATUS_COLOR={STATUS_COLOR}
 								/>
 							</ModalOverlay>
 						)}
