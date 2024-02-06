@@ -27,9 +27,13 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
-import { Attribute, objectType } from '../../../../../types';
+import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
 import logo from '../../../../assets/guardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import {
+	HELPDESK_ADMINS,
+	RECORD_DISPLAY_LIMIT,
+	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
+} from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	GetCosResponse,
@@ -91,6 +95,8 @@ const ManageDelegates: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const domainInformation = useDomainStore((state) => state.domain?.a);
+	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
 
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -116,6 +122,27 @@ const ManageDelegates: FC = () => {
 		],
 		[t]
 	);
+
+	useMemo(() => {
+		if (!!domainInformation && domainInformation.length > 0) {
+			const domainCosMaxAccountArray = domainInformation.filter(
+				(domainContent: any) => domainContent.n === ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
+			);
+			if (domainCosMaxAccountArray && domainCosMaxAccountArray.length > 0) {
+				const domainCosMaxAccounts = domainCosMaxAccountArray.map(
+					(domainContent: any, index: any) => ({
+						id: domainContent._content?.split(':')[0],
+						value: domainContent._content?.split(':')[1]
+							? domainContent._content?.split(':')[1]
+							: -1
+					})
+				);
+				SetCosMaxAccountList(domainCosMaxAccounts);
+			} else {
+				SetCosMaxAccountList([]);
+			}
+		}
+	}, [domainInformation]);
 
 	const generateSignatureList = (signatureResponse: any): void => {
 		if (signatureResponse && Array.isArray(signatureResponse)) {
@@ -518,6 +545,66 @@ const ManageDelegates: FC = () => {
 			domain: domain?.name
 		})
 			.then((res: objectType) => {
+				if (cosMaxAccountList.length > 0) {
+					const request: unknown[] = [];
+					cosMaxAccountList.forEach((item: CosMaxAccountValues) => {
+						const target = {
+							_content: item?.id,
+							type: 'cos',
+							by: 'id'
+						};
+						const grantee = {
+							by: 'name',
+							type: 'grp',
+							_content: `${HELPDESK_ADMINS}@${domain?.name}`
+						};
+						request.push(
+							postSoapFetchRequest(
+								`/service/admin/soap/GrantRightRequest`,
+								{
+									_jsns: 'urn:zimbraAdmin',
+									target,
+									grantee,
+									right: {
+										_content: 'getCos'
+									}
+								},
+								'GrantRightRequest'
+							)
+						);
+
+						request.push(
+							postSoapFetchRequest(
+								`/service/admin/soap/GrantRightRequest`,
+								{
+									_jsns: 'urn:zimbraAdmin',
+									target,
+									grantee,
+									right: {
+										_content: 'listCos'
+									}
+								},
+								'GrantRightRequest'
+							)
+						);
+
+						request.push(
+							postSoapFetchRequest(
+								`/service/admin/soap/GrantRightRequest`,
+								{
+									_jsns: 'urn:zimbraAdmin',
+									target,
+									grantee,
+									right: {
+										_content: 'assignCos'
+									}
+								},
+								'GrantRightRequest'
+							)
+						);
+					});
+					Promise.all(request).then();
+				}
 				setLoading(false);
 				fetchDistributionList(domain?.name, 0, 10);
 				createSnackbar({
@@ -547,7 +634,7 @@ const ManageDelegates: FC = () => {
 					replace: true
 				});
 			});
-	}, [createSnackbar, domain?.name, fetchDistributionList, t]);
+	}, [createSnackbar, domain?.name, fetchDistributionList, t, cosMaxAccountList]);
 
 	const onDeleteFromList = useCallback(
 		(lists: objectType[], type: string) => {

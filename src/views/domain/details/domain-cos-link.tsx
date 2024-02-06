@@ -64,7 +64,6 @@ const DomainCosLink: FC<{
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
-	const allCosList = useDomainStore((state) => state.cosList);
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
