@@ -156,6 +156,7 @@ export const GLOBAL_DOMAIN_ROUTE = 'global/domains';
 export const GLOBAL_QUARANTINE_ROUTE = 'global/quarantine';
 export const GLOBAL_WHITELABEL_SETTINGS = 'global/whitelabel_settings';
 export const GLOBAL_2FA_ROUTE = 'global/2-factor-authentication';
+export const GLOBAL_ACTIVE_SYNC_ROUTE = 'global/active_sync';
 export const MAX_DELEGATE_ACCOUNT_DISPLAY = 30;
 export const NOTIFICATION_INFORMATION = 'Information';
 export const NOTIFICATION_WARNING = 'Warning';

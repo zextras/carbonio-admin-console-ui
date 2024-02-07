@@ -44,7 +44,8 @@ import {
 	DISCLAIMER,
 	GLOBAL_SETTINGS_ROUTE,
 	IS_DETAIL_LIST_EXPANDED,
-	IS_MANAGE_LIST_EXPANDED
+	IS_MANAGE_LIST_EXPANDED,
+	GLOBAL_ACTIVE_SYNC_ROUTE
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -253,6 +254,8 @@ const DomainListPanel: FC = () => {
 					replaceHistory(`/${domainView}`);
 				} else if (domainView === GLOBAL_DELEGATES_ROUTE) {
 					replaceHistory(`/${domainView}`);
+				} else if (domainView === GLOBAL_ACTIVE_SYNC_ROUTE) {
+					replaceHistory(`/${domainView}`);
 				} else {
 					replaceHistory(`/${domainId}/${domainView}`);
 				}
@@ -388,6 +391,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: GLOBAL_QUARANTINE_ROUTE,
 				name: t('label.quarantine', 'Quarantine'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_ACTIVE_SYNC_ROUTE,
+				name: t('label.active_sync', 'ActiveSync'),
 				isSelected: true
 			}
 		],
