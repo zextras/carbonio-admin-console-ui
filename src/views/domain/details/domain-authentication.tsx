@@ -895,7 +895,10 @@ const DomainAuthentication: FC = () => {
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Switch
 										value={zimbraAuthLdapStartTlsEnabled}
-										label={t('label.enable_start_tls', 'Enable StartTLS')}
+										label={t(
+											'label.enable_secure_connection',
+											'Enable Secure Connection (StartTLS/SSL)'
+										)}
 										onClick={authLdapStartTlsEnabled}
 										iconColor="primary"
 									/>
