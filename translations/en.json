@@ -821,6 +821,7 @@
         "active_sessions": "Active Sessions",
         "active_sync": "ActiveSync",
         "active_sync_active_paused": "The activesync is active / paused",
+        "active_sync_has_been_purged_successfully": "ActiveSync has been purged successfully",
         "add": "Add",
         "add_administration_rights": "Add Administration rights",
         "add_in_acl_list_or_both": "You add another Acl List or a User. Both of them can be a Owner of the list.",

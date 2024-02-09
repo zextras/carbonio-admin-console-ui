@@ -12,15 +12,13 @@ import {
 
 import { ZX_MOBILE } from '../constants';
 
-export const doStratStopJail = async (action: string, targetServers: string): Promise<any> =>
+export const doPurgeActiveSync = async (): Promise<any> =>
 	postSoapFetchRequest(
 		`/service/admin/soap`,
 		{
 			_jsns: 'urn:zimbraAdmin',
 			module: ZX_MOBILE,
-			action,
-			service_name: 'anti-dos',
-			targetServers
+			action: 'doPurgeMobileState'
 		},
 		'zextras'
 	);

@@ -20,6 +20,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import { doPurgeActiveSync } from '../../../services/do-purge-mobile-state';
 import { doStratStopJail } from '../../../services/do-start-stop-jail';
 import { getMobileAntiDosService } from '../../../services/get-mobile-anti-dos-service';
 import { getMobileAntiDosServiceJailDuration } from '../../../services/get-mobile-anti-dos-service-jail-duration';
@@ -93,6 +94,25 @@ const GlobalActiveSync: FC = () => {
 					setIsLoading(false);
 				})
 			);
+		}
+	};
+	const PurgeActiveSync = (): void => {
+		if (mailstoresList.length > 0) {
+			setIsLoading(true);
+			doPurgeActiveSync().then(() => {
+				createSnackbar({
+					key: 'success',
+					type: 'success',
+					label: t(
+						'label.active_sync_has_been_purged_successfully',
+						'ActiveSync has been purged successfully'
+					),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setIsLoading(false);
+			});
 		}
 	};
 	const onSave = (): void => {
@@ -225,7 +245,16 @@ const GlobalActiveSync: FC = () => {
 								label={t('label.restart_jail', 'Restart Jail')}
 								color="primary"
 								size="large"
-								onClick={(): any => restartJail()}
+								onClick={(): void => restartJail()}
+							/>
+						</Padding>
+						<Padding right="large">
+							<Button
+								type="outlined"
+								label={t('label.purge_active_sync', 'Purge ActiveSync')}
+								color="primary"
+								size="large"
+								onClick={(): void => PurgeActiveSync()}
 							/>
 						</Padding>
 					</Row>
