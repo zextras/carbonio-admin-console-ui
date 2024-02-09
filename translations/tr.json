@@ -1084,7 +1084,8 @@
         "from": "Kimden",
         "login": "Oturum Aç",
         "messages": "Mesajlar",
-        "to": "Kime"
+        "to": "Kime",
+        "advance_edit_user": "Kullanıcı"
     },
     "timezone": {
         "asia_gaza": "{{value}} Gaza",
@@ -1614,9 +1615,9 @@
         "default_view": {
             "day": "Gün Görünümü",
             "list": "Liste Görünümü",
-            "month": "Ay Görünümü",
+            "month": "Aylık Görünüm",
             "week": "Haftalık Görünüm",
-            "work_week": "Çalışma Haftası Görünümü"
+            "work_week": "Çalışma Günleri Görünümü"
         },
         "disable_attachment_viewing_from_web_mail_ui": "Web posta kullanıcı arabiriminden ek görüntülemeyi devre dışı bırak",
         "disabled": "Kullanıma kapalı",
@@ -1878,9 +1879,9 @@
         "default_view": {
             "day": "Gün Görünümü",
             "list": "Liste Görünümü",
-            "month": "Ay Görünümü",
+            "month": "Aylık Görünüm",
             "week": "Haftalık Görünüm",
-            "work_week": "Çalışma Haftası Görünümü"
+            "work_week": "Çalışma Günleri Görünümü"
         },
         "enable_smime": "S/MIME’yi etkinleştir",
         "general": "Genel",

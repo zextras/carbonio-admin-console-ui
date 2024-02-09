@@ -661,8 +661,22 @@ const DomainGeneralSettings: FC = () => {
 			DeleteCalendarResourceRequest: resourceDeleteBatch,
 			DeleteAccountRequest: accountDeleteBatch,
 			_jsns: 'urn:zimbra'
-		}).then(() => {
-			deleteOnlyDomain();
+		}).then((res) => {
+			if (res?.Fault) {
+				res?.Fault?.forEach((item: any) =>
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: item?.Reason?.Text,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					})
+				);
+				setIsRequestInProgress(false);
+			} else {
+				deleteOnlyDomain();
+			}
 		});
 	};
 
