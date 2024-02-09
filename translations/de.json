@@ -208,7 +208,7 @@
         "yes": "Ja",
         "detail": "Detail",
         "device": "Gerät",
-        "edit": "Bewerken",
+        "edit": "Bearbeiten",
         "go_back": "Zurück",
         "id_lbl": "ID",
         "language": "Sprache",
@@ -1136,7 +1136,8 @@
         "subject": "Betreff",
         "to": "An",
         "view_images": "BILDER ANSEHEN",
-        "attachments_disclaimer": "Sie sehen eine angehängte Nachricht. Die Echtheit der angehängten Nachrichten kann nicht überprüft werden."
+        "attachments_disclaimer": "Sie sehen eine angehängte Nachricht. Die Echtheit der angehängten Nachrichten kann nicht überprüft werden.",
+        "advance_edit_user": "Benutzer"
     },
     "timezone": {
         "asia_yerevan": "{{value}} Eriwan",
@@ -1991,7 +1992,7 @@
         "destination_volume": "Zieldatenträger",
         "details": "Details",
         "document": "Dokument",
-        "edit": "Bewerken",
+        "edit": "Bearbeiten",
         "event": "Event",
         "hours": "Stunden",
         "hsm_policies_list": "Liste HSM Richtlinien",

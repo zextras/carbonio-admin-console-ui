@@ -12,9 +12,11 @@ import { DOMAINS_ROUTE_ID, GLOBAL_ROUTE } from '../../constants';
 
 type DomainState = {
 	domain: Domain;
+	domainWithoutConfig: Domain;
 	cosList: Array<Cos>;
 	domainView: string;
 	setDomain: (domain: Domain) => void;
+	setDomainWioutConfig: (domain: Domain) => void;
 	domainList: Array<Domain>;
 	setCosList: (cosList: Array<Cos>) => void;
 	setDomainList: (domainList: Array<Domain>) => void;
@@ -33,9 +35,12 @@ type DomainState = {
 export const useDomainStore = create<DomainState>()(
 	devtools((set) => ({
 		domain: {},
+		domainWithoutConfig: {},
 		cosList: [],
 		domainView: `${GLOBAL_ROUTE}/${DOMAINS_ROUTE_ID}`,
 		setDomain: (domain): void => set({ domain }, false, 'setDomain'),
+		setDomainWioutConfig: (domainWithoutConfig): void =>
+			set({ domainWithoutConfig }, false, 'setDomainWioutConfig'),
 		domainList: [],
 		isDomainSupportDelegatedAdmin: false,
 		isQuickAccess: false,

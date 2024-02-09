@@ -343,7 +343,7 @@
         "account": "アカウント",
         "accounts": "アカウント",
         "active": "アクティブ",
-        "add": "追加",
+        "add": "追加する",
         "app_clicked": "共有リクエストを承認しました",
         "app_name": "管理",
         "available_space": "利用可能なスペース",
@@ -916,7 +916,7 @@
         "DELETE": "削除する",
         "OTP": "OTP",
         "advanced_lbl": "詳細設定",
-        "allowed": "許可",
+        "allowed": "許可しました",
         "device_id": "デバイスID",
         "e_mail": "メール",
         "eas": "EAS",
@@ -1402,7 +1402,8 @@
         "invalid_destination": "このノードは有効な宛先ではありません",
         "messages": "メッセージ",
         "show_quoted_text": "引用テキストを表示する",
-        "Cos_name": "Cos名"
+        "Cos_name": "Cos名",
+        "advance_edit_user": "ユーザー"
     },
     "message": {
         "snackbar": {
@@ -2162,7 +2163,7 @@
         "is_current": "まず、別のボリュームを現在のボリュームとして設定する必要があります。"
     },
     "mta": {
-        "add": "追加",
+        "add": "追加する",
         "authentication": "認証",
         "days": "日",
         "discard": "削除する",

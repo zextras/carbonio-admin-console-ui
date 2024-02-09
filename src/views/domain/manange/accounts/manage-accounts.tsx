@@ -29,7 +29,6 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './account-context';
-import AccountDetailView from './account-detail-view';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
@@ -43,6 +42,7 @@ import {
 import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
+import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
@@ -53,6 +53,14 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
+
+type UserSession = {
+	name: string;
+	sid: string;
+	zid: string;
+	ip: string;
+	service: string;
+};
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -72,7 +80,8 @@ const ManageAccounts: FC = () => {
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
-
+	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
+	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const tableRef = useRef(null);
@@ -575,13 +584,46 @@ const ManageAccounts: FC = () => {
 		[getFolderList]
 	);
 
+	const getAllUserSession = useCallback((acc) => {
+		const sessionType: string[] = ['admin', 'imap', 'soap'];
+		setUserSessionList([]);
+		setAllUserSessionList([]);
+		sessionType.forEach((item: string) => {
+			getSessions(item, acc).then((resp: any) => {
+				if (resp && resp?.s) {
+					const existingSession = resp?.s;
+					if (existingSession) {
+						const session: UserSession[] = [];
+						const filterSession = existingSession.filter(
+							(sessionItem: any) => sessionItem?.name === acc
+						);
+						if (filterSession.length > 0) {
+							filterSession.forEach((element: any) => {
+								session.push({
+									ip: '',
+									name: element?.name,
+									sid: element?.sid,
+									service: '',
+									zid: element?.zid
+								});
+							});
+						}
+						setUserSessionList((prev: any) => [...prev, ...session]);
+						setAllUserSessionList((prev: any) => [...prev, ...session]);
+					}
+				}
+			});
+		});
+	}, []);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setShowAccountDetailView(true);
+			setShowEditAccountView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
 			getIdentitiesList(acc);
+			getAllUserSession(acc?.name);
 			if (isAdvanced) {
 				getListOtp(acc?.name);
 				getCredentialList(acc?.name);
@@ -592,9 +634,10 @@ const ManageAccounts: FC = () => {
 			getSignatureDetail,
 			getAccountMembership,
 			getIdentitiesList,
+			getAllUserSession,
 			isAdvanced,
-			getCredentialList,
-			getListOtp
+			getListOtp,
+			getCredentialList
 		]
 	);
 	// eslint-disable-next-line sonarjs/cognitive-complexity
@@ -1018,9 +1061,14 @@ const ManageAccounts: FC = () => {
 									globalRights,
 									setGlobalRights,
 									deleteAdministrationRights,
-									setDeleteAdministrationRights
+									setDeleteAdministrationRights,
+									userSessionList,
+									setAllUserSessionList,
+									allUserSessionList,
+									setUserSessionList
 								}}
 							>
+								{/* This may require in future
 								{showAccountDetailView && (
 									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
 										<AccountDetailView
@@ -1032,7 +1080,7 @@ const ManageAccounts: FC = () => {
 											cosDetail={cosDetail}
 										/>
 									</ModalOverlay>
-								)}
+								)} */}
 
 								{showEditAccountView && (
 									<ModalOverlay
@@ -1056,6 +1104,7 @@ const ManageAccounts: FC = () => {
 											setShowModal={setShowModal}
 											isDirty={isDirty}
 											setIsDirty={setIsDirty}
+											STATUS_COLOR={STATUS_COLOR}
 										/>
 									</ModalOverlay>
 								)}
