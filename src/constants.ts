@@ -145,6 +145,7 @@ export const COMPRESSION_THRESHOLD_UNIT = 'KB';
 export const USAGE_IN_EXTERNAL_BACKUP = 'usage in external backup';
 export const UNUSED = 'unused';
 export const ZX_MOBILE = 'ZxMobile';
+export const ZX_CONFIG = 'ZxConfig';
 export const WIPE_DEVICE = 'wipe device';
 export const RESET_DEVICE = 'reset device';
 export const SUSPEND_DEVICE = 'suspend device';
@@ -367,6 +368,10 @@ export const IS_DETAIL_LIST_EXPANDED = 'isDetailListExpanded';
 export const IS_MANAGE_LIST_EXPANDED = 'isManageListExpanded';
 export const IS_GLOBAL_LIST_EXPANDED = 'isGlobalListExpanded';
 export const AMAVIS_DISCLAIMER_OPTIONS = 'amavisDisclaimerOptions';
+export const SET_GLOBAL_CONFIG = 'set_global_config';
+export const GET_GLOBAL_CONFIG = 'get_global_config';
+export const GET = 'get';
+export const SET = 'set';
 export const paginationItems = [
 	{
 		label: '5',

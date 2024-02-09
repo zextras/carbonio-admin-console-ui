@@ -10,14 +10,16 @@ import {
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 
+import { SET, SET_GLOBAL_CONFIG, ZX_CONFIG } from '../constants';
+
 export const setAntiDosServiceEnabled = async (value: boolean): Promise<any> =>
 	postSoapFetchRequest(
 		`/service/admin/soap`,
 		{
 			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxConfig',
-			action: 'set_global_config',
-			command: 'set',
+			module: ZX_CONFIG,
+			action: SET_GLOBAL_CONFIG,
+			command: SET,
 			attribute: 'mobileAntiDosServiceEnabled',
 			value
 		},
