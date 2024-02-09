@@ -185,6 +185,7 @@ const DomainGeneralSettings: FC = () => {
 	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
 	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
 		objectType[]
 	>([]);
@@ -577,7 +578,9 @@ const DomainGeneralSettings: FC = () => {
 			body.a = attributes;
 			modifyDomain(body)
 				.then((data) => {
-					flushCache('domain', 'id', domainData.zimbraId);
+					if (isGlobalAdmin) {
+						flushCache('domain', 'id', domainData.zimbraId);
+					}
 					createSnackbar({
 						key: 'success',
 						type: 'success',
