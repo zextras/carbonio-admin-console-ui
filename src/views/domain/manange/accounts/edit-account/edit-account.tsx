@@ -19,6 +19,7 @@ import {
 	Padding,
 	Modal
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { isEqual, reduce, remove, differenceBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -45,7 +46,8 @@ import {
 	ADMINISTRATION,
 	CHANGE_NAME_BOOLEAN,
 	CHANGE_DISPLAY_NAME_BOOLEAN,
-	IS_DEFAULT_USER_NAME
+	IS_DEFAULT_USER_NAME,
+	TRUE
 } from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
@@ -123,6 +125,8 @@ const EditAccount: FC<{
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const userSetting = useUserSettings();
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 
 	const getDomainLists = useCallback(
 		(offset: number): any => {
@@ -167,6 +171,15 @@ const EditAccount: FC<{
 			setIsDirty(false);
 		}
 	}, [accountDetail, initAccountDetail, setIsDirty]);
+
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const ReusedDefaultTabBar: FC<{
 		item: any;
@@ -494,6 +507,9 @@ const EditAccount: FC<{
 				.then((data) => {
 					if (data) {
 						// setShowCreateAccountView(false);
+						if (isGlobalAdmin) {
+							flushCache('account', 'id', initAccountDetail?.zimbraId);
+						}
 						createSnackbar({
 							key: 'success',
 							type: 'success',
@@ -505,7 +521,6 @@ const EditAccount: FC<{
 							hideButton: true,
 							replace: true
 						});
-						flushCache('account', 'id', initAccountDetail?.zimbraId);
 						setInitAccountDetail({ ...accountDetail });
 						setIsLoading(false);
 						getAccountList();
@@ -558,6 +573,7 @@ const EditAccount: FC<{
 		deleteAdministrationRights,
 		onDeleteFromList,
 		setIsLoading,
+		isGlobalAdmin,
 		t
 	]);
 	const onUndo = (): void => {
