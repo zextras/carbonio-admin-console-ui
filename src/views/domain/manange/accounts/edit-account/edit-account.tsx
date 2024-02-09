@@ -56,7 +56,8 @@ import {
 	CHANGE_DISPLAY_NAME_BOOLEAN,
 	IS_DEFAULT_USER_NAME,
 	CLOSED,
-	CONFIG
+	CONFIG,
+	ABQ_MODE
 } from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
@@ -443,7 +444,7 @@ const EditAccount: FC<{
 				setShowEditAccountView(false);
 			}
 		}
-		if (modifiedKeys.includes('abqMode')) {
+		if (modifiedKeys.includes(ABQ_MODE)) {
 			const body: any = {
 				abqMode: {
 					value: accountDetail.abqMode,
@@ -466,7 +467,7 @@ const EditAccount: FC<{
 					});
 					setIsLoading(false);
 				});
-			remove(modifiedKeys, (ele) => ele === 'abqMode');
+			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
 		}
 		const deleteAliasArr = differenceBy(
 			initAccountDetail.mail.split(','),

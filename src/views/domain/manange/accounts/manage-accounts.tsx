@@ -33,7 +33,7 @@ import { AccountType } from './account-types/account-types';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
-import { ACCOUNT, RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { ABQ_MODE, ACCOUNT, RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -624,7 +624,7 @@ const ManageAccounts: FC = () => {
 			{
 				configType: ACCOUNT,
 				configName: [acc],
-				attrName: ['abqMode']
+				attrName: [ABQ_MODE]
 			}
 		];
 		getCoreAttributes(body).then((data) => {
