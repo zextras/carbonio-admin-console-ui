@@ -647,12 +647,12 @@ const ManageAccounts: FC = () => {
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
-			getABQStatus(acc?.id);
 			getIdentitiesList(acc);
 			getAllUserSession(acc?.name);
 			if (isAdvanced) {
 				getListOtp(acc?.name);
 				getCredentialList(acc?.name);
+				getABQStatus(acc?.id);
 			}
 		},
 		[

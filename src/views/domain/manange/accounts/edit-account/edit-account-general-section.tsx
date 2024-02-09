@@ -659,22 +659,26 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						<></>
 					)}
 				</Row>
-				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="49%" mainAlignment="flex-start">
-						{accountDetail?.abqMode && (
-							<Select
-								items={ABQ_STATUS}
-								background="gray5"
-								label={t('account_details.abq_status', 'ABQ Status')}
-								showCheckbox={false}
-								onChange={onAccountABQStatusChange}
-								defaultSelection={ABQ_STATUS.find(
-									(item: any) => item.value === accountDetail?.abqMode
-								)}
-							/>
-						)}
+				{isAdvanced ? (
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+						<Row width="49%" mainAlignment="flex-start">
+							{accountDetail?.abqMode && (
+								<Select
+									items={ABQ_STATUS}
+									background="gray5"
+									label={t('account_details.abq_status', 'ABQ Status')}
+									showCheckbox={false}
+									onChange={onAccountABQStatusChange}
+									defaultSelection={ABQ_STATUS.find(
+										(item: any) => item.value === accountDetail?.abqMode
+									)}
+								/>
+							)}
+						</Row>
 					</Row>
-				</Row>
+				) : (
+					<></>
+				)}
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="49%" mainAlignment="flex-start">
 						<Input
