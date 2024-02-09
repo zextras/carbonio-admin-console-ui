@@ -366,6 +366,10 @@ export const IS_DETAIL_LIST_EXPANDED = 'isDetailListExpanded';
 export const IS_MANAGE_LIST_EXPANDED = 'isManageListExpanded';
 export const IS_GLOBAL_LIST_EXPANDED = 'isGlobalListExpanded';
 export const AMAVIS_DISCLAIMER_OPTIONS = 'amavisDisclaimerOptions';
+export const PERMISSIVE = 'Permissive';
+export const INTERACTIVE = 'Interactive';
+export const STRICT = 'Strict';
+export const ABQ_DISABLED = 'Disabled';
 export const paginationItems = [
 	{
 		label: '5',

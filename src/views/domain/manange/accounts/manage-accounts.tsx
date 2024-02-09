@@ -29,10 +29,11 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './account-context';
+import { AccountType } from './account-types/account-types';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { ACCOUNT, RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -42,6 +43,7 @@ import {
 import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
+import { getCoreAttributes } from '../../../../services/get-core-attributes';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -397,6 +399,7 @@ const ManageAccounts: FC = () => {
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
 				.catch((error) => {
+					setShowEditAccountView(false);
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -616,12 +619,35 @@ const ManageAccounts: FC = () => {
 		});
 	}, []);
 
+	const getABQStatus = useCallback((acc) => {
+		const body = [
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: ['abqMode']
+			}
+		];
+		getCoreAttributes(body).then((data) => {
+			if (data?.attributes) {
+				setAccountDetail((prev: AccountType) => ({
+					...prev,
+					abqMode: data?.attributes?.abqMode?.[0]?.value || ''
+				}));
+				setInitAccountDetail((prev: AccountType) => ({
+					...prev,
+					abqMode: data?.attributes?.abqMode?.[0]?.value || ''
+				}));
+			}
+		});
+	}, []);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setShowEditAccountView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
+			getABQStatus(acc?.id);
 			getIdentitiesList(acc);
 			getAllUserSession(acc?.name);
 			if (isAdvanced) {
@@ -633,6 +659,7 @@ const ManageAccounts: FC = () => {
 			getAccountDetail,
 			getSignatureDetail,
 			getAccountMembership,
+			getABQStatus,
 			getIdentitiesList,
 			getAllUserSession,
 			isAdvanced,
