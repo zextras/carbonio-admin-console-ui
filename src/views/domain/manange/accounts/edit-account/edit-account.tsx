@@ -4,7 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useEffect, useState, useContext } from 'react';
+import React, {
+	FC,
+	ReactElement,
+	useCallback,
+	useEffect,
+	useState,
+	useContext,
+	useMemo
+} from 'react';
 
 import {
 	Container,
@@ -20,7 +28,7 @@ import {
 	Modal,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, remove, differenceBy } from 'lodash';
+import { isEqual, reduce, remove, differenceBy, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
@@ -47,7 +55,9 @@ import {
 	CHANGE_NAME_BOOLEAN,
 	CHANGE_DISPLAY_NAME_BOOLEAN,
 	IS_DEFAULT_USER_NAME,
-	CLOSED
+	CLOSED,
+	CONFIG,
+	ABQ_MODE
 } from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
@@ -61,7 +71,7 @@ import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../../store/domain/store';
-import { useRightsStore } from '../../../../../store/rights/store';
+import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
@@ -434,6 +444,31 @@ const EditAccount: FC<{
 				setShowEditAccountView(false);
 			}
 		}
+		if (modifiedKeys.includes(ABQ_MODE)) {
+			const body: any = {
+				abqMode: {
+					value: accountDetail.abqMode,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				}
+			};
+			setCoreAttributes(body)
+				.then()
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					setIsLoading(false);
+				});
+			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
+		}
 		const deleteAliasArr = differenceBy(
 			initAccountDetail.mail.split(','),
 			accountDetail.mail.split(',')
@@ -643,8 +678,15 @@ const EditAccount: FC<{
 			setIsOpenDeleteDialog(true);
 		}
 	}, [accountUserType, selectedAccount, userType]);
+
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetPrivacy = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+	}, [rights]);
 	const buttons = [
-		{
+		allowSetPrivacy && {
 			align: 'right',
 			label: t('label.view_mail', 'VIEW MAIL'),
 			color: 'primary',

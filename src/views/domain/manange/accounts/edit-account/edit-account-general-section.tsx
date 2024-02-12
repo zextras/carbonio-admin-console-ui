@@ -44,7 +44,7 @@ import Paging from '../../../../components/paging';
 import Textarea from '../../../../components/textarea';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import { localeList, AccountStatus } from '../../../../utility/utils';
+import { localeList, AccountStatus, ABQStatus } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
@@ -92,6 +92,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 	const [t] = useTranslation();
 	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
+	const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
@@ -254,6 +255,9 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 
 	const onAccountStatusChange = (v: any): any => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraAccountStatus: v }));
+	};
+	const onAccountABQStatusChange = (v: any): any => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, abqMode: v }));
 	};
 	const onPrefLocaleChange = (v: string): void => {
 		v && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraPrefLocale: v }));
@@ -655,6 +659,26 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						<></>
 					)}
 				</Row>
+				{isAdvanced ? (
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+						<Row width="49%" mainAlignment="flex-start">
+							{accountDetail?.abqMode && (
+								<Select
+									items={ABQ_STATUS}
+									background="gray5"
+									label={t('account_details.abq_status', 'ABQ Status')}
+									showCheckbox={false}
+									onChange={onAccountABQStatusChange}
+									defaultSelection={ABQ_STATUS.find(
+										(item: any) => item.value === accountDetail?.abqMode
+									)}
+								/>
+							)}
+						</Row>
+					</Row>
+				) : (
+					<></>
+				)}
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="49%" mainAlignment="flex-start">
 						<Input

@@ -22,7 +22,11 @@ import {
 	READ_MAILS_ONLY,
 	SEND_READ_MAILS,
 	MANAGE_NO_SEND,
-	SEND_READ_MANAGE_MAILS
+	SEND_READ_MANAGE_MAILS,
+	PERMISSIVE,
+	ABQ_DISABLED,
+	STRICT,
+	INTERACTIVE
 } from '../../constants';
 import { Rights, Right } from '../../store/rights/store';
 
@@ -867,6 +871,25 @@ export const AccountStatus = (t: TFunction): Array<{ value: string; label: strin
 			'Not ready to be active'
 		)})`,
 		value: PENDING
+	}
+];
+
+export const ABQStatus = (t: TFunction): Array<{ value: string; label: string }> => [
+	{
+		label: t('label.permissive', 'Permissive'),
+		value: PERMISSIVE
+	},
+	{
+		label: t('label.interactive', 'Interactive'),
+		value: INTERACTIVE
+	},
+	{
+		label: t('label.strict', 'Strict'),
+		value: STRICT
+	},
+	{
+		label: t('label.disabled', 'Disabled'),
+		value: ABQ_DISABLED
 	}
 ];
 
