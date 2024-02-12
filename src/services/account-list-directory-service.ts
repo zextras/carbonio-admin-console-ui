@@ -6,6 +6,8 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
+import { ASC } from '../constants';
+
 export const accountListDirectory = async (
 	attr: string,
 	type: string,
@@ -36,7 +38,7 @@ export const accountListDirectory = async (
 		request.sortBy = sortBy;
 	}
 	if (sortAscending !== '') {
-		request.sortAscending = sortAscending === 'asc' ? 1 : 0;
+		request.sortAscending = sortAscending === ASC ? 1 : 0;
 	}
 	return soapFetch(`SearchDirectory`, {
 		...request
