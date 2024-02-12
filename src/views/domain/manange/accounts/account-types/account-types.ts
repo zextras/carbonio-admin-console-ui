@@ -490,4 +490,5 @@ export interface AccountType {
 	zimbraPrefCalendarForwardInvitesTo?: string;
 	password?: string;
 	repeatPassword?: string;
+	abqMode?: string;
 }

@@ -22,7 +22,11 @@ import {
 	READ_MAILS_ONLY,
 	SEND_READ_MAILS,
 	MANAGE_NO_SEND,
-	SEND_READ_MANAGE_MAILS
+	SEND_READ_MANAGE_MAILS,
+	PERMISSIVE,
+	ABQ_DISABLED,
+	STRICT,
+	INTERACTIVE
 } from '../../constants';
 import { Rights, Right } from '../../store/rights/store';
 
@@ -867,6 +871,25 @@ export const AccountStatus = (t: TFunction): Array<{ value: string; label: strin
 			'Not ready to be active'
 		)})`,
 		value: PENDING
+	}
+];
+
+export const ABQStatus = (t: TFunction): Array<{ value: string; label: string }> => [
+	{
+		label: t('label.permissive', 'Permissive'),
+		value: PERMISSIVE
+	},
+	{
+		label: t('label.interactive', 'Interactive'),
+		value: INTERACTIVE
+	},
+	{
+		label: t('label.strict', 'Strict'),
+		value: STRICT
+	},
+	{
+		label: t('label.disabled', 'Disabled'),
+		value: ABQ_DISABLED
 	}
 ];
 
@@ -2208,10 +2231,15 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 export const RandomString = (): string => (Math.random() + 1).toString(36).substring(2);
 
 export const IsValidFQDN = (value: string): boolean => {
-	const fqdnRegex = /^(?!:\/\/)(?=.{1,255}$)([a-zA-Z0-9_-]+\.)+[a-zA-Z]{2,}$/;
+	const fqdnRegex = /^(?!:\/\/)(?=.{1,255}$)([a-zA-Z0-9]+([-]+[a-zA-Z0-9]+)*\.)*[a-zA-Z0-9]{2,}$/;
 	return fqdnRegex.test(value);
 };
 
+export const isValidProxy = (value: string): boolean => {
+	const pattern = '(proxy|pcre|regexp|inline):(ldap:)?[/\\w.-]+';
+	const validProxyRegex = new RegExp(`^${pattern}(( ,|, | , |,)${pattern})*$`);
+	return validProxyRegex.test(value);
+};
 export const isSpaceAvailableInString = (value: string): boolean => {
 	const spaceRegex = /^\S*$/;
 	return !spaceRegex.test(value);

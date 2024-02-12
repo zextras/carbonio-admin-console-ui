@@ -4,7 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useEffect, useState, useContext } from 'react';
+import React, {
+	FC,
+	ReactElement,
+	useCallback,
+	useEffect,
+	useState,
+	useContext,
+	useMemo
+} from 'react';
 
 import {
 	Container,
@@ -17,10 +25,11 @@ import {
 	IconButton,
 	Divider,
 	Padding,
-	Modal
+	Modal,
+	Icon
 } from '@zextras/carbonio-design-system';
-import { isEqual, reduce, remove, differenceBy } from 'lodash';
-import { useTranslation } from 'react-i18next';
+import { isEqual, reduce, remove, differenceBy, find } from 'lodash';
+import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import EditAccountAdministrationSection from './edit-account-administration-section';
@@ -45,10 +54,15 @@ import {
 	ADMINISTRATION,
 	CHANGE_NAME_BOOLEAN,
 	CHANGE_DISPLAY_NAME_BOOLEAN,
-	IS_DEFAULT_USER_NAME
+	IS_DEFAULT_USER_NAME,
+	CLOSED,
+	CONFIG,
+	ABQ_MODE
 } from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
+import { deleteAccount } from '../../../../../services/delete-account-service';
+import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
@@ -57,6 +71,9 @@ import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../../store/domain/store';
+import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
+import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
+import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
@@ -77,6 +94,14 @@ const ovelayStyle = styled(Container)`
 	padding-top: 2rem;
 `;
 
+type UserSession = {
+	name: string;
+	sid: string;
+	zid: string;
+	ip: string;
+	service: string;
+};
+
 const EditAccount: FC<{
 	setShowEditAccountView: any;
 	selectedAccount: any;
@@ -91,6 +116,7 @@ const EditAccount: FC<{
 	setShowModal: (showModal: boolean) => void;
 	isDirty: boolean;
 	setIsDirty: (isDirty: boolean) => void;
+	STATUS_COLOR: any;
 }> = ({
 	setShowEditAccountView,
 	selectedAccount,
@@ -104,7 +130,8 @@ const EditAccount: FC<{
 	showModal,
 	setShowModal,
 	isDirty,
-	setIsDirty
+	setIsDirty,
+	STATUS_COLOR
 }) => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -122,6 +149,11 @@ const EditAccount: FC<{
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const { isSticky, setIsSticky } = useStickyBarStore();
+	const { userType } = useRightsStore((state) => state);
+	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+	const [isOpenDeleteHintModel, setisOpenDeleteHintModel] = useState(false);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
 	const getDomainLists = useCallback(
 		(offset: number): any => {
@@ -412,6 +444,31 @@ const EditAccount: FC<{
 				setShowEditAccountView(false);
 			}
 		}
+		if (modifiedKeys.includes(ABQ_MODE)) {
+			const body: any = {
+				abqMode: {
+					value: accountDetail.abqMode,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				}
+			};
+			setCoreAttributes(body)
+				.then()
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					setIsLoading(false);
+				});
+			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
+		}
 		const deleteAliasArr = differenceBy(
 			initAccountDetail.mail.split(','),
 			accountDetail.mail.split(',')
@@ -562,6 +619,172 @@ const EditAccount: FC<{
 		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
 		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
 	};
+	const onViewMail = useCallback(() => {
+		getDelegateAuthRequest(selectedAccount?.id)
+			.then((data: any) => {
+				if (data?.authToken?.[0]) {
+					window.open(
+						`https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+						'blank'
+					);
+				} else {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						// eslint-disable-next-line sonarjs/no-duplicate-string
+						label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				}
+			})
+			// eslint-disable-next-line @typescript-eslint/no-empty-function
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, selectedAccount?.id, t]);
+
+	const accountUserType = useCallback((item): string => {
+		if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+		if (item.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+		if (item.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+		if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
+		return 'Normal';
+	}, []);
+
+	const onDeleteAccount = useCallback(() => {
+		if (userType === 'DelegatedAdmin' || userType === 'System') {
+			if (
+				accountUserType(selectedAccount) === 'DelegatedAdmin' ||
+				accountUserType(selectedAccount) === 'System'
+			) {
+				setisOpenDeleteHintModel(true);
+			} else {
+				setIsOpenDeleteDialog(true);
+			}
+		} else if (userType === 'Normal') {
+			setisOpenDeleteHintModel(true);
+		} else {
+			setIsOpenDeleteDialog(true);
+		}
+	}, [accountUserType, selectedAccount, userType]);
+
+	const rights: Rights = useRightsStore((state) => state.rights);
+
+	const allowSetPrivacy = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+	}, [rights]);
+	const buttons = [
+		allowSetPrivacy && {
+			align: 'right',
+			label: t('label.view_mail', 'VIEW MAIL'),
+			color: 'primary',
+			onClick: onViewMail
+		},
+		// {
+		// 	align: 'right',
+		// 	label: t('label.close', 'CLOSE'),
+		// 	color: 'error',
+		// 	onClick: (): void => {
+		// 		setShowAccountDetailView(false);
+		// 		setShowEditAccountView(true);
+		// 	},
+
+		// 	disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
+		// },
+		{
+			align: 'right',
+			color: 'error',
+			label: t('label.delete', 'delete'),
+			type: 'ghost',
+			disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id,
+			onClick: onDeleteAccount
+		},
+		{
+			align: 'left',
+			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+			onClick: (): void => {
+				setIsSticky(!isSticky);
+			}
+		}
+	];
+	const closeHandler = useCallback(() => {
+		setIsOpenDeleteDialog(false);
+	}, []);
+	const onSuccess = useCallback(
+		(message) => {
+			createSnackbar({
+				key: 'success',
+				type: 'success',
+				label: message,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+			setIsRequestInProgress(false);
+			closeHandler();
+			setShowAccountDetailView(false);
+			getAccountList();
+		},
+		[closeHandler, createSnackbar, getAccountList, setShowAccountDetailView]
+	);
+	const onDisableAccount = useCallback(() => {
+		setIsRequestInProgress(true);
+		modifyAccountRequest(accountDetail?.zimbraId, { zimbraAccountStatus: CLOSED })
+			.then((data) => {
+				if (data?.account && Array.isArray(data?.account)) {
+					onSuccess(
+						t('label.account_disable_correctly', 'The account has been correctly disabled.')
+					);
+				}
+			})
+			.catch((error) => {
+				setIsRequestInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [accountDetail?.zimbraId, createSnackbar, t, onSuccess]);
+
+	const onDeleteHandler = useCallback(() => {
+		setIsRequestInProgress(true);
+		deleteAccount(selectedAccount?.id)
+			.then((data: any) => {
+				onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
+			})
+			.then((error: any) => {
+				setIsRequestInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error.message
+						? error.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [createSnackbar, onSuccess, t, selectedAccount?.id]);
 
 	return (
 		<>
@@ -647,28 +870,30 @@ const EditAccount: FC<{
 					<Divider color="gray2" />
 				</Container>
 				<Container
-					padding={{ all: 'small' }}
+					padding={{ left: 'large', right: 'large' }}
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					height="calc(100vh - 7.5rem)"
+					height="calc(100vh - 3.6rem)"
 					background="white"
+					style={{ overflow: 'auto' }}
 				>
-					<Container crossAlignment="flex-start" padding={{ all: '0px' }}>
-						{change === GENERAL_SECTION && <EditAccountGeneralSection />}
-						{change === PROFILE && <EditAccountContactsSection />}
-						{change === CONFIGURATION && <EditAccountConfigrationSection />}
-						{change === USER_PREFERENCES && (
-							<EditAccountUserPrefrencesSection
-								signatureItems={signatureItems}
-								signatureList={signatureList}
-							/>
-						)}
-						{change === SECURITY && <EditAccountSecuritySection />}
-						{change === DELEGATES && <EditAccountDelegatesSection />}
-						{change === ADMINISTRATION && (
-							<EditAccountAdministrationSection setIsLoading={setIsLoading} />
-						)}
-					</Container>
+					{/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
+					<Displayer buttons={buttons} pinIcon={isSticky} />
+					{change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
+					{change === PROFILE && <EditAccountContactsSection />}
+					{change === CONFIGURATION && <EditAccountConfigrationSection />}
+					{change === USER_PREFERENCES && (
+						<EditAccountUserPrefrencesSection
+							signatureItems={signatureItems}
+							signatureList={signatureList}
+						/>
+					)}
+					{change === SECURITY && <EditAccountSecuritySection />}
+					{change === DELEGATES && <EditAccountDelegatesSection />}
+					{change === ADMINISTRATION && (
+						<EditAccountAdministrationSection setIsLoading={setIsLoading} />
+					)}
+					{/* </Container> */}
 				</Container>
 			</Container>
 			<RouteLeavingGuard when={isDirty} onSave={modifyAccountReq}>
@@ -723,6 +948,127 @@ const EditAccount: FC<{
 					)}
 				</Text>
 			</Modal>
+			{isOpenDeleteDialog && (
+				<Modal
+					size="medium"
+					title={t('label.deleting_account_name', 'You are deleting {{name}} account', {
+						name: selectedAccount?.name
+					})}
+					open={isOpenDeleteDialog}
+					customFooter={
+						<Container orientation="horizontal" mainAlignment="flex-end">
+							<Row style={{ gap: '1rem' }}>
+								<Button
+									label={t('label.delete_it_instead', 'Delete it instead')}
+									color="error"
+									type="outlined"
+									onClick={onDeleteHandler}
+									disabled={isRequestInProgress}
+								/>
+								<Button
+									label={t('label.close_the_account', 'Close the account')}
+									color="primary"
+									onClick={onDisableAccount}
+									disabled={
+										isRequestInProgress ||
+										STATUS_COLOR[selectedAccount?.zimbraAccountStatus]?.label ===
+											STATUS_COLOR?.closed?.label
+									}
+								/>
+							</Row>
+						</Container>
+					}
+					showCloseIcon
+					onClose={closeHandler}
+				>
+					<Container>
+						{userType === 'Admin' &&
+							(accountUserType(selectedAccount) === 'System' ||
+								accountUserType(selectedAccount) === 'DelegatedAdmin') && (
+								<Padding bottom="medium" top="medium">
+									<Text color="warning" size="extralarge" overflow="break-word">
+										{t(
+											'label.deleting_account_warning_content',
+											'Deleting the system account could impact the system stability.'
+										)}
+									</Text>
+								</Padding>
+							)}
+						<Padding bottom="medium">
+							<Text size={'extralarge'} overflow="break-word">
+								<Trans
+									i18nKey="label.deleting_account_content_1"
+									defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
+									components={{ bold: <strong />, name: selectedAccount?.name }}
+								/>
+							</Text>
+						</Padding>
+						<Padding bottom="medium">
+							<Text size="extralarge" overflow="break-word">
+								<Trans
+									i18nKey="label.deleting_account_content_2"
+									defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
+									components={{ bold: <strong /> }}
+								/>
+							</Text>
+						</Padding>
+						<Padding bottom="medium">
+							<Text size="extralarge" overflow="break-word">
+								<Trans
+									i18nKey="label.deleting_account_content_3"
+									defaults="You can <bold>Close it to preserve</bold> the data, instead."
+									components={{ bold: <strong /> }}
+								/>
+							</Text>
+						</Padding>
+						<Row padding={{ bottom: 'large' }}>
+							<Icon
+								icon="AlertTriangleOutline"
+								size="large"
+								style={{ height: '48px', width: '48px' }}
+							/>
+						</Row>
+					</Container>
+				</Modal>
+			)}
+			{isOpenDeleteHintModel && (
+				<Modal
+					size="medium"
+					title={selectedAccount?.name}
+					open={isOpenDeleteHintModel}
+					customFooter={
+						<Container orientation="horizontal" mainAlignment="flex-end">
+							<Button
+								label={t('label.close', 'Close')}
+								color="primary"
+								onClick={(): void => {
+									setisOpenDeleteHintModel(false);
+								}}
+								disabled={
+									isRequestInProgress ||
+									STATUS_COLOR[selectedAccount?.zimbraAccountStatus]?.label ===
+										STATUS_COLOR?.closed?.label
+								}
+							/>
+						</Container>
+					}
+					showCloseIcon
+					onClose={(): void => {
+						setisOpenDeleteHintModel(false);
+					}}
+				>
+					<Container>
+						<Padding bottom="medium" top="medium">
+							<Text style={{ textAlign: 'center' }} size={'extralarge'} overflow="break-word">
+								{t(
+									'label.delete_delegated_account_content',
+									`The system accounts can't be deleted from here. Please visit the respective module to manage the account.`
+								)}
+							</Text>
+						</Padding>
+					</Container>
+				</Modal>
+			)}
 		</>
 	);
 };

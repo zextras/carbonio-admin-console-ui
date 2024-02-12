@@ -29,7 +29,7 @@ import styled from 'styled-components';
 import { Attribute } from '../../../../types/attribute';
 import { Cos } from '../../../../types/cos';
 import { CosMaxAccountValues } from '../../../../types/domain';
-import { MAX_COS_DISPLAY, TRUE } from '../../../constants';
+import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE } from '../../../constants';
 import { copyCos } from '../../../services/copy-cos-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getCosList } from '../../../services/search-cos-service';
@@ -64,7 +64,6 @@ const DomainCosLink: FC<{
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
-	const allCosList = useDomainStore((state) => state.cosList);
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -90,7 +89,7 @@ const DomainCosLink: FC<{
 		cosMaxAccountList.forEach((item) => {
 			domainMaxAccountList.push({
 				id: item?.id,
-				name: allCosList.find((c) => c.id === item.id)?.name,
+				name: cosList.find((c) => c.id === item.id)?.name,
 				value: item?.value
 			});
 		});
@@ -99,7 +98,7 @@ const DomainCosLink: FC<{
 		} else {
 			setDomainCosMaxAccountList([]);
 		}
-	}, [cosMaxAccountList, allCosList]);
+	}, [cosMaxAccountList, cosList]);
 
 	const getCosLists = (cos: string): any => {
 		getCosList(cos, 0).then((data) => {
@@ -135,7 +134,6 @@ const DomainCosLink: FC<{
 
 	const onSaveCosLinkToDomain = useCallback(
 		(cId: string, cosMaxAccValue: string): void => {
-			const requests = [];
 			if (!cId || !cosMaxAccValue) {
 				return;
 			}
@@ -178,7 +176,7 @@ const DomainCosLink: FC<{
 			const grantee = {
 				by: 'name',
 				type: 'grp',
-				_content: `__domain_admins@${domainName}`
+				_content: `${HELPDESK_ADMINS}@${domainName}`
 			};
 			modifyDomain(body)
 				.then((data) => {
@@ -267,7 +265,9 @@ const DomainCosLink: FC<{
 				.then((data) => {
 					const cosDetail = data?.cos[0];
 					getCosLists('');
-					onSaveCosLinkToDomain(cosDetail?.id, cosMaxAccValue);
+					setTimeout(() => {
+						onSaveCosLinkToDomain(cosDetail?.id, cosMaxAccValue);
+					}, 1500);
 				})
 				.catch((error) => {
 					createSnackbar({
@@ -287,7 +287,6 @@ const DomainCosLink: FC<{
 
 	const onRemoveCosLinkToDomain = useCallback(
 		(cId: string, cosMaxAccValue: string): void => {
-			const requests = [];
 			if (!cId || !cosMaxAccValue) {
 				return;
 			}
@@ -312,7 +311,7 @@ const DomainCosLink: FC<{
 			const grantee = {
 				by: 'name',
 				type: 'grp',
-				_content: `__domain_admins@${domainName}`
+				_content: `${HELPDESK_ADMINS}@${domainName}`
 			};
 			modifyDomain(body)
 				.then((data) => {

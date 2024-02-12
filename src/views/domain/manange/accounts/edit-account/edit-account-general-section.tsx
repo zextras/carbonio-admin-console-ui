@@ -19,26 +19,42 @@ import {
 	Button,
 	useSnackbar,
 	Modal,
-	Padding
+	Padding,
+	Table
 } from '@zextras/carbonio-design-system';
 import { debounce, map } from 'lodash';
+import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { objectType, Attribute } from '../../../../../../types';
-import { MAX_DOMAIN_DISPLAY } from '../../../../../constants';
+import { ADMINISTRATION, MAX_DOMAIN_DISPLAY } from '../../../../../constants';
+import { endSession } from '../../../../../services/end-session';
+import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
+import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../../store/domain/store';
+import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
+import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
 import DropDownInput from '../../../../components/dropDownInput';
 import ManageAliases from '../../../../components/manageAliases';
+import Paging from '../../../../components/paging';
 import Textarea from '../../../../components/textarea';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import { localeList, AccountStatus } from '../../../../utility/utils';
+import { localeList, AccountStatus, ABQStatus } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
+
+type UserSession = {
+	name: string;
+	sid: string;
+	zid: string;
+	ip: string;
+	service: string;
+};
 
 const SelectItem = styled(Row)``;
 
@@ -53,7 +69,7 @@ const ZimbraAuthMethod = {
 	EXTERNAL: 'ad'
 } as const;
 
-const EditAccountGeneralSection: FC = () => {
+const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 	const createSnackbar = useSnackbar();
 	const context = useContext(AccountContext);
 	const {
@@ -63,7 +79,12 @@ const EditAccountGeneralSection: FC = () => {
 		inDirectMemberList,
 		setInitAccountDetail,
 		accSpecificDetail,
-		cosDetail
+		cosDetail,
+		otpList,
+		allUserSessionList,
+		setAllUserSessionList,
+		userSessionList,
+		setUserSessionList
 	} = context;
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -71,6 +92,7 @@ const EditAccountGeneralSection: FC = () => {
 	const [t] = useTranslation();
 	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
+	const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
@@ -79,6 +101,40 @@ const EditAccountGeneralSection: FC = () => {
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
 	const [accountQuota, setAccountQuota] = useState('');
+	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
+	const [selectedSession, setSelectedSession] = useState<any>([]);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
+	const sessionTableHeader: any[] = useMemo(
+		() => [
+			{
+				id: 'accounts',
+				label: t('label.accounts', 'Accounts'),
+				width: '25%',
+				bold: true
+			},
+			{
+				id: 'session_id',
+				label: t('label.session_id', 'Session ID'),
+				width: '25%',
+				bold: true
+			},
+			{
+				id: 'ip',
+				label: t('label.ip', 'IP'),
+				width: '25%',
+				bold: true
+			},
+			{
+				id: 'service',
+				label: t('label.service', 'Service'),
+				width: '25%',
+				bold: true
+			}
+		],
+		[t]
+	);
 
 	useEffect(() => {
 		setAccountQuota(
@@ -200,6 +256,9 @@ const EditAccountGeneralSection: FC = () => {
 	const onAccountStatusChange = (v: any): any => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraAccountStatus: v }));
 	};
+	const onAccountABQStatusChange = (v: any): any => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, abqMode: v }));
+	};
 	const onPrefLocaleChange = (v: string): void => {
 		v && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraPrefLocale: v }));
 	};
@@ -237,7 +296,8 @@ const EditAccountGeneralSection: FC = () => {
 					type: 'error',
 					label: error?.message
 						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -311,11 +371,160 @@ const EditAccountGeneralSection: FC = () => {
 		getDomainLists(domainName);
 	}, [domainName, getDomainLists, setAccountDetail, setInitAccountDetail]);
 
+	const accountUserType = useMemo((): string => {
+		if (accountDetail.zimbraIsAdminAccount === 'TRUE') return 'Admin';
+		if (accountDetail.zimbraIsDelegatedAdminAccount === 'TRUE') return 'DelegatedAdmin';
+		if (accountDetail.zimbraIsExternalVirtualAccount === 'TRUE') return 'External';
+		if (accountDetail.zimbraIsSystemAccount === 'TRUE') return 'System';
+		return 'Normal';
+	}, [
+		accountDetail.zimbraIsAdminAccount,
+		accountDetail.zimbraIsDelegatedAdminAccount,
+		accountDetail.zimbraIsExternalVirtualAccount,
+		accountDetail.zimbraIsSystemAccount
+	]);
+
+	const addSelection = useCallback((item) => {
+		setSelectedSession([item?.sid]);
+	}, []);
+
+	useEffect(() => {
+		if (userSessionList && userSessionList.length > 0) {
+			const allRows = userSessionList.map((item: UserSession) => ({
+				id: item?.sid,
+				columns: [
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" color="#828282">
+							{item?.name}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{item?.sid}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{''}
+						</Text>
+					</Container>,
+					<Container
+						crossAlignment="flex-start"
+						key={item?.zid}
+						style={{ cursor: 'pointer' }}
+						onClick={(): void => addSelection(item)}
+					>
+						<Text size="small" weight="light" key={item?.zid} color="#828282">
+							{''}
+						</Text>
+					</Container>
+				]
+			}));
+			setSessionListRows(allRows);
+		} else {
+			setSessionListRows([]);
+		}
+	}, [addSelection, userSessionList]);
+
+	const onEndSession = useCallback(() => {
+		setIsRequestInProgress(true);
+		getDelegateAuthRequest(accountDetail?.zimbraId)
+			.then((res: any) => {
+				if (res && res?.authToken) {
+					const token = res?.authToken[0]?._content;
+					setIsRequestInProgress(true);
+					endSession(selectedSession[0], accountDetail?.name, token)
+						.then((resp: any) => {
+							setIsRequestInProgress(false);
+							if (resp && resp?._jsns) {
+								setUserSessionList((prev: any) => [
+									...prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+								]);
+								setAllUserSessionList((prev: any) => [
+									...prev.filter((item: UserSession) => item?.sid !== selectedSession[0])
+								]);
+								setSelectedSession([]);
+								createSnackbar({
+									key: 'success',
+									type: 'success',
+									label: t('label.session_end_success', 'Session end successfully'),
+									autoHideTimeout: 3000,
+									hideButton: true,
+									replace: true
+								});
+							}
+						})
+						.then((error: any) => {
+							setIsRequestInProgress(false);
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: error.message
+									? error.message
+									: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						});
+				}
+			})
+			.then((error: any) => {
+				setIsRequestInProgress(false);
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error.message
+						? error.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [
+		accountDetail?.zimbraId,
+		accountDetail?.name,
+		selectedSession,
+		setUserSessionList,
+		setAllUserSessionList,
+		createSnackbar,
+		t
+	]);
+
+	const onSessionFilterInputChange = useCallback(
+		(ev) => {
+			setSelectedSession([]);
+			const value = ev?.target?.value || '';
+			const filterdSession = allUserSessionList.filter(
+				(item: UserSession) => item?.name.includes(value) || item?.sid.includes(value)
+			);
+			setUserSessionList(filterdSession);
+		},
+		[allUserSessionList, setUserSessionList]
+	);
+
 	return (
 		<Container
 			mainAlignment="flex-start"
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-			style={{ overflow: 'auto' }}
 		>
 			<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
@@ -391,31 +600,126 @@ const EditAccountGeneralSection: FC = () => {
 						</Row>
 					</Row>
 				</Row>
-				<Container height="fit" padding={{ left: 'large', top: 'large' }}>
-					<ManageAliases
-						aliasType="accounts"
-						listAliases={accountAliases}
-						setListAliases={setAccountAliases}
-						setAliasChange={(aliaes): void =>
-							setAccountDetail((prev: AccountType) => ({
-								...prev,
-								mail: map(aliaes, 'label').join(', ')
-							}))
-						}
-					/>
-				</Container>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="49%" mainAlignment="flex-start">
+						<ManageAliases
+							viewType="small"
+							aliasType="accounts"
+							listAliases={accountAliases}
+							setListAliases={setAccountAliases}
+							setAliasChange={(aliaes): void =>
+								setAccountDetail((prev: AccountType) => ({
+									...prev,
+									mail: map(aliaes, 'label').join(', ')
+								}))
+							}
+						/>
+					</Row>
+					<Row width="49%" mainAlignment="flex-start">
+						<Input
+							label={t('label.type', 'Type')}
+							value={accountUserType}
+							CustomIcon={(): any => (
+								<Icon
+									icon="DiagonalArrowRightUp"
+									onClick={(): void => setChange(ADMINISTRATION)}
+									style={{ cursor: 'pointer' }}
+									size="large"
+									onChange={(): null => null}
+								/>
+							)}
+						/>
+					</Row>
+				</Row>
 
-				<Row padding={{ top: 'large', left: 'large' }} width="100%">
-					<Input
-						label={t('label.advance_edit_display_name', 'Display Name')}
-						backgroundColor="gray5"
-						defaultValue={accountDetail?.displayName}
-						value={accountDetail?.displayName}
-						onChange={changeAccDisplayName}
-						inputName="displayName"
-						name="descriptiveName"
-						autoComplete="new-password"
-					/>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="49%" mainAlignment="flex-start">
+						<Input
+							label={t('label.advance_edit_display_name', 'Display Name')}
+							backgroundColor="gray5"
+							defaultValue={accountDetail?.displayName}
+							value={accountDetail?.displayName}
+							onChange={changeAccDisplayName}
+							inputName="displayName"
+							name="descriptiveName"
+							autoComplete="new-password"
+						/>
+					</Row>
+					{isAdvanced ? (
+						<Row width="49%" mainAlignment="flex-start">
+							<Input
+								// eslint-disable-next-line sonarjs/no-duplicate-string
+								label={t('account_details.otp_devices', 'OTP Devices')}
+								backgroundColor="gray5"
+								defaultValue={accountDetail?.displayName}
+								value={otpList?.length || 0}
+							/>
+						</Row>
+					) : (
+						<></>
+					)}
+				</Row>
+				{isAdvanced ? (
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+						<Row width="49%" mainAlignment="flex-start">
+							{accountDetail?.abqMode && (
+								<Select
+									items={ABQ_STATUS}
+									background="gray5"
+									label={t('account_details.abq_status', 'ABQ Status')}
+									showCheckbox={false}
+									onChange={onAccountABQStatusChange}
+									defaultSelection={ABQ_STATUS.find(
+										(item: any) => item.value === accountDetail?.abqMode
+									)}
+								/>
+							)}
+						</Row>
+					</Row>
+				) : (
+					<></>
+				)}
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="49%" mainAlignment="flex-start">
+						<Input
+							label={t('label.server', 'Server')}
+							backgroundColor="gray5"
+							value={accountDetail?.zimbraMailHost}
+						/>
+					</Row>
+					<Row width="49%" mainAlignment="flex-start">
+						<Input label="ID" backgroundColor="gray5" value={accountDetail?.zimbraId} />
+					</Row>
+				</Row>
+				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+					<Row width="49%" mainAlignment="flex-start">
+						<Input
+							label={t('label.creation_date', 'Creation Date')}
+							backgroundColor="gray6"
+							readOnly
+							value={
+								accountDetail?.zimbraCreateTimestamp
+									? moment(accountDetail?.zimbraCreateTimestamp, 'YYYYMMDDHHmmss.Z').format(
+											'DD MMM YYYY | hh:MM:SS A'
+									  )
+									: t('label.not_available', 'Not Available')
+							}
+						/>
+					</Row>
+					<Row width="49%" mainAlignment="flex-start">
+						<Input
+							label={t('label.last_access', 'Last Access')}
+							backgroundColor="gray6"
+							readOnly
+							value={
+								accountDetail?.zimbraLastLogonTimestamp
+									? moment(accountDetail?.zimbraLastLogonTimestamp, 'YYYYMMDDHHmmss.Z').format(
+											'DD MMM YYYY | hh:MM:SS A'
+									  )
+									: t('label.never_logged_in', 'Never logged in')
+							}
+						/>
+					</Row>
 				</Row>
 
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -436,7 +740,7 @@ const EditAccountGeneralSection: FC = () => {
 							</Text>
 						</Tooltip>
 					</Row>
-					<Row width="32%" mainAlignment="flex-start">
+					<Row width="69%" mainAlignment="flex-start">
 						<Switch
 							value={accountDetail?.zimbraPasswordMustChange === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraPasswordMustChange')}
@@ -447,7 +751,6 @@ const EditAccountGeneralSection: FC = () => {
 							iconColor="primary"
 						/>
 					</Row>
-					<Row width="37%" mainAlignment="flex-start"></Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					{isHidePassword ? (
@@ -574,7 +877,7 @@ const EditAccountGeneralSection: FC = () => {
 					</Text>
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-					<Row width="49%" mainAlignment="flex-start" padding={{ right: 'medium' }}>
+					<Row width="49%" mainAlignment="flex-start">
 						{accountDetail?.zimbraId ? (
 							<Select
 								items={ACCOUNT_STATUS}
@@ -701,18 +1004,13 @@ const EditAccountGeneralSection: FC = () => {
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
 			</Row>
-			<Row
-				mainAlignment="flex-start"
-				padding={{ top: 'large', left: 'small' }}
-				width="100%"
-				style={{ paddingBottom: '3.4rem' }}
-			>
+			<Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
 				<Row padding={{ top: 'large' }}>
 					<Text size="small" color="gray0" weight="bold">
 						{t('label.description', 'Description')}
 					</Text>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Input
 						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
@@ -727,7 +1025,7 @@ const EditAccountGeneralSection: FC = () => {
 						{t('label.notes', 'Notes')}
 					</Text>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large', bottom: 'extralarge' }} width="100%">
+				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<Textarea
 						label={t('label.notes', 'Notes')}
 						value={accountDetail?.zimbraNotes || ''}
@@ -735,6 +1033,74 @@ const EditAccountGeneralSection: FC = () => {
 						inputName="zimbraNotes"
 						onChange={changeAccDetail}
 					/>
+				</Row>
+			</Row>
+			<Row width="100%" padding={{ top: 'medium' }}>
+				<Divider color="gray2" />
+			</Row>
+			<Row
+				mainAlignment="flex-start"
+				padding={{ top: 'large', left: 'small', bottom: 'extralarge' }}
+				width="100%"
+			>
+				<Row padding={{ top: 'extralarge' }}>
+					<Text size="small" weight="bold">
+						{t('label.active_sessions', 'Active Sessions')}
+					</Text>
+				</Row>
+				<Row
+					padding={{ top: 'extralarge' }}
+					width="97%"
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+				>
+					<Container width="calc(100% - 13rem)">
+						<Input
+							label={t('label.i_m_looking_for_the_session', 'I`m looking for the session ...')}
+							backgroundColor="gray5"
+							width="100%"
+							onChange={onSessionFilterInputChange}
+						></Input>
+					</Container>
+					<Padding horizontal="small" />
+					<Container width="12rem" mainAlignment="flex-end" crossAlignment="flex-end">
+						<Button
+							label={t('label.end_session', 'End Session')}
+							color="error"
+							type="outlined"
+							icon="StopCircleOutline"
+							iconPlacement="right"
+							size="extralarge"
+							disabled={selectedSession.length === 0 || isRequestInProgress}
+							onClick={onEndSession}
+							loading={isRequestInProgress}
+						/>
+					</Container>
+				</Row>
+				<Row
+					padding={{ top: 'extralarge' }}
+					width="97%"
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+				>
+					<Table
+						rows={sessionListRows}
+						headers={sessionTableHeader}
+						showCheckbox={false}
+						selectedRows={selectedSession}
+						multiSelect={false}
+						HeaderFactory={CustomHeaderFactory}
+						RowFactory={CustomRowFactory}
+					></Table>
+				</Row>
+
+				<Row
+					padding={{ top: 'extralarge' }}
+					width="97%"
+					mainAlignment="flex-end"
+					crossAlignment="flex-end"
+				>
+					<Paging totalItem={1} setOffset={(): null => null} />
 				</Row>
 			</Row>
 

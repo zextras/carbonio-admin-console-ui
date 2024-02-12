@@ -35,5 +35,9 @@ type AccountContext = {
 	setGlobalRights: (arg: any) => void;
 	deleteAdministrationRights: any[];
 	setDeleteAdministrationRights: (arg: any) => void;
+	userSessionList: any[];
+	setAllUserSessionList: (arg: any) => void;
+	allUserSessionList: any[];
+	setUserSessionList: (arg: any) => void;
 };
 export const AccountContext = createContext({} as AccountContext);
