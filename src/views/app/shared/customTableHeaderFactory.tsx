@@ -10,6 +10,8 @@ import { isEmpty } from 'lodash';
 
 export type IconComponent = (props: SVGProps<SVGSVGElement>) => JSX.Element;
 
+const ASC = 'asc';
+const DESC = 'desc';
 export interface ThemeObj {
 	icons: Record<string, IconComponent>;
 }
@@ -39,9 +41,9 @@ interface THeaderProps {
 	selectionMode: boolean;
 	multiSelect: boolean;
 	showCheckbox: boolean;
-	onSortChange: (id: string, sortOrder: 'asc' | 'desc') => void;
+	onSortChange: (id: string, sortOrder: typeof ASC | typeof DESC) => void;
 	sortedColumn: string;
-	sortOrder: 'asc' | 'desc';
+	sortOrder: typeof ASC | typeof DESC;
 }
 
 type HeaderFactoryCustomProps = Omit<THeaderProps, 'headers'> & {
@@ -70,7 +72,7 @@ const CustomHeaderFactory: FC<any> = ({
 	const handleSortChange = useCallback(
 		(id: string) => {
 			// eslint-disable-next-line no-nested-ternary
-			const newSortOrder = id === sortedColumn ? (sortOrder === 'asc' ? 'desc' : 'asc') : 'asc';
+			const newSortOrder = id === sortedColumn ? (sortOrder === ASC ? DESC : ASC) : ASC;
 			onSortChange(id, newSortOrder);
 		},
 		[onSortChange, sortedColumn, sortOrder]
@@ -79,7 +81,7 @@ const CustomHeaderFactory: FC<any> = ({
 	const renderSortingIcon = useCallback(
 		(id: string) => {
 			if (id === sortedColumn) {
-				return sortOrder === 'asc' ? (
+				return sortOrder === ASC ? (
 					<Icon icon="ChevronSortUpOutline" size="large" />
 				) : (
 					<Icon icon="ChevronSortDownOutline" size="large" />

@@ -25,7 +25,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import CreateResource from './create-resource';
 import ResourceEditDetailView from './resource-edit-detail-view';
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
@@ -55,7 +55,7 @@ const DomainResources: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const timer = useRef<any>();
 	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 
 	const resourceStatusFilter: any[] = useMemo(
 		() => [
@@ -157,7 +157,7 @@ const DomainResources: FC = () => {
 			zimbraDomainName: any,
 			queryString: any,
 			sortBy: string,
-			sortAsceding: 'asc' | 'desc'
+			sortAsceding: typeof ASC | typeof DESC
 		): void => {
 			const attrs =
 				'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraLastLogonTimestamp,zimbraAccountStatus';
@@ -278,7 +278,7 @@ const DomainResources: FC = () => {
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const handleSortChange = useCallback(
-		debounce((id: string, sOrder: 'asc' | 'desc'): void => {
+		debounce((id: string, sOrder: typeof ASC | typeof DESC): void => {
 			setSortedColumn(id);
 			setSortOrder(sOrder);
 		}, 300),

@@ -33,7 +33,7 @@ import AccountDetailView from './account-detail-view';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -82,7 +82,7 @@ const ManageAccounts: FC = () => {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('name');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -825,7 +825,7 @@ const ManageAccounts: FC = () => {
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const handleSortChange = useCallback(
-		debounce((id: string, sOrder: 'asc' | 'desc'): void => {
+		debounce((id: string, sOrder: typeof ASC | typeof DESC): void => {
 			setSortedColumn(id);
 			setSortOrder(sOrder);
 		}, 300),

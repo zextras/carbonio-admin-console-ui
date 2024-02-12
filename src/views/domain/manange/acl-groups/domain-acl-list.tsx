@@ -24,7 +24,17 @@ import { Trans, useTranslation } from 'react-i18next';
 import CreateAclList from './create-acl-list';
 import EditAclListView from './edit-acl-detail-view';
 import logo from '../../../../assets/gardian.svg';
-import { ALL, EMAIL, FALSE, GRP, PUB, RECORD_DISPLAY_LIMIT, TRUE } from '../../../../constants';
+import {
+	ALL,
+	EMAIL,
+	FALSE,
+	GRP,
+	PUB,
+	RECORD_DISPLAY_LIMIT,
+	TRUE,
+	ASC,
+	DESC
+} from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createAclList } from '../../../../services/create-acl-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
@@ -60,7 +70,7 @@ const DomainAclList: FC = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -371,7 +381,7 @@ const DomainAclList: FC = () => {
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const handleSortChange = useCallback(
-		debounce((id: string, sOrder: 'asc' | 'desc'): void => {
+		debounce((id: string, sOrder: typeof ASC | typeof DESC): void => {
 			setSortedColumn(id);
 			setSortOrder(sOrder);
 		}, 300),
