@@ -158,14 +158,22 @@ const ManageAccounts: FC = () => {
 				label: t('label.email', 'Email'),
 				width: '25%',
 				bold: true,
-				sortable: true
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'displayName',
 				label: t('label.person_name', 'Name'),
 				width: '15%',
 				bold: true,
-				sortable: true
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'aliases',
@@ -893,15 +901,6 @@ const ManageAccounts: FC = () => {
 		[closeAccountDetailDialog]
 	);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const handleSortChange = useCallback(
-		debounce((id: string, sOrder: typeof ASC | typeof DESC): void => {
-			setSortedColumn(id);
-			setSortOrder(sOrder);
-		}, 300),
-		[]
-	);
-
 	/** Commented code for fix issue of AC-529 */
 	// useOutsideClick(tableRef, closeAccountDetailDialog);
 
@@ -1011,14 +1010,7 @@ const ManageAccounts: FC = () => {
 									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
 								}}
 								RowFactory={CustomRowFactory}
-								HeaderFactory={(props): JSX.Element => (
-									<CustomHeaderFactory
-										{...props}
-										onSortChange={handleSortChange}
-										sortedColumn={sortedColumn}
-										sortOrder={sortOrder}
-									/>
-								)}
+								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (
 								<Container

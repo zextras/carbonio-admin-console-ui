@@ -93,14 +93,22 @@ const DomainAclList: FC = () => {
 				label: t('label.security_group_name', 'Name'),
 				width: '20%',
 				bold: true,
-				sortable: true
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'name',
 				label: t('label.address', 'Address'),
 				width: '20%',
 				bold: true,
-				sortable: true
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'members',
@@ -378,15 +386,6 @@ const DomainAclList: FC = () => {
 			getAclList();
 		}
 	}, [isUpdateRecord, getAclList]);
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const handleSortChange = useCallback(
-		debounce((id: string, sOrder: typeof ASC | typeof DESC): void => {
-			setSortedColumn(id);
-			setSortOrder(sOrder);
-		}, 300),
-		[]
-	);
 
 	const onAddClick = useCallback(() => {
 		setShowCreateAclListView(true);
@@ -728,14 +727,7 @@ const DomainAclList: FC = () => {
 									setSelectedDlRow(selected);
 								}}
 								RowFactory={CustomRowFactory}
-								HeaderFactory={(props): JSX.Element => (
-									<CustomHeaderFactory
-										{...props}
-										onSortChange={handleSortChange}
-										sortedColumn={sortedColumn}
-										sortOrder={sortOrder}
-									/>
-								)}
+								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (
 								<Container

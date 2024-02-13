@@ -78,14 +78,22 @@ const DomainResources: FC = () => {
 				label: t('label.resource', 'Resource'),
 				width: '15%',
 				bold: true,
-				sortable: true
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'name',
 				label: t('label.email', 'Email'),
 				width: '25%',
 				bold: true,
-				sortable: true
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'status',
@@ -275,15 +283,6 @@ const DomainResources: FC = () => {
 			getResourceList(domainName, searchQuery, sortedColumn, sortOrder);
 		}
 	}, [isUpdateRecord, getResourceList, domainName, searchQuery, sortedColumn, sortOrder]);
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const handleSortChange = useCallback(
-		debounce((id: string, sOrder: typeof ASC | typeof DESC): void => {
-			setSortedColumn(id);
-			setSortOrder(sOrder);
-		}, 300),
-		[]
-	);
 
 	const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
 		let filterQuery = '';
@@ -520,14 +519,7 @@ const DomainResources: FC = () => {
 								showCheckbox
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={CustomRowFactory}
-								HeaderFactory={(props): JSX.Element => (
-									<CustomHeaderFactory
-										{...props}
-										onSortChange={handleSortChange}
-										sortedColumn={sortedColumn}
-										sortOrder={sortOrder}
-									/>
-								)}
+								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (
 								<Container

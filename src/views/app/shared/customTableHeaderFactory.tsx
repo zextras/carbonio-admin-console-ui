@@ -34,6 +34,7 @@ type THeader = {
 	bold?: boolean;
 	items?: any;
 	onChange: () => void;
+	onSortChange: (id: string, order: typeof ASC | typeof DESC) => void;
 	sortable?: boolean;
 };
 interface THeaderProps {
@@ -43,9 +44,6 @@ interface THeaderProps {
 	selectionMode: boolean;
 	multiSelect: boolean;
 	showCheckbox: boolean;
-	onSortChange: (id: string, sortOrder: typeof ASC | typeof DESC) => void;
-	sortedColumn: string;
-	sortOrder: typeof ASC | typeof DESC;
 }
 
 type HeaderFactoryCustomProps = Omit<THeaderProps, 'headers'> & {
@@ -63,26 +61,30 @@ const CustomHeaderFactory: FC<any> = ({
 	allSelected,
 	selectionMode,
 	multiSelect,
-	showCheckbox,
-	onSortChange,
-	sortedColumn,
-	sortOrder
+	showCheckbox
 }): JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const [showCkb, setShowCkb] = useState(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 
 	const handleSortChange = useCallback(
 		(id: string) => {
-			// eslint-disable-next-line no-nested-ternary
-			const newSortOrder = id === sortedColumn ? (sortOrder === ASC ? DESC : ASC) : ASC;
-			onSortChange(id, newSortOrder);
+			const newOrder = id === sortedColumn && sortOrder === ASC ? DESC : ASC;
+			setSortedColumn(id);
+			setSortOrder(newOrder);
+			headers.forEach((header: any) => {
+				if (header.id === id) {
+					header.onSortChange(id, newOrder);
+				}
+			});
 		},
-		[onSortChange, sortedColumn, sortOrder]
+		[headers, sortedColumn, sortOrder]
 	);
 
 	const renderSortingIcon = useCallback(
-		(id: string) => {
-			if (id === sortedColumn) {
+		(column: THeader) => {
+			if (column.id === sortedColumn) {
 				return sortOrder === ASC ? (
 					<Icon icon="ChevronSortUpOutline" size="large" />
 				) : (
@@ -91,7 +93,7 @@ const CustomHeaderFactory: FC<any> = ({
 			}
 			return <Icon icon={ChevronSortEmptyOutline} size="large" />;
 		},
-		[sortOrder, sortedColumn]
+		[sortedColumn, sortOrder]
 	);
 
 	const LabelFactory = useCallback(
@@ -194,7 +196,7 @@ const CustomHeaderFactory: FC<any> = ({
 								<Container orientation="horizontal" mainAlignment="flex-start">
 									<Row style={{ cursor: isSortable ? 'pointer' : 'default' }}>
 										{column.label}
-										{isSortable && renderSortingIcon(column.id)}
+										{isSortable && renderSortingIcon(column)}
 									</Row>
 								</Container>
 							</Text>

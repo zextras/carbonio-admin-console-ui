@@ -93,14 +93,22 @@ const DomainMailingList: FC = () => {
 				label: t('label.distribution_list_name', 'Name'),
 				width: '20%',
 				bold: true,
-				sortable: true
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'name',
 				label: t('label.address', 'Address'),
 				width: '20%',
 				bold: true,
-				sortable: true
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'members',
@@ -377,15 +385,6 @@ const DomainMailingList: FC = () => {
 			getMailingList();
 		}
 	}, [isUpdateRecord, getMailingList]);
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const handleSortChange = useCallback(
-		debounce((id: string, sOrder: typeof ASC | typeof DESC): void => {
-			setSortedColumn(id);
-			setSortOrder(sOrder);
-		}, 300),
-		[]
-	);
 
 	const onAddClick = useCallback(() => {
 		setShowCreateMailingListView(true);
@@ -712,14 +711,7 @@ const DomainMailingList: FC = () => {
 									setSelectedDlRow(selected);
 								}}
 								RowFactory={CustomRowFactory}
-								HeaderFactory={(props): JSX.Element => (
-									<CustomHeaderFactory
-										{...props}
-										onSortChange={handleSortChange}
-										sortedColumn={sortedColumn}
-										sortOrder={sortOrder}
-									/>
-								)}
+								HeaderFactory={CustomHeaderFactory}
 							/>
 							{isRequestInProgress && (
 								<Container
