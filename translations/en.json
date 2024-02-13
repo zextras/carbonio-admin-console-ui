@@ -396,6 +396,7 @@
     },
     "core": {
         "subscription": {
+            "accounts": "Accounts",
             "activate": "Activate",
             "activation": "Activation",
             "bundle": "Bundle",
@@ -415,15 +416,21 @@
                 "label": "Deactivate Token",
                 "warning": "You are trying to deactivate the current token.Doing so will disable all the enabled features."
             },
+            "modules": "Modules",
             "more_info": "More Information",
             "not_valid": "Not Valid",
             "order_id": "Order Id",
+            "provider": "Provider",
+            "refresh": "Refresh",
+            "refresh_subscription_last_check": "Refresh Subscription (Last Check)",
             "status": "Status",
             "subscription_Accounts": "Subscription Accounts",
             "subscription_last_check": "Subscription Last Check",
             "subscription_type": "Subscription Type",
             "token": "Token",
+            "type": "Type",
             "valid": "Valid",
+            "valid_until": "Valid until",
             "version": "Module version"
         }
     },
