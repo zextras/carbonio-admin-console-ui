@@ -8,6 +8,8 @@ import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState 
 import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
 
+import ChevronSortEmptyOutline from '../../../icons/outline/ChevronSortEmptyOutline';
+
 export type IconComponent = (props: SVGProps<SVGSVGElement>) => JSX.Element;
 
 const ASC = 'asc';
@@ -87,7 +89,7 @@ const CustomHeaderFactory: FC<any> = ({
 					<Icon icon="ChevronSortDownOutline" size="large" />
 				);
 			}
-			return null;
+			return <Icon icon={ChevronSortEmptyOutline} size="large" />;
 		},
 		[sortOrder, sortedColumn]
 	);
