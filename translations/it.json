@@ -1348,7 +1348,7 @@
         },
         "only_allow_outbound_disclaimers": "Consenti solo dichiarazioni di non responsabilità in uscita",
         "quarantine": "Quarantena",
-        "virtualhost_avaibility_helpertext": "per rendere disponibile il vistualHost, ricaricare prima la configurazione di nginx su tutti i proxy.",
+        "virtualhost_avaibility_helpertext": "per rendere disponibile il virtualHost, ricaricare prima la configurazione di nginx su tutti i proxy.",
         "advance_edit_user": "Utente"
     },
     "message": {
@@ -2442,7 +2442,8 @@
         "show_images": "Mostra immagini",
         "show_source": "Mostra origine",
         "to_make_changes_restart_the_MTA": "Per rendere effettivi i cambiamenti, riavviare l'MTA.",
-        "yes_delete_message": "SI, ELIMINA"
+        "yes_delete_message": "SI, ELIMINA",
+        "attachment_deleted": "L'allegato è stato eliminato"
     },
     "action": {
         "click_open": "Clicca per aprire",
