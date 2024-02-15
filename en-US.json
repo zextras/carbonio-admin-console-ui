@@ -5,7 +5,8 @@
         "domain": "Domain",
         "general": "General",
         "min_new_check_interval_value": "Value",
-        "status": "Status"
+        "status": "Status",
+        "label": "Label"
     },
     "buckets": {
         "connection": {
@@ -131,7 +132,11 @@
         "what_inside": "Subject",
         "wipe_device": "Wipe Device",
         "yes": "Yes",
-        "advance_edit_userName": "Username"
+        "advance_edit_userName": "Username",
+        "login": "Login",
+        "subject": "Subject",
+        "notification": "Notification",
+        "label": "Label"
     },
     "mta": {
         "settings": "Settings",

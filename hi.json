@@ -11,7 +11,7 @@
         "account": "अकाउंट",
         "accounts": "अकाउंट",
         "active": "एक्टिव",
-        "add": "जोड़ें",
+        "add": "जोड़ें",
         "app_clicked": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "app_name": "मैनेज करें",
         "available_space": "उपलब्ध स्पेस",
@@ -30,7 +30,7 @@
         "name": "नाम",
         "not_set": "सेट",
         "note": "पर्ची",
-        "notification": "सूचना",
+        "notification": "अधिसूचना",
         "of": "में से",
         "page ": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "page_": "आपने शेयर अनुरोध स्वीकार कर लिया",
@@ -254,7 +254,6 @@
         "domain_status": "डोमेन स्टेटस",
         "domain_quota_settings": "डोमेन कोटा सेटिंग्स",
         "domain_name": "डोमेन नाम",
-        "displayed_name": "प्रदर्शित नाम",
         "deligated_admin_help_url": "डेलिगेट किया गया एडमिन हेल्प URL",
         "deleting_cos_msg": "<bold>{{cosname}}</bold> डिलीट कर रहा है",
         "delete_domain_with_account_content_msg": "{{domainName}} खाली नहीं है: इसमें {{domainAccounts}} सिस्टम अकाउंट और {{domainAccounts}} रेगुलर अकाउंट हैं। क्या आप डिलीट करना जारी रखना चाहते हैं?",
@@ -682,7 +681,7 @@
         "total_acc_rights_with_delete_distribution_list_helper_text": "लिस्ट में <bold>{{totalAccRights}}</bold> शेयर्ड अकाउंट्स हैं।<br /> यदि आप इसे डिलीट कर देंगे तो सभी शेयर उड़ जाएंगे।",
         "yes_wipe_the_device": "हाँ, डिवाइस को साफ करें",
         "you_are_trying_wipe_device": "आप किसी डिवाइस को साफ करने की कोशिश कर रहे हैं",
-        "notifications": "सूचनाएं",
+        "notifications": "अधिसूचनाएं",
         "who_can_send_mails_to_list ": "इस लिस्ट को मेल कौन भेज सकता है?",
         "bucket_create_button": "बनाएँ",
         "bucket_delete_button": "डिलीट करें",
@@ -702,7 +701,8 @@
         "general_options": "सामान्‍य विकल्‍प",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "queued": "कतार में",
         "running": "चालू है",
@@ -1004,7 +1004,6 @@
         "admin_logout_redirect_url": "लॉगआउट करने पर एडमिन को (URL) पर रीडायरेक्ट करें",
         "administration": "एडमिनिस्ट्रेशन",
         "administration_rights": "एडमिनिस्ट्रेशन के अधिकार",
-        "advanced_edit": "एडवांस्ड एडिट",
         "aggregated_space_quota": "कुल जगह कोटा",
         "apply_to_all": "सभी सेवाओं पर लागू करें",
         "authentication_settings": "ऑथेन्टिकेशन सेटिंग्स",
@@ -1029,7 +1028,7 @@
         "configuration_help_text": "उन नेटवर्क या डिवाइसों (IPs) को सेटअप करें जिन्हें 2FA ऑथेन्टिकेशन के जरूरत नहीं होगी",
         "quota_mb": "कोटा (MB)",
         "re_sync": "फिर से सिंक करें",
-        "read_options": "पढ़ने के विकल्प",
+        "read_options": "पढ़ने के ऑप्शन",
         "remove_all_acl": "सभी ACLs<bold> हटाएँ</bold>",
         "roles": "भूमिकाएँ",
         "send_notifications_to": "नोटिफ़िकेशन यहाँ भेजें…",
@@ -1048,7 +1047,25 @@
         "stats": "आंकड़ें",
         "advance_edit_userName": "यूज़रनेम",
         "search_for_an_account": "किसी अकाउंट के लिए सर्च करें",
-        "received": "मिल गया"
+        "received": "मिल गया",
+        "Cos_name": "Cos नाम",
+        "attachement_unknown": "अज्ञात <{{mimeType}}>",
+        "from": "भेजने वाला",
+        "invalid_destination": "यह नोड कोई मान्य गंतव्य नहीं है",
+        "login": "लॉगिन करें",
+        "messages": "मैसेज",
+        "save_to_files": "Files में सेव करें",
+        "show_all": "सभी दिखाएँ",
+        "show_quoted_text": "संबन्धित टेक्स्ट दिखाएँ",
+        "subject": "विषय",
+        "to": "प्रति",
+        "discard": "छोड़ें",
+        "attachment": "",
+        "attachment_plural": "संलग्नक",
+        "attachments_disclaimer": "आप एक अटैच किया मैसेज देख रहे हैं। अटैच मैसेज असली हैं या नहीं यह सत्यापित नहीं किया जा सकता।",
+        "select_folder": "फोल्डर सिलेक्ट करें",
+        "view_images": "फोटो देखें",
+        "advance_edit_user": "यूज़र"
     },
     "timezone": {
         "asia_tomsk": "{{value}} तोम्स्क",
@@ -1394,8 +1411,13 @@
         "snackbar": {
             "share": {
                 "accepted": "आपने शेयर अनुरोध स्वीकार कर लिया"
-            }
-        }
+            },
+            "all_att_saved": "अटैचमेंट चुने गए फोल्डर में सेव किया गया",
+            "att_err": "सेव करने में कुछ समस्या आ रही है, कृपया दोबारा कोशिश करें",
+            "att_saved": "अटैचमेंट चुने गए फोल्डर में सेव हो गया",
+            "some_att_fails": "कुछ फाइलें जोड़ने में कुछ समस्या आ रही है, कृपया दोबारा कोशिश करें"
+        },
+        "external_images_blocked": "संभावित स्पैम से आपको सुरक्षित रखने के लिए बाहरी फोटो ब्लॉक कर दी गई हैं"
     },
     "backup": {
         "backup_path": "Backup पाथ",
@@ -2082,7 +2104,7 @@
         "done": "हो गया",
         "label": {
             "Deep": "गहराई",
-            "notifications": "सूचनाएं",
+            "notifications": "अधिसूचनाएं",
             "status": "स्टेटस",
             "action(M)": "एक्शन (एम)",
             "cancel_operation_btn": "ऑपरेशन कैंसल करें",
@@ -2144,7 +2166,7 @@
     "the_change_will_not_move_the_data": "इस बदलाव से डेटा स्थानांतरित नहीं होगा",
     "this_will_not_affect_data_already_stored": "यह पहले से स्टोर डेटा को प्रभावित नहीं करेगा",
     "mta": {
-        "add": "जोड़ें",
+        "add": "जोड़ें",
         "discard": "छोड़ें",
         "high": "हाई",
         "may": "मई",
@@ -2252,5 +2274,19 @@
     },
     "error": {
         "one_or_more_ip_invalid": "एक या एक से ज़्यादा IP अमान्य हैं"
+    },
+    "action": {
+        "click_open": "खोलने के लिए क्लिक करें",
+        "click_preview": "प्रीव्यू के लिए क्लिक करें"
+    },
+    "messages": {
+        "snackbar": {
+            "marked_as_spam": "आपने इस ईमेल को स्पैम मार्क किया है"
+        },
+        "no_content": "इस मैसेज में कोई टेक्स्ट नहीं है"
+    },
+    "quarantine": {
+        "message_deleted": "मैसेज डिलीट हो गया",
+        "delete_message": "मैसेज डिलीट करें"
     }
 }

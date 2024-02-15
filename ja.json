@@ -2,7 +2,7 @@
     "core": {
         "subscription": {
             "more_info": "詳細",
-            "status": "ステータス",
+            "status": "状態",
             "subscription_Accounts": "サブスクリプションアカウント",
             "subscription_last_check": "サブスクリプションの最終確認",
             "token": "トークン",
@@ -343,7 +343,7 @@
         "account": "アカウント",
         "accounts": "アカウント",
         "active": "アクティブ",
-        "add": "追加",
+        "add": "追加する",
         "app_clicked": "共有リクエストを承認しました",
         "app_name": "管理",
         "available_space": "利用可能なスペース",
@@ -375,7 +375,7 @@
                 "accepted": "共有リクエストを承認しました"
             }
         },
-        "status": "ステータス",
+        "status": "状態",
         "suspended": "サスペンド済み",
         "timezone": "タイムゾーン",
         "unlimited": "無制限",
@@ -484,7 +484,7 @@
         "cos": "提供サービス",
         "detail": "詳細設定",
         "device": "デバイス",
-        "edit": "編集",
+        "edit": "編集する",
         "go_back": "戻る",
         "id_lbl": "ID",
         "language": "言語",
@@ -599,7 +599,6 @@
         "domain_status": "ドメインステータス",
         "domain_quota_settings": "ドメインクォータ設定",
         "domain_name": "ドメイン名",
-        "displayed_name": "表示名",
         "create_new_domain": "新しいドメインを作成する",
         "servers_list": "サーバーリスト",
         "deligated_admin_help_url": "委任された管理者ヘルプURL",
@@ -917,7 +916,7 @@
         "DELETE": "削除する",
         "OTP": "OTP",
         "advanced_lbl": "詳細設定",
-        "allowed": "許可",
+        "allowed": "許可しました",
         "device_id": "デバイスID",
         "e_mail": "メール",
         "eas": "EAS",
@@ -932,7 +931,7 @@
         "s3_bucket": "S3バケット",
         "select_an_external_volume": "外部ボリュームを選択する",
         "service": "サービス",
-        "status_lbl": "ステータス",
+        "status_lbl": "状態",
         "theme": "テーマ",
         "title": "タイトル",
         "update": "更新する",
@@ -1042,7 +1041,8 @@
         "general_options": "全般オプション",
         "operation": {
             "stop_operation_error": "{{name}}",
-            "get_all_operation_error": "{{name}}"
+            "get_all_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "queued": "キューに入れられました",
         "ID": "ID",
@@ -1292,7 +1292,6 @@
         "admin_logout_redirect_url": "ログアウト時に、管理者を (URL) にリダイレクトします",
         "administration": "管理",
         "administration_rights": "管理権限",
-        "advanced_edit": "高度な編集",
         "aggregated_space_quota": "集約されたスペース割り当て",
         "apply_to_all": "すべてのサービスに適用する",
         "authentication_settings": "認証設定",
@@ -1387,14 +1386,36 @@
         "person_name": "名前",
         "stats": "統計",
         "advance_edit_userName": "ユーザー名",
-        "search_for_an_account": "アカウントを検索する"
+        "search_for_an_account": "アカウントを検索する",
+        "attachement_unknown": "未知<{{mimeType}}>",
+        "attachment_0": "添付ファイル",
+        "attachments_disclaimer": "添付メッセージを表示しています。添付されたメッセージの信憑性は確認できません。",
+        "login": "ログイン",
+        "save_to_files": "ファイルに保存する",
+        "select_folder": "フォルダを選択してください",
+        "show_all": "すべて表示する",
+        "subject": "件名",
+        "to": "宛先",
+        "view_images": "画像を見る",
+        "discard": "削除する",
+        "from": "送信者",
+        "invalid_destination": "このノードは有効な宛先ではありません",
+        "messages": "メッセージ",
+        "show_quoted_text": "引用テキストを表示する",
+        "Cos_name": "Cos名",
+        "advance_edit_user": "ユーザー"
     },
     "message": {
         "snackbar": {
             "share": {
                 "accepted": "共有リクエストを承認しました"
-            }
-        }
+            },
+            "all_att_saved": "選択したフォルダに添付ファイルが保存されました",
+            "att_err": "保存の際に問題が生じたようです。再度お試しください",
+            "att_saved": "選択したフォルダに保存された添付ファイル",
+            "some_att_fails": "ファイルを保存する際に問題が生じたようです。再度お試しください"
+        },
+        "external_images_blocked": "スパムからユーザーを守るために、外部画像はブロックされています"
     },
     "backup": {
         "backup_path": "バックアップパス",
@@ -1540,7 +1561,7 @@
         "session_idle_timeout": "セッションのアイドルタイムアウト",
         "shortest_allowed_duration_for_any_polling_interval": "任意のポーリング間隔の最小許容期間",
         "spam_message_lifetime": "迷惑メールメッセージの有効期間",
-        "status": "ステータス",
+        "status": "状態",
         "tagging": "タグ付け",
         "time_to_lockout_account": "アカウントをロックアウトする時間",
         "time_window_failed_logins_must_occur_to_lock_account": "アカウントをロックするためにログインの失敗が発生しなければならない時間枠：",
@@ -1851,7 +1872,7 @@
         "remove": "削除する",
         "send_check": "送信",
         "services": "サービス",
-        "status": "ステータス",
+        "status": "状態",
         "able_to_see_password_once": " 注意: パスワードは<bold>一度だけ</bold>表示されます",
         "account_read_only_rights": "このアカウントには<bold>読み取り専用</bold>権限があります",
         "account_read_write_rights": "このアカウントには<bold>読み取り/書き込み</bold>権限があります",
@@ -1937,7 +1958,7 @@
             "name": "名前",
             "hsm_scheduled": "HSM スケジュール済み",
             "indexer": "インデクサー",
-            "status": "ステータス"
+            "status": "状態"
         },
         "volume_indexer_header": {
             "current": "現在",
@@ -1970,7 +1991,7 @@
         "destination_volume": "宛先ボリューム",
         "details": "詳細",
         "document": "ドキュメント",
-        "edit": "編集",
+        "edit": "編集する",
         "event": "イベント",
         "gb": "GB",
         "hours": "時間",
@@ -2078,7 +2099,7 @@
         "label": {
             "Deep": "深い",
             "notifications": "通知",
-            "status": "ステータス",
+            "status": "状態",
             "operation_type": "操作の種類",
             "remote_metadata_upload": "リモートメタデータのアップロード",
             "action(M)": "操作（M）",
@@ -2097,7 +2118,7 @@
             "operation": "オペレーション",
             "server": "サーバー",
             "start_date": "開始日",
-            "status": "ステータス",
+            "status": "状態",
             "submit_date": "送信日"
         },
         "queued": "キューに入れられました",
@@ -2142,7 +2163,7 @@
         "is_current": "まず、別のボリュームを現在のボリュームとして設定する必要があります。"
     },
     "mta": {
-        "add": "追加",
+        "add": "追加する",
         "authentication": "認証",
         "days": "日",
         "discard": "削除する",
@@ -2243,12 +2264,26 @@
         "interval": "繰り返し間隔",
         "queued": "キューに入れられました",
         "stats": "統計",
-        "status": "ステータス"
+        "status": "状態"
     },
     "mat": {
         "add_here_any_blocked_extension": "ブロックされた拡張機能をここに追加します"
     },
     "error": {
         "one_or_more_ip_invalid": "一つ以上のIPアドレスが無効です"
+    },
+    "action": {
+        "click_preview": "クリックしてプレビューする",
+        "click_open": "クリックして開きます"
+    },
+    "messages": {
+        "no_content": "このメッセージにはテキストコンテンツがありません",
+        "snackbar": {
+            "marked_as_spam": "このメールを迷惑メールとしてマークしました"
+        }
+    },
+    "quarantine": {
+        "delete_message": "メッセージを削除する",
+        "message_deleted": "メッセージが削除されました"
     }
 }

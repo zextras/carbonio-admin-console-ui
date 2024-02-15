@@ -32,7 +32,8 @@
         "destroy_account": "حذف",
         "open": "باز کردن",
         "logout": "خروج",
-        "person_name": "نام"
+        "person_name": "نام",
+        "discard": "لغو"
     },
     "domain": {
         "theme": "پوسته‌ها"
@@ -84,5 +85,13 @@
         "discard": "لغو",
         "add": "اضافه کردن",
         "settings": "تنظیمات"
+    },
+    "message": {
+        "snackbar": {
+            "att_saved": "پیوست با موفقیت در پوشه مورد نظر ذخیره شد"
+        }
+    },
+    "action": {
+        "click_preview": "برای مشاهده کلیک کنید"
     }
 }

@@ -362,7 +362,7 @@
         "name": "Nama",
         "not_set": "Tidak Diatur",
         "note": "Catatan",
-        "notification": "Notifikasi",
+        "notification": "Pemberitahuan",
         "of": "dari",
         "page ": "Anda telah menerima permintaan berbagi",
         "page_": "Anda telah menerima permintaan berbagi",
@@ -456,7 +456,7 @@
         "restore_account": "Pulihkan Akun",
         "retention_policy": "Kebijakan Retensi",
         "save_and_leave": "Simpan dan keluar",
-        "search": "Cari",
+        "search": "Pencarian",
         "server": "Server",
         "servers": "Server",
         "service_status": "Status Layanan",
@@ -650,7 +650,6 @@
         "domain_status": "Status Domain",
         "domain_quota_settings": "Pengaturan Kuota Domain",
         "domain_name": "Nama Domain",
-        "displayed_name": "Nama yang Ditampilkan",
         "delete_domain_with_account_content_msg": "{{domainName}} tidak kosong: ini berisi akun sistem {{domainSystemAccounts}} dan akun reguler {{domainRegularAccounts}}. Anda yakin ingin melanjutkan penghapusan?",
         "delete_domain_success_msg": "Domain berhasil dihapus",
         "delete_domain_error_msg": "Anda menghapus {{domainName}}. Anda yakin ingin menghapus {{domainName}}?",
@@ -709,8 +708,8 @@
         "new_volume_create": "BUAT",
         "next": "BERIKUTNYA",
         "path": "Jalur",
-        "prefix": "Prefiks",
-        "private": "Pribadi",
+        "prefix": "Awalan",
+        "private": "Privat",
         "public": "Publik",
         "quotas": "Kuota",
         "restore_data_source": "Pulihkan Sumber Data",
@@ -740,7 +739,7 @@
         "detail_error": "{{name}}",
         "volume_create": "BUAT",
         "enable_current_helptext": "Mengaktifkan opsi ini akan menonaktifkan volume aktif saat ini.",
-        "required": "Wajib",
+        "required": "Diperlukan",
         "select_a_server": "Pilih Server",
         "volume_server": "Server",
         "configuration_lbl": "Konfigurasi",
@@ -1041,7 +1040,8 @@
         "general_options": "Opsi Umum",
         "operation": {
             "get_all_operation_error": "{{name}}",
-            "stop_operation_error": "{{name}}"
+            "stop_operation_error": "{{name}}",
+            "get_done_operation_error": "{{name}}"
         },
         "running": "Berjalan",
         "use_intelligent_tiering": "Gunakan Tiering Cerdas",
@@ -1235,7 +1235,7 @@
         "pager": "Pager",
         "phone": "Telepon",
         "state": "Status",
-        "username": "Nama Pengguna",
+        "username": "Nama pengguna",
         "city": "Kota",
         "general_lbl": "Umum",
         "antispam": "Antispam",
@@ -1304,7 +1304,6 @@
         "add_in_acl_list_or_both": "Anda menambahkan Daftar Acl atau Pengguna lain. Keduanya bisa menjadi Pemilik daftar.",
         "administration": "ADMIN",
         "administration_rights": "Hak Admin",
-        "advanced_edit": "EDIT LANJUTAN",
         "aggregated_space_quota": "Kuota Ruang Gabungan",
         "apply_to_all": "TERAPKAN KE SEMUA LAYANAN",
         "authentication_settings": "Pengaturan Autentikasi",
@@ -1386,15 +1385,37 @@
         "please_select_the_measure_unit": "Pilih satuan pengukuran",
         "person_name": "Nama",
         "stats": "Statistik",
-        "advance_edit_userName": "Nama Pengguna",
-        "search_for_an_account": "Cari akun"
+        "advance_edit_userName": "Nama pengguna",
+        "search_for_an_account": "Cari akun",
+        "Cos_name": "Nama Cos",
+        "invalid_destination": "Node ini bukan tujuan yang valid",
+        "login": "Masuk",
+        "messages": "Pesan",
+        "save_to_files": "Simpan ke File",
+        "select_folder": "Pilih folder",
+        "show_all": "Tampilkan semua",
+        "show_quoted_text": "Tampilkan teks kutipan",
+        "attachement_unknown": "Tidak diketahui <{{mimeType}}>",
+        "attachment_0": "lampiran",
+        "attachments_disclaimer": "Anda sedang meliaht pesan terlampir. Keaslian pesan terlampir tidak dapat diverifikasi.",
+        "from": "Dari",
+        "subject": "Subjek",
+        "to": "Kepada",
+        "view_images": "LIHAT GAMBAR",
+        "discard": "Hapus",
+        "advance_edit_user": "Pengguna"
     },
     "message": {
         "snackbar": {
             "share": {
                 "accepted": "Anda telah menerima permintaan berbagi"
-            }
-        }
+            },
+            "all_att_saved": "Lampiran berhasil disimpan di folder terpilih",
+            "att_err": "Tampaknya ada masalah saat menyimpan. Harap coba lagi.",
+            "att_saved": "Lampiran disimpan di folder yang dipilih",
+            "some_att_fails": "Tampaknya ada masalah saat menambahkan beberapa file, coba lagi"
+        },
+        "external_images_blocked": "Gambar eksternal telah diblokir untuk melindungi Anda terhadap potensi spam"
     },
     "cos": {
         "calendar_options": "Opsi Kalender",
@@ -2250,5 +2271,19 @@
     },
     "error": {
         "one_or_more_ip_invalid": "Satu atau beberapa IP tidak valid"
+    },
+    "action": {
+        "click_open": "Klik untuk membuka",
+        "click_preview": "Klik untuk melihat pratinjau"
+    },
+    "quarantine": {
+        "message_deleted": "Pesan dihapus",
+        "delete_message": "Hapus pesan"
+    },
+    "messages": {
+        "no_content": "Pesan ini tidak berisi teks",
+        "snackbar": {
+            "marked_as_spam": "Anda telah menandai email ini sebagai Spam"
+        }
     }
 }

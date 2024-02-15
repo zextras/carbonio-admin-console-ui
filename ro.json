@@ -159,7 +159,7 @@
         "volume_server_name": "Server",
         "theme": "Tema",
         "bucket_notes": "Note",
-        "date": "Dată",
+        "date": "Data",
         "notifications": "Notificări",
         "open": "Deschide",
         "ID": "ID",
@@ -181,7 +181,12 @@
         "link": "Legatura",
         "logout": "Deconectare",
         "person_name": "Nume",
-        "advance_edit_userName": "Nume utilizator"
+        "advance_edit_userName": "Nume utilizator",
+        "discard": "Renunta",
+        "login": "Autentificare",
+        "advance_edit_user": "Utilizator",
+        "label": "Etichetă",
+        "notification": "Notificare"
     },
     "core": {
         "subscription": {
@@ -362,7 +367,8 @@
         "send_check": "Trimite",
         "services": "Servicii",
         "status": "Stare",
-        "enable_past_due_reminders": "Activare mementouri pentru scadenţe depăşite"
+        "enable_past_due_reminders": "Activare mementouri pentru scadenţe depăşite",
+        "label": "Etichetă"
     },
     "connection": {
         "notes": "Note"

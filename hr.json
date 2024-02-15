@@ -49,7 +49,8 @@
         "volume_server": "Server",
         "volume_server_name": "Server",
         "yes": "Da",
-        "advance_edit_userName": "Korisničko ime"
+        "advance_edit_userName": "Korisničko ime",
+        "login": "Prijava"
     },
     "mta": {
         "info": "Info",
