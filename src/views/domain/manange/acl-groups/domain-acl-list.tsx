@@ -24,7 +24,17 @@ import { Trans, useTranslation } from 'react-i18next';
 import CreateAclList from './create-acl-list';
 import EditAclListView from './edit-acl-detail-view';
 import logo from '../../../../assets/gardian.svg';
-import { ALL, EMAIL, FALSE, GRP, PUB, RECORD_DISPLAY_LIMIT, TRUE } from '../../../../constants';
+import {
+	ALL,
+	EMAIL,
+	FALSE,
+	GRP,
+	PUB,
+	RECORD_DISPLAY_LIMIT,
+	TRUE,
+	ASC,
+	DESC
+} from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createAclList } from '../../../../services/create-acl-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
@@ -59,6 +69,8 @@ const DomainAclList: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -77,16 +89,26 @@ const DomainAclList: FC = () => {
 	const headers: any[] = useMemo(
 		() => [
 			{
-				id: 'name',
+				id: 'displayName',
 				label: t('label.security_group_name', 'Name'),
 				width: '20%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
-				id: 'address',
+				id: 'name',
 				label: t('label.address', 'Address'),
 				width: '20%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'members',
@@ -163,7 +185,7 @@ const DomainAclList: FC = () => {
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE))(zimbraIsAdminGroup=TRUE))`;
 		setIsRequestInProgress(true);
-		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name')
+		searchDirectory(attrs, types, domainName || '', query, offset, limit, sortedColumn, sortOrder)
 			.then((data) => {
 				const dlList = data?.dl;
 				if (dlList) {
@@ -303,7 +325,17 @@ const DomainAclList: FC = () => {
 				});
 				setHasError(true);
 			});
-	}, [t, offset, limit, domainName, searchQuery, handleClick, createSnackbar]);
+	}, [
+		searchQuery,
+		domainName,
+		offset,
+		limit,
+		sortedColumn,
+		sortOrder,
+		t,
+		handleClick,
+		createSnackbar
+	]);
 
 	useEffect(() => {
 		getAclList();
@@ -780,6 +812,7 @@ const DomainAclList: FC = () => {
 						selectedAclList={selectedAclList}
 						setShowEditAclList={setShowAclListDetailView}
 						setIsUpdateRecord={setIsUpdateRecord}
+						getAclLists={getAclList}
 					/>
 				</ModalOverlay>
 			)}

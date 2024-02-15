@@ -9,11 +9,11 @@ import { Container, Row, Text, Divider, ChipInput } from '@zextras/carbonio-desi
 import { map, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import InheritedInput from './inherited-components/inherited-input';
-import InheritedSelect from './inherited-components/inherited-select';
-import InheritedSwitch from './inherited-components/inherited-switch';
 import { SignatureDetail } from './signature-detail';
 import CustomChip from '../../../../components/customChip';
+import InheritedInput from '../../../../utility/inherited-components/inherited-input';
+import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
+import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import {
 	timeZoneList,
 	conversationGroupBy,
@@ -276,7 +276,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 
 	const setEmptyValue = useCallback(
 		(keyName) => {
-			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
+			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
 	);
@@ -297,12 +297,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefMessageViewHtmlPreferred}
+						subValue={accountDetail?.zimbraPrefMessageViewHtmlPreferred}
 						onChange={changeSwitchOption}
 						label={t('account_details.view_mail_as_html', 'View mail as HTML')}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefMessageViewHtmlPreferred}
-						fromAccount={accSpecificDetail?.zimbraPrefMessageViewHtmlPreferred}
+						inheritedValue={cosDetail.zimbraPrefMessageViewHtmlPreferred}
+						fromSubValue={accSpecificDetail?.zimbraPrefMessageViewHtmlPreferred}
 						inputName={'zimbraPrefMessageViewHtmlPreferred'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMessageViewHtmlPreferred')}
 					/>
@@ -313,9 +313,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.group_by', 'Group by')}
 						items={GROUP_BY}
-						accountValue={accountDetail.zimbraPrefGroupMailBy}
-						cosValue={cosDetail.zimbraPrefGroupMailBy}
-						fromAccount={accSpecificDetail?.zimbraPrefGroupMailBy}
+						subValue={accountDetail.zimbraPrefGroupMailBy}
+						inheritedValue={cosDetail.zimbraPrefGroupMailBy}
+						fromSubValue={accSpecificDetail?.zimbraPrefGroupMailBy}
 						background="gray5"
 						selectName="zimbraPrefGroupMailBy"
 						onChange={onGroupByChange}
@@ -326,9 +326,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.default_charset', 'Default Charset')}
 						items={CHARACTOR_SET}
-						accountValue={accountDetail.zimbraPrefMailDefaultCharset}
-						cosValue={cosDetail.zimbraPrefMailDefaultCharset}
-						fromAccount={accSpecificDetail?.zimbraPrefMailDefaultCharset}
+						subValue={accountDetail.zimbraPrefMailDefaultCharset}
+						inheritedValue={cosDetail.zimbraPrefMailDefaultCharset}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailDefaultCharset}
 						background="gray5"
 						selectName="zimbraPrefMailDefaultCharset"
 						onChange={onCharactorSetChange}
@@ -339,27 +339,27 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefMessageIdDedupingEnabled}
+						subValue={accountDetail?.zimbraPrefMessageIdDedupingEnabled}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.auto_delete_duplicate_messages',
 							'Auto-Delete duplicate messages'
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefMessageIdDedupingEnabled}
-						fromAccount={accSpecificDetail?.zimbraPrefMessageIdDedupingEnabled}
+						inheritedValue={cosDetail.zimbraPrefMessageIdDedupingEnabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefMessageIdDedupingEnabled}
 						inputName={'zimbraPrefMessageIdDedupingEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMessageIdDedupingEnabled')}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefMailToasterEnabled}
+						subValue={accountDetail?.zimbraPrefMailToasterEnabled}
 						onChange={changeSwitchOption}
 						label={t('account_details.enable_toast_for_new_emails', `Enable toast for new emails`)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefMailToasterEnabled}
-						fromAccount={accSpecificDetail?.zimbraPrefMailToasterEnabled}
+						inheritedValue={cosDetail.zimbraPrefMailToasterEnabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailToasterEnabled}
 						inputName={'zimbraPrefMailToasterEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMailToasterEnabled')}
 					/>
@@ -380,9 +380,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.check_new_mail_every', 'Check new mail every')}
 						items={POLLING_INTERVAL}
-						accountValue={accountDetail.zimbraPrefMailPollingInterval}
-						cosValue={cosDetail.zimbraPrefMailPollingInterval}
-						fromAccount={accSpecificDetail?.zimbraPrefMailPollingInterval}
+						subValue={accountDetail.zimbraPrefMailPollingInterval}
+						inheritedValue={cosDetail.zimbraPrefMailPollingInterval}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailPollingInterval}
 						background="gray5"
 						selectName="zimbraPrefMailPollingInterval"
 						onChange={onPollingIntervalChange}
@@ -393,15 +393,15 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="32%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefMailLocalDeliveryDisabled}
+						subValue={accountDetail?.zimbraPrefMailLocalDeliveryDisabled}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.allow_user_check_minimum_interval',
 							'Allow the user to change the minimum checking interval'
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefMailLocalDeliveryDisabled}
-						fromAccount={accSpecificDetail?.zimbraPrefMailLocalDeliveryDisabled}
+						inheritedValue={cosDetail.zimbraPrefMailLocalDeliveryDisabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailLocalDeliveryDisabled}
 						inputName={'zimbraPrefMailLocalDeliveryDisabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMailLocalDeliveryDisabled')}
 					/>
@@ -412,9 +412,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'account_details.min_new_check_interval_value',
 							'Min new check interval (value)'
 						)}
-						accountValue={accountDetail.zimbraPrefMailPollingInterval?.slice(0, -1) || 0}
-						cosValue={cosDetail.zimbraPrefMailPollingInterval?.slice(0, -1) || 0}
-						fromAccount={accSpecificDetail?.zimbraPrefMailPollingInterval}
+						subValue={accountDetail.zimbraPrefMailPollingInterval?.slice(0, -1) || 0}
+						inheritedValue={cosDetail.zimbraPrefMailPollingInterval?.slice(0, -1) || 0}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailPollingInterval}
 						background="gray5"
 						inputName="zimbraPrefMailPollingInterval"
 						onChange={onPrefMailPollingIntervalNumChange}
@@ -427,9 +427,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
 						items={TIME_TYPES}
-						accountValue={accountDetail?.zimbraPrefMailPollingInterval?.slice(-1) || ''}
-						cosValue={cosDetail.zimbraPrefMailPollingInterval?.slice(-1) || ''}
-						fromAccount={accSpecificDetail?.zimbraPrefMailPollingInterval}
+						subValue={accountDetail?.zimbraPrefMailPollingInterval?.slice(-1) || ''}
+						inheritedValue={cosDetail.zimbraPrefMailPollingInterval?.slice(-1) || ''}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailPollingInterval}
 						background="gray5"
 						selectName="zimbraPrefMailPollingInterval"
 						onChange={onPollingIntervalChange}
@@ -441,15 +441,15 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefNewMailNotificationEnabled}
+						subValue={accountDetail?.zimbraPrefNewMailNotificationEnabled}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.enable_address_for_new_email_notifications',
 							`Enable address for new email notifications`
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefNewMailNotificationEnabled}
-						fromAccount={accSpecificDetail?.zimbraPrefNewMailNotificationEnabled}
+						inheritedValue={cosDetail.zimbraPrefNewMailNotificationEnabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefNewMailNotificationEnabled}
 						inputName={'zimbraPrefNewMailNotificationEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefNewMailNotificationEnabled')}
 					/>
@@ -457,9 +457,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedInput
 						label={t('label.enabed_address', 'Enabed Address')}
-						accountValue={accountDetail.zimbraPrefNewMailNotificationAddress || ''}
-						cosValue={cosDetail.zimbraPrefNewMailNotificationAddress || ''}
-						fromAccount={accSpecificDetail?.zimbraPrefNewMailNotificationAddress}
+						subValue={accountDetail.zimbraPrefNewMailNotificationAddress || ''}
+						inheritedValue={cosDetail.zimbraPrefNewMailNotificationAddress || ''}
+						fromSubValue={accSpecificDetail?.zimbraPrefNewMailNotificationAddress}
 						background="gray5"
 						inputName="zimbraPrefNewMailNotificationAddress"
 						onChange={changeAccDetail}
@@ -471,15 +471,15 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefOutOfOfficeReplyEnabled}
+						subValue={accountDetail?.zimbraPrefOutOfOfficeReplyEnabled}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.can_send_auto_reply_messages',
 							`Can send auto-reply messages`
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefOutOfOfficeReplyEnabled}
-						fromAccount={accSpecificDetail?.zimbraPrefOutOfOfficeReplyEnabled}
+						inheritedValue={cosDetail.zimbraPrefOutOfOfficeReplyEnabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefOutOfOfficeReplyEnabled}
 						inputName={'zimbraPrefOutOfOfficeReplyEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefOutOfOfficeReplyEnabled')}
 					/>
@@ -489,9 +489,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedInput
 						label={t('label.out_of_office_cache_lifetime', 'Out of office cache lifetime')}
-						accountValue={accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1) || ''}
-						cosValue={cosDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1) || ''}
-						fromAccount={accSpecificDetail?.zimbraPrefOutOfOfficeCacheDuration}
+						subValue={accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1) || ''}
+						inheritedValue={cosDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1) || ''}
+						fromSubValue={accSpecificDetail?.zimbraPrefOutOfOfficeCacheDuration}
 						background="gray5"
 						inputName="zimbraPrefOutOfOfficeCacheDuration"
 						onChange={changeOutOfOfficeDurationetail}
@@ -503,9 +503,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
 						items={TIME_TYPES}
-						accountValue={accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''}
-						cosValue={cosDetail.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''}
-						fromAccount={accSpecificDetail?.zimbraPrefOutOfOfficeCacheDuration}
+						subValue={accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''}
+						inheritedValue={cosDetail.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''}
+						fromSubValue={accSpecificDetail?.zimbraPrefOutOfOfficeCacheDuration}
 						background="gray5"
 						selectName="zimbraPrefOutOfOfficeCacheDuration"
 						onChange={onOutOfOfficeCacheDurationTypeChange}
@@ -516,12 +516,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraFeatureReadReceiptsEnabled}
+						subValue={accountDetail?.zimbraFeatureReadReceiptsEnabled}
 						onChange={changeSwitchOption}
 						label={t('account_details.send_read_receipts', `Send read receipts`)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraFeatureReadReceiptsEnabled}
-						fromAccount={accSpecificDetail?.zimbraFeatureReadReceiptsEnabled}
+						inheritedValue={cosDetail.zimbraFeatureReadReceiptsEnabled}
+						fromSubValue={accSpecificDetail?.zimbraFeatureReadReceiptsEnabled}
 						inputName={'zimbraFeatureReadReceiptsEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraFeatureReadReceiptsEnabled')}
 					/>
@@ -566,12 +566,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="100%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefSaveToSent}
+						subValue={accountDetail?.zimbraPrefSaveToSent}
 						onChange={changeSwitchOption}
 						label={t('account_details.save_to_sent', 'Save to sent')}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefSaveToSent}
-						fromAccount={accSpecificDetail?.zimbraPrefSaveToSent}
+						inheritedValue={cosDetail.zimbraPrefSaveToSent}
+						fromSubValue={accSpecificDetail?.zimbraPrefSaveToSent}
 						inputName={'zimbraPrefSaveToSent'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefSaveToSent')}
 					/>
@@ -580,15 +580,15 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="35%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraAllowAnyFromAddress}
+						subValue={accountDetail?.zimbraAllowAnyFromAddress}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.allow_sending_from_any_address',
 							`Allow sending from any address`
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraAllowAnyFromAddress}
-						fromAccount={accSpecificDetail?.zimbraAllowAnyFromAddress}
+						inheritedValue={cosDetail.zimbraAllowAnyFromAddress}
+						fromSubValue={accSpecificDetail?.zimbraAllowAnyFromAddress}
 						inputName={'zimbraAllowAnyFromAddress'}
 						onChangeReset={(): void => setEmptyValue('zimbraAllowAnyFromAddress')}
 					/>
@@ -621,9 +621,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.read_receipt_settings', 'Read Receipt settings')}
 						items={SEND_READ_RECEIPTS}
-						accountValue={accountDetail?.zimbraPrefMailSendReadReceipts}
-						cosValue={cosDetail.zimbraPrefMailSendReadReceipts}
-						fromAccount={accSpecificDetail?.zimbraPrefMailSendReadReceipts}
+						subValue={accountDetail?.zimbraPrefMailSendReadReceipts}
+						inheritedValue={cosDetail.zimbraPrefMailSendReadReceipts}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailSendReadReceipts}
 						background="gray5"
 						selectName="zimbraPrefMailSendReadReceipts"
 						onChange={onReadReceiptChange}
@@ -644,12 +644,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefMailSignatureEnabled}
+						subValue={accountDetail?.zimbraPrefMailSignatureEnabled}
 						onChange={changeSwitchOption}
 						label={t('account_details.mail_signature', 'Mail Signature')}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefMailSignatureEnabled}
-						fromAccount={accSpecificDetail?.zimbraPrefMailSignatureEnabled}
+						inheritedValue={cosDetail.zimbraPrefMailSignatureEnabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefMailSignatureEnabled}
 						inputName={'zimbraPrefMailSignatureEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMailSignatureEnabled')}
 					/>
@@ -676,24 +676,24 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefAutoAddAddressEnabled}
+						subValue={accountDetail?.zimbraPrefAutoAddAddressEnabled}
 						onChange={changeSwitchOption}
 						label={t('account_details.enable_auto_add_contacts', `Enable auto-add contacts`)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefAutoAddAddressEnabled}
-						fromAccount={accSpecificDetail?.zimbraPrefAutoAddAddressEnabled}
+						inheritedValue={cosDetail.zimbraPrefAutoAddAddressEnabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefAutoAddAddressEnabled}
 						inputName={'zimbraPrefAutoAddAddressEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefAutoAddAddressEnabled')}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefGalAutoCompleteEnabled}
+						subValue={accountDetail?.zimbraPrefGalAutoCompleteEnabled}
 						onChange={changeSwitchOption}
 						label={t('account_details.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefGalAutoCompleteEnabled}
-						fromAccount={accSpecificDetail?.zimbraPrefGalAutoCompleteEnabled}
+						inheritedValue={cosDetail.zimbraPrefGalAutoCompleteEnabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefGalAutoCompleteEnabled}
 						inputName={'zimbraPrefGalAutoCompleteEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefGalAutoCompleteEnabled')}
 					/>
@@ -714,9 +714,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.time_zone', 'Time Zone')}
 						items={timezones}
-						accountValue={accountDetail?.zimbraPrefTimeZoneId}
-						cosValue={cosDetail.zimbraPrefTimeZoneId}
-						fromAccount={accSpecificDetail?.zimbraPrefTimeZoneId}
+						subValue={accountDetail?.zimbraPrefTimeZoneId}
+						inheritedValue={cosDetail.zimbraPrefTimeZoneId}
+						fromSubValue={accSpecificDetail?.zimbraPrefTimeZoneId}
 						background="gray5"
 						selectName="zimbraPrefTimeZoneId"
 						onChange={onPrefTimeZoneChange}
@@ -730,9 +730,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							'Appointment’s Default Duration'
 						)}
 						items={APPOINTMENT_DURATION}
-						accountValue={accountDetail?.zimbraPrefCalendarDefaultApptDuration}
-						cosValue={cosDetail.zimbraPrefCalendarDefaultApptDuration}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarDefaultApptDuration}
+						subValue={accountDetail?.zimbraPrefCalendarDefaultApptDuration}
+						inheritedValue={cosDetail.zimbraPrefCalendarDefaultApptDuration}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarDefaultApptDuration}
 						background="gray5"
 						selectName="zimbraPrefCalendarDefaultApptDuration"
 						onChange={onCalendarDefaultApptDurationChange}
@@ -745,9 +745,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.appointment_reminder_in_minutes', 'Appointment Reminder in minutes')}
 						items={APPOINTMENT_REMINDER}
-						accountValue={accountDetail?.zimbraPrefCalendarApptReminderWarningTime}
-						cosValue={cosDetail.zimbraPrefCalendarApptReminderWarningTime}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarApptReminderWarningTime}
+						subValue={accountDetail?.zimbraPrefCalendarApptReminderWarningTime}
+						inheritedValue={cosDetail.zimbraPrefCalendarApptReminderWarningTime}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarApptReminderWarningTime}
 						background="gray5"
 						selectName="zimbraPrefCalendarApptReminderWarningTime"
 						onChange={onReminderWarningTimeChange}
@@ -758,9 +758,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.default_calendar_view', 'Default Calendar View')}
 						items={DefaultViewOptions}
-						accountValue={accountDetail?.zimbraPrefCalendarInitialView}
-						cosValue={cosDetail.zimbraPrefCalendarInitialView}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarInitialView}
+						subValue={accountDetail?.zimbraPrefCalendarInitialView}
+						inheritedValue={cosDetail.zimbraPrefCalendarInitialView}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarInitialView}
 						background="gray5"
 						selectName="zimbraPrefCalendarInitialView"
 						onChange={onCalendarInitialViewChange}
@@ -773,9 +773,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSelect
 						label={t('label.the_week_starts_on', 'The Week starts on')}
 						items={FIRST_DAY_OF_WEEK}
-						accountValue={accountDetail?.zimbraPrefCalendarFirstDayOfWeek}
-						cosValue={cosDetail.zimbraPrefCalendarFirstDayOfWeek}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarFirstDayOfWeek}
+						subValue={accountDetail?.zimbraPrefCalendarFirstDayOfWeek}
+						inheritedValue={cosDetail.zimbraPrefCalendarFirstDayOfWeek}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarFirstDayOfWeek}
 						background="gray5"
 						selectName="zimbraPrefCalendarFirstDayOfWeek"
 						onChange={onFirstDayOfWeekChange}
@@ -787,9 +787,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						<InheritedSelect
 							label={t('label.default_appointment_visibility', 'Default Appointment visibility')}
 							items={APPOINTMENT_VISIBILITY}
-							accountValue={accountDetail?.zimbraPrefCalendarApptVisibility}
-							cosValue={cosDetail.zimbraPrefCalendarApptVisibility}
-							fromAccount={accSpecificDetail?.zimbraPrefCalendarApptVisibility}
+							subValue={accountDetail?.zimbraPrefCalendarApptVisibility}
+							inheritedValue={cosDetail.zimbraPrefCalendarApptVisibility}
+							fromSubValue={accSpecificDetail?.zimbraPrefCalendarApptVisibility}
 							background="gray5"
 							selectName="zimbraPrefCalendarApptVisibility"
 							onChange={onAppointmentVisibilityChange}
@@ -804,15 +804,15 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefCalendarShowPastDueReminders}
+						subValue={accountDetail?.zimbraPrefCalendarShowPastDueReminders}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.enable_past_due_reminders',
 							'Enable reminders of appointments in the past'
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefCalendarShowPastDueReminders}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarShowPastDueReminders}
+						inheritedValue={cosDetail.zimbraPrefCalendarShowPastDueReminders}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarShowPastDueReminders}
 						inputName={'zimbraPrefCalendarShowPastDueReminders'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarShowPastDueReminders')}
 					/>
@@ -820,15 +820,15 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefCalendarAllowCancelEmailToSelf}
+						subValue={accountDetail?.zimbraPrefCalendarAllowCancelEmailToSelf}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.allow_sending_cancellation_mail',
 							'Allow sending cancellation mail'
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefCalendarAllowCancelEmailToSelf}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarAllowCancelEmailToSelf}
+						inheritedValue={cosDetail.zimbraPrefCalendarAllowCancelEmailToSelf}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowCancelEmailToSelf}
 						inputName={'zimbraPrefCalendarAllowCancelEmailToSelf'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarAllowCancelEmailToSelf')}
 					/>
@@ -837,30 +837,30 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefCalendarAllowForwardedInvite}
+						subValue={accountDetail?.zimbraPrefCalendarAllowForwardedInvite}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.add_forwarded_invites_to_calendar',
 							'Automatically add forwarded appointments to the calendar'
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefCalendarAllowForwardedInvite}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarAllowForwardedInvite}
+						inheritedValue={cosDetail.zimbraPrefCalendarAllowForwardedInvite}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowForwardedInvite}
 						inputName={'zimbraPrefCalendarAllowForwardedInvite'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarAllowForwardedInvite')}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefCalendarAllowPublishMethodInvite}
+						subValue={accountDetail?.zimbraPrefCalendarAllowPublishMethodInvite}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.add_invites_with_publish_method',
 							`Add invites with PUBLISH method`
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefCalendarAllowPublishMethodInvite}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarAllowPublishMethodInvite}
+						inheritedValue={cosDetail.zimbraPrefCalendarAllowPublishMethodInvite}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowPublishMethodInvite}
 						inputName={'zimbraPrefCalendarAllowPublishMethodInvite'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarAllowPublishMethodInvite')}
 					/>
@@ -869,30 +869,30 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefCalendarAutoAddInvites}
+						subValue={accountDetail?.zimbraPrefCalendarAutoAddInvites}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.add_appointments_when_invited',
 							'Automatically add appointments when the user is invited'
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefCalendarAutoAddInvites}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarAutoAddInvites}
+						inheritedValue={cosDetail.zimbraPrefCalendarAutoAddInvites}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarAutoAddInvites}
 						inputName={'zimbraPrefCalendarAutoAddInvites'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarAutoAddInvites')}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefCalendarSendInviteDeniedAutoReply}
+						subValue={accountDetail?.zimbraPrefCalendarSendInviteDeniedAutoReply}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.auto_decline_if_inviter_is_blacklisted',
 							`Auto-decline if the sender is blacklisted`
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefCalendarSendInviteDeniedAutoReply}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarSendInviteDeniedAutoReply}
+						inheritedValue={cosDetail.zimbraPrefCalendarSendInviteDeniedAutoReply}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarSendInviteDeniedAutoReply}
 						inputName={'zimbraPrefCalendarSendInviteDeniedAutoReply'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarSendInviteDeniedAutoReply')}
 					/>
@@ -905,30 +905,30 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			>
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefCalendarNotifyDelegatedChanges}
+						subValue={accountDetail?.zimbraPrefCalendarNotifyDelegatedChanges}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.notify_changes_by_delegated_access',
 							`Notify changes made by delegated accounts`
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefCalendarNotifyDelegatedChanges}
-						fromAccount={accSpecificDetail?.zimbraPrefCalendarNotifyDelegatedChanges}
+						inheritedValue={cosDetail.zimbraPrefCalendarNotifyDelegatedChanges}
+						fromSubValue={accSpecificDetail?.zimbraPrefCalendarNotifyDelegatedChanges}
 						inputName={'zimbraPrefCalendarNotifyDelegatedChanges'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarNotifyDelegatedChanges')}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
-						accountValue={accountDetail?.zimbraPrefAppleIcalDelegationEnabled}
+						subValue={accountDetail?.zimbraPrefAppleIcalDelegationEnabled}
 						onChange={changeSwitchOption}
 						label={t(
 							'account_details.use_ical_delegation_model_for_shared_calendars',
 							'Use iCal delegation model for shared calendars'
 						)}
 						iconColor="primary"
-						cosValue={cosDetail.zimbraPrefAppleIcalDelegationEnabled}
-						fromAccount={accSpecificDetail?.zimbraPrefAppleIcalDelegationEnabled}
+						inheritedValue={cosDetail.zimbraPrefAppleIcalDelegationEnabled}
+						fromSubValue={accSpecificDetail?.zimbraPrefAppleIcalDelegationEnabled}
 						inputName={'zimbraPrefAppleIcalDelegationEnabled'}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefAppleIcalDelegationEnabled')}
 					/>

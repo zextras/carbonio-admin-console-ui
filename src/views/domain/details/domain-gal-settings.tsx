@@ -921,7 +921,7 @@ const DomainGalSettings: FC = () => {
 		(id: string): void => {
 			flushCache('all').then((result) => {
 				if (result) {
-					getDomainInformation(id).then((data) => {
+					getDomainInformation(id, 1).then((data) => {
 						const domainList = data?.domain[0];
 						if (domainList) {
 							setDomain(domainList);

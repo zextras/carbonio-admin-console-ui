@@ -24,9 +24,6 @@ import QRCode from 'qrcode.react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import InheritedInput from './inherited-components/inherited-input';
-import InheritedSelect from './inherited-components/inherited-select';
-import InheritedSwitch from './inherited-components/inherited-switch';
 import { ServicesPassphrase } from './services-passphrase';
 import logo from '../../../../../assets/gardian.svg';
 import { DISABLED, ENABLED } from '../../../../../constants';
@@ -40,6 +37,9 @@ import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
 import ListRow from '../../../../list/list-row';
+import InheritedInput from '../../../../utility/inherited-components/inherited-input';
+import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
+import InheritedSwitch from '../../../../utility/inherited-components/inherited-switch';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { emailContent } from '../create-account/email-content';
@@ -425,7 +425,7 @@ const EditAccountSecuritySection: FC = () => {
 
 	const setEmptyValue = useCallback(
 		(keyName) => {
-			setAccountDetail((prev: any) => ({ ...prev, [keyName]: '' }));
+			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
 		},
 		[setAccountDetail]
 	);
@@ -683,15 +683,15 @@ const EditAccountSecuritySection: FC = () => {
 								<ListRow>
 									<Container crossAlignment="flex-start">
 										<InheritedSwitch
-											accountValue={accountDetail?.zimbraPasswordLocked}
+											subValue={accountDetail?.zimbraPasswordLocked}
 											onChange={changeSwitchOption}
 											label={t(
 												'cos.prevent_user_from_changing_password',
 												'Prevent user from changing password'
 											)}
 											iconColor="primary"
-											cosValue={cosDetail.zimbraPasswordLocked}
-											fromAccount={accSpecificDetail?.zimbraPasswordLocked}
+											inheritedValue={cosDetail.zimbraPasswordLocked}
+											fromSubValue={accSpecificDetail?.zimbraPasswordLocked}
 											inputName={'zimbraPasswordLocked'}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordLocked')}
 										/>
@@ -710,9 +710,9 @@ const EditAccountSecuritySection: FC = () => {
 									<Container padding={{ right: 'small' }}>
 										<InheritedInput
 											label={t('cos.minimum_password_length', 'Minimum password length')}
-											accountValue={accountDetail.zimbraPasswordMinLength}
-											cosValue={cosDetail.zimbraPasswordMinLength}
-											fromAccount={accSpecificDetail?.zimbraPasswordMinLength}
+											subValue={accountDetail.zimbraPasswordMinLength}
+											inheritedValue={cosDetail.zimbraPasswordMinLength}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMinLength}
 											background="gray5"
 											inputName="zimbraPasswordMinLength"
 											onChange={changeValue}
@@ -722,9 +722,9 @@ const EditAccountSecuritySection: FC = () => {
 									<Container padding={{ left: 'small' }}>
 										<InheritedInput
 											label={t('cos.maximum_password_length', 'Maximum password length')}
-											accountValue={accountDetail.zimbraPasswordMaxLength}
-											cosValue={cosDetail.zimbraPasswordMaxLength}
-											fromAccount={accSpecificDetail?.zimbraPasswordMaxLength}
+											subValue={accountDetail.zimbraPasswordMaxLength}
+											inheritedValue={cosDetail.zimbraPasswordMaxLength}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMaxLength}
 											background="gray5"
 											inputName="zimbraPasswordMaxLength"
 											onChange={changeValue}
@@ -748,9 +748,9 @@ const EditAccountSecuritySection: FC = () => {
 												'cos.minimum_upper_case_characters',
 												'Minimum upper case characters'
 											)}
-											accountValue={accountDetail.zimbraPasswordMinUpperCaseChars}
-											cosValue={cosDetail.zimbraPasswordMinUpperCaseChars}
-											fromAccount={accSpecificDetail?.zimbraPasswordMinUpperCaseChars}
+											subValue={accountDetail.zimbraPasswordMinUpperCaseChars}
+											inheritedValue={cosDetail.zimbraPasswordMinUpperCaseChars}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMinUpperCaseChars}
 											background="gray5"
 											inputName="zimbraPasswordMinUpperCaseChars"
 											onChange={changeValue}
@@ -763,9 +763,9 @@ const EditAccountSecuritySection: FC = () => {
 												'cos.minimum_lower_case_characters',
 												'Minimum lower case characters'
 											)}
-											accountValue={accountDetail.zimbraPasswordMinLowerCaseChars}
-											cosValue={cosDetail.zimbraPasswordMinLowerCaseChars}
-											fromAccount={accSpecificDetail?.zimbraPasswordMinLowerCaseChars}
+											subValue={accountDetail.zimbraPasswordMinLowerCaseChars}
+											inheritedValue={cosDetail.zimbraPasswordMinLowerCaseChars}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMinLowerCaseChars}
 											background="gray5"
 											inputName="zimbraPasswordMinLowerCaseChars"
 											onChange={changeValue}
@@ -786,9 +786,9 @@ const EditAccountSecuritySection: FC = () => {
 									<Container padding={{ right: 'small' }}>
 										<InheritedInput
 											label={t('cos.minimum_punctuation_symbols', 'Minimum punctuation symbols')}
-											accountValue={accountDetail.zimbraPasswordMinPunctuationChars}
-											cosValue={cosDetail.zimbraPasswordMinPunctuationChars}
-											fromAccount={accSpecificDetail?.zimbraPasswordMinPunctuationChars}
+											subValue={accountDetail.zimbraPasswordMinPunctuationChars}
+											inheritedValue={cosDetail.zimbraPasswordMinPunctuationChars}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMinPunctuationChars}
 											background="gray5"
 											inputName="zimbraPasswordMinPunctuationChars"
 											onChange={changeValue}
@@ -798,9 +798,9 @@ const EditAccountSecuritySection: FC = () => {
 									<Container padding={{ left: 'small' }}>
 										<InheritedInput
 											label={t('cos.minimum_numeric_chracters', 'Minimum numeric characters')}
-											accountValue={accountDetail.zimbraPasswordMinNumericChars}
-											cosValue={cosDetail.zimbraPasswordMinNumericChars}
-											fromAccount={accSpecificDetail?.zimbraPasswordMinNumericChars}
+											subValue={accountDetail.zimbraPasswordMinNumericChars}
+											inheritedValue={cosDetail.zimbraPasswordMinNumericChars}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMinNumericChars}
 											background="gray5"
 											inputName="zimbraPasswordMinNumericChars"
 											onChange={changeValue}
@@ -821,9 +821,9 @@ const EditAccountSecuritySection: FC = () => {
 									<Container padding={{ right: 'small' }}>
 										<InheritedInput
 											label={t('cos.minimum_password_age', 'Minimum password age (Days)')}
-											accountValue={accountDetail.zimbraPasswordMinAge}
-											cosValue={cosDetail.zimbraPasswordMinAge}
-											fromAccount={accSpecificDetail?.zimbraPasswordMinAge}
+											subValue={accountDetail.zimbraPasswordMinAge}
+											inheritedValue={cosDetail.zimbraPasswordMinAge}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMinAge}
 											background="gray5"
 											inputName="zimbraPasswordMinAge"
 											onChange={changeValue}
@@ -833,9 +833,9 @@ const EditAccountSecuritySection: FC = () => {
 									<Container padding={{ left: 'small' }}>
 										<InheritedInput
 											label={t('cos.maximum_password_age', 'Maximum password age (Days)')}
-											accountValue={accountDetail.zimbraPasswordMaxAge}
-											cosValue={cosDetail.zimbraPasswordMaxAge}
-											fromAccount={accSpecificDetail?.zimbraPasswordMaxAge}
+											subValue={accountDetail.zimbraPasswordMaxAge}
+											inheritedValue={cosDetail.zimbraPasswordMaxAge}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMaxAge}
 											background="gray5"
 											inputName="zimbraPasswordMaxAge"
 											onChange={changeValue}
@@ -859,9 +859,9 @@ const EditAccountSecuritySection: FC = () => {
 												'cos.minimum_numeric_characters_or_punctuation_symbols',
 												'Minimum numeric characters or punctuation symbols'
 											)}
-											accountValue={accountDetail.zimbraPasswordMinDigitsOrPuncs}
-											cosValue={cosDetail.zimbraPasswordMinDigitsOrPuncs}
-											fromAccount={accSpecificDetail?.zimbraPasswordMinDigitsOrPuncs}
+											subValue={accountDetail.zimbraPasswordMinDigitsOrPuncs}
+											inheritedValue={cosDetail.zimbraPasswordMinDigitsOrPuncs}
+											fromSubValue={accSpecificDetail?.zimbraPasswordMinDigitsOrPuncs}
 											background="gray5"
 											inputName="zimbraPasswordMinDigitsOrPuncs"
 											onChange={changeValue}
@@ -874,9 +874,9 @@ const EditAccountSecuritySection: FC = () => {
 												'cos.minimum_number_of_unique_password_history',
 												'Minimum number of unique passwords history'
 											)}
-											accountValue={accountDetail.zimbraPasswordEnforceHistory}
-											cosValue={cosDetail.zimbraPasswordEnforceHistory}
-											fromAccount={accSpecificDetail?.zimbraPasswordEnforceHistory}
+											subValue={accountDetail.zimbraPasswordEnforceHistory}
+											inheritedValue={cosDetail.zimbraPasswordEnforceHistory}
+											fromSubValue={accSpecificDetail?.zimbraPasswordEnforceHistory}
 											background="gray5"
 											inputName="zimbraPasswordEnforceHistory"
 											onChange={changeValue}
@@ -891,12 +891,12 @@ const EditAccountSecuritySection: FC = () => {
 								<ListRow>
 									<Container crossAlignment="flex-start" padding={{ top: 'large' }}>
 										<InheritedSwitch
-											accountValue={accountDetail?.zimbraPasswordBlockCommonEnabled}
+											subValue={accountDetail?.zimbraPasswordBlockCommonEnabled}
 											onChange={changeSwitchOption}
 											label={t('cos.reject_common_passwords', 'Reject common passwords')}
 											iconColor="primary"
-											cosValue={cosDetail.zimbraPasswordBlockCommonEnabled}
-											fromAccount={accSpecificDetail?.zimbraPasswordBlockCommonEnabled}
+											inheritedValue={cosDetail.zimbraPasswordBlockCommonEnabled}
+											fromSubValue={accSpecificDetail?.zimbraPasswordBlockCommonEnabled}
 											inputName={'zimbraPasswordBlockCommonEnabled'}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordBlockCommonEnabled')}
 										/>
@@ -991,12 +991,12 @@ const EditAccountSecuritySection: FC = () => {
 								<ListRow>
 									<Container crossAlignment="flex-start">
 										<InheritedSwitch
-											accountValue={accountDetail?.zimbraPasswordLockoutEnabled}
+											subValue={accountDetail?.zimbraPasswordLockoutEnabled}
 											onChange={changeSwitchOption}
 											label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
 											iconColor="primary"
-											cosValue={cosDetail.zimbraPasswordLockoutEnabled}
-											fromAccount={accSpecificDetail?.zimbraPasswordLockoutEnabled}
+											inheritedValue={cosDetail.zimbraPasswordLockoutEnabled}
+											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutEnabled}
 											inputName={'zimbraPasswordLockoutEnabled'}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutEnabled')}
 										/>
@@ -1018,9 +1018,9 @@ const EditAccountSecuritySection: FC = () => {
 												'cos.number_of_consecutive_failed_login_allowed',
 												'Number of consecutive failed logins allowed'
 											)}
-											accountValue={accountDetail.zimbraPasswordLockoutMaxFailures}
-											cosValue={cosDetail.zimbraPasswordLockoutMaxFailures}
-											fromAccount={accSpecificDetail?.zimbraPasswordLockoutMaxFailures}
+											subValue={accountDetail.zimbraPasswordLockoutMaxFailures}
+											inheritedValue={cosDetail.zimbraPasswordLockoutMaxFailures}
+											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutMaxFailures}
 											background="gray5"
 											inputName="zimbraPasswordLockoutMaxFailures"
 											onChange={changeValue}
@@ -1042,9 +1042,9 @@ const EditAccountSecuritySection: FC = () => {
 									<Container width="75%" padding={{ right: 'small' }}>
 										<InheritedInput
 											label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-											accountValue={accountDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
-											cosValue={cosDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
-											fromAccount={accSpecificDetail?.zimbraPasswordLockoutDuration}
+											subValue={accountDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
+											inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
+											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutDuration}
 											background="gray5"
 											inputName="zimbraPasswordLockoutDuration"
 											onChange={onZimbraPasswordLockoutDurationNumChange}
@@ -1056,9 +1056,9 @@ const EditAccountSecuritySection: FC = () => {
 										<InheritedSelect
 											label={t('cos.time_range', 'Time Range')}
 											items={timeItems}
-											accountValue={accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || ''}
-											cosValue={cosDetail.zimbraPasswordLockoutDuration?.slice(-1) || ''}
-											fromAccount={accSpecificDetail?.zimbraPasswordLockoutDuration}
+											subValue={accountDetail?.zimbraPasswordLockoutDuration?.slice(-1) || ''}
+											inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(-1) || ''}
+											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutDuration}
 											background="gray5"
 											selectName="zimbraPasswordLockoutDuration"
 											onChange={onZimbraPasswordLockoutDurationTypeChange}
@@ -1083,12 +1083,10 @@ const EditAccountSecuritySection: FC = () => {
 												'cos.time_window_failed_logins_must_occur_to_lock_account',
 												'Time window in which the failed logins must occur to lock the account:'
 											)}
-											accountValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(
-												0,
-												-1
-											)}
-											cosValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
-											fromAccount={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
+											subValue={accountDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
+											// eslint-disable-next-line max-len
+											inheritedValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
+											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
 											background="gray5"
 											inputName="zimbraPasswordLockoutFailureLifetime"
 											onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
@@ -1102,11 +1100,13 @@ const EditAccountSecuritySection: FC = () => {
 										<InheritedSelect
 											label={t('cos.time_range', 'Time Range')}
 											items={timeItems}
-											accountValue={
+											subValue={
 												accountDetail?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
 											}
-											cosValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''}
-											fromAccount={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
+											inheritedValue={
+												cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
+											}
+											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
 											background="gray5"
 											selectName="zimbraPasswordLockoutFailureLifetime"
 											onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}

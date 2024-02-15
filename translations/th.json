@@ -340,7 +340,7 @@
         "administration_rights": "สิทธิในการบริหาร"
     },
     "label": {
-        "account": "บัญชีผู้ใช้",
+        "account": "บัญชี",
         "accounts": "บัญชีผู้ใช้",
         "active": "ใช้งาน",
         "add": "เพิ่ม",
@@ -692,7 +692,7 @@
         "destination_account": "บัญชีปลายทาง",
         "disable": "ปิดการใช้งาน",
         "do_you_need_more_information": "คุณต้องการข้อมูลเพิ่มเติมหรือไม่?",
-        "domain": "โดเมน",
+        "domain": "Domain",
         "edit_button": "แก้ไข",
         "enable": "เปิดการใช้งาน",
         "enable_compression": "เปิดใช้งานการบีบอัดข้อมูล",
@@ -1809,7 +1809,7 @@
         "view_mail_as_html": "ดูอีเมลเป็น HTML",
         "activesync_remote_access": "การเข้าถึงระยะไกล ActiveSync",
         "Chats": "Chats",
-        "domain": "โดเมน",
+        "domain": "Domain",
         "files": "Drive",
         "aliases": "นามแฝง",
         "allow_user_check_minimum_interval": "อนุญาตให้ผู้ใช้เปลี่ยนช่วงเวลาการตรวจสอบขั้นต่ำ",

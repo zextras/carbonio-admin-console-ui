@@ -8,8 +8,12 @@ import React, { FC, SVGProps, useCallback, useEffect, useMemo, useRef, useState 
 import { Text, Container, Select, Row, Icon, Checkbox } from '@zextras/carbonio-design-system';
 import { isEmpty } from 'lodash';
 
+import ChevronSortEmptyOutline from '../../../icons/outline/ChevronSortEmptyOutline';
+
 export type IconComponent = (props: SVGProps<SVGSVGElement>) => JSX.Element;
 
+const ASC = 'asc';
+const DESC = 'desc';
 export interface ThemeObj {
 	icons: Record<string, IconComponent>;
 }
@@ -30,8 +34,9 @@ type THeader = {
 	bold?: boolean;
 	items?: any;
 	onChange: () => void;
+	onSortChange: (id: string, order: typeof ASC | typeof DESC) => void;
+	sortable?: boolean;
 };
-
 interface THeaderProps {
 	headers: THeader[];
 	onChange: () => void;
@@ -60,6 +65,37 @@ const CustomHeaderFactory: FC<any> = ({
 }): JSX.Element => {
 	const trRef = useRef<HTMLTableRowElement>(null);
 	const [showCkb, setShowCkb] = useState(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+
+	const handleSortChange = useCallback(
+		(id: string) => {
+			const newOrder = id === sortedColumn && sortOrder === ASC ? DESC : ASC;
+			setSortedColumn(id);
+			setSortOrder(newOrder);
+			headers.forEach((header: any) => {
+				if (header.id === id) {
+					header.onSortChange(id, newOrder);
+				}
+			});
+		},
+		[headers, sortedColumn, sortOrder]
+	);
+
+	const renderSortingIcon = useCallback(
+		(column: THeader) => {
+			if (column.id === sortedColumn) {
+				return sortOrder === ASC ? (
+					<Icon icon="ChevronSortUpOutline" size="large" />
+				) : (
+					<Icon icon="ChevronSortDownOutline" size="large" />
+				);
+			}
+			return <Icon icon={ChevronSortEmptyOutline} size="large" />;
+		},
+		[sortedColumn, sortOrder]
+	);
+
 	const LabelFactory = useCallback(
 		({ label, open, focus, bold, size }: any) => (
 			<Container
@@ -129,11 +165,13 @@ const CustomHeaderFactory: FC<any> = ({
 		() =>
 			headers.map((column: any) => {
 				const hasItems = !isEmpty(column.items);
+				const isSortable = column.sortable === true;
 				return (
 					<th
 						key={column.id}
 						align={column.align || 'left'}
 						style={{ width: column?.width, height: '2.625rem' }}
+						onClick={isSortable ? (): void => handleSortChange(column.id) : undefined}
 					>
 						{hasItems && (
 							<Container width="4rem">
@@ -155,13 +193,18 @@ const CustomHeaderFactory: FC<any> = ({
 						)}
 						{!hasItems && (
 							<Text weight={column.bold ? 'bold' : 'regular'} size="small">
-								{column.label}
+								<Container orientation="horizontal" mainAlignment="flex-start">
+									<Row style={{ cursor: isSortable ? 'pointer' : 'default' }}>
+										{column.label}
+										{isSortable && renderSortingIcon(column)}
+									</Row>
+								</Container>
 							</Text>
 						)}
 					</th>
 				);
 			}),
-		[headers, LabelFactory]
+		[headers, renderSortingIcon, handleSortChange, LabelFactory]
 	);
 	return (
 		<tr ref={trRef} style={{ height: '3rem' }}>
