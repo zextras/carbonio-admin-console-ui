@@ -790,6 +790,7 @@ const MTAPostScreenTuning: FC = () => {
 							marginTop: '0.938rem',
 							marginBottom: '0.938rem'
 						}}
+						height="auto"
 					>
 						<Container
 							crossAlignment="flex-start"
