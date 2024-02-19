@@ -61,8 +61,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 		() => [
 			{
 				label: t('account_details.as_new_mail_arrives', 'As New Mail Arrives'),
-				value: '',
-				disabled: true
+				value: '500'
 			},
 			// eslint-disable-next-line sonarjs/no-duplicate-string
 			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
