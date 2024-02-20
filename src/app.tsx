@@ -52,6 +52,16 @@ import {
 	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
+	PRIMARY_BAR_BACKUP,
+	PRIMARY_BAR_COS,
+	PRIMARY_BAR_DASHBOARD,
+	PRIMARY_BAR_DOMAINS,
+	PRIMARY_BAR_MTA,
+	PRIMARY_BAR_NOTIFICATIONS,
+	PRIMARY_BAR_OPERATIONS,
+	PRIMARY_BAR_PRIVACY,
+	PRIMARY_BAR_STORAGE,
+	PRIMARY_BAR_SUBSCRIPTIONS,
 	PRIVACY_ROUTE_ID,
 	SERVER,
 	SERVICES_ROUTE_ID,
@@ -560,7 +570,8 @@ const App: FC = () => {
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			tooltip: HomeTooltipView
+			tooltip: HomeTooltipView,
+			trackerLabel: PRIMARY_BAR_DASHBOARD
 		});
 
 		addRoute({
@@ -573,7 +584,8 @@ const App: FC = () => {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			primarybarSection: { ...managementSection },
-			tooltip: DomainTooltipView
+			tooltip: DomainTooltipView,
+			trackerLabel: PRIMARY_BAR_DOMAINS
 		});
 
 		if (hasListServerRights) {
@@ -587,7 +599,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...managementSection },
-				tooltip: StorageTooltipView
+				tooltip: StorageTooltipView,
+				trackerLabel: PRIMARY_BAR_STORAGE
 			});
 		}
 
@@ -602,7 +615,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...managementSection },
-				tooltip: CosTooltipView
+				tooltip: CosTooltipView,
+				trackerLabel: PRIMARY_BAR_COS
 			});
 		} else {
 			removeRoute(COS_ROUTE_ID);
@@ -620,7 +634,8 @@ const App: FC = () => {
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
 					primarybarSection: { ...managementSection },
-					tooltip: SubscriptionTooltipView
+					tooltip: SubscriptionTooltipView,
+					trackerLabel: PRIMARY_BAR_SUBSCRIPTIONS
 				});
 			} else {
 				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
@@ -638,7 +653,8 @@ const App: FC = () => {
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
 					primarybarSection: { ...servicesSection },
-					tooltip: BackupTooltipView
+					tooltip: BackupTooltipView,
+					trackerLabel: PRIMARY_BAR_BACKUP
 				});
 			} else {
 				removeRoute(BACKUP_ROUTE_ID);
@@ -654,7 +670,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...logAndQueuesSection },
-				tooltip: NotificationTooltipView
+				tooltip: NotificationTooltipView,
+				trackerLabel: PRIMARY_BAR_NOTIFICATIONS
 			});
 
 			addRoute({
@@ -667,7 +684,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...logAndQueuesSection },
-				tooltip: OperationTooltipView
+				tooltip: OperationTooltipView,
+				trackerLabel: PRIMARY_BAR_OPERATIONS
 			});
 		}
 		if (hasConfigRights) {
@@ -681,7 +699,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...logAndQueuesSection },
-				tooltip: MTATooltipView
+				tooltip: MTATooltipView,
+				trackerLabel: PRIMARY_BAR_MTA
 			});
 		} else {
 			removeRoute(MTA_ROUTE_ID);
@@ -697,7 +716,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...managementSection },
-				tooltip: PrivacyTooltipView
+				tooltip: PrivacyTooltipView,
+				trackerLabel: PRIMARY_BAR_PRIVACY
 			});
 		} else {
 			removeRoute(PRIVACY_ROUTE_ID);
