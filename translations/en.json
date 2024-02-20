@@ -1828,7 +1828,6 @@
         "userName": "username (Auto-fill)",
         "userName_auto_fill": "username (Auto-fill)",
         "user_agent": "User Agent",
-        "user_can_ask_for_forgotten_password_token": "User can ask for a forgotten password token",
         "user_auto_fill": "user (Auto-fill)",
         "user_can_ask_for_forgotten_password_token": "User can ask for a forgotten password token",
         "user_cannot_perform_the_action": "User cannot perform the action",
