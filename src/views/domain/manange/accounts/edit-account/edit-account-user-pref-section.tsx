@@ -60,9 +60,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 	const POLLING_INTERVAL = useMemo(
 		() => [
 			{
-				label: t('account_details.as_new_mail_arrives', 'As New Mail Arrives'),
-				value: '',
-				disabled: true
+				label: t('account_details.manuallly', 'Manually'),
+				value: '31536000'
+			},
+			{
+				label: t('account_details.as_new_email_arrives', 'As new e-mail arrives'),
+				value: '500'
 			},
 			// eslint-disable-next-line sonarjs/no-duplicate-string
 			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
@@ -74,13 +77,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			{ label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
 			{ label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
 			{ label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
-			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
-			{
-				label: t('account_details.manuallly', 'Manually'),
-				value: accountDetail.zimbraPrefMailPollingInterval
-			}
+			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' }
 		],
-		[accountDetail.zimbraPrefMailPollingInterval, t]
+		[t]
 	);
 	const TIME_TYPES = useMemo(
 		() => [
