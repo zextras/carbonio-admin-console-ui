@@ -199,7 +199,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
 									</Text>
 								</Container>,
@@ -212,7 +212,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.name}
 									</Text>
 								</Container>,
@@ -225,7 +225,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
 									</Text>
 								</Container>,
@@ -238,7 +238,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
 											? moment(
 													item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content,
@@ -256,7 +256,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'description')?._content}
 									</Text>
 								</Container>
