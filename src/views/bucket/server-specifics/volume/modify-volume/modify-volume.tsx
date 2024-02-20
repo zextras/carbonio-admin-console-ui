@@ -174,6 +174,15 @@ const ModifyVolume: FC<{
 	const onSave = async (): Promise<void> => {
 		setIsLoading(true);
 		if (isAdvanced) {
+			if (type) {
+				if (type?.value === 1) {
+					type.label = 'primary';
+				} else if (type?.value === 2) {
+					type.label = 'secondary';
+				} else if (type?.value === 10) {
+					type.label = 'index';
+				}
+			}
 			const obj: { [key: string]: string | boolean | number | undefined } = {};
 			// eslint-disable-next-line sonarjs/no-duplicate-string
 			obj._jsns = 'urn:zimbraAdmin';
@@ -245,6 +254,7 @@ const ModifyVolume: FC<{
 				.then((res) => {
 					const result = JSON.parse(res?.Body?.response?.content);
 					const updateResponse = result?.response?.[selectedServerName];
+
 					if (updateResponse?.ok) {
 						createSnackbar({
 							key: '1',
