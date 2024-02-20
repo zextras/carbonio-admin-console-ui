@@ -355,7 +355,10 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSwitch
 						subValue={accountDetail?.zimbraPrefMailToasterEnabled}
 						onChange={changeSwitchOption}
-						label={t('account_details.enable_toast_for_new_emails', `Enable toast for new emails`)}
+						label={t(
+							'account_details.enable_new_mail_toast_notification',
+							`Enable New Mail Toast Notification`
+						)}
 						iconColor="primary"
 						inheritedValue={cosDetail.zimbraPrefMailToasterEnabled}
 						fromSubValue={accSpecificDetail?.zimbraPrefMailToasterEnabled}
@@ -443,8 +446,8 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						subValue={accountDetail?.zimbraPrefNewMailNotificationEnabled}
 						onChange={changeSwitchOption}
 						label={t(
-							'account_details.enable_address_for_new_email_notifications',
-							`Enable address for new email notifications`
+							'account_details.enable_new_mail_notifications',
+							`Enable New Mail Notifications`
 						)}
 						iconColor="primary"
 						inheritedValue={cosDetail.zimbraPrefNewMailNotificationEnabled}
