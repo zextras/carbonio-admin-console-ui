@@ -736,7 +736,7 @@ const MTAAdvanced: FC = () => {
 						/>
 					</Container>
 
-					<Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
+					<Container crossAlignment="flex-start" padding={{ left: 'medium' }} height="auto">
 						<Input
 							label={t(
 								'mta.reject_concurrent_milter_connection_above',
@@ -752,7 +752,7 @@ const MTAAdvanced: FC = () => {
 					</Container>
 				</Container>
 
-				<Container crossAlignment="flex-start" padding={{ bottom: 'large' }}>
+				<Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
 					<Input
 						label={t('mta.smtpd_sender_login_maps', 'Smtpd sender login maps')}
 						backgroundColor="gray5"
