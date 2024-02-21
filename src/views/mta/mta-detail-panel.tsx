@@ -25,6 +25,9 @@ const MTADetailPanel: FC = () => {
 				<Route exact path={`${path}/:operation`}>
 					<MTADetailOperationPanel />
 				</Route>
+				<Route exact path={`${path}/:server/:operation`}>
+					<MTADetailOperationPanel />
+				</Route>
 			</Switch>
 		</Container>
 	);
