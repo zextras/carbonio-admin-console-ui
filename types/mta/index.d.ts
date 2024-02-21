@@ -138,6 +138,4 @@ export type MtaServerGeneral = {
 	zimbraAmavisSALogLevel: string;
 	zimbraMtaSmtpdTlsLoglevel: string;
 	zimbraMtaLmtpTlsLoglevel: string;
-	zimbraSpamTagPercent: string;
-	zimbraSpamKillPercent: string;
 };

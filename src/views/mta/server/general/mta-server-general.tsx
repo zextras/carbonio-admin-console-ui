@@ -39,9 +39,7 @@ import {
 	ZIMBRA_MTA_RELAY_HOST,
 	ZIMBRA_MTA_SASL_AUTH_ENABLED,
 	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-	ZIMBRA_MTA_TLS_SECURITY_LEVEL,
-	ZIMBRA_SPAM_KILL_PERCENT,
-	ZIMBRA_SPAM_TAG_PERCENT
+	ZIMBRA_MTA_TLS_SECURITY_LEVEL
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
@@ -255,16 +253,6 @@ const MTAServerGeneral: FC = () => {
 				setInitialAndCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
 			}
 
-			// const zimbraMtaTlsSecurityLevel = serverAttributes.find(
-			// 	(item: Record<string, string>) => item?.n === ZIMBRA_MTA_TLS_SECURITY_LEVEL
-			// );
-			// if (zimbraMtaTlsSecurityLevel && zimbraMtaTlsSecurityLevel?._content) {
-			// 	setInitialAndCurrentValue(
-			// 		ZIMBRA_MTA_TLS_SECURITY_LEVEL,
-			// 		zimbraMtaTlsSecurityLevel?._content
-			// 	);
-			// }
-
 			const zimbraAmavisOriginatingBypassSA = serverAttributes.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
 			);
@@ -331,22 +319,6 @@ const MTAServerGeneral: FC = () => {
 					ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
 					zimbraMtaLmtpTlsLoglevel?._content
 				);
-			}
-
-			const zimbraSpamTagPercent = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_SPAM_TAG_PERCENT
-			);
-
-			if (zimbraSpamTagPercent && zimbraSpamTagPercent?._content) {
-				setInitialAndCurrentValue(ZIMBRA_SPAM_TAG_PERCENT, zimbraSpamTagPercent?._content);
-			}
-
-			const zimbraSpamKillPercent = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_SPAM_KILL_PERCENT
-			);
-
-			if (zimbraSpamKillPercent && zimbraSpamKillPercent?._content) {
-				setInitialAndCurrentValue(ZIMBRA_SPAM_KILL_PERCENT, zimbraSpamKillPercent?._content);
 			}
 		}
 	}, [serverAttributes, setInitialAndCurrentValue]);
@@ -503,18 +475,6 @@ const MTAServerGeneral: FC = () => {
 				_content: mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel
 			});
 		}
-		// if (mtaServerGeneralDetail?.zimbraSpamTagPercent) {
-		// 	attributes.push({
-		// 		n: ZIMBRA_SPAM_TAG_PERCENT,
-		// 		_content: mtaServerGeneralDetail?.zimbraSpamTagPercent
-		// 	});
-		// }
-		// if (mtaServerGeneralDetail?.zimbraSpamKillPercent) {
-		// 	attributes.push({
-		// 		n: ZIMBRA_SPAM_KILL_PERCENT,
-		// 		_content: mtaServerGeneralDetail?.zimbraSpamKillPercent
-		// 	});
-		// }
 		modifyServerRequest(attributes);
 	}, [
 		modifyServerRequest,
@@ -579,20 +539,6 @@ const MTAServerGeneral: FC = () => {
 	const onTlsSecurityOptions = useCallback(
 		(v: string) => {
 			setValue(ZIMBRA_MTA_TLS_SECURITY_LEVEL, v);
-		},
-		[setValue]
-	);
-
-	const onSpamTagPercentChange = useCallback(
-		(v: string) => {
-			setValue(ZIMBRA_SPAM_TAG_PERCENT, v);
-		},
-		[setValue]
-	);
-
-	const onSpamKillPercentChange = useCallback(
-		(v: string) => {
-			setValue(ZIMBRA_SPAM_KILL_PERCENT, v);
 		},
 		[setValue]
 	);
@@ -753,47 +699,6 @@ const MTAServerGeneral: FC = () => {
 					<Text size="small" weight="bold" color="gray0">
 						{t('mta.antispam_and_antivirus', 'Antispam & Antivirus')}
 					</Text>
-				</Container>
-
-				<Container
-					orientation="horizontal"
-					mainAlignment="space-between"
-					crossAlignment="flex-start"
-					padding={{ bottom: 'extralarge' }}
-					height="auto"
-				>
-					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-						<Select
-							items={spamTagPercentOptions}
-							background="gray5"
-							label={t('mta.spam_to_junk_tolerance', 'Spam to Junk tolerance')}
-							showCheckbox={false}
-							selection={spamTagPercentOptions.find(
-								(item: Record<string, string>) =>
-									item.value === mtaServerGeneralDetail?.zimbraSpamTagPercent
-							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={onSpamTagPercentChange}
-							disabled={!allowSetMTA}
-						/>
-					</Container>
-					<Container crossAlignment="flex-start">
-						<Select
-							items={spamKillPercentOptions}
-							background="gray5"
-							label={t('mta.block_spam_tolerance', 'Block Spam tolerance')}
-							showCheckbox={false}
-							selection={spamKillPercentOptions.find(
-								(item: Record<string, string>) =>
-									item.value === mtaServerGeneralDetail?.zimbraSpamKillPercent
-							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
-							onChange={onSpamKillPercentChange}
-							disabled={!allowSetMTA}
-						/>
-					</Container>
 				</Container>
 
 				<Container
