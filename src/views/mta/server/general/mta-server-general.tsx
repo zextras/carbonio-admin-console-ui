@@ -23,7 +23,7 @@ import { find, isEqual, join, map, some, split, trim } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
-import { IpRangeValue, MtaServerGeneral } from '../../../../../types';
+import { CreateSnackbarType, IpRangeValue, MtaServerGeneral } from '../../../../../types';
 import {
 	CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
 	CONFIG,
@@ -38,8 +38,7 @@ import {
 	ZIMBRA_MTA_MY_NETWORKS,
 	ZIMBRA_MTA_RELAY_HOST,
 	ZIMBRA_MTA_SASL_AUTH_ENABLED,
-	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-	ZIMBRA_MTA_TLS_SECURITY_LEVEL
+	ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
@@ -52,14 +51,14 @@ import { validateIpAddress } from '../../../utility/utils';
 const MTAServerGeneral: FC = () => {
 	const [t] = useTranslation();
 	const { server }: { server: string } = useParams();
-	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [serverAttributes, setServerAttributes] = useState<{ n: string; _content: string }[]>([]);
 	const [mtaServerGeneralInitialDetail, setMtaServerGeneralInitialDetail] =
 		useState<MtaServerGeneral>();
 	const [mtaServerGeneralDetail, setMtaServerGeneralDetail] = useState<MtaServerGeneral>();
-	const [networkValue, setNetworkValue] = useState<any>([]);
+	const [networkValue, setNetworkValue] = useState<Array<any>>([]);
 	const mtaServerList = useServerStore((state) => state.mtaServerList);
 
 	const setValue = useCallback((key: string, value: unknown): void => {
@@ -173,48 +172,80 @@ const MTAServerGeneral: FC = () => {
 		[t]
 	);
 
-	const spamTagPercentOptions = useMemo(
-		() => [
-			{
-				label: t('mta.low', 'Low'),
-				value: '33'
-			},
-			{
-				label: t('mta.medium', 'Medium'),
-				value: '20'
-			},
-			{
-				label: t('mta.high', 'High'),
-				value: '16'
-			}
-		],
-		[t]
-	);
-
-	const spamKillPercentOptions = useMemo(
-		() => [
-			{
-				label: t('mta.low', 'Low'),
-				value: '90'
-			},
-			{
-				label: t('mta.medium', 'Medium'),
-				value: '75'
-			},
-			{
-				label: t('mta.high', 'High'),
-				value: '66'
-			}
-		],
-		[t]
-	);
-
 	const allowSetMTA = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const setMtaLoggingValues = useCallback(() => {
+		const zimbraAmavisLogLevel = serverAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL
+		);
+
+		if (zimbraAmavisLogLevel && zimbraAmavisLogLevel?._content) {
+			setInitialAndCurrentValue(ZIMBRA_AMAVIS_LOG_LEVEL, zimbraAmavisLogLevel?._content);
+		}
+
+		const zimbraAmavisSALogLevel = serverAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL
+		);
+
+		if (zimbraAmavisSALogLevel && zimbraAmavisSALogLevel?._content) {
+			setInitialAndCurrentValue(ZIMBRA_AMAVIS_SA_LOG_LEVEL, zimbraAmavisSALogLevel?._content);
+		}
+
+		const zimbraMtaSmtpdTlsLoglevel = serverAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL
+		);
+
+		if (zimbraMtaSmtpdTlsLoglevel && zimbraMtaSmtpdTlsLoglevel?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+				zimbraMtaSmtpdTlsLoglevel?._content
+			);
+		}
+
+		const zimbraMtaLmtpTlsLoglevel = serverAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL
+		);
+
+		if (zimbraMtaLmtpTlsLoglevel && zimbraMtaLmtpTlsLoglevel?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL, zimbraMtaLmtpTlsLoglevel?._content);
+		}
+	}, [serverAttributes, setInitialAndCurrentValue]);
+
+	const setMtaAntiVirusValues = useCallback(() => {
+		const zimbraAmavisOriginatingBypassSA = serverAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
+		);
+		if (zimbraAmavisOriginatingBypassSA && zimbraAmavisOriginatingBypassSA?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+				zimbraAmavisOriginatingBypassSA?._content === TRUE
+			);
+		}
+
+		const zimbraAmavisEnableDKIMVerification = serverAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION
+		);
+		if (zimbraAmavisEnableDKIMVerification && zimbraAmavisEnableDKIMVerification?._content) {
+			setInitialAndCurrentValue(
+				ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+				zimbraAmavisEnableDKIMVerification?._content === TRUE
+			);
+		}
+
+		const carbonioAmavisDisableVirusCheck = serverAttributes.find(
+			(item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
+		);
+		if (carbonioAmavisDisableVirusCheck && carbonioAmavisDisableVirusCheck?._content) {
+			setInitialAndCurrentValue(
+				CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+				carbonioAmavisDisableVirusCheck?._content === TRUE
+			);
+		}
+	}, [serverAttributes, setInitialAndCurrentValue]);
+
 	useEffect(() => {
 		if (serverAttributes.length > 0) {
 			const mtaAuthEnabled = serverAttributes.find(
@@ -252,76 +283,10 @@ const MTAServerGeneral: FC = () => {
 			if (mtaFallBackRelayHost && mtaFallBackRelayHost?._content) {
 				setInitialAndCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
 			}
-
-			const zimbraAmavisOriginatingBypassSA = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
-			);
-			if (zimbraAmavisOriginatingBypassSA && zimbraAmavisOriginatingBypassSA?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-					zimbraAmavisOriginatingBypassSA?._content === TRUE
-				);
-			}
-
-			const zimbraAmavisEnableDKIMVerification = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION
-			);
-			if (zimbraAmavisEnableDKIMVerification && zimbraAmavisEnableDKIMVerification?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-					zimbraAmavisEnableDKIMVerification?._content === TRUE
-				);
-			}
-
-			const carbonioAmavisDisableVirusCheck = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
-			);
-			if (carbonioAmavisDisableVirusCheck && carbonioAmavisDisableVirusCheck?._content) {
-				setInitialAndCurrentValue(
-					CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-					carbonioAmavisDisableVirusCheck?._content === TRUE
-				);
-			}
-
-			const zimbraAmavisLogLevel = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL
-			);
-
-			if (zimbraAmavisLogLevel && zimbraAmavisLogLevel?._content) {
-				setInitialAndCurrentValue(ZIMBRA_AMAVIS_LOG_LEVEL, zimbraAmavisLogLevel?._content);
-			}
-
-			const zimbraAmavisSALogLevel = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL
-			);
-
-			if (zimbraAmavisSALogLevel && zimbraAmavisSALogLevel?._content) {
-				setInitialAndCurrentValue(ZIMBRA_AMAVIS_SA_LOG_LEVEL, zimbraAmavisSALogLevel?._content);
-			}
-
-			const zimbraMtaSmtpdTlsLoglevel = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL
-			);
-
-			if (zimbraMtaSmtpdTlsLoglevel && zimbraMtaSmtpdTlsLoglevel?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-					zimbraMtaSmtpdTlsLoglevel?._content
-				);
-			}
-
-			const zimbraMtaLmtpTlsLoglevel = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL
-			);
-
-			if (zimbraMtaLmtpTlsLoglevel && zimbraMtaLmtpTlsLoglevel?._content) {
-				setInitialAndCurrentValue(
-					ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-					zimbraMtaLmtpTlsLoglevel?._content
-				);
-			}
+			setMtaAntiVirusValues();
+			setMtaLoggingValues();
 		}
-	}, [serverAttributes, setInitialAndCurrentValue]);
+	}, [serverAttributes, setInitialAndCurrentValue, setMtaAntiVirusValues, setMtaLoggingValues]);
 
 	useEffect(() => {
 		getServerInformationByName(server).then((data) => {
@@ -380,7 +345,7 @@ const MTAServerGeneral: FC = () => {
 	const modifyServerRequest = useCallback(
 		(attributes: Array<Record<string, string>>): void => {
 			const id = mtaServerList.find((serverItem) => serverItem?.name === server)?.id;
-			const body: any = {
+			const body: Record<string, unknown> = {
 				a: attributes,
 				_jsns: 'urn:zimbraAdmin',
 				id
@@ -419,7 +384,6 @@ const MTAServerGeneral: FC = () => {
 	);
 
 	const onSave = useCallback(() => {
-		// eslint-disable-next-line sonarjs/no-unused-collection
 		const attributes: Array<Record<string, string>> = [];
 		attributes.push({
 			n: CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
@@ -521,7 +485,7 @@ const MTAServerGeneral: FC = () => {
 
 	const onBlockExtensionChange = useCallback(
 		(ips) => {
-			const data: any = [];
+			const data: Array<unknown> = [];
 			map(ips, (ip: IpRangeValue) => {
 				validateIpAddress(ip.label ?? '') ? data.push(ip) : data.push({ ...ip, error: true });
 			});
@@ -532,15 +496,7 @@ const MTAServerGeneral: FC = () => {
 			}
 			setNetworkValue(data);
 		},
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		[setValue]
-	);
-
-	const onTlsSecurityOptions = useCallback(
-		(v: string) => {
-			setValue(ZIMBRA_MTA_TLS_SECURITY_LEVEL, v);
-		},
-		[setValue]
+		[allowSetMTA, setValue]
 	);
 
 	return (
