@@ -579,7 +579,7 @@ const App: FC = () => {
 		if (hasListServerRights) {
 			addRoute({
 				route: STORAGES_ROUTE_ID,
-				position: 3,
+				position: 4,
 				visible: true,
 				label: t('label.storage', 'Storage') || '',
 				primaryBar: 'HardDriveOutline',
@@ -607,12 +607,28 @@ const App: FC = () => {
 		} else {
 			removeRoute(COS_ROUTE_ID);
 		}
+		if (hasConfigRights) {
+			addRoute({
+				route: MTA_ROUTE_ID,
+				position: 3,
+				visible: true,
+				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
+				primaryBar: 'MailFolderOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: MTATooltipView
+			});
+		} else {
+			removeRoute(MTA_ROUTE_ID);
+		}
 
 		if (isAdvanced) {
 			if (hasConfigRights) {
 				addRoute({
 					route: SUBSCRIPTIONS_ROUTE_ID,
-					position: 4,
+					position: 5,
 					visible: true,
 					label: t('label.subscriptions', 'Subscriptions') || '',
 					primaryBar: 'AwardOutline',
@@ -672,24 +688,8 @@ const App: FC = () => {
 		}
 		if (hasConfigRights) {
 			addRoute({
-				route: MTA_ROUTE_ID,
-				position: 3,
-				visible: true,
-				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
-				primaryBar: 'MailFolderOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection },
-				tooltip: MTATooltipView
-			});
-		} else {
-			removeRoute(MTA_ROUTE_ID);
-		}
-		if (hasConfigRights) {
-			addRoute({
 				route: PRIVACY_ROUTE_ID,
-				position: 5,
+				position: 6,
 				visible: true,
 				label: t('label.privacy', 'Privacy') || '',
 				primaryBar: 'ShieldOutline',
