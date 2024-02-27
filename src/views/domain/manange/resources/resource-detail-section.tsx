@@ -39,11 +39,11 @@ const ResourceDetailSection: FC = () => {
 	const resourceTypeOptions: any[] = useMemo(
 		() => [
 			{
-				label: t('label.location', 'Location'),
+				label: t('label.meeting_room', 'Meeting Room'),
 				value: RESOURCE_TYPE.LOCATION
 			},
 			{
-				label: t('label.device', 'Device'),
+				label: t('label.equipment', 'Equipment'),
 				value: RESOURCE_TYPE.EQUIPMENT
 			}
 		],

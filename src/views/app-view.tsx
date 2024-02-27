@@ -151,6 +151,22 @@ const AppView: FC = () => {
 						</Container>
 					</Container>
 				</Route>
+				<Route path={`/${MANAGE_APP_ID}/${MTA_ROUTE_ID}`}>
+					<Container orientation="horizontal" mainAlignment="flex-start">
+						<Container style={{ maxWidth: '16.563rem' }}>
+							<Suspense fallback={<Spinner />}>
+								<MTAListPanel />
+							</Suspense>
+						</Container>
+						<Container style={{ maxWidth: '100%' }}>
+							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
+								<Suspense fallback={<Spinner />}>
+									<MTADetailPanel />
+								</Suspense>
+							</DetailViewContainer>
+						</Container>
+					</Container>
+				</Route>
 				<Route path={`/${MANAGE_APP_ID}/${SUBSCRIPTIONS_ROUTE_ID}`}>
 					<Container orientation="horizontal" mainAlignment="flex-start">
 						<Container style={{ maxWidth: '100%' }}>
@@ -210,22 +226,6 @@ const AppView: FC = () => {
 							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
 								<Suspense fallback={<Spinner />}>
 									<OperationsDetailPanel />
-								</Suspense>
-							</DetailViewContainer>
-						</Container>
-					</Container>
-				</Route>
-				<Route path={`/${LOG_AND_QUEUES}/${MTA_ROUTE_ID}`}>
-					<Container orientation="horizontal" mainAlignment="flex-start">
-						<Container style={{ maxWidth: '16.563rem' }}>
-							<Suspense fallback={<Spinner />}>
-								<MTAListPanel />
-							</Suspense>
-						</Container>
-						<Container style={{ maxWidth: '100%' }}>
-							<DetailViewContainer isPrimaryBarExpanded={isPrimaryBarExpanded}>
-								<Suspense fallback={<Spinner />}>
-									<MTADetailPanel />
 								</Suspense>
 							</DetailViewContainer>
 						</Container>

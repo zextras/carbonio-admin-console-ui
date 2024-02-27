@@ -727,7 +727,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						<Switch
 							value={accountDetail?.zimbraHideInGal === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraHideInGal')}
-							label={t('account_details.hide_in_gal', 'Hide in GAL')}
+							label={t('account_details.hidden_in_gal', 'Hidden in GAL')}
 							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
