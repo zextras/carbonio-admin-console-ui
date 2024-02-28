@@ -37,10 +37,13 @@ import {
 	CUSTOM_S3,
 	EMC,
 	FILEBLOB,
+	INDEX,
 	OPENIO,
+	PRIMARY,
 	PRIMARY_TYPE_VALUE,
 	S3,
 	SCALITYS3,
+	SECONDARY,
 	SECONDARY_TYPE_VALUE,
 	SWIFT,
 	UNUSED,
@@ -142,6 +145,12 @@ const ModifyVolume: FC<{
 		(state) => state
 	);
 	const { isSticky, setIsSticky } = useStickyBarStore();
+
+	const labelMap: Record<number | string, string> = {
+		1: PRIMARY,
+		2: SECONDARY,
+		10: INDEX
+	};
 	const onUnusedBucketListChange = (e: any): void => {
 		const selectedBucketDetail = isVolumeAllDetail?.filter(
 			(item: BucketVolume) => item?.uuid === e
@@ -175,13 +184,7 @@ const ModifyVolume: FC<{
 		setIsLoading(true);
 		if (isAdvanced) {
 			if (type) {
-				if (type?.value === 1) {
-					type.label = 'primary';
-				} else if (type?.value === 2) {
-					type.label = 'secondary';
-				} else if (type?.value === 10) {
-					type.label = 'index';
-				}
+				type.label = labelMap[type?.value];
 			}
 			const obj: { [key: string]: string | boolean | number | undefined } = {};
 			// eslint-disable-next-line sonarjs/no-duplicate-string
