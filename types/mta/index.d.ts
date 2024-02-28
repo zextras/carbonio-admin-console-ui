@@ -127,7 +127,7 @@ export type MtaMailQueue = {
 };
 
 export type MtaServerGeneral = {
-	zimbraMtaSaslAuthEnable: string;
+	zimbraMtaAuthEnabled: boolean;
 	zimbraMtaMyNetworks: string;
 	zimbraMtaRelayHost: string;
 	zimbraMtaFallbackRelayHost: string;
