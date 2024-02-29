@@ -403,7 +403,11 @@ const EditAccount: FC<{
 					});
 					return;
 				}
-				setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password);
+				setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password).then(() => {
+					if (isGlobalAdmin) {
+						flushCache('account', 'id', initAccountDetail?.zimbraId);
+					}
+				});
 				isPasswordChange = true;
 				remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
 			}
@@ -460,7 +464,11 @@ const EditAccount: FC<{
 			// eslint-disable-next-line array-callback-return
 			deleteAliasArr.forEach((aliasName) => {
 				deleteAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
-					.then()
+					.then(() => {
+						if (isGlobalAdmin) {
+							flushCache('account', 'id', initAccountDetail?.zimbraId);
+						}
+					})
 					.catch((error) => {
 						createSnackbar({
 							key: `error${aliasName}`,
@@ -479,7 +487,11 @@ const EditAccount: FC<{
 			// eslint-disable-next-line array-callback-return
 			addAliasArr.forEach((aliasName) => {
 				addAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
-					.then()
+					.then(() => {
+						if (isGlobalAdmin) {
+							flushCache('account', 'id', initAccountDetail?.zimbraId);
+						}
+					})
 					.catch((error) => {
 						createSnackbar({
 							key: `error${aliasName}`,
