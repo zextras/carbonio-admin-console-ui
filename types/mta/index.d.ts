@@ -125,3 +125,17 @@ export type MtaMailQueue = {
 	qi: Array<mtaMailQueueItem>;
 	total: number;
 };
+
+export type MtaServerGeneral = {
+	zimbraMtaSaslAuthEnable: string;
+	zimbraMtaMyNetworks: string;
+	zimbraMtaRelayHost: string;
+	zimbraMtaFallbackRelayHost: string;
+	zimbraAmavisOriginatingBypassSA: boolean;
+	zimbraAmavisEnableDKIMVerification: boolean;
+	carbonioAmavisDisableVirusCheck: boolean;
+	zimbraAmavisLogLevel: string;
+	zimbraAmavisSALogLevel: string;
+	zimbraMtaSmtpdTlsLoglevel: string;
+	zimbraMtaLmtpTlsLoglevel: string;
+};
