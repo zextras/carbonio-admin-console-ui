@@ -17,7 +17,7 @@ import {
 	Switch,
 	TextArea
 } from '@zextras/carbonio-design-system';
-import { useIntegratedComponent } from '@zextras/carbonio-shell-ui';
+import { useIntegratedComponent, useUserSettings } from '@zextras/carbonio-shell-ui';
 import { isEqual } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -31,6 +31,7 @@ import {
 	ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
 } from '../../../constants';
+import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import ListRow from '../../list/list-row';
@@ -71,6 +72,16 @@ const DomainDisclaimer: FC = () => {
 	const setValue = useCallback((key: string, value: unknown): void => {
 		setDomainDisclaimerDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const setInitialAndCurrentValue = useCallback(
 		(key, value) => {
@@ -181,6 +192,9 @@ const DomainDisclaimer: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', domainId);
+				}
 				if (domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled) {
 					setTimeout(() => {
 						createSnackbar({
@@ -214,14 +228,15 @@ const DomainDisclaimer: FC = () => {
 				});
 			});
 	}, [
-		createSnackbar,
-		domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML,
-		domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText,
-		domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
 		domainId,
-		setDomain,
+		domainDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
+		domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerText,
+		domainDisclaimerDetail?.zimbraAmavisDomainDisclaimerHTML,
+		domainName,
+		createSnackbar,
 		t,
-		domainName
+		isGlobalAdmin,
+		setDomain
 	]);
 
 	return (
