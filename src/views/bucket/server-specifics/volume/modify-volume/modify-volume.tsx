@@ -37,10 +37,13 @@ import {
 	CUSTOM_S3,
 	EMC,
 	FILEBLOB,
+	INDEX,
 	OPENIO,
+	PRIMARY,
 	PRIMARY_TYPE_VALUE,
 	S3,
 	SCALITYS3,
+	SECONDARY,
 	SECONDARY_TYPE_VALUE,
 	SWIFT,
 	UNUSED,
@@ -142,6 +145,12 @@ const ModifyVolume: FC<{
 		(state) => state
 	);
 	const { isSticky, setIsSticky } = useStickyBarStore();
+
+	const labelMap: Record<number | string, string> = {
+		1: PRIMARY,
+		2: SECONDARY,
+		10: INDEX
+	};
 	const onUnusedBucketListChange = (e: any): void => {
 		const selectedBucketDetail = isVolumeAllDetail?.filter(
 			(item: BucketVolume) => item?.uuid === e
@@ -174,6 +183,9 @@ const ModifyVolume: FC<{
 	const onSave = async (): Promise<void> => {
 		setIsLoading(true);
 		if (isAdvanced) {
+			if (type) {
+				type.label = labelMap[type?.value];
+			}
 			const obj: { [key: string]: string | boolean | number | undefined } = {};
 			// eslint-disable-next-line sonarjs/no-duplicate-string
 			obj._jsns = 'urn:zimbraAdmin';
@@ -245,6 +257,7 @@ const ModifyVolume: FC<{
 				.then((res) => {
 					const result = JSON.parse(res?.Body?.response?.content);
 					const updateResponse = result?.response?.[selectedServerName];
+
 					if (updateResponse?.ok) {
 						createSnackbar({
 							key: '1',

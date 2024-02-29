@@ -400,3 +400,6 @@ export const paginationItems = [
 export const ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS = 'zimbraMtaSmtpdSenderLoginMaps';
 export const HELPDESK_ADMINS = '__helpdesk_admins';
 export const MTA_SERVER_GENERAL = 'mta_server_general';
+export const PRIMARY = 'primary';
+export const SECONDARY = 'secondary';
+export const INDEX = 'index';

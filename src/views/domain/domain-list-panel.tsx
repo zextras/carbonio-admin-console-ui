@@ -625,18 +625,6 @@ const DomainListPanel: FC = () => {
 				</Container>
 			)}
 			<ListPanelItem
-				title={t('label.details', 'Details')}
-				isListExpanded={isDetailListExpanded}
-				setToggleView={toggleDetailView}
-			/>
-			{isDetailListExpanded && (
-				<ListItems
-					items={detailItems}
-					selectedOperationItem={domainView}
-					setSelectedOperationItem={setDomainView}
-				/>
-			)}
-			<ListPanelItem
 				title={t('domain.manage', 'Manage')}
 				isListExpanded={isManageListExpanded}
 				setToggleView={toggleManageView}
@@ -644,6 +632,18 @@ const DomainListPanel: FC = () => {
 			{isManageListExpanded && (
 				<ListItems
 					items={manageOptions}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
+				/>
+			)}
+			<ListPanelItem
+				title={t('label.details', 'Details')}
+				isListExpanded={isDetailListExpanded}
+				setToggleView={toggleDetailView}
+			/>
+			{isDetailListExpanded && (
+				<ListItems
+					items={detailItems}
 					selectedOperationItem={domainView}
 					setSelectedOperationItem={setDomainView}
 				/>
