@@ -589,9 +589,6 @@ const DomainGeneralSettings: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					if (isGlobalAdmin) {
-						flushCache('domain', 'id', domainData.zimbraId);
-					}
 					const domain: any = data?.domain[0];
 					if (domain) {
 						setDomain(domain);
