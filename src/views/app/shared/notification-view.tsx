@@ -284,7 +284,7 @@ const NotificationView: FC<{
 
 	const handleClick = useCallback(
 		(event: any) => {
-			matomo.trackEvent('Tables', NOTIFICATION_TABLE_DATABASE);
+			matomo.trackEvent('DashboardTables', NOTIFICATION_TABLE_DATABASE);
 			clearTimeout(timer.current);
 			if (event.detail === 1) {
 				timer.current = setTimeout(doClickAction, 300);

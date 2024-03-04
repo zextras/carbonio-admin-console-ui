@@ -52,7 +52,7 @@ const DashboardServerList: FC<{
 	}, [getVersionInformation]);
 
 	const handleClickRow = (): void => {
-		matomo.trackEvent('Tables', STORAGES_TABLE_DATABASE);
+		matomo.trackEvent('DashboardTables', STORAGES_TABLE_DATABASE);
 	};
 
 	useEffect(() => {

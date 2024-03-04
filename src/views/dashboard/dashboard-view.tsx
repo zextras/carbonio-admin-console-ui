@@ -130,13 +130,13 @@ const Dashboard: FC = () => {
 	}, []);
 
 	const goToMailStoreServerList = useCallback(() => {
-		matomo.trackEvent('Tables', STORAGES_DATABASE);
+		matomo.trackEvent('DashboardTables', STORAGES_DATABASE);
 		history.push(`/${MANAGE}/${STORAGES_ROUTE_ID}/${SERVERS_LIST}`);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);
 
 	const goToMailNotificationt = useCallback(() => {
-		matomo.trackEvent('Tables', NOTIFICATIONS_DATABASE);
+		matomo.trackEvent('DashboardTables', NOTIFICATIONS_DATABASE);
 		history.push(`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}/${LIST}`);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);
