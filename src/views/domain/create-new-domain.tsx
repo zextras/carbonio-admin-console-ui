@@ -519,6 +519,9 @@ const CreateDomain: FC = () => {
 								background="gray6"
 								padding={{ left: 'large', top: 'large' }}
 							>
+								<Text size="small" weight="bold" color="gray0">
+									{t('label.gal', 'GAL')}
+								</Text>
 								<Tooltip
 									placement="top"
 									label={t('label.global_address_list', 'Global Address List')}
