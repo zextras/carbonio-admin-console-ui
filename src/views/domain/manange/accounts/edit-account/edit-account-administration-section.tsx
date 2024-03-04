@@ -51,17 +51,12 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const [selectedOption, setSelectedOption] = useState<any>([]);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const userSetting = useUserSettings();
-	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const [t] = useTranslation();
 
-	useEffect(() => {
-		if (userSetting?.attrs) {
-			const account = userSetting?.attrs?.zimbraIsAdminAccount;
-			if (account && account === TRUE) {
-				setIsGlobalAdmin(true);
-			}
-		}
-	}, [userSetting?.attrs]);
+	const isGlobalAdmin = useMemo(
+		() => userSetting?.attrs?.zimbraIsAdminAccount === TRUE,
+		[userSetting?.attrs]
+	);
 
 	const headers: any = useMemo(
 		() => [
