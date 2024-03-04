@@ -590,7 +590,7 @@ const DomainVirtualHosts: FC = () => {
 								<Padding left="large">
 									<Button
 										type="ghost"
-										label={t('label.load_and_verify_certificate', 'LOAD AND VERIFY CERTIFICATE')}
+										label={t('label.verify_certificate', 'VERIFY CERTIFICATE')}
 										color="primary"
 										onClick={handleLoadAndVerifyCert}
 									/>
