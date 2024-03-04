@@ -51,7 +51,7 @@ import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';
 import ListRow from '../list/list-row';
-import { isValidEmail } from '../utility/utils';
+import { GbToBytes, isValidEmail } from '../utility/utils';
 
 const ovelayStyle = styled(Container)`
 	position: fixed;
@@ -280,10 +280,12 @@ const CreateDomain: FC = () => {
 				n: 'zimbraDomainMaxAccounts',
 				_content: zimbraDomainMaxAccounts
 			});
-			attributes.push({
-				n: 'zimbraMailDomainQuota',
-				_content: zimbraMailDomainQuota
-			});
+			if (zimbraMailDomainQuota) {
+				attributes.push({
+					n: 'zimbraMailDomainQuota',
+					_content: GbToBytes(zimbraMailDomainQuota).toString()
+				});
+			}
 			attributes.push({
 				n: 'zimbraDomainStatus',
 				_content: ACTIVE
@@ -467,8 +469,8 @@ const CreateDomain: FC = () => {
 								<Container padding={{ all: 'small' }}>
 									<Input
 										label={t(
-											'label.max_mainbox_quota_for_the_domain_in_bytes',
-											'Max mailbox quota for the domain (bytes) (0=unlimited)'
+											'label.max_mainbox_quota_for_the_domain_in_gb',
+											'Max mailbox quota for the domain (GB) (0=unlimited)'
 										)}
 										backgroundColor="gray5"
 										value={zimbraMailDomainQuota}
