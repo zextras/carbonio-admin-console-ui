@@ -12,8 +12,7 @@ import {
 	Select,
 	Text,
 	Icon,
-	Divider,
-	PasswordInput
+	Divider
 } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
@@ -27,6 +26,7 @@ import {
 import { useDomainStore } from '../../../../store/domain/store';
 import Textarea from '../../../components/textarea';
 import ListRow from '../../../list/list-row';
+import { checkValidUserName, convertToAscii, getModifiedName } from '../../../utility/utils';
 
 const ResourceDetailSection: FC = () => {
 	const { t } = useTranslation();
@@ -35,6 +35,7 @@ const ResourceDetailSection: FC = () => {
 	const cosList = useDomainStore((state) => state.cosList);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const [showAutoFillAlert, setShowAutoFillAlert] = useState<boolean>(false);
 
 	const resourceTypeOptions: any[] = useMemo(
 		() => [
@@ -181,11 +182,32 @@ const ResourceDetailSection: FC = () => {
 
 	const changeResourceName = useCallback(
 		(e) => {
+			setShowAutoFillAlert(false);
 			setResourceDetail((prev: any) => ({ ...prev, changeNameBool: true }));
-			setResourceDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+			setResourceDetail((prev: any) => ({
+				...prev,
+				[e.target.name]: e.target.value?.replace(/ /g, '')?.toLowerCase()
+			}));
 		},
 		[setResourceDetail]
 	);
+
+	const generatedName = useMemo(() => {
+		const { changeNameBool, displayName, name } = resourceDetail || {};
+
+		if (!changeNameBool) {
+			const userNameStr = getModifiedName(displayName.trim());
+			const asciiValue = convertToAscii(userNameStr);
+			if (userNameStr.length === asciiValue.length && checkValidUserName(asciiValue)) {
+				setShowAutoFillAlert(false);
+				return asciiValue;
+			}
+			setShowAutoFillAlert(true);
+			return '';
+		}
+
+		return name || '';
+	}, [resourceDetail]);
 
 	useEffect(() => {
 		if (domainName) {
@@ -195,8 +217,13 @@ const ResourceDetailSection: FC = () => {
 
 	useEffect(() => {
 		!resourceDetail?.changeNameBool &&
-			setResourceDetail((prev: any) => ({ ...prev, name: resourceDetail?.displayName }));
-	}, [resourceDetail?.changeNameBool, resourceDetail?.displayName, setResourceDetail]);
+			setResourceDetail((prev: any) => ({ ...prev, name: generatedName }));
+	}, [
+		generatedName,
+		resourceDetail?.changeNameBool,
+		resourceDetail?.displayName,
+		setResourceDetail
+	]);
 
 	useEffect(() => {
 		if (accountStatusOptions && accountStatusOptions.length > 0) {
@@ -382,41 +409,6 @@ const ResourceDetailSection: FC = () => {
 							selection={resourceDetail?.schedulePolicyType}
 							onChange={onSchedulePolicyChange}
 						/>
-					</Container>
-				</ListRow>
-				<Row width="100%" padding={{ top: 'medium' }}>
-					<Divider color="gray3" />
-				</Row>
-				<Row padding={{ top: 'large' }}>
-					<Text size="small" weight="bold">
-						{t('label.password', 'Password')}
-					</Text>
-				</Row>
-				<ListRow>
-					<Container
-						mainAlignment="space-between"
-						crossAlignment="flex-start"
-						orientation="horizontal"
-						padding={{ top: 'large' }}
-					>
-						<Container padding={{ right: 'large' }}>
-							<PasswordInput
-								label={t('label.password', 'Password')}
-								backgroundColor="gray5"
-								value={resourceDetail.password}
-								inputName="password"
-								onChange={changeResourceDetail}
-							/>
-						</Container>
-						<Container>
-							<PasswordInput
-								label={t('label.repeat_password', 'Repeat Password')}
-								backgroundColor="gray5"
-								value={resourceDetail.repeatPassword}
-								inputName="repeatPassword"
-								onChange={changeResourceDetail}
-							/>
-						</Container>
 					</Container>
 				</ListRow>
 				<Row width="100%" padding={{ top: 'medium' }}>
