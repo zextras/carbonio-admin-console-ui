@@ -42,6 +42,7 @@ import {
 } from '../../../../constants';
 import { getServerInformationByName } from '../../../../services/get-server-information';
 import { modifyServer } from '../../../../services/modify-server';
+import { useConfigStore } from '../../../../store/config/store';
 import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
 import { useServerStore } from '../../../../store/server/store';
 import CustomChip from '../../../components/customChip';
@@ -60,6 +61,7 @@ const MTAServerGeneral: FC = () => {
 	const [mtaServerGeneralDetail, setMtaServerGeneralDetail] = useState<MtaServerGeneral>();
 	const [networkValue, setNetworkValue] = useState<Array<any>>([]);
 	const mtaServerList = useServerStore((state) => state.mtaServerList);
+	const configInformation = useConfigStore((state) => state.config);
 
 	const setValue = useCallback((key: string, value: unknown): void => {
 		setMtaServerGeneralDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -253,7 +255,7 @@ const MTAServerGeneral: FC = () => {
 			);
 
 			if (mtaAuthEnabled && mtaAuthEnabled?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_SASL_AUTH_ENABLED, mtaAuthEnabled?._content);
+				setInitialAndCurrentValue(ZIMBRA_MTA_SASL_AUTH_ENABLED, mtaAuthEnabled?._content === 'yes');
 			}
 
 			const zimbraMtaMyNetworks = serverAttributes.find(
@@ -432,12 +434,10 @@ const MTAServerGeneral: FC = () => {
 			n: ZIMBRA_MTA_RELAY_HOST,
 			_content: mtaServerGeneralDetail?.zimbraMtaRelayHost || ''
 		});
-		if (mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable) {
-			attributes.push({
-				n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
-				_content: mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable
-			});
-		}
+		attributes.push({
+			n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
+			_content: mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable ? 'yes' : 'no'
+		});
 		if (mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel) {
 			attributes.push({
 				n: ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
@@ -502,6 +502,13 @@ const MTAServerGeneral: FC = () => {
 			setNetworkValue(data);
 		},
 		[allowSetMTA, setValue]
+	);
+
+	const setEmptyValue = useCallback(
+		(keyName) => {
+			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+		},
+		[setMtaServerGeneralDetail]
 	);
 
 	return (
@@ -588,11 +595,11 @@ const MTAServerGeneral: FC = () => {
 						>
 							<Switch
 								label={t('mta.enable_authentication', 'Enable Authentication')}
-								value={mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable === 'yes'}
+								value={mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable}
 								onClick={(): void =>
 									setValue(
 										ZIMBRA_MTA_SASL_AUTH_ENABLED,
-										mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable === 'yes' ? 'no' : 'yes'
+										!mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable
 									)
 								}
 								disabled={!allowSetMTA}
