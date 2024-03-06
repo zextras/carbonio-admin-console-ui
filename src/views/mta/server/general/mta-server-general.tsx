@@ -669,7 +669,7 @@ const MTAServerGeneral: FC = () => {
 		} else {
 			attributes.push({
 				n: CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-				_content: mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck ? TRUE : FALSE
+				_content: mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck
 			});
 		}
 
@@ -681,7 +681,7 @@ const MTAServerGeneral: FC = () => {
 		} else {
 			attributes.push({
 				n: ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-				_content: mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification ? TRUE : FALSE
+				_content: mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification
 			});
 		}
 
@@ -693,10 +693,9 @@ const MTAServerGeneral: FC = () => {
 		} else {
 			attributes.push({
 				n: ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-				_content: mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA ? TRUE : FALSE
+				_content: mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA
 			});
 		}
-
 		modifyServerRequest(attributes);
 	}, [
 		modifyServerRequest,
