@@ -543,74 +543,168 @@ const MTAServerGeneral: FC = () => {
 		[createSnackbar, getServerSpecificInformation, mtaServerList, server, t]
 	);
 
+	const setSaveAttribues = useCallback(
+		(attributes) => {
+			if (mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost === undefined) {
+				attributes.push({
+					n: ZIMBRA_MTA_FALLBACK_RELAY_HOST,
+					_content: ''
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_MTA_FALLBACK_RELAY_HOST,
+					_content: mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost || ''
+				});
+			}
+
+			if (mtaServerGeneralDetail?.zimbraMtaMyNetworks === undefined) {
+				attributes.push({
+					n: ZIMBRA_MTA_MY_NETWORKS,
+					_content: ''
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_MTA_MY_NETWORKS,
+					_content: mtaServerGeneralDetail?.zimbraMtaMyNetworks || ''
+				});
+			}
+
+			if (mtaServerGeneralDetail?.zimbraMtaRelayHost === undefined) {
+				attributes.push({
+					n: ZIMBRA_MTA_RELAY_HOST,
+					_content: ''
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_MTA_RELAY_HOST,
+					_content: mtaServerGeneralDetail?.zimbraMtaRelayHost || ''
+				});
+			}
+
+			if (mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable === undefined) {
+				attributes.push({
+					n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
+					_content: ''
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
+					_content: mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable === TRUE ? 'yes' : 'no'
+				});
+			}
+		},
+		[
+			mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost,
+			mtaServerGeneralDetail?.zimbraMtaMyNetworks,
+			mtaServerGeneralDetail?.zimbraMtaRelayHost,
+			mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable
+		]
+	);
+
+	const setSaveLogLevelAttributes = useCallback(
+		(attributes) => {
+			if (mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel === undefined) {
+				attributes.push({
+					n: ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+					_content: ''
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+					_content: mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel
+				});
+			}
+			if (mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel === undefined) {
+				attributes.push({
+					n: ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
+					_content: ''
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
+					_content: mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel
+				});
+			}
+			if (mtaServerGeneralDetail?.zimbraAmavisSALogLevel === undefined) {
+				attributes.push({
+					n: ZIMBRA_AMAVIS_SA_LOG_LEVEL,
+					_content: ''
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_AMAVIS_SA_LOG_LEVEL,
+					_content: mtaServerGeneralDetail?.zimbraAmavisSALogLevel
+				});
+			}
+			if (mtaServerGeneralDetail?.zimbraAmavisLogLevel === undefined) {
+				attributes.push({
+					n: ZIMBRA_AMAVIS_LOG_LEVEL,
+					_content: ''
+				});
+			} else {
+				attributes.push({
+					n: ZIMBRA_AMAVIS_LOG_LEVEL,
+					_content: mtaServerGeneralDetail?.zimbraAmavisLogLevel
+				});
+			}
+		},
+		[
+			mtaServerGeneralDetail?.zimbraAmavisLogLevel,
+			mtaServerGeneralDetail?.zimbraAmavisSALogLevel,
+			mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel,
+			mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel
+		]
+	);
+
 	const onSave = useCallback(() => {
 		const attributes: Array<Record<string, string>> = [];
-		attributes.push({
-			n: CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-			_content: mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck ? TRUE : FALSE
-		});
-		attributes.push({
-			n: ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-			_content: mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification ? TRUE : FALSE
-		});
-		if (mtaServerGeneralDetail?.zimbraAmavisLogLevel) {
+		setSaveAttribues(attributes);
+		setSaveLogLevelAttributes(attributes);
+
+		if (mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck === undefined) {
 			attributes.push({
-				n: ZIMBRA_AMAVIS_LOG_LEVEL,
-				_content: mtaServerGeneralDetail?.zimbraAmavisLogLevel
+				n: CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+				_content: ''
+			});
+		} else {
+			attributes.push({
+				n: CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+				_content: mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck ? TRUE : FALSE
 			});
 		}
-		attributes.push({
-			n: ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-			_content: mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA ? TRUE : FALSE
-		});
-		if (mtaServerGeneralDetail?.zimbraAmavisSALogLevel) {
+
+		if (mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification === undefined) {
 			attributes.push({
-				n: ZIMBRA_AMAVIS_SA_LOG_LEVEL,
-				_content: mtaServerGeneralDetail?.zimbraAmavisSALogLevel
+				n: ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+				_content: ''
+			});
+		} else {
+			attributes.push({
+				n: ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+				_content: mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification ? TRUE : FALSE
 			});
 		}
-		attributes.push({
-			n: ZIMBRA_MTA_FALLBACK_RELAY_HOST,
-			_content: mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost || ''
-		});
-		if (mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel) {
+
+		if (mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA === undefined) {
 			attributes.push({
-				n: ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-				_content: mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel
+				n: ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+				_content: ''
+			});
+		} else {
+			attributes.push({
+				n: ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+				_content: mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA ? TRUE : FALSE
 			});
 		}
-		attributes.push({
-			n: ZIMBRA_MTA_MY_NETWORKS,
-			_content: mtaServerGeneralDetail?.zimbraMtaMyNetworks || ''
-		});
-		attributes.push({
-			n: ZIMBRA_MTA_RELAY_HOST,
-			_content: mtaServerGeneralDetail?.zimbraMtaRelayHost || ''
-		});
-		attributes.push({
-			n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
-			_content: mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable ? 'yes' : 'no'
-		});
-		if (mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel) {
-			attributes.push({
-				n: ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-				_content: mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel
-			});
-		}
+
 		modifyServerRequest(attributes);
 	}, [
 		modifyServerRequest,
 		mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck,
 		mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification,
-		mtaServerGeneralDetail?.zimbraAmavisLogLevel,
 		mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA,
-		mtaServerGeneralDetail?.zimbraAmavisSALogLevel,
-		mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost,
-		mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel,
-		mtaServerGeneralDetail?.zimbraMtaMyNetworks,
-		mtaServerGeneralDetail?.zimbraMtaRelayHost,
-		mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable,
-		mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel
+		setSaveAttribues,
+		setSaveLogLevelAttributes
 	]);
 
 	const onAmavisLogLevelChange = useCallback(
