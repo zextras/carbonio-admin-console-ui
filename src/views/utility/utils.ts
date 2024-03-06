@@ -2271,3 +2271,11 @@ export const validateIpAddress = (value: string): boolean => {
 
 	return ipv4Regex.test(value) || ipv6Regex.test(value);
 };
+
+export const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+export const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(name);
+export const convertToAscii = (inputString: string): string => {
+	const normalizedString = inputString.normalize('NFKD');
+	// eslint-disable-next-line no-control-regex
+	return normalizedString.replace(/[^\x00-\x7F]/g, '');
+};
