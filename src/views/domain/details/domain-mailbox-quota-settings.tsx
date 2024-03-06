@@ -549,7 +549,10 @@ const DomainMailboxQuotaSetting: FC = () => {
 								</Container>
 								<Container padding={{ all: 'small' }}>
 									<Input
-										label={t('domain.mail_space_quota_threshold', 'Mail Space Quota threshold (%)')}
+										label={t(
+											'domain.mail_space_quota_threshold_warning',
+											'Mail Space Quota threshold (%) warning'
+										)}
 										value={zimbraDomainAggregateQuotaWarnPercent}
 										defaultValue={zimbraDomainAggregateQuotaWarnPercent}
 										backgroundColor="gray5"
