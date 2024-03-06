@@ -127,13 +127,13 @@ export type MtaMailQueue = {
 };
 
 export type MtaServerGeneral = {
-	zimbraMtaSaslAuthEnable: boolean;
+	zimbraMtaSaslAuthEnable: string;
 	zimbraMtaMyNetworks: string;
 	zimbraMtaRelayHost: string;
 	zimbraMtaFallbackRelayHost: string;
-	zimbraAmavisOriginatingBypassSA: boolean;
-	zimbraAmavisEnableDKIMVerification: boolean;
-	carbonioAmavisDisableVirusCheck: boolean;
+	zimbraAmavisOriginatingBypassSA: string;
+	zimbraAmavisEnableDKIMVerification: string;
+	carbonioAmavisDisableVirusCheck: string;
 	zimbraAmavisLogLevel: string;
 	zimbraAmavisSALogLevel: string;
 	zimbraMtaSmtpdTlsLoglevel: string;

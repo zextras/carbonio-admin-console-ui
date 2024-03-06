@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
@@ -12,11 +13,8 @@ import {
 	Button,
 	Padding,
 	Divider,
-	Switch,
 	Tooltip,
 	ChipInput,
-	Input,
-	Select,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { find, isEqual, join, map, some, split, trim } from 'lodash';
@@ -47,6 +45,9 @@ import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
 import { useServerStore } from '../../../../store/server/store';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
+import InheritedInput from '../../../utility/inherited-components/inherited-input';
+import InheritedSelect from '../../../utility/inherited-components/inherited-select';
+import InheritedSwitch from '../../../utility/inherited-components/inherited-switch';
 import { validateIpAddress } from '../../../utility/utils';
 
 const MTAServerGeneral: FC = () => {
@@ -62,6 +63,11 @@ const MTAServerGeneral: FC = () => {
 	const [networkValue, setNetworkValue] = useState<Array<any>>([]);
 	const mtaServerList = useServerStore((state) => state.mtaServerList);
 	const configInformation = useConfigStore((state) => state.config);
+	const [serverSpecificAttributes, setServerSpecificAttributes] = useState<
+		{ n: string; _content: string }[]
+	>([]);
+	const [mtaServerSpecificGeneralDetail, setMtaServerSpecificGeneralDetail] =
+		useState<MtaServerGeneral>();
 
 	const setValue = useCallback((key: string, value: unknown): void => {
 		setMtaServerGeneralDetail((prev: any) => ({ ...prev, [key]: value }));
@@ -80,6 +86,16 @@ const MTAServerGeneral: FC = () => {
 			setValue(key, value);
 		},
 		[setInitialValue, setValue]
+	);
+
+	const setServerSpecificCurrentValue = useCallback(
+		(key, value) => {
+			setMtaServerSpecificGeneralDetail((prev: any) => ({
+				...prev,
+				[key]: value
+			}));
+		},
+		[setMtaServerSpecificGeneralDetail]
 	);
 
 	const amavisLogLevelOptions = useMemo(
@@ -223,7 +239,7 @@ const MTAServerGeneral: FC = () => {
 		if (zimbraAmavisOriginatingBypassSA && zimbraAmavisOriginatingBypassSA?._content) {
 			setInitialAndCurrentValue(
 				ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-				zimbraAmavisOriginatingBypassSA?._content === TRUE
+				zimbraAmavisOriginatingBypassSA?._content
 			);
 		}
 
@@ -233,7 +249,7 @@ const MTAServerGeneral: FC = () => {
 		if (zimbraAmavisEnableDKIMVerification && zimbraAmavisEnableDKIMVerification?._content) {
 			setInitialAndCurrentValue(
 				ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-				zimbraAmavisEnableDKIMVerification?._content === TRUE
+				zimbraAmavisEnableDKIMVerification?._content
 			);
 		}
 
@@ -243,8 +259,15 @@ const MTAServerGeneral: FC = () => {
 		if (carbonioAmavisDisableVirusCheck && carbonioAmavisDisableVirusCheck?._content) {
 			setInitialAndCurrentValue(
 				CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-				carbonioAmavisDisableVirusCheck?._content === TRUE
+				carbonioAmavisDisableVirusCheck?._content
 			);
+		}
+
+		const mtaFallBackRelayHost = serverAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST
+		);
+		if (mtaFallBackRelayHost && mtaFallBackRelayHost?._content) {
+			setInitialAndCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
 		}
 	}, [serverAttributes, setInitialAndCurrentValue]);
 
@@ -255,7 +278,10 @@ const MTAServerGeneral: FC = () => {
 			);
 
 			if (mtaAuthEnabled && mtaAuthEnabled?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_SASL_AUTH_ENABLED, mtaAuthEnabled?._content === 'yes');
+				setInitialAndCurrentValue(
+					ZIMBRA_MTA_SASL_AUTH_ENABLED,
+					mtaAuthEnabled?._content === 'yes' ? TRUE : FALSE
+				);
 			}
 
 			const zimbraMtaMyNetworks = serverAttributes.find(
@@ -280,12 +306,6 @@ const MTAServerGeneral: FC = () => {
 				setInitialAndCurrentValue(ZIMBRA_MTA_RELAY_HOST, mtaRelayHost?._content);
 			}
 
-			const mtaFallBackRelayHost = serverAttributes.find(
-				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST
-			);
-			if (mtaFallBackRelayHost && mtaFallBackRelayHost?._content) {
-				setInitialAndCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
-			}
 			setMtaAntiVirusValues();
 			setMtaLoggingValues();
 			setTimeout(() => {
@@ -293,6 +313,137 @@ const MTAServerGeneral: FC = () => {
 			}, 100);
 		}
 	}, [serverAttributes, setInitialAndCurrentValue, setMtaAntiVirusValues, setMtaLoggingValues]);
+
+	const setServerSpecificMtaLoggingValues = useCallback(() => {
+		const zimbraAmavisLogLevel = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL
+		);
+
+		if (zimbraAmavisLogLevel && zimbraAmavisLogLevel?._content) {
+			setServerSpecificCurrentValue(ZIMBRA_AMAVIS_LOG_LEVEL, zimbraAmavisLogLevel?._content);
+		}
+
+		const zimbraAmavisSALogLevel = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL
+		);
+
+		if (zimbraAmavisSALogLevel && zimbraAmavisSALogLevel?._content) {
+			setServerSpecificCurrentValue(ZIMBRA_AMAVIS_SA_LOG_LEVEL, zimbraAmavisSALogLevel?._content);
+		}
+
+		const zimbraMtaSmtpdTlsLoglevel = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL
+		);
+
+		if (zimbraMtaSmtpdTlsLoglevel && zimbraMtaSmtpdTlsLoglevel?._content) {
+			setServerSpecificCurrentValue(
+				ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+				zimbraMtaSmtpdTlsLoglevel?._content
+			);
+		}
+
+		const zimbraMtaLmtpTlsLoglevel = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL
+		);
+
+		if (zimbraMtaLmtpTlsLoglevel && zimbraMtaLmtpTlsLoglevel?._content) {
+			setServerSpecificCurrentValue(
+				ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
+				zimbraMtaLmtpTlsLoglevel?._content
+			);
+		}
+	}, [serverSpecificAttributes, setServerSpecificCurrentValue]);
+
+	const setServerSpecificMtaAntiVirusValues = useCallback(() => {
+		const zimbraAmavisOriginatingBypassSA = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
+		);
+		if (zimbraAmavisOriginatingBypassSA && zimbraAmavisOriginatingBypassSA?._content) {
+			setServerSpecificCurrentValue(
+				ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
+				zimbraAmavisOriginatingBypassSA?._content
+			);
+		}
+
+		const zimbraAmavisEnableDKIMVerification = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION
+		);
+		if (zimbraAmavisEnableDKIMVerification && zimbraAmavisEnableDKIMVerification?._content) {
+			setServerSpecificCurrentValue(
+				ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
+				zimbraAmavisEnableDKIMVerification?._content
+			);
+		}
+
+		const carbonioAmavisDisableVirusCheck = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
+		);
+		if (carbonioAmavisDisableVirusCheck && carbonioAmavisDisableVirusCheck?._content) {
+			setServerSpecificCurrentValue(
+				CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
+				carbonioAmavisDisableVirusCheck?._content
+			);
+		}
+
+		const mtaFallBackRelayHost = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST
+		);
+		if (mtaFallBackRelayHost && mtaFallBackRelayHost?._content) {
+			setServerSpecificCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
+		}
+	}, [serverSpecificAttributes, setServerSpecificCurrentValue]);
+
+	useEffect(() => {
+		if (serverSpecificAttributes.length > 0) {
+			const mtaAuthEnabled = serverSpecificAttributes.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED
+			);
+
+			if (mtaAuthEnabled && mtaAuthEnabled?._content) {
+				setServerSpecificCurrentValue(
+					ZIMBRA_MTA_SASL_AUTH_ENABLED,
+					mtaAuthEnabled?._content === 'yes' ? TRUE : FALSE
+				);
+			}
+
+			const zimbraMtaMyNetworks = serverSpecificAttributes.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
+			);
+
+			if (zimbraMtaMyNetworks && zimbraMtaMyNetworks?._content) {
+				setServerSpecificCurrentValue(ZIMBRA_MTA_MY_NETWORKS, zimbraMtaMyNetworks?._content);
+			}
+
+			const mtaRelayHost = serverSpecificAttributes.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RELAY_HOST
+			);
+			if (mtaRelayHost && mtaRelayHost?._content) {
+				setServerSpecificCurrentValue(ZIMBRA_MTA_RELAY_HOST, mtaRelayHost?._content);
+			}
+
+			setServerSpecificMtaAntiVirusValues();
+			setServerSpecificMtaLoggingValues();
+			setTimeout(() => {
+				setIsDirty(false);
+			}, 100);
+		}
+	}, [
+		serverSpecificAttributes,
+		setServerSpecificCurrentValue,
+		setServerSpecificMtaAntiVirusValues,
+		setServerSpecificMtaLoggingValues
+	]);
+
+	const getServerSpecificInformation = useCallback(() => {
+		getServerInformationByName(server, true).then((data) => {
+			if (data && data?.server && Array.isArray(data?.server)) {
+				const serverItem = data?.server[0];
+				if (serverItem && serverItem?.a) {
+					setServerSpecificAttributes(serverItem?.a);
+				}
+			}
+		});
+	}, [server]);
 
 	useEffect(() => {
 		setIsDirty(false);
@@ -304,7 +455,8 @@ const MTAServerGeneral: FC = () => {
 				}
 			}
 		});
-	}, [server]);
+		getServerSpecificInformation();
+	}, [server, getServerSpecificInformation]);
 
 	useEffect(() => {
 		if (mtaServerGeneralDetail && !isEqual(mtaServerGeneralDetail, mtaServerGeneralInitialDetail)) {
@@ -371,6 +523,7 @@ const MTAServerGeneral: FC = () => {
 						const serverItem = data?.server[0];
 						if (serverItem && serverItem?.a) {
 							setServerAttributes(serverItem?.a);
+							getServerSpecificInformation();
 						}
 					}
 				})
@@ -387,7 +540,7 @@ const MTAServerGeneral: FC = () => {
 					});
 				});
 		},
-		[createSnackbar, mtaServerList, server, t]
+		[createSnackbar, getServerSpecificInformation, mtaServerList, server, t]
 	);
 
 	const onSave = useCallback(() => {
@@ -462,30 +615,30 @@ const MTAServerGeneral: FC = () => {
 
 	const onAmavisLogLevelChange = useCallback(
 		(v) => {
-			setValue(ZIMBRA_AMAVIS_LOG_LEVEL, v);
+			setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraAmavisLogLevel: v }));
 		},
-		[setValue]
+		[setMtaServerGeneralDetail]
 	);
 
 	const onAmavisSALogLevelChange = useCallback(
 		(v: string) => {
-			setValue(ZIMBRA_AMAVIS_SA_LOG_LEVEL, v);
+			setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraAmavisSALogLevel: v }));
 		},
-		[setValue]
+		[setMtaServerGeneralDetail]
 	);
 
 	const onSMTPClientLogLevelChange = useCallback(
 		(v: string) => {
-			setValue(ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL, v);
+			setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraMtaSmtpdTlsLoglevel: v }));
 		},
-		[setValue]
+		[setMtaServerGeneralDetail]
 	);
 
 	const onLMTPTlsLogLevelChange = useCallback(
 		(v: string) => {
-			setValue(ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL, v);
+			setMtaServerGeneralDetail((prev: any) => ({ ...prev, zimbraMtaLmtpTlsLoglevel: v }));
 		},
-		[setValue]
+		[setMtaServerGeneralDetail]
 	);
 
 	const onBlockExtensionChange = useCallback(
@@ -507,6 +660,25 @@ const MTAServerGeneral: FC = () => {
 	const setEmptyValue = useCallback(
 		(keyName) => {
 			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+		},
+		[setMtaServerGeneralDetail]
+	);
+
+	const changeSwitchOption = useCallback(
+		(key: keyof MtaServerGeneral): void => {
+			if (mtaServerGeneralDetail) {
+				setMtaServerGeneralDetail((prev: any) => ({
+					...prev,
+					[key]: mtaServerGeneralDetail[key] === TRUE ? FALSE : TRUE
+				}));
+			}
+		},
+		[mtaServerGeneralDetail]
+	);
+
+	const changeValue = useCallback(
+		(e) => {
+			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
 		},
 		[setMtaServerGeneralDetail]
 	);
@@ -593,14 +765,22 @@ const MTAServerGeneral: FC = () => {
 							)}
 							maxWidth="auto"
 						>
-							<Switch
+							<InheritedSwitch
+								subValue={mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable}
+								onChange={changeSwitchOption}
 								label={t('mta.enable_authentication', 'Enable Authentication')}
-								value={mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable}
-								onClick={(): void =>
-									setValue(
-										ZIMBRA_MTA_SASL_AUTH_ENABLED,
-										!mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable
-									)
+								iconColor="primary"
+								inheritedValue={
+									configInformation?.find(
+										(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED
+									)?._content === 'yes'
+										? TRUE
+										: FALSE
+								}
+								fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaSaslAuthEnable}
+								inputName={ZIMBRA_MTA_SASL_AUTH_ENABLED}
+								onChangeReset={(): void =>
+									setEmptyValue && setEmptyValue(ZIMBRA_MTA_SASL_AUTH_ENABLED)
 								}
 								disabled={!allowSetMTA}
 							/>
@@ -633,27 +813,37 @@ const MTAServerGeneral: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }} height="auto">
-						<Input
+						<InheritedInput
 							label={t('mta.relay_host', 'Relay Host')}
-							value={mtaServerGeneralDetail?.zimbraMtaRelayHost || ''}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (allowSetMTA) {
-									setValue(ZIMBRA_MTA_RELAY_HOST, e.target.value);
-								}
-							}}
-							backgroundColor="gray5"
+							subValue={mtaServerGeneralDetail?.zimbraMtaRelayHost}
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RELAY_HOST
+								)?._content
+							}
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaRelayHost}
+							background="gray5"
+							inputName="zimbraMtaRelayHost"
+							onChange={changeValue}
+							onChangeReset={(): void => setEmptyValue('zimbraMtaRelayHost')}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container padding={{ right: 'medium' }}>
-						<Input
+						<InheritedInput
 							label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
-							value={mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost || ''}
-							onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-								if (allowSetMTA) {
-									setValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, e.target.value);
-								}
-							}}
-							backgroundColor="gray5"
+							subValue={mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost}
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST
+								)?._content
+							}
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaFallbackRelayHost}
+							background="gray5"
+							inputName="zimbraMtaFallbackRelayHost"
+							onChange={changeValue}
+							onChangeReset={(): void => setEmptyValue('zimbraMtaFallbackRelayHost')}
+							disabled={!allowSetMTA}
 						/>
 					</Container>
 				</Container>
@@ -677,40 +867,59 @@ const MTAServerGeneral: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
-						<Switch
+						<InheritedSwitch
+							subValue={mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA}
+							onChange={changeSwitchOption}
 							label={t('mta.also_check_outbound_messages', 'Also check outbound messages')}
-							value={mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-									!mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA
-								)
+							iconColor="primary"
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
+								)?._content
+							}
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisOriginatingBypassSA}
+							inputName={ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue(ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA)
 							}
 							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch
+						<InheritedSwitch
+							subValue={mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification}
+							onChange={changeSwitchOption}
 							label={t('mta.verify_dkim_validity', 'Verify DKIM validity')}
-							value={mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification}
-							onClick={(): void =>
-								setValue(
-									ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-									!mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification
-								)
+							iconColor="primary"
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) =>
+										item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION
+								)?._content
+							}
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisEnableDKIMVerification}
+							inputName={ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue(ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION)
 							}
 							disabled={!allowSetMTA}
 						/>
 					</Container>
 					<Container crossAlignment="flex-start">
-						<Switch
+						<InheritedSwitch
+							subValue={mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck}
+							onChange={changeSwitchOption}
 							label={t('mta.disable_virus_check', 'Disable Virus Check')}
-							value={mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck}
-							onClick={(): void =>
-								setValue(
-									CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-									!mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck
-								)
+							iconColor="primary"
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
+								)?._content
+							}
+							fromSubValue={mtaServerSpecificGeneralDetail?.carbonioAmavisDisableVirusCheck}
+							inputName={CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK}
+							onChangeReset={(): void =>
+								setEmptyValue && setEmptyValue(CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK)
 							}
 							disabled={!allowSetMTA}
 						/>
@@ -736,38 +945,38 @@ const MTAServerGeneral: FC = () => {
 					padding={{ bottom: 'extralarge' }}
 				>
 					<Container crossAlignment="flex-start">
-						<Select
-							items={amavisLogLevelOptions}
-							background="gray5"
+						<InheritedSelect
 							label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
-							showCheckbox={false}
-							selection={
-								amavisLogLevelOptions.find(
-									(item: Record<string, string>) =>
-										item.value === mtaServerGeneralDetail?.zimbraAmavisLogLevel
-								) || amavisLogLevelOptions[0]
+							items={amavisLogLevelOptions}
+							subValue={mtaServerGeneralDetail?.zimbraAmavisLogLevel}
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL
+								)?._content
 							}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisLogLevel}
+							background="gray5"
+							selectName="zimbraAmavisLogLevel"
 							onChange={onAmavisLogLevelChange}
-							disabled={!allowSetMTA}
+							onChangeReset={(): void => setEmptyValue('zimbraAmavisLogLevel')}
 						/>
 					</Container>
 
 					<Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-						<Select
-							items={amavisSALogLevelOptions}
-							background="gray5"
+						<InheritedSelect
 							label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
-							showCheckbox={false}
-							selection={amavisSALogLevelOptions.find(
-								(item: Record<string, string>) =>
-									item.value === mtaServerGeneralDetail?.zimbraAmavisSALogLevel
-							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
+							items={amavisSALogLevelOptions}
+							subValue={mtaServerGeneralDetail?.zimbraAmavisSALogLevel}
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL
+								)?._content
+							}
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisSALogLevel}
+							background="gray5"
+							selectName="zimbraAmavisSALogLevel"
 							onChange={onAmavisSALogLevelChange}
-							disabled={!allowSetMTA}
+							onChangeReset={(): void => setEmptyValue('zimbraAmavisSALogLevel')}
 						/>
 					</Container>
 				</Container>
@@ -780,42 +989,44 @@ const MTAServerGeneral: FC = () => {
 					height="auto"
 				>
 					<Container crossAlignment="flex-start">
-						<Select
-							items={zimbraMtaSmtpdLoglevelOptions}
-							background="gray5"
+						<InheritedSelect
 							label={t(
 								'mta.smtp_client_logging_of_tls_activity',
 								'SMTP client logging of TLS Activity'
 							)}
-							showCheckbox={false}
-							selection={zimbraMtaSmtpdLoglevelOptions.find(
-								(item: Record<string, string>) =>
-									item.value === mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel
-							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
+							items={zimbraMtaSmtpdLoglevelOptions}
+							subValue={mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel}
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL
+								)?._content
+							}
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaSmtpdTlsLoglevel}
+							background="gray5"
+							selectName="zimbraMtaSmtpdTlsLoglevel"
 							onChange={onSMTPClientLogLevelChange}
-							disabled={!allowSetMTA}
+							onChangeReset={(): void => setEmptyValue('zimbraMtaSmtpdTlsLoglevel')}
 						/>
 					</Container>
 
 					<Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
-						<Select
-							items={zimbraMtaLmtpTlsLoglevelOptions}
-							background="gray5"
+						<InheritedSelect
 							label={t(
 								'mta.lmtp_client_logging_of_tls_activity',
 								'LMTP client logging of TLS activity'
 							)}
-							showCheckbox={false}
-							selection={zimbraMtaLmtpTlsLoglevelOptions.find(
-								(item: Record<string, string>) =>
-									item.value === mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel
-							)}
-							// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-							// @ts-ignore // Need to fix it with custom soultion
+							items={zimbraMtaLmtpTlsLoglevelOptions}
+							subValue={mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel}
+							inheritedValue={
+								configInformation?.find(
+									(item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL
+								)?._content
+							}
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaLmtpTlsLoglevel}
+							background="gray5"
+							selectName="zimbraMtaLmtpTlsLoglevel"
 							onChange={onLMTPTlsLogLevelChange}
-							disabled={!allowSetMTA}
+							onChangeReset={(): void => setEmptyValue('zimbraMtaLmtpTlsLoglevel')}
 						/>
 					</Container>
 				</Container>
