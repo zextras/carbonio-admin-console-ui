@@ -330,7 +330,8 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 							</Row>
 						</Row>
 					)}
-					{accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
+					{isAdvanced &&
+						accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
 						accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
 							<Row
 								width="100%"
