@@ -165,7 +165,8 @@
     },
     "core": {
         "subscription": {
-            "status": "Стан"
+            "status": "Стан",
+            "accounts": "Облікові записи"
         }
     },
     "dashboard": {

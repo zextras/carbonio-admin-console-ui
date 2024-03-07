@@ -124,7 +124,12 @@
             "valid": "Geldig",
             "not_valid": "Niet Geldig",
             "license_activated_successfully": "Licentie met succes geactiveerd",
-            "endDate": "Einddatum"
+            "endDate": "Einddatum",
+            "accounts": "Accounts",
+            "modules": "Modules",
+            "refresh": "Vernieuwen",
+            "type": "Type",
+            "valid_until": "Geldigtot"
         }
     },
     "label": {
@@ -172,7 +177,6 @@
         "certificate": "Certificaat",
         "closed": "Gesloten",
         "domains": "Domeinen",
-        "enable_start_tls": "StartTLS inschakelen",
         "external_active_directory": "Externe Active Directory",
         "external_ldap": "Externe LDAP",
         "features": "Functies",
@@ -1903,7 +1907,8 @@
         "service_label_password": " Wachtwoord van {{ service_label }}",
         "set_global_config": "SetGlobal-config",
         "user_can_specify_forwarding_address": "Gebruiker kan doorstuuradres opgeven",
-        "user_can_specify_mail_forwarding_filter": "De gebruiker kan een doorstuurfilter voor e-mail opgeven"
+        "user_can_specify_mail_forwarding_filter": "De gebruiker kan een doorstuurfilter voor e-mail opgeven",
+        "abq_status": "ABQ Status"
     },
     "privacy": {
         "allow_data_analytics": "Data-analyse mogelijk maken",
