@@ -16,7 +16,8 @@ import {
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import moment from 'moment';
@@ -25,7 +26,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import CreateResource from './create-resource';
 import ResourceEditDetailView from './resource-edit-detail-view';
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
+import { RECORD_DISPLAY_LIMIT, ASC, DESC, MOBILE } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
@@ -56,6 +57,7 @@ const DomainResources: FC = () => {
 	const timer = useRef<any>();
 	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+	const screenMode = useScreenMode();
 
 	const resourceStatusFilter: any[] = useMemo(
 		() => [
@@ -475,7 +477,11 @@ const DomainResources: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto'
+				}}
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -506,18 +512,17 @@ const DomainResources: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								position: 'relative',
-								height:
-									resourceList.length > 0 && !isRequestInProgress
-										? 'calc(100vh - 21.25rem)'
-										: 'calc(100vh - 40.625rem)'
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)'
 							}}
 						>
 							<Table
 								rows={!isRequestInProgress ? resourceList : []}
 								headers={headers}
 								showCheckbox
-								style={{ overflow: 'auto', height: '100%' }}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || resourceList.length === 0 ? '50%' : '100%'
+								}}
 								RowFactory={CustomRowFactory}
 								HeaderFactory={CustomHeaderFactory}
 							/>
@@ -576,7 +581,7 @@ const DomainResources: FC = () => {
 								orientation="horizontal"
 								mainAlignment="space-between"
 								width="100%"
-								style={{ position: 'absolute', bottom: '0', width: '68rem' }}
+								style={{ position: 'static', bottom: '-4rem' }}
 								height="auto"
 							>
 								<Container crossAlignment="flex-start">

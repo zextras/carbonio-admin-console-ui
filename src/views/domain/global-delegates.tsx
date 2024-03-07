@@ -12,7 +12,8 @@ import {
 	Table,
 	Divider,
 	Button,
-	useSnackbar
+	useSnackbar,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -27,7 +28,7 @@ import { AccountContext } from './manange/accounts/account-context';
 import AccountDetailView from './manange/accounts/account-detail-view';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../constants';
+import { MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -78,6 +79,7 @@ const GlobalDelegates: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
 	const tableRef = useRef(null);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const screenMode = useScreenMode();
 
 	const headers: any = useMemo(
 		() => [
@@ -653,7 +655,11 @@ const GlobalDelegates: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto'
+				}}
 				padding={{ all: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -675,7 +681,7 @@ const GlobalDelegates: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: 'calc(100vh - 21.25rem)',
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 							ref={tableRef}
@@ -687,7 +693,7 @@ const GlobalDelegates: FC = () => {
 								multiSelect={false}
 								style={{
 									overflow: 'auto',
-									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
+									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
 								}}
 								RowFactory={CustomRowFactory}
 								HeaderFactory={CustomHeaderFactory}
