@@ -263,7 +263,12 @@
             "valid": "Valid",
             "license_activated_successfully": "Lisensi berhasil diaktifkan",
             "not_valid": "Tidak Valid",
-            "endDate": "Tanggal selesai"
+            "endDate": "Tanggal selesai",
+            "accounts": "Akun",
+            "modules": "Modul",
+            "refresh": "Perbarui",
+            "type": "Jenis",
+            "valid_until": "Valid sampai"
         }
     },
     "domain": {
@@ -384,7 +389,6 @@
         "certificate": "Sertifikat",
         "closed": "Ditutup",
         "domains": "Domain",
-        "enable_start_tls": "Aktifkan StartTLS",
         "external_active_directory": "Active Directory Eksternal",
         "external_ldap": "LDAP Eksternal",
         "features": "Fitur",
@@ -1901,7 +1905,8 @@
         "right_for_selected_user_deleted_successfully": "Hak untuk pengguna yang dipilih berhasil dihapus",
         "inherited_value_was": "Nilai yang diwariskan adalah",
         "set_global_config": "SetGlobal config",
-        "user_can_specify_mail_forwarding_filter": "Pengguna dapat menentukan filter penerusan email"
+        "user_can_specify_mail_forwarding_filter": "Pengguna dapat menentukan filter penerusan email",
+        "abq_status": "Status ABQ"
     },
     "connection": {
         "access_key": "Kunci Akses",
