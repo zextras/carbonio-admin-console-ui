@@ -93,5 +93,10 @@
     },
     "action": {
         "click_preview": "برای مشاهده کلیک کنید"
+    },
+    "core": {
+        "subscription": {
+            "type": "نوع"
+        }
     }
 }
