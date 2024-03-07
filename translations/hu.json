@@ -19,7 +19,7 @@
     "hsm": {
         "message": "Üzenet",
         "server": "Szerver",
-        "delete": "Töröl",
+        "delete": "Törlés",
         "document": "Dokumentum",
         "edit": "Szerkesztés",
         "name": "Név",
@@ -36,7 +36,7 @@
     "label": {
         "accounts": "Fiókok",
         "description": "Leírás",
-        "destroy_account": "Töröl",
+        "destroy_account": "Törlés",
         "disabled": "Letiltva",
         "enable": "engedélyez",
         "enabled": "Engedélyezett",
@@ -53,11 +53,11 @@
         "ID": "ID",
         "account": "Fiók",
         "bucket_done_button": "Kész",
-        "cancel": "Mégse",
+        "cancel": "Törlés",
         "chats": "Csevegések",
         "contacts": "Kapcsolatok",
         "date": "dátum",
-        "delete": "Töröl",
+        "delete": "Törlés",
         "disable": "letilt",
         "domain": "Tartomány",
         "done": "Kész",
@@ -226,7 +226,9 @@
         "subscription": {
             "status": "Státusz",
             "endDate": "Befejező dátum",
-            "hide": "Elrejtés"
+            "hide": "Elrejtés",
+            "accounts": "Fiókok",
+            "type": "Típus"
         }
     },
     "dashboard": {

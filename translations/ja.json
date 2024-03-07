@@ -29,7 +29,12 @@
             "valid": "有効",
             "license_activated_successfully": "ライセンスが有効化されました",
             "not_valid": "有効ではありません",
-            "endDate": "終了日"
+            "endDate": "終了日",
+            "accounts": "アカウント",
+            "modules": "モジュール",
+            "refresh": "更新する",
+            "type": "種類",
+            "valid_until": "ライセンス終了日時"
         }
     },
     "timezone": {
@@ -381,7 +386,6 @@
         "unlimited": "無制限",
         "url": "URL",
         "domains": "ドメイン",
-        "enable_start_tls": "StartTLSを有効にする",
         "external_active_directory": "外部Active Directory",
         "external_ldap": "外部LDAP",
         "features": "機能",
@@ -1912,7 +1916,8 @@
         "set_global_config": "グローバル構成を設定する",
         "user_can_specify_forwarding_address": "ユーザーは転送アドレスを指定できます",
         "user_can_specify_mail_forwarding_filter": "ユーザーはメール転送フィルターを指定できます",
-        "mail": "メール"
+        "mail": "メール",
+        "abq_status": "ABQ ステータス"
     },
     "connection": {
         "access_key": "アクセスキー",

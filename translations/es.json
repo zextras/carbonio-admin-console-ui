@@ -195,7 +195,7 @@
         "page ": "Has aceptado la solicitud de acceso compartido",
         "page_": "Has aceptado la solicitud de acceso compartido",
         "privacy": "Privacidad",
-        "remove": "Aceptar",
+        "remove": "Remover",
         "save": "Guardar",
         "signature_required": "Completar información de la firma.",
         "snackbar": {
@@ -238,7 +238,6 @@
         "deligated_admin_help_url": "URL de ayuda para el Administrador delegado",
         "domain_quota_settings": "Cuota del dominio",
         "domains": "Dominios",
-        "enable_start_tls": "Activar StartTLS",
         "example_new": "Nuevo ejemplo",
         "external_active_directory": "AD externo",
         "external_ldap": "LDAP externo",
@@ -858,7 +857,7 @@
         "search_for_user_and_clic_to_add": "Busque un usuario y haga clic en AÑADIR.",
         "there_are_no_owners": "No hay propietarios.",
         "who_can_send_mails_to_list ": "¿Quién puede enviar correos a esta Lista?",
-        "label": "Etiqueta",
+        "label": "etiqueta",
         "verify": "Verificar",
         "verify_certificate": "Verificar",
         "Aliases": "Alias",
@@ -1416,7 +1415,12 @@
             "valid": "Válida",
             "license_activated_successfully": "La licencia ha sido activada",
             "not_valid": "No es válida",
-            "endDate": "Fecha de finalización"
+            "endDate": "Fecha de finalización",
+            "accounts": "Cuentas",
+            "modules": "Módulos",
+            "refresh": "Actualizar",
+            "type": "Tipo",
+            "valid_until": "Válida hasta"
         }
     },
     "message": {
@@ -1426,7 +1430,7 @@
             },
             "all_att_saved": "Los adjuntos han sido guardados en la carpeta seleccionada",
             "att_err": "Se produjo un problema al guardar. Intenta nuevamente",
-            "att_saved": "Adjunto guardado en la carpeta seleccionada",
+            "att_saved": "El adjunto se guardó en la carpeta seleccionada",
             "some_att_fails": "Parece que hay un problema al guardar los archivos. Intenta nuevamente"
         },
         "external_images_blocked": "Las imágenes externas han sido bloqueadas para protección ante posible spam"
@@ -1886,8 +1890,8 @@
         "DELETE": "BORRAR",
         "SAVE": "GUARDAR",
         "create": "CREAR",
-        "label": "Etiqueta",
-        "remove": "Aceptar",
+        "label": "etiqueta",
+        "remove": "Remover",
         "send_check": "Enviar",
         "status": "Estado",
         "services": "Servicios",
@@ -1931,7 +1935,8 @@
         "user_can_specify_forwarding_address": "El usuario puede especificar una dirección de reenvío",
         "user_can_specify_mail_forwarding_filter": "El usuario puede especificar un filtro para reenvío",
         "send_as_recipients": "Enviar como (los destinatarios mostrarán este email del remitente {{targetEmail}})",
-        "send_recipients_see_the_mail": "Enviar {{right}} (los destinatarios mostrarán este email del remitente {{targetEmail}})"
+        "send_recipients_see_the_mail": "Enviar {{right}} (los destinatarios mostrarán este email del remitente {{targetEmail}})",
+        "abq_status": "Estado de ABQ"
     },
     "connection": {
         "access_key": "Clave de acceso",
@@ -2197,7 +2202,7 @@
         "settings": "Ajustes",
         "weeks": "Semanas",
         "add": "Aceptar",
-        "remove": "Aceptar",
+        "remove": "Remover",
         "add_client_ip_to_header": "Agregar IP del cliente en el encabezado",
         "add_this_prefix_to_spam_mail_subject": "Agregar prefijo de Spam en el asunto",
         "add_username_to_header": "Agregar nombre de usuario en el encabezado",
