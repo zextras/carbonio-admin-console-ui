@@ -28,7 +28,7 @@
     },
     "label": {
         "status": "Trạng thái",
-        "account": "Tài khoản",
+        "account": "Các Tài khoản",
         "accounts": "Tài khoản",
         "add": "Thêm vào",
         "cancel": "Huỷ",
@@ -100,7 +100,7 @@
         "create": "Tạo",
         "creation_date": "Ngày tạo",
         "default_appointment_visibility": "Hiển thị cuộc hẹn mặc định",
-        "details": "Thông tin chi tiết",
+        "details": "Chi tiết",
         "draft_auto_save_interval": "Khoảng thời gian tự động lưu nháp",
         "email": "Email",
         "enable_automatic_adding_of_contacts": "Cho phép tự động thêm số liên hệ",
@@ -223,8 +223,8 @@
         "volume_available_space": "Dung lượng trống",
         "volume_cancel_button": "HUỶ",
         "volume_compression_thresold": "Ngưỡng nén",
-        "volume_id": "ID tập",
-        "volume_name": "Tên tập",
+        "volume_id": "ID Tập",
+        "volume_name": "Tên Tập",
         "volume_path": "Đường dẫn",
         "volume_type": "Kiểu tập",
         "week_day": {
@@ -632,7 +632,7 @@
         "bucket_notes": "Ghi chú",
         "date": "Ngày",
         "label": "Nhãn",
-        "notifications": "Thông báo",
+        "notifications": "Các thông báo",
         "open": "Mở",
         "search_for_user_and_clic_to_add": "Tìm kiếm một người dùng và bấm vào nút THÊM.",
         "there_are_no_owners": "Không có chủ sở hữu nào ở đây.",
@@ -1463,7 +1463,7 @@
         "days": "Ngày",
         "delete": "Xoá",
         "destination_volume": "Tập đích",
-        "details": "Thông tin chi tiết",
+        "details": "Chi tiết",
         "document": "Văn bản",
         "edit": "Chỉnh sửa",
         "event": "Sự kiện",
@@ -1514,11 +1514,11 @@
     },
     "operations": {
         "copy_btn": "SAO CHÉP",
-        "details": "Thông tin chi tiết",
+        "details": "Chi tiết",
         "done": "Hoàn thành",
         "label": {
             "Deep": "Sâu",
-            "notifications": "Thông báo",
+            "notifications": "Các thông báo",
             "status": "Trạng thái"
         },
         "operations_list_header": {

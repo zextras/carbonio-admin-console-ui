@@ -21,7 +21,12 @@ import { useTranslation } from 'react-i18next';
 import { AccountContext } from './account-context';
 import { useDomainStore } from '../../../../../store/domain/store';
 import Textarea from '../../../../components/textarea';
-import { AccountStatus } from '../../../../utility/utils';
+import {
+	AccountStatus,
+	checkValidUserName,
+	convertToAscii,
+	getModifiedName
+} from '../../../../utility/utils';
 import { AccountType } from '../account-types/account-types';
 
 const CreateAccountDetailSection: FC = () => {
@@ -77,14 +82,6 @@ const CreateAccountDetailSection: FC = () => {
 		},
 		[setAccountDetail]
 	);
-
-	const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
-	const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(name);
-	const convertToAscii = (inputString: string): string => {
-		const normalizedString = inputString.normalize('NFKD');
-		// eslint-disable-next-line no-control-regex
-		return normalizedString.replace(/[^\x00-\x7F]/g, '');
-	};
 
 	const combineName = useMemo(() => {
 		const { sn, initials, givenName, changeNameBool, name } = accountDetail || {};

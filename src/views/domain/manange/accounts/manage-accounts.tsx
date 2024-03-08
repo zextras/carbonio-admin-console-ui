@@ -29,10 +29,11 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './account-context';
+import { AccountType } from './account-types/account-types';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { ABQ_MODE, ACCOUNT, RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -42,6 +43,7 @@ import {
 import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
+import { getCoreAttributes } from '../../../../services/get-core-attributes';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -90,6 +92,8 @@ const ManageAccounts: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('name');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -150,16 +154,26 @@ const ManageAccounts: FC = () => {
 	const headers: any = useMemo(
 		() => [
 			{
-				id: 'email',
+				id: 'name',
 				label: t('label.email', 'Email'),
 				width: '25%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
-				id: 'name',
+				id: 'displayName',
 				label: t('label.person_name', 'Name'),
 				width: '15%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'aliases',
@@ -397,6 +411,7 @@ const ManageAccounts: FC = () => {
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
 				.catch((error) => {
+					setShowEditAccountView(false);
 					createSnackbar({
 						key: 'error',
 						type: 'error',
@@ -616,6 +631,28 @@ const ManageAccounts: FC = () => {
 		});
 	}, []);
 
+	const getABQStatus = useCallback((acc) => {
+		const body = [
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [ABQ_MODE]
+			}
+		];
+		getCoreAttributes(body).then((data) => {
+			if (data?.attributes) {
+				setAccountDetail((prev: AccountType) => ({
+					...prev,
+					abqMode: data?.attributes?.abqMode?.[0]?.value || ''
+				}));
+				setInitAccountDetail((prev: AccountType) => ({
+					...prev,
+					abqMode: data?.attributes?.abqMode?.[0]?.value || ''
+				}));
+			}
+		});
+	}, []);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setShowEditAccountView(true);
@@ -627,12 +664,14 @@ const ManageAccounts: FC = () => {
 			if (isAdvanced) {
 				getListOtp(acc?.name);
 				getCredentialList(acc?.name);
+				getABQStatus(acc?.id);
 			}
 		},
 		[
 			getAccountDetail,
 			getSignatureDetail,
 			getAccountMembership,
+			getABQStatus,
 			getIdentitiesList,
 			getAllUserSession,
 			isAdvanced,
@@ -646,7 +685,16 @@ const ManageAccounts: FC = () => {
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domainName, searchQuery, offset, limit)
+		accountListDirectory(
+			attrs,
+			type,
+			domainName,
+			searchQuery,
+			offset,
+			limit,
+			sortedColumn,
+			sortOrder
+		)
 			.then((data) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -788,15 +836,17 @@ const ManageAccounts: FC = () => {
 				setHasError(true);
 			});
 	}, [
-		STATUS_COLOR,
-		accountUserType,
 		domainName,
-		limit,
-		offset,
-		openDetailView,
 		searchQuery,
-		t,
-		createSnackbar
+		offset,
+		limit,
+		sortedColumn,
+		sortOrder,
+		accountUserType,
+		STATUS_COLOR,
+		openDetailView,
+		createSnackbar,
+		t
 	]);
 
 	const generateSearchFilterQuery = useCallback(

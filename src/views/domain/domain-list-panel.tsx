@@ -401,7 +401,8 @@ const DomainListPanel: FC = () => {
 						(item: ManageOptions) =>
 							item?.id !== RESTORE_ACCOUNT &&
 							item?.id !== ACTIVE_SYNC &&
-							item?.id !== DELEGATES_DOMAIN_ADMINS
+							item?.id !== DELEGATES_DOMAIN_ADMINS &&
+							item?.id !== SECURITY_GROUP
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
@@ -624,18 +625,6 @@ const DomainListPanel: FC = () => {
 				</Container>
 			)}
 			<ListPanelItem
-				title={t('label.details', 'Details')}
-				isListExpanded={isDetailListExpanded}
-				setToggleView={toggleDetailView}
-			/>
-			{isDetailListExpanded && (
-				<ListItems
-					items={detailItems}
-					selectedOperationItem={domainView}
-					setSelectedOperationItem={setDomainView}
-				/>
-			)}
-			<ListPanelItem
 				title={t('domain.manage', 'Manage')}
 				isListExpanded={isManageListExpanded}
 				setToggleView={toggleManageView}
@@ -643,6 +632,18 @@ const DomainListPanel: FC = () => {
 			{isManageListExpanded && (
 				<ListItems
 					items={manageOptions}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
+				/>
+			)}
+			<ListPanelItem
+				title={t('label.details', 'Details')}
+				isListExpanded={isDetailListExpanded}
+				setToggleView={toggleDetailView}
+			/>
+			{isDetailListExpanded && (
+				<ListItems
+					items={detailItems}
 					selectedOperationItem={domainView}
 					setSelectedOperationItem={setDomainView}
 				/>

@@ -992,7 +992,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					</Text>
 				</Container>
 
-				<Container crossAlignment="flex-start" padding={{ bottom: 'large' }}>
+				<Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
 					<Switch
 						label={t('mta.disable_virus_check', 'Disable Virus Check')}
 						value={mtaAntiVirusAndAntispamDetail?.carbonioAmavisDisableVirusCheck}
@@ -1010,7 +1010,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					orientation="horizontal"
 					mainAlignment="space-between"
 					crossAlignment="flex-start"
-					padding={{ bottom: 'extralarge' }}
+					padding={{ bottom: 'large' }}
 					height="auto"
 				>
 					<Container
@@ -1140,7 +1140,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					orientation="horizontal"
 					mainAlignment="space-between"
 					crossAlignment="flex-start"
-					padding={{ bottom: 'extralarge', top: 'extralarge' }}
+					padding={{ bottom: 'extralarge', top: 'large' }}
 					height="auto"
 				>
 					<Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="70%">
@@ -1174,10 +1174,10 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					orientation="horizontal"
 					mainAlignment="space-between"
 					crossAlignment="flex-start"
-					padding={{ bottom: 'extralarge', top: 'extralarge' }}
+					padding={{ bottom: 'extralarge', top: 'large' }}
 					height="auto"
 				>
-					<Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
+					<Container crossAlignment="flex-start" padding={{ right: 'medium' }} height="auto">
 						<Switch
 							label={t(
 								'mta.warn_recipients_when_is_quarantined',
@@ -1193,7 +1193,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 							disabled={!allowSetMTA}
 						/>
 					</Container>
-					<Container crossAlignment="flex-start">
+					<Container crossAlignment="flex-start" height="auto">
 						<Switch
 							label={t('mta.virus_block_encrypted_archive', 'Virus Block Encrypted Archive')}
 							value={mtaAntiVirusAndAntispamDetail?.zimbraVirusBlockEncryptedArchive}
@@ -1208,7 +1208,7 @@ const MTAAntiVirusAndAntiSpam: FC = () => {
 					</Container>
 				</Container>
 
-				<Container crossAlignment="flex-start">
+				<Container crossAlignment="flex-start" height="auto">
 					<Switch
 						label={t(
 							'mta.warn_admins_when_something_quarntined',

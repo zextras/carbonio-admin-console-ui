@@ -1187,8 +1187,8 @@ const CosPreferences: FC = () => {
 										value={cosPreferences?.zimbraPrefMailToasterEnabled === 'TRUE'}
 										onClick={(): void => changeSwitchOption('zimbraPrefMailToasterEnabled')}
 										label={t(
-											'cos.enable_notification_for_new_email',
-											`Enable notification for new email`
+											'cos.enable_new_mail_toast_notification',
+											`Enable New Mail Toast Notification`
 										)}
 										iconColor="primary"
 										disabled={readonlyCOS}
