@@ -22,13 +22,14 @@ import {
 	Table,
 	Divider,
 	Icon,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
-import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { GENERAL_SETTINGS, MOBILE, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -76,6 +77,7 @@ const DomainList: FC = () => {
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const screenMode = useScreenMode();
 
 	const tableRef = useRef(null);
 
@@ -273,7 +275,11 @@ const DomainList: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto'
+				}}
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -305,7 +311,10 @@ const DomainList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 21.25rem)"
+							style={{
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
+								position: 'relative'
+							}}
 							ref={tableRef}
 						>
 							{domainList.length !== 0 && (
@@ -365,6 +374,7 @@ const DomainList: FC = () => {
 									orientation="horizontal"
 									mainAlignment="space-between"
 									width="100%"
+									style={{ position: 'absolute', bottom: '-4rem' }}
 									height="auto"
 								>
 									<Container crossAlignment="flex-start">

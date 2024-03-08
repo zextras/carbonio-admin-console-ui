@@ -403,3 +403,4 @@ export const MTA_SERVER_GENERAL = 'mta_server_general';
 export const PRIMARY = 'primary';
 export const SECONDARY = 'secondary';
 export const INDEX = 'index';
+export const MOBILE = 'mobile';
