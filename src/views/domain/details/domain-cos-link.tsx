@@ -31,6 +31,7 @@ import { Cos } from '../../../../types/cos';
 import { CosMaxAccountValues } from '../../../../types/domain';
 import { HELPDESK_ADMINS, MAX_COS_DISPLAY, TRUE } from '../../../constants';
 import { copyCos } from '../../../services/copy-cos-service';
+import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { getCosList } from '../../../services/search-cos-service';
 import { useDomainStore } from '../../../store/domain/store';
@@ -189,6 +190,9 @@ const DomainCosLink: FC<{
 						hideButton: true,
 						replace: true
 					});
+					if (isGlobalAdmin) {
+						flushCache('domain', 'id', domainId);
+					}
 					const domain: any = data?.domain[0];
 					if (domain) {
 						setDomain(domain);
@@ -252,7 +256,7 @@ const DomainCosLink: FC<{
 				});
 			}
 		},
-		[cosMaxAccountList, createSnackbar, domainId, domainName, setDomain, t]
+		[cosMaxAccountList, createSnackbar, domainId, domainName, isGlobalAdmin, setDomain, t]
 	);
 
 	const onDuplicate = useCallback(
@@ -323,6 +327,9 @@ const DomainCosLink: FC<{
 						hideButton: true,
 						replace: true
 					});
+					if (isGlobalAdmin) {
+						flushCache('domain', 'id', domainId);
+					}
 					const domain: any = data?.domain[0];
 					if (domain) {
 						setDomain(domain);
@@ -382,7 +389,7 @@ const DomainCosLink: FC<{
 				});
 			});
 		},
-		[createSnackbar, domainId, domainName, setDomain, t]
+		[createSnackbar, domainId, domainName, isGlobalAdmin, setDomain, t]
 	);
 
 	const markAsDefaultCos = useCallback(
@@ -413,6 +420,9 @@ const DomainCosLink: FC<{
 						hideButton: true,
 						replace: true
 					});
+					if (isGlobalAdmin) {
+						flushCache('domain', 'id', domainId);
+					}
 					const domain: any = data?.domain[0];
 					if (domain) {
 						setDomain(domain);
@@ -431,7 +441,7 @@ const DomainCosLink: FC<{
 					});
 				});
 		},
-		[createSnackbar, domainId, setDomain, t]
+		[createSnackbar, domainId, isGlobalAdmin, setDomain, t]
 	);
 
 	const removeCosLinkRows = useCallback(

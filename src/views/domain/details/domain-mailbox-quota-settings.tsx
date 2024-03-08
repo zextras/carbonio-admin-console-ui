@@ -31,6 +31,7 @@ import {
 	TOTAL_USED,
 	TRUE
 } from '../../../constants';
+import { flushCache } from '../../../services/flush-cache-service';
 import { getQuotaUsage } from '../../../services/get-quota-usage-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
@@ -395,6 +396,9 @@ const DomainMailboxQuotaSetting: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', domainData.zimbraId);
+				}
 				const domain: any = data?.domain[0];
 				if (domain) {
 					setDomain(domain);

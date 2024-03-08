@@ -28,12 +28,14 @@ import {
 	Icon,
 	Popper
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, CreateSnackbarType, objectType } from '../../../../types';
-import { CHECK_OK, DISABLED, ENABLED } from '../../../constants';
+import { CHECK_OK, DISABLED, ENABLED, TRUE } from '../../../constants';
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
+import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../store/domain/store';
@@ -99,6 +101,16 @@ const DomainAuthentication: FC = () => {
 	const [filterOpen, setFilterOpen] = useState(false);
 	const ldapUrlIconRef: RefObject<HTMLDivElement> = useRef(null);
 	const filterIconRef: RefObject<HTMLDivElement> = useRef(null);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [zimbraFeatureResetPasswordStatus, setZimbraFeatureResetPasswordStatus] =
 		useState<boolean>(false);
@@ -420,6 +432,9 @@ const DomainAuthentication: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', domainAuthData.zimbraId);
+				}
 				const domain: objectType = data?.domain[0];
 				if (domain) {
 					setDomain(domain);
