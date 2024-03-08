@@ -355,7 +355,10 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSwitch
 						subValue={accountDetail?.zimbraPrefMailToasterEnabled}
 						onChange={changeSwitchOption}
-						label={t('account_details.enable_toast_for_new_emails', `Enable toast for new emails`)}
+						label={t(
+							'account_details.enable_new_mail_toast_notification',
+							`Enable New Mail Toast Notification`
+						)}
 						iconColor="primary"
 						inheritedValue={cosDetail.zimbraPrefMailToasterEnabled}
 						fromSubValue={accSpecificDetail?.zimbraPrefMailToasterEnabled}
@@ -437,36 +440,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					/>
 				</Row>
 			</Row>
-			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
-					<InheritedSwitch
-						subValue={accountDetail?.zimbraPrefNewMailNotificationEnabled}
-						onChange={changeSwitchOption}
-						label={t(
-							'account_details.enable_address_for_new_email_notifications',
-							`Enable address for new email notifications`
-						)}
-						iconColor="primary"
-						inheritedValue={cosDetail.zimbraPrefNewMailNotificationEnabled}
-						fromSubValue={accSpecificDetail?.zimbraPrefNewMailNotificationEnabled}
-						inputName={'zimbraPrefNewMailNotificationEnabled'}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefNewMailNotificationEnabled')}
-					/>
-				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					<InheritedInput
-						label={t('label.enabed_address', 'Enabed Address')}
-						subValue={accountDetail.zimbraPrefNewMailNotificationAddress || ''}
-						inheritedValue={cosDetail.zimbraPrefNewMailNotificationAddress || ''}
-						fromSubValue={accSpecificDetail?.zimbraPrefNewMailNotificationAddress}
-						background="gray5"
-						inputName="zimbraPrefNewMailNotificationAddress"
-						onChange={changeAccDetail}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefNewMailNotificationAddress')}
-						disabled={accountDetail?.zimbraPrefNewMailNotificationEnabled !== 'TRUE'}
-					/>
-				</Row>
-			</Row>
+
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch

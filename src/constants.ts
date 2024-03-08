@@ -399,6 +399,10 @@ export const paginationItems = [
 ];
 export const ZIMBRA_MTA_SMTPD_SENDER_LOGIN_MAPS = 'zimbraMtaSmtpdSenderLoginMaps';
 export const HELPDESK_ADMINS = '__helpdesk_admins';
+export const MTA_SERVER_GENERAL = 'mta_server_general';
+export const PRIMARY = 'primary';
+export const SECONDARY = 'secondary';
+export const INDEX = 'index';
 export const DOMAINS_ACCOUNT_QUICK_ACCESS = 'domains_account_qa';
 export const DOMAINS_MAILINGLIST_QUICK_ACCESS = 'domains_mailinglist_qa';
 export const NOTIFICATIONS_DATABASE = 'notifications_db';

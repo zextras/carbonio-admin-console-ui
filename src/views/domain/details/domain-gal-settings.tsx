@@ -22,6 +22,7 @@ import {
 	Tooltip,
 	Table
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -251,6 +252,16 @@ const DomainGalSettings: FC = () => {
 	const [openAccModel, setOpenAccModel] = useState<boolean>(false);
 	const [openDistroyModel, setOpenDistroyModel] = useState<boolean>(false);
 	const [serverList, setServerList] = useState<AccountDataType[]>([]);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const closeHandler = (): void => {
 		setOpenAccModel(false);
@@ -665,6 +676,9 @@ const DomainGalSettings: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', domainId);
+				}
 			});
 		if (zimbraGalAccountIdArray?.length !== 0) {
 			// eslint-disable-next-line array-callback-return

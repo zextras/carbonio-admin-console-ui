@@ -44,7 +44,13 @@ import Paging from '../../../../components/paging';
 import Textarea from '../../../../components/textarea';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import { localeList, AccountStatus, ABQStatus } from '../../../../utility/utils';
+import {
+	localeList,
+	AccountStatus,
+	ABQStatus,
+	GbToBytes,
+	BytesToGB
+} from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
@@ -138,7 +144,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 
 	useEffect(() => {
 		setAccountQuota(
-			accountDetail.zimbraMailQuota ? (accountDetail.zimbraMailQuota / 1048576).toString() : ''
+			accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toString() : ''
 		);
 	}, [accountDetail?.zimbraMailQuota]);
 
@@ -173,7 +179,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 		(e) => {
 			setAccountDetail((prev: any) => ({
 				...prev,
-				[e.target.name]: (Number(e.target.value) * 1048576).toString()
+				[e.target.name]: GbToBytes(e.target.value).toString()
 			}));
 		},
 		[setAccountDetail]
@@ -940,14 +946,14 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<InheritedInput
-						label={t('label.account_quota_mb', 'Account Quota (MB)')}
+						label={t('label.account_quota_gb', 'Account Quota (GB)')}
 						subValue={accountQuota}
 						inheritedValue={
-							cosDetail.zimbraMailQuota ? (cosDetail.zimbraMailQuota / 1048576).toString() : ''
+							cosDetail.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toString() : ''
 						}
 						fromSubValue={
 							accSpecificDetail.zimbraMailQuota
-								? (accSpecificDetail.zimbraMailQuota / 1048576).toString()
+								? BytesToGB(accSpecificDetail.zimbraMailQuota).toString()
 								: ''
 						}
 						background="gray5"
