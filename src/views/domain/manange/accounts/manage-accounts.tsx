@@ -17,7 +17,8 @@ import {
 	Button,
 	IconButton,
 	useSnackbar,
-	Tooltip
+	Tooltip,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -33,7 +34,7 @@ import { AccountType } from './account-types/account-types';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
-import { ABQ_MODE, ACCOUNT, RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
+import { ABQ_MODE, ACCOUNT, RECORD_DISPLAY_LIMIT, ASC, DESC, MOBILE } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -94,6 +95,7 @@ const ManageAccounts: FC = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('name');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+	const screenMode = useScreenMode();
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -964,7 +966,12 @@ const ManageAccounts: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto',
+					minHeight: '10rem'
+				}}
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -995,7 +1002,7 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: 'calc(100vh - 21.25rem)',
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 							ref={tableRef}
@@ -1007,7 +1014,7 @@ const ManageAccounts: FC = () => {
 								multiSelect={false}
 								style={{
 									overflow: 'auto',
-									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
+									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
 								}}
 								RowFactory={CustomRowFactory}
 								HeaderFactory={CustomHeaderFactory}
