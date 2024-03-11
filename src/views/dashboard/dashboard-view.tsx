@@ -35,7 +35,8 @@ import {
 	SERVERS_LIST,
 	STORAGES_ROUTE_ID,
 	NOTIFICATIONS_DATABASE,
-	STORAGES_DATABASE
+	STORAGES_DATABASE,
+	DASHBOARD_TABLES
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
@@ -130,13 +131,13 @@ const Dashboard: FC = () => {
 	}, []);
 
 	const goToMailStoreServerList = useCallback(() => {
-		matomo.trackEvent('DashboardTables', STORAGES_DATABASE);
+		matomo.trackEvent(DASHBOARD_TABLES, STORAGES_DATABASE);
 		history.push(`/${MANAGE}/${STORAGES_ROUTE_ID}/${SERVERS_LIST}`);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);
 
 	const goToMailNotificationt = useCallback(() => {
-		matomo.trackEvent('DashboardTables', NOTIFICATIONS_DATABASE);
+		matomo.trackEvent(DASHBOARD_TABLES, NOTIFICATIONS_DATABASE);
 		history.push(`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}/${LIST}`);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);
