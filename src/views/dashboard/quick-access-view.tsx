@@ -36,7 +36,7 @@ const QuickAccess: FC<{
 	const { userId } = useConfigStore((state) => state);
 	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 
-	const handleClickedQA = (item: string): void => {
+	const handleClickedQuickAccess = (item: string): void => {
 		matomo.trackEvent(
 			'Quick Access',
 			`${item === 'account' ? DOMAINS_ACCOUNT_QUICK_ACCESS : DOMAINS_MAILINGLIST_QUICK_ACCESS}`
@@ -121,7 +121,7 @@ const QuickAccess: FC<{
 										crossAlignment="flex-start"
 										padding={{ all: 'large' }}
 										onClick={(): void => {
-											handleClickedQA(item?.operation);
+											handleClickedQuickAccess(item?.operation);
 										}}
 									>
 										<Text color="gray6" overflow="break-word" weight="light" size="medium">
@@ -133,7 +133,7 @@ const QuickAccess: FC<{
 										crossAlignment="flex-end"
 										padding={{ all: 'large' }}
 										onClick={(): void => {
-											handleClickedQA(item?.operation);
+											handleClickedQuickAccess(item?.operation);
 										}}
 									>
 										<Icon icon={item?.bottomIcon} size="medium" color="gray6" />
