@@ -38,7 +38,8 @@ import {
 	NOTIFICATION_INFORMATION,
 	NOTIFICATION_WARNING,
 	DESC,
-	NOTIFICATION_TABLE_DATABASE
+	NOTIFICATION_TABLE_DATABASE,
+	DASHBOARD_TABLES
 } from '../../../constants';
 import MatomoTracker from '../../../matomo-tracker';
 import { getAllNotifications } from '../../../services/get-all-notifications';
@@ -284,7 +285,7 @@ const NotificationView: FC<{
 
 	const handleClick = useCallback(
 		(event: any) => {
-			matomo.trackEvent('DashboardTables', NOTIFICATION_TABLE_DATABASE);
+			matomo.trackEvent(DASHBOARD_TABLES, NOTIFICATION_TABLE_DATABASE);
 			clearTimeout(timer.current);
 			if (event.detail === 1) {
 				timer.current = setTimeout(doClickAction, 300);

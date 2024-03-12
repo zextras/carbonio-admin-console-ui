@@ -10,7 +10,11 @@ import { Container, Text, Icon, Divider, ContainerProps } from '@zextras/carboni
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { DOMAINS_ACCOUNT_QUICK_ACCESS, DOMAINS_MAILINGLIST_QUICK_ACCESS } from '../../constants';
+import {
+	DOMAINS_ACCOUNT_QUICK_ACCESS,
+	DOMAINS_MAILINGLIST_QUICK_ACCESS,
+	QUICK_ACTIONS
+} from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { useConfigStore } from '../../store/config/store';
 import ListRow from '../list/list-row';
@@ -38,7 +42,7 @@ const QuickAccess: FC<{
 
 	const handleClickedQuickAccess = (item: string): void => {
 		matomo.trackEvent(
-			'Quick Access',
+			QUICK_ACTIONS,
 			`${item === 'account' ? DOMAINS_ACCOUNT_QUICK_ACCESS : DOMAINS_MAILINGLIST_QUICK_ACCESS}`
 		);
 		openOperationView(item);
