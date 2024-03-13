@@ -46,7 +46,8 @@ import {
 	ACCOUNTS_MAIN_ACTION,
 	ACCOUNTS_TABLE_ITEM,
 	ACCOUNTS_SEARCH_TABLE,
-	DOMAIN_ACCOUNTS_NEXT_TABLE
+	DOMAIN_ACCOUNTS_NEXT_TABLE,
+	BACKUP_ENABLED
 } from '../../../../constants';
 import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -386,98 +387,6 @@ const ManageAccounts: FC = () => {
 			setCosDetail({ ...obj });
 		});
 	}, []);
-	const getAccountDetail = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(id): void => {
-			getAccountRequest(id, '', 1)
-				.then((data: any) => {
-					const obj: any = {};
-					// eslint-disable-next-line array-callback-return
-					data?.account?.[0]?.a?.forEach((ele: any) => {
-						if (obj[ele.n]) {
-							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
-						} else {
-							obj[ele.n] = ele._content;
-						}
-					});
-					if (obj.userPassword) {
-						obj.password = '******';
-						obj.repeatPassword = '******';
-					} else {
-						obj.password = '';
-						obj.repeatPassword = '';
-					}
-					obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
-						? obj.zimbraPrefMailForwardingAddress
-						: '';
-					obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
-						? obj.zimbraPrefCalendarForwardInvitesTo
-						: '';
-
-					obj.name = data?.account?.[0]?.name;
-					obj.domainName = data?.account?.[0]?.name.split('@')[1];
-					if (obj.zimbraIsAdminAccount === undefined) {
-						obj.zimbraIsAdminAccount = 'FALSE';
-					}
-					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
-						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
-					}
-					setInitAccountDetail({ ...obj });
-					setSelectedAccount({ ...obj, id });
-					setAccountDetail({ ...obj });
-					getAccountSpecificDetail(id);
-					getCosDetail(obj.zimbraCOSId);
-				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
-				.catch((error) => {
-					setShowEditAccountView(false);
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		},
-		[getAccountSpecificDetail, getCosDetail, createSnackbar, t]
-	);
-	const getAccountMembership = useCallback(
-		(id): void => {
-			getAccountMembershipRequest(id)
-				.then((data: any) => {
-					const directMemArr: any[] = [];
-					const inDirectMemArr: any[] = [];
-					// eslint-disable-next-line array-callback-return
-					data?.dl?.forEach((ele: any) => {
-						if (ele?.via)
-							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
-						else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
-					});
-
-					setDirectMemberList(directMemArr);
-					setInDirectMemberList(inDirectMemArr);
-				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		},
-		[setDirectMemberList, setInDirectMemberList, t, createSnackbar]
-	);
 	const getListOtp = useCallback(
 		(id): void => {
 			fetchSoap('zextras', {
@@ -537,6 +446,145 @@ const ManageAccounts: FC = () => {
 			}
 		});
 	}, []);
+	const getABQStatus = useCallback((acc) => {
+		const body = [
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [ABQ_MODE]
+			},
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [BACKUP_ENABLED]
+			}
+		];
+		getCoreAttributes(body).then((data) => {
+			if (data?.attributes) {
+				setAccountDetail((prev: AccountType) => ({
+					...prev,
+					...{
+						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+					}
+				}));
+				setInitAccountDetail((prev: AccountType) => ({
+					...prev,
+					...{
+						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+					}
+				}));
+			}
+		});
+	}, []);
+	const getAccountDetail = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
+		(id): void => {
+			getAccountRequest(id, '', 1)
+				.then((data: any) => {
+					const obj: any = {};
+					// eslint-disable-next-line array-callback-return
+					data?.account?.[0]?.a?.forEach((ele: any) => {
+						if (obj[ele.n]) {
+							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
+						} else {
+							obj[ele.n] = ele._content;
+						}
+					});
+					if (obj.userPassword) {
+						obj.password = '******';
+						obj.repeatPassword = '******';
+					} else {
+						obj.password = '';
+						obj.repeatPassword = '';
+					}
+					obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
+						? obj.zimbraPrefMailForwardingAddress
+						: '';
+					obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
+						? obj.zimbraPrefCalendarForwardInvitesTo
+						: '';
+
+					obj.name = data?.account?.[0]?.name;
+					obj.domainName = data?.account?.[0]?.name.split('@')[1];
+					if (obj.zimbraIsAdminAccount === undefined) {
+						obj.zimbraIsAdminAccount = 'FALSE';
+					}
+					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
+						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
+					}
+					setInitAccountDetail({ ...obj });
+					setSelectedAccount({ ...obj, id });
+					setAccountDetail({ ...obj });
+					getAccountSpecificDetail(id);
+					getCosDetail(obj.zimbraCOSId);
+					if (isAdvanced) {
+						getListOtp(data?.account?.[0]?.name);
+						getCredentialList(data?.account?.[0]?.name);
+						getABQStatus(id);
+					}
+				})
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				.catch((error) => {
+					setShowEditAccountView(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[
+			getAccountSpecificDetail,
+			getCosDetail,
+			isAdvanced,
+			getListOtp,
+			getCredentialList,
+			getABQStatus,
+			createSnackbar,
+			t
+		]
+	);
+	const getAccountMembership = useCallback(
+		(id): void => {
+			getAccountMembershipRequest(id)
+				.then((data: any) => {
+					const directMemArr: any[] = [];
+					const inDirectMemArr: any[] = [];
+					// eslint-disable-next-line array-callback-return
+					data?.dl?.forEach((ele: any) => {
+						if (ele?.via)
+							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
+						else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
+					});
+
+					setDirectMemberList(directMemArr);
+					setInDirectMemberList(inDirectMemArr);
+				})
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[setDirectMemberList, setInDirectMemberList, t, createSnackbar]
+	);
+
 	const getFolderList = useCallback(
 		(acc, delegateList): void => {
 			postSoapFetchRequest(
@@ -650,28 +698,6 @@ const ManageAccounts: FC = () => {
 		});
 	}, []);
 
-	const getABQStatus = useCallback((acc) => {
-		const body = [
-			{
-				configType: ACCOUNT,
-				configName: [acc],
-				attrName: [ABQ_MODE]
-			}
-		];
-		getCoreAttributes(body).then((data) => {
-			if (data?.attributes) {
-				setAccountDetail((prev: AccountType) => ({
-					...prev,
-					abqMode: data?.attributes?.abqMode?.[0]?.value || ''
-				}));
-				setInitAccountDetail((prev: AccountType) => ({
-					...prev,
-					abqMode: data?.attributes?.abqMode?.[0]?.value || ''
-				}));
-			}
-		});
-	}, []);
-
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setShowEditAccountView(true);
@@ -680,22 +706,13 @@ const ManageAccounts: FC = () => {
 			getAccountMembership(acc?.id);
 			getIdentitiesList(acc);
 			getAllUserSession(acc?.name);
-			if (isAdvanced) {
-				getListOtp(acc?.name);
-				getCredentialList(acc?.name);
-				getABQStatus(acc?.id);
-			}
 		},
 		[
 			getAccountDetail,
 			getSignatureDetail,
 			getAccountMembership,
-			getABQStatus,
 			getIdentitiesList,
-			getAllUserSession,
-			isAdvanced,
-			getListOtp,
-			getCredentialList
+			getAllUserSession
 		]
 	);
 

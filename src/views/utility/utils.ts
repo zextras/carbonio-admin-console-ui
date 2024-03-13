@@ -893,6 +893,17 @@ export const ABQStatus = (t: TFunction): Array<{ value: string; label: string }>
 	}
 ];
 
+export const backupEnabledStatus = (t: TFunction): Array<{ value: boolean; label: string }> => [
+	{
+		label: t('account_details.yes', 'Yes'),
+		value: true
+	},
+	{
+		label: t('account_details.no', 'No'),
+		value: false
+	}
+];
+
 export const MeasureUnitItems = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('domain.unit_measure_days', 'Days'),

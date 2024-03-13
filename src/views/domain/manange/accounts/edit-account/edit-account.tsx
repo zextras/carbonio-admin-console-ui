@@ -57,7 +57,8 @@ import {
 	IS_DEFAULT_USER_NAME,
 	CLOSED,
 	CONFIG,
-	ABQ_MODE
+	ABQ_MODE,
+	BACKUP_ENABLED
 } from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
@@ -415,7 +416,9 @@ const EditAccount: FC<{
 						key: 'success',
 						type: 'success',
 						label: t(
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							'label.the_last_changes_has_been_saved_successfully',
+							// eslint-disable-next-line sonarjs/no-duplicate-string
 							'Changes have been saved successfully'
 						),
 						autoHideTimeout: 3000,
@@ -444,16 +447,38 @@ const EditAccount: FC<{
 				setShowEditAccountView(false);
 			}
 		}
-		if (modifiedKeys.includes(ABQ_MODE)) {
-			const body: any = {
-				abqMode: {
+		if (modifiedKeys.includes(ABQ_MODE) || modifiedKeys.includes(BACKUP_ENABLED)) {
+			const body: any = {};
+			if (modifiedKeys.includes(ABQ_MODE)) {
+				body.abqMode = {
 					value: accountDetail.abqMode,
 					objectName: accountDetail.zimbraId,
 					configType: ACCOUNT
-				}
-			};
+				};
+			}
+			if (modifiedKeys.includes(BACKUP_ENABLED)) {
+				body.backupEnabled = {
+					value: accountDetail.backupEnabled,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				};
+			}
+
 			setCoreAttributes(body)
-				.then()
+				.then(() => {
+					createSnackbar({
+						key: 'success',
+						type: 'success',
+						label: t(
+							'label.the_last_changes_has_been_saved_successfully',
+							'Changes have been saved successfully'
+						),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+					setIsLoading(false);
+				})
 				.catch((error) => {
 					createSnackbar({
 						key: 'error',
@@ -467,6 +492,7 @@ const EditAccount: FC<{
 					});
 					setIsLoading(false);
 				});
+			remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
 			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
 		}
 		const deleteAliasArr = differenceBy(
