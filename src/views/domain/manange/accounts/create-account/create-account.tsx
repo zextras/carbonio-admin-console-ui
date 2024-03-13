@@ -15,8 +15,8 @@ import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
 import {
 	ACCOUNTS_ACTIONS,
-	DOMAIN_ACCOUNTS_CANCEL,
-	DOMAIN_ACCOUNTS_SAVE
+	CREATE_NOOTP_NOADMIN,
+	CANCEL_CREATE_ACCOUNT
 } from '../../../../../constants';
 import MatomoTracker from '../../../../../matomo-tracker';
 import { createAccountRequest } from '../../../../../services/create-account';
@@ -67,7 +67,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 			divider
 			showClose
 			onClose={(): void => {
-				matomo.trackEvent(ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CANCEL);
+				matomo.trackEvent(ACCOUNTS_ACTIONS, CANCEL_CREATE_ACCOUNT);
 				setToggleWizardSection(false);
 			}}
 		>
@@ -366,7 +366,7 @@ const CreateAccount: FC<{
 						icon="CloseOutline"
 						iconPlacement="right"
 						onClick={(): void => {
-							matomo.trackEvent(ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CANCEL);
+							matomo.trackEvent(ACCOUNTS_ACTIONS, CANCEL_CREATE_ACCOUNT);
 							setShowCreateAccountView(false);
 						}}
 					/>
@@ -378,7 +378,7 @@ const CreateAccount: FC<{
 						icon="PersonOutline"
 						iconPlacement="right"
 						onClick={(): void => {
-							matomo.trackEvent(ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_SAVE);
+							matomo.trackEvent(ACCOUNTS_ACTIONS, CREATE_NOOTP_NOADMIN);
 							setAccountCreate('create');
 						}}
 					/>
