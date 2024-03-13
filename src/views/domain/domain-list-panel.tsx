@@ -44,7 +44,14 @@ import {
 	DISCLAIMER,
 	GLOBAL_SETTINGS_ROUTE,
 	IS_DETAIL_LIST_EXPANDED,
-	IS_MANAGE_LIST_EXPANDED
+	IS_MANAGE_LIST_EXPANDED,
+	SECONDARY_BAR,
+	SECONDARY_BAR_GLOBAL_SETTINGS,
+	SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
+	SECONDARY_BAR_GLOBAL_DELEGATES,
+	SECONDARY_BAR_GLOBAL_QUARANTINE,
+	SECONDARY_BAR_GLOBAL_DOMAINS,
+	SECONDARY_BAR_GLOBAL_2FA
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -234,36 +241,42 @@ const DomainListPanel: FC = () => {
 		[setDomainView]
 	);
 
+	const getTrakingDetials = (dView: string): any => {
+		const value = dView.split('/');
+		if (dView === GLOBAL_SETTINGS_ROUTE) {
+			globalCarbonioSendAnalytics &&
+				matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_SETTINGS);
+		} else if (dView === GLOBAL_WHITELABEL_SETTINGS) {
+			globalCarbonioSendAnalytics &&
+				matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS);
+		} else if (dView === GLOBAL_2FA_ROUTE) {
+			globalCarbonioSendAnalytics && matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_2FA);
+		} else if (dView === GLOBAL_DOMAIN_ROUTE) {
+			globalCarbonioSendAnalytics && matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_DOMAINS);
+		} else if (dView === GLOBAL_QUARANTINE_ROUTE) {
+			globalCarbonioSendAnalytics &&
+				matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_QUARANTINE);
+		} else if (dView === GLOBAL_DELEGATES_ROUTE) {
+			globalCarbonioSendAnalytics &&
+				matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_DELEGATES);
+		}
+		return value[0] === GLOBAL_ROUTE;
+	};
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
-		if (isDomainSelect && domainId) {
+		if (getTrakingDetials(domainView)) {
+			replaceHistory(`/${domainView}`);
+		} else if (isDomainSelect && domainId) {
 			if (domainView) {
-				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
-				if (domainView === GLOBAL_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_SETTINGS_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_WHITELABEL_SETTINGS) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_2FA_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_DOMAIN_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_QUARANTINE_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_DELEGATES_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else {
-					replaceHistory(`/${domainId}/${domainView}`);
-				}
+				replaceHistory(`/${domainId}/${domainView}`);
 			} else {
-				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
 				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 			}
-		} else if (domainView) {
-			globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
+		} else {
 			replaceHistory(`/${domainView}`);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDomainSelect, domainId, domainView, matomo, globalCarbonioSendAnalytics]);
 
 	const detailOptions = useMemo(
@@ -486,6 +499,7 @@ const DomainListPanel: FC = () => {
 			if (searchDomainName === '') {
 				setIsDomainListExpand(!isDomainListExpand);
 			} else {
+				setDomainId('');
 				setSearchDomainName('');
 				setIsDomainSelect(false);
 			}
