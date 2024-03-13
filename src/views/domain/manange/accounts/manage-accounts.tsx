@@ -41,8 +41,15 @@ import {
 	ASC,
 	DESC,
 	MOBILE,
+	ACCOUNTS_ACTIONS,
+	DOMAIN_ACCOUNTS_CREATE,
+	ACCOUNTS_MAIN_ACTION,
+	ACCOUNTS_TABLE_ITEM,
+	ACCOUNTS_SEARCH_TABLE,
+	DOMAIN_ACCOUNTS_NEXT_TABLE,
 	BACKUP_ENABLED
 } from '../../../../constants';
+import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -57,6 +64,7 @@ import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import { useConfigStore } from '../../../../store/config/store';
 import { useDomainStore } from '../../../../store/domain/store';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -77,6 +85,8 @@ const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
@@ -705,6 +715,12 @@ const ManageAccounts: FC = () => {
 			getAllUserSession
 		]
 	);
+
+	const handleClickTableRow = (item: any): void => {
+		matomo.trackEvent(ACCOUNTS_MAIN_ACTION, ACCOUNTS_TABLE_ITEM);
+		openDetailView(item);
+	};
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
@@ -749,7 +765,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="regular"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.name || ' '}
@@ -760,7 +776,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="light"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.displayName || <>&nbsp;</>}
@@ -781,7 +797,7 @@ const ManageAccounts: FC = () => {
 													key={item?.id}
 													color="#828282"
 													onClick={(): void => {
-														openDetailView(item);
+														handleClickTableRow(item);
 													}}
 												>
 													{
@@ -797,7 +813,7 @@ const ManageAccounts: FC = () => {
 												color="#828282"
 												weight="light"
 												onClick={(): void => {
-													openDetailView(item);
+													handleClickTableRow(item);
 												}}
 											>
 												0
@@ -811,7 +827,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="light"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{accountUserType(item)}
@@ -822,7 +838,7 @@ const ManageAccounts: FC = () => {
 									key={item?.id}
 									color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
@@ -834,7 +850,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									onClick={(event: { stopPropagation: () => void }): void => {
 										event.stopPropagation();
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.description || <>&nbsp;</>}
@@ -861,6 +877,7 @@ const ManageAccounts: FC = () => {
 				});
 				setHasError(true);
 			});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		domainName,
 		searchQuery,
@@ -952,6 +969,10 @@ const ManageAccounts: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const nextPage = (): void => {
+		matomo.trackEvent(ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
+	};
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -974,6 +995,7 @@ const ManageAccounts: FC = () => {
 									backgroundColor="primary"
 									icon="Plus"
 									onClick={(): void => {
+										matomo.trackEvent(ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CREATE);
 										setShowCreateAccountView(true);
 									}}
 								/>
@@ -1017,6 +1039,9 @@ const ManageAccounts: FC = () => {
 										setSearchString(e.target.value);
 									}}
 									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+									onFocus={(): void => {
+										matomo.trackEvent(ACCOUNTS_MAIN_ACTION, ACCOUNTS_SEARCH_TABLE);
+									}}
 								/>
 							</Container>
 						</Row>
@@ -1100,7 +1125,12 @@ const ManageAccounts: FC = () => {
 									height="auto"
 								>
 									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+										<Paging
+											totalItem={totalAccount}
+											setOffset={setOffset}
+											pageSize={limit}
+											nextPage={nextPage}
+										/>
 									</Container>
 									<Container
 										crossAlignment="flex-end"
