@@ -20,6 +20,8 @@ const InheritedInput: FC<{
 	disabled?: boolean;
 	hasError?: boolean;
 	pref?: any;
+	onClick?: any;
+	onFocus?: any;
 }> = ({
 	label,
 	subValue,
@@ -31,7 +33,9 @@ const InheritedInput: FC<{
 	fromSubValue,
 	disabled = false,
 	hasError = false,
-	pref = {}
+	pref = {},
+	onClick,
+	onFocus
 }) => {
 	const [t] = useTranslation();
 	return (
@@ -44,6 +48,12 @@ const InheritedInput: FC<{
 				onChange={onChange}
 				disabled={disabled}
 				hasError={hasError}
+				onClick={(): void => {
+					disabled && onClick && onClick();
+				}}
+				onFocus={(): void => {
+					!disabled && onFocus && onFocus();
+				}}
 				CustomIcon={(): any => (
 					<>
 						{fromSubValue ? (
