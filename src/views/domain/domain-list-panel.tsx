@@ -243,23 +243,20 @@ const DomainListPanel: FC = () => {
 
 	const getTrakingDetials = (dView: string): any => {
 		const value = dView.split('/');
-		if (dView === GLOBAL_SETTINGS_ROUTE) {
-			globalCarbonioSendAnalytics &&
-				matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_SETTINGS);
-		} else if (dView === GLOBAL_WHITELABEL_SETTINGS) {
-			globalCarbonioSendAnalytics &&
-				matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS);
-		} else if (dView === GLOBAL_2FA_ROUTE) {
-			globalCarbonioSendAnalytics && matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_2FA);
-		} else if (dView === GLOBAL_DOMAIN_ROUTE) {
-			globalCarbonioSendAnalytics && matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_DOMAINS);
-		} else if (dView === GLOBAL_QUARANTINE_ROUTE) {
-			globalCarbonioSendAnalytics &&
-				matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_QUARANTINE);
-		} else if (dView === GLOBAL_DELEGATES_ROUTE) {
-			globalCarbonioSendAnalytics &&
-				matomo.trackEvent(SECONDARY_BAR, SECONDARY_BAR_GLOBAL_DELEGATES);
+		const analyticsMap: { [key: string]: string } = {
+			[GLOBAL_SETTINGS_ROUTE]: SECONDARY_BAR_GLOBAL_SETTINGS,
+			[GLOBAL_WHITELABEL_SETTINGS]: SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
+			[GLOBAL_2FA_ROUTE]: SECONDARY_BAR_GLOBAL_2FA,
+			[GLOBAL_DOMAIN_ROUTE]: SECONDARY_BAR_GLOBAL_DOMAINS,
+			[GLOBAL_QUARANTINE_ROUTE]: SECONDARY_BAR_GLOBAL_QUARANTINE,
+			[GLOBAL_DELEGATES_ROUTE]: SECONDARY_BAR_GLOBAL_DELEGATES
+		};
+
+		const event = analyticsMap[dView];
+		if (event && globalCarbonioSendAnalytics) {
+			matomo.trackEvent(SECONDARY_BAR, event);
 		}
+
 		return value[0] === GLOBAL_ROUTE;
 	};
 
