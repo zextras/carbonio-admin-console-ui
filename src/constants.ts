@@ -367,6 +367,7 @@ export const IS_MANAGE_LIST_EXPANDED = 'isManageListExpanded';
 export const IS_GLOBAL_LIST_EXPANDED = 'isGlobalListExpanded';
 export const AMAVIS_DISCLAIMER_OPTIONS = 'amavisDisclaimerOptions';
 export const ABQ_MODE = 'abqMode';
+export const BACKUP_ENABLED = 'backupEnabled';
 export const PERMISSIVE = 'Permissive';
 export const INTERACTIVE = 'Interactive';
 export const STRICT = 'Strict';
