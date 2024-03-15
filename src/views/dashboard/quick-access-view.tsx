@@ -4,12 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC } from 'react';
+import React, { FC, useMemo } from 'react';
 
 import { Container, Text, Icon, Divider, ContainerProps } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
+import {
+	DOMAINS_ACCOUNT_QUICK_ACCESS,
+	DOMAINS_MAILINGLIST_QUICK_ACCESS,
+	QUICK_ACTIONS
+} from '../../constants';
+import MatomoTracker from '../../matomo-tracker';
+import { useConfigStore } from '../../store/config/store';
 import ListRow from '../list/list-row';
 
 interface ContainerExtendProps extends ContainerProps {
@@ -30,6 +37,16 @@ const QuickAccess: FC<{
 	domainName: string;
 }> = ({ quickAccessItems, openOperationView, domainName }) => {
 	const [t] = useTranslation();
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
+
+	const handleClickedQuickAccess = (item: string): void => {
+		matomo.trackEvent(
+			QUICK_ACTIONS,
+			`${item === 'account' ? DOMAINS_ACCOUNT_QUICK_ACCESS : DOMAINS_MAILINGLIST_QUICK_ACCESS}`
+		);
+		openOperationView(item);
+	};
 	return (
 		<Container
 			background="gray6"
@@ -108,7 +125,7 @@ const QuickAccess: FC<{
 										crossAlignment="flex-start"
 										padding={{ all: 'large' }}
 										onClick={(): void => {
-											openOperationView(item?.operation);
+											handleClickedQuickAccess(item?.operation);
 										}}
 									>
 										<Text color="gray6" overflow="break-word" weight="light" size="medium">
@@ -120,7 +137,7 @@ const QuickAccess: FC<{
 										crossAlignment="flex-end"
 										padding={{ all: 'large' }}
 										onClick={(): void => {
-											openOperationView(item?.operation);
+											handleClickedQuickAccess(item?.operation);
 										}}
 									>
 										<Icon icon={item?.bottomIcon} size="medium" color="gray6" />

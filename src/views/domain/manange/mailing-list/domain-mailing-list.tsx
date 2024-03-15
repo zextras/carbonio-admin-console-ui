@@ -16,7 +16,8 @@ import {
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -33,7 +34,8 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE,
 	ASC,
-	DESC
+	DESC,
+	MOBILE
 } from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
@@ -71,6 +73,7 @@ const DomainMailingList: FC = () => {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+	const screenMode = useScreenMode();
 
 	const mailingListStatusFilter: any = useMemo(
 		() => [
@@ -658,7 +661,11 @@ const DomainMailingList: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto'
+				}}
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -693,7 +700,7 @@ const DomainMailingList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: 'calc(100vh - 21.25rem)'
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)'
 							}}
 						>
 							<Table
@@ -703,7 +710,7 @@ const DomainMailingList: FC = () => {
 								multiSelect={false}
 								style={{
 									overflow: 'auto',
-									height: isRequestInProgress || mailingList.length === 0 ? '14%' : '100%'
+									height: isRequestInProgress || mailingList.length === 0 ? '50%' : '100%'
 								}}
 								selectedRows={selectedDlRow}
 								onSelectionChange={(selected: any): void => {

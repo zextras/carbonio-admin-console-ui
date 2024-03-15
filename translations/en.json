@@ -110,6 +110,7 @@
         "i_want_to_create_a_delegate_for": "I want to create a delegate for",
         "i_want_to_select": "I want to select the Folders",
         "iamp_access": "IMAP Access",
+        "included_in_backup": "Included in Backup",
         "inherited_value_was": "The inherited value was",
         "initial_search_preference": "Initial Search Preference",
         "label": "Label",
@@ -124,6 +125,7 @@
         "min_new_check_interval_value": "Value",
         "new_alias_name": "New Alias Name",
         "new_mail_notification": "New Mail Notification",
+        "no": "No",
         "notify_changes_by_delegated_access": "Notify changes made by delegated accounts",
         "offline_support_for_advanced_ajax_client": "Offline support for Advanced (Ajax) client",
         "on_behalf_of": "on behalf of",
@@ -196,6 +198,7 @@
         "where_do_we_store_it": "Where do we store it?",
         "where_to_store_sent_emails": "Where to store sent emails?",
         "who_will_be_delegates": "Who will be the delegates?",
+        "yes": "Yes",
         "your_available_aliases": "Your Available Aliases"
     },
     "action": {
@@ -1839,6 +1842,7 @@
         "userName": "username (Auto-fill)",
         "userName_auto_fill": "username (Auto-fill)",
         "user_agent": "User Agent",
+        "user_can_ask_for_forgotten_password_token": "User can ask for a forgotten password token",
         "user_auto_fill": "user (Auto-fill)",
         "user_can_ask_for_forgotten_password_token": "User can ask for a forgotten password token",
         "user_cannot_perform_the_action": "User cannot perform the action",

@@ -49,7 +49,8 @@ import {
 	AccountStatus,
 	ABQStatus,
 	GbToBytes,
-	BytesToGB
+	BytesToGB,
+	backupEnabledStatus
 } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -99,6 +100,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
 	const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
+	const BACKUP_ENABLED_STATUS = useMemo(() => backupEnabledStatus(t), [t]);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
@@ -264,6 +266,9 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 	};
 	const onAccountABQStatusChange = (v: any): any => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, abqMode: v }));
+	};
+	const onAccountBackupEnabledStatusChange = (v: any): any => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, backupEnabled: v }));
 	};
 	const onPrefLocaleChange = (v: string): void => {
 		v && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraPrefLocale: v }));
@@ -668,18 +673,33 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 				{isAdvanced ? (
 					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 						<Row width="49%" mainAlignment="flex-start">
-							{accountDetail?.abqMode && (
-								<Select
-									items={ABQ_STATUS}
-									background="gray5"
-									label={t('account_details.abq_status', 'ABQ Status')}
-									showCheckbox={false}
-									onChange={onAccountABQStatusChange}
-									defaultSelection={ABQ_STATUS.find(
-										(item: any) => item.value === accountDetail?.abqMode
-									)}
-								/>
-							)}
+							<Select
+								disabled={!accountDetail?.abqMode}
+								items={ABQ_STATUS}
+								background="gray5"
+								label={t('account_details.abq_status', 'ABQ Status')}
+								showCheckbox={false}
+								onChange={onAccountABQStatusChange}
+								selection={
+									ABQ_STATUS.find((item: any) => item.value === accountDetail?.abqMode) ||
+									ABQ_STATUS[0]
+								}
+							/>
+						</Row>
+						<Row width="49%" mainAlignment="flex-start">
+							<Select
+								disabled={accountDetail?.backupEnabled === undefined}
+								items={BACKUP_ENABLED_STATUS}
+								background="gray5"
+								label={t('account_details.included_in_backup', 'Included in Backup')}
+								showCheckbox={false}
+								onChange={onAccountBackupEnabledStatusChange}
+								selection={
+									BACKUP_ENABLED_STATUS.find(
+										(item: any) => item.value === accountDetail?.backupEnabled
+									) || BACKUP_ENABLED_STATUS[0]
+								}
+							/>
 						</Row>
 					</Row>
 				) : (

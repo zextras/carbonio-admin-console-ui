@@ -42,6 +42,7 @@ import {
 } from '../../../constants';
 import { batchService } from '../../../services/batch-service';
 import { deleteDomain } from '../../../services/delete-domain-service';
+import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { searchDirectory } from '../../../services/search-directory-service';
 import { useDomainStore } from '../../../store/domain/store';
@@ -184,6 +185,7 @@ const DomainGeneralSettings: FC = () => {
 	const [carbonioNotificationFrom, setCarbonioNotificationFrom] = useState('');
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+
 	const [carbonioNotificationRecipients, setCarbonioNotificationRecipients] = useState<
 		objectType[]
 	>([]);
@@ -576,6 +578,9 @@ const DomainGeneralSettings: FC = () => {
 			body.a = attributes;
 			modifyDomain(body)
 				.then((data) => {
+					if (isGlobalAdmin) {
+						flushCache('domain', 'id', domainData.zimbraId);
+					}
 					createSnackbar({
 						key: 'success',
 						type: 'success',
@@ -787,6 +792,9 @@ const DomainGeneralSettings: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', domainData.zimbraId);
+				}
 				const domain: any = data?.domain[0];
 				if (domain) {
 					setDomain(domain);

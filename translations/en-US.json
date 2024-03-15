@@ -222,7 +222,11 @@
     "core": {
         "subscription": {
             "status": "Status",
-            "valid": "Valid"
+            "valid": "Valid",
+            "accounts": "Accounts",
+            "modules": "Modules",
+            "type": "Type",
+            "valid_until": "Valid until"
         }
     },
     "cos": {
