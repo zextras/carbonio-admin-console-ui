@@ -30,7 +30,7 @@ const ManageAliases: FC<{
 	setAliasChange: (arg: Array<{ label: string }>) => void;
 	aliasType?: string;
 	viewType?: string;
-	handleMatomoTrackerEvent?: (value: string) => void;
+	handleMatomoTrackerEvent?: any;
 }> = ({
 	listAliases,
 	setListAliases,
@@ -90,22 +90,20 @@ const ManageAliases: FC<{
 						</Row>
 					</>
 				) : (
-					<>
-						<Input
-							label={t('account_details.aliases', 'Aliases')}
-							value={(listAliases?.length || 1) - 1}
-							CustomIcon={(): any => (
-								<Icon
-									icon="EditAsNewOutline"
-									onClick={(): void => setShowManageAliesModal(true)}
-									style={{ cursor: 'pointer' }}
-									size="large"
-									onChange={(): null => null}
-								/>
-							)}
-							onFocus={(): void => handleMatomoTrackerEvent && handleMatomoTrackerEvent(ALIASES)}
-						/>
-					</>
+					<Input
+						label={t('account_details.aliases', 'Aliases')}
+						value={(listAliases?.length || 1) - 1}
+						CustomIcon={(): any => (
+							<Icon
+								icon="EditAsNewOutline"
+								onClick={(): void => setShowManageAliesModal(true)}
+								style={{ cursor: 'pointer' }}
+								size="large"
+								onChange={(): null => null}
+							/>
+						)}
+						onFocus={(): void => handleMatomoTrackerEvent(ALIASES)}
+					/>
 				)}
 			</Row>
 			<Modal
