@@ -42,6 +42,7 @@ import {
 	DESCRIPTION,
 	DISPLAY_NAME,
 	DOMAINNAME,
+	DOMAINS_ROUTE_ID,
 	END_SESSION,
 	ID,
 	INCLUDED_BACKUP,
@@ -582,7 +583,11 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	const handleFocusAllDisabledField = (fieldName: string): void => {
-		matomo.trackEvent(ACCOUNTS_DETAILS, `${ACCOUNTS_DETAILS_DISABLED_FIELD_NAME}_${fieldName}`);
+		matomo.trackEvent(
+			DOMAINS_ROUTE_ID,
+			ACCOUNTS_DETAILS,
+			`${ACCOUNTS_DETAILS_DISABLED_FIELD_NAME}_${fieldName}`
+		);
 	};
 
 	return (

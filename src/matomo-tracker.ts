@@ -38,11 +38,18 @@ export default class MatomoTracker {
 		});
 	}
 
-	trackEvent(category: string, action: string): void {
-		this.matomoInstance.trackEvent({
-			href: '',
-			category,
-			action
-		});
+	trackEvent(category: string, action: string, name?: string): void {
+		return name
+			? this.matomoInstance.trackEvent({
+					href: '',
+					category,
+					action,
+					name
+			  })
+			: this.matomoInstance.trackEvent({
+					href: '',
+					category,
+					action
+			  });
 	}
 }

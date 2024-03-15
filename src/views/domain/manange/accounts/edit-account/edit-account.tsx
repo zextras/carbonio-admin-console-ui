@@ -67,7 +67,8 @@ import {
 	ACCOUNTS_DETAILS,
 	ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME,
 	ACCOUNTS_DETAILS_PIN,
-	ACCOUNTS_DETAILS_UNPIN
+	ACCOUNTS_DETAILS_UNPIN,
+	DOMAINS_ROUTE_ID
 } from '../../../../../constants';
 import MatomoTracker from '../../../../../matomo-tracker';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
@@ -362,7 +363,7 @@ const EditAccount: FC<{
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const modifyAccountReq = useCallback(async () => {
-		matomo.trackEvent(ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_SAVE);
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_SAVE);
 		const modifiedKeys: any = reduce(
 			accountDetail,
 			function (result, value, key): any {
@@ -657,7 +658,7 @@ const EditAccount: FC<{
 		t
 	]);
 	const onUndo = (): void => {
-		matomo.trackEvent(ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_CANCEL);
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_CANCEL);
 		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
 		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
 	};
@@ -705,7 +706,11 @@ const EditAccount: FC<{
 	}, []);
 
 	const onDeleteAccount = useCallback(() => {
-		matomo.trackEvent(ACCOUNTS_DETAILS_ACTIONS, ACCOUNTS_DETAILS_DELETE_ACCOUNT_TABLE_ITEM);
+		matomo.trackEvent(
+			DOMAINS_ROUTE_ID,
+			ACCOUNTS_DETAILS_ACTIONS,
+			ACCOUNTS_DETAILS_DELETE_ACCOUNT_TABLE_ITEM
+		);
 		if (userType === 'DelegatedAdmin' || userType === 'System') {
 			if (
 				accountUserType(selectedAccount) === 'DelegatedAdmin' ||
@@ -759,6 +764,7 @@ const EditAccount: FC<{
 			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
 				matomo.trackEvent(
+					DOMAINS_ROUTE_ID,
 					ACCOUNTS_DETAILS_ACTIONS,
 					`${isSticky ? ACCOUNTS_DETAILS_PIN : ACCOUNTS_DETAILS_UNPIN}`
 				);
@@ -812,7 +818,7 @@ const EditAccount: FC<{
 	}, [accountDetail?.zimbraId, createSnackbar, t, onSuccess]);
 
 	const onDeleteHandler = useCallback(() => {
-		matomo.trackEvent(ACCOUNTS_DETAILS_ACTIONS, ACCOUNTS_DETAILS_DELETE_ITEM);
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, ACCOUNTS_DETAILS_DELETE_ITEM);
 		setIsRequestInProgress(true);
 		deleteAccount(selectedAccount?.id)
 			.then((data: any) => {
@@ -835,7 +841,11 @@ const EditAccount: FC<{
 	}, [matomo, selectedAccount?.id, onSuccess, t, createSnackbar]);
 
 	const handleMatomoTrackerEvent = (fieldName?: string): void => {
-		matomo.trackEvent(ACCOUNTS_DETAILS, `${ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME}_${fieldName}`);
+		matomo.trackEvent(
+			DOMAINS_ROUTE_ID,
+			ACCOUNTS_DETAILS,
+			`${ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME}_${fieldName}`
+		);
 	};
 
 	return (
