@@ -62,11 +62,12 @@ import {
 	ACCOUNTS_DETAILS_ACTIONS,
 	DOMAINS_ACCOUNTS_DETAILS_CANCEL,
 	DOMAINS_ACCOUNTS_DETAILS_SAVE,
-	ACCOUNTS_DETAILS_PIN_UNPIN,
 	ACCOUNTS_DETAILS_DELETE_ACCOUNT_TABLE_ITEM,
 	ACCOUNTS_DETAILS_DELETE_ITEM,
 	ACCOUNTS_DETAILS,
-	ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME
+	ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME,
+	ACCOUNTS_DETAILS_PIN,
+	ACCOUNTS_DETAILS_UNPIN
 } from '../../../../../constants';
 import MatomoTracker from '../../../../../matomo-tracker';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
@@ -757,7 +758,10 @@ const EditAccount: FC<{
 			align: 'left',
 			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
-				matomo.trackEvent(ACCOUNTS_DETAILS_ACTIONS, ACCOUNTS_DETAILS_PIN_UNPIN);
+				matomo.trackEvent(
+					ACCOUNTS_DETAILS_ACTIONS,
+					`${isSticky ? ACCOUNTS_DETAILS_PIN : ACCOUNTS_DETAILS_UNPIN}`
+				);
 				setIsSticky(!isSticky);
 			}
 		}
