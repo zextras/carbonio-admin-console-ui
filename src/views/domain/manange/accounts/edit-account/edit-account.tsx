@@ -431,6 +431,9 @@ const EditAccount: FC<{
 						replace: true
 					});
 					setIsLoading(false);
+					if (isGlobalAdmin) {
+						flushCache('account', 'id', initAccountDetail?.zimbraId);
+					}
 				})
 				.catch((error) => {
 					createSnackbar({
