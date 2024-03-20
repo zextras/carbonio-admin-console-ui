@@ -17,7 +17,8 @@ import {
 	Button,
 	IconButton,
 	useSnackbar,
-	Tooltip
+	Tooltip,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -29,10 +30,26 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './account-context';
+import { AccountType } from './account-types/account-types';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import {
+	ABQ_MODE,
+	ACCOUNT,
+	RECORD_DISPLAY_LIMIT,
+	ASC,
+	DESC,
+	MOBILE,
+	ACCOUNTS_ACTIONS,
+	DOMAIN_ACCOUNTS_CREATE,
+	ACCOUNTS_MAIN_ACTION,
+	ACCOUNTS_TABLE_ITEM,
+	ACCOUNTS_SEARCH_TABLE,
+	DOMAIN_ACCOUNTS_NEXT_TABLE,
+	BACKUP_ENABLED
+} from '../../../../constants';
+import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -42,10 +59,12 @@ import {
 import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
+import { getCoreAttributes } from '../../../../services/get-core-attributes';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import { useConfigStore } from '../../../../store/config/store';
 import { useDomainStore } from '../../../../store/domain/store';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -66,6 +85,8 @@ const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
@@ -90,6 +111,9 @@ const ManageAccounts: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('name');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+	const screenMode = useScreenMode();
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -150,16 +174,26 @@ const ManageAccounts: FC = () => {
 	const headers: any = useMemo(
 		() => [
 			{
-				id: 'email',
+				id: 'name',
 				label: t('label.email', 'Email'),
 				width: '25%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
-				id: 'name',
+				id: 'displayName',
 				label: t('label.person_name', 'Name'),
 				width: '15%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'aliases',
@@ -353,97 +387,6 @@ const ManageAccounts: FC = () => {
 			setCosDetail({ ...obj });
 		});
 	}, []);
-	const getAccountDetail = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
-		(id): void => {
-			getAccountRequest(id, '', 1)
-				.then((data: any) => {
-					const obj: any = {};
-					// eslint-disable-next-line array-callback-return
-					data?.account?.[0]?.a?.forEach((ele: any) => {
-						if (obj[ele.n]) {
-							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
-						} else {
-							obj[ele.n] = ele._content;
-						}
-					});
-					if (obj.userPassword) {
-						obj.password = '******';
-						obj.repeatPassword = '******';
-					} else {
-						obj.password = '';
-						obj.repeatPassword = '';
-					}
-					obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
-						? obj.zimbraPrefMailForwardingAddress
-						: '';
-					obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
-						? obj.zimbraPrefCalendarForwardInvitesTo
-						: '';
-
-					obj.name = data?.account?.[0]?.name;
-					obj.domainName = data?.account?.[0]?.name.split('@')[1];
-					if (obj.zimbraIsAdminAccount === undefined) {
-						obj.zimbraIsAdminAccount = 'FALSE';
-					}
-					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
-						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
-					}
-					setInitAccountDetail({ ...obj });
-					setSelectedAccount({ ...obj, id });
-					setAccountDetail({ ...obj });
-					getAccountSpecificDetail(id);
-					getCosDetail(obj.zimbraCOSId);
-				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		},
-		[getAccountSpecificDetail, getCosDetail, createSnackbar, t]
-	);
-	const getAccountMembership = useCallback(
-		(id): void => {
-			getAccountMembershipRequest(id)
-				.then((data: any) => {
-					const directMemArr: any[] = [];
-					const inDirectMemArr: any[] = [];
-					// eslint-disable-next-line array-callback-return
-					data?.dl?.forEach((ele: any) => {
-						if (ele?.via)
-							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
-						else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
-					});
-
-					setDirectMemberList(directMemArr);
-					setInDirectMemberList(inDirectMemArr);
-				})
-				// eslint-disable-next-line @typescript-eslint/no-empty-function
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
-		},
-		[setDirectMemberList, setInDirectMemberList, t, createSnackbar]
-	);
 	const getListOtp = useCallback(
 		(id): void => {
 			fetchSoap('zextras', {
@@ -503,6 +446,145 @@ const ManageAccounts: FC = () => {
 			}
 		});
 	}, []);
+	const getABQStatus = useCallback((acc) => {
+		const body = [
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [ABQ_MODE]
+			},
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [BACKUP_ENABLED]
+			}
+		];
+		getCoreAttributes(body).then((data) => {
+			if (data?.attributes) {
+				setAccountDetail((prev: AccountType) => ({
+					...prev,
+					...{
+						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+					}
+				}));
+				setInitAccountDetail((prev: AccountType) => ({
+					...prev,
+					...{
+						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+					}
+				}));
+			}
+		});
+	}, []);
+	const getAccountDetail = useCallback(
+		// eslint-disable-next-line sonarjs/cognitive-complexity
+		(id): void => {
+			getAccountRequest(id, '', 1)
+				.then((data: any) => {
+					const obj: any = {};
+					// eslint-disable-next-line array-callback-return
+					data?.account?.[0]?.a?.forEach((ele: any) => {
+						if (obj[ele.n]) {
+							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
+						} else {
+							obj[ele.n] = ele._content;
+						}
+					});
+					if (obj.userPassword) {
+						obj.password = '******';
+						obj.repeatPassword = '******';
+					} else {
+						obj.password = '';
+						obj.repeatPassword = '';
+					}
+					obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
+						? obj.zimbraPrefMailForwardingAddress
+						: '';
+					obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
+						? obj.zimbraPrefCalendarForwardInvitesTo
+						: '';
+
+					obj.name = data?.account?.[0]?.name;
+					obj.domainName = data?.account?.[0]?.name.split('@')[1];
+					if (obj.zimbraIsAdminAccount === undefined) {
+						obj.zimbraIsAdminAccount = 'FALSE';
+					}
+					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
+						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
+					}
+					setInitAccountDetail({ ...obj });
+					setSelectedAccount({ ...obj, id });
+					setAccountDetail({ ...obj });
+					getAccountSpecificDetail(id);
+					getCosDetail(obj.zimbraCOSId);
+					if (isAdvanced) {
+						getListOtp(data?.account?.[0]?.name);
+						getCredentialList(data?.account?.[0]?.name);
+						getABQStatus(id);
+					}
+				})
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				.catch((error) => {
+					setShowEditAccountView(false);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: // eslint-disable-next-line sonarjs/no-duplicate-string
+							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[
+			getAccountSpecificDetail,
+			getCosDetail,
+			isAdvanced,
+			getListOtp,
+			getCredentialList,
+			getABQStatus,
+			createSnackbar,
+			t
+		]
+	);
+	const getAccountMembership = useCallback(
+		(id): void => {
+			getAccountMembershipRequest(id)
+				.then((data: any) => {
+					const directMemArr: any[] = [];
+					const inDirectMemArr: any[] = [];
+					// eslint-disable-next-line array-callback-return
+					data?.dl?.forEach((ele: any) => {
+						if (ele?.via)
+							inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
+						else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
+					});
+
+					setDirectMemberList(directMemArr);
+					setInDirectMemberList(inDirectMemArr);
+				})
+				// eslint-disable-next-line @typescript-eslint/no-empty-function
+				.catch((error) => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				});
+		},
+		[setDirectMemberList, setInDirectMemberList, t, createSnackbar]
+	);
+
 	const getFolderList = useCallback(
 		(acc, delegateList): void => {
 			postSoapFetchRequest(
@@ -624,29 +706,37 @@ const ManageAccounts: FC = () => {
 			getAccountMembership(acc?.id);
 			getIdentitiesList(acc);
 			getAllUserSession(acc?.name);
-			if (isAdvanced) {
-				getListOtp(acc?.name);
-				getCredentialList(acc?.name);
-			}
 		},
 		[
 			getAccountDetail,
 			getSignatureDetail,
 			getAccountMembership,
 			getIdentitiesList,
-			getAllUserSession,
-			isAdvanced,
-			getListOtp,
-			getCredentialList
+			getAllUserSession
 		]
 	);
+
+	const handleClickTableRow = (item: any): void => {
+		matomo.trackEvent(ACCOUNTS_MAIN_ACTION, ACCOUNTS_TABLE_ITEM);
+		openDetailView(item);
+	};
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
 		const type = 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domainName, searchQuery, offset, limit)
+		accountListDirectory(
+			attrs,
+			type,
+			domainName,
+			searchQuery,
+			offset,
+			limit,
+			sortedColumn,
+			sortOrder
+		)
 			.then((data) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -675,7 +765,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="regular"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.name || ' '}
@@ -686,7 +776,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="light"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.displayName || <>&nbsp;</>}
@@ -707,7 +797,7 @@ const ManageAccounts: FC = () => {
 													key={item?.id}
 													color="#828282"
 													onClick={(): void => {
-														openDetailView(item);
+														handleClickTableRow(item);
 													}}
 												>
 													{
@@ -723,7 +813,7 @@ const ManageAccounts: FC = () => {
 												color="#828282"
 												weight="light"
 												onClick={(): void => {
-													openDetailView(item);
+													handleClickTableRow(item);
 												}}
 											>
 												0
@@ -737,7 +827,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="light"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{accountUserType(item)}
@@ -748,7 +838,7 @@ const ManageAccounts: FC = () => {
 									key={item?.id}
 									color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
@@ -760,7 +850,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									onClick={(event: { stopPropagation: () => void }): void => {
 										event.stopPropagation();
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.description || <>&nbsp;</>}
@@ -787,16 +877,19 @@ const ManageAccounts: FC = () => {
 				});
 				setHasError(true);
 			});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
-		STATUS_COLOR,
-		accountUserType,
 		domainName,
-		limit,
-		offset,
-		openDetailView,
 		searchQuery,
-		t,
-		createSnackbar
+		offset,
+		limit,
+		sortedColumn,
+		sortOrder,
+		accountUserType,
+		STATUS_COLOR,
+		openDetailView,
+		createSnackbar,
+		t
 	]);
 
 	const generateSearchFilterQuery = useCallback(
@@ -876,6 +969,10 @@ const ManageAccounts: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const nextPage = (): void => {
+		matomo.trackEvent(ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
+	};
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -898,6 +995,7 @@ const ManageAccounts: FC = () => {
 									backgroundColor="primary"
 									icon="Plus"
 									onClick={(): void => {
+										matomo.trackEvent(ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CREATE);
 										setShowCreateAccountView(true);
 									}}
 								/>
@@ -914,7 +1012,12 @@ const ManageAccounts: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto',
+					minHeight: '10rem'
+				}}
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -936,6 +1039,9 @@ const ManageAccounts: FC = () => {
 										setSearchString(e.target.value);
 									}}
 									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+									onFocus={(): void => {
+										matomo.trackEvent(ACCOUNTS_MAIN_ACTION, ACCOUNTS_SEARCH_TABLE);
+									}}
 								/>
 							</Container>
 						</Row>
@@ -945,7 +1051,7 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: 'calc(100vh - 21.25rem)',
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 							ref={tableRef}
@@ -957,7 +1063,7 @@ const ManageAccounts: FC = () => {
 								multiSelect={false}
 								style={{
 									overflow: 'auto',
-									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
+									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
 								}}
 								RowFactory={CustomRowFactory}
 								HeaderFactory={CustomHeaderFactory}
@@ -1019,7 +1125,12 @@ const ManageAccounts: FC = () => {
 									height="auto"
 								>
 									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+										<Paging
+											totalItem={totalAccount}
+											setOffset={setOffset}
+											pageSize={limit}
+											nextPage={nextPage}
+										/>
 									</Container>
 									<Container
 										crossAlignment="flex-end"

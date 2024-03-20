@@ -1,1 +1,233 @@
-{}
+{
+    "account": {
+        "new": {
+            "create_account_wizard": "Майстер створення облікового запису",
+            "create_otp_wizard": "Створити OTP"
+        }
+    },
+    "accountDetails": {
+        "auto_fill_user_is_disabled": "Автозаповнення користувача відключено",
+        "change_password_for_next_login": "Необхідно змінити пароль при наступному вході",
+        "default_COS": "COS за замовчуванням",
+        "enable_activeSync_remote_access": "Увімкнути віддалений доступу до ActiveSync",
+        "auto_fill_username_is_disabled": "Автозаповнення імені користувача вимкнено"
+    },
+    "action": {
+        "click_preview": "Натисніть, щоб переглянути",
+        "click_open": "Натисніть, щоб відкрити"
+    },
+    "account_details": {
+        "Chats": "Чати",
+        "general": "Загальні",
+        "status": "Стан",
+        "ADD": "ДОДАТИ",
+        "DELETE": "ВИДАЛИТИ",
+        "NEXT": "ДАЛІ",
+        "SAVE": "ЗБЕРЕГТИ",
+        "default_COS": "COS за замовчуванням",
+        "domain": "Домен",
+        "send": "НАДІСЛАТИ",
+        "send_check": "Надіслати",
+        "label": "Ярлик"
+    },
+    "cos": {
+        "disabled": "Вимкнено",
+        "enabled": "Увімкнено",
+        "chats": "Чати",
+        "status": "Стан",
+        "language": "Мова",
+        "password": "Пароль"
+    },
+    "hsm": {
+        "delete": "Видалити",
+        "document": "Документ",
+        "edit": "Редагувати",
+        "message": "Повідомлення",
+        "name": "Ім’я",
+        "details": "Детальніше",
+        "new": "Створити",
+        "no": "Ні",
+        "yes": "Так",
+        "primary": "Первинний",
+        "secondary": "Вторинний",
+        "secondry": "Вторинний"
+    },
+    "label": {
+        "bucket_done_button": "Готово",
+        "done": "Готово",
+        "edit": "Редагувати",
+        "person_name": "Ім’я",
+        "status": "Стан",
+        "status_lbl": "Стан",
+        "username": "Ім’я користувача",
+        "account": "Обліковий запис",
+        "advance_edit_userName": "Ім’я користувача",
+        "cancel": "Скасувати",
+        "chats": "Чати",
+        "delete": "Видалити",
+        "description": "Опис",
+        "destroy_account": "Видалити",
+        "disabled": "Вимкнено",
+        "email": "Електронна пошта",
+        "email_address": "Адреса поштової скриньки",
+        "enabled": "Увімкнено",
+        "general_lbl": "Загальні",
+        "message": "Повідомлення",
+        "name": "Ім’я",
+        "notifications": "Сповіщення",
+        "search": "Пошук",
+        "account_name": "Назва облікового запису",
+        "address": "Адреса",
+        "go_back": "Назад",
+        "leave_anyway": "Все одно вийти",
+        "logout": "Вийти",
+        "save": "Зберегти",
+        "unsaved_changes": "У вас є незбережені зміни",
+        "unsaved_changes_line1": "Ви дійсно хочете залишити цю сторінку без збереження?",
+        "unsaved_changes_line2": "Усі незбережені зміни буде втрачено",
+        "accounts": "Облікові записи",
+        "language": "Мова",
+        "save_and_leave": "Зберегти та вийти",
+        "time_zone": "Часовий пояс",
+        "discard_changes": "СКАСУВАТИ ЗМІНИ",
+        "password": "Пароль",
+        "DELETE": "ВИДАЛИТИ",
+        "add": "Додати",
+        "bucket_delete_button": "ВИДАЛИТИ",
+        "button_delete": "ВИДАЛИТИ",
+        "click_here": "Натисніть тут",
+        "date": "Дата",
+        "delegates_title": "Делегати",
+        "delete_button": "ВИДАЛИТИ",
+        "destroy": "ВИДАЛИТИ",
+        "details": "Детальніше",
+        "do_you_need_more_information": "Вам потрібна додаткова інформація?",
+        "label": "Ярлик",
+        "login": "Вхід",
+        "next": "ДАЛІ",
+        "open": "Відкрити",
+        "settings": "Налаштування",
+        "tasks": "Завдання",
+        "timezone": "Часовий пояс",
+        "volume_next_button": "ДАЛІ",
+        "Accounts": "Облікові записи",
+        "close": "Закрити",
+        "create": "Створити",
+        "default_cos": "COS за замовчуванням",
+        "domain": "Домен",
+        "dont_save_a_copy_of_sent_messages": "Не зберігати копії надісланих повідомлень",
+        "notification": "Сповіщення",
+        "reset": "Скинути",
+        "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Зберігати копії надісланих повідомлень у папці \"Надіслані\" делегата",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Зберігати копію надісланих повідомлень у папці \"Надіслані\"",
+        "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Зберігати копії надісланих повідомлень у моїй папці \"Надіслані\" та папці делегата",
+        "service": "Сервіс",
+        "wizard_previous_button": "ДАЛІ",
+        "yes": "Так"
+    },
+    "operations": {
+        "done": "Готово",
+        "label": {
+            "notifications": "Сповіщення",
+            "status": "Стан"
+        },
+        "operations_list_header": {
+            "status": "Стан"
+        },
+        "details": "Детальніше",
+        "other": "Інше"
+    },
+    "volume": {
+        "server_list_header": {
+            "description": "Опис",
+            "primary": "Первинний",
+            "secondary": "Вторинний"
+        },
+        "volume_header": {
+            "name": "Ім’я"
+        },
+        "volume_indexer_header": {
+            "name": "Ім’я"
+        },
+        "volume_config_header": {
+            "name": "Ім’я",
+            "status": "Стан"
+        },
+        "primary_helperText": "Первинний",
+        "secondary_helperText": "Вторинний",
+        "volume_type": {
+            "primary": "Первинний",
+            "secondary": "Вторинний"
+        }
+    },
+    "backup": {
+        "general": "Загальні"
+    },
+    "core": {
+        "subscription": {
+            "status": "Стан",
+            "accounts": "Облікові записи"
+        }
+    },
+    "dashboard": {
+        "description": "Опис"
+    },
+    "mta": {
+        "status": "Стан",
+        "high": "Високий",
+        "low": "Низький",
+        "medium": "Середній",
+        "add": "Додати",
+        "info": "Інформація",
+        "settings": "Налаштування"
+    },
+    "locale": {
+        "English": "Англійська",
+        "chinese_china": "Китайська",
+        "dutch": "Голландська",
+        "french": "Французька",
+        "german": "Німецька",
+        "hindi": "Хінді",
+        "italian": "Італійська",
+        "label_chinese": "Китайська - {{value}}",
+        "label_dutch": "Голландська - {{value}}",
+        "label_english": "Англійська - {{value}}",
+        "label_french": "Французька - {{value}}",
+        "label_hindi": "Хінді - {{value}}",
+        "label_italian": "Італійська - {{value}}",
+        "label_japanese": "Японська - {{value}}",
+        "label_portuguese": "Португальська - {{value}}",
+        "label_romanian": "Румунська - {{value}}",
+        "label_russian": "Російська - {{value}}",
+        "label_spanish": "Іспанська - {{value}}",
+        "label_thai": "Тайська - {{value}}",
+        "label_turkish": "Турецька - {{value}}",
+        "polish": "Польська",
+        "portuguese": "Португальська",
+        "romanian": "Румунська",
+        "russian": "Російська",
+        "spanish": "Іспанська",
+        "thai": "Тайська",
+        "turkish": "Турецька",
+        "vietnamese": "В'єтнамська",
+        "label_german": "Німецька - {{value}}",
+        "label_portuguese_brazil": "Португальська - {{value}}",
+        "japanese": "Японська",
+        "portuguese_brazil": "Португальська (Бразилія)"
+    },
+    "new": "Створити",
+    "privacy": {
+        "allow_data_analytics": "Дозволити аналітику даних"
+    },
+    "commons": {
+        "next": "ДАЛІ"
+    },
+    "domain": {
+        "imap": "IMAP",
+        "mobile_apps": "Мобільні додатки"
+    },
+    "notification": {
+        "copy": "Копіювати",
+        "mark_as_read": "Позначити як прочитане"
+    }
+}

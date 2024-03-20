@@ -1,0 +1,44 @@
+{
+    "cos": {
+        "enabled": "Activado"
+    },
+    "hsm": {
+        "edit": "Editar",
+        "name": "Nome",
+        "delete": "Eliminar",
+        "details": "Detalhes"
+    },
+    "label": {
+        "bucket_done_button": "Concluído",
+        "delete": "Eliminar",
+        "enabled": "Activado",
+        "settings": "Definições",
+        "cancel": "Cancelar",
+        "create": "Criar",
+        "destroy_account": "Eliminar",
+        "details": "Detalhes",
+        "done": "Concluído",
+        "edit": "Editar",
+        "logout": "Logout",
+        "name": "Nome",
+        "person_name": "Nome"
+    },
+    "mta": {
+        "settings": "Definições"
+    },
+    "volume": {
+        "volume_indexer_header": {
+            "name": "Nome"
+        },
+        "volume_config_header": {
+            "name": "Nome"
+        },
+        "volume_header": {
+            "name": "Nome"
+        }
+    },
+    "operations": {
+        "details": "Detalhes",
+        "done": "Concluído"
+    }
+}

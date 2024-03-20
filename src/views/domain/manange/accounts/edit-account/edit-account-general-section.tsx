@@ -44,7 +44,14 @@ import Paging from '../../../../components/paging';
 import Textarea from '../../../../components/textarea';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import { localeList, AccountStatus } from '../../../../utility/utils';
+import {
+	localeList,
+	AccountStatus,
+	ABQStatus,
+	GbToBytes,
+	BytesToGB,
+	backupEnabledStatus
+} from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
@@ -92,6 +99,8 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 	const [t] = useTranslation();
 	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
+	const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
+	const BACKUP_ENABLED_STATUS = useMemo(() => backupEnabledStatus(t), [t]);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
@@ -137,7 +146,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 
 	useEffect(() => {
 		setAccountQuota(
-			accountDetail.zimbraMailQuota ? (accountDetail.zimbraMailQuota / 1048576).toString() : ''
+			accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toString() : ''
 		);
 	}, [accountDetail?.zimbraMailQuota]);
 
@@ -172,7 +181,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 		(e) => {
 			setAccountDetail((prev: any) => ({
 				...prev,
-				[e.target.name]: (Number(e.target.value) * 1048576).toString()
+				[e.target.name]: GbToBytes(e.target.value).toString()
 			}));
 		},
 		[setAccountDetail]
@@ -254,6 +263,12 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 
 	const onAccountStatusChange = (v: any): any => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraAccountStatus: v }));
+	};
+	const onAccountABQStatusChange = (v: any): any => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, abqMode: v }));
+	};
+	const onAccountBackupEnabledStatusChange = (v: any): any => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, backupEnabled: v }));
 	};
 	const onPrefLocaleChange = (v: string): void => {
 		v && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraPrefLocale: v }));
@@ -655,6 +670,41 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						<></>
 					)}
 				</Row>
+				{isAdvanced ? (
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+						<Row width="49%" mainAlignment="flex-start">
+							<Select
+								disabled={!accountDetail?.abqMode}
+								items={ABQ_STATUS}
+								background="gray5"
+								label={t('account_details.abq_status', 'ABQ Status')}
+								showCheckbox={false}
+								onChange={onAccountABQStatusChange}
+								selection={
+									ABQ_STATUS.find((item: any) => item.value === accountDetail?.abqMode) ||
+									ABQ_STATUS[0]
+								}
+							/>
+						</Row>
+						<Row width="49%" mainAlignment="flex-start">
+							<Select
+								disabled={accountDetail?.backupEnabled === undefined}
+								items={BACKUP_ENABLED_STATUS}
+								background="gray5"
+								label={t('account_details.included_in_backup', 'Included in Backup')}
+								showCheckbox={false}
+								onChange={onAccountBackupEnabledStatusChange}
+								selection={
+									BACKUP_ENABLED_STATUS.find(
+										(item: any) => item.value === accountDetail?.backupEnabled
+									) || BACKUP_ENABLED_STATUS[0]
+								}
+							/>
+						</Row>
+					</Row>
+				) : (
+					<></>
+				)}
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="49%" mainAlignment="flex-start">
 						<Input
@@ -703,7 +753,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						<Switch
 							value={accountDetail?.zimbraHideInGal === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraHideInGal')}
-							label={t('account_details.hide_in_gal', 'Hide in GAL')}
+							label={t('account_details.hidden_in_gal', 'Hidden in GAL')}
 							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
@@ -916,14 +966,14 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<InheritedInput
-						label={t('label.account_quota_mb', 'Account Quota (MB)')}
+						label={t('label.account_quota_gb', 'Account Quota (GB)')}
 						subValue={accountQuota}
 						inheritedValue={
-							cosDetail.zimbraMailQuota ? (cosDetail.zimbraMailQuota / 1048576).toString() : ''
+							cosDetail.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toString() : ''
 						}
 						fromSubValue={
 							accSpecificDetail.zimbraMailQuota
-								? (accSpecificDetail.zimbraMailQuota / 1048576).toString()
+								? BytesToGB(accSpecificDetail.zimbraMailQuota).toString()
 								: ''
 						}
 						background="gray5"

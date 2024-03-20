@@ -16,7 +16,8 @@ import {
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -24,7 +25,18 @@ import { Trans, useTranslation } from 'react-i18next';
 import CreateAclList from './create-acl-list';
 import EditAclListView from './edit-acl-detail-view';
 import logo from '../../../../assets/gardian.svg';
-import { ALL, EMAIL, FALSE, GRP, PUB, RECORD_DISPLAY_LIMIT, TRUE } from '../../../../constants';
+import {
+	ALL,
+	EMAIL,
+	FALSE,
+	GRP,
+	PUB,
+	RECORD_DISPLAY_LIMIT,
+	TRUE,
+	ASC,
+	DESC,
+	MOBILE
+} from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createAclList } from '../../../../services/create-acl-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
@@ -59,6 +71,9 @@ const DomainAclList: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [hasError, setHasError] = useState<boolean>(false);
+	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+	const screenMode = useScreenMode();
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -77,16 +92,26 @@ const DomainAclList: FC = () => {
 	const headers: any[] = useMemo(
 		() => [
 			{
-				id: 'name',
+				id: 'displayName',
 				label: t('label.security_group_name', 'Name'),
 				width: '20%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
-				id: 'address',
+				id: 'name',
 				label: t('label.address', 'Address'),
 				width: '20%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'members',
@@ -163,7 +188,7 @@ const DomainAclList: FC = () => {
 		const types = 'distributionlists,dynamicgroups';
 		const query = `${searchQuery}(&(!(zimbraIsSystemAccount=TRUE))(zimbraIsAdminGroup=TRUE))`;
 		setIsRequestInProgress(true);
-		searchDirectory(attrs, types, domainName || '', query, offset, limit, 'name')
+		searchDirectory(attrs, types, domainName || '', query, offset, limit, sortedColumn, sortOrder)
 			.then((data) => {
 				const dlList = data?.dl;
 				if (dlList) {
@@ -303,7 +328,17 @@ const DomainAclList: FC = () => {
 				});
 				setHasError(true);
 			});
-	}, [t, offset, limit, domainName, searchQuery, handleClick, createSnackbar]);
+	}, [
+		searchQuery,
+		domainName,
+		offset,
+		limit,
+		sortedColumn,
+		sortOrder,
+		t,
+		handleClick,
+		createSnackbar
+	]);
 
 	useEffect(() => {
 		getAclList();
@@ -642,7 +677,11 @@ const DomainAclList: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto'
+				}}
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -677,7 +716,8 @@ const DomainAclList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: 'calc(100vh - 21.25rem)'
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
+								position: 'relative'
 							}}
 						>
 							<Table
@@ -687,7 +727,7 @@ const DomainAclList: FC = () => {
 								multiSelect={false}
 								style={{
 									overflow: 'auto',
-									height: isRequestInProgress || aclList.length === 0 ? '14%' : '100%'
+									height: isRequestInProgress || aclList.length === 0 ? '50%' : '100%'
 								}}
 								selectedRows={selectedDlRow}
 								onSelectionChange={(selected: any): void => {

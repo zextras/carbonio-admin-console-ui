@@ -44,7 +44,14 @@ import {
 	DISCLAIMER,
 	GLOBAL_SETTINGS_ROUTE,
 	IS_DETAIL_LIST_EXPANDED,
-	IS_MANAGE_LIST_EXPANDED
+	IS_MANAGE_LIST_EXPANDED,
+	SECONDARY_BAR,
+	SECONDARY_BAR_GLOBAL_SETTINGS,
+	SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
+	SECONDARY_BAR_GLOBAL_DELEGATES,
+	SECONDARY_BAR_GLOBAL_QUARANTINE,
+	SECONDARY_BAR_GLOBAL_DOMAINS,
+	SECONDARY_BAR_GLOBAL_2FA
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -234,36 +241,39 @@ const DomainListPanel: FC = () => {
 		[setDomainView]
 	);
 
+	const getTrakingDetials = (dView: string): any => {
+		const value = dView.split('/');
+		const analyticsMap: { [key: string]: string } = {
+			[GLOBAL_SETTINGS_ROUTE]: SECONDARY_BAR_GLOBAL_SETTINGS,
+			[GLOBAL_WHITELABEL_SETTINGS]: SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
+			[GLOBAL_2FA_ROUTE]: SECONDARY_BAR_GLOBAL_2FA,
+			[GLOBAL_DOMAIN_ROUTE]: SECONDARY_BAR_GLOBAL_DOMAINS,
+			[GLOBAL_QUARANTINE_ROUTE]: SECONDARY_BAR_GLOBAL_QUARANTINE,
+			[GLOBAL_DELEGATES_ROUTE]: SECONDARY_BAR_GLOBAL_DELEGATES
+		};
+
+		const event = analyticsMap[dView];
+		if (event && globalCarbonioSendAnalytics) {
+			matomo.trackEvent(SECONDARY_BAR, event);
+		}
+
+		return value[0] === GLOBAL_ROUTE;
+	};
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
-		if (isDomainSelect && domainId) {
+		if (getTrakingDetials(domainView)) {
+			replaceHistory(`/${domainView}`);
+		} else if (isDomainSelect && domainId) {
 			if (domainView) {
-				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
-				if (domainView === GLOBAL_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_SETTINGS_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_WHITELABEL_SETTINGS) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_2FA_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_DOMAIN_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_QUARANTINE_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else if (domainView === GLOBAL_DELEGATES_ROUTE) {
-					replaceHistory(`/${domainView}`);
-				} else {
-					replaceHistory(`/${domainId}/${domainView}`);
-				}
+				replaceHistory(`/${domainId}/${domainView}`);
 			} else {
-				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
 				replaceHistory(`/${domainId}/${GENERAL_SETTINGS}`);
 			}
-		} else if (domainView) {
-			globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${domainView}`);
+		} else {
 			replaceHistory(`/${domainView}`);
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDomainSelect, domainId, domainView, matomo, globalCarbonioSendAnalytics]);
 
 	const detailOptions = useMemo(
@@ -401,7 +411,8 @@ const DomainListPanel: FC = () => {
 						(item: ManageOptions) =>
 							item?.id !== RESTORE_ACCOUNT &&
 							item?.id !== ACTIVE_SYNC &&
-							item?.id !== DELEGATES_DOMAIN_ADMINS
+							item?.id !== DELEGATES_DOMAIN_ADMINS &&
+							item?.id !== SECURITY_GROUP
 				  )
 				: allManageOptions,
 		[allManageOptions, isAdvanced]
@@ -485,6 +496,7 @@ const DomainListPanel: FC = () => {
 			if (searchDomainName === '') {
 				setIsDomainListExpand(!isDomainListExpand);
 			} else {
+				setDomainId('');
 				setSearchDomainName('');
 				setIsDomainSelect(false);
 			}
@@ -624,18 +636,6 @@ const DomainListPanel: FC = () => {
 				</Container>
 			)}
 			<ListPanelItem
-				title={t('label.details', 'Details')}
-				isListExpanded={isDetailListExpanded}
-				setToggleView={toggleDetailView}
-			/>
-			{isDetailListExpanded && (
-				<ListItems
-					items={detailItems}
-					selectedOperationItem={domainView}
-					setSelectedOperationItem={setDomainView}
-				/>
-			)}
-			<ListPanelItem
 				title={t('domain.manage', 'Manage')}
 				isListExpanded={isManageListExpanded}
 				setToggleView={toggleManageView}
@@ -643,6 +643,18 @@ const DomainListPanel: FC = () => {
 			{isManageListExpanded && (
 				<ListItems
 					items={manageOptions}
+					selectedOperationItem={domainView}
+					setSelectedOperationItem={setDomainView}
+				/>
+			)}
+			<ListPanelItem
+				title={t('label.details', 'Details')}
+				isListExpanded={isDetailListExpanded}
+				setToggleView={toggleDetailView}
+			/>
+			{isDetailListExpanded && (
+				<ListItems
+					items={detailItems}
 					selectedOperationItem={domainView}
 					setSelectedOperationItem={setDomainView}
 				/>

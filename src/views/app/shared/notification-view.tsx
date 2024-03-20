@@ -37,10 +37,14 @@ import {
 	NOTIFICATION_ERROR,
 	NOTIFICATION_INFORMATION,
 	NOTIFICATION_WARNING,
-	DESC
+	DESC,
+	NOTIFICATION_TABLE_DATABASE,
+	DASHBOARD_TABLES
 } from '../../../constants';
+import MatomoTracker from '../../../matomo-tracker';
 import { getAllNotifications } from '../../../services/get-all-notifications';
 import { readUnreadNotification } from '../../../services/read-unread-notification';
+import { useConfigStore } from '../../../store/config/store';
 import ModalOverlay from '../../components/ModalOverlay';
 import ListRow from '../../list/list-row';
 import { copyTextToClipboard } from '../../utility/utils';
@@ -101,6 +105,8 @@ const NotificationView: FC<{
 	isAddPadding?: boolean;
 }> = ({ isShowTitle, isAddPadding = false }) => {
 	const [t] = useTranslation();
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const [change, setChange] = useState(NOTIFICATION_ALL);
 	const [setClick] = useState('');
 	const createSnackbar: any = useContext(SnackbarManagerContext);
@@ -279,6 +285,7 @@ const NotificationView: FC<{
 
 	const handleClick = useCallback(
 		(event: any) => {
+			matomo.trackEvent(DASHBOARD_TABLES, NOTIFICATION_TABLE_DATABASE);
 			clearTimeout(timer.current);
 			if (event.detail === 1) {
 				timer.current = setTimeout(doClickAction, 300);
@@ -286,6 +293,7 @@ const NotificationView: FC<{
 				doDoubleClickAction();
 			}
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[doClickAction, doDoubleClickAction]
 	);
 

@@ -16,7 +16,7 @@ import {
 	Select,
 	Container
 } from '@zextras/carbonio-design-system';
-import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { soapFetch, useUserSettings } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
 import { CreateSnackbarType, ICertificateContent } from '../../../../../types';
@@ -27,8 +27,10 @@ import {
 	INVALID,
 	LONG,
 	SHORT,
+	TRUE,
 	ZIMBRA_ID
 } from '../../../../constants';
+import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { IssueCertiRequest } from '../../../../services/virtual-host-service';
 import { useDomainStore } from '../../../../store/domain/store';
@@ -83,6 +85,16 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 			fileName: ''
 		});
 	};
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const isCustomCerti = useCallback(
 		() => selectedCertType === certificateTypes[2]?.value,
@@ -265,6 +277,9 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', zimbraId);
+				}
 				externalData(true);
 				setToggleWizardSection(false);
 			})

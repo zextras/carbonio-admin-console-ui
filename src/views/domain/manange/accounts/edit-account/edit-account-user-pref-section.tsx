@@ -60,9 +60,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 	const POLLING_INTERVAL = useMemo(
 		() => [
 			{
-				label: t('account_details.as_new_mail_arrives', 'As New Mail Arrives'),
-				value: '',
-				disabled: true
+				label: t('account_details.manuallly', 'Manually'),
+				value: '31536000'
+			},
+			{
+				label: t('account_details.as_new_email_arrives', 'As new e-mail arrives'),
+				value: '500'
 			},
 			// eslint-disable-next-line sonarjs/no-duplicate-string
 			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
@@ -74,13 +77,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			{ label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
 			{ label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
 			{ label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
-			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
-			{
-				label: t('account_details.manuallly', 'Manually'),
-				value: accountDetail.zimbraPrefMailPollingInterval
-			}
+			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' }
 		],
-		[accountDetail.zimbraPrefMailPollingInterval, t]
+		[t]
 	);
 	const TIME_TYPES = useMemo(
 		() => [
@@ -356,7 +355,10 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSwitch
 						subValue={accountDetail?.zimbraPrefMailToasterEnabled}
 						onChange={changeSwitchOption}
-						label={t('account_details.enable_toast_for_new_emails', `Enable toast for new emails`)}
+						label={t(
+							'account_details.enable_new_mail_toast_notification',
+							`Enable New Mail Toast Notification`
+						)}
 						iconColor="primary"
 						inheritedValue={cosDetail.zimbraPrefMailToasterEnabled}
 						fromSubValue={accSpecificDetail?.zimbraPrefMailToasterEnabled}
@@ -438,36 +440,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					/>
 				</Row>
 			</Row>
-			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
-					<InheritedSwitch
-						subValue={accountDetail?.zimbraPrefNewMailNotificationEnabled}
-						onChange={changeSwitchOption}
-						label={t(
-							'account_details.enable_address_for_new_email_notifications',
-							`Enable address for new email notifications`
-						)}
-						iconColor="primary"
-						inheritedValue={cosDetail.zimbraPrefNewMailNotificationEnabled}
-						fromSubValue={accSpecificDetail?.zimbraPrefNewMailNotificationEnabled}
-						inputName={'zimbraPrefNewMailNotificationEnabled'}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefNewMailNotificationEnabled')}
-					/>
-				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					<InheritedInput
-						label={t('label.enabed_address', 'Enabed Address')}
-						subValue={accountDetail.zimbraPrefNewMailNotificationAddress || ''}
-						inheritedValue={cosDetail.zimbraPrefNewMailNotificationAddress || ''}
-						fromSubValue={accSpecificDetail?.zimbraPrefNewMailNotificationAddress}
-						background="gray5"
-						inputName="zimbraPrefNewMailNotificationAddress"
-						onChange={changeAccDetail}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefNewMailNotificationAddress')}
-						disabled={accountDetail?.zimbraPrefNewMailNotificationEnabled !== 'TRUE'}
-					/>
-				</Row>
-			</Row>
+
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch

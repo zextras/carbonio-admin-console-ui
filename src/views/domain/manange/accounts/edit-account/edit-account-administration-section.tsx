@@ -20,9 +20,11 @@ import {
 	Input,
 	useSnackbar
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import { TRUE } from '../../../../../constants';
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
@@ -48,8 +50,14 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const [sendSelectedRows, setSendSelectedRows] = useState<string[]>([]);
 	const [selectedOption, setSelectedOption] = useState<any>([]);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-
+	const userSetting = useUserSettings();
 	const [t] = useTranslation();
+
+	const isGlobalAdmin = useMemo(
+		() => userSetting?.attrs?.zimbraIsAdminAccount === TRUE,
+		[userSetting?.attrs]
+	);
+
 	const headers: any = useMemo(
 		() => [
 			{
@@ -291,27 +299,31 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 							{t('label.roles', 'Roles')}
 						</Text>
 					</Row>
-					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
-						<Row width="40%" padding={{ top: 'large' }} mainAlignment="flex-start">
-							<Switch
-								value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
-								onClick={(): void => {
-									if (accountDetail?.zimbraIsAdminAccount === 'FALSE') {
-										setDeleteAdministrationRights(accountDistributionList);
-									} else {
-										setDeleteAdministrationRights([]);
-									}
-									changeSwitchOption('zimbraIsAdminAccount');
-									setAccountDetail((prev: AccountType) => ({
-										...prev,
-										zimbraIsDelegatedAdminAccount: initAccountDetail?.zimbraIsDelegatedAdminAccount
-									}));
-								}}
-								label={t('account_details.global_administration', 'Global administration')}
-								iconColor="primary"
-							/>
+					{isGlobalAdmin && (
+						<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
+							<Row width="40%" padding={{ top: 'large' }} mainAlignment="flex-start">
+								<Switch
+									value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
+									onClick={(): void => {
+										if (accountDetail?.zimbraIsAdminAccount === 'FALSE') {
+											setDeleteAdministrationRights(accountDistributionList);
+										} else {
+											setDeleteAdministrationRights([]);
+										}
+										changeSwitchOption('zimbraIsAdminAccount');
+										setAccountDetail((prev: AccountType) => ({
+											...prev,
+											zimbraIsDelegatedAdminAccount:
+												initAccountDetail?.zimbraIsDelegatedAdminAccount
+										}));
+									}}
+									label={t('account_details.global_administration', 'Global administration')}
+									iconColor="primary"
+								/>
+							</Row>
 						</Row>
-					</Row>
+					)}
+
 					{isAdvanced && (
 						<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
 							<Row width="40%" mainAlignment="flex-start">

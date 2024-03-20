@@ -16,7 +16,8 @@ import {
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import moment from 'moment';
@@ -25,7 +26,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import CreateResource from './create-resource';
 import ResourceEditDetailView from './resource-edit-detail-view';
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { RECORD_DISPLAY_LIMIT, ASC, DESC, MOBILE } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
@@ -54,6 +55,9 @@ const DomainResources: FC = () => {
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const timer = useRef<any>();
+	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
+	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+	const screenMode = useScreenMode();
 
 	const resourceStatusFilter: any[] = useMemo(
 		() => [
@@ -72,16 +76,26 @@ const DomainResources: FC = () => {
 	const headers: any[] = useMemo(
 		() => [
 			{
-				id: 'resource',
+				id: 'displayName',
 				label: t('label.resource', 'Resource'),
 				width: '15%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
-				id: 'email',
+				id: 'name',
 				label: t('label.email', 'Email'),
 				width: '25%',
-				bold: true
+				bold: true,
+				sortable: true,
+				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+					setSortOrder(order);
+					setSortedColumn(id);
+				}
 			},
 			{
 				id: 'status',
@@ -149,13 +163,27 @@ const DomainResources: FC = () => {
 	);
 
 	const getResourceList = useCallback(
-		(zimbraDomainName: any, queryString: any): void => {
+		(
+			zimbraDomainName: any,
+			queryString: any,
+			sortBy: string,
+			sortAsceding: typeof ASC | typeof DESC
+		): void => {
 			const attrs =
 				'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraLastLogonTimestamp,zimbraAccountStatus';
 			const types = 'resources';
 			const query = `${queryString}(&(!(zimbraIsSystemAccount=TRUE)))`;
 			setIsRequestInProgress(true);
-			searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, 'name').then((data) => {
+			searchDirectory(
+				attrs,
+				types,
+				zimbraDomainName,
+				query,
+				offset,
+				limit,
+				sortBy,
+				sortAsceding
+			).then((data) => {
 				const resourceListResponse = data?.calresource || [];
 				if (resourceListResponse && Array.isArray(resourceListResponse)) {
 					setTotalAccount(data?.searchTotal || 0);
@@ -173,7 +201,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
 									</Text>
 								</Container>,
@@ -186,7 +214,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.name}
 									</Text>
 								</Container>,
@@ -199,7 +227,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
 									</Text>
 								</Container>,
@@ -212,7 +240,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
 											? moment(
 													item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content,
@@ -230,7 +258,7 @@ const DomainResources: FC = () => {
 										handleClick(e);
 									}}
 								>
-									<Text size="medium" weight="light" key={item?.id} color="gray0">
+									<Text size="small" weight="light" key={item?.id} color="gray0">
 										{item?.a?.find((a: any) => a?.n === 'description')?._content}
 									</Text>
 								</Container>
@@ -249,14 +277,14 @@ const DomainResources: FC = () => {
 	);
 
 	useEffect(() => {
-		getResourceList(domainName, searchQuery);
-	}, [getResourceList, domainName, searchQuery]);
+		getResourceList(domainName, searchQuery, sortedColumn, sortOrder);
+	}, [getResourceList, domainName, searchQuery, sortedColumn, sortOrder]);
 
 	useEffect(() => {
 		if (isUpdateRecord) {
-			getResourceList(domainName, searchQuery);
+			getResourceList(domainName, searchQuery, sortedColumn, sortOrder);
 		}
-	}, [isUpdateRecord, getResourceList, domainName, searchQuery]);
+	}, [isUpdateRecord, getResourceList, domainName, searchQuery, sortedColumn, sortOrder]);
 
 	const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
 		let filterQuery = '';
@@ -449,7 +477,11 @@ const DomainResources: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto'
+				}}
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -480,18 +512,17 @@ const DomainResources: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								position: 'relative',
-								height:
-									resourceList.length > 0 && !isRequestInProgress
-										? 'calc(100vh - 21.25rem)'
-										: 'calc(100vh - 40.625rem)'
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)'
 							}}
 						>
 							<Table
 								rows={!isRequestInProgress ? resourceList : []}
 								headers={headers}
 								showCheckbox
-								style={{ overflow: 'auto', height: '100%' }}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || resourceList.length === 0 ? '50%' : '100%'
+								}}
 								RowFactory={CustomRowFactory}
 								HeaderFactory={CustomHeaderFactory}
 							/>
@@ -550,7 +581,7 @@ const DomainResources: FC = () => {
 								orientation="horizontal"
 								mainAlignment="space-between"
 								width="100%"
-								style={{ position: 'absolute', bottom: '0', width: '68rem' }}
+								style={{ position: 'static', bottom: '-4rem' }}
 								height="auto"
 							>
 								<Container crossAlignment="flex-start">

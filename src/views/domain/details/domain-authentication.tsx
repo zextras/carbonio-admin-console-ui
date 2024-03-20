@@ -28,13 +28,16 @@ import {
 	Icon,
 	Popper
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute, CreateSnackbarType, objectType } from '../../../../types';
-import { CHECK_OK } from '../../../constants';
+import { CHECK_OK, DISABLED, ENABLED, TRUE } from '../../../constants';
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
+import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
+import { useAuthIsAdvanced } from '../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../store/domain/store';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
@@ -98,6 +101,19 @@ const DomainAuthentication: FC = () => {
 	const [filterOpen, setFilterOpen] = useState(false);
 	const ldapUrlIconRef: RefObject<HTMLDivElement> = useRef(null);
 	const filterIconRef: RefObject<HTMLDivElement> = useRef(null);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const [zimbraFeatureResetPasswordStatus, setZimbraFeatureResetPasswordStatus] =
+		useState<boolean>(false);
 
 	const DOMAIN_AUTH_LIST = useMemo(
 		() => [
@@ -219,6 +235,9 @@ const DomainAuthentication: FC = () => {
 			if (obj.zimbraAuthLdapStartTlsEnabled) {
 				setZimbraAuthLdapStartTlsEnabled(obj.zimbraAuthLdapStartTlsEnabled === 'TRUE');
 			}
+			if (obj.zimbraFeatureResetPasswordStatus) {
+				setZimbraFeatureResetPasswordStatus(obj.zimbraFeatureResetPasswordStatus === ENABLED);
+			}
 			setDomainAuthData(obj);
 			setIsDirty(false);
 		}
@@ -296,9 +315,22 @@ const DomainAuthentication: FC = () => {
 		}
 	}, [domainAuthData, zimbraAuthLdapStartTlsEnabled]);
 
+	useEffect(() => {
+		if (!_.isEmpty(domainAuthData)) {
+			const oldResetPasswordStatus = domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED;
+			if (oldResetPasswordStatus !== zimbraFeatureResetPasswordStatus) {
+				setIsDirty(true);
+			}
+		}
+	}, [domainAuthData, zimbraFeatureResetPasswordStatus]);
+
 	const authFallbackToLocal = useCallback(() => setZimbraAuthFallbackToLocal((c) => !c), []);
 	const authLdapStartTlsEnabled = useCallback(
 		() => setZimbraAuthLdapStartTlsEnabled((c) => !c),
+		[]
+	);
+	const resetPassowrdStatusChange = useCallback(
+		() => setZimbraFeatureResetPasswordStatus((c) => !c),
 		[]
 	);
 
@@ -333,6 +365,9 @@ const DomainAuthentication: FC = () => {
 		setZimbraAuthLdapSearchFilter(domainAuthData.zimbraAuthLdapSearchFilter);
 		setZimbraAuthLdapURL(domainAuthData.zimbraAuthLdapURL);
 		setZimbraAuthLdapStartTlsEnabled(domainAuthData.zimbraAuthLdapStartTlsEnabled === 'TRUE');
+		setZimbraFeatureResetPasswordStatus(
+			domainAuthData.zimbraFeatureResetPasswordStatus === ENABLED
+		);
 		setIsDirty(false);
 		setIsValidLdapDn(true);
 		setIsValidLdapUrl(true);
@@ -380,6 +415,12 @@ const DomainAuthentication: FC = () => {
 			n: 'zimbraAuthLdapSearchBase',
 			_content: zimbraAuthLdapSearchBase
 		});
+		if (isAdvanced) {
+			attributes.push({
+				n: 'zimbraFeatureResetPasswordStatus',
+				_content: zimbraFeatureResetPasswordStatus ? ENABLED : DISABLED
+			});
+		}
 		body.a = attributes;
 		modifyDomain(body)
 			.then((data) => {
@@ -391,6 +432,9 @@ const DomainAuthentication: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', domainAuthData.zimbraId);
+				}
 				const domain: objectType = data?.domain[0];
 				if (domain) {
 					setDomain(domain);
@@ -837,16 +881,19 @@ const DomainAuthentication: FC = () => {
 							</ListRow>
 							<Padding horizontal="small" width="90%"></Padding>
 							<ListRow>
-								<Padding vertical="small" horizontal="small" width="100%">
-									<Switch
-										value={zimbraAuthLdapStartTlsEnabled}
-										label={t('label.enable_start_tls', 'Enable StartTLS')}
-										onClick={authLdapStartTlsEnabled}
-										iconColor="primary"
-									/>
-								</Padding>
-							</ListRow>
-							<ListRow>
+								{isAdvanced && (
+									<Padding vertical="small" horizontal="small" width="70%">
+										<Switch
+											value={zimbraFeatureResetPasswordStatus}
+											label={t(
+												'label.show_forget_password_link',
+												'Show "Forget Password" link in the login page'
+											)}
+											onClick={resetPassowrdStatusChange}
+											iconColor="primary"
+										/>
+									</Padding>
+								)}
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Switch
 										value={zimbraAuthFallbackToLocal}
@@ -855,6 +902,19 @@ const DomainAuthentication: FC = () => {
 											'Try local password management in case of failure with other methods'
 										)}
 										onClick={authFallbackToLocal}
+										iconColor="primary"
+									/>
+								</Padding>
+							</ListRow>
+							<ListRow>
+								<Padding vertical="small" horizontal="small" width="100%">
+									<Switch
+										value={zimbraAuthLdapStartTlsEnabled}
+										label={t(
+											'label.enable_secure_connection',
+											'Enable Secure Connection (StartTLS/SSL)'
+										)}
+										onClick={authLdapStartTlsEnabled}
 										iconColor="primary"
 									/>
 								</Padding>

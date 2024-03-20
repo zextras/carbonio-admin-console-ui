@@ -6,19 +6,22 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
+import { ASC } from '../constants';
+
 export const accountListDirectory = async (
 	attr: string,
 	type: string,
 	domainName: string | undefined,
 	query: string,
 	offset: number,
-	limit: number
+	limit: number,
+	sortBy?: string,
+	sortAscending?: string
 ): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
 		offset,
 		limit,
-		sortAscending: '1',
 		applyCos: 'false',
 		applyConfig: 'false',
 		attrs: attr,
@@ -31,6 +34,12 @@ export const accountListDirectory = async (
 		request.query = query;
 	}
 
+	if (sortBy !== '') {
+		request.sortBy = sortBy;
+	}
+	if (sortAscending !== '') {
+		request.sortAscending = sortAscending === ASC ? 1 : 0;
+	}
 	return soapFetch(`SearchDirectory`, {
 		...request
 	});

@@ -124,7 +124,14 @@
             "valid": "Valide",
             "not_valid": "Non valide",
             "license_activated_successfully": "La licence a été activée avec succès",
-            "endDate": "Date de fin"
+            "endDate": "Date de fin",
+            "accounts": "Comptes",
+            "modules": "Modules",
+            "refresh": "Rafraîchir",
+            "type": "Type",
+            "valid_until": "Valide jusqu’à",
+            "provider": "Fournisseur",
+            "refresh_subscription_last_check": "Actualiser l'abonnement (dernière vérification)"
         }
     },
     "label": {
@@ -195,7 +202,6 @@
         "deligated_admin_help_url": "URL d'aide pour les administrateurs délégués",
         "domain_quota_settings": "Paramètres de quota de domaine",
         "domains": "Domaines",
-        "enable_start_tls": "Activer StartTTLS",
         "example_new": "Nouvel Exemple",
         "external_active_directory": "Active Directory externe",
         "external_ldap": "LDAP externe",
@@ -712,7 +718,7 @@
         "last_seen": "vu pour la dernière fois",
         "mailstores": "Mailstores",
         "mobile_password": "Mot de passe mobile",
-        "reset": "Réinitialisation",
+        "reset": "Réinitialiser",
         "reset_device": "Remise à zéro du périphérique",
         "s3_bucket": "Bucket S3",
         "select_an_external_volume": "Sélectionner un volume externe",
@@ -886,7 +892,9 @@
         "disable_the_account": "Désactiver le compte",
         "domain_certificate": "Certificat de domaine",
         "domain_primarybar_tooltip": "Voir vos <bold>détails des domaines</bold> et <bold>gestion</bold> de leurs ressources comme <bold> les comptes, les listes de distribution, les ressources</bold> et <bold>plus</bold>.",
-        "download": "TÉLÉCHARGEMENT",
+        "download_0": "TÉLÉCHARGEMENT",
+        "download_1": "TÉLÉCHARGEMENTS",
+        "download_2": "TÉLÉCHARGEMENTS",
         "download_pdf": "TÉLÉCHARGER LE PDF",
         "download_quota_Report": "Télécharger le rapport de quota",
         "virtual_hosts_and_certificates": "Virtual Hosts & Certificats",
@@ -1007,7 +1015,7 @@
         "galsync_account": "Compte GALSync",
         "generate_sp_certificate": "GÉNÉRATION D'UN CERTIFICAT SP",
         "go_back_button": "RETOUR",
-        "import": "IMPORT",
+        "import": "IMPORTER",
         "import_saml_metadata_from_idp": "Importer les Metadonnées SAML depuis l'IDP",
         "inactive": "Désactivé",
         "job_title": "Titre de la tâche",
@@ -1230,7 +1238,7 @@
         "invalid_destination": "Ce nœud n'est pas une destination valide",
         "login": "Connexion",
         "messages": "Messages",
-        "select_folder": "Sélectionner le dossier",
+        "select_folder": "Sélectionner un dossier",
         "to": "À",
         "view_images": "VISUALISER LES IMAGES",
         "attachement_unknown": "<{{mimeType}}> inconnu",
@@ -1276,7 +1284,24 @@
         "quarantine": "Quarantaine",
         "retention_period": "Période de conservation (valeur)",
         "advance_edit_user": "Utilisateur",
-        "user_auto_fill": "utilisateur (remplissage automatique)"
+        "user_auto_fill": "utilisateur (remplissage automatique)",
+        "enable_secure_connection": "Activer la connexion sécurisée (StartTLS/SSL)",
+        "enter_valid_email_address": "Saisir une adresse email valide",
+        "forgotten_password": "Mot de passe oublié",
+        "has_backup": "A une sauvegarde",
+        "interactive": "Interactif",
+        "invalid_primary_color_dark_mode": "La couleur principale pour le mode sombre n'est pas valide",
+        "invalid_primary_color_light_mode": "La couleur primaire pour le mode clair n'est pas valide",
+        "mailstores_list": "Liste des Mailstores",
+        "not_available": "Non disponible",
+        "permissive": "Permissif",
+        "strict": "Strict",
+        "user_recovery_email": "Email de récupération de l'utilisateur",
+        "validate_ip_Address_text": "Veuillez saisir une adresse IP valide.",
+        "verified": "Vérifié",
+        "max_mainbox_quota_for_the_mails_in_gb": "Quota maximal de la boîte aux lettres pour les courriers (Go)",
+        "show_forget_password_link": "Afficher le lien \"Oublier le mot de passe\" dans la page de connexion",
+        "user_can_ask_for_forgotten_password_token": "L'utilisateur peut demander un jeton de mot de passe oublié"
     },
     "message": {
         "snackbar": {
@@ -1292,7 +1317,7 @@
     },
     "timezone": {
         "africa_algiers": "{{value}} Afrique Central de l'Ouest",
-        "africa_cairo": "{{value}} Égypte",
+        "africa_cairo": "{{value}} Egypte",
         "africa_casablanca": "{{value}} Casablanca",
         "africa_harare": "{{value}} Harare, Pretoria",
         "africa_juba": "{{value}} Juba",
@@ -1338,7 +1363,7 @@
         "america_cuiaba": "{{value}} Cuiaba",
         "america_denver": "{{value}} US/Canada Mountain",
         "america_havana": "{{value}} La Havane",
-        "america_indiana_indianapolis": "{{value}} Indiana (Est)",
+        "america_indiana_indianapolis": "{{value}} Indiana (East)",
         "america_los_angeles": "{{value}} États-Unis/Canada Pacifique",
         "america_mexico_city": "{{value}} Guadalajara, Mexico City, Monterrey",
         "america_miquelon": "{{value}} Miquelon",
@@ -1996,7 +2021,9 @@
         "service_label_password": " Mot de passe de {{ service_label }}",
         "user_can_specify_forwarding_address": "L'utilisateur peux spécifier une adresse de transfert",
         "send_as_recipients": "Envoyer en tant que (les destinataires afficheront l'email de l'expéditeur {{targetEmail}})",
-        "send_recipients_see_the_mail": "Envoyer {{right}} (les destinataires afficheront l'email de l'expéditeur {{targetEmail}})"
+        "send_recipients_see_the_mail": "Envoyer {{right}} (les destinataires afficheront l'email de l'expéditeur {{targetEmail}})",
+        "abq_status": "Statut ABQ",
+        "otp_devices": "Appareils OTP"
     },
     "connection": {
         "access_key": "Clé d’accès",
@@ -2406,7 +2433,11 @@
         "tuning": "Configuration fine",
         "two": "2",
         "updated_at": "Mise à jour à",
-        "zero": "0"
+        "zero": "0",
+        "allowed_valid_antivirus_mirror": "Le miroir antivirus n'est pas valide",
+        "smtpd_not_valid_error": "Les maps de connexion de l'expéditeur Smtpd ne sont pas valides",
+        "smtpd_sender_login_maps": "Maps de connexion de l'expéditeur Smtpd",
+        "space_not_allowed_in_antivirus_mirror": "Espace non autorisé dans le miroir de l'antivirus"
     },
     "mat": {
         "add_here_any_blocked_extension": "Ajouter ici toutes les Extensions Bloquées"
@@ -2425,7 +2456,8 @@
         "is_current": "Premièrement, vous devez définir un autre volume comme volume courant."
     },
     "error": {
-        "one_or_more_ip_invalid": "Une ou plusieurs adresses IP sont invalides"
+        "one_or_more_ip_invalid": "Une ou plusieurs adresses IP sont invalides",
+        "invalid_ip_address_error_text": "Le format IP pris en charge pour ipv4 est ipv4/netmask et pour ipv6 est [ipv6]/netmask"
     },
     "action": {
         "click_open": "Cliquer pour ouvrir",
@@ -2452,7 +2484,13 @@
         "destroy_account_recreate_button": "OUI, LE SUPPRIMER PUIS LE RE-CRÉER",
         "to_make_changes_restart_the_MTA": "Pour que les changements soient appliqués, merci de relancer le MTA.",
         "quarantine_account": "Compte quarantaine",
-        "not_quarantine_account": "Il n'y a pas encore de compte quarantaine dans aucun des domaines. Voulez-vous créer un compte système quarantaine ?"
+        "not_quarantine_account": "Il n'y a pas encore de compte quarantaine dans aucun des domaines. Voulez-vous créer un compte système quarantaine ?",
+        "is_content_email_safe": "Le contenu de l'email est-il sûr ?",
+        "no_cancel": "NON, ANNULER",
+        "refresh_list": "RAFRAÎCHIR LA LISTE",
+        "yes_deliver": "OUI, ENVOYER",
+        "download": "TÉLÉCHARGEMENT",
+        "please_note_email_contains_dangerous_file_not_be_delivered": "Veuillez noter que si l'email contient encore un fichier dangereux, il ne sera pas délivré"
     },
     "messages": {
         "no_content": "Ce message ne contient pas de corps de texte",

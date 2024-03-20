@@ -253,12 +253,7 @@ const MTAOutBoundFlow: FC = () => {
 	}, [configInformation, setInitialAndCurrentValue, setMtaInitialValues]);
 
 	useEffect(() => {
-		if (
-			mtaOutboundDetail &&
-			!isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail) &&
-			!some(networkValue || [], { error: true }) &&
-			mtaOutboundDetail?.zimbraMtaMyNetworks !== mtaOutboundFlowInitialDetail?.zimbraMtaMyNetworks
-		) {
+		if (mtaOutboundDetail && !isEqual(mtaOutboundDetail, mtaOutboundFlowInitialDetail)) {
 			setIsDirty(true);
 		} else {
 			setIsDirty(false);
