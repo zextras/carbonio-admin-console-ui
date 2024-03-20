@@ -438,3 +438,4 @@ export const SECONDARY_BAR_GLOBAL_2FA = 'sb_global_2fa';
 export const SECONDARY_BAR_GLOBAL_QUARANTINE = 'sb_global_quarantine';
 export const ACCOUNTS_SEARCH_TABLE = 'accounts_searchtable';
 export const DOMAIN_ACCOUNTS_NEXT_TABLE = 'domain_accounts_nextable';
+export const LDAP = 'ldap:///';
