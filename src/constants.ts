@@ -438,6 +438,7 @@ export const SECONDARY_BAR_GLOBAL_2FA = 'sb_global_2fa';
 export const SECONDARY_BAR_GLOBAL_QUARANTINE = 'sb_global_quarantine';
 export const ACCOUNTS_SEARCH_TABLE = 'accounts_searchtable';
 export const DOMAIN_ACCOUNTS_NEXT_TABLE = 'domain_accounts_nextable';
+export const LDAP = 'ldap:///';
 export const ACCOUNTS_DETAILS_ACTIONS = 'AccountsDetailsActions';
 export const DOMAINS_ACCOUNTS_DETAILS_CANCEL = 'domain_accountsdetails_cancel';
 export const DOMAINS_ACCOUNTS_DETAILS_SAVE = 'domain_accountsdetails_save';
