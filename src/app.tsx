@@ -632,7 +632,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...managementSection },
-				tooltip: MTATooltipView
+				tooltip: MTATooltipView,
+				trackerLabel: PRIMARY_BAR_MTA
 			});
 		} else {
 			removeRoute(MTA_ROUTE_ID);
@@ -704,23 +705,7 @@ const App: FC = () => {
 				trackerLabel: PRIMARY_BAR_OPERATIONS
 			});
 		}
-		if (hasConfigRights) {
-			addRoute({
-				route: MTA_ROUTE_ID,
-				position: 3,
-				visible: true,
-				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
-				primaryBar: 'MailFolderOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection },
-				tooltip: MTATooltipView,
-				trackerLabel: PRIMARY_BAR_MTA
-			});
-		} else {
-			removeRoute(MTA_ROUTE_ID);
-		}
+
 		if (hasConfigRights) {
 			addRoute({
 				route: PRIVACY_ROUTE_ID,
