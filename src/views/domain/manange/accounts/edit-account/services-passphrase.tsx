@@ -18,6 +18,14 @@ import {
 } from '@zextras/carbonio-design-system';
 import { Trans, useTranslation } from 'react-i18next';
 
+import {
+	CREATE_SERVICES_PASSPHRASE,
+	PASSPHRASA_ID,
+	SERVICES,
+	SERVICES_PASSPHRASE_DELETE,
+	SERVICES_PASSPHRASE_LABEL,
+	STATUS
+} from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { ServicesPassphraseServices, ServicesPassphraseStatus } from '../../../../utility/utils';
@@ -55,7 +63,9 @@ interface AddCredentialApiType {
 	};
 }
 
-export const ServicesPassphrase: FC = () => {
+export const ServicesPassphrase: FC<{ handleMatomoTrackerEvent?: any }> = ({
+	handleMatomoTrackerEvent
+}) => {
 	const context = useContext(AccountContext);
 	const { accountDetail, credentialList, getCredentialList } = context;
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -87,6 +97,7 @@ export const ServicesPassphrase: FC = () => {
 	};
 
 	const onSave = useCallback((): void => {
+		handleMatomoTrackerEvent(CREATE_SERVICES_PASSPHRASE);
 		fetchSoap('zextras', {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxAuth',
@@ -137,6 +148,7 @@ export const ServicesPassphrase: FC = () => {
 		createSnackbar,
 		domainName,
 		getCredentialList,
+		handleMatomoTrackerEvent,
 		t
 	]);
 
@@ -201,6 +213,9 @@ export const ServicesPassphrase: FC = () => {
 								backgroundColor="gray5"
 								value={item.label}
 								textColor="secondary"
+								onFocus={(): void => {
+									handleMatomoTrackerEvent(SERVICES_PASSPHRASE_LABEL);
+								}}
 							/>
 						</Row>
 						<Row
@@ -221,6 +236,9 @@ export const ServicesPassphrase: FC = () => {
 								onChange={(): void => {
 									// console.log('__');
 								}}
+								onClick={(): void => {
+									handleMatomoTrackerEvent(SERVICES);
+								}}
 							/>
 						</Row>
 						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
@@ -237,6 +255,9 @@ export const ServicesPassphrase: FC = () => {
 								onChange={(): null => null}
 								style={{ paddingRight: 'medium' }}
 								disabled
+								onClick={(): void => {
+									handleMatomoTrackerEvent(STATUS);
+								}}
 							/>
 						</Row>
 						<Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
@@ -246,6 +267,9 @@ export const ServicesPassphrase: FC = () => {
 								backgroundColor="gray5"
 								value={item.id}
 								textColor="secondary"
+								onFocus={(): void => {
+									handleMatomoTrackerEvent(PASSPHRASA_ID);
+								}}
 							/>
 						</Row>
 						<Row width="19%" mainAlignment="space-between">
@@ -253,7 +277,10 @@ export const ServicesPassphrase: FC = () => {
 								type="outlined"
 								label={t('account_details.DELETE', 'DELETE')}
 								color="error"
-								onClick={(): void => onDelete(item)}
+								onClick={(): void => {
+									handleMatomoTrackerEvent(SERVICES_PASSPHRASE_DELETE);
+									onDelete(item);
+								}}
 							/>
 						</Row>
 					</Row>
@@ -266,6 +293,9 @@ export const ServicesPassphrase: FC = () => {
 							label={t('account_details.label', 'Label')}
 							backgroundColor="gray5"
 							value={createCredential.label}
+							onFocus={(): void => {
+								handleMatomoTrackerEvent(SERVICES_PASSPHRASE_LABEL);
+							}}
 						/>
 					</Row>
 					<Row width="19%" mainAlignment="space-between" padding={{ right: 'medium' }}>
@@ -276,6 +306,9 @@ export const ServicesPassphrase: FC = () => {
 							showCheckbox={false}
 							onChange={onServicesPassphraseServicesChange}
 							defaultSelection={SERVICE_PASSPHRASE_SERVICES[0]}
+							onClick={(): void => {
+								handleMatomoTrackerEvent(SERVICES);
+							}}
 						/>
 					</Row>
 

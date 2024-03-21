@@ -6,8 +6,17 @@
 import React, { FC, useCallback } from 'react';
 
 import { Container, Row, Text, Divider } from '@zextras/carbonio-design-system';
+import { snakeCase } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
+import {
+	ACTIVESYNC_REMOTE_ACCESS,
+	CAN_ACCESS_SETTINGS,
+	MAIL_SIGNATURES,
+	MOBILE_APP,
+	OUT_OF_OFFICE_REPLY,
+	WEB_FEATURE
+} from '../../constants';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import InheritedSwitch from '../utility/inherited-components/inherited-switch';
 
@@ -18,25 +27,29 @@ export const Features: FC<{
 	accSpecificDetail?: Record<string, string>;
 	setEmptyValue?: CallableFunction;
 	readonlyFeatures?: boolean;
+	handleMatomoTrackerEvent?: any;
 }> = ({
 	featuresDetail,
 	setFeaturesDetail,
 	cosDetail,
 	accSpecificDetail,
 	setEmptyValue,
-	readonlyFeatures = false
+	readonlyFeatures = false,
+	handleMatomoTrackerEvent
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
+			const snakeCaseString = snakeCase(key);
+			handleMatomoTrackerEvent(snakeCaseString);
 			setFeaturesDetail((prev: Record<string, string>) => ({
 				...prev,
 				[key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[featuresDetail, setFeaturesDetail]
+		[featuresDetail, handleMatomoTrackerEvent, setFeaturesDetail]
 	);
 
 	return (
@@ -76,6 +89,9 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('zimbraFeatureOptionsEnabled')
 							}
 							disabled={readonlyFeatures}
+							onFocus={(): void => {
+								readonlyFeatures && handleMatomoTrackerEvent(CAN_ACCESS_SETTINGS);
+							}}
 						/>
 					</Row>
 				</Container>
@@ -110,6 +126,9 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('carbonioFeatureMailsAppEnabled')
 							}
 							disabled={readonlyFeatures}
+							onFocus={(): void => {
+								readonlyFeatures && handleMatomoTrackerEvent(MOBILE_APP);
+							}}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -125,6 +144,9 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('zimbraFeatureSignaturesEnabled')
 							}
 							disabled={readonlyFeatures}
+							onFocus={(): void => {
+								readonlyFeatures && handleMatomoTrackerEvent(MAIL_SIGNATURES);
+							}}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -140,6 +162,9 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('zimbraFeatureOutOfOfficeReplyEnabled')
 							}
 							disabled={readonlyFeatures}
+							onFocus={(): void => {
+								readonlyFeatures && handleMatomoTrackerEvent(OUT_OF_OFFICE_REPLY);
+							}}
 						/>
 					</Row>
 					{isAdvanced && (
@@ -157,6 +182,9 @@ export const Features: FC<{
 									setEmptyValue && setEmptyValue('zimbraFeatureMobileSyncEnabled')
 								}
 								disabled={readonlyFeatures}
+								onFocus={(): void => {
+									readonlyFeatures && handleMatomoTrackerEvent(ACTIVESYNC_REMOTE_ACCESS);
+								}}
 							/>
 						</Row>
 					)}
@@ -186,6 +214,9 @@ export const Features: FC<{
 									setEmptyValue && setEmptyValue('carbonioFeatureTeamEnabled')
 								}
 								disabled={readonlyFeatures}
+								onFocus={(): void => {
+									readonlyFeatures && handleMatomoTrackerEvent(WEB_FEATURE);
+								}}
 							/>
 						</Row>
 						<Row
@@ -205,6 +236,10 @@ export const Features: FC<{
 									setEmptyValue && setEmptyValue('carbonioFeatureChatsAppEnabled')
 								}
 								disabled={featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE' || readonlyFeatures}
+								onFocus={(): void => {
+									(featuresDetail.carbonioFeatureTeamEnabled !== 'TRUE' || readonlyFeatures) &&
+										handleMatomoTrackerEvent(MOBILE_APP);
+								}}
 							/>
 						</Row>
 					</Container>
@@ -240,6 +275,9 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('zimbraFeatureContactsEnabled')
 							}
 							disabled={readonlyFeatures}
+							onFocus={(): void => {
+								readonlyFeatures && handleMatomoTrackerEvent(WEB_FEATURE);
+							}}
 						/>
 					</Row>
 					{isAdvanced && (
@@ -258,6 +296,10 @@ export const Features: FC<{
 								disabled={
 									featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE' || readonlyFeatures
 								}
+								onFocus={(): void => {
+									(featuresDetail.zimbraFeatureContactsEnabled !== 'TRUE' || readonlyFeatures) &&
+										handleMatomoTrackerEvent(ACTIVESYNC_REMOTE_ACCESS);
+								}}
 							/>
 						</Row>
 					)}
@@ -285,6 +327,9 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('zimbraFeatureCalendarEnabled')
 							}
 							disabled={readonlyFeatures}
+							onFocus={(): void => {
+								readonlyFeatures && handleMatomoTrackerEvent(WEB_FEATURE);
+							}}
 						/>
 					</Row>
 					{isAdvanced && (
@@ -303,6 +348,10 @@ export const Features: FC<{
 								disabled={
 									featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE' || readonlyFeatures
 								}
+								onFocus={(): void => {
+									(featuresDetail.zimbraFeatureCalendarEnabled !== 'TRUE' || readonlyFeatures) &&
+										handleMatomoTrackerEvent(ACTIVESYNC_REMOTE_ACCESS);
+								}}
 							/>
 						</Row>
 					)}
@@ -338,6 +387,9 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('carbonioFeatureFilesEnabled')
 							}
 							disabled={readonlyFeatures}
+							onFocus={(): void => {
+								readonlyFeatures && handleMatomoTrackerEvent(WEB_FEATURE);
+							}}
 						/>
 					</Row>
 					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
@@ -353,6 +405,10 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('carbonioFeatureFilesAppEnabled')
 							}
 							disabled={featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE' || readonlyFeatures}
+							onFocus={(): void => {
+								(featuresDetail.carbonioFeatureFilesEnabled !== 'TRUE' || readonlyFeatures) &&
+									handleMatomoTrackerEvent(MOBILE_APP);
+							}}
 						/>
 					</Row>
 				</Container>
@@ -379,6 +435,9 @@ export const Features: FC<{
 								setEmptyValue && setEmptyValue('zimbraFeatureTasksEnabled')
 							}
 							disabled={readonlyFeatures}
+							onFocus={(): void => {
+								readonlyFeatures && handleMatomoTrackerEvent(WEB_FEATURE);
+							}}
 						/>
 					</Row>
 				</Container>

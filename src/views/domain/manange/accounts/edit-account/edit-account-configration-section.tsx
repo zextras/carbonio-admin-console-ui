@@ -16,10 +16,16 @@ import {
 	SnackbarManagerContext,
 	Tooltip
 } from '@zextras/carbonio-design-system';
-import { map, some } from 'lodash';
+import { map, snakeCase, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { ACCOUNT } from '../../../../../constants';
+import {
+	ACCOUNT,
+	FORWADING_ADDRESSES_HIDDEN_FROM_USER,
+	FORWADING_ADDRESSES_SPECIFIED_BY_USER,
+	FORWADING_CALENDAR_INVITATIONS_TO_ADDRESSES,
+	MAIL_TRANSPORT_MAP
+} from '../../../../../constants';
 import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomChip from '../../../../components/customChip';
@@ -29,7 +35,9 @@ import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
-const EditAccountConfigrationSection: FC = () => {
+const EditAccountConfigrationSection: FC<{ handleMatomoTrackerEvent: (value: string) => void }> = ({
+	handleMatomoTrackerEvent
+}) => {
 	const context = useContext(AccountContext);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [t] = useTranslation();
@@ -70,12 +78,14 @@ const EditAccountConfigrationSection: FC = () => {
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
+			const snakeCaseString = snakeCase(key);
+			handleMatomoTrackerEvent(snakeCaseString);
 			setAccountDetail((prev: any) => ({
 				...prev,
 				[key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[accountDetail, setAccountDetail]
+		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
 	);
 
 	const setSwitchOptionValue = useCallback(
@@ -227,6 +237,9 @@ const EditAccountConfigrationSection: FC = () => {
 							background="gray5"
 							hasError={some(prefMailForwardingAddress || [], { error: true })}
 							maxChips={null}
+							onFocus={(): void => {
+								handleMatomoTrackerEvent(FORWADING_ADDRESSES_SPECIFIED_BY_USER);
+							}}
 						/>
 					</Row>
 				</Row>
@@ -254,6 +267,9 @@ const EditAccountConfigrationSection: FC = () => {
 							hasError={some(mailForwardingAddress || [], { error: true })}
 							ChipComponent={CustomChip}
 							maxChips={null}
+							onFocus={(): void => {
+								handleMatomoTrackerEvent(FORWADING_ADDRESSES_HIDDEN_FROM_USER);
+							}}
 						/>
 					</Row>
 				</Row>
@@ -281,6 +297,9 @@ const EditAccountConfigrationSection: FC = () => {
 							hasError={some(prefCalendarForwardInvitesTo || [], { error: true })}
 							ChipComponent={CustomChip}
 							maxChips={null}
+							onFocus={(): void => {
+								handleMatomoTrackerEvent(FORWADING_CALENDAR_INVITATIONS_TO_ADDRESSES);
+							}}
 						/>
 					</Row>
 				</Row>
@@ -314,6 +333,9 @@ const EditAccountConfigrationSection: FC = () => {
 								</Text>
 							</Tooltip>
 						)}
+						onFocus={(): void => {
+							handleMatomoTrackerEvent(MAIL_TRANSPORT_MAP);
+						}}
 					/>
 				</Row>
 				<Row width="100%" padding={{ top: 'medium' }}>
@@ -333,6 +355,7 @@ const EditAccountConfigrationSection: FC = () => {
 					cosDetail={cosDetail}
 					accSpecificDetail={accSpecificDetail}
 					setEmptyValue={setEmptyValue}
+					handleMatomoTrackerEvent={handleMatomoTrackerEvent}
 				/>
 			</Row>
 		</Container>
