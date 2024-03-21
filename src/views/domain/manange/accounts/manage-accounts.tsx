@@ -47,7 +47,8 @@ import {
 	ACCOUNTS_TABLE_ITEM,
 	ACCOUNTS_SEARCH_TABLE,
 	DOMAIN_ACCOUNTS_NEXT_TABLE,
-	BACKUP_ENABLED
+	BACKUP_ENABLED,
+	DOMAINS_ROUTE_ID
 } from '../../../../constants';
 import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -717,7 +718,7 @@ const ManageAccounts: FC = () => {
 	);
 
 	const handleClickTableRow = (item: any): void => {
-		matomo.trackEvent(ACCOUNTS_MAIN_ACTION, ACCOUNTS_TABLE_ITEM);
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, ACCOUNTS_TABLE_ITEM);
 		openDetailView(item);
 	};
 
@@ -970,7 +971,7 @@ const ManageAccounts: FC = () => {
 	}, []);
 
 	const nextPage = (): void => {
-		matomo.trackEvent(ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
 	};
 
 	return (
@@ -995,7 +996,7 @@ const ManageAccounts: FC = () => {
 									backgroundColor="primary"
 									icon="Plus"
 									onClick={(): void => {
-										matomo.trackEvent(ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CREATE);
+										matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CREATE);
 										setShowCreateAccountView(true);
 									}}
 								/>
@@ -1040,7 +1041,11 @@ const ManageAccounts: FC = () => {
 									}}
 									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 									onFocus={(): void => {
-										matomo.trackEvent(ACCOUNTS_MAIN_ACTION, ACCOUNTS_SEARCH_TABLE);
+										matomo.trackEvent(
+											DOMAINS_ROUTE_ID,
+											ACCOUNTS_MAIN_ACTION,
+											ACCOUNTS_SEARCH_TABLE
+										);
 									}}
 								/>
 							</Container>

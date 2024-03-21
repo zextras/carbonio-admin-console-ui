@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import {
+	DASHBOARD,
 	DOMAINS_ACCOUNT_QUICK_ACCESS,
 	DOMAINS_MAILINGLIST_QUICK_ACCESS,
 	QUICK_ACTIONS
@@ -42,6 +43,7 @@ const QuickAccess: FC<{
 
 	const handleClickedQuickAccess = (item: string): void => {
 		matomo.trackEvent(
+			DASHBOARD,
 			QUICK_ACTIONS,
 			`${item === 'account' ? DOMAINS_ACCOUNT_QUICK_ACCESS : DOMAINS_MAILINGLIST_QUICK_ACCESS}`
 		);

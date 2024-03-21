@@ -31,7 +31,7 @@ import {
 	// @ts-ignore
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
-import { find, filter, map, debounce, cloneDeep, findIndex, pullAt } from 'lodash';
+import { find, filter, map, debounce, cloneDeep, findIndex, pullAt, snakeCase } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import DelegateAddSection from './add-delegate-section/delegate-add-section';
@@ -43,7 +43,20 @@ import {
 	READ_MAILS_ONLY,
 	SEND_READ_MAILS,
 	MANAGE_NO_SEND,
-	SEND_READ_MANAGE_MAILS
+	SEND_READ_MANAGE_MAILS,
+	ADD_NEW,
+	EDIT,
+	REMOVE,
+	ADD,
+	VOLUME_CANCEL_BUTTON,
+	ADD_ACCOUNT_GROUP_WITH_SELECTED_RIGHTS,
+	SWITCH_SIMPLIFIED,
+	SWITCH_ADVANCED,
+	START_TYPING_ACCOUNT,
+	READ_WRITE,
+	READ_ONLY,
+	SEND_CHECK,
+	SEND_ON_BEHALF_CHECK
 } from '../../../../../constants';
 import { accountListDirectory } from '../../../../../services/account-list-directory-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -75,7 +88,9 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
-const EditAccountDelegatesSection: FC = () => {
+const EditAccountDelegatesSection: FC<{ handleMatomoTrackerEvent: any }> = ({
+	handleMatomoTrackerEvent
+}) => {
 	const context = useContext(AccountContext);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const {
@@ -191,11 +206,13 @@ const EditAccountDelegatesSection: FC = () => {
 		[t]
 	);
 	const handleCreateDelegate = (): void => {
+		handleMatomoTrackerEvent(ADD_NEW);
 		setEditMode(false);
 		setDeligateDetail({});
 		setShowCreateIdentity(true);
 	};
 	const handleEditDelegate = (): void => {
+		handleMatomoTrackerEvent(EDIT);
 		setEditMode(true);
 		const selectedDelegate = find(identitiesList, (o) => o?.grantee?.[0].id === selectedRows[0]);
 		selectedDelegate.folderSelection = selectedDelegate?.folder?.length ? 'all_folders' : '';
@@ -222,6 +239,7 @@ const EditAccountDelegatesSection: FC = () => {
 	};
 
 	const handleDeleteeDelegate = useCallback((): void => {
+		handleMatomoTrackerEvent(REMOVE);
 		const selectedDelegate = find(identitiesList, (o) => o?.grantee?.[0].id === selectedRows[0]);
 		if (selectedDelegate) {
 			if (selectedDelegate?.folder?.length) {
@@ -291,9 +309,20 @@ const EditAccountDelegatesSection: FC = () => {
 				});
 			}
 		}
-	}, [accountDetail, createSnackbar, editMode, getIdentitiesList, identitiesList, selectedRows, t]);
+	}, [
+		accountDetail?.zimbraId,
+		accountDetail?.zimbraMailDeliveryAddress,
+		createSnackbar,
+		editMode,
+		getIdentitiesList,
+		handleMatomoTrackerEvent,
+		identitiesList,
+		selectedRows,
+		t
+	]);
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const handleCreateDelegateAPI = useCallback((): void => {
+		handleMatomoTrackerEvent(ADD);
 		if (editMode) {
 			handleDeleteeDelegate();
 		}
@@ -405,8 +434,9 @@ const EditAccountDelegatesSection: FC = () => {
 				});
 			});
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
-		deligateDetail,
+		handleMatomoTrackerEvent,
 		editMode,
 		handleDeleteeDelegate,
 		accountDetail?.zimbraMailDeliveryAddress,
@@ -435,7 +465,10 @@ const EditAccountDelegatesSection: FC = () => {
 						icon={'CloseOutline'}
 						iconPlacement="right"
 						color="secondary"
-						onClick={(): void => setShowCreateIdentity(false)}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(VOLUME_CANCEL_BUTTON);
+							setShowCreateIdentity(false);
+						}}
 					/>
 				),
 				PrevButton: (): ReactElement => <></>,
@@ -463,7 +496,10 @@ const EditAccountDelegatesSection: FC = () => {
 						icon={'CloseOutline'}
 						iconPlacement="right"
 						color="secondary"
-						onClick={(): void => setShowCreateIdentity(false)}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(VOLUME_CANCEL_BUTTON);
+							setShowCreateIdentity(false);
+						}}
 					/>
 				),
 				PrevButton: (props: any): any => (
@@ -500,7 +536,10 @@ const EditAccountDelegatesSection: FC = () => {
 						icon={'CloseOutline'}
 						iconPlacement="right"
 						color="secondary"
-						onClick={(): void => setShowCreateIdentity(false)}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(VOLUME_CANCEL_BUTTON);
+							setShowCreateIdentity(false);
+						}}
 					/>
 				),
 				PrevButton: (props: any): any => (
@@ -524,7 +563,7 @@ const EditAccountDelegatesSection: FC = () => {
 				)
 			}
 		],
-		[handleCreateDelegateAPI, t]
+		[handleCreateDelegateAPI, handleMatomoTrackerEvent, t]
 	);
 	const [selectedAccounts, setSelectedAccounts] = useState<any>([]);
 	const [options, setOptions] = useState<any>([]);
@@ -555,6 +594,7 @@ const EditAccountDelegatesSection: FC = () => {
 	);
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const addAccountGroupRights = useCallback((): void => {
+		handleMatomoTrackerEvent(ADD_ACCOUNT_GROUP_WITH_SELECTED_RIGHTS);
 		simpleSelectedList?.forEach((ele: any): void => {
 			if (sendRightCheck || sendBehalfRightCheck) {
 				postSoapFetchRequest(
@@ -656,6 +696,7 @@ const EditAccountDelegatesSection: FC = () => {
 		setReadWriteRightCheck(false);
 		setSendRightCheck(false);
 	}, [
+		handleMatomoTrackerEvent,
 		simpleSelectedList,
 		sendRightCheck,
 		sendBehalfRightCheck,
@@ -671,6 +712,8 @@ const EditAccountDelegatesSection: FC = () => {
 	const handleSimpleDeleteDelegate = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(single: boolean, rightsType: string): void => {
+			const snakeCaseString = snakeCase(rightsType);
+			handleMatomoTrackerEvent(snakeCaseString);
 			const selectedDelegateArr = [];
 			if (rightsType === 'readWrite') {
 				if (
@@ -785,6 +828,7 @@ const EditAccountDelegatesSection: FC = () => {
 			accountDetail?.zimbraMailDeliveryAddress,
 			createSnackbar,
 			getIdentitiesList,
+			handleMatomoTrackerEvent,
 			identitiesList,
 			identityListItem,
 			readSelectedRows,
@@ -853,7 +897,10 @@ const EditAccountDelegatesSection: FC = () => {
 							color="primary"
 							size="small"
 							weight="bold"
-							onClick={(): void => setIsSimplified(true)}
+							onClick={(): void => {
+								handleMatomoTrackerEvent(SWITCH_SIMPLIFIED);
+								setIsSimplified(true);
+							}}
 							style={{ cursor: 'pointer' }}
 						>
 							{t('account_details.switch_simplified', 'Switch to Simplified View')}
@@ -865,6 +912,7 @@ const EditAccountDelegatesSection: FC = () => {
 							size="small"
 							weight="bold"
 							onClick={(): void => {
+								handleMatomoTrackerEvent(SWITCH_ADVANCED);
 								setOptions([]);
 								setIsSimplified(false);
 							}}
@@ -902,6 +950,9 @@ const EditAccountDelegatesSection: FC = () => {
 						selectName="zimbraPrefTimeZoneId"
 						onChange={onDeligateSendSettingsChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefTimeZoneId')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(DELEGATE_SEND_SETTINGS);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -978,6 +1029,9 @@ const EditAccountDelegatesSection: FC = () => {
 							requireUniqueChips
 							ChipComponent={CustomChip}
 							maxChips={null}
+							onFocus={(): void => {
+								handleMatomoTrackerEvent(START_TYPING_ACCOUNT);
+							}}
 						/>
 					</Container>
 					<Container mainAlignment="flex-start">
@@ -1005,6 +1059,7 @@ const EditAccountDelegatesSection: FC = () => {
 									iconColor="primary"
 									value={readRightWriteCheck}
 									onClick={(): void => {
+										handleMatomoTrackerEvent(READ_WRITE);
 										if (!readRightWriteCheck) {
 											setReadRightCheck(false);
 										}
@@ -1018,6 +1073,7 @@ const EditAccountDelegatesSection: FC = () => {
 									iconColor="primary"
 									value={readRightCheck}
 									onClick={(): void => {
+										handleMatomoTrackerEvent(READ_ONLY);
 										if (!readRightCheck) {
 											setReadWriteRightCheck(false);
 										}
@@ -1031,6 +1087,7 @@ const EditAccountDelegatesSection: FC = () => {
 									iconColor="primary"
 									value={sendRightCheck}
 									onClick={(): void => {
+										handleMatomoTrackerEvent(SEND_CHECK);
 										if (!sendRightCheck) {
 											setSendBehalfRightCheck(false);
 										}
@@ -1044,6 +1101,7 @@ const EditAccountDelegatesSection: FC = () => {
 									iconColor="primary"
 									value={sendBehalfRightCheck}
 									onClick={(): void => {
+										handleMatomoTrackerEvent(SEND_ON_BEHALF_CHECK);
 										if (!sendBehalfRightCheck) {
 											setSendRightCheck(false);
 										}

@@ -26,6 +26,7 @@ const InheritedSwitch: FC<{
 	fromSubValue: any;
 	iconColor: string;
 	disabled?: boolean;
+	onFocus?: any;
 }> = ({
 	label,
 	subValue,
@@ -35,7 +36,8 @@ const InheritedSwitch: FC<{
 	onChangeReset,
 	fromSubValue,
 	iconColor,
-	disabled = false
+	disabled = false,
+	onFocus
 }) => {
 	const [t] = useTranslation();
 	return (
@@ -47,6 +49,7 @@ const InheritedSwitch: FC<{
 					label={label}
 					iconColor={iconColor}
 					disabled={disabled}
+					onFocus={onFocus}
 				/>
 			</Row>
 			{fromSubValue ? (
