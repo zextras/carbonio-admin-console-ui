@@ -557,3 +557,7 @@ export const SERVICES = 'services';
 export const PASSPHRASA_ID = 'passphrasa_id';
 export const SERVICES_PASSPHRASE_DELETE = 'services_passphrase_delete';
 export const SEARCH_SIGNATURE = 'search_a_signature';
+export const GLOBAL = 'global';
+export const LIST_COS = 'listCos';
+export const CREATE_COS = 'createCos';
+export const CREATE_TOP_DOMAIN = 'createTopDomain';
