@@ -160,7 +160,7 @@ const App: FC = () => {
 	}, [accounts, setUserId]);
 
 	const showCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig: Right = find(rights, { type: COS }) ?? { all: [], type: COS };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
 			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
@@ -169,7 +169,7 @@ const App: FC = () => {
 	}, [rights]);
 
 	const createCosRight = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: GLOBAL }) || { all: [], type: GLOBAL };
+		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
 			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
@@ -178,7 +178,7 @@ const App: FC = () => {
 	}, [rights]);
 
 	const createDomainRight = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: GLOBAL }) || { all: [], type: GLOBAL };
+		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
 			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
