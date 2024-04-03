@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { Server } from '../../../types';
-import { DASHBOARD_TABLES, STORAGES_TABLE_DATABASE } from '../../constants';
+import { DASHBOARD, DASHBOARD_TABLES, STORAGES_TABLE_DATABASE } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
@@ -52,7 +52,7 @@ const DashboardServerList: FC<{
 	}, [getVersionInformation]);
 
 	const handleClickRow = (): void => {
-		matomo.trackEvent(DASHBOARD_TABLES, STORAGES_TABLE_DATABASE);
+		matomo.trackEvent(DASHBOARD, DASHBOARD_TABLES, STORAGES_TABLE_DATABASE);
 	};
 
 	useEffect(() => {

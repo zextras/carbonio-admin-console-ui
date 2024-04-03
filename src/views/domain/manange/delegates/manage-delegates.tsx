@@ -351,7 +351,9 @@ const ManageDelegates: FC = () => {
 										{item?.label || ' '}
 									</Text>,
 									<Text size="medium" key={item?.id} color="gray0">
-										{item?.status ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+										{item?.enabled
+											? t('label.enabled', 'Enabled')
+											: t('label.disabled', 'Disabled')}
 									</Text>,
 									<Text size="medium" key={item?.id}>
 										{item?.failed_attempts}

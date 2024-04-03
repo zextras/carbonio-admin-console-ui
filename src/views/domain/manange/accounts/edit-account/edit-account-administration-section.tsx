@@ -21,10 +21,10 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
-import { debounce } from 'lodash';
+import { debounce, snakeCase } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { TRUE } from '../../../../../constants';
+import { ADD, DOMAIN, RIGHTS_ACCESS_CONTROL_LISTS, TRUE } from '../../../../../constants';
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
@@ -36,7 +36,7 @@ import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
-const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
+const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoTrackerEvent }) => {
 	const context = useContext(AccountContext);
 	const createSnackbar = useSnackbar();
 	const { accountDetail, setAccountDetail, initAccountDetail, setDeleteAdministrationRights } =
@@ -91,12 +91,15 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
+			const snakeCaseString = snakeCase(key);
+			handleMatomoTrackerEvent(snakeCaseString);
+
 			setAccountDetail((prev: AccountType) => ({
 				...prev,
 				[key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[accountDetail, setAccountDetail]
+		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
 	);
 
 	const getAccountDistributionList = useCallback(() => {
@@ -112,6 +115,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	}, [accountDetail?.zimbraId]);
 
 	const onAdd = useCallback((): void => {
+		handleMatomoTrackerEvent(ADD);
 		setIsLoading(true);
 		const id: any = {
 			n: 'id',
@@ -152,7 +156,15 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 				});
 				setIsLoading(false);
 			});
-	}, [t, accountDetail, selectedOption, getAccountDistributionList, createSnackbar, setIsLoading]);
+	}, [
+		handleMatomoTrackerEvent,
+		setIsLoading,
+		selectedOption.value,
+		accountDetail?.name,
+		createSnackbar,
+		t,
+		getAccountDistributionList
+	]);
 
 	const fetchDistributionList = (name: string): void => {
 		const attrs =
@@ -207,6 +219,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 
 	const onDeleteFromList = useCallback(
 		(lists: any, type: string) => {
+			handleMatomoTrackerEvent(type);
 			if (lists?.length > 0) {
 				setIsLoading(true);
 				lists.forEach((item: any) => {
@@ -253,7 +266,14 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 			}
 			setSendSelectedRows([]);
 		},
-		[t, accountDetail, getAccountDistributionList, createSnackbar, setIsLoading]
+		[
+			handleMatomoTrackerEvent,
+			setIsLoading,
+			accountDetail?.name,
+			createSnackbar,
+			t,
+			getAccountDistributionList
+		]
 	);
 
 	const getDomainLists = useCallback((domain: string): any => {
@@ -287,188 +307,189 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	}, [getDomainLists, getAccountDistributionList, accountDetail?.name]);
 
 	return (
-		<>
-			<Container
-				mainAlignment="flex-start"
-				padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-				style={{ overflow: 'auto' }}
-			>
-				<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-					<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-						<Text size="small" color="gray0" weight="bold">
-							{t('label.roles', 'Roles')}
-						</Text>
+		<Container
+			mainAlignment="flex-start"
+			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+			style={{ overflow: 'auto' }}
+		>
+			<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
+				<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+					<Text size="small" color="gray0" weight="bold">
+						{t('label.roles', 'Roles')}
+					</Text>
+				</Row>
+				{isGlobalAdmin && (
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
+						<Row width="40%" padding={{ top: 'large' }} mainAlignment="flex-start">
+							<Switch
+								value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
+								onClick={(): void => {
+									if (accountDetail?.zimbraIsAdminAccount === 'FALSE') {
+										setDeleteAdministrationRights(accountDistributionList);
+									} else {
+										setDeleteAdministrationRights([]);
+									}
+									changeSwitchOption('zimbraIsAdminAccount');
+									setAccountDetail((prev: AccountType) => ({
+										...prev,
+										zimbraIsDelegatedAdminAccount: initAccountDetail?.zimbraIsDelegatedAdminAccount
+									}));
+								}}
+								label={t('account_details.global_administration', 'Global administration')}
+								iconColor="primary"
+							/>
+						</Row>
 					</Row>
-					{isGlobalAdmin && (
-						<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
-							<Row width="40%" padding={{ top: 'large' }} mainAlignment="flex-start">
+				)}
+
+				{isAdvanced && (
+					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
+						<Row width="40%" mainAlignment="flex-start">
+							{accountDetail?.zimbraIsAdminAccount !== 'TRUE' && (
 								<Switch
-									value={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
-									onClick={(): void => {
-										if (accountDetail?.zimbraIsAdminAccount === 'FALSE') {
-											setDeleteAdministrationRights(accountDistributionList);
-										} else {
-											setDeleteAdministrationRights([]);
-										}
-										changeSwitchOption('zimbraIsAdminAccount');
-										setAccountDetail((prev: AccountType) => ({
-											...prev,
-											zimbraIsDelegatedAdminAccount:
-												initAccountDetail?.zimbraIsDelegatedAdminAccount
-										}));
-									}}
-									label={t('account_details.global_administration', 'Global administration')}
+									disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
+									value={accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE'}
+									onClick={(): void => changeSwitchOption('zimbraIsDelegatedAdminAccount')}
+									label={t('account_details.delegated_administration', 'Delegated administration')}
 									iconColor="primary"
 								/>
-							</Row>
+							)}
 						</Row>
-					)}
-
-					{isAdvanced && (
-						<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="flex-start">
-							<Row width="40%" mainAlignment="flex-start">
-								{accountDetail?.zimbraIsAdminAccount !== 'TRUE' && (
-									<Switch
-										disabled={accountDetail?.zimbraIsAdminAccount === 'TRUE'}
-										value={accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE'}
-										onClick={(): void => changeSwitchOption('zimbraIsDelegatedAdminAccount')}
-										label={t(
-											'account_details.delegated_administration',
-											'Delegated administration'
-										)}
-										iconColor="primary"
-									/>
-								)}
-							</Row>
-						</Row>
-					)}
-					{accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
-						accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
-							<Row
-								width="100%"
-								mainAlignment="flex-start"
-								padding={{ top: 'large', bottom: 'large' }}
-							>
-								<Row
-									width="45%"
-									padding={{ top: 'large', right: 'large' }}
-									mainAlignment="flex-start"
-								>
-									<Dropdown
-										items={items}
-										placement="bottom-start"
-										disableAutoFocus
-										width="100%"
-										style={{
-											width: '100%'
-										}}
-									>
-										<Input
-											label={t('label.domain', 'Domain')}
-											onChange={(ev: any): void => {
-												setIsDomainSelect(false);
-												setDomainId('');
-												setSearchDomainName(ev.target.value);
-											}}
-											value={searchDomainName}
-											backgroundColor="gray5"
-										/>
-									</Dropdown>
-								</Row>
-								<Row
-									width="45%"
-									padding={{ top: 'large', right: 'large' }}
-									mainAlignment="flex-start"
-								>
-									<Select
-										disabled={options?.length < 1}
-										items={options}
-										background="gray5"
-										label={t('label.rights_access_control_lists', 'Rights (Access Control Lists)')}
-										showCheckbox={false}
-										selection={selectedOption}
-										onChange={onOptionChange}
-									/>
-								</Row>
-								<Padding top="large" right="small">
-									<Button
-										label={t('label.add', 'Add')}
-										onClick={onAdd}
-										disabled={domainId === '' || selectedOption?.length === 0}
-										type="outlined"
-										color="primary"
-										size="extralarge"
-									/>
-								</Padding>
-							</Row>
-						)}
-				</Row>
-				{accountDistributionList?.length > 0 &&
+					</Row>
+				)}
+				{isAdvanced &&
 					accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
 					accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
-						<>
-							<Row width="100%" padding={{ top: '2rem' }}>
-								<Divider color="gray2" />
-							</Row>
-							<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
-								<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-									<Text size="small" color="gray0" weight="bold">
-										{t(
-											'label.This account has Administration rights for',
-											'This account has Administration rights for'
-										)}
-									</Text>
-								</Row>
+						<Row
+							width="100%"
+							mainAlignment="flex-start"
+							padding={{ top: 'large', bottom: 'large' }}
+						>
+							<Row
+								width="45%"
+								padding={{ top: 'large', right: 'large' }}
+								mainAlignment="flex-start"
+							>
+								<Dropdown
+									items={items}
+									placement="bottom-start"
+									disableAutoFocus
+									width="100%"
+									style={{
+										width: '100%'
+									}}
+								>
+									<Input
+										label={t('label.domain', 'Domain')}
+										onChange={(ev: any): void => {
+											setIsDomainSelect(false);
+											setDomainId('');
+											setSearchDomainName(ev.target.value);
+										}}
+										value={searchDomainName}
+										backgroundColor="gray5"
+										onFocus={(): void => {
+											handleMatomoTrackerEvent(DOMAIN);
+										}}
+									/>
+								</Dropdown>
 							</Row>
 							<Row
-								width="100%"
+								width="45%"
+								padding={{ top: 'large', right: 'large' }}
 								mainAlignment="flex-start"
-								crossAlignment="center"
-								padding={{ top: 'large' }}
 							>
-								<Table
-									rows={tableRows}
-									headers={headers}
+								<Select
+									disabled={options?.length < 1}
+									items={options}
+									background="gray5"
+									label={t('label.rights_access_control_lists', 'Rights (Access Control Lists)')}
 									showCheckbox={false}
-									onSelectionChange={setSendSelectedRows}
-									multiSelect={false}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
+									selection={selectedOption}
+									onChange={onOptionChange}
+									onClick={(): void => {
+										handleMatomoTrackerEvent(RIGHTS_ACCESS_CONTROL_LISTS);
+									}}
 								/>
 							</Row>
-							<Row
-								width="100%"
-								mainAlignment="flex-start"
-								crossAlignment="center"
-								padding={{ top: 'large', bottom: '3rem' }}
-							>
-								<Row padding={{ right: 'small' }} width="49%">
-									<Padding all={'0'}>
-										<Button
-											disabled={sendSelectedRows?.length < 1}
-											type="ghost"
-											onClick={(): void => onDeleteFromList(sendSelectedRows, 'one')}
-											label={t('label.remove', 'REMOVE')}
-											color="error"
-											width="fill"
-										/>
-									</Padding>
-								</Row>
-
-								<Row width="49%">
+							<Padding top="large" right="small">
+								<Button
+									label={t('label.add', 'Add')}
+									onClick={onAdd}
+									disabled={domainId === '' || selectedOption?.length === 0}
+									type="outlined"
+									color="primary"
+									size="extralarge"
+								/>
+							</Padding>
+						</Row>
+					)}
+			</Row>
+			{accountDistributionList?.length > 0 &&
+				accountDetail?.zimbraIsAdminAccount !== 'TRUE' &&
+				accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE' && (
+					<>
+						<Row width="100%" padding={{ top: '2rem' }}>
+							<Divider color="gray2" />
+						</Row>
+						<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
+							<Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+								<Text size="small" color="gray0" weight="bold">
+									{t(
+										'label.This account has Administration rights for',
+										'This account has Administration rights for'
+									)}
+								</Text>
+							</Row>
+						</Row>
+						<Row
+							width="100%"
+							mainAlignment="flex-start"
+							crossAlignment="center"
+							padding={{ top: 'large' }}
+						>
+							<Table
+								rows={tableRows}
+								headers={headers}
+								showCheckbox={false}
+								onSelectionChange={setSendSelectedRows}
+								multiSelect={false}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+						</Row>
+						<Row
+							width="100%"
+							mainAlignment="flex-start"
+							crossAlignment="center"
+							padding={{ top: 'large', bottom: '3rem' }}
+						>
+							<Row padding={{ right: 'small' }} width="49%">
+								<Padding all={'0'}>
 									<Button
-										type="outlined"
-										label={t('label.remove_all', 'REMOVE ALL')}
-										onClick={(): void => onDeleteFromList(accountDistributionList, 'all')}
+										disabled={sendSelectedRows?.length < 1}
+										type="ghost"
+										onClick={(): void => onDeleteFromList(sendSelectedRows, 'one')}
+										label={t('label.remove', 'REMOVE')}
 										color="error"
 										width="fill"
 									/>
-								</Row>
+								</Padding>
 							</Row>
-						</>
-					)}
-			</Container>
-		</>
+
+							<Row width="49%">
+								<Button
+									type="outlined"
+									label={t('label.remove_all', 'REMOVE ALL')}
+									onClick={(): void => onDeleteFromList(accountDistributionList, 'all')}
+									color="error"
+									width="fill"
+								/>
+							</Row>
+						</Row>
+					</>
+				)}
+		</Container>
 	);
 };
 

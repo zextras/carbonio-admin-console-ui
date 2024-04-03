@@ -254,7 +254,7 @@ const DomainListPanel: FC = () => {
 
 		const event = analyticsMap[dView];
 		if (event && globalCarbonioSendAnalytics) {
-			matomo.trackEvent(SECONDARY_BAR, event);
+			matomo.trackEvent(DOMAINS_ROUTE_ID, SECONDARY_BAR, event);
 		}
 
 		return value[0] === GLOBAL_ROUTE;

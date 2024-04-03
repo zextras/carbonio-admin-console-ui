@@ -727,7 +727,7 @@ const CosGeneralInformation: FC = () => {
 				<Row width="100%" padding={{ all: 'large' }}>
 					<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 						<Text size="medium" weight="bold" color="gray0">
-							{t('cos.handled_domains', 'Handled Domains')}
+							{t('cos.domains_that_use_this_cos', 'Domains that use this COS')}
 						</Text>
 					</Row>
 				</Row>
@@ -839,7 +839,7 @@ const CosGeneralInformation: FC = () => {
 				>
 					<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 						<Text size="medium" weight="bold" color="gray0">
-							{t('cos.handled_accounts', 'Handled Accounts')}
+							{t('cos.accounts_that_use_this_cos', 'Accounts that use this COS')}
 						</Text>
 					</Row>
 				</Row>
