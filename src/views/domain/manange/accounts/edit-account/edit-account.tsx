@@ -56,8 +56,8 @@ import {
 	CHANGE_DISPLAY_NAME_BOOLEAN,
 	IS_DEFAULT_USER_NAME,
 	CLOSED,
-	CONFIG,
-	ABQ_MODE
+	ABQ_MODE,
+	ADMIN_LOGIN_AS
 } from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
@@ -682,9 +682,18 @@ const EditAccount: FC<{
 	const rights: Rights = useRightsStore((state) => state.rights);
 
 	const allowSetPrivacy = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+		const rightsConfig: Right = find(rights, { type: ACCOUNT }) || { all: [], type: ACCOUNT } || {
+				inDomains: [],
+				type: ACCOUNT
+			};
+		return (
+			!!rightsConfig?.all?.[0]?.right?.find((right) => right?.n === ADMIN_LOGIN_AS) ||
+			!!rightsConfig?.inDomains?.[0]?.rights?.[0].right?.find(
+				(right) => right?.n === ADMIN_LOGIN_AS
+			)
+		);
 	}, [rights]);
+
 	const buttons = [
 		allowSetPrivacy && {
 			align: 'right',
