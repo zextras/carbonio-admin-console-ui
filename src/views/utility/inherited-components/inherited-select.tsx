@@ -27,6 +27,7 @@ const InheritedSelect: FC<{
 	onChangeReset: any;
 	fromSubValue: any;
 	disabled?: boolean;
+	onClick?: () => void;
 }> = ({
 	label,
 	items,
@@ -36,7 +37,8 @@ const InheritedSelect: FC<{
 	onChange,
 	onChangeReset,
 	fromSubValue,
-	disabled = false
+	disabled = false,
+	onClick
 }) => {
 	const [t] = useTranslation();
 	const selectedValue = useMemo(() => {
@@ -57,6 +59,7 @@ const InheritedSelect: FC<{
 					background={background}
 					onChange={onChange}
 					disabled={disabled}
+					onClick={onClick}
 				/>
 			</Row>
 			{fromSubValue ? (

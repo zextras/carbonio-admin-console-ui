@@ -84,9 +84,6 @@ const CreateDomain: FC = () => {
 	const setIsDomainSupportDelegatedAdmin = useDomainStore(
 		(state) => state.setIsDomainSupportDelegatedAdmin
 	);
-	const [createObjectAttributeData, setCreateObjectAttributeData] = useState<{
-		[key: string]: string | string[];
-	}>({});
 	const [zimbraGalMode, setZimbraGalMode] = useState<string>('Internal');
 	const [zimbraPublicServiceHostnameList, setZimbraPublicServiceHostnameList] = useState<
 		SelectItem[]
@@ -150,7 +147,6 @@ const CreateDomain: FC = () => {
 						obj[item?.n] = [];
 					}
 				});
-				setCreateObjectAttributeData(obj);
 			}
 		});
 	};
@@ -274,7 +270,7 @@ const CreateDomain: FC = () => {
 			});
 			attributes.push({
 				n: 'zimbraAuthMech',
-				_content: GAL_MODE.INTERNAL
+				_content: ''
 			});
 			attributes.push({
 				n: 'zimbraDomainMaxAccounts',

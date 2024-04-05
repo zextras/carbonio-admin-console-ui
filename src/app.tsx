@@ -40,10 +40,14 @@ import {
 	CONFIG,
 	COS,
 	COS_ROUTE_ID,
+	CREATE_COS,
 	CREATE_NEW_COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
+	CREATE_TOP_DOMAIN,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
+	GLOBAL,
+	LIST_COS,
 	LIST_SERVER,
 	LOG_AND_QUEUES,
 	MANAGE,
@@ -156,11 +160,29 @@ const App: FC = () => {
 	}, [accounts, setUserId]);
 
 	const showCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig: Right = find(rights, { type: COS }) ?? { all: [], type: COS };
 		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ||
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ||
-			find(rightsConfig?.all?.[0]?.right, { n: 'listCos' })
+			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
+			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
+			find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
+		);
+	}, [rights]);
+
+	const createCosRight = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
+		return !!(
+			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
+			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
+			find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
+		);
+	}, [rights]);
+
+	const createDomainRight = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
+		return !!(
+			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
+			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
+			find(rightsConfig?.all?.[0]?.right, { n: CREATE_TOP_DOMAIN })
 		);
 	}, [rights]);
 
@@ -761,7 +783,7 @@ const App: FC = () => {
 						setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
 					}, 100);
 				},
-				disabled: false,
+				disabled: !createDomainRight,
 				group: APP_ID,
 				primary: false
 			}),
@@ -777,7 +799,7 @@ const App: FC = () => {
 					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
 					setCosView(CREATE_NEW_COS_ROUTE_ID);
 				},
-				disabled: false,
+				disabled: !createCosRight,
 				group: APP_ID,
 				primary: false
 			}),
@@ -785,7 +807,7 @@ const App: FC = () => {
 			type: 'new'
 		});
 		history.push(`/${DASHBOARD}`);
-	}, [t, history, setDomainView, setDomain, setCosView]);
+	}, [t, history, setDomainView, setDomain, setCosView, createDomainRight, createCosRight]);
 
 	const checkIsBackupModuleEnable = useCallback(
 		(servers) => {
