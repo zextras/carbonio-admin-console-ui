@@ -2160,7 +2160,7 @@ const EditMailingListView: FC<any> = ({
 						<>
 							<Row padding={{ top: 'small' }}>
 								<Text size="medium" weight="bold" color="gray0">
-									{t('label.who_is_in_this_list', "Who's in this list?")}
+									{t('label.this_list_included_in', 'This list is included in')}
 								</Text>
 							</Row>
 							<ListRow padding={{ all: 'small' }}>
