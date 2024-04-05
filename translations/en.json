@@ -1402,6 +1402,7 @@
         "mailing_list_not_exists_error_msg": "The Mailing List / User does not exist. Please check the spelling and try again.",
         "mailing_list_user": "Mailing List / User",
         "mailing_lists": "Mailing Lists",
+        "mailing_lists_lbl": "Mailing lists",
         "mailing_options": "Mail Options",
         "mails": "Mails",
         "mails_mb": "Mails (MB)",

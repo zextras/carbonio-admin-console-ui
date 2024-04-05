@@ -2166,7 +2166,7 @@ const EditMailingListView: FC<any> = ({
 							<ListRow padding={{ all: 'small' }}>
 								<Container padding={{ bottom: 'small' }}>
 									<Input
-										label={t('label.this_list_is_member_of', 'This List is part of')}
+										label={t('label.mailing_lists_lbl', 'Mailing lists')}
 										value={dlMembershipListNames}
 										backgroundColor="gray5"
 										readOnly
