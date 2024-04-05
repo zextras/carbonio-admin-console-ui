@@ -376,9 +376,9 @@ const EditAccount: FC<{
 	);
 
 	const ErrorSnackbar = useCallback(
-		(label: string, key?: string): void => {
+		(label: string): void => {
 			createSnackbar({
-				key: key || 'error',
+				key: 'error',
 				type: 'error',
 				label,
 				autoHideTimeout: 3000,
