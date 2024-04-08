@@ -17,7 +17,7 @@ import {
 	ChipInput,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
-import { find, isEqual, join, map, some, split, trim } from 'lodash';
+import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -436,10 +436,21 @@ const MTAServerGeneral: FC = () => {
 
 	const getServerSpecificInformation = useCallback(() => {
 		getServerInformationByName(server, true).then((data) => {
-			if (data && data?.server && Array.isArray(data?.server)) {
+			if (data?.server && Array.isArray(data?.server)) {
 				const serverItem = data?.server[0];
-				if (serverItem && serverItem?.a) {
+				if (serverItem?.a) {
 					setServerSpecificAttributes(serverItem?.a);
+				}
+			}
+		});
+	}, [server]);
+
+	const getServerData = useCallback(() => {
+		getServerInformationByName(server).then((data) => {
+			if (data?.server && Array.isArray(data?.server)) {
+				const serverItem = data?.server[0];
+				if (serverItem?.a) {
+					setServerAttributes(serverItem?.a);
 				}
 			}
 		});
@@ -447,16 +458,9 @@ const MTAServerGeneral: FC = () => {
 
 	useEffect(() => {
 		setIsDirty(false);
-		getServerInformationByName(server).then((data) => {
-			if (data && data?.server && Array.isArray(data?.server)) {
-				const serverItem = data?.server[0];
-				if (serverItem && serverItem?.a) {
-					setServerAttributes(serverItem?.a);
-				}
-			}
-		});
+		getServerData();
 		getServerSpecificInformation();
-	}, [server, getServerSpecificInformation]);
+	}, [server, getServerSpecificInformation, getServerData]);
 
 	useEffect(() => {
 		if (mtaServerGeneralDetail && !isEqual(mtaServerGeneralDetail, mtaServerGeneralInitialDetail)) {
@@ -519,9 +523,11 @@ const MTAServerGeneral: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					if (data && data?.server && Array.isArray(data?.server)) {
+					if (data && Array.isArray(data?.server)) {
 						const serverItem = data?.server[0];
-						if (serverItem && serverItem?.a) {
+						if (serverItem?.a) {
+							setMtaServerSpecificGeneralDetail(undefined);
+							setMtaServerGeneralDetail(undefined);
 							setServerAttributes(serverItem?.a);
 							getServerSpecificInformation();
 						}
@@ -550,85 +556,47 @@ const MTAServerGeneral: FC = () => {
 		return val || '';
 	}, []);
 
+	const getYesNoValues = useCallback((val) => {
+		if (val === undefined) {
+			return '';
+		}
+		return (val === TRUE ? 'yes' : 'no') || '';
+	}, []);
+
 	const onSave = useCallback(() => {
+		const modifiedKeys: any = reduce(
+			mtaServerGeneralDetail,
+			(result, value, key: any): any => {
+				const initialKeyValue: any = mtaServerGeneralInitialDetail;
+				return isEqual(value, initialKeyValue[key]) ? result : [...result, key];
+			},
+			[]
+		);
 		const attributes: Array<Record<string, string>> = [];
-
-		attributes.push({
-			n: ZIMBRA_MTA_FALLBACK_RELAY_HOST,
-			_content: getValues(mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost)
-		});
-
-		attributes.push({
-			n: ZIMBRA_MTA_MY_NETWORKS,
-			_content: getValues(mtaServerGeneralDetail?.zimbraMtaMyNetworks)
-		});
-
-		attributes.push({
-			n: ZIMBRA_MTA_RELAY_HOST,
-			_content: getValues(mtaServerGeneralDetail?.zimbraMtaRelayHost)
-		});
-
-		if (mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable === undefined) {
-			attributes.push({
-				n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
-				_content: ''
-			});
-		} else {
-			attributes.push({
-				n: ZIMBRA_MTA_SASL_AUTH_ENABLED,
-				_content: mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable === TRUE ? 'yes' : 'no'
+		if (modifiedKeys.length > 0) {
+			modifiedKeys.forEach((key: keyof MtaServerGeneral) => {
+				if (mtaServerGeneralDetail) {
+					if (key === ZIMBRA_MTA_SASL_AUTH_ENABLED) {
+						attributes.push({
+							n: key,
+							_content: getYesNoValues(mtaServerGeneralDetail[key])
+						});
+					} else {
+						attributes.push({
+							n: key,
+							_content: getValues(mtaServerGeneralDetail[key])
+						});
+					}
+				}
 			});
 		}
-
-		attributes.push({
-			n: ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-			_content: getValues(mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel)
-		});
-
-		attributes.push({
-			n: ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-			_content: getValues(mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel)
-		});
-
-		attributes.push({
-			n: ZIMBRA_AMAVIS_SA_LOG_LEVEL,
-			_content: getValues(mtaServerGeneralDetail?.zimbraAmavisSALogLevel)
-		});
-
-		attributes.push({
-			n: ZIMBRA_AMAVIS_LOG_LEVEL,
-			_content: getValues(mtaServerGeneralDetail?.zimbraAmavisLogLevel)
-		});
-
-		attributes.push({
-			n: CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
-			_content: getValues(mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck)
-		});
-
-		attributes.push({
-			n: ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
-			_content: getValues(mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification)
-		});
-
-		attributes.push({
-			n: ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
-			_content: getValues(mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA)
-		});
 		modifyServerRequest(attributes);
 	}, [
 		getValues,
+		getYesNoValues,
 		modifyServerRequest,
-		mtaServerGeneralDetail?.carbonioAmavisDisableVirusCheck,
-		mtaServerGeneralDetail?.zimbraAmavisEnableDKIMVerification,
-		mtaServerGeneralDetail?.zimbraAmavisLogLevel,
-		mtaServerGeneralDetail?.zimbraAmavisOriginatingBypassSA,
-		mtaServerGeneralDetail?.zimbraAmavisSALogLevel,
-		mtaServerGeneralDetail?.zimbraMtaFallbackRelayHost,
-		mtaServerGeneralDetail?.zimbraMtaLmtpTlsLoglevel,
-		mtaServerGeneralDetail?.zimbraMtaMyNetworks,
-		mtaServerGeneralDetail?.zimbraMtaRelayHost,
-		mtaServerGeneralDetail?.zimbraMtaSaslAuthEnable,
-		mtaServerGeneralDetail?.zimbraMtaSmtpdTlsLoglevel
+		mtaServerGeneralDetail,
+		mtaServerGeneralInitialDetail
 	]);
 
 	const onAmavisLogLevelChange = useCallback(
