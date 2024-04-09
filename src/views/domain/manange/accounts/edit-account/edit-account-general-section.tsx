@@ -632,7 +632,6 @@ const EditAccountGeneralSection: FC<{
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.givenName || ''}
 							value={accountDetail?.givenName || ''}
-							disabled
 							onFocus={(): void => handleMatomoTrackerEvent(NAME)}
 						/>
 					</Row>
