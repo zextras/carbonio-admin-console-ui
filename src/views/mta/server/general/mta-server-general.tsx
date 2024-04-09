@@ -200,7 +200,7 @@ const MTAServerGeneral: FC = () => {
 			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL
 		);
 
-		if (zimbraAmavisLogLevel && zimbraAmavisLogLevel?._content) {
+		if (zimbraAmavisLogLevel?._content) {
 			setInitialAndCurrentValue(ZIMBRA_AMAVIS_LOG_LEVEL, zimbraAmavisLogLevel?._content);
 		}
 
@@ -208,7 +208,7 @@ const MTAServerGeneral: FC = () => {
 			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL
 		);
 
-		if (zimbraAmavisSALogLevel && zimbraAmavisSALogLevel?._content) {
+		if (zimbraAmavisSALogLevel?._content) {
 			setInitialAndCurrentValue(ZIMBRA_AMAVIS_SA_LOG_LEVEL, zimbraAmavisSALogLevel?._content);
 		}
 
@@ -216,7 +216,7 @@ const MTAServerGeneral: FC = () => {
 			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL
 		);
 
-		if (zimbraMtaSmtpdTlsLoglevel && zimbraMtaSmtpdTlsLoglevel?._content) {
+		if (zimbraMtaSmtpdTlsLoglevel?._content) {
 			setInitialAndCurrentValue(
 				ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 				zimbraMtaSmtpdTlsLoglevel?._content
@@ -227,7 +227,7 @@ const MTAServerGeneral: FC = () => {
 			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL
 		);
 
-		if (zimbraMtaLmtpTlsLoglevel && zimbraMtaLmtpTlsLoglevel?._content) {
+		if (zimbraMtaLmtpTlsLoglevel?._content) {
 			setInitialAndCurrentValue(ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL, zimbraMtaLmtpTlsLoglevel?._content);
 		}
 	}, [serverAttributes, setInitialAndCurrentValue]);
@@ -236,7 +236,7 @@ const MTAServerGeneral: FC = () => {
 		const zimbraAmavisOriginatingBypassSA = serverAttributes.find(
 			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA
 		);
-		if (zimbraAmavisOriginatingBypassSA && zimbraAmavisOriginatingBypassSA?._content) {
+		if (zimbraAmavisOriginatingBypassSA?._content) {
 			setInitialAndCurrentValue(
 				ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
 				zimbraAmavisOriginatingBypassSA?._content
@@ -246,7 +246,7 @@ const MTAServerGeneral: FC = () => {
 		const zimbraAmavisEnableDKIMVerification = serverAttributes.find(
 			(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION
 		);
-		if (zimbraAmavisEnableDKIMVerification && zimbraAmavisEnableDKIMVerification?._content) {
+		if (zimbraAmavisEnableDKIMVerification?._content) {
 			setInitialAndCurrentValue(
 				ZIMBRA_AMAVIS_ENABLE_DKIM_VERIFICATION,
 				zimbraAmavisEnableDKIMVerification?._content
@@ -256,7 +256,7 @@ const MTAServerGeneral: FC = () => {
 		const carbonioAmavisDisableVirusCheck = serverAttributes.find(
 			(item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK
 		);
-		if (carbonioAmavisDisableVirusCheck && carbonioAmavisDisableVirusCheck?._content) {
+		if (carbonioAmavisDisableVirusCheck?._content) {
 			setInitialAndCurrentValue(
 				CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,
 				carbonioAmavisDisableVirusCheck?._content
