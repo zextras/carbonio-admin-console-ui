@@ -131,9 +131,9 @@ export type MtaServerGeneral = {
 	zimbraMtaMyNetworks: string;
 	zimbraMtaRelayHost: string;
 	zimbraMtaFallbackRelayHost: string;
-	zimbraAmavisOriginatingBypassSA: boolean;
-	zimbraAmavisEnableDKIMVerification: boolean;
-	carbonioAmavisDisableVirusCheck: boolean;
+	zimbraAmavisOriginatingBypassSA: string;
+	zimbraAmavisEnableDKIMVerification: string;
+	carbonioAmavisDisableVirusCheck: string;
 	zimbraAmavisLogLevel: string;
 	zimbraAmavisSALogLevel: string;
 	zimbraMtaSmtpdTlsLoglevel: string;

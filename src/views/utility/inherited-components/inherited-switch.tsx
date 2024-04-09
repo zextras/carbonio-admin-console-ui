@@ -40,6 +40,7 @@ const InheritedSwitch: FC<{
 	onFocus
 }) => {
 	const [t] = useTranslation();
+
 	return (
 		<Container mainAlignment="flex-start" orientation="horizontal">
 			<Row mainAlignment="flex-start">
