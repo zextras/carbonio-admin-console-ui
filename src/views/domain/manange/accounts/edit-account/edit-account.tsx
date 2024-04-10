@@ -730,10 +730,11 @@ const EditAccount: FC<{
 	const rights: Rights = useRightsStore((state) => state.rights);
 
 	const allowSetPrivacy = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: ACCOUNT }) || { all: [], type: ACCOUNT } || {
-				inDomains: [],
-				type: ACCOUNT
-			};
+		const rightsConfig: Right = find(rights, { type: ACCOUNT }) ?? {
+			all: [],
+			inDomains: [],
+			type: ACCOUNT
+		};
 		return (
 			!!rightsConfig?.all?.[0]?.right?.find((right) => right?.n === ADMIN_LOGIN_AS) ||
 			!!rightsConfig?.inDomains?.[0]?.rights?.[0].right?.find(
