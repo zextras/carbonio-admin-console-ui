@@ -40,17 +40,32 @@ import {
 	CONFIG,
 	COS,
 	COS_ROUTE_ID,
+	CREATE_COS,
 	CREATE_NEW_COS_ROUTE_ID,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
+	CREATE_TOP_DOMAIN,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
+	GLOBAL,
+	LIST_COS,
 	LIST_SERVER,
 	LOG_AND_QUEUES,
 	MANAGE,
 	MANAGE_APP_ID,
+	MTA,
 	MTA_ROUTE_ID,
 	NOTIFICATION_ROUTE_ID,
 	OPERATIONS_ROUTE_ID,
+	PRIMARY_BAR_BACKUP,
+	PRIMARY_BAR_COS,
+	PRIMARY_BAR_DASHBOARD,
+	PRIMARY_BAR_DOMAINS,
+	PRIMARY_BAR_MTA,
+	PRIMARY_BAR_NOTIFICATIONS,
+	PRIMARY_BAR_OPERATIONS,
+	PRIMARY_BAR_PRIVACY,
+	PRIMARY_BAR_STORAGE,
+	PRIMARY_BAR_SUBSCRIPTIONS,
 	PRIVACY_ROUTE_ID,
 	SERVER,
 	SERVICES_ROUTE_ID,
@@ -62,7 +77,11 @@ import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import MatomoTracker from './matomo-tracker';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
-import { getAllServers, getMailstoresServers } from './services/get-all-servers-service';
+import {
+	getAllServerByService,
+	getAllServers,
+	getMailstoresServers
+} from './services/get-all-servers-service';
 import { useAuthIsAdvanced } from './store/auth-advanced/store';
 import { useBackupModuleStore } from './store/backup-module/store';
 import { useBucketServersListStore } from './store/bucket-server-list/store';
@@ -108,6 +127,7 @@ const App: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
 	const setServerList = useServerStore((state) => state.setServerList);
+	const setMtaServerList = useServerStore((state) => state.setMtaServerList);
 	const setGlobalConfig = useGlobalConfigStore((state) => state.setGlobalConfig);
 	const setBackupModuleEnable = useBackupModuleStore((state) => state.setBackupModuleEnable);
 	const setIsAdvanced = useAuthIsAdvanced((state) => state.setIsAdvanced);
@@ -140,11 +160,29 @@ const App: FC = () => {
 	}, [accounts, setUserId]);
 
 	const showCOS = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
+		const rightsConfig: Right = find(rights, { type: COS }) ?? { all: [], type: COS };
 		return !!(
-			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ||
-			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ||
-			find(rightsConfig?.all?.[0]?.right, { n: 'listCos' })
+			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
+			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
+			find(rightsConfig?.all?.[0]?.right, { n: LIST_COS })
+		);
+	}, [rights]);
+
+	const createCosRight = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
+		return !!(
+			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
+			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
+			find(rightsConfig?.all?.[0]?.right, { n: CREATE_COS })
+		);
+	}, [rights]);
+
+	const createDomainRight = useMemo(() => {
+		const rightsConfig: Right = find(rights, { type: GLOBAL }) ?? { all: [], type: GLOBAL };
+		return !!(
+			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all ??
+			rightsConfig?.all?.[0]?.setAttrs?.[0]?.all ??
+			find(rightsConfig?.all?.[0]?.right, { n: CREATE_TOP_DOMAIN })
 		);
 	}, [rights]);
 
@@ -554,7 +592,8 @@ const App: FC = () => {
 			appView: AppView,
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
-			tooltip: HomeTooltipView
+			tooltip: HomeTooltipView,
+			trackerLabel: PRIMARY_BAR_DASHBOARD
 		});
 
 		addRoute({
@@ -567,13 +606,14 @@ const App: FC = () => {
 			// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 			// @ts-ignore
 			primarybarSection: { ...managementSection },
-			tooltip: DomainTooltipView
+			tooltip: DomainTooltipView,
+			trackerLabel: PRIMARY_BAR_DOMAINS
 		});
 
 		if (hasListServerRights) {
 			addRoute({
 				route: STORAGES_ROUTE_ID,
-				position: 3,
+				position: 4,
 				visible: true,
 				label: t('label.storage', 'Storage') || '',
 				primaryBar: 'HardDriveOutline',
@@ -581,7 +621,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...managementSection },
-				tooltip: StorageTooltipView
+				tooltip: StorageTooltipView,
+				trackerLabel: PRIMARY_BAR_STORAGE
 			});
 		}
 
@@ -596,17 +637,35 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...managementSection },
-				tooltip: CosTooltipView
+				tooltip: CosTooltipView,
+				trackerLabel: PRIMARY_BAR_COS
 			});
 		} else {
 			removeRoute(COS_ROUTE_ID);
+		}
+		if (hasConfigRights) {
+			addRoute({
+				route: MTA_ROUTE_ID,
+				position: 3,
+				visible: true,
+				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
+				primaryBar: 'MailFolderOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: MTATooltipView,
+				trackerLabel: PRIMARY_BAR_MTA
+			});
+		} else {
+			removeRoute(MTA_ROUTE_ID);
 		}
 
 		if (isAdvanced) {
 			if (hasConfigRights) {
 				addRoute({
 					route: SUBSCRIPTIONS_ROUTE_ID,
-					position: 4,
+					position: 5,
 					visible: true,
 					label: t('label.subscriptions', 'Subscriptions') || '',
 					primaryBar: 'AwardOutline',
@@ -614,7 +673,8 @@ const App: FC = () => {
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
 					primarybarSection: { ...managementSection },
-					tooltip: SubscriptionTooltipView
+					tooltip: SubscriptionTooltipView,
+					trackerLabel: PRIMARY_BAR_SUBSCRIPTIONS
 				});
 			} else {
 				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
@@ -632,7 +692,8 @@ const App: FC = () => {
 					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 					// @ts-ignore
 					primarybarSection: { ...servicesSection },
-					tooltip: BackupTooltipView
+					tooltip: BackupTooltipView,
+					trackerLabel: PRIMARY_BAR_BACKUP
 				});
 			} else {
 				removeRoute(BACKUP_ROUTE_ID);
@@ -648,7 +709,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...logAndQueuesSection },
-				tooltip: NotificationTooltipView
+				tooltip: NotificationTooltipView,
+				trackerLabel: PRIMARY_BAR_NOTIFICATIONS
 			});
 
 			addRoute({
@@ -661,29 +723,15 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...logAndQueuesSection },
-				tooltip: OperationTooltipView
+				tooltip: OperationTooltipView,
+				trackerLabel: PRIMARY_BAR_OPERATIONS
 			});
 		}
-		if (hasConfigRights) {
-			addRoute({
-				route: MTA_ROUTE_ID,
-				position: 3,
-				visible: true,
-				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
-				primaryBar: 'MailFolderOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...logAndQueuesSection },
-				tooltip: MTATooltipView
-			});
-		} else {
-			removeRoute(MTA_ROUTE_ID);
-		}
+
 		if (hasConfigRights) {
 			addRoute({
 				route: PRIVACY_ROUTE_ID,
-				position: 5,
+				position: 6,
 				visible: true,
 				label: t('label.privacy', 'Privacy') || '',
 				primaryBar: 'ShieldOutline',
@@ -691,7 +739,8 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore
 				primarybarSection: { ...managementSection },
-				tooltip: PrivacyTooltipView
+				tooltip: PrivacyTooltipView,
+				trackerLabel: PRIMARY_BAR_PRIVACY
 			});
 		} else {
 			removeRoute(PRIVACY_ROUTE_ID);
@@ -734,7 +783,7 @@ const App: FC = () => {
 						setDomainView(CREATE_NEW_DOMAIN_ROUTE_ID);
 					}, 100);
 				},
-				disabled: false,
+				disabled: !createDomainRight,
 				group: APP_ID,
 				primary: false
 			}),
@@ -750,7 +799,7 @@ const App: FC = () => {
 					history.push(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
 					setCosView(CREATE_NEW_COS_ROUTE_ID);
 				},
-				disabled: false,
+				disabled: !createCosRight,
 				group: APP_ID,
 				primary: false
 			}),
@@ -758,7 +807,7 @@ const App: FC = () => {
 			type: 'new'
 		});
 		history.push(`/${DASHBOARD}`);
-	}, [t, history, setDomainView, setDomain, setCosView]);
+	}, [t, history, setDomainView, setDomain, setCosView, createDomainRight, createCosRight]);
 
 	const checkIsBackupModuleEnable = useCallback(
 		(servers) => {
@@ -807,7 +856,20 @@ const App: FC = () => {
 				setAllServersList(server);
 			}
 		});
-	}, [setServerList, checkIsBackupModuleEnable, setAllServersList, getGlobalConfig, isAdvanced]);
+		getAllServerByService(MTA).then((data) => {
+			const server = data?.server;
+			if (server && Array.isArray(server) && server.length > 0) {
+				setMtaServerList(server);
+			}
+		});
+	}, [
+		setServerList,
+		isAdvanced,
+		setAllServersList,
+		checkIsBackupModuleEnable,
+		getGlobalConfig,
+		setMtaServerList
+	]);
 
 	const getMailstoresServersRequest = useCallback(() => {
 		getMailstoresServers().then((data) => {

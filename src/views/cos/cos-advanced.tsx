@@ -28,6 +28,7 @@ import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import Textarea from '../components/textarea';
 import ListRow from '../list/list-row';
+import { BytesToGB, GbToBytes } from '../utility/utils';
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;
@@ -375,11 +376,7 @@ const CosAdvanced: FC = () => {
 						: timeItems[0]?.value
 				);
 
-				setZimbraMailQuota(
-					obj?.zimbraMailQuota
-						? (parseInt(obj?.zimbraMailQuota, 10) / (1024 * 1024)).toString()
-						: ''
-				);
+				setZimbraMailQuota(obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toString() : '');
 				setZimbraMailMessageLifetimeNum(obj?.zimbraMailMessageLifetime?.slice(0, -1));
 				setZimbraMailMessageLifetimeType(
 					obj?.zimbraMailMessageLifetime !== '0' && obj?.zimbraMailMessageLifetime?.slice(-1)
@@ -986,9 +983,7 @@ const CosAdvanced: FC = () => {
 		(e) => {
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailQuota: e.target.value
-					? (parseInt(e.target.value, 10) * 1024 * 1024)?.toString()
-					: ''
+				zimbraMailQuota: e.target.value ? GbToBytes(e.target.value).toString() : ''
 			}));
 			setZimbraMailQuota(e.target.value);
 		},
@@ -1176,7 +1171,7 @@ const CosAdvanced: FC = () => {
 							<ListRow>
 								<Container padding={{ right: 'small' }}>
 									<Input
-										label={`${t('cos.account_quota', 'Account quota')} (MB)`}
+										label={`${t('cos.account_quota', 'Account quota')} (GB)`}
 										value={zimbraMailQuota}
 										backgroundColor="gray5"
 										inputName="zimbraMailQuota"

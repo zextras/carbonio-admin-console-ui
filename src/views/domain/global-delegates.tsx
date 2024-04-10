@@ -12,7 +12,8 @@ import {
 	Table,
 	Divider,
 	Button,
-	useSnackbar
+	useSnackbar,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -27,7 +28,7 @@ import { AccountContext } from './manange/accounts/account-context';
 import AccountDetailView from './manange/accounts/account-detail-view';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../constants';
+import { MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -36,6 +37,7 @@ import {
 } from '../../services/cos-general-information-service';
 import { getAccountRequest } from '../../services/get-account';
 import { getAccountMembershipRequest } from '../../services/get-account-membership';
+import { getSessions } from '../../services/get-sessions';
 import { getSingatures } from '../../services/get-signature-service';
 import { fetchSoap } from '../../services/listOTP-service';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
@@ -44,6 +46,14 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
+
+type UserSession = {
+	name: string;
+	sid: string;
+	zid: string;
+	ip: string;
+	service: string;
+};
 
 const GlobalDelegates: FC = () => {
 	const [t] = useTranslation();
@@ -63,11 +73,13 @@ const GlobalDelegates: FC = () => {
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
-
+	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
+	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
 	const tableRef = useRef(null);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const screenMode = useScreenMode();
 
 	const headers: any = useMemo(
 		() => [
@@ -318,7 +330,9 @@ const GlobalDelegates: FC = () => {
 										{item?.label || ' '}
 									</Text>,
 									<Text size="medium" key={item?.id} color="gray0">
-										{item?.status ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+										{item?.enabled
+											? t('label.enabled', 'Enabled')
+											: t('label.disabled', 'Disabled')}
 									</Text>,
 									<Text size="medium" key={item?.id}>
 										{item?.failed_attempts}
@@ -437,6 +451,38 @@ const GlobalDelegates: FC = () => {
 		[getFolderList]
 	);
 
+	const getAllUserSession = useCallback((acc) => {
+		const sessionType: string[] = ['admin', 'imap', 'soap'];
+		setUserSessionList([]);
+		setAllUserSessionList([]);
+		sessionType.forEach((item: string) => {
+			getSessions(item, acc).then((resp: any) => {
+				if (resp && resp?.s) {
+					const existingSession = resp?.s;
+					if (existingSession) {
+						const session: UserSession[] = [];
+						const filterSession = existingSession.filter(
+							(sessionItem: any) => sessionItem?.name === acc
+						);
+						if (filterSession.length > 0) {
+							filterSession.forEach((element: any) => {
+								session.push({
+									ip: '',
+									name: element?.name,
+									sid: element?.sid,
+									service: '',
+									zid: element?.zid
+								});
+							});
+						}
+						setUserSessionList((prev: any) => [...prev, ...session]);
+						setAllUserSessionList((prev: any) => [...prev, ...session]);
+					}
+				}
+			});
+		});
+	}, []);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setShowAccountDetailView(true);
@@ -444,6 +490,7 @@ const GlobalDelegates: FC = () => {
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
 			getIdentitiesList(acc);
+			getAllUserSession(acc?.name);
 			if (isAdvanced) {
 				getListOtp(acc?.name);
 				getCredentialList(acc?.name);
@@ -454,9 +501,10 @@ const GlobalDelegates: FC = () => {
 			getSignatureDetail,
 			getAccountMembership,
 			getIdentitiesList,
+			getAllUserSession,
 			isAdvanced,
-			getCredentialList,
-			getListOtp
+			getListOtp,
+			getCredentialList
 		]
 	);
 	// eslint-disable-next-line sonarjs/cognitive-complexity
@@ -609,7 +657,11 @@ const GlobalDelegates: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto'
+				}}
 				padding={{ all: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -631,7 +683,7 @@ const GlobalDelegates: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: 'calc(100vh - 21.25rem)',
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 							ref={tableRef}
@@ -643,7 +695,7 @@ const GlobalDelegates: FC = () => {
 								multiSelect={false}
 								style={{
 									overflow: 'auto',
-									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
+									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
 								}}
 								RowFactory={CustomRowFactory}
 								HeaderFactory={CustomHeaderFactory}
@@ -747,7 +799,11 @@ const GlobalDelegates: FC = () => {
 									globalRights,
 									setGlobalRights,
 									deleteAdministrationRights,
-									setDeleteAdministrationRights
+									setDeleteAdministrationRights,
+									userSessionList,
+									setAllUserSessionList,
+									allUserSessionList,
+									setUserSessionList
 								}}
 							>
 								{showAccountDetailView && (
@@ -785,6 +841,7 @@ const GlobalDelegates: FC = () => {
 											setShowModal={setShowModal}
 											isDirty={isDirty}
 											setIsDirty={setIsDirty}
+											STATUS_COLOR={STATUS_COLOR}
 										/>
 									</ModalOverlay>
 								)}

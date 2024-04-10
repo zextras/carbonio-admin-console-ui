@@ -263,7 +263,12 @@
             "valid": "ถูกต้องแล้ว",
             "license_activated_successfully": "เปิดใช้งานใบอนุญาตเรียบร้อยแล้ว",
             "not_valid": "ไม่ถูกต้อง",
-            "endDate": "วันที่สุดท้าย"
+            "endDate": "วันที่สุดท้าย",
+            "accounts": "บัญชีผู้ใช้",
+            "refresh": "รีเฟรช",
+            "modules": "โมดูล",
+            "type": "ประเภท",
+            "valid_until": "ใช้ได้จนกระทั่ง"
         }
     },
     "domain": {
@@ -340,7 +345,7 @@
         "administration_rights": "สิทธิในการบริหาร"
     },
     "label": {
-        "account": "บัญชีผู้ใช้",
+        "account": "บัญชี",
         "accounts": "บัญชีผู้ใช้",
         "active": "ใช้งาน",
         "add": "เพิ่ม",
@@ -384,7 +389,6 @@
         "certificate": "ใบรับรอง",
         "closed": "ปิด",
         "domains": "โดเมน",
-        "enable_start_tls": "เปิดใช้งาน StartTLS",
         "external_active_directory": "Active Directory ภายนอก",
         "external_ldap": "LDAP ภายนอก",
         "features": "คุณลักษณะ",
@@ -692,7 +696,7 @@
         "destination_account": "บัญชีปลายทาง",
         "disable": "ปิดการใช้งาน",
         "do_you_need_more_information": "คุณต้องการข้อมูลเพิ่มเติมหรือไม่?",
-        "domain": "โดเมน",
+        "domain": "Domain",
         "edit_button": "แก้ไข",
         "enable": "เปิดการใช้งาน",
         "enable_compression": "เปิดใช้งานการบีบอัดข้อมูล",
@@ -1809,7 +1813,7 @@
         "view_mail_as_html": "ดูอีเมลเป็น HTML",
         "activesync_remote_access": "การเข้าถึงระยะไกล ActiveSync",
         "Chats": "Chats",
-        "domain": "โดเมน",
+        "domain": "Domain",
         "files": "Drive",
         "aliases": "นามแฝง",
         "allow_user_check_minimum_interval": "อนุญาตให้ผู้ใช้เปลี่ยนช่วงเวลาการตรวจสอบขั้นต่ำ",
@@ -1898,7 +1902,8 @@
         "service_label_password": " รหัสผ่านของ {{ service_label }}",
         "set_global_config": "การกำหนดค่า SetGlobal",
         "user_can_specify_forwarding_address": "ผู้ใช้สามารถระบุที่อยู่สำหรับส่งต่อได้",
-        "user_can_specify_mail_forwarding_filter": "ผู้ใช้สามารถระบุตัวกรองการส่งต่อจดหมายได้"
+        "user_can_specify_mail_forwarding_filter": "ผู้ใช้สามารถระบุตัวกรองการส่งต่อจดหมายได้",
+        "abq_status": "สถานะ ABQ"
     },
     "connection": {
         "access_key": "รหัสการเข้าถึง",

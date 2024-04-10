@@ -92,6 +92,7 @@ export type MtaAdvanced = {
 	zimbraMtaMaxMessageSize: string;
 	zimbraMilterMaxConnections: string;
 	zimbraMtaSmtpSaslAuthEnable: string;
+	zimbraMtaSmtpdSenderLoginMaps: string;
 };
 
 export type mtaStats = {
@@ -123,4 +124,18 @@ export type MtaMailQueue = {
 	name: string;
 	qi: Array<mtaMailQueueItem>;
 	total: number;
+};
+
+export type MtaServerGeneral = {
+	zimbraMtaSaslAuthEnable: string;
+	zimbraMtaMyNetworks: string;
+	zimbraMtaRelayHost: string;
+	zimbraMtaFallbackRelayHost: string;
+	zimbraAmavisOriginatingBypassSA: string;
+	zimbraAmavisEnableDKIMVerification: string;
+	carbonioAmavisDisableVirusCheck: string;
+	zimbraAmavisLogLevel: string;
+	zimbraAmavisSALogLevel: string;
+	zimbraMtaSmtpdTlsLoglevel: string;
+	zimbraMtaLmtpTlsLoglevel: string;
 };

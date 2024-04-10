@@ -14,12 +14,15 @@ import {
 	Button,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, isEqual, reduce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { themeConfigStore } from '../../../../types/domain';
+import { TRUE } from '../../../constants';
 import { getDomainInformation } from '../../../services/domain-information-service';
+import { flushCache } from '../../../services/flush-cache-service';
 import { modifyDomain } from '../../../services/modify-domain-service';
 import { useConfigStore } from '../../../store/config/store';
 import { useDomainStore } from '../../../store/domain/store';
@@ -61,6 +64,16 @@ const DomainTheme: FC = () => {
 	const [isValidated, setIsValidated] = useState<boolean>(true);
 	const [zimbraId, setZimbraId] = useState<string>('');
 	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
@@ -103,6 +116,9 @@ const DomainTheme: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', body.id);
+				}
 				const domain: any = data?.domain[0];
 				if (domain) {
 					setDomain(domain);

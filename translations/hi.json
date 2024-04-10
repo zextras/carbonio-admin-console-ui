@@ -30,12 +30,12 @@
         "name": "नाम",
         "not_set": "सेट",
         "note": "पर्ची",
-        "notification": "सूचना",
+        "notification": "अधिसूचना",
         "of": "में से",
         "page ": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "page_": "आपने शेयर अनुरोध स्वीकार कर लिया",
         "privacy": "गोपनीयता",
-        "status": "स्टेटस",
+        "status": "स्थिति",
         "suspended": "निलंबित",
         "timezone": "समय क्षेत्र",
         "unlimited": "असीमित",
@@ -44,7 +44,6 @@
         "certificate": "प्रमाणपत्र",
         "closed": "बंद",
         "domains": "डोमेंस",
-        "enable_start_tls": "StartTLS सक्षम करें",
         "external_active_directory": "बाहरी सक्रिय निर्देशिका",
         "external_ldap": "बाहरी LDAP",
         "features": "सुविधाएँ",
@@ -587,7 +586,7 @@
         "s3_bucket": "S3 बकेट",
         "select_an_external_volume": "कोई एक्सटर्नल वॉल्यूम चुनें",
         "service": "सर्विस",
-        "status_lbl": "स्टेटस",
+        "status_lbl": "स्थिति",
         "theme": "थीम",
         "title": "शीर्षक",
         "update": "अपडेट करें",
@@ -681,7 +680,7 @@
         "total_acc_rights_with_delete_distribution_list_helper_text": "लिस्ट में <bold>{{totalAccRights}}</bold> शेयर्ड अकाउंट्स हैं।<br /> यदि आप इसे डिलीट कर देंगे तो सभी शेयर उड़ जाएंगे।",
         "yes_wipe_the_device": "हाँ, डिवाइस को साफ करें",
         "you_are_trying_wipe_device": "आप किसी डिवाइस को साफ करने की कोशिश कर रहे हैं",
-        "notifications": "सूचनाएं",
+        "notifications": "अधिसूचनाएं",
         "who_can_send_mails_to_list ": "इस लिस्ट को मेल कौन भेज सकता है?",
         "bucket_create_button": "बनाएँ",
         "bucket_delete_button": "डिलीट करें",
@@ -1311,7 +1310,7 @@
             "hide": "छिपाएँ",
             "less_info": "कम जानकारी",
             "more_info": "और जानकारी",
-            "status": "स्टेटस",
+            "status": "स्थिति",
             "subscription_Accounts": "सब्स्क्रिप्शन अकाउंट्स",
             "subscription_last_check": "सब्स्क्रिप्शन पिछला चेक",
             "subscription_type": "सब्स्क्रिप्शन टाइप",
@@ -1331,7 +1330,12 @@
             "valid": "मान्य",
             "license_activated_successfully": "लाइसेंस एक्टिवेट हो गया",
             "not_valid": "मान्य नहीं है",
-            "endDate": "अंत की तिथि"
+            "endDate": "अंत की तिथि",
+            "accounts": "अकाउंट",
+            "modules": "मॉड्यूल",
+            "refresh": "रिफ्रेश करें",
+            "type": "टाइप",
+            "valid_until": "इस तारीख तक मान्य"
         }
     },
     "domain": {
@@ -1600,7 +1604,7 @@
         "session_idle_timeout": "सत्र निष्क्रियता की समय सीमा समाप्‍त",
         "shortest_allowed_duration_for_any_polling_interval": "किसी भी पोलिंग अंतराल के लिए समसे छोटी अनुमत अवधि",
         "spam_message_lifetime": "स्‍पैम मैसेज की समयावधि",
-        "status": "स्टेटस",
+        "status": "स्थिति",
         "tagging": "टैगिंग",
         "time_to_lockout_account": "अकाउंट को बंद करने का समय",
         "time_window_failed_logins_must_occur_to_lock_account": "वह समय विंडो जिसमें अकाउंट बंद करने के लिए विफल लॉगइन आने चाहिए:",
@@ -1861,7 +1865,7 @@
         "remove": "हटाएँ",
         "send_check": "भेजें",
         "services": "सेवाएँ",
-        "status": "स्टेटस",
+        "status": "स्थिति",
         "DELETE": "डिलीट करें",
         "SAVE": "सेव करे",
         "able_to_see_password_once": " कृपया ध्यान देंः आप <bold>केवल एक बार</bold> पासवर्ड देख पाएंगे।",
@@ -1903,7 +1907,8 @@
         "right_for_selected_user_deleted_successfully": "चुने गए यूज़र के लिए अधिकार हटा दिया गया",
         "service_label_password": " {{service_label}}का पासवर्ड",
         "user_can_specify_forwarding_address": "यूज़र फ़ॉरवर्डिंग पता बता सकते हैं",
-        "user_can_specify_mail_forwarding_filter": "यूज़र मेल फॉरवर्डिंग फ़िल्टर बता सकते हैं"
+        "user_can_specify_mail_forwarding_filter": "यूज़र मेल फॉरवर्डिंग फ़िल्टर बता सकते हैं",
+        "abq_status": "ABQ स्थिति"
     },
     "privacy": {
         "allow_live_survey_feedbacks": "फीडबैक के लिए सर्वेज़ की अनुमति दें",
@@ -1953,7 +1958,7 @@
             "name": "नाम",
             "hsm_scheduled": "HSM शैड्यूल है",
             "indexer": "इंडेक्सर",
-            "status": "स्टेटस"
+            "status": "स्थिति"
         },
         "volume_header": {
             "compression": "कंप्रेशन",
@@ -2104,8 +2109,8 @@
         "done": "हो गया",
         "label": {
             "Deep": "गहराई",
-            "notifications": "सूचनाएं",
-            "status": "स्टेटस",
+            "notifications": "अधिसूचनाएं",
+            "status": "स्थिति",
             "action(M)": "एक्शन (एम)",
             "cancel_operation_btn": "ऑपरेशन कैंसल करें",
             "create_fake_blob": "फेक ब्लॉग बनाएँ",
@@ -2124,7 +2129,7 @@
             "operation": "ऑपरेशन",
             "server": "सर्वर",
             "start_date": "प्रारम्भ तिथि",
-            "status": "स्टेटस",
+            "status": "स्थिति",
             "submit_date": "सब्मिट करने की तारीख"
         },
         "other": "अन्य",
@@ -2265,7 +2270,7 @@
         "info": "जानकारी",
         "queued": "कतार में",
         "stats": "आंकड़ें",
-        "status": "स्टेटस",
+        "status": "स्थिति",
         "interval": "इंटरवल",
         "mail_server": "मेल सर्वर"
     },

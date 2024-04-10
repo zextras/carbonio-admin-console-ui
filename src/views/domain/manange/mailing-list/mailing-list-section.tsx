@@ -25,7 +25,7 @@ import { useTranslation } from 'react-i18next';
 
 import { MailingListContext } from './mailinglist-context';
 import carbonioHelmet from '../../../../assets/carbonio-helmet.svg';
-import { ALL, EMAIL, GRP, LDAP_QUERY, PUB, TRUE } from '../../../../constants';
+import { ALL, EMAIL, GRP, LDAP, LDAP_QUERY, PUB, TRUE } from '../../../../constants';
 import { searchDirectory } from '../../../../services/search-directory-service';
 import { searchGal } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -137,16 +137,33 @@ const MailingListSection: FC<any> = () => {
 		}
 	}, [ownersList, setMailingListDetail]);
 
-	const changeResourceDetail = useCallback(
-		(e) => {
-			if (e.target.name === 'memberURL') {
-				const validQuery = isValidLdapQuery(e.target.value);
-				setIsValidQuery(validQuery);
-				setIsShowLdapQueryMessage(!validQuery);
-			}
-			setMailingListDetail((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
+	const setValueByName = useCallback(
+		(name, value) => {
+			setMailingListDetail((prev: any) => ({ ...prev, [name]: value }));
 		},
 		[setMailingListDetail]
+	);
+
+	const changeLdapDetail = useCallback(
+		(e) => {
+			const newValue = e.target.value;
+			let isValid = false;
+			if (newValue.startsWith(LDAP)) {
+				setValueByName(e.target.name, newValue);
+				isValid = isValidLdapQuery(newValue);
+			} else {
+				setValueByName(e.target.name, LDAP);
+			}
+			setIsValidQuery(isValid);
+			setIsShowLdapQueryMessage(!isValid);
+		},
+		[setValueByName]
+	);
+	const changeResourceDetail = useCallback(
+		(e) => {
+			setValueByName(e.target.name, e.target.value);
+		},
+		[setValueByName]
 	);
 
 	const memberHeaders: any[] = useMemo(
@@ -492,7 +509,7 @@ const MailingListSection: FC<any> = () => {
 									backgroundColor="gray5"
 									value={mailingListDetail?.memberURL}
 									inputName="memberURL"
-									onChange={changeResourceDetail}
+									onChange={changeLdapDetail}
 									hasError={!isValidQuery}
 									CustomIcon={(): any => (
 										<Icon

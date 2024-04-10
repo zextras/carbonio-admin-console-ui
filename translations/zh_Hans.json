@@ -100,7 +100,6 @@
         "certificate": "证书",
         "closed": "已关闭",
         "domains": "域",
-        "enable_start_tls": "启用 StartTLS",
         "external_active_directory": "外部 Active Directory",
         "external_ldap": "外部 LDAP",
         "features": "功能",
@@ -1278,7 +1277,12 @@
             "valid": "有效",
             "license_activated_successfully": "许可激活成功",
             "not_valid": "无效",
-            "endDate": "结束日期"
+            "endDate": "结束日期",
+            "accounts": "账户",
+            "modules": "模块",
+            "refresh": "刷新",
+            "type": "类型",
+            "valid_until": "有效期至"
         }
     },
     "message": {
@@ -1766,7 +1770,8 @@
         "delete_password": "删除密码",
         "delete_user_password": "从LDAP中删除用户密码",
         "delete_password_of_user_ldap": "您正在从LDAP中删除<bold>{{name}}</bold>的密码。确定要删除吗？",
-        "user_password_set": "用户密码设置成功"
+        "user_password_set": "用户密码设置成功",
+        "abq_status": "ABQ状态"
     },
     "connection": {
         "access_key": "访问密钥",

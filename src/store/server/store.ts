@@ -14,10 +14,12 @@ type ServerState = {
 	server: Server;
 	serverList: Array<Server>;
 	serverView: string;
+	mtaServerList: Array<Server>;
 	setServer: (server: Server) => void;
 	setServerList: (serverList: Array<Server>) => void;
 	removeServer: () => void;
 	setServerView: (serverView: string) => void;
+	setMtaServerList: (mtaServerList: Array<Server>) => void;
 };
 
 export const useServerStore = create<ServerState>()(
@@ -25,6 +27,7 @@ export const useServerStore = create<ServerState>()(
 		server: {},
 		serverList: [],
 		serverView: SERVER_DETAIL_VIEW,
+		mtaServerList: [],
 		setServer: (server): void => set({ server }, false, 'setServer'),
 		setServerList: (serverList): void => set({ serverList }, false, 'setServerList'),
 		removeServer: (): void =>
@@ -42,6 +45,7 @@ export const useServerStore = create<ServerState>()(
 				}),
 				false,
 				'setServerView'
-			)
+			),
+		setMtaServerList: (mtaServerList): void => set({ mtaServerList }, false, 'setMtaServerList')
 	}))
 );

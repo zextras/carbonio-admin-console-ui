@@ -23,12 +23,17 @@
                 "warning": "Bạn đang cố gắng hủy kích hoạt mã thông báo hiện tại. Làm như vậy sẽ vô hiệu hóa tất cả các tính năng đã bật."
             },
             "valid": "Hợp lệ",
-            "endDate": "Ngày kết thúc"
+            "endDate": "Ngày kết thúc",
+            "accounts": "Tài khoản",
+            "modules": "Các Mô-đun",
+            "refresh": "Làm mới",
+            "type": "Kiểu",
+            "valid_until": "Có giá trị đến"
         }
     },
     "label": {
         "status": "Trạng thái",
-        "account": "Tài khoản",
+        "account": "Các Tài khoản",
         "accounts": "Tài khoản",
         "add": "Thêm vào",
         "cancel": "Huỷ",
@@ -68,7 +73,6 @@
         "configuration": "CẤU HÌNH",
         "core": "Lõi",
         "domains": "Tên miền",
-        "enable_start_tls": "Bật StartTLS",
         "external_active_directory": "Thư mục hoạt động ngoài",
         "external_ldap": "LDAP ngoài",
         "features": "Tính năng",
@@ -100,7 +104,7 @@
         "create": "Tạo",
         "creation_date": "Ngày tạo",
         "default_appointment_visibility": "Hiển thị cuộc hẹn mặc định",
-        "details": "Thông tin chi tiết",
+        "details": "Chi tiết",
         "draft_auto_save_interval": "Khoảng thời gian tự động lưu nháp",
         "email": "Email",
         "enable_automatic_adding_of_contacts": "Cho phép tự động thêm số liên hệ",
@@ -223,10 +227,10 @@
         "volume_available_space": "Dung lượng trống",
         "volume_cancel_button": "HUỶ",
         "volume_compression_thresold": "Ngưỡng nén",
-        "volume_id": "ID tập",
-        "volume_name": "Tên tập",
+        "volume_id": "ID Tập",
+        "volume_name": "Tên Tập",
         "volume_path": "Đường dẫn",
-        "volume_type": "Kiểu tập",
+        "volume_type": "Kiểu Tập",
         "week_day": {
             "friday": "Thứ Sáu",
             "monday": "Thứ Hai",
@@ -632,7 +636,7 @@
         "bucket_notes": "Ghi chú",
         "date": "Ngày",
         "label": "Nhãn",
-        "notifications": "Thông báo",
+        "notifications": "Các thông báo",
         "open": "Mở",
         "search_for_user_and_clic_to_add": "Tìm kiếm một người dùng và bấm vào nút THÊM.",
         "there_are_no_owners": "Không có chủ sở hữu nào ở đây.",
@@ -843,7 +847,7 @@
         "america_caracas": "{{value}} Caracas",
         "america_cayenne": "{{value}} Cayenne, Fortaleza",
         "america_chicago": "{{value}} US/Canada Central",
-        "africa_algiers": "{{value}} Tây Trung Phi",
+        "africa_algiers": "{{value}} West Central Africa",
         "africa_cairo": "{{value}} Ai Cập",
         "africa_casablanca": "{{value}} Casablanca",
         "africa_harare": "{{value}} Harare, Pretoria",
@@ -1463,7 +1467,7 @@
         "days": "Ngày",
         "delete": "Xoá",
         "destination_volume": "Tập đích",
-        "details": "Thông tin chi tiết",
+        "details": "Chi tiết",
         "document": "Văn bản",
         "edit": "Chỉnh sửa",
         "event": "Sự kiện",
@@ -1514,11 +1518,11 @@
     },
     "operations": {
         "copy_btn": "SAO CHÉP",
-        "details": "Thông tin chi tiết",
+        "details": "Chi tiết",
         "done": "Hoàn thành",
         "label": {
             "Deep": "Sâu",
-            "notifications": "Thông báo",
+            "notifications": "Các thông báo",
             "status": "Trạng thái"
         },
         "operations_list_header": {

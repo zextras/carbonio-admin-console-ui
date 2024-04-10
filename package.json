@@ -1,6 +1,6 @@
 {
 	"name": "carbonio-admin-console-ui",
-	"version": "0.9.42",
+	"version": "0.9.44",
 	"description": "Admin module for Zextras Carbonio",
 	"main": "src/app.tsx",
 	"scripts": {
@@ -19,7 +19,8 @@
 		"test:watch": "npm run test:dev -- --onlyChanged --watch",
 		"sdk-setup": "npm ci --prefix sdk",
 		"pull-translations": "git subtree pull -P translations git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git master --squash",
-		"push-translations": "git subtree push -P translations git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git"
+		"push-translations": "git subtree push -P translations git@github.com:Zextras/carbonio-admin-manage-ui-i18n.git",
+		"build:dev": "sdk build --dev --pkgRel $(date +%s)"
 	},
 	"keywords": [],
 	"author": "Zextras NP Team <https://www.zextras.com/carbonio/>",

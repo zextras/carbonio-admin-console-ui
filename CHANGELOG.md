@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.44](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.43...v0.9.44) (2024-03-07)
+
+### [0.9.43](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.42...v0.9.43) (2024-02-15)
+
+
+### Features
+
+* ac-890: allow admin to update zimbraMtaSmtpdSenderLoginMaps ([14d24b7](https://github.com/zextras/carbonio-admin-console-ui/commit/14d24b756a4dd6809494b85b849e961624c4f86e))
+* ac-905: if cos is enabled backup ([91b5596](https://github.com/zextras/carbonio-admin-console-ui/commit/91b5596c7e6d1850ff77ef8410889b130597c642))
+
+
+### Bug Fixes
+
+* ac-:923: improved fqdn invalid domain name allowance ([53796d4](https://github.com/zextras/carbonio-admin-console-ui/commit/53796d48225f234d3058c3186115f721bd4dfd92))
+* ac-887: added valid hostname regular expression ([bdd71de](https://github.com/zextras/carbonio-admin-console-ui/commit/bdd71deb464d86f7d81404430cc1719c8850ef5c))
+* ac-887: validation added in mta for space not allowd in anitivirus definition ([3445946](https://github.com/zextras/carbonio-admin-console-ui/commit/34459461ed1a8ff8f2cb3c1fbded1b6c42e2952e))
+* ac-889: added space allow validation to my networks in mta ([2e97927](https://github.com/zextras/carbonio-admin-console-ui/commit/2e97927ce7b382e9aa3fa455c18afc611a981379))
+* ac-889: fixed regex warning ([aef4f59](https://github.com/zextras/carbonio-admin-console-ui/commit/aef4f590347f996666c9ac2b0c0552e9dc360194))
+* ac-889: improvised the regex to disallow more then 1 after / on ip range ([a9345f4](https://github.com/zextras/carbonio-admin-console-ui/commit/a9345f49e95c801614e305c30992e2af1e4bdb86))
+* ac-889: removed extra space from api call ([1997501](https://github.com/zextras/carbonio-admin-console-ui/commit/199750124735b6d8269f1a38ea8299b244d33e2c))
+* ac-905: import ordering fix after running test ([76eebaf](https://github.com/zextras/carbonio-admin-console-ui/commit/76eebaffe65b2930a688c6d4fe8d2cb386703e13))
+* ac-905: removed unused interface ([becae73](https://github.com/zextras/carbonio-admin-console-ui/commit/becae731e76d770edc1c156fc35bcafbd690d3fa))
+* ac-915: mta outbound flow list only mta server ([a9a53a7](https://github.com/zextras/carbonio-admin-console-ui/commit/a9a53a7d7e2dc266fd82da4fa2121ed0c5247455))
+* ac-919: added grant request when init domain for deligated admin ([297ac52](https://github.com/zextras/carbonio-admin-console-ui/commit/297ac5278a27206a82b342f17ab5581499ccb26a))
+* ac-919: domain admin not change users cos ([99063f4](https://github.com/zextras/carbonio-admin-console-ui/commit/99063f4f6b07a1d8c1de0ee8d8e8fc309b2cf026))
+* ac-921: check color schema is valid color or not ([b0faf56](https://github.com/zextras/carbonio-admin-console-ui/commit/b0faf56a212292faea7e2f78e2c9c69ae1b83b4a))
+* ac-9905: fixed ui bug for enable disable switch save button ([8dc6abc](https://github.com/zextras/carbonio-admin-console-ui/commit/8dc6abc07451093b628751c76ac7f8de90e4a4b2))
+* show implement forget password link configuration ([#656](https://github.com/zextras/carbonio-admin-console-ui/issues/656)) ([8a13fbf](https://github.com/zextras/carbonio-admin-console-ui/commit/8a13fbfb394a0859c99620b3e408ca402a2d8958))
+
 ### [0.9.42](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.41...v0.9.42) (2024-01-12)
 
 
