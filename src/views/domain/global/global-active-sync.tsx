@@ -128,16 +128,6 @@ const GlobalActiveSync: FC = () => {
 			});
 	};
 
-	// createSnackbar({
-	// 	key: 'success',
-	// 	type: 'success',
-	// 	label: t('label.servers_have_been_restared', 'Servers have been restared'),
-	// 	autoHideTimeout: 3000,
-	// 	hideButton: true,
-	// 	replace: true
-	// });
-	// setIsLoading(false);
-
 	const restartJail = (): void => {
 		if (mailstoresList.length > 0) {
 			const request: any[] = [];
