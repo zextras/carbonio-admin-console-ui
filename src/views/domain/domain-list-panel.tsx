@@ -45,6 +45,7 @@ import {
 	GLOBAL_SETTINGS_ROUTE,
 	IS_DETAIL_LIST_EXPANDED,
 	IS_MANAGE_LIST_EXPANDED,
+	GLOBAL_ACTIVE_SYNC_ROUTE,
 	SECONDARY_BAR,
 	SECONDARY_BAR_GLOBAL_SETTINGS,
 	SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
@@ -398,6 +399,11 @@ const DomainListPanel: FC = () => {
 			{
 				id: GLOBAL_QUARANTINE_ROUTE,
 				name: t('label.quarantine', 'Quarantine'),
+				isSelected: true
+			},
+			{
+				id: GLOBAL_ACTIVE_SYNC_ROUTE,
+				name: t('label.active_sync', 'ActiveSync'),
 				isSelected: true
 			}
 		],
