@@ -19,6 +19,13 @@ export interface Right {
 			all: boolean;
 		}[];
 	}[];
+	inDomains?: {
+		rights: {
+			right?: {
+				n: string;
+			}[];
+		}[];
+	}[];
 }
 export type Rights = Right[];
 type RightsState = {
