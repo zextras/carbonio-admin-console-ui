@@ -2287,6 +2287,5 @@ export const getModifiedName = (name: string): string => name?.replace(/ /g, '')
 export const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(name);
 export const convertToAscii = (inputString: string): string => {
 	const normalizedString = inputString.normalize('NFKD');
-	// eslint-disable-next-line no-control-regex
-	return normalizedString.replace(/[^\x00-\x7F]/g, '');
+	return normalizedString.replace(/[^\p{ASCII}]/gu, '');
 };
