@@ -78,11 +78,30 @@ const GlobalActiveSync: FC = () => {
 			replace: true
 		});
 
-	const restartJail = (): void => {
-		if (mailstoresList.length > 0) {
-			setIsLoading(true);
-			mailstoresList.forEach((mailbox) =>
-				doStratStopJail('doStartService', mailbox?.name).then(() => {
+	const callAllRequest = (requests: any): void => {
+		setIsLoading(true);
+		Promise.all(requests)
+			.then((response: any) => Promise.all(response))
+			.then((data: any) => {
+				// eslint-disable-next-line no-shadow
+				let isError = false;
+				let errorMessage = '';
+				data.forEach((item: any) => {
+					if (item?.Fault) {
+						isError = true;
+						errorMessage = item?.Fault?.Reason?.Text;
+					}
+				});
+				if (isError) {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: errorMessage,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				} else {
 					createSnackbar({
 						key: 'success',
 						type: 'success',
@@ -91,9 +110,44 @@ const GlobalActiveSync: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					setIsLoading(false);
-				})
+				}
+				setIsLoading(false);
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error.message
+						? error.message
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+				setIsLoading(false);
+			});
+	};
+
+	// createSnackbar({
+	// 	key: 'success',
+	// 	type: 'success',
+	// 	label: t('label.servers_have_been_restared', 'Servers have been restared'),
+	// 	autoHideTimeout: 3000,
+	// 	hideButton: true,
+	// 	replace: true
+	// });
+	// setIsLoading(false);
+
+	const restartJail = (): void => {
+		if (mailstoresList.length > 0) {
+			const request: any[] = [];
+			setIsLoading(true);
+			mailstoresList.forEach((mailbox) =>
+				request.push(doStratStopJail('doStartService', mailbox?.name))
 			);
+			if (request?.length > 0) {
+				callAllRequest(request);
+			}
 		}
 	};
 	const PurgeActiveSync = (): void => {
