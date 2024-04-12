@@ -28,12 +28,12 @@
         "language": "Jezik",
         "link": "Poveznica",
         "logout": "Odjava",
-        "name": "Naziv",
+        "name": "Ime",
         "never": "Nikad",
         "notifications": "Obavijesti",
         "open": "Otvori",
         "password": "Lozinka",
-        "person_name": "Naziv",
+        "person_name": "Ime",
         "phone": "Telefon",
         "remove": "Ukloni",
         "reset": "Resetiraj",
@@ -65,16 +65,16 @@
             "description": "Opis"
         },
         "volume_config_header": {
-            "name": "Naziv",
+            "name": "Ime",
             "status": "Status"
         },
         "volume_header": {
             "current": "Trenutna",
-            "name": "Naziv"
+            "name": "Ime"
         },
         "volume_indexer_header": {
             "current": "Trenutna",
-            "name": "Naziv"
+            "name": "Ime"
         }
     },
     "backup": {
@@ -92,7 +92,7 @@
         "current": "Trenutna",
         "delete": "Izbriši",
         "edit": "Uredi",
-        "name": "Naziv",
+        "name": "Ime",
         "new": "Kreiraj",
         "no": "Ne",
         "server": "Server",

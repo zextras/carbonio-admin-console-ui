@@ -44,7 +44,6 @@
         "certificate": "Sertifika",
         "closed": "Kapatıldı",
         "domains": "Etki Alanları",
-        "enable_start_tls": "StartTLS Etkinleştir",
         "external_active_directory": "Dış Active Directory",
         "external_ldap": "Dış LDAP",
         "features": "Özellikler",
@@ -74,7 +73,7 @@
         "allow_sending_email_from_any_address": "Her adresten e-posta göndermeye izin ver",
         "details": "Detaylar",
         "draft_auto_save_interval": "Taslağı otomatik olarak kaydetme aralığı",
-        "email": "Eposta",
+        "email": "E-Posta",
         "enable_automatic_adding_of_contacts": "Kişileri otomatik eklemeyi etkinleştir",
         "enable_mandatory_spell_check": "Zorunlu yazım denetimini etkinleştir",
         "enable_past_due_reminders": "Geçmiş randevular için anımsatıcıları etkinleştir",
@@ -1413,7 +1412,12 @@
             "not_valid": "Geçerli değil",
             "license_activated_successfully": "Lisans başarıyla etkinleştirildi",
             "valid": "Geçerli",
-            "endDate": "Bitiş tarihi"
+            "endDate": "Bitiş tarihi",
+            "accounts": "Hesaplar",
+            "modules": "Modüller",
+            "refresh": "Yenile",
+            "type": "Tür",
+            "valid_until": "Geçerlilik bitiş tarihi"
         }
     },
     "domain": {
@@ -2062,7 +2066,9 @@
         "set_global_config": "SetGlobal yapılandırması",
         "user_can_specify_forwarding_address": "Kullanıcı yönlendirme adresini belirtebilir",
         "send_recipients_see_the_mail": "Gönder {{right}} (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)",
-        "send_as_recipients": "Kişi Adından Gönderim (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)"
+        "send_as_recipients": "Kişi Adından Gönderim (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)",
+        "abq_status": "ABQ Durumu",
+        "otp_devices": "Tek Kullanımlık Şifre Cihazları"
     },
     "connection": {
         "access_key": "Access Key",

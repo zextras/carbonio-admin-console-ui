@@ -2,7 +2,7 @@
     "cos": {
         "chats": "Csevegések",
         "enabled": "Engedélyezett",
-        "status": "Státusz",
+        "status": "Állapot",
         "contacts": "Kapcsolatok",
         "disabled": "Letiltva",
         "manuallly": "Manuálisan",
@@ -19,7 +19,7 @@
     "hsm": {
         "message": "Üzenet",
         "server": "Szerver",
-        "delete": "Töröl",
+        "delete": "Törlés",
         "document": "Dokumentum",
         "edit": "Szerkesztés",
         "name": "Név",
@@ -36,7 +36,7 @@
     "label": {
         "accounts": "Fiókok",
         "description": "Leírás",
-        "destroy_account": "Töröl",
+        "destroy_account": "Törlés",
         "disabled": "Letiltva",
         "enable": "engedélyez",
         "enabled": "Engedélyezett",
@@ -53,11 +53,11 @@
         "ID": "ID",
         "account": "Fiók",
         "bucket_done_button": "Kész",
-        "cancel": "Mégse",
+        "cancel": "Törlés",
         "chats": "Csevegések",
         "contacts": "Kapcsolatok",
         "date": "dátum",
-        "delete": "Töröl",
+        "delete": "Törlés",
         "disable": "letilt",
         "domain": "Tartomány",
         "done": "Kész",
@@ -71,8 +71,8 @@
         "person_name": "Név",
         "running": "Fut",
         "server": "Szerver",
-        "status": "Státusz",
-        "status_lbl": "Státusz",
+        "status": "Állapot",
+        "status_lbl": "Állapot",
         "unlimited": "Végtelen",
         "volume_server_name": "Szerver",
         "add": "Hozzáadás",
@@ -152,7 +152,7 @@
         "show_quoted_text": "Idézett szöveg megjelenítése"
     },
     "mta": {
-        "status": "Státusz",
+        "status": "Állapot",
         "add": "Hozzáadás",
         "high": "Magas",
         "low": "Alacsony",
@@ -168,13 +168,13 @@
         "operations_list_header": {
             "operation": "Művelet",
             "server": "Szerver",
-            "status": "Státusz",
+            "status": "Állapot",
             "start_date": "Kezdő dátum"
         },
         "done": "Kész",
         "label": {
             "notifications": "Értesítések",
-            "status": "Státusz"
+            "status": "Állapot"
         },
         "running": "Fut",
         "details": "Részletek"
@@ -186,7 +186,7 @@
         },
         "volume_config_header": {
             "name": "Név",
-            "status": "Státusz"
+            "status": "Állapot"
         },
         "volume_header": {
             "id": "ID",
@@ -204,7 +204,7 @@
         "Chats": "Csevegések",
         "domain": "Tartomány",
         "general": "Általános",
-        "status": "Státusz",
+        "status": "Állapot",
         "calendar": "Naptár",
         "default_view": {
             "day": "Napi nézet",
@@ -224,9 +224,11 @@
     },
     "core": {
         "subscription": {
-            "status": "Státusz",
+            "status": "Állapot",
             "endDate": "Befejező dátum",
-            "hide": "Elrejtés"
+            "hide": "Elrejtés",
+            "accounts": "Fiókok",
+            "type": "Típus"
         }
     },
     "dashboard": {
