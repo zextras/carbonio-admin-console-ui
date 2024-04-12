@@ -909,7 +909,9 @@
         "delete_domain_certificate_content": "Stai eliminando il certificato di un dominio. <br /> Vuoi procedere?",
         "domain_certificate": "Certificato dominio",
         "domain_certificate_private_key": "Chiave privata dominio",
-        "download": "SCARICA",
+        "download_0": "SCARICA",
+        "download_1": "",
+        "download_2": "",
         "download_pdf": "SCARICA PDF",
         "load_FILE": "CARICA FILE",
         "there_are_not_member_here": "Nessun membro presente.",
@@ -1368,7 +1370,11 @@
         "user_recovery_email": "Email di Recupero per l'utente",
         "validate_ip_Address_text": "È richiesto un indirizzo IP valido",
         "verified": "Verificato",
-        "show_forget_password_link": "Mostra link \"Password Dimenticata\" nella login page"
+        "show_forget_password_link": "Mostra link \"Password Dimenticata\" nella login page",
+        "interactive": "Interattivo",
+        "permissive": "Tollerante",
+        "strict": "Severo",
+        "user_can_ask_for_forgotten_password_token": "L'utente può richiedere il token per la password dimenticata"
     },
     "message": {
         "snackbar": {
