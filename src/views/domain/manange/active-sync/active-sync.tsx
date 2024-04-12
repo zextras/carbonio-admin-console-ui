@@ -16,15 +16,16 @@ import {
 	Padding,
 	Table,
 	Icon,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import moment from 'moment';
 import { useTranslation, Trans } from 'react-i18next';
 
 import ActiveDeviceDetail from './active-device-detail';
-import gardian from '../../../../assets/gardian.svg';
-import { ZX_MOBILE } from '../../../../constants';
+import logo from '../../../../assets/gardian.svg';
+import { MOBILE, ZX_MOBILE } from '../../../../constants';
 import { getAllDevices } from '../../../../services/get-all-devices';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
@@ -59,6 +60,7 @@ const ActiveSync: FC = () => {
 	const [searchString, setSearchString] = useState<string>('');
 	const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>([]);
 	const [hasError, setHasError] = useState<boolean>(false);
+	const screenMode = useScreenMode();
 
 	const headers: any[] = useMemo(
 		() => [
@@ -311,7 +313,11 @@ const ActiveSync: FC = () => {
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
 					height="calc(100% - 70px)"
-					style={{ overflow: 'auto' }}
+					style={{
+						height: screenMode === MOBILE ? 'auto' : 'calc(100% - 70px)',
+						position: 'relative',
+						overflow: 'auto'
+					}}
 					padding={{ all: 'large' }}
 				>
 					<Row mainAlignment="flex-start" width="100%" wrap="nowrap">
@@ -342,7 +348,16 @@ const ActiveSync: FC = () => {
 							</Padding>
 						</Container>
 					</Row>
-					<Row mainAlignment="flex-start" width="100%" wrap="nowrap" padding={{ top: 'large' }}>
+					<Row
+						orientation="horizontal"
+						mainAlignment="space-between"
+						crossAlignment="flex-start"
+						width="fill"
+						style={{
+							height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
+							position: 'relative'
+						}}
+					>
 						<Table
 							rows={allDeviceRow}
 							headers={headers}
@@ -351,49 +366,50 @@ const ActiveSync: FC = () => {
 							RowFactory={CustomRowFactory}
 							HeaderFactory={CustomHeaderFactory}
 						/>
+
+						{allDeviceRow.length === 0 && (
+							<Container orientation="column" crossAlignment="center" mainAlignment="center">
+								<Row padding={{ top: 'extralarge' }}>
+									<img src={logo} alt="logo" />
+								</Row>
+								<Row
+									padding={{ top: 'extralarge' }}
+									orientation="vertical"
+									crossAlignment="center"
+									style={{ textAlign: 'center' }}
+								>
+									<Text weight="light" color="#828282" size="large" overflow="break-word">
+										{t('label.this_list_is_empty', 'This list is empty.')}
+									</Text>
+								</Row>
+								<Row
+									orientation="vertical"
+									crossAlignment="center"
+									style={{ textAlign: 'center' }}
+									padding={{ top: 'small' }}
+									width="53%"
+								>
+									<Text weight="light" color="#828282" size="large" overflow="break-word">
+										<Trans
+											i18nKey="label.do_you_need_more_information"
+											defaults="Do you need more information?"
+										/>
+									</Text>
+								</Row>
+								<Row
+									orientation="vertical"
+									crossAlignment="center"
+									style={{ textAlign: 'center' }}
+									padding={{ top: 'small', bottom: 'small' }}
+									width="53%"
+								>
+									<Text weight="light" color="primary">
+										{t('label.click_here', 'Click here')}
+									</Text>
+								</Row>
+							</Container>
+						)}
 					</Row>
-					{allDeviceRow.length === 0 && (
-						<Container orientation="column" crossAlignment="center" mainAlignment="center">
-							<Row>
-								<img src={gardian} alt="logo" />
-							</Row>
-							<Row
-								padding={{ top: 'extralarge' }}
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-							>
-								<Text weight="light" color="#828282" size="large" overflow="break-word">
-									{t('label.this_list_is_empty', 'This list is empty.')}
-								</Text>
-							</Row>
-							<Row
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-								padding={{ top: 'small' }}
-								width="53%"
-							>
-								<Text weight="light" color="#828282" size="large" overflow="break-word">
-									<Trans
-										i18nKey="label.do_you_need_more_information"
-										defaults="Do you need more information?"
-									/>
-								</Text>
-							</Row>
-							<Row
-								orientation="vertical"
-								crossAlignment="center"
-								style={{ textAlign: 'center' }}
-								padding={{ top: 'small', bottom: 'small' }}
-								width="53%"
-							>
-								<Text weight="light" color="primary">
-									{t('label.click_here', 'Click here')}
-								</Text>
-							</Row>
-						</Container>
-					)}
 				</Container>
 			</Container>
 			{isShowDeviceDetail && (

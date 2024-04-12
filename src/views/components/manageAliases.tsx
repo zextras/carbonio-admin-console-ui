@@ -21,6 +21,7 @@ import { cloneDeep, uniqBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from './customChip';
+import { ALIASES } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 
 const ManageAliases: FC<{
@@ -29,7 +30,15 @@ const ManageAliases: FC<{
 	setAliasChange: (arg: Array<{ label: string }>) => void;
 	aliasType?: string;
 	viewType?: string;
-}> = ({ listAliases, setListAliases, setAliasChange, aliasType = '', viewType = 'large' }) => {
+	handleMatomoTrackerEvent?: any;
+}> = ({
+	listAliases,
+	setListAliases,
+	setAliasChange,
+	aliasType = '',
+	viewType = 'large',
+	handleMatomoTrackerEvent
+}) => {
 	const [t] = useTranslation();
 	const [showManageAliesModal, setShowManageAliesModal] = useState<boolean>(false);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -81,21 +90,20 @@ const ManageAliases: FC<{
 						</Row>
 					</>
 				) : (
-					<>
-						<Input
-							label={t('account_details.aliases', 'Aliases')}
-							value={(listAliases?.length || 1) - 1}
-							CustomIcon={(): any => (
-								<Icon
-									icon="EditAsNewOutline"
-									onClick={(): void => setShowManageAliesModal(true)}
-									style={{ cursor: 'pointer' }}
-									size="large"
-									onChange={(): null => null}
-								/>
-							)}
-						/>
-					</>
+					<Input
+						label={t('account_details.aliases', 'Aliases')}
+						value={(listAliases?.length || 1) - 1}
+						CustomIcon={(): any => (
+							<Icon
+								icon="EditAsNewOutline"
+								onClick={(): void => setShowManageAliesModal(true)}
+								style={{ cursor: 'pointer' }}
+								size="large"
+								onChange={(): null => null}
+							/>
+						)}
+						onFocus={(): void => handleMatomoTrackerEvent(ALIASES)}
+					/>
 				)}
 			</Row>
 			<Modal

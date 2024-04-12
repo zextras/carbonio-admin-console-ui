@@ -1,0 +1,29 @@
+{
+    "account_details": {
+        "DELETE": "ЖОК",
+        "NEXT": "КИЙИНКИ",
+        "ADD": "КОШО",
+        "Chats": "Chats",
+        "SAVE": "САКТОО",
+        "a_user": "Колдонуучу"
+    },
+    "label": {
+        "cancel": "Жокко чыгаруу",
+        "save": "Сактоо"
+    },
+    "account": {
+        "new": {
+            "create_account_wizard": "Каттоо чебери түзүү",
+            "create_otp_wizard": "OTP түзүү"
+        }
+    },
+    "accountDetails": {
+        "auto_fill_user_is_disabled": "Автоматтык түрдө толтуруучу колдонуучу өчүрүлгөн",
+        "auto_fill_username_is_disabled": "Колдонуучунун атын автоматтык түрдө толтуруу өчүрүлгөн",
+        "change_password_for_next_login": "Кийинки кирүүдө сырсөздү өзгөртүү керек",
+        "default_COS": "Демейки COS",
+        "enable_activeSync_remote_access": "ActiveSync алыстан кирүү мүмкүнчүлүгүн иштетүү",
+        "force_change_password": "Сырсөздү мажбурлоо",
+        "user_will_change_password_on_next_login": "Колдонуучу кийинки кирүүдө сырсөздү өзгөртөт"
+    }
+}

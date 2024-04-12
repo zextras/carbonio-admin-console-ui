@@ -28,6 +28,7 @@ import {
 	Modal,
 	Icon
 } from '@zextras/carbonio-design-system';
+import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { isEqual, reduce, remove, differenceBy, find } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -55,13 +56,27 @@ import {
 	CHANGE_NAME_BOOLEAN,
 	CHANGE_DISPLAY_NAME_BOOLEAN,
 	IS_DEFAULT_USER_NAME,
+	TRUE,
 	CLOSED,
-	CONFIG,
-	ABQ_MODE
+	ABQ_MODE,
+	BACKUP_ENABLED,
+	ACCOUNTS_DETAILS_ACTIONS,
+	DOMAINS_ACCOUNTS_DETAILS_CANCEL,
+	DOMAINS_ACCOUNTS_DETAILS_SAVE,
+	ACCOUNTS_DETAILS_DELETE_ACCOUNT_TABLE_ITEM,
+	ACCOUNTS_DETAILS_DELETE_ITEM,
+	ACCOUNTS_DETAILS,
+	ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME,
+	ACCOUNTS_DETAILS_PIN,
+	ACCOUNTS_DETAILS_UNPIN,
+	DOMAINS_ROUTE_ID,
+	ADMIN_LOGIN_AS
 } from '../../../../../constants';
+import MatomoTracker from '../../../../../matomo-tracker';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
+import { flushCache } from '../../../../../services/flush-cache-service';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
@@ -70,6 +85,7 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useConfigStore } from '../../../../../store/config/store';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
@@ -148,7 +164,11 @@ const EditAccount: FC<{
 		deleteAdministrationRights
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const userSetting = useUserSettings();
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const { isSticky, setIsSticky } = useStickyBarStore();
 	const { userType } = useRightsStore((state) => state);
 	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
@@ -198,6 +218,15 @@ const EditAccount: FC<{
 			setIsDirty(false);
 		}
 	}, [accountDetail, initAccountDetail, setIsDirty]);
+
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const ReusedDefaultTabBar: FC<{
 		item: any;
@@ -346,70 +375,137 @@ const EditAccount: FC<{
 		[t, accountDetail, createSnackbar]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-	const modifyAccountReq = useCallback(async () => {
-		const modifiedKeys: any = reduce(
-			accountDetail,
-			function (result, value, key): any {
-				return isEqual(value, initAccountDetail[key]) ? result : [...result, key];
-			},
-			[]
-		);
-		if (deleteAdministrationRights?.length > 0 && modifiedKeys.includes('zimbraIsAdminAccount')) {
-			onDeleteFromList(deleteAdministrationRights);
-		}
-		const modifiedData: any = {};
-		let isPasswordChange = false;
-		remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
-		remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
-		remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
-		if (!accountDetail?.sn?.trim()) {
+	const ErrorSnackbar = useCallback(
+		(label: string): void => {
 			createSnackbar({
 				key: 'error',
 				type: 'error',
-				label: t('label.surname_required', 'Surname is required'),
+				label,
 				autoHideTimeout: 3000,
 				hideButton: true,
 				replace: true
 			});
-			return;
+		},
+		[createSnackbar]
+	);
+
+	function findModifiedKeys(): string[] {
+		return reduce(
+			accountDetail,
+			(result, value, key): any =>
+				isEqual(value, initAccountDetail[key]) ? result : [...result, key],
+			[]
+		);
+	}
+
+	function handleAdministrationRightsDeletion(modifiedKeys: string[]): any {
+		if (deleteAdministrationRights?.length > 0 && modifiedKeys.includes('zimbraIsAdminAccount')) {
+			onDeleteFromList(deleteAdministrationRights);
 		}
-		// eslint-disable-next-line sonarjs/no-collapsible-if
-		if (accountDetail?.password || accountDetail?.repeatPassword) {
-			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
-				if (accountDetail?.password?.length < 6) {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					return;
-				}
-				if (accountDetail?.password !== accountDetail?.repeatPassword) {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: t('label.password_and repeat_password_not_match', 'Passwords do not match'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					return;
-				}
-				setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password);
-				isPasswordChange = true;
-				remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
+	}
+
+	const handlePasswordChange = useCallback(
+		async (modifiedKeys: string[]): Promise<void> => {
+			if (accountDetail?.password?.length < 6) {
+				ErrorSnackbar(t('label.password_lenght_msg', 'Password should be more than 5 character'));
+				return;
 			}
-		}
-		if (modifiedKeys.includes('uid') || modifiedKeys.includes(DOMAIN_NAME)) {
-			setIsLoading(true);
-			await renameAccountRequest(
-				initAccountDetail?.zimbraId,
-				`${accountDetail?.uid}@${accountDetail?.domainName}`
-			)
+			if (accountDetail?.password !== accountDetail?.repeatPassword) {
+				ErrorSnackbar(t('label.password_and repeat_password_not_match', 'Passwords do not match'));
+				return;
+			}
+			setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password).then(() => {
+				if (isGlobalAdmin) {
+					flushCache('account', 'id', initAccountDetail?.zimbraId);
+				}
+			});
+			remove(modifiedKeys, (ele) => ele === 'password' || ele === 'repeatPassword');
+		},
+		[
+			ErrorSnackbar,
+			accountDetail?.password,
+			accountDetail?.repeatPassword,
+			initAccountDetail?.zimbraId,
+			isGlobalAdmin,
+			t
+		]
+	);
+
+	const handleAccountRename = useCallback(
+		async (modifiedKeys: string[]) => {
+			if (modifiedKeys.includes('uid') || modifiedKeys.includes(DOMAIN_NAME)) {
+				setIsLoading(true);
+				await renameAccountRequest(
+					initAccountDetail?.zimbraId,
+					`${accountDetail?.uid}@${accountDetail?.domainName}`
+				)
+					.then(() => {
+						createSnackbar({
+							key: 'success',
+							type: 'success',
+							label: t(
+								// eslint-disable-next-line sonarjs/no-duplicate-string
+								'label.the_last_changes_has_been_saved_successfully',
+								// eslint-disable-next-line sonarjs/no-duplicate-string
+								'Changes have been saved successfully'
+							),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+						setIsLoading(false);
+						if (isGlobalAdmin) {
+							flushCache('account', 'id', initAccountDetail?.zimbraId);
+						}
+					})
+					.catch((error) => {
+						ErrorSnackbar(
+							error?.message
+								? error?.message
+								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+						);
+						setIsLoading(false);
+					});
+				await getAccountList();
+				remove(modifiedKeys, (ele) => ele === UID);
+				if (modifiedKeys.includes(DOMAIN_NAME)) {
+					remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
+					setShowEditAccountView(false);
+				}
+			}
+		},
+		[
+			ErrorSnackbar,
+			accountDetail?.domainName,
+			accountDetail?.uid,
+			createSnackbar,
+			getAccountList,
+			initAccountDetail?.zimbraId,
+			isGlobalAdmin,
+			setShowEditAccountView,
+			t
+		]
+	);
+
+	const handleCoreAttributesModification = async (modifiedKeys: string[]): Promise<void> => {
+		if (modifiedKeys.includes(ABQ_MODE) || modifiedKeys.includes(BACKUP_ENABLED)) {
+			const body: any = {};
+			if (modifiedKeys.includes(ABQ_MODE)) {
+				body.abqMode = {
+					value: accountDetail.abqMode,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				};
+			}
+			if (modifiedKeys.includes(BACKUP_ENABLED)) {
+				body.backupEnabled = {
+					value: accountDetail.backupEnabled,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				};
+			}
+
+			await setCoreAttributes(body)
 				.then(() => {
 					createSnackbar({
 						key: 'success',
@@ -425,131 +521,113 @@ const EditAccount: FC<{
 					setIsLoading(false);
 				})
 				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
+					ErrorSnackbar(
+						error?.message
 							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+					);
 					setIsLoading(false);
 				});
-			await getAccountList();
-			remove(modifiedKeys, (ele) => ele === UID);
-			if (modifiedKeys.includes(DOMAIN_NAME)) {
-				remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
-				setShowEditAccountView(false);
-			}
-		}
-		if (modifiedKeys.includes(ABQ_MODE)) {
-			const body: any = {
-				abqMode: {
-					value: accountDetail.abqMode,
-					objectName: accountDetail.zimbraId,
-					configType: ACCOUNT
-				}
-			};
-			setCoreAttributes(body)
-				.then()
-				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-					setIsLoading(false);
-				});
+			remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
 			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
 		}
-		const deleteAliasArr = differenceBy(
-			initAccountDetail.mail.split(','),
-			accountDetail.mail.split(',')
-		);
-		const addAliasArr = differenceBy(
-			accountDetail.mail.split(','),
-			initAccountDetail.mail.split(',')
-		);
-		if (modifiedKeys.includes('mail')) {
-			// eslint-disable-next-line array-callback-return
-			deleteAliasArr.forEach((aliasName) => {
-				deleteAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
-					.then()
-					.catch((error) => {
-						createSnackbar({
-							key: `error${aliasName}`,
-							type: 'error',
-							label: error?.message
-								? error?.message
-								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: false
-						});
-						setIsLoading(false);
+	};
+
+	const handleAliasChanges = async (
+		deleteAliasArr: any,
+		addAliasArr: any,
+		modifiedKeys: string[]
+	): Promise<void> => {
+		deleteAliasArr.forEach(async (aliasName: any) => {
+			await deleteAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
+				.then(() => {
+					if (isGlobalAdmin) {
+						flushCache('account', 'id', initAccountDetail?.zimbraId);
+					}
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: `error${aliasName}`,
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: false
 					});
-			});
-
-			// eslint-disable-next-line array-callback-return
-			addAliasArr.forEach((aliasName) => {
-				addAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
-					.then()
-					.catch((error) => {
-						createSnackbar({
-							key: `error${aliasName}`,
-							type: 'error',
-							label: error?.message
-								? error?.message
-								: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: false
-						});
-						setIsLoading(false);
-					});
-			});
-
-			remove(modifiedKeys, (ele) => ele === 'mail');
-		}
-
-		if (
-			(modifiedKeys.includes(MOBILE_CALENDAR_FEATURE_SYNC) ||
-				modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
-			isAdvanced
-		) {
-			const coreAttrBody: any = {
-				mobileCalendarFeatureSync: {
-					value: accountDetail?.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
-					objectName: accountDetail?.name,
-					configType: ACCOUNT
-				},
-				mobileContactFeatureSync: {
-					value: accountDetail?.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
-					objectName: accountDetail?.name,
-					configType: ACCOUNT
-				}
-			};
-			modifyCoreAttributes(coreAttrBody);
-			remove(modifiedKeys, (ele) => ele === MOBILE_CALENDAR_FEATURE_SYNC);
-			remove(modifiedKeys, (ele) => ele === MOBILE_CONTACT_FEATURE_SYNC);
-		}
-		modifiedKeys.forEach((ele: any) => {
-			modifiedData[ele] = accountDetail[ele];
+					setIsLoading(false);
+				});
 		});
 
-		if (modifiedKeys && modifiedKeys?.length > 0) {
+		addAliasArr.forEach(async (aliasName: any) => {
+			addAccountAliasRequest(initAccountDetail?.zimbraId, `${aliasName}`)
+				.then(() => {
+					if (isGlobalAdmin) {
+						flushCache('account', 'id', initAccountDetail?.zimbraId);
+					}
+				})
+				.catch((error) => {
+					createSnackbar({
+						key: `error${aliasName}`,
+						type: 'error',
+						label: error?.message
+							? error?.message
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: false
+					});
+					setIsLoading(false);
+				});
+		});
+
+		remove(modifiedKeys, (ele) => ele === 'mail');
+	};
+
+	const handleMobileSyncFeatures = useCallback(
+		(modifiedKeys: string[]) => {
+			if (
+				(modifiedKeys.includes(MOBILE_CALENDAR_FEATURE_SYNC) ||
+					modifiedKeys.includes(MOBILE_CONTACT_FEATURE_SYNC)) &&
+				isAdvanced
+			) {
+				const coreAttrBody: any = {
+					mobileCalendarFeatureSync: {
+						value: accountDetail?.mobileCalendarFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+						objectName: accountDetail?.name,
+						configType: ACCOUNT
+					},
+					mobileContactFeatureSync: {
+						value: accountDetail?.mobileContactFeatureSync === 'TRUE' ? 'enabled' : 'disabled',
+						objectName: accountDetail?.name,
+						configType: ACCOUNT
+					}
+				};
+				modifyCoreAttributes(coreAttrBody);
+				remove(modifiedKeys, (ele) => ele === MOBILE_CALENDAR_FEATURE_SYNC);
+				remove(modifiedKeys, (ele) => ele === MOBILE_CONTACT_FEATURE_SYNC);
+			}
+		},
+		[
+			accountDetail?.mobileCalendarFeatureSync,
+			accountDetail?.mobileContactFeatureSync,
+			accountDetail?.name,
+			isAdvanced,
+			modifyCoreAttributes
+		]
+	);
+
+	const handleMainModifiedKeys = useCallback(
+		async (initAccountDetails: any, modifiedData: any) => {
 			setIsLoading(true);
-			modifyAccountRequest(initAccountDetail?.zimbraId, modifiedData)
-				.then((data) => {
+			await modifyAccountRequest(initAccountDetails?.zimbraId, modifiedData)
+				.then(async (data) => {
 					if (data) {
 						// setShowCreateAccountView(false);
+						if (isGlobalAdmin) {
+							await flushCache('account', 'id', initAccountDetails?.zimbraId);
+						}
 						createSnackbar({
 							key: 'success',
 							type: 'success',
@@ -564,22 +642,78 @@ const EditAccount: FC<{
 						setInitAccountDetail({ ...accountDetail });
 						setIsLoading(false);
 						getAccountList();
-						getAccountDetail(initAccountDetail?.zimbraId);
+						getAccountDetail(initAccountDetails?.zimbraId);
 					}
 				})
 				.catch((error) => {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
+					ErrorSnackbar(
+						error?.message
 							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+					);
 					setIsLoading(false);
 				});
+		},
+		[
+			ErrorSnackbar,
+			accountDetail,
+			createSnackbar,
+			getAccountDetail,
+			getAccountList,
+			isGlobalAdmin,
+			setInitAccountDetail,
+			t
+		]
+	);
+
+	const modifyAccountReq = useCallback(async () => {
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_SAVE);
+		const modifiedKeys: string[] = findModifiedKeys();
+		handleAdministrationRightsDeletion(modifiedKeys);
+
+		const modifiedData: any = {};
+		let isPasswordChange = false;
+		remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
+		remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
+		remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
+		if (!accountDetail?.sn?.trim()) {
+			ErrorSnackbar(t('label.surname_required', 'Surname is required'));
+			return;
+		}
+
+		// eslint-disable-next-line sonarjs/no-collapsible-if
+		if (accountDetail?.password || accountDetail?.repeatPassword) {
+			if (modifiedKeys.includes('password') || modifiedKeys.includes('repeatPassword')) {
+				handlePasswordChange(modifiedKeys);
+				isPasswordChange = true;
+			}
+		}
+
+		handleAccountRename(modifiedKeys);
+
+		await handleCoreAttributesModification(modifiedKeys);
+
+		const deleteAliasArr = differenceBy(
+			initAccountDetail.mail.split(','),
+			accountDetail.mail.split(',')
+		);
+		const addAliasArr = differenceBy(
+			accountDetail.mail.split(','),
+			initAccountDetail.mail.split(',')
+		);
+
+		if (modifiedKeys.includes('mail')) {
+			await handleAliasChanges(deleteAliasArr, addAliasArr, modifiedKeys);
+		}
+
+		handleMobileSyncFeatures(modifiedKeys);
+
+		modifiedKeys.forEach((ele: any) => {
+			modifiedData[ele] = accountDetail[ele];
+		});
+
+		if (modifiedKeys && modifiedKeys?.length > 0) {
+			await handleMainModifiedKeys(initAccountDetail, modifiedData);
 		} else {
 			if (addAliasArr.length || deleteAliasArr.length) {
 				setInitAccountDetail({ ...accountDetail });
@@ -600,7 +734,9 @@ const EditAccount: FC<{
 			}
 			setInitAccountDetail({ ...accountDetail });
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
+		ErrorSnackbar,
 		accountDetail,
 		createSnackbar,
 		getAccountDetail,
@@ -613,9 +749,11 @@ const EditAccount: FC<{
 		deleteAdministrationRights,
 		onDeleteFromList,
 		setIsLoading,
+		isGlobalAdmin,
 		t
 	]);
 	const onUndo = (): void => {
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_CANCEL);
 		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
 		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
 	};
@@ -663,6 +801,11 @@ const EditAccount: FC<{
 	}, []);
 
 	const onDeleteAccount = useCallback(() => {
+		matomo.trackEvent(
+			DOMAINS_ROUTE_ID,
+			ACCOUNTS_DETAILS_ACTIONS,
+			ACCOUNTS_DETAILS_DELETE_ACCOUNT_TABLE_ITEM
+		);
 		if (userType === 'DelegatedAdmin' || userType === 'System') {
 			if (
 				accountUserType(selectedAccount) === 'DelegatedAdmin' ||
@@ -677,13 +820,22 @@ const EditAccount: FC<{
 		} else {
 			setIsOpenDeleteDialog(true);
 		}
-	}, [accountUserType, selectedAccount, userType]);
+	}, [accountUserType, matomo, selectedAccount, userType]);
 
 	const rights: Rights = useRightsStore((state) => state.rights);
 
 	const allowSetPrivacy = useMemo(() => {
-		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
+		const rightsConfig: Right = find(rights, { type: ACCOUNT }) ?? {
+			all: [],
+			inDomains: [],
+			type: ACCOUNT
+		};
+		return (
+			!!rightsConfig?.all?.[0]?.right?.find((right) => right?.n === ADMIN_LOGIN_AS) ||
+			!!rightsConfig?.inDomains?.[0]?.rights?.[0].right?.find(
+				(right) => right?.n === ADMIN_LOGIN_AS
+			)
+		);
 	}, [rights]);
 	const buttons = [
 		allowSetPrivacy && {
@@ -715,6 +867,11 @@ const EditAccount: FC<{
 			align: 'left',
 			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
 			onClick: (): void => {
+				matomo.trackEvent(
+					DOMAINS_ROUTE_ID,
+					ACCOUNTS_DETAILS_ACTIONS,
+					`${isSticky ? ACCOUNTS_DETAILS_PIN : ACCOUNTS_DETAILS_UNPIN}`
+				);
 				setIsSticky(!isSticky);
 			}
 		}
@@ -765,6 +922,7 @@ const EditAccount: FC<{
 	}, [accountDetail?.zimbraId, createSnackbar, t, onSuccess]);
 
 	const onDeleteHandler = useCallback(() => {
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, ACCOUNTS_DETAILS_DELETE_ITEM);
 		setIsRequestInProgress(true);
 		deleteAccount(selectedAccount?.id)
 			.then((data: any) => {
@@ -784,7 +942,15 @@ const EditAccount: FC<{
 					replace: true
 				});
 			});
-	}, [createSnackbar, onSuccess, t, selectedAccount?.id]);
+	}, [matomo, selectedAccount?.id, onSuccess, t, createSnackbar]);
+
+	const handleMatomoTrackerEvent = (fieldName?: string): void => {
+		matomo.trackEvent(
+			DOMAINS_ROUTE_ID,
+			ACCOUNTS_DETAILS,
+			`${ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME}_${fieldName}`
+		);
+	};
 
 	return (
 		<>
@@ -879,19 +1045,36 @@ const EditAccount: FC<{
 				>
 					{/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
 					<Displayer buttons={buttons} pinIcon={isSticky} />
-					{change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
-					{change === PROFILE && <EditAccountContactsSection />}
-					{change === CONFIGURATION && <EditAccountConfigrationSection />}
+					{change === GENERAL_SECTION && (
+						<EditAccountGeneralSection
+							setChange={setChange}
+							handleMatomoTrackerEvent={handleMatomoTrackerEvent}
+						/>
+					)}
+					{change === PROFILE && (
+						<EditAccountContactsSection handleMatomoTrackerEvent={handleMatomoTrackerEvent} />
+					)}
+					{change === CONFIGURATION && (
+						<EditAccountConfigrationSection handleMatomoTrackerEvent={handleMatomoTrackerEvent} />
+					)}
 					{change === USER_PREFERENCES && (
 						<EditAccountUserPrefrencesSection
 							signatureItems={signatureItems}
 							signatureList={signatureList}
+							handleMatomoTrackerEvent={handleMatomoTrackerEvent}
 						/>
 					)}
-					{change === SECURITY && <EditAccountSecuritySection />}
-					{change === DELEGATES && <EditAccountDelegatesSection />}
+					{change === SECURITY && (
+						<EditAccountSecuritySection handleMatomoTrackerEvent={handleMatomoTrackerEvent} />
+					)}
+					{change === DELEGATES && (
+						<EditAccountDelegatesSection handleMatomoTrackerEvent={handleMatomoTrackerEvent} />
+					)}
 					{change === ADMINISTRATION && (
-						<EditAccountAdministrationSection setIsLoading={setIsLoading} />
+						<EditAccountAdministrationSection
+							setIsLoading={setIsLoading}
+							handleMatomoTrackerEvent={handleMatomoTrackerEvent}
+						/>
 					)}
 					{/* </Container> */}
 				</Container>

@@ -18,7 +18,7 @@ import {
 	SnackbarManagerContext,
 	Icon
 } from '@zextras/carbonio-design-system';
-import { soapFetch } from '@zextras/carbonio-shell-ui';
+import { soapFetch, useUserSettings } from '@zextras/carbonio-shell-ui';
 import _ from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
@@ -28,12 +28,14 @@ import LoadVerifyCertificateWizard from './load-verify-certificate-wizard';
 import { objectType } from '../../../../../types';
 import logo from '../../../../assets/helmet_logo.svg';
 import {
+	TRUE,
 	ZIMBRA_DOMAIN_NAME,
 	ZIMBRA_ID,
 	ZIMBRA_SSL_CERTIFICATE,
 	ZIMBRA_SSL_PRIVATE_KEY,
 	ZIMBRA_VIRTUAL_HOSTNAME
 } from '../../../../constants';
+import { flushCache } from '../../../../services/flush-cache-service';
 import { modifyDomain } from '../../../../services/modify-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -66,6 +68,16 @@ const DomainVirtualHosts: FC = () => {
 	const [domainCertiDetails, setDomainCertiDetails] = useState<objectType>();
 	const setIsCertificateAvailbale = useDomainStore((state) => state.setIsCertificateAvailbale);
 	const [errVirtualHostName, setErrVirtualHostName] = useState(true);
+	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
+	const userSetting = useUserSettings();
+	useEffect(() => {
+		if (userSetting?.attrs) {
+			const account = userSetting?.attrs?.zimbraIsAdminAccount;
+			if (account && account === TRUE) {
+				setIsGlobalAdmin(true);
+			}
+		}
+	}, [userSetting?.attrs]);
 
 	const closeHandler = (): void => {
 		setOpen(false);
@@ -194,6 +206,9 @@ const DomainVirtualHosts: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', zimbraId);
+				}
 				const domainData: any = data?.domain[0];
 				if (domainData) {
 					setDomain(domainData);
@@ -302,6 +317,9 @@ const DomainVirtualHosts: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				if (isGlobalAdmin) {
+					flushCache('domain', 'id', zimbraId);
+				}
 				setOpen(false);
 				getAllCertiDetailsAPICall();
 				setDomainCertiDetails({});
@@ -590,7 +608,7 @@ const DomainVirtualHosts: FC = () => {
 								<Padding left="large">
 									<Button
 										type="ghost"
-										label={t('label.load_and_verify_certificate', 'LOAD AND VERIFY CERTIFICATE')}
+										label={t('label.verify_certificate', 'VERIFY CERTIFICATE')}
 										color="primary"
 										onClick={handleLoadAndVerifyCert}
 									/>

@@ -15,7 +15,7 @@ import MailingListSection from './mailing-list-section';
 import MailingListSettingsSection from './mailing-list-settings-sections';
 import { MailingListContext } from './mailinglist-context';
 import MailingListCreateSection from './mailinglist-create-section';
-import { PUB } from '../../../../constants';
+import { LDAP, PUB } from '../../../../constants';
 import { useDomainStore } from '../../../../store/domain/store';
 import { HorizontalWizard } from '../../../app/component/hwizard';
 import { Section } from '../../../app/component/section';
@@ -94,7 +94,7 @@ const CreateMailingList: FC<{
 		zimbraIsACLGroup: '',
 		zimbraMailStatus: true,
 		zimbraNotes: '',
-		memberURL: '',
+		memberURL: LDAP,
 		members: [],
 		zimbraDistributionListSendShareMessageToNewMembers: true,
 		owners: [],

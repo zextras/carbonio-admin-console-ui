@@ -26,6 +26,7 @@ const InheritedSwitch: FC<{
 	fromSubValue: any;
 	iconColor: string;
 	disabled?: boolean;
+	onFocus?: any;
 }> = ({
 	label,
 	subValue,
@@ -35,9 +36,11 @@ const InheritedSwitch: FC<{
 	onChangeReset,
 	fromSubValue,
 	iconColor,
-	disabled = false
+	disabled = false,
+	onFocus
 }) => {
 	const [t] = useTranslation();
+
 	return (
 		<Container mainAlignment="flex-start" orientation="horizontal">
 			<Row mainAlignment="flex-start">
@@ -47,6 +50,7 @@ const InheritedSwitch: FC<{
 					label={label}
 					iconColor={iconColor}
 					disabled={disabled}
+					onFocus={onFocus}
 				/>
 			</Row>
 			{fromSubValue ? (

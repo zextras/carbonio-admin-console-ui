@@ -368,7 +368,7 @@
         "hours": "Horas",
         "mb": "MB",
         "minutes": "Minutos",
-        "name": "Name",
+        "name": "Nome",
         "not_set": "Não ativado",
         "note": "Nota",
         "notification": "Notificação",
@@ -1394,7 +1394,7 @@
         "valid_not_before": "Válido a partir de (não antes)",
         "what_to_trust": "Em que confiar?",
         "stats": "Estatísticas",
-        "person_name": "Name",
+        "person_name": "Nome",
         "can_access_settings": "Pode acessar as configurações",
         "init_domain": "INIT DOMAIN",
         "items_per_page": "itens por página",
@@ -1467,7 +1467,7 @@
         "to_domain": "ParaDomínio",
         "user_auto_fill": "Usuário (auto-completado)",
         "delegates_domain_admins": "Administradores de domínios delegados",
-        "deliver": "ENTREGA",
+        "deliver": "ENTREGAR",
         "dont_save_it": "Não salvar",
         "only_allow_outbound_disclaimers": "Permitir isenção de responsabilidade apenas para envío externo",
         "reason": "Motivo",
@@ -2070,7 +2070,7 @@
             "object_storage": "Armazenamento de objetos"
         },
         "volume_config_header": {
-            "name": "Name",
+            "name": "Nome",
             "hsm_scheduled": "HSM programado",
             "indexer": "Indexador",
             "status": "Status"
@@ -2079,14 +2079,14 @@
             "compression": "Compressão",
             "current": "Atual",
             "id": "ID",
-            "name": "Name",
+            "name": "Nome",
             "path": "Caminho",
             "storageType": "Tipo de Storage"
         },
         "volume_indexer_header": {
             "current": "Atual",
             "id": "ID",
-            "name": "Name",
+            "name": "Nome",
             "path": "Caminho"
         },
         "volume_type": {
@@ -2129,7 +2129,7 @@
         "message": "Mensagem",
         "minimum_space_threshold": "Limiar de espaço mínimo",
         "months": "Meses",
-        "name": "Name",
+        "name": "Nome",
         "new_policy_summary": "Resumo da Nova Política",
         "no": "Não",
         "option": "Opção",

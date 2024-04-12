@@ -5,7 +5,6 @@
  */
 import React, { FC } from 'react';
 
-import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
 import MTAAntiVirusAndAntiSpam from './antvirus-and-antispam/antivirus-and-antispam';
@@ -13,20 +12,20 @@ import MTAInboundFlowSecurity from './inbound-flow-security/inbound-flow-securit
 import MTAAdvanced from './mta-advanced/mta-advanced';
 import MTAOutBoundFlow from './outbound-flow/outbound-flow';
 import MTAPostScreenTuning from './post-screen-tuning/post-screen-tuning';
+import MTAServerGeneral from './server/general/mta-server-general';
 import MTAStats from './stats/mta-stats';
 import {
 	ADVANCED,
 	ANTIVIRUS_AND_ANTISPAM,
 	GENERAL,
+	MTA_SERVER_GENERAL,
 	OUTBOUND_FLOW,
 	POSTSCREEN_TUNING,
 	QUEUE
 } from '../../constants';
 
 const MTADetailOperationPanel: FC = () => {
-	const [t] = useTranslation();
-	const { operation, server }: { operation: string; server: string } = useParams();
-
+	const { operation }: { operation: string } = useParams();
 	return (
 		<>
 			{((): any => {
@@ -43,6 +42,8 @@ const MTADetailOperationPanel: FC = () => {
 						return <MTAAdvanced />;
 					case QUEUE:
 						return <MTAStats />;
+					case MTA_SERVER_GENERAL:
+						return <MTAServerGeneral />;
 					default:
 						return null;
 				}

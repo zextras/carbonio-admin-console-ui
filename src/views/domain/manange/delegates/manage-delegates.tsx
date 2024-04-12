@@ -14,7 +14,8 @@ import {
 	Text,
 	Button,
 	Table,
-	useSnackbar
+	useSnackbar,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -31,6 +32,7 @@ import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types
 import logo from '../../../../assets/guardian.svg';
 import {
 	HELPDESK_ADMINS,
+	MOBILE,
 	RECORD_DISPLAY_LIMIT,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../../constants';
@@ -108,6 +110,7 @@ const ManageDelegates: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
+	const screenMode = useScreenMode();
 
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -348,7 +351,9 @@ const ManageDelegates: FC = () => {
 										{item?.label || ' '}
 									</Text>,
 									<Text size="medium" key={item?.id} color="gray0">
-										{item?.status ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
+										{item?.enabled
+											? t('label.enabled', 'Enabled')
+											: t('label.disabled', 'Disabled')}
 									</Text>,
 									<Text size="medium" key={item?.id}>
 										{item?.failed_attempts}
@@ -880,8 +885,11 @@ const ManageDelegates: FC = () => {
 					background="gray6"
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
-					height="calc(100% - 4.375rem)"
-					style={{ overflow: 'auto' }}
+					style={{
+						height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+						position: 'relative',
+						overflow: 'auto'
+					}}
 					padding={{ all: 'large' }}
 				>
 					{isGlobalAdmin && (
@@ -956,7 +964,7 @@ const ManageDelegates: FC = () => {
 						crossAlignment="flex-start"
 						width="fill"
 						style={{
-							height: 'calc(100vh - 21.25rem)',
+							height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 							position: 'relative'
 						}}
 						ref={tableRef}
@@ -968,7 +976,7 @@ const ManageDelegates: FC = () => {
 							multiSelect={false}
 							style={{
 								overflow: 'auto',
-								height: isRequestInProgress || allAccount.length === 0 ? '14%' : '100%'
+								height: isRequestInProgress || allAccount.length === 0 ? '50%' : '100%'
 							}}
 							RowFactory={CustomRowFactory}
 							HeaderFactory={CustomHeaderFactory}

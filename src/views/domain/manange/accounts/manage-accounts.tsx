@@ -17,7 +17,8 @@ import {
 	Button,
 	IconButton,
 	useSnackbar,
-	Tooltip
+	Tooltip,
+	useScreenMode
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -33,7 +34,23 @@ import { AccountType } from './account-types/account-types';
 import CreateAccount from './create-account/create-account';
 import EditAccount from './edit-account/edit-account';
 import logo from '../../../../assets/gardian.svg';
-import { ABQ_MODE, ACCOUNT, RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
+import {
+	ABQ_MODE,
+	ACCOUNT,
+	RECORD_DISPLAY_LIMIT,
+	ASC,
+	DESC,
+	MOBILE,
+	ACCOUNTS_ACTIONS,
+	DOMAIN_ACCOUNTS_CREATE,
+	ACCOUNTS_MAIN_ACTION,
+	ACCOUNTS_TABLE_ITEM,
+	ACCOUNTS_SEARCH_TABLE,
+	DOMAIN_ACCOUNTS_NEXT_TABLE,
+	BACKUP_ENABLED,
+	DOMAINS_ROUTE_ID
+} from '../../../../constants';
+import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -48,6 +65,7 @@ import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
+import { useConfigStore } from '../../../../store/config/store';
 import { useDomainStore } from '../../../../store/domain/store';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -68,6 +86,8 @@ const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
@@ -94,6 +114,7 @@ const ManageAccounts: FC = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('name');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+	const screenMode = useScreenMode();
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -367,6 +388,99 @@ const ManageAccounts: FC = () => {
 			setCosDetail({ ...obj });
 		});
 	}, []);
+	const getListOtp = useCallback(
+		(id): void => {
+			fetchSoap('zextras', {
+				// eslint-disable-next-line sonarjs/no-duplicate-string
+				_jsns: 'urn:zimbraAdmin',
+				module: 'ZxAuth',
+				action: 'list_totp_command',
+				account: `${id}`
+			}).then((res: any) => {
+				if (res?.ok) {
+					const otpListResponse = res.response?.list;
+					if (otpListResponse && Array.isArray(otpListResponse)) {
+						const otpListArr: any = [];
+						otpListResponse.forEach((item: any): any => {
+							otpListArr.push({
+								id: item?.id,
+								columns: [
+									<Text size="medium" key={item?.id} color="gray0">
+										{item?.label || ' '}
+									</Text>,
+									<Text size="medium" key={item?.id} color="gray0">
+										{item?.enabled
+											? t('label.enabled', 'Enabled')
+											: t('label.disabled', 'Disabled')}
+									</Text>,
+									<Text size="medium" key={item?.id}>
+										{item?.failed_attempts}
+									</Text>,
+									<Text size="medium" key={item?.id}>
+										{moment(item?.created).format('DD/MMM/YYYY')}
+									</Text>,
+									<Text size="medium" key={item?.id} color="gray0">
+										{item?.description || <>&nbsp;</>}
+									</Text>
+								],
+								item,
+								clickable: true
+							});
+						});
+						setOtpList(otpListArr);
+					}
+				}
+			});
+		},
+		[t]
+	);
+	const getCredentialList = useCallback((id): void => {
+		fetchSoap('zextras', {
+			_jsns: 'urn:zimbraAdmin',
+			module: 'ZxAuth',
+			action: 'credential',
+			request: 'list',
+			account: `${id}`
+		}).then((res: any) => {
+			if (res.response?.values) {
+				setCredentialList(res.response?.values);
+			} else {
+				setCredentialList([]);
+			}
+		});
+	}, []);
+	const getABQStatus = useCallback((acc) => {
+		const body = [
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [ABQ_MODE]
+			},
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [BACKUP_ENABLED]
+			}
+		];
+		getCoreAttributes(body).then((data) => {
+			if (data?.attributes) {
+				setAccountDetail((prev: AccountType) => ({
+					...prev,
+					...{
+						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+					}
+				}));
+				setInitAccountDetail((prev: AccountType) => ({
+					...prev,
+					...{
+						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+					}
+				}));
+			}
+		});
+	}, []);
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
@@ -408,6 +522,11 @@ const ManageAccounts: FC = () => {
 					setAccountDetail({ ...obj });
 					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
+					if (isAdvanced) {
+						getListOtp(data?.account?.[0]?.name);
+						getCredentialList(data?.account?.[0]?.name);
+						getABQStatus(id);
+					}
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
 				.catch((error) => {
@@ -425,7 +544,16 @@ const ManageAccounts: FC = () => {
 					});
 				});
 		},
-		[getAccountSpecificDetail, getCosDetail, createSnackbar, t]
+		[
+			getAccountSpecificDetail,
+			getCosDetail,
+			isAdvanced,
+			getListOtp,
+			getCredentialList,
+			getABQStatus,
+			createSnackbar,
+			t
+		]
 	);
 	const getAccountMembership = useCallback(
 		(id): void => {
@@ -459,65 +587,7 @@ const ManageAccounts: FC = () => {
 		},
 		[setDirectMemberList, setInDirectMemberList, t, createSnackbar]
 	);
-	const getListOtp = useCallback(
-		(id): void => {
-			fetchSoap('zextras', {
-				// eslint-disable-next-line sonarjs/no-duplicate-string
-				_jsns: 'urn:zimbraAdmin',
-				module: 'ZxAuth',
-				action: 'list_totp_command',
-				account: `${id}`
-			}).then((res: any) => {
-				if (res?.ok) {
-					const otpListResponse = res.response?.list;
-					if (otpListResponse && Array.isArray(otpListResponse)) {
-						const otpListArr: any = [];
-						otpListResponse.forEach((item: any): any => {
-							otpListArr.push({
-								id: item?.id,
-								columns: [
-									<Text size="medium" key={item?.id} color="gray0">
-										{item?.label || ' '}
-									</Text>,
-									<Text size="medium" key={item?.id} color="gray0">
-										{item?.status ? t('label.enabled', 'Enabled') : t('label.disabled', 'Disabled')}
-									</Text>,
-									<Text size="medium" key={item?.id}>
-										{item?.failed_attempts}
-									</Text>,
-									<Text size="medium" key={item?.id}>
-										{moment(item?.created).format('DD/MMM/YYYY')}
-									</Text>,
-									<Text size="medium" key={item?.id} color="gray0">
-										{item?.description || <>&nbsp;</>}
-									</Text>
-								],
-								item,
-								clickable: true
-							});
-						});
-						setOtpList(otpListArr);
-					}
-				}
-			});
-		},
-		[t]
-	);
-	const getCredentialList = useCallback((id): void => {
-		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxAuth',
-			action: 'credential',
-			request: 'list',
-			account: `${id}`
-		}).then((res: any) => {
-			if (res.response?.values) {
-				setCredentialList(res.response?.values);
-			} else {
-				setCredentialList([]);
-			}
-		});
-	}, []);
+
 	const getFolderList = useCallback(
 		(acc, delegateList): void => {
 			postSoapFetchRequest(
@@ -631,28 +701,6 @@ const ManageAccounts: FC = () => {
 		});
 	}, []);
 
-	const getABQStatus = useCallback((acc) => {
-		const body = [
-			{
-				configType: ACCOUNT,
-				configName: [acc],
-				attrName: [ABQ_MODE]
-			}
-		];
-		getCoreAttributes(body).then((data) => {
-			if (data?.attributes) {
-				setAccountDetail((prev: AccountType) => ({
-					...prev,
-					abqMode: data?.attributes?.abqMode?.[0]?.value || ''
-				}));
-				setInitAccountDetail((prev: AccountType) => ({
-					...prev,
-					abqMode: data?.attributes?.abqMode?.[0]?.value || ''
-				}));
-			}
-		});
-	}, []);
-
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setShowEditAccountView(true);
@@ -661,24 +709,21 @@ const ManageAccounts: FC = () => {
 			getAccountMembership(acc?.id);
 			getIdentitiesList(acc);
 			getAllUserSession(acc?.name);
-			if (isAdvanced) {
-				getListOtp(acc?.name);
-				getCredentialList(acc?.name);
-				getABQStatus(acc?.id);
-			}
 		},
 		[
 			getAccountDetail,
 			getSignatureDetail,
 			getAccountMembership,
-			getABQStatus,
 			getIdentitiesList,
-			getAllUserSession,
-			isAdvanced,
-			getListOtp,
-			getCredentialList
+			getAllUserSession
 		]
 	);
+
+	const handleClickTableRow = (item: any): void => {
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, ACCOUNTS_TABLE_ITEM);
+		openDetailView(item);
+	};
+
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
@@ -723,7 +768,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="regular"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.name || ' '}
@@ -734,7 +779,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="light"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.displayName || <>&nbsp;</>}
@@ -755,7 +800,7 @@ const ManageAccounts: FC = () => {
 													key={item?.id}
 													color="#828282"
 													onClick={(): void => {
-														openDetailView(item);
+														handleClickTableRow(item);
 													}}
 												>
 													{
@@ -771,7 +816,7 @@ const ManageAccounts: FC = () => {
 												color="#828282"
 												weight="light"
 												onClick={(): void => {
-													openDetailView(item);
+													handleClickTableRow(item);
 												}}
 											>
 												0
@@ -785,7 +830,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									weight="light"
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{accountUserType(item)}
@@ -796,7 +841,7 @@ const ManageAccounts: FC = () => {
 									key={item?.id}
 									color={STATUS_COLOR[item?.zimbraAccountStatus]?.color}
 									onClick={(): void => {
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{STATUS_COLOR[item?.zimbraAccountStatus]?.label}
@@ -808,7 +853,7 @@ const ManageAccounts: FC = () => {
 									color="gray0"
 									onClick={(event: { stopPropagation: () => void }): void => {
 										event.stopPropagation();
-										openDetailView(item);
+										handleClickTableRow(item);
 									}}
 								>
 									{item?.description || <>&nbsp;</>}
@@ -835,6 +880,7 @@ const ManageAccounts: FC = () => {
 				});
 				setHasError(true);
 			});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [
 		domainName,
 		searchQuery,
@@ -926,6 +972,10 @@ const ManageAccounts: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	const nextPage = (): void => {
+		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
+	};
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -948,6 +998,7 @@ const ManageAccounts: FC = () => {
 									backgroundColor="primary"
 									icon="Plus"
 									onClick={(): void => {
+										matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CREATE);
 										setShowCreateAccountView(true);
 									}}
 								/>
@@ -964,7 +1015,12 @@ const ManageAccounts: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
+				style={{
+					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
+					position: 'relative',
+					overflow: 'auto',
+					minHeight: '10rem'
+				}}
 				padding={{ top: 'large' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -986,6 +1042,13 @@ const ManageAccounts: FC = () => {
 										setSearchString(e.target.value);
 									}}
 									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
+									onFocus={(): void => {
+										matomo.trackEvent(
+											DOMAINS_ROUTE_ID,
+											ACCOUNTS_MAIN_ACTION,
+											ACCOUNTS_SEARCH_TABLE
+										);
+									}}
 								/>
 							</Container>
 						</Row>
@@ -995,7 +1058,7 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: 'calc(100vh - 21.25rem)',
+								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 							ref={tableRef}
@@ -1007,7 +1070,7 @@ const ManageAccounts: FC = () => {
 								multiSelect={false}
 								style={{
 									overflow: 'auto',
-									height: isRequestInProgress || accountList.length === 0 ? '14%' : '100%'
+									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
 								}}
 								RowFactory={CustomRowFactory}
 								HeaderFactory={CustomHeaderFactory}
@@ -1069,7 +1132,12 @@ const ManageAccounts: FC = () => {
 									height="auto"
 								>
 									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+										<Paging
+											totalItem={totalAccount}
+											setOffset={setOffset}
+											pageSize={limit}
+											nextPage={nextPage}
+										/>
 									</Container>
 									<Container
 										crossAlignment="flex-end"

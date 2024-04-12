@@ -6,10 +6,27 @@
 import React, { FC, useCallback, useMemo, useContext, useState, useEffect } from 'react';
 
 import { Container, Row, Text, Divider, ChipInput } from '@zextras/carbonio-design-system';
-import { map, some } from 'lodash';
+import { map, snakeCase, some } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { SignatureDetail } from './signature-detail';
+import {
+	ACCOUNT_IS_IN_DIRECT_MEMBER,
+	ALLOWED_SENDING_ADDRESSES,
+	APPOINTMENTS_DEFAULT_DURATION,
+	APPOINTMENT_REMINDER_MINUTES,
+	CHECK_NEW_MAIN_EVERY,
+	DAYS_HOURS_MINUTES_SEC,
+	DEFAULT_APPOINTMENT_VISIBILITY,
+	DEFAULT_CALENDAR_VIEW,
+	DEFAULT_CHARSET,
+	GROUP_BY_TITLE,
+	MINI_NEW_CHECK_INTERVAL_VALUE,
+	OUT_OFFICE_CACHE_LIFETIME,
+	READ_RECEIPT_SETTINGS,
+	TIME_ZONE,
+	WEEK_STATUS
+} from '../../../../../constants';
 import CustomChip from '../../../../components/customChip';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
@@ -23,10 +40,11 @@ import {
 } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 
-const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList: any }> = ({
-	signatureItems,
-	signatureList
-}) => {
+const EditAccountUserPrefrencesSection: FC<{
+	signatureItems: any;
+	signatureList: any;
+	handleMatomoTrackerEvent: (value: string) => void;
+}> = ({ signatureItems, signatureList, handleMatomoTrackerEvent }) => {
 	const context = useContext(AccountContext);
 	const [t] = useTranslation();
 	const {
@@ -60,9 +78,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 	const POLLING_INTERVAL = useMemo(
 		() => [
 			{
-				label: t('account_details.as_new_mail_arrives', 'As New Mail Arrives'),
-				value: '',
-				disabled: true
+				label: t('account_details.manuallly', 'Manually'),
+				value: '31536000'
+			},
+			{
+				label: t('account_details.as_new_email_arrives', 'As new e-mail arrives'),
+				value: '500'
 			},
 			// eslint-disable-next-line sonarjs/no-duplicate-string
 			{ label: `2 ${t('label.minutes', 'minutes')}`, value: '2m' },
@@ -74,13 +95,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 			{ label: `8 ${t('label.minutes', 'minutes')}`, value: '8m' },
 			{ label: `9 ${t('label.minutes', 'minutes')}`, value: '9m' },
 			{ label: `10 ${t('label.minutes', 'minutes')}`, value: '10m' },
-			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' },
-			{
-				label: t('account_details.manuallly', 'Manually'),
-				value: accountDetail.zimbraPrefMailPollingInterval
-			}
+			{ label: `15 ${t('label.minutes', 'minutes')}`, value: '15m' }
 		],
-		[accountDetail.zimbraPrefMailPollingInterval, t]
+		[t]
 	);
 	const TIME_TYPES = useMemo(
 		() => [
@@ -253,12 +270,15 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 	};
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
+			const snakeCaseString = snakeCase(key);
+			handleMatomoTrackerEvent(snakeCaseString);
+
 			setAccountDetail((prev: any) => ({
 				...prev,
 				[key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[accountDetail, setAccountDetail]
+		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
 	);
 
 	const onGroupByChange = (v: string): void => {
@@ -320,6 +340,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefGroupMailBy"
 						onChange={onGroupByChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefGroupMailBy')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(GROUP_BY_TITLE);
+						}}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -333,6 +356,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefMailDefaultCharset"
 						onChange={onCharactorSetChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMailDefaultCharset')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(DEFAULT_CHARSET);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -356,7 +382,10 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 					<InheritedSwitch
 						subValue={accountDetail?.zimbraPrefMailToasterEnabled}
 						onChange={changeSwitchOption}
-						label={t('account_details.enable_toast_for_new_emails', `Enable toast for new emails`)}
+						label={t(
+							'account_details.enable_new_mail_toast_notification',
+							`Enable New Mail Toast Notification`
+						)}
 						iconColor="primary"
 						inheritedValue={cosDetail.zimbraPrefMailToasterEnabled}
 						fromSubValue={accSpecificDetail?.zimbraPrefMailToasterEnabled}
@@ -387,6 +416,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefMailPollingInterval"
 						onChange={onPollingIntervalChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMailPollingInterval')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(CHECK_NEW_MAIN_EVERY);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -421,6 +453,12 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMailPollingInterval')}
 						disabled={accountDetail?.zimbraPrefMailLocalDeliveryDisabled !== 'TRUE'}
 						pref={{ type: 'number' }}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(MINI_NEW_CHECK_INTERVAL_VALUE);
+						}}
+						onFocus={(): void => {
+							handleMatomoTrackerEvent(MINI_NEW_CHECK_INTERVAL_VALUE);
+						}}
 					/>
 				</Row>
 				<Row width="32%" mainAlignment="flex-start">
@@ -435,39 +473,13 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onChange={onPollingIntervalChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMailPollingInterval')}
 						disabled={accountDetail?.zimbraPrefMailLocalDeliveryDisabled !== 'TRUE'}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(DAYS_HOURS_MINUTES_SEC);
+						}}
 					/>
 				</Row>
 			</Row>
-			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-				<Row width="48%" mainAlignment="flex-start">
-					<InheritedSwitch
-						subValue={accountDetail?.zimbraPrefNewMailNotificationEnabled}
-						onChange={changeSwitchOption}
-						label={t(
-							'account_details.enable_address_for_new_email_notifications',
-							`Enable address for new email notifications`
-						)}
-						iconColor="primary"
-						inheritedValue={cosDetail.zimbraPrefNewMailNotificationEnabled}
-						fromSubValue={accSpecificDetail?.zimbraPrefNewMailNotificationEnabled}
-						inputName={'zimbraPrefNewMailNotificationEnabled'}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefNewMailNotificationEnabled')}
-					/>
-				</Row>
-				<Row width="48%" mainAlignment="flex-start">
-					<InheritedInput
-						label={t('label.enabed_address', 'Enabed Address')}
-						subValue={accountDetail.zimbraPrefNewMailNotificationAddress || ''}
-						inheritedValue={cosDetail.zimbraPrefNewMailNotificationAddress || ''}
-						fromSubValue={accSpecificDetail?.zimbraPrefNewMailNotificationAddress}
-						background="gray5"
-						inputName="zimbraPrefNewMailNotificationAddress"
-						onChange={changeAccDetail}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefNewMailNotificationAddress')}
-						disabled={accountDetail?.zimbraPrefNewMailNotificationEnabled !== 'TRUE'}
-					/>
-				</Row>
-			</Row>
+
 			<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 				<Row width="48%" mainAlignment="flex-start">
 					<InheritedSwitch
@@ -497,6 +509,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						onChange={changeOutOfOfficeDurationetail}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefOutOfOfficeCacheDuration')}
 						pref={{ type: 'number' }}
+						onFocus={(): void => {
+							handleMatomoTrackerEvent(OUT_OFFICE_CACHE_LIFETIME);
+						}}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -510,6 +525,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefOutOfOfficeCacheDuration"
 						onChange={onOutOfOfficeCacheDurationTypeChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefOutOfOfficeCacheDuration')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(DAYS_HOURS_MINUTES_SEC);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -550,6 +568,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						hasError={some(prefReadReceiptsToAddress || [], { error: true })}
 						ChipComponent={CustomChip}
 						maxChips={null}
+						onFocus={(): void => {
+							handleMatomoTrackerEvent(ACCOUNT_IS_IN_DIRECT_MEMBER);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -613,6 +634,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						hasError={some(zimbraAllowFromAddress || [], { error: true })}
 						ChipComponent={CustomChip}
 						maxChips={null}
+						onFocus={(): void => {
+							handleMatomoTrackerEvent(ALLOWED_SENDING_ADDRESSES);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -628,6 +652,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefMailSendReadReceipts"
 						onChange={onReadReceiptChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefMailSendReadReceipts')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(READ_RECEIPT_SETTINGS);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -662,6 +689,7 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 				signatureItems={signatureItems}
 				setSignatureItems={setSignatureItems}
 				accountId={accountDetail?.zimbraId}
+				handleMatomoTrackerEvent={handleMatomoTrackerEvent}
 			/>
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<Divider color="gray2" />
@@ -721,6 +749,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefTimeZoneId"
 						onChange={onPrefTimeZoneChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefTimeZoneId')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(TIME_ZONE);
+						}}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -737,6 +768,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefCalendarDefaultApptDuration"
 						onChange={onCalendarDefaultApptDurationChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarDefaultApptDuration')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(APPOINTMENTS_DEFAULT_DURATION);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -752,6 +786,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefCalendarApptReminderWarningTime"
 						onChange={onReminderWarningTimeChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarApptReminderWarningTime')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(APPOINTMENT_REMINDER_MINUTES);
+						}}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -765,6 +802,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefCalendarInitialView"
 						onChange={onCalendarInitialViewChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarInitialView')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(DEFAULT_CALENDAR_VIEW);
+						}}
 					/>
 				</Row>
 			</Row>
@@ -780,6 +820,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 						selectName="zimbraPrefCalendarFirstDayOfWeek"
 						onChange={onFirstDayOfWeekChange}
 						onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarFirstDayOfWeek')}
+						onClick={(): void => {
+							handleMatomoTrackerEvent(WEEK_STATUS);
+						}}
 					/>
 				</Row>
 				<Row width="48%" mainAlignment="flex-start">
@@ -794,6 +837,9 @@ const EditAccountUserPrefrencesSection: FC<{ signatureItems: any; signatureList:
 							selectName="zimbraPrefCalendarApptVisibility"
 							onChange={onAppointmentVisibilityChange}
 							onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarApptVisibility')}
+							onClick={(): void => {
+								handleMatomoTrackerEvent(DEFAULT_APPOINTMENT_VISIBILITY);
+							}}
 						/>
 					) : (
 						<></>

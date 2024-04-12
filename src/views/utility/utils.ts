@@ -893,6 +893,17 @@ export const ABQStatus = (t: TFunction): Array<{ value: string; label: string }>
 	}
 ];
 
+export const backupEnabledStatus = (t: TFunction): Array<{ value: boolean; label: string }> => [
+	{
+		label: t('account_details.yes', 'Yes'),
+		value: true
+	},
+	{
+		label: t('account_details.no', 'No'),
+		value: false
+	}
+];
+
 export const MeasureUnitItems = (t: TFunction): Array<{ value: string; label: string }> => [
 	{
 		label: t('domain.unit_measure_days', 'Days'),
@@ -2270,4 +2281,11 @@ export const validateIpAddress = (value: string): boolean => {
 		/^(!?)\[(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\]\/([0-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$/;
 
 	return ipv4Regex.test(value) || ipv6Regex.test(value);
+};
+
+export const getModifiedName = (name: string): string => name?.replace(/ /g, '')?.toLowerCase();
+export const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0-9_.]*$/.test(name);
+export const convertToAscii = (inputString: string): string => {
+	const normalizedString = inputString.normalize('NFKD');
+	return normalizedString.replace(/[^\p{ASCII}]/gu, '');
 };

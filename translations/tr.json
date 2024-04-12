@@ -73,7 +73,7 @@
         "allow_sending_email_from_any_address": "Her adresten e-posta göndermeye izin ver",
         "details": "Detaylar",
         "draft_auto_save_interval": "Taslağı otomatik olarak kaydetme aralığı",
-        "email": "Eposta",
+        "email": "E-Posta",
         "enable_automatic_adding_of_contacts": "Kişileri otomatik eklemeyi etkinleştir",
         "enable_mandatory_spell_check": "Zorunlu yazım denetimini etkinleştir",
         "enable_past_due_reminders": "Geçmiş randevular için anımsatıcıları etkinleştir",

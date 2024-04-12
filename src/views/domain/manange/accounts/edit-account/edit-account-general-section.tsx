@@ -22,18 +22,54 @@ import {
 	Padding,
 	Table
 } from '@zextras/carbonio-design-system';
-import { debounce, map } from 'lodash';
+import { debounce, map, snakeCase } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { objectType, Attribute } from '../../../../../../types';
-import { ADMINISTRATION, MAX_DOMAIN_DISPLAY } from '../../../../../constants';
+import {
+	ABQ_STATUS_TITLE,
+	ACCOUNTS_DETAILS,
+	ACCOUNTS_DETAILS_DISABLED_FIELD_NAME,
+	ACCOUNT_QUOTA_GB,
+	ACCOUNT_STATUS_TITLE,
+	ADMINISTRATION,
+	CREATION_DATE,
+	DEFAULT_CLASS_SERVICE,
+	DEFAULT_COS,
+	DELETE_USER_PASSWORD_FROM_THE_LDAP,
+	DESCRIPTION,
+	DISPLAY_NAME,
+	DOMAINNAME,
+	DOMAINS_ROUTE_ID,
+	END_SESSION,
+	ID,
+	INCLUDED_BACKUP,
+	LANGUAGE,
+	LAST_ACCESS,
+	LOOKING_FOR_SESSION,
+	MAX_DOMAIN_DISPLAY,
+	MIDDLE_NAME_INTIALS,
+	NAME,
+	NOTES,
+	OTP_DEVICES,
+	PASSWORD,
+	REPEAT_PASSWORD,
+	SERVER,
+	SURNAME,
+	THIS_ACCOUNT_IS_DIRECT_MEMBER,
+	THIS_ACCOUNT_IS_INDIRECT_MEMBER,
+	TYPE,
+	USER
+} from '../../../../../constants';
+import MatomoTracker from '../../../../../matomo-tracker';
 import { endSession } from '../../../../../services/end-session';
 import { getDelegateAuthRequest } from '../../../../../services/get-delegate-auth-request';
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
+import { useConfigStore } from '../../../../../store/config/store';
 import { useDomainStore } from '../../../../../store/domain/store';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
@@ -44,7 +80,14 @@ import Paging from '../../../../components/paging';
 import Textarea from '../../../../components/textarea';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
-import { localeList, AccountStatus, ABQStatus } from '../../../../utility/utils';
+import {
+	localeList,
+	AccountStatus,
+	ABQStatus,
+	GbToBytes,
+	BytesToGB,
+	backupEnabledStatus
+} from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
@@ -69,7 +112,14 @@ const ZimbraAuthMethod = {
 	EXTERNAL: 'ad'
 } as const;
 
-const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
+const EditAccountGeneralSection: FC<{
+	setChange: any;
+	handleMatomoTrackerEvent: (value: string) => void;
+}> = ({
+	setChange,
+	handleMatomoTrackerEvent
+	// eslint-disable-next-line sonarjs/cognitive-complexity
+}) => {
 	const createSnackbar = useSnackbar();
 	const context = useContext(AccountContext);
 	const {
@@ -90,9 +140,12 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const cosList = useDomainStore((state) => state.cosList);
 	const [t] = useTranslation();
+	const { userId } = useConfigStore((state) => state);
+	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const localeZone = useMemo(() => localeList(t), [t]);
 	const ACCOUNT_STATUS = useMemo(() => AccountStatus(t), [t]);
 	const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
+	const BACKUP_ENABLED_STATUS = useMemo(() => backupEnabledStatus(t), [t]);
 	const [cosItems, setCosItems] = useState<any[]>([]);
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
@@ -138,7 +191,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 
 	useEffect(() => {
 		setAccountQuota(
-			accountDetail.zimbraMailQuota ? (accountDetail.zimbraMailQuota / 1048576).toString() : ''
+			accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toString() : ''
 		);
 	}, [accountDetail?.zimbraMailQuota]);
 
@@ -173,7 +226,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 		(e) => {
 			setAccountDetail((prev: any) => ({
 				...prev,
-				[e.target.name]: (Number(e.target.value) * 1048576).toString()
+				[e.target.name]: GbToBytes(e.target.value).toString()
 			}));
 		},
 		[setAccountDetail]
@@ -204,12 +257,14 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
+			const snakeCaseString = snakeCase(key);
+			handleMatomoTrackerEvent(snakeCaseString);
 			setAccountDetail((prev: AccountType) => ({
 				...prev,
 				[key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[accountDetail, setAccountDetail]
+		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
 	);
 	const changeAccDetail = useCallback(
 		(e) => {
@@ -259,6 +314,9 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 	const onAccountABQStatusChange = (v: any): any => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, abqMode: v }));
 	};
+	const onAccountBackupEnabledStatusChange = (v: any): any => {
+		setAccountDetail((prev: AccountType) => ({ ...prev, backupEnabled: v }));
+	};
 	const onPrefLocaleChange = (v: string): void => {
 		v && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraPrefLocale: v }));
 	};
@@ -266,6 +324,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraCOSId: v }));
 	};
 	const onCOSSwitchChanges = (): void => {
+		handleMatomoTrackerEvent(DEFAULT_COS);
 		defaultCOS && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraCOSId: '' }));
 		setDefaultCOS(!defaultCOS);
 	};
@@ -442,6 +501,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 	}, [addSelection, userSessionList]);
 
 	const onEndSession = useCallback(() => {
+		handleMatomoTrackerEvent(END_SESSION);
 		setIsRequestInProgress(true);
 		getDelegateAuthRequest(accountDetail?.zimbraId)
 			.then((res: any) => {
@@ -506,7 +566,8 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 		setUserSessionList,
 		setAllUserSessionList,
 		createSnackbar,
-		t
+		t,
+		handleMatomoTrackerEvent
 	]);
 
 	const onSessionFilterInputChange = useCallback(
@@ -520,6 +581,14 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 		},
 		[allUserSessionList, setUserSessionList]
 	);
+
+	const handleFocusAllDisabledField = (fieldName: string): void => {
+		matomo.trackEvent(
+			DOMAINS_ROUTE_ID,
+			ACCOUNTS_DETAILS,
+			`${ACCOUNTS_DETAILS_DISABLED_FIELD_NAME}_${fieldName}`
+		);
+	};
 
 	return (
 		<Container
@@ -541,6 +610,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 							inputName="sn"
 							defaultValue={accountDetail?.sn || ''}
 							value={accountDetail?.sn || ''}
+							onFocus={(): void => handleMatomoTrackerEvent(SURNAME)}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
@@ -551,6 +621,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 							inputName="initials"
 							defaultValue={accountDetail?.initials || ''}
 							value={accountDetail?.initials || ''}
+							onFocus={(): void => handleMatomoTrackerEvent(MIDDLE_NAME_INTIALS)}
 						/>
 					</Row>
 					<Row width="32%" mainAlignment="space-between">
@@ -561,6 +632,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.givenName || ''}
 							value={accountDetail?.givenName || ''}
+							onFocus={(): void => handleMatomoTrackerEvent(NAME)}
 						/>
 					</Row>
 				</Row>
@@ -574,6 +646,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 							defaultValue={accountDetail?.uid}
 							value={accountDetail?.uid}
 							autoComplete="new-password"
+							onFocus={(): void => handleMatomoTrackerEvent(USER)}
 						/>
 					</Row>
 					<Row mainAlignment="center" crossAlignment="center" padding={{ top: 'small' }}>
@@ -596,6 +669,9 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 								}}
 								inputValue={searchDomainName}
 								isCustomIcon={false}
+								dropdownOnClick={(e: any): void => {
+									handleMatomoTrackerEvent(DOMAINNAME);
+								}}
 							/>
 						</Row>
 					</Row>
@@ -613,6 +689,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 									mail: map(aliaes, 'label').join(', ')
 								}))
 							}
+							handleMatomoTrackerEvent={handleMatomoTrackerEvent}
 						/>
 					</Row>
 					<Row width="49%" mainAlignment="flex-start">
@@ -628,6 +705,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 									onChange={(): null => null}
 								/>
 							)}
+							onFocus={(): void => handleMatomoTrackerEvent(TYPE)}
 						/>
 					</Row>
 				</Row>
@@ -643,6 +721,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 							inputName="displayName"
 							name="descriptiveName"
 							autoComplete="new-password"
+							onFocus={(): void => handleMatomoTrackerEvent(DISPLAY_NAME)}
 						/>
 					</Row>
 					{isAdvanced ? (
@@ -653,6 +732,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 								backgroundColor="gray5"
 								defaultValue={accountDetail?.displayName}
 								value={otpList?.length || 0}
+								onFocus={(): void => handleMatomoTrackerEvent(OTP_DEVICES)}
 							/>
 						</Row>
 					) : (
@@ -662,18 +742,35 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 				{isAdvanced ? (
 					<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 						<Row width="49%" mainAlignment="flex-start">
-							{accountDetail?.abqMode && (
-								<Select
-									items={ABQ_STATUS}
-									background="gray5"
-									label={t('account_details.abq_status', 'ABQ Status')}
-									showCheckbox={false}
-									onChange={onAccountABQStatusChange}
-									defaultSelection={ABQ_STATUS.find(
-										(item: any) => item.value === accountDetail?.abqMode
-									)}
-								/>
-							)}
+							<Select
+								disabled={!accountDetail?.abqMode}
+								items={ABQ_STATUS}
+								background="gray5"
+								label={t('account_details.abq_status', 'ABQ Status')}
+								showCheckbox={false}
+								onChange={onAccountABQStatusChange}
+								selection={
+									ABQ_STATUS.find((item: any) => item.value === accountDetail?.abqMode) ||
+									ABQ_STATUS[0]
+								}
+								onClick={(): void => handleMatomoTrackerEvent(ABQ_STATUS_TITLE)}
+							/>
+						</Row>
+						<Row width="49%" mainAlignment="flex-start">
+							<Select
+								disabled={accountDetail?.backupEnabled === undefined}
+								items={BACKUP_ENABLED_STATUS}
+								background="gray5"
+								label={t('account_details.included_in_backup', 'Included in Backup')}
+								showCheckbox={false}
+								onChange={onAccountBackupEnabledStatusChange}
+								selection={
+									BACKUP_ENABLED_STATUS.find(
+										(item: any) => item.value === accountDetail?.backupEnabled
+									) || BACKUP_ENABLED_STATUS[0]
+								}
+								onClick={(): void => handleMatomoTrackerEvent(INCLUDED_BACKUP)}
+							/>
 						</Row>
 					</Row>
 				) : (
@@ -685,10 +782,16 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 							label={t('label.server', 'Server')}
 							backgroundColor="gray5"
 							value={accountDetail?.zimbraMailHost}
+							onFocus={(): void => handleFocusAllDisabledField(SERVER)}
 						/>
 					</Row>
 					<Row width="49%" mainAlignment="flex-start">
-						<Input label="ID" backgroundColor="gray5" value={accountDetail?.zimbraId} />
+						<Input
+							label="ID"
+							backgroundColor="gray5"
+							value={accountDetail?.zimbraId}
+							onFocus={(): void => handleFocusAllDisabledField(ID)}
+						/>
 					</Row>
 				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -704,6 +807,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 									  )
 									: t('label.not_available', 'Not Available')
 							}
+							onFocus={(): void => handleFocusAllDisabledField(CREATION_DATE)}
 						/>
 					</Row>
 					<Row width="49%" mainAlignment="flex-start">
@@ -718,6 +822,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 									  )
 									: t('label.never_logged_in', 'Never logged in')
 							}
+							onFocus={(): void => handleFocusAllDisabledField(LAST_ACCESS)}
 						/>
 					</Row>
 				</Row>
@@ -727,7 +832,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						<Switch
 							value={accountDetail?.zimbraHideInGal === 'TRUE'}
 							onClick={(): void => changeSwitchOption('zimbraHideInGal')}
-							label={t('account_details.hide_in_gal', 'Hide in GAL')}
+							label={t('account_details.hidden_in_gal', 'Hidden in GAL')}
 							iconColor="primary"
 						/>
 						<Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
@@ -774,6 +879,11 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 										autoComplete="new-password"
 										value={accountDetail?.password}
 										disabled={isHidePassword}
+										onFocus={(): void => {
+											isHidePassword
+												? handleFocusAllDisabledField(PASSWORD)
+												: handleMatomoTrackerEvent(PASSWORD);
+										}}
 									/>
 								</Tooltip>
 							</Row>
@@ -794,6 +904,11 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 										autoComplete="new-password"
 										value={accountDetail?.repeatPassword}
 										disabled={isHidePassword}
+										onFocus={(): void => {
+											isHidePassword
+												? handleFocusAllDisabledField(REPEAT_PASSWORD)
+												: handleMatomoTrackerEvent(REPEAT_PASSWORD);
+										}}
 									/>
 								</Tooltip>
 							</Row>
@@ -810,6 +925,11 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 									autoComplete="new-password"
 									value={accountDetail?.password}
 									disabled={isHidePassword}
+									onFocus={(): void => {
+										isHidePassword
+											? handleFocusAllDisabledField(PASSWORD)
+											: handleMatomoTrackerEvent(PASSWORD);
+									}}
 								/>
 							</Row>
 							<Row width="49%" mainAlignment="flex-start">
@@ -822,6 +942,11 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 									autoComplete="new-password"
 									value={accountDetail?.repeatPassword}
 									disabled={isHidePassword}
+									onFocus={(): void => {
+										isHidePassword
+											? handleFocusAllDisabledField(REPEAT_PASSWORD)
+											: handleMatomoTrackerEvent(REPEAT_PASSWORD);
+									}}
 								/>
 							</Row>
 						</>
@@ -846,7 +971,12 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 								)}
 								color="error"
 								width="fill"
-								onClick={(): void => setShowDeletePasswordModal(true)}
+								onClick={(): void => {
+									isHidePassword
+										? handleFocusAllDisabledField(DELETE_USER_PASSWORD_FROM_THE_LDAP)
+										: handleMatomoTrackerEvent(DELETE_USER_PASSWORD_FROM_THE_LDAP);
+									setShowDeletePasswordModal(true);
+								}}
 								disabled={isHidePassword}
 							/>
 						</Row>
@@ -861,7 +991,12 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 							)}
 							color="error"
 							width="fill"
-							onClick={(): void => setShowDeletePasswordModal(true)}
+							onClick={(): void => {
+								isHidePassword
+									? handleFocusAllDisabledField(DELETE_USER_PASSWORD_FROM_THE_LDAP)
+									: handleMatomoTrackerEvent(DELETE_USER_PASSWORD_FROM_THE_LDAP);
+								setShowDeletePasswordModal(true);
+							}}
 							disabled={isHidePassword}
 						/>
 					</Row>
@@ -888,6 +1023,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 								defaultSelection={ACCOUNT_STATUS.find(
 									(item: any) => item.value === accountDetail?.zimbraAccountStatus
 								)}
+								onClick={(): void => handleMatomoTrackerEvent(ACCOUNT_STATUS_TITLE)}
 							/>
 						) : (
 							<></>
@@ -905,6 +1041,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 								selectName="zimbraPrefLocale"
 								onChange={onPrefLocaleChange}
 								onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
+								onClick={(): void => handleMatomoTrackerEvent(LANGUAGE)}
 							/>
 						) : (
 							<></>
@@ -932,6 +1069,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 									(item: any) => item.value === accountDetail?.zimbraCOSId
 								)}
 								onChange={onCOSIdChange}
+								onClick={(): void => handleMatomoTrackerEvent(DEFAULT_CLASS_SERVICE)}
 							/>
 						) : (
 							<></>
@@ -940,20 +1078,21 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%">
 					<InheritedInput
-						label={t('label.account_quota_mb', 'Account Quota (MB)')}
+						label={t('label.account_quota_gb', 'Account Quota (GB)')}
 						subValue={accountQuota}
 						inheritedValue={
-							cosDetail.zimbraMailQuota ? (cosDetail.zimbraMailQuota / 1048576).toString() : ''
+							cosDetail.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toString() : ''
 						}
 						fromSubValue={
 							accSpecificDetail.zimbraMailQuota
-								? (accSpecificDetail.zimbraMailQuota / 1048576).toString()
+								? BytesToGB(accSpecificDetail.zimbraMailQuota).toString()
 								: ''
 						}
 						background="gray5"
 						inputName="zimbraMailQuota"
 						onChange={changeAccountQuota}
 						onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
+						onFocus={(): void => handleMatomoTrackerEvent(ACCOUNT_QUOTA_GB)}
 					/>
 				</Row>
 
@@ -983,6 +1122,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						disabled
 						ChipComponent={CustomChip}
 						maxChips={null}
+						onFocus={(): void => handleFocusAllDisabledField(THIS_ACCOUNT_IS_DIRECT_MEMBER)}
 					/>
 				</Row>
 			</Row>
@@ -998,6 +1138,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						disabled
 						ChipComponent={CustomChip}
 						maxChips={null}
+						onFocus={(): void => handleFocusAllDisabledField(THIS_ACCOUNT_IS_INDIRECT_MEMBER)}
 					/>
 				</Row>
 			</Row>
@@ -1018,6 +1159,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						value={accountDetail?.description}
 						onChange={changeAccDetail}
 						inputName="description"
+						onFocus={(): void => handleMatomoTrackerEvent(DESCRIPTION)}
 					/>
 				</Row>
 				<Row padding={{ top: 'large' }}>
@@ -1032,6 +1174,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 						backgroundColor="gray5"
 						inputName="zimbraNotes"
 						onChange={changeAccDetail}
+						onFocus={(): void => handleMatomoTrackerEvent(NOTES)}
 					/>
 				</Row>
 			</Row>
@@ -1060,6 +1203,7 @@ const EditAccountGeneralSection: FC<{ setChange: any }> = ({ setChange }) => {
 							backgroundColor="gray5"
 							width="100%"
 							onChange={onSessionFilterInputChange}
+							onFocus={(): void => handleMatomoTrackerEvent(LOOKING_FOR_SESSION)}
 						></Input>
 					</Container>
 					<Padding horizontal="small" />

@@ -1200,7 +1200,7 @@
         "ldap_url": "URL LDAP",
         "model_label_create_account": "Stwórz konto",
         "operation_lbl": "<bold>Operacje</bold>",
-        "personalisation": "Personalizacja",
+        "personalisation": "Dostosowywanie",
         "prefix_volume": "Prefiks - {{volumePrefix}}",
         "primary_color_for_dark_mode": "<bold>Główny</bold> kolor dla trybu ciemnego",
         "primary_color_for_light_mode": "<bold>Główny</bold> kolor dla trybu jasnego",
