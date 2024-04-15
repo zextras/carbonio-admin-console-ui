@@ -52,7 +52,10 @@ import {
 	SECONDARY_BAR_GLOBAL_DELEGATES,
 	SECONDARY_BAR_GLOBAL_QUARANTINE,
 	SECONDARY_BAR_GLOBAL_DOMAINS,
-	SECONDARY_BAR_GLOBAL_2FA
+	SECONDARY_BAR_GLOBAL_2FA,
+	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+	FALSE,
+	BOOLEAN_FALSE
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -123,6 +126,7 @@ const DomainListPanel: FC = () => {
 	const rights = useRightsStore((state) => state.rights);
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const globalConfigInformation = useConfigStore((state) => state.config);
 
 	const loadingComponent = [
 		{
@@ -277,6 +281,14 @@ const DomainListPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDomainSelect, domainId, domainView, matomo, globalCarbonioSendAnalytics]);
 
+	const isDisclaimerEnable = useMemo(
+		() =>
+			globalConfigInformation.find(
+				(item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
+			)?._content,
+		[globalConfigInformation]
+	);
+
 	const detailOptions = useMemo(
 		() => [
 			{
@@ -322,10 +334,10 @@ const DomainListPanel: FC = () => {
 			{
 				id: DISCLAIMER,
 				name: t('label.disclaimer', 'Disclaimer'),
-				isSelected: isDomainSelect
+				isSelected: isDisclaimerEnable === FALSE ? BOOLEAN_FALSE : isDomainSelect
 			}
 		],
-		[t, isDomainSelect]
+		[t, isDomainSelect, isDisclaimerEnable]
 	);
 
 	const allManageOptions = useMemo(

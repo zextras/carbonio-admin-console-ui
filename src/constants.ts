@@ -568,3 +568,4 @@ export const LIST_COS = 'listCos';
 export const CREATE_COS = 'createCos';
 export const CREATE_TOP_DOMAIN = 'createTopDomain';
 export const ADMIN_LOGIN_AS = 'adminLoginAs';
+export const BOOLEAN_FALSE = false;
