@@ -482,7 +482,7 @@ const DomainListPanel: FC = () => {
 			const backupModule = moduleLicense.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
+			if (backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
@@ -556,14 +556,7 @@ const DomainListPanel: FC = () => {
 					}
 			  ]
 			: domainList.map(
-					(
-						domain: {
-							name: string;
-							id: string;
-							a: { n: string; _content: string }[];
-						},
-						index
-					) => ({
+					(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
 						id: domain.id,
 						label: domain.name,
 						customComponent: (
