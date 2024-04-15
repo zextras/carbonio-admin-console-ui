@@ -168,46 +168,8 @@ const GlobalDetailPanel: FC = () => {
 		});
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-	const handleOnSave = (): void => {
-		const attributes: Attribute[] &
-			{
-				n: string;
-				_content: string[];
-			}[] = [];
-		if (
-			isValidEmail(carbonioNotificationData.carbonioNotificationFrom ?? '') ||
-			carbonioNotificationData.carbonioNotificationFrom === ''
-		) {
-			attributes.push({
-				n: 'carbonioNotificationFrom',
-				_content: carbonioNotificationData.carbonioNotificationFrom
-			});
-			carbonioNotificationData.carbonioNotificationRecipients.forEach(
-				// eslint-disable-next-line array-callback-return
-				(item: { label: string }): void => {
-					attributes.push({
-						n: 'carbonioNotificationRecipients',
-						_content: item?.label
-					});
-				}
-			);
-			setHasCarbonioNotificationFromError(false);
-		} else {
-			setHasCarbonioNotificationFromError(true);
-		}
-
-		attributes.push({
-			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-			_content: globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
-		});
-
-		attributes.push({
-			n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
-			_content: globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE
-		});
-
-		if (attributes && attributes.length > 0) {
+	const callRequest = useCallback(
+		(attributes) => {
 			modifyConfig(attributes)
 				.then(() => {
 					getAllConfigData();
@@ -277,6 +239,58 @@ const GlobalDetailPanel: FC = () => {
 						replace: true
 					});
 				});
+		},
+		[
+			createSnackbar,
+			globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly,
+			globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
+			globalDisclaimerInitialDetail?.zimbraAmavisOutboundDisclaimersOnly,
+			globalDisclaimerInitialDetail?.zimbraDomainMandatoryMailSignatureEnabled,
+			t,
+			updateConfig
+		]
+	);
+
+	const handleOnSave = (): void => {
+		const attributes: Attribute[] &
+			{
+				n: string;
+				_content: string[];
+			}[] = [];
+		if (
+			isValidEmail(carbonioNotificationData.carbonioNotificationFrom ?? '') ||
+			carbonioNotificationData.carbonioNotificationFrom === ''
+		) {
+			attributes.push({
+				n: 'carbonioNotificationFrom',
+				_content: carbonioNotificationData.carbonioNotificationFrom
+			});
+			carbonioNotificationData.carbonioNotificationRecipients.forEach(
+				// eslint-disable-next-line array-callback-return
+				(item: { label: string }): void => {
+					attributes.push({
+						n: 'carbonioNotificationRecipients',
+						_content: item?.label
+					});
+				}
+			);
+			setHasCarbonioNotificationFromError(false);
+		} else {
+			setHasCarbonioNotificationFromError(true);
+		}
+
+		attributes.push({
+			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+			_content: globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
+		});
+
+		attributes.push({
+			n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
+			_content: globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE
+		});
+
+		if (attributes && attributes.length > 0) {
+			callRequest(attributes);
 		}
 	};
 
