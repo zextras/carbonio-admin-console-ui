@@ -91,7 +91,7 @@ const HoverContentRowFactory = ({
 	const [isHovered, setIsHovered] = useState<boolean>(false);
 	const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);
 	const clickableRow = useMemo(
-		() => (!showCheckbox && typeof row.clickable === undefined) || row.clickable,
+		() => (!showCheckbox && typeof row.clickable === 'undefined') || row.clickable,
 		[showCheckbox, row.clickable]
 	);
 
