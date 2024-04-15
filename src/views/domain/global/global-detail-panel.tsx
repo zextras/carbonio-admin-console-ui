@@ -87,7 +87,8 @@ const GlobalDetailPanel: FC = () => {
 	useEffect(() => {
 		if (
 			Object.entries(carbonioNotificationData).length !== 0 &&
-			carbonioNotificationData.carbonioNotificationFrom !== ('' || undefined) &&
+			(carbonioNotificationData.carbonioNotificationFrom !== '' ||
+				carbonioNotificationData.carbonioNotificationFrom !== undefined) &&
 			carbonioNotificationData.carbonioNotificationRecipients?.length !== 0 &&
 			carbonioNotificationData.carbonioNotificationRecipients?.length !== undefined
 		) {
