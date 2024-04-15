@@ -568,3 +568,5 @@ export const LIST_COS = 'listCos';
 export const CREATE_COS = 'createCos';
 export const CREATE_TOP_DOMAIN = 'createTopDomain';
 export const ADMIN_LOGIN_AS = 'adminLoginAs';
+export const DISPLAYNAME = 'displayName';
+export const FETCH_DATA_LIMIT = 50;

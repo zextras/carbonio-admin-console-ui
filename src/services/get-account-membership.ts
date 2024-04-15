@@ -6,9 +6,12 @@
 
 import { soapFetch } from '@zextras/carbonio-shell-ui';
 
-export const getAccountMembershipRequest = async (id: string): Promise<any> => {
+import { DISPLAYNAME } from '../constants';
+
+export const getAccountMembershipRequest = async (id: string, attrs?: string): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAdmin',
+		attrs: attrs ?? DISPLAYNAME,
 		account: [
 			{
 				_content: id,
