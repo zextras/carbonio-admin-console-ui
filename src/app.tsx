@@ -4,10 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+	FC,
+	lazy,
+	Suspense,
+	useCallback,
+	useContext,
+	useEffect,
+	useMemo,
+	useState
+} from 'react';
 
 import { MatomoProvider } from '@datapunt/matomo-tracker-react';
-import { IconButton, Icon } from '@zextras/carbonio-design-system';
+import { IconButton, Icon, SnackbarManagerContext } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
 	removeRoute,
@@ -95,6 +104,7 @@ import { useRightsStore, Right, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { getRights } from './views/utility/utils';
+import { CreateSnackbarType } from '../types';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -147,6 +157,7 @@ const App: FC = () => {
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
+	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const hasConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!(
@@ -188,11 +199,25 @@ const App: FC = () => {
 
 	useEffect(() => {
 		if (!!accounts && Array.isArray(accounts) && accounts.length > 0 && accounts[0]?.name) {
-			getAllEffectiveRigthsRequest(accounts[0]?.name).then((res) => {
-				setRights(res?.target);
-			});
+			getAllEffectiveRigthsRequest(accounts[0]?.name)
+				.then((res) => {
+					setRights(res?.target);
+				})
+				.catch(() => {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: t(
+							'label.error_rights_message',
+							'Error obtaining Rights. Please try again later.'
+						),
+						autoHideTimeout: 4000,
+						hideButton: true,
+						replace: true
+					});
+				});
 		}
-	}, [accounts, setRights]);
+	}, [accounts, createSnackbar, setRights, t]);
 
 	useEffect(() => {
 		const sendAnalytics = config.filter((items) => items.n === CARBONIO_SEND_ANALYTICS)[0]
