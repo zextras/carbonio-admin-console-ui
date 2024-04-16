@@ -18,10 +18,10 @@ import {
 	TWO_FACTOR_AUTHENTICATION,
 	DOMAINS,
 	WHITELABEL_SETTINGS,
-	GLOBAL_DELEGATES,
 	QUARANTINE,
 	SETTINGS,
-	ACTIVE_SYNC
+	ACTIVE_SYNC,
+	ADMINISTRATORS
 } from '../../constants';
 import QuarantineList from '../quarantine/quarantine-list';
 
@@ -41,7 +41,7 @@ const GlobalOperations: FC = () => {
 						return <QuarantineList />;
 					case DOMAINS:
 						return <DomainList />;
-					case GLOBAL_DELEGATES:
+					case ADMINISTRATORS:
 						return <GlobalDelegates />;
 					case SETTINGS:
 						return <GlobalDetailPanel />;

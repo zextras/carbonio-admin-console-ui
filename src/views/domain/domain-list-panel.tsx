@@ -52,7 +52,8 @@ import {
 	SECONDARY_BAR_GLOBAL_DELEGATES,
 	SECONDARY_BAR_GLOBAL_QUARANTINE,
 	SECONDARY_BAR_GLOBAL_DOMAINS,
-	SECONDARY_BAR_GLOBAL_2FA
+	SECONDARY_BAR_GLOBAL_2FA,
+	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -377,8 +378,8 @@ const DomainListPanel: FC = () => {
 				isSelected: true
 			},
 			{
-				id: GLOBAL_DELEGATES_ROUTE,
-				name: t('label.global_delegates', 'Global Delegates'),
+				id: GLOBAL_ADMINISTRATORS,
+				name: t('label.administrators', 'Administrators'),
 				isSelected: true
 			},
 			{

@@ -644,7 +644,7 @@ const GlobalDelegates: FC = () => {
 				>
 					<Row orientation="horizontal" width="100%" mainAlignment="flex-start">
 						<Text size="medium" weight="bold" color="gray0">
-							{t('label.global_delegates', 'Global Delegates')}
+							{t('label.administrators', 'Administrators')}
 						</Text>
 					</Row>
 				</Container>
