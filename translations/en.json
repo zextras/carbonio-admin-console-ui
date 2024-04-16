@@ -1219,6 +1219,7 @@
         "entity_id_copied": "EntityID copied",
         "equipment": "Equipment",
         "error": "{{message}}",
+        "error_rights_message": "Error obtaining Rights. Please try again later.",
         "everyone": "Everyone",
         "ex": "ex.",
         "example": "example",
