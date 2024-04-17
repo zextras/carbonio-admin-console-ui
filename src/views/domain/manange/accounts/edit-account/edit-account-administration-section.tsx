@@ -24,7 +24,14 @@ import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { debounce, snakeCase } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { ADD, DOMAIN, RIGHTS_ACCESS_CONTROL_LISTS, TRUE } from '../../../../../constants';
+import {
+	ADD,
+	DISPLAYNAME,
+	DOMAIN,
+	FETCH_DATA_LIMIT,
+	RIGHTS_ACCESS_CONTROL_LISTS,
+	TRUE
+} from '../../../../../constants';
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
@@ -79,7 +86,9 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 	const options =
 		distributionList?.length > 0
 			? distributionList?.map((group: any) => ({
-					label: group.name,
+					label:
+						group?.a?.find((item: Record<string, string>) => item?.n === DISPLAYNAME)?._content ||
+						group.name,
 					value: group.id
 			  }))
 			: [];
@@ -170,8 +179,8 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 		const attrs =
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
-		const query = `(&(!(zimbraIsSystemAccount=TRUE)))`;
-		searchDirectory(attrs, types, name || '', query, 0, 6, 'name').then((res) => {
+		const query = `zimbraIsAdminGroup=TRUE`;
+		searchDirectory(attrs, types, name || '', query, 0, FETCH_DATA_LIMIT, 'name').then((res) => {
 			setDistributionList(res?.dl);
 		});
 	};
