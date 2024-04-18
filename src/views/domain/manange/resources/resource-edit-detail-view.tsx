@@ -581,11 +581,13 @@ const ResourceEditDetailView: FC<any> = ({
 			});
 			attributes.push({
 				n: 'zimbraCalResAutoAcceptDecline',
-				_content: schedulePolicyType?.value === (1 || 3) ? 'TRUE' : 'FALSE'
+				_content:
+					schedulePolicyType?.value === 1 || schedulePolicyType?.value === 3 ? 'TRUE' : 'FALSE'
 			});
 			attributes.push({
 				n: 'zimbraCalResAutoDeclineIfBusy',
-				_content: schedulePolicyType?.value === (1 || 2) ? 'TRUE' : 'FALSE'
+				_content:
+					schedulePolicyType?.value === 1 || schedulePolicyType?.value === 2 ? 'TRUE' : 'FALSE'
 			});
 			sendInviteList.forEach((item: any) => {
 				attributes.push({
