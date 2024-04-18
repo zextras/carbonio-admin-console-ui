@@ -48,7 +48,9 @@ import {
 	ACCOUNTS_SEARCH_TABLE,
 	DOMAIN_ACCOUNTS_NEXT_TABLE,
 	BACKUP_ENABLED,
-	DOMAINS_ROUTE_ID
+	DOMAINS_ROUTE_ID,
+	FILES_QUOTA_LIMIT,
+	FILES_QUOTA_USED
 } from '../../../../constants';
 import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -61,6 +63,7 @@ import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
+import { getFileQuotaByAccount } from '../../../../services/get-file-quota-account';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -481,6 +484,28 @@ const ManageAccounts: FC = () => {
 			}
 		});
 	}, []);
+
+	const setAccDetailValue = useCallback(
+		(key: string, value: string): void => {
+			setAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+			setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+		},
+		[setAccountDetail, setInitAccountDetail]
+	);
+
+	const getFileQuotaByAccId = useCallback(
+		(accId: string): Promise<void> =>
+			getFileQuotaByAccount(accId).then((res: any) => {
+				if (res?.limit) {
+					setAccDetailValue(FILES_QUOTA_LIMIT, res?.limit);
+				}
+				if (res?.used) {
+					setAccDetailValue(FILES_QUOTA_USED, res?.used);
+				}
+			}),
+		[setAccDetailValue]
+	);
+
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
@@ -526,6 +551,7 @@ const ManageAccounts: FC = () => {
 						getListOtp(data?.account?.[0]?.name);
 						getCredentialList(data?.account?.[0]?.name);
 						getABQStatus(id);
+						getFileQuotaByAccId(id);
 					}
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -551,6 +577,7 @@ const ManageAccounts: FC = () => {
 			getListOtp,
 			getCredentialList,
 			getABQStatus,
+			getFileQuotaByAccId,
 			createSnackbar,
 			t
 		]
