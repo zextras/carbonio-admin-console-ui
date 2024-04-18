@@ -236,9 +236,15 @@ const CreateResource: FC<{
 									zimbraCalResAutoDeclineRecurring:
 										resourceDetail?.zimbraCalResAutoDeclineRecurring?.value,
 									zimbraCalResAutoAcceptDecline:
-										resourceDetail?.schedulePolicyType?.value === (1 || 3) ? 'TRUE' : 'FALSE',
+										resourceDetail?.schedulePolicyType?.value === 1 ||
+										resourceDetail?.schedulePolicyType?.value === 3
+											? 'TRUE'
+											: 'FALSE',
 									zimbraCalResAutoDeclineIfBusy:
-										resourceDetail?.schedulePolicyType?.value === (1 || 2) ? 'TRUE' : 'FALSE'
+										resourceDetail?.schedulePolicyType?.value === 1 ||
+										resourceDetail?.schedulePolicyType?.value === 2
+											? 'TRUE'
+											: 'FALSE'
 								};
 								const attrList: { n: string; _content: string }[] = [];
 								Object.keys(attr).forEach((ele: any) =>
