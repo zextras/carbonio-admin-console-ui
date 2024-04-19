@@ -156,12 +156,15 @@ const EditAccountGeneralSection: FC<{
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
-	const [accountQuota, setAccountQuota] = useState('');
+	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const fileQuotaRef = React.useRef<HTMLInputElement>(null);
+	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState('');
+	const [cosAccountQuotaGBValue, setCosAccountQuotaGBValue] = useState('');
+	const [specificAccountQuotaGBValue, setSpecificAccountQuotaGBValue] = useState('');
 
 	const sessionTableHeader: any[] = useMemo(
 		() => [
@@ -194,10 +197,12 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	useEffect(() => {
-		setAccountQuota(
-			accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toString() : ''
-		);
-	}, [accountDetail?.zimbraMailQuota]);
+		if (accountDetail?.zimbraMailQuota !== undefined && accountQuotaGBValue === '') {
+			setAccountQuotaGBValue(
+				accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toFixed(2) : ''
+			);
+		}
+	}, [accountDetail.zimbraMailQuota, accountQuotaGBValue]);
 
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -228,9 +233,21 @@ const EditAccountGeneralSection: FC<{
 
 	const changeAccountQuota = useCallback(
 		(e) => {
+			setAccountQuotaGBValue(e.target.value);
 			setAccountDetail((prev: any) => ({
 				...prev,
-				[e.target.name]: GbToBytes(e.target.value).toString()
+				[e.target.name]: Math.round(GbToBytes(e.target.value))
+			}));
+		},
+		[setAccountDetail]
+	);
+
+	const changeFileQuotaLimit = useCallback(
+		(e) => {
+			setFileQuotaLimitGBValue(e.target.value);
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[e.target.name]: Math.round(GbToBytes(e.target.value))
 			}));
 		},
 		[setAccountDetail]
@@ -374,6 +391,32 @@ const EditAccountGeneralSection: FC<{
 		},
 		[setAccountDetail]
 	);
+
+	useEffect(() => {
+		if (accountDetail?.filesQuotaLimit !== undefined && fileQuotaLimitGBValue === '') {
+			setFileQuotaLimitGBValue(
+				accountDetail?.filesQuotaLimit ? BytesToGB(accountDetail?.filesQuotaLimit).toFixed(2) : ''
+			);
+		}
+	}, [accountDetail?.filesQuotaLimit, fileQuotaLimitGBValue]);
+
+	useEffect(() => {
+		if (cosDetail?.zimbraMailQuota !== undefined && cosAccountQuotaGBValue === '') {
+			setCosAccountQuotaGBValue(
+				cosDetail?.zimbraMailQuota ? BytesToGB(cosDetail?.zimbraMailQuota).toFixed(2) : ''
+			);
+		}
+	}, [cosAccountQuotaGBValue, cosDetail?.zimbraMailQuota]);
+
+	useEffect(() => {
+		if (accSpecificDetail?.zimbraMailQuota !== undefined && specificAccountQuotaGBValue === '') {
+			setSpecificAccountQuotaGBValue(
+				accSpecificDetail?.zimbraMailQuota
+					? BytesToGB(accSpecificDetail?.zimbraMailQuota).toFixed(2)
+					: ''
+			);
+		}
+	}, [accSpecificDetail?.zimbraMailQuota, specificAccountQuotaGBValue]);
 
 	const items =
 		domainList.length > MAX_DOMAIN_DISPLAY
@@ -619,7 +662,7 @@ const EditAccountGeneralSection: FC<{
 						{t('label.account', 'Account')}
 					</Text>
 				</Row>
-				{isAdvanced && accountDetail?.filesQuotaLimit && (
+				{isAdvanced && initAccountDetail?.filesQuotaLimit && (
 					<Row
 						padding={{ top: 'large', left: 'large' }}
 						width="100%"
@@ -826,15 +869,9 @@ const EditAccountGeneralSection: FC<{
 					<Row width={!isAdvanced ? '100%' : '49%'} mainAlignment="flex-start">
 						<InheritedInput
 							label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
-							subValue={accountQuota}
-							inheritedValue={
-								cosDetail.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toString() : ''
-							}
-							fromSubValue={
-								accSpecificDetail.zimbraMailQuota
-									? BytesToGB(accSpecificDetail.zimbraMailQuota).toString()
-									: ''
-							}
+							subValue={accountQuotaGBValue}
+							inheritedValue={cosAccountQuotaGBValue}
+							fromSubValue={specificAccountQuotaGBValue}
 							background="gray5"
 							inputName="zimbraMailQuota"
 							onChange={changeAccountQuota}
@@ -847,17 +884,8 @@ const EditAccountGeneralSection: FC<{
 							<Input
 								backgroundColor="gray5"
 								label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
-								defaultValue={
-									accountDetail?.filesQuotaLimit
-										? BytesToGB(accountDetail.filesQuotaLimit).toString()
-										: ''
-								}
-								value={
-									accountDetail?.filesQuotaLimit
-										? BytesToGB(accountDetail.filesQuotaLimit).toString()
-										: ''
-								}
-								onChange={changeAccountQuota}
+								value={fileQuotaLimitGBValue}
+								onChange={changeFileQuotaLimit}
 								inputName="filesQuotaLimit"
 								inputRef={fileQuotaRef}
 								onFocus={(): void => handleMatomoTrackerEvent(FILES_QUOTA_LIMIT_GB)}
