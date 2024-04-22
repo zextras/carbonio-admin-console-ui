@@ -55,7 +55,8 @@ import {
 	SECONDARY_BAR_GLOBAL_2FA,
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 	FALSE,
-	BOOLEAN_FALSE
+	BOOLEAN_FALSE,
+	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -389,8 +390,8 @@ const DomainListPanel: FC = () => {
 				isSelected: true
 			},
 			{
-				id: GLOBAL_DELEGATES_ROUTE,
-				name: t('label.global_delegates', 'Global Delegates'),
+				id: GLOBAL_ADMINISTRATORS,
+				name: t('label.administrators', 'Administrators'),
 				isSelected: true
 			},
 			{

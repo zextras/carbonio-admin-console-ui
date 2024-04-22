@@ -569,3 +569,7 @@ export const CREATE_COS = 'createCos';
 export const CREATE_TOP_DOMAIN = 'createTopDomain';
 export const ADMIN_LOGIN_AS = 'adminLoginAs';
 export const BOOLEAN_FALSE = false;
+export const GLOBAL_ADMINISTRATORS = 'global/administrators';
+export const ADMINISTRATORS = 'administrators';
+export const DISPLAYNAME = 'displayName';
+export const FETCH_DATA_LIMIT = 50;
