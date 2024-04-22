@@ -91,8 +91,56 @@ const CreateResource: FC<{
 
 	const [wizardData, setWizardData] = useState();
 
+	const createErrorSnackbar = useCallback(
+		(label: string): void => {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[createSnackbar]
+	);
+
+	const memoizedValue: any = useMemo(
+		() => ({
+			displayName: resourceDetail?.displayName,
+			zimbraNotes: resourceDetail?.zimbraNotes,
+			zimbraCalResMaxNumConflictsAllowed: resourceDetail?.zimbraCalResMaxNumConflictsAllowed,
+			zimbraCalResMaxPercentConflictsAllowed:
+				resourceDetail?.zimbraCalResMaxPercentConflictsAllowed,
+			zimbraCOSId: resourceDetail?.zimbraCOSId?.value,
+			zimbraCalResType: resourceDetail?.zimbraCalResType?.value,
+			zimbraAccountStatus: resourceDetail?.zimbraAccountStatus?.value,
+			zimbraCalResAutoDeclineRecurring: resourceDetail?.zimbraCalResAutoDeclineRecurring?.value,
+			zimbraCalResAutoAcceptDecline:
+				resourceDetail?.schedulePolicyType?.value === 1 ||
+				resourceDetail?.schedulePolicyType?.value === 3
+					? 'TRUE'
+					: 'FALSE',
+			zimbraCalResAutoDeclineIfBusy:
+				resourceDetail?.schedulePolicyType?.value === 1 ||
+				resourceDetail?.schedulePolicyType?.value === 2
+					? 'TRUE'
+					: 'FALSE'
+		}),
+		[
+			resourceDetail?.displayName,
+			resourceDetail?.schedulePolicyType?.value,
+			resourceDetail?.zimbraAccountStatus?.value,
+			resourceDetail?.zimbraCOSId?.value,
+			resourceDetail?.zimbraCalResAutoDeclineRecurring?.value,
+			resourceDetail?.zimbraCalResMaxNumConflictsAllowed,
+			resourceDetail?.zimbraCalResMaxPercentConflictsAllowed,
+			resourceDetail?.zimbraCalResType?.value,
+			resourceDetail?.zimbraNotes
+		]
+	);
+
 	const wizardSteps = useMemo(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		() => [
 			{
 				name: 'details',
@@ -201,54 +249,18 @@ const CreateResource: FC<{
 						disabled={!resourceDetail?.displayName}
 						onClick={(): void => {
 							if (resourceDetail?.password !== '' && resourceDetail?.password?.length < 6) {
-								createSnackbar({
-									key: 'error',
-									type: 'error',
-									label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
+								createErrorSnackbar(
+									t('label.password_lenght_msg', 'Password should be more than 5 character')
+								);
 							} else if (resourceDetail?.password !== resourceDetail?.repeatPassword) {
-								createSnackbar({
-									key: 'error',
-									type: 'error',
-									label: t(
-										'label.password_and repeat_password_not_match',
-										'Passwords do not match'
-									),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
+								createErrorSnackbar(
+									t('label.password_and repeat_password_not_match', 'Passwords do not match')
+								);
 							} else {
 								const name = `${resourceDetail?.name}@${resourceDetail.domain}`;
-								const attr: any = {
-									displayName: resourceDetail?.displayName,
-									zimbraNotes: resourceDetail?.zimbraNotes,
-									zimbraCalResMaxNumConflictsAllowed:
-										resourceDetail?.zimbraCalResMaxNumConflictsAllowed,
-									zimbraCalResMaxPercentConflictsAllowed:
-										resourceDetail?.zimbraCalResMaxPercentConflictsAllowed,
-									zimbraCOSId: resourceDetail?.zimbraCOSId?.value,
-									zimbraCalResType: resourceDetail?.zimbraCalResType?.value,
-									zimbraAccountStatus: resourceDetail?.zimbraAccountStatus?.value,
-									zimbraCalResAutoDeclineRecurring:
-										resourceDetail?.zimbraCalResAutoDeclineRecurring?.value,
-									zimbraCalResAutoAcceptDecline:
-										resourceDetail?.schedulePolicyType?.value === 1 ||
-										resourceDetail?.schedulePolicyType?.value === 3
-											? 'TRUE'
-											: 'FALSE',
-									zimbraCalResAutoDeclineIfBusy:
-										resourceDetail?.schedulePolicyType?.value === 1 ||
-										resourceDetail?.schedulePolicyType?.value === 2
-											? 'TRUE'
-											: 'FALSE'
-								};
 								const attrList: { n: string; _content: string }[] = [];
-								Object.keys(attr).forEach((ele: any) =>
-									attrList.push({ n: ele, _content: attr[ele] })
+								Object.keys(memoizedValue).forEach((ele: any) =>
+									attrList.push({ n: ele, _content: memoizedValue[ele] })
 								);
 								resourceDetail?.sendInviteList.forEach((item: any) => {
 									attrList.push({
@@ -280,20 +292,13 @@ const CreateResource: FC<{
 			resourceDetail?.repeatPassword,
 			resourceDetail?.name,
 			resourceDetail.domain,
-			resourceDetail?.zimbraNotes,
-			resourceDetail?.zimbraCalResMaxNumConflictsAllowed,
-			resourceDetail?.zimbraCalResMaxPercentConflictsAllowed,
-			resourceDetail?.zimbraCOSId?.value,
-			resourceDetail?.zimbraCalResType?.value,
-			resourceDetail?.zimbraAccountStatus?.value,
-			resourceDetail?.zimbraCalResAutoDeclineRecurring?.value,
-			resourceDetail?.schedulePolicyType?.value,
 			resourceDetail?.sendInviteList,
 			resourceDetail?.signaturelist,
 			resourceDetail?.zimbraPrefCalendarAutoAcceptSignatureId,
 			resourceDetail?.zimbraPrefCalendarAutoDeclineSignatureId,
 			resourceDetail?.zimbraPrefCalendarAutoDenySignatureId,
-			createSnackbar,
+			createErrorSnackbar,
+			memoizedValue,
 			createResourceReq
 		]
 	);
