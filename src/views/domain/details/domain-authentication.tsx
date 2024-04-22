@@ -75,7 +75,7 @@ const DomainAuthentication: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
-	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
+	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean | null>(null);
 	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 	const [zimbraAuthLdapBindDn, setZimbraAuthLdapBindDn] = useState<string>('');
 	const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
@@ -209,7 +209,7 @@ const DomainAuthentication: FC = () => {
 			} else {
 				obj.zimbraPasswordChangeListener = '';
 			}
-			if (obj.zimbraAuthFallbackToLocal) {
+			if (obj.zimbraAuthFallbackToLocal !== null) {
 				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
 			}
 			if (obj.zimbraAuthLdapBindDn) {
@@ -391,10 +391,13 @@ const DomainAuthentication: FC = () => {
 			n: 'zimbraPasswordChangeListener',
 			_content: zimbraPasswordChangeListener
 		});
-		attributes.push({
-			n: 'zimbraAuthFallbackToLocal',
-			_content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE'
-		});
+		if (zimbraAuthFallbackToLocal !== null) {
+			attributes.push({
+				n: 'zimbraAuthFallbackToLocal',
+				_content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE'
+			});
+		}
+
 		attributes.push({
 			n: 'zimbraAuthLdapBindDn',
 			_content: zimbraAuthLdapBindDn
@@ -896,13 +899,13 @@ const DomainAuthentication: FC = () => {
 								)}
 								<Padding vertical="small" horizontal="small" width="100%">
 									<Switch
-										value={zimbraAuthFallbackToLocal}
-										label={t(
-											'label.fall_back_to_local_msg',
-											'Try local password management in case of failure with other methods'
-										)}
+										value={!!zimbraAuthFallbackToLocal}
+										label={t('label.enforce_external_auth', 'Enforce External Auth (LDAP/AD)')}
 										onClick={authFallbackToLocal}
 										iconColor="primary"
+										disabled={
+											zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
+										}
 									/>
 								</Padding>
 							</ListRow>

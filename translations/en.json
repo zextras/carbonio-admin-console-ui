@@ -1213,6 +1213,7 @@
         "end_user_webapp": "WebApp End user",
         "enduser_login_redirect_url": "LogIn redirect destination (URL)",
         "enduser_logout_redirect_url": "On Logout, redirect the User to (URL)",
+        "enforce_external_auth": "Enforce External Auth (LDAP/AD)",
         "enter_email_address": "Enter E-mail address",
         "enter_valid_email_address": "Enter valid email Address",
         "entity_id": "Entity ID",
