@@ -210,7 +210,9 @@ const DomainAuthentication: FC = () => {
 				obj.zimbraPasswordChangeListener = '';
 			}
 			if (obj.zimbraAuthFallbackToLocal !== null) {
-				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
+				setZimbraAuthFallbackToLocal(
+					obj.zimbraAuthFallbackToLocal === 'TRUE' && isValidLdapBaseUrl(obj.zimbraAuthLdapURL)
+				);
 			}
 			if (obj.zimbraAuthLdapBindDn) {
 				setZimbraAuthLdapBindDn(obj.zimbraAuthLdapBindDn);
