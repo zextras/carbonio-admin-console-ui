@@ -501,7 +501,7 @@ const QuarantineList: FC = () => {
 							return {
 								...found,
 								content: found.content.concat(
-									`<img src='/service/home/~/?auth=co&loc=en&id=${id}&part=${part?.part}'>` ?? ''
+									`<img src='/service/home/~/?auth=co&loc=en&id=${id}&part=${part?.part}'>`
 								)
 							};
 						}
@@ -837,10 +837,6 @@ const QuarantineList: FC = () => {
 	useEffect(() => {
 		getQuarantineMsgData();
 	}, [getQuarantineMsgData]);
-
-	const onChange = (): void => {
-		null;
-	};
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const createAccountAPI = useCallback((): void => {
