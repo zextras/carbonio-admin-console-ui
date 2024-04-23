@@ -2291,6 +2291,6 @@ export const convertToAscii = (inputString: string): string => {
 };
 
 export const isValidDecimalNumber = (value: string): boolean => {
-	const regex = /^[0-9]*\.?[0-9]*$/;
+	const regex = /^\d*\.?\d*$/;
 	return regex.test(value);
 };

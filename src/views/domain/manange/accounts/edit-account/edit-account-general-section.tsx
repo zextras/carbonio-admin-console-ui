@@ -207,12 +207,17 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	useEffect(() => {
-		if (accountDetail?.zimbraMailQuota !== undefined && accountQuotaGBValue === '') {
+		if (
+			initAccountDetail?.zimbraMailQuota &&
+			accountDetail?.zimbraMailQuota === initAccountDetail?.zimbraMailQuota
+		) {
 			setAccountQuotaGBValue(
-				accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toFixed(3) : ''
+				initAccountDetail.zimbraMailQuota
+					? BytesToGB(initAccountDetail.zimbraMailQuota).toFixed(3)
+					: ''
 			);
 		}
-	}, [accountDetail.zimbraMailQuota, accountQuotaGBValue]);
+	}, [accountDetail.zimbraMailQuota, initAccountDetail.zimbraMailQuota]);
 
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -417,14 +422,17 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	useEffect(() => {
-		if (initAccountDetail?.filesQuotaLimit !== undefined) {
+		if (
+			initAccountDetail?.filesQuotaLimit &&
+			initAccountDetail?.filesQuotaLimit === accountDetail?.filesQuotaLimit
+		) {
 			setFileQuotaLimitGBValue(
 				initAccountDetail?.filesQuotaLimit
 					? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)
 					: ''
 			);
 		}
-	}, [initAccountDetail?.filesQuotaLimit]);
+	}, [accountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaLimit]);
 
 	useEffect(() => {
 		if (cosDetail?.zimbraMailQuota !== undefined && cosAccountQuotaGBValue === '') {
