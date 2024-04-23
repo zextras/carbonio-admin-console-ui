@@ -21,7 +21,8 @@ import {
 	Modal,
 	Padding,
 	Table,
-	Quota
+	Quota,
+	InputProps
 } from '@zextras/carbonio-design-system';
 import { debounce, map, snakeCase } from 'lodash';
 import moment from 'moment';
@@ -88,7 +89,8 @@ import {
 	ABQStatus,
 	GbToBytes,
 	BytesToGB,
-	backupEnabledStatus
+	backupEnabledStatus,
+	isValidDecimalNumber
 } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -108,6 +110,15 @@ const CustomIcon = styled(Icon)`
 	height: 20px;
 `;
 
+interface InputExtendProps extends InputProps {
+	highlighted: boolean;
+}
+
+const HighlightedInput = styled(Input)<InputExtendProps>`
+	background-color: ${({ highlighted }): any => (highlighted ? '#D5E3F6' : 'gray5')};
+	transition: background-color 3s ease;
+`;
+
 const ZimbraAuthMethod = {
 	INTERNAL: 'zimbra',
 	LDAP: 'ldap',
@@ -117,11 +128,7 @@ const ZimbraAuthMethod = {
 const EditAccountGeneralSection: FC<{
 	setChange: any;
 	handleMatomoTrackerEvent: (value: string) => void;
-}> = ({
-	setChange,
-	handleMatomoTrackerEvent
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-}) => {
+}> = ({ setChange, handleMatomoTrackerEvent }) => {
 	const createSnackbar = useSnackbar();
 	const context = useContext(AccountContext);
 	const {
@@ -165,6 +172,9 @@ const EditAccountGeneralSection: FC<{
 	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState('');
 	const [cosAccountQuotaGBValue, setCosAccountQuotaGBValue] = useState('');
 	const [specificAccountQuotaGBValue, setSpecificAccountQuotaGBValue] = useState('');
+	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
+	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
+	const [highlightFileQuota, setHighlightFileQuota] = useState(false);
 
 	const sessionTableHeader: any[] = useMemo(
 		() => [
@@ -233,10 +243,13 @@ const EditAccountGeneralSection: FC<{
 
 	const changeAccountQuota = useCallback(
 		(e) => {
+			if (!isValidDecimalNumber(e.target.value)) return;
 			const decimalPoints = e.target.value?.split('.')[1];
 			if (!!decimalPoints && decimalPoints?.length > 3) {
+				setShowAccountQuotaLimitMsg(true);
 				return;
 			}
+			setShowAccountQuotaLimitMsg(false);
 			setAccountQuotaGBValue(e.target.value);
 			setAccountDetail((prev: any) => ({
 				...prev,
@@ -248,10 +261,13 @@ const EditAccountGeneralSection: FC<{
 
 	const changeFileQuotaLimit = useCallback(
 		(e) => {
+			if (!isValidDecimalNumber(e.target.value)) return;
 			const decimalPoints = e.target.value?.split('.')[1];
 			if (!!decimalPoints && decimalPoints?.length > 3) {
+				setShowFileQuotaLimitMsg(true);
 				return;
 			}
+			setShowFileQuotaLimitMsg(false);
 			setFileQuotaLimitGBValue(e.target.value);
 			setAccountDetail((prev: any) => ({
 				...prev,
@@ -658,6 +674,23 @@ const EditAccountGeneralSection: FC<{
 	const focusFileQuota = useCallback(() => {
 		if (fileQuotaRef?.current) {
 			fileQuotaRef.current?.focus();
+			fileQuotaRef?.current?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'center'
+			});
+
+			setHighlightFileQuota(true);
+
+			// Reset the highlight after the transition ends
+			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+			const transitionEndHandler = () => {
+				setHighlightFileQuota(false);
+				// Remove the event listener
+				document.removeEventListener('transitionend', transitionEndHandler);
+			};
+
+			// Listen for the 'transitionend' event to reset the highlight
+			document.addEventListener('transitionend', transitionEndHandler, { once: true });
 		}
 	}, []);
 
@@ -875,7 +908,12 @@ const EditAccountGeneralSection: FC<{
 				) : (
 					<></>
 				)}
-				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+				<Row
+					width="100%"
+					padding={{ top: 'large', left: 'large' }}
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+				>
 					<Row width={!isAdvanced ? '100%' : '49%'} mainAlignment="flex-start">
 						<InheritedInput
 							label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
@@ -886,28 +924,45 @@ const EditAccountGeneralSection: FC<{
 							inputName="zimbraMailQuota"
 							onChange={changeAccountQuota}
 							onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
-							description={t(
-								'label.maximum_3_digits_allowed_decimal_point',
-								'Maximum 3 digits allowed after the decimal point'
-							)}
 							onFocus={(): void => handleMatomoTrackerEvent(MAILBOX_QUOTA_LIMIT_GB)}
 						/>
+						{showAccountQuotaLimitMsg && (
+							<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+								<Padding top="small">
+									<Text size="extrasmall" weight="regular" color="primary">
+										{t(
+											'label.maximum_3_digits_allowed_decimal_point',
+											'Maximum 3 digits allowed after the decimal point'
+										)}
+									</Text>
+								</Padding>
+							</Container>
+						)}
 					</Row>
 					{isAdvanced && (
 						<Row width="49%" mainAlignment="flex-start">
-							<Input
+							<HighlightedInput
 								backgroundColor="gray5"
 								label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
 								value={fileQuotaLimitGBValue}
 								onChange={changeFileQuotaLimit}
 								inputName="filesQuotaLimit"
 								inputRef={fileQuotaRef}
-								description={t(
-									'label.maximum_3_digits_allowed_decimal_point',
-									'Maximum 3 digits allowed after the decimal point'
-								)}
+								highlighted={highlightFileQuota}
 								onFocus={(): void => handleMatomoTrackerEvent(FILES_QUOTA_LIMIT_GB)}
 							/>
+							{showFileQuotaLimitMsg && (
+								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+									<Padding top="small">
+										<Text size="extrasmall" weight="regular" color="primary">
+											{t(
+												'label.maximum_3_digits_allowed_decimal_point',
+												'Maximum 3 digits allowed after the decimal point'
+											)}
+										</Text>
+									</Padding>
+								</Container>
+							)}
 						</Row>
 					)}
 				</Row>

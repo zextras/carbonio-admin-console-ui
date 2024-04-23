@@ -2289,3 +2289,8 @@ export const convertToAscii = (inputString: string): string => {
 	const normalizedString = inputString.normalize('NFKD');
 	return normalizedString.replace(/[^\p{ASCII}]/gu, '');
 };
+
+export const isValidDecimalNumber = (value: string): boolean => {
+	const regex = /^[0-9]*\.?[0-9]*$/;
+	return regex.test(value);
+};
