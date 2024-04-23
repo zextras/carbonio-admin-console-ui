@@ -108,6 +108,7 @@ const ManageDelegates: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
 	const screenMode = useScreenMode();
@@ -1109,7 +1110,9 @@ const ManageDelegates: FC = () => {
 							userSessionList,
 							setAllUserSessionList,
 							allUserSessionList,
-							setUserSessionList
+							setUserSessionList,
+							defaultCOS,
+							setDefaultCOS
 						}}
 					>
 						{showAccountDetailView && (

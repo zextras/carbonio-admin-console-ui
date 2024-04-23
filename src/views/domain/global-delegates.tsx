@@ -73,6 +73,7 @@ const GlobalDelegates: FC = () => {
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
@@ -803,7 +804,9 @@ const GlobalDelegates: FC = () => {
 									userSessionList,
 									setAllUserSessionList,
 									allUserSessionList,
-									setUserSessionList
+									setUserSessionList,
+									defaultCOS,
+									setDefaultCOS
 								}}
 							>
 								{showAccountDetailView && (

@@ -96,6 +96,7 @@ const ManageAccounts: FC = () => {
 	const [directMemberList, setDirectMemberList] = useState<any>({});
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const [otpList, setOtpList] = useState<any[]>([]);
 	const [credentialList, setCredentialList] = useState<any[]>([]);
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
@@ -522,6 +523,7 @@ const ManageAccounts: FC = () => {
 					setAccountDetail({ ...obj });
 					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
+					setDefaultCOS(!obj.zimbraCOSId);
 					if (isAdvanced) {
 						getListOtp(data?.account?.[0]?.name);
 						getCredentialList(data?.account?.[0]?.name);
@@ -1183,7 +1185,9 @@ const ManageAccounts: FC = () => {
 									userSessionList,
 									setAllUserSessionList,
 									allUserSessionList,
-									setUserSessionList
+									setUserSessionList,
+									defaultCOS,
+									setDefaultCOS
 								}}
 							>
 								{/* This may require in future
