@@ -22,6 +22,7 @@ const InheritedInput: FC<{
 	pref?: any;
 	onClick?: any;
 	onFocus?: any;
+	description?: any;
 }> = ({
 	label,
 	subValue,
@@ -35,7 +36,8 @@ const InheritedInput: FC<{
 	hasError = false,
 	pref = {},
 	onClick,
-	onFocus
+	onFocus,
+	description
 }) => {
 	const [t] = useTranslation();
 	return (
@@ -85,6 +87,7 @@ const InheritedInput: FC<{
 					)}
 				</>
 			)}
+			description={description}
 			{...pref}
 		/>
 	);

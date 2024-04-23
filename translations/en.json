@@ -1435,6 +1435,7 @@
         "max_mainbox_quota_for_the_mails_in_gb": "Max mailbox quota for the Mails (GB)",
         "max_manageable_account_for_the_domain": "Max manageable account for the domain (0=unlimited)",
         "max_quota_allowed": "Max Quota Allowed",
+        "maximum_3_digits_allowed_decimal_point": "Maximum 3 digits allowed after the decimal point",
         "maximum_conflict": "Maximum Conflict",
         "maximum_conflict_allowed": "Maximum Conflict Allowed",
         "maximum_handled_accounts": "Maximum Handled Accounts",

@@ -199,7 +199,7 @@ const EditAccountGeneralSection: FC<{
 	useEffect(() => {
 		if (accountDetail?.zimbraMailQuota !== undefined && accountQuotaGBValue === '') {
 			setAccountQuotaGBValue(
-				accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toFixed(2) : ''
+				accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toFixed(3) : ''
 			);
 		}
 	}, [accountDetail.zimbraMailQuota, accountQuotaGBValue]);
@@ -233,6 +233,10 @@ const EditAccountGeneralSection: FC<{
 
 	const changeAccountQuota = useCallback(
 		(e) => {
+			const decimalPoints = e.target.value?.split('.')[1];
+			if (!!decimalPoints && decimalPoints?.length > 3) {
+				return;
+			}
 			setAccountQuotaGBValue(e.target.value);
 			setAccountDetail((prev: any) => ({
 				...prev,
@@ -244,6 +248,10 @@ const EditAccountGeneralSection: FC<{
 
 	const changeFileQuotaLimit = useCallback(
 		(e) => {
+			const decimalPoints = e.target.value?.split('.')[1];
+			if (!!decimalPoints && decimalPoints?.length > 3) {
+				return;
+			}
 			setFileQuotaLimitGBValue(e.target.value);
 			setAccountDetail((prev: any) => ({
 				...prev,
@@ -393,17 +401,19 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	useEffect(() => {
-		if (accountDetail?.filesQuotaLimit !== undefined && fileQuotaLimitGBValue === '') {
+		if (initAccountDetail?.filesQuotaLimit !== undefined) {
 			setFileQuotaLimitGBValue(
-				accountDetail?.filesQuotaLimit ? BytesToGB(accountDetail?.filesQuotaLimit).toFixed(2) : ''
+				initAccountDetail?.filesQuotaLimit
+					? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)
+					: ''
 			);
 		}
-	}, [accountDetail?.filesQuotaLimit, fileQuotaLimitGBValue]);
+	}, [initAccountDetail?.filesQuotaLimit]);
 
 	useEffect(() => {
 		if (cosDetail?.zimbraMailQuota !== undefined && cosAccountQuotaGBValue === '') {
 			setCosAccountQuotaGBValue(
-				cosDetail?.zimbraMailQuota ? BytesToGB(cosDetail?.zimbraMailQuota).toFixed(2) : ''
+				cosDetail?.zimbraMailQuota ? BytesToGB(cosDetail?.zimbraMailQuota).toFixed(3) : ''
 			);
 		}
 	}, [cosAccountQuotaGBValue, cosDetail?.zimbraMailQuota]);
@@ -412,7 +422,7 @@ const EditAccountGeneralSection: FC<{
 		if (accSpecificDetail?.zimbraMailQuota !== undefined && specificAccountQuotaGBValue === '') {
 			setSpecificAccountQuotaGBValue(
 				accSpecificDetail?.zimbraMailQuota
-					? BytesToGB(accSpecificDetail?.zimbraMailQuota).toFixed(2)
+					? BytesToGB(accSpecificDetail?.zimbraMailQuota).toFixed(3)
 					: ''
 			);
 		}
@@ -676,8 +686,8 @@ const EditAccountGeneralSection: FC<{
 						</Row>
 						<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
 							<Text size="extrasmall" color="gray0">
-								{BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(2)} {t('label.of', 'of')}{' '}
-								{BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(2)} {t('label.gb', 'GB')}
+								{BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(3)} {t('label.of', 'of')}{' '}
+								{BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)} {t('label.gb', 'GB')}
 							</Text>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%">
@@ -876,6 +886,10 @@ const EditAccountGeneralSection: FC<{
 							inputName="zimbraMailQuota"
 							onChange={changeAccountQuota}
 							onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
+							description={t(
+								'label.maximum_3_digits_allowed_decimal_point',
+								'Maximum 3 digits allowed after the decimal point'
+							)}
 							onFocus={(): void => handleMatomoTrackerEvent(MAILBOX_QUOTA_LIMIT_GB)}
 						/>
 					</Row>
@@ -888,6 +902,10 @@ const EditAccountGeneralSection: FC<{
 								onChange={changeFileQuotaLimit}
 								inputName="filesQuotaLimit"
 								inputRef={fileQuotaRef}
+								description={t(
+									'label.maximum_3_digits_allowed_decimal_point',
+									'Maximum 3 digits allowed after the decimal point'
+								)}
 								onFocus={(): void => handleMatomoTrackerEvent(FILES_QUOTA_LIMIT_GB)}
 							/>
 						</Row>
