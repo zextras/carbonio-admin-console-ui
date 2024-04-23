@@ -203,11 +203,11 @@ const DomainAuthentication: FC = () => {
 				setter: (value: T) => void,
 				defaultValue: T
 			) => {
-				if (obj[key] === null || obj[key] === undefined) {
+				if (obj[key] ?? defaultValue) {
+					setter(obj[key]);
+				} else {
 					obj[key] = defaultValue;
 					setter(defaultValue);
-				} else {
-					setter(obj[key]);
 				}
 			};
 
@@ -215,7 +215,7 @@ const DomainAuthentication: FC = () => {
 				obj.zimbraAuthMech
 					? DOMAIN_AUTH_LIST.find(
 							(item: { value?: string }) => item.value === obj.zimbraAuthMech
-					  ) || DOMAIN_AUTH_LIST[0]
+					  ) ?? DOMAIN_AUTH_LIST[0]
 					: DOMAIN_AUTH_LIST[0]
 			);
 
