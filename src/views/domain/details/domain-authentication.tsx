@@ -26,7 +26,8 @@ import {
 	Switch,
 	Select,
 	Icon,
-	Popper
+	Popper,
+	Tooltip as TooltipDefault
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import _ from 'lodash';
@@ -210,9 +211,7 @@ const DomainAuthentication: FC = () => {
 				obj.zimbraPasswordChangeListener = '';
 			}
 			if (obj.zimbraAuthFallbackToLocal !== null) {
-				setZimbraAuthFallbackToLocal(
-					obj.zimbraAuthFallbackToLocal === 'TRUE' && isValidLdapBaseUrl(obj.zimbraAuthLdapURL)
-				);
+				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
 			}
 			if (obj.zimbraAuthLdapBindDn) {
 				setZimbraAuthLdapBindDn(obj.zimbraAuthLdapBindDn);
@@ -900,15 +899,39 @@ const DomainAuthentication: FC = () => {
 									</Padding>
 								)}
 								<Padding vertical="small" horizontal="small" width="100%">
-									<Switch
-										value={!!zimbraAuthFallbackToLocal}
-										label={t('label.enforce_external_auth', 'Enforce External Auth (LDAP/AD)')}
-										onClick={authFallbackToLocal}
-										iconColor="primary"
-										disabled={
-											zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
+									<TooltipDefault
+										label={
+											zimbraAuthFallbackToLocal === null
+												? t(
+														'label.enable_global_enforce_external_auth_ldap',
+														'You must enable the Global Enforce External Auth (LDAP/AD) first'
+												  )
+												: t(
+														'label.please_add_ldap_url_endpoint_first',
+														'To enable this, please add a ldap URL endpoint first'
+												  )
 										}
-									/>
+										disabled={
+											!(
+												// eslint-disable-next-line max-len
+												(
+													zimbraAuthFallbackToLocal === null ||
+													!isValidLdapBaseUrl(zimbraAuthLdapURL)
+												)
+											)
+										}
+									>
+										<Switch
+											value={!!zimbraAuthFallbackToLocal && isValidLdapBaseUrl(zimbraAuthLdapURL)}
+											label={t('label.enforce_external_auth', 'Enforce External Auth (LDAP/AD)')}
+											onClick={authFallbackToLocal}
+											iconColor="primary"
+											disabled={
+												// eslint-disable-next-line max-len
+												zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
+											}
+										/>
+									</TooltipDefault>
 								</Padding>
 							</ListRow>
 							<ListRow>
