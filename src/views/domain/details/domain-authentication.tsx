@@ -190,55 +190,52 @@ const DomainAuthentication: FC = () => {
 
 	const FilterTooltip: FC = useCallback(() => <Tooltip items={FILTER_TOOLTIP} />, [FILTER_TOOLTIP]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
-			const obj: objectType = {};
+			const obj: Record<string, any> = {};
 			domainInformation.forEach((item: Attribute) => {
 				obj[item?.n] = item._content;
 			});
+
+			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+			const handleNullable = <T extends string | boolean>(
+				key: keyof typeof obj,
+				setter: (value: T) => void,
+				defaultValue: T
+			) => {
+				if (obj[key] === null || obj[key] === undefined) {
+					obj[key] = defaultValue;
+					setter(defaultValue);
+				} else {
+					setter(obj[key]);
+				}
+			};
+
 			setZimbraAuthMech(
 				obj.zimbraAuthMech
-					? DOMAIN_AUTH_LIST.find((item: { value?: string }) => item.value === obj.zimbraAuthMech)
+					? DOMAIN_AUTH_LIST.find(
+							(item: { value?: string }) => item.value === obj.zimbraAuthMech
+					  ) || DOMAIN_AUTH_LIST[0]
 					: DOMAIN_AUTH_LIST[0]
 			);
-			if (!obj.zimbraAuthMech) {
-				obj.zimbraAuthMech = '';
-			}
-			if (obj.zimbraPasswordChangeListener) {
-				setZimbraPasswordChangeListener(obj.zimbraPasswordChangeListener);
-			} else {
-				obj.zimbraPasswordChangeListener = '';
-			}
-			if (obj.zimbraAuthFallbackToLocal !== null) {
-				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
-			}
-			if (obj.zimbraAuthLdapBindDn) {
-				setZimbraAuthLdapBindDn(obj.zimbraAuthLdapBindDn);
-			} else {
-				obj.zimbraAuthLdapBindDn = '';
-			}
-			if (obj.zimbraAuthLdapURL) {
-				setZimbraAuthLdapURL(obj.zimbraAuthLdapURL);
-			} else {
-				obj.zimbraAuthLdapURL = '';
-			}
-			if (obj.zimbraAuthLdapSearchFilter) {
-				setZimbraAuthLdapSearchFilter(obj.zimbraAuthLdapSearchFilter);
-			} else {
-				obj.zimbraAuthLdapSearchFilter = '';
-			}
-			if (obj.zimbraAuthLdapSearchBase) {
-				setZimbraAuthLdapSearchBase(obj.zimbraAuthLdapSearchBase);
-			} else {
-				obj.zimbraAuthLdapSearchBase = '';
-			}
-			if (obj.zimbraAuthLdapStartTlsEnabled) {
-				setZimbraAuthLdapStartTlsEnabled(obj.zimbraAuthLdapStartTlsEnabled === 'TRUE');
-			}
-			if (obj.zimbraFeatureResetPasswordStatus) {
-				setZimbraFeatureResetPasswordStatus(obj.zimbraFeatureResetPasswordStatus === ENABLED);
-			}
+
+			handleNullable<string>('zimbraPasswordChangeListener', setZimbraPasswordChangeListener, '');
+			handleNullable<boolean>('zimbraAuthFallbackToLocal', setZimbraAuthFallbackToLocal, false);
+			handleNullable<string>('zimbraAuthLdapBindDn', setZimbraAuthLdapBindDn, '');
+			handleNullable<string>('zimbraAuthLdapURL', setZimbraAuthLdapURL, '');
+			handleNullable<string>('zimbraAuthLdapSearchFilter', setZimbraAuthLdapSearchFilter, '');
+			handleNullable<string>('zimbraAuthLdapSearchBase', setZimbraAuthLdapSearchBase, '');
+			handleNullable<boolean>(
+				'zimbraAuthLdapStartTlsEnabled',
+				setZimbraAuthLdapStartTlsEnabled,
+				false
+			);
+			handleNullable<boolean>(
+				'zimbraFeatureResetPasswordStatus',
+				setZimbraFeatureResetPasswordStatus,
+				false
+			);
+
 			setDomainAuthData(obj);
 			setIsDirty(false);
 		}
