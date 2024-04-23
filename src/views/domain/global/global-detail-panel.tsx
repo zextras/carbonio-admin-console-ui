@@ -31,23 +31,9 @@ import {
 } from '../../../constants';
 import { getAllConfig } from '../../../services/get-all-config';
 import { modifyConfig } from '../../../services/modify-config';
+import { useConfigStore } from '../../../store/config/store';
 import ListRow from '../../list/list-row';
 import { isValidEmail } from '../../utility/utils';
-
-const ovelayStyle = styled(Container)`
-	position: fixed;
-	width: 70.35rem;
-	top: 6.5rem;
-	right: 0;
-	bottom: 0;
-	height: auto;
-	max-height: 100%;
-	overflow: hidden;
-	background: #0d0d0d;
-	opacity: 0.4;
-	z-index: 11;
-	padding-top: 2rem;
-`;
 
 const RelativeContainer = styled(Container)`
 	position: relative;
@@ -57,17 +43,17 @@ const GlobalDetailPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const [carbonioNotificationData, setCarbonioNotificationData] = useState<any>({});
-	const [initCarbonioNotificationData, setinitCarbonioNotificationData] = useState<{
+	const [initCarbonioNotificationData, setInitCarbonioNotificationData] = useState<{
 		[key: string]: string | { label: string }[];
 	}>({});
 	const [hasCarbonioNotificationFromError, setHasCarbonioNotificationFromError] = useState(false);
 	const [isDirty, setIsDirty] = useState(false);
-	const [isLoading, setIsLoading] = useState(false);
 
 	const [globalDisclaimerDetail, setGlobalDisclaimerDetail] = useState<GlobalDisclaimerType>();
 	const [globalConfigData, setGlobalConfigData] = useState<Array<any>>([]);
 	const [globalDisclaimerInitialDetail, setGlobalDisclaimerInitialDetail] =
 		useState<GlobalDisclaimerType>();
+	const updateConfig = useConfigStore((state) => state.updateConfig);
 	const setGlobalInitialValue = useCallback((key: string, value: unknown): void => {
 		setGlobalDisclaimerInitialDetail((prev: any) => ({ ...prev, [key]: value }));
 	}, []);
@@ -87,8 +73,8 @@ const GlobalDetailPanel: FC = () => {
 	useEffect(() => {
 		if (
 			Object.entries(carbonioNotificationData).length !== 0 &&
-			(carbonioNotificationData.carbonioNotificationFrom !== '' ||
-				carbonioNotificationData.carbonioNotificationFrom !== undefined) &&
+			carbonioNotificationData.carbonioNotificationFrom !== '' &&
+			carbonioNotificationData.carbonioNotificationFrom !== undefined &&
 			carbonioNotificationData.carbonioNotificationRecipients?.length !== 0 &&
 			carbonioNotificationData.carbonioNotificationRecipients?.length !== undefined
 		) {
@@ -137,10 +123,7 @@ const GlobalDetailPanel: FC = () => {
 			const zimbraDomainMandatoryMailSignatureEnabled = data.filter(
 				(item: Record<string, string>) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
 			);
-			if (
-				zimbraDomainMandatoryMailSignatureEnabled &&
-				zimbraDomainMandatoryMailSignatureEnabled[0]?._content
-			) {
+			if (zimbraDomainMandatoryMailSignatureEnabled[0]?._content) {
 				setInitialAndCurrentValue(
 					ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 					zimbraDomainMandatoryMailSignatureEnabled[0]?._content === TRUE
@@ -152,7 +135,7 @@ const GlobalDetailPanel: FC = () => {
 			const zimbraAmavisOutboundDisclaimersOnly = data.filter(
 				(item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY
 			);
-			if (zimbraAmavisOutboundDisclaimersOnly && zimbraAmavisOutboundDisclaimersOnly[0]?._content) {
+			if (zimbraAmavisOutboundDisclaimersOnly[0]?._content) {
 				setInitialAndCurrentValue(
 					ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
 					zimbraAmavisOutboundDisclaimersOnly[0]?._content === TRUE
@@ -178,57 +161,22 @@ const GlobalDetailPanel: FC = () => {
 				}
 			});
 			setCarbonioNotificationData(obj);
-			setinitCarbonioNotificationData(obj);
-			if (res && res?.a) {
+			setInitCarbonioNotificationData(obj);
+			if (res?.a) {
 				setGlobalConfigData(res?.a);
 			}
 		});
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-	const handleOnSave = (): void => {
-		const attributes: Attribute[] &
-			{
-				n: string;
-				_content: string[];
-			}[] = [];
-		if (
-			isValidEmail(carbonioNotificationData.carbonioNotificationFrom ?? '') ||
-			carbonioNotificationData.carbonioNotificationFrom === ''
-		) {
-			attributes.push({
-				n: 'carbonioNotificationFrom',
-				_content: carbonioNotificationData.carbonioNotificationFrom
-			});
-			carbonioNotificationData.carbonioNotificationRecipients.forEach(
-				// eslint-disable-next-line array-callback-return
-				(item: { label: string }): void => {
-					attributes.push({
-						n: 'carbonioNotificationRecipients',
-						_content: item?.label
-					});
-				}
-			);
-			setHasCarbonioNotificationFromError(false);
-		} else {
-			setHasCarbonioNotificationFromError(true);
-		}
-
-		attributes.push({
-			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-			_content: globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
-		});
-
-		attributes.push({
-			n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
-			_content: globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE
-		});
-
-		if (attributes && attributes.length > 0) {
-			setIsLoading(true);
+	const callRequest = useCallback(
+		(attributes) => {
 			modifyConfig(attributes)
 				.then(() => {
 					getAllConfigData();
+					updateConfig(
+						ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+						globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
+					);
 					createSnackbar({
 						key: 'success',
 						type: 'success',
@@ -280,7 +228,6 @@ const GlobalDetailPanel: FC = () => {
 							});
 						}, 4000);
 					}
-					setIsLoading(false);
 				})
 				.catch(() => {
 					createSnackbar({
@@ -291,8 +238,59 @@ const GlobalDetailPanel: FC = () => {
 						hideButton: true,
 						replace: true
 					});
-					setIsLoading(false);
 				});
+		},
+		[
+			createSnackbar,
+			globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly,
+			globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled,
+			globalDisclaimerInitialDetail?.zimbraAmavisOutboundDisclaimersOnly,
+			globalDisclaimerInitialDetail?.zimbraDomainMandatoryMailSignatureEnabled,
+			t,
+			updateConfig
+		]
+	);
+
+	const handleOnSave = (): void => {
+		const attributes: Attribute[] &
+			{
+				n: string;
+				_content: string[];
+			}[] = [];
+		if (
+			isValidEmail(carbonioNotificationData.carbonioNotificationFrom ?? '') ||
+			carbonioNotificationData.carbonioNotificationFrom === ''
+		) {
+			attributes.push({
+				n: 'carbonioNotificationFrom',
+				_content: carbonioNotificationData.carbonioNotificationFrom
+			});
+			carbonioNotificationData.carbonioNotificationRecipients.forEach(
+				// eslint-disable-next-line array-callback-return
+				(item: { label: string }): void => {
+					attributes.push({
+						n: 'carbonioNotificationRecipients',
+						_content: item?.label
+					});
+				}
+			);
+			setHasCarbonioNotificationFromError(false);
+		} else {
+			setHasCarbonioNotificationFromError(true);
+		}
+
+		attributes.push({
+			n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+			_content: globalDisclaimerDetail?.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE
+		});
+
+		attributes.push({
+			n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
+			_content: globalDisclaimerDetail?.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE
+		});
+
+		if (attributes && attributes.length > 0) {
+			callRequest(attributes);
 		}
 	};
 

@@ -52,7 +52,11 @@ import {
 	SECONDARY_BAR_GLOBAL_DELEGATES,
 	SECONDARY_BAR_GLOBAL_QUARANTINE,
 	SECONDARY_BAR_GLOBAL_DOMAINS,
-	SECONDARY_BAR_GLOBAL_2FA
+	SECONDARY_BAR_GLOBAL_2FA,
+	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+	FALSE,
+	BOOLEAN_FALSE,
+	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
@@ -123,6 +127,7 @@ const DomainListPanel: FC = () => {
 	const rights = useRightsStore((state) => state.rights);
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const globalConfigInformation = useConfigStore((state) => state.config);
 
 	const loadingComponent = [
 		{
@@ -277,6 +282,14 @@ const DomainListPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDomainSelect, domainId, domainView, matomo, globalCarbonioSendAnalytics]);
 
+	const isDisclaimerEnable = useMemo(
+		() =>
+			globalConfigInformation.find(
+				(item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
+			)?._content,
+		[globalConfigInformation]
+	);
+
 	const detailOptions = useMemo(
 		() => [
 			{
@@ -322,10 +335,10 @@ const DomainListPanel: FC = () => {
 			{
 				id: DISCLAIMER,
 				name: t('label.disclaimer', 'Disclaimer'),
-				isSelected: isDomainSelect
+				isSelected: isDisclaimerEnable === FALSE ? BOOLEAN_FALSE : isDomainSelect
 			}
 		],
-		[t, isDomainSelect]
+		[t, isDomainSelect, isDisclaimerEnable]
 	);
 
 	const allManageOptions = useMemo(
@@ -377,8 +390,8 @@ const DomainListPanel: FC = () => {
 				isSelected: true
 			},
 			{
-				id: GLOBAL_DELEGATES_ROUTE,
-				name: t('label.global_delegates', 'Global Delegates'),
+				id: GLOBAL_ADMINISTRATORS,
+				name: t('label.administrators', 'Administrators'),
 				isSelected: true
 			},
 			{
@@ -470,7 +483,7 @@ const DomainListPanel: FC = () => {
 			const backupModule = moduleLicense.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
+			if (backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
@@ -544,14 +557,7 @@ const DomainListPanel: FC = () => {
 					}
 			  ]
 			: domainList.map(
-					(
-						domain: {
-							name: string;
-							id: string;
-							a: { n: string; _content: string }[];
-						},
-						index
-					) => ({
+					(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
 						id: domain.id,
 						label: domain.name,
 						customComponent: (

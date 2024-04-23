@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.46](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.45...v0.9.46) (2024-04-15)
+
+
+### Bug Fixes
+
+* ac-1012: acl rights account not filter correctly ([0d9a676](https://github.com/zextras/carbonio-admin-console-ui/commit/0d9a676a4d004189f1e943395b520d342109b700))
+
 ### [0.9.45](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.44...v0.9.45) (2024-04-12)
 
 

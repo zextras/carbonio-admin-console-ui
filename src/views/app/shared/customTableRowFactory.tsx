@@ -77,7 +77,7 @@ const CustomRowFactory = ({
 	const ckbRef = useRef<HTMLDivElement>(null);
 	const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);
 	const clickableRow = useMemo(
-		() => (!showCheckbox && typeof row.clickable === undefined) || row.clickable,
+		() => (!showCheckbox && typeof row.clickable === 'undefined') || row.clickable,
 		[showCheckbox, row.clickable]
 	);
 
