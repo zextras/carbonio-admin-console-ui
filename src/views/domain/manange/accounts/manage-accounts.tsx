@@ -978,6 +978,83 @@ const ManageAccounts: FC = () => {
 		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
 	};
 
+	const accountContextValue = useMemo(
+		() => ({
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		}),
+		[
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		]
+	);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -1151,45 +1228,7 @@ const ManageAccounts: FC = () => {
 									</Container>
 								</Container>
 							)}
-							<AccountContext.Provider
-								value={{
-									accountDetail,
-									cosDetail,
-									setAccountDetail,
-									accSpecificDetail,
-									setAccSpecificDetail,
-									directMemberList,
-									inDirectMemberList,
-									setDirectMemberList,
-									setInDirectMemberList,
-									initAccountDetail,
-									setInitAccountDetail,
-									setSignatureItems,
-									setSignatureList,
-									otpList,
-									getListOtp,
-									identitiesList,
-									deligateDetail,
-									setDeligateDetail,
-									getIdentitiesList,
-									folderList,
-									setFolderList,
-									credentialList,
-									getCredentialList,
-									initialGlobalRights,
-									setinitialGlobalRights,
-									globalRights,
-									setGlobalRights,
-									deleteAdministrationRights,
-									setDeleteAdministrationRights,
-									userSessionList,
-									setAllUserSessionList,
-									allUserSessionList,
-									setUserSessionList,
-									defaultCOS,
-									setDefaultCOS
-								}}
-							>
+							<AccountContext.Provider value={accountContextValue}>
 								{/* This may require in future
 								{showAccountDetailView && (
 									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>

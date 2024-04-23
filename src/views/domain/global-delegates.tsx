@@ -484,6 +484,83 @@ const GlobalDelegates: FC = () => {
 		});
 	}, []);
 
+	const accountContextValue = useMemo(
+		() => ({
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		}),
+		[
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		]
+	);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setShowAccountDetailView(true);
@@ -770,45 +847,7 @@ const GlobalDelegates: FC = () => {
 									</Container>
 								</Container>
 							)}
-							<AccountContext.Provider
-								value={{
-									accountDetail,
-									cosDetail,
-									setAccountDetail,
-									accSpecificDetail,
-									setAccSpecificDetail,
-									directMemberList,
-									inDirectMemberList,
-									setDirectMemberList,
-									setInDirectMemberList,
-									initAccountDetail,
-									setInitAccountDetail,
-									setSignatureItems,
-									setSignatureList,
-									otpList,
-									getListOtp,
-									identitiesList,
-									deligateDetail,
-									setDeligateDetail,
-									getIdentitiesList,
-									folderList,
-									setFolderList,
-									credentialList,
-									getCredentialList,
-									initialGlobalRights,
-									setinitialGlobalRights,
-									globalRights,
-									setGlobalRights,
-									deleteAdministrationRights,
-									setDeleteAdministrationRights,
-									userSessionList,
-									setAllUserSessionList,
-									allUserSessionList,
-									setUserSessionList,
-									defaultCOS,
-									setDefaultCOS
-								}}
-							>
+							<AccountContext.Provider value={accountContextValue}>
 								{showAccountDetailView && (
 									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
 										<AccountDetailView
