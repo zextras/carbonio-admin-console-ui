@@ -808,16 +808,18 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 								background="gray6"
 								padding={{ top: 'large' }}
 							>
-								<ListRow>
-									<Container crossAlignment="flex-start">
-										<Switch
-											value={undeleteAllowed}
-											onClick={(): void => onClickUndeleteAllowed()}
-											label={t('cos.allow_restore_message', 'Allow user to restore messages')}
-											iconColor="primary"
-										/>
-									</Container>
-								</ListRow>
+								{isAdvanced && (
+									<ListRow>
+										<Container crossAlignment="flex-start">
+											<Switch
+												value={undeleteAllowed}
+												onClick={(): void => onClickUndeleteAllowed()}
+												label={t('cos.allow_restore_message', 'Allow user to restore messages')}
+												iconColor="primary"
+											/>
+										</Container>
+									</ListRow>
+								)}
 							</Container>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%">
