@@ -75,7 +75,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const [cosAdvanced, setCosAdvanced] = useState<any>({
-		backupSelfUndeleteAllowed: false,
+		backupSelfUndeleteAllowed: undefined,
 		zimbraMailForwardingAddressMaxLength: '',
 		zimbraMailForwardingAddressMaxNumAddrs: '',
 		zimbraMailQuota: '',
