@@ -817,13 +817,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 								</ListRow>
 							</Container>
 						</Row>
-					</Row>
-					<Row
-						mainAlignment="flex-start"
-						crossAlignment="flex-start"
-						padding={{ all: 'large' }}
-						width="100%"
-					>
 						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
