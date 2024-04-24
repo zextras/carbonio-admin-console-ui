@@ -732,6 +732,42 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 								</ListRow>
 							</Container>
 						</Row>
+					</Row>
+					<Row
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ all: 'large' }}
+						width="100%"
+					>
+						<Text size="extralarge" weight="bold">
+							{t('cos.password', 'Password')}
+						</Text>
+						<Row mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container crossAlignment="flex-start">
+										<InheritedSwitch
+											subValue={accountDetail?.zimbraPasswordLocked}
+											onChange={changeSwitchOption}
+											label={t(
+												'cos.prevent_user_from_changing_password',
+												'Prevent user from changing password'
+											)}
+											iconColor="primary"
+											inheritedValue={cosDetail.zimbraPasswordLocked}
+											fromSubValue={accSpecificDetail?.zimbraPasswordLocked}
+											inputName={'zimbraPasswordLocked'}
+											onChangeReset={(): void => setEmptyValue('zimbraPasswordLocked')}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
 						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
