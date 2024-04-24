@@ -23,7 +23,9 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { COS } from '../../constants';
+import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos } from '../../services/modify-cos-service';
+import { setCoreAttributes } from '../../services/set-core-attributes';
 import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import Textarea from '../components/textarea';
@@ -72,6 +74,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const [cosAdvanced, setCosAdvanced] = useState<any>({
+		backupSelfUndeleteAllowed: false,
 		zimbraMailForwardingAddressMaxLength: '',
 		zimbraMailForwardingAddressMaxNumAddrs: '',
 		zimbraMailQuota: '',
@@ -1015,6 +1018,8 @@ const CosAdvanced: FC = () => {
 		[zimbraMailMessageLifetimeType, setCosAdvanced]
 	);
 
+	const cosName = useCosStore((state) => state.cos?.name);
+
 	const onSave = (): void => {
 		const body: any = {};
 		body._jsns = 'urn:zimbraAdmin';
@@ -1023,9 +1028,20 @@ const CosAdvanced: FC = () => {
 			_content: cosData.zimbraId
 		};
 		body.id = id;
-		Object.keys(cosAdvanced).forEach((ele: any) =>
-			attributes.push({ n: ele, _content: cosAdvanced[ele] })
-		);
+		if (cosAdvanced.backupSelfUndeleteAllowed !== undefined) {
+			const backupSelfUndeleteAllowedBody: any = {
+				backupSelfUndeleteAllowed: {
+					value: cosAdvanced.backupSelfUndeleteAllowed,
+					objectName: cosName,
+					configType: COS
+				}
+			};
+			setCoreAttributes(backupSelfUndeleteAllowedBody);
+		}
+		Object.keys(cosAdvanced).forEach((ele: any) => {
+			if (ele !== 'backupSelfUndeleteAllowed')
+				attributes.push({ n: ele, _content: cosAdvanced[ele] });
+		});
 		// proxyAllowedDomainList.forEach((item: any) => {
 		// 	attributes.push({
 		// 		n: 'zimbraProxyAllowedDomains',
@@ -1062,6 +1078,49 @@ const CosAdvanced: FC = () => {
 				});
 			});
 	};
+
+	useEffect(() => {
+		const body = [
+			{
+				configType: COS,
+				configName: [cosName],
+				attrName: ['backupSelfUndeleteAllowed']
+			}
+		];
+		getCoreAttributes(body)
+			.then((data) => {
+				if (data?.attributes) {
+					setValue(
+						'backupSelfUndeleteAllowed',
+						!!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
+					);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [cosName, createSnackbar, setValue, t]);
+
+	const changeBooleanSwitchOption = useCallback(
+		(key: string): void => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				[key]: !cosAdvanced[key]
+			}));
+			setIsDirty(true);
+		},
+		[cosAdvanced, setCosAdvanced, setIsDirty]
+	);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
@@ -1105,6 +1164,23 @@ const CosAdvanced: FC = () => {
 				style={{ overflow: 'auto' }}
 				padding={{ top: 'large' }}
 			>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ all: 'large' }}
+					width="100%"
+				>
+					<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
+						{t('cos.general_options', 'General Options')}
+					</Text>
+					<Row mainAlignment="flex-start" width="100%">
+						<Switch
+							label={t('cos.allow_restore_message', 'Allow user to restore messages')}
+							value={cosAdvanced.backupSelfUndeleteAllowed}
+							onClick={(): void => changeBooleanSwitchOption('backupSelfUndeleteAllowed')}
+						/>
+					</Row>
+				</Row>
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
