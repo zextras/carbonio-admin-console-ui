@@ -15,8 +15,6 @@ import styled from 'styled-components';
 import { DASHBOARD } from '../../constants';
 import { getAccountRequest } from '../../services/get-account';
 
-// import { getAccountRequest } from '../../services/get-account';
-
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};
 	cursor: pointer;
@@ -144,6 +142,7 @@ const BreadCrumb: FC = () => {
 						crossAlignment="flex-end"
 						width="50%"
 						padding={{ right: 'small' }}
+						margin={{ left: 'auto' }}
 					>
 						{t('label.last_access', 'Last access')} {accountLastLogin}
 					</Container>

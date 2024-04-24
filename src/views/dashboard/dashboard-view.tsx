@@ -160,7 +160,7 @@ const Dashboard: FC = () => {
 
 	const getVersionInformation = useCallback(() => {
 		getVersionInfo().then((res) => {
-			if (res && res?.info && Array.isArray(res?.info)) {
+			if (res?.info && Array.isArray(res?.info)) {
 				setServerVersion(res?.info[0]);
 			}
 		});
