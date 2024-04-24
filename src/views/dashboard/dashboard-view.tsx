@@ -39,6 +39,7 @@ import {
 	DASHBOARD_TABLES
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
+import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useConfigStore } from '../../store/config/store';
 import { useDomainStore } from '../../store/domain/store';
@@ -59,6 +60,7 @@ const Dashboard: FC = () => {
 	const accounts = useUserAccounts();
 	const [userName, setUserName] = useState<string>('');
 	const [version, setVersion] = useState<string>('');
+	const [serverVersion, setServerVersion] = useState<any>({});
 
 	const { setDomain, setDomainView, setIsQuickAccess } = useDomainStore((state) => state);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -156,6 +158,17 @@ const Dashboard: FC = () => {
 		}
 	}, [rights]);
 
+	const getVersionInformation = useCallback(() => {
+		getVersionInfo().then((res) => {
+			if (res && res?.info && Array.isArray(res?.info)) {
+				setServerVersion(res?.info[0]);
+			}
+		});
+	}, []);
+	useEffect(() => {
+		getVersionInformation();
+	}, [getVersionInformation]);
+
 	return (
 		<Container>
 			<Divider color="gray6" />
@@ -168,7 +181,7 @@ const Dashboard: FC = () => {
 			>
 				<ListRow>
 					<Container width={'40'} padding={{ all: 'extralarge' }}>
-						<CarbonioVersionInformation userName={userName} />
+						<CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
 					</Container>
 					<Container width={'60'} padding={{ all: 'extralarge' }}>
 						<QuickAccess
@@ -189,7 +202,10 @@ const Dashboard: FC = () => {
 				{hasListServerRights && (
 					<ListRow>
 						<Container padding={{ all: 'extralarge' }}>
-							<DashboardServerList goToMailStoreServerList={goToMailStoreServerList} />
+							<DashboardServerList
+								goToMailStoreServerList={goToMailStoreServerList}
+								serverVersion={serverVersion}
+							/>
 						</Container>
 					</ListRow>
 				)}

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 
 import { Container, Icon, Button, Table, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -13,7 +13,6 @@ import styled from 'styled-components';
 import { Server } from '../../../types';
 import { DASHBOARD, DASHBOARD_TABLES, STORAGES_TABLE_DATABASE } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
-import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useConfigStore } from '../../store/config/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
@@ -32,24 +31,14 @@ export const VersionText = styled(Text)`
 
 const DashboardServerList: FC<{
 	goToMailStoreServerList: () => void;
-}> = ({ goToMailStoreServerList }) => {
+	serverVersion: any;
+}> = ({ goToMailStoreServerList, serverVersion }) => {
 	const [t] = useTranslation();
 	const { userId } = useConfigStore((state) => state);
 	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const mailstoresList = useMailstoreListStore((state) => state.allMailstoreList || []);
 	const [serverListRow, setServerListRow] = useState<Array<any>>([]);
-	const [serverVersion, setServerVersion] = useState<any>({});
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const getVersionInformation = useCallback(() => {
-		getVersionInfo().then((res) => {
-			if (res && res?.info && Array.isArray(res?.info)) {
-				setServerVersion(res?.info[0]);
-			}
-		});
-	}, []);
-	useEffect(() => {
-		getVersionInformation();
-	}, [getVersionInformation]);
 
 	const handleClickRow = (): void => {
 		matomo.trackEvent(DASHBOARD, DASHBOARD_TABLES, STORAGES_TABLE_DATABASE);
