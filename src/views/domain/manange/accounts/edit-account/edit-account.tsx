@@ -161,7 +161,8 @@ const EditAccount: FC<{
 		setAccountDetail,
 		initAccountDetail,
 		setInitAccountDetail,
-		deleteAdministrationRights
+		deleteAdministrationRights,
+		setDefaultCOS
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const { userId } = useConfigStore((state) => state);
@@ -755,6 +756,7 @@ const EditAccount: FC<{
 	const onUndo = (): void => {
 		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_CANCEL);
 		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
+		setDefaultCOS(!initAccountDetail.zimbraCOSId);
 		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
 	};
 	const onViewMail = useCallback(() => {

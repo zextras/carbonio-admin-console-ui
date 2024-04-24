@@ -108,6 +108,7 @@ const ManageDelegates: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
 	const screenMode = useScreenMode();
@@ -849,6 +850,83 @@ const ManageDelegates: FC = () => {
 		}
 	}, [userSetting?.attrs]);
 
+	const accountContextValue = useMemo(
+		() => ({
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		}),
+		[
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		]
+	);
+
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			{accountDistributionList?.length > 0 && open && (
@@ -1075,43 +1153,7 @@ const ManageDelegates: FC = () => {
 							</ListRow>
 						</>
 					)} */}
-					<AccountContext.Provider
-						value={{
-							accountDetail,
-							cosDetail,
-							setAccountDetail,
-							accSpecificDetail,
-							setAccSpecificDetail,
-							directMemberList,
-							inDirectMemberList,
-							setDirectMemberList,
-							setInDirectMemberList,
-							initAccountDetail,
-							setInitAccountDetail,
-							setSignatureItems,
-							setSignatureList,
-							otpList,
-							getListOtp,
-							identitiesList,
-							deligateDetail,
-							setDeligateDetail,
-							getIdentitiesList,
-							folderList,
-							setFolderList,
-							credentialList,
-							getCredentialList,
-							initialGlobalRights,
-							setinitialGlobalRights,
-							globalRights,
-							setGlobalRights,
-							deleteAdministrationRights,
-							setDeleteAdministrationRights,
-							userSessionList,
-							setAllUserSessionList,
-							allUserSessionList,
-							setUserSessionList
-						}}
-					>
+					<AccountContext.Provider value={accountContextValue}>
 						{showAccountDetailView && (
 							<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
 								<AccountDetailView
