@@ -517,88 +517,98 @@ const ResourceEditDetailView: FC<any> = ({
 		});
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-	const onSave = (): void => {
-		if (password !== '' && password?.length < 6) {
+	const createErrorSnackbar = useCallback(
+		(label: string): void => {
 			createSnackbar({
 				key: 'error',
 				type: 'error',
-				label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
+				label,
 				autoHideTimeout: 3000,
 				hideButton: true,
 				replace: true
 			});
-		} else if (password !== repeatPassword) {
-			createSnackbar({
-				key: 'error',
-				type: 'error',
-				label: t('label.password_and repeat_password_not_match', 'Passwords do not match'),
-				autoHideTimeout: 3000,
-				hideButton: true,
-				replace: true
-			});
-		} else {
-			const attributes: any[] = [];
-			const requests: any[] = [];
-			if (password !== '' && password === repeatPassword) {
-				requests.push(setPasswordRequest(selectedResourceList.id, password));
-			}
-			if (resourceDetailData?.mail !== resourceMail) {
-				requests.push(renameCalendarResource(selectedResourceList.id, resourceMail));
-			}
+		},
+		[createSnackbar]
+	);
 
+	const validatePassword = (): boolean => {
+		if (password !== '' && password?.length < 6) {
+			createErrorSnackbar(
+				t('label.password_length_msg', 'Password should be more than 5 characters')
+			);
+			return false;
+		}
+		if (password !== repeatPassword) {
+			createErrorSnackbar(
+				t('label.password_and_repeat_password_not_match', 'Passwords do not match')
+			);
+			return false;
+		}
+		return true;
+	};
+
+	const onSave = (): void => {
+		if (!validatePassword()) return;
+		const attributes: any[] = [];
+		const requests: any[] = [];
+		if (password !== '' && password === repeatPassword) {
+			requests.push(setPasswordRequest(selectedResourceList.id, password));
+		}
+		if (resourceDetailData?.mail !== resourceMail) {
+			requests.push(renameCalendarResource(selectedResourceList.id, resourceMail));
+		}
+
+		attributes.push({
+			n: 'displayName',
+			_content: resourceName
+		});
+		attributes.push({
+			n: 'zimbraNotes',
+			_content: zimbraNotes
+		});
+		attributes.push({
+			n: 'zimbraCalResMaxNumConflictsAllowed',
+			_content: zimbraCalResMaxNumConflictsAllowed
+		});
+		attributes.push({
+			n: 'zimbraCalResMaxPercentConflictsAllowed',
+			_content: zimbraCalResMaxPercentConflictsAllowed
+		});
+		attributes.push({
+			n: 'zimbraCOSId',
+			_content: zimbraCOSId?.value
+		});
+		attributes.push({
+			n: 'zimbraCalResType',
+			_content: zimbraCalResType?.value
+		});
+		attributes.push({
+			n: 'zimbraAccountStatus',
+			_content: zimbraAccountStatus?.value
+		});
+		attributes.push({
+			n: 'zimbraCalResAutoDeclineRecurring',
+			_content: zimbraCalResAutoDeclineRecurring?.value
+		});
+		attributes.push({
+			n: 'zimbraCalResAutoAcceptDecline',
+			_content:
+				schedulePolicyType?.value === 1 || schedulePolicyType?.value === 3 ? 'TRUE' : 'FALSE'
+		});
+		attributes.push({
+			n: 'zimbraCalResAutoDeclineIfBusy',
+			_content:
+				schedulePolicyType?.value === 1 || schedulePolicyType?.value === 2 ? 'TRUE' : 'FALSE'
+		});
+		sendInviteList.forEach((item: any) => {
 			attributes.push({
-				n: 'displayName',
-				_content: resourceName
+				n: 'zimbraPrefCalendarForwardInvitesTo',
+				_content: item?._content
 			});
-			attributes.push({
-				n: 'zimbraNotes',
-				_content: zimbraNotes
-			});
-			attributes.push({
-				n: 'zimbraCalResMaxNumConflictsAllowed',
-				_content: zimbraCalResMaxNumConflictsAllowed
-			});
-			attributes.push({
-				n: 'zimbraCalResMaxPercentConflictsAllowed',
-				_content: zimbraCalResMaxPercentConflictsAllowed
-			});
-			attributes.push({
-				n: 'zimbraCOSId',
-				_content: zimbraCOSId?.value
-			});
-			attributes.push({
-				n: 'zimbraCalResType',
-				_content: zimbraCalResType?.value
-			});
-			attributes.push({
-				n: 'zimbraAccountStatus',
-				_content: zimbraAccountStatus?.value
-			});
-			attributes.push({
-				n: 'zimbraCalResAutoDeclineRecurring',
-				_content: zimbraCalResAutoDeclineRecurring?.value
-			});
-			attributes.push({
-				n: 'zimbraCalResAutoAcceptDecline',
-				_content:
-					schedulePolicyType?.value === 1 || schedulePolicyType?.value === 3 ? 'TRUE' : 'FALSE'
-			});
-			attributes.push({
-				n: 'zimbraCalResAutoDeclineIfBusy',
-				_content:
-					schedulePolicyType?.value === 1 || schedulePolicyType?.value === 2 ? 'TRUE' : 'FALSE'
-			});
-			sendInviteList.forEach((item: any) => {
-				attributes.push({
-					n: 'zimbraPrefCalendarForwardInvitesTo',
-					_content: item?._content
-				});
-			});
-			requests.push(modifyCalendarResource(selectedResourceList?.id, attributes));
-			if (requests.length > 0) {
-				callAllRequest(requests);
-			}
+		});
+		requests.push(modifyCalendarResource(selectedResourceList?.id, attributes));
+		if (requests.length > 0) {
+			callAllRequest(requests);
 		}
 	};
 
