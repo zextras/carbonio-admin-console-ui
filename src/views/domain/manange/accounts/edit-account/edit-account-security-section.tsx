@@ -717,6 +717,32 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 					)}
 				</>
 			)}
+			{isAdvanced && (
+				<Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
+					<Text size="extralarge" weight="bold">
+						{t('label.backup', 'Backup')}
+					</Text>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ top: 'large' }}
+						>
+							<ListRow>
+								<Container crossAlignment="flex-start">
+									<Switch
+										value={undeleteAllowed}
+										onClick={(): void => onClickUndeleteAllowed()}
+										label={t('cos.allow_restore_message', 'Allow user to restore messages')}
+										iconColor="primary"
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+				</Row>
+			)}
 			{!showCreateOTP && (
 				<Row mainAlignment="flex-start" width="100%">
 					<Row
@@ -798,33 +824,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 						padding={{ all: 'large' }}
 						width="100%"
 					>
-						{isAdvanced && (
-							<>
-								<Text size="extralarge" weight="bold">
-									{t('label.backup', 'Backup')}
-								</Text>
-								<Row mainAlignment="flex-start" width="100%">
-									<Container
-										height="fit"
-										crossAlignment="flex-start"
-										background="gray6"
-										padding={{ top: 'large' }}
-									>
-										<ListRow>
-											<Container crossAlignment="flex-start">
-												<Switch
-													value={undeleteAllowed}
-													onClick={(): void => onClickUndeleteAllowed()}
-													label={t('cos.allow_restore_message', 'Allow user to restore messages')}
-													iconColor="primary"
-												/>
-											</Container>
-										</ListRow>
-										)
-									</Container>
-								</Row>
-							</>
-						)}
 						<Row mainAlignment="flex-start" width="100%">
 							<Container
 								height="fit"
