@@ -26,6 +26,7 @@ import { COS } from '../../constants';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { modifyCos } from '../../services/modify-cos-service';
 import { setCoreAttributes } from '../../services/set-core-attributes';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import Textarea from '../components/textarea';
@@ -46,7 +47,7 @@ const CosAdvanced: FC = () => {
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
 	const rights: Rights = useRightsStore((state) => state.rights);
-
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
@@ -1080,6 +1081,7 @@ const CosAdvanced: FC = () => {
 	};
 
 	useEffect(() => {
+		if (!isAdvanced) return;
 		const body = [
 			{
 				configType: COS,
@@ -1109,7 +1111,7 @@ const CosAdvanced: FC = () => {
 					replace: true
 				});
 			});
-	}, [cosName, createSnackbar, setValue, t]);
+	}, [cosName, createSnackbar, isAdvanced, setValue, t]);
 
 	const changeBooleanSwitchOption = useCallback(
 		(key: string): void => {
@@ -1164,23 +1166,25 @@ const CosAdvanced: FC = () => {
 				style={{ overflow: 'auto' }}
 				padding={{ top: 'large' }}
 			>
-				<Row
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					padding={{ all: 'large' }}
-					width="100%"
-				>
-					<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
-						{t('cos.general_options', 'General Options')}
-					</Text>
-					<Row mainAlignment="flex-start" width="100%">
-						<Switch
-							label={t('cos.allow_restore_message', 'Allow user to restore messages')}
-							value={cosAdvanced.backupSelfUndeleteAllowed}
-							onClick={(): void => changeBooleanSwitchOption('backupSelfUndeleteAllowed')}
-						/>
+				{isAdvanced && (
+					<Row
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ all: 'large' }}
+						width="100%"
+					>
+						<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
+							{t('cos.general_options', 'General Options')}
+						</Text>
+						<Row mainAlignment="flex-start" width="100%">
+							<Switch
+								label={t('cos.allow_restore_message', 'Allow user to restore messages')}
+								value={cosAdvanced.backupSelfUndeleteAllowed}
+								onClick={(): void => changeBooleanSwitchOption('backupSelfUndeleteAllowed')}
+							/>
+						</Row>
 					</Row>
-				</Row>
+				)}
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
