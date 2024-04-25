@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DASHBOARD } from '../../constants';
+import { DASHBOARD, ZIMBRA_LAST_LOGON_TIMESTAMP } from '../../constants';
 import { getAccountRequest } from '../../services/get-account';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
@@ -29,17 +29,11 @@ const BreadCrumb: FC = () => {
 
 	const getAccountDetails = useCallback((id) => {
 		getAccountRequest(id, '', 0).then((res: any) => {
-			const accountObj: any = {};
-			// eslint-disable-next-line array-callback-return
-			res?.account?.[0]?.a?.forEach((ele: any) => {
-				if (accountObj[ele.n]) {
-					accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
-				} else {
-					accountObj[ele.n] = ele._content;
-				}
-			});
+			const lastLoginTimestamp = res?.account?.[0]?.a?.find(
+				(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
+			);
 			setAccountLastLogin(
-				moment(accountObj?.zimbraLastLogonTimestamp, 'YYYYMMDDHHmmss.SSSZ').format(
+				moment(lastLoginTimestamp?._content, 'YYYYMMDDHHmmss.SSSZ').format(
 					'dddd DD MMM YYYY | h:mm a'
 				)
 			);
@@ -144,7 +138,9 @@ const BreadCrumb: FC = () => {
 						padding={{ right: 'small' }}
 						margin={{ left: 'auto' }}
 					>
-						{t('label.last_access', 'Last access')} {accountLastLogin}
+						<Text color="secondary" overflow="break-word" weight="light">
+							{t('label.last_access', 'Last access')} {accountLastLogin}
+						</Text>
 					</Container>
 				)}
 			</Container>

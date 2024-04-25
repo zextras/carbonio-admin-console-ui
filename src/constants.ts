@@ -573,3 +573,4 @@ export const GLOBAL_ADMINISTRATORS = 'global/administrators';
 export const ADMINISTRATORS = 'administrators';
 export const DISPLAYNAME = 'displayName';
 export const FETCH_DATA_LIMIT = 50;
+export const ZIMBRA_LAST_LOGON_TIMESTAMP = 'zimbraLastLogonTimestamp';
