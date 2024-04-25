@@ -39,5 +39,7 @@ type AccountContext = {
 	setAllUserSessionList: (arg: any) => void;
 	allUserSessionList: any[];
 	setUserSessionList: (arg: any) => void;
+	defaultCOS: any;
+	setDefaultCOS: (arg: any) => void;
 };
 export const AccountContext = createContext({} as AccountContext);
