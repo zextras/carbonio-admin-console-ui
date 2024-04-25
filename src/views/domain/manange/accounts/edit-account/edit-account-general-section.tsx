@@ -37,6 +37,7 @@ import {
 	ACCOUNT_STATUS_TITLE,
 	ADMINISTRATION,
 	CREATION_DATE,
+	DEFAULT,
 	DEFAULT_CLASS_SERVICE,
 	DEFAULT_COS,
 	DELETE_USER_PASSWORD_FROM_THE_LDAP,
@@ -63,6 +64,7 @@ import {
 	SURNAME,
 	THIS_ACCOUNT_IS_DIRECT_MEMBER,
 	THIS_ACCOUNT_IS_INDIRECT_MEMBER,
+	TRUE,
 	TYPE,
 	USER
 } from '../../../../../constants';
@@ -144,7 +146,9 @@ const EditAccountGeneralSection: FC<{
 		setAllUserSessionList,
 		userSessionList,
 		setUserSessionList,
-		initAccountDetail
+		initAccountDetail,
+		defaultCOS,
+		setDefaultCOS
 	} = context;
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -157,7 +161,6 @@ const EditAccountGeneralSection: FC<{
 	const ABQ_STATUS = useMemo(() => ABQStatus(t), [t]);
 	const BACKUP_ENABLED_STATUS = useMemo(() => backupEnabledStatus(t), [t]);
 	const [cosItems, setCosItems] = useState<any[]>([]);
-	const [defaultCOS, setDefaultCOS] = useState<boolean>(!accountDetail?.zimbraCOSId);
 	const [accountAliases, setAccountAliases] = useState<any[]>([]);
 	const [showDeletePasswordModal, setShowDeletePasswordModal] = useState<boolean>(false);
 	const [domainList, setDomainList] = useState([]);
@@ -175,6 +178,7 @@ const EditAccountGeneralSection: FC<{
 	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
 	const [highlightFileQuota, setHighlightFileQuota] = useState(false);
+	const [defaultCosId, setDefaultCosId] = useState('');
 
 	const sessionTableHeader: any[] = useMemo(
 		() => [
@@ -358,6 +362,21 @@ const EditAccountGeneralSection: FC<{
 		}
 	}, [cosList]);
 
+	useEffect(() => {
+		if (accountDetail?.zimbraCOSId) {
+			const cosId = cosItems.find((item: any) => item.label === DEFAULT);
+			setDefaultCosId(cosId?.value);
+			if (accountDetail?.zimbraCOSId === cosId?.value) {
+				setDefaultCOS(TRUE);
+			}
+		}
+	}, [accountDetail, cosItems, setDefaultCOS]);
+
+	const selection = useMemo(
+		() => cosItems.find((item: any) => item.value === accountDetail?.zimbraCOSId),
+		[accountDetail, cosItems]
+	);
+
 	const onAccountStatusChange = (v: any): any => {
 		setAccountDetail((prev: AccountType) => ({ ...prev, zimbraAccountStatus: v }));
 	};
@@ -375,7 +394,14 @@ const EditAccountGeneralSection: FC<{
 	};
 	const onCOSSwitchChanges = (): void => {
 		handleMatomoTrackerEvent(DEFAULT_COS);
-		defaultCOS && setAccountDetail((prev: AccountType) => ({ ...prev, zimbraCOSId: '' }));
+		if (!defaultCOS) {
+			setAccountDetail((prev: AccountType) => ({
+				...prev,
+				zimbraCOSId: defaultCosId
+			}));
+		} else {
+			setAccountDetail((prev: AccountType) => ({ ...prev, zimbraCOSId: cosItems[0]?.value }));
+		}
 		setDefaultCOS(!defaultCOS);
 	};
 
@@ -1259,13 +1285,12 @@ const EditAccountGeneralSection: FC<{
 					<Row width="84.5%" mainAlignment="flex-start">
 						{cosItems?.length ? (
 							<Select
+								disabled={defaultCOS}
 								items={cosItems}
 								background="gray5"
 								label={t('label.default_class_of_service', 'Default Class of Service')}
 								showCheckbox={false}
-								defaultSelection={cosItems.find(
-									(item: any) => item.value === accountDetail?.zimbraCOSId
-								)}
+								selection={selection}
 								onChange={onCOSIdChange}
 								onClick={(): void => handleMatomoTrackerEvent(DEFAULT_CLASS_SERVICE)}
 							/>

@@ -26,7 +26,8 @@ import {
 	Switch,
 	Select,
 	Icon,
-	Popper
+	Popper,
+	Tooltip as TooltipDefault
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import _ from 'lodash';
@@ -75,7 +76,7 @@ const DomainAuthentication: FC = () => {
 	const [isDirty, setIsDirty] = useState<boolean>(false);
 	const [zimbraAuthMech, setZimbraAuthMech] = useState<any>();
 	const [zimbraPasswordChangeListener, setZimbraPasswordChangeListener] = useState<string>('');
-	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean>(false);
+	const [zimbraAuthFallbackToLocal, setZimbraAuthFallbackToLocal] = useState<boolean | null>(null);
 	const [domainAuthData, setDomainAuthData] = useState<objectType>({});
 	const [zimbraAuthLdapBindDn, setZimbraAuthLdapBindDn] = useState<string>('');
 	const [zimbraAuthLdapURL, setZimbraAuthLdapURL] = useState<string>('');
@@ -189,55 +190,52 @@ const DomainAuthentication: FC = () => {
 
 	const FilterTooltip: FC = useCallback(() => <Tooltip items={FILTER_TOOLTIP} />, [FILTER_TOOLTIP]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
-			const obj: objectType = {};
+			const obj: Record<string, any> = {};
 			domainInformation.forEach((item: Attribute) => {
 				obj[item?.n] = item._content;
 			});
+
+			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+			const handleNullable = <T extends string | boolean>(
+				key: keyof typeof obj,
+				setter: (value: T) => void,
+				defaultValue: T
+			) => {
+				if (obj[key] ?? defaultValue) {
+					setter(obj[key]);
+				} else {
+					obj[key] = defaultValue;
+					setter(defaultValue);
+				}
+			};
+
 			setZimbraAuthMech(
 				obj.zimbraAuthMech
-					? DOMAIN_AUTH_LIST.find((item: { value?: string }) => item.value === obj.zimbraAuthMech)
+					? DOMAIN_AUTH_LIST.find(
+							(item: { value?: string }) => item.value === obj.zimbraAuthMech
+					  ) ?? DOMAIN_AUTH_LIST[0]
 					: DOMAIN_AUTH_LIST[0]
 			);
-			if (!obj.zimbraAuthMech) {
-				obj.zimbraAuthMech = '';
-			}
-			if (obj.zimbraPasswordChangeListener) {
-				setZimbraPasswordChangeListener(obj.zimbraPasswordChangeListener);
-			} else {
-				obj.zimbraPasswordChangeListener = '';
-			}
-			if (obj.zimbraAuthFallbackToLocal) {
-				setZimbraAuthFallbackToLocal(obj.zimbraAuthFallbackToLocal === 'TRUE');
-			}
-			if (obj.zimbraAuthLdapBindDn) {
-				setZimbraAuthLdapBindDn(obj.zimbraAuthLdapBindDn);
-			} else {
-				obj.zimbraAuthLdapBindDn = '';
-			}
-			if (obj.zimbraAuthLdapURL) {
-				setZimbraAuthLdapURL(obj.zimbraAuthLdapURL);
-			} else {
-				obj.zimbraAuthLdapURL = '';
-			}
-			if (obj.zimbraAuthLdapSearchFilter) {
-				setZimbraAuthLdapSearchFilter(obj.zimbraAuthLdapSearchFilter);
-			} else {
-				obj.zimbraAuthLdapSearchFilter = '';
-			}
-			if (obj.zimbraAuthLdapSearchBase) {
-				setZimbraAuthLdapSearchBase(obj.zimbraAuthLdapSearchBase);
-			} else {
-				obj.zimbraAuthLdapSearchBase = '';
-			}
-			if (obj.zimbraAuthLdapStartTlsEnabled) {
-				setZimbraAuthLdapStartTlsEnabled(obj.zimbraAuthLdapStartTlsEnabled === 'TRUE');
-			}
-			if (obj.zimbraFeatureResetPasswordStatus) {
-				setZimbraFeatureResetPasswordStatus(obj.zimbraFeatureResetPasswordStatus === ENABLED);
-			}
+
+			handleNullable<string>('zimbraPasswordChangeListener', setZimbraPasswordChangeListener, '');
+			handleNullable<boolean>('zimbraAuthFallbackToLocal', setZimbraAuthFallbackToLocal, false);
+			handleNullable<string>('zimbraAuthLdapBindDn', setZimbraAuthLdapBindDn, '');
+			handleNullable<string>('zimbraAuthLdapURL', setZimbraAuthLdapURL, '');
+			handleNullable<string>('zimbraAuthLdapSearchFilter', setZimbraAuthLdapSearchFilter, '');
+			handleNullable<string>('zimbraAuthLdapSearchBase', setZimbraAuthLdapSearchBase, '');
+			handleNullable<boolean>(
+				'zimbraAuthLdapStartTlsEnabled',
+				setZimbraAuthLdapStartTlsEnabled,
+				false
+			);
+			handleNullable<boolean>(
+				'zimbraFeatureResetPasswordStatus',
+				setZimbraFeatureResetPasswordStatus,
+				false
+			);
+
 			setDomainAuthData(obj);
 			setIsDirty(false);
 		}
@@ -391,10 +389,13 @@ const DomainAuthentication: FC = () => {
 			n: 'zimbraPasswordChangeListener',
 			_content: zimbraPasswordChangeListener
 		});
-		attributes.push({
-			n: 'zimbraAuthFallbackToLocal',
-			_content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE'
-		});
+		if (zimbraAuthFallbackToLocal !== null) {
+			attributes.push({
+				n: 'zimbraAuthFallbackToLocal',
+				_content: zimbraAuthFallbackToLocal ? 'TRUE' : 'FALSE'
+			});
+		}
+
 		attributes.push({
 			n: 'zimbraAuthLdapBindDn',
 			_content: zimbraAuthLdapBindDn
@@ -895,15 +896,39 @@ const DomainAuthentication: FC = () => {
 									</Padding>
 								)}
 								<Padding vertical="small" horizontal="small" width="100%">
-									<Switch
-										value={zimbraAuthFallbackToLocal}
-										label={t(
-											'label.fall_back_to_local_msg',
-											'Try local password management in case of failure with other methods'
-										)}
-										onClick={authFallbackToLocal}
-										iconColor="primary"
-									/>
+									<TooltipDefault
+										label={
+											zimbraAuthFallbackToLocal === null
+												? t(
+														'label.enable_global_enforce_external_auth_ldap',
+														'You must enable the Global Enforce External Auth (LDAP/AD) first'
+												  )
+												: t(
+														'label.please_add_ldap_url_endpoint_first',
+														'To enable this, please add a ldap URL endpoint first'
+												  )
+										}
+										disabled={
+											!(
+												// eslint-disable-next-line max-len
+												(
+													zimbraAuthFallbackToLocal === null ||
+													!isValidLdapBaseUrl(zimbraAuthLdapURL)
+												)
+											)
+										}
+									>
+										<Switch
+											value={!!zimbraAuthFallbackToLocal && isValidLdapBaseUrl(zimbraAuthLdapURL)}
+											label={t('label.enforce_external_auth', 'Enforce External Auth (LDAP/AD)')}
+											onClick={authFallbackToLocal}
+											iconColor="primary"
+											disabled={
+												// eslint-disable-next-line max-len
+												zimbraAuthFallbackToLocal === null || !isValidLdapBaseUrl(zimbraAuthLdapURL)
+											}
+										/>
+									</TooltipDefault>
 								</Padding>
 							</ListRow>
 							<ListRow>

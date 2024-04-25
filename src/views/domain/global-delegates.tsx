@@ -73,6 +73,7 @@ const GlobalDelegates: FC = () => {
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
@@ -483,6 +484,83 @@ const GlobalDelegates: FC = () => {
 		});
 	}, []);
 
+	const accountContextValue = useMemo(
+		() => ({
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		}),
+		[
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		]
+	);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
 			setShowAccountDetailView(true);
@@ -769,43 +847,7 @@ const GlobalDelegates: FC = () => {
 									</Container>
 								</Container>
 							)}
-							<AccountContext.Provider
-								value={{
-									accountDetail,
-									cosDetail,
-									setAccountDetail,
-									accSpecificDetail,
-									setAccSpecificDetail,
-									directMemberList,
-									inDirectMemberList,
-									setDirectMemberList,
-									setInDirectMemberList,
-									initAccountDetail,
-									setInitAccountDetail,
-									setSignatureItems,
-									setSignatureList,
-									otpList,
-									getListOtp,
-									identitiesList,
-									deligateDetail,
-									setDeligateDetail,
-									getIdentitiesList,
-									folderList,
-									setFolderList,
-									credentialList,
-									getCredentialList,
-									initialGlobalRights,
-									setinitialGlobalRights,
-									globalRights,
-									setGlobalRights,
-									deleteAdministrationRights,
-									setDeleteAdministrationRights,
-									userSessionList,
-									setAllUserSessionList,
-									allUserSessionList,
-									setUserSessionList
-								}}
-							>
+							<AccountContext.Provider value={accountContextValue}>
 								{showAccountDetailView && (
 									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
 										<AccountDetailView
