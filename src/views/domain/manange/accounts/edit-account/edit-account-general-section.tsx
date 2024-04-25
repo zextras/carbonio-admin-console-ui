@@ -20,7 +20,9 @@ import {
 	useSnackbar,
 	Modal,
 	Padding,
-	Table
+	Table,
+	Quota,
+	InputProps
 } from '@zextras/carbonio-design-system';
 import { debounce, map, snakeCase } from 'lodash';
 import moment from 'moment';
@@ -32,7 +34,6 @@ import {
 	ABQ_STATUS_TITLE,
 	ACCOUNTS_DETAILS,
 	ACCOUNTS_DETAILS_DISABLED_FIELD_NAME,
-	ACCOUNT_QUOTA_GB,
 	ACCOUNT_STATUS_TITLE,
 	ADMINISTRATION,
 	CREATION_DATE,
@@ -45,11 +46,13 @@ import {
 	DOMAINNAME,
 	DOMAINS_ROUTE_ID,
 	END_SESSION,
+	FILES_QUOTA_LIMIT_GB,
 	ID,
 	INCLUDED_BACKUP,
 	LANGUAGE,
 	LAST_ACCESS,
 	LOOKING_FOR_SESSION,
+	MAILBOX_QUOTA_LIMIT_GB,
 	MAX_DOMAIN_DISPLAY,
 	MIDDLE_NAME_INTIALS,
 	NAME,
@@ -88,7 +91,8 @@ import {
 	ABQStatus,
 	GbToBytes,
 	BytesToGB,
-	backupEnabledStatus
+	backupEnabledStatus,
+	isValidDecimalNumber
 } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -108,6 +112,15 @@ const CustomIcon = styled(Icon)`
 	height: 20px;
 `;
 
+interface InputExtendProps extends InputProps {
+	highlighted: boolean;
+}
+
+const HighlightedInput = styled(Input)<InputExtendProps>`
+	background-color: ${({ highlighted }): any => (highlighted ? '#D5E3F6' : 'gray5')};
+	transition: background-color 3s ease;
+`;
+
 const ZimbraAuthMethod = {
 	INTERNAL: 'zimbra',
 	LDAP: 'ldap',
@@ -117,11 +130,7 @@ const ZimbraAuthMethod = {
 const EditAccountGeneralSection: FC<{
 	setChange: any;
 	handleMatomoTrackerEvent: (value: string) => void;
-}> = ({
-	setChange,
-	handleMatomoTrackerEvent
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-}) => {
+}> = ({ setChange, handleMatomoTrackerEvent }) => {
 	const createSnackbar = useSnackbar();
 	const context = useContext(AccountContext);
 	const {
@@ -137,6 +146,7 @@ const EditAccountGeneralSection: FC<{
 		setAllUserSessionList,
 		userSessionList,
 		setUserSessionList,
+		initAccountDetail,
 		defaultCOS,
 		setDefaultCOS
 	} = context;
@@ -156,11 +166,18 @@ const EditAccountGeneralSection: FC<{
 	const [domainList, setDomainList] = useState([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState(domainName);
-	const [accountQuota, setAccountQuota] = useState('');
+	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
 	const [sessionListRows, setSessionListRows] = useState<Array<any>>([]);
 	const [selectedSession, setSelectedSession] = useState<any>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const fileQuotaRef = React.useRef<HTMLInputElement>(null);
+	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState('');
+	const [cosAccountQuotaGBValue, setCosAccountQuotaGBValue] = useState('');
+	const [specificAccountQuotaGBValue, setSpecificAccountQuotaGBValue] = useState('');
+	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
+	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
+	const [highlightFileQuota, setHighlightFileQuota] = useState(false);
 	const [defaultCosId, setDefaultCosId] = useState('');
 
 	const sessionTableHeader: any[] = useMemo(
@@ -194,10 +211,17 @@ const EditAccountGeneralSection: FC<{
 	);
 
 	useEffect(() => {
-		setAccountQuota(
-			accountDetail.zimbraMailQuota ? BytesToGB(accountDetail.zimbraMailQuota).toString() : ''
-		);
-	}, [accountDetail?.zimbraMailQuota]);
+		if (
+			initAccountDetail?.zimbraMailQuota &&
+			accountDetail?.zimbraMailQuota === initAccountDetail?.zimbraMailQuota
+		) {
+			setAccountQuotaGBValue(
+				initAccountDetail.zimbraMailQuota
+					? BytesToGB(initAccountDetail.zimbraMailQuota).toFixed(3)
+					: ''
+			);
+		}
+	}, [accountDetail.zimbraMailQuota, initAccountDetail.zimbraMailQuota]);
 
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -228,9 +252,35 @@ const EditAccountGeneralSection: FC<{
 
 	const changeAccountQuota = useCallback(
 		(e) => {
+			if (!isValidDecimalNumber(e.target.value)) return;
+			const decimalPoints = e.target.value?.split('.')[1];
+			if (!!decimalPoints && decimalPoints?.length > 3) {
+				setShowAccountQuotaLimitMsg(true);
+				return;
+			}
+			setShowAccountQuotaLimitMsg(false);
+			setAccountQuotaGBValue(e.target.value);
 			setAccountDetail((prev: any) => ({
 				...prev,
-				[e.target.name]: GbToBytes(e.target.value).toString()
+				[e.target.name]: Math.round(GbToBytes(e.target.value))
+			}));
+		},
+		[setAccountDetail]
+	);
+
+	const changeFileQuotaLimit = useCallback(
+		(e) => {
+			if (!isValidDecimalNumber(e.target.value)) return;
+			const decimalPoints = e.target.value?.split('.')[1];
+			if (!!decimalPoints && decimalPoints?.length > 3) {
+				setShowFileQuotaLimitMsg(true);
+				return;
+			}
+			setShowFileQuotaLimitMsg(false);
+			setFileQuotaLimitGBValue(e.target.value);
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[e.target.name]: Math.round(GbToBytes(e.target.value))
 			}));
 		},
 		[setAccountDetail]
@@ -354,6 +404,7 @@ const EditAccountGeneralSection: FC<{
 		}
 		setDefaultCOS(!defaultCOS);
 	};
+
 	const deleteUserPassword = (): void => {
 		setShowDeletePasswordModal(false);
 		modifyAccountRequest(accountDetail?.zimbraId, { userPassword: '' })
@@ -395,6 +446,37 @@ const EditAccountGeneralSection: FC<{
 		},
 		[setAccountDetail]
 	);
+
+	useEffect(() => {
+		if (
+			initAccountDetail?.filesQuotaLimit &&
+			initAccountDetail?.filesQuotaLimit === accountDetail?.filesQuotaLimit
+		) {
+			setFileQuotaLimitGBValue(
+				initAccountDetail?.filesQuotaLimit
+					? BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)
+					: ''
+			);
+		}
+	}, [accountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaLimit]);
+
+	useEffect(() => {
+		if (cosDetail?.zimbraMailQuota !== undefined && cosAccountQuotaGBValue === '') {
+			setCosAccountQuotaGBValue(
+				cosDetail?.zimbraMailQuota ? BytesToGB(cosDetail?.zimbraMailQuota).toFixed(3) : ''
+			);
+		}
+	}, [cosAccountQuotaGBValue, cosDetail?.zimbraMailQuota]);
+
+	useEffect(() => {
+		if (accSpecificDetail?.zimbraMailQuota !== undefined && specificAccountQuotaGBValue === '') {
+			setSpecificAccountQuotaGBValue(
+				accSpecificDetail?.zimbraMailQuota
+					? BytesToGB(accSpecificDetail?.zimbraMailQuota).toFixed(3)
+					: ''
+			);
+		}
+	}, [accSpecificDetail?.zimbraMailQuota, specificAccountQuotaGBValue]);
 
 	const items =
 		domainList.length > MAX_DOMAIN_DISPLAY
@@ -615,6 +697,37 @@ const EditAccountGeneralSection: FC<{
 			`${ACCOUNTS_DETAILS_DISABLED_FIELD_NAME}_${fieldName}`
 		);
 	};
+
+	const calculatedFilesQuotaSizePercentage: number = useMemo(() => {
+		if (!initAccountDetail?.filesQuotaLimit) {
+			return 0;
+		}
+		return (initAccountDetail.filesQuotaUsed / initAccountDetail.filesQuotaLimit) * 100;
+	}, [initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed]);
+
+	const focusFileQuota = useCallback(() => {
+		if (fileQuotaRef?.current) {
+			fileQuotaRef.current?.focus();
+			fileQuotaRef?.current?.scrollIntoView({
+				behavior: 'smooth',
+				block: 'center'
+			});
+
+			setHighlightFileQuota(true);
+
+			// Reset the highlight after the transition ends
+			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+			const transitionEndHandler = () => {
+				setHighlightFileQuota(false);
+				// Remove the event listener
+				document.removeEventListener('transitionend', transitionEndHandler);
+			};
+
+			// Listen for the 'transitionend' event to reset the highlight
+			document.addEventListener('transitionend', transitionEndHandler, { once: true });
+		}
+	}, []);
+
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -626,6 +739,34 @@ const EditAccountGeneralSection: FC<{
 						{t('label.account', 'Account')}
 					</Text>
 				</Row>
+				{isAdvanced && initAccountDetail?.filesQuotaLimit && (
+					<Row
+						padding={{ top: 'large', left: 'large' }}
+						width="100%"
+						mainAlignment="space-between"
+						onClick={focusFileQuota}
+					>
+						<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
+							<Text size="extrasmall" color="secondary">
+								{t('label.files_space_usage', 'Files Space Usage')}
+							</Text>
+						</Row>
+						<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
+							<Text size="extrasmall" color="gray0">
+								{BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(3)} {t('label.of', 'of')}{' '}
+								{BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)} {t('label.gb', 'GB')}
+							</Text>
+						</Row>
+						<Row mainAlignment="flex-start" width="100%">
+							<Quota
+								fill={calculatedFilesQuotaSizePercentage}
+								height="0.5rem"
+								background="gray5"
+								style={{ borderRadius: '2px' }}
+							/>
+						</Row>
+					</Row>
+				)}
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="space-between">
 						<Input
@@ -801,6 +942,64 @@ const EditAccountGeneralSection: FC<{
 				) : (
 					<></>
 				)}
+				<Row
+					width="100%"
+					padding={{ top: 'large', left: 'large' }}
+					mainAlignment="space-between"
+					crossAlignment="flex-start"
+				>
+					<Row width={!isAdvanced ? '100%' : '49%'} mainAlignment="flex-start">
+						<InheritedInput
+							label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
+							subValue={accountQuotaGBValue}
+							inheritedValue={cosAccountQuotaGBValue}
+							fromSubValue={specificAccountQuotaGBValue}
+							background="gray5"
+							inputName="zimbraMailQuota"
+							onChange={changeAccountQuota}
+							onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
+							onFocus={(): void => handleMatomoTrackerEvent(MAILBOX_QUOTA_LIMIT_GB)}
+						/>
+						{showAccountQuotaLimitMsg && (
+							<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+								<Padding top="small">
+									<Text size="extrasmall" weight="regular" color="primary">
+										{t(
+											'label.maximum_3_digits_allowed_decimal_point',
+											'Maximum 3 digits allowed after the decimal point'
+										)}
+									</Text>
+								</Padding>
+							</Container>
+						)}
+					</Row>
+					{isAdvanced && (
+						<Row width="49%" mainAlignment="flex-start">
+							<HighlightedInput
+								backgroundColor="gray5"
+								label={t('label.files_space_limit_gb', 'Files Space Limit (GB)')}
+								value={fileQuotaLimitGBValue}
+								onChange={changeFileQuotaLimit}
+								inputName="filesQuotaLimit"
+								inputRef={fileQuotaRef}
+								highlighted={highlightFileQuota}
+								onFocus={(): void => handleMatomoTrackerEvent(FILES_QUOTA_LIMIT_GB)}
+							/>
+							{showFileQuotaLimitMsg && (
+								<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+									<Padding top="small">
+										<Text size="extrasmall" weight="regular" color="primary">
+											{t(
+												'label.maximum_3_digits_allowed_decimal_point',
+												'Maximum 3 digits allowed after the decimal point'
+											)}
+										</Text>
+									</Padding>
+								</Container>
+							)}
+						</Row>
+					)}
+				</Row>
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
 					<Row width="49%" mainAlignment="flex-start">
 						<Input
@@ -1100,26 +1299,6 @@ const EditAccountGeneralSection: FC<{
 						)}
 					</Row>
 				</Row>
-				<Row padding={{ top: 'large', left: 'large' }} width="100%">
-					<InheritedInput
-						label={t('label.account_quota_gb', 'Account Quota (GB)')}
-						subValue={accountQuota}
-						inheritedValue={
-							cosDetail.zimbraMailQuota ? BytesToGB(cosDetail.zimbraMailQuota).toString() : ''
-						}
-						fromSubValue={
-							accSpecificDetail.zimbraMailQuota
-								? BytesToGB(accSpecificDetail.zimbraMailQuota).toString()
-								: ''
-						}
-						background="gray5"
-						inputName="zimbraMailQuota"
-						onChange={changeAccountQuota}
-						onChangeReset={(): void => setEmptyValue('zimbraMailQuota')}
-						onFocus={(): void => handleMatomoTrackerEvent(ACCOUNT_QUOTA_GB)}
-					/>
-				</Row>
-
 				<Row
 					padding={{ top: 'large', left: 'large' }}
 					width="100%"
