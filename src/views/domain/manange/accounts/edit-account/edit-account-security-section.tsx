@@ -3,15 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	useMemo,
-	useContext,
-	useState,
-	ReactElement,
-	useCallback,
-	useEffect
-} from 'react';
+import React, { FC, useMemo, useContext, useState, ReactElement, useCallback } from 'react';
 
 import {
 	Container,
@@ -35,8 +27,6 @@ import styled from 'styled-components';
 import { ServicesPassphrase } from './services-passphrase';
 import logo from '../../../../../assets/gardian.svg';
 import {
-	ACCOUNT,
-	COS,
 	DELETE_OTP,
 	DISABLED,
 	ENABLED,
@@ -61,11 +51,9 @@ import {
 	USER_RECOVERY_EMAIL
 } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-import { getCoreAttributes } from '../../../../../services/get-core-attributes';
+// import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { sendMail } from '../../../../../services/send-mail-service';
-import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import { useCosStore } from '../../../../../store/cos/store';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { HorizontalWizard } from '../../../../app/component/hwizard';
 import { Section } from '../../../../app/component/section';
@@ -134,38 +122,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const cosName = useCosStore((state) => state.cos?.name);
-	const [undeleteAllowed, setUndeleteAllowed] = useState<boolean | undefined>(undefined);
-
-	useEffect(() => {
-		if (!isAdvanced) return;
-		const body = [
-			{
-				configType: COS,
-				configName: [cosName],
-				attrName: ['backupSelfUndeleteAllowed']
-			}
-		];
-		getCoreAttributes(body)
-			.then((data) => {
-				if (data?.attributes) {
-					setUndeleteAllowed(!!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value);
-				}
-			})
-			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
-	}, [cosName, createSnackbar, isAdvanced, setUndeleteAllowed, t]);
 
 	const wizardSteps = useMemo(
 		() => [
@@ -516,6 +472,19 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
 	);
 
+	const changeSwitchOptionBoolean = useCallback(
+		(key: string): void => {
+			const snakeCaseString = snakeCase(key);
+			handleMatomoTrackerEvent(snakeCaseString);
+
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[key]: !accountDetail[key]
+			}));
+		},
+		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
+	);
+
 	const onZimbraPasswordLockoutDurationTypeChange = useCallback(
 		(v: string) => {
 			setAccountDetail((prev: any) => ({
@@ -580,18 +549,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 		},
 		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
 	);
-
-	const onClickUndeleteAllowed = useCallback(() => {
-		const backupSelfUndeleteAllowedBody: any = {
-			backupSelfUndeleteAllowed: {
-				value: !undeleteAllowed,
-				objectName: accountDetail?.name,
-				configType: ACCOUNT
-			}
-		};
-		setCoreAttributes(backupSelfUndeleteAllowedBody);
-		setUndeleteAllowed((state) => !state);
-	}, [accountDetail?.name, undeleteAllowed]);
 
 	return (
 		<Container
@@ -732,9 +689,12 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 							<ListRow>
 								<Container crossAlignment="flex-start">
 									<Switch
-										value={undeleteAllowed}
-										onClick={(): void => onClickUndeleteAllowed()}
-										label={t('cos.allow_restore_message', 'Allow user to restore messages')}
+										value={accountDetail?.backupSelfUndeleteAllowed}
+										onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
+										label={t(
+											'account_details.allow_restore_message',
+											'Allow user to restore messages'
+										)}
 										iconColor="primary"
 									/>
 								</Container>
