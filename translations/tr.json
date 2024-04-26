@@ -202,8 +202,8 @@
         "public_service_port": "Genel Servis Bağlantı Noktası",
         "public_service_hostname": "Genel Servis Sunucu Adı",
         "percentage_maximum_conflict_allowed": "İzin Verilen Maksimum Çakışma %",
-        "password_lenght_msg": "Parola 5 karakterden uzun olmalı",
-        "password_and repeat_password_not_match": "Parolalar eşleşmiyor",
+        "password_length_msg": "Parola 5 karakterden uzun olmalı",
+        "password_and_repeat_password_not_match": "Parolalar eşleşmiyor",
         "number_of_items_to_fetch_when_scrolling": "Kaydırma sırasında alınacak öğe sayısı",
         "no_go_back": "Hayır, Geri Git",
         "next_step": "SONRAKİ ADIM",
@@ -1076,9 +1076,9 @@
         "subject": "Konu",
         "view_images": "RESİMLERİ GÖRÜNTÜLE",
         "advance_edit_display_name": "Görünen Ad",
-        "attachement_unknown": "Bilinmeyen <{{mimeType}}>",
-        "attachment": "Ek",
-        "attachment_plural": "ekler",
+        "attachment_unknown": "Bilinmeyen <{{mimeType}}>",
+        "attachment_one": "Ek",
+        "attachment_other": "ekler",
         "attachments_disclaimer": "Eklenmiş mesajı görüntülüyorsunuz. Ekli mesajların gerçekliği belirlenemez.",
         "from": "Kimden",
         "login": "Oturum Aç",
@@ -2078,8 +2078,8 @@
         "secret_key": "Gizli Anahtar"
     },
     "reminder": {
-        "minute": "{{count}} dakika",
-        "minute_plural": "{{count}} dakika"
+        "minute_one": "{{count}} dakika",
+        "minute_other": "{{count}} dakika"
     },
     "hsm": {
         "allocation": "Kaynak Kullanımı",

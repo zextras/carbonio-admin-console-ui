@@ -215,8 +215,8 @@
         "public_service_port": "पब्लिक सर्विस पोर्ट",
         "public_service_hostname": "पब्लिक सर्विस होस्ट नाम",
         "percentage_maximum_conflict_allowed": "% अनुमत अधिकतम विरोधाभास",
-        "password_lenght_msg": "पासवर्ड 5 कैरक्टर से ज़्यादा नहीं होने चाहिए",
-        "password_and repeat_password_not_match": "पासवर्ड मेल नहीं खा रहे",
+        "password_length_msg": "पासवर्ड 5 कैरक्टर से ज़्यादा नहीं होने चाहिए",
+        "password_and_repeat_password_not_match": "पासवर्ड मेल नहीं खा रहे",
         "number_of_items_to_fetch_when_scrolling": "स्क्रॉल करने पर कितने आइटम लाने हैं",
         "not_send_receive": "न भेज सकता है और न पा सकता है",
         "no_virtual_host_msg": "यहाँ वर्चुअल होस्ट नहीं हैं।",
@@ -1048,7 +1048,7 @@
         "search_for_an_account": "किसी अकाउंट के लिए सर्च करें",
         "received": "मिल गया",
         "Cos_name": "Cos नाम",
-        "attachement_unknown": "अज्ञात <{{mimeType}}>",
+        "attachment_unknown": "अज्ञात <{{mimeType}}>",
         "from": "भेजने वाला",
         "invalid_destination": "यह नोड कोई मान्य गंतव्य नहीं है",
         "login": "लॉगिन करें",
@@ -1059,8 +1059,8 @@
         "subject": "विषय",
         "to": "प्रति",
         "discard": "छोड़ें",
-        "attachment": "",
-        "attachment_plural": "संलग्नक",
+        "attachment_one": "",
+        "attachment_other": "संलग्नक",
         "attachments_disclaimer": "आप एक अटैच किया मैसेज देख रहे हैं। अटैच मैसेज असली हैं या नहीं यह सत्यापित नहीं किया जा सकता।",
         "select_folder": "फोल्डर सिलेक्ट करें",
         "view_images": "फोटो देखें",
@@ -1919,8 +1919,8 @@
         "send_full_error_data": "पूरा एरर डाटा भेजें"
     },
     "reminder": {
-        "minute": "{{count}} मिनट",
-        "minute_plural": ""
+        "minute_one": "{{count}} मिनट",
+        "minute_other": ""
     },
     "connection": {
         "access_key": "एक्सेस की",

@@ -373,8 +373,8 @@
         "schedule_policy": "Задать политику",
         "restart_replica": "ПЕРЕЗАПУСК РЕПЛИКАЦИИ",
         "repeat_password": "Повторить пароль",
-        "password_lenght_msg": "Пароль должен быть больше 5 символов",
-        "password_and repeat_password_not_match": "Пароли не совпадают",
+        "password_length_msg": "Пароль должен быть больше 5 символов",
+        "password_and_repeat_password_not_match": "Пароли не совпадают",
         "not_send_receive": "Не может отправлять и получать",
         "no_go_back": "Нет, вернуться назад",
         "next_step": "СЛЕДУЮЩИЙ ШАГ",
@@ -1023,10 +1023,9 @@
         "administration_rights": "Права администратора",
         "aggregated_space_quota": "Совокупная квота пространства",
         "Cos_name": "Имя класса сервисов",
-        "attachement_unknown": "Неизвестно <{{mimeType}}>",
-        "attachment_0": "",
-        "attachment_1": "",
-        "attachment_2": "вложения",
+        "attachment_unknown": "Неизвестно <{{mimeType}}>",
+        "attachment_one": "",
+        "attachment_other": "вложения",
         "attachments_disclaimer": "Вы просматриваете прикрепленное сообщение. Подлинность вложенных сообщений проверить невозможно.",
         "discard": "Отменить",
         "from": "От",
@@ -2010,9 +2009,8 @@
         "secret_key": "Секретный ключ"
     },
     "reminder": {
-        "minute_0": "{{count}} минута",
-        "minute_1": "",
-        "minute_2": ""
+        "minute_one": "{{count}} минута",
+        "minute_other": ""
     },
     "hsm": {
         "all": "Все",

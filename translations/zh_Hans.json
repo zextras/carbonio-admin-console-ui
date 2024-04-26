@@ -278,8 +278,8 @@
         "public_service_port": "公共服务端口",
         "public_service_hostname": "公共服务主机名",
         "percentage_maximum_conflict_allowed": "%最大允许冲突",
-        "password_lenght_msg": "密码长度应超过5字符",
-        "password_and repeat_password_not_match": "密码不匹配",
+        "password_length_msg": "密码长度应超过5字符",
+        "password_and_repeat_password_not_match": "密码不匹配",
         "number_of_items_to_fetch_when_scrolling": "滑动时获取的项目数",
         "no_virtual_host_msg": "这里没有虚拟主机。",
         "no_go_back": "不，返回",
@@ -997,8 +997,9 @@
         "advance_edit_userName": "用户名",
         "search_for_an_account": "搜索账户",
         "received": "已接收",
-        "attachement_unknown": "未知 <{{mimeType}}>",
-        "attachment_0": "附件",
+        "attachment_unknown": "未知 <{{mimeType}}>",
+        "attachment_one": "附件",
+        "attachment_other": "",
         "discard": "丢弃",
         "save_to_files": "保存至文件",
         "Cos_name": "COS名称",
@@ -1604,7 +1605,8 @@
         "send_full_error_data": "发送完整错误数据"
     },
     "reminder": {
-        "minute": "{{count}} 分钟"
+        "minute_one": "{{count}} 分钟",
+        "minute_other": ""
     },
     "account_details": {
         "advanced_search": "高级搜索",

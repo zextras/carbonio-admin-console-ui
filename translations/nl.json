@@ -305,7 +305,7 @@
         "manual_accept_auto_decline_on_conflict": "Handmatige aanvaarding; automatische afwijzing in geval van conflict",
         "use_the_QuickAdd_dialog_when_creating_new_appointments": "Snel Toevoegen-dialoog gebruiken bij het creëren van nieuwe afspraken",
         "virtual_host_enable_info_msg": "Klik op de TOEVOEGEN-knop om een nieuwe in te schakelen.",
-        "password_lenght_msg": "Wachtwoord moet meer dan 5 tekens bevatten",
+        "password_length_msg": "Wachtwoord moet meer dan 5 tekens bevatten",
         "number_of_items_to_fetch_when_scrolling": "Aantal op te halen items bij scrollen",
         "external_password_change_listener": "Eindpunt dat moet worden gebruikt voor het wijzigen van het wachtwoord",
         "this_is_hidden_from_gal": "Deze lijst is verborgen voor GAL",
@@ -325,7 +325,7 @@
         "search_an_account": "Zoeken naar een account",
         "search_a_signature": "Zoeken naar een handtekening",
         "percentage_maximum_conflict_allowed": "% Maximum Conflicten Toegelaten",
-        "password_and repeat_password_not_match": "Wachtwoorden komen niet overeen",
+        "password_and_repeat_password_not_match": "Wachtwoorden komen niet overeen",
         "not_send_receive": "Kan niet verzenden of ontvangen",
         "mailing_list_user": "Mailinglijst / Gebruiker",
         "i_am_looking_for_member": "Ik ben op zoek naar het lid…",
@@ -1181,9 +1181,9 @@
         "search_for_an_account": "Zoeken naar een account",
         "received": "Ontvangen",
         "Cos_name": "Cos-Naam",
-        "attachement_unknown": "Onbekend <{{mimeType}}>",
-        "attachment": "Bijlage",
-        "attachment_plural": "bijlagen",
+        "attachment_unknown": "Onbekend <{{mimeType}}>",
+        "attachment_one": "Bijlage",
+        "attachment_other": "bijlagen",
         "attachments_disclaimer": "U bekijkt een bijgevoegd bericht. De authenticiteit van de bijgevoegde berichten kan niet worden gecontroleerd.",
         "discard": "Verwijderen",
         "from": "Van",
@@ -1919,8 +1919,8 @@
         "send_full_error_data": "Volledige foutgegevens verzenden"
     },
     "reminder": {
-        "minute": "{{count}} minuut",
-        "minute_plural": "{{count}} minuten"
+        "minute_one": "{{count}} minuut",
+        "minute_other": "{{count}} minuten"
     },
     "connection": {
         "access_key": "Toegangssleutel",

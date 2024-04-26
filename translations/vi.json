@@ -440,8 +440,8 @@
         "no_owner_search_information_message": "Không có chủ sở hữu ở đây. Tìm kiếm người dùng và nhấp vào nút THÊM.",
         "on_startup_and_scheduled": "Khi khởi động và đã được lên lịch",
         "owners_settings": "Cài đặt chủ sở hữu danh sách gửi thư",
-        "password_and repeat_password_not_match": "Mật khẩu không hợp lệ",
-        "password_lenght_msg": "Mật khẩu phải nhiều hơn 5 ký tự",
+        "password_and_repeat_password_not_match": "Mật khẩu không hợp lệ",
+        "password_length_msg": "Mật khẩu phải nhiều hơn 5 ký tự",
         "percentage_maximum_conflict": "% xung đột tối đa",
         "percentage_maximum_conflict_allowed": "% xung đột tối đa được phép",
         "query_is_not_valid": "Truy vấn không hợp lệ",
@@ -709,8 +709,9 @@
         "messages": "Tin nhắn",
         "show_all": "Hiện tất cả",
         "Cos_name": "Tên COS",
-        "attachement_unknown": "Không biết <{{mimeType}}>",
-        "attachment_0": "đính kèm",
+        "attachment_unknown": "Không biết <{{mimeType}}>",
+        "attachment_one": "đính kèm",
+        "attachment_other": "",
         "invalid_destination": "Chỗ này không phải là đích hợp lệ",
         "login": "Đăng nhập",
         "save_to_files": "Lưu vào tệp",
@@ -1373,7 +1374,8 @@
         "survey_feedback_sub_1": "Đừng lo lắng, các cuộc khảo sát sẽ nhanh chóng, dễ dàng và cực kỳ hữu ích đối với chúng tôi để hiểu chúng tôi đang đi như thế nào."
     },
     "reminder": {
-        "minute": "{{count}} phút"
+        "minute_one": "{{count}} phút",
+        "minute_other": ""
     },
     "connection": {
         "access_key": "Khoá truy cập",
