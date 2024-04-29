@@ -124,7 +124,14 @@
             "valid": "Valida",
             "license_activated_successfully": "Licenza attivata con successo",
             "not_valid": "Non valido",
-            "endDate": "Data di fine"
+            "endDate": "Data di fine",
+            "accounts": "Account",
+            "modules": "Moduli",
+            "refresh": "Ricarica",
+            "type": "Tipo",
+            "valid_until": "Valido fino al",
+            "provider": "Fornitore",
+            "refresh_subscription_last_check": "Aggiorna Licenza (Ultimo Controllo)"
         }
     },
     "domain": {
@@ -225,7 +232,7 @@
         "name": "Nome",
         "not_set": "Non impostato",
         "note": "Nota",
-        "notification": "Notiifca",
+        "notification": "Notifica",
         "of": "di",
         "page ": "Hai accettato la richiesta di condivisione",
         "page_": "Hai accettato la richiesta di condivisione",
@@ -285,7 +292,6 @@
         "certificates": "Certificati",
         "internal": "Interna",
         "virtual_host_user_msg": "Qualsiasi utente che effettua il login utilizzando un URL che contiene uno degli hostname qui elencati, sarà considerato come utente di questo dominio, {{domainName}}",
-        "enable_start_tls": "Attiva StartTLS",
         "external_active_directory": "Directory attiva esterna",
         "external_ldap": "LDAP esterno",
         "filter": "Filtro",
@@ -689,7 +695,6 @@
         "default_calendar_view": "Vista predefinita calendario",
         "restore_account_has_added_operation_queue": "Il ripristino dell'account è stato aggiunto con successo alla coda delle operazioni",
         "contact_options": "Opzioni Contatto",
-        "who_is_in_this_list": "Chi è in questa lista?",
         "who_needs_receive_this_email": "Chi deve ricevere questa e-mail?",
         "disabled": "Disabilitato",
         "local": "Locale",
@@ -903,7 +908,9 @@
         "delete_domain_certificate_content": "Stai eliminando il certificato di un dominio. <br /> Vuoi procedere?",
         "domain_certificate": "Certificato dominio",
         "domain_certificate_private_key": "Chiave privata dominio",
-        "download": "SCARICA",
+        "download_0": "SCARICA",
+        "download_1": "",
+        "download_2": "",
         "download_pdf": "SCARICA PDF",
         "load_FILE": "CARICA FILE",
         "there_are_not_member_here": "Nessun membro presente.",
@@ -941,7 +948,6 @@
         "copyrights_information": "Informazioni Copyright",
         "disable_the_account": "Disabilita account",
         "infrequent_access": "Accesso poco frequente",
-        "load_and_verify_certificate": "CARICA E VERIFICA IL CERTIFICATO",
         "load_you_cert_file": "Carica il file del certificato",
         "load_your_cert_file": "Carica il file del tuo certificato",
         "load_your_private_file": "Carica il file del tuo certificato",
@@ -1286,7 +1292,7 @@
         "sender": "Mittente",
         "to_domain": "Al Dominio",
         "whitelabel_settings": "Impostazioni whitelabel",
-        "discard": "Abbandona",
+        "discard": "Ignora",
         "save_the_changes": "Salva le modifiche",
         "search_for_a_completed_operation": "Ricerca di un'operazione completata",
         "display_name": "Nome visualizzato",
@@ -1349,7 +1355,24 @@
         "only_allow_outbound_disclaimers": "Consenti solo dichiarazioni di non responsabilità in uscita",
         "quarantine": "Quarantena",
         "virtualhost_avaibility_helpertext": "per rendere disponibile il virtualHost, ricaricare prima la configurazione di nginx su tutti i proxy.",
-        "advance_edit_user": "Utente"
+        "advance_edit_user": "Utente",
+        "enable_secure_connection": "Abilita Connessione Sicura (StartTLS/SSL)",
+        "enter_valid_email_address": "Inserire un indirizzo email valido",
+        "forgotten_password": "Password Dimenticata",
+        "has_backup": "Sì Backup",
+        "invalid_primary_color_dark_mode": "Il Colore Primario per la Dark Mode non è valido",
+        "invalid_primary_color_light_mode": "Il Colore Primario per la Light Mode non è valido",
+        "mailstores_list": "Lista Maistores",
+        "max_mainbox_quota_for_the_mails_in_gb": "Limite Quota Mailbox per Mails (GB)",
+        "not_available": "Non Disponibile",
+        "user_recovery_email": "Email di Recupero per l'utente",
+        "validate_ip_Address_text": "È richiesto un indirizzo IP valido",
+        "verified": "Verificato",
+        "show_forget_password_link": "Mostra link \"Password Dimenticata\" nella login page",
+        "interactive": "Interattivo",
+        "permissive": "Tollerante",
+        "strict": "Severo",
+        "user_can_ask_for_forgotten_password_token": "L'utente può richiedere il token per la password dimenticata"
     },
     "message": {
         "snackbar": {
@@ -1760,9 +1783,7 @@
         "user_can_specify_forwarding_address": "L'utente può specificare l'indirizzo di inoltro",
         "user_can_specify_mail_forwarding_filter": "L'utente può specificare il filtro di inoltro per le mail",
         "user_specific_fowarding_addresses": "Numero massimo di indirizzi di inoltro",
-        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "indirizzi di inoltro specifici dell'utente+numero massimo di indirizzi di inoltro",
-        "handled_accounts": "Accont gestiti",
-        "handled_domains": "Domini gestiti"
+        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "indirizzi di inoltro specifici dell'utente+numero massimo di indirizzi di inoltro"
     },
     "accountDetails": {
         "default_COS": "COS Predefinita",
@@ -2007,7 +2028,9 @@
         "user_can_specify_forwarding_address": "L'utente può specificare l'indirizzo di inoltro",
         "user_can_specify_mail_forwarding_filter": "L'utente può specificare il filtro di inoltro per le mail",
         "send_as_recipients": "Invia come (i destinatari vedranno questo indirizzo come mittente {{targetEmail}})",
-        "send_recipients_see_the_mail": "Invia {{right}} (i destinatari vedranno questo indirizzo come mittente {{targetEmail}})"
+        "send_recipients_see_the_mail": "Invia {{right}} (i destinatari vedranno questo indirizzo come mittente {{targetEmail}})",
+        "abq_status": "Stato ABQ",
+        "otp_devices": "Dispositivi OTP"
     },
     "connection": {
         "access_key": "Chiave d'Accesso",
@@ -2257,7 +2280,7 @@
         "add": "Aggiungi",
         "authentication": "Autenticazione",
         "days": "Giorni",
-        "discard": "Abbandona",
+        "discard": "Ignora",
         "hours": "Ore",
         "low": "Bassa",
         "may": "Maggio",
@@ -2411,7 +2434,10 @@
         "mail_queue_flush_successfully": "Coda mail svuotata correttamente",
         "queue": "Coda",
         "release": "Rilascio",
-        "requeue": "Rimetti in coda"
+        "requeue": "Rimetti in coda",
+        "allowed_valid_antivirus_mirror": "Mirror Antivirus non valido",
+        "smtpd_not_valid_error": "Smtpd sender login maps non valido",
+        "space_not_allowed_in_antivirus_mirror": "Spazio non accettato nel Mirror Antivirus"
     },
     "mat": {
         "add_here_any_blocked_extension": "Aggiungi qui qualsiasi estensione bloccata"
@@ -2421,7 +2447,8 @@
         "is_current": "Prima devi impostare un altro volume come quello corrente."
     },
     "error": {
-        "one_or_more_ip_invalid": "Uno o più IP non sono validi"
+        "one_or_more_ip_invalid": "Uno o più IP non sono validi",
+        "invalid_ip_address_error_text": "Formati IP supportati: IPv4: ipv4/netmask, IPv6: [ipv6]/netmask"
     },
     "quarantine": {
         "delete_message": "Elimina messaggio",
@@ -2443,7 +2470,13 @@
         "show_source": "Mostra origine",
         "to_make_changes_restart_the_MTA": "Per rendere effettivi i cambiamenti, riavviare l'MTA.",
         "yes_delete_message": "SI, ELIMINA",
-        "attachment_deleted": "L'allegato è stato eliminato"
+        "attachment_deleted": "L'allegato è stato eliminato",
+        "download": "SCARICA",
+        "no_cancel": "NO, CANCELLA",
+        "refresh_list": "AGGIORNA LISTA",
+        "is_content_email_safe": "Il contenuto della mail è sicuro?",
+        "please_note_email_contains_dangerous_file_not_be_delivered": "Se l'e-mail contiene ancora un file pericoloso, non verrà consegnata",
+        "yes_deliver": "Sì, CONSEGNA"
     },
     "action": {
         "click_open": "Clicca per aprire",

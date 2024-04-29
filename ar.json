@@ -46,7 +46,8 @@
         "general_lbl": "عام",
         "status": "الحالة",
         "person_name": "الاسم",
-        "advance_edit_userName": "اسم المستخدم"
+        "advance_edit_userName": "اسم المستخدم",
+        "save": "حفظ"
     },
     "account_details": {
         "Chats": "دردشات",

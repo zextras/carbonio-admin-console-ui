@@ -17,7 +17,6 @@
         "closed": "Închis",
         "configuration": "Configuraţie",
         "domains": "Domenii",
-        "enable_start_tls": "Activare StartTLS",
         "external": "Extern",
         "external_active_directory": "Active Directory extern",
         "external_ldap": "LDAP extern",
@@ -194,7 +193,10 @@
             "hide": "Ascundere",
             "modal": {
                 "cancel": "Nu."
-            }
+            },
+            "accounts": "Conturi",
+            "refresh": "Împrospătare",
+            "type": "Tip"
         }
     },
     "domain": {

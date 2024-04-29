@@ -263,7 +263,12 @@
             "valid": "Valid",
             "license_activated_successfully": "Lisensi berhasil diaktifkan",
             "not_valid": "Tidak Valid",
-            "endDate": "Tanggal selesai"
+            "endDate": "Tanggal selesai",
+            "accounts": "Akun",
+            "modules": "Modul",
+            "refresh": "Perbarui",
+            "type": "Jenis",
+            "valid_until": "Valid sampai"
         }
     },
     "domain": {
@@ -384,7 +389,6 @@
         "certificate": "Sertifikat",
         "closed": "Ditutup",
         "domains": "Domain",
-        "enable_start_tls": "Aktifkan StartTLS",
         "external_active_directory": "Active Directory Eksternal",
         "external_ldap": "LDAP Eksternal",
         "features": "Fitur",
@@ -911,7 +915,6 @@
         "type_accounts_paste_them_here": "Ketik Akun atau tempelkan di sini",
         "type_an_account_dot": "Ketik akun …",
         "username_with": "nama pengguna dengan",
-        "who_is_in_this_list": "Siapa yang ada di daftar?",
         "who_needs_receive_this_email": "Siapa yang butuh menerima email ini?",
         "DELETE": "HAPUS",
         "OTP": "OTP",
@@ -1052,7 +1055,6 @@
         "lockout": "Penguncian",
         "please_wait": "Harap tunggu",
         "what_inside": "Subjek",
-        "load_and_verify_certificate": "UNGGAH DAN VERIFIKASI SERTIFIKAT",
         "type_an_account_add_senders_list": "Ketik alamat untuk menambahkannya sebagai pengirim yang diizinkan",
         "private_key_certificate": "Private Key Sertifikat",
         "use_infraquent_access": "Gunakan akses jarang",
@@ -1901,7 +1903,8 @@
         "right_for_selected_user_deleted_successfully": "Hak untuk pengguna yang dipilih berhasil dihapus",
         "inherited_value_was": "Nilai yang diwariskan adalah",
         "set_global_config": "SetGlobal config",
-        "user_can_specify_mail_forwarding_filter": "Pengguna dapat menentukan filter penerusan email"
+        "user_can_specify_mail_forwarding_filter": "Pengguna dapat menentukan filter penerusan email",
+        "abq_status": "Status ABQ"
     },
     "connection": {
         "access_key": "Kunci Akses",

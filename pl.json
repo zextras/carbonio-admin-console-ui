@@ -263,7 +263,14 @@
             "valid": "Ważna",
             "license_activated_successfully": "Licencja została aktywowana",
             "not_valid": "Nieważna",
-            "endDate": "Data zakończenia"
+            "endDate": "Data zakończenia",
+            "accounts": "Konta",
+            "modules": "Moduły",
+            "refresh": "Odśwież",
+            "type": "Typ",
+            "valid_until": "Ważna do",
+            "provider": "Dostawca",
+            "refresh_subscription_last_check": "Odśwież subskrypcję (ostatnio sprawdzane)"
         }
     },
     "domain": {
@@ -339,7 +346,9 @@
         "certificate_type_use_letsencrypt_short_chain": "Chcę użyć certyfikatu Let’s Encrypt (shortChain)",
         "administration_rights": "Uprawnienia administracyjne",
         "certificate_content_error_without_ca_chain": "Certyfikat domeny, prywatny klucz jest nieprawidłowy",
-        "virtual_host_name_error": "Wprowadź prawidłową nazwę wirtualnego hosta."
+        "virtual_host_name_error": "Wprowadź prawidłową nazwę wirtualnego hosta.",
+        "jail_duration": "Czas trwania jail (ms)",
+        "mail_space_quota_threshold_warning": "Próg ostrzeżenia dla limitu przestrzeni dla skrzynki pocztowej (%)"
     },
     "label": {
         "account": "Konto",
@@ -349,7 +358,7 @@
         "app_name": "Zarządzaj",
         "backup": "Kopia zapasowa",
         "cancel": "Anuluj",
-        "core": "Core",
+        "core": "Rdzeń",
         "days": "Dni",
         "delete": "Usuń",
         "description": "Opis",
@@ -386,7 +395,6 @@
         "closed": "Wyłączone",
         "configuration": "KONFIGURACJA",
         "domains": "Domeny",
-        "enable_start_tls": "Włącz StartTLS",
         "external_active_directory": "Zewnętrzny katalog aktywny",
         "external_ldap": "Zewnętrzne LDAP",
         "features": "Funkcje",
@@ -742,7 +750,6 @@
         "restore_account_has_added_operation_queue": "Przywracanie konta zostało dodane do kolejki operacji",
         "application_log": "Dziennik aplikacji",
         "who_needs_receive_this_email": "Kto otrzyma powiadomienie?",
-        "who_is_in_this_list": "Kto znajduje się na tej liście?",
         "volume_min_threshold": "Min. próg",
         "volume_max_quota_allowed": "Max. dozwolony limit przestrzeni",
         "volume_main": "Główny wolumin",
@@ -927,7 +934,7 @@
         "enabled": "Włączone",
         "global": "Globalne",
         "last_seen": "Ostatnio widziano",
-        "mailstores": "Magazyn poczty",
+        "mailstores": "Magazyny poczty",
         "mobile_password": "Hasło mobilne",
         "reset": "Zresetuj",
         "reset_device": "Reset urządzenia",
@@ -1034,7 +1041,7 @@
         "search_for_user_and_clic_to_add": "Wyszukaj użytkownika i kliknij przycisk DODAJ.",
         "there_are_no_owners": "Nie ma żadnych właścicieli.",
         "verify": "Zweryfikuj",
-        "verify_certificate": "Zweryfikuj",
+        "verify_certificate": "ZWERYFIKUJ CERTYFIKAT",
         "delete_private_key_certificate_content": "Usuwasz prywatny klucz certyfikatu.<br /> Czy na pewno chcesz go usunąć?",
         "delete_private_key_certificate_header": "Usunąć prywatny klucz certyfikatu?",
         "load_certificate_message": "Prześlij certyfikat, aby zobaczyć jego szczegóły.<br />Kliknij w <strong>\"PRZEŚLIJ I ZWERYFIKUJ CERTYFIKAT\"</strong>, aby zacząć",
@@ -1051,10 +1058,11 @@
         "domain_certificate": "Certyfikat domeny",
         "domain_certificate_ca_chain": "Łańcuch CA certyfikatu domeny",
         "domain_certificate_private_key": "Prywatny klucz domeny",
-        "download": "POBIERZ",
+        "download_0": "POBIERZ",
+        "download_1": "POBIERZ",
+        "download_2": "POBIERZ",
         "download_pdf": "POBIERZ PDF",
         "load_FILE": "PRZEŚLIJ PLIK",
-        "load_and_verify_certificate": "PRZEŚLIJ I ZWERYFIKUJ CERTYFIKAT",
         "load_copy_certi": "Prześlij lub skopiuj swój certyifkat",
         "load_you_cert_file": "Prześlij plik z certyfikatem",
         "load_your_cert_file": "Prześlij plik z certyfikatem",
@@ -1192,7 +1200,7 @@
         "ldap_url": "URL LDAP",
         "model_label_create_account": "Stwórz konto",
         "operation_lbl": "<bold>Operacje</bold>",
-        "personalisation": "Personalizacja",
+        "personalisation": "Dostosowywanie",
         "prefix_volume": "Prefiks - {{volumePrefix}}",
         "primary_color_for_dark_mode": "<bold>Główny</bold> kolor dla trybu ciemnego",
         "primary_color_for_light_mode": "<bold>Główny</bold> kolor dla trybu jasnego",
@@ -1489,8 +1497,42 @@
         "something_went_wrong_check_data_and_try_again": "COŚ POSZŁO NIE TAK. SPRAWDŹ DANE I SPRÓBUJ PONOWNIE",
         "text_editor": "Edytor tekstu",
         "user_auto_fill": "użytkownik (automatyczne uzupełnianie)",
-        "virtualhost_avaibility_helpertext": ",że aby wirtualny host stał się dostępny, konfiguracja nginx musi najpierw zostać uruchomiona ponownie na wszystkich proxy.",
-        "add_in_distribution_list_or_both": "Możesz dodać kolejną listę dystrybucyjną lub użytkownika. Oboje z nich mogą być właścicielem listy."
+        "virtualhost_avaibility_helpertext": ", aby wirtualny host stał się dostępny, konfiguracja nginx musi najpierw zostać uruchomiona ponownie na wszystkich proxy.",
+        "add_in_distribution_list_or_both": "Możesz dodać kolejną listę dystrybucyjną lub użytkownika. Oboje z nich mogą być właścicielem listy.",
+        "enable_secure_connection": "Włącz bezpieczne połączenie (StartTLS/SSL)",
+        "enter_valid_email_address": "Wprowadź prawidłowy adres e-mail",
+        "forgotten_password": "Zapomniane hasło",
+        "has_backup": "Ma kopię zapasową",
+        "interactive": "Interaktywne",
+        "invalid_primary_color_dark_mode": "Główny kolor dla trybu ciemnego jest nieprawidłowy",
+        "invalid_primary_color_light_mode": "Główny kolor dla trybu jasnego jest nieprawidłowy",
+        "mailstores_list": "Lista magazynów poczty",
+        "not_available": "Niedostępne",
+        "permissive": "Dozwolone",
+        "show_forget_password_link": "Pokazuj link \"Nie pamiętasz hasła?\" na ekranie logowania",
+        "strict": "Rygorystyczne",
+        "user_can_ask_for_forgotten_password_token": "Użytkownik może zapytać o token zapomnianego hasła",
+        "user_recovery_email": "Pomocniczy adres e-mail użytkownika",
+        "validate_ip_Address_text": "Wprowadź prawidłowy adres IP.",
+        "verified": "Zweryfikowane",
+        "max_mainbox_quota_for_the_mails_in_gb": "Max. limit przestrzeni dla skrzynki pocztowej w E-mailach (GB)",
+        "active_sync_has_been_purged_successfully": "ActiveSync zostało wyczyszczone",
+        "enable_the_mobile_dos_protection_service": "Włącz usługę mobilnej ochrony DOS",
+        "equipment": "Ekwipunek",
+        "mailing_lists_lbl": "Listy dystrybucyjne",
+        "max_mainbox_quota_for_the_domain_in_gb": "Max. limit przestrzeni dla skrzynki pocztowej w domenie (GB) (0=nielimitowany)",
+        "maximum_of_requests_allowed": "Max. ilość dozwolonych żądań",
+        "meeting_room": "Pokój spotkań",
+        "mobile_dos_protection": "Mobilna ochrona DOS",
+        "servers_has_been_restared": "Serwer został zrestartowany",
+        "servers_have_been_restared": "Serwery zostały zrestartowane",
+        "single_server": "Pojedynczy serwer",
+        "this_list_included_in": "Ta lista jest uwzględniona w",
+        "time_window_for_allowed_requests": "Okienko czasowe dla dozwolonych żądań (ms)",
+        "mta_server_general": "Ogólne",
+        "account_quota_gb": "Limit przestrzeni dla konta (GB)",
+        "purge_active_sync": "Wyczyść ActiveSync",
+        "restart_jail": "Zrestartuj jail"
     },
     "message": {
         "snackbar": {
@@ -1749,8 +1791,9 @@
         "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "użytkownik określił adresy przekazania dalej oraz max. liczbę adresów przekazania dalej na użytkownika",
         "limit_user_specified_forwarding_addresses": "Max. liczba znaków adresu przekazania dalej",
         "user_specific_fowarding_addresses": "Ogranicz pole adresów przekazywania dalej ustalane przez użytkownika do (znaki)",
-        "handled_accounts": "przetwarzane konta",
-        "handled_domains": "przetwarzane domeny"
+        "accounts_that_use_this_cos": "Konta używające tego COS",
+        "domains_that_use_this_cos": "Domeny używające tego COS",
+        "enable_new_mail_toast_notification": "Włącz wyskakujące powiadomienia o nowych e-mailach"
     },
     "locale": {
         "label_italian": "Włoski - {{value}}",
@@ -1997,7 +2040,16 @@
         "user_can_specify_forwarding_address": "Użytkownik może określać adres przekazania dalej",
         "user_can_specify_mail_forwarding_filter": "Użytkownik może określać filtr przekazania dalej e-maili",
         "send_as_recipients": "Wyślij jako (odbiorcy zobaczą adres {{targetEmail}} jako adres nadawcy)",
-        "send_recipients_see_the_mail": "Wyślij {{right}} (odbiorcy zobaczą adres {{targetEmail}} jako adres nadawcy)"
+        "send_recipients_see_the_mail": "Wyślij {{right}} (odbiorcy zobaczą adres {{targetEmail}} jako adres nadawcy)",
+        "abq_status": "Status ABQ",
+        "otp_devices": "Urządzenia hasła OTP",
+        "as_new_email_arrives": "Kiedy przyjdzie nowy e-mail",
+        "enable_new_mail_notifications": "Włącz powiadomienia o nowych e-mailach",
+        "enable_new_mail_toast_notification": "Włącz wyskakujące powiadomienia o nowych e-mailach",
+        "hidden_in_gal": "Ukryte w GLA",
+        "included_in_backup": "Uwzględnione w kopii zapasowej",
+        "no": "Nie",
+        "yes": "Tak"
     },
     "privacy": {
         "survey_feedback_sub_1": "Nie martw się, ankiety będą szybkie, proste i bardzo pomogą nam zrozumieć co robimy dobrze a co źle.",
@@ -2020,10 +2072,10 @@
         "secret_key": "Tajny klucz"
     },
     "volume": {
-        "serverName_volumes_create_mailstores_volume": "Stwórz wolumin magazynu poczty w {{serverName}}",
+        "serverName_volumes_create_mailstores_volume": "Stwórz wolumin magazynów poczty w {{serverName}}",
         "serverName_volumes": "Woluminy {{serverName}}",
         "new": {
-            "create_mailstores_volume": "Stwórz wolumin magazynu poczty"
+            "create_mailstores_volume": "Stwórz wolumin magazynów poczty"
         },
         "server_list_header": {
             "description": "Opis",
@@ -2419,13 +2471,20 @@
         "spam_to_junk_tolerance": "Tolerancja spamu",
         "queue": "Kolejka",
         "release": "Wersja",
-        "requeue": "Dodaj ponownie do kolejki"
+        "requeue": "Dodaj ponownie do kolejki",
+        "allowed_valid_antivirus_mirror": "Zapasowy serwer definicji jest nieprawidłowy",
+        "smtpd_not_valid_error": "Smtpd sender login maps jest nieprawidłowe",
+        "smtpd_sender_login_maps": "Smtpd sender login maps",
+        "space_not_allowed_in_antivirus_mirror": "Spacja nie jest dozwolona w zapasowym serwerze definicji",
+        "antispam_and_antivirus": "Antyspam i antywirus",
+        "block_spam_tolerance": "Tolerancja blokowania spamu"
     },
     "mat": {
         "add_here_any_blocked_extension": "Tutaj dodaj wszystkie zablokowane rozszerzenia"
     },
     "error": {
-        "one_or_more_ip_invalid": "Jedno lub więcej z IP jest nieprawidłowe"
+        "one_or_more_ip_invalid": "Jedno lub więcej z IP jest nieprawidłowe",
+        "invalid_ip_address_error_text": "Wspierany format ip dla ipv4 to ipv4/maska sieci a dla ipv6 to [ipv6]/maska sieci"
     },
     "action": {
         "click_open": "Kliknij, aby otworzyć",
@@ -2458,6 +2517,12 @@
         "delete_and_recrate_quarantine_account_title": "Usuń i stwórz ponownie konto kwarantanny",
         "delete_msg_warning": "Czy na pewno chcesz usunąć tę wiadomość?",
         "destroy_account_recreate_button": "TAK, USUŃ I STWÓRZ JE PONOWNIE",
-        "yes_delete_message": "TAK, USUŃ"
+        "yes_delete_message": "TAK, USUŃ",
+        "download": "POBIERZ",
+        "is_content_email_safe": "Czy zawartość e-maila jest bezpieczna?",
+        "no_cancel": "NIE, ANULUJ",
+        "please_note_email_contains_dangerous_file_not_be_delivered": "Uwaga: jeśli e-mail dalej zawiera niebezpieczny plik, to nie zostanie on dostarczony",
+        "refresh_list": "ODŚWIEŻ LISTĘ",
+        "yes_deliver": "TAK, DOSTARCZ"
     }
 }

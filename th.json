@@ -263,7 +263,12 @@
             "valid": "ถูกต้องแล้ว",
             "license_activated_successfully": "เปิดใช้งานใบอนุญาตเรียบร้อยแล้ว",
             "not_valid": "ไม่ถูกต้อง",
-            "endDate": "วันที่สุดท้าย"
+            "endDate": "วันที่สุดท้าย",
+            "accounts": "บัญชีผู้ใช้",
+            "refresh": "รีเฟรช",
+            "modules": "โมดูล",
+            "type": "ประเภท",
+            "valid_until": "ใช้ได้จนกระทั่ง"
         }
     },
     "domain": {
@@ -384,7 +389,6 @@
         "certificate": "ใบรับรอง",
         "closed": "ปิด",
         "domains": "โดเมน",
-        "enable_start_tls": "เปิดใช้งาน StartTLS",
         "external_active_directory": "Active Directory ภายนอก",
         "external_ldap": "LDAP ภายนอก",
         "features": "คุณลักษณะ",
@@ -773,7 +777,6 @@
         "volume_created": "สร้างวอลุ่มเรียบร้อยแล้ว",
         "volume_deleted": "ลบวอลุ่มเรียบร้อยแล้ว",
         "volume_detail_error": "{{message}}",
-        "who_is_in_this_list": "ใครอยู่ในรายการนี้?",
         "who_needs_receive_this_email": "ใครต้องได้รับอีเมลนี้บ้าง?",
         "account_disable_correctly": "บัญชีถูกปิดการใช้งานอย่างถูกต้อง",
         "account_remove_correctly": "บัญชีถูกลบอย่างถูกต้อง",
@@ -1057,7 +1060,6 @@
         "cancel_operations_message": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการดำเนินการนี้? <br /> โดยการคลิกยกเลิกการดำเนินการ จะทำให้ถูก <br /> ลบออกจากรายการคิวการดำเนินการ",
         "cancel_operations_msg": "คุณแน่ใจหรือไม่ว่าต้องการยกเลิกการดำเนินการนี้? <br /> โดยการคลิกยกเลิกการดำเนินการ จะทำให้ถูกลบออกจากรายการคิวการดำเนินการ",
         "delete_domain_certificate_content": "คุณกำลังลบใบรับรองโดเมน<br /> คุณแน่ใจหรือไม่ว่าต้องการลบ?",
-        "load_and_verify_certificate": "อัปโหลดและตรวจสอบใบรับรอง",
         "load_certificate_message": "โหลดใบรับรองเพื่อดูรายละเอียด!<br />คลิกที่ <strong>“โหลดและตรวจสอบใบรับรอง +”</strong> เพื่อเริ่มต้น",
         "load_your_private_file": "โหลดไฟล์ใบรับรองของคุณ",
         "new_virtual_host_name": "พิมพ์ชื่อโฮสต์เสมือนจริงใหม่แล้วคลิก \"เพิ่ม +\" เพื่อเพิ่มลงในรายการ",
@@ -1898,7 +1900,8 @@
         "service_label_password": " รหัสผ่านของ {{ service_label }}",
         "set_global_config": "การกำหนดค่า SetGlobal",
         "user_can_specify_forwarding_address": "ผู้ใช้สามารถระบุที่อยู่สำหรับส่งต่อได้",
-        "user_can_specify_mail_forwarding_filter": "ผู้ใช้สามารถระบุตัวกรองการส่งต่อจดหมายได้"
+        "user_can_specify_mail_forwarding_filter": "ผู้ใช้สามารถระบุตัวกรองการส่งต่อจดหมายได้",
+        "abq_status": "สถานะ ABQ"
     },
     "connection": {
         "access_key": "รหัสการเข้าถึง",

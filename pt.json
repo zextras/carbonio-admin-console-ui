@@ -47,7 +47,7 @@
         "america_santiago": "{{value}} Pacífico América do Sul",
         "america_sao_paulo": "{{value}} Brasília",
         "america_st_johns": "{{value}} Terra Nova",
-        "america_tijuana": "{{value}} Baja Califórnia",
+        "america_tijuana": "{{value}} Baixa Califórnia",
         "america_whitehorse": "{{value}} Yukon",
         "asia_almaty": "{{value}} Nur-Sultã",
         "asia_amman": "{{value}} Jordânia",
@@ -241,7 +241,7 @@
             "hide": "Ocultar",
             "less_info": "Menos Informação",
             "more_info": "Mais informação",
-            "status": "Estado",
+            "status": "Status",
             "subscription_Accounts": "Contas utilizadas",
             "subscription_last_check": "Última verificação da assinatura",
             "subscription_type": "Tipo de assinatura",
@@ -261,7 +261,12 @@
             "valid": "Válida",
             "license_activated_successfully": "Licença activada com êxito",
             "not_valid": "Não válida",
-            "endDate": "Data final"
+            "endDate": "Data final",
+            "accounts": "Contas",
+            "modules": "Módulos",
+            "refresh": "Atualizar",
+            "type": "Tipo",
+            "valid_until": "Válida até"
         }
     },
     "domain": {
@@ -356,7 +361,7 @@
                 "accepted": "Você aceitou este pedido de compartilhamento"
             }
         },
-        "status": "Estado",
+        "status": "Status",
         "suspended": "Suspendido",
         "timezone": "Fuso horário",
         "unlimited": "Ilimitado",
@@ -384,7 +389,6 @@
         "delete_domain": "Apagar domínio",
         "delete_domain_success_msg": "O domínio foi excluído com sucesso",
         "domains": "Domínios",
-        "enable_start_tls": "Ativar StartTLS",
         "external_active_directory": "Diretório ativo externo",
         "external_ldap": "LDAP externo",
         "features": "Recursos",
@@ -892,7 +896,6 @@
         "smime": "S/MIME",
         "specified_domain_not_exist": "O domínio especificado não existe",
         "start": "iniciar",
-        "who_is_in_this_list": "Quem pertence a esta lista?",
         "who_needs_receive_this_email": "Insira os endereços de e-mail para envio de notificações",
         "DELETE": "EXCLUIR",
         "OTP": "Autenticação em duas etapas - Senha de uso único (OTP)",
@@ -910,7 +913,7 @@
         "reset": "Redefinir",
         "reset_device": "Resetar dispositivo",
         "service": "Serviço",
-        "status_lbl": "Estado",
+        "status_lbl": "Status",
         "title": "Título",
         "update": "Atualizar",
         "volume_next_button": "PRÓXIMO",
@@ -1052,7 +1055,6 @@
         "download_pdf": "BAIXAR PDF",
         "infrequent_access": "S3 – Acesso ocasional",
         "load_FILE": "CARREGAR ARQUIVO",
-        "load_and_verify_certificate": "CARREGAR E VERIFICAR CERTIFICADO",
         "load_certificate_message": "Carregue um certificado para ver seus detalhes!<br />Clique em <strong>“CARREGAR E VERIFICAR CERTIFICADO +”</strong> para iniciar",
         "load_copy_certi": "Carregue ou copie um certificado",
         "load_you_cert_file": "Arquivo do certificado",
@@ -1128,7 +1130,7 @@
         "value": "Valor",
         "distribution_list": "Lista de distribuição",
         "save_a_copy_of_sent_messages_to_delegates_sent_folder": "Guardar uma cópia das mensagens enviadas na pasta de Enviados do delegado",
-        "save_a_copy_of_sent_messages_to_my_sent_folder": "Guardar uma cópia das mensagens na minha pasta Enviadas",
+        "save_a_copy_of_sent_messages_to_my_sent_folder": "Salvar uma cópia das mensagens na minha pasta Enviadas",
         "save_a_copy_of_sent_messages_to_my_sent_folder_and_delegates_folder": "Guardar uma cópia das mensagens na minha pasta de mensagens Enviadas e na dos delegados",
         "destroy": "EXCLUIR",
         "save_a_copy_of_sent_messages_to_delegate_and_delegated_send_folder": "Salvar uma cópia na pasta Enviadas do delegado",
@@ -1489,7 +1491,7 @@
         "session_idle_timeout": "Tempo limite ocioso da sessão",
         "shortest_allowed_duration_for_any_polling_interval": "Duração mínima permitida para intervalos de consulta",
         "spam_message_lifetime": "Retenção de mensagens de Spam",
-        "status": "Estado",
+        "status": "Status",
         "tagging": "Etiquetas",
         "time_to_lockout_account": "Tempo de bloqueio da conta",
         "time_window_failed_logins_must_occur_to_lock_account": "Intervalo de tempo antes de bloquear a conta para acessos falhados:",
@@ -1725,7 +1727,7 @@
         "send_as_behalf": "Enviar em nome de (os destinatários verão o endereço {{targetEmail}} como remetente)",
         "send_check": "Enviar",
         "services": "Serviços",
-        "status": "Estado",
+        "status": "Status",
         "create": "CRIAR",
         "label": "Rótulo",
         "remove": "Remover",
@@ -1759,7 +1761,8 @@
         "switch_advanced": "Mudar para a vista avançada",
         "switch_simplified": "Mudar para a vista simplificada",
         "user_password_deleted": "Palavra-passe eliminada com êxito",
-        "user_password_set": "Palavra-passe definida com êxito"
+        "user_password_set": "Palavra-passe definida com êxito",
+        "abq_status": "Status de ABQ"
     },
     "connection": {
         "access_key": "Chave de acesso",
@@ -1808,7 +1811,7 @@
             "name": "Nome",
             "hsm_scheduled": "HSM programado",
             "indexer": "Indexador",
-            "status": "Estado"
+            "status": "Status"
         },
         "volume_header": {
             "compression": "Compressão",
@@ -1956,7 +1959,7 @@
         "label": {
             "Deep": "Profundo",
             "notifications": "Notificações",
-            "status": "Estado",
+            "status": "Status",
             "action(M)": "Ação (M)",
             "cancel_operation_btn": "CANCELAR OPERAÇÃO",
             "create_fake_blob": "Criar Blob falso",
@@ -1975,7 +1978,7 @@
             "operation": "Operação",
             "server": "Servidor",
             "start_date": "Data de início",
-            "status": "Estado",
+            "status": "Status",
             "submit_date": "Data de envio"
         },
         "other": "Outro",
@@ -2101,7 +2104,7 @@
         "all": "Tudo",
         "current_status": "Estado atual",
         "mail_server": "Servidor de email",
-        "status": "Estado"
+        "status": "Status"
     },
     "modal": {
         "iscurrent_confirm": {

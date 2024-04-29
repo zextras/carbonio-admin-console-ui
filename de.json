@@ -117,7 +117,6 @@
         "certificate": "Zertifikat",
         "closed": "Geschlossen",
         "domains": "Domains",
-        "enable_start_tls": "StartTLS aktivieren",
         "external_active_directory": "Externes Active Directory",
         "external_ldap": "Externes LDAP",
         "features": "Funktionen",
@@ -506,7 +505,6 @@
         "volume_check": "ÜBERPRÜFEN",
         "volume_active": "{{volumeName}} ist gerade aktiv",
         "who_needs_receive_this_email": "Wer muss diese E-Mail erhalten?",
-        "who_is_in_this_list": "Wer ist in der Liste?",
         "account_remove_correctly": "Das Konto wurde korrekt gelöscht.",
         "apply_hsm_policy_after_the_restore": "HSM-Richtlinien nach Wiederherstellung anwenden",
         "application_log": "Anwendungs-Log",
@@ -793,7 +791,6 @@
         "Type": "Typ",
         "chats": "Chats",
         "contacts": "Kontakte",
-        "files": "Dateien",
         "mail_signatures": "E-Mail-Signaturen",
         "mails": "E-Mails",
         "out_of_the_office_reply": "Abwesenheitsnachricht",
@@ -857,7 +854,6 @@
         "delegates": "Bevollmächtigte",
         "domain_certificate_ca_chain": "Domänenzertifikat CA-Kette",
         "infrequent_access": "Seltener Zugriff",
-        "load_and_verify_certificate": "ZERTIFIKAT HOCHLADEN UND VERIFIZIEREN",
         "load_FILE": "DATEI HOCHLADEN",
         "load_copy_certi": "Laden oder kopieren Sie Ihr Zertifikat",
         "logo_redirection": "Logo Umleitung",
@@ -889,7 +885,7 @@
         "city": "Stadt",
         "company": "Firma",
         "country": "Land",
-        "general_lbl": "Allgemeines",
+        "general_lbl": "Allgemein",
         "interval": "Intervall",
         "mobile": "Mobil",
         "pager": "Pager",
@@ -1403,7 +1399,12 @@
             "valid": "Gültig",
             "not_valid": "Ungültig",
             "license_activated_successfully": "Lizenz erfolgreich aktiviert",
-            "endDate": "Enddatum"
+            "endDate": "Enddatum",
+            "accounts": "Konten",
+            "modules": "Module",
+            "refresh": "Aktualisieren",
+            "type": "Typ",
+            "valid_until": "Gültig bis"
         }
     },
     "message": {
@@ -1473,7 +1474,7 @@
         "data_retention_policies": "Datenspeicherungsrichtlinie",
         "other_controls": "Andere Steuerungen",
         "force_backup_purge_now": "Backup Löschung jetzt erzwingen",
-        "general": "Allgemeines",
+        "general": "Allgemein",
         "initialize_backup": "Backup initialisieren",
         "keep_deleted_item_in_backup": "Gelöschte Elemente im Backup halten",
         "latency": "Latenz",
@@ -1649,7 +1650,6 @@
         "activesync_remote_access": "ActiveSync-Fernsteuerung",
         "create_cos_success_msg": "Sie deaktivieren den Pool auf {{serverName}}. Mailboxen werden nicht entfernt. Möchten Sie fortfahren?",
         "chats": "Chats",
-        "files": "Dateien",
         "idp_configuration_saml_notes": "Gehen Sie zu Ihrem IDP, um SAML zu konfigurieren, und kopieren Sie die Werte für EntityID und ServiceURL",
         "forwarding": "Weiterleiten",
         "select_cos_to_include_in_domain": "COS auswählen, die in diese Domäne aufgenommen werden soll",
@@ -1743,7 +1743,7 @@
             "work_week": "Arbeitswochenansicht"
         },
         "enable_smime": "S/MIME aktivieren",
-        "general": "Allgemeines",
+        "general": "Allgemein",
         "hide_in_gal": "In GAL verstecken",
         "mail": "E-Mail",
         "manuallly": "Manuell",
@@ -1815,7 +1815,6 @@
         "Chats": "Chats",
         "domain": "Domain",
         "aliases": "Aliasnamen",
-        "files": "Dateien",
         "NEXT": "WEITER",
         "abstract": "Abstrakt",
         "on_behalf_of": "im Namen von",
@@ -1902,7 +1901,8 @@
         "service_label_password": " {{ service_label }}s Passwort",
         "set_global_config": "SetGlobal Konfiguration",
         "user_can_specify_forwarding_address": "Der Benutzer kann eine Weiterleitungsadresse angeben",
-        "user_can_specify_mail_forwarding_filter": "Der Benutzer kann einen E-Mail-Weiterleitungsfilter festlegen"
+        "user_can_specify_mail_forwarding_filter": "Der Benutzer kann einen E-Mail-Weiterleitungsfilter festlegen",
+        "abq_status": "ABQ Status"
     },
     "connection": {
         "access_key": "Access Key",
