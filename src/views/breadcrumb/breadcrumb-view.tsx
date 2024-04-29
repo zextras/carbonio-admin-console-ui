@@ -6,14 +6,12 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { Container, Text, Row, Padding, Icon } from '@zextras/carbonio-design-system';
-import { useUserSettings } from '@zextras/carbonio-shell-ui';
-import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DASHBOARD, ZIMBRA_LAST_LOGON_TIMESTAMP } from '../../constants';
-import { getAccountRequest } from '../../services/get-account';
+import { DASHBOARD } from '../../constants';
+import { useLastLoginTimestamp } from '../../store/last-login-time-stamp';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};
@@ -23,22 +21,8 @@ const BreadCrumb: FC = () => {
 	const [t] = useTranslation();
 	const loc = useLocation();
 	const history = useHistory();
-	const userSetting = useUserSettings();
 	const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
-	const [accountLastLogin, setAccountLastLogin] = useState<any>();
-
-	const getAccountDetails = useCallback((id) => {
-		getAccountRequest(id, '', 0).then((res: any) => {
-			const lastLoginTimestamp = res?.account?.[0]?.a?.find(
-				(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
-			);
-			setAccountLastLogin(
-				moment(lastLoginTimestamp?._content, 'YYYYMMDDHHmmss.SSSZ').format(
-					'dddd DD MMM YYYY | h:mm a'
-				)
-			);
-		});
-	}, []);
+	const { lastLoginTimestamp } = useLastLoginTimestamp();
 
 	useEffect(() => {
 		if (loc?.pathname) {
@@ -84,13 +68,6 @@ const BreadCrumb: FC = () => {
 		},
 		[history]
 	);
-
-	useEffect(() => {
-		if (userSetting?.attrs?.zimbraId) {
-			getAccountDetails(userSetting?.attrs?.zimbraId);
-		}
-	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
-
 	return (
 		<Container height="fit" crossAlignment="baseline" mainAlignment="baseline">
 			<Container
@@ -130,7 +107,7 @@ const BreadCrumb: FC = () => {
 						{t('label.home', 'Home')}
 					</Container>
 				)}
-				{accountLastLogin && (
+				{lastLoginTimestamp && (
 					<Container
 						mainAlignment="center"
 						crossAlignment="flex-end"
@@ -139,7 +116,7 @@ const BreadCrumb: FC = () => {
 						margin={{ left: 'auto' }}
 					>
 						<Text color="secondary" overflow="break-word" weight="light">
-							{t('label.last_access', 'Last access')} {accountLastLogin}
+							{t('label.last_access', 'Last access')} {lastLoginTimestamp}
 						</Text>
 					</Container>
 				)}
