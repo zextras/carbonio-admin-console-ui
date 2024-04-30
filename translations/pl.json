@@ -346,7 +346,9 @@
         "certificate_type_use_letsencrypt_short_chain": "Chcę użyć certyfikatu Let’s Encrypt (shortChain)",
         "administration_rights": "Uprawnienia administracyjne",
         "certificate_content_error_without_ca_chain": "Certyfikat domeny, prywatny klucz jest nieprawidłowy",
-        "virtual_host_name_error": "Wprowadź prawidłową nazwę wirtualnego hosta."
+        "virtual_host_name_error": "Wprowadź prawidłową nazwę wirtualnego hosta.",
+        "jail_duration": "Czas trwania jail (ms)",
+        "mail_space_quota_threshold_warning": "Próg ostrzeżenia dla limitu przestrzeni dla skrzynki pocztowej (%)"
     },
     "label": {
         "account": "Konto",
@@ -356,7 +358,7 @@
         "app_name": "Zarządzaj",
         "backup": "Kopia zapasowa",
         "cancel": "Anuluj",
-        "core": "Core",
+        "core": "Rdzeń",
         "days": "Dni",
         "delete": "Usuń",
         "description": "Opis",
@@ -748,7 +750,6 @@
         "restore_account_has_added_operation_queue": "Przywracanie konta zostało dodane do kolejki operacji",
         "application_log": "Dziennik aplikacji",
         "who_needs_receive_this_email": "Kto otrzyma powiadomienie?",
-        "who_is_in_this_list": "Kto znajduje się na tej liście?",
         "volume_min_threshold": "Min. próg",
         "volume_max_quota_allowed": "Max. dozwolony limit przestrzeni",
         "volume_main": "Główny wolumin",
@@ -1040,7 +1041,7 @@
         "search_for_user_and_clic_to_add": "Wyszukaj użytkownika i kliknij przycisk DODAJ.",
         "there_are_no_owners": "Nie ma żadnych właścicieli.",
         "verify": "Zweryfikuj",
-        "verify_certificate": "Zweryfikuj",
+        "verify_certificate": "ZWERYFIKUJ CERTYFIKAT",
         "delete_private_key_certificate_content": "Usuwasz prywatny klucz certyfikatu.<br /> Czy na pewno chcesz go usunąć?",
         "delete_private_key_certificate_header": "Usunąć prywatny klucz certyfikatu?",
         "load_certificate_message": "Prześlij certyfikat, aby zobaczyć jego szczegóły.<br />Kliknij w <strong>\"PRZEŚLIJ I ZWERYFIKUJ CERTYFIKAT\"</strong>, aby zacząć",
@@ -1062,7 +1063,6 @@
         "download_pdf": "POBIERZ PDF",
         "download_uppercase": "POBIERZ",
         "load_FILE": "PRZEŚLIJ PLIK",
-        "load_and_verify_certificate": "PRZEŚLIJ I ZWERYFIKUJ CERTYFIKAT",
         "load_copy_certi": "Prześlij lub skopiuj swój certyifkat",
         "load_you_cert_file": "Prześlij plik z certyfikatem",
         "load_your_cert_file": "Prześlij plik z certyfikatem",
@@ -1514,7 +1514,24 @@
         "user_recovery_email": "Pomocniczy adres e-mail użytkownika",
         "validate_ip_Address_text": "Wprowadź prawidłowy adres IP.",
         "verified": "Zweryfikowane",
-        "max_mainbox_quota_for_the_mails_in_gb": "Max. limit przestrzeni dla skrzynki pocztowej w E-mailach (GB)"
+        "max_mainbox_quota_for_the_mails_in_gb": "Max. limit przestrzeni dla skrzynki pocztowej w E-mailach (GB)",
+        "active_sync_has_been_purged_successfully": "ActiveSync zostało wyczyszczone",
+        "enable_the_mobile_dos_protection_service": "Włącz usługę mobilnej ochrony DOS",
+        "equipment": "Ekwipunek",
+        "mailing_lists_lbl": "Listy dystrybucyjne",
+        "max_mainbox_quota_for_the_domain_in_gb": "Max. limit przestrzeni dla skrzynki pocztowej w domenie (GB) (0=nielimitowany)",
+        "maximum_of_requests_allowed": "Max. ilość dozwolonych żądań",
+        "meeting_room": "Pokój spotkań",
+        "mobile_dos_protection": "Mobilna ochrona DOS",
+        "servers_has_been_restared": "Serwer został zrestartowany",
+        "servers_have_been_restared": "Serwery zostały zrestartowane",
+        "single_server": "Pojedynczy serwer",
+        "this_list_included_in": "Ta lista jest uwzględniona w",
+        "time_window_for_allowed_requests": "Okienko czasowe dla dozwolonych żądań (ms)",
+        "mta_server_general": "Ogólne",
+        "account_quota_gb": "Limit przestrzeni dla konta (GB)",
+        "purge_active_sync": "Wyczyść ActiveSync",
+        "restart_jail": "Zrestartuj jail"
     },
     "message": {
         "snackbar": {
@@ -1773,8 +1790,9 @@
         "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "użytkownik określił adresy przekazania dalej oraz max. liczbę adresów przekazania dalej na użytkownika",
         "limit_user_specified_forwarding_addresses": "Max. liczba znaków adresu przekazania dalej",
         "user_specific_fowarding_addresses": "Ogranicz pole adresów przekazywania dalej ustalane przez użytkownika do (znaki)",
-        "handled_accounts": "przetwarzane konta",
-        "handled_domains": "przetwarzane domeny"
+        "accounts_that_use_this_cos": "Konta używające tego COS",
+        "domains_that_use_this_cos": "Domeny używające tego COS",
+        "enable_new_mail_toast_notification": "Włącz wyskakujące powiadomienia o nowych e-mailach"
     },
     "locale": {
         "label_italian": "Włoski - {{value}}",
@@ -2023,7 +2041,14 @@
         "send_as_recipients": "Wyślij jako (odbiorcy zobaczą adres {{targetEmail}} jako adres nadawcy)",
         "send_recipients_see_the_mail": "Wyślij {{right}} (odbiorcy zobaczą adres {{targetEmail}} jako adres nadawcy)",
         "abq_status": "Status ABQ",
-        "otp_devices": "Urządzenia hasła OTP"
+        "otp_devices": "Urządzenia hasła OTP",
+        "as_new_email_arrives": "Kiedy przyjdzie nowy e-mail",
+        "enable_new_mail_notifications": "Włącz powiadomienia o nowych e-mailach",
+        "enable_new_mail_toast_notification": "Włącz wyskakujące powiadomienia o nowych e-mailach",
+        "hidden_in_gal": "Ukryte w GLA",
+        "included_in_backup": "Uwzględnione w kopii zapasowej",
+        "no": "Nie",
+        "yes": "Tak"
     },
     "privacy": {
         "survey_feedback_sub_1": "Nie martw się, ankiety będą szybkie, proste i bardzo pomogą nam zrozumieć co robimy dobrze a co źle.",
@@ -2448,7 +2473,9 @@
         "allowed_valid_antivirus_mirror": "Zapasowy serwer definicji jest nieprawidłowy",
         "smtpd_not_valid_error": "Smtpd sender login maps jest nieprawidłowe",
         "smtpd_sender_login_maps": "Smtpd sender login maps",
-        "space_not_allowed_in_antivirus_mirror": "Spacja nie jest dozwolona w zapasowym serwerze definicji"
+        "space_not_allowed_in_antivirus_mirror": "Spacja nie jest dozwolona w zapasowym serwerze definicji",
+        "antispam_and_antivirus": "Antyspam i antywirus",
+        "block_spam_tolerance": "Tolerancja blokowania spamu"
     },
     "mat": {
         "add_here_any_blocked_extension": "Tutaj dodaj wszystkie zablokowane rozszerzenia"

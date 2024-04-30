@@ -695,7 +695,6 @@
         "default_calendar_view": "Vista predefinita calendario",
         "restore_account_has_added_operation_queue": "Il ripristino dell'account è stato aggiunto con successo alla coda delle operazioni",
         "contact_options": "Opzioni Contatto",
-        "who_is_in_this_list": "Chi è in questa lista?",
         "who_needs_receive_this_email": "Chi deve ricevere questa e-mail?",
         "disabled": "Disabilitato",
         "local": "Locale",
@@ -949,7 +948,6 @@
         "copyrights_information": "Informazioni Copyright",
         "disable_the_account": "Disabilita account",
         "infrequent_access": "Accesso poco frequente",
-        "load_and_verify_certificate": "CARICA E VERIFICA IL CERTIFICATO",
         "load_you_cert_file": "Carica il file del certificato",
         "load_your_cert_file": "Carica il file del tuo certificato",
         "load_your_private_file": "Carica il file del tuo certificato",
@@ -1784,9 +1782,7 @@
         "user_can_specify_forwarding_address": "L'utente può specificare l'indirizzo di inoltro",
         "user_can_specify_mail_forwarding_filter": "L'utente può specificare il filtro di inoltro per le mail",
         "user_specific_fowarding_addresses": "Numero massimo di indirizzi di inoltro",
-        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "indirizzi di inoltro specifici dell'utente+numero massimo di indirizzi di inoltro",
-        "handled_accounts": "Accont gestiti",
-        "handled_domains": "Domini gestiti"
+        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "indirizzi di inoltro specifici dell'utente+numero massimo di indirizzi di inoltro"
     },
     "accountDetails": {
         "default_COS": "COS Predefinita",
