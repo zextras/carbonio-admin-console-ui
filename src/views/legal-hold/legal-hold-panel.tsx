@@ -84,6 +84,11 @@ const LegalHoldPanel: FC = () => {
 	const [legalHoldOperationLabel, setLegalHoldOperationLabel] = useState<string>(
 		t('legal_hold.set_legal_hold', 'Set legal hold')
 	);
+	const [isShowOnlyLegalHostAccount, setIsShowOnlyLegalHostAccount] = useState<boolean>(false);
+	const errorMessage = t(
+		'label.something_wrong_error_msg',
+		'Something went wrong. Please try again.'
+	);
 	const [domainList, setDomainList] = useState<
 		{
 			name: string;
@@ -157,8 +162,51 @@ const LegalHoldPanel: FC = () => {
 		[t]
 	);
 
+	const setBackupAccountAndPage = useCallback(
+		(backupAccounts, page) => {
+			if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
+				setAccounts(backupAccounts);
+			}
+			if (page) {
+				const num: number = page;
+				setTotalItem(num * accountLimit);
+			} else if (page === 0) {
+				setTotalItem(1);
+			}
+		},
+		[accountLimit]
+	);
+
+	const setBackupAccountPage = useCallback(
+		(data, page) => {
+			let backupAccounts;
+			const allServers = Object.keys(data);
+			let allServerAccounts: any[] = [];
+			const maxPageList: any[] = [];
+			let backupPage = page;
+			allServers.forEach((item: string) => {
+				if (data[item]?.response?.accounts) {
+					allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
+				}
+				if (data[item]?.response?.maxPage) {
+					maxPageList.push(data[item]?.response?.maxPage);
+				}
+			});
+			if (allServerAccounts && allServerAccounts.length > 0) {
+				backupAccounts = allServerAccounts;
+				if (maxPageList && maxPageList.length > 0) {
+					const max = Math.max(...maxPageList);
+					if (max) {
+						backupPage = max;
+					}
+				}
+			}
+			setBackupAccountAndPage(backupAccounts, backupPage);
+		},
+		[setBackupAccountAndPage]
+	);
+
 	const getBackupAccounts = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(searchText, domainNameItem) => {
 			setIsRequestInProgress(true);
 			setAccounts([]);
@@ -168,32 +216,9 @@ const LegalHoldPanel: FC = () => {
 				.then((data: any) => {
 					setIsRequestInProgress(false);
 					const error = data?.all_server?.error?.message;
-					let backupAccounts = data?.accounts;
-					let page = data?.maxPage;
+					const backupAccounts = data?.accounts;
+					const page = data?.maxPage;
 
-					/* Take account list and maxPage from multiserver environment  */
-					if (backupAccounts === undefined && !!data) {
-						const allServers = Object.keys(data);
-						let allServerAccounts: any[] = [];
-						const maxPageList: any[] = [];
-						allServers.forEach((item: string) => {
-							if (data[item]?.response?.accounts) {
-								allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
-							}
-							if (data[item]?.response?.maxPage) {
-								maxPageList.push(data[item]?.response?.maxPage);
-							}
-						});
-						if (allServerAccounts && allServerAccounts.length > 0) {
-							backupAccounts = allServerAccounts;
-							if (maxPageList && maxPageList.length > 0) {
-								const max = Math.max(...maxPageList);
-								if (max) {
-									page = max;
-								}
-							}
-						}
-					}
 					if (error) {
 						createSnackbar({
 							key: 'error',
@@ -203,15 +228,14 @@ const LegalHoldPanel: FC = () => {
 							hideButton: true,
 							replace: true
 						});
+						return;
 					}
-					if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
-						setAccounts(backupAccounts);
-					}
-					if (page) {
-						const num: number = page;
-						setTotalItem(num * accountLimit);
-					} else if (page === 0) {
-						setTotalItem(1);
+
+					/* Take account list and maxPage from multiserver environment  */
+					if (backupAccounts === undefined && !!data) {
+						setBackupAccountPage(data, page);
+					} else {
+						setBackupAccountAndPage(backupAccounts, page);
 					}
 				})
 				.catch((error: any) => {
@@ -219,17 +243,21 @@ const LegalHoldPanel: FC = () => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: error?.message
-							? error?.message
-							: // eslint-disable-next-line sonarjs/no-duplicate-string
-							  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						label: error?.message ? error?.message : errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
 				});
 		},
-		[accountOffset, accountLimit, createSnackbar, t]
+		[
+			accountOffset,
+			accountLimit,
+			createSnackbar,
+			setBackupAccountPage,
+			setBackupAccountAndPage,
+			errorMessage
+		]
 	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -273,16 +301,13 @@ const LegalHoldPanel: FC = () => {
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: error?.message
-						? error?.message
-						: // eslint-disable-next-line sonarjs/no-duplicate-string
-						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error?.message ? error?.message : errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
 			});
-	}, [createSnackbar, t]);
+	}, [createSnackbar, errorMessage]);
 
 	useEffect(() => {
 		getAllLegalHold();
@@ -361,7 +386,6 @@ const LegalHoldPanel: FC = () => {
 		[allLegalHoldAccountList]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onLegalHoldPress = useCallback(() => {
 		const id = selectedAccountRows[0];
 		const legalHoldItem = getLegalHoldById(id);
@@ -374,9 +398,7 @@ const LegalHoldPanel: FC = () => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label:
-							key ?? // eslint-disable-next-line sonarjs/no-duplicate-string
-							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						label: key ?? errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
@@ -384,11 +406,11 @@ const LegalHoldPanel: FC = () => {
 				} else {
 					const updateAccounts = accounts;
 					const updatedLegalAccounts = allLegalHoldAccountList.map((item) => {
-						if (item?.id === id) {
-							// eslint-disable-next-line no-param-reassign
-							item.status = status;
+						const holdItem = item;
+						if (holdItem?.id === id) {
+							holdItem.status = status;
 						}
-						return item;
+						return holdItem;
 					});
 					setAllLegalHoldAccountList(updatedLegalAccounts);
 					setAccounts([]);
@@ -397,11 +419,14 @@ const LegalHoldPanel: FC = () => {
 				setSelectedAccountRows([]);
 			});
 		}
-	}, [selectedAccountRows, getLegalHoldById, createSnackbar, t, accounts, allLegalHoldAccountList]);
-
-	const onShowAccountLegalHold = useCallback(() => {
-		console.log('On Show Account LegalHold press');
-	}, []);
+	}, [
+		selectedAccountRows,
+		getLegalHoldById,
+		createSnackbar,
+		errorMessage,
+		accounts,
+		allLegalHoldAccountList
+	]);
 
 	const customIconDetail = {
 		style: {
@@ -582,7 +607,10 @@ const LegalHoldPanel: FC = () => {
 												'legal_hold.show_only_accounts_on_legal_hold',
 												'Show only accounts on Legal Hold'
 											)}
-											onClick={onShowAccountLegalHold}
+											value={isShowOnlyLegalHostAccount}
+											onClick={(): void => {
+												setIsShowOnlyLegalHostAccount(!isShowOnlyLegalHostAccount);
+											}}
 											iconColor="primary"
 										/>
 									</Text>
@@ -703,7 +731,8 @@ const LegalHoldPanel: FC = () => {
 												showCheckbox={false}
 												multiSelect={false}
 												style={{
-													overflow: 'auto'
+													overflow: 'auto',
+													height: '100%'
 												}}
 												selectedRows={selectedAccountRows}
 												RowFactory={CustomRowFactory}
