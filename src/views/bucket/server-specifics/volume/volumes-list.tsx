@@ -809,32 +809,36 @@ const VolumesDetailPanel: FC = () => {
 								}}
 							/>
 						</Row>
+						{isAdvanced && (
+							<>
+								<Row
+									width="100%"
+									mainAlignment="flex-start"
+									orientation="horizontal"
+									padding={{
+										horizontal: 'large',
+										bottom: 'large',
+										top: 'small'
+									}}
+								>
+									<Text>{t('volume.secondary_helperText', 'Secondary')}</Text>
+								</Row>
+								<Row padding={{ horizontal: 'large', bottom: 'extralarge' }} width="100%">
+									<VolumeListTable
+										volumes={volumeList?.secondaries}
+										headers={volPrimarySecondaryHeaders}
+										selectedRows={secondaryVolumeSelection}
+										onSelectionChange={(selected: string[]): void => {
+											setSecondaryVolumeSelection(selected);
+										}}
+										onClick={(i: number): void => {
+											handleClick(i, volumeList?.secondaries);
+										}}
+									/>
+								</Row>
+							</>
+						)}
 
-						<Row
-							width="100%"
-							mainAlignment="flex-start"
-							orientation="horizontal"
-							padding={{
-								horizontal: 'large',
-								bottom: 'large',
-								top: 'small'
-							}}
-						>
-							<Text>{t('volume.secondary_helperText', 'Secondary')}</Text>
-						</Row>
-						<Row padding={{ horizontal: 'large', bottom: 'extralarge' }} width="100%">
-							<VolumeListTable
-								volumes={volumeList?.secondaries}
-								headers={volPrimarySecondaryHeaders}
-								selectedRows={secondaryVolumeSelection}
-								onSelectionChange={(selected: string[]): void => {
-									setSecondaryVolumeSelection(selected);
-								}}
-								onClick={(i: number): void => {
-									handleClick(i, volumeList?.secondaries);
-								}}
-							/>
-						</Row>
 						<Row
 							width="100%"
 							mainAlignment="flex-start"
