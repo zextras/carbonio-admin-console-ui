@@ -25,5 +25,9 @@
         "enable_activeSync_remote_access": "ActiveSync алыстан кирүү мүмкүнчүлүгүн иштетүү",
         "force_change_password": "Сырсөздү мажбурлоо",
         "user_will_change_password_on_next_login": "Колдонуучу кийинки кирүүдө сырсөздү өзгөртөт"
+    },
+    "action": {
+        "click_open": "Ачуу үчүн, басыңыз",
+        "click_preview": "Алдын ала көрүү үчүн басыңыз"
     }
 }

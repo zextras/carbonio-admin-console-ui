@@ -377,7 +377,7 @@
         "delete_cos_succeess": "La COS {{cosname}} a été supprimée avec succès",
         "delete_cos_instruction_msg": "Si vous cliquez sur le bouton \"OUI, SUPPRIMER\", la COS par défaut remplacera la COS supprimée.",
         "delete_bucket_sucess": "Le {{name}} a été supprimé",
-        "location": "Emplacement",
+        "location": "Informations complémentaires",
         "owners": "Propriétaires",
         "password": "Mot de passe",
         "require_list_owner_approval": "Approbation du propriétaire de la liste nécessaire",
@@ -701,7 +701,6 @@
         "volume_main": "Volume principal",
         "volume_deleted": "Le Volume a été supprimé avec succès",
         "yes_delete_it": "Oui, supprimez la",
-        "who_is_in_this_list": "Qui est dans cette liste ?",
         "who_needs_receive_this_email": "Qui doit recevoir cet email ?",
         "would_you_like_to_add_ml": "<bold>Qui souhaitez-vous ajouter à cette liste de distribution ?</bold>",
         "you_are_deleting_ml": "Vous êtes sur le point de supprimer {{name}}",
@@ -823,7 +822,7 @@
         "search_for_user_and_clic_to_add": "Rechercher un utilisateur et appuyer sur le bouton AJOUTER.",
         "there_are_no_owners": "Il n'y a pas de propriétaire ici.",
         "verify": "Vérification",
-        "verify_certificate": "Vérification",
+        "verify_certificate": "VÉRIFIER LE CERTIFICAT",
         "who_can_send_mails_to_list ": "Qui peut envoyer des emails à cette liste ?",
         "centralized": "Centralisé",
         "external_volume_edited": "{{message}}",
@@ -901,7 +900,6 @@
         "example_lbl": "Exemple :",
         "infrequent_access": "Accès peu fréquent",
         "load_FILE": "TÉLÉVERSER LE FICHIER",
-        "load_and_verify_certificate": "TÉLÉVERSER ET VÉRIFIER LE CERTIFICAT",
         "load_certificate_message": "Charger un certificat pour voir ses détails !<br />Cliquer sur le bouton <strong>\"CHARGER ET VÉRIFIER LE CERTIFICAT +\"</strong> pour commencer",
         "load_copy_certi": "Charger et copier votre certificat",
         "load_you_cert_file": "Téléverser le fichier de certificat",
@@ -1301,7 +1299,24 @@
         "verified": "Vérifié",
         "max_mainbox_quota_for_the_mails_in_gb": "Quota maximal de la boîte aux lettres pour les courriers (Go)",
         "show_forget_password_link": "Afficher le lien \"Oublier le mot de passe\" dans la page de connexion",
-        "user_can_ask_for_forgotten_password_token": "L'utilisateur peut demander un jeton de mot de passe oublié"
+        "user_can_ask_for_forgotten_password_token": "L'utilisateur peut demander un jeton de mot de passe oublié",
+        "enable_the_mobile_dos_protection_service": "Activer le service de Protection DOS pour les mobiles",
+        "mailing_lists_lbl": "Liste d'expédition",
+        "max_mainbox_quota_for_the_domain_in_gb": "Quota maximum pour les boîtes email pour le domaine (Go) (0=illimité)",
+        "purge_active_sync": "Purger l'ActiveSync",
+        "restart_jail": "Relancer l'emprisonnement",
+        "account_quota_gb": "Quota par Compte (Go)",
+        "active_sync_has_been_purged_successfully": "ActiveSync a été purgé avec succès",
+        "equipment": "Équipement",
+        "maximum_of_requests_allowed": "Nombre maximum de requête autorisé",
+        "meeting_room": "Salle de Réunion",
+        "mobile_dos_protection": "Protection DOS pour les mobiles",
+        "mta_server_general": "Général",
+        "servers_has_been_restared": "Les serveurs ont été redémarrés",
+        "servers_have_been_restared": "Les serveurs ont été redémarrés",
+        "single_server": "Mono-serveur",
+        "this_list_included_in": "Cette liste est inclue dans",
+        "time_window_for_allowed_requests": "La fenêtre de temps pour les requêtes allouées (ms)"
     },
     "message": {
         "snackbar": {
@@ -1527,7 +1542,9 @@
         "web_ui": "Interface Web",
         "administration_rights": "Droits d'administration",
         "certificate_content_error_without_ca_chain": "Certificats de domaine, la clé privée n'est pas valide",
-        "virtual_host_name_error": "Merci de saisir un nom de Virtual Host !"
+        "virtual_host_name_error": "Merci de saisir un nom de Virtual Host !",
+        "jail_duration": "Durée de l'emprisonnement (ms)",
+        "mail_space_quota_threshold_warning": "Alerte du seuil du quota d'espace email atteint (%)"
     },
     "commons": {
         "confirm_connection": "CONFIRMER LA CONNEXION",
@@ -1789,8 +1806,9 @@
         "user_can_specify_mail_forwarding_filter": "L'utilisateur peut définir une adresse de transfert",
         "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "adresses de transfert spécifiées par l'utilisateur+nombre maximal d'adresses de transfert spécifiques à l'utilisateur",
         "user_specific_fowarding_addresses": "Limiter le champ des adresses de transfert spécifiées par l'utilisateur à (caractères)",
-        "handled_accounts": "Comptes gérés",
-        "handled_domains": "Domaines gérés"
+        "accounts_that_use_this_cos": "Comptes utilisant cette COS",
+        "domains_that_use_this_cos": "Domaines utilisant cette COS",
+        "enable_new_mail_toast_notification": "Activer les bulles de notification pour les nouveaux messages"
     },
     "create_new_cos": "CRÉER UNE NOUVELLE COS",
     "select_section_from_left_menu": "Merci de sélectionner une section depuis le menu de gauche",
@@ -2023,7 +2041,14 @@
         "send_as_recipients": "Envoyer en tant que (les destinataires afficheront l'email de l'expéditeur {{targetEmail}})",
         "send_recipients_see_the_mail": "Envoyer {{right}} (les destinataires afficheront l'email de l'expéditeur {{targetEmail}})",
         "abq_status": "Statut ABQ",
-        "otp_devices": "Appareils OTP"
+        "otp_devices": "Appareils OTP",
+        "enable_new_mail_notifications": "Activer les notifications de nouveaux messages",
+        "as_new_email_arrives": "Au fur et à mesure de l'arrivée de nouveaux emails",
+        "enable_new_mail_toast_notification": "Activer les bulles de notification pour les nouveaux messages",
+        "hidden_in_gal": "Masqué dans la GAL",
+        "included_in_backup": "Inclus dans le Backup",
+        "no": "Non",
+        "yes": "Oui"
     },
     "connection": {
         "access_key": "Clé d’accès",
@@ -2437,7 +2462,9 @@
         "allowed_valid_antivirus_mirror": "Le miroir antivirus n'est pas valide",
         "smtpd_not_valid_error": "Les maps de connexion de l'expéditeur Smtpd ne sont pas valides",
         "smtpd_sender_login_maps": "Maps de connexion de l'expéditeur Smtpd",
-        "space_not_allowed_in_antivirus_mirror": "Espace non autorisé dans le miroir de l'antivirus"
+        "space_not_allowed_in_antivirus_mirror": "Espace non autorisé dans le miroir de l'antivirus",
+        "antispam_and_antivirus": "Antispam & Antivirus",
+        "block_spam_tolerance": "Tolérance de blocage au Spam"
     },
     "mat": {
         "add_here_any_blocked_extension": "Ajouter ici toutes les Extensions Bloquées"

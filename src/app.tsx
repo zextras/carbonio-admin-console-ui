@@ -35,9 +35,11 @@ import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	useIsAdvanced,
-	useUserAccounts
+	useUserAccounts,
+	useUserSettings
 } from '@zextras/carbonio-shell-ui';
 import { find } from 'lodash';
+import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -82,11 +84,13 @@ import {
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID,
-	TRUE
+	TRUE,
+	ZIMBRA_LAST_LOGON_TIMESTAMP
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import MatomoTracker from './matomo-tracker';
+import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import {
 	getAllServerByService,
@@ -100,6 +104,7 @@ import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
 import { useDomainStore } from './store/domain/store';
 import { useGlobalConfigStore } from './store/global-config/store';
+import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
@@ -160,12 +165,33 @@ const App: FC = () => {
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const hasConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
 		);
 	}, [rights]);
+	const userSetting = useUserSettings();
+	const getAccountDetails = useCallback(
+		(id) => {
+			getAccountRequest(id, '', 0).then((res: any) => {
+				const lastLogin = res?.account?.[0]?.a?.find(
+					(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
+				);
+				setLastLoginTimestamp(
+					moment(lastLogin?._content, 'YYYYMMDDHHmmss.SSSZ').format('dddd DD MMM YYYY | h:mm a')
+				);
+			});
+		},
+		[setLastLoginTimestamp]
+	);
+
+	useEffect(() => {
+		if (userSetting?.attrs?.zimbraId) {
+			getAccountDetails(userSetting?.attrs?.zimbraId);
+		}
+	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
 
 	useEffect(() => {
 		const { id } = accounts[0];
