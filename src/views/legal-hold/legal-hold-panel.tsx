@@ -36,6 +36,7 @@ import logo from '../../assets/ninja_robo.svg';
 import { MAX_DOMAIN_DISPLAY, MOBILE } from '../../constants';
 import { getLegalHoldList } from '../../services/get-legal-hold-list';
 import { getDomainList } from '../../services/search-domain-service';
+import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import DropDownInput from '../components/dropDownInput';
@@ -80,6 +81,9 @@ const LegalHoldPanel: FC = () => {
 	const [searchDomainName, setSearchDomainName] = useState<string>('');
 	const [isShowError, setIsShowError] = useState(false);
 	const [searchAccountName, setSearchAccountName] = useState<string>('');
+	const [legalHoldOperationLabel, setLegalHoldOperationLabel] = useState<string>(
+		t('legal_hold.set_legal_hold', 'Set legal hold')
+	);
 	const [domainList, setDomainList] = useState<
 		{
 			name: string;
@@ -87,6 +91,14 @@ const LegalHoldPanel: FC = () => {
 			a: { n: string; _content: string }[];
 		}[]
 	>([]);
+
+	type LegalHolds = {
+		name: string;
+		id: string;
+		status: string | unknown;
+	};
+
+	const [allLegalHoldAccountList, setAllLegalHoldAccountList] = useState<Array<LegalHolds>>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [domainName, setDomainName] = useState(useDomainInformation()?.name || '');
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
@@ -237,7 +249,26 @@ const LegalHoldPanel: FC = () => {
 
 	const getAllLegalHold = useCallback(() => {
 		getLegalHoldList()
-			.then()
+			.then((data) => {
+				if (data?.Body?.response?.content) {
+					const parseData = JSON.parse(data?.Body?.response?.content);
+					const key = Object.keys(parseData?.response)[0];
+					if (key.toString().includes('No account found for legal hold')) {
+						return;
+					}
+					const accountRawData = parseData.response;
+					const legalHoldsItems: Array<LegalHolds> = [];
+					Object.entries(accountRawData).forEach((entry) => {
+						const [keyItem, value] = entry;
+						legalHoldsItems.push({
+							id: keyItem.split(' ')[1],
+							name: keyItem.split(' ')[0],
+							status: value
+						});
+					});
+					setAllLegalHoldAccountList(legalHoldsItems);
+				}
+			})
 			.catch((error) => {
 				createSnackbar({
 					key: 'error',
@@ -257,6 +288,14 @@ const LegalHoldPanel: FC = () => {
 		getAllLegalHold();
 	}, [getAllLegalHold]);
 
+	const getStatusOfLegalHoldFromAccount = useCallback(
+		(name): string => {
+			const status = allLegalHoldAccountList.find((item) => item?.name === name)?.status;
+			return status && status === 'unset' ? 'NO' : 'YES';
+		},
+		[allLegalHoldAccountList]
+	);
+
 	useMemo(() => {
 		if (accounts && accounts.length > 0) {
 			const allRows = accounts.map((item: any) => ({
@@ -274,25 +313,25 @@ const LegalHoldPanel: FC = () => {
 						</Text>
 					</Container>,
 					<Container
-						key={item?.status}
-						onClick={(): void => {
-							setSelectedAccountRows([item?.id]);
-						}}
-						crossAlignment="flex-start"
-					>
-						<Text size="small" weight="light" key={item?.status} color="gray0">
-							{item?.status === 'Active' ? 'Yes' : 'No'}
-						</Text>
-					</Container>,
-					<Container
 						key={item?.name}
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="small" weight="regular" key={item?.name} color="gray0">
+						<Text size="small" weight="light" key={item?.status} color="gray0">
 							{item?.name}
+						</Text>
+					</Container>,
+					<Container
+						key={item?.status}
+						onClick={(): void => {
+							setSelectedAccountRows([item?.id]);
+						}}
+						crossAlignment="flex-start"
+					>
+						<Text size="small" weight="regular" key={item?.name} color="gray0">
+							{item?.status}
 						</Text>
 					</Container>,
 					<Container
@@ -303,7 +342,7 @@ const LegalHoldPanel: FC = () => {
 						crossAlignment="flex-start"
 					>
 						<Text size="small" weight="regular" key={item?.status} color="gray0">
-							{item?.status}
+							{getStatusOfLegalHoldFromAccount(item?.name)}
 						</Text>
 					</Container>
 				]
@@ -312,11 +351,53 @@ const LegalHoldPanel: FC = () => {
 		} else {
 			setAccountRows([]);
 		}
-	}, [accounts]);
+	}, [accounts, getStatusOfLegalHoldFromAccount]);
 
+	const getLegalHoldById = useCallback(
+		(id): LegalHolds | undefined => {
+			const account = allLegalHoldAccountList.find((item) => item?.id === id);
+			return account || undefined;
+		},
+		[allLegalHoldAccountList]
+	);
+
+	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const onLegalHoldPress = useCallback(() => {
-		console.log('Legalhold press');
-	}, []);
+		const id = selectedAccountRows[0];
+		const legalHoldItem = getLegalHoldById(id);
+		if (legalHoldItem) {
+			const status = legalHoldItem?.status === 'unset' ? 'set' : 'unset';
+			setUnsetLegalHold(status, legalHoldItem?.name).then((data) => {
+				const parseData = JSON.parse(data?.Body?.response?.content);
+				const key = Object.keys(parseData?.response)[0];
+				if (key.toString().includes('No account found for legal hold')) {
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label:
+							key ?? // eslint-disable-next-line sonarjs/no-duplicate-string
+							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
+				} else {
+					const updateAccounts = accounts;
+					const updatedLegalAccounts = allLegalHoldAccountList.map((item) => {
+						if (item?.id === id) {
+							// eslint-disable-next-line no-param-reassign
+							item.status = status;
+						}
+						return item;
+					});
+					setAllLegalHoldAccountList(updatedLegalAccounts);
+					setAccounts([]);
+					setAccounts(updateAccounts);
+				}
+				setSelectedAccountRows([]);
+			});
+		}
+	}, [selectedAccountRows, getLegalHoldById, createSnackbar, t, accounts, allLegalHoldAccountList]);
 
 	const onShowAccountLegalHold = useCallback(() => {
 		console.log('On Show Account LegalHold press');
@@ -340,6 +421,7 @@ const LegalHoldPanel: FC = () => {
 
 	const getDomainLists = useCallback((name: string): void => {
 		setIsLoading(true);
+		setSelectedAccountRows([]);
 		getDomainList(name, 0).then((data) => {
 			const searchResponse: DomainResponse = data;
 			if (!!searchResponse && searchResponse?.searchTotal > 0) {
@@ -415,6 +497,7 @@ const LegalHoldPanel: FC = () => {
 								onClick={(): void => {
 									setIsShowError(false);
 									selectedDomain(domain);
+									setSelectedAccountRows([]);
 								}}
 							>
 								{domain?.name}
@@ -422,10 +505,6 @@ const LegalHoldPanel: FC = () => {
 						)
 					})
 			  );
-
-	const onSelectTableRow = useCallback((selectRow) => {
-		console.log(selectRow);
-	}, []);
 
 	const onSearchAccount = useCallback((e) => {
 		setSearchAccountName(e.target.value);
@@ -437,6 +516,21 @@ const LegalHoldPanel: FC = () => {
 			searchAccount(searchAccountName, searchDomainName);
 		}
 	}, [isDomainSelect, searchDomainName, searchAccountName, searchAccount]);
+
+	useEffect(() => {
+		if (selectedAccountRows.length > 0) {
+			const id = selectedAccountRows[0];
+			const legalHoldItem = getLegalHoldById(id);
+			const label =
+				legalHoldItem?.status === 'unset'
+					? t('legal_hold.set_legal_hold', 'Set legal hold')
+					: t('legal_hold.unset_legal_hold', 'Unset legal hold');
+			setLegalHoldOperationLabel(label);
+			setIsEnableLegalHold(true);
+		} else {
+			setIsEnableLegalHold(false);
+		}
+	}, [getLegalHoldById, selectedAccountRows, t]);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
@@ -497,7 +591,7 @@ const LegalHoldPanel: FC = () => {
 									<Padding right="small">
 										<Button
 											type="outlined"
-											label={t('legal_hold.set_legal_hold', 'Set legal hold')}
+											label={legalHoldOperationLabel}
 											color="primary"
 											onClick={onLegalHoldPress}
 											disabled={!isEnableLegalHold}
@@ -612,7 +706,6 @@ const LegalHoldPanel: FC = () => {
 													overflow: 'auto'
 												}}
 												selectedRows={selectedAccountRows}
-												onSelectionChange={onSelectTableRow}
 												RowFactory={CustomRowFactory}
 												HeaderFactory={CustomHeaderFactory}
 											/>

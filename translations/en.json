@@ -1991,7 +1991,8 @@
     "legal_hold": {
         "restore": "Restore",
         "set_legal_hold": "Set legal hold",
-        "show_only_accounts_on_legal_hold": "Show only accounts on Legal Hold"
+        "show_only_accounts_on_legal_hold": "Show only accounts on Legal Hold",
+        "unset_legal_hold": "Unset legal hold"
     },
     "locale": {
         "English": "English",
