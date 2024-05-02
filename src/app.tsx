@@ -56,6 +56,7 @@ import {
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
 	GLOBAL,
+	LEGAL_HOLD_ROUTE_ID,
 	LIST_COS,
 	LIST_SERVER,
 	LOG_AND_QUEUES,
@@ -69,6 +70,7 @@ import {
 	PRIMARY_BAR_COS,
 	PRIMARY_BAR_DASHBOARD,
 	PRIMARY_BAR_DOMAINS,
+	PRIMARY_BAR_LEGAL_HOLD,
 	PRIMARY_BAR_MTA,
 	PRIMARY_BAR_NOTIFICATIONS,
 	PRIMARY_BAR_OPERATIONS,
@@ -558,6 +560,25 @@ const App: FC = () => {
 		[t]
 	);
 
+	const leagalHoldTooltipItem = useMemo(
+		() => [
+			{
+				header: (
+					<>
+						<Trans
+							i18nKey="label.legal_hold_lbl"
+							defaults="<bold>Legal Hold</bold>"
+							components={{ bold: <strong /> }}
+							t={t}
+						/>
+					</>
+				),
+				options: []
+			}
+		],
+		[t]
+	);
+
 	const OperationTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={operationTooltipItem} />,
 		[operationTooltipItem]
@@ -579,6 +600,11 @@ const App: FC = () => {
 			/>
 		),
 		[history]
+	);
+
+	const LegalHoldTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={leagalHoldTooltipItem} />,
+		[leagalHoldTooltipItem]
 	);
 
 	const cosPrimaryBar = useCallback(
@@ -724,6 +750,24 @@ const App: FC = () => {
 				removeRoute(BACKUP_ROUTE_ID);
 			}
 
+			if (hasConfigRights) {
+				addRoute({
+					route: LEGAL_HOLD_ROUTE_ID,
+					position: 2,
+					visible: true,
+					label: t('label.legal_hold', 'Legal Hold') || '',
+					primaryBar: 'LockOutline',
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...servicesSection },
+					tooltip: LegalHoldTooltipView,
+					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
+				});
+			} else {
+				removeRoute(LEGAL_HOLD_ROUTE_ID);
+			}
+
 			addRoute({
 				route: NOTIFICATION_ROUTE_ID,
 				position: 1,
@@ -792,7 +836,8 @@ const App: FC = () => {
 		MTATooltipView,
 		showCOS,
 		hasConfigRights,
-		cosPrimaryBar
+		cosPrimaryBar,
+		LegalHoldTooltipView
 	]);
 
 	useEffect(() => {
