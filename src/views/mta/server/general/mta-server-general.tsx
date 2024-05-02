@@ -418,9 +418,8 @@ const MTAServerGeneral: FC = () => {
 			  }))
 			: [];
 
-		if (myNetworkServerSpecific?._content) {
-			setServerSpecificCurrentValue(ZIMBRA_MTA_MY_NETWORKS, myNetworkValueGlobal);
-		}
+		const serverSpecificValue = myNetworkServerSpecific?._content ? myNetworkValueGlobal : [];
+		setServerSpecificCurrentValue(ZIMBRA_MTA_MY_NETWORKS, serverSpecificValue);
 	}, [serverSpecificAttributes, setServerSpecificCurrentValue]);
 
 	useEffect(() => {

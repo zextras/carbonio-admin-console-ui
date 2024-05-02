@@ -92,7 +92,7 @@ const InheritedChipInput: FC<{
 					{...pref}
 				/>
 			</Row>
-			{fromSubValue ? (
+			{fromSubValue && fromSubValue?.length ? (
 				<Tooltip
 					label={
 						<>
