@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
+import React, { FC, useCallback } from 'react';
 
 import {
 	ChipInput,
@@ -17,7 +17,7 @@ import {
 import { map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-interface InheritedChipInputProps {
+const InheritedChipInput: FC<{
 	subValue: any;
 	inheritedValue: any;
 	background?: any;
@@ -29,11 +29,11 @@ interface InheritedChipInputProps {
 	requireUniqueChips?: boolean;
 	pref?: any;
 	description?: any;
+	placeholder?: any;
 	ChipComponent?: any;
-	placeholder?: string;
-}
-
-const InheritedChipInput: FC<InheritedChipInputProps> = ({
+}> = ({
+	placeholder,
+	requireUniqueChips,
 	subValue,
 	inheritedValue,
 	background = 'gray5',
@@ -42,57 +42,57 @@ const InheritedChipInput: FC<InheritedChipInputProps> = ({
 	fromSubValue,
 	disabled = false,
 	hasError = false,
-	requireUniqueChips,
 	pref = {},
 	description,
-	ChipComponent,
-	placeholder
+	ChipComponent
 }) => {
 	const [t] = useTranslation();
+	const CustomIcon = useCallback(
+		() => (
+			<Tooltip
+				label={
+					<>
+						<Row>
+							<Text weight="bold">
+								{t('account_details.inherited_value_was', 'The inherited value was')} :
+							</Text>
+							<Text>{`  ${inheritedValue || ''}`}</Text>
+						</Row>
+						<Padding top="small">
+							<Text weight="bold">{t('account_details.click_to_revert', 'Click to revert.')}</Text>
+						</Padding>
+					</>
+				}
+			>
+				<IconCheckbox
+					icon="RefreshOutline"
+					onClick={onChangeReset}
+					style={{ cursor: 'pointer' }}
+					onChange={(): null => null}
+				/>
+			</Tooltip>
+		),
+		[inheritedValue, onChangeReset, t]
+	);
 	return (
 		<Container orientation="horizontal">
 			<Row takeAvailableSpace>
 				<ChipInput
 					placeholder={placeholder}
 					requireUniqueChips={requireUniqueChips}
-					value={subValue === undefined ? inheritedValue || '' : subValue}
+					value={subValue === undefined || !subValue?.length ? inheritedValue || '' : subValue}
 					background={background}
 					onChange={onChange}
 					disabled={disabled}
 					hasError={hasError}
 					ChipComponent={ChipComponent}
 					maxChips={null}
-					CustomIcon={(): any => (
-						<Tooltip
-							label={
-								<>
-									<Row>
-										<Text weight="bold">
-											{t('account_details.inherited_value_was', 'The inherited value was')} :
-										</Text>
-										<Text overflow={'break-word'}>{`  ${inheritedValue || ''}`}</Text>
-									</Row>
-									<Padding top="small">
-										<Text weight="bold">
-											{t('account_details.click_to_revert', 'Click to revert.')}
-										</Text>
-									</Padding>
-								</>
-							}
-						>
-							<IconCheckbox
-								icon="RefreshOutline"
-								onClick={onChangeReset}
-								style={{ cursor: 'pointer' }}
-								onChange={(): null => null}
-							/>
-						</Tooltip>
-					)}
+					CustomIcon={CustomIcon}
 					description={description}
 					{...pref}
 				/>
 			</Row>
-			{fromSubValue?.length ? (
+			{fromSubValue ? (
 				<Tooltip
 					label={
 						<>
