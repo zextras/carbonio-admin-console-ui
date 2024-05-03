@@ -192,12 +192,6 @@ const GlobalTheme: FC = () => {
 	}, [configInformation, setInitalValues]);
 
 	const updateGlobalConfig = (attributes: Array<any>): void => {
-		/* attributes.forEach((ele: any) => {
-			if (ele?.n === 'carbonioAdminDocumentationUrl') {
-				console.log('_dd ele._content [updateGlobalConfig]', ele._content);
-			}
-			updateConfig(ele?.n, ele._content);
-		}); */
 		updateAllConfig(attributes);
 	};
 
@@ -221,9 +215,7 @@ const GlobalTheme: FC = () => {
 					hideButton: true,
 					replace: true
 				});
-				console.log('_dd attributes', attributes);
 				updateGlobalConfig(attributes);
-				console.log('_dd attributes after', attributes);
 				setIsLoading(false);
 			})
 			.catch((error) => {

@@ -1404,19 +1404,8 @@ export const ThemeConfigs: FC<{
 								</ListRow>
 								<ListRow>
 									<Container padding={{ all: 'small' }}>
-										{console.log(
-											'_dd themeConfig.carbonioAdminDocumentationUrl',
-											themeConfig.carbonioAdminDocumentationUrl
-										)}
-										{console.log(
-											'_dd globalTheme?.carbonioAdminDocumentationUrl',
-											globalTheme?.carbonioAdminDocumentationUrl
-										)}
 										<InheritedInput
-											label={t(
-												'label.upload_yourdocs_placeholder',
-												'Ex. https://upload.yourdocs.com/'
-											)}
+											label={'Ex. https://upload.yourdocs.com/'}
 											subValue={themeConfig.carbonioAdminDocumentationUrl}
 											inheritedValue={globalTheme?.carbonioAdminDocumentationUrl}
 											fromSubValue={globalTheme ? themeConfig.carbonioAdminDocumentationUrl : ''}
