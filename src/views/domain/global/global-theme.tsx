@@ -48,7 +48,7 @@ const GlobalTheme: FC = () => {
 	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [globalTheme, setGlobalTheme] = useState<themeConfigStore>({});
 	const configInformation = useConfigStore((state) => state.config);
-	const updateConfig = useConfigStore((state) => state.updateConfig);
+	const updateAllConfig = useConfigStore((state) => state.updateAllConfig);
 	const [intialThemeConfig, setIntialThemeConfig] = useState<themeConfigStore>({});
 	const [isOpenResetDialog, setIsOpenResetDialog] = useState<boolean>(false);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -57,8 +57,8 @@ const GlobalTheme: FC = () => {
 
 	const setValue = useCallback(
 		(key: string, value: any): void => {
-			setIntialThemeConfig((prev: any) => ({ ...prev, [key]: value }));
 			setGlobalTheme((prev: any) => ({ ...prev, [key]: value }));
+			setIntialThemeConfig((prev: any) => ({ ...prev, [key]: value }));
 		},
 		[setGlobalTheme]
 	);
@@ -92,6 +92,7 @@ const GlobalTheme: FC = () => {
 				setValue('carbonioWebUILogoutURL', obj?.carbonioWebUILogoutURL);
 				setValue('carbonioAdminUILoginURL', obj?.carbonioAdminUILoginURL);
 				setValue('carbonioAdminUILogoutURL', obj?.carbonioAdminUILogoutURL);
+				setValue('carbonioAdminDocumentationUrl', obj?.carbonioAdminDocumentationUrl);
 			}
 		},
 		[setValue]
@@ -182,15 +183,22 @@ const GlobalTheme: FC = () => {
 			if (!obj.carbonioAdminUILogoutURL) {
 				obj.carbonioAdminUILogoutURL = '';
 			}
+			if (!obj.carbonioAdminDocumentationUrl) {
+				obj.carbonioAdminDocumentationUrl = '';
+			}
 			setInitalValues(obj);
 			setIsDirty(false);
 		}
 	}, [configInformation, setInitalValues]);
 
 	const updateGlobalConfig = (attributes: Array<any>): void => {
-		attributes.forEach((ele: any) => {
+		/* attributes.forEach((ele: any) => {
+			if (ele?.n === 'carbonioAdminDocumentationUrl') {
+				console.log('_dd ele._content [updateGlobalConfig]', ele._content);
+			}
 			updateConfig(ele?.n, ele._content);
-		});
+		}); */
+		updateAllConfig(attributes);
 	};
 
 	useEffect(() => {
@@ -213,7 +221,9 @@ const GlobalTheme: FC = () => {
 					hideButton: true,
 					replace: true
 				});
+				console.log('_dd attributes', attributes);
 				updateGlobalConfig(attributes);
+				console.log('_dd attributes after', attributes);
 				setIsLoading(false);
 			})
 			.catch((error) => {
@@ -314,7 +324,8 @@ const GlobalTheme: FC = () => {
 			carbonioWebUILoginURL: '',
 			carbonioWebUILogoutURL: '',
 			carbonioAdminUILoginURL: '',
-			carbonioAdminUILogoutURL: ''
+			carbonioAdminUILogoutURL: '',
+			carbonioAdminDocumentationUrl: ''
 		};
 		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })

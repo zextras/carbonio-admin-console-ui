@@ -106,6 +106,8 @@ export const ThemeConfigs: FC<{
 	const [isValidCarbonioAdminLogoutURL, setIsValidCarbonioAdminLogoutURL] = useState<boolean>(true);
 	const [isValidCarbonioWebClientLogoutURL, setIsValidCarbonioWebClientLogoutURL] =
 		useState<boolean>(true);
+	const [isValidCarbonioAdminDocumentationUrl, setIsValidCarbonioAdminDocumentationUrl] =
+		useState<boolean>(true);
 	const [change, setChange] = useState('end_user');
 	const [click, setClick] = useState<string>('');
 
@@ -1388,6 +1390,51 @@ export const ThemeConfigs: FC<{
 											disabled={isGlobalTheme && !hasModifyRights}
 										/>
 										{!isValidCarbonioAdminLogoutURL && <HttpsErrorMessage />}
+									</Container>
+								</ListRow>
+								<Container padding={{ top: 'small' }}>
+									<Divider color="gray2" />
+								</Container>
+								<ListRow>
+									<Padding top="large" bottom="small" horizontal="small" width="100%">
+										<Text size="small" color="gray0" weight="bold">
+											{t('label.help_documentation_url', 'Help documentation URL')}
+										</Text>
+									</Padding>
+								</ListRow>
+								<ListRow>
+									<Container padding={{ all: 'small' }}>
+										{console.log(
+											'_dd themeConfig.carbonioAdminDocumentationUrl',
+											themeConfig.carbonioAdminDocumentationUrl
+										)}
+										{console.log(
+											'_dd globalTheme?.carbonioAdminDocumentationUrl',
+											globalTheme?.carbonioAdminDocumentationUrl
+										)}
+										<InheritedInput
+											label={t(
+												'label.upload_yourdocs_placeholder',
+												'Ex. https://upload.yourdocs.com/'
+											)}
+											subValue={themeConfig.carbonioAdminDocumentationUrl}
+											inheritedValue={globalTheme?.carbonioAdminDocumentationUrl}
+											fromSubValue={globalTheme ? themeConfig.carbonioAdminDocumentationUrl : ''}
+											inputName="carbonioAdminDocumentationUrl"
+											onChange={(e: any): any => {
+												if (e.target.value) {
+													const isValid = isValidHttpsUrl(e.target.value);
+													setIsValidCarbonioAdminDocumentationUrl(isValid);
+												} else {
+													setIsValidCarbonioAdminDocumentationUrl(true);
+												}
+												onChangeDomainThemeDetail(e);
+											}}
+											onChangeReset={(): void => setEmptyValue('carbonioAdminDocumentationUrl')}
+											hasError={!isValidCarbonioAdminDocumentationUrl}
+											disabled={isGlobalTheme && !hasModifyRights}
+										/>
+										{!isValidCarbonioAdminDocumentationUrl && <HttpsErrorMessage />}
 									</Container>
 								</ListRow>
 							</>
