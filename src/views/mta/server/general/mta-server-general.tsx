@@ -304,7 +304,7 @@ const MTAServerGeneral: FC = () => {
 			);
 
 			const myNetworkValueGlobal = zimbraMtaMyNetworksGlobal?._content?.trim()
-				? map(split(zimbraMtaMyNetworksGlobal?._content, /  ?/), (ip) => ({
+				? map(split(zimbraMtaMyNetworksGlobal?._content, ' '), (ip) => ({
 						label: trim(ip)
 				  }))
 				: [];
@@ -413,7 +413,7 @@ const MTAServerGeneral: FC = () => {
 			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
 		);
 		const myNetworkValueGlobal = myNetworkServerSpecific?._content?.trim()
-			? map(split(myNetworkServerSpecific?._content, /  ?/), (ip) => ({
+			? map(split(myNetworkServerSpecific?._content, ' '), (ip) => ({
 					label: trim(ip)
 			  }))
 			: [];
