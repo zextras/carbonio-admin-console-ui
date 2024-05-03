@@ -590,6 +590,11 @@ const LegalHoldPanel: FC = () => {
 		}
 	}, [getLegalHoldById, selectedAccountRows, t]);
 
+	const customIcon = useCallback(
+		() => <Icon icon="FunnelOutline" size="large" color="primary" />,
+		[]
+	);
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -698,9 +703,7 @@ const LegalHoldPanel: FC = () => {
 									<Input
 										label={t('label.search_an_account', 'Search an Account')}
 										backgroundColor="gray5"
-										CustomIcon={(): React.ReactElement => (
-											<Icon icon="FunnelOutline" size="large" color="primary" />
-										)}
+										CustomIcon={customIcon}
 										value={searchAccountName}
 										onChange={onSearchAccount}
 									/>
