@@ -33,7 +33,7 @@ import styled from 'styled-components';
 
 import { DomainResponse } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
-import { MAX_DOMAIN_DISPLAY, MOBILE } from '../../constants';
+import { MAX_DOMAIN_DISPLAY, MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { getLegalHoldList } from '../../services/get-legal-hold-list';
 import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
@@ -83,7 +83,7 @@ const LegalHoldPanel: FC = () => {
 	const [t] = useTranslation();
 	const screenMode = useScreenMode();
 	const [totalItem, setTotalItem] = useState(1);
-	const [accountLimit] = useState<number>(10);
+	const [accountLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const createSnackbar = useContext(SnackbarManagerContext);
 	const [accounts, setAccounts] = useState<Array<BackupAccountItem>>([]);
@@ -189,6 +189,8 @@ const LegalHoldPanel: FC = () => {
 		(backupAccounts, page) => {
 			if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
 				setAccounts(backupAccounts);
+			} else {
+				setBackupAccountList([]);
 			}
 			if (page) {
 				const num: number = page;
@@ -286,17 +288,26 @@ const LegalHoldPanel: FC = () => {
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccount = useCallback(
 		debounce((searchText, domainNameItem) => {
-			setAccountOffset(0);
 			getBackupAccounts(searchText, domainNameItem);
 		}, 1000),
 		[debounce]
 	);
 
 	useEffect(() => {
-		if (searchAccountName !== undefined) {
-			searchAccount(searchAccountName, domainName);
-		}
-	}, [searchAccountName, searchAccount, domainName]);
+		const name =
+			searchDomainName === '' || searchDomainName === undefined ? domainName : searchDomainName;
+		getBackupAccounts('', name);
+	}, [domainName, getBackupAccounts, searchDomainName]);
+
+	const onSearchAccount = useCallback(
+		(e) => {
+			setSearchAccountName(e.target.value);
+			const name =
+				searchDomainName === '' || searchDomainName === undefined ? domainName : searchDomainName;
+			searchAccount(e.target.value, name);
+		},
+		[domainName, searchAccount, searchDomainName]
+	);
 
 	const getAllLegalHold = useCallback(() => {
 		getLegalHoldList()
@@ -471,6 +482,7 @@ const LegalHoldPanel: FC = () => {
 		(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => {
 			setIsDomainSelect(true);
 			setSearchDomainName(domain?.name);
+			setTotalItem(0);
 		},
 		[]
 	);
@@ -561,17 +573,6 @@ const LegalHoldPanel: FC = () => {
 						)
 					})
 			  );
-
-	const onSearchAccount = useCallback((e) => {
-		setSearchAccountName(e.target.value);
-	}, []);
-
-	useEffect(() => {
-		if (isDomainSelect) {
-			setDomainName(searchDomainName);
-			searchAccount(searchAccountName, searchDomainName);
-		}
-	}, [isDomainSelect, searchDomainName, searchAccountName, searchAccount]);
 
 	useEffect(() => {
 		if (selectedAccountRows.length > 0) {
