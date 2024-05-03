@@ -57,6 +57,8 @@ const ovelayStyle = styled(Container)`
 
 const AbsoluteContainerItem = styled(Container)`
 	position: absolute;
+	z-index: 1;
+	top: 8rem;
 `;
 
 const SelectItem = styled(Row)``;
@@ -69,13 +71,13 @@ const CustomIcon = styled(Icon)`
 type LegalHolds = {
 	name: string;
 	id: string;
-	status: string | unknown;
+	status: string;
 };
 
 type BackupAccountItem = {
 	name: string;
 	id: string;
-	status: string | unknown;
+	status: string;
 	legalHold: string;
 };
 
@@ -83,7 +85,7 @@ const LegalHoldPanel: FC = () => {
 	const [t] = useTranslation();
 	const screenMode = useScreenMode();
 	const [totalItem, setTotalItem] = useState(1);
-	const [accountLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
+	const accountLimit = RECORD_DISPLAY_LIMIT;
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const createSnackbar = useContext(SnackbarManagerContext);
 	const [accounts, setAccounts] = useState<Array<BackupAccountItem>>([]);
@@ -112,7 +114,7 @@ const LegalHoldPanel: FC = () => {
 	>([]);
 	const [allLegalHoldAccountList, setAllLegalHoldAccountList] = useState<Array<LegalHolds>>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const [domainName, setDomainName] = useState(useDomainInformation()?.name || '');
+	const [domainName] = useState(useDomainInformation()?.name || '');
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
 
 	const loadingComponent = [
@@ -128,7 +130,6 @@ const LegalHoldPanel: FC = () => {
 	type THeader = {
 		id: string;
 		label: string;
-		align?: React.ThHTMLAttributes<HTMLTableHeaderCellElement>['align'];
 		width?: string;
 		i18nAllLabel?: string;
 		bold?: boolean;
@@ -206,7 +207,7 @@ const LegalHoldPanel: FC = () => {
 		(data, page) => {
 			let backupAccounts;
 			const allServers = Object.keys(data);
-			let allServerAccounts: Array<unknown> = [];
+			let allServerAccounts: Array<any> = [];
 			const maxPageList: Array<number> = [];
 			let backupPage = page;
 			allServers.forEach((item: string) => {
@@ -320,7 +321,7 @@ const LegalHoldPanel: FC = () => {
 					}
 					const accountRawData = parseData.response;
 					const legalHoldsItems: Array<LegalHolds> = [];
-					Object.entries(accountRawData).forEach((entry) => {
+					Object.entries(accountRawData).forEach((entry: any) => {
 						const [keyItem, value] = entry;
 						legalHoldsItems.push({
 							id: keyItem.split(' ')[1],
@@ -423,7 +424,7 @@ const LegalHoldPanel: FC = () => {
 	const getLegalHoldById = useCallback(
 		(id): LegalHolds | undefined => {
 			const account = allLegalHoldAccountList.find((item) => item?.id === id);
-			return account || undefined;
+			return account ?? undefined;
 		},
 		[allLegalHoldAccountList]
 	);
@@ -705,7 +706,11 @@ const LegalHoldPanel: FC = () => {
 									/>
 								</Row>
 							</Row>
-							<Container crossAlignment="center" mainAlignment="flex-start">
+							<Container
+								crossAlignment="center"
+								mainAlignment="flex-start"
+								style={{ position: 'relative' }}
+							>
 								{isRequestInProgress && (
 									<AbsoluteContainerItem
 										crossAlignment="center"
