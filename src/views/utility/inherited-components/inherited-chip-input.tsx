@@ -17,7 +17,7 @@ import {
 import { map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-const InheritedChipInput: FC<{
+interface InheritedChipInputProps {
 	subValue: any;
 	inheritedValue: any;
 	background?: any;
@@ -29,11 +29,11 @@ const InheritedChipInput: FC<{
 	requireUniqueChips?: boolean;
 	pref?: any;
 	description?: any;
-	placeholder?: any;
 	ChipComponent?: any;
-}> = ({
-	placeholder,
-	requireUniqueChips,
+	placeholder?: string;
+}
+
+const InheritedChipInput: FC<InheritedChipInputProps> = ({
 	subValue,
 	inheritedValue,
 	background = 'gray5',
@@ -42,9 +42,11 @@ const InheritedChipInput: FC<{
 	fromSubValue,
 	disabled = false,
 	hasError = false,
+	requireUniqueChips,
 	pref = {},
 	description,
-	ChipComponent
+	ChipComponent,
+	placeholder
 }) => {
 	const [t] = useTranslation();
 	return (
@@ -53,7 +55,7 @@ const InheritedChipInput: FC<{
 				<ChipInput
 					placeholder={placeholder}
 					requireUniqueChips={requireUniqueChips}
-					value={subValue === undefined || !subValue?.length ? inheritedValue || '' : subValue}
+					value={subValue === undefined ? inheritedValue || '' : subValue}
 					background={background}
 					onChange={onChange}
 					disabled={disabled}
@@ -61,38 +63,36 @@ const InheritedChipInput: FC<{
 					ChipComponent={ChipComponent}
 					maxChips={null}
 					CustomIcon={(): any => (
-						<>
-							<Tooltip
-								label={
-									<>
-										<Row>
-											<Text weight="bold">
-												{t('account_details.inherited_value_was', 'The inherited value was')} :
-											</Text>
-											<Text overflow={'break-word'}>{`  ${inheritedValue || ''}`}</Text>
-										</Row>
-										<Padding top="small">
-											<Text weight="bold">
-												{t('account_details.click_to_revert', 'Click to revert.')}
-											</Text>
-										</Padding>
-									</>
-								}
-							>
-								<IconCheckbox
-									icon="RefreshOutline"
-									onClick={onChangeReset}
-									style={{ cursor: 'pointer' }}
-									onChange={(): null => null}
-								/>
-							</Tooltip>
-						</>
+						<Tooltip
+							label={
+								<>
+									<Row>
+										<Text weight="bold">
+											{t('account_details.inherited_value_was', 'The inherited value was')} :
+										</Text>
+										<Text overflow={'break-word'}>{`  ${inheritedValue || ''}`}</Text>
+									</Row>
+									<Padding top="small">
+										<Text weight="bold">
+											{t('account_details.click_to_revert', 'Click to revert.')}
+										</Text>
+									</Padding>
+								</>
+							}
+						>
+							<IconCheckbox
+								icon="RefreshOutline"
+								onClick={onChangeReset}
+								style={{ cursor: 'pointer' }}
+								onChange={(): null => null}
+							/>
+						</Tooltip>
 					)}
 					description={description}
 					{...pref}
 				/>
 			</Row>
-			{fromSubValue && fromSubValue?.length ? (
+			{fromSubValue?.length ? (
 				<Tooltip
 					label={
 						<>
