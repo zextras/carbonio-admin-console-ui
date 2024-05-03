@@ -114,7 +114,7 @@ const LegalHoldPanel: FC = () => {
 	>([]);
 	const [allLegalHoldAccountList, setAllLegalHoldAccountList] = useState<Array<LegalHolds>>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
-	const [domainName] = useState(useDomainInformation()?.name || '');
+	const domainName = useDomainInformation()?.name || '';
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
 
 	const loadingComponent = [
@@ -698,7 +698,7 @@ const LegalHoldPanel: FC = () => {
 									<Input
 										label={t('label.search_an_account', 'Search an Account')}
 										backgroundColor="gray5"
-										CustomIcon={(): JSX.Element => (
+										CustomIcon={(): React.ReactElement => (
 											<Icon icon="FunnelOutline" size="large" color="primary" />
 										)}
 										value={searchAccountName}
