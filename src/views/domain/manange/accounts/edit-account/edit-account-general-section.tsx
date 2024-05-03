@@ -877,7 +877,7 @@ const EditAccountGeneralSection: FC<{
 				</Row>
 
 				<Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-					<Row width="49%" mainAlignment="flex-start">
+					<Row width={!isAdvanced ? '100%' : '49%'} mainAlignment="flex-start">
 						<Input
 							label={t('label.advance_edit_display_name', 'Display Name')}
 							backgroundColor="gray5"

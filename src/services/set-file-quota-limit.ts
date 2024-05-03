@@ -10,9 +10,16 @@ import {
 	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
 
-export const setFileQuotaLimitByAccount = async (accId: string, limit: string): Promise<any> => {
+import { ACCOUNTS, COS } from '../constants';
+
+export const setFileQuotaLimitById = async (
+	accId: string,
+	limit: string,
+	type?: string
+): Promise<any> => {
+	const fetchType = type === COS ? COS : ACCOUNTS;
 	fetchExternalSoap(
-		`/services/storages/admin/quota/config/accounts/${accId}`,
+		`/services/storages/admin/quota/config/${fetchType}/${accId}`,
 		{
 			limit
 		},

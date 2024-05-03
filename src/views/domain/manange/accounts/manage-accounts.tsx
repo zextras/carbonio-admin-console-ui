@@ -63,7 +63,7 @@ import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
-import { getFileQuotaByAccount } from '../../../../services/get-file-quota-account';
+import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -496,7 +496,7 @@ const ManageAccounts: FC = () => {
 
 	const getFileQuotaByAccId = useCallback(
 		(accId: string): Promise<void> =>
-			getFileQuotaByAccount(accId).then((res: any) => {
+			getFileQuotaById(accId).then((res: any) => {
 				if (res?.limit) {
 					setAccDetailValue(FILES_QUOTA_LIMIT, res?.limit);
 				}

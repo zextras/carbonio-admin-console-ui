@@ -84,7 +84,7 @@ import { removeDistributionListMember } from '../../../../../services/remove-dis
 import { renameAccountRequest } from '../../../../../services/rename-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
-import { setFileQuotaLimitByAccount } from '../../../../../services/set-file-quota-limit-account';
+import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../../../store/config/store';
@@ -624,7 +624,7 @@ const EditAccount: FC<{
 	const handleFileQuotaLimitChange = useCallback(
 		(modifiedKeys: string[]) => {
 			if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
-				setFileQuotaLimitByAccount(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
+				setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
 					(res) => {
 						if (modifiedKeys?.length === 0) {
 							createSnackbar({
