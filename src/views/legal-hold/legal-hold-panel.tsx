@@ -66,6 +66,19 @@ const CustomIcon = styled(Icon)`
 	height: 1.25rem;
 `;
 
+type LegalHolds = {
+	name: string;
+	id: string;
+	status: string | unknown;
+};
+
+type BackupAccountItem = {
+	name: string;
+	id: string;
+	status: string | unknown;
+	legalHold: string;
+};
+
 const LegalHoldPanel: FC = () => {
 	const [t] = useTranslation();
 	const screenMode = useScreenMode();
@@ -73,10 +86,11 @@ const LegalHoldPanel: FC = () => {
 	const [accountLimit] = useState<number>(10);
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const createSnackbar = useContext(SnackbarManagerContext);
-	const [accounts, setAccounts] = useState<Array<unknown>>([]);
+	const [accounts, setAccounts] = useState<Array<BackupAccountItem>>([]);
+	const [backupAccountList, setBackupAccountList] = useState<Array<BackupAccountItem>>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
-	const [accountRows, setAccountRows] = useState<Array<any>>([]);
+	const [accountRows, setAccountRows] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [searchDomainName, setSearchDomainName] = useState<string>('');
 	const [isShowError, setIsShowError] = useState(false);
@@ -96,13 +110,6 @@ const LegalHoldPanel: FC = () => {
 			a: { n: string; _content: string }[];
 		}[]
 	>([]);
-
-	type LegalHolds = {
-		name: string;
-		id: string;
-		status: string | unknown;
-	};
-
 	const [allLegalHoldAccountList, setAllLegalHoldAccountList] = useState<Array<LegalHolds>>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const [domainName, setDomainName] = useState(useDomainInformation()?.name || '');
@@ -162,6 +169,22 @@ const LegalHoldPanel: FC = () => {
 		[t]
 	);
 
+	useEffect(() => {
+		if (allLegalHoldAccountList.length > 0 && accounts.length > 0) {
+			const updateAccountItems = accounts.map((item: BackupAccountItem) => {
+				const holdAccount = item;
+				const statusItem = allLegalHoldAccountList.find(
+					(legalHoldAccount) => legalHoldAccount.id === holdAccount?.id
+				)?.status;
+				if (statusItem) {
+					holdAccount.legalHold = statusItem.toString();
+				}
+				return holdAccount;
+			});
+			setBackupAccountList(updateAccountItems);
+		}
+	}, [accounts, allLegalHoldAccountList]);
+
 	const setBackupAccountAndPage = useCallback(
 		(backupAccounts, page) => {
 			if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
@@ -181,8 +204,8 @@ const LegalHoldPanel: FC = () => {
 		(data, page) => {
 			let backupAccounts;
 			const allServers = Object.keys(data);
-			let allServerAccounts: any[] = [];
-			const maxPageList: any[] = [];
+			let allServerAccounts: Array<unknown> = [];
+			const maxPageList: Array<number> = [];
 			let backupPage = page;
 			allServers.forEach((item: string) => {
 				if (data[item]?.response?.accounts) {
@@ -321,9 +344,17 @@ const LegalHoldPanel: FC = () => {
 		[allLegalHoldAccountList]
 	);
 
+	const allBackupAccounts = useMemo(
+		() =>
+			isShowOnlyLegalHostAccount
+				? backupAccountList.filter((item) => item?.legalHold === 'set')
+				: backupAccountList,
+		[backupAccountList, isShowOnlyLegalHostAccount]
+	);
+
 	useMemo(() => {
-		if (accounts && accounts.length > 0) {
-			const allRows = accounts.map((item: any) => ({
+		if (allBackupAccounts && allBackupAccounts.length > 0) {
+			const allRows = allBackupAccounts.map((item) => ({
 				id: item?.id,
 				columns: [
 					<Container
@@ -344,12 +375,12 @@ const LegalHoldPanel: FC = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="small" weight="light" key={item?.status} color="gray0">
+						<Text size="small" weight="light" key={item?.name} color="gray0">
 							{item?.name}
 						</Text>
 					</Container>,
 					<Container
-						key={item?.status}
+						key={item?.name}
 						onClick={(): void => {
 							setSelectedAccountRows([item?.id]);
 						}}
@@ -366,7 +397,7 @@ const LegalHoldPanel: FC = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="small" weight="regular" key={item?.status} color="gray0">
+						<Text size="small" weight="regular" key={item?.name} color="gray0">
 							{getStatusOfLegalHoldFromAccount(item?.name)}
 						</Text>
 					</Container>
@@ -376,7 +407,7 @@ const LegalHoldPanel: FC = () => {
 		} else {
 			setAccountRows([]);
 		}
-	}, [accounts, getStatusOfLegalHoldFromAccount]);
+	}, [allBackupAccounts, getStatusOfLegalHoldFromAccount]);
 
 	const getLegalHoldById = useCallback(
 		(id): LegalHolds | undefined => {
@@ -665,7 +696,7 @@ const LegalHoldPanel: FC = () => {
 									<Input
 										label={t('label.search_an_account', 'Search an Account')}
 										backgroundColor="gray5"
-										CustomIcon={(): any => (
+										CustomIcon={(): JSX.Element => (
 											<Icon icon="FunnelOutline" size="large" color="primary" />
 										)}
 										value={searchAccountName}
