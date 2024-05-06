@@ -46,7 +46,8 @@ import {
 	CLOUDIAN,
 	EMC,
 	SCALITYS3,
-	LOCAL_VALUE
+	LOCAL_VALUE,
+	FLEX_START
 } from '../../../../constants';
 import { fetchSoap } from '../../../../services/bucket-service';
 import { createVoume } from '../../../../services/create-volume-service';
@@ -69,20 +70,19 @@ const VolumeListTable: FC<{
 	onSelectionChange: (selected: string[]) => void;
 	headers: THeader[];
 	onClick: (i: number) => void;
-}> = ({ volumes, selectedRows, onSelectionChange, headers, onClick }) => {
+	isAdvanced: boolean;
+}> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
 	const [t] = useTranslation();
 	const tableRows: any = useMemo(
 		() =>
-			volumes.map((v, i) => ({
-				id: v?.id,
-				columns: [
+			volumes.map((v, i) => {
+				const columns = [
 					<Row
 						key={i}
 						onClick={(): void => {
 							onClick(i);
 						}}
-						// eslint-disable-next-line sonarjs/no-duplicate-string
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text size="small" weight="regular">
 							{v?.id}
@@ -93,31 +93,33 @@ const VolumeListTable: FC<{
 						onClick={(): void => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text size="small" weight="light">
 							{v?.name}
 						</Text>
 					</Row>,
+					isAdvanced && (
+						<Row
+							key={i}
+							onClick={(): void => {
+								onClick(i);
+							}}
+							style={{ textAlign: 'left', justifyContent: FLEX_START }}
+						>
+							<Text size="small" weight="light">
+								{v?.storeType === LOCAL_VALUE
+									? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
+									: t('volume.volume_allocation_list.object_storage', 'Object Storage')}
+							</Text>
+						</Row>
+					),
 					<Row
 						key={i}
 						onClick={(): void => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-					>
-						<Text size="small" weight="light">
-							{v?.storeType === LOCAL_VALUE
-								? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
-								: t('volume.volume_allocation_list.object_storage', 'Object Storage')}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						onClick={(): void => {
-							onClick(i);
-						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text size="small" weight="light">
 							{v?.storeType === LOCAL_VALUE
@@ -132,7 +134,7 @@ const VolumeListTable: FC<{
 						onClick={(): void => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text color={v?.isCurrent ? 'text' : 'error'} size="small" weight="light">
 							{v?.isCurrent ? YES : NO}
@@ -143,16 +145,21 @@ const VolumeListTable: FC<{
 						onClick={(): void => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text color={v?.compressed ? 'text' : 'error'} size="small" weight="light">
 							{v?.compressed ? YES : NO}
 						</Text>
 					</Row>
-				],
-				clickable: true
-			})),
-		[onClick, t, volumes]
+				];
+
+				return {
+					id: v?.id,
+					columns: columns.filter((column) => column !== false), // Changed filter condition to remove false instead of null
+					clickable: true
+				};
+			}),
+		[onClick, t, volumes, isAdvanced]
 	);
 
 	return (
@@ -183,8 +190,8 @@ const VolumesDetailPanel: FC = () => {
 	const { setVolumeDetail } = context;
 	const { isVolumeAllDetail, selectedServerName } = useBucketVolumeStore((state) => state);
 	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
-	const volIndexerHeaders = useMemo(() => indexerHeaders(t), [t]);
-	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t), [t]);
+	const volIndexerHeaders = useMemo(() => indexerHeaders(t, isAdvanced), [t, isAdvanced]);
+	const volPrimarySecondaryHeaders = useMemo(() => volTableHeader(t, isAdvanced), [t, isAdvanced]);
 	const [priamryVolumeSelection, setPriamryVolumeSelection] = useState<string[]>([]);
 	const [secondaryVolumeSelection, setSecondaryVolumeSelection] = useState<string[]>([]);
 	const [indexerVolumeSelection, setIndexerVolumeSelection] = useState<string[]>([]);
@@ -807,6 +814,7 @@ const VolumesDetailPanel: FC = () => {
 								onClick={(i: number): void => {
 									handleClick(i, volumeList?.primaries);
 								}}
+								isAdvanced={isAdvanced}
 							/>
 						</Row>
 						{isAdvanced && (
@@ -834,6 +842,7 @@ const VolumesDetailPanel: FC = () => {
 										onClick={(i: number): void => {
 											handleClick(i, volumeList?.secondaries);
 										}}
+										isAdvanced={isAdvanced}
 									/>
 								</Row>
 							</>
@@ -864,6 +873,7 @@ const VolumesDetailPanel: FC = () => {
 								onClick={(i: number): void => {
 									handleClick(i, volumeList?.indexes);
 								}}
+								isAdvanced={isAdvanced}
 							/>
 						</Row>
 					</Container>
