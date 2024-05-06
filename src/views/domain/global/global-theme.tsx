@@ -98,94 +98,44 @@ const GlobalTheme: FC = () => {
 		[setValue]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
 		if (!!configInformation && configInformation.length > 0) {
-			const obj: any = {};
-			configInformation.forEach((item: any) => {
-				obj[item?.n] = item._content;
+			const defaultValues: any = {
+				carbonioWebUiDarkMode: 'FALSE',
+				carbonioWebUiLoginLogo: '',
+				carbonioWebUiDarkLoginLogo: '',
+				carbonioWebUiLoginBackground: '',
+				carbonioWebUiDarkLoginBackground: '',
+				carbonioWebUiAppLogo: '',
+				carbonioWebUiDarkAppLogo: '',
+				carbonioWebUiFavicon: '',
+				carbonioWebUiTitle: '',
+				carbonioWebUiDescription: '',
+				carbonioAdminUiLoginLogo: '',
+				carbonioAdminUiDarkLoginLogo: '',
+				carbonioAdminUiAppLogo: '',
+				carbonioAdminUiDarkAppLogo: '',
+				carbonioAdminUiBackground: '',
+				carbonioAdminUiDarkBackground: '',
+				carbonioAdminUiFavicon: '',
+				carbonioAdminUiTitle: '',
+				carbonioAdminUiDescription: '',
+				carbonioLogoUrl: '',
+				carbonioWebUiPrimaryColor: '',
+				carbonioWebUiDarkPrimaryColor: '',
+				carbonioWebUILoginURL: '',
+				carbonioWebUILogoutURL: '',
+				carbonioAdminUILoginURL: '',
+				carbonioAdminUILogoutURL: '',
+				carbonioAdminDocumentationUrl: ''
+			};
+
+			const obj: any = { ...defaultValues };
+			configInformation.forEach((item) => {
+				if (item?.n in obj) {
+					obj[item.n] = item._content || defaultValues[item.n];
+				}
 			});
-			if (!obj.carbonioWebUiDarkMode) {
-				obj.carbonioWebUiDarkMode = 'FALSE';
-			}
-			if (!obj.carbonioWebUiLoginLogo) {
-				obj.carbonioWebUiLoginLogo = '';
-			}
-			if (!obj.carbonioWebUiDarkLoginLogo) {
-				obj.carbonioWebUiDarkLoginLogo = '';
-			}
-			if (!obj.carbonioWebUiLoginBackground) {
-				obj.carbonioWebUiLoginBackground = '';
-			}
-			if (!obj.carbonioWebUiDarkLoginBackground) {
-				obj.carbonioWebUiDarkLoginBackground = '';
-			}
-			if (!obj.carbonioWebUiAppLogo) {
-				obj.carbonioWebUiAppLogo = '';
-			}
-			if (!obj.carbonioWebUiDarkAppLogo) {
-				obj.carbonioWebUiDarkAppLogo = '';
-			}
-			if (!obj.carbonioWebUiFavicon) {
-				obj.carbonioWebUiFavicon = '';
-			}
-			if (!obj.carbonioWebUiTitle) {
-				obj.carbonioWebUiTitle = '';
-			}
-			if (!obj.carbonioWebUiDescription) {
-				obj.carbonioWebUiDescription = '';
-			}
-			if (!obj.carbonioAdminUiLoginLogo) {
-				obj.carbonioAdminUiLoginLogo = '';
-			}
-			if (!obj.carbonioAdminUiDarkLoginLogo) {
-				obj.carbonioAdminUiDarkLoginLogo = '';
-			}
-			if (!obj.carbonioAdminUiAppLogo) {
-				obj.carbonioAdminUiAppLogo = '';
-			}
-			if (!obj.carbonioAdminUiDarkAppLogo) {
-				obj.carbonioAdminUiDarkAppLogo = '';
-			}
-			if (!obj.carbonioAdminUiBackground) {
-				obj.carbonioAdminUiBackground = '';
-			}
-			if (!obj.carbonioAdminUiDarkBackground) {
-				obj.carbonioAdminUiDarkBackground = '';
-			}
-			if (!obj.carbonioAdminUiFavicon) {
-				obj.carbonioAdminUiFavicon = '';
-			}
-			if (!obj.carbonioAdminUiTitle) {
-				obj.carbonioAdminUiTitle = '';
-			}
-			if (!obj.carbonioAdminUiDescription) {
-				obj.carbonioAdminUiDescription = '';
-			}
-			if (!obj.carbonioLogoUrl) {
-				obj.carbonioLogoUrl = '';
-			}
-			if (!obj.carbonioWebUiPrimaryColor) {
-				obj.carbonioWebUiPrimaryColor = '';
-			}
-			if (!obj.carbonioWebUiDarkPrimaryColor) {
-				obj.carbonioWebUiDarkPrimaryColor = '';
-			}
-			if (!obj.carbonioWebUILoginURL) {
-				obj.carbonioWebUILoginURL = '';
-			}
-			if (!obj.carbonioWebUILogoutURL) {
-				obj.carbonioWebUILogoutURL = '';
-			}
-			if (!obj.carbonioAdminUILoginURL) {
-				obj.carbonioAdminUILoginURL = '';
-			}
-			if (!obj.carbonioAdminUILogoutURL) {
-				obj.carbonioAdminUILogoutURL = '';
-			}
-			if (!obj.carbonioAdminDocumentationUrl) {
-				obj.carbonioAdminDocumentationUrl = '';
-			}
 			setInitalValues(obj);
 			setIsDirty(false);
 		}
