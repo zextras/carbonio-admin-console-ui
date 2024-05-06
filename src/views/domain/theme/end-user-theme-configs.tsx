@@ -27,7 +27,7 @@ const HttpsErrorMessage: FC = () => {
 };
 const EndUserThemeConfigs: FC<{
 	themeConfig: themeConfigStore;
-	globalTheme?: themeConfigStore | undefined;
+	globalTheme?: themeConfigStore;
 	onChangeDomainThemeDetail: any;
 	setEmptyValue: any;
 	isGlobalTheme?: boolean;

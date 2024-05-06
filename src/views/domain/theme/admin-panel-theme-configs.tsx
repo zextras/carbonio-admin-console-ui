@@ -28,7 +28,7 @@ const HttpsErrorMessage: FC = () => {
 
 const AdminPanelThemeConfig: FC<{
 	themeConfig: themeConfigStore;
-	globalTheme?: themeConfigStore | undefined;
+	globalTheme?: themeConfigStore;
 	onChangeDomainThemeDetail: any;
 	setEmptyValue: any;
 	isGlobalTheme?: boolean;
