@@ -120,9 +120,37 @@ const EditHsmPolicy: FC<{
 		}
 	];
 
+	const showSnackbar = useCallback(
+		(msg) => {
+			createSnackbar({
+				key: 'error',
+				type: 'error',
+				label: msg,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[createSnackbar]
+	);
+
 	const onSave = useCallback(() => {
+		if (
+			hsmDetail?.isContactEnabled === false &&
+			hsmDetail?.isDocumentEnabled === false &&
+			hsmDetail?.isEventEnabled === false &&
+			hsmDetail?.isMessageEnabled === false
+		) {
+			showSnackbar(t('hsm.select_at_least_one_type', 'Select at least one type'));
+			return;
+		}
+		if (hsmDetail?.policyCriteria.length === 0) {
+			showSnackbar(t('hsm.add_at_lease_one_criteria', 'Add at least one criteria'));
+			return;
+		}
 		onEditSave(hsmDetail);
-	}, [hsmDetail, onEditSave]);
+	}, [hsmDetail, onEditSave, showSnackbar, t]);
+
 	return (
 		<>
 			<Container

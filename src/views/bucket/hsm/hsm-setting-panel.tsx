@@ -429,7 +429,7 @@ const HSMsettingPanel: FC = () => {
 				module: 'ZxPowerstore',
 				action: 'removeHSMPolicy',
 				targetServer: server,
-				hsmPolicy: `${getHSMType(hType?.hsmType)}${selectedPolicies[0]}`
+				hsmPolicy: `${getHSMType(hType?.hsmType)}${selectedPolicies[0]}`.trim()
 			})
 				.then((res: any) => {
 					setIsRequestInProgress(false);
@@ -506,13 +506,7 @@ const HSMsettingPanel: FC = () => {
 		}
 		if (hsmPolicyDetail?.policyCriteria.length > 0) {
 			hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
-				if (item?.option === 'before') {
-					policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
-				} else if (item?.option === 'after') {
-					policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
-				} else if (item?.option === 'larger' || item?.option === 'smaller') {
-					policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
-				}
+				policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
 			});
 		}
 		if (hsmPolicyDetail?.sourceVolume?.length > 0) {
@@ -534,7 +528,7 @@ const HSMsettingPanel: FC = () => {
 				module: 'ZxPowerstore',
 				action: 'setHSMPolicy',
 				targetServer: server,
-				hsmPolicy: policy,
+				hsmPolicy: policy.trim(),
 				policyToAdd: true
 			})
 				.then((res: any) => {
@@ -601,7 +595,7 @@ const HSMsettingPanel: FC = () => {
 				module: 'ZxPowerstore',
 				action: 'doMoveBlobs',
 				command: 'start',
-				customHSMPolicy: policy,
+				customHSMPolicy: policy.trim(),
 				targetServer: server
 			})
 				.then((res: any) => {

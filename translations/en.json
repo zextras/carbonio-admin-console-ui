@@ -710,6 +710,7 @@
     "hsm": {
         "abstract_msg_1": "<strong>{{enables}} {{largerSmaller}}</strong>. This will affect data stored in the <bold>{{previous}}</bold> and in the <bold>{{next}}</bold>.",
         "abstract_msg_2": "<bold>{{enables}} {{largerSmaller}}</bold> stored in {{source}} will be moved to {{destination}}. This will affect data stored in the <bold>{{previous}}</bold> and in the <bold>{{next}}</bold>.",
+        "add_at_lease_one_criteria": "Add at least one criteria",
         "after_date": "After (Date)",
         "all": "All",
         "all_primary_volume_used_source_msg": "All primary volumes will be used as source by default. Or select manually other volumes.",
@@ -774,6 +775,7 @@
         "scheduling": "Schedule",
         "secondary": "Secondary",
         "secondry": "Secondary",
+        "select_at_least_one_type": "Select at least one type",
         "select_manually_destination_volumes": "Select destination volumes manually",
         "select_manually_source_volumes": "Select source volumes manually",
         "select_volumes": "Select Volumes",
