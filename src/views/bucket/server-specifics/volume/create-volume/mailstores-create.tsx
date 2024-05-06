@@ -22,7 +22,6 @@ import {
 	COMPRESSION_THRESHOLD_UNIT,
 	EMPTY_TYPE_VALUE,
 	INDEX_TYPE_VALUE,
-	LOCAL,
 	PRIMARY_TYPE_VALUE,
 	SECONDARY_TYPE_VALUE
 } from '../../../../../constants';
@@ -212,16 +211,6 @@ const MailstoresCreate: FC<{
 						readOnly
 					/>
 				</Row>
-				{!isAdvanced && (
-					<Row padding={{ top: 'large' }} width="100%">
-						<Input
-							label={t('label.volume_allocation', 'Allocation')}
-							backgroundColor="gray6"
-							value={LOCAL}
-							readOnly
-						/>
-					</Row>
-				)}
 				{!isAdvanced && (
 					<Row padding={{ top: 'large' }} width="100%">
 						<Select
