@@ -76,16 +76,39 @@ const EditHsmPolicyDetailSection: FC<{
 					setIsContactEnable(true);
 					setIsMessageEnable(true);
 					setIsEventEnable(true);
+					setHsmDetail((prev: any) => ({
+						...prev,
+						isMessageEnabled: true,
+						isDocumentEnabled: true,
+						isEventEnabled: true,
+						isContactEnabled: true
+					}));
 				} else {
 					currentPolicy?.hsmType.forEach((element: any) => {
 						if (element === 5) {
 							setIsMessageEnable(true);
+							setHsmDetail((prev: any) => ({
+								...prev,
+								isMessageEnabled: true
+							}));
 						} else if (element === 8) {
 							setIsDocument(true);
+							setHsmDetail((prev: any) => ({
+								...prev,
+								isDocumentEnabled: true
+							}));
 						} else if (element === 11) {
 							setIsEventEnable(true);
+							setHsmDetail((prev: any) => ({
+								...prev,
+								isEventEnabled: true
+							}));
 						} else if (element === 6) {
 							setIsContactEnable(true);
+							setHsmDetail((prev: any) => ({
+								...prev,
+								isContactEnabled: true
+							}));
 						}
 					});
 				}
@@ -100,20 +123,19 @@ const EditHsmPolicyDetailSection: FC<{
 							!element.startsWith('source') &&
 							!element.startsWith('destination')
 						) {
-							const option = element.split(':')[0];
-							const scale = element
-								.split(':')[1]
-								.match(/[a-zA-Z]/g)
-								?.join('');
-							const valueItem = element.split(':')[1].match(/\d/g)?.join('');
-							setPolicyCriteria((prev) => [
-								...prev,
-								{
-									option,
-									scale,
-									dateScale: valueItem
-								}
-							]);
+							const option = element.match(/after|before|larger|small/g)?.join('');
+							const scale = element.match(/minutes|hours|days|months|years/g)?.join('');
+							const valueItem = element.match(/\d/g)?.join('');
+							if (valueItem) {
+								setPolicyCriteria((prev) => [
+									...prev,
+									{
+										option,
+										scale,
+										dateScale: valueItem
+									}
+								]);
+							}
 						}
 
 						if (
