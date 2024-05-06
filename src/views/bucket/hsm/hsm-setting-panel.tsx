@@ -57,7 +57,7 @@ const HSMsettingPanel: FC = () => {
 	const [showEditHsmPolicyView, setShowEditHsmPolicyView] = useState<boolean>(false);
 	const [showDeletePolicyView, setShowDeletePolicyView] = useState<boolean>(false);
 	const serverList = useServerStore((state) => state.serverList);
-	const [isPowerstoreMoveSchedulerEnabled, setIsPowerstoreMoveSchedulerEnabled] =
+	const [isZxPowerstoreMoveSchedulingEnabled, setIsZxPowerstoreMoveSchedulingEnabled] =
 		useState<boolean>(false);
 	const [powerstoreMoveSchedulerValue, setPowerstoreMoveSchedulerValue] = useState<string>('');
 	const [powerstoreSpaceThreshold, setPowerstoreSpaceThreshold] = useState<number>(0);
@@ -197,16 +197,6 @@ const HSMsettingPanel: FC = () => {
 						const attributes = values?.ZxPowerstore?.attributes;
 						if (attributes) {
 							if (attributes?.powerstoreMoveScheduler) {
-								const schedulerEnabled =
-									attributes?.powerstoreMoveScheduler?.value?.['cron-enabled'];
-								if (schedulerEnabled) {
-									setIsPowerstoreMoveSchedulerEnabled(true);
-									olderValues.isPowerstoreMoveSchedulerEnabled = true;
-								} else {
-									setIsPowerstoreMoveSchedulerEnabled(false);
-									olderValues.isPowerstoreMoveSchedulerEnabled = false;
-								}
-
 								const schedulePattern =
 									attributes?.powerstoreMoveScheduler?.value?.['cron-pattern'];
 								if (schedulePattern) {
@@ -236,6 +226,17 @@ const HSMsettingPanel: FC = () => {
 								} else {
 									setDeduplicateAfterScheduledMoveBlobs(false);
 									olderValues.deduplicateAfterScheduledMoveBlobs = false;
+								}
+							}
+
+							if (attributes?.ZxPowerstore_MoveSchedulingEnabled) {
+								const moveScheduling = attributes?.ZxPowerstore_MoveSchedulingEnabled?.value;
+								if (moveScheduling === true) {
+									setIsZxPowerstoreMoveSchedulingEnabled(true);
+									olderValues.isZxPowerstoreMoveSchedulingEnabled = true;
+								} else {
+									setIsZxPowerstoreMoveSchedulingEnabled(false);
+									olderValues.isZxPowerstoreMoveSchedulingEnabled = false;
 								}
 							}
 						}
@@ -276,13 +277,13 @@ const HSMsettingPanel: FC = () => {
 	}, [server, getZxPowerStoreServers, serverList, getAllVolumes]);
 
 	const onCancel = useCallback(() => {
-		setIsPowerstoreMoveSchedulerEnabled(oldValues?.isPowerstoreMoveSchedulerEnabled);
+		setIsZxPowerstoreMoveSchedulingEnabled(oldValues?.isZxPowerstore_MoveSchedulingEnabled);
 		setPowerstoreMoveSchedulerValue(oldValues?.powerstoreMoveSchedulerValue);
 		setPowerstoreSpaceThreshold(oldValues?.powerstoreSpaceThreshold);
 		setDeduplicateAfterScheduledMoveBlobs(oldValues?.deduplicateAfterScheduledMoveBlobs);
 		setIsDirty(false);
 	}, [
-		oldValues?.isPowerstoreMoveSchedulerEnabled,
+		oldValues?.isZxPowerstore_MoveSchedulingEnabled,
 		oldValues?.powerstoreMoveSchedulerValue,
 		oldValues?.powerstoreSpaceThreshold,
 		oldValues?.deduplicateAfterScheduledMoveBlobs
@@ -294,7 +295,7 @@ const HSMsettingPanel: FC = () => {
 			powerstoreMoveScheduler: {
 				value: {
 					'cron-pattern': powerstoreMoveSchedulerValue,
-					'cron-enabled': isPowerstoreMoveSchedulerEnabled
+					'cron-enabled': isZxPowerstoreMoveSchedulingEnabled
 				},
 				objectName: server,
 				configType: SERVER
@@ -306,6 +307,11 @@ const HSMsettingPanel: FC = () => {
 			},
 			deduplicateAfterScheduledMoveBlobs: {
 				value: deduplicateAfterScheduledMoveBlobs,
+				objectName: server,
+				configType: SERVER
+			},
+			ZxPowerstore_MoveSchedulingEnabled: {
+				value: isZxPowerstoreMoveSchedulingEnabled,
 				objectName: server,
 				configType: SERVER
 			}
@@ -337,7 +343,7 @@ const HSMsettingPanel: FC = () => {
 					setIsDirty(false);
 					setOldValues((prev: any) => ({
 						...prev,
-						isPowerstoreMoveSchedulerEnabled,
+						isZxPowerstoreMoveSchedulingEnabled,
 						powerstoreMoveSchedulerValue,
 						powerstoreSpaceThreshold,
 						deduplicateAfterScheduledMoveBlobs
@@ -370,7 +376,7 @@ const HSMsettingPanel: FC = () => {
 			});
 	}, [
 		powerstoreMoveSchedulerValue,
-		isPowerstoreMoveSchedulerEnabled,
+		isZxPowerstoreMoveSchedulingEnabled,
 		powerstoreSpaceThreshold,
 		server,
 		deduplicateAfterScheduledMoveBlobs,
@@ -380,12 +386,12 @@ const HSMsettingPanel: FC = () => {
 
 	useEffect(() => {
 		if (
-			oldValues.isPowerstoreMoveSchedulerEnabled !== undefined &&
-			oldValues.isPowerstoreMoveSchedulerEnabled !== isPowerstoreMoveSchedulerEnabled
+			oldValues.isZxPowerstoreMoveSchedulingEnabled !== undefined &&
+			oldValues.isZxPowerstoreMoveSchedulingEnabled !== isZxPowerstoreMoveSchedulingEnabled
 		) {
 			setIsDirty(true);
 		}
-	}, [oldValues.isPowerstoreMoveSchedulerEnabled, isPowerstoreMoveSchedulerEnabled]);
+	}, [oldValues.isZxPowerstoreMoveSchedulingEnabled, isZxPowerstoreMoveSchedulingEnabled]);
 
 	useEffect(() => {
 		if (
@@ -782,9 +788,9 @@ const HSMsettingPanel: FC = () => {
 					<Padding bottom="large">
 						<Switch
 							label={t('hsm.enable_scheduler', 'Enable Scheduler')}
-							value={isPowerstoreMoveSchedulerEnabled}
+							value={isZxPowerstoreMoveSchedulingEnabled}
 							onClick={(): void =>
-								setIsPowerstoreMoveSchedulerEnabled(!isPowerstoreMoveSchedulerEnabled)
+								setIsZxPowerstoreMoveSchedulingEnabled(!isZxPowerstoreMoveSchedulingEnabled)
 							}
 							iconColor="primary"
 						/>
