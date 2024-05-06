@@ -70,11 +70,7 @@ const IndexerVolumeTable: FC<{
 						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text size="small" weight="light">
-							{v?.storeType === LOCAL_VALUE
-								? v?.path
-								: t('label.prefix_volume', 'Prefix - {{volumePrefix}}', {
-										volumePrefix: v?.volumePrefix
-								  })}
+							{v?.storeType === LOCAL_VALUE ? v?.path : v?.rootpath}
 						</Text>
 					</Row>,
 					<Row

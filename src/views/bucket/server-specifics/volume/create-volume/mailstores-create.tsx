@@ -18,6 +18,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { VolumeContext } from './volume-context';
+import { objectType } from '../../../../../../types';
 import {
 	COMPRESSION_THRESHOLD_UNIT,
 	EMPTY_TYPE_VALUE,
@@ -36,7 +37,7 @@ const MailstoresCreate: FC<{
 	const context = useContext(VolumeContext);
 	const { t } = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
-	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+	const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const { volumeDetail, setVolumeDetail } = context;
 	const [errName, setErrName] = useState(true);
@@ -114,6 +115,18 @@ const MailstoresCreate: FC<{
 	const onVolAllocationChange = (v: any): any => {
 		setVolumeDetail((prev: any) => ({ ...prev, volumeAllocation: v }));
 	};
+
+	const onVolNamechange = useCallback(
+		(e) => {
+			setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
+			if (e?.target?.value !== '') {
+				setErrName(true);
+			} else {
+				setErrName(false);
+			}
+		},
+		[setVolumeDetail]
+	);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
@@ -243,6 +256,7 @@ const MailstoresCreate: FC<{
 						label={t('label.volume_name', 'Volume Name')}
 						backgroundColor="gray5"
 						value={volumeDetail?.volumeName}
+						onChange={onVolNamechange}
 						readOnly
 						hasError={!errName}
 					/>

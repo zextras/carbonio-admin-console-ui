@@ -1087,20 +1087,24 @@ export const indexerHeaders = (
 		align: string;
 	}>;
 
-export const volumeTypeList = (t: TFunction): Array<{ label: string; value: number }> => [
-	{
-		label: t('volume.volume_type.primary', 'Primary'),
-		value: 1
-	},
-	{
-		label: t('volume.volume_type.secondary', 'Secondary'),
-		value: 2
-	},
-	{
-		label: t('volume.volume_type.index', 'Index'),
-		value: 10
-	}
-];
+export const volumeTypeList = (
+	t: TFunction,
+	isAdvanced?: boolean
+): Array<{ label: string; value: number }> =>
+	[
+		{
+			label: t('volume.volume_type.primary', 'Primary'),
+			value: 1
+		},
+		isAdvanced && {
+			label: t('volume.volume_type.secondary', 'Secondary'),
+			value: 2
+		},
+		{
+			label: t('volume.volume_type.index', 'Index'),
+			value: 10
+		}
+	].filter(Boolean) as Array<{ label: string; value: number }>;
 
 export const volumeAllocationList = (t: TFunction): Array<{ label: string; value: number }> => [
 	{
