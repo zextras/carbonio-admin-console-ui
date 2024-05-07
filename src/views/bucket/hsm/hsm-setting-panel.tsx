@@ -71,6 +71,15 @@ const HSMsettingPanel: FC = () => {
 	const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
 	const [isEditSaveInProgress, setIsEditSaveInProgress] = useState<boolean>(false);
 	const timer = useRef<any>();
+	const storageNotLicenced = t(
+		'label.storage_hsm_not_licensed',
+		'Cannot complete operation: storages_hsm not licensed.'
+	);
+	const urnZimbraAdmin = 'urn:zimbraAdmin';
+	const errorMessage = t(
+		'label.something_wrong_error_msg',
+		'Something went wrong. Please try again.'
+	);
 
 	const headers = useMemo(
 		() => [
@@ -86,8 +95,7 @@ const HSMsettingPanel: FC = () => {
 
 	const getHSMPolicyList = useCallback(() => {
 		fetchSoap('zextras', {
-			// eslint-disable-next-line sonarjs/no-duplicate-string
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: urnZimbraAdmin,
 			module: 'ZxPowerstore',
 			action: 'getHSMPolicy',
 			targetServer: server
@@ -181,72 +189,58 @@ const HSMsettingPanel: FC = () => {
 		}
 	}, [handleClick, policies]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const setValuesFromAttributes = useCallback((attributes) => {
+		const olderValues: any = {};
+		if (attributes) {
+			if (attributes?.powerstoreMoveScheduler) {
+				const schedulePattern = attributes?.powerstoreMoveScheduler?.value?.['cron-pattern'];
+				const pattern = schedulePattern || '';
+				setPowerstoreMoveSchedulerValue(pattern);
+				olderValues.powerstoreMoveSchedulerValue = pattern;
+			}
+			if (attributes?.ZxPowerstore_SpaceThreshold) {
+				const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
+				const val = spaceThreshold || 0;
+				setPowerstoreSpaceThreshold(val);
+				olderValues.powerstoreSpaceThreshold = val;
+			}
+
+			if (attributes?.deduplicateAfterScheduledMoveBlobs) {
+				const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
+				const val = !!duplicate?.value;
+				setDeduplicateAfterScheduledMoveBlobs(val);
+				olderValues.deduplicateAfterScheduledMoveBlobs = val;
+			}
+
+			if (attributes?.ZxPowerstore_MoveSchedulingEnabled) {
+				const moveScheduling = attributes?.ZxPowerstore_MoveSchedulingEnabled?.value;
+				const val = moveScheduling === true;
+				setIsZxPowerstoreMoveSchedulingEnabled(val);
+				olderValues.isZxPowerstoreMoveSchedulingEnabled = val;
+			}
+			setOldValues(olderValues);
+		}
+	}, []);
+
 	const getZxPowerStoreServers = useCallback(() => {
 		getSoapFetchRequest(
 			`/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`
 		).then((data: any) => {
 			const serv = data?.servers;
 			if (serv && serv.length > 0) {
-				const olderValues: any = {};
 				const object: Array<unknown> = Object.values(serv).map((i: any) => Object.values(i)[0]);
 				const selectedServer = object.find((sItem: any) => sItem.name === server);
 				if (selectedServer) {
 					const values: Record<string, any> = selectedServer;
 					if (values) {
 						const attributes = values?.ZxPowerstore?.attributes;
-						if (attributes) {
-							if (attributes?.powerstoreMoveScheduler) {
-								const schedulePattern =
-									attributes?.powerstoreMoveScheduler?.value?.['cron-pattern'];
-								if (schedulePattern) {
-									setPowerstoreMoveSchedulerValue(schedulePattern);
-									olderValues.powerstoreMoveSchedulerValue = schedulePattern;
-								} else {
-									setPowerstoreMoveSchedulerValue('');
-									olderValues.powerstoreMoveSchedulerValue = '';
-								}
-							}
-							if (attributes?.ZxPowerstore_SpaceThreshold) {
-								const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
-								if (spaceThreshold) {
-									setPowerstoreSpaceThreshold(spaceThreshold);
-									olderValues.powerstoreSpaceThreshold = spaceThreshold;
-								} else {
-									setPowerstoreSpaceThreshold(0);
-									olderValues.powerstoreSpaceThreshold = 0;
-								}
-							}
-
-							if (attributes?.deduplicateAfterScheduledMoveBlobs) {
-								const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
-								if (duplicate?.value) {
-									setDeduplicateAfterScheduledMoveBlobs(true);
-									olderValues.deduplicateAfterScheduledMoveBlobs = true;
-								} else {
-									setDeduplicateAfterScheduledMoveBlobs(false);
-									olderValues.deduplicateAfterScheduledMoveBlobs = false;
-								}
-							}
-
-							if (attributes?.ZxPowerstore_MoveSchedulingEnabled) {
-								const moveScheduling = attributes?.ZxPowerstore_MoveSchedulingEnabled?.value;
-								if (moveScheduling === true) {
-									setIsZxPowerstoreMoveSchedulingEnabled(true);
-									olderValues.isZxPowerstoreMoveSchedulingEnabled = true;
-								} else {
-									setIsZxPowerstoreMoveSchedulingEnabled(false);
-									olderValues.isZxPowerstoreMoveSchedulingEnabled = false;
-								}
-							}
-						}
+						setValuesFromAttributes(attributes);
 					}
 				}
-				setOldValues(olderValues);
 				setIsDirty(false);
 			}
 		});
-	}, [server]);
+	}, [server, setValuesFromAttributes]);
 
 	const getAllVolumes = useCallback(() => {
 		const serverId: any = serverList.find((item: any) => item?.name === server);
@@ -256,7 +250,7 @@ const HSMsettingPanel: FC = () => {
 			soapFetch(
 				'GetAllVolumes',
 				{
-					_jsns: 'urn:zimbraAdmin'
+					_jsns: urnZimbraAdmin
 				},
 				undefined,
 				serverId
@@ -320,16 +314,11 @@ const HSMsettingPanel: FC = () => {
 			.then((data: any) => {
 				setIsRequestInProgress(false);
 				if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
-					let errorMessage = t(
-						// eslint-disable-next-line sonarjs/no-duplicate-string
-						'label.something_wrong_error_msg',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
-						'Something went wrong. Please try again.'
-					);
+					let errMessage = errorMessage;
 					if (data?.errors && Array.isArray(data?.errors) && data?.errors[0]?.error) {
-						errorMessage = data?.errors[0]?.error;
+						errMessage = data?.errors[0]?.error;
 					} else if (data?.error) {
-						errorMessage = data?.error;
+						errMessage = data?.error;
 					}
 					createSnackbar({
 						key: 'error',
@@ -366,9 +355,7 @@ const HSMsettingPanel: FC = () => {
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error ? error?.error : errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -377,9 +364,10 @@ const HSMsettingPanel: FC = () => {
 	}, [
 		powerstoreMoveSchedulerValue,
 		isZxPowerstoreMoveSchedulingEnabled,
-		powerstoreSpaceThreshold,
 		server,
+		powerstoreSpaceThreshold,
 		deduplicateAfterScheduledMoveBlobs,
+		errorMessage,
 		createSnackbar,
 		t
 	]);
@@ -425,7 +413,7 @@ const HSMsettingPanel: FC = () => {
 			setIsRequestInProgress(true);
 			const hType = policies.find((item: any) => item?.hsmQuery === selectedPolicies[0]);
 			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: urnZimbraAdmin,
 				module: 'ZxPowerstore',
 				action: 'removeHSMPolicy',
 				targetServer: server,
@@ -469,19 +457,16 @@ const HSMsettingPanel: FC = () => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						label: error?.message ? error?.message : errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
 				});
 		},
-		[server, selectedPolicies, t, createSnackbar, getHSMPolicyList, policies]
+		[policies, server, selectedPolicies, getHSMPolicyList, createSnackbar, t, errorMessage]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const generatePolicyString = useCallback((hsmPolicyDetail: any) => {
 		let policy = '';
 		const criteriaScale: string[] = [];
@@ -524,7 +509,7 @@ const HSMsettingPanel: FC = () => {
 		(hsmPolicyDetail: any, isEditSave?: boolean) => {
 			const policy = generatePolicyString(hsmPolicyDetail);
 			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: urnZimbraAdmin,
 				module: 'ZxPowerstore',
 				action: 'setHSMPolicy',
 				targetServer: server,
@@ -557,12 +542,7 @@ const HSMsettingPanel: FC = () => {
 							createSnackbar({
 								key: 'error',
 								type: 'error',
-								label: t(
-									// eslint-disable-next-line sonarjs/no-duplicate-string
-									'label.storage_hsm_not_licensed',
-									// eslint-disable-next-line sonarjs/no-duplicate-string
-									'Cannot complete operation: storages_hsm not licensed.'
-								),
+								label: storageNotLicenced,
 								autoHideTimeout: 3000,
 								hideButton: true,
 								replace: true
@@ -575,23 +555,30 @@ const HSMsettingPanel: FC = () => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						label: error?.message ? error?.message : errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
 				});
 		},
-		[generatePolicyString, server, onDeletePolicy, getHSMPolicyList, createSnackbar, t]
+		[
+			generatePolicyString,
+			server,
+			onDeletePolicy,
+			getHSMPolicyList,
+			createSnackbar,
+			t,
+			storageNotLicenced,
+			errorMessage
+		]
 	);
 
 	const runCustomHSMpolicy = useCallback(
 		(hsmPolicyDetail: any) => {
 			const policy = generatePolicyString(hsmPolicyDetail);
 			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: urnZimbraAdmin,
 				module: 'ZxPowerstore',
 				action: 'doMoveBlobs',
 				command: 'start',
@@ -616,10 +603,7 @@ const HSMsettingPanel: FC = () => {
 							createSnackbar({
 								key: 'error',
 								type: 'error',
-								label: t(
-									'label.storage_hsm_not_licensed',
-									'Cannot complete operation: storages_hsm not licensed.'
-								),
+								label: storageNotLicenced,
 								autoHideTimeout: 3000,
 								hideButton: true,
 								replace: true
@@ -632,16 +616,14 @@ const HSMsettingPanel: FC = () => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						label: error?.message ? error?.message : errorMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
 				});
 		},
-		[generatePolicyString, server, createSnackbar, t]
+		[generatePolicyString, server, createSnackbar, t, storageNotLicenced, errorMessage]
 	);
 
 	const onEditSave = useCallback(
@@ -655,7 +637,7 @@ const HSMsettingPanel: FC = () => {
 	const runAllHSMpolicy = useCallback(() => {
 		setIsRequestInProgress(true);
 		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: urnZimbraAdmin,
 			module: 'ZxPowerstore',
 			action: 'doMoveBlobs',
 			command: 'start',
@@ -680,10 +662,7 @@ const HSMsettingPanel: FC = () => {
 						createSnackbar({
 							key: 'error',
 							type: 'error',
-							label: t(
-								'label.storage_hsm_not_licensed',
-								'Cannot complete operation: storages_hsm not licensed.'
-							),
+							label: storageNotLicenced,
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
@@ -697,15 +676,13 @@ const HSMsettingPanel: FC = () => {
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					label: error?.message ? error?.message : errorMessage,
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
 			});
-	}, [createSnackbar, server, t]);
+	}, [createSnackbar, errorMessage, server, storageNotLicenced, t]);
 
 	return (
 		<Container mainAlignment="flex-start" width="100%">
