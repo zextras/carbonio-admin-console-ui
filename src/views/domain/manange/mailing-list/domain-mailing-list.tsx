@@ -16,8 +16,7 @@ import {
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext,
-	useScreenMode
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -34,8 +33,7 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE,
 	ASC,
-	DESC,
-	MOBILE
+	DESC
 } from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
@@ -63,7 +61,6 @@ const DomainMailingList: FC = () => {
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
 	const [mailingListItem, setMailingListItem] = useState([]);
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
-	const [editMailingList, setEditMailingList] = useState<boolean>(false);
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
 	const timer = useRef<any>();
@@ -73,7 +70,6 @@ const DomainMailingList: FC = () => {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-	const screenMode = useScreenMode();
 
 	const mailingListStatusFilter: any = useMemo(
 		() => [
@@ -662,7 +658,6 @@ const DomainMailingList: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto'
 				}}
@@ -699,9 +694,6 @@ const DomainMailingList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)'
-							}}
 						>
 							<Table
 								rows={!isRequestInProgress ? mailingList : []}

@@ -16,8 +16,7 @@ import {
 	Padding,
 	Table,
 	Icon,
-	SnackbarManagerContext,
-	useScreenMode
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import moment from 'moment';
@@ -25,7 +24,7 @@ import { useTranslation, Trans } from 'react-i18next';
 
 import ActiveDeviceDetail from './active-device-detail';
 import logo from '../../../../assets/gardian.svg';
-import { MOBILE, ZX_MOBILE } from '../../../../constants';
+import { ZX_MOBILE } from '../../../../constants';
 import { getAllDevices } from '../../../../services/get-all-devices';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
@@ -60,7 +59,6 @@ const ActiveSync: FC = () => {
 	const [searchString, setSearchString] = useState<string>('');
 	const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>([]);
 	const [hasError, setHasError] = useState<boolean>(false);
-	const screenMode = useScreenMode();
 
 	const headers: any[] = useMemo(
 		() => [
@@ -314,7 +312,6 @@ const ActiveSync: FC = () => {
 					mainAlignment="flex-start"
 					height="calc(100% - 70px)"
 					style={{
-						height: screenMode === MOBILE ? 'auto' : 'calc(100% - 70px)',
 						position: 'relative',
 						overflow: 'auto'
 					}}
@@ -354,7 +351,6 @@ const ActiveSync: FC = () => {
 						crossAlignment="flex-start"
 						width="fill"
 						style={{
-							height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 							position: 'relative'
 						}}
 					>

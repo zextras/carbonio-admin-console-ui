@@ -16,8 +16,7 @@ import {
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext,
-	useScreenMode
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -34,8 +33,7 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE,
 	ASC,
-	DESC,
-	MOBILE
+	DESC
 } from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createAclList } from '../../../../services/create-acl-list-service';
@@ -63,7 +61,6 @@ const DomainAclList: FC = () => {
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
 	const [aclListItem, setAclListItem] = useState([]);
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
-	const [editAclList, setEditAclList] = useState<boolean>(false);
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateAclListView, setShowCreateAclListView] = useState<boolean>(false);
 	const timer = useRef<any>();
@@ -73,7 +70,6 @@ const DomainAclList: FC = () => {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-	const screenMode = useScreenMode();
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -678,7 +674,6 @@ const DomainAclList: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto'
 				}}
@@ -716,7 +711,6 @@ const DomainAclList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 						>

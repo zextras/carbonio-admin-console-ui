@@ -22,14 +22,13 @@ import {
 	Table,
 	Divider,
 	Icon,
-	SnackbarManagerContext,
-	useScreenMode
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
-import { GENERAL_SETTINGS, MOBILE, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { getDomainList } from '../../../services/search-domain-service';
 import { useDomainStore } from '../../../store/domain/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -77,7 +76,6 @@ const DomainList: FC = () => {
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
-	const screenMode = useScreenMode();
 
 	const tableRef = useRef(null);
 
@@ -276,7 +274,6 @@ const DomainList: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto'
 				}}
@@ -312,7 +309,6 @@ const DomainList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 							ref={tableRef}

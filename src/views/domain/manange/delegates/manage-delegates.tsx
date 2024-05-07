@@ -14,8 +14,7 @@ import {
 	Text,
 	Button,
 	Table,
-	useSnackbar,
-	useScreenMode
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -32,7 +31,6 @@ import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types
 import logo from '../../../../assets/guardian.svg';
 import {
 	HELPDESK_ADMINS,
-	MOBILE,
 	RECORD_DISPLAY_LIMIT,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../../constants';
@@ -111,7 +109,6 @@ const ManageDelegates: FC = () => {
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
-	const screenMode = useScreenMode();
 
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -964,7 +961,6 @@ const ManageDelegates: FC = () => {
 					crossAlignment="flex-start"
 					mainAlignment="flex-start"
 					style={{
-						height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 						position: 'relative',
 						overflow: 'auto'
 					}}
@@ -1042,7 +1038,6 @@ const ManageDelegates: FC = () => {
 						crossAlignment="flex-start"
 						width="fill"
 						style={{
-							height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 							position: 'relative'
 						}}
 						ref={tableRef}

@@ -18,7 +18,7 @@ import {
 	IconButton,
 	useSnackbar,
 	Tooltip,
-	useScreenMode
+	useTheme
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -28,6 +28,7 @@ import {
 import { debounce, flatMapDeep, filter } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
 import { AccountContext } from './account-context';
 import { AccountType } from './account-types/account-types';
@@ -40,7 +41,6 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	ASC,
 	DESC,
-	MOBILE,
 	ACCOUNTS_ACTIONS,
 	DOMAIN_ACCOUNTS_CREATE,
 	ACCOUNTS_MAIN_ACTION,
@@ -85,6 +85,13 @@ type UserSession = {
 	service: string;
 };
 
+const ScrollContainer = styled(Container)<{ isTableTooTall: boolean }>`
+	position: sticky;
+	bottom: ${({ isTableTooTall }): string => (isTableTooTall ? '0' : '-6rem')};
+	background: ${({ theme }): string => theme.palette.gray6.regular};
+	opacity: 0.7;
+`;
+
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -110,7 +117,7 @@ const ManageAccounts: FC = () => {
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const tableRef = useRef(null);
+	const tableRef = useRef<HTMLTableElement>(null);
 	const [typeFilter, setTypeFilter] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -118,7 +125,8 @@ const ManageAccounts: FC = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('name');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-	const screenMode = useScreenMode();
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const theme: any = useTheme();
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -1001,6 +1009,17 @@ const ManageAccounts: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	useEffect(() => {
+		const handleResize = (): void => {
+			if (tableRef.current) {
+				const tableHeight = tableRef.current.clientHeight + 400;
+				const viewportHeight = window?.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		};
+		handleResize();
+		window.addEventListener('resize', handleResize);
+	}, [tableRef?.current?.clientHeight]);
 	const nextPage = (): void => {
 		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
 	};
@@ -1082,6 +1101,8 @@ const ManageAccounts: FC = () => {
 		]
 	);
 
+	console.log(theme?.palette.gray6.regular, 'tarun');
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -1122,7 +1143,6 @@ const ManageAccounts: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto',
 					minHeight: '10rem'
@@ -1164,16 +1184,15 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
-							ref={tableRef}
 						>
 							<Table
 								rows={!isRequestInProgress ? accountList : []}
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
+								ref={tableRef}
 								style={{
 									overflow: 'auto',
 									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
@@ -1231,27 +1250,47 @@ const ManageAccounts: FC = () => {
 							)}
 							{accountList.length !== 0 && (
 								<Container
-									orientation="horizontal"
-									mainAlignment="space-between"
-									width="100%"
-									style={{ position: 'absolute', bottom: '-4rem' }}
-									height="auto"
+									style={{
+										position: 'sticky',
+										bottom: isTableTooTall ? '0' : '-4rem'
+									}}
 								>
-									<Container crossAlignment="flex-start">
-										<Paging
-											totalItem={totalAccount}
-											setOffset={setOffset}
-											pageSize={limit}
-											nextPage={nextPage}
-										/>
-									</Container>
+									{isTableTooTall && (
+										<ScrollContainer isTableTooTall={isTableTooTall} padding="small">
+											<Container orientation="horizontal" width="100%">
+												<Icon icon="ArrowheadDown" size="large" />
+												<Text size="large" weight="regular" color="gray">
+													{t(
+														'label.scroll_down_to_view_other_items',
+														'Scroll down to view other items'
+													)}
+												</Text>
+											</Container>
+										</ScrollContainer>
+									)}
 									<Container
-										crossAlignment="flex-end"
 										orientation="horizontal"
-										mainAlignment="flex-end"
-										padding={{ top: 'small' }}
+										mainAlignment="space-between"
+										background="gray6"
+										width="100%"
+										height="auto"
 									>
-										<TrackNumberPerPage setPageSize={setLimit} />
+										<Container crossAlignment="flex-start">
+											<Paging
+												totalItem={totalAccount}
+												setOffset={setOffset}
+												pageSize={limit}
+												nextPage={nextPage}
+											/>
+										</Container>
+										<Container
+											crossAlignment="flex-end"
+											orientation="horizontal"
+											mainAlignment="flex-end"
+											padding={{ top: 'small' }}
+										>
+											<TrackNumberPerPage setPageSize={setLimit} />
+										</Container>
 									</Container>
 								</Container>
 							)}
