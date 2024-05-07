@@ -1295,6 +1295,7 @@
         "has_backup": "Has Backup",
         "helo": "Help",
         "help": "Help",
+        "help_documentation_url": "Help documentation URL",
         "helpdesk": "Helpdesk",
         "here_will_be_shown_the_attribute_value": "The Attribute Value will be displayed here",
         "here_you_will_find": "Here you will find",
