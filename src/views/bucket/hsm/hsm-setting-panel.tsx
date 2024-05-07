@@ -323,7 +323,7 @@ const HSMsettingPanel: FC = () => {
 					createSnackbar({
 						key: 'error',
 						type: 'error',
-						label: errorMessage,
+						label: errMessage,
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
