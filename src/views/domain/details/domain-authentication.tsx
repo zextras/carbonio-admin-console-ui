@@ -118,12 +118,47 @@ const DomainAuthentication: FC = () => {
 
 	const DOMAIN_AUTH_LIST = useMemo(
 		() => [
-			{ label: `${t('label.default', 'Default')}`, value: '' },
-			{ label: `${t('label.local_ldap', 'Local LDAP')}`, value: ZimbraAuthMethod.INTERNAL },
-			{ label: `${t('label.external_ldap', 'External LDAP')}`, value: ZimbraAuthMethod.LDAP },
 			{
-				label: `${t('label.external_active_directory', 'External Active Directory')}`,
-				value: ZimbraAuthMethod.EXTERNAL
+				label: `${t('label.carbonio', 'Carbonio')}`,
+				value: '',
+				info_label: `${t(
+					'label.carbonio_info',
+					'This method allows usage of Local LDAP, External AD/LDAP, Credential Password and SAML.'
+				)}`,
+				info_label_ce: `${t('label.carbonio_info_ce', 'This method allows usage of Local LDAP')}`
+			},
+			{
+				label: `${t('label.local_ldap_only', 'Local LDAP only')}`,
+				value: ZimbraAuthMethod.INTERNAL,
+				info_label: `${t('label.local_ldap_only_info', 'This method allows usage of Local LDAP')}`,
+				info_label_ce: `${t(
+					'label.local_ldap_only_info_ce',
+					'This method allows usage of Local LDAP'
+				)}`
+			},
+			{
+				label: `${t('label.external_ldap_only', 'External LDAP only')}`,
+				value: ZimbraAuthMethod.LDAP,
+				info_label: `${t(
+					'label.external_ldap_only_infor',
+					'This method allows usage of external LDAP'
+				)}`,
+				info_label_ce: `${t(
+					'label.external_ldap_only_info_ce',
+					'This method allows usage of external LDAP'
+				)}`
+			},
+			{
+				label: `${t('label.external_ad_only', 'External AD only')}`,
+				value: ZimbraAuthMethod.EXTERNAL,
+				info_label: `${t(
+					'label.external_ad_only_info',
+					'This method allows usage of external AD'
+				)}`,
+				info_label_ce: `${t(
+					'label.external_ad_only_info_ce',
+					'This method allows usage of external AD'
+				)}`
 			}
 		],
 		[t]
@@ -631,6 +666,13 @@ const DomainAuthentication: FC = () => {
 										selection={zimbraAuthMech}
 										onChange={onAuthMethodChange}
 									></Select>
+									<Padding top="medium">
+										{zimbraAuthMech && (
+											<Text size="small" color="gray1">
+												{isAdvanced ? zimbraAuthMech.info_label : zimbraAuthMech.info_label_ce}
+											</Text>
+										)}
+									</Padding>
 								</Padding>
 							</ListRow>
 							<ListRow>
