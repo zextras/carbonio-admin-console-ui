@@ -82,6 +82,7 @@ import { getDelegateAuthRequest } from '../../../../../services/get-delegate-aut
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
+import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
@@ -624,8 +625,26 @@ const EditAccount: FC<{
 	const handleFileQuotaLimitChange = useCallback(
 		(modifiedKeys: string[]) => {
 			if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
-				setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
-					(res) => {
+				if (accountDetail?.filesQuotaLimit) {
+					setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
+						(res) => {
+							if (modifiedKeys?.length === 0) {
+								createSnackbar({
+									key: 'success',
+									type: 'success',
+									label: t(
+										'label.the_last_changes_has_been_saved_successfully',
+										'Changes have been saved successfully'
+									),
+									autoHideTimeout: 3000,
+									hideButton: true,
+									replace: true
+								});
+							}
+						}
+					);
+				} else {
+					resetFileQuotaLimitById(accountDetail?.zimbraId).then((res) => {
 						if (modifiedKeys?.length === 0) {
 							createSnackbar({
 								key: 'success',
@@ -639,12 +658,12 @@ const EditAccount: FC<{
 								replace: true
 							});
 						}
-					}
-				);
+					});
+				}
 				remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
 			}
 		},
-		[accountDetail?.filesQuotaLimit, accountDetail?.zimbraId, createSnackbar, t]
+		[accountDetail.filesQuotaLimit, accountDetail?.zimbraId, createSnackbar, t]
 	);
 
 	const handleMainModifiedKeys = useCallback(

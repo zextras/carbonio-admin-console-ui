@@ -50,7 +50,8 @@ import {
 	BACKUP_ENABLED,
 	DOMAINS_ROUTE_ID,
 	FILES_QUOTA_LIMIT,
-	FILES_QUOTA_USED
+	FILES_QUOTA_USED,
+	COS
 } from '../../../../constants';
 import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -507,6 +508,16 @@ const ManageAccounts: FC = () => {
 		[setAccDetailValue]
 	);
 
+	const getFileQuotaByCosId = useCallback(
+		(cosId: string): Promise<void> =>
+			getFileQuotaById(cosId, COS).then((res: any) => {
+				if (res?.limit) {
+					setCosDetail((prev: any) => ({ ...prev, [FILES_QUOTA_LIMIT]: res?.limit }));
+				}
+			}),
+		[]
+	);
+
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
@@ -554,6 +565,7 @@ const ManageAccounts: FC = () => {
 						getCredentialList(data?.account?.[0]?.name);
 						getABQStatus(id);
 						getFileQuotaByAccId(id);
+						getFileQuotaByCosId(obj.zimbraCOSId);
 					}
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -580,6 +592,7 @@ const ManageAccounts: FC = () => {
 			getCredentialList,
 			getABQStatus,
 			getFileQuotaByAccId,
+			getFileQuotaByCosId,
 			createSnackbar,
 			t
 		]

@@ -1287,6 +1287,7 @@
         "generate_sp_certificate": "GENERATE SP CERTIFICATE",
         "global": "Global",
         "global_address_list": "Global Address List",
+        "global_delegates": "Global Delegates",
         "global_server_settings": "Global Server Settings",
         "global_servers": "Global Servers",
         "go_back": "Go Back",

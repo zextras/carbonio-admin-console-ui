@@ -25,6 +25,7 @@ import styled from 'styled-components';
 import { COS } from '../../constants';
 import { getFileQuotaById } from '../../services/get-file-quota';
 import { modifyCos } from '../../services/modify-cos-service';
+import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
@@ -159,8 +160,8 @@ const CosAdvanced: FC = () => {
 	const [zimbraMailSpamLifetimeType, setZimbraMailSpamLifetimeType] = useState(
 		cosAdvanced?.zimbraMailSpamLifetime?.slice(-1) || ''
 	);
-	const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState('');
-	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState('');
+	const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState(undefined);
+	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState(undefined);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
@@ -809,8 +810,13 @@ const CosAdvanced: FC = () => {
 	}, [cosAdvanced.zimbraFreebusyExchangeUserOrg, cosData.zimbraFreebusyExchangeUserOrg]);
 
 	useEffect(() => {
-		if (fileQuotaLimitGBValue !== '' && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) {
+		if (
+			fileQuotaLimitGBValue !== undefined &&
+			initFileQuotaLimitGBValue !== fileQuotaLimitGBValue
+		) {
 			setIsDirty(true);
+		} else {
+			setIsDirty(false);
 		}
 	}, [initFileQuotaLimitGBValue, fileQuotaLimitGBValue]);
 
@@ -1067,8 +1073,15 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setFileQuotaLimit = useCallback((cosId: string, limit: string) => {
-		// eslint-disable-next-line @typescript-eslint/no-empty-function
-		setFileQuotaLimitById(cosId, limit, COS).then((res) => {});
+		setFileQuotaLimitById(cosId, limit, COS).then((res) => {
+			setShowFileQuotaLimitMsg(false);
+		});
+	}, []);
+
+	const resetFileQuotaLimit = useCallback((cosId: string) => {
+		resetFileQuotaLimitById(cosId, COS).then((res) => {
+			setShowFileQuotaLimitMsg(false);
+		});
 	}, []);
 
 	const onSave = (): void => {
@@ -1098,10 +1111,14 @@ const CosAdvanced: FC = () => {
 					setCos(cos);
 				}
 				if (isAdvanced && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) {
-					setFileQuotaLimit(
-						cosData.zimbraId,
-						Math.round(GbToBytes(fileQuotaLimitGBValue)).toString()
-					);
+					if (fileQuotaLimitGBValue) {
+						setFileQuotaLimit(
+							cosData.zimbraId,
+							Math.round(GbToBytes(fileQuotaLimitGBValue)).toString()
+						);
+					} else {
+						resetFileQuotaLimit(cosData.zimbraId);
+					}
 				}
 				setIsDirty(false);
 			})
