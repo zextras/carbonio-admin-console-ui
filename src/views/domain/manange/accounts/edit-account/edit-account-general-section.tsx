@@ -908,7 +908,10 @@ const EditAccountGeneralSection: FC<{
 					mainAlignment="space-between"
 					crossAlignment="flex-start"
 				>
-					<Row width={!isAdvanced ? '100%' : '49%'} mainAlignment="flex-start">
+					<Row
+						width={isAdvanced && initAccountDetail?.filesQuotaLimit ? '49%' : '100%'}
+						mainAlignment="flex-start"
+					>
 						<InheritedInput
 							label={t('label.mailbox_quota_limit_gb', 'Mailbox Quota Limit (GB)')}
 							subValue={accountQuotaGBValue}
@@ -939,7 +942,7 @@ const EditAccountGeneralSection: FC<{
 							</Container>
 						)}
 					</Row>
-					{isAdvanced && (
+					{isAdvanced && initAccountDetail?.filesQuotaLimit && (
 						<Row width="49%" mainAlignment="flex-start">
 							<InheritedInput
 								background="gray5"

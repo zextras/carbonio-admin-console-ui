@@ -1249,28 +1249,34 @@ const CosAdvanced: FC = () => {
 							padding={{ top: 'large' }}
 						>
 							<ListRow>
-								<Container padding={{ right: 'small' }}>
-									<Input
-										label={t('cos.files_account_quota_gb', 'Files Account quota (GB)')}
-										value={fileQuotaLimitGBValue}
-										backgroundColor="gray5"
-										inputName="fileQuotaLimit"
-										onChange={onFileQuotaChange}
-										disabled={readonlyCOS}
-									/>
-									{showFileQuotaLimitMsg && (
-										<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-											<Padding top="small">
-												<Text size="extrasmall" weight="regular" color="primary">
-													{t(
-														'label.maximum_3_digits_allowed_decimal_point',
-														'Maximum 3 digits allowed after the decimal point'
-													)}
-												</Text>
-											</Padding>
-										</Container>
-									)}
-								</Container>
+								{isAdvanced && initFileQuotaLimitGBValue && (
+									<Container padding={{ right: 'small' }}>
+										<Input
+											label={t('cos.files_account_quota_gb', 'Files Account quota (GB)')}
+											value={fileQuotaLimitGBValue}
+											backgroundColor="gray5"
+											inputName="fileQuotaLimit"
+											onChange={onFileQuotaChange}
+											disabled={readonlyCOS}
+										/>
+										{showFileQuotaLimitMsg && (
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												width="fill"
+											>
+												<Padding top="small">
+													<Text size="extrasmall" weight="regular" color="primary">
+														{t(
+															'label.maximum_3_digits_allowed_decimal_point',
+															'Maximum 3 digits allowed after the decimal point'
+														)}
+													</Text>
+												</Padding>
+											</Container>
+										)}
+									</Container>
+								)}
 								<Container padding={{ right: 'small' }}>
 									<Input
 										label={t('cos.mails_account_quota_gb', 'Mails Account quota (GB)')}
