@@ -54,7 +54,7 @@ export const emailContent = (pinCodes: unknown, secrateCode: string): string => 
                 <td style="padding: 0 30px;">
                     <table style="width: 100%; margin-bottom: 20px;">
                         <tr>
-                            <td rowspan="9"><img alt="Image not available. Please use the Secret Code on your device." src="${
+                            <td rowspan="9"><img alt="Image unavailable. Please use the Secret Code." src="${
 															window?.document?.getElementsByTagName('canvas')[0]?.toDataURL() || ''
 														}" alt="qr" style="width: 180px;" /></td>
                         </tr>
