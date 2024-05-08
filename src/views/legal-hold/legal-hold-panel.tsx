@@ -94,7 +94,6 @@ const LegalHoldPanel: FC = () => {
 	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
 	const [accountRows, setAccountRows] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(false);
-	const [searchDomainName, setSearchDomainName] = useState<string>('');
 	const [isShowError, setIsShowError] = useState(false);
 	const [searchAccountName, setSearchAccountName] = useState<string>('');
 	const [legalHoldOperationLabel, setLegalHoldOperationLabel] = useState<string>(
@@ -115,6 +114,8 @@ const LegalHoldPanel: FC = () => {
 	const [allLegalHoldAccountList, setAllLegalHoldAccountList] = useState<Array<LegalHolds>>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const domainName = useDomainInformation()?.name || '';
+	const [searchDomainName, setSearchDomainName] = useState<string>(domainName);
+	const [selectedDomainName, setSelectedDomainName] = useState<string>(domainName);
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
 
 	const loadingComponent = [
@@ -154,14 +155,14 @@ const LegalHoldPanel: FC = () => {
 			},
 			{
 				id: 'status',
-				label: t('label.status', 'Status'),
+				label: t('label.account_status', 'Account Status'),
 				width: '25%',
 				bold: true,
 				sortable: false
 			},
 			{
 				id: 'legalhold',
-				label: t('label.legal_hold', 'Legal Hold'),
+				label: t('label.legal_hold_status', 'Legal Hold Status'),
 				width: '25%',
 				bold: true,
 				sortable: false
@@ -296,18 +297,22 @@ const LegalHoldPanel: FC = () => {
 
 	useEffect(() => {
 		const name =
-			searchDomainName === '' || searchDomainName === undefined ? domainName : searchDomainName;
+			selectedDomainName === '' || selectedDomainName === undefined
+				? domainName
+				: selectedDomainName;
 		getBackupAccounts('', name);
-	}, [domainName, getBackupAccounts, searchDomainName]);
+	}, [domainName, getBackupAccounts, selectedDomainName]);
 
 	const onSearchAccount = useCallback(
 		(e) => {
 			setSearchAccountName(e.target.value);
 			const name =
-				searchDomainName === '' || searchDomainName === undefined ? domainName : searchDomainName;
+				selectedDomainName === '' || selectedDomainName === undefined
+					? domainName
+					: selectedDomainName;
 			searchAccount(e.target.value, name);
 		},
-		[domainName, searchAccount, searchDomainName]
+		[domainName, searchAccount, selectedDomainName]
 	);
 
 	const getAllLegalHold = useCallback(() => {
@@ -483,6 +488,7 @@ const LegalHoldPanel: FC = () => {
 		(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => {
 			setIsDomainSelect(true);
 			setSearchDomainName(domain?.name);
+			setSelectedDomainName(domain?.name);
 			setTotalItem(0);
 		},
 		[]

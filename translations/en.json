@@ -1360,6 +1360,7 @@
         "leave_anyway": "Leave anyway",
         "legal_hold": "Legal Hold",
         "legal_hold_lbl": "<bold>Legal Hold</bold>",
+        "legal_hold_status": "Legal Hold Status",
         "light_mode": "<bold>Light</bold> Mode",
         "limit_search_results_from_address_book_list_to": "Limit search results from Address Book List to",
         "link": "Link",
