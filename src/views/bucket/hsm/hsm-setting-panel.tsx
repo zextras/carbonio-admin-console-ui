@@ -608,6 +608,16 @@ const HSMsettingPanel: FC = () => {
 								hideButton: true,
 								replace: true
 							});
+						} else if (info?.error?.message) {
+							setIsEditSaveInProgress(false);
+							createSnackbar({
+								key: 'error',
+								type: 'error',
+								label: info?.error?.message,
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
 						}
 					}
 				})
@@ -663,6 +673,26 @@ const HSMsettingPanel: FC = () => {
 							key: 'error',
 							type: 'error',
 							label: storageNotLicenced,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					} else if (info?.error?.message) {
+						setIsEditSaveInProgress(false);
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: info?.error?.message,
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true
+						});
+					} else if (info?.exception?.message) {
+						setIsEditSaveInProgress(false);
+						createSnackbar({
+							key: 'error',
+							type: 'error',
+							label: info?.exception?.message,
 							autoHideTimeout: 3000,
 							hideButton: true,
 							replace: true
