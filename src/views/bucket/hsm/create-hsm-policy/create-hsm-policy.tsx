@@ -4,14 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, ReactElement, useCallback, useContext, useMemo, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useMemo, useState } from 'react';
 
-import {
-	Container,
-	Button,
-	Padding,
-	SnackbarManagerContext
-} from '@zextras/carbonio-design-system';
+import { Container, Button, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -72,55 +67,14 @@ const CreateHsmPolicy: FC<{
 		destinationVolume: []
 	});
 	const { t } = useTranslation();
-	const createSnackbar = useContext(SnackbarManagerContext);
-
-	const showSnackbar = useCallback(
-		(msg) => {
-			createSnackbar({
-				key: 'error',
-				type: 'error',
-				label: msg,
-				autoHideTimeout: 3000,
-				hideButton: true,
-				replace: true
-			});
-		},
-		[createSnackbar]
-	);
 
 	const onCreate = useCallback(() => {
-		if (
-			hsmDetail?.isContactEnabled === false &&
-			hsmDetail?.isDocumentEnabled === false &&
-			hsmDetail?.isEventEnabled === false &&
-			hsmDetail?.isMessageEnabled === false
-		) {
-			showSnackbar(t('hsm.select_at_least_one_type', 'Select at least one type'));
-			return;
-		}
-		if (hsmDetail?.policyCriteria.length === 0) {
-			showSnackbar(t('hsm.add_at_lease_one_criteria', 'Add at least one criteria'));
-			return;
-		}
 		createHSMpolicy(hsmDetail);
-	}, [createHSMpolicy, hsmDetail, showSnackbar, t]);
+	}, [createHSMpolicy, hsmDetail]);
 
 	const onRunCustomPolicy = useCallback(() => {
-		if (
-			hsmDetail?.isContactEnabled === false &&
-			hsmDetail?.isDocumentEnabled === false &&
-			hsmDetail?.isEventEnabled === false &&
-			hsmDetail?.isMessageEnabled === false
-		) {
-			showSnackbar('Select at least one item');
-			return;
-		}
-		if (hsmDetail?.policyCriteria.length === 0) {
-			showSnackbar('Add at least one criteria');
-			return;
-		}
 		runCustomHSMpolicy(hsmDetail);
-	}, [hsmDetail, runCustomHSMpolicy, showSnackbar]);
+	}, [hsmDetail, runCustomHSMpolicy]);
 
 	const standardHsmPolicyWizardStep = useMemo(
 		() => [

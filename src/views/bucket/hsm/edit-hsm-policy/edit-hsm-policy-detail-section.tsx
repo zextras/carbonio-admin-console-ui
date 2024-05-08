@@ -82,7 +82,7 @@ const EditHsmPolicyDetailSection: FC<{
 					isContactEnabled: true
 				}));
 			} else {
-				currentPolicy?.hsmType.forEach((element: any) => {
+				currentPolicy?.hsmType.forEach((element: number) => {
 					if (element === 5) {
 						setIsMessageEnable(true);
 						setHsmDetail((prev: any) => ({
@@ -118,11 +118,7 @@ const EditHsmPolicyDetailSection: FC<{
 			const queries = currentPolicy?.hsmQuery.split(' ');
 			if (queries && queries.length > 0 && hsmDetail?.isDataLoaded === false) {
 				queries.forEach((element: string) => {
-					if (
-						element !== '' &&
-						!element.startsWith('source') &&
-						!element.startsWith('destination')
-					) {
+					if (!element.startsWith('source') && !element.startsWith('destination')) {
 						const option = element.match(/after|before|larger|small/g)?.join('');
 						const scale = element.match(/minutes|hours|days|months|years/g)?.join('');
 						const valueItem = element.match(/\d/g)?.join('');
@@ -144,12 +140,12 @@ const EditHsmPolicyDetailSection: FC<{
 		}
 	}, [currentPolicy?.hsmQuery, hsmDetail?.isDataLoaded, hsmDetail?.policyCriteria]);
 
-	const setSouceAndDestinationValues = useCallback((option, valueItem) => {
+	const setSourceAndDestinationValues = useCallback((option, valueItem) => {
 		if (option.startsWith('source')) {
-			setSelectedSourceVolume(valueItem.split(',').map((item: any) => +item));
+			setSelectedSourceVolume(valueItem.split(',').map((item: string) => +item));
 		}
 		if (option.startsWith('destination')) {
-			setSelectedDestinationVolume(valueItem.split(',').map((item: any) => +item));
+			setSelectedDestinationVolume(valueItem.split(',').map((item: string) => +item));
 		}
 	}, []);
 
@@ -164,12 +160,12 @@ const EditHsmPolicyDetailSection: FC<{
 					) {
 						const option = element.split(':')[0];
 						const valueItem = element.split(':')[1];
-						setSouceAndDestinationValues(option, valueItem);
+						setSourceAndDestinationValues(option, valueItem);
 					}
 				});
 			}
 		}
-	}, [currentPolicy?.hsmQuery, hsmDetail?.isDataLoaded, setSouceAndDestinationValues]);
+	}, [currentPolicy?.hsmQuery, hsmDetail?.isDataLoaded, setSourceAndDestinationValues]);
 
 	useMemo(() => {
 		if (currentPolicy) {
