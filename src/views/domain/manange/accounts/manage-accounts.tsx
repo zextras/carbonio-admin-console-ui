@@ -51,10 +51,14 @@ import {
 	DOMAINS_ROUTE_ID,
 	FILES_QUOTA_LIMIT,
 	FILES_QUOTA_USED,
-	COS
+	COS,
+	MAILBOX_QUOTA_USED
 } from '../../../../constants';
 import MatomoTracker from '../../../../matomo-tracker';
-import { accountListDirectory } from '../../../../services/account-list-directory-service';
+import {
+	accountListDirectory,
+	getMailboxQuota
+} from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
 	GetCosResponse,
@@ -518,6 +522,14 @@ const ManageAccounts: FC = () => {
 		[]
 	);
 
+	const getMailboxQuotaUsed = useCallback(
+		(accId: string): Promise<void> =>
+			getMailboxQuota(accId).then((data) => {
+				setAccDetailValue(MAILBOX_QUOTA_USED, data?.mbox?.[0]?.s || 0);
+			}),
+		[setAccDetailValue]
+	);
+
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
@@ -560,6 +572,7 @@ const ManageAccounts: FC = () => {
 					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
 					setDefaultCOS(!obj.zimbraCOSId);
+					getMailboxQuotaUsed(id);
 					if (isAdvanced) {
 						getListOtp(data?.account?.[0]?.name);
 						getCredentialList(data?.account?.[0]?.name);
@@ -587,6 +600,7 @@ const ManageAccounts: FC = () => {
 		[
 			getAccountSpecificDetail,
 			getCosDetail,
+			getMailboxQuotaUsed,
 			isAdvanced,
 			getListOtp,
 			getCredentialList,

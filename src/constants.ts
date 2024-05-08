@@ -577,3 +577,4 @@ export const FETCH_DATA_LIMIT = 50;
 export const ZIMBRA_LAST_LOGON_TIMESTAMP = 'zimbraLastLogonTimestamp';
 export const FILES_QUOTA_LIMIT = 'filesQuotaLimit';
 export const FILES_QUOTA_USED = 'filesQuotaUsed';
+export const MAILBOX_QUOTA_USED = 'mailboxQuotaUsed';
