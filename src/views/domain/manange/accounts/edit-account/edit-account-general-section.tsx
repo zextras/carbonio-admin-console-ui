@@ -169,48 +169,19 @@ const EditAccountGeneralSection: FC<{
 	const [highlightFileQuota, setHighlightFileQuota] = useState(false);
 	const [defaultCosId, setDefaultCosId] = useState('');
 
-	const sessionTableHeader: any[] = useMemo(
-		() => [
-			{
-				id: 'accounts',
-				label: t('label.accounts', 'Accounts'),
-				width: '25%',
-				bold: true
-			},
-			{
-				id: 'session_id',
-				label: t('label.session_id', 'Session ID'),
-				width: '25%',
-				bold: true
-			},
-			{
-				id: 'ip',
-				label: t('label.ip', 'IP'),
-				width: '25%',
-				bold: true
-			},
-			{
-				id: 'service',
-				label: t('label.service', 'Service'),
-				width: '25%',
-				bold: true
-			}
-		],
-		[t]
-	);
+	const sessionTableHeader: any[] = useMemo(() => {
+		const accountsLabel = t('label.accounts', 'Accounts');
+		const sessionIdLabel = t('label.session_id', 'Session ID');
+		const ipLabel = t('label.ip', 'IP');
+		const serviceLabel = t('label.service', 'Service');
 
-	useEffect(() => {
-		if (
-			initAccountDetail?.zimbraMailQuota &&
-			accountDetail?.zimbraMailQuota === initAccountDetail?.zimbraMailQuota
-		) {
-			setAccountQuotaGBValue(
-				initAccountDetail.zimbraMailQuota
-					? BytesToGB(initAccountDetail.zimbraMailQuota).toFixed(3)
-					: ''
-			);
-		}
-	}, [accountDetail.zimbraMailQuota, initAccountDetail.zimbraMailQuota]);
+		return [
+			{ id: 'accounts', label: accountsLabel, width: '25%', bold: true },
+			{ id: 'session_id', label: sessionIdLabel, width: '25%', bold: true },
+			{ id: 'ip', label: ipLabel, width: '25%', bold: true },
+			{ id: 'service', label: serviceLabel, width: '25%', bold: true }
+		];
+	}, [t]);
 
 	const isHidePassword = useMemo(() => {
 		if (!!domainInformation && domainInformation.length > 0) {
@@ -239,40 +210,46 @@ const EditAccountGeneralSection: FC<{
 		});
 	}, []);
 
-	const changeAccountQuota = useCallback(
-		(e) => {
-			if (!isValidDecimalNumber(e.target.value)) return;
-			const decimalPoints = e.target.value?.split('.')[1];
+	const handleQuotaChange = useCallback(
+		(value, setQuotaLimitMsg, setQuotaGBValue, name) => {
+			if (!isValidDecimalNumber(value)) return;
+			const decimalPoints = value?.split('.')[1];
 			if (!!decimalPoints && decimalPoints?.length > 3) {
-				setShowAccountQuotaLimitMsg(true);
+				setQuotaLimitMsg(true);
 				return;
 			}
-			setShowAccountQuotaLimitMsg(false);
-			setAccountQuotaGBValue(e.target.value);
+			setQuotaLimitMsg(false);
+			setQuotaGBValue(value);
 			setAccountDetail((prev: any) => ({
 				...prev,
-				[e.target.name]: e.target.value ? Math.round(GbToBytes(e.target.value)) : ''
+				[name]: value ? Math.round(GbToBytes(value)) : ''
 			}));
 		},
 		[setAccountDetail]
 	);
 
+	const changeAccountQuota = useCallback(
+		(e) => {
+			handleQuotaChange(
+				e.target.value,
+				setShowAccountQuotaLimitMsg,
+				setAccountQuotaGBValue,
+				e.target.name
+			);
+		},
+		[handleQuotaChange, setShowAccountQuotaLimitMsg, setAccountQuotaGBValue]
+	);
+
 	const changeFileQuotaLimit = useCallback(
 		(e) => {
-			if (!isValidDecimalNumber(e.target.value)) return;
-			const decimalPoints = e.target.value?.split('.')[1];
-			if (!!decimalPoints && decimalPoints?.length > 3) {
-				setShowFileQuotaLimitMsg(true);
-				return;
-			}
-			setShowFileQuotaLimitMsg(false);
-			setFileQuotaGBValue(e.target.value);
-			setAccountDetail((prev: any) => ({
-				...prev,
-				[e.target.name]: e.target.value ? Math.round(GbToBytes(e.target.value)) : ''
-			}));
+			handleQuotaChange(
+				e.target.value,
+				setShowFileQuotaLimitMsg,
+				setFileQuotaGBValue,
+				e.target.name
+			);
 		},
-		[setAccountDetail]
+		[handleQuotaChange, setShowFileQuotaLimitMsg, setFileQuotaGBValue]
 	);
 
 	const selectedDomain = useCallback(
@@ -325,12 +302,6 @@ const EditAccountGeneralSection: FC<{
 		[setAccountDetail]
 	);
 
-	const changeAccDisplayName = useCallback(
-		(e) => {
-			setAccountDetail((prev: AccountType) => ({ ...prev, [e.target.name]: e.target.value }));
-		},
-		[setAccountDetail]
-	);
 	useEffect(() => {
 		if (accountDetail?.mail) {
 			const aliaes = accountDetail.mail.split(', ').map((ele: string) => ({ label: ele }));
@@ -398,12 +369,18 @@ const EditAccountGeneralSection: FC<{
 		setShowDeletePasswordModal(false);
 		modifyAccountRequest(accountDetail?.zimbraId, { userPassword: '' })
 			.then((data) => {
-				setAccountDetail((prev: AccountType) => ({ ...prev, userPassword: '' }));
-				setInitAccountDetail((prev: AccountType) => ({ ...prev, userPassword: '' }));
-				setAccountDetail((prev: AccountType) => ({ ...prev, password: '' }));
-				setInitAccountDetail((prev: AccountType) => ({ ...prev, password: '' }));
-				setAccountDetail((prev: AccountType) => ({ ...prev, repeatPassword: '' }));
-				setInitAccountDetail((prev: AccountType) => ({ ...prev, repeatPassword: '' }));
+				setAccountDetail((prev: AccountType) => ({
+					...prev,
+					userPassword: '',
+					password: '',
+					repeatPassword: ''
+				}));
+				setInitAccountDetail((prev: AccountType) => ({
+					...prev,
+					userPassword: '',
+					password: '',
+					repeatPassword: ''
+				}));
 				if (data) {
 					createSnackbar({
 						key: 'success',
@@ -429,6 +406,7 @@ const EditAccountGeneralSection: FC<{
 				});
 			});
 	};
+
 	const setEmptyValue = useCallback(
 		(keyName) => {
 			setAccountDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
@@ -451,6 +429,19 @@ const EditAccountGeneralSection: FC<{
 		},
 		[setEmptyValue]
 	);
+
+	useEffect(() => {
+		if (
+			initAccountDetail?.zimbraMailQuota &&
+			accountDetail?.zimbraMailQuota === initAccountDetail?.zimbraMailQuota
+		) {
+			setAccountQuotaGBValue(
+				initAccountDetail.zimbraMailQuota
+					? BytesToGB(initAccountDetail.zimbraMailQuota).toFixed(3)
+					: ''
+			);
+		}
+	}, [accountDetail.zimbraMailQuota, initAccountDetail.zimbraMailQuota]);
 
 	useEffect(() => {
 		if (
@@ -852,7 +843,7 @@ const EditAccountGeneralSection: FC<{
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.displayName}
 							value={accountDetail?.displayName}
-							onChange={changeAccDisplayName}
+							onChange={changeAccDetail}
 							inputName="displayName"
 							name="descriptiveName"
 							autoComplete="new-password"

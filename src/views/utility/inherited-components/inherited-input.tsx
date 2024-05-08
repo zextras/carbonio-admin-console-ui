@@ -105,7 +105,7 @@ const InheritedInput: FC<InheritedInputProps> = ({
 				!disabled && onFocus && onFocus();
 			}}
 			onBlur={(): void => {
-				!disabled && onBlur && onBlur();
+				!disabled && onBlur?.();
 			}}
 			CustomIcon={(): any => (
 				<>

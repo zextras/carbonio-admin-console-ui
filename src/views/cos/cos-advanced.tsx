@@ -107,7 +107,6 @@ const CosAdvanced: FC = () => {
 		zimbraMailSpamLifetime: '',
 		zimbraFreebusyExchangeUserOrg: ''
 	});
-	// const [zimbraMailQuota, setZimbraMailQuota] = useState('');
 	const [zimbraMailMessageLifetimeNum, setZimbraMailMessageLifetimeNum] = useState(
 		cosAdvanced?.zimbraMailMessageLifetime?.slice(0, -1)
 	);
@@ -332,68 +331,76 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setStateAttrValues = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(obj: any): void => {
+			const setTimeValues = (
+				value: string | undefined,
+				setValueFn: React.Dispatch<any>,
+				setValueTypeFn: React.Dispatch<any>,
+				timeItem: any[]
+			): void => {
+				setValueFn(value?.slice(0, -1));
+				setValueTypeFn(value?.slice(-1) ? value?.slice(-1) : timeItem[0]?.value);
+			};
+
 			if (obj) {
-				setZimbraQuotaWarnIntervalNum(obj?.zimbraQuotaWarnInterval?.slice(0, -1));
-				setzimbraQuotaWarnIntervalType(
-					obj?.zimbraQuotaWarnInterval?.slice(-1)
-						? obj?.zimbraQuotaWarnInterval?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraQuotaWarnInterval,
+					setZimbraQuotaWarnIntervalNum,
+					setzimbraQuotaWarnIntervalType,
+					timeItems
 				);
-				setZimbraPasswordLockoutDurationNum(obj?.zimbraPasswordLockoutDuration?.slice(0, -1));
-				setZimbraPasswordLockoutDurationType(
-					obj?.zimbraPasswordLockoutDuration?.slice(-1)
-						? obj?.zimbraPasswordLockoutDuration?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraPasswordLockoutDuration,
+					setZimbraPasswordLockoutDurationNum,
+					setZimbraPasswordLockoutDurationType,
+					timeItems
 				);
-				setZimbraPasswordLockoutFailureLifetimeNum(
-					obj?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)
+				setTimeValues(
+					obj?.zimbraPasswordLockoutFailureLifetime,
+					setZimbraPasswordLockoutFailureLifetimeNum,
+					setZimbraPasswordLockoutFailureLifetimeType,
+					timeItems
 				);
-				setZimbraPasswordLockoutFailureLifetimeType(
-					obj?.zimbraPasswordLockoutFailureLifetime?.slice(-1)
-						? obj?.zimbraPasswordLockoutFailureLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraAdminAuthTokenLifetime,
+					setZimbraAdminAuthTokenLifetimeNum,
+					setZimbraAdminAuthTokenLifetimeType,
+					timeItems
 				);
-				setZimbraAdminAuthTokenLifetimeNum(obj?.zimbraAdminAuthTokenLifetime?.slice(0, -1));
-				setZimbraAdminAuthTokenLifetimeType(
-					obj?.zimbraAdminAuthTokenLifetime?.slice(-1)
-						? obj?.zimbraAdminAuthTokenLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraAuthTokenLifetime,
+					setZimbraAuthTokenLifetimeNum,
+					setZimbraAuthTokenLifetimeType,
+					timeItems
 				);
-				setZimbraAuthTokenLifetimeNum(obj?.zimbraAuthTokenLifetime?.slice(0, -1));
-				setZimbraAuthTokenLifetimeType(
-					obj?.zimbraAuthTokenLifetime?.slice(-1)
-						? obj?.zimbraAuthTokenLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraMailIdleSessionTimeout,
+					setZimbraMailIdleSessionTimeoutNum,
+					setZimbraMailIdleSessionTimeoutType,
+					timeItems
 				);
-				setZimbraMailIdleSessionTimeoutNum(obj?.zimbraMailIdleSessionTimeout?.slice(0, -1));
-				setZimbraMailIdleSessionTimeoutType(
-					obj?.zimbraMailIdleSessionTimeout?.slice(-1)
-						? obj?.zimbraMailIdleSessionTimeout?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraMailTrashLifetime,
+					setZimbraMailTrashLifetimeNum,
+					setZimbraMailTrashLifetimeType,
+					timeItems
 				);
-				setZimbraMailTrashLifetimeNum(obj?.zimbraMailTrashLifetime?.slice(0, -1));
-				setZimbraMailTrashLifetimeType(
-					obj?.zimbraMailTrashLifetime?.slice(-1)
-						? obj?.zimbraMailTrashLifetime?.slice(-1)
-						: timeItems[0]?.value
-				);
-				setZimbraMailSpamLifetimeNum(obj?.zimbraMailSpamLifetime?.slice(0, -1));
-				setZimbraMailSpamLifetimeType(
-					obj?.zimbraMailSpamLifetime?.slice(-1)
-						? obj?.zimbraMailSpamLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraMailSpamLifetime,
+					setZimbraMailSpamLifetimeNum,
+					setZimbraMailSpamLifetimeType,
+					timeItems
 				);
 
 				setAccountQuotaGBValue(
 					obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(3) : ''
 				);
-				setZimbraMailMessageLifetimeNum(obj?.zimbraMailMessageLifetime?.slice(0, -1));
-				setZimbraMailMessageLifetimeType(
-					obj?.zimbraMailMessageLifetime !== '0' && obj?.zimbraMailMessageLifetime?.slice(-1)
-						? obj?.zimbraMailMessageLifetime?.slice(-1)
-						: timeItems[0]?.value
+
+				setTimeValues(
+					obj?.zimbraMailMessageLifetime,
+					setZimbraMailMessageLifetimeNum,
+					setZimbraMailMessageLifetimeType,
+					timeItems
 				);
 			}
 		},
