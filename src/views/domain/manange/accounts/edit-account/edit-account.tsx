@@ -71,7 +71,8 @@ import {
 	ACCOUNTS_DETAILS_UNPIN,
 	DOMAINS_ROUTE_ID,
 	ADMIN_LOGIN_AS,
-	BACKUP_SELF_UNDELETE_ALLOWED
+	BACKUP_SELF_UNDELETE_ALLOWED,
+	FILES_QUOTA_LIMIT
 } from '../../../../../constants';
 import MatomoTracker from '../../../../../matomo-tracker';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
@@ -84,6 +85,7 @@ import { removeDistributionListMember } from '../../../../../services/remove-dis
 import { renameAccountRequest } from '../../../../../services/rename-account';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
+import { setFileQuotaLimitByAccount } from '../../../../../services/set-file-quota-limit-account';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../../../store/config/store';
@@ -162,7 +164,8 @@ const EditAccount: FC<{
 		setAccountDetail,
 		initAccountDetail,
 		setInitAccountDetail,
-		deleteAdministrationRights
+		deleteAdministrationRights,
+		setDefaultCOS
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const { userId } = useConfigStore((state) => state);
@@ -632,6 +635,32 @@ const EditAccount: FC<{
 		]
 	);
 
+	const handleFileQuotaLimitChange = useCallback(
+		(modifiedKeys: string[]) => {
+			if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
+				setFileQuotaLimitByAccount(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
+					(res) => {
+						if (modifiedKeys?.length === 0) {
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t(
+									'label.the_last_changes_has_been_saved_successfully',
+									'Changes have been saved successfully'
+								),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+						}
+					}
+				);
+				remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
+			}
+		},
+		[accountDetail?.filesQuotaLimit, accountDetail?.zimbraId, createSnackbar, t]
+	);
+
 	const handleMainModifiedKeys = useCallback(
 		async (initAccountDetails: any, modifiedData: any) => {
 			setIsLoading(true);
@@ -721,6 +750,7 @@ const EditAccount: FC<{
 		}
 
 		handleMobileSyncFeatures(modifiedKeys);
+		handleFileQuotaLimitChange(modifiedKeys);
 
 		modifiedKeys.forEach((ele: any) => {
 			modifiedData[ele] = accountDetail[ele];
@@ -769,6 +799,7 @@ const EditAccount: FC<{
 	const onUndo = (): void => {
 		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_CANCEL);
 		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
+		setDefaultCOS(!initAccountDetail.zimbraCOSId);
 		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
 	};
 	const onViewMail = useCallback(() => {

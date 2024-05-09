@@ -1251,6 +1251,8 @@
         "fax_number": "Fax Number",
         "features": "Features",
         "files": "Files",
+        "files_space_limit_gb": "Files Space Limit (GB)",
+        "files_space_usage": "Files Space Usage",
         "filter": "Filter",
         "filter_account_list": "Filter Account List",
         "filter_by_device_type_account": "Filter by device type, account, status",
@@ -1274,6 +1276,7 @@
         "gal_update_frequencey_value": "GAL Update Frequency (value)",
         "galsync_account": "GALSync Account",
         "gay_sync_account_name": "GAL Sync Account Name",
+        "gb": "GB",
         "general": "GENERAL",
         "general_Settings": "General Settings",
         "general_information": "General Information",
@@ -1401,6 +1404,7 @@
         "mail_transport": "Mail Transport",
         "mail_transport_map": "Mail Transport Map",
         "mailbox_quota": "Mailbox Quota",
+        "mailbox_quota_limit_gb": "Mailbox Quota Limit (GB)",
         "mailing-list": {
             "object_name": "Object Name"
         },
@@ -1435,6 +1439,7 @@
         "max_mainbox_quota_for_the_mails_in_gb": "Max mailbox quota for the Mails (GB)",
         "max_manageable_account_for_the_domain": "Max manageable account for the domain (0=unlimited)",
         "max_quota_allowed": "Max Quota Allowed",
+        "maximum_3_digits_allowed_decimal_point": "Maximum 3 digits allowed after the decimal point",
         "maximum_conflict": "Maximum Conflict",
         "maximum_conflict_allowed": "Maximum Conflict Allowed",
         "maximum_handled_accounts": "Maximum Handled Accounts",

@@ -49,7 +49,9 @@ import {
 	DOMAIN_ACCOUNTS_NEXT_TABLE,
 	BACKUP_ENABLED,
 	DOMAINS_ROUTE_ID,
-	BACKUP_SELF_UNDELETE_ALLOWED
+	BACKUP_SELF_UNDELETE_ALLOWED,
+	FILES_QUOTA_LIMIT,
+	FILES_QUOTA_USED
 } from '../../../../constants';
 import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -62,6 +64,7 @@ import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
+import { getFileQuotaByAccount } from '../../../../services/get-file-quota-account';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -97,6 +100,7 @@ const ManageAccounts: FC = () => {
 	const [directMemberList, setDirectMemberList] = useState<any>({});
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const [otpList, setOtpList] = useState<any[]>([]);
 	const [credentialList, setCredentialList] = useState<any[]>([]);
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
@@ -489,6 +493,28 @@ const ManageAccounts: FC = () => {
 			}
 		});
 	}, []);
+
+	const setAccDetailValue = useCallback(
+		(key: string, value: string): void => {
+			setAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+			setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+		},
+		[setAccountDetail, setInitAccountDetail]
+	);
+
+	const getFileQuotaByAccId = useCallback(
+		(accId: string): Promise<void> =>
+			getFileQuotaByAccount(accId).then((res: any) => {
+				if (res?.limit) {
+					setAccDetailValue(FILES_QUOTA_LIMIT, res?.limit);
+				}
+				if (res?.used) {
+					setAccDetailValue(FILES_QUOTA_USED, res?.used);
+				}
+			}),
+		[setAccDetailValue]
+	);
+
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
@@ -530,10 +556,12 @@ const ManageAccounts: FC = () => {
 					setAccountDetail({ ...obj });
 					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
+					setDefaultCOS(!obj.zimbraCOSId);
 					if (isAdvanced) {
 						getListOtp(data?.account?.[0]?.name);
 						getCredentialList(data?.account?.[0]?.name);
 						getABQStatus(id);
+						getFileQuotaByAccId(id);
 					}
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -559,6 +587,7 @@ const ManageAccounts: FC = () => {
 			getListOtp,
 			getCredentialList,
 			getABQStatus,
+			getFileQuotaByAccId,
 			createSnackbar,
 			t
 		]
@@ -984,6 +1013,83 @@ const ManageAccounts: FC = () => {
 		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
 	};
 
+	const accountContextValue = useMemo(
+		() => ({
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		}),
+		[
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		]
+	);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -1157,43 +1263,7 @@ const ManageAccounts: FC = () => {
 									</Container>
 								</Container>
 							)}
-							<AccountContext.Provider
-								value={{
-									accountDetail,
-									cosDetail,
-									setAccountDetail,
-									accSpecificDetail,
-									setAccSpecificDetail,
-									directMemberList,
-									inDirectMemberList,
-									setDirectMemberList,
-									setInDirectMemberList,
-									initAccountDetail,
-									setInitAccountDetail,
-									setSignatureItems,
-									setSignatureList,
-									otpList,
-									getListOtp,
-									identitiesList,
-									deligateDetail,
-									setDeligateDetail,
-									getIdentitiesList,
-									folderList,
-									setFolderList,
-									credentialList,
-									getCredentialList,
-									initialGlobalRights,
-									setinitialGlobalRights,
-									globalRights,
-									setGlobalRights,
-									deleteAdministrationRights,
-									setDeleteAdministrationRights,
-									userSessionList,
-									setAllUserSessionList,
-									allUserSessionList,
-									setUserSessionList
-								}}
-							>
+							<AccountContext.Provider value={accountContextValue}>
 								{/* This may require in future
 								{showAccountDetailView && (
 									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
