@@ -27,6 +27,7 @@ import CosListPanel from './cos/cos-list-panel';
 import Dashboard from './dashboard/dashboard-view';
 import DomainDetailPanel from './domain/domain-detail-panel';
 import DomainListPanel from './domain/domain-list-panel';
+import LegalHoldPanel from './legal-hold/legal-hold-panel';
 import MonitoringView from './monitoring/monitoring-view';
 import MTADetailPanel from './mta/mta-detail-panel';
 import MTAListPanel from './mta/mta-list-panel';
@@ -40,6 +41,7 @@ import {
 	COS_ROUTE_ID,
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
+	LEGAL_HOLD_ROUTE_ID,
 	LOG_AND_QUEUES,
 	MANAGE_APP_ID,
 	MONITORING,
@@ -195,6 +197,20 @@ const AppView: FC = () => {
 									<BackupDetailPanel />
 								</Suspense>
 							</DetailViewContainer>
+						</Container>
+					</Container>
+				</Route>
+
+				<Route path={`/${SERVICES_ROUTE_ID}/${LEGAL_HOLD_ROUTE_ID}`}>
+					<Container
+						orientation="horizontal"
+						mainAlignment="flex-start"
+						style={{ overflow: 'hidden' }}
+					>
+						<Container style={{ maxWidth: '100%' }}>
+							<Suspense fallback={<Spinner />}>
+								<LegalHoldPanel />
+							</Suspense>
 						</Container>
 					</Container>
 				</Route>

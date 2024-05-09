@@ -3,12 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { Input, Tooltip, IconCheckbox, Text, Row, Padding } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
+import styled from 'styled-components';
 
-const InheritedInput: FC<{
+export interface InheritedInputProps {
 	label: any;
 	subValue: any;
 	inheritedValue: any;
@@ -22,8 +23,17 @@ const InheritedInput: FC<{
 	pref?: any;
 	onClick?: any;
 	onFocus?: any;
+	onBlur?: any;
 	description?: any;
-}> = ({
+	focus?: boolean;
+	highlighted?: boolean;
+}
+
+const HighlightedInput = styled(Input)<InheritedInputProps>`
+	background-color: ${({ highlighted }): any => (highlighted ? '#D5E3F6' : 'gray5')};
+	transition: background-color 3s ease;
+`;
+const InheritedInput: FC<InheritedInputProps> = ({
 	label,
 	subValue,
 	inheritedValue,
@@ -37,11 +47,50 @@ const InheritedInput: FC<{
 	pref = {},
 	onClick,
 	onFocus,
-	description
+	onBlur,
+	description,
+	focus = false,
+	highlighted = false
 }) => {
 	const [t] = useTranslation();
+	const inputRef = React.useRef<HTMLInputElement>(null);
+	const [highlight, setHighlight] = useState(false);
+
+	// Effect to reset the highlight after a transition
+	useEffect(() => {
+		if (highlight) {
+			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+			const transitionEndHandler = () => {
+				setHighlight(false);
+			};
+
+			// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+			const handleTransitionEnd = () => {
+				document.removeEventListener('transitionend', transitionEndHandler);
+				transitionEndHandler();
+			};
+
+			document.addEventListener('transitionend', handleTransitionEnd, { once: true });
+		}
+	}, [highlight]);
+
+	useEffect(() => {
+		if (highlighted) {
+			setHighlight(true);
+		}
+	}, [highlighted]);
+
+	useEffect(() => {
+		if (focus && inputRef.current) {
+			inputRef.current.focus();
+			inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+		}
+	}, [focus, inputRef]);
+
+	const InputComponent = highlighted ? HighlightedInput : Input;
+
 	return (
-		<Input
+		<InputComponent
 			label={label}
 			value={subValue === undefined ? inheritedValue || '' : subValue}
 			background={background}
@@ -54,6 +103,9 @@ const InheritedInput: FC<{
 			}}
 			onFocus={(): void => {
 				!disabled && onFocus && onFocus();
+			}}
+			onBlur={(): void => {
+				!disabled && onBlur?.();
 			}}
 			CustomIcon={(): any => (
 				<>
@@ -89,6 +141,8 @@ const InheritedInput: FC<{
 			)}
 			description={description}
 			{...pref}
+			inputRef={inputRef}
+			highlighted={highlight}
 		/>
 	);
 };

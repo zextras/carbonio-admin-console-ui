@@ -18,11 +18,11 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { VolumeContext } from './volume-context';
+import { objectType } from '../../../../../../types';
 import {
 	COMPRESSION_THRESHOLD_UNIT,
 	EMPTY_TYPE_VALUE,
 	INDEX_TYPE_VALUE,
-	LOCAL,
 	PRIMARY_TYPE_VALUE,
 	SECONDARY_TYPE_VALUE
 } from '../../../../../constants';
@@ -37,7 +37,7 @@ const MailstoresCreate: FC<{
 	const context = useContext(VolumeContext);
 	const { t } = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state?.isAdvanced);
-	const volTypeList = useMemo(() => volumeTypeList(t), [t]);
+	const volTypeList = useMemo(() => volumeTypeList(t, isAdvanced), [t, isAdvanced]);
 	const volAllocationList = useMemo(() => volumeAllocationList(t), [t]);
 	const { volumeDetail, setVolumeDetail } = context;
 	const [errName, setErrName] = useState(true);
@@ -115,6 +115,18 @@ const MailstoresCreate: FC<{
 	const onVolAllocationChange = (v: any): any => {
 		setVolumeDetail((prev: any) => ({ ...prev, volumeAllocation: v }));
 	};
+
+	const onVolNamechange = useCallback(
+		(e) => {
+			setVolumeDetail((prev: objectType) => ({ ...prev, volumeName: e?.target?.value }));
+			if (e?.target?.value !== '') {
+				setErrName(true);
+			} else {
+				setErrName(false);
+			}
+		},
+		[setVolumeDetail]
+	);
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	useEffect(() => {
@@ -202,181 +214,170 @@ const MailstoresCreate: FC<{
 	}, [onSelection, setVolumeDetail, volumeDetail?.isCompression]);
 
 	return (
-		<>
-			<Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
+		<Container mainAlignment="flex-start" padding={{ horizontal: 'large' }}>
+			<Row padding={{ top: 'large' }} width="100%">
+				<Input
+					label={t('label.volume_server', 'Server')}
+					backgroundColor="gray6"
+					value={externalData}
+					readOnly
+				/>
+			</Row>
+			{!isAdvanced && (
 				<Row padding={{ top: 'large' }} width="100%">
-					<Input
-						label={t('label.volume_server', 'Server')}
-						backgroundColor="gray6"
-						value={externalData}
-						readOnly
+					<Select
+						items={volTypeList}
+						background="gray5"
+						label={t('label.volume_type', 'Volume Type')}
+						defaultSelection={
+							volTypeList?.filter((items) => items?.value === volumeDetail?.volumeMain)[0]
+						}
+						showCheckbox={false}
+						onChange={onVolMainChange}
 					/>
 				</Row>
-				{!isAdvanced && (
-					<Row padding={{ top: 'large' }} width="100%">
-						<Input
-							label={t('label.volume_allocation', 'Allocation')}
-							backgroundColor="gray6"
-							value={LOCAL}
-							readOnly
-						/>
-					</Row>
-				)}
-				{!isAdvanced && (
-					<Row padding={{ top: 'large' }} width="100%">
-						<Select
-							items={volTypeList}
-							background="gray5"
-							label={t('label.volume_type', 'Volume Type')}
-							defaultSelection={
-								volTypeList?.filter((items) => items?.value === volumeDetail?.volumeMain)[0]
-							}
-							showCheckbox={false}
-							onChange={onVolMainChange}
-						/>
-					</Row>
-				)}
-				{isAdvanced && (
-					<Row padding={{ top: 'large' }} width="100%">
-						<Select
-							items={volAllocationList}
-							background="gray5"
-							label={t('label.volume_allocation', 'Allocation')}
-							showCheckbox={false}
-							selection={allocation}
-							onChange={onVolAllocationChange}
-						/>
-					</Row>
-				)}
-				<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-					<Input
-						inputName="volumeName"
-						label={t('label.volume_name', 'Volume Name')}
-						backgroundColor="gray5"
-						value={volumeDetail?.volumeName}
-						readOnly
-						hasError={!errName}
+			)}
+			{isAdvanced && (
+				<Row padding={{ top: 'large' }} width="100%">
+					<Select
+						items={volAllocationList}
+						background="gray5"
+						label={t('label.volume_allocation', 'Allocation')}
+						showCheckbox={false}
+						selection={allocation}
+						onChange={onVolAllocationChange}
 					/>
-					{!errName && (
-						<Padding top="extrasmall">
-							<Text color="error" overflow="break-word" size="extrasmall">
-								{t('buckets.invalid_volume_name', 'Volume name is required.')}
-							</Text>
-						</Padding>
-					)}
 				</Row>
-				{isAdvanced && (
-					<>
-						<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-							<Row width="48%" mainAlignment="flex-start">
-								<Radio
-									label={t('label.primary_volume', 'This is a Primary Volume')}
-									value={PRIMARY_TYPE_VALUE}
-									checked={primaryRadio}
-									onClick={(): any => {
-										setPrimaryRadio(!primaryRadio);
-										setSecondaryRadio(false);
-										setIndexRadio(false);
-									}}
-									iconColor="primary"
-								/>
-							</Row>
-							<Row width="48%" mainAlignment="flex-start">
-								<Radio
-									label={t('label.secondary_volume', 'This is a Secondary Volume')}
-									value={SECONDARY_TYPE_VALUE}
-									checked={secondaryRadio}
-									onClick={(): any => {
-										setSecondaryRadio(!secondaryRadio);
-										setPrimaryRadio(false);
-										setIndexRadio(false);
-									}}
-									iconColor="primary"
-								/>
-							</Row>
-						</Row>
-						<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+			)}
+			<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+				<Input
+					inputName="volumeName"
+					label={t('label.volume_name', 'Volume Name')}
+					backgroundColor="gray5"
+					value={volumeDetail?.volumeName}
+					onChange={onVolNamechange}
+					readOnly
+					hasError={!errName}
+				/>
+				{!errName && (
+					<Padding top="extrasmall">
+						<Text color="error" overflow="break-word" size="extrasmall">
+							{t('buckets.invalid_volume_name', 'Volume name is required.')}
+						</Text>
+					</Padding>
+				)}
+			</Row>
+			{isAdvanced && (
+				<>
+					<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+						<Row width="48%" mainAlignment="flex-start">
 							<Radio
-								label={t('label.index_volume', 'This is a Index Volume')}
-								value={INDEX_TYPE_VALUE}
-								checked={indexRadio}
+								label={t('label.primary_volume', 'This is a Primary Volume')}
+								value={PRIMARY_TYPE_VALUE}
+								checked={primaryRadio}
 								onClick={(): any => {
-									setIndexRadio(!indexRadio);
-									setPrimaryRadio(false);
+									setPrimaryRadio(!primaryRadio);
 									setSecondaryRadio(false);
+									setIndexRadio(false);
 								}}
 								iconColor="primary"
 							/>
 						</Row>
-					</>
-				)}
-				<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
-					<Input
-						inputName="path"
-						label={t('label.volume_path', 'Volume path')}
-						backgroundColor="gray5"
-						value={volumeDetail?.path}
-						onChange={changeVolPath}
-						hasError={!errPath}
-					/>
-					{!errPath && (
-						<Padding top="extrasmall">
-							<Text color="error" overflow="break-word" size="extrasmall">
-								{t('buckets.invalid_volume_path', 'path is required')}
-							</Text>
-						</Padding>
-					)}
-				</Row>
-				{!toggleIndexer && (
-					<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
-						<Row width="32%" mainAlignment="flex-start">
-							<Switch
-								value={volumeDetail?.isCompression}
-								label={t('label.enable_compression', 'Enable Compression')}
-								onClick={changeSwitchIsCompression}
+						<Row width="48%" mainAlignment="flex-start">
+							<Radio
+								label={t('label.secondary_volume', 'This is a Secondary Volume')}
+								value={SECONDARY_TYPE_VALUE}
+								checked={secondaryRadio}
+								onClick={(): any => {
+									setSecondaryRadio(!secondaryRadio);
+									setPrimaryRadio(false);
+									setIndexRadio(false);
+								}}
 								iconColor="primary"
 							/>
 						</Row>
-						<Padding horizontal="small" />
-						<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="65%">
-							<Input
-								inputName="compressionThreshold"
-								label={t('label.volume_compression_thresold', 'Compression Threshold')}
-								backgroundColor="gray5"
-								value={volumeDetail?.compressionThreshold}
-								onChange={changeVolCompThresold}
-								hasError={!errCompressionThreshold}
-								disabled={!volumeDetail?.isCompression}
-								CustomIcon={(): any => <Text color="secondary">{COMPRESSION_THRESHOLD_UNIT}</Text>}
-							/>
-							{!errCompressionThreshold && (
-								<Padding top="extrasmall">
-									<Text color="error" overflow="break-word" size="extrasmall">
-										{t('buckets.invalid_compression_thresold', 'Compression Threshold is required')}
-									</Text>
-								</Padding>
-							)}
-						</Row>
 					</Row>
+					<Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+						<Radio
+							label={t('label.index_volume', 'This is a Index Volume')}
+							value={INDEX_TYPE_VALUE}
+							checked={indexRadio}
+							onClick={(): any => {
+								setIndexRadio(!indexRadio);
+								setPrimaryRadio(false);
+								setSecondaryRadio(false);
+							}}
+							iconColor="primary"
+						/>
+					</Row>
+				</>
+			)}
+			<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
+				<Input
+					inputName="path"
+					label={t('label.volume_path', 'Volume path')}
+					backgroundColor="gray5"
+					value={volumeDetail?.path}
+					onChange={changeVolPath}
+					hasError={!errPath}
+				/>
+				{!errPath && (
+					<Padding top="extrasmall">
+						<Text color="error" overflow="break-word" size="extrasmall">
+							{t('buckets.invalid_volume_path', 'path is required')}
+						</Text>
+					</Padding>
 				)}
-				<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-					<Switch
-						value={volumeDetail?.isCurrent}
-						label={t('label.enable_current', 'Enable as Current')}
-						onClick={changeSwitchIsCurrent}
-						iconColor="primary"
-					/>
-				</Row>
-				<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-					<Text color="secondary">
-						{t(
-							'label.enable_current_helptext',
-							'Enabling this option will disable the current active volume.'
+			</Row>
+			{!toggleIndexer && (
+				<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
+					<Row width="32%" mainAlignment="flex-start">
+						<Switch
+							value={volumeDetail?.isCompression}
+							label={t('label.enable_compression', 'Enable Compression')}
+							onClick={changeSwitchIsCompression}
+							iconColor="primary"
+						/>
+					</Row>
+					<Padding horizontal="small" />
+					<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="65%">
+						<Input
+							inputName="compressionThreshold"
+							label={t('label.volume_compression_thresold', 'Compression Threshold')}
+							backgroundColor="gray5"
+							value={volumeDetail?.compressionThreshold}
+							onChange={changeVolCompThresold}
+							hasError={!errCompressionThreshold}
+							disabled={!volumeDetail?.isCompression}
+							CustomIcon={(): any => <Text color="secondary">{COMPRESSION_THRESHOLD_UNIT}</Text>}
+						/>
+						{!errCompressionThreshold && (
+							<Padding top="extrasmall">
+								<Text color="error" overflow="break-word" size="extrasmall">
+									{t('buckets.invalid_compression_thresold', 'Compression Threshold is required')}
+								</Text>
+							</Padding>
 						)}
-					</Text>
+					</Row>
 				</Row>
-			</Container>
-		</>
+			)}
+			<Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+				<Switch
+					value={volumeDetail?.isCurrent}
+					label={t('label.enable_current', 'Enable as Current')}
+					onClick={changeSwitchIsCurrent}
+					iconColor="primary"
+				/>
+			</Row>
+			<Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
+				<Text color="secondary">
+					{t(
+						'label.enable_current_helptext',
+						'Enabling this option will disable the current active volume.'
+					)}
+				</Text>
+			</Row>
+		</Container>
 	);
 };
 
