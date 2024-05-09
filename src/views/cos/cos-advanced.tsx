@@ -22,7 +22,7 @@ import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { COS } from '../../constants';
+import { BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
 import { getCoreAttributes } from '../../services/get-core-attributes';
 import { getFileQuotaById } from '../../services/get-file-quota';
 import { modifyCos } from '../../services/modify-cos-service';
@@ -1113,7 +1113,7 @@ const CosAdvanced: FC = () => {
 			setCoreAttributes(backupSelfUndeleteAllowedBody);
 		}
 		Object.keys(cosAdvanced).forEach((ele: any) => {
-			if (ele !== 'backupSelfUndeleteAllowed')
+			if (ele !== BACKUP_SELF_UNDELETE_ALLOWED)
 				attributes.push({ n: ele, _content: cosAdvanced[ele] });
 		});
 
@@ -1164,14 +1164,14 @@ const CosAdvanced: FC = () => {
 			{
 				configType: COS,
 				configName: [cosName],
-				attrName: ['backupSelfUndeleteAllowed']
+				attrName: [BACKUP_SELF_UNDELETE_ALLOWED]
 			}
 		];
 		getCoreAttributes(body)
 			.then((data) => {
 				if (data?.attributes) {
 					setValue(
-						'backupSelfUndeleteAllowed',
+						BACKUP_SELF_UNDELETE_ALLOWED,
 						!!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					);
 				}
