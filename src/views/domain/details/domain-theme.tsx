@@ -246,7 +246,8 @@ const DomainTheme: FC = () => {
 			carbonioWebUILoginURL: '',
 			carbonioWebUILogoutURL: '',
 			carbonioAdminUILoginURL: '',
-			carbonioAdminUILogoutURL: ''
+			carbonioAdminUILogoutURL: '',
+			carbonioAdminDocumentationUrl: ''
 		};
 		Object.keys(domainDefaultElements).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: domainDefaultElements[ele] })
