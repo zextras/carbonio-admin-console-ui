@@ -116,6 +116,10 @@ const DomainAuthentication: FC = () => {
 	const [zimbraFeatureResetPasswordStatus, setZimbraFeatureResetPasswordStatus] =
 		useState<boolean>(false);
 
+	const localLdapTrans = t(
+		'label.method_allows_local_ldap_only',
+		'This method allows usage of Local LDAP'
+	);
 	const DOMAIN_AUTH_LIST = useMemo(
 		() => [
 			{
@@ -125,17 +129,13 @@ const DomainAuthentication: FC = () => {
 					'label.carbonio_info',
 					'This method allows usage of Local LDAP, External AD/LDAP, Credential Password and SAML.'
 				)}`,
-				// eslint-disable-next-line sonarjs/no-duplicate-string
-				info_label_ce: `${t('label.carbonio_info_ce', 'This method allows usage of Local LDAP')}`
+				info_label_ce: `${localLdapTrans}`
 			},
 			{
 				label: `${t('label.local_ldap_only', 'Local LDAP only')}`,
 				value: ZimbraAuthMethod.INTERNAL,
-				info_label: `${t('label.local_ldap_only_info', 'This method allows usage of Local LDAP')}`,
-				info_label_ce: `${t(
-					'label.local_ldap_only_info_ce',
-					'This method allows usage of Local LDAP'
-				)}`
+				info_label: `${localLdapTrans}`,
+				info_label_ce: `${localLdapTrans}`
 			},
 			{
 				label: `${t('label.external_ldap_only', 'External LDAP only')}`,
@@ -162,7 +162,7 @@ const DomainAuthentication: FC = () => {
 				)}`
 			}
 		],
-		[t]
+		[localLdapTrans, t]
 	);
 
 	const DN_TEMPLATE_TOOLTIP = useMemo(
