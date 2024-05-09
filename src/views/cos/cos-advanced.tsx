@@ -23,12 +23,16 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { COS } from '../../constants';
+import { getFileQuotaById } from '../../services/get-file-quota';
 import { modifyCos } from '../../services/modify-cos-service';
+import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
+import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
+import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
 import Textarea from '../components/textarea';
 import ListRow from '../list/list-row';
-import { BytesToGB, GbToBytes } from '../utility/utils';
+import { BytesToGB, GbToBytes, isValidDecimalNumber } from '../utility/utils';
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;
@@ -103,7 +107,6 @@ const CosAdvanced: FC = () => {
 		zimbraMailSpamLifetime: '',
 		zimbraFreebusyExchangeUserOrg: ''
 	});
-	const [zimbraMailQuota, setZimbraMailQuota] = useState('');
 	const [zimbraMailMessageLifetimeNum, setZimbraMailMessageLifetimeNum] = useState(
 		cosAdvanced?.zimbraMailMessageLifetime?.slice(0, -1)
 	);
@@ -156,6 +159,12 @@ const CosAdvanced: FC = () => {
 	const [zimbraMailSpamLifetimeType, setZimbraMailSpamLifetimeType] = useState(
 		cosAdvanced?.zimbraMailSpamLifetime?.slice(-1) || ''
 	);
+	const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState(undefined);
+	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState(undefined);
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
+	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
+	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
 
 	const setValue = useCallback(
 		(key: string, value: any): void => {
@@ -322,66 +331,76 @@ const CosAdvanced: FC = () => {
 	);
 
 	const setStateAttrValues = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(obj: any): void => {
+			const setTimeValues = (
+				value: string | undefined,
+				setValueFn: React.Dispatch<any>,
+				setValueTypeFn: React.Dispatch<any>,
+				timeItem: any[]
+			): void => {
+				setValueFn(value?.slice(0, -1));
+				setValueTypeFn(value?.slice(-1) ? value?.slice(-1) : timeItem[0]?.value);
+			};
+
 			if (obj) {
-				setZimbraQuotaWarnIntervalNum(obj?.zimbraQuotaWarnInterval?.slice(0, -1));
-				setzimbraQuotaWarnIntervalType(
-					obj?.zimbraQuotaWarnInterval?.slice(-1)
-						? obj?.zimbraQuotaWarnInterval?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraQuotaWarnInterval,
+					setZimbraQuotaWarnIntervalNum,
+					setzimbraQuotaWarnIntervalType,
+					timeItems
 				);
-				setZimbraPasswordLockoutDurationNum(obj?.zimbraPasswordLockoutDuration?.slice(0, -1));
-				setZimbraPasswordLockoutDurationType(
-					obj?.zimbraPasswordLockoutDuration?.slice(-1)
-						? obj?.zimbraPasswordLockoutDuration?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraPasswordLockoutDuration,
+					setZimbraPasswordLockoutDurationNum,
+					setZimbraPasswordLockoutDurationType,
+					timeItems
 				);
-				setZimbraPasswordLockoutFailureLifetimeNum(
-					obj?.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)
+				setTimeValues(
+					obj?.zimbraPasswordLockoutFailureLifetime,
+					setZimbraPasswordLockoutFailureLifetimeNum,
+					setZimbraPasswordLockoutFailureLifetimeType,
+					timeItems
 				);
-				setZimbraPasswordLockoutFailureLifetimeType(
-					obj?.zimbraPasswordLockoutFailureLifetime?.slice(-1)
-						? obj?.zimbraPasswordLockoutFailureLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraAdminAuthTokenLifetime,
+					setZimbraAdminAuthTokenLifetimeNum,
+					setZimbraAdminAuthTokenLifetimeType,
+					timeItems
 				);
-				setZimbraAdminAuthTokenLifetimeNum(obj?.zimbraAdminAuthTokenLifetime?.slice(0, -1));
-				setZimbraAdminAuthTokenLifetimeType(
-					obj?.zimbraAdminAuthTokenLifetime?.slice(-1)
-						? obj?.zimbraAdminAuthTokenLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraAuthTokenLifetime,
+					setZimbraAuthTokenLifetimeNum,
+					setZimbraAuthTokenLifetimeType,
+					timeItems
 				);
-				setZimbraAuthTokenLifetimeNum(obj?.zimbraAuthTokenLifetime?.slice(0, -1));
-				setZimbraAuthTokenLifetimeType(
-					obj?.zimbraAuthTokenLifetime?.slice(-1)
-						? obj?.zimbraAuthTokenLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraMailIdleSessionTimeout,
+					setZimbraMailIdleSessionTimeoutNum,
+					setZimbraMailIdleSessionTimeoutType,
+					timeItems
 				);
-				setZimbraMailIdleSessionTimeoutNum(obj?.zimbraMailIdleSessionTimeout?.slice(0, -1));
-				setZimbraMailIdleSessionTimeoutType(
-					obj?.zimbraMailIdleSessionTimeout?.slice(-1)
-						? obj?.zimbraMailIdleSessionTimeout?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraMailTrashLifetime,
+					setZimbraMailTrashLifetimeNum,
+					setZimbraMailTrashLifetimeType,
+					timeItems
 				);
-				setZimbraMailTrashLifetimeNum(obj?.zimbraMailTrashLifetime?.slice(0, -1));
-				setZimbraMailTrashLifetimeType(
-					obj?.zimbraMailTrashLifetime?.slice(-1)
-						? obj?.zimbraMailTrashLifetime?.slice(-1)
-						: timeItems[0]?.value
-				);
-				setZimbraMailSpamLifetimeNum(obj?.zimbraMailSpamLifetime?.slice(0, -1));
-				setZimbraMailSpamLifetimeType(
-					obj?.zimbraMailSpamLifetime?.slice(-1)
-						? obj?.zimbraMailSpamLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setTimeValues(
+					obj?.zimbraMailSpamLifetime,
+					setZimbraMailSpamLifetimeNum,
+					setZimbraMailSpamLifetimeType,
+					timeItems
 				);
 
-				setZimbraMailQuota(obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toString() : '');
-				setZimbraMailMessageLifetimeNum(obj?.zimbraMailMessageLifetime?.slice(0, -1));
-				setZimbraMailMessageLifetimeType(
-					obj?.zimbraMailMessageLifetime !== '0' && obj?.zimbraMailMessageLifetime?.slice(-1)
-						? obj?.zimbraMailMessageLifetime?.slice(-1)
-						: timeItems[0]?.value
+				setAccountQuotaGBValue(
+					obj?.zimbraMailQuota ? BytesToGB(obj?.zimbraMailQuota).toFixed(3) : ''
+				);
+
+				setTimeValues(
+					obj?.zimbraMailMessageLifetime,
+					setZimbraMailMessageLifetimeNum,
+					setZimbraMailMessageLifetimeType,
+					timeItems
 				);
 			}
 		},
@@ -492,6 +511,21 @@ const CosAdvanced: FC = () => {
 		}
 	}, [cosInformation, setInitalValues, setStateAttrValues, setValue, timeItems]);
 
+	const getFileQuota = useCallback((cosId: string): void => {
+		getFileQuotaById(cosId, COS).then((res: any) => {
+			if (res?.limit) {
+				setInitFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(3));
+				setFileQuotaLimitGBValue(BytesToGB(res.limit).toFixed(3));
+			}
+		});
+	}, []);
+
+	useEffect(() => {
+		if (cosData?.zimbraId && isAdvanced) {
+			getFileQuota(cosData.zimbraId);
+		}
+	}, [cosData, getFileQuota, isAdvanced]);
+
 	const changeValue = useCallback(
 		(e) => {
 			setCosAdvanced((prev: any) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -523,6 +557,7 @@ const CosAdvanced: FC = () => {
 	const onCancel = (): void => {
 		setInitalValues(cosData);
 		setStateAttrValues(cosData);
+		setFileQuotaLimitGBValue(initFileQuotaLimitGBValue);
 		setIsDirty(false);
 	};
 
@@ -781,6 +816,17 @@ const CosAdvanced: FC = () => {
 		}
 	}, [cosAdvanced.zimbraFreebusyExchangeUserOrg, cosData.zimbraFreebusyExchangeUserOrg]);
 
+	useEffect(() => {
+		if (
+			fileQuotaLimitGBValue !== undefined &&
+			initFileQuotaLimitGBValue !== fileQuotaLimitGBValue
+		) {
+			setIsDirty(true);
+		} else {
+			setIsDirty(false);
+		}
+	}, [initFileQuotaLimitGBValue, fileQuotaLimitGBValue]);
+
 	const onZimbraQuotaWarnIntervalTypeChange = useCallback(
 		(v) => {
 			setCosAdvanced((prev: any) => ({
@@ -979,13 +1025,31 @@ const CosAdvanced: FC = () => {
 		[zimbraMailSpamLifetimeType, setCosAdvanced]
 	);
 
+	const onFileQuotaChange = useCallback((e) => {
+		if (!isValidDecimalNumber(e.target.value)) return;
+		const decimalPoints = e.target.value?.split('.')[1];
+		if (!!decimalPoints && decimalPoints?.length > 3) {
+			setShowFileQuotaLimitMsg(true);
+			return;
+		}
+		setShowFileQuotaLimitMsg(false);
+		setFileQuotaLimitGBValue(e.target.value);
+	}, []);
+
 	const onZimbraMailQuotaChange = useCallback(
 		(e) => {
+			if (!isValidDecimalNumber(e.target.value)) return;
+			const decimalPoints = e.target.value?.split('.')[1];
+			if (!!decimalPoints && decimalPoints?.length > 3) {
+				setShowAccountQuotaLimitMsg(true);
+				return;
+			}
+			setShowAccountQuotaLimitMsg(false);
+			setAccountQuotaGBValue(e.target.value);
 			setCosAdvanced((prev: any) => ({
 				...prev,
-				zimbraMailQuota: e.target.value ? GbToBytes(e.target.value).toString() : ''
+				zimbraMailQuota: e.target.value ? Math.round(GbToBytes(e.target.value)) : ''
 			}));
-			setZimbraMailQuota(e.target.value);
 		},
 		[setCosAdvanced]
 	);
@@ -1015,6 +1079,18 @@ const CosAdvanced: FC = () => {
 		[zimbraMailMessageLifetimeType, setCosAdvanced]
 	);
 
+	const setFileQuotaLimit = useCallback((cosId: string, limit: string) => {
+		setFileQuotaLimitById(cosId, limit, COS).then((res) => {
+			setShowFileQuotaLimitMsg(false);
+		});
+	}, []);
+
+	const resetFileQuotaLimit = useCallback((cosId: string) => {
+		resetFileQuotaLimitById(cosId, COS).then((res) => {
+			setShowFileQuotaLimitMsg(false);
+		});
+	}, []);
+
 	const onSave = (): void => {
 		const body: any = {};
 		body._jsns = 'urn:zimbraAdmin';
@@ -1026,12 +1102,6 @@ const CosAdvanced: FC = () => {
 		Object.keys(cosAdvanced).forEach((ele: any) =>
 			attributes.push({ n: ele, _content: cosAdvanced[ele] })
 		);
-		// proxyAllowedDomainList.forEach((item: any) => {
-		// 	attributes.push({
-		// 		n: 'zimbraProxyAllowedDomains',
-		// 		_content: item?._content
-		// 	});
-		// });
 		body.a = attributes;
 		modifyCos(body)
 			.then((data) => {
@@ -1046,6 +1116,16 @@ const CosAdvanced: FC = () => {
 				const cos: any = data?.cos[0];
 				if (cos) {
 					setCos(cos);
+				}
+				if (isAdvanced && initFileQuotaLimitGBValue !== fileQuotaLimitGBValue) {
+					if (fileQuotaLimitGBValue) {
+						setFileQuotaLimit(
+							cosData.zimbraId,
+							Math.round(GbToBytes(fileQuotaLimitGBValue)).toString()
+						);
+					} else {
+						resetFileQuotaLimit(cosData.zimbraId);
+					}
 				}
 				setIsDirty(false);
 			})
@@ -1169,15 +1249,55 @@ const CosAdvanced: FC = () => {
 							padding={{ top: 'large' }}
 						>
 							<ListRow>
+								{isAdvanced && initFileQuotaLimitGBValue && (
+									<Container padding={{ right: 'small' }}>
+										<Input
+											label={t('cos.files_account_quota_gb', 'Files Account quota (GB)')}
+											value={fileQuotaLimitGBValue}
+											backgroundColor="gray5"
+											inputName="fileQuotaLimit"
+											onChange={onFileQuotaChange}
+											disabled={readonlyCOS}
+										/>
+										{showFileQuotaLimitMsg && (
+											<Container
+												mainAlignment="flex-start"
+												crossAlignment="flex-start"
+												width="fill"
+											>
+												<Padding top="small">
+													<Text size="extrasmall" weight="regular" color="primary">
+														{t(
+															'label.maximum_3_digits_allowed_decimal_point',
+															'Maximum 3 digits allowed after the decimal point'
+														)}
+													</Text>
+												</Padding>
+											</Container>
+										)}
+									</Container>
+								)}
 								<Container padding={{ right: 'small' }}>
 									<Input
-										label={`${t('cos.account_quota', 'Account quota')} (GB)`}
-										value={zimbraMailQuota}
+										label={t('cos.mails_account_quota_gb', 'Mails Account quota (GB)')}
+										value={accountQuotaGBValue}
 										backgroundColor="gray5"
 										inputName="zimbraMailQuota"
 										onChange={onZimbraMailQuotaChange}
 										disabled={readonlyCOS}
 									/>
+									{showAccountQuotaLimitMsg && (
+										<Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
+											<Padding top="small">
+												<Text size="extrasmall" weight="regular" color="primary">
+													{t(
+														'label.maximum_3_digits_allowed_decimal_point',
+														'Maximum 3 digits allowed after the decimal point'
+													)}
+												</Text>
+											</Padding>
+										</Container>
+									)}
 								</Container>
 								<Container padding={{ left: 'small' }}>
 									<Input
