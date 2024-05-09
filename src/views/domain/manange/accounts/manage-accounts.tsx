@@ -48,7 +48,8 @@ import {
 	ACCOUNTS_SEARCH_TABLE,
 	DOMAIN_ACCOUNTS_NEXT_TABLE,
 	BACKUP_ENABLED,
-	DOMAINS_ROUTE_ID
+	DOMAINS_ROUTE_ID,
+	BACKUP_SELF_UNDELETE_ALLOWED
 } from '../../../../constants';
 import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -460,6 +461,11 @@ const ManageAccounts: FC = () => {
 				configType: ACCOUNT,
 				configName: [acc],
 				attrName: [BACKUP_ENABLED]
+			},
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [BACKUP_SELF_UNDELETE_ALLOWED]
 			}
 		];
 		getCoreAttributes(body).then((data) => {
@@ -468,14 +474,16 @@ const ManageAccounts: FC = () => {
 					...prev,
 					...{
 						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					}
 				}));
 				setInitAccountDetail((prev: AccountType) => ({
 					...prev,
 					...{
 						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					}
 				}));
 			}
