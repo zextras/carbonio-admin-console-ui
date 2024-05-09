@@ -1256,6 +1256,7 @@
         "filter": "Filter",
         "filter_account_list": "Filter Account List",
         "filter_by_device_type_account": "Filter by device type, account, status",
+        "filter_per_domain": "Filter per Domain",
         "first_day_of_Week": "First day of Week",
         "first_day_of_week": "First Day of Week",
         "fixed_size_quota": "{{usedQuota}} MB of {{calculatedSize}} MB",
@@ -1298,6 +1299,7 @@
         "has_backup": "Has Backup",
         "helo": "Help",
         "help": "Help",
+        "help_documentation_url": "Help documentation URL",
         "helpdesk": "Helpdesk",
         "here_will_be_shown_the_attribute_value": "The Attribute Value will be displayed here",
         "here_you_will_find": "Here you will find",
@@ -1360,6 +1362,9 @@
         "ldap_url": "LDAP Url",
         "ldap_url_is_not_valid": "Ldap url is not valid",
         "leave_anyway": "Leave anyway",
+        "legal_hold": "Legal Hold",
+        "legal_hold_lbl": "<bold>Legal Hold</bold>",
+        "legal_hold_status": "Legal Hold Status",
         "light_mode": "<bold>Light</bold> Mode",
         "limit_search_results_from_address_book_list_to": "Limit search results from Address Book List to",
         "link": "Link",
@@ -1988,6 +1993,12 @@
         "you_have_removed_attribute": "You have removed the {{ attributeName }} attribute",
         "you_have_updated_attribute": "You have updated the {{ attributeName }} attribute",
         "your_auth_method_is": "Your Auth Method is"
+    },
+    "legal_hold": {
+        "restore": "Restore",
+        "set_legal_hold": "Set legal hold",
+        "show_only_accounts_on_legal_hold": "Show only accounts on Legal Hold",
+        "unset_legal_hold": "Unset legal hold"
     },
     "locale": {
         "English": "English",

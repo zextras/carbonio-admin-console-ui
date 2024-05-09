@@ -578,3 +578,6 @@ export const ZIMBRA_LAST_LOGON_TIMESTAMP = 'zimbraLastLogonTimestamp';
 export const FILES_QUOTA_LIMIT = 'filesQuotaLimit';
 export const FILES_QUOTA_USED = 'filesQuotaUsed';
 export const MAILBOX_QUOTA_USED = 'mailboxQuotaUsed';
+export const LEGAL_HOLD_ROUTE_ID = 'legal_hold';
+export const PRIMARY_BAR_LEGAL_HOLD = 'pb_legalhold';
+export const FLEX_START = 'flex-start';
