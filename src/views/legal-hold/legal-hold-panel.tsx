@@ -477,11 +477,15 @@ const LegalHoldPanel: FC = () => {
 	]);
 
 	const customIconDetail = {
+		onClick: (): void => {
+			setSearchDomainName('');
+		},
 		style: {
 			width: '1.25rem',
-			height: '1.25rem'
+			height: '1.25rem',
+			cursor: 'pointer'
 		},
-		icon: 'ChevronDown'
+		icon: searchDomainName === '' ? 'ChevronDown' : 'CloseOutline'
 	};
 
 	const selectedDomain = useCallback(
