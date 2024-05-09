@@ -51,7 +51,6 @@ import {
 	USER_RECOVERY_EMAIL
 } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
-// import { getCoreAttributes } from '../../../../../services/get-core-attributes';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../../store/domain/store';
