@@ -74,7 +74,7 @@ const CreateHsmPolicy: FC<{
 
 	const onRunCustomPolicy = useCallback(() => {
 		runCustomHSMpolicy(hsmDetail);
-	}, [runCustomHSMpolicy, hsmDetail]);
+	}, [hsmDetail, runCustomHSMpolicy]);
 
 	const standardHsmPolicyWizardStep = useMemo(
 		() => [
