@@ -1271,6 +1271,7 @@
         "found_check_the_text_and_try_again": "Not found - check the text and try again",
         "frequency_value_also_updated": "The GAL Frequency value has been updated",
         "from": "From",
+        "from_date": "From date",
         "from_domain": "FromDomain",
         "gal": "GAL",
         "gal_folder_name": "GAL Folder Name",
@@ -1838,6 +1839,7 @@
         "title_and_copyrights_information": "Title & Copyrights Information",
         "title_theme_note": "The title is the name that will appear on the browser tab",
         "to": "To",
+        "to_date": "To date",
         "to_domain": "ToDomain",
         "total_acc_rights_with_delete_distribution_list_helper_text": "This list has <bold>{{totalAccRights}}</bold> shared accounts. <br /> If you delete it, the shares will be lost.",
         "true": "True",
@@ -1998,10 +2000,18 @@
         "your_auth_method_is": "Your Auth Method is"
     },
     "legal_hold": {
+        "enable_this_legal_access": "Enable this legal accesses",
+        "initialized": "INITIALIZED",
+        "legal_access": "Legal Access",
+        "legalhold_appendix": "Legal Hold appendix",
         "restore": "Restore",
+        "restore_for_legal_hold": "Restore for Legal Hold",
+        "restore_legalhold_successfully": "Restore legalhold successfully",
+        "restore_settings": "Restore Settings",
         "set_legal_hold": "Set legal hold",
         "show_only_accounts_on_legal_hold": "Show only accounts on Legal Hold",
-        "unset_legal_hold": "Unset legal hold"
+        "unset_legal_hold": "Unset legal hold",
+        "you_must_access_before_restoring": "You must enable these accesses before restoring"
     },
     "locale": {
         "English": "English",

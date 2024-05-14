@@ -31,7 +31,8 @@ import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { DomainResponse } from '../../../types';
+import RestoreAccountView from './restore/restore-account';
+import { BackupAccountItem, DomainResponse, LegalHolds } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import { MAX_DOMAIN_DISPLAY, MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { getLegalHoldList } from '../../services/get-legal-hold-list';
@@ -68,19 +69,6 @@ const CustomIcon = styled(Icon)`
 	height: 1.25rem;
 `;
 
-type LegalHolds = {
-	name: string;
-	id: string;
-	status: string;
-};
-
-type BackupAccountItem = {
-	name: string;
-	id: string;
-	status: string;
-	legalHold: string;
-};
-
 const LegalHoldPanel: FC = () => {
 	const [t] = useTranslation();
 	const screenMode = useScreenMode();
@@ -92,6 +80,7 @@ const LegalHoldPanel: FC = () => {
 	const [backupAccountList, setBackupAccountList] = useState<Array<BackupAccountItem>>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
+	const [isShowRestoreView, setIsShowRestoreView] = useState<boolean>(false);
 	const [accountRows, setAccountRows] = useState<any>([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isShowError, setIsShowError] = useState(false);
@@ -605,6 +594,10 @@ const LegalHoldPanel: FC = () => {
 		[]
 	);
 
+	const onRestore = useCallback(() => {
+		setIsShowRestoreView(true);
+	}, []);
+
 	return (
 		<Container mainAlignment="flex-start" background="gray6">
 			<Row mainAlignment="flex-start" width="100%">
@@ -678,8 +671,8 @@ const LegalHoldPanel: FC = () => {
 										type="outlined"
 										label={t('legal_hold.restore', 'Restore')}
 										color="primary"
-										onClick={(): void => undefined}
-										disabled
+										onClick={onRestore}
+										disabled={selectedAccountRows.length === 0}
 									/>
 								</Row>
 							</Row>
@@ -807,6 +800,12 @@ const LegalHoldPanel: FC = () => {
 					</Row>
 				</Container>
 			</Row>
+			{isShowRestoreView && (
+				<RestoreAccountView
+					legalHoldAccount={getLegalHoldById(selectedAccountRows[0])}
+					setIsShowRestoreView={setIsShowRestoreView}
+				/>
+			)}
 		</Container>
 	);
 };
