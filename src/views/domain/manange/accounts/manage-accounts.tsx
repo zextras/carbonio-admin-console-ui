@@ -50,7 +50,8 @@ import {
 	BACKUP_ENABLED,
 	DOMAINS_ROUTE_ID,
 	FILES_QUOTA_LIMIT,
-	FILES_QUOTA_USED
+	FILES_QUOTA_USED,
+	COS
 } from '../../../../constants';
 import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -63,7 +64,7 @@ import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
-import { getFileQuotaByAccount } from '../../../../services/get-file-quota-account';
+import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -504,7 +505,7 @@ const ManageAccounts: FC = () => {
 
 	const getFileQuotaByAccId = useCallback(
 		(accId: string): Promise<void> =>
-			getFileQuotaByAccount(accId).then((res: any) => {
+			getFileQuotaById(accId).then((res: any) => {
 				if (res?.limit) {
 					setAccDetailValue(FILES_QUOTA_LIMIT, res?.limit);
 				}
@@ -513,6 +514,16 @@ const ManageAccounts: FC = () => {
 				}
 			}),
 		[setAccDetailValue]
+	);
+
+	const getFileQuotaByCosId = useCallback(
+		(cosId: string): Promise<void> =>
+			getFileQuotaById(cosId, COS).then((res: any) => {
+				if (res?.limit) {
+					setCosDetail((prev: any) => ({ ...prev, [FILES_QUOTA_LIMIT]: res?.limit }));
+				}
+			}),
+		[]
 	);
 
 	const getAccountDetail = useCallback(
@@ -562,6 +573,7 @@ const ManageAccounts: FC = () => {
 						getCredentialList(data?.account?.[0]?.name);
 						getABQStatus(id);
 						getFileQuotaByAccId(id);
+						getFileQuotaByCosId(obj.zimbraCOSId);
 					}
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -588,6 +600,7 @@ const ManageAccounts: FC = () => {
 			getCredentialList,
 			getABQStatus,
 			getFileQuotaByAccId,
+			getFileQuotaByCosId,
 			createSnackbar,
 			t
 		]

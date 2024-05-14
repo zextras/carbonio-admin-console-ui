@@ -57,7 +57,7 @@ const HSMsettingPanel: FC = () => {
 	const [showEditHsmPolicyView, setShowEditHsmPolicyView] = useState<boolean>(false);
 	const [showDeletePolicyView, setShowDeletePolicyView] = useState<boolean>(false);
 	const serverList = useServerStore((state) => state.serverList);
-	const [isPowerstoreMoveSchedulerEnabled, setIsPowerstoreMoveSchedulerEnabled] =
+	const [isZxPowerstoreMoveSchedulingEnabled, setIsZxPowerstoreMoveSchedulingEnabled] =
 		useState<boolean>(false);
 	const [powerstoreMoveSchedulerValue, setPowerstoreMoveSchedulerValue] = useState<string>('');
 	const [powerstoreSpaceThreshold, setPowerstoreSpaceThreshold] = useState<number>(0);
@@ -71,6 +71,15 @@ const HSMsettingPanel: FC = () => {
 	const [isVolumeInProgress, setIsVolumeInProgress] = useState<boolean>(false);
 	const [isEditSaveInProgress, setIsEditSaveInProgress] = useState<boolean>(false);
 	const timer = useRef<any>();
+	const storageNotLicenced = t(
+		'label.storage_hsm_not_licensed',
+		'Cannot complete operation: storages_hsm not licensed.'
+	);
+	const urnZimbraAdmin = 'urn:zimbraAdmin';
+	const errorMessage = t(
+		'label.something_wrong_error_msg',
+		'Something went wrong. Please try again.'
+	);
 
 	const headers = useMemo(
 		() => [
@@ -84,10 +93,23 @@ const HSMsettingPanel: FC = () => {
 		[t]
 	);
 
+	const showSnackbar = useCallback(
+		(key, type, message) => {
+			createSnackbar({
+				key,
+				type,
+				label: message,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[createSnackbar]
+	);
+
 	const getHSMPolicyList = useCallback(() => {
 		fetchSoap('zextras', {
-			// eslint-disable-next-line sonarjs/no-duplicate-string
-			_jsns: 'urn:zimbraAdmin',
+			_jsns: urnZimbraAdmin,
 			module: 'ZxPowerstore',
 			action: 'getHSMPolicy',
 			targetServer: server
@@ -181,71 +203,59 @@ const HSMsettingPanel: FC = () => {
 		}
 	}, [handleClick, policies]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const setValuesFromAttributes = useCallback((attributes) => {
+		if (!attributes) return;
+		const olderValues: any = {};
+		if (attributes) {
+			if (attributes?.powerstoreMoveScheduler) {
+				const schedulePattern = attributes?.powerstoreMoveScheduler?.value?.['cron-pattern'];
+				const pattern = schedulePattern || '';
+				setPowerstoreMoveSchedulerValue(pattern);
+				olderValues.powerstoreMoveSchedulerValue = pattern;
+			}
+			if (attributes?.ZxPowerstore_SpaceThreshold) {
+				const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
+				const val = spaceThreshold || 0;
+				setPowerstoreSpaceThreshold(val);
+				olderValues.powerstoreSpaceThreshold = val;
+			}
+
+			if (attributes?.deduplicateAfterScheduledMoveBlobs) {
+				const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
+				const val = !!duplicate?.value;
+				setDeduplicateAfterScheduledMoveBlobs(val);
+				olderValues.deduplicateAfterScheduledMoveBlobs = val;
+			}
+
+			if (attributes?.ZxPowerstore_MoveSchedulingEnabled) {
+				const moveScheduling = attributes?.ZxPowerstore_MoveSchedulingEnabled?.value;
+				const val = moveScheduling === true;
+				setIsZxPowerstoreMoveSchedulingEnabled(val);
+				olderValues.isZxPowerstoreMoveSchedulingEnabled = val;
+			}
+			setOldValues(olderValues);
+		}
+	}, []);
+
 	const getZxPowerStoreServers = useCallback(() => {
 		getSoapFetchRequest(
 			`/service/extension/zextras_admin/core/getAllServers?module=zxpowerstore`
 		).then((data: any) => {
 			const serv = data?.servers;
 			if (serv && serv.length > 0) {
-				const olderValues: any = {};
 				const object: Array<unknown> = Object.values(serv).map((i: any) => Object.values(i)[0]);
 				const selectedServer = object.find((sItem: any) => sItem.name === server);
 				if (selectedServer) {
 					const values: Record<string, any> = selectedServer;
 					if (values) {
 						const attributes = values?.ZxPowerstore?.attributes;
-						if (attributes) {
-							if (attributes?.powerstoreMoveScheduler) {
-								const schedulerEnabled =
-									attributes?.powerstoreMoveScheduler?.value?.['cron-enabled'];
-								if (schedulerEnabled) {
-									setIsPowerstoreMoveSchedulerEnabled(true);
-									olderValues.isPowerstoreMoveSchedulerEnabled = true;
-								} else {
-									setIsPowerstoreMoveSchedulerEnabled(false);
-									olderValues.isPowerstoreMoveSchedulerEnabled = false;
-								}
-
-								const schedulePattern =
-									attributes?.powerstoreMoveScheduler?.value?.['cron-pattern'];
-								if (schedulePattern) {
-									setPowerstoreMoveSchedulerValue(schedulePattern);
-									olderValues.powerstoreMoveSchedulerValue = schedulePattern;
-								} else {
-									setPowerstoreMoveSchedulerValue('');
-									olderValues.powerstoreMoveSchedulerValue = '';
-								}
-							}
-							if (attributes?.ZxPowerstore_SpaceThreshold) {
-								const spaceThreshold = attributes?.ZxPowerstore_SpaceThreshold?.value;
-								if (spaceThreshold) {
-									setPowerstoreSpaceThreshold(spaceThreshold);
-									olderValues.powerstoreSpaceThreshold = spaceThreshold;
-								} else {
-									setPowerstoreSpaceThreshold(0);
-									olderValues.powerstoreSpaceThreshold = 0;
-								}
-							}
-
-							if (attributes?.deduplicateAfterScheduledMoveBlobs) {
-								const duplicate = attributes?.deduplicateAfterScheduledMoveBlobs;
-								if (duplicate?.value) {
-									setDeduplicateAfterScheduledMoveBlobs(true);
-									olderValues.deduplicateAfterScheduledMoveBlobs = true;
-								} else {
-									setDeduplicateAfterScheduledMoveBlobs(false);
-									olderValues.deduplicateAfterScheduledMoveBlobs = false;
-								}
-							}
-						}
+						setValuesFromAttributes(attributes);
 					}
 				}
-				setOldValues(olderValues);
 				setIsDirty(false);
 			}
 		});
-	}, [server]);
+	}, [server, setValuesFromAttributes]);
 
 	const getAllVolumes = useCallback(() => {
 		const serverId: any = serverList.find((item: any) => item?.name === server);
@@ -255,7 +265,7 @@ const HSMsettingPanel: FC = () => {
 			soapFetch(
 				'GetAllVolumes',
 				{
-					_jsns: 'urn:zimbraAdmin'
+					_jsns: urnZimbraAdmin
 				},
 				undefined,
 				serverId
@@ -276,13 +286,13 @@ const HSMsettingPanel: FC = () => {
 	}, [server, getZxPowerStoreServers, serverList, getAllVolumes]);
 
 	const onCancel = useCallback(() => {
-		setIsPowerstoreMoveSchedulerEnabled(oldValues?.isPowerstoreMoveSchedulerEnabled);
+		setIsZxPowerstoreMoveSchedulingEnabled(oldValues?.isZxPowerstore_MoveSchedulingEnabled);
 		setPowerstoreMoveSchedulerValue(oldValues?.powerstoreMoveSchedulerValue);
 		setPowerstoreSpaceThreshold(oldValues?.powerstoreSpaceThreshold);
 		setDeduplicateAfterScheduledMoveBlobs(oldValues?.deduplicateAfterScheduledMoveBlobs);
 		setIsDirty(false);
 	}, [
-		oldValues?.isPowerstoreMoveSchedulerEnabled,
+		oldValues?.isZxPowerstore_MoveSchedulingEnabled,
 		oldValues?.powerstoreMoveSchedulerValue,
 		oldValues?.powerstoreSpaceThreshold,
 		oldValues?.deduplicateAfterScheduledMoveBlobs
@@ -294,7 +304,7 @@ const HSMsettingPanel: FC = () => {
 			powerstoreMoveScheduler: {
 				value: {
 					'cron-pattern': powerstoreMoveSchedulerValue,
-					'cron-enabled': isPowerstoreMoveSchedulerEnabled
+					'cron-enabled': isZxPowerstoreMoveSchedulingEnabled
 				},
 				objectName: server,
 				configType: SERVER
@@ -308,84 +318,66 @@ const HSMsettingPanel: FC = () => {
 				value: deduplicateAfterScheduledMoveBlobs,
 				objectName: server,
 				configType: SERVER
+			},
+			ZxPowerstore_MoveSchedulingEnabled: {
+				value: isZxPowerstoreMoveSchedulingEnabled,
+				objectName: server,
+				configType: SERVER
 			}
 		};
 		setCoreAttributes(body)
 			.then((data: any) => {
 				setIsRequestInProgress(false);
 				if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
-					let errorMessage = t(
-						// eslint-disable-next-line sonarjs/no-duplicate-string
-						'label.something_wrong_error_msg',
-						// eslint-disable-next-line sonarjs/no-duplicate-string
-						'Something went wrong. Please try again.'
-					);
+					let errMessage = errorMessage;
 					if (data?.errors && Array.isArray(data?.errors) && data?.errors[0]?.error) {
-						errorMessage = data?.errors[0]?.error;
+						errMessage = data?.errors[0]?.error;
 					} else if (data?.error) {
-						errorMessage = data?.error;
+						errMessage = data?.error;
 					}
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: errorMessage,
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+					showSnackbar('error', 'error', errMessage);
 				} else {
 					setIsDirty(false);
 					setOldValues((prev: any) => ({
 						...prev,
-						isPowerstoreMoveSchedulerEnabled,
+						isZxPowerstoreMoveSchedulingEnabled,
 						powerstoreMoveSchedulerValue,
 						powerstoreSpaceThreshold,
 						deduplicateAfterScheduledMoveBlobs
 					}));
-					createSnackbar({
-						key: 'success',
-						type: 'success',
-						label: t(
+					showSnackbar(
+						'success',
+						'success',
+						t(
 							'label.the_last_changes_has_been_saved_successfully',
 							'Changes have been saved successfully'
-						),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+						)
+					);
 				}
 			})
 			.catch((error: any) => {
 				setIsRequestInProgress(false);
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+				showSnackbar('error', 'error', error ? error?.error : errorMessage);
 			});
 	}, [
 		powerstoreMoveSchedulerValue,
-		isPowerstoreMoveSchedulerEnabled,
-		powerstoreSpaceThreshold,
+		isZxPowerstoreMoveSchedulingEnabled,
 		server,
+		powerstoreSpaceThreshold,
 		deduplicateAfterScheduledMoveBlobs,
-		createSnackbar,
+		errorMessage,
+		showSnackbar,
 		t
 	]);
 
 	useEffect(() => {
 		if (
-			oldValues.isPowerstoreMoveSchedulerEnabled !== undefined &&
-			oldValues.isPowerstoreMoveSchedulerEnabled !== isPowerstoreMoveSchedulerEnabled
+			oldValues.isZxPowerstoreMoveSchedulingEnabled !== undefined &&
+			oldValues.isZxPowerstoreMoveSchedulingEnabled !== isZxPowerstoreMoveSchedulingEnabled
 		) {
 			setIsDirty(true);
 		}
-	}, [oldValues.isPowerstoreMoveSchedulerEnabled, isPowerstoreMoveSchedulerEnabled]);
+	}, [oldValues.isZxPowerstoreMoveSchedulingEnabled, isZxPowerstoreMoveSchedulingEnabled]);
 
 	useEffect(() => {
 		if (
@@ -419,11 +411,11 @@ const HSMsettingPanel: FC = () => {
 			setIsRequestInProgress(true);
 			const hType = policies.find((item: any) => item?.hsmQuery === selectedPolicies[0]);
 			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+				_jsns: urnZimbraAdmin,
 				module: 'ZxPowerstore',
 				action: 'removeHSMPolicy',
 				targetServer: server,
-				hsmPolicy: `${getHSMType(hType?.hsmType)}${selectedPolicies[0]}`
+				hsmPolicy: `${getHSMType(hType?.hsmType)}${selectedPolicies[0]}`.trim()
 			})
 				.then((res: any) => {
 					setIsRequestInProgress(false);
@@ -436,23 +428,17 @@ const HSMsettingPanel: FC = () => {
 							setIsEditSaveInProgress(false);
 							if (isEditSave) {
 								setShowEditHsmPolicyView(false);
-								createSnackbar({
-									key: 'success',
-									type: 'success',
-									label: t('hsm.edit_hsm_policy_success', 'HSM Policy updated successfully'),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
+								showSnackbar(
+									'success',
+									'success',
+									t('hsm.edit_hsm_policy_success', 'HSM Policy updated successfully')
+								);
 							} else {
-								createSnackbar({
-									key: 'success',
-									type: 'success',
-									label: t('hsm.hsm_policy_correctly_deleted', 'HSM Policy was correctly deleted'),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
+								showSnackbar(
+									'success',
+									'success',
+									t('hsm.hsm_policy_correctly_deleted', 'HSM Policy was correctly deleted')
+								);
 							}
 						}
 					}
@@ -460,22 +446,12 @@ const HSMsettingPanel: FC = () => {
 				.catch((error) => {
 					setIsRequestInProgress(false);
 					setIsEditSaveInProgress(false);
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+					showSnackbar('error', 'error', error?.message ? error?.message : errorMessage);
 				});
 		},
-		[server, selectedPolicies, t, createSnackbar, getHSMPolicyList, policies]
+		[policies, server, selectedPolicies, getHSMPolicyList, showSnackbar, t, errorMessage]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const generatePolicyString = useCallback((hsmPolicyDetail: any) => {
 		let policy = '';
 		const criteriaScale: string[] = [];
@@ -500,13 +476,7 @@ const HSMsettingPanel: FC = () => {
 		}
 		if (hsmPolicyDetail?.policyCriteria.length > 0) {
 			hsmPolicyDetail?.policyCriteria.forEach((item: any, index: number) => {
-				if (item?.option === 'before') {
-					policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
-				} else if (item?.option === 'after') {
-					policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
-				} else if (item?.option === 'larger' || item?.option === 'smaller') {
-					policy += `${item?.option}:${item?.dateScale}${item?.scale} `;
-				}
+				policy += `${item?.option}:-${item?.dateScale}${item?.scale} `;
 			});
 		}
 		if (hsmPolicyDetail?.sourceVolume?.length > 0) {
@@ -520,128 +490,100 @@ const HSMsettingPanel: FC = () => {
 		return policy;
 	}, []);
 
-	const createHSMpolicy = useCallback(
-		(hsmPolicyDetail: any, isEditSave?: boolean) => {
-			const policy = generatePolicyString(hsmPolicyDetail);
-			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
+	const parseResponse = useCallback(
+		(isEditSave, info) => {
+			if (info?.ok) {
+				if (isEditSave) {
+					onDeletePolicy(isEditSave);
+				} else {
+					setShowCreateHsmPolicyView(false);
+					getHSMPolicyList();
+					showSnackbar(
+						'success',
+						'success',
+						t('hsm.policies_added_successfully', 'Policies have been added successfully')
+					);
+				}
+			} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
+				setIsEditSaveInProgress(false);
+				showSnackbar('error', 'error', storageNotLicenced);
+			} else if (info?.error?.message) {
+				setIsEditSaveInProgress(false);
+				showSnackbar('error', 'error', info?.error?.message);
+			} else if (info?.exception?.message) {
+				setIsEditSaveInProgress(false);
+				showSnackbar('error', 'error', info?.exception?.message);
+			}
+		},
+		[getHSMPolicyList, onDeletePolicy, showSnackbar, storageNotLicenced, t]
+	);
+
+	const hsmPolicyOperation = useCallback(
+		(hsmPolicyDetail?: any, isEditSave?: boolean, isRunCustomPolicy?: boolean) => {
+			const request: any = {
+				_jsns: urnZimbraAdmin,
 				module: 'ZxPowerstore',
-				action: 'setHSMPolicy',
+				action: isRunCustomPolicy ? 'doMoveBlobs' : 'setHSMPolicy',
 				targetServer: server,
-				hsmPolicy: policy,
 				policyToAdd: true
+			};
+			if (isRunCustomPolicy) {
+				request.command = 'start';
+			}
+			if (hsmPolicyDetail) {
+				if (
+					hsmPolicyDetail?.isContactEnabled === false &&
+					hsmPolicyDetail?.isDocumentEnabled === false &&
+					hsmPolicyDetail?.isEventEnabled === false &&
+					hsmPolicyDetail?.isMessageEnabled === false
+				) {
+					showSnackbar(
+						'error',
+						'error',
+						t('hsm.select_at_least_one_item', 'Select at least one item')
+					);
+					return;
+				}
+				if (hsmPolicyDetail?.policyCriteria.length === 0) {
+					showSnackbar(
+						'error',
+						'error',
+						t('hsm.add_at_least_one_criteria', 'Add at least one criteria')
+					);
+					return;
+				}
+				const policy = generatePolicyString(hsmPolicyDetail);
+				request.hsmPolicy = policy.trim();
+			}
+			fetchSoap('zextras', {
+				...request
 			})
 				.then((res: any) => {
 					if (res?.Body?.response?.content) {
 						const info = JSON.parse(res?.Body?.response?.content);
-						if (info?.ok) {
-							if (isEditSave) {
-								onDeletePolicy(isEditSave);
-							} else {
-								setShowCreateHsmPolicyView(false);
-								getHSMPolicyList();
-								createSnackbar({
-									key: 'success',
-									type: 'success',
-									label: t(
-										'hsm.policies_added_successfully',
-										'Policies have been added successfully'
-									),
-									autoHideTimeout: 3000,
-									hideButton: true,
-									replace: true
-								});
-							}
-						} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
-							setIsEditSaveInProgress(false);
-							createSnackbar({
-								key: 'error',
-								type: 'error',
-								label: t(
-									// eslint-disable-next-line sonarjs/no-duplicate-string
-									'label.storage_hsm_not_licensed',
-									// eslint-disable-next-line sonarjs/no-duplicate-string
-									'Cannot complete operation: storages_hsm not licensed.'
-								),
-								autoHideTimeout: 3000,
-								hideButton: true,
-								replace: true
-							});
-						}
+						parseResponse(isEditSave, info);
 					}
 				})
 				.catch((error) => {
 					setIsEditSaveInProgress(false);
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+					showSnackbar('error', 'error', error?.message ? error?.message : errorMessage);
 				});
 		},
-		[generatePolicyString, server, onDeletePolicy, getHSMPolicyList, createSnackbar, t]
+		[errorMessage, generatePolicyString, parseResponse, server, showSnackbar, t]
+	);
+
+	const createHSMpolicy = useCallback(
+		(hsmPolicyDetail: any, isEditSave?: boolean) => {
+			hsmPolicyOperation(hsmPolicyDetail, isEditSave);
+		},
+		[hsmPolicyOperation]
 	);
 
 	const runCustomHSMpolicy = useCallback(
 		(hsmPolicyDetail: any) => {
-			const policy = generatePolicyString(hsmPolicyDetail);
-			fetchSoap('zextras', {
-				_jsns: 'urn:zimbraAdmin',
-				module: 'ZxPowerstore',
-				action: 'doMoveBlobs',
-				command: 'start',
-				customHSMPolicy: policy,
-				targetServer: server
-			})
-				.then((res: any) => {
-					if (res?.Body?.response?.content) {
-						const info = JSON.parse(res?.Body?.response?.content);
-						if (info?.ok) {
-							setShowCreateHsmPolicyView(false);
-							createSnackbar({
-								key: 'success',
-								type: 'success',
-								label: t('hsm.policy_is_correctly_running', 'The policy is correctly running'),
-								autoHideTimeout: 3000,
-								hideButton: true,
-								replace: true
-							});
-						} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
-							setIsEditSaveInProgress(false);
-							createSnackbar({
-								key: 'error',
-								type: 'error',
-								label: t(
-									'label.storage_hsm_not_licensed',
-									'Cannot complete operation: storages_hsm not licensed.'
-								),
-								autoHideTimeout: 3000,
-								hideButton: true,
-								replace: true
-							});
-						}
-					}
-				})
-				.catch((error) => {
-					setIsEditSaveInProgress(false);
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message
-							? error?.message
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				});
+			hsmPolicyOperation(hsmPolicyDetail, undefined, true);
 		},
-		[generatePolicyString, server, createSnackbar, t]
+		[hsmPolicyOperation]
 	);
 
 	const onEditSave = useCallback(
@@ -654,58 +596,8 @@ const HSMsettingPanel: FC = () => {
 
 	const runAllHSMpolicy = useCallback(() => {
 		setIsRequestInProgress(true);
-		fetchSoap('zextras', {
-			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxPowerstore',
-			action: 'doMoveBlobs',
-			command: 'start',
-			targetServer: server
-		})
-			.then((res: any) => {
-				setIsRequestInProgress(false);
-				if (res?.Body?.response?.content) {
-					const info = JSON.parse(res?.Body?.response?.content);
-					if (info?.ok) {
-						setIsEditSaveInProgress(false);
-						createSnackbar({
-							key: 'success',
-							type: 'success',
-							label: t('hsm.policies_are_running', 'The HSM Policies are running'),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-					} else if (info?.error && info?.error?.code === 'MODULE_OR_FEATURE_NOT_LICENSED') {
-						setIsEditSaveInProgress(false);
-						createSnackbar({
-							key: 'error',
-							type: 'error',
-							label: t(
-								'label.storage_hsm_not_licensed',
-								'Cannot complete operation: storages_hsm not licensed.'
-							),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
-					}
-				}
-			})
-			.catch((error) => {
-				setIsRequestInProgress(false);
-				setIsEditSaveInProgress(false);
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message
-						? error?.message
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-			});
-	}, [createSnackbar, server, t]);
+		hsmPolicyOperation(undefined, undefined, true);
+	}, [hsmPolicyOperation]);
 
 	return (
 		<Container mainAlignment="flex-start" width="100%">
@@ -782,9 +674,9 @@ const HSMsettingPanel: FC = () => {
 					<Padding bottom="large">
 						<Switch
 							label={t('hsm.enable_scheduler', 'Enable Scheduler')}
-							value={isPowerstoreMoveSchedulerEnabled}
+							value={isZxPowerstoreMoveSchedulingEnabled}
 							onClick={(): void =>
-								setIsPowerstoreMoveSchedulerEnabled(!isPowerstoreMoveSchedulerEnabled)
+								setIsZxPowerstoreMoveSchedulingEnabled(!isZxPowerstoreMoveSchedulingEnabled)
 							}
 							iconColor="primary"
 						/>
