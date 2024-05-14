@@ -479,7 +479,7 @@ const DomainResources: FC = () => {
 					position: 'relative',
 					overflow: 'auto'
 				}}
-				padding={{ top: 'large' }}
+				padding="small"
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">

@@ -349,6 +349,7 @@ const ActiveSync: FC = () => {
 						orientation="horizontal"
 						mainAlignment="space-between"
 						crossAlignment="flex-start"
+						padding={{ top: 'large' }}
 						width="fill"
 						style={{
 							position: 'relative'

@@ -28,7 +28,6 @@ import {
 import { debounce, flatMapDeep, filter } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
-import styled from 'styled-components';
 
 import { AccountContext } from './account-context';
 import { AccountType } from './account-types/account-types';
@@ -77,6 +76,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
+import ScrollContainer from '../../../components/scrollComponent';
 
 type UserSession = {
 	name: string;
@@ -85,13 +85,6 @@ type UserSession = {
 	ip: string;
 	service: string;
 };
-
-const ScrollContainer = styled(Container)<{ isTableTooTall: boolean }>`
-	position: sticky;
-	bottom: ${({ isTableTooTall }): string => (isTableTooTall ? '0' : '-6rem')};
-	background: ${({ theme }): string => theme.palette.gray6.regular};
-	opacity: 0.7;
-`;
 
 const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
@@ -1023,16 +1016,23 @@ const ManageAccounts: FC = () => {
 	}, []);
 
 	useEffect(() => {
+		const table: any = tableRef.current;
+
 		const handleResize = (): void => {
-			if (tableRef.current) {
-				const tableHeight = tableRef.current.clientHeight + 400;
-				const viewportHeight = window?.innerHeight;
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
 				setIsTableTooTall(tableHeight > viewportHeight);
 			}
 		};
-		handleResize();
-		window.addEventListener('resize', handleResize);
-	}, [tableRef?.current?.clientHeight]);
+
+		const resizeObserver = new ResizeObserver(handleResize);
+		resizeObserver.observe(table);
+
+		return () => {
+			resizeObserver.disconnect();
+		};
+	}, []);
 	const nextPage = (): void => {
 		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
 	};
@@ -1113,8 +1113,6 @@ const ManageAccounts: FC = () => {
 			setDefaultCOS
 		]
 	);
-
-	console.log(theme?.palette.gray6.regular, 'tarun');
 
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
@@ -1268,24 +1266,13 @@ const ManageAccounts: FC = () => {
 										bottom: isTableTooTall ? '0' : '-4rem'
 									}}
 								>
-									{isTableTooTall && (
-										<ScrollContainer isTableTooTall={isTableTooTall} padding="small">
-											<Container orientation="horizontal" width="100%">
-												<Icon icon="ArrowheadDown" size="large" />
-												<Text size="large" weight="regular" color="gray">
-													{t(
-														'label.scroll_down_to_view_other_items',
-														'Scroll down to view other items'
-													)}
-												</Text>
-											</Container>
-										</ScrollContainer>
-									)}
+									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
 										orientation="horizontal"
 										mainAlignment="space-between"
 										background="gray6"
 										width="100%"
+										padding={{ right: 'extralarge' }}
 										height="auto"
 									>
 										<Container crossAlignment="flex-start">
