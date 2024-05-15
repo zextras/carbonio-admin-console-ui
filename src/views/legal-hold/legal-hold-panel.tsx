@@ -34,7 +34,7 @@ import styled from 'styled-components';
 import RestoreAccountView from './restore/restore-account';
 import { BackupAccountItem, DomainResponse, LegalHolds } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
-import { MAX_DOMAIN_DISPLAY, MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
+import { ERROR_LABLE, MAX_DOMAIN_DISPLAY, MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
 import { getLegalHoldList } from '../../services/get-legal-hold-list';
 import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
@@ -106,6 +106,20 @@ const LegalHoldPanel: FC = () => {
 	const [searchDomainName, setSearchDomainName] = useState<string>(domainName);
 	const [selectedDomainName, setSelectedDomainName] = useState<string>(domainName);
 	const [isEnableLegalHold, setIsEnableLegalHold] = useState<boolean>(false);
+
+	const showSnackbar = useCallback(
+		(key, type, msg) => {
+			createSnackbar({
+				key,
+				type,
+				label: msg,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[createSnackbar]
+	);
 
 	const loadingComponent = [
 		{
@@ -236,14 +250,7 @@ const LegalHoldPanel: FC = () => {
 					const page = data?.maxPage;
 
 					if (error) {
-						createSnackbar({
-							key: 'error',
-							type: 'error',
-							label: error,
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true
-						});
+						showSnackbar(ERROR_LABLE, ERROR_LABLE, error);
 						return;
 					}
 
@@ -256,20 +263,13 @@ const LegalHoldPanel: FC = () => {
 				})
 				.catch((error: any) => {
 					setIsRequestInProgress(false);
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: error?.message ? error?.message : errorMessage,
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+					showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ? error?.message : errorMessage);
 				});
 		},
 		[
 			accountOffset,
 			accountLimit,
-			createSnackbar,
+			showSnackbar,
 			setBackupAccountPage,
 			setBackupAccountAndPage,
 			errorMessage
@@ -327,16 +327,9 @@ const LegalHoldPanel: FC = () => {
 				}
 			})
 			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error?.message ? error?.message : errorMessage,
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+				showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ? error?.message : errorMessage);
 			});
-	}, [createSnackbar, errorMessage]);
+	}, [errorMessage, showSnackbar]);
 
 	useEffect(() => {
 		getAllLegalHold();
@@ -432,14 +425,7 @@ const LegalHoldPanel: FC = () => {
 				const parseData = JSON.parse(data?.Body?.response?.content);
 				const key = Object.keys(parseData?.response)[0];
 				if (key.toString().includes('No account found for legal hold')) {
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: key ?? errorMessage,
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
+					showSnackbar(ERROR_LABLE, ERROR_LABLE, key ?? errorMessage);
 				} else {
 					const updateAccounts = accounts;
 					const updatedLegalAccounts = allLegalHoldAccountList.map((item) => {
@@ -459,7 +445,7 @@ const LegalHoldPanel: FC = () => {
 	}, [
 		selectedAccountRows,
 		getLegalHoldById,
-		createSnackbar,
+		showSnackbar,
 		errorMessage,
 		accounts,
 		allLegalHoldAccountList
@@ -595,8 +581,17 @@ const LegalHoldPanel: FC = () => {
 	);
 
 	const onRestore = useCallback(() => {
+		const selectedItem = getLegalHoldById(selectedAccountRows[0]);
+		if (selectedItem?.status === 'unset') {
+			showSnackbar(
+				ERROR_LABLE,
+				ERROR_LABLE,
+				t('legal_hold.legal_hold_status_not_set', 'Legal hold not set in this account')
+			);
+			return;
+		}
 		setIsShowRestoreView(true);
-	}, []);
+	}, [getLegalHoldById, selectedAccountRows, showSnackbar, t]);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6">

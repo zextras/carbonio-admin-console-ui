@@ -22,7 +22,7 @@ import { cloneDeep, debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { LegalHolds } from '../../../../types';
-import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { ASC, DESC, ERROR_LABLE, RECORD_DISPLAY_LIMIT, SUCCESS_LABLE } from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -40,8 +40,7 @@ const RestoreAccountView: FC<{
 	const [account, setAccount] = useState<string>(legalHoldAccount?.name ?? '');
 	const [accountList, setAccountList] = useState<any[]>([]);
 	const [searchAccountResult, setSearchAccountResult] = useState<any[]>([]);
-	const [isSearchAccountRequestInProgress, setIsSearchAccountRequestInProgress] =
-		useState<boolean>(false);
+	const [isRequestInprogress, setIsRequestInprogress] = useState<boolean>(false);
 	const offset = 0;
 	const limit = RECORD_DISPLAY_LIMIT;
 	const [sortedColumn, setSortedColumn] = useState<string>('name');
@@ -107,7 +106,7 @@ const RestoreAccountView: FC<{
 
 	const getAccountList = useCallback(
 		(searchStr) => {
-			setIsSearchAccountRequestInProgress(true);
+			setIsRequestInprogress(true);
 			const type = 'accounts';
 			const attrs = 'displayName,zimbraId';
 			const query = `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
@@ -122,17 +121,17 @@ const RestoreAccountView: FC<{
 				sortOrder
 			)
 				.then((data) => {
-					setIsSearchAccountRequestInProgress(false);
+					setIsRequestInprogress(false);
 					const accountListResponse: any = data?.account || [];
 					if (accountListResponse && Array.isArray(accountListResponse)) {
 						setSearchAccountResult(accountListResponse);
 					}
 				})
 				.catch((error) => {
-					setIsSearchAccountRequestInProgress(false);
+					setIsRequestInprogress(false);
 					showSnackbar(
-						'error',
-						'error',
+						ERROR_LABLE,
+						ERROR_LABLE,
 						error
 							? error?.error
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
@@ -221,6 +220,30 @@ const RestoreAccountView: FC<{
 	}, [accountList]);
 
 	const onRestore = useCallback(() => {
+		if (legalHoldAppendix === '') {
+			showSnackbar(
+				ERROR_LABLE,
+				ERROR_LABLE,
+				t('legal_hold.legal_hold_appendix_blank_error', 'Legal Hold appendix should not be blank')
+			);
+			return;
+		}
+		if (account === '') {
+			showSnackbar(
+				ERROR_LABLE,
+				ERROR_LABLE,
+				t('legal_hold.legal_hold_account_blank_error', 'Legal Hold account should not be blank')
+			);
+			return;
+		}
+		if (fromDate === undefined || fromDate === null) {
+			showSnackbar(
+				ERROR_LABLE,
+				ERROR_LABLE,
+				t('legal_hold.legal_hold_fromdate_blank_error', 'Legal Hold from date should not be blank')
+			);
+			return;
+		}
 		const destinationAccount = `${legalHoldAppendix}_${account}`;
 		const sourceAccount = account;
 		const date = fromDate?.getTime();
@@ -228,16 +251,16 @@ const RestoreAccountView: FC<{
 			doRestoreOnNewLegalHoldAccount(sourceAccount, destinationAccount, date)
 				.then(() => {
 					showSnackbar(
-						'success',
-						'success',
+						SUCCESS_LABLE,
+						SUCCESS_LABLE,
 						t('legal_hold.restore_legalhold_successfully', 'Restore Legal Hold successfully')
 					);
 					setIsShowRestoreView(false);
 				})
 				.catch((error) => {
 					showSnackbar(
-						'error',
-						'error',
+						ERROR_LABLE,
+						ERROR_LABLE,
 						error
 							? error?.error
 							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
