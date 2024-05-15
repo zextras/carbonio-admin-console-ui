@@ -462,7 +462,9 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? globalOptionItems.filter(
 						(item: ManageOptions) =>
-							item?.id !== GLOBAL_WHITELABEL_SETTINGS && item?.id !== GLOBAL_2FA_ROUTE
+							item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
+							item?.id !== GLOBAL_2FA_ROUTE &&
+							item.id !== GLOBAL_ACTIVE_SYNC_ROUTE
 				  )
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
