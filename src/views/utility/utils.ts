@@ -987,111 +987,124 @@ export const delegateDomainHeaders = (
 	}
 ];
 
-export const volTableHeader = (t: TFunction): THeader[] => [
-	{
-		id: 'id',
-		label: t('volume.volume_header.id', 'ID'),
-		width: '5%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'name',
-		label: t('volume.volume_header.name', 'Name'),
-		width: '30%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'storeType',
-		label: t('volume.volume_header.storageType', 'Storage Type'),
-		width: '25%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'path',
-		label: t('volume.volume_header.path', 'Path'),
-		width: '30%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'current',
-		label: t('volume.volume_header.current', 'Current'),
-		width: '18%',
-		align: 'left',
-		bold: true
-	},
-	{
-		id: 'compression',
-		label: t('volume.volume_header.compression', 'Compression'),
-		width: '25%',
-		align: 'left',
-		bold: true
-	}
-];
+export const volTableHeader = (t: TFunction, isAdvanced: boolean): THeader[] =>
+	[
+		{
+			id: 'id',
+			label: t('volume.volume_header.id', 'ID'),
+			width: '5%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'name',
+			label: t('volume.volume_header.name', 'Name'),
+			width: '30%',
+			bold: true,
+			align: 'left'
+		},
+		isAdvanced && {
+			id: 'storeType',
+			label: t('volume.volume_header.storageType', 'Storage Type'),
+			width: '25%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'path',
+			label: t('volume.volume_header.path', 'Path'),
+			width: '30%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'current',
+			label: t('volume.volume_header.current', 'Current'),
+			width: '18%',
+			align: 'left',
+			bold: true
+		},
+		{
+			id: 'compression',
+			label: t('volume.volume_header.compression', 'Compression'),
+			width: '25%',
+			align: 'left',
+			bold: true
+		}
+	].filter(Boolean) as THeader[];
 
 export const indexerHeaders = (
-	t: TFunction
+	t: TFunction,
+	isAdvanced: boolean
 ): Array<{
 	id: string;
 	label: string;
 	width: string;
 	bold: boolean;
 	align: string;
-}> => [
-	{
-		id: 'id',
-		label: t('volume.volume_indexer_header.id', 'ID'),
-		width: '5%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'name',
-		label: t('volume.volume_indexer_header.name', 'Name'),
-		width: '30%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'storeType',
-		label: t('volume.volume_header.storageType', 'Storage Type'),
-		width: '25%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'path',
-		label: t('volume.volume_indexer_header.path', 'Path'),
-		width: '61%',
-		align: 'left',
-		bold: true
-	},
-	{
-		id: 'current',
-		label: t('volume.volume_indexer_header.current', 'Current'),
-		width: '14%',
-		align: 'left',
-		bold: true
-	}
-];
+}> =>
+	[
+		{
+			id: 'id',
+			label: t('volume.volume_indexer_header.id', 'ID'),
+			width: '5%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'name',
+			label: t('volume.volume_indexer_header.name', 'Name'),
+			width: '30%',
+			bold: true,
+			align: 'left'
+		},
+		isAdvanced && {
+			id: 'storeType',
+			label: t('volume.volume_header.storageType', 'Storage Type'),
+			width: '25%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'path',
+			label: t('volume.volume_indexer_header.path', 'Path'),
+			width: '30%',
+			align: 'left',
+			bold: true
+		},
+		{
+			id: 'current',
+			label: t('volume.volume_indexer_header.current', 'Current'),
+			width: '45%',
+			align: 'left',
+			bold: true
+		}
+	].filter(Boolean) as Array<{
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+		align: string;
+	}>;
 
-export const volumeTypeList = (t: TFunction): Array<{ label: string; value: number }> => [
-	{
-		label: t('volume.volume_type.primary', 'Primary'),
-		value: 1
-	},
-	{
-		label: t('volume.volume_type.secondary', 'Secondary'),
-		value: 2
-	},
-	{
-		label: t('volume.volume_type.index', 'Index'),
-		value: 10
-	}
-];
+export const volumeTypeList = (
+	t: TFunction,
+	isAdvanced?: boolean
+): Array<{ label: string; value: number }> =>
+	[
+		{
+			label: t('volume.volume_type.primary', 'Primary'),
+			value: 1
+		},
+		isAdvanced && {
+			label: t('volume.volume_type.secondary', 'Secondary'),
+			value: 2
+		},
+		{
+			label: t('volume.volume_type.index', 'Index'),
+			value: 10
+		}
+	].filter(Boolean) as Array<{ label: string; value: number }>;
 
 export const volumeAllocationList = (t: TFunction): Array<{ label: string; value: number }> => [
 	{

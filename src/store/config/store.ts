@@ -16,6 +16,7 @@ type ConfigState = {
 	removeConfig: () => void;
 	removeConfigItems: (config: any) => void;
 	updateConfig: (key: any, value: any) => void;
+	updateAllConfig: (newConfig: Array<any>) => void;
 	setUserId: (userName: string) => void;
 };
 
@@ -55,7 +56,13 @@ export const useConfigStore = create<ConfigState>()(
 								}
 								return item;
 						  })
-						: [...state.config, ...[{ n: key, _content: value }]];
+						: [...state.config, { n: key, _content: value }];
+				})
+			),
+		updateAllConfig: (newConfig: Array<any>): void =>
+			set(
+				produce((state: any) => {
+					state.config = [...newConfig];
 				})
 			)
 	}))

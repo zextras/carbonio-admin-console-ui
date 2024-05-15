@@ -336,7 +336,6 @@
         "no_auto_accept_or_decline": "Kullanıcı uygun olsa bile otomatik kabul etme",
         "add_regex": "REGEX EKLE",
         "who_needs_receive_this_email": "Bu eposta kime gönderilmeli?",
-        "who_is_in_this_list": "Bu listede kim var?",
         "volume_min_threshold": "Min. Aralık",
         "volume_max_quota_allowed": "İzin Verilen Maksimum Kota",
         "volume_main": "Temel Depolama Hacmi",
@@ -706,9 +705,9 @@
         "domain_certificate_ca_chain": "Alan Adı Sertifika CA Zincir",
         "domain_certificate_private_key": "Alan Adı Özel Anahtarı",
         "download": "İNDİR",
+        "download_plural": "",
         "download_pdf": "PDF İNDİR",
         "load_FILE": "DOSYA YÜKLE",
-        "load_and_verify_certificate": "YÜKLE VE SERTİFİKAYI ONAYLA",
         "load_certificate_message": "Detaylarını görmek için sertifikayı yükleyin!<br />Başlamak için<strong>“YÜKLE VE SERTİFİKAYI ONAYLA +”</strong> tıklayın",
         "load_copy_certi": "Sertifikanızı yükleyin veya kopyalayın",
         "load_you_cert_file": "Sertifika dosyasını yükleyin",
@@ -1146,7 +1145,24 @@
         "what_to_trust": "Neye güvenmeli?",
         "you_have_no_sufficient_administrationr_rights_to_see_this_section": "Bu bölümü görmek için yeterli yönetim hakkınız yok",
         "unlimited_size_quota": "Sınırsızdan kotadan {{usedQuota}} MB kullanıldı",
-        "create_distribution_list_msg": "Sol üst köşedeki <bold>Oluştur</bold> düğmesine veya buradaki Ekle (<bold>+</bold>) simgesine tıklayıp yeni bir Dağıtım Listesi oluşturabilirsiniz"
+        "create_distribution_list_msg": "Sol üst köşedeki <bold>Oluştur</bold> düğmesine veya buradaki Ekle (<bold>+</bold>) simgesine tıklayıp yeni bir Dağıtım Listesi oluşturabilirsiniz",
+        "mailstores_list": "Posta Depolama Listesi",
+        "enter_valid_email_address": "Geçerli bir e-posta adresi girin",
+        "has_backup": "Yedekleme Var",
+        "interactive": "Etkileşimli",
+        "invalid_primary_color_dark_mode": "Koyu Renk Modu için Ana Renk geçerli değil",
+        "max_mainbox_quota_for_the_mails_in_gb": "Postalar için maksimum posta kutusu kotası (GB)",
+        "not_available": "Kullanılamiyor",
+        "strict": "Sıkı",
+        "user_can_ask_for_forgotten_password_token": "Kullanıcı unutulmuş bir parola giriş bilgisi isteyebilir",
+        "user_recovery_email": "Kullanıcı Kurtarma E - posta adresi",
+        "validate_ip_Address_text": "Lütfen geçerli bir IP adresi girin.",
+        "verified": "Doğrulandı",
+        "forgotten_password": "Parolamı Unuttum",
+        "show_forget_password_link": "Giriş sayfasında \"Parolamı Unuttum\" bağlantısını göster",
+        "permissive": "İzin",
+        "enable_secure_connection": "Güvenli Bağlantı Kullan (StartTLS/SSL)",
+        "invalid_primary_color_light_mode": "Açık Renk Modu için Ana Renk geçerli değil"
     },
     "timezone": {
         "asia_gaza": "{{value}} Gaza",
@@ -1417,7 +1433,9 @@
             "modules": "Modüller",
             "refresh": "Yenile",
             "type": "Tür",
-            "valid_until": "Geçerlilik bitiş tarihi"
+            "valid_until": "Geçerlilik bitiş tarihi",
+            "refresh_subscription_last_check": "Aboneliği Güncelle(Son Kontrol)",
+            "provider": "Sağlayıcı"
         }
     },
     "domain": {
@@ -1751,9 +1769,7 @@
         "max_user_specific_forwarding_address": "Maksimum sayıda iletim adresleri",
         "read_receipt_settings": "Alındı ayarlarını oku",
         "select_cos_to_include_in_domain": "Bu alanadına eklemek için bir Servis Paketi SEÇİN",
-        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "kullanıcı tarafından belirtilen iletme adresleri+ kullanıcıya özgü iletme adreslerinin maksimum sayısı",
-        "handled_accounts": "işlenen Hesaplar",
-        "handled_domains": "işlenen Alan Adları"
+        "user_specified_forwarding_addresses_max_number_of_user_specific_forwarding_addresses": "kullanıcı tarafından belirtilen iletme adresleri+ kullanıcıya özgü iletme adreslerinin maksimum sayısı"
     },
     "locale": {
         "English": "English",
@@ -2068,7 +2084,11 @@
         "send_recipients_see_the_mail": "Gönder {{right}} (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)",
         "send_as_recipients": "Kişi Adından Gönderim (alanlar gönderen eposta adresi olarak {{targetEmail}} görecek)",
         "abq_status": "ABQ Durumu",
-        "otp_devices": "Tek Kullanımlık Şifre Cihazları"
+        "otp_devices": "Tek Kullanımlık Şifre Cihazları",
+        "as_new_email_arrives": "Yeni e-posta gelince",
+        "enable_new_mail_notifications": "Yeni Posta Bildirimlerini Etkinleştir",
+        "hidden_in_gal": "GAL içinde gizli",
+        "enable_new_mail_toast_notification": "Yeni Posta Anlık Bildirimi Etkinleştir"
     },
     "connection": {
         "access_key": "Access Key",
@@ -2423,13 +2443,18 @@
         "non_smtp_command": "NonSMTP Komutu",
         "spam_to_junk_tolerance": "Spam - Junk toleransı",
         "tolerance_for_spam_blocking": "Spam Engelleme Toleransı",
-        "tolerance_for_spam_delivery": "Spam Gönderim Toleransı"
+        "tolerance_for_spam_delivery": "Spam Gönderim Toleransı",
+        "smtpd_not_valid_error": "Smtpd gönderen giriş eşleştirmeleri geçerli değil",
+        "space_not_allowed_in_antivirus_mirror": "Antivirüs yedek kopya sunucusunda boşluğa izin verilmez",
+        "smtpd_sender_login_maps": "Smtpd gönderen giriş eşleştirmeleri",
+        "allowed_valid_antivirus_mirror": "Antivirüs yedek kopya sunucusu geçerli değil"
     },
     "mat": {
         "add_here_any_blocked_extension": "Buraya herhangi bir Engellenen Uzantı ekleyin"
     },
     "error": {
-        "one_or_more_ip_invalid": "Bir veya daha fazla IP geçersiz"
+        "one_or_more_ip_invalid": "Bir veya daha fazla IP geçersiz",
+        "invalid_ip_address_error_text": "Desteklenen IP yazımı: ipv4 için ipv4/netmask ve ipv6 için [ipv6]/netmask"
     },
     "action": {
         "click_open": "Açmak için tıklayın",
@@ -2456,7 +2481,13 @@
         "delete_and_recreate_quarantine": "KARANTİNA HESABINI SİL VE YENİDEN OLUŞTUR",
         "message_delivered": "Mesaj teslim edildi",
         "delete_and_recrate_quarantine_account_warning": "Karantina hesabını silmek ve yeniden oluşturmak istediğinizden emin misiniz?",
-        "not_quarantine_account": "Henüz hiçbir alan adında karantina hesabı yok. Sistem karantina hesabı oluşturmak ister misiniz?"
+        "not_quarantine_account": "Henüz hiçbir alan adında karantina hesabı yok. Sistem karantina hesabı oluşturmak ister misiniz?",
+        "no_cancel": "HAYIR, İPTAL ET",
+        "refresh_list": "LİSTEYİ YENİLE",
+        "yes_deliver": "EVET, TESLİM ET",
+        "download": "İNDİR",
+        "is_content_email_safe": "E - postanın içeriği güvenli mi?",
+        "please_note_email_contains_dangerous_file_not_be_delivered": "E - posta hala tehlikeli bir dosya içeriyorsa teslim edilmeyeceğini lütfen unutmayın"
     },
     "messages": {
         "no_content": "Bu mesajda metin içeriği yok",

@@ -816,7 +816,7 @@ const ModifyVolume: FC<{
 							crossAlignment="center"
 							background="gray6"
 						>
-							<Row width="48%">
+							<Row width={isAdvanced ? '48%' : '100%'}>
 								<Radio
 									label={t('label.primary_volume', 'This is a Primary Volume')}
 									value={PRIMARY_TYPE_VALUE}
@@ -827,17 +827,19 @@ const ModifyVolume: FC<{
 									iconColor="primary"
 								/>
 							</Row>
-							<Row width="48%">
-								<Radio
-									label={t('label.secondary_volume', 'This is a Secondary Volume')}
-									value={SECONDARY_TYPE_VALUE}
-									checked={type?.value === 2}
-									onClick={(): void => {
-										onVolumeTypeChange(2);
-									}}
-									iconColor="primary"
-								/>
-							</Row>
+							{isAdvanced && (
+								<Row width="48%">
+									<Radio
+										label={t('label.secondary_volume', 'This is a Secondary Volume')}
+										value={SECONDARY_TYPE_VALUE}
+										checked={type?.value === 2}
+										onClick={(): void => {
+											onVolumeTypeChange(2);
+										}}
+										iconColor="primary"
+									/>
+								</Row>
+							)}
 						</Row>
 						<Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
 							{volumeDetail?.type !== 10 && (

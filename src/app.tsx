@@ -35,9 +35,11 @@ import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	useIsAdvanced,
-	useUserAccounts
+	useUserAccounts,
+	useUserSettings
 } from '@zextras/carbonio-shell-ui';
 import { find } from 'lodash';
+import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
@@ -56,6 +58,7 @@ import {
 	DASHBOARD,
 	DOMAINS_ROUTE_ID,
 	GLOBAL,
+	LEGAL_HOLD_ROUTE_ID,
 	LIST_COS,
 	LIST_SERVER,
 	LOG_AND_QUEUES,
@@ -69,6 +72,7 @@ import {
 	PRIMARY_BAR_COS,
 	PRIMARY_BAR_DASHBOARD,
 	PRIMARY_BAR_DOMAINS,
+	PRIMARY_BAR_LEGAL_HOLD,
 	PRIMARY_BAR_MTA,
 	PRIMARY_BAR_NOTIFICATIONS,
 	PRIMARY_BAR_OPERATIONS,
@@ -80,11 +84,13 @@ import {
 	SERVICES_ROUTE_ID,
 	STORAGES_ROUTE_ID,
 	SUBSCRIPTIONS_ROUTE_ID,
-	TRUE
+	TRUE,
+	ZIMBRA_LAST_LOGON_TIMESTAMP
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
 import MatomoTracker from './matomo-tracker';
+import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import {
 	getAllServerByService,
@@ -98,6 +104,7 @@ import { useConfigStore } from './store/config/store';
 import { useCosStore } from './store/cos/store';
 import { useDomainStore } from './store/domain/store';
 import { useGlobalConfigStore } from './store/global-config/store';
+import { useLastLoginTimestamp } from './store/last-login-time-stamp';
 import { useMailstoreListStore } from './store/mailstore-list/store';
 import { useModuleLicenseStore } from './store/module-license/store';
 import { useRightsStore, Right, Rights } from './store/rights/store';
@@ -158,12 +165,33 @@ const App: FC = () => {
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const hasConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
 		);
 	}, [rights]);
+	const userSetting = useUserSettings();
+	const getAccountDetails = useCallback(
+		(id) => {
+			getAccountRequest(id, '', 0).then((res: any) => {
+				const lastLogin = res?.account?.[0]?.a?.find(
+					(ele: any) => ele.n === ZIMBRA_LAST_LOGON_TIMESTAMP
+				);
+				setLastLoginTimestamp(
+					moment(lastLogin?._content, 'YYYYMMDDHHmmss.SSSZ').format('dddd DD MMM YYYY | h:mm a')
+				);
+			});
+		},
+		[setLastLoginTimestamp]
+	);
+
+	useEffect(() => {
+		if (userSetting?.attrs?.zimbraId) {
+			getAccountDetails(userSetting?.attrs?.zimbraId);
+		}
+	}, [getAccountDetails, userSetting?.attrs?.zimbraId]);
 
 	useEffect(() => {
 		const { id } = accounts[0];
@@ -419,14 +447,12 @@ const App: FC = () => {
 		() => [
 			{
 				header: (
-					<>
-						<Trans
-							i18nKey="label.dashboard"
-							defaults="<bold>Dashboard</bold>"
-							components={{ bold: <strong /> }}
-							t={t}
-						/>
-					</>
+					<Trans
+						i18nKey="label.dashboard"
+						defaults="<bold>Dashboard</bold>"
+						components={{ bold: <strong /> }}
+						t={t}
+					/>
 				),
 				options: []
 			}
@@ -558,6 +584,23 @@ const App: FC = () => {
 		[t]
 	);
 
+	const leagalHoldTooltipItem = useMemo(
+		() => [
+			{
+				header: (
+					<Trans
+						i18nKey="label.legal_hold_lbl"
+						defaults="<bold>Legal Hold</bold>"
+						components={{ bold: <strong /> }}
+						t={t}
+					/>
+				),
+				options: []
+			}
+		],
+		[t]
+	);
+
 	const OperationTooltipView: FC = useCallback(
 		() => <PrimaryBarTooltip items={operationTooltipItem} />,
 		[operationTooltipItem]
@@ -579,6 +622,11 @@ const App: FC = () => {
 			/>
 		),
 		[history]
+	);
+
+	const LegalHoldTooltipView: FC = useCallback(
+		() => <PrimaryBarTooltip items={leagalHoldTooltipItem} />,
+		[leagalHoldTooltipItem]
 	);
 
 	const cosPrimaryBar = useCallback(
@@ -606,7 +654,97 @@ const App: FC = () => {
 		}
 	}, [rights]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const setConfigRightsRoute = useCallback(() => {
+		if (hasListServerRights) {
+			addRoute({
+				route: STORAGES_ROUTE_ID,
+				position: 4,
+				visible: true,
+				label: t('label.storage', 'Storage') || '',
+				primaryBar: 'HardDriveOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: StorageTooltipView,
+				trackerLabel: PRIMARY_BAR_STORAGE
+			});
+		}
+
+		if (hasConfigRights) {
+			addRoute({
+				route: MTA_ROUTE_ID,
+				position: 3,
+				visible: true,
+				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
+				primaryBar: 'MailFolderOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: MTATooltipView,
+				trackerLabel: PRIMARY_BAR_MTA
+			});
+			addRoute({
+				route: BACKUP_ROUTE_ID,
+				position: 1,
+				visible: true,
+				label: t('label.backup', 'Backup') || '',
+				// primaryBar: 'HistoryOutline',
+				primaryBar: backupPrimaryBar,
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...servicesSection },
+				tooltip: BackupTooltipView,
+				trackerLabel: PRIMARY_BAR_BACKUP
+			});
+			addRoute({
+				route: LEGAL_HOLD_ROUTE_ID,
+				position: 2,
+				visible: true,
+				label: t('label.legal_hold', 'Legal Hold') || '',
+				primaryBar: 'LockOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...servicesSection },
+				tooltip: LegalHoldTooltipView,
+				trackerLabel: PRIMARY_BAR_LEGAL_HOLD
+			});
+			addRoute({
+				route: PRIVACY_ROUTE_ID,
+				position: 6,
+				visible: true,
+				label: t('label.privacy', 'Privacy') || '',
+				primaryBar: 'ShieldOutline',
+				appView: AppView,
+				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+				// @ts-ignore
+				primarybarSection: { ...managementSection },
+				tooltip: PrivacyTooltipView,
+				trackerLabel: PRIMARY_BAR_PRIVACY
+			});
+		} else {
+			removeRoute(BACKUP_ROUTE_ID);
+			removeRoute(LEGAL_HOLD_ROUTE_ID);
+			removeRoute(MTA_ROUTE_ID);
+			removeRoute(PRIVACY_ROUTE_ID);
+		}
+	}, [
+		BackupTooltipView,
+		LegalHoldTooltipView,
+		MTATooltipView,
+		PrivacyTooltipView,
+		StorageTooltipView,
+		backupPrimaryBar,
+		hasConfigRights,
+		hasListServerRights,
+		managementSection,
+		servicesSection,
+		t
+	]);
+
 	useEffect(() => {
 		addRoute({
 			route: DASHBOARD,
@@ -635,22 +773,7 @@ const App: FC = () => {
 			trackerLabel: PRIMARY_BAR_DOMAINS
 		});
 
-		if (hasListServerRights) {
-			addRoute({
-				route: STORAGES_ROUTE_ID,
-				position: 4,
-				visible: true,
-				label: t('label.storage', 'Storage') || '',
-				primaryBar: 'HardDriveOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...managementSection },
-				tooltip: StorageTooltipView,
-				trackerLabel: PRIMARY_BAR_STORAGE
-			});
-		}
-
+		setConfigRightsRoute();
 		if (showCOS) {
 			addRoute({
 				route: COS_ROUTE_ID,
@@ -667,23 +790,6 @@ const App: FC = () => {
 			});
 		} else {
 			removeRoute(COS_ROUTE_ID);
-		}
-		if (hasConfigRights) {
-			addRoute({
-				route: MTA_ROUTE_ID,
-				position: 3,
-				visible: true,
-				label: t('label.mail_trans_agent', 'Mail Trans. Agent') || '',
-				primaryBar: 'MailFolderOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...managementSection },
-				tooltip: MTATooltipView,
-				trackerLabel: PRIMARY_BAR_MTA
-			});
-		} else {
-			removeRoute(MTA_ROUTE_ID);
 		}
 
 		if (isAdvanced) {
@@ -703,25 +809,6 @@ const App: FC = () => {
 				});
 			} else {
 				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
-			}
-
-			if (hasConfigRights) {
-				addRoute({
-					route: BACKUP_ROUTE_ID,
-					position: 1,
-					visible: true,
-					label: t('label.backup', 'Backup') || '',
-					// primaryBar: 'HistoryOutline',
-					primaryBar: backupPrimaryBar,
-					appView: AppView,
-					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-					// @ts-ignore
-					primarybarSection: { ...servicesSection },
-					tooltip: BackupTooltipView,
-					trackerLabel: PRIMARY_BAR_BACKUP
-				});
-			} else {
-				removeRoute(BACKUP_ROUTE_ID);
 			}
 
 			addRoute({
@@ -752,25 +839,6 @@ const App: FC = () => {
 				trackerLabel: PRIMARY_BAR_OPERATIONS
 			});
 		}
-
-		if (hasConfigRights) {
-			addRoute({
-				route: PRIVACY_ROUTE_ID,
-				position: 6,
-				visible: true,
-				label: t('label.privacy', 'Privacy') || '',
-				primaryBar: 'ShieldOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...managementSection },
-				tooltip: PrivacyTooltipView,
-				trackerLabel: PRIMARY_BAR_PRIVACY
-			});
-		} else {
-			removeRoute(PRIVACY_ROUTE_ID);
-		}
-
 		setAppContext({ cabonio_admin_console_ui: 'cabonio_admin_console_ui' });
 	}, [
 		t,
@@ -792,7 +860,9 @@ const App: FC = () => {
 		MTATooltipView,
 		showCOS,
 		hasConfigRights,
-		cosPrimaryBar
+		cosPrimaryBar,
+		LegalHoldTooltipView,
+		setConfigRightsRoute
 	]);
 
 	useEffect(() => {
