@@ -57,6 +57,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
 import AccountDetailView from '../accounts/account-detail-view';
@@ -574,8 +575,8 @@ const ManageDelegates: FC = () => {
 				'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 			const types = 'distributionlists,dynamicgroups';
 			const query = `(&(!(zimbraIsSystemAccount=TRUE)))`;
-			searchDirectory(attrs, types, name || '', query, offsetData, limitData, 'name').then(
-				(res) => {
+			searchDirectory(attrs, types, name || '', query, offsetData, limitData, 'name')
+				.then((res) => {
 					const data = res?.dl;
 					if (data) {
 						setDistributionList((prevDistributionList) => [...prevDistributionList, ...data]);
@@ -583,10 +584,13 @@ const ManageDelegates: FC = () => {
 							fetchDistributionList(domain?.name, offsetData + limitData, limitData);
 						}
 					}
-				}
-			);
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
 		},
-		[domain?.name]
+		[createSnackbar, domain?.name, t]
 	);
 
 	const handleRevokesGrants = useCallback(() => {
@@ -811,17 +815,9 @@ const ManageDelegates: FC = () => {
 				}
 				setIsRequestInProgress(false);
 			})
-			.catch((error: any) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
 			});
 	}, [domain.name, openDetailView, limit, offset, createSnackbar, t]);
 

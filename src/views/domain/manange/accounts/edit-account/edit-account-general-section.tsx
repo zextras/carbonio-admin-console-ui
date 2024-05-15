@@ -82,6 +82,7 @@ import DropDownInput from '../../../../components/dropDownInput';
 import ManageAliases from '../../../../components/manageAliases';
 import Paging from '../../../../components/paging';
 import Textarea from '../../../../components/textarea';
+import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import InheritedInput from '../../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import {
@@ -199,16 +200,24 @@ const EditAccountGeneralSection: FC<{
 		return false;
 	}, [domainInformation]);
 
-	const getDomainLists = useCallback((domain: string | undefined): void => {
-		getDomainList(domain, 0).then((data) => {
-			const searchResponse = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setDomainList(searchResponse?.domain);
-			} else {
-				setDomainList([]);
-			}
-		});
-	}, []);
+	const getDomainLists = useCallback(
+		(domain: string | undefined): void => {
+			getDomainList(domain, 0)
+				.then((data) => {
+					const searchResponse = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+					} else {
+						setDomainList([]);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	const handleQuotaChange = useCallback(
 		(value, setQuotaLimitMsg, setQuotaGBValue, name) => {

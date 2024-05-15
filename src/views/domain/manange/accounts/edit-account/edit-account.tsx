@@ -94,6 +94,7 @@ import { Right, Rights, useRightsStore } from '../../../../../store/rights/store
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
+import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -181,21 +182,26 @@ const EditAccount: FC<{
 
 	const getDomainLists = useCallback(
 		(offset: number): any => {
-			getDomainList('', offset).then((data) => {
-				const searchResponse: any = data;
-				if (!!searchResponse && searchResponse?.searchTotal > 0) {
-					if (searchResponse?.domain?.length) {
-						setDomainListStore([...domainList, ...searchResponse.domain]);
-						if (searchResponse?.more) {
-							getDomainLists(offset + 50);
+			getDomainList('', offset)
+				.then((data) => {
+					const searchResponse: any = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						if (searchResponse?.domain?.length) {
+							setDomainListStore([...domainList, ...searchResponse.domain]);
+							if (searchResponse?.more) {
+								getDomainLists(offset + 50);
+							}
 						}
+					} else {
+						setDomainListStore([]);
 					}
-				} else {
-					setDomainListStore([]);
-				}
-			});
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
 		},
-		[domainList, setDomainListStore]
+		[createSnackbar, domainList, setDomainListStore, t]
 	);
 
 	useEffect(() => {

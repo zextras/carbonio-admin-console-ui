@@ -40,6 +40,7 @@ import { getDomainList } from '../../../../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
+import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
@@ -180,9 +181,14 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 			'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 		const types = 'distributionlists,dynamicgroups';
 		const query = `zimbraIsAdminGroup=TRUE`;
-		searchDirectory(attrs, types, name || '', query, 0, FETCH_DATA_LIMIT, 'name').then((res) => {
-			setDistributionList(res?.dl);
-		});
+		searchDirectory(attrs, types, name || '', query, 0, FETCH_DATA_LIMIT, 'name')
+			.then((res) => {
+				setDistributionList(res?.dl);
+			})
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+			});
 	};
 
 	const tableRows = useMemo(
@@ -285,16 +291,24 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 		]
 	);
 
-	const getDomainLists = useCallback((domain: string): any => {
-		getDomainList(domain, 0).then((data) => {
-			const searchResponse: any = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setDomainList(searchResponse?.domain);
-			} else {
-				setDomainList([]);
-			}
-		});
-	}, []);
+	const getDomainLists = useCallback(
+		(domain: string): any => {
+			getDomainList(domain, 0)
+				.then((data) => {
+					const searchResponse: any = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+					} else {
+						setDomainList([]);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchDomainCall = useCallback(

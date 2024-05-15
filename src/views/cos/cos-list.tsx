@@ -35,6 +35,7 @@ import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
 type StatusTypes = {
 	[key: string]: {
@@ -218,17 +219,9 @@ const CosList: FC = () => {
 					setcosList(cosListArr);
 				}
 			})
-			.catch((error: any) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
 				setHasError(true);
 			});
 	}, [STATUS_COLOR, offset, onCosSelect, searchQuery, limit, t, createSnackbar]);
