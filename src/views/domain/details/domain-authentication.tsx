@@ -104,6 +104,8 @@ const DomainAuthentication: FC = () => {
 	const filterIconRef: RefObject<HTMLDivElement> = useRef(null);
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
 	const userSetting = useUserSettings();
+	const [verifyAuthUserName, setVerifyAuthUserName] = useState<string>('');
+	const [verifyAuthPassword, setVerifyAuthPassword] = useState<string>('');
 	useEffect(() => {
 		if (userSetting?.attrs) {
 			const account = userSetting?.attrs?.zimbraIsAdminAccount;
@@ -550,8 +552,8 @@ const DomainAuthentication: FC = () => {
 			_content: zimbraAuthLdapSearchBindPassword
 		});
 		body.a = attributes;
-		body.name = zimbraAuthLdapSearchBindDn;
-		body.password = zimbraAuthLdapSearchBindPassword;
+		body.name = verifyAuthUserName;
+		body.password = verifyAuthPassword;
 		CheckAuthConfig(body)
 			.then((response) => {
 				if (response?.code[0]?._content === CHECK_OK) {
@@ -584,6 +586,8 @@ const DomainAuthentication: FC = () => {
 	}, [
 		createSnackbar,
 		t,
+		verifyAuthPassword,
+		verifyAuthUserName,
 		zimbraAuthLdapSearchBindDn,
 		zimbraAuthLdapSearchBindPassword,
 		zimbraAuthLdapSearchFilter,
@@ -795,9 +799,9 @@ const DomainAuthentication: FC = () => {
 								</Padding>
 							</ListRow>
 							<ListRow>
-								<Padding vertical="small" horizontal="small" width="38%">
+								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
-										label={t('label.user', 'User')}
+										label={t('label.search_bind_user', 'Search Bind User')}
 										value={zimbraAuthLdapSearchBindDn}
 										backgroundColor="gray5"
 										inputName="user"
@@ -827,9 +831,9 @@ const DomainAuthentication: FC = () => {
 										</Row>
 									)}
 								</Padding>
-								<Padding vertical="small" horizontal="small" width="38%">
+								<Padding vertical="small" horizontal="small" width="100%">
 									<Input
-										label={t('label.password', 'Password')}
+										label={t('label.search_bind_password', 'Search Bind Password')}
 										backgroundColor="gray5"
 										inputName="zimbraQuotaWarnInterval"
 										value={zimbraAuthLdapSearchBindPassword}
@@ -858,6 +862,43 @@ const DomainAuthentication: FC = () => {
 											</Container>
 										</Row>
 									)}
+								</Padding>
+							</ListRow>
+							<ListRow>
+								<Padding vertical="small" horizontal="small" width="100%">
+									<Divider color="gray2" />
+								</Padding>
+							</ListRow>
+							<ListRow>
+								<Padding vertical="large" horizontal="small" width="100%">
+									<Text size="small" color="gray0" weight="bold">
+										{t('label.verify_auth', 'Verify Auth')}
+									</Text>
+								</Padding>
+							</ListRow>
+							<ListRow>
+								<Padding vertical="small" horizontal="small" width="38%">
+									<Input
+										label={t('label.user_name', 'User Name')}
+										value={verifyAuthUserName}
+										backgroundColor="gray5"
+										inputName="user"
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setVerifyAuthUserName(e.target.value);
+										}}
+									/>
+								</Padding>
+								<Padding vertical="small" horizontal="small" width="38%">
+									<Input
+										label={t('label.password', 'Password')}
+										backgroundColor="gray5"
+										inputName="verifyAuthPassword"
+										value={verifyAuthPassword}
+										onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+											setVerifyAuthPassword(e.target.value);
+										}}
+										hasError={!isValidPassword}
+									/>
 								</Padding>
 								<Padding vertical="small" horizontal="small" width="24%">
 									<Button
