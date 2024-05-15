@@ -38,9 +38,14 @@ export const doRestoreOnNewLegalHoldAccount = async (
 	).then((data: any) => {
 		if (data?.Body?.response?.content) {
 			const parseData = JSON.parse(data.Body.response.content);
+
 			const operationId = parseData?.response?.operationId;
 			if (operationId) {
 				return { operationId };
+			}
+			const message = parseData?.error?.message;
+			if (message) {
+				return Promise.reject(message);
 			}
 		}
 		return Promise.reject(new Error('Something went wrong. Please try again.'));

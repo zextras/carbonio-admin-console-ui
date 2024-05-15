@@ -18,6 +18,12 @@ import {
 	useSnackbar,
 	Padding
 } from '@zextras/carbonio-design-system';
+import {
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
+	postSoapFetchRequest,
+	soapFetch
+} from '@zextras/carbonio-shell-ui';
 import { cloneDeep, debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
@@ -49,6 +55,8 @@ const RestoreAccountView: FC<{
 	const [selectedRow, setSelectedRow] = useState<any>([]);
 	const [fromDate, setFromDate] = useState<Date>();
 	const [isEnableLeagalAccess, setIsEnableLeagalAccess] = useState<boolean>(false);
+	const [isRestoreOprationComplete, setIsRestoreOprationComplete] = useState<boolean>(false);
+	const [legalHoldAccountInformation, setLegalHoldAccountInformation] = useState<any>(null);
 
 	const header = useMemo(
 		() => [
@@ -155,13 +163,43 @@ const RestoreAccountView: FC<{
 		}
 	}, [searchAccount, searchAccountList]);
 
-	const initialized = useCallback(() => {
-		console.log('Initialized');
+	const callDeligateRequest = useCallback((request) => {
+		setIsRequestInprogress(true);
+		Promise.all(request)
+			.then((response) => Promise.all(response))
+			.then(() => {
+				setIsRequestInprogress(false);
+				setIsEnableLeagalAccess(true);
+			});
 	}, []);
 
 	const enableLegalAccess = useCallback(() => {
-		console.log('Enable Legal Access');
-	}, []);
+		const requestItem: Array<any> = [];
+		accountList.forEach((item) => {
+			requestItem.push(
+				postSoapFetchRequest(
+					`/service/admin/soap/FolderActionRequest`,
+					{
+						_jsns: 'urn:zimbraMail',
+						action: {
+							op: 'grant',
+							id: '1',
+							grant: {
+								perm: 'r',
+
+								gt: 'usr',
+								d: item?.name,
+								pw: ''
+							}
+						}
+					},
+					'FolderActionRequest',
+					legalHoldAccountInformation?.id
+				)
+			);
+		});
+		callDeligateRequest(requestItem);
+	}, [accountList, callDeligateRequest, legalHoldAccountInformation]);
 
 	const onRemove = useCallback(() => {
 		const updatedList = accountList.filter((item) => item?.id !== selectedRow[0]);
@@ -170,6 +208,7 @@ const RestoreAccountView: FC<{
 
 	const onAdd = useCallback(() => {
 		if (searchAccount !== '') {
+			setSearchAccount('');
 			const holdList = cloneDeep(accountList);
 			const filterData = searchAccountResult.filter((item) => item?.name === searchAccount);
 			setAccountList([...holdList, ...filterData]);
@@ -248,26 +287,50 @@ const RestoreAccountView: FC<{
 		const sourceAccount = account;
 		const date = fromDate?.getTime();
 		if (date) {
+			setIsRequestInprogress(true);
 			doRestoreOnNewLegalHoldAccount(sourceAccount, destinationAccount, date)
 				.then(() => {
+					setIsRequestInprogress(false);
+					setIsRestoreOprationComplete(true);
 					showSnackbar(
 						SUCCESS_LABLE,
 						SUCCESS_LABLE,
 						t('legal_hold.restore_legalhold_successfully', 'Restore Legal Hold successfully')
 					);
-					setIsShowRestoreView(false);
+					if (tableRows.length === 0) {
+						setIsShowRestoreView(false);
+					} else {
+						soapFetch(`GetAccount`, {
+							_jsns: 'urn:zimbraAdmin',
+							account: {
+								by: 'name',
+								_content: destinationAccount
+							}
+						}).then((data: any) => {
+							if (Array.isArray(data?.account)) {
+								setLegalHoldAccountInformation(data?.account[0]);
+							}
+						});
+					}
 				})
-				.catch((error) => {
+				.catch((err) => {
+					setIsRequestInprogress(false);
 					showSnackbar(
 						ERROR_LABLE,
 						ERROR_LABLE,
-						error
-							? error?.error
-							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+						err ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
 					);
 				});
 		}
-	}, [account, fromDate, legalHoldAppendix, setIsShowRestoreView, showSnackbar, t]);
+	}, [
+		account,
+		fromDate,
+		legalHoldAppendix,
+		setIsShowRestoreView,
+		showSnackbar,
+		t,
+		tableRows.length
+	]);
 
 	return (
 		<Container
@@ -315,13 +378,13 @@ const RestoreAccountView: FC<{
 					</Row>
 				</Row>
 				<Row>
-					<Divider color="gray3" />
+					<Divider color="gray2" />
 				</Row>
 				<Container
 					padding={{ all: 'extralarge' }}
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"
-					height="calc(100vh - 10.5rem)"
+					height="calc(100vh - 14.5rem)"
 					style={{ overflow: 'auto' }}
 					background="gray6"
 				>
@@ -474,7 +537,7 @@ const RestoreAccountView: FC<{
 								type="outlined"
 								color="success"
 								label={t('legal_hold.initialized', 'INITIALIZED')}
-								onClick={initialized}
+								onClick={(): void => undefined}
 								width="fill"
 							/>
 						</Container>
@@ -489,6 +552,12 @@ const RestoreAccountView: FC<{
 								label={t('legal_hold.enable_this_legal_access', 'Enable this legal accesses')}
 								onClick={enableLegalAccess}
 								width="fill"
+								disabled={
+									accountList.length === 0 ||
+									isRequestInprogress ||
+									!isRestoreOprationComplete ||
+									legalHoldAccountInformation === null
+								}
 							/>
 						</Container>
 					)}
@@ -500,16 +569,23 @@ const RestoreAccountView: FC<{
 							)}
 						</Text>
 					</Container>
-					<Container mainAlignment="flex-end" crossAlignment="flex-end" height="auto">
-						<Button
-							size="large"
-							type="default"
-							color="primary"
-							label={t('legal_hold.restore', 'Restore')}
-							onClick={onRestore}
-						/>
-					</Container>
 				</Container>
+			</Container>
+			<Container
+				mainAlignment="flex-end"
+				crossAlignment="flex-end"
+				height="auto"
+				background="gray6"
+				padding={{ all: 'large' }}
+			>
+				<Button
+					size="large"
+					type="default"
+					color="primary"
+					label={t('legal_hold.restore', 'Restore')}
+					onClick={onRestore}
+					disabled={isRequestInprogress || isRestoreOprationComplete}
+				/>
 			</Container>
 		</Container>
 	);
