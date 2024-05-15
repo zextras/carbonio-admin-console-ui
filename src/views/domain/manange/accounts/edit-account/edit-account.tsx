@@ -130,7 +130,6 @@ const EditAccount: FC<{
 	getAccountDetail: any;
 	defaultTab: string;
 	setDefaultTab: any;
-	setShowAccountDetailView: any;
 	showModal: boolean;
 	setShowModal: (showModal: boolean) => void;
 	isDirty: boolean;
@@ -144,7 +143,6 @@ const EditAccount: FC<{
 	signatureList,
 	getAccountDetail,
 	defaultTab,
-	setShowAccountDetailView,
 	setDefaultTab,
 	showModal,
 	setShowModal,
@@ -894,17 +892,6 @@ const EditAccount: FC<{
 			color: 'primary',
 			onClick: onViewMail
 		},
-		// {
-		// 	align: 'right',
-		// 	label: t('label.close', 'CLOSE'),
-		// 	color: 'error',
-		// 	onClick: (): void => {
-		// 		setShowAccountDetailView(false);
-		// 		setShowEditAccountView(true);
-		// 	},
-
-		// 	disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-		// },
 		{
 			align: 'right',
 			color: 'error',
@@ -941,10 +928,9 @@ const EditAccount: FC<{
 			});
 			setIsRequestInProgress(false);
 			closeHandler();
-			setShowAccountDetailView(false);
 			getAccountList();
 		},
-		[closeHandler, createSnackbar, getAccountList, setShowAccountDetailView]
+		[closeHandler, createSnackbar, getAccountList]
 	);
 	const onDisableAccount = useCallback(() => {
 		setIsRequestInProgress(true);
@@ -1058,7 +1044,6 @@ const EditAccount: FC<{
 							icon="CloseOutline"
 							onClick={(): void => {
 								setShowEditAccountView(false);
-								setShowAccountDetailView(true);
 								setDefaultTab('general');
 							}}
 						/>

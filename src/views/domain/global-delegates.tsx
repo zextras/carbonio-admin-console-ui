@@ -25,7 +25,6 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './manange/accounts/account-context';
-import AccountDetailView from './manange/accounts/account-detail-view';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
 import { MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
@@ -117,7 +116,6 @@ const GlobalDelegates: FC = () => {
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
-	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -563,7 +561,7 @@ const GlobalDelegates: FC = () => {
 
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setShowAccountDetailView(true);
+			setShowEditAccountView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
@@ -684,28 +682,6 @@ const GlobalDelegates: FC = () => {
 				});
 			});
 	}, [accountUserType, limit, offset, openDetailView, t, createSnackbar]);
-
-	const closeAccountDetailDialog = useCallback(() => {
-		if (showAccountDetailView) {
-			setShowAccountDetailView(false);
-		}
-	}, [showAccountDetailView]);
-
-	const handleKeyEvent = useCallback(
-		(event) => {
-			if (event.key === 'Escape') {
-				closeAccountDetailDialog();
-			}
-		},
-		[closeAccountDetailDialog]
-	);
-
-	useEffect(() => {
-		window.addEventListener('keydown', handleKeyEvent);
-		return () => {
-			window.removeEventListener('keydown', handleKeyEvent);
-		};
-	}, [handleKeyEvent]);
 
 	useEffect(() => {
 		getAccountList();
@@ -848,19 +824,6 @@ const GlobalDelegates: FC = () => {
 								</Container>
 							)}
 							<AccountContext.Provider value={accountContextValue}>
-								{showAccountDetailView && (
-									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
-										<AccountDetailView
-											selectedAccount={selectedAccount}
-											setShowAccountDetailView={setShowAccountDetailView}
-											setShowEditAccountView={setShowEditAccountView}
-											STATUS_COLOR={STATUS_COLOR}
-											getAccountList={getAccountList}
-											cosDetail={cosDetail}
-										/>
-									</ModalOverlay>
-								)}
-
 								{showEditAccountView && (
 									<ModalOverlay
 										setOpen={setShowEditAccountView}
@@ -878,7 +841,6 @@ const GlobalDelegates: FC = () => {
 											getAccountDetail={getAccountDetail}
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
-											setShowAccountDetailView={setShowAccountDetailView}
 											showModal={showModal}
 											setShowModal={setShowModal}
 											isDirty={isDirty}
