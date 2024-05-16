@@ -131,16 +131,16 @@ const RestoreAccountView: FC<{
 					const accountListResponse =
 						data?.account
 							?.filter(
-								(filteredAccount: Record<string, string | unknown>) =>
+								(filteredAccount: Record<string, any>) =>
 									filteredAccount?.id !== legalHoldAccount?.id
 							)
-							?.map((item: Record<string, string | unknown>) => {
+							?.map((item: Record<string, any>) => {
 								const holdItem = item;
 								holdItem.type = 'usr';
 								return holdItem;
 							}) || [];
 					const dlListResponse =
-						data?.dl?.map((item: Record<string, string | unknown>) => {
+						data?.dl?.map((item: Record<string, any>) => {
 							const holdItem = item;
 							holdItem.type = 'grp';
 							return holdItem;
