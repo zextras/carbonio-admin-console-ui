@@ -6,8 +6,11 @@
 
 export type MailBoxQuota = {
 	name: string;
-	quota: string;
-	mailSize: string;
-	quotaUsedPercentage: string;
+	mailsQuota: string;
+	mailsQuotaUsed: string;
+	mailsQuotaUsedPercentage: string;
+	filesQuota?: string;
+	filesQuotaUsed?: string;
+	filesQuotaUsedPercentage?: string;
 	id: string;
 };
