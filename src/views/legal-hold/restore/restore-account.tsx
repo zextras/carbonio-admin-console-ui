@@ -24,11 +24,11 @@ import {
 	postSoapFetchRequest,
 	soapFetch
 } from '@zextras/carbonio-shell-ui';
-import { cloneDeep, debounce } from 'lodash';
+import { cloneDeep, debounce, unionBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { LegalHolds } from '../../../../types';
-import { ASC, DESC, ERROR_LABLE, RECORD_DISPLAY_LIMIT, SUCCESS_LABLE } from '../../../constants';
+import { ASC, ERROR_LABLE, RECORD_DISPLAY_LIMIT, SUCCESS_LABLE } from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -37,7 +37,7 @@ import DropDownInput from '../../components/dropDownInput';
 
 const RestoreAccountView: FC<{
 	legalHoldAccount: LegalHolds | undefined;
-	setIsShowRestoreView: any;
+	setIsShowRestoreView: (value: boolean) => void;
 }> = ({ legalHoldAccount, setIsShowRestoreView }) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -49,8 +49,8 @@ const RestoreAccountView: FC<{
 	const [isRequestInprogress, setIsRequestInprogress] = useState<boolean>(false);
 	const offset = 0;
 	const limit = RECORD_DISPLAY_LIMIT;
-	const [sortedColumn, setSortedColumn] = useState<string>('name');
-	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
+	const sortedColumn = 'name';
+	const sortOrder = ASC;
 	const [tableRows, setTableRows] = useState<any[]>([]);
 	const [selectedRow, setSelectedRow] = useState<any>([]);
 	const [fromDate, setFromDate] = useState<Date>();
@@ -92,7 +92,7 @@ const RestoreAccountView: FC<{
 		[createSnackbar]
 	);
 
-	const items = searchAccountResult.map((item: any) => ({
+	const items = searchAccountResult.map((item) => ({
 		id: item.id,
 		label:
 			item?.a.find((rec: Record<string, string>) => rec?.n === 'displayName')?._content ??
@@ -114,8 +114,7 @@ const RestoreAccountView: FC<{
 
 	const getAccountList = useCallback(
 		(searchStr) => {
-			setIsRequestInprogress(true);
-			const type = 'accounts';
+			const type = 'distributionlists,accounts';
 			const attrs = 'displayName,zimbraId';
 			const query = `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
 			accountListDirectory(
@@ -129,14 +128,29 @@ const RestoreAccountView: FC<{
 				sortOrder
 			)
 				.then((data) => {
-					setIsRequestInprogress(false);
-					const accountListResponse: any = data?.account || [];
-					if (accountListResponse && Array.isArray(accountListResponse)) {
-						setSearchAccountResult(accountListResponse);
+					const accountListResponse =
+						data?.account
+							?.filter(
+								(filteredAccount: Record<string, string | unknown>) =>
+									filteredAccount?.id !== legalHoldAccount?.id
+							)
+							?.map((item: Record<string, string | unknown>) => {
+								const holdItem = item;
+								holdItem.type = 'usr';
+								return holdItem;
+							}) || [];
+					const dlListResponse =
+						data?.dl?.map((item: Record<string, string | unknown>) => {
+							const holdItem = item;
+							holdItem.type = 'grp';
+							return holdItem;
+						}) || [];
+					const mergeAccounts = [...accountListResponse, ...dlListResponse];
+					if (mergeAccounts && Array.isArray(mergeAccounts)) {
+						setSearchAccountResult(mergeAccounts);
 					}
 				})
 				.catch((error) => {
-					setIsRequestInprogress(false);
 					showSnackbar(
 						ERROR_LABLE,
 						ERROR_LABLE,
@@ -146,7 +160,7 @@ const RestoreAccountView: FC<{
 					);
 				});
 		},
-		[limit, offset, showSnackbar, sortOrder, sortedColumn, t]
+		[legalHoldAccount?.id, limit, showSnackbar, sortOrder, sortedColumn, t]
 	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -174,7 +188,7 @@ const RestoreAccountView: FC<{
 	}, []);
 
 	const enableLegalAccess = useCallback(() => {
-		const requestItem: Array<any> = [];
+		const requestItem: Array<unknown> = [];
 		accountList.forEach((item) => {
 			requestItem.push(
 				postSoapFetchRequest(
@@ -187,7 +201,7 @@ const RestoreAccountView: FC<{
 							grant: {
 								perm: 'r',
 
-								gt: 'usr',
+								gt: item?.type ?? 'usr',
 								d: item?.name,
 								pw: ''
 							}
@@ -211,7 +225,7 @@ const RestoreAccountView: FC<{
 			setSearchAccount('');
 			const holdList = cloneDeep(accountList);
 			const filterData = searchAccountResult.filter((item) => item?.name === searchAccount);
-			setAccountList([...holdList, ...filterData]);
+			setAccountList(unionBy([...holdList, ...filterData], 'id'));
 		}
 	}, [accountList, searchAccount, searchAccountResult]);
 
@@ -224,8 +238,8 @@ const RestoreAccountView: FC<{
 			setTableRows([]);
 			return;
 		}
-		const accountListArr: Array<any> = [];
-		accountList.forEach((item: any): any => {
+		const accountListArr: Array<unknown> = [];
+		accountList.forEach((item: any) => {
 			accountListArr.push({
 				id: item?.id,
 				columns: [

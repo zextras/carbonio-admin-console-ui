@@ -43,10 +43,11 @@ export const doRestoreOnNewLegalHoldAccount = async (
 			if (operationId) {
 				return { operationId };
 			}
-			const message = parseData?.error?.message;
+			const message: string = parseData?.error?.message || parseData?.message;
 			if (message) {
 				return Promise.reject(message);
 			}
 		}
-		return Promise.reject(new Error('Something went wrong. Please try again.'));
+		const msg = 'Something went wrong. Please try again.';
+		return Promise.reject(msg);
 	});

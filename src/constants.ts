@@ -582,3 +582,4 @@ export const PRIMARY_BAR_LEGAL_HOLD = 'pb_legalhold';
 export const FLEX_START = 'flex-start';
 export const ERROR_LABLE = 'error';
 export const SUCCESS_LABLE = 'success';
+export const UNSET = 'unset';

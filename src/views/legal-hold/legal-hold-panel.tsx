@@ -34,7 +34,14 @@ import styled from 'styled-components';
 import RestoreAccountView from './restore/restore-account';
 import { BackupAccountItem, DomainResponse, LegalHolds } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
-import { ERROR_LABLE, MAX_DOMAIN_DISPLAY, MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
+import {
+	ERROR_LABLE,
+	MAX_DOMAIN_DISPLAY,
+	MOBILE,
+	RECORD_DISPLAY_LIMIT,
+	SET,
+	UNSET
+} from '../../constants';
 import { getLegalHoldList } from '../../services/get-legal-hold-list';
 import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
@@ -61,8 +68,6 @@ const AbsoluteContainerItem = styled(Container)`
 	z-index: 1;
 	top: 8rem;
 `;
-
-const SelectItem = styled(Row)``;
 
 const CustomIcon = styled(Icon)`
 	width: 1.25rem;
@@ -211,7 +216,7 @@ const LegalHoldPanel: FC = () => {
 		(data, page) => {
 			let backupAccounts;
 			const allServers = Object.keys(data);
-			let allServerAccounts: Array<any> = [];
+			let allServerAccounts: Array<Record<string, unknown>> = [];
 			const maxPageList: Array<number> = [];
 			let backupPage = page;
 			allServers.forEach((item: string) => {
@@ -338,7 +343,7 @@ const LegalHoldPanel: FC = () => {
 	const getStatusOfLegalHoldFromAccount = useCallback(
 		(name): string => {
 			const status = allLegalHoldAccountList.find((item) => item?.name === name)?.status;
-			return status && status === 'unset' ? 'NO' : 'YES';
+			return status && status === UNSET ? 'NO' : 'YES';
 		},
 		[allLegalHoldAccountList]
 	);
@@ -346,7 +351,7 @@ const LegalHoldPanel: FC = () => {
 	const allBackupAccounts = useMemo(
 		() =>
 			isShowOnlyLegalHostAccount
-				? backupAccountList.filter((item) => item?.legalHold === 'set')
+				? backupAccountList.filter((item) => item?.legalHold === SET)
 				: backupAccountList,
 		[backupAccountList, isShowOnlyLegalHostAccount]
 	);
@@ -420,7 +425,7 @@ const LegalHoldPanel: FC = () => {
 		const id = selectedAccountRows[0];
 		const legalHoldItem = getLegalHoldById(id);
 		if (legalHoldItem) {
-			const status = legalHoldItem?.status === 'unset' ? 'set' : 'unset';
+			const status = legalHoldItem?.status === UNSET ? SET : UNSET;
 			setUnsetLegalHold(status, legalHoldItem?.name).then((data) => {
 				const parseData = JSON.parse(data?.Body?.response?.content);
 				const key = Object.keys(parseData?.response)[0];
@@ -540,7 +545,7 @@ const LegalHoldPanel: FC = () => {
 						id: domain.id,
 						label: domain.name,
 						customComponent: (
-							<SelectItem
+							<Row
 								style={{
 									display: 'block',
 									textAlign: 'left',
@@ -555,7 +560,7 @@ const LegalHoldPanel: FC = () => {
 								}}
 							>
 								{domain?.name}
-							</SelectItem>
+							</Row>
 						)
 					})
 			  );
@@ -565,7 +570,7 @@ const LegalHoldPanel: FC = () => {
 			const id = selectedAccountRows[0];
 			const legalHoldItem = getLegalHoldById(id);
 			const label =
-				legalHoldItem?.status === 'unset'
+				legalHoldItem?.status === UNSET
 					? t('legal_hold.set_legal_hold', 'Set legal hold')
 					: t('legal_hold.unset_legal_hold', 'Unset legal hold');
 			setLegalHoldOperationLabel(label);
@@ -582,7 +587,7 @@ const LegalHoldPanel: FC = () => {
 
 	const onRestore = useCallback(() => {
 		const selectedItem = getLegalHoldById(selectedAccountRows[0]);
-		if (selectedItem?.status === 'unset') {
+		if (selectedItem?.status === UNSET) {
 			showSnackbar(
 				ERROR_LABLE,
 				ERROR_LABLE,
