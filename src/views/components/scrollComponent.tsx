@@ -18,7 +18,6 @@ const ScrollingContainer = styled(Container)<{ isShow: boolean }>`
 		${({ theme }): string => theme.palette.gray6.regular} 0%,
 		transparent 100%
 	);
-	opacity: 0.7;
 `;
 
 const ScrollContainer: FC<{
@@ -27,10 +26,10 @@ const ScrollContainer: FC<{
 	const [t] = useTranslation();
 	return isVisible ? (
 		<ScrollingContainer isShow={isVisible}>
-			<Container orientation="horizontal" width="100%">
+			<Container orientation="horizontal" padding={{ top: 'large' }} width="100%">
 				<Icon color="gray" icon="ArrowheadDown" size="large" />
 				<Padding left="small">
-					<Text size="large" weight="regular" color="gray">
+					<Text size="large" weight="300" color="gray">
 						{t('label.scroll_down_to_view_other_items', 'Scroll down to view other items')}
 					</Text>
 				</Padding>
