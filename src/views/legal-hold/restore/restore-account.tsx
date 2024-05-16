@@ -28,7 +28,7 @@ import { cloneDeep, debounce, unionBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import { LegalHolds } from '../../../../types';
-import { ASC, ERROR_LABLE, RECORD_DISPLAY_LIMIT, SUCCESS_LABLE } from '../../../constants';
+import { ERROR_LABLE, RECORD_DISPLAY_LIMIT, SUCCESS_LABLE } from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
@@ -49,8 +49,6 @@ const RestoreAccountView: FC<{
 	const [isRequestInprogress, setIsRequestInprogress] = useState<boolean>(false);
 	const offset = 0;
 	const limit = RECORD_DISPLAY_LIMIT;
-	const sortedColumn = 'name';
-	const sortOrder = ASC;
 	const [tableRows, setTableRows] = useState<any[]>([]);
 	const [selectedRow, setSelectedRow] = useState<any>([]);
 	const [fromDate, setFromDate] = useState<Date>();
@@ -64,15 +62,13 @@ const RestoreAccountView: FC<{
 				id: 'name',
 				label: t('label.name', 'Name'),
 				width: '40%',
-				bold: true,
-				sortable: true
+				bold: true
 			},
 			{
 				id: 'email',
 				label: t('label.email', 'Email'),
 				width: '60%',
-				bold: true,
-				sortable: true
+				bold: true
 			}
 		],
 		[t]
@@ -117,16 +113,7 @@ const RestoreAccountView: FC<{
 			const type = 'distributionlists,accounts';
 			const attrs = 'displayName,zimbraId';
 			const query = `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-			accountListDirectory(
-				attrs,
-				type,
-				'',
-				searchStr === '' ? '' : query,
-				offset,
-				limit,
-				sortedColumn,
-				sortOrder
-			)
+			accountListDirectory(attrs, type, '', searchStr === '' ? '' : query, offset, limit)
 				.then((data) => {
 					const accountListResponse =
 						data?.account
@@ -160,7 +147,7 @@ const RestoreAccountView: FC<{
 					);
 				});
 		},
-		[legalHoldAccount?.id, limit, showSnackbar, sortOrder, sortedColumn, t]
+		[legalHoldAccount?.id, limit, showSnackbar, t]
 	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps

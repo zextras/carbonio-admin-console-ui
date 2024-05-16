@@ -166,7 +166,7 @@ const App: FC = () => {
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
 	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
-	const hasConfigRights = useMemo(() => {
+	const hasAllConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!(
 			rightsConfig?.all?.[0]?.getAttrs?.[0]?.all || rightsConfig?.all?.[0]?.setAttrs?.[0]?.all
@@ -671,7 +671,7 @@ const App: FC = () => {
 			});
 		}
 
-		if (hasConfigRights) {
+		if (hasAllConfigRights) {
 			addRoute({
 				route: MTA_ROUTE_ID,
 				position: 3,
@@ -685,6 +685,7 @@ const App: FC = () => {
 				tooltip: MTATooltipView,
 				trackerLabel: PRIMARY_BAR_MTA
 			});
+
 			addRoute({
 				route: BACKUP_ROUTE_ID,
 				position: 1,
@@ -698,19 +699,6 @@ const App: FC = () => {
 				primarybarSection: { ...servicesSection },
 				tooltip: BackupTooltipView,
 				trackerLabel: PRIMARY_BAR_BACKUP
-			});
-			addRoute({
-				route: LEGAL_HOLD_ROUTE_ID,
-				position: 2,
-				visible: true,
-				label: t('label.legal_hold', 'Legal Hold') || '',
-				primaryBar: 'LockOutline',
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...servicesSection },
-				tooltip: LegalHoldTooltipView,
-				trackerLabel: PRIMARY_BAR_LEGAL_HOLD
 			});
 			addRoute({
 				route: PRIVACY_ROUTE_ID,
@@ -727,18 +715,17 @@ const App: FC = () => {
 			});
 		} else {
 			removeRoute(BACKUP_ROUTE_ID);
-			removeRoute(LEGAL_HOLD_ROUTE_ID);
+
 			removeRoute(MTA_ROUTE_ID);
 			removeRoute(PRIVACY_ROUTE_ID);
 		}
 	}, [
 		BackupTooltipView,
-		LegalHoldTooltipView,
 		MTATooltipView,
 		PrivacyTooltipView,
 		StorageTooltipView,
 		backupPrimaryBar,
-		hasConfigRights,
+		hasAllConfigRights,
 		hasListServerRights,
 		managementSection,
 		servicesSection,
@@ -793,7 +780,7 @@ const App: FC = () => {
 		}
 
 		if (isAdvanced) {
-			if (hasConfigRights) {
+			if (hasAllConfigRights) {
 				addRoute({
 					route: SUBSCRIPTIONS_ROUTE_ID,
 					position: 5,
@@ -807,8 +794,23 @@ const App: FC = () => {
 					tooltip: SubscriptionTooltipView,
 					trackerLabel: PRIMARY_BAR_SUBSCRIPTIONS
 				});
+
+				addRoute({
+					route: LEGAL_HOLD_ROUTE_ID,
+					position: 2,
+					visible: true,
+					label: t('label.legal_hold', 'Legal Hold') || '',
+					primaryBar: 'LockOutline',
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...servicesSection },
+					tooltip: LegalHoldTooltipView,
+					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
+				});
 			} else {
 				removeRoute(SUBSCRIPTIONS_ROUTE_ID);
+				removeRoute(LEGAL_HOLD_ROUTE_ID);
 			}
 
 			addRoute({
@@ -859,7 +861,7 @@ const App: FC = () => {
 		hasListServerRights,
 		MTATooltipView,
 		showCOS,
-		hasConfigRights,
+		hasAllConfigRights,
 		cosPrimaryBar,
 		LegalHoldTooltipView,
 		setConfigRightsRoute

@@ -36,18 +36,14 @@ export const doRestoreOnNewLegalHoldAccount = async (
 		},
 		'zextras'
 	).then((data: any) => {
-		if (data?.Body?.response?.content) {
-			const parseData = JSON.parse(data.Body.response.content);
-
-			const operationId = parseData?.response?.operationId;
-			if (operationId) {
-				return { operationId };
-			}
-			const message: string = parseData?.error?.message || parseData?.message;
-			if (message) {
-				return Promise.reject(message);
-			}
+		const parseData = JSON.parse(data?.Body?.response?.content || '{}');
+		const message: string = parseData?.error?.message || parseData?.message;
+		if (message) {
+			return Promise.reject(message);
 		}
-		const msg = 'Something went wrong. Please try again.';
-		return Promise.reject(msg);
+		const operationId = parseData?.response?.operationId;
+		if (!operationId) {
+			return Promise.reject();
+		}
+		return { operationId };
 	});
