@@ -164,15 +164,23 @@ const RestoreAccountView: FC<{
 		}
 	}, [searchAccount, searchAccountList]);
 
-	const callDeligateRequest = useCallback((request) => {
-		setIsRequestInprogress(true);
-		Promise.all(request)
-			.then((response) => Promise.all(response))
-			.then(() => {
-				setIsRequestInprogress(false);
-				setIsEnableLeagalAccess(true);
-			});
-	}, []);
+	const callDeligateRequest = useCallback(
+		(request) => {
+			setIsRequestInprogress(true);
+			Promise.all(request)
+				.then((response) => Promise.all(response))
+				.then(() => {
+					setIsRequestInprogress(false);
+					setIsEnableLeagalAccess(true);
+					showSnackbar(
+						SUCCESS_LABLE,
+						SUCCESS_LABLE,
+						t('legal_hold.legal_hold_enabled_successfully', 'Legal Hold enabled successfully')
+					);
+				});
+		},
+		[showSnackbar, t]
+	);
 
 	const enableLegalAccess = useCallback(() => {
 		const requestItem: Array<unknown> = [];
@@ -531,42 +539,22 @@ const RestoreAccountView: FC<{
 							</Padding>
 						</Container>
 					)}
-					{isEnableLeagalAccess && (
-						<Container mainAlignment="flex-start" height="auto">
-							<Button
-								size="large"
-								type="outlined"
-								color="success"
-								label={t('legal_hold.initialized', 'INITIALIZED')}
-								onClick={(): void => undefined}
-								width="fill"
-							/>
-						</Container>
-					)}
-
-					{!isEnableLeagalAccess && (
-						<Container mainAlignment="flex-start" height="auto">
-							<Button
-								size="large"
-								type="outlined"
-								color="primary"
-								label={t('legal_hold.enable_this_legal_access', 'Enable this legal accesses')}
-								onClick={enableLegalAccess}
-								width="fill"
-								disabled={
-									accountList.length === 0 ||
-									isRequestInprogress ||
-									!isRestoreOprationComplete ||
-									legalHoldAccountInformation === null
-								}
-							/>
-						</Container>
-					)}
+					<Container mainAlignment="flex-start" height="auto">
+						<Button
+							size="large"
+							type="outlined"
+							color="primary"
+							label={t('legal_hold.restore', 'Restore')}
+							onClick={onRestore}
+							disabled={isRequestInprogress || isRestoreOprationComplete}
+							width="fill"
+						/>
+					</Container>
 					<Container height="auto" padding={{ top: 'medium', bottom: 'large' }}>
 						<Text size="small" overflow="ellipsis" weight="light" color="gray0">
 							{t(
-								'legal_hold.you_must_access_before_restoring',
-								'You must enable these accesses before restoring'
+								'legal_hold.you_must_restore_the_account_before_enable_legal_hold',
+								'You must restore the account before enabling the Legal Hold'
 							)}
 						</Text>
 					</Container>
@@ -583,9 +571,15 @@ const RestoreAccountView: FC<{
 					size="large"
 					type="default"
 					color="primary"
-					label={t('legal_hold.restore', 'Restore')}
-					onClick={onRestore}
-					disabled={isRequestInprogress || isRestoreOprationComplete}
+					label={t('legal_hold.enable_legal_hold', 'Enable legal hold')}
+					onClick={enableLegalAccess}
+					disabled={
+						accountList.length === 0 ||
+						isRequestInprogress ||
+						!isRestoreOprationComplete ||
+						legalHoldAccountInformation === null ||
+						isEnableLeagalAccess
+					}
 				/>
 			</Container>
 		</Container>

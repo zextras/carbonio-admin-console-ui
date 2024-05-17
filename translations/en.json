@@ -2000,11 +2000,13 @@
         "your_auth_method_is": "Your Auth Method is"
     },
     "legal_hold": {
+        "enable_legal_hold": "Enable legal hold",
         "enable_this_legal_access": "Enable this legal accesses",
         "initialized": "INITIALIZED",
         "legal_access": "Legal Access",
         "legal_hold_account_blank_error": "Legal Hold account should not be blank",
         "legal_hold_appendix_blank_error": "Legal Hold appendix should not be blank",
+        "legal_hold_enabled_successfully": "Legal Hold enabled successfully",
         "legal_hold_fromdate_blank_error": "Legal Hold from date should not be blank",
         "legal_hold_status_not_set": "Legal hold not set in this account",
         "legalhold_appendix": "Legal Hold appendix",
@@ -2015,7 +2017,8 @@
         "set_legal_hold": "Set legal hold",
         "show_only_accounts_on_legal_hold": "Show only accounts on Legal Hold",
         "unset_legal_hold": "Unset legal hold",
-        "you_must_access_before_restoring": "You must enable these accesses before restoring"
+        "you_must_access_before_restoring": "You must enable these accesses before restoring",
+        "you_must_restore_the_account_before_enable_legal_hold": "You must restore the account before enabling the Legal Hold"
     },
     "locale": {
         "English": "English",
