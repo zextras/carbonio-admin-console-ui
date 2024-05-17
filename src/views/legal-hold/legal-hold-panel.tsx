@@ -314,6 +314,11 @@ const LegalHoldPanel: FC = () => {
 			.then((data) => {
 				if (data?.Body?.response?.content) {
 					const parseData = JSON.parse(data?.Body?.response?.content);
+					const message: string = parseData?.error?.message || parseData?.message;
+					if (message) {
+						showSnackbar(ERROR_LABLE, ERROR_LABLE, message);
+						return;
+					}
 					const key = Object.keys(parseData?.response)[0];
 					if (key.toString().includes('No account found for legal hold')) {
 						return;

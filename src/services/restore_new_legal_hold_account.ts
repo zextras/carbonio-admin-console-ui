@@ -43,7 +43,8 @@ export const doRestoreOnNewLegalHoldAccount = async (
 		}
 		const operationId = parseData?.response?.operationId;
 		if (!operationId) {
-			return Promise.reject();
+			const msg = undefined;
+			return Promise.reject(msg);
 		}
 		return { operationId };
 	});
