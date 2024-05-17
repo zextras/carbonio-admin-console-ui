@@ -21,17 +21,10 @@ import {
 	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
-import { debounce, snakeCase } from 'lodash';
+import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import {
-	ADD,
-	DISPLAYNAME,
-	DOMAIN,
-	FETCH_DATA_LIMIT,
-	RIGHTS_ACCESS_CONTROL_LISTS,
-	TRUE
-} from '../../../../../constants';
+import { DISPLAYNAME, FETCH_DATA_LIMIT, TRUE } from '../../../../../constants';
 import { addDistributionListMember } from '../../../../../services/add-distributionlist-member-service';
 import { getAccountMembershipRequest } from '../../../../../services/get-account-membership';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
@@ -43,7 +36,7 @@ import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
-const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoTrackerEvent }) => {
+const EditAccountAdministrationSection: FC<any> = ({ setIsLoading }) => {
 	const context = useContext(AccountContext);
 	const createSnackbar = useSnackbar();
 	const { accountDetail, setAccountDetail, initAccountDetail, setDeleteAdministrationRights } =
@@ -100,15 +93,12 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
-			const snakeCaseString = snakeCase(key);
-			handleMatomoTrackerEvent(snakeCaseString);
-
 			setAccountDetail((prev: AccountType) => ({
 				...prev,
 				[key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
+		[accountDetail, setAccountDetail]
 	);
 
 	const getAccountDistributionList = useCallback(() => {
@@ -124,7 +114,6 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 	}, [accountDetail?.zimbraId]);
 
 	const onAdd = useCallback((): void => {
-		handleMatomoTrackerEvent(ADD);
 		setIsLoading(true);
 		const id: any = {
 			n: 'id',
@@ -166,7 +155,6 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 				setIsLoading(false);
 			});
 	}, [
-		handleMatomoTrackerEvent,
 		setIsLoading,
 		selectedOption.value,
 		accountDetail?.name,
@@ -228,7 +216,6 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 
 	const onDeleteFromList = useCallback(
 		(lists: any, type: string) => {
-			handleMatomoTrackerEvent(type);
 			if (lists?.length > 0) {
 				setIsLoading(true);
 				lists.forEach((item: any) => {
@@ -275,14 +262,7 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 			}
 			setSendSelectedRows([]);
 		},
-		[
-			handleMatomoTrackerEvent,
-			setIsLoading,
-			accountDetail?.name,
-			createSnackbar,
-			t,
-			getAccountDistributionList
-		]
+		[setIsLoading, accountDetail?.name, createSnackbar, t, getAccountDistributionList]
 	);
 
 	const getDomainLists = useCallback((domain: string): any => {
@@ -397,9 +377,6 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 										}}
 										value={searchDomainName}
 										backgroundColor="gray5"
-										onFocus={(): void => {
-											handleMatomoTrackerEvent(DOMAIN);
-										}}
 									/>
 								</Dropdown>
 							</Row>
@@ -416,9 +393,6 @@ const EditAccountAdministrationSection: FC<any> = ({ setIsLoading, handleMatomoT
 									showCheckbox={false}
 									selection={selectedOption}
 									onChange={onOptionChange}
-									onClick={(): void => {
-										handleMatomoTrackerEvent(RIGHTS_ACCESS_CONTROL_LISTS);
-									}}
 								/>
 							</Row>
 							<Padding top="large" right="small">
