@@ -17,8 +17,7 @@ import {
 	Button,
 	IconButton,
 	useSnackbar,
-	Tooltip,
-	useTheme
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -120,7 +119,7 @@ const ManageAccounts: FC = () => {
 	const [sortedColumn, setSortedColumn] = useState<string>('name');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 	const [isTableTooTall, setIsTableTooTall] = useState(false);
-	const theme: any = useTheme();
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -1016,23 +1015,30 @@ const ManageAccounts: FC = () => {
 	}, []);
 
 	useEffect(() => {
-		const table: any = tableRef.current;
+		const table = tableRef.current;
 
-		const handleResize = (): void => {
+		const handleResize = debounce((): void => {
 			if (table) {
 				const tableHeight = table.clientHeight + 375;
 				const viewportHeight = window.innerHeight;
 				setIsTableTooTall(tableHeight > viewportHeight);
 			}
-		};
+		}, 100);
 
-		const resizeObserver = new ResizeObserver(handleResize);
-		resizeObserver.observe(table);
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
 
 		return () => {
-			resizeObserver.disconnect();
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
 		};
 	}, []);
+
 	const nextPage = (): void => {
 		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
 	};
@@ -1115,7 +1121,11 @@ const ManageAccounts: FC = () => {
 	);
 
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -1158,7 +1168,7 @@ const ManageAccounts: FC = () => {
 					overflow: 'auto',
 					minHeight: '10rem'
 				}}
-				padding={{ top: 'large' }}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">

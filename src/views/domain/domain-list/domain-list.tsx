@@ -22,7 +22,8 @@ import {
 	Table,
 	Divider,
 	Icon,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Button
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -35,6 +36,7 @@ import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../app/shared/track-number-per-page';
 import Paging from '../../components/paging';
+import ScrollContainer from '../../components/scrollComponent';
 
 type StatusTypes = {
 	[key: string]: {
@@ -73,9 +75,9 @@ const DomainList: FC = () => {
 	const [t] = useTranslation();
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainView = useDomainStore((state) => state.setDomainView);
-	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
 
 	const tableRef = useRef(null);
 
@@ -106,10 +108,12 @@ const DomainList: FC = () => {
 		}[]
 	>([]);
 	const [offset, setOffset] = useState<number>(0);
+	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [totalDomain, setTotalDomain] = useState<number>(0);
-
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const STATUS_COLOR: StatusTypes = useMemo(
 		() => ({
 			active: {
@@ -153,6 +157,7 @@ const DomainList: FC = () => {
 	);
 
 	const getAllDomainList = useCallback((): void => {
+		setIsRequestInProgress(true);
 		getDomainList(searchQuery, offset, limit)
 			.then((data) => {
 				const domainListResponse: ZimbraDomainResponse = data?.domain || [];
@@ -218,6 +223,7 @@ const DomainList: FC = () => {
 					});
 					setDomainList(domainListArr);
 				}
+				setIsRequestInProgress(false);
 			})
 			.catch((error) => {
 				createSnackbar({
@@ -247,8 +253,37 @@ const DomainList: FC = () => {
 		searchDomainList(searchString);
 	}, [domainList, offset, searchDomainList, searchString]);
 
+	useEffect(() => {
+		const table: any = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
+
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -277,7 +312,7 @@ const DomainList: FC = () => {
 					position: 'relative',
 					overflow: 'auto'
 				}}
-				padding={{ top: 'large' }}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -311,20 +346,37 @@ const DomainList: FC = () => {
 							style={{
 								position: 'relative'
 							}}
-							ref={tableRef}
 						>
-							{domainList.length !== 0 && (
-								<Table
-									rows={domainList}
-									headers={headers}
-									showCheckbox={false}
-									multiSelect={false}
-									style={{ overflow: 'auto', height: '100%' }}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={!isRequestInProgress ? domainList : []}
+								headers={headers}
+								showCheckbox={false}
+								multiSelect={false}
+								ref={tableRef}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || domainList.length === 0 ? '50%' : '100%'
+								}}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										color="primary"
+										label=""
+										loading
+										onClick={(): null => null}
+									/>
+								</Container>
 							)}
-							{domainList.length === 0 && (
+							{domainList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -356,33 +408,33 @@ const DomainList: FC = () => {
 									</Row>
 								</Container>
 							)}
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								padding={{ top: 'medium' }}
-							>
-								<Divider />
-							</Row>
 							{domainList.length !== 0 && (
 								<Container
-									orientation="horizontal"
-									mainAlignment="space-between"
-									width="100%"
-									style={{ position: 'absolute', bottom: '-4rem' }}
-									height="auto"
+									style={{
+										position: 'sticky',
+										bottom: isTableTooTall ? '0' : '-4rem'
+									}}
 								>
-									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
-									</Container>
+									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
-										crossAlignment="flex-end"
 										orientation="horizontal"
-										mainAlignment="flex-end"
-										padding={{ top: 'small' }}
+										mainAlignment="space-between"
+										background="gray6"
+										width="100%"
+										padding={{ right: 'extralarge' }}
+										height="auto"
 									>
-										<TrackNumberPerPage setPageSize={setLimit} />
+										<Container crossAlignment="flex-start">
+											<Paging totalItem={totalDomain} setOffset={setOffset} pageSize={limit} />
+										</Container>
+										<Container
+											crossAlignment="flex-end"
+											orientation="horizontal"
+											mainAlignment="flex-end"
+											padding={{ top: 'small' }}
+										>
+											<TrackNumberPerPage setPageSize={setLimit} />
+										</Container>
 									</Container>
 								</Container>
 							)}
