@@ -304,7 +304,7 @@ const RestoreAccountView: FC<{
 					showSnackbar(
 						SUCCESS_LABLE,
 						SUCCESS_LABLE,
-						t('legal_hold.restore_legalhold_successfully', 'Restore Legal Hold successfully')
+						t('legal_hold.account_successful_restored', 'Account successfully restored')
 					);
 					if (tableRows.length === 0) {
 						setIsShowRestoreView(false);

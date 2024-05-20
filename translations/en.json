@@ -2000,6 +2000,7 @@
         "your_auth_method_is": "Your Auth Method is"
     },
     "legal_hold": {
+        "account_successful_restored": "Account successfully restored",
         "enable_legal_hold": "Enable legal hold",
         "enable_this_legal_access": "Enable this legal accesses",
         "initialized": "INITIALIZED",
@@ -2012,7 +2013,6 @@
         "legalhold_appendix": "Legal Hold appendix",
         "restore": "Restore",
         "restore_for_legal_hold": "Restore for Legal Hold",
-        "restore_legalhold_successfully": "Restore legalhold successfully",
         "restore_settings": "Restore Settings",
         "set_legal_hold": "Set legal hold",
         "show_only_accounts_on_legal_hold": "Show only accounts on Legal Hold",
