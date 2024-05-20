@@ -58,7 +58,6 @@ import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
 import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
-import AccountDetailView from '../accounts/account-detail-view';
 import EditAccount from '../accounts/edit-account/edit-account';
 
 type UserSession = {
@@ -98,7 +97,6 @@ const ManageDelegates: FC = () => {
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [offset, setOffset] = useState<number>(0);
 	const [pageLimit, setPageLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
@@ -507,7 +505,7 @@ const ManageDelegates: FC = () => {
 
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setShowAccountDetailView(true);
+			setShowEditAccountView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
@@ -747,21 +745,6 @@ const ManageDelegates: FC = () => {
 		setOpen(false);
 	};
 
-	const closeAccountDetailDialog = useCallback(() => {
-		if (showAccountDetailView) {
-			setShowAccountDetailView(false);
-		}
-	}, [showAccountDetailView]);
-
-	const handleKeyEvent = useCallback(
-		(event) => {
-			if (event.key === 'Escape') {
-				closeAccountDetailDialog();
-			}
-		},
-		[closeAccountDetailDialog]
-	);
-
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
@@ -824,13 +807,6 @@ const ManageDelegates: FC = () => {
 				});
 			});
 	}, [domain.name, openDetailView, pageLimit, offset, createSnackbar, t]);
-
-	useEffect(() => {
-		window.addEventListener('keydown', handleKeyEvent);
-		return () => {
-			window.removeEventListener('keydown', handleKeyEvent);
-		};
-	}, [handleKeyEvent]);
 
 	useEffect(() => {
 		fetchDistributionList(domain?.name, 0, 10);
@@ -1210,19 +1186,6 @@ const ManageDelegates: FC = () => {
 						</>
 					)} */}
 					<AccountContext.Provider value={accountContextValue}>
-						{showAccountDetailView && (
-							<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
-								<AccountDetailView
-									selectedAccount={selectedAccount}
-									setShowAccountDetailView={setShowAccountDetailView}
-									setShowEditAccountView={setShowEditAccountView}
-									STATUS_COLOR={STATUS_COLOR}
-									getAccountList={getAccountList}
-									cosDetail={cosDetail}
-								/>
-							</ModalOverlay>
-						)}
-
 						{showEditAccountView && (
 							<ModalOverlay
 								setOpen={setShowEditAccountView}
@@ -1240,7 +1203,6 @@ const ManageDelegates: FC = () => {
 									getAccountDetail={getAccountDetail}
 									defaultTab={defaultTab}
 									setDefaultTab={setDefaultTab}
-									setShowAccountDetailView={setShowAccountDetailView}
 									showModal={showModal}
 									setShowModal={setShowModal}
 									isDirty={isDirty}

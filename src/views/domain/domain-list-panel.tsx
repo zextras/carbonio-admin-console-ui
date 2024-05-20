@@ -128,6 +128,12 @@ const DomainListPanel: FC = () => {
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const globalConfigInformation = useConfigStore((state) => state.config);
+	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
+
+	useEffect(() => {
+		const isAvail2Fa = domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech');
+		setIs2FAAvailable(isAvail2Fa === undefined);
+	}, [domainInformation]);
 
 	const loadingComponent = [
 		{
@@ -325,7 +331,7 @@ const DomainListPanel: FC = () => {
 			{
 				id: TWO_FACTOR_AUTHENTICATION,
 				name: t('label.2-factor-authentication', '2-Factor-Authentication'),
-				isSelected: isDomainSelect
+				isSelected: isDomainSelect && is2FAAvailable
 			},
 			{
 				id: SAML,
@@ -338,7 +344,7 @@ const DomainListPanel: FC = () => {
 				isSelected: isDisclaimerEnable === FALSE ? BOOLEAN_FALSE : isDomainSelect
 			}
 		],
-		[t, isDomainSelect, isDisclaimerEnable]
+		[t, isDomainSelect, is2FAAvailable, isDisclaimerEnable]
 	);
 
 	const allManageOptions = useMemo(
@@ -447,7 +453,8 @@ const DomainListPanel: FC = () => {
 							item?.id !== TWO_FACTOR_AUTHENTICATION
 				  )
 				: detailOptions,
-		[detailOptions, isAdvanced]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[detailOptions, isAdvanced, is2FAAvailable]
 	);
 
 	const globalOptionsItems = useMemo(
@@ -455,7 +462,9 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? globalOptionItems.filter(
 						(item: ManageOptions) =>
-							item?.id !== GLOBAL_WHITELABEL_SETTINGS && item?.id !== GLOBAL_2FA_ROUTE
+							item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
+							item?.id !== GLOBAL_2FA_ROUTE &&
+							item.id !== GLOBAL_ACTIVE_SYNC_ROUTE
 				  )
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]
