@@ -43,7 +43,7 @@ const RestoreAccountView: FC<{
 	const createSnackbar = useSnackbar();
 	const [searchAccount, setSearchAccount] = useState<string>('');
 	const [legalHoldAppendix, setLegalHoldAppendix] = useState<string>('');
-	const [account, setAccount] = useState<string>(legalHoldAccount?.name ?? '');
+	const account = legalHoldAccount?.name ?? '';
 	const [accountList, setAccountList] = useState<any[]>([]);
 	const [searchAccountResult, setSearchAccountResult] = useState<any[]>([]);
 	const [isRequestInprogress, setIsRequestInprogress] = useState<boolean>(false);
