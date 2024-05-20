@@ -95,7 +95,7 @@ const ManageDelegates: FC = () => {
 	const [credentialList, setCredentialList] = useState<any[]>([]);
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
-	const [totalDomainAccount, setTotalDomainAccount] = useState<number>(0);
+	const [totalDomainAccount, setTotalAccount] = useState<number>(0);
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
@@ -775,7 +775,7 @@ const ManageDelegates: FC = () => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
 					const accountListArr: any = [];
-					setTotalDomainAccount(data.searchTotal || 0);
+					setTotalAccount(data.searchTotal || 0);
 					accountListResponse.forEach((item: any): any => {
 						item?.a?.forEach((ele: any) => {
 							if (ele?.n === 'mail') {
