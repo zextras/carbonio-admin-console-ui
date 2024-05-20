@@ -95,9 +95,9 @@ const ManageDelegates: FC = () => {
 	const [credentialList, setCredentialList] = useState<any[]>([]);
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
-	const [totalDomainAccount, setTotalAccount] = useState<number>(0);
+	const [totatAccount, setTotalAccount] = useState<number>(0);
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
+	const [pageLimit, setPageLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
@@ -770,7 +770,7 @@ const ManageDelegates: FC = () => {
 			'(|(&(zimbraIsAdminAccount=TRUE))(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE))))';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domain.name, searchQuery, offset, limit)
+		accountListDirectory(attrs, type, domain.name, searchQuery, offset, pageLimit)
 			.then((data: any) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -823,7 +823,7 @@ const ManageDelegates: FC = () => {
 					replace: true
 				});
 			});
-	}, [domain.name, openDetailView, limit, offset, createSnackbar, t]);
+	}, [domain.name, openDetailView, pageLimit, offset, createSnackbar, t]);
 
 	useEffect(() => {
 		window.addEventListener('keydown', handleKeyEvent);
@@ -1159,9 +1159,9 @@ const ManageDelegates: FC = () => {
 										>
 											<Container crossAlignment="flex-start">
 												<Paging
-													totalItem={totalDomainAccount}
+													totalItem={totatAccount}
 													setOffset={setOffset}
-													pageSize={limit}
+													pageSize={pageLimit}
 												/>
 											</Container>
 
@@ -1171,7 +1171,7 @@ const ManageDelegates: FC = () => {
 												mainAlignment="flex-end"
 												padding={{ top: 'small' }}
 											>
-												<TrackNumberPerPage setPageSize={setLimit} />
+												<TrackNumberPerPage setPageSize={setPageLimit} />
 											</Container>
 										</Container>
 									</Container>
