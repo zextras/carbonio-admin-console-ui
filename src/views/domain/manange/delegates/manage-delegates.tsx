@@ -95,7 +95,7 @@ const ManageDelegates: FC = () => {
 	const [credentialList, setCredentialList] = useState<any[]>([]);
 	const [folderList, setFolderList] = useState<any[]>([]);
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
-	const [totatAccount, setTotalAccount] = useState<number>(0);
+	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [offset, setOffset] = useState<number>(0);
 	const [pageLimit, setPageLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
@@ -1159,7 +1159,7 @@ const ManageDelegates: FC = () => {
 										>
 											<Container crossAlignment="flex-start">
 												<Paging
-													totalItem={totatAccount}
+													totalItem={totalAccount}
 													setOffset={setOffset}
 													pageSize={pageLimit}
 												/>
