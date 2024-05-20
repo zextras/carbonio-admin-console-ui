@@ -425,9 +425,7 @@ const RestoreAccountView: FC<{
 								label={t('label.account', 'Account')}
 								backgroundColor="gray5"
 								value={account}
-								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-									setAccount(e.target.value);
-								}}
+								disabled
 							/>
 						</Container>
 					</Container>
