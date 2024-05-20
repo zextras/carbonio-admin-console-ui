@@ -13,7 +13,6 @@ import {
 	ADVANCED,
 	ADVANCED_LBL,
 	BACKUP_BASIC,
-	BACKUP_ROUTE_ID,
 	CONFIGURATION_BACKUP,
 	IS_DEFAULT_SETTINGS_EXPANDED,
 	IS_SERVER_SPECIFICS_EXPANDED,
@@ -22,9 +21,7 @@ import {
 	SERVERS_LIST,
 	SERVER_CONFIG
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
-import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { useRightsStore } from '../../store/rights/store';
@@ -35,8 +32,6 @@ import { getRights } from '../utility/utils';
 
 const BackupListPanel: FC = () => {
 	const [t] = useTranslation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -53,10 +48,6 @@ const BackupListPanel: FC = () => {
 	const rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const [isShowError, setIsShowError] = useState(false);
-
-	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${BACKUP_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
 
 	useEffect(() => {
 		if (moduleLicense && moduleLicense.length > 0) {
@@ -120,13 +111,12 @@ const BackupListPanel: FC = () => {
 	);
 
 	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 		if (selectedOperationItem === CONFIGURATION_BACKUP || selectedOperationItem === ADVANCED_LBL) {
 			replaceHistory(`/${selectedServer}/${selectedOperationItem}`);
 		} else {
 			replaceHistory(`/${selectedOperationItem}`);
 		}
-	}, [globalCarbonioSendAnalytics, matomo, selectedOperationItem, selectedServer]);
+	}, [globalCarbonioSendAnalytics, selectedOperationItem, selectedServer]);
 
 	const toggleDefaultSettingsView = (): void => {
 		if (isDefaultSettingsExpanded) {

@@ -10,17 +10,13 @@ import { Container } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
-import { LIST, NOTIFICATION_ROUTE_ID } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
-import { useConfigStore } from '../../store/config/store';
+import { LIST } from '../../constants';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 
 const NotificationsListPanel: FC = () => {
 	const [t] = useTranslation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -43,13 +39,8 @@ const NotificationsListPanel: FC = () => {
 	};
 
 	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${NOTIFICATION_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
-
-	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 		replaceHistory(`/${selectedOperationItem}`);
-	}, [selectedOperationItem, globalCarbonioSendAnalytics, matomo]);
+	}, [selectedOperationItem, globalCarbonioSendAnalytics]);
 
 	return (
 		<Container
