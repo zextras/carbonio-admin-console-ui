@@ -409,11 +409,11 @@ const EditAccount: FC<{
 	const handlePasswordChange = useCallback(
 		async (modifiedKeys: string[]): Promise<void> => {
 			if (accountDetail?.password?.length < 6) {
-				ErrorSnackbar(t('label.password_lenght_msg', 'Password should be more than 5 character'));
+				ErrorSnackbar(t('label.password_length_msg', 'Password should be more than 5 character'));
 				return;
 			}
 			if (accountDetail?.password !== accountDetail?.repeatPassword) {
-				ErrorSnackbar(t('label.password_and repeat_password_not_match', 'Passwords do not match'));
+				ErrorSnackbar(t('label.password_and_repeat_password_not_match', 'Passwords do not match'));
 				return;
 			}
 			setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password).then(() => {
