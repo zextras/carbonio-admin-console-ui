@@ -34,7 +34,6 @@ import {
 	SERVERS_LIST,
 	STORAGES_ROUTE_ID
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useDomainStore } from '../../store/domain/store';
