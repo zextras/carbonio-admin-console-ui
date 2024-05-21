@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import { Container, Divider } from '@zextras/carbonio-design-system';
 import {
@@ -23,7 +23,6 @@ import QuickAccess from './quick-access-view';
 import packageJson from '../../../package.json';
 import {
 	ACCOUNTS,
-	DASHBOARD,
 	DOMAINS_ROUTE_ID,
 	LIST,
 	LIST_SERVER,
@@ -33,17 +32,12 @@ import {
 	NOTIFICATION_ROUTE_ID,
 	SERVER,
 	SERVERS_LIST,
-	STORAGES_ROUTE_ID,
-	NOTIFICATIONS_DATABASE,
-	STORAGES_DATABASE,
-	DASHBOARD_TABLES
+	STORAGES_ROUTE_ID
 } from '../../constants';
 import MatomoTracker from '../../matomo-tracker';
 import { getVersionInfo } from '../../services/get-version-info';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import { useConfigStore } from '../../store/config/store';
 import { useDomainStore } from '../../store/domain/store';
-import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useRightsStore } from '../../store/rights/store';
 import ListRow from '../list/list-row';
 import { getRights } from '../utility/utils';
@@ -51,12 +45,6 @@ import { getRights } from '../utility/utils';
 const Dashboard: FC = () => {
 	const [t] = useTranslation();
 	const history = useHistory();
-	const userInfo = useConfigStore((state) => state.userId);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const matomo = useMemo(() => new MatomoTracker(userInfo), []);
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
 	const accounts = useUserAccounts();
 	const [userName, setUserName] = useState<string>('');
 	const [version, setVersion] = useState<string>('');
@@ -115,10 +103,6 @@ const Dashboard: FC = () => {
 	);
 
 	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${DASHBOARD}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
-
-	useEffect(() => {
 		if (accounts[0]?.displayName) {
 			setUserName(accounts[0]?.displayName);
 		} else if (accounts[0]?.name) {
@@ -133,13 +117,11 @@ const Dashboard: FC = () => {
 	}, []);
 
 	const goToMailStoreServerList = useCallback(() => {
-		matomo.trackEvent(DASHBOARD, DASHBOARD_TABLES, STORAGES_DATABASE);
 		history.push(`/${MANAGE}/${STORAGES_ROUTE_ID}/${SERVERS_LIST}`);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);
 
 	const goToMailNotificationt = useCallback(() => {
-		matomo.trackEvent(DASHBOARD, DASHBOARD_TABLES, NOTIFICATIONS_DATABASE);
 		history.push(`/${LOG_AND_QUEUES}/${NOTIFICATION_ROUTE_ID}/${LIST}`);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [history]);

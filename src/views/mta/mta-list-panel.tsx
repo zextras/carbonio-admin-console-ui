@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 import {
 	ANTIVIRUS_AND_ANTISPAM,
 	GENERAL,
-	MTA_ROUTE_ID,
 	OUTBOUND_FLOW,
 	ADVANCED,
 	POSTSCREEN_TUNING,
@@ -20,8 +19,6 @@ import {
 	IS_SERVER_SPECIFICS_EXPANDED,
 	MTA_SERVER_GENERAL
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
-import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useServerStore } from '../../store/server/store';
 import DropDownInput from '../components/dropDownInput';
@@ -30,8 +27,6 @@ import ListPanelItem from '../list/list-panel-item';
 
 const MTAListPanel: FC = () => {
 	const [t] = useTranslation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const [isMtaSettingsExpanded, setIsMtaSettingsExpanded] = useState(true);
 	const [selectedOperationItem, setSelectedOperationItem] = useState(GENERAL);
 	const [isServerSpecificsExpanded, setIsServerSpecificsExpanded] = useState<boolean>(true);
@@ -45,10 +40,6 @@ const MTAListPanel: FC = () => {
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
-
-	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${MTA_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
 
 	const toggleServerSpecific = (): void => {
 		if (isServerSpecificsExpanded) {
@@ -160,13 +151,12 @@ const MTAListPanel: FC = () => {
 	};
 
 	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 		if (selectedOperationItem === MTA_SERVER_GENERAL) {
 			replaceHistory(`/${selectedServer}/${selectedOperationItem}`);
 		} else {
 			replaceHistory(`/${selectedOperationItem}`);
 		}
-	}, [globalCarbonioSendAnalytics, matomo, selectedOperationItem, selectedServer]);
+	}, [globalCarbonioSendAnalytics, selectedOperationItem, selectedServer]);
 
 	return (
 		<Container

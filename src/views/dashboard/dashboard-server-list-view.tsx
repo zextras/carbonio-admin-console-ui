@@ -11,10 +11,7 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { Server } from '../../../types';
-import { DASHBOARD, DASHBOARD_TABLES, STORAGES_TABLE_DATABASE } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
-import { useConfigStore } from '../../store/config/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
@@ -34,15 +31,9 @@ const DashboardServerList: FC<{
 	serverVersion: any;
 }> = ({ goToMailStoreServerList, serverVersion }) => {
 	const [t] = useTranslation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const mailstoresList = useMailstoreListStore((state) => state.allMailstoreList || []);
 	const [serverListRow, setServerListRow] = useState<Array<any>>([]);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-
-	const handleClickRow = (): void => {
-		matomo.trackEvent(DASHBOARD, DASHBOARD_TABLES, STORAGES_TABLE_DATABASE);
-	};
 
 	useEffect(() => {
 		if (mailstoresList.length > 0) {
@@ -56,7 +47,6 @@ const DashboardServerList: FC<{
 						key={item.id}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
-							handleClickRow();
 						}}
 					>
 						{item?.name}
@@ -68,7 +58,6 @@ const DashboardServerList: FC<{
 						key={item?.name}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
-							handleClickRow();
 						}}
 					>
 						{`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
@@ -81,7 +70,6 @@ const DashboardServerList: FC<{
 							key={item?.name}
 							onClick={(event: { stopPropagation: () => void }): void => {
 								event.stopPropagation();
-								handleClickRow();
 							}}
 						>
 							{`${serverVersion?.majorversion}.${serverVersion?.minorversion}.${serverVersion?.microversion}`}
@@ -96,7 +84,6 @@ const DashboardServerList: FC<{
 						key={item?.name}
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
-							handleClickRow();
 						}}
 					>
 						{item && item?.a
