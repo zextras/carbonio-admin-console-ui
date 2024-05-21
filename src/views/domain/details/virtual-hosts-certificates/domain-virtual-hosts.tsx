@@ -616,7 +616,7 @@ const DomainVirtualHosts: FC = () => {
 								<Padding left="large">
 									<Button
 										type="ghost"
-										label={t('label.download', 'DOWNLOAD')}
+										label={t('label.download_uppercase', 'DOWNLOAD')}
 										color="primary"
 										disabled={toggleCertiBtn}
 										onClick={downloadTxtHandler}

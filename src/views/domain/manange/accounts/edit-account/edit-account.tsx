@@ -130,7 +130,6 @@ const EditAccount: FC<{
 	getAccountDetail: any;
 	defaultTab: string;
 	setDefaultTab: any;
-	setShowAccountDetailView: any;
 	showModal: boolean;
 	setShowModal: (showModal: boolean) => void;
 	isDirty: boolean;
@@ -144,7 +143,6 @@ const EditAccount: FC<{
 	signatureList,
 	getAccountDetail,
 	defaultTab,
-	setShowAccountDetailView,
 	setDefaultTab,
 	showModal,
 	setShowModal,
@@ -411,11 +409,11 @@ const EditAccount: FC<{
 	const handlePasswordChange = useCallback(
 		async (modifiedKeys: string[]): Promise<void> => {
 			if (accountDetail?.password?.length < 6) {
-				ErrorSnackbar(t('label.password_lenght_msg', 'Password should be more than 5 character'));
+				ErrorSnackbar(t('label.password_length_msg', 'Password should be more than 5 character'));
 				return;
 			}
 			if (accountDetail?.password !== accountDetail?.repeatPassword) {
-				ErrorSnackbar(t('label.password_and repeat_password_not_match', 'Passwords do not match'));
+				ErrorSnackbar(t('label.password_and_repeat_password_not_match', 'Passwords do not match'));
 				return;
 			}
 			setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password).then(() => {
@@ -894,17 +892,6 @@ const EditAccount: FC<{
 			color: 'primary',
 			onClick: onViewMail
 		},
-		// {
-		// 	align: 'right',
-		// 	label: t('label.close', 'CLOSE'),
-		// 	color: 'error',
-		// 	onClick: (): void => {
-		// 		setShowAccountDetailView(false);
-		// 		setShowEditAccountView(true);
-		// 	},
-
-		// 	disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-		// },
 		{
 			align: 'right',
 			color: 'error',
@@ -941,10 +928,9 @@ const EditAccount: FC<{
 			});
 			setIsRequestInProgress(false);
 			closeHandler();
-			setShowAccountDetailView(false);
 			getAccountList();
 		},
-		[closeHandler, createSnackbar, getAccountList, setShowAccountDetailView]
+		[closeHandler, createSnackbar, getAccountList]
 	);
 	const onDisableAccount = useCallback(() => {
 		setIsRequestInProgress(true);
@@ -1058,7 +1044,6 @@ const EditAccount: FC<{
 							icon="CloseOutline"
 							onClick={(): void => {
 								setShowEditAccountView(false);
-								setShowAccountDetailView(true);
 								setDefaultTab('general');
 							}}
 						/>
