@@ -9,7 +9,6 @@ import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 're
 import {
 	Row,
 	Container,
-	Padding,
 	Divider,
 	Text,
 	Button,
@@ -950,7 +949,7 @@ const ManageDelegates: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
+					<Container orientation="vertical" mainAlignment="space-around" height="10.5rem">
 						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 							<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 								<Text size="medium" weight="bold" color="gray0">
@@ -958,10 +957,25 @@ const ManageDelegates: FC = () => {
 								</Text>
 							</Row>
 						</Row>
+						<Row orientation="horizontal" width="100%" background="gray6">
+							<Divider />
+						</Row>
+						{isGlobalAdmin && (
+							<>
+								<ListRow padding={{ vertical: 'large' }}>
+									<Button
+										label={t('label.init_domain', 'INIT DOMAIN')}
+										color="primary"
+										onClick={handleRevokesGrants}
+										loading={loading}
+									/>
+								</ListRow>
+								<Row orientation="horizontal" width="100%" background="gray6">
+									<Divider />
+								</Row>
+							</>
+						)}
 					</Container>
-				</Row>
-				<Row orientation="horizontal" width="100%" background="gray6">
-					<Divider />
 				</Row>
 				<Container
 					orientation="column"
@@ -975,23 +989,6 @@ const ManageDelegates: FC = () => {
 					}}
 					padding={{ top: 'large' }}
 				>
-					{isGlobalAdmin && (
-						<>
-							<ListRow padding={{ vertical: 'large' }}>
-								<Padding bottom="large">
-									<Button
-										label={t('label.init_domain', 'INIT DOMAIN')}
-										color="primary"
-										onClick={handleRevokesGrants}
-										loading={loading}
-									/>
-								</Padding>
-							</ListRow>
-							<Row orientation="horizontal" width="100%" background="gray6">
-								<Divider />
-							</Row>
-						</>
-					)}
 					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large', left: 'large' }}>
 						<Row
 							mainAlignment="flex-start"
