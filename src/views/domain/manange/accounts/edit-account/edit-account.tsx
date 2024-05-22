@@ -71,6 +71,7 @@ import {
 	ACCOUNTS_DETAILS_UNPIN,
 	DOMAINS_ROUTE_ID,
 	ADMIN_LOGIN_AS,
+	BACKUP_SELF_UNDELETE_ALLOWED,
 	FILES_QUOTA_LIMIT
 } from '../../../../../constants';
 import MatomoTracker from '../../../../../matomo-tracker';
@@ -490,7 +491,11 @@ const EditAccount: FC<{
 	);
 
 	const handleCoreAttributesModification = async (modifiedKeys: string[]): Promise<void> => {
-		if (modifiedKeys.includes(ABQ_MODE) || modifiedKeys.includes(BACKUP_ENABLED)) {
+		if (
+			modifiedKeys.includes(ABQ_MODE) ||
+			modifiedKeys.includes(BACKUP_ENABLED) ||
+			modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)
+		) {
 			const body: any = {};
 			if (modifiedKeys.includes(ABQ_MODE)) {
 				body.abqMode = {
@@ -502,6 +507,14 @@ const EditAccount: FC<{
 			if (modifiedKeys.includes(BACKUP_ENABLED)) {
 				body.backupEnabled = {
 					value: accountDetail.backupEnabled,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				};
+			}
+
+			if (modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)) {
+				body.backupSelfUndeleteAllowed = {
+					value: accountDetail.backupSelfUndeleteAllowed,
 					objectName: accountDetail.zimbraId,
 					configType: ACCOUNT
 				};
@@ -532,6 +545,7 @@ const EditAccount: FC<{
 				});
 			remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
 			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
+			remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
 		}
 	};
 

@@ -374,6 +374,7 @@ export const GET = 'get';
 export const SET = 'set';
 export const ABQ_MODE = 'abqMode';
 export const BACKUP_ENABLED = 'backupEnabled';
+export const BACKUP_SELF_UNDELETE_ALLOWED = 'backupSelfUndeleteAllowed';
 export const PERMISSIVE = 'Permissive';
 export const INTERACTIVE = 'Interactive';
 export const STRICT = 'Strict';

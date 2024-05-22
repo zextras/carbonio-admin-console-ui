@@ -47,6 +47,7 @@ import {
 	DOMAIN_ACCOUNTS_NEXT_TABLE,
 	BACKUP_ENABLED,
 	DOMAINS_ROUTE_ID,
+	BACKUP_SELF_UNDELETE_ALLOWED,
 	FILES_QUOTA_LIMIT,
 	FILES_QUOTA_USED,
 	COS
@@ -465,6 +466,11 @@ const ManageAccounts: FC = () => {
 				configType: ACCOUNT,
 				configName: [acc],
 				attrName: [BACKUP_ENABLED]
+			},
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [BACKUP_SELF_UNDELETE_ALLOWED]
 			}
 		];
 		getCoreAttributes(body).then((data) => {
@@ -473,14 +479,16 @@ const ManageAccounts: FC = () => {
 					...prev,
 					...{
 						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					}
 				}));
 				setInitAccountDetail((prev: AccountType) => ({
 					...prev,
 					...{
 						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					}
 				}));
 			}
