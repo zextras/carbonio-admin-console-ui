@@ -2307,3 +2307,14 @@ export const isValidDecimalNumber = (value: string): boolean => {
 	const regex = /^\d*\.?\d*$/;
 	return regex.test(value);
 };
+
+export const isValidVirtualHostname = (hostname: string): boolean => {
+	const hostnamePartRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/;
+	const tldRegex = /^[A-Za-z]{2,}$/;
+	const parts = hostname.split('.');
+	if (parts.length < 2) {
+		return false;
+	}
+	const tld = parts.pop();
+	return tldRegex.test(tld!) && parts.every((part) => hostnamePartRegex.test(part));
+};
