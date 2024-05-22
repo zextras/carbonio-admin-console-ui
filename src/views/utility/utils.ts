@@ -1411,16 +1411,6 @@ export const localeList = (
 	t: TFunction
 ): Array<{ id: string; name: string; localName: string; value: string; label: string }> => [
 	{
-		id: 'zh_CN',
-		name: '中文 (中国)',
-		localName: t('locale.chinese_china', 'Chinese (China)'),
-		label: t('locale.label_chinese', {
-			value: '中文 (中国)',
-			defaultValue: 'Chinese (China) - {{value}}'
-		}),
-		value: 'zh_CN'
-	},
-	{
 		id: 'nl',
 		name: 'Nederlands',
 		localName: t('locale.dutch', 'Dutch'),
@@ -1447,6 +1437,16 @@ export const localeList = (
 		localName: t('locale.hindi', 'Hindi'),
 		label: t('locale.label_hindi', { value: 'हिंदी', defaultValue: 'Hindi - {{value}}' }),
 		value: 'hi'
+	},
+	{
+		id: 'id',
+		name: 'Bahasa Indonesia',
+		localName: t('locale.indonesian', 'Indonesian'),
+		label: t('locale.label_indonesian', {
+			value: 'Bahasa Indonesia',
+			defaultValue: 'Indonesian - {{value}}'
+		}),
+		value: 'id'
 	},
 	{
 		id: 'it',
