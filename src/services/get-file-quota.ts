@@ -9,7 +9,10 @@ import {
 	getSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 
-export const getFileQuotaByAccount = async (accId: string): Promise<any> => {
-	const url = `/services/storages/admin/quota/accounts/${accId}`;
+import { ACCOUNTS, COS } from '../constants';
+
+export const getFileQuotaById = async (accId: string, type?: string): Promise<any> => {
+	const fetchType = type === COS ? COS : ACCOUNTS;
+	const url = `/services/storages/admin/quota/${fetchType}/${accId}`;
 	return getSoapFetchRequest(url);
 };

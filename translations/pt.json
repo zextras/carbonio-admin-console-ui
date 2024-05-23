@@ -622,8 +622,8 @@
         "restart_replica": "REINICIAR RÉPLICA",
         "repeat_password": "Repetir senha",
         "percentage_maximum_conflict_allowed": "% máximo de conflitos permitidos",
-        "password_lenght_msg": "A senha deve conter mais de 5 caracteres",
-        "password_and repeat_password_not_match": "As senhas não correspondem",
+        "password_length_msg": "A senha deve conter mais de 5 caracteres",
+        "password_and_repeat_password_not_match": "As senhas não correspondem",
         "not_send_receive": "Não pode enviar nem receber",
         "no_auto_accept_or_decline": "Nunca aceitar automaticamente, mesmo que o usuário esteja disponível",
         "next_step": "PRÓXIMO",
@@ -1268,7 +1268,7 @@
         "search_for_an_account": "Procurar conta",
         "received": "Recebida",
         "Cos_name": "Nome da COS",
-        "attachement_unknown": "Desconhecido <{{mimeType}}>",
+        "attachment_unknown": "Desconhecido <{{mimeType}}>",
         "discard": "Descartar",
         "from": "De",
         "login": "Iniciar sessão",
@@ -1279,9 +1279,8 @@
         "show_quoted_text": "Mostrar texto citado",
         "subject": "Assunto",
         "view_images": "Ver imágens",
-        "attachment_0": "",
-        "attachment_1": "",
-        "attachment_2": "anexos",
+        "attachment_one": "",
+        "attachment_other": "anexos",
         "attachments_disclaimer": "Você está visualizando uma mensagem anexada. Sua autenticidade não pode ser verificada.",
         "invalid_destination": "Este elemento não é um destino válido",
         "to": "Para",
@@ -1780,8 +1779,8 @@
         "send_full_error_data": "Enviar dados completos do erro"
     },
     "reminder": {
-        "minute": "{{count}} minuto",
-        "minute_plural": "{{count}} minutos"
+        "minute_one": "{{count}} minuto",
+        "minute_other": "{{count}} minutos"
     },
     "volume": {
         "new": {

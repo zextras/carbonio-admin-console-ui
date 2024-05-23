@@ -610,8 +610,8 @@
         "public_service_port": "พอร์ตบริการสาธารณะ",
         "public_service_hostname": "ชื่อโฮสต์บริการสาธารณะ",
         "percentage_maximum_conflict_allowed": "% ความขัดแย้งสูงสุดที่อนุญาต",
-        "password_lenght_msg": "รหัสผ่านควรมีความยาวมากกว่า 5 ตัวอักษร",
-        "password_and repeat_password_not_match": "รหัสผ่านไม่ตรงกัน",
+        "password_length_msg": "รหัสผ่านควรมีความยาวมากกว่า 5 ตัวอักษร",
+        "password_and_repeat_password_not_match": "รหัสผ่านไม่ตรงกัน",
         "number_of_items_to_fetch_when_scrolling": "จำนวนรายการที่จะดึงขณะเลื่อน",
         "not_send_receive": "ไม่สามารถส่งหรือรับได้",
         "no_virtual_host_msg": "ไม่มีโฮสต์เสมือนจริงที่นี่",
@@ -1389,8 +1389,9 @@
         "advance_edit_userName": "ชื่อผู้ใช้",
         "search_for_an_account": "ค้นหาบัญชี",
         "Cos_name": "ชื่อ Cos",
-        "attachement_unknown": "ไม่รู้จัก <{{mimeType}}>",
-        "attachment_0": "สิ่งที่แนบมา",
+        "attachment_unknown": "ไม่รู้จัก <{{mimeType}}>",
+        "attachment_one": "สิ่งที่แนบมา",
+        "attachment_other": "",
         "discard": "ยกเลิก",
         "from": "จาก",
         "login": "เข้าสู่ระบบ",
@@ -1919,7 +1920,8 @@
         "send_full_error_data": "ส่งข้อมูลข้อผิดพลาดทั้งหมด"
     },
     "reminder": {
-        "minute": "{{count}} นาที"
+        "minute_one": "{{count}} นาที",
+        "minute_other": ""
     },
     "volume": {
         "new": {

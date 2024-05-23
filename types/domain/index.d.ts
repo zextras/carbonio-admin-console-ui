@@ -88,6 +88,7 @@ export type themeConfigStore = {
 	carbonioWebUILogoutURL?: string;
 	carbonioAdminUILoginURL?: string;
 	carbonioAdminUILogoutURL?: string;
+	carbonioAdminDocumentationUrl?: string;
 };
 
 export interface IpRangeValue {

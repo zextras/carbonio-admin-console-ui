@@ -71,6 +71,7 @@ import {
 	ACCOUNTS_DETAILS_UNPIN,
 	DOMAINS_ROUTE_ID,
 	ADMIN_LOGIN_AS,
+	BACKUP_SELF_UNDELETE_ALLOWED,
 	FILES_QUOTA_LIMIT
 } from '../../../../../constants';
 import MatomoTracker from '../../../../../matomo-tracker';
@@ -82,9 +83,10 @@ import { getDelegateAuthRequest } from '../../../../../services/get-delegate-aut
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
+import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
-import { setFileQuotaLimitByAccount } from '../../../../../services/set-file-quota-limit-account';
+import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useConfigStore } from '../../../../../store/config/store';
@@ -129,7 +131,6 @@ const EditAccount: FC<{
 	getAccountDetail: any;
 	defaultTab: string;
 	setDefaultTab: any;
-	setShowAccountDetailView: any;
 	showModal: boolean;
 	setShowModal: (showModal: boolean) => void;
 	isDirty: boolean;
@@ -143,7 +144,6 @@ const EditAccount: FC<{
 	signatureList,
 	getAccountDetail,
 	defaultTab,
-	setShowAccountDetailView,
 	setDefaultTab,
 	showModal,
 	setShowModal,
@@ -410,11 +410,11 @@ const EditAccount: FC<{
 	const handlePasswordChange = useCallback(
 		async (modifiedKeys: string[]): Promise<void> => {
 			if (accountDetail?.password?.length < 6) {
-				ErrorSnackbar(t('label.password_lenght_msg', 'Password should be more than 5 character'));
+				ErrorSnackbar(t('label.password_length_msg', 'Password should be more than 5 character'));
 				return;
 			}
 			if (accountDetail?.password !== accountDetail?.repeatPassword) {
-				ErrorSnackbar(t('label.password_and repeat_password_not_match', 'Passwords do not match'));
+				ErrorSnackbar(t('label.password_and_repeat_password_not_match', 'Passwords do not match'));
 				return;
 			}
 			setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password).then(() => {
@@ -491,7 +491,11 @@ const EditAccount: FC<{
 	);
 
 	const handleCoreAttributesModification = async (modifiedKeys: string[]): Promise<void> => {
-		if (modifiedKeys.includes(ABQ_MODE) || modifiedKeys.includes(BACKUP_ENABLED)) {
+		if (
+			modifiedKeys.includes(ABQ_MODE) ||
+			modifiedKeys.includes(BACKUP_ENABLED) ||
+			modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)
+		) {
 			const body: any = {};
 			if (modifiedKeys.includes(ABQ_MODE)) {
 				body.abqMode = {
@@ -503,6 +507,14 @@ const EditAccount: FC<{
 			if (modifiedKeys.includes(BACKUP_ENABLED)) {
 				body.backupEnabled = {
 					value: accountDetail.backupEnabled,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				};
+			}
+
+			if (modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)) {
+				body.backupSelfUndeleteAllowed = {
+					value: accountDetail.backupSelfUndeleteAllowed,
 					objectName: accountDetail.zimbraId,
 					configType: ACCOUNT
 				};
@@ -533,6 +545,7 @@ const EditAccount: FC<{
 				});
 			remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
 			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
+			remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
 		}
 	};
 
@@ -624,8 +637,26 @@ const EditAccount: FC<{
 	const handleFileQuotaLimitChange = useCallback(
 		(modifiedKeys: string[]) => {
 			if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
-				setFileQuotaLimitByAccount(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
-					(res) => {
+				if (accountDetail?.filesQuotaLimit) {
+					setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
+						(res) => {
+							if (modifiedKeys?.length === 0) {
+								createSnackbar({
+									key: 'success',
+									type: 'success',
+									label: t(
+										'label.the_last_changes_has_been_saved_successfully',
+										'Changes have been saved successfully'
+									),
+									autoHideTimeout: 3000,
+									hideButton: true,
+									replace: true
+								});
+							}
+						}
+					);
+				} else {
+					resetFileQuotaLimitById(accountDetail?.zimbraId).then((res) => {
 						if (modifiedKeys?.length === 0) {
 							createSnackbar({
 								key: 'success',
@@ -639,12 +670,12 @@ const EditAccount: FC<{
 								replace: true
 							});
 						}
-					}
-				);
+					});
+				}
 				remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
 			}
 		},
-		[accountDetail?.filesQuotaLimit, accountDetail?.zimbraId, createSnackbar, t]
+		[accountDetail.filesQuotaLimit, accountDetail?.zimbraId, createSnackbar, t]
 	);
 
 	const handleMainModifiedKeys = useCallback(
@@ -875,17 +906,6 @@ const EditAccount: FC<{
 			color: 'primary',
 			onClick: onViewMail
 		},
-		// {
-		// 	align: 'right',
-		// 	label: t('label.close', 'CLOSE'),
-		// 	color: 'error',
-		// 	onClick: (): void => {
-		// 		setShowAccountDetailView(false);
-		// 		setShowEditAccountView(true);
-		// 	},
-
-		// 	disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-		// },
 		{
 			align: 'right',
 			color: 'error',
@@ -922,10 +942,9 @@ const EditAccount: FC<{
 			});
 			setIsRequestInProgress(false);
 			closeHandler();
-			setShowAccountDetailView(false);
 			getAccountList();
 		},
-		[closeHandler, createSnackbar, getAccountList, setShowAccountDetailView]
+		[closeHandler, createSnackbar, getAccountList]
 	);
 	const onDisableAccount = useCallback(() => {
 		setIsRequestInProgress(true);
@@ -1039,7 +1058,6 @@ const EditAccount: FC<{
 							icon="CloseOutline"
 							onClick={(): void => {
 								setShowEditAccountView(false);
-								setShowAccountDetailView(true);
 								setDefaultTab('general');
 							}}
 						/>
