@@ -595,6 +595,24 @@ const DomainAuthentication: FC = () => {
 		zimbraAuthMech?.value
 	]);
 
+	const isUserNameRequired = useMemo(
+		() =>
+			!(
+				[ZimbraAuthMethod.LDAP, ZimbraAuthMethod.EXTERNAL].includes(zimbraAuthMech?.value) &&
+				!zimbraAuthLdapSearchBindDn
+			),
+		[zimbraAuthLdapSearchBindDn, zimbraAuthMech?.value]
+	);
+
+	const isUserPasswordRequired = useMemo(
+		() =>
+			!(
+				[ZimbraAuthMethod.LDAP, ZimbraAuthMethod.EXTERNAL].includes(zimbraAuthMech?.value) &&
+				!zimbraAuthLdapSearchBindPassword
+			),
+		[zimbraAuthLdapSearchBindPassword, zimbraAuthMech?.value]
+	);
+
 	return (
 		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
 			<Container
@@ -636,7 +654,12 @@ const DomainAuthentication: FC = () => {
 										label={t('label.save', 'Save')}
 										color="primary"
 										onClick={onSave}
-										disabled={!isValidLdapUrl || !isValidLdapDN}
+										disabled={
+											!isValidLdapUrl ||
+											!isValidLdapDN ||
+											!isUserPasswordRequired ||
+											!isUserNameRequired
+										}
 									/>
 								)}
 							</Row>
@@ -813,9 +836,9 @@ const DomainAuthentication: FC = () => {
 											}
 											setZimbraAuthLdapSearchBindDn(e.target.value);
 										}}
-										hasError={!isValidUserName}
+										hasError={!isUserNameRequired}
 									/>
-									{!isValidUserName && (
+									{!isUserNameRequired && (
 										<Row>
 											<Container
 												mainAlignment="flex-start"
@@ -845,23 +868,26 @@ const DomainAuthentication: FC = () => {
 											}
 											setZimbraAuthLdapSearchBindPassword(e.target.value);
 										}}
-										hasError={!isValidPassword}
+										hasError={!isUserPasswordRequired}
 									/>
-									{!isValidPassword && (
-										<Row>
-											<Container
-												mainAlignment="flex-start"
-												crossAlignment="flex-start"
-												width="fill"
-											>
-												<Padding top="small">
-													<Text size="extrasmall" weight="regular" color="error">
-														{t('label.required', 'Required')}
-													</Text>
-												</Padding>
-											</Container>
-										</Row>
-									)}
+									{!isUserPasswordRequired &&
+										[ZimbraAuthMethod.LDAP, ZimbraAuthMethod.EXTERNAL].includes(
+											zimbraAuthMech?.value
+										) && (
+											<Row>
+												<Container
+													mainAlignment="flex-start"
+													crossAlignment="flex-start"
+													width="fill"
+												>
+													<Padding top="small">
+														<Text size="extrasmall" weight="regular" color="error">
+															{t('label.required', 'Required')}
+														</Text>
+													</Padding>
+												</Container>
+											</Row>
+										)}
 								</Padding>
 							</ListRow>
 							<ListRow>
