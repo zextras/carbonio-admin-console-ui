@@ -9,13 +9,11 @@ import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 're
 import {
 	Row,
 	Container,
-	Padding,
 	Divider,
 	Text,
 	Button,
 	Table,
-	useSnackbar,
-	useScreenMode
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -23,7 +21,7 @@ import {
 	postSoapFetchRequest,
 	useUserSettings
 } from '@zextras/carbonio-shell-ui';
-import { filter, flatMapDeep } from 'lodash';
+import { debounce, filter, flatMapDeep } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -32,7 +30,6 @@ import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types
 import logo from '../../../../assets/guardian.svg';
 import {
 	HELPDESK_ADMINS,
-	MOBILE,
 	RECORD_DISPLAY_LIMIT,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../../constants';
@@ -57,9 +54,9 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
+import ScrollContainer from '../../../components/scrollComponent';
 import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
-import AccountDetailView from '../accounts/account-detail-view';
 import EditAccount from '../accounts/edit-account/edit-account';
 
 type UserSession = {
@@ -98,8 +95,7 @@ const ManageDelegates: FC = () => {
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
+	const [pageLimit, setPageLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
@@ -111,7 +107,7 @@ const ManageDelegates: FC = () => {
 	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
-	const screenMode = useScreenMode();
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
 
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -124,7 +120,8 @@ const ManageDelegates: FC = () => {
 
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
-	const tableRef = useRef(null);
+	const tableRef = useRef<HTMLTableElement>(null);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	const headers: any = useMemo(
 		() => [
@@ -507,7 +504,7 @@ const ManageDelegates: FC = () => {
 
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setShowAccountDetailView(true);
+			setShowEditAccountView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
@@ -747,21 +744,6 @@ const ManageDelegates: FC = () => {
 		setOpen(false);
 	};
 
-	const closeAccountDetailDialog = useCallback(() => {
-		if (showAccountDetailView) {
-			setShowAccountDetailView(false);
-		}
-	}, [showAccountDetailView]);
-
-	const handleKeyEvent = useCallback(
-		(event) => {
-			if (event.key === 'Escape') {
-				closeAccountDetailDialog();
-			}
-		},
-		[closeAccountDetailDialog]
-	);
-
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
@@ -770,7 +752,7 @@ const ManageDelegates: FC = () => {
 			'(|(&(zimbraIsAdminAccount=TRUE))(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE))))';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domain.name, searchQuery, offset, limit)
+		accountListDirectory(attrs, type, domain.name, searchQuery, offset, pageLimit)
 			.then((data: any) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
@@ -823,14 +805,7 @@ const ManageDelegates: FC = () => {
 					replace: true
 				});
 			});
-	}, [domain.name, openDetailView, limit, offset, createSnackbar, t]);
-
-	useEffect(() => {
-		window.addEventListener('keydown', handleKeyEvent);
-		return () => {
-			window.removeEventListener('keydown', handleKeyEvent);
-		};
-	}, [handleKeyEvent]);
+	}, [domain.name, openDetailView, pageLimit, offset, createSnackbar, t]);
 
 	useEffect(() => {
 		fetchDistributionList(domain?.name, 0, 10);
@@ -849,6 +824,31 @@ const ManageDelegates: FC = () => {
 			}
 		}
 	}, [userSetting?.attrs]);
+
+	useEffect(() => {
+		const table = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 450;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
 
 	const accountContextValue = useMemo(
 		() => ({
@@ -928,7 +928,11 @@ const ManageDelegates: FC = () => {
 	);
 
 	return (
-		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			background="gray6"
+			mainAlignment="flex-start"
+		>
 			{accountDistributionList?.length > 0 && open && (
 				<DisableDelegateAdminModel
 					open={open}
@@ -945,7 +949,7 @@ const ManageDelegates: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
+					<Container orientation="vertical" mainAlignment="space-around" height="10.5rem">
 						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 							<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 								<Text size="medium" weight="bold" color="gray0">
@@ -953,41 +957,39 @@ const ManageDelegates: FC = () => {
 								</Text>
 							</Row>
 						</Row>
-					</Container>
-				</Row>
-				<Row orientation="horizontal" width="100%" background="gray6">
-					<Divider />
-				</Row>
-				<Container
-					orientation="column"
-					background="gray6"
-					crossAlignment="flex-start"
-					mainAlignment="flex-start"
-					style={{
-						height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
-						position: 'relative',
-						overflow: 'auto'
-					}}
-					padding={{ all: 'large' }}
-				>
-					{isGlobalAdmin && (
-						<>
-							<ListRow padding={{ vertical: 'large' }}>
-								<Padding bottom="large">
+						<Row orientation="horizontal" width="100%" background="gray6">
+							<Divider />
+						</Row>
+						{isGlobalAdmin && (
+							<>
+								<ListRow padding={{ vertical: 'large' }}>
 									<Button
 										label={t('label.init_domain', 'INIT DOMAIN')}
 										color="primary"
 										onClick={handleRevokesGrants}
 										loading={loading}
 									/>
-								</Padding>
-							</ListRow>
-							<Row orientation="horizontal" width="100%" background="gray6">
-								<Divider />
-							</Row>
-						</>
-					)}
-					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+								</ListRow>
+								<Row orientation="horizontal" width="100%" background="gray6">
+									<Divider />
+								</Row>
+							</>
+						)}
+					</Container>
+				</Row>
+				<Container
+					orientation="column"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					width="100%"
+					style={{
+						position: 'relative',
+						overflow: 'auto',
+						minHeight: '10rem'
+					}}
+					padding={{ top: 'large' }}
+				>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large', left: 'large' }}>
 						<Row
 							mainAlignment="flex-start"
 							width="100%"
@@ -1037,91 +1039,118 @@ const ManageDelegates: FC = () => {
 						</Padding>
 					</ListRow> */}
 					<Row
-						orientation="horizontal"
-						mainAlignment="space-between"
-						crossAlignment="flex-start"
-						width="fill"
-						style={{
-							height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
-							position: 'relative'
-						}}
-						ref={tableRef}
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'small', left: 'small', right: 'small' }}
 					>
-						<Table
-							rows={!isRequestInProgress ? allAccount : []}
-							headers={headers}
-							showCheckbox={false}
-							multiSelect={false}
-							style={{
-								overflow: 'auto',
-								height: isRequestInProgress || allAccount.length === 0 ? '50%' : '100%'
-							}}
-							RowFactory={CustomRowFactory}
-							HeaderFactory={CustomHeaderFactory}
-						/>
-						{isRequestInProgress && (
-							<Container
-								crossAlignment="center"
-								mainAlignment="center"
-								height="auto"
-								padding={{ top: 'medium' }}
-							>
-								<Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
-							</Container>
-						)}
-						{allAccount?.length === 0 && !isRequestInProgress && (
-							<Container orientation="column" crossAlignment="center" mainAlignment="center">
-								<Row>
-									<img src={logo} alt="logo" />
-								</Row>
-								<Row
-									padding={{ top: 'extralarge' }}
-									orientation="vertical"
-									crossAlignment="center"
-									style={{ textAlign: 'center' }}
-								>
-									<Text weight="light" color="#828282" size="large" overflow="break-word">
-										{t('label.this_list_is_empty', 'This list is empty.')}
-									</Text>
-								</Row>
-								<Row
-									orientation="vertical"
-									crossAlignment="center"
-									style={{ textAlign: 'center' }}
-									padding={{ top: 'small' }}
-									width="53%"
-								>
-									<Text weight="light" color="#828282" size="large" overflow="break-word">
-										<Trans
-											i18nKey="label.create_account_list_msg"
-											defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
-											components={{ bold: <strong /> }}
-										/>
-									</Text>
-								</Row>
-							</Container>
-						)}
-						{allAccount?.length !== 0 && (
-							<Container
+						<Container height="fit" crossAlignment="flex-start" background="gray6">
+							<Row
 								orientation="horizontal"
 								mainAlignment="space-between"
-								width="100%"
-								style={{ position: 'absolute', bottom: '-4rem' }}
-								height="auto"
+								crossAlignment="flex-start"
+								width="fill"
+								style={{
+									position: 'relative'
+								}}
 							>
-								<Container crossAlignment="flex-start">
-									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-								</Container>
-								<Container
-									crossAlignment="flex-end"
-									orientation="horizontal"
-									mainAlignment="flex-end"
-									padding={{ top: 'small' }}
-								>
-									<TrackNumberPerPage setPageSize={setLimit} />
-								</Container>
-							</Container>
-						)}
+								<Table
+									rows={!isRequestInProgress ? allAccount : []}
+									headers={headers}
+									showCheckbox={false}
+									multiSelect={false}
+									ref={tableRef}
+									style={{
+										overflow: 'auto',
+										height: isRequestInProgress || allAccount.length === 0 ? '50%' : '100%'
+									}}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
+								/>
+								{isRequestInProgress && (
+									<Container
+										crossAlignment="center"
+										mainAlignment="center"
+										height="auto"
+										padding={{ top: 'medium' }}
+									>
+										<Button
+											type="ghost"
+											color="primary"
+											label=""
+											loading
+											onClick={(): null => null}
+										/>
+									</Container>
+								)}
+								{allAccount?.length === 0 && !isRequestInProgress && (
+									<Container orientation="column" crossAlignment="center" mainAlignment="center">
+										<Row>
+											<img src={logo} alt="logo" />
+										</Row>
+										<Row
+											padding={{ top: 'extralarge' }}
+											orientation="vertical"
+											crossAlignment="center"
+											style={{ textAlign: 'center' }}
+										>
+											<Text weight="light" color="#828282" size="large" overflow="break-word">
+												{t('label.this_list_is_empty', 'This list is empty.')}
+											</Text>
+										</Row>
+										<Row
+											orientation="vertical"
+											crossAlignment="center"
+											style={{ textAlign: 'center' }}
+											padding={{ top: 'small' }}
+											width="53%"
+										>
+											<Text weight="light" color="#828282" size="large" overflow="break-word">
+												<Trans
+													i18nKey="label.create_account_list_msg"
+													defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
+													components={{ bold: <strong /> }}
+												/>
+											</Text>
+										</Row>
+									</Container>
+								)}
+								{allAccount.length !== 0 && (
+									<Container
+										style={{
+											position: 'sticky',
+											bottom: isTableTooTall ? '0' : '-4rem'
+										}}
+									>
+										<ScrollContainer isVisible={isTableTooTall} />
+										<Container
+											orientation="horizontal"
+											mainAlignment="space-between"
+											background="gray6"
+											width="100%"
+											padding={{ right: 'extralarge' }}
+											height="auto"
+										>
+											<Container crossAlignment="flex-start">
+												<Paging
+													totalItem={totalAccount}
+													setOffset={setOffset}
+													pageSize={pageLimit}
+												/>
+											</Container>
+
+											<Container
+												crossAlignment="flex-end"
+												orientation="horizontal"
+												mainAlignment="flex-end"
+												padding={{ top: 'small' }}
+											>
+												<TrackNumberPerPage setPageSize={setPageLimit} />
+											</Container>
+										</Container>
+									</Container>
+								)}
+							</Row>
+						</Container>
 					</Row>
 					{/* TODO: uncomment once we fix the delgates feature's bug completely. */}
 					{/* {allAccount?.length > 0 && (
@@ -1154,19 +1183,6 @@ const ManageDelegates: FC = () => {
 						</>
 					)} */}
 					<AccountContext.Provider value={accountContextValue}>
-						{showAccountDetailView && (
-							<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
-								<AccountDetailView
-									selectedAccount={selectedAccount}
-									setShowAccountDetailView={setShowAccountDetailView}
-									setShowEditAccountView={setShowEditAccountView}
-									STATUS_COLOR={STATUS_COLOR}
-									getAccountList={getAccountList}
-									cosDetail={cosDetail}
-								/>
-							</ModalOverlay>
-						)}
-
 						{showEditAccountView && (
 							<ModalOverlay
 								setOpen={setShowEditAccountView}
@@ -1184,7 +1200,6 @@ const ManageDelegates: FC = () => {
 									getAccountDetail={getAccountDetail}
 									defaultTab={defaultTab}
 									setDefaultTab={setDefaultTab}
-									setShowAccountDetailView={setShowAccountDetailView}
 									showModal={showModal}
 									setShowModal={setShowModal}
 									isDirty={isDirty}

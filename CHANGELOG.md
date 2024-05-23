@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.49](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.48...v0.9.49) (2024-05-20)
+
+### [0.9.48](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.47...v0.9.48) (2024-05-15)
+
+
+### Bug Fixes
+
+* ac-1056: global active sync is only carbonio advance not for CE ([2b26426](https://github.com/zextras/carbonio-admin-console-ui/commit/2b264269d6a8d22d799777f06470672545787458))
+
 ### [0.9.47](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.46...v0.9.47) (2024-04-29)
 
 ### [0.9.46](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.45...v0.9.46) (2024-04-15)

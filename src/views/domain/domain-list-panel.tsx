@@ -39,26 +39,17 @@ import {
 	WHITELABEL_SETTINGS,
 	GLOBAL_WHITELABEL_SETTINGS,
 	DELEGATES_DOMAIN_ADMINS,
-	GLOBAL_DELEGATES_ROUTE,
 	RESOURCES,
 	DISCLAIMER,
 	GLOBAL_SETTINGS_ROUTE,
 	IS_DETAIL_LIST_EXPANDED,
 	IS_MANAGE_LIST_EXPANDED,
 	GLOBAL_ACTIVE_SYNC_ROUTE,
-	SECONDARY_BAR,
-	SECONDARY_BAR_GLOBAL_SETTINGS,
-	SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
-	SECONDARY_BAR_GLOBAL_DELEGATES,
-	SECONDARY_BAR_GLOBAL_QUARANTINE,
-	SECONDARY_BAR_GLOBAL_DOMAINS,
-	SECONDARY_BAR_GLOBAL_2FA,
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 	FALSE,
 	BOOLEAN_FALSE,
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useBackupModuleStore } from '../../store/backup-module/store';
@@ -97,8 +88,6 @@ interface ManageOptions {
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
 	const locationService = useLocation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -128,6 +117,12 @@ const DomainListPanel: FC = () => {
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const globalConfigInformation = useConfigStore((state) => state.config);
+	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
+
+	useEffect(() => {
+		const isAvail2Fa = domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech');
+		setIs2FAAvailable(isAvail2Fa === undefined);
+	}, [domainInformation]);
 
 	const loadingComponent = [
 		{
@@ -160,10 +155,6 @@ const DomainListPanel: FC = () => {
 			}
 		}
 	}, [rights]);
-
-	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${DOMAINS_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
 
 	useEffect(() => {
 		if (!domainInformation?.name) {
@@ -249,20 +240,6 @@ const DomainListPanel: FC = () => {
 
 	const getTrakingDetials = (dView: string): any => {
 		const value = dView.split('/');
-		const analyticsMap: { [key: string]: string } = {
-			[GLOBAL_SETTINGS_ROUTE]: SECONDARY_BAR_GLOBAL_SETTINGS,
-			[GLOBAL_WHITELABEL_SETTINGS]: SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
-			[GLOBAL_2FA_ROUTE]: SECONDARY_BAR_GLOBAL_2FA,
-			[GLOBAL_DOMAIN_ROUTE]: SECONDARY_BAR_GLOBAL_DOMAINS,
-			[GLOBAL_QUARANTINE_ROUTE]: SECONDARY_BAR_GLOBAL_QUARANTINE,
-			[GLOBAL_DELEGATES_ROUTE]: SECONDARY_BAR_GLOBAL_DELEGATES
-		};
-
-		const event = analyticsMap[dView];
-		if (event && globalCarbonioSendAnalytics) {
-			matomo.trackEvent(DOMAINS_ROUTE_ID, SECONDARY_BAR, event);
-		}
-
 		return value[0] === GLOBAL_ROUTE;
 	};
 
@@ -280,7 +257,7 @@ const DomainListPanel: FC = () => {
 			replaceHistory(`/${domainView}`);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isDomainSelect, domainId, domainView, matomo, globalCarbonioSendAnalytics]);
+	}, [isDomainSelect, domainId, domainView, globalCarbonioSendAnalytics]);
 
 	const isDisclaimerEnable = useMemo(
 		() =>
@@ -325,7 +302,7 @@ const DomainListPanel: FC = () => {
 			{
 				id: TWO_FACTOR_AUTHENTICATION,
 				name: t('label.2-factor-authentication', '2-Factor-Authentication'),
-				isSelected: isDomainSelect
+				isSelected: isDomainSelect && is2FAAvailable
 			},
 			{
 				id: SAML,
@@ -338,7 +315,7 @@ const DomainListPanel: FC = () => {
 				isSelected: isDisclaimerEnable === FALSE ? BOOLEAN_FALSE : isDomainSelect
 			}
 		],
-		[t, isDomainSelect, isDisclaimerEnable]
+		[t, isDomainSelect, is2FAAvailable, isDisclaimerEnable]
 	);
 
 	const allManageOptions = useMemo(
@@ -447,7 +424,8 @@ const DomainListPanel: FC = () => {
 							item?.id !== TWO_FACTOR_AUTHENTICATION
 				  )
 				: detailOptions,
-		[detailOptions, isAdvanced]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[detailOptions, isAdvanced, is2FAAvailable]
 	);
 
 	const globalOptionsItems = useMemo(
@@ -455,7 +433,9 @@ const DomainListPanel: FC = () => {
 			!isAdvanced
 				? globalOptionItems.filter(
 						(item: ManageOptions) =>
-							item?.id !== GLOBAL_WHITELABEL_SETTINGS && item?.id !== GLOBAL_2FA_ROUTE
+							item?.id !== GLOBAL_WHITELABEL_SETTINGS &&
+							item?.id !== GLOBAL_2FA_ROUTE &&
+							item.id !== GLOBAL_ACTIVE_SYNC_ROUTE
 				  )
 				: globalOptionItems,
 		[globalOptionItems, isAdvanced]

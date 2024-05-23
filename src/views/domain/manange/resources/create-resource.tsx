@@ -250,11 +250,11 @@ const CreateResource: FC<{
 						onClick={(): void => {
 							if (resourceDetail?.password !== '' && resourceDetail?.password?.length < 6) {
 								createErrorSnackbar(
-									t('label.password_lenght_msg', 'Password should be more than 5 character')
+									t('label.password_length_msg', 'Password should be more than 5 character')
 								);
 							} else if (resourceDetail?.password !== resourceDetail?.repeatPassword) {
 								createErrorSnackbar(
-									t('label.password_and repeat_password_not_match', 'Passwords do not match')
+									t('label.password_and_repeat_password_not_match', 'Passwords do not match')
 								);
 							} else {
 								const name = `${resourceDetail?.name}@${resourceDetail.domain}`;

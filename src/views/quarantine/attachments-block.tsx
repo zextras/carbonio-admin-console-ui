@@ -470,7 +470,7 @@ const Attachment: FC<AttachmentType> = ({
 						<Padding style={{ width: '100%' }} bottom="extrasmall">
 							<Text>
 								{filename ||
-									t('label.attachement_unknown', {
+									t('label.attachment_unknown', {
 										mimeType: att?.contentType,
 										defaultValue: 'Unknown <{{mimeType}}>'
 									})}
@@ -485,7 +485,10 @@ const Attachment: FC<AttachmentType> = ({
 			<Row orientation="horizontal" crossAlignment="center">
 				<AttachmentHoverBarContainer orientation="horizontal">
 					<Padding right="small">
-						<Tooltip key={`${message.id}-DownloadOutline`} label={t('label.download', 'Download')}>
+						<Tooltip
+							key={`${message.id}-DownloadOutline`}
+							label={t('label.download_one', 'Download')}
+						>
 							<IconButton size="medium" icon="DownloadOutline" onClick={downloadAttachment} />
 						</Tooltip>
 					</Padding>
@@ -681,13 +684,13 @@ const AttachmentsBlock: FC<{
 			<Row mainAlignment="flex-start" padding={{ top: 'extrasmall', bottom: 'medium' }}>
 				<Padding right="small">
 					{attachmentsCount === 1 && (
-						<Text color="gray1">{`1 ${t('label.attachment', 'Attachment')}`}</Text>
+						<Text color="gray1">{`1 ${t('label.attachment_one', 'Attachment')}`}</Text>
 					)}
 					{attachmentsCount === 2 && (
 						<Text color="gray1">
 							{
 								// eslint-disable-next-line sonarjs/no-duplicate-string
-								`${attachmentsCount} ${t('label.attachment_plural', 'Attachments')}`
+								`${attachmentsCount} ${t('label.attachment_other', 'Attachments')}`
 							}
 						</Text>
 					)}
@@ -700,7 +703,7 @@ const AttachmentsBlock: FC<{
 							>
 								<Padding right="small">
 									<Text color="primary">
-										{`${attachmentsCount} ${t('label.attachment_plural', 'Attachments')}`}
+										{`${attachmentsCount} ${t('label.attachment_other', 'Attachments')}`}
 									</Text>
 								</Padding>
 								<Icon icon="ArrowIosUpward" color="primary" />
@@ -714,7 +717,7 @@ const AttachmentsBlock: FC<{
 								<Padding right="small">
 									<Text color="primary">
 										{`${t('label.show_all', 'Show all')} ${attachmentsCount} ${t(
-											'label.attachment_plural',
+											'label.attachment_other',
 											'attachments'
 										)}`}
 									</Text>
@@ -727,8 +730,8 @@ const AttachmentsBlock: FC<{
 				<Link target="_blank" size="medium" href={actionsDownloadLink}>
 					{t('label.download', {
 						count: attachmentsCount,
-						defaultValue: 'Download',
-						defaultValue_plural: 'Download all'
+						defaultValue_one: 'Download',
+						defaultValue_other: 'Download all'
 					})}
 				</Link>
 				{getSaveToFilesLink()}

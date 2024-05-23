@@ -17,8 +17,7 @@ import {
 	Button,
 	IconButton,
 	useSnackbar,
-	Tooltip,
-	useScreenMode
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -40,21 +39,13 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	ASC,
 	DESC,
-	MOBILE,
-	ACCOUNTS_ACTIONS,
-	DOMAIN_ACCOUNTS_CREATE,
-	ACCOUNTS_MAIN_ACTION,
-	ACCOUNTS_TABLE_ITEM,
-	ACCOUNTS_SEARCH_TABLE,
-	DOMAIN_ACCOUNTS_NEXT_TABLE,
 	BACKUP_ENABLED,
-	DOMAINS_ROUTE_ID,
+	BACKUP_SELF_UNDELETE_ALLOWED,
 	FILES_QUOTA_LIMIT,
 	FILES_QUOTA_USED,
 	COS,
 	MAILBOX_QUOTA_USED
 } from '../../../../constants';
-import MatomoTracker from '../../../../matomo-tracker';
 import {
 	accountListDirectory,
 	getMailboxQuota
@@ -73,7 +64,6 @@ import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
-import { useConfigStore } from '../../../../store/config/store';
 import { useDomainStore } from '../../../../store/domain/store';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -81,6 +71,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
+import ScrollContainer from '../../../components/scrollComponent';
 
 type UserSession = {
 	name: string;
@@ -94,8 +85,6 @@ const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
@@ -115,7 +104,7 @@ const ManageAccounts: FC = () => {
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const tableRef = useRef(null);
+	const tableRef = useRef<HTMLTableElement>(null);
 	const [typeFilter, setTypeFilter] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -123,7 +112,8 @@ const ManageAccounts: FC = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('name');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-	const screenMode = useScreenMode();
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -469,6 +459,11 @@ const ManageAccounts: FC = () => {
 				configType: ACCOUNT,
 				configName: [acc],
 				attrName: [BACKUP_ENABLED]
+			},
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [BACKUP_SELF_UNDELETE_ALLOWED]
 			}
 		];
 		getCoreAttributes(body).then((data) => {
@@ -477,14 +472,16 @@ const ManageAccounts: FC = () => {
 					...prev,
 					...{
 						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					}
 				}));
 				setInitAccountDetail((prev: AccountType) => ({
 					...prev,
 					...{
 						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					}
 				}));
 			}
@@ -776,7 +773,6 @@ const ManageAccounts: FC = () => {
 	);
 
 	const handleClickTableRow = (item: any): void => {
-		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, ACCOUNTS_TABLE_ITEM);
 		openDetailView(item);
 	};
 
@@ -1028,9 +1024,30 @@ const ManageAccounts: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const nextPage = (): void => {
-		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
-	};
+	useEffect(() => {
+		const table = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
 
 	const accountContextValue = useMemo(
 		() => ({
@@ -1110,7 +1127,11 @@ const ManageAccounts: FC = () => {
 	);
 
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -1130,10 +1151,7 @@ const ManageAccounts: FC = () => {
 									iconColor="gray6"
 									backgroundColor="primary"
 									icon="Plus"
-									onClick={(): void => {
-										matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CREATE);
-										setShowCreateAccountView(true);
-									}}
+									onClick={(): void => setShowCreateAccountView(true)}
 								/>
 							</Padding>
 						</Row>
@@ -1149,12 +1167,11 @@ const ManageAccounts: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto',
 					minHeight: '10rem'
 				}}
-				padding={{ top: 'large' }}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -1175,13 +1192,6 @@ const ManageAccounts: FC = () => {
 										setSearchString(e.target.value);
 									}}
 									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-									onFocus={(): void => {
-										matomo.trackEvent(
-											DOMAINS_ROUTE_ID,
-											ACCOUNTS_MAIN_ACTION,
-											ACCOUNTS_SEARCH_TABLE
-										);
-									}}
 								/>
 							</Container>
 						</Row>
@@ -1191,16 +1201,15 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
-							ref={tableRef}
 						>
 							<Table
 								rows={!isRequestInProgress ? accountList : []}
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
+								ref={tableRef}
 								style={{
 									overflow: 'auto',
 									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
@@ -1258,45 +1267,38 @@ const ManageAccounts: FC = () => {
 							)}
 							{accountList.length !== 0 && (
 								<Container
-									orientation="horizontal"
-									mainAlignment="space-between"
-									width="100%"
-									style={{ position: 'absolute', bottom: '-4rem' }}
-									height="auto"
+									style={{
+										position: 'sticky',
+										bottom: isTableTooTall ? '0' : '-4rem'
+									}}
 								>
 									<Container crossAlignment="flex-start">
-										<Paging
-											totalItem={totalAccount}
-											setOffset={setOffset}
-											pageSize={limit}
-											nextPage={nextPage}
-										/>
+										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 									</Container>
+									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
-										crossAlignment="flex-end"
 										orientation="horizontal"
-										mainAlignment="flex-end"
-										padding={{ top: 'small' }}
+										mainAlignment="space-between"
+										background="gray6"
+										width="100%"
+										padding={{ right: 'extralarge' }}
+										height="auto"
 									>
-										<TrackNumberPerPage setPageSize={setLimit} />
+										<Container crossAlignment="flex-start">
+											<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+										</Container>
+										<Container
+											crossAlignment="flex-end"
+											orientation="horizontal"
+											mainAlignment="flex-end"
+											padding={{ top: 'small' }}
+										>
+											<TrackNumberPerPage setPageSize={setLimit} />
+										</Container>
 									</Container>
 								</Container>
 							)}
 							<AccountContext.Provider value={accountContextValue}>
-								{/* This may require in future
-								{showAccountDetailView && (
-									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
-										<AccountDetailView
-											selectedAccount={selectedAccount}
-											setShowAccountDetailView={setShowAccountDetailView}
-											setShowEditAccountView={setShowEditAccountView}
-											STATUS_COLOR={STATUS_COLOR}
-											getAccountList={getAccountList}
-											cosDetail={cosDetail}
-										/>
-									</ModalOverlay>
-								)} */}
-
 								{showEditAccountView && (
 									<ModalOverlay
 										setOpen={setShowEditAccountView}
@@ -1314,7 +1316,6 @@ const ManageAccounts: FC = () => {
 											getAccountDetail={getAccountDetail}
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
-											setShowAccountDetailView={setShowAccountDetailView}
 											showModal={showModal}
 											setShowModal={setShowModal}
 											isDirty={isDirty}
