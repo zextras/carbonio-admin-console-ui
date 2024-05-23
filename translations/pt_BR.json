@@ -645,8 +645,8 @@
         "restart_replica": "REINICIAR RÉPLICA",
         "repeat_password": "Repetir senha",
         "percentage_maximum_conflict_allowed": "% máximo de conflitos permitidos",
-        "password_lenght_msg": "A senha deve conter mais de 5 caracteres",
-        "password_and repeat_password_not_match": "As senhas não correspondem",
+        "password_length_msg": "A senha deve conter mais de 5 caracteres",
+        "password_and_repeat_password_not_match": "As senhas não correspondem",
         "not_send_receive": "Não pode enviar nem receber",
         "no_auto_accept_or_decline": "Nunca aceitar automaticamente, mesmo que o usuário esteja disponível",
         "next_step": "PRÓXIMO",
@@ -1074,10 +1074,10 @@
         "delete_private_key_certificate_header": "Excluir chave privada do certificado?",
         "disable_the_account": "Desativar a conta",
         "domain_certificate_ca_chain": "Cadeia CA do certificado de domínio",
-        "download_0": "DOWNLOAD",
-        "download_1": "DOWNLOADS",
-        "download_2": "DOWNLOADS",
+        "download_one": "DOWNLOAD",
+        "download_other": "DOWNLOADS",
         "download_pdf": "BAIXAR PDF",
+        "download_uppercase": "DOWNLOAD",
         "infrequent_access": "S3 – Acesso ocasional",
         "load_FILE": "CARREGAR ARQUIVO",
         "load_certificate_message": "Carregue um certificado para ver seus detalhes!<br />Clique em <strong>“CARREGAR E VERIFICAR CERTIFICADO +”</strong> para iniciar",
@@ -1407,10 +1407,9 @@
         "search_for_an_account": "Buscar conta",
         "advance_edit_userName": "Nome de usuário",
         "received": "Recebida",
-        "attachement_unknown": "Desconhecido <{{mimeType}}>",
-        "attachment_0": "",
-        "attachment_1": "",
-        "attachment_2": "Anexos",
+        "attachment_unknown": "Desconhecido <{{mimeType}}>",
+        "attachment_one": "",
+        "attachment_other": "Anexos",
         "from": "De",
         "invalid_destination": "Este elemento não é um destino válido",
         "login": "Login",
@@ -2040,8 +2039,8 @@
         "send_full_error_data": "Enviar dados completos do erro"
     },
     "reminder": {
-        "minute": "{{count}} minuto",
-        "minute_plural": "{{count}} minutos"
+        "minute_one": "{{count}} minuto",
+        "minute_other": "{{count}} minutos"
     },
     "volume": {
         "new": {

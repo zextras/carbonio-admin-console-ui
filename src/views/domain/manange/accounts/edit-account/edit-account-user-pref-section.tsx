@@ -154,33 +154,33 @@ const EditAccountUserPrefrencesSection: FC<{
 				label: t('reminder.minute', {
 					count: 30,
 					// eslint-disable-next-line sonarjs/no-duplicate-string
-					defaultValue: '{{count}} minute',
+					defaultValue_one: '{{count}} minute',
 					// eslint-disable-next-line sonarjs/no-duplicate-string
-					defaultValue_plural: '{{count}} minutes'
+					defaultValue_other: '{{count}} minutes'
 				}),
 				value: '30m'
 			},
 			{
 				label: t('reminder.minute', {
 					count: 60,
-					defaultValue: '{{count}} minute',
-					defaultValue_plural: '{{count}} minutes'
+					defaultValue_one: '{{count}} minute',
+					defaultValue_other: '{{count}} minutes'
 				}),
 				value: '60m'
 			},
 			{
 				label: t('reminder.minute', {
 					count: 90,
-					defaultValue: '{{count}} minute',
-					defaultValue_plural: '{{count}} minutes'
+					defaultValue_one: '{{count}} minute',
+					defaultValue_other: '{{count}} minutes'
 				}),
 				value: '90m'
 			},
 			{
 				label: t('reminder.minute', {
 					count: 120,
-					defaultValue: '{{count}} minute',
-					defaultValue_plural: '{{count}} minutes'
+					defaultValue_one: '{{count}} minute',
+					defaultValue_other: '{{count}} minutes'
 				}),
 				value: '120m'
 			}

@@ -96,6 +96,7 @@ const EditAccountSecuritySection: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
 	const wizardSteps = useMemo(
 		() => [
 			{
@@ -440,6 +441,16 @@ const EditAccountSecuritySection: FC = () => {
 		[accountDetail, setAccountDetail]
 	);
 
+	const changeSwitchOptionBoolean = useCallback(
+		(key: string): void => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[key]: !accountDetail[key]
+			}));
+		},
+		[accountDetail, setAccountDetail]
+	);
+
 	const onZimbraPasswordLockoutDurationTypeChange = useCallback(
 		(v: string) => {
 			setAccountDetail((prev: any) => ({
@@ -501,6 +512,7 @@ const EditAccountSecuritySection: FC = () => {
 		},
 		[accountDetail, setAccountDetail]
 	);
+
 	return (
 		<Container
 			mainAlignment="flex-start"
@@ -624,6 +636,35 @@ const EditAccountSecuritySection: FC = () => {
 						</>
 					)}
 				</>
+			)}
+			{isAdvanced && (
+				<Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
+					<Text size="extralarge" weight="bold">
+						{t('label.backup', 'Backup')}
+					</Text>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ top: 'large' }}
+						>
+							<ListRow>
+								<Container crossAlignment="flex-start">
+									<Switch
+										value={accountDetail?.backupSelfUndeleteAllowed}
+										onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
+										label={t(
+											'account_details.allow_restore_message',
+											'Allow user to restore messages'
+										)}
+										iconColor="primary"
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+				</Row>
 			)}
 			{!showCreateOTP && (
 				<Row mainAlignment="flex-start" width="100%">

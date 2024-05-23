@@ -12,8 +12,7 @@ import {
 	Table,
 	Divider,
 	Button,
-	useSnackbar,
-	useScreenMode
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -27,7 +26,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { AccountContext } from './manange/accounts/account-context';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
-import { MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
+import { RECORD_DISPLAY_LIMIT } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -79,7 +78,6 @@ const GlobalDelegates: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
 	const tableRef = useRef(null);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-	const screenMode = useScreenMode();
 
 	const headers: any = useMemo(
 		() => [
@@ -712,7 +710,6 @@ const GlobalDelegates: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto'
 				}}
@@ -737,7 +734,6 @@ const GlobalDelegates: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 							ref={tableRef}
