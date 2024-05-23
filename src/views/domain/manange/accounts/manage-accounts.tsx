@@ -566,8 +566,8 @@ const ManageAccounts: FC = () => {
 					setInitAccountDetail({ ...obj });
 					setSelectedAccount({ ...obj, id });
 					setAccountDetail({ ...obj });
-					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
+					getAccountSpecificDetail(id);
 					setDefaultCOS(!obj.zimbraCOSId);
 					getMailboxQuotaUsed(id);
 					if (isAdvanced) {
@@ -575,7 +575,9 @@ const ManageAccounts: FC = () => {
 						getCredentialList(data?.account?.[0]?.name);
 						getABQStatus(id);
 						getFileQuotaByAccId(id);
-						getFileQuotaByCosId(obj.zimbraCOSId);
+						setTimeout(() => {
+							getFileQuotaByCosId(obj.zimbraCOSId);
+						}, 2000);
 					}
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
