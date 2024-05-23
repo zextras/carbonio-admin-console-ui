@@ -15,7 +15,6 @@ import React, {
 	useState
 } from 'react';
 
-import { MatomoProvider } from '@datapunt/matomo-tracker-react';
 import { IconButton, Icon, SnackbarManagerContext } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
@@ -89,7 +88,6 @@ import {
 } from './constants';
 import SvgBackupOutline from './icons/outline/BackupOutline';
 import SettingsModOutline from './icons/outline/SettingsModOutline';
-import MatomoTracker from './matomo-tracker';
 import { getAccountRequest } from './services/get-account';
 import { getAllEffectiveRigthsRequest } from './services/get-all-effective-rights';
 import {
@@ -116,11 +114,9 @@ import { CreateSnackbarType } from '../types';
 const LazyAppView = lazy(() => import('./views/app-view'));
 
 const AppView: FC = (props) => (
-	<MatomoProvider value={MatomoTracker.matomoInstance}>
-		<Suspense fallback={<Spinner />}>
-			<LazyAppView {...props} />
-		</Suspense>
-	</MatomoProvider>
+	<Suspense fallback={<Spinner />}>
+		<LazyAppView {...props} />
+	</Suspense>
 );
 
 const PrimaryBarIconButton = styled(IconButton)`

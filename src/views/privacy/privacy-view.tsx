@@ -24,11 +24,9 @@ import {
 	CARBONIO_SEND_ANALYTICS,
 	CARBONIO_SEND_FULL_ERROR_STACK,
 	FALSE,
-	PRIVACY_ROUTE_ID,
 	TRUE,
 	CONFIG
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { modifyConfig } from '../../services/modify-config';
 import { useConfigStore } from '../../store/config/store';
 import { useRightsStore, Right, Rights } from '../../store/rights/store';
@@ -36,8 +34,7 @@ import ListRow from '../list/list-row';
 
 const PrivacyView: FC = () => {
 	const [t] = useTranslation();
-	const { userId, config } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
+	const { config } = useConfigStore((state) => state);
 	const [carbonioAllowFeedback, setCarbonioAllowFeedback] = useState<boolean>(false);
 	const [carbonioSendAnalytics, setCarbonioSendAnalytics] = useState<boolean>(false);
 	const [carbonioSendFullErrorStack, setCarbonioSendFullErrorStack] = useState<boolean>(false);
@@ -55,10 +52,6 @@ const PrivacyView: FC = () => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
-
-	useEffect(() => {
-		carbonioSendAnalytics && matomo.trackPageView(`${PRIVACY_ROUTE_ID}`);
-	}, [carbonioSendAnalytics, matomo]);
 
 	useEffect(() => {
 		if (config && config.length > 0) {

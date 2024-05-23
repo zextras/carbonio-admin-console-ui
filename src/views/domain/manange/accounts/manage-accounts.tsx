@@ -39,20 +39,12 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	ASC,
 	DESC,
-	ACCOUNTS_ACTIONS,
-	DOMAIN_ACCOUNTS_CREATE,
-	ACCOUNTS_MAIN_ACTION,
-	ACCOUNTS_TABLE_ITEM,
-	ACCOUNTS_SEARCH_TABLE,
-	DOMAIN_ACCOUNTS_NEXT_TABLE,
 	BACKUP_ENABLED,
-	DOMAINS_ROUTE_ID,
 	BACKUP_SELF_UNDELETE_ALLOWED,
 	FILES_QUOTA_LIMIT,
 	FILES_QUOTA_USED,
 	COS
 } from '../../../../constants';
-import MatomoTracker from '../../../../matomo-tracker';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -68,7 +60,6 @@ import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
 import { useAuthIsAdvanced } from '../../../../store/auth-advanced/store';
-import { useConfigStore } from '../../../../store/config/store';
 import { useDomainStore } from '../../../../store/domain/store';
 import { useRightsStore } from '../../../../store/rights/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
@@ -90,8 +81,6 @@ const ManageAccounts: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const domainName = useDomainStore((state) => state.domain?.name);
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const { setUserType } = useRightsStore((state) => state);
 	const [accountDetail, setAccountDetail] = useState<any>({});
 	const [cosDetail, setCosDetail] = useState<any>({});
@@ -770,7 +759,6 @@ const ManageAccounts: FC = () => {
 	);
 
 	const handleClickTableRow = (item: any): void => {
-		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, ACCOUNTS_TABLE_ITEM);
 		openDetailView(item);
 	};
 
@@ -1047,10 +1035,6 @@ const ManageAccounts: FC = () => {
 		};
 	}, []);
 
-	const nextPage = (): void => {
-		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_MAIN_ACTION, DOMAIN_ACCOUNTS_NEXT_TABLE);
-	};
-
 	const accountContextValue = useMemo(
 		() => ({
 			accountDetail,
@@ -1153,10 +1137,7 @@ const ManageAccounts: FC = () => {
 									iconColor="gray6"
 									backgroundColor="primary"
 									icon="Plus"
-									onClick={(): void => {
-										matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_ACTIONS, DOMAIN_ACCOUNTS_CREATE);
-										setShowCreateAccountView(true);
-									}}
+									onClick={(): void => setShowCreateAccountView(true)}
 								/>
 							</Padding>
 						</Row>
@@ -1197,13 +1178,6 @@ const ManageAccounts: FC = () => {
 										setSearchString(e.target.value);
 									}}
 									CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
-									onFocus={(): void => {
-										matomo.trackEvent(
-											DOMAINS_ROUTE_ID,
-											ACCOUNTS_MAIN_ACTION,
-											ACCOUNTS_SEARCH_TABLE
-										);
-									}}
 								/>
 							</Container>
 						</Row>
@@ -1284,6 +1258,9 @@ const ManageAccounts: FC = () => {
 										bottom: isTableTooTall ? '0' : '-4rem'
 									}}
 								>
+									<Container crossAlignment="flex-start">
+										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+									</Container>
 									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
 										orientation="horizontal"
@@ -1294,12 +1271,7 @@ const ManageAccounts: FC = () => {
 										height="auto"
 									>
 										<Container crossAlignment="flex-start">
-											<Paging
-												totalItem={totalAccount}
-												setOffset={setOffset}
-												pageSize={limit}
-												nextPage={nextPage}
-											/>
+											<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
 										</Container>
 										<Container
 											crossAlignment="flex-end"

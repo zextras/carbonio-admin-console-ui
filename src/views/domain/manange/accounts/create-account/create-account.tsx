@@ -13,13 +13,6 @@ import styled from 'styled-components';
 import { AccountContext } from './account-context';
 import CreateOtpSectionView from './account-otp-section';
 import CreateAccountDetailSection from './create-account-detail-section';
-import {
-	ACCOUNTS_ACTIONS,
-	CREATE_NOOTP_NOADMIN,
-	CANCEL_CREATE_ACCOUNT,
-	DOMAINS_ROUTE_ID
-} from '../../../../../constants';
-import MatomoTracker from '../../../../../matomo-tracker';
 import { createAccountRequest } from '../../../../../services/create-account';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -58,8 +51,6 @@ const AccountDetailContainer = styled(Container)`
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	return (
 		<Section
 			title={t('account.new.create_account_wizard', 'Create Account Wizard')}
@@ -68,7 +59,6 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 			divider
 			showClose
 			onClose={(): void => {
-				matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_ACTIONS, CANCEL_CREATE_ACCOUNT);
 				setToggleWizardSection(false);
 			}}
 		>
@@ -122,7 +112,6 @@ const CreateAccount: FC<{
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const domainName = useDomainStore((state) => state.domain?.name);
 	const [accountDetail, setAccountDetail] = useState<AccountDetailObj>({
 		name: '',
@@ -367,7 +356,6 @@ const CreateAccount: FC<{
 						icon="CloseOutline"
 						iconPlacement="right"
 						onClick={(): void => {
-							matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_ACTIONS, CANCEL_CREATE_ACCOUNT);
 							setShowCreateAccountView(false);
 						}}
 					/>
@@ -379,7 +367,6 @@ const CreateAccount: FC<{
 						icon="PersonOutline"
 						iconPlacement="right"
 						onClick={(): void => {
-							matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_ACTIONS, CREATE_NOOTP_NOADMIN);
 							setAccountCreate('create');
 						}}
 					/>
