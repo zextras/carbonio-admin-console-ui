@@ -22,7 +22,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import logo from '../../../../../assets/gardian.svg';
-import { ADD, DELETE, EDIT, SEARCH_SIGNATURE } from '../../../../../constants';
 import { createSignature } from '../../../../../services/create-signature-service';
 import { deleteSignature } from '../../../../../services/delete-signature-service';
 import { modifySignature } from '../../../../../services/modify-signature-service';
@@ -44,8 +43,7 @@ export const SignatureDetail: FC<any> = ({
 	signatureItems,
 	setSignatureItems,
 	accountId,
-	hideSearchBar,
-	handleMatomoTrackerEvent
+	hideSearchBar
 }) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -122,7 +120,6 @@ export const SignatureDetail: FC<any> = ({
 	);
 
 	const onDeleteSignature = useCallback(() => {
-		handleMatomoTrackerEvent(DELETE);
 		if (accountId) {
 			const deleteRequest: any[] = [];
 			selectedSignature.forEach((item: string) => {
@@ -134,7 +131,7 @@ export const SignatureDetail: FC<any> = ({
 		} else {
 			deleteSignatureIntoList(selectedSignature);
 		}
-	}, [handleMatomoTrackerEvent, accountId, selectedSignature, deleteSignatureIntoList]);
+	}, [accountId, selectedSignature, deleteSignatureIntoList]);
 
 	const addSignatureIntoList = useCallback(
 		(signatureItem: any) => {
@@ -268,7 +265,6 @@ export const SignatureDetail: FC<any> = ({
 	}, [_createSignature, _modifySignature, isEditSignature]);
 
 	const onEditSignature = useCallback(() => {
-		handleMatomoTrackerEvent(EDIT);
 		const _signature = signatureList.find((item: any) => item?.id === selectedSignature[0]);
 		if (_signature && _signature?.id) {
 			const content = _signature?.content;
@@ -282,7 +278,7 @@ export const SignatureDetail: FC<any> = ({
 			setIsEditSignature(true);
 			setIsOpenCreateEditSignatureDialog(true);
 		}
-	}, [handleMatomoTrackerEvent, selectedSignature, signatureList]);
+	}, [selectedSignature, signatureList]);
 
 	useEffect(() => {
 		if (!isOpenCreateEditSignatureDialog) {
@@ -305,7 +301,6 @@ export const SignatureDetail: FC<any> = ({
 								icon="Plus"
 								color="primary"
 								onClick={(): void => {
-									handleMatomoTrackerEvent(ADD);
 									setIsOpenCreateEditSignatureDialog(true);
 								}}
 							/>
@@ -350,9 +345,6 @@ export const SignatureDetail: FC<any> = ({
 								CustomIcon={(): any => <Icon icon="FunnelOutline" size="large" color="primary" />}
 								onChange={(e: any): any => {
 									setSearchSignatureName(e.target.value);
-								}}
-								onFocus={(): void => {
-									handleMatomoTrackerEvent(SEARCH_SIGNATURE);
 								}}
 							/>
 						</Row>

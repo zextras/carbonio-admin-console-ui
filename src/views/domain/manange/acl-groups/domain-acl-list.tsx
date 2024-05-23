@@ -11,13 +11,11 @@ import {
 	IconButton,
 	Divider,
 	Button,
-	Padding,
 	Icon,
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext,
-	useScreenMode
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -34,8 +32,7 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	TRUE,
 	ASC,
-	DESC,
-	MOBILE
+	DESC
 } from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createAclList } from '../../../../services/create-acl-list-service';
@@ -47,6 +44,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
+import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 
 const DomainAclList: FC = () => {
@@ -64,7 +62,6 @@ const DomainAclList: FC = () => {
 	const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
 	const [aclListItem, setAclListItem] = useState([]);
 	const [selectedFromRow, setSelectedFromRow] = useState<any>({});
-	const [editAclList, setEditAclList] = useState<boolean>(false);
 	const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
 	const [showCreateAclListView, setShowCreateAclListView] = useState<boolean>(false);
 	const timer = useRef<any>();
@@ -74,7 +71,9 @@ const DomainAclList: FC = () => {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-	const screenMode = useScreenMode();
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
+	const tableRef = useRef<HTMLTableElement>(null);
 
 	const aclListStatusFilter: any = useMemo(
 		() => [
@@ -635,8 +634,37 @@ const DomainAclList: FC = () => {
 		[createSnackbar, t, addMemberToAclList, callAllRequest]
 	);
 
+	useEffect(() => {
+		const table = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
+
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -651,14 +679,12 @@ const DomainAclList: FC = () => {
 							</Text>
 						</Row>
 						<Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
-							<Padding all="small">
-								<IconButton
-									iconColor="gray6"
-									backgroundColor="primary"
-									icon="Plus"
-									onClick={onAddClick}
-								/>
-							</Padding>
+							<IconButton
+								iconColor="gray6"
+								backgroundColor="primary"
+								icon="Plus"
+								onClick={onAddClick}
+							/>
 						</Row>
 					</Row>
 				</Container>
@@ -672,11 +698,10 @@ const DomainAclList: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto'
 				}}
-				padding={{ top: 'large' }}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container
@@ -710,7 +735,6 @@ const DomainAclList: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 						>
@@ -719,6 +743,7 @@ const DomainAclList: FC = () => {
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
+								ref={tableRef}
 								style={{
 									overflow: 'auto',
 									height: isRequestInProgress || aclList.length === 0 ? '50%' : '100%'
@@ -782,22 +807,31 @@ const DomainAclList: FC = () => {
 						</Row>
 						{aclList && aclList.length > 0 && (
 							<Container
-								orientation="horizontal"
-								mainAlignment="space-between"
-								width="100%"
-								style={{ position: 'absolute', bottom: '-4rem' }}
-								height="auto"
+								style={{
+									position: 'sticky',
+									bottom: isTableTooTall ? '0' : '-4rem'
+								}}
 							>
-								<Container crossAlignment="flex-start">
-									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-								</Container>
+								<ScrollContainer isVisible={isTableTooTall} />
 								<Container
-									crossAlignment="flex-end"
 									orientation="horizontal"
-									mainAlignment="flex-end"
-									padding={{ top: 'small' }}
+									mainAlignment="space-between"
+									width="100%"
+									background="gray6"
+									padding={{ right: 'extralarge' }}
+									height="auto"
 								>
-									<TrackNumberPerPage setPageSize={setLimit} />
+									<Container crossAlignment="flex-start">
+										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+									</Container>
+									<Container
+										crossAlignment="flex-end"
+										orientation="horizontal"
+										mainAlignment="flex-end"
+										padding={{ top: 'small' }}
+									>
+										<TrackNumberPerPage setPageSize={setLimit} />
+									</Container>
 								</Container>
 							</Container>
 						)}

@@ -22,7 +22,8 @@ import {
 	Table,
 	Divider,
 	Icon,
-	SnackbarManagerContext
+	SnackbarManagerContext,
+	Button
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -35,6 +36,7 @@ import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
+import ScrollContainer from '../components/scrollComponent';
 import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
 type StatusTypes = {
@@ -76,8 +78,10 @@ const CosList: FC = () => {
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const createSnackbar: any = useContext(SnackbarManagerContext);
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
-	const tableRef = useRef(null);
+	const tableRef = useRef<HTMLTableElement>(null);
 
 	const headers = useMemo(
 		() => [
@@ -109,6 +113,7 @@ const CosList: FC = () => {
 	const [searchString, setSearchString] = useState<string>('');
 	const [searchQuery, setSearchQuery] = useState<string>('');
 	const [totalCos, setTotalCos] = useState<number>(0);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
 	const STATUS_COLOR: StatusTypes = useMemo(
 		() => ({
@@ -153,6 +158,7 @@ const CosList: FC = () => {
 	);
 
 	const getAllcosList = useCallback((): void => {
+		setIsRequestInProgress(true);
 		getCosList(searchQuery, limit, offset)
 			.then((data: any) => {
 				const cosListResponse: ZimbraCosResponse = data?.cos || [];
@@ -218,6 +224,7 @@ const CosList: FC = () => {
 					});
 					setcosList(cosListArr);
 				}
+				setIsRequestInProgress(false);
 			})
 			.catch((error) => {
 				const snackbarConfig = generateSnackbarFromError(error, t);
@@ -239,8 +246,37 @@ const CosList: FC = () => {
 		searchcosList(searchString);
 	}, [offset, searchcosList, searchString]);
 
+	useEffect(() => {
+		const table: any = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
+
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -265,8 +301,12 @@ const CosList: FC = () => {
 				crossAlignment="flex-start"
 				mainAlignment="flex-start"
 				width="100%"
-				height="calc(100vh - 12.5rem)"
-				padding={{ top: 'large' }}
+				style={{
+					position: 'relative',
+					overflow: 'auto',
+					minHeight: '10rem'
+				}}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -297,21 +337,40 @@ const CosList: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							height="calc(100vh - 21.25rem)"
-							ref={tableRef}
+							style={{
+								position: 'relative'
+							}}
 						>
-							{cosList.length !== 0 && (
-								<Table
-									rows={cosList}
-									headers={headers}
-									showCheckbox={false}
-									multiSelect={false}
-									style={{ overflow: 'auto', height: '100%' }}
-									RowFactory={CustomRowFactory}
-									HeaderFactory={CustomHeaderFactory}
-								/>
+							<Table
+								rows={!isRequestInProgress ? cosList : []}
+								headers={headers}
+								showCheckbox={false}
+								multiSelect={false}
+								ref={tableRef}
+								style={{
+									overflow: 'auto',
+									height: isRequestInProgress || cosList.length === 0 ? '50%' : '100%'
+								}}
+								RowFactory={CustomRowFactory}
+								HeaderFactory={CustomHeaderFactory}
+							/>
+							{isRequestInProgress && (
+								<Container
+									crossAlignment="center"
+									mainAlignment="center"
+									height="auto"
+									padding={{ top: 'medium' }}
+								>
+									<Button
+										type="ghost"
+										color="primary"
+										label=""
+										loading
+										onClick={(): null => null}
+									/>
+								</Container>
 							)}
-							{cosList.length === 0 && (
+							{cosList.length === 0 && !isRequestInProgress && (
 								<Container orientation="column" crossAlignment="center" mainAlignment="center">
 									<Row>
 										<img src={logo} alt="logo" />
@@ -343,32 +402,33 @@ const CosList: FC = () => {
 									</Row>
 								</Container>
 							)}
-							<Row
-								orientation="horizontal"
-								mainAlignment="space-between"
-								crossAlignment="flex-start"
-								width="fill"
-								padding={{ top: 'medium' }}
-							>
-								<Divider />
-							</Row>
 							{cosList.length !== 0 && (
 								<Container
-									orientation="horizontal"
-									mainAlignment="space-between"
-									width="100%"
-									height="auto"
+									style={{
+										position: 'sticky',
+										bottom: isTableTooTall ? '0' : '-4rem'
+									}}
 								>
-									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalCos} setOffset={setOffset} pageSize={limit} />
-									</Container>
+									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
-										crossAlignment="flex-end"
 										orientation="horizontal"
-										mainAlignment="flex-end"
-										padding={{ top: 'small' }}
+										mainAlignment="space-between"
+										background="gray6"
+										width="100%"
+										padding={{ right: 'extralarge' }}
+										height="auto"
 									>
-										<TrackNumberPerPage setPageSize={setLimit} />
+										<Container crossAlignment="flex-start">
+											<Paging totalItem={totalCos} setOffset={setOffset} pageSize={limit} />
+										</Container>
+										<Container
+											crossAlignment="flex-end"
+											orientation="horizontal"
+											mainAlignment="flex-end"
+											padding={{ top: 'small' }}
+										>
+											<TrackNumberPerPage setPageSize={setLimit} />
+										</Container>
 									</Container>
 								</Container>
 							)}

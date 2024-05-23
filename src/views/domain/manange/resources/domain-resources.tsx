@@ -16,8 +16,7 @@ import {
 	Input,
 	Table,
 	Text,
-	SnackbarManagerContext,
-	useScreenMode
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import moment from 'moment';
@@ -26,7 +25,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import CreateResource from './create-resource';
 import ResourceEditDetailView from './resource-edit-detail-view';
 import logo from '../../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT, ASC, DESC, MOBILE } from '../../../../constants';
+import { RECORD_DISPLAY_LIMIT, ASC, DESC } from '../../../../constants';
 import { createResource } from '../../../../services/create-cal-resource-service';
 import { createSignature } from '../../../../services/create-signature-service';
 import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
@@ -36,6 +35,7 @@ import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
+import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 
 const DomainResources: FC = () => {
@@ -58,7 +58,9 @@ const DomainResources: FC = () => {
 	const timer = useRef<any>();
 	const [sortedColumn, setSortedColumn] = useState<string>('displayName');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-	const screenMode = useScreenMode();
+	const tableRef = useRef<HTMLTableElement>(null);
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	const resourceStatusFilter: any[] = useMemo(
 		() => [
@@ -438,8 +440,37 @@ const DomainResources: FC = () => {
 		[errorSnackBar, successSnackBar]
 	);
 
+	useEffect(() => {
+		const table = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
+
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -477,13 +508,15 @@ const DomainResources: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto'
 				}}
-				padding={{ top: 'large' }}
 			>
-				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+				<Row
+					mainAlignment="flex-start"
+					width="100%"
+					padding={{ top: 'small', left: 'small', right: 'small' }}
+				>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
 						<Row
 							orientation="horizontal"
@@ -510,14 +543,12 @@ const DomainResources: FC = () => {
 							mainAlignment="space-between"
 							crossAlignment="flex-start"
 							width="fill"
-							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)'
-							}}
 						>
 							<Table
 								rows={!isRequestInProgress ? resourceList : []}
 								headers={headers}
 								showCheckbox
+								ref={tableRef}
 								style={{
 									overflow: 'auto',
 									height: isRequestInProgress || resourceList.length === 0 ? '50%' : '100%'
@@ -577,22 +608,31 @@ const DomainResources: FC = () => {
 
 						{resourceList && resourceList.length > 0 && (
 							<Container
-								orientation="horizontal"
-								mainAlignment="space-between"
-								width="100%"
-								style={{ position: 'static', bottom: '-4rem' }}
-								height="auto"
+								style={{
+									position: 'sticky',
+									bottom: isTableTooTall ? '0' : '-4rem'
+								}}
 							>
-								<Container crossAlignment="flex-start">
-									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-								</Container>
+								<ScrollContainer isVisible={isTableTooTall} />
 								<Container
-									crossAlignment="flex-end"
 									orientation="horizontal"
-									mainAlignment="flex-end"
-									padding={{ top: 'small' }}
+									mainAlignment="space-between"
+									background="gray6"
+									width="100%"
+									padding={{ right: 'extralarge' }}
+									height="auto"
 								>
-									<TrackNumberPerPage setPageSize={setLimit} />
+									<Container crossAlignment="flex-start">
+										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+									</Container>
+									<Container
+										crossAlignment="flex-end"
+										orientation="horizontal"
+										mainAlignment="flex-end"
+										padding={{ top: 'small' }}
+									>
+										<TrackNumberPerPage setPageSize={setLimit} />
+									</Container>
 								</Container>
 							</Container>
 						)}

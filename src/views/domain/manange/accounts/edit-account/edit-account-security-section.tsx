@@ -19,37 +19,14 @@ import {
 	Input,
 	Select
 } from '@zextras/carbonio-design-system';
-import { map, snakeCase } from 'lodash';
+import { map } from 'lodash';
 import QRCode from 'qrcode.react';
 import { Trans, useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { ServicesPassphrase } from './services-passphrase';
 import logo from '../../../../../assets/gardian.svg';
-import {
-	DELETE_OTP,
-	DISABLED,
-	ENABLED,
-	ENABLE_FAILED_LOGIN_LOCKOUT,
-	MAXIMUM_PASSWORD_AGE,
-	MAXIMUM_PASSWORD_LENGTH,
-	MINIMUM_LOWER_CASE_CHARACTERS,
-	MINIMUM_NUMBER_UNIQUE_PASSWORD_HISTORY,
-	MINIMUM_NUMERIC_CHARACTERS_OR_PUNCTUATION_SYMBOLS,
-	MINIMUM_NUMERIC_SYMBOLS,
-	MINIMUM_PASSWORD_AGE,
-	MINIMUM_PASSWORD_LENGTH,
-	MINIMUM_PUNCTUATION_SYMBOLS,
-	MINIMUM_UPPER_CASE_CHARACTERS,
-	NEW_OTP,
-	NUMBER_CONSECUTIVE_FAILED_LOGIN_ALLOWED,
-	REGECT_COMMON_PASSWORDS,
-	STATUS,
-	TIME_LOCKOUT_ACCOUNT,
-	TIME_RANGE,
-	TIME_WINDOW_FAILED_LOGINS_MUST_OCCUR_TO_LOCK_ACCOUNT,
-	USER_RECOVERY_EMAIL
-} from '../../../../../constants';
+import { DISABLED, ENABLED } from '../../../../../constants';
 import { fetchSoap } from '../../../../../services/generateOTP-service';
 import { sendMail } from '../../../../../services/send-mail-service';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
@@ -105,9 +82,7 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
-const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string) => void }> = ({
-	handleMatomoTrackerEvent
-}) => {
+const EditAccountSecuritySection: FC = () => {
 	const context = useContext(AccountContext);
 	const { otpList, accountDetail, setAccountDetail, getListOtp, accSpecificDetail, cosDetail } =
 		context;
@@ -121,6 +96,7 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
+
 	const wizardSteps = useMemo(
 		() => [
 			{
@@ -388,7 +364,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 	);
 
 	const handleOnGenerateOTP = (): void => {
-		handleMatomoTrackerEvent(NEW_OTP);
 		fetchSoap('zextras', {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxAuth',
@@ -411,7 +386,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 		});
 	};
 	const handleDeleteOTP = (): void => {
-		handleMatomoTrackerEvent(DELETE_OTP);
 		fetchSoap('zextras', {
 			_jsns: 'urn:zimbraAdmin',
 			module: 'ZxAuth',
@@ -459,15 +433,22 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 
 	const changeSwitchOption = useCallback(
 		(key: string): void => {
-			const snakeCaseString = snakeCase(key);
-			handleMatomoTrackerEvent(snakeCaseString);
-
 			setAccountDetail((prev: any) => ({
 				...prev,
 				[key]: accountDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
 			}));
 		},
-		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
+		[accountDetail, setAccountDetail]
+	);
+
+	const changeSwitchOptionBoolean = useCallback(
+		(key: string): void => {
+			setAccountDetail((prev: any) => ({
+				...prev,
+				[key]: !accountDetail[key]
+			}));
+		},
+		[accountDetail, setAccountDetail]
 	);
 
 	const onZimbraPasswordLockoutDurationTypeChange = useCallback(
@@ -524,23 +505,21 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 
 	const changeRecoverOption = useCallback(
 		(key: string): void => {
-			const snakeCaseString = snakeCase(key);
-			handleMatomoTrackerEvent(snakeCaseString);
-
 			setAccountDetail((prev: any) => ({
 				...prev,
 				[key]: accountDetail[key] === ENABLED ? DISABLED : ENABLED
 			}));
 		},
-		[accountDetail, handleMatomoTrackerEvent, setAccountDetail]
+		[accountDetail, setAccountDetail]
 	);
+
 	return (
 		<Container
 			mainAlignment="flex-start"
 			padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
 			style={{ overflow: 'auto' }}
 		>
-			{isAdvanced && <ServicesPassphrase handleMatomoTrackerEvent={handleMatomoTrackerEvent} />}
+			{isAdvanced && <ServicesPassphrase />}
 			{isAdvanced && (
 				<>
 					{!showCreateOTP && (
@@ -658,6 +637,35 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 					)}
 				</>
 			)}
+			{isAdvanced && (
+				<Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
+					<Text size="extralarge" weight="bold">
+						{t('label.backup', 'Backup')}
+					</Text>
+					<Row mainAlignment="flex-start" width="100%">
+						<Container
+							height="fit"
+							crossAlignment="flex-start"
+							background="gray6"
+							padding={{ top: 'large' }}
+						>
+							<ListRow>
+								<Container crossAlignment="flex-start">
+									<Switch
+										value={accountDetail?.backupSelfUndeleteAllowed}
+										onClick={(): void => changeSwitchOptionBoolean('backupSelfUndeleteAllowed')}
+										label={t(
+											'account_details.allow_restore_message',
+											'Allow user to restore messages'
+										)}
+										iconColor="primary"
+									/>
+								</Container>
+							</ListRow>
+						</Container>
+					</Row>
+				</Row>
+			)}
 			{!showCreateOTP && (
 				<Row mainAlignment="flex-start" width="100%">
 					<Row
@@ -750,9 +758,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMinLength"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinLength')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MINIMUM_PASSWORD_LENGTH);
-											}}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
@@ -765,9 +770,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMaxLength"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMaxLength')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MAXIMUM_PASSWORD_LENGTH);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -794,9 +796,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMinUpperCaseChars"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinUpperCaseChars')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MINIMUM_UPPER_CASE_CHARACTERS);
-											}}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
@@ -812,9 +811,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMinLowerCaseChars"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinLowerCaseChars')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MINIMUM_LOWER_CASE_CHARACTERS);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -838,9 +834,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMinPunctuationChars"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinPunctuationChars')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MINIMUM_PUNCTUATION_SYMBOLS);
-											}}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
@@ -853,9 +846,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMinNumericChars"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinNumericChars')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MINIMUM_NUMERIC_SYMBOLS);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -879,9 +869,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMinAge"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinAge')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MINIMUM_PASSWORD_AGE);
-											}}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
@@ -894,9 +881,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMaxAge"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMaxAge')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MAXIMUM_PASSWORD_AGE);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -923,10 +907,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordMinDigitsOrPuncs"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordMinDigitsOrPuncs')}
-											onFocus={(): void => {
-												// eslint-disable-next-line max-len
-												handleMatomoTrackerEvent(MINIMUM_NUMERIC_CHARACTERS_OR_PUNCTUATION_SYMBOLS);
-											}}
 										/>
 									</Container>
 									<Container padding={{ left: 'small' }}>
@@ -942,9 +922,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											inputName="zimbraPasswordEnforceHistory"
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordEnforceHistory')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(MINIMUM_NUMBER_UNIQUE_PASSWORD_HISTORY);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -963,9 +940,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											fromSubValue={accSpecificDetail?.zimbraPasswordBlockCommonEnabled}
 											inputName={'zimbraPasswordBlockCommonEnabled'}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordBlockCommonEnabled')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(REGECT_COMMON_PASSWORDS);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -1019,9 +993,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 												'Enter valid email Address'
 											)}
 											hasError={recoveryEmailError}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(USER_RECOVERY_EMAIL);
-											}}
 										/>
 									</Container>
 									<Container width="30%" padding={{ left: 'small' }}>
@@ -1036,9 +1007,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 													// eslint-disable-next-line max-len
 													item.value === accountDetail?.zimbraPrefPasswordRecoveryAddressStatus
 											)}
-											onClick={(): void => {
-												handleMatomoTrackerEvent(STATUS);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -1072,9 +1040,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											fromSubValue={accSpecificDetail?.zimbraPasswordLockoutEnabled}
 											inputName={'zimbraPasswordLockoutEnabled'}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutEnabled')}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(ENABLE_FAILED_LOGIN_LOCKOUT);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -1102,12 +1067,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											onChange={changeValue}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutMaxFailures')}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(NUMBER_CONSECUTIVE_FAILED_LOGIN_ALLOWED);
-											}}
-											onClick={(): void => {
-												handleMatomoTrackerEvent(NUMBER_CONSECUTIVE_FAILED_LOGIN_ALLOWED);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -1132,12 +1091,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											onChange={onZimbraPasswordLockoutDurationNumChange}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(TIME_LOCKOUT_ACCOUNT);
-											}}
-											onClick={(): void => {
-												handleMatomoTrackerEvent(TIME_LOCKOUT_ACCOUNT);
-											}}
 										/>
 									</Container>
 									<Container width="25%" padding={{ left: 'small' }}>
@@ -1152,9 +1105,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 											onChange={onZimbraPasswordLockoutDurationTypeChange}
 											onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-											onClick={(): void => {
-												handleMatomoTrackerEvent(TIME_RANGE);
-											}}
 										/>
 									</Container>
 								</ListRow>
@@ -1185,16 +1135,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 												setEmptyValue('zimbraPasswordLockoutFailureLifetime')
 											}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-											onFocus={(): void => {
-												handleMatomoTrackerEvent(
-													TIME_WINDOW_FAILED_LOGINS_MUST_OCCUR_TO_LOCK_ACCOUNT
-												);
-											}}
-											onClick={(): void => {
-												handleMatomoTrackerEvent(
-													TIME_WINDOW_FAILED_LOGINS_MUST_OCCUR_TO_LOCK_ACCOUNT
-												);
-											}}
 										/>
 									</Container>
 									<Container width="25%" padding={{ left: 'small' }}>
@@ -1215,9 +1155,6 @@ const EditAccountSecuritySection: FC<{ handleMatomoTrackerEvent: (value: string)
 												setEmptyValue('zimbraPasswordLockoutFailureLifetime')
 											}
 											disabled={accountDetail.zimbraPasswordLockoutEnabled !== 'TRUE'}
-											onClick={(): void => {
-												handleMatomoTrackerEvent(TIME_RANGE);
-											}}
 										/>
 									</Container>
 								</ListRow>

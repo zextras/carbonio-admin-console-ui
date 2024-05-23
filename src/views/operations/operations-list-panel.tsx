@@ -10,21 +10,12 @@ import { Container } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
-import {
-	DONE_ROUTE_ID,
-	OPERATIONS_ROUTE_ID,
-	QUEUED_ROUTE_ID,
-	RUNNING_ROUTE_ID
-} from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
-import { useConfigStore } from '../../store/config/store';
+import { DONE_ROUTE_ID, QUEUED_ROUTE_ID, RUNNING_ROUTE_ID } from '../../constants';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import ListItems from '../list/list-items';
 
 const OperationsListPanel: FC = () => {
 	const [t] = useTranslation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -52,15 +43,10 @@ const OperationsListPanel: FC = () => {
 	);
 
 	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${OPERATIONS_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
-
-	useEffect(() => {
 		if (selectedOperationItem) {
-			globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 			replaceHistory(`/${selectedOperationItem}`);
 		}
-	}, [selectedOperationItem, globalCarbonioSendAnalytics, matomo]);
+	}, [selectedOperationItem, globalCarbonioSendAnalytics]);
 
 	return (
 		<Container

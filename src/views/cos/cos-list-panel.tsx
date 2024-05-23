@@ -27,9 +27,7 @@ import {
 	CREATE_NEW_COS_ROUTE_ID,
 	IS_COS_DETAIL_LIST_EXPANDED
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { getCosList } from '../../services/search-cos-service';
-import { useConfigStore } from '../../store/config/store';
 import { useCosStore } from '../../store/cos/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
@@ -71,8 +69,6 @@ const CosListPanel: FC = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const locationService = useLocation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -88,10 +84,6 @@ const CosListPanel: FC = () => {
 	const prevCosRef = useRef();
 	const [isLoading, setIsLoading] = useState(false);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
-
-	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${COS_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
 
 	const getCosLists = useCallback(
 		(searchData: string): any => {
@@ -204,14 +196,12 @@ const CosListPanel: FC = () => {
 			if (cosView === COS) {
 				replaceHistory(`/cos_list`);
 			} else if (cosView) {
-				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${cosView}`);
 				replaceHistory(`/${cos?.id}/${cosView}`);
 			} else {
-				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${cosView}`);
 				replaceHistory(`/${cos?.id}/${GENERAL_INFORMATION}`);
 			}
 		}
-	}, [isCosSelect, cos, cosView, matomo, globalCarbonioSendAnalytics, setCosView]);
+	}, [isCosSelect, cos, cosView, globalCarbonioSendAnalytics, setCosView]);
 
 	const detailOptions = useMemo<
 		{

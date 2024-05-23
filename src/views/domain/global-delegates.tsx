@@ -12,8 +12,7 @@ import {
 	Table,
 	Divider,
 	Button,
-	useSnackbar,
-	useScreenMode
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -25,10 +24,9 @@ import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './manange/accounts/account-context';
-import AccountDetailView from './manange/accounts/account-detail-view';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
-import { MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
+import { RECORD_DISPLAY_LIMIT } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -81,7 +79,6 @@ const GlobalDelegates: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
 	const tableRef = useRef(null);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-	const screenMode = useScreenMode();
 
 	const headers: any = useMemo(
 		() => [
@@ -118,7 +115,6 @@ const GlobalDelegates: FC = () => {
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
-	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -564,7 +560,7 @@ const GlobalDelegates: FC = () => {
 
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setShowAccountDetailView(true);
+			setShowEditAccountView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
@@ -679,28 +675,6 @@ const GlobalDelegates: FC = () => {
 			});
 	}, [accountUserType, limit, offset, openDetailView, t, createSnackbar]);
 
-	const closeAccountDetailDialog = useCallback(() => {
-		if (showAccountDetailView) {
-			setShowAccountDetailView(false);
-		}
-	}, [showAccountDetailView]);
-
-	const handleKeyEvent = useCallback(
-		(event) => {
-			if (event.key === 'Escape') {
-				closeAccountDetailDialog();
-			}
-		},
-		[closeAccountDetailDialog]
-	);
-
-	useEffect(() => {
-		window.addEventListener('keydown', handleKeyEvent);
-		return () => {
-			window.removeEventListener('keydown', handleKeyEvent);
-		};
-	}, [handleKeyEvent]);
-
 	useEffect(() => {
 		getAccountList();
 	}, [offset, getAccountList]);
@@ -730,7 +704,6 @@ const GlobalDelegates: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto'
 				}}
@@ -755,7 +728,6 @@ const GlobalDelegates: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
 							ref={tableRef}
@@ -842,19 +814,6 @@ const GlobalDelegates: FC = () => {
 								</Container>
 							)}
 							<AccountContext.Provider value={accountContextValue}>
-								{showAccountDetailView && (
-									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
-										<AccountDetailView
-											selectedAccount={selectedAccount}
-											setShowAccountDetailView={setShowAccountDetailView}
-											setShowEditAccountView={setShowEditAccountView}
-											STATUS_COLOR={STATUS_COLOR}
-											getAccountList={getAccountList}
-											cosDetail={cosDetail}
-										/>
-									</ModalOverlay>
-								)}
-
 								{showEditAccountView && (
 									<ModalOverlay
 										setOpen={setShowEditAccountView}
@@ -872,7 +831,6 @@ const GlobalDelegates: FC = () => {
 											getAccountDetail={getAccountDetail}
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
-											setShowAccountDetailView={setShowAccountDetailView}
 											showModal={showModal}
 											setShowModal={setShowModal}
 											isDirty={isDirty}
