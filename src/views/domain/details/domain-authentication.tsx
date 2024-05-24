@@ -206,10 +206,10 @@ const DomainAuthentication: FC = () => {
 				label: `${t('label.ex', 'ex.')} ldap[s]://${t(
 					'label.external_ldap_server',
 					'external-ldap-server'
-				)}[:389]`
+				)}${zimbraAuthMech?.value !== ZimbraAuthMethod.EXTERNAL ? '[:389]' : '[:3268]'}`
 			}
 		],
-		[t]
+		[t, zimbraAuthMech]
 	);
 
 	const LdapUrlTooltip: FC = useCallback(
