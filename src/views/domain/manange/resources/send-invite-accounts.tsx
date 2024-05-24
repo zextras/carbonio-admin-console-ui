@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -13,7 +13,8 @@ import {
 	Icon,
 	Table,
 	Button,
-	Padding
+	Padding,
+	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -24,6 +25,7 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import DropDownInput from '../../../components/dropDownInput';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { isValidEmail } from '../../../utility/utils';
 
@@ -35,6 +37,7 @@ export const SendInviteAccounts: FC<any> = ({
 	hideHeaderBar
 }) => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const [newSentInviteValue, setNewSentInviteValue] = useState<string>('');
 	const [selectedSendInvite, setSelectedSendInvite] = useState<any>([]);
 	const [sendInviteAddBtnDisabled, setSendInviteAddBtnDisabled] = useState(true);
@@ -117,29 +120,37 @@ export const SendInviteAccounts: FC<any> = ({
 		}
 	}, [selectedSendInvite, sendInviteList, setDefaultSendInviteList, setSendInviteList]);
 
-	const getSearchMemberList = useCallback((mem) => {
-		const attrs =
-			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-		const types = 'accounts,distributionlists,aliases';
-		const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+	const getSearchMemberList = useCallback(
+		(mem) => {
+			const attrs =
+				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+			const types = 'accounts,distributionlists,aliases';
+			const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
 
-		searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name').then((data) => {
-			const result: any[] = [];
-			const dl = data?.dl;
-			const account = data?.account;
-			const alias = data?.alias;
-			if (dl) {
-				dl.map((item: any) => result.push(item));
-			}
-			if (account) {
-				account.map((item: any) => result.push(item));
-			}
-			if (alias) {
-				alias.map((item: any) => result.push(item));
-			}
-			setSearchMemberResult(result);
-		});
-	}, []);
+			searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name')
+				.then((data) => {
+					const result: any[] = [];
+					const dl = data?.dl;
+					const account = data?.account;
+					const alias = data?.alias;
+					if (dl) {
+						dl.map((item: any) => result.push(item));
+					}
+					if (account) {
+						account.map((item: any) => result.push(item));
+					}
+					if (alias) {
+						alias.map((item: any) => result.push(item));
+					}
+					setSearchMemberResult(result);
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchMemberCall = useCallback(

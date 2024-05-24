@@ -45,6 +45,7 @@ import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
 import ScrollContainer from '../components/scrollComponent';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
 type UserSession = {
 	name: string;
@@ -696,16 +697,9 @@ const GlobalDelegates: FC = () => {
 				setIsRequestInProgress(false);
 			})
 			.catch((error: any) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+				setIsRequestInProgress(false);
 			});
 	}, [accountUserType, limit, offset, openDetailView, t, createSnackbar]);
 

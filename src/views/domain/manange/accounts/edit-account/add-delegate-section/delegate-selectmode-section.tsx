@@ -5,13 +5,14 @@
  */
 import React, { FC, useMemo, useContext, useState, useEffect, useCallback } from 'react';
 
-import { Container, Row, Select, Text } from '@zextras/carbonio-design-system';
+import { Container, Row, Select, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import { accountListDirectory } from '../../../../../../services/account-list-directory-service';
 import DropDownInput from '../../../../../components/dropDownInput';
+import { generateSnackbarFromError } from '../../../../../error/generate-snackbar-error';
 import { delegateType } from '../../../../../utility/utils';
 import { AccountContext } from '../../account-context';
 
@@ -19,6 +20,7 @@ const SelectItem = styled(Row)``;
 
 const DelegateSelectModeSection: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
 	const [delegateAccountList, setDelegateAccountList] = useState<any[]>([]);
 	const [searchDelegateAccountName, setSearchDelegateAccountName] = useState(undefined);
 	const [isDelegateAccountListExpand, setIsDelegateAccountListExpand] = useState(false);
@@ -64,48 +66,55 @@ const DelegateSelectModeSection: FC = () => {
 		const type = deligateDetail?.grantee?.[0]?.type === 'grp' ? 'distributionlists' : 'accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, '', searchQuery, offset, limit).then((data) => {
-			const accountListResponse: any = data?.account || [];
+		accountListDirectory(attrs, type, '', searchQuery, offset, limit)
+			.then((data) => {
+				const accountListResponse: any = data?.account || [];
 
-			if (accountListResponse && Array.isArray(accountListResponse)) {
-				const accountListArr: any[] = [];
-				if (data?.dl?.length) {
-					// eslint-disable-next-line no-param-reassign
-					data.account = data?.dl;
+				if (accountListResponse && Array.isArray(accountListResponse)) {
+					const accountListArr: any[] = [];
+					if (data?.dl?.length) {
+						// eslint-disable-next-line no-param-reassign
+						data.account = data?.dl;
+					}
+					data?.account.map(
+						(delegateAccount: any) =>
+							delegateAccount.id !== accountDetail.zimbraId &&
+							accountListArr.push({
+								id: delegateAccount.id,
+								label: delegateAccount.name,
+								customComponent: (
+									<SelectItem
+										style={{
+											display: 'block',
+											textAlign: 'left',
+											height: 'inherit',
+											width: 'inherit'
+										}}
+										onClick={(): void => {
+											selectedDelegateAccount(delegateAccount);
+										}}
+									>
+										{delegateAccount?.name}
+									</SelectItem>
+								)
+							})
+					);
+					setDelegateAccountList(accountListArr);
 				}
-				data?.account.map(
-					(delegateAccount: any) =>
-						delegateAccount.id !== accountDetail.zimbraId &&
-						accountListArr.push({
-							id: delegateAccount.id,
-							label: delegateAccount.name,
-							customComponent: (
-								<SelectItem
-									style={{
-										display: 'block',
-										textAlign: 'left',
-										height: 'inherit',
-										width: 'inherit'
-									}}
-									onClick={(): void => {
-										selectedDelegateAccount(delegateAccount);
-									}}
-								>
-									{delegateAccount?.name}
-								</SelectItem>
-							)
-						})
-				);
-				setDelegateAccountList(accountListArr);
-			}
-		});
+			})
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+			});
 	}, [
 		deligateDetail?.grantee,
 		searchQuery,
 		offset,
 		limit,
 		accountDetail.zimbraId,
-		selectedDelegateAccount
+		selectedDelegateAccount,
+		t,
+		createSnackbar
 	]);
 
 	useEffect(() => {

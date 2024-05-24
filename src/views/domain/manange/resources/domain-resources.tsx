@@ -36,6 +36,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import Paging from '../../../components/paging';
 import ScrollContainer from '../../../components/scrollComponent';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 
 const DomainResources: FC = () => {
 	const [t] = useTranslation();
@@ -176,106 +177,104 @@ const DomainResources: FC = () => {
 			const types = 'resources';
 			const query = `${queryString}(&(!(zimbraIsSystemAccount=TRUE)))`;
 			setIsRequestInProgress(true);
-			searchDirectory(
-				attrs,
-				types,
-				zimbraDomainName,
-				query,
-				offset,
-				limit,
-				sortBy,
-				sortAsceding
-			).then((data) => {
-				const resourceListResponse = data?.calresource || [];
-				if (resourceListResponse && Array.isArray(resourceListResponse)) {
-					setTotalAccount(data?.searchTotal || 0);
-					const rList: any[] = [];
-					resourceListResponse.forEach((item: any, index: number) => {
-						rList.push({
-							id: item?.id,
-							columns: [
-								<Container
-									key={item?.id}
-									crossAlignment="flex-start"
-									onClick={(e: { stopPropagation: () => void }): void => {
-										e.stopPropagation();
-										setSelectedResourceList(item);
-										handleClick(e);
-									}}
-								>
-									<Text size="small" weight="light" key={item?.id} color="gray0">
-										{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-									</Text>
-								</Container>,
-								<Container
-									key={item?.id}
-									crossAlignment="flex-start"
-									onClick={(e: { stopPropagation: () => void }): void => {
-										e.stopPropagation();
-										setSelectedResourceList(item);
-										handleClick(e);
-									}}
-								>
-									<Text size="small" weight="light" key={item?.id} color="gray0">
-										{item?.name}
-									</Text>
-								</Container>,
-								<Container
-									key={item?.id}
-									crossAlignment="flex-start"
-									onClick={(e: { stopPropagation: () => void }): void => {
-										e.stopPropagation();
-										setSelectedResourceList(item);
-										handleClick(e);
-									}}
-								>
-									<Text size="small" weight="light" key={item?.id} color="gray0">
-										{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
-									</Text>
-								</Container>,
-								<Container
-									key={item?.id}
-									crossAlignment="flex-start"
-									onClick={(e: { stopPropagation: () => void }): void => {
-										e.stopPropagation();
-										setSelectedResourceList(item);
-										handleClick(e);
-									}}
-								>
-									<Text size="small" weight="light" key={item?.id} color="gray0">
-										{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
-											? moment(
-													item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content,
-													'YYYYMMDDHHmmss.Z'
-											  ).format('YY/MM/DD | hh:MM')
-											: t('label.never_logged_in', 'Never logged In')}
-									</Text>
-								</Container>,
-								<Container
-									key={item?.id}
-									crossAlignment="flex-start"
-									onClick={(e: { stopPropagation: () => void }): void => {
-										e.stopPropagation();
-										setSelectedResourceList(item);
-										handleClick(e);
-									}}
-								>
-									<Text size="small" weight="light" key={item?.id} color="gray0">
-										{item?.a?.find((a: any) => a?.n === 'description')?._content}
-									</Text>
-								</Container>
-							],
-							item,
-							clickable: true
+			searchDirectory(attrs, types, zimbraDomainName, query, offset, limit, sortBy, sortAsceding)
+				.then((data) => {
+					const resourceListResponse = data?.calresource || [];
+					if (resourceListResponse && Array.isArray(resourceListResponse)) {
+						setTotalAccount(data?.searchTotal || 0);
+						const rList: any[] = [];
+						resourceListResponse.forEach((item: any, index: number) => {
+							rList.push({
+								id: item?.id,
+								columns: [
+									<Container
+										key={item?.id}
+										crossAlignment="flex-start"
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
+											setSelectedResourceList(item);
+											handleClick(e);
+										}}
+									>
+										<Text size="small" weight="light" key={item?.id} color="gray0">
+											{item?.a?.find((a: any) => a?.n === 'displayName')?._content}
+										</Text>
+									</Container>,
+									<Container
+										key={item?.id}
+										crossAlignment="flex-start"
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
+											setSelectedResourceList(item);
+											handleClick(e);
+										}}
+									>
+										<Text size="small" weight="light" key={item?.id} color="gray0">
+											{item?.name}
+										</Text>
+									</Container>,
+									<Container
+										key={item?.id}
+										crossAlignment="flex-start"
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
+											setSelectedResourceList(item);
+											handleClick(e);
+										}}
+									>
+										<Text size="small" weight="light" key={item?.id} color="gray0">
+											{item?.a?.find((a: any) => a?.n === 'zimbraAccountStatus')?._content}
+										</Text>
+									</Container>,
+									<Container
+										key={item?.id}
+										crossAlignment="flex-start"
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
+											setSelectedResourceList(item);
+											handleClick(e);
+										}}
+									>
+										<Text size="small" weight="light" key={item?.id} color="gray0">
+											{item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')?._content
+												? moment(
+														item?.a?.find((a: any) => a?.n === 'zimbraLastLogonTimestamp')
+															?._content,
+														'YYYYMMDDHHmmss.Z'
+												  ).format('YY/MM/DD | hh:MM')
+												: t('label.never_logged_in', 'Never logged In')}
+										</Text>
+									</Container>,
+									<Container
+										key={item?.id}
+										crossAlignment="flex-start"
+										onClick={(e: { stopPropagation: () => void }): void => {
+											e.stopPropagation();
+											setSelectedResourceList(item);
+											handleClick(e);
+										}}
+									>
+										<Text size="small" weight="light" key={item?.id} color="gray0">
+											{item?.a?.find((a: any) => a?.n === 'description')?._content}
+										</Text>
+									</Container>
+								],
+								item,
+								clickable: true
+							});
 						});
-					});
-					setResourceList(rList);
-					setIsUpdateRecord(false);
-				}
-				setIsRequestInProgress(false);
-			});
+						setResourceList(rList);
+						setIsUpdateRecord(false);
+					}
+					setIsRequestInProgress(false);
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+					setIsRequestInProgress(false);
+				});
 		},
-		[offset, limit, t, handleClick]
+		[offset, limit, t, handleClick, createSnackbar]
 	);
 
 	useEffect(() => {
