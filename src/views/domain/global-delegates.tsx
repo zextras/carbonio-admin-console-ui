@@ -19,7 +19,7 @@ import {
 	// @ts-ignore
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
-import { flatMapDeep, filter } from 'lodash';
+import { flatMapDeep, filter, debounce } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -44,6 +44,7 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
+import ScrollContainer from '../components/scrollComponent';
 
 type UserSession = {
 	name: string;
@@ -76,8 +77,10 @@ const GlobalDelegates: FC = () => {
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
-	const tableRef = useRef(null);
+	const tableRef = useRef<HTMLTableElement>(null);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	const headers: any = useMemo(
 		() => [
@@ -480,6 +483,31 @@ const GlobalDelegates: FC = () => {
 		});
 	}, []);
 
+	useEffect(() => {
+		const table = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
+
 	const accountContextValue = useMemo(
 		() => ({
 			accountDetail,
@@ -686,8 +714,12 @@ const GlobalDelegates: FC = () => {
 	}, [offset, getAccountList]);
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6">
-			<Row padding={{ left: 'large' }} mainAlignment="flex-start" width="100%">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -713,7 +745,7 @@ const GlobalDelegates: FC = () => {
 					position: 'relative',
 					overflow: 'auto'
 				}}
-				padding={{ all: 'large' }}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -736,13 +768,13 @@ const GlobalDelegates: FC = () => {
 							style={{
 								position: 'relative'
 							}}
-							ref={tableRef}
 						>
 							<Table
 								rows={!isRequestInProgress ? accountList : []}
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
+								ref={tableRef}
 								style={{
 									overflow: 'auto',
 									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
@@ -800,22 +832,31 @@ const GlobalDelegates: FC = () => {
 							)}
 							{accountList.length !== 0 && (
 								<Container
-									orientation="horizontal"
-									mainAlignment="space-between"
-									width="100%"
-									style={{ position: 'absolute', bottom: '-4rem' }}
-									height="auto"
+									style={{
+										position: 'sticky',
+										bottom: isTableTooTall ? '0' : '-4rem'
+									}}
 								>
-									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-									</Container>
+									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
-										crossAlignment="flex-end"
 										orientation="horizontal"
-										mainAlignment="flex-end"
-										padding={{ top: 'small' }}
+										mainAlignment="space-between"
+										background="gray6"
+										width="100%"
+										padding={{ right: 'extralarge' }}
+										height="auto"
 									>
-										<TrackNumberPerPage setPageSize={setLimit} />
+										<Container crossAlignment="flex-start">
+											<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+										</Container>
+										<Container
+											crossAlignment="flex-end"
+											orientation="horizontal"
+											mainAlignment="flex-end"
+											padding={{ top: 'small' }}
+										>
+											<TrackNumberPerPage setPageSize={setLimit} />
+										</Container>
 									</Container>
 								</Container>
 							)}
