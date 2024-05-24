@@ -1252,9 +1252,6 @@ const ManageAccounts: FC = () => {
 										bottom: isTableTooTall ? '0' : '-4rem'
 									}}
 								>
-									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-									</Container>
 									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
 										orientation="horizontal"
