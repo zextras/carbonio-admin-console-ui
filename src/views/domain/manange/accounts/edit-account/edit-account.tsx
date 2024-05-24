@@ -153,7 +153,8 @@ const EditAccount: FC<{
 		initAccountDetail,
 		setInitAccountDetail,
 		deleteAdministrationRights,
-		setDefaultCOS
+		setDefaultCOS,
+		cosDetail
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -661,13 +662,29 @@ const EditAccount: FC<{
 								hideButton: true,
 								replace: true
 							});
+							setInitAccountDetail((prev: any) => ({
+								...prev,
+								[FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit
+							}));
+							setAccountDetail((prev: any) => ({
+								...prev,
+								[FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit
+							}));
 						}
 					});
 				}
 				remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
 			}
 		},
-		[accountDetail.filesQuotaLimit, accountDetail?.zimbraId, createSnackbar, t]
+		[
+			accountDetail?.filesQuotaLimit,
+			accountDetail?.zimbraId,
+			cosDetail.filesQuotaLimit,
+			createSnackbar,
+			setAccountDetail,
+			setInitAccountDetail,
+			t
+		]
 	);
 
 	const handleMainModifiedKeys = useCallback(

@@ -127,6 +127,8 @@ const EditAccountGeneralSection: FC<{
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
 	const [highlightFileQuota, setHighlightFileQuota] = useState(false);
 	const [defaultCosId, setDefaultCosId] = useState('');
+	const [focusableMailboxQuota, setFocusableMailboxQuota] = useState(false);
+	const [highlightMailboxQuota, setHighlightMailboxQuota] = useState(false);
 
 	const sessionTableHeader: any[] = useMemo(() => {
 		const accountsLabel = t('label.accounts', 'Accounts');
@@ -637,10 +639,50 @@ const EditAccountGeneralSection: FC<{
 		return (initAccountDetail.filesQuotaUsed / initAccountDetail.filesQuotaLimit) * 100;
 	}, [initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed]);
 
+	const calculatedMailBoxQuotaSizePercentage: number = useMemo(() => {
+		if (!initAccountDetail?.zimbraMailQuota) {
+			return 0;
+		}
+		return (initAccountDetail.mailboxQuotaUsed / initAccountDetail.zimbraMailQuota) * 100;
+	}, [initAccountDetail?.zimbraMailQuota, initAccountDetail?.mailboxQuotaUsed]);
+
 	const focusFileQuota = useCallback(() => {
 		setFocusableFileQuota(true);
 		setHighlightFileQuota(true);
 	}, []);
+
+	const focusMailBoxQuota = useCallback(() => {
+		setFocusableMailboxQuota(true);
+		setHighlightMailboxQuota(true);
+	}, []);
+
+	const calculatedFilesQuotaSize: string = useMemo(
+		() =>
+			initAccountDetail?.filesQuotaLimit > 0
+				? `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(3)} ${t(
+						'label.of',
+						'Of'
+				  )}  ${BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)} ${t('label.gb', 'GB')}`
+				: `${BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(3)} ${t('label.of', 'Of')}  ${t(
+						'label.unlimited',
+						'unlimited'
+				  )}`,
+		[initAccountDetail?.filesQuotaLimit, initAccountDetail?.filesQuotaUsed, t]
+	);
+
+	const calculatedMailboxQuotaSize: string = useMemo(
+		() =>
+			initAccountDetail?.zimbraMailQuota > 0
+				? `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(3)} ${t(
+						'label.of',
+						'Of'
+				  )}  ${BytesToGB(initAccountDetail?.zimbraMailQuota).toFixed(3)} ${t('label.gb', 'GB')}`
+				: `${BytesToGB(initAccountDetail?.mailboxQuotaUsed).toFixed(3)} ${t('label.of', 'Of')}  ${t(
+						'label.unlimited',
+						'unlimited'
+				  )}`,
+		[initAccountDetail?.mailboxQuotaUsed, initAccountDetail?.zimbraMailQuota, t]
+	);
 
 	return (
 		<Container
@@ -653,34 +695,54 @@ const EditAccountGeneralSection: FC<{
 						{t('label.account', 'Account')}
 					</Text>
 				</Row>
-				{isAdvanced && initAccountDetail?.filesQuotaLimit && (
+				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row
-						padding={{ top: 'large', left: 'large' }}
-						width="100%"
+						width={isAdvanced && initAccountDetail?.filesQuotaLimit ? '49%' : '100%'}
 						mainAlignment="space-between"
-						onClick={focusFileQuota}
+						onClick={focusMailBoxQuota}
 					>
 						<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
 							<Text size="extrasmall" color="secondary">
-								{t('label.files_space_usage', 'Files Space Usage')}
+								{t('label.mailbox_space_usage', 'Mailbox Space Usage')}
 							</Text>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
 							<Text size="extrasmall" color="gray0">
-								{BytesToGB(initAccountDetail?.filesQuotaUsed).toFixed(3)} {t('label.of', 'of')}{' '}
-								{BytesToGB(initAccountDetail?.filesQuotaLimit).toFixed(3)} {t('label.gb', 'GB')}
+								{calculatedMailboxQuotaSize}
 							</Text>
 						</Row>
 						<Row mainAlignment="flex-start" width="100%">
 							<Quota
-								fill={calculatedFilesQuotaSizePercentage}
+								fill={calculatedMailBoxQuotaSizePercentage}
 								height="0.5rem"
 								background="gray5"
 								style={{ borderRadius: '2px' }}
 							/>
 						</Row>
 					</Row>
-				)}
+					{isAdvanced && initAccountDetail?.filesQuotaLimit && (
+						<Row width="49%" mainAlignment="space-between" onClick={focusFileQuota}>
+							<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'small' }}>
+								<Text size="extrasmall" color="secondary">
+									{t('label.files_space_usage', 'Files Space Usage')}
+								</Text>
+							</Row>
+							<Row mainAlignment="flex-start" width="100%" padding={{ bottom: 'extrasmall' }}>
+								<Text size="extrasmall" color="gray0">
+									{calculatedFilesQuotaSize}
+								</Text>
+							</Row>
+							<Row mainAlignment="flex-start" width="100%">
+								<Quota
+									fill={calculatedFilesQuotaSizePercentage}
+									height="0.5rem"
+									background="gray5"
+									style={{ borderRadius: '2px' }}
+								/>
+							</Row>
+						</Row>
+					)}
+				</Row>
 				<Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
 					<Row width="32%" mainAlignment="space-between">
 						<Input
@@ -867,6 +929,12 @@ const EditAccountGeneralSection: FC<{
 							background="gray5"
 							inputName="zimbraMailQuota"
 							onChange={changeAccountQuota}
+							focus={focusableMailboxQuota}
+							highlighted={highlightMailboxQuota}
+							onBlur={(): void => {
+								setFocusableMailboxQuota(false);
+								setHighlightMailboxQuota(false);
+							}}
 							onChangeReset={(): void => setEmptyAccountQuota('zimbraMailQuota')}
 						/>
 						{showAccountQuotaLimitMsg && (

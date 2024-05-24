@@ -1428,6 +1428,7 @@
         "mail_transport_map": "Mail Transport Map",
         "mailbox_quota": "Mailbox Quota",
         "mailbox_quota_limit_gb": "Mailbox Quota Limit (GB)",
+        "mailbox_space_usage": "Mailbox Space Usage",
         "mailing-list": {
             "object_name": "Object Name"
         },
