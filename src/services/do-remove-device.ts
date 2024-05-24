@@ -10,15 +10,17 @@ import {
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 
-export const getAllDevices = async (module: string, domainName: string): Promise<any> =>
+import { ZX_MOBILE } from '../constants';
+
+export const doRemoveDevice = async (account: string, deviceId: string): Promise<any> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{
 			_jsns: 'urn:zimbraAdmin',
-			module,
-			action: 'getAllDevices',
-			targetServers: 'all_servers',
-			domainList: domainName
+			module: ZX_MOBILE,
+			action: 'doRemoveDevice',
+			accountName: account,
+			deviceId
 		},
 		'zextras'
 	);

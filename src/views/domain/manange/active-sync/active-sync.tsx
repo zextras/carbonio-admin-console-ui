@@ -25,7 +25,9 @@ import { useTranslation, Trans } from 'react-i18next';
 import ActiveDeviceDetail from './active-device-detail';
 import logo from '../../../../assets/gardian.svg';
 import { ZX_MOBILE } from '../../../../constants';
+import { doRemoveDevice } from '../../../../services/do-remove-device';
 import { getAllDevices } from '../../../../services/get-all-devices';
+import { useDomainStore } from '../../../../store/domain/store';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 
@@ -59,6 +61,22 @@ const ActiveSync: FC = () => {
 	const [searchString, setSearchString] = useState<string>('');
 	const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>([]);
 	const [hasError, setHasError] = useState<boolean>(false);
+	const domainName = useDomainStore((state) => state.domain?.name) || '';
+	const [selectRow, setSelectRow] = useState<Array<any>>([]);
+
+	const showSnackbar = useCallback(
+		(key, type, msg) => {
+			createSnackbar({
+				key,
+				type,
+				label: msg,
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
+			});
+		},
+		[createSnackbar]
+	);
 
 	const headers: any[] = useMemo(
 		() => [
@@ -104,7 +122,7 @@ const ActiveSync: FC = () => {
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAllDeviceList = useCallback(() => {
-		getAllDevices(ZX_MOBILE)
+		getAllDevices(ZX_MOBILE, domainName)
 			.then((res: any) => {
 				if (res?.Body?.response?.content) {
 					const content = JSON.parse(res?.Body?.response?.content);
@@ -127,25 +145,25 @@ const ActiveSync: FC = () => {
 							if (allDevices.length > 0) {
 								setAllMobileDevices(allDevices);
 								setBackupAllDevice(allDevices);
+							} else {
+								setAllMobileDevices([]);
+								setBackupAllDevice([]);
 							}
 						}
 					}
 				}
 			})
 			.catch((error: any) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
+				showSnackbar(
+					'error',
+					'error',
+					error
 						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+				);
 				setHasError(true);
 			});
-	}, [t, createSnackbar]);
+	}, [t, domainName, showSnackbar]);
 
 	useEffect(() => {
 		getAllDeviceList();
@@ -185,6 +203,7 @@ const ActiveSync: FC = () => {
 
 	useMemo(() => {
 		setAllDeviceRow([]);
+		setSelectRow([]);
 		if (allMobileDevices.length > 0) {
 			const allRows = allMobileDevices.map((item: MobileDevice, index: number) => ({
 				id: item?.firstSeen,
@@ -282,6 +301,36 @@ const ActiveSync: FC = () => {
 		}
 	}, [selectedMobileDevice, allMobileDevices]);
 
+	const parseResponse = useCallback(
+		(info) => {
+			if (info?.ok) {
+				getAllDeviceList();
+				showSnackbar(
+					'success',
+					'success',
+					t('label.remove_device_success_message', 'Device remove successfully')
+				);
+			} else if (info?.error?.message) {
+				showSnackbar('error', 'error', info?.error?.message);
+			} else if (info?.exception?.message) {
+				showSnackbar('error', 'error', info?.exception?.message);
+			}
+		},
+		[getAllDeviceList, showSnackbar, t]
+	);
+
+	const onRemoveDevice = useCallback(() => {
+		const mobileDevice = allMobileDevices.find(
+			(item: MobileDevice) => item?.firstSeen === selectRow[0]
+		);
+		if (mobileDevice) {
+			doRemoveDevice(mobileDevice?.accountEmail, mobileDevice?.deviceId).then((data) => {
+				const info = JSON.parse(data?.Body?.response?.content);
+				parseResponse(info);
+			});
+		}
+	}, [allMobileDevices, parseResponse, selectRow]);
+
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
 			<Container
@@ -338,9 +387,9 @@ const ActiveSync: FC = () => {
 									type="outlined"
 									label={t('label.remove', 'Remove')}
 									color="error"
-									disabled
+									disabled={selectRow.length === 0}
 									size="extralarge"
-									onClick={(): null => null}
+									onClick={onRemoveDevice}
 								/>
 							</Padding>
 						</Container>
@@ -358,10 +407,13 @@ const ActiveSync: FC = () => {
 						<Table
 							rows={allDeviceRow}
 							headers={headers}
-							showCheckbox={false}
+							showCheckbox
 							multiSelect={false}
 							RowFactory={CustomRowFactory}
 							HeaderFactory={CustomHeaderFactory}
+							onSelectionChange={(selected: any): any => {
+								setSelectRow(selected);
+							}}
 						/>
 
 						{allDeviceRow.length === 0 && (
