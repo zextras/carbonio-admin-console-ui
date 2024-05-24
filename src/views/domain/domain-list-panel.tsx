@@ -3,9 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo, useContext } from 'react';
 
-import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Icon,
+	Row,
+	Padding,
+	Text,
+	SnackbarManagerContext
+} from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -60,6 +67,7 @@ import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 import { getAllRights } from '../utility/utils';
@@ -87,6 +95,7 @@ interface ManageOptions {
 
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const locationService = useLocation();
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
@@ -163,23 +172,32 @@ const DomainListPanel: FC = () => {
 	}, [domainInformation]);
 
 	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
-	const getDomainLists = useCallback((domainName: string): void => {
-		setIsLoading(true);
-		getDomainList(domainName, 0).then((data) => {
-			const searchResponse: DomainResponse = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setDomainList(searchResponse?.domain);
-				setIsLoading(false);
-			} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
-				setIsShowError(true);
-				setDomainList([]);
-				setIsLoading(false);
-			} else {
-				setDomainList([]);
-				setIsLoading(false);
-			}
-		});
-	}, []);
+	const getDomainLists = useCallback(
+		(domainName: string): void => {
+			setIsLoading(true);
+			getDomainList(domainName, 0)
+				.then((data) => {
+					const searchResponse: DomainResponse = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+						setIsLoading(false);
+					} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
+						setIsShowError(true);
+						setDomainList([]);
+						setIsLoading(false);
+					} else {
+						setDomainList([]);
+						setIsLoading(false);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+					setIsLoading(false);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	useEffect(() => {
 		getDomainLists('');

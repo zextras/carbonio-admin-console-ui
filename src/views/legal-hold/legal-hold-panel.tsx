@@ -42,6 +42,7 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
 import Paging from '../components/paging';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 
 const ovelayStyle = styled(Container)`
@@ -498,24 +499,32 @@ const LegalHoldPanel: FC = () => {
 		[]
 	);
 
-	const getDomainLists = useCallback((name: string): void => {
-		setIsLoading(true);
-		setSelectedAccountRows([]);
-		getDomainList(name, 0).then((data) => {
-			const searchResponse: DomainResponse = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setDomainList(searchResponse?.domain);
-				setIsLoading(false);
-			} else if (name !== '' && searchResponse?.searchTotal === 0) {
-				setIsShowError(true);
-				setDomainList([]);
-				setIsLoading(false);
-			} else {
-				setDomainList([]);
-				setIsLoading(false);
-			}
-		});
-	}, []);
+	const getDomainLists = useCallback(
+		(name: string): void => {
+			setIsLoading(true);
+			setSelectedAccountRows([]);
+			getDomainList(name, 0)
+				.then((data) => {
+					const searchResponse: DomainResponse = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+						setIsLoading(false);
+					} else if (name !== '' && searchResponse?.searchTotal === 0) {
+						setIsShowError(true);
+						setDomainList([]);
+						setIsLoading(false);
+					} else {
+						setDomainList([]);
+						setIsLoading(false);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchDomainCall = useCallback(

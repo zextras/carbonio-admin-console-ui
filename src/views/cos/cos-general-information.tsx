@@ -36,6 +36,7 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import Paging from '../components/paging';
 import Textarea from '../components/textarea';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 import { RouteLeavingGuard } from '../ui-extras/nav-guard';
 import { getFormatedDate, getDateFromStr } from '../utility/utils';
@@ -454,10 +455,12 @@ const CosGeneralInformation: FC = () => {
 				}
 				setIsAccountRequestInProgress(false);
 			})
-			.catch(() => {
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
 				setIsAccountRequestInProgress(false);
 			});
-	}, [STATUS_COLOR, accountUserType, accountLimit, offset, searchAccountQuery]);
+	}, [searchAccountQuery, offset, accountLimit, accountUserType, STATUS_COLOR, t, createSnackbar]);
 
 	useEffect(() => {
 		if (cosDetail?.id) {
@@ -553,9 +556,11 @@ const CosGeneralInformation: FC = () => {
 				setIsDomainRequestInProgress(false);
 			})
 			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
 				setIsDomainRequestInProgress(false);
 			});
-	}, [searchDomainQuery, domainOffset, limit, cosDetail?.id, t]);
+	}, [searchDomainQuery, domainOffset, limit, cosDetail?.id, t, createSnackbar]);
 
 	useEffect(() => {
 		if (cosDetail?.id) {
