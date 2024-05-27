@@ -63,6 +63,7 @@ const ActiveSync: FC = () => {
 	const [hasError, setHasError] = useState<boolean>(false);
 	const domainName = useDomainStore((state) => state.domain?.name) || '';
 	const [selectRow, setSelectRow] = useState<Array<any>>([]);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
 	const showSnackbar = useCallback(
 		(key, type, msg) => {
@@ -122,8 +123,10 @@ const ActiveSync: FC = () => {
 
 	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAllDeviceList = useCallback(() => {
+		setIsRequestInProgress(true);
 		getAllDevices(ZX_MOBILE, domainName)
 			.then((res: any) => {
+				setIsRequestInProgress(false);
 				if (res?.Body?.response?.content) {
 					const content = JSON.parse(res?.Body?.response?.content);
 					if (content?.response) {
@@ -154,6 +157,7 @@ const ActiveSync: FC = () => {
 				}
 			})
 			.catch((error: any) => {
+				setIsRequestInProgress(false);
 				showSnackbar(
 					'error',
 					'error',
@@ -320,16 +324,29 @@ const ActiveSync: FC = () => {
 	);
 
 	const onRemoveDevice = useCallback(() => {
+		setIsRequestInProgress(true);
 		const mobileDevice = allMobileDevices.find(
 			(item: MobileDevice) => item?.firstSeen === selectRow[0]
 		);
 		if (mobileDevice) {
-			doRemoveDevice(mobileDevice?.accountEmail, mobileDevice?.deviceId).then((data) => {
-				const info = JSON.parse(data?.Body?.response?.content);
-				parseResponse(info);
-			});
+			doRemoveDevice(mobileDevice?.accountEmail, mobileDevice?.deviceId)
+				.then((data) => {
+					setIsRequestInProgress(false);
+					const info = JSON.parse(data?.Body?.response?.content);
+					parseResponse(info);
+				})
+				.catch((error) => {
+					setIsRequestInProgress(false);
+					showSnackbar(
+						'error',
+						'error',
+						error
+							? error?.error
+							: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+					);
+				});
 		}
-	}, [allMobileDevices, parseResponse, selectRow]);
+	}, [allMobileDevices, parseResponse, selectRow, showSnackbar, t]);
 
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
@@ -387,9 +404,10 @@ const ActiveSync: FC = () => {
 									type="outlined"
 									label={t('label.remove', 'Remove')}
 									color="error"
-									disabled={selectRow.length === 0}
+									disabled={selectRow.length === 0 || isRequestInProgress}
 									size="extralarge"
 									onClick={onRemoveDevice}
+									loading={isRequestInProgress}
 								/>
 							</Padding>
 						</Container>
