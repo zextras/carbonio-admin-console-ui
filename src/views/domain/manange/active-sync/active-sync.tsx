@@ -61,7 +61,7 @@ const ActiveSync: FC = () => {
 	const [searchString, setSearchString] = useState<string>('');
 	const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>([]);
 	const [hasError, setHasError] = useState<boolean>(false);
-	const domainName = useDomainStore((state) => state.domain?.name) || '';
+	const domainName = useDomainStore((state) => state.domain?.name) ?? '';
 	const [selectRow, setSelectRow] = useState<Array<any>>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
@@ -121,7 +121,30 @@ const ActiveSync: FC = () => {
 		[t]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const parseAllDevices = useCallback((keys, contentDevice) => {
+		if (keys.length > 0) {
+			const allDevices: Array<MobileDevice> = [];
+			keys.forEach((item: string) => {
+				const mobileData = contentDevice[item];
+				if (mobileData?.response?.devices) {
+					const devices = mobileData?.response?.devices;
+					if (devices && devices.length > 0) {
+						devices.forEach((deviceItem: MobileDevice) => {
+							allDevices.push(deviceItem);
+						});
+					}
+				}
+			});
+			if (allDevices.length > 0) {
+				setAllMobileDevices(allDevices);
+				setBackupAllDevice(allDevices);
+			} else {
+				setAllMobileDevices([]);
+				setBackupAllDevice([]);
+			}
+		}
+	}, []);
+
 	const getAllDeviceList = useCallback(() => {
 		setIsRequestInProgress(true);
 		getAllDevices(ZX_MOBILE, domainName)
@@ -132,27 +155,7 @@ const ActiveSync: FC = () => {
 					if (content?.response) {
 						const contentDevice: any = content?.response;
 						const keys = Object.keys(contentDevice);
-						if (keys.length > 0) {
-							const allDevices: Array<MobileDevice> = [];
-							keys.forEach((item: string) => {
-								const mobileData = contentDevice[item];
-								if (mobileData?.response?.devices) {
-									const devices = mobileData?.response?.devices;
-									if (devices && devices.length > 0) {
-										devices.forEach((deviceItem: MobileDevice) => {
-											allDevices.push(deviceItem);
-										});
-									}
-								}
-							});
-							if (allDevices.length > 0) {
-								setAllMobileDevices(allDevices);
-								setBackupAllDevice(allDevices);
-							} else {
-								setAllMobileDevices([]);
-								setBackupAllDevice([]);
-							}
-						}
+						parseAllDevices(keys, contentDevice);
 					}
 				}
 			})
@@ -167,7 +170,7 @@ const ActiveSync: FC = () => {
 				);
 				setHasError(true);
 			});
-	}, [t, domainName, showSnackbar]);
+	}, [domainName, parseAllDevices, showSnackbar, t]);
 
 	useEffect(() => {
 		getAllDeviceList();
