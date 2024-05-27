@@ -300,7 +300,7 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Container padding={{ all: 'small' }}>
 							<InheritedInput
-								label="ex. #HEX123"
+								label="ex. #225CA8"
 								subValue={themeConfig.carbonioWebUiPrimaryColor}
 								inheritedValue={globalTheme?.carbonioWebUiPrimaryColor}
 								fromSubValue={globalTheme ? themeConfig.carbonioWebUiPrimaryColor : ''}
@@ -313,7 +313,7 @@ export const ThemeConfigs: FC<{
 						</Container>
 						<Container padding={{ all: 'small' }}>
 							<InheritedInput
-								label="ex. #HEX123"
+								label="ex. #225CA8"
 								subValue={themeConfig.carbonioWebUiDarkPrimaryColor}
 								inheritedValue={globalTheme?.carbonioWebUiDarkPrimaryColor}
 								fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkPrimaryColor : ''}
