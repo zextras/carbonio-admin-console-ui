@@ -1159,6 +1159,7 @@
         "distribution_list_not_exists_error_msg": "The Distribution List / User does not exist. Please check the spelling and try again.",
         "distribution_list_url": "Distribution List's URL",
         "distribution_list_user": "Distribution List / User",
+        "distribution_lists": "Distribution Lists",
         "dl_delete_successfull": "{{name}} has been deleted successfully",
         "dn_settings": "DN Settings",
         "do_you_need_more_information": "Do you need more information?",
