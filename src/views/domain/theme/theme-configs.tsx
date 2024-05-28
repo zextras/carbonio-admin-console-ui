@@ -20,7 +20,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import AdminPanelThemeConfig from './admin-panel-theme-configs';
 import EndUserThemeConfigs from './end-user-theme-configs';
 import { themeConfigStore } from '../../../../types/domain';
-import { CONFIG } from '../../../constants';
+import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../../constants';
 import { Right, useRightsStore } from '../../../store/rights/store';
 import ListRow from '../../list/list-row';
 import InheritedInput from '../../utility/inherited-components/inherited-input';
@@ -300,7 +300,7 @@ export const ThemeConfigs: FC<{
 					<ListRow>
 						<Container padding={{ all: 'small' }}>
 							<InheritedInput
-								label="ex. #225CA8"
+								label={PRIMARY_COLOR_CODE_EX}
 								subValue={themeConfig.carbonioWebUiPrimaryColor}
 								inheritedValue={globalTheme?.carbonioWebUiPrimaryColor}
 								fromSubValue={globalTheme ? themeConfig.carbonioWebUiPrimaryColor : ''}
@@ -313,7 +313,7 @@ export const ThemeConfigs: FC<{
 						</Container>
 						<Container padding={{ all: 'small' }}>
 							<InheritedInput
-								label="ex. #225CA8"
+								label={PRIMARY_COLOR_CODE_EX}
 								subValue={themeConfig.carbonioWebUiDarkPrimaryColor}
 								inheritedValue={globalTheme?.carbonioWebUiDarkPrimaryColor}
 								fromSubValue={globalTheme ? themeConfig.carbonioWebUiDarkPrimaryColor : ''}
