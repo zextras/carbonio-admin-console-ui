@@ -215,7 +215,8 @@ export const ServicesPassphrase: FC = () => {
 								label={t('account_details.services', 'Services')}
 								showCheckbox={false}
 								selection={SERVICE_PASSPHRASE_SERVICES.find(
-									(el: SelectServiceType) => el.value === item.services
+									(el: SelectServiceType) =>
+										el.value?.toLowerCase() === item.services?.toLowerCase()
 								)}
 								disabled
 								onChange={(): void => {
