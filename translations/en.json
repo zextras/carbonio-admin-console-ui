@@ -1632,6 +1632,7 @@
         "quota_used": "Quota / Quota used",
         "quota_used_lbl": "Quota used",
         "quotas": "Quotas",
+        "re_init_domain": "RE-INIT DOMAIN",
         "re_sync": "RE-SYNC",
         "read_options": "Reading options",
         "read_receipt_settings": "Read Receipt settings",

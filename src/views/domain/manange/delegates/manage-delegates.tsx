@@ -29,8 +29,10 @@ import DisableDelegateAdminModel from './disable-delegate-admin-model';
 import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
 import logo from '../../../../assets/guardian.svg';
 import {
+	ADMIN_GROUP_FLAG,
 	HELPDESK_ADMINS,
 	RECORD_DISPLAY_LIMIT,
+	SYSTEM_ACCOUNT_FLAG,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -118,6 +120,7 @@ const ManageDelegates: FC = () => {
 		setGlobalConfig: false,
 		getGlobalConfig: false
 	});
+	const [isInitDomain, setIsInitDomain] = useState(false);
 
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
@@ -239,41 +242,46 @@ const ManageDelegates: FC = () => {
 			setCosDetail({ ...obj });
 		});
 	}, []);
+
+	const processAccountData = (data: any): void => {
+		const obj: any = {};
+		// eslint-disable-next-line array-callback-return
+		data?.account?.[0]?.a?.forEach((ele: any) => {
+			if (obj[ele.n]) {
+				obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
+			} else {
+				obj[ele.n] = ele._content;
+			}
+		});
+		if (obj.userPassword) {
+			obj.password = '******';
+			obj.repeatPassword = '******';
+		} else {
+			obj.password = '';
+			obj.repeatPassword = '';
+		}
+		obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
+			? obj.zimbraPrefMailForwardingAddress
+			: '';
+		obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
+			? obj.zimbraPrefCalendarForwardInvitesTo
+			: '';
+
+		obj.name = data?.account?.[0]?.name;
+		if (obj.zimbraIsAdminAccount === undefined) {
+			obj.zimbraIsAdminAccount = 'FALSE';
+		}
+		if (obj.zimbraIsDelegatedAdminAccount === undefined) {
+			obj.zimbraIsDelegatedAdminAccount = 'FALSE';
+		}
+		return obj;
+	};
+
 	const getAccountDetail = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
 			getAccountRequest(id, '', 1)
 				.then((data: any) => {
-					const obj: any = {};
-					// eslint-disable-next-line array-callback-return
-					data?.account?.[0]?.a?.forEach((ele: any) => {
-						if (obj[ele.n]) {
-							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
-						} else {
-							obj[ele.n] = ele._content;
-						}
-					});
-					if (obj.userPassword) {
-						obj.password = '******';
-						obj.repeatPassword = '******';
-					} else {
-						obj.password = '';
-						obj.repeatPassword = '';
-					}
-					obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
-						? obj.zimbraPrefMailForwardingAddress
-						: '';
-					obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
-						? obj.zimbraPrefCalendarForwardInvitesTo
-						: '';
-
-					obj.name = data?.account?.[0]?.name;
-					if (obj.zimbraIsAdminAccount === undefined) {
-						obj.zimbraIsAdminAccount = 'FALSE';
-					}
-					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
-						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
-					}
+					const obj: any = processAccountData(data);
 					setInitAccountDetail({ ...obj });
 					setSelectedAccount({ ...obj, id });
 					setAccountDetail({ ...obj });
@@ -423,7 +431,6 @@ const ManageDelegates: FC = () => {
 				userDelegate.forEach((ele: any) => {
 					let found = false;
 					delegateList.forEach((el: any) => {
-						// const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
 						if (el?.grantee?.[0]?.name === ele?.d) {
 							found = true;
 							if (el?.folder?.length) {
@@ -477,7 +484,7 @@ const ManageDelegates: FC = () => {
 		setAllUserSessionList([]);
 		sessionType.forEach((item: string) => {
 			getSessions(item, acc).then((resp: any) => {
-				if (resp && resp?.s) {
+				if (resp?.s) {
 					const existingSession = resp?.s;
 					if (existingSession) {
 						const session: UserSession[] = [];
@@ -567,19 +574,36 @@ const ManageDelegates: FC = () => {
 	);
 
 	const fetchDistributionList = useCallback(
-		(name: string | undefined, offsetData: number, limitData: number): void => {
+		(
+			query: string,
+			name: string | undefined,
+			offsetData: number,
+			limitData: number,
+			type?: string
+		): void => {
+			if (type === ADMIN_GROUP_FLAG) {
+				setLoading(true);
+			}
 			const attrs =
 				'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 			const types = 'distributionlists,dynamicgroups';
-			const query = `(&(!(zimbraIsSystemAccount=TRUE)))`;
 			searchDirectory(attrs, types, name ?? '', query, offsetData, limitData, 'name')
 				.then((res) => {
 					const data = res?.dl;
-					if (data) {
+					if (data && type === SYSTEM_ACCOUNT_FLAG) {
 						setDistributionList((prevDistributionList) => [...prevDistributionList, ...data]);
 						if (res.more) {
-							fetchDistributionList(domain?.name, offsetData + limitData, limitData);
+							fetchDistributionList(
+								query,
+								domain?.name,
+								offsetData + limitData,
+								limitData,
+								SYSTEM_ACCOUNT_FLAG
+							);
 						}
+					} else if (type === ADMIN_GROUP_FLAG) {
+						setIsInitDomain(data?.length > 0);
+						setLoading(false);
 					}
 				})
 				.catch((error) => {
@@ -658,7 +682,13 @@ const ManageDelegates: FC = () => {
 					Promise.all(request).then();
 				}
 				setLoading(false);
-				fetchDistributionList(domain?.name, 0, 10);
+				fetchDistributionList(
+					`(&(!(zimbraIsSystemAccount=TRUE)))`,
+					domain?.name,
+					0,
+					10,
+					SYSTEM_ACCOUNT_FLAG
+				);
 				createSnackbar({
 					key: 'success',
 					type: 'success',
@@ -686,7 +716,7 @@ const ManageDelegates: FC = () => {
 					replace: true
 				});
 			});
-	}, [createSnackbar, domain?.name, fetchDistributionList, t, cosMaxAccountList]);
+	}, [domain?.name, cosMaxAccountList, fetchDistributionList, createSnackbar, t]);
 
 	const onDeleteFromList = useCallback(
 		(lists: objectType[], type: string) => {
@@ -748,7 +778,43 @@ const ManageDelegates: FC = () => {
 		setOpen(false);
 	};
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
+	const parseAccountListResponse = useCallback(
+		(accountListResponse: any): any[] => {
+			const accountListArr: any[] = [];
+			accountListResponse.forEach((item: any): void => {
+				item?.a?.forEach((ele: any) => {
+					if (ele?.n === 'mail') {
+						if (item[ele?.n]) {
+							item[ele?.n].push(ele._content);
+						} else {
+							// eslint-disable-next-line no-param-reassign
+							item[ele?.n] = [ele._content];
+						}
+					} else {
+						// eslint-disable-next-line no-param-reassign
+						item[ele?.n] = ele._content;
+					}
+				});
+				accountListArr.push({
+					id: item?.id,
+					columns: [
+						<Row
+							onClick={(): void => openDetailView(item)}
+							key={item?.id}
+							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						>
+							<Text weight="light">{item?.name || ' '}</Text>
+						</Row>
+					],
+					item,
+					clickable: true
+				});
+			});
+			return accountListArr;
+		},
+		[openDetailView]
+	);
+
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
 		const type = 'accounts';
@@ -760,39 +826,8 @@ const ManageDelegates: FC = () => {
 			.then((data: any) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
-					const accountListArr: any = [];
 					setTotalAccount(data.searchTotal || 0);
-					accountListResponse.forEach((item: any): any => {
-						item?.a?.forEach((ele: any) => {
-							if (ele?.n === 'mail') {
-								if (item[ele?.n]) {
-									item[ele?.n].push(ele._content);
-								} else {
-									// eslint-disable-next-line no-param-reassign
-									item[ele?.n] = [ele._content];
-								}
-							} else {
-								// eslint-disable-next-line no-param-reassign
-								item[ele?.n] = ele._content;
-							}
-						});
-						accountListArr.push({
-							id: item?.id,
-							columns: [
-								<Row
-									onClick={(): void => {
-										openDetailView(item);
-									}}
-									key={item?.id}
-									style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-								>
-									<Text weight="light">{item?.name || ' '}</Text>
-								</Row>
-							],
-							item,
-							clickable: true
-						});
-					});
+					const accountListArr = parseAccountListResponse(accountListResponse);
 					setAllAccount(accountListArr);
 				}
 				setIsRequestInProgress(false);
@@ -801,10 +836,17 @@ const ManageDelegates: FC = () => {
 				const snackbarConfig = generateSnackbarFromError(error, t);
 				createSnackbar(snackbarConfig);
 			});
-	}, [domain.name, openDetailView, pageLimit, offset, createSnackbar, t]);
+	}, [domain.name, offset, pageLimit, parseAccountListResponse, t, createSnackbar]);
 
 	useEffect(() => {
-		fetchDistributionList(domain?.name, 0, 10);
+		fetchDistributionList(
+			`(&(!(zimbraIsSystemAccount=TRUE)))`,
+			domain?.name,
+			0,
+			10,
+			SYSTEM_ACCOUNT_FLAG
+		);
+		fetchDistributionList(`(&(!(zimbraIsAdminGroup=TRUE)))`, domain?.name, 0, 10, ADMIN_GROUP_FLAG);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -960,7 +1002,11 @@ const ManageDelegates: FC = () => {
 							<>
 								<ListRow padding={{ vertical: 'large' }}>
 									<Button
-										label={t('label.init_domain', 'INIT DOMAIN')}
+										label={
+											isInitDomain
+												? t('label.re_init_domain', 'RE-INIT DOMAIN')
+												: t('label.init_domain', 'INIT DOMAIN')
+										}
 										color="primary"
 										onClick={handleRevokesGrants}
 										loading={loading}
