@@ -400,7 +400,7 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.abq_status', 'ABQ Status')}
 							showCheckbox={false}
 							selection={abqStatus}
-							onChange={(ev): void => {
+							onChange={(ev: any): void => {
 								const dataItem = abqStatusOptions.find((item) => item?.value === ev);
 								if (dataItem) {
 									setAbqStatus(dataItem);
@@ -445,7 +445,7 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.status_lbl', 'Status')}
 							showCheckbox={false}
 							selection={status}
-							onChange={(ev): void => {
+							onChange={(ev: any): void => {
 								const dataItem = statusOptions.find((item) => item?.value === ev);
 								if (dataItem) {
 									setStatus(dataItem);

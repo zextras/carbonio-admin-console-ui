@@ -1646,6 +1646,7 @@
         "remove_all": "REMOVE ALL",
         "remove_all_acl": "<bold>REMOVE</bold> ALL ACLs",
         "remove_button": "REMOVE",
+        "remove_device_success_message": "Device remove successfully",
         "repeat_password": "Repeat Password",
         "reply/forward_using_format_of_the_original_message": "Reply/forward using format of the original message",
         "require_list_owner_approval": "Require list owner approval",
