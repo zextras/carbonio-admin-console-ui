@@ -1577,7 +1577,7 @@
         "out_of_the_office_reply": "Out of Office Reply",
         "outbound_flow": "Outbound Flow",
         "owners": "Owners",
-        "owners_description": "Owners can manage the mailing list's members (adding and removing emails) and modify its options.",
+        "owners_description": "Owners can manage the distribution list's members (adding and removing emails) and modify its options.",
         "owners_description_msg_1": "Owners can add and remove members, change display name and description, change list visibility (ie. hide from gal), change the ownership, modify the subscription/unsubscription behaviour.",
         "owners_manage_add_list": "Owners can add and remove members, change the displayed name and description, change list visibility (ie. hide from gal), change the ownership, modify the subscription/unsubscription behavior",
         "owners_settings": "Owners’ Settings",

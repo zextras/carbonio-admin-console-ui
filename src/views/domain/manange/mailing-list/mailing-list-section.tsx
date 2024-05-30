@@ -594,7 +594,7 @@ const MailingListSection: FC<any> = () => {
 							</Text>
 						</Row>
 						<Row padding={{ top: 'small', bottom: 'medium' }}>
-							<Text size="small" weight="light" color="#828282">
+							<Text size="small" weight="light" color="#828282" overflow={'break-word'}>
 								{t(
 									'label.owners_description',
 									"Owners can manage the distribution list's members (adding and removing emails) and modify its options."
