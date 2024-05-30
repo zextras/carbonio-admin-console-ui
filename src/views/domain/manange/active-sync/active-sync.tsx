@@ -62,7 +62,7 @@ const ActiveSync: FC = () => {
 	const [backupAllDevice, setBackupAllDevice] = useState<Array<MobileDevice>>([]);
 	const [hasError, setHasError] = useState<boolean>(false);
 	const domainName = useDomainStore((state) => state.domain?.name) ?? '';
-	const [selectRow, setSelectRow] = useState<Array<any>>([]);
+	const [selectRow, setSelectRow] = useState<any>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
 	const showSnackbar = useCallback(
@@ -221,6 +221,7 @@ const ActiveSync: FC = () => {
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
+							setSelectRow([item?.firstSeen]);
 						}}
 					>
 						<Text size="small" weight="regular" color="gray0" key={index}>
@@ -233,6 +234,7 @@ const ActiveSync: FC = () => {
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
+							setSelectRow([item?.firstSeen]);
 						}}
 					>
 						<Text size="small" weight="light" color="gray0" key={index}>
@@ -245,6 +247,7 @@ const ActiveSync: FC = () => {
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
+							setSelectRow([item?.firstSeen]);
 						}}
 					>
 						<Text size="small" weight="light" color="gray0" key={index}>
@@ -257,6 +260,7 @@ const ActiveSync: FC = () => {
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
+							setSelectRow([item?.firstSeen]);
 						}}
 					>
 						<Text size="small" weight="light" color="gray0" key={index}>
@@ -269,6 +273,7 @@ const ActiveSync: FC = () => {
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
+							setSelectRow([item?.firstSeen]);
 						}}
 					>
 						<Text size="small" weight="light" color="gray0" key={index}>
@@ -281,6 +286,7 @@ const ActiveSync: FC = () => {
 						onClick={(event: { stopPropagation: () => void }): void => {
 							event.stopPropagation();
 							setSelectedMobileDevice([item?.firstSeen]);
+							setSelectRow([item?.firstSeen]);
 						}}
 					>
 						<Text size="small" weight="light" color="gray0" key={index}>
@@ -350,6 +356,10 @@ const ActiveSync: FC = () => {
 				});
 		}
 	}, [allMobileDevices, parseResponse, selectRow, showSnackbar, t]);
+
+	const onSelectChange = useCallback((selected) => {
+		setSelectRow(selected);
+	}, []);
 
 	return (
 		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
@@ -430,11 +440,10 @@ const ActiveSync: FC = () => {
 							headers={headers}
 							showCheckbox
 							multiSelect={false}
+							selectedRows={selectRow}
+							onSelectionChange={onSelectChange}
 							RowFactory={CustomRowFactory}
 							HeaderFactory={CustomHeaderFactory}
-							onSelectionChange={(selected: any): any => {
-								setSelectRow(selected);
-							}}
 						/>
 
 						{allDeviceRow.length === 0 && (
