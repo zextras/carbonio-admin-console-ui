@@ -2180,7 +2180,7 @@ const EditMailingListView: FC<any> = ({
 							<ListRow padding={{ all: 'small' }}>
 								<Container padding={{ bottom: 'small' }}>
 									<Input
-										label={t('label.mailing_lists_lbl', 'Mailing lists')}
+										label={t('label.distribution_lists', 'Distribution Lists')}
 										value={dlMembershipListNames}
 										backgroundColor="gray5"
 										readOnly
