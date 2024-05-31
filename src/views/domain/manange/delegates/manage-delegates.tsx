@@ -846,7 +846,7 @@ const ManageDelegates: FC = () => {
 			10,
 			SYSTEM_ACCOUNT_FLAG
 		);
-		fetchDistributionList(`(&(!(zimbraIsAdminGroup=TRUE)))`, domain?.name, 0, 10, ADMIN_GROUP_FLAG);
+		fetchDistributionList(`(zimbraIsAdminGroup=TRUE)`, domain?.name, 0, 10, ADMIN_GROUP_FLAG);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
