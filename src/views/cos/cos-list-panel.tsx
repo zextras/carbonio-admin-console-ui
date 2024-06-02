@@ -5,7 +5,7 @@
  */
 import React, { FC, useCallback, useEffect, useState, useMemo, useRef } from 'react';
 
-import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
+import { Container, Icon, Row, Padding, Text, useSnackbar } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -27,13 +27,12 @@ import {
 	CREATE_NEW_COS_ROUTE_ID,
 	IS_COS_DETAIL_LIST_EXPANDED
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { getCosList } from '../../services/search-cos-service';
-import { useConfigStore } from '../../store/config/store';
 import { useCosStore } from '../../store/cos/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 
@@ -68,9 +67,8 @@ const loadingComponent = [
 const CosListPanel: FC = () => {
 	// eslint-disable-next-line react-hooks/rules-of-hooks
 	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
 	const locationService = useLocation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -87,35 +85,39 @@ const CosListPanel: FC = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isDetailListExpanded, setIsDetailListExpanded] = useState(true);
 
-	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${COS_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
-
-	const getCosLists = (searchData: string): any => {
-		setIsLoading(true);
-		getCosList(searchData).then((data) => {
-			const searchResponse: any = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setCosList(searchResponse?.cos);
-				setIsLoading(false);
-			} else {
-				setCosList([]);
-				setIsShowError(true);
-				setIsLoading(false);
-			}
-		});
-	};
+	const getCosLists = useCallback(
+		(searchData: string): any => {
+			setIsLoading(true);
+			getCosList(searchData)
+				.then((data) => {
+					const searchResponse: any = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setCosList(searchResponse?.cos);
+						setIsLoading(false);
+					} else {
+						setCosList([]);
+						setIsShowError(true);
+						setIsLoading(false);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	useEffect(() => {
 		getCosLists('');
-	}, []);
+	}, [getCosLists]);
 
 	useEffect(() => {
 		if (!!prevCosRef.current && prevCosRef.current !== cosName) {
 			getCosLists('');
 		}
 		prevCosRef.current = cosName;
-	}, [cosName]);
+	}, [cosName, getCosLists]);
 
 	useEffect(() => {
 		if (cosInformation?.name) {
@@ -194,14 +196,12 @@ const CosListPanel: FC = () => {
 			if (cosView === COS) {
 				replaceHistory(`/cos_list`);
 			} else if (cosView) {
-				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${cosView}`);
 				replaceHistory(`/${cos?.id}/${cosView}`);
 			} else {
-				globalCarbonioSendAnalytics && matomo.trackEvent('trackViewPage', `${cosView}`);
 				replaceHistory(`/${cos?.id}/${GENERAL_INFORMATION}`);
 			}
 		}
-	}, [isCosSelect, cos, cosView, matomo, globalCarbonioSendAnalytics, setCosView]);
+	}, [isCosSelect, cos, cosView, globalCarbonioSendAnalytics, setCosView]);
 
 	const detailOptions = useMemo<
 		{

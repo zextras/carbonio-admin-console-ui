@@ -60,20 +60,10 @@ import {
 	CLOSED,
 	ABQ_MODE,
 	BACKUP_ENABLED,
-	ACCOUNTS_DETAILS_ACTIONS,
-	DOMAINS_ACCOUNTS_DETAILS_CANCEL,
-	DOMAINS_ACCOUNTS_DETAILS_SAVE,
-	ACCOUNTS_DETAILS_DELETE_ACCOUNT_TABLE_ITEM,
-	ACCOUNTS_DETAILS_DELETE_ITEM,
-	ACCOUNTS_DETAILS,
-	ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME,
-	ACCOUNTS_DETAILS_PIN,
-	ACCOUNTS_DETAILS_UNPIN,
-	DOMAINS_ROUTE_ID,
 	ADMIN_LOGIN_AS,
+	BACKUP_SELF_UNDELETE_ALLOWED,
 	FILES_QUOTA_LIMIT
 } from '../../../../../constants';
-import MatomoTracker from '../../../../../matomo-tracker';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
 import { deleteAccount } from '../../../../../services/delete-account-service';
@@ -88,12 +78,12 @@ import { setCoreAttributes } from '../../../../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
-import { useConfigStore } from '../../../../../store/config/store';
 import { useDomainStore } from '../../../../../store/domain/store';
 import { Right, Rights, useRightsStore } from '../../../../../store/rights/store';
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
+import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -163,11 +153,10 @@ const EditAccount: FC<{
 		initAccountDetail,
 		setInitAccountDetail,
 		deleteAdministrationRights,
-		setDefaultCOS
+		setDefaultCOS,
+		cosDetail
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const userSetting = useUserSettings();
 	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
@@ -179,21 +168,26 @@ const EditAccount: FC<{
 
 	const getDomainLists = useCallback(
 		(offset: number): any => {
-			getDomainList('', offset).then((data) => {
-				const searchResponse: any = data;
-				if (!!searchResponse && searchResponse?.searchTotal > 0) {
-					if (searchResponse?.domain?.length) {
-						setDomainListStore([...domainList, ...searchResponse.domain]);
-						if (searchResponse?.more) {
-							getDomainLists(offset + 50);
+			getDomainList('', offset)
+				.then((data) => {
+					const searchResponse: any = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						if (searchResponse?.domain?.length) {
+							setDomainListStore([...domainList, ...searchResponse.domain]);
+							if (searchResponse?.more) {
+								getDomainLists(offset + 50);
+							}
 						}
+					} else {
+						setDomainListStore([]);
 					}
-				} else {
-					setDomainListStore([]);
-				}
-			});
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
 		},
-		[domainList, setDomainListStore]
+		[createSnackbar, domainList, setDomainListStore, t]
 	);
 
 	useEffect(() => {
@@ -490,7 +484,11 @@ const EditAccount: FC<{
 	);
 
 	const handleCoreAttributesModification = async (modifiedKeys: string[]): Promise<void> => {
-		if (modifiedKeys.includes(ABQ_MODE) || modifiedKeys.includes(BACKUP_ENABLED)) {
+		if (
+			modifiedKeys.includes(ABQ_MODE) ||
+			modifiedKeys.includes(BACKUP_ENABLED) ||
+			modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)
+		) {
 			const body: any = {};
 			if (modifiedKeys.includes(ABQ_MODE)) {
 				body.abqMode = {
@@ -502,6 +500,14 @@ const EditAccount: FC<{
 			if (modifiedKeys.includes(BACKUP_ENABLED)) {
 				body.backupEnabled = {
 					value: accountDetail.backupEnabled,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				};
+			}
+
+			if (modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)) {
+				body.backupSelfUndeleteAllowed = {
+					value: accountDetail.backupSelfUndeleteAllowed,
 					objectName: accountDetail.zimbraId,
 					configType: ACCOUNT
 				};
@@ -532,6 +538,7 @@ const EditAccount: FC<{
 				});
 			remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
 			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
+			remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
 		}
 	};
 
@@ -655,13 +662,29 @@ const EditAccount: FC<{
 								hideButton: true,
 								replace: true
 							});
+							setInitAccountDetail((prev: any) => ({
+								...prev,
+								[FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit
+							}));
+							setAccountDetail((prev: any) => ({
+								...prev,
+								[FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit
+							}));
 						}
 					});
 				}
 				remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
 			}
 		},
-		[accountDetail.filesQuotaLimit, accountDetail?.zimbraId, createSnackbar, t]
+		[
+			accountDetail?.filesQuotaLimit,
+			accountDetail?.zimbraId,
+			cosDetail.filesQuotaLimit,
+			createSnackbar,
+			setAccountDetail,
+			setInitAccountDetail,
+			t
+		]
 	);
 
 	const handleMainModifiedKeys = useCallback(
@@ -713,7 +736,6 @@ const EditAccount: FC<{
 	);
 
 	const modifyAccountReq = useCallback(async () => {
-		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_SAVE);
 		const modifiedKeys: string[] = findModifiedKeys();
 		handleAdministrationRightsDeletion(modifiedKeys);
 
@@ -800,7 +822,6 @@ const EditAccount: FC<{
 		t
 	]);
 	const onUndo = (): void => {
-		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, DOMAINS_ACCOUNTS_DETAILS_CANCEL);
 		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
 		setDefaultCOS(!initAccountDetail.zimbraCOSId);
 		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
@@ -849,11 +870,6 @@ const EditAccount: FC<{
 	}, []);
 
 	const onDeleteAccount = useCallback(() => {
-		matomo.trackEvent(
-			DOMAINS_ROUTE_ID,
-			ACCOUNTS_DETAILS_ACTIONS,
-			ACCOUNTS_DETAILS_DELETE_ACCOUNT_TABLE_ITEM
-		);
 		if (userType === 'DelegatedAdmin' || userType === 'System') {
 			if (
 				accountUserType(selectedAccount) === 'DelegatedAdmin' ||
@@ -868,7 +884,7 @@ const EditAccount: FC<{
 		} else {
 			setIsOpenDeleteDialog(true);
 		}
-	}, [accountUserType, matomo, selectedAccount, userType]);
+	}, [accountUserType, selectedAccount, userType]);
 
 	const rights: Rights = useRightsStore((state) => state.rights);
 
@@ -903,14 +919,7 @@ const EditAccount: FC<{
 		{
 			align: 'left',
 			icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
-			onClick: (): void => {
-				matomo.trackEvent(
-					DOMAINS_ROUTE_ID,
-					ACCOUNTS_DETAILS_ACTIONS,
-					`${isSticky ? ACCOUNTS_DETAILS_PIN : ACCOUNTS_DETAILS_UNPIN}`
-				);
-				setIsSticky(!isSticky);
-			}
+			onClick: (): void => setIsSticky(!isSticky)
 		}
 	];
 	const closeHandler = useCallback(() => {
@@ -958,7 +967,6 @@ const EditAccount: FC<{
 	}, [accountDetail?.zimbraId, createSnackbar, t, onSuccess]);
 
 	const onDeleteHandler = useCallback(() => {
-		matomo.trackEvent(DOMAINS_ROUTE_ID, ACCOUNTS_DETAILS_ACTIONS, ACCOUNTS_DETAILS_DELETE_ITEM);
 		setIsRequestInProgress(true);
 		deleteAccount(selectedAccount?.id)
 			.then((data: any) => {
@@ -978,15 +986,7 @@ const EditAccount: FC<{
 					replace: true
 				});
 			});
-	}, [matomo, selectedAccount?.id, onSuccess, t, createSnackbar]);
-
-	const handleMatomoTrackerEvent = (fieldName?: string): void => {
-		matomo.trackEvent(
-			DOMAINS_ROUTE_ID,
-			ACCOUNTS_DETAILS,
-			`${ACCOUNTS_DETAILS_EDITABLE_FIELD_NAME}_${fieldName}`
-		);
-	};
+	}, [selectedAccount?.id, onSuccess, t, createSnackbar]);
 
 	return (
 		<>
@@ -1080,36 +1080,19 @@ const EditAccount: FC<{
 				>
 					{/* <Container crossAlignment="flex-start" padding={{ all: '0px' }}> */}
 					<Displayer buttons={buttons} pinIcon={isSticky} />
-					{change === GENERAL_SECTION && (
-						<EditAccountGeneralSection
-							setChange={setChange}
-							handleMatomoTrackerEvent={handleMatomoTrackerEvent}
-						/>
-					)}
-					{change === PROFILE && (
-						<EditAccountContactsSection handleMatomoTrackerEvent={handleMatomoTrackerEvent} />
-					)}
-					{change === CONFIGURATION && (
-						<EditAccountConfigrationSection handleMatomoTrackerEvent={handleMatomoTrackerEvent} />
-					)}
+					{change === GENERAL_SECTION && <EditAccountGeneralSection setChange={setChange} />}
+					{change === PROFILE && <EditAccountContactsSection />}
+					{change === CONFIGURATION && <EditAccountConfigrationSection />}
 					{change === USER_PREFERENCES && (
 						<EditAccountUserPrefrencesSection
 							signatureItems={signatureItems}
 							signatureList={signatureList}
-							handleMatomoTrackerEvent={handleMatomoTrackerEvent}
 						/>
 					)}
-					{change === SECURITY && (
-						<EditAccountSecuritySection handleMatomoTrackerEvent={handleMatomoTrackerEvent} />
-					)}
-					{change === DELEGATES && (
-						<EditAccountDelegatesSection handleMatomoTrackerEvent={handleMatomoTrackerEvent} />
-					)}
+					{change === SECURITY && <EditAccountSecuritySection />}
+					{change === DELEGATES && <EditAccountDelegatesSection />}
 					{change === ADMINISTRATION && (
-						<EditAccountAdministrationSection
-							setIsLoading={setIsLoading}
-							handleMatomoTrackerEvent={handleMatomoTrackerEvent}
-						/>
+						<EditAccountAdministrationSection setIsLoading={setIsLoading} />
 					)}
 					{/* </Container> */}
 				</Container>

@@ -24,11 +24,8 @@ import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { SUBSCRIPTIONS_ROUTE_ID, CONFIG } from '../../../constants';
-import MatomoTracker from '../../../matomo-tracker';
+import { CONFIG } from '../../../constants';
 import { fetchSoap } from '../../../services/subscription-service';
-import { useConfigStore } from '../../../store/config/store';
-import { useGlobalConfigStore } from '../../../store/global-config/store';
 import { useRightsStore, Right, Rights } from '../../../store/rights/store';
 
 const CollapseText = styled(Text)`
@@ -185,12 +182,6 @@ const ServiceStatus = ({
 
 // eslint-disable-next-line sonarjs/cognitive-complexity
 const Subscription: FC = () => {
-	const { userId } = useConfigStore((state) => state);
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const matomo = useMemo(() => new MatomoTracker(userId), []);
-	const globalCarbonioSendAnalytics = useGlobalConfigStore(
-		(state) => state.globalCarbonioSendAnalytics
-	);
 	const [services, setServices] = useState<any>({});
 	const [modules, setModules]: any = useState([]);
 	const [open, setOpen] = useState(false);
@@ -206,10 +197,6 @@ const Subscription: FC = () => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
 		return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 	}, [rights]);
-
-	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${SUBSCRIPTIONS_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
 
 	const { t } = useTranslation();
 

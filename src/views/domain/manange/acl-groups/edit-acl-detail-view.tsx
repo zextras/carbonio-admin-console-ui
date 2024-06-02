@@ -49,6 +49,7 @@ import Displayer from '../../../components/displayer';
 import OverlayDivision from '../../../components/overlayDivision';
 import Paging from '../../../components/paging';
 import Textarea from '../../../components/textarea';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { RouteLeavingGuard } from '../../../ui-extras/nav-guard';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
@@ -232,21 +233,26 @@ const EditAclListView: FC<any> = ({
 	};
 	const getDomainLists = useCallback(
 		(offset: number): void => {
-			getDomainList('', offset).then((data) => {
-				const searchResponse: DomainResponse = data;
-				if (!!searchResponse && searchResponse?.searchTotal > 0) {
-					if (searchResponse?.domain?.length) {
-						setDomainListStore([...domainList, ...searchResponse.domain]);
-						if (searchResponse?.more) {
-							getDomainLists(offset + 50);
+			getDomainList('', offset)
+				.then((data) => {
+					const searchResponse: DomainResponse = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						if (searchResponse?.domain?.length) {
+							setDomainListStore([...domainList, ...searchResponse.domain]);
+							if (searchResponse?.more) {
+								getDomainLists(offset + 50);
+							}
 						}
+					} else {
+						setDomainListStore([]);
 					}
-				} else {
-					setDomainListStore([]);
-				}
-			});
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
 		},
-		[domainList, setDomainListStore]
+		[createSnackbar, domainList, setDomainListStore, t]
 	);
 
 	useEffect(() => {
@@ -1511,29 +1517,37 @@ const EditAclListView: FC<any> = ({
 		)
 	}));
 
-	const getSearchMemberList = useCallback((mem) => {
-		const attrs =
-			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-		const types = 'accounts,distributionlists,aliases';
-		const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+	const getSearchMemberList = useCallback(
+		(mem) => {
+			const attrs =
+				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+			const types = 'accounts,distributionlists,aliases';
+			const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
 
-		searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name').then((data) => {
-			const result: any[] = [];
-			const dl = data?.dl;
-			const account = data?.account;
-			const alias = data?.alias;
-			if (dl) {
-				dl.map((item: any) => result.push(item));
-			}
-			if (account) {
-				account.map((item: any) => result.push(item));
-			}
-			if (alias) {
-				alias.map((item: any) => result.push(item));
-			}
-			setSearchMemberResult(result);
-		});
-	}, []);
+			searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name')
+				.then((data) => {
+					const result: any[] = [];
+					const dl = data?.dl;
+					const account = data?.account;
+					const alias = data?.alias;
+					if (dl) {
+						dl.map((item: any) => result.push(item));
+					}
+					if (account) {
+						account.map((item: any) => result.push(item));
+					}
+					if (alias) {
+						alias.map((item: any) => result.push(item));
+					}
+					setSearchMemberResult(result);
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchMemberCall = useCallback(

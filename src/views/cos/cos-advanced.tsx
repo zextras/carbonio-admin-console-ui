@@ -22,10 +22,12 @@ import { find } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { COS } from '../../constants';
+import { BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../constants';
+import { getCoreAttributes } from '../../services/get-core-attributes';
 import { getFileQuotaById } from '../../services/get-file-quota';
 import { modifyCos } from '../../services/modify-cos-service';
 import { resetFileQuotaLimitById } from '../../services/reset-file-quota-limit';
+import { setCoreAttributes } from '../../services/set-core-attributes';
 import { setFileQuotaLimitById } from '../../services/set-file-quota-limit';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useCosStore } from '../../store/cos/store';
@@ -48,7 +50,7 @@ const CosAdvanced: FC = () => {
 	const [cosData, setCosData]: any = useState({});
 	const setCos = useCosStore((state) => state.setCos);
 	const rights: Rights = useRightsStore((state) => state.rights);
-
+	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const readonlyCOS = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: COS }) || { all: [], type: COS };
 		return !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
@@ -76,6 +78,7 @@ const CosAdvanced: FC = () => {
 	);
 
 	const [cosAdvanced, setCosAdvanced] = useState<any>({
+		backupSelfUndeleteAllowed: undefined,
 		zimbraMailForwardingAddressMaxLength: '',
 		zimbraMailForwardingAddressMaxNumAddrs: '',
 		zimbraMailQuota: '',
@@ -161,7 +164,6 @@ const CosAdvanced: FC = () => {
 	);
 	const [initFileQuotaLimitGBValue, setInitFileQuotaLimitGBValue] = useState(undefined);
 	const [fileQuotaLimitGBValue, setFileQuotaLimitGBValue] = useState(undefined);
-	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [showFileQuotaLimitMsg, setShowFileQuotaLimitMsg] = useState<boolean>(false);
 	const [showAccountQuotaLimitMsg, setShowAccountQuotaLimitMsg] = useState<boolean>(false);
 	const [accountQuotaGBValue, setAccountQuotaGBValue] = useState('');
@@ -1079,6 +1081,7 @@ const CosAdvanced: FC = () => {
 		[zimbraMailMessageLifetimeType, setCosAdvanced]
 	);
 
+	const cosName = useCosStore((state) => state.cos?.name);
 	const setFileQuotaLimit = useCallback((cosId: string, limit: string) => {
 		setFileQuotaLimitById(cosId, limit, COS).then((res) => {
 			setShowFileQuotaLimitMsg(false);
@@ -1099,9 +1102,21 @@ const CosAdvanced: FC = () => {
 			_content: cosData.zimbraId
 		};
 		body.id = id;
-		Object.keys(cosAdvanced).forEach((ele: any) =>
-			attributes.push({ n: ele, _content: cosAdvanced[ele] })
-		);
+		if (cosAdvanced.backupSelfUndeleteAllowed !== undefined) {
+			const backupSelfUndeleteAllowedBody: any = {
+				backupSelfUndeleteAllowed: {
+					value: cosAdvanced.backupSelfUndeleteAllowed,
+					objectName: cosName,
+					configType: COS
+				}
+			};
+			setCoreAttributes(backupSelfUndeleteAllowedBody);
+		}
+		Object.keys(cosAdvanced).forEach((ele: any) => {
+			if (ele !== BACKUP_SELF_UNDELETE_ALLOWED)
+				attributes.push({ n: ele, _content: cosAdvanced[ele] });
+		});
+
 		body.a = attributes;
 		modifyCos(body)
 			.then((data) => {
@@ -1142,6 +1157,50 @@ const CosAdvanced: FC = () => {
 				});
 			});
 	};
+
+	useEffect(() => {
+		if (!isAdvanced) return;
+		const body = [
+			{
+				configType: COS,
+				configName: [cosName],
+				attrName: [BACKUP_SELF_UNDELETE_ALLOWED]
+			}
+		];
+		getCoreAttributes(body)
+			.then((data) => {
+				if (data?.attributes) {
+					setValue(
+						BACKUP_SELF_UNDELETE_ALLOWED,
+						!!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
+					);
+				}
+			})
+			.catch((error) => {
+				createSnackbar({
+					key: 'error',
+					type: 'error',
+					label: error?.message
+						? error?.message
+						: // eslint-disable-next-line sonarjs/no-duplicate-string
+						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+					autoHideTimeout: 3000,
+					hideButton: true,
+					replace: true
+				});
+			});
+	}, [cosName, createSnackbar, isAdvanced, setValue, t]);
+
+	const changeBooleanSwitchOption = useCallback(
+		(key: string): void => {
+			setCosAdvanced((prev: any) => ({
+				...prev,
+				[key]: !cosAdvanced[key]
+			}));
+			setIsDirty(true);
+		},
+		[cosAdvanced, setCosAdvanced, setIsDirty]
+	);
 
 	return (
 		<Container mainAlignment="flex-start" background="gray6" padding={{ all: 'large' }}>
@@ -1185,6 +1244,38 @@ const CosAdvanced: FC = () => {
 				style={{ overflow: 'auto' }}
 				padding={{ top: 'large' }}
 			>
+				{isAdvanced && (
+					<Row
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						padding={{ all: 'large' }}
+						width="100%"
+					>
+						<Text size="extbackupSelfUndeleteAllowedralarge" weight="bold">
+							{t('cos.general_options', 'General Options')}
+						</Text>
+						<Row mainAlignment="flex-start" width="100%">
+							<Container
+								height="fit"
+								crossAlignment="flex-start"
+								background="gray6"
+								padding={{ top: 'large' }}
+							>
+								<ListRow>
+									<Container crossAlignment="flex-start">
+										<Switch
+											label={t('cos.allow_restore_message', 'Allow user to restore messages')}
+											value={cosAdvanced.backupSelfUndeleteAllowed}
+											onClick={(): void => changeBooleanSwitchOption('backupSelfUndeleteAllowed')}
+											iconColor="primary"
+											disabled={readonlyCOS}
+										/>
+									</Container>
+								</ListRow>
+							</Container>
+						</Row>
+					</Row>
+				)}
 				<Row
 					mainAlignment="flex-start"
 					crossAlignment="flex-start"

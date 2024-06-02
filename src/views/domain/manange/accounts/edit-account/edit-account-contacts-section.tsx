@@ -8,27 +8,11 @@ import React, { FC, useCallback, useState, useContext } from 'react';
 import { Container, Input, Row, Text } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import {
-	ADDRESS,
-	CITY,
-	COMPANY,
-	COUNTRY,
-	FAX_NUMBER,
-	HOME,
-	JOB_TITLE,
-	MOBILE,
-	PAGER,
-	PHONE,
-	POSTAL_CODE,
-	STATE
-} from '../../../../../constants';
 import { isValidNumber } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
 
-const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string) => void }> = ({
-	handleMatomoTrackerEvent
-}) => {
+const EditAccountContactsSection: FC = () => {
 	const context = useContext(AccountContext);
 	const { accountDetail, setAccountDetail } = context;
 	const [t] = useTranslation();
@@ -76,9 +60,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							backgroundColor="gray5"
 							defaultValue={accountDetail?.telephoneNumber || ''}
 							value={accountDetail?.telephoneNumber || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(PHONE);
-							}}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="space-between">
@@ -100,9 +81,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="homePhone"
 							defaultValue={accountDetail?.homePhone || ''}
 							value={accountDetail?.homePhone || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(HOME);
-							}}
 						/>
 					</Row>
 				</Row>
@@ -126,9 +104,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="mobile"
 							defaultValue={accountDetail?.mobile || ''}
 							value={accountDetail?.mobile || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(MOBILE);
-							}}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -150,9 +125,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="pager"
 							defaultValue={accountDetail?.pager || ''}
 							value={accountDetail?.pager || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(PAGER);
-							}}
 						/>
 					</Row>
 				</Row>
@@ -176,9 +148,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="facsimileTelephoneNumber"
 							defaultValue={accountDetail?.facsimileTelephoneNumber || ''}
 							value={accountDetail?.facsimileTelephoneNumber || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(FAX_NUMBER);
-							}}
 						/>
 					</Row>
 				</Row>
@@ -198,9 +167,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="company"
 							defaultValue={accountDetail?.company || ''}
 							value={accountDetail?.company || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(COMPANY);
-							}}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -211,9 +177,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="title"
 							defaultValue={accountDetail?.title || ''}
 							value={accountDetail?.title || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(JOB_TITLE);
-							}}
 						/>
 					</Row>
 				</Row>
@@ -233,9 +196,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="co"
 							defaultValue={accountDetail?.co || ''}
 							value={accountDetail?.co || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(COUNTRY);
-							}}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -246,9 +206,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="st"
 							defaultValue={accountDetail?.st || ''}
 							value={accountDetail?.st || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(STATE);
-							}}
 						/>
 					</Row>
 				</Row>
@@ -261,9 +218,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="l"
 							defaultValue={accountDetail?.l || ''}
 							value={accountDetail?.l || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(CITY);
-							}}
 						/>
 					</Row>
 					<Row width="48%" mainAlignment="flex-start">
@@ -274,9 +228,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="postalCode"
 							defaultValue={accountDetail?.postalCode || ''}
 							value={accountDetail?.postalCode || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(POSTAL_CODE);
-							}}
 						/>
 					</Row>
 				</Row>
@@ -289,9 +240,6 @@ const EditAccountContactsSection: FC<{ handleMatomoTrackerEvent: (value: string)
 							inputName="street"
 							defaultValue={accountDetail?.street || ''}
 							value={accountDetail?.street || ''}
-							onFocus={(): void => {
-								handleMatomoTrackerEvent(ADDRESS);
-							}}
 						/>
 					</Row>
 				</Row>

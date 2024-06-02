@@ -3,9 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo, useContext } from 'react';
 
-import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Icon,
+	Row,
+	Padding,
+	Text,
+	SnackbarManagerContext
+} from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -39,26 +46,17 @@ import {
 	WHITELABEL_SETTINGS,
 	GLOBAL_WHITELABEL_SETTINGS,
 	DELEGATES_DOMAIN_ADMINS,
-	GLOBAL_DELEGATES_ROUTE,
 	RESOURCES,
 	DISCLAIMER,
 	GLOBAL_SETTINGS_ROUTE,
 	IS_DETAIL_LIST_EXPANDED,
 	IS_MANAGE_LIST_EXPANDED,
 	GLOBAL_ACTIVE_SYNC_ROUTE,
-	SECONDARY_BAR,
-	SECONDARY_BAR_GLOBAL_SETTINGS,
-	SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
-	SECONDARY_BAR_GLOBAL_DELEGATES,
-	SECONDARY_BAR_GLOBAL_QUARANTINE,
-	SECONDARY_BAR_GLOBAL_DOMAINS,
-	SECONDARY_BAR_GLOBAL_2FA,
 	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 	FALSE,
 	BOOLEAN_FALSE,
 	GLOBAL_ADMINISTRATORS
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { getDomainList } from '../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useBackupModuleStore } from '../../store/backup-module/store';
@@ -69,6 +67,7 @@ import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 import { getAllRights } from '../utility/utils';
@@ -96,9 +95,8 @@ interface ManageOptions {
 
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const locationService = useLocation();
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -168,33 +166,38 @@ const DomainListPanel: FC = () => {
 	}, [rights]);
 
 	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${DOMAINS_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
-
-	useEffect(() => {
 		if (!domainInformation?.name) {
 			setSearchDomainName('');
 		}
 	}, [domainInformation]);
 
 	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
-	const getDomainLists = useCallback((domainName: string): void => {
-		setIsLoading(true);
-		getDomainList(domainName, 0).then((data) => {
-			const searchResponse: DomainResponse = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setDomainList(searchResponse?.domain);
-				setIsLoading(false);
-			} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
-				setIsShowError(true);
-				setDomainList([]);
-				setIsLoading(false);
-			} else {
-				setDomainList([]);
-				setIsLoading(false);
-			}
-		});
-	}, []);
+	const getDomainLists = useCallback(
+		(domainName: string): void => {
+			setIsLoading(true);
+			getDomainList(domainName, 0)
+				.then((data) => {
+					const searchResponse: DomainResponse = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+						setIsLoading(false);
+					} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
+						setIsShowError(true);
+						setDomainList([]);
+						setIsLoading(false);
+					} else {
+						setDomainList([]);
+						setIsLoading(false);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+					setIsLoading(false);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	useEffect(() => {
 		getDomainLists('');
@@ -255,20 +258,6 @@ const DomainListPanel: FC = () => {
 
 	const getTrakingDetials = (dView: string): any => {
 		const value = dView.split('/');
-		const analyticsMap: { [key: string]: string } = {
-			[GLOBAL_SETTINGS_ROUTE]: SECONDARY_BAR_GLOBAL_SETTINGS,
-			[GLOBAL_WHITELABEL_SETTINGS]: SECONDARY_BAR_GLOBAL_WHITELABELS_SETTINGS,
-			[GLOBAL_2FA_ROUTE]: SECONDARY_BAR_GLOBAL_2FA,
-			[GLOBAL_DOMAIN_ROUTE]: SECONDARY_BAR_GLOBAL_DOMAINS,
-			[GLOBAL_QUARANTINE_ROUTE]: SECONDARY_BAR_GLOBAL_QUARANTINE,
-			[GLOBAL_DELEGATES_ROUTE]: SECONDARY_BAR_GLOBAL_DELEGATES
-		};
-
-		const event = analyticsMap[dView];
-		if (event && globalCarbonioSendAnalytics) {
-			matomo.trackEvent(DOMAINS_ROUTE_ID, SECONDARY_BAR, event);
-		}
-
 		return value[0] === GLOBAL_ROUTE;
 	};
 
@@ -286,7 +275,7 @@ const DomainListPanel: FC = () => {
 			replaceHistory(`/${domainView}`);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isDomainSelect, domainId, domainView, matomo, globalCarbonioSendAnalytics]);
+	}, [isDomainSelect, domainId, domainView, globalCarbonioSendAnalytics]);
 
 	const isDisclaimerEnable = useMemo(
 		() =>

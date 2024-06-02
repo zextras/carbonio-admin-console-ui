@@ -33,6 +33,7 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../components/customChip';
 import DropDownInput from '../../../components/dropDownInput';
 import Textarea from '../../../components/textarea';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail, isValidLdapQuery } from '../../../utility/utils';
 
@@ -185,39 +186,44 @@ const MailingListSection: FC<any> = () => {
 			'accounts,distributionlists,dynamicgroups,accounts,aliases,dynamicgroups,resources',
 			'',
 			query
-		).then((data) => {
-			const allList: any[] = [];
-			const account = data?.account;
-			const dl = data?.dl;
-			const alias = data?.alias;
-			const calresource = data?.calresource;
-			const errorFault = data?.Body?.Fault;
-			if (errorFault) {
-				setIsShowLdapQueryMessage(true);
-				setLdapQueryErrorMessage(t('label.query_is_not_valid', 'Query is not valid'));
-			} else {
-				setIsShowLdapQueryMessage(false);
-				setLdapQueryErrorMessage('');
-			}
-			if (dl) {
-				dl.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
-			}
-			if (account) {
-				account.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
-			}
-			if (alias) {
-				alias.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
-			}
-			if (calresource) {
-				calresource.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
-			}
-			if (allList && allList.length > 0) {
-				setDynamicListMember(allList);
-			} else {
-				setDynamicListMember([]);
-			}
-		});
-	}, [mailingListDetail?.memberURL, t]);
+		)
+			.then((data) => {
+				const allList: any[] = [];
+				const account = data?.account;
+				const dl = data?.dl;
+				const alias = data?.alias;
+				const calresource = data?.calresource;
+				const errorFault = data?.Body?.Fault;
+				if (errorFault) {
+					setIsShowLdapQueryMessage(true);
+					setLdapQueryErrorMessage(t('label.query_is_not_valid', 'Query is not valid'));
+				} else {
+					setIsShowLdapQueryMessage(false);
+					setLdapQueryErrorMessage('');
+				}
+				if (dl) {
+					dl.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+				}
+				if (account) {
+					account.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+				}
+				if (alias) {
+					alias.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+				}
+				if (calresource) {
+					calresource.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+				}
+				if (allList && allList.length > 0) {
+					setDynamicListMember(allList);
+				} else {
+					setDynamicListMember([]);
+				}
+			})
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+			});
+	}, [createSnackbar, mailingListDetail?.memberURL, t]);
 
 	useEffect(() => {
 		if (dynamicListMember && dynamicListMember.length > 0) {
@@ -588,7 +594,7 @@ const MailingListSection: FC<any> = () => {
 							</Text>
 						</Row>
 						<Row padding={{ top: 'small', bottom: 'medium' }}>
-							<Text size="small" weight="light" color="#828282">
+							<Text size="small" weight="light" color="#828282" overflow={'break-word'}>
 								{t(
 									'label.owners_description',
 									"Owners can manage the distribution list's members (adding and removing emails) and modify its options."

@@ -16,15 +16,12 @@ import {
 	SERVERS_LIST,
 	HSM_SETTINGS,
 	DATA_VOLUMES,
-	STORAGES_ROUTE_ID,
 	IS_SERVER_LIST_EXPANDED,
 	IS_SERVER_SPECIFIC_LIST_EXPANDED
 } from '../../constants';
-import MatomoTracker from '../../matomo-tracker';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useBucketServersListStore } from '../../store/bucket-server-list/store';
 import { useBucketVolumeStore } from '../../store/bucket-volume/store';
-import { useConfigStore } from '../../store/config/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import DropDownInput from '../components/dropDownInput';
 import ListItems from '../list/list-items';
@@ -36,8 +33,6 @@ const BucketListPanel: FC = () => {
 	const [t] = useTranslation();
 	const setSelectedServerName = useBucketVolumeStore((state) => state.setSelectedServerName);
 	const volumeList = useBucketServersListStore((state) => state.volumeList);
-	const { userId } = useConfigStore((state) => state);
-	const matomo = useMemo(() => new MatomoTracker(userId), [userId]);
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
 	);
@@ -51,10 +46,6 @@ const BucketListPanel: FC = () => {
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
 	const [itemsVolume, setItemsVolume] = useState<any>();
 	const [isShowError, setIsShowError] = useState(false);
-
-	useEffect(() => {
-		globalCarbonioSendAnalytics && matomo.trackPageView(`${STORAGES_ROUTE_ID}`);
-	}, [globalCarbonioSendAnalytics, matomo]);
 
 	const selectedVolume = useCallback(
 		(volume: any) => {
@@ -164,18 +155,15 @@ const BucketListPanel: FC = () => {
 			if (selectedOperationItem) {
 				if (selectedOperationItem === DATA_VOLUMES || selectedOperationItem === HSM_SETTINGS) {
 					globalCarbonioSendAnalytics &&
-						matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
-					replaceHistory(`${searchVolumeName}/${selectedOperationItem}`);
+						replaceHistory(`${searchVolumeName}/${selectedOperationItem}`);
 				} else {
 					replaceHistory(`/${selectedOperationItem}`);
-					globalCarbonioSendAnalytics &&
-						matomo.trackEvent('trackViewPage', `${selectedOperationItem}`);
 				}
 			} else {
 				replaceHistory(`/${selectedOperationItem}`);
 			}
 		}
-	}, [isStoreSelect, selectedOperationItem, searchVolumeName, matomo, globalCarbonioSendAnalytics]);
+	}, [isStoreSelect, selectedOperationItem, searchVolumeName, globalCarbonioSendAnalytics]);
 
 	const toggleServer = (): void => {
 		if (isServerListExpand) {

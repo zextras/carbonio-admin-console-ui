@@ -21,7 +21,6 @@ import { cloneDeep, uniqBy } from 'lodash';
 import { useTranslation } from 'react-i18next';
 
 import CustomChip from './customChip';
-import { ALIASES } from '../../constants';
 import { useDomainStore } from '../../store/domain/store';
 
 const ManageAliases: FC<{
@@ -30,15 +29,7 @@ const ManageAliases: FC<{
 	setAliasChange: (arg: Array<{ label: string }>) => void;
 	aliasType?: string;
 	viewType?: string;
-	handleMatomoTrackerEvent?: any;
-}> = ({
-	listAliases,
-	setListAliases,
-	setAliasChange,
-	aliasType = '',
-	viewType = 'large',
-	handleMatomoTrackerEvent
-}) => {
+}> = ({ listAliases, setListAliases, setAliasChange, aliasType = '', viewType = 'large' }) => {
 	const [t] = useTranslation();
 	const [showManageAliesModal, setShowManageAliesModal] = useState<boolean>(false);
 	const domainName = useDomainStore((state) => state.domain?.name);
@@ -102,7 +93,6 @@ const ManageAliases: FC<{
 								onChange={(): null => null}
 							/>
 						)}
-						onFocus={(): void => handleMatomoTrackerEvent(ALIASES)}
 					/>
 				)}
 			</Row>

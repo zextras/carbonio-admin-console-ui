@@ -3,8 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { FC, useCallback, useContext, useEffect } from 'react';
 
+import { SnackbarManagerContext } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 
@@ -46,9 +47,11 @@ import {
 import { getDomainInformation } from '../../services/domain-information-service';
 import { searchDirectory } from '../../services/search-directory-service';
 import { useDomainStore } from '../../store/domain/store';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
 const DomainOperations: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const { operation, domainId }: { operation: string; domainId: string } = useParams();
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainWioutConfig = useDomainStore((state) => state.setDomainWioutConfig);
@@ -76,13 +79,18 @@ const DomainOperations: FC = () => {
 		const attrs = 'cn,description';
 		const types = 'coses';
 
-		searchDirectory(attrs, types, '', '', 0, 0).then((data) => {
-			const cosLists = data?.cos;
-			if (cosLists) {
-				setCosList(cosLists);
-			}
-		});
-	}, [setCosList]);
+		searchDirectory(attrs, types, '', '', 0, 0)
+			.then((data) => {
+				const cosLists = data?.cos;
+				if (cosLists) {
+					setCosList(cosLists);
+				}
+			})
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+			});
+	}, [createSnackbar, setCosList, t]);
 
 	useEffect(() => {
 		getSelectedDomainInformation(domainId);
