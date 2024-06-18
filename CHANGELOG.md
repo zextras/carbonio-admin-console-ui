@@ -2,6 +2,45 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.50](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.49...v0.9.50) (2024-06-18)
+
+
+### Features
+
+* ac-1006: Leagal hold account status added ([8adc2c1](https://github.com/zextras/carbonio-admin-console-ui/commit/8adc2c1c5a984c189e2eb194920f8613678f9400))
+* ac-1006: set and unset legal operation added ([0b5d660](https://github.com/zextras/carbonio-admin-console-ui/commit/0b5d660d40995c7dc8909d94f3907fa67b90deed))
+* AC-1015 zimbraAuthMech selector label changes and info implemented ([f23b4eb](https://github.com/zextras/carbonio-admin-console-ui/commit/f23b4eb55885acac76fa042d2370822c592a8608))
+* ac-1035 ac-1036 added indonesian language and removed chinese language ([#741](https://github.com/zextras/carbonio-admin-console-ui/issues/741)) ([2e1700d](https://github.com/zextras/carbonio-admin-console-ui/commit/2e1700d6ea1631ef00c38e1de8c55be0c18fe683))
+* added documentation whitelabel url for admin panel ([2316f96](https://github.com/zextras/carbonio-admin-console-ui/commit/2316f96b27fa407bc606b58576712b16f3ac0900))
+
+
+### Bug Fixes
+
+* ac-1033: pagination twice in manage accounts ([f96391b](https://github.com/zextras/carbonio-admin-console-ui/commit/f96391ba97aa70b94e2675e07facf58ef117b245))
+* ac-1033: scrolling issue for tables ([e232273](https://github.com/zextras/carbonio-admin-console-ui/commit/e23227303c4113e8185db8d8a960558bd93510d2))
+* ac-413: sonar issues fixed ([403d220](https://github.com/zextras/carbonio-admin-console-ui/commit/403d220816664249d097876d50399be4d595d522))
+* ac-413: sonar undefined issue on type declaration ([92a0e38](https://github.com/zextras/carbonio-admin-console-ui/commit/92a0e38c690fdb44c6dd3d6cb2c493a5492b4468))
+* ac-969: fixed query for fetching only admin groups ([d19e874](https://github.com/zextras/carbonio-admin-console-ui/commit/d19e874f554a6eadd25402408554566de14c8acf))
+* ac-981: validation for virtual host ([762cb7e](https://github.com/zextras/carbonio-admin-console-ui/commit/762cb7e6b6f1b49422a61298f03d117a25f998ac))
+* ac-982: Enable and disable HSM policy use wrong attribute ([902cc40](https://github.com/zextras/carbonio-admin-console-ui/commit/902cc401289a6928e2c69b4a9a834ecb10ea46a1))
+* ac-983: changing the cos at account level ([3942616](https://github.com/zextras/carbonio-admin-console-ui/commit/394261681fb18aed181bd911c614e70594de79ff))
+* ac-983: resolved code smells ([6d0a356](https://github.com/zextras/carbonio-admin-console-ui/commit/6d0a356de30a1c189f92792f57cc3ba0480ad44c))
+* ac-986: sonar qube fix custom table row factory ([3ba02a4](https://github.com/zextras/carbonio-admin-console-ui/commit/3ba02a44bbfacc334d8d9b07a6ba45898aff6a14))
+* ac-987: fixed hover content factory sonar issue ([1a20b44](https://github.com/zextras/carbonio-admin-console-ui/commit/1a20b44e58bd7e9b31b8241b69948b827bc1d69b))
+* ac-988: sonar qube fixed for operator change ([fce4d9f](https://github.com/zextras/carbonio-admin-console-ui/commit/fce4d9f71312f7f300cfc877f28370b5e31083ae))
+* ac-989: fixed sonar qube domain details panel ([101cd8c](https://github.com/zextras/carbonio-admin-console-ui/commit/101cd8ce093196697d6c11f722a95b09a3541988))
+* ac-990: conflicts resolved ([775d216](https://github.com/zextras/carbonio-admin-console-ui/commit/775d216303f6eedbefd70434adb49f4bb18668ee))
+* ac-990: fixed sonar global details panel ([326b5c2](https://github.com/zextras/carbonio-admin-console-ui/commit/326b5c268b07f87e449e047c16d043bbd2a5b877))
+* ac-991: fixed cognizive complexity sonar issue create resources ([aeb6a45](https://github.com/zextras/carbonio-admin-console-ui/commit/aeb6a45843a5f7a10eac6c55ee2e0cda2765bdd8))
+* ac-991: fixed sonar issue create resource ([12a1cdf](https://github.com/zextras/carbonio-admin-console-ui/commit/12a1cdfbc38d810d60c355439abdd5a36268a05d))
+* ac-992: fix sonar cognitive complexity and devel merged ([45d24a6](https://github.com/zextras/carbonio-admin-console-ui/commit/45d24a69065a76c7d4587926a2f38a7619ade486))
+* ac-992: soner bug issue fixed resource edit details view ([139a239](https://github.com/zextras/carbonio-admin-console-ui/commit/139a23942e2024e25ba9cef8f368c036207fe5e2))
+* ac-993: sonar fix quarantine list ([e520a06](https://github.com/zextras/carbonio-admin-console-ui/commit/e520a06419dc0849e5683afe3be24a548a23fd32))
+* external AD tooltip port change ([#747](https://github.com/zextras/carbonio-admin-console-ui/issues/747)) ([ed07ca7](https://github.com/zextras/carbonio-admin-console-ui/commit/ed07ca78d6ae7fe7b992b2499bcf727ba03ba21c))
+* file space quota for account ([#708](https://github.com/zextras/carbonio-admin-console-ui/issues/708)) ([e84486d](https://github.com/zextras/carbonio-admin-console-ui/commit/e84486dda5b465e6078fe901f4ae053f4b9d7f51))
+* search result exceeded error handling ([#736](https://github.com/zextras/carbonio-admin-console-ui/issues/736)) ([99dafcb](https://github.com/zextras/carbonio-admin-console-ui/commit/99dafcb13f9a2dcd01141c34c02ae429318aeaaa))
+* update quota panel to show files quota ([#738](https://github.com/zextras/carbonio-admin-console-ui/issues/738)) ([c71a05b](https://github.com/zextras/carbonio-admin-console-ui/commit/c71a05b5e32192d6ed6fa11f031a3d50398ddc22))
+
 ### [0.9.49](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.48...v0.9.49) (2024-05-20)
 
 ### [0.9.48](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.47...v0.9.48) (2024-05-15)
