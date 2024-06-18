@@ -152,6 +152,7 @@ const HSMcreatePolicy: FC<any> = () => {
 			setDestinationVolumeNames(hsmDetail?.destinationVolume.map((item: any) => item?.name).join());
 		}
 	}, [hsmDetail?.destinationVolume]);
+
 	return (
 		<Container
 			mainAlignment="flex-start"

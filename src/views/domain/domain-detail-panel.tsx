@@ -75,7 +75,7 @@ const DomainDetailPanel: FC = () => {
 								defaults="<text>The domain  <bold> {{domain}} </bold>  is closed</text>"
 								components={{ bold: <strong />, text: <Text color="white" /> }}
 								values={{
-									domain: ` ${domain?.name} ` ?? ''
+									domain: domain?.name ?? ''
 								}}
 							/>
 						</Padding>

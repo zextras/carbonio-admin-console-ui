@@ -50,6 +50,7 @@ import { useDomainStore } from '../../store/domain/store';
 import { useMailstoreListStore } from '../../store/mailstore-list/store';
 import OverlayDivision from '../components/overlayDivision';
 import Textarea from '../components/textarea';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListRow from '../list/list-row';
 import { GbToBytes, isValidEmail } from '../utility/utils';
 
@@ -160,15 +161,22 @@ const CreateDomain: FC = () => {
 
 	const getCosLists = (cos: string): any => {
 		setIsLoading(true);
-		getCosList(cos, 0).then((data) => {
-			const searchResponse: any = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setCosList(searchResponse?.cos);
+		getCosList(cos, 0)
+			.then((data) => {
+				const searchResponse: any = data;
+				if (!!searchResponse && searchResponse?.searchTotal > 0) {
+					setCosList(searchResponse?.cos);
+					setIsLoading(false);
+				} else {
+					setCosList([]);
+					setIsLoading(false);
+				}
+			})
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
 				setIsLoading(false);
-			} else {
-				setCosList([]);
-			}
-		});
+			});
 	};
 
 	useEffect(() => {

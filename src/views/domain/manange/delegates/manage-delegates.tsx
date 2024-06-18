@@ -9,13 +9,11 @@ import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 're
 import {
 	Row,
 	Container,
-	Padding,
 	Divider,
 	Text,
 	Button,
 	Table,
-	useSnackbar,
-	useScreenMode
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -23,7 +21,7 @@ import {
 	postSoapFetchRequest,
 	useUserSettings
 } from '@zextras/carbonio-shell-ui';
-import { filter, flatMapDeep } from 'lodash';
+import { debounce, filter, flatMapDeep } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -31,9 +29,10 @@ import DisableDelegateAdminModel from './disable-delegate-admin-model';
 import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
 import logo from '../../../../assets/guardian.svg';
 import {
+	ADMIN_GROUP_FLAG,
 	HELPDESK_ADMINS,
-	MOBILE,
 	RECORD_DISPLAY_LIMIT,
+	SYSTEM_ACCOUNT_FLAG,
 	ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS
 } from '../../../../constants';
 import { accountListDirectory } from '../../../../services/account-list-directory-service';
@@ -57,9 +56,10 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
+import ScrollContainer from '../../../components/scrollComponent';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { AccountContext } from '../accounts/account-context';
-import AccountDetailView from '../accounts/account-detail-view';
 import EditAccount from '../accounts/edit-account/edit-account';
 
 type UserSession = {
@@ -98,8 +98,7 @@ const ManageDelegates: FC = () => {
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
 	const [offset, setOffset] = useState<number>(0);
-	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
+	const [pageLimit, setPageLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [signatureItems, setSignatureItems] = useState<any[]>([]);
 	const [deligateDetail, setDeligateDetail] = useState<any>({});
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
@@ -108,9 +107,10 @@ const ManageDelegates: FC = () => {
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [showModal, setShowModal] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const [cosMaxAccountList, SetCosMaxAccountList] = useState<Array<CosMaxAccountValues>>([]);
-	const screenMode = useScreenMode();
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
 
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -120,10 +120,12 @@ const ManageDelegates: FC = () => {
 		setGlobalConfig: false,
 		getGlobalConfig: false
 	});
+	const [isInitDomain, setIsInitDomain] = useState(false);
 
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
-	const tableRef = useRef(null);
+	const tableRef = useRef<HTMLTableElement>(null);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	const headers: any = useMemo(
 		() => [
@@ -240,41 +242,46 @@ const ManageDelegates: FC = () => {
 			setCosDetail({ ...obj });
 		});
 	}, []);
+
+	const processAccountData = (data: any): void => {
+		const obj: any = {};
+		// eslint-disable-next-line array-callback-return
+		data?.account?.[0]?.a?.forEach((ele: any) => {
+			if (obj[ele.n]) {
+				obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
+			} else {
+				obj[ele.n] = ele._content;
+			}
+		});
+		if (obj.userPassword) {
+			obj.password = '******';
+			obj.repeatPassword = '******';
+		} else {
+			obj.password = '';
+			obj.repeatPassword = '';
+		}
+		obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
+			? obj.zimbraPrefMailForwardingAddress
+			: '';
+		obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
+			? obj.zimbraPrefCalendarForwardInvitesTo
+			: '';
+
+		obj.name = data?.account?.[0]?.name;
+		if (obj.zimbraIsAdminAccount === undefined) {
+			obj.zimbraIsAdminAccount = 'FALSE';
+		}
+		if (obj.zimbraIsDelegatedAdminAccount === undefined) {
+			obj.zimbraIsDelegatedAdminAccount = 'FALSE';
+		}
+		return obj;
+	};
+
 	const getAccountDetail = useCallback(
-		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
 			getAccountRequest(id, '', 1)
 				.then((data: any) => {
-					const obj: any = {};
-					// eslint-disable-next-line array-callback-return
-					data?.account?.[0]?.a?.forEach((ele: any) => {
-						if (obj[ele.n]) {
-							obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
-						} else {
-							obj[ele.n] = ele._content;
-						}
-					});
-					if (obj.userPassword) {
-						obj.password = '******';
-						obj.repeatPassword = '******';
-					} else {
-						obj.password = '';
-						obj.repeatPassword = '';
-					}
-					obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
-						? obj.zimbraPrefMailForwardingAddress
-						: '';
-					obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
-						? obj.zimbraPrefCalendarForwardInvitesTo
-						: '';
-
-					obj.name = data?.account?.[0]?.name;
-					if (obj.zimbraIsAdminAccount === undefined) {
-						obj.zimbraIsAdminAccount = 'FALSE';
-					}
-					if (obj.zimbraIsDelegatedAdminAccount === undefined) {
-						obj.zimbraIsDelegatedAdminAccount = 'FALSE';
-					}
+					const obj: any = processAccountData(data);
 					setInitAccountDetail({ ...obj });
 					setSelectedAccount({ ...obj, id });
 					setAccountDetail({ ...obj });
@@ -424,7 +431,6 @@ const ManageDelegates: FC = () => {
 				userDelegate.forEach((ele: any) => {
 					let found = false;
 					delegateList.forEach((el: any) => {
-						// const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
 						if (el?.grantee?.[0]?.name === ele?.d) {
 							found = true;
 							if (el?.folder?.length) {
@@ -478,7 +484,7 @@ const ManageDelegates: FC = () => {
 		setAllUserSessionList([]);
 		sessionType.forEach((item: string) => {
 			getSessions(item, acc).then((resp: any) => {
-				if (resp && resp?.s) {
+				if (resp?.s) {
 					const existingSession = resp?.s;
 					if (existingSession) {
 						const session: UserSession[] = [];
@@ -506,7 +512,7 @@ const ManageDelegates: FC = () => {
 
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setShowAccountDetailView(true);
+			setShowEditAccountView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
@@ -568,24 +574,44 @@ const ManageDelegates: FC = () => {
 	);
 
 	const fetchDistributionList = useCallback(
-		(name: string | undefined, offsetData: number, limitData: number): void => {
+		(
+			query: string,
+			name: string | undefined,
+			offsetData: number,
+			limitData: number,
+			type?: string
+		): void => {
+			if (type === ADMIN_GROUP_FLAG) {
+				setLoading(true);
+			}
 			const attrs =
 				'displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount';
 			const types = 'distributionlists,dynamicgroups';
-			const query = `(&(!(zimbraIsSystemAccount=TRUE)))`;
-			searchDirectory(attrs, types, name || '', query, offsetData, limitData, 'name').then(
-				(res) => {
+			searchDirectory(attrs, types, name ?? '', query, offsetData, limitData, 'name')
+				.then((res) => {
 					const data = res?.dl;
-					if (data) {
+					if (data && type === SYSTEM_ACCOUNT_FLAG) {
 						setDistributionList((prevDistributionList) => [...prevDistributionList, ...data]);
 						if (res.more) {
-							fetchDistributionList(domain?.name, offsetData + limitData, limitData);
+							fetchDistributionList(
+								query,
+								domain?.name,
+								offsetData + limitData,
+								limitData,
+								SYSTEM_ACCOUNT_FLAG
+							);
 						}
+					} else if (type === ADMIN_GROUP_FLAG) {
+						setIsInitDomain(data?.length > 0);
+						setLoading(false);
 					}
-				}
-			);
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
 		},
-		[domain?.name]
+		[createSnackbar, domain?.name, t]
 	);
 
 	const handleRevokesGrants = useCallback(() => {
@@ -656,7 +682,13 @@ const ManageDelegates: FC = () => {
 					Promise.all(request).then();
 				}
 				setLoading(false);
-				fetchDistributionList(domain?.name, 0, 10);
+				fetchDistributionList(
+					`(&(!(zimbraIsSystemAccount=TRUE)))`,
+					domain?.name,
+					0,
+					10,
+					SYSTEM_ACCOUNT_FLAG
+				);
 				createSnackbar({
 					key: 'success',
 					type: 'success',
@@ -684,7 +716,7 @@ const ManageDelegates: FC = () => {
 					replace: true
 				});
 			});
-	}, [createSnackbar, domain?.name, fetchDistributionList, t, cosMaxAccountList]);
+	}, [domain?.name, cosMaxAccountList, fetchDistributionList, createSnackbar, t]);
 
 	const onDeleteFromList = useCallback(
 		(lists: objectType[], type: string) => {
@@ -746,22 +778,43 @@ const ManageDelegates: FC = () => {
 		setOpen(false);
 	};
 
-	const closeAccountDetailDialog = useCallback(() => {
-		if (showAccountDetailView) {
-			setShowAccountDetailView(false);
-		}
-	}, [showAccountDetailView]);
-
-	const handleKeyEvent = useCallback(
-		(event) => {
-			if (event.key === 'Escape') {
-				closeAccountDetailDialog();
-			}
+	const parseAccountListResponse = useCallback(
+		(accountListResponse: any): any[] => {
+			const accountListArr: any[] = [];
+			accountListResponse.forEach((item: any): void => {
+				item?.a?.forEach((ele: any) => {
+					if (ele?.n === 'mail') {
+						if (item[ele?.n]) {
+							item[ele?.n].push(ele._content);
+						} else {
+							// eslint-disable-next-line no-param-reassign
+							item[ele?.n] = [ele._content];
+						}
+					} else {
+						// eslint-disable-next-line no-param-reassign
+						item[ele?.n] = ele._content;
+					}
+				});
+				accountListArr.push({
+					id: item?.id,
+					columns: [
+						<Row
+							onClick={(): void => openDetailView(item)}
+							key={item?.id}
+							style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						>
+							<Text weight="light">{item?.name || ' '}</Text>
+						</Row>
+					],
+					item,
+					clickable: true
+				});
+			});
+			return accountListArr;
 		},
-		[closeAccountDetailDialog]
+		[openDetailView]
 	);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
 	const getAccountList = useCallback((): void => {
 		setIsRequestInProgress(true);
 		const type = 'accounts';
@@ -769,70 +822,31 @@ const ManageDelegates: FC = () => {
 			'(|(&(zimbraIsAdminAccount=TRUE))(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE))))';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, domain.name, searchQuery, offset, limit)
+		accountListDirectory(attrs, type, domain.name, searchQuery, offset, pageLimit)
 			.then((data: any) => {
 				const accountListResponse: any = data?.account || [];
 				if (accountListResponse && Array.isArray(accountListResponse)) {
-					const accountListArr: any = [];
 					setTotalAccount(data.searchTotal || 0);
-					accountListResponse.forEach((item: any): any => {
-						item?.a?.forEach((ele: any) => {
-							if (ele?.n === 'mail') {
-								if (item[ele?.n]) {
-									item[ele?.n].push(ele._content);
-								} else {
-									// eslint-disable-next-line no-param-reassign
-									item[ele?.n] = [ele._content];
-								}
-							} else {
-								// eslint-disable-next-line no-param-reassign
-								item[ele?.n] = ele._content;
-							}
-						});
-						accountListArr.push({
-							id: item?.id,
-							columns: [
-								<Row
-									onClick={(): void => {
-										openDetailView(item);
-									}}
-									key={item?.id}
-									style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-								>
-									<Text weight="light">{item?.name || ' '}</Text>
-								</Row>
-							],
-							item,
-							clickable: true
-						});
-					});
+					const accountListArr = parseAccountListResponse(accountListResponse);
 					setAllAccount(accountListArr);
 				}
 				setIsRequestInProgress(false);
 			})
-			.catch((error: any) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
 			});
-	}, [domain.name, openDetailView, limit, offset, createSnackbar, t]);
+	}, [domain.name, offset, pageLimit, parseAccountListResponse, t, createSnackbar]);
 
 	useEffect(() => {
-		window.addEventListener('keydown', handleKeyEvent);
-		return () => {
-			window.removeEventListener('keydown', handleKeyEvent);
-		};
-	}, [handleKeyEvent]);
-
-	useEffect(() => {
-		fetchDistributionList(domain?.name, 0, 10);
+		fetchDistributionList(
+			`(&(!(zimbraIsSystemAccount=TRUE)))`,
+			domain?.name,
+			0,
+			10,
+			SYSTEM_ACCOUNT_FLAG
+		);
+		fetchDistributionList(`(zimbraIsAdminGroup=TRUE)`, domain?.name, 0, 10, ADMIN_GROUP_FLAG);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -849,8 +863,114 @@ const ManageDelegates: FC = () => {
 		}
 	}, [userSetting?.attrs]);
 
+	useEffect(() => {
+		const table = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 450;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
+
+	const accountContextValue = useMemo(
+		() => ({
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		}),
+		[
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		]
+	);
+
 	return (
-		<Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			background="gray6"
+			mainAlignment="flex-start"
+		>
 			{accountDistributionList?.length > 0 && open && (
 				<DisableDelegateAdminModel
 					open={open}
@@ -867,7 +987,7 @@ const ManageDelegates: FC = () => {
 				mainAlignment="flex-start"
 			>
 				<Row mainAlignment="flex-start" width="100%">
-					<Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
+					<Container orientation="vertical" mainAlignment="space-around" height="10.5rem">
 						<Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
 							<Row mainAlignment="flex-start" width="100%" crossAlignment="flex-start">
 								<Text size="medium" weight="bold" color="gray0">
@@ -875,41 +995,43 @@ const ManageDelegates: FC = () => {
 								</Text>
 							</Row>
 						</Row>
-					</Container>
-				</Row>
-				<Row orientation="horizontal" width="100%" background="gray6">
-					<Divider />
-				</Row>
-				<Container
-					orientation="column"
-					background="gray6"
-					crossAlignment="flex-start"
-					mainAlignment="flex-start"
-					style={{
-						height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
-						position: 'relative',
-						overflow: 'auto'
-					}}
-					padding={{ all: 'large' }}
-				>
-					{isGlobalAdmin && (
-						<>
-							<ListRow padding={{ vertical: 'large' }}>
-								<Padding bottom="large">
+						<Row orientation="horizontal" width="100%" background="gray6">
+							<Divider />
+						</Row>
+						{isGlobalAdmin && (
+							<>
+								<ListRow padding={{ vertical: 'large' }}>
 									<Button
-										label={t('label.init_domain', 'INIT DOMAIN')}
+										label={
+											isInitDomain
+												? t('label.re_init_domain', 'RE-INIT DOMAIN')
+												: t('label.init_domain', 'INIT DOMAIN')
+										}
 										color="primary"
 										onClick={handleRevokesGrants}
 										loading={loading}
 									/>
-								</Padding>
-							</ListRow>
-							<Row orientation="horizontal" width="100%" background="gray6">
-								<Divider />
-							</Row>
-						</>
-					)}
-					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
+								</ListRow>
+								<Row orientation="horizontal" width="100%" background="gray6">
+									<Divider />
+								</Row>
+							</>
+						)}
+					</Container>
+				</Row>
+				<Container
+					orientation="column"
+					crossAlignment="flex-start"
+					mainAlignment="flex-start"
+					width="100%"
+					style={{
+						position: 'relative',
+						overflow: 'auto',
+						minHeight: '10rem'
+					}}
+					padding={{ top: 'large' }}
+				>
+					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large', left: 'large' }}>
 						<Row
 							mainAlignment="flex-start"
 							width="100%"
@@ -959,91 +1081,118 @@ const ManageDelegates: FC = () => {
 						</Padding>
 					</ListRow> */}
 					<Row
-						orientation="horizontal"
-						mainAlignment="space-between"
-						crossAlignment="flex-start"
-						width="fill"
-						style={{
-							height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
-							position: 'relative'
-						}}
-						ref={tableRef}
+						mainAlignment="flex-start"
+						width="100%"
+						padding={{ top: 'small', left: 'small', right: 'small' }}
 					>
-						<Table
-							rows={!isRequestInProgress ? allAccount : []}
-							headers={headers}
-							showCheckbox={false}
-							multiSelect={false}
-							style={{
-								overflow: 'auto',
-								height: isRequestInProgress || allAccount.length === 0 ? '50%' : '100%'
-							}}
-							RowFactory={CustomRowFactory}
-							HeaderFactory={CustomHeaderFactory}
-						/>
-						{isRequestInProgress && (
-							<Container
-								crossAlignment="center"
-								mainAlignment="center"
-								height="auto"
-								padding={{ top: 'medium' }}
-							>
-								<Button type="ghost" color="primary" label="" loading onClick={(): null => null} />
-							</Container>
-						)}
-						{allAccount?.length === 0 && !isRequestInProgress && (
-							<Container orientation="column" crossAlignment="center" mainAlignment="center">
-								<Row>
-									<img src={logo} alt="logo" />
-								</Row>
-								<Row
-									padding={{ top: 'extralarge' }}
-									orientation="vertical"
-									crossAlignment="center"
-									style={{ textAlign: 'center' }}
-								>
-									<Text weight="light" color="#828282" size="large" overflow="break-word">
-										{t('label.this_list_is_empty', 'This list is empty.')}
-									</Text>
-								</Row>
-								<Row
-									orientation="vertical"
-									crossAlignment="center"
-									style={{ textAlign: 'center' }}
-									padding={{ top: 'small' }}
-									width="53%"
-								>
-									<Text weight="light" color="#828282" size="large" overflow="break-word">
-										<Trans
-											i18nKey="label.create_account_list_msg"
-											defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
-											components={{ bold: <strong /> }}
-										/>
-									</Text>
-								</Row>
-							</Container>
-						)}
-						{allAccount?.length !== 0 && (
-							<Container
+						<Container height="fit" crossAlignment="flex-start" background="gray6">
+							<Row
 								orientation="horizontal"
 								mainAlignment="space-between"
-								width="100%"
-								style={{ position: 'absolute', bottom: '-4rem' }}
-								height="auto"
+								crossAlignment="flex-start"
+								width="fill"
+								style={{
+									position: 'relative'
+								}}
 							>
-								<Container crossAlignment="flex-start">
-									<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-								</Container>
-								<Container
-									crossAlignment="flex-end"
-									orientation="horizontal"
-									mainAlignment="flex-end"
-									padding={{ top: 'small' }}
-								>
-									<TrackNumberPerPage setPageSize={setLimit} />
-								</Container>
-							</Container>
-						)}
+								<Table
+									rows={!isRequestInProgress ? allAccount : []}
+									headers={headers}
+									showCheckbox={false}
+									multiSelect={false}
+									ref={tableRef}
+									style={{
+										overflow: 'auto',
+										height: isRequestInProgress || allAccount.length === 0 ? '50%' : '100%'
+									}}
+									RowFactory={CustomRowFactory}
+									HeaderFactory={CustomHeaderFactory}
+								/>
+								{isRequestInProgress && (
+									<Container
+										crossAlignment="center"
+										mainAlignment="center"
+										height="auto"
+										padding={{ top: 'medium' }}
+									>
+										<Button
+											type="ghost"
+											color="primary"
+											label=""
+											loading
+											onClick={(): null => null}
+										/>
+									</Container>
+								)}
+								{allAccount?.length === 0 && !isRequestInProgress && (
+									<Container orientation="column" crossAlignment="center" mainAlignment="center">
+										<Row>
+											<img src={logo} alt="logo" />
+										</Row>
+										<Row
+											padding={{ top: 'extralarge' }}
+											orientation="vertical"
+											crossAlignment="center"
+											style={{ textAlign: 'center' }}
+										>
+											<Text weight="light" color="#828282" size="large" overflow="break-word">
+												{t('label.this_list_is_empty', 'This list is empty.')}
+											</Text>
+										</Row>
+										<Row
+											orientation="vertical"
+											crossAlignment="center"
+											style={{ textAlign: 'center' }}
+											padding={{ top: 'small' }}
+											width="53%"
+										>
+											<Text weight="light" color="#828282" size="large" overflow="break-word">
+												<Trans
+													i18nKey="label.create_account_list_msg"
+													defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
+													components={{ bold: <strong /> }}
+												/>
+											</Text>
+										</Row>
+									</Container>
+								)}
+								{allAccount.length !== 0 && (
+									<Container
+										style={{
+											position: 'sticky',
+											bottom: isTableTooTall ? '0' : '-4rem'
+										}}
+									>
+										<ScrollContainer isVisible={isTableTooTall} />
+										<Container
+											orientation="horizontal"
+											mainAlignment="space-between"
+											background="gray6"
+											width="100%"
+											padding={{ right: 'extralarge' }}
+											height="auto"
+										>
+											<Container crossAlignment="flex-start">
+												<Paging
+													totalItem={totalAccount}
+													setOffset={setOffset}
+													pageSize={pageLimit}
+												/>
+											</Container>
+
+											<Container
+												crossAlignment="flex-end"
+												orientation="horizontal"
+												mainAlignment="flex-end"
+												padding={{ top: 'small' }}
+											>
+												<TrackNumberPerPage setPageSize={setPageLimit} />
+											</Container>
+										</Container>
+									</Container>
+								)}
+							</Row>
+						</Container>
 					</Row>
 					{/* TODO: uncomment once we fix the delgates feature's bug completely. */}
 					{/* {allAccount?.length > 0 && (
@@ -1075,56 +1224,7 @@ const ManageDelegates: FC = () => {
 							</ListRow>
 						</>
 					)} */}
-					<AccountContext.Provider
-						value={{
-							accountDetail,
-							cosDetail,
-							setAccountDetail,
-							accSpecificDetail,
-							setAccSpecificDetail,
-							directMemberList,
-							inDirectMemberList,
-							setDirectMemberList,
-							setInDirectMemberList,
-							initAccountDetail,
-							setInitAccountDetail,
-							setSignatureItems,
-							setSignatureList,
-							otpList,
-							getListOtp,
-							identitiesList,
-							deligateDetail,
-							setDeligateDetail,
-							getIdentitiesList,
-							folderList,
-							setFolderList,
-							credentialList,
-							getCredentialList,
-							initialGlobalRights,
-							setinitialGlobalRights,
-							globalRights,
-							setGlobalRights,
-							deleteAdministrationRights,
-							setDeleteAdministrationRights,
-							userSessionList,
-							setAllUserSessionList,
-							allUserSessionList,
-							setUserSessionList
-						}}
-					>
-						{showAccountDetailView && (
-							<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
-								<AccountDetailView
-									selectedAccount={selectedAccount}
-									setShowAccountDetailView={setShowAccountDetailView}
-									setShowEditAccountView={setShowEditAccountView}
-									STATUS_COLOR={STATUS_COLOR}
-									getAccountList={getAccountList}
-									cosDetail={cosDetail}
-								/>
-							</ModalOverlay>
-						)}
-
+					<AccountContext.Provider value={accountContextValue}>
 						{showEditAccountView && (
 							<ModalOverlay
 								setOpen={setShowEditAccountView}
@@ -1142,7 +1242,6 @@ const ManageDelegates: FC = () => {
 									getAccountDetail={getAccountDetail}
 									defaultTab={defaultTab}
 									setDefaultTab={setDefaultTab}
-									setShowAccountDetailView={setShowAccountDetailView}
 									showModal={showModal}
 									setShowModal={setShowModal}
 									isDirty={isDirty}

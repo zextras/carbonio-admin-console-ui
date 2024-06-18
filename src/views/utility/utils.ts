@@ -987,111 +987,124 @@ export const delegateDomainHeaders = (
 	}
 ];
 
-export const volTableHeader = (t: TFunction): THeader[] => [
-	{
-		id: 'id',
-		label: t('volume.volume_header.id', 'ID'),
-		width: '5%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'name',
-		label: t('volume.volume_header.name', 'Name'),
-		width: '30%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'storeType',
-		label: t('volume.volume_header.storageType', 'Storage Type'),
-		width: '25%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'path',
-		label: t('volume.volume_header.path', 'Path'),
-		width: '30%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'current',
-		label: t('volume.volume_header.current', 'Current'),
-		width: '18%',
-		align: 'left',
-		bold: true
-	},
-	{
-		id: 'compression',
-		label: t('volume.volume_header.compression', 'Compression'),
-		width: '25%',
-		align: 'left',
-		bold: true
-	}
-];
+export const volTableHeader = (t: TFunction, isAdvanced: boolean): THeader[] =>
+	[
+		{
+			id: 'id',
+			label: t('volume.volume_header.id', 'ID'),
+			width: '5%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'name',
+			label: t('volume.volume_header.name', 'Name'),
+			width: '30%',
+			bold: true,
+			align: 'left'
+		},
+		isAdvanced && {
+			id: 'storeType',
+			label: t('volume.volume_header.storageType', 'Storage Type'),
+			width: '25%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'path',
+			label: t('volume.volume_header.path', 'Path'),
+			width: '30%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'current',
+			label: t('volume.volume_header.current', 'Current'),
+			width: '18%',
+			align: 'left',
+			bold: true
+		},
+		{
+			id: 'compression',
+			label: t('volume.volume_header.compression', 'Compression'),
+			width: '25%',
+			align: 'left',
+			bold: true
+		}
+	].filter(Boolean) as THeader[];
 
 export const indexerHeaders = (
-	t: TFunction
+	t: TFunction,
+	isAdvanced: boolean
 ): Array<{
 	id: string;
 	label: string;
 	width: string;
 	bold: boolean;
 	align: string;
-}> => [
-	{
-		id: 'id',
-		label: t('volume.volume_indexer_header.id', 'ID'),
-		width: '5%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'name',
-		label: t('volume.volume_indexer_header.name', 'Name'),
-		width: '30%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'storeType',
-		label: t('volume.volume_header.storageType', 'Storage Type'),
-		width: '25%',
-		bold: true,
-		align: 'left'
-	},
-	{
-		id: 'path',
-		label: t('volume.volume_indexer_header.path', 'Path'),
-		width: '61%',
-		align: 'left',
-		bold: true
-	},
-	{
-		id: 'current',
-		label: t('volume.volume_indexer_header.current', 'Current'),
-		width: '14%',
-		align: 'left',
-		bold: true
-	}
-];
+}> =>
+	[
+		{
+			id: 'id',
+			label: t('volume.volume_indexer_header.id', 'ID'),
+			width: '5%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'name',
+			label: t('volume.volume_indexer_header.name', 'Name'),
+			width: '30%',
+			bold: true,
+			align: 'left'
+		},
+		isAdvanced && {
+			id: 'storeType',
+			label: t('volume.volume_header.storageType', 'Storage Type'),
+			width: '25%',
+			bold: true,
+			align: 'left'
+		},
+		{
+			id: 'path',
+			label: t('volume.volume_indexer_header.path', 'Path'),
+			width: '30%',
+			align: 'left',
+			bold: true
+		},
+		{
+			id: 'current',
+			label: t('volume.volume_indexer_header.current', 'Current'),
+			width: '45%',
+			align: 'left',
+			bold: true
+		}
+	].filter(Boolean) as Array<{
+		id: string;
+		label: string;
+		width: string;
+		bold: boolean;
+		align: string;
+	}>;
 
-export const volumeTypeList = (t: TFunction): Array<{ label: string; value: number }> => [
-	{
-		label: t('volume.volume_type.primary', 'Primary'),
-		value: 1
-	},
-	{
-		label: t('volume.volume_type.secondary', 'Secondary'),
-		value: 2
-	},
-	{
-		label: t('volume.volume_type.index', 'Index'),
-		value: 10
-	}
-];
+export const volumeTypeList = (
+	t: TFunction,
+	isAdvanced?: boolean
+): Array<{ label: string; value: number }> =>
+	[
+		{
+			label: t('volume.volume_type.primary', 'Primary'),
+			value: 1
+		},
+		isAdvanced && {
+			label: t('volume.volume_type.secondary', 'Secondary'),
+			value: 2
+		},
+		{
+			label: t('volume.volume_type.index', 'Index'),
+			value: 10
+		}
+	].filter(Boolean) as Array<{ label: string; value: number }>;
 
 export const volumeAllocationList = (t: TFunction): Array<{ label: string; value: number }> => [
 	{
@@ -1398,16 +1411,6 @@ export const localeList = (
 	t: TFunction
 ): Array<{ id: string; name: string; localName: string; value: string; label: string }> => [
 	{
-		id: 'zh_CN',
-		name: '中文 (中国)',
-		localName: t('locale.chinese_china', 'Chinese (China)'),
-		label: t('locale.label_chinese', {
-			value: '中文 (中国)',
-			defaultValue: 'Chinese (China) - {{value}}'
-		}),
-		value: 'zh_CN'
-	},
-	{
 		id: 'nl',
 		name: 'Nederlands',
 		localName: t('locale.dutch', 'Dutch'),
@@ -1434,6 +1437,16 @@ export const localeList = (
 		localName: t('locale.hindi', 'Hindi'),
 		label: t('locale.label_hindi', { value: 'हिंदी', defaultValue: 'Hindi - {{value}}' }),
 		value: 'hi'
+	},
+	{
+		id: 'id',
+		name: 'Bahasa Indonesia',
+		localName: t('locale.indonesian', 'Indonesian'),
+		label: t('locale.label_indonesian', {
+			value: 'Bahasa Indonesia',
+			defaultValue: 'Indonesian - {{value}}'
+		}),
+		value: 'id'
 	},
 	{
 		id: 'it',
@@ -2288,4 +2301,20 @@ export const checkValidUserName = (name: string): boolean => /^[a-zA-Z_][a-zA-Z0
 export const convertToAscii = (inputString: string): string => {
 	const normalizedString = inputString.normalize('NFKD');
 	return normalizedString.replace(/[^\p{ASCII}]/gu, '');
+};
+
+export const isValidDecimalNumber = (value: string): boolean => {
+	const regex = /^\d*\.?\d*$/;
+	return regex.test(value);
+};
+
+export const isValidVirtualHostname = (hostname: string): boolean => {
+	const hostnamePartRegex = /^(?!-)[A-Za-z0-9-]{1,63}(?<!-)$/;
+	const tldRegex = /^[A-Za-z]{2,}$/;
+	const parts = hostname.split('.');
+	if (parts.length < 2) {
+		return false;
+	}
+	const tld = parts.pop();
+	return tldRegex.test(tld!) && parts.every((part) => hostnamePartRegex.test(part));
 };

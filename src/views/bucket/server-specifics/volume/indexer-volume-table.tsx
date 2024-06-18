@@ -8,7 +8,7 @@ import React, { FC, useMemo } from 'react';
 import { Container, Row, Text, Table } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
 
-import { LOCAL_VALUE, NO, YES } from '../../../../constants';
+import { FLEX_START, LOCAL_VALUE, NO, YES } from '../../../../constants';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 
@@ -18,20 +18,19 @@ const IndexerVolumeTable: FC<{
 	onSelectionChange: any;
 	headers: any;
 	onClick: any;
-}> = ({ volumes, selectedRows, onSelectionChange, headers, onClick }) => {
+	isAdvanced: boolean;
+}> = ({ volumes, selectedRows, onSelectionChange, headers, onClick, isAdvanced }) => {
 	const [t] = useTranslation();
-	const tableRows = useMemo(
+	const tableRows: any = useMemo(
 		() =>
-			volumes.map((v, i) => ({
-				id: v?.id,
-				columns: [
+			volumes.map((v, i) => {
+				const columns = [
 					<Row
 						key={i}
 						onClick={(): void => {
 							onClick(i);
 						}}
-						// eslint-disable-next-line sonarjs/no-duplicate-string
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text size="small" weight="light">
 							{v?.id}
@@ -42,38 +41,36 @@ const IndexerVolumeTable: FC<{
 						onClick={(): void => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text size="small" weight="light">
 							{v?.name}
 						</Text>
 					</Row>,
+					isAdvanced && (
+						<Row
+							key={i}
+							onClick={(): void => {
+								onClick(i);
+							}}
+							style={{ textAlign: 'left', justifyContent: FLEX_START }}
+						>
+							<Text size="small" weight="light">
+								{v?.storeType === LOCAL_VALUE
+									? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
+									: t('volume.volume_allocation_list.object_storage', 'Object Storage')}
+							</Text>
+						</Row>
+					),
 					<Row
 						key={i}
 						onClick={(): void => {
 							onClick(i);
 						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
+						style={{ textAlign: 'left', justifyContent: FLEX_START }}
 					>
 						<Text size="small" weight="light">
-							{v?.storeType === LOCAL_VALUE
-								? t('volume.volume_allocation_list.local_block_device', 'Local Block Device')
-								: t('volume.volume_allocation_list.object_storage', 'Object Storage')}
-						</Text>
-					</Row>,
-					<Row
-						key={i}
-						onClick={(): void => {
-							onClick(i);
-						}}
-						style={{ textAlign: 'left', justifyContent: 'flex-start' }}
-					>
-						<Text size="small" weight="light">
-							{v?.storeType === LOCAL_VALUE
-								? v?.path
-								: t('label.prefix_volume', 'Prefix - {{volumePrefix}}', {
-										volumePrefix: v?.volumePrefix
-								  })}
+							{v?.storeType === LOCAL_VALUE ? v?.path : v?.rootpath}
 						</Text>
 					</Row>,
 					<Row
@@ -87,11 +84,17 @@ const IndexerVolumeTable: FC<{
 							{v?.isCurrent ? YES : NO}
 						</Text>
 					</Row>
-				],
-				clickable: true
-			})),
-		[onClick, t, volumes]
+				];
+
+				return {
+					id: v?.id,
+					columns: columns.filter((column) => column !== false),
+					clickable: true
+				};
+			}),
+		[isAdvanced, onClick, t, volumes]
 	);
+
 	return (
 		<Container crossAlignment="flex-start">
 			<Table

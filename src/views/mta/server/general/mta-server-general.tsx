@@ -14,7 +14,6 @@ import {
 	Padding,
 	Divider,
 	Tooltip,
-	ChipInput,
 	SnackbarManagerContext
 } from '@zextras/carbonio-design-system';
 import { find, isEqual, join, map, reduce, some, split, trim } from 'lodash';
@@ -45,6 +44,7 @@ import { Right, Rights, useRightsStore } from '../../../../store/rights/store';
 import { useServerStore } from '../../../../store/server/store';
 import CustomChip from '../../../components/customChip';
 import ListRow from '../../../list/list-row';
+import InheritedChipInput from '../../../utility/inherited-components/inherited-chip-input';
 import InheritedInput from '../../../utility/inherited-components/inherited-input';
 import InheritedSelect from '../../../utility/inherited-components/inherited-select';
 import InheritedSwitch from '../../../utility/inherited-components/inherited-switch';
@@ -61,6 +61,7 @@ const MTAServerGeneral: FC = () => {
 		useState<MtaServerGeneral>();
 	const [mtaServerGeneralDetail, setMtaServerGeneralDetail] = useState<MtaServerGeneral>();
 	const [networkValue, setNetworkValue] = useState<Array<any>>([]);
+	const [networkValueGlobal, setNetworkValueGlobal] = useState<Array<any>>([]);
 	const mtaServerList = useServerStore((state) => state.mtaServerList);
 	const configInformation = useConfigStore((state) => state.config);
 	const [serverSpecificAttributes, setServerSpecificAttributes] = useState<
@@ -283,7 +284,6 @@ const MTAServerGeneral: FC = () => {
 					mtaAuthEnabled?._content === 'yes' ? TRUE : FALSE
 				);
 			}
-
 			const zimbraMtaMyNetworks = serverAttributes.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
 			);
@@ -299,6 +299,17 @@ const MTAServerGeneral: FC = () => {
 
 			setNetworkValue(value);
 
+			const zimbraMtaMyNetworksGlobal = configInformation.find(
+				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
+			);
+
+			const myNetworkValueGlobal = zimbraMtaMyNetworksGlobal?._content?.trim()
+				? map(split(zimbraMtaMyNetworksGlobal?._content, ' '), (ip) => ({
+						label: trim(ip)
+				  }))
+				: [];
+
+			setNetworkValueGlobal(myNetworkValueGlobal);
 			const mtaRelayHost = serverAttributes.find(
 				(item: Record<string, string>) => item?.n === ZIMBRA_MTA_RELAY_HOST
 			);
@@ -312,7 +323,13 @@ const MTAServerGeneral: FC = () => {
 				setIsDirty(false);
 			}, 100);
 		}
-	}, [serverAttributes, setInitialAndCurrentValue, setMtaAntiVirusValues, setMtaLoggingValues]);
+	}, [
+		configInformation,
+		serverAttributes,
+		setInitialAndCurrentValue,
+		setMtaAntiVirusValues,
+		setMtaLoggingValues
+	]);
 
 	const setServerSpecificMtaLoggingValues = useCallback(() => {
 		const zimbraAmavisLogLevel = serverSpecificAttributes.find(
@@ -391,6 +408,20 @@ const MTAServerGeneral: FC = () => {
 		if (mtaFallBackRelayHost?._content) {
 			setServerSpecificCurrentValue(ZIMBRA_MTA_FALLBACK_RELAY_HOST, mtaFallBackRelayHost?._content);
 		}
+
+		const myNetworkServerSpecific = serverSpecificAttributes.find(
+			(item: Record<string, string>) => item?.n === ZIMBRA_MTA_MY_NETWORKS
+		);
+		const myNetworkValueGlobal = myNetworkServerSpecific?._content?.trim()
+			? map(split(myNetworkServerSpecific?._content, ' '), (ip) => ({
+					label: trim(ip)
+			  }))
+			: [];
+
+		const serverSpecificValue = myNetworkServerSpecific?._content
+			? myNetworkValueGlobal
+			: undefined;
+		setServerSpecificCurrentValue(ZIMBRA_MTA_MY_NETWORKS, serverSpecificValue);
 	}, [serverSpecificAttributes, setServerSpecificCurrentValue]);
 
 	useEffect(() => {
@@ -650,6 +681,14 @@ const MTAServerGeneral: FC = () => {
 		[setMtaServerGeneralDetail]
 	);
 
+	const setEmptyValueMyNetwork = useCallback(
+		(keyName) => {
+			setMtaServerGeneralDetail((prev: any) => ({ ...prev, [keyName]: undefined }));
+			setNetworkValue([]);
+		},
+		[setMtaServerGeneralDetail]
+	);
+
 	const changeSwitchOption = useCallback(
 		(key: keyof MtaServerGeneral): void => {
 			if (mtaServerGeneralDetail) {
@@ -771,20 +810,18 @@ const MTAServerGeneral: FC = () => {
 						</Tooltip>
 					</Container>
 					<Container crossAlignment="flex-start" height="auto">
-						<ChipInput
+						<InheritedChipInput
 							placeholder={t('mta.my_netword', 'My Network')}
 							background="gray5"
 							requireUniqueChips
-							value={networkValue}
 							onChange={onBlockExtensionChange}
 							disabled={!allowSetMTA}
 							hasError={some(networkValue || [], { error: true })}
 							ChipComponent={CustomChip}
-							errorLabel={t(
-								'error.invalid_ip_address_error_text',
-								'Supported ip format for ipv4 is ipv4/netmask and for ipv6 is [ipv6]/netmask'
-							)}
-							maxChips={null}
+							subValue={networkValue}
+							inheritedValue={networkValueGlobal}
+							fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaMyNetworks}
+							onChangeReset={(): void => setEmptyValueMyNetwork(ZIMBRA_MTA_MY_NETWORKS)}
 						/>
 					</Container>
 				</Container>

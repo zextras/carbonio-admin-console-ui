@@ -3,9 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState, useMemo } from 'react';
+import React, { FC, useCallback, useEffect, useState, useMemo, useContext } from 'react';
 
-import { Container, Icon, Row, Padding, Text } from '@zextras/carbonio-design-system';
+import {
+	Container,
+	Icon,
+	Row,
+	Padding,
+	Text,
+	SnackbarManagerContext
+} from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { debounce } from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -39,23 +46,28 @@ import {
 	WHITELABEL_SETTINGS,
 	GLOBAL_WHITELABEL_SETTINGS,
 	DELEGATES_DOMAIN_ADMINS,
-	GLOBAL_DELEGATES_ROUTE,
 	RESOURCES,
 	DISCLAIMER,
 	GLOBAL_SETTINGS_ROUTE,
 	IS_DETAIL_LIST_EXPANDED,
 	IS_MANAGE_LIST_EXPANDED,
-	GLOBAL_ACTIVE_SYNC_ROUTE
+	GLOBAL_ACTIVE_SYNC_ROUTE,
+	ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+	FALSE,
+	BOOLEAN_FALSE,
+	GLOBAL_ADMINISTRATORS
 } from '../../constants';
 import { getDomainList } from '../../services/search-domain-service';
 import { useAuthIsAdvanced } from '../../store/auth-advanced/store';
 import { useBackupModuleStore } from '../../store/backup-module/store';
+import { useConfigStore } from '../../store/config/store';
 import { useDomainStore } from '../../store/domain/store';
 import { useGlobalConfigStore } from '../../store/global-config/store';
 import { useModuleLicenseStore } from '../../store/module-license/store';
 import { Right, useRightsStore } from '../../store/rights/store';
 import DropDownInput from '../components/dropDownInput';
 import OverlayDivision from '../components/overlayDivision';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import ListItems from '../list/list-items';
 import ListPanelItem from '../list/list-panel-item';
 import { getAllRights } from '../utility/utils';
@@ -83,6 +95,7 @@ interface ManageOptions {
 
 const DomainListPanel: FC = () => {
 	const [t] = useTranslation();
+	const createSnackbar: any = useContext(SnackbarManagerContext);
 	const locationService = useLocation();
 	const globalCarbonioSendAnalytics = useGlobalConfigStore(
 		(state) => state.globalCarbonioSendAnalytics
@@ -112,6 +125,13 @@ const DomainListPanel: FC = () => {
 	const rights = useRightsStore((state) => state.rights);
 	const [isShowError, setIsShowError] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const globalConfigInformation = useConfigStore((state) => state.config);
+	const [is2FAAvailable, setIs2FAAvailable] = useState(true);
+
+	useEffect(() => {
+		const isAvail2Fa = domainInformation?.a?.find((item) => item?.n === 'zimbraAuthMech');
+		setIs2FAAvailable(isAvail2Fa === undefined);
+	}, [domainInformation]);
 
 	const loadingComponent = [
 		{
@@ -152,23 +172,32 @@ const DomainListPanel: FC = () => {
 	}, [domainInformation]);
 
 	const getBackupModuleEnable = useBackupModuleStore((state) => state.backupModuleEnable);
-	const getDomainLists = useCallback((domainName: string): void => {
-		setIsLoading(true);
-		getDomainList(domainName, 0).then((data) => {
-			const searchResponse: DomainResponse = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setDomainList(searchResponse?.domain);
-				setIsLoading(false);
-			} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
-				setIsShowError(true);
-				setDomainList([]);
-				setIsLoading(false);
-			} else {
-				setDomainList([]);
-				setIsLoading(false);
-			}
-		});
-	}, []);
+	const getDomainLists = useCallback(
+		(domainName: string): void => {
+			setIsLoading(true);
+			getDomainList(domainName, 0)
+				.then((data) => {
+					const searchResponse: DomainResponse = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+						setIsLoading(false);
+					} else if (domainName !== '' && searchResponse?.searchTotal === 0) {
+						setIsShowError(true);
+						setDomainList([]);
+						setIsLoading(false);
+					} else {
+						setDomainList([]);
+						setIsLoading(false);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+					setIsLoading(false);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	useEffect(() => {
 		getDomainLists('');
@@ -248,6 +277,14 @@ const DomainListPanel: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isDomainSelect, domainId, domainView, globalCarbonioSendAnalytics]);
 
+	const isDisclaimerEnable = useMemo(
+		() =>
+			globalConfigInformation.find(
+				(item) => item?.n === ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED
+			)?._content,
+		[globalConfigInformation]
+	);
+
 	const detailOptions = useMemo(
 		() => [
 			{
@@ -283,7 +320,7 @@ const DomainListPanel: FC = () => {
 			{
 				id: TWO_FACTOR_AUTHENTICATION,
 				name: t('label.2-factor-authentication', '2-Factor-Authentication'),
-				isSelected: isDomainSelect
+				isSelected: isDomainSelect && is2FAAvailable
 			},
 			{
 				id: SAML,
@@ -293,10 +330,10 @@ const DomainListPanel: FC = () => {
 			{
 				id: DISCLAIMER,
 				name: t('label.disclaimer', 'Disclaimer'),
-				isSelected: isDomainSelect
+				isSelected: isDisclaimerEnable === FALSE ? BOOLEAN_FALSE : isDomainSelect
 			}
 		],
-		[t, isDomainSelect]
+		[t, isDomainSelect, is2FAAvailable, isDisclaimerEnable]
 	);
 
 	const allManageOptions = useMemo(
@@ -348,8 +385,8 @@ const DomainListPanel: FC = () => {
 				isSelected: true
 			},
 			{
-				id: GLOBAL_DELEGATES_ROUTE,
-				name: t('label.global_delegates', 'Global Delegates'),
+				id: GLOBAL_ADMINISTRATORS,
+				name: t('label.administrators', 'Administrators'),
 				isSelected: true
 			},
 			{
@@ -405,7 +442,8 @@ const DomainListPanel: FC = () => {
 							item?.id !== TWO_FACTOR_AUTHENTICATION
 				  )
 				: detailOptions,
-		[detailOptions, isAdvanced]
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[detailOptions, isAdvanced, is2FAAvailable]
 	);
 
 	const globalOptionsItems = useMemo(
@@ -443,7 +481,7 @@ const DomainListPanel: FC = () => {
 			const backupModule = moduleLicense.filter(
 				(item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC
 			);
-			if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
+			if (backupModule[0] && backupModule[0]?.enabled) {
 				setIsBackupModuleLicensed(true);
 			}
 		}
@@ -517,14 +555,7 @@ const DomainListPanel: FC = () => {
 					}
 			  ]
 			: domainList.map(
-					(
-						domain: {
-							name: string;
-							id: string;
-							a: { n: string; _content: string }[];
-						},
-						index
-					) => ({
+					(domain: { name: string; id: string; a: { n: string; _content: string }[] }) => ({
 						id: domain.id,
 						label: domain.name,
 						customComponent: (

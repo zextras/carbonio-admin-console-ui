@@ -485,8 +485,8 @@
         "search_a_signature": "Buscar firma",
         "restart_replica": "REINICIAR RÉPLICA",
         "repeat_password": "Repetir contraseña",
-        "password_lenght_msg": "La contraseña debe tener más de 5 caracteres",
-        "password_and repeat_password_not_match": "Las contraseñas no coinciden",
+        "password_length_msg": "La contraseña debe tener más de 5 caracteres",
+        "password_and_repeat_password_not_match": "Las contraseñas no coinciden",
         "not_send_receive": "No puede enviar ni recibir",
         "no_auto_accept_or_decline": "Nunca aceptar automáticamente, aunque el usuario esté disponible",
         "next_step": "SIGUIENTE",
@@ -1231,10 +1231,9 @@
         "messages": "Mensajes",
         "view_images": "Ver imágenes",
         "discard": "Descartar",
-        "attachement_unknown": "Desconocido <{{mimeType}}>",
-        "attachment_0": "Adjunto",
-        "attachment_1": "",
-        "attachment_2": "adjuntos",
+        "attachment_unknown": "Desconocido <{{mimeType}}>",
+        "attachment_one": "Adjunto",
+        "attachment_other": "adjuntos",
         "attachments_disclaimer": "Estás viendo un mensaje adjunto. La autenticidad del mismo no se puede verificar.",
         "save_to_files": "Guardar en Files",
         "select_folder": "Seleccionar carpeta",
@@ -1753,9 +1752,8 @@
         "send_full_error_data": "Enviar datos completos del error"
     },
     "reminder": {
-        "minute_0": "{{count}} minuto",
-        "minute_1": "",
-        "minute_2": ""
+        "minute_one": "{{count}} minuto",
+        "minute_other": ""
     },
     "account_details": {
         "advanced_search": "Búsqueda avanzada",

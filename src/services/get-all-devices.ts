@@ -10,14 +10,15 @@ import {
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
 
-export const getAllDevices = async (module: string): Promise<any> =>
+export const getAllDevices = async (module: string, domainName: string): Promise<any> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{
 			_jsns: 'urn:zimbraAdmin',
 			module,
 			action: 'getAllDevices',
-			targetServers: 'all_servers'
+			targetServers: 'all_servers',
+			domainList: domainName
 		},
 		'zextras'
 	);

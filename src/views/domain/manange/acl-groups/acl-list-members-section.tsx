@@ -26,6 +26,7 @@ import { searchDirectory } from '../../../../services/search-directory-service';
 import { searchGal } from '../../../../services/search-gal-service';
 import CustomHeaderFactory from '../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../app/shared/customTableRowFactory';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 
@@ -183,30 +184,38 @@ const AclListMembersSection: FC<any> = () => {
 		}
 	}, [dlm, selectedDistributionListMember]);
 
-	const getSearchMemberList = useCallback((mem) => {
-		const attrs =
-			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-		const types = 'accounts,distributionlists,aliases';
-		const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+	const getSearchMemberList = useCallback(
+		(mem) => {
+			const attrs =
+				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+			const types = 'accounts,distributionlists,aliases';
+			const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
 
-		searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name').then((data) => {
-			const result: any[] = [];
+			searchDirectory(attrs, types, '', query, 0, RECORD_DISPLAY_LIMIT, 'name')
+				.then((data) => {
+					const result: any[] = [];
 
-			const dl = data?.dl;
-			const account = data?.account;
-			const alias = data?.alias;
-			if (dl) {
-				dl.map((item: any) => result.push(item));
-			}
-			if (account) {
-				account.map((item: any) => result.push(item));
-			}
-			if (alias) {
-				alias.map((item: any) => result.push(item));
-			}
-			setSearchMemberResult(result);
-		});
-	}, []);
+					const dl = data?.dl;
+					const account = data?.account;
+					const alias = data?.alias;
+					if (dl) {
+						dl.map((item: any) => result.push(item));
+					}
+					if (account) {
+						account.map((item: any) => result.push(item));
+					}
+					if (alias) {
+						alias.map((item: any) => result.push(item));
+					}
+					setSearchMemberResult(result);
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	const getSearchOwnerList = useCallback((searchKeyword) => {
 		searchGal(searchKeyword).then((data) => {
