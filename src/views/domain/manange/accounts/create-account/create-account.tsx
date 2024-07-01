@@ -313,7 +313,7 @@ const CreateAccount: FC<{
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: t('label.password_lenght_msg', 'Password should be more than 5 character'),
+					label: t('label.password_length_msg', 'Password should be more than 5 character'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
@@ -323,7 +323,7 @@ const CreateAccount: FC<{
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: t('label.password_and repeat_password_not_match', 'Passwords do not match'),
+					label: t('label.password_and_repeat_password_not_match', 'Passwords do not match'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true

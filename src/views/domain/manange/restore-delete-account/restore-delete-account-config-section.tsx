@@ -14,7 +14,8 @@ import {
 	Icon,
 	Text,
 	Divider,
-	Dropdown
+	Dropdown,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { debounce } from 'lodash';
 import { Trans, useTranslation } from 'react-i18next';
@@ -23,6 +24,7 @@ import styled from 'styled-components';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import { getDomainList } from '../../../../services/search-domain-service';
 import { useDomainStore } from '../../../../store/domain/store';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import ListRow from '../../../list/list-row';
 
 const DatePickerContainer = styled(Container)`
@@ -35,6 +37,7 @@ const DatePickerContainer = styled(Container)`
 
 const RestoreDeleteAccountConfigSection: FC<any> = () => {
 	const { t } = useTranslation();
+	const createSnackbar = useSnackbar();
 	const context = useContext(RestoreDeleteAccountContext);
 	const { restoreAccountDetail, setRestoreAccountDetail } = context;
 	const [date, setDate] = useState(
@@ -53,16 +56,24 @@ const RestoreDeleteAccountConfigSection: FC<any> = () => {
 		},
 		[setRestoreAccountDetail]
 	);
-	const getDomainLists = useCallback((domain: string): any => {
-		getDomainList(domain, 0).then((data) => {
-			const searchResponse: any = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setDomainList(searchResponse?.domain);
-			} else {
-				setDomainList([]);
-			}
-		});
-	}, []);
+	const getDomainLists = useCallback(
+		(domain: string): any => {
+			getDomainList(domain, 0)
+				.then((data) => {
+					const searchResponse: any = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setDomainList(searchResponse?.domain);
+					} else {
+						setDomainList([]);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchDomainCall = useCallback(

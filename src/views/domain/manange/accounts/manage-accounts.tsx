@@ -17,8 +17,7 @@ import {
 	Button,
 	IconButton,
 	useSnackbar,
-	Tooltip,
-	useScreenMode
+	Tooltip
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -40,10 +39,17 @@ import {
 	RECORD_DISPLAY_LIMIT,
 	ASC,
 	DESC,
-	MOBILE,
-	BACKUP_ENABLED
+	BACKUP_ENABLED,
+	BACKUP_SELF_UNDELETE_ALLOWED,
+	FILES_QUOTA_LIMIT,
+	FILES_QUOTA_USED,
+	COS,
+	MAILBOX_QUOTA_USED
 } from '../../../../constants';
-import { accountListDirectory } from '../../../../services/account-list-directory-service';
+import {
+	accountListDirectory,
+	getMailboxQuota
+} from '../../../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
 	GetCosResponse,
@@ -53,6 +59,7 @@ import { fetchSoapData } from '../../../../services/fetch-soap';
 import { getAccountRequest } from '../../../../services/get-account';
 import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
 import { getCoreAttributes } from '../../../../services/get-core-attributes';
+import { getFileQuotaById } from '../../../../services/get-file-quota';
 import { getSessions } from '../../../../services/get-sessions';
 import { getSingatures } from '../../../../services/get-signature-service';
 import { fetchSoap } from '../../../../services/listOTP-service';
@@ -64,6 +71,8 @@ import CustomRowFactory from '../../../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../../../app/shared/track-number-per-page';
 import ModalOverlay from '../../../components/ModalOverlay';
 import Paging from '../../../components/paging';
+import ScrollContainer from '../../../components/scrollComponent';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 
 type UserSession = {
 	name: string;
@@ -85,6 +94,7 @@ const ManageAccounts: FC = () => {
 	const [directMemberList, setDirectMemberList] = useState<any>({});
 	const [inDirectMemberList, setInDirectMemberList] = useState<any>({});
 	const [initAccountDetail, setInitAccountDetail] = useState<any>({});
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const [otpList, setOtpList] = useState<any[]>([]);
 	const [credentialList, setCredentialList] = useState<any[]>([]);
 	const [identitiesList, setIdentitiesList] = useState<any[]>([]);
@@ -95,7 +105,7 @@ const ManageAccounts: FC = () => {
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
-	const tableRef = useRef(null);
+	const tableRef = useRef<HTMLTableElement>(null);
 	const [typeFilter, setTypeFilter] = useState<string>('');
 	const [statusFilter, setStatusFilter] = useState<string>('');
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
@@ -103,7 +113,8 @@ const ManageAccounts: FC = () => {
 	const [showModal, setShowModal] = useState(false);
 	const [sortedColumn, setSortedColumn] = useState<string>('name');
 	const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-	const screenMode = useScreenMode();
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	const accountTypeFilter: any = useMemo(
 		() => [
@@ -449,6 +460,11 @@ const ManageAccounts: FC = () => {
 				configType: ACCOUNT,
 				configName: [acc],
 				attrName: [BACKUP_ENABLED]
+			},
+			{
+				configType: ACCOUNT,
+				configName: [acc],
+				attrName: [BACKUP_SELF_UNDELETE_ALLOWED]
 			}
 		];
 		getCoreAttributes(body).then((data) => {
@@ -457,19 +473,61 @@ const ManageAccounts: FC = () => {
 					...prev,
 					...{
 						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					}
 				}));
 				setInitAccountDetail((prev: AccountType) => ({
 					...prev,
 					...{
 						abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value
+						backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
+						backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value
 					}
 				}));
 			}
 		});
 	}, []);
+
+	const setAccDetailValue = useCallback(
+		(key: string, value: string): void => {
+			setAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+			setInitAccountDetail((prev: Record<string, string>) => ({ ...prev, [key]: value }));
+		},
+		[setAccountDetail, setInitAccountDetail]
+	);
+
+	const getFileQuotaByAccId = useCallback(
+		(accId: string): Promise<void> =>
+			getFileQuotaById(accId).then((res: any) => {
+				if (res?.limit) {
+					setAccDetailValue(FILES_QUOTA_LIMIT, res?.limit);
+				}
+				if (res?.used) {
+					setAccDetailValue(FILES_QUOTA_USED, res?.used);
+				}
+			}),
+		[setAccDetailValue]
+	);
+
+	const getFileQuotaByCosId = useCallback(
+		(cosId: string): Promise<void> =>
+			getFileQuotaById(cosId, COS).then((res: any) => {
+				if (res?.limit) {
+					setCosDetail((prev: any) => ({ ...prev, [FILES_QUOTA_LIMIT]: res?.limit }));
+				}
+			}),
+		[]
+	);
+
+	const getMailboxQuotaUsed = useCallback(
+		(accId: string): Promise<void> =>
+			getMailboxQuota(accId).then((data) => {
+				setAccDetailValue(MAILBOX_QUOTA_USED, data?.mbox?.[0]?.s || 0);
+			}),
+		[setAccDetailValue]
+	);
+
 	const getAccountDetail = useCallback(
 		// eslint-disable-next-line sonarjs/cognitive-complexity
 		(id): void => {
@@ -509,12 +567,18 @@ const ManageAccounts: FC = () => {
 					setInitAccountDetail({ ...obj });
 					setSelectedAccount({ ...obj, id });
 					setAccountDetail({ ...obj });
-					getAccountSpecificDetail(id);
 					getCosDetail(obj.zimbraCOSId);
+					getAccountSpecificDetail(id);
+					setDefaultCOS(!obj.zimbraCOSId);
+					getMailboxQuotaUsed(id);
 					if (isAdvanced) {
 						getListOtp(data?.account?.[0]?.name);
 						getCredentialList(data?.account?.[0]?.name);
 						getABQStatus(id);
+						getFileQuotaByAccId(id);
+						setTimeout(() => {
+							getFileQuotaByCosId(obj.zimbraCOSId);
+						}, 2000);
 					}
 				})
 				// eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -536,10 +600,13 @@ const ManageAccounts: FC = () => {
 		[
 			getAccountSpecificDetail,
 			getCosDetail,
+			getMailboxQuotaUsed,
 			isAdvanced,
 			getListOtp,
 			getCredentialList,
 			getABQStatus,
+			getFileQuotaByAccId,
+			getFileQuotaByCosId,
 			createSnackbar,
 			t
 		]
@@ -856,16 +923,9 @@ const ManageAccounts: FC = () => {
 				setIsRequestInProgress(false);
 			})
 			.catch((error) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+				setIsRequestInProgress(false);
 				setHasError(true);
 			});
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -960,8 +1020,114 @@ const ManageAccounts: FC = () => {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
+	useEffect(() => {
+		const table = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
+
+	const accountContextValue = useMemo(
+		() => ({
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		}),
+		[
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		]
+	);
+
 	return (
-		<Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
 			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
@@ -997,12 +1163,11 @@ const ManageAccounts: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto',
 					minHeight: '10rem'
 				}}
-				padding={{ top: 'large' }}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -1032,16 +1197,15 @@ const ManageAccounts: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
-							ref={tableRef}
 						>
 							<Table
 								rows={!isRequestInProgress ? accountList : []}
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
+								ref={tableRef}
 								style={{
 									overflow: 'auto',
 									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
@@ -1099,76 +1263,35 @@ const ManageAccounts: FC = () => {
 							)}
 							{accountList.length !== 0 && (
 								<Container
-									orientation="horizontal"
-									mainAlignment="space-between"
-									width="100%"
-									style={{ position: 'absolute', bottom: '-4rem' }}
-									height="auto"
+									style={{
+										position: 'sticky',
+										bottom: isTableTooTall ? '0' : '-4rem'
+									}}
 								>
-									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-									</Container>
+									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
-										crossAlignment="flex-end"
 										orientation="horizontal"
-										mainAlignment="flex-end"
-										padding={{ top: 'small' }}
+										mainAlignment="space-between"
+										background="gray6"
+										width="100%"
+										padding={{ right: 'extralarge' }}
+										height="auto"
 									>
-										<TrackNumberPerPage setPageSize={setLimit} />
+										<Container crossAlignment="flex-start">
+											<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+										</Container>
+										<Container
+											crossAlignment="flex-end"
+											orientation="horizontal"
+											mainAlignment="flex-end"
+											padding={{ top: 'small' }}
+										>
+											<TrackNumberPerPage setPageSize={setLimit} />
+										</Container>
 									</Container>
 								</Container>
 							)}
-							<AccountContext.Provider
-								value={{
-									accountDetail,
-									cosDetail,
-									setAccountDetail,
-									accSpecificDetail,
-									setAccSpecificDetail,
-									directMemberList,
-									inDirectMemberList,
-									setDirectMemberList,
-									setInDirectMemberList,
-									initAccountDetail,
-									setInitAccountDetail,
-									setSignatureItems,
-									setSignatureList,
-									otpList,
-									getListOtp,
-									identitiesList,
-									deligateDetail,
-									setDeligateDetail,
-									getIdentitiesList,
-									folderList,
-									setFolderList,
-									credentialList,
-									getCredentialList,
-									initialGlobalRights,
-									setinitialGlobalRights,
-									globalRights,
-									setGlobalRights,
-									deleteAdministrationRights,
-									setDeleteAdministrationRights,
-									userSessionList,
-									setAllUserSessionList,
-									allUserSessionList,
-									setUserSessionList
-								}}
-							>
-								{/* This may require in future
-								{showAccountDetailView && (
-									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
-										<AccountDetailView
-											selectedAccount={selectedAccount}
-											setShowAccountDetailView={setShowAccountDetailView}
-											setShowEditAccountView={setShowEditAccountView}
-											STATUS_COLOR={STATUS_COLOR}
-											getAccountList={getAccountList}
-											cosDetail={cosDetail}
-										/>
-									</ModalOverlay>
-								)} */}
-
+							<AccountContext.Provider value={accountContextValue}>
 								{showEditAccountView && (
 									<ModalOverlay
 										setOpen={setShowEditAccountView}
@@ -1186,7 +1309,6 @@ const ManageAccounts: FC = () => {
 											getAccountDetail={getAccountDetail}
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
-											setShowAccountDetailView={setShowAccountDetailView}
 											showModal={showModal}
 											setShowModal={setShowModal}
 											isDirty={isDirty}

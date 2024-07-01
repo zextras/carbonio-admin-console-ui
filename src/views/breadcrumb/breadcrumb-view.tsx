@@ -11,6 +11,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { DASHBOARD } from '../../constants';
+import { useLastLoginTimestamp } from '../../store/last-login-time-stamp';
 
 const BreadCrumbText = styled(Text)<{ isLast: boolean }>`
 	color: ${({ isLast }): string => (!isLast ? '#CCCCCC' : 'gray0')};
@@ -21,6 +22,7 @@ const BreadCrumb: FC = () => {
 	const loc = useLocation();
 	const history = useHistory();
 	const [splitRoutes, setSplitRoutes] = useState<any[]>([]);
+	const { lastLoginTimestamp } = useLastLoginTimestamp();
 
 	useEffect(() => {
 		if (loc?.pathname) {
@@ -66,7 +68,6 @@ const BreadCrumb: FC = () => {
 		},
 		[history]
 	);
-
 	return (
 		<Container height="fit" crossAlignment="baseline" mainAlignment="baseline">
 			<Container
@@ -104,6 +105,19 @@ const BreadCrumb: FC = () => {
 				{splitRoutes.length === 1 && (
 					<Container mainAlignment="center" crossAlignment="flex-start" padding={{ left: 'small' }}>
 						{t('label.home', 'Home')}
+					</Container>
+				)}
+				{lastLoginTimestamp && (
+					<Container
+						mainAlignment="center"
+						crossAlignment="flex-end"
+						width="50%"
+						padding={{ right: 'small' }}
+						margin={{ left: 'auto' }}
+					>
+						<Text color="secondary" overflow="break-word" weight="light">
+							{t('label.last_access', 'Last access')} {lastLoginTimestamp}
+						</Text>
 					</Container>
 				)}
 			</Container>

@@ -1156,7 +1156,7 @@ const BackupConfiguration: FC = () => {
 									value={spaceThreshold}
 									backgroundColor="gray5"
 									onChange={(e: any): void => {
-										!allowSetBackup ?? setSpaceThreshold(e.target.value);
+										!allowSetBackup && setSpaceThreshold(e.target.value);
 									}}
 									disabled={!allowSetBackup}
 								/>
@@ -1215,7 +1215,7 @@ const BackupConfiguration: FC = () => {
 									value={rootVolumePath || ''}
 									backgroundColor="gray5"
 									onChange={(e): void => {
-										!allowSetBackup ?? setRootVolumePath(e.target.value);
+										!allowSetBackup && setRootVolumePath(e.target.value);
 									}}
 								/>
 							</Container>
@@ -1304,7 +1304,7 @@ const BackupConfiguration: FC = () => {
 												value={manageExternalVolumeNewLocalMountpoint || ''}
 												backgroundColor="gray5"
 												onChange={(e): void => {
-													!allowSetBackup ??
+													!allowSetBackup &&
 														setManageExternalVolumeNewLocalMountpoint(e.target.value);
 												}}
 											/>

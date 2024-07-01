@@ -48,6 +48,7 @@ import { searchDirectory } from '../../../services/search-directory-service';
 import { useDomainStore } from '../../../store/domain/store';
 import OverlayDivision from '../../components/overlayDivision';
 import Textarea from '../../components/textarea';
+import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
 import { RouteLeavingGuard } from '../../ui-extras/nav-guard';
 import { timeZoneList, getFormatedDate, getDateFromStr, isValidEmail } from '../../utility/utils';
@@ -705,8 +706,8 @@ const DomainGeneralSettings: FC = () => {
 			const type = 'accounts,distributionlists,aliases,resources,dynamicgroups';
 			const attrs =
 				'zimbraAliasTargetId,zimbraId,targetName,uid,type,description,displayName,zimbraId,zimbraMailHost,uid,description,zimbraIsAdminGroup,zimbraMailStatus,displayName,zimbraId,zimbraMailHost,uid,zimbraAccountStatus,description,zimbraCalResType,displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus, zimbraIsSystemAccount';
-			searchDirectory(attrs, type, domainName, '', offset, limit).then(
-				(data: SearchDomainDirectoies) => {
+			searchDirectory(attrs, type, domainName, '', offset, limit)
+				.then((data: SearchDomainDirectoies) => {
 					if (data?.account?.length) {
 						data.account.forEach((item: AccountDlAlias) => {
 							const zimbraIsSystemAccount = find(item.a, { n: 'zimbraIsSystemAccount' });
@@ -757,10 +758,13 @@ const DomainGeneralSettings: FC = () => {
 					} else if (data?.searchTotal === 0) {
 						deleteOnlyDomain();
 					}
-				}
-			);
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
 		},
-		[deleteOnlyDomain, domainName]
+		[createSnackbar, deleteOnlyDomain, domainName, t]
 	);
 
 	const onDeleteDomain = (): void => {

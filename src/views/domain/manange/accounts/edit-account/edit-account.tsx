@@ -60,7 +60,9 @@ import {
 	CLOSED,
 	ABQ_MODE,
 	BACKUP_ENABLED,
-	ADMIN_LOGIN_AS
+	ADMIN_LOGIN_AS,
+	BACKUP_SELF_UNDELETE_ALLOWED,
+	FILES_QUOTA_LIMIT
 } from '../../../../../constants';
 import { addAccountAliasRequest } from '../../../../../services/add-account-alias';
 import { deleteAccountAliasRequest } from '../../../../../services/delete-account-alias';
@@ -70,8 +72,10 @@ import { getDelegateAuthRequest } from '../../../../../services/get-delegate-aut
 import { modifyAccountRequest } from '../../../../../services/modify-account';
 import { removeDistributionListMember } from '../../../../../services/remove-distributionlist-member-service';
 import { renameAccountRequest } from '../../../../../services/rename-account';
+import { resetFileQuotaLimitById } from '../../../../../services/reset-file-quota-limit';
 import { getDomainList } from '../../../../../services/search-domain-service';
 import { setCoreAttributes } from '../../../../../services/set-core-attributes';
+import { setFileQuotaLimitById } from '../../../../../services/set-file-quota-limit';
 import { setPasswordRequest } from '../../../../../services/set-password';
 import { useAuthIsAdvanced } from '../../../../../store/auth-advanced/store';
 import { useDomainStore } from '../../../../../store/domain/store';
@@ -79,6 +83,7 @@ import { Right, Rights, useRightsStore } from '../../../../../store/rights/store
 import { useStickyBarStore } from '../../../../../store/sticky-bar/store';
 import Displayer from '../../../../components/displayer';
 import OverlayDivision from '../../../../components/overlayDivision';
+import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { RouteLeavingGuard } from '../../../../ui-extras/nav-guard';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
@@ -115,7 +120,6 @@ const EditAccount: FC<{
 	getAccountDetail: any;
 	defaultTab: string;
 	setDefaultTab: any;
-	setShowAccountDetailView: any;
 	showModal: boolean;
 	setShowModal: (showModal: boolean) => void;
 	isDirty: boolean;
@@ -129,7 +133,6 @@ const EditAccount: FC<{
 	signatureList,
 	getAccountDetail,
 	defaultTab,
-	setShowAccountDetailView,
 	setDefaultTab,
 	showModal,
 	setShowModal,
@@ -149,7 +152,9 @@ const EditAccount: FC<{
 		setAccountDetail,
 		initAccountDetail,
 		setInitAccountDetail,
-		deleteAdministrationRights
+		deleteAdministrationRights,
+		setDefaultCOS,
+		cosDetail
 	} = context;
 	const setDomainListStore = useDomainStore((state) => state.setDomainList);
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -163,21 +168,26 @@ const EditAccount: FC<{
 
 	const getDomainLists = useCallback(
 		(offset: number): any => {
-			getDomainList('', offset).then((data) => {
-				const searchResponse: any = data;
-				if (!!searchResponse && searchResponse?.searchTotal > 0) {
-					if (searchResponse?.domain?.length) {
-						setDomainListStore([...domainList, ...searchResponse.domain]);
-						if (searchResponse?.more) {
-							getDomainLists(offset + 50);
+			getDomainList('', offset)
+				.then((data) => {
+					const searchResponse: any = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						if (searchResponse?.domain?.length) {
+							setDomainListStore([...domainList, ...searchResponse.domain]);
+							if (searchResponse?.more) {
+								getDomainLists(offset + 50);
+							}
 						}
+					} else {
+						setDomainListStore([]);
 					}
-				} else {
-					setDomainListStore([]);
-				}
-			});
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
 		},
-		[domainList, setDomainListStore]
+		[createSnackbar, domainList, setDomainListStore, t]
 	);
 
 	useEffect(() => {
@@ -393,11 +403,11 @@ const EditAccount: FC<{
 	const handlePasswordChange = useCallback(
 		async (modifiedKeys: string[]): Promise<void> => {
 			if (accountDetail?.password?.length < 6) {
-				ErrorSnackbar(t('label.password_lenght_msg', 'Password should be more than 5 character'));
+				ErrorSnackbar(t('label.password_length_msg', 'Password should be more than 5 character'));
 				return;
 			}
 			if (accountDetail?.password !== accountDetail?.repeatPassword) {
-				ErrorSnackbar(t('label.password_and repeat_password_not_match', 'Passwords do not match'));
+				ErrorSnackbar(t('label.password_and_repeat_password_not_match', 'Passwords do not match'));
 				return;
 			}
 			setPasswordRequest(initAccountDetail?.zimbraId, accountDetail?.password).then(() => {
@@ -474,7 +484,11 @@ const EditAccount: FC<{
 	);
 
 	const handleCoreAttributesModification = async (modifiedKeys: string[]): Promise<void> => {
-		if (modifiedKeys.includes(ABQ_MODE) || modifiedKeys.includes(BACKUP_ENABLED)) {
+		if (
+			modifiedKeys.includes(ABQ_MODE) ||
+			modifiedKeys.includes(BACKUP_ENABLED) ||
+			modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)
+		) {
 			const body: any = {};
 			if (modifiedKeys.includes(ABQ_MODE)) {
 				body.abqMode = {
@@ -486,6 +500,14 @@ const EditAccount: FC<{
 			if (modifiedKeys.includes(BACKUP_ENABLED)) {
 				body.backupEnabled = {
 					value: accountDetail.backupEnabled,
+					objectName: accountDetail.zimbraId,
+					configType: ACCOUNT
+				};
+			}
+
+			if (modifiedKeys.includes(BACKUP_SELF_UNDELETE_ALLOWED)) {
+				body.backupSelfUndeleteAllowed = {
+					value: accountDetail.backupSelfUndeleteAllowed,
 					objectName: accountDetail.zimbraId,
 					configType: ACCOUNT
 				};
@@ -516,6 +538,7 @@ const EditAccount: FC<{
 				});
 			remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
 			remove(modifiedKeys, (ele) => ele === ABQ_MODE);
+			remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
 		}
 	};
 
@@ -601,6 +624,66 @@ const EditAccount: FC<{
 			accountDetail?.name,
 			isAdvanced,
 			modifyCoreAttributes
+		]
+	);
+
+	const handleFileQuotaLimitChange = useCallback(
+		(modifiedKeys: string[]) => {
+			if (modifiedKeys.includes(FILES_QUOTA_LIMIT)) {
+				if (accountDetail?.filesQuotaLimit) {
+					setFileQuotaLimitById(accountDetail?.zimbraId, accountDetail?.filesQuotaLimit).then(
+						(res) => {
+							if (modifiedKeys?.length === 0) {
+								createSnackbar({
+									key: 'success',
+									type: 'success',
+									label: t(
+										'label.the_last_changes_has_been_saved_successfully',
+										'Changes have been saved successfully'
+									),
+									autoHideTimeout: 3000,
+									hideButton: true,
+									replace: true
+								});
+							}
+						}
+					);
+				} else {
+					resetFileQuotaLimitById(accountDetail?.zimbraId).then((res) => {
+						if (modifiedKeys?.length === 0) {
+							createSnackbar({
+								key: 'success',
+								type: 'success',
+								label: t(
+									'label.the_last_changes_has_been_saved_successfully',
+									'Changes have been saved successfully'
+								),
+								autoHideTimeout: 3000,
+								hideButton: true,
+								replace: true
+							});
+							setInitAccountDetail((prev: any) => ({
+								...prev,
+								[FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit
+							}));
+							setAccountDetail((prev: any) => ({
+								...prev,
+								[FILES_QUOTA_LIMIT]: cosDetail.filesQuotaLimit
+							}));
+						}
+					});
+				}
+				remove(modifiedKeys, (ele) => ele === FILES_QUOTA_LIMIT);
+			}
+		},
+		[
+			accountDetail?.filesQuotaLimit,
+			accountDetail?.zimbraId,
+			cosDetail.filesQuotaLimit,
+			createSnackbar,
+			setAccountDetail,
+			setInitAccountDetail,
+			t
 		]
 	);
 
@@ -692,6 +775,7 @@ const EditAccount: FC<{
 		}
 
 		handleMobileSyncFeatures(modifiedKeys);
+		handleFileQuotaLimitChange(modifiedKeys);
 
 		modifiedKeys.forEach((ele: any) => {
 			modifiedData[ele] = accountDetail[ele];
@@ -739,6 +823,7 @@ const EditAccount: FC<{
 	]);
 	const onUndo = (): void => {
 		setAccountDetail({ ...initAccountDetail, isDefaultUserName: true });
+		setDefaultCOS(!initAccountDetail.zimbraCOSId);
 		setInitAccountDetail((prev: AccountType) => ({ ...prev, isDefaultUserName: true }));
 	};
 	const onViewMail = useCallback(() => {
@@ -823,17 +908,6 @@ const EditAccount: FC<{
 			color: 'primary',
 			onClick: onViewMail
 		},
-		// {
-		// 	align: 'right',
-		// 	label: t('label.close', 'CLOSE'),
-		// 	color: 'error',
-		// 	onClick: (): void => {
-		// 		setShowAccountDetailView(false);
-		// 		setShowEditAccountView(true);
-		// 	},
-
-		// 	disabled: !accountDetail?.zimbraId || accountDetail?.zimbraId !== selectedAccount.id
-		// },
 		{
 			align: 'right',
 			color: 'error',
@@ -863,10 +937,9 @@ const EditAccount: FC<{
 			});
 			setIsRequestInProgress(false);
 			closeHandler();
-			setShowAccountDetailView(false);
 			getAccountList();
 		},
-		[closeHandler, createSnackbar, getAccountList, setShowAccountDetailView]
+		[closeHandler, createSnackbar, getAccountList]
 	);
 	const onDisableAccount = useCallback(() => {
 		setIsRequestInProgress(true);
@@ -971,7 +1044,6 @@ const EditAccount: FC<{
 							icon="CloseOutline"
 							onClick={(): void => {
 								setShowEditAccountView(false);
-								setShowAccountDetailView(true);
 								setDefaultTab('general');
 							}}
 						/>

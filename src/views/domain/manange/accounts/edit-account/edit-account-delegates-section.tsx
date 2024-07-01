@@ -52,6 +52,7 @@ import { Section } from '../../../../app/component/section';
 import CustomHeaderFactory from '../../../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../../../app/shared/customTableRowFactory';
 import CustomChip from '../../../../components/customChip';
+import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import InheritedSelect from '../../../../utility/inherited-components/inherited-select';
 import { deligateSendSettings, isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
@@ -805,29 +806,34 @@ const EditAccountDelegatesSection: FC = () => {
 		const type = 'distributionlists,accounts';
 		const attrs =
 			'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
-		accountListDirectory(attrs, type, '', searchQuery, 0, 10).then((data) => {
-			const accountListArr: any[] = [];
-			data?.account?.map(
-				(delegateAccount: any) =>
-					delegateAccount.id !== accountDetail.zimbraId &&
+		accountListDirectory(attrs, type, '', searchQuery, 0, 10)
+			.then((data) => {
+				const accountListArr: any[] = [];
+				data?.account?.map(
+					(delegateAccount: any) =>
+						delegateAccount.id !== accountDetail.zimbraId &&
+						accountListArr.push({
+							id: delegateAccount.id,
+							label: delegateAccount.name,
+							type: 'usr',
+							ele: delegateAccount
+						})
+				);
+				data?.dl?.map((delegateAccount: any) =>
 					accountListArr.push({
 						id: delegateAccount.id,
 						label: delegateAccount.name,
-						type: 'usr',
+						type: 'grp',
 						ele: delegateAccount
 					})
-			);
-			data?.dl?.map((delegateAccount: any) =>
-				accountListArr.push({
-					id: delegateAccount.id,
-					label: delegateAccount.name,
-					type: 'grp',
-					ele: delegateAccount
-				})
-			);
-			setOptions(accountListArr);
-		});
-	}, [accountDetail.zimbraId, searchQuery]);
+				);
+				setOptions(accountListArr);
+			})
+			.catch((error) => {
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+			});
+	}, [accountDetail.zimbraId, createSnackbar, searchQuery, t]);
 
 	useEffect(() => {
 		if (searchQuery) getAccountList();

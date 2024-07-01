@@ -67,45 +67,62 @@ const EditHsmPolicyDetailSection: FC<{
 		}
 	}, [isDocument, isContactEnable, isMessageEnable, isEventEnable, setHsmDetail]);
 
-	// eslint-disable-next-line sonarjs/cognitive-complexity
-	useMemo(() => {
-		if (currentPolicy) {
-			if (currentPolicy?.hsmType) {
-				if (currentPolicy?.hsmType.length === 4) {
-					setIsDocument(true);
-					setIsContactEnable(true);
-					setIsMessageEnable(true);
-					setIsEventEnable(true);
-				} else {
-					currentPolicy?.hsmType.forEach((element: any) => {
-						if (element === 5) {
-							setIsMessageEnable(true);
-						} else if (element === 8) {
-							setIsDocument(true);
-						} else if (element === 11) {
-							setIsEventEnable(true);
-						} else if (element === 6) {
-							setIsContactEnable(true);
-						}
-					});
-				}
+	const setHsmPolicyType = useCallback(() => {
+		if (currentPolicy?.hsmType) {
+			if (currentPolicy?.hsmType.length === 4) {
+				setIsDocument(true);
+				setIsContactEnable(true);
+				setIsMessageEnable(true);
+				setIsEventEnable(true);
+				setHsmDetail((prev: any) => ({
+					...prev,
+					isMessageEnabled: true,
+					isDocumentEnabled: true,
+					isEventEnabled: true,
+					isContactEnabled: true
+				}));
+			} else {
+				currentPolicy?.hsmType.forEach((element: number) => {
+					if (element === 5) {
+						setIsMessageEnable(true);
+						setHsmDetail((prev: any) => ({
+							...prev,
+							isMessageEnabled: true
+						}));
+					} else if (element === 8) {
+						setIsDocument(true);
+						setHsmDetail((prev: any) => ({
+							...prev,
+							isDocumentEnabled: true
+						}));
+					} else if (element === 11) {
+						setIsEventEnable(true);
+						setHsmDetail((prev: any) => ({
+							...prev,
+							isEventEnabled: true
+						}));
+					} else if (element === 6) {
+						setIsContactEnable(true);
+						setHsmDetail((prev: any) => ({
+							...prev,
+							isContactEnabled: true
+						}));
+					}
+				});
 			}
+		}
+	}, [currentPolicy?.hsmType, setHsmDetail]);
 
-			if (currentPolicy?.hsmQuery) {
-				const queries = currentPolicy?.hsmQuery.split(' ');
-				if (queries && queries.length > 0 && hsmDetail?.isDataLoaded === false) {
-					queries.forEach((element: string) => {
-						if (
-							element !== '' &&
-							!element.startsWith('source') &&
-							!element.startsWith('destination')
-						) {
-							const option = element.split(':')[0];
-							const scale = element
-								.split(':')[1]
-								.match(/[a-zA-Z]/g)
-								?.join('');
-							const valueItem = element.split(':')[1].match(/\d/g)?.join('');
+	const setHSMQuery = useCallback(() => {
+		if (currentPolicy?.hsmQuery) {
+			const queries = currentPolicy?.hsmQuery.split(' ');
+			if (queries && queries.length > 0 && hsmDetail?.isDataLoaded === false) {
+				queries.forEach((element: string) => {
+					if (!element.startsWith('source') && !element.startsWith('destination')) {
+						const option = element.match(/after|before|larger|small/g)?.join('');
+						const scale = element.match(/minutes|hours|days|months|years/g)?.join('');
+						const valueItem = element.match(/\d/g)?.join('');
+						if (valueItem) {
 							setPolicyCriteria((prev) => [
 								...prev,
 								{
@@ -115,31 +132,58 @@ const EditHsmPolicyDetailSection: FC<{
 								}
 							]);
 						}
-
-						if (
-							element !== '' &&
-							(element.startsWith('source') || element.startsWith('destination'))
-						) {
-							const option = element.split(':')[0];
-							const valueItem = element.split(':')[1];
-							if (option.startsWith('source')) {
-								setSelectedSourceVolume(valueItem.split(',').map((item: any) => +item));
-							}
-							if (option.startsWith('destination')) {
-								setSelectedDestinationVolume(valueItem.split(',').map((item: any) => +item));
-							}
-						}
-					});
-				} else {
-					setPolicyCriteria(hsmDetail?.policyCriteria);
-				}
+					}
+				});
+			} else {
+				setPolicyCriteria(hsmDetail?.policyCriteria);
 			}
+		}
+	}, [currentPolicy?.hsmQuery, hsmDetail?.isDataLoaded, hsmDetail?.policyCriteria]);
+
+	const setSourceAndDestinationValues = useCallback((option, valueItem) => {
+		if (option.startsWith('source')) {
+			setSelectedSourceVolume(valueItem.split(',').map((item: string) => +item));
+		}
+		if (option.startsWith('destination')) {
+			setSelectedDestinationVolume(valueItem.split(',').map((item: string) => +item));
+		}
+	}, []);
+
+	const setHSMPolicyQuerySourceAndDestination = useCallback(() => {
+		if (currentPolicy?.hsmQuery) {
+			const queries = currentPolicy?.hsmQuery.split(' ');
+			if (queries && queries.length > 0 && hsmDetail?.isDataLoaded === false) {
+				queries.forEach((element: string) => {
+					if (
+						element !== '' &&
+						(element.startsWith('source') || element.startsWith('destination'))
+					) {
+						const option = element.split(':')[0];
+						const valueItem = element.split(':')[1];
+						setSourceAndDestinationValues(option, valueItem);
+					}
+				});
+			}
+		}
+	}, [currentPolicy?.hsmQuery, hsmDetail?.isDataLoaded, setSourceAndDestinationValues]);
+
+	useMemo(() => {
+		if (currentPolicy) {
+			setHsmPolicyType();
+			setHSMQuery();
+			setHSMPolicyQuerySourceAndDestination();
 			setHsmDetail((prev: any) => ({
 				...prev,
 				isDataLoaded: true
 			}));
 		}
-	}, [currentPolicy, setHsmDetail, hsmDetail?.isDataLoaded, hsmDetail?.policyCriteria]);
+	}, [
+		currentPolicy,
+		setHSMPolicyQuerySourceAndDestination,
+		setHSMQuery,
+		setHsmDetail,
+		setHsmPolicyType
+	]);
 
 	useEffect(() => {
 		setHsmDetail((prev: any) => ({

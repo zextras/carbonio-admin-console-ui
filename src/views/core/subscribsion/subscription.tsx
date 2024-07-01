@@ -497,7 +497,7 @@ const Subscription: FC = () => {
 						>
 							<Input
 								label={t('core.subscription.company_name', 'Company Name')}
-								value={services.response.company || ''}
+								value={services.response.endUser || ''}
 								readOnly
 							/>
 						</Row>

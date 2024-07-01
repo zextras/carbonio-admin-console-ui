@@ -12,23 +12,21 @@ import {
 	Table,
 	Divider,
 	Button,
-	useSnackbar,
-	useScreenMode
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	postSoapFetchRequest
 } from '@zextras/carbonio-shell-ui';
-import { flatMapDeep, filter } from 'lodash';
+import { flatMapDeep, filter, debounce } from 'lodash';
 import moment from 'moment';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { AccountContext } from './manange/accounts/account-context';
-import AccountDetailView from './manange/accounts/account-detail-view';
 import EditAccount from './manange/accounts/edit-account/edit-account';
 import logo from '../../assets/gardian.svg';
-import { MOBILE, RECORD_DISPLAY_LIMIT } from '../../constants';
+import { RECORD_DISPLAY_LIMIT } from '../../constants';
 import { accountListDirectory } from '../../services/account-list-directory-service';
 import {
 	getCosGeneralInformation,
@@ -46,6 +44,8 @@ import CustomRowFactory from '../app/shared/customTableRowFactory';
 import TrackNumberPerPage from '../app/shared/track-number-per-page';
 import ModalOverlay from '../components/ModalOverlay';
 import Paging from '../components/paging';
+import ScrollContainer from '../components/scrollComponent';
+import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 
 type UserSession = {
 	name: string;
@@ -73,13 +73,15 @@ const GlobalDelegates: FC = () => {
 	const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
 	const [showModal, setShowModal] = useState(false);
 	const [isDirty, setIsDirty] = useState<boolean>(false);
+	const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
 	const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
 	const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
 	const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
 	const isAdvanced = useAuthIsAdvanced((state: any) => state.isAdvanced);
-	const tableRef = useRef(null);
+	const tableRef = useRef<HTMLTableElement>(null);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-	const screenMode = useScreenMode();
+	const [isTableTooTall, setIsTableTooTall] = useState(false);
+	const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
 	const headers: any = useMemo(
 		() => [
@@ -116,7 +118,6 @@ const GlobalDelegates: FC = () => {
 	const [offset, setOffset] = useState<number>(0);
 	const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
 	const [totalAccount, setTotalAccount] = useState<number>(0);
-	const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
 	const [initialGlobalRights, setinitialGlobalRights] = useState({
 		setGlobalConfig: false,
@@ -483,9 +484,111 @@ const GlobalDelegates: FC = () => {
 		});
 	}, []);
 
+	useEffect(() => {
+		const table = tableRef.current;
+
+		const handleResize = debounce((): void => {
+			if (table) {
+				const tableHeight = table.clientHeight + 375;
+				const viewportHeight = window.innerHeight;
+				setIsTableTooTall(tableHeight > viewportHeight);
+			}
+		}, 100);
+
+		if (table && !resizeObserverRef.current) {
+			const observer = new ResizeObserver(handleResize);
+			resizeObserverRef.current = observer;
+			observer.observe(table);
+		}
+
+		return () => {
+			if (resizeObserverRef.current) {
+				resizeObserverRef.current.disconnect();
+				resizeObserverRef.current = null;
+			}
+		};
+	}, []);
+
+	const accountContextValue = useMemo(
+		() => ({
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		}),
+		[
+			accountDetail,
+			cosDetail,
+			setAccountDetail,
+			accSpecificDetail,
+			setAccSpecificDetail,
+			directMemberList,
+			inDirectMemberList,
+			setDirectMemberList,
+			setInDirectMemberList,
+			initAccountDetail,
+			setInitAccountDetail,
+			setSignatureItems,
+			setSignatureList,
+			otpList,
+			getListOtp,
+			identitiesList,
+			deligateDetail,
+			setDeligateDetail,
+			getIdentitiesList,
+			folderList,
+			setFolderList,
+			credentialList,
+			getCredentialList,
+			initialGlobalRights,
+			setinitialGlobalRights,
+			globalRights,
+			setGlobalRights,
+			deleteAdministrationRights,
+			setDeleteAdministrationRights,
+			userSessionList,
+			setAllUserSessionList,
+			allUserSessionList,
+			setUserSessionList,
+			defaultCOS,
+			setDefaultCOS
+		]
+	);
+
 	const openDetailView = useCallback(
 		(acc: any): void => {
-			setShowAccountDetailView(true);
+			setShowEditAccountView(true);
 			getAccountDetail(acc?.id);
 			getSignatureDetail(acc?.id);
 			getAccountMembership(acc?.id);
@@ -594,48 +697,23 @@ const GlobalDelegates: FC = () => {
 				setIsRequestInProgress(false);
 			})
 			.catch((error: any) => {
-				createSnackbar({
-					key: 'error',
-					type: 'error',
-					label: error
-						? error?.error
-						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
+				const snackbarConfig = generateSnackbarFromError(error, t);
+				createSnackbar(snackbarConfig);
+				setIsRequestInProgress(false);
 			});
 	}, [accountUserType, limit, offset, openDetailView, t, createSnackbar]);
-
-	const closeAccountDetailDialog = useCallback(() => {
-		if (showAccountDetailView) {
-			setShowAccountDetailView(false);
-		}
-	}, [showAccountDetailView]);
-
-	const handleKeyEvent = useCallback(
-		(event) => {
-			if (event.key === 'Escape') {
-				closeAccountDetailDialog();
-			}
-		},
-		[closeAccountDetailDialog]
-	);
-
-	useEffect(() => {
-		window.addEventListener('keydown', handleKeyEvent);
-		return () => {
-			window.removeEventListener('keydown', handleKeyEvent);
-		};
-	}, [handleKeyEvent]);
 
 	useEffect(() => {
 		getAccountList();
 	}, [offset, getAccountList]);
 
 	return (
-		<Container mainAlignment="flex-start" background="gray6">
-			<Row padding={{ left: 'large' }} mainAlignment="flex-start" width="100%">
+		<Container
+			padding={{ top: 'large', left: 'large', right: 'large' }}
+			mainAlignment="flex-start"
+			background="gray6"
+		>
+			<Row mainAlignment="flex-start" width="100%">
 				<Container
 					orientation="vertical"
 					mainAlignment="space-around"
@@ -644,7 +722,7 @@ const GlobalDelegates: FC = () => {
 				>
 					<Row orientation="horizontal" width="100%" mainAlignment="flex-start">
 						<Text size="medium" weight="bold" color="gray0">
-							{t('label.global_delegates', 'Global Delegates')}
+							{t('label.administrators', 'Administrators')}
 						</Text>
 					</Row>
 				</Container>
@@ -658,11 +736,10 @@ const GlobalDelegates: FC = () => {
 				mainAlignment="flex-start"
 				width="100%"
 				style={{
-					height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 12.5rem)',
 					position: 'relative',
 					overflow: 'auto'
 				}}
-				padding={{ all: 'large' }}
+				padding={{ top: 'small', left: 'small', right: 'small' }}
 			>
 				<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
 					<Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -683,16 +760,15 @@ const GlobalDelegates: FC = () => {
 							crossAlignment="flex-start"
 							width="fill"
 							style={{
-								height: screenMode === MOBILE ? 'auto' : 'calc(100vh - 21.25rem)',
 								position: 'relative'
 							}}
-							ref={tableRef}
 						>
 							<Table
 								rows={!isRequestInProgress ? accountList : []}
 								headers={headers}
 								showCheckbox={false}
 								multiSelect={false}
+								ref={tableRef}
 								style={{
 									overflow: 'auto',
 									height: isRequestInProgress || accountList.length === 0 ? '50%' : '100%'
@@ -750,75 +826,35 @@ const GlobalDelegates: FC = () => {
 							)}
 							{accountList.length !== 0 && (
 								<Container
-									orientation="horizontal"
-									mainAlignment="space-between"
-									width="100%"
-									style={{ position: 'absolute', bottom: '-4rem' }}
-									height="auto"
+									style={{
+										position: 'sticky',
+										bottom: isTableTooTall ? '0' : '-4rem'
+									}}
 								>
-									<Container crossAlignment="flex-start">
-										<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-									</Container>
+									<ScrollContainer isVisible={isTableTooTall} />
 									<Container
-										crossAlignment="flex-end"
 										orientation="horizontal"
-										mainAlignment="flex-end"
-										padding={{ top: 'small' }}
+										mainAlignment="space-between"
+										background="gray6"
+										width="100%"
+										padding={{ right: 'extralarge' }}
+										height="auto"
 									>
-										<TrackNumberPerPage setPageSize={setLimit} />
+										<Container crossAlignment="flex-start">
+											<Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
+										</Container>
+										<Container
+											crossAlignment="flex-end"
+											orientation="horizontal"
+											mainAlignment="flex-end"
+											padding={{ top: 'small' }}
+										>
+											<TrackNumberPerPage setPageSize={setLimit} />
+										</Container>
 									</Container>
 								</Container>
 							)}
-							<AccountContext.Provider
-								value={{
-									accountDetail,
-									cosDetail,
-									setAccountDetail,
-									accSpecificDetail,
-									setAccSpecificDetail,
-									directMemberList,
-									inDirectMemberList,
-									setDirectMemberList,
-									setInDirectMemberList,
-									initAccountDetail,
-									setInitAccountDetail,
-									setSignatureItems,
-									setSignatureList,
-									otpList,
-									getListOtp,
-									identitiesList,
-									deligateDetail,
-									setDeligateDetail,
-									getIdentitiesList,
-									folderList,
-									setFolderList,
-									credentialList,
-									getCredentialList,
-									initialGlobalRights,
-									setinitialGlobalRights,
-									globalRights,
-									setGlobalRights,
-									deleteAdministrationRights,
-									setDeleteAdministrationRights,
-									userSessionList,
-									setAllUserSessionList,
-									allUserSessionList,
-									setUserSessionList
-								}}
-							>
-								{showAccountDetailView && (
-									<ModalOverlay setOpen={setShowAccountDetailView} open={showAccountDetailView}>
-										<AccountDetailView
-											selectedAccount={selectedAccount}
-											setShowAccountDetailView={setShowAccountDetailView}
-											setShowEditAccountView={setShowEditAccountView}
-											STATUS_COLOR={STATUS_COLOR}
-											getAccountList={getAccountList}
-											cosDetail={cosDetail}
-										/>
-									</ModalOverlay>
-								)}
-
+							<AccountContext.Provider value={accountContextValue}>
 								{showEditAccountView && (
 									<ModalOverlay
 										setOpen={setShowEditAccountView}
@@ -836,7 +872,6 @@ const GlobalDelegates: FC = () => {
 											getAccountDetail={getAccountDetail}
 											defaultTab={defaultTab}
 											setDefaultTab={setDefaultTab}
-											setShowAccountDetailView={setShowAccountDetailView}
 											showModal={showModal}
 											setShowModal={setShowModal}
 											isDirty={isDirty}

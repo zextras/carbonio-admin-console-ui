@@ -38,6 +38,7 @@ import { useDomainStore } from '../../../store/domain/store';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import HoverContentRowFactory from '../../app/shared/hoverContentRowFactory';
 import DropDownInput from '../../components/dropDownInput';
+import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import ListRow from '../../list/list-row';
 
 const SelectItem = styled(Row)``;
@@ -101,16 +102,24 @@ const DomainCosLink: FC<{
 		}
 	}, [cosMaxAccountList, cosList]);
 
-	const getCosLists = (cos: string): any => {
-		getCosList(cos, 0).then((data) => {
-			const searchResponse: any = data;
-			if (!!searchResponse && searchResponse?.searchTotal > 0) {
-				setCosList(searchResponse?.cos);
-			} else {
-				setCosList([]);
-			}
-		});
-	};
+	const getCosLists = useCallback(
+		(cos: string): any => {
+			getCosList(cos, 0)
+				.then((data) => {
+					const searchResponse: any = data;
+					if (!!searchResponse && searchResponse?.searchTotal > 0) {
+						setCosList(searchResponse?.cos);
+					} else {
+						setCosList([]);
+					}
+				})
+				.catch((error) => {
+					const snackbarConfig = generateSnackbarFromError(error, t);
+					createSnackbar(snackbarConfig);
+				});
+		},
+		[createSnackbar, t]
+	);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchCosCall = useCallback(
@@ -286,7 +295,7 @@ const DomainCosLink: FC<{
 					});
 				});
 		},
-		[createSnackbar, domainName, t, onSaveCosLinkToDomain]
+		[domainName, getCosLists, onSaveCosLinkToDomain, createSnackbar, t]
 	);
 
 	const onRemoveCosLinkToDomain = useCallback(
