@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.9.51](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.50...v0.9.51) (2024-07-02)
+
+
+### Bug Fixes
+
+* co-1251 backup and legal hold not visible in carbonio ce ([3fc8e1c](https://github.com/zextras/carbonio-admin-console-ui/commit/3fc8e1c2ce6e720eaac07ab44653f98a8c6d446e))
+* legal hold error response message format ([56f5ec7](https://github.com/zextras/carbonio-admin-console-ui/commit/56f5ec7db1f55f3c9a2ddfc2129fb5fd26025e20))
+
 ### [0.9.50](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.9.49...v0.9.50) (2024-06-18)
 
 
