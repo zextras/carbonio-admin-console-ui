@@ -442,4 +442,6 @@ export const ERROR_LABLE = 'error';
 export const SUCCESS_LABLE = 'success';
 export const UNSET = 'unset';
 export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
+export const SYSTEM_ACCOUNT_FLAG = 'systemAccount';
+export const ADMIN_GROUP_FLAG = 'adminGroup';
 export const PRIMARY_COLOR_CODE_EX = 'ex. #225CA8';

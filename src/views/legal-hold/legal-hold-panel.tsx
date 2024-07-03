@@ -75,6 +75,17 @@ const CustomIcon = styled(Icon)`
 	height: 1.25rem;
 `;
 
+type Details = {
+	[key: string]: string;
+};
+
+type ErrorResponse = {
+	code: string;
+	details: Details;
+	message: string;
+	time: number;
+};
+
 const LegalHoldPanel: FC = () => {
 	const [t] = useTranslation();
 	const screenMode = useScreenMode();
@@ -310,16 +321,21 @@ const LegalHoldPanel: FC = () => {
 		[domainName, searchAccount, selectedDomainName]
 	);
 
+	const formatedErrorMessage = useCallback((response: ErrorResponse): ErrorResponse => {
+		if (response.details) {
+			Object.entries(response.details).forEach(([key, value]) => {
+				const placeholder = `{${key}}`;
+				response.message = response.message.replace(placeholder, value);
+			});
+		}
+		return response;
+	}, []);
+
 	const getAllLegalHold = useCallback(() => {
 		getLegalHoldList()
 			.then((data) => {
-				if (data?.Body?.response?.content) {
-					const parseData = JSON.parse(data?.Body?.response?.content);
-					const message: string = parseData?.error?.message || parseData?.message;
-					if (message) {
-						showSnackbar(ERROR_LABLE, ERROR_LABLE, message);
-						return;
-					}
+				const parseData = JSON.parse(data?.Body?.response?.content);
+				if (parseData?.ok) {
 					const key = Object.keys(parseData?.response)[0];
 					if (key.toString().includes('No account found for legal hold')) {
 						return;
@@ -335,12 +351,22 @@ const LegalHoldPanel: FC = () => {
 						});
 					});
 					setAllLegalHoldAccountList(legalHoldsItems);
+				} else {
+					const errorMsgFormated = formatedErrorMessage(parseData?.error);
+					createSnackbar({
+						key: 'error',
+						type: 'error',
+						label: errorMsgFormated?.message ? errorMsgFormated?.message : errorMessage,
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true
+					});
 				}
 			})
 			.catch((error) => {
 				showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ? error?.message : errorMessage);
 			});
-	}, [errorMessage, showSnackbar]);
+	}, [createSnackbar, errorMessage, formatedErrorMessage, showSnackbar]);
 
 	useEffect(() => {
 		getAllLegalHold();

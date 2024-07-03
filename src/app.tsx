@@ -681,21 +681,36 @@ const App: FC = () => {
 				tooltip: MTATooltipView,
 				trackerLabel: PRIMARY_BAR_MTA
 			});
+			if (isAdvanced) {
+				addRoute({
+					route: BACKUP_ROUTE_ID,
+					position: 1,
+					visible: true,
+					label: t('label.backup', 'Backup') || '',
+					// primaryBar: 'HistoryOutline',
+					primaryBar: backupPrimaryBar,
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...servicesSection },
+					tooltip: BackupTooltipView,
+					trackerLabel: PRIMARY_BAR_BACKUP
+				});
+				addRoute({
+					route: LEGAL_HOLD_ROUTE_ID,
+					position: 2,
+					visible: true,
+					label: t('label.legal_hold', 'Legal Hold') || '',
+					primaryBar: 'LockOutline',
+					appView: AppView,
+					// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+					// @ts-ignore
+					primarybarSection: { ...servicesSection },
+					tooltip: LegalHoldTooltipView,
+					trackerLabel: PRIMARY_BAR_LEGAL_HOLD
+				});
+			}
 
-			addRoute({
-				route: BACKUP_ROUTE_ID,
-				position: 1,
-				visible: true,
-				label: t('label.backup', 'Backup') || '',
-				// primaryBar: 'HistoryOutline',
-				primaryBar: backupPrimaryBar,
-				appView: AppView,
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				primarybarSection: { ...servicesSection },
-				tooltip: BackupTooltipView,
-				trackerLabel: PRIMARY_BAR_BACKUP
-			});
 			addRoute({
 				route: PRIVACY_ROUTE_ID,
 				position: 6,
@@ -717,12 +732,14 @@ const App: FC = () => {
 		}
 	}, [
 		BackupTooltipView,
+		LegalHoldTooltipView,
 		MTATooltipView,
 		PrivacyTooltipView,
 		StorageTooltipView,
 		backupPrimaryBar,
 		hasAllConfigRights,
 		hasListServerRights,
+		isAdvanced,
 		managementSection,
 		servicesSection,
 		t
