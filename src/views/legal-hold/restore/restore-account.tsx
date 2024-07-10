@@ -16,7 +16,8 @@ import {
 	Table,
 	DateTimePicker,
 	useSnackbar,
-	Padding
+	Padding,
+	Switch
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -25,25 +26,41 @@ import {
 	soapFetch
 } from '@zextras/carbonio-shell-ui';
 import { cloneDeep, debounce, unionBy } from 'lodash';
+import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 
-import { LegalHolds } from '../../../../types';
+import { BackupAccountItem } from '../../../../types';
 import { ERROR_LABLE, RECORD_DISPLAY_LIMIT, SUCCESS_LABLE } from '../../../constants';
 import { accountListDirectory } from '../../../services/account-list-directory-service';
 import { doRestoreOnNewLegalHoldAccount } from '../../../services/restore_new_legal_hold_account';
 import CustomHeaderFactory from '../../app/shared/customTableHeaderFactory';
 import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import DropDownInput from '../../components/dropDownInput';
+import { formatedErrorMessage } from '../../utility/utils';
+
+type Details = {
+	[key: string]: string;
+};
+
+type ErrorResponse = {
+	code: string;
+	details: Details;
+	message: string;
+	time: number;
+};
 
 const RestoreAccountView: FC<{
-	legalHoldAccount: LegalHolds | undefined;
+	legalHoldAccount: BackupAccountItem | undefined;
 	setIsShowRestoreView: (value: boolean) => void;
 }> = ({ legalHoldAccount, setIsShowRestoreView }) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [searchAccount, setSearchAccount] = useState<string>('');
+	const [unDelete, setUndelete] = useState<boolean>(false);
 	const [legalHoldAppendix, setLegalHoldAppendix] = useState<string>('');
 	const account = legalHoldAccount?.name ?? '';
+	const accountId = legalHoldAccount?.id ?? '';
+	const targetServers = legalHoldAccount?.serverName ?? '';
 	const [accountList, setAccountList] = useState<any[]>([]);
 	const [searchAccountResult, setSearchAccountResult] = useState<any[]>([]);
 	const [isRequestInprogress, setIsRequestInprogress] = useState<boolean>(false);
@@ -52,6 +69,9 @@ const RestoreAccountView: FC<{
 	const [tableRows, setTableRows] = useState<any[]>([]);
 	const [selectedRow, setSelectedRow] = useState<any>([]);
 	const [fromDate, setFromDate] = useState<Date>();
+	const [undeleteFromDate, setUndeleteFromDate] = useState<Date>(
+		new Date(legalHoldAccount?.creationTimestamp || '')
+	);
 	const [isEnableLeagalAccess, setIsEnableLeagalAccess] = useState<boolean>(false);
 	const [isRestoreOprationComplete, setIsRestoreOprationComplete] = useState<boolean>(false);
 	const [legalHoldAccountInformation, setLegalHoldAccountInformation] = useState<any>(null);
@@ -175,7 +195,7 @@ const RestoreAccountView: FC<{
 					showSnackbar(
 						SUCCESS_LABLE,
 						SUCCESS_LABLE,
-						t('legal_hold.legal_hold_enabled_successfully', 'Legal Hold enabled successfully')
+						t('legal_hold.permission_given_successfully', 'Permission given successfully')
 					);
 				});
 		},
@@ -224,8 +244,18 @@ const RestoreAccountView: FC<{
 		}
 	}, [accountList, searchAccount, searchAccountResult]);
 
-	const handleFromDateChange = useCallback((d) => {
-		setFromDate(d);
+	const handleFromDateChange = useCallback(
+		(d) => {
+			if (undeleteFromDate && d?.getTime() < undeleteFromDate?.getTime()) {
+				setUndeleteFromDate(d);
+			}
+			setFromDate(d);
+		},
+		[undeleteFromDate]
+	);
+
+	const handleUndeleteFromDateChange = useCallback((d) => {
+		setUndeleteFromDate(d);
 	}, []);
 
 	useMemo(() => {
@@ -267,6 +297,50 @@ const RestoreAccountView: FC<{
 		setTableRows(accountListArr);
 	}, [accountList]);
 
+	const fixDate = useCallback(
+		({ getDate, getUndeletedDate }) => {
+			let returnTimestamp;
+			const creationTimestamp = legalHoldAccount?.creationTimestamp;
+			const deletedTimestamp = legalHoldAccount?.deletedTimestamp;
+			if (getDate) {
+				returnTimestamp = fromDate?.setHours(23, 59, 59, 999);
+			}
+			if (getUndeletedDate && unDelete) {
+				returnTimestamp = undeleteFromDate?.setHours(0, 0, 0, 0);
+			}
+
+			if (returnTimestamp && returnTimestamp > new Date().getTime()) {
+				returnTimestamp = new Date().getTime();
+			}
+
+			if (returnTimestamp && deletedTimestamp && returnTimestamp > deletedTimestamp) {
+				returnTimestamp = deletedTimestamp;
+			}
+
+			if (returnTimestamp && creationTimestamp && returnTimestamp < creationTimestamp) {
+				returnTimestamp = creationTimestamp;
+			}
+			return returnTimestamp;
+		},
+		[
+			fromDate,
+			legalHoldAccount?.creationTimestamp,
+			legalHoldAccount?.deletedTimestamp,
+			unDelete,
+			undeleteFromDate
+		]
+	);
+
+	// const formatedErrorMessage = useCallback((response: ErrorResponse): ErrorResponse => {
+	// 	if (response.details) {
+	// 		Object.entries(response.details).forEach(([key, value]) => {
+	// 			const placeholder = `{${key}}`;
+	// 			response.message = response.message.replace(placeholder, value);
+	// 		});
+	// 	}
+	// 	return response;
+	// }, []);
+
 	const onRestore = useCallback(() => {
 		if (legalHoldAppendix === '') {
 			showSnackbar(
@@ -293,11 +367,19 @@ const RestoreAccountView: FC<{
 			return;
 		}
 		const destinationAccount = `${legalHoldAppendix}_${account}`;
-		const sourceAccount = account;
-		const date = fromDate?.getTime();
-		if (date) {
+		const sourceAccountId = accountId;
+		const getDate = fixDate({ getDate: true });
+		const getUndeletedDate = fixDate({ getUndeletedDate: true });
+		if (getDate) {
 			setIsRequestInprogress(true);
-			doRestoreOnNewLegalHoldAccount(sourceAccount, destinationAccount, date)
+			doRestoreOnNewLegalHoldAccount(
+				sourceAccountId,
+				destinationAccount,
+				getDate,
+				getUndeletedDate,
+				unDelete,
+				targetServers
+			)
 				.then(() => {
 					setIsRequestInprogress(false);
 					setIsRestoreOprationComplete(true);
@@ -324,21 +406,27 @@ const RestoreAccountView: FC<{
 				})
 				.catch((err) => {
 					setIsRequestInprogress(false);
+					const formatedMessage = formatedErrorMessage(err);
 					showSnackbar(
 						ERROR_LABLE,
 						ERROR_LABLE,
-						err ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+						formatedMessage?.message ??
+							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
 					);
 				});
 		}
 	}, [
 		account,
+		accountId,
+		fixDate,
 		fromDate,
 		legalHoldAppendix,
 		setIsShowRestoreView,
 		showSnackbar,
 		t,
-		tableRows.length
+		tableRows.length,
+		targetServers,
+		unDelete
 	]);
 
 	return (
@@ -371,7 +459,7 @@ const RestoreAccountView: FC<{
 					<Row padding={{ horizontal: 'small' }}></Row>
 					<Row takeAvailableSpace mainAlignment="flex-start">
 						<Text size="medium" overflow="ellipsis" weight="bold">
-							{t('legal_hold.restore_for_legal_hold', 'Restore for Legal Hold')} {' - '}
+							{t('legal_hold.restore', 'Restore')} {' - '}
 							{legalHoldAccount?.name}
 						</Text>
 					</Row>
@@ -397,7 +485,88 @@ const RestoreAccountView: FC<{
 					style={{ overflow: 'auto' }}
 					background="gray6"
 				>
-					<Container crossAlignment="flex-start" mainAlignment="flex-start" height="auto">
+					<Container
+						orientation="horizontal"
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{ bottom: 'small' }}
+					>
+						<Container crossAlignment="flex-start" width={'7rem'}>
+							<Text size="small" overflow="ellipsis" weight="bold">
+								{t('label.server', 'Server Name')} :
+							</Text>
+						</Container>
+						<Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
+							<Text size="small" overflow="ellipsis">
+								{legalHoldAccount?.serverName}
+							</Text>
+						</Container>
+					</Container>
+					<Container
+						orientation="horizontal"
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{ bottom: 'small' }}
+					>
+						<Container crossAlignment="flex-start" width={'7rem'}>
+							<Text size="small" overflow="ellipsis" weight="bold">
+								{t('label.account_id', 'Account Id')} :
+							</Text>
+						</Container>
+						<Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
+							<Text size="small" overflow="ellipsis">
+								{legalHoldAccount?.id}
+							</Text>
+						</Container>
+					</Container>
+
+					<Container
+						orientation="horizontal"
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{ bottom: 'small' }}
+					>
+						<Container crossAlignment="flex-start" width={'7rem'}>
+							<Text size="small" overflow="ellipsis" weight="bold">
+								{t('label.created_date', 'Created Date')} :
+							</Text>
+						</Container>
+						<Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
+							<Text size="small" overflow="ellipsis">
+								{moment(legalHoldAccount?.creationTimestamp).format('DD/MM/YYYY')}
+							</Text>
+						</Container>
+					</Container>
+
+					{legalHoldAccount?.deletedTimestamp && (
+						<Container
+							orientation="horizontal"
+							crossAlignment="flex-start"
+							mainAlignment="flex-start"
+							height="auto"
+						>
+							<Container crossAlignment="flex-start" width={'7rem'}>
+								<Text size="small" overflow="ellipsis" weight="bold">
+									{t('label.deleted_date', 'Deleted Date')} :
+								</Text>
+							</Container>
+							<Container width={'20rem'} crossAlignment="flex-start" padding={{ left: 'small' }}>
+								<Text size="small" overflow="ellipsis">
+									{moment(legalHoldAccount?.deletedTimestamp).format('DD/MM/YYYY')}
+								</Text>
+							</Container>
+						</Container>
+					)}
+
+					<Container
+						crossAlignment="flex-start"
+						mainAlignment="flex-start"
+						height="auto"
+						padding={{ top: 'large' }}
+					>
 						<Text size="small" overflow="ellipsis" weight="bold">
 							{t('legal_hold.restore_settings', 'Restore Settings')}
 						</Text>
@@ -440,13 +609,63 @@ const RestoreAccountView: FC<{
 							<DateTimePicker
 								className="fffff"
 								width="fill"
-								label={t('label.from_date', 'From date')}
+								label={t('label.account_status_on ', 'Account status on')}
 								onChange={handleFromDateChange}
 								dateFormat="dd/MM/yyyy"
 								includeTime={false}
+								minDate={new Date(legalHoldAccount?.creationTimestamp || '')}
+								maxDate={
+									legalHoldAccount?.deletedTimestamp
+										? new Date(legalHoldAccount.deletedTimestamp)
+										: new Date()
+								}
 							/>
 						</Container>
 					</Container>
+
+					<Container
+						orientation="horizontal"
+						mainAlignment="space-between"
+						crossAlignment="flex-start"
+						padding={{ bottom: 'extralarge' }}
+						height="auto"
+					>
+						<Container crossAlignment="flex-start">
+							<Switch
+								label={t('legal_hold.include_items_deleted', 'Include items deleted')}
+								value={unDelete}
+								onClick={(): void => {
+									setUndelete(!unDelete);
+								}}
+								iconColor="primary"
+							/>
+						</Container>
+					</Container>
+
+					{unDelete && (
+						<Container
+							orientation="horizontal"
+							mainAlignment="space-between"
+							crossAlignment="flex-start"
+							padding={{ bottom: 'extralarge' }}
+							height="auto"
+						>
+							<Container crossAlignment="flex-start">
+								<DateTimePicker
+									className="fffff"
+									width="fill"
+									isClearable
+									label={t('label.include_items_deleted_after', 'Include items deleted after')}
+									onChange={handleUndeleteFromDateChange}
+									dateFormat="dd/MM/yyyy"
+									includeTime={false}
+									selected={undeleteFromDate}
+									minDate={new Date(legalHoldAccount?.creationTimestamp || '')}
+									maxDate={fromDate}
+								/>
+							</Container>
+						</Container>
+					)}
 
 					<Container
 						crossAlignment="flex-start"
@@ -569,7 +788,7 @@ const RestoreAccountView: FC<{
 					size="large"
 					type="default"
 					color="primary"
-					label={t('legal_hold.enable_legal_hold', 'Enable legal hold')}
+					label={t('legal_hold.give_permission', 'Give Permission')}
 					onClick={enableLegalAccess}
 					disabled={
 						accountList.length === 0 ||

@@ -28,11 +28,12 @@ import {
 	useDomainInformation
 } from '@zextras/carbonio-shell-ui';
 import { debounce } from 'lodash';
+import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
 import RestoreAccountView from './restore/restore-account';
-import { BackupAccountItem, DomainResponse, LegalHolds } from '../../../types';
+import { BackupAccountItem, DomainResponse } from '../../../types';
 import logo from '../../assets/ninja_robo.svg';
 import {
 	ERROR_LABLE,
@@ -40,9 +41,9 @@ import {
 	MOBILE,
 	RECORD_DISPLAY_LIMIT,
 	SET,
+	TRUE,
 	UNSET
 } from '../../constants';
-import { getLegalHoldList } from '../../services/get-legal-hold-list';
 import { getDomainList } from '../../services/search-domain-service';
 import { setUnsetLegalHold } from '../../services/set-unset-legalhold';
 import CustomHeaderFactory from '../app/shared/customTableHeaderFactory';
@@ -75,17 +76,6 @@ const CustomIcon = styled(Icon)`
 	height: 1.25rem;
 `;
 
-type Details = {
-	[key: string]: string;
-};
-
-type ErrorResponse = {
-	code: string;
-	details: Details;
-	message: string;
-	time: number;
-};
-
 const LegalHoldPanel: FC = () => {
 	const [t] = useTranslation();
 	const screenMode = useScreenMode();
@@ -117,7 +107,6 @@ const LegalHoldPanel: FC = () => {
 			a: { n: string; _content: string }[];
 		}[]
 	>([]);
-	const [allLegalHoldAccountList, setAllLegalHoldAccountList] = useState<Array<LegalHolds>>([]);
 	const [isDomainSelect, setIsDomainSelect] = useState(false);
 	const domainName = useDomainInformation()?.name || '';
 	const [searchDomainName, setSearchDomainName] = useState<string>(domainName);
@@ -160,30 +149,51 @@ const LegalHoldPanel: FC = () => {
 	const headers: THeader[] = useMemo(
 		() => [
 			{
-				id: 'name',
-				label: t('label.name', 'Name'),
-				width: '25%',
+				id: 'email',
+				label: t('label.email', 'Email'),
+				width: '20%',
 				bold: true,
 				sortable: false
 			},
 			{
-				id: 'email',
-				label: t('label.email', 'Email'),
-				width: '25%',
+				id: 'uid',
+				label: t('label.account_id', 'Account Id'),
+				width: '20%',
+				bold: true,
+				sortable: false
+			},
+			{
+				id: 'serverName',
+				label: t('label.server_name', 'Server Name'),
+				width: '20%',
+				bold: true,
+				sortable: false
+			},
+			{
+				id: 'createdDate',
+				label: t('label.created_date', 'Created Date'),
+				width: '10%',
+				bold: true,
+				sortable: false
+			},
+			{
+				id: 'deletedDate',
+				label: t('label.deleted_date', 'Deleted Date'),
+				width: '10%',
 				bold: true,
 				sortable: false
 			},
 			{
 				id: 'status',
 				label: t('label.account_status', 'Account Status'),
-				width: '25%',
+				width: '10%',
 				bold: true,
 				sortable: false
 			},
 			{
 				id: 'legalhold',
 				label: t('label.legal_hold_status', 'Legal Hold Status'),
-				width: '25%',
+				width: '10%',
 				bold: true,
 				sortable: false
 			}
@@ -191,26 +201,10 @@ const LegalHoldPanel: FC = () => {
 		[t]
 	);
 
-	useEffect(() => {
-		if (allLegalHoldAccountList.length > 0 && accounts.length > 0) {
-			const updateAccountItems = accounts.map((item: BackupAccountItem) => {
-				const holdAccount = item;
-				const statusItem = allLegalHoldAccountList.find(
-					(legalHoldAccount) => legalHoldAccount.id === holdAccount?.id
-				)?.status;
-				if (statusItem) {
-					holdAccount.legalHold = statusItem.toString();
-				}
-				return holdAccount;
-			});
-			setBackupAccountList(updateAccountItems);
-		}
-	}, [accounts, allLegalHoldAccountList]);
-
 	const setBackupAccountAndPage = useCallback(
 		(backupAccounts, page) => {
 			if (backupAccounts && Array.isArray(backupAccounts) && backupAccounts.length > 0) {
-				setAccounts(backupAccounts);
+				setBackupAccountList(backupAccounts);
 			} else {
 				setBackupAccountList([]);
 			}
@@ -321,65 +315,6 @@ const LegalHoldPanel: FC = () => {
 		[domainName, searchAccount, selectedDomainName]
 	);
 
-	const formatedErrorMessage = useCallback((response: ErrorResponse): ErrorResponse => {
-		if (response.details) {
-			Object.entries(response.details).forEach(([key, value]) => {
-				const placeholder = `{${key}}`;
-				response.message = response.message.replace(placeholder, value);
-			});
-		}
-		return response;
-	}, []);
-
-	const getAllLegalHold = useCallback(() => {
-		getLegalHoldList()
-			.then((data) => {
-				const parseData = JSON.parse(data?.Body?.response?.content);
-				if (parseData?.ok) {
-					const key = Object.keys(parseData?.response)[0];
-					if (key.toString().includes('No account found for legal hold')) {
-						return;
-					}
-					const accountRawData = parseData.response;
-					const legalHoldsItems: Array<LegalHolds> = [];
-					Object.entries(accountRawData).forEach((entry: any) => {
-						const [keyItem, value] = entry;
-						legalHoldsItems.push({
-							id: keyItem.split(' ')[1],
-							name: keyItem.split(' ')[0],
-							status: value
-						});
-					});
-					setAllLegalHoldAccountList(legalHoldsItems);
-				} else {
-					const errorMsgFormated = formatedErrorMessage(parseData?.error);
-					createSnackbar({
-						key: 'error',
-						type: 'error',
-						label: errorMsgFormated?.message ? errorMsgFormated?.message : errorMessage,
-						autoHideTimeout: 3000,
-						hideButton: true,
-						replace: true
-					});
-				}
-			})
-			.catch((error) => {
-				showSnackbar(ERROR_LABLE, ERROR_LABLE, error?.message ? error?.message : errorMessage);
-			});
-	}, [createSnackbar, errorMessage, formatedErrorMessage, showSnackbar]);
-
-	useEffect(() => {
-		getAllLegalHold();
-	}, [getAllLegalHold]);
-
-	const getStatusOfLegalHoldFromAccount = useCallback(
-		(name): string => {
-			const status = allLegalHoldAccountList.find((item) => item?.name === name)?.status;
-			return status && status === UNSET ? 'NO' : 'YES';
-		},
-		[allLegalHoldAccountList]
-	);
-
 	const allBackupAccounts = useMemo(
 		() =>
 			isShowOnlyLegalHostAccount
@@ -400,7 +335,7 @@ const LegalHoldPanel: FC = () => {
 						}}
 						crossAlignment="flex-start"
 					>
-						<Text size="small" weight="regular" key={item?.name} color="gray0">
+						<Text size="small" weight="light" key={item?.name} color="gray0">
 							{item?.name}
 						</Text>
 					</Container>,
@@ -412,7 +347,40 @@ const LegalHoldPanel: FC = () => {
 						crossAlignment="flex-start"
 					>
 						<Text size="small" weight="light" key={item?.name} color="gray0">
-							{item?.name}
+							{item?.id}
+						</Text>
+					</Container>,
+					<Container
+						key={item?.name}
+						onClick={(): void => {
+							setSelectedAccountRows([item?.id]);
+						}}
+						crossAlignment="flex-start"
+					>
+						<Text size="small" weight="light" key={item?.name} color="gray0">
+							{item?.serverName}
+						</Text>
+					</Container>,
+					<Container
+						key={item?.name}
+						onClick={(): void => {
+							setSelectedAccountRows([item?.id]);
+						}}
+						crossAlignment="flex-start"
+					>
+						<Text size="small" weight="light" key={item?.name} color="gray0">
+							{moment(item?.creationTimestamp).format('DD/MM/YYYY')}
+						</Text>
+					</Container>,
+					<Container
+						key={item?.name}
+						onClick={(): void => {
+							setSelectedAccountRows([item?.id]);
+						}}
+						crossAlignment="flex-start"
+					>
+						<Text size="small" weight="light" key={item?.name} color="gray0">
+							{item?.deletedTimestamp ? moment(item?.deletedTimestamp).format('DD/MM/YYYY') : ''}
 						</Text>
 					</Container>,
 					<Container
@@ -434,7 +402,9 @@ const LegalHoldPanel: FC = () => {
 						crossAlignment="flex-start"
 					>
 						<Text size="small" weight="regular" key={item?.name} color="gray0">
-							{getStatusOfLegalHoldFromAccount(item?.name)}
+							{item.legalHold?.toUpperCase() === TRUE
+								? t('legal_hold.yes', 'Yes')
+								: t('legal_hold.no', 'No')}
 						</Text>
 					</Container>
 				]
@@ -443,50 +413,70 @@ const LegalHoldPanel: FC = () => {
 		} else {
 			setAccountRows([]);
 		}
-	}, [allBackupAccounts, getStatusOfLegalHoldFromAccount]);
+	}, [allBackupAccounts, t]);
 
 	const getLegalHoldById = useCallback(
-		(id): LegalHolds | undefined => {
-			const account = allLegalHoldAccountList.find((item) => item?.id === id);
+		(id): BackupAccountItem | undefined => {
+			const account = allBackupAccounts.find((item) => item?.id === id);
 			return account ?? undefined;
 		},
-		[allLegalHoldAccountList]
+		[allBackupAccounts]
+	);
+
+	const setAccountAfterLegalHold = useCallback(
+		(status: string, id: string) => {
+			const updatedLegalAccounts = allBackupAccounts.map((item) => {
+				const holdItem = item;
+				if (holdItem?.id === id) {
+					holdItem.legalHold = status === SET ? 'true' : 'false';
+				}
+				return holdItem;
+			});
+			setBackupAccountList(updatedLegalAccounts);
+		},
+		[allBackupAccounts]
+	);
+
+	const setUnsetLegalHoldResponse = useCallback(
+		(data: any, status: string, id: string) => {
+			// If Single Server
+			if (data?.Body?.response?.content) {
+				const parseData = JSON.parse(data?.Body?.response?.content);
+				const key = Object.keys(parseData?.response)[0];
+				if (key.toString().includes('No account found for legal hold')) {
+					showSnackbar(ERROR_LABLE, ERROR_LABLE, key ?? errorMessage);
+				} else {
+					setAccountAfterLegalHold(status, id);
+				}
+			} else {
+				// If multi server env
+				const allServers = Object.keys(data);
+				let allServerAccounts: Array<Record<string, unknown>> = [];
+				allServers.forEach((item: string) => {
+					if (data[item]?.response?.accounts) {
+						allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
+					}
+				});
+				if (allServerAccounts.length) {
+					setAccountAfterLegalHold(status, id);
+				}
+			}
+
+			setSelectedAccountRows([]);
+		},
+		[errorMessage, setAccountAfterLegalHold, showSnackbar]
 	);
 
 	const onLegalHoldPress = useCallback(() => {
 		const id = selectedAccountRows[0];
 		const legalHoldItem = getLegalHoldById(id);
 		if (legalHoldItem) {
-			const status = legalHoldItem?.status === UNSET ? SET : UNSET;
+			const status = legalHoldItem?.legalHold?.toUpperCase() === TRUE ? UNSET : SET;
 			setUnsetLegalHold(status, legalHoldItem?.name).then((data) => {
-				const parseData = JSON.parse(data?.Body?.response?.content);
-				const key = Object.keys(parseData?.response)[0];
-				if (key.toString().includes('No account found for legal hold')) {
-					showSnackbar(ERROR_LABLE, ERROR_LABLE, key ?? errorMessage);
-				} else {
-					const updateAccounts = accounts;
-					const updatedLegalAccounts = allLegalHoldAccountList.map((item) => {
-						const holdItem = item;
-						if (holdItem?.id === id) {
-							holdItem.status = status;
-						}
-						return holdItem;
-					});
-					setAllLegalHoldAccountList(updatedLegalAccounts);
-					setAccounts([]);
-					setAccounts(updateAccounts);
-				}
-				setSelectedAccountRows([]);
+				setUnsetLegalHoldResponse(data, status, id);
 			});
 		}
-	}, [
-		selectedAccountRows,
-		getLegalHoldById,
-		showSnackbar,
-		errorMessage,
-		accounts,
-		allLegalHoldAccountList
-	]);
+	}, [selectedAccountRows, getLegalHoldById, setUnsetLegalHoldResponse]);
 
 	const customIconDetail = {
 		onClick: (): void => {
@@ -610,7 +600,7 @@ const LegalHoldPanel: FC = () => {
 			const id = selectedAccountRows[0];
 			const legalHoldItem = getLegalHoldById(id);
 			const label =
-				legalHoldItem?.status === UNSET
+				legalHoldItem?.legalHold === 'false'
 					? t('legal_hold.set_legal_hold', 'Set legal hold')
 					: t('legal_hold.unset_legal_hold', 'Unset legal hold');
 			setLegalHoldOperationLabel(label);

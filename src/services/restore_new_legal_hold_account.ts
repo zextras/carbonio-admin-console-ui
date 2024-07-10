@@ -6,7 +6,7 @@
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	postSoapFetchRequest
+	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
 
 type RestoreResponse = {
@@ -16,35 +16,37 @@ type RestoreResponse = {
 export const doRestoreOnNewLegalHoldAccount = async (
 	srcAccountName: string,
 	dstAccountName: string,
-	date: number
+	date: number,
+	undeleteDate: number | undefined,
+	unDelete: boolean,
+	targetServers: string
 ): Promise<RestoreResponse> =>
-	postSoapFetchRequest(
-		`/service/admin/soap/zextras`,
+	fetchExternalSoap(
+		`/service/extension/zextras_admin/backup/doRestoreOnNewAccount?targetServers=${targetServers}`,
 		{
-			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxBackup',
-			action: 'doRestoreOnNewAccount',
-			command: 'doRestoreOnNewAccount',
 			srcAccountName,
 			dstAccountName,
 			date,
-			undelete: true,
-			undeleteStartDate: date,
-			restoreChatBuddies: false,
-			obeyHSM: false,
-			restoreDatasource: false
-		},
-		'zextras'
-	).then((data: any) => {
-		const parseData = JSON.parse(data?.Body?.response?.content || '{}');
-		const message: string = parseData?.error?.message || parseData?.message;
-		if (message) {
-			return Promise.reject(message);
+			undelete: unDelete,
+			undeleteStartDate: undeleteDate
 		}
-		const operationId = parseData?.response?.operationId;
-		if (!operationId) {
-			const msg = undefined;
-			return Promise.reject(msg);
-		}
-		return { operationId };
-	});
+	)
+		.then((data: any) => {
+			if (data?.error) {
+				return Promise.reject(data.error);
+			}
+			const parseData = data?.operationId
+				? data
+				: JSON.parse(data?.Body?.response?.content || '{}');
+			const message: string = parseData?.error?.message || parseData?.message;
+			if (message) {
+				return Promise.reject(message);
+			}
+			const operationId = data?.operationId ?? parseData?.response?.operationId;
+			if (!operationId) {
+				const msg = undefined;
+				return Promise.reject(msg);
+			}
+			return { operationId };
+		})
+		.catch((err: any) => Promise.reject(err));

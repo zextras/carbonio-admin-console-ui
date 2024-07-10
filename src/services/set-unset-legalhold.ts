@@ -7,18 +7,16 @@
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	postSoapFetchRequest
+	fetchExternalSoap
 } from '@zextras/carbonio-shell-ui';
 
-export const setUnsetLegalHold = async (status: string, email: string): Promise<any> =>
-	postSoapFetchRequest(
-		`/service/admin/soap/zextras`,
-		{
-			_jsns: 'urn:zimbraAdmin',
-			module: 'ZxBackup',
-			action: 'legalHold',
-			command: status,
-			accounts: email
-		},
-		'zextras'
-	);
+export const setUnsetLegalHold = async (
+	status: string,
+	email: string,
+	servers = 'all_servers'
+): Promise<any> =>
+	fetchExternalSoap(`/service/extension/zextras_admin/backup/legalHold?targetServers=${servers}`, {
+		ui: true,
+		command: status,
+		accounts: email
+	});

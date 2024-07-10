@@ -15,4 +15,7 @@ export type BackupAccountItem = {
 	id: string;
 	status: string;
 	legalHold: string;
+	serverName: string;
+	creationTimestamp: number;
+	deletedTimestamp?: number;
 };
