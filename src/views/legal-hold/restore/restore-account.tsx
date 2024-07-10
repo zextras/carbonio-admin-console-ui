@@ -56,7 +56,7 @@ const RestoreAccountView: FC<{
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [searchAccount, setSearchAccount] = useState<string>('');
-	const [unDelete, setUndelete] = useState<boolean>(false);
+	const [unDelete, setUndelete] = useState(false);
 	const [legalHoldAppendix, setLegalHoldAppendix] = useState<string>('');
 	const account = legalHoldAccount?.name ?? '';
 	const accountId = legalHoldAccount?.id ?? '';
@@ -70,7 +70,7 @@ const RestoreAccountView: FC<{
 	const [selectedRow, setSelectedRow] = useState<any>([]);
 	const [fromDate, setFromDate] = useState<Date>();
 	const [undeleteFromDate, setUndeleteFromDate] = useState<Date>(
-		new Date(legalHoldAccount?.creationTimestamp || '')
+		new Date(legalHoldAccount?.creationTimestamp ?? '')
 	);
 	const [isEnableLeagalAccess, setIsEnableLeagalAccess] = useState<boolean>(false);
 	const [isRestoreOprationComplete, setIsRestoreOprationComplete] = useState<boolean>(false);
@@ -330,16 +330,6 @@ const RestoreAccountView: FC<{
 			undeleteFromDate
 		]
 	);
-
-	// const formatedErrorMessage = useCallback((response: ErrorResponse): ErrorResponse => {
-	// 	if (response.details) {
-	// 		Object.entries(response.details).forEach(([key, value]) => {
-	// 			const placeholder = `{${key}}`;
-	// 			response.message = response.message.replace(placeholder, value);
-	// 		});
-	// 	}
-	// 	return response;
-	// }, []);
 
 	const onRestore = useCallback(() => {
 		if (legalHoldAppendix === '') {
@@ -613,7 +603,7 @@ const RestoreAccountView: FC<{
 								onChange={handleFromDateChange}
 								dateFormat="dd/MM/yyyy"
 								includeTime={false}
-								minDate={new Date(legalHoldAccount?.creationTimestamp || '')}
+								minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
 								maxDate={
 									legalHoldAccount?.deletedTimestamp
 										? new Date(legalHoldAccount.deletedTimestamp)
@@ -660,7 +650,7 @@ const RestoreAccountView: FC<{
 									dateFormat="dd/MM/yyyy"
 									includeTime={false}
 									selected={undeleteFromDate}
-									minDate={new Date(legalHoldAccount?.creationTimestamp || '')}
+									minDate={new Date(legalHoldAccount?.creationTimestamp ?? '')}
 									maxDate={fromDate}
 								/>
 							</Container>
