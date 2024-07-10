@@ -56,7 +56,7 @@ const RestoreAccountView: FC<{
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const [searchAccount, setSearchAccount] = useState<string>('');
-	const [unDelete, setUndelete] = useState(false);
+	const [unDelete, setUnDelete] = useState(false);
 	const [legalHoldAppendix, setLegalHoldAppendix] = useState<string>('');
 	const account = legalHoldAccount?.name ?? '';
 	const accountId = legalHoldAccount?.id ?? '';
@@ -625,7 +625,7 @@ const RestoreAccountView: FC<{
 								label={t('legal_hold.include_items_deleted', 'Include items deleted')}
 								value={unDelete}
 								onClick={(): void => {
-									setUndelete(!unDelete);
+									setUnDelete(!unDelete);
 								}}
 								iconColor="primary"
 							/>
