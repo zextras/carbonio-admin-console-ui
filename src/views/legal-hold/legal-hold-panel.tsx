@@ -83,7 +83,6 @@ const LegalHoldPanel: FC = () => {
 	const accountLimit = RECORD_DISPLAY_LIMIT;
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const createSnackbar = useContext(SnackbarManagerContext);
-	const [accounts, setAccounts] = useState<Array<BackupAccountItem>>([]);
 	const [backupAccountList, setBackupAccountList] = useState<Array<BackupAccountItem>>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
@@ -208,7 +207,7 @@ const LegalHoldPanel: FC = () => {
 			} else {
 				setBackupAccountList([]);
 			}
-			if (page) {
+			if (page >= 0) {
 				const num: number = page;
 				setTotalItem(num * accountLimit);
 			} else if (page === 0) {
@@ -229,7 +228,7 @@ const LegalHoldPanel: FC = () => {
 				if (data[item]?.response?.accounts) {
 					allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
 				}
-				if (data[item]?.response?.maxPage) {
+				if (data[item]?.response?.maxPage >= 0) {
 					maxPageList.push(data[item]?.response?.maxPage);
 				}
 			});
@@ -237,7 +236,7 @@ const LegalHoldPanel: FC = () => {
 				backupAccounts = allServerAccounts;
 				if (maxPageList && maxPageList.length > 0) {
 					const max = Math.max(...maxPageList);
-					if (max) {
+					if (max >= 0) {
 						backupPage = max;
 					}
 				}
@@ -248,11 +247,13 @@ const LegalHoldPanel: FC = () => {
 	);
 
 	const getBackupAccounts = useCallback(
-		(searchText, domainNameItem) => {
-			setIsRequestInProgress(true);
-			setAccounts([]);
+		(searchText = '', offSet = 0): void => {
+			const domainNameItem =
+				selectedDomainName === '' || selectedDomainName === undefined
+					? domainName
+					: selectedDomainName;
 			getSoapFetchRequest(
-				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${accountOffset}&pageSize=${accountLimit}&domains=${domainNameItem}&targetServers=all_servers&filter=${searchText}`
+				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${offSet}&pageSize=${accountLimit}&domains=${domainNameItem}&targetServers=all_servers&filter=${searchText}`
 			)
 				.then((data: any) => {
 					setIsRequestInProgress(false);
@@ -278,47 +279,45 @@ const LegalHoldPanel: FC = () => {
 				});
 		},
 		[
-			accountOffset,
 			accountLimit,
-			showSnackbar,
-			setBackupAccountPage,
+			domainName,
+			errorMessage,
+			selectedDomainName,
 			setBackupAccountAndPage,
-			errorMessage
+			setBackupAccountPage,
+			showSnackbar
 		]
 	);
+	// if (accountOffset === undefined) {
+	// 	setAccountOffset(0);
+	// 	getBackupAccountRequest();
+	// }
+
+	useEffect(() => {
+		getBackupAccounts();
+	}, [getBackupAccounts]);
 
 	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const searchAccount = useCallback(
-		debounce((searchText, domainNameItem) => {
-			getBackupAccounts(searchText, domainNameItem);
+		debounce((searchText) => {
+			setSearchAccountName(searchText);
+			getBackupAccounts(searchText, 0);
+			setAccountOffset(0);
 		}, 1000),
 		[debounce]
 	);
 
-	useEffect(() => {
-		const name =
-			selectedDomainName === '' || selectedDomainName === undefined
-				? domainName
-				: selectedDomainName;
-		getBackupAccounts('', name);
-	}, [domainName, getBackupAccounts, selectedDomainName]);
-
 	const onSearchAccount = useCallback(
 		(e) => {
-			setSearchAccountName(e.target.value);
-			const name =
-				selectedDomainName === '' || selectedDomainName === undefined
-					? domainName
-					: selectedDomainName;
-			searchAccount(e.target.value, name);
+			searchAccount(e.target.value);
 		},
-		[domainName, searchAccount, selectedDomainName]
+		[searchAccount]
 	);
 
 	const allBackupAccounts = useMemo(
 		() =>
 			isShowOnlyLegalHostAccount
-				? backupAccountList.filter((item) => item?.legalHold === SET)
+				? backupAccountList.filter((item) => item?.legalHold === 'true')
 				: backupAccountList,
 		[backupAccountList, isShowOnlyLegalHostAccount]
 	);
@@ -440,14 +439,8 @@ const LegalHoldPanel: FC = () => {
 	const setUnsetLegalHoldResponse = useCallback(
 		(data: any, status: string, id: string) => {
 			// If Single Server
-			if (data?.Body?.response?.content) {
-				const parseData = JSON.parse(data?.Body?.response?.content);
-				const key = Object.keys(parseData?.response)[0];
-				if (key.toString().includes('No account found for legal hold')) {
-					showSnackbar(ERROR_LABLE, ERROR_LABLE, key ?? errorMessage);
-				} else {
-					setAccountAfterLegalHold(status, id);
-				}
+			if (data?.accounts?.length) {
+				setAccountAfterLegalHold(status, id);
 			} else {
 				// If multi server env
 				const allServers = Object.keys(data);
@@ -464,7 +457,7 @@ const LegalHoldPanel: FC = () => {
 
 			setSelectedAccountRows([]);
 		},
-		[errorMessage, setAccountAfterLegalHold, showSnackbar]
+		[setAccountAfterLegalHold]
 	);
 
 	const onLegalHoldPress = useCallback(() => {
@@ -472,7 +465,7 @@ const LegalHoldPanel: FC = () => {
 		const legalHoldItem = getLegalHoldById(id);
 		if (legalHoldItem) {
 			const status = legalHoldItem?.legalHold?.toUpperCase() === TRUE ? UNSET : SET;
-			setUnsetLegalHold(status, legalHoldItem?.name).then((data) => {
+			setUnsetLegalHold(status, legalHoldItem.id, legalHoldItem.serverName).then((data) => {
 				setUnsetLegalHoldResponse(data, status, id);
 			});
 		}
@@ -737,7 +730,7 @@ const LegalHoldPanel: FC = () => {
 										label={t('label.search_an_account', 'Search an Account')}
 										backgroundColor="gray5"
 										CustomIcon={customIcon}
-										value={searchAccountName}
+										defaultValue={searchAccountName}
 										onChange={onSearchAccount}
 									/>
 								</Row>
@@ -817,8 +810,10 @@ const LegalHoldPanel: FC = () => {
 												<Paging
 													totalItem={totalItem}
 													pageSize={accountLimit}
-													setOffset={(val: number): void => {
-														setAccountOffset(val / accountLimit);
+													currentPageProp={accountOffset ? accountOffset + 1 : 1}
+													onPageChange={(val: number): void => {
+														getBackupAccounts(searchAccountName, val - 1);
+														setAccountOffset(val - 1);
 													}}
 												/>
 											</Container>
