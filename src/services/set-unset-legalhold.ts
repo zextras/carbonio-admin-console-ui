@@ -12,11 +12,11 @@ import {
 
 export const setUnsetLegalHold = async (
 	status: string,
-	email: string,
-	servers = 'all_servers'
+	id: string,
+	servers: string
 ): Promise<any> =>
 	fetchExternalSoap(`/service/extension/zextras_admin/backup/legalHold?targetServers=${servers}`, {
 		ui: true,
 		command: status,
-		accounts: email
+		accounts: id
 	});

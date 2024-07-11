@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { Container, IconButton, Text, Row } from '@zextras/carbonio-design-system';
 import { useTranslation } from 'react-i18next';
@@ -18,10 +18,22 @@ const Paging: FC<{
 	previousPage?: any;
 	setOffset?: any;
 	pageSize?: number;
-}> = ({ totalItem, firstPage, lastPage, nextPage, previousPage, setOffset, pageSize = 10 }) => {
+	onPageChange?: any;
+	currentPageProp?: number;
+}> = ({
+	totalItem,
+	firstPage,
+	lastPage,
+	nextPage,
+	previousPage,
+	setOffset,
+	pageSize = 10,
+	onPageChange,
+	currentPageProp
+}) => {
 	const [t] = useTranslation();
 	const totalPages = Math.ceil(totalItem / pageSize);
-	const [currentPage, setCurrentPage] = useState<number>(FIRST_PAGE);
+	const [currentPage, setCurrentPage] = useState<number>(currentPageProp ?? FIRST_PAGE);
 	const [isNextPageDisabled, setIsNextPageDisabled] = useState(false);
 	const [isPreviousPageDisabled, setIsPreviousPageDisabled] = useState(false);
 	const [isFirstPageDisabled, setIsFirstPageDisabled] = useState(false);
@@ -35,6 +47,7 @@ const Paging: FC<{
 		if (nextPage) {
 			nextPage(page);
 		}
+		onPageChange?.(page);
 	};
 
 	const onPreviousPage = (): void => {
@@ -48,6 +61,7 @@ const Paging: FC<{
 		if (previousPage) {
 			previousPage(page);
 		}
+		onPageChange?.(page);
 	};
 
 	const onLastPage = (): void => {
@@ -55,14 +69,20 @@ const Paging: FC<{
 		if (lastPage) {
 			lastPage(totalPages);
 		}
+		onPageChange?.(totalPages);
 	};
 
-	const onFirstPage = useCallback((): void => {
+	const onFirstPage = (): void => {
 		setCurrentPage(FIRST_PAGE);
 		if (firstPage) {
 			firstPage(FIRST_PAGE);
 		}
-	}, [firstPage]);
+		onPageChange?.(FIRST_PAGE);
+	};
+
+	useEffect(() => {
+		currentPageProp && setCurrentPage(currentPageProp);
+	}, [currentPageProp]);
 
 	useEffect(() => {
 		if (currentPage >= totalPages) {
@@ -85,9 +105,9 @@ const Paging: FC<{
 		}
 		if (totalPages === 0) {
 			setCurrentPage(FIRST_PAGE);
-			setOffset(0);
+			setOffset?.(0);
 		} else {
-			setOffset(currentPage * pageSize - pageSize);
+			setOffset?.(currentPage * pageSize - pageSize);
 		}
 	}, [currentPage, totalPages, setOffset, pageSize, totalItem]);
 
