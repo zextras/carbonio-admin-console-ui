@@ -288,10 +288,6 @@ const LegalHoldPanel: FC = () => {
 			showSnackbar
 		]
 	);
-	// if (accountOffset === undefined) {
-	// 	setAccountOffset(0);
-	// 	getBackupAccountRequest();
-	// }
 
 	useEffect(() => {
 		getBackupAccounts();

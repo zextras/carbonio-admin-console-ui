@@ -47,7 +47,7 @@ const Paging: FC<{
 		if (nextPage) {
 			nextPage(page);
 		}
-		onPageChange && onPageChange(page);
+		onPageChange?.(page);
 	};
 
 	const onPreviousPage = (): void => {
@@ -61,7 +61,7 @@ const Paging: FC<{
 		if (previousPage) {
 			previousPage(page);
 		}
-		onPageChange && onPageChange(page);
+		onPageChange?.(page);
 	};
 
 	const onLastPage = (): void => {
@@ -69,7 +69,7 @@ const Paging: FC<{
 		if (lastPage) {
 			lastPage(totalPages);
 		}
-		onPageChange && onPageChange(totalPages);
+		onPageChange?.(totalPages);
 	};
 
 	const onFirstPage = (): void => {
@@ -77,7 +77,7 @@ const Paging: FC<{
 		if (firstPage) {
 			firstPage(FIRST_PAGE);
 		}
-		onPageChange && onPageChange(FIRST_PAGE);
+		onPageChange?.(FIRST_PAGE);
 	};
 
 	useEffect(() => {
@@ -105,9 +105,9 @@ const Paging: FC<{
 		}
 		if (totalPages === 0) {
 			setCurrentPage(FIRST_PAGE);
-			setOffset && setOffset(0);
+			setOffset?.(0);
 		} else {
-			setOffset && setOffset(currentPage * pageSize - pageSize);
+			setOffset?.(currentPage * pageSize - pageSize);
 		}
 	}, [currentPage, totalPages, setOffset, pageSize, totalItem]);
 
