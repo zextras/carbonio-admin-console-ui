@@ -101,9 +101,7 @@ export const Features: FC<{
 								inheritedValue={cosDetail?.carbonioFeatureOTPMgmtEnabled}
 								fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
 								inputName={'carbonioFeatureOTPMgmtEnabled'}
-								onChangeReset={(): void =>
-									setEmptyValue && setEmptyValue('carbonioFeatureOTPMgmtEnabled')
-								}
+								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureOTPMgmtEnabled')}
 								disabled={readonlyFeatures}
 							/>
 						</Row>
