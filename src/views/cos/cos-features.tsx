@@ -109,6 +109,7 @@ const CosFeatures: FC = () => {
 				setSwitchOptionValue('carbonioFeatureChatsAppEnabled', obj?.carbonioFeatureChatsAppEnabled);
 				setSwitchOptionValue('zimbraFeatureTasksEnabled', obj?.zimbraFeatureTasksEnabled);
 				setSwitchOptionValue('zimbraFeatureOptionsEnabled', obj?.zimbraFeatureOptionsEnabled);
+				setSwitchOptionValue('carbonioFeatureOTPMgmtEnabled', obj?.carbonioFeatureOTPMgmtEnabled);
 			}
 		},
 		[setSwitchOptionValue]
@@ -277,6 +278,7 @@ const CosFeatures: FC = () => {
 				featuresDetail={cosFeatures}
 				setFeaturesDetail={setCosFeatures}
 				readonlyFeatures={readonlyCOS}
+				cosLevelFeaures
 			/>
 			<RouteLeavingGuard when={isDirty} onSave={onSave}>
 				<Text>

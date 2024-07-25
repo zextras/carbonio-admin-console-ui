@@ -621,6 +621,32 @@ const EditAccountSecuritySection: FC = () => {
 										)}
 									</Row>
 								</Row>
+								<Row mainAlignment="flex-start" width="100%" padding={{ left: 'large' }}>
+									<Container
+										height="fit"
+										crossAlignment="flex-start"
+										background="gray6"
+										padding={{ top: 'large' }}
+									>
+										<ListRow>
+											<Container crossAlignment="flex-start">
+												<InheritedSwitch
+													subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
+													onChange={changeSwitchOption}
+													label={t(
+														'label.one_time_password_management',
+														'One Time Password management'
+													)}
+													iconColor="primary"
+													inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
+													fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
+													inputName={'carbonioFeatureOTPMgmtEnabled'}
+													onChangeReset={(): void => setEmptyValue('carbonioFeatureOTPMgmtEnabled')}
+												/>
+											</Container>
+										</ListRow>
+									</Container>
+								</Row>
 							</Row>
 						</>
 					)}
