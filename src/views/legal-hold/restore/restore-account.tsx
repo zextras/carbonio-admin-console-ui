@@ -38,17 +38,6 @@ import CustomRowFactory from '../../app/shared/customTableRowFactory';
 import DropDownInput from '../../components/dropDownInput';
 import { formatedErrorMessage } from '../../utility/utils';
 
-type Details = {
-	[key: string]: string;
-};
-
-type ErrorResponse = {
-	code: string;
-	details: Details;
-	message: string;
-	time: number;
-};
-
 const RestoreAccountView: FC<{
 	legalHoldAccount: BackupAccountItem | undefined;
 	setIsShowRestoreView: (value: boolean) => void;
@@ -57,7 +46,7 @@ const RestoreAccountView: FC<{
 	const createSnackbar = useSnackbar();
 	const [searchAccount, setSearchAccount] = useState<string>('');
 	const [unDelete, setUnDelete] = useState(false);
-	const [legalHoldAppendix, setLegalHoldAppendix] = useState<string>('');
+	const [legalHoldPrefix, setLegalHoldPrefix] = useState<string>('');
 	const account = legalHoldAccount?.name ?? '';
 	const accountId = legalHoldAccount?.id ?? '';
 	const targetServers = legalHoldAccount?.serverName ?? '';
@@ -332,11 +321,11 @@ const RestoreAccountView: FC<{
 	);
 
 	const onRestore = useCallback(() => {
-		if (legalHoldAppendix === '') {
+		if (legalHoldPrefix === '') {
 			showSnackbar(
 				ERROR_LABLE,
 				ERROR_LABLE,
-				t('legal_hold.legal_hold_appendix_blank_error', 'Legal Hold appendix should not be blank')
+				t('legal_hold.legal_hold_prefix_blank_error', 'Legal Hold prefix should not be blank')
 			);
 			return;
 		}
@@ -356,7 +345,7 @@ const RestoreAccountView: FC<{
 			);
 			return;
 		}
-		const destinationAccount = `${legalHoldAppendix}_${account}`;
+		const destinationAccount = `${legalHoldPrefix}_${account}`;
 		const sourceAccountId = accountId;
 		const getDate = fixDate({ getDate: true });
 		const getUndeletedDate = fixDate({ getUndeletedDate: true });
@@ -410,7 +399,7 @@ const RestoreAccountView: FC<{
 		accountId,
 		fixDate,
 		fromDate,
-		legalHoldAppendix,
+		legalHoldPrefix,
 		setIsShowRestoreView,
 		showSnackbar,
 		t,
@@ -570,11 +559,11 @@ const RestoreAccountView: FC<{
 					>
 						<Container crossAlignment="flex-start">
 							<Input
-								label={t('legal_hold.legalhold_appendix', 'Legal Hold appendix')}
+								label={t('legal_hold.legalhold_prefix', 'Legal Hold prefix')}
 								backgroundColor="gray5"
-								value={legalHoldAppendix}
+								value={legalHoldPrefix}
 								onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-									setLegalHoldAppendix(e.target.value);
+									setLegalHoldPrefix(e.target.value);
 								}}
 							/>
 						</Container>
