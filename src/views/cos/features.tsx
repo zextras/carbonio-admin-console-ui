@@ -18,13 +18,15 @@ export const Features: FC<{
 	accSpecificDetail?: Record<string, string>;
 	setEmptyValue?: CallableFunction;
 	readonlyFeatures?: boolean;
+	cosLevelFeaures?: boolean;
 }> = ({
 	featuresDetail,
 	setFeaturesDetail,
 	cosDetail,
 	accSpecificDetail,
 	setEmptyValue,
-	readonlyFeatures = false
+	readonlyFeatures = false,
+	cosLevelFeaures = false
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useAuthIsAdvanced((state) => state.isAdvanced);
@@ -79,6 +81,32 @@ export const Features: FC<{
 						/>
 					</Row>
 				</Container>
+				{cosLevelFeaures && (
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						width="50%"
+						orientation="vertical"
+						padding={{ bottom: 'large' }}
+					>
+						<Text size="extralarge" weight="bold">
+							{t('label.two_factor_auth', '2nd Factor Authentication')}
+						</Text>
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioFeatureOTPMgmtEnabled}
+								onChange={changeSwitchOption}
+								label={t('label.one_time_password_management', 'One Time Password management')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioFeatureOTPMgmtEnabled}
+								fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
+								inputName={'carbonioFeatureOTPMgmtEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureOTPMgmtEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					</Container>
+				)}
 			</Row>
 			<Row
 				mainAlignment="flex-start"

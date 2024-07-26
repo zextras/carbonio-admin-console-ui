@@ -523,106 +523,126 @@ const EditAccountSecuritySection: FC = () => {
 			{isAdvanced && (
 				<>
 					{!showCreateOTP && (
-						<>
-							<Row mainAlignment="flex-start" width="100%">
-								<Row
-									padding={{ top: 'large', left: 'large' }}
-									width="100%"
-									mainAlignment="space-between"
-								>
-									<Text size="small" color="gray0" weight="bold">
-										{t('label.OTP', 'OTP')}
-									</Text>
-								</Row>
-								<Row
-									width="100%"
-									mainAlignment="flex-end"
-									crossAlignment="flex-end"
-									padding={{ right: 'large' }}
-								>
-									<Padding right="large">
-										<Button
-											type="outlined"
-											label={t('label.NEW_OTP', 'NEW OTP')}
-											icon="PlusOutline"
-											iconPlacement="right"
-											color="primary"
-											onClick={(): void => handleOnGenerateOTP()}
-										/>
-									</Padding>
+						<Row mainAlignment="flex-start" width="100%">
+							<Row
+								padding={{ top: 'large', left: 'large' }}
+								width="100%"
+								mainAlignment="space-between"
+							>
+								<Text size="small" color="gray0" weight="bold">
+									{t('label.two_factor_auth', '2nd Factor Authentication')}
+								</Text>
+							</Row>
+							<Row
+								width="100%"
+								mainAlignment="flex-end"
+								crossAlignment="flex-end"
+								padding={{ right: 'large' }}
+							>
+								<Padding right="large">
 									<Button
 										type="outlined"
-										label={t('label.DELETE', 'DELETE')}
-										icon="CloseOutline"
+										label={t('label.NEW_OTP', 'NEW OTP')}
+										icon="PlusOutline"
 										iconPlacement="right"
-										color="error"
-										disabled={!selectedRows?.length}
-										onClick={(): void => handleDeleteOTP()}
+										color="primary"
+										onClick={(): void => handleOnGenerateOTP()}
 									/>
-								</Row>
+								</Padding>
+								<Button
+									type="outlined"
+									label={t('label.DELETE', 'DELETE')}
+									icon="CloseOutline"
+									iconPlacement="right"
+									color="error"
+									disabled={!selectedRows?.length}
+									onClick={(): void => handleDeleteOTP()}
+								/>
+							</Row>
+							<Row
+								padding={{ top: 'large', left: 'large', right: 'large' }}
+								width="100%"
+								mainAlignment="space-between"
+							>
 								<Row
-									padding={{ top: 'large', left: 'large', right: 'large' }}
-									width="100%"
+									orientation="horizontal"
 									mainAlignment="space-between"
+									crossAlignment="flex-start"
+									width="fill"
+									// height="calc(100vh - 340px)"
 								>
-									<Row
-										orientation="horizontal"
-										mainAlignment="space-between"
-										crossAlignment="flex-start"
-										width="fill"
-										// height="calc(100vh - 340px)"
-									>
-										{otpList.length !== 0 && (
-											<Table
-												rows={otpList}
-												headers={headers}
-												multiSelect={false}
-												onSelectionChange={setSelectedRows}
-												style={{ overflow: 'auto', height: '100%' }}
-												RowFactory={CustomRowFactory}
-												HeaderFactory={CustomHeaderFactory}
-											/>
-										)}
-										{otpList.length === 0 && (
-											<Container
-												orientation="column"
+									{otpList.length !== 0 && (
+										<Table
+											rows={otpList}
+											headers={headers}
+											multiSelect={false}
+											onSelectionChange={setSelectedRows}
+											style={{ overflow: 'auto', height: '100%' }}
+											RowFactory={CustomRowFactory}
+											HeaderFactory={CustomHeaderFactory}
+										/>
+									)}
+									{otpList.length === 0 && (
+										<Container orientation="column" crossAlignment="center" mainAlignment="center">
+											<Row>
+												<img src={logo} alt="logo" />
+											</Row>
+											<Row
+												padding={{ top: 'extralarge' }}
+												orientation="vertical"
 												crossAlignment="center"
-												mainAlignment="center"
+												style={{ textAlign: 'center' }}
 											>
-												<Row>
-													<img src={logo} alt="logo" />
-												</Row>
-												<Row
-													padding={{ top: 'extralarge' }}
-													orientation="vertical"
-													crossAlignment="center"
-													style={{ textAlign: 'center' }}
-												>
-													<Text weight="light" color="#828282" size="large" overflow="break-word">
-														{t('label.this_list_is_empty', 'This list is empty.')}
-													</Text>
-												</Row>
-												<Row
-													orientation="vertical"
-													crossAlignment="center"
-													style={{ textAlign: 'center' }}
-													padding={{ top: 'small' }}
-													width="53%"
-												>
-													<Text weight="light" color="#828282" size="large" overflow="break-word">
-														<Trans
-															i18nKey="label.create_otp_list_msg"
-															defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
-															components={{ bold: <strong /> }}
-														/>
-													</Text>
-												</Row>
-											</Container>
-										)}
-									</Row>
+												<Text weight="light" color="#828282" size="large" overflow="break-word">
+													{t('label.this_list_is_empty', 'This list is empty.')}
+												</Text>
+											</Row>
+											<Row
+												orientation="vertical"
+												crossAlignment="center"
+												style={{ textAlign: 'center' }}
+												padding={{ top: 'small' }}
+												width="53%"
+											>
+												<Text weight="light" color="#828282" size="large" overflow="break-word">
+													<Trans
+														i18nKey="label.create_otp_list_msg"
+														defaults="You can create a new OTP by clicking on <bold>NEW OTP</bold> button up here"
+														components={{ bold: <strong /> }}
+													/>
+												</Text>
+											</Row>
+										</Container>
+									)}
 								</Row>
 							</Row>
-						</>
+							<Row mainAlignment="flex-start" width="100%" padding={{ left: 'large' }}>
+								<Container
+									height="fit"
+									crossAlignment="flex-start"
+									background="gray6"
+									padding={{ top: 'large' }}
+								>
+									<ListRow>
+										<Container crossAlignment="flex-start">
+											<InheritedSwitch
+												subValue={accountDetail?.carbonioFeatureOTPMgmtEnabled}
+												onChange={changeSwitchOption}
+												label={t(
+													'label.one_time_password_management',
+													'One Time Password management'
+												)}
+												iconColor="primary"
+												inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
+												fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
+												inputName={'carbonioFeatureOTPMgmtEnabled'}
+												onChangeReset={(): void => setEmptyValue('carbonioFeatureOTPMgmtEnabled')}
+											/>
+										</Container>
+									</ListRow>
+								</Container>
+							</Row>
+						</Row>
 					)}
 					{showCreateOTP && (
 						<>
