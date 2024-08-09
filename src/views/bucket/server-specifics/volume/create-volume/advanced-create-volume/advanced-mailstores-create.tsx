@@ -68,7 +68,6 @@ const AdvancedMailstoresCreate: FC<{
 						label={t('label.volume_allocation', 'Allocation')}
 						backgroundColor="gray6"
 						value={advancedVolumeDetail?.volumeAllocation}
-						readOnly
 					/>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
@@ -76,7 +75,6 @@ const AdvancedMailstoresCreate: FC<{
 						label={t('label.volume_name', 'Volume Name')}
 						value={advancedVolumeDetail?.volumeName}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Row>
 				<ListRow>
@@ -89,7 +87,6 @@ const AdvancedMailstoresCreate: FC<{
 							label={t('label.bucket_name', 'Bucket Name')}
 							backgroundColor="gray6"
 							value={advancedVolumeDetail?.bucketName}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -101,7 +98,6 @@ const AdvancedMailstoresCreate: FC<{
 							label={t('label.type', 'Type')}
 							backgroundColor="gray6"
 							value={advancedVolumeDetail?.unusedBucketType}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -113,7 +109,6 @@ const AdvancedMailstoresCreate: FC<{
 							label={t('label.ID', 'ID')}
 							backgroundColor="gray6"
 							value={advancedVolumeDetail?.bucketId}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -122,7 +117,6 @@ const AdvancedMailstoresCreate: FC<{
 						label={t('label.type_of_volume', 'Type of Volume')}
 						value={volumeType}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
@@ -133,7 +127,6 @@ const AdvancedMailstoresCreate: FC<{
 						)}
 						value={advancedVolumeDetail?.prefix}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Row>
 				{bucketS3 && (
@@ -143,7 +136,6 @@ const AdvancedMailstoresCreate: FC<{
 								label={t('label.infrequent_access', 'Infrequent access')}
 								value={advancedVolumeDetail?.useInfrequentAccess ? ENABLED : DISABLED}
 								backgroundColor="gray6"
-								readOnly
 							/>
 						</Row>
 						<Row padding={{ top: 'large' }} width="100%">
@@ -151,7 +143,6 @@ const AdvancedMailstoresCreate: FC<{
 								label={t('label.use_intelligent_tiering', 'Use Intelligent Tiering')}
 								value={advancedVolumeDetail?.useIntelligentTiering ? ENABLED : DISABLED}
 								backgroundColor="gray6"
-								readOnly
 							/>
 						</Row>
 					</>
@@ -161,7 +152,6 @@ const AdvancedMailstoresCreate: FC<{
 						label={t('label.volume_as_current', 'Volum as current')}
 						value={advancedVolumeDetail?.isCurrent ? YES : NO}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Row>
 				<Row padding={{ top: 'large' }} width="100%">
@@ -169,7 +159,6 @@ const AdvancedMailstoresCreate: FC<{
 						label={t('label.centralized', 'Centralized')}
 						value={advancedVolumeDetail?.centralized ? YES : NO}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Row>
 			</Container>

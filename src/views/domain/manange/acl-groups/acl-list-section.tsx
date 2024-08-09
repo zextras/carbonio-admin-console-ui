@@ -376,7 +376,6 @@ const AclListSection: FC<any> = () => {
 						<Input
 							label={t('domain.type_here_a_domain', 'Type here a domain')}
 							value={aclListDetail?.suffixName}
-							readOnly
 							backgroundColor="gray5"
 						/>
 					</Container>
@@ -542,7 +541,6 @@ const AclListSection: FC<any> = () => {
 										? t('label.yes', 'Yes')
 										: t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 					)}
@@ -556,7 +554,6 @@ const AclListSection: FC<any> = () => {
 							label={t('label.hidden_from_gal', 'Hidden from GAL')}
 							backgroundColor="gray6"
 							value={aclListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
-							readOnly
 						/>
 					</Container>
 					<Container
@@ -569,7 +566,6 @@ const AclListSection: FC<any> = () => {
 							label={t('label.this_list_can_receive_email', 'This list can receive Emails')}
 							backgroundColor="gray6"
 							value={aclListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')}
-							readOnly
 						/>
 					</Container>
 				</ListRow>

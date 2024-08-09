@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, ReactElement, useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 
 import {
 	Container,
@@ -13,9 +13,9 @@ import {
 	Link,
 	Padding,
 	Row,
-	SnackbarManagerContext,
 	Text,
 	Tooltip,
+	useSnackbar,
 	useTheme
 } from '@zextras/carbonio-design-system';
 import { getBridgedFunctions, getIntegratedFunction, soapFetch } from '@zextras/carbonio-shell-ui';
@@ -390,7 +390,7 @@ const Attachment: FC<AttachmentType> = ({
 	const sizeLabel = useMemo(() => humanFileSize(size), [size]);
 	const inputRef = useRef<HTMLAnchorElement>(null);
 	const inputRef2 = useRef<HTMLAnchorElement>(null);
-	const createSnackbar = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [t] = useTranslation();
 
 	const downloadAttachment = useCallback(() => {

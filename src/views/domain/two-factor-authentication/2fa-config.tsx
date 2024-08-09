@@ -138,7 +138,11 @@ export const TwoFactorAuthencationConfig: FC<{
 								}}
 								hasError={some(applyAllValues.ipRange || [], { error: true })}
 								value={applyAllValues.ipRange}
-								errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
+								description={
+									some(applyAllValues.ipRange || [], { error: true })
+										? t('error.one_or_more_ip_invalid', 'One or more IP are invalid')
+										: ''
+								}
 								ChipComponent={CustomChip}
 								maxChips={null}
 							/>
@@ -214,7 +218,19 @@ export const TwoFactorAuthencationConfig: FC<{
 												)?.[cVal.keyToGet]?.trustedIpRange,
 												(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
 											)}
-											errorLabel={t('error.one_or_more_ip_invalid', 'One or more IP are invalid')}
+											description={
+												some(
+													map(
+														arrPoliciesToModify.find((obj: any) =>
+															Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
+														)?.[cVal.keyToGet]?.trustedIpRange,
+														(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
+													) || [],
+													{ error: true }
+												)
+													? t('error.one_or_more_ip_invalid', 'One or more IP are invalid')
+													: ''
+											}
 											ChipComponent={CustomChip}
 											maxChips={null}
 										/>

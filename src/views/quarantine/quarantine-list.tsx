@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useEffect, useState, useCallback, useContext, useMemo } from 'react';
+import React, { FC, useEffect, useState, useCallback, useMemo } from 'react';
 
 import {
 	Container,
@@ -12,14 +12,14 @@ import {
 	Text,
 	Button,
 	Divider,
-	SnackbarManagerContext,
 	Modal,
 	Table,
 	IconButton,
 	Padding,
 	Collapse,
 	Icon,
-	Tooltip
+	Tooltip,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { getTags } from '@zextras/carbonio-shell-ui';
 import { filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash';
@@ -333,7 +333,7 @@ const MessageListTable: FC<{
 
 const QuarantineList: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [quarantineAccountName, setQuarantineAccountName] = useState<string>('');
 	const [quarantineAccountId, setQuarantineAccountId] = useState<string>('');
 	const [quarantineDomaintName, setQuarantineDomaintName] = useState<string>('');
@@ -1152,7 +1152,6 @@ const QuarantineList: FC = () => {
 													label={t('label.retention_period', 'Retention Period (value)')}
 													backgroundColor="gray5"
 													value={zimbraMailMessageLifetimeNum}
-													readOnly
 													style={{ pointerEvents: 'none' }}
 												/>
 											</Container>
@@ -1173,7 +1172,6 @@ const QuarantineList: FC = () => {
 																	(item: any) => item.value === zimbraMailMessageLifetimeType
 															  ).label
 													}
-													readOnly
 													style={{ pointerEvents: 'none' }}
 												/>
 											</Container>

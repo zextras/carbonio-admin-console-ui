@@ -648,10 +648,14 @@ const MTAOutBoundFlow: FC = () => {
 						disabled={!allowSetMTA}
 						hasError={some(networkValue || [], { error: true })}
 						ChipComponent={CustomChip}
-						errorLabel={t(
-							'error.invalid_ip_address_error_text',
-							'Supported ip format for ipv4 is ipv4/netmask and for ipv6 is [ipv6]/netmask'
-						)}
+						description={
+							some(networkValue || [], { error: true })
+								? t(
+										'error.invalid_ip_address_error_text',
+										'Supported ip format for ipv4 is ipv4/netmask and for ipv6 is [ipv6]/netmask'
+								  )
+								: ''
+						}
 						maxChips={null}
 					/>
 				</Container>

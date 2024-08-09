@@ -105,7 +105,6 @@ const NotificationDetail: FC<{
 						label={t('label.date', 'Date')}
 						value={moment(notification?.date).format('DD-MM-YYYY - HH:mm A')}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Container>
 				<Container padding={{ bottom: 'large', left: 'small', right: 'extralarge' }}>
@@ -113,7 +112,6 @@ const NotificationDetail: FC<{
 						label={t('label.type', 'Type')}
 						value={notification?.level}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Container>
 			</ListRow>
@@ -125,7 +123,6 @@ const NotificationDetail: FC<{
 						label={t('label.what_inside', 'What’s inside?')}
 						value={notification?.subject}
 						backgroundColor="gray6"
-						readOnly
 					/>
 				</Container>
 			</ListRow>

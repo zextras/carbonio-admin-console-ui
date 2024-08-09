@@ -877,9 +877,7 @@ const DomainGeneralSettings: FC = () => {
 						width="fill"
 						crossAlignment="flex-start"
 					>
-						<Shimmer.FormSection>
-							<Shimmer.FormSubSection />
-						</Shimmer.FormSection>
+						<Shimmer.FormSubSection variant="dark" />
 					</Container>
 				) : (
 					<Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
@@ -895,7 +893,6 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.name', 'Name')}
 										value={domainName}
 										backgroundColor="gray6"
-										readOnly
 									/>
 								</Container>
 								<Container padding={{ all: 'small' }}>
@@ -903,7 +900,6 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.id', 'Id')}
 										value={domainData.zimbraId}
 										backgroundColor="gray6"
-										readOnly
 									/>
 								</Container>
 							</ListRow>
@@ -928,7 +924,6 @@ const DomainGeneralSettings: FC = () => {
 										label={t('label.creation_date', 'Creation Date')}
 										value={domainCreationDate}
 										backgroundColor="gray6"
-										readOnly
 									/>
 								</Container>
 							</ListRow>

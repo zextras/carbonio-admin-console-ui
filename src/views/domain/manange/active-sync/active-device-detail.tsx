@@ -424,7 +424,6 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.server', 'Server')}
 							backgroundColor="gray5"
 							value={mobileDeviceDetail?.accountServer}
-							readOnly
 						/>
 					</Container>
 					<Container padding={{ top: 'large', left: 'extralarge' }}>
@@ -432,7 +431,6 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.e_mail', 'E-mail')}
 							backgroundColor="gray5"
 							value={mobileDeviceDetail?.accountEmail}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -462,7 +460,6 @@ const ActiveDeviceDetail: FC<{
 									? t('label.true', 'True')
 									: t('label.false', 'False')
 							}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -473,7 +470,6 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.device_id', 'Device ID')}
 							backgroundColor="gray5"
 							value={mobileDeviceDetail?.deviceId}
-							readOnly
 						/>
 					</Container>
 					<Container padding={{ top: 'large', left: 'extralarge' }}>
@@ -481,7 +477,6 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.device', 'Device')}
 							backgroundColor="gray5"
 							value={mobileDeviceDetail?.deviceType}
-							readOnly
 						/>
 					</Container>
 				</ListRow>
@@ -492,11 +487,10 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.user_agent', 'User Agent')}
 							backgroundColor="gray5"
 							value={mobileDeviceDetail?.userAgent}
-							readOnly
 						/>
 					</Container>
 					<Container padding={{ top: 'large', left: 'extralarge' }}>
-						<Input label={t('label.eas', 'EAS')} backgroundColor="gray5" value={''} readOnly />
+						<Input label={t('label.eas', 'EAS')} backgroundColor="gray5" value={''} />
 					</Container>
 				</ListRow>
 
@@ -506,7 +500,6 @@ const ActiveDeviceDetail: FC<{
 							label={t('label.registration', 'Registration')}
 							backgroundColor="gray5"
 							value={''}
-							readOnly
 						/>
 					</Container>
 					<Container padding={{ top: 'large', left: 'extralarge' }}>
@@ -518,7 +511,6 @@ const ActiveDeviceDetail: FC<{
 									? moment(mobileDeviceDetail?.lastSeen).format('YY/MM/DD | hh:mm:ss a')
 									: ''
 							}
-							readOnly
 						/>
 					</Container>
 				</ListRow>

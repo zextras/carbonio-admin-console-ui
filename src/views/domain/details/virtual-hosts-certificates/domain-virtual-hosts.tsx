@@ -643,7 +643,6 @@ const DomainVirtualHosts: FC = () => {
 										'Subject Name (Canonical Name record - CNAME)'
 									)}
 									backgroundColor="gray6"
-									name="subject_name"
 									value={domainCertiDetails?.subject || ''}
 								/>
 							</Container>
@@ -654,7 +653,6 @@ const DomainVirtualHosts: FC = () => {
 										'Subject Alt Name (Fully Qualified Domain Name - FQDN)'
 									)}
 									backgroundColor="gray6"
-									name="key_id"
 									value={domainCertiDetails?.SubjectAltName || ''}
 								/>
 							</Container>
@@ -673,7 +671,6 @@ const DomainVirtualHosts: FC = () => {
 								<Input
 									label={t('label.valid_not_before', 'Valid from (not before)')}
 									backgroundColor="gray6"
-									name="subject_name"
 									value={domainCertiDetails?.notBefore || ''}
 								/>
 							</Container>
@@ -681,7 +678,6 @@ const DomainVirtualHosts: FC = () => {
 								<Input
 									label={t('label.valid_not_after', 'Valid until (not after)')}
 									backgroundColor="gray6"
-									name="key_id"
 									value={domainCertiDetails?.notAfter || ''}
 								/>
 							</Container>

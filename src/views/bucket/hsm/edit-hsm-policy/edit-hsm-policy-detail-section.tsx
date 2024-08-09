@@ -458,12 +458,7 @@ const EditHsmPolicyDetailSection: FC<{
 		>
 			<ListRow>
 				<Container padding={{ bottom: 'large' }}>
-					<Input
-						label={t('hsm.server', 'Server')}
-						backgroundColor="gray6"
-						value={server}
-						readOnly
-					/>
+					<Input label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
 				</Container>
 			</ListRow>
 			<ListRow>

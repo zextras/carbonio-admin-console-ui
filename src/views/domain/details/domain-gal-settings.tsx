@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -14,13 +14,13 @@ import {
 	Divider,
 	Button,
 	Padding,
-	SnackbarManagerContext,
 	Dropdown,
 	Select,
 	Switch,
 	Icon,
 	Tooltip,
-	Table
+	Table,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,6 @@ import DistroyGalsyncAccountModel from './distroy-galsync-account-model';
 import {
 	AccountDataType,
 	Attribute,
-	CreateSnackbarType,
 	DomainDataType,
 	IntervalType,
 	Server,
@@ -149,7 +148,7 @@ const ServerListTable: FC<{
 const DomainGalSettings: FC = () => {
 	const [t] = useTranslation();
 	const measureUnitItems = useMemo(() => MeasureUnitItems(t), [t]);
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const domain: { name?: string } = useDomainStore((state) => state.domain);
 	const { allMailstoreList } = useMailstoreListStore((state) => state);
 	const { domainId }: { domainId: string } = useParams();
@@ -1216,7 +1215,6 @@ const DomainGalSettings: FC = () => {
 											label={t('label.gal_mode', 'GAL Mode')}
 											value={zimbraGalMode}
 											backgroundColor="gray6"
-											readOnly
 										/>
 									</Padding>
 								</Container>

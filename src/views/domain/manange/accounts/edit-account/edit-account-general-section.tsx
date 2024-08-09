@@ -852,7 +852,6 @@ const EditAccountGeneralSection: FC<{
 							value={accountDetail?.displayName}
 							onChange={changeAccDetail}
 							inputName="displayName"
-							name="descriptiveName"
 							autoComplete="new-password"
 						/>
 					</Row>
@@ -1002,7 +1001,6 @@ const EditAccountGeneralSection: FC<{
 						<Input
 							label={t('label.creation_date', 'Creation Date')}
 							backgroundColor="gray6"
-							readOnly
 							value={
 								accountDetail?.zimbraCreateTimestamp
 									? moment(accountDetail?.zimbraCreateTimestamp, 'YYYYMMDDHHmmss.Z').format(
@@ -1016,7 +1014,6 @@ const EditAccountGeneralSection: FC<{
 						<Input
 							label={t('label.last_access', 'Last Access')}
 							backgroundColor="gray6"
-							readOnly
 							value={
 								accountDetail?.zimbraLastLogonTimestamp
 									? moment(accountDetail?.zimbraLastLogonTimestamp, 'YYYYMMDDHHmmss.Z').format(

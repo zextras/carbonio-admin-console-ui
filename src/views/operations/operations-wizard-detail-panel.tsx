@@ -157,7 +157,6 @@ const OperationsWizardDetailPanel: FC<{
 									backgroundColor="gray6"
 									label={t('operations.label.operation_type', 'Operation Type')}
 									value={selectedData?.module || ''}
-									readOnly
 								/>
 							</Container>
 							<Container padding={{ right: 'small', left: 'small' }}>
@@ -165,7 +164,6 @@ const OperationsWizardDetailPanel: FC<{
 									backgroundColor="gray6"
 									label={t('operations.label.who_started_it', 'Who started it?')}
 									value={selectedData?.parameters?.requesterAddress || ''}
-									readOnly
 								/>
 							</Container>
 							<Container padding={{ left: 'small' }}>
@@ -173,7 +171,6 @@ const OperationsWizardDetailPanel: FC<{
 									backgroundColor="gray6"
 									label={t('operations.label.status', 'Status')}
 									value={(selectedData?.type ? selectedData?.type : status) || ''}
-									readOnly
 								/>
 							</Container>
 						</ListRow>
@@ -185,7 +182,6 @@ const OperationsWizardDetailPanel: FC<{
 									backgroundColor="gray6"
 									label={t('operations.label.submitted_at', 'Submitted at')}
 									value={selectedData?.startTime ? MiliSecondToDate(selectedData?.startTime) : ''}
-									readOnly
 								/>
 							</Container>
 							<Container padding={{ left: 'small' }}>
@@ -193,7 +189,6 @@ const OperationsWizardDetailPanel: FC<{
 									backgroundColor="gray6"
 									label={t('operations.label.started_at', 'Started at')}
 									value={selectedData?.humanStartTime ? selectedData?.humanStartTime : ''}
-									readOnly
 								/>
 							</Container>
 						</ListRow>
@@ -215,7 +210,6 @@ const OperationsWizardDetailPanel: FC<{
 									selectedData?.parameters?.additionalNotificationAddresses?.length) ||
 								''
 							}
-							readOnly
 						/>
 					</Row>
 					<Row width="100%" padding={{ top: 'large' }}>
@@ -225,7 +219,6 @@ const OperationsWizardDetailPanel: FC<{
 									backgroundColor="gray6"
 									label={t('operations.label.create_fake_blob', 'Create Fake Blob')}
 									value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERTION : FALSE_OPERTION}
-									readOnly
 								/>
 							</Container>
 							<Container padding={{ left: 'small' }}>
@@ -233,7 +226,6 @@ const OperationsWizardDetailPanel: FC<{
 									backgroundColor="gray6"
 									label={t('operations.label.Deep', 'Deep')}
 									value={selectedData?.parameters?.isDeep ? TRUE_OPERTION : FALSE_OPERTION}
-									readOnly
 								/>
 							</Container>
 						</ListRow>

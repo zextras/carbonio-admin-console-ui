@@ -4,21 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import {
 	Container,
 	Row,
 	Button,
 	Text,
-	SnackbarManagerContext,
 	Input,
 	Select,
 	Padding,
 	Divider,
 	Tooltip,
 	Switch,
-	ChipInput
+	ChipInput,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { replaceHistory } from '@zextras/carbonio-shell-ui';
 import { map, some } from 'lodash';
@@ -26,13 +26,7 @@ import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-	Attribute,
-	CreateSnackbarType,
-	DomainResponse,
-	SelectItem,
-	objectType
-} from '../../../types';
+import { Attribute, DomainResponse, SelectItem, objectType } from '../../../types';
 import {
 	ACTIVE,
 	DOMAINS_ROUTE_ID,
@@ -78,7 +72,7 @@ export enum GAL_MODE {
 
 const CreateDomain: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const history = useHistory();
 	const setDomain = useDomainStore((state) => state.setDomain);
 	const setDomainView = useDomainStore((state) => state.setDomainView);

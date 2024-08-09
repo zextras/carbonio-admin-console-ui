@@ -980,7 +980,6 @@ const ModifyVolume: FC<{
 									label={t('label.bucket_name', 'Bucket Name')}
 									backgroundColor="gray6"
 									value={bucketName}
-									readOnly
 								/>
 							</Container>
 							<Container
@@ -988,12 +987,7 @@ const ModifyVolume: FC<{
 								crossAlignment="flex-start"
 								padding={{ top: 'large', right: 'large' }}
 							>
-								<Input
-									label={t('label.type', 'Type')}
-									backgroundColor="gray6"
-									value={storeType}
-									readOnly
-								/>
+								<Input label={t('label.type', 'Type')} backgroundColor="gray6" value={storeType} />
 							</Container>
 							<Container
 								mainAlignment="flex-start"
@@ -1004,7 +998,6 @@ const ModifyVolume: FC<{
 									label={t('label.ID', 'ID')}
 									backgroundColor="gray6"
 									value={bucketConfigurationId}
-									readOnly
 								/>
 							</Container>
 						</ListRow>

@@ -65,7 +65,7 @@ const GlobalActiveSync: FC = () => {
 	const mailstoresList = useMailstoreListStore((state) => state.allMailstoreList || []);
 	const createSnackbar = useSnackbar();
 
-	const successSnackbar = (): void =>
+	const successSnackbar = (): void => {
 		createSnackbar({
 			key: 'success',
 			type: 'success',
@@ -77,7 +77,7 @@ const GlobalActiveSync: FC = () => {
 			hideButton: true,
 			replace: true
 		});
-
+	};
 	const callAllRequest = (requests: any): void => {
 		setIsLoading(true);
 		Promise.all(requests)

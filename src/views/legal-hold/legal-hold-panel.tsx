@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -17,7 +17,7 @@ import {
 	Icon,
 	Table,
 	useScreenMode,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import {
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -82,7 +82,7 @@ const LegalHoldPanel: FC = () => {
 	const [totalItem, setTotalItem] = useState(1);
 	const accountLimit = RECORD_DISPLAY_LIMIT;
 	const [accountOffset, setAccountOffset] = useState<number>(0);
-	const createSnackbar = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [backupAccountList, setBackupAccountList] = useState<Array<BackupAccountItem>>([]);
 	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);

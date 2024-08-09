@@ -2183,7 +2183,6 @@ const EditMailingListView: FC<any> = ({
 										label={t('label.distribution_lists', 'Distribution Lists')}
 										value={dlMembershipListNames}
 										backgroundColor="gray5"
-										readOnly
 									/>
 								</Container>
 							</ListRow>

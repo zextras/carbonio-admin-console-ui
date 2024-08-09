@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 
 import {
 	Container,
@@ -14,15 +14,15 @@ import {
 	ChipInput,
 	Padding,
 	Button,
-	SnackbarManagerContext,
 	Switch,
-	ChipItem
+	ChipItem,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { filter, isEqual, map } from 'lodash';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import { Attribute, CreateSnackbarType, GlobalDisclaimerType } from '../../../../types';
+import { Attribute, GlobalDisclaimerType } from '../../../../types';
 import {
 	FALSE,
 	TRUE,
@@ -41,7 +41,7 @@ const RelativeContainer = styled(Container)`
 
 const GlobalDetailPanel: FC = () => {
 	const [t] = useTranslation();
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [carbonioNotificationData, setCarbonioNotificationData] = useState<any>({});
 	const [initCarbonioNotificationData, setInitCarbonioNotificationData] = useState<{
 		[key: string]: string | { label: string }[];

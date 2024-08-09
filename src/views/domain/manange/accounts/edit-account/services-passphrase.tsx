@@ -358,7 +358,6 @@ export const ServicesPassphrase: FC = () => {
 									style={{ cursor: 'pointer' }}
 								/>
 							)}
-							readOnly
 							disabled
 							textColor={'gray1'}
 						/>

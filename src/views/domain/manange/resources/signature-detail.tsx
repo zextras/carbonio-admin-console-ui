@@ -461,7 +461,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.auto_accept', 'Auto-Accept')}
 								backgroundColor="gray6"
 								value={zimbraPrefCalendarAutoAcceptSignatureId?.label}
-								readOnly
 							/>
 						)}
 					</Row>
@@ -481,7 +480,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.auto_refuse', 'Auto-Refuse')}
 								backgroundColor="gray6"
 								value={zimbraPrefCalendarAutoDeclineSignatureId?.label}
-								readOnly
 							/>
 						)}
 					</Row>
@@ -501,7 +499,6 @@ export const SignatureDetail: FC<any> = ({
 								label={t('label.auto_negation', 'Auto-Negation')}
 								backgroundColor="gray6"
 								value={zimbraPrefCalendarAutoDenySignatureId?.label}
-								readOnly
 							/>
 						)}
 					</Row>

@@ -456,7 +456,6 @@ const MailingListSection: FC<any> = () => {
 						<Input
 							label={t('domain.type_here_a_domain', 'Type here a domain')}
 							value={mailingListDetail?.suffixName}
-							readOnly
 							backgroundColor="gray5"
 						/>
 					</Container>

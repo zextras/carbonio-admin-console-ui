@@ -41,7 +41,6 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 									backgroundColor="gray6"
 									label={t('label.account', 'Account')}
 									value={restoreAccountDetail?.name}
-									readOnly
 								/>
 							</Container>
 							<Container padding={{ bottom: 'medium' }}>
@@ -55,7 +54,6 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 													restoreAccountDetail?.copyDomain
 											  }`
 									}
-									readOnly
 								/>
 							</Container>
 						</ListRow>
@@ -69,7 +67,6 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 											? t('label.yes', 'Yes')
 											: t('label.no', 'NO')
 									}
-									readOnly
 								/>
 							</Container>
 							<Container padding={{ bottom: 'large' }}>
@@ -81,7 +78,6 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 											? ''
 											: moment(restoreAccountDetail?.dateTime).format('D MMMM YYYY | hh:mm:ss A')
 									}
-									readOnly
 								/>
 							</Container>
 						</ListRow>
@@ -96,7 +92,6 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 									value={
 										restoreAccountDetail?.hsmApply ? t('label.yes', 'Yes') : t('label.no', 'NO')
 									}
-									readOnly
 								/>
 							</Container>
 						</ListRow>
@@ -110,7 +105,6 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
 											? '-'
 											: restoreAccountDetail?.notificationReceiver
 									}
-									readOnly
 								/>
 							</Container>
 						</ListRow>

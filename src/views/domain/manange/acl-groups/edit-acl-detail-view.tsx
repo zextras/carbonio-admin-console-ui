@@ -1637,7 +1637,7 @@ const EditAclListView: FC<any> = ({
 			getAclLists();
 			setIsRequestInProgress(false);
 			closeHandler();
-			setShowEditAclList(false)(false);
+			setShowEditAclList(false);
 			setIsUpdateRecord(true);
 		},
 		[closeHandler, createSnackbar, setIsUpdateRecord, setShowEditAclList, getAclLists]
@@ -1657,7 +1657,7 @@ const EditAclListView: FC<any> = ({
 				createSnackbar({
 					key: 'error',
 					type: 'error',
-					label: error.message
+					label: error?.message
 						? error.message
 						: // eslint-disable-next-line sonarjs/no-duplicate-string
 						  t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
@@ -1921,7 +1921,6 @@ const EditAclListView: FC<any> = ({
 							<Input
 								label={t('domain.domain_name', 'Domain Name')}
 								value={distributionDomain}
-								readOnly
 								backgroundColor="gray5"
 							/>
 						</Container>
@@ -1942,7 +1941,6 @@ const EditAclListView: FC<any> = ({
 										? t('label.yes', 'Yes')
 										: t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 						<Container
@@ -1955,7 +1953,6 @@ const EditAclListView: FC<any> = ({
 								label={t('label.hidden_from_gal', 'Hidden from GAL')}
 								backgroundColor="gray6"
 								value={zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')}
-								readOnly
 							/>
 						</Container>
 						<Container
@@ -1970,7 +1967,6 @@ const EditAclListView: FC<any> = ({
 								value={
 									zimbraMailStatus?.value === 'TRUE' ? t('label.yes', 'Yes') : t('label.no', 'No')
 								}
-								readOnly
 							/>
 						</Container>
 					</ListRow>

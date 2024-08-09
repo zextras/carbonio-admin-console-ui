@@ -392,7 +392,6 @@ const Connection: FC<{
 						label={t('label.bucket_type', 'Bucket Type')}
 						backgroundColor="gray5"
 						value={bucketTypeData}
-						readOnly
 					/>
 				</Row>
 			) : (
@@ -412,7 +411,6 @@ const Connection: FC<{
 				<Input
 					backgroundColor="gray5"
 					label={t('label.label', 'Label')}
-					name="label"
 					value={bucketLabel}
 					onChange={(ev): void => {
 						setBucketLabel(ev.target.value);
@@ -424,7 +422,6 @@ const Connection: FC<{
 					<Input
 						backgroundColor="gray5"
 						label={t('label.bucket_name', 'Bucket Name')}
-						name="bucketName"
 						value={bucketName}
 						onChange={(ev): void => {
 							setBucketName(ev.target.value);
@@ -457,7 +454,6 @@ const Connection: FC<{
 					<Input
 						backgroundColor="gray5"
 						label={t('label.access_key', 'Access Key')}
-						name="accessKey"
 						value={accessKeyData}
 						onChange={(ev): void => {
 							setAccessKeyData(ev.target.value);
@@ -470,7 +466,6 @@ const Connection: FC<{
 					<PasswordInput
 						backgroundColor="gray5"
 						label={t('label.secret_key', 'Secret Key')}
-						name="secretKey"
 						value={secretKey}
 						onChange={(ev): void => {
 							setSecretKey(ev.target.value);
@@ -484,7 +479,6 @@ const Connection: FC<{
 					<Input
 						label={t('label.url', 'URL')}
 						backgroundColor="gray5"
-						name="url"
 						value={urlInput}
 						onChange={(ev): void => {
 							setUrlInput(ev.target.value);
@@ -497,7 +491,6 @@ const Connection: FC<{
 					<Input
 						label={t('label.prefix', 'Prefix')}
 						backgroundColor="gray5"
-						name="prefix"
 						value={prefix}
 						onChange={(ev): void => {
 							setPrefix(ev.target.value);
@@ -529,7 +522,6 @@ const Connection: FC<{
 				<Input
 					backgroundColor="gray5"
 					label={t('label.description', 'Description')}
-					name="notes"
 					value={bucketNotes}
 					onChange={(ev): void => {
 						setBucketNotes(ev.target.value);
@@ -552,7 +544,7 @@ const Connection: FC<{
 			</Row>
 			{verifyCheck === SUCCESS && (
 				<Row width="100%" padding={{ top: 'large' }}>
-					<Input label={t('label.uuid', 'uuid')} value={BucketUid} readOnly />
+					<Input label={t('label.uuid', 'uuid')} value={BucketUid} />
 				</Row>
 			)}
 			{verifyCheck === ERROR && (

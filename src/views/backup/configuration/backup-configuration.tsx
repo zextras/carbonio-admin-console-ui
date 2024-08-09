@@ -1171,7 +1171,6 @@ const BackupConfiguration: FC = () => {
 											label={t('backup.external_volume', 'External Volume')}
 											value={manageExternalVolumeType}
 											backgroundColor="gray5"
-											readOnly
 										/>
 									</Container>
 								</ListRow>
@@ -1185,7 +1184,6 @@ const BackupConfiguration: FC = () => {
 													: manageExternalVolumeConfiguration?.label
 											}
 											backgroundColor="gray5"
-											readOnly
 										/>
 									</Container>
 								</ListRow>

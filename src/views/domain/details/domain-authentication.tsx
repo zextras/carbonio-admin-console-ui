@@ -3,16 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	RefObject,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState
-} from 'react';
+import React, { FC, RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import {
 	Container,
@@ -22,18 +13,18 @@ import {
 	Text,
 	Input,
 	Button,
-	SnackbarManagerContext,
 	Switch,
 	Select,
 	Icon,
 	Popper,
-	Tooltip as TooltipDefault
+	Tooltip as TooltipDefault,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { useUserSettings } from '@zextras/carbonio-shell-ui';
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 
-import { Attribute, CreateSnackbarType, objectType } from '../../../../types';
+import { Attribute, objectType } from '../../../../types';
 import { CHECK_OK, DISABLED, ENABLED, TRUE } from '../../../constants';
 import { CheckAuthConfig } from '../../../services/check-auth-config-service';
 import { flushCache } from '../../../services/flush-cache-service';
@@ -90,7 +81,7 @@ const DomainAuthentication: FC = () => {
 	const [isSuccessVerify, setIsSuccessVerify] = useState<boolean>(false);
 	const [isValidUserName, setIsValidUserName] = useState<boolean>(true);
 	const [isValidPassword, setIsValidPassword] = useState<boolean>(true);
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const domainInformation = useDomainStore((state) => state.domain?.a);
 	const setDomain = useDomainStore((state) => state.setDomain);
 

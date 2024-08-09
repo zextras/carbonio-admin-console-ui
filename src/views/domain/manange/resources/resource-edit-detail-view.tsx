@@ -893,7 +893,6 @@ const ResourceEditDetailView: FC<any> = ({
 								label={t('label.server', 'Server')}
 								backgroundColor="gray6"
 								value={resourceDetailData?.zimbraMailHost}
-								readOnly
 							/>
 						</Row>
 					</Container>
@@ -1037,7 +1036,6 @@ const ResourceEditDetailView: FC<any> = ({
 								label={t('label.id_lbl', 'ID')}
 								backgroundColor="gray6"
 								value={selectedResourceList?.id}
-								readOnly
 							/>
 						</Row>
 					</Container>
@@ -1058,7 +1056,6 @@ const ResourceEditDetailView: FC<any> = ({
 										  )
 										: '--'
 								}
-								readOnly
 							/>
 						</Row>
 					</Container>

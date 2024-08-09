@@ -587,7 +587,6 @@ const EditBucketDetailPanel: FC<{
 						label={t('label.bucket_type', 'Bucket Type')}
 						inputName="label"
 						value={bucketDetail?.storeType || ''}
-						readOnly
 					/>
 				</Row>
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
@@ -681,14 +680,12 @@ const EditBucketDetailPanel: FC<{
 						label={t('label.prefix', 'Prefix')}
 						inputName="label"
 						value={bucketDetail?.prefix || ''}
-						readOnly
 					/>
 				</Row>
 				<Row width={'100%'} padding={{ top: 'large' }} mainAlignment="flex-start">
 					<Input
 						backgroundColor="gray5"
 						label={t('label.description', 'Description')}
-						name="notes"
 						value={bucketNotes}
 						onChange={(ev): void => {
 							setBucketNotes(ev.target.value);

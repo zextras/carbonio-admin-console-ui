@@ -3,15 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, {
-	FC,
-	ReactElement,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
+import React, { FC, ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
 	Container,
@@ -23,19 +15,13 @@ import {
 	DefaultTabBarItem,
 	TabBar,
 	Table,
-	SnackbarManagerContext
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import moment from 'moment';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 
-import {
-	CreateSnackbarType,
-	MtaMailQueue,
-	MtaMailQueueItem,
-	MtaStats,
-	mtaStats
-} from '../../../../types';
+import { MtaMailQueue, MtaMailQueueItem, MtaStats, mtaStats } from '../../../../types';
 import logo from '../../../assets/gardian.svg';
 import {
 	CORRUPT,
@@ -110,7 +96,7 @@ const MTAStatsMail: FC<{
 	flushRequestInProgress
 }) => {
 	const [t] = useTranslation();
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [change, setChange] = useState(ACTIVE);
 	const [setClick] = useState('');
 	const [selectedRow, setSelectedRow] = useState<Array<string>>([]);

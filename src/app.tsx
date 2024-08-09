@@ -4,18 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, {
-	FC,
-	lazy,
-	Suspense,
-	useCallback,
-	useContext,
-	useEffect,
-	useMemo,
-	useState
-} from 'react';
+import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { IconButton, Icon, SnackbarManagerContext } from '@zextras/carbonio-design-system';
+import { IconButton, Icon, useSnackbar } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
 	removeRoute,
@@ -109,7 +100,6 @@ import { useRightsStore, Right, Rights } from './store/rights/store';
 import { useServerStore } from './store/server/store';
 import PrimaryBarTooltip from './views/primary-bar-tooltip/primary-bar-tooltip';
 import { getRights } from './views/utility/utils';
-import { CreateSnackbarType } from '../types';
 
 const LazyAppView = lazy(() => import('./views/app-view'));
 
@@ -160,7 +150,7 @@ const App: FC = () => {
 	const rights: Rights = useRightsStore((state) => state.rights);
 	const [hasListServerRights, sethasListServerRights] = useState<boolean>(false);
 	const { setDomainView, setDomain } = useDomainStore((state) => state);
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const setLastLoginTimestamp = useLastLoginTimestamp((state) => state.setLastLoginTimestamp);
 	const hasAllConfigRights = useMemo(() => {
 		const rightsConfig: Right = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };

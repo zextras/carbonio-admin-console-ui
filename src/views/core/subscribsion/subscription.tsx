@@ -498,7 +498,6 @@ const Subscription: FC = () => {
 							<Input
 								label={t('core.subscription.company_name', 'Company Name')}
 								value={services.response.endUser || ''}
-								readOnly
 							/>
 						</Row>
 						<Row
@@ -603,11 +602,7 @@ const Subscription: FC = () => {
 							crossAlignment="flex-start"
 							padding={{ top: 'small', bottom: 'small', right: 'small' }}
 						>
-							<Input
-								label={t('core.subscription.version', 'Module Version')}
-								value={version}
-								readOnly
-							/>
+							<Input label={t('core.subscription.version', 'Module Version')} value={version} />
 						</Row>
 					</Container>
 				)}

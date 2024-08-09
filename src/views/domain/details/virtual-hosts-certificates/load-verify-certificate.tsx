@@ -4,22 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 
 import {
-	SnackbarManagerContext,
 	Button,
 	FileLoader,
 	Input,
 	Text,
 	Padding,
 	Select,
-	Container
+	Container,
+	useSnackbar
 } from '@zextras/carbonio-design-system';
 import { soapFetch, useUserSettings } from '@zextras/carbonio-shell-ui';
 import { useTranslation } from 'react-i18next';
 
-import { CreateSnackbarType, ICertificateContent } from '../../../../../types';
+import { ICertificateContent } from '../../../../../types';
 import {
 	DOMAIN_CERTIFICATE,
 	DOMAIN_CERTIFICATE_CA_CHAIN,
@@ -50,7 +50,7 @@ const LoadAndVerifyCert: FC<{ setToggleWizardSection: any; externalData: any }> 
 	const [selectedCertType, setSelectedCertType] = useState(certificateTypes[2]?.value);
 	const [verifyBtnLoading, setVerifyBtnLoading] = useState(false);
 	const [uploadBtnTgl, setUploadBtnTgl] = useState(false);
-	const createSnackbar: (options: CreateSnackbarType) => void = useContext(SnackbarManagerContext);
+	const createSnackbar = useSnackbar();
 	const [domainCertiErr, setDomainCertiErr] = useState(true);
 	const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
 	const [privateKeyErr, setPrivateKeyErr] = useState(true);
