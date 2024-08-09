@@ -172,7 +172,7 @@ export const TwoFactorAuthencationConfig: FC<{
 					</ListRow>
 					{twoFactorPolicyArray?.map((cVal, cInd) => (
 						<ListRow
-							key={cInd}
+							key={`policyArray${cInd}`}
 							padding={{ top: 'large' }}
 							orientation="horizontal"
 							crossAlignment="center"
