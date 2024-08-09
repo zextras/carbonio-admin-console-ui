@@ -6,7 +6,7 @@
 
 import React, { FC, lazy, Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 
-import { IconButton, Icon, useSnackbar } from '@zextras/carbonio-design-system';
+import { Icon, useSnackbar, Button } from '@zextras/carbonio-design-system';
 import {
 	addRoute,
 	removeRoute,
@@ -109,7 +109,7 @@ const AppView: FC = (props) => (
 	</Suspense>
 );
 
-const PrimaryBarIconButton = styled(IconButton)`
+const PrimaryBarIconButton = styled(Button)`
 	&:hover {
 		background: transparent;
 	}
@@ -603,7 +603,9 @@ const App: FC = () => {
 				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 				// @ts-ignore // Need to fix it with custom soultion
 				icon={SvgBackupOutline}
+				type="ghost"
 				size="large"
+				backgroundColor="transparent"
 				onClick={(): void => history.push(`/${SERVICES_ROUTE_ID}/${BACKUP_ROUTE_ID}`)}
 			/>
 		),

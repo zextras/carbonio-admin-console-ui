@@ -22,14 +22,16 @@ import CustomChip from '../../components/customChip';
 import ListRow from '../../list/list-row';
 import { TwoFactorWhatToTrust, isValidIpRange } from '../../utility/utils';
 
+type TwoFactorPolicy = {
+	label: string;
+	keyToGet: string;
+};
+
 export const TwoFactorAuthencationConfig: FC<{
 	policies: TwoFactorAuthPolicyValues[];
 	modifyPolicies: any;
 	arrPoliciesToModify: TwoFactorAuthPolicyValues[];
-	twoFactorPolicyArray: Array<{
-		label?: string;
-		keyToGet: string;
-	}>;
+	twoFactorPolicyArray: Array<TwoFactorPolicy>;
 }> = ({ modifyPolicies, arrPoliciesToModify, twoFactorPolicyArray }) => {
 	const [t] = useTranslation();
 	const WHAT_TO_TRUST: any = useMemo(() => TwoFactorWhatToTrust(t), [t]);
@@ -82,6 +84,17 @@ export const TwoFactorAuthencationConfig: FC<{
 		});
 		modifyPolicies(modifiedPolicy);
 	};
+
+	const hasValidIpCheck = (cVal: TwoFactorPolicy): boolean =>
+		some(
+			map(
+				arrPoliciesToModify.find(
+					(obj: TwoFactorAuthPolicyValues) => obj?.[cVal.keyToGet]?.trustedIpRange
+				)?.[cVal.keyToGet]?.trustedIpRange,
+				(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
+			) || [],
+			{ error: true }
+		);
 
 	return (
 		<Container
@@ -203,34 +216,17 @@ export const TwoFactorAuthencationConfig: FC<{
 												});
 												applyToIndividual(cVal.keyToGet, undefined, data);
 											}}
-											hasError={some(
-												map(
-													arrPoliciesToModify.find((obj: any) =>
-														Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
-													)?.[cVal.keyToGet]?.trustedIpRange,
-													(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
-												) || [],
-												{ error: true }
-											)}
+											hasError={hasValidIpCheck(cVal)}
 											value={map(
-												arrPoliciesToModify.find((obj: any) =>
-													Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
-												)?.[cVal.keyToGet]?.trustedIpRange,
+												// eslint-disable-next-line @typescript-eslint/no-explicit-any, max-len
+												arrPoliciesToModify.find((obj: any) => Object.hasOwn(obj, cVal.keyToGet))?.[
+													cVal.keyToGet
+												]?.trustedIpRange,
 												(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
 											)}
-											description={
-												some(
-													map(
-														arrPoliciesToModify.find((obj: any) =>
-															Object.prototype.hasOwnProperty.call(obj, cVal.keyToGet)
-														)?.[cVal.keyToGet]?.trustedIpRange,
-														(ip: string) => ({ label: ip, error: !isValidIpRange(ip) })
-													) || [],
-													{ error: true }
-												)
-													? t('error.one_or_more_ip_invalid', 'One or more IP are invalid')
-													: ''
-											}
+											{...(hasValidIpCheck(cVal) && {
+												description: t('error.one_or_more_ip_invalid', 'One or more IP are invalid')
+											})}
 											ChipComponent={CustomChip}
 											maxChips={null}
 										/>
