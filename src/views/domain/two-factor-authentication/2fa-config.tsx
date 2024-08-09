@@ -170,9 +170,9 @@ export const TwoFactorAuthencationConfig: FC<{
 							onClick={applyToAll}
 						/>
 					</ListRow>
-					{twoFactorPolicyArray?.map((cVal, cInd) => (
+					{twoFactorPolicyArray?.map((cVal) => (
 						<ListRow
-							key={`policyArray${cInd}`}
+							key={`${cVal.label}-${cVal.keyToGet}`}
 							padding={{ top: 'large' }}
 							orientation="horizontal"
 							crossAlignment="center"
